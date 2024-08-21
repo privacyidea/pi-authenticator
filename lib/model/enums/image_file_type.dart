@@ -18,14 +18,14 @@
  * limitations under the License.
  */
 
-import '../../../../model/riverpod_states/token_state.dart';
-import '../../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_notifier.dart';
-import '../../buildless_listener.dart';
-
-abstract class TokenStateListener extends BuildlessListener<TokenNotifier, TokenState> {
-  const TokenStateListener({
-    required super.provider,
-    required super.onNewState,
-    required super.listenerName,
-  });
+// Do not rename or remove values, they are used for serialization. Only add new values.
+enum ImageFileType {
+  svg,
+  svgz,
+  png,
+  jpg,
+  jpeg,
+  gif,
+  bmp,
+  webp,
 }

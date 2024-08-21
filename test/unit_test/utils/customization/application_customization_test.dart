@@ -1,7 +1,10 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:privacyidea_authenticator/model/enums/app_feature.dart';
+import 'package:privacyidea_authenticator/model/enums/image_file_type.dart';
+import 'package:privacyidea_authenticator/model/widget_image.dart';
 import 'package:privacyidea_authenticator/utils/customization/application_customization.dart';
 
 void main() {
@@ -14,8 +17,14 @@ void _testAppCustomizer() {
     final customization = ApplicationCustomization(
       appName: 'test',
       websiteLink: 'https://test',
-      appIconUint8List: defaultIconUint8List,
-      appImageUint8List: defaultImageUint8List,
+      appIcon: WidgetImage(
+        fileType: ImageFileType.png,
+        imageData: defaultIconUint8List,
+      ),
+      appImage: WidgetImage(
+        fileType: ImageFileType.png,
+        imageData: defaultImageUint8List,
+      ),
       lightTheme: ApplicationCustomization.defaultCustomization.lightTheme,
       darkTheme: ApplicationCustomization.defaultCustomization.darkTheme,
       disabledFeatures: {AppFeature.patchNotes},
@@ -24,8 +33,12 @@ void _testAppCustomizer() {
       // Assert
       expect(customization.appName, equals('test'));
       expect(customization.websiteLink, equals('https://test'));
-      expect(customization.appIconUint8List, equals(defaultIconUint8List));
-      expect(customization.appImageUint8List, equals(defaultImageUint8List));
+      expect(customization.appIcon.imageData, equals(defaultIconUint8List));
+      expect(() => customization.appIcon.getWidget, returnsNormally);
+      expect(customization.appImage.getWidget, isA<Widget>());
+      expect(customization.appImage.imageData, equals(defaultImageUint8List));
+      expect(() => customization.appImage.getWidget, returnsNormally);
+      expect(customization..appImage.getWidget, isA<Widget>());
       expect(customization.lightTheme, equals(ApplicationCustomization.defaultCustomization.lightTheme));
       expect(customization.darkTheme, equals(ApplicationCustomization.defaultCustomization.darkTheme));
       expect(customization.disabledFeatures, equals({AppFeature.patchNotes}));
@@ -35,8 +48,14 @@ void _testAppCustomizer() {
       final newCustomization = customization.copyWith(
         appName: 'test2',
         websiteLink: 'https://test2',
-        appIconUint8List: defaultImageUint8List,
-        appImageUint8List: defaultIconUint8List,
+        appIcon: WidgetImage(
+          fileType: ImageFileType.png,
+          imageData: defaultImageUint8List,
+        ),
+        appImage: WidgetImage(
+          fileType: ImageFileType.png,
+          imageData: defaultIconUint8List,
+        ),
         lightTheme: ApplicationCustomization.defaultCustomization.darkTheme,
         darkTheme: ApplicationCustomization.defaultCustomization.lightTheme,
         disabledFeatures: {},
@@ -44,8 +63,8 @@ void _testAppCustomizer() {
       // Assert
       expect(newCustomization.appName, equals('test2'));
       expect(newCustomization.websiteLink, equals('https://test2'));
-      expect(newCustomization.appIconUint8List, equals(defaultImageUint8List));
-      expect(newCustomization.appImageUint8List, equals(defaultIconUint8List));
+      expect(newCustomization.appIcon.imageData, equals(defaultImageUint8List));
+      expect(newCustomization.appImage.imageData, equals(defaultIconUint8List));
     });
     group('serialization', () {
       test('toJson', () {
@@ -74,8 +93,8 @@ void _testAppCustomizer() {
         // Assert
         expect(newCustomization.appName, equals('test2'));
         expect(newCustomization.websiteLink, equals('https://test2'));
-        expect(newCustomization.appIconUint8List, equals(defaultImageUint8List));
-        expect(newCustomization.appImageUint8List, equals(defaultIconUint8List));
+        expect(newCustomization.appIcon.imageData, equals(defaultIconUint8List));
+        expect(newCustomization.appImage.imageData, equals(defaultImageUint8List));
         expect(newCustomization.lightTheme, equals(ApplicationCustomization.defaultCustomization.lightTheme));
         expect(newCustomization.darkTheme, equals(ApplicationCustomization.defaultCustomization.darkTheme));
         expect(newCustomization.disabledFeatures, isA<Set>());

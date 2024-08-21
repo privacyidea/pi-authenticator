@@ -21,7 +21,7 @@ import 'package:app_minimizer/app_minimizer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../utils/customization/extended_text_theme.dart';
+import '../../utils/customization/theme_extentions/extended_text_theme.dart';
 import '../../utils/home_widget_utils.dart';
 import '../../utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
 import '../../utils/riverpod/riverpod_providers/state_notifier_providers/token_notifier.dart';

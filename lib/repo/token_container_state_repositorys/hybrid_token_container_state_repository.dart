@@ -17,10 +17,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import '../../utils/errors.dart';
-
 import '../../interfaces/repo/container_repository.dart';
 import '../../model/token_container.dart';
+import '../../utils/errors.dart';
 import '../../utils/logger.dart';
 
 class HybridTokenContainerRepository<LocalRepo extends TokenContainerRepository, RemoteRepo extends TokenContainerRepository>

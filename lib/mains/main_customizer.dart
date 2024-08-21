@@ -22,6 +22,7 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/utils/customization/application_customization.dart';
 
 import '../l10n/app_localizations.dart';
 import '../model/enums/app_feature.dart';
@@ -43,15 +44,19 @@ import '../widgets/app_wrapper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const AppWrapper(child: CustomizationAuthenticator()));
+  runApp(AppWrapper(child: CustomizationAuthenticator(initialCustomization: ApplicationCustomization.defaultCustomization)));
 }
 
 class CustomizationAuthenticator extends ConsumerWidget {
-  const CustomizationAuthenticator({super.key});
+  final ApplicationCustomization initialCustomization;
+  const CustomizationAuthenticator({required this.initialCustomization, super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     WidgetsFlutterBinding.ensureInitialized();
-    final applicationCustomizer = ref.watch(applicationCustomizerProvider);
+    final applicationCustomizer = ref.watch(applicationCustomizerProvider).maybeWhen(
+          data: (data) => data,
+          orElse: () => initialCustomization,
+        );
     return LayoutBuilder(
       builder: (context, constraints) {
         WidgetsBinding.instance.addPostFrameCallback((_) async => ref.read(appConstraintsNotifierProvider.notifier).update(constraints));
@@ -77,12 +82,12 @@ class CustomizationAuthenticator extends ConsumerWidget {
             FeedbackView.routeName: (context) => const FeedbackView(),
             ImportTokensView.routeName: (context) => const ImportTokensView(),
             LicenseView.routeName: (context) => LicenseView(
-                  appImage: applicationCustomizer.appImage,
+                  appImage: applicationCustomizer.appImage.getWidget,
                   appName: applicationCustomizer.appName,
                   websiteLink: applicationCustomizer.websiteLink,
                 ),
             MainView.routeName: (context) => MainView(
-                  appIcon: applicationCustomizer.appIcon,
+                  appIcon: applicationCustomizer.appIcon.getWidget,
                   appName: applicationCustomizer.appName,
                   disablePatchNotes: applicationCustomizer.disabledFeatures.contains(AppFeature.patchNotes),
                 ),

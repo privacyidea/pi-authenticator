@@ -17,12 +17,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../model/enums/app_feature.dart';
 import '../../../customization/application_customization.dart';
 
+part 'application_customizer_provider.g.dart';
+
 /// Only used for the app customizer
-final applicationCustomizerProvider = StateProvider<ApplicationCustomization>((ref) {
-  return ApplicationCustomization.defaultCustomization.copyWith(disabledFeatures: AppFeature.values.toSet());
-});
+@riverpod
+class ApplicationCustomizer extends _$ApplicationCustomizer {
+  @override
+  Future<ApplicationCustomization> build() async {
+    final customization = ApplicationCustomization.defaultCustomization.copyWith(disabledFeatures: AppFeature.values.toSet());
+    return customization;
+  }
+
+  Future<ApplicationCustomization> setState(ApplicationCustomization newState) async {
+    state = AsyncValue.data(newState);
+    return newState;
+  }
+
+  Future<ApplicationCustomization> updateState(FutureOr<ApplicationCustomization> Function(ApplicationCustomization) updater) async {
+    final oldState = await future;
+    final newState = await updater(oldState);
+    setState(newState);
+    return newState;
+  }
+}

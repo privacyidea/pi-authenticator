@@ -19,11 +19,11 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../interfaces/riverpod/buildless_listener.dart';
-import '../../interfaces/riverpod/state_listeners/state_notifier_provider_listeners/deep_link_listener.dart';
 
+import '../../interfaces/riverpod/buildless_listener.dart';
 import '../../interfaces/riverpod/state_listeners/notifier_provider_listener.dart';
 import '../../interfaces/riverpod/state_listeners/state_notifier_provider_listener.dart';
+import '../../interfaces/riverpod/state_listeners/state_notifier_provider_listeners/deep_link_listener.dart';
 
 class StateObserver extends ConsumerWidget {
   final List<StateNotifierProviderListener> stateNotifierProviderListeners;

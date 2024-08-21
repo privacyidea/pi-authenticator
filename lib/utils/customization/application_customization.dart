@@ -18,14 +18,18 @@
  * limitations under the License.
  */
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-
+import 'package:flutter/services.dart';
 import '../../../utils/customization/theme_customization.dart';
 import '../../model/enums/app_feature.dart';
+import '../../model/enums/image_file_type.dart';
+import '../../model/widget_image.dart';
 
 class ApplicationCustomization {
+  static const String _defaultFontName = 'defaultFont';
+  final String fontFamilyName;
+  final Uint8List? customFontBytes;
   // Edit in android/app/src/main/AndroidManifest.xml file
   // <application android:label="app name">
 
@@ -57,39 +61,34 @@ class ApplicationCustomization {
 
   final String appName;
   final String websiteLink;
-  final Uint8List appIconUint8List;
-  final Uint8List appImageUint8List;
-  Image get appIcon => Image.memory(appIconUint8List);
-  Image get appImage => Image.memory(appImageUint8List);
+  final WidgetImage appIcon;
+
+  final WidgetImage appImage;
+
   final ThemeCustomization lightTheme;
   final ThemeCustomization darkTheme;
   final Set<AppFeature> disabledFeatures;
 
-  static final defaultCustomization = ApplicationCustomization(
-    appName: 'privacyIDEA Authenticator',
-    websiteLink: 'https://netknights.it/',
-    appIconUint8List: defaultIconUint8List,
-    appImageUint8List: defaultImageUint8List,
-    lightTheme: ThemeCustomization.defaultLightTheme,
-    darkTheme: ThemeCustomization.defaultDarkTheme,
-    disabledFeatures: const {},
-  );
+  static final defaultCustomization = ApplicationCustomization();
 
-  const ApplicationCustomization({
-    required this.appName,
-    required this.websiteLink,
-    required this.appIconUint8List,
-    required this.appImageUint8List,
-    required this.lightTheme,
-    required this.darkTheme,
-    required this.disabledFeatures,
-  });
+  ApplicationCustomization({
+    this.appName = 'privacyIDEA Authenticator',
+    this.websiteLink = 'https://netknights.it/',
+    this.fontFamilyName = _defaultFontName,
+    this.customFontBytes,
+    WidgetImage? appIcon,
+    WidgetImage? appImage,
+    this.lightTheme = ThemeCustomization.defaultLightTheme,
+    this.darkTheme = ThemeCustomization.defaultDarkTheme,
+    this.disabledFeatures = const {},
+  })  : appIcon = appIcon ?? WidgetImage(fileType: ImageFileType.png, imageData: defaultIconUint8List),
+        appImage = appImage ?? WidgetImage(fileType: ImageFileType.png, imageData: defaultIconUint8List);
 
   ApplicationCustomization copyWith({
     String? appName,
     String? websiteLink,
-    Uint8List? appIconUint8List,
-    Uint8List? appImageUint8List,
+    WidgetImage? appIcon,
+    WidgetImage? appImage,
     ThemeCustomization? lightTheme,
     ThemeCustomization? darkTheme,
     Set<AppFeature>? disabledFeatures,
@@ -97,39 +96,64 @@ class ApplicationCustomization {
       ApplicationCustomization(
         appName: appName ?? this.appName,
         websiteLink: websiteLink ?? this.websiteLink,
-        appIconUint8List: appIconUint8List ?? this.appIconUint8List,
-        appImageUint8List: appImageUint8List ?? this.appImageUint8List,
+        appIcon: appIcon ?? this.appIcon,
+        appImage: appImage ?? this.appImage,
         lightTheme: lightTheme ?? this.lightTheme,
         darkTheme: darkTheme ?? this.darkTheme,
         disabledFeatures: disabledFeatures ?? this.disabledFeatures,
       );
 
-  ThemeData generateLightTheme() => lightTheme.generateTheme();
+  Future<ApplicationCustomization> updateFont(Uint8List fontBytes, String fontName) async {
+    final newState = ApplicationCustomization(
+      appName: appName,
+      websiteLink: websiteLink,
+      customFontBytes: fontBytes,
+      fontFamilyName: fontName,
+      appIcon: appIcon,
+      appImage: appImage,
+      lightTheme: lightTheme,
+      darkTheme: darkTheme,
+      disabledFeatures: disabledFeatures,
+    );
+    await newState.loadCustomFonts(fontBytes);
+    return newState;
+  }
 
-  ThemeData generateDarkTheme() => darkTheme.generateTheme();
+  Future<void> loadCustomFonts(fontBytes) async {
+    if (customFontBytes == null) return;
+    var fontLoader = FontLoader(fontFamilyName);
+    final byteData = ByteData.view(customFontBytes!.buffer);
+    fontLoader.addFont(Future.value(byteData));
+    await fontLoader.load();
+  }
 
-  factory ApplicationCustomization.fromJson(Map<String, dynamic> json) => defaultCustomization.copyWith(
-        appName: json['appName'] as String,
-        websiteLink: json['websiteLink'] as String,
-        appIconUint8List: json['appIconBASE64'] != null ? base64Decode(json['appIconBASE64']! as String) : null,
-        appImageUint8List: json['appImageBASE64'] != null ? base64Decode(json['appImageBASE64'] as String) : null,
-        lightTheme: ThemeCustomization.fromJson(json['lightTheme'] as Map<String, dynamic>),
-        darkTheme: ThemeCustomization.fromJson(json['darkTheme'] as Map<String, dynamic>),
+  ThemeData generateLightTheme() => lightTheme.generateTheme(fontFamily: customFontBytes != null ? fontFamilyName : null);
+  ThemeData generateDarkTheme() => darkTheme.generateTheme(fontFamily: customFontBytes != null ? fontFamilyName : null);
+
+  factory ApplicationCustomization.fromJson(Map<String, dynamic> json) => ApplicationCustomization(
+        appName: json['appName'] as String? ?? 'privacyIDEA Authenticator',
+        websiteLink: json['websiteLink'] as String? ?? 'https://netknights.it/',
+        customFontBytes: json['customFontBytes'] != null ? base64Decode(json['customFontBytes'] as String) : null,
+        fontFamilyName: json['fontFamilyName'] as String? ?? _defaultFontName,
+        appIcon: json['appIcon'] == null ? null : WidgetImage.fromJson(json['appIcon'] as Map<String, dynamic>),
+        appImage: json['appImage'] == null ? null : WidgetImage.fromJson(json['appImage'] as Map<String, dynamic>),
+        lightTheme: json['lightTheme'] != null ? ThemeCustomization.fromJson(json['lightTheme'] as Map<String, dynamic>) : ThemeCustomization.defaultLightTheme,
+        darkTheme: json['darkTheme'] != null ? ThemeCustomization.fromJson(json['darkTheme'] as Map<String, dynamic>) : ThemeCustomization.defaultDarkTheme,
         disabledFeatures:
-            json['disabledFeatures'] != null ? (json['disabledFeatures'] as List<dynamic>).map((e) => AppFeature.values.byName(e as String)).toSet() : const {},
+            json['disabledFeatures'] != null ? (json['disabledFeatures'] as List<dynamic>).map((e) => AppFeature.values.byName(e as String)).toSet() : {},
       );
 
-  Map<String, dynamic> toJson() {
-    return <String, dynamic>{
-      'appName': appName,
-      'websiteLink': websiteLink,
-      'appIconBASE64': base64Encode(appIconUint8List),
-      'appImageBASE64': base64Encode(appImageUint8List),
-      'lightTheme': lightTheme.toJson(),
-      'darkTheme': darkTheme.toJson(),
-      'disabledFeatures': disabledFeatures.map((e) => e.name).toList(),
-    };
-  }
+  Map<String, dynamic> toJson() => {
+        'appName': appName,
+        'websiteLink': websiteLink,
+        'customFontBytes': customFontBytes != null ? base64Encode(customFontBytes!) : null,
+        'fontFamilyName': fontFamilyName,
+        'appIcon': appIcon.toJson(),
+        'appImage': appImage.toJson(),
+        'lightTheme': lightTheme.toJson(),
+        'darkTheme': darkTheme.toJson(),
+        'disabledFeatures': disabledFeatures.map((e) => e.name).toList(),
+      };
 }
 
 final Uint8List defaultIconUint8List = base64Decode(

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../utils/customization/extended_text_theme.dart';
+import '../../utils/customization/theme_extentions/extended_text_theme.dart';
 import 'interfaces/flutter_home_widget_base.dart';
 import 'interfaces/flutter_home_widget_builder.dart';
 

@@ -31,8 +31,8 @@ import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'token_import/token_origin_data.dart';
 import 'tokens/token.dart';
 
-part 'token_container.g.dart';
 part 'token_container.freezed.dart';
+part 'token_container.g.dart';
 
 @freezed
 sealed class TokenContainer with _$TokenContainer {

@@ -25,9 +25,9 @@ import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../model/deeplink.dart';
-import '../../state_notifiers/deeplink_notifier.dart';
 import '../../../home_widget_utils.dart';
 import '../../../logger.dart';
+import '../../state_notifiers/deeplink_notifier.dart';
 
 part 'deeplink_notifier.g.dart';
 

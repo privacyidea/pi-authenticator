@@ -30,10 +30,9 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   app_minimizer: ^1.0.0+2
-  flutter_local_notifications: ^17.0.0
+  flutter_local_notifications: ^17.2.2
   home_widget: ^0.6.0
   image: ^4.1.6
-  json_annotation: ^4.9.0
   local_auth: ^2.1.6
   local_auth_android: ^1.0.37
   local_auth_darwin: ^1.2.2
@@ -44,6 +43,9 @@ dependencies:
   uuid: ^4.0.0
   flutter_zxing: ^1.7.0
   zxing2: ^0.2.3
+  flutter_svg: ^2.0.10+1
+  freezed: ^2.5.7
+  json_annotation: ^4.9.0
   # Crypto
   mutex: ^3.0.0
   hex: ^0.2.0
@@ -95,6 +97,7 @@ dependencies:
   async: ^2.11.0
 
 
+
 dev_dependencies:
   flutter_driver:
     sdk: flutter
@@ -112,7 +115,6 @@ dev_dependencies:
   json_serializable: ^6.8.0
   custom_lint: ^0.6.4
   riverpod_lint: ^2.3.10
-  freezed: ^2.5.2
 
 
 # For information on the generic Dart part of this file, see the

@@ -18,6 +18,7 @@
  * limitations under the License.
  */
 import 'package:json_annotation/json_annotation.dart';
+
 import 'push_token.dart';
 
 part 'container_credentials.g.dart';

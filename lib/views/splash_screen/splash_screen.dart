@@ -98,7 +98,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     }
     final ViewWidget nextView = MainView(
       appName: _customization.appName,
-      appIcon: _customization.appIcon,
+      appIcon: _customization.appIcon.getWidget,
       disablePatchNotes: _customization.disabledFeatures.contains(AppFeature.patchNotes),
     );
     final routeBuilder = PageRouteBuilder(pageBuilder: (_, __, ___) => nextView);
@@ -125,7 +125,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
           curve: Curves.easeOut,
           child: Padding(
             padding: const EdgeInsets.all(32.0),
-            child: _customization.appImage,
+            child: SizedBox(
+              height: 99999,
+              width: 99999,
+              child: _customization.appImage.getWidget,
+            ),
           ),
         ),
       ),

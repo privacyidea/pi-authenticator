@@ -22,7 +22,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/token.dart';
-import '../../../../../utils/customization/action_theme.dart';
+import '../../../../../utils/customization/theme_extentions/action_theme.dart';
 import '../../../../../utils/globals.dart';
 import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_notifier.dart';

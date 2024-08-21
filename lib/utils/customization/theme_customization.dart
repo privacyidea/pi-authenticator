@@ -21,8 +21,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-import '../../../utils/customization/action_theme.dart';
-import '../../../utils/customization/extended_text_theme.dart';
+import 'theme_extentions/action_theme.dart';
+import 'theme_extentions/extended_text_theme.dart';
+import 'theme_extentions/push_request_theme.dart';
 
 class ThemeCustomization {
   static const ThemeCustomization defaultLightTheme = ThemeCustomization.defaultLightWith();
@@ -41,13 +42,17 @@ class ThemeCustomization {
     required this.lockColor,
     required this.tileIconColor,
     required this.navigationBarColor,
+    Color? pushAuthRequestAcceptColor,
+    Color? pushAuthRequestDeclineColor,
     Color? actionButtonsForegroundColor,
     Color? tilePrimaryColor,
     Color? tileSubtitleColor,
     Color? navigationBarIconColor,
     Color? qrButtonBackgroundColor,
     Color? qrButtonIconColor,
-  })  : _actionButtonsForegroundColor = actionButtonsForegroundColor,
+  })  : _pushAuthRequestAcceptColor = pushAuthRequestAcceptColor,
+        _pushAuthRequestDeclineColor = pushAuthRequestDeclineColor,
+        _actionButtonsForegroundColor = actionButtonsForegroundColor,
         _tilePrimaryColor = tilePrimaryColor,
         _tileSubtitleColor = tileSubtitleColor,
         _navigationBarIconColor = navigationBarIconColor,
@@ -67,6 +72,8 @@ class ThemeCustomization {
     Color? tileIconColor,
     Color? navigationBarColor,
     // From here on the colors have a default value based on another given color so they can be null
+    Color? pushAuthRequestAcceptColor, // Default: primaryColor
+    Color? pushAuthRequestDeclineColor, // Default: deleteColor
     Color? actionButtonsForegroundColor, // Default: foregroundColor
     Color? tilePrimaryColor, // Default: primaryColor
     Color? tileSubtitleColor, // Default: subtitleColor
@@ -86,6 +93,8 @@ class ThemeCustomization {
         tileIconColor = tileIconColor ?? const Color(0xff757575),
         navigationBarColor = navigationBarColor ?? const Color(0xFFFFFFFF),
         // From here on the colors have a default value based on another given color so they can be null
+        _pushAuthRequestAcceptColor = pushAuthRequestAcceptColor,
+        _pushAuthRequestDeclineColor = pushAuthRequestDeclineColor,
         _actionButtonsForegroundColor = actionButtonsForegroundColor,
         _tilePrimaryColor = tilePrimaryColor,
         _tileSubtitleColor = tileSubtitleColor,
@@ -106,6 +115,8 @@ class ThemeCustomization {
     Color? tileIconColor,
     Color? navigationBarColor,
     // From here on the colors have a default value based on another given color so they can be null
+    Color? pushAuthRequestAcceptColor, // Default: primaryColor
+    Color? pushAuthRequestDeclineColor, // Default: deleteColor
     Color? actionButtonsForegroundColor, // Default: foregroundColor
     Color? tilePrimaryColor, // Default: primaryColor
     Color? tileSubtitleColor, // Default: subtitleColor
@@ -125,6 +136,8 @@ class ThemeCustomization {
         tileIconColor = tileIconColor ?? const Color(0xffF5F5F5),
         navigationBarColor = navigationBarColor ?? const Color(0xFF282828),
         // From here on the colors have a default value based on another given color so they can be null
+        _pushAuthRequestAcceptColor = pushAuthRequestAcceptColor,
+        _pushAuthRequestDeclineColor = pushAuthRequestDeclineColor,
         _actionButtonsForegroundColor = actionButtonsForegroundColor,
         _tilePrimaryColor = tilePrimaryColor,
         _tileSubtitleColor = tileSubtitleColor,
@@ -141,6 +154,12 @@ class ThemeCustomization {
   final Color backgroundColor;
   final Color foregroundColor;
   final Color shadowColor;
+
+  // Push Request colors
+  final Color? _pushAuthRequestAcceptColor;
+  Color get pushAuthRequestAcceptColor => _pushAuthRequestAcceptColor ?? primaryColor;
+  final Color? _pushAuthRequestDeclineColor;
+  Color get pushAuthRequestDeclineColor => _pushAuthRequestDeclineColor ?? deleteColor;
 
   // Slide action
   final Color deleteColor;
@@ -179,6 +198,8 @@ class ThemeCustomization {
     Color? tileIconColor,
     Color? navigationBarColor,
     // From here on the colors have a default value based on another given color so they can be null
+    Color? Function()? pushAuthRequestAcceptColor, // Default: primaryColor
+    Color? Function()? pushAuthRequestDeclineColor, // Default: deleteColor
     Color? Function()? actionButtonsForegroundColor, // Default: foregroundColor
     Color? Function()? tilePrimaryColor, // Default: primaryColor
     Color? Function()? tileSubtitleColor, // Default: subtitleColor
@@ -199,6 +220,9 @@ class ThemeCustomization {
         lockColor: lockColor ?? this.lockColor,
         tileIconColor: tileIconColor ?? this.tileIconColor,
         navigationBarColor: navigationBarColor ?? this.navigationBarColor,
+        // From here on the colors have a default value based on another given color so they can be null
+        pushAuthRequestAcceptColor: pushAuthRequestAcceptColor != null ? pushAuthRequestAcceptColor() : _pushAuthRequestAcceptColor,
+        pushAuthRequestDeclineColor: pushAuthRequestDeclineColor != null ? pushAuthRequestDeclineColor() : _pushAuthRequestDeclineColor,
         actionButtonsForegroundColor: actionButtonsForegroundColor != null ? actionButtonsForegroundColor() : _actionButtonsForegroundColor,
         tilePrimaryColor: tilePrimaryColor != null ? tilePrimaryColor() : _tilePrimaryColor,
         tileSubtitleColor: tileSubtitleColor != null ? tileSubtitleColor() : _tileSubtitleColor,
@@ -226,6 +250,8 @@ class ThemeCustomization {
         lockColor: json['lockColor'] != null ? Color(json['lockColor'] as int) : null,
         tileIconColor: json['tileIconColor'] != null ? Color(json['tileIconColor'] as int) : null,
         navigationBarColor: json['navigationBarColor'] != null ? Color(json['navigationBarColor'] as int) : null,
+        pushAuthRequestAcceptColor: json['_pushAuthRequestAcceptColor'] != null ? Color(json['_pushAuthRequestAcceptColor'] as int) : null,
+        pushAuthRequestDeclineColor: json['_pushAuthRequestDeclineColor'] != null ? Color(json['_pushAuthRequestDeclineColor'] as int) : null,
         actionButtonsForegroundColor: json['_actionButtonsForegroundColor'] != null ? Color(json['_actionButtonsForegroundColor'] as int) : null,
         tilePrimaryColor: json['_tilePrimaryColor'] != null ? Color(json['_tilePrimaryColor'] as int) : null,
         tileSubtitleColor: json['_tileSubtitleColor'] != null ? Color(json['_tileSubtitleColor'] as int) : null,
@@ -247,6 +273,8 @@ class ThemeCustomization {
         lockColor: json['lockColor'] != null ? Color(json['lockColor'] as int) : null,
         tileIconColor: json['tileIconColor'] != null ? Color(json['tileIconColor'] as int) : null,
         navigationBarColor: json['navigationBarColor'] != null ? Color(json['navigationBarColor'] as int) : null,
+        pushAuthRequestAcceptColor: json['_pushAuthRequestAcceptColor'] != null ? Color(json['_pushAuthRequestAcceptColor'] as int) : null,
+        pushAuthRequestDeclineColor: json['_pushAuthRequestDeclineColor'] != null ? Color(json['_pushAuthRequestDeclineColor'] as int) : null,
         actionButtonsForegroundColor: json['_actionButtonsForegroundColor'] != null ? Color(json['_actionButtonsForegroundColor'] as int) : null,
         tilePrimaryColor: json['_tilePrimaryColor'] != null ? Color(json['_tilePrimaryColor'] as int) : null,
         tileSubtitleColor: json['_tileSubtitleColor'] != null ? Color(json['_tileSubtitleColor'] as int) : null,
@@ -271,6 +299,7 @@ class ThemeCustomization {
         'lockColor': lockColor.value,
         'tileIconColor': tileIconColor.value,
         'navigationBarColor': navigationBarColor.value,
+        '_pushAuthRequestAcceptColor': _pushAuthRequestAcceptColor?.value,
         '_actionButtonsForegroundColor': _actionButtonsForegroundColor?.value,
         '_tilePrimaryColor': _tilePrimaryColor?.value,
         '_tileSubtitleColor': _tileSubtitleColor?.value,
@@ -279,25 +308,25 @@ class ThemeCustomization {
         '_qrButtonIconColor': _qrButtonIconColor?.value,
       };
 
-  ThemeData generateTheme() => ThemeData(
+  ThemeData generateTheme({String? fontFamily}) => ThemeData(
           useMaterial3: false,
           brightness: brightness,
           primaryColor: primaryColor,
           canvasColor: backgroundColor,
           textTheme: const TextTheme().copyWith(
-            bodyLarge: TextStyle(color: foregroundColor),
-            bodyMedium: TextStyle(color: foregroundColor),
-            titleMedium: TextStyle(color: foregroundColor),
-            titleSmall: TextStyle(color: foregroundColor),
-            displayLarge: TextStyle(color: foregroundColor),
-            displayMedium: TextStyle(color: foregroundColor),
-            displaySmall: TextStyle(color: foregroundColor),
-            headlineMedium: TextStyle(color: foregroundColor),
-            headlineSmall: TextStyle(color: foregroundColor),
-            titleLarge: TextStyle(color: primaryColor),
-            bodySmall: TextStyle(color: subtitleColor),
-            labelLarge: TextStyle(color: foregroundColor),
-            labelSmall: TextStyle(color: foregroundColor),
+            bodyLarge: TextStyle(color: foregroundColor, fontFamily: fontFamily),
+            bodyMedium: TextStyle(color: foregroundColor, fontFamily: fontFamily),
+            titleMedium: TextStyle(color: foregroundColor, fontFamily: fontFamily),
+            titleSmall: TextStyle(color: foregroundColor, fontFamily: fontFamily),
+            displayLarge: TextStyle(color: foregroundColor, fontFamily: fontFamily),
+            displayMedium: TextStyle(color: foregroundColor, fontFamily: fontFamily),
+            displaySmall: TextStyle(color: foregroundColor, fontFamily: fontFamily),
+            headlineMedium: TextStyle(color: foregroundColor, fontFamily: fontFamily),
+            headlineSmall: TextStyle(color: foregroundColor, fontFamily: fontFamily),
+            titleLarge: TextStyle(color: primaryColor, fontFamily: fontFamily),
+            bodySmall: TextStyle(color: subtitleColor, fontFamily: fontFamily),
+            labelLarge: TextStyle(color: foregroundColor, fontFamily: fontFamily),
+            labelSmall: TextStyle(color: foregroundColor, fontFamily: fontFamily),
           ),
           iconButtonTheme: IconButtonThemeData(
             style: ButtonStyle(
@@ -437,6 +466,10 @@ class ThemeCustomization {
               tokenTileSubtitle: TextStyle(
                 color: tileSubtitleColor,
               ),
+            ),
+            PushRequestTheme(
+              acceptColor: pushAuthRequestAcceptColor,
+              declineColor: pushAuthRequestDeclineColor,
             ),
           ]);
 

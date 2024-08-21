@@ -19,16 +19,16 @@
  */
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pointycastle/asymmetric/api.dart';
-import '../token_container.dart';
-import '../../utils/errors.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../utils/custom_int_buffer.dart';
+import '../../utils/errors.dart';
 import '../../utils/identifiers.dart';
 import '../../utils/logger.dart';
 import '../../utils/rsa_utils.dart';
 import '../enums/push_token_rollout_state.dart';
 import '../enums/token_types.dart';
+import '../token_container.dart';
 import '../token_import/token_origin_data.dart';
 import 'token.dart';
 
