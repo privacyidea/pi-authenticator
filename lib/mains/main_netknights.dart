@@ -78,7 +78,9 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     globalRef = ref;
     return LayoutBuilder(builder: (context, constraints) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => ref.read(appConstraintsNotifierProvider.notifier).update(constraints));
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(appConstraintsNotifierProvider.notifier).update(constraints);
+      });
       return MaterialApp(
         scrollBehavior: ScrollConfiguration.of(context).copyWith(
           physics: const ClampingScrollPhysics(),
@@ -109,10 +111,11 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
                 appIcon: _customization.appIcon.getWidget,
                 appName: _customization.appName,
                 disablePatchNotes: _customization.disabledFeatures.contains(AppFeature.patchNotes),
+                appConstraints: constraints,
               ),
           PushTokensView.routeName: (context) => const PushTokensView(),
           SettingsView.routeName: (context) => const SettingsView(),
-          SplashScreen.routeName: (context) => SplashScreen(customization: _customization),
+          SplashScreen.routeName: (context) => SplashScreen(customization: _customization, appConstraints: constraints),
           QRScannerView.routeName: (context) => const QRScannerView(),
         },
       );

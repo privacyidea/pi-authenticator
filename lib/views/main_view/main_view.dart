@@ -48,8 +48,9 @@ class MainView extends ConsumerStatefulView {
   final Widget appIcon;
   final String appName;
   final bool disablePatchNotes;
+  final BoxConstraints appConstraints;
 
-  const MainView({required this.appIcon, required this.appName, required this.disablePatchNotes, super.key});
+  const MainView({required this.appIcon, required this.appName, required this.disablePatchNotes, super.key, required this.appConstraints});
 
   @override
   ConsumerState<MainView> createState() => _MainViewState();
@@ -114,7 +115,7 @@ class _MainViewState extends ConsumerState<MainView> {
                   ? Stack(
                       children: [
                         MainViewTokensList(nestedScrollViewKey: globalKey),
-                        const MainViewNavigationBar(),
+                        MainViewNavigationBar(appConstraints: widget.appConstraints),
                       ],
                     )
                   : const MainViewTokensListFiltered(),
