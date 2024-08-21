@@ -23,6 +23,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../model/enums/introduction.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
+import '../../../utils/riverpod/riverpod_providers/state_providers/app_constraints_notifier.dart';
 import '../../../widgets/focused_item_as_overlay.dart';
 import '../../add_token_manually_view/add_token_manually_view.dart';
 import '../../settings_view/settings_view.dart';
@@ -39,11 +40,12 @@ class MainViewNavigationBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final introProv = ref.watch(introductionNotifierProvider);
-    final navWidth = appConstraints.maxWidth;
-    final navHeight = appConstraints.maxHeight * 0.10;
+    final constraints = ref.watch(appConstraintsNotifierProvider) ?? appConstraints;
+    final navWidth = constraints.maxWidth;
+    final navHeight = constraints.maxHeight * 0.10;
     return SizedBox(
-      width: appConstraints.maxWidth,
-      height: appConstraints.maxHeight,
+      width: constraints.maxWidth,
+      height: constraints.maxHeight,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
