@@ -23,7 +23,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../model/enums/introduction.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
-import '../../../utils/riverpod/riverpod_providers/state_providers/app_constraints_notifier.dart';
 import '../../../widgets/focused_item_as_overlay.dart';
 import '../../add_token_manually_view/add_token_manually_view.dart';
 import '../../settings_view/settings_view.dart';
@@ -34,18 +33,17 @@ import 'main_view_navigation_buttons/license_push_view_button.dart';
 import 'main_view_navigation_buttons/qr_scanner_button.dart';
 
 class MainViewNavigationBar extends ConsumerWidget {
-  const MainViewNavigationBar({super.key});
+  final BoxConstraints appConstraints;
+  const MainViewNavigationBar({super.key, required this.appConstraints});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    BoxConstraints? constraints = ref.watch(appConstraintsNotifierProvider);
     final introProv = ref.watch(introductionNotifierProvider);
-    constraints ??= const BoxConstraints();
-    final navWidth = constraints.maxWidth;
-    final navHeight = constraints.maxHeight * 0.10;
+    final navWidth = appConstraints.maxWidth;
+    final navHeight = appConstraints.maxHeight * 0.10;
     return SizedBox(
-      width: constraints.maxWidth,
-      height: constraints.maxHeight,
+      width: appConstraints.maxWidth,
+      height: appConstraints.maxHeight,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [

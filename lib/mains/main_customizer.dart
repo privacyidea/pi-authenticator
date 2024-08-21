@@ -91,10 +91,11 @@ class CustomizationAuthenticator extends ConsumerWidget {
                   appIcon: applicationCustomizer.appIcon.getWidget,
                   appName: applicationCustomizer.appName,
                   disablePatchNotes: applicationCustomizer.disabledFeatures.contains(AppFeature.patchNotes),
+                  appConstraints: constraints,
                 ),
             PushTokensView.routeName: (context) => const PushTokensView(),
             SettingsView.routeName: (context) => const SettingsView(),
-            SplashScreen.routeName: (context) => SplashScreen(customization: applicationCustomizer),
+            SplashScreen.routeName: (context) => SplashScreen(customization: applicationCustomizer, appConstraints: constraints),
             QRScannerView.routeName: (context) => const QRScannerView(),
           },
         );
