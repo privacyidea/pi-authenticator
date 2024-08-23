@@ -26,7 +26,7 @@ import '../../utils/customization/application_customization.dart';
 import '../../utils/home_widget_utils.dart';
 import '../../utils/logger.dart';
 import '../../utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
-import '../../utils/riverpod/riverpod_providers/state_notifier_providers/token_notifier.dart';
+import '../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../main_view/main_view.dart';
 import '../view_interface.dart';
 

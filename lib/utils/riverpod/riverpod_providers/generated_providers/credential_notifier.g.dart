@@ -7,7 +7,7 @@ part of 'credential_notifier.dart';
 // **************************************************************************
 
 String _$credentialsNotifierHash() =>
-    r'459a5bf82645911570b3c7947743ff2f959fa751';
+    r'f2f6e55487b59136bb7ce6aa3e05df96d3d8fd82';
 
 /// See also [CredentialsNotifier].
 @ProviderFor(CredentialsNotifier)

@@ -57,7 +57,7 @@ sealed class TokenContainer with _$TokenContainer {
   const factory TokenContainer.uninitialized({
     // Base fields
     @Default('PrivacyIDEA') String serverName,
-    @Default(null) DateTime? lastSyncAt,
+    DateTime? lastSyncAt,
     @Default('none') String serial,
     @Default('Uninitialized') String description,
     @Default([]) List<TokenTemplate> syncedTokenTemplates,
@@ -77,7 +77,7 @@ sealed class TokenContainer with _$TokenContainer {
   const factory TokenContainer.modified({
     // Base fields
     @Default('PrivacyIDEA') String serverName,
-    @Default(null) DateTime? lastSyncAt,
+    DateTime? lastSyncAt,
     required String serial,
     required String description,
     required List<TokenTemplate> syncedTokenTemplates,
@@ -88,7 +88,7 @@ sealed class TokenContainer with _$TokenContainer {
   const factory TokenContainer.unsynced({
     // Base fields
     @Default('PrivacyIDEA') String serverName,
-    @Default(null) DateTime? lastSyncAt,
+    DateTime? lastSyncAt,
     required String serial,
     required String description,
     required List<TokenTemplate> syncedTokenTemplates,
@@ -110,7 +110,7 @@ sealed class TokenContainer with _$TokenContainer {
   const factory TokenContainer.error({
     // Base fields
     @Default('PrivacyIDEA') String serverName,
-    @Default(null) DateTime? lastSyncAt,
+    DateTime? lastSyncAt,
     @Default('none') String serial,
     @Default('Error') String description,
     @Default([]) List<TokenTemplate> syncedTokenTemplates,

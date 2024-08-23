@@ -95,6 +95,7 @@ dependencies:
   riverpod_annotation: ^2.3.5
   freezed_annotation: ^2.4.4
   async: ^2.11.0
+  basic_utils: ^5.7.0
 
 
 

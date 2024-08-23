@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import '../utils/globals.dart';
 import '../utils/logger.dart';
-import '../utils/riverpod/riverpod_providers/state_providers/app_constraints_notifier.dart';
+import '../utils/riverpod/riverpod_providers/generated_providers/app_constraints_notifier.dart';
 import '../utils/utils.dart';
 import 'pulse_icon.dart';
 import 'tooltip_container.dart';

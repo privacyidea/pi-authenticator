@@ -29,7 +29,7 @@ import '../../../../../utils/customization/theme_extentions/action_theme.dart';
 import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/logger.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
-import '../../../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_notifier.dart';
+import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../../../widgets/focused_item_as_overlay.dart';
 import '../token_action.dart';
 

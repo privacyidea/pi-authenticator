@@ -26,7 +26,7 @@ import '../../../../model/mixins/sortable_mixin.dart';
 import '../../../../model/token_folder.dart';
 import '../../../../model/tokens/token.dart';
 import 'token_folder_notifier.dart';
-import '../state_notifier_providers/token_notifier.dart';
+import 'token_notifier.dart';
 
 part 'sortable_notifier.g.dart';
 

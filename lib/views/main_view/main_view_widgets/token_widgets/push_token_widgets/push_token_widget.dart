@@ -50,24 +50,22 @@ class PushTokenWidget extends TokenWidget {
   });
 
   @override
-  TokenWidgetBase build(BuildContext context) {
-    return TokenWidgetBase(
-      key: Key(token.id),
-      token: token,
-      tile: PushTokenWidgetTile(token),
-      dragIcon: Icons.notifications,
-      editAction: EditPushTokenAction(token: token, key: Key('${token.id}editAction')),
-      stack: [
-        if (!token.isRolledOut)
-          Positioned.fill(
-            child: ClipRect(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                child: rolloutFailed ? RolloutFailedWidget(token: token) : RolloutWidget(token: token),
+  TokenWidgetBase build(BuildContext context) => TokenWidgetBase(
+        key: Key(token.id),
+        token: token,
+        tile: PushTokenWidgetTile(token),
+        dragIcon: Icons.notifications,
+        editAction: EditPushTokenAction(token: token, key: Key('${token.id}editAction')),
+        stack: [
+          if (!token.isRolledOut)
+            Positioned.fill(
+              child: ClipRect(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                  child: rolloutFailed ? RolloutFailedWidget(token: token) : RolloutWidget(token: token),
+                ),
               ),
             ),
-          ),
-      ],
-    );
-  }
+        ],
+      );
 }

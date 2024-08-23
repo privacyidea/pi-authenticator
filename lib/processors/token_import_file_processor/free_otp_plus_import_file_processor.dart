@@ -38,6 +38,7 @@ import '../scheme_processors/token_import_scheme_processors/free_otp_plus_qr_pro
 import 'token_import_file_processor_interface.dart';
 
 class FreeOtpPlusImportFileProcessor extends TokenImportFileProcessor {
+  static get resultHandlerType => TokenImportFileProcessor.resultHandlerType;
   static const String _FREE_OTP_PLUS_ALGORITHM = 'algo'; // String: "MD5", "SHA1", "SHA256", "SHA512"
   static const String _FREE_OTP_PLUS_COUNTER = 'counter';
   static const String _FREE_OTP_PLUS_DIGITS = 'digits';
@@ -88,17 +89,22 @@ class FreeOtpPlusImportFileProcessor extends TokenImportFileProcessor {
         results.addAll(await const FreeOtpPlusQrProcessor().processUri(uri));
       } catch (e) {
         Logger.error('Failed to process line: $line', name: 'FreeOtpPlusFileProcessor#processFile', error: e, stackTrace: StackTrace.current);
-        results.add(ProcessorResultFailed(e.toString()));
+        results.add(ProcessorResultFailed(e.toString(),
+          resultHandlerType: resultHandlerType,
+        ));
       }
     }
     return results.map((t) {
       if (t is! ProcessorResultSuccess<Token>) return t;
-      return ProcessorResultSuccess(TokenOriginSourceType.backupFile.addOriginToToken(
-        appName: TokenImportOrigins.freeOtpPlus.appName,
-        token: t.resultData,
-        isPrivacyIdeaToken: false,
-        data: t.resultData.origin!.data,
-      ));
+      return ProcessorResultSuccess(
+        TokenOriginSourceType.backupFile.addOriginToToken(
+          appName: TokenImportOrigins.freeOtpPlus.appName,
+          token: t.resultData,
+          isPrivacyIdeaToken: false,
+          data: t.resultData.origin!.data,
+        ),
+        resultHandlerType: resultHandlerType,
+      );
     }).toList();
   }
 
@@ -116,12 +122,21 @@ class FreeOtpPlusImportFileProcessor extends TokenImportFileProcessor {
 
   Future<ProcessorResult<Token>> _processJsonToken(Map<String, dynamic> tokenJson) async {
     try {
-      return ProcessorResultSuccess(Token.fromUriMap(_jsonToUriMap(tokenJson)));
+      return ProcessorResultSuccess(
+        Token.fromUriMap(_jsonToUriMap(tokenJson)),
+        resultHandlerType: resultHandlerType,
+      );
     } on LocalizedException catch (e) {
-      return ProcessorResultFailed(e.localizedMessage(AppLocalizations.of(await globalContext)!));
+      return ProcessorResultFailed(
+        e.localizedMessage(AppLocalizations.of(await globalContext)!),
+        resultHandlerType: resultHandlerType,
+      );
     } catch (e) {
       Logger.error('Failed to parse token.', name: 'FreeOtpPlusFileProcessor#_processJsonToken', error: e, stackTrace: StackTrace.current);
-      return ProcessorResultFailed(e.toString());
+      return ProcessorResultFailed(
+        e.toString(),
+        resultHandlerType: resultHandlerType,
+      );
     }
   }
 

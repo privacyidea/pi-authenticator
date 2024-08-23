@@ -17,12 +17,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import '../enums/encodings.dart';
-import '../extensions/enums/encodings_extension.dart';
 import '../../utils/identifiers.dart';
-
 import '../../utils/logger.dart';
 import '../enums/algorithms.dart';
+import '../enums/encodings.dart';
+import '../extensions/enums/encodings_extension.dart';
 import '../token_import/token_origin_data.dart';
 import 'token.dart';
 

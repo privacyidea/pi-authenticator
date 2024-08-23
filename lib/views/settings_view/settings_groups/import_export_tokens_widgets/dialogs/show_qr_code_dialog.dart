@@ -28,7 +28,7 @@ import 'package:zxing2/qrcode.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/token.dart';
 import '../../../../../utils/encryption/token_encryption.dart';
-import '../../../../../utils/riverpod/riverpod_providers/state_providers/app_constraints_notifier.dart';
+import '../../../../../utils/riverpod/riverpod_providers/generated_providers/app_constraints_notifier.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 
 class ShowQrCodeDialog extends ConsumerWidget {

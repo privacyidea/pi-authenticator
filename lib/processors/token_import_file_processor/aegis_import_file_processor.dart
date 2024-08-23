@@ -61,6 +61,8 @@ void _isolatedKdf(List args) {
 }
 
 class AegisImportFileProcessor extends TokenImportFileProcessor {
+  static get resultHandlerType => TokenImportFileProcessor.resultHandlerType;
+
   const AegisImportFileProcessor();
 
   static const String AEGIS_TYPE = 'type';
@@ -163,7 +165,10 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
         if (entry['type'] != 'totp' && entry['type'] != 'hotp') {
           // TODO: support other token types
           Logger.warning('Unsupported token type: ${entry['type']}', name: '_processPlain#OtpAuthImportFileProcessor');
-          results.add(ProcessorResult.failed(localization?.unsupported('token type', entry['type']) ?? 'Unsupported token type: ${entry['type']}'));
+          results.add(ProcessorResult.failed(
+            localization?.unsupported('token type', entry['type']) ?? 'Unsupported token type: ${entry['type']}',
+            resultHandlerType: resultHandlerType,
+          ));
           continue;
         }
         Map<String, dynamic> info = entry['info'];
@@ -184,12 +189,21 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
           ),
         };
         final token = Token.fromUriMap(entryUriMap);
-        results.add(ProcessorResult.success(token.copyWith(id: entry[AEGIS_ID])));
+        results.add(ProcessorResult.success(
+          token.copyWith(id: entry[AEGIS_ID]),
+          resultHandlerType: resultHandlerType,
+        ));
       } on LocalizedException catch (e) {
-        results.add(ProcessorResult.failed(localization != null ? e.localizedMessage(localization) : e.unlocalizedMessage));
+        results.add(ProcessorResult.failed(
+          localization != null ? e.localizedMessage(localization) : e.unlocalizedMessage,
+          resultHandlerType: resultHandlerType,
+        ));
       } catch (e) {
         Logger.error('Failed to parse token.', name: 'AegisImportFileProcessor#_processPlain', error: e, stackTrace: StackTrace.current);
-        results.add(ProcessorResult.failed(e.toString()));
+        results.add(ProcessorResult.failed(
+          e.toString(),
+          resultHandlerType: resultHandlerType,
+        ));
       }
     }
     return Future.value(results);
@@ -204,7 +218,10 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
         if (doesThrow(() => TokenTypes.values.byName((entry['type'] as String).toUpperCase()))) {
           // TODO: support other token types
           Logger.warning('Unsupported token type: ${entry['type']}', name: '_processPlain#OtpAuthImportFileProcessor');
-          results.add(ProcessorResult.failed(localization?.unsupported('token type', entry['type']) ?? 'Unsupported token type: ${entry['type']}'));
+          results.add(ProcessorResult.failed(
+            localization?.unsupported('token type', entry['type']) ?? 'Unsupported token type: ${entry['type']}',
+            resultHandlerType: resultHandlerType,
+          ));
           continue;
         }
         Map<String, dynamic> info = entry['info'];
@@ -224,12 +241,21 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
             data: jsonEncode(entry),
           ),
         };
-        results.add(ProcessorResult.success(Token.fromUriMap(entryUriMap)));
+        results.add(ProcessorResult.success(
+          Token.fromUriMap(entryUriMap),
+          resultHandlerType: resultHandlerType,
+        ));
       } on LocalizedException catch (e) {
-        results.add(ProcessorResultFailed(localization != null ? e.localizedMessage(localization) : e.unlocalizedMessage));
+        results.add(ProcessorResultFailed(
+          localization != null ? e.localizedMessage(localization) : e.unlocalizedMessage,
+          resultHandlerType: resultHandlerType,
+        ));
       } catch (e) {
         Logger.error('Failed to parse token.', name: 'AegisImportFileProcessor#_processPlain', error: e, stackTrace: StackTrace.current);
-        results.add(ProcessorResultFailed(e.toString()));
+        results.add(ProcessorResultFailed(
+          e.toString(),
+          resultHandlerType: resultHandlerType,
+        ));
       }
     }
 

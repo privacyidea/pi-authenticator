@@ -22,9 +22,10 @@ import 'package:privacyidea_authenticator/utils/push_provider.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/state_notifier_providers/token_notifier.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
 import 'package:privacyidea_authenticator/model/version.dart';
+import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:privacyidea_authenticator/views/settings_view/settings_view_widgets/settings_groups.dart';
 
 import '../test/tests_app_wrapper.dart';
@@ -166,8 +167,10 @@ Future<void> _settingsViewTest(WidgetTester tester) async {
   expect(find.text(AppLocalizationsEn().language), findsOneWidget);
   expect(find.text(AppLocalizationsEn().errorLogTitle), findsOneWidget);
   expect(find.byType(SettingsGroup), findsNWidgets(6));
-  globalRef!.read(tokenProvider.notifier).handleQrCode(
-      'otpauth://pipush/label?url=http%3A%2F%2Fwww.example.com&ttl=10&issuer=issuer&enrollment_credential=enrollmentCredentials&v=1&serial=serial&serial=serial&sslverify=0');
+  const qrCode =
+      'otpauth://pipush/label?url=http%3A%2F%2Fwww.example.com&ttl=10&issuer=issuer&enrollment_credential=enrollmentCredentials&v=1&serial=serial&serial=serial&sslverify=0';
+  await scanQrCode(globalRef!, qrCode);
+
   await pumpUntilFindNWidgets(tester, find.text(AppLocalizationsEn().pushToken), 1, const Duration(minutes: 5));
   expect(find.text(AppLocalizationsEn().pushToken), findsOneWidget);
   expect(find.byType(SettingsGroup), findsNWidgets(6));

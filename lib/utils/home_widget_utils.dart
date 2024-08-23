@@ -50,7 +50,7 @@ import '../widgets/home_widgets/home_widget_otp.dart';
 import '../widgets/home_widgets/home_widget_unlinked.dart';
 import 'globals.dart';
 import 'logger.dart';
-import 'riverpod/riverpod_providers/state_notifier_providers/token_notifier.dart';
+import 'riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import 'riverpod/riverpod_providers/state_providers/home_widget_provider.dart';
 
 const appGroupId = 'group.authenticator_home_widget_group';

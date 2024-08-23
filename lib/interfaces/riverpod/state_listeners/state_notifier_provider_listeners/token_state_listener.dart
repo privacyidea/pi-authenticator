@@ -19,7 +19,7 @@
  */
 
 import '../../../../model/riverpod_states/token_state.dart';
-import '../../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_notifier.dart';
+import '../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../buildless_listener.dart';
 
 abstract class TokenStateListener extends BuildlessListener<TokenNotifier, TokenState> {

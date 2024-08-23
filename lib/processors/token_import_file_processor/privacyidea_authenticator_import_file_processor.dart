@@ -29,6 +29,7 @@ import 'token_import_file_processor_interface.dart';
 import 'two_fas_import_file_processor.dart';
 
 class PrivacyIDEAAuthenticatorImportFileProcessor extends TokenImportFileProcessor {
+  static get resultHandlerType => TokenImportFileProcessor.resultHandlerType;
   const PrivacyIDEAAuthenticatorImportFileProcessor();
   @override
   Future<bool> fileIsValid(XFile file) async {
@@ -59,12 +60,22 @@ class PrivacyIDEAAuthenticatorImportFileProcessor extends TokenImportFileProcess
       } catch (e) {
         throw BadDecryptionPasswordException('Invalid password');
       }
-      final results = tokens.map((token) => ProcessorResultSuccess(token)).toList();
+      final results = tokens
+          .map((token) => ProcessorResult.success(
+                token,
+                resultHandlerType: resultHandlerType,
+              ))
+          .toList();
       return results;
     } catch (e) {
       if (e is BadDecryptionPasswordException) rethrow;
       Logger.error('Failed to process file', name: 'PrivacyIDEAAuthenticatorImportFileProcessor#processFile', error: e, stackTrace: StackTrace.current);
-      return [ProcessorResultFailed<Token>(e.toString())];
+      return [
+        ProcessorResult.failed(
+          e.toString(),
+          resultHandlerType: resultHandlerType,
+        )
+      ];
     }
   }
 }

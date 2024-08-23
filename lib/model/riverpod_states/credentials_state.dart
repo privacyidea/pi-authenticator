@@ -27,17 +27,12 @@ import '../tokens/container_credentials.dart';
 part 'credentials_state.freezed.dart';
 part 'credentials_state.g.dart';
 
-@Freezed()
+@freezed
 class CredentialsState with _$CredentialsState {
   const CredentialsState._();
   const factory CredentialsState({
     required List<ContainerCredential> credentials,
   }) = _CredentialsState;
-
-  @override
-  String toString() {
-    return 'CredentialsState{credentials: $credentials}';
-  }
 
   ContainerCredential? credentialsOf(String containerSerial) => credentials.firstWhereOrNull((credential) => credential.serial == containerSerial);
   static CredentialsState fromJsonStringList(List<String> jsonStrings) {

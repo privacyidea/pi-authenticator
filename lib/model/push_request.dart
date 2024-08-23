@@ -25,7 +25,7 @@ import 'package:json_annotation/json_annotation.dart';
 import '../utils/globals.dart';
 import '../utils/identifiers.dart';
 import '../utils/logger.dart';
-import '../utils/riverpod/riverpod_providers/state_notifier_providers/token_notifier.dart';
+import '../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../utils/rsa_utils.dart';
 import 'tokens/push_token.dart';
 

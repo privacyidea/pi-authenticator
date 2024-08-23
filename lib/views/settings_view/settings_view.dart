@@ -22,7 +22,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../model/tokens/push_token.dart';
-import '../../utils/riverpod/riverpod_providers/state_notifier_providers/token_notifier.dart';
+import '../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../widgets/push_request_listener.dart';
 import '../view_interface.dart';
 import 'settings_groups/settings_group_error_log.dart';

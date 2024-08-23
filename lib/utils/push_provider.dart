@@ -38,7 +38,7 @@ import 'globals.dart';
 import 'logger.dart';
 import 'privacyidea_io_client.dart';
 import 'riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
-import 'riverpod/riverpod_providers/state_notifier_providers/token_notifier.dart';
+import 'riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import 'riverpod/riverpod_providers/state_providers/status_message_provider.dart';
 import 'rsa_utils.dart';
 import 'utils.dart';

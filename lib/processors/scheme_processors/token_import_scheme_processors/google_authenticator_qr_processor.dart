@@ -36,6 +36,7 @@ import 'otp_auth_processor.dart';
 import 'token_import_scheme_processor_interface.dart';
 
 class GoogleAuthenticatorQrProcessor extends TokenImportSchemeProcessor {
+  static get resultHandlerType => OtpAuthProcessor.resultHandlerType;
   const GoogleAuthenticatorQrProcessor();
   static const OtpAuthProcessor otpAuthProcessor = OtpAuthProcessor();
 
@@ -123,7 +124,7 @@ class GoogleAuthenticatorQrProcessor extends TokenImportSchemeProcessor {
           error: e,
           stackTrace: StackTrace.current,
         );
-        results.add(ProcessorResultFailed(e.toString()));
+        results.add(ProcessorResultFailed(e.toString(), resultHandlerType: resultHandlerType));
         continue;
       }
     }
@@ -137,6 +138,7 @@ class GoogleAuthenticatorQrProcessor extends TokenImportSchemeProcessor {
           isPrivacyIdeaToken: false,
           data: base64.encode(decoded),
         ),
+        resultHandlerType: resultHandlerType,
       );
     }).toList();
     return resultsWithOrigin;

@@ -21,6 +21,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import '../../../utils/customization/theme_customization.dart';
 import '../../model/enums/app_feature.dart';
 import '../../model/enums/image_file_type.dart';

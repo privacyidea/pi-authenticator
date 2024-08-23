@@ -27,6 +27,7 @@ import 'aegis_import_file_processor.dart';
 import 'two_fas_import_file_processor.dart';
 
 abstract class TokenImportFileProcessor with TokenImportProcessor<XFile, String?> {
+  static get resultHandlerType => TokenImportProcessor.resultHandlerType;
   const TokenImportFileProcessor();
 
   @override

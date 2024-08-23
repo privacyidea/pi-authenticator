@@ -24,6 +24,7 @@ import '../../../utils/logger.dart';
 import 'token_import_scheme_processor_interface.dart';
 
 class PrivacyIDEAAuthenticatorQrProcessor extends TokenImportSchemeProcessor {
+  static get resultHandlerType => TokenImportSchemeProcessor.resultHandlerType;
   const PrivacyIDEAAuthenticatorQrProcessor();
   static const scheme = 'pia';
   static const host = 'qrbackup';
@@ -32,19 +33,32 @@ class PrivacyIDEAAuthenticatorQrProcessor extends TokenImportSchemeProcessor {
   Set<String> get supportedSchemes => {scheme};
 
   @override
-  Future<List<ProcessorResult<Token>>> processUri(Uri uri, {bool fromInit = false}) async {
-    if (!supportedSchemes.contains(uri.scheme) || uri.host != host) {
-      Logger.warning('Unsupported scheme or host');
-      return [];
+  Future<List<ProcessorResult<Token>>?> processUri(Uri uri, {bool fromInit = false}) async {
+    if (!supportedSchemes.contains(uri.scheme)) {
+      return null;
+    }
+    if (uri.host != host) {
+      Logger.warning('Unsupported scheme or host', name: 'PrivacyIDEAAuthenticatorQrProcessor#processUri');
+      return null;
     }
     Logger.info('Processing URI with scheme: ${uri.scheme}', name: 'PrivacyIDEAAuthenticatorQrProcessor#processUri');
     try {
       final token = TokenEncryption.fromExportUri(uri);
       Logger.info('Processing URI ${uri.scheme} succeded', name: 'PrivacyIDEAAuthenticatorQrProcessor#processUri');
-      return [ProcessorResult.success(token)];
+      return [
+        ProcessorResult.success(
+          token,
+          resultHandlerType: resultHandlerType,
+        )
+      ];
     } catch (e) {
       Logger.error('Error while processing URI ${uri.scheme}', error: e, name: 'PrivacyIDEAAuthenticatorQrProcessor#processUri');
-      return [ProcessorResult.failed('Invalid URI')];
+      return [
+        ProcessorResult.failed(
+          'Invalid URI',
+          resultHandlerType: resultHandlerType,
+        )
+      ];
     }
   }
 }

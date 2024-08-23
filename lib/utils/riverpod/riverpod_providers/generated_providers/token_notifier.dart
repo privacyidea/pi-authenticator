@@ -57,7 +57,7 @@ import '../../../privacyidea_io_client.dart';
 import '../../../rsa_utils.dart';
 import '../../../utils.dart';
 import '../../../view_utils.dart';
-import '../generated_providers/settings_notifier.dart';
+import 'settings_notifier.dart';
 import '../state_providers/status_message_provider.dart';
 
 part 'token_notifier.g.dart';
@@ -69,27 +69,8 @@ final tokenProvider = tokenNotifierProviderOf(
   repo: const SecureTokenRepository(),
 );
 
-// StateNotifierProvider<TokenNotifier, TokenState>(
-//   (ref) {
-//     Logger.info("New TokenNotifier created");
-//     final newTokenNotifier = TokenNotifier(ref: ref);
-
-//     ref.listen(deeplinkNotifierProvider, (previous, newLink) {
-//       newLink.whenData(
-//         (data) {
-//           Logger.info("Received new deeplink with data: $data", name: 'tokenProvider#deeplinkProvider');
-//           newTokenNotifier.handleLink(data.uri);
-//         },
-//       );
-//     });
-
-//     return newTokenNotifier;
-//   },
-//   name: 'tokenProvider',
-// );
-
 @Riverpod(keepAlive: true)
-class TokenNotifier extends _$TokenNotifier {
+class TokenNotifier extends _$TokenNotifier with ResultHandler {
   static final Map<String, Timer> _hidingTimers = {};
   late final Future<TokenState> initState;
   // final StateNotifierProviderRef ref;
@@ -257,7 +238,7 @@ class TokenNotifier extends _$TokenNotifier {
       return false;
     }
     _repoMutex.release();
-    _handlePushTokensIfExist();
+    handlePushTokensIfExist();
     return true;
   }
 
@@ -280,7 +261,7 @@ class TokenNotifier extends _$TokenNotifier {
       return failedTokens;
     }
     _repoMutex.release();
-    _handlePushTokensIfExist();
+    handlePushTokensIfExist();
     return [];
   }
 
@@ -303,7 +284,7 @@ class TokenNotifier extends _$TokenNotifier {
       return state;
     }
     _repoMutex.release();
-    _handlePushTokensIfExist();
+    handlePushTokensIfExist();
     return newState;
   }
 
@@ -384,8 +365,14 @@ class TokenNotifier extends _$TokenNotifier {
   /// Adds a new token and returns true if successful, false if not.
   Future<bool> addNewToken(Token token) async {
     final success = await _addOrReplaceToken(token);
-    await _handlePushTokensIfExist();
+    await handlePushTokensIfExist();
     return success;
+  }
+
+  Future<bool> addNewTokens(List<Token> tokens) async {
+    final failedTokens = await _addOrReplaceTokens(tokens);
+    await handlePushTokensIfExist();
+    return failedTokens.isEmpty;
   }
 
   /// Adds or replaces a token and returns true if successful, false if not.
@@ -394,7 +381,7 @@ class TokenNotifier extends _$TokenNotifier {
   /// Adds new tokens and returns the tokens that could not be added.
   Future<List<Token>> addTokens(List<Token> tokens) async {
     final failedTokens = await _addOrReplaceTokens(tokens);
-    await _handlePushTokensIfExist();
+    await handlePushTokensIfExist();
     return failedTokens;
   }
 
@@ -886,83 +873,58 @@ class TokenNotifier extends _$TokenNotifier {
   ///////////////////////////////////////////////////////////////////////////////
   /// Does not need to wait for updating functions because they doesn't depend on any state */
 
-  /// The return value of a qrCode could be any object. In this case should be a String that is a valid URI.
-  /// If it is not a valid URI, the user will be informed.
-  Future<void> handleQrCode(Object? qrCode) async {
-    Uri uri;
-    try {
-      qrCode as String;
-      uri = Uri.parse(qrCode);
-    } catch (_) {
-      showMessage(message: 'The scanned QR code is not a valid URI.', duration: const Duration(seconds: 3));
-      Logger.warning('Scanned Data: $qrCode', error: 'Scanned QR code is not a valid URI.', name: 'token_notifier.dart#handleQrCode');
-      return;
-    }
-    List<Token> tokens = await _tokensFromUri(uri);
-    tokens = tokens
-        .map(
-          (e) => e.copyWith(
-            origin: e.origin?.copyWith(source: TokenOriginSourceType.qrScan) ??
-                TokenOriginSourceType.qrScan.toTokenOrigin(data: uri.toString(), isPrivacyIdeaToken: null),
-          ),
-        )
-        .toList();
-
-    await _addOrReplaceTokens(tokens);
-    await _handlePushTokensIfExist();
-  }
-
   Future<void> handleLink(Uri uri) async {
-    List<Token> tokens = await _tokensFromUri(uri);
-    tokens = tokens
-        .map((e) => e.copyWith(
-            origin: e.origin?.copyWith(source: TokenOriginSourceType.link) ??
-                TokenOriginSourceType.link.toTokenOrigin(data: uri.toString(), isPrivacyIdeaToken: null)))
-        .toList();
-    await _addOrReplaceTokens(tokens);
-    await _handlePushTokensIfExist();
+    final tokenResults = await TokenImportSchemeProcessor.processUriByAny(uri);
+    if (tokenResults == null) return;
+    await handleProcessorResults(tokenResults, {'TokenOriginSourceType': TokenOriginSourceType.link});
   }
 
-  Future<List<Token>> _tokensFromUri(Uri uri) async {
-    if (!TokenImportSchemeProcessor.allSupportedSchemes.contains(uri.scheme)) {
-      return Future.value([]);
-    }
+  @override
+  Future<void> handleProcessorResult(ProcessorResult result, Map<String, dynamic> args) {
+    // TODO: implement handleResult
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List?> handleProcessorResults(List<ProcessorResult> results, Map<String, dynamic> args) async {
+    final List<ProcessorResult<Token>> tokenResults = results.whereType<ProcessorResult<Token>>().toList();
+    if (tokenResults.isEmpty) return null;
+    final List<Token> resultTokens = tokenResults.getData();
+    final stateTokens = state.tokens;
+    List<Token>? tokensToKeep;
+    final selectedType = (args['TokenImportType'] as TokenImportType?) ?? TokenImportType.qrScan;
+
     try {
-      final results = await TokenImportSchemeProcessor.processUriByAny(uri);
-      if (results == null || results.isEmpty) {
-        showMessage(message: 'The scanned QR code is not a valid URI.', duration: const Duration(seconds: 3));
-        Logger.warning('Scanned Data: $uri', error: 'Scanned QR code is not a valid URI.', name: 'token_notifier.dart#handleQrCode');
-        return [];
-      }
-      final failedResults = results.whereType<ProcessorResultFailed>().toList();
-      for (var failedResult in failedResults) {
-        ref.read(statusMessageProvider.notifier).state = (AppLocalizations.of((await globalContext))!.malformedData, failedResult.message);
-      }
-      final successResults = results.whereType<ProcessorResultSuccess<Token>>().toList();
-      if (successResults.isEmpty) {
-        return [];
-      }
-      if (successResults.length > 1 || state.tokens.any((e) => successResults.first.resultData.isSameTokenAs(e) == true)) {
+      if (resultTokens.length > 1 || stateTokens.any((e) => resultTokens.first.isSameTokenAs(e) == true)) {
         Navigator.of(globalNavigatorKey.currentContext!).popUntil((route) => route.isFirst);
-        final tokensToKeep = await Navigator.of(globalNavigatorKey.currentContext!).push<List<Token>>(
+        tokensToKeep = await Navigator.of(globalNavigatorKey.currentContext!).push<List<Token>>(
           MaterialPageRoute<List<Token>>(
             builder: (context) => ImportPlainTokensPage(
               titleName: AppLocalizations.of(context)!.importTokens,
-              processorResults: results,
-              selectedType: TokenImportType.qrScan,
+              processorResults: tokenResults,
+              selectedType: selectedType,
             ),
           ),
         );
-        return tokensToKeep ?? [];
+      } else {
+        tokensToKeep = resultTokens;
       }
-      return successResults.map((e) => e.resultData).toList();
     } catch (error, stackTrace) {
       Logger.error('Error while processing QR code.', name: 'token_notifier.dart#handleQrCode', error: error, stackTrace: stackTrace);
-      return [];
+      return null;
     }
+    if (tokensToKeep == null) return null;
+    tokensToKeep = tokensToKeep
+        .map((e) => e.copyWith(
+            origin: e.origin?.copyWith(source: TokenOriginSourceType.link) ??
+                TokenOriginSourceType.link.toTokenOrigin(data: 'No Origindata available', isPrivacyIdeaToken: null)))
+        .toList();
+    await handlePushTokensIfExist();
+    await addNewTokens(tokensToKeep);
+    return null;
   }
 
-  /* /////////////////////////////////////////////////////////////////////////////
+/* /////////////////////////////////////////////////////////////////////////////
   /////////////////////////// Helper Methods /////////////////////////////////////
   ///////////////////////////////////////////////////////////////////////////// */
 
@@ -980,7 +942,7 @@ class TokenNotifier extends _$TokenNotifier {
     }
   }
 
-  Future<void> _handlePushTokensIfExist() async {
+  Future<void> handlePushTokensIfExist() async {
     Logger.info('Handling push tokens if they exist.', name: 'token_notifier.dart#_handlePushTokensIfExist');
     final pushTokens = state.pushTokens;
     if (pushTokens.isEmpty || state.pushTokens.isEmpty) {
@@ -1012,11 +974,3 @@ class TokenNotifier extends _$TokenNotifier {
     _hidingTimers.clear();
   }
 }
-
-
-
-
-
-
-
-// }

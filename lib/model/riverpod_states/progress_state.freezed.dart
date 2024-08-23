@@ -57,7 +57,9 @@ mixin _$ProgressState {
   }) =>
       throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of ProgressState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $ProgressStateCopyWith<ProgressState> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -81,6 +83,8 @@ class _$ProgressStateCopyWithImpl<$Res, $Val extends ProgressState>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of ProgressState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -121,6 +125,8 @@ class __$$ProgressStateUninitializedImplCopyWithImpl<$Res>
       $Res Function(_$ProgressStateUninitializedImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of ProgressState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -170,7 +176,9 @@ class _$ProgressStateUninitializedImpl extends ProgressStateUninitialized {
   @override
   int get hashCode => Object.hash(runtimeType, max, value);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of ProgressState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$ProgressStateUninitializedImplCopyWith<_$ProgressStateUninitializedImpl>
@@ -249,8 +257,11 @@ abstract class ProgressStateUninitialized extends ProgressState {
   int get max;
   @override
   int get value;
+
+  /// Create a copy of ProgressState
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ProgressStateUninitializedImplCopyWith<_$ProgressStateUninitializedImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -274,6 +285,8 @@ class __$$ProgressStateImplCopyWithImpl<$Res>
       _$ProgressStateImpl _value, $Res Function(_$ProgressStateImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of ProgressState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -323,7 +336,9 @@ class _$ProgressStateImpl extends _ProgressState {
   @override
   int get hashCode => Object.hash(runtimeType, max, value);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of ProgressState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$ProgressStateImplCopyWith<_$ProgressStateImpl> get copyWith =>
@@ -401,8 +416,11 @@ abstract class _ProgressState extends ProgressState {
   int get max;
   @override
   int get value;
+
+  /// Create a copy of ProgressState
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ProgressStateImplCopyWith<_$ProgressStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

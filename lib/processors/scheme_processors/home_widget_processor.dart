@@ -17,6 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import '../../model/processor_result.dart';
 import '../../utils/home_widget_utils.dart';
 import '../../utils/logger.dart';
 import 'scheme_processor_interface.dart';
@@ -24,42 +25,96 @@ import 'scheme_processor_interface.dart';
 class HomeWidgetProcessor implements SchemeProcessor {
   const HomeWidgetProcessor();
 
-  static final Map<String, Future<void> Function(Uri)> _processors = {
+  static final Map<String, Future<List<ProcessorResult<dynamic>>?> Function(Uri)> _processors = {
     'show': _showProcessor,
     'copy': _copyProcessor,
     'action': _actionProcessor,
   };
 
   @override
-  Future<void> processUri(Uri uri, {bool fromInit = false}) async {
-    if (supportedSchemes.contains(uri.scheme) == false) return;
-    return _processors[uri.host]?.call(uri);
+  Future<List<ProcessorResult<dynamic>>?> processUri(Uri uri, {bool fromInit = false}) async {
+    if (supportedSchemes.contains(uri.scheme) == false) return [];
+    final processor = _processors[uri.host];
+    if (processor == null) {
+      return [
+        ProcessorResult.failed(
+          'No processor found for host: ${uri.host}',
+          resultHandlerType: null,
+        )
+      ];
+    }
+    return processor.call(uri);
   }
 
   @override
   Set<String> get supportedSchemes => {'homewidget'};
 
-  static Future<void> _showProcessor(Uri uri, {bool fromInit = false}) async {
+  static Future<List<ProcessorResult<dynamic>>?> _showProcessor(Uri uri, {bool fromInit = false}) async {
     Logger.warning('HomeWidgetProcessor: Processing uri show: $uri');
-    if (uri.host != 'show') return;
+    if (uri.host != 'show') {
+      return [
+        ProcessorResult.failed(
+          'Invalid host: ${uri.host} for scheme: ${uri.scheme}',
+          resultHandlerType: null,
+        )
+      ];
+    }
     final widgetId = uri.queryParameters['widgetId'];
-    if (widgetId == null) return;
-    return HomeWidgetUtils().showOtp(widgetId);
+    if (widgetId == null) {
+      return [
+        ProcessorResult.failed(
+          'Missing widgetId',
+          resultHandlerType: null,
+        )
+      ];
+    }
+    HomeWidgetUtils().showOtp(widgetId);
+    return null;
   }
 
-  static Future<void> _copyProcessor(Uri uri, {bool fromInit = false}) async {
+  static Future<List<ProcessorResult<dynamic>>?> _copyProcessor(Uri uri, {bool fromInit = false}) async {
     Logger.warning('HomeWidgetProcessor: Processing uri copy: $uri');
-    if (uri.host != 'copy') return;
+    if (uri.host != 'copy') {
+      return [
+        ProcessorResult.failed(
+          'Invalid host: ${uri.host} for scheme: ${uri.scheme}',
+          resultHandlerType: null,
+        )
+      ];
+    }
     final widgetId = uri.queryParameters['widgetId'];
-    if (widgetId == null) return;
-    return HomeWidgetUtils().copyOtp(widgetId);
+    if (widgetId == null) {
+      return [
+        ProcessorResult.failed(
+          'Missing widgetId',
+          resultHandlerType: null,
+        )
+      ];
+    }
+    HomeWidgetUtils().copyOtp(widgetId);
+    return null;
   }
 
-  static Future<void> _actionProcessor(Uri uri, {bool fromInit = false}) async {
+  static Future<List<ProcessorResult<dynamic>>?> _actionProcessor(Uri uri, {bool fromInit = false}) async {
     Logger.warning('HomeWidgetProcessor: Processing uri action: $uri');
-    if (uri.host != 'action') return;
+    if (uri.host != 'action') {
+      return [
+        ProcessorResult.failed(
+          'Invalid host: ${uri.host} for scheme: ${uri.scheme}',
+          resultHandlerType: null,
+        )
+      ];
+    }
     final widgetId = uri.queryParameters['widgetId'];
-    if (widgetId == null) return;
-    return HomeWidgetUtils().performAction(widgetId);
+    if (widgetId == null) {
+      return [
+        ProcessorResult.failed(
+          'Missing widgetId',
+          resultHandlerType: null,
+        )
+      ];
+    }
+    HomeWidgetUtils().performAction(widgetId);
+    return null;
   }
 }

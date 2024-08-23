@@ -19,6 +19,7 @@
  */
 import 'package:flutter/material.dart';
 
+import '../../../model/processor_result.dart';
 import '../../../utils/globals.dart';
 import '../../../utils/logger.dart';
 import '../scheme_processor_interface.dart';
@@ -32,7 +33,7 @@ abstract class NavigationSchemeProcessor implements SchemeProcessor {
   };
 
   @override
-  Future<void> processUri(Uri uri, {BuildContext? context, bool fromInit = false});
+  Future<List<ProcessorResult<dynamic>>?> processUri(Uri uri, {BuildContext? context, bool fromInit = false});
 
   static Future<void> processUriByAny(Uri uri, {BuildContext? context, required bool fromInit}) async {
     if (context == null) {

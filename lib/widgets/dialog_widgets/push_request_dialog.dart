@@ -12,7 +12,7 @@ import '../../utils/globals.dart';
 import '../../utils/lock_auth.dart';
 import '../../utils/logger.dart';
 import '../../utils/riverpod/riverpod_providers/generated_providers/push_request_provider.dart';
-import '../../utils/riverpod/riverpod_providers/state_notifier_providers/token_notifier.dart';
+import '../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../press_button.dart';
 import 'default_dialog.dart';
 

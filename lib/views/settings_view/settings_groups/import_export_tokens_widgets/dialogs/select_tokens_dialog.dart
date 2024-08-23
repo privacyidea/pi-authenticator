@@ -19,12 +19,12 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../../model/riverpod_states/token_state.dart';
 
 import '../../../../../l10n/app_localizations.dart';
+import '../../../../../model/riverpod_states/token_state.dart';
 import '../../../../../model/tokens/token.dart';
-import '../../../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_notifier.dart';
-import '../../../../../utils/riverpod/riverpod_providers/state_providers/app_constraints_notifier.dart';
+import '../../../../../utils/riverpod/riverpod_providers/generated_providers/app_constraints_notifier.dart';
+import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../../../main_view/main_view_widgets/token_widgets/token_widget_builder.dart';
 

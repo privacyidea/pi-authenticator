@@ -24,7 +24,7 @@ abstract class ContainerCredentialsRepository {
   Future<CredentialsState> saveCredential(ContainerCredential credential);
   Future<CredentialsState> saveCredentialsState(CredentialsState credentialsState);
   Future<CredentialsState> loadCredentialsState();
-  Future<ContainerCredential?> loadCredential(String id);
+  Future<ContainerCredential?> loadCredential(String serial);
   Future<CredentialsState> deleteAllCredentials();
-  Future<CredentialsState> deleteCredential(String id);
+  Future<CredentialsState> deleteCredential(String serial);
 }

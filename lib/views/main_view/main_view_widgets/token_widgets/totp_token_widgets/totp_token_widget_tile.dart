@@ -24,7 +24,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/totp_token.dart';
 import '../../../../../utils/globals.dart';
-import '../../../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_notifier.dart';
+import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../../../utils/utils.dart';
 import '../../../../../widgets/custom_texts.dart';
 import '../../../../../widgets/custom_trailing.dart';

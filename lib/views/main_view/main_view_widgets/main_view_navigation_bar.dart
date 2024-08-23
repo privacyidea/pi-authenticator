@@ -23,7 +23,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../model/enums/introduction.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
-import '../../../utils/riverpod/riverpod_providers/state_providers/app_constraints_notifier.dart';
+import '../../../utils/riverpod/riverpod_providers/generated_providers/app_constraints_notifier.dart';
 import '../../../widgets/focused_item_as_overlay.dart';
 import '../../add_token_manually_view/add_token_manually_view.dart';
 import '../../settings_view/settings_view.dart';

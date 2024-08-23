@@ -23,8 +23,12 @@ mixin _$CredentialsState {
   List<ContainerCredential> get credentials =>
       throw _privateConstructorUsedError;
 
+  /// Serializes this CredentialsState to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of CredentialsState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $CredentialsStateCopyWith<CredentialsState> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -48,6 +52,8 @@ class _$CredentialsStateCopyWithImpl<$Res, $Val extends CredentialsState>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of CredentialsState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -81,6 +87,8 @@ class __$$CredentialsStateImplCopyWithImpl<$Res>
       $Res Function(_$CredentialsStateImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of CredentialsState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -115,6 +123,11 @@ class _$CredentialsStateImpl extends _CredentialsState {
   }
 
   @override
+  String toString() {
+    return 'CredentialsState(credentials: $credentials)';
+  }
+
+  @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
@@ -123,12 +136,14 @@ class _$CredentialsStateImpl extends _CredentialsState {
                 .equals(other._credentials, _credentials));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType, const DeepCollectionEquality().hash(_credentials));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of CredentialsState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$CredentialsStateImplCopyWith<_$CredentialsStateImpl> get copyWith =>
@@ -154,8 +169,11 @@ abstract class _CredentialsState extends CredentialsState {
 
   @override
   List<ContainerCredential> get credentials;
+
+  /// Create a copy of CredentialsState
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$CredentialsStateImplCopyWith<_$CredentialsStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

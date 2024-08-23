@@ -11,7 +11,7 @@ import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/sortable_notifier.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/state_notifier_providers/token_notifier.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 
 import '../../tests_app_wrapper.mocks.dart';
 

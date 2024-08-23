@@ -25,6 +25,7 @@ import '../../../utils/token_import_origins.dart';
 import 'otp_auth_processor.dart';
 
 class FreeOtpPlusQrProcessor extends OtpAuthProcessor {
+  static get resultHandlerType => OtpAuthProcessor.resultHandlerType;
   const FreeOtpPlusQrProcessor();
 
   @override
@@ -41,6 +42,7 @@ class FreeOtpPlusQrProcessor extends OtpAuthProcessor {
           isPrivacyIdeaToken: false,
           data: uri.toString(),
         ),
+        resultHandlerType: resultHandlerType,
       );
     }).toList();
     return resultsWithOrigin;
