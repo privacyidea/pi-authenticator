@@ -12,10 +12,11 @@ import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/utils/privacyidea_io_client.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/state_notifier_providers/token_notifier.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
+import 'package:privacyidea_authenticator/utils/utils.dart';
 
 import '../../tests_app_wrapper.mocks.dart';
 
@@ -260,8 +261,9 @@ void _testTokenNotifier() {
         ioClient: const PrivacyideaIOClient(),
         firebaseUtils: mockFirebaseUtils,
       );
-      final notifier = container.read(testProvider.notifier);
-      await notifier.handleQrCode('otpauth://totp/issuer2:label2?secret=secret2&issuer=issuer2&algorithm=SHA256&digits=6&period=30');
+      final testNotifier = container.read(tokenProvider.notifier);
+      const qrCode = 'otpauth://totp/issuer2:label2?secret=secret2&issuer=issuer2&algorithm=SHA256&digits=6&period=30';
+      await scanQrCode([testNotifier], qrCode);
       final state = container.read(testProvider);
       expect(state, isNotNull);
       after.last = after.last.copyWith(id: state.tokens.last.id);
@@ -348,7 +350,7 @@ void _testTokenNotifier() {
       final notifier = container.read(testProvider.notifier);
       final initState = await notifier.initState;
       expect(initState.tokens, before);
-      await notifier.handleQrCode(otpAuth);
+      await scanQrCode([notifier], otpAuth);
       final tokenState = container.read(testProvider);
       expect(tokenState, isNotNull);
       expect(tokenState.tokens, after);

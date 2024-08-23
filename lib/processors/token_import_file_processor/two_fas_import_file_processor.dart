@@ -40,6 +40,7 @@ import '../../utils/token_import_origins.dart';
 import 'token_import_file_processor_interface.dart';
 
 class TwoFasAuthenticatorImportFileProcessor extends TokenImportFileProcessor {
+  static get resultHandlerType => TokenImportFileProcessor.resultHandlerType;
   const TwoFasAuthenticatorImportFileProcessor();
   static const String TWOFAS_TYPE = 'tokenType';
   static const String TWOFAS_ISSUER = 'name';
@@ -145,12 +146,20 @@ class TwoFasAuthenticatorImportFileProcessor extends TokenImportFileProcessor {
     final results = <ProcessorResult<Token>>[];
     for (Map<String, dynamic> twoFasToken in tokensJsonList) {
       try {
-        results.add(ProcessorResultSuccess(Token.fromUriMap(_twoFasToUriMap(twoFasToken))));
+        results.add(ProcessorResult.success(
+          Token.fromUriMap(_twoFasToUriMap(twoFasToken)),
+          resultHandlerType: resultHandlerType,
+        ));
       } on LocalizedException catch (e) {
-        results.add(ProcessorResultFailed(e.localizedMessage(AppLocalizations.of(await globalContext)!)));
+        results.add(ProcessorResultFailed(
+          e.localizedMessage(AppLocalizations.of(await globalContext)!),
+          resultHandlerType: resultHandlerType,
+        ));
       } catch (e) {
         Logger.error('Failed to parse token.', name: 'two_fas_import_file_processor.dart#_processPlainTokens', error: e, stackTrace: StackTrace.current);
-        results.add(ProcessorResultFailed(e.toString()));
+        results.add(ProcessorResultFailed(e.toString(),
+          resultHandlerType: resultHandlerType,
+        ));
       }
     }
     Logger.info('successfully imported ${results.length} tokens', name: 'two_fas_import_file_processor.dart#processPlainTokens');

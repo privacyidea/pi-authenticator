@@ -228,6 +228,7 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
           isPrivacyIdeaToken: false,
           data: t.resultData.origin?.data ?? fileString,
         ),
+        resultHandlerType: const TypeMatcher<TokenNotifier>(),
       );
     }).toList();
 
@@ -250,6 +251,11 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
       return;
     }
     var results = await schemeProcessor.processUri(uri);
+    if (results == null || results.isEmpty) {
+      if (mounted == false) return;
+      setState(() => _errorText = localizations.invalidQrScan(widget.appName));
+      return;
+    }
     results = results.map<ProcessorResult<Token>>((t) {
       if (t is! ProcessorResultSuccess<Token>) return t;
       return ProcessorResultSuccess(
@@ -259,6 +265,7 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
           token: t.resultData,
           data: t.resultData.origin?.data ?? uri.toString(),
         ),
+        resultHandlerType: const TypeMatcher<TokenNotifier>(),
       );
     }).toList();
     Logger.info("QR code scanned successfully", name: "_scanQrCode#ImportStartPage");
@@ -340,19 +347,22 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
       return;
     }
     var results = await schemeProcessor.processUri(uri);
-    if (results.isEmpty) {
+    if (results == null || results.isEmpty) {
       if (!mounted) return;
       setState(() => _errorText = localizations.invalidLink(widget.appName));
       return;
     }
     results = results.map<ProcessorResult<Token>>((t) {
       if (t is! ProcessorResultSuccess<Token>) return t;
-      return ProcessorResultSuccess(TokenOriginSourceType.linkImport.addOriginToToken(
-        appName: widget.appName,
-        token: t.resultData,
-        isPrivacyIdeaToken: false,
-        data: _linkController.text,
-      ));
+      return ProcessorResultSuccess(
+        TokenOriginSourceType.linkImport.addOriginToToken(
+          appName: widget.appName,
+          token: t.resultData,
+          isPrivacyIdeaToken: false,
+          data: _linkController.text,
+        ),
+        resultHandlerType: const TypeMatcher<TokenNotifier>(),
+      );
     }).toList();
     if (!mounted) return;
     setState(() => FocusScope.of(context).unfocus());

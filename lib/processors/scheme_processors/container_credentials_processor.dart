@@ -17,26 +17,58 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/credential_notifier.dart';
+
+import '../../model/processor_result.dart';
+import '../../utils/identifiers.dart';
 import 'scheme_processor_interface.dart';
-import '../../utils/globals.dart';
 import '../../utils/logger.dart';
 
 import '../../model/tokens/container_credentials.dart';
-import '../../utils/riverpod/riverpod_providers/generated_providers/credential_notifier.dart';
 
 class ContainerCredentialsProcessor extends SchemeProcessor {
+  static const resultHandlerType = TypeMatcher<CredentialsNotifier>();
+  static const scheme = 'pia';
+  // static const hosts = {'container': _container};
+
   @override
-  Set<String> get supportedSchemes => {'container'}; // TODO: edit supportedSchemes to the real supported schemes
-  List<String> get supportedHosts => ['credentials']; // TODO: edit supportedHosts to the real supported hosts
+  Set<String> get supportedSchemes => {scheme};
 
   const ContainerCredentialsProcessor();
   @override
-  Future processUri(Uri uri, {bool fromInit = false}) async {
-    if (!supportedHosts.contains(uri.host) || !supportedSchemes.contains(uri.scheme)) {
-      return null;
+  Future<List<ProcessorResult<ContainerCredential>>> processUri(Uri uri, {bool fromInit = false}) async {
+    if (!supportedSchemes.contains(uri.scheme)) {
+      Logger.error('Unsupported scheme', name: 'ContainerCredentialsProcessor');
+      return [];
     }
     final credential = ContainerCredential.fromUriMap(uri.queryParameters);
     Logger.warning('Adding credential to container', name: 'ContainerCredentialsProcessor');
-    globalRef?.read(credentialsNotifierProvider.notifier).addCredential(credential);
+    return [
+      ProcessorResult.success(
+        credential,
+        resultHandlerType: resultHandlerType,
+      )
+    ];
   }
+
+  // static Future<List<ProcessorResult<ContainerCredential>>> _container(Uri uri) async {
+  //   try {
+  //     final credential = ContainerCredential.fromUriMap(uri.queryParameters);
+  //     Logger.info('Processing URI ${uri.scheme} succeded', name: 'PrivacyIDEAAuthenticatorQrProcessor#processUri');
+  //     return [
+  //       ProcessorResult.success(
+  //         credential,
+  //         resultHandlerType: resultHandlerType,
+  //       )
+  //     ];
+  //   } catch (e) {
+  //     Logger.error('Error while processing URI ${uri.scheme}', error: e, name: 'PrivacyIDEAAuthenticatorQrProcessor#processUri');
+  //     return [
+  //       ProcessorResult.failed(
+  //         'Invalid URI',
+  //         resultHandlerType: resultHandlerType,
+  //       )
+  //     ];
+  //   }
+  // }
 }

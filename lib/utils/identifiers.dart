@@ -27,6 +27,11 @@ const defaultCrashReportRecipient = 'app-crash@netknights.it';
 // qr codes:
 const String URI_ID = 'URI_ID';
 const String URI_SERIAL = 'URI_SERIAL';
+const String URI_NONCE = 'URI_NONCE';
+const String URI_TIMESTAMP = 'URI_TIMESTAMP';
+const String URI_FINALIZATION_URL = 'URI_FINALIZATION_URL';
+const String URI_KEY_ALGORITHM = 'URI_KEY_ALGORITHM';
+const String URI_HASH_ALGORITHM = 'URI_HASH_ALGORITHM';
 const String URI_CONTAINER_SERIAL = 'URI_CONTAINER_SERIAL';
 const String URI_TYPE = 'URI_TYPE';
 const String URI_LABEL = 'URI_LABEL';
@@ -67,13 +72,30 @@ const String PUSH_REQUEST_SSL_VERIFY = 'sslverify'; // 6.
 const String PUSH_REQUEST_SIGNATURE = 'signature'; // 7.
 const String PUSH_REQUEST_ANSWERS = 'require_presence'; // 8.
 
+// Container registration:
+const String PUBLIC_SERVER_KEY = 'PUBLIC_SERVER_KEY';
+
 const String GLOBAL_SECURE_REPO_PREFIX = 'app_v3_';
 
-bool validateMap(Map<String, dynamic> map, List<String> keys) {
-  for (String key in keys) {
-    if (!map.containsKey(key)) {
-      return false;
+void validateMap(Map<String, dynamic> map, Map<String, TypeMatcher> keys) {
+  for (String key in keys.keys) {
+    final type = keys[key]!;
+    if (!type.isTypeOf(map[key])) {
+      throw ArgumentError('Map does not contain required key "$key" of type $type');
     }
   }
-  return true;
+}
+
+class TypeMatcher<T> {
+  const TypeMatcher();
+  bool isTypeOf(dynamic value) => value is T;
+
+  @override
+  String toString() => 'TypeMatcher<${T.runtimeType}>';
+
+  @override
+  bool operator ==(Object other) => other is TypeMatcher<T>;
+
+  @override
+  int get hashCode => toString().hashCode;
 }

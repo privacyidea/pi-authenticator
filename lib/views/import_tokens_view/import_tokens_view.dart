@@ -23,7 +23,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../l10n/app_localizations.dart';
 import '../../model/token_import/token_import_origin.dart';
 import '../../model/tokens/token.dart';
-import '../../utils/riverpod/riverpod_providers/state_notifier_providers/token_notifier.dart';
+import '../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../utils/token_import_origins.dart';
 import '../view_interface.dart';
 import 'pages/import_start_page.dart';

@@ -20,10 +20,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/credential_notifier.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 
 import '../../../../l10n/app_localizations.dart';
+import '../../../../model/processor_result.dart';
 import '../../../../utils/globals.dart';
-import '../../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_notifier.dart';
+import '../../../../utils/utils.dart';
 import '../../../../utils/view_utils.dart';
 import '../../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../../qr_scanner_view/qr_scanner_view.dart';
@@ -47,7 +50,11 @@ class QrScannerButton extends ConsumerWidget {
 
           /// Open the QR-code scanner and call `handleQrCode`, with the scanned code as the argument.
           Navigator.pushNamed(globalNavigatorKey.currentContext!, QRScannerView.routeName).then((qrCode) {
-            if (qrCode != null) ref.read(tokenProvider.notifier).handleQrCode(qrCode);
+            final resultHandlers = <ResultHandler>[
+              ref.read(tokenProvider.notifier),
+              ref.read(credentialsNotifierProvider.notifier),
+            ];
+            scanQrCode(resultHandlers, qrCode);
           });
         },
         tooltip: AppLocalizations.of(context)!.scanQrCode,

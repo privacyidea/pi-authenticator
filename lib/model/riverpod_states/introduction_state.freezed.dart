@@ -23,8 +23,12 @@ mixin _$IntroductionState {
   Set<Introduction> get completedIntroductions =>
       throw _privateConstructorUsedError;
 
+  /// Serializes this IntroductionState to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of IntroductionState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $IntroductionStateCopyWith<IntroductionState> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -48,6 +52,8 @@ class _$IntroductionStateCopyWithImpl<$Res, $Val extends IntroductionState>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of IntroductionState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -81,6 +87,8 @@ class __$$IntroductionStateImplCopyWithImpl<$Res>
       $Res Function(_$IntroductionStateImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of IntroductionState
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -130,12 +138,14 @@ class _$IntroductionStateImpl extends _IntroductionState {
                 other._completedIntroductions, _completedIntroductions));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType,
       const DeepCollectionEquality().hash(_completedIntroductions));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of IntroductionState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$IntroductionStateImplCopyWith<_$IntroductionStateImpl> get copyWith =>
@@ -161,8 +171,11 @@ abstract class _IntroductionState extends IntroductionState {
 
   @override
   Set<Introduction> get completedIntroductions;
+
+  /// Create a copy of IntroductionState
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$IntroductionStateImplCopyWith<_$IntroductionStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

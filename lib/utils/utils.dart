@@ -21,6 +21,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -29,16 +30,21 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:privacyidea_authenticator/mains/main_netknights.dart';
 import 'package:privacyidea_authenticator/model/extensions/sortable_list.dart';
+import 'package:privacyidea_authenticator/processors/scheme_processors/scheme_processor_interface.dart';
+import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/sortable_notifier.dart';
 
+import '../model/enums/token_origin_source_type.dart';
 import '../model/mixins/sortable_mixin.dart';
+import '../model/processor_result.dart';
 import '../model/token_folder.dart';
 import '../model/tokens/token.dart';
 import 'customization/application_customization.dart' show ApplicationCustomization;
 import 'riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
-import 'riverpod/riverpod_providers/state_notifier_providers/token_notifier.dart';
+import 'riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import 'riverpod/riverpod_providers/state_providers/dragging_sortable_provider.dart';
+import 'view_utils.dart';
 
 /// Inserts [char] at the position [pos] in the given String ([str]),
 /// and returns the resulting String.
@@ -173,4 +179,64 @@ void dragSortableOnAccept({
       draggingSortableProviderNotifier.state = null;
     });
   });
+}
+
+ByteData bigIntToByteData(BigInt bigInt) {
+  final data = ByteData((bigInt.bitLength / 8).ceil());
+
+  for (var i = 1; i <= data.lengthInBytes; i++) {
+    data.setUint8(data.lengthInBytes - i, bigInt.toUnsigned(8).toInt());
+    bigInt = bigInt >> 8;
+  }
+
+  return data;
+}
+
+BigInt byteDataToBigInt(ByteData data) {
+  BigInt result = BigInt.zero;
+  for (var i = 0; i < data.lengthInBytes; i++) {
+    result = result << 8;
+    result = result | BigInt.from(data.getUint8(i));
+  }
+  return result;
+}
+
+Uint8List bigIntToBytes(BigInt bigInt) => bigIntToByteData(bigInt).buffer.asUint8List();
+
+BigInt bytesToBigInt(Uint8List bytes) => byteDataToBigInt(ByteData.sublistView(bytes));
+
+Future<void> scanQrCode(List<ResultHandler> resultHandlerList, Object? qrCode) async {
+  Uri uri;
+  try {
+    uri = switch (qrCode.runtimeType) {
+      const (String) => Uri.parse(qrCode as String),
+      const (Uri) => qrCode as Uri,
+      _ => throw ArgumentError('Invalid type for qrCode: $qrCode'),
+    };
+  } catch (e) {
+    showMessage(message: 'The scanned QR code is not a valid URI.', duration: const Duration(seconds: 3));
+    Logger.warning('Scanned Data: $qrCode', error: 'Scanned QR code is not a valid URI: $e', name: 'utils.dart#scanQrCode');
+    return;
+  }
+  final processorResults = await SchemeProcessor.processUriByAny(uri);
+  if (processorResults == null) return;
+  final resultHandlerTypeMap = <TypeMatcher<ResultHandler>, List<ProcessorResult>>{};
+
+  for (var result in processorResults) {
+    final typeMatcher = result.resultHandlerType;
+    if (typeMatcher == null) continue;
+    if (resultHandlerTypeMap.containsKey(result.resultHandlerType)) {
+      resultHandlerTypeMap[typeMatcher]!.add(result);
+    } else {
+      resultHandlerTypeMap[typeMatcher] = [result];
+    }
+  }
+
+  for (var resultHandlerType in resultHandlerTypeMap.keys) {
+    final results = resultHandlerTypeMap[resultHandlerType]!;
+    final resultHandler = resultHandlerList.firstWhereOrNull((resultHandler) => resultHandlerType.isTypeOf(resultHandler));
+    if (resultHandler != null) {
+      await resultHandler.handleProcessorResults(results, {'TokenOriginSourceType': TokenOriginSourceType.qrScan});
+    }
+  }
 }

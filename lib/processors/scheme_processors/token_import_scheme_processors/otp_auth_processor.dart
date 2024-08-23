@@ -42,13 +42,21 @@ import '../../../widgets/dialog_widgets/two_step_dialog.dart';
 import 'token_import_scheme_processor_interface.dart';
 
 class OtpAuthProcessor extends TokenImportSchemeProcessor {
+  static get resultHandlerType => TokenImportSchemeProcessor.resultHandlerType;
   const OtpAuthProcessor();
   @override
   Set<String> get supportedSchemes => {'otpauth'};
 
   @override
   Future<List<ProcessorResult<Token>>> processUri(Uri uri, {bool fromInit = false}) async {
-    if (!supportedSchemes.contains(uri.scheme)) return [ProcessorResultFailed('The scheme [${uri.scheme}] not supported')];
+    if (!supportedSchemes.contains(uri.scheme)) {
+      return [
+        ProcessorResultFailed(
+          'The scheme [${uri.scheme}] not supported',
+          resultHandlerType: resultHandlerType,
+        )
+      ];
+    }
     Logger.info('Try to handle otpAuth:', name: 'token_notifier.dart#addTokenFromOtpAuth');
     Map<String, dynamic> uriMap;
     try {
@@ -57,7 +65,12 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
       if (e is LocalizedException) {
         Logger.warning('Error while parsing otpAuth.', name: 'token_notifier.dart#addTokenFromOtpAuth', error: e.unlocalizedMessage, stackTrace: s);
         final message = globalContextSync != null ? e.localizedMessage(AppLocalizations.of(globalContextSync!)!) : e.unlocalizedMessage;
-        return [ProcessorResult.failed(message)];
+        return [
+          ProcessorResult.failed(
+            message,
+            resultHandlerType: resultHandlerType,
+          )
+        ];
       }
       String? message;
       if (e is ArgumentError) {
@@ -65,10 +78,20 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
         message = '${e.message} - ${e.name}: ${e.invalidValue}';
       }
       message ??= 'An error occurred while parsing the QR code.';
-      return [ProcessorResult.failed(globalContextSync != null ? AppLocalizations.of(globalContextSync!)?.tokenDataParseError ?? message : message)];
+      return [
+        ProcessorResult.failed(
+          globalContextSync != null ? AppLocalizations.of(globalContextSync!)?.tokenDataParseError ?? message : message,
+          resultHandlerType: resultHandlerType,
+        )
+      ];
     }
     if (_is2StepURI(uri)) {
-      validateMap(uriMap, [URI_SECRET, URI_ITERATIONS, URI_OUTPUT_LENGTH_IN_BYTES, URI_SALT_LENGTH]);
+      validateMap(uriMap, {
+        URI_SECRET: TypeMatcher<Uint8List>(),
+        URI_ITERATIONS: TypeMatcher<int>(),
+        URI_OUTPUT_LENGTH_IN_BYTES: TypeMatcher<int>(),
+        URI_SALT_LENGTH: TypeMatcher<int>(),
+      });
       final secret = uriMap[URI_SECRET] as Uint8List;
       // Calculate the whole secret.
 
@@ -82,7 +105,12 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
         ),
       ));
       if (twoStepSecret == null) {
-        return [const ProcessorResultFailed('The two step secret could not be generated, or was canceled.')];
+        return [
+          ProcessorResultFailed(
+            'The two step secret could not be generated, or was canceled.',
+            resultHandlerType: resultHandlerType,
+          )
+        ];
       }
       uriMap[URI_SECRET] = twoStepSecret;
     }
@@ -98,13 +126,28 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
       );
     } on FormatException catch (e) {
       Logger.warning('Error while parsing otpAuth.', name: 'token_notifier.dart#addTokenFromOtpAuth', error: e);
-      return [ProcessorResultFailed(e.message)];
+      return [
+        ProcessorResultFailed(
+          e.message,
+          resultHandlerType: resultHandlerType,
+        )
+      ];
     } catch (e, s) {
       Logger.warning('Error while parsing otpAuth.', name: 'token_notifier.dart#addTokenFromOtpAuth', error: e, stackTrace: s);
       // showMessage(message: 'An error occurred while parsing the QR code.', duration: const Duration(seconds: 3));
-      return [const ProcessorResultFailed('An error occurred while parsing the QR code.')];
+      return [
+        ProcessorResultFailed(
+          'An error occurred while parsing the QR code.',
+          resultHandlerType: resultHandlerType,
+        )
+      ];
     }
-    return [ProcessorResultSuccess(newToken)];
+    return [
+      ProcessorResultSuccess(
+        newToken,
+        resultHandlerType: resultHandlerType,
+      )
+    ];
   }
 }
 

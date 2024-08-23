@@ -29,7 +29,7 @@ import '../../../../../model/enums/day_password_token_view_mode.dart';
 import '../../../../../model/riverpod_states/settings_state.dart';
 import '../../../../../model/tokens/day_password_token.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
-import '../../../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_notifier.dart';
+import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../../../utils/utils.dart';
 import '../../../../../widgets/custom_texts.dart';
 import '../../../../../widgets/custom_trailing.dart';

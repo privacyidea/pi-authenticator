@@ -29,7 +29,7 @@ import '../../../../repo/token_container_state_repositorys/hybrid_token_containe
 import '../../../../repo/token_container_state_repositorys/remote_token_container_state_repository.dart';
 import '../../../../repo/token_container_state_repositorys/secure_token_container_state_repository.dart.dart';
 import '../../../../model/tokens/container_credentials.dart';
-import '../state_notifier_providers/token_notifier.dart';
+import 'token_notifier.dart';
 
 part 'token_container_notifier.g.dart';
 

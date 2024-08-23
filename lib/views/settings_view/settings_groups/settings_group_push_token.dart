@@ -24,7 +24,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../../model/riverpod_states/settings_state.dart';
 import '../../../model/tokens/push_token.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
-import '../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_notifier.dart';
+import '../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../settings_view_widgets/settings_groups.dart';
 import '../settings_view_widgets/update_firebase_token_dialog.dart';
 

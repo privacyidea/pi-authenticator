@@ -134,6 +134,7 @@ class _ImportEncryptedDataPageState extends State<ImportEncryptedDataPage> {
                                         () async {
                                           try {
                                             final processorResults = await widget.processor.processTokenMigrate(widget.data, args: _passwordController.text);
+                                            if (processorResults == null) return;
                                             _pushImportPlainTokensPage(processorResults);
                                           } on BadDecryptionPasswordException catch (_) {
                                             setState(() {

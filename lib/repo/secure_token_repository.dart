@@ -32,7 +32,7 @@ import '../model/tokens/token.dart';
 import '../utils/globals.dart';
 import '../utils/identifiers.dart';
 import '../utils/logger.dart';
-import '../utils/riverpod/riverpod_providers/state_notifier_providers/token_notifier.dart';
+import '../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../utils/view_utils.dart';
 import '../views/settings_view/settings_view_widgets/send_error_dialog.dart';
 import '../widgets/dialog_widgets/default_dialog.dart';

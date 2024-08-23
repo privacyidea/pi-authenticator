@@ -17,29 +17,62 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-abstract class ProcessorResult<T> {
-  const ProcessorResult();
-  factory ProcessorResult.success(T data) => ProcessorResultSuccess(data);
-  factory ProcessorResult.failed(String errorMessage) => ProcessorResultFailed(errorMessage);
+import 'package:flutter/material.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:privacyidea_authenticator/utils/identifiers.dart';
+
+import '../l10n/app_localizations.dart';
+import '../utils/globals.dart';
+import '../utils/logger.dart';
+import '../utils/riverpod/riverpod_providers/state_providers/status_message_provider.dart';
+import '../utils/view_utils.dart';
+
+part 'processor_result.freezed.dart';
+
+@freezed
+abstract class ProcessorResult<T> with _$ProcessorResult<T> {
+  const ProcessorResult._();
+  factory ProcessorResult.success(
+    T resultData, {
+    required TypeMatcher<ResultHandler>? resultHandlerType,
+  }) = ProcessorResultSuccess;
+  factory ProcessorResult.failed(
+    String message, {
+    required TypeMatcher<ResultHandler>? resultHandlerType,
+  }) = ProcessorResultFailed;
+
   bool get isSuccess => this is ProcessorResultSuccess<T>;
+  bool get isFailed => this is ProcessorResultFailed<T>;
   ProcessorResultSuccess<T>? get asSuccess => this is ProcessorResultSuccess<T> ? this as ProcessorResultSuccess<T> : null;
   ProcessorResultFailed<T>? get asFailed => this is ProcessorResultFailed<T> ? this as ProcessorResultFailed<T> : null;
 }
 
-class ProcessorResultSuccess<T> extends ProcessorResult<T> {
-  final T resultData;
-  const ProcessorResultSuccess(this.resultData);
+extension ListProcessorResult<T> on List<ProcessorResult<T>> {
+  List<ProcessorResultSuccess<T>> get successResults => where((element) => element.isSuccess).map((e) => e.asSuccess!).toList();
+  List<ProcessorResultFailed<T>> get failedResults => where((element) => !element.isSuccess).map((e) => e.asFailed!).toList();
 
-  @override
-  String toString() {
-    return 'ProcessorResultSuccess(data: $resultData)';
+  List<T> getData() {
+    final results = toList();
+    if (results.isEmpty) {
+      showMessage(message: 'No data found in QR code.', duration: const Duration(seconds: 3));
+      Logger.warning('No data found in QR code.', name: 'token_notifier.dart#_getData');
+      return [];
+    }
+    final failedResults = results.whereType<ProcessorResultFailed>().toList();
+    // add postframe callback to show the message after the current frame
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      for (var failedResult in failedResults) {
+        globalRef?.read(statusMessageProvider.notifier).state = (AppLocalizations.of((await globalContext))!.malformedData, failedResult.message);
+      }
+    });
+
+    final successData = results.where((result) => result.isSuccess).map((e) => e.asSuccess!.resultData).toList();
+    return successData;
   }
 }
 
-class ProcessorResultFailed<T> extends ProcessorResult<T> {
-  final String message;
-  const ProcessorResultFailed(this.message);
-
-  @override
-  String toString() => '$runtimeType(message: $message)';
+mixin ResultHandler {
+  Future handleProcessorResult(ProcessorResult result, Map<String, dynamic> args);
+  Future handleProcessorResults(List<ProcessorResult> results, Map<String, dynamic> args);
 }

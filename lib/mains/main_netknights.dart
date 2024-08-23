@@ -33,7 +33,7 @@ import '../utils/globals.dart';
 import '../utils/home_widget_utils.dart';
 import '../utils/logger.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
-import '../utils/riverpod/riverpod_providers/state_providers/app_constraints_notifier.dart';
+import '../utils/riverpod/riverpod_providers/generated_providers/app_constraints_notifier.dart';
 import '../views/add_token_manually_view/add_token_manually_view.dart';
 import '../views/feedback_view/feedback_view.dart';
 import '../views/import_tokens_view/import_tokens_view.dart';

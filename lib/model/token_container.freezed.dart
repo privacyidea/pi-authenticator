@@ -246,8 +246,13 @@ mixin _$TokenContainer {
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
+
+  /// Serializes this TokenContainer to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of TokenContainer
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $TokenContainerCopyWith<TokenContainer> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -277,6 +282,8 @@ class _$TokenContainerCopyWithImpl<$Res, $Val extends TokenContainer>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of TokenContainer
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -344,6 +351,8 @@ class __$$TokenContainerUninitializedImplCopyWithImpl<$Res>
       $Res Function(_$TokenContainerUninitializedImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of TokenContainer
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -389,7 +398,7 @@ class _$TokenContainerUninitializedImpl extends TokenContainerUninitialized
     with DiagnosticableTreeMixin {
   const _$TokenContainerUninitializedImpl(
       {this.serverName = 'PrivacyIDEA',
-      this.lastSyncAt = null,
+      this.lastSyncAt,
       this.serial = 'none',
       this.description = 'Uninitialized',
       final List<TokenTemplate> syncedTokenTemplates = const [],
@@ -409,7 +418,6 @@ class _$TokenContainerUninitializedImpl extends TokenContainerUninitialized
   @JsonKey()
   final String serverName;
   @override
-  @JsonKey()
   final DateTime? lastSyncAt;
   @override
   @JsonKey()
@@ -476,7 +484,7 @@ class _$TokenContainerUninitializedImpl extends TokenContainerUninitialized
                 .equals(other._localTokenTemplates, _localTokenTemplates));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -487,7 +495,9 @@ class _$TokenContainerUninitializedImpl extends TokenContainerUninitialized
       const DeepCollectionEquality().hash(_syncedTokenTemplates),
       const DeepCollectionEquality().hash(_localTokenTemplates));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of TokenContainer
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$TokenContainerUninitializedImplCopyWith<_$TokenContainerUninitializedImpl>
@@ -743,7 +753,8 @@ abstract class TokenContainerUninitialized extends TokenContainer {
   factory TokenContainerUninitialized.fromJson(Map<String, dynamic> json) =
       _$TokenContainerUninitializedImpl.fromJson;
 
-  @override // Base fields
+// Base fields
+  @override
   String get serverName;
   @override
   DateTime? get lastSyncAt;
@@ -755,8 +766,11 @@ abstract class TokenContainerUninitialized extends TokenContainer {
   List<TokenTemplate> get syncedTokenTemplates;
   @override
   List<TokenTemplate> get localTokenTemplates;
+
+  /// Create a copy of TokenContainer
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$TokenContainerUninitializedImplCopyWith<_$TokenContainerUninitializedImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -786,6 +800,8 @@ class __$$TokenContainerSyncedImplCopyWithImpl<$Res>
       $Res Function(_$TokenContainerSyncedImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of TokenContainer
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -912,7 +928,7 @@ class _$TokenContainerSyncedImpl extends TokenContainerSynced
                 .equals(other._localTokenTemplates, _localTokenTemplates));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -923,7 +939,9 @@ class _$TokenContainerSyncedImpl extends TokenContainerSynced
       const DeepCollectionEquality().hash(_syncedTokenTemplates),
       const DeepCollectionEquality().hash(_localTokenTemplates));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of TokenContainer
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$TokenContainerSyncedImplCopyWith<_$TokenContainerSyncedImpl>
@@ -1180,7 +1198,8 @@ abstract class TokenContainerSynced extends TokenContainer {
   factory TokenContainerSynced.fromJson(Map<String, dynamic> json) =
       _$TokenContainerSyncedImpl.fromJson;
 
-  @override // Base fields
+// Base fields
+  @override
   String get serverName;
   @override
   DateTime get lastSyncAt;
@@ -1192,8 +1211,11 @@ abstract class TokenContainerSynced extends TokenContainer {
   List<TokenTemplate> get syncedTokenTemplates;
   @override
   List<TokenTemplate> get localTokenTemplates;
+
+  /// Create a copy of TokenContainer
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$TokenContainerSyncedImplCopyWith<_$TokenContainerSyncedImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -1226,6 +1248,8 @@ class __$$TokenContainerModifiedImplCopyWithImpl<$Res>
       $Res Function(_$TokenContainerModifiedImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of TokenContainer
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1276,7 +1300,7 @@ class _$TokenContainerModifiedImpl extends TokenContainerModified
     with DiagnosticableTreeMixin {
   const _$TokenContainerModifiedImpl(
       {this.serverName = 'PrivacyIDEA',
-      this.lastSyncAt = null,
+      this.lastSyncAt,
       required this.serial,
       required this.description,
       required final List<TokenTemplate> syncedTokenTemplates,
@@ -1296,7 +1320,6 @@ class _$TokenContainerModifiedImpl extends TokenContainerModified
   @JsonKey()
   final String serverName;
   @override
-  @JsonKey()
   final DateTime? lastSyncAt;
   @override
   final String serial;
@@ -1366,7 +1389,7 @@ class _$TokenContainerModifiedImpl extends TokenContainerModified
                 other.lastModifiedAt == lastModifiedAt));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -1378,7 +1401,9 @@ class _$TokenContainerModifiedImpl extends TokenContainerModified
       const DeepCollectionEquality().hash(_localTokenTemplates),
       lastModifiedAt);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of TokenContainer
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$TokenContainerModifiedImplCopyWith<_$TokenContainerModifiedImpl>
@@ -1634,7 +1659,8 @@ abstract class TokenContainerModified extends TokenContainer {
   factory TokenContainerModified.fromJson(Map<String, dynamic> json) =
       _$TokenContainerModifiedImpl.fromJson;
 
-  @override // Base fields
+// Base fields
+  @override
   String get serverName;
   @override
   DateTime? get lastSyncAt;
@@ -1647,8 +1673,11 @@ abstract class TokenContainerModified extends TokenContainer {
   @override
   List<TokenTemplate> get localTokenTemplates; // Base fields end
   DateTime get lastModifiedAt;
+
+  /// Create a copy of TokenContainer
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$TokenContainerModifiedImplCopyWith<_$TokenContainerModifiedImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -1681,6 +1710,8 @@ class __$$TokenContainerUnsyncedImplCopyWithImpl<$Res>
       $Res Function(_$TokenContainerUnsyncedImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of TokenContainer
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1731,7 +1762,7 @@ class _$TokenContainerUnsyncedImpl extends TokenContainerUnsynced
     with DiagnosticableTreeMixin {
   const _$TokenContainerUnsyncedImpl(
       {this.serverName = 'PrivacyIDEA',
-      this.lastSyncAt = null,
+      this.lastSyncAt,
       required this.serial,
       required this.description,
       required final List<TokenTemplate> syncedTokenTemplates,
@@ -1751,7 +1782,6 @@ class _$TokenContainerUnsyncedImpl extends TokenContainerUnsynced
   @JsonKey()
   final String serverName;
   @override
-  @JsonKey()
   final DateTime? lastSyncAt;
   @override
   final String serial;
@@ -1820,7 +1850,7 @@ class _$TokenContainerUnsyncedImpl extends TokenContainerUnsynced
             (identical(other.message, message) || other.message == message));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -1832,7 +1862,9 @@ class _$TokenContainerUnsyncedImpl extends TokenContainerUnsynced
       const DeepCollectionEquality().hash(_localTokenTemplates),
       message);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of TokenContainer
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$TokenContainerUnsyncedImplCopyWith<_$TokenContainerUnsyncedImpl>
@@ -2088,7 +2120,8 @@ abstract class TokenContainerUnsynced extends TokenContainer {
   factory TokenContainerUnsynced.fromJson(Map<String, dynamic> json) =
       _$TokenContainerUnsyncedImpl.fromJson;
 
-  @override // Base fields
+// Base fields
+  @override
   String get serverName;
   @override
   DateTime? get lastSyncAt;
@@ -2101,8 +2134,11 @@ abstract class TokenContainerUnsynced extends TokenContainer {
   @override
   List<TokenTemplate> get localTokenTemplates; // Base fields end
   String? get message;
+
+  /// Create a copy of TokenContainer
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$TokenContainerUnsyncedImplCopyWith<_$TokenContainerUnsyncedImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -2135,6 +2171,8 @@ class __$$TokenContainerNotFoundImplCopyWithImpl<$Res>
       $Res Function(_$TokenContainerNotFoundImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of TokenContainer
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -2273,7 +2311,7 @@ class _$TokenContainerNotFoundImpl extends TokenContainerNotFound
             (identical(other.message, message) || other.message == message));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -2285,7 +2323,9 @@ class _$TokenContainerNotFoundImpl extends TokenContainerNotFound
       const DeepCollectionEquality().hash(_localTokenTemplates),
       message);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of TokenContainer
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$TokenContainerNotFoundImplCopyWith<_$TokenContainerNotFoundImpl>
@@ -2541,7 +2581,8 @@ abstract class TokenContainerNotFound extends TokenContainer {
   factory TokenContainerNotFound.fromJson(Map<String, dynamic> json) =
       _$TokenContainerNotFoundImpl.fromJson;
 
-  @override // Base fields
+// Base fields
+  @override
   String get serverName;
   @override
   DateTime? get lastSyncAt;
@@ -2554,8 +2595,11 @@ abstract class TokenContainerNotFound extends TokenContainer {
   @override
   List<TokenTemplate> get localTokenTemplates; // Base fields end
   String get message;
+
+  /// Create a copy of TokenContainer
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$TokenContainerNotFoundImplCopyWith<_$TokenContainerNotFoundImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -2586,6 +2630,8 @@ class __$$TokenContainerErrorImplCopyWithImpl<$Res>
       $Res Function(_$TokenContainerErrorImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of TokenContainer
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -2636,7 +2682,7 @@ class _$TokenContainerErrorImpl extends TokenContainerError
     with DiagnosticableTreeMixin {
   const _$TokenContainerErrorImpl(
       {this.serverName = 'PrivacyIDEA',
-      this.lastSyncAt = null,
+      this.lastSyncAt,
       this.serial = 'none',
       this.description = 'Error',
       final List<TokenTemplate> syncedTokenTemplates = const [],
@@ -2656,7 +2702,6 @@ class _$TokenContainerErrorImpl extends TokenContainerError
   @JsonKey()
   final String serverName;
   @override
-  @JsonKey()
   final DateTime? lastSyncAt;
   @override
   @JsonKey()
@@ -2729,7 +2774,7 @@ class _$TokenContainerErrorImpl extends TokenContainerError
             const DeepCollectionEquality().equals(other.error, error));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType,
@@ -2741,7 +2786,9 @@ class _$TokenContainerErrorImpl extends TokenContainerError
       const DeepCollectionEquality().hash(_localTokenTemplates),
       const DeepCollectionEquality().hash(error));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of TokenContainer
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$TokenContainerErrorImplCopyWith<_$TokenContainerErrorImpl> get copyWith =>
@@ -2997,7 +3044,8 @@ abstract class TokenContainerError extends TokenContainer {
   factory TokenContainerError.fromJson(Map<String, dynamic> json) =
       _$TokenContainerErrorImpl.fromJson;
 
-  @override // Base fields
+// Base fields
+  @override
   String get serverName;
   @override
   DateTime? get lastSyncAt;
@@ -3010,8 +3058,11 @@ abstract class TokenContainerError extends TokenContainer {
   @override
   List<TokenTemplate> get localTokenTemplates; // Base fields end
   dynamic get error;
+
+  /// Create a copy of TokenContainer
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$TokenContainerErrorImplCopyWith<_$TokenContainerErrorImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -3024,8 +3075,12 @@ TokenTemplate _$TokenTemplateFromJson(Map<String, dynamic> json) {
 mixin _$TokenTemplate {
   Map<String, dynamic> get data => throw _privateConstructorUsedError;
 
+  /// Serializes this TokenTemplate to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of TokenTemplate
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $TokenTemplateCopyWith<TokenTemplate> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -3049,6 +3104,8 @@ class _$TokenTemplateCopyWithImpl<$Res, $Val extends TokenTemplate>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of TokenTemplate
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -3082,6 +3139,8 @@ class __$$TokenTemplateImplCopyWithImpl<$Res>
       _$TokenTemplateImpl _value, $Res Function(_$TokenTemplateImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of TokenTemplate
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -3127,7 +3186,9 @@ class _$TokenTemplateImpl extends _TokenTemplate with DiagnosticableTreeMixin {
       ..add(DiagnosticsProperty('data', data));
   }
 
-  @JsonKey(ignore: true)
+  /// Create a copy of TokenTemplate
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$TokenTemplateImplCopyWith<_$TokenTemplateImpl> get copyWith =>
@@ -3151,8 +3212,11 @@ abstract class _TokenTemplate extends TokenTemplate {
 
   @override
   Map<String, dynamic> get data;
+
+  /// Create a copy of TokenTemplate
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$TokenTemplateImplCopyWith<_$TokenTemplateImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

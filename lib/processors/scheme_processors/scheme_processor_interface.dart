@@ -17,6 +17,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import 'package:privacyidea_authenticator/model/processor_result.dart';
+
+import '../../utils/logger.dart';
 import 'container_credentials_processor.dart';
 import 'home_widget_processor.dart';
 import 'navigation_scheme_processors/navigation_scheme_processor_interface.dart';
@@ -26,7 +29,7 @@ import 'token_import_scheme_processors/token_import_scheme_processor_interface.d
 abstract class SchemeProcessor {
   const SchemeProcessor();
   Set<String> get supportedSchemes;
-  Future<dynamic> processUri(Uri uri, {bool fromInit = false});
+  Future<List<ProcessorResult<dynamic>>?> processUri(Uri uri, {bool fromInit = false});
 
   static final List<SchemeProcessor> implementations = [
     const HomeWidgetProcessor(),
@@ -34,12 +37,17 @@ abstract class SchemeProcessor {
     ...TokenImportSchemeProcessor.implementations,
     const ContainerCredentialsProcessor(),
   ];
-  static Future<dynamic> processUriByAny(Uri uri, {bool fromInit = false}) async {
+  static Future<List<ProcessorResult<dynamic>>?> processUriByAny(Uri uri, {bool fromInit = false}) async {
     for (SchemeProcessor processor in implementations) {
       if (processor.supportedSchemes.contains(uri.scheme)) {
-        return await processor.processUri(uri);
+        Logger.info('Processing URI with processor: $processor', name: 'SchemeProcessor#processUriByAny');
+        final result = await processor.processUri(uri, fromInit: fromInit);
+        if (result != null) {
+          return result;
+        }
       }
     }
+    Logger.warning('Unsupported scheme', name: 'SchemeProcessor#processUriByAny');
     return null;
   }
 }

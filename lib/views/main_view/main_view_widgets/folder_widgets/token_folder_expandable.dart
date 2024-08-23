@@ -35,7 +35,7 @@ import '../../../../utils/customization/theme_extentions/action_theme.dart';
 import '../../../../utils/lock_auth.dart';
 import '../../../../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import '../../../../utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
-import '../../../../utils/riverpod/riverpod_providers/state_notifier_providers/token_notifier.dart';
+import '../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../../utils/riverpod/riverpod_providers/state_providers/dragging_sortable_provider.dart';
 import '../../../../utils/utils.dart';
 import '../../../../widgets/custom_trailing.dart';

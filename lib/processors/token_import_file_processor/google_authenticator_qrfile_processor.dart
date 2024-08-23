@@ -38,6 +38,7 @@ import '../scheme_processors/token_import_scheme_processors/google_authenticator
 import 'token_import_file_processor_interface.dart';
 
 class GoogleAuthenticatorQrfileProcessor extends TokenImportFileProcessor {
+  static get resultHandlerType => TokenImportFileProcessor.resultHandlerType;
   const GoogleAuthenticatorQrfileProcessor();
   @override
   Future<bool> fileIsValid(XFile file) async {
@@ -115,6 +116,7 @@ class GoogleAuthenticatorQrfileProcessor extends TokenImportFileProcessor {
           isPrivacyIdeaToken: false,
           data: t.resultData.origin?.data ?? qrResult!.text,
         ),
+        resultHandlerType: resultHandlerType,
       );
     }).toList();
     return processorResults;
