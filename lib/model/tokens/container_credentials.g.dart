@@ -18,9 +18,10 @@ _$ContainerCredentialUnfinalizedImpl
               $enumDecode(_$EcKeyAlgorithmEnumMap, json['ecKeyAlgorithm']),
           hashAlgorithm:
               $enumDecode(_$AlgorithmsEnumMap, json['hashAlgorithm']),
-          state: $enumDecodeNullable(
-                  _$ContainerCredentialStateEnumMap, json['state']) ??
-              ContainerCredentialState.uninitialized,
+          finalizationState: $enumDecodeNullable(
+                  _$ContainerFinalizationStateEnumMap,
+                  json['finalizationState']) ??
+              ContainerFinalizationState.uninitialized,
           passphrase: json['passphrase'] as String?,
           publicServerKey: json['publicServerKey'] as String?,
           publicClientKey: json['publicClientKey'] as String?,
@@ -38,7 +39,8 @@ Map<String, dynamic> _$$ContainerCredentialUnfinalizedImplToJson(
       'serial': instance.serial,
       'ecKeyAlgorithm': _$EcKeyAlgorithmEnumMap[instance.ecKeyAlgorithm]!,
       'hashAlgorithm': _$AlgorithmsEnumMap[instance.hashAlgorithm]!,
-      'state': _$ContainerCredentialStateEnumMap[instance.state]!,
+      'finalizationState':
+          _$ContainerFinalizationStateEnumMap[instance.finalizationState]!,
       'passphrase': instance.passphrase,
       'publicServerKey': instance.publicServerKey,
       'publicClientKey': instance.publicClientKey,
@@ -96,15 +98,21 @@ const _$AlgorithmsEnumMap = {
   Algorithms.SHA512: 'SHA512',
 };
 
-const _$ContainerCredentialStateEnumMap = {
-  ContainerCredentialState.uninitialized: 'uninitialized',
-  ContainerCredentialState.generatingKeyPair: 'generatingKeyPair',
-  ContainerCredentialState.generatingKeyPairFailed: 'generatingKeyPairFailed',
-  ContainerCredentialState.sendingPublicKey: 'sendingPublicKey',
-  ContainerCredentialState.sendingPublicKeyFailed: 'sendingPublicKeyFailed',
-  ContainerCredentialState.parsingResponse: 'parsingResponse',
-  ContainerCredentialState.parsingResponseFailed: 'parsingResponseFailed',
-  ContainerCredentialState.finalized: 'finalized',
+const _$ContainerFinalizationStateEnumMap = {
+  ContainerFinalizationState.uninitialized: 'uninitialized',
+  ContainerFinalizationState.generatingKeyPair: 'generatingKeyPair',
+  ContainerFinalizationState.generatingKeyPairFailed: 'generatingKeyPairFailed',
+  ContainerFinalizationState.generatingKeyPairCompleted:
+      'generatingKeyPairCompleted',
+  ContainerFinalizationState.sendingPublicKey: 'sendingPublicKey',
+  ContainerFinalizationState.sendingPublicKeyFailed: 'sendingPublicKeyFailed',
+  ContainerFinalizationState.sendingPublicKeyCompleted:
+      'sendingPublicKeyCompleted',
+  ContainerFinalizationState.parsingResponse: 'parsingResponse',
+  ContainerFinalizationState.parsingResponseFailed: 'parsingResponseFailed',
+  ContainerFinalizationState.parsingResponseCompleted:
+      'parsingResponseCompleted',
+  ContainerFinalizationState.finalized: 'finalized',
 };
 
 _$ContainerCredentialFinalizedImpl _$$ContainerCredentialFinalizedImplFromJson(
@@ -118,9 +126,9 @@ _$ContainerCredentialFinalizedImpl _$$ContainerCredentialFinalizedImplFromJson(
       ecKeyAlgorithm:
           $enumDecode(_$EcKeyAlgorithmEnumMap, json['ecKeyAlgorithm']),
       hashAlgorithm: $enumDecode(_$AlgorithmsEnumMap, json['hashAlgorithm']),
-      state: $enumDecodeNullable(
-              _$ContainerCredentialStateEnumMap, json['state']) ??
-          ContainerCredentialState.finalized,
+      finalizationState: $enumDecodeNullable(
+              _$ContainerFinalizationStateEnumMap, json['finalizationState']) ??
+          ContainerFinalizationState.finalized,
       passphrase: json['passphrase'] as String?,
       publicServerKey: json['publicServerKey'] as String,
       publicClientKey: json['publicClientKey'] as String,
@@ -138,7 +146,8 @@ Map<String, dynamic> _$$ContainerCredentialFinalizedImplToJson(
       'serial': instance.serial,
       'ecKeyAlgorithm': _$EcKeyAlgorithmEnumMap[instance.ecKeyAlgorithm]!,
       'hashAlgorithm': _$AlgorithmsEnumMap[instance.hashAlgorithm]!,
-      'state': _$ContainerCredentialStateEnumMap[instance.state]!,
+      'finalizationState':
+          _$ContainerFinalizationStateEnumMap[instance.finalizationState]!,
       'passphrase': instance.passphrase,
       'publicServerKey': instance.publicServerKey,
       'publicClientKey': instance.publicClientKey,

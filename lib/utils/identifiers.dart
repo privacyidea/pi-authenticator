@@ -74,14 +74,19 @@ const String PUSH_REQUEST_ANSWERS = 'require_presence'; // 8.
 
 // Container registration:
 const String PUBLIC_SERVER_KEY = 'PUBLIC_SERVER_KEY';
+const String URI_PASSPHRASE = 'URI_PASSPHRASE';
 
 const String GLOBAL_SECURE_REPO_PREFIX = 'app_v3_';
 
 void validateMap(Map<String, dynamic> map, Map<String, TypeMatcher> keys) {
   for (String key in keys.keys) {
-    final type = keys[key]!;
-    if (!type.isTypeOf(map[key])) {
-      throw ArgumentError('Map does not contain required key "$key" of type $type');
+    final typeMatcher = keys[key]!;
+    final mapEntry = map[key];
+    if (!typeMatcher.isTypeOf(map[key])) {
+      if (mapEntry == null) {
+        throw ArgumentError('Map does not contain required key "$key"');
+      }
+      throw ArgumentError('Map does contain required key "$key" but ${mapEntry.runtimeType} is not a subtype of ${typeMatcher.type}');
     }
   }
 }
@@ -90,8 +95,10 @@ class TypeMatcher<T> {
   const TypeMatcher();
   bool isTypeOf(dynamic value) => value is T;
 
+  String get type => RegExp('(?<=<).+(?=>)').firstMatch(toString())!.group(0)!;
+
   @override
-  String toString() => 'TypeMatcher<${T.runtimeType}>';
+  String toString() => runtimeType.toString();
 
   @override
   bool operator ==(Object other) => other is TypeMatcher<T>;

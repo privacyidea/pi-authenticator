@@ -49,12 +49,12 @@ class SecureTokenContainerRepository implements TokenContainerRepository {
   }
 
   Future<void> _delete(String key) => _protect(() => _storage.delete(key: key));
-  Future<Map<String, String>> _readAll() async {
-    Map<String, String>? keys;
-    await _protect(() async => keys = await _storage.readAll());
-    keys!.removeWhere((key, value) => !key.startsWith(prefix + containerId));
-    return keys!;
-  }
+  // Future<Map<String, String>> _readAll() async {
+  //   Map<String, String>? keys;
+  //   await _protect(() async => keys = await _storage.readAll());
+  //   keys!.removeWhere((key, value) => !key.startsWith(prefix + containerId));
+  //   return keys!;
+  // }
 
   @override
   Future<TokenContainer> saveContainerState(TokenContainer containerState) async {

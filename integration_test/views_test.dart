@@ -169,7 +169,8 @@ Future<void> _settingsViewTest(WidgetTester tester) async {
   expect(find.byType(SettingsGroup), findsNWidgets(6));
   const qrCode =
       'otpauth://pipush/label?url=http%3A%2F%2Fwww.example.com&ttl=10&issuer=issuer&enrollment_credential=enrollmentCredentials&v=1&serial=serial&serial=serial&sslverify=0';
-  await scanQrCode(globalRef!, qrCode);
+  final notifier = globalRef!.read(tokenProvider.notifier);
+  await scanQrCode([notifier], qrCode);
 
   await pumpUntilFindNWidgets(tester, find.text(AppLocalizationsEn().pushToken), 1, const Duration(minutes: 5));
   expect(find.text(AppLocalizationsEn().pushToken), findsOneWidget);

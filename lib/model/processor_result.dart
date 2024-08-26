@@ -32,13 +32,13 @@ part 'processor_result.freezed.dart';
 @freezed
 abstract class ProcessorResult<T> with _$ProcessorResult<T> {
   const ProcessorResult._();
-  factory ProcessorResult.success(
+  const factory ProcessorResult.success(
     T resultData, {
-    required TypeMatcher<ResultHandler>? resultHandlerType,
+    TypeMatcher<ResultHandler>? resultHandlerType,
   }) = ProcessorResultSuccess;
-  factory ProcessorResult.failed(
+  const factory ProcessorResult.failed(
     String message, {
-    required TypeMatcher<ResultHandler>? resultHandlerType,
+    TypeMatcher<ResultHandler>? resultHandlerType,
   }) = ProcessorResultFailed;
 
   bool get isSuccess => this is ProcessorResultSuccess<T>;

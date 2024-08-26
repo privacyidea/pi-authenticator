@@ -87,11 +87,11 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    final credentials = ref.watch(credentialsNotifierProvider).value?.credentials ?? [];
+    final credentials = ref.watch(containerCredentialsProvider).value?.credentials ?? [];
     Logger.debug('Credentials: $credentials', name: 'AppWrapper#build');
     return SingleTouchRecognizer(
       child: StateObserver(
-        stateNotifierProviderListeners: [],
+        stateNotifierProviderListeners: const [],
         buildlessProviderListener: [
           HomeWidgetTokenStateListener(provider: tokenProvider),
           ContainerListensToTokenState(provider: tokenProvider, ref: ref),

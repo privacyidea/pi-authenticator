@@ -47,7 +47,7 @@ class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
         stackTrace: StackTrace.current,
       );
       return [
-        ProcessorResult.failed(
+        const ProcessorResult.failed(
           'Cannot Navigate without context',
           resultHandlerType: resultHandlerType,
         )
@@ -128,7 +128,7 @@ class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
     if (globalRef == null) {
       Logger.warning('Could not find globalRef', name: 'home_widget_processor.dart#_showLockedHomeWidgetProcessor');
       return [
-        ProcessorResult.failed(
+        const ProcessorResult.failed(
           'Could not find globalRef',
           resultHandlerType: resultHandlerType,
         )

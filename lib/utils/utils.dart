@@ -208,6 +208,7 @@ BigInt bytesToBigInt(Uint8List bytes) => byteDataToBigInt(ByteData.sublistView(b
 Future<void> scanQrCode(List<ResultHandler> resultHandlerList, Object? qrCode) async {
   Uri uri;
   try {
+    if (qrCode == null) return;
     uri = switch (qrCode.runtimeType) {
       const (String) => Uri.parse(qrCode as String),
       const (Uri) => qrCode as Uri,

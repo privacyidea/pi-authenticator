@@ -59,8 +59,8 @@ class SecureContainerCredentialsRepository extends ContainerCredentialsRepositor
   }
 
   @override
-  Future<CredentialsState> deleteCredential(String id) async {
-    await _delete(_keyOfSerial(id));
+  Future<CredentialsState> deleteCredential(String serial) async {
+    await _delete(_keyOfSerial(serial));
     return await loadCredentialsState();
   }
 
@@ -76,8 +76,8 @@ class SecureContainerCredentialsRepository extends ContainerCredentialsRepositor
   }
 
   @override
-  Future<ContainerCredential?> loadCredential(String id) async {
-    final credentialJsonString = await _read(_keyOfSerial(id));
+  Future<ContainerCredential?> loadCredential(String serial) async {
+    final credentialJsonString = await _read(_keyOfSerial(serial));
     if (credentialJsonString == null) return null;
     return ContainerCredential.fromJson(jsonDecode(credentialJsonString));
   }
