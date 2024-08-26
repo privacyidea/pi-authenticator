@@ -40,7 +40,7 @@ class ContainerListensToTokenState extends TokenStateListener {
   static Future<void> _onNewState(TokenState? previousState, TokenState nextState, WidgetRef ref) async {
     Logger.warning('New token state', name: 'TokenContainerTokenStateListener');
     final maybePiTokenTemplates = nextState.lastlyUpdatedTokens.maybePiTokens.toTemplates();
-    final credentials = (await ref.read(credentialsNotifierProvider.future)).credentials;
+    final credentials = (await ref.read(containerCredentialsProvider.future)).credentials;
     Logger.warning('Readed: $credentials', name: 'TokenContainerTokenStateListener');
     // if (maybePiTokenTemplates.isEmpty) return;
     for (var credential in credentials) {

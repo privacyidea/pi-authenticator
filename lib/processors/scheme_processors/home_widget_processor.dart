@@ -62,7 +62,7 @@ class HomeWidgetProcessor implements SchemeProcessor {
     final widgetId = uri.queryParameters['widgetId'];
     if (widgetId == null) {
       return [
-        ProcessorResult.failed(
+        const ProcessorResult.failed(
           'Missing widgetId',
           resultHandlerType: null,
         )
@@ -85,7 +85,7 @@ class HomeWidgetProcessor implements SchemeProcessor {
     final widgetId = uri.queryParameters['widgetId'];
     if (widgetId == null) {
       return [
-        ProcessorResult.failed(
+        const ProcessorResult.failed(
           'Missing widgetId',
           resultHandlerType: null,
         )
@@ -108,7 +108,7 @@ class HomeWidgetProcessor implements SchemeProcessor {
     final widgetId = uri.queryParameters['widgetId'];
     if (widgetId == null) {
       return [
-        ProcessorResult.failed(
+        const ProcessorResult.failed(
           'Missing widgetId',
           resultHandlerType: null,
         )

@@ -34,14 +34,9 @@ class PrivacyIDEAAuthenticatorQrProcessor extends TokenImportSchemeProcessor {
 
   @override
   Future<List<ProcessorResult<Token>>?> processUri(Uri uri, {bool fromInit = false}) async {
-    if (!supportedSchemes.contains(uri.scheme)) {
-      return null;
-    }
-    if (uri.host != host) {
-      Logger.warning('Unsupported scheme or host', name: 'PrivacyIDEAAuthenticatorQrProcessor#processUri');
-      return null;
-    }
-    Logger.info('Processing URI with scheme: ${uri.scheme}', name: 'PrivacyIDEAAuthenticatorQrProcessor#processUri');
+    if (!supportedSchemes.contains(uri.scheme)) return null;
+    if (uri.host != host) return null;
+    Logger.info('Processing URI with scheme: ${uri.scheme} and host: ${uri.host}', name: 'PrivacyIDEAAuthenticatorQrProcessor#processUri');
     try {
       final token = TokenEncryption.fromExportUri(uri);
       Logger.info('Processing URI ${uri.scheme} succeded', name: 'PrivacyIDEAAuthenticatorQrProcessor#processUri');

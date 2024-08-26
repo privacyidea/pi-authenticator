@@ -20,12 +20,12 @@ void _testProcessorResult() {
     });
     group('factories', () {
       test('success', () {
-        final result = ProcessorResult.success('data');
+        const result = ProcessorResult.success('data');
         expect(result, isA<ProcessorResultSuccess>());
         expect((result as ProcessorResultSuccess).resultData, 'data');
       });
       test('error', () {
-        final result = ProcessorResult.failed('error');
+        const result = ProcessorResult.failed('error');
         expect(result, isA<ProcessorResultFailed>());
         expect((result as ProcessorResultFailed).message, 'error');
       });

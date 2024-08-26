@@ -49,20 +49,20 @@ class ContainerCredential with _$ContainerCredential {
     validateMap(uriMap, {
       URI_ISSUER: const TypeMatcher<String>(),
       URI_NONCE: const TypeMatcher<String>(),
-      URI_TIMESTAMP: const TypeMatcher<String>(),
-      URI_FINALIZATION_URL: const TypeMatcher<String>(),
+      URI_TIMESTAMP: const TypeMatcher<DateTime>(),
+      URI_FINALIZATION_URL: const TypeMatcher<Uri>(),
       URI_SERIAL: const TypeMatcher<String>(),
-      URI_KEY_ALGORITHM: const TypeMatcher<String>(),
-      URI_HASH_ALGORITHM: const TypeMatcher<String>(),
+      URI_KEY_ALGORITHM: const TypeMatcher<EcKeyAlgorithm>(),
+      URI_HASH_ALGORITHM: const TypeMatcher<Algorithms>(),
     });
     return ContainerCredential.unfinalized(
       issuer: uriMap[URI_ISSUER],
       nonce: uriMap[URI_NONCE],
-      timestamp: DateTime.parse(uriMap[URI_TIMESTAMP]),
-      finalizationUrl: Uri.parse(uriMap[URI_FINALIZATION_URL]),
+      timestamp: uriMap[URI_TIMESTAMP],
+      finalizationUrl: uriMap[URI_FINALIZATION_URL],
       serial: uriMap[URI_SERIAL],
-      ecKeyAlgorithm: EcKeyAlgorithm.values.byCurveName(uriMap[URI_KEY_ALGORITHM]),
-      hashAlgorithm: Algorithms.values.byName(uriMap[URI_HASH_ALGORITHM]),
+      ecKeyAlgorithm: uriMap[URI_KEY_ALGORITHM],
+      hashAlgorithm: uriMap[URI_HASH_ALGORITHM],
     );
   }
 
@@ -74,7 +74,7 @@ class ContainerCredential with _$ContainerCredential {
     required String serial,
     required EcKeyAlgorithm ecKeyAlgorithm,
     required Algorithms hashAlgorithm,
-    @Default(ContainerCredentialState.uninitialized) ContainerCredentialState state,
+    @Default(ContainerFinalizationState.uninitialized) ContainerFinalizationState finalizationState,
     String? passphrase,
     String? publicServerKey,
     String? publicClientKey,
@@ -89,7 +89,7 @@ class ContainerCredential with _$ContainerCredential {
     required String serial,
     required EcKeyAlgorithm ecKeyAlgorithm,
     required Algorithms hashAlgorithm,
-    @Default(ContainerCredentialState.finalized) ContainerCredentialState state,
+    @Default(ContainerFinalizationState.finalized) ContainerFinalizationState finalizationState,
     String? passphrase,
     required String publicServerKey,
     required String publicClientKey,
@@ -118,7 +118,7 @@ class ContainerCredential with _$ContainerCredential {
       ecKeyAlgorithm: ecKeyAlgorithm,
       hashAlgorithm: hashAlgorithm,
       passphrase: passphrase,
-      state: ContainerCredentialState.finalized,
+      finalizationState: ContainerFinalizationState.finalized,
       publicServerKey: this.publicServerKey ?? eccUtils.serializeECPublicKey(publicServerKey!),
       publicClientKey: publicClientKey ?? eccUtils.serializeECPublicKey(clientKeyPair!.publicKey),
       privateClientKey: privateClientKey ?? eccUtils.serializeECPrivateKey(clientKeyPair!.privateKey),
@@ -129,9 +129,12 @@ class ContainerCredential with _$ContainerCredential {
   ContainerCredential withPublicServerKey(ECPublicKey publicServerKey) => copyWith(publicServerKey: eccUtils.serializeECPublicKey(publicServerKey));
   ECPublicKey? get ecPublicClientKey => publicClientKey == null ? null : eccUtils.deserializeECPublicKey(publicClientKey!);
   ECPrivateKey? get ecPrivateClientKey => privateClientKey == null ? null : eccUtils.deserializeECPrivateKey(privateClientKey!);
+
+  /// Add client key pair and set finalization state to generatingKeyPairCompleted
   ContainerCredential withClientKeyPair(AsymmetricKeyPair<ECPublicKey, ECPrivateKey> keyPair) => copyWith(
         publicClientKey: eccUtils.serializeECPublicKey(keyPair.publicKey),
         privateClientKey: eccUtils.serializeECPrivateKey(keyPair.privateKey),
+        finalizationState: ContainerFinalizationState.generatingKeyPairCompleted,
       );
 
   factory ContainerCredential.fromJson(Map<String, dynamic> json) => _$ContainerCredentialFromJson(json);
@@ -144,14 +147,17 @@ class ContainerCredential with _$ContainerCredential {
   // };
 }
 
-enum ContainerCredentialState {
+enum ContainerFinalizationState {
   uninitialized,
   generatingKeyPair,
   generatingKeyPairFailed,
+  generatingKeyPairCompleted,
   sendingPublicKey,
   sendingPublicKeyFailed,
+  sendingPublicKeyCompleted,
   parsingResponse,
   parsingResponseFailed,
+  parsingResponseCompleted,
   finalized,
 }
 

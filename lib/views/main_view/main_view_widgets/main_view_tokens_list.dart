@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/credential_notifier.dart';
 
 import '../../../model/mixins/sortable_mixin.dart';
 import '../../../model/riverpod_states/settings_state.dart';
@@ -104,6 +105,11 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
     }
 
     if ((showSortables.isEmpty)) return const NoTokenScreen();
+
+    final credentials = ref.read(containerCredentialsProvider).whenOrNull(
+          data: (data) => data.credentials,
+        );
+
     return Stack(
       children: [
         Column(
@@ -147,11 +153,7 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Column(
-                      children: [
-                        ...MainViewTokensList.buildSortableWidgets(showSortables, draggingSortable),
-                      ],
-                    ),
+                    ...MainViewTokensList.buildSortableWidgets(showSortables, draggingSortable),
                     (draggingSortable != null)
                         ? DragTargetDivider(
                             dependingFolder: null,
@@ -160,7 +162,13 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
                             isLastDivider: true,
                             bottomPaddingIfLast: 80,
                           )
-                        : const SizedBox(height: 80)
+                        : const SizedBox(height: 80),
+                    ...(credentials!.map((credential) {
+                      return Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Text('${credential.serial} | ${credential.issuer} | ${credential.finalizationState.name}'),
+                      );
+                    }).toList())
                   ],
                 ),
               ),

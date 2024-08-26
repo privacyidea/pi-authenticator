@@ -36,7 +36,8 @@ mixin _$ContainerCredential {
   String get serial => throw _privateConstructorUsedError;
   EcKeyAlgorithm get ecKeyAlgorithm => throw _privateConstructorUsedError;
   Algorithms get hashAlgorithm => throw _privateConstructorUsedError;
-  ContainerCredentialState get state => throw _privateConstructorUsedError;
+  ContainerFinalizationState get finalizationState =>
+      throw _privateConstructorUsedError;
   String? get passphrase => throw _privateConstructorUsedError;
   String? get publicServerKey => throw _privateConstructorUsedError;
   String? get publicClientKey => throw _privateConstructorUsedError;
@@ -51,7 +52,7 @@ mixin _$ContainerCredential {
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
-            ContainerCredentialState state,
+            ContainerFinalizationState finalizationState,
             String? passphrase,
             String? publicServerKey,
             String? publicClientKey,
@@ -65,7 +66,7 @@ mixin _$ContainerCredential {
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
-            ContainerCredentialState state,
+            ContainerFinalizationState finalizationState,
             String? passphrase,
             String publicServerKey,
             String publicClientKey,
@@ -83,7 +84,7 @@ mixin _$ContainerCredential {
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
-            ContainerCredentialState state,
+            ContainerFinalizationState finalizationState,
             String? passphrase,
             String? publicServerKey,
             String? publicClientKey,
@@ -97,7 +98,7 @@ mixin _$ContainerCredential {
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
-            ContainerCredentialState state,
+            ContainerFinalizationState finalizationState,
             String? passphrase,
             String publicServerKey,
             String publicClientKey,
@@ -115,7 +116,7 @@ mixin _$ContainerCredential {
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
-            ContainerCredentialState state,
+            ContainerFinalizationState finalizationState,
             String? passphrase,
             String? publicServerKey,
             String? publicClientKey,
@@ -129,7 +130,7 @@ mixin _$ContainerCredential {
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
-            ContainerCredentialState state,
+            ContainerFinalizationState finalizationState,
             String? passphrase,
             String publicServerKey,
             String publicClientKey,
@@ -182,7 +183,7 @@ abstract class $ContainerCredentialCopyWith<$Res> {
       String serial,
       EcKeyAlgorithm ecKeyAlgorithm,
       Algorithms hashAlgorithm,
-      ContainerCredentialState state,
+      ContainerFinalizationState finalizationState,
       String? passphrase,
       String publicServerKey,
       String publicClientKey,
@@ -211,7 +212,7 @@ class _$ContainerCredentialCopyWithImpl<$Res, $Val extends ContainerCredential>
     Object? serial = null,
     Object? ecKeyAlgorithm = null,
     Object? hashAlgorithm = null,
-    Object? state = null,
+    Object? finalizationState = null,
     Object? passphrase = freezed,
     Object? publicServerKey = null,
     Object? publicClientKey = null,
@@ -246,10 +247,10 @@ class _$ContainerCredentialCopyWithImpl<$Res, $Val extends ContainerCredential>
           ? _value.hashAlgorithm
           : hashAlgorithm // ignore: cast_nullable_to_non_nullable
               as Algorithms,
-      state: null == state
-          ? _value.state
-          : state // ignore: cast_nullable_to_non_nullable
-              as ContainerCredentialState,
+      finalizationState: null == finalizationState
+          ? _value.finalizationState
+          : finalizationState // ignore: cast_nullable_to_non_nullable
+              as ContainerFinalizationState,
       passphrase: freezed == passphrase
           ? _value.passphrase
           : passphrase // ignore: cast_nullable_to_non_nullable
@@ -287,7 +288,7 @@ abstract class _$$ContainerCredentialUnfinalizedImplCopyWith<$Res>
       String serial,
       EcKeyAlgorithm ecKeyAlgorithm,
       Algorithms hashAlgorithm,
-      ContainerCredentialState state,
+      ContainerFinalizationState finalizationState,
       String? passphrase,
       String? publicServerKey,
       String? publicClientKey,
@@ -316,7 +317,7 @@ class __$$ContainerCredentialUnfinalizedImplCopyWithImpl<$Res>
     Object? serial = null,
     Object? ecKeyAlgorithm = null,
     Object? hashAlgorithm = null,
-    Object? state = null,
+    Object? finalizationState = null,
     Object? passphrase = freezed,
     Object? publicServerKey = freezed,
     Object? publicClientKey = freezed,
@@ -351,10 +352,10 @@ class __$$ContainerCredentialUnfinalizedImplCopyWithImpl<$Res>
           ? _value.hashAlgorithm
           : hashAlgorithm // ignore: cast_nullable_to_non_nullable
               as Algorithms,
-      state: null == state
-          ? _value.state
-          : state // ignore: cast_nullable_to_non_nullable
-              as ContainerCredentialState,
+      finalizationState: null == finalizationState
+          ? _value.finalizationState
+          : finalizationState // ignore: cast_nullable_to_non_nullable
+              as ContainerFinalizationState,
       passphrase: freezed == passphrase
           ? _value.passphrase
           : passphrase // ignore: cast_nullable_to_non_nullable
@@ -387,7 +388,7 @@ class _$ContainerCredentialUnfinalizedImpl
       required this.serial,
       required this.ecKeyAlgorithm,
       required this.hashAlgorithm,
-      this.state = ContainerCredentialState.uninitialized,
+      this.finalizationState = ContainerFinalizationState.uninitialized,
       this.passphrase,
       this.publicServerKey,
       this.publicClientKey,
@@ -416,7 +417,7 @@ class _$ContainerCredentialUnfinalizedImpl
   final Algorithms hashAlgorithm;
   @override
   @JsonKey()
-  final ContainerCredentialState state;
+  final ContainerFinalizationState finalizationState;
   @override
   final String? passphrase;
   @override
@@ -431,7 +432,7 @@ class _$ContainerCredentialUnfinalizedImpl
 
   @override
   String toString() {
-    return 'ContainerCredential.unfinalized(issuer: $issuer, nonce: $nonce, timestamp: $timestamp, finalizationUrl: $finalizationUrl, serial: $serial, ecKeyAlgorithm: $ecKeyAlgorithm, hashAlgorithm: $hashAlgorithm, state: $state, passphrase: $passphrase, publicServerKey: $publicServerKey, publicClientKey: $publicClientKey, privateClientKey: $privateClientKey)';
+    return 'ContainerCredential.unfinalized(issuer: $issuer, nonce: $nonce, timestamp: $timestamp, finalizationUrl: $finalizationUrl, serial: $serial, ecKeyAlgorithm: $ecKeyAlgorithm, hashAlgorithm: $hashAlgorithm, finalizationState: $finalizationState, passphrase: $passphrase, publicServerKey: $publicServerKey, publicClientKey: $publicClientKey, privateClientKey: $privateClientKey)';
   }
 
   @override
@@ -450,7 +451,8 @@ class _$ContainerCredentialUnfinalizedImpl
                 other.ecKeyAlgorithm == ecKeyAlgorithm) &&
             (identical(other.hashAlgorithm, hashAlgorithm) ||
                 other.hashAlgorithm == hashAlgorithm) &&
-            (identical(other.state, state) || other.state == state) &&
+            (identical(other.finalizationState, finalizationState) ||
+                other.finalizationState == finalizationState) &&
             (identical(other.passphrase, passphrase) ||
                 other.passphrase == passphrase) &&
             (identical(other.publicServerKey, publicServerKey) ||
@@ -472,7 +474,7 @@ class _$ContainerCredentialUnfinalizedImpl
       serial,
       ecKeyAlgorithm,
       hashAlgorithm,
-      state,
+      finalizationState,
       passphrase,
       publicServerKey,
       publicClientKey,
@@ -499,7 +501,7 @@ class _$ContainerCredentialUnfinalizedImpl
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
-            ContainerCredentialState state,
+            ContainerFinalizationState finalizationState,
             String? passphrase,
             String? publicServerKey,
             String? publicClientKey,
@@ -513,7 +515,7 @@ class _$ContainerCredentialUnfinalizedImpl
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
-            ContainerCredentialState state,
+            ContainerFinalizationState finalizationState,
             String? passphrase,
             String publicServerKey,
             String publicClientKey,
@@ -528,7 +530,7 @@ class _$ContainerCredentialUnfinalizedImpl
         serial,
         ecKeyAlgorithm,
         hashAlgorithm,
-        state,
+        finalizationState,
         passphrase,
         publicServerKey,
         publicClientKey,
@@ -546,7 +548,7 @@ class _$ContainerCredentialUnfinalizedImpl
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
-            ContainerCredentialState state,
+            ContainerFinalizationState finalizationState,
             String? passphrase,
             String? publicServerKey,
             String? publicClientKey,
@@ -560,7 +562,7 @@ class _$ContainerCredentialUnfinalizedImpl
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
-            ContainerCredentialState state,
+            ContainerFinalizationState finalizationState,
             String? passphrase,
             String publicServerKey,
             String publicClientKey,
@@ -575,7 +577,7 @@ class _$ContainerCredentialUnfinalizedImpl
         serial,
         ecKeyAlgorithm,
         hashAlgorithm,
-        state,
+        finalizationState,
         passphrase,
         publicServerKey,
         publicClientKey,
@@ -593,7 +595,7 @@ class _$ContainerCredentialUnfinalizedImpl
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
-            ContainerCredentialState state,
+            ContainerFinalizationState finalizationState,
             String? passphrase,
             String? publicServerKey,
             String? publicClientKey,
@@ -607,7 +609,7 @@ class _$ContainerCredentialUnfinalizedImpl
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
-            ContainerCredentialState state,
+            ContainerFinalizationState finalizationState,
             String? passphrase,
             String publicServerKey,
             String publicClientKey,
@@ -624,7 +626,7 @@ class _$ContainerCredentialUnfinalizedImpl
           serial,
           ecKeyAlgorithm,
           hashAlgorithm,
-          state,
+          finalizationState,
           passphrase,
           publicServerKey,
           publicClientKey,
@@ -681,7 +683,7 @@ abstract class ContainerCredentialUnfinalized extends ContainerCredential {
       required final String serial,
       required final EcKeyAlgorithm ecKeyAlgorithm,
       required final Algorithms hashAlgorithm,
-      final ContainerCredentialState state,
+      final ContainerFinalizationState finalizationState,
       final String? passphrase,
       final String? publicServerKey,
       final String? publicClientKey,
@@ -706,7 +708,7 @@ abstract class ContainerCredentialUnfinalized extends ContainerCredential {
   @override
   Algorithms get hashAlgorithm;
   @override
-  ContainerCredentialState get state;
+  ContainerFinalizationState get finalizationState;
   @override
   String? get passphrase;
   @override
@@ -742,7 +744,7 @@ abstract class _$$ContainerCredentialFinalizedImplCopyWith<$Res>
       String serial,
       EcKeyAlgorithm ecKeyAlgorithm,
       Algorithms hashAlgorithm,
-      ContainerCredentialState state,
+      ContainerFinalizationState finalizationState,
       String? passphrase,
       String publicServerKey,
       String publicClientKey,
@@ -771,7 +773,7 @@ class __$$ContainerCredentialFinalizedImplCopyWithImpl<$Res>
     Object? serial = null,
     Object? ecKeyAlgorithm = null,
     Object? hashAlgorithm = null,
-    Object? state = null,
+    Object? finalizationState = null,
     Object? passphrase = freezed,
     Object? publicServerKey = null,
     Object? publicClientKey = null,
@@ -806,10 +808,10 @@ class __$$ContainerCredentialFinalizedImplCopyWithImpl<$Res>
           ? _value.hashAlgorithm
           : hashAlgorithm // ignore: cast_nullable_to_non_nullable
               as Algorithms,
-      state: null == state
-          ? _value.state
-          : state // ignore: cast_nullable_to_non_nullable
-              as ContainerCredentialState,
+      finalizationState: null == finalizationState
+          ? _value.finalizationState
+          : finalizationState // ignore: cast_nullable_to_non_nullable
+              as ContainerFinalizationState,
       passphrase: freezed == passphrase
           ? _value.passphrase
           : passphrase // ignore: cast_nullable_to_non_nullable
@@ -841,7 +843,7 @@ class _$ContainerCredentialFinalizedImpl extends ContainerCredentialFinalized {
       required this.serial,
       required this.ecKeyAlgorithm,
       required this.hashAlgorithm,
-      this.state = ContainerCredentialState.finalized,
+      this.finalizationState = ContainerFinalizationState.finalized,
       this.passphrase,
       required this.publicServerKey,
       required this.publicClientKey,
@@ -870,7 +872,7 @@ class _$ContainerCredentialFinalizedImpl extends ContainerCredentialFinalized {
   final Algorithms hashAlgorithm;
   @override
   @JsonKey()
-  final ContainerCredentialState state;
+  final ContainerFinalizationState finalizationState;
   @override
   final String? passphrase;
   @override
@@ -885,7 +887,7 @@ class _$ContainerCredentialFinalizedImpl extends ContainerCredentialFinalized {
 
   @override
   String toString() {
-    return 'ContainerCredential.finalized(issuer: $issuer, nonce: $nonce, timestamp: $timestamp, finalizationUrl: $finalizationUrl, serial: $serial, ecKeyAlgorithm: $ecKeyAlgorithm, hashAlgorithm: $hashAlgorithm, state: $state, passphrase: $passphrase, publicServerKey: $publicServerKey, publicClientKey: $publicClientKey, privateClientKey: $privateClientKey)';
+    return 'ContainerCredential.finalized(issuer: $issuer, nonce: $nonce, timestamp: $timestamp, finalizationUrl: $finalizationUrl, serial: $serial, ecKeyAlgorithm: $ecKeyAlgorithm, hashAlgorithm: $hashAlgorithm, finalizationState: $finalizationState, passphrase: $passphrase, publicServerKey: $publicServerKey, publicClientKey: $publicClientKey, privateClientKey: $privateClientKey)';
   }
 
   @override
@@ -904,7 +906,8 @@ class _$ContainerCredentialFinalizedImpl extends ContainerCredentialFinalized {
                 other.ecKeyAlgorithm == ecKeyAlgorithm) &&
             (identical(other.hashAlgorithm, hashAlgorithm) ||
                 other.hashAlgorithm == hashAlgorithm) &&
-            (identical(other.state, state) || other.state == state) &&
+            (identical(other.finalizationState, finalizationState) ||
+                other.finalizationState == finalizationState) &&
             (identical(other.passphrase, passphrase) ||
                 other.passphrase == passphrase) &&
             (identical(other.publicServerKey, publicServerKey) ||
@@ -926,7 +929,7 @@ class _$ContainerCredentialFinalizedImpl extends ContainerCredentialFinalized {
       serial,
       ecKeyAlgorithm,
       hashAlgorithm,
-      state,
+      finalizationState,
       passphrase,
       publicServerKey,
       publicClientKey,
@@ -953,7 +956,7 @@ class _$ContainerCredentialFinalizedImpl extends ContainerCredentialFinalized {
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
-            ContainerCredentialState state,
+            ContainerFinalizationState finalizationState,
             String? passphrase,
             String? publicServerKey,
             String? publicClientKey,
@@ -967,7 +970,7 @@ class _$ContainerCredentialFinalizedImpl extends ContainerCredentialFinalized {
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
-            ContainerCredentialState state,
+            ContainerFinalizationState finalizationState,
             String? passphrase,
             String publicServerKey,
             String publicClientKey,
@@ -982,7 +985,7 @@ class _$ContainerCredentialFinalizedImpl extends ContainerCredentialFinalized {
         serial,
         ecKeyAlgorithm,
         hashAlgorithm,
-        state,
+        finalizationState,
         passphrase,
         publicServerKey,
         publicClientKey,
@@ -1000,7 +1003,7 @@ class _$ContainerCredentialFinalizedImpl extends ContainerCredentialFinalized {
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
-            ContainerCredentialState state,
+            ContainerFinalizationState finalizationState,
             String? passphrase,
             String? publicServerKey,
             String? publicClientKey,
@@ -1014,7 +1017,7 @@ class _$ContainerCredentialFinalizedImpl extends ContainerCredentialFinalized {
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
-            ContainerCredentialState state,
+            ContainerFinalizationState finalizationState,
             String? passphrase,
             String publicServerKey,
             String publicClientKey,
@@ -1029,7 +1032,7 @@ class _$ContainerCredentialFinalizedImpl extends ContainerCredentialFinalized {
         serial,
         ecKeyAlgorithm,
         hashAlgorithm,
-        state,
+        finalizationState,
         passphrase,
         publicServerKey,
         publicClientKey,
@@ -1047,7 +1050,7 @@ class _$ContainerCredentialFinalizedImpl extends ContainerCredentialFinalized {
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
-            ContainerCredentialState state,
+            ContainerFinalizationState finalizationState,
             String? passphrase,
             String? publicServerKey,
             String? publicClientKey,
@@ -1061,7 +1064,7 @@ class _$ContainerCredentialFinalizedImpl extends ContainerCredentialFinalized {
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
-            ContainerCredentialState state,
+            ContainerFinalizationState finalizationState,
             String? passphrase,
             String publicServerKey,
             String publicClientKey,
@@ -1078,7 +1081,7 @@ class _$ContainerCredentialFinalizedImpl extends ContainerCredentialFinalized {
           serial,
           ecKeyAlgorithm,
           hashAlgorithm,
-          state,
+          finalizationState,
           passphrase,
           publicServerKey,
           publicClientKey,
@@ -1135,7 +1138,7 @@ abstract class ContainerCredentialFinalized extends ContainerCredential {
           required final String serial,
           required final EcKeyAlgorithm ecKeyAlgorithm,
           required final Algorithms hashAlgorithm,
-          final ContainerCredentialState state,
+          final ContainerFinalizationState finalizationState,
           final String? passphrase,
           required final String publicServerKey,
           required final String publicClientKey,
@@ -1161,7 +1164,7 @@ abstract class ContainerCredentialFinalized extends ContainerCredential {
   @override
   Algorithms get hashAlgorithm;
   @override
-  ContainerCredentialState get state;
+  ContainerFinalizationState get finalizationState;
   @override
   String? get passphrase;
   @override

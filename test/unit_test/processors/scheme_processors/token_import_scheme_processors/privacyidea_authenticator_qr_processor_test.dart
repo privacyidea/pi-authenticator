@@ -33,8 +33,8 @@ void _testPrivacyideaAuthenticatorQrProcessor() {
         final token = tokensList[i];
         final uri = Uri.parse(uriStrings[i]);
         final result = await processor.processUri(uri);
-        expect(result.length, 1);
-        expect(result[0].isSuccess, true);
+        expect(result?.length, 1);
+        expect(result![0].isSuccess, true);
         expect(result[0].asSuccess, isNotNull);
         expect(result[0].asSuccess!.resultData, token);
       }

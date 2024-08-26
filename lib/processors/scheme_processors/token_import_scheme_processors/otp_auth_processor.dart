@@ -87,10 +87,10 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
     }
     if (_is2StepURI(uri)) {
       validateMap(uriMap, {
-        URI_SECRET: TypeMatcher<Uint8List>(),
-        URI_ITERATIONS: TypeMatcher<int>(),
-        URI_OUTPUT_LENGTH_IN_BYTES: TypeMatcher<int>(),
-        URI_SALT_LENGTH: TypeMatcher<int>(),
+        URI_SECRET: const TypeMatcher<Uint8List>(),
+        URI_ITERATIONS: const TypeMatcher<int>(),
+        URI_OUTPUT_LENGTH_IN_BYTES: const TypeMatcher<int>(),
+        URI_SALT_LENGTH: const TypeMatcher<int>(),
       });
       final secret = uriMap[URI_SECRET] as Uint8List;
       // Calculate the whole secret.

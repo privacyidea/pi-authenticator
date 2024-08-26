@@ -32,7 +32,7 @@ class _DefaultRefreshIndicatorState extends ConsumerState<DefaultRefreshIndicato
           });
           final future = LoadingIndicator.show(context, () async {
             final pushProviderInstance = PushProvider.instance;
-            final credentials = (await ref.read(credentialsNotifierProvider.future)).credentials;
+            final credentials = (await ref.read(containerCredentialsProvider.future)).credentials;
             Logger.debug('Refreshing container with ${credentials.length} credentials');
             await Future.wait([
               if (pushProviderInstance != null) pushProviderInstance.pollForChallenges(isManually: true),

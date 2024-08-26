@@ -157,8 +157,7 @@ class __$$ProcessorResultSuccessImplCopyWithImpl<T, $Res>
 /// @nodoc
 
 class _$ProcessorResultSuccessImpl<T> extends ProcessorResultSuccess<T> {
-  _$ProcessorResultSuccessImpl(this.resultData,
-      {required this.resultHandlerType})
+  const _$ProcessorResultSuccessImpl(this.resultData, {this.resultHandlerType})
       : super._();
 
   @override
@@ -271,10 +270,10 @@ class _$ProcessorResultSuccessImpl<T> extends ProcessorResultSuccess<T> {
 }
 
 abstract class ProcessorResultSuccess<T> extends ProcessorResult<T> {
-  factory ProcessorResultSuccess(final T resultData,
-          {required final TypeMatcher<ResultHandler>? resultHandlerType}) =
+  const factory ProcessorResultSuccess(final T resultData,
+          {final TypeMatcher<ResultHandler>? resultHandlerType}) =
       _$ProcessorResultSuccessImpl<T>;
-  ProcessorResultSuccess._() : super._();
+  const ProcessorResultSuccess._() : super._();
 
   T get resultData;
   @override
@@ -334,7 +333,7 @@ class __$$ProcessorResultFailedImplCopyWithImpl<T, $Res>
 /// @nodoc
 
 class _$ProcessorResultFailedImpl<T> extends ProcessorResultFailed<T> {
-  _$ProcessorResultFailedImpl(this.message, {required this.resultHandlerType})
+  const _$ProcessorResultFailedImpl(this.message, {this.resultHandlerType})
       : super._();
 
   @override
@@ -445,10 +444,10 @@ class _$ProcessorResultFailedImpl<T> extends ProcessorResultFailed<T> {
 }
 
 abstract class ProcessorResultFailed<T> extends ProcessorResult<T> {
-  factory ProcessorResultFailed(final String message,
-          {required final TypeMatcher<ResultHandler>? resultHandlerType}) =
+  const factory ProcessorResultFailed(final String message,
+          {final TypeMatcher<ResultHandler>? resultHandlerType}) =
       _$ProcessorResultFailedImpl<T>;
-  ProcessorResultFailed._() : super._();
+  const ProcessorResultFailed._() : super._();
 
   String get message;
   @override
