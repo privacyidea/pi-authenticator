@@ -19,6 +19,7 @@
 */
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -116,16 +117,16 @@ class PrivacyideaIOClient {
     } on HandshakeException catch (e, _) {
       Logger.warning('Handshake failed. sslVerify: $sslVerify', name: 'utils.dart#doPost');
       showMessage(message: 'Handshake failed, please check the server certificate and try again.');
-      response = Response('${e.runtimeType}', 525);
+      response = Response('Handshake failed', 525);
     } on TimeoutException catch (e, _) {
       Logger.info('Post request timed out', name: 'utils.dart#doPost');
-      response = Response('${e.runtimeType}', 408);
+      response = Response('Request timed out', 408);
     } on SocketException catch (e, _) {
       Logger.info('Post request failed', name: 'utils.dart#doPost');
-      response = Response('${e.runtimeType}', 404);
+      response = Response('Failed to send request', 404);
     } catch (e, _) {
       Logger.warning('Something unexpected happened', name: 'utils.dart#doPost');
-      response = Response('${e.runtimeType}', 404);
+      response = Response('Failed to send request', 404);
     }
 
     if (response.statusCode != 200) {
@@ -194,5 +195,23 @@ class PrivacyideaIOClient {
 
     ioClient.close();
     return response;
+  }
+}
+
+extension PiServerMessage on Response {
+  String? get piServerMessage {
+    try {
+      return jsonDecode(body)['result']['error']['message'].toString();
+    } catch (e, _) {
+      return null;
+    }
+  }
+
+  String? get piStatusCode {
+    try {
+      return jsonDecode(body)['result']['error']['code'].toString();
+    } catch (e, _) {
+      return null;
+    }
   }
 }

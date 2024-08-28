@@ -30,9 +30,9 @@ import '../../../../../utils/logger.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../../../widgets/focused_item_as_overlay.dart';
-import '../token_action.dart';
+import '../slideable_action.dart';
 
-class DefaultLockAction extends TokenAction {
+class DefaultLockAction extends PiSlideableAction {
   final Token token;
 
   const DefaultLockAction({required this.token, super.key});

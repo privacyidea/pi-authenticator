@@ -31,10 +31,10 @@ import '../../../../../utils/logger.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../../../widgets/focused_item_as_overlay.dart';
-import '../token_action.dart';
+import '../slideable_action.dart';
 import 'default_edit_action_dialog.dart';
 
-class DefaultEditAction extends TokenAction {
+class DefaultEditAction extends PiSlideableAction {
   final Token token;
   const DefaultEditAction({required this.token, super.key});
 

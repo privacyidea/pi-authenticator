@@ -17,6 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:basic_utils/basic_utils.dart';
@@ -42,6 +43,7 @@ part 'credential_notifier.g.dart';
 final containerCredentialsProvider = containerCredentialsNotifierProviderOf(
   repo: SecureContainerCredentialsRepository(),
   ioClient: const PrivacyideaIOClient(),
+  eccUtils: const EccUtils(),
 );
 
 @Riverpod(keepAlive: true)
@@ -52,9 +54,10 @@ class ContainerCredentialsNotifier extends _$ContainerCredentialsNotifier with R
   ContainerCredentialsNotifier({
     ContainerCredentialsRepository? repoOverride,
     PrivacyideaIOClient? ioClientOverride,
-    NotifierProviderRef? refOverride,
+    EccUtils? eccUtilsOverride,
   })  : _repoOverride = repoOverride,
-        _ioClientOverride = ioClientOverride;
+        _ioClientOverride = ioClientOverride,
+        _eccUtilsOverride = eccUtilsOverride;
 
   @override
   ContainerCredentialsRepository get repo => _repo;
@@ -67,14 +70,20 @@ class ContainerCredentialsNotifier extends _$ContainerCredentialsNotifier with R
   final PrivacyideaIOClient? _ioClientOverride;
 
   @override
+  EccUtils get eccUtils => _eccUtils;
+  late EccUtils _eccUtils;
+  final EccUtils? _eccUtilsOverride;
+
+  @override
   Future<CredentialsState> build({
     required ContainerCredentialsRepository repo,
     required PrivacyideaIOClient ioClient,
+    required EccUtils eccUtils,
   }) async {
     await _stateMutex.acquire();
     _repo = _repoOverride ?? repo;
     _ioClient = _ioClientOverride ?? ioClient;
-    // _ref = _refOverride ?? ref;
+    _eccUtils = _eccUtilsOverride ?? eccUtils;
     Logger.warning('Building credentialsProvider', name: 'CredentialsNotifier');
     final initState = await _repo.loadCredentialsState();
     for (var credential in initState.credentials.whereType<ContainerCredentialUnfinalized>()) {
@@ -83,6 +92,63 @@ class ContainerCredentialsNotifier extends _$ContainerCredentialsNotifier with R
     _stateMutex.release();
     return initState;
   }
+
+//////////////////////////////////////////////////////////////////
+////////////////////////// REPO METHODS //////////////////////////
+//////////////////////////////////////////////////////////////////
+
+  Future<CredentialsState> _saveCredentialToRepo(ContainerCredential credential) async {
+    return await _repoMutex.protect(() async => await _repo.saveCredential(credential));
+  }
+
+  Future<CredentialsState> _saveCredentialsStateToRepo(CredentialsState credentialsState) async {
+    return await _repoMutex.protect(() async => await _repo.saveCredentialsState(credentialsState));
+  }
+
+  Future<CredentialsState> _deleteCredentialFromRepo(ContainerCredential credential) async {
+    return await _repoMutex.protect(() async => await _repo.deleteCredential(credential.serial));
+  }
+
+  Future<CredentialsState> _deleteCredentialsStateToRepo() async {
+    return await _repoMutex.protect(() async => await _repo.deleteAllCredentials());
+  }
+
+/*//////////////////////////////////////////////////////////////////
+////////////////////////// PUBLIC METHODS //////////////////////////
+///////////////////////////////////////////////////////////////// */
+
+// ADD CREDENTIALS
+
+  Future<CredentialsState> addCredential(ContainerCredential credential) async {
+    await _stateMutex.acquire();
+    final newState = await _saveCredentialToRepo(credential);
+    await update((_) => newState);
+    _stateMutex.release();
+    return newState;
+  }
+
+  Future<CredentialsState> addCredentials(List<ContainerCredential> credentials) async {
+    await _stateMutex.acquire();
+    final newCredentials = credentials.toList();
+    final oldCredentials = (await future).credentials;
+    final combinedCredentials = <ContainerCredential>[];
+    for (var oldCredential in oldCredentials) {
+      final newCredential = newCredentials.firstWhereOrNull((newCredential) => newCredential.serial == oldCredential.serial);
+      if (newCredential == null) {
+        combinedCredentials.add(oldCredential);
+      } else {
+        combinedCredentials.add(newCredential);
+        newCredentials.remove(newCredential);
+      }
+    }
+    combinedCredentials.addAll(newCredentials);
+    final newState = await _saveCredentialsStateToRepo(CredentialsState(credentials: combinedCredentials));
+    await update((_) => newState);
+    _stateMutex.release();
+    return newState;
+  }
+
+  // UPDATE CREDENTIALS
 
   @override
   Future<CredentialsState> update(
@@ -104,20 +170,22 @@ class ContainerCredentialsNotifier extends _$ContainerCredentialsNotifier with R
     }
     final updated = updater(currentCredential);
     final newState = await _saveCredentialToRepo(updated);
-    state = AsyncValue.data(newState);
+    await update((_) => newState);
     _stateMutex.release();
     return updated;
   }
 
-  Future<CredentialsState> addCredential(ContainerCredential credential) async {
+  // DELETE CREDENTIALS
+
+  Future<CredentialsState> deleteCredential(ContainerCredential credential) async {
     await _stateMutex.acquire();
-    final newState = await _saveCredentialToRepo(credential);
-    state = AsyncValue.data(newState);
+    final newState = await _deleteCredentialFromRepo(credential);
+    await update((_) => newState);
     _stateMutex.release();
     return newState;
   }
 
-  Future<CredentialsState> addCredentials(List<ContainerCredential> credentials) async {
+  Future<CredentialsState> deleteCredentials(List<ContainerCredential> credentials) async {
     await _stateMutex.acquire();
     final newCredentials = credentials.toList();
     final oldCredentials = (await future).credentials;
@@ -127,24 +195,16 @@ class ContainerCredentialsNotifier extends _$ContainerCredentialsNotifier with R
       if (newCredential == null) {
         combinedCredentials.add(oldCredential);
       } else {
-        combinedCredentials.add(newCredential);
         newCredentials.remove(newCredential);
       }
     }
-    combinedCredentials.addAll(newCredentials);
     final newState = await _saveCredentialsStateToRepo(CredentialsState(credentials: combinedCredentials));
-    state = AsyncValue.data(newState);
+    await update((_) => newState);
     _stateMutex.release();
     return newState;
   }
 
-  Future<CredentialsState> _saveCredentialToRepo(ContainerCredential credential) async {
-    return await _repoMutex.protect(() async => await _repo.saveCredential(credential));
-  }
-
-  Future<CredentialsState> _saveCredentialsStateToRepo(CredentialsState credentialsState) async {
-    return await _repoMutex.protect(() async => await _repo.saveCredentialsState(credentialsState));
-  }
+  // HANDLE PROCESSOR RESULTS
 
   @override
   Future<void> handleProcessorResult(ProcessorResult result, Map<String, dynamic> args) {
@@ -163,31 +223,58 @@ class ContainerCredentialsNotifier extends _$ContainerCredentialsNotifier with R
     final stateCredentials = currentState.credentials;
     final stateCredentialsSerials = stateCredentials.map((e) => e.serial);
     final newCredentials = containerCredentials.where((element) => !stateCredentialsSerials.contains(element.serial)).toList();
+    Logger.info('Handling processor results: adding Credential', name: 'CredentialsNotifier#handleProcessorResults');
     await addCredentials(newCredentials);
-    for (var credential in containerCredentials) {
-      if (stateCredentialsSerials is! ContainerCredentialUnfinalized) continue;
+    Logger.info('Handling processor results: adding done (${newCredentials.length})', name: 'CredentialsNotifier#handleProcessorResults');
+    for (var credential in newCredentials) {
+      Logger.info('Handling processor results: finalize check ()', name: 'CredentialsNotifier#handleProcessorResults');
+      if (credential is! ContainerCredentialUnfinalized) continue;
+      Logger.info('Handling processor results: finalize', name: 'CredentialsNotifier#handleProcessorResults');
       await finalize(credential);
     }
     return null;
   }
 
   final Mutex _finalizationMutex = Mutex();
-  Future<void> finalize(ContainerCredential containerCredential) async {
-    ContainerCredential? credential = containerCredential;
+  Future<void> finalize(ContainerCredential credential) async {
     await _finalizationMutex.acquire();
     if (credential is! ContainerCredentialUnfinalized) {
       _finalizationMutex.release();
-      throw ArgumentError('Credential must not be finalized');
+      throw ArgumentError('Container must not be finalized');
     }
-    Logger.info('Finalizing container credential ${credential.serial}', name: 'CredentialsNotifier#finalize');
-    credential = await _generateKeyPair(credential);
-    final Response response;
-    (credential, response) = await _sendPublicKey(credential);
-    final ECPublicKey publicServerKey;
-    (credential, publicServerKey) = await _parseResponse(credential, response);
-    await updateCredential(credential, (c) => c.finalize(publicServerKey: publicServerKey)!);
+    Logger.info('Finalizing container ${credential.serial}', name: 'CredentialsNotifier#finalize');
+    try {
+      credential = await _generateKeyPair(credential);
+      final Response response;
+      (credential, response) = await _sendPublicKey(credential);
+      if (response.statusCode != 200) {
+        if (response.piServerMessage != null) {
+          ref.read(statusMessageProvider.notifier).state = (
+            'Failed to finalize container: ${response.piServerMessage}',
+            response.piStatusCode != null ? 'PI Server code ${response.piStatusCode}' : 'Status code ${response.body}'
+          );
+        } else {
+          ref.read(statusMessageProvider.notifier).state = ('Failed to finalize container: ${response.body}', 'Status code ${response.statusCode}');
+        }
+        _finalizationMutex.release();
+        return;
+      }
+      final ECPublicKey publicServerKey;
+      (credential, publicServerKey) = await _parseResponse(credential, response);
+      await updateCredential(credential, (c) => c.finalize(publicServerKey: publicServerKey)!);
+    } on StateError {
+      Logger.info('Container was removed while finalizing', name: 'CredentialsNotifier#finalize');
+    } catch (e) {
+      Logger.error('Failed to finalize container ${credential.serial}', name: 'CredentialsNotifier#finalize', error: e);
+      _finalizationMutex.release();
+      return;
+    }
     _finalizationMutex.release();
   }
+
+////////////////////////////////////////////////////////////////////////////
+////////////////////////// PRIVATE HELPER METHODS //////////////////////////
+////////////////////////////////////////////////////////////////////////////
 
   /// Finalization substep 1: Generate key pair
   Future<ContainerCredential> _generateKeyPair(ContainerCredential containerCredential) async {
@@ -208,8 +295,8 @@ class ContainerCredentialsNotifier extends _$ContainerCredentialsNotifier with R
     // sendingPublicKey,
     // sendingPublicKeyFailed,
     // sendingPublicKeyCompleted,
-    ContainerCredential? credential = containerCredential;
-    final ecPrivateClientKey = credential.ecPrivateClientKey!;
+    ContainerCredential? container = containerCredential;
+    final ecPrivateClientKey = container.ecPrivateClientKey!;
     //POST /container/register/finalize
     // Request: {
     // 'container_serial': <serial>,
@@ -217,32 +304,39 @@ class ContainerCredentialsNotifier extends _$ContainerCredentialsNotifier with R
     // 'signature': <sig( <nonce|timestamp|registration_url|serial[|passphrase]> )>,
     // }
 
-    final passphrase = credential.passphrase != null ? EnterPassphraseDialog.show(await globalContext) : null;
-    final message = '${credential.nonce}'
-        '|${credential.timestamp}'
-        '|${credential.finalizationUrl}'
-        '|${credential.serial}'
+    final passphrase = container.passphrase != null ? EnterPassphraseDialog.show(await globalContext) : null;
+    final message = '${container.nonce}'
+        '|${container.timestamp.toIso8601String().replaceFirst('Z', '+00:00')}'
+        '|${container.finalizationUrl}'
+        '|${container.serial}'
         '${passphrase != null ? '|$passphrase' : ''}';
+    print(message);
+    final signature = eccUtils.trySignWithPrivateKey(ecPrivateClientKey, message);
 
-    final signature = const EccUtils().trySignWithPrivateKey(ecPrivateClientKey, message);
     final body = {
-      'container_serial': credential.serial,
-      'public_client_key': credential.publicClientKey,
+      'container_serial': container.serial,
+      'public_client_key': container.publicClientKey,
       'signature': signature,
     };
     final Response response;
-    credential = await updateCredential(credential, (c) => c.copyWith(finalizationState: ContainerFinalizationState.sendingPublicKey));
-    if (credential == null) throw StateError('Credential was removed');
+    container = await updateCredential(container, (c) => c.copyWith(finalizationState: ContainerFinalizationState.sendingPublicKey));
+    if (container == null) throw StateError('Credential was removed');
     try {
-      response = await _ioClient.doPost(url: credential.finalizationUrl, body: body);
+      response = await _ioClient.doPost(url: container.finalizationUrl, body: body, sslVerify: false); //TODO: sslVerify
     } catch (e) {
       ref.read(statusMessageProvider.notifier).state = ('Failed to finalize container', e.toString());
-      await updateCredential(credential, (c) => c.copyWith(finalizationState: ContainerFinalizationState.sendingPublicKeyFailed));
+      await updateCredential(container, (c) => c.copyWith(finalizationState: ContainerFinalizationState.sendingPublicKeyFailed));
       rethrow;
     }
-    credential = await updateCredential(credential, (c) => c.copyWith(finalizationState: ContainerFinalizationState.sendingPublicKeyCompleted));
-    if (credential == null) throw StateError('Credential was removed');
-    return (credential, response);
+    if (response.statusCode != 200) {
+      container = await updateCredential(container, (c) => c.copyWith(finalizationState: ContainerFinalizationState.sendingPublicKeyFailed));
+      if (container == null) throw StateError('Credential was removed');
+      return (container, response);
+    }
+
+    container = await updateCredential(container, (c) => c.copyWith(finalizationState: ContainerFinalizationState.sendingPublicKeyCompleted));
+    if (container == null) throw StateError('Credential was removed');
+    return (container, response);
   }
 
   /// Finalization substep 3: Parse response
@@ -259,8 +353,12 @@ class ContainerCredentialsNotifier extends _$ContainerCredentialsNotifier with R
     if (credential == null) throw StateError('Credential was removed');
     try {
       responseJson = jsonDecode(responseBody);
-      validateMap(responseJson, {PUBLIC_SERVER_KEY: const TypeMatcher<String>()});
-      publicServerKey = const EccUtils().deserializeECPublicKey(responseJson[PUBLIC_SERVER_KEY]);
+      validateMap(responseJson, {'result': const TypeMatcher<Map<String, dynamic>>()});
+      final result = responseJson['result'];
+      validateMap(result, {'value': const TypeMatcher<Map<String, dynamic>>()});
+      final value = result['value'];
+      validateMap(value, {'public_server_key': const TypeMatcher<String>()});
+      publicServerKey = const EccUtils().deserializeECPublicKey(value['public_server_key']);
     } catch (e) {
       ref.read(statusMessageProvider.notifier).state = ('Failed to decode response body', e.toString());
       await updateCredential(credential, (c) => c.copyWith(finalizationState: ContainerFinalizationState.parsingResponseFailed));

@@ -41,7 +41,7 @@ part 'container_credentials.g.dart';
 // &hash_algorithm=SHA256
 // &passphrase=Enter%20your%20passphrase
 
-@freezed
+@Freezed(toStringOverride: false)
 class ContainerCredential with _$ContainerCredential {
   static const eccUtils = EccUtils();
   const ContainerCredential._();
@@ -139,12 +139,19 @@ class ContainerCredential with _$ContainerCredential {
 
   factory ContainerCredential.fromJson(Map<String, dynamic> json) => _$ContainerCredentialFromJson(json);
 
-  // // Sign with private client key
-  // String signMessage(String message) {
-  //   final signer = Signer(hashAlgorithm.name);
-  //   signer.init(true, PrivateKey(ecPrivateClientKey!.d, ecPrivateClientKey!.parameters));
-  //   return signer.signMessage(message);
-  // };
+  @override
+  String toString() => 'ContainerCredential('
+      'issuer: $issuer, '
+      'nonce: $nonce, '
+      'timestamp: $timestamp, '
+      'finalizationUrl: $finalizationUrl, '
+      'serial: $serial, '
+      'ecKeyAlgorithm: $ecKeyAlgorithm, '
+      'hashAlgorithm: $hashAlgorithm, '
+      'finalizationState: $finalizationState, '
+      'passphrase: $passphrase, '
+      'publicServerKey: $publicServerKey, '
+      'publicClientKey: $publicClientKey)';
 }
 
 enum ContainerFinalizationState {
@@ -299,10 +306,10 @@ extension EcKeyAlgorithmX on EcKeyAlgorithm {
         EcKeyAlgorithm.secp521r1 => 'secp521r1',
       };
 }
+//be99ff65b1c38ae8a7d6caf8799a0cce3749fe0e|2024-08-27 14:30:58.371312Z|http://192.168.0.230:5000/container/register/finalize|SMPH0000D49C
+//be99ff65b1c38ae8a7d6caf8799a0cce3749fe0e|2024-08-27T14:30:58.371312+00:00|http://192.168.0.230:5000/container/register/finalize|SMPH0000D49C
 
 class EccUtils {
-  final String algorithmName = 'EC';
-
   const EccUtils();
 
   String serializeECPublicKey(ECPublicKey publicKey) => CryptoUtils.encodeEcPublicKeyToPem(publicKey);
@@ -311,7 +318,7 @@ class EccUtils {
   ECPrivateKey deserializeECPrivateKey(String ecPrivateKey) => CryptoUtils.ecPrivateKeyFromPem(ecPrivateKey);
 
   String trySignWithPrivateKey(ECPrivateKey privateKey, String message) {
-    final ecSignature = CryptoUtils.ecSign(privateKey, Uint8List.fromList(message.codeUnits));
+    final ecSignature = CryptoUtils.ecSign(privateKey, Uint8List.fromList(message.codeUnits), algorithmName: 'SHA-256/ECDSA');
     String signatureBase64 = CryptoUtils.ecSignatureToBase64(ecSignature);
     return signatureBase64;
   }

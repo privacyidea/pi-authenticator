@@ -20,17 +20,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-import '../../../../model/tokens/token.dart';
-import 'token_action.dart';
+import '../views/main_view/main_view_widgets/token_widgets/slideable_action.dart';
 
-class TokenWidgetSlideable extends StatelessWidget {
-  final Token token;
-  final List<TokenAction> actions;
+class PiSlideable extends StatelessWidget {
+  final String groupTag;
+  final String identifier;
+  final List<PiSlideableAction> actions;
   final List<Widget> stack;
   final Widget tile;
 
-  const TokenWidgetSlideable({
-    required this.token,
+  const PiSlideable({
+    required this.groupTag,
+    required this.identifier,
     required this.actions,
     required this.stack,
     required this.tile,
@@ -47,8 +48,8 @@ class TokenWidgetSlideable extends StatelessWidget {
     );
     return actions.isNotEmpty
         ? Slidable(
-            key: ValueKey(token.id),
-            groupTag: 'myTag', // This is used to only let one be open at a time.
+            key: ValueKey('$groupTag-$identifier'),
+            groupTag: groupTag,
             endActionPane: ActionPane(
               motion: const DrawerMotion(),
               extentRatio: 1,

@@ -22,6 +22,7 @@ import 'package:flutter/material.dart';
 import 'token_widget_base.dart';
 
 abstract class TokenWidget extends StatelessWidget {
+  static const String groupTag = 'token-actions';
   const TokenWidget({super.key});
 
   @override

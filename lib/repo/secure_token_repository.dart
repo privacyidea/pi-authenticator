@@ -133,7 +133,7 @@ class SecureTokenRepository implements TokenRepository {
       }
     }
     if (failedTokens.isNotEmpty) {
-      Logger.warning(
+      Logger.error(
         'Could not save all tokens (${tokens.length - failedTokens.length}/${tokens.length}) to secure storage',
         stackTrace: StackTrace.current,
       );
@@ -148,7 +148,7 @@ class SecureTokenRepository implements TokenRepository {
     try {
       await _storage.write(key: _TOKEN_PREFIX + token.id, value: jsonEncode(token.toJson()));
     } catch (e) {
-      Logger.warning('Could not save token to secure storage', error: e, verbose: true);
+      Logger.warning('Could not save token to secure storage', error: e, name: 'secure_token_repository.dart#saveOrReplaceToken', verbose: true);
       return false;
     }
     return true;

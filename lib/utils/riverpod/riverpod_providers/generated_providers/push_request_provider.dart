@@ -390,7 +390,7 @@ class PushRequestNotifier extends _$PushRequestNotifier {
     try {
       Logger.info('Sending push request response.', name: 'token_widgets.dart#_handleReaction');
       response = await _ioClient.doPost(sslVerify: pushRequest.sslVerify, url: pushRequest.uri, body: body);
-    } catch (e) {
+    } catch (_) {
       Logger.warning('Sending push request response failed. Retrying.', name: 'token_widgets.dart#handleReaction');
       try {
         response = await _ioClient.doPost(sslVerify: pushRequest.sslVerify, url: pushRequest.uri, body: body);
