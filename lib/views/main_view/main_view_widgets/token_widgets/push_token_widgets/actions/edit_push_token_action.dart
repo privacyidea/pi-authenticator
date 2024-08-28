@@ -32,9 +32,9 @@ import '../../../../../../utils/riverpod/riverpod_providers/generated_providers/
 import '../../../../../../widgets/enable_text_edit_after_many_taps.dart';
 import '../../../../../../widgets/focused_item_as_overlay.dart';
 import '../../default_token_actions/default_edit_action_dialog.dart';
-import '../../token_action.dart';
+import '../../slideable_action.dart';
 
-class EditPushTokenAction extends TokenAction {
+class EditPushTokenAction extends PiSlideableAction {
   final PushToken token;
 
   const EditPushTokenAction({

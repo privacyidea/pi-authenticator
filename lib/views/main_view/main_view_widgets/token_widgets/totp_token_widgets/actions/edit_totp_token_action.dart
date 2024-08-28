@@ -30,9 +30,9 @@ import '../../../../../../utils/lock_auth.dart';
 import '../../../../../../utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
 import '../../../../../../widgets/focused_item_as_overlay.dart';
 import '../../default_token_actions/default_edit_action_dialog.dart';
-import '../../token_action.dart';
+import '../../slideable_action.dart';
 
-class EditTOTPTokenAction extends TokenAction {
+class EditTOTPTokenAction extends PiSlideableAction {
   final TOTPToken token;
 
   const EditTOTPTokenAction({

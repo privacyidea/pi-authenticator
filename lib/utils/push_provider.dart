@@ -353,7 +353,7 @@ class PushProvider {
       response = instance != null
           ? await instance!._ioClient.doGet(url: token.url!, parameters: parameters, sslVerify: token.sslVerify)
           : await const PrivacyideaIOClient().doGet(url: token.url!, parameters: parameters, sslVerify: token.sslVerify);
-    } catch (e) {
+    } catch (_) {
       if (isManually) {
         globalRef?.read(statusMessageProvider.notifier).state = (
           AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorWhenPullingChallenges(token.serial),

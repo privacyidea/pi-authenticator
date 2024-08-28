@@ -431,11 +431,6 @@ class _$ContainerCredentialUnfinalizedImpl
   final String $type;
 
   @override
-  String toString() {
-    return 'ContainerCredential.unfinalized(issuer: $issuer, nonce: $nonce, timestamp: $timestamp, finalizationUrl: $finalizationUrl, serial: $serial, ecKeyAlgorithm: $ecKeyAlgorithm, hashAlgorithm: $hashAlgorithm, finalizationState: $finalizationState, passphrase: $passphrase, publicServerKey: $publicServerKey, publicClientKey: $publicClientKey, privateClientKey: $privateClientKey)';
-  }
-
-  @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
@@ -884,11 +879,6 @@ class _$ContainerCredentialFinalizedImpl extends ContainerCredentialFinalized {
 
   @JsonKey(name: 'runtimeType')
   final String $type;
-
-  @override
-  String toString() {
-    return 'ContainerCredential.finalized(issuer: $issuer, nonce: $nonce, timestamp: $timestamp, finalizationUrl: $finalizationUrl, serial: $serial, ecKeyAlgorithm: $ecKeyAlgorithm, hashAlgorithm: $hashAlgorithm, finalizationState: $finalizationState, passphrase: $passphrase, publicServerKey: $publicServerKey, publicClientKey: $publicClientKey, privateClientKey: $privateClientKey)';
-  }
 
   @override
   bool operator ==(Object other) {

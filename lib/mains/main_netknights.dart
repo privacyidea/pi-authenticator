@@ -35,6 +35,7 @@ import '../utils/logger.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/app_constraints_notifier.dart';
 import '../views/add_token_manually_view/add_token_manually_view.dart';
+import '../views/container_view/container_view.dart';
 import '../views/feedback_view/feedback_view.dart';
 import '../views/import_tokens_view/import_tokens_view.dart';
 import '../views/license_view/license_view.dart';
@@ -117,6 +118,7 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
           SettingsView.routeName: (context) => const SettingsView(),
           SplashScreen.routeName: (context) => SplashScreen(customization: _customization, appConstraints: constraints),
           QRScannerView.routeName: (context) => const QRScannerView(),
+          ContainerView.routeName: (context) => const ContainerView(),
         },
       );
     });

@@ -35,12 +35,10 @@ class HOTPTokenWidget extends TokenWidget {
     super.key,
   });
   @override
-  TokenWidgetBase build(BuildContext context) {
-    return TokenWidgetBase(
-      token: token,
-      tile: HOTPTokenWidgetTile(token, key: ValueKey(token.id)),
-      dragIcon: Icons.replay,
-      editAction: EditHOTPTokenAction(token: token),
-    );
-  }
+  TokenWidgetBase build(BuildContext context) => TokenWidgetBase(
+        token: token,
+        tile: HOTPTokenWidgetTile(token, key: ValueKey(token.id)),
+        dragIcon: Icons.replay,
+        editAction: EditHOTPTokenAction(token: token),
+      );
 }

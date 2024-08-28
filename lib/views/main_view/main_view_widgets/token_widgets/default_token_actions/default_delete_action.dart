@@ -28,9 +28,9 @@ import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../loading_indicator.dart';
-import '../token_action.dart';
+import '../slideable_action.dart';
 
-class DefaultDeleteAction extends TokenAction {
+class DefaultDeleteAction extends PiSlideableAction {
   final Token token;
 
   const DefaultDeleteAction({super.key, required this.token});

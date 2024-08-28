@@ -31,15 +31,16 @@ import '../../../../utils/utils.dart';
 import 'default_token_actions/default_delete_action.dart';
 import 'default_token_actions/default_edit_action.dart';
 import 'default_token_actions/default_lock_action.dart';
-import 'token_action.dart';
-import 'token_widget_slideable.dart';
+import 'slideable_action.dart';
+import '../../../../widgets/pi_slideable.dart';
+import 'token_widget.dart';
 
 class TokenWidgetBase extends ConsumerWidget {
   final Widget tile;
   final Token token;
-  final TokenAction? deleteAction;
-  final TokenAction? editAction;
-  final TokenAction? lockAction;
+  final PiSlideableAction? deleteAction;
+  final PiSlideableAction? editAction;
+  final PiSlideableAction? lockAction;
   final List<Widget> stack;
   final IconData dragIcon;
 
@@ -57,7 +58,7 @@ class TokenWidgetBase extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final SortableMixin? draggingSortable = ref.watch(draggingSortableProvider);
-    final List<TokenAction> actions = [
+    final List<PiSlideableAction> actions = [
       deleteAction ?? DefaultDeleteAction(token: token, key: Key('${token.id}deleteAction')),
       editAction ?? DefaultEditAction(token: token, key: Key('${token.id}editAction')),
     ];
@@ -103,8 +104,9 @@ class TokenWidgetBase extends ConsumerWidget {
             ),
             data: token,
             child: ClipRRect(
-              child: TokenWidgetSlideable(
-                token: token,
+              child: PiSlideable(
+                groupTag: TokenWidget.groupTag,
+                identifier: token.id,
                 actions: actions,
                 stack: stack,
                 tile: tile,
@@ -114,8 +116,9 @@ class TokenWidgetBase extends ConsumerWidget {
         : draggingSortable == token
             ? const SizedBox()
             : ClipRRect(
-                child: TokenWidgetSlideable(
-                  token: token,
+                child: PiSlideable(
+                  groupTag: TokenWidget.groupTag,
+                  identifier: token.id,
                   actions: actions,
                   stack: stack,
                   tile: tile,
