@@ -17,31 +17,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
-import '../../mains/main_netknights.dart';
 import '../../model/enums/algorithms.dart';
 import '../../model/enums/encodings.dart';
-import '../../model/enums/token_origin_source_type.dart';
 import '../../model/enums/token_types.dart';
-import '../../model/extensions/enums/encodings_extension.dart';
-import '../../model/extensions/enums/token_origin_source_type.dart';
-import '../../model/tokens/token.dart';
-import '../../utils/identifiers.dart';
-import '../../utils/logger.dart';
-import '../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
-import 'add_token_manually_view_widgets/labeled_dropdown_button.dart';
-import 'add_token_manually_view_widgets/link_input_view.dart';
+import 'add_token_manually_view_widgets/add_tokens_manually/add_daypassword_manually.dart';
+import 'add_token_manually_view_widgets/add_tokens_manually/add_hotp_manually.dart';
+import 'add_token_manually_view_widgets/add_tokens_manually/add_steam_manually.dart';
+import 'add_token_manually_view_widgets/add_tokens_manually/add_token_manually_interface.dart';
+import 'add_token_manually_view_widgets/add_tokens_manually/add_totp_manually.dart';
 
 class AddTokenManuallyView extends ConsumerStatefulWidget {
   static const routeName = '/add_token_manually';
-  static final List<int> allowedDigits = [6, 8];
-  static final List<int> allowedPeriodsTOTP = [30, 60];
-  static final List<int> allowedPeriodsDayPassword = List.generate(24, (i) => 24 - i, growable: false);
 
   const AddTokenManuallyView({super.key});
 
@@ -50,14 +41,7 @@ class AddTokenManuallyView extends ConsumerStatefulWidget {
 }
 
 class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
-  final ValueNotifier<Algorithms> _algorithmNotifier = ValueNotifier(Algorithms.SHA512);
-  final ValueNotifier<Encodings> _encodingNotifier = ValueNotifier(Encodings.none);
-  final ValueNotifier<TokenTypes> _typeNotifier = ValueNotifier(TokenTypes.HOTP);
-  final ValueNotifier<int> _digitsNotifier = ValueNotifier(AddTokenManuallyView.allowedDigits[0]);
-  final ValueNotifier<int> _periodNotifier = ValueNotifier(AddTokenManuallyView.allowedPeriodsTOTP[0]);
-  final ValueNotifier<int> _periodDayPasswordNotifier = ValueNotifier(AddTokenManuallyView.allowedPeriodsDayPassword[0]);
-  final TextEditingController _labelController = TextEditingController();
-  final TextEditingController _secretController = TextEditingController();
+  late ValueNotifier<TokenTypes> selectedTypeNotifier;
 
   final PageController pageController = PageController();
 
@@ -65,23 +49,95 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
   final _labelInputKey = GlobalKey<FormFieldState>();
   final _secretInputKey = GlobalKey<FormFieldState>();
 
-  // used to handle focusing certain input fields
-  final FocusNode _labelFieldFocus = FocusNode();
-  final FocusNode _secretFieldFocus = FocusNode();
-
-  AutovalidateMode _autoValidateLabel = AutovalidateMode.disabled;
-  AutovalidateMode _autoValidateSecret = AutovalidateMode.disabled;
+  late ValueNotifier<bool> autoValidateLabel;
+  late ValueNotifier<bool> autoValidateSecret;
+  late ValueNotifier<Encodings> encodingNofitier;
+  late ValueNotifier<Algorithms> algorithmsNotifier;
+  late ValueNotifier<int?> digitsNotifier;
+  late ValueNotifier<int?> counterNotifier;
+  late ValueNotifier<Duration?> periodNotifierTOTP;
+  late ValueNotifier<Duration?> periodNotifierDayPassword;
 
   @override
   void initState() {
     super.initState();
-    _typeNotifier.addListener(() {
-      setState(() {});
-    });
+    selectedTypeNotifier = ValueNotifier(TokenTypes.HOTP);
+    selectedTypeNotifier.addListener(() => setState(() {}));
+    labelController = TextEditingController();
+    secretController = TextEditingController();
+    autoValidateLabel = ValueNotifier(false);
+    autoValidateSecret = ValueNotifier(false);
+    encodingNofitier = ValueNotifier(Encodings.base32);
+    algorithmsNotifier = ValueNotifier(Algorithms.SHA1);
+    digitsNotifier = ValueNotifier(null);
+    counterNotifier = ValueNotifier(null);
+    periodNotifierTOTP = ValueNotifier(null);
+    periodNotifierDayPassword = ValueNotifier(null);
+  }
+
+  @override
+  void dispose() {
+    selectedTypeNotifier.dispose();
+    labelController.dispose();
+    secretController.dispose();
+    autoValidateLabel.dispose();
+    autoValidateSecret.dispose();
+    encodingNofitier.dispose();
+    algorithmsNotifier.dispose();
+    digitsNotifier.dispose();
+    counterNotifier.dispose();
+    periodNotifierTOTP.dispose();
+    periodNotifierDayPassword.dispose();
+
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final AddTokenManually column = switch (selectedTypeNotifier.value) {
+      const (TokenTypes.HOTP) => AddHotpManually(
+          labelController: labelController,
+          secretController: secretController,
+          autoValidateLabel: autoValidateLabel,
+          autoValidateSecret: autoValidateSecret,
+          encodingNofitier: encodingNofitier,
+          algorithmsNotifier: algorithmsNotifier,
+          digitsNotifier: digitsNotifier,
+          counterNotifier: counterNotifier,
+          typeNotifier: selectedTypeNotifier,
+        ),
+      TokenTypes.TOTP => AddTotpManually(
+          labelController: labelController,
+          secretController: secretController,
+          autoValidateLabel: autoValidateLabel,
+          autoValidateSecret: autoValidateSecret,
+          encodingNofitier: encodingNofitier,
+          algorithmsNotifier: algorithmsNotifier,
+          digitsNotifier: digitsNotifier,
+          periodNotifier: periodNotifierTOTP,
+          typeNotifier: selectedTypeNotifier,
+        ),
+      TokenTypes.DAYPASSWORD => AddDayPasswordManually(
+          labelController: labelController,
+          secretController: secretController,
+          autoValidateLabel: autoValidateLabel,
+          autoValidateSecret: autoValidateSecret,
+          encodingNofitier: encodingNofitier,
+          algorithmsNotifier: algorithmsNotifier,
+          digitsNotifier: digitsNotifier,
+          periodNotifier: periodNotifierDayPassword,
+          typeNotifier: selectedTypeNotifier,
+        ),
+      TokenTypes.STEAM => AddSteamManually(
+          labelController: labelController,
+          secretController: secretController,
+          autoValidateLabel: autoValidateLabel,
+          autoValidateSecret: autoValidateSecret,
+          typeNotifier: selectedTypeNotifier,
+        ),
+      TokenTypes.PIPUSH => throw UnimplementedError(),
+    };
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -232,54 +288,5 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
         ],
       ),
     );
-  }
-
-  Token? _buildTokenIfValid({required BuildContext context}) {
-    if (_inputIsValid(context) == false) return null;
-    Logger.info('Input is valid, building token');
-
-    final uriMap = <String, dynamic>{
-      URI_TYPE: _typeNotifier.value.name,
-      URI_LABEL: _labelController.text,
-      URI_ISSUER: '',
-      URI_ALGORITHM: _algorithmNotifier.value.name,
-      URI_DIGITS: _digitsNotifier.value,
-      URI_SECRET: _encodingNotifier.value.decode(_secretController.text),
-      URI_COUNTER: 0,
-      URI_PERIOD: _typeNotifier.value == TokenTypes.DAYPASSWORD ? _periodDayPasswordNotifier.value * 60 * 60 : _periodNotifier.value,
-    };
-    uriMap.addAll({
-      URI_ORIGIN: TokenOriginSourceType.manually.toTokenOrigin(
-        data: jsonEncode(uriMap),
-        originName: PrivacyIDEAAuthenticator.currentCustomization?.appName,
-        isPrivacyIdeaToken: false,
-      ),
-    });
-    return Token.fromUriMap(uriMap);
-  }
-
-  /// Validates the inputs of the label and secret.
-  bool _inputIsValid(BuildContext context) {
-    if (_labelInputKey.currentState!.validate()) {
-      _labelInputKey.currentState!.save();
-    } else {
-      setState(() {
-        _autoValidateLabel = AutovalidateMode.always;
-      });
-      FocusScope.of(context).requestFocus(_labelFieldFocus);
-      return false;
-    }
-
-    if (_secretInputKey.currentState!.validate()) {
-      _secretInputKey.currentState!.save();
-    } else {
-      setState(() {
-        _autoValidateSecret = AutovalidateMode.always;
-      });
-      FocusScope.of(context).requestFocus(_secretFieldFocus);
-      return false;
-    }
-
-    return true;
   }
 }

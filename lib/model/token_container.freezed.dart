@@ -30,8 +30,7 @@ TokenContainer _$TokenContainerFromJson(Map<String, dynamic> json) {
       return TokenContainerError.fromJson(json);
 
     default:
-      throw CheckedFromJsonException(json, 'runtimeType', 'TokenContainer',
-          'Invalid union type "${json['runtimeType']}"!');
+      throw CheckedFromJsonException(json, 'runtimeType', 'TokenContainer', 'Invalid union type "${json['runtimeType']}"!');
   }
 }
 
@@ -42,175 +41,71 @@ mixin _$TokenContainer {
   DateTime? get lastSyncAt => throw _privateConstructorUsedError;
   String get serial => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
-  List<TokenTemplate> get syncedTokenTemplates =>
-      throw _privateConstructorUsedError;
-  List<TokenTemplate> get localTokenTemplates =>
-      throw _privateConstructorUsedError;
+  List<TokenTemplate> get syncedTokenTemplates => throw _privateConstructorUsedError;
+  List<TokenTemplate> get localTokenTemplates => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    required TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)
         uninitialized,
-    required TResult Function(
-            String serverName,
-            DateTime lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    required TResult Function(String serverName, DateTime lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)
         synced,
-    required TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            DateTime lastModifiedAt)
+    required TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, DateTime lastModifiedAt)
         modified,
-    required TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String? message)
+    required TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String? message)
         unsynced,
-    required TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String message)
+    required TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String message)
         notFound,
-    required TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            dynamic error)
+    required TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, dynamic error)
         error,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    TResult? Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)?
         uninitialized,
-    TResult? Function(
-            String serverName,
-            DateTime lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    TResult? Function(String serverName, DateTime lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)?
         synced,
-    TResult? Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            DateTime lastModifiedAt)?
+    TResult? Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, DateTime lastModifiedAt)?
         modified,
-    TResult? Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String? message)?
+    TResult? Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String? message)?
         unsynced,
-    TResult? Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String message)?
+    TResult? Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String message)?
         notFound,
-    TResult? Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            dynamic error)?
+    TResult? Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, dynamic error)?
         error,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)?
         uninitialized,
-    TResult Function(
-            String serverName,
-            DateTime lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    TResult Function(String serverName, DateTime lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)?
         synced,
-    TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            DateTime lastModifiedAt)?
+    TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, DateTime lastModifiedAt)?
         modified,
-    TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String? message)?
+    TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String? message)?
         unsynced,
-    TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String message)?
+    TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String message)?
         notFound,
-    TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            dynamic error)?
+    TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, dynamic error)?
         error,
     required TResult orElse(),
   }) =>
@@ -253,15 +148,12 @@ mixin _$TokenContainer {
   /// Create a copy of TokenContainer
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $TokenContainerCopyWith<TokenContainer> get copyWith =>
-      throw _privateConstructorUsedError;
+  $TokenContainerCopyWith<TokenContainer> get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $TokenContainerCopyWith<$Res> {
-  factory $TokenContainerCopyWith(
-          TokenContainer value, $Res Function(TokenContainer) then) =
-      _$TokenContainerCopyWithImpl<$Res, TokenContainer>;
+  factory $TokenContainerCopyWith(TokenContainer value, $Res Function(TokenContainer) then) = _$TokenContainerCopyWithImpl<$Res, TokenContainer>;
   @useResult
   $Res call(
       {String serverName,
@@ -273,8 +165,7 @@ abstract class $TokenContainerCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$TokenContainerCopyWithImpl<$Res, $Val extends TokenContainer>
-    implements $TokenContainerCopyWith<$Res> {
+class _$TokenContainerCopyWithImpl<$Res, $Val extends TokenContainer> implements $TokenContainerCopyWith<$Res> {
   _$TokenContainerCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
@@ -324,11 +215,8 @@ class _$TokenContainerCopyWithImpl<$Res, $Val extends TokenContainer>
 }
 
 /// @nodoc
-abstract class _$$TokenContainerUninitializedImplCopyWith<$Res>
-    implements $TokenContainerCopyWith<$Res> {
-  factory _$$TokenContainerUninitializedImplCopyWith(
-          _$TokenContainerUninitializedImpl value,
-          $Res Function(_$TokenContainerUninitializedImpl) then) =
+abstract class _$$TokenContainerUninitializedImplCopyWith<$Res> implements $TokenContainerCopyWith<$Res> {
+  factory _$$TokenContainerUninitializedImplCopyWith(_$TokenContainerUninitializedImpl value, $Res Function(_$TokenContainerUninitializedImpl) then) =
       __$$TokenContainerUninitializedImplCopyWithImpl<$Res>;
   @override
   @useResult
@@ -342,13 +230,9 @@ abstract class _$$TokenContainerUninitializedImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$TokenContainerUninitializedImplCopyWithImpl<$Res>
-    extends _$TokenContainerCopyWithImpl<$Res,
-        _$TokenContainerUninitializedImpl>
+class __$$TokenContainerUninitializedImplCopyWithImpl<$Res> extends _$TokenContainerCopyWithImpl<$Res, _$TokenContainerUninitializedImpl>
     implements _$$TokenContainerUninitializedImplCopyWith<$Res> {
-  __$$TokenContainerUninitializedImplCopyWithImpl(
-      _$TokenContainerUninitializedImpl _value,
-      $Res Function(_$TokenContainerUninitializedImpl) _then)
+  __$$TokenContainerUninitializedImplCopyWithImpl(_$TokenContainerUninitializedImpl _value, $Res Function(_$TokenContainerUninitializedImpl) _then)
       : super(_value, _then);
 
   /// Create a copy of TokenContainer
@@ -394,8 +278,7 @@ class __$$TokenContainerUninitializedImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$TokenContainerUninitializedImpl extends TokenContainerUninitialized
-    with DiagnosticableTreeMixin {
+class _$TokenContainerUninitializedImpl extends TokenContainerUninitialized with DiagnosticableTreeMixin {
   const _$TokenContainerUninitializedImpl(
       {this.serverName = 'PrivacyIDEA',
       this.lastSyncAt,
@@ -409,9 +292,7 @@ class _$TokenContainerUninitializedImpl extends TokenContainerUninitialized
         $type = $type ?? 'uninitialized',
         super._();
 
-  factory _$TokenContainerUninitializedImpl.fromJson(
-          Map<String, dynamic> json) =>
-      _$$TokenContainerUninitializedImplFromJson(json);
+  factory _$TokenContainerUninitializedImpl.fromJson(Map<String, dynamic> json) => _$$TokenContainerUninitializedImplFromJson(json);
 
 // Base fields
   @override
@@ -429,8 +310,7 @@ class _$TokenContainerUninitializedImpl extends TokenContainerUninitialized
   @override
   @JsonKey()
   List<TokenTemplate> get syncedTokenTemplates {
-    if (_syncedTokenTemplates is EqualUnmodifiableListView)
-      return _syncedTokenTemplates;
+    if (_syncedTokenTemplates is EqualUnmodifiableListView) return _syncedTokenTemplates;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_syncedTokenTemplates);
   }
@@ -439,8 +319,7 @@ class _$TokenContainerUninitializedImpl extends TokenContainerUninitialized
   @override
   @JsonKey()
   List<TokenTemplate> get localTokenTemplates {
-    if (_localTokenTemplates is EqualUnmodifiableListView)
-      return _localTokenTemplates;
+    if (_localTokenTemplates is EqualUnmodifiableListView) return _localTokenTemplates;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_localTokenTemplates);
   }
@@ -471,28 +350,17 @@ class _$TokenContainerUninitializedImpl extends TokenContainerUninitialized
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$TokenContainerUninitializedImpl &&
-            (identical(other.serverName, serverName) ||
-                other.serverName == serverName) &&
-            (identical(other.lastSyncAt, lastSyncAt) ||
-                other.lastSyncAt == lastSyncAt) &&
+            (identical(other.serverName, serverName) || other.serverName == serverName) &&
+            (identical(other.lastSyncAt, lastSyncAt) || other.lastSyncAt == lastSyncAt) &&
             (identical(other.serial, serial) || other.serial == serial) &&
-            (identical(other.description, description) ||
-                other.description == description) &&
-            const DeepCollectionEquality()
-                .equals(other._syncedTokenTemplates, _syncedTokenTemplates) &&
-            const DeepCollectionEquality()
-                .equals(other._localTokenTemplates, _localTokenTemplates));
+            (identical(other.description, description) || other.description == description) &&
+            const DeepCollectionEquality().equals(other._syncedTokenTemplates, _syncedTokenTemplates) &&
+            const DeepCollectionEquality().equals(other._localTokenTemplates, _localTokenTemplates));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      serverName,
-      lastSyncAt,
-      serial,
-      description,
-      const DeepCollectionEquality().hash(_syncedTokenTemplates),
+  int get hashCode => Object.hash(runtimeType, serverName, lastSyncAt, serial, description, const DeepCollectionEquality().hash(_syncedTokenTemplates),
       const DeepCollectionEquality().hash(_localTokenTemplates));
 
   /// Create a copy of TokenContainer
@@ -500,190 +368,84 @@ class _$TokenContainerUninitializedImpl extends TokenContainerUninitialized
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$TokenContainerUninitializedImplCopyWith<_$TokenContainerUninitializedImpl>
-      get copyWith => __$$TokenContainerUninitializedImplCopyWithImpl<
-          _$TokenContainerUninitializedImpl>(this, _$identity);
+  _$$TokenContainerUninitializedImplCopyWith<_$TokenContainerUninitializedImpl> get copyWith =>
+      __$$TokenContainerUninitializedImplCopyWithImpl<_$TokenContainerUninitializedImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    required TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)
         uninitialized,
-    required TResult Function(
-            String serverName,
-            DateTime lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    required TResult Function(String serverName, DateTime lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)
         synced,
-    required TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            DateTime lastModifiedAt)
+    required TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, DateTime lastModifiedAt)
         modified,
-    required TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String? message)
+    required TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String? message)
         unsynced,
-    required TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String message)
+    required TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String message)
         notFound,
-    required TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            dynamic error)
+    required TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, dynamic error)
         error,
   }) {
-    return uninitialized(serverName, lastSyncAt, serial, description,
-        syncedTokenTemplates, localTokenTemplates);
+    return uninitialized(serverName, lastSyncAt, serial, description, syncedTokenTemplates, localTokenTemplates);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    TResult? Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)?
         uninitialized,
-    TResult? Function(
-            String serverName,
-            DateTime lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    TResult? Function(String serverName, DateTime lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)?
         synced,
-    TResult? Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            DateTime lastModifiedAt)?
+    TResult? Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, DateTime lastModifiedAt)?
         modified,
-    TResult? Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String? message)?
+    TResult? Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String? message)?
         unsynced,
-    TResult? Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String message)?
+    TResult? Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String message)?
         notFound,
-    TResult? Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            dynamic error)?
+    TResult? Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, dynamic error)?
         error,
   }) {
-    return uninitialized?.call(serverName, lastSyncAt, serial, description,
-        syncedTokenTemplates, localTokenTemplates);
+    return uninitialized?.call(serverName, lastSyncAt, serial, description, syncedTokenTemplates, localTokenTemplates);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)?
         uninitialized,
-    TResult Function(
-            String serverName,
-            DateTime lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    TResult Function(String serverName, DateTime lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)?
         synced,
-    TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            DateTime lastModifiedAt)?
+    TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, DateTime lastModifiedAt)?
         modified,
-    TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String? message)?
+    TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String? message)?
         unsynced,
-    TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String message)?
+    TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String message)?
         notFound,
-    TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            dynamic error)?
+    TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, dynamic error)?
         error,
     required TResult orElse(),
   }) {
     if (uninitialized != null) {
-      return uninitialized(serverName, lastSyncAt, serial, description,
-          syncedTokenTemplates, localTokenTemplates);
+      return uninitialized(serverName, lastSyncAt, serial, description, syncedTokenTemplates, localTokenTemplates);
     }
     return orElse();
   }
@@ -741,17 +503,15 @@ class _$TokenContainerUninitializedImpl extends TokenContainerUninitialized
 
 abstract class TokenContainerUninitialized extends TokenContainer {
   const factory TokenContainerUninitialized(
-          {final String serverName,
-          final DateTime? lastSyncAt,
-          final String serial,
-          final String description,
-          final List<TokenTemplate> syncedTokenTemplates,
-          final List<TokenTemplate> localTokenTemplates}) =
-      _$TokenContainerUninitializedImpl;
+      {final String serverName,
+      final DateTime? lastSyncAt,
+      final String serial,
+      final String description,
+      final List<TokenTemplate> syncedTokenTemplates,
+      final List<TokenTemplate> localTokenTemplates}) = _$TokenContainerUninitializedImpl;
   const TokenContainerUninitialized._() : super._();
 
-  factory TokenContainerUninitialized.fromJson(Map<String, dynamic> json) =
-      _$TokenContainerUninitializedImpl.fromJson;
+  factory TokenContainerUninitialized.fromJson(Map<String, dynamic> json) = _$TokenContainerUninitializedImpl.fromJson;
 
 // Base fields
   @override
@@ -771,15 +531,12 @@ abstract class TokenContainerUninitialized extends TokenContainer {
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$TokenContainerUninitializedImplCopyWith<_$TokenContainerUninitializedImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  _$$TokenContainerUninitializedImplCopyWith<_$TokenContainerUninitializedImpl> get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$TokenContainerSyncedImplCopyWith<$Res>
-    implements $TokenContainerCopyWith<$Res> {
-  factory _$$TokenContainerSyncedImplCopyWith(_$TokenContainerSyncedImpl value,
-          $Res Function(_$TokenContainerSyncedImpl) then) =
+abstract class _$$TokenContainerSyncedImplCopyWith<$Res> implements $TokenContainerCopyWith<$Res> {
+  factory _$$TokenContainerSyncedImplCopyWith(_$TokenContainerSyncedImpl value, $Res Function(_$TokenContainerSyncedImpl) then) =
       __$$TokenContainerSyncedImplCopyWithImpl<$Res>;
   @override
   @useResult
@@ -793,12 +550,9 @@ abstract class _$$TokenContainerSyncedImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$TokenContainerSyncedImplCopyWithImpl<$Res>
-    extends _$TokenContainerCopyWithImpl<$Res, _$TokenContainerSyncedImpl>
+class __$$TokenContainerSyncedImplCopyWithImpl<$Res> extends _$TokenContainerCopyWithImpl<$Res, _$TokenContainerSyncedImpl>
     implements _$$TokenContainerSyncedImplCopyWith<$Res> {
-  __$$TokenContainerSyncedImplCopyWithImpl(_$TokenContainerSyncedImpl _value,
-      $Res Function(_$TokenContainerSyncedImpl) _then)
-      : super(_value, _then);
+  __$$TokenContainerSyncedImplCopyWithImpl(_$TokenContainerSyncedImpl _value, $Res Function(_$TokenContainerSyncedImpl) _then) : super(_value, _then);
 
   /// Create a copy of TokenContainer
   /// with the given fields replaced by the non-null parameter values.
@@ -843,8 +597,7 @@ class __$$TokenContainerSyncedImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$TokenContainerSyncedImpl extends TokenContainerSynced
-    with DiagnosticableTreeMixin {
+class _$TokenContainerSyncedImpl extends TokenContainerSynced with DiagnosticableTreeMixin {
   const _$TokenContainerSyncedImpl(
       {this.serverName = 'PrivacyIDEA',
       required this.lastSyncAt,
@@ -858,8 +611,7 @@ class _$TokenContainerSyncedImpl extends TokenContainerSynced
         $type = $type ?? 'synced',
         super._();
 
-  factory _$TokenContainerSyncedImpl.fromJson(Map<String, dynamic> json) =>
-      _$$TokenContainerSyncedImplFromJson(json);
+  factory _$TokenContainerSyncedImpl.fromJson(Map<String, dynamic> json) => _$$TokenContainerSyncedImplFromJson(json);
 
 // Base fields
   @override
@@ -874,8 +626,7 @@ class _$TokenContainerSyncedImpl extends TokenContainerSynced
   final List<TokenTemplate> _syncedTokenTemplates;
   @override
   List<TokenTemplate> get syncedTokenTemplates {
-    if (_syncedTokenTemplates is EqualUnmodifiableListView)
-      return _syncedTokenTemplates;
+    if (_syncedTokenTemplates is EqualUnmodifiableListView) return _syncedTokenTemplates;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_syncedTokenTemplates);
   }
@@ -883,8 +634,7 @@ class _$TokenContainerSyncedImpl extends TokenContainerSynced
   final List<TokenTemplate> _localTokenTemplates;
   @override
   List<TokenTemplate> get localTokenTemplates {
-    if (_localTokenTemplates is EqualUnmodifiableListView)
-      return _localTokenTemplates;
+    if (_localTokenTemplates is EqualUnmodifiableListView) return _localTokenTemplates;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_localTokenTemplates);
   }
@@ -915,28 +665,17 @@ class _$TokenContainerSyncedImpl extends TokenContainerSynced
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$TokenContainerSyncedImpl &&
-            (identical(other.serverName, serverName) ||
-                other.serverName == serverName) &&
-            (identical(other.lastSyncAt, lastSyncAt) ||
-                other.lastSyncAt == lastSyncAt) &&
+            (identical(other.serverName, serverName) || other.serverName == serverName) &&
+            (identical(other.lastSyncAt, lastSyncAt) || other.lastSyncAt == lastSyncAt) &&
             (identical(other.serial, serial) || other.serial == serial) &&
-            (identical(other.description, description) ||
-                other.description == description) &&
-            const DeepCollectionEquality()
-                .equals(other._syncedTokenTemplates, _syncedTokenTemplates) &&
-            const DeepCollectionEquality()
-                .equals(other._localTokenTemplates, _localTokenTemplates));
+            (identical(other.description, description) || other.description == description) &&
+            const DeepCollectionEquality().equals(other._syncedTokenTemplates, _syncedTokenTemplates) &&
+            const DeepCollectionEquality().equals(other._localTokenTemplates, _localTokenTemplates));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      serverName,
-      lastSyncAt,
-      serial,
-      description,
-      const DeepCollectionEquality().hash(_syncedTokenTemplates),
+  int get hashCode => Object.hash(runtimeType, serverName, lastSyncAt, serial, description, const DeepCollectionEquality().hash(_syncedTokenTemplates),
       const DeepCollectionEquality().hash(_localTokenTemplates));
 
   /// Create a copy of TokenContainer
@@ -944,191 +683,84 @@ class _$TokenContainerSyncedImpl extends TokenContainerSynced
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$TokenContainerSyncedImplCopyWith<_$TokenContainerSyncedImpl>
-      get copyWith =>
-          __$$TokenContainerSyncedImplCopyWithImpl<_$TokenContainerSyncedImpl>(
-              this, _$identity);
+  _$$TokenContainerSyncedImplCopyWith<_$TokenContainerSyncedImpl> get copyWith =>
+      __$$TokenContainerSyncedImplCopyWithImpl<_$TokenContainerSyncedImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    required TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)
         uninitialized,
-    required TResult Function(
-            String serverName,
-            DateTime lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    required TResult Function(String serverName, DateTime lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)
         synced,
-    required TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            DateTime lastModifiedAt)
+    required TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, DateTime lastModifiedAt)
         modified,
-    required TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String? message)
+    required TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String? message)
         unsynced,
-    required TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String message)
+    required TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String message)
         notFound,
-    required TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            dynamic error)
+    required TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, dynamic error)
         error,
   }) {
-    return synced(serverName, lastSyncAt, serial, description,
-        syncedTokenTemplates, localTokenTemplates);
+    return synced(serverName, lastSyncAt, serial, description, syncedTokenTemplates, localTokenTemplates);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    TResult? Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)?
         uninitialized,
-    TResult? Function(
-            String serverName,
-            DateTime lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    TResult? Function(String serverName, DateTime lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)?
         synced,
-    TResult? Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            DateTime lastModifiedAt)?
+    TResult? Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, DateTime lastModifiedAt)?
         modified,
-    TResult? Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String? message)?
+    TResult? Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String? message)?
         unsynced,
-    TResult? Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String message)?
+    TResult? Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String message)?
         notFound,
-    TResult? Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            dynamic error)?
+    TResult? Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, dynamic error)?
         error,
   }) {
-    return synced?.call(serverName, lastSyncAt, serial, description,
-        syncedTokenTemplates, localTokenTemplates);
+    return synced?.call(serverName, lastSyncAt, serial, description, syncedTokenTemplates, localTokenTemplates);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)?
         uninitialized,
-    TResult Function(
-            String serverName,
-            DateTime lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    TResult Function(String serverName, DateTime lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)?
         synced,
-    TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            DateTime lastModifiedAt)?
+    TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, DateTime lastModifiedAt)?
         modified,
-    TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String? message)?
+    TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String? message)?
         unsynced,
-    TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String message)?
+    TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String message)?
         notFound,
-    TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            dynamic error)?
+    TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, dynamic error)?
         error,
     required TResult orElse(),
   }) {
     if (synced != null) {
-      return synced(serverName, lastSyncAt, serial, description,
-          syncedTokenTemplates, localTokenTemplates);
+      return synced(serverName, lastSyncAt, serial, description, syncedTokenTemplates, localTokenTemplates);
     }
     return orElse();
   }
@@ -1186,17 +818,15 @@ class _$TokenContainerSyncedImpl extends TokenContainerSynced
 
 abstract class TokenContainerSynced extends TokenContainer {
   const factory TokenContainerSynced(
-          {final String serverName,
-          required final DateTime lastSyncAt,
-          required final String serial,
-          required final String description,
-          required final List<TokenTemplate> syncedTokenTemplates,
-          required final List<TokenTemplate> localTokenTemplates}) =
-      _$TokenContainerSyncedImpl;
+      {final String serverName,
+      required final DateTime lastSyncAt,
+      required final String serial,
+      required final String description,
+      required final List<TokenTemplate> syncedTokenTemplates,
+      required final List<TokenTemplate> localTokenTemplates}) = _$TokenContainerSyncedImpl;
   const TokenContainerSynced._() : super._();
 
-  factory TokenContainerSynced.fromJson(Map<String, dynamic> json) =
-      _$TokenContainerSyncedImpl.fromJson;
+  factory TokenContainerSynced.fromJson(Map<String, dynamic> json) = _$TokenContainerSyncedImpl.fromJson;
 
 // Base fields
   @override
@@ -1216,16 +846,12 @@ abstract class TokenContainerSynced extends TokenContainer {
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$TokenContainerSyncedImplCopyWith<_$TokenContainerSyncedImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  _$$TokenContainerSyncedImplCopyWith<_$TokenContainerSyncedImpl> get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$TokenContainerModifiedImplCopyWith<$Res>
-    implements $TokenContainerCopyWith<$Res> {
-  factory _$$TokenContainerModifiedImplCopyWith(
-          _$TokenContainerModifiedImpl value,
-          $Res Function(_$TokenContainerModifiedImpl) then) =
+abstract class _$$TokenContainerModifiedImplCopyWith<$Res> implements $TokenContainerCopyWith<$Res> {
+  factory _$$TokenContainerModifiedImplCopyWith(_$TokenContainerModifiedImpl value, $Res Function(_$TokenContainerModifiedImpl) then) =
       __$$TokenContainerModifiedImplCopyWithImpl<$Res>;
   @override
   @useResult
@@ -1240,13 +866,9 @@ abstract class _$$TokenContainerModifiedImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$TokenContainerModifiedImplCopyWithImpl<$Res>
-    extends _$TokenContainerCopyWithImpl<$Res, _$TokenContainerModifiedImpl>
+class __$$TokenContainerModifiedImplCopyWithImpl<$Res> extends _$TokenContainerCopyWithImpl<$Res, _$TokenContainerModifiedImpl>
     implements _$$TokenContainerModifiedImplCopyWith<$Res> {
-  __$$TokenContainerModifiedImplCopyWithImpl(
-      _$TokenContainerModifiedImpl _value,
-      $Res Function(_$TokenContainerModifiedImpl) _then)
-      : super(_value, _then);
+  __$$TokenContainerModifiedImplCopyWithImpl(_$TokenContainerModifiedImpl _value, $Res Function(_$TokenContainerModifiedImpl) _then) : super(_value, _then);
 
   /// Create a copy of TokenContainer
   /// with the given fields replaced by the non-null parameter values.
@@ -1296,8 +918,7 @@ class __$$TokenContainerModifiedImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$TokenContainerModifiedImpl extends TokenContainerModified
-    with DiagnosticableTreeMixin {
+class _$TokenContainerModifiedImpl extends TokenContainerModified with DiagnosticableTreeMixin {
   const _$TokenContainerModifiedImpl(
       {this.serverName = 'PrivacyIDEA',
       this.lastSyncAt,
@@ -1312,8 +933,7 @@ class _$TokenContainerModifiedImpl extends TokenContainerModified
         $type = $type ?? 'modified',
         super._();
 
-  factory _$TokenContainerModifiedImpl.fromJson(Map<String, dynamic> json) =>
-      _$$TokenContainerModifiedImplFromJson(json);
+  factory _$TokenContainerModifiedImpl.fromJson(Map<String, dynamic> json) => _$$TokenContainerModifiedImplFromJson(json);
 
 // Base fields
   @override
@@ -1328,8 +948,7 @@ class _$TokenContainerModifiedImpl extends TokenContainerModified
   final List<TokenTemplate> _syncedTokenTemplates;
   @override
   List<TokenTemplate> get syncedTokenTemplates {
-    if (_syncedTokenTemplates is EqualUnmodifiableListView)
-      return _syncedTokenTemplates;
+    if (_syncedTokenTemplates is EqualUnmodifiableListView) return _syncedTokenTemplates;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_syncedTokenTemplates);
   }
@@ -1337,8 +956,7 @@ class _$TokenContainerModifiedImpl extends TokenContainerModified
   final List<TokenTemplate> _localTokenTemplates;
   @override
   List<TokenTemplate> get localTokenTemplates {
-    if (_localTokenTemplates is EqualUnmodifiableListView)
-      return _localTokenTemplates;
+    if (_localTokenTemplates is EqualUnmodifiableListView) return _localTokenTemplates;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_localTokenTemplates);
   }
@@ -1374,222 +992,103 @@ class _$TokenContainerModifiedImpl extends TokenContainerModified
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$TokenContainerModifiedImpl &&
-            (identical(other.serverName, serverName) ||
-                other.serverName == serverName) &&
-            (identical(other.lastSyncAt, lastSyncAt) ||
-                other.lastSyncAt == lastSyncAt) &&
+            (identical(other.serverName, serverName) || other.serverName == serverName) &&
+            (identical(other.lastSyncAt, lastSyncAt) || other.lastSyncAt == lastSyncAt) &&
             (identical(other.serial, serial) || other.serial == serial) &&
-            (identical(other.description, description) ||
-                other.description == description) &&
-            const DeepCollectionEquality()
-                .equals(other._syncedTokenTemplates, _syncedTokenTemplates) &&
-            const DeepCollectionEquality()
-                .equals(other._localTokenTemplates, _localTokenTemplates) &&
-            (identical(other.lastModifiedAt, lastModifiedAt) ||
-                other.lastModifiedAt == lastModifiedAt));
+            (identical(other.description, description) || other.description == description) &&
+            const DeepCollectionEquality().equals(other._syncedTokenTemplates, _syncedTokenTemplates) &&
+            const DeepCollectionEquality().equals(other._localTokenTemplates, _localTokenTemplates) &&
+            (identical(other.lastModifiedAt, lastModifiedAt) || other.lastModifiedAt == lastModifiedAt));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      serverName,
-      lastSyncAt,
-      serial,
-      description,
-      const DeepCollectionEquality().hash(_syncedTokenTemplates),
-      const DeepCollectionEquality().hash(_localTokenTemplates),
-      lastModifiedAt);
+  int get hashCode => Object.hash(runtimeType, serverName, lastSyncAt, serial, description, const DeepCollectionEquality().hash(_syncedTokenTemplates),
+      const DeepCollectionEquality().hash(_localTokenTemplates), lastModifiedAt);
 
   /// Create a copy of TokenContainer
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$TokenContainerModifiedImplCopyWith<_$TokenContainerModifiedImpl>
-      get copyWith => __$$TokenContainerModifiedImplCopyWithImpl<
-          _$TokenContainerModifiedImpl>(this, _$identity);
+  _$$TokenContainerModifiedImplCopyWith<_$TokenContainerModifiedImpl> get copyWith =>
+      __$$TokenContainerModifiedImplCopyWithImpl<_$TokenContainerModifiedImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    required TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)
         uninitialized,
-    required TResult Function(
-            String serverName,
-            DateTime lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    required TResult Function(String serverName, DateTime lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)
         synced,
-    required TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            DateTime lastModifiedAt)
+    required TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, DateTime lastModifiedAt)
         modified,
-    required TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String? message)
+    required TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String? message)
         unsynced,
-    required TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String message)
+    required TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String message)
         notFound,
-    required TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            dynamic error)
+    required TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, dynamic error)
         error,
   }) {
-    return modified(serverName, lastSyncAt, serial, description,
-        syncedTokenTemplates, localTokenTemplates, lastModifiedAt);
+    return modified(serverName, lastSyncAt, serial, description, syncedTokenTemplates, localTokenTemplates, lastModifiedAt);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    TResult? Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)?
         uninitialized,
-    TResult? Function(
-            String serverName,
-            DateTime lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    TResult? Function(String serverName, DateTime lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)?
         synced,
-    TResult? Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            DateTime lastModifiedAt)?
+    TResult? Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, DateTime lastModifiedAt)?
         modified,
-    TResult? Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String? message)?
+    TResult? Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String? message)?
         unsynced,
-    TResult? Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String message)?
+    TResult? Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String message)?
         notFound,
-    TResult? Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            dynamic error)?
+    TResult? Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, dynamic error)?
         error,
   }) {
-    return modified?.call(serverName, lastSyncAt, serial, description,
-        syncedTokenTemplates, localTokenTemplates, lastModifiedAt);
+    return modified?.call(serverName, lastSyncAt, serial, description, syncedTokenTemplates, localTokenTemplates, lastModifiedAt);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)?
         uninitialized,
-    TResult Function(
-            String serverName,
-            DateTime lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    TResult Function(String serverName, DateTime lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)?
         synced,
-    TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            DateTime lastModifiedAt)?
+    TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, DateTime lastModifiedAt)?
         modified,
-    TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String? message)?
+    TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String? message)?
         unsynced,
-    TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String message)?
+    TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String message)?
         notFound,
-    TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            dynamic error)?
+    TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, dynamic error)?
         error,
     required TResult orElse(),
   }) {
     if (modified != null) {
-      return modified(serverName, lastSyncAt, serial, description,
-          syncedTokenTemplates, localTokenTemplates, lastModifiedAt);
+      return modified(serverName, lastSyncAt, serial, description, syncedTokenTemplates, localTokenTemplates, lastModifiedAt);
     }
     return orElse();
   }
@@ -1656,8 +1155,7 @@ abstract class TokenContainerModified extends TokenContainer {
       required final DateTime lastModifiedAt}) = _$TokenContainerModifiedImpl;
   const TokenContainerModified._() : super._();
 
-  factory TokenContainerModified.fromJson(Map<String, dynamic> json) =
-      _$TokenContainerModifiedImpl.fromJson;
+  factory TokenContainerModified.fromJson(Map<String, dynamic> json) = _$TokenContainerModifiedImpl.fromJson;
 
 // Base fields
   @override
@@ -1678,16 +1176,12 @@ abstract class TokenContainerModified extends TokenContainer {
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$TokenContainerModifiedImplCopyWith<_$TokenContainerModifiedImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  _$$TokenContainerModifiedImplCopyWith<_$TokenContainerModifiedImpl> get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$TokenContainerUnsyncedImplCopyWith<$Res>
-    implements $TokenContainerCopyWith<$Res> {
-  factory _$$TokenContainerUnsyncedImplCopyWith(
-          _$TokenContainerUnsyncedImpl value,
-          $Res Function(_$TokenContainerUnsyncedImpl) then) =
+abstract class _$$TokenContainerUnsyncedImplCopyWith<$Res> implements $TokenContainerCopyWith<$Res> {
+  factory _$$TokenContainerUnsyncedImplCopyWith(_$TokenContainerUnsyncedImpl value, $Res Function(_$TokenContainerUnsyncedImpl) then) =
       __$$TokenContainerUnsyncedImplCopyWithImpl<$Res>;
   @override
   @useResult
@@ -1702,13 +1196,9 @@ abstract class _$$TokenContainerUnsyncedImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$TokenContainerUnsyncedImplCopyWithImpl<$Res>
-    extends _$TokenContainerCopyWithImpl<$Res, _$TokenContainerUnsyncedImpl>
+class __$$TokenContainerUnsyncedImplCopyWithImpl<$Res> extends _$TokenContainerCopyWithImpl<$Res, _$TokenContainerUnsyncedImpl>
     implements _$$TokenContainerUnsyncedImplCopyWith<$Res> {
-  __$$TokenContainerUnsyncedImplCopyWithImpl(
-      _$TokenContainerUnsyncedImpl _value,
-      $Res Function(_$TokenContainerUnsyncedImpl) _then)
-      : super(_value, _then);
+  __$$TokenContainerUnsyncedImplCopyWithImpl(_$TokenContainerUnsyncedImpl _value, $Res Function(_$TokenContainerUnsyncedImpl) _then) : super(_value, _then);
 
   /// Create a copy of TokenContainer
   /// with the given fields replaced by the non-null parameter values.
@@ -1758,8 +1248,7 @@ class __$$TokenContainerUnsyncedImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$TokenContainerUnsyncedImpl extends TokenContainerUnsynced
-    with DiagnosticableTreeMixin {
+class _$TokenContainerUnsyncedImpl extends TokenContainerUnsynced with DiagnosticableTreeMixin {
   const _$TokenContainerUnsyncedImpl(
       {this.serverName = 'PrivacyIDEA',
       this.lastSyncAt,
@@ -1774,8 +1263,7 @@ class _$TokenContainerUnsyncedImpl extends TokenContainerUnsynced
         $type = $type ?? 'unsynced',
         super._();
 
-  factory _$TokenContainerUnsyncedImpl.fromJson(Map<String, dynamic> json) =>
-      _$$TokenContainerUnsyncedImplFromJson(json);
+  factory _$TokenContainerUnsyncedImpl.fromJson(Map<String, dynamic> json) => _$$TokenContainerUnsyncedImplFromJson(json);
 
 // Base fields
   @override
@@ -1790,8 +1278,7 @@ class _$TokenContainerUnsyncedImpl extends TokenContainerUnsynced
   final List<TokenTemplate> _syncedTokenTemplates;
   @override
   List<TokenTemplate> get syncedTokenTemplates {
-    if (_syncedTokenTemplates is EqualUnmodifiableListView)
-      return _syncedTokenTemplates;
+    if (_syncedTokenTemplates is EqualUnmodifiableListView) return _syncedTokenTemplates;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_syncedTokenTemplates);
   }
@@ -1799,8 +1286,7 @@ class _$TokenContainerUnsyncedImpl extends TokenContainerUnsynced
   final List<TokenTemplate> _localTokenTemplates;
   @override
   List<TokenTemplate> get localTokenTemplates {
-    if (_localTokenTemplates is EqualUnmodifiableListView)
-      return _localTokenTemplates;
+    if (_localTokenTemplates is EqualUnmodifiableListView) return _localTokenTemplates;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_localTokenTemplates);
   }
@@ -1836,221 +1322,103 @@ class _$TokenContainerUnsyncedImpl extends TokenContainerUnsynced
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$TokenContainerUnsyncedImpl &&
-            (identical(other.serverName, serverName) ||
-                other.serverName == serverName) &&
-            (identical(other.lastSyncAt, lastSyncAt) ||
-                other.lastSyncAt == lastSyncAt) &&
+            (identical(other.serverName, serverName) || other.serverName == serverName) &&
+            (identical(other.lastSyncAt, lastSyncAt) || other.lastSyncAt == lastSyncAt) &&
             (identical(other.serial, serial) || other.serial == serial) &&
-            (identical(other.description, description) ||
-                other.description == description) &&
-            const DeepCollectionEquality()
-                .equals(other._syncedTokenTemplates, _syncedTokenTemplates) &&
-            const DeepCollectionEquality()
-                .equals(other._localTokenTemplates, _localTokenTemplates) &&
+            (identical(other.description, description) || other.description == description) &&
+            const DeepCollectionEquality().equals(other._syncedTokenTemplates, _syncedTokenTemplates) &&
+            const DeepCollectionEquality().equals(other._localTokenTemplates, _localTokenTemplates) &&
             (identical(other.message, message) || other.message == message));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      serverName,
-      lastSyncAt,
-      serial,
-      description,
-      const DeepCollectionEquality().hash(_syncedTokenTemplates),
-      const DeepCollectionEquality().hash(_localTokenTemplates),
-      message);
+  int get hashCode => Object.hash(runtimeType, serverName, lastSyncAt, serial, description, const DeepCollectionEquality().hash(_syncedTokenTemplates),
+      const DeepCollectionEquality().hash(_localTokenTemplates), message);
 
   /// Create a copy of TokenContainer
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$TokenContainerUnsyncedImplCopyWith<_$TokenContainerUnsyncedImpl>
-      get copyWith => __$$TokenContainerUnsyncedImplCopyWithImpl<
-          _$TokenContainerUnsyncedImpl>(this, _$identity);
+  _$$TokenContainerUnsyncedImplCopyWith<_$TokenContainerUnsyncedImpl> get copyWith =>
+      __$$TokenContainerUnsyncedImplCopyWithImpl<_$TokenContainerUnsyncedImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    required TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)
         uninitialized,
-    required TResult Function(
-            String serverName,
-            DateTime lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    required TResult Function(String serverName, DateTime lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)
         synced,
-    required TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            DateTime lastModifiedAt)
+    required TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, DateTime lastModifiedAt)
         modified,
-    required TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String? message)
+    required TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String? message)
         unsynced,
-    required TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String message)
+    required TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String message)
         notFound,
-    required TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            dynamic error)
+    required TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, dynamic error)
         error,
   }) {
-    return unsynced(serverName, lastSyncAt, serial, description,
-        syncedTokenTemplates, localTokenTemplates, message);
+    return unsynced(serverName, lastSyncAt, serial, description, syncedTokenTemplates, localTokenTemplates, message);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    TResult? Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)?
         uninitialized,
-    TResult? Function(
-            String serverName,
-            DateTime lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    TResult? Function(String serverName, DateTime lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)?
         synced,
-    TResult? Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            DateTime lastModifiedAt)?
+    TResult? Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, DateTime lastModifiedAt)?
         modified,
-    TResult? Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String? message)?
+    TResult? Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String? message)?
         unsynced,
-    TResult? Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String message)?
+    TResult? Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String message)?
         notFound,
-    TResult? Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            dynamic error)?
+    TResult? Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, dynamic error)?
         error,
   }) {
-    return unsynced?.call(serverName, lastSyncAt, serial, description,
-        syncedTokenTemplates, localTokenTemplates, message);
+    return unsynced?.call(serverName, lastSyncAt, serial, description, syncedTokenTemplates, localTokenTemplates, message);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)?
         uninitialized,
-    TResult Function(
-            String serverName,
-            DateTime lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    TResult Function(String serverName, DateTime lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)?
         synced,
-    TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            DateTime lastModifiedAt)?
+    TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, DateTime lastModifiedAt)?
         modified,
-    TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String? message)?
+    TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String? message)?
         unsynced,
-    TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String message)?
+    TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String message)?
         notFound,
-    TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            dynamic error)?
+    TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, dynamic error)?
         error,
     required TResult orElse(),
   }) {
     if (unsynced != null) {
-      return unsynced(serverName, lastSyncAt, serial, description,
-          syncedTokenTemplates, localTokenTemplates, message);
+      return unsynced(serverName, lastSyncAt, serial, description, syncedTokenTemplates, localTokenTemplates, message);
     }
     return orElse();
   }
@@ -2117,8 +1485,7 @@ abstract class TokenContainerUnsynced extends TokenContainer {
       final String? message}) = _$TokenContainerUnsyncedImpl;
   const TokenContainerUnsynced._() : super._();
 
-  factory TokenContainerUnsynced.fromJson(Map<String, dynamic> json) =
-      _$TokenContainerUnsyncedImpl.fromJson;
+  factory TokenContainerUnsynced.fromJson(Map<String, dynamic> json) = _$TokenContainerUnsyncedImpl.fromJson;
 
 // Base fields
   @override
@@ -2139,16 +1506,12 @@ abstract class TokenContainerUnsynced extends TokenContainer {
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$TokenContainerUnsyncedImplCopyWith<_$TokenContainerUnsyncedImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  _$$TokenContainerUnsyncedImplCopyWith<_$TokenContainerUnsyncedImpl> get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$TokenContainerNotFoundImplCopyWith<$Res>
-    implements $TokenContainerCopyWith<$Res> {
-  factory _$$TokenContainerNotFoundImplCopyWith(
-          _$TokenContainerNotFoundImpl value,
-          $Res Function(_$TokenContainerNotFoundImpl) then) =
+abstract class _$$TokenContainerNotFoundImplCopyWith<$Res> implements $TokenContainerCopyWith<$Res> {
+  factory _$$TokenContainerNotFoundImplCopyWith(_$TokenContainerNotFoundImpl value, $Res Function(_$TokenContainerNotFoundImpl) then) =
       __$$TokenContainerNotFoundImplCopyWithImpl<$Res>;
   @override
   @useResult
@@ -2163,13 +1526,9 @@ abstract class _$$TokenContainerNotFoundImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$TokenContainerNotFoundImplCopyWithImpl<$Res>
-    extends _$TokenContainerCopyWithImpl<$Res, _$TokenContainerNotFoundImpl>
+class __$$TokenContainerNotFoundImplCopyWithImpl<$Res> extends _$TokenContainerCopyWithImpl<$Res, _$TokenContainerNotFoundImpl>
     implements _$$TokenContainerNotFoundImplCopyWith<$Res> {
-  __$$TokenContainerNotFoundImplCopyWithImpl(
-      _$TokenContainerNotFoundImpl _value,
-      $Res Function(_$TokenContainerNotFoundImpl) _then)
-      : super(_value, _then);
+  __$$TokenContainerNotFoundImplCopyWithImpl(_$TokenContainerNotFoundImpl _value, $Res Function(_$TokenContainerNotFoundImpl) _then) : super(_value, _then);
 
   /// Create a copy of TokenContainer
   /// with the given fields replaced by the non-null parameter values.
@@ -2219,8 +1578,7 @@ class __$$TokenContainerNotFoundImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$TokenContainerNotFoundImpl extends TokenContainerNotFound
-    with DiagnosticableTreeMixin {
+class _$TokenContainerNotFoundImpl extends TokenContainerNotFound with DiagnosticableTreeMixin {
   const _$TokenContainerNotFoundImpl(
       {this.serverName = 'PrivacyIDEA',
       this.lastSyncAt,
@@ -2235,8 +1593,7 @@ class _$TokenContainerNotFoundImpl extends TokenContainerNotFound
         $type = $type ?? 'notFound',
         super._();
 
-  factory _$TokenContainerNotFoundImpl.fromJson(Map<String, dynamic> json) =>
-      _$$TokenContainerNotFoundImplFromJson(json);
+  factory _$TokenContainerNotFoundImpl.fromJson(Map<String, dynamic> json) => _$$TokenContainerNotFoundImplFromJson(json);
 
 // Base fields
   @override
@@ -2251,8 +1608,7 @@ class _$TokenContainerNotFoundImpl extends TokenContainerNotFound
   final List<TokenTemplate> _syncedTokenTemplates;
   @override
   List<TokenTemplate> get syncedTokenTemplates {
-    if (_syncedTokenTemplates is EqualUnmodifiableListView)
-      return _syncedTokenTemplates;
+    if (_syncedTokenTemplates is EqualUnmodifiableListView) return _syncedTokenTemplates;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_syncedTokenTemplates);
   }
@@ -2260,8 +1616,7 @@ class _$TokenContainerNotFoundImpl extends TokenContainerNotFound
   final List<TokenTemplate> _localTokenTemplates;
   @override
   List<TokenTemplate> get localTokenTemplates {
-    if (_localTokenTemplates is EqualUnmodifiableListView)
-      return _localTokenTemplates;
+    if (_localTokenTemplates is EqualUnmodifiableListView) return _localTokenTemplates;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_localTokenTemplates);
   }
@@ -2297,221 +1652,103 @@ class _$TokenContainerNotFoundImpl extends TokenContainerNotFound
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$TokenContainerNotFoundImpl &&
-            (identical(other.serverName, serverName) ||
-                other.serverName == serverName) &&
-            (identical(other.lastSyncAt, lastSyncAt) ||
-                other.lastSyncAt == lastSyncAt) &&
+            (identical(other.serverName, serverName) || other.serverName == serverName) &&
+            (identical(other.lastSyncAt, lastSyncAt) || other.lastSyncAt == lastSyncAt) &&
             (identical(other.serial, serial) || other.serial == serial) &&
-            (identical(other.description, description) ||
-                other.description == description) &&
-            const DeepCollectionEquality()
-                .equals(other._syncedTokenTemplates, _syncedTokenTemplates) &&
-            const DeepCollectionEquality()
-                .equals(other._localTokenTemplates, _localTokenTemplates) &&
+            (identical(other.description, description) || other.description == description) &&
+            const DeepCollectionEquality().equals(other._syncedTokenTemplates, _syncedTokenTemplates) &&
+            const DeepCollectionEquality().equals(other._localTokenTemplates, _localTokenTemplates) &&
             (identical(other.message, message) || other.message == message));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      serverName,
-      lastSyncAt,
-      serial,
-      description,
-      const DeepCollectionEquality().hash(_syncedTokenTemplates),
-      const DeepCollectionEquality().hash(_localTokenTemplates),
-      message);
+  int get hashCode => Object.hash(runtimeType, serverName, lastSyncAt, serial, description, const DeepCollectionEquality().hash(_syncedTokenTemplates),
+      const DeepCollectionEquality().hash(_localTokenTemplates), message);
 
   /// Create a copy of TokenContainer
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$TokenContainerNotFoundImplCopyWith<_$TokenContainerNotFoundImpl>
-      get copyWith => __$$TokenContainerNotFoundImplCopyWithImpl<
-          _$TokenContainerNotFoundImpl>(this, _$identity);
+  _$$TokenContainerNotFoundImplCopyWith<_$TokenContainerNotFoundImpl> get copyWith =>
+      __$$TokenContainerNotFoundImplCopyWithImpl<_$TokenContainerNotFoundImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    required TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)
         uninitialized,
-    required TResult Function(
-            String serverName,
-            DateTime lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    required TResult Function(String serverName, DateTime lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)
         synced,
-    required TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            DateTime lastModifiedAt)
+    required TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, DateTime lastModifiedAt)
         modified,
-    required TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String? message)
+    required TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String? message)
         unsynced,
-    required TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String message)
+    required TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String message)
         notFound,
-    required TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            dynamic error)
+    required TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, dynamic error)
         error,
   }) {
-    return notFound(serverName, lastSyncAt, serial, description,
-        syncedTokenTemplates, localTokenTemplates, message);
+    return notFound(serverName, lastSyncAt, serial, description, syncedTokenTemplates, localTokenTemplates, message);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    TResult? Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)?
         uninitialized,
-    TResult? Function(
-            String serverName,
-            DateTime lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    TResult? Function(String serverName, DateTime lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)?
         synced,
-    TResult? Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            DateTime lastModifiedAt)?
+    TResult? Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, DateTime lastModifiedAt)?
         modified,
-    TResult? Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String? message)?
+    TResult? Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String? message)?
         unsynced,
-    TResult? Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String message)?
+    TResult? Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String message)?
         notFound,
-    TResult? Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            dynamic error)?
+    TResult? Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, dynamic error)?
         error,
   }) {
-    return notFound?.call(serverName, lastSyncAt, serial, description,
-        syncedTokenTemplates, localTokenTemplates, message);
+    return notFound?.call(serverName, lastSyncAt, serial, description, syncedTokenTemplates, localTokenTemplates, message);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)?
         uninitialized,
-    TResult Function(
-            String serverName,
-            DateTime lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    TResult Function(String serverName, DateTime lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)?
         synced,
-    TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            DateTime lastModifiedAt)?
+    TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, DateTime lastModifiedAt)?
         modified,
-    TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String? message)?
+    TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String? message)?
         unsynced,
-    TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String message)?
+    TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String message)?
         notFound,
-    TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            dynamic error)?
+    TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, dynamic error)?
         error,
     required TResult orElse(),
   }) {
     if (notFound != null) {
-      return notFound(serverName, lastSyncAt, serial, description,
-          syncedTokenTemplates, localTokenTemplates, message);
+      return notFound(serverName, lastSyncAt, serial, description, syncedTokenTemplates, localTokenTemplates, message);
     }
     return orElse();
   }
@@ -2578,8 +1815,7 @@ abstract class TokenContainerNotFound extends TokenContainer {
       required final String message}) = _$TokenContainerNotFoundImpl;
   const TokenContainerNotFound._() : super._();
 
-  factory TokenContainerNotFound.fromJson(Map<String, dynamic> json) =
-      _$TokenContainerNotFoundImpl.fromJson;
+  factory TokenContainerNotFound.fromJson(Map<String, dynamic> json) = _$TokenContainerNotFoundImpl.fromJson;
 
 // Base fields
   @override
@@ -2600,15 +1836,12 @@ abstract class TokenContainerNotFound extends TokenContainer {
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$TokenContainerNotFoundImplCopyWith<_$TokenContainerNotFoundImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  _$$TokenContainerNotFoundImplCopyWith<_$TokenContainerNotFoundImpl> get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$TokenContainerErrorImplCopyWith<$Res>
-    implements $TokenContainerCopyWith<$Res> {
-  factory _$$TokenContainerErrorImplCopyWith(_$TokenContainerErrorImpl value,
-          $Res Function(_$TokenContainerErrorImpl) then) =
+abstract class _$$TokenContainerErrorImplCopyWith<$Res> implements $TokenContainerCopyWith<$Res> {
+  factory _$$TokenContainerErrorImplCopyWith(_$TokenContainerErrorImpl value, $Res Function(_$TokenContainerErrorImpl) then) =
       __$$TokenContainerErrorImplCopyWithImpl<$Res>;
   @override
   @useResult
@@ -2623,12 +1856,9 @@ abstract class _$$TokenContainerErrorImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$TokenContainerErrorImplCopyWithImpl<$Res>
-    extends _$TokenContainerCopyWithImpl<$Res, _$TokenContainerErrorImpl>
+class __$$TokenContainerErrorImplCopyWithImpl<$Res> extends _$TokenContainerCopyWithImpl<$Res, _$TokenContainerErrorImpl>
     implements _$$TokenContainerErrorImplCopyWith<$Res> {
-  __$$TokenContainerErrorImplCopyWithImpl(_$TokenContainerErrorImpl _value,
-      $Res Function(_$TokenContainerErrorImpl) _then)
-      : super(_value, _then);
+  __$$TokenContainerErrorImplCopyWithImpl(_$TokenContainerErrorImpl _value, $Res Function(_$TokenContainerErrorImpl) _then) : super(_value, _then);
 
   /// Create a copy of TokenContainer
   /// with the given fields replaced by the non-null parameter values.
@@ -2678,8 +1908,7 @@ class __$$TokenContainerErrorImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$TokenContainerErrorImpl extends TokenContainerError
-    with DiagnosticableTreeMixin {
+class _$TokenContainerErrorImpl extends TokenContainerError with DiagnosticableTreeMixin {
   const _$TokenContainerErrorImpl(
       {this.serverName = 'PrivacyIDEA',
       this.lastSyncAt,
@@ -2694,8 +1923,7 @@ class _$TokenContainerErrorImpl extends TokenContainerError
         $type = $type ?? 'error',
         super._();
 
-  factory _$TokenContainerErrorImpl.fromJson(Map<String, dynamic> json) =>
-      _$$TokenContainerErrorImplFromJson(json);
+  factory _$TokenContainerErrorImpl.fromJson(Map<String, dynamic> json) => _$$TokenContainerErrorImplFromJson(json);
 
 // Base fields
   @override
@@ -2713,8 +1941,7 @@ class _$TokenContainerErrorImpl extends TokenContainerError
   @override
   @JsonKey()
   List<TokenTemplate> get syncedTokenTemplates {
-    if (_syncedTokenTemplates is EqualUnmodifiableListView)
-      return _syncedTokenTemplates;
+    if (_syncedTokenTemplates is EqualUnmodifiableListView) return _syncedTokenTemplates;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_syncedTokenTemplates);
   }
@@ -2723,8 +1950,7 @@ class _$TokenContainerErrorImpl extends TokenContainerError
   @override
   @JsonKey()
   List<TokenTemplate> get localTokenTemplates {
-    if (_localTokenTemplates is EqualUnmodifiableListView)
-      return _localTokenTemplates;
+    if (_localTokenTemplates is EqualUnmodifiableListView) return _localTokenTemplates;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_localTokenTemplates);
   }
@@ -2760,31 +1986,19 @@ class _$TokenContainerErrorImpl extends TokenContainerError
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$TokenContainerErrorImpl &&
-            (identical(other.serverName, serverName) ||
-                other.serverName == serverName) &&
-            (identical(other.lastSyncAt, lastSyncAt) ||
-                other.lastSyncAt == lastSyncAt) &&
+            (identical(other.serverName, serverName) || other.serverName == serverName) &&
+            (identical(other.lastSyncAt, lastSyncAt) || other.lastSyncAt == lastSyncAt) &&
             (identical(other.serial, serial) || other.serial == serial) &&
-            (identical(other.description, description) ||
-                other.description == description) &&
-            const DeepCollectionEquality()
-                .equals(other._syncedTokenTemplates, _syncedTokenTemplates) &&
-            const DeepCollectionEquality()
-                .equals(other._localTokenTemplates, _localTokenTemplates) &&
+            (identical(other.description, description) || other.description == description) &&
+            const DeepCollectionEquality().equals(other._syncedTokenTemplates, _syncedTokenTemplates) &&
+            const DeepCollectionEquality().equals(other._localTokenTemplates, _localTokenTemplates) &&
             const DeepCollectionEquality().equals(other.error, error));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      serverName,
-      lastSyncAt,
-      serial,
-      description,
-      const DeepCollectionEquality().hash(_syncedTokenTemplates),
-      const DeepCollectionEquality().hash(_localTokenTemplates),
-      const DeepCollectionEquality().hash(error));
+  int get hashCode => Object.hash(runtimeType, serverName, lastSyncAt, serial, description, const DeepCollectionEquality().hash(_syncedTokenTemplates),
+      const DeepCollectionEquality().hash(_localTokenTemplates), const DeepCollectionEquality().hash(error));
 
   /// Create a copy of TokenContainer
   /// with the given fields replaced by the non-null parameter values.
@@ -2792,189 +2006,83 @@ class _$TokenContainerErrorImpl extends TokenContainerError
   @override
   @pragma('vm:prefer-inline')
   _$$TokenContainerErrorImplCopyWith<_$TokenContainerErrorImpl> get copyWith =>
-      __$$TokenContainerErrorImplCopyWithImpl<_$TokenContainerErrorImpl>(
-          this, _$identity);
+      __$$TokenContainerErrorImplCopyWithImpl<_$TokenContainerErrorImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    required TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)
         uninitialized,
-    required TResult Function(
-            String serverName,
-            DateTime lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    required TResult Function(String serverName, DateTime lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)
         synced,
-    required TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            DateTime lastModifiedAt)
+    required TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, DateTime lastModifiedAt)
         modified,
-    required TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String? message)
+    required TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String? message)
         unsynced,
-    required TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String message)
+    required TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String message)
         notFound,
-    required TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            dynamic error)
+    required TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, dynamic error)
         error,
   }) {
-    return error(serverName, lastSyncAt, serial, description,
-        syncedTokenTemplates, localTokenTemplates, this.error);
+    return error(serverName, lastSyncAt, serial, description, syncedTokenTemplates, localTokenTemplates, this.error);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    TResult? Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)?
         uninitialized,
-    TResult? Function(
-            String serverName,
-            DateTime lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    TResult? Function(String serverName, DateTime lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)?
         synced,
-    TResult? Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            DateTime lastModifiedAt)?
+    TResult? Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, DateTime lastModifiedAt)?
         modified,
-    TResult? Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String? message)?
+    TResult? Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String? message)?
         unsynced,
-    TResult? Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String message)?
+    TResult? Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String message)?
         notFound,
-    TResult? Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            dynamic error)?
+    TResult? Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, dynamic error)?
         error,
   }) {
-    return error?.call(serverName, lastSyncAt, serial, description,
-        syncedTokenTemplates, localTokenTemplates, this.error);
+    return error?.call(serverName, lastSyncAt, serial, description, syncedTokenTemplates, localTokenTemplates, this.error);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)?
         uninitialized,
-    TResult Function(
-            String serverName,
-            DateTime lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
+    TResult Function(String serverName, DateTime lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
             List<TokenTemplate> localTokenTemplates)?
         synced,
-    TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            DateTime lastModifiedAt)?
+    TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, DateTime lastModifiedAt)?
         modified,
-    TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String? message)?
+    TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String? message)?
         unsynced,
-    TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            String message)?
+    TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, String message)?
         notFound,
-    TResult Function(
-            String serverName,
-            DateTime? lastSyncAt,
-            String serial,
-            String description,
-            List<TokenTemplate> syncedTokenTemplates,
-            List<TokenTemplate> localTokenTemplates,
-            dynamic error)?
+    TResult Function(String serverName, DateTime? lastSyncAt, String serial, String description, List<TokenTemplate> syncedTokenTemplates,
+            List<TokenTemplate> localTokenTemplates, dynamic error)?
         error,
     required TResult orElse(),
   }) {
     if (error != null) {
-      return error(serverName, lastSyncAt, serial, description,
-          syncedTokenTemplates, localTokenTemplates, this.error);
+      return error(serverName, lastSyncAt, serial, description, syncedTokenTemplates, localTokenTemplates, this.error);
     }
     return orElse();
   }
@@ -3041,8 +2149,7 @@ abstract class TokenContainerError extends TokenContainer {
       required final dynamic error}) = _$TokenContainerErrorImpl;
   const TokenContainerError._() : super._();
 
-  factory TokenContainerError.fromJson(Map<String, dynamic> json) =
-      _$TokenContainerErrorImpl.fromJson;
+  factory TokenContainerError.fromJson(Map<String, dynamic> json) = _$TokenContainerErrorImpl.fromJson;
 
 // Base fields
   @override
@@ -3063,8 +2170,7 @@ abstract class TokenContainerError extends TokenContainer {
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$TokenContainerErrorImplCopyWith<_$TokenContainerErrorImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  _$$TokenContainerErrorImplCopyWith<_$TokenContainerErrorImpl> get copyWith => throw _privateConstructorUsedError;
 }
 
 TokenTemplate _$TokenTemplateFromJson(Map<String, dynamic> json) {
@@ -3073,7 +2179,7 @@ TokenTemplate _$TokenTemplateFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$TokenTemplate {
-  Map<String, dynamic> get data => throw _privateConstructorUsedError;
+  Map<String, String> get data => throw _privateConstructorUsedError;
 
   /// Serializes this TokenTemplate to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -3081,22 +2187,18 @@ mixin _$TokenTemplate {
   /// Create a copy of TokenTemplate
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $TokenTemplateCopyWith<TokenTemplate> get copyWith =>
-      throw _privateConstructorUsedError;
+  $TokenTemplateCopyWith<TokenTemplate> get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $TokenTemplateCopyWith<$Res> {
-  factory $TokenTemplateCopyWith(
-          TokenTemplate value, $Res Function(TokenTemplate) then) =
-      _$TokenTemplateCopyWithImpl<$Res, TokenTemplate>;
+  factory $TokenTemplateCopyWith(TokenTemplate value, $Res Function(TokenTemplate) then) = _$TokenTemplateCopyWithImpl<$Res, TokenTemplate>;
   @useResult
   $Res call({Map<String, dynamic> data});
 }
 
 /// @nodoc
-class _$TokenTemplateCopyWithImpl<$Res, $Val extends TokenTemplate>
-    implements $TokenTemplateCopyWith<$Res> {
+class _$TokenTemplateCopyWithImpl<$Res, $Val extends TokenTemplate> implements $TokenTemplateCopyWith<$Res> {
   _$TokenTemplateCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
@@ -3121,23 +2223,16 @@ class _$TokenTemplateCopyWithImpl<$Res, $Val extends TokenTemplate>
 }
 
 /// @nodoc
-abstract class _$$TokenTemplateImplCopyWith<$Res>
-    implements $TokenTemplateCopyWith<$Res> {
-  factory _$$TokenTemplateImplCopyWith(
-          _$TokenTemplateImpl value, $Res Function(_$TokenTemplateImpl) then) =
-      __$$TokenTemplateImplCopyWithImpl<$Res>;
+abstract class _$$TokenTemplateImplCopyWith<$Res> implements $TokenTemplateCopyWith<$Res> {
+  factory _$$TokenTemplateImplCopyWith(_$TokenTemplateImpl value, $Res Function(_$TokenTemplateImpl) then) = __$$TokenTemplateImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({Map<String, dynamic> data});
 }
 
 /// @nodoc
-class __$$TokenTemplateImplCopyWithImpl<$Res>
-    extends _$TokenTemplateCopyWithImpl<$Res, _$TokenTemplateImpl>
-    implements _$$TokenTemplateImplCopyWith<$Res> {
-  __$$TokenTemplateImplCopyWithImpl(
-      _$TokenTemplateImpl _value, $Res Function(_$TokenTemplateImpl) _then)
-      : super(_value, _then);
+class __$$TokenTemplateImplCopyWithImpl<$Res> extends _$TokenTemplateCopyWithImpl<$Res, _$TokenTemplateImpl> implements _$$TokenTemplateImplCopyWith<$Res> {
+  __$$TokenTemplateImplCopyWithImpl(_$TokenTemplateImpl _value, $Res Function(_$TokenTemplateImpl) _then) : super(_value, _then);
 
   /// Create a copy of TokenTemplate
   /// with the given fields replaced by the non-null parameter values.
@@ -3150,7 +2245,7 @@ class __$$TokenTemplateImplCopyWithImpl<$Res>
       data: null == data
           ? _value._data
           : data // ignore: cast_nullable_to_non_nullable
-              as Map<String, dynamic>,
+              as Map<String, String>,
     ));
   }
 }
@@ -3158,16 +2253,15 @@ class __$$TokenTemplateImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$TokenTemplateImpl extends _TokenTemplate with DiagnosticableTreeMixin {
-  _$TokenTemplateImpl({required final Map<String, dynamic> data})
+  _$TokenTemplateImpl({required final Map<String, String> data})
       : _data = data,
         super._();
 
-  factory _$TokenTemplateImpl.fromJson(Map<String, dynamic> json) =>
-      _$$TokenTemplateImplFromJson(json);
+  factory _$TokenTemplateImpl.fromJson(Map<String, dynamic> json) => _$$TokenTemplateImplFromJson(json);
 
-  final Map<String, dynamic> _data;
+  final Map<String, String> _data;
   @override
-  Map<String, dynamic> get data {
+  Map<String, String> get data {
     if (_data is EqualUnmodifiableMapView) return _data;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableMapView(_data);
@@ -3191,8 +2285,7 @@ class _$TokenTemplateImpl extends _TokenTemplate with DiagnosticableTreeMixin {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$TokenTemplateImplCopyWith<_$TokenTemplateImpl> get copyWith =>
-      __$$TokenTemplateImplCopyWithImpl<_$TokenTemplateImpl>(this, _$identity);
+  _$$TokenTemplateImplCopyWith<_$TokenTemplateImpl> get copyWith => __$$TokenTemplateImplCopyWithImpl<_$TokenTemplateImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
@@ -3203,20 +2296,17 @@ class _$TokenTemplateImpl extends _TokenTemplate with DiagnosticableTreeMixin {
 }
 
 abstract class _TokenTemplate extends TokenTemplate {
-  factory _TokenTemplate({required final Map<String, dynamic> data}) =
-      _$TokenTemplateImpl;
+  factory _TokenTemplate({required final Map<String, String> data}) = _$TokenTemplateImpl;
   _TokenTemplate._() : super._();
 
-  factory _TokenTemplate.fromJson(Map<String, dynamic> json) =
-      _$TokenTemplateImpl.fromJson;
+  factory _TokenTemplate.fromJson(Map<String, dynamic> json) = _$TokenTemplateImpl.fromJson;
 
   @override
-  Map<String, dynamic> get data;
+  Map<String, String> get data;
 
   /// Create a copy of TokenTemplate
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$TokenTemplateImplCopyWith<_$TokenTemplateImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  _$$TokenTemplateImplCopyWith<_$TokenTemplateImpl> get copyWith => throw _privateConstructorUsedError;
 }

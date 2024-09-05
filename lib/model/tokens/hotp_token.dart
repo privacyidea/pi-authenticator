@@ -17,19 +17,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import 'dart:typed_data';
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:privacyidea_authenticator/utils/type_matchers.dart';
 import '../token_container.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../utils/errors.dart';
 import '../../utils/identifiers.dart';
 import '../enums/algorithms.dart';
-import '../enums/encodings.dart';
 import '../enums/token_types.dart';
 import '../extensions/enums/algorithms_extension.dart';
-import '../extensions/enums/encodings_extension.dart';
 import '../token_import/token_origin_data.dart';
 import 'otp_token.dart';
 import 'token.dart';
@@ -47,6 +44,7 @@ class HOTPToken extends OTPToken {
   HOTPToken({
     this.counter = 0,
     super.containerSerial,
+    super.checkedContainers,
     required super.id,
     required super.algorithm,
     required super.digits,
@@ -79,6 +77,14 @@ class HOTPToken extends OTPToken {
         isGoogle: true,
       );
 
+  @override
+  String get nextValue => algorithm.generateHOTPCodeString(
+        secret: secret,
+        counter: counter + 1,
+        length: digits,
+        isGoogle: true,
+      );
+
   HOTPToken withNextCounter() => copyWith(counter: counter + 1);
 
   @override
@@ -88,6 +94,7 @@ class HOTPToken extends OTPToken {
     String? label,
     String? issuer,
     String? Function()? containerSerial,
+    List<String>? checkedContainers,
     String? id,
     Algorithms? algorithm,
     int? digits,
@@ -106,6 +113,7 @@ class HOTPToken extends OTPToken {
         label: label ?? this.label,
         issuer: issuer ?? this.issuer,
         containerSerial: containerSerial != null ? containerSerial() : this.containerSerial,
+        checkedContainers: checkedContainers ?? this.checkedContainers,
         id: id ?? this.id,
         algorithm: algorithm ?? this.algorithm,
         digits: digits ?? this.digits,
@@ -125,96 +133,92 @@ class HOTPToken extends OTPToken {
   }
 
   @override
-  HOTPToken copyWithFromTemplate(TokenTemplate template) {
-    final uriMap = template.data;
+  HOTPToken copyUpdateByTemplate(TokenTemplate template) {
+    final uriMap = validateMap(
+      map: template.data,
+      validators: {
+        OTP_AUTH_LABEL: const TypeValidatorOptional<String>(),
+        OTP_AUTH_ISSUER: const TypeValidatorOptional<String>(),
+        OTP_AUTH_SERIAL: const TypeValidatorOptional<String>(),
+        OTP_AUTH_ALGORITHM: stringToAlgorithmsValidatorOptional,
+        OTP_AUTH_DIGITS: stringToIntValidatorOptional,
+        OTP_AUTH_SECRET_BASE32: base32SecretValidatorOptional,
+        OTP_AUTH_COUNTER: stringToIntValidatorOptional,
+        OTP_AUTH_IMAGE: const TypeValidatorOptional<String>(),
+        OTP_AUTH_PIN: stringToBoolValidatorOptional,
+      },
+      name: 'HOTPToken',
+    );
     return copyWith(
-      label: uriMap[URI_LABEL],
-      issuer: uriMap[URI_ISSUER],
-      id: uriMap[URI_ID],
-      serial: uriMap[URI_SERIAL],
-      algorithm: uriMap[URI_ALGORITHM] != null ? Algorithms.values.byName((uriMap[URI_ALGORITHM] as String).toUpperCase()) : null,
-      digits: uriMap[URI_DIGITS],
-      secret: uriMap[URI_SECRET] != null ? Encodings.base32.encode(uriMap[URI_SECRET]) : null,
-      counter: uriMap[URI_COUNTER],
-      tokenImage: uriMap[URI_IMAGE],
-      pin: uriMap[URI_PIN],
-      isLocked: uriMap[URI_PIN],
-      origin: uriMap[URI_ORIGIN],
+      label: uriMap[OTP_AUTH_LABEL] as String?,
+      issuer: uriMap[OTP_AUTH_ISSUER] as String?,
+      serial: uriMap[OTP_AUTH_SERIAL] as String?,
+      algorithm: uriMap[OTP_AUTH_ALGORITHM] as Algorithms?,
+      digits: uriMap[OTP_AUTH_DIGITS] as int?,
+      secret: uriMap[OTP_AUTH_SECRET_BASE32] as String?,
+      counter: uriMap[OTP_AUTH_COUNTER] as int?,
+      tokenImage: uriMap[OTP_AUTH_IMAGE] as String?,
+      pin: uriMap[OTP_AUTH_PIN] as bool?,
+      isLocked: uriMap[OTP_AUTH_PIN] as bool?,
     );
   }
 
-  factory HOTPToken.fromUriMap(Map<String, dynamic> uriMap) {
-    validateUriMap(uriMap);
+  factory HOTPToken.fromOtpAuthMap(Map<String, String> otpAuthMap, {required TokenOriginData origin}) {
+    final validatedMap = validateMap(
+      map: otpAuthMap,
+      validators: {
+        OTP_AUTH_LABEL: const TypeValidatorRequired<String>(defaultValue: ''),
+        OTP_AUTH_ISSUER: const TypeValidatorRequired<String>(defaultValue: ''),
+        OTP_AUTH_SERIAL: const TypeValidatorOptional<String>(),
+        OTP_AUTH_ALGORITHM: stringToAlgorithmsValidator.withDefault(Algorithms.SHA1),
+        OTP_AUTH_DIGITS: stringToIntvalidator.withDefault(6),
+        OTP_AUTH_SECRET_BASE32: base32Secretvalidator,
+        OTP_AUTH_COUNTER: stringToIntvalidator.withDefault(0),
+        OTP_AUTH_IMAGE: const TypeValidatorOptional<String>(),
+        OTP_AUTH_PIN: stringToBoolValidatorOptional,
+      },
+      name: 'HOTPToken',
+    );
     return HOTPToken(
-      label: uriMap[URI_LABEL] ?? '',
-      issuer: uriMap[URI_ISSUER] ?? '',
-      id: uriMap[URI_ID] == String ? uriMap[URI_ID] : const Uuid().v4(),
-      serial: uriMap[URI_SERIAL],
-      algorithm: Algorithms.values.byName((uriMap[URI_ALGORITHM] as String? ?? 'SHA1').toUpperCase()),
-      digits: uriMap[URI_DIGITS] ?? 6,
-      secret: Encodings.base32.encode(uriMap[URI_SECRET]),
-      counter: uriMap[URI_COUNTER] ?? 0,
-      tokenImage: uriMap[URI_IMAGE],
-      pin: uriMap[URI_PIN],
-      isLocked: uriMap[URI_PIN],
-      origin: uriMap[URI_ORIGIN],
+      label: validatedMap[OTP_AUTH_LABEL] as String,
+      issuer: validatedMap[OTP_AUTH_ISSUER] as String,
+      id: const Uuid().v4(),
+      serial: validatedMap[OTP_AUTH_SERIAL] as String?,
+      algorithm: validatedMap[OTP_AUTH_ALGORITHM] as Algorithms,
+      digits: validatedMap[OTP_AUTH_DIGITS] as int,
+      secret: validatedMap[OTP_AUTH_SECRET_BASE32] as String,
+      counter: validatedMap[OTP_AUTH_COUNTER] as int,
+      tokenImage: validatedMap[OTP_AUTH_IMAGE] as String?,
+      pin: validatedMap[OTP_AUTH_PIN] as bool?,
+      isLocked: validatedMap[OTP_AUTH_PIN] as bool?,
+      origin: origin,
     );
   }
 
+  /// This is used to create a map that typically was created from a uri.
   /// ```dart
-  /// URI_TYPE: tokenType,
-  /// URI_COUNTER: counter,
-  /// ```
-  /// ------ OTPTOKEN ------
-  /// ```dart
-  /// URI_SECRET: Encodings.base32.decode(secret),
-  /// URI_ALGORITHM: algorithm.name,
-  /// URI_DIGITS: digits,
-  /// ```
-  /// ------- TOKEN ---------
-  /// ```dart
-  /// URI_LABEL: label,
-  /// URI_ISSUER: issuer,
-  /// URI_PIN: pin,
-  /// URI_IMAGE: tokenImage,
-  /// URI_ORIGIN: jsonEncode(origin!.toJson()),
+  ///  ------------------------- [Token] -------------------------
+  /// | OTP_AUTH_SERIAL: serial, (optional)                       |
+  /// | OTP_AUTH_TYPE: type,                                      |
+  /// | OTP_AUTH_LABEL: label,                                    |
+  /// | OTP_AUTH_ISSUER: issuer,                                  |
+  /// | OTP_AUTH_PIN: pin,                                        |
+  /// | OTP_AUTH_IMAGE: tokenImage, (optional)                    |
+  ///  -----------------------------------------------------------
+  ///  ----------------------- [OTPToken] ------------------------
+  /// | OTP_AUTH_ALGORITHM: algorithm,                            |
+  /// | OTP_AUTH_DIGITS: digits,                                  |
+  ///  -----------------------------------------------------------
+  ///  ----------------------- [HOTPToken] -----------------------
+  /// | OTP_AUTH_COUNTER: counter,                                |
+  ///  -----------------------------------------------------------
   /// ```
   @override
-  Map<String, dynamic> toUriMap() {
-    return super.toUriMap()
+  Map<String, String> toOtpAuthMap({String? containerSerial}) {
+    return super.toOtpAuthMap()
       ..addAll({
-        URI_COUNTER: counter,
+        OTP_AUTH_COUNTER: counter.toString(),
       });
-  }
-
-  /// Validates the uriMap for the required fields throws [LocalizedArgumentError] if a field is missing or invalid.
-  static void validateUriMap(Map<String, dynamic> uriMap) {
-    if (uriMap[URI_SECRET] is! Uint8List) {
-      throw LocalizedArgumentError(
-        localizedMessage: ((localizations, value, name) => localizations.secretIsRequired),
-        unlocalizedMessage: 'Secret is required and must be a Uint8List',
-        invalidValue: uriMap[URI_SECRET],
-        name: URI_SECRET,
-      );
-    }
-    if (uriMap[URI_DIGITS] != null && uriMap[URI_DIGITS] < 1) {
-      throw LocalizedArgumentError(
-          invalidValue: uriMap[URI_DIGITS],
-          name: URI_DIGITS,
-          unlocalizedMessage: 'Digits must be greater than 0',
-          localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter));
-    }
-    if (uriMap[URI_ALGORITHM] != null) {
-      try {
-        Algorithms.values.byName((uriMap[URI_ALGORITHM] as String).toUpperCase());
-      } catch (e) {
-        throw LocalizedArgumentError(
-            invalidValue: uriMap[URI_ALGORITHM],
-            name: URI_ALGORITHM,
-            unlocalizedMessage: 'Algorithm ${uriMap[URI_ALGORITHM]} is not supported',
-            localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter));
-      }
-    }
   }
 
   @override

@@ -60,22 +60,18 @@ mixin _$ProgressState {
   /// Create a copy of ProgressState
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $ProgressStateCopyWith<ProgressState> get copyWith =>
-      throw _privateConstructorUsedError;
+  $ProgressStateCopyWith<ProgressState> get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $ProgressStateCopyWith<$Res> {
-  factory $ProgressStateCopyWith(
-          ProgressState value, $Res Function(ProgressState) then) =
-      _$ProgressStateCopyWithImpl<$Res, ProgressState>;
+  factory $ProgressStateCopyWith(ProgressState value, $Res Function(ProgressState) then) = _$ProgressStateCopyWithImpl<$Res, ProgressState>;
   @useResult
   $Res call({int max, int value});
 }
 
 /// @nodoc
-class _$ProgressStateCopyWithImpl<$Res, $Val extends ProgressState>
-    implements $ProgressStateCopyWith<$Res> {
+class _$ProgressStateCopyWithImpl<$Res, $Val extends ProgressState> implements $ProgressStateCopyWith<$Res> {
   _$ProgressStateCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
@@ -105,11 +101,8 @@ class _$ProgressStateCopyWithImpl<$Res, $Val extends ProgressState>
 }
 
 /// @nodoc
-abstract class _$$ProgressStateUninitializedImplCopyWith<$Res>
-    implements $ProgressStateCopyWith<$Res> {
-  factory _$$ProgressStateUninitializedImplCopyWith(
-          _$ProgressStateUninitializedImpl value,
-          $Res Function(_$ProgressStateUninitializedImpl) then) =
+abstract class _$$ProgressStateUninitializedImplCopyWith<$Res> implements $ProgressStateCopyWith<$Res> {
+  factory _$$ProgressStateUninitializedImplCopyWith(_$ProgressStateUninitializedImpl value, $Res Function(_$ProgressStateUninitializedImpl) then) =
       __$$ProgressStateUninitializedImplCopyWithImpl<$Res>;
   @override
   @useResult
@@ -117,12 +110,9 @@ abstract class _$$ProgressStateUninitializedImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$ProgressStateUninitializedImplCopyWithImpl<$Res>
-    extends _$ProgressStateCopyWithImpl<$Res, _$ProgressStateUninitializedImpl>
+class __$$ProgressStateUninitializedImplCopyWithImpl<$Res> extends _$ProgressStateCopyWithImpl<$Res, _$ProgressStateUninitializedImpl>
     implements _$$ProgressStateUninitializedImplCopyWith<$Res> {
-  __$$ProgressStateUninitializedImplCopyWithImpl(
-      _$ProgressStateUninitializedImpl _value,
-      $Res Function(_$ProgressStateUninitializedImpl) _then)
+  __$$ProgressStateUninitializedImplCopyWithImpl(_$ProgressStateUninitializedImpl _value, $Res Function(_$ProgressStateUninitializedImpl) _then)
       : super(_value, _then);
 
   /// Create a copy of ProgressState
@@ -149,8 +139,7 @@ class __$$ProgressStateUninitializedImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$ProgressStateUninitializedImpl extends ProgressStateUninitialized {
-  const _$ProgressStateUninitializedImpl({this.max = 0, this.value = 0})
-      : super._();
+  const _$ProgressStateUninitializedImpl({this.max = 0, this.value = 0}) : super._();
 
   @override
   @JsonKey()
@@ -181,9 +170,8 @@ class _$ProgressStateUninitializedImpl extends ProgressStateUninitialized {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$ProgressStateUninitializedImplCopyWith<_$ProgressStateUninitializedImpl>
-      get copyWith => __$$ProgressStateUninitializedImplCopyWithImpl<
-          _$ProgressStateUninitializedImpl>(this, _$identity);
+  _$$ProgressStateUninitializedImplCopyWith<_$ProgressStateUninitializedImpl> get copyWith =>
+      __$$ProgressStateUninitializedImplCopyWithImpl<_$ProgressStateUninitializedImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -249,8 +237,7 @@ class _$ProgressStateUninitializedImpl extends ProgressStateUninitialized {
 }
 
 abstract class ProgressStateUninitialized extends ProgressState {
-  const factory ProgressStateUninitialized({final int max, final int value}) =
-      _$ProgressStateUninitializedImpl;
+  const factory ProgressStateUninitialized({final int max, final int value}) = _$ProgressStateUninitializedImpl;
   const ProgressStateUninitialized._() : super._();
 
   @override
@@ -262,28 +249,20 @@ abstract class ProgressStateUninitialized extends ProgressState {
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$ProgressStateUninitializedImplCopyWith<_$ProgressStateUninitializedImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  _$$ProgressStateUninitializedImplCopyWith<_$ProgressStateUninitializedImpl> get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$ProgressStateImplCopyWith<$Res>
-    implements $ProgressStateCopyWith<$Res> {
-  factory _$$ProgressStateImplCopyWith(
-          _$ProgressStateImpl value, $Res Function(_$ProgressStateImpl) then) =
-      __$$ProgressStateImplCopyWithImpl<$Res>;
+abstract class _$$ProgressStateImplCopyWith<$Res> implements $ProgressStateCopyWith<$Res> {
+  factory _$$ProgressStateImplCopyWith(_$ProgressStateImpl value, $Res Function(_$ProgressStateImpl) then) = __$$ProgressStateImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({int max, int value});
 }
 
 /// @nodoc
-class __$$ProgressStateImplCopyWithImpl<$Res>
-    extends _$ProgressStateCopyWithImpl<$Res, _$ProgressStateImpl>
-    implements _$$ProgressStateImplCopyWith<$Res> {
-  __$$ProgressStateImplCopyWithImpl(
-      _$ProgressStateImpl _value, $Res Function(_$ProgressStateImpl) _then)
-      : super(_value, _then);
+class __$$ProgressStateImplCopyWithImpl<$Res> extends _$ProgressStateCopyWithImpl<$Res, _$ProgressStateImpl> implements _$$ProgressStateImplCopyWith<$Res> {
+  __$$ProgressStateImplCopyWithImpl(_$ProgressStateImpl _value, $Res Function(_$ProgressStateImpl) _then) : super(_value, _then);
 
   /// Create a copy of ProgressState
   /// with the given fields replaced by the non-null parameter values.
@@ -311,7 +290,7 @@ class __$$ProgressStateImplCopyWithImpl<$Res>
 class _$ProgressStateImpl extends _ProgressState {
   const _$ProgressStateImpl({required this.max, required this.value})
       : assert(max >= 0, 'max must be greater than or equal to 0'),
-        assert(value >= max, 'value must be less than or equal to max'),
+        assert(value <= max, 'value must be less than or equal to max'),
         super._();
 
   @override
@@ -341,8 +320,7 @@ class _$ProgressStateImpl extends _ProgressState {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$ProgressStateImplCopyWith<_$ProgressStateImpl> get copyWith =>
-      __$$ProgressStateImplCopyWithImpl<_$ProgressStateImpl>(this, _$identity);
+  _$$ProgressStateImplCopyWith<_$ProgressStateImpl> get copyWith => __$$ProgressStateImplCopyWithImpl<_$ProgressStateImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -408,8 +386,7 @@ class _$ProgressStateImpl extends _ProgressState {
 }
 
 abstract class _ProgressState extends ProgressState {
-  const factory _ProgressState(
-      {required final int max, required final int value}) = _$ProgressStateImpl;
+  const factory _ProgressState({required final int max, required final int value}) = _$ProgressStateImpl;
   const _ProgressState._() : super._();
 
   @override
@@ -421,6 +398,5 @@ abstract class _ProgressState extends ProgressState {
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$ProgressStateImplCopyWith<_$ProgressStateImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  _$$ProgressStateImplCopyWith<_$ProgressStateImpl> get copyWith => throw _privateConstructorUsedError;
 }

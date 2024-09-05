@@ -22,7 +22,7 @@ _$ContainerCredentialUnfinalizedImpl
                   _$ContainerFinalizationStateEnumMap,
                   json['finalizationState']) ??
               ContainerFinalizationState.uninitialized,
-          passphrase: json['passphrase'] as String?,
+          passphraseQuestion: json['passphraseQuestion'] as String?,
           publicServerKey: json['publicServerKey'] as String?,
           publicClientKey: json['publicClientKey'] as String?,
           privateClientKey: json['privateClientKey'] as String?,
@@ -41,7 +41,7 @@ Map<String, dynamic> _$$ContainerCredentialUnfinalizedImplToJson(
       'hashAlgorithm': _$AlgorithmsEnumMap[instance.hashAlgorithm]!,
       'finalizationState':
           _$ContainerFinalizationStateEnumMap[instance.finalizationState]!,
-      'passphrase': instance.passphrase,
+      'passphraseQuestion': instance.passphraseQuestion,
       'publicServerKey': instance.publicServerKey,
       'publicClientKey': instance.publicClientKey,
       'privateClientKey': instance.privateClientKey,
@@ -129,7 +129,7 @@ _$ContainerCredentialFinalizedImpl _$$ContainerCredentialFinalizedImplFromJson(
       finalizationState: $enumDecodeNullable(
               _$ContainerFinalizationStateEnumMap, json['finalizationState']) ??
           ContainerFinalizationState.finalized,
-      passphrase: json['passphrase'] as String?,
+      passphraseQuestion: json['passphraseQuestion'] as String?,
       publicServerKey: json['publicServerKey'] as String,
       publicClientKey: json['publicClientKey'] as String,
       privateClientKey: json['privateClientKey'] as String,
@@ -148,7 +148,7 @@ Map<String, dynamic> _$$ContainerCredentialFinalizedImplToJson(
       'hashAlgorithm': _$AlgorithmsEnumMap[instance.hashAlgorithm]!,
       'finalizationState':
           _$ContainerFinalizationStateEnumMap[instance.finalizationState]!,
-      'passphrase': instance.passphrase,
+      'passphraseQuestion': instance.passphraseQuestion,
       'publicServerKey': instance.publicServerKey,
       'publicClientKey': instance.publicClientKey,
       'privateClientKey': instance.privateClientKey,

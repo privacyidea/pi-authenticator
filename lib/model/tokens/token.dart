@@ -36,6 +36,7 @@ abstract class Token with SortableMixin {
   bool? get isPrivacyIdeaToken => origin?.isPrivacyIdeaToken;
   final String tokenVersion = 'v1.0.0'; // The version of this token, this is used for serialization.
   final String? containerSerial; // The serial of the container this token belongs to.
+  final List<String> checkedContainers; // The serials of the containers this token should not be in.
   final String label; // the name of the token, it cannot be uses as an identifier
   final String issuer; // The issuer of this token, currently unused.
   final String id; // this is the identifier of the token
@@ -65,14 +66,15 @@ abstract class Token with SortableMixin {
   }
 
   /// Creates a token from a uri map.
-  factory Token.fromUriMap(Map<String, dynamic> uriMap) {
-    String type = uriMap[URI_TYPE];
-    if (TokenTypes.HOTP.isName(type, caseSensitive: false)) return HOTPToken.fromUriMap(uriMap);
-    if (TokenTypes.TOTP.isName(type, caseSensitive: false)) return TOTPToken.fromUriMap(uriMap);
-    if (TokenTypes.PIPUSH.isName(type, caseSensitive: false)) return PushToken.fromUriMap(uriMap);
-    if (TokenTypes.DAYPASSWORD.isName(type, caseSensitive: false)) return DayPasswordToken.fromUriMap(uriMap);
-    if (TokenTypes.STEAM.isName(type, caseSensitive: false)) return SteamToken.fromUriMap(uriMap);
-    throw ArgumentError.value(uriMap, 'Token#fromUriMap', 'Token type [$type] is not a supported');
+  factory Token.fromOtpAuthMap(Map<String, String> otpAuthMap, {required TokenOriginData origin}) {
+    String? type = otpAuthMap[OTP_AUTH_TYPE];
+    if (type == null) throw ArgumentError.value(otpAuthMap, 'Token#fromUriMap', 'Token type is not defined in the uri map');
+    if (TokenTypes.HOTP.isName(type, caseSensitive: false)) return HOTPToken.fromOtpAuthMap(otpAuthMap, origin: origin);
+    if (TokenTypes.TOTP.isName(type, caseSensitive: false)) return TOTPToken.fromOtpAuthMap(otpAuthMap, origin: origin);
+    if (TokenTypes.PIPUSH.isName(type, caseSensitive: false)) return PushToken.fromOtpAuthMap(otpAuthMap, origin: origin);
+    if (TokenTypes.DAYPASSWORD.isName(type, caseSensitive: false)) return DayPasswordToken.fromOtpAuthMap(otpAuthMap, origin: origin);
+    if (TokenTypes.STEAM.isName(type, caseSensitive: false)) return SteamToken.fromOtpAuthMap(otpAuthMap, origin: origin);
+    throw ArgumentError.value(otpAuthMap, 'Token#fromUriMap', 'Token type [$type] is not a supported');
   }
 
   const Token({
@@ -80,6 +82,7 @@ abstract class Token with SortableMixin {
     this.label = '',
     this.issuer = '',
     this.containerSerial,
+    this.checkedContainers = const [],
     required this.id,
     required this.type,
     this.tokenImage,
@@ -109,6 +112,7 @@ abstract class Token with SortableMixin {
     String? label,
     String? issuer,
     String? Function()? containerSerial,
+    List<String>? checkedContainers,
     String? id,
     bool? isLocked,
     bool? isHidden,
@@ -147,29 +151,28 @@ abstract class Token with SortableMixin {
 
   /// This is used to create a map that typically was created from a uri.
   /// ```dart
-  ///  ------------------------------- [Token] ---------------------------------
-  /// URI_LABEL: name of the token (String),
-  /// URI_ISSUER: name of the issuer (String),
-  /// URI_PIN: is the user forced to have a pin (bool),
-  /// URI_IMAGE: url to an image e.g. "https://example.com/image.png" (String),
-  /// URI_ORIGIN: json string of the origin class (String),
-  /// -------------------------------------------------------------------------
+  ///  ------------------------- [Token] -------------------------
+  /// | OTP_AUTH_SERIAL: serial, (optional)                       |
+  /// | OTP_AUTH_TYPE: type,                                      |
+  /// | OTP_AUTH_LABEL: label,                                    |
+  /// | OTP_AUTH_ISSUER: issuer,                                  |
+  /// | OTP_AUTH_PIN: pin,                                        |
+  /// | OTP_AUTH_IMAGE: tokenImage, (optional)                    |
+  ///  -----------------------------------------------------------
   /// ```
-  Map<String, dynamic> toUriMap() {
+  Map<String, String> toOtpAuthMap({String? containerSerial}) {
     return {
-      URI_ID: id,
-      URI_SERIAL: serial,
-      URI_CONTAINER_SERIAL: containerSerial,
-      URI_TYPE: type,
-      URI_LABEL: label,
-      URI_ISSUER: issuer,
-      URI_PIN: pin,
-      if (tokenImage != null) URI_IMAGE: tokenImage,
-      if (origin != null) URI_ORIGIN: origin!,
+      if (containerSerial != null) CONTAINER_SERIAL: containerSerial,
+      if (serial != null) OTP_AUTH_SERIAL: serial!,
+      OTP_AUTH_TYPE: type,
+      OTP_AUTH_LABEL: label,
+      OTP_AUTH_ISSUER: issuer,
+      OTP_AUTH_PIN: pin ? OTP_AUTH_PIN_TRUE : OTP_AUTH_PIN_FALSE,
+      if (tokenImage != null) OTP_AUTH_IMAGE: tokenImage!,
     };
   }
 
-  Token copyWithFromTemplate(TokenTemplate template);
+  Token copyUpdateByTemplate(TokenTemplate template);
 
-  TokenTemplate toTemplate() => TokenTemplate(data: toUriMap());
+  TokenTemplate toTemplate() => TokenTemplate(data: toOtpAuthMap());
 }

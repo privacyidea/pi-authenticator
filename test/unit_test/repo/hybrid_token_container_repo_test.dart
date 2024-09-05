@@ -98,7 +98,7 @@ void _testHybridTokenContainerRepository() {
       expect(state.lastSyncAt.isBefore(dateTimeAfter), isTrue);
       expect(state.syncedTokenTemplates.length, 1);
       final template = state.syncedTokenTemplates.first;
-      expect(template.data, token.toUriMap(), reason: 'Should be the remote state if both are changed since last sync');
+      expect(template.data, token.toOtpAuthMap(), reason: 'Should be the remote state if both are changed since last sync');
     });
   });
 }

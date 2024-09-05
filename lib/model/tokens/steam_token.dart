@@ -20,14 +20,13 @@
 import 'package:base32/base32.dart';
 import 'package:crypto/crypto.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:privacyidea_authenticator/model/token_container.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../utils/errors.dart';
 import '../../utils/identifiers.dart';
+import '../../utils/type_matchers.dart';
 import '../enums/algorithms.dart';
-import '../enums/encodings.dart';
 import '../enums/token_types.dart';
-import '../extensions/enums/encodings_extension.dart';
 import '../extensions/int_extension.dart';
 import '../token_import/token_origin_data.dart';
 import 'token.dart';
@@ -45,8 +44,9 @@ class SteamToken extends TOTPToken {
   SteamToken({
     required super.id,
     required super.secret,
-    super.containerSerial,
     super.serial,
+    super.containerSerial,
+    super.checkedContainers,
     String? type,
     super.tokenImage,
     super.pin,
@@ -70,6 +70,7 @@ class SteamToken extends TOTPToken {
     String? label,
     String? issuer,
     String? Function()? containerSerial,
+    List<String>? checkedContainers,
     String? id,
     bool? isLocked,
     bool? isHidden,
@@ -78,16 +79,17 @@ class SteamToken extends TOTPToken {
     int? sortIndex,
     int? Function()? folderId,
     TokenOriginData? origin,
+    String? secret,
     int? period, // unused steam tokens always have 30 seconds period
     int? digits, // unused steam tokens always have 5 digits
     Algorithms? algorithm, // unused steam tokens always have SHA1 algorithm
-    String? secret,
   }) {
     return SteamToken(
       serial: serial ?? this.serial,
       label: label ?? this.label,
       issuer: issuer ?? this.issuer,
       containerSerial: containerSerial != null ? containerSerial() : this.containerSerial,
+      checkedContainers: checkedContainers ?? this.checkedContainers,
       id: id ?? this.id,
       secret: secret ?? this.secret,
       tokenImage: tokenImage ?? this.tokenImage,
@@ -107,7 +109,8 @@ class SteamToken extends TOTPToken {
   @override
   bool isSameTokenAs(Token other) => super.isSameTokenAs(other) && other is SteamToken;
 
-  String otpOfTime(DateTime time) {
+  @override
+  String otpFromTime(DateTime time) {
     // Flooring time/counter is TOTP default, but yes, steam uses the rounded time/counter.
     final counterBytes = (time.millisecondsSinceEpoch / 1000 / period).round().bytes;
     final secretList = base32.decode(secret.toUpperCase());
@@ -126,49 +129,87 @@ class SteamToken extends TOTPToken {
   }
 
   @override
-  String get otpValue => otpOfTime(DateTime.now());
+  String get otpValue => otpFromTime(DateTime.now());
 
-  static SteamToken fromUriMap(Map<String, dynamic> uriMap) {
-    if (uriMap[URI_SECRET] == null) {
-      throw LocalizedArgumentError(
-        localizedMessage: (localizations, value, name) => localizations.secretIsRequired,
-        unlocalizedMessage: 'Secret is required',
-        invalidValue: uriMap[URI_SECRET],
-        name: 'SteamToken#fromUriMap',
-      );
-    }
-    return SteamToken(
-      label: (uriMap[URI_LABEL] as String?) ?? '',
-      issuer: (uriMap[URI_ISSUER] as String?) ?? '',
-      id: const Uuid().v4(),
-      secret: Encodings.base32.encode(uriMap[URI_SECRET]),
-      tokenImage: uriMap[URI_IMAGE] as String?,
-      pin: uriMap[URI_PIN] as bool?,
-      origin: uriMap[URI_ORIGIN] as TokenOriginData?,
+  @override
+  String toString() {
+    return 'STEAM-${super.toString()}';
+  }
+
+  @override
+  SteamToken copyUpdateByTemplate(TokenTemplate template) {
+    final uriMap = validateMap(
+      map: template.data,
+      validators: {
+        OTP_AUTH_LABEL: const TypeValidatorOptional<String>(),
+        OTP_AUTH_ISSUER: const TypeValidatorOptional<String>(),
+        OTP_AUTH_SERIAL: const TypeValidatorOptional<String>(),
+        OTP_AUTH_SECRET_BASE32: base32SecretValidatorOptional,
+        OTP_AUTH_IMAGE: const TypeValidatorOptional<String>(),
+        OTP_AUTH_PIN: stringToBoolValidatorOptional,
+      },
+      name: 'SteamToken',
+    );
+    return copyWith(
+      label: uriMap[OTP_AUTH_LABEL] as String?,
+      issuer: uriMap[OTP_AUTH_ISSUER] as String?,
+      serial: uriMap[OTP_AUTH_SERIAL] as String?,
+      secret: uriMap[OTP_AUTH_SECRET_BASE32] as String?,
+      tokenImage: uriMap[OTP_AUTH_IMAGE] as String?,
+      pin: uriMap[OTP_AUTH_PIN] as bool?,
+      isLocked: uriMap[OTP_AUTH_PIN] as bool?,
     );
   }
 
-  /// ----- TOTP TOKEN -----
+  static SteamToken fromOtpAuthMap(Map<String, dynamic> uriMap, {required TokenOriginData origin}) {
+    uriMap = validateMap(
+      map: uriMap,
+      validators: {
+        OTP_AUTH_LABEL: const TypeValidatorRequired<String>(defaultValue: ''),
+        OTP_AUTH_ISSUER: const TypeValidatorRequired<String>(defaultValue: ''),
+        OTP_AUTH_SERIAL: const TypeValidatorOptional<String>(),
+        OTP_AUTH_SECRET_BASE32: base32Secretvalidator,
+        OTP_AUTH_IMAGE: const TypeValidatorOptional<String>(),
+        OTP_AUTH_PIN: stringToBoolValidatorOptional,
+      },
+      name: 'SteamToken',
+    );
+    return SteamToken(
+      label: uriMap[OTP_AUTH_LABEL],
+      issuer: uriMap[OTP_AUTH_ISSUER],
+      id: const Uuid().v4(),
+      serial: uriMap[OTP_AUTH_SERIAL],
+      secret: uriMap[OTP_AUTH_SECRET_BASE32],
+      tokenImage: uriMap[OTP_AUTH_IMAGE],
+      pin: uriMap[OTP_AUTH_PIN],
+      isLocked: uriMap[OTP_AUTH_PIN],
+      origin: origin,
+    );
+  }
+
+  /// This is used to create a map that typically was created from a uri.
   /// ```dart
-  /// URI_TYPE: tokenType,
-  /// URI_PERIOD: period,
-  /// ```
-  /// ------ OTP TOKEN ------
-  /// ```dart
-  /// URI_SECRET: Encodings.base32.decode(secret),
-  /// URI_ALGORITHM: algorithm.name,
-  /// URI_DIGITS: digits,
-  /// ```
-  /// ------- TOKEN ---------
-  /// ```dart
-  /// URI_LABEL: label,
-  /// URI_ISSUER: issuer,
-  /// URI_PIN: pin,
-  /// URI_IMAGE: tokenImage,
-  /// URI_ORIGIN: jsonEncode(origin!.toJson()),
+  ///  ------------------------- [Token] -------------------------
+  /// | OTP_AUTH_SERIAL: serial, (optional)                       |
+  /// | OTP_AUTH_TYPE: type,                                      |
+  /// | OTP_AUTH_LABEL: label,                                    |
+  /// | OTP_AUTH_ISSUER: issuer,                                  |
+  /// | OTP_AUTH_PIN: pin,                                        |
+  /// | OTP_AUTH_IMAGE: tokenImage, (optional)                    |
+  ///  -----------------------------------------------------------
+  ///  ----------------------- [OTPToken] ------------------------
+  /// | OTP_AUTH_ALGORITHM: algorithm,                            |
+  /// | OTP_AUTH_DIGITS: digits,                                  |
+  ///  -----------------------------------------------------------
+  ///  ----------------------- [HOTPToken] -----------------------
+  /// | OTP_AUTH_COUNTER: period,                                 |
+  ///  -----------------------------------------------------------
+  ///  ----------------------- [SteamToken] ----------------------
+  /// | /*No additional fields*/                                  |
+  ///  -----------------------------------------------------------
   /// ```
   @override
-  Map<String, dynamic> toUriMap() => super.toUriMap();
+  Map<String, String> toOtpAuthMap({String? containerSerial}) => super.toOtpAuthMap();
 
   static SteamToken fromJson(Map<String, dynamic> json) => _$SteamTokenFromJson(json);
   @override

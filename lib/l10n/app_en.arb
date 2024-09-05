@@ -34,6 +34,10 @@
   "@secretKey": {
     "description": "Describes the field where the tokens secret should be entered."
   },
+  "counter": "Counter",
+  "@counter": {
+    "description": "Describes the field where the tokens counter should be entered."
+  },
   "encoding": "Encoding",
   "@encoding": {
     "description": "Title of the dropdown button where the encoding is selected."
@@ -93,6 +97,14 @@
   "theSecretDoesNotFitTheCurrentEncoding": "The secret does not fit the current encoding",
   "@theSecretDoesNotFitTheCurrentEncoding": {
     "description": "Hint telling the user that the secret does not fit the selected encoding."
+  },
+  "notAnNumber": "The value is not a number.",
+  "@notAnNumber": {
+    "description": "Error message when the user entered a value that is not a number."
+  },
+  "notAnInteger" : "The value is not an integer.",
+  "@notAnInteger": {
+    "description": "Error message when the user entered a value that is not an integer."
   },
   "renameToken": "Rename token",
   "@renameToken": {
@@ -527,7 +539,7 @@
   "selectImportSource": "Select import source",
   "selectImportType": "How do you want to import the tokens?",
   "importTokens": "Import token",
-  "importNTokens": "{count, plural, zero{Import no tokens} one{Import one token} other{Import {count} tokens}}",
+  "importNTokens": "{count, plural, zero{Import no token} one{Import one token} other{Import {count} tokens}}",
   "selectFile": "Select file",
   "decrypt": "Decrypt",
   "tokensAreEncrypted": "The tokens are encrypted. Please enter the password to decrypt them.",
@@ -646,18 +658,50 @@
         "example": "counter"
       }
     }
-  },
-  "invalidValueForParameter": "\"{value}\" is not a valid value for the parameter \"{parameter}\".",
-  "@invalidValueForParameter": {
+  },  "missingRequiredParameterIn": "Value for parameter [{parameter}] is required and is missing in \"{map}\"",
+  "@missingRequiredParameterIn": {
     "placeholders": {
-      "value": {
-        "example": "abc"
-      },
       "parameter": {
-        "example": "number"
+        "example": "counter"
+      },
+      "map": {
+        "example": "query parameters"
       }
     }
   },
+  "invalidValue": "The {type} \"{value}\" is not valid for \"{parameter}\"",
+  "@invalidValue": {
+    "placeholders": {
+      "type": {
+        "example": "int"
+      },
+      "value": {
+        "example": "5"
+      },
+      "parameter": {
+        "example": "counter"
+      }
+    }
+  },
+  "invalidValueIn": "The {type} \"{value}\" is not valid for \"{parameter}\" in \"{map}\"",
+  "@invalidValueIn": {
+    "placeholders": {
+      "type": {
+        "example": "int"
+      },
+      "value": {
+        "example": "5"
+      },
+      "parameter": {
+        "example": "counter"
+      },
+      "map": {
+        "example": "query parameters"
+      }
+
+    }
+  },
+
   "unsupported": "The {name} [{value}] is not supported by this version of the app.",
   "@unsupported": {
     "placeholders": {

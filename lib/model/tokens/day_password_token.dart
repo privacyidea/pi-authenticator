@@ -17,21 +17,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
+import '../../utils/identifiers.dart';
+import '../../utils/type_matchers.dart';
 import '../token_container.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../utils/errors.dart';
-import '../../utils/identifiers.dart';
 import '../enums/algorithms.dart';
 import '../enums/day_password_token_view_mode.dart';
-import '../enums/encodings.dart';
 import '../enums/token_types.dart';
 import '../extensions/enums/algorithms_extension.dart';
-import '../extensions/enums/encodings_extension.dart';
 import '../token_import/token_origin_data.dart';
 import 'otp_token.dart';
 import 'token.dart';
@@ -51,8 +48,9 @@ class DayPasswordToken extends OTPToken {
     required super.algorithm,
     required super.digits,
     required super.secret,
-    super.containerSerial,
     super.serial,
+    super.containerSerial,
+    super.checkedContainers,
     this.viewMode = DayPasswordTokenViewMode.VALIDFOR,
     String? type, // just for @JsonSerializable(): type of DayPasswordToken is always TokenTypes.DAYPASSWORD
     super.tokenImage,
@@ -95,6 +93,7 @@ class DayPasswordToken extends OTPToken {
     String? label,
     String? issuer,
     String? Function()? containerSerial,
+    List<String>? checkedContainers,
     String? id,
     Algorithms? algorithm,
     int? digits,
@@ -114,6 +113,7 @@ class DayPasswordToken extends OTPToken {
         label: label ?? this.label,
         issuer: issuer ?? this.issuer,
         containerSerial: containerSerial != null ? containerSerial() : this.containerSerial,
+        checkedContainers: checkedContainers ?? this.checkedContainers,
         id: id ?? this.id,
         type: TokenTypes.DAYPASSWORD.name,
         algorithm: algorithm ?? this.algorithm,
@@ -128,14 +128,18 @@ class DayPasswordToken extends OTPToken {
         origin: origin ?? this.origin,
       );
 
-  @override
-  String get otpValue => algorithm.generateTOTPCodeString(
+  String otpFromTime(DateTime time) => algorithm.generateTOTPCodeString(
         secret: secret,
-        time: DateTime.now(),
+        time: time,
         length: digits,
         interval: period,
         isGoogle: true,
       );
+
+  @override
+  String get otpValue => otpFromTime(DateTime.now());
+  @override
+  String get nextValue => otpFromTime(DateTime.now().add(period));
 
   Duration get durationSinceLastOTP {
     final msPassedThisPeriod = (DateTime.now().millisecondsSinceEpoch) % period.inMilliseconds;
@@ -150,82 +154,92 @@ class DayPasswordToken extends OTPToken {
   }
 
   @override
-  DayPasswordToken copyWithFromTemplate(TokenTemplate template) {
-    final uriMap = template.data;
+  DayPasswordToken copyUpdateByTemplate(TokenTemplate template) {
+    final uriMap = validateMap(
+      map: template.data,
+      validators: {
+        OTP_AUTH_LABEL: const TypeValidatorOptional<String>(),
+        OTP_AUTH_ISSUER: const TypeValidatorOptional<String>(),
+        OTP_AUTH_SERIAL: const TypeValidatorOptional<String>(),
+        OTP_AUTH_ALGORITHM: stringToAlgorithmsValidatorOptional,
+        OTP_AUTH_DIGITS: stringToIntValidatorOptional,
+        OTP_AUTH_SECRET_BASE32: base32SecretValidatorOptional,
+        OTP_AUTH_PERIOD_SECONDS: stringSecondsToDurationvalidatorOptional,
+        OTP_AUTH_IMAGE: const TypeValidatorOptional<String>(),
+        OTP_AUTH_PIN: stringToBoolValidatorOptional,
+      },
+      name: 'DayPasswordToken',
+    );
     return copyWith(
-      label: uriMap[URI_LABEL],
-      issuer: uriMap[URI_ISSUER],
-      id: uriMap[URI_ID] == String ? uriMap[URI_ID] : const Uuid().v4(),
-      serial: uriMap[URI_SERIAL],
-      algorithm: uriMap[URI_ALGORITHM] != null ? Algorithms.values.byName((uriMap[URI_ALGORITHM] as String).toUpperCase()) : null,
-      digits: uriMap[URI_DIGITS],
-      secret: uriMap[URI_SECRET] != null ? Encodings.base32.encode(uriMap[URI_SECRET]) : null,
-      period: uriMap[URI_PERIOD] != null ? Duration(seconds: uriMap[URI_PERIOD]) : null,
-      tokenImage: uriMap[URI_IMAGE],
-      pin: uriMap[URI_PIN],
-      isLocked: uriMap[URI_PIN],
-      origin: uriMap[URI_ORIGIN],
+      label: uriMap[OTP_AUTH_LABEL] as String?,
+      issuer: uriMap[OTP_AUTH_ISSUER] as String?,
+      serial: uriMap[OTP_AUTH_SERIAL] as String?,
+      algorithm: uriMap[OTP_AUTH_ALGORITHM] as Algorithms?,
+      digits: uriMap[OTP_AUTH_DIGITS] as int?,
+      secret: uriMap[OTP_AUTH_SECRET_BASE32] as String?,
+      period: uriMap[OTP_AUTH_PERIOD_SECONDS] as Duration?,
+      tokenImage: uriMap[OTP_AUTH_IMAGE] as String?,
+      pin: uriMap[OTP_AUTH_PIN] as bool?,
+      isLocked: uriMap[OTP_AUTH_PIN] as bool?,
     );
   }
 
-  factory DayPasswordToken.fromUriMap(Map<String, dynamic> uriMap) {
-    validateUriMap(uriMap);
+  factory DayPasswordToken.fromOtpAuthMap(Map<String, dynamic> uriMap, {required TokenOriginData origin}) {
+    uriMap = validateMap(
+      map: uriMap,
+      validators: {
+        OTP_AUTH_LABEL: const TypeValidatorRequired<String>(defaultValue: ''),
+        OTP_AUTH_ISSUER: const TypeValidatorRequired<String>(defaultValue: ''),
+        OTP_AUTH_SERIAL: const TypeValidatorOptional<String>(),
+        OTP_AUTH_ALGORITHM: stringToAlgorithmsValidator.withDefault(Algorithms.SHA1),
+        OTP_AUTH_DIGITS: stringToIntvalidator.withDefault(6),
+        OTP_AUTH_SECRET_BASE32: base32Secretvalidator,
+        OTP_AUTH_PERIOD_SECONDS: stringSecondsToDurationvalidator.withDefault(const Duration(hours: 24)),
+        OTP_AUTH_IMAGE: const TypeValidatorOptional<String>(),
+        OTP_AUTH_PIN: stringToBoolValidatorOptional,
+      },
+      name: 'DayPasswordToken',
+    );
     return DayPasswordToken(
-      label: uriMap[URI_LABEL] ?? '',
-      issuer: uriMap[URI_ISSUER] ?? '',
+      label: uriMap[OTP_AUTH_LABEL],
+      issuer: uriMap[OTP_AUTH_ISSUER],
       id: const Uuid().v4(),
-      algorithm: Algorithms.values.byName((uriMap[URI_ALGORITHM] as String? ?? 'SHA1').toUpperCase()),
-      digits: uriMap[URI_DIGITS] ?? 6,
-      secret: Encodings.base32.encode(uriMap[URI_SECRET]),
-      period: Duration(seconds: uriMap[URI_PERIOD] ?? 86400), // default 24 hours
-      tokenImage: uriMap[URI_IMAGE],
-      pin: uriMap[URI_PIN],
-      isLocked: uriMap[URI_PIN],
-      origin: uriMap[URI_ORIGIN],
+      serial: uriMap[OTP_AUTH_SERIAL],
+      algorithm: uriMap[OTP_AUTH_ALGORITHM],
+      digits: uriMap[OTP_AUTH_DIGITS],
+      secret: uriMap[OTP_AUTH_SECRET_BASE32],
+      period: uriMap[OTP_AUTH_PERIOD_SECONDS],
+      tokenImage: uriMap[OTP_AUTH_IMAGE],
+      pin: uriMap[OTP_AUTH_PIN],
+      isLocked: uriMap[OTP_AUTH_PIN],
+      origin: origin,
     );
   }
 
+  /// This is used to create a map that typically was created from a uri.
+  /// ```dart
+  ///  ------------------------- [Token] -------------------------
+  /// | OTP_AUTH_SERIAL: serial, (optional)                       |
+  /// | OTP_AUTH_TYPE: type,                                      |
+  /// | OTP_AUTH_LABEL: label,                                    |
+  /// | OTP_AUTH_ISSUER: issuer,                                  |
+  /// | OTP_AUTH_PIN: pin,                                        |
+  /// | OTP_AUTH_IMAGE: tokenImage, (optional)                    |
+  ///  -----------------------------------------------------------
+  ///  ----------------------- [OTPToken] ------------------------
+  /// | OTP_AUTH_ALGORITHM: algorithm,                            |
+  /// | OTP_AUTH_DIGITS: digits,                                  |
+  ///  -----------------------------------------------------------
+  ///  ------------------- [DayPasswordToken] --------------------
+  /// | OTP_AUTH_PERIOD: period,                                  |
+  ///  -----------------------------------------------------------
+  /// ```
   @override
-  Map<String, dynamic> toUriMap() {
-    return super.toUriMap()
+  Map<String, String> toOtpAuthMap({String? containerSerial}) {
+    return super.toOtpAuthMap()
       ..addAll({
-        URI_PERIOD: period.inSeconds,
+        OTP_AUTH_PERIOD_SECONDS: period.inSeconds.toString(),
       });
-  }
-
-  /// Validates the uriMap for the required fields throws [LocalizedArgumentError] if a field is missing or invalid.
-  static void validateUriMap(Map<String, dynamic> uriMap) {
-    if (uriMap[URI_SECRET] is! Uint8List) {
-      throw LocalizedArgumentError(
-        localizedMessage: ((localizations, value, name) => localizations.secretIsRequired),
-        unlocalizedMessage: 'Secret is required and must be a Uint8List',
-        invalidValue: uriMap[URI_SECRET],
-        name: URI_SECRET,
-      );
-    }
-    if (uriMap[URI_PERIOD] != null && uriMap[URI_PERIOD] < 1) {
-      throw LocalizedArgumentError(
-        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
-        unlocalizedMessage: 'Period must be greater than 0',
-        invalidValue: uriMap[URI_PERIOD],
-        name: URI_PERIOD,
-      );
-    }
-    if (uriMap[URI_DIGITS] != null && uriMap[URI_DIGITS] < 1) {
-      throw LocalizedArgumentError(
-        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
-        unlocalizedMessage: 'Digits must be greater than 0',
-        invalidValue: uriMap[URI_DIGITS],
-        name: URI_DIGITS,
-      );
-    }
-    if (uriMap[URI_ALGORITHM] != null) {
-      try {
-        Algorithms.values.byName((uriMap[URI_ALGORITHM] as String).toUpperCase());
-      } catch (e) {
-        throw ArgumentError('Algorithm ${uriMap[URI_ALGORITHM]} is not supported');
-      }
-    }
   }
 
   @override

@@ -34,11 +34,11 @@ abstract class ProcessorResult<T> with _$ProcessorResult<T> {
   const ProcessorResult._();
   const factory ProcessorResult.success(
     T resultData, {
-    TypeMatcher<ResultHandler>? resultHandlerType,
+    TypeValidatorRequired<ResultHandler>? resultHandlerType,
   }) = ProcessorResultSuccess;
   const factory ProcessorResult.failed(
     String message, {
-    TypeMatcher<ResultHandler>? resultHandlerType,
+    TypeValidatorRequired<ResultHandler>? resultHandlerType,
   }) = ProcessorResultFailed;
 
   bool get isSuccess => this is ProcessorResultSuccess<T>;

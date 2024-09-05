@@ -87,7 +87,7 @@ void _testDayPasswordToken() {
           'URI_PIN': false,
           'URI_IMAGE': 'example.png',
         };
-        final totpFromUriMap = DayPasswordToken.fromUriMap(uriMap);
+        final totpFromUriMap = DayPasswordToken.fromOtpAuthMap(uriMap);
         expect(totpFromUriMap.period, const Duration(seconds: 30));
         expect(totpFromUriMap.label, 'label');
         expect(totpFromUriMap.issuer, 'issuer');
@@ -109,7 +109,7 @@ void _testDayPasswordToken() {
           'URI_PIN': false,
           'URI_IMAGE': 'example.png',
         };
-        expect(() => DayPasswordToken.fromUriMap(uriMap), throwsA(isA<ArgumentError>()));
+        expect(() => DayPasswordToken.fromOtpAuthMap(uriMap), throwsA(isA<ArgumentError>()));
       });
       test('with zero period', () {
         final uriMap = {
@@ -123,7 +123,7 @@ void _testDayPasswordToken() {
           'URI_PIN': false,
           'URI_IMAGE': 'example.png',
         };
-        expect(() => DayPasswordToken.fromUriMap(uriMap), throwsA(isA<ArgumentError>()));
+        expect(() => DayPasswordToken.fromOtpAuthMap(uriMap), throwsA(isA<ArgumentError>()));
       });
       test('with zero digits', () {
         final uriMap = {
@@ -137,7 +137,7 @@ void _testDayPasswordToken() {
           'URI_PIN': false,
           'URI_IMAGE': 'example.png',
         };
-        expect(() => DayPasswordToken.fromUriMap(uriMap), throwsA(isA<ArgumentError>()));
+        expect(() => DayPasswordToken.fromOtpAuthMap(uriMap), throwsA(isA<ArgumentError>()));
       });
       test('with lowercase algorithm', () {
         final uriMap = {
@@ -151,12 +151,12 @@ void _testDayPasswordToken() {
           'URI_PIN': false,
           'URI_IMAGE': 'example.png',
         };
-        final totpFromUriMap = DayPasswordToken.fromUriMap(uriMap);
+        final totpFromUriMap = DayPasswordToken.fromOtpAuthMap(uriMap);
         expect(totpFromUriMap.algorithm, Algorithms.SHA1);
       });
       test('with empty map', () {
         final uriMap = <String, dynamic>{};
-        expect(() => DayPasswordToken.fromUriMap(uriMap), throwsA(isA<ArgumentError>()));
+        expect(() => DayPasswordToken.fromOtpAuthMap(uriMap), throwsA(isA<ArgumentError>()));
       });
     });
     test('fromJson', () {

@@ -22,39 +22,72 @@
 
 // default email address for crash reports
 
+import 'package:privacyidea_authenticator/utils/errors.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
+
 const defaultCrashReportRecipient = 'app-crash@netknights.it';
 
-// qr codes:
-const String URI_ID = 'URI_ID';
-const String URI_SERIAL = 'URI_SERIAL';
-const String URI_NONCE = 'URI_NONCE';
-const String URI_TIMESTAMP = 'URI_TIMESTAMP';
-const String URI_FINALIZATION_URL = 'URI_FINALIZATION_URL';
-const String URI_KEY_ALGORITHM = 'URI_KEY_ALGORITHM';
-const String URI_HASH_ALGORITHM = 'URI_HASH_ALGORITHM';
-const String URI_CONTAINER_SERIAL = 'URI_CONTAINER_SERIAL';
-const String URI_TYPE = 'URI_TYPE';
-const String URI_LABEL = 'URI_LABEL';
-const String URI_ALGORITHM = 'URI_ALGORITHM';
-const String URI_DIGITS = 'URI_DIGITS';
-const String URI_SECRET = 'URI_SECRET'; // Should be Uint8List
-const String URI_COUNTER = 'URI_COUNTER';
-const String URI_PERIOD = 'URI_PERIOD';
-const String URI_ISSUER = 'URI_ISSUER';
-const String URI_PIN = 'URI_PIN';
-const String URI_IMAGE = 'URI_IMAGE';
-const String URI_ORIGIN = 'URI_ORIGIN';
+// otp auth
+const OTP_AUTH_VERSION = 'v';
+const OTP_AUTH_CREATOR = 'creator';
+const OTP_AUTH_TYPE = 'type';
 
-// 2 step:
-const String URI_SALT_LENGTH = 'URI_SALT_LENGTH';
-const String URI_OUTPUT_LENGTH_IN_BYTES = 'URI_OUTPUT_LENGTH_IN_BYTES';
-const String URI_ITERATIONS = 'URI_ITERATIONS';
+/// [String] (optional) default = null
+const OTP_AUTH_SERIAL = 'serial';
 
-// push token:
-const String URI_ROLLOUT_URL = 'URI_ROLLOUT_URL';
-const String URI_TTL = 'URI_TTL';
-const String URI_ENROLLMENT_CREDENTIAL = 'URI_ENROLLMENT_CREDENTIAL';
-const String URI_SSL_VERIFY = 'URI_SSL_VERIFY';
+/// [String] (required)
+const OTP_AUTH_SECRET_BASE32 = 'secret';
+
+/// [String] (optional) default =' 0'
+const OTP_AUTH_COUNTER = 'counter';
+
+/// [String] (optional) default = '30'
+const OTP_AUTH_PERIOD_SECONDS = 'period'; // int optional default 30
+/// [String] (optional) default = 'SHA1'
+const OTP_AUTH_ALGORITHM = 'algorithm'; // String optional default 'SHA1'
+/// [String] (optional) default = '6'
+const OTP_AUTH_DIGITS = 'digits'; // int optional default 6
+/// [String] (optional) default = ''
+const OTP_AUTH_LABEL = 'label'; // String optional default ''
+/// [String] (optional) default = ''
+const OTP_AUTH_ISSUER = 'issuer'; // String optional default ''
+/// [String] (optional) default = ''
+const OTP_AUTH_PIN = 'pin'; // String optional default "False"
+/// [String] (optional) default = 'False'
+const OTP_AUTH_PIN_TRUE = 'True';
+const OTP_AUTH_PIN_FALSE = 'False';
+
+/// [String] (optional) default = ''
+const OTP_AUTH_IMAGE = 'image'; // String optional default ''
+
+// OTP auth push
+
+/// [String] (required for PUSH)
+const OTP_AUTH_PUSH_ROLLOUT_URL = 'url';
+const OTP_AUTH_PUSH_TTL_MINUTES = 'ttl';
+
+/// [String] (optional) default = null
+const OTP_AUTH_PUSH_ENROLLMENT_CREDENTIAL = 'enrollment_credential';
+const OTP_AUTH_PUSH_SSL_VERIFY = 'sslverify'; // String optional default '1'
+const OTP_AUTH_PUSH_SSL_VERIFY_TRUE = '1';
+const OTP_AUTH_PUSH_SSL_VERIFY_FALSE = '0';
+
+// otp auth 2step
+
+/// [String] (required for 2step)
+const OTP_AUTH_2STEP_SALT_LENTH = '2step_salt';
+
+/// [String] (required for 2step)
+const OTP_AUTH_2STEP_OUTPUT_LENTH = '2step_output';
+
+/// [String] (required for 2step)
+const OTP_AUTH_2STEP_ITERATIONS = '2step_difficulty';
+
+// Container otp sync
+
+const OTP_AUTH_OTP_VALUES = 'otp_values';
+
+const OTP_AUTH_STEAM_ISSUER = 'Steam';
 
 // Crypto stuff:
 const String SIGNING_ALGORITHM = 'SHA-256/RSA';
@@ -73,27 +106,121 @@ const String PUSH_REQUEST_SIGNATURE = 'signature'; // 7.
 const String PUSH_REQUEST_ANSWERS = 'require_presence'; // 8.
 
 // Container registration:
-const String PUBLIC_SERVER_KEY = 'PUBLIC_SERVER_KEY';
-const String URI_PASSPHRASE = 'URI_PASSPHRASE';
+const String CONTAINER_ISSUER = 'issuer';
+const String CONTAINER_NONCE = 'nonce';
+const String CONTAINER_TIMESTAMP = 'time';
+const String CONTAINER_FINALIZATION_URL = 'url';
+const String CONTAINER_SERIAL = 'serial';
+const String CONTAINER_EC_KEY_ALGORITHM = 'key_algorithm';
+const String CONTAINER_HASH_ALGORITHM = 'hash_algorithm';
+const String CONTAINER_PASSPHRASE_QUESTION = 'passphrase';
 
 const String GLOBAL_SECURE_REPO_PREFIX = 'app_v3_';
 
-void validateMap(Map<String, dynamic> map, Map<String, TypeMatcher> keys) {
-  for (String key in keys.keys) {
-    final typeMatcher = keys[key]!;
-    final mapEntry = map[key];
-    if (!typeMatcher.isTypeOf(map[key])) {
-      if (mapEntry == null) {
-        throw ArgumentError('Map does not contain required key "$key"');
-      }
-      throw ArgumentError('Map does contain required key "$key" but ${mapEntry.runtimeType} is not a subtype of ${typeMatcher.type}');
-    }
+T? validateOptional<T extends Object>({required dynamic value, required TypeValidatorOptional<T> validator, required String name}) {
+  if (validator.isTypeOf(value)) {
+    return validator.transform(value);
+  } else {
+    throw LocalizedArgumentError(
+      localizedMessage: (localizations, value, name) => localizations.invalidValue(value.runtimeType.toString(), value, name),
+      unlocalizedMessage: 'The ${value.runtimeType} "$value" is not valid for "$name"',
+      invalidValue: value,
+      name: name,
+    );
   }
 }
 
-class TypeMatcher<T> {
-  const TypeMatcher();
-  bool isTypeOf(dynamic value) => value is T;
+T validate<T extends Object>({required dynamic value, required TypeValidatorRequired<T> validator, required String name}) {
+  if (validator.isTypeOf(value)) {
+    return validator.transform(value);
+  } else {
+    throw LocalizedArgumentError(
+      localizedMessage: (localizations, value, name) => localizations.invalidValue(value.runtimeType.toString(), value, name),
+      unlocalizedMessage: 'The ${value.runtimeType} "$value" is not valid for "$name"',
+      invalidValue: value,
+      name: name,
+    );
+  }
+}
+
+/// Validates a map by checking if it contains all required keys and if the values are of the correct type.
+///
+/// Throws a [LocalizedArgumentError] if the map is invalid.
+/// <br />If the validator provides a transformer function, the value will be transformed before checking the type.
+/// <br />The returned map will contain the transformed values.
+Map<String, RV> validateMap<RV>({required Map<String, dynamic> map, required Map<String, TypeValidatorOptional<RV>> validators, required String? name}) {
+  Map<String, RV> validatedMap = {};
+  for (String key in validators.keys) {
+    final validator = validators[key]!;
+    final mapEntry = map[key];
+    if (validator.isTypeOf(mapEntry)) {
+      final newValue = validator.transform(mapEntry);
+      if (newValue != null) validatedMap[key] = newValue;
+    } else {
+      if (mapEntry == null) {
+        throw LocalizedArgumentError(
+          localizedMessage: name != null
+              ? (localizations, value, key) => localizations.missingRequiredParameterIn(key, name)
+              : (localizations, value, key) => localizations.missingRequiredParameter(key),
+          unlocalizedMessage: 'Map does not contain required key "$key"',
+          invalidValue: mapEntry.toString(),
+          name: key,
+        );
+      }
+      throw LocalizedArgumentError(
+        localizedMessage: name != null
+            ? (localizations, value, key) => localizations.invalidValueIn(value.runtimeType.toString(), value.toString(), key, name)
+            : (localizations, value, key) => localizations.invalidValue(value.runtimeType.toString(), value.toString(), key),
+        unlocalizedMessage: 'The ${mapEntry.runtimeType} "$mapEntry" is not valid for "$key"${name != null ? ' in $name' : ''}',
+        invalidValue: mapEntry.toString(),
+        name: key,
+      );
+    }
+  }
+  return validatedMap;
+}
+
+class TypeValidatorOptional<T> {
+  bool get isOptional => runtimeType.toString().contains('Optional');
+
+  final T Function(dynamic value)? transformer;
+  final T? defaultValue;
+
+  const TypeValidatorOptional({
+    this.transformer,
+    this.defaultValue,
+  });
+
+  /// Checks if the value is of the correct type, or sub-type.
+  /// If the transformer is provided, the value will be transformed before checking the type.
+  bool isTypeOf(dynamic value) {
+    Logger.debug('Checking type of $value and default value $defaultValue with transformer $transformer (isOptional $isOptional)');
+    if (value == null) return (defaultValue != null) ? true : isOptional;
+
+    if (transformer == null) return value is T?;
+    try {
+      transformer!(value);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /// Transforms the value if a transformer is provided, otherwise returns the value as is.
+  /// May throw an error if the value is not of the correct type.
+  /// To prevent an error, use isTypeOf before calling transform.
+  T? transform(dynamic value) {
+    if (value == null) return defaultValue;
+    if (transformer == null) return value as T;
+    try {
+      return transformer!(value);
+    } catch (e) {
+      return defaultValue;
+    }
+  }
+
+  TypeValidatorOptional<T> optional() => TypeValidatorOptional<T>(transformer: transformer, defaultValue: defaultValue);
+  TypeValidatorOptional<T> withDefault(T? defaultValue) => TypeValidatorOptional<T>(transformer: transformer, defaultValue: defaultValue);
 
   String get type => RegExp('(?<=<).+(?=>)').firstMatch(toString())!.group(0)!;
 
@@ -101,8 +228,35 @@ class TypeMatcher<T> {
   String toString() => runtimeType.toString();
 
   @override
-  bool operator ==(Object other) => other is TypeMatcher<T>;
+  bool operator ==(Object other) => other is TypeValidatorOptional<T>;
 
   @override
   int get hashCode => toString().hashCode;
+}
+
+class TypeValidatorRequired<T extends Object> extends TypeValidatorOptional<T> {
+  const TypeValidatorRequired({
+    super.transformer,
+    super.defaultValue,
+  });
+
+  /// Transforms the value if a transformer is provided, otherwise returns the value as is.
+  /// May throw an error if the value is not of the correct type.
+  /// To prevent an error, use isTypeOf before calling transform.
+  @override
+  T transform(dynamic value) {
+    try {
+      if (value == null) return defaultValue!;
+      if (transformer == null) return value is T ? value : defaultValue!;
+      return transformer!(value);
+    } catch (e) {
+      if (defaultValue != null) return defaultValue!;
+      throw LocalizedArgumentError(
+        localizedMessage: (localizations, value, name) => localizations.invalidValue(value.runtimeType.toString(), value, name),
+        unlocalizedMessage: 'The type ${value.runtimeType} for value "$value" is not valid.',
+        invalidValue: value,
+        name: type,
+      );
+    }
+  }
 }

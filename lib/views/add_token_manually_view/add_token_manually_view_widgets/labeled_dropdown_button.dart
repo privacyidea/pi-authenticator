@@ -18,23 +18,26 @@
  * limitations under the License.
  */
 import 'package:flutter/material.dart';
-
 import '../../../utils/logger.dart';
+import 'add_token_manually_row.dart';
 
 class LabeledDropdownButton<T> extends StatefulWidget {
   final String label;
   final List<T> values;
-  final ValueNotifier<T?> valueNotifier;
+  final bool enabled;
+  // If valueLabel is not avaible, the value toString are used as label
+  final List<String>? valueLabels;
+  final ValueNotifier<T?>? valueNotifier;
   final String postFix;
-  final Function(T)? onChanged;
 
   const LabeledDropdownButton({
     required this.label,
     required this.values,
-    required this.valueNotifier,
+    this.enabled = true,
+    this.valueLabels,
     this.postFix = '',
-    this.onChanged,
     super.key,
+    required this.valueNotifier,
   });
 
   @override
@@ -42,51 +45,58 @@ class LabeledDropdownButton<T> extends StatefulWidget {
 }
 
 class _LabeledDropdownButtonState<T> extends State<LabeledDropdownButton<T>> {
+  void _setState() => setState(() {});
+
+  @override
+  void initState() {
+    super.initState();
+    widget.valueNotifier?.value ??= widget.values.firstOrNull;
+    widget.valueNotifier?.addListener(_setState);
+  }
+
+  @override
+  void dispose() {
+    widget.valueNotifier?.removeListener(_setState);
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Flexible(
-          flex: 5,
-          child: Text(
-            widget.label,
-            style: Theme.of(context).textTheme.bodyMedium,
-            overflow: TextOverflow.fade,
-            softWrap: false,
-          ),
-        ),
-        Flexible(
-          flex: 3,
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(minWidth: 100),
-            child: DropdownButton<T>(
-              value: widget.valueNotifier.value,
-              isExpanded: true,
-              items: widget.values.map<DropdownMenuItem<T>>((T value) {
-                return DropdownMenuItem<T>(
-                  value: value,
-                  child: Text(
-                    '${value is Enum ? value.name : value}'
-                    '${widget.postFix}',
-                    style: Theme.of(context).textTheme.bodyMedium,
-                    overflow: TextOverflow.fade,
-                    softWrap: false,
-                  ),
-                );
-              }).toList(),
-              onChanged: (T? newValue) {
-                if (newValue == null) return;
-                setState(() {
-                  Logger.info('DropdownButton onChanged: $newValue');
-                  widget.onChanged?.call(newValue);
-                  widget.valueNotifier.value = newValue;
-                });
-              },
+    final child = AddTokenManuallyRow(
+      label: widget.label,
+      child: DropdownButton<T>(
+        value: widget.valueNotifier?.value != null && widget.values.contains(widget.valueNotifier!.value)
+            ? widget.valueNotifier!.value
+            : widget.values.firstOrNull,
+        isExpanded: true,
+        items: [
+          for (var i = 0; i < widget.values.length; i++)
+            DropdownMenuItem<T>(
+              value: widget.values[i],
+              child: Text(
+                '${widget.valueLabels != null && i < widget.valueLabels!.length ? widget.valueLabels![i] : widget.values[i].toString()}'
+                ' ${widget.postFix}',
+                style: Theme.of(context).textTheme.bodyMedium,
+                overflow: TextOverflow.fade,
+                softWrap: false,
+              ),
             ),
-          ),
-        ),
-      ],
+        ],
+        onChanged: (T? newValue) {
+          if (newValue == null) return;
+          Logger.info('DropdownButton onChanged: $newValue');
+          widget.valueNotifier?.value = newValue;
+        },
+      ),
     );
+
+    return widget.enabled
+        ? child
+        : ShaderMask(
+            shaderCallback: (Rect bounds) => LinearGradient(
+              colors: [Colors.grey.shade600, Colors.grey.shade600],
+            ).createShader(bounds),
+            child: IgnorePointer(ignoring: true, child: child),
+          );
   }
 }

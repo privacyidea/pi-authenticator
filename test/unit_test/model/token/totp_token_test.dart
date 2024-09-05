@@ -85,7 +85,7 @@ void _testTotpToken() {
           'URI_PIN': false,
           'URI_IMAGE': 'example.png',
         };
-        final totpFromUriMap = TOTPToken.fromUriMap(uriMap);
+        final totpFromUriMap = TOTPToken.fromOtpAuthMap(uriMap);
         expect(totpFromUriMap.period, 30);
         expect(totpFromUriMap.label, 'label');
         expect(totpFromUriMap.issuer, 'issuer');
@@ -107,7 +107,7 @@ void _testTotpToken() {
           'URI_PIN': false,
           'URI_IMAGE': 'example.png',
         };
-        expect(() => TOTPToken.fromUriMap(uriMap), throwsA(isA<ArgumentError>()));
+        expect(() => TOTPToken.fromOtpAuthMap(uriMap), throwsA(isA<ArgumentError>()));
       });
       test('with zero period', () {
         final uriMap = {
@@ -121,7 +121,7 @@ void _testTotpToken() {
           'URI_PIN': false,
           'URI_IMAGE': 'example.png',
         };
-        expect(() => TOTPToken.fromUriMap(uriMap), throwsA(isA<ArgumentError>()));
+        expect(() => TOTPToken.fromOtpAuthMap(uriMap), throwsA(isA<ArgumentError>()));
       });
       test('with zero digits', () {
         final uriMap = {
@@ -135,7 +135,7 @@ void _testTotpToken() {
           'URI_PIN': false,
           'URI_IMAGE': 'example.png',
         };
-        expect(() => TOTPToken.fromUriMap(uriMap), throwsA(isA<ArgumentError>()));
+        expect(() => TOTPToken.fromOtpAuthMap(uriMap), throwsA(isA<ArgumentError>()));
       });
       test('with lowercase algorithm', () {
         final uriMap = {
@@ -149,12 +149,12 @@ void _testTotpToken() {
           'URI_PIN': false,
           'URI_IMAGE': 'example.png',
         };
-        final totpFromUriMap = TOTPToken.fromUriMap(uriMap);
+        final totpFromUriMap = TOTPToken.fromOtpAuthMap(uriMap);
         expect(totpFromUriMap.algorithm, Algorithms.SHA1);
       });
       test('with empty map', () {
         final uriMap = <String, dynamic>{};
-        expect(() => TOTPToken.fromUriMap(uriMap), throwsA(isA<ArgumentError>()));
+        expect(() => TOTPToken.fromOtpAuthMap(uriMap), throwsA(isA<ArgumentError>()));
       });
     });
     test('fromJson', () {

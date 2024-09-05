@@ -16,36 +16,23 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$ProcessorResult<T> {
-  TypeMatcher<ResultHandler>? get resultHandlerType =>
-      throw _privateConstructorUsedError;
+  TypeValidatorRequired<ResultHandler>? get resultHandlerType => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(
-            T resultData, TypeMatcher<ResultHandler>? resultHandlerType)
-        success,
-    required TResult Function(
-            String message, TypeMatcher<ResultHandler>? resultHandlerType)
-        failed,
+    required TResult Function(T resultData, TypeValidatorRequired<ResultHandler>? resultHandlerType) success,
+    required TResult Function(String message, TypeValidatorRequired<ResultHandler>? resultHandlerType) failed,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(
-            T resultData, TypeMatcher<ResultHandler>? resultHandlerType)?
-        success,
-    TResult? Function(
-            String message, TypeMatcher<ResultHandler>? resultHandlerType)?
-        failed,
+    TResult? Function(T resultData, TypeValidatorRequired<ResultHandler>? resultHandlerType)? success,
+    TResult? Function(String message, TypeValidatorRequired<ResultHandler>? resultHandlerType)? failed,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(
-            T resultData, TypeMatcher<ResultHandler>? resultHandlerType)?
-        success,
-    TResult Function(
-            String message, TypeMatcher<ResultHandler>? resultHandlerType)?
-        failed,
+    TResult Function(T resultData, TypeValidatorRequired<ResultHandler>? resultHandlerType)? success,
+    TResult Function(String message, TypeValidatorRequired<ResultHandler>? resultHandlerType)? failed,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -72,22 +59,19 @@ mixin _$ProcessorResult<T> {
   /// Create a copy of ProcessorResult
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $ProcessorResultCopyWith<T, ProcessorResult<T>> get copyWith =>
-      throw _privateConstructorUsedError;
+  $ProcessorResultCopyWith<T, ProcessorResult<T>> get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $ProcessorResultCopyWith<T, $Res> {
-  factory $ProcessorResultCopyWith(
-          ProcessorResult<T> value, $Res Function(ProcessorResult<T>) then) =
+  factory $ProcessorResultCopyWith(ProcessorResult<T> value, $Res Function(ProcessorResult<T>) then) =
       _$ProcessorResultCopyWithImpl<T, $Res, ProcessorResult<T>>;
   @useResult
-  $Res call({TypeMatcher<ResultHandler>? resultHandlerType});
+  $Res call({TypeValidatorRequired<ResultHandler>? resultHandlerType});
 }
 
 /// @nodoc
-class _$ProcessorResultCopyWithImpl<T, $Res, $Val extends ProcessorResult<T>>
-    implements $ProcessorResultCopyWith<T, $Res> {
+class _$ProcessorResultCopyWithImpl<T, $Res, $Val extends ProcessorResult<T>> implements $ProcessorResultCopyWith<T, $Res> {
   _$ProcessorResultCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
@@ -106,31 +90,24 @@ class _$ProcessorResultCopyWithImpl<T, $Res, $Val extends ProcessorResult<T>>
       resultHandlerType: freezed == resultHandlerType
           ? _value.resultHandlerType
           : resultHandlerType // ignore: cast_nullable_to_non_nullable
-              as TypeMatcher<ResultHandler>?,
+              as TypeValidatorRequired<ResultHandler>?,
     ) as $Val);
   }
 }
 
 /// @nodoc
-abstract class _$$ProcessorResultSuccessImplCopyWith<T, $Res>
-    implements $ProcessorResultCopyWith<T, $Res> {
-  factory _$$ProcessorResultSuccessImplCopyWith(
-          _$ProcessorResultSuccessImpl<T> value,
-          $Res Function(_$ProcessorResultSuccessImpl<T>) then) =
+abstract class _$$ProcessorResultSuccessImplCopyWith<T, $Res> implements $ProcessorResultCopyWith<T, $Res> {
+  factory _$$ProcessorResultSuccessImplCopyWith(_$ProcessorResultSuccessImpl<T> value, $Res Function(_$ProcessorResultSuccessImpl<T>) then) =
       __$$ProcessorResultSuccessImplCopyWithImpl<T, $Res>;
   @override
   @useResult
-  $Res call({T resultData, TypeMatcher<ResultHandler>? resultHandlerType});
+  $Res call({T resultData, TypeValidatorRequired<ResultHandler>? resultHandlerType});
 }
 
 /// @nodoc
-class __$$ProcessorResultSuccessImplCopyWithImpl<T, $Res>
-    extends _$ProcessorResultCopyWithImpl<T, $Res,
-        _$ProcessorResultSuccessImpl<T>>
+class __$$ProcessorResultSuccessImplCopyWithImpl<T, $Res> extends _$ProcessorResultCopyWithImpl<T, $Res, _$ProcessorResultSuccessImpl<T>>
     implements _$$ProcessorResultSuccessImplCopyWith<T, $Res> {
-  __$$ProcessorResultSuccessImplCopyWithImpl(
-      _$ProcessorResultSuccessImpl<T> _value,
-      $Res Function(_$ProcessorResultSuccessImpl<T>) _then)
+  __$$ProcessorResultSuccessImplCopyWithImpl(_$ProcessorResultSuccessImpl<T> _value, $Res Function(_$ProcessorResultSuccessImpl<T>) _then)
       : super(_value, _then);
 
   /// Create a copy of ProcessorResult
@@ -149,7 +126,7 @@ class __$$ProcessorResultSuccessImplCopyWithImpl<T, $Res>
       resultHandlerType: freezed == resultHandlerType
           ? _value.resultHandlerType
           : resultHandlerType // ignore: cast_nullable_to_non_nullable
-              as TypeMatcher<ResultHandler>?,
+              as TypeValidatorRequired<ResultHandler>?,
     ));
   }
 }
@@ -157,13 +134,12 @@ class __$$ProcessorResultSuccessImplCopyWithImpl<T, $Res>
 /// @nodoc
 
 class _$ProcessorResultSuccessImpl<T> extends ProcessorResultSuccess<T> {
-  const _$ProcessorResultSuccessImpl(this.resultData, {this.resultHandlerType})
-      : super._();
+  const _$ProcessorResultSuccessImpl(this.resultData, {this.resultHandlerType}) : super._();
 
   @override
   final T resultData;
   @override
-  final TypeMatcher<ResultHandler>? resultHandlerType;
+  final TypeValidatorRequired<ResultHandler>? resultHandlerType;
 
   @override
   String toString() {
@@ -175,34 +151,26 @@ class _$ProcessorResultSuccessImpl<T> extends ProcessorResultSuccess<T> {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$ProcessorResultSuccessImpl<T> &&
-            const DeepCollectionEquality()
-                .equals(other.resultData, resultData) &&
-            (identical(other.resultHandlerType, resultHandlerType) ||
-                other.resultHandlerType == resultHandlerType));
+            const DeepCollectionEquality().equals(other.resultData, resultData) &&
+            (identical(other.resultHandlerType, resultHandlerType) || other.resultHandlerType == resultHandlerType));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType,
-      const DeepCollectionEquality().hash(resultData), resultHandlerType);
+  int get hashCode => Object.hash(runtimeType, const DeepCollectionEquality().hash(resultData), resultHandlerType);
 
   /// Create a copy of ProcessorResult
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$ProcessorResultSuccessImplCopyWith<T, _$ProcessorResultSuccessImpl<T>>
-      get copyWith => __$$ProcessorResultSuccessImplCopyWithImpl<T,
-          _$ProcessorResultSuccessImpl<T>>(this, _$identity);
+  _$$ProcessorResultSuccessImplCopyWith<T, _$ProcessorResultSuccessImpl<T>> get copyWith =>
+      __$$ProcessorResultSuccessImplCopyWithImpl<T, _$ProcessorResultSuccessImpl<T>>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(
-            T resultData, TypeMatcher<ResultHandler>? resultHandlerType)
-        success,
-    required TResult Function(
-            String message, TypeMatcher<ResultHandler>? resultHandlerType)
-        failed,
+    required TResult Function(T resultData, TypeValidatorRequired<ResultHandler>? resultHandlerType) success,
+    required TResult Function(String message, TypeValidatorRequired<ResultHandler>? resultHandlerType) failed,
   }) {
     return success(resultData, resultHandlerType);
   }
@@ -210,12 +178,8 @@ class _$ProcessorResultSuccessImpl<T> extends ProcessorResultSuccess<T> {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(
-            T resultData, TypeMatcher<ResultHandler>? resultHandlerType)?
-        success,
-    TResult? Function(
-            String message, TypeMatcher<ResultHandler>? resultHandlerType)?
-        failed,
+    TResult? Function(T resultData, TypeValidatorRequired<ResultHandler>? resultHandlerType)? success,
+    TResult? Function(String message, TypeValidatorRequired<ResultHandler>? resultHandlerType)? failed,
   }) {
     return success?.call(resultData, resultHandlerType);
   }
@@ -223,12 +187,8 @@ class _$ProcessorResultSuccessImpl<T> extends ProcessorResultSuccess<T> {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(
-            T resultData, TypeMatcher<ResultHandler>? resultHandlerType)?
-        success,
-    TResult Function(
-            String message, TypeMatcher<ResultHandler>? resultHandlerType)?
-        failed,
+    TResult Function(T resultData, TypeValidatorRequired<ResultHandler>? resultHandlerType)? success,
+    TResult Function(String message, TypeValidatorRequired<ResultHandler>? resultHandlerType)? failed,
     required TResult orElse(),
   }) {
     if (success != null) {
@@ -270,44 +230,33 @@ class _$ProcessorResultSuccessImpl<T> extends ProcessorResultSuccess<T> {
 }
 
 abstract class ProcessorResultSuccess<T> extends ProcessorResult<T> {
-  const factory ProcessorResultSuccess(final T resultData,
-          {final TypeMatcher<ResultHandler>? resultHandlerType}) =
-      _$ProcessorResultSuccessImpl<T>;
+  const factory ProcessorResultSuccess(final T resultData, {final TypeValidatorRequired<ResultHandler>? resultHandlerType}) = _$ProcessorResultSuccessImpl<T>;
   const ProcessorResultSuccess._() : super._();
 
   T get resultData;
   @override
-  TypeMatcher<ResultHandler>? get resultHandlerType;
+  TypeValidatorRequired<ResultHandler>? get resultHandlerType;
 
   /// Create a copy of ProcessorResult
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$ProcessorResultSuccessImplCopyWith<T, _$ProcessorResultSuccessImpl<T>>
-      get copyWith => throw _privateConstructorUsedError;
+  _$$ProcessorResultSuccessImplCopyWith<T, _$ProcessorResultSuccessImpl<T>> get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$ProcessorResultFailedImplCopyWith<T, $Res>
-    implements $ProcessorResultCopyWith<T, $Res> {
-  factory _$$ProcessorResultFailedImplCopyWith(
-          _$ProcessorResultFailedImpl<T> value,
-          $Res Function(_$ProcessorResultFailedImpl<T>) then) =
+abstract class _$$ProcessorResultFailedImplCopyWith<T, $Res> implements $ProcessorResultCopyWith<T, $Res> {
+  factory _$$ProcessorResultFailedImplCopyWith(_$ProcessorResultFailedImpl<T> value, $Res Function(_$ProcessorResultFailedImpl<T>) then) =
       __$$ProcessorResultFailedImplCopyWithImpl<T, $Res>;
   @override
   @useResult
-  $Res call({String message, TypeMatcher<ResultHandler>? resultHandlerType});
+  $Res call({String message, TypeValidatorRequired<ResultHandler>? resultHandlerType});
 }
 
 /// @nodoc
-class __$$ProcessorResultFailedImplCopyWithImpl<T, $Res>
-    extends _$ProcessorResultCopyWithImpl<T, $Res,
-        _$ProcessorResultFailedImpl<T>>
+class __$$ProcessorResultFailedImplCopyWithImpl<T, $Res> extends _$ProcessorResultCopyWithImpl<T, $Res, _$ProcessorResultFailedImpl<T>>
     implements _$$ProcessorResultFailedImplCopyWith<T, $Res> {
-  __$$ProcessorResultFailedImplCopyWithImpl(
-      _$ProcessorResultFailedImpl<T> _value,
-      $Res Function(_$ProcessorResultFailedImpl<T>) _then)
-      : super(_value, _then);
+  __$$ProcessorResultFailedImplCopyWithImpl(_$ProcessorResultFailedImpl<T> _value, $Res Function(_$ProcessorResultFailedImpl<T>) _then) : super(_value, _then);
 
   /// Create a copy of ProcessorResult
   /// with the given fields replaced by the non-null parameter values.
@@ -325,7 +274,7 @@ class __$$ProcessorResultFailedImplCopyWithImpl<T, $Res>
       resultHandlerType: freezed == resultHandlerType
           ? _value.resultHandlerType
           : resultHandlerType // ignore: cast_nullable_to_non_nullable
-              as TypeMatcher<ResultHandler>?,
+              as TypeValidatorRequired<ResultHandler>?,
     ));
   }
 }
@@ -333,13 +282,12 @@ class __$$ProcessorResultFailedImplCopyWithImpl<T, $Res>
 /// @nodoc
 
 class _$ProcessorResultFailedImpl<T> extends ProcessorResultFailed<T> {
-  const _$ProcessorResultFailedImpl(this.message, {this.resultHandlerType})
-      : super._();
+  const _$ProcessorResultFailedImpl(this.message, {this.resultHandlerType}) : super._();
 
   @override
   final String message;
   @override
-  final TypeMatcher<ResultHandler>? resultHandlerType;
+  final TypeValidatorRequired<ResultHandler>? resultHandlerType;
 
   @override
   String toString() {
@@ -352,8 +300,7 @@ class _$ProcessorResultFailedImpl<T> extends ProcessorResultFailed<T> {
         (other.runtimeType == runtimeType &&
             other is _$ProcessorResultFailedImpl<T> &&
             (identical(other.message, message) || other.message == message) &&
-            (identical(other.resultHandlerType, resultHandlerType) ||
-                other.resultHandlerType == resultHandlerType));
+            (identical(other.resultHandlerType, resultHandlerType) || other.resultHandlerType == resultHandlerType));
   }
 
   @override
@@ -364,19 +311,14 @@ class _$ProcessorResultFailedImpl<T> extends ProcessorResultFailed<T> {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$ProcessorResultFailedImplCopyWith<T, _$ProcessorResultFailedImpl<T>>
-      get copyWith => __$$ProcessorResultFailedImplCopyWithImpl<T,
-          _$ProcessorResultFailedImpl<T>>(this, _$identity);
+  _$$ProcessorResultFailedImplCopyWith<T, _$ProcessorResultFailedImpl<T>> get copyWith =>
+      __$$ProcessorResultFailedImplCopyWithImpl<T, _$ProcessorResultFailedImpl<T>>(this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(
-            T resultData, TypeMatcher<ResultHandler>? resultHandlerType)
-        success,
-    required TResult Function(
-            String message, TypeMatcher<ResultHandler>? resultHandlerType)
-        failed,
+    required TResult Function(T resultData, TypeValidatorRequired<ResultHandler>? resultHandlerType) success,
+    required TResult Function(String message, TypeValidatorRequired<ResultHandler>? resultHandlerType) failed,
   }) {
     return failed(message, resultHandlerType);
   }
@@ -384,12 +326,8 @@ class _$ProcessorResultFailedImpl<T> extends ProcessorResultFailed<T> {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(
-            T resultData, TypeMatcher<ResultHandler>? resultHandlerType)?
-        success,
-    TResult? Function(
-            String message, TypeMatcher<ResultHandler>? resultHandlerType)?
-        failed,
+    TResult? Function(T resultData, TypeValidatorRequired<ResultHandler>? resultHandlerType)? success,
+    TResult? Function(String message, TypeValidatorRequired<ResultHandler>? resultHandlerType)? failed,
   }) {
     return failed?.call(message, resultHandlerType);
   }
@@ -397,12 +335,8 @@ class _$ProcessorResultFailedImpl<T> extends ProcessorResultFailed<T> {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(
-            T resultData, TypeMatcher<ResultHandler>? resultHandlerType)?
-        success,
-    TResult Function(
-            String message, TypeMatcher<ResultHandler>? resultHandlerType)?
-        failed,
+    TResult Function(T resultData, TypeValidatorRequired<ResultHandler>? resultHandlerType)? success,
+    TResult Function(String message, TypeValidatorRequired<ResultHandler>? resultHandlerType)? failed,
     required TResult orElse(),
   }) {
     if (failed != null) {
@@ -444,19 +378,16 @@ class _$ProcessorResultFailedImpl<T> extends ProcessorResultFailed<T> {
 }
 
 abstract class ProcessorResultFailed<T> extends ProcessorResult<T> {
-  const factory ProcessorResultFailed(final String message,
-          {final TypeMatcher<ResultHandler>? resultHandlerType}) =
-      _$ProcessorResultFailedImpl<T>;
+  const factory ProcessorResultFailed(final String message, {final TypeValidatorRequired<ResultHandler>? resultHandlerType}) = _$ProcessorResultFailedImpl<T>;
   const ProcessorResultFailed._() : super._();
 
   String get message;
   @override
-  TypeMatcher<ResultHandler>? get resultHandlerType;
+  TypeValidatorRequired<ResultHandler>? get resultHandlerType;
 
   /// Create a copy of ProcessorResult
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$ProcessorResultFailedImplCopyWith<T, _$ProcessorResultFailedImpl<T>>
-      get copyWith => throw _privateConstructorUsedError;
+  _$$ProcessorResultFailedImplCopyWith<T, _$ProcessorResultFailedImpl<T>> get copyWith => throw _privateConstructorUsedError;
 }

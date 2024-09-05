@@ -25,7 +25,6 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) => PushToken(
       sslVerify: json['sslVerify'] as bool?,
       rolloutState: $enumDecodeNullable(
           _$PushTokenRollOutStateEnumMap, json['rolloutState']),
-      type: json['type'] as String?,
       tokenImage: json['tokenImage'] as String?,
       sortIndex: (json['sortIndex'] as num?)?.toInt(),
       folderId: (json['folderId'] as num?)?.toInt(),
@@ -49,7 +48,6 @@ Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
       'folderId': instance.folderId,
       'sortIndex': instance.sortIndex,
       'origin': instance.origin,
-      'type': instance.type,
       'expirationDate': instance.expirationDate?.toIso8601String(),
       'serial': instance.serial,
       'fbToken': instance.fbToken,

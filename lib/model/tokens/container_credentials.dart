@@ -20,49 +20,59 @@
  * limitations under the License.
  */
 
-import 'dart:typed_data';
-
 import 'package:basic_utils/basic_utils.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
+import 'package:privacyidea_authenticator/model/extensions/enums/ec_key_algorithm_extension.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
+import 'package:privacyidea_authenticator/utils/type_matchers.dart';
 
+import '../../utils/ecc_utils.dart';
 import '../../utils/logger.dart';
+import '../enums/container_finalization_state.dart';
+import '../enums/ec_key_algorithm.dart';
 
 part 'container_credentials.freezed.dart';
 part 'container_credentials.g.dart';
-
-// issuer=privacyIDEA
-// &serial=SMPH00134123
-// &nonce=887197025f5fa59b50f33c15196eb97ee651a5d1
-// &time=2024-08-21T07%3A43%3A07.086670%2B00%3A00
-// &url="http://127.0.0.1:5000/container/register/finalize"
-// &key_algorithm=secp384r1
-// &hash_algorithm=SHA256
-// &passphrase=Enter%20your%20passphrase
 
 @Freezed(toStringOverride: false)
 class ContainerCredential with _$ContainerCredential {
   static const eccUtils = EccUtils();
   const ContainerCredential._();
+
+  // example: pia://container/SMPH00134123
+  // ?issuer=privacyIDEA
+  // &nonce=887197025f5fa59b50f33c15196eb97ee651a5d1
+  // &time=2024-08-21T07%3A43%3A07.086670%2B00%3A00
+  // &url=http://127.0.0.1:5000/container/register/initialize
+  // &serial=SMPH00134123
+  // &key_algorithm=secp384r1
+  // &hash_algorithm=SHA256
+  // &passphrase=Enter%20your%20passphrase
   factory ContainerCredential.fromUriMap(Map<String, dynamic> uriMap) {
-    validateMap(uriMap, {
-      URI_ISSUER: const TypeMatcher<String>(),
-      URI_NONCE: const TypeMatcher<String>(),
-      URI_TIMESTAMP: const TypeMatcher<DateTime>(),
-      URI_FINALIZATION_URL: const TypeMatcher<Uri>(),
-      URI_SERIAL: const TypeMatcher<String>(),
-      URI_KEY_ALGORITHM: const TypeMatcher<EcKeyAlgorithm>(),
-      URI_HASH_ALGORITHM: const TypeMatcher<Algorithms>(),
-    });
+    uriMap = validateMap(
+      map: uriMap,
+      validators: {
+        CONTAINER_ISSUER: const TypeValidatorRequired<String>(),
+        CONTAINER_NONCE: const TypeValidatorRequired<String>(),
+        CONTAINER_TIMESTAMP: TypeValidatorRequired<DateTime>(transformer: (v) => DateTime.parse(v)),
+        CONTAINER_FINALIZATION_URL: stringToUrivalidator,
+        CONTAINER_SERIAL: const TypeValidatorRequired<String>(),
+        CONTAINER_EC_KEY_ALGORITHM: TypeValidatorRequired<EcKeyAlgorithm>(transformer: (v) => EcKeyAlgorithm.values.byCurveName(v)),
+        CONTAINER_HASH_ALGORITHM: stringToAlgorithmsValidator,
+        CONTAINER_PASSPHRASE_QUESTION: const TypeValidatorOptional<String>(),
+      },
+      name: 'Container',
+    );
     return ContainerCredential.unfinalized(
-      issuer: uriMap[URI_ISSUER],
-      nonce: uriMap[URI_NONCE],
-      timestamp: uriMap[URI_TIMESTAMP],
-      finalizationUrl: uriMap[URI_FINALIZATION_URL],
-      serial: uriMap[URI_SERIAL],
-      ecKeyAlgorithm: uriMap[URI_KEY_ALGORITHM],
-      hashAlgorithm: uriMap[URI_HASH_ALGORITHM],
+      issuer: uriMap[CONTAINER_ISSUER],
+      nonce: uriMap[CONTAINER_NONCE],
+      timestamp: uriMap[CONTAINER_TIMESTAMP],
+      finalizationUrl: uriMap[CONTAINER_FINALIZATION_URL],
+      serial: uriMap[CONTAINER_SERIAL],
+      ecKeyAlgorithm: uriMap[CONTAINER_EC_KEY_ALGORITHM],
+      hashAlgorithm: uriMap[CONTAINER_HASH_ALGORITHM],
+      passphraseQuestion: uriMap[CONTAINER_PASSPHRASE_QUESTION],
     );
   }
 
@@ -75,7 +85,7 @@ class ContainerCredential with _$ContainerCredential {
     required EcKeyAlgorithm ecKeyAlgorithm,
     required Algorithms hashAlgorithm,
     @Default(ContainerFinalizationState.uninitialized) ContainerFinalizationState finalizationState,
-    String? passphrase,
+    String? passphraseQuestion,
     String? publicServerKey,
     String? publicClientKey,
     String? privateClientKey,
@@ -90,7 +100,7 @@ class ContainerCredential with _$ContainerCredential {
     required EcKeyAlgorithm ecKeyAlgorithm,
     required Algorithms hashAlgorithm,
     @Default(ContainerFinalizationState.finalized) ContainerFinalizationState finalizationState,
-    String? passphrase,
+    String? passphraseQuestion,
     required String publicServerKey,
     required String publicClientKey,
     required String privateClientKey,
@@ -117,7 +127,7 @@ class ContainerCredential with _$ContainerCredential {
       serial: serial,
       ecKeyAlgorithm: ecKeyAlgorithm,
       hashAlgorithm: hashAlgorithm,
-      passphrase: passphrase,
+      passphraseQuestion: passphraseQuestion,
       finalizationState: ContainerFinalizationState.finalized,
       publicServerKey: this.publicServerKey ?? eccUtils.serializeECPublicKey(publicServerKey!),
       publicClientKey: publicClientKey ?? eccUtils.serializeECPublicKey(clientKeyPair!.publicKey),
@@ -149,177 +159,11 @@ class ContainerCredential with _$ContainerCredential {
       'ecKeyAlgorithm: $ecKeyAlgorithm, '
       'hashAlgorithm: $hashAlgorithm, '
       'finalizationState: $finalizationState, '
-      'passphrase: $passphrase, '
+      'passphraseQuestion: $passphraseQuestion, '
       'publicServerKey: $publicServerKey, '
       'publicClientKey: $publicClientKey)';
 }
 
-enum ContainerFinalizationState {
-  uninitialized,
-  generatingKeyPair,
-  generatingKeyPairFailed,
-  generatingKeyPairCompleted,
-  sendingPublicKey,
-  sendingPublicKeyFailed,
-  sendingPublicKeyCompleted,
-  parsingResponse,
-  parsingResponseFailed,
-  parsingResponseCompleted,
-  finalized,
-}
-
-/// The following curves are supported:
-
-enum EcKeyAlgorithm {
-  brainpoolp160r1,
-  brainpoolp160t1,
-  brainpoolp192r1,
-  brainpoolp192t1,
-  brainpoolp224r1,
-  brainpoolp224t1,
-  brainpoolp256r1,
-  brainpoolp256t1,
-  brainpoolp320r1,
-  brainpoolp320t1,
-  brainpoolp384r1,
-  brainpoolp384t1,
-  brainpoolp512r1,
-  brainpoolp512t1,
-  GostR3410_2001_CryptoPro_A,
-  GostR3410_2001_CryptoPro_B,
-  GostR3410_2001_CryptoPro_C,
-  GostR3410_2001_CryptoPro_XchA,
-  GostR3410_2001_CryptoPro_XchB,
-  prime192v1,
-  prime192v2,
-  prime192v3,
-  prime239v1,
-  prime239v2,
-  prime239v3,
-  prime256v1,
-  secp112r1,
-  secp112r2,
-  secp128r1,
-  secp128r2,
-  secp160k1,
-  secp160r1,
-  secp160r2,
-  secp192k1,
-  secp192r1,
-  secp224k1,
-  secp224r1,
-  secp256k1,
-  secp256r1,
-  secp384r1,
-  secp521r1,
-}
-
-extension EcKeyAlgorithmList on List<EcKeyAlgorithm> {
-  EcKeyAlgorithm byCurveName(String domainName) => switch (domainName) {
-        'brainpoolp160r1' => EcKeyAlgorithm.brainpoolp160r1,
-        'brainpoolp160t1' => EcKeyAlgorithm.brainpoolp160t1,
-        'brainpoolp192r1' => EcKeyAlgorithm.brainpoolp192r1,
-        'brainpoolp192t1' => EcKeyAlgorithm.brainpoolp192t1,
-        'brainpoolp224r1' => EcKeyAlgorithm.brainpoolp224r1,
-        'brainpoolp224t1' => EcKeyAlgorithm.brainpoolp224t1,
-        'brainpoolp256r1' => EcKeyAlgorithm.brainpoolp256r1,
-        'brainpoolp256t1' => EcKeyAlgorithm.brainpoolp256t1,
-        'brainpoolp320r1' => EcKeyAlgorithm.brainpoolp320r1,
-        'brainpoolp320t1' => EcKeyAlgorithm.brainpoolp320t1,
-        'brainpoolp384r1' => EcKeyAlgorithm.brainpoolp384r1,
-        'brainpoolp384t1' => EcKeyAlgorithm.brainpoolp384t1,
-        'brainpoolp512r1' => EcKeyAlgorithm.brainpoolp512r1,
-        'brainpoolp512t1' => EcKeyAlgorithm.brainpoolp512t1,
-        'GostR3410-2001-CryptoPro-A' => EcKeyAlgorithm.GostR3410_2001_CryptoPro_A,
-        'GostR3410-2001-CryptoPro-B' => EcKeyAlgorithm.GostR3410_2001_CryptoPro_B,
-        'GostR3410-2001-CryptoPro-C' => EcKeyAlgorithm.GostR3410_2001_CryptoPro_C,
-        'GostR3410-2001-CryptoPro-XchA' => EcKeyAlgorithm.GostR3410_2001_CryptoPro_XchA,
-        'GostR3410-2001-CryptoPro-XchB' => EcKeyAlgorithm.GostR3410_2001_CryptoPro_XchB,
-        'prime192v1' => EcKeyAlgorithm.prime192v1,
-        'prime192v2' => EcKeyAlgorithm.prime192v2,
-        'prime192v3' => EcKeyAlgorithm.prime192v3,
-        'prime239v1' => EcKeyAlgorithm.prime239v1,
-        'prime239v2' => EcKeyAlgorithm.prime239v2,
-        'prime239v3' => EcKeyAlgorithm.prime239v3,
-        'prime256v1' => EcKeyAlgorithm.prime256v1,
-        'secp112r1' => EcKeyAlgorithm.secp112r1,
-        'secp112r2' => EcKeyAlgorithm.secp112r2,
-        'secp128r1' => EcKeyAlgorithm.secp128r1,
-        'secp128r2' => EcKeyAlgorithm.secp128r2,
-        'secp160k1' => EcKeyAlgorithm.secp160k1,
-        'secp160r1' => EcKeyAlgorithm.secp160r1,
-        'secp160r2' => EcKeyAlgorithm.secp160r2,
-        'secp192k1' => EcKeyAlgorithm.secp192k1,
-        'secp192r1' => EcKeyAlgorithm.secp192r1,
-        'secp224k1' => EcKeyAlgorithm.secp224k1,
-        'secp224r1' => EcKeyAlgorithm.secp224r1,
-        'secp256k1' => EcKeyAlgorithm.secp256k1,
-        'secp256r1' => EcKeyAlgorithm.secp256r1,
-        'secp384r1' => EcKeyAlgorithm.secp384r1,
-        'secp521r1' => EcKeyAlgorithm.secp521r1,
-        _ => throw ArgumentError('Unknown domain name: $domainName'),
-      };
-}
-
-extension EcKeyAlgorithmX on EcKeyAlgorithm {
-  String get curveName => switch (this) {
-        EcKeyAlgorithm.brainpoolp160r1 => 'brainpoolp160r1',
-        EcKeyAlgorithm.brainpoolp160t1 => 'brainpoolp160t1',
-        EcKeyAlgorithm.brainpoolp192r1 => 'brainpoolp192r1',
-        EcKeyAlgorithm.brainpoolp192t1 => 'brainpoolp192t1',
-        EcKeyAlgorithm.brainpoolp224r1 => 'brainpoolp224r1',
-        EcKeyAlgorithm.brainpoolp224t1 => 'brainpoolp224t1',
-        EcKeyAlgorithm.brainpoolp256r1 => 'brainpoolp256r1',
-        EcKeyAlgorithm.brainpoolp256t1 => 'brainpoolp256t1',
-        EcKeyAlgorithm.brainpoolp320r1 => 'brainpoolp320r1',
-        EcKeyAlgorithm.brainpoolp320t1 => 'brainpoolp320t1',
-        EcKeyAlgorithm.brainpoolp384r1 => 'brainpoolp384r1',
-        EcKeyAlgorithm.brainpoolp384t1 => 'brainpoolp384t1',
-        EcKeyAlgorithm.brainpoolp512r1 => 'brainpoolp512r1',
-        EcKeyAlgorithm.brainpoolp512t1 => 'brainpoolp512t1',
-        EcKeyAlgorithm.GostR3410_2001_CryptoPro_A => 'GostR3410-2001-CryptoPro-A',
-        EcKeyAlgorithm.GostR3410_2001_CryptoPro_B => 'GostR3410-2001-CryptoPro-B',
-        EcKeyAlgorithm.GostR3410_2001_CryptoPro_C => 'GostR3410-2001-CryptoPro-C',
-        EcKeyAlgorithm.GostR3410_2001_CryptoPro_XchA => 'GostR3410-2001-CryptoPro-XchA',
-        EcKeyAlgorithm.GostR3410_2001_CryptoPro_XchB => 'GostR3410-2001-CryptoPro-XchB',
-        EcKeyAlgorithm.prime192v1 => 'prime192v1',
-        EcKeyAlgorithm.prime192v2 => 'prime192v2',
-        EcKeyAlgorithm.prime192v3 => 'prime192v3',
-        EcKeyAlgorithm.prime239v1 => 'prime239v1',
-        EcKeyAlgorithm.prime239v2 => 'prime239v2',
-        EcKeyAlgorithm.prime239v3 => 'prime239v3',
-        EcKeyAlgorithm.prime256v1 => 'prime256v1',
-        EcKeyAlgorithm.secp112r1 => 'secp112r1',
-        EcKeyAlgorithm.secp112r2 => 'secp112r2',
-        EcKeyAlgorithm.secp128r1 => 'secp128r1',
-        EcKeyAlgorithm.secp128r2 => 'secp128r2',
-        EcKeyAlgorithm.secp160k1 => 'secp160k1',
-        EcKeyAlgorithm.secp160r1 => 'secp160r1',
-        EcKeyAlgorithm.secp160r2 => 'secp160r2',
-        EcKeyAlgorithm.secp192k1 => 'secp192k1',
-        EcKeyAlgorithm.secp192r1 => 'secp192r1',
-        EcKeyAlgorithm.secp224k1 => 'secp224k1',
-        EcKeyAlgorithm.secp224r1 => 'secp224r1',
-        EcKeyAlgorithm.secp256k1 => 'secp256k1',
-        EcKeyAlgorithm.secp256r1 => 'secp256r1',
-        EcKeyAlgorithm.secp384r1 => 'secp384r1',
-        EcKeyAlgorithm.secp521r1 => 'secp521r1',
-      };
-}
 //be99ff65b1c38ae8a7d6caf8799a0cce3749fe0e|2024-08-27 14:30:58.371312Z|http://192.168.0.230:5000/container/register/finalize|SMPH0000D49C
 //be99ff65b1c38ae8a7d6caf8799a0cce3749fe0e|2024-08-27T14:30:58.371312+00:00|http://192.168.0.230:5000/container/register/finalize|SMPH0000D49C
 
-class EccUtils {
-  const EccUtils();
-
-  String serializeECPublicKey(ECPublicKey publicKey) => CryptoUtils.encodeEcPublicKeyToPem(publicKey);
-  ECPublicKey deserializeECPublicKey(String ecPublicKey) => CryptoUtils.ecPublicKeyFromPem(ecPublicKey);
-  String serializeECPrivateKey(ECPrivateKey ecPrivateKey) => CryptoUtils.encodeEcPrivateKeyToPem(ecPrivateKey);
-  ECPrivateKey deserializeECPrivateKey(String ecPrivateKey) => CryptoUtils.ecPrivateKeyFromPem(ecPrivateKey);
-
-  String trySignWithPrivateKey(ECPrivateKey privateKey, String message) {
-    final ecSignature = CryptoUtils.ecSign(privateKey, Uint8List.fromList(message.codeUnits), algorithmName: 'SHA-256/ECDSA');
-    String signatureBase64 = CryptoUtils.ecSignatureToBase64(ecSignature);
-    return signatureBase64;
-  }
-}

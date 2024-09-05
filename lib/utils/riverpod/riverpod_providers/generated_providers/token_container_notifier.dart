@@ -45,10 +45,11 @@ class TokenContainerNotifier extends _$TokenContainerNotifier {
   }) async {
     Logger.info('New tokenContainerStateProvider created', name: 'TokenContainerNotifier#build');
     await _stateMutex.acquire();
-    _repository = HybridTokenContainerRepository(
-      localRepository: SecureTokenContainerRepository(containerId: credential.serial),
-      remoteRepository: RemoteTokenContainerRepository(apiEndpoint: TokenContainerApiEndpoint(credential: credential)),
-    );
+    _repository = SecureTokenContainerRepository(containerId: credential.serial);
+    // HybridTokenContainerRepository(
+    // localRepository: SecureTokenContainerRepository(containerId: credential.serial),
+    // remoteRepository: RemoteTokenContainerRepository(apiEndpoint: TokenContainerApiEndpoint(credential: credential)),
+    // );
     final initialState = await _repository.loadContainerState();
     Logger.debug('Initial state: $initialState', name: 'TokenContainerNotifier#build');
     _stateMutex.release();
