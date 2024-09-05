@@ -62,7 +62,6 @@ class _ImportTokensViewState extends ConsumerState<ImportTokensView> {
           ),
         ),
       );
-      return;
     } else {
       tokensToImport = await Navigator.of(context).push(
         MaterialPageRoute(
@@ -70,11 +69,9 @@ class _ImportTokensViewState extends ConsumerState<ImportTokensView> {
         ),
       );
     }
-    if (tokensToImport != null) {
-      ref.read(tokenProvider.notifier).addOrReplaceTokens(tokensToImport);
-      if (!mounted) return;
-      Navigator.of(context).pop(true);
-    }
+    if (tokensToImport == null) return;
+    if (tokensToImport.isNotEmpty) ref.read(tokenProvider.notifier).addOrReplaceTokens(tokensToImport);
+    if (mounted) return Navigator.of(context).pop(tokensToImport.isNotEmpty);
   }
 
   @override

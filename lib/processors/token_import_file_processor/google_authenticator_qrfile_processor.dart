@@ -73,10 +73,11 @@ class GoogleAuthenticatorQrfileProcessor extends TokenImportFileProcessor {
       Logger.info("Cropped image to square: ${qrImage.width}x${qrImage.height}");
     }
 
-    var progress = globalRef?.read(progressStateProvider.notifier).initProgress(maxZoomLevel * 360, 0).progress;
-    for (var zoomLevel = 0; zoomLevel <= maxZoomLevel && qrResult == null && progress != null; zoomLevel++) {
-      for (var rotation = 0; rotation < 360 && progress != null; rotation += 90) {
-        globalRef?.read(progressStateProvider.notifier).setProgressValue(zoomLevel * 360 + rotation);
+    // var progress = globalRef?.read(progressStateProvider.notifier).initProgress(maxZoomLevel * 360, 0).progress;
+    for (var zoomLevel = 0; zoomLevel <= maxZoomLevel && qrResult == null; zoomLevel++) {
+      for (var rotation = 0; rotation < 360; rotation += 90) {
+        // await Future.delayed(const Duration(milliseconds: 1));
+        // globalRef?.read(progressStateProvider.notifier).setProgressValue(zoomLevel * 360 + rotation);
         try {
           qrResult = await compute(_decodeQrImageIsolate, [qrImage, rotation, zoomLevel]);
 
@@ -87,10 +88,10 @@ class GoogleAuthenticatorQrfileProcessor extends TokenImportFileProcessor {
         } on NotFoundException catch (_) {
           Logger.info("Qr-Code not detected. Zoom level: $zoomLevel|rotation: $rotation");
         }
-        progress = globalRef?.read(progressStateProvider).progress;
+        // progress = globalRef?.read(progressStateProvider).progress;
       }
     }
-    if (qrResult == null || progress == null) {
+    if (qrResult == null) {
       Logger.warning("Error decoding QR file..", name: "_pickQrFile#ImportStartPage");
       throw NotFoundException();
     }

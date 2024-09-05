@@ -177,7 +177,7 @@ void _testPushToken() {
           'URI_ROLLOUT_URL': Uri.parse('http://www.example.com'),
           'URI_TTL': 10,
         };
-        final token = PushToken.fromUriMap(uriMap);
+        final token = PushToken.fromOtpAuthMap(uriMap);
         expect(token.type, 'PIPUSH');
         expect(token.label, 'label');
         expect(token.issuer, 'issuer');
@@ -188,7 +188,7 @@ void _testPushToken() {
       });
       test('with empty map', () {
         final uriMap = <String, dynamic>{};
-        expect(() => PushToken.fromUriMap(uriMap), throwsA(isA<ArgumentError>()));
+        expect(() => PushToken.fromOtpAuthMap(uriMap), throwsA(isA<ArgumentError>()));
       });
     });
   });

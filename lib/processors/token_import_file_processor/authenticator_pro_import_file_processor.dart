@@ -23,14 +23,13 @@ import 'dart:convert';
 
 import 'package:cryptography/cryptography.dart';
 import 'package:file_selector/file_selector.dart';
+import 'package:privacyidea_authenticator/utils/type_matchers.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../model/encryption/uint_8_buffer.dart';
 import '../../model/enums/algorithms.dart';
-import '../../model/enums/encodings.dart';
 import '../../model/enums/token_origin_source_type.dart';
 import '../../model/enums/token_types.dart';
-import '../../model/extensions/enums/encodings_extension.dart';
 import '../../model/extensions/enums/token_origin_source_type.dart';
 import '../../model/processor_result.dart';
 import '../../model/tokens/token.dart';
@@ -156,12 +155,13 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
 
     return results.map((t) {
       if (t is! ProcessorResultSuccess<Token>) return t;
-      return ProcessorResultSuccess(TokenOriginSourceType.backupFile.addOriginToToken(
-        appName: TokenImportOrigins.authenticatorPro.appName,
-        token: t.resultData,
-        isPrivacyIdeaToken: false,
-        data: t.resultData.origin!.data,
-      ),
+      return ProcessorResultSuccess(
+        TokenOriginSourceType.backupFile.addOriginToToken(
+          appName: TokenImportOrigins.authenticatorPro.appName,
+          token: t.resultData,
+          isPrivacyIdeaToken: false,
+          data: t.resultData.origin!.data,
+        ),
         resultHandlerType: resultHandlerType,
       );
     }).toList();
@@ -320,23 +320,39 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
           Logger.warning('Unsupported token type: $typeInt');
           continue;
         }
-        final uriMap = {
-          URI_TYPE: tokenType,
-          URI_ISSUER: tokenMap[_AUTHENTICATOR_PRO_ISSUER] as String,
-          URI_LABEL: tokenMap[_AUTHENTICATOR_PRO_LABEL] as String,
-          URI_SECRET: Encodings.base32.decode(tokenMap[_AUTHENTICATOR_PRO_SECRET] as String),
-          URI_DIGITS: tokenMap[_AUTHENTICATOR_PRO_DIGITS] as int,
-          URI_PERIOD: tokenMap[_AUTHENTICATOR_PRO_PERIOD] as int,
-          URI_ALGORITHM: algorithmMap[tokenMap[_AUTHENTICATOR_PRO_ALGORITHM] as int],
-          URI_COUNTER: tokenMap[_AUTHENTICATOR_PRO_COUNTER] as int,
-          URI_ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
+
+        final otpAuthMap = validateMap<String>(
+          map: {
+            OTP_AUTH_TYPE: tokenType,
+            OTP_AUTH_ISSUER: tokenMap[_AUTHENTICATOR_PRO_ISSUER],
+            OTP_AUTH_LABEL: tokenMap[_AUTHENTICATOR_PRO_LABEL],
+            OTP_AUTH_SECRET_BASE32: tokenMap[_AUTHENTICATOR_PRO_SECRET],
+            OTP_AUTH_DIGITS: tokenMap[_AUTHENTICATOR_PRO_DIGITS],
+            OTP_AUTH_PERIOD_SECONDS: tokenMap[_AUTHENTICATOR_PRO_PERIOD],
+            OTP_AUTH_ALGORITHM: tokenMap[_AUTHENTICATOR_PRO_ALGORITHM],
+            OTP_AUTH_COUNTER: tokenMap[_AUTHENTICATOR_PRO_COUNTER],
+          },
+          validators: {
+            OTP_AUTH_TYPE: const TypeValidatorRequired<String>(),
+            OTP_AUTH_ISSUER: const TypeValidatorRequired<String>(),
+            OTP_AUTH_LABEL: const TypeValidatorRequired<String>(),
+            OTP_AUTH_SECRET_BASE32: const TypeValidatorRequired<String>(),
+            OTP_AUTH_DIGITS: intToStringValidator,
+            OTP_AUTH_PERIOD_SECONDS: intToStringValidator,
+            OTP_AUTH_ALGORITHM: TypeValidatorRequired<String>(transformer: (value) => algorithmMap[value]!),
+            OTP_AUTH_COUNTER: intToStringValidator,
+          },
+          name: 'AuthenticatorProToken',
+        );
+
+        final token = Token.fromOtpAuthMap(
+          otpAuthMap,
+          origin: TokenOriginSourceType.backupFile.toTokenOrigin(
             originName: TokenImportOrigins.authenticatorPro.appName,
             isPrivacyIdeaToken: false,
             data: jsonEncode(tokenMap),
           ),
-        };
-
-        final token = Token.fromUriMap(uriMap);
+        );
         result.add(ProcessorResultSuccess(
           token,
           resultHandlerType: resultHandlerType,
@@ -348,7 +364,8 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
         ));
       } catch (e) {
         Logger.error('Failed to parse token.', name: 'authenticator_pro_import_file_processor#_processAuthPro', error: e, stackTrace: StackTrace.current);
-        result.add(ProcessorResultFailed(e.toString(),
+        result.add(ProcessorResultFailed(
+          e.toString(),
           resultHandlerType: resultHandlerType,
         ));
       }

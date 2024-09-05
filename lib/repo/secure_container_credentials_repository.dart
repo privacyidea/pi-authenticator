@@ -4,7 +4,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mutex/mutex.dart';
 import '../interfaces/repo/container_credentials_repository.dart';
 
-import '../model/enums/algorithms.dart';
 import '../model/riverpod_states/credentials_state.dart';
 import '../model/tokens/container_credentials.dart';
 import '../utils/logger.dart';
@@ -26,24 +25,6 @@ class SecureContainerCredentialsRepository extends ContainerCredentialsRepositor
   Future<CredentialsState> loadCredentialsState() async {
     final credentialsJsonString = await _readAll();
     Logger.warning('Loaded credentials: $credentialsJsonString', name: 'SecureContainerCredentialsRepository');
-    if (credentialsJsonString.isEmpty) {
-      final credentialState = CredentialsState(credentials: [
-        ContainerCredential.finalized(
-          serial: '123',
-          ecKeyAlgorithm: EcKeyAlgorithm.secp256k1,
-          hashAlgorithm: Algorithms.SHA256,
-          issuer: '',
-          nonce: '',
-          timestamp: DateTime.now(),
-          finalizationUrl: Uri(),
-          publicServerKey: '',
-          publicClientKey: '',
-          privateClientKey: '',
-        ),
-      ]);
-      Logger.warning('Returning default credentials: $credentialState', name: 'SecureContainerCredentialsRepository');
-      return credentialState;
-    }
     return CredentialsState.fromJsonStringList(credentialsJsonString.values.toList());
   }
 

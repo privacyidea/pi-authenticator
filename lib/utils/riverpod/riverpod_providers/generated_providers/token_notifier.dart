@@ -423,26 +423,26 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       );
       if (appTemplate == null) {
         Logger.debug(
-          'Token with serial ${serverTokenTemplate.serial} or id ${serverTokenTemplate.id} not found in app. Adding them.',
+          'Token with serial ${serverTokenTemplate.serial} or otps ${serverTokenTemplate.otpValues} not found in app. Adding them.',
           name: 'token_notifier.dart#updateContainerTokens',
         );
         templatesToAdd.add(serverTokenTemplate);
       } else {
         Logger.debug(
-          'Token with serial ${serverTokenTemplate.serial} or id ${serverTokenTemplate.id} found in app. Checking for update.',
+          'Token with serial ${serverTokenTemplate.serial} or otps ${serverTokenTemplate.otpValues} found in app. Checking for update.',
           name: 'token_notifier.dart#updateContainerTokens',
         );
         appTokenTemplates.remove(appTemplate);
         if (!appTemplate.hasSameValuesAs(serverTokenTemplate)) {
           Logger.debug(
-            'Token with serial ${serverTokenTemplate.serial} or id ${serverTokenTemplate.id} found in app the Template but is different. Check update.',
+            'Token with serial ${serverTokenTemplate.serial} or otps ${serverTokenTemplate.otpValues} found in app the Template but is different. Check update.',
             name: 'token_notifier.dart#updateContainerTokens',
           );
           // Only update the token if the template is different
           templatesToUpdate.add(serverTokenTemplate);
         } else {
           Logger.debug(
-            'Token with serial ${serverTokenTemplate.serial} or id ${serverTokenTemplate.id} found in app. And is the same. Skipping.',
+            'Token with serial ${serverTokenTemplate.serial} or otps ${serverTokenTemplate.otpValues} found in app. And is the same. Skipping.',
             name: 'token_notifier.dart#updateContainerTokens',
           );
         }
@@ -460,7 +460,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     final tokensToAdd = templatesToAdd.map((e) => e.toToken(container)).toList();
     final tokensToUpdate = <Token>[];
     for (var template in templatesToUpdate) {
-      final token = knownContainerTokens.firstWhereOrNull((token) => token.id == template.id || token.serial == template.serial);
+      final token = knownContainerTokens.firstWhereOrNull((token) => token.serial == template.serial);
       if (token == null) continue;
       final needsUpdate = template.tokenWouldBeUpdated(token);
       if (needsUpdate) {
@@ -469,7 +469,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     }
     final tokensToRemove = <Token>[];
     for (var template in templatesToRemove) {
-      final token = knownContainerTokens.firstWhereOrNull((token) => token.id == template.id || token.serial == template.serial);
+      final token = knownContainerTokens.firstWhereOrNull((token) => token.serial == template.serial);
       if (token == null) continue;
       tokensToRemove.add(token);
     }
@@ -484,7 +484,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     }
     if (tokensToUpdate.isNotEmpty) {
       await updateTokens(tokensToUpdate, (token) {
-        final template = templatesToUpdate.firstWhereOrNull((template) => template.id == token.id || template.serial == token.serial);
+        final template = templatesToUpdate.firstWhereOrNull((template) => template.serial == token.serial);
         if (template == null) {
           Logger.debug(
             'Not able to update token with id ${token.id} or serial ${token.serial}. No token serial/id matches the templates serial/id.',
@@ -496,7 +496,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
           'Updating token with id:"${token.id}"/serial:"${token.serial}".',
           name: 'token_notifier.dart#updateContainerTokens',
         );
-        return token.copyWithFromTemplate(template);
+        return token.copyUpdateByTemplate(template);
       });
     }
     if (tokensToRemove.isNotEmpty) {

@@ -78,7 +78,7 @@ void _testSteamToken() {
             'URI_PIN': false,
             'URI_IMAGE': 'example.png',
           };
-          final totpFromUriMap = SteamToken.fromUriMap(uriMap);
+          final totpFromUriMap = SteamToken.fromOtpAuthMap(uriMap);
           expect(totpFromUriMap.period, 30);
           expect(totpFromUriMap.label, 'label');
           expect(totpFromUriMap.issuer, 'issuer');
@@ -97,11 +97,11 @@ void _testSteamToken() {
             'URI_PIN': false,
             'URI_IMAGE': 'example.png',
           };
-          expect(() => SteamToken.fromUriMap(uriMap), throwsA(isA<ArgumentError>()));
+          expect(() => SteamToken.fromOtpAuthMap(uriMap), throwsA(isA<ArgumentError>()));
         });
         test('with empty map', () {
           final uriMap = <String, dynamic>{};
-          expect(() => TOTPToken.fromUriMap(uriMap), throwsA(isA<ArgumentError>()));
+          expect(() => TOTPToken.fromOtpAuthMap(uriMap), throwsA(isA<ArgumentError>()));
         });
       });
       test('fromJson', () {

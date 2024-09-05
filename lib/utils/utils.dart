@@ -221,15 +221,15 @@ Future<void> scanQrCode(List<ResultHandler> resultHandlerList, Object? qrCode) a
   }
   final processorResults = await SchemeProcessor.processUriByAny(uri);
   if (processorResults == null) return;
-  final resultHandlerTypeMap = <TypeMatcher<ResultHandler>, List<ProcessorResult>>{};
+  final resultHandlerTypeMap = <TypeValidatorRequired<ResultHandler>, List<ProcessorResult>>{};
 
   for (var result in processorResults) {
-    final typeMatcher = result.resultHandlerType;
-    if (typeMatcher == null) continue;
+    final validator = result.resultHandlerType;
+    if (validator == null) continue;
     if (resultHandlerTypeMap.containsKey(result.resultHandlerType)) {
-      resultHandlerTypeMap[typeMatcher]!.add(result);
+      resultHandlerTypeMap[validator]!.add(result);
     } else {
-      resultHandlerTypeMap[typeMatcher] = [result];
+      resultHandlerTypeMap[validator] = [result];
     }
   }
 

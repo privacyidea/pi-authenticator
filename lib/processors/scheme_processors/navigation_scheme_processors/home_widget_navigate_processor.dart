@@ -30,7 +30,7 @@ import '../../../views/link_home_widget_view/link_home_widget_view.dart';
 import 'navigation_scheme_processor_interface.dart';
 
 class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
-  static const resultHandlerType = TypeMatcher<NavigationHandler>();
+  static const resultHandlerType = TypeValidatorRequired<NavigationHandler>();
   HomeWidgetNavigateProcessor();
 
   static final Map<String, Future<List<ProcessorResult<dynamic>>?> Function(Uri, BuildContext, {bool fromInit})> _processors = {
@@ -151,7 +151,11 @@ class NavigationHandler<R> with ResultHandler {
   Future<R?> handleProcessorResult(ProcessorResult result, Map<String, dynamic> args) async {
     if (result is! ProcessorResult<Navigation>) return null;
     if (result.isFailed) return null;
-    validateMap(args, {'context': const TypeMatcher<BuildContext>()});
+    validate(
+      value: args['context'],
+      validator: const TypeValidatorRequired<BuildContext>(),
+      name: 'context',
+    );
     final navigation = result.asSuccess!.resultData;
     final BuildContext context = args['context'];
     return await navigation(context);
@@ -161,7 +165,20 @@ class NavigationHandler<R> with ResultHandler {
   Future<List<R>?> handleProcessorResults(List<ProcessorResult> results, Map<String, dynamic> args) async {
     final successResults = results.whereType<ProcessorResult<Navigation>>().toList().successResults;
     if (successResults.isEmpty) return null;
-    validateMap(args, {'context': const TypeMatcher<BuildContext>()});
+    try {
+      validate(
+        value: args['context'],
+        validator: const TypeValidatorRequired<BuildContext>(),
+        name: 'context',
+      );
+    } catch (e, s) {
+      Logger.error(
+        'Error while processing navigation results',
+        error: e,
+        stackTrace: s,
+      );
+      return null;
+    }
     List<Navigation> navigations = successResults.getData();
     final context = args['context'];
     final retunValues = <R>[];

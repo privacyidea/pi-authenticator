@@ -17,24 +17,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import 'dart:typed_data';
 
 import 'package:json_annotation/json_annotation.dart';
 import 'package:uuid/uuid.dart';
-
-import '../../utils/errors.dart';
 import '../../utils/identifiers.dart';
 import '../../utils/logger.dart';
+import '../../utils/type_matchers.dart';
 import '../enums/algorithms.dart';
-import '../enums/encodings.dart';
 import '../enums/token_types.dart';
 import '../extensions/enums/algorithms_extension.dart';
-import '../extensions/enums/encodings_extension.dart';
 import '../token_container.dart';
 import '../token_import/token_origin_data.dart';
 import 'otp_token.dart';
 import 'token.dart';
-
 part 'totp_token.g.dart';
 
 @JsonSerializable()
@@ -62,6 +57,8 @@ class TOTPToken extends OTPToken {
 
   @override
   String get otpValue => otpFromTime(DateTime.now());
+  @override
+  String get nextValue => otpFromTime(DateTime.now().add(Duration(seconds: period)));
 
   TOTPToken({
     required int period,
@@ -69,8 +66,9 @@ class TOTPToken extends OTPToken {
     required super.algorithm,
     required super.digits,
     required super.secret,
-    super.containerSerial,
     super.serial,
+    super.containerSerial,
+    super.checkedContainers,
     String? type,
     super.tokenImage,
     super.pin,
@@ -97,6 +95,7 @@ class TOTPToken extends OTPToken {
     String? label,
     String? issuer,
     String? Function()? containerSerial,
+    List<String>? checkedContainers,
     String? id,
     Algorithms? algorithm,
     int? digits,
@@ -115,6 +114,7 @@ class TOTPToken extends OTPToken {
       label: label ?? this.label,
       issuer: issuer ?? this.issuer,
       containerSerial: containerSerial != null ? containerSerial() : this.containerSerial,
+      checkedContainers: checkedContainers ?? this.checkedContainers,
       id: id ?? this.id,
       algorithm: algorithm ?? this.algorithm,
       digits: digits ?? this.digits,
@@ -131,26 +131,34 @@ class TOTPToken extends OTPToken {
   }
 
   @override
-  TOTPToken copyWithFromTemplate(TokenTemplate template) {
-    final uriMap = template.data;
-
-    final newToken = copyWith(
-      id: uriMap[URI_ID],
-      label: uriMap[URI_LABEL],
-      issuer: uriMap[URI_ISSUER],
-      serial: uriMap[URI_SERIAL],
-      algorithm: uriMap[URI_ALGORITHM] != null ? Algorithms.values.byName((uriMap[URI_ALGORITHM] as String).toUpperCase()) : null,
-      digits: uriMap[URI_DIGITS],
-      tokenImage: uriMap[URI_IMAGE],
-      secret: uriMap[URI_SECRET] != null ? Encodings.base32.encode(uriMap[URI_SECRET]) : null,
-      period: uriMap[URI_PERIOD],
-      pin: uriMap[URI_PIN],
-      isLocked: uriMap[URI_PIN],
-      origin: uriMap[URI_ORIGIN],
+  TOTPToken copyUpdateByTemplate(TokenTemplate template) {
+    final uriMap = validateMap(
+      map: template.data,
+      validators: {
+        OTP_AUTH_LABEL: const TypeValidatorOptional<String>(),
+        OTP_AUTH_ISSUER: const TypeValidatorOptional<String>(),
+        OTP_AUTH_SERIAL: const TypeValidatorOptional<String>(),
+        OTP_AUTH_ALGORITHM: stringToAlgorithmsValidatorOptional,
+        OTP_AUTH_DIGITS: stringToIntValidatorOptional,
+        OTP_AUTH_SECRET_BASE32: base32SecretValidatorOptional,
+        OTP_AUTH_PERIOD_SECONDS: stringToIntValidatorOptional,
+        OTP_AUTH_IMAGE: const TypeValidatorOptional<String>(),
+        OTP_AUTH_PIN: stringToBoolValidatorOptional,
+      },
+      name: 'TOTPToken',
     );
-    Logger.debug('TOTPToken.copyWithFromTemplate old token: $this');
-    Logger.debug('TOTPToken.copyWithFromTemplate new token: $newToken');
-    return newToken;
+    return copyWith(
+      label: uriMap[OTP_AUTH_LABEL] as String?,
+      issuer: uriMap[OTP_AUTH_ISSUER] as String?,
+      serial: uriMap[OTP_AUTH_SERIAL] as String?,
+      algorithm: uriMap[OTP_AUTH_ALGORITHM] as Algorithms?,
+      digits: uriMap[OTP_AUTH_DIGITS] as int?,
+      secret: uriMap[OTP_AUTH_SECRET_BASE32] as String?,
+      period: uriMap[OTP_AUTH_PERIOD_SECONDS] as int?,
+      tokenImage: uriMap[OTP_AUTH_IMAGE] as String?,
+      pin: uriMap[OTP_AUTH_PIN] as bool?,
+      isLocked: uriMap[OTP_AUTH_PIN] as bool?,
+    );
   }
 
   @override
@@ -158,94 +166,62 @@ class TOTPToken extends OTPToken {
     return 'T${super.toString()}period: $period}';
   }
 
-  factory TOTPToken.fromUriMap(Map<String, dynamic> uriMap) {
-    validateUriMap(uriMap);
+  factory TOTPToken.fromOtpAuthMap(Map<String, String> otpAuthMap, {required TokenOriginData origin}) {
+    final validatedMap = validateMap(
+      map: otpAuthMap,
+      validators: {
+        OTP_AUTH_LABEL: const TypeValidatorRequired<String>(defaultValue: ''),
+        OTP_AUTH_ISSUER: const TypeValidatorRequired<String>(defaultValue: ''),
+        OTP_AUTH_SERIAL: const TypeValidatorOptional<String>(),
+        OTP_AUTH_ALGORITHM: stringToAlgorithmsValidator.withDefault(Algorithms.SHA1),
+        OTP_AUTH_DIGITS: stringToIntvalidator.withDefault(6),
+        OTP_AUTH_SECRET_BASE32: base32Secretvalidator,
+        OTP_AUTH_PERIOD_SECONDS: stringToIntvalidator.withDefault(30),
+        OTP_AUTH_IMAGE: const TypeValidatorOptional<String>(),
+        OTP_AUTH_PIN: stringToBoolValidatorOptional,
+      },
+      name: 'TOTPToken',
+    );
     return TOTPToken(
-      label: uriMap[URI_LABEL] ?? '',
-      issuer: uriMap[URI_ISSUER] ?? '',
-      id: uriMap[URI_ID] == String ? uriMap[URI_ID] : const Uuid().v4(),
-      serial: uriMap[URI_SERIAL],
-      algorithm: Algorithms.values.byName((uriMap[URI_ALGORITHM] as String? ?? 'SHA1').toUpperCase()),
-      digits: uriMap[URI_DIGITS] ?? 6,
-      tokenImage: uriMap[URI_IMAGE],
-      secret: Encodings.base32.encode(uriMap[URI_SECRET]),
-      period: uriMap[URI_PERIOD] ?? 30,
-      pin: uriMap[URI_PIN],
-      isLocked: uriMap[URI_PIN],
-      origin: uriMap[URI_ORIGIN],
+      label: validatedMap[OTP_AUTH_LABEL] as String,
+      issuer: validatedMap[OTP_AUTH_ISSUER] as String,
+      id: const Uuid().v4(),
+      serial: validatedMap[OTP_AUTH_SERIAL] as String?,
+      algorithm: validatedMap[OTP_AUTH_ALGORITHM] as Algorithms,
+      digits: validatedMap[OTP_AUTH_DIGITS] as int,
+      secret: validatedMap[OTP_AUTH_SECRET_BASE32] as String,
+      period: validatedMap[OTP_AUTH_PERIOD_SECONDS] as int,
+      tokenImage: validatedMap[OTP_AUTH_IMAGE] as String?,
+      pin: validatedMap[OTP_AUTH_PIN] as bool?,
+      isLocked: validatedMap[OTP_AUTH_PIN] as bool?,
+      origin: origin,
     );
   }
 
   /// This is used to create a map that typically was created from a uri.
   /// ```dart
-  /// ----------------------------- [TOTPToken] ------------------------------
-  /// URI_PERIOD: period of otp generation in seconds (int),
-  /// ------------------------------ [OTPToken] ------------------------------
-  /// URI_SECRET: base32 encoded string (String),
-  /// URI_ALGORITHM: algorithm name e.g. SHA1 (String),
-  /// URI_DIGITS: number of digits (int),
-  /// ------------------------------- [Token] ---------------------------------
-  /// URI_LABEL: name of the token (String),
-  /// URI_ISSUER: name of the issuer (String),
-  /// URI_PIN: is the user forced to have a pin (bool),
-  /// URI_IMAGE: url to an image e.g. "https://example.com/image.png" (String),
-  /// URI_ORIGIN: json string of the origin class (String),
-  /// -------------------------------------------------------------------------
+  ///  ------------------------- [Token] -------------------------
+  /// | OTP_AUTH_SERIAL: serial, (optional)                       |
+  /// | OTP_AUTH_TYPE: type,                                      |
+  /// | OTP_AUTH_LABEL: label,                                    |
+  /// | OTP_AUTH_ISSUER: issuer,                                  |
+  /// | OTP_AUTH_PIN: pin,                                        |
+  /// | OTP_AUTH_IMAGE: tokenImage, (optional)                    |
+  ///  -----------------------------------------------------------
+  ///  ----------------------- [OTPToken] ------------------------
+  /// | OTP_AUTH_ALGORITHM: algorithm,                            |
+  /// | OTP_AUTH_DIGITS: digits,                                  |
+  ///  -----------------------------------------------------------
+  ///  ----------------------- [HOTPToken] -----------------------
+  /// | OTP_AUTH_COUNTER: period,                                 |
+  ///  -----------------------------------------------------------
   /// ```
   @override
-  Map<String, dynamic> toUriMap() {
-    return super.toUriMap()
+  Map<String, String> toOtpAuthMap({String? containerSerial}) {
+    return super.toOtpAuthMap()
       ..addAll({
-        URI_PERIOD: period,
+        OTP_AUTH_COUNTER: period.toString(),
       });
-  }
-
-  /// Validates the uriMap for the required fields throws [LocalizedArgumentError] if a field is missing or invalid.
-  static void validateUriMap(Map<String, dynamic> uriMap) {
-    if (uriMap[URI_SECRET] is! Uint8List) {
-      throw LocalizedArgumentError(
-        localizedMessage: ((localizations, value, name) => localizations.secretIsRequired),
-        unlocalizedMessage: 'Secret is required and must be a Uint8List',
-        invalidValue: uriMap[URI_SECRET],
-        name: URI_SECRET,
-      );
-    }
-    if (uriMap[URI_SERIAL] is! String?) {
-      throw LocalizedArgumentError(
-        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
-        unlocalizedMessage: 'Serial must be a string',
-        invalidValue: uriMap[URI_SERIAL],
-        name: URI_SERIAL,
-      );
-    }
-    if (uriMap[URI_DIGITS] != null && uriMap[URI_DIGITS] < 1) {
-      throw LocalizedArgumentError(
-        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
-        unlocalizedMessage: 'Digits must be greater than 0',
-        invalidValue: uriMap[URI_DIGITS],
-        name: URI_DIGITS,
-      );
-    }
-    if (uriMap[URI_PERIOD] != null && uriMap[URI_PERIOD] < 1) {
-      throw LocalizedArgumentError(
-        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
-        unlocalizedMessage: 'Period must be greater than 0',
-        invalidValue: uriMap[URI_PERIOD],
-        name: URI_PERIOD,
-      );
-    }
-    if (uriMap[URI_ALGORITHM] != null) {
-      try {
-        Algorithms.values.byName(uriMap[URI_ALGORITHM].toUpperCase());
-      } catch (e) {
-        throw LocalizedArgumentError(
-          localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
-          unlocalizedMessage: 'Algorithm ${uriMap[URI_ALGORITHM]} is not supported',
-          invalidValue: uriMap[URI_ALGORITHM],
-          name: URI_ALGORITHM,
-        );
-      }
-    }
   }
 
   double get currentProgress {

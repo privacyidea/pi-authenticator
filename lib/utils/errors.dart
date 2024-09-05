@@ -19,15 +19,15 @@
  */
 import '../l10n/app_localizations.dart';
 
-class LocalizedArgumentError<T> extends LocalizedException implements ArgumentError {
-  final T _invalidValue;
+class LocalizedArgumentError extends LocalizedException implements ArgumentError {
+  final String _invalidValue;
   final String? _name;
   final StackTrace? _stackTrace;
 
   factory LocalizedArgumentError({
-    required String Function(AppLocalizations localizations, T value, String name) localizedMessage,
+    required String Function(AppLocalizations localizations, String valueString, String name) localizedMessage,
     required String unlocalizedMessage,
-    required T invalidValue,
+    required String invalidValue,
     required String name,
     StackTrace? stackTrace,
   }) =>

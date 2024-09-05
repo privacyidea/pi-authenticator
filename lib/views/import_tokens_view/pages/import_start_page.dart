@@ -76,16 +76,16 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
     _linkController.dispose();
     _deleteCopyOfXFile();
     future?.ignore();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      globalRef?.read(progressStateProvider.notifier).deleteProgress();
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   globalRef?.read(progressStateProvider.notifier).deleteProgress();
+    // });
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
-    final currentLoadingProgress = ref.watch(progressStateProvider).progress;
+    // final currentLoadingProgress = ref.watch(progressStateProvider).progress;
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.appName),
@@ -151,11 +151,11 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
                         children: [
                           Stack(
                             children: [
-                              LinearProgressIndicator(
-                                minHeight: _progessLabel != null ? 16 : null,
-                                value: currentLoadingProgress,
-                                semanticsLabel: _progessLabel,
-                              ),
+                              // LinearProgressIndicator(
+                              //   minHeight: _progessLabel != null ? 16 : null,
+                              //   value: currentLoadingProgress,
+                              //   semanticsLabel: _progessLabel,
+                              // ),
                               if (_progessLabel != null)
                                 Positioned.fill(
                                   child: Center(
@@ -192,7 +192,7 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
     final fileProcessor = processor as TokenImportFileProcessor;
     final localizations = AppLocalizations.of(context)!;
     final XTypeGroup typeGroup = XTypeGroup(label: localizations.selectFile);
-    final XFile? file = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
+    final XFile? file = await openFile(acceptedTypeGroups: [typeGroup]);
     if (file == null) {
       Logger.warning("No file selected", name: "_pickAFile#ImportSelectFilePage");
       return;
@@ -230,7 +230,7 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
           isPrivacyIdeaToken: false,
           data: t.resultData.origin?.data ?? fileString,
         ),
-        resultHandlerType: const TypeMatcher<TokenNotifier>(),
+        resultHandlerType: const TypeValidatorRequired<TokenNotifier>(),
       );
     }).toList();
 
@@ -267,7 +267,7 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
           token: t.resultData,
           data: t.resultData.origin?.data ?? uri.toString(),
         ),
-        resultHandlerType: const TypeMatcher<TokenNotifier>(),
+        resultHandlerType: const TypeValidatorRequired<TokenNotifier>(),
       );
     }).toList();
     Logger.info("QR code scanned successfully", name: "_scanQrCode#ImportStartPage");
@@ -363,7 +363,7 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
           isPrivacyIdeaToken: false,
           data: _linkController.text,
         ),
-        resultHandlerType: const TypeMatcher<TokenNotifier>(),
+        resultHandlerType: const TypeValidatorRequired<TokenNotifier>(),
       );
     }).toList();
     if (!mounted) return;

@@ -89,7 +89,7 @@ void _testHotpToken() {
           'URI_PIN': true,
           'URI_IMAGE': 'example.png',
         };
-        final hotpFromUriMap = HOTPToken.fromUriMap(uriMap);
+        final hotpFromUriMap = HOTPToken.fromOtpAuthMap(uriMap);
         expect(hotpFromUriMap.counter, 10);
         expect(hotpFromUriMap.label, 'label');
         expect(hotpFromUriMap.issuer, 'issuer');
@@ -111,7 +111,7 @@ void _testHotpToken() {
           'URI_PIN': true,
           'URI_IMAGE': 'example.png',
         };
-        expect(() => HOTPToken.fromUriMap(uriMap), throwsArgumentError);
+        expect(() => HOTPToken.fromOtpAuthMap(uriMap), throwsArgumentError);
       });
       test('digits is zero', () {
         final uriMap = {
@@ -125,7 +125,7 @@ void _testHotpToken() {
           'URI_PIN': true,
           'URI_IMAGE': 'example.png',
         };
-        expect(() => HOTPToken.fromUriMap(uriMap), throwsArgumentError);
+        expect(() => HOTPToken.fromOtpAuthMap(uriMap), throwsArgumentError);
       });
       test('with lowercase algorithm', () {
         final uriMap = {
@@ -139,7 +139,7 @@ void _testHotpToken() {
           'URI_PIN': true,
           'URI_IMAGE': 'example.png',
         };
-        final hotpFromUriMap = HOTPToken.fromUriMap(uriMap);
+        final hotpFromUriMap = HOTPToken.fromOtpAuthMap(uriMap);
         expect(hotpFromUriMap.counter, 10);
         expect(hotpFromUriMap.label, 'label');
         expect(hotpFromUriMap.issuer, 'issuer');
@@ -153,7 +153,7 @@ void _testHotpToken() {
 
       test('with empty map', () {
         final uriMap = <String, dynamic>{};
-        expect(() => HOTPToken.fromUriMap(uriMap), throwsArgumentError);
+        expect(() => HOTPToken.fromOtpAuthMap(uriMap), throwsArgumentError);
       });
     });
   });

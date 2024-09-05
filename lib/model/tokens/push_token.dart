@@ -19,16 +19,16 @@
  */
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pointycastle/asymmetric/api.dart';
+import 'package:privacyidea_authenticator/model/token_container.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../utils/custom_int_buffer.dart';
 import '../../utils/errors.dart';
 import '../../utils/identifiers.dart';
-import '../../utils/logger.dart';
 import '../../utils/rsa_utils.dart';
+import '../../utils/type_matchers.dart';
 import '../enums/push_token_rollout_state.dart';
 import '../enums/token_types.dart';
-import '../token_container.dart';
 import '../token_import/token_origin_data.dart';
 import 'token.dart';
 
@@ -70,6 +70,7 @@ class PushToken extends Token {
     super.label,
     super.issuer,
     super.containerSerial,
+    super.checkedContainers,
     required super.id,
     this.fbToken,
     this.url,
@@ -81,7 +82,6 @@ class PushToken extends Token {
     bool? isRolledOut,
     bool? sslVerify,
     PushTokenRollOutState? rolloutState,
-    String? type, // just for @JsonSerializable(): type of PushToken is always TokenTypes.PIPUSH
     super.tokenImage,
     super.sortIndex,
     super.folderId,
@@ -122,6 +122,7 @@ class PushToken extends Token {
     String? serial,
     String? issuer,
     String? Function()? containerSerial,
+    List<String>? checkedContainers,
     String? id,
     String? tokenImage,
     String? fbToken,
@@ -149,6 +150,7 @@ class PushToken extends Token {
       tokenImage: tokenImage ?? this.tokenImage,
       fbToken: fbToken ?? this.fbToken,
       containerSerial: containerSerial != null ? containerSerial() : this.containerSerial,
+      checkedContainers: checkedContainers ?? this.checkedContainers,
       id: id ?? this.id,
       pin: pin ?? this.pin,
       isLocked: isLocked ?? this.isLocked,
@@ -189,172 +191,116 @@ class PushToken extends Token {
         'publicTokenKey: $publicTokenKey}';
   }
 
+  factory PushToken.fromOtpAuthMap(Map<String, String> otpAuthMap, {TokenOriginData? origin}) {
+// Validate map for Push token
+    final validatedMap = validateMap(
+      map: otpAuthMap,
+      validators: {
+        OTP_AUTH_LABEL: const TypeValidatorOptional<String>(defaultValue: ''),
+        OTP_AUTH_ISSUER: const TypeValidatorOptional<String>(defaultValue: ''),
+        OTP_AUTH_SERIAL: const TypeValidatorRequired<String>(),
+        OTP_AUTH_PUSH_SSL_VERIFY: stringToBoolValidator.withDefault(true),
+        OTP_AUTH_PUSH_TTL_MINUTES: TypeValidatorRequired<Duration>(
+          transformer: (v) => Duration(minutes: int.parse(v)),
+          defaultValue: const Duration(minutes: 10),
+        ),
+        OTP_AUTH_PUSH_ENROLLMENT_CREDENTIAL: const TypeValidatorOptional<String>(),
+        OTP_AUTH_PUSH_ROLLOUT_URL: stringToUrivalidator,
+        OTP_AUTH_IMAGE: stringToUriValidatorOptional,
+        OTP_AUTH_PIN: const TypeValidatorOptional<bool>(),
+        OTP_AUTH_VERSION: const TypeValidatorRequired<String>(),
+      },
+      name: 'PushToken',
+    );
+    return switch (validatedMap[OTP_AUTH_VERSION]) {
+      '1' => PushToken(
+          id: const Uuid().v4(),
+          label: validatedMap[OTP_AUTH_LABEL] as String,
+          issuer: validatedMap[OTP_AUTH_ISSUER] as String,
+          serial: validatedMap[OTP_AUTH_SERIAL] as String,
+          sslVerify: validatedMap[OTP_AUTH_PUSH_SSL_VERIFY] as bool,
+          expirationDate: DateTime.now().add(validatedMap[OTP_AUTH_PUSH_TTL_MINUTES] as Duration),
+          enrollmentCredentials: validatedMap[OTP_AUTH_PUSH_ENROLLMENT_CREDENTIAL] as String?,
+          url: validatedMap[OTP_AUTH_PUSH_ROLLOUT_URL] as Uri,
+          tokenImage: validatedMap[OTP_AUTH_IMAGE] as String?,
+          pin: validatedMap[OTP_AUTH_PIN] as bool?,
+          isLocked: validatedMap[OTP_AUTH_PIN] as bool?,
+          origin: origin,
+        ),
+      _ => throw LocalizedArgumentError(
+          localizedMessage: (localizations, value, name) => localizations.unsupported(value, name),
+          unlocalizedMessage: 'The piauth version [${validatedMap[OTP_AUTH_VERSION]}] is not supported by this version of the app.',
+          invalidValue: validatedMap[OTP_AUTH_VERSION].toString(),
+          name: 'piauth version',
+        ),
+    };
+  }
+
   @override
-  PushToken copyWithFromTemplate(TokenTemplate template) {
-    final uriMap = template.data;
+  Token copyUpdateByTemplate(TokenTemplate template) {
+    final uriMap = validateMap(
+      map: template.data,
+      validators: {
+        OTP_AUTH_LABEL: const TypeValidatorOptional<String>(),
+        OTP_AUTH_ISSUER: const TypeValidatorOptional<String>(),
+        OTP_AUTH_SERIAL: const TypeValidatorOptional<String>(),
+        OTP_AUTH_PUSH_SSL_VERIFY: stringToBoolValidatorOptional,
+        OTP_AUTH_PUSH_TTL_MINUTES: TypeValidatorOptional<Duration>(
+          transformer: (v) => Duration(minutes: int.parse(v)),
+        ),
+        OTP_AUTH_PUSH_ENROLLMENT_CREDENTIAL: const TypeValidatorOptional<String>(),
+        OTP_AUTH_PUSH_ROLLOUT_URL: stringToUriValidatorOptional,
+        OTP_AUTH_IMAGE: stringToUriValidatorOptional,
+        OTP_AUTH_PIN: stringToBoolValidator,
+        OTP_AUTH_VERSION: stringToIntValidatorOptional,
+      },
+      name: 'PushToken',
+    );
     return copyWith(
-      label: uriMap[URI_LABEL],
-      issuer: uriMap[URI_ISSUER],
-      id: uriMap[URI_ID],
-      serial: uriMap[URI_SERIAL],
-      sslVerify: uriMap[URI_SSL_VERIFY],
-      enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
-      url: uriMap[URI_ROLLOUT_URL],
-      tokenImage: uriMap[URI_IMAGE],
-      pin: uriMap[URI_PIN],
-      isLocked: uriMap[URI_PIN],
-      origin: uriMap[URI_ORIGIN],
-      // do not update expirationDate
+      label: uriMap[OTP_AUTH_LABEL] as String?,
+      issuer: uriMap[OTP_AUTH_ISSUER] as String?,
+      serial: uriMap[OTP_AUTH_SERIAL] as String?,
+      sslVerify: uriMap[OTP_AUTH_PUSH_SSL_VERIFY] as bool?,
+      expirationDate: uriMap[OTP_AUTH_PUSH_TTL_MINUTES] != null ? DateTime.now().add(uriMap[OTP_AUTH_PUSH_TTL_MINUTES] as Duration) : expirationDate,
+      enrollmentCredentials: uriMap[OTP_AUTH_PUSH_ENROLLMENT_CREDENTIAL] as String?,
+      url: uriMap[OTP_AUTH_PUSH_ROLLOUT_URL] as Uri?,
+      tokenImage: uriMap[OTP_AUTH_IMAGE] as String?,
+      pin: uriMap[OTP_AUTH_PIN] as bool?,
+      isLocked: uriMap[OTP_AUTH_PIN] as bool?,
     );
   }
 
-  factory PushToken.fromUriMap(Map<String, dynamic> uriMap) {
-    validateUriMap(uriMap);
-    return PushToken(
-      label: uriMap[URI_LABEL] ?? '',
-      issuer: uriMap[URI_ISSUER] ?? '',
-      id: uriMap[URI_ID] == String ? uriMap[URI_ID] : const Uuid().v4(),
-      serial: uriMap[URI_SERIAL],
-      sslVerify: uriMap[URI_SSL_VERIFY],
-      expirationDate: uriMap[URI_TTL] != null ? DateTime.now().add(Duration(minutes: uriMap[URI_TTL])) : null,
-      enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
-      url: uriMap[URI_ROLLOUT_URL],
-      tokenImage: uriMap[URI_IMAGE],
-      pin: uriMap[URI_PIN],
-      isLocked: uriMap[URI_PIN],
-      origin: uriMap[URI_ORIGIN],
-    );
-  }
-
-  static void validateUriMap(Map<String, dynamic> uriMap) {
-    uriMap = Map<String, dynamic>.from(uriMap);
-    if (uriMap[URI_TYPE]?.toUpperCase() != TokenTypes.PIPUSH.name.toUpperCase()) {
-      throw ArgumentError('Invalid type: ${uriMap[URI_TYPE]}');
-    }
-    uriMap.remove(URI_TYPE);
-    if (uriMap[URI_LABEL] is! String?) {
-      throw LocalizedArgumentError(
-        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
-        unlocalizedMessage: 'Invalid value ${uriMap[URI_LABEL]} for parameter $URI_LABEL',
-        invalidValue: uriMap[URI_LABEL],
-        name: URI_LABEL,
-      );
-    }
-    uriMap.remove(URI_LABEL);
-    if (uriMap[URI_ISSUER] is! String?) {
-      throw LocalizedArgumentError(
-        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
-        unlocalizedMessage: 'Invalid value ${uriMap[URI_ISSUER]} for parameter $URI_ISSUER',
-        invalidValue: uriMap[URI_ISSUER],
-        name: URI_ISSUER,
-      );
-    }
-    uriMap.remove(URI_ISSUER);
-    if (uriMap[URI_ID] is! String?) {
-      throw LocalizedArgumentError(
-        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
-        unlocalizedMessage: 'Invalid value ${uriMap[URI_ID]} for parameter $URI_ID',
-        invalidValue: uriMap[URI_ID],
-        name: URI_ID,
-      );
-    }
-    uriMap.remove(URI_ID);
-    if (uriMap[URI_SERIAL] is! String) {
-      throw LocalizedArgumentError(
-        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
-        unlocalizedMessage: 'Invalid value ${uriMap[URI_SERIAL]} for parameter $URI_SERIAL',
-        invalidValue: uriMap[URI_SERIAL],
-        name: URI_SERIAL,
-      );
-    }
-    uriMap.remove(URI_SERIAL);
-    if (uriMap[URI_SSL_VERIFY] is! bool) {
-      throw LocalizedArgumentError(
-        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
-        unlocalizedMessage: 'Invalid value ${uriMap[URI_SSL_VERIFY]} for parameter $URI_SSL_VERIFY',
-        invalidValue: uriMap[URI_SSL_VERIFY],
-        name: URI_SSL_VERIFY,
-      );
-    }
-    uriMap.remove(URI_SSL_VERIFY);
-    /**
-
-      expirationDate: uriMap[URI_TTL] != null ? DateTime.now().add(Duration(minutes: uriMap[URI_TTL])) : null,
-      enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
-      url: uriMap[URI_ROLLOUT_URL],
-      tokenImage: uriMap[URI_IMAGE],
-      pin: uriMap[URI_PIN],
-      isLocked: uriMap[URI_PIN],
-      origin: uriMap[URI_ORIGIN],
-     */
-    if (uriMap[URI_TTL] is! int?) {
-      throw LocalizedArgumentError(
-        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
-        unlocalizedMessage: 'Invalid value ${uriMap[URI_TTL]} for parameter $URI_TTL',
-        invalidValue: uriMap[URI_TTL],
-        name: URI_TTL,
-      );
-    }
-    uriMap.remove(URI_TTL);
-    if (uriMap[URI_ENROLLMENT_CREDENTIAL] is! String?) {
-      throw LocalizedArgumentError(
-        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
-        unlocalizedMessage: 'Invalid value ${uriMap[URI_ENROLLMENT_CREDENTIAL]} for parameter $URI_ENROLLMENT_CREDENTIAL',
-        invalidValue: uriMap[URI_ENROLLMENT_CREDENTIAL],
-        name: URI_ENROLLMENT_CREDENTIAL,
-      );
-    }
-    uriMap.remove(URI_ENROLLMENT_CREDENTIAL);
-    if (uriMap[URI_ROLLOUT_URL] is! Uri?) {
-      throw LocalizedArgumentError(
-        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
-        unlocalizedMessage: 'Invalid value ${uriMap[URI_ROLLOUT_URL]} for parameter $URI_ROLLOUT_URL',
-        invalidValue: uriMap[URI_ROLLOUT_URL],
-        name: URI_ROLLOUT_URL,
-      );
-    }
-    uriMap.remove(URI_ROLLOUT_URL);
-    if (uriMap[URI_IMAGE] is! String?) {
-      throw LocalizedArgumentError(
-        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
-        unlocalizedMessage: 'Invalid value ${uriMap[URI_IMAGE]} for parameter $URI_IMAGE',
-        invalidValue: uriMap[URI_IMAGE],
-        name: URI_IMAGE,
-      );
-    }
-    uriMap.remove(URI_IMAGE);
-    if (uriMap[URI_PIN] is! bool?) {
-      throw LocalizedArgumentError(
-        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
-        unlocalizedMessage: 'Invalid value ${uriMap[URI_PIN]} for parameter $URI_PIN',
-        invalidValue: uriMap[URI_PIN],
-        name: URI_PIN,
-      );
-    }
-    uriMap.remove(URI_PIN);
-    if (uriMap[URI_ORIGIN] is! TokenOriginData?) {
-      throw LocalizedArgumentError(
-        localizedMessage: (localizations, value, parameter) => localizations.invalidValueForParameter(value, parameter),
-        unlocalizedMessage: 'Invalid value ${uriMap[URI_ORIGIN]} for parameter $URI_ORIGIN',
-        invalidValue: uriMap[URI_ORIGIN],
-        name: URI_ORIGIN,
-      );
-    }
-    uriMap.remove(URI_ORIGIN);
-    if (uriMap.isNotEmpty) {
-      Logger.warning('Unknown parameters in uriMap: $uriMap');
-    }
-  }
-
+  /// This is used to create a map that typically was created from a uri.
+  /// ```dart
+  ///  ---------------------------- [Token] ----------------------------
+  /// | OTP_AUTH_SERIAL: serial, (optional)                              |
+  /// | OTP_AUTH_TYPE: type,                                             |
+  /// | OTP_AUTH_LABEL: label,                                           |
+  /// | OTP_AUTH_ISSUER: issuer,                                         |
+  /// | OTP_AUTH_PIN: pin,                                               |
+  /// | OTP_AUTH_IMAGE: tokenImage, (optional)                           |
+  ///  ------------------------------------------------------------------
+  ///  -------------------------- [PushToken] ---------------------------
+  /// | OTP_AUTH_SSL_VERIFY: sslVerify,                                  |
+  /// | OTP_AUTH_ROLLOUT_TTL_MINUTES: expirationDate, (optional)         |
+  /// | OTP_AUTH_ENROLLMENT_CREDENTIAL: enrollmentCredentials, (optional)|
+  /// | OTP_AUTH_ROLLOUT_URL: url, (optional)                            |
+  /// | OTP_AUTH_IMAGE: tokenImage, (optional)                           |
+  /// | OTP_AUTH_PIN: pin,                                               |
+  /// | OTP_AUTH_VERSION: 1,                                             |
+  ///  ------------------------------------------------------------------
+  /// ```
   @override
-  Map<String, dynamic> toUriMap() {
-    return super.toUriMap()
+  Map<String, String> toOtpAuthMap({String? containerSerial}) {
+    return super.toOtpAuthMap()
       ..addAll({
-        URI_SERIAL: serial,
-        URI_SSL_VERIFY: sslVerify,
-        if (expirationDate != null) URI_TTL: expirationDate!.difference(DateTime.now()).inMinutes,
-        if (enrollmentCredentials != null) URI_ENROLLMENT_CREDENTIAL: enrollmentCredentials,
-        if (url != null) URI_ROLLOUT_URL: url.toString(),
+        OTP_AUTH_PUSH_SSL_VERIFY: sslVerify ? OTP_AUTH_PUSH_SSL_VERIFY_TRUE : OTP_AUTH_PUSH_SSL_VERIFY_FALSE,
+        if (expirationDate != null) OTP_AUTH_PUSH_TTL_MINUTES: expirationDate!.difference(DateTime.now()).inMinutes.toString(),
+        if (enrollmentCredentials != null) OTP_AUTH_PUSH_ENROLLMENT_CREDENTIAL: enrollmentCredentials!,
+        if (url != null) OTP_AUTH_PUSH_ROLLOUT_URL: url.toString(),
+        if (tokenImage != null) OTP_AUTH_IMAGE: tokenImage!,
+        OTP_AUTH_PIN: pin ? OTP_AUTH_PIN_TRUE : OTP_AUTH_PIN_FALSE,
+        OTP_AUTH_VERSION: '1',
       });
   }
 

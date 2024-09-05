@@ -23,11 +23,10 @@ import 'dart:convert';
 
 import 'package:cryptography/cryptography.dart';
 import 'package:file_selector/file_selector.dart';
+import 'package:privacyidea_authenticator/utils/type_matchers.dart';
 
 import '../../l10n/app_localizations.dart';
-import '../../model/enums/encodings.dart';
 import '../../model/enums/token_origin_source_type.dart';
-import '../../model/extensions/enums/encodings_extension.dart';
 import '../../model/extensions/enums/token_origin_source_type.dart';
 import '../../model/processor_result.dart';
 import '../../model/tokens/token.dart';
@@ -42,6 +41,7 @@ import 'token_import_file_processor_interface.dart';
 class TwoFasAuthenticatorImportFileProcessor extends TokenImportFileProcessor {
   static get resultHandlerType => TokenImportFileProcessor.resultHandlerType;
   const TwoFasAuthenticatorImportFileProcessor();
+  static const String TWOFAS_OTP = 'otp';
   static const String TWOFAS_TYPE = 'tokenType';
   static const String TWOFAS_ISSUER = 'name';
   static const String TWOFAS_SECRET = 'secret';
@@ -147,7 +147,14 @@ class TwoFasAuthenticatorImportFileProcessor extends TokenImportFileProcessor {
     for (Map<String, dynamic> twoFasToken in tokensJsonList) {
       try {
         results.add(ProcessorResult.success(
-          Token.fromUriMap(_twoFasToUriMap(twoFasToken)),
+          Token.fromOtpAuthMap(
+            _twoFasToOtpAuth(twoFasToken),
+            origin: TokenOriginSourceType.backupFile.toTokenOrigin(
+              originName: TokenImportOrigins.twoFasAuthenticator.appName,
+              isPrivacyIdeaToken: false,
+              data: jsonEncode(twoFasToken),
+            ),
+          ),
           resultHandlerType: resultHandlerType,
         ));
       } on LocalizedException catch (e) {
@@ -157,7 +164,8 @@ class TwoFasAuthenticatorImportFileProcessor extends TokenImportFileProcessor {
         ));
       } catch (e) {
         Logger.error('Failed to parse token.', name: 'two_fas_import_file_processor.dart#_processPlainTokens', error: e, stackTrace: StackTrace.current);
-        results.add(ProcessorResultFailed(e.toString(),
+        results.add(ProcessorResultFailed(
+          e.toString(),
           resultHandlerType: resultHandlerType,
         ));
       }
@@ -166,23 +174,31 @@ class TwoFasAuthenticatorImportFileProcessor extends TokenImportFileProcessor {
     return results;
   }
 
-  Map<String, dynamic> _twoFasToUriMap(Map<String, dynamic> twoFasToken) {
-    final twoFasOTP = twoFasToken['otp'];
-    return {
-      URI_TYPE: twoFasOTP[TWOFAS_TYPE],
-      URI_ISSUER: twoFasToken[TWOFAS_ISSUER],
-      URI_SECRET: Encodings.base32.decode(twoFasToken[TWOFAS_SECRET]),
-      URI_ALGORITHM: twoFasOTP[TWOFAS_ALGORITHM],
-      URI_LABEL: twoFasOTP[TWOFAS_LABEL],
-      URI_DIGITS: twoFasOTP[TWOFAS_DIGITS],
-      URI_PERIOD: twoFasOTP[TWOFAS_PERIOD],
-      URI_COUNTER: twoFasOTP[TWOFAS_COUNTER],
-      URI_ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
-        originName: TokenImportOrigins.twoFasAuthenticator.appName,
-        isPrivacyIdeaToken: false,
-        data: jsonEncode(twoFasToken),
-      ),
-    };
+  Map<String, String> _twoFasToOtpAuth(Map<String, dynamic> twoFasToken) {
+    Map<String, dynamic> twoFasOTP = twoFasToken[TWOFAS_OTP];
+    return validateMap(
+      map: {
+        OTP_AUTH_TYPE: twoFasOTP[TWOFAS_TYPE],
+        OTP_AUTH_ISSUER: twoFasOTP[TWOFAS_ISSUER],
+        OTP_AUTH_LABEL: twoFasOTP[TWOFAS_LABEL],
+        OTP_AUTH_SECRET_BASE32: twoFasToken[TWOFAS_SECRET],
+        OTP_AUTH_ALGORITHM: twoFasOTP[TWOFAS_ALGORITHM],
+        OTP_AUTH_DIGITS: twoFasOTP[TWOFAS_DIGITS],
+        OTP_AUTH_PERIOD_SECONDS: twoFasOTP[TWOFAS_PERIOD],
+        OTP_AUTH_COUNTER: twoFasOTP[TWOFAS_COUNTER],
+      },
+      validators: {
+        OTP_AUTH_TYPE: const TypeValidatorRequired<String>(),
+        OTP_AUTH_ISSUER: const TypeValidatorOptional<String>(),
+        OTP_AUTH_LABEL: const TypeValidatorOptional<String>(),
+        OTP_AUTH_SECRET_BASE32: const TypeValidatorRequired<String>(),
+        OTP_AUTH_ALGORITHM: const TypeValidatorOptional<String>(),
+        OTP_AUTH_DIGITS: intToStringValidatorOptional,
+        OTP_AUTH_PERIOD_SECONDS: intToStringValidatorOptional,
+        OTP_AUTH_COUNTER: intToStringValidatorOptional,
+      },
+      name: '2FAS token',
+    );
   }
 }
 

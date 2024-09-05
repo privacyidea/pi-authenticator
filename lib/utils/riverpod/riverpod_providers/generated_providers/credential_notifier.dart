@@ -24,6 +24,7 @@ import 'package:basic_utils/basic_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:http/http.dart';
 import 'package:mutex/mutex.dart';
+import 'package:privacyidea_authenticator/model/extensions/enums/ec_key_algorithm_extension.dart';
 import 'package:privacyidea_authenticator/model/processor_result.dart';
 import 'package:privacyidea_authenticator/utils/globals.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
@@ -32,10 +33,14 @@ import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/stat
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../interfaces/repo/container_credentials_repository.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../../../model/enums/container_finalization_state.dart';
 import '../../../../model/riverpod_states/credentials_state.dart';
 import '../../../../model/tokens/container_credentials.dart';
 import '../../../../repo/secure_container_credentials_repository.dart';
 import '../../../../widgets/dialog_widgets/enter_passphrase_dialog.dart';
+import '../../../ecc_utils.dart';
+import '../../../errors.dart';
 import '../../../logger.dart';
 
 part 'credential_notifier.g.dart';
@@ -264,6 +269,9 @@ class ContainerCredentialsNotifier extends _$ContainerCredentialsNotifier with R
       await updateCredential(credential, (c) => c.finalize(publicServerKey: publicServerKey)!);
     } on StateError {
       Logger.info('Container was removed while finalizing', name: 'CredentialsNotifier#finalize');
+    } on LocalizedArgumentError catch (e) {
+      ref.read(statusMessageProvider.notifier).state = ('Failed to decode response body', e.localizedMessage(AppLocalizations.of(await globalContext)!));
+      await updateCredential(credential, (c) => c.copyWith(finalizationState: ContainerFinalizationState.parsingResponseFailed));
     } catch (e) {
       Logger.error('Failed to finalize container ${credential.serial}', name: 'CredentialsNotifier#finalize', error: e);
       _finalizationMutex.release();
@@ -304,13 +312,13 @@ class ContainerCredentialsNotifier extends _$ContainerCredentialsNotifier with R
     // 'signature': <sig( <nonce|timestamp|registration_url|serial[|passphrase]> )>,
     // }
 
-    final passphrase = container.passphrase != null ? EnterPassphraseDialog.show(await globalContext) : null;
+    final passphrase = container.passphraseQuestion != null ? EnterPassphraseDialog.show(await globalContext) : null;
     final message = '${container.nonce}'
         '|${container.timestamp.toIso8601String().replaceFirst('Z', '+00:00')}'
         '|${container.finalizationUrl}'
         '|${container.serial}'
         '${passphrase != null ? '|$passphrase' : ''}';
-    print(message);
+
     final signature = eccUtils.trySignWithPrivateKey(ecPrivateClientKey, message);
 
     final body = {
@@ -351,19 +359,14 @@ class ContainerCredentialsNotifier extends _$ContainerCredentialsNotifier with R
     Map<String, dynamic> responseJson;
     credential = await updateCredential(credential, (c) => c.copyWith(finalizationState: ContainerFinalizationState.parsingResponse));
     if (credential == null) throw StateError('Credential was removed');
-    try {
-      responseJson = jsonDecode(responseBody);
-      validateMap(responseJson, {'result': const TypeMatcher<Map<String, dynamic>>()});
-      final result = responseJson['result'];
-      validateMap(result, {'value': const TypeMatcher<Map<String, dynamic>>()});
-      final value = result['value'];
-      validateMap(value, {'public_server_key': const TypeMatcher<String>()});
-      publicServerKey = const EccUtils().deserializeECPublicKey(value['public_server_key']);
-    } catch (e) {
-      ref.read(statusMessageProvider.notifier).state = ('Failed to decode response body', e.toString());
-      await updateCredential(credential, (c) => c.copyWith(finalizationState: ContainerFinalizationState.parsingResponseFailed));
-      rethrow;
-    }
+    responseJson = jsonDecode(responseBody);
+    final result = validate(value: responseJson['result'], validator: const TypeValidatorRequired<Map<String, dynamic>>(), name: 'result');
+    final value = validate(value: result['value'], validator: const TypeValidatorRequired<Map<String, dynamic>>(), name: 'value');
+    publicServerKey = validate(
+      value: value['public_server_key'],
+      validator: TypeValidatorRequired<ECPublicKey>(transformer: (v) => const EccUtils().deserializeECPublicKey(v)),
+      name: 'public_server_key',
+    );
     credential = await updateCredential(credential, (c) => c.copyWith(finalizationState: ContainerFinalizationState.parsingResponseCompleted));
     if (credential == null) throw StateError('Credential was removed');
     return (credential, publicServerKey);

@@ -20,8 +20,6 @@
 import '../../utils/identifiers.dart';
 import '../../utils/logger.dart';
 import '../enums/algorithms.dart';
-import '../enums/encodings.dart';
-import '../extensions/enums/encodings_extension.dart';
 import '../token_import/token_origin_data.dart';
 import 'token.dart';
 
@@ -30,6 +28,7 @@ abstract class OTPToken extends Token {
   final int digits; // the number of digits the otp value will have
   final String secret; // the secret based on which the otp value is calculated in base32
   String get otpValue; // the current otp value
+  String get nextValue; // the next otp value
   Duration get showDuration {
     const Duration duration = Duration(seconds: 30);
     Logger.info('$runtimeType showDuration: ${duration.inSeconds} seconds');
@@ -43,6 +42,7 @@ abstract class OTPToken extends Token {
     required super.id,
     required super.type,
     super.containerSerial,
+    super.checkedContainers,
     super.serial,
     super.pin,
     super.tokenImage,
@@ -70,6 +70,7 @@ abstract class OTPToken extends Token {
     String? label,
     String? issuer,
     String? Function()? containerSerial,
+    List<String>? checkedContainers,
     String? id,
     Algorithms? algorithm,
     int? digits,
@@ -88,13 +89,28 @@ abstract class OTPToken extends Token {
     return 'OTP${super.toString()}algorithm: $algorithm, digits: $digits, pin: $pin, ';
   }
 
+  /// This is used to create a map that typically was created from a uri.
+  /// ```dart
+  ///  ------------------------- [Token] -------------------------
+  /// | OTP_AUTH_SERIAL: serial, (optional)                       |
+  /// | OTP_AUTH_TYPE: type,                                      |
+  /// | OTP_AUTH_LABEL: label,                                    |
+  /// | OTP_AUTH_ISSUER: issuer,                                  |
+  /// | OTP_AUTH_PIN: pin,                                        |
+  /// | OTP_AUTH_IMAGE: tokenImage, (optional)                    |
+  ///  -----------------------------------------------------------
+  ///  ------------------------ [OTPToken] -----------------------
+  /// | OTP_AUTH_ALGORITHM: algorithm,                            |
+  /// | OTP_AUTH_DIGITS: digits,                                  |
+  ///  -----------------------------------------------------------
+  /// ```
   @override
-  Map<String, dynamic> toUriMap() {
-    return super.toUriMap()
+  Map<String, String> toOtpAuthMap({String? containerSerial}) {
+    return super.toOtpAuthMap()
       ..addAll({
-        URI_SECRET: Encodings.base32.decode(secret),
-        URI_ALGORITHM: algorithm.name,
-        URI_DIGITS: digits,
+        OTP_AUTH_ALGORITHM: algorithm.name,
+        OTP_AUTH_DIGITS: digits.toString(),
+        if (serial == null && !checkedContainers.contains(containerSerial)) OTP_AUTH_OTP_VALUES: '[$otpValue, $nextValue]',
       });
   }
 }

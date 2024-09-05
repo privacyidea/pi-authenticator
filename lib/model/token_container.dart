@@ -178,66 +178,42 @@ sealed class TokenContainer with _$TokenContainer {
 class TokenTemplate with _$TokenTemplate {
   TokenTemplate._();
   factory TokenTemplate({
-    required Map<String, dynamic> data,
+    required Map<String, String> data,
   }) = _TokenTemplate;
 
   List<String> get keys => data.keys.toList();
   List<dynamic> get values => data.values.toList();
 
-  String? get id {
-    final id = data[URI_ID];
-    if (id is! String?) {
-      Logger.error('TokenTemplate id is not a string');
-    }
-    return id;
-  }
+  String? get serial => validateOptional(
+        value: data[OTP_AUTH_SERIAL],
+        validator: const TypeValidatorOptional<String>(),
+        name: OTP_AUTH_SERIAL,
+      );
 
-  Uint8List? get secret {
-    final secret = data[URI_SECRET];
-    if (secret is! Uint8List?) {
-      Logger.error('TokenTemplate secret is not a string');
-    }
-    return secret;
-  }
+  String? get type => validateOptional(
+        value: data[OTP_AUTH_TYPE],
+        validator: const TypeValidatorOptional<String>(),
+        name: OTP_AUTH_TYPE,
+      );
 
-  String? get serial {
-    final serial = data[URI_SERIAL];
-    if (serial is! String?) {
-      Logger.error('TokenTemplate id is not a string');
-    }
-    return serial;
-  }
+  List<String> get otpValues => validate(
+        value: data[OTP_AUTH_OTP_VALUES],
+        validator: const TypeValidatorRequired<List<String>>(),
+        name: OTP_AUTH_OTP_VALUES,
+      );
 
-  String? get type {
-    final type = data[URI_TYPE];
-    if (type is! String?) {
-      Logger.error('TokenTemplate type is not a string');
-    }
-    return type;
-  }
-
-  String? get containerSerial {
-    final containerSerial = data[URI_CONTAINER_SERIAL];
-    if (containerSerial is! String?) {
-      Logger.error('TokenTemplate containerSerial is not a string');
-    }
-    return containerSerial;
-  }
+  String? get containerSerial => validateOptional(
+        value: data[CONTAINER_SERIAL],
+        validator: const TypeValidatorOptional<String>(),
+        name: CONTAINER_SERIAL,
+      );
 
   @override
   operator ==(Object other) {
-    if (other is! TokenTemplate) {
-      return false;
-    }
-    if (data.length != other.data.length) {
-      return false;
-    }
+    if (other is! TokenTemplate) return false;
+    if (data.length != other.data.length) return false;
     for (var key in data.keys) {
-      if (data[key] is Iterable) {
-        if (!const IterableEquality().equals(data[key], other.data[key])) {
-          return false;
-        }
-      } else if (data[key].toString() != other.data[key].toString()) {
+      if (data[key].toString() != other.data[key].toString()) {
         return false;
       }
     }
@@ -246,16 +222,16 @@ class TokenTemplate with _$TokenTemplate {
 
   factory TokenTemplate.fromJson(Map<String, dynamic> json) => _$TokenTemplateFromJson(json);
 
-  String get label => data[URI_LABEL] ?? 'No label';
-
-  Token toToken(TokenContainer container) => Token.fromUriMap(data).copyWith(
-        containerSerial: () => container.serial,
+  Token toToken(TokenContainer container) => Token.fromOtpAuthMap(
+        data,
         origin: TokenOriginData(
           appName: '${container.serverName} ${container.serial}',
           data: data.toString(),
           source: TokenOriginSourceType.container,
           isPrivacyIdeaToken: true,
         ),
+      ).copyWith(
+        containerSerial: () => container.serial,
       );
 
   /// Adds all key/value pairs of [other] to this map.
@@ -270,29 +246,19 @@ class TokenTemplate with _$TokenTemplate {
   /// planets.addAll({5: 'Jupiter', 6: 'Saturn'});
   /// print(planets); // {1: Mercury, 2: Earth, 5: Jupiter, 6: Saturn}
   /// ```
-  TokenTemplate copyAddAll(Map<String, dynamic> addData) {
-    final newData = Map<String, dynamic>.from(data)..addAll(addData);
+  TokenTemplate copyAddAll(Map<String, String> addData) {
+    final newData = Map<String, String>.from(data)..addAll(addData);
     return TokenTemplate(data: newData);
   }
 
   @override
   int get hashCode => Object.hashAllUnordered(data.keys.map((key) => '$key:${data[key]}'));
 
-  bool isSameTokenAs(TokenTemplate other) => id == other.id || serial == other.serial || const IterableEquality().equals(secret, other.secret);
+  bool isSameTokenAs(TokenTemplate other) => serial == other.serial || (otpValues.isNotEmpty && const IterableEquality().equals(otpValues, other.otpValues));
 
   bool hasSameValuesAs(TokenTemplate serverTokenTemplate) {
     Logger.debug('serverTokenTemplate.keys: ${serverTokenTemplate.keys}', name: 'TokenTemplate#hasSameValuesAs');
     for (var key in serverTokenTemplate.keys) {
-      if (data[key] is Iterable && serverTokenTemplate.data[key] is Iterable) {
-        if (!const IterableEquality().equals(data[key], serverTokenTemplate.data[key])) {
-          Logger.debug(
-            'TokenTemplate has different values for key "$key": ${data[key]} != ${serverTokenTemplate.data[key]}',
-            name: 'TokenTemplate#hasSameValuesAs',
-          );
-          return false;
-        }
-        continue;
-      }
       if (data[key] != serverTokenTemplate.data[key]) {
         Logger.debug('TokenTemplate has different values for key "$key": ${data[key]} != ${serverTokenTemplate.data[key]}',
             name: 'TokenTemplate#hasSameValuesAs');
@@ -300,7 +266,7 @@ class TokenTemplate with _$TokenTemplate {
       }
     }
     Logger.debug(
-      'AppTokenTemplate serial $serial/id $id has same values as serverTokenTemplate serial ${serverTokenTemplate.serial}/id ${serverTokenTemplate.id}',
+      'AppTokenTemplate serial $serial/otp ($otpValues) has same values as serverTokenTemplate serial ${serverTokenTemplate.serial}/id ${serverTokenTemplate.otpValues}',
       name: 'TokenTemplate#hasSameValuesAs',
     );
     return true;
