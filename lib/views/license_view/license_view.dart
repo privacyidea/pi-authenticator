@@ -24,7 +24,7 @@ class LicenseView extends StatelessView {
               padding: const EdgeInsets.all(32),
               child: appImage,
             ),
-            applicationLegalese: websiteLink,
+            applicationLegalese: '© $websiteLink',
             applicationVersion: platformInfo.data == null ? '' : '${platformInfo.data?.version}+${platformInfo.data?.buildNumber}',
           ),
         ),
