@@ -19,6 +19,7 @@
  */
 import 'package:flutter/material.dart';
 import '../../../utils/logger.dart';
+import '../../../widgets/deactivateable.dart';
 import 'add_token_manually_row.dart';
 
 class LabeledDropdownButton<T> extends StatefulWidget {
@@ -62,41 +63,35 @@ class _LabeledDropdownButtonState<T> extends State<LabeledDropdownButton<T>> {
 
   @override
   Widget build(BuildContext context) {
-    final child = AddTokenManuallyRow(
-      label: widget.label,
-      child: DropdownButton<T>(
-        value: widget.valueNotifier?.value != null && widget.values.contains(widget.valueNotifier!.value)
-            ? widget.valueNotifier!.value
-            : widget.values.firstOrNull,
-        isExpanded: true,
-        items: [
-          for (var i = 0; i < widget.values.length; i++)
-            DropdownMenuItem<T>(
-              value: widget.values[i],
-              child: Text(
-                '${widget.valueLabels != null && i < widget.valueLabels!.length ? widget.valueLabels![i] : widget.values[i].toString()}'
-                ' ${widget.postFix}',
-                style: Theme.of(context).textTheme.bodyMedium,
-                overflow: TextOverflow.fade,
-                softWrap: false,
+    return Deactivateable(
+      deactivated: !widget.enabled,
+      child: AddTokenManuallyRow(
+        label: widget.label,
+        child: DropdownButton<T>(
+          value: widget.valueNotifier?.value != null && widget.values.contains(widget.valueNotifier!.value)
+              ? widget.valueNotifier!.value
+              : widget.values.firstOrNull,
+          isExpanded: true,
+          items: [
+            for (var i = 0; i < widget.values.length; i++)
+              DropdownMenuItem<T>(
+                value: widget.values[i],
+                child: Text(
+                  '${widget.valueLabels != null && i < widget.valueLabels!.length ? widget.valueLabels![i] : widget.values[i].toString()}'
+                  ' ${widget.postFix}',
+                  style: Theme.of(context).textTheme.bodyMedium,
+                  overflow: TextOverflow.fade,
+                  softWrap: false,
+                ),
               ),
-            ),
-        ],
-        onChanged: (T? newValue) {
-          if (newValue == null) return;
-          Logger.info('DropdownButton onChanged: $newValue');
-          widget.valueNotifier?.value = newValue;
-        },
+          ],
+          onChanged: (T? newValue) {
+            if (newValue == null) return;
+            Logger.info('DropdownButton onChanged: $newValue');
+            widget.valueNotifier?.value = newValue;
+          },
+        ),
       ),
     );
-
-    return widget.enabled
-        ? child
-        : ShaderMask(
-            shaderCallback: (Rect bounds) => LinearGradient(
-              colors: [Colors.grey.shade600, Colors.grey.shade600],
-            ).createShader(bounds),
-            child: IgnorePointer(ignoring: true, child: child),
-          );
   }
 }
