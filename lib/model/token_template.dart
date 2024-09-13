@@ -45,10 +45,10 @@ class TokenTemplate with _$TokenTemplate {
     ContainerCredential? container,
   }) = _TokenTemplateWithSerial;
 
+  /// [ otpAuthMap ]: The map containing the OTP token data. May contain the secret.
   factory TokenTemplate.withOtps({
     required Map<String, dynamic> otpAuthMap,
     required List<String> otps,
-    required List<String> checkedContainers,
     @Default({}) Map<String, dynamic> additionalData,
     ContainerCredential? container,
   }) = _TokenTemplateWithOtps;
@@ -76,6 +76,8 @@ class TokenTemplate with _$TokenTemplate {
         name: CONTAINER_SERIAL,
       );
 
+  Map<String, dynamic> get otpAuthMapSafeToSend => Map<String, dynamic>.from(otpAuthMap)..remove(OTP_AUTH_SECRET_BASE32);
+
   @override
   operator ==(Object other) {
     if (other is! TokenTemplate) return false;
@@ -98,7 +100,7 @@ class TokenTemplate with _$TokenTemplate {
     if (additionalData[Token.ORIGIN] != null) {
       additionalData[Token.ORIGIN] = container != null
           ? TokenOriginData(
-              appName: '${container!.serverName} ${container!.serial}',
+              appName: '${container!.serverName} (${container!.serial})',
               data: otpAuthMap.toString(),
               source: TokenOriginSourceType.container,
               isPrivacyIdeaToken: true,

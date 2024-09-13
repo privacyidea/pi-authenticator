@@ -130,7 +130,7 @@ abstract class Token with SortableMixin {
 
   /// This is used to identify the same token even if the id is different.
   bool isSameTokenAs(Token other) {
-    return other.type == type; // && other.origin?.appName == origin?.appName && other.origin?.data == origin?.data;
+    return (other.id == id && other.type == type) || (other.serial == serial && other.type == type);
   }
 
   @override

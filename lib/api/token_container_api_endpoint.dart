@@ -45,22 +45,6 @@ class PrivacyideaContainerApi {
   final PrivacyideaIOClient _ioClient;
   const PrivacyideaContainerApi({required PrivacyideaIOClient ioClient}) : _ioClient = ioClient;
 
-  Future<ContainerChallenge?> _getChallenge(ContainerCredentialFinalized container) async {
-    final initResponse = await _ioClient.doGet(url: container.syncUrl, parameters: {CONTAINER_SERIAL: container.serial});
-    try {
-      Logger.debug('Received container sync challenge: ${initResponse.body}', name: 'TokenContainerApiEndpoint#sync');
-      final piResponse = PiServerResponse<ContainerChallenge>.fromResponse(initResponse);
-      if (piResponse.isError) {
-        Logger.error('Error while syncing container: ${piResponse.asError.resultError}', name: 'TokenContainerApiEndpoint#sync');
-        return null;
-      }
-      return piResponse.asSuccess.resultValue;
-    } catch (e, s) {
-      Logger.error('Error while syncing container: $e', name: 'TokenContainerApiEndpoint#sync', stackTrace: s);
-      return null;
-    }
-  }
-
   // Returns a tuple of updated/new tokens and serials of deleted tokens
   Future<(List<Token>, List<String>)?> sync(ContainerCredentialFinalized container, TokenState tokenState) async {
     final containerTokenTemplates = tokenState.containerTokens(container.serial).toTemplates();
@@ -73,7 +57,7 @@ class PrivacyideaContainerApi {
       container: container,
       challenge: challenge,
       otpAuthMaps: [
-        for (var template in [...containerTokenTemplates, ...maybePiTokensTemplates]) template.otpAuthMap
+        for (var template in [...containerTokenTemplates, ...maybePiTokensTemplates]) template.otpAuthMapSafeToSend
       ],
     );
     if (decryptedContainerDictJson == null) return null;
@@ -106,6 +90,7 @@ class PrivacyideaContainerApi {
     (mergedTemplatesWithSerial, deleteSerials) = _handlePiTokens(
       containerTokenTemplates: containerTokenTemplates,
       serverTokensWithSerial: serverTokensWithSerial,
+      container: container,
     );
 
     final updatedTokens = <Token>[];
@@ -143,6 +128,22 @@ class PrivacyideaContainerApi {
   /* ////////////////////////////
   ////// PRIVATE FUNCTIONS //////
   ////////////////////////////// */
+
+  Future<ContainerChallenge?> _getChallenge(ContainerCredentialFinalized container) async {
+    final initResponse = await _ioClient.doGet(url: container.syncUrl, parameters: {CONTAINER_SERIAL: container.serial});
+    try {
+      Logger.debug('Received container sync challenge: ${initResponse.body}', name: 'TokenContainerApiEndpoint#sync');
+      final piResponse = PiServerResponse<ContainerChallenge>.fromResponse(initResponse);
+      if (piResponse.isError) {
+        Logger.error('Error while syncing container: ${piResponse.asError.resultError}', name: 'TokenContainerApiEndpoint#sync');
+        return null;
+      }
+      return piResponse.asSuccess.resultValue;
+    } catch (e, s) {
+      Logger.error('Error while syncing container: $e', name: 'TokenContainerApiEndpoint#sync', stackTrace: s);
+      return null;
+    }
+  }
 
   Future<Map<String, dynamic>?> _getContainerDict({
     required ContainerCredentialFinalized container,
@@ -204,26 +205,6 @@ class PrivacyideaContainerApi {
     return jsonDecode(utf8.decode(decryptedContainerDict)) as Map<String, dynamic>;
   }
 
-  List<TokenTemplate> _handleMaybePiTokens({
-    required List<TokenTemplate> maybePiTokensTemplates,
-    required List<Map<String, dynamic>> serverTokensWithOtps,
-    required ContainerCredentialFinalized container,
-  }) {
-    final merged = <TokenTemplate>[];
-    for (var serverTokenWithOtp in serverTokensWithOtps) {
-      final otps = (serverTokenWithOtp[OTP_AUTH_OTP_VALUES] as List).cast<String>();
-      var mergedTemplate = maybePiTokensTemplates.firstWhere(
-        (maybePiToken) => const IterableEquality().equals(otps, maybePiToken.otpValues),
-        orElse: () => TokenTemplate.withOtps(
-            otps: serverTokenWithOtp[OTP_AUTH_OTP_VALUES]!, otpAuthMap: serverTokenWithOtp, container: container, checkedContainers: [container.serial]),
-      );
-      mergedTemplate = mergedTemplate.withOtpAuthData(serverTokenWithOtp);
-      mergedTemplate = mergedTemplate.copyWith(container: container);
-      merged.add(mergedTemplate);
-    }
-    return merged;
-  }
-
   Future<List<Token>> _parseNewTokens({required ContainerCredentialFinalized container, required List<Uri> otpAuthUris}) async {
     final newTokens = <Token>[];
     for (var otpAuthUri in otpAuthUris) {
@@ -237,9 +218,36 @@ class PrivacyideaContainerApi {
     return newTokens;
   }
 
+  List<TokenTemplate> _handleMaybePiTokens({
+    required List<TokenTemplate> maybePiTokensTemplates,
+    required List<Map<String, dynamic>> serverTokensWithOtps,
+    required ContainerCredentialFinalized container,
+  }) {
+    final merged = <TokenTemplate>[];
+    for (var serverTokenWithOtp in serverTokensWithOtps) {
+      final otps = (serverTokenWithOtp[OTP_AUTH_OTP_VALUES] as List).cast<String>();
+      var mergedTemplate = maybePiTokensTemplates.firstWhere(
+        (maybePiToken) => const IterableEquality().equals(otps, maybePiToken.otpValues),
+        orElse: () => TokenTemplate.withOtps(
+          otps: serverTokenWithOtp[OTP_AUTH_OTP_VALUES]!,
+          otpAuthMap: serverTokenWithOtp,
+          container: container,
+          additionalData: {
+            Token.CHECKED_CONTAINERS: [container.serial],
+          },
+        ),
+      );
+      mergedTemplate = mergedTemplate.withOtpAuthData(serverTokenWithOtp);
+      mergedTemplate = mergedTemplate.copyWith(container: container);
+      merged.add(mergedTemplate);
+    }
+    return merged;
+  }
+
   (List<TokenTemplate>, List<String>) _handlePiTokens({
     required List<TokenTemplate> containerTokenTemplates,
     required List<Map<String, dynamic>> serverTokensWithSerial,
+    required ContainerCredentialFinalized container,
   }) {
     final deleteSerials = <String>[];
     final mergedTemplatesWithSerial = <TokenTemplate>[];
@@ -250,6 +258,7 @@ class PrivacyideaContainerApi {
         deleteSerials.add(containerToken.serial!);
       } else {
         var mergedTemplate = containerToken.withOtpAuthData(serverToken);
+        mergedTemplate = mergedTemplate.copyWith(container: container);
         mergedTemplatesWithSerial.add(mergedTemplate);
       }
     }

@@ -111,14 +111,7 @@ class PushToken extends Token {
   }
 
   @override
-  bool isSameTokenAs(Token other) {
-    return super.isSameTokenAs(other) &&
-        other is PushToken &&
-        other.serial == serial &&
-        other.privateTokenKey == privateTokenKey &&
-        other.publicTokenKey == publicTokenKey &&
-        other.publicServerKey == publicServerKey;
-  }
+  bool isSameTokenAs(Token other) => super.isSameTokenAs(other) || (other is PushToken && other.serial == serial);
 
   @override
   PushToken copyWith({
