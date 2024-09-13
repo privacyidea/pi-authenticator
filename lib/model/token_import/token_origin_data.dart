@@ -120,6 +120,5 @@ class TokenOriginData {
         appName: 'Unknown',
         data: data.toString(),
         createdAt: DateTime.now(),
-        isPrivacyIdeaToken: false,
       );
 }

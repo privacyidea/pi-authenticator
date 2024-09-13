@@ -27,7 +27,6 @@ import 'package:privacyidea_authenticator/model/enums/token_origin_source_type.d
 import 'package:privacyidea_authenticator/model/tokens/container_credentials.dart';
 import 'package:privacyidea_authenticator/model/tokens/otp_token.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
 
 import 'token_import/token_origin_data.dart';
 import 'tokens/token.dart';
@@ -92,6 +91,7 @@ class TokenTemplate with _$TokenTemplate {
   factory TokenTemplate.fromJson(Map<String, dynamic> json) => _$TokenTemplateFromJson(json);
 
   Token toToken() {
+    final additionalData = Map<String, dynamic>.from(this.additionalData);
     if (container != null) {
       additionalData[Token.CONTAINER_SERIAL] = container!.serial;
     }

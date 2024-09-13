@@ -184,10 +184,15 @@ class ContainerCredential with _$ContainerCredential {
   String? trySignMessage(String msg) => ecPrivateClientKey == null ? null : eccUtils.signWithPrivateKey(ecPrivateClientKey!, msg);
 
   Token addOriginToToken({required Token token, String? tokenData}) => token.copyWith(
-      containerSerial: () => serial,
-      origin: token.origin == null
-          ? TokenOriginData.fromContainer(container: this, tokenData: tokenData ?? '')
-          : token.origin!.copyWith(source: TokenOriginSourceType.container));
+        containerSerial: () => serial,
+        origin: token.origin == null
+            ? TokenOriginData.fromContainer(container: this, tokenData: tokenData ?? '')
+            : token.origin!.copyWith(
+                source: TokenOriginSourceType.container,
+                isPrivacyIdeaToken: () => true,
+                data: token.origin!.data.isEmpty ? tokenData : token.origin!.data,
+              ),
+      );
 }
 //be99ff65b1c38ae8a7d6caf8799a0cce3749fe0e|2024-08-27 14:30:58.371312Z|http://192.168.0.230:5000/container/register/finalize|SMPH0000D49C
 //be99ff65b1c38ae8a7d6caf8799a0cce3749fe0e|2024-08-27T14:30:58.371312+00:00|http://192.168.0.230:5000/container/register/finalize|SMPH0000D49C

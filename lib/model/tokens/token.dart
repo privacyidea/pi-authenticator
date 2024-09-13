@@ -204,7 +204,7 @@ abstract class Token with SortableMixin {
 
   Map<String, dynamic> get additionalData => {
         ID: id,
-        ORIGIN: origin?.data,
+        ORIGIN: origin,
         SORT_INDEX: sortIndex,
         FOLDER_ID: folderId,
         HIDDEN: isHidden,
