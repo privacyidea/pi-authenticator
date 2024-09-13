@@ -24,19 +24,17 @@ import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/extensions/enums/push_token_rollout_state_extension.dart';
 import '../../../../../model/tokens/push_token.dart';
 import '../../../../../utils/globals.dart';
-import '../../../../../utils/riverpod/riverpod_providers/generated_providers/app_constraints_notifier.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../../../../widgets/press_button.dart';
 
-class RolloutFailedWidget extends ConsumerWidget {
+class StartRolloutWidget extends ConsumerWidget {
   final PushToken token;
 
-  const RolloutFailedWidget({super.key, required this.token});
+  const StartRolloutWidget({super.key, required this.token});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final width = ref.read(appConstraintsNotifierProvider)?.maxWidth ?? 0;
     final localizations = AppLocalizations.of(context)!;
     return SingleChildScrollView(
       child: Column(
@@ -55,21 +53,28 @@ class RolloutFailedWidget extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(
-                width: width * 0.35,
+              const Expanded(
+                flex: 12,
+                child: SizedBox(),
+              ),
+              Expanded(
+                flex: 35,
                 child: PressButton(
                   onPressed: () => globalRef?.read(tokenProvider.notifier).rolloutPushToken(token) ?? Future.value(),
                   child: Text(
-                    localizations.retryRollout,
+                    token.rolloutState.rolloutFailed ? localizations.retryRollout : localizations.startRollout,
                     style: Theme.of(context).textTheme.bodyMedium,
                     overflow: TextOverflow.fade,
                     softWrap: false,
                   ),
                 ),
               ),
-              const SizedBox(width: 16),
-              SizedBox(
-                width: width * 0.35,
+              const Expanded(
+                flex: 6,
+                child: SizedBox(),
+              ),
+              Expanded(
+                flex: 35,
                 child: PressButton(
                   style: ButtonStyle(backgroundColor: WidgetStateProperty.all(Theme.of(context).colorScheme.errorContainer)),
                   onPressed: () => _showDialog(),
@@ -80,6 +85,10 @@ class RolloutFailedWidget extends ConsumerWidget {
                     softWrap: false,
                   ),
                 ),
+              ),
+              const Expanded(
+                flex: 12,
+                child: SizedBox(),
               ),
             ],
           ),

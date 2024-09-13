@@ -17,10 +17,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import '../model/tokens/container_credentials.dart';
 
-abstract class ApiEndpioint<Data, Ref> {
-  ContainerCredential get credential;
+import '../utils/privacyidea_io_client.dart';
+
+abstract class ApiEndpioint<Credential, Data> {
+  ApiEndpioint(PrivacyideaIOClient ioClient);
   Future<Data> fetch();
-  Future<void> sync(Data data);
+  Future<Data> sync(Credential credential, Data data);
 }

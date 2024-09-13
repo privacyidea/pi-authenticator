@@ -241,8 +241,8 @@
       }
     }
   },
-  "rollingOut": "Ausrollen",
-  "@rollingOut": {
+  "startRollout": "Starte Rollout",
+  "@startRollout": {
     "description": "Label that tells the user that the token is being rolled out."
   },
   "pollingChallenges": "Frage ausstehende Authentifizierungsanfragen ab",

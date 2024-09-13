@@ -21,6 +21,8 @@
 import 'dart:typed_data';
 
 import 'package:basic_utils/basic_utils.dart';
+import 'package:privacyidea_authenticator/model/enums/ec_key_algorithm.dart';
+import 'package:privacyidea_authenticator/model/extensions/enums/ec_key_algorithm_extension.dart';
 
 class EccUtils {
   const EccUtils();
@@ -30,9 +32,10 @@ class EccUtils {
   String serializeECPrivateKey(ECPrivateKey ecPrivateKey) => CryptoUtils.encodeEcPrivateKeyToPem(ecPrivateKey);
   ECPrivateKey deserializeECPrivateKey(String ecPrivateKey) => CryptoUtils.ecPrivateKeyFromPem(ecPrivateKey);
 
-  String trySignWithPrivateKey(ECPrivateKey privateKey, String message) {
+  String signWithPrivateKey(ECPrivateKey privateKey, String message) {
     final ecSignature = CryptoUtils.ecSign(privateKey, Uint8List.fromList(message.codeUnits), algorithmName: 'SHA-256/ECDSA');
-    String signatureBase64 = CryptoUtils.ecSignatureToBase64(ecSignature);
-    return signatureBase64;
+    return CryptoUtils.ecSignatureToBase64(ecSignature);
   }
+
+  AsymmetricKeyPair<ECPublicKey, ECPrivateKey> generateKeyPair(EcKeyAlgorithm keyAlgorithm) => CryptoUtils.generateEcKeyPair(curve: keyAlgorithm.curveName);
 }

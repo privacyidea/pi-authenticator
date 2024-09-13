@@ -18,6 +18,7 @@
  * limitations under the License.
  */
 import 'package:json_annotation/json_annotation.dart';
+import 'package:privacyidea_authenticator/model/tokens/container_credentials.dart';
 
 import '../enums/token_origin_source_type.dart';
 import '../version.dart';
@@ -106,4 +107,19 @@ class TokenOriginData {
   factory TokenOriginData.fromJson(Map<String, dynamic> json) => _$TokenOriginDataFromJson(json);
 
   Map<String, dynamic> toJson() => _$TokenOriginDataToJson(this);
+  factory TokenOriginData.fromContainer({required ContainerCredential container, required String tokenData}) => TokenOriginData(
+        source: TokenOriginSourceType.container,
+        appName: container.issuer,
+        data: tokenData,
+        createdAt: DateTime.now(),
+        isPrivacyIdeaToken: true,
+      );
+
+  factory TokenOriginData.unknown([dynamic data]) => TokenOriginData(
+        source: TokenOriginSourceType.unknown,
+        appName: 'Unknown',
+        data: data.toString(),
+        createdAt: DateTime.now(),
+        isPrivacyIdeaToken: false,
+      );
 }

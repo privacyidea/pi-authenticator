@@ -13,8 +13,12 @@ DayPasswordToken _$DayPasswordTokenFromJson(Map<String, dynamic> json) =>
       algorithm: $enumDecode(_$AlgorithmsEnumMap, json['algorithm']),
       digits: (json['digits'] as num).toInt(),
       secret: json['secret'] as String,
-      containerSerial: json['containerSerial'] as String?,
       serial: json['serial'] as String?,
+      containerSerial: json['containerSerial'] as String?,
+      checkedContainers: (json['checkedContainers'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
       viewMode: $enumDecodeNullable(
               _$DayPasswordTokenViewModeEnumMap, json['viewMode']) ??
           DayPasswordTokenViewMode.VALIDFOR,
@@ -34,9 +38,10 @@ DayPasswordToken _$DayPasswordTokenFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$DayPasswordTokenToJson(DayPasswordToken instance) =>
     <String, dynamic>{
-      'containerSerial': instance.containerSerial,
+      'checkedContainers': instance.checkedContainers,
       'label': instance.label,
       'issuer': instance.issuer,
+      'containerSerial': instance.containerSerial,
       'id': instance.id,
       'serial': instance.serial,
       'pin': instance.pin,

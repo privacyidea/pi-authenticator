@@ -27,6 +27,12 @@ part 'token_folder.g.dart';
 @immutable
 @JsonSerializable()
 class TokenFolder with SortableMixin {
+  static const LABEL = 'label';
+  static const FOLDER_ID = 'folderId';
+  static const IS_EXPANDED = 'isExpanded';
+  static const IS_LOCKED = 'isLocked';
+  static const SORT_INDEX = SortableMixin.SORT_INDEX;
+
   final String label;
   final int folderId;
   final bool isExpanded;

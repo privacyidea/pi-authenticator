@@ -20,7 +20,7 @@
 import 'package:base32/base32.dart';
 import 'package:crypto/crypto.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:privacyidea_authenticator/model/token_container.dart';
+import 'package:privacyidea_authenticator/model/token_template.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../utils/identifiers.dart';
@@ -139,7 +139,7 @@ class SteamToken extends TOTPToken {
   @override
   SteamToken copyUpdateByTemplate(TokenTemplate template) {
     final uriMap = validateMap(
-      map: template.data,
+      map: template.otpAuthMap,
       validators: {
         OTP_AUTH_LABEL: const TypeValidatorOptional<String>(),
         OTP_AUTH_ISSUER: const TypeValidatorOptional<String>(),
@@ -161,7 +161,7 @@ class SteamToken extends TOTPToken {
     );
   }
 
-  static SteamToken fromOtpAuthMap(Map<String, dynamic> uriMap, {required TokenOriginData origin}) {
+  static SteamToken fromOtpAuthMap(Map<String, dynamic> uriMap, {required Map<String, dynamic> additionalData}) {
     uriMap = validateMap(
       map: uriMap,
       validators: {
@@ -172,18 +172,24 @@ class SteamToken extends TOTPToken {
         OTP_AUTH_IMAGE: const TypeValidatorOptional<String>(),
         OTP_AUTH_PIN: stringToBoolValidatorOptional,
       },
-      name: 'SteamToken',
+      name: 'SteamToken#otpAuthMap',
     );
+    final validatedAdditionalData = Token.validateAdditionalData(additionalData);
     return SteamToken(
       label: uriMap[OTP_AUTH_LABEL],
       issuer: uriMap[OTP_AUTH_ISSUER],
-      id: const Uuid().v4(),
       serial: uriMap[OTP_AUTH_SERIAL],
       secret: uriMap[OTP_AUTH_SECRET_BASE32],
       tokenImage: uriMap[OTP_AUTH_IMAGE],
       pin: uriMap[OTP_AUTH_PIN],
       isLocked: uriMap[OTP_AUTH_PIN],
-      origin: origin,
+      id: validatedAdditionalData[Token.ID] ?? const Uuid().v4(),
+      containerSerial: validatedAdditionalData[Token.CONTAINER_SERIAL],
+      checkedContainers: validatedAdditionalData[Token.CHECKED_CONTAINERS] ?? [],
+      sortIndex: validatedAdditionalData[Token.SORT_INDEX],
+      folderId: validatedAdditionalData[Token.FOLDER_ID],
+      origin: validatedAdditionalData[Token.ORIGIN],
+      isHidden: validatedAdditionalData[Token.HIDDEN],
     );
   }
 
@@ -209,7 +215,7 @@ class SteamToken extends TOTPToken {
   ///  -----------------------------------------------------------
   /// ```
   @override
-  Map<String, String> toOtpAuthMap({String? containerSerial}) => super.toOtpAuthMap();
+  Map<String, dynamic> toOtpAuthMap() => super.toOtpAuthMap();
 
   static SteamToken fromJson(Map<String, dynamic> json) => _$SteamTokenFromJson(json);
   @override

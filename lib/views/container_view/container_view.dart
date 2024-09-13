@@ -28,6 +28,7 @@ import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/toke
 import '../../l10n/app_localizations.dart';
 import '../../model/tokens/container_credentials.dart';
 import '../../utils/customization/theme_extentions/action_theme.dart';
+import '../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../main_view/main_view_widgets/token_widgets/slideable_action.dart';
 import '../../widgets/pi_slideable.dart';
 import '../view_interface.dart';
@@ -88,12 +89,20 @@ class ContainerWidget extends ConsumerWidget {
               'issuer: ${containerCredential.issuer}',
               'finalizationState: ${containerCredential.finalizationState.name}',
             ],
-            trailing: IconButton(
-              icon: const Icon(Icons.delete),
-              onPressed: () {
-                // Open Slidable
-              },
-            ),
+            trailing: containerCredential is ContainerCredentialFinalized
+                ? IconButton(
+                    icon: const Icon(Icons.sync),
+                    onPressed: () {
+                      final tokenState = ref.read(tokenProvider);
+                      ref.read(containerCredentialsProvider.notifier).syncTokens(tokenState);
+                    },
+                  )
+                : IconButton(
+                    icon: const Icon(Icons.delete),
+                    onPressed: () {
+                      ref.read(containerCredentialsProvider.notifier).deleteCredential(containerCredential);
+                    },
+                  ),
           ),
         ),
       );

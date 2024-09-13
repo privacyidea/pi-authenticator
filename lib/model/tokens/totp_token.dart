@@ -27,7 +27,7 @@ import '../../utils/type_matchers.dart';
 import '../enums/algorithms.dart';
 import '../enums/token_types.dart';
 import '../extensions/enums/algorithms_extension.dart';
-import '../token_container.dart';
+import '../token_template.dart';
 import '../token_import/token_origin_data.dart';
 import 'otp_token.dart';
 import 'token.dart';
@@ -135,7 +135,7 @@ class TOTPToken extends OTPToken {
   @override
   TOTPToken copyUpdateByTemplate(TokenTemplate template) {
     final uriMap = validateMap(
-      map: template.data,
+      map: template.otpAuthMap,
       validators: {
         OTP_AUTH_LABEL: const TypeValidatorOptional<String>(),
         OTP_AUTH_ISSUER: const TypeValidatorOptional<String>(),
@@ -168,7 +168,7 @@ class TOTPToken extends OTPToken {
     return 'T${super.toString()}period: $period}';
   }
 
-  factory TOTPToken.fromOtpAuthMap(Map<String, String> otpAuthMap, {required TokenOriginData origin}) {
+  factory TOTPToken.fromOtpAuthMap(Map<String, dynamic> otpAuthMap, {required Map<String, dynamic> additionalData}) {
     final validatedMap = validateMap(
       map: otpAuthMap,
       validators: {
@@ -182,12 +182,12 @@ class TOTPToken extends OTPToken {
         OTP_AUTH_IMAGE: const TypeValidatorOptional<String>(),
         OTP_AUTH_PIN: stringToBoolValidatorOptional,
       },
-      name: 'TOTPToken',
+      name: 'TOTPToken#otpAuthMap',
     );
+    final validatedAdditionalData = Token.validateAdditionalData(additionalData);
     return TOTPToken(
       label: validatedMap[OTP_AUTH_LABEL] as String,
       issuer: validatedMap[OTP_AUTH_ISSUER] as String,
-      id: const Uuid().v4(),
       serial: validatedMap[OTP_AUTH_SERIAL] as String?,
       algorithm: validatedMap[OTP_AUTH_ALGORITHM] as Algorithms,
       digits: validatedMap[OTP_AUTH_DIGITS] as int,
@@ -196,7 +196,13 @@ class TOTPToken extends OTPToken {
       tokenImage: validatedMap[OTP_AUTH_IMAGE] as String?,
       pin: validatedMap[OTP_AUTH_PIN] as bool?,
       isLocked: validatedMap[OTP_AUTH_PIN] as bool?,
-      origin: origin,
+      id: validatedAdditionalData[Token.ID] ?? const Uuid().v4(),
+      containerSerial: validatedAdditionalData[Token.CONTAINER_SERIAL],
+      checkedContainers: validatedAdditionalData[Token.CHECKED_CONTAINERS] ?? [],
+      sortIndex: validatedAdditionalData[Token.SORT_INDEX],
+      folderId: validatedAdditionalData[Token.FOLDER_ID],
+      origin: validatedAdditionalData[Token.ORIGIN],
+      isHidden: validatedAdditionalData[Token.HIDDEN],
     );
   }
 
@@ -219,7 +225,7 @@ class TOTPToken extends OTPToken {
   ///  -----------------------------------------------------------
   /// ```
   @override
-  Map<String, String> toOtpAuthMap({String? containerSerial}) {
+  Map<String, dynamic> toOtpAuthMap() {
     return super.toOtpAuthMap()
       ..addAll({
         OTP_AUTH_COUNTER: period.toString(),

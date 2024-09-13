@@ -85,7 +85,7 @@ const OTP_AUTH_2STEP_ITERATIONS = '2step_difficulty';
 
 // Container otp sync
 
-const OTP_AUTH_OTP_VALUES = 'otp_values';
+const OTP_AUTH_OTP_VALUES = 'otp';
 
 const OTP_AUTH_STEAM_ISSUER = 'Steam';
 
@@ -94,6 +94,10 @@ const String SIGNING_ALGORITHM = 'SHA-256/RSA';
 
 // Custom error identifiers
 const String FIREBASE_TOKEN_ERROR_CODE = 'FIREBASE_TOKEN_ERROR_CODE';
+
+// Pi Server Error
+const String PI_SERVER_ERROR_CODE = 'code';
+const String PI_SERVER_ERROR_MESSAGE = 'message';
 
 // Push request:
 const String PUSH_REQUEST_NONCE = 'nonce'; // 1.
@@ -114,6 +118,31 @@ const String CONTAINER_SERIAL = 'serial';
 const String CONTAINER_EC_KEY_ALGORITHM = 'key_algorithm';
 const String CONTAINER_HASH_ALGORITHM = 'hash_algorithm';
 const String CONTAINER_PASSPHRASE_QUESTION = 'passphrase';
+
+// Container sync:
+const String CONTAINER_SYNC_NONCE = 'nonce';
+const String CONTAINER_SYNC_TIMESTAMP = 'time_stamp';
+const String CONTAINER_SYNC_KEY_ALGORITHM = 'key_algorithm';
+const String CONTAINER_SYNC_URL = 'container_sync_url';
+const String CONTAINER_SYNC_SIGNATURE = 'signature';
+const String CONTAINER_SYNC_PUBLIC_CLIENT_KEY = 'public_enc_key_client';
+const String CONTAINER_SYNC_DICT_SERVER = 'container_dict_server';
+const String CONTAINER_SYNC_DICT_CLIENT = 'container_dict_client';
+
+const String CONTAINER_DICT_SERIAL = 'serial';
+const String CONTAINER_DICT_TYPE = 'type';
+const String CONTAINER_DICT_TOKENS = 'tokens';
+const String CONTAINER_DICT_TOKENS_ADD = 'add';
+const String CONTAINER_DICT_TOKENS_UPDATE = 'update';
+
+const String CONTAINER_SYNC_PUBLIC_SERVER_KEY = 'public_server_key';
+
+const String CONTAINER_SYNC_ENC_ALGORITHM = 'encryption_algorithm';
+const String CONTAINER_SYNC_ENC_PARAMS = 'encryption_params';
+const String CONTAINER_SYNC_ENC_PARAMS_MODE = 'mode';
+const String CONTAINER_SYNC_ENC_PARAMS_IV = 'init_vector';
+const String CONTAINER_SYNC_ENC_PARAMS_TAG = 'tag';
+const String CONTAINER_SYNC_DICT_ENCRYPTED = 'container_dict_encrypted';
 
 const String GLOBAL_SECURE_REPO_PREFIX = 'app_v3_';
 
@@ -180,7 +209,7 @@ Map<String, RV> validateMap<RV>({required Map<String, dynamic> map, required Map
   return validatedMap;
 }
 
-class TypeValidatorOptional<T> {
+class TypeValidatorOptional<T extends Object?> {
   bool get isOptional => runtimeType.toString().contains('Optional');
 
   final T Function(dynamic value)? transformer;
@@ -197,7 +226,7 @@ class TypeValidatorOptional<T> {
     Logger.debug('Checking type of $value and default value $defaultValue with transformer $transformer (isOptional $isOptional)');
     if (value == null) return (defaultValue != null) ? true : isOptional;
 
-    if (transformer == null) return value is T?;
+    if (transformer == null) return value is T;
     try {
       transformer!(value);
       return true;
@@ -213,7 +242,7 @@ class TypeValidatorOptional<T> {
     if (value == null) return defaultValue;
     if (transformer == null) return value as T;
     try {
-      return transformer!(value);
+      return transformer!.call(value);
     } catch (e) {
       return defaultValue;
     }
@@ -248,7 +277,7 @@ class TypeValidatorRequired<T extends Object> extends TypeValidatorOptional<T> {
     try {
       if (value == null) return defaultValue!;
       if (transformer == null) return value is T ? value : defaultValue!;
-      return transformer!(value);
+      return transformer!.call(value);
     } catch (e) {
       if (defaultValue != null) return defaultValue!;
       throw LocalizedArgumentError(

@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 /*
  * privacyIDEA Authenticator
  *
@@ -18,7 +20,8 @@
  * limitations under the License.
  */
 import 'package:flutter/material.dart';
-import '../token_container.dart';
+import 'package:privacyidea_authenticator/model/tokens/container_credentials.dart';
+import '../token_template.dart';
 
 import '../../utils/identifiers.dart';
 import '../enums/token_types.dart';
@@ -33,12 +36,20 @@ import 'totp_token.dart';
 
 @immutable
 abstract class Token with SortableMixin {
+  static const CONTAINER_SERIAL = 'containerSerial';
+  static const ID = 'id';
+  static const ORIGIN = 'origin';
+  static const HIDDEN = 'hidden';
+  static const CHECKED_CONTAINERS = 'checkedContainers';
+  static const FOLDER_ID = 'folderId';
+  static const SORT_INDEX = SortableMixin.SORT_INDEX;
+
   bool? get isPrivacyIdeaToken => origin?.isPrivacyIdeaToken;
   final String tokenVersion = 'v1.0.0'; // The version of this token, this is used for serialization.
-  final String? containerSerial; // The serial of the container this token belongs to.
   final List<String> checkedContainers; // The serials of the containers this token should not be in.
   final String label; // the name of the token, it cannot be uses as an identifier
   final String issuer; // The issuer of this token, currently unused.
+  final String? containerSerial; // The serial of the container this token belongs to.
   final String id; // this is the identifier of the token
   final String? serial; // The serial of the token, this is used to identify the token in the privacyIDEA server.
   final bool pin;
@@ -66,16 +77,32 @@ abstract class Token with SortableMixin {
   }
 
   /// Creates a token from a uri map.
-  factory Token.fromOtpAuthMap(Map<String, String> otpAuthMap, {required TokenOriginData origin}) {
+  factory Token.fromOtpAuthMap(Map<String, dynamic> otpAuthMap, {required Map<String, dynamic> additionalData}) {
     String? type = otpAuthMap[OTP_AUTH_TYPE];
     if (type == null) throw ArgumentError.value(otpAuthMap, 'Token#fromUriMap', 'Token type is not defined in the uri map');
-    if (TokenTypes.HOTP.isName(type, caseSensitive: false)) return HOTPToken.fromOtpAuthMap(otpAuthMap, origin: origin);
-    if (TokenTypes.TOTP.isName(type, caseSensitive: false)) return TOTPToken.fromOtpAuthMap(otpAuthMap, origin: origin);
-    if (TokenTypes.PIPUSH.isName(type, caseSensitive: false)) return PushToken.fromOtpAuthMap(otpAuthMap, origin: origin);
-    if (TokenTypes.DAYPASSWORD.isName(type, caseSensitive: false)) return DayPasswordToken.fromOtpAuthMap(otpAuthMap, origin: origin);
-    if (TokenTypes.STEAM.isName(type, caseSensitive: false)) return SteamToken.fromOtpAuthMap(otpAuthMap, origin: origin);
+    if (TokenTypes.HOTP.isName(type, caseSensitive: false)) return HOTPToken.fromOtpAuthMap(otpAuthMap, additionalData: additionalData);
+    if (TokenTypes.TOTP.isName(type, caseSensitive: false)) return TOTPToken.fromOtpAuthMap(otpAuthMap, additionalData: additionalData);
+    if (TokenTypes.PIPUSH.isName(type, caseSensitive: false)) return PushToken.fromOtpAuthMap(otpAuthMap, additionalData: additionalData);
+    if (TokenTypes.DAYPASSWORD.isName(type, caseSensitive: false)) {
+      return DayPasswordToken.fromOtpAuthMap(otpAuthMap, additionalData: additionalData);
+    }
+    if (TokenTypes.STEAM.isName(type, caseSensitive: false)) return SteamToken.fromOtpAuthMap(otpAuthMap, additionalData: additionalData);
     throw ArgumentError.value(otpAuthMap, 'Token#fromUriMap', 'Token type [$type] is not a supported');
   }
+
+  static Map<String, dynamic> validateAdditionalData(Map<String, dynamic> additionalData) => validateMap(
+        map: additionalData,
+        validators: {
+          Token.CONTAINER_SERIAL: const TypeValidatorOptional<String>(),
+          Token.ID: const TypeValidatorOptional<String>(),
+          Token.ORIGIN: const TypeValidatorOptional<TokenOriginData>(),
+          Token.HIDDEN: const TypeValidatorOptional<bool>(),
+          Token.CHECKED_CONTAINERS: const TypeValidatorOptional<List<String>>(),
+          Token.FOLDER_ID: const TypeValidatorOptional<int>(),
+          Token.SORT_INDEX: const TypeValidatorOptional<int>(),
+        },
+        name: 'Token#validateAdditionalData',
+      );
 
   const Token({
     this.serial,
@@ -143,7 +170,8 @@ abstract class Token with SortableMixin {
         'type: $type, '
         'sortIndex: $sortIndex, '
         'folderId: $folderId, '
-        'origin: $origin, ';
+        'origin: $origin, '
+        'containerSerial: $containerSerial, ';
   }
 
   /// This is used to create a map that can be used to serialize the token.
@@ -159,10 +187,10 @@ abstract class Token with SortableMixin {
   /// | OTP_AUTH_PIN: pin,                                        |
   /// | OTP_AUTH_IMAGE: tokenImage, (optional)                    |
   ///  -----------------------------------------------------------
+  ///
   /// ```
-  Map<String, String> toOtpAuthMap({String? containerSerial}) {
+  Map<String, dynamic> toOtpAuthMap() {
     return {
-      if (containerSerial != null) CONTAINER_SERIAL: containerSerial,
       if (serial != null) OTP_AUTH_SERIAL: serial!,
       OTP_AUTH_TYPE: type,
       OTP_AUTH_LABEL: label,
@@ -174,5 +202,21 @@ abstract class Token with SortableMixin {
 
   Token copyUpdateByTemplate(TokenTemplate template);
 
-  TokenTemplate toTemplate() => TokenTemplate(data: toOtpAuthMap());
+  Map<String, dynamic> get additionalData => {
+        ID: id,
+        ORIGIN: origin?.data,
+        SORT_INDEX: sortIndex,
+        FOLDER_ID: folderId,
+        HIDDEN: isHidden,
+        CHECKED_CONTAINERS: checkedContainers,
+      };
+
+  TokenTemplate? toTemplate({ContainerCredential? container}) => serial != null
+      ? TokenTemplate.withSerial(
+          otpAuthMap: toOtpAuthMap(),
+          additionalData: additionalData,
+          serial: serial!,
+          container: container,
+        )
+      : null;
 }

@@ -24,6 +24,7 @@ import 'package:basic_utils/basic_utils.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/extensions/enums/ec_key_algorithm_extension.dart';
+import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/type_matchers.dart';
 
@@ -31,12 +32,15 @@ import '../../utils/ecc_utils.dart';
 import '../../utils/logger.dart';
 import '../enums/container_finalization_state.dart';
 import '../enums/ec_key_algorithm.dart';
+import '../enums/token_origin_source_type.dart';
+import '../token_import/token_origin_data.dart';
 
 part 'container_credentials.freezed.dart';
 part 'container_credentials.g.dart';
 
 @Freezed(toStringOverride: false)
 class ContainerCredential with _$ContainerCredential {
+  static const SERIAL = 'serial';
   static const eccUtils = EccUtils();
   const ContainerCredential._();
 
@@ -81,9 +85,11 @@ class ContainerCredential with _$ContainerCredential {
     required String nonce,
     required DateTime timestamp,
     required Uri finalizationUrl,
+    Uri? syncUrl,
     required String serial,
     required EcKeyAlgorithm ecKeyAlgorithm,
     required Algorithms hashAlgorithm,
+    @Default('privacyIDEA') String serverName,
     @Default(ContainerFinalizationState.uninitialized) ContainerFinalizationState finalizationState,
     String? passphraseQuestion,
     String? publicServerKey,
@@ -95,35 +101,41 @@ class ContainerCredential with _$ContainerCredential {
     required String issuer,
     required String nonce,
     required DateTime timestamp,
-    required Uri finalizationUrl,
+    required Uri syncUrl,
     required String serial,
     required EcKeyAlgorithm ecKeyAlgorithm,
     required Algorithms hashAlgorithm,
+    @Default('privacyIDEA') String serverName,
     @Default(ContainerFinalizationState.finalized) ContainerFinalizationState finalizationState,
     String? passphraseQuestion,
     required String publicServerKey,
     required String publicClientKey,
     required String privateClientKey,
   }) = ContainerCredentialFinalized;
+
   ContainerCredentialFinalized? finalize({
     ECPublicKey? publicServerKey,
     AsymmetricKeyPair<ECPublicKey, ECPrivateKey>? clientKeyPair,
+    Uri? syncUrl,
   }) {
     if (this is ContainerCredentialFinalized) return this as ContainerCredentialFinalized;
     if (publicServerKey == null && this.publicServerKey == null) {
       Logger.warning('Unable to finalize without public server key');
       return null;
     }
-    assert(publicServerKey != null || this.publicServerKey != null, 'Unable to finalize without public server key');
     if (clientKeyPair == null && (publicClientKey == null || privateClientKey == null)) {
       Logger.warning('Unable to finalize without client key pair');
+      return null;
+    }
+    if (syncUrl == null && this.syncUrl == null) {
+      Logger.warning('Unable to finalize without sync url');
       return null;
     }
     return ContainerCredentialFinalized(
       issuer: issuer,
       nonce: nonce,
       timestamp: timestamp,
-      finalizationUrl: finalizationUrl,
+      syncUrl: syncUrl ?? this.syncUrl!,
       serial: serial,
       ecKeyAlgorithm: ecKeyAlgorithm,
       hashAlgorithm: hashAlgorithm,
@@ -154,7 +166,8 @@ class ContainerCredential with _$ContainerCredential {
       'issuer: $issuer, '
       'nonce: $nonce, '
       'timestamp: $timestamp, '
-      'finalizationUrl: $finalizationUrl, '
+      '${(this is ContainerCredentialUnfinalized) ? ' finalizationUrl: ${(this as ContainerCredentialUnfinalized).finalizationUrl}, ' : ''}'
+      'syncUrl: $syncUrl, '
       'serial: $serial, '
       'ecKeyAlgorithm: $ecKeyAlgorithm, '
       'hashAlgorithm: $hashAlgorithm, '
@@ -162,8 +175,20 @@ class ContainerCredential with _$ContainerCredential {
       'passphraseQuestion: $passphraseQuestion, '
       'publicServerKey: $publicServerKey, '
       'publicClientKey: $publicClientKey)';
-}
 
+  String signMessage(String msg) {
+    assert(ecPrivateClientKey != null, 'Unable to sign without private client key');
+    return eccUtils.signWithPrivateKey(ecPrivateClientKey!, msg);
+  }
+
+  String? trySignMessage(String msg) => ecPrivateClientKey == null ? null : eccUtils.signWithPrivateKey(ecPrivateClientKey!, msg);
+
+  Token addOriginToToken({required Token token, String? tokenData}) => token.copyWith(
+      containerSerial: () => serial,
+      origin: token.origin == null
+          ? TokenOriginData.fromContainer(container: this, tokenData: tokenData ?? '')
+          : token.origin!.copyWith(source: TokenOriginSourceType.container));
+}
 //be99ff65b1c38ae8a7d6caf8799a0cce3749fe0e|2024-08-27 14:30:58.371312Z|http://192.168.0.230:5000/container/register/finalize|SMPH0000D49C
 //be99ff65b1c38ae8a7d6caf8799a0cce3749fe0e|2024-08-27T14:30:58.371312+00:00|http://192.168.0.230:5000/container/register/finalize|SMPH0000D49C
 

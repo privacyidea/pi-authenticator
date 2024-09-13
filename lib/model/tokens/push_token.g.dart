@@ -11,6 +11,10 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) => PushToken(
       label: json['label'] as String? ?? '',
       issuer: json['issuer'] as String? ?? '',
       containerSerial: json['containerSerial'] as String?,
+      checkedContainers: (json['checkedContainers'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
       id: json['id'] as String,
       fbToken: json['fbToken'] as String?,
       url: json['url'] == null ? null : Uri.parse(json['url'] as String),
@@ -25,6 +29,7 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) => PushToken(
       sslVerify: json['sslVerify'] as bool?,
       rolloutState: $enumDecodeNullable(
           _$PushTokenRollOutStateEnumMap, json['rolloutState']),
+      type: json['type'] as String?,
       tokenImage: json['tokenImage'] as String?,
       sortIndex: (json['sortIndex'] as num?)?.toInt(),
       folderId: (json['folderId'] as num?)?.toInt(),
@@ -37,9 +42,10 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) => PushToken(
     );
 
 Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
-      'containerSerial': instance.containerSerial,
+      'checkedContainers': instance.checkedContainers,
       'label': instance.label,
       'issuer': instance.issuer,
+      'containerSerial': instance.containerSerial,
       'id': instance.id,
       'pin': instance.pin,
       'isLocked': instance.isLocked,
@@ -48,6 +54,7 @@ Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
       'folderId': instance.folderId,
       'sortIndex': instance.sortIndex,
       'origin': instance.origin,
+      'type': instance.type,
       'expirationDate': instance.expirationDate?.toIso8601String(),
       'serial': instance.serial,
       'fbToken': instance.fbToken,

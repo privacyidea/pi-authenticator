@@ -213,14 +213,13 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
           name: 'aegisV2Entry',
         );
 
-        final token = Token.fromOtpAuthMap(
-          otpAuthMap,
-          origin: TokenOriginSourceType.backupFile.toTokenOrigin(
+        final token = Token.fromOtpAuthMap(otpAuthMap, additionalData: {
+          Token.ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
             originName: TokenImportOrigins.aegisAuthenticator.appName,
             isPrivacyIdeaToken: false,
             data: jsonEncode(entry),
           ),
-        );
+        });
         results.add(ProcessorResult.success(
           token.copyWith(id: entry[AEGIS_ENTRY_ID]),
           resultHandlerType: resultHandlerType,
@@ -276,11 +275,13 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
         results.add(ProcessorResult.success(
           Token.fromOtpAuthMap(
             otpAuthMap,
-            origin: TokenOriginSourceType.backupFile.toTokenOrigin(
-              originName: TokenImportOrigins.aegisAuthenticator.appName,
-              isPrivacyIdeaToken: false,
-              data: jsonEncode(entry),
-            ),
+            additionalData: {
+              Token.ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
+                originName: TokenImportOrigins.aegisAuthenticator.appName,
+                isPrivacyIdeaToken: false,
+                data: jsonEncode(entry),
+              ),
+            },
           ),
           resultHandlerType: resultHandlerType,
         ));

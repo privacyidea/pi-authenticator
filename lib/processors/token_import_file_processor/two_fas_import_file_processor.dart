@@ -149,11 +149,13 @@ class TwoFasAuthenticatorImportFileProcessor extends TokenImportFileProcessor {
         results.add(ProcessorResult.success(
           Token.fromOtpAuthMap(
             _twoFasToOtpAuth(twoFasToken),
-            origin: TokenOriginSourceType.backupFile.toTokenOrigin(
-              originName: TokenImportOrigins.twoFasAuthenticator.appName,
-              isPrivacyIdeaToken: false,
-              data: jsonEncode(twoFasToken),
-            ),
+            additionalData: {
+              Token.ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
+                originName: TokenImportOrigins.twoFasAuthenticator.appName,
+                isPrivacyIdeaToken: false,
+                data: jsonEncode(twoFasToken),
+              ),
+            },
           ),
           resultHandlerType: resultHandlerType,
         ));

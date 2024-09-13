@@ -40,7 +40,11 @@ class CredentialsState with _$CredentialsState {
     return CredentialsState(credentials: credentials);
   }
 
-  ContainerCredential? currentOf(ContainerCredential credential) => credentialsOf(credential.serial);
+  T? currentOf<T extends ContainerCredential>(T credential) {
+    final current = credentialsOf(credential.serial);
+    if (current is T) return current;
+    return null;
+  }
 
   factory CredentialsState.fromJson(Map<String, dynamic> json) => _$CredentialsStateFromJson(json);
 }

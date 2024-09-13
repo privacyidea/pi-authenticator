@@ -55,19 +55,13 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
     }
     Logger.info('Try to handle otpAuth:', name: 'token_notifier.dart#addTokenFromOtpAuth');
     // The values from queryParameters are always strings.
-    Map<String, String> queryParameters = uri.queryParameters;
-
-    queryParameters = validateMap(
-      map: queryParameters,
-      validators: {OTP_AUTH_SECRET_BASE32: const TypeValidatorRequired<String>()},
-      name: 'queryParameters',
-    );
+    Map<String, String> queryParameters = {...uri.queryParameters};
 
     final (label, issuer) = _parseLabelAndIssuer(uri);
     queryParameters[OTP_AUTH_LABEL] = label;
     queryParameters[OTP_AUTH_ISSUER] = issuer;
     queryParameters[OTP_AUTH_TYPE] = _parseTokenType(uri);
-    queryParameters[OTP_AUTH_SECRET_BASE32] = _secretPadding(queryParameters[OTP_AUTH_SECRET_BASE32]!);
+    queryParameters = _secretAddPadding(queryParameters);
 
     _logInfo(uri);
     final twoStepSecretFuture = _parse2StepSecret(uri);
@@ -84,7 +78,7 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
       // Update the secret with the two step secret.
       queryParameters[OTP_AUTH_SECRET_BASE32] = twoStepSecretString;
     }
-    final newToken = Token.fromOtpAuthMap(queryParameters, origin: _parseCreatorToOrigin(uri));
+    final newToken = Token.fromOtpAuthMap(queryParameters, additionalData: {Token.ORIGIN: _parseCreatorToOrigin(uri)});
     return [
       ProcessorResultSuccess(
         newToken,
@@ -220,7 +214,11 @@ void _logInfo(Uri uri) {
 //
 // According to https://github.com/google/google-authenticator/wiki/Key-Uri-Format,
 // the padding can be omitted, but the libraries for base32 do not allow this.
-String _secretPadding(String secret) => '$secret${secret.length % 2 == 1 ? '=' : ''}';
+Map<String, String> _secretAddPadding(Map<String, String> queryParameters) {
+  if (queryParameters[OTP_AUTH_SECRET_BASE32] == null) return queryParameters;
+  final secret = queryParameters[OTP_AUTH_SECRET_BASE32]!;
+  return {...queryParameters}..addAll({OTP_AUTH_SECRET_BASE32: '$secret${secret.length % 2 == 1 ? '=' : ''}'});
+}
 
 String _parseTokenType(Uri uri) {
   if (_parseIssuer(uri) == "Steam") return TokenTypes.STEAM.name;

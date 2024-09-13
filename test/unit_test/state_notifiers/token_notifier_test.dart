@@ -297,7 +297,6 @@ void _testTokenNotifier() {
         id: '20663f77-a26e-41c3-8946-d0efb8b386d3',
         pin: false,
         tokenImage: null,
-        type: 'PIPUSH',
         sortIndex: null,
         folderId: null,
         serial: 'PIPU0006BF18',

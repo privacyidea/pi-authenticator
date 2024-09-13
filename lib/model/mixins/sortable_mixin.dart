@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 /*
  * privacyIDEA Authenticator
  *
@@ -18,6 +20,8 @@
  * limitations under the License.
  */
 mixin SortableMixin {
+  static const String SORT_INDEX = 'sortIndex';
+
   int? get sortIndex;
   SortableMixin copyWith({int? sortIndex});
 

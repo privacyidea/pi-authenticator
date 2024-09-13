@@ -41,7 +41,7 @@ import '../../../../model/enums/token_import_type.dart';
 import '../../../../model/enums/token_origin_source_type.dart';
 import '../../../../model/processor_result.dart';
 import '../../../../model/riverpod_states/token_state.dart';
-import '../../../../model/token_container.dart';
+import '../../../../model/token_template.dart';
 import '../../../../model/tokens/hotp_token.dart';
 import '../../../../model/tokens/otp_token.dart';
 import '../../../../model/tokens/push_token.dart';
@@ -156,20 +156,24 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   /// Adds a list of tokens and returns the tokens that could not be added or replaced.
   Future<List<Token>> _addOrReplaceTokens(List<Token> tokens) async {
     await _repoMutex.acquire();
+    tokens = tokens.map((token) {
+      final currentId = state.currentOf(token)?.id;
+      if (currentId != null) return token.copyWith(id: currentId);
+      return token;
+    }).toList();
     final failedTokens = await _repo.saveOrReplaceTokens(tokens);
     if (failedTokens.isNotEmpty) {
       Logger.warning(
         'Saving tokens failed. Failed Tokens: ${failedTokens.length}',
         name: 'token_notifier.dart#_saveOrReplaceTokens',
       );
-      // Every token that is saved should not be in the failedTokens list
-      final savedTokens = tokens.where((element) => !failedTokens.contains(element)).toList();
-      state = state.addOrReplaceTokens(savedTokens);
-      return failedTokens;
     }
-    // [failedTokens] is empty, so every token was saved successfully and we dont need to filter the tokens
-    Logger.info('Saved ${tokens.length} Tokens to storage.', name: 'token_notifier.dart#_saveOrReplaceTokens');
-    state = state.addOrReplaceTokens(tokens);
+    // Every token that is saved should not be in the failedTokens list
+    final savedTokens = tokens.where((element) => !failedTokens.contains(element)).toList();
+    // Add the saved tokens to the state
+    Logger.info('Saved ${savedTokens.length} Tokens to storage.', name: 'token_notifier.dart#_saveOrReplaceTokens');
+    state = state.addOrReplaceTokens(savedTokens);
+
     Logger.debug('New State: ${state.tokens.length} Tokens', name: 'token_notifier.dart#_saveOrReplaceTokens');
     _repoMutex.release();
     return [];
@@ -238,7 +242,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       return false;
     }
     _repoMutex.release();
-    handlePushTokensIfExist();
+    await _handlePushTokensIfExist();
     return true;
   }
 
@@ -261,7 +265,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       return failedTokens;
     }
     _repoMutex.release();
-    handlePushTokensIfExist();
+    await _handlePushTokensIfExist();
     return [];
   }
 
@@ -284,7 +288,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       return state;
     }
     _repoMutex.release();
-    handlePushTokensIfExist();
+    await _handlePushTokensIfExist();
     return newState;
   }
 
@@ -365,25 +369,19 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   /// Adds a new token and returns true if successful, false if not.
   Future<bool> addNewToken(Token token) async {
     final success = await _addOrReplaceToken(token);
-    await handlePushTokensIfExist();
+    await _handlePushTokensIfExist();
     return success;
   }
 
-  Future<bool> addNewTokens(List<Token> tokens) async {
+  /// Adds new tokens and returns the tokens that could not be added.
+  Future<List<Token>> addNewTokens(List<Token> tokens) async {
     final failedTokens = await _addOrReplaceTokens(tokens);
-    await handlePushTokensIfExist();
-    return failedTokens.isEmpty;
+    await _handlePushTokensIfExist();
+    return failedTokens;
   }
 
   /// Adds or replaces a token and returns true if successful, false if not.
   Future<bool> addOrReplaceToken(Token token) => _addOrReplaceToken(token);
-
-  /// Adds new tokens and returns the tokens that could not be added.
-  Future<List<Token>> addTokens(List<Token> tokens) async {
-    final failedTokens = await _addOrReplaceTokens(tokens);
-    await handlePushTokensIfExist();
-    return failedTokens;
-  }
 
   /// Adds or replaces a list of tokens and returns the tokens that could not be added or replaced.
   Future<List<Token>> addOrReplaceTokens(List<Token> tokens) => _addOrReplaceTokens(tokens);
@@ -395,114 +393,114 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   Future<List<T>> updateTokens<T extends Token>(List<T> tokens, T Function(T) updater) async => _updateTokens(tokens, updater);
 
   /// Adds, Updates or Removes tokens based on the [TokenContainer] and returns the updated tokens.
-  Future<void> updateContainerTokens(TokenContainer container) async {
-    await initState;
-    Logger.info('Updating tokens from container.', name: 'token_notifier.dart#updateContainerTokens');
-    final templatesToAdd = <TokenTemplate>[];
-    final templatesToUpdate = <TokenTemplate>[];
-    final templatesToRemove = <TokenTemplate>[];
+  // Future<void> updateContainerTokens(TokenContainer container) async {
+  //   await initState;
+  //   Logger.info('Updating tokens from container.', name: 'token_notifier.dart#updateContainerTokens');
+  //   final templatesToAdd = <TokenTemplate>[];
+  //   final templatesToUpdate = <TokenTemplate>[];
+  //   final templatesToRemove = <TokenTemplate>[];
 
-    final knownContainerTokens = state.tokens.fromContainer(container.serial)..addAll(state.maybePiTokens);
-    final serverTokenTemplates = container.syncedTokenTemplates;
-    Logger.debug(
-      'App knows  ${knownContainerTokens.length} of ${serverTokenTemplates.length} server tokens',
-      name: 'token_notifier.dart#updateContainerTokens',
-    );
-    final appTokenTemplates = knownContainerTokens.toTemplates();
-    Logger.debug('All server templates: ${serverTokenTemplates.join('\n')}', name: 'token_notifier.dart#updateContainerTokens');
-    for (var serverTokenTemplate in serverTokenTemplates) {
-      Logger.debug(
-        'Checking server token template: $serverTokenTemplate',
-        name: 'token_notifier.dart#updateContainerTokens',
-      );
-      // Searches for tokens that are in the container but not in the app to add them.
-      // If the token is already in the app, it will be updated.
-      // Reduces the [tokenTemplatesApp] list to only the tokens that are in the app but not in the container. These tokens will be removed.
-      final appTemplate = appTokenTemplates.firstWhereOrNull(
-        (templateApp) => templateApp.isSameTokenAs(serverTokenTemplate),
-      );
-      if (appTemplate == null) {
-        Logger.debug(
-          'Token with serial ${serverTokenTemplate.serial} or otps ${serverTokenTemplate.otpValues} not found in app. Adding them.',
-          name: 'token_notifier.dart#updateContainerTokens',
-        );
-        templatesToAdd.add(serverTokenTemplate);
-      } else {
-        Logger.debug(
-          'Token with serial ${serverTokenTemplate.serial} or otps ${serverTokenTemplate.otpValues} found in app. Checking for update.',
-          name: 'token_notifier.dart#updateContainerTokens',
-        );
-        appTokenTemplates.remove(appTemplate);
-        if (!appTemplate.hasSameValuesAs(serverTokenTemplate)) {
-          Logger.debug(
-            'Token with serial ${serverTokenTemplate.serial} or otps ${serverTokenTemplate.otpValues} found in app the Template but is different. Check update.',
-            name: 'token_notifier.dart#updateContainerTokens',
-          );
-          // Only update the token if the template is different
-          templatesToUpdate.add(serverTokenTemplate);
-        } else {
-          Logger.debug(
-            'Token with serial ${serverTokenTemplate.serial} or otps ${serverTokenTemplate.otpValues} found in app. And is the same. Skipping.',
-            name: 'token_notifier.dart#updateContainerTokens',
-          );
-        }
-      }
-    }
-    // Removes all tokens that are in the app but not in the container.
-    final remainingTokenTemplatesOfContainer = appTokenTemplates.where((template) => template.containerSerial == container.serial);
-    templatesToRemove.addAll(remainingTokenTemplatesOfContainer);
+  //   final knownContainerTokens = state.tokens.ofContainer(container.serial)..addAll(state.maybePiTokens);
+  //   final serverTokenTemplates = container.syncedTokenTemplates;
+  //   Logger.debug(
+  //     'App knows  ${knownContainerTokens.length} of ${serverTokenTemplates.length} server tokens',
+  //     name: 'token_notifier.dart#updateContainerTokens',
+  //   );
+  //   final appTokenTemplates = knownContainerTokens.toTemplates();
+  //   Logger.debug('All server templates: ${serverTokenTemplates.join('\n')}', name: 'token_notifier.dart#updateContainerTokens');
+  //   for (var serverTokenTemplate in serverTokenTemplates) {
+  //     Logger.debug(
+  //       'Checking server token template: $serverTokenTemplate',
+  //       name: 'token_notifier.dart#updateContainerTokens',
+  //     );
+  //     // Searches for tokens that are in the container but not in the app to add them.
+  //     // If the token is already in the app, it will be updated.
+  //     // Reduces the [tokenTemplatesApp] list to only the tokens that are in the app but not in the container. These tokens will be removed.
+  //     final appTemplate = appTokenTemplates.firstWhereOrNull(
+  //       (templateApp) => templateApp.isSameTokenAs(serverTokenTemplate),
+  //     );
+  //     if (appTemplate == null) {
+  //       Logger.debug(
+  //         'Token with serial ${serverTokenTemplate.serial} or otps ${serverTokenTemplate.otpValues} not found in app. Adding them.',
+  //         name: 'token_notifier.dart#updateContainerTokens',
+  //       );
+  //       templatesToAdd.add(serverTokenTemplate);
+  //     } else {
+  //       Logger.debug(
+  //         'Token with serial ${serverTokenTemplate.serial} or otps ${serverTokenTemplate.otpValues} found in app. Checking for update.',
+  //         name: 'token_notifier.dart#updateContainerTokens',
+  //       );
+  //       appTokenTemplates.remove(appTemplate);
+  //       if (!appTemplate.hasSameValuesAs(serverTokenTemplate)) {
+  //         Logger.debug(
+  //           'Token with serial ${serverTokenTemplate.serial} or otps ${serverTokenTemplate.otpValues} found in app the Template but is different. Check update.',
+  //           name: 'token_notifier.dart#updateContainerTokens',
+  //         );
+  //         // Only update the token if the template is different
+  //         templatesToUpdate.add(serverTokenTemplate);
+  //       } else {
+  //         Logger.debug(
+  //           'Token with serial ${serverTokenTemplate.serial} or otps ${serverTokenTemplate.otpValues} found in app. And is the same. Skipping.',
+  //           name: 'token_notifier.dart#updateContainerTokens',
+  //         );
+  //       }
+  //     }
+  //   }
+  //   // Removes all tokens that are in the app but not in the container.
+  //   final remainingTokenTemplatesOfContainer = appTokenTemplates.where((template) => template.containerSerial == container.serial);
+  //   templatesToRemove.addAll(remainingTokenTemplatesOfContainer);
 
-    Logger.debug(
-      'Add(${templatesToAdd.length}) | Check update(${templatesToUpdate.length}) | Remove(${templatesToRemove.length})',
-      name: 'token_notifier.dart#updateContainerTokens',
-    );
+  //   Logger.debug(
+  //     'Add(${templatesToAdd.length}) | Check update(${templatesToUpdate.length}) | Remove(${templatesToRemove.length})',
+  //     name: 'token_notifier.dart#updateContainerTokens',
+  //   );
 
-    final tokensToAdd = templatesToAdd.map((e) => e.toToken(container)).toList();
-    final tokensToUpdate = <Token>[];
-    for (var template in templatesToUpdate) {
-      final token = knownContainerTokens.firstWhereOrNull((token) => token.serial == template.serial);
-      if (token == null) continue;
-      final needsUpdate = template.tokenWouldBeUpdated(token);
-      if (needsUpdate) {
-        tokensToUpdate.add(token);
-      }
-    }
-    final tokensToRemove = <Token>[];
-    for (var template in templatesToRemove) {
-      final token = knownContainerTokens.firstWhereOrNull((token) => token.serial == template.serial);
-      if (token == null) continue;
-      tokensToRemove.add(token);
-    }
+  //   final tokensToAdd = templatesToAdd.map((e) => e.toToken(container)).toList();
+  //   final tokensToUpdate = <Token>[];
+  //   for (var template in templatesToUpdate) {
+  //     final token = knownContainerTokens.firstWhereOrNull((token) => token.serial == template.serial);
+  //     if (token == null) continue;
+  //     final needsUpdate = template.tokenWouldBeUpdated(token);
+  //     if (needsUpdate) {
+  //       tokensToUpdate.add(token);
+  //     }
+  //   }
+  //   final tokensToRemove = <Token>[];
+  //   for (var template in templatesToRemove) {
+  //     final token = knownContainerTokens.firstWhereOrNull((token) => token.serial == template.serial);
+  //     if (token == null) continue;
+  //     tokensToRemove.add(token);
+  //   }
 
-    Logger.debug(
-      'Add(${tokensToAdd.length}) | Update(${tokensToUpdate.length}) | Remove(${tokensToRemove.length})',
-      name: 'token_notifier.dart#updateContainerTokens',
-    );
+  //   Logger.debug(
+  //     'Add(${tokensToAdd.length}) | Update(${tokensToUpdate.length}) | Remove(${tokensToRemove.length})',
+  //     name: 'token_notifier.dart#updateContainerTokens',
+  //   );
 
-    if (tokensToAdd.isNotEmpty) {
-      await addOrReplaceTokens(tokensToAdd);
-    }
-    if (tokensToUpdate.isNotEmpty) {
-      await updateTokens(tokensToUpdate, (token) {
-        final template = templatesToUpdate.firstWhereOrNull((template) => template.serial == token.serial);
-        if (template == null) {
-          Logger.debug(
-            'Not able to update token with id ${token.id} or serial ${token.serial}. No token serial/id matches the templates serial/id.',
-            name: 'token_notifier.dart#updateContainerTokens',
-          );
-          return token;
-        }
-        Logger.debug(
-          'Updating token with id:"${token.id}"/serial:"${token.serial}".',
-          name: 'token_notifier.dart#updateContainerTokens',
-        );
-        return token.copyUpdateByTemplate(template);
-      });
-    }
-    if (tokensToRemove.isNotEmpty) {
-      await removeTokens(tokensToRemove);
-    }
-  }
+  //   if (tokensToAdd.isNotEmpty) {
+  //     await addOrReplaceTokens(tokensToAdd);
+  //   }
+  //   if (tokensToUpdate.isNotEmpty) {
+  //     await updateTokens(tokensToUpdate, (token) {
+  //       final template = templatesToUpdate.firstWhereOrNull((template) => template.serial == token.serial);
+  //       if (template == null) {
+  //         Logger.debug(
+  //           'Not able to update token with id ${token.id} or serial ${token.serial}. No token serial/id matches the templates serial/id.',
+  //           name: 'token_notifier.dart#updateContainerTokens',
+  //         );
+  //         return token;
+  //       }
+  //       Logger.debug(
+  //         'Updating token with id:"${token.id}"/serial:"${token.serial}".',
+  //         name: 'token_notifier.dart#updateContainerTokens',
+  //       );
+  //       return token.copyUpdateByTemplate(template);
+  //     });
+  //   }
+  //   if (tokensToRemove.isNotEmpty) {
+  //     await removeTokens(tokensToRemove);
+  //   }
+  // }
 
   /// Increments the counter of a HOTPToken and returns the updated token if successful, the old token if not and null if the token does not exist.
   Future<HOTPToken?> incrementCounter(HOTPToken token) => _updateToken(token, (p0) => p0.copyWith(counter: token.counter + 1));
@@ -593,6 +591,11 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     for (var token in pushTokens) {
       await _removePushToken(token);
     }
+  }
+
+  Future<void> removeTokensBySerials(List<String> serials) async {
+    final tokens = state.tokens.where((token) => serials.contains(token.serial)).toList();
+    await removeTokens(tokens);
   }
 
   Future<void> _removePushToken(PushToken token) async {
@@ -881,8 +884,10 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
 
   @override
   Future<void> handleProcessorResult(ProcessorResult result, Map<String, dynamic> args) {
-    // TODO: implement handleResult
-    throw UnimplementedError();
+    if (result is ProcessorResult<Token>) {
+      return handleProcessorResults([result], args);
+    }
+    return Future.value();
   }
 
   @override
@@ -919,7 +924,6 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
             origin: e.origin?.copyWith(source: TokenOriginSourceType.link) ??
                 TokenOriginSourceType.link.toTokenOrigin(data: 'No Origindata available', isPrivacyIdeaToken: null)))
         .toList();
-    await handlePushTokensIfExist();
     await addNewTokens(tokensToKeep);
     return null;
   }
@@ -942,7 +946,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     }
   }
 
-  Future<void> handlePushTokensIfExist() async {
+  Future<void> _handlePushTokensIfExist() async {
     Logger.info('Handling push tokens if they exist.', name: 'token_notifier.dart#_handlePushTokensIfExist');
     final pushTokens = state.pushTokens;
     if (pushTokens.isEmpty || state.pushTokens.isEmpty) {

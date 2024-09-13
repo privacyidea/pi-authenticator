@@ -32,10 +32,11 @@ mixin _$ContainerCredential {
   String get issuer => throw _privateConstructorUsedError;
   String get nonce => throw _privateConstructorUsedError;
   DateTime get timestamp => throw _privateConstructorUsedError;
-  Uri get finalizationUrl => throw _privateConstructorUsedError;
+  Uri? get syncUrl => throw _privateConstructorUsedError;
   String get serial => throw _privateConstructorUsedError;
   EcKeyAlgorithm get ecKeyAlgorithm => throw _privateConstructorUsedError;
   Algorithms get hashAlgorithm => throw _privateConstructorUsedError;
+  String get serverName => throw _privateConstructorUsedError;
   ContainerFinalizationState get finalizationState =>
       throw _privateConstructorUsedError;
   String? get passphraseQuestion => throw _privateConstructorUsedError;
@@ -49,9 +50,11 @@ mixin _$ContainerCredential {
             String nonce,
             DateTime timestamp,
             Uri finalizationUrl,
+            Uri? syncUrl,
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
+            String serverName,
             ContainerFinalizationState finalizationState,
             String? passphraseQuestion,
             String? publicServerKey,
@@ -62,10 +65,11 @@ mixin _$ContainerCredential {
             String issuer,
             String nonce,
             DateTime timestamp,
-            Uri finalizationUrl,
+            Uri syncUrl,
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
+            String serverName,
             ContainerFinalizationState finalizationState,
             String? passphraseQuestion,
             String publicServerKey,
@@ -81,9 +85,11 @@ mixin _$ContainerCredential {
             String nonce,
             DateTime timestamp,
             Uri finalizationUrl,
+            Uri? syncUrl,
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
+            String serverName,
             ContainerFinalizationState finalizationState,
             String? passphraseQuestion,
             String? publicServerKey,
@@ -94,10 +100,11 @@ mixin _$ContainerCredential {
             String issuer,
             String nonce,
             DateTime timestamp,
-            Uri finalizationUrl,
+            Uri syncUrl,
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
+            String serverName,
             ContainerFinalizationState finalizationState,
             String? passphraseQuestion,
             String publicServerKey,
@@ -113,9 +120,11 @@ mixin _$ContainerCredential {
             String nonce,
             DateTime timestamp,
             Uri finalizationUrl,
+            Uri? syncUrl,
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
+            String serverName,
             ContainerFinalizationState finalizationState,
             String? passphraseQuestion,
             String? publicServerKey,
@@ -126,10 +135,11 @@ mixin _$ContainerCredential {
             String issuer,
             String nonce,
             DateTime timestamp,
-            Uri finalizationUrl,
+            Uri syncUrl,
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
+            String serverName,
             ContainerFinalizationState finalizationState,
             String? passphraseQuestion,
             String publicServerKey,
@@ -179,10 +189,11 @@ abstract class $ContainerCredentialCopyWith<$Res> {
       {String issuer,
       String nonce,
       DateTime timestamp,
-      Uri finalizationUrl,
+      Uri syncUrl,
       String serial,
       EcKeyAlgorithm ecKeyAlgorithm,
       Algorithms hashAlgorithm,
+      String serverName,
       ContainerFinalizationState finalizationState,
       String? passphraseQuestion,
       String publicServerKey,
@@ -208,10 +219,11 @@ class _$ContainerCredentialCopyWithImpl<$Res, $Val extends ContainerCredential>
     Object? issuer = null,
     Object? nonce = null,
     Object? timestamp = null,
-    Object? finalizationUrl = null,
+    Object? syncUrl = null,
     Object? serial = null,
     Object? ecKeyAlgorithm = null,
     Object? hashAlgorithm = null,
+    Object? serverName = null,
     Object? finalizationState = null,
     Object? passphraseQuestion = freezed,
     Object? publicServerKey = null,
@@ -231,9 +243,9 @@ class _$ContainerCredentialCopyWithImpl<$Res, $Val extends ContainerCredential>
           ? _value.timestamp
           : timestamp // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      finalizationUrl: null == finalizationUrl
-          ? _value.finalizationUrl
-          : finalizationUrl // ignore: cast_nullable_to_non_nullable
+      syncUrl: null == syncUrl
+          ? _value.syncUrl!
+          : syncUrl // ignore: cast_nullable_to_non_nullable
               as Uri,
       serial: null == serial
           ? _value.serial
@@ -247,6 +259,10 @@ class _$ContainerCredentialCopyWithImpl<$Res, $Val extends ContainerCredential>
           ? _value.hashAlgorithm
           : hashAlgorithm // ignore: cast_nullable_to_non_nullable
               as Algorithms,
+      serverName: null == serverName
+          ? _value.serverName
+          : serverName // ignore: cast_nullable_to_non_nullable
+              as String,
       finalizationState: null == finalizationState
           ? _value.finalizationState
           : finalizationState // ignore: cast_nullable_to_non_nullable
@@ -285,9 +301,11 @@ abstract class _$$ContainerCredentialUnfinalizedImplCopyWith<$Res>
       String nonce,
       DateTime timestamp,
       Uri finalizationUrl,
+      Uri? syncUrl,
       String serial,
       EcKeyAlgorithm ecKeyAlgorithm,
       Algorithms hashAlgorithm,
+      String serverName,
       ContainerFinalizationState finalizationState,
       String? passphraseQuestion,
       String? publicServerKey,
@@ -314,9 +332,11 @@ class __$$ContainerCredentialUnfinalizedImplCopyWithImpl<$Res>
     Object? nonce = null,
     Object? timestamp = null,
     Object? finalizationUrl = null,
+    Object? syncUrl = freezed,
     Object? serial = null,
     Object? ecKeyAlgorithm = null,
     Object? hashAlgorithm = null,
+    Object? serverName = null,
     Object? finalizationState = null,
     Object? passphraseQuestion = freezed,
     Object? publicServerKey = freezed,
@@ -340,6 +360,10 @@ class __$$ContainerCredentialUnfinalizedImplCopyWithImpl<$Res>
           ? _value.finalizationUrl
           : finalizationUrl // ignore: cast_nullable_to_non_nullable
               as Uri,
+      syncUrl: freezed == syncUrl
+          ? _value.syncUrl
+          : syncUrl // ignore: cast_nullable_to_non_nullable
+              as Uri?,
       serial: null == serial
           ? _value.serial
           : serial // ignore: cast_nullable_to_non_nullable
@@ -352,6 +376,10 @@ class __$$ContainerCredentialUnfinalizedImplCopyWithImpl<$Res>
           ? _value.hashAlgorithm
           : hashAlgorithm // ignore: cast_nullable_to_non_nullable
               as Algorithms,
+      serverName: null == serverName
+          ? _value.serverName
+          : serverName // ignore: cast_nullable_to_non_nullable
+              as String,
       finalizationState: null == finalizationState
           ? _value.finalizationState
           : finalizationState // ignore: cast_nullable_to_non_nullable
@@ -385,9 +413,11 @@ class _$ContainerCredentialUnfinalizedImpl
       required this.nonce,
       required this.timestamp,
       required this.finalizationUrl,
+      this.syncUrl,
       required this.serial,
       required this.ecKeyAlgorithm,
       required this.hashAlgorithm,
+      this.serverName = 'privacyIDEA',
       this.finalizationState = ContainerFinalizationState.uninitialized,
       this.passphraseQuestion,
       this.publicServerKey,
@@ -410,11 +440,16 @@ class _$ContainerCredentialUnfinalizedImpl
   @override
   final Uri finalizationUrl;
   @override
+  final Uri? syncUrl;
+  @override
   final String serial;
   @override
   final EcKeyAlgorithm ecKeyAlgorithm;
   @override
   final Algorithms hashAlgorithm;
+  @override
+  @JsonKey()
+  final String serverName;
   @override
   @JsonKey()
   final ContainerFinalizationState finalizationState;
@@ -441,11 +476,14 @@ class _$ContainerCredentialUnfinalizedImpl
                 other.timestamp == timestamp) &&
             (identical(other.finalizationUrl, finalizationUrl) ||
                 other.finalizationUrl == finalizationUrl) &&
+            (identical(other.syncUrl, syncUrl) || other.syncUrl == syncUrl) &&
             (identical(other.serial, serial) || other.serial == serial) &&
             (identical(other.ecKeyAlgorithm, ecKeyAlgorithm) ||
                 other.ecKeyAlgorithm == ecKeyAlgorithm) &&
             (identical(other.hashAlgorithm, hashAlgorithm) ||
                 other.hashAlgorithm == hashAlgorithm) &&
+            (identical(other.serverName, serverName) ||
+                other.serverName == serverName) &&
             (identical(other.finalizationState, finalizationState) ||
                 other.finalizationState == finalizationState) &&
             (identical(other.passphraseQuestion, passphraseQuestion) ||
@@ -466,9 +504,11 @@ class _$ContainerCredentialUnfinalizedImpl
       nonce,
       timestamp,
       finalizationUrl,
+      syncUrl,
       serial,
       ecKeyAlgorithm,
       hashAlgorithm,
+      serverName,
       finalizationState,
       passphraseQuestion,
       publicServerKey,
@@ -493,9 +533,11 @@ class _$ContainerCredentialUnfinalizedImpl
             String nonce,
             DateTime timestamp,
             Uri finalizationUrl,
+            Uri? syncUrl,
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
+            String serverName,
             ContainerFinalizationState finalizationState,
             String? passphraseQuestion,
             String? publicServerKey,
@@ -506,10 +548,11 @@ class _$ContainerCredentialUnfinalizedImpl
             String issuer,
             String nonce,
             DateTime timestamp,
-            Uri finalizationUrl,
+            Uri syncUrl,
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
+            String serverName,
             ContainerFinalizationState finalizationState,
             String? passphraseQuestion,
             String publicServerKey,
@@ -522,9 +565,11 @@ class _$ContainerCredentialUnfinalizedImpl
         nonce,
         timestamp,
         finalizationUrl,
+        syncUrl,
         serial,
         ecKeyAlgorithm,
         hashAlgorithm,
+        serverName,
         finalizationState,
         passphraseQuestion,
         publicServerKey,
@@ -540,9 +585,11 @@ class _$ContainerCredentialUnfinalizedImpl
             String nonce,
             DateTime timestamp,
             Uri finalizationUrl,
+            Uri? syncUrl,
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
+            String serverName,
             ContainerFinalizationState finalizationState,
             String? passphraseQuestion,
             String? publicServerKey,
@@ -553,10 +600,11 @@ class _$ContainerCredentialUnfinalizedImpl
             String issuer,
             String nonce,
             DateTime timestamp,
-            Uri finalizationUrl,
+            Uri syncUrl,
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
+            String serverName,
             ContainerFinalizationState finalizationState,
             String? passphraseQuestion,
             String publicServerKey,
@@ -569,9 +617,11 @@ class _$ContainerCredentialUnfinalizedImpl
         nonce,
         timestamp,
         finalizationUrl,
+        syncUrl,
         serial,
         ecKeyAlgorithm,
         hashAlgorithm,
+        serverName,
         finalizationState,
         passphraseQuestion,
         publicServerKey,
@@ -587,9 +637,11 @@ class _$ContainerCredentialUnfinalizedImpl
             String nonce,
             DateTime timestamp,
             Uri finalizationUrl,
+            Uri? syncUrl,
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
+            String serverName,
             ContainerFinalizationState finalizationState,
             String? passphraseQuestion,
             String? publicServerKey,
@@ -600,10 +652,11 @@ class _$ContainerCredentialUnfinalizedImpl
             String issuer,
             String nonce,
             DateTime timestamp,
-            Uri finalizationUrl,
+            Uri syncUrl,
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
+            String serverName,
             ContainerFinalizationState finalizationState,
             String? passphraseQuestion,
             String publicServerKey,
@@ -618,9 +671,11 @@ class _$ContainerCredentialUnfinalizedImpl
           nonce,
           timestamp,
           finalizationUrl,
+          syncUrl,
           serial,
           ecKeyAlgorithm,
           hashAlgorithm,
+          serverName,
           finalizationState,
           passphraseQuestion,
           publicServerKey,
@@ -675,9 +730,11 @@ abstract class ContainerCredentialUnfinalized extends ContainerCredential {
       required final String nonce,
       required final DateTime timestamp,
       required final Uri finalizationUrl,
+      final Uri? syncUrl,
       required final String serial,
       required final EcKeyAlgorithm ecKeyAlgorithm,
       required final Algorithms hashAlgorithm,
+      final String serverName,
       final ContainerFinalizationState finalizationState,
       final String? passphraseQuestion,
       final String? publicServerKey,
@@ -694,14 +751,17 @@ abstract class ContainerCredentialUnfinalized extends ContainerCredential {
   String get nonce;
   @override
   DateTime get timestamp;
-  @override
   Uri get finalizationUrl;
+  @override
+  Uri? get syncUrl;
   @override
   String get serial;
   @override
   EcKeyAlgorithm get ecKeyAlgorithm;
   @override
   Algorithms get hashAlgorithm;
+  @override
+  String get serverName;
   @override
   ContainerFinalizationState get finalizationState;
   @override
@@ -735,10 +795,11 @@ abstract class _$$ContainerCredentialFinalizedImplCopyWith<$Res>
       {String issuer,
       String nonce,
       DateTime timestamp,
-      Uri finalizationUrl,
+      Uri syncUrl,
       String serial,
       EcKeyAlgorithm ecKeyAlgorithm,
       Algorithms hashAlgorithm,
+      String serverName,
       ContainerFinalizationState finalizationState,
       String? passphraseQuestion,
       String publicServerKey,
@@ -764,10 +825,11 @@ class __$$ContainerCredentialFinalizedImplCopyWithImpl<$Res>
     Object? issuer = null,
     Object? nonce = null,
     Object? timestamp = null,
-    Object? finalizationUrl = null,
+    Object? syncUrl = null,
     Object? serial = null,
     Object? ecKeyAlgorithm = null,
     Object? hashAlgorithm = null,
+    Object? serverName = null,
     Object? finalizationState = null,
     Object? passphraseQuestion = freezed,
     Object? publicServerKey = null,
@@ -787,9 +849,9 @@ class __$$ContainerCredentialFinalizedImplCopyWithImpl<$Res>
           ? _value.timestamp
           : timestamp // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      finalizationUrl: null == finalizationUrl
-          ? _value.finalizationUrl
-          : finalizationUrl // ignore: cast_nullable_to_non_nullable
+      syncUrl: null == syncUrl
+          ? _value.syncUrl
+          : syncUrl // ignore: cast_nullable_to_non_nullable
               as Uri,
       serial: null == serial
           ? _value.serial
@@ -803,6 +865,10 @@ class __$$ContainerCredentialFinalizedImplCopyWithImpl<$Res>
           ? _value.hashAlgorithm
           : hashAlgorithm // ignore: cast_nullable_to_non_nullable
               as Algorithms,
+      serverName: null == serverName
+          ? _value.serverName
+          : serverName // ignore: cast_nullable_to_non_nullable
+              as String,
       finalizationState: null == finalizationState
           ? _value.finalizationState
           : finalizationState // ignore: cast_nullable_to_non_nullable
@@ -834,10 +900,11 @@ class _$ContainerCredentialFinalizedImpl extends ContainerCredentialFinalized {
       {required this.issuer,
       required this.nonce,
       required this.timestamp,
-      required this.finalizationUrl,
+      required this.syncUrl,
       required this.serial,
       required this.ecKeyAlgorithm,
       required this.hashAlgorithm,
+      this.serverName = 'privacyIDEA',
       this.finalizationState = ContainerFinalizationState.finalized,
       this.passphraseQuestion,
       required this.publicServerKey,
@@ -858,13 +925,16 @@ class _$ContainerCredentialFinalizedImpl extends ContainerCredentialFinalized {
   @override
   final DateTime timestamp;
   @override
-  final Uri finalizationUrl;
+  final Uri syncUrl;
   @override
   final String serial;
   @override
   final EcKeyAlgorithm ecKeyAlgorithm;
   @override
   final Algorithms hashAlgorithm;
+  @override
+  @JsonKey()
+  final String serverName;
   @override
   @JsonKey()
   final ContainerFinalizationState finalizationState;
@@ -889,13 +959,14 @@ class _$ContainerCredentialFinalizedImpl extends ContainerCredentialFinalized {
             (identical(other.nonce, nonce) || other.nonce == nonce) &&
             (identical(other.timestamp, timestamp) ||
                 other.timestamp == timestamp) &&
-            (identical(other.finalizationUrl, finalizationUrl) ||
-                other.finalizationUrl == finalizationUrl) &&
+            (identical(other.syncUrl, syncUrl) || other.syncUrl == syncUrl) &&
             (identical(other.serial, serial) || other.serial == serial) &&
             (identical(other.ecKeyAlgorithm, ecKeyAlgorithm) ||
                 other.ecKeyAlgorithm == ecKeyAlgorithm) &&
             (identical(other.hashAlgorithm, hashAlgorithm) ||
                 other.hashAlgorithm == hashAlgorithm) &&
+            (identical(other.serverName, serverName) ||
+                other.serverName == serverName) &&
             (identical(other.finalizationState, finalizationState) ||
                 other.finalizationState == finalizationState) &&
             (identical(other.passphraseQuestion, passphraseQuestion) ||
@@ -915,10 +986,11 @@ class _$ContainerCredentialFinalizedImpl extends ContainerCredentialFinalized {
       issuer,
       nonce,
       timestamp,
-      finalizationUrl,
+      syncUrl,
       serial,
       ecKeyAlgorithm,
       hashAlgorithm,
+      serverName,
       finalizationState,
       passphraseQuestion,
       publicServerKey,
@@ -943,9 +1015,11 @@ class _$ContainerCredentialFinalizedImpl extends ContainerCredentialFinalized {
             String nonce,
             DateTime timestamp,
             Uri finalizationUrl,
+            Uri? syncUrl,
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
+            String serverName,
             ContainerFinalizationState finalizationState,
             String? passphraseQuestion,
             String? publicServerKey,
@@ -956,10 +1030,11 @@ class _$ContainerCredentialFinalizedImpl extends ContainerCredentialFinalized {
             String issuer,
             String nonce,
             DateTime timestamp,
-            Uri finalizationUrl,
+            Uri syncUrl,
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
+            String serverName,
             ContainerFinalizationState finalizationState,
             String? passphraseQuestion,
             String publicServerKey,
@@ -971,10 +1046,11 @@ class _$ContainerCredentialFinalizedImpl extends ContainerCredentialFinalized {
         issuer,
         nonce,
         timestamp,
-        finalizationUrl,
+        syncUrl,
         serial,
         ecKeyAlgorithm,
         hashAlgorithm,
+        serverName,
         finalizationState,
         passphraseQuestion,
         publicServerKey,
@@ -990,9 +1066,11 @@ class _$ContainerCredentialFinalizedImpl extends ContainerCredentialFinalized {
             String nonce,
             DateTime timestamp,
             Uri finalizationUrl,
+            Uri? syncUrl,
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
+            String serverName,
             ContainerFinalizationState finalizationState,
             String? passphraseQuestion,
             String? publicServerKey,
@@ -1003,10 +1081,11 @@ class _$ContainerCredentialFinalizedImpl extends ContainerCredentialFinalized {
             String issuer,
             String nonce,
             DateTime timestamp,
-            Uri finalizationUrl,
+            Uri syncUrl,
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
+            String serverName,
             ContainerFinalizationState finalizationState,
             String? passphraseQuestion,
             String publicServerKey,
@@ -1018,10 +1097,11 @@ class _$ContainerCredentialFinalizedImpl extends ContainerCredentialFinalized {
         issuer,
         nonce,
         timestamp,
-        finalizationUrl,
+        syncUrl,
         serial,
         ecKeyAlgorithm,
         hashAlgorithm,
+        serverName,
         finalizationState,
         passphraseQuestion,
         publicServerKey,
@@ -1037,9 +1117,11 @@ class _$ContainerCredentialFinalizedImpl extends ContainerCredentialFinalized {
             String nonce,
             DateTime timestamp,
             Uri finalizationUrl,
+            Uri? syncUrl,
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
+            String serverName,
             ContainerFinalizationState finalizationState,
             String? passphraseQuestion,
             String? publicServerKey,
@@ -1050,10 +1132,11 @@ class _$ContainerCredentialFinalizedImpl extends ContainerCredentialFinalized {
             String issuer,
             String nonce,
             DateTime timestamp,
-            Uri finalizationUrl,
+            Uri syncUrl,
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
+            String serverName,
             ContainerFinalizationState finalizationState,
             String? passphraseQuestion,
             String publicServerKey,
@@ -1067,10 +1150,11 @@ class _$ContainerCredentialFinalizedImpl extends ContainerCredentialFinalized {
           issuer,
           nonce,
           timestamp,
-          finalizationUrl,
+          syncUrl,
           serial,
           ecKeyAlgorithm,
           hashAlgorithm,
+          serverName,
           finalizationState,
           passphraseQuestion,
           publicServerKey,
@@ -1124,10 +1208,11 @@ abstract class ContainerCredentialFinalized extends ContainerCredential {
           {required final String issuer,
           required final String nonce,
           required final DateTime timestamp,
-          required final Uri finalizationUrl,
+          required final Uri syncUrl,
           required final String serial,
           required final EcKeyAlgorithm ecKeyAlgorithm,
           required final Algorithms hashAlgorithm,
+          final String serverName,
           final ContainerFinalizationState finalizationState,
           final String? passphraseQuestion,
           required final String publicServerKey,
@@ -1146,13 +1231,15 @@ abstract class ContainerCredentialFinalized extends ContainerCredential {
   @override
   DateTime get timestamp;
   @override
-  Uri get finalizationUrl;
+  Uri get syncUrl;
   @override
   String get serial;
   @override
   EcKeyAlgorithm get ecKeyAlgorithm;
   @override
   Algorithms get hashAlgorithm;
+  @override
+  String get serverName;
   @override
   ContainerFinalizationState get finalizationState;
   @override
