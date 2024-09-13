@@ -17,10 +17,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import 'dart:convert';
+
 import '../../utils/identifiers.dart';
 import '../../utils/logger.dart';
 import '../enums/algorithms.dart';
+import '../token_template.dart';
 import '../token_import/token_origin_data.dart';
+import 'container_credentials.dart';
 import 'token.dart';
 
 abstract class OTPToken extends Token {
@@ -91,26 +95,48 @@ abstract class OTPToken extends Token {
 
   /// This is used to create a map that typically was created from a uri.
   /// ```dart
-  ///  ------------------------- [Token] -------------------------
-  /// | OTP_AUTH_SERIAL: serial, (optional)                       |
-  /// | OTP_AUTH_TYPE: type,                                      |
-  /// | OTP_AUTH_LABEL: label,                                    |
-  /// | OTP_AUTH_ISSUER: issuer,                                  |
-  /// | OTP_AUTH_PIN: pin,                                        |
-  /// | OTP_AUTH_IMAGE: tokenImage, (optional)                    |
-  ///  -----------------------------------------------------------
-  ///  ------------------------ [OTPToken] -----------------------
-  /// | OTP_AUTH_ALGORITHM: algorithm,                            |
-  /// | OTP_AUTH_DIGITS: digits,                                  |
-  ///  -----------------------------------------------------------
+  /// -------------------------- [Token] -------------------------------
+  /// | OTP_AUTH_SERIAL: serial, (optional)                             |
+  /// | OTP_AUTH_LABEL: label,                                          |
+  /// | OTP_AUTH_ISSUER: issuer,                                        |
+  /// | CONTAINER_SERIAL: containerSerial, (optional)                   |
+  /// | CHECKED_CONTAINERS: checkedContainers,                          |
+  /// | TOKEN_ID: id,                                                   |
+  /// | OTP_AUTH_TYPE: type,                                            |
+  /// | OTP_AUTH_IMAGE: tokenImage, (optional)                          |
+  /// | SORTABLE_INDEX: sortIndex, (optional)                           |
+  /// | FOLDER_ID: folderId, (optional)                                 |
+  /// | TOKEN_ORIGIN: origin, (optional)                                |
+  /// | OTP_AUTH_PIN: pin,                                              |
+  /// | TOKEN_HIDDEN: isHidden,                                         |
+  /// -------------------------------------------------------------------
+  /// ------------------------- [OTPToken] ------------------------------
+  /// | OTP_AUTH_ALGORITHM: algorithm,                                  |
+  /// | OTP_AUTH_DIGITS: digits,                                        |
+  /// | OTP_AUTH_SECRET_BASE32: secret,                                 |
+  /// | OTP_AUTH_OTP_VALUES: [otpValue, nextValue], (if serial is null) |
+  /// -------------------------------------------------------------------
   /// ```
   @override
-  Map<String, String> toOtpAuthMap({String? containerSerial}) {
+  Map<String, dynamic> toOtpAuthMap() {
+    Logger.debug('$OTP_AUTH_OTP_VALUES ${jsonEncode([otpValue, nextValue])}');
     return super.toOtpAuthMap()
       ..addAll({
         OTP_AUTH_ALGORITHM: algorithm.name,
         OTP_AUTH_DIGITS: digits.toString(),
-        if (serial == null && !checkedContainers.contains(containerSerial)) OTP_AUTH_OTP_VALUES: '[$otpValue, $nextValue]',
+        OTP_AUTH_SECRET_BASE32: secret,
+        if (serial == null) OTP_AUTH_OTP_VALUES: [otpValue, nextValue],
       });
   }
+
+  @override
+  TokenTemplate toTemplate({ContainerCredential? container}) =>
+      super.toTemplate(container: container) ??
+      TokenTemplate.withOtps(
+        otpAuthMap: toOtpAuthMap(),
+        otps: [otpValue, nextValue],
+        container: container,
+        checkedContainers: checkedContainers,
+        additionalData: additionalData,
+      );
 }

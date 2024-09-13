@@ -19,7 +19,7 @@
  */
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pointycastle/asymmetric/api.dart';
-import 'package:privacyidea_authenticator/model/token_container.dart';
+import 'package:privacyidea_authenticator/model/token_template.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../utils/custom_int_buffer.dart';
@@ -30,6 +30,7 @@ import '../../utils/type_matchers.dart';
 import '../enums/push_token_rollout_state.dart';
 import '../enums/token_types.dart';
 import '../token_import/token_origin_data.dart';
+import 'container_credentials.dart';
 import 'token.dart';
 
 part 'push_token.g.dart';
@@ -37,6 +38,9 @@ part 'push_token.g.dart';
 @JsonSerializable()
 class PushToken extends Token {
   static RsaUtils rsaParser = const RsaUtils();
+  // ignore: constant_identifier_names
+  static const String EXPIRATION_DATE = 'expirationDate';
+
   final DateTime? expirationDate;
   @override
   String get serial => super.serial!;
@@ -82,6 +86,7 @@ class PushToken extends Token {
     bool? isRolledOut,
     bool? sslVerify,
     PushTokenRollOutState? rolloutState,
+    String? type,
     super.tokenImage,
     super.sortIndex,
     super.folderId,
@@ -92,7 +97,7 @@ class PushToken extends Token {
   })  : isRolledOut = isRolledOut ?? false,
         sslVerify = sslVerify ?? false,
         rolloutState = rolloutState ?? PushTokenRollOutState.rolloutNotStarted,
-        super(type: TokenTypes.PIPUSH.name, serial: serial);
+        super(type: type ?? TokenTypes.PIPUSH.name, serial: serial);
 
   @override
   bool sameValuesAs(Token other) {
@@ -191,7 +196,7 @@ class PushToken extends Token {
         'publicTokenKey: $publicTokenKey}';
   }
 
-  factory PushToken.fromOtpAuthMap(Map<String, String> otpAuthMap, {TokenOriginData? origin}) {
+  factory PushToken.fromOtpAuthMap(Map<String, dynamic> otpAuthMap, {required Map<String, dynamic> additionalData}) {
 // Validate map for Push token
     final validatedMap = validateMap(
       map: otpAuthMap,
@@ -212,20 +217,30 @@ class PushToken extends Token {
       },
       name: 'PushToken',
     );
+    final validatedAdditionalData = Token.validateAdditionalData(additionalData);
+    final expirationDate = validateOptional(
+      value: additionalData[EXPIRATION_DATE],
+      validator: const TypeValidatorOptional<DateTime>(),
+      name: 'PushToken#expirationDate',
+    );
     return switch (validatedMap[OTP_AUTH_VERSION]) {
       '1' => PushToken(
-          id: const Uuid().v4(),
           label: validatedMap[OTP_AUTH_LABEL] as String,
           issuer: validatedMap[OTP_AUTH_ISSUER] as String,
           serial: validatedMap[OTP_AUTH_SERIAL] as String,
           sslVerify: validatedMap[OTP_AUTH_PUSH_SSL_VERIFY] as bool,
-          expirationDate: DateTime.now().add(validatedMap[OTP_AUTH_PUSH_TTL_MINUTES] as Duration),
+          expirationDate: expirationDate ?? DateTime.now().add(validatedMap[OTP_AUTH_PUSH_TTL_MINUTES] as Duration),
           enrollmentCredentials: validatedMap[OTP_AUTH_PUSH_ENROLLMENT_CREDENTIAL] as String?,
           url: validatedMap[OTP_AUTH_PUSH_ROLLOUT_URL] as Uri,
           tokenImage: validatedMap[OTP_AUTH_IMAGE] as String?,
           pin: validatedMap[OTP_AUTH_PIN] as bool?,
           isLocked: validatedMap[OTP_AUTH_PIN] as bool?,
-          origin: origin,
+          id: validatedAdditionalData[Token.ID] ?? const Uuid().v4(),
+          origin: validatedAdditionalData[Token.ORIGIN],
+          isHidden: validatedAdditionalData[Token.HIDDEN],
+          checkedContainers: validatedAdditionalData[Token.CHECKED_CONTAINERS] ?? [],
+          folderId: validatedAdditionalData[Token.FOLDER_ID],
+          sortIndex: validatedAdditionalData[Token.SORT_INDEX],
         ),
       _ => throw LocalizedArgumentError(
           localizedMessage: (localizations, value, name) => localizations.unsupported(value, name),
@@ -239,7 +254,7 @@ class PushToken extends Token {
   @override
   Token copyUpdateByTemplate(TokenTemplate template) {
     final uriMap = validateMap(
-      map: template.data,
+      map: template.otpAuthMap,
       validators: {
         OTP_AUTH_LABEL: const TypeValidatorOptional<String>(),
         OTP_AUTH_ISSUER: const TypeValidatorOptional<String>(),
@@ -256,6 +271,7 @@ class PushToken extends Token {
       },
       name: 'PushToken',
     );
+
     return copyWith(
       label: uriMap[OTP_AUTH_LABEL] as String?,
       issuer: uriMap[OTP_AUTH_ISSUER] as String?,
@@ -291,7 +307,7 @@ class PushToken extends Token {
   ///  ------------------------------------------------------------------
   /// ```
   @override
-  Map<String, String> toOtpAuthMap({String? containerSerial}) {
+  Map<String, dynamic> toOtpAuthMap() {
     return super.toOtpAuthMap()
       ..addAll({
         OTP_AUTH_PUSH_SSL_VERIFY: sslVerify ? OTP_AUTH_PUSH_SSL_VERIFY_TRUE : OTP_AUTH_PUSH_SSL_VERIFY_FALSE,
@@ -303,6 +319,13 @@ class PushToken extends Token {
         OTP_AUTH_VERSION: '1',
       });
   }
+
+  @override
+  TokenTemplate? toTemplate({ContainerCredential? container}) => expirationDate != null
+      ? super.toTemplate(container: container)
+      : super.toTemplate(container: container)?.withAditionalData({
+          EXPIRATION_DATE: expirationDate!,
+        });
 
   factory PushToken.fromJson(Map<String, dynamic> json) {
     final newToken = _$PushTokenFromJson(json);

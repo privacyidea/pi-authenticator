@@ -238,8 +238,8 @@
       }
     }
   },
-  "rollingOut": "Despliegue",
-  "@rollingOut": {
+  "startRollout": "Iniciar despliegue",
+  "@startRollout": {
     "description": "Label that tells the user that the token is being rolled out."
   },
   "pollingChallenges": "Sondeo para nuevos challenges",

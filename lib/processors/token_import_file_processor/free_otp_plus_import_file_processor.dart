@@ -129,11 +129,13 @@ class FreeOtpPlusImportFileProcessor extends TokenImportFileProcessor {
       return ProcessorResultSuccess(
         Token.fromOtpAuthMap(
           _jsonToOtpAuth(tokenJson),
-          origin: TokenOriginSourceType.backupFile.toTokenOrigin(
-            originName: TokenImportOrigins.freeOtpPlus.appName,
-            isPrivacyIdeaToken: false,
-            data: jsonEncode(tokenJson),
-          ),
+          additionalData: {
+            Token.ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
+              originName: TokenImportOrigins.freeOtpPlus.appName,
+              isPrivacyIdeaToken: false,
+              data: jsonEncode(tokenJson),
+            ),
+          },
         ),
         resultHandlerType: resultHandlerType,
       );

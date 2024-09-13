@@ -22,7 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import '../../utils/identifiers.dart';
 import '../../utils/type_matchers.dart';
-import '../token_container.dart';
+import '../token_template.dart';
 import 'package:uuid/uuid.dart';
 
 import '../enums/algorithms.dart';
@@ -156,7 +156,7 @@ class DayPasswordToken extends OTPToken {
   @override
   DayPasswordToken copyUpdateByTemplate(TokenTemplate template) {
     final uriMap = validateMap(
-      map: template.data,
+      map: template.otpAuthMap,
       validators: {
         OTP_AUTH_LABEL: const TypeValidatorOptional<String>(),
         OTP_AUTH_ISSUER: const TypeValidatorOptional<String>(),
@@ -184,7 +184,7 @@ class DayPasswordToken extends OTPToken {
     );
   }
 
-  factory DayPasswordToken.fromOtpAuthMap(Map<String, dynamic> uriMap, {required TokenOriginData origin}) {
+  factory DayPasswordToken.fromOtpAuthMap(Map<String, dynamic> uriMap, {required Map<String, dynamic> additionalData}) {
     uriMap = validateMap(
       map: uriMap,
       validators: {
@@ -200,10 +200,10 @@ class DayPasswordToken extends OTPToken {
       },
       name: 'DayPasswordToken',
     );
+    final validatedAdditionalData = Token.validateAdditionalData(additionalData);
     return DayPasswordToken(
       label: uriMap[OTP_AUTH_LABEL],
       issuer: uriMap[OTP_AUTH_ISSUER],
-      id: const Uuid().v4(),
       serial: uriMap[OTP_AUTH_SERIAL],
       algorithm: uriMap[OTP_AUTH_ALGORITHM],
       digits: uriMap[OTP_AUTH_DIGITS],
@@ -212,30 +212,45 @@ class DayPasswordToken extends OTPToken {
       tokenImage: uriMap[OTP_AUTH_IMAGE],
       pin: uriMap[OTP_AUTH_PIN],
       isLocked: uriMap[OTP_AUTH_PIN],
-      origin: origin,
+      id: validatedAdditionalData[Token.ID] ?? const Uuid().v4(),
+      containerSerial: validatedAdditionalData[Token.CONTAINER_SERIAL],
+      checkedContainers: validatedAdditionalData[Token.CHECKED_CONTAINERS] ?? [],
+      sortIndex: validatedAdditionalData[Token.SORT_INDEX],
+      folderId: validatedAdditionalData[Token.FOLDER_ID],
+      origin: validatedAdditionalData[Token.ORIGIN],
+      isHidden: validatedAdditionalData[Token.HIDDEN],
     );
   }
 
   /// This is used to create a map that typically was created from a uri.
   /// ```dart
-  ///  ------------------------- [Token] -------------------------
-  /// | OTP_AUTH_SERIAL: serial, (optional)                       |
-  /// | OTP_AUTH_TYPE: type,                                      |
-  /// | OTP_AUTH_LABEL: label,                                    |
-  /// | OTP_AUTH_ISSUER: issuer,                                  |
-  /// | OTP_AUTH_PIN: pin,                                        |
-  /// | OTP_AUTH_IMAGE: tokenImage, (optional)                    |
-  ///  -----------------------------------------------------------
-  ///  ----------------------- [OTPToken] ------------------------
-  /// | OTP_AUTH_ALGORITHM: algorithm,                            |
-  /// | OTP_AUTH_DIGITS: digits,                                  |
-  ///  -----------------------------------------------------------
-  ///  ------------------- [DayPasswordToken] --------------------
-  /// | OTP_AUTH_PERIOD: period,                                  |
-  ///  -----------------------------------------------------------
+  /// -------------------------- [Token] --------------------------------
+  /// | OTP_AUTH_SERIAL: serial, (optional)                             |
+  /// | OTP_AUTH_LABEL: label,                                          |
+  /// | OTP_AUTH_ISSUER: issuer,                                        |
+  /// | CONTAINER_SERIAL: containerSerial, (optional)                   |
+  /// | CHECKED_CONTAINERS: checkedContainers,                          |
+  /// | TOKEN_ID: id,                                                   |
+  /// | OTP_AUTH_TYPE: type,                                            |
+  /// | OTP_AUTH_IMAGE: tokenImage, (optional)                          |
+  /// | SORTABLE_INDEX: sortIndex, (optional)                           |
+  /// | FOLDER_ID: folderId, (optional)                                 |
+  /// | TOKEN_ORIGIN: origin, (optional)                                |
+  /// | OTP_AUTH_PIN: pin,                                              |
+  /// | TOKEN_HIDDEN: isHidden,                                         |
+  /// -------------------------------------------------------------------
+  /// ------------------------- [OTPToken] ------------------------------
+  /// | OTP_AUTH_ALGORITHM: algorithm,                                  |
+  /// | OTP_AUTH_DIGITS: digits,                                        |
+  /// | OTP_AUTH_SECRET_BASE32: secret,                                 |
+  /// | OTP_AUTH_OTP_VALUES: [otpValue, nextValue], (if serial is null) |
+  /// -------------------------------------------------------------------
+  /// -------------------- [DayPasswordToken] ---------------------------
+  /// | OTP_AUTH_PERIOD: period,                                        |
+  /// -------------------------------------------------------------------
   /// ```
   @override
-  Map<String, String> toOtpAuthMap({String? containerSerial}) {
+  Map<String, dynamic> toOtpAuthMap() {
     return super.toOtpAuthMap()
       ..addAll({
         OTP_AUTH_PERIOD_SECONDS: period.inSeconds.toString(),

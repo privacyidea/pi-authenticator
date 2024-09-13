@@ -347,11 +347,13 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
 
         final token = Token.fromOtpAuthMap(
           otpAuthMap,
-          origin: TokenOriginSourceType.backupFile.toTokenOrigin(
-            originName: TokenImportOrigins.authenticatorPro.appName,
-            isPrivacyIdeaToken: false,
-            data: jsonEncode(tokenMap),
-          ),
+          additionalData: {
+            Token.ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
+              originName: TokenImportOrigins.authenticatorPro.appName,
+              isPrivacyIdeaToken: false,
+              data: jsonEncode(tokenMap),
+            ),
+          },
         );
         result.add(ProcessorResultSuccess(
           token,

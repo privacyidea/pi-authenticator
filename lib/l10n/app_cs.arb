@@ -242,8 +242,8 @@
       }
     }
   },
-  "rollingOut": "Registrace",
-  "@rollingOut": {
+  "startRollout":  "Začít zavádění",
+  "@startRollout": {
     "description": "Label that tells the user that the token is being rolled out."
   },
   "pollingChallenges": "Čekám na nové požadavky",

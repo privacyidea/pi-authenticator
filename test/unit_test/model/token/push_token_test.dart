@@ -24,7 +24,6 @@ void _testPushToken() {
       privateTokenKey: 'privateTokenKey',
       isRolledOut: true,
       rolloutState: PushTokenRollOutState.rolloutNotStarted,
-      type: 'type',
       sortIndex: 0,
       tokenImage: 'example.png',
       folderId: 0,

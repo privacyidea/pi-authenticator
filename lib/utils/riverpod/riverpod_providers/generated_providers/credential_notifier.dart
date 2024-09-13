@@ -26,19 +26,22 @@ import 'package:http/http.dart';
 import 'package:mutex/mutex.dart';
 import 'package:privacyidea_authenticator/model/extensions/enums/ec_key_algorithm_extension.dart';
 import 'package:privacyidea_authenticator/model/processor_result.dart';
+import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/utils/globals.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/privacyidea_io_client.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/state_providers/status_message_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../api/token_container_api_endpoint.dart';
 import '../../../../interfaces/repo/container_credentials_repository.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../model/enums/container_finalization_state.dart';
 import '../../../../model/riverpod_states/credentials_state.dart';
+import '../../../../model/riverpod_states/token_state.dart';
 import '../../../../model/tokens/container_credentials.dart';
 import '../../../../repo/secure_container_credentials_repository.dart';
-import '../../../../widgets/dialog_widgets/enter_passphrase_dialog.dart';
 import '../../../ecc_utils.dart';
 import '../../../errors.dart';
 import '../../../logger.dart';
@@ -47,7 +50,7 @@ part 'credential_notifier.g.dart';
 
 final containerCredentialsProvider = containerCredentialsNotifierProviderOf(
   repo: SecureContainerCredentialsRepository(),
-  ioClient: const PrivacyideaIOClient(),
+  containerApi: const PrivacyideaContainerApi(ioClient: PrivacyideaIOClient()),
   eccUtils: const EccUtils(),
 );
 
@@ -58,10 +61,10 @@ class ContainerCredentialsNotifier extends _$ContainerCredentialsNotifier with R
 
   ContainerCredentialsNotifier({
     ContainerCredentialsRepository? repoOverride,
-    PrivacyideaIOClient? ioClientOverride,
+    PrivacyideaContainerApi? containerApiOverride,
     EccUtils? eccUtilsOverride,
   })  : _repoOverride = repoOverride,
-        _ioClientOverride = ioClientOverride,
+        _containerApiOverride = containerApiOverride,
         _eccUtilsOverride = eccUtilsOverride;
 
   @override
@@ -70,9 +73,9 @@ class ContainerCredentialsNotifier extends _$ContainerCredentialsNotifier with R
   final ContainerCredentialsRepository? _repoOverride;
 
   @override
-  PrivacyideaIOClient get ioClient => _ioClient;
-  late PrivacyideaIOClient _ioClient;
-  final PrivacyideaIOClient? _ioClientOverride;
+  PrivacyideaContainerApi get containerApi => _containerApi;
+  late PrivacyideaContainerApi _containerApi;
+  final PrivacyideaContainerApi? _containerApiOverride;
 
   @override
   EccUtils get eccUtils => _eccUtils;
@@ -82,14 +85,15 @@ class ContainerCredentialsNotifier extends _$ContainerCredentialsNotifier with R
   @override
   Future<CredentialsState> build({
     required ContainerCredentialsRepository repo,
-    required PrivacyideaIOClient ioClient,
+    required PrivacyideaContainerApi containerApi,
     required EccUtils eccUtils,
   }) async {
     await _stateMutex.acquire();
     _repo = _repoOverride ?? repo;
-    _ioClient = _ioClientOverride ?? ioClient;
+    _containerApi = _containerApiOverride ?? containerApi;
     _eccUtils = _eccUtilsOverride ?? eccUtils;
     Logger.warning('Building credentialsProvider', name: 'CredentialsNotifier');
+
     final initState = await _repo.loadCredentialsState();
     for (var credential in initState.credentials.whereType<ContainerCredentialUnfinalized>()) {
       finalize(credential);
@@ -136,6 +140,7 @@ class ContainerCredentialsNotifier extends _$ContainerCredentialsNotifier with R
     await _stateMutex.acquire();
     final newCredentials = credentials.toList();
     final oldCredentials = (await future).credentials;
+    Logger.debug('Loaded credentials: $oldCredentials', name: 'CredentialsNotifier#addCredentials');
     final combinedCredentials = <ContainerCredential>[];
     for (var oldCredential in oldCredentials) {
       final newCredential = newCredentials.firstWhereOrNull((newCredential) => newCredential.serial == oldCredential.serial);
@@ -147,8 +152,11 @@ class ContainerCredentialsNotifier extends _$ContainerCredentialsNotifier with R
       }
     }
     combinedCredentials.addAll(newCredentials);
+    Logger.debug('Combined credentials: $combinedCredentials', name: 'CredentialsNotifier#addCredentials');
     final newState = await _saveCredentialsStateToRepo(CredentialsState(credentials: combinedCredentials));
+    Logger.debug('Saved credentials: $newState', name: 'CredentialsNotifier#addCredentials');
     await update((_) => newState);
+    Logger.debug('Updated credentials: $newState', name: 'CredentialsNotifier#addCredentials');
     _stateMutex.release();
     return newState;
   }
@@ -164,10 +172,10 @@ class ContainerCredentialsNotifier extends _$ContainerCredentialsNotifier with R
     return super.update(cb, onError: onError);
   }
 
-  Future<T?> updateCredential<T extends ContainerCredential>(ContainerCredential credential, T Function(ContainerCredential) updater) async {
+  Future<T?> updateCredential<T extends ContainerCredential>(T credential, T Function(T) updater) async {
     await _stateMutex.acquire();
     final oldState = await future;
-    final currentCredential = oldState.currentOf(credential);
+    final currentCredential = oldState.currentOf<T>(credential);
     if (currentCredential == null) {
       Logger.info('Failed to update credential. It was probably removed in the meantime.', name: 'CredentialsNotifier#updateCredential');
       _stateMutex.release();
@@ -280,16 +288,16 @@ class ContainerCredentialsNotifier extends _$ContainerCredentialsNotifier with R
     _finalizationMutex.release();
   }
 
-////////////////////////////////////////////////////////////////////////////
+/* /////////////////////////////////////////////////////////////////////////
 ////////////////////////// PRIVATE HELPER METHODS //////////////////////////
-////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////// */
 
   /// Finalization substep 1: Generate key pair
-  Future<ContainerCredential> _generateKeyPair(ContainerCredential containerCredential) async {
+  Future<ContainerCredentialUnfinalized> _generateKeyPair(ContainerCredentialUnfinalized containerCredential) async {
     // generatingKeyPair,
     // generatingKeyPairFailed,
     // generatingKeyPairCompleted,
-    ContainerCredential? credential = containerCredential;
+    ContainerCredentialUnfinalized? credential = containerCredential;
     credential = await updateCredential(credential, (c) => c.copyWith(finalizationState: ContainerFinalizationState.generatingKeyPair));
     if (credential == null) throw StateError('Credential was removed');
     final keyPair = CryptoUtils.generateEcKeyPair(curve: credential.ecKeyAlgorithm.curveName);
@@ -299,12 +307,11 @@ class ContainerCredentialsNotifier extends _$ContainerCredentialsNotifier with R
   }
 
   /// Finalization substep 2: Send public key
-  Future<(ContainerCredential, Response)> _sendPublicKey(ContainerCredential containerCredential) async {
+  Future<(ContainerCredential, Response)> _sendPublicKey(ContainerCredentialUnfinalized containerc) async {
     // sendingPublicKey,
     // sendingPublicKeyFailed,
     // sendingPublicKeyCompleted,
-    ContainerCredential? container = containerCredential;
-    final ecPrivateClientKey = container.ecPrivateClientKey!;
+
     //POST /container/register/finalize
     // Request: {
     // 'container_serial': <serial>,
@@ -312,25 +319,14 @@ class ContainerCredentialsNotifier extends _$ContainerCredentialsNotifier with R
     // 'signature': <sig( <nonce|timestamp|registration_url|serial[|passphrase]> )>,
     // }
 
-    final passphrase = container.passphraseQuestion != null ? EnterPassphraseDialog.show(await globalContext) : null;
-    final message = '${container.nonce}'
-        '|${container.timestamp.toIso8601String().replaceFirst('Z', '+00:00')}'
-        '|${container.finalizationUrl}'
-        '|${container.serial}'
-        '${passphrase != null ? '|$passphrase' : ''}';
+    ContainerCredentialUnfinalized? container = containerc;
 
-    final signature = eccUtils.trySignWithPrivateKey(ecPrivateClientKey, message);
-
-    final body = {
-      'container_serial': container.serial,
-      'public_client_key': container.publicClientKey,
-      'signature': signature,
-    };
     final Response response;
-    container = await updateCredential(container, (c) => c.copyWith(finalizationState: ContainerFinalizationState.sendingPublicKey));
+    container =
+        await updateCredential<ContainerCredentialUnfinalized>(container, (c) => c.copyWith(finalizationState: ContainerFinalizationState.sendingPublicKey));
     if (container == null) throw StateError('Credential was removed');
     try {
-      response = await _ioClient.doPost(url: container.finalizationUrl, body: body, sslVerify: false); //TODO: sslVerify
+      response = (await _containerApi.finalizeContainer(container, eccUtils))!;
     } catch (e) {
       ref.read(statusMessageProvider.notifier).state = ('Failed to finalize container', e.toString());
       await updateCredential(container, (c) => c.copyWith(finalizationState: ContainerFinalizationState.sendingPublicKeyFailed));
@@ -360,6 +356,7 @@ class ContainerCredentialsNotifier extends _$ContainerCredentialsNotifier with R
     credential = await updateCredential(credential, (c) => c.copyWith(finalizationState: ContainerFinalizationState.parsingResponse));
     if (credential == null) throw StateError('Credential was removed');
     responseJson = jsonDecode(responseBody);
+    Logger.debug('Response JSON: $responseJson', name: 'CredentialsNotifier#_parseResponse');
     final result = validate(value: responseJson['result'], validator: const TypeValidatorRequired<Map<String, dynamic>>(), name: 'result');
     final value = validate(value: result['value'], validator: const TypeValidatorRequired<Map<String, dynamic>>(), name: 'value');
     publicServerKey = validate(
@@ -367,8 +364,34 @@ class ContainerCredentialsNotifier extends _$ContainerCredentialsNotifier with R
       validator: TypeValidatorRequired<ECPublicKey>(transformer: (v) => const EccUtils().deserializeECPublicKey(v)),
       name: 'public_server_key',
     );
-    credential = await updateCredential(credential, (c) => c.copyWith(finalizationState: ContainerFinalizationState.parsingResponseCompleted));
+    final syncUrlUri = validate(
+      value: value['container_sync_url'],
+      validator: TypeValidatorRequired<Uri>(transformer: (v) => Uri.parse(v)),
+      name: 'container_sync_url',
+    );
+    credential =
+        await updateCredential(credential, (c) => c.copyWith(finalizationState: ContainerFinalizationState.parsingResponseCompleted, syncUrl: syncUrlUri));
     if (credential == null) throw StateError('Credential was removed');
     return (credential, publicServerKey);
+  }
+
+  Future<void> syncTokens(TokenState tokenState) async {
+    final containerCredentials = (await future).credentials;
+    final containerCredential = containerCredentials.whereType<ContainerCredentialFinalized>().first;
+
+    List<Token> syncedTokens;
+    List<String> deletedTokens;
+    final tuple = await _containerApi.sync(
+      containerCredential,
+      tokenState,
+    );
+    if (tuple == null) {
+      return;
+    }
+    syncedTokens = tuple.$1;
+    deletedTokens = tuple.$2;
+
+    await ref.read(tokenProvider.notifier).addOrReplaceTokens(syncedTokens);
+    await ref.read(tokenProvider.notifier).removeTokensBySerials(deletedTokens);
   }
 }

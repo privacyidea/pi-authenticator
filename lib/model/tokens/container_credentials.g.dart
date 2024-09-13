@@ -13,11 +13,15 @@ _$ContainerCredentialUnfinalizedImpl
           nonce: json['nonce'] as String,
           timestamp: DateTime.parse(json['timestamp'] as String),
           finalizationUrl: Uri.parse(json['finalizationUrl'] as String),
+          syncUrl: json['syncUrl'] == null
+              ? null
+              : Uri.parse(json['syncUrl'] as String),
           serial: json['serial'] as String,
           ecKeyAlgorithm:
               $enumDecode(_$EcKeyAlgorithmEnumMap, json['ecKeyAlgorithm']),
           hashAlgorithm:
               $enumDecode(_$AlgorithmsEnumMap, json['hashAlgorithm']),
+          serverName: json['serverName'] as String? ?? 'privacyIDEA',
           finalizationState: $enumDecodeNullable(
                   _$ContainerFinalizationStateEnumMap,
                   json['finalizationState']) ??
@@ -36,9 +40,11 @@ Map<String, dynamic> _$$ContainerCredentialUnfinalizedImplToJson(
       'nonce': instance.nonce,
       'timestamp': instance.timestamp.toIso8601String(),
       'finalizationUrl': instance.finalizationUrl.toString(),
+      'syncUrl': instance.syncUrl?.toString(),
       'serial': instance.serial,
       'ecKeyAlgorithm': _$EcKeyAlgorithmEnumMap[instance.ecKeyAlgorithm]!,
       'hashAlgorithm': _$AlgorithmsEnumMap[instance.hashAlgorithm]!,
+      'serverName': instance.serverName,
       'finalizationState':
           _$ContainerFinalizationStateEnumMap[instance.finalizationState]!,
       'passphraseQuestion': instance.passphraseQuestion,
@@ -121,11 +127,12 @@ _$ContainerCredentialFinalizedImpl _$$ContainerCredentialFinalizedImplFromJson(
       issuer: json['issuer'] as String,
       nonce: json['nonce'] as String,
       timestamp: DateTime.parse(json['timestamp'] as String),
-      finalizationUrl: Uri.parse(json['finalizationUrl'] as String),
+      syncUrl: Uri.parse(json['syncUrl'] as String),
       serial: json['serial'] as String,
       ecKeyAlgorithm:
           $enumDecode(_$EcKeyAlgorithmEnumMap, json['ecKeyAlgorithm']),
       hashAlgorithm: $enumDecode(_$AlgorithmsEnumMap, json['hashAlgorithm']),
+      serverName: json['serverName'] as String? ?? 'privacyIDEA',
       finalizationState: $enumDecodeNullable(
               _$ContainerFinalizationStateEnumMap, json['finalizationState']) ??
           ContainerFinalizationState.finalized,
@@ -142,10 +149,11 @@ Map<String, dynamic> _$$ContainerCredentialFinalizedImplToJson(
       'issuer': instance.issuer,
       'nonce': instance.nonce,
       'timestamp': instance.timestamp.toIso8601String(),
-      'finalizationUrl': instance.finalizationUrl.toString(),
+      'syncUrl': instance.syncUrl.toString(),
       'serial': instance.serial,
       'ecKeyAlgorithm': _$EcKeyAlgorithmEnumMap[instance.ecKeyAlgorithm]!,
       'hashAlgorithm': _$AlgorithmsEnumMap[instance.hashAlgorithm]!,
+      'serverName': instance.serverName,
       'finalizationState':
           _$ContainerFinalizationStateEnumMap[instance.finalizationState]!,
       'passphraseQuestion': instance.passphraseQuestion,

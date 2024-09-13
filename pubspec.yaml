@@ -31,7 +31,7 @@ dependencies:
     sdk: flutter
   app_minimizer: ^1.0.0+2
   flutter_local_notifications: ^17.2.2
-  home_widget: ^0.6.0
+  home_widget: ^0.7.0
   image: ^4.1.6
   local_auth: ^2.1.6
   local_auth_android: ^1.0.37
@@ -90,12 +90,13 @@ dependencies:
   simple_icons: ^10.1.3
   path_provider: ^2.1.2
   qr_flutter: ^4.1.0
-  image_cropper: ^7.1.0
+  image_cropper: ^8.0.2
   riverpod_generator: ^2.4.0
   riverpod_annotation: ^2.3.5
   freezed_annotation: ^2.4.4
   async: ^2.11.0
   basic_utils: ^5.7.0
+  diffie_hellman: ^1.2.0
 
 
 

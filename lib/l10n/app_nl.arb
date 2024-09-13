@@ -235,8 +235,8 @@
       }
     }
   },
-  "rollingOut": "Uitrollen",
-  "@rollingOut": {
+  "startRollout": "Start uitrollen",
+  "@startRollout": {
     "description": "Label that tells the user that the token is being rolled out."
   },
   "pollingChallenges": "Zoeken naar nieuwe aanvragen",

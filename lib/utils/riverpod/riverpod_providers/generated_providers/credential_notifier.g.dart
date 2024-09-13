@@ -7,7 +7,7 @@ part of 'credential_notifier.dart';
 // **************************************************************************
 
 String _$containerCredentialsNotifierHash() =>
-    r'e89ea14f6a73f042c4cf8f0d80a10b2be7605082';
+    r'83daeabb57839b956f33171c95c8f45393049d29';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -33,12 +33,12 @@ class _SystemHash {
 abstract class _$ContainerCredentialsNotifier
     extends BuildlessAsyncNotifier<CredentialsState> {
   late final ContainerCredentialsRepository repo;
-  late final PrivacyideaIOClient ioClient;
+  late final PrivacyideaContainerApi containerApi;
   late final EccUtils eccUtils;
 
   FutureOr<CredentialsState> build({
     required ContainerCredentialsRepository repo,
-    required PrivacyideaIOClient ioClient,
+    required PrivacyideaContainerApi containerApi,
     required EccUtils eccUtils,
   });
 }
@@ -57,12 +57,12 @@ class ContainerCredentialsNotifierFamily
   /// See also [ContainerCredentialsNotifier].
   ContainerCredentialsNotifierProvider call({
     required ContainerCredentialsRepository repo,
-    required PrivacyideaIOClient ioClient,
+    required PrivacyideaContainerApi containerApi,
     required EccUtils eccUtils,
   }) {
     return ContainerCredentialsNotifierProvider(
       repo: repo,
-      ioClient: ioClient,
+      containerApi: containerApi,
       eccUtils: eccUtils,
     );
   }
@@ -73,7 +73,7 @@ class ContainerCredentialsNotifierFamily
   ) {
     return call(
       repo: provider.repo,
-      ioClient: provider.ioClient,
+      containerApi: provider.containerApi,
       eccUtils: provider.eccUtils,
     );
   }
@@ -99,12 +99,12 @@ class ContainerCredentialsNotifierProvider extends AsyncNotifierProviderImpl<
   /// See also [ContainerCredentialsNotifier].
   ContainerCredentialsNotifierProvider({
     required ContainerCredentialsRepository repo,
-    required PrivacyideaIOClient ioClient,
+    required PrivacyideaContainerApi containerApi,
     required EccUtils eccUtils,
   }) : this._internal(
           () => ContainerCredentialsNotifier()
             ..repo = repo
-            ..ioClient = ioClient
+            ..containerApi = containerApi
             ..eccUtils = eccUtils,
           from: containerCredentialsNotifierProviderOf,
           name: r'containerCredentialsNotifierProviderOf',
@@ -116,7 +116,7 @@ class ContainerCredentialsNotifierProvider extends AsyncNotifierProviderImpl<
           allTransitiveDependencies:
               ContainerCredentialsNotifierFamily._allTransitiveDependencies,
           repo: repo,
-          ioClient: ioClient,
+          containerApi: containerApi,
           eccUtils: eccUtils,
         );
 
@@ -128,12 +128,12 @@ class ContainerCredentialsNotifierProvider extends AsyncNotifierProviderImpl<
     required super.debugGetCreateSourceHash,
     required super.from,
     required this.repo,
-    required this.ioClient,
+    required this.containerApi,
     required this.eccUtils,
   }) : super.internal();
 
   final ContainerCredentialsRepository repo;
-  final PrivacyideaIOClient ioClient;
+  final PrivacyideaContainerApi containerApi;
   final EccUtils eccUtils;
 
   @override
@@ -142,7 +142,7 @@ class ContainerCredentialsNotifierProvider extends AsyncNotifierProviderImpl<
   ) {
     return notifier.build(
       repo: repo,
-      ioClient: ioClient,
+      containerApi: containerApi,
       eccUtils: eccUtils,
     );
   }
@@ -154,7 +154,7 @@ class ContainerCredentialsNotifierProvider extends AsyncNotifierProviderImpl<
       override: ContainerCredentialsNotifierProvider._internal(
         () => create()
           ..repo = repo
-          ..ioClient = ioClient
+          ..containerApi = containerApi
           ..eccUtils = eccUtils,
         from: from,
         name: null,
@@ -162,7 +162,7 @@ class ContainerCredentialsNotifierProvider extends AsyncNotifierProviderImpl<
         allTransitiveDependencies: null,
         debugGetCreateSourceHash: null,
         repo: repo,
-        ioClient: ioClient,
+        containerApi: containerApi,
         eccUtils: eccUtils,
       ),
     );
@@ -178,7 +178,7 @@ class ContainerCredentialsNotifierProvider extends AsyncNotifierProviderImpl<
   bool operator ==(Object other) {
     return other is ContainerCredentialsNotifierProvider &&
         other.repo == repo &&
-        other.ioClient == ioClient &&
+        other.containerApi == containerApi &&
         other.eccUtils == eccUtils;
   }
 
@@ -186,7 +186,7 @@ class ContainerCredentialsNotifierProvider extends AsyncNotifierProviderImpl<
   int get hashCode {
     var hash = _SystemHash.combine(0, runtimeType.hashCode);
     hash = _SystemHash.combine(hash, repo.hashCode);
-    hash = _SystemHash.combine(hash, ioClient.hashCode);
+    hash = _SystemHash.combine(hash, containerApi.hashCode);
     hash = _SystemHash.combine(hash, eccUtils.hashCode);
 
     return _SystemHash.finish(hash);
@@ -198,8 +198,8 @@ mixin ContainerCredentialsNotifierRef
   /// The parameter `repo` of this provider.
   ContainerCredentialsRepository get repo;
 
-  /// The parameter `ioClient` of this provider.
-  PrivacyideaIOClient get ioClient;
+  /// The parameter `containerApi` of this provider.
+  PrivacyideaContainerApi get containerApi;
 
   /// The parameter `eccUtils` of this provider.
   EccUtils get eccUtils;
@@ -214,8 +214,8 @@ class _ContainerCredentialsNotifierProviderElement
   ContainerCredentialsRepository get repo =>
       (origin as ContainerCredentialsNotifierProvider).repo;
   @override
-  PrivacyideaIOClient get ioClient =>
-      (origin as ContainerCredentialsNotifierProvider).ioClient;
+  PrivacyideaContainerApi get containerApi =>
+      (origin as ContainerCredentialsNotifierProvider).containerApi;
   @override
   EccUtils get eccUtils =>
       (origin as ContainerCredentialsNotifierProvider).eccUtils;

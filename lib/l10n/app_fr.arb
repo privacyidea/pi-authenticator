@@ -242,8 +242,8 @@
       }
     }
   },
-  "rollingOut": "Déploiement en cours",
-  "@rollingOut": {
+  "startRollout":  "Démarrer le déploiement",
+  "@startRollout": {
     "description": "Label that tells the user that the token is being rolled out."
   },
   "pollingChallenges": "Vérification de nouveaux challenges",

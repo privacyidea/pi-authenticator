@@ -20,7 +20,7 @@
 
 import 'package:json_annotation/json_annotation.dart';
 import 'package:privacyidea_authenticator/utils/type_matchers.dart';
-import '../token_container.dart';
+import '../token_template.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../utils/identifiers.dart';
@@ -135,7 +135,7 @@ class HOTPToken extends OTPToken {
   @override
   HOTPToken copyUpdateByTemplate(TokenTemplate template) {
     final uriMap = validateMap(
-      map: template.data,
+      map: template.otpAuthMap,
       validators: {
         OTP_AUTH_LABEL: const TypeValidatorOptional<String>(),
         OTP_AUTH_ISSUER: const TypeValidatorOptional<String>(),
@@ -163,7 +163,7 @@ class HOTPToken extends OTPToken {
     );
   }
 
-  factory HOTPToken.fromOtpAuthMap(Map<String, String> otpAuthMap, {required TokenOriginData origin}) {
+  factory HOTPToken.fromOtpAuthMap(Map<String, dynamic> otpAuthMap, {required Map<String, dynamic> additionalData}) {
     final validatedMap = validateMap(
       map: otpAuthMap,
       validators: {
@@ -177,12 +177,12 @@ class HOTPToken extends OTPToken {
         OTP_AUTH_IMAGE: const TypeValidatorOptional<String>(),
         OTP_AUTH_PIN: stringToBoolValidatorOptional,
       },
-      name: 'HOTPToken',
+      name: 'HOTPToken#otpAuthMap',
     );
+    final validatedAdditionalData = Token.validateAdditionalData(additionalData);
     return HOTPToken(
       label: validatedMap[OTP_AUTH_LABEL] as String,
       issuer: validatedMap[OTP_AUTH_ISSUER] as String,
-      id: const Uuid().v4(),
       serial: validatedMap[OTP_AUTH_SERIAL] as String?,
       algorithm: validatedMap[OTP_AUTH_ALGORITHM] as Algorithms,
       digits: validatedMap[OTP_AUTH_DIGITS] as int,
@@ -191,30 +191,45 @@ class HOTPToken extends OTPToken {
       tokenImage: validatedMap[OTP_AUTH_IMAGE] as String?,
       pin: validatedMap[OTP_AUTH_PIN] as bool?,
       isLocked: validatedMap[OTP_AUTH_PIN] as bool?,
-      origin: origin,
+      containerSerial: validatedAdditionalData[Token.CONTAINER_SERIAL],
+      id: validatedAdditionalData[Token.ID] ?? const Uuid().v4(),
+      origin: validatedAdditionalData[Token.ORIGIN],
+      isHidden: validatedAdditionalData[Token.HIDDEN],
+      checkedContainers: validatedAdditionalData[Token.CHECKED_CONTAINERS] ?? [],
+      folderId: validatedAdditionalData[Token.FOLDER_ID],
+      sortIndex: validatedAdditionalData[Token.SORT_INDEX],
     );
   }
 
   /// This is used to create a map that typically was created from a uri.
   /// ```dart
-  ///  ------------------------- [Token] -------------------------
-  /// | OTP_AUTH_SERIAL: serial, (optional)                       |
-  /// | OTP_AUTH_TYPE: type,                                      |
-  /// | OTP_AUTH_LABEL: label,                                    |
-  /// | OTP_AUTH_ISSUER: issuer,                                  |
-  /// | OTP_AUTH_PIN: pin,                                        |
-  /// | OTP_AUTH_IMAGE: tokenImage, (optional)                    |
-  ///  -----------------------------------------------------------
-  ///  ----------------------- [OTPToken] ------------------------
-  /// | OTP_AUTH_ALGORITHM: algorithm,                            |
-  /// | OTP_AUTH_DIGITS: digits,                                  |
-  ///  -----------------------------------------------------------
-  ///  ----------------------- [HOTPToken] -----------------------
-  /// | OTP_AUTH_COUNTER: counter,                                |
-  ///  -----------------------------------------------------------
+  /// -------------------------- [Token] --------------------------------
+  /// | OTP_AUTH_SERIAL: serial, (optional)                             |
+  /// | OTP_AUTH_LABEL: label,                                          |
+  /// | OTP_AUTH_ISSUER: issuer,                                        |
+  /// | CONTAINER_SERIAL: containerSerial, (optional)                   |
+  /// | CHECKED_CONTAINERS: checkedContainers,                          |
+  /// | TOKEN_ID: id,                                                   |
+  /// | OTP_AUTH_TYPE: type,                                            |
+  /// | OTP_AUTH_IMAGE: tokenImage, (optional)                          |
+  /// | SORTABLE_INDEX: sortIndex, (optional)                           |
+  /// | FOLDER_ID: folderId, (optional)                                 |
+  /// | TOKEN_ORIGIN: origin, (optional)                                |
+  /// | OTP_AUTH_PIN: pin,                                              |
+  /// | TOKEN_HIDDEN: isHidden,                                         |
+  /// -------------------------------------------------------------------
+  /// ------------------------- [OTPToken] ------------------------------
+  /// | OTP_AUTH_ALGORITHM: algorithm,                                  |
+  /// | OTP_AUTH_DIGITS: digits,                                        |
+  /// | OTP_AUTH_SECRET_BASE32: secret,                                 |
+  /// | OTP_AUTH_OTP_VALUES: [otpValue, nextValue], (if serial is null) |
+  /// -------------------------------------------------------------------
+  /// ------------------------ [HOTPToken] ------------------------------
+  /// | OTP_AUTH_COUNTER: counter,                                      |
+  /// -------------------------------------------------------------------
   /// ```
   @override
-  Map<String, String> toOtpAuthMap({String? containerSerial}) {
+  Map<String, dynamic> toOtpAuthMap() {
     return super.toOtpAuthMap()
       ..addAll({
         OTP_AUTH_COUNTER: counter.toString(),

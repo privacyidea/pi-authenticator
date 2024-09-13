@@ -36,7 +36,7 @@ class _DefaultRefreshIndicatorState extends ConsumerState<DefaultRefreshIndicato
             Logger.debug('Refreshing container with ${credentials.length} credentials');
             await Future.wait([
               if (pushProviderInstance != null) pushProviderInstance.pollForChallenges(isManually: true),
-              for (var credential in credentials) (ref.read(tokenContainerNotifierProviderOf(credential: credential).notifier).sync()),
+              // for (var credential in credentials) (ref.read(tokenContainerNotifierProviderOf(credential: credential).notifier).sync()),
             ]);
           });
           await future;

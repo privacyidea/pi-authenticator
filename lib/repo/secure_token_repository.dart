@@ -100,11 +100,18 @@ class SecureTokenRepository implements TokenRepository {
         valueJson = jsonDecode(value);
       } on FormatException catch (_) {
         // Value should be a json. Skip everything that is not a json.
+        Logger.debug('Value is not a json', name: 'secure_token_repository.dart#loadTokens');
         continue;
       }
 
-      if (valueJson == null || !valueJson.containsKey('type')) {
+      if (valueJson == null) {
         // If valueJson is null or does not contain a type, it can't be a token. Skip it.
+        Logger.debug('Value Json is null', name: 'secure_token_repository.dart#loadTokens');
+        continue;
+      }
+      if (!valueJson.containsKey('type')) {
+        // If valueJson is null or does not contain a type, it can't be a token. Skip it.
+        Logger.debug('Value Json does not contain a type', name: 'secure_token_repository.dart#loadTokens');
         continue;
       }
 

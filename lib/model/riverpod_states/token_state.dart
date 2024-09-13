@@ -23,7 +23,7 @@ import 'package:flutter/material.dart';
 import '../../utils/logger.dart';
 import '../enums/push_token_rollout_state.dart';
 import '../enums/token_origin_source_type.dart';
-import '../token_container.dart';
+import '../token_template.dart';
 import '../token_folder.dart';
 import '../tokens/otp_token.dart';
 import '../tokens/push_token.dart';
@@ -76,7 +76,7 @@ class TokenState {
     return sameTokensMap;
   }
 
-  T? currentOf<T extends Token>(T token) => tokens.firstWhereOrNull((element) => element.id == token.id) as T?;
+  T? currentOf<T extends Token>(T token) => tokens.firstWhereOrNull((element) => element.isSameTokenAs(token)) as T?;
   T? currentOfId<T extends Token>(String id) => tokens.firstWhereOrNull((element) => element.id == id) as T?;
 
   TokenState withToken(Token token) {
@@ -177,18 +177,34 @@ class TokenState {
 
   List<Token> tokensWithoutFolder({List<Type> only = const [], List<Type> exclude = const []}) => tokens.withoutFolder(only: only, exclude: exclude);
 
-  List<Token> containerTokens(String containerId) => tokens.piTokens.fromContainer(containerId);
+  List<Token> containerTokens(String containerSerial) {
+    final piTokens = tokens.piTokens;
+    Logger.debug('PiTokens: ${piTokens}', name: 'token_state.dart#containerTokens');
+    final containerTokens = piTokens.ofContainer(containerSerial);
+    Logger.debug('${containerTokens.length}/${piTokens.length} tokens with containerSerial: $containerSerial', name: 'token_state.dart#containerTokens');
+    return containerTokens;
+  }
 }
 
 extension TokenListExtension on List<Token> {
-  List<Token> get nonPiTokens => where((token) => token.isPrivacyIdeaToken == false).toList();
+  List<Token> get piTokens {
+    final piTokens = where((token) => token.isPrivacyIdeaToken == true).toList();
+    Logger.debug('${piTokens.length}/$length tokens with "isPrivacyIdeaToken == true"', name: 'token_state.dart#piTokens');
+    return piTokens;
+  }
+
+  List<Token> get nonPiTokens {
+    final nonPiTokens = where((token) => token.isPrivacyIdeaToken == false).toList();
+    Logger.debug('${nonPiTokens.length}/$length tokens with "isPrivacyIdeaToken == false"', name: 'token_state.dart#nonPiTokens');
+    return nonPiTokens;
+  }
+
   List<Token> get maybePiTokens {
     final maybePiTokens = where((token) => token.isPrivacyIdeaToken == null).toList();
-    Logger.debug('${maybePiTokens.length}/$length tokens with "isPrivacyIdeaToken" == null', name: 'token_state.dart#maybePiTokens');
+    Logger.debug('${maybePiTokens.length}/$length tokens with "isPrivacyIdeaToken == null"', name: 'token_state.dart#maybePiTokens');
     return maybePiTokens;
   }
 
-  List<Token> get piTokens => where((token) => token.isPrivacyIdeaToken == true).toList();
   List<Token> inFolder(TokenFolder folder, {List<Type> only = const [], List<Type> exclude = const []}) => where((token) {
         if (token.folderId != folder.folderId) return false;
         if (exclude.contains(token.runtimeType)) return false;
@@ -203,16 +219,19 @@ extension TokenListExtension on List<Token> {
         return true;
       }).toList();
 
-  List<Token> fromContainer(String containerSerial) {
-    final filtered = where((token) {
-      return token.origin?.source == TokenOriginSourceType.container && token.containerSerial == containerSerial;
-    }).toList();
+  List<Token> ofContainer(String containerSerial) {
+    final filtered = where((token) => token.origin?.source == TokenOriginSourceType.container && token.containerSerial == containerSerial).toList();
     Logger.debug('${filtered.length}/$length tokens with containerSerial: $containerSerial', name: 'token_state.dart#fromContainer');
     return filtered;
   }
 
   List<TokenTemplate> toTemplates() {
     if (isEmpty) return [];
-    return map((token) => token.toTemplate()).toList();
+    final templates = <TokenTemplate>[];
+    for (var token in this) {
+      final template = token.toTemplate();
+      if (template != null) templates.add(template);
+    }
+    return templates;
   }
 }

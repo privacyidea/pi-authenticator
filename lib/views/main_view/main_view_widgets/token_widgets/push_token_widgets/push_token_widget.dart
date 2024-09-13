@@ -20,8 +20,8 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:privacyidea_authenticator/model/extensions/enums/push_token_rollout_state_extension.dart';
 
-import '../../../../../model/enums/push_token_rollout_state.dart';
 import '../../../../../model/mixins/sortable_mixin.dart';
 import '../../../../../model/tokens/push_token.dart';
 import '../token_widget.dart';
@@ -35,12 +35,6 @@ class PushTokenWidget extends TokenWidget {
   final PushToken token;
   final SortableMixin? previousSortable;
   final bool withDivider;
-  bool get rolloutFailed => switch (token.rolloutState) {
-        PushTokenRollOutState.generatingRSAKeyPairFailed => true,
-        PushTokenRollOutState.sendRSAPublicKeyFailed => true,
-        PushTokenRollOutState.parsingResponseFailed => true,
-        _ => false,
-      };
 
   const PushTokenWidget(
     this.token, {
@@ -62,7 +56,7 @@ class PushTokenWidget extends TokenWidget {
               child: ClipRect(
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                  child: rolloutFailed ? RolloutFailedWidget(token: token) : RolloutWidget(token: token),
+                  child: token.rolloutState.rollOutInProgress ? RolloutWidget(token: token) : StartRolloutWidget(token: token),
                 ),
               ),
             ),

@@ -246,8 +246,8 @@
       }
     }
   },
-  "rollingOut": "Rolling out",
-  "@rollingOut": {
+  "startRollout":  "Start rollout",
+  "@startRollout": {
     "description": "Label that tells the user that the token is being rolled out."
   },
   "pollingChallenges": "Polling for new challenges",
