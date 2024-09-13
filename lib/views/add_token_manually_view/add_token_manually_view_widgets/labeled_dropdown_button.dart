@@ -18,6 +18,7 @@
  * limitations under the License.
  */
 import 'package:flutter/material.dart';
+
 import '../../../utils/logger.dart';
 import '../../../widgets/deactivateable.dart';
 import 'add_token_manually_row.dart';

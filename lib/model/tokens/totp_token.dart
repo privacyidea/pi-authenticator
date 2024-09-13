@@ -27,8 +27,8 @@ import '../../utils/type_matchers.dart';
 import '../enums/algorithms.dart';
 import '../enums/token_types.dart';
 import '../extensions/enums/algorithms_extension.dart';
-import '../token_template.dart';
 import '../token_import/token_origin_data.dart';
+import '../token_template.dart';
 import 'otp_token.dart';
 import 'token.dart';
 

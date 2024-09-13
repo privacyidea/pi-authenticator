@@ -21,12 +21,12 @@ import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/utils/errors.dart';
 import 'package:privacyidea_authenticator/utils/globals.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/credential_notifier.dart';
-import '../../model/processor_result.dart';
-import '../../utils/identifiers.dart';
-import 'scheme_processor_interface.dart';
-import '../../utils/logger.dart';
 
+import '../../model/processor_result.dart';
 import '../../model/tokens/container_credentials.dart';
+import '../../utils/identifiers.dart';
+import '../../utils/logger.dart';
+import 'scheme_processor_interface.dart';
 
 class ContainerCredentialsProcessor extends SchemeProcessor {
   static const resultHandlerType = TypeValidatorRequired<ContainerCredentialsNotifier>();

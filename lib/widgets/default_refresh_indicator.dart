@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
-import 'deactivateable_refresh_indicator.dart';
 
 import '../utils/logger.dart';
 import '../utils/push_provider.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/credential_notifier.dart';
 import '../views/main_view/main_view_widgets/loading_indicator.dart';
+import 'deactivateable_refresh_indicator.dart';
 
 class DefaultRefreshIndicator extends ConsumerStatefulWidget {
   final Widget child;
