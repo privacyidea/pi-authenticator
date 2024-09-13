@@ -65,7 +65,7 @@ abstract class OTPToken extends Token {
 
   @override
   bool isSameTokenAs(Token other) {
-    return super.isSameTokenAs(other) && other is OTPToken && other.algorithm == algorithm && other.digits == digits && other.secret == secret;
+    return super.isSameTokenAs(other) || (other is OTPToken && other.secret == secret);
   }
 
   @override
@@ -136,7 +136,6 @@ abstract class OTPToken extends Token {
         otpAuthMap: toOtpAuthMap(),
         otps: [otpValue, nextValue],
         container: container,
-        checkedContainers: checkedContainers,
         additionalData: additionalData,
       );
 }

@@ -35,9 +35,6 @@ _$TokenTemplateWithOtpsImpl _$$TokenTemplateWithOtpsImplFromJson(
     _$TokenTemplateWithOtpsImpl(
       otpAuthMap: json['otpAuthMap'] as Map<String, dynamic>,
       otps: (json['otps'] as List<dynamic>).map((e) => e as String).toList(),
-      checkedContainers: (json['checkedContainers'] as List<dynamic>)
-          .map((e) => e as String)
-          .toList(),
       additionalData:
           json['additionalData'] as Map<String, dynamic>? ?? const {},
       container: json['container'] == null
@@ -52,7 +49,6 @@ Map<String, dynamic> _$$TokenTemplateWithOtpsImplToJson(
     <String, dynamic>{
       'otpAuthMap': instance.otpAuthMap,
       'otps': instance.otps,
-      'checkedContainers': instance.checkedContainers,
       'additionalData': instance.additionalData,
       'container': instance.container,
       'runtimeType': instance.$type,

@@ -31,7 +31,7 @@ import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 
 class DefaultEditActionDialog extends ConsumerStatefulWidget {
   final Token token;
-  final List<Widget>? additionalChildren;
+  final List<Widget> additionalChildren;
 
   /// Should return false if an input is invalid. Name and image URL are validated regardless of whether the function is set or not.
   final bool additionalSaveValidation;
@@ -39,7 +39,7 @@ class DefaultEditActionDialog extends ConsumerStatefulWidget {
   const DefaultEditActionDialog({
     required this.token,
     this.onSaveButtonPressed,
-    this.additionalChildren,
+    this.additionalChildren = const [],
     this.additionalSaveValidation = true,
     super.key,
   });
@@ -104,18 +104,28 @@ class _DefaultEditActionDialogState extends ConsumerState<DefaultEditActionDialo
                 decoration: InputDecoration(labelText: appLocalizations.imageUrl),
                 validator: _validateImageUrl,
               ),
-              if (widget.additionalChildren != null) ...widget.additionalChildren!,
-              TextFormField(
-                  initialValue: widget.token.origin?.appName ?? 'appLocalizations.unknown',
-                  decoration: const InputDecoration(labelText: 'Origin'),
-                  readOnly: true,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).disabledColor)),
-              TextFormField(
-                initialValue: widget.token.isPrivacyIdeaToken == false ? 'Yes' : 'No',
-                decoration: const InputDecoration(labelText: 'Is exportable?'),
-                readOnly: true,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).disabledColor),
+              ExpansionTile(
+                title: Text(appLocalizations.showDetails),
+                children: [
+                  ...widget.additionalChildren,
+                  TextFormField(
+                      initialValue: widget.token.origin?.appName ?? 'appLocalizations.unknown',
+                      decoration: const InputDecoration(labelText: 'Origin'),
+                      readOnly: true,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).disabledColor)),
+                  TextFormField(
+                    initialValue: widget.token.isPrivacyIdeaToken == false ? 'Yes' : 'No',
+                    decoration: const InputDecoration(labelText: 'Is exportable?'),
+                    readOnly: true,
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).disabledColor),
+                  ),
+                ],
               ),
+              if (widget.token.containerSerial != null)
+                ReadOnlyTextFormField(
+                  text: widget.token.containerSerial!,
+                  labelText: 'Linked Container',
+                ),
             ],
           ),
         ),
@@ -165,4 +175,23 @@ class _DefaultEditActionDialogState extends ConsumerState<DefaultEditActionDialo
       ],
     );
   }
+}
+
+class ReadOnlyTextFormField extends StatelessWidget {
+  final String text;
+  final String labelText;
+
+  const ReadOnlyTextFormField({
+    required this.text,
+    required this.labelText,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) => TextFormField(
+        initialValue: text,
+        decoration: InputDecoration(labelText: labelText),
+        readOnly: true,
+        style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).disabledColor),
+      );
 }

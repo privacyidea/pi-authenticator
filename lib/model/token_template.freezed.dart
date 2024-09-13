@@ -40,7 +40,6 @@ mixin _$TokenTemplate {
     required TResult Function(
             Map<String, dynamic> otpAuthMap,
             List<String> otps,
-            List<String> checkedContainers,
             Map<String, dynamic> additionalData,
             ContainerCredential? container)
         withOtps,
@@ -57,7 +56,6 @@ mixin _$TokenTemplate {
     TResult? Function(
             Map<String, dynamic> otpAuthMap,
             List<String> otps,
-            List<String> checkedContainers,
             Map<String, dynamic> additionalData,
             ContainerCredential? container)?
         withOtps,
@@ -74,7 +72,6 @@ mixin _$TokenTemplate {
     TResult Function(
             Map<String, dynamic> otpAuthMap,
             List<String> otps,
-            List<String> checkedContainers,
             Map<String, dynamic> additionalData,
             ContainerCredential? container)?
         withOtps,
@@ -311,7 +308,6 @@ class _$TokenTemplateWithSerialImpl extends _TokenTemplateWithSerial
     required TResult Function(
             Map<String, dynamic> otpAuthMap,
             List<String> otps,
-            List<String> checkedContainers,
             Map<String, dynamic> additionalData,
             ContainerCredential? container)
         withOtps,
@@ -331,7 +327,6 @@ class _$TokenTemplateWithSerialImpl extends _TokenTemplateWithSerial
     TResult? Function(
             Map<String, dynamic> otpAuthMap,
             List<String> otps,
-            List<String> checkedContainers,
             Map<String, dynamic> additionalData,
             ContainerCredential? container)?
         withOtps,
@@ -351,7 +346,6 @@ class _$TokenTemplateWithSerialImpl extends _TokenTemplateWithSerial
     TResult Function(
             Map<String, dynamic> otpAuthMap,
             List<String> otps,
-            List<String> checkedContainers,
             Map<String, dynamic> additionalData,
             ContainerCredential? container)?
         withOtps,
@@ -441,7 +435,6 @@ abstract class _$$TokenTemplateWithOtpsImplCopyWith<$Res>
   $Res call(
       {Map<String, dynamic> otpAuthMap,
       List<String> otps,
-      List<String> checkedContainers,
       Map<String, dynamic> additionalData,
       ContainerCredential? container});
 
@@ -464,7 +457,6 @@ class __$$TokenTemplateWithOtpsImplCopyWithImpl<$Res>
   $Res call({
     Object? otpAuthMap = null,
     Object? otps = null,
-    Object? checkedContainers = null,
     Object? additionalData = null,
     Object? container = freezed,
   }) {
@@ -476,10 +468,6 @@ class __$$TokenTemplateWithOtpsImplCopyWithImpl<$Res>
       otps: null == otps
           ? _value._otps
           : otps // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-      checkedContainers: null == checkedContainers
-          ? _value._checkedContainers
-          : checkedContainers // ignore: cast_nullable_to_non_nullable
               as List<String>,
       additionalData: null == additionalData
           ? _value._additionalData
@@ -500,13 +488,11 @@ class _$TokenTemplateWithOtpsImpl extends _TokenTemplateWithOtps
   _$TokenTemplateWithOtpsImpl(
       {required final Map<String, dynamic> otpAuthMap,
       required final List<String> otps,
-      required final List<String> checkedContainers,
       final Map<String, dynamic> additionalData = const {},
       this.container,
       final String? $type})
       : _otpAuthMap = otpAuthMap,
         _otps = otps,
-        _checkedContainers = checkedContainers,
         _additionalData = additionalData,
         $type = $type ?? 'withOtps',
         super._();
@@ -530,15 +516,6 @@ class _$TokenTemplateWithOtpsImpl extends _TokenTemplateWithOtps
     return EqualUnmodifiableListView(_otps);
   }
 
-  final List<String> _checkedContainers;
-  @override
-  List<String> get checkedContainers {
-    if (_checkedContainers is EqualUnmodifiableListView)
-      return _checkedContainers;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_checkedContainers);
-  }
-
   final Map<String, dynamic> _additionalData;
   @override
   @JsonKey()
@@ -556,7 +533,7 @@ class _$TokenTemplateWithOtpsImpl extends _TokenTemplateWithOtps
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'TokenTemplate.withOtps(otpAuthMap: $otpAuthMap, otps: $otps, checkedContainers: $checkedContainers, additionalData: $additionalData, container: $container)';
+    return 'TokenTemplate.withOtps(otpAuthMap: $otpAuthMap, otps: $otps, additionalData: $additionalData, container: $container)';
   }
 
   @override
@@ -566,7 +543,6 @@ class _$TokenTemplateWithOtpsImpl extends _TokenTemplateWithOtps
       ..add(DiagnosticsProperty('type', 'TokenTemplate.withOtps'))
       ..add(DiagnosticsProperty('otpAuthMap', otpAuthMap))
       ..add(DiagnosticsProperty('otps', otps))
-      ..add(DiagnosticsProperty('checkedContainers', checkedContainers))
       ..add(DiagnosticsProperty('additionalData', additionalData))
       ..add(DiagnosticsProperty('container', container));
   }
@@ -589,13 +565,11 @@ class _$TokenTemplateWithOtpsImpl extends _TokenTemplateWithOtps
     required TResult Function(
             Map<String, dynamic> otpAuthMap,
             List<String> otps,
-            List<String> checkedContainers,
             Map<String, dynamic> additionalData,
             ContainerCredential? container)
         withOtps,
   }) {
-    return withOtps(
-        otpAuthMap, otps, checkedContainers, additionalData, container);
+    return withOtps(otpAuthMap, otps, additionalData, container);
   }
 
   @override
@@ -610,13 +584,11 @@ class _$TokenTemplateWithOtpsImpl extends _TokenTemplateWithOtps
     TResult? Function(
             Map<String, dynamic> otpAuthMap,
             List<String> otps,
-            List<String> checkedContainers,
             Map<String, dynamic> additionalData,
             ContainerCredential? container)?
         withOtps,
   }) {
-    return withOtps?.call(
-        otpAuthMap, otps, checkedContainers, additionalData, container);
+    return withOtps?.call(otpAuthMap, otps, additionalData, container);
   }
 
   @override
@@ -631,15 +603,13 @@ class _$TokenTemplateWithOtpsImpl extends _TokenTemplateWithOtps
     TResult Function(
             Map<String, dynamic> otpAuthMap,
             List<String> otps,
-            List<String> checkedContainers,
             Map<String, dynamic> additionalData,
             ContainerCredential? container)?
         withOtps,
     required TResult orElse(),
   }) {
     if (withOtps != null) {
-      return withOtps(
-          otpAuthMap, otps, checkedContainers, additionalData, container);
+      return withOtps(otpAuthMap, otps, additionalData, container);
     }
     return orElse();
   }
@@ -687,7 +657,6 @@ abstract class _TokenTemplateWithOtps extends TokenTemplate {
   factory _TokenTemplateWithOtps(
       {required final Map<String, dynamic> otpAuthMap,
       required final List<String> otps,
-      required final List<String> checkedContainers,
       final Map<String, dynamic> additionalData,
       final ContainerCredential? container}) = _$TokenTemplateWithOtpsImpl;
   _TokenTemplateWithOtps._() : super._();
@@ -698,7 +667,6 @@ abstract class _TokenTemplateWithOtps extends TokenTemplate {
   @override
   Map<String, dynamic> get otpAuthMap;
   List<String> get otps;
-  List<String> get checkedContainers;
   @override
   Map<String, dynamic> get additionalData;
   @override
