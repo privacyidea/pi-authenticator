@@ -5,20 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../interfaces/riverpod/state_listeners/notifier_provider_listener.dart';
-import '../model/token_template.dart';
 import '../utils/home_widget_utils.dart';
 import '../utils/logger.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/credential_notifier.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/deeplink_notifier.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/push_request_provider.dart';
-import '../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../utils/riverpod/state_listeners/home_widget_deep_link_listener.dart';
 import '../utils/riverpod/state_listeners/home_widget_token_state_listener.dart';
 import '../utils/riverpod/state_listeners/navigation_deep_link_listener.dart';
-import '../utils/riverpod/state_listeners/token_container_token_state_listener.dart';
 import 'app_wrappers/single_touch_recognizer.dart';
 import 'app_wrappers/state_observer.dart';
 

@@ -28,11 +28,11 @@ import '../../../../utils/globals.dart';
 import '../../../../utils/logger.dart';
 import '../../../../utils/riverpod/riverpod_providers/state_providers/dragging_sortable_provider.dart';
 import '../../../../utils/utils.dart';
+import '../../../../widgets/pi_slideable.dart';
 import 'default_token_actions/default_delete_action.dart';
 import 'default_token_actions/default_edit_action.dart';
 import 'default_token_actions/default_lock_action.dart';
 import 'slideable_action.dart';
-import '../../../../widgets/pi_slideable.dart';
 import 'token_widget.dart';
 
 class TokenWidgetBase extends ConsumerWidget {

@@ -41,7 +41,6 @@ import '../../../../model/enums/token_import_type.dart';
 import '../../../../model/enums/token_origin_source_type.dart';
 import '../../../../model/processor_result.dart';
 import '../../../../model/riverpod_states/token_state.dart';
-import '../../../../model/token_template.dart';
 import '../../../../model/tokens/hotp_token.dart';
 import '../../../../model/tokens/otp_token.dart';
 import '../../../../model/tokens/push_token.dart';
@@ -57,8 +56,8 @@ import '../../../privacyidea_io_client.dart';
 import '../../../rsa_utils.dart';
 import '../../../utils.dart';
 import '../../../view_utils.dart';
-import 'settings_notifier.dart';
 import '../state_providers/status_message_provider.dart';
+import 'settings_notifier.dart';
 
 part 'token_notifier.g.dart';
 

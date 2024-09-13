@@ -20,16 +20,18 @@
 
 import 'package:json_annotation/json_annotation.dart';
 import 'package:uuid/uuid.dart';
+
 import '../../utils/identifiers.dart';
 import '../../utils/logger.dart';
 import '../../utils/type_matchers.dart';
 import '../enums/algorithms.dart';
 import '../enums/token_types.dart';
 import '../extensions/enums/algorithms_extension.dart';
-import '../token_template.dart';
 import '../token_import/token_origin_data.dart';
+import '../token_template.dart';
 import 'otp_token.dart';
 import 'token.dart';
+
 part 'totp_token.g.dart';
 
 @JsonSerializable()

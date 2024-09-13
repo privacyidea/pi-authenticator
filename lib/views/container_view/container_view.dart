@@ -29,8 +29,8 @@ import '../../l10n/app_localizations.dart';
 import '../../model/tokens/container_credentials.dart';
 import '../../utils/customization/theme_extentions/action_theme.dart';
 import '../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
-import '../main_view/main_view_widgets/token_widgets/slideable_action.dart';
 import '../../widgets/pi_slideable.dart';
+import '../main_view/main_view_widgets/token_widgets/slideable_action.dart';
 import '../view_interface.dart';
 
 const String groupTag = 'container-actions';

@@ -20,28 +20,23 @@
  * limitations under the License.
  */
 import 'dart:convert';
-import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
 import 'package:cryptography/cryptography.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:http/http.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/ec_key_algorithm_extension.dart';
 import 'package:privacyidea_authenticator/processors/scheme_processors/token_import_scheme_processors/otp_auth_processor.dart';
 import 'package:privacyidea_authenticator/utils/ecc_utils.dart';
 import 'package:privacyidea_authenticator/utils/privacyidea_io_client.dart';
 
-import '../model/enums/ec_key_algorithm.dart';
 import '../model/riverpod_states/token_state.dart';
-import '../model/token_import/token_origin_data.dart';
 import '../model/token_template.dart';
 import '../model/tokens/container_credentials.dart';
 import '../model/tokens/token.dart';
 import '../utils/globals.dart';
 import '../utils/identifiers.dart';
 import '../utils/logger.dart';
-
 import '../widgets/dialog_widgets/enter_passphrase_dialog.dart';
 
 part 'token_container_api_endpoint.freezed.dart';
