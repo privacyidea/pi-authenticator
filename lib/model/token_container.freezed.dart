@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'container_credentials.dart';
+part of 'token_container.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -14,21 +14,21 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
-ContainerCredential _$ContainerCredentialFromJson(Map<String, dynamic> json) {
+TokenContainer _$TokenContainerFromJson(Map<String, dynamic> json) {
   switch (json['runtimeType']) {
     case 'unfinalized':
-      return ContainerCredentialUnfinalized.fromJson(json);
+      return TokenContainerUnfinalized.fromJson(json);
     case 'finalized':
-      return ContainerCredentialFinalized.fromJson(json);
+      return TokenContainerFinalized.fromJson(json);
 
     default:
-      throw CheckedFromJsonException(json, 'runtimeType', 'ContainerCredential',
+      throw CheckedFromJsonException(json, 'runtimeType', 'TokenContainer',
           'Invalid union type "${json['runtimeType']}"!');
   }
 }
 
 /// @nodoc
-mixin _$ContainerCredential {
+mixin _$TokenContainer {
   String get issuer => throw _privateConstructorUsedError;
   String get nonce => throw _privateConstructorUsedError;
   DateTime get timestamp => throw _privateConstructorUsedError;
@@ -151,39 +151,39 @@ mixin _$ContainerCredential {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(ContainerCredentialUnfinalized value) unfinalized,
-    required TResult Function(ContainerCredentialFinalized value) finalized,
+    required TResult Function(TokenContainerUnfinalized value) unfinalized,
+    required TResult Function(TokenContainerFinalized value) finalized,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(ContainerCredentialUnfinalized value)? unfinalized,
-    TResult? Function(ContainerCredentialFinalized value)? finalized,
+    TResult? Function(TokenContainerUnfinalized value)? unfinalized,
+    TResult? Function(TokenContainerFinalized value)? finalized,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(ContainerCredentialUnfinalized value)? unfinalized,
-    TResult Function(ContainerCredentialFinalized value)? finalized,
+    TResult Function(TokenContainerUnfinalized value)? unfinalized,
+    TResult Function(TokenContainerFinalized value)? finalized,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
 
-  /// Serializes this ContainerCredential to a JSON map.
+  /// Serializes this TokenContainer to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
-  /// Create a copy of ContainerCredential
+  /// Create a copy of TokenContainer
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $ContainerCredentialCopyWith<ContainerCredential> get copyWith =>
+  $TokenContainerCopyWith<TokenContainer> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $ContainerCredentialCopyWith<$Res> {
-  factory $ContainerCredentialCopyWith(
-          ContainerCredential value, $Res Function(ContainerCredential) then) =
-      _$ContainerCredentialCopyWithImpl<$Res, ContainerCredential>;
+abstract class $TokenContainerCopyWith<$Res> {
+  factory $TokenContainerCopyWith(
+          TokenContainer value, $Res Function(TokenContainer) then) =
+      _$TokenContainerCopyWithImpl<$Res, TokenContainer>;
   @useResult
   $Res call(
       {String issuer,
@@ -202,16 +202,16 @@ abstract class $ContainerCredentialCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$ContainerCredentialCopyWithImpl<$Res, $Val extends ContainerCredential>
-    implements $ContainerCredentialCopyWith<$Res> {
-  _$ContainerCredentialCopyWithImpl(this._value, this._then);
+class _$TokenContainerCopyWithImpl<$Res, $Val extends TokenContainer>
+    implements $TokenContainerCopyWith<$Res> {
+  _$TokenContainerCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of ContainerCredential
+  /// Create a copy of TokenContainer
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -288,12 +288,12 @@ class _$ContainerCredentialCopyWithImpl<$Res, $Val extends ContainerCredential>
 }
 
 /// @nodoc
-abstract class _$$ContainerCredentialUnfinalizedImplCopyWith<$Res>
-    implements $ContainerCredentialCopyWith<$Res> {
-  factory _$$ContainerCredentialUnfinalizedImplCopyWith(
-          _$ContainerCredentialUnfinalizedImpl value,
-          $Res Function(_$ContainerCredentialUnfinalizedImpl) then) =
-      __$$ContainerCredentialUnfinalizedImplCopyWithImpl<$Res>;
+abstract class _$$TokenContainerUnfinalizedImplCopyWith<$Res>
+    implements $TokenContainerCopyWith<$Res> {
+  factory _$$TokenContainerUnfinalizedImplCopyWith(
+          _$TokenContainerUnfinalizedImpl value,
+          $Res Function(_$TokenContainerUnfinalizedImpl) then) =
+      __$$TokenContainerUnfinalizedImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -314,16 +314,15 @@ abstract class _$$ContainerCredentialUnfinalizedImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$ContainerCredentialUnfinalizedImplCopyWithImpl<$Res>
-    extends _$ContainerCredentialCopyWithImpl<$Res,
-        _$ContainerCredentialUnfinalizedImpl>
-    implements _$$ContainerCredentialUnfinalizedImplCopyWith<$Res> {
-  __$$ContainerCredentialUnfinalizedImplCopyWithImpl(
-      _$ContainerCredentialUnfinalizedImpl _value,
-      $Res Function(_$ContainerCredentialUnfinalizedImpl) _then)
+class __$$TokenContainerUnfinalizedImplCopyWithImpl<$Res>
+    extends _$TokenContainerCopyWithImpl<$Res, _$TokenContainerUnfinalizedImpl>
+    implements _$$TokenContainerUnfinalizedImplCopyWith<$Res> {
+  __$$TokenContainerUnfinalizedImplCopyWithImpl(
+      _$TokenContainerUnfinalizedImpl _value,
+      $Res Function(_$TokenContainerUnfinalizedImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of ContainerCredential
+  /// Create a copy of TokenContainer
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -343,7 +342,7 @@ class __$$ContainerCredentialUnfinalizedImplCopyWithImpl<$Res>
     Object? publicClientKey = freezed,
     Object? privateClientKey = freezed,
   }) {
-    return _then(_$ContainerCredentialUnfinalizedImpl(
+    return _then(_$TokenContainerUnfinalizedImpl(
       issuer: null == issuer
           ? _value.issuer
           : issuer // ignore: cast_nullable_to_non_nullable
@@ -406,9 +405,8 @@ class __$$ContainerCredentialUnfinalizedImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$ContainerCredentialUnfinalizedImpl
-    extends ContainerCredentialUnfinalized {
-  const _$ContainerCredentialUnfinalizedImpl(
+class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
+  const _$TokenContainerUnfinalizedImpl(
       {required this.issuer,
       required this.nonce,
       required this.timestamp,
@@ -427,9 +425,8 @@ class _$ContainerCredentialUnfinalizedImpl
       : $type = $type ?? 'unfinalized',
         super._();
 
-  factory _$ContainerCredentialUnfinalizedImpl.fromJson(
-          Map<String, dynamic> json) =>
-      _$$ContainerCredentialUnfinalizedImplFromJson(json);
+  factory _$TokenContainerUnfinalizedImpl.fromJson(Map<String, dynamic> json) =>
+      _$$TokenContainerUnfinalizedImplFromJson(json);
 
   @override
   final String issuer;
@@ -469,7 +466,7 @@ class _$ContainerCredentialUnfinalizedImpl
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$ContainerCredentialUnfinalizedImpl &&
+            other is _$TokenContainerUnfinalizedImpl &&
             (identical(other.issuer, issuer) || other.issuer == issuer) &&
             (identical(other.nonce, nonce) || other.nonce == nonce) &&
             (identical(other.timestamp, timestamp) ||
@@ -515,15 +512,14 @@ class _$ContainerCredentialUnfinalizedImpl
       publicClientKey,
       privateClientKey);
 
-  /// Create a copy of ContainerCredential
+  /// Create a copy of TokenContainer
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$ContainerCredentialUnfinalizedImplCopyWith<
-          _$ContainerCredentialUnfinalizedImpl>
-      get copyWith => __$$ContainerCredentialUnfinalizedImplCopyWithImpl<
-          _$ContainerCredentialUnfinalizedImpl>(this, _$identity);
+  _$$TokenContainerUnfinalizedImplCopyWith<_$TokenContainerUnfinalizedImpl>
+      get copyWith => __$$TokenContainerUnfinalizedImplCopyWithImpl<
+          _$TokenContainerUnfinalizedImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -688,8 +684,8 @@ class _$ContainerCredentialUnfinalizedImpl
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(ContainerCredentialUnfinalized value) unfinalized,
-    required TResult Function(ContainerCredentialFinalized value) finalized,
+    required TResult Function(TokenContainerUnfinalized value) unfinalized,
+    required TResult Function(TokenContainerFinalized value) finalized,
   }) {
     return unfinalized(this);
   }
@@ -697,8 +693,8 @@ class _$ContainerCredentialUnfinalizedImpl
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(ContainerCredentialUnfinalized value)? unfinalized,
-    TResult? Function(ContainerCredentialFinalized value)? finalized,
+    TResult? Function(TokenContainerUnfinalized value)? unfinalized,
+    TResult? Function(TokenContainerFinalized value)? finalized,
   }) {
     return unfinalized?.call(this);
   }
@@ -706,8 +702,8 @@ class _$ContainerCredentialUnfinalizedImpl
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(ContainerCredentialUnfinalized value)? unfinalized,
-    TResult Function(ContainerCredentialFinalized value)? finalized,
+    TResult Function(TokenContainerUnfinalized value)? unfinalized,
+    TResult Function(TokenContainerFinalized value)? finalized,
     required TResult orElse(),
   }) {
     if (unfinalized != null) {
@@ -718,14 +714,14 @@ class _$ContainerCredentialUnfinalizedImpl
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$ContainerCredentialUnfinalizedImplToJson(
+    return _$$TokenContainerUnfinalizedImplToJson(
       this,
     );
   }
 }
 
-abstract class ContainerCredentialUnfinalized extends ContainerCredential {
-  const factory ContainerCredentialUnfinalized(
+abstract class TokenContainerUnfinalized extends TokenContainer {
+  const factory TokenContainerUnfinalized(
       {required final String issuer,
       required final String nonce,
       required final DateTime timestamp,
@@ -739,11 +735,11 @@ abstract class ContainerCredentialUnfinalized extends ContainerCredential {
       final String? passphraseQuestion,
       final String? publicServerKey,
       final String? publicClientKey,
-      final String? privateClientKey}) = _$ContainerCredentialUnfinalizedImpl;
-  const ContainerCredentialUnfinalized._() : super._();
+      final String? privateClientKey}) = _$TokenContainerUnfinalizedImpl;
+  const TokenContainerUnfinalized._() : super._();
 
-  factory ContainerCredentialUnfinalized.fromJson(Map<String, dynamic> json) =
-      _$ContainerCredentialUnfinalizedImpl.fromJson;
+  factory TokenContainerUnfinalized.fromJson(Map<String, dynamic> json) =
+      _$TokenContainerUnfinalizedImpl.fromJson;
 
   @override
   String get issuer;
@@ -773,22 +769,21 @@ abstract class ContainerCredentialUnfinalized extends ContainerCredential {
   @override
   String? get privateClientKey;
 
-  /// Create a copy of ContainerCredential
+  /// Create a copy of TokenContainer
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$ContainerCredentialUnfinalizedImplCopyWith<
-          _$ContainerCredentialUnfinalizedImpl>
+  _$$TokenContainerUnfinalizedImplCopyWith<_$TokenContainerUnfinalizedImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$ContainerCredentialFinalizedImplCopyWith<$Res>
-    implements $ContainerCredentialCopyWith<$Res> {
-  factory _$$ContainerCredentialFinalizedImplCopyWith(
-          _$ContainerCredentialFinalizedImpl value,
-          $Res Function(_$ContainerCredentialFinalizedImpl) then) =
-      __$$ContainerCredentialFinalizedImplCopyWithImpl<$Res>;
+abstract class _$$TokenContainerFinalizedImplCopyWith<$Res>
+    implements $TokenContainerCopyWith<$Res> {
+  factory _$$TokenContainerFinalizedImplCopyWith(
+          _$TokenContainerFinalizedImpl value,
+          $Res Function(_$TokenContainerFinalizedImpl) then) =
+      __$$TokenContainerFinalizedImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
@@ -808,16 +803,15 @@ abstract class _$$ContainerCredentialFinalizedImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$ContainerCredentialFinalizedImplCopyWithImpl<$Res>
-    extends _$ContainerCredentialCopyWithImpl<$Res,
-        _$ContainerCredentialFinalizedImpl>
-    implements _$$ContainerCredentialFinalizedImplCopyWith<$Res> {
-  __$$ContainerCredentialFinalizedImplCopyWithImpl(
-      _$ContainerCredentialFinalizedImpl _value,
-      $Res Function(_$ContainerCredentialFinalizedImpl) _then)
+class __$$TokenContainerFinalizedImplCopyWithImpl<$Res>
+    extends _$TokenContainerCopyWithImpl<$Res, _$TokenContainerFinalizedImpl>
+    implements _$$TokenContainerFinalizedImplCopyWith<$Res> {
+  __$$TokenContainerFinalizedImplCopyWithImpl(
+      _$TokenContainerFinalizedImpl _value,
+      $Res Function(_$TokenContainerFinalizedImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of ContainerCredential
+  /// Create a copy of TokenContainer
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -836,7 +830,7 @@ class __$$ContainerCredentialFinalizedImplCopyWithImpl<$Res>
     Object? publicClientKey = null,
     Object? privateClientKey = null,
   }) {
-    return _then(_$ContainerCredentialFinalizedImpl(
+    return _then(_$TokenContainerFinalizedImpl(
       issuer: null == issuer
           ? _value.issuer
           : issuer // ignore: cast_nullable_to_non_nullable
@@ -895,8 +889,8 @@ class __$$ContainerCredentialFinalizedImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$ContainerCredentialFinalizedImpl extends ContainerCredentialFinalized {
-  const _$ContainerCredentialFinalizedImpl(
+class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
+  const _$TokenContainerFinalizedImpl(
       {required this.issuer,
       required this.nonce,
       required this.timestamp,
@@ -914,9 +908,8 @@ class _$ContainerCredentialFinalizedImpl extends ContainerCredentialFinalized {
       : $type = $type ?? 'finalized',
         super._();
 
-  factory _$ContainerCredentialFinalizedImpl.fromJson(
-          Map<String, dynamic> json) =>
-      _$$ContainerCredentialFinalizedImplFromJson(json);
+  factory _$TokenContainerFinalizedImpl.fromJson(Map<String, dynamic> json) =>
+      _$$TokenContainerFinalizedImplFromJson(json);
 
   @override
   final String issuer;
@@ -954,7 +947,7 @@ class _$ContainerCredentialFinalizedImpl extends ContainerCredentialFinalized {
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$ContainerCredentialFinalizedImpl &&
+            other is _$TokenContainerFinalizedImpl &&
             (identical(other.issuer, issuer) || other.issuer == issuer) &&
             (identical(other.nonce, nonce) || other.nonce == nonce) &&
             (identical(other.timestamp, timestamp) ||
@@ -997,15 +990,14 @@ class _$ContainerCredentialFinalizedImpl extends ContainerCredentialFinalized {
       publicClientKey,
       privateClientKey);
 
-  /// Create a copy of ContainerCredential
+  /// Create a copy of TokenContainer
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$ContainerCredentialFinalizedImplCopyWith<
-          _$ContainerCredentialFinalizedImpl>
-      get copyWith => __$$ContainerCredentialFinalizedImplCopyWithImpl<
-          _$ContainerCredentialFinalizedImpl>(this, _$identity);
+  _$$TokenContainerFinalizedImplCopyWith<_$TokenContainerFinalizedImpl>
+      get copyWith => __$$TokenContainerFinalizedImplCopyWithImpl<
+          _$TokenContainerFinalizedImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -1167,8 +1159,8 @@ class _$ContainerCredentialFinalizedImpl extends ContainerCredentialFinalized {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(ContainerCredentialUnfinalized value) unfinalized,
-    required TResult Function(ContainerCredentialFinalized value) finalized,
+    required TResult Function(TokenContainerUnfinalized value) unfinalized,
+    required TResult Function(TokenContainerFinalized value) finalized,
   }) {
     return finalized(this);
   }
@@ -1176,8 +1168,8 @@ class _$ContainerCredentialFinalizedImpl extends ContainerCredentialFinalized {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(ContainerCredentialUnfinalized value)? unfinalized,
-    TResult? Function(ContainerCredentialFinalized value)? finalized,
+    TResult? Function(TokenContainerUnfinalized value)? unfinalized,
+    TResult? Function(TokenContainerFinalized value)? finalized,
   }) {
     return finalized?.call(this);
   }
@@ -1185,8 +1177,8 @@ class _$ContainerCredentialFinalizedImpl extends ContainerCredentialFinalized {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(ContainerCredentialUnfinalized value)? unfinalized,
-    TResult Function(ContainerCredentialFinalized value)? finalized,
+    TResult Function(TokenContainerUnfinalized value)? unfinalized,
+    TResult Function(TokenContainerFinalized value)? finalized,
     required TResult orElse(),
   }) {
     if (finalized != null) {
@@ -1197,32 +1189,31 @@ class _$ContainerCredentialFinalizedImpl extends ContainerCredentialFinalized {
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$ContainerCredentialFinalizedImplToJson(
+    return _$$TokenContainerFinalizedImplToJson(
       this,
     );
   }
 }
 
-abstract class ContainerCredentialFinalized extends ContainerCredential {
-  const factory ContainerCredentialFinalized(
-          {required final String issuer,
-          required final String nonce,
-          required final DateTime timestamp,
-          required final Uri syncUrl,
-          required final String serial,
-          required final EcKeyAlgorithm ecKeyAlgorithm,
-          required final Algorithms hashAlgorithm,
-          final String serverName,
-          final ContainerFinalizationState finalizationState,
-          final String? passphraseQuestion,
-          required final String publicServerKey,
-          required final String publicClientKey,
-          required final String privateClientKey}) =
-      _$ContainerCredentialFinalizedImpl;
-  const ContainerCredentialFinalized._() : super._();
+abstract class TokenContainerFinalized extends TokenContainer {
+  const factory TokenContainerFinalized(
+      {required final String issuer,
+      required final String nonce,
+      required final DateTime timestamp,
+      required final Uri syncUrl,
+      required final String serial,
+      required final EcKeyAlgorithm ecKeyAlgorithm,
+      required final Algorithms hashAlgorithm,
+      final String serverName,
+      final ContainerFinalizationState finalizationState,
+      final String? passphraseQuestion,
+      required final String publicServerKey,
+      required final String publicClientKey,
+      required final String privateClientKey}) = _$TokenContainerFinalizedImpl;
+  const TokenContainerFinalized._() : super._();
 
-  factory ContainerCredentialFinalized.fromJson(Map<String, dynamic> json) =
-      _$ContainerCredentialFinalizedImpl.fromJson;
+  factory TokenContainerFinalized.fromJson(Map<String, dynamic> json) =
+      _$TokenContainerFinalizedImpl.fromJson;
 
   @override
   String get issuer;
@@ -1251,11 +1242,10 @@ abstract class ContainerCredentialFinalized extends ContainerCredential {
   @override
   String get privateClientKey;
 
-  /// Create a copy of ContainerCredential
+  /// Create a copy of TokenContainer
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$ContainerCredentialFinalizedImplCopyWith<
-          _$ContainerCredentialFinalizedImpl>
+  _$$TokenContainerFinalizedImplCopyWith<_$TokenContainerFinalizedImpl>
       get copyWith => throw _privateConstructorUsedError;
 }

@@ -9,7 +9,7 @@ part of 'hotp_token.dart';
 HOTPToken _$HOTPTokenFromJson(Map<String, dynamic> json) => HOTPToken(
       counter: (json['counter'] as num?)?.toInt() ?? 0,
       containerSerial: json['containerSerial'] as String?,
-      checkedContainers: (json['checkedContainers'] as List<dynamic>?)
+      checkedContainer: (json['checkedContainer'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList() ??
           const [],
@@ -33,7 +33,7 @@ HOTPToken _$HOTPTokenFromJson(Map<String, dynamic> json) => HOTPToken(
     );
 
 Map<String, dynamic> _$HOTPTokenToJson(HOTPToken instance) => <String, dynamic>{
-      'checkedContainers': instance.checkedContainers,
+      'checkedContainer': instance.checkedContainer,
       'label': instance.label,
       'issuer': instance.issuer,
       'containerSerial': instance.containerSerial,

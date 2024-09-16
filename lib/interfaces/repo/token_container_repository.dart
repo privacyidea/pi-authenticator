@@ -17,14 +17,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import '../../model/riverpod_states/credentials_state.dart';
-import '../../model/tokens/container_credentials.dart';
+import '../../model/riverpod_states/token_container_state.dart';
+import '../../model/token_container.dart';
 
-abstract class ContainerCredentialsRepository {
-  Future<CredentialsState> saveCredential(ContainerCredential credential);
-  Future<CredentialsState> saveCredentialsState(CredentialsState credentialsState);
-  Future<CredentialsState> loadCredentialsState();
-  Future<ContainerCredential?> loadCredential(String serial);
-  Future<CredentialsState> deleteAllCredentials();
-  Future<CredentialsState> deleteCredential(String serial);
+abstract class TokenContainerRepository {
+  Future<TokenContainerState> saveCredential(TokenContainer container);
+  Future<TokenContainerState> saveCredentialsState(TokenContainerState containerState);
+  Future<TokenContainerState> loadCredentialsState();
+  Future<TokenContainer?> loadCredential(String serial);
+  Future<TokenContainerState> deleteAllCredentials();
+  Future<TokenContainerState> deleteCredential(String serial);
 }

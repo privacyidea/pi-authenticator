@@ -168,7 +168,7 @@ Future<void> _settingsViewTest(WidgetTester tester) async {
   expect(find.text(AppLocalizationsEn().errorLogTitle), findsOneWidget);
   expect(find.byType(SettingsGroup), findsNWidgets(6));
   const qrCode =
-      'otpauth://pipush/label?url=http%3A%2F%2Fwww.example.com&ttl=10&issuer=issuer&enrollment_credential=enrollmentCredentials&v=1&serial=serial&serial=serial&sslverify=0';
+      'otpauth://pipush/label?url=http%3A%2F%2Fwww.example.com&ttl=10&issuer=issuer&enrollment_container=enrollmentCredentials&v=1&serial=serial&serial=serial&sslverify=0';
   final notifier = globalRef!.read(tokenProvider.notifier);
   await scanQrCode([notifier], qrCode);
 

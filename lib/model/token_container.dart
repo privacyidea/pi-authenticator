@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 /*
  * privacyIDEA Authenticator
  *
@@ -18,264 +20,180 @@
  * limitations under the License.
  */
 
-// We need some unnecessary_overrides to force to add the fields in factory constructors
-// ignore_for_file: unnecessary_overrides
-
-import 'package:collection/collection.dart';
-import 'package:flutter/foundation.dart';
+import 'package:basic_utils/basic_utils.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:privacyidea_authenticator/model/enums/token_origin_source_type.dart';
+import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
+import 'package:privacyidea_authenticator/model/extensions/enums/ec_key_algorithm_extension.dart';
+import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
+import 'package:privacyidea_authenticator/utils/type_matchers.dart';
 
+import '../utils/ecc_utils.dart';
+import '../utils/logger.dart';
+import 'enums/container_finalization_state.dart';
+import 'enums/ec_key_algorithm.dart';
+import 'enums/token_origin_source_type.dart';
 import 'token_import/token_origin_data.dart';
-import 'tokens/token.dart';
 
-part 'token_container.g.dart';
 part 'token_container.freezed.dart';
+part 'token_container.g.dart';
 
-@freezed
-sealed class TokenContainer with _$TokenContainer {
+@Freezed(toStringOverride: false)
+class TokenContainer with _$TokenContainer {
+  static const SERIAL = 'serial';
+  static const eccUtils = EccUtils();
   const TokenContainer._();
-  // Overriding fields resutls in a error when someone
-  // forgot to add the field in a new factory constructor
-  // On error "The getter '...' isn't defined in a superclass of 'TokenContainer'."
-  //  add the '...' field to the every factory constructor to get rid of this error
-  @override
-  String get serverName => super.serverName;
-  @override
-  DateTime? get lastSyncAt => super.lastSyncAt;
-  @override
-  String get serial => super.serial;
-  @override
-  String get description => super.description;
-  @override
-  List<TokenTemplate> get syncedTokenTemplates => super.syncedTokenTemplates;
-  @override
-  List<TokenTemplate> get localTokenTemplates => super.localTokenTemplates;
 
-  const factory TokenContainer.uninitialized({
-    // Base fields
-    @Default('PrivacyIDEA') String serverName,
-    DateTime? lastSyncAt,
-    @Default('none') String serial,
-    @Default('Uninitialized') String description,
-    @Default([]) List<TokenTemplate> syncedTokenTemplates,
-    @Default([]) List<TokenTemplate> localTokenTemplates,
-    // Base fields end
-  }) = TokenContainerUninitialized;
-  const factory TokenContainer.synced({
-    // Base fields
-    @Default('PrivacyIDEA') String serverName,
-    required DateTime lastSyncAt,
-    required String serial,
-    required String description,
-    required List<TokenTemplate> syncedTokenTemplates,
-    required List<TokenTemplate> localTokenTemplates,
-    // Base fields end
-  }) = TokenContainerSynced;
-  const factory TokenContainer.modified({
-    // Base fields
-    @Default('PrivacyIDEA') String serverName,
-    DateTime? lastSyncAt,
-    required String serial,
-    required String description,
-    required List<TokenTemplate> syncedTokenTemplates,
-    required List<TokenTemplate> localTokenTemplates,
-    // Base fields end
-    required DateTime lastModifiedAt,
-  }) = TokenContainerModified;
-  const factory TokenContainer.unsynced({
-    // Base fields
-    @Default('PrivacyIDEA') String serverName,
-    DateTime? lastSyncAt,
-    required String serial,
-    required String description,
-    required List<TokenTemplate> syncedTokenTemplates,
-    required List<TokenTemplate> localTokenTemplates,
-    // Base fields end
-    String? message,
-  }) = TokenContainerUnsynced;
-  const factory TokenContainer.notFound({
-    // Base fields
-    @Default('PrivacyIDEA') String serverName,
-    DateTime? lastSyncAt,
-    required String serial,
-    required String description,
-    required List<TokenTemplate> syncedTokenTemplates,
-    required List<TokenTemplate> localTokenTemplates,
-    // Base fields end
-    required String message,
-  }) = TokenContainerNotFound;
-  const factory TokenContainer.error({
-    // Base fields
-    @Default('PrivacyIDEA') String serverName,
-    DateTime? lastSyncAt,
-    @Default('none') String serial,
-    @Default('Error') String description,
-    @Default([]) List<TokenTemplate> syncedTokenTemplates,
-    @Default([]) List<TokenTemplate> localTokenTemplates,
-    // Base fields end
-    required dynamic error,
-  }) = TokenContainerError;
+  // example: pia://container/SMPH00134123
+  // ?issuer=privacyIDEA
+  // &nonce=887197025f5fa59b50f33c15196eb97ee651a5d1
+  // &time=2024-08-21T07%3A43%3A07.086670%2B00%3A00
+  // &url=http://127.0.0.1:5000/container/register/initialize
+  // &serial=SMPH00134123
+  // &key_algorithm=secp384r1
+  // &hash_algorithm=SHA256
+  // &passphrase=Enter%20your%20passphrase
+  factory TokenContainer.fromUriMap(Map<String, dynamic> uriMap) {
+    uriMap = validateMap(
+      map: uriMap,
+      validators: {
+        CONTAINER_ISSUER: const TypeValidatorRequired<String>(),
+        CONTAINER_NONCE: const TypeValidatorRequired<String>(),
+        CONTAINER_TIMESTAMP: TypeValidatorRequired<DateTime>(transformer: (v) => DateTime.parse(v)),
+        CONTAINER_FINALIZATION_URL: stringToUrivalidator,
+        CONTAINER_SERIAL: const TypeValidatorRequired<String>(),
+        CONTAINER_EC_KEY_ALGORITHM: TypeValidatorRequired<EcKeyAlgorithm>(transformer: (v) => EcKeyAlgorithm.values.byCurveName(v)),
+        CONTAINER_HASH_ALGORITHM: stringToAlgorithmsValidator,
+        CONTAINER_PASSPHRASE_QUESTION: const TypeValidatorOptional<String>(),
+      },
+      name: 'Container',
+    );
+    return TokenContainer.unfinalized(
+      issuer: uriMap[CONTAINER_ISSUER],
+      nonce: uriMap[CONTAINER_NONCE],
+      timestamp: uriMap[CONTAINER_TIMESTAMP],
+      finalizationUrl: uriMap[CONTAINER_FINALIZATION_URL],
+      serial: uriMap[CONTAINER_SERIAL],
+      ecKeyAlgorithm: uriMap[CONTAINER_EC_KEY_ALGORITHM],
+      hashAlgorithm: uriMap[CONTAINER_HASH_ALGORITHM],
+      passphraseQuestion: uriMap[CONTAINER_PASSPHRASE_QUESTION],
+    );
+  }
 
-  T copyTransformInto<T extends TokenContainer>({
-    // Base fields
-    String? serverName,
-    DateTime? lastSyncAt,
-    String? serial,
-    String? description,
-    List<TokenTemplate>? syncedTokenTemplates,
-    List<TokenTemplate>? localTokenTemplates,
-    // Base fields end
-    Map<String, dynamic>? args,
-  }) =>
-      switch (T) {
-        const (TokenContainerSynced) => TokenContainerSynced(
-            serverName: serverName ?? this.serverName,
-            lastSyncAt: lastSyncAt ?? this.lastSyncAt!,
-            serial: serial ?? this.serial,
-            description: description ?? this.description,
-            syncedTokenTemplates: [
-              ...(syncedTokenTemplates ?? this.syncedTokenTemplates),
-              ...(localTokenTemplates ?? this.localTokenTemplates),
-            ],
-            localTokenTemplates: [],
-          ) as T,
-        const (TokenContainerUnsynced) => TokenContainerUnsynced(
-            serverName: serverName ?? this.serverName,
-            lastSyncAt: lastSyncAt ?? this.lastSyncAt,
-            serial: serial ?? this.serial,
-            description: description ?? this.description,
-            syncedTokenTemplates: syncedTokenTemplates ?? this.syncedTokenTemplates,
-            localTokenTemplates: localTokenTemplates ?? this.localTokenTemplates,
-          ) as T,
-        const (TokenContainerNotFound) => TokenContainerNotFound(
-            serverName: serverName ?? this.serverName,
-            lastSyncAt: lastSyncAt ?? this.lastSyncAt,
-            serial: serial ?? this.serial,
-            description: description ?? this.description,
-            syncedTokenTemplates: syncedTokenTemplates ?? this.syncedTokenTemplates,
-            localTokenTemplates: localTokenTemplates ?? this.localTokenTemplates,
-            message: args != null && args['message'] != null ? args['message'] : 'Unknown message',
-          ) as T,
-        const (TokenContainerError) => TokenContainerError(
-            serverName: serverName ?? this.serverName,
-            lastSyncAt: lastSyncAt ?? this.lastSyncAt,
-            serial: serial ?? this.serial,
-            description: description ?? this.description,
-            syncedTokenTemplates: syncedTokenTemplates ?? this.syncedTokenTemplates,
-            localTokenTemplates: localTokenTemplates ?? this.localTokenTemplates,
-            error: args != null && args['error'] != null ? args['error'] : 'Unknown error',
-          ) as T,
-        _ => throw UnimplementedError('Unknown TokenContainer type: $T'),
-      };
+  const factory TokenContainer.unfinalized({
+    required String issuer,
+    required String nonce,
+    required DateTime timestamp,
+    required Uri finalizationUrl,
+    Uri? syncUrl,
+    required String serial,
+    required EcKeyAlgorithm ecKeyAlgorithm,
+    required Algorithms hashAlgorithm,
+    @Default('privacyIDEA') String serverName,
+    @Default(ContainerFinalizationState.uninitialized) ContainerFinalizationState finalizationState,
+    String? passphraseQuestion,
+    String? publicServerKey,
+    String? publicClientKey,
+    String? privateClientKey,
+  }) = TokenContainerUnfinalized;
+
+  const factory TokenContainer.finalized({
+    required String issuer,
+    required String nonce,
+    required DateTime timestamp,
+    required Uri syncUrl,
+    required String serial,
+    required EcKeyAlgorithm ecKeyAlgorithm,
+    required Algorithms hashAlgorithm,
+    @Default('privacyIDEA') String serverName,
+    @Default(ContainerFinalizationState.finalized) ContainerFinalizationState finalizationState,
+    String? passphraseQuestion,
+    required String publicServerKey,
+    required String publicClientKey,
+    required String privateClientKey,
+  }) = TokenContainerFinalized;
+
+  TokenContainerFinalized? finalize({
+    ECPublicKey? publicServerKey,
+    AsymmetricKeyPair<ECPublicKey, ECPrivateKey>? clientKeyPair,
+    Uri? syncUrl,
+  }) {
+    if (this is TokenContainerFinalized) return this as TokenContainerFinalized;
+    if (publicServerKey == null && this.publicServerKey == null) {
+      Logger.warning('Unable to finalize without public server key');
+      return null;
+    }
+    if (clientKeyPair == null && (publicClientKey == null || privateClientKey == null)) {
+      Logger.warning('Unable to finalize without client key pair');
+      return null;
+    }
+    if (syncUrl == null && this.syncUrl == null) {
+      Logger.warning('Unable to finalize without sync url');
+      return null;
+    }
+    return TokenContainerFinalized(
+      issuer: issuer,
+      nonce: nonce,
+      timestamp: timestamp,
+      syncUrl: syncUrl ?? this.syncUrl!,
+      serial: serial,
+      ecKeyAlgorithm: ecKeyAlgorithm,
+      hashAlgorithm: hashAlgorithm,
+      passphraseQuestion: passphraseQuestion,
+      finalizationState: ContainerFinalizationState.finalized,
+      publicServerKey: this.publicServerKey ?? eccUtils.serializeECPublicKey(publicServerKey!),
+      publicClientKey: publicClientKey ?? eccUtils.serializeECPublicKey(clientKeyPair!.publicKey),
+      privateClientKey: privateClientKey ?? eccUtils.serializeECPrivateKey(clientKeyPair!.privateKey),
+    );
+  }
+
+  ECPublicKey? get ecPublicServerKey => publicServerKey == null ? null : eccUtils.deserializeECPublicKey(publicServerKey!);
+  TokenContainer withPublicServerKey(ECPublicKey publicServerKey) => copyWith(publicServerKey: eccUtils.serializeECPublicKey(publicServerKey));
+  ECPublicKey? get ecPublicClientKey => publicClientKey == null ? null : eccUtils.deserializeECPublicKey(publicClientKey!);
+  ECPrivateKey? get ecPrivateClientKey => privateClientKey == null ? null : eccUtils.deserializeECPrivateKey(privateClientKey!);
+
+  /// Add client key pair and set finalization state to generatingKeyPairCompleted
+  TokenContainer withClientKeyPair(AsymmetricKeyPair<ECPublicKey, ECPrivateKey> keyPair) => copyWith(
+        publicClientKey: eccUtils.serializeECPublicKey(keyPair.publicKey),
+        privateClientKey: eccUtils.serializeECPrivateKey(keyPair.privateKey),
+        finalizationState: ContainerFinalizationState.generatingKeyPairCompleted,
+      );
 
   factory TokenContainer.fromJson(Map<String, dynamic> json) => _$TokenContainerFromJson(json);
-}
-
-@freezed
-class TokenTemplate with _$TokenTemplate {
-  TokenTemplate._();
-  factory TokenTemplate({
-    required Map<String, String> data,
-  }) = _TokenTemplate;
-
-  List<String> get keys => data.keys.toList();
-  List<dynamic> get values => data.values.toList();
-
-  String? get serial => validateOptional(
-        value: data[OTP_AUTH_SERIAL],
-        validator: const TypeValidatorOptional<String>(),
-        name: OTP_AUTH_SERIAL,
-      );
-
-  String? get type => validateOptional(
-        value: data[OTP_AUTH_TYPE],
-        validator: const TypeValidatorOptional<String>(),
-        name: OTP_AUTH_TYPE,
-      );
-
-  List<String> get otpValues => validate(
-        value: data[OTP_AUTH_OTP_VALUES],
-        validator: const TypeValidatorRequired<List<String>>(),
-        name: OTP_AUTH_OTP_VALUES,
-      );
-
-  String? get containerSerial => validateOptional(
-        value: data[CONTAINER_SERIAL],
-        validator: const TypeValidatorOptional<String>(),
-        name: CONTAINER_SERIAL,
-      );
 
   @override
-  operator ==(Object other) {
-    if (other is! TokenTemplate) return false;
-    if (data.length != other.data.length) return false;
-    for (var key in data.keys) {
-      if (data[key].toString() != other.data[key].toString()) {
-        return false;
-      }
-    }
-    return true;
+  String toString() => 'TokenContainer('
+      'issuer: $issuer, '
+      'nonce: $nonce, '
+      'timestamp: $timestamp, '
+      '${(this is TokenContainerUnfinalized) ? ' finalizationUrl: ${(this as TokenContainerUnfinalized).finalizationUrl}, ' : ''}'
+      'syncUrl: $syncUrl, '
+      'serial: $serial, '
+      'ecKeyAlgorithm: $ecKeyAlgorithm, '
+      'hashAlgorithm: $hashAlgorithm, '
+      'finalizationState: $finalizationState, '
+      'passphraseQuestion: $passphraseQuestion, '
+      'publicServerKey: $publicServerKey, '
+      'publicClientKey: $publicClientKey)';
+
+  String signMessage(String msg) {
+    assert(ecPrivateClientKey != null, 'Unable to sign without private client key');
+    return eccUtils.signWithPrivateKey(ecPrivateClientKey!, msg);
   }
 
-  factory TokenTemplate.fromJson(Map<String, dynamic> json) => _$TokenTemplateFromJson(json);
+  String? trySignMessage(String msg) => ecPrivateClientKey == null ? null : eccUtils.signWithPrivateKey(ecPrivateClientKey!, msg);
 
-  Token toToken(TokenContainer container) => Token.fromOtpAuthMap(
-        data,
-        origin: TokenOriginData(
-          appName: '${container.serverName} ${container.serial}',
-          data: data.toString(),
-          source: TokenOriginSourceType.container,
-          isPrivacyIdeaToken: true,
-        ),
-      ).copyWith(
-        containerSerial: () => container.serial,
+  Token addOriginToToken({required Token token, String? tokenData}) => token.copyWith(
+        containerSerial: () => serial,
+        origin: token.origin == null
+            ? TokenOriginData.fromContainer(container: this, tokenData: tokenData ?? '')
+            : token.origin!.copyWith(
+                source: TokenOriginSourceType.container,
+                isPrivacyIdeaToken: () => true,
+                data: token.origin!.data.isEmpty ? tokenData : token.origin!.data,
+              ),
       );
-
-  /// Adds all key/value pairs of [other] to this map.
-  ///
-  /// If a key of [other] is already in this map, its value is overwritten.
-  ///
-  /// The operation is equivalent to doing `this[key] = value` for each key
-  /// and associated value in other. It iterates over [other], which must
-  /// therefore not change during the iteration.
-  /// ```dart
-  /// final planets = <int, String>{1: 'Mercury', 2: 'Earth'};
-  /// planets.addAll({5: 'Jupiter', 6: 'Saturn'});
-  /// print(planets); // {1: Mercury, 2: Earth, 5: Jupiter, 6: Saturn}
-  /// ```
-  TokenTemplate copyAddAll(Map<String, String> addData) {
-    final newData = Map<String, String>.from(data)..addAll(addData);
-    return TokenTemplate(data: newData);
-  }
-
-  @override
-  int get hashCode => Object.hashAllUnordered(data.keys.map((key) => '$key:${data[key]}'));
-
-  bool isSameTokenAs(TokenTemplate other) => serial == other.serial || (otpValues.isNotEmpty && const IterableEquality().equals(otpValues, other.otpValues));
-
-  bool hasSameValuesAs(TokenTemplate serverTokenTemplate) {
-    Logger.debug('serverTokenTemplate.keys: ${serverTokenTemplate.keys}', name: 'TokenTemplate#hasSameValuesAs');
-    for (var key in serverTokenTemplate.keys) {
-      if (data[key] != serverTokenTemplate.data[key]) {
-        Logger.debug('TokenTemplate has different values for key "$key": ${data[key]} != ${serverTokenTemplate.data[key]}',
-            name: 'TokenTemplate#hasSameValuesAs');
-        return false;
-      }
-    }
-    Logger.debug(
-      'AppTokenTemplate serial $serial/otp ($otpValues) has same values as serverTokenTemplate serial ${serverTokenTemplate.serial}/id ${serverTokenTemplate.otpValues}',
-      name: 'TokenTemplate#hasSameValuesAs',
-    );
-    return true;
-  }
-
-  bool tokenWouldBeUpdated(Token token) {
-    Logger.debug('Checking if token would be updated', name: 'TokenTemplate#tokenWouldBeUpdated');
-    final tokenTemplate = token.toTemplate();
-    Logger.debug('TokenTemplate: \n$tokenTemplate\n has same values as \n$this\n ?', name: 'TokenTemplate#tokenWouldBeUpdated');
-    return !tokenTemplate.hasSameValuesAs(this);
-  }
 }
+//be99ff65b1c38ae8a7d6caf8799a0cce3749fe0e|2024-08-27 14:30:58.371312Z|http://192.168.0.230:5000/container/register/finalize|SMPH0000D49C
+//be99ff65b1c38ae8a7d6caf8799a0cce3749fe0e|2024-08-27T14:30:58.371312+00:00|http://192.168.0.230:5000/container/register/finalize|SMPH0000D49C
+

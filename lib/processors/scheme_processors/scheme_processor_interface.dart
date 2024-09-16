@@ -20,9 +20,9 @@
 import 'package:privacyidea_authenticator/model/processor_result.dart';
 
 import '../../utils/logger.dart';
-import 'container_credentials_processor.dart';
 import 'home_widget_processor.dart';
 import 'navigation_scheme_processors/navigation_scheme_processor_interface.dart';
+import 'token_container_processor.dart';
 import 'token_import_scheme_processors/token_import_scheme_processor_interface.dart';
 
 /// On new impelementations, add them to the [SchemeProcessor.implementations] list
@@ -35,7 +35,7 @@ abstract class SchemeProcessor {
     const HomeWidgetProcessor(),
     ...NavigationSchemeProcessor.implementations,
     ...TokenImportSchemeProcessor.implementations,
-    const ContainerCredentialsProcessor(),
+    const TokenContainerProcessor(),
   ];
   static Future<List<ProcessorResult<dynamic>>?> processUriByAny(Uri uri, {bool fromInit = false}) async {
     for (SchemeProcessor processor in implementations) {

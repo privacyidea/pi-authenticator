@@ -24,7 +24,7 @@ import '../../utils/logger.dart';
 import '../enums/algorithms.dart';
 import '../token_template.dart';
 import '../token_import/token_origin_data.dart';
-import 'container_credentials.dart';
+import '../token_container.dart';
 import 'token.dart';
 
 abstract class OTPToken extends Token {
@@ -46,7 +46,7 @@ abstract class OTPToken extends Token {
     required super.id,
     required super.type,
     super.containerSerial,
-    super.checkedContainers,
+    super.checkedContainer,
     super.serial,
     super.pin,
     super.tokenImage,
@@ -74,7 +74,7 @@ abstract class OTPToken extends Token {
     String? label,
     String? issuer,
     String? Function()? containerSerial,
-    List<String>? checkedContainers,
+    List<String>? checkedContainer,
     String? id,
     Algorithms? algorithm,
     int? digits,
@@ -100,7 +100,7 @@ abstract class OTPToken extends Token {
   /// | OTP_AUTH_LABEL: label,                                          |
   /// | OTP_AUTH_ISSUER: issuer,                                        |
   /// | CONTAINER_SERIAL: containerSerial, (optional)                   |
-  /// | CHECKED_CONTAINERS: checkedContainers,                          |
+  /// | CHECKED_CONTAINERS: checkedContainer,                          |
   /// | TOKEN_ID: id,                                                   |
   /// | OTP_AUTH_TYPE: type,                                            |
   /// | OTP_AUTH_IMAGE: tokenImage, (optional)                          |
@@ -130,7 +130,7 @@ abstract class OTPToken extends Token {
   }
 
   @override
-  TokenTemplate toTemplate({ContainerCredential? container}) =>
+  TokenTemplate toTemplate({TokenContainer? container}) =>
       super.toTemplate(container: container) ??
       TokenTemplate.withOtps(
         otpAuthMap: toOtpAuthMap(),

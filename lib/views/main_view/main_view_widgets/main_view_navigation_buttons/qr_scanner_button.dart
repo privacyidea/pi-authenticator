@@ -20,12 +20,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/credential_notifier.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../../../model/processor_result.dart';
 import '../../../../utils/globals.dart';
+import '../../../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 import '../../../../utils/utils.dart';
 import '../../../../utils/view_utils.dart';
 import '../../../../widgets/dialog_widgets/default_dialog.dart';

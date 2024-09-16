@@ -11,7 +11,7 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) => PushToken(
       label: json['label'] as String? ?? '',
       issuer: json['issuer'] as String? ?? '',
       containerSerial: json['containerSerial'] as String?,
-      checkedContainers: (json['checkedContainers'] as List<dynamic>?)
+      checkedContainer: (json['checkedContainer'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList() ??
           const [],
@@ -42,7 +42,7 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) => PushToken(
     );
 
 Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
-      'checkedContainers': instance.checkedContainers,
+      'checkedContainer': instance.checkedContainer,
       'label': instance.label,
       'issuer': instance.issuer,
       'containerSerial': instance.containerSerial,

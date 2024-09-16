@@ -24,7 +24,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:privacyidea_authenticator/model/enums/token_origin_source_type.dart';
-import 'package:privacyidea_authenticator/model/tokens/container_credentials.dart';
+import 'package:privacyidea_authenticator/model/token_container.dart';
 import 'package:privacyidea_authenticator/model/tokens/otp_token.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 
@@ -42,7 +42,7 @@ class TokenTemplate with _$TokenTemplate {
     required Map<String, dynamic> otpAuthMap,
     required String serial,
     @Default({}) Map<String, dynamic> additionalData,
-    ContainerCredential? container,
+    TokenContainer? container,
   }) = _TokenTemplateWithSerial;
 
   /// [ otpAuthMap ]: The map containing the OTP token data. May contain the secret.
@@ -50,7 +50,7 @@ class TokenTemplate with _$TokenTemplate {
     required Map<String, dynamic> otpAuthMap,
     required List<String> otps,
     @Default({}) Map<String, dynamic> additionalData,
-    ContainerCredential? container,
+    TokenContainer? container,
   }) = _TokenTemplateWithOtps;
 
   List<String> get keys => otpAuthMap.keys.toList();

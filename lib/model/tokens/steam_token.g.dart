@@ -11,7 +11,7 @@ SteamToken _$SteamTokenFromJson(Map<String, dynamic> json) => SteamToken(
       secret: json['secret'] as String,
       serial: json['serial'] as String?,
       containerSerial: json['containerSerial'] as String?,
-      checkedContainers: (json['checkedContainers'] as List<dynamic>?)
+      checkedContainer: (json['checkedContainer'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList() ??
           const [],
@@ -31,7 +31,7 @@ SteamToken _$SteamTokenFromJson(Map<String, dynamic> json) => SteamToken(
 
 Map<String, dynamic> _$SteamTokenToJson(SteamToken instance) =>
     <String, dynamic>{
-      'checkedContainers': instance.checkedContainers,
+      'checkedContainer': instance.checkedContainer,
       'label': instance.label,
       'issuer': instance.issuer,
       'containerSerial': instance.containerSerial,
