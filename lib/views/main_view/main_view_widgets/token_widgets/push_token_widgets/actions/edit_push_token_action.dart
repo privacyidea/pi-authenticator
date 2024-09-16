@@ -108,17 +108,9 @@ class EditPushTokenAction extends PiSlideableAction {
               Navigator.of(context).pop();
             },
             additionalChildren: [
-              TextFormField(
-                initialValue: token.serial,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).disabledColor),
-                decoration: const InputDecoration(
-                  labelText: 'Serial',
-                ),
-                readOnly: true,
-              ),
               EnableTextEditAfterManyTaps(
                 controller: pushUrl,
-                decoration: InputDecoration(labelText: appLocalizations.pushEndpointUrl),
+                labelText: appLocalizations.pushEndpointUrl,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 validator: (value) => _validatePushEndpointUrl(value, context),
               ),

@@ -35,6 +35,7 @@ import '../widgets/no_conflict_import_tokens_list.dart';
 class ImportPlainTokensPage extends ConsumerStatefulWidget {
   final String titleName;
   final TokenImportType selectedType;
+  // final int numOfDuplicates;
   final List<Token> importedTokens;
   final List<String> failedImports;
   factory ImportPlainTokensPage({
@@ -51,9 +52,17 @@ class ImportPlainTokensPage extends ConsumerStatefulWidget {
       failedImports: failedImports,
       titleName: titleName,
       selectedType: selectedType,
+      // numOfDuplicates: duplicates.length,
     );
   }
-  const ImportPlainTokensPage._({super.key, required this.importedTokens, required this.failedImports, required this.titleName, required this.selectedType});
+  const ImportPlainTokensPage._({
+    super.key,
+    // this.numOfDuplicates = 0,
+    required this.importedTokens,
+    required this.failedImports,
+    required this.titleName,
+    required this.selectedType,
+  });
 
   @override
   ConsumerState<ImportPlainTokensPage> createState() => _ImportFileNoPwState();
@@ -62,8 +71,52 @@ class ImportPlainTokensPage extends ConsumerStatefulWidget {
 class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
   ScrollController scrollController = ScrollController();
   List<Token?>? tokensToKeep;
-  List<TokenImportEntry> importTokenEntrys = [];
   bool isMaxScrollOffset = true;
+
+  List<TokenImportEntry> importTokenEntrys = [];
+  final List<TokenImportEntry> conflictedImports = [];
+  final List<TokenImportEntry> newImports = [];
+  final List<TokenImportEntry> appDuplicates = [];
+  final List<TokenImportEntry> importDuplicates = [];
+
+  List<TokenImportEntry> _initBuildLists(List<TokenImportEntry> importTokenEntrys) {
+    for (var i = 0; i < importTokenEntrys.length; i++) {
+      final importTokenEntry = importTokenEntrys[i];
+      if ([...newImports, ...appDuplicates, ...conflictedImports].any((import) => import.newToken.isSameTokenAs(importTokenEntry.newToken))) {
+        importDuplicates.add(importTokenEntry);
+        importTokenEntrys.remove(importTokenEntry);
+        i--;
+        continue;
+      }
+      if (importTokenEntry.oldToken == null) {
+        newImports.add(importTokenEntry);
+        continue;
+      }
+      if (importTokenEntry.newToken.sameValuesAs(importTokenEntry.oldToken!)) {
+        appDuplicates.add(importTokenEntry);
+        continue;
+      }
+      conflictedImports.add(importTokenEntry);
+    }
+    return importTokenEntrys;
+  }
+
+  void _renewLists(List<TokenImportEntry> importTokenEntrys) {
+    newImports.clear();
+    appDuplicates.clear();
+    conflictedImports.clear();
+    for (final importTokenEntry in importTokenEntrys) {
+      if (importTokenEntry.oldToken == null) {
+        newImports.add(importTokenEntry);
+        continue;
+      }
+      if (importTokenEntry.newToken.sameValuesAs(importTokenEntry.oldToken!)) {
+        appDuplicates.add(importTokenEntry);
+        continue;
+      }
+      conflictedImports.add(importTokenEntry);
+    }
+  }
 
   @override
   void initState() {
@@ -75,8 +128,9 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
         map.forEach((key, value) {
           importTokenEntrys.add(TokenImportEntry(newToken: key, oldToken: value));
         });
+        importTokenEntrys = _initBuildLists(importTokenEntrys);
+        _setTokensToKeep(importTokenEntrys);
       });
-      _setTokensToKeep(importTokenEntrys);
     });
     scrollController.addListener(_updateIsMaxScrollExtent);
     _updateIsMaxScrollExtent();
@@ -110,20 +164,6 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
   @override
   Widget build(BuildContext context) {
     _updateIsMaxScrollExtent();
-    final List<TokenImportEntry> conflictedImports = [];
-    final List<TokenImportEntry> newImports = [];
-    final List<TokenImportEntry> duplicateImport = [];
-    for (final importTokenEntry in importTokenEntrys) {
-      if (importTokenEntry.oldToken == null) {
-        newImports.add(importTokenEntry);
-        continue;
-      }
-      if (importTokenEntry.newToken.sameValuesAs(importTokenEntry.oldToken!)) {
-        duplicateImport.add(importTokenEntry);
-        continue;
-      }
-      conflictedImports.add(importTokenEntry);
-    }
 
     return Scaffold(
       appBar: AppBar(
@@ -170,13 +210,22 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
                           importEntries: newImports,
                           onTap: _updateImportTokenEntry,
                         ),
-                      if (duplicateImport.isNotEmpty)
+                      if (appDuplicates.isNotEmpty)
                         NoConflictImportTokensList(
-                          title: AppLocalizations.of(context)!.importExistingToken(duplicateImport.length),
+                          title: AppLocalizations.of(context)!.importExistingToken(appDuplicates.length),
                           titlePadding: const EdgeInsets.symmetric(horizontal: 40),
                           leadingDivider: newImports.isNotEmpty || conflictedImports.isNotEmpty,
-                          importEntries: duplicateImport,
+                          importEntries: appDuplicates,
                           // borderColor: null,
+                        ),
+                      if (importDuplicates.isNotEmpty)
+                        NoConflictImportTokensList(
+                          title: 'The contained duplicates (${importDuplicates.length}) will be ignored.',
+                          //  AppLocalizations.of(context)!.importDuplicateToken(importDuplicates.length),''
+                          titlePadding: const EdgeInsets.symmetric(horizontal: 40),
+                          leadingDivider: newImports.isNotEmpty || conflictedImports.isNotEmpty || appDuplicates.isNotEmpty,
+                          importEntries: importDuplicates,
+                          borderColor: null,
                         ),
                     ],
                   ),
@@ -223,6 +272,7 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
   void _updateImportTokenEntry(TokenImportEntry oldEntry, TokenImportEntry newEntry) {
     setState(() {
       importTokenEntrys[importTokenEntrys.indexOf(oldEntry)] = newEntry;
+      _renewLists(importTokenEntrys);
       _setTokensToKeep(importTokenEntrys);
     });
   }

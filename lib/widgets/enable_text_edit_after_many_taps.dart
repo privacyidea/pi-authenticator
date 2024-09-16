@@ -2,16 +2,18 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../views/main_view/main_view_widgets/token_widgets/default_token_actions/default_edit_action_dialog.dart';
+
 class EnableTextEditAfterManyTaps extends StatefulWidget {
   final TextEditingController controller;
-  final InputDecoration decoration;
+  final String labelText;
   final AutovalidateMode? autovalidateMode;
   final String? Function(String?)? validator;
   final int maxTaps;
 
   const EnableTextEditAfterManyTaps({
     required this.controller,
-    required this.decoration,
+    required this.labelText,
     this.maxTaps = 6,
     this.autovalidateMode,
     this.validator,
@@ -33,7 +35,8 @@ class _EnableTextEditAfterManyTapsState extends State<EnableTextEditAfterManyTap
       counter = 0;
       timer = null;
     });
-    counter = counter + taps;
+    counter += taps;
+    print('Tapped $counter times');
     if (counter == widget.maxTaps) {
       setState(() {
         enabled = true;
@@ -44,17 +47,21 @@ class _EnableTextEditAfterManyTapsState extends State<EnableTextEditAfterManyTap
   }
 
   @override
-  Widget build(BuildContext context) => GestureDetector(
-        onDoubleTap: !enabled ? () => tapped(2) : null,
-        child: TextFormField(
+  Widget build(BuildContext context) => enabled
+      ? TextFormField(
           key: Key('${widget.controller.hashCode}_enableTextEditAfterManyTaps'),
-          readOnly: !enabled,
-          onTap: !enabled ? () => tapped(1) : null,
-          style: enabled ? null : Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).disabledColor),
+          style: null,
           controller: widget.controller,
-          decoration: widget.decoration,
+          decoration: InputDecoration(labelText: widget.labelText),
           autovalidateMode: widget.autovalidateMode,
           validator: widget.validator,
-        ),
-      );
+        )
+      : GestureDetector(
+          onDoubleTap: () => tapped(2),
+          child: ReadOnlyTextFormField(
+            text: widget.controller.text,
+            labelText: widget.labelText,
+            onTap: () => tapped(1),
+          ),
+        );
 }
