@@ -94,7 +94,6 @@ class _QRScannerViewState extends State<QRScannerView> {
         return SafeArea(
           child: Stack(
             children: [
-              const QRScannerWidget(),
               Scaffold(
                 resizeToAvoidBottomInset: false,
                 backgroundColor: Colors.transparent,
@@ -106,6 +105,7 @@ class _QRScannerViewState extends State<QRScannerView> {
                 extendBodyBehindAppBar: true,
                 body: const SizedBox(),
               ),
+              const QRScannerWidget(),
             ],
           ),
         );

@@ -65,14 +65,12 @@ class ConflictedImportTokensList extends StatelessWidget {
           ),
           const SizedBox(height: 8),
         ],
-        for (final entry in importEntries)
+        for (var i = 0; i < importEntries.length; i++)
           ConflictedImportTokensTile(
-            selectTokenCallback: (newEntry) => onTap(entry, newEntry),
-            importTokenEntry: entry,
+            selectTokenCallback: (newEntry) => onTap(importEntries[i], newEntry),
+            importTokenEntry: importEntries[i],
             initialScreenSize: MediaQuery.of(context).size,
-            key: Key(
-              entry.hashCode.toString(),
-            ),
+            key: Key('ConflictedImportTokensTile_$i'),
           ),
       ],
     );

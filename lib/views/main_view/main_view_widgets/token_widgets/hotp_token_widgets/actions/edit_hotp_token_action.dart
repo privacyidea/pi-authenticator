@@ -80,10 +80,13 @@ class EditHOTPTokenAction extends PiSlideableAction {
         builder: (BuildContext context) => DefaultEditActionDialog(
           token: token,
           additionalChildren: [
-            TextFormField(
-              initialValue: token.algorithm.name,
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.algorithm),
-              enabled: false,
+            ReadOnlyTextFormField(
+              text: token.algorithm.name,
+              labelText: AppLocalizations.of(context)!.algorithm,
+            ),
+            ReadOnlyTextFormField(
+              text: token.counter.toString(),
+              labelText: AppLocalizations.of(context)!.counter,
             ),
           ],
         ),

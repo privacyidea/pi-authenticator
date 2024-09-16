@@ -56,6 +56,8 @@ class _DefaultEditActionDialogState extends ConsumerState<DefaultEditActionDialo
   late final bool _additionalSaveValidation = widget.additionalSaveValidation;
   bool get _canSave => _nameIsValid && _imageUrlIsValid && _additionalSaveValidation;
 
+  late final token = widget.token;
+
   String? _validateName(String? value) {
     if (value == null || value.isNotEmpty) return null;
     return AppLocalizations.of(context)!.mustNotBeEmpty(AppLocalizations.of(context)!.name);
@@ -73,6 +75,7 @@ class _DefaultEditActionDialogState extends ConsumerState<DefaultEditActionDialo
   @override
   Widget build(BuildContext context) {
     final appLocalizations = AppLocalizations.of(context)!;
+    final origin = token.origin;
     return DefaultDialog(
       scrollable: true,
       title: Text(
@@ -104,33 +107,62 @@ class _DefaultEditActionDialogState extends ConsumerState<DefaultEditActionDialo
                 decoration: InputDecoration(labelText: appLocalizations.imageUrl),
                 validator: _validateImageUrl,
               ),
-              ExpansionTile(
-                title: Text(appLocalizations.showDetails),
+              EditActionExpansionTile(
+                title: 'Token Details',
                 children: [
-                  ...widget.additionalChildren,
-                  TextFormField(
-                      initialValue: widget.token.origin?.appName ?? 'appLocalizations.unknown',
-                      decoration: const InputDecoration(labelText: 'Origin'),
-                      readOnly: true,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).disabledColor)),
-                  TextFormField(
-                    initialValue: widget.token.isPrivacyIdeaToken == false ? 'Yes' : 'No',
-                    decoration: const InputDecoration(labelText: 'Is exportable?'),
-                    readOnly: true,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).disabledColor),
+                  if (token.serial != null)
+                    ReadOnlyTextFormField(
+                      text: token.serial!,
+                      labelText: 'Tokenserial',
+                    ),
+                  ReadOnlyTextFormField(
+                    text: token.isPrivacyIdeaToken == false ? 'Is Exportable' : 'Not Exportable',
+                    labelText: 'Exportable?',
                   ),
+                  if (widget.token.containerSerial != null)
+                    ReadOnlyTextFormField(
+                      text: token.containerSerial!,
+                      labelText: 'Linked Container',
+                    ),
+                  ...widget.additionalChildren,
                 ],
               ),
-              if (widget.token.containerSerial != null)
-                ReadOnlyTextFormField(
-                  text: widget.token.containerSerial!,
-                  labelText: 'Linked Container',
+              if (origin != null)
+                EditActionExpansionTile(
+                  title: 'Origin Details',
+                  children: [
+                    ReadOnlyTextFormField(
+                      text: origin.appName,
+                      labelText: 'Origin',
+                    ),
+                    if (origin.creator != null)
+                      ReadOnlyTextFormField(
+                        text: origin.creator!,
+                        labelText: 'Creator',
+                      ),
+                    ReadOnlyTextFormField(
+                      text: origin.createdAt.toString().split('.').first,
+                      labelText: 'Created At',
+                    ),
+                    ReadOnlyTextFormField(
+                      text: origin.isPrivacyIdeaToken == null
+                          ? 'Unknown'
+                          : origin.isPrivacyIdeaToken!
+                              ? "It's a privacyIDEA Token!"
+                              : "It's not a privacyIDEA Token!",
+                      labelText: 'Is privacyIDEA Token?',
+                    ),
+                    ReadOnlyTextFormField(
+                      text: origin.source.name,
+                      labelText: 'Imported via',
+                    ),
+                  ],
                 ),
             ],
           ),
         ),
       ),
-      actions: <Widget>[
+      actions: [
         TextButton(
           child: Text(
             appLocalizations.cancel,
@@ -153,15 +185,14 @@ class _DefaultEditActionDialogState extends ConsumerState<DefaultEditActionDialo
                       final newLabel = nameInputController.text;
                       final newImageUrl = imageUrlController.text;
                       if (newLabel.isEmpty) return;
-                      final edited = await globalRef
-                          ?.read(tokenProvider.notifier)
-                          .updateToken(widget.token, (p0) => p0.copyWith(label: newLabel, tokenImage: newImageUrl));
+                      final edited =
+                          await globalRef?.read(tokenProvider.notifier).updateToken(token, (p0) => p0.copyWith(label: newLabel, tokenImage: newImageUrl));
                       if (edited == null) {
                         Logger.error('Token editing failed', name: 'DefaultEditAction#_showDialog');
                         return;
                       }
                       Logger.info(
-                        'Token edited: ${widget.token.label} -> ${edited.label}, ${widget.token.tokenImage} -> ${edited.tokenImage}',
+                        'Token edited: ${token.label} -> ${edited.label}, ${token.tokenImage} -> ${edited.tokenImage}',
                         name: 'DefaultEditAction#_showDialog',
                       );
                       if (context.mounted) Navigator.of(context).pop();
@@ -180,18 +211,126 @@ class _DefaultEditActionDialogState extends ConsumerState<DefaultEditActionDialo
 class ReadOnlyTextFormField extends StatelessWidget {
   final String text;
   final String labelText;
+  final void Function()? onTap;
 
   const ReadOnlyTextFormField({
     required this.text,
     required this.labelText,
+    this.onTap,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) => TextFormField(
         initialValue: text,
-        decoration: InputDecoration(labelText: labelText),
+        decoration: InputDecoration(
+          labelText: labelText,
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Theme.of(context).disabledColor),
+          ),
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(color: Theme.of(context).disabledColor),
+          ),
+          border: UnderlineInputBorder(
+            borderSide: BorderSide(color: Theme.of(context).disabledColor),
+          ),
+        ),
         readOnly: true,
+        onTap: onTap,
         style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).disabledColor),
       );
+}
+
+class EditActionExpansionTile extends StatefulWidget {
+  final List<Widget> children;
+  final String title;
+
+  const EditActionExpansionTile({
+    required this.children,
+    required this.title,
+    super.key,
+  });
+
+  @override
+  State<EditActionExpansionTile> createState() => _EditActionExpansionTileState();
+}
+
+class _EditActionExpansionTileState extends State<EditActionExpansionTile> with SingleTickerProviderStateMixin {
+  AnimationController? controller;
+  Animation<double>? animation;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (animation == null) {
+      controller = AnimationController(
+        duration: ExpansionTileTheme.of(context).expansionAnimationStyle?.duration ?? const Duration(milliseconds: 200),
+        vsync: this,
+      );
+      animation = CurvedAnimation(parent: controller!, curve: Curves.fastOutSlowIn);
+    }
+    return AnimatedBuilder(
+      animation: animation!,
+      builder: (buildContext, _) => Container(
+        margin: const EdgeInsets.symmetric(vertical: 8.0),
+        padding: EdgeInsets.only(bottom: animation!.value * 16.0),
+        decoration: BoxDecoration(
+          color: Theme.of(context).cardColor,
+          borderRadius: BorderRadius.circular(12.0),
+          boxShadow: [
+            BoxShadow(
+              color: Theme.of(context).shadowColor.withOpacity(0.15),
+              blurRadius: 5.0,
+              offset: const Offset(0, 3.0),
+            ),
+          ],
+        ),
+        child: Theme(
+          data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+          child: ExpansionTile(
+            tilePadding: const EdgeInsets.symmetric(horizontal: 6.0),
+            title: Row(
+              children: [
+                RotationTransition(
+                  turns: Tween(begin: 0.0, end: 0.25).animate(animation!),
+                  child: Icon(
+                    Icons.arrow_forward_ios,
+                    color: Theme.of(context).iconTheme.color,
+                  ),
+                ),
+                const SizedBox(width: 8.0),
+                Text(widget.title, style: Theme.of(context).textTheme.titleSmall),
+              ],
+            ),
+            showTrailingIcon: false,
+            onExpansionChanged: (isExpanded) {
+              if (isExpanded) {
+                controller!.forward();
+              } else {
+                controller!.reverse();
+              }
+            },
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Column(
+                  children: widget.children,
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }

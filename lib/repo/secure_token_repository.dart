@@ -148,7 +148,7 @@ class SecureTokenRepository implements TokenRepository {
         stackTrace: StackTrace.current,
       );
     } else {
-      Logger.info('Saved ${tokens.length}/${tokens.length} tokens to secure storage', name: 'secure_token_repository.dart#saveOrReplaceTokens');
+      Logger.info('Saved ${tokens.length}/${tokens.length} tokens to secure storage', name: 'secure_token_repository.dart#saveOrReplaceTokens', stackTrace: StackTrace.current,);
     }
     return failedTokens;
   }

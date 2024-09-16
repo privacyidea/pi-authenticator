@@ -154,6 +154,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
 
   /// Adds a list of tokens and returns the tokens that could not be added or replaced.
   Future<List<Token>> _addOrReplaceTokens(List<Token> tokens) async {
+    Logger.debug('Adding ${tokens.length} tokens.', name: 'token_notifier.dart#_addOrReplaceTokens', verbose: true);
     await _repoMutex.acquire();
     tokens = tokens.map((token) {
       final currentId = state.currentOf(token)?.id;
@@ -896,8 +897,8 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     final List<Token> resultTokens = tokenResults.getData();
     final stateTokens = state.tokens;
     List<Token>? tokensToKeep;
-    final selectedType = (args['TokenImportType'] as TokenImportType?) ?? TokenImportType.qrScan;
-
+    final tokenOriginSourceType = (args['TokenOriginSourceType'] as TokenOriginSourceType?);
+    var tokenImportType = (args['TokenImportType'] as TokenImportType?) ?? TokenImportType.qrScan;
     try {
       if (resultTokens.length > 1 || stateTokens.any((e) => resultTokens.first.isSameTokenAs(e) == true)) {
         Navigator.of(globalNavigatorKey.currentContext!).popUntil((route) => route.isFirst);
@@ -906,7 +907,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
             builder: (context) => ImportPlainTokensPage(
               titleName: AppLocalizations.of(context)!.importTokens,
               processorResults: tokenResults,
-              selectedType: selectedType,
+              selectedType: tokenImportType,
             ),
           ),
         );
@@ -919,9 +920,12 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     }
     if (tokensToKeep == null) return null;
     tokensToKeep = tokensToKeep
-        .map((e) => e.copyWith(
-            origin: e.origin?.copyWith(source: TokenOriginSourceType.link) ??
-                TokenOriginSourceType.link.toTokenOrigin(data: 'No Origindata available', isPrivacyIdeaToken: null)))
+        .map(
+          (e) => e.copyWith(
+            origin: e.origin?.copyWith(source: tokenOriginSourceType) ??
+                TokenOriginSourceType.unknown.toTokenOrigin(data: 'No Origindata available', isPrivacyIdeaToken: null),
+          ),
+        )
         .toList();
     await addNewTokens(tokensToKeep);
     return null;

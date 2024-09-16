@@ -39,4 +39,19 @@ class TokenImportEntry {
     assert(selectedToken == null || selectedToken == newToken || selectedToken == oldToken);
     return TokenImportEntry._(newToken, oldToken, selectedToken);
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is TokenImportEntry &&
+          runtimeType == other.runtimeType &&
+          newToken == other.newToken &&
+          oldToken == other.oldToken &&
+          selectedToken == other.selectedToken;
+
+  @override
+  int get hashCode => Object.hashAll([newToken, oldToken, selectedToken]);
+
+  @override
+  String toString() => 'TokenImportEntry{newToken: $newToken, \noldToken: $oldToken, \nselectedToken: $selectedToken}';
 }

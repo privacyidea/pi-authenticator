@@ -237,7 +237,7 @@ Future<void> scanQrCode(List<ResultHandler> resultHandlerList, Object? qrCode) a
     final results = resultHandlerTypeMap[resultHandlerType]!;
     final resultHandler = resultHandlerList.firstWhereOrNull((resultHandler) => resultHandlerType.isTypeOf(resultHandler));
     if (resultHandler != null) {
-      await resultHandler.handleProcessorResults(results, {'TokenOriginSourceType': TokenOriginSourceType.qrScan});
+      await resultHandler.handleProcessorResults(results, {'TokenOriginSourceType': TokenOriginSourceType.qrScan}); // TODO: use const IDENTIFIER variable
     }
   }
 }

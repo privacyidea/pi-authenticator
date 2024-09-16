@@ -100,19 +100,22 @@ class PushToken extends Token {
         super(type: type ?? TokenTypes.PIPUSH.name, serial: serial);
 
   @override
-  bool sameValuesAs(Token other) {
-    return super.sameValuesAs(other) &&
-        other is PushToken &&
-        other.fbToken == fbToken &&
-        other.expirationDate == expirationDate &&
-        other.sslVerify == sslVerify &&
-        other.enrollmentCredentials == enrollmentCredentials &&
-        other.url == url &&
-        other.isRolledOut == isRolledOut;
-  }
+  bool sameValuesAs(Token other) =>
+      super.sameValuesAs(other) &&
+      other is PushToken &&
+      other.fbToken == fbToken &&
+      other.expirationDate == expirationDate &&
+      other.sslVerify == sslVerify &&
+      other.enrollmentCredentials == enrollmentCredentials &&
+      other.url == url &&
+      other.isRolledOut == isRolledOut &&
+      other.rolloutState == rolloutState &&
+      other.publicServerKey == publicServerKey &&
+      other.publicTokenKey == publicTokenKey &&
+      other.privateTokenKey == privateTokenKey;
 
   @override
-  bool isSameTokenAs(Token other) => super.isSameTokenAs(other) || (other is PushToken && other.serial == serial);
+  bool isSameTokenAs(Token other) => super.isSameTokenAs(other) && (other is PushToken && other.serial == serial);
 
   @override
   PushToken copyWith({
