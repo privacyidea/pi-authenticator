@@ -206,8 +206,8 @@
   "@allTokensSynchronized": {
     "description": "Content of the push synchronization dialog. Signaling the user that everything worked."
   },
-  "synchronizationFailed": "Synchronization failed for the following tokens, please try again:",
-  "@synchronizationFailed": {
+  "syncFbTokenFailed": "Synchronization failed for the following tokens, please try again:",
+  "@syncFbTokenFailed": {
     "description": "Headline for the list of tokens where the synchronization failed."
   },
   "tokensDoNotSupportSynchronization": "The following tokens do not support synchronization and must be rolled out again:",
@@ -746,5 +746,25 @@
   "malformedData": "Malformed data",
   "linkMustOtpAuth" : "The link must start with otpauth://",
   "clipboardEmpty": "Clipboard is empty",
-  "invalidUrl": "Invalid URL"
+  "invalidUrl": "Invalid URL",
+  "failedToLoad": "Failed to load: \"{name}\"",
+  "@failedToLoad": {
+    "placeholders": {
+      "name": {
+        "example": "token data"
+      }
+    }
+  },
+  "internalServerError": "Internal server error ({code})",
+  "@internalServerError": {
+    "placeholders": {
+      "code": {
+        "example": "500"
+      }
+    }
+  },
+  "timeOut": "Time out",
+  "syncContainerFailed": "Failed to synchronize container",
+  "handshakeFailed" : "Handshake failed",
+  "checkServerCertificate": "Please check the server certificate"
 }
