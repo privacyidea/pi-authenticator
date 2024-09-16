@@ -201,8 +201,8 @@
   "@allTokensSynchronized": {
     "description": "Content of the push synchronization dialog. Signaling the user that everything worked."
   },
-  "synchronizationFailed": "La synchronisation a échoué pour ces jetons, veuillez reéssayer:",
-  "@synchronizationFailed": {
+  "syncFbTokenFailed": "La synchronisation a échoué pour ces jetons, veuillez reéssayer:",
+  "@syncFbTokenFailed": {
     "description": "Headline for the list of tokens where the synchronization failed."
   },
   "tokensDoNotSupportSynchronization": "Ces jetons ne supportent pas la synchronisation et doivent être de nouveau générés:",

@@ -199,8 +199,8 @@
   "@allTokensSynchronized": {
     "description": "Content of the push synchronization dialog. Signaling the user that everything worked."
   },
-  "synchronizationFailed": "La sincronización ha fallado para los siguientes tokens, por favor inténtelo de nuevo:",
-  "@synchronizationFailed": {
+  "syncFbTokenFailed": "La sincronización ha fallado para los siguientes tokens, por favor inténtelo de nuevo:",
+  "@syncFbTokenFailed": {
     "description": "Headline for the list of tokens where the synchronization failed."
   },
   "tokensDoNotSupportSynchronization": "Las siguientes tokens no admiten la sincronización y deben volver a desplegarse:",

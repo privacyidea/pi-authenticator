@@ -176,17 +176,23 @@ class PrivacyideaIOClient {
       response = await ioClient.get(uri).timeout(const Duration(seconds: 15));
     } on HandshakeException catch (e, _) {
       Logger.warning('Handshake failed. sslVerify: $sslVerify', name: 'utils.dart#doGet');
-      showMessage(message: 'Handshake failed, please check the server certificate and try again.');
+      showStatusMessage(
+        message: AppLocalizations.of(await globalContext)!.handshakeFailed,
+        subMessage: AppLocalizations.of(await globalContext)!.checkServerCertificate,
+      );
       response = Response('${e.runtimeType}', 525);
     } on TimeoutException catch (e, _) {
       Logger.info('Get request timed out', name: 'utils.dart#doGet');
-      response = Response('${e.runtimeType}', 408);
+      response = Response('${AppLocalizations.of(await globalContext)!.timeOut}', 408);
     } on SocketException catch (e, _) {
       Logger.info('Get request failed', name: 'utils.dart#doGet');
-      response = Response('${e.runtimeType}', 404);
+      response = Response('${AppLocalizations.of(await globalContext)!.connectionFailed}', 404);
+    } on ClientException catch (e, _) {
+      Logger.info('Get request failed', name: 'utils.dart#doGet');
+      response = Response('${AppLocalizations.of(await globalContext)!.connectionFailed}', 404);
     } catch (e, _) {
       Logger.warning('Something unexpected happened', name: 'utils.dart#doGet');
-      response = Response('${e.runtimeType}', 404);
+      response = Response('${AppLocalizations.of(await globalContext)!.unexpectedError}', 520);
     }
 
     if (response.statusCode != 200) {

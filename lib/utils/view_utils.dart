@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 
 import 'globals.dart';
 import 'logger.dart';
+import 'riverpod/riverpod_providers/state_providers/status_message_provider.dart';
 
 /// Shows a snackbar message to the user for a given `Duration`.
 void showMessage({
@@ -34,6 +35,15 @@ void showMessage({
   globalSnackbarKey.currentState!.showSnackBar(
     SnackBar(content: Text(message), duration: duration),
   );
+}
+
+void showStatusMessage({required String message, String? subMessage}) {
+  final ref = globalRef;
+  if (ref == null) {
+    Logger.warning('Could not show status message: globalRef is null');
+    return;
+  }
+  ref.read(statusMessageProvider.notifier).state = (message, subMessage);
 }
 
 Future<T?> showAsyncDialog<T>({

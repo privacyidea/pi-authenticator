@@ -30,6 +30,7 @@ import 'package:privacyidea_authenticator/processors/scheme_processors/token_imp
 import 'package:privacyidea_authenticator/utils/ecc_utils.dart';
 import 'package:privacyidea_authenticator/utils/privacyidea_io_client.dart';
 
+import '../l10n/app_localizations.dart';
 import '../model/riverpod_states/token_state.dart';
 import '../model/token_template.dart';
 import '../model/tokens/container_credentials.dart';
@@ -37,6 +38,7 @@ import '../model/tokens/token.dart';
 import '../utils/globals.dart';
 import '../utils/identifiers.dart';
 import '../utils/logger.dart';
+import '../utils/view_utils.dart';
 import '../widgets/dialog_widgets/enter_passphrase_dialog.dart';
 
 part 'token_container_api_endpoint.freezed.dart';
@@ -131,16 +133,21 @@ class PrivacyideaContainerApi {
 
   Future<ContainerChallenge?> _getChallenge(ContainerCredentialFinalized container) async {
     final initResponse = await _ioClient.doGet(url: container.syncUrl, parameters: {CONTAINER_SERIAL: container.serial});
+    if (initResponse.statusCode != 200) {
+      _showSyncStatusMessage(initResponse);
+      return null;
+    }
+
     try {
       Logger.debug('Received container sync challenge: ${initResponse.body}', name: 'TokenContainerApiEndpoint#sync');
       final piResponse = PiServerResponse<ContainerChallenge>.fromResponse(initResponse);
       if (piResponse.isError) {
-        Logger.error('Error while syncing container: ${piResponse.asError.resultError}', name: 'TokenContainerApiEndpoint#sync');
+        Logger.error('Error while getting sync challenge: ${piResponse.asError.resultError}', name: 'TokenContainerApiEndpoint#sync');
         return null;
       }
       return piResponse.asSuccess.resultValue;
     } catch (e, s) {
-      Logger.error('Error while syncing container: $e', name: 'TokenContainerApiEndpoint#sync', stackTrace: s);
+      Logger.error('Error while getting sync challenge: $e', name: 'TokenContainerApiEndpoint#sync', stackTrace: s);
       return null;
     }
   }
@@ -174,9 +181,13 @@ class PrivacyideaContainerApi {
     };
 
     final response = await _ioClient.doPost(url: Uri.parse(challenge.finalizeSyncUrl), body: body);
+    if (response.statusCode != 200) {
+      _showSyncStatusMessage(response);
+      return null;
+    }
     final containerSyncResponse = PiServerResponse<ContainerSyncResult>.fromResponse(response);
     if (containerSyncResponse.isError) {
-      Logger.error('Error while syncing container: ${containerSyncResponse.asError.resultError}', name: 'TokenContainerApiEndpoint#sync');
+      Logger.error('Error while reciving sync response: ${containerSyncResponse.asError.resultError}', name: 'TokenContainerApiEndpoint#sync');
       return null;
     }
 
@@ -263,6 +274,28 @@ class PrivacyideaContainerApi {
       }
     }
     return (mergedTemplatesWithSerial, deleteSerials);
+  }
+
+  void _showSyncStatusMessage(Response response) {
+    assert(response.statusCode != 200, 'Status code should not be 200');
+
+    final AppLocalizations appLocalizations = AppLocalizations.of(globalNavigatorKey.currentContext!)!;
+    if (response.statusCode == 525) return;
+    if (response.statusCode == 500) {
+      return showStatusMessage(message: appLocalizations.syncContainerFailed, subMessage: appLocalizations.internalServerError(500));
+    }
+    if (response.statusCode == 408) {
+      return showStatusMessage(message: appLocalizations.timeOut, subMessage: appLocalizations.checkYourNetwork);
+    }
+    if (response.statusCode == 404) {
+      return showStatusMessage(message: appLocalizations.syncContainerFailed, subMessage: appLocalizations.checkYourNetwork);
+    }
+    Logger.error(
+      'Received unexpected response',
+      error: 'StatusCode: ${response.statusCode}',
+      name: 'TokenContainerApiEndpoint#_showStatusMessage',
+      stackTrace: StackTrace.current,
+    );
   }
 }
 

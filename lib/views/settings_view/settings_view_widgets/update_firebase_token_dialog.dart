@@ -86,7 +86,7 @@ class _UpdateFirebaseTokenDialogState extends ConsumerState<UpdateFirebaseTokenD
 
       if (tokenWithFailedUpdate.isNotEmpty) {
         children.add(
-          Text('${AppLocalizations.of(globalNavigatorKey.currentContext!)!.synchronizationFailed}\n'),
+          Text('${AppLocalizations.of(globalNavigatorKey.currentContext!)!.syncFbTokenFailed}\n'),
         );
         for (PushToken p in tokenWithFailedUpdate) {
           children.add(Text('• ${p.label}'));

@@ -201,8 +201,8 @@
   "@allTokensSynchronized": {
     "description": "Content of the push synchronization dialog. Signaling the user that everything worked."
   },
-  "synchronizationFailed": "Synchronizace následujících tokenů selhala, zkuste to znovu:",
-  "@synchronizationFailed": {
+  "syncFbTokenFailed": "Synchronizace následujících tokenů selhala, zkuste to znovu:",
+  "@syncFbTokenFailed": {
     "description": "Headline for the list of tokens where the synchronization failed."
   },
   "tokensDoNotSupportSynchronization": "Následující tokeny nepodporují synchronizaci a musí být znovu zaregistrovány:",
