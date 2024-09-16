@@ -1,13 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'credential_notifier.dart';
+part of 'token_container_notifier.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$containerCredentialsNotifierHash() =>
-    r'83daeabb57839b956f33171c95c8f45393049d29';
+String _$tokenContainerNotifierHash() =>
+    r'cf5aaebd080b94a5bff442a564a8f29280f56871';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -30,37 +30,36 @@ class _SystemHash {
   }
 }
 
-abstract class _$ContainerCredentialsNotifier
-    extends BuildlessAsyncNotifier<CredentialsState> {
-  late final ContainerCredentialsRepository repo;
+abstract class _$TokenContainerNotifier
+    extends BuildlessAsyncNotifier<TokenContainerState> {
+  late final TokenContainerRepository repo;
   late final PrivacyideaContainerApi containerApi;
   late final EccUtils eccUtils;
 
-  FutureOr<CredentialsState> build({
-    required ContainerCredentialsRepository repo,
+  FutureOr<TokenContainerState> build({
+    required TokenContainerRepository repo,
     required PrivacyideaContainerApi containerApi,
     required EccUtils eccUtils,
   });
 }
 
-/// See also [ContainerCredentialsNotifier].
-@ProviderFor(ContainerCredentialsNotifier)
-const containerCredentialsNotifierProviderOf =
-    ContainerCredentialsNotifierFamily();
+/// See also [TokenContainerNotifier].
+@ProviderFor(TokenContainerNotifier)
+const tokenContainerNotifierProviderOf = TokenContainerNotifierFamily();
 
-/// See also [ContainerCredentialsNotifier].
-class ContainerCredentialsNotifierFamily
-    extends Family<AsyncValue<CredentialsState>> {
-  /// See also [ContainerCredentialsNotifier].
-  const ContainerCredentialsNotifierFamily();
+/// See also [TokenContainerNotifier].
+class TokenContainerNotifierFamily
+    extends Family<AsyncValue<TokenContainerState>> {
+  /// See also [TokenContainerNotifier].
+  const TokenContainerNotifierFamily();
 
-  /// See also [ContainerCredentialsNotifier].
-  ContainerCredentialsNotifierProvider call({
-    required ContainerCredentialsRepository repo,
+  /// See also [TokenContainerNotifier].
+  TokenContainerNotifierProvider call({
+    required TokenContainerRepository repo,
     required PrivacyideaContainerApi containerApi,
     required EccUtils eccUtils,
   }) {
-    return ContainerCredentialsNotifierProvider(
+    return TokenContainerNotifierProvider(
       repo: repo,
       containerApi: containerApi,
       eccUtils: eccUtils,
@@ -68,8 +67,8 @@ class ContainerCredentialsNotifierFamily
   }
 
   @override
-  ContainerCredentialsNotifierProvider getProviderOverride(
-    covariant ContainerCredentialsNotifierProvider provider,
+  TokenContainerNotifierProvider getProviderOverride(
+    covariant TokenContainerNotifierProvider provider,
   ) {
     return call(
       repo: provider.repo,
@@ -90,37 +89,37 @@ class ContainerCredentialsNotifierFamily
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'containerCredentialsNotifierProviderOf';
+  String? get name => r'tokenContainerNotifierProviderOf';
 }
 
-/// See also [ContainerCredentialsNotifier].
-class ContainerCredentialsNotifierProvider extends AsyncNotifierProviderImpl<
-    ContainerCredentialsNotifier, CredentialsState> {
-  /// See also [ContainerCredentialsNotifier].
-  ContainerCredentialsNotifierProvider({
-    required ContainerCredentialsRepository repo,
+/// See also [TokenContainerNotifier].
+class TokenContainerNotifierProvider extends AsyncNotifierProviderImpl<
+    TokenContainerNotifier, TokenContainerState> {
+  /// See also [TokenContainerNotifier].
+  TokenContainerNotifierProvider({
+    required TokenContainerRepository repo,
     required PrivacyideaContainerApi containerApi,
     required EccUtils eccUtils,
   }) : this._internal(
-          () => ContainerCredentialsNotifier()
+          () => TokenContainerNotifier()
             ..repo = repo
             ..containerApi = containerApi
             ..eccUtils = eccUtils,
-          from: containerCredentialsNotifierProviderOf,
-          name: r'containerCredentialsNotifierProviderOf',
+          from: tokenContainerNotifierProviderOf,
+          name: r'tokenContainerNotifierProviderOf',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$containerCredentialsNotifierHash,
-          dependencies: ContainerCredentialsNotifierFamily._dependencies,
+                  : _$tokenContainerNotifierHash,
+          dependencies: TokenContainerNotifierFamily._dependencies,
           allTransitiveDependencies:
-              ContainerCredentialsNotifierFamily._allTransitiveDependencies,
+              TokenContainerNotifierFamily._allTransitiveDependencies,
           repo: repo,
           containerApi: containerApi,
           eccUtils: eccUtils,
         );
 
-  ContainerCredentialsNotifierProvider._internal(
+  TokenContainerNotifierProvider._internal(
     super._createNotifier, {
     required super.name,
     required super.dependencies,
@@ -132,13 +131,13 @@ class ContainerCredentialsNotifierProvider extends AsyncNotifierProviderImpl<
     required this.eccUtils,
   }) : super.internal();
 
-  final ContainerCredentialsRepository repo;
+  final TokenContainerRepository repo;
   final PrivacyideaContainerApi containerApi;
   final EccUtils eccUtils;
 
   @override
-  FutureOr<CredentialsState> runNotifierBuild(
-    covariant ContainerCredentialsNotifier notifier,
+  FutureOr<TokenContainerState> runNotifierBuild(
+    covariant TokenContainerNotifier notifier,
   ) {
     return notifier.build(
       repo: repo,
@@ -148,10 +147,10 @@ class ContainerCredentialsNotifierProvider extends AsyncNotifierProviderImpl<
   }
 
   @override
-  Override overrideWith(ContainerCredentialsNotifier Function() create) {
+  Override overrideWith(TokenContainerNotifier Function() create) {
     return ProviderOverride(
       origin: this,
-      override: ContainerCredentialsNotifierProvider._internal(
+      override: TokenContainerNotifierProvider._internal(
         () => create()
           ..repo = repo
           ..containerApi = containerApi
@@ -169,14 +168,14 @@ class ContainerCredentialsNotifierProvider extends AsyncNotifierProviderImpl<
   }
 
   @override
-  AsyncNotifierProviderElement<ContainerCredentialsNotifier, CredentialsState>
+  AsyncNotifierProviderElement<TokenContainerNotifier, TokenContainerState>
       createElement() {
-    return _ContainerCredentialsNotifierProviderElement(this);
+    return _TokenContainerNotifierProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is ContainerCredentialsNotifierProvider &&
+    return other is TokenContainerNotifierProvider &&
         other.repo == repo &&
         other.containerApi == containerApi &&
         other.eccUtils == eccUtils;
@@ -193,10 +192,10 @@ class ContainerCredentialsNotifierProvider extends AsyncNotifierProviderImpl<
   }
 }
 
-mixin ContainerCredentialsNotifierRef
-    on AsyncNotifierProviderRef<CredentialsState> {
+mixin TokenContainerNotifierRef
+    on AsyncNotifierProviderRef<TokenContainerState> {
   /// The parameter `repo` of this provider.
-  ContainerCredentialsRepository get repo;
+  TokenContainerRepository get repo;
 
   /// The parameter `containerApi` of this provider.
   PrivacyideaContainerApi get containerApi;
@@ -205,20 +204,19 @@ mixin ContainerCredentialsNotifierRef
   EccUtils get eccUtils;
 }
 
-class _ContainerCredentialsNotifierProviderElement
-    extends AsyncNotifierProviderElement<ContainerCredentialsNotifier,
-        CredentialsState> with ContainerCredentialsNotifierRef {
-  _ContainerCredentialsNotifierProviderElement(super.provider);
+class _TokenContainerNotifierProviderElement
+    extends AsyncNotifierProviderElement<TokenContainerNotifier,
+        TokenContainerState> with TokenContainerNotifierRef {
+  _TokenContainerNotifierProviderElement(super.provider);
 
   @override
-  ContainerCredentialsRepository get repo =>
-      (origin as ContainerCredentialsNotifierProvider).repo;
+  TokenContainerRepository get repo =>
+      (origin as TokenContainerNotifierProvider).repo;
   @override
   PrivacyideaContainerApi get containerApi =>
-      (origin as ContainerCredentialsNotifierProvider).containerApi;
+      (origin as TokenContainerNotifierProvider).containerApi;
   @override
-  EccUtils get eccUtils =>
-      (origin as ContainerCredentialsNotifierProvider).eccUtils;
+  EccUtils get eccUtils => (origin as TokenContainerNotifierProvider).eccUtils;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member

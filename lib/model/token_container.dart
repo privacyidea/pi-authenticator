@@ -28,21 +28,21 @@ import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/type_matchers.dart';
 
-import '../../utils/ecc_utils.dart';
-import '../../utils/logger.dart';
-import '../enums/container_finalization_state.dart';
-import '../enums/ec_key_algorithm.dart';
-import '../enums/token_origin_source_type.dart';
-import '../token_import/token_origin_data.dart';
+import '../utils/ecc_utils.dart';
+import '../utils/logger.dart';
+import 'enums/container_finalization_state.dart';
+import 'enums/ec_key_algorithm.dart';
+import 'enums/token_origin_source_type.dart';
+import 'token_import/token_origin_data.dart';
 
-part 'container_credentials.freezed.dart';
-part 'container_credentials.g.dart';
+part 'token_container.freezed.dart';
+part 'token_container.g.dart';
 
 @Freezed(toStringOverride: false)
-class ContainerCredential with _$ContainerCredential {
+class TokenContainer with _$TokenContainer {
   static const SERIAL = 'serial';
   static const eccUtils = EccUtils();
-  const ContainerCredential._();
+  const TokenContainer._();
 
   // example: pia://container/SMPH00134123
   // ?issuer=privacyIDEA
@@ -53,7 +53,7 @@ class ContainerCredential with _$ContainerCredential {
   // &key_algorithm=secp384r1
   // &hash_algorithm=SHA256
   // &passphrase=Enter%20your%20passphrase
-  factory ContainerCredential.fromUriMap(Map<String, dynamic> uriMap) {
+  factory TokenContainer.fromUriMap(Map<String, dynamic> uriMap) {
     uriMap = validateMap(
       map: uriMap,
       validators: {
@@ -68,7 +68,7 @@ class ContainerCredential with _$ContainerCredential {
       },
       name: 'Container',
     );
-    return ContainerCredential.unfinalized(
+    return TokenContainer.unfinalized(
       issuer: uriMap[CONTAINER_ISSUER],
       nonce: uriMap[CONTAINER_NONCE],
       timestamp: uriMap[CONTAINER_TIMESTAMP],
@@ -80,7 +80,7 @@ class ContainerCredential with _$ContainerCredential {
     );
   }
 
-  const factory ContainerCredential.unfinalized({
+  const factory TokenContainer.unfinalized({
     required String issuer,
     required String nonce,
     required DateTime timestamp,
@@ -95,9 +95,9 @@ class ContainerCredential with _$ContainerCredential {
     String? publicServerKey,
     String? publicClientKey,
     String? privateClientKey,
-  }) = ContainerCredentialUnfinalized;
+  }) = TokenContainerUnfinalized;
 
-  const factory ContainerCredential.finalized({
+  const factory TokenContainer.finalized({
     required String issuer,
     required String nonce,
     required DateTime timestamp,
@@ -111,14 +111,14 @@ class ContainerCredential with _$ContainerCredential {
     required String publicServerKey,
     required String publicClientKey,
     required String privateClientKey,
-  }) = ContainerCredentialFinalized;
+  }) = TokenContainerFinalized;
 
-  ContainerCredentialFinalized? finalize({
+  TokenContainerFinalized? finalize({
     ECPublicKey? publicServerKey,
     AsymmetricKeyPair<ECPublicKey, ECPrivateKey>? clientKeyPair,
     Uri? syncUrl,
   }) {
-    if (this is ContainerCredentialFinalized) return this as ContainerCredentialFinalized;
+    if (this is TokenContainerFinalized) return this as TokenContainerFinalized;
     if (publicServerKey == null && this.publicServerKey == null) {
       Logger.warning('Unable to finalize without public server key');
       return null;
@@ -131,7 +131,7 @@ class ContainerCredential with _$ContainerCredential {
       Logger.warning('Unable to finalize without sync url');
       return null;
     }
-    return ContainerCredentialFinalized(
+    return TokenContainerFinalized(
       issuer: issuer,
       nonce: nonce,
       timestamp: timestamp,
@@ -148,25 +148,25 @@ class ContainerCredential with _$ContainerCredential {
   }
 
   ECPublicKey? get ecPublicServerKey => publicServerKey == null ? null : eccUtils.deserializeECPublicKey(publicServerKey!);
-  ContainerCredential withPublicServerKey(ECPublicKey publicServerKey) => copyWith(publicServerKey: eccUtils.serializeECPublicKey(publicServerKey));
+  TokenContainer withPublicServerKey(ECPublicKey publicServerKey) => copyWith(publicServerKey: eccUtils.serializeECPublicKey(publicServerKey));
   ECPublicKey? get ecPublicClientKey => publicClientKey == null ? null : eccUtils.deserializeECPublicKey(publicClientKey!);
   ECPrivateKey? get ecPrivateClientKey => privateClientKey == null ? null : eccUtils.deserializeECPrivateKey(privateClientKey!);
 
   /// Add client key pair and set finalization state to generatingKeyPairCompleted
-  ContainerCredential withClientKeyPair(AsymmetricKeyPair<ECPublicKey, ECPrivateKey> keyPair) => copyWith(
+  TokenContainer withClientKeyPair(AsymmetricKeyPair<ECPublicKey, ECPrivateKey> keyPair) => copyWith(
         publicClientKey: eccUtils.serializeECPublicKey(keyPair.publicKey),
         privateClientKey: eccUtils.serializeECPrivateKey(keyPair.privateKey),
         finalizationState: ContainerFinalizationState.generatingKeyPairCompleted,
       );
 
-  factory ContainerCredential.fromJson(Map<String, dynamic> json) => _$ContainerCredentialFromJson(json);
+  factory TokenContainer.fromJson(Map<String, dynamic> json) => _$TokenContainerFromJson(json);
 
   @override
-  String toString() => 'ContainerCredential('
+  String toString() => 'TokenContainer('
       'issuer: $issuer, '
       'nonce: $nonce, '
       'timestamp: $timestamp, '
-      '${(this is ContainerCredentialUnfinalized) ? ' finalizationUrl: ${(this as ContainerCredentialUnfinalized).finalizationUrl}, ' : ''}'
+      '${(this is TokenContainerUnfinalized) ? ' finalizationUrl: ${(this as TokenContainerUnfinalized).finalizationUrl}, ' : ''}'
       'syncUrl: $syncUrl, '
       'serial: $serial, '
       'ecKeyAlgorithm: $ecKeyAlgorithm, '

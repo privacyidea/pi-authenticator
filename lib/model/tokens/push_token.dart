@@ -30,7 +30,7 @@ import '../../utils/type_matchers.dart';
 import '../enums/push_token_rollout_state.dart';
 import '../enums/token_types.dart';
 import '../token_import/token_origin_data.dart';
-import 'container_credentials.dart';
+import '../token_container.dart';
 import 'token.dart';
 
 part 'push_token.g.dart';
@@ -74,7 +74,7 @@ class PushToken extends Token {
     super.label,
     super.issuer,
     super.containerSerial,
-    super.checkedContainers,
+    super.checkedContainer,
     required super.id,
     this.fbToken,
     this.url,
@@ -123,7 +123,7 @@ class PushToken extends Token {
     String? serial,
     String? issuer,
     String? Function()? containerSerial,
-    List<String>? checkedContainers,
+    List<String>? checkedContainer,
     String? id,
     String? tokenImage,
     String? fbToken,
@@ -151,7 +151,7 @@ class PushToken extends Token {
       tokenImage: tokenImage ?? this.tokenImage,
       fbToken: fbToken ?? this.fbToken,
       containerSerial: containerSerial != null ? containerSerial() : this.containerSerial,
-      checkedContainers: checkedContainers ?? this.checkedContainers,
+      checkedContainer: checkedContainer ?? this.checkedContainer,
       id: id ?? this.id,
       pin: pin ?? this.pin,
       isLocked: isLocked ?? this.isLocked,
@@ -234,7 +234,7 @@ class PushToken extends Token {
           id: validatedAdditionalData[Token.ID] ?? const Uuid().v4(),
           origin: validatedAdditionalData[Token.ORIGIN],
           isHidden: validatedAdditionalData[Token.HIDDEN],
-          checkedContainers: validatedAdditionalData[Token.CHECKED_CONTAINERS] ?? [],
+          checkedContainer: validatedAdditionalData[Token.CHECKED_CONTAINERS] ?? [],
           folderId: validatedAdditionalData[Token.FOLDER_ID],
           sortIndex: validatedAdditionalData[Token.SORT_INDEX],
         ),
@@ -317,7 +317,7 @@ class PushToken extends Token {
   }
 
   @override
-  TokenTemplate? toTemplate({ContainerCredential? container}) => expirationDate != null
+  TokenTemplate? toTemplate({TokenContainer? container}) => expirationDate != null
       ? super.toTemplate(container: container)
       : super.toTemplate(container: container)?.withAditionalData({
           EXPIRATION_DATE: expirationDate!,

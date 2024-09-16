@@ -20,39 +20,39 @@
 import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/utils/errors.dart';
 import 'package:privacyidea_authenticator/utils/globals.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/credential_notifier.dart';
 
 import '../../model/processor_result.dart';
-import '../../model/tokens/container_credentials.dart';
+import '../../model/token_container.dart';
 import '../../utils/identifiers.dart';
 import '../../utils/logger.dart';
+import '../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 import 'scheme_processor_interface.dart';
 
-class ContainerCredentialsProcessor extends SchemeProcessor {
-  static const resultHandlerType = TypeValidatorRequired<ContainerCredentialsNotifier>();
+class TokenContainerProcessor extends SchemeProcessor {
+  static const resultHandlerType = TypeValidatorRequired<TokenContainerNotifier>();
   static const scheme = 'pia';
   static const host = 'container';
 
   @override
   Set<String> get supportedSchemes => {scheme};
 
-  const ContainerCredentialsProcessor();
+  const TokenContainerProcessor();
   @override
-  Future<List<ProcessorResult<ContainerCredential>>?> processUri(Uri uri, {bool fromInit = false}) async {
+  Future<List<ProcessorResult<TokenContainer>>?> processUri(Uri uri, {bool fromInit = false}) async {
     if (!supportedSchemes.contains(uri.scheme)) return null;
     if (uri.host != host) return null;
 
     try {
-      final credential = ContainerCredential.fromUriMap(uri.queryParameters);
-      Logger.info('Successfully parsed container credential', name: 'ContainerCredentialsProcessor#processUri');
+      final container = TokenContainer.fromUriMap(uri.queryParameters);
+      Logger.info('Successfully parsed container container', name: 'TokenContainerProcessor#processUri');
       return [
         ProcessorResult.success(
-          credential,
+          container,
           resultHandlerType: resultHandlerType,
         )
       ];
     } on LocalizedArgumentError catch (e) {
-      Logger.warning('Error while processing URI ${uri.scheme}', error: e.message, name: 'ContainerCredentialsProcessor#processUri');
+      Logger.warning('Error while processing URI ${uri.scheme}', error: e.message, name: 'TokenContainerProcessor#processUri');
       return [
         ProcessorResult.failed(
           e.localizedMessage(AppLocalizations.of(await globalContext)!),

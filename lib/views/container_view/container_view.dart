@@ -21,13 +21,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/credential_notifier.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/main_view_navigation_buttons/qr_scanner_button.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/token_widget_tile.dart';
 
 import '../../l10n/app_localizations.dart';
-import '../../model/tokens/container_credentials.dart';
+import '../../model/token_container.dart';
 import '../../utils/customization/theme_extentions/action_theme.dart';
+import '../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 import '../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../widgets/pi_slideable.dart';
 import '../main_view/main_view_widgets/token_widgets/slideable_action.dart';
@@ -45,7 +45,7 @@ class ContainerView extends ConsumerView {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final credentials = ref.watch(containerCredentialsProvider).whenOrNull(data: (data) => data.credentials) ?? [];
+    final container = ref.watch(containerCredentialsProvider).whenOrNull(data: (data) => data.container) ?? [];
     return Scaffold(
       appBar: AppBar(title: const Text('Container')),
       floatingActionButton: const QrScannerButton(),
@@ -54,7 +54,7 @@ class ContainerView extends ConsumerView {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            for (var containerCredential in credentials) ContainerWidget(containerCredential: containerCredential),
+            for (var containerCredential in container) ContainerWidget(containerCredential: containerCredential),
           ],
         ),
       ),
@@ -63,7 +63,7 @@ class ContainerView extends ConsumerView {
 }
 
 class ContainerWidget extends ConsumerWidget {
-  final ContainerCredential containerCredential;
+  final TokenContainer containerCredential;
 
   final List<Widget> stack;
 
@@ -89,7 +89,7 @@ class ContainerWidget extends ConsumerWidget {
               'issuer: ${containerCredential.issuer}',
               'finalizationState: ${containerCredential.finalizationState.name}',
             ],
-            trailing: containerCredential is ContainerCredentialFinalized
+            trailing: containerCredential is TokenContainerFinalized
                 ? IconButton(
                     icon: const Icon(Icons.sync),
                     onPressed: () {
@@ -109,7 +109,7 @@ class ContainerWidget extends ConsumerWidget {
 }
 
 class DeleteContainerAction extends PiSlideableAction {
-  final ContainerCredential container;
+  final TokenContainer container;
 
   const DeleteContainerAction({
     required this.container,
@@ -136,7 +136,7 @@ class DeleteContainerAction extends PiSlideableAction {
 }
 
 class EditContainerAction extends PiSlideableAction {
-  final ContainerCredential container;
+  final TokenContainer container;
 
   const EditContainerAction({
     required this.container,

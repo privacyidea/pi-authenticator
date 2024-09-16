@@ -23,7 +23,7 @@
 
 // import '../../../interfaces/riverpod/state_listeners/state_notifier_provider_listeners/token_state_listener.dart';
 // import '../../../model/riverpod_states/token_state.dart';
-// import '../riverpod_providers/generated_providers/credential_notifier.dart';
+// import '../riverpod_providers/generated_providers/container_notifier.dart';
 // import '../riverpod_providers/generated_providers/token_container_notifier.dart';
 
 // class ContainerListensToTokenState extends TokenStateListener {
@@ -40,24 +40,24 @@
 //   static Future<void> _onNewState(TokenState? previousState, TokenState nextState, WidgetRef ref) async {
 //     Logger.warning('New token state', name: 'TokenContainerTokenStateListener');
 //     final maybePiTokenTemplates = nextState.lastlyUpdatedTokens.maybePiTokens.toTemplates();
-//     final credentials = (await ref.read(containerCredentialsProvider.future)).credentials;
-//     Logger.warning('Readed: $credentials', name: 'TokenContainerTokenStateListener');
+//     final container = (await ref.read(containerCredentialsProvider.future)).container;
+//     Logger.warning('Readed: $container', name: 'TokenContainerTokenStateListener');
 //     // if (maybePiTokenTemplates.isEmpty) return;
-//     for (var credential in credentials) {
-//       final deletedPiTokenTemplates = nextState.lastlyDeletedTokens.ofContainer(credential.serial).toTemplates();
+//     for (var container in container) {
+//       final deletedPiTokenTemplates = nextState.lastlyDeletedTokens.ofContainer(container.serial).toTemplates();
 //       if (deletedPiTokenTemplates.isNotEmpty) {
 //         Logger.warning(
-//           'Deleted (${deletedPiTokenTemplates.length}) tokens from container "${credential.serial}"',
+//           'Deleted (${deletedPiTokenTemplates.length}) tokens from container "${container.serial}"',
 //           name: 'TokenContainerTokenStateListener',
 //         );
-//         // await ref.read(tokenContainerNotifierProviderOf(credential: credential).notifier).handleDeletedTokenTemplates(deletedPiTokenTemplates);
+//         // await ref.read(tokenContainerNotifierProviderOf(container: container).notifier).handleDeletedTokenTemplates(deletedPiTokenTemplates);
 //       }
 //       if (maybePiTokenTemplates.isNotEmpty) {
 //         Logger.warning(
-//           'Adding maybePiTokenTemplates (${maybePiTokenTemplates.length}) to container ${credential.serial}',
+//           'Adding maybePiTokenTemplates (${maybePiTokenTemplates.length}) to container ${container.serial}',
 //           name: 'TokenContainerTokenStateListener',
 //         );
-//         // await ref.read(tokenContainerNotifierProviderOf(credential: credential).notifier).tryAddLocalTemplates(maybePiTokenTemplates);
+//         // await ref.read(tokenContainerNotifierProviderOf(container: container).notifier).tryAddLocalTemplates(maybePiTokenTemplates);
 //       }
 //     }
 //   }

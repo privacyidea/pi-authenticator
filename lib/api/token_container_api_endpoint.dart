@@ -33,7 +33,7 @@ import 'package:privacyidea_authenticator/utils/privacyidea_io_client.dart';
 import '../l10n/app_localizations.dart';
 import '../model/riverpod_states/token_state.dart';
 import '../model/token_template.dart';
-import '../model/tokens/container_credentials.dart';
+import '../model/token_container.dart';
 import '../model/tokens/token.dart';
 import '../utils/globals.dart';
 import '../utils/identifiers.dart';
@@ -48,7 +48,7 @@ class PrivacyideaContainerApi {
   const PrivacyideaContainerApi({required PrivacyideaIOClient ioClient}) : _ioClient = ioClient;
 
   // Returns a tuple of updated/new tokens and serials of deleted tokens
-  Future<(List<Token>, List<String>)?> sync(ContainerCredentialFinalized container, TokenState tokenState) async {
+  Future<(List<Token>, List<String>)?> sync(TokenContainerFinalized container, TokenState tokenState) async {
     final containerTokenTemplates = tokenState.containerTokens(container.serial).toTemplates();
     final maybePiTokensTemplates = tokenState.maybePiTokens.toTemplates();
 
@@ -105,7 +105,7 @@ class PrivacyideaContainerApi {
     return ([...updatedTokens, ...newTokens], deleteSerials);
   }
 
-  Future<Response?> finalizeContainer(ContainerCredentialUnfinalized container, EccUtils eccUtils) async {
+  Future<Response?> finalizeContainer(TokenContainerUnfinalized container, EccUtils eccUtils) async {
     final ecPrivateClientKey = container.ecPrivateClientKey;
     if (ecPrivateClientKey == null) return null;
 
@@ -131,7 +131,7 @@ class PrivacyideaContainerApi {
   ////// PRIVATE FUNCTIONS //////
   ////////////////////////////// */
 
-  Future<ContainerChallenge?> _getChallenge(ContainerCredentialFinalized container) async {
+  Future<ContainerChallenge?> _getChallenge(TokenContainerFinalized container) async {
     final initResponse = await _ioClient.doGet(url: container.syncUrl, parameters: {CONTAINER_SERIAL: container.serial});
     if (initResponse.statusCode != 200) {
       _showSyncStatusMessage(initResponse);
@@ -153,7 +153,7 @@ class PrivacyideaContainerApi {
   }
 
   Future<Map<String, dynamic>?> _getContainerDict({
-    required ContainerCredentialFinalized container,
+    required TokenContainerFinalized container,
     required ContainerChallenge challenge,
     required List<Map> otpAuthMaps,
   }) async {
@@ -216,7 +216,7 @@ class PrivacyideaContainerApi {
     return jsonDecode(utf8.decode(decryptedContainerDict)) as Map<String, dynamic>;
   }
 
-  Future<List<Token>> _parseNewTokens({required ContainerCredentialFinalized container, required List<Uri> otpAuthUris}) async {
+  Future<List<Token>> _parseNewTokens({required TokenContainerFinalized container, required List<Uri> otpAuthUris}) async {
     final newTokens = <Token>[];
     for (var otpAuthUri in otpAuthUris) {
       Logger.debug('Processing token: $otpAuthUri');
@@ -232,7 +232,7 @@ class PrivacyideaContainerApi {
   List<TokenTemplate> _handleMaybePiTokens({
     required List<TokenTemplate> maybePiTokensTemplates,
     required List<Map<String, dynamic>> serverTokensWithOtps,
-    required ContainerCredentialFinalized container,
+    required TokenContainerFinalized container,
   }) {
     final merged = <TokenTemplate>[];
     for (var serverTokenWithOtp in serverTokensWithOtps) {
@@ -258,7 +258,7 @@ class PrivacyideaContainerApi {
   (List<TokenTemplate>, List<String>) _handlePiTokens({
     required List<TokenTemplate> containerTokenTemplates,
     required List<Map<String, dynamic>> serverTokensWithSerial,
-    required ContainerCredentialFinalized container,
+    required TokenContainerFinalized container,
   }) {
     final deleteSerials = <String>[];
     final mergedTemplatesWithSerial = <TokenTemplate>[];

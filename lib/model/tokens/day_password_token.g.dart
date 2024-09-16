@@ -15,7 +15,7 @@ DayPasswordToken _$DayPasswordTokenFromJson(Map<String, dynamic> json) =>
       secret: json['secret'] as String,
       serial: json['serial'] as String?,
       containerSerial: json['containerSerial'] as String?,
-      checkedContainers: (json['checkedContainers'] as List<dynamic>?)
+      checkedContainer: (json['checkedContainer'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList() ??
           const [],
@@ -38,7 +38,7 @@ DayPasswordToken _$DayPasswordTokenFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$DayPasswordTokenToJson(DayPasswordToken instance) =>
     <String, dynamic>{
-      'checkedContainers': instance.checkedContainers,
+      'checkedContainer': instance.checkedContainer,
       'label': instance.label,
       'issuer': instance.issuer,
       'containerSerial': instance.containerSerial,

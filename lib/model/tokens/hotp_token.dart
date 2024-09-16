@@ -44,7 +44,7 @@ class HOTPToken extends OTPToken {
   HOTPToken({
     this.counter = 0,
     super.containerSerial,
-    super.checkedContainers,
+    super.checkedContainer,
     required super.id,
     required super.algorithm,
     required super.digits,
@@ -94,7 +94,7 @@ class HOTPToken extends OTPToken {
     String? label,
     String? issuer,
     String? Function()? containerSerial,
-    List<String>? checkedContainers,
+    List<String>? checkedContainer,
     String? id,
     Algorithms? algorithm,
     int? digits,
@@ -113,7 +113,7 @@ class HOTPToken extends OTPToken {
         label: label ?? this.label,
         issuer: issuer ?? this.issuer,
         containerSerial: containerSerial != null ? containerSerial() : this.containerSerial,
-        checkedContainers: checkedContainers ?? this.checkedContainers,
+        checkedContainer: checkedContainer ?? this.checkedContainer,
         id: id ?? this.id,
         algorithm: algorithm ?? this.algorithm,
         digits: digits ?? this.digits,
@@ -195,7 +195,7 @@ class HOTPToken extends OTPToken {
       id: validatedAdditionalData[Token.ID] ?? const Uuid().v4(),
       origin: validatedAdditionalData[Token.ORIGIN],
       isHidden: validatedAdditionalData[Token.HIDDEN],
-      checkedContainers: validatedAdditionalData[Token.CHECKED_CONTAINERS] ?? [],
+      checkedContainer: validatedAdditionalData[Token.CHECKED_CONTAINERS] ?? [],
       folderId: validatedAdditionalData[Token.FOLDER_ID],
       sortIndex: validatedAdditionalData[Token.SORT_INDEX],
     );
@@ -208,7 +208,7 @@ class HOTPToken extends OTPToken {
   /// | OTP_AUTH_LABEL: label,                                          |
   /// | OTP_AUTH_ISSUER: issuer,                                        |
   /// | CONTAINER_SERIAL: containerSerial, (optional)                   |
-  /// | CHECKED_CONTAINERS: checkedContainers,                          |
+  /// | CHECKED_CONTAINERS: checkedContainer,                          |
   /// | TOKEN_ID: id,                                                   |
   /// | OTP_AUTH_TYPE: type,                                            |
   /// | OTP_AUTH_IMAGE: tokenImage, (optional)                          |

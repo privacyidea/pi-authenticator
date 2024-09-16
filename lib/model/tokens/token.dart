@@ -20,7 +20,7 @@
  * limitations under the License.
  */
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/model/tokens/container_credentials.dart';
+import 'package:privacyidea_authenticator/model/token_container.dart';
 import '../token_template.dart';
 
 import '../../utils/identifiers.dart';
@@ -40,13 +40,13 @@ abstract class Token with SortableMixin {
   static const ID = 'id';
   static const ORIGIN = 'origin';
   static const HIDDEN = 'hidden';
-  static const CHECKED_CONTAINERS = 'checkedContainers';
+  static const CHECKED_CONTAINERS = 'checkedContainer';
   static const FOLDER_ID = 'folderId';
   static const SORT_INDEX = SortableMixin.SORT_INDEX;
 
   bool? get isPrivacyIdeaToken => origin?.isPrivacyIdeaToken;
   final String tokenVersion = 'v1.0.0'; // The version of this token, this is used for serialization.
-  final List<String> checkedContainers; // The serials of the containers this token should not be in.
+  final List<String> checkedContainer; // The serials of the container this token should not be in.
   final String label; // the name of the token, it cannot be uses as an identifier
   final String issuer; // The issuer of this token, currently unused.
   final String? containerSerial; // The serial of the container this token belongs to.
@@ -109,7 +109,7 @@ abstract class Token with SortableMixin {
     this.label = '',
     this.issuer = '',
     this.containerSerial,
-    this.checkedContainers = const [],
+    this.checkedContainer = const [],
     required this.id,
     required this.type,
     this.tokenImage,
@@ -139,7 +139,7 @@ abstract class Token with SortableMixin {
     String? label,
     String? issuer,
     String? Function()? containerSerial,
-    List<String>? checkedContainers,
+    List<String>? checkedContainer,
     String? id,
     bool? isLocked,
     bool? isHidden,
@@ -208,10 +208,10 @@ abstract class Token with SortableMixin {
         SORT_INDEX: sortIndex,
         FOLDER_ID: folderId,
         HIDDEN: isHidden,
-        CHECKED_CONTAINERS: checkedContainers,
+        CHECKED_CONTAINERS: checkedContainer,
       };
 
-  TokenTemplate? toTemplate({ContainerCredential? container}) => serial != null
+  TokenTemplate? toTemplate({TokenContainer? container}) => serial != null
       ? TokenTemplate.withSerial(
           otpAuthMap: toOtpAuthMap(),
           additionalData: additionalData,

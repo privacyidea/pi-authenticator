@@ -23,5 +23,5 @@ import '../utils/privacyidea_io_client.dart';
 abstract class ApiEndpioint<Credential, Data> {
   ApiEndpioint(PrivacyideaIOClient ioClient);
   Future<Data> fetch();
-  Future<Data> sync(Credential credential, Data data);
+  Future<Data> sync(Credential container, Data data);
 }

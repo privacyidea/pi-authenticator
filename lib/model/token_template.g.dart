@@ -15,8 +15,7 @@ _$TokenTemplateWithSerialImpl _$$TokenTemplateWithSerialImplFromJson(
           json['additionalData'] as Map<String, dynamic>? ?? const {},
       container: json['container'] == null
           ? null
-          : ContainerCredential.fromJson(
-              json['container'] as Map<String, dynamic>),
+          : TokenContainer.fromJson(json['container'] as Map<String, dynamic>),
       $type: json['runtimeType'] as String?,
     );
 
@@ -39,8 +38,7 @@ _$TokenTemplateWithOtpsImpl _$$TokenTemplateWithOtpsImplFromJson(
           json['additionalData'] as Map<String, dynamic>? ?? const {},
       container: json['container'] == null
           ? null
-          : ContainerCredential.fromJson(
-              json['container'] as Map<String, dynamic>),
+          : TokenContainer.fromJson(json['container'] as Map<String, dynamic>),
       $type: json['runtimeType'] as String?,
     );
 

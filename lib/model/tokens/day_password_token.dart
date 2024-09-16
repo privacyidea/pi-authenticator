@@ -50,7 +50,7 @@ class DayPasswordToken extends OTPToken {
     required super.secret,
     super.serial,
     super.containerSerial,
-    super.checkedContainers,
+    super.checkedContainer,
     this.viewMode = DayPasswordTokenViewMode.VALIDFOR,
     String? type, // just for @JsonSerializable(): type of DayPasswordToken is always TokenTypes.DAYPASSWORD
     super.tokenImage,
@@ -93,7 +93,7 @@ class DayPasswordToken extends OTPToken {
     String? label,
     String? issuer,
     String? Function()? containerSerial,
-    List<String>? checkedContainers,
+    List<String>? checkedContainer,
     String? id,
     Algorithms? algorithm,
     int? digits,
@@ -113,7 +113,7 @@ class DayPasswordToken extends OTPToken {
         label: label ?? this.label,
         issuer: issuer ?? this.issuer,
         containerSerial: containerSerial != null ? containerSerial() : this.containerSerial,
-        checkedContainers: checkedContainers ?? this.checkedContainers,
+        checkedContainer: checkedContainer ?? this.checkedContainer,
         id: id ?? this.id,
         type: TokenTypes.DAYPASSWORD.name,
         algorithm: algorithm ?? this.algorithm,
@@ -214,7 +214,7 @@ class DayPasswordToken extends OTPToken {
       isLocked: uriMap[OTP_AUTH_PIN],
       id: validatedAdditionalData[Token.ID] ?? const Uuid().v4(),
       containerSerial: validatedAdditionalData[Token.CONTAINER_SERIAL],
-      checkedContainers: validatedAdditionalData[Token.CHECKED_CONTAINERS] ?? [],
+      checkedContainer: validatedAdditionalData[Token.CHECKED_CONTAINERS] ?? [],
       sortIndex: validatedAdditionalData[Token.SORT_INDEX],
       folderId: validatedAdditionalData[Token.FOLDER_ID],
       origin: validatedAdditionalData[Token.ORIGIN],
@@ -229,7 +229,7 @@ class DayPasswordToken extends OTPToken {
   /// | OTP_AUTH_LABEL: label,                                          |
   /// | OTP_AUTH_ISSUER: issuer,                                        |
   /// | CONTAINER_SERIAL: containerSerial, (optional)                   |
-  /// | CHECKED_CONTAINERS: checkedContainers,                          |
+  /// | CHECKED_CONTAINERS: checkedContainer,                          |
   /// | TOKEN_ID: id,                                                   |
   /// | OTP_AUTH_TYPE: type,                                            |
   /// | OTP_AUTH_IMAGE: tokenImage, (optional)                          |

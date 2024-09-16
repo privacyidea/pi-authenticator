@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../utils/logger.dart';
 import '../utils/push_provider.dart';
-import '../utils/riverpod/riverpod_providers/generated_providers/credential_notifier.dart';
+import '../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 import '../views/main_view/main_view_widgets/loading_indicator.dart';
 import 'deactivateable_refresh_indicator.dart';
 
@@ -31,11 +31,11 @@ class _DefaultRefreshIndicatorState extends ConsumerState<DefaultRefreshIndicato
           });
           final future = LoadingIndicator.show(context, () async {
             final pushProviderInstance = PushProvider.instance;
-            final credentials = (await ref.read(containerCredentialsProvider.future)).credentials;
-            Logger.debug('Refreshing container with ${credentials.length} credentials');
+            final container = (await ref.read(containerCredentialsProvider.future)).container;
+            Logger.debug('Refreshing container with ${container.length} container');
             await Future.wait([
               if (pushProviderInstance != null) pushProviderInstance.pollForChallenges(isManually: true),
-              // for (var credential in credentials) (ref.read(tokenContainerNotifierProviderOf(credential: credential).notifier).sync()),
+              // for (var container in container) (ref.read(tokenContainerNotifierProviderOf(container: container).notifier).sync()),
             ]);
           });
           await future;

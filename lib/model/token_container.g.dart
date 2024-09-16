@@ -1,40 +1,37 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'container_credentials.dart';
+part of 'token_container.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$ContainerCredentialUnfinalizedImpl
-    _$$ContainerCredentialUnfinalizedImplFromJson(Map<String, dynamic> json) =>
-        _$ContainerCredentialUnfinalizedImpl(
-          issuer: json['issuer'] as String,
-          nonce: json['nonce'] as String,
-          timestamp: DateTime.parse(json['timestamp'] as String),
-          finalizationUrl: Uri.parse(json['finalizationUrl'] as String),
-          syncUrl: json['syncUrl'] == null
-              ? null
-              : Uri.parse(json['syncUrl'] as String),
-          serial: json['serial'] as String,
-          ecKeyAlgorithm:
-              $enumDecode(_$EcKeyAlgorithmEnumMap, json['ecKeyAlgorithm']),
-          hashAlgorithm:
-              $enumDecode(_$AlgorithmsEnumMap, json['hashAlgorithm']),
-          serverName: json['serverName'] as String? ?? 'privacyIDEA',
-          finalizationState: $enumDecodeNullable(
-                  _$ContainerFinalizationStateEnumMap,
-                  json['finalizationState']) ??
-              ContainerFinalizationState.uninitialized,
-          passphraseQuestion: json['passphraseQuestion'] as String?,
-          publicServerKey: json['publicServerKey'] as String?,
-          publicClientKey: json['publicClientKey'] as String?,
-          privateClientKey: json['privateClientKey'] as String?,
-          $type: json['runtimeType'] as String?,
-        );
+_$TokenContainerUnfinalizedImpl _$$TokenContainerUnfinalizedImplFromJson(
+        Map<String, dynamic> json) =>
+    _$TokenContainerUnfinalizedImpl(
+      issuer: json['issuer'] as String,
+      nonce: json['nonce'] as String,
+      timestamp: DateTime.parse(json['timestamp'] as String),
+      finalizationUrl: Uri.parse(json['finalizationUrl'] as String),
+      syncUrl:
+          json['syncUrl'] == null ? null : Uri.parse(json['syncUrl'] as String),
+      serial: json['serial'] as String,
+      ecKeyAlgorithm:
+          $enumDecode(_$EcKeyAlgorithmEnumMap, json['ecKeyAlgorithm']),
+      hashAlgorithm: $enumDecode(_$AlgorithmsEnumMap, json['hashAlgorithm']),
+      serverName: json['serverName'] as String? ?? 'privacyIDEA',
+      finalizationState: $enumDecodeNullable(
+              _$ContainerFinalizationStateEnumMap, json['finalizationState']) ??
+          ContainerFinalizationState.uninitialized,
+      passphraseQuestion: json['passphraseQuestion'] as String?,
+      publicServerKey: json['publicServerKey'] as String?,
+      publicClientKey: json['publicClientKey'] as String?,
+      privateClientKey: json['privateClientKey'] as String?,
+      $type: json['runtimeType'] as String?,
+    );
 
-Map<String, dynamic> _$$ContainerCredentialUnfinalizedImplToJson(
-        _$ContainerCredentialUnfinalizedImpl instance) =>
+Map<String, dynamic> _$$TokenContainerUnfinalizedImplToJson(
+        _$TokenContainerUnfinalizedImpl instance) =>
     <String, dynamic>{
       'issuer': instance.issuer,
       'nonce': instance.nonce,
@@ -121,9 +118,9 @@ const _$ContainerFinalizationStateEnumMap = {
   ContainerFinalizationState.finalized: 'finalized',
 };
 
-_$ContainerCredentialFinalizedImpl _$$ContainerCredentialFinalizedImplFromJson(
+_$TokenContainerFinalizedImpl _$$TokenContainerFinalizedImplFromJson(
         Map<String, dynamic> json) =>
-    _$ContainerCredentialFinalizedImpl(
+    _$TokenContainerFinalizedImpl(
       issuer: json['issuer'] as String,
       nonce: json['nonce'] as String,
       timestamp: DateTime.parse(json['timestamp'] as String),
@@ -143,8 +140,8 @@ _$ContainerCredentialFinalizedImpl _$$ContainerCredentialFinalizedImplFromJson(
       $type: json['runtimeType'] as String?,
     );
 
-Map<String, dynamic> _$$ContainerCredentialFinalizedImplToJson(
-        _$ContainerCredentialFinalizedImpl instance) =>
+Map<String, dynamic> _$$TokenContainerFinalizedImplToJson(
+        _$TokenContainerFinalizedImpl instance) =>
     <String, dynamic>{
       'issuer': instance.issuer,
       'nonce': instance.nonce,
