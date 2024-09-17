@@ -128,7 +128,7 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
                                 return;
                               }
                               ref.read(pushRequestProvider.notifier).accept(token, widget.pushRequest).then((success) {
-                                Logger.info('accept push request success: $success', name: 'push_request_dialog.dart#AnswerSelectionWidget');
+                                Logger.info('accept push request success: $success', name: 'push_request_dialog.dart#_PushRequestDialogState');
                                 if (!success && mounted) setState(() => isHandled = false);
                               });
                               if (mounted) setState(() => isHandled = true);
@@ -197,6 +197,7 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
 
   Future<void> _showConfirmationDialog(PushToken pushToken) {
     final localizations = AppLocalizations.of(context)!;
+    final pushRequestTheme = (Theme.of(context).extensions[PushRequestTheme] as PushRequestTheme);
     return showDialog(
         useRootNavigator: false,
         context: globalNavigatorKey.currentContext!,
@@ -226,7 +227,10 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
                     Expanded(
                       flex: 6,
                       child: PressButton(
-                        style: ButtonStyle(shape: buttonShape(context)),
+                        style: ButtonStyle(
+                          shape: buttonShape(context),
+                          backgroundColor: WidgetStateProperty.all(pushRequestTheme.acceptColor),
+                        ),
                         onPressed: () async {
                           if (pushToken.isLocked && await lockAuth(localizedReason: localizations.authToDeclinePushRequest) == false) {
                             return;
@@ -267,7 +271,7 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
                       flex: 6,
                       child: PressButton(
                         style: ButtonStyle(
-                          backgroundColor: WidgetStateProperty.all(Theme.of(context).colorScheme.errorContainer),
+                          backgroundColor: WidgetStateProperty.all(pushRequestTheme.declineColor),
                           shape: buttonShape(context),
                         ),
                         onPressed: () async {
@@ -337,6 +341,7 @@ class _AnswerSelectionWidgetState<T> extends State<AnswerSelectionWidget<T>> {
       final spacer = (maxThisRow != numPerRow && totalAnswersNum > maxThisRow)
           ? Expanded(flex: (numPerRow - answersThisRow.length) * answersThisRow.length, child: const SizedBox())
           : const SizedBox();
+      final pushRequestTheme = (Theme.of(context).extensions[PushRequestTheme] as PushRequestTheme);
       children.add(
         Row(
           mainAxisSize: MainAxisSize.max,
@@ -347,7 +352,10 @@ class _AnswerSelectionWidgetState<T> extends State<AnswerSelectionWidget<T>> {
               Expanded(
                 flex: answersThisRow.length * 2,
                 child: PressButton(
-                  style: ButtonStyle(shape: _PushRequestDialogState.buttonShape(context)),
+                  style: ButtonStyle(
+                    shape: _PushRequestDialogState.buttonShape(context),
+                    backgroundColor: WidgetStateProperty.all(pushRequestTheme.acceptColor),
+                  ),
                   onPressed: () => widget.onAnswerSelected(possibleAnswer),
                   child: Padding(
                     padding: EdgeInsets.symmetric(vertical: spacerHeight),

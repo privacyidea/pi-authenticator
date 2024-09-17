@@ -83,7 +83,7 @@ class ApplicationCustomization {
     this.darkTheme = ThemeCustomization.defaultDarkTheme,
     this.disabledFeatures = const {},
   })  : appIcon = appIcon ?? WidgetImage(fileType: ImageFileType.png, imageData: defaultIconUint8List),
-        appImage = appImage ?? WidgetImage(fileType: ImageFileType.png, imageData: defaultIconUint8List);
+        appImage = appImage ?? WidgetImage(fileType: ImageFileType.png, imageData: defaultImageUint8List);
 
   ApplicationCustomization copyWith({
     String? appName,
