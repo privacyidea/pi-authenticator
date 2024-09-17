@@ -30,7 +30,7 @@ part 'token_folder_notifier.g.dart';
 
 final tokenFolderProvider = tokenFolderNotifierProviderOf(repo: PreferenceTokenFolderRepository());
 
-@riverpod
+@Riverpod(keepAlive: true)
 class TokenFolderNotifier extends _$TokenFolderNotifier {
   late final Future<TokenFolderState> initState;
   final Mutex _repoMutex = Mutex();
@@ -48,8 +48,12 @@ class TokenFolderNotifier extends _$TokenFolderNotifier {
   @override
   TokenFolderState build({required TokenFolderRepository repo}) {
     _repo = _repoOverride ?? repo;
+    _stateMutex.acquire();
     Logger.info('Initializing token folder state', name: 'TokenFolderNotifier#initTokenFolder');
-    initState = _loadFromRepo().then((newState) => state = newState);
+    initState = _loadFromRepo().then((newState) {
+      _stateMutex.release();
+      return state = newState;
+    });
     return const TokenFolderState(folders: []);
   }
 

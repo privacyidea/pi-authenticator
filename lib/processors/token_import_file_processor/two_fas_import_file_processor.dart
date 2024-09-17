@@ -60,7 +60,7 @@ class TwoFasAuthenticatorImportFileProcessor extends TokenImportFileProcessor {
     } catch (e) {
       throw InvalidFileContentException('No valid 2FAS import file');
     }
-    if (password == null) return _processPlainFile(jsonString: fileContent, json: json);
+    if (password == null) return _processPlainFile(json: json);
     return processEncryptedFile(jsonString: fileContent, json: json, password: password);
   }
 
@@ -123,12 +123,7 @@ class TwoFasAuthenticatorImportFileProcessor extends TokenImportFileProcessor {
     return await _processPlainTokens(decryptedTokensJsonList.cast<Map<String, dynamic>>());
   }
 
-  Future<List<ProcessorResult<Token>>> _processPlainFile({String? jsonString, Map<String, dynamic>? json}) async {
-    try {
-      json ??= jsonDecode(jsonString!) as Map<String, dynamic>;
-    } catch (e) {
-      throw InvalidFileContentException('No valid 2FAS import file');
-    }
+  Future<List<ProcessorResult<Token>>> _processPlainFile({required Map<String, dynamic> json}) async {
     final tokensJsonList = json['services'] as List<dynamic>?;
     if (tokensJsonList == null || tokensJsonList.isEmpty) {
       if (json['servicesEncrypted'] == null) {
@@ -180,10 +175,10 @@ class TwoFasAuthenticatorImportFileProcessor extends TokenImportFileProcessor {
     Map<String, dynamic> twoFasOTP = twoFasToken[TWOFAS_OTP];
     return validateMap(
       map: {
-        OTP_AUTH_TYPE: twoFasOTP[TWOFAS_TYPE],
-        OTP_AUTH_ISSUER: twoFasOTP[TWOFAS_ISSUER],
-        OTP_AUTH_LABEL: twoFasOTP[TWOFAS_LABEL],
+        OTP_AUTH_ISSUER: twoFasToken[TWOFAS_ISSUER],
         OTP_AUTH_SECRET_BASE32: twoFasToken[TWOFAS_SECRET],
+        OTP_AUTH_TYPE: twoFasOTP[TWOFAS_TYPE],
+        OTP_AUTH_LABEL: twoFasOTP[TWOFAS_LABEL],
         OTP_AUTH_ALGORITHM: twoFasOTP[TWOFAS_ALGORITHM],
         OTP_AUTH_DIGITS: twoFasOTP[TWOFAS_DIGITS],
         OTP_AUTH_PERIOD_SECONDS: twoFasOTP[TWOFAS_PERIOD],

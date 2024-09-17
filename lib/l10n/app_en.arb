@@ -79,7 +79,7 @@
   "@scanQrCode": {
     "description": "The button to scan otpauth qr-codes."
   },
-  "enterDetailsForToken": "Enter details for token",
+  "enterDetailsForToken": "Enter token details",
   "@enterDetailsForToken": {
     "description": "Title of the screen where tokens are created manually, tells the user to enter all required values."
   },

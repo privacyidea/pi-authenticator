@@ -22,7 +22,6 @@ import 'dart:async';
 import 'package:http/http.dart';
 import 'package:mutex/mutex.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/push_request_repository.dart';
-import 'package:privacyidea_authenticator/utils/custom_int_buffer.dart';
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -97,7 +96,7 @@ class PushRequestNotifier extends _$PushRequestNotifier {
     _pushRepo = _pushRepoOverride ?? pushRepo;
     Logger.info('New PushRequestNotifier created', name: 'pushRequestProvider#build');
     _pushProvider.subscribe(add);
-    return PushRequestState(pushRequests: [], knownPushRequests: CustomIntBuffer(list: []));
+    return _loadFromRepo();
   }
 
   void swapPushProvider(PushProvider newProvider) {

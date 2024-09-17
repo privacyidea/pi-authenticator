@@ -263,7 +263,7 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
             OTP_AUTH_TYPE: const TypeValidatorRequired<String>(),
             OTP_AUTH_LABEL: const TypeValidatorRequired<String>(defaultValue: ''),
             OTP_AUTH_ISSUER: const TypeValidatorRequired<String>(defaultValue: ''),
-            OTP_AUTH_SECRET_BASE32: TypeValidatorRequired<String>(transformer: (v) => Encodings.none.encodeStringTo(Encodings.base32, v)),
+            OTP_AUTH_SECRET_BASE32: TypeValidatorRequired<String>(transformer: (v) => Encodings.base32.encodeStringTo(Encodings.base32, v)),
             OTP_AUTH_ALGORITHM: const TypeValidatorOptional<String>(),
             OTP_AUTH_DIGITS: intToStringValidatorOptional,
             OTP_AUTH_PERIOD_SECONDS: intToStringValidatorOptional,

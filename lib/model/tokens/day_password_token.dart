@@ -184,7 +184,7 @@ class DayPasswordToken extends OTPToken {
     );
   }
 
-  factory DayPasswordToken.fromOtpAuthMap(Map<String, dynamic> uriMap, {required Map<String, dynamic> additionalData}) {
+  factory DayPasswordToken.fromOtpAuthMap(Map<String, dynamic> uriMap, {Map<String, dynamic> additionalData = const {}}) {
     uriMap = validateMap(
       map: uriMap,
       validators: {

@@ -192,7 +192,7 @@ class PushToken extends Token {
         'publicTokenKey: $publicTokenKey}';
   }
 
-  factory PushToken.fromOtpAuthMap(Map<String, dynamic> otpAuthMap, {required Map<String, dynamic> additionalData}) {
+  factory PushToken.fromOtpAuthMap(Map<String, dynamic> otpAuthMap, {Map<String, dynamic> additionalData = const {}}) {
 // Validate map for Push token
     final validatedMap = validateMap(
       map: otpAuthMap,

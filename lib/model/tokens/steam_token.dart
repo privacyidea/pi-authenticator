@@ -161,7 +161,7 @@ class SteamToken extends TOTPToken {
     );
   }
 
-  static SteamToken fromOtpAuthMap(Map<String, dynamic> uriMap, {required Map<String, dynamic> additionalData}) {
+  static SteamToken fromOtpAuthMap(Map<String, dynamic> uriMap, {Map<String, dynamic> additionalData = const {}}) {
     uriMap = validateMap(
       map: uriMap,
       validators: {
