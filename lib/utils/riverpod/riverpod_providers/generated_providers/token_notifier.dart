@@ -117,7 +117,11 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     _rsaUtils = _rsaUtilsOverride ?? rsaUtils;
     _ioClient = _ioClientOverride ?? ioClient;
     _firebaseUtils = _firebaseUtilsOverride ?? firebaseUtils;
-    initState = _loadStateFromRepo().then((newState) => state = newState);
+    _stateMutex.acquire();
+    initState = _loadStateFromRepo().then((newState) {
+      _stateMutex.release();
+      return state = newState;
+    });
     return const TokenState(tokens: [], lastlyUpdatedTokens: []);
   }
   //   /*

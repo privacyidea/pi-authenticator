@@ -174,7 +174,8 @@ class FreeOtpPlusImportFileProcessor extends TokenImportFileProcessor {
           OTP_AUTH_ISSUER: const TypeValidatorRequired<String>(),
           OTP_AUTH_ALGORITHM: const TypeValidatorRequired<String>(),
           OTP_AUTH_DIGITS: intToStringValidator,
-          OTP_AUTH_COUNTER: intToStringValidatorOptional,
+          // FreeOTP+ saves the counter 1 less than the actual value
+          OTP_AUTH_COUNTER: TypeValidatorOptional<String>(transformer: (value) => ((value as int) + 1).toString()),
           OTP_AUTH_PERIOD_SECONDS: intToStringValidatorOptional,
         },
       );

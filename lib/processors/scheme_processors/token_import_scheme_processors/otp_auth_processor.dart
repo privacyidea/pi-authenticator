@@ -78,13 +78,22 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
       // Update the secret with the two step secret.
       queryParameters[OTP_AUTH_SECRET_BASE32] = twoStepSecretString;
     }
-    final newToken = Token.fromOtpAuthMap(queryParameters, additionalData: {Token.ORIGIN: _parseCreatorToOrigin(uri)});
-    return [
-      ProcessorResultSuccess(
-        newToken,
-        resultHandlerType: resultHandlerType,
-      )
-    ];
+    try {
+      return [
+        ProcessorResultSuccess(
+          Token.fromOtpAuthMap(queryParameters, additionalData: {Token.ORIGIN: _parseCreatorToOrigin(uri)}),
+          resultHandlerType: resultHandlerType,
+        )
+      ];
+    } catch (e) {
+      return [
+        ProcessorResultFailed(
+          'The token could not be created.',
+          error: e,
+          resultHandlerType: resultHandlerType,
+        )
+      ];
+    }
   }
 }
 

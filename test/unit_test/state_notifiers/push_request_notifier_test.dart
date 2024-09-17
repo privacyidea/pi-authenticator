@@ -59,6 +59,7 @@ void _testPushRequestNotifier() {
       when(mockPushRepo.saveState(any)).thenAnswer((_) async {});
       when(mockPushRepo.loadState()).thenAnswer((_) async => before);
       final initState = await container.read(pushProvider.future);
+      verify(mockPushRepo.loadState()).called(1);
       expect(initState, before);
       when(mockRsaUtils.trySignWithToken(any, any)).thenAnswer((_) async => 'signature');
       when(mockIoClient.doPost(
@@ -70,8 +71,7 @@ void _testPushRequestNotifier() {
 
       await container.read(pushProvider.notifier).accept(PushToken(serial: 'serial', id: 'id'), pr);
 
-      expect(container.read(pushProvider), after);
-      verify(mockPushRepo.loadState()).called(1);
+      expect(await container.read(pushProvider.future), after);
       verify(mockRsaUtils.trySignWithToken(any, any)).called(1);
       verify(mockIoClient.doPost(
         url: anyNamed('url'),
@@ -205,7 +205,7 @@ void _testPushRequestNotifier() {
       expect(initState, before);
       final success = await container.read(pushProvider.notifier).remove(pr2);
       expect(success, true);
-      expect(container.read(pushProvider), after);
+      expect(await container.read(pushProvider.future), after);
     });
   });
 }

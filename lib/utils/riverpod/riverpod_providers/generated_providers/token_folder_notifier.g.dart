@@ -7,7 +7,7 @@ part of 'token_folder_notifier.dart';
 // **************************************************************************
 
 String _$tokenFolderNotifierHash() =>
-    r'cba0fe40fa6c71aa6c3436b8fd9bde0e7cf94388';
+    r'f1f961ff173b88705b6c2dfc893703a7644e6afc';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -31,7 +31,7 @@ class _SystemHash {
 }
 
 abstract class _$TokenFolderNotifier
-    extends BuildlessAutoDisposeNotifier<TokenFolderState> {
+    extends BuildlessNotifier<TokenFolderState> {
   late final TokenFolderRepository repo;
 
   TokenFolderState build({
@@ -82,8 +82,8 @@ class TokenFolderNotifierFamily extends Family<TokenFolderState> {
 }
 
 /// See also [TokenFolderNotifier].
-class TokenFolderNotifierProvider extends AutoDisposeNotifierProviderImpl<
-    TokenFolderNotifier, TokenFolderState> {
+class TokenFolderNotifierProvider
+    extends NotifierProviderImpl<TokenFolderNotifier, TokenFolderState> {
   /// See also [TokenFolderNotifier].
   TokenFolderNotifierProvider({
     required TokenFolderRepository repo,
@@ -139,7 +139,7 @@ class TokenFolderNotifierProvider extends AutoDisposeNotifierProviderImpl<
   }
 
   @override
-  AutoDisposeNotifierProviderElement<TokenFolderNotifier, TokenFolderState>
+  NotifierProviderElement<TokenFolderNotifier, TokenFolderState>
       createElement() {
     return _TokenFolderNotifierProviderElement(this);
   }
@@ -158,15 +158,14 @@ class TokenFolderNotifierProvider extends AutoDisposeNotifierProviderImpl<
   }
 }
 
-mixin TokenFolderNotifierRef
-    on AutoDisposeNotifierProviderRef<TokenFolderState> {
+mixin TokenFolderNotifierRef on NotifierProviderRef<TokenFolderState> {
   /// The parameter `repo` of this provider.
   TokenFolderRepository get repo;
 }
 
 class _TokenFolderNotifierProviderElement
-    extends AutoDisposeNotifierProviderElement<TokenFolderNotifier,
-        TokenFolderState> with TokenFolderNotifierRef {
+    extends NotifierProviderElement<TokenFolderNotifier, TokenFolderState>
+    with TokenFolderNotifierRef {
   _TokenFolderNotifierProviderElement(super.provider);
 
   @override

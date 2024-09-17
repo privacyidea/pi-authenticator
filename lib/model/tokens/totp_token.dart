@@ -168,7 +168,7 @@ class TOTPToken extends OTPToken {
     return 'T${super.toString()}period: $period}';
   }
 
-  factory TOTPToken.fromOtpAuthMap(Map<String, dynamic> otpAuthMap, {required Map<String, dynamic> additionalData}) {
+  factory TOTPToken.fromOtpAuthMap(Map<String, dynamic> otpAuthMap, {Map<String, dynamic> additionalData = const {}}) {
     final validatedMap = validateMap(
       map: otpAuthMap,
       validators: {

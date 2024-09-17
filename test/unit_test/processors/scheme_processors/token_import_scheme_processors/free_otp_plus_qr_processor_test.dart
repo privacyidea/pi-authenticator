@@ -14,7 +14,7 @@ void _testFreeOtpPlusQrProcessor() {
     FreeOtpPlusQrProcessor;
     test('processUri', () async {
       // Arrange
-      final normalOtpAuthUri = Uri.parse('otpauth://totp/FreeOTP+:alice?secret=secret&issuer=FreeOTP&algorithm=SHA1&digits=6&period=30');
+      final normalOtpAuthUri = Uri.parse('otpauth://totp/FreeOTP+:alice?secret=AAAAAAAA&issuer=FreeOTP&algorithm=SHA1&digits=6&period=30');
       // Act
       final results = await const FreeOtpPlusQrProcessor().processUri(normalOtpAuthUri);
       // Assert
@@ -40,7 +40,7 @@ void _testFreeOtpPlusQrProcessor() {
     });
     test('processUri without counter', () async {
       // Arrange
-      final normalOtpAuthUri = Uri.parse('otpauth://hotp/FreeOTP+:alice?secret=secret&issuer=FreeOTP&algorithm=SHA1&digits=6');
+      final normalOtpAuthUri = Uri.parse('otpauth://hotp/FreeOTP+:alice?secret=AAAAAAAA&issuer=FreeOTP&algorithm=SHA1&digits=6');
       // Act
       final results = await const FreeOtpPlusQrProcessor().processUri(normalOtpAuthUri);
       // Assert

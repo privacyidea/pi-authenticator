@@ -38,6 +38,7 @@ abstract class ProcessorResult<T> with _$ProcessorResult<T> {
   }) = ProcessorResultSuccess;
   const factory ProcessorResult.failed(
     String message, {
+    dynamic error,
     TypeValidatorRequired<ResultHandler>? resultHandlerType,
   }) = ProcessorResultFailed;
 

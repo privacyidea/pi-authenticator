@@ -163,7 +163,7 @@ class HOTPToken extends OTPToken {
     );
   }
 
-  factory HOTPToken.fromOtpAuthMap(Map<String, dynamic> otpAuthMap, {required Map<String, dynamic> additionalData}) {
+  factory HOTPToken.fromOtpAuthMap(Map<String, dynamic> otpAuthMap, {Map<String, dynamic> additionalData = const {}}) {
     final validatedMap = validateMap(
       map: otpAuthMap,
       validators: {

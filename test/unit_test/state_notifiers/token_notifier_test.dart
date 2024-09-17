@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
@@ -241,11 +242,11 @@ void _testTokenNotifier() {
       expect(state.tokens, after);
     });
     test('addTokenFromOtpAuth', () async {
+      WidgetsFlutterBinding.ensureInitialized();
       final mockSettingsRepo = MockSettingsRepository();
       when(mockSettingsRepo.loadSettings()).thenAnswer((_) async => SettingsState());
-      final container = ProviderContainer(overrides: [settingsProvider.overrideWith(() => SettingsNotifier(repoOverride: mockSettingsRepo))]);
+
       final mockRepo = MockTokenRepository();
-      final mockFirebaseUtils = MockFirebaseUtils();
       final before = <Token>[
         HOTPToken(label: 'label', issuer: 'issuer', id: 'id', algorithm: Algorithms.SHA1, digits: 6, secret: 'secret'),
       ];
@@ -255,22 +256,23 @@ void _testTokenNotifier() {
       ];
       when(mockRepo.loadTokens()).thenAnswer((_) async => before);
       when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
-      final testProvider = tokenNotifierProviderOf(
-        repo: mockRepo,
-        rsaUtils: const RsaUtils(),
-        ioClient: const PrivacyideaIOClient(),
-        firebaseUtils: mockFirebaseUtils,
-      );
-      final testNotifier = container.read(tokenProvider.notifier);
-      const qrCode = 'otpauth://totp/issuer2:label2?secret=secret2&issuer=issuer2&algorithm=SHA256&digits=6&period=30';
-      await scanQrCode([testNotifier], qrCode);
-      final state = container.read(testProvider);
+
+      final container = ProviderContainer(overrides: [
+        settingsProvider.overrideWith(() => SettingsNotifier(repoOverride: mockSettingsRepo)),
+        tokenProvider.overrideWith(() => TokenNotifier(repoOverride: mockRepo)),
+      ]);
+
+      const qrCode = 'otpauth://totp/issuer2:label2?secret=AAAAAAAA2&issuer=issuer2&algorithm=SHA256&digits=6&period=30';
+      final tokenNotifier = container.read(tokenProvider.notifier);
+      await scanQrCode([tokenNotifier], qrCode);
+      final state = container.read(tokenProvider);
       expect(state, isNotNull);
       after.last = after.last.copyWith(id: state.tokens.last.id);
       expect(state.tokens, after);
       verify(mockRepo.saveOrReplaceTokens(any)).called(greaterThan(0));
     });
     test('addTokenFromOtpAuth: rolloutPushToken', () async {
+      WidgetsFlutterBinding.ensureInitialized();
       final mockSettingsRepo = MockSettingsRepository();
       when(mockSettingsRepo.loadSettings()).thenAnswer((_) async => SettingsState());
       final container = ProviderContainer(overrides: [settingsProvider.overrideWith(() => SettingsNotifier(repoOverride: mockSettingsRepo))]);
@@ -431,7 +433,9 @@ void _testTokenNotifier() {
       )).called(greaterThan(0));
     });
     test('loadFromRepo', () async {
-      final container = ProviderContainer();
+      final mockSettingsRepo = MockSettingsRepository();
+      when(mockSettingsRepo.loadSettings()).thenAnswer((_) async => SettingsState());
+      final container = ProviderContainer(overrides: [settingsProvider.overrideWith(() => SettingsNotifier(repoOverride: mockSettingsRepo))]);
       final mockRepo = MockTokenRepository();
       final mockFirebaseUtils = MockFirebaseUtils();
       final before = <Token>[

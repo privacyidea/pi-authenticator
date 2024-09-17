@@ -25,7 +25,7 @@ void _testTokenFolderNotifier() {
       await notifier.initState;
       await notifier.addNewFolder('test');
       final state = container.read(testProvider);
-      expect(state.folders, after);
+      expect(state, after);
       verify(mockRepo.saveState(after)).called(1);
     });
 
@@ -41,7 +41,7 @@ void _testTokenFolderNotifier() {
       await notifier.initState;
       await notifier.removeFolder(const TokenFolder(label: 'test', folderId: 1));
       final state = container.read(testProvider);
-      expect(state.folders, after);
+      expect(state, after);
       verify(mockRepo.saveState(after)).called(1);
     });
     test('updateFolder', () async {
@@ -56,7 +56,7 @@ void _testTokenFolderNotifier() {
       await notifier.initState;
       await notifier.updateFolder(before.folders.first, (p0) => after.folders.first);
       final state = container.read(testProvider);
-      expect(state.folders, after);
+      expect(state, after);
       verify(mockRepo.saveState(after)).called(1);
     });
     test('updateFolders', () async {
@@ -77,7 +77,7 @@ void _testTokenFolderNotifier() {
       await notifier.initState;
       await notifier.addOrReplaceFolders(after.folders);
       final state = container.read(testProvider);
-      expect(state.folders, after);
+      expect(state, after);
       verify(mockRepo.saveState(after)).called(1);
     });
   });

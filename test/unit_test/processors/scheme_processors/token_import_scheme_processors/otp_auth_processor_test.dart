@@ -17,7 +17,7 @@ void _testOtpAuthProcessor() {
       test('processUri', () async {
         // Arrange
         const processor = OtpAuthProcessor();
-        const uriString = 'otpauth://totp/account?secret=secret&issuer=issuer&algorithm=SHA256&digits=8&period=45';
+        const uriString = 'otpauth://totp/account?secret=AAAAAAAA&issuer=issuer&algorithm=SHA256&digits=8&period=45';
         final uri = Uri.parse(uriString);
         // Act
         final results = await processor.processUri(uri);
@@ -41,7 +41,7 @@ void _testOtpAuthProcessor() {
       test('processUri missing algorithm', () async {
         // Arrange
         const processor = OtpAuthProcessor();
-        const uriString = 'otpauth://totp/account?secret=secret&issuer=issuer&digits=6&period=30';
+        const uriString = 'otpauth://totp/account?secret=AAAAAAAA&issuer=issuer&digits=6&period=30';
         final uri = Uri.parse(uriString);
         // Act
         final results = await processor.processUri(uri);
@@ -65,7 +65,7 @@ void _testOtpAuthProcessor() {
       test('processUri missing digits', () async {
         // Arrange
         const processor = OtpAuthProcessor();
-        const uriString = 'otpauth://totp/account?secret=secret&issuer=issuer&algorithm=SHA1&period=30';
+        const uriString = 'otpauth://totp/account?secret=AAAAAAAA&issuer=issuer&algorithm=SHA1&period=30';
         final uri = Uri.parse(uriString);
         // Act
         final results = await processor.processUri(uri);
@@ -89,7 +89,7 @@ void _testOtpAuthProcessor() {
       test('processUri missing period', () async {
         // Arrange
         const processor = OtpAuthProcessor();
-        const uriString = 'otpauth://totp/account?secret=secret&issuer=issuer&algorithm=SHA1&digits=6';
+        const uriString = 'otpauth://totp/account?secret=AAAAAAAA&issuer=issuer&algorithm=SHA1&digits=6';
         final uri = Uri.parse(uriString);
         // Act
         final results = await processor.processUri(uri);
@@ -122,12 +122,13 @@ void _testOtpAuthProcessor() {
         final result0 = results[0];
         expect(result0, isA<ProcessorResultFailed>());
         final message = result0.asFailed!.message;
-        expect(message.toLowerCase().contains('secret'), isTrue);
+        final error = result0.asFailed!.error;
+        expect(message.toLowerCase().contains('secret') || error.toString().toLowerCase().contains('secret'), isTrue);
       });
       test('processUri issuer from path', () async {
         // Arrange
         const processor = OtpAuthProcessor();
-        const uriString = 'otpauth://totp/issuer:account?secret=secret&issuer=issuer2&algorithm=SHA1&digits=6&period=30';
+        const uriString = 'otpauth://totp/issuer:account?secret=AAAAAAAA&issuer=issuer2&algorithm=SHA1&digits=6&period=30';
         final uri = Uri.parse(uriString);
         // Act
         final results = await processor.processUri(uri);
@@ -154,7 +155,7 @@ void _testOtpAuthProcessor() {
       test('processUri', () async {
         // Arrange
         const processor = OtpAuthProcessor();
-        const uriString = 'otpauth://hotp/account?secret=secret&issuer=issuer&algorithm=SHA256&digits=8&counter=5';
+        const uriString = 'otpauth://hotp/account?secret=AAAAAAAA&issuer=issuer&algorithm=SHA256&digits=8&counter=5';
         final uri = Uri.parse(uriString);
         // Act
         final results = await processor.processUri(uri);
@@ -178,7 +179,7 @@ void _testOtpAuthProcessor() {
       test('processUri missing algorithm', () async {
         // Arrange
         const processor = OtpAuthProcessor();
-        const uriString = 'otpauth://hotp/account?secret=secret&issuer=issuer&digits=8&counter=5';
+        const uriString = 'otpauth://hotp/account?secret=AAAAAAAA&issuer=issuer&digits=8&counter=5';
         final uri = Uri.parse(uriString);
         // Act
         final results = await processor.processUri(uri);
@@ -202,7 +203,7 @@ void _testOtpAuthProcessor() {
       test('processUri missing digits', () async {
         // Arrange
         const processor = OtpAuthProcessor();
-        const uriString = 'otpauth://hotp/account?secret=secret&issuer=issuer&algorithm=SHA256&counter=5';
+        const uriString = 'otpauth://hotp/account?secret=AAAAAAAA&issuer=issuer&algorithm=SHA256&counter=5';
         final uri = Uri.parse(uriString);
         // Act
         final results = await processor.processUri(uri);
@@ -226,7 +227,7 @@ void _testOtpAuthProcessor() {
       test('processUri missing counter', () async {
         // Arrange
         const processor = OtpAuthProcessor();
-        const uriString = 'otpauth://hotp/account?secret=secret&issuer=issuer&algorithm=SHA256&digits=8';
+        const uriString = 'otpauth://hotp/account?secret=AAAAAAAA&issuer=issuer&algorithm=SHA256&digits=8';
         final uri = Uri.parse(uriString);
         // Act
         final results = await processor.processUri(uri);
@@ -259,12 +260,13 @@ void _testOtpAuthProcessor() {
         final result0 = results[0];
         expect(result0, isA<ProcessorResultFailed>());
         final message = result0.asFailed!.message;
-        expect(message.toLowerCase().contains('secret'), isTrue);
+        final error = result0.asFailed!.error;
+        expect(message.toLowerCase().contains('secret') || error.toString().toLowerCase().contains('secret'), isTrue);
       });
       test('processUri issuer from path', () async {
         // Arrange
         const processor = OtpAuthProcessor();
-        const uriString = 'otpauth://hotp/issuer:account?secret=secret&algorithm=SHA256&digits=8&counter=5';
+        const uriString = 'otpauth://hotp/issuer:account?secret=AAAAAAAA&algorithm=SHA256&digits=8&counter=5';
         final uri = Uri.parse(uriString);
         // Act
         final results = await processor.processUri(uri);
@@ -290,7 +292,7 @@ void _testOtpAuthProcessor() {
         // Arrange
         const processor = OtpAuthProcessor();
         const uriString =
-            'otpauth://hotp/issuer:account?secret=secret&algorithm=SHA256&digits=8&counter=5&2step_salt=10&2step_output=20&2step_difficulty=10000';
+            'otpauth://hotp/issuer:account?secret=AAAAAAAA&algorithm=SHA256&digits=8&counter=5&2step_salt=10&2step_output=20&2step_difficulty=10000';
         final uri = Uri.parse(uriString);
         // Act
         final results = await processor.processUri(uri);
@@ -304,7 +306,7 @@ void _testOtpAuthProcessor() {
       test('processUri', () async {
         // Arrange
         const processor = OtpAuthProcessor();
-        const uriString = 'otpauth://daypassword/account?secret=secret&issuer=issuer&algorithm=SHA256&period=86400&digits=8';
+        const uriString = 'otpauth://daypassword/account?secret=AAAAAAAA&issuer=issuer&algorithm=SHA256&period=86400&digits=8';
         final uri = Uri.parse(uriString);
         // Act
         final results = await processor.processUri(uri);
@@ -329,7 +331,7 @@ void _testOtpAuthProcessor() {
       test('processUri missing algorithm', () async {
         // Arrange
         const processor = OtpAuthProcessor();
-        const uriString = 'otpauth://daypassword/account?secret=secret&issuer=issuer&period=86400&digits=8';
+        const uriString = 'otpauth://daypassword/account?secret=AAAAAAAA&issuer=issuer&period=86400&digits=8';
         final uri = Uri.parse(uriString);
         // Act
         final results = await processor.processUri(uri);
@@ -354,7 +356,7 @@ void _testOtpAuthProcessor() {
       test('processUri missing digits', () async {
         // Arrange
         const processor = OtpAuthProcessor();
-        const uriString = 'otpauth://daypassword/account?secret=secret&issuer=issuer&algorithm=SHA256&period=172800';
+        const uriString = 'otpauth://daypassword/account?secret=AAAAAAAA&issuer=issuer&algorithm=SHA256&period=172800';
         final uri = Uri.parse(uriString);
         // Act
         final results = await processor.processUri(uri);
@@ -379,7 +381,7 @@ void _testOtpAuthProcessor() {
       test('processUri missing period', () async {
         // Arrange
         const processor = OtpAuthProcessor();
-        const uriString = 'otpauth://daypassword/account?secret=secret&issuer=issuer&algorithm=SHA256&digits=8';
+        const uriString = 'otpauth://daypassword/account?secret=AAAAAAAA&issuer=issuer&algorithm=SHA256&digits=8';
         final uri = Uri.parse(uriString);
         // Act
         final results = await processor.processUri(uri);
@@ -413,7 +415,8 @@ void _testOtpAuthProcessor() {
         final result0 = results[0];
         expect(result0, isA<ProcessorResultFailed>());
         final message = result0.asFailed!.message;
-        expect(message.toLowerCase().contains('secret'), isTrue);
+        final error = result0.asFailed!.error;
+        expect(message.toLowerCase().contains('secret') || error.toString().toLowerCase().contains('secret'), isTrue);
       });
     });
     group('Push Token', () {
