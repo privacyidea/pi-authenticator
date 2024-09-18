@@ -23,7 +23,7 @@ import 'dart:convert';
 
 import 'package:cryptography/cryptography.dart';
 import 'package:file_selector/file_selector.dart';
-import 'package:privacyidea_authenticator/utils/type_matchers.dart';
+import 'package:privacyidea_authenticator/utils/object_validators.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../model/encryption/uint_8_buffer.dart';
@@ -333,13 +333,13 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
             OTP_AUTH_COUNTER: tokenMap[_AUTHENTICATOR_PRO_COUNTER],
           },
           validators: {
-            OTP_AUTH_TYPE: const TypeValidatorRequired<String>(),
-            OTP_AUTH_ISSUER: const TypeValidatorRequired<String>(),
-            OTP_AUTH_LABEL: const TypeValidatorRequired<String>(),
-            OTP_AUTH_SECRET_BASE32: const TypeValidatorRequired<String>(),
+            OTP_AUTH_TYPE: const ObjectValidator<String>(),
+            OTP_AUTH_ISSUER: const ObjectValidator<String>(),
+            OTP_AUTH_LABEL: const ObjectValidator<String>(),
+            OTP_AUTH_SECRET_BASE32: const ObjectValidator<String>(),
             OTP_AUTH_DIGITS: intToStringValidator,
             OTP_AUTH_PERIOD_SECONDS: intToStringValidator,
-            OTP_AUTH_ALGORITHM: TypeValidatorRequired<String>(transformer: (value) => algorithmMap[value]!),
+            OTP_AUTH_ALGORITHM: ObjectValidator<String>(transformer: (value) => algorithmMap[value]!),
             OTP_AUTH_COUNTER: intToStringValidator,
           },
           name: 'AuthenticatorProToken',

@@ -19,7 +19,7 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
-import 'package:privacyidea_authenticator/utils/type_matchers.dart';
+import 'package:privacyidea_authenticator/utils/object_validators.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../utils/identifiers.dart';
@@ -137,15 +137,15 @@ class HOTPToken extends OTPToken {
     final uriMap = validateMap(
       map: template.otpAuthMap,
       validators: {
-        OTP_AUTH_LABEL: const TypeValidatorOptional<String>(),
-        OTP_AUTH_ISSUER: const TypeValidatorOptional<String>(),
-        OTP_AUTH_SERIAL: const TypeValidatorOptional<String>(),
-        OTP_AUTH_ALGORITHM: stringToAlgorithmsValidatorOptional,
-        OTP_AUTH_DIGITS: stringToIntValidatorOptional,
-        OTP_AUTH_SECRET_BASE32: base32SecretValidatorOptional,
-        OTP_AUTH_COUNTER: stringToIntValidatorOptional,
-        OTP_AUTH_IMAGE: const TypeValidatorOptional<String>(),
-        OTP_AUTH_PIN: stringToBoolValidatorOptional,
+        OTP_AUTH_LABEL: const ObjectValidatorNullable<String>(),
+        OTP_AUTH_ISSUER: const ObjectValidatorNullable<String>(),
+        OTP_AUTH_SERIAL: const ObjectValidatorNullable<String>(),
+        OTP_AUTH_ALGORITHM: stringToAlgorithmsValidatorNullable,
+        OTP_AUTH_DIGITS: stringToIntValidatorNullable,
+        OTP_AUTH_SECRET_BASE32: base32SecretValidatorNullable,
+        OTP_AUTH_COUNTER: stringToIntValidatorNullable,
+        OTP_AUTH_IMAGE: const ObjectValidatorNullable<String>(),
+        OTP_AUTH_PIN: stringToBoolValidatorNullable,
       },
       name: 'HOTPToken',
     );
@@ -167,15 +167,15 @@ class HOTPToken extends OTPToken {
     final validatedMap = validateMap(
       map: otpAuthMap,
       validators: {
-        OTP_AUTH_LABEL: const TypeValidatorRequired<String>(defaultValue: ''),
-        OTP_AUTH_ISSUER: const TypeValidatorRequired<String>(defaultValue: ''),
-        OTP_AUTH_SERIAL: const TypeValidatorOptional<String>(),
+        OTP_AUTH_LABEL: const ObjectValidator<String>(defaultValue: ''),
+        OTP_AUTH_ISSUER: const ObjectValidator<String>(defaultValue: ''),
+        OTP_AUTH_SERIAL: const ObjectValidatorNullable<String>(),
         OTP_AUTH_ALGORITHM: stringToAlgorithmsValidator.withDefault(Algorithms.SHA1),
-        OTP_AUTH_DIGITS: stringToIntvalidator.withDefault(6),
+        OTP_AUTH_DIGITS: otpAuthDigitsValidatorNullable,
         OTP_AUTH_SECRET_BASE32: base32Secretvalidator,
-        OTP_AUTH_COUNTER: stringToIntvalidator.withDefault(0),
-        OTP_AUTH_IMAGE: const TypeValidatorOptional<String>(),
-        OTP_AUTH_PIN: stringToBoolValidatorOptional,
+        OTP_AUTH_COUNTER: otpAuthCounterValidator,
+        OTP_AUTH_IMAGE: const ObjectValidatorNullable<String>(),
+        OTP_AUTH_PIN: stringToBoolValidatorNullable,
       },
       name: 'HOTPToken#otpAuthMap',
     );

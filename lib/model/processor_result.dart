@@ -34,12 +34,12 @@ abstract class ProcessorResult<T> with _$ProcessorResult<T> {
   const ProcessorResult._();
   const factory ProcessorResult.success(
     T resultData, {
-    TypeValidatorRequired<ResultHandler>? resultHandlerType,
+    ObjectValidator<ResultHandler>? resultHandlerType,
   }) = ProcessorResultSuccess;
   const factory ProcessorResult.failed(
     String message, {
     dynamic error,
-    TypeValidatorRequired<ResultHandler>? resultHandlerType,
+    ObjectValidator<ResultHandler>? resultHandlerType,
   }) = ProcessorResultFailed;
 
   bool get isSuccess => this is ProcessorResultSuccess<T>;

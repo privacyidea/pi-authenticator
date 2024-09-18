@@ -24,7 +24,7 @@ import 'package:privacyidea_authenticator/model/token_template.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../utils/identifiers.dart';
-import '../../utils/type_matchers.dart';
+import '../../utils/object_validators.dart';
 import '../enums/algorithms.dart';
 import '../enums/token_types.dart';
 import '../extensions/int_extension.dart';
@@ -141,12 +141,12 @@ class SteamToken extends TOTPToken {
     final uriMap = validateMap(
       map: template.otpAuthMap,
       validators: {
-        OTP_AUTH_LABEL: const TypeValidatorOptional<String>(),
-        OTP_AUTH_ISSUER: const TypeValidatorOptional<String>(),
-        OTP_AUTH_SERIAL: const TypeValidatorOptional<String>(),
-        OTP_AUTH_SECRET_BASE32: base32SecretValidatorOptional,
-        OTP_AUTH_IMAGE: const TypeValidatorOptional<String>(),
-        OTP_AUTH_PIN: stringToBoolValidatorOptional,
+        OTP_AUTH_LABEL: const ObjectValidatorNullable<String>(),
+        OTP_AUTH_ISSUER: const ObjectValidatorNullable<String>(),
+        OTP_AUTH_SERIAL: const ObjectValidatorNullable<String>(),
+        OTP_AUTH_SECRET_BASE32: base32SecretValidatorNullable,
+        OTP_AUTH_IMAGE: const ObjectValidatorNullable<String>(),
+        OTP_AUTH_PIN: stringToBoolValidatorNullable,
       },
       name: 'SteamToken',
     );
@@ -165,12 +165,12 @@ class SteamToken extends TOTPToken {
     uriMap = validateMap(
       map: uriMap,
       validators: {
-        OTP_AUTH_LABEL: const TypeValidatorRequired<String>(defaultValue: ''),
-        OTP_AUTH_ISSUER: const TypeValidatorRequired<String>(defaultValue: ''),
-        OTP_AUTH_SERIAL: const TypeValidatorOptional<String>(),
+        OTP_AUTH_LABEL: const ObjectValidator<String>(defaultValue: ''),
+        OTP_AUTH_ISSUER: const ObjectValidator<String>(defaultValue: ''),
+        OTP_AUTH_SERIAL: const ObjectValidatorNullable<String>(),
         OTP_AUTH_SECRET_BASE32: base32Secretvalidator,
-        OTP_AUTH_IMAGE: const TypeValidatorOptional<String>(),
-        OTP_AUTH_PIN: stringToBoolValidatorOptional,
+        OTP_AUTH_IMAGE: const ObjectValidatorNullable<String>(),
+        OTP_AUTH_PIN: stringToBoolValidatorNullable,
       },
       name: 'SteamToken#otpAuthMap',
     );

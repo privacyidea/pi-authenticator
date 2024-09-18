@@ -29,7 +29,7 @@ import '../../../model/token_import/token_origin_data.dart';
 import '../../../model/tokens/token.dart';
 import '../../../utils/identifiers.dart';
 import '../../../utils/logger.dart';
-import '../../../utils/type_matchers.dart';
+import '../../../utils/object_validators.dart';
 import '../../../utils/utils.dart';
 import '../../../utils/view_utils.dart';
 import '../../../widgets/dialog_widgets/two_step_dialog.dart';
@@ -151,7 +151,7 @@ TokenOriginData _parseCreatorToOrigin(Uri uri) {
 String _parseIssuer(Uri uri) {
   final param = validate(
     value: uri.queryParameters[OTP_AUTH_ISSUER],
-    validator: const TypeValidatorRequired<String>(defaultValue: ''),
+    validator: const ObjectValidator<String>(defaultValue: ''),
     name: OTP_AUTH_ISSUER,
   );
   try {
@@ -179,7 +179,7 @@ Future<String?>? _parse2StepSecret(Uri uri) {
   validateMap(
     map: queryParameters,
     validators: {
-      OTP_AUTH_SECRET_BASE32: TypeValidatorRequired<Uint8List>(transformer: (v) => Encodings.base32.decode(v)),
+      OTP_AUTH_SECRET_BASE32: ObjectValidator<Uint8List>(transformer: (v) => Encodings.base32.decode(v)),
       OTP_AUTH_2STEP_SALT_LENTH: stringToIntvalidator,
       OTP_AUTH_2STEP_OUTPUT_LENTH: stringToIntvalidator,
       OTP_AUTH_2STEP_ITERATIONS: stringToIntvalidator,
@@ -237,7 +237,7 @@ String _parseTokenType(Uri uri) {
   Logger.debug('Token type value: $value', name: 'otp_auth_processor.dart#_parseTokenType');
   return validate(
     value: uri.queryParameters[OTP_AUTH_TYPE] ?? uri.host,
-    validator: TypeValidatorRequired<String>(defaultValue: uri.host),
+    validator: ObjectValidator<String>(defaultValue: uri.host),
     name: OTP_AUTH_TYPE,
   );
 }

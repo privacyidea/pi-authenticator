@@ -58,13 +58,13 @@ class TokenTemplate with _$TokenTemplate {
 
   String? get serial => validateOptional(
         value: otpAuthMap[OTP_AUTH_SERIAL],
-        validator: const TypeValidatorOptional<String>(),
+        validator: const ObjectValidatorNullable<String>(),
         name: OTP_AUTH_SERIAL,
       );
 
   String? get type => validateOptional(
         value: otpAuthMap[OTP_AUTH_TYPE],
-        validator: const TypeValidatorOptional<String>(),
+        validator: const ObjectValidatorNullable<String>(),
         name: OTP_AUTH_TYPE,
       );
 
@@ -72,7 +72,7 @@ class TokenTemplate with _$TokenTemplate {
 
   String? get containerSerial => validateOptional(
         value: otpAuthMap[CONTAINER_SERIAL],
-        validator: const TypeValidatorOptional<String>(),
+        validator: const ObjectValidatorNullable<String>(),
         name: CONTAINER_SERIAL,
       );
 

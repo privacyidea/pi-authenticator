@@ -350,22 +350,22 @@ class PiServerResponse<T extends PiServerResultValue> with _$PiServerResponse {
     final map = validateMap<dynamic>(
       map: json,
       validators: {
-        RESULT: const TypeValidatorRequired<Map<String, dynamic>>(),
-        ID: const TypeValidatorRequired<int>(),
-        JSONRPC: const TypeValidatorRequired<String>(),
-        DETAIL: const TypeValidatorOptional<dynamic>(),
-        TIME: const TypeValidatorRequired<double>(),
-        VERSION: const TypeValidatorRequired<String>(),
-        SIGNATURE: const TypeValidatorRequired<String>(),
+        RESULT: const ObjectValidator<Map<String, dynamic>>(),
+        ID: const ObjectValidator<int>(),
+        JSONRPC: const ObjectValidator<String>(),
+        DETAIL: const ObjectValidatorNullable<dynamic>(),
+        TIME: const ObjectValidator<double>(),
+        VERSION: const ObjectValidator<String>(),
+        SIGNATURE: const ObjectValidator<String>(),
       },
       name: 'PiServerResponse#fromJson',
     );
     final result = validateMap<dynamic>(
       map: map[RESULT],
       validators: {
-        RESULT_STATUS: const TypeValidatorRequired<bool>(),
-        RESULT_VALUE: const TypeValidatorOptional<Map<String, dynamic>>(),
-        RESULT_ERROR: const TypeValidatorOptional<Map<String, dynamic>>(),
+        RESULT_STATUS: const ObjectValidator<bool>(),
+        RESULT_VALUE: const ObjectValidatorNullable<Map<String, dynamic>>(),
+        RESULT_ERROR: const ObjectValidatorNullable<Map<String, dynamic>>(),
       },
       name: 'PiServerResponse#fromJson#result',
     );
@@ -422,10 +422,10 @@ class EncryptionParams {
     final map = validateMap(
       map: json,
       validators: {
-        'algorithm': const TypeValidatorRequired<String>(),
-        'init_vector': const TypeValidatorRequired<String>(),
-        'mode': const TypeValidatorRequired<String>(),
-        'tag': const TypeValidatorRequired<String>(),
+        'algorithm': const ObjectValidator<String>(),
+        'init_vector': const ObjectValidator<String>(),
+        'mode': const ObjectValidator<String>(),
+        'tag': const ObjectValidator<String>(),
       },
       name: 'EncryptionParams#fromJson',
     );
@@ -456,8 +456,8 @@ class PiServerResultError extends PiServerResult {
     final map = validateMap(
       map: json,
       validators: {
-        PI_SERVER_ERROR_CODE: const TypeValidatorRequired<int>(),
-        PI_SERVER_ERROR_MESSAGE: const TypeValidatorRequired<String>(),
+        PI_SERVER_ERROR_CODE: const ObjectValidator<int>(),
+        PI_SERVER_ERROR_MESSAGE: const ObjectValidator<String>(),
       },
       name: 'PiServerResultError#fromJson',
     );
@@ -504,10 +504,10 @@ class ContainerChallenge extends PiServerResultValue {
     final map = validateMap(
       map: json,
       validators: {
-        CONTAINER_SYNC_URL: const TypeValidatorRequired<String>(),
-        CONTAINER_SYNC_KEY_ALGORITHM: const TypeValidatorRequired<String>(),
-        CONTAINER_SYNC_NONCE: const TypeValidatorRequired<String>(),
-        CONTAINER_SYNC_TIMESTAMP: const TypeValidatorRequired<String>(),
+        CONTAINER_SYNC_URL: const ObjectValidator<String>(),
+        CONTAINER_SYNC_KEY_ALGORITHM: const ObjectValidator<String>(),
+        CONTAINER_SYNC_NONCE: const ObjectValidator<String>(),
+        CONTAINER_SYNC_TIMESTAMP: const ObjectValidator<String>(),
       },
       name: 'ContainerChallenge#fromJson',
     );
@@ -538,10 +538,10 @@ class ContainerSyncResult extends PiServerResultValue {
     final map = validateMap(
       map: json,
       validators: {
-        CONTAINER_SYNC_PUBLIC_SERVER_KEY: const TypeValidatorRequired<String>(),
-        CONTAINER_SYNC_ENC_ALGORITHM: const TypeValidatorRequired<String>(),
-        CONTAINER_SYNC_ENC_PARAMS: TypeValidatorRequired<EncryptionParams>(transformer: (v) => EncryptionParams.fromJson(v)),
-        CONTAINER_SYNC_DICT_SERVER: const TypeValidatorRequired<String>(),
+        CONTAINER_SYNC_PUBLIC_SERVER_KEY: const ObjectValidator<String>(),
+        CONTAINER_SYNC_ENC_ALGORITHM: const ObjectValidator<String>(),
+        CONTAINER_SYNC_ENC_PARAMS: ObjectValidator<EncryptionParams>(transformer: (v) => EncryptionParams.fromJson(v)),
+        CONTAINER_SYNC_DICT_SERVER: const ObjectValidator<String>(),
       },
       name: 'ContainerSyncResult#fromJson',
     );

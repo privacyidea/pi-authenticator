@@ -221,7 +221,7 @@ Future<void> scanQrCode(List<ResultHandler> resultHandlerList, Object? qrCode) a
   }
   final processorResults = await SchemeProcessor.processUriByAny(uri);
   if (processorResults == null) return;
-  final resultHandlerTypeMap = <TypeValidatorRequired<ResultHandler>, List<ProcessorResult>>{};
+  final resultHandlerTypeMap = <ObjectValidator<ResultHandler>, List<ProcessorResult>>{};
 
   for (var result in processorResults) {
     final validator = result.resultHandlerType;

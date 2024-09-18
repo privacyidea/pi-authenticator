@@ -16,35 +16,35 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$ProcessorResult<T> {
-  TypeValidatorRequired<ResultHandler>? get resultHandlerType =>
+  ObjectValidator<ResultHandler>? get resultHandlerType =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(T resultData,
-            TypeValidatorRequired<ResultHandler>? resultHandlerType)
+    required TResult Function(
+            T resultData, ObjectValidator<ResultHandler>? resultHandlerType)
         success,
     required TResult Function(String message, dynamic error,
-            TypeValidatorRequired<ResultHandler>? resultHandlerType)
+            ObjectValidator<ResultHandler>? resultHandlerType)
         failed,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(T resultData,
-            TypeValidatorRequired<ResultHandler>? resultHandlerType)?
+    TResult? Function(
+            T resultData, ObjectValidator<ResultHandler>? resultHandlerType)?
         success,
     TResult? Function(String message, dynamic error,
-            TypeValidatorRequired<ResultHandler>? resultHandlerType)?
+            ObjectValidator<ResultHandler>? resultHandlerType)?
         failed,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(T resultData,
-            TypeValidatorRequired<ResultHandler>? resultHandlerType)?
+    TResult Function(
+            T resultData, ObjectValidator<ResultHandler>? resultHandlerType)?
         success,
     TResult Function(String message, dynamic error,
-            TypeValidatorRequired<ResultHandler>? resultHandlerType)?
+            ObjectValidator<ResultHandler>? resultHandlerType)?
         failed,
     required TResult orElse(),
   }) =>
@@ -82,7 +82,7 @@ abstract class $ProcessorResultCopyWith<T, $Res> {
           ProcessorResult<T> value, $Res Function(ProcessorResult<T>) then) =
       _$ProcessorResultCopyWithImpl<T, $Res, ProcessorResult<T>>;
   @useResult
-  $Res call({TypeValidatorRequired<ResultHandler>? resultHandlerType});
+  $Res call({ObjectValidator<ResultHandler>? resultHandlerType});
 }
 
 /// @nodoc
@@ -106,7 +106,7 @@ class _$ProcessorResultCopyWithImpl<T, $Res, $Val extends ProcessorResult<T>>
       resultHandlerType: freezed == resultHandlerType
           ? _value.resultHandlerType
           : resultHandlerType // ignore: cast_nullable_to_non_nullable
-              as TypeValidatorRequired<ResultHandler>?,
+              as ObjectValidator<ResultHandler>?,
     ) as $Val);
   }
 }
@@ -120,8 +120,7 @@ abstract class _$$ProcessorResultSuccessImplCopyWith<T, $Res>
       __$$ProcessorResultSuccessImplCopyWithImpl<T, $Res>;
   @override
   @useResult
-  $Res call(
-      {T resultData, TypeValidatorRequired<ResultHandler>? resultHandlerType});
+  $Res call({T resultData, ObjectValidator<ResultHandler>? resultHandlerType});
 }
 
 /// @nodoc
@@ -150,7 +149,7 @@ class __$$ProcessorResultSuccessImplCopyWithImpl<T, $Res>
       resultHandlerType: freezed == resultHandlerType
           ? _value.resultHandlerType
           : resultHandlerType // ignore: cast_nullable_to_non_nullable
-              as TypeValidatorRequired<ResultHandler>?,
+              as ObjectValidator<ResultHandler>?,
     ));
   }
 }
@@ -164,7 +163,7 @@ class _$ProcessorResultSuccessImpl<T> extends ProcessorResultSuccess<T> {
   @override
   final T resultData;
   @override
-  final TypeValidatorRequired<ResultHandler>? resultHandlerType;
+  final ObjectValidator<ResultHandler>? resultHandlerType;
 
   @override
   String toString() {
@@ -198,11 +197,11 @@ class _$ProcessorResultSuccessImpl<T> extends ProcessorResultSuccess<T> {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(T resultData,
-            TypeValidatorRequired<ResultHandler>? resultHandlerType)
+    required TResult Function(
+            T resultData, ObjectValidator<ResultHandler>? resultHandlerType)
         success,
     required TResult Function(String message, dynamic error,
-            TypeValidatorRequired<ResultHandler>? resultHandlerType)
+            ObjectValidator<ResultHandler>? resultHandlerType)
         failed,
   }) {
     return success(resultData, resultHandlerType);
@@ -211,11 +210,11 @@ class _$ProcessorResultSuccessImpl<T> extends ProcessorResultSuccess<T> {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(T resultData,
-            TypeValidatorRequired<ResultHandler>? resultHandlerType)?
+    TResult? Function(
+            T resultData, ObjectValidator<ResultHandler>? resultHandlerType)?
         success,
     TResult? Function(String message, dynamic error,
-            TypeValidatorRequired<ResultHandler>? resultHandlerType)?
+            ObjectValidator<ResultHandler>? resultHandlerType)?
         failed,
   }) {
     return success?.call(resultData, resultHandlerType);
@@ -224,11 +223,11 @@ class _$ProcessorResultSuccessImpl<T> extends ProcessorResultSuccess<T> {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(T resultData,
-            TypeValidatorRequired<ResultHandler>? resultHandlerType)?
+    TResult Function(
+            T resultData, ObjectValidator<ResultHandler>? resultHandlerType)?
         success,
     TResult Function(String message, dynamic error,
-            TypeValidatorRequired<ResultHandler>? resultHandlerType)?
+            ObjectValidator<ResultHandler>? resultHandlerType)?
         failed,
     required TResult orElse(),
   }) {
@@ -272,13 +271,13 @@ class _$ProcessorResultSuccessImpl<T> extends ProcessorResultSuccess<T> {
 
 abstract class ProcessorResultSuccess<T> extends ProcessorResult<T> {
   const factory ProcessorResultSuccess(final T resultData,
-          {final TypeValidatorRequired<ResultHandler>? resultHandlerType}) =
+          {final ObjectValidator<ResultHandler>? resultHandlerType}) =
       _$ProcessorResultSuccessImpl<T>;
   const ProcessorResultSuccess._() : super._();
 
   T get resultData;
   @override
-  TypeValidatorRequired<ResultHandler>? get resultHandlerType;
+  ObjectValidator<ResultHandler>? get resultHandlerType;
 
   /// Create a copy of ProcessorResult
   /// with the given fields replaced by the non-null parameter values.
@@ -300,7 +299,7 @@ abstract class _$$ProcessorResultFailedImplCopyWith<T, $Res>
   $Res call(
       {String message,
       dynamic error,
-      TypeValidatorRequired<ResultHandler>? resultHandlerType});
+      ObjectValidator<ResultHandler>? resultHandlerType});
 }
 
 /// @nodoc
@@ -334,7 +333,7 @@ class __$$ProcessorResultFailedImplCopyWithImpl<T, $Res>
       resultHandlerType: freezed == resultHandlerType
           ? _value.resultHandlerType
           : resultHandlerType // ignore: cast_nullable_to_non_nullable
-              as TypeValidatorRequired<ResultHandler>?,
+              as ObjectValidator<ResultHandler>?,
     ));
   }
 }
@@ -351,7 +350,7 @@ class _$ProcessorResultFailedImpl<T> extends ProcessorResultFailed<T> {
   @override
   final dynamic error;
   @override
-  final TypeValidatorRequired<ResultHandler>? resultHandlerType;
+  final ObjectValidator<ResultHandler>? resultHandlerType;
 
   @override
   String toString() {
@@ -385,11 +384,11 @@ class _$ProcessorResultFailedImpl<T> extends ProcessorResultFailed<T> {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(T resultData,
-            TypeValidatorRequired<ResultHandler>? resultHandlerType)
+    required TResult Function(
+            T resultData, ObjectValidator<ResultHandler>? resultHandlerType)
         success,
     required TResult Function(String message, dynamic error,
-            TypeValidatorRequired<ResultHandler>? resultHandlerType)
+            ObjectValidator<ResultHandler>? resultHandlerType)
         failed,
   }) {
     return failed(message, error, resultHandlerType);
@@ -398,11 +397,11 @@ class _$ProcessorResultFailedImpl<T> extends ProcessorResultFailed<T> {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(T resultData,
-            TypeValidatorRequired<ResultHandler>? resultHandlerType)?
+    TResult? Function(
+            T resultData, ObjectValidator<ResultHandler>? resultHandlerType)?
         success,
     TResult? Function(String message, dynamic error,
-            TypeValidatorRequired<ResultHandler>? resultHandlerType)?
+            ObjectValidator<ResultHandler>? resultHandlerType)?
         failed,
   }) {
     return failed?.call(message, error, resultHandlerType);
@@ -411,11 +410,11 @@ class _$ProcessorResultFailedImpl<T> extends ProcessorResultFailed<T> {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(T resultData,
-            TypeValidatorRequired<ResultHandler>? resultHandlerType)?
+    TResult Function(
+            T resultData, ObjectValidator<ResultHandler>? resultHandlerType)?
         success,
     TResult Function(String message, dynamic error,
-            TypeValidatorRequired<ResultHandler>? resultHandlerType)?
+            ObjectValidator<ResultHandler>? resultHandlerType)?
         failed,
     required TResult orElse(),
   }) {
@@ -460,14 +459,14 @@ class _$ProcessorResultFailedImpl<T> extends ProcessorResultFailed<T> {
 abstract class ProcessorResultFailed<T> extends ProcessorResult<T> {
   const factory ProcessorResultFailed(final String message,
           {final dynamic error,
-          final TypeValidatorRequired<ResultHandler>? resultHandlerType}) =
+          final ObjectValidator<ResultHandler>? resultHandlerType}) =
       _$ProcessorResultFailedImpl<T>;
   const ProcessorResultFailed._() : super._();
 
   String get message;
   dynamic get error;
   @override
-  TypeValidatorRequired<ResultHandler>? get resultHandlerType;
+  ObjectValidator<ResultHandler>? get resultHandlerType;
 
   /// Create a copy of ProcessorResult
   /// with the given fields replaced by the non-null parameter values.

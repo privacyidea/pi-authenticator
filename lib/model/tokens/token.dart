@@ -93,13 +93,13 @@ abstract class Token with SortableMixin {
   static Map<String, dynamic> validateAdditionalData(Map<String, dynamic> additionalData) => validateMap(
         map: additionalData,
         validators: {
-          Token.CONTAINER_SERIAL: const TypeValidatorOptional<String>(),
-          Token.ID: const TypeValidatorOptional<String>(),
-          Token.ORIGIN: const TypeValidatorOptional<TokenOriginData>(),
-          Token.HIDDEN: const TypeValidatorOptional<bool>(),
-          Token.CHECKED_CONTAINERS: const TypeValidatorOptional<List<String>>(),
-          Token.FOLDER_ID: const TypeValidatorOptional<int>(),
-          Token.SORT_INDEX: const TypeValidatorOptional<int>(),
+          Token.CONTAINER_SERIAL: const ObjectValidatorNullable<String>(),
+          Token.ID: const ObjectValidatorNullable<String>(),
+          Token.ORIGIN: const ObjectValidatorNullable<TokenOriginData>(),
+          Token.HIDDEN: const ObjectValidatorNullable<bool>(),
+          Token.CHECKED_CONTAINERS: const ObjectValidatorNullable<List<String>>(),
+          Token.FOLDER_ID: const ObjectValidatorNullable<int>(),
+          Token.SORT_INDEX: const ObjectValidatorNullable<int>(),
         },
         name: 'Token#validateAdditionalData',
       );

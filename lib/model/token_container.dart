@@ -26,7 +26,7 @@ import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/extensions/enums/ec_key_algorithm_extension.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
-import 'package:privacyidea_authenticator/utils/type_matchers.dart';
+import 'package:privacyidea_authenticator/utils/object_validators.dart';
 
 import '../utils/ecc_utils.dart';
 import '../utils/logger.dart';
@@ -57,14 +57,14 @@ class TokenContainer with _$TokenContainer {
     uriMap = validateMap(
       map: uriMap,
       validators: {
-        CONTAINER_ISSUER: const TypeValidatorRequired<String>(),
-        CONTAINER_NONCE: const TypeValidatorRequired<String>(),
-        CONTAINER_TIMESTAMP: TypeValidatorRequired<DateTime>(transformer: (v) => DateTime.parse(v)),
+        CONTAINER_ISSUER: const ObjectValidator<String>(),
+        CONTAINER_NONCE: const ObjectValidator<String>(),
+        CONTAINER_TIMESTAMP: ObjectValidator<DateTime>(transformer: (v) => DateTime.parse(v)),
         CONTAINER_FINALIZATION_URL: stringToUrivalidator,
-        CONTAINER_SERIAL: const TypeValidatorRequired<String>(),
-        CONTAINER_EC_KEY_ALGORITHM: TypeValidatorRequired<EcKeyAlgorithm>(transformer: (v) => EcKeyAlgorithm.values.byCurveName(v)),
+        CONTAINER_SERIAL: const ObjectValidator<String>(),
+        CONTAINER_EC_KEY_ALGORITHM: ObjectValidator<EcKeyAlgorithm>(transformer: (v) => EcKeyAlgorithm.values.byCurveName(v)),
         CONTAINER_HASH_ALGORITHM: stringToAlgorithmsValidator,
-        CONTAINER_PASSPHRASE_QUESTION: const TypeValidatorOptional<String>(),
+        CONTAINER_PASSPHRASE_QUESTION: const ObjectValidatorNullable<String>(),
       },
       name: 'Container',
     );
