@@ -701,7 +701,38 @@
 
     }
   },
+    "valueNotAllowed": "The {type} \"{value}\" is not an allowed value for \"{parameter}\"",
+  "@valueNotAllowed": {
+    "placeholders": {
+      "type": {
+        "example": "int"
+      },
+      "value": {
+        "example": "-1"
+      },
+      "parameter": {
+        "example": "counter"
+      }
+    }
+  },
+  "valueNotAllowedIn": "The {type} \"{value}\" is not an allowed value for \"{parameter}\" in \"{map}\"",
+  "@valueNotAllowedIn": {
+    "placeholders": {
+      "type": {
+        "example": "int"
+      },
+      "value": {
+        "example": "-1"
+      },
+      "parameter": {
+        "example": "counter"
+      },
+      "map": {
+        "example": "query parameters"
+      }
 
+    }
+  },
   "unsupported": "The {name} [{value}] is not supported by this version of the app.",
   "@unsupported": {
     "placeholders": {

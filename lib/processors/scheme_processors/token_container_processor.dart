@@ -29,7 +29,7 @@ import '../../utils/riverpod/riverpod_providers/generated_providers/token_contai
 import 'scheme_processor_interface.dart';
 
 class TokenContainerProcessor extends SchemeProcessor {
-  static const resultHandlerType = TypeValidatorRequired<TokenContainerNotifier>();
+  static const resultHandlerType = ObjectValidator<TokenContainerNotifier>();
   static const scheme = 'pia';
   static const host = 'container';
 

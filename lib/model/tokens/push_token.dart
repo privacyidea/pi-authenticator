@@ -25,7 +25,7 @@ import 'package:uuid/uuid.dart';
 import '../../utils/custom_int_buffer.dart';
 import '../../utils/identifiers.dart';
 import '../../utils/rsa_utils.dart';
-import '../../utils/type_matchers.dart';
+import '../../utils/object_validators.dart';
 import '../enums/push_token_rollout_state.dart';
 import '../enums/token_types.dart';
 import '../token_import/token_origin_data.dart';
@@ -196,26 +196,26 @@ class PushToken extends Token {
     final validatedMap = validateMap(
       map: otpAuthMap,
       validators: {
-        OTP_AUTH_LABEL: const TypeValidatorOptional<String>(defaultValue: ''),
-        OTP_AUTH_ISSUER: const TypeValidatorOptional<String>(defaultValue: ''),
-        OTP_AUTH_SERIAL: const TypeValidatorRequired<String>(),
+        OTP_AUTH_LABEL: const ObjectValidatorNullable<String>(defaultValue: ''),
+        OTP_AUTH_ISSUER: const ObjectValidatorNullable<String>(defaultValue: ''),
+        OTP_AUTH_SERIAL: const ObjectValidator<String>(),
         OTP_AUTH_PUSH_SSL_VERIFY: stringToBoolValidator.withDefault(true),
-        OTP_AUTH_PUSH_TTL_MINUTES: TypeValidatorRequired<Duration>(
+        OTP_AUTH_PUSH_TTL_MINUTES: ObjectValidator<Duration>(
           transformer: (v) => Duration(minutes: int.parse(v)),
           defaultValue: const Duration(minutes: 10),
         ),
-        OTP_AUTH_PUSH_ENROLLMENT_CREDENTIAL: const TypeValidatorOptional<String>(),
+        OTP_AUTH_PUSH_ENROLLMENT_CREDENTIAL: const ObjectValidatorNullable<String>(),
         OTP_AUTH_PUSH_ROLLOUT_URL: stringToUrivalidator,
-        OTP_AUTH_IMAGE: stringToUriValidatorOptional,
-        OTP_AUTH_PIN: const TypeValidatorOptional<bool>(),
-        OTP_AUTH_VERSION: const TypeValidatorRequired<String>(),
+        OTP_AUTH_IMAGE: stringToUriValidatorNullable,
+        OTP_AUTH_PIN: const ObjectValidatorNullable<bool>(),
+        OTP_AUTH_VERSION: const ObjectValidator<String>(),
       },
       name: 'PushToken',
     );
     final validatedAdditionalData = Token.validateAdditionalData(additionalData);
     final expirationDate = validateOptional(
       value: additionalData[EXPIRATION_DATE],
-      validator: const TypeValidatorOptional<DateTime>(),
+      validator: const ObjectValidatorNullable<DateTime>(),
       name: 'PushToken#expirationDate',
     );
     return switch (validatedMap[OTP_AUTH_VERSION]) {
@@ -251,18 +251,18 @@ class PushToken extends Token {
     final uriMap = validateMap(
       map: template.otpAuthMap,
       validators: {
-        OTP_AUTH_LABEL: const TypeValidatorOptional<String>(),
-        OTP_AUTH_ISSUER: const TypeValidatorOptional<String>(),
-        OTP_AUTH_SERIAL: const TypeValidatorOptional<String>(),
-        OTP_AUTH_PUSH_SSL_VERIFY: stringToBoolValidatorOptional,
-        OTP_AUTH_PUSH_TTL_MINUTES: TypeValidatorOptional<Duration>(
+        OTP_AUTH_LABEL: const ObjectValidatorNullable<String>(),
+        OTP_AUTH_ISSUER: const ObjectValidatorNullable<String>(),
+        OTP_AUTH_SERIAL: const ObjectValidatorNullable<String>(),
+        OTP_AUTH_PUSH_SSL_VERIFY: stringToBoolValidatorNullable,
+        OTP_AUTH_PUSH_TTL_MINUTES: ObjectValidatorNullable<Duration>(
           transformer: (v) => Duration(minutes: int.parse(v)),
         ),
-        OTP_AUTH_PUSH_ENROLLMENT_CREDENTIAL: const TypeValidatorOptional<String>(),
-        OTP_AUTH_PUSH_ROLLOUT_URL: stringToUriValidatorOptional,
-        OTP_AUTH_IMAGE: stringToUriValidatorOptional,
+        OTP_AUTH_PUSH_ENROLLMENT_CREDENTIAL: const ObjectValidatorNullable<String>(),
+        OTP_AUTH_PUSH_ROLLOUT_URL: stringToUriValidatorNullable,
+        OTP_AUTH_IMAGE: stringToUriValidatorNullable,
         OTP_AUTH_PIN: stringToBoolValidator,
-        OTP_AUTH_VERSION: stringToIntValidatorOptional,
+        OTP_AUTH_VERSION: stringToIntValidatorNullable,
       },
       name: 'PushToken',
     );

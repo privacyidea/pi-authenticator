@@ -25,7 +25,7 @@ import 'dart:typed_data';
 import 'package:file_selector/file_selector.dart';
 import 'package:privacyidea_authenticator/model/extensions/enums/encodings_extension.dart';
 import 'package:privacyidea_authenticator/model/enums/encodings.dart';
-import 'package:privacyidea_authenticator/utils/type_matchers.dart';
+import 'package:privacyidea_authenticator/utils/object_validators.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../model/enums/token_origin_source_type.dart';
@@ -167,16 +167,15 @@ class FreeOtpPlusImportFileProcessor extends TokenImportFileProcessor {
           OTP_AUTH_PERIOD_SECONDS: tokenJson[_FREE_OTP_PLUS_PERIOD],
         },
         validators: {
-          OTP_AUTH_TYPE: const TypeValidatorRequired<String>(),
-          OTP_AUTH_LABEL: const TypeValidatorRequired<String>(),
-          OTP_AUTH_SECRET_BASE32:
-              TypeValidatorRequired<String>(transformer: (value) => Encodings.base32.encode(Uint8List.fromList((value as List).cast<int>()))),
-          OTP_AUTH_ISSUER: const TypeValidatorRequired<String>(),
-          OTP_AUTH_ALGORITHM: const TypeValidatorRequired<String>(),
+          OTP_AUTH_TYPE: const ObjectValidator<String>(),
+          OTP_AUTH_LABEL: const ObjectValidator<String>(),
+          OTP_AUTH_SECRET_BASE32: ObjectValidator<String>(transformer: (value) => Encodings.base32.encode(Uint8List.fromList((value as List).cast<int>()))),
+          OTP_AUTH_ISSUER: const ObjectValidator<String>(),
+          OTP_AUTH_ALGORITHM: const ObjectValidator<String>(),
           OTP_AUTH_DIGITS: intToStringValidator,
           // FreeOTP+ saves the counter 1 less than the actual value
-          OTP_AUTH_COUNTER: TypeValidatorOptional<String>(transformer: (value) => ((value as int) + 1).toString()),
-          OTP_AUTH_PERIOD_SECONDS: intToStringValidatorOptional,
+          OTP_AUTH_COUNTER: ObjectValidatorNullable<String>(transformer: (value) => ((value as int) + 1).toString()),
+          OTP_AUTH_PERIOD_SECONDS: intToStringValidatorNullable,
         },
       );
 }

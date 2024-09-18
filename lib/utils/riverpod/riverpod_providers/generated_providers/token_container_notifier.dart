@@ -356,16 +356,16 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     if (container == null) throw StateError('Credential was removed');
     responseJson = jsonDecode(responseBody);
     Logger.debug('Response JSON: $responseJson', name: 'CredentialsNotifier#_parseResponse');
-    final result = validate(value: responseJson['result'], validator: const TypeValidatorRequired<Map<String, dynamic>>(), name: 'result');
-    final value = validate(value: result['value'], validator: const TypeValidatorRequired<Map<String, dynamic>>(), name: 'value');
+    final result = validate(value: responseJson['result'], validator: const ObjectValidator<Map<String, dynamic>>(), name: 'result');
+    final value = validate(value: result['value'], validator: const ObjectValidator<Map<String, dynamic>>(), name: 'value');
     publicServerKey = validate(
       value: value['public_server_key'],
-      validator: TypeValidatorRequired<ECPublicKey>(transformer: (v) => const EccUtils().deserializeECPublicKey(v)),
+      validator: ObjectValidator<ECPublicKey>(transformer: (v) => const EccUtils().deserializeECPublicKey(v)),
       name: 'public_server_key',
     );
     final syncUrlUri = validate(
       value: value['container_sync_url'],
-      validator: TypeValidatorRequired<Uri>(transformer: (v) => Uri.parse(v)),
+      validator: ObjectValidator<Uri>(transformer: (v) => Uri.parse(v)),
       name: 'container_sync_url',
     );
     container =

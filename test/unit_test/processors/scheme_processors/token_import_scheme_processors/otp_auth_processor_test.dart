@@ -6,6 +6,7 @@ import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
 import 'package:privacyidea_authenticator/processors/scheme_processors/token_import_scheme_processors/otp_auth_processor.dart';
 import 'package:privacyidea_authenticator/utils/customization/application_customization.dart';
+import 'package:privacyidea_authenticator/utils/identifiers.dart';
 
 void main() {
   _testOtpAuthProcessor();
@@ -234,19 +235,10 @@ void _testOtpAuthProcessor() {
         // Assert
         expect(results.length, equals(1));
         final result0 = results[0];
-        expect(result0, isA<ProcessorResultSuccess>());
-        final token0 = result0.asSuccess!.resultData;
-        expect(token0.issuer, equals('issuer'));
-        expect(token0.label, equals('account'));
-        expect(token0.type, equals('HOTP'));
-        expect(token0.origin, isNotNull);
-        expect(token0.origin!.appName, ApplicationCustomization.defaultCustomization.appName);
-        expect(token0.origin!.isPrivacyIdeaToken, isNull);
-        expect(token0.origin!.data, equals(uriString));
-        final hotpToken = token0 as HOTPToken;
-        expect(hotpToken.counter, equals(0));
-        expect(hotpToken.digits, equals(8));
-        expect(hotpToken.algorithm.name, equals('SHA256'));
+        expect(result0, isA<ProcessorResultFailed>());
+        final message = result0.asFailed!.message;
+        final error = result0.asFailed!.error;
+        expect(message.toLowerCase().contains(OTP_AUTH_COUNTER) || error.toString().toLowerCase().contains(OTP_AUTH_COUNTER), isTrue);
       });
       test('processUri missing secret', () async {
         // Arrange
@@ -261,7 +253,7 @@ void _testOtpAuthProcessor() {
         expect(result0, isA<ProcessorResultFailed>());
         final message = result0.asFailed!.message;
         final error = result0.asFailed!.error;
-        expect(message.toLowerCase().contains('secret') || error.toString().toLowerCase().contains('secret'), isTrue);
+        expect(message.toLowerCase().contains(OTP_AUTH_SECRET_BASE32) || error.toString().toLowerCase().contains(OTP_AUTH_SECRET_BASE32), isTrue);
       });
       test('processUri issuer from path', () async {
         // Arrange

@@ -25,7 +25,7 @@ import '../scheme_processors/token_import_scheme_processors/google_authenticator
 import '../token_import_file_processor/token_import_file_processor_interface.dart';
 
 mixin TokenImportProcessor<T, V> {
-  static const resultHandlerType = TypeValidatorRequired<TokenNotifier>();
+  static const resultHandlerType = ObjectValidator<TokenNotifier>();
   static Set<TokenImportProcessor> implementations = {
     const GoogleAuthenticatorQrProcessor(),
     ...TokenImportFileProcessor.implementations,

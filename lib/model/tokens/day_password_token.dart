@@ -21,7 +21,7 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import '../../utils/identifiers.dart';
-import '../../utils/type_matchers.dart';
+import '../../utils/object_validators.dart';
 import '../token_template.dart';
 import 'package:uuid/uuid.dart';
 
@@ -158,15 +158,15 @@ class DayPasswordToken extends OTPToken {
     final uriMap = validateMap(
       map: template.otpAuthMap,
       validators: {
-        OTP_AUTH_LABEL: const TypeValidatorOptional<String>(),
-        OTP_AUTH_ISSUER: const TypeValidatorOptional<String>(),
-        OTP_AUTH_SERIAL: const TypeValidatorOptional<String>(),
-        OTP_AUTH_ALGORITHM: stringToAlgorithmsValidatorOptional,
-        OTP_AUTH_DIGITS: stringToIntValidatorOptional,
-        OTP_AUTH_SECRET_BASE32: base32SecretValidatorOptional,
-        OTP_AUTH_PERIOD_SECONDS: stringSecondsToDurationvalidatorOptional,
-        OTP_AUTH_IMAGE: const TypeValidatorOptional<String>(),
-        OTP_AUTH_PIN: stringToBoolValidatorOptional,
+        OTP_AUTH_LABEL: const ObjectValidatorNullable<String>(),
+        OTP_AUTH_ISSUER: const ObjectValidatorNullable<String>(),
+        OTP_AUTH_SERIAL: const ObjectValidatorNullable<String>(),
+        OTP_AUTH_ALGORITHM: stringToAlgorithmsValidatorNullable,
+        OTP_AUTH_DIGITS: stringToIntValidatorNullable,
+        OTP_AUTH_SECRET_BASE32: base32SecretValidatorNullable,
+        OTP_AUTH_PERIOD_SECONDS: stringSecondsToDurationValidatorNullable,
+        OTP_AUTH_IMAGE: const ObjectValidatorNullable<String>(),
+        OTP_AUTH_PIN: stringToBoolValidatorNullable,
       },
       name: 'DayPasswordToken',
     );
@@ -188,15 +188,15 @@ class DayPasswordToken extends OTPToken {
     uriMap = validateMap(
       map: uriMap,
       validators: {
-        OTP_AUTH_LABEL: const TypeValidatorRequired<String>(defaultValue: ''),
-        OTP_AUTH_ISSUER: const TypeValidatorRequired<String>(defaultValue: ''),
-        OTP_AUTH_SERIAL: const TypeValidatorOptional<String>(),
+        OTP_AUTH_LABEL: const ObjectValidator<String>(defaultValue: ''),
+        OTP_AUTH_ISSUER: const ObjectValidator<String>(defaultValue: ''),
+        OTP_AUTH_SERIAL: const ObjectValidatorNullable<String>(),
         OTP_AUTH_ALGORITHM: stringToAlgorithmsValidator.withDefault(Algorithms.SHA1),
-        OTP_AUTH_DIGITS: stringToIntvalidator.withDefault(6),
+        OTP_AUTH_DIGITS: otpAuthDigitsValidatorNullable,
         OTP_AUTH_SECRET_BASE32: base32Secretvalidator,
-        OTP_AUTH_PERIOD_SECONDS: stringSecondsToDurationvalidator.withDefault(const Duration(hours: 24)),
-        OTP_AUTH_IMAGE: const TypeValidatorOptional<String>(),
-        OTP_AUTH_PIN: stringToBoolValidatorOptional,
+        OTP_AUTH_PERIOD_SECONDS: stringSecondsToDurationValidator.withDefault(const Duration(hours: 24)),
+        OTP_AUTH_IMAGE: const ObjectValidatorNullable<String>(),
+        OTP_AUTH_PIN: stringToBoolValidatorNullable,
       },
       name: 'DayPasswordToken',
     );

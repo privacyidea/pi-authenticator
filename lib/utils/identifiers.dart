@@ -42,23 +42,29 @@ const OTP_AUTH_SECRET_BASE32 = 'secret';
 const OTP_AUTH_COUNTER = 'counter';
 
 /// [String] (optional) default = '30'
-const OTP_AUTH_PERIOD_SECONDS = 'period'; // int optional default 30
+const OTP_AUTH_PERIOD_SECONDS = 'period';
+
 /// [String] (optional) default = 'SHA1'
-const OTP_AUTH_ALGORITHM = 'algorithm'; // String optional default 'SHA1'
+const OTP_AUTH_ALGORITHM = 'algorithm';
+
 /// [String] (optional) default = '6'
-const OTP_AUTH_DIGITS = 'digits'; // int optional default 6
+const OTP_AUTH_DIGITS = 'digits';
+
 /// [String] (optional) default = ''
-const OTP_AUTH_LABEL = 'label'; // String optional default ''
+const OTP_AUTH_LABEL = 'label';
+
 /// [String] (optional) default = ''
-const OTP_AUTH_ISSUER = 'issuer'; // String optional default ''
-/// [String] (optional) default = ''
-const OTP_AUTH_PIN = 'pin'; // String optional default "False"
+const OTP_AUTH_ISSUER = 'issuer';
+
+/// [String] 'True' / 'False' (optional) default = 'False'
+const OTP_AUTH_PIN = 'pin';
+
 /// [String] (optional) default = 'False'
 const OTP_AUTH_PIN_TRUE = 'True';
 const OTP_AUTH_PIN_FALSE = 'False';
 
 /// [String] (optional) default = ''
-const OTP_AUTH_IMAGE = 'image'; // String optional default ''
+const OTP_AUTH_IMAGE = 'image';
 
 // OTP auth push
 
@@ -68,7 +74,9 @@ const OTP_AUTH_PUSH_TTL_MINUTES = 'ttl';
 
 /// [String] (optional) default = null
 const OTP_AUTH_PUSH_ENROLLMENT_CREDENTIAL = 'enrollment_credential';
-const OTP_AUTH_PUSH_SSL_VERIFY = 'sslverify'; // String optional default '1'
+
+/// [String] '1' / '0' (optional) default = '1'
+const OTP_AUTH_PUSH_SSL_VERIFY = 'sslverify';
 const OTP_AUTH_PUSH_SSL_VERIFY_TRUE = '1';
 const OTP_AUTH_PUSH_SSL_VERIFY_FALSE = '0';
 
@@ -146,7 +154,7 @@ const String CONTAINER_SYNC_DICT_ENCRYPTED = 'container_dict_encrypted';
 
 const String GLOBAL_SECURE_REPO_PREFIX = 'app_v3_';
 
-T? validateOptional<T extends Object>({required dynamic value, required TypeValidatorOptional<T> validator, required String name}) {
+T? validateOptional<T extends Object>({required dynamic value, required ObjectValidatorNullable<T> validator, required String name}) {
   if (validator.isTypeOf(value)) {
     return validator.transform(value);
   } else {
@@ -159,7 +167,7 @@ T? validateOptional<T extends Object>({required dynamic value, required TypeVali
   }
 }
 
-T validate<T extends Object>({required dynamic value, required TypeValidatorRequired<T> validator, required String name}) {
+T validate<T extends Object>({required dynamic value, required ObjectValidator<T> validator, required String name}) {
   if (validator.isTypeOf(value)) {
     return validator.transform(value);
   } else {
@@ -177,14 +185,25 @@ T validate<T extends Object>({required dynamic value, required TypeValidatorRequ
 /// Throws a [LocalizedArgumentError] if the map is invalid.
 /// <br />If the validator provides a transformer function, the value will be transformed before checking the type.
 /// <br />The returned map will contain the transformed values.
-Map<String, RV> validateMap<RV>({required Map<String, dynamic> map, required Map<String, TypeValidatorOptional<RV>> validators, required String? name}) {
+Map<String, RV> validateMap<RV>({required Map<String, dynamic> map, required Map<String, ObjectValidatorNullable<RV>> validators, required String? name}) {
   Map<String, RV> validatedMap = {};
   for (String key in validators.keys) {
     final validator = validators[key]!;
     final mapEntry = map[key];
     if (validator.isTypeOf(mapEntry)) {
-      final newValue = validator.transform(mapEntry);
-      if (newValue != null) validatedMap[key] = newValue;
+      if (validator.valueIsAllowed(mapEntry)) {
+        final newValue = validator.transform(mapEntry);
+        if (newValue != null) validatedMap[key] = newValue;
+      } else {
+        throw LocalizedArgumentError(
+          localizedMessage: name != null
+              ? (localizations, value, key) => localizations.valueNotAllowedIn(value.runtimeType.toString(), value.toString(), key, name)
+              : (localizations, value, key) => localizations.valueNotAllowed(value.runtimeType.toString(), value.toString(), key),
+          unlocalizedMessage: 'The ${mapEntry.runtimeType} "$mapEntry" is not an allowed value for "$key"',
+          invalidValue: mapEntry.toString(),
+          name: key,
+        );
+      }
     } else {
       if (mapEntry == null) {
         throw LocalizedArgumentError(
@@ -209,30 +228,39 @@ Map<String, RV> validateMap<RV>({required Map<String, dynamic> map, required Map
   return validatedMap;
 }
 
-class TypeValidatorOptional<T extends Object?> {
-  bool get isOptional => runtimeType.toString().contains('Optional');
-
+class ObjectValidatorNullable<T extends Object?> {
   final T Function(dynamic value)? transformer;
   final T? defaultValue;
+  final bool Function(T)? allowedValues;
 
-  const TypeValidatorOptional({
+  const ObjectValidatorNullable({
     this.transformer,
     this.defaultValue,
+    this.allowedValues,
   });
 
   /// Checks if the value is of the correct type, or sub-type.
   /// If the transformer is provided, the value will be transformed before checking the type.
   bool isTypeOf(dynamic value) {
-    Logger.debug('Checking type of $value and default value $defaultValue with transformer $transformer (isOptional $isOptional)');
-    if (value == null) return (defaultValue != null) ? true : isOptional;
-
-    if (transformer == null) return value is T;
+    Logger.debug('Checking type (${T.runtimeType}) of nullable value "$value" and default value "$defaultValue" with transformer "$transformer".');
+    if (value == null) return true;
+    if (transformer == null) return value is T?;
     try {
       transformer!(value);
       return true;
     } catch (e) {
       return false;
     }
+  }
+
+  bool valueIsAllowed(dynamic value) {
+    if (!isTypeOf(value)) return false;
+    if (allowedValues == null) return true;
+    if (value == null) return true;
+    final transformedValue = transform(value);
+    if (transformedValue == null) return true;
+    if (allowedValues!(transformedValue)) return true;
+    return false;
   }
 
   /// Transforms the value if a transformer is provided, otherwise returns the value as is.
@@ -248,8 +276,9 @@ class TypeValidatorOptional<T extends Object?> {
     }
   }
 
-  TypeValidatorOptional<T> optional() => TypeValidatorOptional<T>(transformer: transformer, defaultValue: defaultValue);
-  TypeValidatorOptional<T> withDefault(T? defaultValue) => TypeValidatorOptional<T>(transformer: transformer, defaultValue: defaultValue);
+  ObjectValidatorNullable<T> nullable() => ObjectValidatorNullable<T>(transformer: transformer, defaultValue: defaultValue, allowedValues: allowedValues);
+  ObjectValidatorNullable<T> withDefault(T? defaultValue) =>
+      ObjectValidatorNullable<T>(transformer: transformer, defaultValue: defaultValue, allowedValues: allowedValues);
 
   String get type => RegExp('(?<=<).+(?=>)').firstMatch(toString())!.group(0)!;
 
@@ -257,16 +286,17 @@ class TypeValidatorOptional<T extends Object?> {
   String toString() => runtimeType.toString();
 
   @override
-  bool operator ==(Object other) => other is TypeValidatorOptional<T>;
+  bool operator ==(Object other) => other is ObjectValidatorNullable<T>;
 
   @override
   int get hashCode => toString().hashCode;
 }
 
-class TypeValidatorRequired<T extends Object> extends TypeValidatorOptional<T> {
-  const TypeValidatorRequired({
+class ObjectValidator<T extends Object> extends ObjectValidatorNullable<T> {
+  const ObjectValidator({
     super.transformer,
     super.defaultValue,
+    super.allowedValues,
   });
 
   /// Transforms the value if a transformer is provided, otherwise returns the value as is.
@@ -287,5 +317,29 @@ class TypeValidatorRequired<T extends Object> extends TypeValidatorOptional<T> {
         name: type,
       );
     }
+  }
+
+  /// Checks if the value is of the correct type, or sub-type.
+  /// If the transformer is provided, the value will be transformed before checking the type.
+  @override
+  bool isTypeOf(dynamic value) {
+    Logger.debug('Checking type (${T.runtimeType}) of value "$value" and default value "$defaultValue" with transformer "$transformer".');
+    if (value == null) return defaultValue != null;
+    if (transformer == null) return value is T;
+    try {
+      transformer!(value);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  @override
+  bool valueIsAllowed(dynamic value) {
+    if (!isTypeOf(value)) return false;
+    value ??= defaultValue;
+    if (value == null) return false;
+    if (allowedValues == null) return true;
+    return allowedValues!(transform(value));
   }
 }

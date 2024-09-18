@@ -30,7 +30,7 @@ import '../../../views/link_home_widget_view/link_home_widget_view.dart';
 import 'navigation_scheme_processor_interface.dart';
 
 class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
-  static const resultHandlerType = TypeValidatorRequired<NavigationHandler>();
+  static const resultHandlerType = ObjectValidator<NavigationHandler>();
   HomeWidgetNavigateProcessor();
 
   static final Map<String, Future<List<ProcessorResult<dynamic>>?> Function(Uri, BuildContext, {bool fromInit})> _processors = {
@@ -153,7 +153,7 @@ class NavigationHandler<R> with ResultHandler {
     if (result.isFailed) return null;
     validate(
       value: args['context'],
-      validator: const TypeValidatorRequired<BuildContext>(),
+      validator: const ObjectValidator<BuildContext>(),
       name: 'context',
     );
     final navigation = result.asSuccess!.resultData;
@@ -168,7 +168,7 @@ class NavigationHandler<R> with ResultHandler {
     try {
       validate(
         value: args['context'],
-        validator: const TypeValidatorRequired<BuildContext>(),
+        validator: const ObjectValidator<BuildContext>(),
         name: 'context',
       );
     } catch (e, s) {

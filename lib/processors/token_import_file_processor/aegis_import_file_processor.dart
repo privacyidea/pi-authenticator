@@ -27,7 +27,7 @@ import 'package:cryptography/cryptography.dart' as crypto;
 import 'package:encrypt/encrypt.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:pointycastle/export.dart';
-import 'package:privacyidea_authenticator/utils/type_matchers.dart';
+import 'package:privacyidea_authenticator/utils/object_validators.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../model/enums/encodings.dart';
@@ -200,15 +200,15 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
             OTP_AUTH_PIN: info[AEGIS_INFO_PIN],
           },
           validators: {
-            OTP_AUTH_TYPE: const TypeValidatorRequired<String>(),
-            OTP_AUTH_LABEL: const TypeValidatorRequired<String>(defaultValue: ''),
-            OTP_AUTH_ISSUER: const TypeValidatorRequired<String>(defaultValue: ''),
-            OTP_AUTH_SECRET_BASE32: TypeValidatorRequired<String>(transformer: (v) => Encodings.none.encodeStringTo(Encodings.base32, info[AEGIS_INFO_SECRET])),
-            OTP_AUTH_ALGORITHM: const TypeValidatorOptional<String>(),
-            OTP_AUTH_DIGITS: TypeValidatorOptional<String>(transformer: (v) => (v as int).toString()),
-            OTP_AUTH_PERIOD_SECONDS: TypeValidatorOptional<String>(transformer: (v) => (v as int).toString()),
-            OTP_AUTH_COUNTER: TypeValidatorOptional<String>(transformer: (v) => (v as int).toString()),
-            OTP_AUTH_PIN: const TypeValidatorOptional<String>(),
+            OTP_AUTH_TYPE: const ObjectValidator<String>(),
+            OTP_AUTH_LABEL: const ObjectValidator<String>(defaultValue: ''),
+            OTP_AUTH_ISSUER: const ObjectValidator<String>(defaultValue: ''),
+            OTP_AUTH_SECRET_BASE32: ObjectValidator<String>(transformer: (v) => Encodings.none.encodeStringTo(Encodings.base32, info[AEGIS_INFO_SECRET])),
+            OTP_AUTH_ALGORITHM: const ObjectValidatorNullable<String>(),
+            OTP_AUTH_DIGITS: ObjectValidatorNullable<String>(transformer: (v) => (v as int).toString()),
+            OTP_AUTH_PERIOD_SECONDS: ObjectValidatorNullable<String>(transformer: (v) => (v as int).toString()),
+            OTP_AUTH_COUNTER: ObjectValidatorNullable<String>(transformer: (v) => (v as int).toString()),
+            OTP_AUTH_PIN: const ObjectValidatorNullable<String>(),
           },
           name: 'aegisV2Entry',
         );
@@ -260,15 +260,15 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
             OTP_AUTH_PIN: info[AEGIS_INFO_PIN],
           },
           validators: {
-            OTP_AUTH_TYPE: const TypeValidatorRequired<String>(),
-            OTP_AUTH_LABEL: const TypeValidatorRequired<String>(defaultValue: ''),
-            OTP_AUTH_ISSUER: const TypeValidatorRequired<String>(defaultValue: ''),
-            OTP_AUTH_SECRET_BASE32: TypeValidatorRequired<String>(transformer: (v) => Encodings.base32.encodeStringTo(Encodings.base32, v)),
-            OTP_AUTH_ALGORITHM: const TypeValidatorOptional<String>(),
-            OTP_AUTH_DIGITS: intToStringValidatorOptional,
-            OTP_AUTH_PERIOD_SECONDS: intToStringValidatorOptional,
-            OTP_AUTH_COUNTER: intToStringValidatorOptional,
-            OTP_AUTH_PIN: const TypeValidatorOptional<String>(),
+            OTP_AUTH_TYPE: const ObjectValidator<String>(),
+            OTP_AUTH_LABEL: const ObjectValidator<String>(defaultValue: ''),
+            OTP_AUTH_ISSUER: const ObjectValidator<String>(defaultValue: ''),
+            OTP_AUTH_SECRET_BASE32: ObjectValidator<String>(transformer: (v) => Encodings.base32.encodeStringTo(Encodings.base32, v)),
+            OTP_AUTH_ALGORITHM: const ObjectValidatorNullable<String>(),
+            OTP_AUTH_DIGITS: intToStringValidatorNullable,
+            OTP_AUTH_PERIOD_SECONDS: intToStringValidatorNullable,
+            OTP_AUTH_COUNTER: intToStringValidatorNullable,
+            OTP_AUTH_PIN: const ObjectValidatorNullable<String>(),
           },
           name: 'aegisV3Entry',
         );

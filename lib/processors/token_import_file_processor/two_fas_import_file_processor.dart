@@ -23,7 +23,7 @@ import 'dart:convert';
 
 import 'package:cryptography/cryptography.dart';
 import 'package:file_selector/file_selector.dart';
-import 'package:privacyidea_authenticator/utils/type_matchers.dart';
+import 'package:privacyidea_authenticator/utils/object_validators.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../model/enums/token_origin_source_type.dart';
@@ -185,14 +185,14 @@ class TwoFasAuthenticatorImportFileProcessor extends TokenImportFileProcessor {
         OTP_AUTH_COUNTER: twoFasOTP[TWOFAS_COUNTER],
       },
       validators: {
-        OTP_AUTH_TYPE: const TypeValidatorRequired<String>(),
-        OTP_AUTH_ISSUER: const TypeValidatorOptional<String>(),
-        OTP_AUTH_LABEL: const TypeValidatorOptional<String>(),
-        OTP_AUTH_SECRET_BASE32: const TypeValidatorRequired<String>(),
-        OTP_AUTH_ALGORITHM: const TypeValidatorOptional<String>(),
-        OTP_AUTH_DIGITS: intToStringValidatorOptional,
-        OTP_AUTH_PERIOD_SECONDS: intToStringValidatorOptional,
-        OTP_AUTH_COUNTER: intToStringValidatorOptional,
+        OTP_AUTH_TYPE: const ObjectValidator<String>(),
+        OTP_AUTH_ISSUER: const ObjectValidatorNullable<String>(),
+        OTP_AUTH_LABEL: const ObjectValidatorNullable<String>(),
+        OTP_AUTH_SECRET_BASE32: const ObjectValidator<String>(),
+        OTP_AUTH_ALGORITHM: const ObjectValidatorNullable<String>(),
+        OTP_AUTH_DIGITS: intToStringValidatorNullable,
+        OTP_AUTH_PERIOD_SECONDS: intToStringValidatorNullable,
+        OTP_AUTH_COUNTER: intToStringValidatorNullable,
       },
       name: '2FAS token',
     );
