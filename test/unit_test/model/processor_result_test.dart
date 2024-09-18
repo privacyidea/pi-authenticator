@@ -20,7 +20,7 @@ void _testProcessorResult() {
     });
     group('factories', () {
       test('success', () {
-        const result = ProcessorResult.success('data');
+        ProcessorResult<String> result = const ProcessorResult.success('data');
         expect(result, isA<ProcessorResultSuccess>());
         expect((result as ProcessorResultSuccess).resultData, 'data');
       });
