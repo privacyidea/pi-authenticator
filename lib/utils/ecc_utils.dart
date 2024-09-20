@@ -37,5 +37,6 @@ class EccUtils {
     return CryptoUtils.ecSignatureToBase64(ecSignature);
   }
 
-  AsymmetricKeyPair<ECPublicKey, ECPrivateKey> generateKeyPair(EcKeyAlgorithm keyAlgorithm) => CryptoUtils.generateEcKeyPair(curve: keyAlgorithm.curveName);
+  AsymmetricKeyPair<ECPublicKey, ECPrivateKey> generateKeyPair(EcKeyAlgorithm keyAlgorithm) =>
+      CryptoUtils.generateEcKeyPair(curve: keyAlgorithm.curveName) as AsymmetricKeyPair<ECPublicKey, ECPrivateKey>;
 }
