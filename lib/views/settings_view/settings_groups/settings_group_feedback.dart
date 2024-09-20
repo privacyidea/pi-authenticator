@@ -17,30 +17,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import 'package:flutter/material.dart';
 
 import '../../../l10n/app_localizations.dart';
-import '../settings_view_widgets/logging_menu.dart';
+import '../../feedback_view/feedback_view.dart';
 import '../settings_view_widgets/settings_group.dart';
 
-class SettingsGroupErrorLog extends StatelessWidget {
-  const SettingsGroupErrorLog({super.key});
+class SettingsGroupFeedback extends StatelessWidget {
+  const SettingsGroupFeedback({super.key});
 
   @override
   Widget build(BuildContext context) => SettingsGroup(
-        title: AppLocalizations.of(context)!.errorLogTitle,
-        onPressed: () => showDialog(
-          useRootNavigator: false,
-          context: context,
-          builder: (_) => const SettingsGroupErrorLogDialog(),
-        ),
-        trailingIcon: Icons.error_outline,
+        title: AppLocalizations.of(context)!.feedback,
+        onPressed: () => Navigator.pushNamed(context, FeedbackView.routeName),
+        trailingIcon: Icons.feedback,
       );
-}
-
-class SettingsGroupErrorLogDialog extends StatelessWidget {
-  const SettingsGroupErrorLogDialog({super.key});
-
-  @override
-  Widget build(BuildContext context) => const LoggingMenu();
 }

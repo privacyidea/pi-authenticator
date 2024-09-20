@@ -26,7 +26,7 @@ import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/gene
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
 import 'package:privacyidea_authenticator/model/version.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
-import 'package:privacyidea_authenticator/views/settings_view/settings_view_widgets/settings_groups.dart';
+import 'package:privacyidea_authenticator/views/settings_view/settings_view_widgets/settings_group.dart';
 
 import '../test/tests_app_wrapper.dart';
 import '../test/tests_app_wrapper.mocks.dart';
@@ -163,7 +163,7 @@ Future<void> _settingsViewTest(WidgetTester tester) async {
   await tester.tap(find.byIcon(Icons.settings));
   await tester.pumpAndSettle();
   expect(find.text(AppLocalizationsEn().settings), findsOneWidget);
-  expect(find.text(AppLocalizationsEn().theme), findsOneWidget);
+  expect(find.text(AppLocalizationsEn().themeMode), findsOneWidget);
   expect(find.text(AppLocalizationsEn().language), findsOneWidget);
   expect(find.text(AppLocalizationsEn().errorLogTitle), findsOneWidget);
   expect(find.byType(SettingsGroup), findsNWidgets(6));

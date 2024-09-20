@@ -19,15 +19,11 @@
  */
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:privacyidea_authenticator/views/feedback_view/widgets/feedback_send_row.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../l10n/app_localizations.dart';
-import '../../utils/app_info_utils.dart';
 import '../../utils/globals.dart';
-import '../../utils/pi_mailer.dart';
-import '../../utils/view_utils.dart';
-import '../../widgets/dialog_widgets/default_dialog.dart';
-import '../main_view/main_view.dart';
 import '../view_interface.dart';
 
 class FeedbackView extends StatefulView {
@@ -44,8 +40,6 @@ class FeedbackView extends StatefulView {
 
 class _FeedbackViewState extends State<FeedbackView> {
   final TextEditingController _feedbackController = TextEditingController();
-  bool _addDeviceInfo = false;
-
   final FocusNode _focusNode = FocusNode();
 
   @override
@@ -126,86 +120,14 @@ class _FeedbackViewState extends State<FeedbackView> {
                             ],
                           ),
                         ),
+                        FeedbackSendRow(feedbackController: _feedbackController),
                       ],
                     ),
                   ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    TextButton(
-                      onPressed: () => setState(() => _addDeviceInfo = !_addDeviceInfo),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            width: 70,
-                            child: Text(
-                              AppLocalizations.of(context)!.addSystemInfo,
-                              textAlign: TextAlign.right,
-                              style: Theme.of(context).textTheme.bodySmall,
-                            ),
-                          ),
-                          const SizedBox(width: 4),
-                          SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: Checkbox(
-                              value: _addDeviceInfo,
-                              onChanged: (value) {
-                                if (value == null) return;
-                                setState(() {
-                                  _addDeviceInfo = value;
-                                });
-                              },
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () async {
-                        final String mailText;
-                        if (_addDeviceInfo) {
-                          mailText = _addDeviceInfoToMail(_feedbackController.text);
-                        } else {
-                          mailText = _feedbackController.text;
-                        }
-                        final sended = await _sendMail(mailText);
-                        if (sended) {
-                          showAsyncDialog(
-                            builder: (context) => DefaultDialog(
-                              title: Text(AppLocalizations.of(context)!.feedbackSentTitle),
-                              content: Text(AppLocalizations.of(context)!.feedbackSentDescription),
-                              actionsAlignment: MainAxisAlignment.center,
-                              actions: [
-                                ElevatedButton(
-                                    onPressed: () => Navigator.of(context).popUntil((route) => route.settings.name == MainView.routeName),
-                                    child: Text(AppLocalizations.of(context)!.ok))
-                              ],
-                            ),
-                            barrierDismissible: false,
-                          );
-                        }
-                      },
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(AppLocalizations.of(context)!.send),
-                          const SizedBox(width: 8),
-                          const Icon(Icons.mail_outline),
-                        ],
-                      ),
-                    ),
-                  ],
                 ),
               ],
             ),
           ),
         ),
       );
-
-  String _addDeviceInfoToMail(String feedback) => '$feedback\n\n[${AppInfoUtils.currentVersionAndBuildNumber}] ${AppInfoUtils.deviceInfoString}';
-  Future<bool> _sendMail(String mailText) => PiMailer.sendMail(subjectPrefix: 'Feedback', body: mailText, subjectAppVersion: false);
 }

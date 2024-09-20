@@ -45,9 +45,11 @@ class ContainerView extends ConsumerView {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final container = ref.watch(containerCredentialsProvider).whenOrNull(data: (data) => data.container) ?? [];
+    final container = ref.watch(tokenContainerProvider).whenOrNull(data: (data) => data.container) ?? [];
     return Scaffold(
-      appBar: AppBar(title: const Text('Container')),
+      appBar: AppBar(
+        title: Text(AppLocalizations.of(context)!.container),
+      ),
       floatingActionButton: const QrScannerButton(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: Center(
@@ -94,13 +96,13 @@ class ContainerWidget extends ConsumerWidget {
                     icon: const Icon(Icons.sync),
                     onPressed: () {
                       final tokenState = ref.read(tokenProvider);
-                      ref.read(containerCredentialsProvider.notifier).syncTokens(tokenState);
+                      ref.read(tokenContainerProvider.notifier).syncTokens(tokenState);
                     },
                   )
                 : IconButton(
                     icon: const Icon(Icons.delete),
                     onPressed: () {
-                      ref.read(containerCredentialsProvider.notifier).deleteCredential(containerCredential);
+                      ref.read(tokenContainerProvider.notifier).deleteCredential(containerCredential);
                     },
                   ),
           ),
@@ -118,7 +120,7 @@ class DeleteContainerAction extends PiSlideableAction {
 
   @override
   CustomSlidableAction build(BuildContext context, WidgetRef ref) => CustomSlidableAction(
-        onPressed: (BuildContext context) => ref.read(containerCredentialsProvider.notifier).deleteCredential(container),
+        onPressed: (BuildContext context) => ref.read(tokenContainerProvider.notifier).deleteCredential(container),
         backgroundColor: Theme.of(context).extension<ActionTheme>()!.deleteColor,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

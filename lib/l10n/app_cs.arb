@@ -1,466 +1,154 @@
 {
-  "@@last_modified": "2023-08-07",
-  "patchNotesNewFeatures": "Nové funkce",
-  "patchNotesImprovements": "Improvements",
-  "patchNotesBugFixes": "Opravy chyb",
-  "patchNotesV4_4_2NewFeatures1": "Žetony lze nyní vkládat pomocí kopírování a vkládání.",
-  "patchNotesV4_4_2NewFeatures2": "Přidána podpora galerie pro skenování QR kódů.",
-  "patchNotesV4_4_2Improvement1": "Přidána podpora svítilny pro skenování QR kódů.",
-  "patchNotesV4_4_0NewFeatures1": "Nyní je možné exportovat tokeny, u kterých lze zajistit, že se nejedná o tokeny privacyIDEA. V současné době nelze vyloučit, že tokeny přidané prostřednictvím čtečky QR kódů pocházejí z aplikace privacyIDEA. Rozlišování bude v budoucích verzích vylepšeno.",
-  "patchNotesV4_4_0NewFeatures2": "Přidána podpora pro \"require presence\" aplikace privacyIDEA.",
-  "patchNotesV4_4_0Improvement1": "Byly přidány další dovozní zdroje.",
-  "patchNotesV4_4_0Improvement2": "Bylo vylepšeno rozpoznávání QR kódů z obrazových souborů.",
-  "patchNotesV4_3_1BugFix1": "Opraven problém, kdy nebyla zobrazena hodnota otp po ověření na některých zařízeních.",
-  "patchNotesV4_3_1Improvement1": "Skener QR kódů byl vylepšen.",
-  "patchNotesV4_3_0NewFeatures1": "Přidána podpora pro import tokenů z Google, Aegis a 2FAS Authenticator. Další zdroje importu budou přidány v budoucnu.",
-  "patchNotesV4_3_0NewFeatures2": "Do nastavení byla přidána možnost zpětné vazby.",
-  "patchNotesV4_3_0NewFeatures3": "Tokeny Push lze nyní skrýt ze seznamu tokenů.",
-  "patchNotesV4_3_0NewFeatures4": "Byly přidány úvodní informace, které novým uživatelům usnadní začátky.",
-  "patchNotesV4_3_0NewFeatures5": "Žetony nyní můžete vyhledávat klepnutím na lupu v pravém horním rohu.",
-  "patchNotesV4_3_0NewFeatures6": "Přidán token HomeWidget pro systém Android 12 a novější.",
-  "guide": "Průvodce",
-  "@guide": {
-    "description": "Button to open the guide screen."
-  },
-  "retry": "Zkusit znovu",
-  "@retry": {
-    "description": "Label for e.g. a button. Something is tried to be done again."
-  },
-  "accept": "Přijmout",
+  "@@last_modified": "2024-09-20",
+  "@@locale": "cs",
   "@accept": {
     "description": "Label for e.g. a button. Something gets accepted by the user."
   },
-  "decline": "Odmítnout",
-  "@decline": {
-    "description": "Label for e.g. a button. Something gets declined by the user."
-  },
-  "name": "Název",
-  "@name": {
-    "description": "Describes the field where the tokens name should be entered."
-  },
-  "secretKey": "Tajný klíč",
-  "@secretKey": {
-    "description": "Describes the field where the tokens secret should be entered."
-  },
-  "encoding": "Kódování",
-  "@encoding": {
-    "description": "Title of the dropdown button where the encoding is selected."
-  },
-  "algorithm": "Algoritmus",
-  "@algorithm": {
-    "description": "Title of the dropdown button where the encoding is selected."
-  },
-  "digits": "Počet číslic",
-  "@digits": {
-    "description": "Title of the dropdown button where the number of digits for the opt value is selected."
-  },
-  "type": "Typ",
-  "@type": {
-    "description": "Title of the dropdown button where the type of the token is selected."
-  },
-  "period": "Časový interval",
-  "@period": {
-    "description": "Title of the dropdown button where the period of the totp token is selected."
-  },
-  "rename": "Přejmenovat",
-  "@rename": {
-    "description": "Label that describes renaming the token."
-  },
-  "cancel": "Zrušit",
-  "@cancel": {
-    "description": "Button to cancel an action."
-  },
-  "delete": "Smazat",
-  "@delete": {
-    "description": "Label that describes deleting the token."
-  },
-  "dismiss": "Zavřít",
-  "@dismiss": {
-    "description": "Text of a button that closes a dialog."
-  },
-  "addToken": "Přidat token",
   "@addToken": {
     "description": "The button to open the screen to add tokens by hand."
   },
-  "scanQrCode": "Naskenovat QR kód",
-  "@scanQrCode": {
-    "description": "The button to scan otpauth qr-codes."
+  "@algorithm": {
+    "description": "Title of the dropdown button where the encoding is selected."
   },
-  "enterDetailsForToken": "Vložte podrobnosti tokenu",
-  "@enterDetailsForToken": {
-    "description": "Title of the screen where tokens are created manually, tells the user to enter all required values."
+  "@algorithmUnsupported": {
+    "placeholders": {
+      "algorithm": {
+        "example": "MD5"
+      }
+    }
   },
-  "pleaseEnterANameForThisToken": "Vložte název pro tento token.",
-  "@pleaseEnterANameForThisToken": {
-    "description": "Hint telling the user to enter a name for a token."
+  "@allTokensSynchronized": {
+    "description": "Content of the push synchronization dialog. Signaling the user that everything worked."
   },
-  "pleaseEnterASecretForThisToken": "Vložte tajný klíč pro tento token.",
-  "@pleaseEnterASecretForThisToken": {
-    "description": "Hint telling the user to enter a secret for a token."
+  "@authNotSupportedBody": {
+    "description": "Message shown as a dialog body that tells the user that device credentials or biometrics must be setup for this action."
   },
-  "theSecretDoesNotFitTheCurrentEncoding": "Tajný klíč neodpovídá zvolenému kódování.",
-  "@theSecretDoesNotFitTheCurrentEncoding": {
-    "description": "Hint telling the user that the secret does not fit the selected encoding."
+  "@authNotSupportedTitle": {
+    "description": "Message shown as a dialog title that tells the user that device credentials or biometrics must be setup for this action."
   },
-  "renameToken": "Přejmenovat token",
-  "@renameToken": {
-    "description": "Title of the dialog where a new name for a token can be entered."
+  "@authToAcceptPushRequest": {
+    "description": "Message to accepting a push request for authentication."
   },
-  "confirmDeletion": "Potvrdit smazání",
+  "@authToDeclinePushRequest": {
+    "description": "Message for declining a push request for authentication."
+  },
+  "@authenticateToShowOtp": {
+    "description": "Reason to authenticate when trying to view a one time password."
+  },
+  "@authenticateToUnLockToken": {
+    "description": "Reason to authenticate when trying to lock or unlock a token."
+  },
+  "@biometricHint": {
+    "description": "Hint message advising the user how to authenticate with biometrics. It is used on Android side. Maximum 60 characters."
+  },
+  "@biometricNotRecognized": {
+    "description": "Message to let the user know that authentication was failed. It is used on Android side. Maximum 60 characters."
+  },
+  "@biometricRequiredTitle": {
+    "description": "Message showed as a title in a dialog which indicates the user has not set up biometric authentication on their device. It is used on Android side. Maximum 60 characters."
+  },
+  "@biometricSuccess": {
+    "description": "Message to let the user know that authentication was successful. It is used on Android side. Maximum 60 characters."
+  },
+  "@cancel": {
+    "description": "Button to cancel an action."
+  },
+  "@checkServerCertificate": {
+    "description": "Error message when the server certificate should be checked."
+  },
+  "@checkYourNetwork": {
+    "description": "Tells the user to check the network connection."
+  },
+  "@clearErrorLog": {
+    "description": "Button to clear the error log."
+  },
   "@confirmDeletion": {
     "description": "Title of the dialog where a token can be deleted."
   },
-  "confirmDeletionOf": "Opravdu chcete smazat token {name}?",
   "@confirmDeletionOf": {
     "description": "Asks for confirmation on deleting a token.",
-    "type": "text",
     "placeholders": {
       "name": {
         "example": "PUSH1234"
       }
-    }
+    },
+    "type": "text"
   },
-  "confirmTokenDeletionHint": "Pokud tento token odstraníte, nebude již možné se přihlásit.\nProsím, ujistěte se, že se můžete přihlásit k přidruženému účtu bez tohoto tokenu.",
-  "@confirmTokenDeletionHint": {
-    "description": "Gives the user a hint about the consequences of deleting a token."
-  },
-  "confirmFolderDeletionHint": "Odstranění složky nemá žádný vliv na tokeny v ní.\nTokeny jsou přesunuty do hlavního seznamu.",
   "@confirmFolderDeletionHint": {
     "description": "Gives the user a hint about the consequences of deleting a folder."
   },
-  "generatingPhonePart": "Generování klientské části",
-  "@generatingPhonePart": {
-    "description": "Title of a dialog telling the user that the phone part gets generated right now."
+  "@confirmTokenDeletionHint": {
+    "description": "Gives the user a hint about the consequences of deleting a token."
   },
-  "phonePart": "Klientská část:",
-  "@phonePart": {
-    "description": "Title of a dialog telling the user that the phone was generated, and it is shown to the user."
+  "@connectionFailed": {
+    "description": "Tells the user that the connection failed."
   },
-  "otpValueCopiedMessage": "Heslo \"{otpValue}\" bylo zkopírováno do schránky.",
-  "@otpValueCopiedMessage": {
-    "description": "Tells the user that the otp value was copied to the clipboard.",
-    "type": "text",
-    "placeholders": {
-      "otpValue": {
-        "example": "055374"
-      }
-    }
+  "@container": {
+    "description": "Title for the container view."
   },
-  "settings": "Nastavení",
-  "@settings": {
-    "description": "Button to open the settings page."
+  "@couldNotSignMessage": {
+    "description": "Tells the user that the message could not be signed."
   },
-  "pushToken": "Push notifikace",
-  "@pushToken": {
-    "description": "Title for the settings block concerning the push tokens."
+  "@counter": {
+    "description": "Title of the counter field."
   },
-  "theme": "Vzhled",
-  "@theme": {
-    "description": "Title of the setting group where the theme can be selected."
+  "@createdAt": {
+    "description": "Label for the creation date of the token."
   },
-  "lightTheme": "Světlý",
-  "@lightTheme": {
-    "description": "The light theme."
+  "@creator": {
+    "description": "Label for the creator of the token."
   },
-  "darkTheme": "Tmavý",
   "@darkTheme": {
     "description": "The dark theme."
   },
-  "systemTheme": "Použít nastavení systému",
-  "@systemTheme": {
-    "description": "The systems theme."
+  "@decline": {
+    "description": "Label for e.g. a button. Something gets declined by the user."
   },
-  "someTokensDoNotSupportPolling": "Některé tokeny jsou zastaralé a nepodporují polling",
-  "@someTokensDoNotSupportPolling": {
-    "description": "Tells the user, that the following tokens do not support polling.",
-    "type": "text",
-    "placeholders": {}
+  "@delete": {
+    "description": "Label that describes deleting the token."
   },
-  "enablePolling": "Povolit polling",
+  "@deviceCredentialsRequiredTitle": {
+    "description": "Message showed as a title in a dialog which indicates the user has not set up credentials authentication on their device. It is used on Android side. Maximum 60 characters."
+  },
+  "@deviceCredentialsSetupDescription": {
+    "description": "Message advising the user to go to the settings and configure device credentials on their device. It shows in a dialog on Android side."
+  },
+  "@digits": {
+    "description": "Title of the dropdown button where the number of digits for the opt value is selected."
+  },
+  "@dismiss": {
+    "description": "Text of a button that closes a dialog."
+  },
   "@enablePolling": {
     "description": "Name of the setting switch that enables polling."
   },
-  "requestPushChallengesPeriodically": "Periodicky získávat výzvy ze serveru. Povolte pokud nefunguje příjem push notifikací.",
-  "@requestPushChallengesPeriodically": {
-    "description": "The description of the polling feature."
+  "@encoding": {
+    "description": "Title of the dropdown button where the encoding is selected."
   },
-  "synchronizePushTokens": "Synchronizace push tokenů",
-  "@synchronizePushTokens": {
-    "description": "Title of synchronizing push tokens in settings."
+  "@enterDetailsForToken": {
+    "description": "Title of the screen where tokens are created manually, tells the user to enter all required values."
   },
-  "synchronizesTokensWithServer": "Synchronizovat tokeny se serverem privacyIDEA.",
-  "@synchronizesTokensWithServer": {
-    "description": "Description of synchronizing push tokens in settings."
+  "@errorLogCleared": {
+    "description": "Message that tells the user that the error log was cleared."
   },
-  "sync": "Synchronizovat",
-  "@sync": {
-    "description": "Text of button that is used to synchronize push tokens."
+  "@errorLogEmpty": {
+    "description": "Message that tells the user that the error log is empty."
   },
-  "synchronizingTokens": "Tokeny se synchronizují.",
-  "@synchronizingTokens": {
-    "description": "Title of the push synchronization dialog."
+  "@errorLogTitle": {
+    "description": "Title of the error log screen."
   },
-  "allTokensSynchronized": "Všechny tokeny jsou synchronizované.",
-  "@allTokensSynchronized": {
-    "description": "Content of the push synchronization dialog. Signaling the user that everything worked."
+  "@errorMailBody": {
+    "description": "Message for email body"
   },
-  "syncFbTokenFailed": "Synchronizace následujících tokenů selhala, zkuste to znovu:",
-  "@syncFbTokenFailed": {
-    "description": "Headline for the list of tokens where the synchronization failed."
-  },
-  "tokensDoNotSupportSynchronization": "Následující tokeny nepodporují synchronizaci a musí být znovu zaregistrovány:",
-  "@tokensDoNotSupportSynchronization": {
-    "description": "Informs the user that the following tokens cannot be synchronized as they do not support that."
-  },
-  "errorRollOutFailed": "Registrace tokenu {name} selhala.",
   "@errorRollOutFailed": {
     "description": "Tells the user that the token could not be rolled out, because a network error occurred.",
-    "type": "text",
     "placeholders": {
       "name": {
         "example": "PUSH1234A"
       }
-    }
-  },
-  "statusCode": "Stavový kód: {statusCode}",
-  "@statusCode": {
-    "description": "Tells the user the status code of the error.",
-    "placeholders": {
-      "statusCode": {
-        "example": "400"
-      }
-    }
-  },
-  "errorSynchronizationNoNetworkConnection": "Synchronizace tokenů selhala, připojení k serveru privacyIDEA se nezdařilo.",
-  "@errorSynchronizationNoNetworkConnection": {
-    "description": "Tells the user that synchronizing the push tokens failed because the server could not be reached."
-  },
-  "errorRollOutUnknownError": "Vyskytla se neznámá chyba. Registrace není možná: {e}",
-  "@errorRollOutUnknownError": {
-    "description": "Tells the user that the roll-out failed because of an unknown error.",
-    "type": "text",
-    "placeholders": {
-      "e": {
-        "example": "IllegalArgumentException on Line 5 ..."
-      }
-    }
-  },
-  "startRollout":  "Začít zavádění",
-  "@startRollout": {
-    "description": "Label that tells the user that the token is being rolled out."
-  },
-  "pollingChallenges": "Čekám na nové požadavky",
-  "@pollingChallenges": {
+    },
     "type": "text"
   },
-  "unexpectedError": "Nastala neočekávaná chyba.",
-  "@unexpectedError": {
-    "description": "Title of page report mode."
-  },
-  "pollingFailed": "Dotaz se nezdařil.",
-  "@pollingFailed": {
-    "description": "Tells the user that the polling failed."
-  },
-  "pollingFailedFor": "Dotaz na {serial} se nezdařil.",
-  "@pollingFailedFor": {
-    "description": "Tells the user that the polling failed.",
-    "placeholders": {
-      "serial": {
-        "example": "PUSH1234A"
-      }
-    }
-  },
-  "noNetworkConnection": "Žádné připojení k síti.",
-  "@noNetworkConnection": {
-    "description": "Tells the user that there is no network connection."
-  },
-  "connectionFailed": "Připojení se nezdařilo.",
-  "@connectionFailed": {
-    "description": "Tells the user that the connection failed."
-  },
-  "checkYourNetwork": "Zkontrolujte prosím síťové připojení a zkuste to znovu.",
-  "@checkYourNetwork": {
-    "description": "Tells the user to check the network connection."
-  },
-  "serverNotReachable": "Na server se nepodařilo dovolat.",
-  "@serverNotReachable": {
-    "description": "Tells the user that the server could not be reached."
-  },
-  "couldNotSignMessage": "Zprávu se nepodařilo podepsat.",
-  "@couldNotSignMessage": {
-    "description": "Tells the user that the message could not be signed."
-  },
-  "useDeviceLocaleTitle": "Použít jazyk zařízení",
-  "@useDeviceLocaleTitle": {
-    "description": "Title of the switch tile where using the devices language can be enabled."
-  },
-  "useDeviceLocaleDescription": "Použít jazyk zařízení, pokud je podporován, případně angličtinu.",
-  "@useDeviceLocaleDescription": {
-    "description": "Description of the switch tile where using the devices language can be enabled."
-  },
-  "language": "Jazyk",
-  "@language": {
-    "description": "Title of language setting group."
-  },
-  "authenticateToShowOtp": "Pro zobrazení jednorázového kódu se přihlaste.",
-  "@authenticateToShowOtp": {
-    "description": "Reason to authenticate when trying to view a one time password."
-  },
-  "authenticateToUnLockToken": "Pro změnu uzamčení tokenu se přihlaste.",
-  "@authenticateToUnLockToken": {
-    "description": "Reason to authenticate when trying to lock or unlock a token."
-  },
-  "biometricRequiredTitle": "Biometrické ověření není nastaveno",
-  "@biometricRequiredTitle": {
-    "description": "Message showed as a title in a dialog which indicates the user has not set up biometric authentication on their device. It is used on Android side. Maximum 60 characters."
-  },
-  "biometricHint": "Vyžadováno přihlášení",
-  "@biometricHint": {
-    "description": "Hint message advising the user how to authenticate with biometrics. It is used on Android side. Maximum 60 characters."
-  },
-  "biometricNotRecognized": "Ověření se nezdařilo. Zkuste to znovu.",
-  "@biometricNotRecognized": {
-    "description": "Message to let the user know that authentication was failed. It is used on Android side. Maximum 60 characters."
-  },
-  "biometricSuccess": "Přihlášení bylo úspěšné",
-  "@biometricSuccess": {
-    "description": "Message to let the user know that authentication was successful. It is used on Android side. Maximum 60 characters."
-  },
-  "deviceCredentialsRequiredTitle": "Není nastaven zámek zařízení",
-  "@deviceCredentialsRequiredTitle": {
-    "description": "Message showed as a title in a dialog which indicates the user has not set up credentials authentication on their device. It is used on Android side. Maximum 60 characters."
-  },
-  "deviceCredentialsSetupDescription": "Nastave zámek zařízení v nastavení zařízení",
-  "@deviceCredentialsSetupDescription": {
-    "description": "Message advising the user to go to the settings and configure device credentials on their device. It shows in a dialog on Android side."
-  },
-  "signInTitle": "Vyžadováno přihlášení",
-  "@signInTitle": {
-    "description": "Message showed as a title in a dialog which indicates the user that they need to scan biometric to continue. It is used on Android side. Maximum 60 characters."
-  },
-  "goToSettingsButton": "Otevřít nastavení",
-  "@goToSettingsButton": {
-    "description": "Message showed on a button that the user can click to go to settings pages from the current dialog. It is used on both Android and iOS side. Maximum 30 characters."
-  },
-  "goToSettingsDescription": "Není nastaveno přihlášení zámkem zařízení ani biometrické ověření. Aktivujte je v nastavení zařízení.",
-  "@goToSettingsDescription": {
-    "description": "Message advising the user to go to the settings and configure device credentials or biometrics on their device."
-  },
-  "lockOut": "Biometrické ověření je deaktivováno. Pro aktivaci zamkněte a znovu odemkněte obrazovku/zařízení.",
-  "@lockOut": {
-    "description": "Message advising the user to re-enable biometrics on their device. It shows in a dialog on iOS side."
-  },
-  "authNotSupportedTitle": "Vyžadován zámek zařízení nebo biometrické ověření",
-  "@authNotSupportedTitle": {
-    "description": "Message shown as a dialog title that tells the user that device credentials or biometrics must be setup for this action."
-  },
-  "authNotSupportedBody": "Tato akce vyžaduje, aby bylo zařízení chráněno zámkem zařízení nebo biometrickým ověřením.",
-  "@authNotSupportedBody": {
-    "description": "Message shown as a dialog body that tells the user that device credentials or biometrics must be setup for this action."
-  },
-  "lock": "Zamknout",
-  "@lock": {
-    "description": "Description of button that locks a token."
-  },
-  "unlock": "Odemknout",
-  "@unlock": {
-    "description": "Description of button that unlocks a token."
-  },
-  "noResultTitle": "Nejsou nainstalovány žádné tokeny.",
-  "@noResultTitle": {
-    "description": "No tokens installed yet."
-  },
-  "noResultText1": "stiskněte tlačítko ",
-  "@noResultText1": {
-    "description": "first noresult text"
-  },
-  "noResultText2": " a začněte s používáním.",
-  "@noResultText2": {
-    "description": "second noresult text"
-  },
-  "onBoardingTitle1": "{appName}",
-  "@onBoardingTitle1": {
-    "placeholders": {
-      "appName": {
-        "example": "privacyIDEA Authenticator"
-      }
-    }
-  },
-  "onBoardingText1": "vícefázové ověření\nusnadněno",
-  "onBoardingTitle2": "Maximální Bezpečnost",
-  "onBoardingText2": "Uložte tokeny do svého zařízení\nchráněné biometrickým ověřením",
-  "onBoardingTitle3": "Navštivte náš profil Github",
-  "onBoardingText3": "Tuto aplikaci má open source",
-  "errorLogTitle": "Protokol chyb",
-  "logMenu": "Nabídka protokolu",
-  "showErrorLog": "Zobrazit",
-  "clearErrorLog": "Vymazat",
-  "send": "Odeslat",
-  "sendErrorLogDescription": "Vytvoří se připravený e-mail.\nObsahuje informace o aplikaci, chybě a zařízení.\nPřed odesláním můžete e-mail upravit.\nZde se můžete podívat, jak informace používáme:",
-  "@sendErrorLogDescription": {
-    "description": "Explanation for the user what he will send."
-  },
-  "showPrivacyPolicy": "Zobrazit zásady ochrany osobních údajů",
-  "errorLogEmpty": "Protokol chyb je prázdný.",
-  "verboseLogging": "Zevrubné protokolování",
-  "errorLogCleared": "Protokol chyb vymazán.",
-  "ok": "Ok",
-  "errorMailBody": "Přiložen je soubor protokolu o chybách.\nTento text můžete nahradit dalšími informacemi o chybě.",
-  "@errorMailBody": {
-    "description": "Message for email body"
-  },
-  "showDetails": "Zobrazit podrobnosti",
-  "open": "Otevřít",
-  "sendErrorDialogBody": "V aplikaci se vyskytla neznámá chyba. Informace uvedené níže mohou být odeslány vývojářům e-mailem pro vyřešení chyby v budoucnu.",
-  "@sendErrorDialogBody": {
-    "description": "Description shown to the user about what info the error report contains."
-  },
-  "noFbToken": "Není k dispozici žádný token Firebase.",
-  "firebaseToken": "Token Firebase",
-  "noPublicKey": "Není k dispozici žádný veřejný klíč.",
-  "publicKey": "Veřejný klíč",
-  "editToken": "Upravit token",
-  "edit": "Upravit",
-  "save": "Uložit",
-  "create": "Vytvořit",
-  "validFor": "Platné pro",
-  "validUntil": "Platné do",
-  "deleteLockedToken": "Prosím, autentifikujte se pro smazání uzamčeného tokenu.",
-  "editLockedToken": "Prosím, autentifikujte se pro úpravu uzamčeného tokenu.",
-  "expandLockedFolder": "Chcete-li otevřít uzamčenou složku, ověřte se.",
-  "renameTokenFolder": "Přejmenování složky",
-  "addANewFolder": "Vytvoření nové složky",
-  "folderName": "Název složky",
-  "retryRollout": "Zkusit znovu",
-  "generatingRSAKeyPair": "Generování párů klíčů RSA",
-  "@generatingRSAKeyPair": {
-    "description": "Message for the rollout process"
-  },
-  "generatingRSAKeyPairFailed": "Generování páru klíčů RSA se nezdařilo",
-  "@generatingRSAKeyPairFailed": {
-    "description": "Message for the rollout process"
-  },
-  "sendingRSAPublicKey": "Odeslání veřejného klíče RSA",
-  "@sendingRSAPublicKey": {
-    "description": "Message for the rollout process"
-  },
-  "sendingRSAPublicKeyFailed": "Nepodařilo se odeslat veřejný klíč RSA",
-  "@sendingRSAPublicKeyFailed": {
-    "description": "Message for the rollout process"
-  },
-  "parsingResponse": "Rozbor odpovědi",
-  "@parsingResponse": {
-    "description": "Message for the rollout process"
-  },
-  "parsingResponseFailed": "Parsování odpovědi se nezdařilo",
-  "@parsingResponseFailed": {
-    "description": "Message for the rollout process"
-  },
-  "rolloutCompleted": "Zavedení dokončeno",
-  "@rolloutCompleted": {
-    "description": "Message for the rollout process"
-  },
-  "errorRollOutNoConnectionToServer": "Registrace tokenu {name} selhala. Server není dostupný.",
   "@errorRollOutNoConnectionToServer": {
     "description": "Message for the rollout process",
     "placeholders": {
@@ -469,22 +157,21 @@
       }
     }
   },
-  "authToAcceptPushRequest": "Pro přijetí požadavku na push notifikaci se přihlaste.",
-  "authToDeclinePushRequest": "Pro odmítnutí požadavku na push notifikaci se přihlaste.",
-  "pushRequestParseError": "Požadavek na odeslání se nepodařilo zpracovat.",
-  "imageUrl": "URL obrázku",
-  "errorRollOutSSLHandshakeFailed": "SSL handshake se nezdařil. Roll-out není možný.",
-  "errorWhenPullingChallenges": "Při dotazování na výzvy {name} došlo k chybě.",
-  "@errorWhenPullingChallenges": {
-    "placeholders": {
-      "name": {
-        "example": "PUSH1234A"
-      }
-    }
+  "@errorRollOutSSLHandshakeFailed": {
+    "description": "Tells the user that the roll-out failed because the SSL handshake failed."
   },
-  "couldNotConnectToServer": "Nepodařilo se připojit k serveru.",
-  "errorRollOutNotPossibleAnymore": "Roll-out tohoto tokenu již není možný.",
-  "errorTokenExpired": "Platnost tokenu {name} vypršela.",
+  "@errorRollOutUnknownError": {
+    "description": "Tells the user that the roll-out failed because of an unknown error.",
+    "placeholders": {
+      "e": {
+        "example": "IllegalArgumentException on Line 5 ..."
+      }
+    },
+    "type": "text"
+  },
+  "@errorSynchronizationNoNetworkConnection": {
+    "description": "Tells the user that synchronizing the push tokens failed because the server could not be reached."
+  },
   "@errorTokenExpired": {
     "placeholders": {
       "name": {
@@ -492,112 +179,6 @@
       }
     }
   },
-  "yes": "Ano",
-  "no": "Ne",
-  "butDiscardIt": "ale zahodit jej",
-  "declineIt": "odmítnout jej ",
-  "requestTriggerdByUserQuestion": "Byl tento požadavek vyvolán vámi?",
-  "grantCameraPermissionDialogTitle": "Camera permission is not granted",
-  "grantCameraPermissionDialogContent": "Please grant camera permission to scan QR codes.",
-  "grantCameraPermissionDialogPermanentlyDenied": "Oprávnění kamery je trvale odepřeno. Udělte prosím oprávnění fotoaparátu v nastavení telefonu.",
-  "grantCameraPermissionDialogButton": "Udělit oprávnění",
-  "decryptErrorTitle": "Chyba dešifrování",
-  "decryptErrorContent": "Bohužel se aplikaci nepodařilo dešifrovat vaše tokeny. To znamená, že šifrovací klíč je poškozen. Můžete to zkusit znovu nebo odstranit data aplikace, čímž by došlo k odstranění tokenů v aplikaci.",
-  "decryptErrorButtonDelete": "Odstranit",
-  "decryptErrorButtonSendError": "Odeslat chybu",
-  "decryptErrorButtonRetry": "Opakování",
-  "decryptErrorDeleteConfirmationContent": "Jste si jisti, že chcete data aplikace odstranit?",
-  "hidePushTokens": "Skrýt push tokeny",
-  "hidePushTokensDescription": "Skrýt push tokeny ze seznamu tokenů. Tím se tokeny neodstraní a budou stále viditelné na samostatné obrazovce.",
-  "settingsGroupGeneral": "Obecné informace",
-  "licensesAndVersion": "Licence a verze",
-  "privacyPolicy": "Zásady ochrany osobních údajů",
-  "introScanQrCode": "Podporujeme všechny běžné dvoufaktorové autentizační tokeny a také tokeny privacyIDEA.",
-  "introAddTokenManually": "Pokud nechcete skenovat QR kód, můžete tokeny přidávat také ručně.",
-  "introTokenSwipe": "Přejetím po tokenech doleva zobrazíte dostupné akce.",
-  "introEditToken": "Zde můžete upravit název tokenu a zobrazit některé podrobnosti.",
-  "introLockToken": "To improve security even more, you can lock tokens. Then the token can only be used after authentication.",
-  "introDragToken": "Reorganizujte tokeny tak, že je na několik sekund stisknete a poté je přetáhnete na požadované místo.",
-  "introAddFolder": "Můžete vytvářet složky\npro uspořádání svých tokenů.",
-  "introPollForChallenges": "Můžete zkontrolovat nové výzvy přetažením seznamu tokenů dolů.",
-  "introHidePushTokens": "Vaše push tokeny jsou nyní skryté.\nNa obrazovce push tokenů je však stále vidíte.",
-  "legacySigningErrorTitle": "Při použití staršího tokenu došlo k chybě: {tokenLabel}",
-  "@legacySigningErrorTitle": {
-    "description": "Title of the error dialog that is shown when an error occurs while using a legacy token.",
-    "placeholders": {
-      "tokenLabel": {
-        "example": "PUSH1234A"
-      }
-    }
-  },
-  "legacySigningErrorMessage": "Token byl vytvořen v zastaralé verzi aplikace, což může vést k problémům při jeho používání.\nPokud problém přetrvává, doporučujeme vytvořit nový push token!",
-  "@legacySigningErrorMessage": {
-    "description": "Message of the error dialog that is shown when an error occurs while using a legacy token."
-  },
-  "selectImportSource": "Vyberte zdroj importu",
-  "selectImportType": "Jak chcete importovat žetony?",
-  "importTokens": "Importní token",
-  "importNTokens": "{count, plural, zero{Neimportujte žádné tokeny} one{Importovat jeden token} other{Importovat {count} tokenů}}",
-  "selectFile": "Vybrat soubor",
-  "decrypt": "Dešifrovat",
-  "tokensAreEncrypted": "Tokeny jsou zašifrované. Please enter the password to decrypt them.",
-  "tokensNotEncrypted": "Tokeny nejsou šifrované a lze je importovat přímo.",
-  "tokensSuccessfullyDecrypted": "Tokeny byly úspěšně dešifrovány a nyní je lze importovat.",
-  "password": "Heslo",
-  "wrongPassword": "Nesprávné heslo",
-  "qrScan": "Skenování",
-  "enterLink": "Zadejte odkaz",
-  "invalidBackupFile": "Vybraný soubor není platnou zálohou {appName}.",
-  "invalidQrScan": "Naskenovaný QR kód není platnou zálohou {appName}.",
-  "invalidQrFile": "Vybraný soubor neobsahuje platný QR kód z {appName}.",
-  "invalidLink": "Zadaný odkaz není platným tokenem {appName} nebo není podporován.",
-  "importFailedToken": "{count, plural, zero{Žádný token Nepodařilo se importovat.} one{Nepodařilo se importovat token.} other{Nepodařilo se importovat {count} tokenů.}}",
-  "importExistingToken": "{count, plural, zero{Nebyl nalezen žádný token, který by se již v aplikaci nacházel.} one{Byl nalezen token, který již v aplikaci existuje.} other{{count} byly nalezeny tokeny, které se již v aplikaci nacházejí.}}",
-  "importConflictToken": "{count, plural, zero{Není žádný konflikt s tokeny, které již existují.} one{Je konflikt s tokeny, které již existují.\nProsím, vyberte, který z nich chcete zachovat.} other{Je konflikt s tokeny, které již existují.\nProsím, vyberte, který z nich chcete zachovat.}}",
-  "importNewToken": "{count, plural, zero{Nebyl nalezen žádný nový token.} one{Byl nalezen nový token, který lze importovat.} other{Bylo nalezeno {count} nových tokenů, které lze importovat.}}",
-  "importHintPrivacyIdeaQrScan": "Chcete-li vytvořit QR kódy žetonů, přejděte do nastavení a klepněte na \"Export\". Poté vyberte \"Jako QR kód\" a klepněte na token, který chcete exportovat. Tato varianta je vhodná pouze pro přímý přenos do jiného zařízení, protože QR kód není šifrovaný.",
-  "importHintPrivacyIdeaFile": "Chcete-li vytvořit zálohu, přejděte do nastavení a klepněte na položku \"Export\". Vyberte \"Jako soubor\" a vyberte tokeny, které chcete exportovat. Potom klepněte na \"Exportovat\" a nastavte heslo. Úložištěm je složka pro stahování ve vašem zařízení.",
-  "importHint2FAS": "Vyberte zálohu 2FAS.\nPokud nemáte zálohu, vytvořte ji v aplikaci 2FAS. Doporučujeme použít heslo.",
-  "importHintAegisBackupFile": "Vyberte svůj export Aegis (.JSON).\nPokud nemáte export, vytvořte si jej prostřednictvím nabídky nastavení v aplikaci Aegis. Doporučujeme použít heslo.",
-  "importHintAegisQrScan": "Naskenujte QR kód, který obdržíte při přenosu záznamů z aplikace Aegis.",
-  "importHintAegisLink": "Zadejte odkaz, který obdržíte při přenosu záznamů ze systému Aegis.",
-  "importHintGoogleQrScan": "Naskenujte QR kód, který obdržíte při exportu účtů z Google Authenticator.",
-  "importHintGoogleQrFile": "Vyberte obrazový soubor s QR kódem, který obdržíte při exportu účtů z Google Authenticator.\n!! Upozorňujeme, že není bezpečné ukládat QR kód do zařízení, protože tokeny nejsou šifrovány !!",
-  "importHintAuthenticatorProFile": "Chcete-li vytvořit zálohu aplikace Authenticator Pro, přejděte do nastavení a klepněte na položku \"Automatické zálohování\". Vyberte umístění úložiště a nastavte heslo. Poté stiskněte \"Zálohovat nyní\" a exportujte tokeny.",
-  "importHintFreeOtpPlusQrScan": "Naskenujte QR kód, který obdržíte po stisknutí tří teček na dlaždici tokenu, a vyberte možnost \"Sdílet QR kód\".",
-  "importHintFreeOtpPlusFile": "Chcete-li vytvořit zálohu aplikace FreeOTP+, klepněte na tři tečky v pravém horním rohu a vyberte možnost \"Exportovat\". Můžete si vybrat mezi formátem JSON a URI. Zálohu doporučujeme po importu odstranit, protože není šifrovaná.",
-  "qrFileDecodeError": "Z vybraného obrázku nebylo možné dekódovat QR kód, použijte prosím místo toho skener QR kódů.",
-  "tokenLink": "Token link",
-  "feedback": "Zpětná vazba",
-  "feedbackTitle": "Vaše zpětná vazba je vždy vítána!",
-  "feedbackDescription": "Pokud máte nějaké dotazy, návrhy nebo problémy, dejte nám prosím vědět.",
-  "feedbackHint": "Otevře se připravený e-mail, který nám můžete zaslat. V případě potřeby budou doplněny informace o vašem zařízení a verzi aplikace. Před odesláním můžete e-mail zkontrolovat a upravit.",
-  "feedbackPrivacyPolicy1": "Odesláním zpětné vazby souhlasíte s našimi ",
-  "feedbackPrivacyPolicy2": "zásadami ochrany osobních údajů",
-  "@feedbackPrivacyPolicy2": {
-    "description": "Taping on this should open the privacy policy."
-  },
-  "feedbackPrivacyPolicy3": ".",
-  "addSystemInfo": "Přidat systémové informace",
-  "feedbackSentTitle": "Zpětná vazba odeslána",
-  "feedbackSentDescription": "Děkujeme vám za pomoc při vylepšování této aplikace!",
-  "patchNotesDialogTitle": "Co je nového?",
-  "version": "Verze",
-  "noMailAppTitle": "Není nainstalována žádná e-mailová aplikace",
-  "noMailAppDescription": "There is no e-mail app installed or initialised on this device, please try again when you are able to send an email message.",
-  "authentication": "Žádost o ověření",
-  "requestInfo": "Odesláno {issuer} pro váš účet: \"{account}\"",
-  "@requestInfo": {
-    "placeholders": {
-      "issuer": {
-        "example": "privacyIDEA"
-      },
-      "account": {
-        "example": "GitHub"
-      }
-    }
-  },
-  "errorUnlinkingPushToken": "Nepodařilo se odlinkovat push token {label}.",
   "@errorUnlinkingPushToken": {
     "description": "Error message when unlinking a push token failed.",
     "placeholders": {
@@ -606,50 +187,142 @@
       }
     }
   },
-  "pleaseSyncManuallyWhenNetworkIsAvailable": "Synchronizujte prosím push tokeny ručně prostřednictvím nastavení, když je k dispozici síťové připojení.",
-  "pushTokens": "Žetony Push",
-  "continueButton": "Pokračovat",
-  "addTokenManually": "Přidat token ručně",
-  "addFolder": "Přidat složku",
-  "searchTokens": "Hledat tokeny",
-  "closeSearchTokens": "Zavřít vyhledávání",
-  "increaseCounter": "Zvýšit počítadla",
-  "copyOTPToClipboard": "Zkopírovat OTP do schránky",
-  "licenses": "Licence",
-  "optionalMessage": "Volitelná zpráva",
-  "confirmation": "Potvrzení",
-  "askLogSendedDescription": "Odeslali jste protokol a chcete jej nyní vymazat?",
-  "algorithmUnsupported": "Algoritmus {algorithm} není podporován",
-  "@algorithmUnsupported": {
+  "@errorWhenPullingChallenges": {
+    "description": "errorWhenPullingChallenges",
     "placeholders": {
-      "algorithm": {
-        "example": "MD5"
+      "name": {
+        "example": "PUSH1234A"
       }
     }
   },
-  "thisAppIsOpenSource": "Tato aplikace má otevřený zdrojový kód\nNavštivte nás na GitHub",
-  "invalidArgument": "{argument} není platná hodnota pro {type}",
-  "importExportTokens": "Import/Exportovat žetony",
-  "exportNonPrivacyIDEATokens": "Exportovat ne-privacyIDEA žetony",
-  "selectTokensToExport": "{count, plural, zero{} one{Vyberte žeton k exportu} other{Vyberte žetony k exportu}}",
-  "noTokenToExport": "Pro export není k dispozici žádný token",
-  "exportAllTokens": "Exportovat všechny žetony",
-  "export": "Export",
-  "exportingTokens": "Probíhá export žetonů...",
-  "exportTokens": "Exportovat žetony",
-  "enterPasswordToEncrypt": "Zadejte heslo pro šifrování žetonů. Toto heslo bude vyžadováno k importu žetonů.",
-  "exportLockedTokenReason": "Prosím, ověřte se, abyste mohli exportovat uzamčené žetony.",
-  "fileSavedToDownloadsFolder": "Soubor uložen do složky Stažené soubory",
-  "errorSavingFile": "Chyba při ukládání souboru",
-  "asQrCode": "Jako QR kód",
-  "asFile": "Jako soubor",
-  "scanThisQrWithNewDevice": "Naskenujte tento QR kód svým novým zařízením pro import žetonu.",
-  "oneMore": "Ještě jeden",
-  "done": "Hotovo",
-  "confirmPassword": "Potvrďte heslo",
-  "exampleUrl": "Zadejte prosím platnou adresu URL, například: \"https://example.com/\"",
-  "pushEndpointUrl": "URL koncového bodu push",
-  "mustNotBeEmpty": "{field} nesmí být prázdné",
+  "@failedToLoad": {
+    "placeholders": {
+      "name": {
+        "example": "token data"
+      }
+    }
+  },
+  "@feedbackPrivacyPolicy2": {
+    "description": "Taping on this should open the privacy policy."
+  },
+  "@generatingPhonePart": {
+    "description": "Title of a dialog telling the user that the phone part gets generated right now."
+  },
+  "@generatingRSAKeyPair": {
+    "description": "Message for the rollout process"
+  },
+  "@generatingRSAKeyPairFailed": {
+    "description": "Message for the rollout process"
+  },
+  "@goToSettingsButton": {
+    "description": "Message showed on a button that the user can click to go to settings pages from the current dialog. It is used on both Android and iOS side. Maximum 30 characters."
+  },
+  "@goToSettingsDescription": {
+    "description": "Message advising the user to go to the settings and configure device credentials or biometrics on their device."
+  },
+  "@guide": {
+    "description": "Button to open the guide screen."
+  },
+  "@handshakeFailed": {
+    "description": "Error message when the handshake failed."
+  },
+  "@importedVia": {
+    "description": "Label for the import method of the token."
+  },
+  "@internalServerError": {
+    "placeholders": {
+      "code": {
+        "example": "500"
+      }
+    }
+  },
+  "@invalidValue": {
+    "description": "Error message when the value is not valid for the parameter.",
+    "placeholders": {
+      "parameter": {
+        "example": "counter"
+      },
+      "type": {
+        "example": "int"
+      },
+      "value": {
+        "example": "5"
+      }
+    }
+  },
+  "@invalidValueIn": {
+    "placeholders": {
+      "map": {
+        "example": "query parameters"
+      },
+      "parameter": {
+        "example": "counter"
+      },
+      "type": {
+        "example": "int"
+      },
+      "value": {
+        "example": "5"
+      }
+    }
+  },
+  "@isExpotableQuestion": {
+    "description": "Label for the question if the token is exportable."
+  },
+  "@isPiTokenQuestion": {
+    "description": "Label for the question if the token is a privacyIDEA token."
+  },
+  "@language": {
+    "description": "Title of language setting group."
+  },
+  "@legacySigningErrorMessage": {
+    "description": "Message of the error dialog that is shown when an error occurs while using a legacy token."
+  },
+  "@legacySigningErrorTitle": {
+    "description": "Title of the error dialog that is shown when an error occurs while using a legacy token.",
+    "placeholders": {
+      "tokenLabel": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
+  "@lightTheme": {
+    "description": "The light theme."
+  },
+  "@linkedContainer": {
+    "description": "Label for the linked container serial number."
+  },
+  "@lock": {
+    "description": "Description of button that locks a token."
+  },
+  "@lockOut": {
+    "description": "Message advising the user to re-enable biometrics on their device. It shows in a dialog on iOS side."
+  },
+  "@logMenu": {
+    "description": "Button to open the log menu."
+  },
+  "@malformedData": {
+    "description": "Error message when the data is malformed."
+  },
+  "@missingRequiredParameter": {
+    "description": "Error message when a required parameter is missing.",
+    "placeholders": {
+      "parameter": {
+        "example": "counter"
+      }
+    }
+  },
+  "@missingRequiredParameterIn": {
+    "description": "Error message when a required parameter is missing in a specific map.",
+    "placeholders": {
+      "map": {
+        "example": "query parameters"
+      },
+      "parameter": {
+        "example": "counter"
+      }
+    }
+  },
   "@mustNotBeEmpty": {
     "placeholders": {
       "field": {
@@ -657,28 +330,592 @@
       }
     }
   },
-  "sendPushRequestResponseFailed": "Odpověď se nepodařilo odeslat.",
+  "@name": {
+    "description": "Describes the field where the tokens name should be entered."
+  },
+  "@noFbToken": {
+    "description": "Tells the user that there is no Firebase token available."
+  },
+  "@noNetworkConnection": {
+    "description": "Tells the user that there is no network connection."
+  },
+  "@noResultText1": {
+    "description": "first noresult text"
+  },
+  "@noResultText2": {
+    "description": "second noresult text"
+  },
+  "@noResultTitle": {
+    "description": "No tokens installed yet."
+  },
+  "@notAnInteger": {
+    "description": "Error message when the user entered a value that is not an integer."
+  },
+  "@notAnNumber": {
+    "description": "Error message when the user entered a value that is not a number."
+  },
+  "@ok": {
+    "description": "Button to confirm an action."
+  },
+  "@onBoardingTitle1": {
+    "placeholders": {
+      "appName": {
+        "example": "privacyIDEA Authenticator"
+      }
+    }
+  },
+  "@open": {
+    "description": "Button to open something."
+  },
+  "@originApp": {
+    "description": "Label for the origin app."
+  },
+  "@originDetails": {
+    "description": "Title of the origin details menu."
+  },
+  "@otpValueCopiedMessage": {
+    "description": "Tells the user that the otp value was copied to the clipboard.",
+    "placeholders": {
+      "otpValue": {
+        "example": "055374"
+      }
+    },
+    "type": "text"
+  },
+  "@parsingResponse": {
+    "description": "Message for the rollout process"
+  },
+  "@parsingResponseFailed": {
+    "description": "Message for the rollout process"
+  },
+  "@period": {
+    "description": "Title of the dropdown button where the period of the totp token is selected."
+  },
+  "@phonePart": {
+    "description": "Title of a dialog telling the user that the phone was generated, and it is shown to the user."
+  },
+  "@pleaseEnterANameForThisToken": {
+    "description": "Hint telling the user to enter a name for a token."
+  },
+  "@pleaseEnterASecretForThisToken": {
+    "description": "Hint telling the user to enter a secret for a token."
+  },
+  "@pollingChallenges": {
+    "type": "text"
+  },
+  "@pollingFailed": {
+    "description": "Tells the user that the polling failed."
+  },
+  "@pollingFailedFor": {
+    "description": "Tells the user that the polling failed.",
+    "placeholders": {
+      "serial": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
+  "@pushToken": {
+    "description": "Title for the settings block concerning the push tokens."
+  },
+  "@rename": {
+    "description": "Label that describes renaming the token."
+  },
+  "@renameToken": {
+    "description": "Title of the dialog where a new name for a token can be entered."
+  },
+  "@renameTokenFolder": {
+    "description": "Title of the dialog where a new name for a token folder can be entered."
+  },
+  "@requestInfo": {
+    "description": "Description of the authentication request.",
+    "placeholders": {
+      "account": {
+        "example": "GitHub"
+      },
+      "issuer": {
+        "example": "privacyIDEA"
+      }
+    }
+  },
+  "@requestPushChallengesPeriodically": {
+    "description": "The description of the polling feature."
+  },
+  "@retry": {
+    "description": "Label for e.g. a button. Something is tried to be done again."
+  },
+  "@rolloutCompleted": {
+    "description": "Message for the rollout process"
+  },
+  "@scanQrCode": {
+    "description": "The button to scan otpauth qr-codes."
+  },
+  "@secretIsRequired": {
+    "description": "Error message when the secret is missing."
+  },
+  "@secretKey": {
+    "description": "Describes the field where the tokens secret should be entered."
+  },
+  "@send": {
+    "description": "Button to send the error log."
+  },
+  "@sendErrorDialogBody": {
+    "description": "Description shown to the user about what info the error report contains."
+  },
+  "@sendErrorLogDescription": {
+    "description": "Explanation for the user what he will send."
+  },
   "@sendPushRequestResponseFailed": {
     "description": "Error message when the response to a push request could not be sent."
   },
+  "@sendingRSAPublicKey": {
+    "description": "Message for the rollout process"
+  },
+  "@sendingRSAPublicKeyFailed": {
+    "description": "Message for the rollout process"
+  },
+  "@serverNotReachable": {
+    "description": "Tells the user that the server could not be reached."
+  },
+  "@settings": {
+    "description": "Button to open the settings page."
+  },
+  "@showDetails": {
+    "description": "Button to show details."
+  },
+  "@showErrorLog": {
+    "description": "Button to show the error log."
+  },
+  "@showPrivacyPolicy": {
+    "description": "Button to show the privacy policy."
+  },
+  "@signInTitle": {
+    "description": "Message showed as a title in a dialog which indicates the user that they need to scan biometric to continue. It is used on Android side. Maximum 60 characters."
+  },
+  "@someTokensDoNotSupportPolling": {
+    "description": "Tells the user, that the following tokens do not support polling.",
+    "type": "text"
+  },
+  "@startRollout": {
+    "description": "Label that tells the user that the token is being rolled out."
+  },
+  "@statusCode": {
+    "description": "Tells the user the status code of the error.",
+    "placeholders": {
+      "statusCode": {
+        "example": "400"
+      }
+    }
+  },
+  "@sync": {
+    "description": "Text of button that is used to synchronize push tokens."
+  },
+  "@syncContainerFailed": {
+    "description": "Error message when synchronizing a container failed."
+  },
+  "@syncFbTokenFailed": {
+    "description": "Headline for the list of tokens where the synchronization failed."
+  },
+  "@synchronizePushTokens": {
+    "description": "Title of synchronizing push tokens in settings."
+  },
+  "@synchronizesTokensWithServer": {
+    "description": "Description of synchronizing push tokens in settings."
+  },
+  "@synchronizingTokens": {
+    "description": "Title of the push synchronization dialog."
+  },
+  "@systemTheme": {
+    "description": "The systems theme."
+  },
+  "@theSecretDoesNotFitTheCurrentEncoding": {
+    "description": "Hint telling the user that the secret does not fit the selected encoding."
+  },
+  "@theme": {
+    "description": "Title of the setting group where the theme can be selected."
+  },
+  "@themeMode": {
+    "description": "Title of the setting group where the theme mode can be changed."
+  },
+  "@timeOut": {
+    "description": "Error message when a request times out."
+  },
+  "@tokenDataParseError": {
+    "description": "Error message when the token data could not be parsed."
+  },
+  "@tokenDetails": {
+    "description": "Title of the token details menu."
+  },
+  "@tokenSerial": {
+    "description": "Label for the token serial number."
+  },
+  "@tokensDoNotSupportSynchronization": {
+    "description": "Informs the user that the following tokens cannot be synchronized as they do not support that."
+  },
+  "@type": {
+    "description": "Title of the dropdown button where the type of the token is selected."
+  },
+  "@unexpectedError": {
+    "description": "Title of page report mode."
+  },
+  "@unknown": {
+    "description": "Tells that something is unknown."
+  },
+  "@unlock": {
+    "description": "Description of button that unlocks a token."
+  },
+  "@unsupported": {
+    "placeholders": {
+      "name": {
+        "example": "piauth version"
+      },
+      "value": {
+        "example": "5"
+      }
+    }
+  },
+  "@useDeviceLocaleDescription": {
+    "description": "Description of the switch tile where using the devices language can be enabled."
+  },
+  "@useDeviceLocaleTitle": {
+    "description": "Title of the switch tile where using the devices language can be enabled."
+  },
+  "@valueNotAllowed": {
+    "placeholders": {
+      "parameter": {
+        "example": "counter"
+      },
+      "type": {
+        "example": "int"
+      },
+      "value": {
+        "example": "-1"
+      }
+    }
+  },
+  "@valueNotAllowedIn": {
+    "placeholders": {
+      "map": {
+        "example": "query parameters"
+      },
+      "parameter": {
+        "example": "counter"
+      },
+      "type": {
+        "example": "int"
+      },
+      "value": {
+        "example": "-1"
+      }
+    }
+  },
+  "@verboseLogging": {
+    "description": "Title of the switch tile where verbose logging can be enabled."
+  },
+  "accept": "Přijmout",
+  "addANewFolder": "Vytvoření nové složky",
+  "addFolder": "Přidat složku",
+  "addSystemInfo": "Přidat systémové informace",
+  "addToken": "Přidat token",
+  "addTokenManually": "Přidat token ručně",
+  "algorithm": "Algoritmus",
+  "algorithmUnsupported": "Algoritmus {algorithm} není podporován",
+  "allTokensSynchronized": "Všechny tokeny jsou synchronizované.",
+  "asFile": "Jako soubor",
+  "asQrCode": "Jako QR kód",
+  "askLogSendedDescription": "Odeslali jste protokol a chcete jej nyní vymazat?",
+  "authNotSupportedBody": "Tato akce vyžaduje, aby bylo zařízení chráněno zámkem zařízení nebo biometrickým ověřením.",
+  "authNotSupportedTitle": "Vyžadován zámek zařízení nebo biometrické ověření",
+  "authToAcceptPushRequest": "Pro přijetí požadavku na push notifikaci se přihlaste.",
+  "authToDeclinePushRequest": "Pro odmítnutí požadavku na push notifikaci se přihlaste.",
+  "authenticateToShowOtp": "Pro zobrazení jednorázového kódu se přihlaste.",
+  "authenticateToUnLockToken": "Pro změnu uzamčení tokenu se přihlaste.",
+  "authenticationRequest": "Žádost o ověření",
+  "biometricHint": "Vyžadováno přihlášení",
+  "biometricNotRecognized": "Ověření se nezdařilo. Zkuste to znovu.",
+  "biometricRequiredTitle": "Biometrické ověření není nastaveno",
+  "biometricSuccess": "Přihlášení bylo úspěšné",
+  "butDiscardIt": "ale zahodit jej",
+  "cancel": "Zrušit",
+  "checkServerCertificate": "Zkontrolujte prosím certifikát serveru",
+  "checkYourNetwork": "Zkontrolujte prosím síťové připojení a zkuste to znovu.",
+  "clearErrorLog": "Vymazat",
+  "closeSearchTokens": "Zavřít vyhledávání",
+  "confirmDeletion": "Potvrdit smazání",
+  "confirmDeletionOf": "Opravdu chcete smazat token {name}?",
+  "confirmFolderDeletionHint": "Odstranění složky nemá žádný vliv na tokeny v ní.\nTokeny jsou přesunuty do hlavního seznamu.",
+  "confirmPassword": "Potvrďte heslo",
+  "confirmTokenDeletionHint": "Pokud tento token odstraníte, nebude již možné se přihlásit.\nProsím, ujistěte se, že se můžete přihlásit k přidruženému účtu bez tohoto tokenu.",
+  "confirmation": "Potvrzení",
+  "connectionFailed": "Připojení se nezdařilo.",
+  "container": "Kontejner",
+  "continueButton": "Pokračovat",
+  "copyOTPToClipboard": "Zkopírovat OTP do schránky",
+  "couldNotConnectToServer": "Nepodařilo se připojit k serveru.",
+  "couldNotSignMessage": "Zprávu se nepodařilo podepsat.",
+  "counter": "Pult",
+  "create": "Vytvořit",
+  "createdAt": "Vytvořeno dne",
+  "creator": "Tvůrce",
+  "decline": "Odmítnout",
+  "declineIt": "odmítnout jej ",
+  "decrypt": "Dešifrovat",
+  "decryptErrorButtonDelete": "Odstranit",
+  "decryptErrorButtonRetry": "Opakování",
+  "decryptErrorButtonSendError": "Odeslat chybu",
+  "decryptErrorContent": "Bohužel se aplikaci nepodařilo dešifrovat vaše tokeny. To znamená, že šifrovací klíč je poškozen. Můžete to zkusit znovu nebo odstranit data aplikace, čímž by došlo k odstranění tokenů v aplikaci.",
+  "decryptErrorDeleteConfirmationContent": "Jste si jisti, že chcete data aplikace odstranit?",
+  "decryptErrorTitle": "Chyba dešifrování",
+  "delete": "Smazat",
+  "deleteLockedToken": "Prosím, autentifikujte se pro smazání uzamčeného tokenu.",
+  "deviceCredentialsRequiredTitle": "Není nastaven zámek zařízení",
+  "deviceCredentialsSetupDescription": "Nastave zámek zařízení v nastavení zařízení",
+  "digits": "Počet číslic",
+  "dismiss": "Zavřít",
+  "done": "Hotovo",
+  "edit": "Upravit",
+  "editLockedToken": "Prosím, autentifikujte se pro úpravu uzamčeného tokenu.",
+  "editToken": "Upravit token",
+  "enablePolling": "Povolit polling",
+  "encoding": "Kódování",
+  "enterDetailsForToken": "Vložte podrobnosti tokenu",
+  "enterLink": "Zadejte odkaz",
+  "enterPasswordToEncrypt": "Zadejte heslo pro šifrování žetonů. Toto heslo bude vyžadováno k importu žetonů.",
+  "errorLogCleared": "Protokol chyb vymazán.",
+  "errorLogEmpty": "Protokol chyb je prázdný.",
+  "errorLogTitle": "Protokol chyb",
+  "errorMailBody": "Přiložen je soubor protokolu o chybách.\nTento text můžete nahradit dalšími informacemi o chybě.",
+  "errorRollOutFailed": "Registrace tokenu {name} selhala.",
+  "errorRollOutNoConnectionToServer": "Registrace tokenu {name} selhala. Server není dostupný.",
+  "errorRollOutNotPossibleAnymore": "Roll-out tohoto tokenu již není možný.",
+  "errorRollOutSSLHandshakeFailed": "SSL handshake se nezdařil. Roll-out není možný.",
+  "errorRollOutUnknownError": "Vyskytla se neznámá chyba. Registrace není možná: {e}",
+  "errorSavingFile": "Chyba při ukládání souboru",
+  "errorSynchronizationNoNetworkConnection": "Synchronizace tokenů selhala, připojení k serveru privacyIDEA se nezdařilo.",
+  "errorTokenExpired": "Platnost tokenu {name} vypršela.",
+  "errorUnlinkingPushToken": "Nepodařilo se odlinkovat push token {label}.",
+  "errorWhenPullingChallenges": "Při dotazování na výzvy {name} došlo k chybě.",
+  "exampleUrl": "Zadejte prosím platnou adresu URL, například: \"https://example.com/\"",
+  "expandLockedFolder": "Chcete-li otevřít uzamčenou složku, ověřte se.",
+  "export": "Export",
+  "exportAllTokens": "Exportovat všechny žetony",
+  "exportLockedTokenReason": "Prosím, ověřte se, abyste mohli exportovat uzamčené žetony.",
+  "exportNonPrivacyIDEATokens": "Exportovat ne-privacyIDEA žetony",
+  "exportTokens": "Exportovat žetony",
+  "exportingTokens": "Probíhá export žetonů...",
+  "failedToLoad": "Nepodařilo se načíst:",
+  "feedback": "Zpětná vazba",
+  "feedbackDescription": "Pokud máte nějaké dotazy, návrhy nebo problémy, dejte nám prosím vědět.",
+  "feedbackHint": "Otevře se připravený e-mail, který nám můžete zaslat. V případě potřeby budou doplněny informace o vašem zařízení a verzi aplikace. Před odesláním můžete e-mail zkontrolovat a upravit.",
+  "feedbackPrivacyPolicy1": "Odesláním zpětné vazby souhlasíte s našimi ",
+  "feedbackPrivacyPolicy2": "zásadami ochrany osobních údajů",
+  "feedbackPrivacyPolicy3": ".",
+  "feedbackSentDescription": "Děkujeme vám za pomoc při vylepšování této aplikace!",
+  "feedbackSentTitle": "Zpětná vazba odeslána",
+  "feedbackTitle": "Vaše zpětná vazba je vždy vítána!",
+  "fileSavedToDownloadsFolder": "Soubor uložen do složky Stažené soubory",
+  "findingQrCodeInImage": "Hledání QR kódu v obrázku...",
+  "firebaseToken": "Token Firebase",
+  "folderName": "Název složky",
+  "generatingPhonePart": "Generování klientské části",
+  "generatingRSAKeyPair": "Generování párů klíčů RSA",
+  "generatingRSAKeyPairFailed": "Generování páru klíčů RSA se nezdařilo",
+  "goToSettingsButton": "Otevřít nastavení",
+  "goToSettingsDescription": "Není nastaveno přihlášení zámkem zařízení ani biometrické ověření. Aktivujte je v nastavení zařízení.",
+  "grantCameraPermissionDialogButton": "Udělit oprávnění",
+  "grantCameraPermissionDialogContent": "Please grant camera permission to scan QR codes.",
+  "grantCameraPermissionDialogPermanentlyDenied": "Oprávnění kamery je trvale odepřeno. Udělte prosím oprávnění fotoaparátu v nastavení telefonu.",
+  "grantCameraPermissionDialogTitle": "Camera permission is not granted",
+  "handshakeFailed": "Handshake se nezdařil",
+  "hidePushTokens": "Skrýt push tokeny",
+  "hidePushTokensDescription": "Skrýt push tokeny ze seznamu tokenů. Tím se tokeny neodstraní a budou stále viditelné na samostatné obrazovce.",
+  "imageUrl": "URL obrázku",
+  "importConflictToken": "{count, plural, zero{Není žádný konflikt s tokeny, které již existují.} one{Je konflikt s tokeny, které již existují.\nProsím, vyberte, který z nich chcete zachovat.} other{Je konflikt s tokeny, které již existují.\nProsím, vyberte, který z nich chcete zachovat.}}",
+  "importExistingToken": "{count, plural, zero{Nebyl nalezen žádný token, který by se již v aplikaci nacházel.} one{Byl nalezen token, který již v aplikaci existuje.} other{{count} byly nalezeny tokeny, které se již v aplikaci nacházejí.}}",
+  "importExportTokens": "Import/Exportovat žetony",
+  "importFailedToken": "{count, plural, zero{Žádný token Nepodařilo se importovat.} one{Nepodařilo se importovat token.} other{Nepodařilo se importovat {count} tokenů.}}",
+  "importHint2FAS": "Vyberte zálohu 2FAS.\nPokud nemáte zálohu, vytvořte ji v aplikaci 2FAS. Doporučujeme použít heslo.",
+  "importHintAegisBackupFile": "Vyberte svůj export Aegis (.JSON).\nPokud nemáte export, vytvořte si jej prostřednictvím nabídky nastavení v aplikaci Aegis. Doporučujeme použít heslo.",
+  "importHintAegisLink": "Zadejte odkaz, který obdržíte při přenosu záznamů ze systému Aegis.",
+  "importHintAegisQrScan": "Naskenujte QR kód, který obdržíte při přenosu záznamů z aplikace Aegis.",
+  "importHintAuthenticatorProFile": "Chcete-li vytvořit zálohu aplikace Authenticator Pro, přejděte do nastavení a klepněte na položku \"Automatické zálohování\". Vyberte umístění úložiště a nastavte heslo. Poté stiskněte \"Zálohovat nyní\" a exportujte tokeny.",
+  "importHintFreeOtpPlusFile": "Chcete-li vytvořit zálohu aplikace FreeOTP+, klepněte na tři tečky v pravém horním rohu a vyberte možnost \"Exportovat\". Můžete si vybrat mezi formátem JSON a URI. Zálohu doporučujeme po importu odstranit, protože není šifrovaná.",
+  "importHintFreeOtpPlusQrScan": "Naskenujte QR kód, který obdržíte po stisknutí tří teček na dlaždici tokenu, a vyberte možnost \"Sdílet QR kód\".",
+  "importHintGoogleQrFile": "Vyberte obrazový soubor s QR kódem, který obdržíte při exportu účtů z Google Authenticator.\n!! Upozorňujeme, že není bezpečné ukládat QR kód do zařízení, protože tokeny nejsou šifrovány !!",
+  "importHintGoogleQrScan": "Naskenujte QR kód, který obdržíte při exportu účtů z Google Authenticator.",
+  "importHintPrivacyIdeaFile": "Chcete-li vytvořit zálohu, přejděte do nastavení a klepněte na položku \"Export\". Vyberte \"Jako soubor\" a vyberte tokeny, které chcete exportovat. Potom klepněte na \"Exportovat\" a nastavte heslo. Úložištěm je složka pro stahování ve vašem zařízení.",
+  "importHintPrivacyIdeaQrScan": "Chcete-li vytvořit QR kódy žetonů, přejděte do nastavení a klepněte na \"Export\". Poté vyberte \"Jako QR kód\" a klepněte na token, který chcete exportovat. Tato varianta je vhodná pouze pro přímý přenos do jiného zařízení, protože QR kód není šifrovaný.",
+  "importNTokens": "{count, plural, zero{Neimportujte žádné tokeny} one{Importovat jeden token} other{Importovat {count} tokenů}}",
+  "importNewToken": "{count, plural, zero{Nebyl nalezen žádný nový token.} one{Byl nalezen nový token, který lze importovat.} other{Bylo nalezeno {count} nových tokenů, které lze importovat.}}",
+  "importTokens": "Importní token",
+  "importedVia": "Dovezeno prostřednictvím",
+  "increaseCounter": "Zvýšit počítadla",
+  "internalServerError": "Interní chyba serveru ({code})",
+  "introAddFolder": "Můžete vytvářet složky\npro uspořádání svých tokenů.",
+  "introAddTokenManually": "Pokud nechcete skenovat QR kód, můžete tokeny přidávat také ručně.",
+  "introDragToken": "Reorganizujte tokeny tak, že je na několik sekund stisknete a poté je přetáhnete na požadované místo.",
+  "introEditToken": "Zde můžete upravit název tokenu a zobrazit některé podrobnosti.",
+  "introHidePushTokens": "Vaše push tokeny jsou nyní skryté.\nNa obrazovce push tokenů je však stále vidíte.",
+  "introLockToken": "To improve security even more, you can lock tokens. Then the token can only be used after authentication.",
+  "introPollForChallenges": "Můžete zkontrolovat nové výzvy přetažením seznamu tokenů dolů.",
+  "introScanQrCode": "Podporujeme všechny běžné dvoufaktorové autentizační tokeny a také tokeny privacyIDEA.",
+  "introTokenSwipe": "Přejetím po tokenech doleva zobrazíte dostupné akce.",
+  "invalidBackupFile": "Vybraný soubor není platnou zálohou {appName}.",
+  "invalidLink": "Zadaný odkaz není platným tokenem {appName} nebo není podporován.",
+  "invalidQrFile": "Vybraný soubor neobsahuje platný QR kód z {appName}.",
+  "invalidQrScan": "Naskenovaný QR kód není platnou zálohou {appName}.",
+  "invalidValue": "untranslated",
+  "invalidValueIn": "untranslated",
+  "isExpotableQuestion": "Lze exportovat?",
+  "isPiTokenQuestion": "Je to token privacyIDEA?",
+  "language": "Jazyk",
+  "legacySigningErrorMessage": "Token byl vytvořen v zastaralé verzi aplikace, což může vést k problémům při jeho používání.\nPokud problém přetrvává, doporučujeme vytvořit nový push token!",
+  "legacySigningErrorTitle": "Při použití staršího tokenu došlo k chybě: {tokenLabel}",
+  "licenses": "Licence",
+  "licensesAndVersion": "Licence a verze",
+  "linkedContainer": "Propojený kontejner",
+  "lock": "Zamknout",
+  "lockOut": "Biometrické ověření je deaktivováno. Pro aktivaci zamkněte a znovu odemkněte obrazovku/zařízení.",
+  "logMenu": "Nabídka protokolu",
+  "malformedData": "Data nejsou ve správném formátu",
+  "markQrCode": "Označte QR kód",
+  "missingRequiredParameter": "Hodnota parametru [{parameter}] je povinná, ale chybí.",
+  "missingRequiredParameterIn": "Hodnota parametru [{parameter}] je povinná, ale v \"{map}\" chybí.",
+  "mustNotBeEmpty": "{field} nesmí být prázdné",
+  "name": "Název",
+  "no": "Ne",
+  "noFbToken": "Není k dispozici žádný token Firebase.",
+  "noMailAppDescription": "There is no e-mail app installed or initialised on this device, please try again when you are able to send an email message.",
+  "noMailAppTitle": "Není nainstalována žádná e-mailová aplikace",
+  "noNetworkConnection": "Žádné připojení k síti.",
+  "noPublicKey": "Není k dispozici žádný veřejný klíč.",
+  "noResultText1": "stiskněte tlačítko ",
+  "noResultText2": " a začněte s používáním.",
+  "noResultTitle": "Nejsou nainstalovány žádné tokeny.",
+  "noTokenToExport": "Pro export není k dispozici žádný token",
+  "notAnInteger": "Hodnota není celé číslo.",
+  "notAnNumber": "Hodnota není číslo.",
+  "ok": "Ok",
+  "oneMore": "Ještě jeden",
+  "open": "Otevřít",
+  "optionalMessage": "Volitelná zpráva",
+  "originApp": "Aplikace Origin",
+  "originDetails": "Podrobnosti o původu",
+  "otpValueCopiedMessage": "Heslo \"{otpValue}\" bylo zkopírováno do schránky.",
+  "parsingResponse": "Rozbor odpovědi",
+  "parsingResponseFailed": "Parsování odpovědi se nezdařilo",
+  "password": "Heslo",
   "passwordCannotBeEmpty": "Heslo nesmí být prázdné",
-  "passwordMustBeAtLeast8Characters": "Heslo musí obsahovat alespoň 8 znaků",
   "passwordCannotContainWhitespace": "Heslo nesmí obsahovat mezery",
+  "passwordMustBeAtLeast8Characters": "Heslo musí obsahovat alespoň 8 znaků",
   "passwordMustContainLowercaseLetter": "Heslo musí obsahovat malé písmeno",
-  "passwordMustContainUppercaseLetter": "Heslo musí obsahovat velké písmeno",
   "passwordMustContainNumber": "Heslo musí obsahovat číslo",
   "passwordMustContainSpecialCharacter": "Heslo musí obsahovat speciální znak",
+  "passwordMustContainUppercaseLetter": "Heslo musí obsahovat velké písmeno",
   "passwordsDoNotMatch": "Hesla se neshodují",
-  "selectTokensToExportHelpTitle": "Není váš token uveden?",
-  "selectTokensToExportHelpContent": "Pokud token není uveden v seznamu, není zaručeno, že se nejedná o token privacyIDEA.\nV současné době lze exportovat pouze ručně přidané a importované tokeny.",
-  "findingQrCodeInImage": "Hledání QR kódu v obrázku...",
-  "qrNotFound": "Žádný QR kód nebyl nalezen!",
+  "patchNotesBugFixes": "Opravy chyb",
+  "patchNotesDialogTitle": "Co je nového?",
+  "patchNotesImprovements": "Improvements",
+  "patchNotesNewFeatures": "Nové funkce",
+  "patchNotesV4_3_0NewFeatures1": "Přidána podpora pro import tokenů z Google, Aegis a 2FAS Authenticator. Další zdroje importu budou přidány v budoucnu.",
+  "patchNotesV4_3_0NewFeatures2": "Do nastavení byla přidána možnost zpětné vazby.",
+  "patchNotesV4_3_0NewFeatures3": "Tokeny Push lze nyní skrýt ze seznamu tokenů.",
+  "patchNotesV4_3_0NewFeatures4": "Byly přidány úvodní informace, které novým uživatelům usnadní začátky.",
+  "patchNotesV4_3_0NewFeatures5": "Žetony nyní můžete vyhledávat klepnutím na lupu v pravém horním rohu.",
+  "patchNotesV4_3_0NewFeatures6": "Přidán token HomeWidget pro systém Android 12 a novější.",
+  "patchNotesV4_3_1BugFix1": "Opraven problém, kdy nebyla zobrazena hodnota otp po ověření na některých zařízeních.",
+  "patchNotesV4_3_1Improvement1": "Skener QR kódů byl vylepšen.",
+  "patchNotesV4_4_0Improvement1": "Byly přidány další dovozní zdroje.",
+  "patchNotesV4_4_0Improvement2": "Bylo vylepšeno rozpoznávání QR kódů z obrazových souborů.",
+  "patchNotesV4_4_0NewFeatures1": "Nyní je možné exportovat tokeny, u kterých lze zajistit, že se nejedná o tokeny privacyIDEA. V současné době nelze vyloučit, že tokeny přidané prostřednictvím čtečky QR kódů pocházejí z aplikace privacyIDEA. Rozlišování bude v budoucích verzích vylepšeno.",
+  "patchNotesV4_4_0NewFeatures2": "Přidána podpora pro \"require presence\" aplikace privacyIDEA.",
+  "period": "Časový interval",
+  "phonePart": "Klientská část:",
+  "pleaseEnterANameForThisToken": "Vložte název pro tento token.",
+  "pleaseEnterASecretForThisToken": "Vložte tajný klíč pro tento token.",
+  "pleaseSyncManuallyWhenNetworkIsAvailable": "Synchronizujte prosím push tokeny ručně prostřednictvím nastavení, když je k dispozici síťové připojení.",
+  "pollingChallenges": "Čekám na nové požadavky",
+  "pollingFailed": "Dotaz se nezdařil.",
+  "pollingFailedFor": "Dotaz na {serial} se nezdařil.",
+  "privacyPolicy": "Zásady ochrany osobních údajů",
+  "publicKey": "Veřejný klíč",
+  "pushEndpointUrl": "URL koncového bodu push",
+  "pushRequestParseError": "Požadavek na odeslání se nepodařilo zpracovat.",
+  "pushToken": "Push notifikace",
+  "pushTokens": "Žetony Push",
+  "qrFileDecodeError": "Z vybraného obrázku nebylo možné dekódovat QR kód, použijte prosím místo toho skener QR kódů.",
   "qrInFileNotFound": "Ve vybraném obrázku nebyl nalezen žádný QR kód.",
   "qrInFileNotFound2": "Můžete mi ukázat, kde se QR kód nachází.",
   "qrInFileNotFound3": "Předpokládám, že kód najdu, pokud se nachází uprostřed označené oblasti.",
-  "markQrCode": "Označte QR kód",
-  "malformedData": "Data nejsou ve správném formátu",
-  "linkMustOtpAuth" : "Odkaz musí začínat otpauth://",
-  "clipboardEmpty": "Schránka je prázdná",
-  "invalidUrl": "Neplatná adresa URL"
+  "qrNotFound": "Žádný QR kód nebyl nalezen!",
+  "qrScan": "Skenování",
+  "rename": "Přejmenovat",
+  "renameToken": "Přejmenovat token",
+  "renameTokenFolder": "Přejmenování složky",
+  "requestInfo": "Odesláno {issuer} pro váš účet: \"{account}\"",
+  "requestPushChallengesPeriodically": "Periodicky získávat výzvy ze serveru. Povolte pokud nefunguje příjem push notifikací.",
+  "requestTriggerdByUserQuestion": "Byl tento požadavek vyvolán vámi?",
+  "retry": "Zkusit znovu",
+  "retryRollout": "Zkusit znovu",
+  "rolloutCompleted": "Zavedení dokončeno",
+  "save": "Uložit",
+  "scanQrCode": "Naskenovat QR kód",
+  "scanThisQrWithNewDevice": "Naskenujte tento QR kód svým novým zařízením pro import žetonu.",
+  "searchTokens": "Hledat tokeny",
+  "secretIsRequired": "Tajné je vyžadováno",
+  "secretKey": "Tajný klíč",
+  "selectFile": "Vybrat soubor",
+  "selectImportSource": "Vyberte zdroj importu",
+  "selectImportType": "Jak chcete importovat žetony?",
+  "selectTokensToExport": "{count, plural, zero{} one{Vyberte žeton k exportu} other{Vyberte žetony k exportu}}",
+  "selectTokensToExportHelpContent": "Pokud token není uveden v seznamu, není zaručeno, že se nejedná o token privacyIDEA.\nV současné době lze exportovat pouze ručně přidané a importované tokeny.",
+  "selectTokensToExportHelpTitle": "Není váš token uveden?",
+  "send": "Odeslat",
+  "sendErrorDialogBody": "V aplikaci se vyskytla neznámá chyba. Informace uvedené níže mohou být odeslány vývojářům e-mailem pro vyřešení chyby v budoucnu.",
+  "sendErrorLogDescription": "Vytvoří se připravený e-mail.\nObsahuje informace o aplikaci, chybě a zařízení.\nPřed odesláním můžete e-mail upravit.\nZde se můžete podívat, jak informace používáme:",
+  "sendPushRequestResponseFailed": "Odpověď se nepodařilo odeslat.",
+  "sendingRSAPublicKey": "Odeslání veřejného klíče RSA",
+  "sendingRSAPublicKeyFailed": "Nepodařilo se odeslat veřejný klíč RSA",
+  "serverNotReachable": "Na server se nepodařilo dovolat.",
+  "settings": "Nastavení",
+  "settingsGroupGeneral": "Obecné informace",
+  "showDetails": "Zobrazit podrobnosti",
+  "showErrorLog": "Zobrazit",
+  "showPrivacyPolicy": "Zobrazit zásady ochrany osobních údajů",
+  "signInTitle": "Vyžadováno přihlášení",
+  "someTokensDoNotSupportPolling": "Některé tokeny jsou zastaralé a nepodporují polling",
+  "startRollout": "Začít zavádění",
+  "statusCode": "Stavový kód: {statusCode}",
+  "sync": "Synchronizovat",
+  "syncContainerFailed": "Synchronizace kontejneru se nezdařila",
+  "syncFbTokenFailed": "Synchronizace následujících tokenů selhala, zkuste to znovu:",
+  "synchronizePushTokens": "Synchronizace push tokenů",
+  "synchronizesTokensWithServer": "Synchronizovat tokeny se serverem privacyIDEA.",
+  "synchronizingTokens": "Tokeny se synchronizují.",
+  "theSecretDoesNotFitTheCurrentEncoding": "Tajný klíč neodpovídá zvolenému kódování.",
+  "themeMode": "Vzhled",
+  "thisAppIsOpenSource": "Tato aplikace má otevřený zdrojový kód\nNavštivte nás na GitHub",
+  "timeOut": "Časový limit",
+  "tokenDataParseError": "Tokenová data nelze analyzovat",
+  "tokenDetails": "Podrobnosti o tokenu",
+  "tokenLink": "Token link",
+  "tokenSerial": "Token serial",
+  "tokensAreEncrypted": "Tokeny jsou zašifrované. Please enter the password to decrypt them.",
+  "tokensDoNotSupportSynchronization": "Následující tokeny nepodporují synchronizaci a musí být znovu zaregistrovány:",
+  "tokensNotEncrypted": "Tokeny nejsou šifrované a lze je importovat přímo.",
+  "tokensSuccessfullyDecrypted": "Tokeny byly úspěšně dešifrovány a nyní je lze importovat.",
+  "type": "Typ",
+  "unexpectedError": "Nastala neočekávaná chyba.",
+  "unknown": "Neznámý",
+  "unlock": "Odemknout",
+  "unsupported": "Příkaz {name} [{value}] není touto verzí aplikace podporován.",
+  "useDeviceLocaleDescription": "Použít jazyk zařízení, pokud je podporován, případně angličtinu.",
+  "useDeviceLocaleTitle": "Použít jazyk zařízení",
+  "validFor": "Platné pro",
+  "validUntil": "Platné do",
+  "valueNotAllowed": "untranslated",
+  "valueNotAllowedIn": "untranslated",
+  "verboseLogging": "Zevrubné protokolování",
+  "version": "Verze",
+  "wrongPassword": "Nesprávné heslo",
+  "yes": "Ano"
 }

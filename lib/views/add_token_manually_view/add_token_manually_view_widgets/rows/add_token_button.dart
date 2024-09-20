@@ -23,7 +23,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../model/tokens/token.dart';
 import '../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
-import '../../../../widgets/mutex_button.dart';
+import '../../../../widgets/button_widgets/mutex_button.dart';
 
 class AddTokenButton extends ConsumerWidget {
   final ValueNotifier<bool> autoValidateLabel;

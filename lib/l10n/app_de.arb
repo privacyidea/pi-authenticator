@@ -1,469 +1,177 @@
 {
-  "@@last_modified": "2023-08-07",
-  "patchNotesNewFeatures": "Neue Funktionen",
-  "patchNotesImprovements": "Verbesserungen",
-  "patchNotesBugFixes": "Fehlerbehebungen",
-  "patchNotesV4_4_2NewFeatures1": "Token können jetzt per Copy & Paste eingefügt werden.",
-  "patchNotesV4_4_2NewFeatures2": "Galerie-Unterstützung für das Scannen von QR-Codes hinzugefügt.",
-  "patchNotesV4_4_2Improvement1": "Taschenlampenunterstützung für das Scannen von QR-Codes wurde zugefügt.",
-  "patchNotesV4_4_0NewFeatures1": "Es ist nun möglich, Token zu exportieren, bei denen sichergestellt werden kann, dass es sich nicht um privacyIDEA Token handelt. Derzeit kann nicht ausgeschlossen werden, dass über den QR-Code-Scanner hinzugefügte Token von privacyIDEA stammen. Die Differenzierung wird in zukünftigen Versionen verbessert.",
-  "patchNotesV4_4_0NewFeatures2": "Unterstützung für privacyIDEA's \"require presence\" hinzugefügt.",
-  "patchNotesV4_4_0Improvement1": "Es wurden weitere Importquellen hinzugefügt.",
-  "patchNotesV4_4_0Improvement2": "Die erkennung von QR-Codes aus Bilddateien wurde verbessert.",
-  "patchNotesV4_3_1BugFix1": "Ein Problem wurde behoben, bei dem der otp-Wert nach der Authentifizierung auf einigen Geräten nicht angezeigt wurde.",
-  "patchNotesV4_3_1Improvement1": "Der QR-Code-Scanner wurde verbessert.",
-  "patchNotesV4_3_0NewFeatures1": "Unterstützung für den Import von Token von Google, Aegis und 2FAS Authenticator hinzugefügt. Weitere Importquellen werden in Zukunft hinzugefügt.",
-  "patchNotesV4_3_0NewFeatures2": "Feedback-Option zu den Einstellungen hinzugefügt.",
-  "patchNotesV4_3_0NewFeatures3": "Push-Token können jetzt aus der Token-Liste ausgeblendet werden.",
-  "patchNotesV4_3_0NewFeatures4": "Es wurden Einführungen hinzugefügt, um neuen Benutzern den Einstieg zu erleichtern.",
-  "patchNotesV4_3_0NewFeatures5": "Sie können jetzt nach Token suchen, indem Sie auf die Lupe in der oberen rechten Ecke tippen.",
-  "patchNotesV4_3_0NewFeatures6": "Ab Android 12 kann für einen Token ein Widget auf dem Homescreen erstellt werden.",
-  "guide": "Anleitung",
-  "@guide": {
-    "description": "Button to open the guide screen."
-  },
-  "retry": "Erneut versuchen",
-  "@retry": {
-    "description": "Label for e.g. a button. Something is tried to be done again."
-  },
-  "accept": "Akzeptieren",
+  "@@last_modified": "2024-09-20",
+  "@@locale": "de",
   "@accept": {
     "description": "Label for e.g. a button. Something gets accepted by the user."
   },
-  "decline": "Ablehnen",
-  "@decline": {
-    "description": "Label for e.g. a button. Something gets declined by the user."
-  },
-  "name": "Name",
-  "@name": {
-    "description": "Describes the field where the tokens name should be entered."
-  },
-  "secretKey": "Geheimer Schlüssel",
-  "@secretKey": {
-    "description": "Describes the field where the tokens secret should be entered."
-  },
-  "encoding": "Kodierung",
-  "@encoding": {
-    "description": "Title of the dropdown button where the encoding is selected."
-  },
-  "algorithm": "Algorithmus",
-  "@algorithm": {
-    "description": "Title of the dropdown button where the encoding is selected."
-  },
-  "digits": "Ziffern",
-  "@digits": {
-    "description": "Title of the dropdown button where the number of digits for the opt value is selected."
-  },
-  "type": "Art",
-  "@type": {
-    "description": "Title of the dropdown button where the type of the token is selected."
-  },
-  "period": "Periode",
-  "@period": {
-    "description": "Title of the dropdown button where the period of the totp token is selected."
-  },
-  "rename": "Umbenennen",
-  "@rename": {
-    "description": "Label that describes renaming the token."
-  },
-  "cancel": "Abbrechen",
-  "@cancel": {
-    "description": "Button to cancel an action."
-  },
-  "delete": "Löschen",
-  "@delete": {
-    "description": "Label that describes deleting the token."
-  },
-  "dismiss": "Schließen",
-  "@dismiss": {
-    "description": "Text of a button that closes a dialog."
-  },
-  "addToken": "Token hinzufügen",
   "@addToken": {
     "description": "The button to open the screen to add tokens by hand."
   },
-  "scanQrCode": "QR-Code scannen",
-  "@scanQrCode": {
-    "description": "The button to scan otpauth qr-codes."
+  "@algorithm": {
+    "description": "Title of the dropdown button where the encoding is selected."
   },
-  "enterDetailsForToken": "Neuen Token konfigurieren",
-  "@enterDetailsForToken": {
-    "description": "Title of the screen where tokens are created manually, tells the user to enter all required values."
+  "@algorithmUnsupported": {
+    "placeholders": {
+      "algorithm": {
+        "example": "MD5"
+      }
+    }
   },
-  "pleaseEnterANameForThisToken": "Bitte geben Sie einen Namen ein.",
-  "@pleaseEnterANameForThisToken": {
-    "description": "Hint telling the user to enter a name for a token."
+  "@allTokensSynchronized": {
+    "description": "Content of the push synchronization dialog. Signaling the user that everything worked."
   },
-  "pleaseEnterASecretForThisToken": "Bitte geben Sie ein Geheimnis ein.",
-  "@pleaseEnterASecretForThisToken": {
-    "description": "Hint telling the user to enter a secret for a token."
+  "@authNotSupportedBody": {
+    "description": "Message shown as a dialog body that tells the user that device credentials or biometrics must be setup for this action."
   },
-  "theSecretDoesNotFitTheCurrentEncoding": "Das Geheimnis entspricht nicht der gewählten Verschlüsselung.",
-  "@theSecretDoesNotFitTheCurrentEncoding": {
-    "description": "Hint telling the user that the secret does not fit the selected encoding."
+  "@authNotSupportedTitle": {
+    "description": "Message shown as a dialog title that tells the user that device credentials or biometrics must be setup for this action."
   },
-  "renameToken": "Token umbenennen",
-  "@renameToken": {
-    "description": "Title of the dialog where a new name for a token can be entered."
+  "@authToAcceptPushRequest": {
+    "description": "Message to accepting a push request for authentication."
   },
-  "confirmDeletion": "Löschen bestätigen",
+  "@authToDeclinePushRequest": {
+    "description": "Message for declining a push request for authentication."
+  },
+  "@authenticateToShowOtp": {
+    "description": "Reason to authenticate when trying to view a one time password."
+  },
+  "@authenticateToUnLockToken": {
+    "description": "Reason to authenticate when trying to lock or unlock a token."
+  },
+  "@biometricHint": {
+    "description": "Hint message advising the user how to authenticate with biometrics. It is used on Android side. Maximum 60 characters."
+  },
+  "@biometricNotRecognized": {
+    "description": "Message to let the user know that authentication was failed. It is used on Android side. Maximum 60 characters."
+  },
+  "@biometricRequiredTitle": {
+    "description": "Message showed as a title in a dialog which indicates the user has not set up biometric authentication on their device. It is used on Android side. Maximum 60 characters."
+  },
+  "@biometricSuccess": {
+    "description": "Message to let the user know that authentication was successful. It is used on Android side. Maximum 60 characters."
+  },
+  "@cancel": {
+    "description": "Button to cancel an action."
+  },
+  "@checkServerCertificate": {
+    "description": "Error message when the server certificate should be checked."
+  },
+  "@checkYourNetwork": {
+    "description": "Tells the user to check the network connection."
+  },
+  "@clearErrorLog": {
+    "description": "Button to clear the error log."
+  },
   "@confirmDeletion": {
     "description": "Title of the dialog where a token can be deleted."
   },
-  "confirmDeletionOf": "Sind Sie sicher dass Sie {name} löschen möchten?",
   "@confirmDeletionOf": {
     "description": "Asks for confirmation on deleting a token.",
     "placeholders": {
       "name": {
         "example": "PUSH1234"
       }
-    }
+    },
+    "type": "text"
   },
-  "confirmTokenDeletionHint": "Unter Umständen können Sie sich nicht mehr einloggen, wenn Sie diesen Token löschen.\nBitte stellen Sie sicher, dass Sie sich ohne diesen Token in den dazugehörigen Account einloggen können.",
-  "@confirmTokenDeletionHint": {
-    "description": "Gives the user a hint about the consequences of deleting a token."
-  },
-  "confirmFolderDeletionHint": "Das Löschen eines Ordners hat keine Auswirkungen auf die Token, die sich darin befinden.\nDie Token werden in die Hauptliste verschoben.",
   "@confirmFolderDeletionHint": {
     "description": "Gives the user a hint about the consequences of deleting a folder."
   },
-  "generatingPhonePart": "Generiere Telefonanteil",
-  "@generatingPhonePart": {
-    "description": "Title of a dialog telling the user that the phone part gets generated right now."
+  "@confirmTokenDeletionHint": {
+    "description": "Gives the user a hint about the consequences of deleting a token."
   },
-  "phonePart": "Telefonanteil:",
-  "@phonePart": {
-    "description": "Title of a dialog telling the user that the phone was generated, and it is shown to the user."
+  "@connectionFailed": {
+    "description": "Tells the user that the connection failed."
   },
-  "otpValueCopiedMessage": "Passwort \"{otpValue}\" wurde in Zwischenablage kopiert.",
-  "@otpValueCopiedMessage": {
-    "description": "Tells the user that the otp value was copied to the clipboard.",
-    "placeholders": {
-      "otpValue": {
-        "example": "055374"
-      }
-    }
+  "@container": {
+    "description": "Title for the container view."
   },
-  "settings": "Einstellungen",
-  "@settings": {
-    "description": "Button to open the settings page."
+  "@couldNotSignMessage": {
+    "description": "Tells the user that the message could not be signed."
   },
-  "pushToken": "Push Token",
-  "@pushToken": {
-    "description": "Title for the settings block concerning the push tokens."
+  "@counter": {
+    "description": "Describes the field where the tokens counter should be entered."
   },
-  "theme": "Farbschema",
-  "@theme": {
-    "description": "Title of the setting group where the theme can be selected."
+  "@createdAt": {
+    "description": "Label for the creation date of the token."
   },
-  "lightTheme": "Hell",
-  "@lightTheme": {
-    "description": "The light theme."
+  "@creator": {
+    "description": "Label for the creator of the token."
   },
-  "darkTheme": "Dunkel",
   "@darkTheme": {
     "description": "The dark theme."
   },
-  "systemTheme": "Nutze Farbschema des Geräts",
-  "@systemTheme": {
-    "description": "The systems theme."
+  "@decline": {
+    "description": "Label for e.g. a button. Something gets declined by the user."
   },
-  "someTokensDoNotSupportPolling": "Einige der Token sind veraltet und unterstützen keine aktiven Anfragen",
-  "@someTokensDoNotSupportPolling": {
-    "description": "Tells the user, that the following tokens do not support polling.",
-    "type": "text",
-    "placeholders": {}
+  "@delete": {
+    "description": "Label that describes deleting the token."
   },
-  "enablePolling": "Aktives Stellen von Push-Anfragen",
+  "@deviceCredentialsRequiredTitle": {
+    "description": "Message showed as a title in a dialog which indicates the user has not set up credentials authentication on their device. It is used on Android side. Maximum 60 characters."
+  },
+  "@deviceCredentialsSetupDescription": {
+    "description": "Message advising the user to go to the settings and configure device credentials on their device. It shows in a dialog on Android side."
+  },
+  "@digits": {
+    "description": "Title of the dropdown button where the number of digits for the opt value is selected."
+  },
+  "@dismiss": {
+    "description": "Text of a button that closes a dialog."
+  },
   "@enablePolling": {
     "description": "Name of the setting switch that enables polling."
   },
-  "requestPushChallengesPeriodically": "Fordert regelmäßig Push-Anfragen vom Server an. Aktivieren Sie diese Funktion, wenn Nachrichten ansonsten nicht erhalten werden.",
-  "@requestPushChallengesPeriodically": {
-    "description": "The description of the polling feature."
+  "@encoding": {
+    "description": "Title of the dropdown button where the encoding is selected."
   },
-  "synchronizePushTokens": "Synchronisiere Push Token",
-  "@synchronizePushTokens": {
-    "description": "Title of synchronizing push tokens in settings."
+  "@enterDetailsForToken": {
+    "description": "Title of the screen where tokens are created manually, tells the user to enter all required values."
   },
-  "synchronizesTokensWithServer": "Synchronisiert Token mit dem privacyIDEA Server.",
-  "@synchronizesTokensWithServer": {
-    "description": "Description of synchronizing push tokens in settings."
+  "@errorLogCleared": {
+    "description": "Message that tells the user that the error log was cleared."
   },
-  "sync": "Sync",
-  "@sync": {
-    "description": "Text of button that is used to synchronize push tokens."
+  "@errorLogEmpty": {
+    "description": "Message that tells the user that the error log is empty."
   },
-  "synchronizingTokens": "Synchronisiere Token.",
-  "@synchronizingTokens": {
-    "description": "Title of the push synchronization dialog."
+  "@errorLogTitle": {
+    "description": "Title of the error log screen."
   },
-  "allTokensSynchronized": "Alle Token wurden synchronisiert.",
-  "@allTokensSynchronized": {
-    "description": "Content of the push synchronization dialog. Signaling the user that everything worked."
+  "@errorMailBody": {
+    "description": "Message for email body"
   },
-  "syncFbTokenFailed": "Synchronisation ist für die folgenden Token fehlgeschlagen:",
-  "@syncFbTokenFailed": {
-    "description": "Headline for the list of tokens where the synchronization failed."
-  },
-  "tokensDoNotSupportSynchronization": "Die folgenden Token unterstützen keine Synchronisation und müssen erneut ausgerollt werden:",
-  "@tokensDoNotSupportSynchronization": {
-    "description": "Informs the user that the following tokens cannot be synchronized as they do not support that."
-  },
-  "errorRollOutFailed": "Ausrollen von {name} ist fehlgeschlagen.",
   "@errorRollOutFailed": {
     "description": "Tells the user that the token could not be rolled out, because a network error occurred.",
     "placeholders": {
       "name": {
         "example": "PUSH1234A"
       }
-    }
+    },
+    "type": "text"
   },
-  "statusCode": "Statuscode: {statusCode}",
-  "@statusCode": {
-    "description": "Tells the user the status code of the error.",
-    "placeholders": {
-      "statusCode": {
-        "example": "400"
-      }
-    }
-  },
-  "errorSynchronizationNoNetworkConnection": "Die Synchronisation ist fehlgeschlagen, da der privacyIDEA Server nicht erreicht werden konnte.",
-  "@errorSynchronizationNoNetworkConnection": {
-    "description": "Tells the user that synchronizing the push tokens failed because the server could not be reached."
-  },
-  "errorRollOutUnknownError": "Ein unbekannter Fehler ist aufgetreten. Aurollen nicht möglich: {e}",
-  "@errorRollOutUnknownError": {
-    "description": "Tells the user that the roll-out failed because of an unknown error.",
-    "placeholders": {
-      "e": {
-        "example": "IllegalArgumentException on Line 5 ..."
-      }
-    }
-  },
-  "startRollout": "Starte Rollout",
-  "@startRollout": {
-    "description": "Label that tells the user that the token is being rolled out."
-  },
-  "pollingChallenges": "Frage ausstehende Authentifizierungsanfragen ab",
-  "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten.",
-  "@unexpectedError": {
-    "description": "Title of page report mode."
-  },
-  "pollingFailed": "Abfrage fehlgeschlagen.",
-  "@pollingFailed": {
-    "description": "Tells the user that the polling failed."
-  },
-  "pollingFailedFor": "Abfrage für {serial} fehlgeschlagen.",
-  "@pollingFailedFor": {
-    "description": "Tells the user that the polling failed.",
-    "placeholders": {
-      "serial": {
-        "example": "PUSH1234A"
-      }
-    }
-  },
-  "noNetworkConnection": "Keine Netzwerkverbindung.",
-  "@noNetworkConnection": {
-    "description": "Tells the user that there is no network connection."
-  },
-  "connectionFailed": "Verbindung fehlgeschlagen.",
-  "@connectionFailed": {
-    "description": "Tells the user that the connection failed."
-  },
-  "checkYourNetwork": "Bitte überprüfen Sie Ihre Netzwerkverbindung und versuchen Sie es erneut.",
-  "@checkYourNetwork": {
-    "description": "Tells the user to check the network connection."
-  },
-  "serverNotReachable": "Der Server konnte nicht erreicht werden.",
-  "@serverNotReachable": {
-    "description": "Tells the user that the server could not be reached."
-  },
-  "couldNotSignMessage": "Nachricht konnte nicht signiert werden.",
-  "@couldNotSignMessage": {
-    "description": "Tells the user that the message could not be signed."
-  },
-  "useDeviceLocaleTitle": "Nutze Systemsprache",
-  "@useDeviceLocaleTitle": {
-    "description": "Title of the switch tile where using the devices language can be enabled."
-  },
-  "useDeviceLocaleDescription": "Nutze Systemsprache, falls diese unterstützt wird. Anderenfalls nutze Englisch. ",
-  "@useDeviceLocaleDescription": {
-    "description": "Description of the switch tile where using the devices language can be enabled."
-  },
-  "language": "Sprache",
-  "@language": {
-    "description": "Title of language setting group."
-  },
-  "authenticateToShowOtp": "Bitte authentifizieren Sie sich, um das Einmalpasswort anzuzeigen.",
-  "@authenticateToShowOtp": {
-    "description": "Reason to authenticate when trying to view a one time password."
-  },
-  "authenticateToUnLockToken": "Bitte authentifizieren Sie sich, um den Sperrstatus des Tokens zu ändern.",
-  "@authenticateToUnLockToken": {
-    "description": "Reason to authenticate when trying to lock or unlock a token."
-  },
-  "biometricRequiredTitle": "Biometrie ist nicht eingerichtet",
-  "@biometricRequiredTitle": {
-    "description": "Message showed as a title in a dialog which indicates the user has not set up biometric authentication on their device. It is used on Android side. Maximum 60 characters."
-  },
-  "biometricHint": "Authentifizierung wird benötigt",
-  "@biometricHint": {
-    "description": "Hint message advising the user how to authenticate with biometrics. It is used on Android side. Maximum 60 characters."
-  },
-  "biometricNotRecognized": "Biometrie wurde nicht erkannt, bitte versuchen Sie es erneut",
-  "@biometricNotRecognized": {
-    "description": "Message to let the user know that authentication was failed. It is used on Android side. Maximum 60 characters."
-  },
-  "biometricSuccess": "Authentifizierung erfolgreich",
-  "@biometricSuccess": {
-    "description": "Message to let the user know that authentication was successful. It is used on Android side. Maximum 60 characters."
-  },
-  "deviceCredentialsRequiredTitle": "Gerätepasswort ist nicht eingerichtet",
-  "@deviceCredentialsRequiredTitle": {
-    "description": "Message showed as a title in a dialog which indicates the user has not set up credentials authentication on their device. It is used on Android side. Maximum 60 characters."
-  },
-  "deviceCredentialsSetupDescription": "Setzen Sie bitte ein Gerätepasswort in den Einstellungen",
-  "@deviceCredentialsSetupDescription": {
-    "description": "Message advising the user to go to the settings and configure device credentials on their device. It shows in a dialog on Android side."
-  },
-  "signInTitle": "Authentifizierung wird benötigt",
-  "@signInTitle": {
-    "description": "Message showed as a title in a dialog which indicates the user that they need to scan biometric to continue. It is used on Android side. Maximum 60 characters."
-  },
-  "goToSettingsButton": "Gehe zu Einstellungen",
-  "@goToSettingsButton": {
-    "description": "Message showed on a button that the user can click to go to settings pages from the current dialog. It is used on both Android and iOS side. Maximum 30 characters."
-  },
-  "goToSettingsDescription": "Authentifizierung durch Gerätepasswort oder Biometrie ist nicht eingerichtet. Bitte aktivieren Sie dies in den Geräteeinstellungen.",
-  "@goToSettingsDescription": {
-    "description": "Message advising the user to go to the settings and configure device credentials or biometrics on their device."
-  },
-  "lockOut": "Biometrie ist deaktiviert. Bitte sperren und entsperren Sie Ihren Bildschirm um diese zu aktivieren.",
-  "@lockOut": {
-    "description": "Message advising the user to re-enable biometrics on their device. It shows in a dialog on iOS side."
-  },
-  "authNotSupportedTitle": "Gerätepasswort oder Biometrie wird benötigt",
-  "@authNotSupportedTitle": {
-    "description": "Message shown as a dialog title that tells the user that device credentials or biometrics must be setup for this action."
-  },
-  "authNotSupportedBody": "Diese Aktion erfordert, dass auf dem Gerät ein Passwort oder Biometrie eingerichtet ist.",
-  "@authNotSupportedBody": {
-    "description": "Message shown as a dialog body that tells the user that device credentials or biometrics must be setup for this action."
-  },
-  "lock": "Sperren",
-  "@lock": {
-    "description": "Description of button that locks a token."
-  },
-  "unlock": "Entsperren",
-  "@unlock": {
-    "description": "Description of button that unlocks a token."
-  },
-  "noResultTitle": "Keine Token vorhanden.",
-  "@noResultTitle": {
-    "description": "No tokens installed yet."
-  },
-  "noResultText1": "Tippe auf das ",
-  "@noResultText1": {
-    "description": "first no result text"
-  },
-  "noResultText2": " Icon um loszulegen!",
-  "@noResultText2": {
-    "description": "second no result text"
-  },
-  "onBoardingTitle1": "{appName}",
-  "@onBoardingTitle1": {
-    "placeholders": {
-      "appName": {
-        "example": "privacyIDEA Authenticator"
-      }
-    }
-  },
-  "onBoardingText1": "Zwei-Faktor-Authentifizierung\neinfach gemacht",
-  "onBoardingTitle2": "Maximale Sicherheit",
-  "onBoardingText2": "Speichern Sie Ihre Token sicher auf diesem Gerät\nGeschützt durch Ihre biometrischen Daten",
-  "onBoardingTitle3": "Besuchen Sie uns auf Github",
-  "onBoardingText3": "Diese App ist Open Source",
-  "errorLogTitle": "Fehlerprotokoll",
-  "logMenu": "Log-Menü",
-  "showErrorLog": "Anzeigen",
-  "clearErrorLog": "Löschen",
-  "send": "Senden",
-  "sendErrorLogDescription": "Es wird eine vorgefertigte E-Mail erstellt.\nSie enthält Informationen über die App, den Fehler und das Gerät.\nSie können die E-Mail vor dem Senden bearbeiten.\nWie wir die Informationen verwenden, sehen Sie hier:",
-  "@sendErrorLogDescription": {
-    "description": "Explanation for the user what he will send."
-  },
-  "showPrivacyPolicy": "Datenschutzerklärung anzeigen",
-  "errorLogEmpty": "Das Fehlerprotokoll ist leer.",
-  "verboseLogging": "Ausführliche Protokollierung",
-  "errorLogCleared": "Fehlerprotokoll gelöscht.",
-  "ok": "Ok",
-  "errorMailBody": "Die Fehlerprotokolldatei ist angehängt.\nSie können diesen Text durch zusätzliche Informationen über den Fehler ersetzen.",
-  "@errorMailBody": {
-    "description": "Message for email body"
-  },
-  "showDetails": "Details anzeigen",
-  "open": "Öffnen",
-  "sendErrorDialogBody": "Ein unbekannter Fehler ist aufgetreten. Die unten gezeigten Informationen können den Entwicklern per E-Mail zugesendet werden, um zu helfen, diesen Fehler in Zukunft zu vermeiden.",
-  "@sendErrorDialogBody": {
-    "description": "Description shown to the user about what info the error report contains."
-  },
-  "noFbToken": "Kein Firebase Token vorhanden",
-  "firebaseToken": "Firebase Token",
-  "noPublicKey": "Kein öffentlicher Schlüssel vorhanden",
-  "publicKey": "Öffentlicher Schlüssel",
-  "editToken": "Token bearbeiten",
-  "edit": "Bearbeiten",
-  "save": "Speichern",
-  "create": "Erstellen",
-  "validFor": "Gültig für",
-  "validUntil": "Gültig bis",
-  "deleteLockedToken": "Bitte authentifizieren Sie sich, um den gesperrten Token zu löschen.",
-  "editLockedToken": "Bitte authentifizieren Sie sich, um den gesperrten Token zu bearbeiten.",
-  "expandLockedFolder": "Bitte authentifizieren Sie sich, um den gesperrten Ordner zu öffnen.",
-  "renameTokenFolder": "Ordner umbenennen",
-  "addANewFolder": "Neuen Ordner anlegen",
-  "folderName": "Ordnername",
-  "retryRollout": "Erneut ausrollen",
-  "generatingRSAKeyPair": "Generiere RSA Schlüsselpaar",
-  "@generatingRSAKeyPair": {
-    "description": "Message for the rollout process"
-  },
-  "generatingRSAKeyPairFailed": "Generieren des RSA Schlüsselpaars fehlgeschlagen",
-  "@generatingRSAKeyPairFailed": {
-    "description": "Message for the rollout process"
-  },
-  "sendingRSAPublicKey": "Sende öffentlichen RSA Schlüssel",
-  "@sendingRSAPublicKey": {
-    "description": "Message for the rollout process"
-  },
-  "sendingRSAPublicKeyFailed": "Senden des öffentlichen RSA Schlüssels fehlgeschlagen",
-  "@sendingRSAPublicKeyFailed": {
-    "description": "Message for the rollout process"
-  },
-  "parsingResponse": "Analysiere Antwort",
-  "@parsingResponse": {
-    "description": "Message for the rollout process"
-  },
-  "parsingResponseFailed": "Analysieren der Antwort fehlgeschlagen",
-  "rolloutCompleted": "Ausrollen abgeschlossen",
-  "imageUrl": "Bild URL",
-  "errorWhenPullingChallenges": "Fehler beim Abrufen der Authentifizierungsanfragen von {name}",
-  "@errorWhenPullingChallenges": {
+  "@errorRollOutNoConnectionToServer": {
+    "description": "Message for the rollout process",
     "placeholders": {
       "name": {
         "example": "PUSH1234A"
       }
     }
   },
-  "couldNotConnectToServer": "Konnte keine Verbindung zum Server herstellen.",
-  "errorRollOutNoConnectionToServer": "Der Rollout von Token {name} ist fehlgeschlagen, der Server konnte nicht erreicht werden.",
-  "authToAcceptPushRequest": "Bitte authentifizieren Sie sich, um die Anfrage anzunehmen.",
-  "authToDeclinePushRequest": "Bitte authentifizieren Sie sich, um die Anfrage abzulehnen.",
-  "pushRequestParseError": "Die Push-Anfrage konnte nicht verarbeitet werden.",
-  "errorRollOutSSLHandshakeFailed": "SSL-Handshake fehlgeschlagen. Roll-out nicht möglich.",
-  "errorRollOutNotPossibleAnymore": "Das Ausrollen dieses Tokens ist nicht mehr möglich.",
-  "errorTokenExpired": "Der Token {name} ist abgelaufen.",
+  "@errorRollOutSSLHandshakeFailed": {
+    "description": "Tells the user that the roll-out failed because the SSL handshake failed."
+  },
+  "@errorRollOutUnknownError": {
+    "description": "Tells the user that the roll-out failed because of an unknown error.",
+    "placeholders": {
+      "e": {
+        "example": "IllegalArgumentException on Line 5 ..."
+      }
+    },
+    "type": "text"
+  },
+  "@errorSynchronizationNoNetworkConnection": {
+    "description": "Tells the user that synchronizing the push tokens failed because the server could not be reached."
+  },
   "@errorTokenExpired": {
     "placeholders": {
       "name": {
@@ -471,112 +179,6 @@
       }
     }
   },
-  "yes": "Ja",
-  "no": "Nein",
-  "butDiscardIt": "aber verwerfen",
-  "declineIt": "ablehnen",
-  "requestTriggerdByUserQuestion": "Wurde diese Anfrage von Ihnen ausgelöst?",
-  "grantCameraPermissionDialogTitle": "Kamera-Berechtigung erforderlich",
-  "grantCameraPermissionDialogContent": "Um QR-Codes zu scannen, benötigt die App Zugriff auf die Kamera.",
-  "grantCameraPermissionDialogPermanentlyDenied": "Sie haben die Berechtigung für den Kamerazugriff permanent verweigert. Bitte aktivieren Sie die Berechtigung in den Einstellungen ihres Smartphones.",
-  "grantCameraPermissionDialogButton": "Berechtigung erteilen",
-  "decryptErrorTitle": "Entschlüsselung fehlgeschlagen",
-  "decryptErrorContent": "Leider konnten Ihre Token nicht entschlüsselt werden. Das deutet darauf hin, dass der Verschlüsselungsschlüssel nicht mehr verfügbar ist. Sie können es erneut versuchen oder die App Daten löschen. Dabei werden alle Token aus der App geschlöscht.",
-  "decryptErrorButtonDelete": "Löschen.",
-  "decryptErrorButtonSendError": "Fehler senden",
-  "decryptErrorButtonRetry": "Wiederholen",
-  "decryptErrorDeleteConfirmationContent": "Sind Sie sicher, dass Sie die App Daten löschen möchten?",
-  "hidePushTokens": "Push-Token ausblenden",
-  "hidePushTokensDescription": "Push-Token aus der Token-Liste ausblenden. Dadurch werden die Token nicht gelöscht und sind weiterhin auf einem separaten Bildschirm sichtbar.",
-  "settingsGroupGeneral": "Allgemeines",
-  "licensesAndVersion": "Lizenzen und Version",
-  "privacyPolicy": "Datenschutzerklärung",
-  "legacySigningErrorTitle": "Bei der Verwendung des veralteten Tokens ist ein Fehler aufgetreten: {tokenLabel}",
-  "introScanQrCode": "Sie können QR-Codes scannen, um Token hinzuzufügen.\nWir unterstützen alle gängigen Two-Factor-Authentication Token und auch die privacyIDEA Token.",
-  "introAddTokenManually": "Wenn Sie keinen QR-Code scannen möchten, können Sie Token auch manuell hinzufügen.",
-  "introTokenSwipe": "Wischen Sie Token nach links, um die verfügbaren Aktionen zu sehen.",
-  "introEditToken": "Hier können Sie den Namen des Tokens bearbeiten und einige Details einsehen.",
-  "introLockToken": "Um die Sicherheit noch weiter zu erhöhen, können Sie Token sperren.\nDer Token kann dann erst nach der Authentifizierung verwendet werden.",
-  "introDragToken": "Reorganisieren Sie Ihre Token, indem Sie sie einige Sekunden lang drücken und dann an die gewünschte Position ziehen.",
-  "introAddFolder": "Sie können Ordner erstellen, um Ihre Token zu organisieren.",
-  "introPollForChallenges": "Sie können neue Push-Anmeldungen abfragen, indem Sie die Liste der Token nach unten ziehen.",
-  "introHidePushTokens": "Deine Push-Token sind jetzt versteckt.\nAber du kannst sie immer noch auf dem Bildschirm mit den Push-Token sehen.",
-  "@legacySigningErrorTitle": {
-    "description": "Title of the error dialog that is shown when an error occurs while using a legacy token.",
-    "placeholders": {
-      "tokenLabel": {
-        "example": "PUSH1234A"
-      }
-    }
-  },
-  "legacySigningErrorMessage": "Der Token wurde in einer veralteten Version der App erstellt, was zu Problemen bei der Verwendung führen kann. Es wird empfohlen, einen neuen Push-Token zu erstellen, wenn das Problem weiterhin besteht!",
-  "@legacySigningErrorMessage": {
-    "description": "Message of the error dialog that is shown when an error occurs while using a legacy token."
-  },
-  "selectImportSource": "Importquelle auswählen",
-  "selectImportType": "Wie wollen Sie die Token importieren?",
-  "importTokens": "Token importieren",
-  "importNTokens": "{count, plural, zero{Keine Token importieren} one{Ein Token importieren} other{{count} Token importieren}}",
-  "selectFile": "Datei auswählen",
-  "decrypt": "Entschlüsseln",
-  "tokensAreEncrypted": "Die Token sind verschlüsselt. Bitte gib das Passwort ein, um sie zu entschlüsseln.",
-  "tokensNotEncrypted": "Die Token sind unverschlüsselt und können direkt importiert werden.",
-  "tokensSuccessfullyDecrypted": "Die Token wurden erfolgreich entschlüsselt, sie können nun importiert werden.",
-  "password": "Passwort",
-  "wrongPassword": "Falsches Passwort",
-  "qrScan": "Scannen",
-  "enterLink": "Link eingeben",
-  "invalidBackupFile": "Die ausgewählte Datei ist kein gültiges Backup von {appName}.",
-  "invalidQrScan": "Der gescannte QR-Code ist kein gültiges Backup von {appName}.",
-  "invalidQrFile": "Die ausgewählte Datei enthällt kein gültigen QR-Code von {appName}.",
-  "invalidLink": "Der eingegebene Link ist kein gültiger Token von {appName}, oder er wird nicht unterstützt.",
-  "importFailedToken": "{count, plural, zero{Kein Token konnte nicht importiert werden.} one{Importieren eines Tokens fehlgeschlagen.} other{Der Import von {count} Token ist fehlgeschlagen.}}",
-  "importExistingToken": "{count, plural, zero{Es wurde kein Token gefunden, das sich bereits in der App befindet.} one{Es wurde ein Token gefunden, das sich bereits in der Anwendung befindet.} other{Es wurden {count} Token gefunden, die sich bereits in der Anwendung befinden.}}",
-  "importConflictToken": "{count, plural, zero{Es besteht kein Konflikt mit bereits existierenden Token.} one{Es besteht ein Konflikt mit bereits vorhandenen Token.\nBitte wählen Sie aus, welches Sie behalten möchten.} other{Es bestehen Konflikte mit bereits vorhandenen Token.\nBitte wählen Sie die Token aus, die Sie behalten möchten.}}",
-  "importNewToken": "{count, plural, zero{Es wurde kein neues Token gefunden.} one{Es wurde ein neues Token gefunden, das importiert werden kann} other{Es wurden {count} neue Token gefunden, die importiert werden können.}}",
-  "importHintPrivacyIdeaQrScan": "Um QR-Codes der Token zu erstellen, navigieren Sie zu den Einstellungen und tippen auf \"Exportieren\". Wählen Sie dann \"Als QR-Code\" und tippen Sie auf den zu exportierenden Token. Diese Variante ist nur für die direkte Übertragung auf ein anderes Gerät geeignet, da der QR-Code nicht verschlüsselt ist.",
-  "importHintPrivacyIdeaFile": "Um ein Backup zu erstellen, gehen Sie zu den Einstellungen und tippen auf \"Exportieren\". Wählen Sie \"Als Datei\" aus, wählen Sie die Token aus, die Sie exportieren möchten. Anschließend tippen Sie auf \"Exportieren\" und setzen Sie ein Passwort. Der Speicherort ist der Download-Ordner auf Ihrem Gerät.",
-  "importHint2FAS": "Wählen Sie das 2FAS-Backup aus.\nFalls Sie kein Backup haben, erstellen Sie eins in der 2FAS-App. Wir empfehlen die Verwendung eines Passworts.",
-  "importHintAegisBackupFile": "Wähle dein Aegis-Export (.json) aus.\nWenn Sie keinen Export haben, erstellen Sie bitte eins über das Einstellungen Menu in der Aegis-App. Wir empfehlen die Verwendung eines Passworts.",
-  "importHintAegisQrScan": "Scannen Sie den QR-Code, den Sie erhalten, wenn Sie Einträge aus Aegis übertragen.",
-  "importHintAegisLink": "Geben Sie den Link ein, den Sie erhalten, wenn Sie Einträge aus Aegis übertragen.",
-  "importHintGoogleQrScan": "Scannen Sie den QR-Code, den Sie erhalten, wenn Sie Ihre Konten aus Google Authenticator exportieren.",
-  "importHintGoogleQrFile": "Wählen Sie eine Bilddatei mit dem QR-Code, den Sie erhalten, wenn Sie Ihre Konten aus dem Google Authenticator exportieren.\n!! Der QR-Code enthält die Token in unverschlüsselter Form. Es ist deshalb nicht sicher, diesen länger als nötig aufzubewahren !!",
-  "importHintAuthenticatorProFile": "Um ein Backup der Authenticator Pro-App zu erstellen navigieren Sie zu den Einstellungen und tippen Sie auf \"Automatische Sicherung\". Wählen Sie einen Speicherort und setzen Sie ein Passwort. Anschließend drücken Sie auf \"Jetzt sichern\" um die Token zu exportieren.",
-  "importHintFreeOtpPlusQrScan": "Scannen Sie den QR-Code, den Sie erhalten, wenn Sie auf die drei Punkte in der Kachel des Tokens drücken, und wählen Sie \"QR-Code teilen\".",
-  "importHintFreeOtpPlusFile": "Um ein Backup der FreeOTP+ App zu erstellen, tippen Sie auf die drei Punkte in der oberen rechten Ecke und wählen Sie \"Exportieren\". Sie können zwischen dem JSON- und dem URI-Format wählen. Wir empfehlen, das Backup nach dem Importieren zu löschen, da es nicht verschlüsselt ist.",
-  "qrFileDecodeError": "Es war nicht möglich, den QR-Code aus dem ausgewählten Bild zu dekodieren. Bitte verwenden Sie stattdessen den QR-Code-Scanner.",
-  "tokenLink": "Token Link",
-  "feedback": "Feedback",
-  "feedbackTitle": "Ihr Feedback ist immer willkommen!",
-  "feedbackDescription": "Wenn Sie Fragen, Anregungen oder Probleme haben, lassen Sie es uns wissen.",
-  "feedbackHint": "Es öffnet sich eine vorgefertigte E-Mail, die Sie an uns senden können. Falls gewünscht, werden Informationen über Ihr Gerät und die Version der Anwendung hinzugefügt. Vor dem Versenden können Sie die E-Mail überprüfen und bearbeiten.",
-  "feedbackPrivacyPolicy1": "Mit dem Senden des Feedbacks stimmen Sie unserer ",
-  "feedbackPrivacyPolicy2": "Datenschutzerklärung",
-  "@feedbackPrivacyPolicy2": {
-    "description": "Tapping on this should open the privacy policy."
-  },
-  "feedbackPrivacyPolicy3": " zu.",
-  "addSystemInfo": "Systeminfos hinzufügen",
-  "feedbackSentTitle": "Feedback gesendet",
-  "feedbackSentDescription": "Vielen Dank für Ihre Hilfe bei der Verbesserung dieser App!",
-  "patchNotesDialogTitle": "Was ist neu?",
-  "version": "Version",
-  "noMailAppTitle": "Keine Mail-App gefunden",
-  "noMailAppDescription": "Auf diesem Gerät ist keine E-Mail-App installiert oder initialisiert, bitte versuchen Sie es erneut, wenn Sie eine E-Mail-Nachricht senden können.",
-  "authentication": "Authentifizierung",
-  "requestInfo": "Gesendet von {issuer} für Ihr Konto: \"{account}\"",
-  "@requestInfo": {
-    "placeholders": {
-      "issuer": {
-        "example": "privacyIDEA"
-      },
-      "Konto": {
-        "example": "GitHub"
-      }
-    }
-  },
-  "errorUnlinkingPushToken": "Entkoppeln des Push Tokens {label} fehlgeschlagen.",
   "@errorUnlinkingPushToken": {
     "description": "Error message when unlinking a push token failed.",
     "placeholders": {
@@ -585,50 +187,142 @@
       }
     }
   },
-  "pleaseSyncManuallyWhenNetworkIsAvailable": "Bitte synchronisieren Sie die Push Token über die Einstellungen manuell, wenn eine Netzwerkverbindung verfügbar ist.",
-  "pushTokens": "Push-Token",
-  "continueButton": "Weiter",
-  "addTokenManually": "Token manuell hinzufügen",
-  "addFolder": "Ordner hinzufügen",
-  "searchTokens": "Token suchen",
-  "closeSearchTokens": "Suche schließen",
-  "increaseCounter": "Zähler erhöhen",
-  "copyOTPToClipboard": "OTP in die Zwischenablage kopieren",
-  "licenses": "Lizenzen",
-  "optionalMessage": "Optionale Nachricht",
-  "confirmation": "Confirmation",
-  "askLogSendedDescription": "Haben Sie das Protokoll gesendet, und möchten Sie es jetzt löschen?",
-  "algorithmUnsupported": "Der Algorithmus {algorithm} wird nicht unterstützt",
-  "@algorithmUnsupported": {
+  "@errorWhenPullingChallenges": {
+    "description": "errorWhenPullingChallenges",
     "placeholders": {
-      "algorithm": {
-        "example": "MD5"
+      "name": {
+        "example": "PUSH1234A"
       }
     }
   },
-  "thisAppIsOpenSource": "Diese App ist Open Source\nBesuchen Sie uns auf GitHub",
-  "invalidArgument": "{argument} ist kein gültiger Wert für {type}",
-  "importExportTokens": "Token importieren/exportieren",
-  "exportNonPrivacyIDEATokens": "Nicht-privacyIDEA-Token exportieren",
-  "selectTokensToExport": "{count, plural, zero{} one{Wählen Sie das zu exportierende Token aus} other{Wählen Sie die zu exportierenden Tokens aus}}",
-  "noTokenToExport": "Kein Token zum Exportieren verfügbar",
-  "exportAllTokens": "Alle Tokens exportieren",
-  "export": "Exportieren",
-  "exportingTokens": "Tokens werden exportiert...",
-  "exportTokens": "Tokens exportieren",
-  "enterPasswordToEncrypt": "Geben Sie ein Passwort ein, um die Tokens zu verschlüsseln. Dieses Passwort wird benötigt, um die Tokens zu importieren.",
-  "exportLockedTokenReason": "Bitte authentifizieren Sie sich, um gesperrte Tokens zu exportieren.",
-  "fileSavedToDownloadsFolder": "Datei wurde im Download-Ordner gespeichert",
-  "errorSavingFile": "Fehler beim Speichern der Datei",
-  "asQrCode": "Als QR-Code",
-  "asFile": "Als Datei",
-  "scanThisQrWithNewDevice": "Scannen Sie diesen QR-Code mit Ihrem neuen Gerät, um das Token zu importieren.",
-  "oneMore": "Noch eins",
-  "done": "Fertig",
-  "confirmPassword": "Passwort bestätigen",
-  "exampleUrl": "Bitte geben Sie eine gültige URL ein wie: \"https://example.com\"",
-  "pushEndpointUrl": "Push-Endpunkt URL",
-  "mustNotBeEmpty": "{field} darf nicht leer sein",
+  "@failedToLoad": {
+    "placeholders": {
+      "name": {
+        "example": "token data"
+      }
+    }
+  },
+  "@feedbackPrivacyPolicy2": {
+    "description": "Tapping on this should open the privacy policy."
+  },
+  "@generatingPhonePart": {
+    "description": "Title of a dialog telling the user that the phone part gets generated right now."
+  },
+  "@generatingRSAKeyPair": {
+    "description": "Message for the rollout process"
+  },
+  "@generatingRSAKeyPairFailed": {
+    "description": "Message for the rollout process"
+  },
+  "@goToSettingsButton": {
+    "description": "Message showed on a button that the user can click to go to settings pages from the current dialog. It is used on both Android and iOS side. Maximum 30 characters."
+  },
+  "@goToSettingsDescription": {
+    "description": "Message advising the user to go to the settings and configure device credentials or biometrics on their device."
+  },
+  "@guide": {
+    "description": "Button to open the guide screen."
+  },
+  "@handshakeFailed": {
+    "description": "Error message when the handshake failed."
+  },
+  "@importedVia": {
+    "description": "Label for the import method of the token."
+  },
+  "@internalServerError": {
+    "placeholders": {
+      "code": {
+        "example": "500"
+      }
+    }
+  },
+  "@invalidValue": {
+    "description": "Error message when the value is not valid for the parameter.",
+    "placeholders": {
+      "parameter": {
+        "example": "counter"
+      },
+      "type": {
+        "example": "int"
+      },
+      "value": {
+        "example": "5"
+      }
+    }
+  },
+  "@invalidValueIn": {
+    "placeholders": {
+      "map": {
+        "example": "query parameters"
+      },
+      "parameter": {
+        "example": "counter"
+      },
+      "type": {
+        "example": "int"
+      },
+      "value": {
+        "example": "5"
+      }
+    }
+  },
+  "@isExpotableQuestion": {
+    "description": "Label for the question if the token is exportable."
+  },
+  "@isPiTokenQuestion": {
+    "description": "Label for the question if the token is a privacyIDEA token."
+  },
+  "@language": {
+    "description": "Title of language setting group."
+  },
+  "@legacySigningErrorMessage": {
+    "description": "Message of the error dialog that is shown when an error occurs while using a legacy token."
+  },
+  "@legacySigningErrorTitle": {
+    "description": "Title of the error dialog that is shown when an error occurs while using a legacy token.",
+    "placeholders": {
+      "tokenLabel": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
+  "@lightTheme": {
+    "description": "The light theme."
+  },
+  "@linkedContainer": {
+    "description": "Label for the linked container serial number."
+  },
+  "@lock": {
+    "description": "Description of button that locks a token."
+  },
+  "@lockOut": {
+    "description": "Message advising the user to re-enable biometrics on their device. It shows in a dialog on iOS side."
+  },
+  "@logMenu": {
+    "description": "Button to open the log menu."
+  },
+  "@malformedData": {
+    "description": "Error message when the data is malformed."
+  },
+  "@missingRequiredParameter": {
+    "description": "Error message when a required parameter is missing.",
+    "placeholders": {
+      "parameter": {
+        "example": "counter"
+      }
+    }
+  },
+  "@missingRequiredParameterIn": {
+    "description": "Error message when a required parameter is missing in a specific map.Error message when a required parameter is missing in a specific map.Error message when a required parameter is missing in a specific map.Error message when a required parameter is missing in a specific map.",
+    "placeholders": {
+      "map": {
+        "example": "query parameters"
+      },
+      "parameter": {
+        "example": "counter"
+      }
+    }
+  },
   "@mustNotBeEmpty": {
     "placeholders": {
       "field": {
@@ -636,28 +330,592 @@
       }
     }
   },
-  "sendPushRequestResponseFailed": "Senden der Antwort fehlgeschlagen.",
+  "@name": {
+    "description": "Describes the field where the tokens name should be entered."
+  },
+  "@noFbToken": {
+    "description": "Tells the user that there is no Firebase token available."
+  },
+  "@noNetworkConnection": {
+    "description": "Tells the user that there is no network connection."
+  },
+  "@noResultText1": {
+    "description": "first no result text"
+  },
+  "@noResultText2": {
+    "description": "second no result text"
+  },
+  "@noResultTitle": {
+    "description": "No tokens installed yet."
+  },
+  "@notAnInteger": {
+    "description": "Tells the user that there is no Firebase token available."
+  },
+  "@notAnNumber": {
+    "description": "Error message when the user entered a value that is not a number."
+  },
+  "@ok": {
+    "description": "Button to confirm an action."
+  },
+  "@onBoardingTitle1": {
+    "placeholders": {
+      "appName": {
+        "example": "privacyIDEA Authenticator"
+      }
+    }
+  },
+  "@open": {
+    "description": "Button to open something."
+  },
+  "@originApp": {
+    "description": "Label for the origin app."
+  },
+  "@originDetails": {
+    "description": "Title of the origin details menu."
+  },
+  "@otpValueCopiedMessage": {
+    "description": "Tells the user that the otp value was copied to the clipboard.",
+    "placeholders": {
+      "otpValue": {
+        "example": "055374"
+      }
+    },
+    "type": "text"
+  },
+  "@parsingResponse": {
+    "description": "Message for the rollout process"
+  },
+  "@parsingResponseFailed": {
+    "description": "Message for the rollout process"
+  },
+  "@period": {
+    "description": "Title of the dropdown button where the period of the totp token is selected."
+  },
+  "@phonePart": {
+    "description": "Title of a dialog telling the user that the phone was generated, and it is shown to the user."
+  },
+  "@pleaseEnterANameForThisToken": {
+    "description": "Hint telling the user to enter a name for a token."
+  },
+  "@pleaseEnterASecretForThisToken": {
+    "description": "Hint telling the user to enter a secret for a token."
+  },
+  "@pollingChallenges": {
+    "type": "text"
+  },
+  "@pollingFailed": {
+    "description": "Tells the user that the polling failed."
+  },
+  "@pollingFailedFor": {
+    "description": "Tells the user that the polling failed.",
+    "placeholders": {
+      "serial": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
+  "@pushToken": {
+    "description": "Title for the settings block concerning the push tokens."
+  },
+  "@rename": {
+    "description": "Label that describes renaming the token."
+  },
+  "@renameToken": {
+    "description": "Title of the dialog where a new name for a token can be entered."
+  },
+  "@renameTokenFolder": {
+    "description": "Title of the dialog where a new name for a token folder can be entered."
+  },
+  "@requestInfo": {
+    "description": "Description of the authentication request.",
+    "placeholders": {
+      "account": {
+        "example": "GitHub"
+      },
+      "issuer": {
+        "example": "privacyIDEA"
+      }
+    }
+  },
+  "@requestPushChallengesPeriodically": {
+    "description": "The description of the polling feature."
+  },
+  "@retry": {
+    "description": "Label for e.g. a button. Something is tried to be done again."
+  },
+  "@rolloutCompleted": {
+    "description": "Message for the rollout process"
+  },
+  "@scanQrCode": {
+    "description": "The button to scan otpauth qr-codes."
+  },
+  "@secretIsRequired": {
+    "description": "Error message when the secret is missing."
+  },
+  "@secretKey": {
+    "description": "Describes the field where the tokens secret should be entered."
+  },
+  "@send": {
+    "description": "Button to send the error log."
+  },
+  "@sendErrorDialogBody": {
+    "description": "Description shown to the user about what info the error report contains."
+  },
+  "@sendErrorLogDescription": {
+    "description": "Explanation for the user what he will send."
+  },
   "@sendPushRequestResponseFailed": {
     "description": "Error message when the response to a push request could not be sent."
   },
+  "@sendingRSAPublicKey": {
+    "description": "Message for the rollout process"
+  },
+  "@sendingRSAPublicKeyFailed": {
+    "description": "Message for the rollout process"
+  },
+  "@serverNotReachable": {
+    "description": "Tells the user that the server could not be reached."
+  },
+  "@settings": {
+    "description": "Button to open the settings page."
+  },
+  "@showDetails": {
+    "description": "Button to show details."
+  },
+  "@showErrorLog": {
+    "description": "Button to show the error log."
+  },
+  "@showPrivacyPolicy": {
+    "description": "Button to show the privacy policy."
+  },
+  "@signInTitle": {
+    "description": "Message showed as a title in a dialog which indicates the user that they need to scan biometric to continue. It is used on Android side. Maximum 60 characters."
+  },
+  "@someTokensDoNotSupportPolling": {
+    "description": "Tells the user, that the following tokens do not support polling.",
+    "type": "text"
+  },
+  "@startRollout": {
+    "description": "Label that tells the user that the token is being rolled out."
+  },
+  "@statusCode": {
+    "description": "Tells the user the status code of the error.",
+    "placeholders": {
+      "statusCode": {
+        "example": "400"
+      }
+    }
+  },
+  "@sync": {
+    "description": "Text of button that is used to synchronize push tokens."
+  },
+  "@syncContainerFailed": {
+    "description": "Error message when synchronizing a container failed."
+  },
+  "@syncFbTokenFailed": {
+    "description": "Headline for the list of tokens where the synchronization failed."
+  },
+  "@synchronizePushTokens": {
+    "description": "Title of synchronizing push tokens in settings."
+  },
+  "@synchronizesTokensWithServer": {
+    "description": "Description of synchronizing push tokens in settings."
+  },
+  "@synchronizingTokens": {
+    "description": "Title of the push synchronization dialog."
+  },
+  "@systemTheme": {
+    "description": "The systems theme."
+  },
+  "@theSecretDoesNotFitTheCurrentEncoding": {
+    "description": "Hint telling the user that the secret does not fit the selected encoding."
+  },
+  "@theme": {
+    "description": "Title of the setting group where the theme can be selected."
+  },
+  "@themeMode": {
+    "description": "Title of the setting group where the theme mode can be changed."
+  },
+  "@timeOut": {
+    "description": "Error message when a request times out."
+  },
+  "@tokenDataParseError": {
+    "description": "Error message when the token data could not be parsed."
+  },
+  "@tokenDetails": {
+    "description": "Title of the token details menu."
+  },
+  "@tokenSerial": {
+    "description": "Label for the token serial number."
+  },
+  "@tokensDoNotSupportSynchronization": {
+    "description": "Informs the user that the following tokens cannot be synchronized as they do not support that."
+  },
+  "@type": {
+    "description": "Title of the dropdown button where the type of the token is selected."
+  },
+  "@unexpectedError": {
+    "description": "Title of page report mode."
+  },
+  "@unknown": {
+    "description": "Tells that something is unknown."
+  },
+  "@unlock": {
+    "description": "Description of button that unlocks a token."
+  },
+  "@unsupported": {
+    "placeholders": {
+      "name": {
+        "example": "piauth version"
+      },
+      "value": {
+        "example": "5"
+      }
+    }
+  },
+  "@useDeviceLocaleDescription": {
+    "description": "Description of the switch tile where using the devices language can be enabled."
+  },
+  "@useDeviceLocaleTitle": {
+    "description": "Title of the switch tile where using the devices language can be enabled."
+  },
+  "@valueNotAllowed": {
+    "placeholders": {
+      "parameter": {
+        "example": "counter"
+      },
+      "type": {
+        "example": "int"
+      },
+      "value": {
+        "example": "-1"
+      }
+    }
+  },
+  "@valueNotAllowedIn": {
+    "placeholders": {
+      "map": {
+        "example": "query parameters"
+      },
+      "parameter": {
+        "example": "counter"
+      },
+      "type": {
+        "example": "int"
+      },
+      "value": {
+        "example": "-1"
+      }
+    }
+  },
+  "@verboseLogging": {
+    "description": "Title of the switch tile where verbose logging can be enabled."
+  },
+  "accept": "Akzeptieren",
+  "addANewFolder": "Neuen Ordner anlegen",
+  "addFolder": "Ordner hinzufügen",
+  "addSystemInfo": "Systeminfos hinzufügen",
+  "addToken": "Token hinzufügen",
+  "addTokenManually": "Token manuell hinzufügen",
+  "algorithm": "Algorithmus",
+  "algorithmUnsupported": "Der Algorithmus {algorithm} wird nicht unterstützt",
+  "allTokensSynchronized": "Alle Token wurden synchronisiert.",
+  "asFile": "Als Datei",
+  "asQrCode": "Als QR-Code",
+  "askLogSendedDescription": "Haben Sie das Protokoll gesendet, und möchten Sie es jetzt löschen?",
+  "authNotSupportedBody": "Diese Aktion erfordert, dass auf dem Gerät ein Passwort oder Biometrie eingerichtet ist.",
+  "authNotSupportedTitle": "Gerätepasswort oder Biometrie wird benötigt",
+  "authToAcceptPushRequest": "Bitte authentifizieren Sie sich, um die Anfrage anzunehmen.",
+  "authToDeclinePushRequest": "Bitte authentifizieren Sie sich, um die Anfrage abzulehnen.",
+  "authenticateToShowOtp": "Bitte authentifizieren Sie sich, um das Einmalpasswort anzuzeigen.",
+  "authenticateToUnLockToken": "Bitte authentifizieren Sie sich, um den Sperrstatus des Tokens zu ändern.",
+  "authenticationRequest": "Authentifizierung",
+  "biometricHint": "Authentifizierung wird benötigt",
+  "biometricNotRecognized": "Biometrie wurde nicht erkannt, bitte versuchen Sie es erneut",
+  "biometricRequiredTitle": "Biometrie ist nicht eingerichtet",
+  "biometricSuccess": "Authentifizierung erfolgreich",
+  "butDiscardIt": "aber verwerfen",
+  "cancel": "Abbrechen",
+  "checkServerCertificate": "Bitte überprüfen Sie das Serverzertifikat",
+  "checkYourNetwork": "Bitte überprüfen Sie Ihre Netzwerkverbindung und versuchen Sie es erneut.",
+  "clearErrorLog": "Löschen",
+  "closeSearchTokens": "Suche schließen",
+  "confirmDeletion": "Löschen bestätigen",
+  "confirmDeletionOf": "Sind Sie sicher dass Sie {name} löschen möchten?",
+  "confirmFolderDeletionHint": "Das Löschen eines Ordners hat keine Auswirkungen auf die Token, die sich darin befinden.\nDie Token werden in die Hauptliste verschoben.",
+  "confirmPassword": "Passwort bestätigen",
+  "confirmTokenDeletionHint": "Unter Umständen können Sie sich nicht mehr einloggen, wenn Sie diesen Token löschen.\nBitte stellen Sie sicher, dass Sie sich ohne diesen Token in den dazugehörigen Account einloggen können.",
+  "confirmation": "Confirmation",
+  "connectionFailed": "Verbindung fehlgeschlagen.",
+  "container": "Container",
+  "continueButton": "Weiter",
+  "copyOTPToClipboard": "OTP in die Zwischenablage kopieren",
+  "couldNotConnectToServer": "Konnte keine Verbindung zum Server herstellen.",
+  "couldNotSignMessage": "Nachricht konnte nicht signiert werden.",
+  "counter": "Zähler",
+  "create": "Erstellen",
+  "createdAt": "Erstellt am",
+  "creator": "Ersteller",
+  "decline": "Ablehnen",
+  "declineIt": "ablehnen",
+  "decrypt": "Entschlüsseln",
+  "decryptErrorButtonDelete": "Löschen.",
+  "decryptErrorButtonRetry": "Wiederholen",
+  "decryptErrorButtonSendError": "Fehler senden",
+  "decryptErrorContent": "Leider konnten Ihre Token nicht entschlüsselt werden. Das deutet darauf hin, dass der Verschlüsselungsschlüssel nicht mehr verfügbar ist. Sie können es erneut versuchen oder die App Daten löschen. Dabei werden alle Token aus der App geschlöscht.",
+  "decryptErrorDeleteConfirmationContent": "Sind Sie sicher, dass Sie die App Daten löschen möchten?",
+  "decryptErrorTitle": "Entschlüsselung fehlgeschlagen",
+  "delete": "Löschen",
+  "deleteLockedToken": "Bitte authentifizieren Sie sich, um den gesperrten Token zu löschen.",
+  "deviceCredentialsRequiredTitle": "Gerätepasswort ist nicht eingerichtet",
+  "deviceCredentialsSetupDescription": "Setzen Sie bitte ein Gerätepasswort in den Einstellungen",
+  "digits": "Ziffern",
+  "dismiss": "Schließen",
+  "done": "Fertig",
+  "edit": "Bearbeiten",
+  "editLockedToken": "Bitte authentifizieren Sie sich, um den gesperrten Token zu bearbeiten.",
+  "editToken": "Token bearbeiten",
+  "enablePolling": "Aktives Stellen von Push-Anfragen",
+  "encoding": "Kodierung",
+  "enterDetailsForToken": "Neuen Token konfigurieren",
+  "enterLink": "Link eingeben",
+  "enterPasswordToEncrypt": "Geben Sie ein Passwort ein, um die Tokens zu verschlüsseln. Dieses Passwort wird benötigt, um die Tokens zu importieren.",
+  "errorLogCleared": "Fehlerprotokoll gelöscht.",
+  "errorLogEmpty": "Das Fehlerprotokoll ist leer.",
+  "errorLogTitle": "Fehlerprotokoll",
+  "errorMailBody": "Die Fehlerprotokolldatei ist angehängt.\nSie können diesen Text durch zusätzliche Informationen über den Fehler ersetzen.",
+  "errorRollOutFailed": "Ausrollen von {name} ist fehlgeschlagen.",
+  "errorRollOutNoConnectionToServer": "Der Rollout von Token {name} ist fehlgeschlagen, der Server konnte nicht erreicht werden.",
+  "errorRollOutNotPossibleAnymore": "Das Ausrollen dieses Tokens ist nicht mehr möglich.",
+  "errorRollOutSSLHandshakeFailed": "SSL-Handshake fehlgeschlagen. Roll-out nicht möglich.",
+  "errorRollOutUnknownError": "Ein unbekannter Fehler ist aufgetreten. Aurollen nicht möglich: {e}",
+  "errorSavingFile": "Fehler beim Speichern der Datei",
+  "errorSynchronizationNoNetworkConnection": "Die Synchronisation ist fehlgeschlagen, da der privacyIDEA Server nicht erreicht werden konnte.",
+  "errorTokenExpired": "Der Token {name} ist abgelaufen.",
+  "errorUnlinkingPushToken": "Entkoppeln des Push Tokens {label} fehlgeschlagen.",
+  "errorWhenPullingChallenges": "Fehler beim Abrufen der Authentifizierungsanfragen von {name}",
+  "exampleUrl": "Bitte geben Sie eine gültige URL ein wie: \"https://example.com\"",
+  "expandLockedFolder": "Bitte authentifizieren Sie sich, um den gesperrten Ordner zu öffnen.",
+  "export": "Exportieren",
+  "exportAllTokens": "Alle Tokens exportieren",
+  "exportLockedTokenReason": "Bitte authentifizieren Sie sich, um gesperrte Tokens zu exportieren.",
+  "exportNonPrivacyIDEATokens": "Nicht-privacyIDEA-Token exportieren",
+  "exportTokens": "Tokens exportieren",
+  "exportingTokens": "Tokens werden exportiert...",
+  "failedToLoad": "Fehlgeschlagen zu laden: ",
+  "feedback": "Feedback",
+  "feedbackDescription": "Wenn Sie Fragen, Anregungen oder Probleme haben, lassen Sie es uns wissen.",
+  "feedbackHint": "Es öffnet sich eine vorgefertigte E-Mail, die Sie an uns senden können. Falls gewünscht, werden Informationen über Ihr Gerät und die Version der Anwendung hinzugefügt. Vor dem Versenden können Sie die E-Mail überprüfen und bearbeiten.",
+  "feedbackPrivacyPolicy1": "Mit dem Senden des Feedbacks stimmen Sie unserer ",
+  "feedbackPrivacyPolicy2": "Datenschutzerklärung",
+  "feedbackPrivacyPolicy3": " zu.",
+  "feedbackSentDescription": "Vielen Dank für Ihre Hilfe bei der Verbesserung dieser App!",
+  "feedbackSentTitle": "Feedback gesendet",
+  "feedbackTitle": "Ihr Feedback ist immer willkommen!",
+  "fileSavedToDownloadsFolder": "Datei wurde im Download-Ordner gespeichert",
+  "findingQrCodeInImage": "Suche nach QR-Code im Bild...",
+  "firebaseToken": "Firebase Token",
+  "folderName": "Ordnername",
+  "generatingPhonePart": "Generiere Telefonanteil",
+  "generatingRSAKeyPair": "Generiere RSA Schlüsselpaar",
+  "generatingRSAKeyPairFailed": "Generieren des RSA Schlüsselpaars fehlgeschlagen",
+  "goToSettingsButton": "Gehe zu Einstellungen",
+  "goToSettingsDescription": "Authentifizierung durch Gerätepasswort oder Biometrie ist nicht eingerichtet. Bitte aktivieren Sie dies in den Geräteeinstellungen.",
+  "grantCameraPermissionDialogButton": "Berechtigung erteilen",
+  "grantCameraPermissionDialogContent": "Um QR-Codes zu scannen, benötigt die App Zugriff auf die Kamera.",
+  "grantCameraPermissionDialogPermanentlyDenied": "Sie haben die Berechtigung für den Kamerazugriff permanent verweigert. Bitte aktivieren Sie die Berechtigung in den Einstellungen ihres Smartphones.",
+  "grantCameraPermissionDialogTitle": "Kamera-Berechtigung erforderlich",
+  "handshakeFailed": "Handshake fehlgeschlagen",
+  "hidePushTokens": "Push-Token ausblenden",
+  "hidePushTokensDescription": "Push-Token aus der Token-Liste ausblenden. Dadurch werden die Token nicht gelöscht und sind weiterhin auf einem separaten Bildschirm sichtbar.",
+  "imageUrl": "Bild URL",
+  "importConflictToken": "{count, plural, zero{Es besteht kein Konflikt mit bereits existierenden Token.} one{Es besteht ein Konflikt mit bereits vorhandenen Token.\nBitte wählen Sie aus, welches Sie behalten möchten.} other{Es bestehen Konflikte mit bereits vorhandenen Token.\nBitte wählen Sie die Token aus, die Sie behalten möchten.}}",
+  "importExistingToken": "{count, plural, zero{Es wurde kein Token gefunden, das sich bereits in der App befindet.} one{Es wurde ein Token gefunden, das sich bereits in der Anwendung befindet.} other{Es wurden {count} Token gefunden, die sich bereits in der Anwendung befinden.}}",
+  "importExportTokens": "Token importieren/exportieren",
+  "importFailedToken": "{count, plural, zero{Kein Token konnte nicht importiert werden.} one{Importieren eines Tokens fehlgeschlagen.} other{Der Import von {count} Token ist fehlgeschlagen.}}",
+  "importHint2FAS": "Wählen Sie das 2FAS-Backup aus.\nFalls Sie kein Backup haben, erstellen Sie eins in der 2FAS-App. Wir empfehlen die Verwendung eines Passworts.",
+  "importHintAegisBackupFile": "Wähle dein Aegis-Export (.json) aus.\nWenn Sie keinen Export haben, erstellen Sie bitte eins über das Einstellungen Menu in der Aegis-App. Wir empfehlen die Verwendung eines Passworts.",
+  "importHintAegisLink": "Geben Sie den Link ein, den Sie erhalten, wenn Sie Einträge aus Aegis übertragen.",
+  "importHintAegisQrScan": "Scannen Sie den QR-Code, den Sie erhalten, wenn Sie Einträge aus Aegis übertragen.",
+  "importHintAuthenticatorProFile": "Um ein Backup der Authenticator Pro-App zu erstellen navigieren Sie zu den Einstellungen und tippen Sie auf \"Automatische Sicherung\". Wählen Sie einen Speicherort und setzen Sie ein Passwort. Anschließend drücken Sie auf \"Jetzt sichern\" um die Token zu exportieren.",
+  "importHintFreeOtpPlusFile": "Um ein Backup der FreeOTP+ App zu erstellen, tippen Sie auf die drei Punkte in der oberen rechten Ecke und wählen Sie \"Exportieren\". Sie können zwischen dem JSON- und dem URI-Format wählen. Wir empfehlen, das Backup nach dem Importieren zu löschen, da es nicht verschlüsselt ist.",
+  "importHintFreeOtpPlusQrScan": "Scannen Sie den QR-Code, den Sie erhalten, wenn Sie auf die drei Punkte in der Kachel des Tokens drücken, und wählen Sie \"QR-Code teilen\".",
+  "importHintGoogleQrFile": "Wählen Sie eine Bilddatei mit dem QR-Code, den Sie erhalten, wenn Sie Ihre Konten aus dem Google Authenticator exportieren.\n!! Der QR-Code enthält die Token in unverschlüsselter Form. Es ist deshalb nicht sicher, diesen länger als nötig aufzubewahren !!",
+  "importHintGoogleQrScan": "Scannen Sie den QR-Code, den Sie erhalten, wenn Sie Ihre Konten aus Google Authenticator exportieren.",
+  "importHintPrivacyIdeaFile": "Um ein Backup zu erstellen, gehen Sie zu den Einstellungen und tippen auf \"Exportieren\". Wählen Sie \"Als Datei\" aus, wählen Sie die Token aus, die Sie exportieren möchten. Anschließend tippen Sie auf \"Exportieren\" und setzen Sie ein Passwort. Der Speicherort ist der Download-Ordner auf Ihrem Gerät.",
+  "importHintPrivacyIdeaQrScan": "Um QR-Codes der Token zu erstellen, navigieren Sie zu den Einstellungen und tippen auf \"Exportieren\". Wählen Sie dann \"Als QR-Code\" und tippen Sie auf den zu exportierenden Token. Diese Variante ist nur für die direkte Übertragung auf ein anderes Gerät geeignet, da der QR-Code nicht verschlüsselt ist.",
+  "importNTokens": "{count, plural, zero{Keine Token importieren} one{Ein Token importieren} other{{count} Token importieren}}",
+  "importNewToken": "{count, plural, zero{Es wurde kein neues Token gefunden.} one{Es wurde ein neues Token gefunden, das importiert werden kann} other{Es wurden {count} neue Token gefunden, die importiert werden können.}}",
+  "importTokens": "Token importieren",
+  "importedVia": "Importiert über",
+  "increaseCounter": "Zähler erhöhen",
+  "internalServerError": "Interner Serverfehler ({code})",
+  "introAddFolder": "Sie können Ordner erstellen, um Ihre Token zu organisieren.",
+  "introAddTokenManually": "Wenn Sie keinen QR-Code scannen möchten, können Sie Token auch manuell hinzufügen.",
+  "introDragToken": "Reorganisieren Sie Ihre Token, indem Sie sie einige Sekunden lang drücken und dann an die gewünschte Position ziehen.",
+  "introEditToken": "Hier können Sie den Namen des Tokens bearbeiten und einige Details einsehen.",
+  "introHidePushTokens": "Deine Push-Token sind jetzt versteckt.\nAber du kannst sie immer noch auf dem Bildschirm mit den Push-Token sehen.",
+  "introLockToken": "Um die Sicherheit noch weiter zu erhöhen, können Sie Token sperren.\nDer Token kann dann erst nach der Authentifizierung verwendet werden.",
+  "introPollForChallenges": "Sie können neue Push-Anmeldungen abfragen, indem Sie die Liste der Token nach unten ziehen.",
+  "introScanQrCode": "Sie können QR-Codes scannen, um Token hinzuzufügen.\nWir unterstützen alle gängigen Two-Factor-Authentication Token und auch die privacyIDEA Token.",
+  "introTokenSwipe": "Wischen Sie Token nach links, um die verfügbaren Aktionen zu sehen.",
+  "invalidBackupFile": "Die ausgewählte Datei ist kein gültiges Backup von {appName}.",
+  "invalidLink": "Der eingegebene Link ist kein gültiger Token von {appName}, oder er wird nicht unterstützt.",
+  "invalidQrFile": "Die ausgewählte Datei enthällt kein gültigen QR-Code von {appName}.",
+  "invalidQrScan": "Der gescannte QR-Code ist kein gültiges Backup von {appName}.",
+  "invalidValue": "untranslated",
+  "invalidValueIn": "untranslated",
+  "isExpotableQuestion": "Ist exportierbar?",
+  "isPiTokenQuestion": "Ist ein privacyIDEA-Token?",
+  "language": "Sprache",
+  "legacySigningErrorMessage": "Der Token wurde in einer veralteten Version der App erstellt, was zu Problemen bei der Verwendung führen kann. Es wird empfohlen, einen neuen Push-Token zu erstellen, wenn das Problem weiterhin besteht!",
+  "legacySigningErrorTitle": "Bei der Verwendung des veralteten Tokens ist ein Fehler aufgetreten: {tokenLabel}",
+  "licenses": "Lizenzen",
+  "licensesAndVersion": "Lizenzen und Version",
+  "linkedContainer": "Verknüpfter Container",
+  "lock": "Sperren",
+  "lockOut": "Biometrie ist deaktiviert. Bitte sperren und entsperren Sie Ihren Bildschirm um diese zu aktivieren.",
+  "logMenu": "Log-Menü",
+  "malformedData": "Fehlerhafte Daten",
+  "markQrCode": "QR-Code markieren",
+  "missingRequiredParameter": "Der Wert für den Parameter [{parameter}] ist erforderlich, fehlt aber.",
+  "missingRequiredParameterIn": "Der Wert für den Parameter [{parameter}] ist erforderlich, fehlt aber in \"{map}\".",
+  "mustNotBeEmpty": "{field} darf nicht leer sein",
+  "name": "Name",
+  "no": "Nein",
+  "noFbToken": "Kein Firebase Token vorhanden",
+  "noMailAppDescription": "Auf diesem Gerät ist keine E-Mail-App installiert oder initialisiert, bitte versuchen Sie es erneut, wenn Sie eine E-Mail-Nachricht senden können.",
+  "noMailAppTitle": "Keine Mail-App gefunden",
+  "noNetworkConnection": "Keine Netzwerkverbindung.",
+  "noPublicKey": "Kein öffentlicher Schlüssel vorhanden",
+  "noResultText1": "Tippe auf das ",
+  "noResultText2": " Icon um loszulegen!",
+  "noResultTitle": "Keine Token vorhanden.",
+  "noTokenToExport": "Kein Token zum Exportieren verfügbar",
+  "notAnInteger": "Der Wert ist keine Ganzzahl.",
+  "notAnNumber": "Der Wert ist keine Zahl.",
+  "ok": "Ok",
+  "oneMore": "Noch eins",
+  "open": "Öffnen",
+  "optionalMessage": "Optionale Nachricht",
+  "originApp": "Ursprungs-App",
+  "originDetails": "Angaben zur Herkunft",
+  "otpValueCopiedMessage": "Passwort \"{otpValue}\" wurde in Zwischenablage kopiert.",
+  "parsingResponse": "Analysiere Antwort",
+  "parsingResponseFailed": "Analysieren der Antwort fehlgeschlagen",
+  "password": "Passwort",
   "passwordCannotBeEmpty": "Das Passwort darf nicht leer sein",
-  "passwordMustBeAtLeast8Characters": "Das Passwort muss mindestens 8 Zeichen lang sein",
   "passwordCannotContainWhitespace": "Das Passwort darf keine Leerzeichen enthalten",
+  "passwordMustBeAtLeast8Characters": "Das Passwort muss mindestens 8 Zeichen lang sein",
   "passwordMustContainLowercaseLetter": "Das Passwort muss einen Kleinbuchstaben enthalten",
-  "passwordMustContainUppercaseLetter": "Das Passwort muss einen Großbuchstaben enthalten",
   "passwordMustContainNumber": "Das Passwort muss eine Zahl enthalten",
   "passwordMustContainSpecialCharacter": "Das Passwort muss ein Sonderzeichen enthalten",
+  "passwordMustContainUppercaseLetter": "Das Passwort muss einen Großbuchstaben enthalten",
   "passwordsDoNotMatch": "Die Passwörter stimmen nicht überein",
-  "selectTokensToExportHelpTitle": "Ist Ihr Token nicht aufgelistet?",
-  "selectTokensToExportHelpContent": "Wenn ein Token nicht aufgelistet ist, ist nicht garantiert, dass es sich nicht um ein privacyIDEA-Token handelt.\nZurzeit können nur manuell hinzugefügte und importierte Token exportiert werden.",
-  "findingQrCodeInImage": "Suche nach QR-Code im Bild...",
-  "qrNotFound": "Kein QR-Code gefunden!",
+  "patchNotesBugFixes": "Fehlerbehebungen",
+  "patchNotesDialogTitle": "Was ist neu?",
+  "patchNotesImprovements": "Verbesserungen",
+  "patchNotesNewFeatures": "Neue Funktionen",
+  "patchNotesV4_3_0NewFeatures1": "Unterstützung für den Import von Token von Google, Aegis und 2FAS Authenticator hinzugefügt. Weitere Importquellen werden in Zukunft hinzugefügt.",
+  "patchNotesV4_3_0NewFeatures2": "Feedback-Option zu den Einstellungen hinzugefügt.",
+  "patchNotesV4_3_0NewFeatures3": "Push-Token können jetzt aus der Token-Liste ausgeblendet werden.",
+  "patchNotesV4_3_0NewFeatures4": "Es wurden Einführungen hinzugefügt, um neuen Benutzern den Einstieg zu erleichtern.",
+  "patchNotesV4_3_0NewFeatures5": "Sie können jetzt nach Token suchen, indem Sie auf die Lupe in der oberen rechten Ecke tippen.",
+  "patchNotesV4_3_0NewFeatures6": "Ab Android 12 kann für einen Token ein Widget auf dem Homescreen erstellt werden.",
+  "patchNotesV4_3_1BugFix1": "Ein Problem wurde behoben, bei dem der otp-Wert nach der Authentifizierung auf einigen Geräten nicht angezeigt wurde.",
+  "patchNotesV4_3_1Improvement1": "Der QR-Code-Scanner wurde verbessert.",
+  "patchNotesV4_4_0Improvement1": "Es wurden weitere Importquellen hinzugefügt.",
+  "patchNotesV4_4_0Improvement2": "Die erkennung von QR-Codes aus Bilddateien wurde verbessert.",
+  "patchNotesV4_4_0NewFeatures1": "Es ist nun möglich, Token zu exportieren, bei denen sichergestellt werden kann, dass es sich nicht um privacyIDEA Token handelt. Derzeit kann nicht ausgeschlossen werden, dass über den QR-Code-Scanner hinzugefügte Token von privacyIDEA stammen. Die Differenzierung wird in zukünftigen Versionen verbessert.",
+  "patchNotesV4_4_0NewFeatures2": "Unterstützung für privacyIDEA's \"require presence\" hinzugefügt.",
+  "period": "Periode",
+  "phonePart": "Telefonanteil:",
+  "pleaseEnterANameForThisToken": "Bitte geben Sie einen Namen ein.",
+  "pleaseEnterASecretForThisToken": "Bitte geben Sie ein Geheimnis ein.",
+  "pleaseSyncManuallyWhenNetworkIsAvailable": "Bitte synchronisieren Sie die Push Token über die Einstellungen manuell, wenn eine Netzwerkverbindung verfügbar ist.",
+  "pollingChallenges": "Frage ausstehende Authentifizierungsanfragen ab",
+  "pollingFailed": "Abfrage fehlgeschlagen.",
+  "pollingFailedFor": "Abfrage für {serial} fehlgeschlagen.",
+  "privacyPolicy": "Datenschutzerklärung",
+  "publicKey": "Öffentlicher Schlüssel",
+  "pushEndpointUrl": "Push-Endpunkt URL",
+  "pushRequestParseError": "Die Push-Anfrage konnte nicht verarbeitet werden.",
+  "pushToken": "Push Token",
+  "pushTokens": "Push-Token",
+  "qrFileDecodeError": "Es war nicht möglich, den QR-Code aus dem ausgewählten Bild zu dekodieren. Bitte verwenden Sie stattdessen den QR-Code-Scanner.",
   "qrInFileNotFound": "Es wurde kein QR-Code in dem ausgewählten Bild gefunden.",
   "qrInFileNotFound2": "Sie können mir zeigen, wo sich der QR-Code befindet.",
   "qrInFileNotFound3": "Ich erwarte, dass ich den Code finde, wenn er sich in der Mitte des markierten Bereichs befindet.",
-  "markQrCode": "QR-Code markieren",
-  "malformedData": "Fehlerhafte Daten",
-  "linkMustOtpAuth" : "Der Link muss mit otpauth:// beginnen",
-  "clipboardEmpty": "Zwischenablage ist leer",
-  "invalidUrl": "Ungültige URL"
+  "qrNotFound": "Kein QR-Code gefunden!",
+  "qrScan": "Scannen",
+  "rename": "Umbenennen",
+  "renameToken": "Token umbenennen",
+  "renameTokenFolder": "Ordner umbenennen",
+  "requestInfo": "Gesendet von {issuer} für Ihr Konto: \"{account}\"",
+  "requestPushChallengesPeriodically": "Fordert regelmäßig Push-Anfragen vom Server an. Aktivieren Sie diese Funktion, wenn Nachrichten ansonsten nicht erhalten werden.",
+  "requestTriggerdByUserQuestion": "Wurde diese Anfrage von Ihnen ausgelöst?",
+  "retry": "Erneut versuchen",
+  "retryRollout": "Erneut ausrollen",
+  "rolloutCompleted": "Ausrollen abgeschlossen",
+  "save": "Speichern",
+  "scanQrCode": "QR-Code scannen",
+  "scanThisQrWithNewDevice": "Scannen Sie diesen QR-Code mit Ihrem neuen Gerät, um das Token zu importieren.",
+  "searchTokens": "Token suchen",
+  "secretIsRequired": "Secret ist erforderlich",
+  "secretKey": "Geheimer Schlüssel",
+  "selectFile": "Datei auswählen",
+  "selectImportSource": "Importquelle auswählen",
+  "selectImportType": "Wie wollen Sie die Token importieren?",
+  "selectTokensToExport": "{count, plural, zero{} one{Wählen Sie das zu exportierende Token aus} other{Wählen Sie die zu exportierenden Tokens aus}}",
+  "selectTokensToExportHelpContent": "Wenn ein Token nicht aufgelistet ist, ist nicht garantiert, dass es sich nicht um ein privacyIDEA-Token handelt.\nZurzeit können nur manuell hinzugefügte und importierte Token exportiert werden.",
+  "selectTokensToExportHelpTitle": "Ist Ihr Token nicht aufgelistet?",
+  "send": "Senden",
+  "sendErrorDialogBody": "Ein unbekannter Fehler ist aufgetreten. Die unten gezeigten Informationen können den Entwicklern per E-Mail zugesendet werden, um zu helfen, diesen Fehler in Zukunft zu vermeiden.",
+  "sendErrorLogDescription": "Es wird eine vorgefertigte E-Mail erstellt.\nSie enthält Informationen über die App, den Fehler und das Gerät.\nSie können die E-Mail vor dem Senden bearbeiten.\nWie wir die Informationen verwenden, sehen Sie hier:",
+  "sendPushRequestResponseFailed": "Senden der Antwort fehlgeschlagen.",
+  "sendingRSAPublicKey": "Sende öffentlichen RSA Schlüssel",
+  "sendingRSAPublicKeyFailed": "Senden des öffentlichen RSA Schlüssels fehlgeschlagen",
+  "serverNotReachable": "Der Server konnte nicht erreicht werden.",
+  "settings": "Einstellungen",
+  "settingsGroupGeneral": "Allgemeines",
+  "showDetails": "Details anzeigen",
+  "showErrorLog": "Anzeigen",
+  "showPrivacyPolicy": "Datenschutzerklärung anzeigen",
+  "signInTitle": "Authentifizierung wird benötigt",
+  "someTokensDoNotSupportPolling": "Einige der Token sind veraltet und unterstützen keine aktiven Anfragen",
+  "startRollout": "Starte Rollout",
+  "statusCode": "Statuscode: {statusCode}",
+  "sync": "Sync",
+  "syncContainerFailed": "Container synchronisation fehlgeschlagen",
+  "syncFbTokenFailed": "Synchronisation ist für die folgenden Token fehlgeschlagen:",
+  "synchronizePushTokens": "Synchronisiere Push Token",
+  "synchronizesTokensWithServer": "Synchronisiert Token mit dem privacyIDEA Server.",
+  "synchronizingTokens": "Synchronisiere Token.",
+  "theSecretDoesNotFitTheCurrentEncoding": "Das Geheimnis entspricht nicht der gewählten Verschlüsselung.",
+  "themeMode": "Farbschema",
+  "thisAppIsOpenSource": "Diese App ist Open Source\nBesuchen Sie uns auf GitHub",
+  "timeOut": "Zeitlimit",
+  "tokenDataParseError": "Token-Daten konnten nicht geparst werden",
+  "tokenDetails": "Tokendetails",
+  "tokenLink": "Token Link",
+  "tokenSerial": "Token serial",
+  "tokensAreEncrypted": "Die Token sind verschlüsselt. Bitte gib das Passwort ein, um sie zu entschlüsseln.",
+  "tokensDoNotSupportSynchronization": "Die folgenden Token unterstützen keine Synchronisation und müssen erneut ausgerollt werden:",
+  "tokensNotEncrypted": "Die Token sind unverschlüsselt und können direkt importiert werden.",
+  "tokensSuccessfullyDecrypted": "Die Token wurden erfolgreich entschlüsselt, sie können nun importiert werden.",
+  "type": "Art",
+  "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten.",
+  "unknown": "Unbekannt",
+  "unlock": "Entsperren",
+  "unsupported": "Der {name} [{value}] wird von dieser Version der App nicht unterstützt.",
+  "useDeviceLocaleDescription": "Nutze Systemsprache, falls diese unterstützt wird. Anderenfalls nutze Englisch. ",
+  "useDeviceLocaleTitle": "Nutze Systemsprache",
+  "validFor": "Gültig für",
+  "validUntil": "Gültig bis",
+  "valueNotAllowed": "untranslated",
+  "valueNotAllowedIn": "untranslated",
+  "verboseLogging": "Ausführliche Protokollierung",
+  "version": "Version",
+  "wrongPassword": "Falsches Passwort",
+  "yes": "Ja"
 }

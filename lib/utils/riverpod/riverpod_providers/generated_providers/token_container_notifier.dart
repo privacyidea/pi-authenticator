@@ -48,7 +48,7 @@ import '../../../logger.dart';
 
 part 'token_container_notifier.g.dart';
 
-final containerCredentialsProvider = tokenContainerNotifierProviderOf(
+final tokenContainerProvider = tokenContainerNotifierProviderOf(
   repo: SecureTokenContainerRepository(),
   containerApi: const PrivacyideaContainerApi(ioClient: PrivacyideaIOClient()),
   eccUtils: const EccUtils(),

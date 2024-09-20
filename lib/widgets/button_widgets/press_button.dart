@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
-class PressButton extends StatefulWidget {
+class CooldownButton extends StatefulWidget {
   final Future Function() onPressed;
   final Widget child;
-  final int delayInMilliseconds;
+  final int buttonCooldown;
   final ButtonStyle? style;
 
-  const PressButton({super.key, required this.onPressed, required this.child, this.delayInMilliseconds = 1000, this.style});
+  const CooldownButton({super.key, required this.onPressed, required this.child, this.buttonCooldown = 1000, this.style});
 
   @override
-  State<StatefulWidget> createState() => _PressButtonState();
+  State<StatefulWidget> createState() => _CooldownButtonState();
 }
 
-class _PressButtonState extends State<PressButton> {
+class _CooldownButtonState extends State<CooldownButton> {
   bool isPressable = true;
 
   void press() async {
@@ -23,7 +23,7 @@ class _PressButtonState extends State<PressButton> {
       await Future.wait(
         [
           widget.onPressed(),
-          Future.delayed(Duration(milliseconds: widget.delayInMilliseconds)),
+          Future.delayed(Duration(milliseconds: widget.buttonCooldown)),
         ],
       );
       if (mounted) {

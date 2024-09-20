@@ -19,123 +19,143 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/widgets/dialog_widgets/default_dialog.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../model/riverpod_states/settings_state.dart';
 import '../../../model/tokens/push_token.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
-import '../settings_view_widgets/settings_groups.dart';
+import '../settings_view_widgets/settings_group.dart';
 import '../settings_view_widgets/update_firebase_token_dialog.dart';
 
 class SettingsGroupPushToken extends ConsumerWidget {
-  final bool enablePushSettingsGroup;
-  final List<PushToken> unsupportedPushTokens;
   const SettingsGroupPushToken({
-    required this.enablePushSettingsGroup,
-    required this.unsupportedPushTokens,
     super.key,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final settingsState = ref.watch(settingsProvider).whenOrNull(data: (data) => data);
+    final tokens = ref.watch(tokenProvider).tokens;
+    final enrolledPushTokenList = tokens.whereType<PushToken>().where((e) => e.isRolledOut).toList();
+    final unsupportedPushTokens = enrolledPushTokenList.where((e) => e.url == null).toList();
     return SettingsGroup(
-      isActive: enablePushSettingsGroup,
       title: AppLocalizations.of(context)!.pushToken,
-      children: [
-        ListTile(
-          title: Text(
-            AppLocalizations.of(context)!.synchronizePushTokens,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-          subtitle: Text(
-            AppLocalizations.of(context)!.synchronizesTokensWithServer,
-            overflow: TextOverflow.fade,
-          ),
-          trailing: ElevatedButton(
-            onPressed: enablePushSettingsGroup
-                ? () {
-                    showDialog(
-                      useRootNavigator: false,
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (context) => const UpdateFirebaseTokenDialog(),
-                    );
-                  }
-                : null,
-            child: Text(
-              AppLocalizations.of(context)!.sync,
+      isActive: enrolledPushTokenList.isNotEmpty,
+      onPressed: () => showDialog(
+        useRootNavigator: false,
+        context: context,
+        builder: (_) => SettingsGroupPushTokenDialog(
+          unsupportedPushTokens: unsupportedPushTokens,
+        ),
+      ),
+      trailingIcon: Icons.notifications,
+    );
+  }
+}
+
+class SettingsGroupPushTokenDialog extends ConsumerWidget {
+  final List<PushToken> unsupportedPushTokens;
+  const SettingsGroupPushTokenDialog({
+    super.key,
+    required this.unsupportedPushTokens,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final settingsState = ref.watch(settingsProvider).whenOrNull(data: (data) => data);
+    return DefaultDialog(
+      title: Text(AppLocalizations.of(context)!.pushToken),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            title: Text(
+              AppLocalizations.of(context)!.synchronizePushTokens,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            subtitle: Text(
+              AppLocalizations.of(context)!.synchronizesTokensWithServer,
               overflow: TextOverflow.fade,
-              softWrap: false,
+            ),
+            trailing: ElevatedButton(
+              onPressed: () => showDialog(
+                useRootNavigator: false,
+                context: context,
+                barrierDismissible: false,
+                builder: (context) => const UpdateFirebaseTokenDialog(),
+              ),
+              child: Text(
+                AppLocalizations.of(context)!.sync,
+                overflow: TextOverflow.fade,
+                softWrap: false,
+              ),
             ),
           ),
-        ),
-        ListTile(
-          title: RichText(
-            text: TextSpan(
-              children: [
-                TextSpan(
-                  text: AppLocalizations.of(context)!.enablePolling,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                // Add clickable icon to inform user of unsupported push tokens (for polling)
-                WidgetSpan(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 10),
-                    child: unsupportedPushTokens.isNotEmpty && enablePushSettingsGroup
-                        ? GestureDetector(
-                            onTap: () => _showPollingInfo(context, unsupportedPushTokens),
-                            child: const Icon(
-                              Icons.info_outline,
-                              color: Colors.red,
-                            ),
-                          )
-                        : null,
+          ListTile(
+            title: RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: AppLocalizations.of(context)!.enablePolling,
+                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
-                ),
-              ],
+                  // Add clickable icon to inform user of unsupported push tokens (for polling)
+                  WidgetSpan(
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: unsupportedPushTokens.isNotEmpty
+                          ? GestureDetector(
+                              onTap: () => _showPollingInfo(context, unsupportedPushTokens),
+                              child: const Icon(
+                                Icons.info_outline,
+                                color: Colors.red,
+                              ),
+                            )
+                          : null,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            subtitle: Text(
+              AppLocalizations.of(context)!.requestPushChallengesPeriodically,
+              overflow: TextOverflow.fade,
+            ),
+            trailing: Switch(
+              value: settingsState?.enablePolling ?? SettingsState.enablePollingDefault,
+              onChanged: (value) => ref.read(settingsProvider.notifier).setPolling(value),
             ),
           ),
-          subtitle: Text(
-            AppLocalizations.of(context)!.requestPushChallengesPeriodically,
-            overflow: TextOverflow.fade,
-          ),
-          trailing: Switch(
-            value: settingsState?.enablePolling ?? SettingsState.enablePollingDefault,
-            onChanged: enablePushSettingsGroup ? (value) => ref.read(settingsProvider.notifier).setPolling(value) : null,
-          ),
-        ),
-        ListTile(
-          title: RichText(
-            text: TextSpan(
-              children: [
-                TextSpan(
-                  text: AppLocalizations.of(context)!.hidePushTokens,
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-              ],
+          ListTile(
+            title: RichText(
+              text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: AppLocalizations.of(context)!.hidePushTokens,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ],
+              ),
+            ),
+            subtitle: Text(
+              AppLocalizations.of(context)!.hidePushTokensDescription,
+              overflow: TextOverflow.fade,
+            ),
+            trailing: Switch(
+              value: settingsState?.hidePushTokens ?? SettingsState.hidePushTokensDefault,
+              onChanged: (value) => ref.read(settingsProvider.notifier).setHidePushTokens(value),
             ),
           ),
-          subtitle: Text(
-            AppLocalizations.of(context)!.hidePushTokensDescription,
-            overflow: TextOverflow.fade,
-          ),
-          trailing: Switch(
-            value: settingsState?.hidePushTokens ?? SettingsState.hidePushTokensDefault,
-            onChanged: enablePushSettingsGroup && ref.watch(tokenProvider).hasOTPTokens
-                ? (value) => ref.read(settingsProvider.notifier).setHidePushTokens(value)
-                : null,
-          ),
-        )
-      ],
+        ],
+      ),
     );
   }
 
   /// Shows a dialog to the user that displays all push tokens that do not
   /// support polling.
-  void _showPollingInfo(BuildContext context, List<PushToken> unsupported) {
-    showDialog(
+  void _showPollingInfo(BuildContext context, List<PushToken> unsupported) => showDialog(
+        useRootNavigator: false,
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
@@ -158,6 +178,6 @@ class SettingsGroupPushToken extends ConsumerWidget {
               ),
             ],
           );
-        });
-  }
+        },
+      );
 }

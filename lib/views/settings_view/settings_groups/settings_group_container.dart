@@ -19,30 +19,21 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 import 'package:privacyidea_authenticator/views/container_view/container_view.dart';
 
-import '../settings_view_widgets/settings_groups.dart';
+import '../settings_view_widgets/settings_group.dart';
 
-class SettingsGroupContainer extends StatelessWidget {
+class SettingsGroupContainer extends ConsumerWidget {
   const SettingsGroupContainer({super.key});
 
   @override
-  Widget build(BuildContext context) => SettingsGroup(
-        title: 'Container',
-        children: [
-          TextButton(
-            child: ListTile(
-              title: Text(
-                'Container',
-                style: Theme.of(context).textTheme.bodyMedium,
-                overflow: TextOverflow.fade,
-                softWrap: false,
-              ),
-              style: ListTileStyle.list,
-              trailing: Icon(Icons.arrow_forward_ios),
-            ),
-            onPressed: () => Navigator.of(context).pushNamed(ContainerView.routeName),
-          ),
-        ],
+  Widget build(BuildContext context, WidgetRef ref) => SettingsGroup(
+        title: AppLocalizations.of(context)!.container,
+        onPressed: () => Navigator.of(context).pushNamed(ContainerView.routeName),
+        isActive: ref.watch(tokenContainerProvider).whenOrNull(data: (data) => data)?.container.isNotEmpty ?? false,
+        trailingIcon: Icons.arrow_forward_ios, // TODO: Change to container icon when we have one
       );
 }

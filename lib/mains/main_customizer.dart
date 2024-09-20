@@ -89,6 +89,7 @@ class CustomizationAuthenticator extends ConsumerWidget {
                 ),
             MainView.routeName: (context) => MainView(
                   appIcon: applicationCustomizer.appIcon.getWidget,
+                  appImage: applicationCustomizer.appImage.getWidget,
                   appName: applicationCustomizer.appName,
                   disablePatchNotes: applicationCustomizer.disabledFeatures.contains(AppFeature.patchNotes),
                   appConstraints: constraints,

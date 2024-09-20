@@ -35,6 +35,7 @@ import 'main_view_widgets/expandable_appbar.dart';
 import 'main_view_widgets/main_view_navigation_bar.dart';
 import 'main_view_widgets/main_view_tokens_list.dart';
 import 'main_view_widgets/main_view_tokens_list_filtered.dart';
+import 'main_view_widgets/token_widgets/main_view_background_icon.dart';
 
 export '../../views/main_view/main_view.dart';
 
@@ -45,11 +46,19 @@ class MainView extends ConsumerStatefulView {
   RouteSettings get routeSettings => const RouteSettings(name: routeName);
 
   final Widget appIcon;
+  final Widget appImage;
   final String appName;
   final bool disablePatchNotes;
   final BoxConstraints appConstraints;
 
-  const MainView({required this.appIcon, required this.appName, required this.disablePatchNotes, super.key, required this.appConstraints});
+  const MainView({
+    required this.appImage,
+    required this.appIcon,
+    required this.appName,
+    required this.disablePatchNotes,
+    super.key,
+    required this.appConstraints,
+  });
 
   @override
   ConsumerState<MainView> createState() => _MainViewState();
@@ -86,10 +95,7 @@ class _MainViewState extends ConsumerState<MainView> {
                 // maxLines: 2 only works like this.
                 maxLines: 2, // Title can be shown on small screens too.
               ),
-              leading: Padding(
-                padding: const EdgeInsets.all(4),
-                child: widget.appIcon,
-              ),
+              leading: const SizedBox(),
               actions: [
                 hasFilter
                     ? AppBarItem(
@@ -114,6 +120,7 @@ class _MainViewState extends ConsumerState<MainView> {
               child: !hasFilter
                   ? Stack(
                       children: [
+                        MainViewBackgroundIcon(appImage: widget.appImage),
                         MainViewTokensList(nestedScrollViewKey: globalKey),
                         MainViewNavigationBar(appConstraints: widget.appConstraints),
                       ],
