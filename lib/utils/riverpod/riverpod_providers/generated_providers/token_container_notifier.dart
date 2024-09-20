@@ -300,7 +300,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     TokenContainerUnfinalized? container = containerCredential;
     container = await updateCredential(container, (c) => c.copyWith(finalizationState: ContainerFinalizationState.generatingKeyPair));
     if (container == null) throw StateError('Credential was removed');
-    final keyPair = CryptoUtils.generateEcKeyPair(curve: container.ecKeyAlgorithm.curveName);
+    final keyPair = CryptoUtils.generateEcKeyPair(curve: container.ecKeyAlgorithm.curveName) as AsymmetricKeyPair<ECPublicKey, ECPrivateKey>;
     container = await updateCredential(container, (c) => c.withClientKeyPair(keyPair) as TokenContainerUnfinalized);
     if (container == null) throw StateError('Credential was removed');
     return container;
