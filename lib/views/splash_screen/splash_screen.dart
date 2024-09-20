@@ -100,6 +100,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     final ViewWidget nextView = MainView(
       appName: _customization.appName,
       appIcon: _customization.appIcon.getWidget,
+      appImage: _customization.appImage.getWidget,
       disablePatchNotes: _customization.disabledFeatures.contains(AppFeature.patchNotes),
       appConstraints: widget.appConstraints,
     );

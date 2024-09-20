@@ -26,7 +26,7 @@ import '../../../../../model/tokens/push_token.dart';
 import '../../../../../utils/globals.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
-import '../../../../../widgets/press_button.dart';
+import '../../../../../widgets/button_widgets/press_button.dart';
 
 class StartRolloutWidget extends ConsumerWidget {
   final PushToken token;
@@ -59,7 +59,7 @@ class StartRolloutWidget extends ConsumerWidget {
               ),
               Expanded(
                 flex: 35,
-                child: PressButton(
+                child: CooldownButton(
                   onPressed: () => globalRef?.read(tokenProvider.notifier).rolloutPushToken(token) ?? Future.value(),
                   child: Text(
                     token.rolloutState.rolloutFailed ? localizations.retryRollout : localizations.startRollout,
@@ -75,7 +75,7 @@ class StartRolloutWidget extends ConsumerWidget {
               ),
               Expanded(
                 flex: 35,
-                child: PressButton(
+                child: CooldownButton(
                   style: ButtonStyle(backgroundColor: WidgetStateProperty.all(Theme.of(context).colorScheme.errorContainer)),
                   onPressed: () => _showDialog(),
                   child: Text(

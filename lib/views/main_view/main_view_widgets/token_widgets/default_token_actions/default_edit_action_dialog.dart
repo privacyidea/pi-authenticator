@@ -108,53 +108,52 @@ class _DefaultEditActionDialogState extends ConsumerState<DefaultEditActionDialo
                 validator: _validateImageUrl,
               ),
               EditActionExpansionTile(
-                title: 'Token Details',
+                title: appLocalizations.tokenDetails,
                 children: [
                   if (token.serial != null)
                     ReadOnlyTextFormField(
                       text: token.serial!,
-                      labelText: 'Tokenserial',
+                      labelText: appLocalizations.tokenSerial,
                     ),
                   ReadOnlyTextFormField(
-                    text: token.isPrivacyIdeaToken == false ? 'Is Exportable' : 'Not Exportable',
-                    labelText: 'Exportable?',
+                    text: token.isPrivacyIdeaToken == false ? appLocalizations.yes : appLocalizations.no,
+                    labelText: appLocalizations.isExpotableQuestion,
                   ),
                   if (widget.token.containerSerial != null)
                     ReadOnlyTextFormField(
                       text: token.containerSerial!,
-                      labelText: 'Linked Container',
+                      labelText: appLocalizations.linkedContainer,
                     ),
                   ...widget.additionalChildren,
                 ],
               ),
               if (origin != null)
                 EditActionExpansionTile(
-                  title: 'Origin Details',
+                  title: appLocalizations.originDetails,
                   children: [
                     ReadOnlyTextFormField(
+                      labelText: appLocalizations.originApp,
                       text: origin.appName,
-                      labelText: 'Origin',
                     ),
                     if (origin.creator != null)
                       ReadOnlyTextFormField(
+                        labelText: appLocalizations.creator,
                         text: origin.creator!,
-                        labelText: 'Creator',
                       ),
                     ReadOnlyTextFormField(
+                      labelText: appLocalizations.createdAt,
                       text: origin.createdAt.toString().split('.').first,
-                      labelText: 'Created At',
                     ),
                     ReadOnlyTextFormField(
-                      text: origin.isPrivacyIdeaToken == null
-                          ? 'Unknown'
-                          : origin.isPrivacyIdeaToken!
-                              ? "It's a privacyIDEA Token!"
-                              : "It's not a privacyIDEA Token!",
-                      labelText: 'Is privacyIDEA Token?',
-                    ),
+                        labelText: appLocalizations.isPiTokenQuestion, //'Is privacyIDEA Token?',
+                        text: origin.isPrivacyIdeaToken == null
+                            ? appLocalizations.unknown
+                            : origin.isPrivacyIdeaToken!
+                                ? appLocalizations.yes
+                                : appLocalizations.no),
                     ReadOnlyTextFormField(
                       text: origin.source.name,
-                      labelText: 'Imported via',
+                      labelText: appLocalizations.importedVia, //'Imported via',
                     ),
                   ],
                 ),

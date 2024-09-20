@@ -52,7 +52,7 @@ class QrScannerButton extends ConsumerWidget {
           Navigator.pushNamed(globalNavigatorKey.currentContext!, QRScannerView.routeName).then((qrCode) {
             final resultHandlers = <ResultHandler>[
               ref.read(tokenProvider.notifier),
-              ref.read(containerCredentialsProvider.notifier),
+              ref.read(tokenContainerProvider.notifier),
             ];
             scanQrCode(resultHandlers, qrCode);
           });

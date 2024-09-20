@@ -13,7 +13,7 @@ import '../../utils/lock_auth.dart';
 import '../../utils/logger.dart';
 import '../../utils/riverpod/riverpod_providers/generated_providers/push_request_provider.dart';
 import '../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
-import '../press_button.dart';
+import '../button_widgets/press_button.dart';
 import 'default_dialog.dart';
 
 class PushRequestDialog extends ConsumerStatefulWidget {
@@ -118,7 +118,7 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
                         )
                       : SizedBox(
                           // Accept button
-                          child: PressButton(
+                          child: CooldownButton(
                             style: ButtonStyle(
                               backgroundColor: WidgetStateProperty.all(pushRequestTheme.acceptColor),
                               shape: buttonShape(context),
@@ -157,7 +157,7 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
                         ),
                   SizedBox(
                     // Decline button
-                    child: PressButton(
+                    child: CooldownButton(
                       style: ButtonStyle(
                         backgroundColor: WidgetStateProperty.all(pushRequestTheme.declineColor),
                         shape: buttonShape(context),
@@ -226,7 +226,7 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
                     const Expanded(child: SizedBox()),
                     Expanded(
                       flex: 6,
-                      child: PressButton(
+                      child: CooldownButton(
                         style: ButtonStyle(
                           shape: buttonShape(context),
                           backgroundColor: WidgetStateProperty.all(pushRequestTheme.acceptColor),
@@ -269,7 +269,7 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
                     const Expanded(flex: 2, child: SizedBox()),
                     Expanded(
                       flex: 6,
-                      child: PressButton(
+                      child: CooldownButton(
                         style: ButtonStyle(
                           backgroundColor: WidgetStateProperty.all(pushRequestTheme.declineColor),
                           shape: buttonShape(context),
@@ -351,7 +351,7 @@ class _AnswerSelectionWidgetState<T> extends State<AnswerSelectionWidget<T>> {
             for (final possibleAnswer in answersThisRow)
               Expanded(
                 flex: answersThisRow.length * 2,
-                child: PressButton(
+                child: CooldownButton(
                   style: ButtonStyle(
                     shape: _PushRequestDialogState.buttonShape(context),
                     backgroundColor: WidgetStateProperty.all(pushRequestTheme.acceptColor),

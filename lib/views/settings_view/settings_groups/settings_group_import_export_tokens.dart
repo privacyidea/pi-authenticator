@@ -24,10 +24,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../model/enums/introduction.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
-import '../../../widgets/countdown_button.dart';
+import '../../../widgets/button_widgets/countdown_button.dart';
 import '../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../import_tokens_view/import_tokens_view.dart';
-import '../settings_view_widgets/settings_groups.dart';
+import '../settings_view_widgets/settings_group.dart';
 import '../settings_view_widgets/settings_list_tile_button.dart';
 import 'import_export_tokens_widgets/dialogs/select_export_type_dialog.dart';
 

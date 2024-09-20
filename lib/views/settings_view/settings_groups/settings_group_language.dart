@@ -20,13 +20,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.dart';
+import 'package:privacyidea_authenticator/widgets/dialog_widgets/default_dialog.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
-import '../settings_view_widgets/settings_groups.dart';
+
+import '../settings_view_widgets/settings_group.dart';
 
 class SettingsGroupLanguage extends ConsumerWidget {
   const SettingsGroupLanguage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return SettingsGroup(
+      title: AppLocalizations.of(context)!.language,
+      onPressed: () => showDialog(
+        useRootNavigator: false,
+        context: context,
+        builder: (context) => const SettingsGroupLanguageDialog(),
+      ),
+      trailingIcon: Icons.language,
+    );
+  }
+}
+
+class SettingsGroupLanguageDialog extends ConsumerWidget {
+  const SettingsGroupLanguageDialog({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -34,46 +55,50 @@ class SettingsGroupLanguage extends ConsumerWidget {
     final settings = ref.watch(settingsProvider).whenOrNull(data: (data) => data);
     final useSystemLocale = settings?.useSystemLocale ?? SettingsState.useSystemLocaleDefault;
     final currentLocale = settings?.currentLocale ?? SettingsState.localeDefault;
-    return SettingsGroup(
-      title: localizations.language,
-      children: [
-        SwitchListTile(
-            title: Text(
-              localizations.useDeviceLocaleTitle,
-              style: Theme.of(context).textTheme.bodyMedium,
+    return DefaultDialog(
+      title: Text(localizations.language),
+      content: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SwitchListTile(
+              title: Text(
+                localizations.useDeviceLocaleTitle,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              subtitle: Text(
+                localizations.useDeviceLocaleDescription,
+                overflow: TextOverflow.fade,
+              ),
+              value: useSystemLocale,
+              onChanged: (value) => ref.read(settingsProvider.notifier).setUseSystemLocale(value)),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: DropdownButton<Locale>(
+              disabledHint: Text(
+                '$currentLocale',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey),
+                overflow: TextOverflow.fade,
+                softWrap: false,
+              ),
+              isExpanded: true,
+              value: currentLocale,
+              items: AppLocalizations.supportedLocales.map<DropdownMenuItem<Locale>>((Locale itemLocale) {
+                return DropdownMenuItem<Locale>(
+                  value: itemLocale,
+                  child: Text(
+                    '$itemLocale',
+                    overflow: TextOverflow.fade,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: useSystemLocale ? Colors.grey : null),
+                    softWrap: false,
+                  ),
+                );
+              }).toList(),
+              onChanged: useSystemLocale ? null : (value) => ref.read(settingsProvider.notifier).setLocalePreference(value!),
             ),
-            subtitle: Text(
-              localizations.useDeviceLocaleDescription,
-              overflow: TextOverflow.fade,
-            ),
-            value: useSystemLocale,
-            onChanged: (value) => ref.read(settingsProvider.notifier).setUseSystemLocale(value)),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: DropdownButton<Locale>(
-            disabledHint: Text(
-              '$currentLocale',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey),
-              overflow: TextOverflow.fade,
-              softWrap: false,
-            ),
-            isExpanded: true,
-            value: currentLocale,
-            items: AppLocalizations.supportedLocales.map<DropdownMenuItem<Locale>>((Locale itemLocale) {
-              return DropdownMenuItem<Locale>(
-                value: itemLocale,
-                child: Text(
-                  '$itemLocale',
-                  overflow: TextOverflow.fade,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: useSystemLocale ? Colors.grey : null),
-                  softWrap: false,
-                ),
-              );
-            }).toList(),
-            onChanged: useSystemLocale ? null : (value) => ref.read(settingsProvider.notifier).setLocalePreference(value!),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

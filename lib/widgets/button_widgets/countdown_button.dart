@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../model/extensions/color_extension.dart';
+import '../../model/extensions/color_extension.dart';
 
 class CountdownButton extends StatefulWidget {
   final int countdownSeconds;

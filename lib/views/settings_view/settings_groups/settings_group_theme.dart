@@ -22,58 +22,42 @@ import 'package:flutter/material.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/home_widget_utils.dart';
-import '../settings_view_widgets/settings_groups.dart';
+import '../settings_view_widgets/settings_group.dart';
 
 class SettingsGroupTheme extends StatelessWidget {
   const SettingsGroupTheme({super.key});
 
   @override
-  Widget build(BuildContext context) => SettingsGroup(
-        title: AppLocalizations.of(context)!.theme,
-        children: [
-          RadioListTile(
-            title: Text(
-              AppLocalizations.of(context)!.lightTheme,
-              style: Theme.of(context).textTheme.bodyMedium,
-              overflow: TextOverflow.fade,
-              softWrap: false,
-            ),
-            value: ThemeMode.light,
-            groupValue: EasyDynamicTheme.of(context).themeMode,
-            controlAffinity: ListTileControlAffinity.trailing,
-            onChanged: (dynamic value) {
-              EasyDynamicTheme.of(context).changeTheme(dynamic: false, dark: false);
-              HomeWidgetUtils().setCurrentThemeMode(ThemeMode.light);
-            },
-          ),
-          RadioListTile(
-            title: Text(
-              AppLocalizations.of(context)!.darkTheme,
-              style: Theme.of(context).textTheme.bodyMedium,
-              overflow: TextOverflow.fade,
-              softWrap: false,
-            ),
-            value: ThemeMode.dark,
-            groupValue: EasyDynamicTheme.of(context).themeMode,
-            controlAffinity: ListTileControlAffinity.trailing,
-            onChanged: (dynamic value) {
-              EasyDynamicTheme.of(context).changeTheme(dynamic: false, dark: true);
-              HomeWidgetUtils().setCurrentThemeMode(ThemeMode.dark);
-            },
-          ),
-          RadioListTile(
-            title: Text(
-              AppLocalizations.of(context)!.systemTheme,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            value: ThemeMode.system,
-            groupValue: EasyDynamicTheme.of(context).themeMode,
-            controlAffinity: ListTileControlAffinity.trailing,
-            onChanged: (dynamic value) {
-              EasyDynamicTheme.of(context).changeTheme(dynamic: true, dark: false);
-              HomeWidgetUtils().setCurrentThemeMode(ThemeMode.system);
-            },
-          ),
-        ],
-      );
+  Widget build(BuildContext context) {
+    final current = EasyDynamicTheme.of(context).themeMode;
+    return SettingsGroup(
+      title: AppLocalizations.of(context)!.themeMode,
+      onPressed: () {
+        switch (current) {
+          case ThemeMode.light:
+            EasyDynamicTheme.of(context).changeTheme(dynamic: false, dark: true);
+            HomeWidgetUtils().setCurrentThemeMode(ThemeMode.dark);
+            break;
+          case ThemeMode.dark:
+            EasyDynamicTheme.of(context).changeTheme(dynamic: true);
+            HomeWidgetUtils().setCurrentThemeMode(ThemeMode.system);
+            break;
+          case ThemeMode.system:
+            EasyDynamicTheme.of(context).changeTheme(dynamic: false, dark: false);
+            HomeWidgetUtils().setCurrentThemeMode(ThemeMode.light);
+            break;
+          case null:
+            EasyDynamicTheme.of(context).changeTheme(dynamic: false, dark: false);
+            HomeWidgetUtils().setCurrentThemeMode(ThemeMode.light);
+            break;
+        }
+      },
+      trailingIcon: switch (current) {
+        ThemeMode.light => Icons.brightness_5,
+        ThemeMode.dark => Icons.brightness_4,
+        ThemeMode.system => Icons.brightness_auto,
+        null => Icons.question_mark,
+      },
+    );
+  }
 }

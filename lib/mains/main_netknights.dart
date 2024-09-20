@@ -110,6 +110,7 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
               ),
           MainView.routeName: (context) => MainView(
                 appIcon: _customization.appIcon.getWidget,
+                appImage: _customization.appImage.getWidget,
                 appName: _customization.appName,
                 disablePatchNotes: _customization.disabledFeatures.contains(AppFeature.patchNotes),
                 appConstraints: constraints,

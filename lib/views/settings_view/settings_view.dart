@@ -18,11 +18,8 @@
  * limitations under the License.
  */
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
-import '../../model/tokens/push_token.dart';
-import '../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../widgets/push_request_listener.dart';
 import '../view_interface.dart';
 import 'settings_groups/settings_group_container.dart';
@@ -32,6 +29,7 @@ import 'settings_groups/settings_group_import_export_tokens.dart';
 import 'settings_groups/settings_group_language.dart';
 import 'settings_groups/settings_group_push_token.dart';
 import 'settings_groups/settings_group_theme.dart';
+import 'settings_groups/settings_group_feedback.dart';
 
 class SettingsView extends ConsumerView {
   @override
@@ -41,45 +39,31 @@ class SettingsView extends ConsumerView {
   const SettingsView({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = ref.watch(tokenProvider).tokens;
-    final enrolledPushTokenList = tokens.whereType<PushToken>().where((e) => e.isRolledOut).toList();
-    final unsupportedPushTokens = enrolledPushTokenList.where((e) => e.url == null).toList();
-    final enablePushSettingsGroup = enrolledPushTokenList.isNotEmpty;
-
-    return PushRequestListener(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            AppLocalizations.of(context)!.settings,
-            overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
-            maxLines: 2, // Title can be shown on small screens too.
+  Widget build(BuildContext context, WidgetRef ref) => PushRequestListener(
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(
+              AppLocalizations.of(context)!.settings,
+              overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
+              maxLines: 2, // Title can be shown on small screens too.
+            ),
+          ),
+          body: const SingleChildScrollView(
+            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SettingsGroupFeedback(),
+                SettingsGroupImportExportTokens(),
+                SettingsGroupPushToken(),
+                SettingsGroupContainer(),
+                SettingsGroupTheme(),
+                SettingsGroupLanguage(),
+                SettingsGroupErrorLog(),
+                SettingsGroupGeneral(),
+              ],
+            ),
           ),
         ),
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SettingsGroupGeneral(),
-              const Divider(),
-              const SettingsGroupImportExportTokens(),
-              const Divider(),
-              const SettingsGroupTheme(),
-              const Divider(),
-              const SettingsGroupLanguage(),
-              SettingsGroupPushToken(
-                enablePushSettingsGroup: enablePushSettingsGroup,
-                unsupportedPushTokens: unsupportedPushTokens,
-              ),
-              const Divider(),
-              const SettingsGroupErrorLog(),
-              const Divider(),
-              const SettingsGroupContainer(),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+      );
 }
