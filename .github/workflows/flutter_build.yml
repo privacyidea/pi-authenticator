@@ -4,7 +4,7 @@ on:
       branches:
          - master
    pull_request:
-     
+
 
 jobs:
   build_ios:
@@ -27,7 +27,7 @@ jobs:
     - uses: subosito/flutter-action@v2
       with:
         channel: 'stable'
-        flutter-version: '3.22.0'
+        flutter-version: '3.24.3'
     - run: "flutter --version"
     - run: "flutter pub get"
     - run: "flutter build ios -t 'lib/mains/main_netknights.dart' --debug --flavor netknights --no-codesign"

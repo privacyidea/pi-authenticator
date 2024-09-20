@@ -1,5 +1,5 @@
 name: Flutter Test
-on: 
+on:
    push:
       branches:
          - master
@@ -19,7 +19,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          flutter-version: '3.22.0'
+          flutter-version: '3.24.3'
       - run: "flutter --version"
       - run: flutter pub get
       - run: flutter gen-l10n
