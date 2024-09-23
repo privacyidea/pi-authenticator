@@ -6,7 +6,7 @@ part of 'deeplink_notifier.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$deeplinkNotifierHash() => r'be8127ccfb6d48a9cd5c00776c306db860fa49a1';
+String _$deeplinkNotifierHash() => r'4d2679c2d7edd3efe7b05aa4b64aa1be4b8cdbb4';
 
 /// See also [DeeplinkNotifier].
 @ProviderFor(DeeplinkNotifier)

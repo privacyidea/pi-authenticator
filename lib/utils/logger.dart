@@ -53,7 +53,6 @@ class Logger {
       },
       colors: true,
       printEmojis: true,
-      dateTimeFormat: printer.DateTimeFormat.dateAndTime,
     ),
   );
 
@@ -425,10 +424,10 @@ Device Parameters $deviceInfo""";
     return fileMessage;
   }
 
-  static String? _getCallerMethodName({int depth = 1}) => _getCurrentMethodName(deph: depth + 2);
+  static String? _getCallerMethodName({int depth = 1}) => _getCurrentMethodName(deph: depth + 1);
   static String? _getCurrentMethodName({int deph = 1}) {
     final frames = StackTrace.current.toString().split('\n');
-    final frame = frames.elementAtOrNull(deph);
+    final frame = frames.elementAtOrNull(deph + 1);
     if (frame == null) return null;
     final entry = frame.split(' ');
     final methodName = entry.elementAtOrNull(entry.length - 2);

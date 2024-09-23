@@ -102,7 +102,7 @@ class ContainerWidget extends ConsumerWidget {
                 : IconButton(
                     icon: const Icon(Icons.delete),
                     onPressed: () {
-                      ref.read(tokenContainerProvider.notifier).deleteCredential(containerCredential);
+                      ref.read(tokenContainerProvider.notifier).deleteContainer(containerCredential);
                     },
                   ),
           ),
@@ -120,7 +120,7 @@ class DeleteContainerAction extends PiSlideableAction {
 
   @override
   CustomSlidableAction build(BuildContext context, WidgetRef ref) => CustomSlidableAction(
-        onPressed: (BuildContext context) => ref.read(tokenContainerProvider.notifier).deleteCredential(container),
+        onPressed: (BuildContext context) => ref.read(tokenContainerProvider.notifier).deleteContainer(container),
         backgroundColor: Theme.of(context).extension<ActionTheme>()!.deleteColor,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

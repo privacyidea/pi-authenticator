@@ -94,7 +94,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     _eccUtils = _eccUtilsOverride ?? eccUtils;
     Logger.warning('Building containerProvider');
 
-    final initState = await _repo.loadCredentialsState();
+    final initState = await _repo.loadContainerState();
     for (var container in initState.container.whereType<TokenContainerUnfinalized>()) {
       finalize(container);
     }
@@ -107,28 +107,28 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
 //////////////////////////////////////////////////////////////////
 
   Future<TokenContainerState> _saveCredentialToRepo(TokenContainer container) async {
-    return await _repoMutex.protect(() async => await _repo.saveCredential(container));
+    return await _repoMutex.protect(() async => await _repo.saveContainer(container));
   }
 
   Future<TokenContainerState> _saveCredentialsStateToRepo(TokenContainerState containerState) async {
-    return await _repoMutex.protect(() async => await _repo.saveCredentialsState(containerState));
+    return await _repoMutex.protect(() async => await _repo.saveContainerState(containerState));
   }
 
   Future<TokenContainerState> _deleteCredentialFromRepo(TokenContainer container) async {
-    return await _repoMutex.protect(() async => await _repo.deleteCredential(container.serial));
+    return await _repoMutex.protect(() async => await _repo.deleteContainer(container.serial));
   }
 
   Future<TokenContainerState> _deleteCredentialsStateToRepo() async {
-    return await _repoMutex.protect(() async => await _repo.deleteAllCredentials());
+    return await _repoMutex.protect(() async => await _repo.deleteAllContainer());
   }
 
 /*//////////////////////////////////////////////////////////////////
 ////////////////////////// PUBLIC METHODS //////////////////////////
 ///////////////////////////////////////////////////////////////// */
 
-// ADD CREDENTIALS
+// ADD CONTAINER
 
-  Future<TokenContainerState> addCredential(TokenContainer container) async {
+  Future<TokenContainerState> addContainer(TokenContainer container) async {
     await _stateMutex.acquire();
     final newState = await _saveCredentialToRepo(container);
     await update((_) => newState);
@@ -136,7 +136,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     return newState;
   }
 
-  Future<TokenContainerState> addCredentials(List<TokenContainer> container) async {
+  Future<TokenContainerState> addContainerList(List<TokenContainer> container) async {
     await _stateMutex.acquire();
     final newCredentials = container.toList();
     final oldCredentials = (await future).container;
@@ -161,7 +161,9 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     return newState;
   }
 
-  // UPDATE CREDENTIALS
+  /* /////////////////////////////////////////////////////////////////////////
+  ////////////////////////// UPDATE CONTAINER ////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////// */
 
   @override
   Future<TokenContainerState> update(
@@ -172,7 +174,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     return super.update(cb, onError: onError);
   }
 
-  Future<T?> updateCredential<T extends TokenContainer>(T container, T Function(T) updater) async {
+  Future<T?> updateContainer<T extends TokenContainer>(T container, T Function(T) updater) async {
     await _stateMutex.acquire();
     final oldState = await future;
     final currentCredential = oldState.currentOf<T>(container);
@@ -188,9 +190,11 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     return updated;
   }
 
-  // DELETE CREDENTIALS
+  /* /////////////////////////////////////////////////////////////////////////
+  ///////////////////////// DELETE CONTAINER /////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////// */
 
-  Future<TokenContainerState> deleteCredential(TokenContainer container) async {
+  Future<TokenContainerState> deleteContainer(TokenContainer container) async {
     await _stateMutex.acquire();
     final newState = await _deleteCredentialFromRepo(container);
     await update((_) => newState);
@@ -198,7 +202,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     return newState;
   }
 
-  Future<TokenContainerState> deleteCredentials(List<TokenContainer> container) async {
+  Future<TokenContainerState> deleteContainerList(List<TokenContainer> container) async {
     await _stateMutex.acquire();
     final newCredentials = container.toList();
     final oldCredentials = (await future).container;
@@ -217,35 +221,39 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     return newState;
   }
 
-  // HANDLE PROCESSOR RESULTS
+  /* /////////////////////////////////////////////////////////////////////////
+  /////////////////////// HANDLE PROCESSOR RESULTS ///////////////////////////
+  ///////////////////////////////////////////////////////////////////////// */
 
   @override
-  Future<void> handleProcessorResult(ProcessorResult result, Map<String, dynamic> args) {
-    // TODO: implement handleResult
-    throw UnimplementedError();
-  }
+  Future<bool> handleProcessorResult(ProcessorResult result, Map<String, dynamic> args) async =>
+      (await handleProcessorResults([result], args))?.isEmpty == true;
 
   @override
   Future<List?> handleProcessorResults(List<ProcessorResult> results, Map<String, dynamic> args) async {
     Logger.info('Handling processor results');
     final containerCredentials = results.getData().whereType<TokenContainer>().toList();
-    if (containerCredentials.isEmpty) {
-      return null;
-    }
+    if (containerCredentials.isEmpty) return null;
     final currentState = await future;
     final stateCredentials = currentState.container;
     final stateCredentialsSerials = stateCredentials.map((e) => e.serial);
     final newCredentials = containerCredentials.where((element) => !stateCredentialsSerials.contains(element.serial)).toList();
     Logger.info('Handling processor results: adding Credential');
-    await addCredentials(newCredentials);
+    final stateAfterAdding = await addContainerList(newCredentials);
+    final failedToAdd = [];
     Logger.info('Handling processor results: adding done (${newCredentials.length})');
     for (var container in newCredentials) {
       Logger.info('Handling processor results: finalize check ()');
+
+      if (!stateAfterAdding.container.contains(container)) {
+        failedToAdd.add(container);
+        continue;
+      }
       if (container is! TokenContainerUnfinalized) continue;
       Logger.info('Handling processor results: finalize');
       await finalize(container);
     }
-    return null;
+    return failedToAdd;
   }
 
   final Mutex _finalizationMutex = Mutex();
@@ -274,12 +282,12 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
       }
       final ECPublicKey publicServerKey;
       (container, publicServerKey) = await _parseResponse(container, response);
-      await updateCredential(container, (c) => c.finalize(publicServerKey: publicServerKey)!);
+      await updateContainer(container, (c) => c.finalize(publicServerKey: publicServerKey)!);
     } on StateError {
       Logger.info('Container was removed while finalizing');
     } on LocalizedArgumentError catch (e) {
       ref.read(statusMessageProvider.notifier).state = ('Failed to decode response body', e.localizedMessage(AppLocalizations.of(await globalContext)!));
-      await updateCredential(container, (c) => c.copyWith(finalizationState: ContainerFinalizationState.parsingResponseFailed));
+      await updateContainer(container, (c) => c.copyWith(finalizationState: ContainerFinalizationState.parsingResponseFailed));
     } catch (e) {
       Logger.error('Failed to finalize container ${container.serial}', error: e);
       _finalizationMutex.release();
@@ -298,10 +306,10 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     // generatingKeyPairFailed,
     // generatingKeyPairCompleted,
     TokenContainerUnfinalized? container = containerCredential;
-    container = await updateCredential(container, (c) => c.copyWith(finalizationState: ContainerFinalizationState.generatingKeyPair));
+    container = await updateContainer(container, (c) => c.copyWith(finalizationState: ContainerFinalizationState.generatingKeyPair));
     if (container == null) throw StateError('Credential was removed');
     final keyPair = CryptoUtils.generateEcKeyPair(curve: container.ecKeyAlgorithm.curveName) as AsymmetricKeyPair<ECPublicKey, ECPrivateKey>;
-    container = await updateCredential(container, (c) => c.withClientKeyPair(keyPair) as TokenContainerUnfinalized);
+    container = await updateContainer(container, (c) => c.withClientKeyPair(keyPair) as TokenContainerUnfinalized);
     if (container == null) throw StateError('Credential was removed');
     return container;
   }
@@ -322,22 +330,22 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     TokenContainerUnfinalized? container = containerc;
 
     final Response response;
-    container = await updateCredential<TokenContainerUnfinalized>(container, (c) => c.copyWith(finalizationState: ContainerFinalizationState.sendingPublicKey));
+    container = await updateContainer<TokenContainerUnfinalized>(container, (c) => c.copyWith(finalizationState: ContainerFinalizationState.sendingPublicKey));
     if (container == null) throw StateError('Credential was removed');
     try {
       response = (await _containerApi.finalizeContainer(container, eccUtils))!;
     } catch (e) {
       ref.read(statusMessageProvider.notifier).state = ('Failed to finalize container', e.toString());
-      await updateCredential(container, (c) => c.copyWith(finalizationState: ContainerFinalizationState.sendingPublicKeyFailed));
+      await updateContainer(container, (c) => c.copyWith(finalizationState: ContainerFinalizationState.sendingPublicKeyFailed));
       rethrow;
     }
     if (response.statusCode != 200) {
-      container = await updateCredential(container, (c) => c.copyWith(finalizationState: ContainerFinalizationState.sendingPublicKeyFailed));
+      container = await updateContainer(container, (c) => c.copyWith(finalizationState: ContainerFinalizationState.sendingPublicKeyFailed));
       if (container == null) throw StateError('Credential was removed');
       return (container, response);
     }
 
-    container = await updateCredential(container, (c) => c.copyWith(finalizationState: ContainerFinalizationState.sendingPublicKeyCompleted));
+    container = await updateContainer(container, (c) => c.copyWith(finalizationState: ContainerFinalizationState.sendingPublicKeyCompleted));
     if (container == null) throw StateError('Credential was removed');
     return (container, response);
   }
@@ -352,7 +360,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     ECPublicKey publicServerKey;
     String responseBody = response.body;
     Map<String, dynamic> responseJson;
-    container = await updateCredential(container, (c) => c.copyWith(finalizationState: ContainerFinalizationState.parsingResponse));
+    container = await updateContainer(container, (c) => c.copyWith(finalizationState: ContainerFinalizationState.parsingResponse));
     if (container == null) throw StateError('Credential was removed');
     responseJson = jsonDecode(responseBody);
     Logger.debug('Response JSON: $responseJson');
@@ -369,7 +377,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
       name: 'container_sync_url',
     );
     container =
-        await updateCredential(container, (c) => c.copyWith(finalizationState: ContainerFinalizationState.parsingResponseCompleted, syncUrl: syncUrlUri));
+        await updateContainer(container, (c) => c.copyWith(finalizationState: ContainerFinalizationState.parsingResponseCompleted, syncUrl: syncUrlUri));
     if (container == null) throw StateError('Credential was removed');
     return (container, publicServerKey);
   }

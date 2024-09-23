@@ -7,7 +7,7 @@ part of 'token_folder_notifier.dart';
 // **************************************************************************
 
 String _$tokenFolderNotifierHash() =>
-    r'f1f961ff173b88705b6c2dfc893703a7644e6afc';
+    r'1302c08e0a69caa5abda317a509b3c40f84b24e1';
 
 /// Copied from Dart SDK
 class _SystemHash {
