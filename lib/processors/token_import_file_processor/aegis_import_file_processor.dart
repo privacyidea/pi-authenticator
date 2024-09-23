@@ -230,7 +230,7 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
           resultHandlerType: resultHandlerType,
         ));
       } catch (e) {
-        Logger.error('Failed to parse token.', name: 'AegisImportFileProcessor#_processPlain', error: e, stackTrace: StackTrace.current);
+        Logger.error('Failed to parse token.', error: e, stackTrace: StackTrace.current);
         results.add(ProcessorResult.failed(
           e.toString(),
           resultHandlerType: resultHandlerType,
@@ -291,7 +291,7 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
           resultHandlerType: resultHandlerType,
         ));
       } catch (e) {
-        Logger.error('Failed to parse token.', name: 'AegisImportFileProcessor#_processPlain', error: e, stackTrace: StackTrace.current);
+        Logger.error('Failed to parse token.', error: e, stackTrace: StackTrace.current);
         results.add(ProcessorResultFailed(
           e.toString(),
           resultHandlerType: resultHandlerType,

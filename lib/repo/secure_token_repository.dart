@@ -61,9 +61,9 @@ class SecureTokenRepository implements TokenRepository {
   Future<Token?> loadToken(String id) => _protect(() => _loadToken(id));
   Future<Token?> _loadToken(String id) async {
     final token = await _storage.read(key: _TOKEN_PREFIX + id);
-    Logger.info('Loading token from secure storage: $id', name: 'secure_token_repository.dart#loadToken');
+    Logger.info('Loading token from secure storage: $id');
     if (token == null) {
-      Logger.warning('Token not found in secure storage', name: 'secure_token_repository.dart#loadToken');
+      Logger.warning('Token not found in secure storage');
       return null;
     }
     return Token.fromJson(jsonDecode(token));
@@ -79,7 +79,7 @@ class SecureTokenRepository implements TokenRepository {
     try {
       keyValueMap = await _storage.readAll();
     } on PlatformException catch (e, s) {
-      Logger.warning("Token found, but could not be decrypted.", name: 'secure_token_repository.dart#loadTokens', error: e, stackTrace: s, verbose: true);
+      Logger.warning("Token found, but could not be decrypted.", error: e, stackTrace: s, verbose: true);
       _decryptErrorDialog();
       return [];
     }
@@ -100,28 +100,28 @@ class SecureTokenRepository implements TokenRepository {
         valueJson = jsonDecode(value);
       } on FormatException catch (_) {
         // Value should be a json. Skip everything that is not a json.
-        Logger.debug('Value is not a json', name: 'secure_token_repository.dart#loadTokens');
+        Logger.debug('Value is not a json');
         continue;
       }
 
       if (valueJson == null) {
         // If valueJson is null or does not contain a type, it can't be a token. Skip it.
-        Logger.debug('Value Json is null', name: 'secure_token_repository.dart#loadTokens');
+        Logger.debug('Value Json is null');
         continue;
       }
       if (!valueJson.containsKey('type')) {
         // If valueJson is null or does not contain a type, it can't be a token. Skip it.
-        Logger.debug('Value Json does not contain a type', name: 'secure_token_repository.dart#loadTokens');
+        Logger.debug('Value Json does not contain a type');
         continue;
       }
 
       // TODO token.version might be deprecated, is there a reason to use it?
       // TODO when the token version (token.version) changed handle this here.
-      Logger.info('Loading token from secure storage: ${valueJson['id']}', name: 'secure_token_repository.dart#loadTokens');
+      Logger.info('Loading token from secure storage: ${valueJson['id']}');
       try {
         tokenList.add(Token.fromJson(valueJson));
       } catch (e, s) {
-        Logger.error('Could not load token from secure storage', name: 'secure_token_repository.dart#loadTokens', error: e, stackTrace: s);
+        Logger.error('Could not load token from secure storage', error: e, stackTrace: s);
       }
     }
 
@@ -144,11 +144,13 @@ class SecureTokenRepository implements TokenRepository {
     if (failedTokens.isNotEmpty) {
       Logger.error(
         'Could not save all tokens (${tokens.length - failedTokens.length}/${tokens.length}) to secure storage',
-        name: 'secure_token_repository.dart#saveOrReplaceTokens',
         stackTrace: StackTrace.current,
       );
     } else {
-      Logger.info('Saved ${tokens.length}/${tokens.length} tokens to secure storage', name: 'secure_token_repository.dart#saveOrReplaceTokens', stackTrace: StackTrace.current,);
+      Logger.info(
+        'Saved ${tokens.length}/${tokens.length} tokens to secure storage',
+        stackTrace: StackTrace.current,
+      );
     }
     return failedTokens;
   }
@@ -159,7 +161,7 @@ class SecureTokenRepository implements TokenRepository {
     try {
       await _storage.write(key: _TOKEN_PREFIX + token.id, value: jsonEncode(token.toJson()));
     } catch (e) {
-      Logger.warning('Could not save token to secure storage', error: e, name: 'secure_token_repository.dart#saveOrReplaceToken', verbose: true);
+      Logger.warning('Could not save token to secure storage', error: e, verbose: true);
       return false;
     }
     return true;
@@ -176,8 +178,7 @@ class SecureTokenRepository implements TokenRepository {
       }
     }
     if (failedTokens.isNotEmpty) {
-      Logger.warning('Could not delete all tokens from secure storage',
-          name: 'secure_token_repository.dart#deleteTokens', error: 'Failed tokens: $failedTokens', stackTrace: StackTrace.current);
+      Logger.warning('Could not delete all tokens from secure storage', error: 'Failed tokens: $failedTokens', stackTrace: StackTrace.current);
     }
     return failedTokens;
   }
@@ -189,7 +190,7 @@ class SecureTokenRepository implements TokenRepository {
     try {
       _storage.delete(key: _TOKEN_PREFIX + token.id);
     } catch (e, s) {
-      Logger.warning('Could not delete token from secure storage', name: 'secure_token_repository.dart#deleteToken', error: e, stackTrace: s);
+      Logger.warning('Could not delete token from secure storage', error: e, stackTrace: s);
       return false;
     }
     Logger.info('Token deleted from secure storage');
@@ -223,7 +224,7 @@ class SecureTokenRepository implements TokenRepository {
             DefaultDialogButton(
                 child: Text(AppLocalizations.of(context)!.decryptErrorButtonSendError),
                 onPressed: () async {
-                  Logger.info('Sending error report', name: 'secure_token_repository.dart#_decryptErrorDialog');
+                  Logger.info('Sending error report');
                   await showDialog(
                     context: context,
                     builder: (context) => const SendErrorDialog(),
@@ -271,7 +272,6 @@ class SecureTokenRepository implements TokenRepository {
               onPressed: () async {
                 Logger.info(
                   'Deleting all tokens from secure storage',
-                  name: 'secure_token_repository.dart#_decryptErrorDeleteTokenConfirmationDialog',
                   verbose: true,
                 );
                 Navigator.pop(context, true);

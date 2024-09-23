@@ -192,7 +192,7 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
     final XTypeGroup typeGroup = XTypeGroup(label: localizations.selectFile);
     final XFile? file = await openFile(acceptedTypeGroups: [typeGroup]);
     if (file == null) {
-      Logger.warning("No file selected", name: "_pickAFile#ImportSelectFilePage");
+      Logger.warning("No file selected");
       return;
     }
     if (await fileProcessor.fileIsValid(file) == false) {
@@ -232,7 +232,7 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
       );
     }).toList();
 
-    Logger.info("Backup file imported successfully", name: "_pickBackupFile#ImportStartPage");
+    Logger.info("Backup file imported successfully");
     await _routeImportPlainTokensPage(importResults: importResults);
   }
 
@@ -268,13 +268,13 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
         resultHandlerType: const ObjectValidator<TokenNotifier>(),
       );
     }).toList();
-    Logger.info("QR code scanned successfully", name: "_scanQrCode#ImportStartPage");
+    Logger.info("QR code scanned successfully");
     _routeImportPlainTokensPage(importResults: results);
     return;
   }
 
   Future<XFile> _saveCopyOfXFile(XFile xFile) async {
-    Logger.warning("Saving copy of file", name: "_saveCopyOfXFile#ImportStartPage");
+    Logger.warning("Saving copy of file");
     final path = '${(await getApplicationCacheDirectory()).path}/copy_of_xFile';
     await xFile.saveTo(path);
     _copyShouldExist = true;
@@ -309,7 +309,7 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
       } on NotFoundException catch (_) {
         if (!mounted) return;
         xFile = await QrNotFoundDialog(xFile: xFile).show(context);
-        Logger.warning('Got cropped file: $xFile', name: '_pickQrFile#ImportStartPage');
+        Logger.warning('Got cropped file: $xFile');
         if (xFile != null) processorResults = await schemeProcessor.processFile(xFile);
         if (processorResults == null) {
           if (!mounted) return;
@@ -327,7 +327,7 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
       return;
     }
 
-    Logger.info("QR file imported successfully", name: "_pickQrFile#ImportStartPage");
+    Logger.info("QR file imported successfully");
     _routeImportPlainTokensPage(importResults: processorResults);
   }
 
@@ -366,7 +366,7 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
     }).toList();
     if (!mounted) return;
     setState(() => FocusScope.of(context).unfocus());
-    Logger.info("Link imported successfully", name: "_validateLink#ImportStartPage");
+    Logger.info("Link imported successfully");
     _routeImportPlainTokensPage(importResults: results);
   }
 
@@ -381,7 +381,7 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
         );
       }),
     );
-    Logger.info('Imported tokens: ${tokensToImport?.length}', name: '_routeImportPlainTokensPage#ImportStartPage');
+    Logger.info('Imported tokens: ${tokensToImport?.length}');
     if (tokensToImport != null) {
       if (!mounted) return;
       Navigator.of(context).pop(tokensToImport);
@@ -400,7 +400,7 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
         );
       }),
     );
-    Logger.info('Imported encrypted tokens: ${tokensToImport?.length}', name: '_routeEncryptedData#ImportStartPage');
+    Logger.info('Imported encrypted tokens: ${tokensToImport?.length}');
     if (tokensToImport != null) {
       if (!mounted) return;
       Navigator.of(context).pop(tokensToImport);

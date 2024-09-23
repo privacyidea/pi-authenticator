@@ -22,7 +22,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
-import 'dart:math';
+import 'dart:math' show min;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -53,7 +53,7 @@ class Logger {
       },
       colors: true,
       printEmojis: true,
-      printTime: false,
+      dateTimeFormat: printer.DateTimeFormat.dateAndTime,
     ),
   );
 
@@ -130,8 +130,17 @@ class Logger {
 
   /*----------- LOGGING METHODS -----------*/
 
-  void logInfo(String message, {dynamic stackTrace, String? name, bool verbose = false}) {
-    String infoString = _convertLogToSingleString(message, stackTrace: stackTrace, name: name, logLevel: LogLevel.INFO);
+  static void info(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) =>
+      instance._logInfo(message, stackTrace: stackTrace, name: name, verbose: verbose);
+
+  void _logInfo(String message, {dynamic stackTrace, String? name, bool verbose = false}) {
+    if (_verboseLogging == false && kDebugMode == false && verbose == false) return;
+    String infoString = _convertLogToSingleString(
+      message,
+      stackTrace: stackTrace,
+      name: name ?? _getCallerMethodName(depth: 2),
+      logLevel: LogLevel.INFO,
+    );
     infoString = _textFilter(infoString);
     if (_verboseLogging || verbose) {
       _logToFile(infoString);
@@ -139,11 +148,18 @@ class Logger {
     _print(infoString);
   }
 
-  static void info(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) =>
-      instance.logInfo(message, stackTrace: stackTrace, name: name, verbose: verbose);
+  static void warning(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) =>
+      instance._logWarning(message, error: error, stackTrace: stackTrace, name: name, verbose: verbose);
 
-  void logWarning(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) {
-    String warningString = _convertLogToSingleString(message, error: error, stackTrace: stackTrace, name: name, logLevel: LogLevel.WARNING);
+  void _logWarning(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) {
+    if (_verboseLogging == false && kDebugMode == false && verbose == false) return;
+    String warningString = _convertLogToSingleString(
+      message,
+      error: error,
+      stackTrace: stackTrace,
+      name: name ?? _getCallerMethodName(depth: 2),
+      logLevel: LogLevel.WARNING,
+    );
     warningString = _textFilter(warningString);
     if (_verboseLogging || verbose) {
       instance._logToFile(warningString);
@@ -154,20 +170,35 @@ class Logger {
   /// Does nothing if in production/release mode
   static void debug(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) {
     if (!kDebugMode) return;
+    instance._logDebug(message, error: error, stackTrace: stackTrace, name: name, verbose: verbose);
+  }
+
+  void _logDebug(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) {
+    if (_verboseLogging == false && kDebugMode == false && verbose == false) return;
     String debugString = instance._convertLogToSingleString(
       message,
       stackTrace: stackTrace ?? (_verboseLogging || verbose) ? StackTrace.current : null,
-      name: name,
+      name: name ?? _getCallerMethodName(depth: 2),
       logLevel: LogLevel.DEBUG,
     );
+    debugString = _textFilter(debugString);
+    if (_verboseLogging || verbose) {
+      instance._logToFile(debugString);
+    }
     _printDebug(debugString);
   }
 
-  static void warning(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) =>
-      instance.logWarning(message, error: error, stackTrace: stackTrace, name: name, verbose: verbose);
+  static void error(String? message, {dynamic error, dynamic stackTrace, String? name}) =>
+      instance._logError(message, error: error, stackTrace: stackTrace, name: name);
 
-  void logError(String? message, {dynamic error, dynamic stackTrace, String? name}) {
-    String errorString = _convertLogToSingleString(message, error: error, stackTrace: stackTrace, name: name, logLevel: LogLevel.ERROR);
+  void _logError(String? message, {dynamic error, dynamic stackTrace, String? name}) {
+    String errorString = _convertLogToSingleString(
+      message,
+      error: error,
+      stackTrace: stackTrace,
+      name: name ?? _getCallerMethodName(depth: 2),
+      logLevel: LogLevel.ERROR,
+    );
     errorString = _textFilter(errorString);
     if (message != null) {
       _lastError = message.substring(0, min(message.length, 100));
@@ -184,9 +215,6 @@ class Logger {
     }
     _printError(message, error: error, stackTrace: stackTraceObject, name: name);
   }
-
-  static void error(String? message, {dynamic error, dynamic stackTrace, String? name}) =>
-      instance.logError(message, error: error, stackTrace: stackTrace, name: name);
 
   Future<void> _logToFile(String fileMessage) async {
     if (_enableLoggingToFile == false) return;
@@ -395,6 +423,17 @@ Device Parameters $deviceInfo""";
       if (nextLine != null && nextLine != 'null' && nextLine != '') fileMessage += '\n';
     }
     return fileMessage;
+  }
+
+  static String? _getCallerMethodName({int depth = 1}) => _getCurrentMethodName(deph: depth + 2);
+  static String? _getCurrentMethodName({int deph = 1}) {
+    final frames = StackTrace.current.toString().split('\n');
+    final frame = frames.elementAtOrNull(deph);
+    if (frame == null) return null;
+    final entry = frame.split(' ');
+    final methodName = entry.elementAtOrNull(entry.length - 2);
+    if (methodName == 'closure>') return RegExp(r'(?<=\s\s)\w+.*(?=\s\()').firstMatch(frame)?.group(0);
+    return methodName;
   }
 }
 

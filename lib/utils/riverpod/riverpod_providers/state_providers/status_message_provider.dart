@@ -23,7 +23,7 @@ import '../../../logger.dart';
 
 final statusMessageProvider = StateProvider<(String, String?)?>(
   (ref) {
-    Logger.info("New statusMessageProvider created", name: 'statusMessageProvider');
+    Logger.info("New statusMessageProvider created");
     return null;
   },
 );

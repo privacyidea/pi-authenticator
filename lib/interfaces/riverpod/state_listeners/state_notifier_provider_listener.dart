@@ -28,7 +28,7 @@ abstract class StateNotifierProviderListener<T extends StateNotifier<S>, S> {
   final void Function(S? previous, S next) onNewState;
   const StateNotifierProviderListener({required this.provider, required this.onNewState, required this.listenerName});
   void buildListen(WidgetRef ref) {
-    Logger.debug('("$listenerName") listening to provider ("$provider")', name: 'StateNotifierProviderListener#buildListen');
+    Logger.debug('("$listenerName") listening to provider ("$provider")');
     ref.listen(provider, (previous, next) {
       WidgetsBinding.instance.addPostFrameCallback((_) => onNewState(previous, next));
     });

@@ -92,7 +92,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     _repo = _repoOverride ?? repo;
     _containerApi = _containerApiOverride ?? containerApi;
     _eccUtils = _eccUtilsOverride ?? eccUtils;
-    Logger.warning('Building containerProvider', name: 'CredentialsNotifier');
+    Logger.warning('Building containerProvider');
 
     final initState = await _repo.loadCredentialsState();
     for (var container in initState.container.whereType<TokenContainerUnfinalized>()) {
@@ -140,7 +140,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     await _stateMutex.acquire();
     final newCredentials = container.toList();
     final oldCredentials = (await future).container;
-    Logger.debug('Loaded container: $oldCredentials', name: 'CredentialsNotifier#addCredentials');
+    Logger.debug('Loaded container: $oldCredentials');
     final combinedCredentials = <TokenContainer>[];
     for (var oldCredential in oldCredentials) {
       final newCredential = newCredentials.firstWhereOrNull((newCredential) => newCredential.serial == oldCredential.serial);
@@ -152,11 +152,11 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
       }
     }
     combinedCredentials.addAll(newCredentials);
-    Logger.debug('Combined container: $combinedCredentials', name: 'CredentialsNotifier#addCredentials');
+    Logger.debug('Combined container: $combinedCredentials');
     final newState = await _saveCredentialsStateToRepo(TokenContainerState(container: combinedCredentials));
-    Logger.debug('Saved container: $newState', name: 'CredentialsNotifier#addCredentials');
+    Logger.debug('Saved container: $newState');
     await update((_) => newState);
-    Logger.debug('Updated container: $newState', name: 'CredentialsNotifier#addCredentials');
+    Logger.debug('Updated container: $newState');
     _stateMutex.release();
     return newState;
   }
@@ -168,7 +168,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     FutureOr<TokenContainerState> Function(TokenContainerState state) cb, {
     FutureOr<TokenContainerState> Function(Object, StackTrace)? onError,
   }) async {
-    Logger.warning('Updating containerProvider', name: 'CredentialsNotifier');
+    Logger.warning('Updating containerProvider');
     return super.update(cb, onError: onError);
   }
 
@@ -177,7 +177,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     final oldState = await future;
     final currentCredential = oldState.currentOf<T>(container);
     if (currentCredential == null) {
-      Logger.info('Failed to update container. It was probably removed in the meantime.', name: 'CredentialsNotifier#updateCredential');
+      Logger.info('Failed to update container. It was probably removed in the meantime.');
       _stateMutex.release();
       return null;
     }
@@ -227,7 +227,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
 
   @override
   Future<List?> handleProcessorResults(List<ProcessorResult> results, Map<String, dynamic> args) async {
-    Logger.info('Handling processor results', name: 'CredentialsNotifier#handleProcessorResults');
+    Logger.info('Handling processor results');
     final containerCredentials = results.getData().whereType<TokenContainer>().toList();
     if (containerCredentials.isEmpty) {
       return null;
@@ -236,13 +236,13 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     final stateCredentials = currentState.container;
     final stateCredentialsSerials = stateCredentials.map((e) => e.serial);
     final newCredentials = containerCredentials.where((element) => !stateCredentialsSerials.contains(element.serial)).toList();
-    Logger.info('Handling processor results: adding Credential', name: 'CredentialsNotifier#handleProcessorResults');
+    Logger.info('Handling processor results: adding Credential');
     await addCredentials(newCredentials);
-    Logger.info('Handling processor results: adding done (${newCredentials.length})', name: 'CredentialsNotifier#handleProcessorResults');
+    Logger.info('Handling processor results: adding done (${newCredentials.length})');
     for (var container in newCredentials) {
-      Logger.info('Handling processor results: finalize check ()', name: 'CredentialsNotifier#handleProcessorResults');
+      Logger.info('Handling processor results: finalize check ()');
       if (container is! TokenContainerUnfinalized) continue;
-      Logger.info('Handling processor results: finalize', name: 'CredentialsNotifier#handleProcessorResults');
+      Logger.info('Handling processor results: finalize');
       await finalize(container);
     }
     return null;
@@ -255,7 +255,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
       _finalizationMutex.release();
       throw ArgumentError('Container must not be finalized');
     }
-    Logger.info('Finalizing container ${container.serial}', name: 'CredentialsNotifier#finalize');
+    Logger.info('Finalizing container ${container.serial}');
     try {
       container = await _generateKeyPair(container);
       final Response response;
@@ -276,12 +276,12 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
       (container, publicServerKey) = await _parseResponse(container, response);
       await updateCredential(container, (c) => c.finalize(publicServerKey: publicServerKey)!);
     } on StateError {
-      Logger.info('Container was removed while finalizing', name: 'CredentialsNotifier#finalize');
+      Logger.info('Container was removed while finalizing');
     } on LocalizedArgumentError catch (e) {
       ref.read(statusMessageProvider.notifier).state = ('Failed to decode response body', e.localizedMessage(AppLocalizations.of(await globalContext)!));
       await updateCredential(container, (c) => c.copyWith(finalizationState: ContainerFinalizationState.parsingResponseFailed));
     } catch (e) {
-      Logger.error('Failed to finalize container ${container.serial}', name: 'CredentialsNotifier#finalize', error: e);
+      Logger.error('Failed to finalize container ${container.serial}', error: e);
       _finalizationMutex.release();
       return;
     }
@@ -355,7 +355,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     container = await updateCredential(container, (c) => c.copyWith(finalizationState: ContainerFinalizationState.parsingResponse));
     if (container == null) throw StateError('Credential was removed');
     responseJson = jsonDecode(responseBody);
-    Logger.debug('Response JSON: $responseJson', name: 'CredentialsNotifier#_parseResponse');
+    Logger.debug('Response JSON: $responseJson');
     final result = validate(value: responseJson['result'], validator: const ObjectValidator<Map<String, dynamic>>(), name: 'result');
     final value = validate(value: result['value'], validator: const ObjectValidator<Map<String, dynamic>>(), name: 'value');
     publicServerKey = validate(

@@ -144,10 +144,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     await _repoMutex.acquire();
     final success = await _repo.saveOrReplaceToken(token);
     if (!success) {
-      Logger.warning(
-        'Saving token failed. Token: ${token.id}',
-        name: 'token_notifier.dart#_addOrReplaceToken',
-      );
+      Logger.warning('Saving token failed. Token: ${token.id}');
       _repoMutex.release();
       return false;
     }
@@ -158,7 +155,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
 
   /// Adds a list of tokens and returns the tokens that could not be added or replaced.
   Future<List<Token>> _addOrReplaceTokens(List<Token> tokens) async {
-    Logger.debug('Adding ${tokens.length} tokens.', name: 'token_notifier.dart#_addOrReplaceTokens', verbose: true);
+    Logger.debug('Adding ${tokens.length} tokens.', verbose: true);
     await _repoMutex.acquire();
     tokens = tokens.map((token) {
       final currentId = state.currentOf(token)?.id;
@@ -167,18 +164,15 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     }).toList();
     final failedTokens = await _repo.saveOrReplaceTokens(tokens);
     if (failedTokens.isNotEmpty) {
-      Logger.warning(
-        'Saving tokens failed. Failed Tokens: ${failedTokens.length}',
-        name: 'token_notifier.dart#_saveOrReplaceTokens',
-      );
+      Logger.warning('Saving tokens failed. Failed Tokens: ${failedTokens.length}');
     }
     // Every token that is saved should not be in the failedTokens list
     final savedTokens = tokens.where((element) => !failedTokens.contains(element)).toList();
     // Add the saved tokens to the state
-    Logger.info('Saved ${savedTokens.length} Tokens to storage.', name: 'token_notifier.dart#_saveOrReplaceTokens');
+    Logger.info('Saved ${savedTokens.length} Tokens to storage.');
     state = state.addOrReplaceTokens(savedTokens);
 
-    Logger.debug('New State: ${state.tokens.length} Tokens', name: 'token_notifier.dart#_saveOrReplaceTokens');
+    Logger.debug('New State: ${state.tokens.length} Tokens');
     _repoMutex.release();
     return [];
   }
@@ -188,16 +182,13 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     await _repoMutex.acquire();
     final (newState, replaced) = state.replaceToken(token);
     if (!replaced) {
-      Logger.warning('Tried to replace a token that does not exist.', name: 'token_notifier.dart#_replaceToken');
+      Logger.warning('Tried to replace a token that does not exist.');
       _repoMutex.release();
       return false;
     }
     final saved = await _repo.saveOrReplaceToken(token);
     if (!saved) {
-      Logger.warning(
-        'Saving token failed. Token: ${token.id}',
-        name: 'token_notifier.dart#_replaceToken',
-      );
+      Logger.warning('Saving token failed. Token: ${token.id}');
       _repoMutex.release();
       return false;
     }
@@ -217,10 +208,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     }
     final failedToSave = await _repo.saveOrReplaceTokens<T>(tokens);
     if (failedToSave.isNotEmpty) {
-      Logger.warning(
-        'Saving tokens failed. Failed Tokens: ${failedToSave.length}',
-        name: 'token_notifier.dart#_saveOrReplaceTokens',
-      );
+      Logger.warning('Saving tokens failed. Failed Tokens: ${failedToSave.length}');
       final recovered = oldState.tokens.whereType<T>().where((oldToken) => failedToSave.contains(oldToken)).toList();
       state = state.addOrReplaceTokens<T>(recovered);
       _repoMutex.release();
@@ -237,10 +225,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
 
     final success = await _repo.deleteToken(token);
     if (!success) {
-      Logger.warning(
-        'Deleting token failed. Token: ${token.id}',
-        name: 'token_notifier.dart#_deleteTokensRepo',
-      );
+      Logger.warning('Deleting token failed. Token: ${token.id}');
       state = state.addOrReplaceToken(token);
       _repoMutex.release();
       return false;
@@ -252,17 +237,14 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
 
   /// Removes a list of tokens and returns the tokens that could not be removed.
   Future<List<Token>> _removeTokens(List<Token> tokens) async {
-    Logger.info('Removing ${tokens.length} tokens.', name: 'token_notifier.dart#_removeTokens');
+    Logger.info('Removing ${tokens.length} tokens.');
     await _repoMutex.acquire();
     final oldState = state;
     state = state.withoutTokens(tokens);
 
     final failedTokens = await _repo.deleteTokens(tokens);
     if (failedTokens.isNotEmpty) {
-      Logger.warning(
-        'Deleting tokens failed. Failed Tokens: ${failedTokens.length}',
-        name: 'token_notifier.dart#_deleteTokensRepo',
-      );
+      Logger.warning('Deleting tokens failed. Failed Tokens: ${failedTokens.length}');
       final recoveredTokens = oldState.tokens.where((oldToken) => failedTokens.contains(oldToken)).toList();
       state = state.addOrReplaceTokens(recoveredTokens);
       _repoMutex.release();
@@ -285,7 +267,6 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     } catch (e) {
       Logger.error(
         'Loading tokens from storage failed.',
-        name: 'token_notifier.dart#_loadFromRepo',
         error: e,
       );
       _repoMutex.release();
@@ -303,7 +284,6 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     } catch (e) {
       Logger.error(
         'Saving tokens to storage failed.',
-        name: 'token_notifier.dart#_saveStateToRepo',
         error: e,
       );
       _repoMutex.release();
@@ -327,7 +307,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     _repoMutex.release();
     final current = state.currentOf<T>(token);
     if (current == null) {
-      Logger.warning('Tried to update a token that does not exist.', name: 'token_notifier.dart#updateToken');
+      Logger.warning('Tried to update a token that does not exist.');
       _stateMutex.release();
       return null;
     }
@@ -396,116 +376,6 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   /// Updates a list of tokens and returns the updated tokens if successful, the old tokens if not and an empty list if the tokens does not exist.
   Future<List<T>> updateTokens<T extends Token>(List<T> tokens, T Function(T) updater) async => _updateTokens(tokens, updater);
 
-  /// Adds, Updates or Removes tokens based on the [TokenContainer] and returns the updated tokens.
-  // Future<void> updateContainerTokens(TokenContainer container) async {
-  //   await initState;
-  //   Logger.info('Updating tokens from container.', name: 'token_notifier.dart#updateContainerTokens');
-  //   final templatesToAdd = <TokenTemplate>[];
-  //   final templatesToUpdate = <TokenTemplate>[];
-  //   final templatesToRemove = <TokenTemplate>[];
-
-  //   final knownContainerTokens = state.tokens.ofContainer(container.serial)..addAll(state.maybePiTokens);
-  //   final serverTokenTemplates = container.syncedTokenTemplates;
-  //   Logger.debug(
-  //     'App knows  ${knownContainerTokens.length} of ${serverTokenTemplates.length} server tokens',
-  //     name: 'token_notifier.dart#updateContainerTokens',
-  //   );
-  //   final appTokenTemplates = knownContainerTokens.toTemplates();
-  //   Logger.debug('All server templates: ${serverTokenTemplates.join('\n')}', name: 'token_notifier.dart#updateContainerTokens');
-  //   for (var serverTokenTemplate in serverTokenTemplates) {
-  //     Logger.debug(
-  //       'Checking server token template: $serverTokenTemplate',
-  //       name: 'token_notifier.dart#updateContainerTokens',
-  //     );
-  //     // Searches for tokens that are in the container but not in the app to add them.
-  //     // If the token is already in the app, it will be updated.
-  //     // Reduces the [tokenTemplatesApp] list to only the tokens that are in the app but not in the container. These tokens will be removed.
-  //     final appTemplate = appTokenTemplates.firstWhereOrNull(
-  //       (templateApp) => templateApp.isSameTokenAs(serverTokenTemplate),
-  //     );
-  //     if (appTemplate == null) {
-  //       Logger.debug(
-  //         'Token with serial ${serverTokenTemplate.serial} or otps ${serverTokenTemplate.otpValues} not found in app. Adding them.',
-  //         name: 'token_notifier.dart#updateContainerTokens',
-  //       );
-  //       templatesToAdd.add(serverTokenTemplate);
-  //     } else {
-  //       Logger.debug(
-  //         'Token with serial ${serverTokenTemplate.serial} or otps ${serverTokenTemplate.otpValues} found in app. Checking for update.',
-  //         name: 'token_notifier.dart#updateContainerTokens',
-  //       );
-  //       appTokenTemplates.remove(appTemplate);
-  //       if (!appTemplate.hasSameValuesAs(serverTokenTemplate)) {
-  //         Logger.debug(
-  //           'Token with serial ${serverTokenTemplate.serial} or otps ${serverTokenTemplate.otpValues} found in app the Template but is different. Check update.',
-  //           name: 'token_notifier.dart#updateContainerTokens',
-  //         );
-  //         // Only update the token if the template is different
-  //         templatesToUpdate.add(serverTokenTemplate);
-  //       } else {
-  //         Logger.debug(
-  //           'Token with serial ${serverTokenTemplate.serial} or otps ${serverTokenTemplate.otpValues} found in app. And is the same. Skipping.',
-  //           name: 'token_notifier.dart#updateContainerTokens',
-  //         );
-  //       }
-  //     }
-  //   }
-  //   // Removes all tokens that are in the app but not in the container.
-  //   final remainingTokenTemplatesOfContainer = appTokenTemplates.where((template) => template.containerSerial == container.serial);
-  //   templatesToRemove.addAll(remainingTokenTemplatesOfContainer);
-
-  //   Logger.debug(
-  //     'Add(${templatesToAdd.length}) | Check update(${templatesToUpdate.length}) | Remove(${templatesToRemove.length})',
-  //     name: 'token_notifier.dart#updateContainerTokens',
-  //   );
-
-  //   final tokensToAdd = templatesToAdd.map((e) => e.toToken(container)).toList();
-  //   final tokensToUpdate = <Token>[];
-  //   for (var template in templatesToUpdate) {
-  //     final token = knownContainerTokens.firstWhereOrNull((token) => token.serial == template.serial);
-  //     if (token == null) continue;
-  //     final needsUpdate = template.tokenWouldBeUpdated(token);
-  //     if (needsUpdate) {
-  //       tokensToUpdate.add(token);
-  //     }
-  //   }
-  //   final tokensToRemove = <Token>[];
-  //   for (var template in templatesToRemove) {
-  //     final token = knownContainerTokens.firstWhereOrNull((token) => token.serial == template.serial);
-  //     if (token == null) continue;
-  //     tokensToRemove.add(token);
-  //   }
-
-  //   Logger.debug(
-  //     'Add(${tokensToAdd.length}) | Update(${tokensToUpdate.length}) | Remove(${tokensToRemove.length})',
-  //     name: 'token_notifier.dart#updateContainerTokens',
-  //   );
-
-  //   if (tokensToAdd.isNotEmpty) {
-  //     await addOrReplaceTokens(tokensToAdd);
-  //   }
-  //   if (tokensToUpdate.isNotEmpty) {
-  //     await updateTokens(tokensToUpdate, (token) {
-  //       final template = templatesToUpdate.firstWhereOrNull((template) => template.serial == token.serial);
-  //       if (template == null) {
-  //         Logger.debug(
-  //           'Not able to update token with id ${token.id} or serial ${token.serial}. No token serial/id matches the templates serial/id.',
-  //           name: 'token_notifier.dart#updateContainerTokens',
-  //         );
-  //         return token;
-  //       }
-  //       Logger.debug(
-  //         'Updating token with id:"${token.id}"/serial:"${token.serial}".',
-  //         name: 'token_notifier.dart#updateContainerTokens',
-  //       );
-  //       return token.copyUpdateByTemplate(template);
-  //     });
-  //   }
-  //   if (tokensToRemove.isNotEmpty) {
-  //     await removeTokens(tokensToRemove);
-  //   }
-  // }
-
   /// Increments the counter of a HOTPToken and returns the updated token if successful, the old token if not and null if the token does not exist.
   Future<HOTPToken?> incrementCounter(HOTPToken token) => _updateToken(token, (p0) => p0.copyWith(counter: token.counter + 1));
 
@@ -530,11 +400,11 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   Future<Token?> showTokenById(String tokenId) {
     final token = getTokenById(tokenId);
     if (token == null) {
-      Logger.warning('Tried to show a token that does not exist.', name: 'token_notifier.dart#showTokenById');
+      Logger.warning('Tried to show a token that does not exist.');
       return Future.value(null);
     }
     if (token is! OTPToken) {
-      Logger.warning('Tried to show a token that is not an OTPToken.', name: 'token_notifier.dart#showTokenById');
+      Logger.warning('Tried to show a token that is not an OTPToken.');
       return Future.value(null);
     }
     return showToken(token);
@@ -544,7 +414,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     try {
       return await _loadFromRepo();
     } catch (_) {
-      Logger.warning('Loading tokens from storage failed.', name: 'token_notifier.dart#loadStateFromRepo');
+      Logger.warning('Loading tokens from storage failed.');
       return null;
     }
   }
@@ -552,10 +422,10 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   Future<bool> saveStateToRepo() async {
     try {
       await _saveStateToRepo(state);
-      Logger.info('Saved ${state.tokens.length} Tokens to storage.', name: 'token_notifier.dart#saveStateToRepo');
+      Logger.info('Saved ${state.tokens.length} Tokens to storage.');
       return true;
     } catch (_) {
-      Logger.error('Saving tokens to storage failed.', name: 'token_notifier.dart#saveStateToRepo');
+      Logger.error('Saving tokens to storage failed.');
       return false;
     }
   }
@@ -588,7 +458,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
 
   /// Removes a list of tokens from the state and the repository.
   Future<void> removeTokens(List<Token> tokens) async {
-    Logger.info('Removing ${tokens.length} tokens.', name: 'token_notifier.dart#removeTokens');
+    Logger.info('Removing ${tokens.length} tokens.');
     final pushTokens = tokens.whereType<PushToken>().toList();
     final otherTokens = tokens.whereType<Token>().toList();
     await _removeTokens(otherTokens);
@@ -606,7 +476,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     try {
       await _firebaseUtils.deleteFirebaseToken();
     } on SocketException {
-      Logger.warning('Could not delete firebase token.', name: 'token_notifier.dart#_removePushToken');
+      Logger.warning('Could not delete firebase token.');
       ref.read(statusMessageProvider.notifier).state = (
         AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorUnlinkingPushToken(token.label),
         AppLocalizations.of(globalNavigatorKey.currentContext!)!.checkYourNetwork,
@@ -616,7 +486,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     _firebaseUtils.getFBToken().then((fbToken) async {
       if (fbToken == null) {
         await _updateTokens(state.pushTokens, (p0) => p0.copyWith(fbToken: null));
-        Logger.warning('Could not update firebase token because no firebase token is available.', name: 'token_notifier.dart#_removePushToken');
+        Logger.warning('Could not update firebase token because no firebase token is available.');
         ref.read(statusMessageProvider.notifier).state = (
           AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorSynchronizationNoNetworkConnection,
           AppLocalizations.of(globalNavigatorKey.currentContext!)!.pleaseSyncManuallyWhenNetworkIsAvailable,
@@ -627,30 +497,29 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       return;
     });
     await _removeToken(token);
-    Logger.info('Push token "${token.id}" removed successfully.', name: 'token_notifier.dart#_removePushToken');
+    Logger.info('Push token "${token.id}" removed successfully.');
   }
 
   Future<bool> rolloutPushToken(PushToken token) async {
     PushToken? pushToken;
     pushToken = (getTokenById(token.id)) as PushToken?;
     if (pushToken == null) {
-      Logger.warning('Tried to rollout a token that does not exist.', name: 'token_notifier.dart#rolloutPushToken');
+      Logger.warning('Tried to rollout a token that does not exist.');
       return false;
     }
 
     assert(pushToken.url != null, 'Token url is null. Cannot rollout token without url.');
-    Logger.info('Rolling out token "${pushToken.id}"', name: 'token_notifier.dart#rolloutPushToken');
+    Logger.info('Rolling out token "${pushToken.id}"');
     if (pushToken.isRolledOut) {
-      Logger.info('Ignoring rollout request: Token "${pushToken.id}" already rolled out.', name: 'token_notifier.dart#rolloutPushToken');
+      Logger.info('Ignoring rollout request: Token "${pushToken.id}" already rolled out.');
       return true;
     }
     if (pushToken.rolloutState.rollOutInProgress) {
-      Logger.info('Ignoring rollout request: Rollout of token "${pushToken.id}" already started. Tokenstate: ${pushToken.rolloutState} ',
-          name: 'token_notifier.dart#rolloutPushToken');
+      Logger.info('Ignoring rollout request: Rollout of token "${pushToken.id}" already started. Tokenstate: ${pushToken.rolloutState} ');
       return false;
     }
     if (pushToken.expirationDate?.isBefore(DateTime.now()) == true) {
-      Logger.info('Ignoring rollout request: Token "${pushToken.id}" is expired. ', name: 'token_notifier.dart#rolloutPushToken');
+      Logger.info('Ignoring rollout request: Token "${pushToken.id}" is expired. ');
 
       if (globalNavigatorKey.currentContext != null) {
         ref.read(statusMessageProvider.notifier).state = (
@@ -663,13 +532,13 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     }
 
     if (pushToken.privateTokenKey == null) {
-      Logger.info('Updating rollout state of token "${pushToken.id}" to generatingRSAKeyPair', name: 'token_notifier.dart#rolloutPushToken');
+      Logger.info('Updating rollout state of token "${pushToken.id}" to generatingRSAKeyPair');
       pushToken = await _updateToken(pushToken, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.generatingRSAKeyPair));
       if (pushToken == null) {
-        Logger.warning('Tried to update a token that does not exist.', name: 'token_notifier.dart#rolloutPushToken');
+        Logger.warning('Tried to update a token that does not exist.');
         return false;
       }
-      Logger.info('Updated token "${pushToken.id}"', name: 'token_notifier.dart#rolloutPushToken');
+      Logger.info('Updated token "${pushToken.id}"');
       try {
         final keyPair = await _rsaUtils.generateRSAKeyPair();
         pushToken = pushToken.withPrivateTokenKey(keyPair.privateKey);
@@ -679,11 +548,15 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
               return p0.withPublicTokenKey(keyPair.publicKey);
             }) ??
             pushToken;
-        Logger.info('Updated token "${pushToken.id}"', name: 'token_notifier.dart#rolloutPushToken');
+        Logger.info('Updated token "${pushToken.id}"');
       } catch (e, s) {
-        Logger.error('Error while generating RSA key pair.', name: 'token_notifier.dart#rolloutPushToken', error: e, stackTrace: s);
+        Logger.error(
+          'Error while generating RSA key pair.',
+          error: e,
+          stackTrace: s,
+        );
         if (pushToken == null) {
-          Logger.warning('Tried to update a token that does not exist.', name: 'token_notifier.dart#rolloutPushToken');
+          Logger.warning('Tried to update a token that does not exist.');
           return false;
         }
         pushToken = await _updateToken(pushToken, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.generatingRSAKeyPairFailed));
@@ -693,22 +566,22 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
 
     pushToken = await _updateToken(pushToken, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKey));
     if (pushToken == null) {
-      Logger.warning('Tried to update a token that does not exist.', name: 'token_notifier.dart#rolloutPushToken');
+      Logger.warning('Tried to update a token that does not exist.');
       return false;
     }
     if (!kIsWeb && Platform.isIOS) {
-      Logger.warning('Triggering network access permission for token "${pushToken.id}"', name: 'token_notifier.dart#rolloutPushToken');
+      Logger.warning('Triggering network access permission for token "${pushToken.id}"');
       if (await _ioClient.triggerNetworkAccessPermission(url: pushToken.url!, sslVerify: pushToken.sslVerify) == false) {
-        Logger.warning('Network access permission for token "${pushToken.id}" failed.', name: 'token_notifier.dart#rolloutPushToken');
+        Logger.warning('Network access permission for token "${pushToken.id}" failed.');
         _updateToken(pushToken, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed));
         return false;
       }
-      Logger.warning('Network access permission for token "${pushToken.id}" successful.', name: 'token_notifier.dart#rolloutPushToken');
+      Logger.warning('Network access permission for token "${pushToken.id}" successful.');
     }
     try {
       // TODO What to do with poll only tokens if google-services is used?
 
-      Logger.warning('SSLVerify: ${pushToken.sslVerify}', name: 'token_notifier.dart#rolloutPushToken');
+      Logger.warning('SSLVerify: ${pushToken.sslVerify}');
       final fbToken = await _firebaseUtils.getFBToken();
       Response response = await _ioClient.doPost(
         sslVerify: pushToken.sslVerify,
@@ -724,36 +597,37 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       if (response.statusCode == 200) {
         pushToken = await _updateToken(pushToken, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.parsingResponse, fbToken: fbToken));
         if (pushToken == null) {
-          Logger.warning('Tried to update a token that does not exist.', name: 'token_notifier.dart#rolloutPushToken');
+          Logger.warning('Tried to update a token that does not exist.');
           return false;
         }
         try {
           RSAPublicKey publicServerKey = await _parseRollOutResponse(response);
           pushToken = await _updateToken(pushToken, (p0) => p0.withPublicServerKey(publicServerKey));
           if (pushToken == null) {
-            Logger.warning('Tried to update a token that does not exist.', name: 'token_notifier.dart#rolloutPushToken');
+            Logger.warning('Tried to update a token that does not exist.');
             return false;
           }
         } on FormatException catch (e, s) {
           showMessage(message: "Couldn't parsing RSA public key: ${e.message}", duration: const Duration(seconds: 3));
 
-          Logger.warning('Error while parsing RSA public key.', name: 'token_notifier.dart#rolloutPushToken', error: e, stackTrace: s);
+          Logger.warning('Error while parsing RSA public key.', error: e, stackTrace: s);
           if (pushToken == null) {
-            Logger.warning('Tried to update a token that does not exist.', name: 'token_notifier.dart#rolloutPushToken');
+            Logger.warning('Tried to update a token that does not exist.');
             return false;
           }
           pushToken = await _updateToken(pushToken, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.parsingResponseFailed));
           return false;
         }
-        Logger.info('Roll out successful', name: 'token_notifier.dart#rolloutPushToken');
+        Logger.info('Roll out successful');
         pushToken = await _updateToken(pushToken, (p0) => p0.copyWith(isRolledOut: true, rolloutState: PushTokenRollOutState.rolloutComplete));
         checkNotificationPermission();
 
         return true;
       } else {
-        Logger.warning('Post request on roll out failed.',
-            name: 'token_notifier.dart#rolloutPushToken',
-            error: 'Token: ${pushToken.serial}\nStatus code: ${response.statusCode},\nURL:${response.request?.url}\nBody: ${response.body}');
+        Logger.warning(
+          'Post request on roll out failed.',
+          error: 'Token: ${pushToken.serial}\nStatus code: ${response.statusCode},\nURL:${response.request?.url}\nBody: ${response.body}',
+        );
 
         try {
           final message = response.body.isNotEmpty ? (json.decode(response.body)['result']?['error']?['message']) : '';
@@ -775,22 +649,22 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       }
     } catch (e, s) {
       if (pushToken == null) {
-        Logger.warning('Tried to update a token that does not exist.', name: 'token_notifier.dart#rolloutPushToken');
+        Logger.warning('Tried to update a token that does not exist.');
         return false;
       }
       pushToken = await _updateToken(pushToken, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed));
       if (pushToken == null) {
-        Logger.warning('Tried to update a token that does not exist.', name: 'token_notifier.dart#rolloutPushToken');
+        Logger.warning('Tried to update a token that does not exist.');
         return false;
       }
       if (e is PlatformException && e.code == FIREBASE_TOKEN_ERROR_CODE || e is SocketException || e is TimeoutException || e is FirebaseException) {
-        Logger.warning('Connection error: Roll out push token failed.', name: 'token_notifier.dart#rolloutPushToken', error: e, stackTrace: s);
+        Logger.warning('Connection error: Roll out push token failed.', error: e, stackTrace: s);
         showMessage(
           message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutNoConnectionToServer(pushToken.label),
           duration: const Duration(seconds: 3),
         );
       } else if (e is HandshakeException) {
-        Logger.warning('SSL error: Roll out push token failed.', name: 'token_notifier.dart#rolloutPushToken', error: e, stackTrace: s);
+        Logger.warning('SSL error: Roll out push token failed.', error: e, stackTrace: s);
         showMessage(
           message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutSSLHandshakeFailed,
           duration: const Duration(seconds: 3),
@@ -802,7 +676,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
             duration: const Duration(seconds: 3),
           );
         }
-        Logger.error('Roll out push token failed.', name: 'token_notifier.dart#rolloutPushToken', error: e, stackTrace: s);
+        Logger.error('Roll out push token failed.', error: e, stackTrace: s);
       }
       return false;
     }
@@ -821,14 +695,14 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   /// as this can not be guaranteed to work. There is a manual option available
   /// through the settings also.
   Future<(List<PushToken>, List<PushToken>)?> updateFirebaseToken([String? firebaseToken]) async {
-    Logger.info('Updating firebase token for all push tokens.', name: 'push_provider.dart#updateFirebaseToken');
+    Logger.info('Updating firebase token for all push tokens.');
     firebaseToken ??= await _firebaseUtils.getFBToken();
     if (firebaseToken == null) {
-      Logger.warning('Could not update firebase token because no firebase token is available.', name: 'push_provider.dart#updateFirebaseToken');
+      Logger.warning('Could not update firebase token because no firebase token is available.');
       return null;
     }
     List<PushToken> tokenList = state.pushTokens.where((t) => t.isRolledOut && t.fbToken != firebaseToken).toList();
-    Logger.info('Updating firebase token for ${tokenList.length} push tokens.', name: 'push_provider.dart#updateFirebaseToken');
+    Logger.info('Updating firebase token for ${tokenList.length} push tokens.');
     bool allUpdated = true;
     final List<PushToken> failedTokens = [];
     final List<PushToken> unsuportedTokens = [];
@@ -845,7 +719,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       //serial=<tokenserial>element
       //timestamp=<timestamp>
       //signature=SIGNATURE(<new firebase token>|<tokenserial>|<timestamp>)
-      Logger.warning('Updating firebase token for push token "${p.serial}"', name: 'push_provider.dart#updateFirebaseToken');
+      Logger.warning('Updating firebase token for push token "${p.serial}"');
       String timestamp = DateTime.now().toUtc().toIso8601String();
       String message = '$firebaseToken|${p.serial}|$timestamp';
       String? signature = await _rsaUtils.trySignWithToken(p, message);
@@ -860,10 +734,10 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
         sslVerify: p.sslVerify,
       );
       if (response.statusCode == 200) {
-        Logger.info('Updating firebase token for push token succeeded!', name: 'push_provider.dart#updateFirebaseToken');
+        Logger.info('Updating firebase token for push token succeeded!');
         _updateToken(p, (p0) => p0.copyWith(fbToken: firebaseToken));
       } else {
-        Logger.warning('Updating firebase token for push token failed!', name: 'push_provider.dart#updateFirebaseToken');
+        Logger.warning('Updating firebase token for push token failed!');
         failedTokens.add(p);
         allUpdated = false;
       }
@@ -919,7 +793,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
         tokensToKeep = resultTokens;
       }
     } catch (error, stackTrace) {
-      Logger.error('Error while processing QR code.', name: 'token_notifier.dart#handleQrCode', error: error, stackTrace: stackTrace);
+      Logger.error('Error while processing QR code.', error: error, stackTrace: stackTrace);
       return null;
     }
     if (tokensToKeep == null) return null;
@@ -940,12 +814,12 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   ///////////////////////////////////////////////////////////////////////////// */
 
   Future<RSAPublicKey> _parseRollOutResponse(Response response) async {
-    Logger.info('Parsing rollout response, try to extract public_key.', name: 'token_notifier.dart#_parseRollOutResponse');
+    Logger.info('Parsing rollout response, try to extract public_key.');
     try {
       String key = json.decode(response.body)['detail']['public_key'];
       key = key.replaceAll('\n', '');
 
-      Logger.info('Extracting public key was successful.', name: 'token_notifier.dart#_parseRollOutResponse');
+      Logger.info('Extracting public key was successful.');
 
       return _rsaUtils.deserializeRSAPublicKeyPKCS1(key);
     } on FormatException catch (e) {
@@ -954,7 +828,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   }
 
   Future<void> _handlePushTokensIfExist() async {
-    Logger.info('Handling push tokens if they exist.', name: 'token_notifier.dart#_handlePushTokensIfExist');
+    Logger.info('Handling push tokens if they exist.');
     final pushTokens = state.pushTokens;
     if (pushTokens.isEmpty || state.pushTokens.isEmpty) {
       if ((await ref.read(settingsProvider.future)).hidePushTokens == true) {
@@ -969,7 +843,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       checkNotificationPermission();
     }
     for (final element in state.pushTokensToRollOut) {
-      Logger.info('Handling push token "${element.id}"', name: 'token_notifier.dart#_handlePushTokensIfExist');
+      Logger.info('Handling push token "${element.id}"');
       await rolloutPushToken(element);
     }
   }

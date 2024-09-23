@@ -101,13 +101,11 @@ class RenameTokenFolderAction extends StatelessWidget {
                   if (success != null) {
                     Logger.info(
                       'Renamed token:',
-                      name: 'token_widget_base.dart#TextButton#renameClicked',
                       error: '\'${folder.label}\' changed to \'$newLabel\'',
                     );
                   } else {
                     Logger.warning(
                       'Failed to rename token',
-                      name: 'token_widget_base.dart#TextButton#renameClicked',
                       error: '\'${folder.label}\' to \'$newLabel\'',
                     );
                   }

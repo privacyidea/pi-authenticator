@@ -24,7 +24,7 @@ import '../../../logger.dart';
 
 final draggingSortableProvider = StateProvider<SortableMixin?>(
   (ref) {
-    Logger.info("New draggingSortableProvider created", name: 'draggingSortableProvider');
+    Logger.info("New draggingSortableProvider created");
     return null;
   },
   name: 'draggingSortableProvider',

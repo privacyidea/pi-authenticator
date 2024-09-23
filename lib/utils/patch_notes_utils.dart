@@ -44,13 +44,10 @@ class PatchNotesUtils {
 
   static void showPatchNotesIfNeeded(BuildContext context, Version latestStartedVersion) {
     if (latestStartedVersion < AppInfoUtils.currentVersion) {
-      Logger.info('Showing patch notes between $latestStartedVersion and ${AppInfoUtils.currentVersion}', name: 'main_view.dart#showPatchNotesIfNeeded');
+      Logger.info('Showing patch notes between $latestStartedVersion and ${AppInfoUtils.currentVersion}');
       return _showPatchNotes(context: context, latestStartedVersion: latestStartedVersion);
     }
-    Logger.info(
-      'No patch notes to show. Latest version: $latestStartedVersion. Current version: ${AppInfoUtils.currentVersion}',
-      name: 'main_view.dart#showPatchNotesIfNeeded',
-    );
+    Logger.info('No patch notes to show. Latest version: $latestStartedVersion. Current version: ${AppInfoUtils.currentVersion}');
   }
 
   static void _showPatchNotes({required BuildContext context, required Version latestStartedVersion}) {

@@ -56,7 +56,7 @@ class TokenState {
 
   List<Token> get tokensNotInContainer {
     final tokensNotInContainer = tokens.maybePiTokens.where((token) => token.containerSerial != null).toList();
-    Logger.debug('${tokensNotInContainer.length}/${tokens.length} tokens not in container', name: 'token_state.dart#tokensNotInContainer');
+    Logger.debug('${tokensNotInContainer.length}/${tokens.length} tokens not in container');
     return tokensNotInContainer;
   }
 
@@ -102,7 +102,7 @@ class TokenState {
   TokenState withoutTokens(List<Token> tokens) {
     final newTokens = List<Token>.from(this.tokens);
     newTokens.removeWhere((element) => tokens.any((token) {
-          Logger.debug('token.id ${token.id} == element.id ${element.id}', name: 'token_state.dart#withoutTokens');
+          Logger.debug('token.id ${token.id} == element.id ${element.id}');
           return token.id == element.id;
         }));
     return TokenState(tokens: newTokens, lastlyUpdatedTokens: const [], lastlyDeletedTokens: tokens);
@@ -129,7 +129,7 @@ class TokenState {
     final newTokens = tokens.toList();
     final index = newTokens.indexWhere((element) => element.id == token.id);
     if (index == -1) {
-      Logger.warning('Tried to replace a token that does not exist.', name: 'token_state.dart#replaceToken');
+      Logger.warning('Tried to replace a token that does not exist.');
       return (this, false);
     }
     newTokens[index] = token;
@@ -163,7 +163,7 @@ class TokenState {
     for (var token in tokens) {
       final index = newTokens.indexWhere((element) => element.id == token.id);
       if (index == -1) {
-        Logger.warning('Tried to replace a token that does not exist.', name: 'token_state.dart#replaceToken');
+        Logger.warning('Tried to replace a token that does not exist.');
         failedToReplace.add(token);
         continue;
       }
@@ -179,9 +179,9 @@ class TokenState {
 
   List<Token> containerTokens(String containerSerial) {
     final piTokens = tokens.piTokens;
-    Logger.debug('PiTokens: ${piTokens}', name: 'token_state.dart#containerTokens');
+    Logger.debug('PiTokens: ${piTokens}');
     final containerTokens = piTokens.ofContainer(containerSerial);
-    Logger.debug('${containerTokens.length}/${piTokens.length} tokens with containerSerial: $containerSerial', name: 'token_state.dart#containerTokens');
+    Logger.debug('${containerTokens.length}/${piTokens.length} tokens with containerSerial: $containerSerial');
     return containerTokens;
   }
 }
@@ -189,19 +189,19 @@ class TokenState {
 extension TokenListExtension on List<Token> {
   List<Token> get piTokens {
     final piTokens = where((token) => token.isPrivacyIdeaToken == true).toList();
-    Logger.debug('${piTokens.length}/$length tokens with "isPrivacyIdeaToken == true"', name: 'token_state.dart#piTokens');
+    Logger.debug('${piTokens.length}/$length tokens with "isPrivacyIdeaToken == true"');
     return piTokens;
   }
 
   List<Token> get nonPiTokens {
     final nonPiTokens = where((token) => token.isPrivacyIdeaToken == false).toList();
-    Logger.debug('${nonPiTokens.length}/$length tokens with "isPrivacyIdeaToken == false"', name: 'token_state.dart#nonPiTokens');
+    Logger.debug('${nonPiTokens.length}/$length tokens with "isPrivacyIdeaToken == false"');
     return nonPiTokens;
   }
 
   List<Token> get maybePiTokens {
     final maybePiTokens = where((token) => token.isPrivacyIdeaToken == null).toList();
-    Logger.debug('${maybePiTokens.length}/$length tokens with "isPrivacyIdeaToken == null"', name: 'token_state.dart#maybePiTokens');
+    Logger.debug('${maybePiTokens.length}/$length tokens with "isPrivacyIdeaToken == null"');
     return maybePiTokens;
   }
 
@@ -221,7 +221,7 @@ extension TokenListExtension on List<Token> {
 
   List<Token> ofContainer(String containerSerial) {
     final filtered = where((token) => token.origin?.source == TokenOriginSourceType.container && token.containerSerial == containerSerial).toList();
-    Logger.debug('${filtered.length}/$length tokens with containerSerial: $containerSerial', name: 'token_state.dart#fromContainer');
+    Logger.debug('${filtered.length}/$length tokens with containerSerial: $containerSerial');
     return filtered;
   }
 

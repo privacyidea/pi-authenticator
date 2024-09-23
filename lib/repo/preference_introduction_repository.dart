@@ -46,7 +46,6 @@ class PreferenceIntroductionRepository implements IntroductionRepository {
     } catch (e, s) {
       Logger.warning(
         'Failed to load completed introductions',
-        name: 'PreferenceIntroductionRepository#loadCompletedIntroductions',
         error: e,
         stackTrace: s,
         verbose: true,
@@ -65,7 +64,6 @@ class PreferenceIntroductionRepository implements IntroductionRepository {
     } catch (e, s) {
       Logger.warning(
         'Failed to load completed introductions',
-        name: 'PreferenceIntroductionRepository#loadCompletedIntroductions',
         error: e,
         stackTrace: s,
         verbose: true,

@@ -44,31 +44,31 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
     _listener = AppLifecycleListener(
       onResume: () async {
         await ref.read(tokenProvider.notifier).loadStateFromRepo();
-        Logger.info('Refreshed tokens on resume', name: 'tokenProvider#appStateProvider');
+        Logger.info('Refreshed tokens on resume');
         final prProvider = ref.read(pushRequestProvider.notifier);
         await prProvider.loadStateFromRepo();
         await prProvider.pollForChallenges(isManually: false);
-        Logger.info('Polled for challenges on resume', name: 'pushRequestProvider#appStateProvider');
+        Logger.info('Polled for challenges on resume');
         final hidden = await HomeWidgetUtils().hideAllOtps();
-        if (hidden) Logger.info('Hid all HomeWidget OTPs on resume', name: 'tokenProvider#appStateProvider');
+        if (hidden) Logger.info('Hid all HomeWidget OTPs on resume');
       },
       // onInactive: () => log('App inactive'),
       onHide: () async {
         if (await ref.read(tokenProvider.notifier).saveStateOnMinimizeApp() == false) {
-          Logger.error('Failed to save tokens on Hide', name: 'tokenProvider#appStateProvider');
+          Logger.error('Failed to save tokens on Hide');
         }
         if (await ref.read(tokenFolderProvider.notifier).collapseLockedFolders() == false) {
-          Logger.error('Failed to collapse locked folders on Hide', name: 'tokenFolderProvider#appStateProvider');
+          Logger.error('Failed to collapse locked folders on Hide');
         }
         await FlutterLocalNotificationsPlugin().cancelAll();
-        Logger.info('Collapsed locked folders on Hide', name: 'tokenFolderProvider#appStateProvider');
+        Logger.info('Collapsed locked folders on Hide');
       },
       //     onShow: () => log('App shown'),
       //     onPause: () => log('App paused'),
       //     onRestart: () => log('App restarted'),
       //     onDetach: () => log('App detached'),
       onExitRequested: () async {
-        Logger.info('Exit requested', name: 'onExitRequested#AppWrapper');
+        Logger.info('Exit requested');
         return AppExitResponse.exit;
       },
     );
@@ -83,7 +83,7 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
   @override
   Widget build(BuildContext context) {
     final container = ref.watch(tokenContainerProvider).value?.container ?? [];
-    Logger.debug('Credentials: $container', name: 'AppWrapper#build');
+    Logger.debug('Credentials: $container');
     return SingleTouchRecognizer(
       child: StateObserver(
         stateNotifierProviderListeners: const [],

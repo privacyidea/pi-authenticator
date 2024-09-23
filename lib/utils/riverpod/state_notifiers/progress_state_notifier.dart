@@ -28,20 +28,20 @@ class ProgressStateNotifier extends StateNotifier<ProgressState?> {
   double? get progress => state?.progress;
 
   ProgressState initProgress(int max, int value) {
-    Logger.info('Initializing progress state', name: 'ProgressStateNotifier#initProgress');
+    Logger.info('Initializing progress state');
     final newState = ProgressState(max: max, value: value);
     state = newState;
     return newState;
   }
 
   void deleteProgress() {
-    Logger.info('Deleting progress state', name: 'ProgressStateNotifier#deleteProgress');
+    Logger.info('Deleting progress state');
     state = null;
   }
 
   ProgressState? resetProgress() {
     if (state == null) return state;
-    Logger.info('Resetting progress state', name: 'ProgressStateNotifier#resetProgress');
+    Logger.info('Resetting progress state');
     final newState = state!.copyWith(value: 0);
     state = newState;
     return newState;
@@ -49,7 +49,7 @@ class ProgressStateNotifier extends StateNotifier<ProgressState?> {
 
   ProgressState? setProgressMax(int max) {
     if (state == null) return state;
-    Logger.info('Setting progress max to $max', name: 'ProgressStateNotifier#setProgressMax');
+    Logger.info('Setting progress max to $max');
     final newState = state!.copyWith(max: max);
     state = newState;
     return newState;
@@ -57,7 +57,7 @@ class ProgressStateNotifier extends StateNotifier<ProgressState?> {
 
   ProgressState? setProgressValue(int value) {
     if (state == null) return state;
-    Logger.info('Setting progress value to $value/${state!.max}', name: 'ProgressStateNotifier#setProgressValue');
+    Logger.info('Setting progress value to $value/${state!.max}');
     final newState = state!.copyWith(value: value);
     state = newState;
     return newState;

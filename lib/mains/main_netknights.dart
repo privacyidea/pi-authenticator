@@ -59,7 +59,7 @@ void main() async {
         );
         await app.setAutomaticDataCollectionEnabled(false);
         if (app.isAutomaticDataCollectionEnabled) {
-          Logger.error('Automatic data collection should not be enabled', name: 'main.dart#main');
+          Logger.error('Automatic data collection should not be enabled');
         }
         runApp(AppWrapper(child: PrivacyIDEAAuthenticator(ApplicationCustomization.defaultCustomization)));
       });

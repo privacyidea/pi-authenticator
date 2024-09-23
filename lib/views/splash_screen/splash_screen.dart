@@ -55,7 +55,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       }
     });
 
-    Logger.info('Starting app.', name: 'main.dart#initState');
+    Logger.info('Starting app.');
     Future.delayed(_splashScreenDelay, () {
       if (mounted) setState(() => _appIconIsVisible = true);
 
@@ -72,11 +72,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         },
       ).catchError((error) async {
         if (error is Error) {
-          Logger.error('Error while loading the app.', error: error, stackTrace: error.stackTrace, name: 'main.dart#initState');
+          Logger.error('Error while loading the app.');
           return [];
         }
         if (error is Exception) {
-          Logger.error('Error while loading the app.', error: error, stackTrace: StackTrace.current, name: 'main.dart#initState');
+          Logger.error('Error while loading the app.');
           return [];
         }
         return [];
@@ -89,13 +89,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
   @override
   void dispose() {
-    Logger.info('Disposing Splash Screen', name: 'main.dart#dispose');
+    Logger.info('Disposing Splash Screen');
     super.dispose();
   }
 
   void _navigate() async {
     if (_customization.disabledFeatures.isNotEmpty) {
-      Logger.info('Disabled features: ${_customization.disabledFeatures}', name: 'main.dart#_pushReplace');
+      Logger.info('Disabled features: ${_customization.disabledFeatures}');
     }
     final ViewWidget nextView = MainView(
       appName: _customization.appName,

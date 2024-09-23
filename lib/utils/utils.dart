@@ -216,7 +216,7 @@ Future<void> scanQrCode(List<ResultHandler> resultHandlerList, Object? qrCode) a
     };
   } catch (e) {
     showMessage(message: 'The scanned QR code is not a valid URI.', duration: const Duration(seconds: 3));
-    Logger.warning('Scanned Data: $qrCode', error: 'Scanned QR code is not a valid URI: $e', name: 'utils.dart#scanQrCode');
+    Logger.warning('Scanned Data: $qrCode');
     return;
   }
   final processorResults = await SchemeProcessor.processUriByAny(uri);

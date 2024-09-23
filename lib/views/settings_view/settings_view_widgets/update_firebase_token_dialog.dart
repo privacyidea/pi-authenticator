@@ -64,7 +64,7 @@ class _UpdateFirebaseTokenDialogState extends ConsumerState<UpdateFirebaseTokenD
   }
 
   void _updateFbTokens() async {
-    Logger.info('Starting update of firebase token.', name: 'update_firebase_token_dialog.dart#_updateFbTokens');
+    Logger.info('Starting update of firebase token.');
 
     // TODO What to do with poll only tokens if google-services is used?
 

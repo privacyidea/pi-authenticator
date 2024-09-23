@@ -43,7 +43,7 @@ class GoogleAuthenticatorQrfileProcessor extends TokenImportFileProcessor {
     try {
       final img_lib.Image? qrImage = img_lib.decodeImage(await file.readAsBytes());
       if (qrImage == null) {
-        Logger.warning("Error decoding file to image..", name: "_pickQrFile#ImportStartPage");
+        Logger.warning("Error decoding file to image..");
         return Future.value(false);
       }
       return Future.value(true);
@@ -60,7 +60,7 @@ class GoogleAuthenticatorQrfileProcessor extends TokenImportFileProcessor {
     Result? qrResult;
     img_lib.Image? qrImage = img_lib.decodeImage(await file.readAsBytes());
     if (qrImage == null) {
-      Logger.warning("Error decoding file to image..", name: "_pickQrFile#ImportStartPage");
+      Logger.warning("Error decoding file to image..");
       throw Exception("Error decoding file to image.."); //TODO: Better error handling
     }
     int maxZoomLevel = 10;
@@ -90,7 +90,7 @@ class GoogleAuthenticatorQrfileProcessor extends TokenImportFileProcessor {
       }
     }
     if (qrResult == null) {
-      Logger.warning("Error decoding QR file..", name: "_pickQrFile#ImportStartPage");
+      Logger.warning("Error decoding QR file..");
       throw NotFoundException();
     }
 
@@ -98,12 +98,12 @@ class GoogleAuthenticatorQrfileProcessor extends TokenImportFileProcessor {
     try {
       uri = Uri.parse(qrResult.text);
     } on FormatException catch (_) {
-      Logger.warning("Error parsing QR file content..", name: "_pickQrFile#ImportStartPage");
+      Logger.warning("Error parsing QR file content..");
       throw FormatReaderException();
     }
     var processorResults = await const GoogleAuthenticatorQrProcessor().processUri(uri);
     if (processorResults.isEmpty) {
-      Logger.warning("Error processing QR file content..", name: "_pickQrFile#ImportStartPage");
+      Logger.warning("Error processing QR file content..");
       throw FormatReaderException();
     }
     processorResults = processorResults.map<ProcessorResult<Token>>((t) {

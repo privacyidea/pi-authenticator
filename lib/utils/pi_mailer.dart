@@ -68,10 +68,10 @@ class PiMailer {
         );
         return false;
       }
-      Logger.error('Was not able to send the Email', error: e, stackTrace: stackTrace, name: 'pi_mailer.dart#sendMail');
+      Logger.error('Was not able to send the Email', error: e, stackTrace: stackTrace);
       return false;
     } catch (e, stackTrace) {
-      Logger.error('Was not able to send the Email', error: e, stackTrace: stackTrace, name: 'pi_mailer.dart#sendMail');
+      Logger.error('Was not able to send the Email', error: e, stackTrace: stackTrace);
       return false;
     }
     return true;

@@ -112,7 +112,7 @@ class TwoFasAuthenticatorImportFileProcessor extends TokenImportFileProcessor {
         iv: iv,
       ).decryptToString(password);
     } catch (e) {
-      Logger.warning('Failed to decrypt 2FAS import file', error: e, name: 'two_fas_import_file_processor.dart#processEncryptedFile');
+      Logger.warning('Failed to decrypt 2FAS import file');
       throw BadDecryptionPasswordException('Wrong decryption password');
     }
     try {
@@ -129,11 +129,11 @@ class TwoFasAuthenticatorImportFileProcessor extends TokenImportFileProcessor {
       if (json['servicesEncrypted'] == null) {
         throw InvalidFileContentException('No valid 2FAS import file');
       } else {
-        Logger.warning('2FAS import file is encrypted', name: 'two_fas_import_file_processor.dart#processPlainFile');
+        Logger.warning('2FAS import file is encrypted');
         throw BadDecryptionPasswordException('2FAS import file is encrypted');
       }
     }
-    Logger.info('2FAS import file contains ${tokensJsonList.length} tokens', name: 'two_fas_import_file_processor.dart#processPlainFile');
+    Logger.info('2FAS import file contains ${tokensJsonList.length} tokens');
     return _processPlainTokens(tokensJsonList.cast<Map<String, dynamic>>());
   }
 
@@ -160,14 +160,14 @@ class TwoFasAuthenticatorImportFileProcessor extends TokenImportFileProcessor {
           resultHandlerType: resultHandlerType,
         ));
       } catch (e) {
-        Logger.error('Failed to parse token.', name: 'two_fas_import_file_processor.dart#_processPlainTokens', error: e, stackTrace: StackTrace.current);
+        Logger.error('Failed to parse token.', error: e, stackTrace: StackTrace.current);
         results.add(ProcessorResultFailed(
           e.toString(),
           resultHandlerType: resultHandlerType,
         ));
       }
     }
-    Logger.info('successfully imported ${results.length} tokens', name: 'two_fas_import_file_processor.dart#processPlainTokens');
+    Logger.info('successfully imported ${results.length} tokens');
     return results;
   }
 

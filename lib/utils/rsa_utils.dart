@@ -200,7 +200,7 @@ class RsaUtils {
     try {
       isVerified = signer.verifySignature(signedMessage, RSASignature(signature));
     } on ArgumentError catch (e, s) {
-      Logger.warning('Verifying signature failed due to ${e.name}', name: 'crypto_utils.dart#verifyRSASignature', error: e, stackTrace: s);
+      Logger.warning('Verifying signature failed due to ${e.name}', error: e, stackTrace: s);
     }
 
     return isVerified;
@@ -220,9 +220,9 @@ class RsaUtils {
   }
 
   Future<AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey>> generateRSAKeyPair() async {
-    Logger.info('Start generating RSA key pair', name: 'crypto_utils.dart#generateRSAKeyPair');
+    Logger.info('Start generating RSA key pair');
     AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey> keyPair = await compute(_generateRSAKeyPairIsolate, 4096);
-    Logger.info('Finished generating RSA key pair', name: 'crypto_utils.dart#generateRSAKeyPair');
+    Logger.info('Finished generating RSA key pair');
     return keyPair;
   }
 

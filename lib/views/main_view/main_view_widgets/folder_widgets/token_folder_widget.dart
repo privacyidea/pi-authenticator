@@ -52,11 +52,11 @@ class TokenFolderWidget extends ConsumerWidget {
             },
             onDragStarted: () => draggingSortableNotifier.state = folder,
             onDragCompleted: () {
-              Logger.info('Draggable completed', name: 'TokenFolderWidget#build');
+              Logger.info('Draggable completed');
               // Will be handled by the sortableNotifier
             },
             onDraggableCanceled: (velocity, offset) {
-              Logger.info('Draggable canceled', name: 'TokenFolderWidget#build');
+              Logger.info('Draggable canceled');
               draggingSortableNotifier.state = null;
             },
             data: folder,

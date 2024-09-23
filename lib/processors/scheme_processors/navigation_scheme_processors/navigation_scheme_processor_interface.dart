@@ -37,16 +37,16 @@ abstract class NavigationSchemeProcessor implements SchemeProcessor {
 
   static Future<void> processUriByAny(Uri uri, {BuildContext? context, required bool fromInit}) async {
     if (context == null) {
-      Logger.info('Current context is null, waiting for navigator context', name: 'processUri#NavigationSchemeProcessor');
+      Logger.info('Current context is null, waiting for navigator context');
       final key = await contextedGlobalNavigatorKey;
       context = key.currentContext;
     }
-    Logger.info('Processing scheme: ${uri.scheme}', name: 'processUri#NavigationSchemeProcessor');
+    Logger.info('Processing scheme: ${uri.scheme}');
     final futures = <Future<void>>[];
     for (final processor in implementations) {
-      Logger.info('Supported schemes [${processor.supportedSchemes}] for processor ${processor.runtimeType}', name: 'processUri#NavigationSchemeProcessor');
+      Logger.info('Supported schemes [${processor.supportedSchemes}] for processor ${processor.runtimeType}');
       if (processor.supportedSchemes.contains(uri.scheme)) {
-        Logger.info('Processing scheme ${uri.scheme} with ${processor.runtimeType}', name: 'processUri#NavigationSchemeProcessor');
+        Logger.info('Processing scheme ${uri.scheme} with ${processor.runtimeType}');
         // ignoring use_build_context_synchronously is ok because we got the context after the await. The Context cannot be expired.
         // ignore: use_build_context_synchronously
         futures.add(processor.processUri(uri, context: context, fromInit: fromInit));

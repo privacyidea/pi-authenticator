@@ -92,7 +92,7 @@
 //     initState = initialState != null ? Future.value(initialState) : _loadFromRepo();
 //     await initState;
 //     await hideLockedTokens();
-//     Logger.info('TokenNotifier initialized.', name: 'token_notifier.dart#_init');
+//     Logger.info('TokenNotifier initialized.');
 //   }
 
 //   /*
@@ -134,9 +134,9 @@
 //       return failedTokens;
 //     }
 //     // [failedTokens] is empty, so every token was saved successfully and we dont need to filter the tokens
-//     Logger.info('Saved ${tokens.length} Tokens to storage.', name: 'token_notifier.dart#_saveOrReplaceTokens');
+//     Logger.info('Saved ${tokens.length} Tokens to storage.');
 //     state = state.addOrReplaceTokens(tokens);
-//     Logger.debug('New State: ${state.tokens.length} Tokens', name: 'token_notifier.dart#_saveOrReplaceTokens');
+//     Logger.debug('New State: ${state.tokens.length} Tokens');
 //     _loadingRepoMutex.release();
 //     return [];
 //   }
@@ -146,7 +146,7 @@
 //     await _loadingRepoMutex.acquire();
 //     final (newState, replaced) = state.replaceToken(token);
 //     if (!replaced) {
-//       Logger.warning('Tried to replace a token that does not exist.', name: 'token_notifier.dart#_replaceToken');
+//       Logger.warning('Tried to replace a token that does not exist.');
 //       _loadingRepoMutex.release();
 //       return false;
 //     }
@@ -210,7 +210,7 @@
 
 //   /// Removes a list of tokens and returns the tokens that could not be removed.
 //   Future<List<Token>> _removeTokens(List<Token> tokens) async {
-//     Logger.info('Removing ${tokens.length} tokens.', name: 'token_notifier.dart#_removeTokens');
+//     Logger.info('Removing ${tokens.length} tokens.');
 //     await _loadingRepoMutex.acquire();
 //     final oldState = state;
 //     state = state.withoutTokens(tokens);
@@ -285,7 +285,7 @@
 //     _loadingRepoMutex.release();
 //     final current = state.currentOf<T>(token);
 //     if (current == null) {
-//       Logger.warning('Tried to update a token that does not exist.', name: 'token_notifier.dart#updateToken');
+//       Logger.warning('Tried to update a token that does not exist.');
 //       _updatingTokensMutex.release();
 //       return null;
 //     }
@@ -357,7 +357,7 @@
 //   /// Adds, Updates or Removes tokens based on the [TokenContainer] and returns the updated tokens.
 //   Future<void> updateContainerTokens(TokenContainer container) async {
 //     await initState;
-//     Logger.info('Updating tokens from container.', name: 'token_notifier.dart#updateContainerTokens');
+//     Logger.info('Updating tokens from container.');
 //     final templatesToAdd = <TokenTemplate>[];
 //     final templatesToUpdate = <TokenTemplate>[];
 //     final templatesToRemove = <TokenTemplate>[];
@@ -369,7 +369,7 @@
 //       name: 'token_notifier.dart#updateContainerTokens',
 //     );
 //     final appTokenTemplates = knownContainerTokens.toTemplates();
-//     Logger.debug('All server templates: ${serverTokenTemplates.join('\n')}', name: 'token_notifier.dart#updateContainerTokens');
+//     Logger.debug('All server templates: ${serverTokenTemplates.join('\n')}');
 //     for (var serverTokenTemplate in serverTokenTemplates) {
 //       Logger.debug(
 //         'Checking server token template: $serverTokenTemplate',
@@ -488,11 +488,11 @@
 //   Future<Token?> showTokenById(String tokenId) {
 //     final token = getTokenById(tokenId);
 //     if (token == null) {
-//       Logger.warning('Tried to show a token that does not exist.', name: 'token_notifier.dart#showTokenById');
+//       Logger.warning('Tried to show a token that does not exist.');
 //       return Future.value(null);
 //     }
 //     if (token is! OTPToken) {
-//       Logger.warning('Tried to show a token that is not an OTPToken.', name: 'token_notifier.dart#showTokenById');
+//       Logger.warning('Tried to show a token that is not an OTPToken.');
 //       return Future.value(null);
 //     }
 //     return showToken(token);
@@ -502,7 +502,7 @@
 //     try {
 //       return await _loadFromRepo();
 //     } catch (_) {
-//       Logger.warning('Loading tokens from storage failed.', name: 'token_notifier.dart#loadStateFromRepo');
+//       Logger.warning('Loading tokens from storage failed.');
 //       return null;
 //     }
 //   }
@@ -510,10 +510,10 @@
 //   Future<bool> saveStateToRepo() async {
 //     try {
 //       await _saveStateToRepo(state);
-//       Logger.info('Saved ${state.tokens.length} Tokens to storage.', name: 'token_notifier.dart#saveStateToRepo');
+//       Logger.info('Saved ${state.tokens.length} Tokens to storage.');
 //       return true;
 //     } catch (_) {
-//       Logger.error('Saving tokens to storage failed.', name: 'token_notifier.dart#saveStateToRepo');
+//       Logger.error('Saving tokens to storage failed.');
 //       return false;
 //     }
 //   }
@@ -546,7 +546,7 @@
 
 //   /// Removes a list of tokens from the state and the repository.
 //   Future<void> removeTokens(List<Token> tokens) async {
-//     Logger.info('Removing ${tokens.length} tokens.', name: 'token_notifier.dart#removeTokens');
+//     Logger.info('Removing ${tokens.length} tokens.');
 //     final pushTokens = tokens.whereType<PushToken>().toList();
 //     final otherTokens = tokens.whereType<Token>().toList();
 //     await _removeTokens(otherTokens);
@@ -559,7 +559,7 @@
 //     try {
 //       await _firebaseUtils.deleteFirebaseToken();
 //     } on SocketException {
-//       Logger.warning('Could not delete firebase token.', name: 'token_notifier.dart#_removePushToken');
+//       Logger.warning('Could not delete firebase token.');
 //       ref.read(statusMessageProvider.notifier).state = (
 //         AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorUnlinkingPushToken(token.label),
 //         AppLocalizations.of(globalNavigatorKey.currentContext!)!.checkYourNetwork,
@@ -569,7 +569,7 @@
 //     _firebaseUtils.getFBToken().then((fbToken) async {
 //       if (fbToken == null) {
 //         await _updateTokens(state.pushTokens, (p0) => p0.copyWith(fbToken: null));
-//         Logger.warning('Could not update firebase token because no firebase token is available.', name: 'token_notifier.dart#_removePushToken');
+//         Logger.warning('Could not update firebase token because no firebase token is available.');
 //         ref.read(statusMessageProvider.notifier).state = (
 //           AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorSynchronizationNoNetworkConnection,
 //           AppLocalizations.of(globalNavigatorKey.currentContext!)!.pleaseSyncManuallyWhenNetworkIsAvailable,
@@ -580,21 +580,21 @@
 //       return;
 //     });
 //     await _removeToken(token);
-//     Logger.info('Push token "${token.id}" removed successfully.', name: 'token_notifier.dart#_removePushToken');
+//     Logger.info('Push token "${token.id}" removed successfully.');
 //   }
 
 //   Future<bool> rolloutPushToken(PushToken token) async {
 //     PushToken? pushToken;
 //     pushToken = (getTokenById(token.id)) as PushToken?;
 //     if (pushToken == null) {
-//       Logger.warning('Tried to rollout a token that does not exist.', name: 'token_notifier.dart#rolloutPushToken');
+//       Logger.warning('Tried to rollout a token that does not exist.');
 //       return false;
 //     }
 
 //     assert(pushToken.url != null, 'Token url is null. Cannot rollout token without url.');
-//     Logger.info('Rolling out token "${pushToken.id}"', name: 'token_notifier.dart#rolloutPushToken');
+//     Logger.info('Rolling out token "${pushToken.id}"');
 //     if (pushToken.isRolledOut) {
-//       Logger.info('Ignoring rollout request: Token "${pushToken.id}" already rolled out.', name: 'token_notifier.dart#rolloutPushToken');
+//       Logger.info('Ignoring rollout request: Token "${pushToken.id}" already rolled out.');
 //       return true;
 //     }
 //     if (pushToken.rolloutState.rollOutInProgress) {
@@ -603,7 +603,7 @@
 //       return false;
 //     }
 //     if (pushToken.expirationDate?.isBefore(DateTime.now()) == true) {
-//       Logger.info('Ignoring rollout request: Token "${pushToken.id}" is expired. ', name: 'token_notifier.dart#rolloutPushToken');
+//       Logger.info('Ignoring rollout request: Token "${pushToken.id}" is expired. ');
 
 //       if (globalNavigatorKey.currentContext != null) {
 //         ref.read(statusMessageProvider.notifier).state = (
@@ -616,13 +616,13 @@
 //     }
 
 //     if (pushToken.privateTokenKey == null) {
-//       Logger.info('Updating rollout state of token "${pushToken.id}" to generatingRSAKeyPair', name: 'token_notifier.dart#rolloutPushToken');
+//       Logger.info('Updating rollout state of token "${pushToken.id}" to generatingRSAKeyPair');
 //       pushToken = await _updateToken(pushToken, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.generatingRSAKeyPair));
 //       if (pushToken == null) {
-//         Logger.warning('Tried to update a token that does not exist.', name: 'token_notifier.dart#rolloutPushToken');
+//         Logger.warning('Tried to update a token that does not exist.');
 //         return false;
 //       }
-//       Logger.info('Updated token "${pushToken.id}"', name: 'token_notifier.dart#rolloutPushToken');
+//       Logger.info('Updated token "${pushToken.id}"');
 //       try {
 //         final keyPair = await _rsaUtils.generateRSAKeyPair();
 //         pushToken = pushToken.withPrivateTokenKey(keyPair.privateKey);
@@ -632,11 +632,11 @@
 //               return p0.withPublicTokenKey(keyPair.publicKey);
 //             }) ??
 //             pushToken;
-//         Logger.info('Updated token "${pushToken.id}"', name: 'token_notifier.dart#rolloutPushToken');
+//         Logger.info('Updated token "${pushToken.id}"');
 //       } catch (e, s) {
 //         Logger.error('Error while generating RSA key pair.', name: 'token_notifier.dart#rolloutPushToken', error: e, stackTrace: s);
 //         if (pushToken == null) {
-//           Logger.warning('Tried to update a token that does not exist.', name: 'token_notifier.dart#rolloutPushToken');
+//           Logger.warning('Tried to update a token that does not exist.');
 //           return false;
 //         }
 //         pushToken = await _updateToken(pushToken, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.generatingRSAKeyPairFailed));
@@ -646,22 +646,22 @@
 
 //     pushToken = await _updateToken(pushToken, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKey));
 //     if (pushToken == null) {
-//       Logger.warning('Tried to update a token that does not exist.', name: 'token_notifier.dart#rolloutPushToken');
+//       Logger.warning('Tried to update a token that does not exist.');
 //       return false;
 //     }
 //     if (!kIsWeb && Platform.isIOS) {
-//       Logger.warning('Triggering network access permission for token "${pushToken.id}"', name: 'token_notifier.dart#rolloutPushToken');
+//       Logger.warning('Triggering network access permission for token "${pushToken.id}"');
 //       if (await _ioClient.triggerNetworkAccessPermission(url: pushToken.url!, sslVerify: pushToken.sslVerify) == false) {
-//         Logger.warning('Network access permission for token "${pushToken.id}" failed.', name: 'token_notifier.dart#rolloutPushToken');
+//         Logger.warning('Network access permission for token "${pushToken.id}" failed.');
 //         _updateToken(pushToken, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed));
 //         return false;
 //       }
-//       Logger.warning('Network access permission for token "${pushToken.id}" successful.', name: 'token_notifier.dart#rolloutPushToken');
+//       Logger.warning('Network access permission for token "${pushToken.id}" successful.');
 //     }
 //     try {
 //       // TODO What to do with poll only tokens if google-services is used?
 
-//       Logger.warning('SSLVerify: ${pushToken.sslVerify}', name: 'token_notifier.dart#rolloutPushToken');
+//       Logger.warning('SSLVerify: ${pushToken.sslVerify}');
 //       final fbToken = await _firebaseUtils.getFBToken();
 //       Response response = await _ioClient.doPost(
 //         sslVerify: pushToken.sslVerify,
@@ -677,14 +677,14 @@
 //       if (response.statusCode == 200) {
 //         pushToken = await _updateToken(pushToken, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.parsingResponse, fbToken: fbToken));
 //         if (pushToken == null) {
-//           Logger.warning('Tried to update a token that does not exist.', name: 'token_notifier.dart#rolloutPushToken');
+//           Logger.warning('Tried to update a token that does not exist.');
 //           return false;
 //         }
 //         try {
 //           RSAPublicKey publicServerKey = await _parseRollOutResponse(response);
 //           pushToken = await _updateToken(pushToken, (p0) => p0.withPublicServerKey(publicServerKey));
 //           if (pushToken == null) {
-//             Logger.warning('Tried to update a token that does not exist.', name: 'token_notifier.dart#rolloutPushToken');
+//             Logger.warning('Tried to update a token that does not exist.');
 //             return false;
 //           }
 //         } on FormatException catch (e, s) {
@@ -692,13 +692,13 @@
 
 //           Logger.warning('Error while parsing RSA public key.', name: 'token_notifier.dart#rolloutPushToken', error: e, stackTrace: s);
 //           if (pushToken == null) {
-//             Logger.warning('Tried to update a token that does not exist.', name: 'token_notifier.dart#rolloutPushToken');
+//             Logger.warning('Tried to update a token that does not exist.');
 //             return false;
 //           }
 //           pushToken = await _updateToken(pushToken, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.parsingResponseFailed));
 //           return false;
 //         }
-//         Logger.info('Roll out successful', name: 'token_notifier.dart#rolloutPushToken');
+//         Logger.info('Roll out successful');
 //         pushToken = await _updateToken(pushToken, (p0) => p0.copyWith(isRolledOut: true, rolloutState: PushTokenRollOutState.rolloutComplete));
 //         checkNotificationPermission();
 
@@ -728,12 +728,12 @@
 //       }
 //     } catch (e, s) {
 //       if (pushToken == null) {
-//         Logger.warning('Tried to update a token that does not exist.', name: 'token_notifier.dart#rolloutPushToken');
+//         Logger.warning('Tried to update a token that does not exist.');
 //         return false;
 //       }
 //       pushToken = await _updateToken(pushToken, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed));
 //       if (pushToken == null) {
-//         Logger.warning('Tried to update a token that does not exist.', name: 'token_notifier.dart#rolloutPushToken');
+//         Logger.warning('Tried to update a token that does not exist.');
 //         return false;
 //       }
 //       if (e is PlatformException && e.code == FIREBASE_TOKEN_ERROR_CODE || e is SocketException || e is TimeoutException || e is FirebaseException) {
@@ -774,14 +774,14 @@
 //   /// as this can not be guaranteed to work. There is a manual option available
 //   /// through the settings also.
 //   Future<(List<PushToken>, List<PushToken>)?> updateFirebaseToken([String? firebaseToken]) async {
-//     Logger.info('Updating firebase token for all push tokens.', name: 'push_provider.dart#updateFirebaseToken');
+//     Logger.info('Updating firebase token for all push tokens.');
 //     firebaseToken ??= await _firebaseUtils.getFBToken();
 //     if (firebaseToken == null) {
-//       Logger.warning('Could not update firebase token because no firebase token is available.', name: 'push_provider.dart#updateFirebaseToken');
+//       Logger.warning('Could not update firebase token because no firebase token is available.');
 //       return null;
 //     }
 //     List<PushToken> tokenList = state.pushTokens.where((t) => t.isRolledOut && t.fbToken != firebaseToken).toList();
-//     Logger.info('Updating firebase token for ${tokenList.length} push tokens.', name: 'push_provider.dart#updateFirebaseToken');
+//     Logger.info('Updating firebase token for ${tokenList.length} push tokens.');
 //     bool allUpdated = true;
 //     final List<PushToken> failedTokens = [];
 //     final List<PushToken> unsuportedTokens = [];
@@ -798,7 +798,7 @@
 //       //serial=<tokenserial>element
 //       //timestamp=<timestamp>
 //       //signature=SIGNATURE(<new firebase token>|<tokenserial>|<timestamp>)
-//       Logger.warning('Updating firebase token for push token "${p.serial}"', name: 'push_provider.dart#updateFirebaseToken');
+//       Logger.warning('Updating firebase token for push token "${p.serial}"');
 //       String timestamp = DateTime.now().toUtc().toIso8601String();
 //       String message = '$firebaseToken|${p.serial}|$timestamp';
 //       String? signature = await _rsaUtils.trySignWithToken(p, message);
@@ -813,10 +813,10 @@
 //         sslVerify: p.sslVerify,
 //       );
 //       if (response.statusCode == 200) {
-//         Logger.info('Updating firebase token for push token succeeded!', name: 'push_provider.dart#updateFirebaseToken');
+//         Logger.info('Updating firebase token for push token succeeded!');
 //         _updateToken(p, (p0) => p0.copyWith(fbToken: firebaseToken));
 //       } else {
-//         Logger.warning('Updating firebase token for push token failed!', name: 'push_provider.dart#updateFirebaseToken');
+//         Logger.warning('Updating firebase token for push token failed!');
 //         failedTokens.add(p);
 //         allUpdated = false;
 //       }
@@ -842,7 +842,7 @@
 //       uri = Uri.parse(qrCode);
 //     } catch (_) {
 //       showMessage(message: 'The scanned QR code is not a valid URI.', duration: const Duration(seconds: 3));
-//       Logger.warning('Scanned Data: $qrCode', error: 'Scanned QR code is not a valid URI.', name: 'token_notifier.dart#handleQrCode');
+//       Logger.warning('Scanned Data: $qrCode');
 //       return;
 //     }
 //     List<Token> tokens = await _tokensFromUri(uri);
@@ -878,7 +878,7 @@
 //       final results = await TokenImportSchemeProcessor.processUriByAny(uri);
 //       if (results == null || results.isEmpty) {
 //         showMessage(message: 'The scanned QR code is not a valid URI.', duration: const Duration(seconds: 3));
-//         Logger.warning('Scanned Data: $uri', error: 'Scanned QR code is not a valid URI.', name: 'token_notifier.dart#handleQrCode');
+//         Logger.warning('Scanned Data: $uri');
 //         return [];
 //       }
 //       final failedResults = results.whereType<ProcessorResultFailed>().toList();
@@ -914,12 +914,12 @@
 //   ///////////////////////////////////////////////////////////////////////////// */
 
 //   Future<RSAPublicKey> _parseRollOutResponse(Response response) async {
-//     Logger.info('Parsing rollout response, try to extract public_key.', name: 'token_notifier.dart#_parseRollOutResponse');
+//     Logger.info('Parsing rollout response, try to extract public_key.');
 //     try {
 //       String key = json.decode(response.body)['detail']['public_key'];
 //       key = key.replaceAll('\n', '');
 
-//       Logger.info('Extracting public key was successful.', name: 'token_notifier.dart#_parseRollOutResponse');
+//       Logger.info('Extracting public key was successful.');
 
 //       return _rsaUtils.deserializeRSAPublicKeyPKCS1(key);
 //     } on FormatException catch (e) {
@@ -928,7 +928,7 @@
 //   }
 
 //   Future<void> _handlePushTokensIfExist() async {
-//     Logger.info('Handling push tokens if they exist.', name: 'token_notifier.dart#_handlePushTokensIfExist');
+//     Logger.info('Handling push tokens if they exist.');
 //     final pushTokens = state.pushTokens;
 //     if (pushTokens.isEmpty || state.pushTokens.isEmpty) {
 //       if ((await ref.read(settingsProvider.future)).hidePushTokens == true) {
@@ -943,7 +943,7 @@
 //       checkNotificationPermission();
 //     }
 //     for (final element in state.pushTokensToRollOut) {
-//       Logger.info('Handling push token "${element.id}"', name: 'token_notifier.dart#_handlePushTokensIfExist');
+//       Logger.info('Handling push token "${element.id}"');
 //       await rolloutPushToken(element);
 //     }
 //   }

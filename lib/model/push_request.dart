@@ -114,7 +114,7 @@ class PushRequest {
     try {
       verifyData(data);
     } catch (e, s) {
-      Logger.error('Invalid push request data.', name: 'push_request.dart#fromMessageData', error: e, stackTrace: s);
+      Logger.error('Invalid push request data.', error: e, stackTrace: s);
     }
     return PushRequest(
       title: data[PUSH_REQUEST_TITLE],
@@ -159,12 +159,12 @@ class PushRequest {
     if (data[PUSH_REQUEST_ANSWERS] is! String?) {
       throw ArgumentError('Push request answers is ${data[PUSH_REQUEST_ANSWERS].runtimeType}. Expected List<String> or null.');
     }
-    Logger.debug('Push request data ($data) is valid.', name: 'push_request.dart#verifyData');
+    Logger.debug('Push request data ($data) is valid.');
   }
 
   Future<bool> verifySignature(PushToken token, {RsaUtils rsaUtils = const RsaUtils()}) async {
     //5NV6KJCFCLNQURT2ZTBRHHGY6FDXOCOR|http://192.168.178.22:5000/ttype/push|PIPU0000E793|Pick a Number!|privacyIDEA|0|["A", "B", "C"]
-    Logger.info('Adding push request to token', name: 'push_request_notifier.dart#newRequest');
+    Logger.info('Adding push request to token');
     String signedData = '$nonce|'
         '$uri|'
         '$serial|'
@@ -172,7 +172,7 @@ class PushRequest {
         '$title|'
         '${sslVerify ? '1' : '0'}'
         '${possibleAnswers != null ? '|${possibleAnswers!.join(",")}' : ''}';
-    Logger.warning('Signed data: $signedData', name: 'push_request_notifier.dart#newRequest');
+    Logger.warning('Signed data: $signedData');
 
     // Re-add url and sslverify to android legacy tokens:
     if (token.url == null) {
@@ -184,12 +184,11 @@ class PushRequest {
     if (!isVerified) {
       Logger.warning(
         'Validating incoming message failed.',
-        name: 'token_notifier.dart#addPushRequestToToken',
         error: 'Signature does not match signed data.',
       );
       return false;
     }
-    Logger.info('Validating incoming message was successful.', name: 'token_notifier.dart#addPushRequestToToken');
+    Logger.info('Validating incoming message was successful.');
     return true;
   }
 }

@@ -107,7 +107,7 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
                                   return;
                                 }
                                 ref.read(pushRequestProvider.notifier).accept(token, widget.pushRequest, selectedAnswer: selectedAnswer).then((success) {
-                                  Logger.info('accept push request success: $success', name: 'push_request_dialog.dart#AnswerSelectionWidget');
+                                  Logger.info('accept push request success: $success');
                                   if (!success && mounted) setState(() => isHandled = false);
                                 });
                                 if (mounted) setState(() => isHandled = true);
@@ -128,7 +128,7 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
                                 return;
                               }
                               ref.read(pushRequestProvider.notifier).accept(token, widget.pushRequest).then((success) {
-                                Logger.info('accept push request success: $success', name: 'push_request_dialog.dart#_PushRequestDialogState');
+                                Logger.info('accept push request success: $success');
                                 if (!success && mounted) setState(() => isHandled = false);
                               });
                               if (mounted) setState(() => isHandled = true);
@@ -237,7 +237,7 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
                           }
 
                           ref.read(pushRequestProvider.notifier).remove(widget.pushRequest).then((success) {
-                            Logger.info('remove push request success: $success', name: 'push_request_dialog.dart#_showConfirmationDialog');
+                            Logger.info('remove push request success: $success');
                             if (!success && mounted) setState(() => isHandled = false);
                           });
                           if (context.mounted) Navigator.of(context).pop();
@@ -281,7 +281,7 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
                           }
 
                           ref.read(pushRequestProvider.notifier).decline(pushToken, widget.pushRequest).then((success) {
-                            Logger.info('decline push request success: $success', name: 'push_request_dialog.dart#_showConfirmationDialog');
+                            Logger.info('decline push request success: $success');
                             if (!success && mounted) setState(() => isHandled = false);
                           });
                           if (context.mounted) Navigator.of(context).pop();

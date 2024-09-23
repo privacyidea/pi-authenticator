@@ -39,7 +39,7 @@ class IntroductionNotifier extends _$IntroductionNotifier {
 
   @override
   Future<IntroductionState> build({required IntroductionRepository repo}) async {
-    Logger.info('New IntroductionNotifier created', name: 'introduction_provider.dart#build');
+    Logger.info('New IntroductionNotifier created');
     _repo = _repositoryOverride ?? repo;
     return await _loadFromRepo();
   }
@@ -47,21 +47,21 @@ class IntroductionNotifier extends _$IntroductionNotifier {
   Future<IntroductionState> _loadFromRepo() async {
     final newState = await _repo.loadCompletedIntroductions();
 
-    Logger.info('Loading completed introductions from repo: $newState', name: 'introduction_provider.dart#_loadFromRepo');
+    Logger.info('Loading completed introductions from repo: $newState');
     return newState;
   }
 
   Future<void> _saveToRepo(IntroductionState state) async {
     final success = await _repo.saveCompletedIntroductions(state);
     if (success) {
-      Logger.info('Saving completed introductions to repo: $state', name: 'introduction_provider.dart#_saveToRepo');
+      Logger.info('Saving completed introductions to repo: $state');
     } else {
-      Logger.warning('Failed to save completed introductions to repo: $state', name: 'introduction_provider.dart#_saveToRepo');
+      Logger.warning('Failed to save completed introductions to repo: $state');
     }
   }
 
   Future<void> complete(Introduction introduction) async {
-    Logger.info('Completing introduction: $introduction', name: 'introduction_provider.dart#complete');
+    Logger.info('Completing introduction: $introduction');
     final newState = (await future).withCompletedIntroduction(introduction);
     await _saveToRepo(newState);
     state = AsyncValue.data(newState);
@@ -69,14 +69,14 @@ class IntroductionNotifier extends _$IntroductionNotifier {
   }
 
   Future<void> uncomplete(Introduction introduction) async {
-    Logger.info('Uncompleting introduction: $introduction', name: 'introduction_provider.dart#uncomplete');
+    Logger.info('Uncompleting introduction: $introduction');
     final newState = (await future).withoutCompletedIntroduction(introduction);
     await _saveToRepo(newState);
     state = AsyncValue.data(newState);
   }
 
   Future<void> completeAll() async {
-    Logger.info('Completing all introductions', name: 'introduction_provider.dart#completeAll');
+    Logger.info('Completing all introductions');
     final newState = IntroductionState.withAllCompleted();
     await _saveToRepo(newState);
     state = AsyncValue.data(newState);

@@ -206,7 +206,7 @@ class HomeWidgetUtils {
         }
       }
     }
-    Logger.info('Found ${tokenWigetPairs.length} linked Widgets', name: 'home_widget_utils.dart#_getWidgetIdsOfTokens');
+    Logger.info('Found ${tokenWigetPairs.length} linked Widgets');
     return tokenWigetPairs;
   }
 
@@ -375,19 +375,19 @@ class HomeWidgetUtils {
     if (tokenAction == null) return;
     final actionTimer = _actionTimers[tokenId];
     if (actionTimer != null && actionTimer.isActive) {
-      Logger.info('Action blocked', name: 'home_widget_utils.dart#performAction');
+      Logger.info('Action blocked');
       return;
     }
     HomeWidget.saveWidgetData('$keyActionBlocked$tokenId', true);
     final widgetIds = (await _getWidgetIdsOfTokens([token.id])).keys.toList();
     _actionTimers[tokenId] = Timer(const Duration(seconds: 1), () async {
-      Logger.info('Unblocked action', name: 'home_widget_utils.dart#performAction');
+      Logger.info('Unblocked action');
       await HomeWidget.saveWidgetData('$keyActionBlocked$tokenId', false);
       await _notifyUpdate(widgetIds);
     });
 
     await _mapTokenAction[token.type]?.call(widgetId);
-    Logger.info('Performing action', name: 'home_widget_utils.dart#performAction');
+    Logger.info('Performing action');
     await _notifyUpdate(widgetIds);
   }
 
@@ -455,7 +455,7 @@ class HomeWidgetUtils {
   }
 
   Future<void> _unlink(String widgetId) async {
-    Logger.info('Unlinking HomeWidget with id $widgetId', name: 'home_widget_utils.dart#_unlink');
+    Logger.info('Unlinking HomeWidget with id $widgetId');
     await HomeWidget.saveWidgetData('$keyTokenId$widgetId', null);
     await _updateHomeWidgetUnlinked();
     await _removeTokenType(widgetId);
@@ -629,19 +629,19 @@ class HomeWidgetUtils {
   /// This method has to be called after change to the HomeWidget to notify the HomeWidget to update
   Future<void> _notifyUpdate(Iterable<String> updatedWidgetIds) async {
     if (updatedWidgetIds.isEmpty) return;
-    Logger.info('Update requested for: $updatedWidgetIds', name: 'home_widget_utils.dart#_notifyUpdate');
+    Logger.info('Update requested for: $updatedWidgetIds');
     if (await _widgetIsRebuilding || _lastUpdate != null && DateTime.now().difference(_lastUpdate!) < _updateDelay) {
-      Logger.info('Update delayed: $updatedWidgetIds', name: 'home_widget_utils.dart#_notifyUpdate');
+      Logger.info('Update delayed: $updatedWidgetIds');
       _updatedWidgetIds.addAll(updatedWidgetIds);
       _updateTimer?.cancel();
       final nextDelayInMs = _updateDelay.inMilliseconds - DateTime.now().difference(_lastUpdate!).inMilliseconds;
       _updateTimer = Timer(nextDelayInMs < 1 ? _updateDelay : Duration(milliseconds: nextDelayInMs), () async {
-        Logger.info('Call Update from Timer', name: 'home_widget_utils.dart#_notifyUpdate');
+        Logger.info('Call Update from Timer');
         await _notifyUpdate(_updatedWidgetIds.toList());
       });
       return;
     }
-    Logger.info('Notify Update: $updatedWidgetIds', name: 'home_widget_utils.dart#_notifyUpdate');
+    Logger.info('Notify Update: $updatedWidgetIds');
     _lastUpdate = DateTime.now();
     await HomeWidget.saveWidgetData(keyRebuildingWidgetIds, updatedWidgetIds.join(','));
     await HomeWidget.updateWidget(qualifiedAndroidName: '$_packageId.AppWidgetProvider', iOSName: 'AppWidgetProvider');

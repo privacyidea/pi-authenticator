@@ -36,10 +36,10 @@ class PrivacyIDEAAuthenticatorQrProcessor extends TokenImportSchemeProcessor {
   Future<List<ProcessorResult<Token>>?> processUri(Uri uri, {bool fromInit = false}) async {
     if (!supportedSchemes.contains(uri.scheme)) return null;
     if (uri.host != host) return null;
-    Logger.info('Processing URI with scheme: ${uri.scheme} and host: ${uri.host}', name: 'PrivacyIDEAAuthenticatorQrProcessor#processUri');
+    Logger.info('Processing URI with scheme: ${uri.scheme} and host: ${uri.host}');
     try {
       final token = TokenEncryption.fromExportUri(uri);
-      Logger.info('Processing URI ${uri.scheme} succeded', name: 'PrivacyIDEAAuthenticatorQrProcessor#processUri');
+      Logger.info('Processing URI ${uri.scheme} succeded');
       return [
         ProcessorResult.success(
           token,
@@ -47,7 +47,7 @@ class PrivacyIDEAAuthenticatorQrProcessor extends TokenImportSchemeProcessor {
         )
       ];
     } catch (e) {
-      Logger.error('Error while processing URI ${uri.scheme}', error: e, name: 'PrivacyIDEAAuthenticatorQrProcessor#processUri');
+      Logger.error('Error while processing URI ${uri.scheme}', error: e);
       return [
         ProcessorResult.failed(
           'Invalid URI',
