@@ -40,14 +40,14 @@ abstract class SchemeProcessor {
   static Future<List<ProcessorResult<dynamic>>?> processUriByAny(Uri uri, {bool fromInit = false}) async {
     for (SchemeProcessor processor in implementations) {
       if (processor.supportedSchemes.contains(uri.scheme)) {
-        Logger.info('Processing URI with processor: $processor', name: 'SchemeProcessor#processUriByAny');
+        Logger.info('Processing URI with processor: $processor');
         final result = await processor.processUri(uri, fromInit: fromInit);
         if (result != null) {
           return result;
         }
       }
     }
-    Logger.warning('Unsupported scheme', name: 'SchemeProcessor#processUriByAny');
+    Logger.warning('Unsupported scheme');
     return null;
   }
 }

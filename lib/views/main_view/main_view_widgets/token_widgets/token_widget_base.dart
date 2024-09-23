@@ -71,14 +71,12 @@ class TokenWidgetBase extends ConsumerWidget {
         ? LongPressDraggable(
             maxSimultaneousDrags: 1,
             onDragStarted: () => ref.read(draggingSortableProvider.notifier).state = token,
-            onDragCompleted: () async {
-              Logger.info('Draggable completed', name: 'TokenWidgetBase#build');
-              await Future.delayed(const Duration(milliseconds: 100));
-              globalRef?.read(draggingSortableProvider.notifier).state = null;
+            onDragCompleted: () {
+              Logger.info('Draggable completed');
+              // Will be handled by the sortableNotifier
             },
-            onDraggableCanceled: (velocity, offset) async {
-              Logger.info('Draggable canceled', name: 'TokenWidgetBase#build');
-              await Future.delayed(const Duration(milliseconds: 100));
+            onDraggableCanceled: (velocity, offset) {
+              Logger.info('Draggable canceled');
               globalRef?.read(draggingSortableProvider.notifier).state = null;
             },
             dragAnchorStrategy: (Draggable<Object> d, BuildContext context, Offset point) {

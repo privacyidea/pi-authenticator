@@ -29,7 +29,7 @@ abstract class AsyncNotifierProviderListener<T extends BuildlessAutoDisposeAsync
   final void Function(AsyncValue<S>? previous, AsyncValue<S> next)? onNewState;
   const AsyncNotifierProviderListener({this.provider, this.onNewState});
   void buildListen(WidgetRef ref) {
-    Logger.debug('Listening to $provider', name: 'AsyncNotifierProviderListener#buildListen');
+    Logger.debug('Listening to $provider');
     if (provider == null || onNewState == null) return;
     ref.listen(provider!, onNewState!);
   }

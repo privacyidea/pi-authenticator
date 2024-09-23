@@ -28,7 +28,7 @@ import '../../utils/logger.dart';
 
 class TokenEncryption {
   static Future<String> encrypt({required Iterable<Token> tokens, required String password}) async {
-    Logger.info('Encrypting tokens', name: 'TokenEncryption#encrypt');
+    Logger.info('Encrypting tokens');
     final String jsonString;
     try {
       final jsonsList = tokens.map((e) => e.toJson()).toList();
@@ -36,7 +36,7 @@ class TokenEncryption {
       final encrypted = (await AesEncrypted.encrypt(data: encoded, password: password)).toJson();
       jsonString = jsonEncode(encrypted);
     } catch (e, s) {
-      Logger.error('Failed to encrypt tokens', error: e, stackTrace: s, name: 'TokenEncryption#encrypt');
+      Logger.error('Failed to encrypt tokens', error: e, stackTrace: s);
       rethrow;
     }
     Logger.info('Encrypted ${tokens.length} tokens');
@@ -44,7 +44,7 @@ class TokenEncryption {
   }
 
   static Future<List<Token>> decrypt({required String encryptedTokens, required String password}) async {
-    Logger.info('Decrypting tokens', name: 'TokenEncryption#decrypt');
+    Logger.info('Decrypting tokens');
     List<Token> tokens = [];
     try {
       final json = jsonDecode(encryptedTokens);
@@ -53,7 +53,7 @@ class TokenEncryption {
       tokens = tokenJsonsList.map<Token>((e) => Token.fromJson(e).copyWith(folderId: () => null)).toList();
     } catch (e, s) {
       // Does not has to be an error, if the password is wrong.
-      Logger.warning('Failed to decrypt tokens', error: e, stackTrace: s, name: 'TokenEncryption#decrypt');
+      Logger.warning('Failed to decrypt tokens', error: e, stackTrace: s);
       rethrow;
     }
     Logger.info('Decrypted ${tokens.length} tokens');
@@ -61,7 +61,7 @@ class TokenEncryption {
   }
 
   static Uri generateExportUri({required Token token}) {
-    Logger.info('Generating export URI for token ${token.label}', name: 'TokenEncryption#generateExportUri');
+    Logger.info('Generating export URI for token ${token.label}');
     Uri uri;
     try {
       final tokenJson = token.toJson();
@@ -70,7 +70,7 @@ class TokenEncryption {
       final base64 = base64Url.encode(bytes);
       uri = Uri.parse('${PrivacyIDEAAuthenticatorQrProcessor.scheme}://${PrivacyIDEAAuthenticatorQrProcessor.host}?data=$base64');
     } catch (e, s) {
-      Logger.error('Failed to generate export URI', error: e, stackTrace: s, name: 'TokenEncryption#generateExportUri');
+      Logger.error('Failed to generate export URI', error: e, stackTrace: s);
       rethrow;
     }
     Logger.info('Generated export URI for token ${token.label}');
@@ -78,7 +78,7 @@ class TokenEncryption {
   }
 
   static QRCode toQrCode(Token token) {
-    Logger.info('Generating QR code for token ${token.label}', name: 'TokenEncryption#toQrCode');
+    Logger.info('Generating QR code for token ${token.label}');
     final QRCode qrCode;
     try {
       qrCode = Encoder.encode(
@@ -87,7 +87,7 @@ class TokenEncryption {
         hints: EncodeHints()..put<CharacterSetECI>(EncodeHintType.characterSet, CharacterSetECI.ASCII),
       );
     } catch (e, s) {
-      Logger.error('Failed to generate QR code', error: e, stackTrace: s, name: 'TokenEncryption#toQrCode');
+      Logger.error('Failed to generate QR code', error: e, stackTrace: s);
       rethrow;
     }
     Logger.info('Generated QR code for token ${token.label}');
@@ -96,7 +96,7 @@ class TokenEncryption {
 
   static Token fromExportUri(Uri uri) {
     final Token token;
-    Logger.info('Parsing exportUri (${uri.scheme})', name: 'TokenEncryption#fromExportUri');
+    Logger.info('Parsing exportUri (${uri.scheme})');
     try {
       final base64String = uri.queryParameters['data'];
       final bytes = base64Url.decode(base64String!);
@@ -104,10 +104,10 @@ class TokenEncryption {
       final tokenJson = json.decode(jsonString) as Map<String, dynamic>;
       token = Token.fromJson(tokenJson);
     } catch (e, s) {
-      Logger.error('Failed to parse token from URI', error: e, stackTrace: s, name: 'TokenEncryption#fromExportUri');
+      Logger.error('Failed to parse token from URI', error: e, stackTrace: s);
       rethrow;
     }
-    Logger.info('Parsed token ${token.label}', name: 'TokenEncryption#fromExportUri');
+    Logger.info('Parsed token ${token.label}');
     return token;
   }
 }

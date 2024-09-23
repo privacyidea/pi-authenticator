@@ -44,7 +44,7 @@ class TokenContainerProcessor extends SchemeProcessor {
 
     try {
       final container = TokenContainer.fromUriMap(uri.queryParameters);
-      Logger.info('Successfully parsed container container', name: 'TokenContainerProcessor#processUri');
+      Logger.info('Successfully parsed container container');
       return [
         ProcessorResult.success(
           container,
@@ -52,7 +52,7 @@ class TokenContainerProcessor extends SchemeProcessor {
         )
       ];
     } on LocalizedArgumentError catch (e) {
-      Logger.warning('Error while processing URI ${uri.scheme}', error: e.message, name: 'TokenContainerProcessor#processUri');
+      Logger.warning('Error while processing URI ${uri.scheme}', error: e.message);
       return [
         ProcessorResult.failed(
           e.localizedMessage(AppLocalizations.of(await globalContext)!),

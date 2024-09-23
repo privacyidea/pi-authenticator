@@ -48,7 +48,7 @@ final sources = [
 class DeeplinkNotifier extends _$DeeplinkNotifier {
   @override
   Stream<DeepLink> build() async* {
-    Logger.info('New DeeplinkNotifier created', name: 'DeeplinkNotifier#build');
+    Logger.info('New DeeplinkNotifier created');
     final initial = await _handleInitialUri(sources);
     if (initial != null) yield initial;
     await for (var dl in _handleIncomingLinks(sources)) {

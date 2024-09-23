@@ -46,7 +46,7 @@
 //     loadingRepo = Future<IntroductionState>(() async {
 //       final newState = await _repo.loadCompletedIntroductions();
 //       state = newState;
-//       Logger.info('Loading completed introductions from repo: $state', name: 'settings_notifier.dart#_loadFromRepo');
+//       Logger.info('Loading completed introductions from repo: $state');
 //       return newState;
 //     });
 //     await loadingRepo;
@@ -56,9 +56,9 @@
 //     loadingRepo = Future<IntroductionState>(() async {
 //       final success = await _repo.saveCompletedIntroductions(state);
 //       if (success) {
-//         Logger.info('Saving completed introductions to repo: $state', name: 'settings_notifier.dart#_saveToRepo');
+//         Logger.info('Saving completed introductions to repo: $state');
 //       } else {
-//         Logger.warning('Failed to save completed introductions to repo: $state', name: 'settings_notifier.dart#_saveToRepo');
+//         Logger.warning('Failed to save completed introductions to repo: $state');
 //       }
 //       return state;
 //     });

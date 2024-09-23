@@ -44,11 +44,11 @@ class PreferenceTokenFolderRepository extends TokenFolderRepository {
       if (foldersString == null) return const TokenFolderState(folders: []);
       final jsons = jsonDecode(foldersString) as List<dynamic>;
       final folders = jsons.map((e) => TokenFolder.fromJson(e)).toList();
-      Logger.info('Loaded ${folders.length} folders from preferences', name: 'PreferenceTokenFolderRepository#loadFolders');
+      Logger.info('Loaded ${folders.length} folders from preferences');
 
       return TokenFolderState(folders: folders);
     } catch (e, s) {
-      Logger.error('Failed to load folders', name: 'PreferenceTokenFolderRepository#loadFolders', error: e, stackTrace: s);
+      Logger.error('Failed to load folders', error: e, stackTrace: s);
       return const TokenFolderState(folders: []);
     }
   }
@@ -57,16 +57,16 @@ class PreferenceTokenFolderRepository extends TokenFolderRepository {
   Future<bool> saveState(TokenFolderState state) => _protect(() => _saveReplaceList(state));
   Future<bool> _saveReplaceList(TokenFolderState state) async {
     final folders = state.folders;
-    Logger.info('Saving ${folders.length} folders to preferences...', name: 'PreferenceTokenFolderRepository#saveReplaceList');
+    Logger.info('Saving ${folders.length} folders to preferences...');
     try {
       final jsons = folders.map((e) => e.toJson()).toList();
       final json = jsonEncode(jsons);
       await _prefs.then((prefs) => prefs.setString(_tokenFoldersKey, json));
-      Logger.info('Saved ${folders.length} folders to preferences', name: 'PreferenceTokenFolderRepository#saveFolders');
+      Logger.info('Saved ${folders.length} folders to preferences');
 
       return true;
     } catch (e, s) {
-      Logger.error('Failed to save folders', name: 'PreferenceTokenFolderRepository#saveFolders', error: e, stackTrace: s);
+      Logger.error('Failed to save folders', error: e, stackTrace: s);
 
       return false;
     }

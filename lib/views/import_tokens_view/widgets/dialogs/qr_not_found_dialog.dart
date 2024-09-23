@@ -78,10 +78,10 @@ class QrNotFoundDialog extends StatelessWidget {
             }
             if (!context.mounted) return;
             if (croppedFile == null) {
-              Logger.warning("No croppedFile", name: "_pickAFile#ImportSelectFilePage");
+              Logger.warning("No croppedFile");
               return Navigator.of(context).pop();
             }
-            Logger.warning("Cropped file: ${croppedFile.path}", name: "_pickAFile#ImportSelectFilePage");
+            Logger.warning("Cropped file: ${croppedFile.path}");
             return Navigator.of(context).pop(XFile(croppedFile.path));
           },
           child: Text(appLocalizations.markQrCode),

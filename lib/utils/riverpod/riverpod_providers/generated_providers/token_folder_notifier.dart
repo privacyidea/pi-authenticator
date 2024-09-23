@@ -49,7 +49,7 @@ class TokenFolderNotifier extends _$TokenFolderNotifier {
   TokenFolderState build({required TokenFolderRepository repo}) {
     _repo = _repoOverride ?? repo;
     _stateMutex.acquire();
-    Logger.info('Initializing token folder state', name: 'TokenFolderNotifier#initTokenFolder');
+    Logger.info('Initializing token folder state');
     initState = _loadFromRepo().then((newState) {
       _stateMutex.release();
       return state = newState;
@@ -68,10 +68,7 @@ class TokenFolderNotifier extends _$TokenFolderNotifier {
     await _repoMutex.acquire();
     final success = await _repo.saveState(state);
     if (!success) {
-      Logger.warning(
-        'Failed to save folders',
-        name: 'TokenFolderNotifier#_saveToRepo',
-      );
+      Logger.warning('Failed to save folders');
       _repoMutex.release();
       return false;
     }
@@ -85,10 +82,7 @@ class TokenFolderNotifier extends _$TokenFolderNotifier {
     final newState = oldState.addNewFolder(name);
     final success = await _saveToRepo(newState);
     if (!success) {
-      Logger.warning(
-        'Failed to add new folder',
-        name: 'TokenFolderNotifier#_addNewFolder',
-      );
+      Logger.warning('Failed to add new folder');
       _stateMutex.release();
       return oldState;
     }
@@ -103,10 +97,7 @@ class TokenFolderNotifier extends _$TokenFolderNotifier {
     final newState = oldState.removeFolder(folder);
     final success = await _saveToRepo(newState);
     if (!success) {
-      Logger.warning(
-        'Failed to remove folder',
-        name: 'TokenFolderNotifier#_removeFolder',
-      );
+      Logger.warning('Failed to remove folder');
       _stateMutex.release();
       return oldState;
     }
@@ -124,10 +115,7 @@ class TokenFolderNotifier extends _$TokenFolderNotifier {
     final newState = oldState.update(folder, updater);
     final success = await _saveToRepo(newState);
     if (!success) {
-      Logger.warning(
-        'Failed to add or replace folders',
-        name: 'TokenFolderNotifier#addOrReplaceFolders',
-      );
+      Logger.warning('Failed to add or replace folders');
       _stateMutex.release();
       return oldState;
     }
@@ -146,10 +134,7 @@ class TokenFolderNotifier extends _$TokenFolderNotifier {
     final newState = oldState.update(folder, updater);
     final success = await _saveToRepo(newState);
     if (!success) {
-      Logger.warning(
-        'Failed to add or replace folders',
-        name: 'TokenFolderNotifier#addOrReplaceFolders',
-      );
+      Logger.warning('Failed to add or replace folders');
       _stateMutex.release();
       return oldState;
     }
@@ -164,10 +149,7 @@ class TokenFolderNotifier extends _$TokenFolderNotifier {
     final newState = oldState.addOrReplaceFolders(folders);
     final success = await _saveToRepo(newState);
     if (!success) {
-      Logger.warning(
-        'Failed to add or replace folders',
-        name: 'TokenFolderNotifier#addOrReplaceFolders',
-      );
+      Logger.warning('Failed to add or replace folders');
       _stateMutex.release();
       return oldState;
     }
@@ -194,10 +176,7 @@ class TokenFolderNotifier extends _$TokenFolderNotifier {
     final newState = oldState.addOrReplaceFolders(lockedFolders);
     final success = await _saveToRepo(newState);
     if (!success) {
-      Logger.warning(
-        'Failed to add or replace folders',
-        name: 'TokenFolderNotifier#addOrReplaceFolders',
-      );
+      Logger.warning('Failed to add or replace folders');
       _stateMutex.release();
       return oldState;
     }

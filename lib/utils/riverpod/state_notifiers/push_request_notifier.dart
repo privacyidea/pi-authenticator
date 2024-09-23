@@ -80,7 +80,7 @@
 //     initState = initialState != null ? Future.value(initialState) : _loadFromRepo();
 //     _pushProvider.subscribe(add);
 //     await initState;
-//     Logger.info('PushRequestNotifier initialized', name: 'push_request_notifier.dart#_init');
+//     Logger.info('PushRequestNotifier initialized');
 //   }
 
 //   @override
@@ -197,7 +197,7 @@
 //     await updatingRequestMutex.acquire();
 //     final current = state.currentOf(pushRequest);
 //     if (current == null) {
-//       Logger.warning('Tried to update a push request that does not exist.', name: 'push_request_notifier.dart#updatePushRequest');
+//       Logger.warning('Tried to update a push request that does not exist.');
 //       updatingRequestMutex.release();
 //       return null;
 //     }
@@ -223,22 +223,22 @@
 //   /// It should be still in the CustomIntBuffer of the state.
 //   Future<bool> accept(PushToken pushToken, PushRequest pushRequest, {String? selectedAnswer}) async {
 //     if (pushRequest.accepted != null) {
-//       Logger.warning('The push request is already accepted or declined.', name: 'push_request_notifier.dart#accept');
+//       Logger.warning('The push request is already accepted or declined.');
 
 //       return false;
 //     }
-//     Logger.info('Accept push request.', name: 'push_request_notifier.dart#accept');
+//     Logger.info('Accept push request.');
 //     final updated = await _updatePushRequest(pushRequest, (p0) async {
 //       final updated = p0.copyWith(accepted: true, selectedAnswer: () => selectedAnswer);
 //       final success = await _handleReaction(pushRequest: updated, token: pushToken);
 //       if (!success) {
-//         Logger.warning('Failed to handle push request reaction.', name: 'push_request_notifier.dart#accept');
+//         Logger.warning('Failed to handle push request reaction.');
 //         return p0;
 //       }
 //       return updated;
 //     });
 //     if (updated == null || updated.accepted != true) {
-//       Logger.warning('Failed to accept push request.', name: 'push_request_notifier.dart#accept');
+//       Logger.warning('Failed to accept push request.');
 //       return false;
 //     }
 //     await _remove(updated);
@@ -247,21 +247,21 @@
 
 //   Future<bool> decline(PushToken pushToken, PushRequest pushRequest) async {
 //     if (pushRequest.accepted != null) {
-//       Logger.warning('The push request is already accepted or declined.', name: 'push_request_notifier.dart#decline');
+//       Logger.warning('The push request is already accepted or declined.');
 //       return false;
 //     }
-//     Logger.info('Decline push request.', name: 'push_request_notifier.dart#decline');
+//     Logger.info('Decline push request.');
 //     final updated = await _updatePushRequest(pushRequest, (p0) async {
 //       final updated = p0.copyWith(accepted: false, selectedAnswer: () => null);
 //       final success = await _handleReaction(pushRequest: updated, token: pushToken);
 //       if (!success) {
-//         Logger.warning('Failed to handle push request reaction.', name: 'push_request_notifier.dart#accept');
+//         Logger.warning('Failed to handle push request reaction.');
 //         return p0;
 //       }
 //       return updated;
 //     });
 //     if (updated == null || updated.accepted != false) {
-//       Logger.warning('Failed to decline push request.', name: 'push_request_notifier.dart#decline');
+//       Logger.warning('Failed to decline push request.');
 //       return false;
 //     }
 //     await _remove(updated);
@@ -281,7 +281,7 @@
 
 //     // Remove the request after it expires.
 //     if (success) _setupTimer(pr);
-//     Logger.info('Added push request ${pr.id} to state', name: 'token_notifier.dart#addPushRequestToToken');
+//     Logger.info('Added push request ${pr.id} to state');
 //     return true;
 //   }
 
@@ -297,16 +297,16 @@
 //   }
 
 //   void _cancelTimer(PushRequest pr) {
-//     Logger.info('Canceling timer for push request ${pr.id}', name: 'push_request_notifier.dart#_cancelTimer');
+//     Logger.info('Canceling timer for push request ${pr.id}');
 //     final timer = _expirationTimers.remove(pr.id.toString())?..cancel();
 //     if (timer == null) {
-//       Logger.warning('Timer for push request ${pr.id} not found.', name: 'push_request_notifier.dart#_cancelTimer');
+//       Logger.warning('Timer for push request ${pr.id} not found.');
 //     }
 //   }
 
 //   void _cancalAllTimers() {
 //     if (_expirationTimers.keys.isNotEmpty) {
-//       Logger.info('Canceling all timers: [${_expirationTimers.keys}]', name: 'push_request_notifier.dart#_cancelAllTimers');
+//       Logger.info('Canceling all timers: [${_expirationTimers.keys}]');
 //     }
 //     final ids = _expirationTimers.keys.toList();
 //     for (var id in ids) {
@@ -341,7 +341,7 @@
 
 //   Future<bool> _handleReaction({required PushRequest pushRequest, required PushToken token}) async {
 //     if (pushRequest.accepted == null) return false;
-//     Logger.info('Push auth request accepted=${pushRequest.accepted}, sending response to privacyidea', name: 'token_widgets.dart#handleReaction');
+//     Logger.info('Push auth request accepted=${pushRequest.accepted}, sending response to privacyidea');
 //     //    POST https://privacyideaserver/validate/check
 //     //    nonce=<nonce_from_request>
 //     //    serial=<serial>
@@ -362,10 +362,10 @@
 //       body['presence_answer'] = pushRequest.selectedAnswer!;
 //       msg += '|${pushRequest.selectedAnswer!}';
 //     }
-//     Logger.warning('Signature message: $msg', name: 'token_widgets.dart#handleReaction');
+//     Logger.warning('Signature message: $msg');
 //     String? signature = await _rsaUtils.trySignWithToken(token, msg);
 //     if (signature == null) {
-//       Logger.warning('Failed to sign push request response.', name: 'token_widgets.dart#handleReaction');
+//       Logger.warning('Failed to sign push request response.');
 //       return false;
 //     }
 
@@ -373,10 +373,10 @@
 
 //     Response response;
 //     try {
-//       Logger.info('Sending push request response.', name: 'token_widgets.dart#_handleReaction');
+//       Logger.info('Sending push request response.');
 //       response = await _ioClient.doPost(sslVerify: pushRequest.sslVerify, url: pushRequest.uri, body: body);
 //     } catch (e) {
-//       Logger.warning('Sending push request response failed. Retrying.', name: 'token_widgets.dart#handleReaction');
+//       Logger.warning('Sending push request response failed. Retrying.');
 //       try {
 //         response = await _ioClient.doPost(sslVerify: pushRequest.sslVerify, url: pushRequest.uri, body: body);
 //       } catch (e) {
@@ -391,7 +391,7 @@
 //         '${appLocalizations.sendPushRequestResponseFailed}\n${appLocalizations.statusCode(response.statusCode)}',
 //         tryJsonDecode(response.body)?["result"]?["error"]?["message"],
 //       );
-//       Logger.warning('Sending push request response failed.', name: 'token_widgets.dart#handleReaction');
+//       Logger.warning('Sending push request response failed.');
 //       return false;
 //     }
 //     return true;

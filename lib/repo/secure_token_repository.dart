@@ -91,18 +91,18 @@ class SecureTokenRepository implements TokenRepository {
         valueJson = jsonDecode(value);
       } on FormatException catch (_) {
         // Value should be a json. Skip everything that is not a json.
-        Logger.debug('Value is not a json', name: 'secure_token_repository.dart#loadTokens');
+        Logger.debug('Value is not a json');
         continue;
       }
 
       if (valueJson == null) {
         // If valueJson is null or does not contain a type, it can't be a token. Skip it.
-        Logger.debug('Value Json is null', name: 'secure_token_repository.dart#loadTokens');
+        Logger.debug('Value Json is null');
         continue;
       }
       if (!valueJson.containsKey('type')) {
         // If valueJson is null or does not contain a type, it can't be a token. Skip it.
-        Logger.debug('Value Json does not contain a type', name: 'secure_token_repository.dart#loadTokens');
+        Logger.debug('Value Json does not contain a type');
         continue;
       }
 
@@ -138,7 +138,10 @@ class SecureTokenRepository implements TokenRepository {
         stackTrace: StackTrace.current,
       );
     } else {
-      Logger.info('Saved ${tokens.length}/${tokens.length} tokens to secure storage');
+      Logger.info(
+        'Saved ${tokens.length}/${tokens.length} tokens to secure storage',
+        stackTrace: StackTrace.current,
+      );
     }
     return failedTokens;
   }
@@ -148,7 +151,7 @@ class SecureTokenRepository implements TokenRepository {
     try {
       await _storage.write(key: _TOKEN_PREFIX + token.id, value: jsonEncode(token.toJson()));
     } catch (e) {
-      Logger.warning('Could not save token to secure storage', error: e, name: 'secure_token_repository.dart#saveOrReplaceToken', verbose: true);
+      Logger.warning('Could not save token to secure storage', error: e, verbose: true);
       return false;
     }
     return true;

@@ -52,7 +52,7 @@ class FirebaseUtils {
       return;
     }
     _initialized = true;
-    Logger.info('Initializing Firebase', name: 'firebase_utils.dart#initFirebase');
+    Logger.info('Initializing Firebase');
 
     try {
       // await FirebaseMessaging.instance.requestPermission();
@@ -61,7 +61,6 @@ class FirebaseUtils {
         'e.code: ${e.code}, '
         'e.message: ${e.message}, '
         'e.plugin: ${e.plugin},',
-        name: 'push_provider.dart#_initFirebase',
         error: e,
         stackTrace: s,
       );
@@ -141,14 +140,14 @@ class FirebaseUtils {
       firebaseToken = await FirebaseMessaging.instance.getToken();
     } on FirebaseException catch (e, s) {
       String errorMessage = e.message ?? 'no error message';
-      Logger.warning('Unable to retrieve Firebase token! ($errorMessage: ${e.code})', name: 'push_provider.dart#getFBToken', error: e, stackTrace: s);
+      Logger.warning('Unable to retrieve Firebase token! ($errorMessage: ${e.code})', error: e, stackTrace: s);
     }
 
     // Fall back to the last known firebase token
     if (firebaseToken == null) {
       firebaseToken = await getCurrentFirebaseToken();
     } else {
-      Logger.info('New Firebase token retrieved', name: 'push_provider.dart#getFBToken');
+      Logger.info('New Firebase token retrieved');
       await setNewFirebaseToken(firebaseToken);
     }
 
@@ -197,25 +196,25 @@ class FirebaseUtils {
   // }
 
   Future<bool> deleteFirebaseToken() async {
-    Logger.info('Deleting firebase token..', name: 'firebase_utils.dart#deleteFBToken');
+    Logger.info('Deleting firebase token..');
     try {
       final app = await Firebase.initializeApp();
       await app.setAutomaticDataCollectionEnabled(false);
       await FirebaseMessaging.instance.deleteToken();
-      Logger.warning('Firebase token deleted from Firebase', name: 'firebase_utils.dart#deleteFBToken');
+      Logger.warning('Firebase token deleted from Firebase');
     } on FirebaseException catch (e) {
       if (e.message?.contains('IOException') == true) throw SocketException(e.message!);
       rethrow;
     }
     await _storage.delete(key: _CURRENT_APP_TOKEN_KEY);
     await _storage.delete(key: _NEW_APP_TOKEN_KEY);
-    Logger.info('Firebase token deleted from secure storage', name: 'firebase_utils.dart#deleteFBToken');
+    Logger.info('Firebase token deleted from secure storage');
     return true;
   }
 
   // FIXME: WHY CURRENT AND NEW TOKEN?
   Future<void> setCurrentFirebaseToken(String str) {
-    Logger.info('Setting current firebase token', name: 'secure_token_repository.dart#setCurrentFirebaseToken');
+    Logger.info('Setting current firebase token');
     return _protect(() => _storage.write(key: _CURRENT_APP_TOKEN_KEY, value: str));
   }
 
@@ -223,7 +222,7 @@ class FirebaseUtils {
 
   // This is used for checking if the token was updated.
   Future<void> setNewFirebaseToken(String str) => _protect(() {
-        Logger.info('Setting new firebase token', name: 'secure_token_repository.dart#setNewFirebaseToken');
+        Logger.info('Setting new firebase token');
         return _storage.write(key: _NEW_APP_TOKEN_KEY, value: str);
       });
   Future<String?> getNewFirebaseToken() => _protect(() => _storage.read(key: _NEW_APP_TOKEN_KEY));

@@ -53,7 +53,7 @@ class PrivacyideaIOClient {
     try {
       await ioClient.post(url, body: '').timeout(const Duration(seconds: 15));
     } on ClientException {
-      Logger.warning('ClientException', name: 'utils.dart#triggerNetworkAccessPermission');
+      Logger.warning('ClientException');
       ioClient.close();
       if (globalNavigatorKey.currentState?.context == null) return false;
       globalRef?.read(statusMessageProvider.notifier).state = (
@@ -66,7 +66,7 @@ class PrivacyideaIOClient {
         rethrow;
       }
       if (isRetry) {
-        Logger.warning('SocketException while retrying', name: 'utils.dart#triggerNetworkAccessPermission');
+        Logger.warning('SocketException while retrying');
         if (globalNavigatorKey.currentState?.context != null) {
           globalRef?.read(statusMessageProvider.notifier).state = (
             AppLocalizations.of(await globalContext)!.connectionFailed,
@@ -90,7 +90,7 @@ class PrivacyideaIOClient {
   /// Custom POST request allows to not verify certificates.
   Future<Response> doPost({required Uri url, required Map<String, String?> body, bool sslVerify = true}) async {
     if (kIsWeb) return Response('Platform not supported', 405);
-    Logger.info('Sending post request (SSLVerify: $sslVerify)', name: 'utils.dart#doPost');
+    Logger.info('Sending post request (SSLVerify: $sslVerify)');
 
     List<MapEntry> entries = body.entries.where((element) => element.value == null).toList();
     if (entries.isNotEmpty) {
@@ -115,24 +115,23 @@ class PrivacyideaIOClient {
     try {
       response = await ioClient.post(url, body: body).timeout(const Duration(seconds: 15));
     } on HandshakeException catch (e, _) {
-      Logger.warning('Handshake failed. sslVerify: $sslVerify', name: 'utils.dart#doPost');
+      Logger.warning('Handshake failed. sslVerify: $sslVerify');
       showMessage(message: 'Handshake failed, please check the server certificate and try again.');
       response = Response('Handshake failed', 525);
     } on TimeoutException catch (e, _) {
-      Logger.info('Post request timed out', name: 'utils.dart#doPost');
+      Logger.info('Post request timed out');
       response = Response('Request timed out', 408);
     } on SocketException catch (e, _) {
-      Logger.info('Post request failed', name: 'utils.dart#doPost');
+      Logger.info('Post request failed');
       response = Response('Failed to send request', 404);
     } catch (e, _) {
-      Logger.warning('Something unexpected happened', name: 'utils.dart#doPost');
+      Logger.warning('Something unexpected happened');
       response = Response('Failed to send request', 404);
     }
 
     if (response.statusCode != 200) {
       Logger.warning(
         'Received unexpected response',
-        name: 'utils.dart#doPost',
         error: 'Status code: ${response.statusCode}' '\nPosted body: $body' '\nResponse: ${response.body}\n',
         stackTrace: StackTrace.current,
       );
@@ -144,7 +143,7 @@ class PrivacyideaIOClient {
 
   Future<Response> doGet({required Uri url, required Map<String, String?> parameters, bool sslVerify = true}) async {
     if (kIsWeb) return Response('', 405);
-    Logger.info('Sending get request (SSLVerify: $sslVerify)', name: 'utils.dart#doGet');
+    Logger.info('Sending get request (SSLVerify: $sslVerify)');
     List<MapEntry> entries = parameters.entries.where((element) => element.value == null).toList();
     if (entries.isNotEmpty) {
       List<String> nullEntries = [];
@@ -175,28 +174,28 @@ class PrivacyideaIOClient {
     try {
       response = await ioClient.get(uri).timeout(const Duration(seconds: 15));
     } on HandshakeException catch (e, _) {
-      Logger.warning('Handshake failed. sslVerify: $sslVerify', name: 'utils.dart#doGet');
+      Logger.warning('Handshake failed. sslVerify: $sslVerify');
       showStatusMessage(
         message: AppLocalizations.of(await globalContext)!.handshakeFailed,
         subMessage: AppLocalizations.of(await globalContext)!.checkServerCertificate,
       );
       response = Response('${e.runtimeType}', 525);
     } on TimeoutException catch (e, _) {
-      Logger.info('Get request timed out', name: 'utils.dart#doGet');
+      Logger.info('Get request timed out');
       response = Response('${AppLocalizations.of(await globalContext)!.timeOut}', 408);
     } on SocketException catch (e, _) {
-      Logger.info('Get request failed', name: 'utils.dart#doGet');
+      Logger.info('Get request failed');
       response = Response('${AppLocalizations.of(await globalContext)!.connectionFailed}', 404);
     } on ClientException catch (e, _) {
-      Logger.info('Get request failed', name: 'utils.dart#doGet');
+      Logger.info('Get request failed');
       response = Response('${AppLocalizations.of(await globalContext)!.connectionFailed}', 404);
     } catch (e, _) {
-      Logger.warning('Something unexpected happened', name: 'utils.dart#doGet');
+      Logger.warning('Something unexpected happened');
       response = Response('${AppLocalizations.of(await globalContext)!.unexpectedError}', 520);
     }
 
     if (response.statusCode != 200) {
-      Logger.warning('Received unexpected response: ${response.statusCode}', name: 'utils.dart#doGet');
+      Logger.warning('Received unexpected response: ${response.statusCode}');
     }
 
     ioClient.close();

@@ -139,15 +139,15 @@ class PrivacyideaContainerApi {
     }
 
     try {
-      Logger.debug('Received container sync challenge: ${initResponse.body}', name: 'TokenContainerApiEndpoint#sync');
+      Logger.debug('Received container sync challenge: ${initResponse.body}');
       final piResponse = PiServerResponse<ContainerChallenge>.fromResponse(initResponse);
       if (piResponse.isError) {
-        Logger.error('Error while getting sync challenge: ${piResponse.asError.resultError}', name: 'TokenContainerApiEndpoint#sync');
+        Logger.error('Error while getting sync challenge: ${piResponse.asError.resultError}');
         return null;
       }
       return piResponse.asSuccess.resultValue;
     } catch (e, s) {
-      Logger.error('Error while getting sync challenge: $e', name: 'TokenContainerApiEndpoint#sync', stackTrace: s);
+      Logger.error('Error while getting sync challenge: $e', stackTrace: s);
       return null;
     }
   }
@@ -187,7 +187,7 @@ class PrivacyideaContainerApi {
     }
     final containerSyncResponse = PiServerResponse<ContainerSyncResult>.fromResponse(response);
     if (containerSyncResponse.isError) {
-      Logger.error('Error while reciving sync response: ${containerSyncResponse.asError.resultError}', name: 'TokenContainerApiEndpoint#sync');
+      Logger.error('Error while reciving sync response: ${containerSyncResponse.asError.resultError}');
       return null;
     }
 
@@ -293,7 +293,6 @@ class PrivacyideaContainerApi {
     Logger.error(
       'Received unexpected response',
       error: 'StatusCode: ${response.statusCode}',
-      name: 'TokenContainerApiEndpoint#_showStatusMessage',
       stackTrace: StackTrace.current,
     );
   }
@@ -346,7 +345,7 @@ class PiServerResponse<T extends PiServerResultValue> with _$PiServerResponse {
   PiServerResponseError get asError => this as PiServerResponseError;
 
   factory PiServerResponse.fromJson(Map<String, dynamic> json) {
-    Logger.debug('Received container sync response: $json', name: 'PiServerResponse#fromJson');
+    Logger.debug('Received container sync response: $json');
     final map = validateMap<dynamic>(
       map: json,
       validators: {
@@ -391,11 +390,9 @@ class PiServerResponse<T extends PiServerResultValue> with _$PiServerResponse {
         signature: map[SIGNATURE],
       );
     }
-    Logger.info(
-        'Status: ${result[RESULT_STATUS]}'
+    Logger.info('Status: ${result[RESULT_STATUS]}'
         '\nContains error: ${result.containsKey(RESULT_ERROR)}'
-        '\nContains value: ${result.containsKey(RESULT_VALUE)}',
-        name: 'PiServerResponse#fromJson');
+        '\nContains value: ${result.containsKey(RESULT_VALUE)}');
 
     throw UnimplementedError('Unknown PiServerResponse type');
   }

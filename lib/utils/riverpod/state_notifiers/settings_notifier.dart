@@ -46,7 +46,7 @@
 //       final newState = await _repo.loadSettings();
 //       PushProvider.instance?.setPollingEnabled(state.enablePolling);
 //       state = newState;
-//       Logger.info('Loading settings from repo: $newState', name: 'settings_notifier.dart#_loadFromRepo');
+//       Logger.info('Loading settings from repo: $newState');
 //       return newState;
 //     });
 //     await loadingRepo;
@@ -55,100 +55,100 @@
 //   void _saveToRepo() async {
 //     loadingRepo = Future(() async {
 //       await _repo.saveSettings(state);
-//       Logger.info('Saving settings to repo: $state', name: 'settings_notifier.dart#_saveToRepo');
+//       Logger.info('Saving settings to repo: $state');
 //       return state;
 //     });
 //   }
 
 //   void addCrashReportRecipient(String email) {
-//     Logger.info('Crash report recipient added: $email', name: 'settings_notifier.dart#addCrashReportRecipient');
+//     Logger.info('Crash report recipient added: $email');
 //     var updatedSet = state.crashReportRecipients..add(email);
 //     state = state.copyWith(crashReportRecipients: updatedSet);
 //     _saveToRepo();
 //   }
 
 //   set isFirstRun(bool value) {
-//     Logger.info('First run set to $value', name: 'settings_notifier.dart#setFirstRun');
+//     Logger.info('First run set to $value');
 //     state = state.copyWith(isFirstRun: value);
 //     _saveToRepo();
 //   }
 
 //   set hideOTPs(bool value) {
-//     Logger.info('Hide OTPs set to $value', name: 'settings_notifier.dart#setHideOTPs');
+//     Logger.info('Hide OTPs set to $value');
 //     state = state.copyWith(hideOpts: value);
 //     _saveToRepo();
 //   }
 
 //   set showGuideOnStart(bool value) {
-//     Logger.info('Show guide on start set to $value', name: 'settings_notifier.dart#setShowGuideOnStart');
+//     Logger.info('Show guide on start set to $value');
 //     state = state.copyWith(showGuideOnStart: value);
 //     _saveToRepo();
 //   }
 
 //   void setLocalePreference(Locale locale) {
-//     Logger.info('Locale set to $locale', name: 'settings_notifier.dart#setLocalePreference');
+//     Logger.info('Locale set to $locale');
 //     state = state.copyWith(localePreference: locale);
 //     _saveToRepo();
 //   }
 
 //   void setUseSystemLocale(bool value) {
-//     Logger.info('Use system locale set to $value', name: 'settings_notifier.dart#setUseSystemLocale');
+//     Logger.info('Use system locale set to $value');
 //     state = state.copyWith(useSystemLocale: value);
 //     _saveToRepo();
 //   }
 
 //   void enablePolling() {
-//     Logger.info('Polling set to true', name: 'settings_notifier.dart#enablePolling');
+//     Logger.info('Polling set to true');
 //     state = state.copyWith(enablePolling: true);
 //     _saveToRepo();
 //   }
 
 //   void disablePolling() {
-//     Logger.info('Polling set to false', name: 'settings_notifier.dart#disablePolling');
+//     Logger.info('Polling set to false');
 //     state = state.copyWith(enablePolling: false);
 //     _saveToRepo();
 //   }
 
 //   void setPolling(bool value) {
-//     Logger.info('Polling set to $value', name: 'settings_notifier.dart#setPolling');
+//     Logger.info('Polling set to $value');
 //     state = state.copyWith(enablePolling: value);
 //     _saveToRepo();
 //   }
 
 //   void setLocale(Locale locale) {
-//     Logger.info('Locale set to $locale', name: 'settings_notifier.dart#setLocale');
+//     Logger.info('Locale set to $locale');
 //     state = state.copyWith(localePreference: locale);
 //     _saveToRepo();
 //   }
 
 //   void setVerboseLogging(bool value) {
-//     Logger.info('Verbose logging set to $value', name: 'settings_notifier.dart#setVerboseLogging');
+//     Logger.info('Verbose logging set to $value');
 //     state = state.copyWith(verboseLogging: value);
 //     _saveToRepo();
 //   }
 
 //   void toggleVerboseLogging() {
 //     final value = !state.verboseLogging;
-//     Logger.info('Verbose logging set to $value', name: 'settings_notifier.dart#setVerboseLogging');
+//     Logger.info('Verbose logging set to $value');
 //     state = state.copyWith(verboseLogging: value);
 //     _saveToRepo();
 //   }
 
 //   void setFirstRun(bool value) {
-//     Logger.info('First run set to $value', name: 'settings_notifier.dart#setFirstRun');
+//     Logger.info('First run set to $value');
 //     state = state.copyWith(isFirstRun: value);
 //     _saveToRepo();
 //   }
 
 //   void setHidePushTokens(bool value) {
-//     Logger.info('Hide push tokens set to $value', name: 'settings_notifier.dart#setHidePushTokens');
+//     Logger.info('Hide push tokens set to $value');
 //     state = state.copyWith(hidePushTokens: value);
 //     _saveToRepo();
 //   }
 
 //   void setLatestStartedVersion(Version version) {
 //     if (state.latestStartedVersion >= version) return;
-//     Logger.info('Latest started version set to $version', name: 'settings_notifier.dart#setLatestStartedVersion');
+//     Logger.info('Latest started version set to $version');
 //     state = state.copyWith(latestStartedVersion: version);
 //     _saveToRepo();
 //   }

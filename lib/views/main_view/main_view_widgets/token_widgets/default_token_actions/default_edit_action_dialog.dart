@@ -187,13 +187,10 @@ class _DefaultEditActionDialogState extends ConsumerState<DefaultEditActionDialo
                       final edited =
                           await globalRef?.read(tokenProvider.notifier).updateToken(token, (p0) => p0.copyWith(label: newLabel, tokenImage: newImageUrl));
                       if (edited == null) {
-                        Logger.error('Token editing failed', name: 'DefaultEditAction#_showDialog');
+                        Logger.error('Token editing failed');
                         return;
                       }
-                      Logger.info(
-                        'Token edited: ${token.label} -> ${edited.label}, ${token.tokenImage} -> ${edited.tokenImage}',
-                        name: 'DefaultEditAction#_showDialog',
-                      );
+                      Logger.info('Token edited: ${token.label} -> ${edited.label}, ${token.tokenImage} -> ${edited.tokenImage}');
                       if (context.mounted) Navigator.of(context).pop();
                     },
           child: Text(

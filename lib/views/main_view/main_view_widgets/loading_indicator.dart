@@ -32,10 +32,10 @@ class LoadingIndicator extends StatelessWidget {
       builder: (context) => const LoadingIndicator._(),
     );
     Overlay.of(context).insert(_overlayEntry!);
-    Logger.info('Showing loading indicator', name: 'loading_indicator.dart#show');
+    Logger.info('Showing loading indicator');
 
     final T result = await future().then((value) {
-      Logger.info('Hiding loading indicator', name: 'loading_indicator.dart#show');
+      Logger.info('Hiding loading indicator');
       _overlayEntry?.remove();
       _overlayEntry = null;
       return value;

@@ -33,7 +33,7 @@ void _testSortableNotifier() {
         TokenFolder(label: 'Folder 2', folderId: 2, sortIndex: 2),
       ]);
       when(mockTokenFolderRepository.loadState()).thenAnswer((_) async {
-        Logger.debug('Loading token folder state', name: 'TokenFolderNotifier#_loadFromRepo');
+        Logger.debug('Loading token folder state');
         return tokenFolderState;
       });
       when(mockTokenFolderRepository.saveState(any)).thenAnswer((newState) async {

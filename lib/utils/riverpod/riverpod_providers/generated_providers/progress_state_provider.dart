@@ -31,27 +31,27 @@
 // class ProgressStateNotifier extends _$ProgressStateNotifier {
 //   @override
 //   ProgressState build(Type type) {
-//     Logger.info('Initializing progress state', name: 'ProgressStateNotifier#initProgress');
+//     Logger.info('Initializing progress state');
 //     return const ProgressState.uninitialized();
 //   }
 
 //   double? get progress => state.progress;
 
 //   ProgressState initProgress(int max, int value) {
-//     Logger.info('Initializing progress state', name: 'ProgressStateNotifier#initProgress');
+//     Logger.info('Initializing progress state');
 //     final newState = ProgressState(max: max, value: value);
 //     state = newState;
 //     return newState;
 //   }
 
 //   void deleteProgress() {
-//     Logger.info('Deleting progress state', name: 'ProgressStateNotifier#deleteProgress');
+//     Logger.info('Deleting progress state');
 //     state = const ProgressState.uninitialized();
 //   }
 
 //   ProgressState? resetProgress() {
 //     if (state is ProgressStateUninitialized) return state;
-//     Logger.info('Resetting progress state', name: 'ProgressStateNotifier#resetProgress');
+//     Logger.info('Resetting progress state');
 //     final newState = state.copyWith(value: 0);
 //     state = newState;
 //     return newState;
@@ -60,7 +60,7 @@
 //   ProgressState? setProgressMax(int max) {
 //     assert(state is! ProgressStateUninitialized, 'Progress state is uninitialized');
 //     assert(max > 0, 'Max value must be greater than 0');
-//     Logger.info('Setting progress max to $max', name: 'ProgressStateNotifier#setProgressMax');
+//     Logger.info('Setting progress max to $max');
 //     final newState = state.copyWith(max: max);
 //     state = newState;
 //     return newState;
@@ -70,7 +70,7 @@
 //     assert(state is! ProgressStateUninitialized, 'Progress state is uninitialized');
 //     assert(value >= 0, 'Value must be greater than or equal to 0');
 //     if (value > state.max) value = state.max;
-//     Logger.info('Setting progress value to $value/${state.max}', name: 'ProgressStateNotifier#setProgressValue');
+//     Logger.info('Setting progress value to $value/${state.max}');
 //     final newState = state.copyWith(value: value);
 //     state = newState;
 //     return newState;

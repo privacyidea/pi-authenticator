@@ -91,7 +91,7 @@ class FreeOtpPlusImportFileProcessor extends TokenImportFileProcessor {
         final uri = Uri.parse(line);
         results.addAll(await const FreeOtpPlusQrProcessor().processUri(uri));
       } catch (e) {
-        Logger.error('Failed to process line: $line', name: 'FreeOtpPlusFileProcessor#processFile', error: e, stackTrace: StackTrace.current);
+        Logger.error('Failed to process line: $line', error: e, stackTrace: StackTrace.current);
         results.add(ProcessorResultFailed(
           e.toString(),
           resultHandlerType: resultHandlerType,
@@ -145,7 +145,7 @@ class FreeOtpPlusImportFileProcessor extends TokenImportFileProcessor {
         resultHandlerType: resultHandlerType,
       );
     } catch (e, s) {
-      Logger.warning('Failed to parse token.', name: 'FreeOtpPlusFileProcessor#_processJsonToken', error: e, stackTrace: s);
+      Logger.warning('Failed to parse token.', error: e, stackTrace: s);
       return ProcessorResultFailed(
         e.toString(),
         resultHandlerType: resultHandlerType,

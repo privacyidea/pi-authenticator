@@ -49,7 +49,7 @@ class SettingsNotifier extends _$SettingsNotifier {
   Future<SettingsState> build({
     required SettingsRepository repo,
   }) async {
-    // Logger.info('New settings notifier created', name: 'settings_notifier.dart#build');
+    // Logger.info('New settings notifier created');
     _repo = _repoOverride ?? repo;
     final newState = await _loadFromRepo();
     return newState;
@@ -58,14 +58,14 @@ class SettingsNotifier extends _$SettingsNotifier {
   Future<SettingsState> _loadFromRepo() async {
     await _repoMutex.acquire();
     final newState = await _repo.loadSettings();
-    Logger.info('Loading settings from repo: $newState', name: 'settings_notifier.dart#_loadFromRepo');
+    Logger.info('Loading settings from repo: $newState');
     _repoMutex.release();
     return newState;
   }
 
   Future<bool> _saveToRepo(SettingsState state) async {
     await _repoMutex.acquire();
-    Logger.info('Saving settings to repo: $state', name: 'settings_notifier.dart#_saveToRepo');
+    Logger.info('Saving settings to repo: $state');
     final success = await _repo.saveSettings(state);
     _repoMutex.release();
     return success;
@@ -87,7 +87,7 @@ class SettingsNotifier extends _$SettingsNotifier {
   }
 
   Future<SettingsState> addCrashReportRecipient(String email) async {
-    Logger.info('Crash report recipient added: $email', name: 'settings_notifier.dart#addCrashReportRecipient');
+    Logger.info('Crash report recipient added: $email');
     return updateState((oldState) {
       final updatedSet = oldState.crashReportRecipients..add(email);
       return oldState.copyWith(crashReportRecipients: updatedSet);
@@ -95,7 +95,7 @@ class SettingsNotifier extends _$SettingsNotifier {
   }
 
   Future<SettingsState> removeCrashReportRecipient(String email) async {
-    Logger.info('Crash report recipient removed: $email', name: 'settings_notifier.dart#removeCrashReportRecipient');
+    Logger.info('Crash report recipient removed: $email');
     return updateState((oldState) {
       final updatedSet = oldState.crashReportRecipients..remove(email);
       return oldState.copyWith(crashReportRecipients: updatedSet);
@@ -103,74 +103,74 @@ class SettingsNotifier extends _$SettingsNotifier {
   }
 
   Future<SettingsState> setisFirstRun(bool value) {
-    Logger.info('First run set to $value', name: 'settings_notifier.dart#setFirstRun');
+    Logger.info('First run set to $value');
     return updateState((oldState) => oldState.copyWith(isFirstRun: value));
   }
 
   Future<SettingsState> sethideOTPs(bool value) {
-    Logger.info('Hide OTPs set to $value', name: 'settings_notifier.dart#setHideOTPs');
+    Logger.info('Hide OTPs set to $value');
     return updateState((oldState) => oldState.copyWith(hideOpts: value));
   }
 
   Future<SettingsState> setshowGuideOnStart(bool value) {
-    Logger.info('Show guide on start set to $value', name: 'settings_notifier.dart#setShowGuideOnStart');
+    Logger.info('Show guide on start set to $value');
     return updateState((oldState) => oldState.copyWith(showGuideOnStart: value));
   }
 
   Future<SettingsState> setLocalePreference(Locale locale) {
-    Logger.info('Locale set to $locale', name: 'settings_notifier.dart#setLocalePreference');
+    Logger.info('Locale set to $locale');
     return updateState((oldState) => oldState.copyWith(localePreference: locale));
   }
 
   Future<SettingsState> setUseSystemLocale(bool value) {
-    Logger.info('Use system locale set to $value', name: 'settings_notifier.dart#setUseSystemLocale');
+    Logger.info('Use system locale set to $value');
     return updateState((oldState) => oldState.copyWith(useSystemLocale: value));
   }
 
   Future<SettingsState> enablePolling() {
-    Logger.info('Polling set to true', name: 'settings_notifier.dart#enablePolling');
+    Logger.info('Polling set to true');
     return updateState((oldState) => oldState.copyWith(enablePolling: true));
   }
 
   Future<SettingsState> disablePolling() {
-    Logger.info('Polling set to false', name: 'settings_notifier.dart#disablePolling');
+    Logger.info('Polling set to false');
     return updateState((oldState) => oldState.copyWith(enablePolling: false));
   }
 
   Future<SettingsState> setPolling(bool value) {
-    Logger.info('Polling set to $value', name: 'settings_notifier.dart#setPolling');
+    Logger.info('Polling set to $value');
     return updateState((oldState) => oldState.copyWith(enablePolling: value));
   }
 
   Future<SettingsState> setLocale(Locale locale) {
-    Logger.info('Locale set to $locale', name: 'settings_notifier.dart#setLocale');
+    Logger.info('Locale set to $locale');
     return updateState((oldState) => oldState.copyWith(localePreference: locale));
   }
 
   Future<SettingsState> setVerboseLogging(bool value) async {
-    Logger.info('Verbose logging set to $value', name: 'settings_notifier.dart#setVerboseLogging');
+    Logger.info('Verbose logging set to $value');
     final updatedState = await updateState((oldState) => oldState.copyWith(verboseLogging: value));
     Logger.setVerboseLogging(updatedState.verboseLogging);
     return updatedState;
   }
 
   Future<SettingsState> toggleVerboseLogging() {
-    Logger.info('Toggling verbose logging', name: 'settings_notifier.dart#toggleVerboseLogging');
+    Logger.info('Toggling verbose logging');
     return updateState((oldState) => oldState.copyWith(verboseLogging: !oldState.verboseLogging));
   }
 
   Future<SettingsState> setFirstRun(bool value) {
-    Logger.info('First run set to $value', name: 'settings_notifier.dart#setFirstRun');
+    Logger.info('First run set to $value');
     return updateState((oldState) => oldState.copyWith(isFirstRun: value));
   }
 
   Future<SettingsState> setHidePushTokens(bool value) {
-    Logger.info('Hide push tokens set to $value', name: 'settings_notifier.dart#setHidePushTokens');
+    Logger.info('Hide push tokens set to $value');
     return updateState((oldState) => oldState.copyWith(hidePushTokens: value));
   }
 
   Future<SettingsState> setLatestStartedVersion(Version version) {
-    Logger.info('Latest started version set to $version', name: 'settings_notifier.dart#setLatestStartedVersion');
+    Logger.info('Latest started version set to $version');
     return updateState((oldState) => oldState.copyWith(latestStartedVersion: version));
   }
 }

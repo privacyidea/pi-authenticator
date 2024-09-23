@@ -120,7 +120,6 @@ class GoogleAuthenticatorQrProcessor extends TokenImportSchemeProcessor {
       } catch (e) {
         Logger.error(
           "Skipping token ${param.name} due to error: $e",
-          name: "GoogleAuthenticatorQrProcessor#processUri",
           error: e,
           stackTrace: StackTrace.current,
         );

@@ -78,8 +78,7 @@ class _LabeledDropdownButtonState<T> extends State<LabeledDropdownButton<T>> {
               DropdownMenuItem<T>(
                 value: widget.values[i],
                 child: Text(
-                  '${widget.valueLabels != null && i < widget.valueLabels!.length ? widget.valueLabels![i] : widget.values[i].toString()}'
-                  ' ${widget.postFix}',
+                  '${widget.valueLabels != null && i < widget.valueLabels!.length ? widget.valueLabels![i] : widget.values[i].toString()}${widget.postFix.isNotEmpty ? ' ${widget.postFix}' : ''}',
                   style: Theme.of(context).textTheme.bodyMedium,
                   overflow: TextOverflow.fade,
                   softWrap: false,

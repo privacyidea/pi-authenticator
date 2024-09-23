@@ -28,12 +28,12 @@ part 'app_constraints_notifier.g.dart';
 class AppConstraintsNotifier extends _$AppConstraintsNotifier {
   @override
   BoxConstraints? build() {
-    Logger.info("New AppConstraints created", name: 'AppConstraintsNotifier#build');
+    Logger.info("New AppConstraints created");
     return null;
   }
 
   void update(BoxConstraints constraints) {
-    Logger.info("AppConstraints updated", name: 'AppConstraintsNotifier#update');
+    Logger.info("AppConstraints updated");
     state = constraints;
   }
 }

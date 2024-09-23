@@ -95,7 +95,6 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
       Logger.warning(
         'File is not a valid Authenticator Pro backup file',
         error: 'Invalid content: $contentString',
-        name: 'authenticator_pro_import_file_processor#fileIsValid',
       );
       return false;
     } catch (e) {
@@ -111,7 +110,6 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
       Logger.warning(
         'File is not a valid Authenticator Pro backup file',
         error: 'Content Bytes: $contentBytes',
-        name: 'authenticator_pro_import_file_processor#fileIsValid',
       );
     }
     // It's not utf8 encoded and not encrypted, so it's not valid -> return false
@@ -145,7 +143,7 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
     Uint8Buffer uint8buffer = Uint8Buffer(data: bytes);
     final headerByteLength = utf8.encode(header).length;
     final fileHeader = utf8.decode(uint8buffer.readBytes(headerByteLength));
-    Logger.info('File header: $fileHeader', name: 'authenticator_pro_import_file_processor#processFile');
+    Logger.info('File header: $fileHeader');
     final plainText = switch (fileHeader) {
       header => await _processEncrypted(uint8buffer: uint8buffer, password: password ?? ''),
       headerLegacy => await _processEncryptedLegacy(uint8buffer: uint8buffer, password: password ?? ''),
@@ -258,7 +256,7 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
           resultHandlerType: resultHandlerType,
         ));
       } catch (e) {
-        Logger.error('Failed to parse token.', name: 'authenticator_pro_import_file_processor#_processUriList', error: e, stackTrace: StackTrace.current);
+        Logger.error('Failed to parse token.', error: e, stackTrace: StackTrace.current);
         results.add(ProcessorResultFailed(
           e.toString(),
           resultHandlerType: resultHandlerType,
@@ -300,7 +298,7 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
         resultHandlerType: resultHandlerType,
       ));
     } catch (e) {
-      Logger.error('Failed to parse token.', name: 'authenticator_pro_import_file_processor#_processHtml', error: e, stackTrace: StackTrace.current);
+      Logger.error('Failed to parse token.', error: e, stackTrace: StackTrace.current);
       results.add(ProcessorResultFailed(
         e.toString(),
         resultHandlerType: resultHandlerType,
@@ -310,7 +308,7 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
   }
 
   Future<List<ProcessorResult<Token>>> _processJson({required List<Map<String, dynamic>> tokensMap}) async {
-    Logger.info('Processing plain file', name: 'authenticator_pro_import_file_processor#_processAuthPro');
+    Logger.info('Processing plain file');
     final result = <ProcessorResult<Token>>[];
     for (var tokenMap in tokensMap) {
       try {
@@ -365,7 +363,7 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
           resultHandlerType: resultHandlerType,
         ));
       } catch (e) {
-        Logger.error('Failed to parse token.', name: 'authenticator_pro_import_file_processor#_processAuthPro', error: e, stackTrace: StackTrace.current);
+        Logger.error('Failed to parse token.', error: e, stackTrace: StackTrace.current);
         result.add(ProcessorResultFailed(
           e.toString(),
           resultHandlerType: resultHandlerType,

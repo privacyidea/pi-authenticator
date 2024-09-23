@@ -24,13 +24,13 @@ class SecureTokenContainerRepository extends TokenContainerRepository {
   @override
   Future<TokenContainerState> loadCredentialsState() async {
     final containerJsonString = await _readAll();
-    Logger.warning('Loaded container: $containerJsonString', name: 'SecureTokenContainerRepository');
+    Logger.warning('Loaded container: $containerJsonString');
     return TokenContainerState.fromJsonStringList(containerJsonString.values.toList());
   }
 
   @override
   Future<TokenContainerState> saveCredentialsState(TokenContainerState containerState) async {
-    Logger.warning('Saving container: $containerState', name: 'SecureTokenContainerRepository');
+    Logger.warning('Saving container: $containerState');
     final futures = <Future>[];
     for (var container in containerState.container) {
       futures.add(saveCredential(container));

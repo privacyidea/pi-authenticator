@@ -49,16 +49,14 @@ class TokenFolderWidget extends ConsumerWidget {
               );
               return Offset(max(textSize.width / 2, 30), textSize.height / 2 + 30);
             },
-            onDragStarted: () => ref.read(draggingSortableProvider.notifier).state = folder,
-            onDragCompleted: () async {
-              Logger.info('Draggable completed', name: 'TokenFolderWidget#build');
-              await Future.delayed(const Duration(milliseconds: 100));
-              globalRef?.read(draggingSortableProvider.notifier).state = null;
+            onDragStarted: () => draggingSortableNotifier.state = folder,
+            onDragCompleted: () {
+              Logger.info('Draggable completed');
+              // Will be handled by the sortableNotifier
             },
-            onDraggableCanceled: (velocity, offset) async {
-              Logger.info('Draggable canceled', name: 'TokenFolderWidget#build');
-              await Future.delayed(const Duration(milliseconds: 100));
-              globalRef?.read(draggingSortableProvider.notifier).state = null;
+            onDraggableCanceled: (velocity, offset) {
+              Logger.info('Draggable canceled');
+              draggingSortableNotifier.state = null;
             },
             data: folder,
             childWhenDragging: const SizedBox(),

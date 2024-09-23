@@ -146,7 +146,7 @@ class TokenTemplate with _$TokenTemplate {
   }
 
   // bool hasSameValuesAs(TokenTemplate serverTokenTemplate) {
-  //   Logger.debug('serverTokenTemplate.keys: ${serverTokenTemplate.keys}', name: 'TokenTemplate#hasSameValuesAs');
+  //   Logger.debug('serverTokenTemplate.keys: ${serverTokenTemplate.keys}');
   //   for (var key in serverTokenTemplate.keys) {
   //     if (otpAuthMap[key] != serverTokenTemplate.otpAuthMap[key]) {
   //       Logger.debug('TokenTemplate has different values for key "$key": ${otpAuthMap[key]} != ${serverTokenTemplate.otpAuthMap[key]}',
@@ -162,9 +162,9 @@ class TokenTemplate with _$TokenTemplate {
   // }
 
   // bool tokenWouldBeUpdated(Token token) {
-  //   Logger.debug('Checking if token would be updated', name: 'TokenTemplate#tokenWouldBeUpdated');
+  //   Logger.debug('Checking if token would be updated');
   //   final tokenTemplate = token.toTemplate(this);
-  //   Logger.debug('TokenTemplate: \n$tokenTemplate\n has same values as \n$this\n ?', name: 'TokenTemplate#tokenWouldBeUpdated');
+  //   Logger.debug('TokenTemplate: \n$tokenTemplate\n has same values as \n$this\n ?');
   //   return tokenTemplate?.hasSameValuesAs(this) == false;
   // }
 }

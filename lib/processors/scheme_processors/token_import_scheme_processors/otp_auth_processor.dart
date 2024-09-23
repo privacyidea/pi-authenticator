@@ -53,7 +53,7 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
         )
       ];
     }
-    Logger.info('Try to handle otpAuth:', name: 'token_notifier.dart#addTokenFromOtpAuth');
+    Logger.info('Try to handle otpAuth:');
     // The values from queryParameters are always strings.
     Map<String, String> queryParameters = {...uri.queryParameters};
 
@@ -216,7 +216,7 @@ void _logInfo(Uri uri) {
   queryParameters.forEach((key, value) {
     infoLog += '\n${key.padLeft(9)} | $value';
   });
-  Logger.info(infoLog, name: 'parsing_utils.dart#_parseOtpAuth');
+  Logger.info(infoLog);
 }
 
 // This is a fix for omitted padding in base32 encoded secrets.
@@ -231,10 +231,10 @@ Map<String, String> _secretAddPadding(Map<String, String> queryParameters) {
 
 String _parseTokenType(Uri uri) {
   if (_parseIssuer(uri) == "Steam") return TokenTypes.STEAM.name;
-  Logger.debug('Token type host: ${uri.host}', name: 'otp_auth_processor.dart#_parseTokenType');
-  Logger.debug('Token type queryParameters: ${uri.queryParameters[OTP_AUTH_TYPE]}', name: 'otp_auth_processor.dart#_parseTokenType');
+  Logger.debug('Token type host: ${uri.host}');
+  Logger.debug('Token type queryParameters: ${uri.queryParameters[OTP_AUTH_TYPE]}');
   final value = uri.queryParameters[OTP_AUTH_TYPE] ?? uri.host;
-  Logger.debug('Token type value: $value', name: 'otp_auth_processor.dart#_parseTokenType');
+  Logger.debug('Token type value: $value');
   return validate(
     value: uri.queryParameters[OTP_AUTH_TYPE] ?? uri.host,
     validator: ObjectValidator<String>(defaultValue: uri.host),

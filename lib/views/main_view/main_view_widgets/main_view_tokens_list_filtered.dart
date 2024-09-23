@@ -72,7 +72,7 @@ class MainViewTokensListFiltered extends ConsumerWidget {
   List<Widget> _buildFilteredFolder({required WidgetRef ref, required TokenFolder folder, required TokenFilter filter}) {
     if (filter.filterTokens(ref.watch(tokenProvider).tokensInFolder(folder)).isEmpty) return [];
     final expanded = filter.searchQuery.isNotEmpty && !folder.isLocked ? true : null; // Auto expand if search query is not empty and folder is not locked.
-    Logger.warning('Expanded: $expanded', name: 'main_view_tokens_list_filtered.dart#_buildFilteredFolder');
+    Logger.warning('Expanded: $expanded');
     final List<Widget> widgets = [];
     widgets.add(
       TokenFolderExpandable(folder: folder, filter: filter, expandOverride: expanded, key: ValueKey('filteredFolder:${folder.folderId}')),

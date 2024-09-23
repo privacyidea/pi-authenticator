@@ -56,7 +56,7 @@ extension ListProcessorResult<T> on List<ProcessorResult<T>> {
     final results = toList();
     if (results.isEmpty) {
       showMessage(message: 'No data found in QR code.', duration: const Duration(seconds: 3));
-      Logger.warning('No data found in QR code.', name: 'token_notifier.dart#_getData');
+      Logger.warning('No data found in QR code.');
       return [];
     }
     final failedResults = results.whereType<ProcessorResultFailed>().toList();

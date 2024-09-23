@@ -99,11 +99,11 @@ class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
 
   static Future<List<ProcessorResult<dynamic>>?> _showLockedHomeWidgetProcessor(Uri uri, BuildContext context, {bool fromInit = false}) async {
     if (uri.host != 'showlocked') {
-      Logger.warning('Invalid host for showlocked: ${uri.host}', name: 'home_widget_processor.dart#_showLockedHomeWidgetProcessor');
+      Logger.warning('Invalid host for showlocked: ${uri.host}');
       return [];
     }
     if (uri.queryParameters['id'] == null) {
-      Logger.warning('Invalid query parameters for showlocked: ${uri.queryParameters}', name: 'home_widget_processor.dart#_showLockedHomeWidgetProcessor');
+      Logger.warning('Invalid query parameters for showlocked: ${uri.queryParameters}');
       return [
         ProcessorResult.failed(
           'Missing id for showlocked: ${uri.host}',
@@ -111,12 +111,12 @@ class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
         )
       ];
     }
-    Logger.info('Showing otp of locked Token of homeWidget: ${uri.queryParameters['id']}', name: 'home_widget_processor.dart#_showLockedHomeWidgetProcessor');
+    Logger.info('Showing otp of locked Token of homeWidget: ${uri.queryParameters['id']}');
     Navigator.popUntil(context, (route) => route.isFirst);
 
     final tokenId = await HomeWidgetUtils().getTokenIdOfWidgetId(uri.queryParameters['id']!);
     if (tokenId == null) {
-      Logger.warning('Could not find token for widget id: ${uri.queryParameters['id']}', name: 'home_widget_processor.dart#_showLockedHomeWidgetProcessor');
+      Logger.warning('Could not find token for widget id: ${uri.queryParameters['id']}');
       return [
         ProcessorResult.failed(
           'Could not find token for widget id: ${uri.queryParameters['id}']}',
@@ -126,7 +126,7 @@ class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
     }
     await Future.delayed(const Duration(milliseconds: 200));
     if (globalRef == null) {
-      Logger.warning('Could not find globalRef', name: 'home_widget_processor.dart#_showLockedHomeWidgetProcessor');
+      Logger.warning('Could not find globalRef');
       return [
         const ProcessorResult.failed(
           'Could not find globalRef',

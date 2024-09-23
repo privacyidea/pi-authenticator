@@ -26,7 +26,7 @@ import '../generated_providers/token_notifier.dart';
 
 final homeWidgetProvider = StateProvider<Map<String, OTPToken>>(
   (ref) {
-    Logger.info("New homeWidgetProvider created", name: 'homeWidgetProvider');
+    Logger.info("New homeWidgetProvider created");
     ref.listen(tokenProvider, (previous, next) {
       HomeWidgetUtils().updateTokensIfLinked(next.lastlyUpdatedTokens);
     });

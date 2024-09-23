@@ -49,8 +49,7 @@ abstract class TokenImportFileProcessor with TokenImportProcessor<XFile, String?
         tokens.addAll(await processor.processFile(file, password: password));
         return tokens;
       } catch (e) {
-        Logger.warning('Failed to process file with processor ${processor.runtimeType}',
-            error: e, name: 'token_import_file_processor_interface.dart#processFile');
+        Logger.warning('Failed to process file with processor ${processor.runtimeType}', error: e);
       }
     }
     return [];
