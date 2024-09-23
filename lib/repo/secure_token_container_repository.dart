@@ -22,51 +22,51 @@ class SecureTokenContainerRepository extends TokenContainerRepository {
   Future<void> _delete(String key) => _protect(() => _storage.delete(key: key));
 
   @override
-  Future<TokenContainerState> loadCredentialsState() async {
+  Future<TokenContainerState> loadContainerState() async {
     final containerJsonString = await _readAll();
     Logger.warning('Loaded container: $containerJsonString');
     return TokenContainerState.fromJsonStringList(containerJsonString.values.toList());
   }
 
   @override
-  Future<TokenContainerState> saveCredentialsState(TokenContainerState containerState) async {
+  Future<TokenContainerState> saveContainerState(TokenContainerState containerState) async {
     Logger.warning('Saving container: $containerState');
     final futures = <Future>[];
     for (var container in containerState.container) {
-      futures.add(saveCredential(container));
+      futures.add(saveContainer(container));
     }
     await Future.wait(futures);
-    return await loadCredentialsState();
+    return await loadContainerState();
   }
 
   @override
-  Future<TokenContainerState> deleteCredential(String serial) async {
+  Future<TokenContainerState> deleteContainer(String serial) async {
     await _delete(_keyOfSerial(serial));
-    return await loadCredentialsState();
+    return await loadContainerState();
   }
 
   @override
-  Future<TokenContainerState> deleteAllCredentials() async {
+  Future<TokenContainerState> deleteAllContainer() async {
     final containerKeys = (await _readAll()).keys.where((key) => key.startsWith(containerCredentialsKey));
     final futures = <Future>[];
     for (var key in containerKeys) {
       futures.add(_delete(key));
     }
     await Future.wait(futures);
-    return await loadCredentialsState();
+    return await loadContainerState();
   }
 
   @override
-  Future<TokenContainer?> loadCredential(String serial) async {
+  Future<TokenContainer?> loadContainer(String serial) async {
     final containerJsonString = await _read(_keyOfSerial(serial));
     if (containerJsonString == null) return null;
     return TokenContainer.fromJson(jsonDecode(containerJsonString));
   }
 
   @override
-  Future<TokenContainerState> saveCredential(TokenContainer container) async {
+  Future<TokenContainerState> saveContainer(TokenContainer container) async {
     final containerJsonString = jsonEncode(container.toJson());
     await _write(_keyOfSerial(container.serial), containerJsonString);
-    return await loadCredentialsState();
+    return await loadContainerState();
   }
 }

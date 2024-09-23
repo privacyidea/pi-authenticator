@@ -7,7 +7,7 @@ part of 'app_constraints_notifier.dart';
 // **************************************************************************
 
 String _$appConstraintsNotifierHash() =>
-    r'6b6633ada94116eb933767ab1e29aeecf3e4397c';
+    r'7ee476bc79277d5b032420984c5eec5d782210a8';
 
 /// See also [AppConstraintsNotifier].
 @ProviderFor(AppConstraintsNotifier)
