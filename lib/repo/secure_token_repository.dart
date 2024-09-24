@@ -138,10 +138,7 @@ class SecureTokenRepository implements TokenRepository {
         stackTrace: StackTrace.current,
       );
     } else {
-      Logger.info(
-        'Saved ${tokens.length}/${tokens.length} tokens to secure storage',
-        stackTrace: StackTrace.current,
-      );
+      Logger.info('Saved ${tokens.length}/${tokens.length} tokens to secure storage');
     }
     return failedTokens;
   }

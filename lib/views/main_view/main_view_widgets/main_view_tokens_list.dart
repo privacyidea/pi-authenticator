@@ -60,7 +60,7 @@ class MainViewTokensList extends ConsumerStatefulWidget {
       // 4. Ignore 2. and 3. if there is a sortable that is dragged
       //           1                     2                     3                         4
       if (!isDraggingTheCurrent && ((!isFirst && !previousWasExpandedFolder) || draggingSortable != null)) {
-        widgets.add(DragTargetDivider(dependingFolder: null, previousSortable: sortables.last, nextSortable: sortables[i]));
+        widgets.add(DragTargetDivider(dependingFolder: null, previousSortable: i == 0 ? null : sortables.elementAtOrNull(i - 1), nextSortable: sortables[i]));
       }
       if (introductionAdded == false && sortables[i] is Token) {
         widgets.add(
@@ -71,7 +71,7 @@ class MainViewTokensList extends ConsumerStatefulWidget {
         );
         introductionAdded = true;
       } else {
-        widgets.add(SortableWidgetBuilder.fromSortable(sortables[i], key: Key('mainview_${sortables[i].runtimeType}${sortables[i].sortIndex}')));
+        widgets.add(SortableWidgetBuilder.fromSortable(sortables[i], key: Key('mainview_${sortables[i].runtimeType}${sortables[i].hashCode}')));
       }
     }
 

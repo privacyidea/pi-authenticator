@@ -62,7 +62,7 @@ class CustomPaintNavigationBar extends CustomPainter {
       ..close(); // point 1
 
     canvas.translate(0, -elevation);
-    canvas.drawShadow(path, shadowColor, elevation, false);
+    canvas.drawShadow(path, shadowColor, elevation, true);
     canvas.translate(0, elevation);
     canvas.drawPath(path, paint);
   }

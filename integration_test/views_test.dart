@@ -163,7 +163,7 @@ Future<void> _settingsViewTest(WidgetTester tester) async {
   await tester.tap(find.byIcon(Icons.settings));
   await tester.pumpAndSettle();
   expect(find.text(AppLocalizationsEn().settings), findsOneWidget);
-  expect(find.text(AppLocalizationsEn().themeMode), findsOneWidget);
+  expect(find.text(AppLocalizationsEn().theme), findsOneWidget);
   expect(find.text(AppLocalizationsEn().language), findsOneWidget);
   expect(find.text(AppLocalizationsEn().errorLogTitle), findsOneWidget);
   expect(find.byType(SettingsGroup), findsNWidgets(6));

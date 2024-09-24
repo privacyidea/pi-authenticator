@@ -31,7 +31,7 @@ class SettingsGroupTheme extends StatelessWidget {
   Widget build(BuildContext context) {
     final current = EasyDynamicTheme.of(context).themeMode;
     return SettingsGroup(
-      title: AppLocalizations.of(context)!.themeMode,
+      title: AppLocalizations.of(context)!.theme,
       onPressed: () {
         switch (current) {
           case ThemeMode.light:

@@ -42,48 +42,62 @@ class SettingsGroup extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Divider(),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            onPressed != null
-                ? GestureDetector(
-                    onTap: isActive ? onPressed : null,
-                    child: ListTile(
-                      dense: true,
-                      leading: Text(
-                        title,
-                        style: theme.textTheme.titleLarge?.copyWith(color: isActive ? null : Colors.grey),
-                        overflow: TextOverflow.fade,
-                        softWrap: false,
-                      ),
-                      trailing: DefaultIconButton(
-                        tooltip: title,
-                        onPressed: isActive ? onPressed! : null,
-                        icon: trailingIcon ?? Icons.arrow_forward_ios,
-                      ),
-                    ),
-                  )
-                : ListTile(
-                    dense: true,
-                    leading: Text(
-                      title,
-                      style: theme.textTheme.titleLarge?.copyWith(color: isActive ? null : Colors.grey),
-                      overflow: TextOverflow.fade,
-                      softWrap: false,
-                    ),
-                  ),
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0),
-              child: Column(children: children),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: theme.cardColor,
+          borderRadius: BorderRadius.circular(8.0),
+          boxShadow: [
+            BoxShadow(
+              color: theme.shadowColor,
+              blurRadius: 4.0,
+              offset: const Offset(0, 2),
             ),
           ],
         ),
-        const Divider(),
-      ],
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                onPressed != null
+                    ? GestureDetector(
+                        onTap: isActive ? onPressed : null,
+                        child: ListTile(
+                          dense: true,
+                          leading: Text(
+                            title,
+                            style: theme.textTheme.titleLarge?.copyWith(color: isActive ? null : Colors.grey),
+                            overflow: TextOverflow.fade,
+                            softWrap: false,
+                          ),
+                          trailing: DefaultIconButton(
+                            tooltip: title,
+                            onPressed: isActive ? onPressed! : null,
+                            icon: trailingIcon ?? Icons.arrow_forward_ios,
+                          ),
+                        ),
+                      )
+                    : ListTile(
+                        dense: true,
+                        leading: Text(
+                          title,
+                          style: theme.textTheme.titleLarge?.copyWith(color: isActive ? null : Colors.grey),
+                          overflow: TextOverflow.fade,
+                          softWrap: false,
+                        ),
+                      ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: Column(children: children),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

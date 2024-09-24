@@ -20,16 +20,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class MainViewBackgroundIcon extends ConsumerWidget {
+class MainViewBackgroundImage extends ConsumerWidget {
   final Widget appImage;
 
-  const MainViewBackgroundIcon({super.key, required this.appImage});
+  const MainViewBackgroundImage({super.key, required this.appImage});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final scaffoldBackgroundColor = Theme.of(context).scaffoldBackgroundColor;
-    final base = isDarkMode ? 0.3 : 0.18;
+    final base = isDarkMode ? 0.3 : 0.08;
     final blendMode = isDarkMode ? BlendMode.darken : BlendMode.lighten;
     return Positioned.fill(
       child: Padding(

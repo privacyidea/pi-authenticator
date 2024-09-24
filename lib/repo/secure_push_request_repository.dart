@@ -25,6 +25,7 @@ import '../interfaces/repo/push_request_repository.dart';
 import '../model/push_request.dart';
 import '../model/riverpod_states/push_request_state.dart';
 import '../utils/custom_int_buffer.dart';
+import '../utils/logger.dart';
 import 'secure_storage_mutexed.dart';
 
 class SecurePushRequestRepository implements PushRequestRepository {
@@ -60,7 +61,7 @@ class SecurePushRequestRepository implements PushRequestRepository {
   /// If no state is given, the current state is loaded from the secure storage.
   /// This is a critical section, so it is protected by Mutex.
   @override
-  Future<PushRequestState> add(PushRequest pushRequest, {PushRequestState? state}) async {
+  Future<PushRequestState> addRequest(PushRequest pushRequest, {PushRequestState? state}) async {
     state ??= await loadState();
     if (state.knowsRequest(pushRequest)) {
       return state;
@@ -74,7 +75,7 @@ class SecurePushRequestRepository implements PushRequestRepository {
   /// If no state is given, the current state is loaded from the secure storage.
   /// This is a critical section, so it is protected by Mutex.
   @override
-  Future<PushRequestState> remove(PushRequest pushRequest, {PushRequestState? state}) async {
+  Future<PushRequestState> removeRequest(PushRequest pushRequest, {PushRequestState? state}) async {
     state ??= await loadState();
     final newState = state.withoutRequest(pushRequest);
     await saveState(newState);

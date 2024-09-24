@@ -533,9 +533,6 @@
   "@theme": {
     "description": "Title of the setting group where the theme can be selected."
   },
-  "@themeMode": {
-    "description": "Title of the setting group where the theme mode can be changed."
-  },
   "@timeOut": {
     "description": "Error message when a request times out."
   },
@@ -792,6 +789,7 @@
   "noResultText2": " a začněte s používáním.",
   "noResultTitle": "Nejsou nainstalovány žádné tokeny.",
   "noTokenToExport": "Pro export není k dispozici žádný token",
+  "noTokenToImport": "Nebyl nalezen žádný token pro import",
   "notAnInteger": "Hodnota není celé číslo.",
   "notAnNumber": "Hodnota není číslo.",
   "ok": "Ok",
@@ -892,7 +890,7 @@
   "synchronizesTokensWithServer": "Synchronizovat tokeny se serverem privacyIDEA.",
   "synchronizingTokens": "Tokeny se synchronizují.",
   "theSecretDoesNotFitTheCurrentEncoding": "Tajný klíč neodpovídá zvolenému kódování.",
-  "themeMode": "Vzhled",
+  "theme": "Vzhled",
   "thisAppIsOpenSource": "Tato aplikace má otevřený zdrojový kód\nNavštivte nás na GitHub",
   "timeOut": "Časový limit",
   "tokenDataParseError": "Tokenová data nelze analyzovat",
