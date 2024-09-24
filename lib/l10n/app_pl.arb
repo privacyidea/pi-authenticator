@@ -533,9 +533,6 @@
   "@theme": {
     "description": "Title of the setting group where the theme can be selected."
   },
-  "@themeMode": {
-    "description": "Title of the setting group where the theme mode can be changed."
-  },
   "@timeOut": {
     "description": "Error message when a request times out."
   },
@@ -792,6 +789,7 @@
   "noResultText2": " przycisku, żeby zacząć!",
   "noResultTitle": "Nie zainstalowano jeszcze żadnego tokenu.",
   "noTokenToExport": "Brak tokena dostępnego do eksportu",
+  "noTokenToImport": "Nie znaleziono tokenu do zaimportowania",
   "notAnInteger": "Wartość nie jest liczbą całkowitą.Wartość nie jest liczbą całkowitą.",
   "notAnNumber": "Wartość nie jest liczbą.",
   "ok": "Ok",
@@ -891,7 +889,7 @@
   "synchronizesTokensWithServer": "Synchronizuje tokeny push z serwerem privacyIDEA.",
   "synchronizingTokens": "Synchronizacja tokenów.",
   "theSecretDoesNotFitTheCurrentEncoding": "Sekret nie odpowiada wybranemu sposobowi kodowania.",
-  "themeMode": "Motyw",
+  "theme": "Motyw",
   "thisAppIsOpenSource": "Ta aplikacja jest open source\nOdwiedź nas na GitHub",
   "timeOut": "Limit czasu",
   "tokenDataParseError": "Nie można przeanalizować danych tokenu",

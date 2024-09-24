@@ -46,7 +46,7 @@ class _SettingsGroupImportExportTokensState extends ConsumerState<SettingsGroupI
       title: appLocalizations.importExportTokens,
       children: [
         SettingsListTileButton(
-          onPressed: _importDialog,
+          onPressed: _routeToImport,
           title: Text(
             appLocalizations.importTokens,
             style: Theme.of(context).textTheme.bodyMedium,
@@ -107,11 +107,6 @@ class _SettingsGroupImportExportTokensState extends ConsumerState<SettingsGroupI
     if (isExported == true && mounted) Navigator.of(context).pop(isExported);
   }
 
-  void _importDialog() async {
-    final isImported = await Navigator.pushNamed(
-      context,
-      ImportTokensView.routeName,
-    );
-    if (isImported == true && mounted) Navigator.of(context).pop(isImported);
-  }
+  void _routeToImport() => Navigator.pushNamed(context, ImportTokensView.routeName)
+      .then((isImported) => (isImported == true && mounted) ? Navigator.of(context).pop(isImported) : null);
 }

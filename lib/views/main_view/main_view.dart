@@ -36,7 +36,7 @@ import 'main_view_widgets/expandable_appbar.dart';
 import 'main_view_widgets/main_view_navigation_bar.dart';
 import 'main_view_widgets/main_view_tokens_list.dart';
 import 'main_view_widgets/main_view_tokens_list_filtered.dart';
-import 'main_view_widgets/token_widgets/main_view_background_icon.dart';
+import 'main_view_widgets/main_view_background_image.dart';
 
 export '../../views/main_view/main_view.dart';
 
@@ -82,6 +82,7 @@ class _MainViewState extends ConsumerState<MainView> {
   @override
   Widget build(BuildContext context) {
     final hasFilter = ref.watch(tokenFilterProvider) != null;
+
     return PushRequestListener(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
@@ -95,7 +96,7 @@ class _MainViewState extends ConsumerState<MainView> {
                 // maxLines: 2 only works like this.
                 maxLines: 2, // Title can be shown on small screens too.
               ),
-              leading: const SizedBox(),
+              leading: widget.appIcon,
               actions: [
                 hasFilter
                     ? AppBarItem(
@@ -120,7 +121,7 @@ class _MainViewState extends ConsumerState<MainView> {
               child: !hasFilter
                   ? Stack(
                       children: [
-                        MainViewBackgroundIcon(appImage: widget.appImage),
+                        MainViewBackgroundImage(appImage: widget.appImage),
                         MainViewTokensList(nestedScrollViewKey: globalKey),
                         MainViewNavigationBar(appConstraints: widget.appConstraints),
                       ],

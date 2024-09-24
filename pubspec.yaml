@@ -41,8 +41,6 @@ dependencies:
   pi_authenticator_legacy:
     path: local_plugins/pi-authenticator-legacy
   uuid: ^4.0.0
-  flutter_zxing: ^1.7.0
-  zxing2: ^0.2.3
   flutter_svg: ^2.0.10+1
   freezed: ^2.5.7
   json_annotation: ^4.9.0
@@ -96,7 +94,9 @@ dependencies:
   riverpod_annotation: ^2.3.5
   freezed_annotation: ^2.4.4
   async: ^2.11.0
-
+  image_picker: ^1.1.2
+  flutter_zxing: ^1.7.0
+  zxing2: ^0.2.3
 
 
 dev_dependencies:

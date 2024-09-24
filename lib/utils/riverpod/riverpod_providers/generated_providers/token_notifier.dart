@@ -143,6 +143,10 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   Future<bool> _addOrReplaceToken(Token token) async {
     await _repoMutex.acquire();
     final success = await _repo.saveOrReplaceToken(token);
+    final currentId = state.currentOf(token)?.id;
+    if (currentId != null) {
+      token = token.copyWith(id: currentId);
+    }
     if (!success) {
       Logger.warning('Saving token failed. Token: ${token.id}');
       _repoMutex.release();
@@ -155,6 +159,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
 
   /// Adds a list of tokens and returns the tokens that could not be added or replaced.
   Future<List<Token>> _addOrReplaceTokens(List<Token> tokens) async {
+    if (tokens.isEmpty) return [];
     Logger.debug('Adding ${tokens.length} tokens.', verbose: true);
     await _repoMutex.acquire();
     tokens = tokens.map((token) {

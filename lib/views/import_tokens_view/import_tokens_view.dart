@@ -42,9 +42,7 @@ class ImportTokensView extends ConsumerStatefulView {
   static const double itemSpacingVertical = 10;
   static const double iconSize = 100;
 
-  final TokenImportOrigin? selectedOrigin;
-
-  const ImportTokensView({this.selectedOrigin, super.key});
+  const ImportTokensView({super.key});
 
   @override
   ConsumerState<ImportTokensView> createState() => _ImportTokensViewState();

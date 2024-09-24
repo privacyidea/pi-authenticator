@@ -135,6 +135,7 @@ class SecureTokenRepository implements TokenRepository {
   @override
   Future<List<T>> saveOrReplaceTokens<T extends Token>(List<T> tokens) => _protect<List<T>>(() => _saveOrReplaceTokens(tokens));
   Future<List<T>> _saveOrReplaceTokens<T extends Token>(List<T> tokens) async {
+    if (tokens.isEmpty) return [];
     final failedTokens = <T>[];
     for (var element in tokens) {
       if (!await _saveOrReplaceToken(element)) {
@@ -147,10 +148,7 @@ class SecureTokenRepository implements TokenRepository {
         stackTrace: StackTrace.current,
       );
     } else {
-      Logger.info(
-        'Saved ${tokens.length}/${tokens.length} tokens to secure storage',
-        stackTrace: StackTrace.current,
-      );
+      Logger.info('Saved ${tokens.length}/${tokens.length} tokens to secure storage');
     }
     return failedTokens;
   }

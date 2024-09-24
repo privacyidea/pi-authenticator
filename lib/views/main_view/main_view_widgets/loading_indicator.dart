@@ -61,7 +61,7 @@ class LoadingIndicator extends StatelessWidget {
             borderRadius: BorderRadius.circular(99),
             boxShadow: [
               BoxShadow(
-                color: Theme.of(context).shadowColor.withOpacity(0.3),
+                color: Theme.of(context).shadowColor,
                 blurRadius: 2,
                 offset: const Offset(0, 2),
               ),

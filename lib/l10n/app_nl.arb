@@ -533,9 +533,6 @@
   "@theme": {
     "description": "Title of the setting group where the theme can be selected."
   },
-  "@themeMode": {
-    "description": "Title of the setting group where the theme mode can be changed."
-  },
   "@timeOut": {
     "description": "Error message when a request times out."
   },
@@ -792,6 +789,7 @@
   "noResultText2": " de knop om te beginnen!",
   "noResultTitle": "Nog geen token opgeslagen.",
   "noTokenToExport": "Geen token beschikbaar voor export",
+  "noTokenToImport": "Geen token gevonden om te importeren",
   "notAnInteger": "De waarde is geen geheel getal.",
   "notAnNumber": "De waarde is geen getal.",
   "ok": "Ok",
@@ -891,7 +889,7 @@
   "synchronizesTokensWithServer": "Synchroniseert tokens met de privacyIDEA server.",
   "synchronizingTokens": "Tokens synchroniseren.",
   "theSecretDoesNotFitTheCurrentEncoding": "De geheime sleutel past niet bij de huidige codering",
-  "themeMode": "Thema",
+  "theme": "Thema",
   "thisAppIsOpenSource": "Deze app is open source\nBezoek ons op GitHub",
   "timeOut": "Time-out",
   "tokenDataParseError": "Token-gegevens konden niet worden verwerkt",

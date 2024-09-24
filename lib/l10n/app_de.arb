@@ -533,9 +533,6 @@
   "@theme": {
     "description": "Title of the setting group where the theme can be selected."
   },
-  "@themeMode": {
-    "description": "Title of the setting group where the theme mode can be changed."
-  },
   "@timeOut": {
     "description": "Error message when a request times out."
   },
@@ -792,6 +789,7 @@
   "noResultText2": " Icon um loszulegen!",
   "noResultTitle": "Keine Token vorhanden.",
   "noTokenToExport": "Kein Token zum Exportieren verfügbar",
+  "noTokenToImport": "Kein Token zum Importieren gefunden",
   "notAnInteger": "Der Wert ist keine Ganzzahl.",
   "notAnNumber": "Der Wert ist keine Zahl.",
   "ok": "Ok",
@@ -892,7 +890,7 @@
   "synchronizesTokensWithServer": "Synchronisiert Token mit dem privacyIDEA Server.",
   "synchronizingTokens": "Synchronisiere Token.",
   "theSecretDoesNotFitTheCurrentEncoding": "Das Geheimnis entspricht nicht der gewählten Verschlüsselung.",
-  "themeMode": "Farbschema",
+  "theme": "Farbschema",
   "thisAppIsOpenSource": "Diese App ist Open Source\nBesuchen Sie uns auf GitHub",
   "timeOut": "Zeitlimit",
   "tokenDataParseError": "Token-Daten konnten nicht geparst werden",

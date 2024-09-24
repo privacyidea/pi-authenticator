@@ -533,9 +533,6 @@
   "@theme": {
     "description": "Title of the setting group where the theme can be selected."
   },
-  "@themeMode": {
-    "description": "Title of the setting group where the theme mode can be changed."
-  },
   "@timeOut": {
     "description": "Error message when a request times out."
   },
@@ -792,6 +789,7 @@
   "noResultText2": " button to get started!",
   "noResultTitle": "No tokens stored yet.",
   "noTokenToExport": "No token available for export",
+  "noTokenToImport": "No token found to import",
   "notAnInteger": "The value is not an integer.",
   "notAnNumber": "The value is not a number.",
   "ok": "Ok",
@@ -891,7 +889,7 @@
   "synchronizesTokensWithServer": "Synchronizes tokens with the privacyIDEA server.",
   "synchronizingTokens": "Synchronizing tokens.",
   "theSecretDoesNotFitTheCurrentEncoding": "The secret does not fit the current encoding",
-  "themeMode": "Theme mode",
+  "theme": "Theme",
   "thisAppIsOpenSource": "This Application is Open Source\nVisit us on GitHub",
   "timeOut": "Time out",
   "tokenDataParseError": "Token data could not be parsed",

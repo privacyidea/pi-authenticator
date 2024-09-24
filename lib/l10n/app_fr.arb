@@ -533,9 +533,6 @@
   "@theme": {
     "description": "Title of the setting group where the theme can be selected."
   },
-  "@themeMode": {
-    "description": "Title of the setting group where the theme mode can be changed."
-  },
   "@timeOut": {
     "description": "Error message when a request times out."
   },
@@ -792,6 +789,7 @@
   "noResultText2": "bouton pour commencer!",
   "noResultTitle": "Aucun jeton n'est encore stocké.",
   "noTokenToExport": "Pas de jeton disponible pour l'exportation",
+  "noTokenToImport": "Aucun jeton n'a été trouvé pour l'importation",
   "notAnInteger": "La valeur n'est pas un nombre entier.",
   "notAnNumber": "La valeur n'est pas un nombre.",
   "ok": "Ok",
@@ -892,7 +890,7 @@
   "synchronizesTokensWithServer": "Synchroniser les jetons Push avec le serveur privacyIDEA.",
   "synchronizingTokens": "Synchroniser les jetons.",
   "theSecretDoesNotFitTheCurrentEncoding": "Le secret n'est pas compatible avec \nl'encodage actuel.",
-  "themeMode": "Thème",
+  "theme": "Thème",
   "thisAppIsOpenSource": "Cette application est open source\nRendez-nous visite sur GitHub",
   "timeOut": "Délai d'attente",
   "tokenDataParseError": "Les données du jeton n'ont pas pu être analysées",

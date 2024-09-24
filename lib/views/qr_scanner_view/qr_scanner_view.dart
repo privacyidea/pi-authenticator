@@ -58,58 +58,49 @@ class _QRScannerViewState extends State<QRScannerView> {
   PermissionStatus? _cameraPermission;
 
   @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<PermissionStatus>(
-      future: Future<PermissionStatus>(() async => _cameraPermission ?? await _requestCameraPermission()),
-      builder: (context, isGranted) {
-        if (isGranted.connectionState != ConnectionState.done) return const Center(child: CircularProgressIndicator());
-        if (isGranted.data == PermissionStatus.permanentlyDenied) {
-          return DefaultDialog(
-            title: Text(AppLocalizations.of(context)!.grantCameraPermissionDialogTitle),
-            content: Text(AppLocalizations.of(context)!.grantCameraPermissionDialogPermanentlyDenied),
-          );
-        }
-        if (isGranted.data != PermissionStatus.granted) {
-          return DefaultDialog(
-            title: Text(AppLocalizations.of(context)!.grantCameraPermissionDialogTitle),
-            content: Text(AppLocalizations.of(context)!.grantCameraPermissionDialogContent),
-            actions: [
-              DefaultDialogButton(
-                child: Text(AppLocalizations.of(context)!.grantCameraPermissionDialogButton),
-                onPressed: () async {
-                  //Trigger the permission to request it
-                  final cameraPermission = await _requestCameraPermission();
-                  setState(() => _cameraPermission = cameraPermission);
-                },
+  Widget build(BuildContext context) => FutureBuilder<PermissionStatus>(
+        future: Future<PermissionStatus>(() async => _cameraPermission ?? await _requestCameraPermission()),
+        builder: (context, isGranted) {
+          if (isGranted.connectionState != ConnectionState.done) return const Center(child: CircularProgressIndicator());
+          return switch (isGranted.data) {
+            PermissionStatus.permanentlyDenied => DefaultDialog(
+                title: Text(AppLocalizations.of(context)!.grantCameraPermissionDialogTitle),
+                content: Text(AppLocalizations.of(context)!.grantCameraPermissionDialogPermanentlyDenied),
               ),
-              DefaultDialogButton(
-                child: Text(AppLocalizations.of(context)!.cancel),
-                onPressed: () {
-                  Navigator.pop(context, null);
-                },
-              ),
-            ],
-          );
-        }
-        return SafeArea(
-          child: Stack(
-            children: [
-              Scaffold(
-                resizeToAvoidBottomInset: false,
-                backgroundColor: Colors.transparent,
-                appBar: AppBar(
+            PermissionStatus.granted => SafeArea(
+                child: Scaffold(
+                  resizeToAvoidBottomInset: false,
                   backgroundColor: Colors.transparent,
-                  foregroundColor: Colors.white,
-                  elevation: 0,
+                  appBar: AppBar(
+                    backgroundColor: Colors.transparent,
+                    foregroundColor: Colors.white,
+                    elevation: 0,
+                  ),
+                  extendBodyBehindAppBar: true,
+                  body: const QRScannerWidget(),
                 ),
-                extendBodyBehindAppBar: true,
-                body: const SizedBox(),
               ),
-              const QRScannerWidget(),
-            ],
-          ),
-        );
-      },
-    );
-  }
+            _ => DefaultDialog(
+                title: Text(AppLocalizations.of(context)!.grantCameraPermissionDialogTitle),
+                content: Text(AppLocalizations.of(context)!.grantCameraPermissionDialogContent),
+                actions: [
+                  DefaultDialogButton(
+                    child: Text(AppLocalizations.of(context)!.grantCameraPermissionDialogButton),
+                    onPressed: () async {
+                      //Trigger the permission to request it
+                      final cameraPermission = await _requestCameraPermission();
+                      setState(() => _cameraPermission = cameraPermission);
+                    },
+                  ),
+                  DefaultDialogButton(
+                    child: Text(AppLocalizations.of(context)!.cancel),
+                    onPressed: () {
+                      Navigator.pop(context, null);
+                    },
+                  ),
+                ],
+              ),
+          };
+        },
+      );
 }

@@ -285,7 +285,7 @@ class _EditActionExpansionTileState extends State<EditActionExpansionTile> with 
           borderRadius: BorderRadius.circular(12.0),
           boxShadow: [
             BoxShadow(
-              color: Theme.of(context).shadowColor.withOpacity(0.15),
+              color: Theme.of(context).shadowColor,
               blurRadius: 5.0,
               offset: const Offset(0, 3.0),
             ),
