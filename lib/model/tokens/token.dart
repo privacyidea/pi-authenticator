@@ -21,6 +21,7 @@
  */
 import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/model/token_container.dart';
+import '../../utils/object_validator.dart';
 import '../token_template.dart';
 
 import '../../utils/identifiers.dart';

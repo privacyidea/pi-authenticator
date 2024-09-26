@@ -23,7 +23,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../utils/identifiers.dart';
 import '../../utils/logger.dart';
-import '../../utils/object_validators.dart';
+import '../../utils/object_validator.dart';
 import '../enums/algorithms.dart';
 import '../enums/token_types.dart';
 import '../extensions/enums/algorithms_extension.dart';

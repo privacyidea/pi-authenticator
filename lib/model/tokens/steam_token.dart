@@ -24,7 +24,7 @@ import 'package:privacyidea_authenticator/model/token_template.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../utils/identifiers.dart';
-import '../../utils/object_validators.dart';
+import '../../utils/object_validator.dart';
 import '../enums/algorithms.dart';
 import '../enums/token_types.dart';
 import '../extensions/int_extension.dart';

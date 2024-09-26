@@ -20,17 +20,17 @@
  * limitations under the License.
  */
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
 import 'package:cryptography/cryptography.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:http/http.dart';
 import 'package:privacyidea_authenticator/processors/scheme_processors/token_import_scheme_processors/otp_auth_processor.dart';
 import 'package:privacyidea_authenticator/utils/ecc_utils.dart';
 import 'package:privacyidea_authenticator/utils/privacyidea_io_client.dart';
 
 import '../l10n/app_localizations.dart';
+import '../model/api_results/pi_server_results/pi_server_result_value.dart';
+import '../model/pi_server_response.dart';
 import '../model/riverpod_states/token_state.dart';
 import '../model/token_template.dart';
 import '../model/token_container.dart';
@@ -40,8 +40,6 @@ import '../utils/identifiers.dart';
 import '../utils/logger.dart';
 import '../utils/view_utils.dart';
 import '../widgets/dialog_widgets/enter_passphrase_dialog.dart';
-
-part 'token_container_api_endpoint.freezed.dart';
 
 class PrivacyideaContainerApi {
   final PrivacyideaIOClient _ioClient;
@@ -294,259 +292,6 @@ class PrivacyideaContainerApi {
       'Received unexpected response',
       error: 'StatusCode: ${response.statusCode}',
       stackTrace: StackTrace.current,
-    );
-  }
-}
-
-abstract class PiServerResult {
-  bool get status;
-  PiServerResultError? get asError => this is PiServerResultError ? this as PiServerResultError : null;
-  PiServerResultValue? get asValue => this is PiServerResultValue ? this as PiServerResultValue : null;
-  const PiServerResult();
-}
-
-@freezed
-class PiServerResponse<T extends PiServerResultValue> with _$PiServerResponse {
-  static const RESULT = 'result';
-  static const DETAIL = 'detail';
-  static const ID = 'id';
-  static const JSONRPC = 'jsonrpc';
-  static const TIME = 'time';
-  static const VERSION = 'version';
-  static const SIGNATURE = 'signature';
-
-  static const RESULT_STATUS = 'status';
-  static const RESULT_VALUE = 'value';
-  static const RESULT_ERROR = 'error';
-
-  const PiServerResponse._();
-  factory PiServerResponse.success({
-    required dynamic detail,
-    required int id,
-    required String jsonrpc,
-    required T resultValue,
-    required double time,
-    required String version,
-    required String signature,
-  }) = PiServerResponseSuccess;
-  bool get isSuccess => this is PiServerResponseSuccess;
-  PiServerResponseSuccess<T> get asSuccess => this as PiServerResponseSuccess<T>;
-
-  factory PiServerResponse.error({
-    required dynamic detail,
-    required int id,
-    required String jsonrpc,
-    required PiServerResultError resultError,
-    required double time,
-    required String version,
-    required String signature,
-  }) = PiServerResponseError;
-  bool get isError => this is PiServerResponseError;
-  PiServerResponseError get asError => this as PiServerResponseError;
-
-  factory PiServerResponse.fromJson(Map<String, dynamic> json) {
-    Logger.debug('Received container sync response: $json');
-    final map = validateMap<dynamic>(
-      map: json,
-      validators: {
-        RESULT: const ObjectValidator<Map<String, dynamic>>(),
-        ID: const ObjectValidator<int>(),
-        JSONRPC: const ObjectValidator<String>(),
-        DETAIL: const ObjectValidatorNullable<dynamic>(),
-        TIME: const ObjectValidator<double>(),
-        VERSION: const ObjectValidator<String>(),
-        SIGNATURE: const ObjectValidator<String>(),
-      },
-      name: 'PiServerResponse#fromJson',
-    );
-    final result = validateMap<dynamic>(
-      map: map[RESULT],
-      validators: {
-        RESULT_STATUS: const ObjectValidator<bool>(),
-        RESULT_VALUE: const ObjectValidatorNullable<Map<String, dynamic>>(),
-        RESULT_ERROR: const ObjectValidatorNullable<Map<String, dynamic>>(),
-      },
-      name: 'PiServerResponse#fromJson#result',
-    );
-    if (result[RESULT_STATUS] == true && result.containsKey(RESULT_VALUE)) {
-      return PiServerResponse.success(
-        detail: map[DETAIL],
-        id: map[ID],
-        jsonrpc: map[JSONRPC],
-        resultValue: PiServerResultValue.fromJsonOfType<T>(result[RESULT_VALUE]),
-        time: map[TIME],
-        version: map[VERSION],
-        signature: map[SIGNATURE],
-      );
-    }
-    if (result[RESULT_STATUS] == false && result.containsKey(RESULT_ERROR)) {
-      return PiServerResponse.error(
-        detail: map[DETAIL],
-        id: json[ID],
-        jsonrpc: map[JSONRPC],
-        resultError: PiServerResultError.fromJson(result[RESULT_ERROR]),
-        time: map[TIME],
-        version: map[VERSION],
-        signature: map[SIGNATURE],
-      );
-    }
-    Logger.info('Status: ${result[RESULT_STATUS]}'
-        '\nContains error: ${result.containsKey(RESULT_ERROR)}'
-        '\nContains value: ${result.containsKey(RESULT_VALUE)}');
-
-    throw UnimplementedError('Unknown PiServerResponse type');
-  }
-
-  factory PiServerResponse.fromResponse(Response response) {
-    return PiServerResponse.fromJson(jsonDecode(response.body));
-  }
-}
-
-class EncryptionParams {
-  final String algorithm;
-  final String initVector;
-  final String mode;
-  final String tag;
-
-  const EncryptionParams({
-    required this.algorithm,
-    required this.mode,
-    required this.initVector,
-    required this.tag,
-  });
-
-  static EncryptionParams fromJson(Map<String, dynamic> json) {
-    final map = validateMap(
-      map: json,
-      validators: {
-        'algorithm': const ObjectValidator<String>(),
-        'init_vector': const ObjectValidator<String>(),
-        'mode': const ObjectValidator<String>(),
-        'tag': const ObjectValidator<String>(),
-      },
-      name: 'EncryptionParams#fromJson',
-    );
-    return EncryptionParams(
-      algorithm: map['algorithm'] as String,
-      initVector: map['init_vector'] as String,
-      mode: map['mode'] as String,
-      tag: map['tag'] as String,
-    );
-  }
-}
-/* ////////////////////////////
-////// PI SERVER RESULTS //////
-//////////////////////////// */
-
-class PiServerResultError extends PiServerResult {
-  @override
-  bool get status => false;
-  final int code;
-  final String message;
-
-  const PiServerResultError({
-    required this.code,
-    required this.message,
-  });
-
-  factory PiServerResultError.fromJson(Map<String, dynamic> json) {
-    final map = validateMap(
-      map: json,
-      validators: {
-        PI_SERVER_ERROR_CODE: const ObjectValidator<int>(),
-        PI_SERVER_ERROR_MESSAGE: const ObjectValidator<String>(),
-      },
-      name: 'PiServerResultError#fromJson',
-    );
-    return PiServerResultError(
-      code: map[PI_SERVER_ERROR_CODE] as int,
-      message: map[PI_SERVER_ERROR_MESSAGE] as String,
-    );
-  }
-  @override
-  String toString() => 'PiError(code: $code, message: $message)';
-}
-
-sealed class PiServerResultValue extends PiServerResult {
-  @override
-  bool get status => true;
-
-  static T fromJsonOfType<T extends PiServerResultValue>(Map<String, dynamic> json) {
-    return switch (T) {
-      const (ContainerChallenge) => ContainerChallenge.fromJson(json) as T,
-      const (ContainerSyncResult) => ContainerSyncResult.fromJson(json) as T,
-      _ => throw UnimplementedError('Unknown PiServerResultValue type'),
-    };
-  }
-
-  const PiServerResultValue();
-}
-
-class ContainerChallenge extends PiServerResultValue {
-  final String finalizeSyncUrl;
-  final String keyAlgorithm;
-  final String nonce;
-  final String timeStamp;
-
-  get timeAsDatetime => DateTime.parse(timeStamp);
-
-  const ContainerChallenge({
-    required this.finalizeSyncUrl,
-    required this.keyAlgorithm,
-    required this.nonce,
-    required this.timeStamp,
-  });
-
-  factory ContainerChallenge.fromJson(Map<String, dynamic> json) {
-    final map = validateMap(
-      map: json,
-      validators: {
-        CONTAINER_SYNC_URL: const ObjectValidator<String>(),
-        CONTAINER_SYNC_KEY_ALGORITHM: const ObjectValidator<String>(),
-        CONTAINER_SYNC_NONCE: const ObjectValidator<String>(),
-        CONTAINER_SYNC_TIMESTAMP: const ObjectValidator<String>(),
-      },
-      name: 'ContainerChallenge#fromJson',
-    );
-    return ContainerChallenge(
-      finalizeSyncUrl: map[CONTAINER_SYNC_URL] as String,
-      keyAlgorithm: map[CONTAINER_SYNC_KEY_ALGORITHM] as String,
-      nonce: map[CONTAINER_SYNC_NONCE] as String,
-      timeStamp: map[CONTAINER_SYNC_TIMESTAMP] as String,
-    );
-  }
-}
-
-class ContainerSyncResult extends PiServerResultValue {
-  final String publicServerKey;
-  Uint8List get publicServerKeyBytes => base64Decode(publicServerKey);
-  final String encryptionAlgorithm;
-  final EncryptionParams encryptionParams;
-  final String containerDictEncrypted;
-
-  const ContainerSyncResult({
-    required this.publicServerKey,
-    required this.encryptionAlgorithm,
-    required this.encryptionParams,
-    required this.containerDictEncrypted,
-  });
-
-  static ContainerSyncResult fromJson(Map<String, dynamic> json) {
-    final map = validateMap(
-      map: json,
-      validators: {
-        CONTAINER_SYNC_PUBLIC_SERVER_KEY: const ObjectValidator<String>(),
-        CONTAINER_SYNC_ENC_ALGORITHM: const ObjectValidator<String>(),
-        CONTAINER_SYNC_ENC_PARAMS: ObjectValidator<EncryptionParams>(transformer: (v) => EncryptionParams.fromJson(v)),
-        CONTAINER_SYNC_DICT_SERVER: const ObjectValidator<String>(),
-      },
-      name: 'ContainerSyncResult#fromJson',
-    );
-    return ContainerSyncResult(
-      publicServerKey: map[CONTAINER_SYNC_PUBLIC_SERVER_KEY] as String,
-      encryptionAlgorithm: map[CONTAINER_SYNC_ENC_ALGORITHM] as String,
-      encryptionParams: map[CONTAINER_SYNC_ENC_PARAMS] as EncryptionParams,
-      containerDictEncrypted: map[CONTAINER_SYNC_DICT_SERVER] as String,
     );
   }
 }

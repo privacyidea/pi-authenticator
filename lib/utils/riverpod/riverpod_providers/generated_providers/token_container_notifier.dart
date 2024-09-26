@@ -24,11 +24,9 @@ import 'package:basic_utils/basic_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:http/http.dart';
 import 'package:mutex/mutex.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/ec_key_algorithm_extension.dart';
 import 'package:privacyidea_authenticator/model/processor_result.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/utils/globals.dart';
-import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/privacyidea_io_client.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/state_providers/status_message_provider.dart';
@@ -45,6 +43,7 @@ import '../../../../repo/secure_token_container_repository.dart';
 import '../../../ecc_utils.dart';
 import '../../../errors.dart';
 import '../../../logger.dart';
+import '../../../object_validator.dart';
 
 part 'token_container_notifier.g.dart';
 
@@ -95,7 +94,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     Logger.warning('Building containerProvider');
 
     final initState = await _repo.loadContainerState();
-    for (var container in initState.container.whereType<TokenContainerUnfinalized>()) {
+    for (var container in initState.containerList.whereType<TokenContainerUnfinalized>()) {
       finalize(container);
     }
     _stateMutex.release();
@@ -139,7 +138,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
   Future<TokenContainerState> addContainerList(List<TokenContainer> container) async {
     await _stateMutex.acquire();
     final newCredentials = container.toList();
-    final oldCredentials = (await future).container;
+    final oldCredentials = (await future).containerList;
     Logger.debug('Loaded container: $oldCredentials');
     final combinedCredentials = <TokenContainer>[];
     for (var oldCredential in oldCredentials) {
@@ -205,7 +204,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
   Future<TokenContainerState> deleteContainerList(List<TokenContainer> container) async {
     await _stateMutex.acquire();
     final newCredentials = container.toList();
-    final oldCredentials = (await future).container;
+    final oldCredentials = (await future).containerList;
     final combinedCredentials = <TokenContainer>[];
     for (var oldCredential in oldCredentials) {
       final newCredential = newCredentials.firstWhereOrNull((newCredential) => newCredential.serial == oldCredential.serial);
@@ -235,7 +234,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     final containerCredentials = results.getData().whereType<TokenContainer>().toList();
     if (containerCredentials.isEmpty) return null;
     final currentState = await future;
-    final stateCredentials = currentState.container;
+    final stateCredentials = currentState.containerList;
     final stateCredentialsSerials = stateCredentials.map((e) => e.serial);
     final newCredentials = containerCredentials.where((element) => !stateCredentialsSerials.contains(element.serial)).toList();
     Logger.info('Handling processor results: adding Credential');
@@ -245,7 +244,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     for (var container in newCredentials) {
       Logger.info('Handling processor results: finalize check ()');
 
-      if (!stateAfterAdding.container.contains(container)) {
+      if (!stateAfterAdding.containerList.contains(container)) {
         failedToAdd.add(container);
         continue;
       }
@@ -308,7 +307,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     TokenContainerUnfinalized? container = containerCredential;
     container = await updateContainer(container, (c) => c.copyWith(finalizationState: ContainerFinalizationState.generatingKeyPair));
     if (container == null) throw StateError('Credential was removed');
-    final keyPair = CryptoUtils.generateEcKeyPair(curve: container.ecKeyAlgorithm.curveName) as AsymmetricKeyPair<ECPublicKey, ECPrivateKey>;
+    final keyPair = eccUtils.generateKeyPair(container.ecKeyAlgorithm);
     container = await updateContainer(container, (c) => c.withClientKeyPair(keyPair) as TokenContainerUnfinalized);
     if (container == null) throw StateError('Credential was removed');
     return container;
@@ -383,20 +382,30 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
   }
 
   Future<void> syncTokens(TokenState tokenState) async {
-    final containerCredentials = (await future).container;
-    final containerCredential = containerCredentials.whereType<TokenContainerFinalized>().first;
+    final containerList = (await future).containerList;
+    final finalizedList = containerList.whereType<TokenContainerFinalized>();
+    final syncFutures = <Future<(List<Token>, List<String>)?>>[];
 
-    List<Token> syncedTokens;
-    List<String> deletedTokens;
-    final tuple = await _containerApi.sync(
-      containerCredential,
-      tokenState,
-    );
-    if (tuple == null) {
-      return;
+    List<Token> syncedTokens = [];
+    List<String> deletedTokens = [];
+
+    for (var finalized in finalizedList) {
+      syncFutures.add(_containerApi.sync(
+        finalized,
+        tokenState,
+      ));
     }
-    syncedTokens = tuple.$1;
-    deletedTokens = tuple.$2;
+
+    await Future.wait(syncFutures).then((tuples) {
+      for (var tuple in tuples) {
+        if (tuple == null) continue;
+        syncedTokens.addAll(tuple.$1);
+        deletedTokens.addAll(tuple.$2);
+      }
+    });
+
+    // Do not remove tokens that are synced in any other container
+    deletedTokens.removeWhere((serial) => syncedTokens.any((token) => token.serial == serial));
 
     await ref.read(tokenProvider.notifier).addOrReplaceTokens(syncedTokens);
     await ref.read(tokenProvider.notifier).removeTokensBySerials(deletedTokens);

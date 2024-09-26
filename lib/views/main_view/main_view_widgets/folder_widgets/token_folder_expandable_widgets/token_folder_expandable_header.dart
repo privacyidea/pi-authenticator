@@ -68,20 +68,20 @@ class _TokenFolderExpandableHeaderState extends ConsumerState<TokenFolderExpanda
   Widget build(BuildContext context) {
     final isExpanded = widget.expandableController.value;
     final draggingSortable = ref.watch(draggingSortableProvider);
-    return Slidable(
-      key: ValueKey('tokenFolder-${widget.folder.folderId}'),
-      groupTag: 'myTag',
-      endActionPane: ActionPane(
-        motion: const DrawerMotion(),
-        extentRatio: 1,
-        children: [
-          DeleteTokenFolderAction(folder: widget.folder),
-          RenameTokenFolderAction(folder: widget.folder),
-          LockTokenFolderAction(folder: widget.folder),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.only(left: 15, right: 0),
+    return Padding(
+      padding: const EdgeInsets.only(right: 4),
+      child: Slidable(
+        key: ValueKey('tokenFolder-${widget.folder.folderId}'),
+        groupTag: 'myTag',
+        endActionPane: ActionPane(
+          motion: const DrawerMotion(),
+          extentRatio: 1,
+          children: [
+            DeleteTokenFolderAction(folder: widget.folder),
+            RenameTokenFolderAction(folder: widget.folder),
+            LockTokenFolderAction(folder: widget.folder),
+          ],
+        ),
         child: DragTarget<Token>(
           onWillAcceptWithDetails: (details) {
             if (details.data.folderId != widget.folder.folderId) {
@@ -105,72 +105,92 @@ class _TokenFolderExpandableHeaderState extends ConsumerState<TokenFolderExpanda
             ref: ref,
           ),
           builder: (context, willAccept, willReject) => Center(
-            child: Container(
-              margin: widget.folder.isExpanded ? null : const EdgeInsets.only(right: 8),
-              padding: widget.folder.isExpanded ? const EdgeInsets.only(right: 8) : null,
+            child: SizedBox(
               height: 50,
-              decoration: BoxDecoration(
-                color: willAccept.isNotEmpty
-                    ? Theme.of(context).dividerColor
-                    : isExpanded
-                        ? Theme.of(context).scaffoldBackgroundColor
-                        : null,
-                borderRadius: BorderRadius.only(
-                  topRight: widget.folder.isExpanded ? const Radius.circular(0) : const Radius.circular(8),
-                  topLeft: const Radius.circular(8),
-                  bottomRight: widget.folder.isExpanded ? const Radius.circular(0) : const Radius.circular(8),
-                  bottomLeft: widget.folder.isExpanded ? const Radius.circular(0) : const Radius.circular(8),
-                ),
-              ),
-              child: Material(
-                // Material to draw on for the InkWell
-                color: Colors.transparent,
-                child: InkWell(
-                  onTap: () async {
-                    if (widget.expandOverride != null) return;
-                    if (isExpanded) {
-                      widget.expandableController.value = false;
-                      return;
-                    }
-                    if (widget.tokens.isEmpty || (widget.tokens.length == 1 && widget.tokens.first == draggingSortable)) return;
-                    if (widget.folder.isLocked && await lockAuth(localizedReason: AppLocalizations.of(context)!.expandLockedFolder) == false) {
-                      return;
-                    }
-                    if (!mounted) return;
-                    widget.expandableController.value = true;
-                  },
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      RotationTransition(
-                          turns: Tween(begin: 0.25, end: 0.0).animate(widget.animationController),
-                          child: SizedBox.square(
-                            dimension: 25,
-                            child: (widget.tokens.isEmpty || (widget.tokens.length == 1 && widget.tokens.first == draggingSortable))
-                                ? null
-                                : const Icon(Icons.arrow_forward_ios_sharp),
-                          )),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        flex: 2,
-                        child: Text(
-                          widget.folder.label,
-                          style: Theme.of(context).textTheme.titleLarge,
-                          overflow: TextOverflow.fade,
-                          softWrap: false,
-                        ),
+              child: DefaultInkWell(
+                highlight: willAccept.isNotEmpty,
+                onTap: () async {
+                  if (widget.expandOverride != null) return;
+                  if (isExpanded) {
+                    widget.expandableController.value = false;
+                    return;
+                  }
+                  if (widget.tokens.isEmpty || (widget.tokens.length == 1 && widget.tokens.first == draggingSortable)) return;
+                  if (widget.folder.isLocked && await lockAuth(localizedReason: AppLocalizations.of(context)!.expandLockedFolder) == false) {
+                    return;
+                  }
+                  if (!mounted) return;
+                  widget.expandableController.value = true;
+                },
+                child: Row(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    const SizedBox(width: 8),
+                    RotationTransition(
+                        turns: Tween(begin: 0.25, end: 0.0).animate(widget.animationController),
+                        child: SizedBox.square(
+                          dimension: 25,
+                          child: (widget.tokens.isEmpty || (widget.tokens.length == 1 && widget.tokens.first == draggingSortable))
+                              ? null
+                              : const Icon(Icons.arrow_forward_ios_sharp),
+                        )),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      flex: 2,
+                      child: Text(
+                        widget.folder.label,
+                        style: Theme.of(context).textTheme.titleLarge,
+                        overflow: TextOverflow.fade,
+                        softWrap: false,
                       ),
-                      TokenFolderExpandableHeaderIcon(
-                        showEmptyFolderIcon: (widget.tokens.isEmpty || (widget.tokens.length == 1 && widget.tokens.first == draggingSortable)),
-                        isLocked: widget.folder.isLocked,
-                        isExpanded: isExpanded,
-                      ),
-                    ],
-                  ),
+                    ),
+                    TokenFolderExpandableHeaderIcon(
+                      showEmptyFolderIcon: (widget.tokens.isEmpty || (widget.tokens.length == 1 && widget.tokens.first == draggingSortable)),
+                      isLocked: widget.folder.isLocked,
+                      isExpanded: isExpanded,
+                    ),
+                  ],
                 ),
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class DefaultInkWell extends StatelessWidget {
+  final Widget child;
+  final VoidCallback? onTap;
+  final bool highlight;
+
+  const DefaultInkWell({
+    required this.child,
+    this.highlight = false,
+    this.onTap,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    List<num> asd = [5];
+    asd.cast<int>();
+
+    return Material(
+      // Material to draw on for the InkWell
+      color: Colors.transparent,
+      child: Container(
+        decoration: BoxDecoration(
+          color: highlight ? Theme.of(context).dividerColor : null,
+          borderRadius: const BorderRadius.all(Radius.circular(4)),
+        ),
+        child: InkWell(
+          customBorder: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(4)),
+          ),
+          onTap: onTap,
+          child: child,
         ),
       ),
     );

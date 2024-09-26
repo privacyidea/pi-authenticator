@@ -23,7 +23,6 @@ import 'dart:convert';
 
 import 'package:cryptography/cryptography.dart';
 import 'package:file_selector/file_selector.dart';
-import 'package:privacyidea_authenticator/utils/object_validators.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../model/enums/token_origin_source_type.dart';
@@ -35,6 +34,7 @@ import '../../utils/errors.dart';
 import '../../utils/globals.dart';
 import '../../utils/identifiers.dart';
 import '../../utils/logger.dart';
+import '../../utils/object_validator.dart';
 import '../../utils/token_import_origins.dart';
 import 'token_import_file_processor_interface.dart';
 

@@ -27,7 +27,6 @@ import 'package:cryptography/cryptography.dart' as crypto;
 import 'package:encrypt/encrypt.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:pointycastle/export.dart';
-import 'package:privacyidea_authenticator/utils/object_validators.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../model/enums/encodings.dart';
@@ -40,6 +39,7 @@ import '../../utils/errors.dart';
 import '../../utils/globals.dart';
 import '../../utils/identifiers.dart';
 import '../../utils/logger.dart';
+import '../../utils/object_validator.dart';
 import '../../utils/token_import_origins.dart';
 import 'token_import_file_processor_interface.dart';
 import 'two_fas_import_file_processor.dart';

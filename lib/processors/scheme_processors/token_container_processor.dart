@@ -23,8 +23,8 @@ import 'package:privacyidea_authenticator/utils/globals.dart';
 
 import '../../model/processor_result.dart';
 import '../../model/token_container.dart';
-import '../../utils/identifiers.dart';
 import '../../utils/logger.dart';
+import '../../utils/object_validator.dart';
 import '../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 import 'scheme_processor_interface.dart';
 

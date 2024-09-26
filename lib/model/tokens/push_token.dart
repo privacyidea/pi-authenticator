@@ -24,8 +24,8 @@ import 'package:uuid/uuid.dart';
 
 import '../../utils/custom_int_buffer.dart';
 import '../../utils/identifiers.dart';
+import '../../utils/object_validator.dart';
 import '../../utils/rsa_utils.dart';
-import '../../utils/object_validators.dart';
 import '../enums/push_token_rollout_state.dart';
 import '../enums/token_types.dart';
 import '../token_import/token_origin_data.dart';

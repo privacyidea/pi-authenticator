@@ -52,7 +52,8 @@ class _PushTokensViwListState extends ConsumerState<PushTokensViwList> {
     return Stack(
       children: [
         DefaultRefreshIndicator(
-          allowToRefresh: allowToRefresh,
+          listViewKey: listViewKey,
+          scrollController: scrollController,
           child: SlidableAutoCloseBehavior(
             child: DragItemScroller(
               listViewKey: listViewKey,

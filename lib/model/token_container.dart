@@ -26,10 +26,10 @@ import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/extensions/enums/ec_key_algorithm_extension.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
-import 'package:privacyidea_authenticator/utils/object_validators.dart';
 
 import '../utils/ecc_utils.dart';
 import '../utils/logger.dart';
+import '../utils/object_validator.dart';
 import 'enums/container_finalization_state.dart';
 import 'enums/ec_key_algorithm.dart';
 import 'enums/token_origin_source_type.dart';

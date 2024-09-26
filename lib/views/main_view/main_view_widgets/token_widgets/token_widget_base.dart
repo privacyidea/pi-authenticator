@@ -21,6 +21,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/folder_widgets/token_folder_expandable_widgets/token_folder_expandable_header.dart';
 
 import '../../../../model/mixins/sortable_mixin.dart';
 import '../../../../model/tokens/token.dart';
@@ -104,12 +105,18 @@ class TokenWidgetBase extends ConsumerWidget {
             ),
             data: token,
             child: ClipRRect(
-              child: PiSlideable(
-                groupTag: TokenWidget.groupTag,
-                identifier: token.id,
-                actions: actions,
-                stack: stack,
-                tile: tile,
+              child: Material(
+                color: Colors.transparent,
+                child: DefaultInkWell(
+                  onTap: () {},
+                  child: PiSlideable(
+                    groupTag: TokenWidget.groupTag,
+                    identifier: token.id,
+                    actions: actions,
+                    stack: stack,
+                    tile: tile,
+                  ),
+                ),
               ),
             ),
           )

@@ -28,6 +28,7 @@ import 'package:privacyidea_authenticator/model/token_container.dart';
 import 'package:privacyidea_authenticator/model/tokens/otp_token.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 
+import '../utils/object_validator.dart';
 import 'token_import/token_origin_data.dart';
 import 'tokens/token.dart';
 

@@ -30,7 +30,6 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:privacyidea_authenticator/mains/main_netknights.dart';
 import 'package:privacyidea_authenticator/model/extensions/sortable_list.dart';
-import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/sortable_notifier.dart';
 
@@ -41,6 +40,7 @@ import '../model/token_folder.dart';
 import '../model/tokens/token.dart';
 import '../processors/scheme_processors/scheme_processor_interface.dart';
 import 'customization/application_customization.dart' show ApplicationCustomization;
+import 'object_validator.dart';
 import 'riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
 import 'riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import 'riverpod/riverpod_providers/state_providers/dragging_sortable_provider.dart';
