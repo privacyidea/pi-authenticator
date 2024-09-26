@@ -561,7 +561,7 @@
   "version": "Version",
   "noMailAppTitle": "Keine Mail-App gefunden",
   "noMailAppDescription": "Auf diesem Gerät ist keine E-Mail-App installiert oder initialisiert, bitte versuchen Sie es erneut, wenn Sie eine E-Mail-Nachricht senden können.",
-  "authenticationRequest": "Authentifizierung",
+  "authentication": "Authentifizierung",
   "requestInfo": "Gesendet von {issuer} für Ihr Konto: \"{account}\"",
   "@requestInfo": {
     "placeholders": {

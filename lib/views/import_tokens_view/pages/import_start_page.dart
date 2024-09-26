@@ -105,7 +105,7 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
                         child: ElevatedButton(
                           child: Text(
                             widget.selectedSource.type.buttonText(localizations),
-                            style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Theme.of(context).colorScheme.onPrimary),
+                            style: Theme.of(context).textTheme.headlineSmall,
                             overflow: TextOverflow.fade,
                             softWrap: false,
                           ),

@@ -132,7 +132,7 @@ class _ImportEncryptedDataPageState extends State<ImportEncryptedDataPage> {
                                   },
                             child: Text(
                               AppLocalizations.of(context)!.decrypt,
-                              style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Theme.of(context).colorScheme.onPrimary),
+                              style: Theme.of(context).textTheme.headlineSmall,
                               overflow: TextOverflow.fade,
                               softWrap: false,
                             ),

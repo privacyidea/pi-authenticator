@@ -295,16 +295,41 @@ class ThemeCustomization {
           primaryColor: primaryColor,
           canvasColor: backgroundColor,
           textTheme: const TextTheme().copyWith(
-            bodyLarge: TextStyle(color: foregroundColor, fontFamily: fontFamily),
-            bodyMedium: TextStyle(color: foregroundColor, fontFamily: fontFamily),
-            titleMedium: TextStyle(color: foregroundColor, fontFamily: fontFamily),
-            titleSmall: TextStyle(color: foregroundColor, fontFamily: fontFamily),
+            /// Copied from \flutter\lib\src\material\text_theme.dart
+            ///
+            ///
+            /// | NAME           | SIZE |  WEIGHT |  SPACING |             |
+            /// |----------------|------|---------|----------|-------------|
+            /// | displayLarge   | 96.0 | light   | -1.5     |             |
+            /// | displayMedium  | 60.0 | light   | -0.5     |             |
+            /// | displaySmall   | 48.0 | regular |  0.0     |             |
+            /// | headlineMedium | 34.0 | regular |  0.25    |             |
+            /// | headlineSmall  | 24.0 | regular |  0.0     |             |
+            /// | titleLarge     | 24.0 | medium  |  0.15    |             |
+            /// | titleMedium    | 20.0 | medium  |  0.15    |             |
+            /// | titleSmall     | 16.0 | medium  |  0.1     |             |
+            /// | bodyLarge      | 16.0 | regular |  0.5     |             |
+            /// | bodyMedium     | 14.0 | regular |  0.25    |             |
+            /// | bodySmall      | 12.0 | regular |  0.4     |             |
+            /// | labelLarge     | 14.0 | medium  |  1.25    |             |
+            /// | labelSmall     | 10.0 | regular |  1.5     |             |
+            ///
+            /// ...where "light" is `FontWeight.w300`, "regular" is `FontWeight.w400` and
+            /// "medium" is `FontWeight.w500`.
+            ///
+            /// By default, text styles are initialized to match the 2018 Material Design
+            /// specification as listed above. To provide backwards compatibility, the 2014
+            /// specification is also available.
             displayLarge: TextStyle(color: foregroundColor, fontFamily: fontFamily),
             displayMedium: TextStyle(color: foregroundColor, fontFamily: fontFamily),
             displaySmall: TextStyle(color: foregroundColor, fontFamily: fontFamily),
             headlineMedium: TextStyle(color: foregroundColor, fontFamily: fontFamily),
             headlineSmall: TextStyle(color: foregroundColor, fontFamily: fontFamily),
-            titleLarge: TextStyle(color: primaryColor, fontFamily: fontFamily),
+            titleLarge: TextStyle(color: primaryColor, fontFamily: fontFamily, fontSize: 24),
+            titleMedium: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 20, fontWeight: FontWeight.w500),
+            titleSmall: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 16, fontWeight: FontWeight.w500),
+            bodyLarge: TextStyle(color: foregroundColor, fontFamily: fontFamily),
+            bodyMedium: TextStyle(color: foregroundColor, fontFamily: fontFamily),
             bodySmall: TextStyle(color: subtitleColor, fontFamily: fontFamily),
             labelLarge: TextStyle(color: foregroundColor, fontFamily: fontFamily),
             labelSmall: TextStyle(color: foregroundColor, fontFamily: fontFamily),

@@ -768,7 +768,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get noMailAppDescription => 'Na tym urządzeniu nie zainstalowano ani nie zainicjowano aplikacji poczty e-mail, spróbuj ponownie, gdy będziesz w stanie wysłać wiadomość e-mail';
 
   @override
-  String get authenticationRequest => 'Żądanie uwierzytelnienia';
+  String get authentication => 'Uwierzytelnianie';
 
   @override
   String requestInfo(Object issuer, Object account) {

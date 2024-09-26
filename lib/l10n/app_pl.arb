@@ -576,7 +576,7 @@
   "version": "Wersja",
   "noMailAppTitle": "Nie znaleziono aplikacji pocztowej",
   "noMailAppDescription": "Na tym urządzeniu nie zainstalowano ani nie zainicjowano aplikacji poczty e-mail, spróbuj ponownie, gdy będziesz w stanie wysłać wiadomość e-mail",
-  "authenticationRequest": "Żądanie uwierzytelnienia",
+  "authentication": "Uwierzytelnianie",
   "requestInfo": "Wysłane przez {issuer} dla twojego konta: \"{account}\"",
   "@requestInfo": {
     "placeholders": {

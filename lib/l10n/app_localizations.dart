@@ -1473,11 +1473,11 @@ abstract class AppLocalizations {
   /// **'There is no e-mail app installed or initialised on this device, please try again when you are able to send an email message.'**
   String get noMailAppDescription;
 
-  /// No description provided for @authenticationRequest.
+  /// No description provided for @authentication.
   ///
   /// In en, this message translates to:
-  /// **'Authentication request'**
-  String get authenticationRequest;
+  /// **'Authentication'**
+  String get authentication;
 
   /// Description of the authentication request.
   ///

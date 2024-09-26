@@ -768,7 +768,7 @@ class AppLocalizationsEs extends AppLocalizations {
   String get noMailAppDescription => 'No hay ninguna app de correo electrónico instalada o inicializada en este dispositivo, inténtalo de nuevo cuando puedas enviar un mensaje de correo electrónico.';
 
   @override
-  String get authenticationRequest => 'Autenticación';
+  String get authentication => 'Autenticación';
 
   @override
   String requestInfo(Object issuer, Object account) {

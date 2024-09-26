@@ -578,7 +578,7 @@
   "version": "Versión",
   "noMailAppTitle": "No hay aplicación de correo electrónico",
   "noMailAppDescription": "No hay ninguna app de correo electrónico instalada o inicializada en este dispositivo, inténtalo de nuevo cuando puedas enviar un mensaje de correo electrónico.",
-  "authenticationRequest": "Autenticación",
+  "authentication": "Autenticación",
   "requestInfo": "Enviado por {issuer} para su cuenta: \"{account}\"",
   "@requestInfo": {
     "placeholders": {

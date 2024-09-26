@@ -59,7 +59,7 @@ class SelectImportTypePage extends StatelessWidget {
                                 const (TokenImportType.qrFile) => localizations.selectFile,
                                 const (TokenImportType.link) => localizations.enterLink,
                               },
-                              style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Theme.of(context).colorScheme.onPrimary),
+                              style: Theme.of(context).textTheme.headlineSmall,
                               overflow: TextOverflow.fade,
                               textAlign: TextAlign.center,
                               softWrap: false,

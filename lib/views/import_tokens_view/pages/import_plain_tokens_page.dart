@@ -189,7 +189,7 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
                     : () => Navigator.of(context).pop<List<Token>>(tokensToKeep!.whereType<Token>().toList()),
                 child: Text(
                   tokensToKeep != null ? AppLocalizations.of(context)!.importNTokens(tokensToKeep!.length) : AppLocalizations.of(context)!.ok,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Theme.of(context).colorScheme.onPrimary),
+                  style: Theme.of(context).textTheme.headlineSmall,
                   overflow: TextOverflow.fade,
                   softWrap: false,
                 ),
