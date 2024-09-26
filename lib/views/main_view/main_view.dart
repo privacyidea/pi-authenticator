@@ -93,6 +93,7 @@ class _MainViewState extends ConsumerState<MainView> {
               title: Text(
                 widget.appName,
                 overflow: TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.titleMedium,
                 // maxLines: 2 only works like this.
                 maxLines: 2, // Title can be shown on small screens too.
               ),

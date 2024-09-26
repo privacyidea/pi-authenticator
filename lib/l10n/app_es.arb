@@ -626,7 +626,7 @@
   "authToDeclinePushRequest": "Por favor, autentifíquese para rechazar la solicitud push.",
   "authenticateToShowOtp": "Por favor, autentifíquese para mostrar la contraseña de una sola vez.",
   "authenticateToUnLockToken": "Por favor, autentifíquese para cambiar el estado de bloqueo del token.",
-  "authenticationRequest": "Autenticación",
+  "authentication": "Autenticación",
   "biometricHint": "AAutenticación necesaria",
   "biometricNotRecognized": "No reconocido. Inténtelo de nuevo.",
   "biometricRequiredTitle": "Biometría no configurada",

@@ -152,7 +152,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     }
     combinedCredentials.addAll(newCredentials);
     Logger.debug('Combined container: $combinedCredentials');
-    final newState = await _saveCredentialsStateToRepo(TokenContainerState(container: combinedCredentials));
+    final newState = await _saveCredentialsStateToRepo(TokenContainerState(containerList: combinedCredentials));
     Logger.debug('Saved container: $newState');
     await update((_) => newState);
     Logger.debug('Updated container: $newState');
@@ -214,7 +214,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
         newCredentials.remove(newCredential);
       }
     }
-    final newState = await _saveCredentialsStateToRepo(TokenContainerState(container: combinedCredentials));
+    final newState = await _saveCredentialsStateToRepo(TokenContainerState(containerList: combinedCredentials));
     await update((_) => newState);
     _stateMutex.release();
     return newState;
