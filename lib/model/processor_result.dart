@@ -19,11 +19,11 @@
  */
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:privacyidea_authenticator/utils/identifiers.dart';
 
 import '../l10n/app_localizations.dart';
 import '../utils/globals.dart';
 import '../utils/logger.dart';
+import '../utils/object_validator.dart';
 import '../utils/riverpod/riverpod_providers/state_providers/status_message_provider.dart';
 import '../utils/view_utils.dart';
 

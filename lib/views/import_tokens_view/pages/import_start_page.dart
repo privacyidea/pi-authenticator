@@ -24,7 +24,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_zxing/flutter_zxing.dart';
 import 'package:flutter_zxing/flutter_zxing.dart' as zxing;
 import 'package:image_picker/image_picker.dart';
-import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 
 import '../../../l10n/app_localizations.dart';
@@ -39,6 +38,7 @@ import '../../../processors/mixins/token_import_processor.dart';
 import '../../../processors/scheme_processors/token_import_scheme_processors/token_import_scheme_processor_interface.dart';
 import '../../../processors/token_import_file_processor/token_import_file_processor_interface.dart';
 import '../../../utils/logger.dart';
+import '../../../utils/object_validator.dart';
 import '../../qr_scanner_view/qr_scanner_view.dart';
 import '../import_tokens_view.dart';
 import 'import_encrypted_data_page.dart';

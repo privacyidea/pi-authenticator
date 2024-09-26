@@ -25,7 +25,6 @@ import 'dart:typed_data';
 import 'package:file_selector/file_selector.dart';
 import 'package:privacyidea_authenticator/model/extensions/enums/encodings_extension.dart';
 import 'package:privacyidea_authenticator/model/enums/encodings.dart';
-import 'package:privacyidea_authenticator/utils/object_validators.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../model/enums/token_origin_source_type.dart';
@@ -36,6 +35,7 @@ import '../../utils/errors.dart';
 import '../../utils/globals.dart';
 import '../../utils/identifiers.dart';
 import '../../utils/logger.dart';
+import '../../utils/object_validator.dart';
 import '../../utils/token_import_origins.dart';
 import '../scheme_processors/token_import_scheme_processors/free_otp_plus_qr_processor.dart';
 import 'token_import_file_processor_interface.dart';

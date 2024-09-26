@@ -36,6 +36,7 @@ class DragTargetDivider<T extends SortableMixin> extends ConsumerStatefulWidget 
   final double dividerBaseHeight;
   final double dividerExpandedHeight;
   final double bottomPaddingIfLast;
+  final double opacity;
   final bool isExpandalbe;
   final bool isLastDivider;
 
@@ -47,6 +48,7 @@ class DragTargetDivider<T extends SortableMixin> extends ConsumerStatefulWidget 
     this.bottomPaddingIfLast = 0,
     this.dividerBaseHeight = 1.5,
     this.dividerExpandedHeight = 40,
+    this.opacity = 1,
     this.isExpandalbe = true,
     this.isLastDivider = false,
   });
@@ -100,15 +102,18 @@ class _DragTargetDividerState<T extends SortableMixin> extends ConsumerState<Dra
         },
         builder: (context, _, __) {
           final dividerHeight = expansionController.value * widget.dividerExpandedHeight + (1 - expansionController.value) * widget.dividerBaseHeight;
-          return Padding(
-            padding: EdgeInsets.only(bottom: widget.isLastDivider ? max(widget.bottomPaddingIfLast - dividerHeight + widget.dividerBaseHeight, 0) : 0),
-            child: Container(
-              height: dividerHeight,
-              decoration: BoxDecoration(
-                color: Theme.of(context).dividerColor,
-                borderRadius: BorderRadius.circular(dividerHeight / 4),
+          return Opacity(
+            opacity: widget.opacity,
+            child: Padding(
+              padding: EdgeInsets.only(bottom: widget.isLastDivider ? max(widget.bottomPaddingIfLast - dividerHeight + widget.dividerBaseHeight, 0) : 0),
+              child: Container(
+                height: dividerHeight,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).dividerColor,
+                  borderRadius: BorderRadius.circular(dividerHeight / 4),
+                ),
+                margin: EdgeInsets.only(left: 8 - expansionController.value * 2, right: 8 - expansionController.value * 2, top: 8, bottom: 8),
               ),
-              margin: EdgeInsets.only(left: 8 - expansionController.value * 2, right: 8 - expansionController.value * 2, top: 8, bottom: 8),
             ),
           );
         },

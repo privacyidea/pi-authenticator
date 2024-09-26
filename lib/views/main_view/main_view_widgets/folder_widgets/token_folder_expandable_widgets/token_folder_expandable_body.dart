@@ -43,45 +43,25 @@ class TokenFolderExpandableBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        margin: const EdgeInsets.only(left: 15, bottom: 10),
-        decoration: BoxDecoration(
-          color: Theme.of(context).focusColor,
-          borderRadius: const BorderRadius.only(
-            bottomLeft: Radius.circular(4),
-          ),
-        ),
-        child: Card(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          //Only bottom left corner round the other corners sharp
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(4),
-            ),
-          ),
-          margin: const EdgeInsets.only(
-            left: 4,
-            bottom: 2,
-          ),
-          semanticContainer: false,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              for (var i = 0; i < tokens.length; i++) ...[
-                if (draggingSortable != tokens[i] && (i != 0 || draggingSortable is Token))
-                  filter == null
-                      ? DragTargetDivider<Token>(
-                          dependingFolder: folder,
-                          previousSortable: (i - 1) < 0 ? null : tokens[i - 1],
-                          nextSortable: tokens[i],
-                        )
-                      : const Divider(),
-                TokenWidgetBuilder.fromToken(tokens[i]),
-              ],
-              if (tokens.isNotEmpty && draggingSortable is Token)
-                filter == null ? DragTargetDivider<Token>(dependingFolder: folder, previousSortable: tokens.last, nextSortable: null) : const Divider(),
-              if (tokens.isNotEmpty && draggingSortable is! Token) const SizedBox(height: 8),
+        color: Theme.of(context).scaffoldBackgroundColor,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            for (var i = 0; i < tokens.length; i++) ...[
+              if (draggingSortable != tokens[i] && (i != 0 || draggingSortable is Token))
+                filter == null
+                    ? DragTargetDivider<Token>(
+                        dependingFolder: folder,
+                        previousSortable: (i - 1) < 0 ? null : tokens[i - 1],
+                        nextSortable: tokens[i],
+                      )
+                    : const Divider(),
+              TokenWidgetBuilder.fromToken(tokens[i]),
             ],
-          ),
+            if (tokens.isNotEmpty && draggingSortable is Token)
+              filter == null ? DragTargetDivider<Token>(dependingFolder: folder, previousSortable: tokens.last, nextSortable: null) : const Divider(),
+            if (tokens.isNotEmpty && draggingSortable is! Token) const SizedBox(height: 8),
+          ],
         ),
       );
 }

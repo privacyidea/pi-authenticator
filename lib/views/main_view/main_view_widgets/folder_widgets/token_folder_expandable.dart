@@ -81,7 +81,7 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
   }
 
   @override
-  ExpandablePanel build(BuildContext context) {
+  Widget build(BuildContext context) {
     final hidePushTokens = ref.watch(settingsProvider).whenOrNull(data: (data) => data.hidePushTokens) ?? SettingsState.hidePushTokensDefault;
     final tokens = ref.watch(tokenProvider).tokensInFolder(widget.folder, exclude: hidePushTokens ? [PushToken] : []);
 
@@ -96,30 +96,60 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
     } else {
       expandableController.value = widget.expandOverride!;
     }
-    return ExpandablePanel(
-      theme: const ExpandableThemeData(
-        useInkWell: false,
-        hasIcon: false,
-        tapBodyToCollapse: false,
-        tapBodyToExpand: false,
-      ),
-      controller: expandableController,
-      header: TokenFolderExpandableHeader(
-        tokens: tokens,
-        expandableController: expandableController,
-        animationController: animationController,
-        expandOverride: widget.expandOverride,
-        folder: widget.folder,
-      ),
-      collapsed: const SizedBox(),
-      expanded: tokens.isEmpty || (tokens.length == 1 && tokens.first == draggingSortable)
-          ? const SizedBox()
-          : TokenFolderExpandableBody(
-              tokens: tokens,
-              draggingSortable: draggingSortable,
-              folder: widget.folder,
-              filter: widget.filter,
+    final isExpanded = expandableController.value;
+    return Container(
+      padding: const EdgeInsets.all(2),
+      margin: const EdgeInsets.only(bottom: 8, left: 14),
+      decoration: BoxDecoration(
+        color: isExpanded ? Theme.of(context).scaffoldBackgroundColor : Colors.transparent,
+        borderRadius: isExpanded
+            ? const BorderRadius.only(
+                topLeft: Radius.circular(6),
+                bottomLeft: Radius.circular(6),
+              )
+            : const BorderRadius.all(Radius.circular(6)),
+        boxShadow: [
+          if (isExpanded)
+            BoxShadow(
+              color: Theme.of(context).shadowColor,
+              offset: const Offset(0, 2),
+              blurRadius: 4,
             ),
+        ],
+      ),
+      child: ExpandablePanel(
+        theme: const ExpandableThemeData(
+          useInkWell: false,
+          hasIcon: false,
+          fadeCurve: InstantCurve(),
+          tapBodyToCollapse: false,
+          tapBodyToExpand: false,
+        ),
+        controller: expandableController,
+        header: TokenFolderExpandableHeader(
+          tokens: tokens,
+          expandableController: expandableController,
+          animationController: animationController,
+          expandOverride: widget.expandOverride,
+          folder: widget.folder,
+        ),
+        collapsed: const SizedBox(),
+        expanded: tokens.isEmpty || (tokens.length == 1 && tokens.first == draggingSortable)
+            ? const SizedBox()
+            : TokenFolderExpandableBody(
+                tokens: tokens,
+                draggingSortable: draggingSortable,
+                folder: widget.folder,
+                filter: widget.filter,
+              ),
+      ),
     );
   }
+}
+
+class InstantCurve extends Curve {
+  const InstantCurve();
+
+  @override
+  double transformInternal(double t) => t < 1 ? 1 : 0;
 }

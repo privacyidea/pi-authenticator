@@ -21,7 +21,7 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import '../../utils/identifiers.dart';
-import '../../utils/object_validators.dart';
+import '../../utils/object_validator.dart';
 import '../token_template.dart';
 import 'package:uuid/uuid.dart';
 

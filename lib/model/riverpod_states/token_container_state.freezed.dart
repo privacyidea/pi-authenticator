@@ -20,7 +20,7 @@ TokenContainerState _$TokenContainerStateFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$TokenContainerState {
-  List<TokenContainer> get container => throw _privateConstructorUsedError;
+  List<TokenContainer> get containerList => throw _privateConstructorUsedError;
 
   /// Serializes this TokenContainerState to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -28,22 +28,19 @@ mixin _$TokenContainerState {
   /// Create a copy of TokenContainerState
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $TokenContainerStateCopyWith<TokenContainerState> get copyWith =>
-      throw _privateConstructorUsedError;
+  $TokenContainerStateCopyWith<TokenContainerState> get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $TokenContainerStateCopyWith<$Res> {
-  factory $TokenContainerStateCopyWith(
-          TokenContainerState value, $Res Function(TokenContainerState) then) =
+  factory $TokenContainerStateCopyWith(TokenContainerState value, $Res Function(TokenContainerState) then) =
       _$TokenContainerStateCopyWithImpl<$Res, TokenContainerState>;
   @useResult
   $Res call({List<TokenContainer> container});
 }
 
 /// @nodoc
-class _$TokenContainerStateCopyWithImpl<$Res, $Val extends TokenContainerState>
-    implements $TokenContainerStateCopyWith<$Res> {
+class _$TokenContainerStateCopyWithImpl<$Res, $Val extends TokenContainerState> implements $TokenContainerStateCopyWith<$Res> {
   _$TokenContainerStateCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
@@ -60,7 +57,7 @@ class _$TokenContainerStateCopyWithImpl<$Res, $Val extends TokenContainerState>
   }) {
     return _then(_value.copyWith(
       container: null == container
-          ? _value.container
+          ? _value.containerList
           : container // ignore: cast_nullable_to_non_nullable
               as List<TokenContainer>,
     ) as $Val);
@@ -68,10 +65,8 @@ class _$TokenContainerStateCopyWithImpl<$Res, $Val extends TokenContainerState>
 }
 
 /// @nodoc
-abstract class _$$CredentialsStateImplCopyWith<$Res>
-    implements $TokenContainerStateCopyWith<$Res> {
-  factory _$$CredentialsStateImplCopyWith(_$CredentialsStateImpl value,
-          $Res Function(_$CredentialsStateImpl) then) =
+abstract class _$$CredentialsStateImplCopyWith<$Res> implements $TokenContainerStateCopyWith<$Res> {
+  factory _$$CredentialsStateImplCopyWith(_$CredentialsStateImpl value, $Res Function(_$CredentialsStateImpl) then) =
       __$$CredentialsStateImplCopyWithImpl<$Res>;
   @override
   @useResult
@@ -79,12 +74,9 @@ abstract class _$$CredentialsStateImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$CredentialsStateImplCopyWithImpl<$Res>
-    extends _$TokenContainerStateCopyWithImpl<$Res, _$CredentialsStateImpl>
+class __$$CredentialsStateImplCopyWithImpl<$Res> extends _$TokenContainerStateCopyWithImpl<$Res, _$CredentialsStateImpl>
     implements _$$CredentialsStateImplCopyWith<$Res> {
-  __$$CredentialsStateImplCopyWithImpl(_$CredentialsStateImpl _value,
-      $Res Function(_$CredentialsStateImpl) _then)
-      : super(_value, _then);
+  __$$CredentialsStateImplCopyWithImpl(_$CredentialsStateImpl _value, $Res Function(_$CredentialsStateImpl) _then) : super(_value, _then);
 
   /// Create a copy of TokenContainerState
   /// with the given fields replaced by the non-null parameter values.
@@ -109,12 +101,11 @@ class _$CredentialsStateImpl extends _CredentialsState {
       : _container = container,
         super._();
 
-  factory _$CredentialsStateImpl.fromJson(Map<String, dynamic> json) =>
-      _$$CredentialsStateImplFromJson(json);
+  factory _$CredentialsStateImpl.fromJson(Map<String, dynamic> json) => _$$CredentialsStateImplFromJson(json);
 
   final List<TokenContainer> _container;
   @override
-  List<TokenContainer> get container {
+  List<TokenContainer> get containerList {
     if (_container is EqualUnmodifiableListView) return _container;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(_container);
@@ -122,31 +113,25 @@ class _$CredentialsStateImpl extends _CredentialsState {
 
   @override
   String toString() {
-    return 'TokenContainerState(container: $container)';
+    return 'TokenContainerState(container: $containerList)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$CredentialsStateImpl &&
-            const DeepCollectionEquality()
-                .equals(other._container, _container));
+        (other.runtimeType == runtimeType && other is _$CredentialsStateImpl && const DeepCollectionEquality().equals(other._container, _container));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_container));
+  int get hashCode => Object.hash(runtimeType, const DeepCollectionEquality().hash(_container));
 
   /// Create a copy of TokenContainerState
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$CredentialsStateImplCopyWith<_$CredentialsStateImpl> get copyWith =>
-      __$$CredentialsStateImplCopyWithImpl<_$CredentialsStateImpl>(
-          this, _$identity);
+  _$$CredentialsStateImplCopyWith<_$CredentialsStateImpl> get copyWith => __$$CredentialsStateImplCopyWithImpl<_$CredentialsStateImpl>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
@@ -157,20 +142,17 @@ class _$CredentialsStateImpl extends _CredentialsState {
 }
 
 abstract class _CredentialsState extends TokenContainerState {
-  const factory _CredentialsState(
-      {required final List<TokenContainer> container}) = _$CredentialsStateImpl;
+  const factory _CredentialsState({required final List<TokenContainer> container}) = _$CredentialsStateImpl;
   const _CredentialsState._() : super._();
 
-  factory _CredentialsState.fromJson(Map<String, dynamic> json) =
-      _$CredentialsStateImpl.fromJson;
+  factory _CredentialsState.fromJson(Map<String, dynamic> json) = _$CredentialsStateImpl.fromJson;
 
   @override
-  List<TokenContainer> get container;
+  List<TokenContainer> get containerList;
 
   /// Create a copy of TokenContainerState
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$CredentialsStateImplCopyWith<_$CredentialsStateImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  _$$CredentialsStateImplCopyWith<_$CredentialsStateImpl> get copyWith => throw _privateConstructorUsedError;
 }

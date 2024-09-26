@@ -32,7 +32,7 @@ class SecureTokenContainerRepository extends TokenContainerRepository {
   Future<TokenContainerState> saveContainerState(TokenContainerState containerState) async {
     Logger.warning('Saving container: $containerState');
     final futures = <Future>[];
-    for (var container in containerState.container) {
+    for (var container in containerState.containerList) {
       futures.add(saveContainer(container));
     }
     await Future.wait(futures);

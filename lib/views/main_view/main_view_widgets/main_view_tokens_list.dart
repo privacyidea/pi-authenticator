@@ -54,13 +54,23 @@ class MainViewTokensList extends ConsumerStatefulWidget {
       final isFirst = i == 0;
       final isDraggingTheCurrent = draggingSortable == sortables[i];
       final previousWasExpandedFolder = i > 0 && sortables[i - 1] is TokenFolder && (sortables[i - 1] as TokenFolder).isExpanded;
+      final currentIsExpandedFolder = sortables[i] is TokenFolder && (sortables[i] as TokenFolder).isExpanded;
       // 1. Add a divider if the current sortable is not the one which is dragged
-      // 2. Dont add a divider if the current sortable is the first
-      // 3. Dont add a divider if the previous sortable was an expanded folder
+      // 2. Don't add a divider if the current sortable is the first
+      // 3. Don't add a divider after an expanded folder
       // 4. Ignore 2. and 3. if there is a sortable that is dragged
-      //           1                     2                     3                         4
+      // 5. Do not add a divider before a folder
+      //           1                     2                      3                           4
       if (!isDraggingTheCurrent && ((!isFirst && !previousWasExpandedFolder) || draggingSortable != null)) {
-        widgets.add(DragTargetDivider(dependingFolder: null, previousSortable: i == 0 ? null : sortables.elementAtOrNull(i - 1), nextSortable: sortables[i]));
+        widgets.add(
+          DragTargetDivider(
+            // The divider should be invisible if the upcoming folder is expanded
+            opacity: currentIsExpandedFolder ? 0 : 1,
+            dependingFolder: null,
+            previousSortable: i == 0 ? null : sortables.elementAtOrNull(i - 1),
+            nextSortable: sortables[i],
+          ),
+        );
       }
       if (introductionAdded == false && sortables[i] is Token) {
         widgets.add(
@@ -111,22 +121,16 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
           children: [
             Flexible(
               child: DefaultRefreshIndicator(
-                allowToRefresh: allowToRefresh,
-                child: LayoutBuilder(
-                  builder: (context, constraints) => SingleChildScrollView(
-                    physics: _getScrollPhysics(allowToRefresh),
-                    child: SizedBox(
-                      height: constraints.maxHeight,
-                      child: Opacity(
-                        opacity: 0,
-                        child: DragTargetDivider(
-                          dependingFolder: null,
-                          previousSortable: showSortables.last,
-                          nextSortable: null,
-                          isLastDivider: true,
-                          bottomPaddingIfLast: 0,
-                        ),
-                      ),
+                child: SizedBox(
+                  height: 9999,
+                  child: Opacity(
+                    opacity: 0,
+                    child: DragTargetDivider(
+                      dependingFolder: null,
+                      previousSortable: showSortables.last,
+                      nextSortable: null,
+                      isLastDivider: true,
+                      bottomPaddingIfLast: 0,
                     ),
                   ),
                 ),
@@ -135,31 +139,27 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
           ],
         ),
         DefaultRefreshIndicator(
-          allowToRefresh: allowToRefresh,
+          listViewKey: listViewKey,
+          scrollController: scrollController,
           child: SlidableAutoCloseBehavior(
             child: DragItemScroller(
               listViewKey: listViewKey,
               itemIsDragged: draggingSortable != null,
               scrollController: scrollController,
-              child: SingleChildScrollView(
-                key: listViewKey,
-                physics: _getScrollPhysics(allowToRefresh),
-                controller: scrollController,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ...MainViewTokensList.buildSortableWidgets(showSortables, draggingSortable),
-                    (draggingSortable != null)
-                        ? DragTargetDivider(
-                            dependingFolder: null,
-                            previousSortable: showSortables.last,
-                            nextSortable: null,
-                            isLastDivider: true,
-                            bottomPaddingIfLast: 80,
-                          )
-                        : const SizedBox(height: 80),
-                  ],
-                ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ...MainViewTokensList.buildSortableWidgets(showSortables, draggingSortable),
+                  (draggingSortable != null)
+                      ? DragTargetDivider(
+                          dependingFolder: null,
+                          previousSortable: showSortables.last,
+                          nextSortable: null,
+                          isLastDivider: true,
+                          bottomPaddingIfLast: 80,
+                        )
+                      : const SizedBox(height: 80),
+                ],
               ),
             ),
           ),

@@ -19,6 +19,7 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 
 import '../../model/enums/app_feature.dart';
 import '../../utils/app_info_utils.dart';
@@ -82,6 +83,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         return [];
       }).then((values) async {
         if (!mounted) return;
+        final tokenState = ref.read(tokenProvider);
+        ref.read(tokenContainerProvider.notifier).syncTokens(tokenState);
         return _navigate();
       });
     });

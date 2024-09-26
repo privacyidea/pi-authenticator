@@ -45,7 +45,7 @@ class ContainerView extends ConsumerView {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final container = ref.watch(tokenContainerProvider).whenOrNull(data: (data) => data.container) ?? [];
+    final container = ref.watch(tokenContainerProvider).whenOrNull(data: (data) => data.containerList) ?? [];
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context)!.container),

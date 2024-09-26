@@ -29,7 +29,7 @@ import '../../../model/token_import/token_origin_data.dart';
 import '../../../model/tokens/token.dart';
 import '../../../utils/identifiers.dart';
 import '../../../utils/logger.dart';
-import '../../../utils/object_validators.dart';
+import '../../../utils/object_validator.dart';
 import '../../../utils/utils.dart';
 import '../../../utils/view_utils.dart';
 import '../../../widgets/dialog_widgets/two_step_dialog.dart';

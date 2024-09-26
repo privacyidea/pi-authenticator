@@ -82,7 +82,7 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    final container = ref.watch(tokenContainerProvider).value?.container ?? [];
+    final container = ref.watch(tokenContainerProvider).value?.containerList ?? [];
     Logger.debug('Credentials: $container');
     return SingleTouchRecognizer(
       child: StateObserver(
