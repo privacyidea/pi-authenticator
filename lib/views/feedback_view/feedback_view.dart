@@ -74,7 +74,7 @@ class _FeedbackViewState extends State<FeedbackView> {
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
                   child: Text(
                     AppLocalizations.of(context)!.feedbackTitle,
-                    style: Theme.of(context).textTheme.titleLarge,
+                    style: Theme.of(context).textTheme.titleMedium,
                     textAlign: TextAlign.center,
                   ),
                 ),

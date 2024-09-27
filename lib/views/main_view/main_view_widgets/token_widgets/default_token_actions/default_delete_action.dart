@@ -71,7 +71,7 @@ class DefaultDeleteAction extends PiSlideableAction {
               scrollable: true,
               title: Text(
                 AppLocalizations.of(context)!.confirmDeletion,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Theme.of(context).colorScheme.error),
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.error),
               ),
               content: Column(
                 children: [

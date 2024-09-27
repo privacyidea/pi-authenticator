@@ -118,7 +118,7 @@ class EditPushTokenAction extends PiSlideableAction {
               ExpansionTile(
                 title: Text(
                   appLocalizations.publicKey,
-                  style: Theme.of(context).textTheme.titleMedium,
+                  style: Theme.of(context).textTheme.titleSmall,
                   overflow: TextOverflow.fade,
                   softWrap: false,
                 ),
@@ -133,7 +133,7 @@ class EditPushTokenAction extends PiSlideableAction {
               ExpansionTile(
                 title: Text(
                   appLocalizations.firebaseToken,
-                  style: Theme.of(context).textTheme.titleMedium,
+                  style: Theme.of(context).textTheme.titleSmall,
                   overflow: TextOverflow.fade,
                   softWrap: false,
                 ),

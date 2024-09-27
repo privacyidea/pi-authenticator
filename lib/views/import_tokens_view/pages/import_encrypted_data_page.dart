@@ -89,7 +89,7 @@ class _ImportEncryptedDataPageState extends State<ImportEncryptedDataPage> {
                             style: Theme.of(context).textTheme.bodyMedium,
                             decoration: InputDecoration(
                               labelText: AppLocalizations.of(context)!.password,
-                              labelStyle: Theme.of(context).textTheme.titleMedium,
+                              labelStyle: Theme.of(context).textTheme.titleSmall,
                               errorText: wrongPassword ? AppLocalizations.of(context)!.wrongPassword : null,
                             ),
                             onChanged: (value) => setState(() {

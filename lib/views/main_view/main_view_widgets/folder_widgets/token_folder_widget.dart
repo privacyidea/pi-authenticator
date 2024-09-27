@@ -44,7 +44,7 @@ class TokenFolderWidget extends ConsumerWidget {
             dragAnchorStrategy: (draggable, context, position) {
               final textSize = textSizeOf(
                 text: folder.label,
-                style: Theme.of(context).textTheme.titleLarge!,
+                style: Theme.of(context).textTheme.titleMedium!,
                 textScaler: MediaQuery.of(context).textScaler,
                 maxLines: 1,
               );
@@ -69,7 +69,7 @@ class TokenFolderWidget extends ConsumerWidget {
                   color: Colors.transparent,
                   child: Text(
                     folder.label,
-                    style: Theme.of(context).textTheme.titleLarge,
+                    style: Theme.of(context).textTheme.titleMedium,
                     overflow: TextOverflow.fade,
                     softWrap: false,
                   ),

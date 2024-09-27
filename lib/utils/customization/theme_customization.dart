@@ -314,24 +314,24 @@ class ThemeCustomization {
           primaryColor: primaryColor,
           canvasColor: backgroundColor,
           textTheme: const TextTheme().copyWith(
-            /// Copied from \flutter\lib\src\material\text_theme.dart
+            /// Original sheet from \flutter\lib\src\material\text_theme.dart
             ///
             ///
-            /// | NAME           | SIZE |  WEIGHT |  SPACING |             |
+            /// | NAME           | SIZE |  WEIGHT |  SPACING |   Color     |
             /// |----------------|------|---------|----------|-------------|
-            /// | displayLarge   | 96.0 | light   | -1.5     |             |
-            /// | displayMedium  | 60.0 | light   | -0.5     |             |
-            /// | displaySmall   | 48.0 | regular |  0.0     |             |
-            /// | headlineMedium | 34.0 | regular |  0.25    |             |
-            /// | headlineSmall  | 24.0 | regular |  0.0     |             |
-            /// | titleLarge     | 24.0 | medium  |  0.15    |             |
-            /// | titleMedium    | 20.0 | medium  |  0.15    |             |
-            /// | titleSmall     | 16.0 | medium  |  0.1     |             |
-            /// | bodyLarge      | 16.0 | regular |  0.5     |             |
-            /// | bodyMedium     | 14.0 | regular |  0.25    |             |
-            /// | bodySmall      | 12.0 | regular |  0.4     |             |
-            /// | labelLarge     | 14.0 | medium  |  1.25    |             |
-            /// | labelSmall     | 10.0 | regular |  1.5     |             |
+            /// | displayLarge   | 96.0 | light   | -1.5     | foreground  |
+            /// | displayMedium  | 60.0 | light   | -0.5     | foreground  |
+            /// | displaySmall   | 48.0 | regular |  0.0     | foreground  |
+            /// | headlineMedium | 34.0 | regular |  0.25    | foreground  |
+            /// | headlineSmall  | 24.0 | regular |  0.0     | foreground  |
+            /// | titleLarge     | 24.0 | medium  |  0.15    | primary     |
+            /// | titleMedium    | 20.0 | medium  |  0.15    | primary     |
+            /// | titleSmall     | 16.0 | medium  |  0.1     | foreground  |
+            /// | bodyLarge      | 16.0 | regular |  0.5     | foreground  |
+            /// | bodyMedium     | 14.0 | regular |  0.25    | foreground  |
+            /// | bodySmall      | 12.0 | regular |  0.4     | subtitle    |
+            /// | labelLarge     | 14.0 | medium  |  1.25    | foreground  |
+            /// | labelSmall     | 10.0 | regular |  1.5     | foreground  |
             ///
             /// ...where "light" is `FontWeight.w300`, "regular" is `FontWeight.w400` and
             /// "medium" is `FontWeight.w500`.
@@ -345,7 +345,7 @@ class ThemeCustomization {
             headlineMedium: TextStyle(color: foregroundColor, fontFamily: fontFamily),
             headlineSmall: TextStyle(color: foregroundColor, fontFamily: fontFamily),
             titleLarge: TextStyle(color: primaryColor, fontFamily: fontFamily, fontSize: 24),
-            titleMedium: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 20, fontWeight: FontWeight.w500),
+            titleMedium: TextStyle(color: primaryColor, fontFamily: fontFamily, fontSize: 20, fontWeight: FontWeight.w500),
             titleSmall: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 16, fontWeight: FontWeight.w500),
             bodyLarge: TextStyle(color: foregroundColor, fontFamily: fontFamily),
             bodyMedium: TextStyle(color: foregroundColor, fontFamily: fontFamily),

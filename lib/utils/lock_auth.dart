@@ -51,7 +51,7 @@ Future<bool> lockAuth({required String localizedReason, bool autoAuthIfUnsupport
             title: Center(
               child: Text(
                 AppLocalizations.of(context)!.authNotSupportedTitle,
-                style: Theme.of(context).textTheme.titleLarge,
+                style: Theme.of(context).textTheme.titleMedium,
               ),
             ),
             leading: const Icon(Icons.lock),

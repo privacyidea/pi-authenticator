@@ -28,7 +28,7 @@ class PatchNotesDialog extends StatelessWidget {
       child: DefaultDialog(
         title: Text(
           localizations.patchNotesDialogTitle,
-          style: Theme.of(context).textTheme.titleLarge,
+          style: Theme.of(context).textTheme.titleMedium,
         ),
         content: SingleChildScrollView(
           child: Column(

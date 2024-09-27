@@ -69,7 +69,7 @@ class SettingsGroup extends StatelessWidget {
                           dense: true,
                           leading: Text(
                             title,
-                            style: theme.textTheme.titleLarge?.copyWith(color: isActive ? null : Colors.grey),
+                            style: theme.textTheme.titleMedium?.copyWith(color: isActive ? null : Colors.grey),
                             overflow: TextOverflow.fade,
                             softWrap: false,
                           ),
@@ -84,7 +84,7 @@ class SettingsGroup extends StatelessWidget {
                         dense: true,
                         leading: Text(
                           title,
-                          style: theme.textTheme.titleLarge?.copyWith(color: isActive ? null : Colors.grey),
+                          style: theme.textTheme.titleMedium?.copyWith(color: isActive ? null : Colors.grey),
                           overflow: TextOverflow.fade,
                           softWrap: false,
                         ),
