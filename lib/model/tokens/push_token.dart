@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 /*
  * privacyIDEA Authenticator
  *
@@ -38,8 +40,14 @@ part 'push_token.g.dart';
 @JsonSerializable()
 class PushToken extends Token {
   static RsaUtils rsaParser = const RsaUtils();
-  // ignore: constant_identifier_names
+
   static const String EXPIRATION_DATE = 'expirationDate';
+  static const String ROLLOUT_STATE = 'rolloutState';
+  static const String IS_ROLLED_OUT = 'isRolledOut';
+
+  static const String PUBLIC_SERVER_KEY = 'publicServerKey';
+  static const String PRIVATE_TOKEN_KEY = 'privateTokenKey';
+  static const String PUBLIC_TOKEN_KEY = 'publicTokenKey';
 
   final DateTime? expirationDate;
   @override
@@ -208,17 +216,25 @@ class PushToken extends Token {
         OTP_AUTH_PUSH_ENROLLMENT_CREDENTIAL: const ObjectValidatorNullable<String>(),
         OTP_AUTH_PUSH_ROLLOUT_URL: stringToUrivalidator,
         OTP_AUTH_IMAGE: stringToUriValidatorNullable,
-        OTP_AUTH_PIN: const ObjectValidatorNullable<bool>(),
+        OTP_AUTH_PIN: stringToBoolValidatorNullable,
         OTP_AUTH_VERSION: const ObjectValidator<String>(),
       },
       name: 'PushToken',
     );
     final validatedAdditionalData = Token.validateAdditionalData(additionalData);
-    final expirationDate = validateOptional(
-      value: additionalData[EXPIRATION_DATE],
-      validator: const ObjectValidatorNullable<DateTime>(),
-      name: 'PushToken#expirationDate',
-    );
+    validatedAdditionalData.addAll(validateMap(
+      map: additionalData,
+      validators: {
+        EXPIRATION_DATE: const ObjectValidatorNullable<DateTime>(),
+        ROLLOUT_STATE: ObjectValidatorNullable<PushTokenRollOutState>(),
+        IS_ROLLED_OUT: ObjectValidatorNullable<bool>(),
+        PUBLIC_SERVER_KEY: const ObjectValidatorNullable<String>(),
+        PUBLIC_TOKEN_KEY: const ObjectValidatorNullable<String>(),
+        PRIVATE_TOKEN_KEY: const ObjectValidatorNullable<String>(),
+      },
+      name: 'PushToken#additionalData',
+    ));
+    final expirationDate = validatedAdditionalData[EXPIRATION_DATE] as DateTime?;
     return switch (validatedMap[OTP_AUTH_VERSION]) {
       '1' => PushToken(
           label: validatedMap[OTP_AUTH_LABEL] as String,
@@ -226,6 +242,8 @@ class PushToken extends Token {
           serial: validatedMap[OTP_AUTH_SERIAL] as String,
           sslVerify: validatedMap[OTP_AUTH_PUSH_SSL_VERIFY] as bool,
           expirationDate: expirationDate ?? DateTime.now().add(validatedMap[OTP_AUTH_PUSH_TTL_MINUTES] as Duration),
+          rolloutState: validatedAdditionalData[ROLLOUT_STATE],
+          isRolledOut: validatedAdditionalData[IS_ROLLED_OUT],
           enrollmentCredentials: validatedMap[OTP_AUTH_PUSH_ENROLLMENT_CREDENTIAL] as String?,
           url: validatedMap[OTP_AUTH_PUSH_ROLLOUT_URL] as Uri,
           tokenImage: validatedMap[OTP_AUTH_IMAGE] as String?,
@@ -237,6 +255,9 @@ class PushToken extends Token {
           checkedContainer: validatedAdditionalData[Token.CHECKED_CONTAINERS] ?? [],
           folderId: validatedAdditionalData[Token.FOLDER_ID],
           sortIndex: validatedAdditionalData[Token.SORT_INDEX],
+          publicServerKey: validatedAdditionalData[PUBLIC_SERVER_KEY],
+          publicTokenKey: validatedAdditionalData[PUBLIC_TOKEN_KEY],
+          privateTokenKey: validatedAdditionalData[PRIVATE_TOKEN_KEY],
         ),
       _ => throw LocalizedArgumentError(
           localizedMessage: (localizations, value, name) => localizations.unsupported(value, name),
@@ -317,11 +338,14 @@ class PushToken extends Token {
   }
 
   @override
-  TokenTemplate? toTemplate({TokenContainer? container}) => expirationDate != null
-      ? super.toTemplate(container: container)
-      : super.toTemplate(container: container)?.withAditionalData({
-          EXPIRATION_DATE: expirationDate!,
-        });
+  TokenTemplate? toTemplate({TokenContainer? container}) => super.toTemplate(container: container)?.withAditionalData({
+        if (expirationDate != null) EXPIRATION_DATE: expirationDate!,
+        ROLLOUT_STATE: rolloutState,
+        IS_ROLLED_OUT: isRolledOut,
+        if (publicServerKey != null) PUBLIC_SERVER_KEY: publicServerKey!,
+        if (publicTokenKey != null) PUBLIC_TOKEN_KEY: publicTokenKey!,
+        if (privateTokenKey != null) PRIVATE_TOKEN_KEY: privateTokenKey!,
+      });
 
   factory PushToken.fromJson(Map<String, dynamic> json) {
     final newToken = _$PushTokenFromJson(json);

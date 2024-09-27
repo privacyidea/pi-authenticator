@@ -402,6 +402,8 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
         syncedTokens.addAll(tuple.$1);
         deletedTokens.addAll(tuple.$2);
       }
+    }).onError((error, stackTrace) {
+      Logger.error('Failed to sync container', error: error, stackTrace: stackTrace);
     });
 
     // Do not remove tokens that are synced in any other container

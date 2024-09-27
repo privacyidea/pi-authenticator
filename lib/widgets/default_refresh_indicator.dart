@@ -39,7 +39,6 @@ class _DefaultRefreshIndicatorState extends ConsumerState<DefaultRefreshIndicato
           await Future.wait([
             if (pushProviderInstance != null) pushProviderInstance.pollForChallenges(isManually: true),
             ref.read(tokenContainerProvider.notifier).syncTokens(tokenState),
-            // for (var container in container) (ref.read(tokenContainerNotifierProviderOf(container: container).notifier).sync()),
           ]);
         });
         await future;

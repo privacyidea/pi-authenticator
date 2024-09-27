@@ -242,6 +242,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
 
   /// Removes a list of tokens and returns the tokens that could not be removed.
   Future<List<Token>> _removeTokens(List<Token> tokens) async {
+    if (tokens.isEmpty) return [];
     Logger.info('Removing ${tokens.length} tokens.');
     await _repoMutex.acquire();
     final oldState = state;
