@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../utils/push_provider.dart';
+import '../utils/riverpod/riverpod_providers/generated_providers/push_request_provider.dart';
 import 'dialog_widgets/push_request_dialog/push_request_dialog.dart';
 
 class PushRequestListener extends ConsumerStatefulWidget {
@@ -28,11 +29,10 @@ class _PushRequestListenerState extends ConsumerState<PushRequestListener> {
     return Stack(
       children: [
         widget.child,
-        if (pushRequest != null)
-          PushRequestDialog(
-            pushRequest: pushRequest,
-            key: Key('${pushRequest.hashCode.toString()}#PushRequestDialog'),
-          ),
+        PushRequestDialog(
+          pushRequest: pushRequest,
+          key: Key('${pushRequest.hashCode.toString()}#PushRequestDialog'),
+        ),
       ],
     );
   }

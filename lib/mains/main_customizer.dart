@@ -53,7 +53,6 @@ class CustomizationAuthenticator extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     WidgetsFlutterBinding.ensureInitialized();
-    final locale = ref.watch(settingsProvider).currentLocale;
     final applicationCustomizer = ref.watch(applicationCustomizerProvider).maybeWhen(
           data: (data) => data,
           orElse: () => initialCustomization,

@@ -24,12 +24,12 @@ import '../../widgets/push_request_listener.dart';
 import '../view_interface.dart';
 import 'settings_groups/settings_group_container.dart';
 import 'settings_groups/settings_group_error_log.dart';
+import 'settings_groups/settings_group_feedback.dart';
 import 'settings_groups/settings_group_general.dart';
 import 'settings_groups/settings_group_import_export_tokens.dart';
 import 'settings_groups/settings_group_language.dart';
 import 'settings_groups/settings_group_push_token.dart';
 import 'settings_groups/settings_group_theme.dart';
-import 'settings_groups/settings_group_feedback.dart';
 
 class SettingsView extends ConsumerView {
   @override

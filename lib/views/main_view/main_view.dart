@@ -21,7 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
-import '../../model/states/token_filter.dart';
+import '../../utils/globals.dart';
 import '../../utils/logger.dart';
 import '../../utils/patch_notes_utils.dart';
 import '../../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
@@ -32,10 +32,10 @@ import '../view_interface.dart';
 import 'main_view_widgets/app_bar_item.dart';
 import 'main_view_widgets/connectivity_listener.dart';
 import 'main_view_widgets/expandable_appbar.dart';
+import 'main_view_widgets/main_view_background_image.dart';
 import 'main_view_widgets/main_view_navigation_bar.dart';
 import 'main_view_widgets/main_view_tokens_list.dart';
 import 'main_view_widgets/main_view_tokens_list_filtered.dart';
-import 'main_view_widgets/main_view_background_image.dart';
 
 export '../../views/main_view/main_view.dart';
 

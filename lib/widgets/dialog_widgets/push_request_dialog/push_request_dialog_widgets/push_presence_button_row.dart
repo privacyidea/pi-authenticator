@@ -23,7 +23,7 @@ import 'dart:math' show min;
 import 'package:flutter/material.dart';
 
 import '../../../../utils/customization/theme_extentions/push_request_theme.dart';
-import '../../../press_button.dart';
+import '../../../button_widgets/press_button.dart';
 import '../push_request_dialog.dart';
 
 class RequirePresenceButtonRow<T> extends StatelessWidget {
@@ -63,7 +63,7 @@ class RequirePresenceButtonRow<T> extends StatelessWidget {
               for (final possibleAnswer in answersThisRow)
                 Expanded(
                   flex: answersThisRow.length * 2,
-                  child: PressButton(
+                  child: CooldownButton(
                     style: ButtonStyle(
                       shape: PushRequestDialog.getButtonShape(context),
                       backgroundColor: WidgetStateProperty.all(pushRequestTheme.acceptColor),

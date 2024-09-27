@@ -26,8 +26,7 @@ import 'package:privacyidea_authenticator/widgets/dialog_widgets/push_request_di
 
 import '../../../../l10n/app_localizations.dart';
 import '../../../../utils/customization/theme_extentions/push_request_theme.dart';
-
-import '../../../press_button.dart';
+import '../../../button_widgets/press_button.dart';
 
 class PushDeclineConfirmDialog extends StatefulWidget {
   static Future<void> showDialogWidget({
@@ -112,7 +111,7 @@ class _PushDeclineConfirmDialogState extends State<PushDeclineConfirmDialog> {
                 PaddedRow(
                   peddingPercent: 0.33,
                   child: SizedBox(
-                    child: PressButton(
+                    child: CooldownButton(
                       // Discard button
                       style: ButtonStyle(
                         shape: PushRequestDialog.getButtonShape(context),
@@ -147,7 +146,7 @@ class _PushDeclineConfirmDialogState extends State<PushDeclineConfirmDialog> {
                 ),
                 PaddedRow(
                   peddingPercent: 0.33,
-                  child: PressButton(
+                  child: CooldownButton(
                     // Decline button
                     style: ButtonStyle(
                       backgroundColor: WidgetStateProperty.all(pushRequestTheme.declineColor),

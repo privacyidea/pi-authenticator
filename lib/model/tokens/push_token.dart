@@ -25,13 +25,14 @@ import 'package:privacyidea_authenticator/model/token_template.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../utils/custom_int_buffer.dart';
+import '../../utils/errors.dart';
 import '../../utils/identifiers.dart';
 import '../../utils/object_validator.dart';
 import '../../utils/rsa_utils.dart';
 import '../enums/push_token_rollout_state.dart';
 import '../enums/token_types.dart';
-import '../token_import/token_origin_data.dart';
 import '../token_container.dart';
+import '../token_import/token_origin_data.dart';
 import 'token.dart';
 
 part 'push_token.g.dart';

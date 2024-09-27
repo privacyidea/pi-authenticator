@@ -9,40 +9,709 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get patchNotesNewFeatures => 'New features';
+  String get accept => 'Accept';
 
   @override
-  String get patchNotesImprovements => 'Improvements';
+  String get addANewFolder => 'Create new folder';
+
+  @override
+  String get addFolder => 'Add folder';
+
+  @override
+  String get addSystemInfo => 'Add system information';
+
+  @override
+  String get addToken => 'Add token';
+
+  @override
+  String get addTokenManually => 'Add token manually';
+
+  @override
+  String get algorithm => 'Algorithm';
+
+  @override
+  String algorithmUnsupported(Object algorithm) {
+    return 'The algorithm $algorithm is not supported';
+  }
+
+  @override
+  String get allTokensSynchronized => 'All tokens are synchronized.';
+
+  @override
+  String get asFile => 'As file';
+
+  @override
+  String get asQrCode => 'As QR code';
+
+  @override
+  String get askLogSendedDescription => 'Did you send the log, and do you want to clear it now?';
+
+  @override
+  String get authNotSupportedBody => 'This action requires the device to be secured by credentials or biometrics.';
+
+  @override
+  String get authNotSupportedTitle => 'Device credentials or biometrics required';
+
+  @override
+  String get authToAcceptPushRequest => 'Please authenticate to accept the push request.';
+
+  @override
+  String get authToDeclinePushRequest => 'Please authenticate to decline the push request.';
+
+  @override
+  String get authenticateToShowOtp => 'Please authenticate to show one time password.';
+
+  @override
+  String get authenticateToUnLockToken => 'Please authenticate to change the lock status of the token.';
+
+  @override
+  String get authenticationRequest => 'Authentication request';
+
+  @override
+  String get biometricHint => 'Authentication required';
+
+  @override
+  String get biometricNotRecognized => 'Not recognized. Try again.';
+
+  @override
+  String get biometricRequiredTitle => 'Biometrics not setup';
+
+  @override
+  String get biometricSuccess => 'Authentication successful';
+
+  @override
+  String get butDiscardIt => 'but discard it';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get checkServerCertificate => 'Please check the server certificate';
+
+  @override
+  String get checkYourNetwork => 'Please check your network connection and try again.';
+
+  @override
+  String get clearErrorLog => 'Clear';
+
+  @override
+  String get closeSearchTokens => 'Close search';
+
+  @override
+  String get confirmDeletion => 'Confirm deletion';
+
+  @override
+  String confirmDeletionOf(Object name) {
+    return 'Are you sure you want to delete $name?';
+  }
+
+  @override
+  String get confirmFolderDeletionHint => 'Deleting a folder has no effect on the tokens in it.\nThe tokens are moved to the main list.';
+
+  @override
+  String get confirmPassword => 'Confirm password';
+
+  @override
+  String get confirmTokenDeletionHint => 'You may no longer be able to log in if you delete this token.\nPlease make sure that you can log in to the associated account without this token.';
+
+  @override
+  String get confirmation => 'Confirmation';
+
+  @override
+  String get connectionFailed => 'Connection failed.';
+
+  @override
+  String get container => 'Container';
+
+  @override
+  String get continueButton => 'Continue';
+
+  @override
+  String get copyOTPToClipboard => 'Copy OTP to clipboard';
+
+  @override
+  String get couldNotConnectToServer => 'Could not connect to server';
+
+  @override
+  String get couldNotSignMessage => 'Could not sign message.';
+
+  @override
+  String get counter => 'Counter';
+
+  @override
+  String get create => 'Create';
+
+  @override
+  String get createdAt => 'Created on';
+
+  @override
+  String get creator => 'Creator';
+
+  @override
+  String get decline => 'Decline';
+
+  @override
+  String get declineIt => 'decline it';
+
+  @override
+  String get decrypt => 'Decrypt';
+
+  @override
+  String get decryptErrorButtonDelete => 'Delete';
+
+  @override
+  String get decryptErrorButtonRetry => 'Retry';
+
+  @override
+  String get decryptErrorButtonSendError => 'Send error';
+
+  @override
+  String get decryptErrorContent => 'Unfortunately, the app was unable to decrypt your tokens. This indicates that the encryption key is broken. You can try again or delete the app data, which would delete the tokens in the app.';
+
+  @override
+  String get decryptErrorDeleteConfirmationContent => 'Are you sure you want to delete the app data?';
+
+  @override
+  String get decryptErrorTitle => 'Decryption error';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get deleteLockedToken => 'Please authenticate to delete the locked token.';
+
+  @override
+  String get deviceCredentialsRequiredTitle => 'Device credentials not set up';
+
+  @override
+  String get deviceCredentialsSetupDescription => 'Setup device credentials in the device\'s settings';
+
+  @override
+  String get digits => 'Digits';
+
+  @override
+  String get dismiss => 'Dismiss';
+
+  @override
+  String get done => 'Done';
+
+  @override
+  String get edit => 'Edit';
+
+  @override
+  String get editLockedToken => 'Please authenticate to edit the locked token.';
+
+  @override
+  String get editToken => 'Edit Token';
+
+  @override
+  String get enablePolling => 'Enable polling';
+
+  @override
+  String get encoding => 'Encoding';
+
+  @override
+  String get enterDetailsForToken => 'Enter token details';
+
+  @override
+  String get enterLink => 'Enter link';
+
+  @override
+  String get enterPasswordToEncrypt => 'Enter a password to encrypt the tokens. This password will be required to import the tokens.';
+
+  @override
+  String get errorLogCleared => 'Error log cleared.';
+
+  @override
+  String get errorLogEmpty => 'The error log is empty.';
+
+  @override
+  String get errorLogTitle => 'Error log';
+
+  @override
+  String get errorMailBody => 'The error log file is attached.\nYou can replace this text with additional information about the error.';
+
+  @override
+  String errorRollOutFailed(Object name) {
+    return 'Rolling out token $name failed.';
+  }
+
+  @override
+  String errorRollOutNoConnectionToServer(Object name) {
+    return 'Rolling out token $name failed, the server could not be reached.';
+  }
+
+  @override
+  String get errorRollOutNotPossibleAnymore => 'Rolling out this Token is not possible anymore.';
+
+  @override
+  String get errorRollOutSSLHandshakeFailed => 'SSL handshake failed. Roll-out not possible.';
+
+  @override
+  String errorRollOutUnknownError(Object e) {
+    return 'An unknown error occurred. Roll-out not possible: $e';
+  }
+
+  @override
+  String get errorSavingFile => 'Saving to file failed';
+
+  @override
+  String get errorSynchronizationNoNetworkConnection => 'Synchronizing tokens failed, privacyIDEA server could not be reached.';
+
+  @override
+  String errorTokenExpired(Object name) {
+    return 'The token $name has expired.';
+  }
+
+  @override
+  String errorUnlinkingPushToken(Object label) {
+    return 'Failed to unlink the push token $label.';
+  }
+
+  @override
+  String errorWhenPullingChallenges(Object name) {
+    return 'An error occured when polling for challenges of $name';
+  }
+
+  @override
+  String get exampleUrl => 'Please enter a valid URL like: \"https://example.com/\"';
+
+  @override
+  String get expandLockedFolder => 'Please authenticate to uncollapse the locked folder.';
+
+  @override
+  String get export => 'Export';
+
+  @override
+  String get exportAllTokens => 'Export all tokens';
+
+  @override
+  String get exportLockedTokenReason => 'Please authenticate to export locked tokens.';
+
+  @override
+  String get exportNonPrivacyIDEATokens => 'Export non-privacyIDEA tokens';
+
+  @override
+  String get exportTokens => 'Export tokens';
+
+  @override
+  String get exportingTokens => 'Exporting tokens...';
+
+  @override
+  String failedToLoad(Object name) {
+    return 'Failed to load: \"$name\"';
+  }
+
+  @override
+  String get feedback => 'Feedback';
+
+  @override
+  String get feedbackDescription => 'If you have any questions, suggestions or problems, please let us know.';
+
+  @override
+  String get feedbackHint => 'A ready-made e-mail will open, which you can send to us. If desired, information about your device and the version of the application will be added. You can check and edit the email before sending it.';
+
+  @override
+  String get feedbackPrivacyPolicy1 => 'By sending the feedback you agree to our ';
+
+  @override
+  String get feedbackPrivacyPolicy2 => 'privacy policy';
+
+  @override
+  String get feedbackPrivacyPolicy3 => '.';
+
+  @override
+  String get feedbackSentDescription => 'Thank you very much for your help in making this application better!';
+
+  @override
+  String get feedbackSentTitle => 'Feedback sent';
+
+  @override
+  String get feedbackTitle => 'Your feedback is always welcome!';
+
+  @override
+  String get fileSavedToDownloadsFolder => 'File saved to Downloads folder';
+
+  @override
+  String get findingQrCodeInImage => 'Looking for QR code in image...';
+
+  @override
+  String get firebaseToken => 'Firebase Token';
+
+  @override
+  String get folderName => 'Folder name';
+
+  @override
+  String get generatingPhonePart => 'Generating phone part';
+
+  @override
+  String get generatingRSAKeyPair => 'Generating RSA key pair';
+
+  @override
+  String get generatingRSAKeyPairFailed => 'Generating RSA key pair failed';
+
+  @override
+  String get goToSettingsButton => 'Go to settings';
+
+  @override
+  String get goToSettingsDescription => 'Authentication by credentials or biometrics is not set up on your device. Please set it up in the device\'s settings.';
+
+  @override
+  String get grantCameraPermissionDialogButton => 'Grant permission';
+
+  @override
+  String get grantCameraPermissionDialogContent => 'Please grant camera permission to scan QR codes.';
+
+  @override
+  String get grantCameraPermissionDialogPermanentlyDenied => 'Camera permission is permanently denied. Please grant camera permission in your Phone\'s settings.';
+
+  @override
+  String get grantCameraPermissionDialogTitle => 'Camera permission is not granted';
+
+  @override
+  String get handshakeFailed => 'Handshake failed';
+
+  @override
+  String get hidePushTokens => 'Hide push tokens';
+
+  @override
+  String get hidePushTokensDescription => 'Hide push tokens from the token list. This will not delete the tokens and they will still be visible on a separate screen.';
+
+  @override
+  String get imageUrl => 'Image URL';
+
+  @override
+  String importConflictToken(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'There are conflicts with existing tokens.\nPlease select the tokens you wish to keep.',
+      one: 'There is a conflict with existing tokens.\nPlease select which one you would like to keep.',
+      zero: 'There is no conflict with existing tokens.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String importExistingToken(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count tokens was found that are already in the application.',
+      one: 'A token was found that already exists in the application.',
+      zero: 'No token was found that is already in the application.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get importExportTokens => 'Import/Export tokens';
+
+  @override
+  String importFailedToken(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Failed to import $count tokens.',
+      one: 'Failed to import a token.',
+      zero: 'No token Failed to import.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get importHint2FAS => 'Select your 2FAS backup.\nIf you do not have a backup, create one in the 2FAS app. We recommend using a password.';
+
+  @override
+  String get importHintAegisBackupFile => 'Select your Aegis export (.JSON).\nIf you do not have an export, please create one via the settings menu in the Aegis app. The use of a password is recommended.';
+
+  @override
+  String get importHintAegisLink => 'Enter the link you receive when you transfer entries from Aegis.';
+
+  @override
+  String get importHintAegisQrScan => 'Scan the QR code you receive when you transfer entries from Aegis.';
+
+  @override
+  String get importHintAuthenticatorProFile => 'To create a backup of the Authenticator Pro app, navigate to the settings and tap on \"Auto backup\". Select a storage location and set a password. Then press \"Back up now\" to export the tokens.';
+
+  @override
+  String get importHintFreeOtpPlusFile => 'To create a backup of the FreeOTP+ app, tap on the three dots in the upper right corner and select \"Export\". You can choose between JSON and URI format. We recommend to delete the backup after importing it, because it is not encrypted.';
+
+  @override
+  String get importHintFreeOtpPlusQrScan => 'Scan the QR code you receive when you press the three dots in the tile of the token and select \"Share QR code\".';
+
+  @override
+  String get importHintGoogleQrFile => 'Select an image file with the QR code you receive when you export your accounts from Google Authenticator.\n!! Note that it is not safe to save the QR code on your device as the tokens are not encrypted !!';
+
+  @override
+  String get importHintGoogleQrScan => 'Scan the QR code you receive when you export your accounts from Google Authenticator.';
+
+  @override
+  String get importHintPrivacyIdeaFile => 'To create a backup, go to the settings and tap on \"Export\". Select \"As file\", select the tokens you want to export. Then tap on \"Export\" and set a password. The storage location is the download folder on your device.';
+
+  @override
+  String get importHintPrivacyIdeaQrScan => 'Um QR-Codes der Token zu erstellen, navigieren Sie zu den Einstellungen und tippen auf \"Exportieren\". Wählen Sie dann \"Als QR-Code\" und tippen Sie auf den zu exportierenden Token. Diese Variante ist nur für die direkte Übertragung auf ein anderes Gerät geeignet, da der QR-Code nicht verschlüsselt ist.';
+
+  @override
+  String importNTokens(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'Import $count tokens',
+      one: 'Import one token',
+      zero: 'Import no token',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String importNewToken(num count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count new tokens were found that can be imported.',
+      one: 'A new token was found that can be imported.',
+      zero: 'No new token was found.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get importTokens => 'Import token';
+
+  @override
+  String get importedVia => 'Imported via';
+
+  @override
+  String get increaseCounter => 'Increase counter';
+
+  @override
+  String internalServerError(Object code) {
+    return 'Internal server error ($code)';
+  }
+
+  @override
+  String get introAddFolder => 'You can create folders\nto organize your tokens.';
+
+  @override
+  String get introAddTokenManually => 'If you don\'t want to scan a QR code, you can also add tokens manually.';
+
+  @override
+  String get introDragToken => 'Reorganize your tokens by pressing it for a few seconds and then dragging it to the desired position.';
+
+  @override
+  String get introEditToken => 'Here you can edit the token name and see some details.';
+
+  @override
+  String get introHidePushTokens => 'Your push tokens are hidden now.\nBut you can still see them on the push token screen.';
+
+  @override
+  String get introLockToken => 'To improve security even more, you can lock tokens.\nThen the token can only be used after authentication.';
+
+  @override
+  String get introPollForChallenges => 'You can check for new challenges by dragging down the token list.';
+
+  @override
+  String get introScanQrCode => 'You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.';
+
+  @override
+  String get introTokenSwipe => 'Swipe tokens to the left to see available actions.';
+
+  @override
+  String invalidBackupFile(Object appName) {
+    return 'The selected file is not a valid backup of $appName.';
+  }
+
+  @override
+  String invalidLink(Object appName) {
+    return 'The link entered is not a valid token of $appName, or it is not supported.';
+  }
+
+  @override
+  String invalidQrFile(Object appName) {
+    return 'The selected file does not contain a valid QR code from $appName.';
+  }
+
+  @override
+  String invalidQrScan(Object appName) {
+    return 'The scanned QR code is not a valid backup of $appName.';
+  }
+
+  @override
+  String invalidValue(Object parameter, Object type, Object value) {
+    return 'The $type \"$value\" is not valid for \"$parameter\"';
+  }
+
+  @override
+  String invalidValueIn(Object map, Object parameter, Object type, Object value) {
+    return 'The $type \"$value\" is not valid for \"$parameter\" in \"$map\"';
+  }
+
+  @override
+  String get isExpotableQuestion => 'Is exportable?';
+
+  @override
+  String get isPiTokenQuestion => 'It\'s a privacyIDEA token?';
+
+  @override
+  String get language => 'Language';
+
+  @override
+  String get legacySigningErrorMessage => 'The token was enrolled in a old version of this app, which may cause trouble using it.\nIt is suggested to enroll a new push token if the problem persist!';
+
+  @override
+  String legacySigningErrorTitle(Object tokenLabel) {
+    return 'An error occured while using the legacy token: $tokenLabel';
+  }
+
+  @override
+  String get licenses => 'Licenses';
+
+  @override
+  String get licensesAndVersion => 'Licenses and version';
+
+  @override
+  String get linkedContainer => 'Linked container';
+
+  @override
+  String get lock => 'Lock';
+
+  @override
+  String get lockOut => 'Biometric authentication is disabled. Please lock and unlock your screen to enable it.';
+
+  @override
+  String get logMenu => 'Log menu';
+
+  @override
+  String get malformedData => 'Malformed data';
+
+  @override
+  String get markQrCode => 'Mark QR Code';
+
+  @override
+  String missingRequiredParameter(Object parameter) {
+    return 'The value for the [$parameter] parameter is required, but is missing.';
+  }
+
+  @override
+  String missingRequiredParameterIn(Object map, Object parameter) {
+    return 'The value for the parameter [$parameter] is required, but is missing in \"$map\".';
+  }
+
+  @override
+  String mustNotBeEmpty(Object field) {
+    return '$field must not be empty';
+  }
+
+  @override
+  String get name => 'Name';
+
+  @override
+  String get no => 'No';
+
+  @override
+  String get noFbToken => 'No Firebase token available';
+
+  @override
+  String get noMailAppDescription => 'There is no e-mail app installed or initialised on this device, please try again when you are able to send an email message.';
+
+  @override
+  String get noMailAppTitle => 'No mail app found';
+
+  @override
+  String get noNetworkConnection => 'No network connection.';
+
+  @override
+  String get noPublicKey => 'No public key available';
+
+  @override
+  String get noResultText1 => 'Tap the ';
+
+  @override
+  String get noResultText2 => ' button to get started!';
+
+  @override
+  String get noResultTitle => 'No tokens stored yet.';
+
+  @override
+  String get noTokenToExport => 'No token available for export';
+
+  @override
+  String get noTokenToImport => 'No token found to import';
+
+  @override
+  String get notAnInteger => 'The value is not an integer.';
+
+  @override
+  String get notAnNumber => 'The value is not a number.';
+
+  @override
+  String get ok => 'Ok';
+
+  @override
+  String get oneMore => 'One more';
+
+  @override
+  String get open => 'Open';
+
+  @override
+  String get optionalMessage => 'Optional message';
+
+  @override
+  String get originApp => 'Origin app';
+
+  @override
+  String get originDetails => 'Origin details';
+
+  @override
+  String otpValueCopiedMessage(Object otpValue) {
+    return 'Password \"$otpValue\" copied to clipboard.';
+  }
+
+  @override
+  String get parsingResponse => 'Parsing response';
+
+  @override
+  String get parsingResponseFailed => 'Parsing response failed';
+
+  @override
+  String get password => 'Password';
+
+  @override
+  String get passwordCannotBeEmpty => 'Password cannot be empty';
+
+  @override
+  String get passwordCannotContainWhitespace => 'Password cannot contain whitespace';
+
+  @override
+  String get passwordMustBeAtLeast8Characters => 'Password must be at least 8 characters';
+
+  @override
+  String get passwordMustContainLowercaseLetter => 'Password must contain lowercase letter';
+
+  @override
+  String get passwordMustContainNumber => 'Password must contain number';
+
+  @override
+  String get passwordMustContainSpecialCharacter => 'Password must contain special character';
+
+  @override
+  String get passwordMustContainUppercaseLetter => 'Password must contain uppercase letter';
+
+  @override
+  String get passwordsDoNotMatch => 'Passwords do not match';
 
   @override
   String get patchNotesBugFixes => 'Bug fixes';
 
   @override
-  String get patchNotesV4_4_2NewFeatures1 => 'Tokens can now be inserted using copy & paste.';
+  String get patchNotesDialogTitle => 'What\'s new?';
 
   @override
-  String get patchNotesV4_4_2NewFeatures2 => 'Added gallery support for QR code scanning.';
+  String get patchNotesImprovements => 'Improvements';
 
   @override
-  String get patchNotesV4_4_2Improvement1 => 'Added flashlight support for QR code scanning.';
-
-  @override
-  String get patchNotesV4_4_0NewFeatures1 => 'It is now possible to export tokens where it can be ensured that they are not privacyIDEA tokens. Currently, it cannot be ruled out that tokens added via the QR code scanner originate from privacyIDEA. The differentiation will be improved in future versions.';
-
-  @override
-  String get patchNotesV4_4_0NewFeatures2 => 'Added support for privacyIDEA\'s \"require presence\"';
-
-  @override
-  String get patchNotesV4_4_0Improvement1 => 'Further import sources have been added.';
-
-  @override
-  String get patchNotesV4_4_0Improvement2 => 'Improved recognition of QR codes from image files.';
-
-  @override
-  String get patchNotesV4_3_1BugFix1 => 'Fixed an issue where the otp value was not displayed after authentication on some devices.';
-
-  @override
-  String get patchNotesV4_3_1Improvement1 => 'Improved the qr code scanner.';
+  String get patchNotesNewFeatures => 'New features';
 
   @override
   String get patchNotesV4_3_0NewFeatures1 => 'Support for importing tokens from Google, Aegis and 2FAS Authenticator has been added. More import sources will be added in the future.';
@@ -63,52 +732,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get patchNotesV4_3_0NewFeatures6 => 'Added HomeWidget token for Android 12 and later.';
 
   @override
-  String get accept => 'Accept';
+  String get patchNotesV4_3_1BugFix1 => 'Fixed an issue where the otp value was not displayed after authentication on some devices.';
 
   @override
-  String get decline => 'Decline';
+  String get patchNotesV4_3_1Improvement1 => 'Improved the qr code scanner.';
 
   @override
-  String get name => 'Name';
+  String get patchNotesV4_4_0Improvement1 => 'Further import sources have been added.';
 
   @override
-  String get secretKey => 'Secret key';
+  String get patchNotesV4_4_0Improvement2 => 'Improved recognition of QR codes from image files.';
 
   @override
-  String get encoding => 'Encoding';
+  String get patchNotesV4_4_0NewFeatures1 => 'It is now possible to export tokens where it can be ensured that they are not privacyIDEA tokens. Currently, it cannot be ruled out that tokens added via the QR code scanner originate from privacyIDEA. The differentiation will be improved in future versions.';
 
   @override
-  String get algorithm => 'Algorithm';
-
-  @override
-  String get digits => 'Digits';
-
-  @override
-  String get type => 'Type';
+  String get patchNotesV4_4_0NewFeatures2 => 'Added support for privacyIDEA\'s \"require presence\"';
 
   @override
   String get period => 'Period';
 
   @override
-  String get rename => 'Rename';
-
-  @override
-  String get cancel => 'Cancel';
-
-  @override
-  String get delete => 'Delete';
-
-  @override
-  String get dismiss => 'Dismiss';
-
-  @override
-  String get addToken => 'Add token';
-
-  @override
-  String get scanQrCode => 'Scan QR-Code';
-
-  @override
-  String get enterDetailsForToken => 'Enter details for token';
+  String get phonePart => 'Phone part:';
 
   @override
   String get pleaseEnterANameForThisToken => 'Please enter a name for this token.';
@@ -117,115 +762,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get pleaseEnterASecretForThisToken => 'Please enter a secret for this token.';
 
   @override
-  String get theSecretDoesNotFitTheCurrentEncoding => 'The secret does not fit the current encoding';
-
-  @override
-  String get renameToken => 'Rename token';
-
-  @override
-  String get confirmDeletion => 'Confirm deletion';
-
-  @override
-  String confirmDeletionOf(Object name) {
-    return 'Are you sure you want to delete $name?';
-  }
-
-  @override
-  String get confirmTokenDeletionHint => 'You may no longer be able to log in if you delete this token.\nPlease make sure that you can log in to the associated account without this token.';
-
-  @override
-  String get confirmFolderDeletionHint => 'Deleting a folder has no effect on the tokens in it.\nThe tokens are moved to the main list.';
-
-  @override
-  String get generatingPhonePart => 'Generating phone part';
-
-  @override
-  String get phonePart => 'Phone part:';
-
-  @override
-  String otpValueCopiedMessage(Object otpValue) {
-    return 'Password \"$otpValue\" copied to clipboard.';
-  }
-
-  @override
-  String get settings => 'Settings';
-
-  @override
-  String get pushToken => 'Push Token';
-
-  @override
-  String get theme => 'Theme';
-
-  @override
-  String get lightTheme => 'Light';
-
-  @override
-  String get darkTheme => 'Dark';
-
-  @override
-  String get systemTheme => 'Use device\'s theme';
-
-  @override
-  String get someTokensDoNotSupportPolling => 'Some of the tokens are outdated and do not support polling';
-
-  @override
-  String get enablePolling => 'Enable polling';
-
-  @override
-  String get requestPushChallengesPeriodically => 'Request push challenges from the server periodically. Enable this if push challenges are not received normally.';
-
-  @override
-  String get synchronizePushTokens => 'Synchronize push tokens';
-
-  @override
-  String get synchronizesTokensWithServer => 'Synchronizes tokens with the privacyIDEA server.';
-
-  @override
-  String get sync => 'Sync';
-
-  @override
-  String get synchronizingTokens => 'Synchronizing tokens.';
-
-  @override
-  String get allTokensSynchronized => 'All tokens are synchronized.';
-
-  @override
-  String get synchronizationFailed => 'Synchronization failed for the following tokens, please try again:';
-
-  @override
-  String get tokensDoNotSupportSynchronization => 'The following tokens do not support synchronization and must be rolled out again:';
-
-  @override
-  String errorRollOutFailed(Object name) {
-    return 'Rolling out token $name failed.';
-  }
-
-  @override
-  String statusCode(Object statusCode) {
-    return 'Status code: $statusCode';
-  }
-
-  @override
-  String get errorSynchronizationNoNetworkConnection => 'Synchronizing tokens failed, privacyIDEA server could not be reached.';
-
-  @override
-  String errorRollOutNoConnectionToServer(Object name) {
-    return 'Rolling out token $name failed, the server could not be reached.';
-  }
-
-  @override
-  String errorRollOutUnknownError(Object e) {
-    return 'An unknown error occurred. Roll-out not possible: $e';
-  }
-
-  @override
-  String get rollingOut => 'Rolling out';
+  String get pleaseSyncManuallyWhenNetworkIsAvailable => 'Please synchronize the push tokens manually via the settings when a network connection is available.';
 
   @override
   String get pollingChallenges => 'Polling for new challenges';
-
-  @override
-  String get unexpectedError => 'An unexpected error occurred.';
 
   @override
   String get pollingFailed => 'Polling failed.';
@@ -236,611 +776,93 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get noNetworkConnection => 'No network connection.';
-
-  @override
-  String get connectionFailed => 'Connection failed.';
-
-  @override
-  String get checkYourNetwork => 'Please check your network connection and try again.';
-
-  @override
-  String get serverNotReachable => 'The server could not be reached.';
-
-  @override
-  String get couldNotSignMessage => 'Could not sign message.';
-
-  @override
-  String get useDeviceLocaleTitle => 'Use device language';
-
-  @override
-  String get useDeviceLocaleDescription => 'Use device language if it is supported, otherwise default to english.';
-
-  @override
-  String get language => 'Language';
-
-  @override
-  String get authenticateToShowOtp => 'Please authenticate to show one time password.';
-
-  @override
-  String get authenticateToUnLockToken => 'Please authenticate to change the lock status of the token.';
-
-  @override
-  String get biometricRequiredTitle => 'Biometrics not setup';
-
-  @override
-  String get biometricHint => 'Authentication required';
-
-  @override
-  String get biometricNotRecognized => 'Not recognized. Try again.';
-
-  @override
-  String get biometricSuccess => 'Authentication successful';
-
-  @override
-  String get deviceCredentialsRequiredTitle => 'Device credentials not set up';
-
-  @override
-  String get deviceCredentialsSetupDescription => 'Setup device credentials in the device\'s settings';
-
-  @override
-  String get signInTitle => 'Authentication required';
-
-  @override
-  String get goToSettingsButton => 'Go to settings';
-
-  @override
-  String get goToSettingsDescription => 'Authentication by credentials or biometrics is not set up on your device. Please set it up in the device\'s settings.';
-
-  @override
-  String get lockOut => 'Biometric authentication is disabled. Please lock and unlock your screen to enable it.';
-
-  @override
-  String get authNotSupportedTitle => 'Device credentials or biometrics required';
-
-  @override
-  String get authNotSupportedBody => 'This action requires the device to be secured by credentials or biometrics.';
-
-  @override
-  String get lock => 'Lock';
-
-  @override
-  String get unlock => 'Unlock';
-
-  @override
-  String get noResultTitle => 'No tokens stored yet.';
-
-  @override
-  String get noResultText1 => 'Tap the ';
-
-  @override
-  String get noResultText2 => ' button to get started!';
-
-  @override
-  String onBoardingTitle1(Object appName) {
-    return '$appName';
-  }
-
-  @override
-  String get onBoardingText1 => 'Two-factor authentication\nmade easy';
-
-  @override
-  String get onBoardingTitle2 => 'Maximum Security';
-
-  @override
-  String get onBoardingText2 => 'Store tokens on your device securely\nProtected by your biometrics';
-
-  @override
-  String get onBoardingTitle3 => 'Visit us at Github';
-
-  @override
-  String get onBoardingText3 => 'This app is open source';
-
-  @override
-  String get errorLogTitle => 'Error log';
-
-  @override
-  String get logMenu => 'Log menu';
-
-  @override
-  String get showErrorLog => 'Show';
-
-  @override
-  String get clearErrorLog => 'Clear';
-
-  @override
-  String get send => 'Send';
-
-  @override
-  String get sendErrorLogDescription => 'A predefined email is created.\nIt contains information about the app, the error and the device.\nYou can edit the email before sending it.\nYou can see here how we use the information:';
-
-  @override
-  String get showPrivacyPolicy => 'Show privacy policy';
-
-  @override
-  String get errorLogEmpty => 'The error log is empty.';
-
-  @override
-  String get verboseLogging => 'Verbose logging';
-
-  @override
-  String get errorLogCleared => 'Error log cleared.';
-
-  @override
-  String get ok => 'Ok';
-
-  @override
-  String get errorMailBody => 'The error log file is attached.\nYou can replace this text with additional information about the error.';
-
-  @override
-  String get showDetails => 'Show details';
-
-  @override
-  String get open => 'Open';
-
-  @override
-  String get sendErrorDialogBody => 'An unexpected error occurred in the application. The information below can be send to the developers by email to help prevent this error in the future.';
-
-  @override
-  String get noFbToken => 'No Firebase token available';
-
-  @override
-  String get firebaseToken => 'Firebase Token';
-
-  @override
-  String get noPublicKey => 'No public key available';
+  String get privacyPolicy => 'Privacy policy';
 
   @override
   String get publicKey => 'Public Key';
 
   @override
-  String get editToken => 'Edit Token';
-
-  @override
-  String get edit => 'Edit';
-
-  @override
-  String get save => 'Save';
-
-  @override
-  String get create => 'Create';
-
-  @override
-  String get validFor => 'Valid for';
-
-  @override
-  String get validUntil => 'Valid until';
-
-  @override
-  String get deleteLockedToken => 'Please authenticate to delete the locked token.';
-
-  @override
-  String get editLockedToken => 'Please authenticate to edit the locked token.';
-
-  @override
-  String get expandLockedFolder => 'Please authenticate to uncollapse the locked folder.';
-
-  @override
-  String get renameTokenFolder => 'Rename folder';
-
-  @override
-  String get addANewFolder => 'Create new folder';
-
-  @override
-  String get folderName => 'Folder name';
-
-  @override
-  String get retryRollout => 'Retry rollout';
-
-  @override
-  String get generatingRSAKeyPair => 'Generating RSA key pair';
-
-  @override
-  String get generatingRSAKeyPairFailed => 'Generating RSA key pair failed';
-
-  @override
-  String get sendingRSAPublicKey => 'Sending public RSA key';
-
-  @override
-  String get sendingRSAPublicKeyFailed => 'Sending public RSA key failed';
-
-  @override
-  String get parsingResponse => 'Parsing response';
-
-  @override
-  String get parsingResponseFailed => 'Parsing response failed';
-
-  @override
-  String get rolloutCompleted => 'Rollout completed';
-
-  @override
-  String get authToAcceptPushRequest => 'Please authenticate to accept the push request.';
-
-  @override
-  String get authToDeclinePushRequest => 'Please authenticate to decline the push request.';
+  String get pushEndpointUrl => 'Push endpoint URL';
 
   @override
   String get pushRequestParseError => 'Push request could not be parsed.';
 
   @override
-  String get imageUrl => 'Image URL';
+  String get pushToken => 'Push Token';
 
   @override
-  String get errorRollOutSSLHandshakeFailed => 'SSL handshake failed. Roll-out not possible.';
+  String get pushTokens => 'Push Tokens';
 
   @override
-  String errorWhenPullingChallenges(Object name) {
-    return 'An error occured when polling for challenges of $name';
+  String get qrFileDecodeError => 'It was not possible to decode the QR code from the selected image, please use the QR code scanner instead.';
+
+  @override
+  String get qrInFileNotFound => 'No QR code was found in the selected image.';
+
+  @override
+  String get qrInFileNotFound2 => 'You can show me where the QR code is located.';
+
+  @override
+  String get qrInFileNotFound3 => 'I expect i will find the code if it is in the middle of the marked area.';
+
+  @override
+  String get qrNotFound => 'No QR code found!';
+
+  @override
+  String get qrScan => 'Scan';
+
+  @override
+  String get rename => 'Rename';
+
+  @override
+  String get renameToken => 'Rename token';
+
+  @override
+  String get renameTokenFolder => 'Rename folder';
+
+  @override
+  String requestInfo(Object account, Object issuer) {
+    return 'Sent by $issuer for your account: \"$account\"';
   }
 
   @override
-  String get couldNotConnectToServer => 'Could not connect to server';
-
-  @override
-  String get errorRollOutNotPossibleAnymore => 'Rolling out this Token is not possible anymore.';
-
-  @override
-  String errorTokenExpired(Object name) {
-    return 'The token $name has expired.';
-  }
-
-  @override
-  String get yes => 'Yes';
-
-  @override
-  String get no => 'No';
-
-  @override
-  String get butDiscardIt => 'but discard it';
-
-  @override
-  String get declineIt => 'decline it';
+  String get requestPushChallengesPeriodically => 'Request push challenges from the server periodically. Enable this if push challenges are not received normally.';
 
   @override
   String get requestTriggerdByUserQuestion => 'Was this request triggered by you?';
 
   @override
-  String get grantCameraPermissionDialogTitle => 'Camera permission is not granted';
+  String get retryRollout => 'Retry rollout';
 
   @override
-  String get grantCameraPermissionDialogContent => 'Please grant camera permission to scan QR codes.';
+  String get rolloutCompleted => 'Rollout completed';
 
   @override
-  String get grantCameraPermissionDialogPermanentlyDenied => 'Camera permission is permanently denied. Please grant camera permission in your Phone\'s settings.';
+  String get save => 'Save';
 
   @override
-  String get grantCameraPermissionDialogButton => 'Grant permission';
+  String get scanQrCode => 'Scan QR-Code';
 
   @override
-  String get decryptErrorTitle => 'Decryption error';
+  String get scanThisQrWithNewDevice => 'Scan this QR code with your new device to import the token.';
 
   @override
-  String get decryptErrorContent => 'Unfortunately, the app was unable to decrypt your tokens. This indicates that the encryption key is broken. You can try again or delete the app data, which would delete the tokens in the app.';
+  String get searchTokens => 'Search tokens';
 
   @override
-  String get decryptErrorButtonDelete => 'Delete';
+  String get secretIsRequired => 'Secret is required';
 
   @override
-  String get decryptErrorButtonSendError => 'Send error';
+  String get secretKey => 'Secret key';
 
   @override
-  String get decryptErrorButtonRetry => 'Retry';
-
-  @override
-  String get decryptErrorDeleteConfirmationContent => 'Are you sure you want to delete the app data?';
-
-  @override
-  String get hidePushTokens => 'Hide push tokens';
-
-  @override
-  String get hidePushTokensDescription => 'Hide push tokens from the token list. This will not delete the tokens and they will still be visible on a separate screen.';
-
-  @override
-  String get settingsGroupGeneral => 'General';
-
-  @override
-  String get licensesAndVersion => 'Licenses and version';
-
-  @override
-  String get privacyPolicy => 'Privacy policy';
-
-  @override
-  String get introScanQrCode => 'You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.';
-
-  @override
-  String get introAddTokenManually => 'If you don\'t want to scan a QR code, you can also add tokens manually.';
-
-  @override
-  String get introTokenSwipe => 'Swipe tokens to the left to see available actions.';
-
-  @override
-  String get introEditToken => 'Here you can edit the token name and see some details.';
-
-  @override
-  String get introLockToken => 'To improve security even more, you can lock tokens.\nThen the token can only be used after authentication.';
-
-  @override
-  String get introDragToken => 'Reorganize your tokens by pressing it for a few seconds and then dragging it to the desired position.';
-
-  @override
-  String get introAddFolder => 'You can create folders\nto organize your tokens.';
-
-  @override
-  String get introPollForChallenges => 'You can check for new challenges by dragging down the token list.';
-
-  @override
-  String get introHidePushTokens => 'Your push tokens are hidden now.\nBut you can still see them on the push token screen.';
-
-  @override
-  String legacySigningErrorTitle(Object tokenLabel) {
-    return 'An error occured while using the legacy token: $tokenLabel';
-  }
-
-  @override
-  String get legacySigningErrorMessage => 'The token was enrolled in a old version of this app, which may cause trouble using it.\nIt is suggested to enroll a new push token if the problem persist!';
+  String get selectFile => 'Select file';
 
   @override
   String get selectImportSource => 'Select import source';
 
   @override
   String get selectImportType => 'How do you want to import the tokens?';
-
-  @override
-  String get importTokens => 'Import token';
-
-  @override
-  String importNTokens(num count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Import $count tokens',
-      one: 'Import one token',
-      zero: 'Import no tokens',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get selectFile => 'Select file';
-
-  @override
-  String get decrypt => 'Decrypt';
-
-  @override
-  String get tokensAreEncrypted => 'The tokens are encrypted. Please enter the password to decrypt them.';
-
-  @override
-  String get tokensNotEncrypted => 'The tokens are not encrypted and can be imported directly.';
-
-  @override
-  String get tokensSuccessfullyDecrypted => 'The tokens have been successfully decrypted and can now be imported.';
-
-  @override
-  String get password => 'Password';
-
-  @override
-  String get wrongPassword => 'Incorrect password';
-
-  @override
-  String get qrScan => 'Scan';
-
-  @override
-  String get enterLink => 'Enter link';
-
-  @override
-  String invalidBackupFile(Object appName) {
-    return 'The selected file is not a valid backup of $appName.';
-  }
-
-  @override
-  String invalidQrScan(Object appName) {
-    return 'The scanned QR code is not a valid backup of $appName.';
-  }
-
-  @override
-  String invalidQrFile(Object appName) {
-    return 'The selected file does not contain a valid QR code from $appName.';
-  }
-
-  @override
-  String invalidLink(Object appName) {
-    return 'The link entered is not a valid token of $appName, or it is not supported.';
-  }
-
-  @override
-  String importFailedToken(num count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'Failed to import $count tokens.',
-      one: 'Failed to import a token.',
-      zero: 'No token Failed to import.',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String importExistingToken(num count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count tokens was found that are already in the application.',
-      one: 'A token was found that already exists in the application.',
-      zero: 'No token was found that is already in the application.',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String importConflictToken(num count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: 'There are conflicts with existing tokens.\nPlease select the tokens you wish to keep.',
-      one: 'There is a conflict with existing tokens.\nPlease select which one you would like to keep.',
-      zero: 'There is no conflict with existing tokens.',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String importNewToken(num count) {
-    String _temp0 = intl.Intl.pluralLogic(
-      count,
-      locale: localeName,
-      other: '$count new tokens were found that can be imported.',
-      one: 'A new token was found that can be imported.',
-      zero: 'No new token was found.',
-    );
-    return '$_temp0';
-  }
-
-  @override
-  String get importHintPrivacyIdeaQrScan => 'Um QR-Codes der Token zu erstellen, navigieren Sie zu den Einstellungen und tippen auf \"Exportieren\". Wählen Sie dann \"Als QR-Code\" und tippen Sie auf den zu exportierenden Token. Diese Variante ist nur für die direkte Übertragung auf ein anderes Gerät geeignet, da der QR-Code nicht verschlüsselt ist.';
-
-  @override
-  String get importHintPrivacyIdeaFile => 'To create a backup, go to the settings and tap on \"Export\". Select \"As file\", select the tokens you want to export. Then tap on \"Export\" and set a password. The storage location is the download folder on your device.';
-
-  @override
-  String get importHint2FAS => 'Select your 2FAS backup.\nIf you do not have a backup, create one in the 2FAS app. We recommend using a password.';
-
-  @override
-  String get importHintAegisBackupFile => 'Select your Aegis export (.JSON).\nIf you do not have an export, please create one via the settings menu in the Aegis app. The use of a password is recommended.';
-
-  @override
-  String get importHintAegisQrScan => 'Scan the QR code you receive when you transfer entries from Aegis.';
-
-  @override
-  String get importHintAegisLink => 'Enter the link you receive when you transfer entries from Aegis.';
-
-  @override
-  String get importHintGoogleQrScan => 'Scan the QR code you receive when you export your accounts from Google Authenticator.';
-
-  @override
-  String get importHintGoogleQrFile => 'Select an image file with the QR code you receive when you export your accounts from Google Authenticator.\n!! Note that it is not safe to save the QR code on your device as the tokens are not encrypted !!';
-
-  @override
-  String get importHintAuthenticatorProFile => 'To create a backup of the Authenticator Pro app, navigate to the settings and tap on \"Auto backup\". Select a storage location and set a password. Then press \"Back up now\" to export the tokens.';
-
-  @override
-  String get importHintFreeOtpPlusQrScan => 'Scan the QR code you receive when you press the three dots in the tile of the token and select \"Share QR code\".';
-
-  @override
-  String get importHintFreeOtpPlusFile => 'To create a backup of the FreeOTP+ app, tap on the three dots in the upper right corner and select \"Export\". You can choose between JSON and URI format. We recommend to delete the backup after importing it, because it is not encrypted.';
-
-  @override
-  String get qrFileDecodeError => 'It was not possible to decode the QR code from the selected image, please use the QR code scanner instead.';
-
-  @override
-  String get tokenLink => 'Token link';
-
-  @override
-  String get feedback => 'Feedback';
-
-  @override
-  String get feedbackTitle => 'Your feedback is always welcome!';
-
-  @override
-  String get feedbackDescription => 'If you have any questions, suggestions or problems, please let us know.';
-
-  @override
-  String get feedbackHint => 'A ready-made e-mail will open, which you can send to us. If desired, information about your device and the version of the application will be added. You can check and edit the email before sending it.';
-
-  @override
-  String get feedbackPrivacyPolicy1 => 'By sending the feedback you agree to our ';
-
-  @override
-  String get feedbackPrivacyPolicy2 => 'privacy policy';
-
-  @override
-  String get feedbackPrivacyPolicy3 => '.';
-
-  @override
-  String get addSystemInfo => 'Add system information';
-
-  @override
-  String get feedbackSentTitle => 'Feedback sent';
-
-  @override
-  String get feedbackSentDescription => 'Thank you very much for your help in making this application better!';
-
-  @override
-  String get patchNotesDialogTitle => 'What\'s new?';
-
-  @override
-  String get version => 'Version';
-
-  @override
-  String get noMailAppTitle => 'No mail app found';
-
-  @override
-  String get noMailAppDescription => 'There is no e-mail app installed or initialised on this device, please try again when you are able to send an email message.';
-
-  @override
-  String get authentication => 'Authentication';
-
-  @override
-  String requestInfo(Object issuer, Object account) {
-    return 'Sent by $issuer for your account: \"$account\"';
-  }
-
-  @override
-  String errorUnlinkingPushToken(Object label) {
-    return 'Failed to unlink the push token $label.';
-  }
-
-  @override
-  String get pleaseSyncManuallyWhenNetworkIsAvailable => 'Please synchronize the push tokens manually via the settings when a network connection is available.';
-
-  @override
-  String get pushTokens => 'Push Tokens';
-
-  @override
-  String get continueButton => 'Continue';
-
-  @override
-  String get addTokenManually => 'Add token manually';
-
-  @override
-  String get addFolder => 'Add folder';
-
-  @override
-  String get searchTokens => 'Search tokens';
-
-  @override
-  String get closeSearchTokens => 'Close search';
-
-  @override
-  String get increaseCounter => 'Increase counter';
-
-  @override
-  String get copyOTPToClipboard => 'Copy OTP to clipboard';
-
-  @override
-  String get licenses => 'Licenses';
-
-  @override
-  String get optionalMessage => 'Optional message';
-
-  @override
-  String get confirmation => 'Confirmation';
-
-  @override
-  String get askLogSendedDescription => 'Did you send the log, and do you want to clear it now?';
-
-  @override
-  String algorithmUnsupported(Object algorithm) {
-    return 'The algorithm $algorithm is not supported';
-  }
-
-  @override
-  String get thisAppIsOpenSource => 'This Application is Open Source\nVisit us on GitHub';
-
-  @override
-  String get importExportTokens => 'Import/Export tokens';
-
-  @override
-  String get exportNonPrivacyIDEATokens => 'Export non-privacyIDEA tokens';
 
   @override
   String selectTokensToExport(num count) {
@@ -855,65 +877,126 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get noTokenToExport => 'No token available for export';
+  String get selectTokensToExportHelpContent => 'If a token is not listed, it is not guaranteed that it is not a privacyIDEA token.\nCurrently only manually added and imported tokens are exportable.';
 
   @override
-  String get exportAllTokens => 'Export all tokens';
+  String get selectTokensToExportHelpTitle => 'Is your token not listed?';
 
   @override
-  String get export => 'Export';
+  String get send => 'Send';
 
   @override
-  String get exportingTokens => 'Exporting tokens...';
+  String get sendErrorDialogBody => 'An unexpected error occurred in the application. The information below can be send to the developers by email to help prevent this error in the future.';
 
   @override
-  String get exportTokens => 'Export tokens';
+  String get sendErrorLogDescription => 'A predefined email is created.\nIt contains information about the app, the error and the device.\nYou can edit the email before sending it.\nYou can see here how we use the information:';
 
   @override
-  String get enterPasswordToEncrypt => 'Enter a password to encrypt the tokens. This password will be required to import the tokens.';
+  String get sendPushRequestResponseFailed => 'Failed to send the response.';
 
   @override
-  String get exportLockedTokenReason => 'Please authenticate to export locked tokens.';
+  String get sendingRSAPublicKey => 'Sending public RSA key';
 
   @override
-  String get fileSavedToDownloadsFolder => 'File saved to Downloads folder';
+  String get sendingRSAPublicKeyFailed => 'Sending public RSA key failed';
 
   @override
-  String get errorSavingFile => 'Saving to file failed';
+  String get serverNotReachable => 'The server could not be reached.';
 
   @override
-  String get asQrCode => 'As QR code';
+  String get settings => 'Settings';
 
   @override
-  String get asFile => 'As file';
+  String get settingsGroupGeneral => 'General';
 
   @override
-  String get scanThisQrWithNewDevice => 'Scan this QR code with your new device to import the token.';
+  String get showDetails => 'Show details';
 
   @override
-  String get oneMore => 'One more';
+  String get showErrorLog => 'Show';
 
   @override
-  String get done => 'Done';
+  String get showPrivacyPolicy => 'Show privacy policy';
 
   @override
-  String get confirmPassword => 'Confirm password';
+  String get signInTitle => 'Authentication required';
 
   @override
-  String get secretIsRequired => 'Secret is required';
+  String get someTokensDoNotSupportPolling => 'Some of the tokens are outdated and do not support polling';
+
+  @override
+  String get startRollout => 'Start rollout';
+
+  @override
+  String statusCode(Object statusCode) {
+    return 'Status code: $statusCode';
+  }
+
+  @override
+  String get sync => 'Sync';
+
+  @override
+  String get syncContainerFailed => 'Container synchronization failed';
+
+  @override
+  String get syncFbTokenFailed => 'Synchronization failed for the following tokens, please try again:';
+
+  @override
+  String get synchronizePushTokens => 'Synchronize push tokens';
+
+  @override
+  String get synchronizesTokensWithServer => 'Synchronizes tokens with the privacyIDEA server.';
+
+  @override
+  String get synchronizingTokens => 'Synchronizing tokens.';
+
+  @override
+  String get theSecretDoesNotFitTheCurrentEncoding => 'The secret does not fit the current encoding';
+
+  @override
+  String get theme => 'Theme';
+
+  @override
+  String get thisAppIsOpenSource => 'This Application is Open Source\nVisit us on GitHub';
+
+  @override
+  String get timeOut => 'Time out';
 
   @override
   String get tokenDataParseError => 'Token data could not be parsed';
 
   @override
-  String missingRequiredParameter(Object counter) {
-    return 'Value for parameter [$counter] is required and is missing';
-  }
+  String get tokenDetails => 'Token details';
 
   @override
-  String invalidValueForParameter(Object value, Object parameter) {
-    return '\"$value\" is not a valid value for the parameter \"$parameter\".';
-  }
+  String get tokenLink => 'Token link';
+
+  @override
+  String get tokenSerial => 'Token serial';
+
+  @override
+  String get tokensAreEncrypted => 'The tokens are encrypted. Please enter the password to decrypt them.';
+
+  @override
+  String get tokensDoNotSupportSynchronization => 'The following tokens do not support synchronization and must be rolled out again:';
+
+  @override
+  String get tokensNotEncrypted => 'The tokens are not encrypted and can be imported directly.';
+
+  @override
+  String get tokensSuccessfullyDecrypted => 'The tokens have been successfully decrypted and can now be imported.';
+
+  @override
+  String get type => 'Type';
+
+  @override
+  String get unexpectedError => 'An unexpected error occurred.';
+
+  @override
+  String get unknown => 'Unknown';
+
+  @override
+  String get unlock => 'Unlock';
 
   @override
   String unsupported(Object name, Object value) {
@@ -921,76 +1004,36 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get pushEndpointUrl => 'Push endpoint URL';
+  String get useDeviceLocaleDescription => 'Use device language if it is supported, otherwise default to english.';
 
   @override
-  String get exampleUrl => 'Please enter a valid URL like: \"https://example.com/\"';
+  String get useDeviceLocaleTitle => 'Use device language';
 
   @override
-  String mustNotBeEmpty(Object field) {
-    return '$field must not be empty';
+  String get validFor => 'Valid for';
+
+  @override
+  String get validUntil => 'Valid until';
+
+  @override
+  String valueNotAllowed(Object parameter, Object type, Object value) {
+    return 'The $type \"$value\" is not an allowed value for \"$parameter\"';
   }
 
   @override
-  String get sendPushRequestResponseFailed => 'Failed to send the response.';
+  String valueNotAllowedIn(Object map, Object parameter, Object type, Object value) {
+    return 'The $type \"$value\" is not an allowed value for \"$parameter\" in \"$map\"';
+  }
 
   @override
-  String get passwordCannotBeEmpty => 'Password cannot be empty';
+  String get verboseLogging => 'Verbose logging';
 
   @override
-  String get passwordMustBeAtLeast8Characters => 'Password must be at least 8 characters';
+  String get version => 'Version';
 
   @override
-  String get passwordCannotContainWhitespace => 'Password cannot contain whitespace';
+  String get wrongPassword => 'Incorrect password';
 
   @override
-  String get passwordMustContainLowercaseLetter => 'Password must contain lowercase letter';
-
-  @override
-  String get passwordMustContainUppercaseLetter => 'Password must contain uppercase letter';
-
-  @override
-  String get passwordMustContainNumber => 'Password must contain number';
-
-  @override
-  String get passwordMustContainSpecialCharacter => 'Password must contain special character';
-
-  @override
-  String get passwordsDoNotMatch => 'Passwords do not match';
-
-  @override
-  String get selectTokensToExportHelpTitle => 'Is your token not listed?';
-
-  @override
-  String get selectTokensToExportHelpContent => 'If a token is not listed, it is not guaranteed that it is not a privacyIDEA token.\nCurrently only manually added and imported tokens are exportable.';
-
-  @override
-  String get findingQrCodeInImage => 'Looking for QR code in image...';
-
-  @override
-  String get qrNotFound => 'No QR code found!';
-
-  @override
-  String get qrInFileNotFound => 'No QR code was found in the selected image.';
-
-  @override
-  String get qrInFileNotFound2 => 'You can show me where the QR code is located.';
-
-  @override
-  String get qrInFileNotFound3 => 'I expect i will find the code if it is in the middle of the marked area.';
-
-  @override
-  String get markQrCode => 'Mark QR Code';
-
-  @override
-  String get malformedData => 'Malformed data';
-
-  @override
-  String get linkMustOtpAuth => 'The link must start with otpauth://';
-
-  @override
-  String get clipboardEmpty => 'Clipboard is empty';
-
-  @override
-  String get invalidUrl => 'Invalid URL';
+  String get yes => 'Yes';
 }

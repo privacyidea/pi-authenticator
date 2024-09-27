@@ -43,11 +43,8 @@ class AddTokenManuallyView extends ConsumerStatefulWidget {
 class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
   late ValueNotifier<TokenTypes> selectedTypeNotifier;
 
-  final PageController pageController = PageController();
-
-  // fields needed to manage the widget
-  final _labelInputKey = GlobalKey<FormFieldState>();
-  final _secretInputKey = GlobalKey<FormFieldState>();
+  late TextEditingController labelController;
+  late TextEditingController secretController;
 
   late ValueNotifier<bool> autoValidateLabel;
   late ValueNotifier<bool> autoValidateSecret;
@@ -147,145 +144,9 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
           maxLines: 2, // Title can be shown on small screens too.
         ),
       ),
-      body: Column(
-        children: [
-          PageViewIndicator(
-            controller: pageController,
-            icons: [
-              Icon(Icons.edit),
-              Icon(Icons.link),
-            ],
-          ),
-          Expanded(
-            child: PageView(
-              controller: pageController,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
-                  child: Form(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Expanded(
-                          child: SingleChildScrollView(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                TextFormField(
-                                  key: _labelInputKey,
-                                  controller: _labelController,
-                                  autovalidateMode: _autoValidateLabel,
-                                  focusNode: _labelFieldFocus,
-                                  decoration: InputDecoration(labelText: AppLocalizations.of(context)!.name),
-                                  validator: (value) {
-                                    if (value!.isEmpty) {
-                                      return AppLocalizations.of(context)!.pleaseEnterANameForThisToken;
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                TextFormField(
-                                  key: _secretInputKey,
-                                  controller: _secretController,
-                                  autovalidateMode: _autoValidateSecret,
-                                  focusNode: _secretFieldFocus,
-                                  decoration: InputDecoration(
-                                    labelText: AppLocalizations.of(context)!.secretKey,
-                                  ),
-                                  validator: (value) {
-                                    if (value!.isEmpty) {
-                                      return AppLocalizations.of(context)!.pleaseEnterASecretForThisToken;
-                                    } else if ((_typeNotifier.value == TokenTypes.STEAM && Encodings.base32.isInvalidEncoding(value)) ||
-                                        (_typeNotifier.value != TokenTypes.STEAM && _encodingNotifier.value.isInvalidEncoding(value))) {
-                                      return AppLocalizations.of(context)!.theSecretDoesNotFitTheCurrentEncoding;
-                                    }
-                                    return null;
-                                  },
-                                ),
-                                Visibility(
-                                  visible: _typeNotifier.value != TokenTypes.STEAM,
-                                  child: LabeledDropdownButton<Encodings>(
-                                    label: AppLocalizations.of(context)!.encoding,
-                                    values: Encodings.values,
-                                    valueNotifier: _encodingNotifier,
-                                  ),
-                                ),
-                                Visibility(
-                                  visible: _typeNotifier.value != TokenTypes.STEAM,
-                                  child: LabeledDropdownButton<Algorithms>(
-                                    label: AppLocalizations.of(context)!.algorithm,
-                                    values: Algorithms.values.reversed.toList(),
-                                    valueNotifier: _algorithmNotifier,
-                                  ),
-                                ),
-                                Visibility(
-                                  visible: _typeNotifier.value != TokenTypes.STEAM,
-                                  child: LabeledDropdownButton<int>(
-                                    label: AppLocalizations.of(context)!.digits,
-                                    values: AddTokenManuallyView.allowedDigits,
-                                    valueNotifier: _digitsNotifier,
-                                  ),
-                                ),
-                                LabeledDropdownButton<TokenTypes>(
-                                  label: AppLocalizations.of(context)!.type,
-                                  values: List.from(TokenTypes.values)..remove(TokenTypes.PIPUSH),
-                                  valueNotifier: _typeNotifier,
-                                ),
-                                Visibility(
-                                  // the period is only used by TOTP tokens
-                                  visible: _typeNotifier.value == TokenTypes.TOTP,
-                                  child: LabeledDropdownButton<int>(
-                                    label: AppLocalizations.of(context)!.period,
-                                    values: AddTokenManuallyView.allowedPeriodsTOTP,
-                                    valueNotifier: _periodNotifier,
-                                    postFix: 's' /*seconds*/,
-                                  ),
-                                ),
-                                Visibility(
-                                  // the period is only used by DayPassword tokens
-                                  visible: _typeNotifier.value == TokenTypes.DAYPASSWORD,
-                                  child: LabeledDropdownButton<int>(
-                                    label: AppLocalizations.of(context)!.period,
-                                    values: AddTokenManuallyView.allowedPeriodsDayPassword,
-                                    valueNotifier: _periodDayPasswordNotifier,
-                                    postFix: 'h' /*hours*/,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            child: Text(
-                              AppLocalizations.of(context)!.addToken,
-                              style: Theme.of(context).textTheme.headlineSmall,
-                              overflow: TextOverflow.fade,
-                              softWrap: false,
-                            ),
-                            onPressed: () {
-                              final token = _buildTokenIfValid(context: context);
-                              if (token != null) {
-                                ref.read(tokenProvider.notifier).addOrReplaceToken(token);
-                                Navigator.pop(context);
-                              }
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
-                  child: LinkInputView(),
-                )
-              ],
-            ),
-          ),
-        ],
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: column,
       ),
     );
   }
