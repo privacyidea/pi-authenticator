@@ -38,7 +38,7 @@ void _testAppCustomizer() {
       expect(customization.appImage.getWidget, isA<Widget>());
       expect(customization.appImage.imageData, equals(defaultImageUint8List));
       expect(() => customization.appImage.getWidget, returnsNormally);
-      expect(customization..appImage.getWidget, isA<Widget>());
+      expect(customization.appImage.getWidget, isA<Widget>());
       expect(customization.lightTheme, equals(ApplicationCustomization.defaultCustomization.lightTheme));
       expect(customization.darkTheme, equals(ApplicationCustomization.defaultCustomization.darkTheme));
       expect(customization.disabledFeatures, equals({AppFeature.patchNotes}));
@@ -73,8 +73,8 @@ void _testAppCustomizer() {
         // Assert
         expect(json['appName'], equals('test'));
         expect(json['websiteLink'], equals('https://test'));
-        expect(json['appIconBASE64'], equals(base64Encode(defaultIconUint8List)));
-        expect(json['appImageBASE64'], equals(base64Encode(defaultImageUint8List)));
+        expect(json['appIcon'], equals({'fileType': 'png', 'imageData': base64Encode(defaultIconUint8List)}));
+        expect(json['appImage'], equals({'fileType': 'png', 'imageData': base64Encode(defaultImageUint8List)}));
         expect(json['lightTheme'], equals(ApplicationCustomization.defaultCustomization.lightTheme.toJson()));
         expect(json['darkTheme'], equals(ApplicationCustomization.defaultCustomization.darkTheme.toJson()));
         expect(json['disabledFeatures'], equals({AppFeature.patchNotes.name}));
