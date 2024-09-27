@@ -39,7 +39,7 @@ class FailedImportsList extends StatelessWidget {
           child: Text(
             AppLocalizations.of(context)!.importFailedToken(failedImports.length),
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleLarge,
+            style: Theme.of(context).textTheme.titleMedium,
           ),
         ),
         for (var i = 0; i < failedImports.length; i++)

@@ -83,7 +83,7 @@ class TokenWidgetBase extends ConsumerWidget {
             dragAnchorStrategy: (Draggable<Object> d, BuildContext context, Offset point) {
               final textSize = textSizeOf(
                 text: token.label,
-                style: Theme.of(context).textTheme.titleLarge!,
+                style: Theme.of(context).textTheme.titleMedium!,
                 textScaler: MediaQuery.of(context).textScaler,
                 maxLines: 1,
               );
@@ -97,7 +97,7 @@ class TokenWidgetBase extends ConsumerWidget {
                     color: Colors.transparent,
                     child: Text(
                       token.label,
-                      style: Theme.of(context).textTheme.titleLarge,
+                      style: Theme.of(context).textTheme.titleMedium,
                       overflow: TextOverflow.fade,
                       softWrap: false,
                     )),

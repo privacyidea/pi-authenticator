@@ -172,7 +172,7 @@ class SettingsGroupPushTokenDialog extends ConsumerWidget {
               TextButton(
                 child: Text(
                   AppLocalizations.of(context)!.dismiss,
-                  style: Theme.of(context).textTheme.titleLarge,
+                  style: Theme.of(context).textTheme.titleMedium,
                 ),
                 onPressed: () => Navigator.of(context).pop(),
               ),

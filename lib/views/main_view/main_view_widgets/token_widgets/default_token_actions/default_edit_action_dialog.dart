@@ -233,7 +233,7 @@ class ReadOnlyTextFormField extends StatelessWidget {
         ),
         readOnly: true,
         onTap: onTap,
-        style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).disabledColor),
+        style: Theme.of(context).textTheme.titleSmall?.copyWith(color: Theme.of(context).disabledColor),
       );
 }
 

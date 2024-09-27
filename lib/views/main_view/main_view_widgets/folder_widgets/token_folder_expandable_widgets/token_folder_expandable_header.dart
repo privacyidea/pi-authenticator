@@ -139,7 +139,7 @@ class _TokenFolderExpandableHeaderState extends ConsumerState<TokenFolderExpanda
                       flex: 2,
                       child: Text(
                         widget.folder.label,
-                        style: Theme.of(context).textTheme.titleLarge,
+                        style: Theme.of(context).textTheme.titleMedium,
                         overflow: TextOverflow.fade,
                         softWrap: false,
                       ),

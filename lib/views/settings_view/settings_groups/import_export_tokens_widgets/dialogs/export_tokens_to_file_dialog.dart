@@ -71,7 +71,7 @@ class _ExportTokensToFileDialogState extends ConsumerState<ExportTokensToFileDia
                         validator: Validators(appLocalizations).password,
                         decoration: InputDecoration(
                           labelText: appLocalizations.password,
-                          labelStyle: Theme.of(context).textTheme.titleMedium,
+                          labelStyle: Theme.of(context).textTheme.titleSmall,
                         ),
                       ),
                     ),
@@ -98,7 +98,7 @@ class _ExportTokensToFileDialogState extends ConsumerState<ExportTokensToFileDia
                         validator: (value) => Validators(appLocalizations).confirmPassword(_passwordTextController.text, value),
                         decoration: InputDecoration(
                           labelText: appLocalizations.confirmPassword,
-                          labelStyle: Theme.of(context).textTheme.titleMedium,
+                          labelStyle: Theme.of(context).textTheme.titleSmall,
                         ),
                       ),
                     ),

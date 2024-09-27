@@ -89,7 +89,7 @@ class _PushDeclineConfirmDialogState extends State<PushDeclineConfirmDialog> {
     return DefaultDialog(
       title: Text(
         widget.title,
-        style: Theme.of(context).textTheme.titleLarge!,
+        style: Theme.of(context).textTheme.titleMedium!,
         textAlign: TextAlign.center,
       ),
       content: Column(
@@ -128,14 +128,14 @@ class _PushDeclineConfirmDialogState extends State<PushDeclineConfirmDialog> {
                         children: [
                           Text(
                             localizations.yes,
-                            style: Theme.of(context).textTheme.titleMedium,
+                            style: Theme.of(context).textTheme.titleSmall,
                             textAlign: TextAlign.center,
                           ),
                           FittedBox(
                             fit: BoxFit.scaleDown,
                             child: Text(
                               localizations.butDiscardIt,
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).textTheme.titleMedium?.color),
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).textTheme.titleSmall?.color),
                               textAlign: TextAlign.center,
                               softWrap: false,
                             ),
@@ -163,12 +163,12 @@ class _PushDeclineConfirmDialogState extends State<PushDeclineConfirmDialog> {
                       children: [
                         Text(
                           localizations.no,
-                          style: Theme.of(context).textTheme.titleMedium,
+                          style: Theme.of(context).textTheme.titleSmall,
                           textAlign: TextAlign.center,
                         ),
                         Text(
                           localizations.declineIt,
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).textTheme.titleMedium?.color),
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).textTheme.titleSmall?.color),
                           textAlign: TextAlign.center,
                           softWrap: false,
                         ),
