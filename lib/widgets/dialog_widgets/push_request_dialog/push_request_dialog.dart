@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/widgets/dialog_widgets/push_request_dialog/push_request_dialog_widgets/push_decline_confirm_button.dart';
+import 'push_request_dialog_widgets/push_decline_confirm_button.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../model/push_request.dart';

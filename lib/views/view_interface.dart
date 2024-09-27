@@ -19,6 +19,7 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 export 'package:flutter_riverpod/flutter_riverpod.dart' show WidgetRef;
 
 abstract class ViewWidget extends Widget {
