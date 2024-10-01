@@ -29,7 +29,7 @@ import '../../../../utils/globals.dart';
 import '../../../../utils/logger.dart';
 import '../../../../utils/riverpod/riverpod_providers/state_providers/dragging_sortable_provider.dart';
 import '../../../../utils/utils.dart';
-import '../../../../widgets/pi_slideable.dart';
+import '../../../../widgets/pi_slidable.dart';
 import 'default_token_actions/default_delete_action.dart';
 import 'default_token_actions/default_edit_action.dart';
 import 'default_token_actions/default_lock_action.dart';
@@ -39,9 +39,9 @@ import 'token_widget.dart';
 class TokenWidgetBase extends ConsumerWidget {
   final Widget tile;
   final Token token;
-  final PiSlideableAction? deleteAction;
-  final PiSlideableAction? editAction;
-  final PiSlideableAction? lockAction;
+  final ConsumerSlideableAction? deleteAction;
+  final ConsumerSlideableAction? editAction;
+  final ConsumerSlideableAction? lockAction;
   final List<Widget> stack;
   final IconData dragIcon;
 
@@ -59,7 +59,7 @@ class TokenWidgetBase extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final SortableMixin? draggingSortable = ref.watch(draggingSortableProvider);
-    final List<PiSlideableAction> actions = [
+    final List<ConsumerSlideableAction> actions = [
       deleteAction ?? DefaultDeleteAction(token: token, key: Key('${token.id}deleteAction')),
       editAction ?? DefaultEditAction(token: token, key: Key('${token.id}editAction')),
     ];
@@ -104,32 +104,28 @@ class TokenWidgetBase extends ConsumerWidget {
               ],
             ),
             data: token,
-            child: ClipRRect(
-              child: Material(
-                color: Colors.transparent,
-                child: DefaultInkWell(
-                  onTap: () {},
-                  child: PiSlideable(
-                    groupTag: TokenWidget.groupTag,
-                    identifier: token.id,
-                    actions: actions,
-                    stack: stack,
-                    tile: tile,
-                  ),
+            child: Material(
+              color: Colors.transparent,
+              child: DefaultInkWell(
+                onTap: () {},
+                child: PiSliable(
+                  groupTag: TokenWidget.groupTag,
+                  identifier: token.id,
+                  actions: actions,
+                  stack: stack,
+                  child: tile,
                 ),
               ),
             ),
           )
         : draggingSortable == token
             ? const SizedBox()
-            : ClipRRect(
-                child: PiSlideable(
-                  groupTag: TokenWidget.groupTag,
-                  identifier: token.id,
-                  actions: actions,
-                  stack: stack,
-                  tile: tile,
-                ),
+            : PiSliable(
+                groupTag: TokenWidget.groupTag,
+                identifier: token.id,
+                actions: actions,
+                stack: stack,
+                child: tile,
               );
   }
 }

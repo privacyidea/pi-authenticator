@@ -54,7 +54,8 @@ class QrScannerButton extends ConsumerWidget {
               ref.read(tokenProvider.notifier),
               ref.read(tokenContainerProvider.notifier),
             ];
-            scanQrCode(resultHandlers, qrCode);
+            if (qrCode == null || !context.mounted) return;
+            scanQrCode(context: context, resultHandlerList: resultHandlers, qrCode: qrCode);
           });
         },
         tooltip: AppLocalizations.of(context)!.scanQrCode,

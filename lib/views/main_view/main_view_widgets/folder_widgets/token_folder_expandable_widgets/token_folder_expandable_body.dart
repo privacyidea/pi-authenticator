@@ -60,7 +60,6 @@ class TokenFolderExpandableBody extends StatelessWidget {
             ],
             if (tokens.isNotEmpty && draggingSortable is Token)
               filter == null ? DragTargetDivider<Token>(dependingFolder: folder, previousSortable: tokens.last, nextSortable: null) : const Divider(),
-            if (tokens.isNotEmpty && draggingSortable is! Token) const SizedBox(height: 8),
           ],
         ),
       );

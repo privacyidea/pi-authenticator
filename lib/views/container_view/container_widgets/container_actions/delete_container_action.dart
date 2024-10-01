@@ -28,7 +28,7 @@ import '../../../../utils/riverpod/riverpod_providers/generated_providers/token_
 import '../../../main_view/main_view_widgets/token_widgets/slideable_action.dart';
 import '../../../view_interface.dart';
 
-class DeleteContainerAction extends PiSlideableAction {
+class DeleteContainerAction extends ConsumerSlideableAction {
   final TokenContainer container;
 
   const DeleteContainerAction({

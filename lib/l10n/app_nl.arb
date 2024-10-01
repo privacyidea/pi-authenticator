@@ -208,12 +208,6 @@
   "@generatingPhonePart": {
     "description": "Title of a dialog telling the user that the phone part gets generated right now."
   },
-  "@generatingRSAKeyPair": {
-    "description": "Message for the rollout process"
-  },
-  "@generatingRSAKeyPairFailed": {
-    "description": "Message for the rollout process"
-  },
   "@goToSettingsButton": {
     "description": "Message showed on a button that the user can click to go to settings pages from the current dialog. It is used on both Android and iOS side. Maximum 30 characters."
   },
@@ -382,12 +376,6 @@
     },
     "type": "text"
   },
-  "@parsingResponse": {
-    "description": "Message for the rollout process"
-  },
-  "@parsingResponseFailed": {
-    "description": "Message for the rollout process"
-  },
   "@period": {
     "description": "Title of the dropdown button where the period of the totp token is selected."
   },
@@ -443,7 +431,37 @@
   "@retry": {
     "description": "Label for e.g. a button. Something is tried to be done again."
   },
-  "@rolloutCompleted": {
+  "@rolloutStateCompleted": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateGeneratingKeyPair": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateGeneratingKeyPairCompleted": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateGeneratingKeyPairFailed": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateNotStarted": {
+    "description": "Label that tells the user that the token is being rolled out."
+  },
+  "@rolloutStateParsingResponse": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateParsingResponseCompleted": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateParsingResponseFailed": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateSendingPublicKey": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateSendingPublicKeyCompleted": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateSendingPublicKeyFailed": {
     "description": "Message for the rollout process"
   },
   "@scanQrCode": {
@@ -467,12 +485,6 @@
   "@sendPushRequestResponseFailed": {
     "description": "Error message when the response to a push request could not be sent."
   },
-  "@sendingRSAPublicKey": {
-    "description": "Message for the rollout process"
-  },
-  "@sendingRSAPublicKeyFailed": {
-    "description": "Message for the rollout process"
-  },
   "@serverNotReachable": {
     "description": "Tells the user that the server could not be reached."
   },
@@ -494,9 +506,6 @@
   "@someTokensDoNotSupportPolling": {
     "description": "Tells the user, that the following tokens do not support polling.",
     "type": "text"
-  },
-  "@startRollout": {
-    "description": "Label that tells the user that the token is being rolled out."
   },
   "@statusCode": {
     "description": "Tells the user the status code of the error.",
@@ -714,8 +723,6 @@
   "firebaseToken": "Firebase Token",
   "folderName": "Mapnaam",
   "generatingPhonePart": "Genereren telefoon gedeelte",
-  "generatingRSAKeyPair": "Genereren RSA sleutelpaar",
-  "generatingRSAKeyPairFailed": "Genereren RSA sleutelpaar mislukt",
   "goToSettingsButton": "Ga naar instellingen",
   "goToSettingsDescription": "Authenticatie via inloggegevens of biometrie is niet ingesteld. Stel het in bij de instellingen van het apparaat.",
   "grantCameraPermissionDialogButton": "Toestemming verlenen",
@@ -799,8 +806,6 @@
   "originApp": "Oorsprong app",
   "originDetails": "Details over de oorsprong",
   "otpValueCopiedMessage": "Wachtwoord \"{otpValue}\" gekopieerd naar het klembord.",
-  "parsingResponse": "Antwoord analyseren",
-  "parsingResponseFailed": "Antwoord analyseren mislukt",
   "password": "Wachtwoord",
   "passwordCannotBeEmpty": "Wachtwoord mag niet leeg zijn",
   "passwordCannotContainWhitespace": "Wachtwoord mag geen spaties bevatten",
@@ -853,7 +858,17 @@
   "requestPushChallengesPeriodically": "Activeer het zoeken naar berichten. Gebruik deze optie wanneer de push berichten niet worden ontvangen.",
   "requestTriggerdByUserQuestion": "Is dit verzoek door jou gedaan?",
   "retryRollout": "Opnieuw uitrollen",
-  "rolloutCompleted": "Uitrollen voltooid",
+  "rolloutStateCompleted": "Uitrollen voltooid",
+  "rolloutStateGeneratingKeyPair": "Sleutelpaar genereren",
+  "rolloutStateGeneratingKeyPairCompleted": "Genereren sleutelpaar voltooid",
+  "rolloutStateGeneratingKeyPairFailed": "Het sleutelpaar is niet gegenereerd",
+  "rolloutStateNotStarted": "Start uitrollen",
+  "rolloutStateParsingResponse": "Antwoord analyseren",
+  "rolloutStateParsingResponseCompleted": "Antwoord ontleden voltooid",
+  "rolloutStateParsingResponseFailed": "Antwoord analyseren mislukt",
+  "rolloutStateSendingPublicKey": "Publieke sleutel verzenden",
+  "rolloutStateSendingPublicKeyCompleted": "Verzenden openbare sleutel voltooid",
+  "rolloutStateSendingPublicKeyFailed": "Versturen openbare sleutel mislukt",
   "save": "Opslaan",
   "scanQrCode": "Scan QR-Code",
   "scanThisQrWithNewDevice": "Scan deze QR-code met uw nieuwe apparaat om de token te importeren.",
@@ -870,8 +885,6 @@
   "sendErrorDialogBody": "Een onverwachte fout heeft plaatsgevonden in de applicatie. De onderstaande informatie kan worden verstuurd naar de ontwikkelaars via e-mail om het probleem in de toekomst te voorkomen.",
   "sendErrorLogDescription": "Er wordt een kant-en-klare e-mail gemaakt die informatie bevat over de app, de fout en het apparaat.\nJe kunt de e-mail bewerken voordat je hem verstuurt.\nJe kunt hier zien hoe we de informatie gebruiken:",
   "sendPushRequestResponseFailed": "Het verzenden van het antwoord is mislukt. ",
-  "sendingRSAPublicKey": "Versturen van de openbare RSA sleutel",
-  "sendingRSAPublicKeyFailed": "Versturen van de openbare RSA sleutel mislukt",
   "serverNotReachable": "De server kon niet worden bereikt.",
   "settings": "Instellingen",
   "settingsGroupGeneral": "Algemene informatie",
@@ -880,7 +893,6 @@
   "showPrivacyPolicy": "Privacybeleid tonen",
   "signInTitle": "Authenticatie vereist",
   "someTokensDoNotSupportPolling": "Sommige tokens zijn verouderd en ondersteunen geen actief zoeken",
-  "startRollout": "Start uitrollen",
   "statusCode": "Statuscode: {statusCode}",
   "sync": "Synchroniseer",
   "syncContainerFailed": "Container synchronisatie mislukt",

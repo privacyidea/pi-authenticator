@@ -48,5 +48,7 @@ class TokenContainerState with _$TokenContainerState {
     return null;
   }
 
+  TokenContainer? ofSerial(String serial) => containerList.firstWhereOrNull((container) => container.serial == serial);
+
   factory TokenContainerState.fromJson(Map<String, dynamic> json) => _$TokenContainerStateFromJson(json);
 }

@@ -32,7 +32,7 @@ import '../../../../../../widgets/focused_item_as_overlay.dart';
 import '../../default_token_actions/default_edit_action_dialog.dart';
 import '../../slideable_action.dart';
 
-class EditDayPassowrdTokenAction extends PiSlideableAction {
+class EditDayPassowrdTokenAction extends ConsumerSlideableAction {
   final DayPasswordToken token;
 
   const EditDayPassowrdTokenAction({

@@ -208,12 +208,6 @@
   "@generatingPhonePart": {
     "description": "Title of a dialog telling the user that the phone part gets generated right now."
   },
-  "@generatingRSAKeyPair": {
-    "description": "Message for the rollout process"
-  },
-  "@generatingRSAKeyPairFailed": {
-    "description": "Message for the rollout process"
-  },
   "@goToSettingsButton": {
     "description": "Message showed on a button that the user can click to go to settings pages from the current dialog. It is used on both Android and iOS side. Maximum 30 characters."
   },
@@ -382,12 +376,6 @@
     },
     "type": "text"
   },
-  "@parsingResponse": {
-    "description": "Message for the rollout process"
-  },
-  "@parsingResponseFailed": {
-    "description": "Message for the rollout process"
-  },
   "@period": {
     "description": "Title of the dropdown button where the period of the totp token is selected."
   },
@@ -443,7 +431,37 @@
   "@retry": {
     "description": "Label for e.g. a button. Something is tried to be done again."
   },
-  "@rolloutCompleted": {
+  "@rolloutStateCompleted": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateGeneratingKeyPair": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateGeneratingKeyPairCompleted": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateGeneratingKeyPairFailed": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateNotStarted": {
+    "description": "Label that tells the user that the token is being rolled out."
+  },
+  "@rolloutStateParsingResponse": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateParsingResponseCompleted": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateParsingResponseFailed": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateSendingPublicKey": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateSendingPublicKeyCompleted": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateSendingPublicKeyFailed": {
     "description": "Message for the rollout process"
   },
   "@scanQrCode": {
@@ -467,12 +485,6 @@
   "@sendPushRequestResponseFailed": {
     "description": "Error message when the response to a push request could not be sent."
   },
-  "@sendingRSAPublicKey": {
-    "description": "Message for the rollout process"
-  },
-  "@sendingRSAPublicKeyFailed": {
-    "description": "Message for the rollout process"
-  },
   "@serverNotReachable": {
     "description": "Tells the user that the server could not be reached."
   },
@@ -494,9 +506,6 @@
   "@someTokensDoNotSupportPolling": {
     "description": "Tells the user, that the following tokens do not support polling.",
     "type": "text"
-  },
-  "@startRollout": {
-    "description": "Label that tells the user that the token is being rolled out."
   },
   "@statusCode": {
     "description": "Tells the user the status code of the error.",
@@ -714,8 +723,6 @@
   "firebaseToken": "Token Firebase",
   "folderName": "Nazwa folderu",
   "generatingPhonePart": "Generowanie sekretu po stronie telefonu...",
-  "generatingRSAKeyPair": "Generowanie pary kluczy RSA",
-  "generatingRSAKeyPairFailed": "Generowanie pary kluczy RSA nieudane",
   "goToSettingsButton": "Idź do ustawień",
   "goToSettingsDescription": "Ustawienia zabezpieczeń, bądź uwierzytelnianie biometryczne nie są skonfigurowane w twoim urządzeniu. Skonfiguruj je w ustawieniach urządzenia.",
   "grantCameraPermissionDialogButton": "Grant permission",
@@ -799,8 +806,6 @@
   "originApp": "Aplikacja Origin",
   "originDetails": "Szczegóły dotyczące pochodzenia",
   "otpValueCopiedMessage": "Jednorazowe hasło \"{otpValue}\" skopiowane do schowka.",
-  "parsingResponse": "Analizowanie odpowiedzi",
-  "parsingResponseFailed": "Analizowanie odpowiedzi nieudane",
   "password": "Hasło",
   "passwordCannotBeEmpty": "Hasło nie może być puste",
   "passwordCannotContainWhitespace": "Hasło nie może zawierać spacji",
@@ -853,7 +858,17 @@
   "requestPushChallengesPeriodically": "Wysyłaj zapytanie o push challenge cyklicznie. Włącz, jeśli push nie przychodzi normalnie.",
   "requestTriggerdByUserQuestion": "Czy ta prośba została wywołana przez Ciebie?",
   "retryRollout": "Ponowne uruchomienie",
-  "rolloutCompleted": "Wdrożenie zakończone",
+  "rolloutStateCompleted": "Wdrożenie zakończone",
+  "rolloutStateGeneratingKeyPair": "Generowanie pary kluczy",
+  "rolloutStateGeneratingKeyPairCompleted": "Generowanie pary kluczy zakończone",
+  "rolloutStateGeneratingKeyPairFailed": "Nie udało się wygenerować pary kluczy",
+  "rolloutStateNotStarted": "Rozpocznij wdrożenie",
+  "rolloutStateParsingResponse": "Analizowanie odpowiedzi",
+  "rolloutStateParsingResponseCompleted": "Parsowanie odpowiedzi zakończone",
+  "rolloutStateParsingResponseFailed": "Analizowanie odpowiedzi nieudane",
+  "rolloutStateSendingPublicKey": "Wysyłanie klucza publicznego",
+  "rolloutStateSendingPublicKeyCompleted": "Wysyłanie klucza publicznego zakończone",
+  "rolloutStateSendingPublicKeyFailed": "Wysyłanie klucza publicznego nie powiodło się",
   "save": "Zapisz",
   "scanQrCode": "Zeskanuj kod QR",
   "scanThisQrWithNewDevice": "Zeskanuj ten kod QR za pomocą nowego urządzenia, aby zaimportować token.",
@@ -870,8 +885,6 @@
   "sendErrorDialogBody": "Napotkano nieoczekiwany błąd w aplikacji. Poniższa wiadomość może zostać wysłana do deweloperów poprzez email, żeby pomóc uniknąć tego problemu w przyszłości.",
   "sendErrorLogDescription": "Tworzona jest gotowa wiadomość e-mail zawierająca informacje o aplikacji, błędzie i urządzeniu.\nMożesz edytować wiadomość e-mail przed jej wysłaniem.\nTutaj można zobaczyć, w jaki sposób wykorzystujemy te informacje:",
   "sendPushRequestResponseFailed": "Nie udało się wysłać odpowiedzi.",
-  "sendingRSAPublicKey": "Wysyłanie publicznego klucza RSA",
-  "sendingRSAPublicKeyFailed": "Wysyłanie publicznego klucza RSA nieudane",
   "serverNotReachable": "Nie można uzyskać połączenia z serwerem.",
   "settings": "Ustawienia",
   "settingsGroupGeneral": "Informacje ogólne",
@@ -880,7 +893,6 @@
   "showPrivacyPolicy": "Pokaż politykę prywatności",
   "signInTitle": "Wymagana autentykacja",
   "someTokensDoNotSupportPolling": "Część tokenów jest przestarzała i nie wspiera aktywnego zapytania dla autentykacji przez wiadomość push.",
-  "startRollout": "Rozpocznij wdrożenie",
   "statusCode": "Kod statusu: {statusCode}",
   "sync": "Synchronizuj",
   "syncContainerFailed": "Synchronizacja kontenera nie powiodła się",

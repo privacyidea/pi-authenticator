@@ -775,49 +775,57 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   }
 
   @override
-  Future<List?> handleProcessorResults(List<ProcessorResult> results, Map<String, dynamic> args) async {
+  Future handleProcessorResults(List<ProcessorResult> results, Map<String, dynamic> args) async {
     final List<ProcessorResult<Token>> tokenResults = results.whereType<ProcessorResult<Token>>().toList();
-    if (tokenResults.isEmpty) return null;
+    if (tokenResults.isEmpty) return;
     final List<Token> resultTokens = tokenResults.getData();
     final stateTokens = state.tokens;
-    List<Token>? tokensToKeep;
     final tokenOriginSourceType = (args['TokenOriginSourceType'] as TokenOriginSourceType?);
     var tokenImportType = (args['TokenImportType'] as TokenImportType?) ?? TokenImportType.qrScan;
     try {
       if (resultTokens.length > 1 || stateTokens.any((e) => resultTokens.first.isSameTokenAs(e) == true)) {
-        Navigator.of(globalNavigatorKey.currentContext!).popUntil((route) => route.isFirst);
-        tokensToKeep = await Navigator.of(globalNavigatorKey.currentContext!).push<List<Token>>(
-          MaterialPageRoute<List<Token>>(
-            builder: (context) => ImportPlainTokensPage(
-              titleName: AppLocalizations.of(context)!.importTokens,
-              processorResults: tokenResults,
-              selectedType: tokenImportType,
-            ),
-          ),
-        );
-      } else {
-        tokensToKeep = resultTokens;
+        // Navigator.of(globalNavigatorKey.currentContext!).popUntil((route) => route.isFirst);
+        _showImportTokensPage(tokenResults, tokenOriginSourceType!, tokenImportType);
+        return;
       }
     } catch (error, stackTrace) {
       Logger.error('Error while processing QR code.', error: error, stackTrace: stackTrace);
-      return null;
+      return;
     }
-    if (tokensToKeep == null) return null;
-    tokensToKeep = tokensToKeep
-        .map(
-          (e) => e.copyWith(
-            origin: e.origin?.copyWith(source: tokenOriginSourceType) ??
-                TokenOriginSourceType.unknown.toTokenOrigin(data: 'No Origindata available', isPrivacyIdeaToken: null),
-          ),
-        )
-        .toList();
-    await addNewTokens(tokensToKeep);
-    return null;
+    final tokensWithSourceType = _addSourceType(resultTokens, tokenOriginSourceType);
+    addNewTokens(tokensWithSourceType);
   }
 
 /* /////////////////////////////////////////////////////////////////////////////
-  /////////////////////////// Helper Methods /////////////////////////////////////
-  ///////////////////////////////////////////////////////////////////////////// */
+///////////////////////////// Helper Methods ///////////////////////////////////
+///////////////////////////////////////////////////////////////////////////// */
+
+  Future<void> _showImportTokensPage(
+    List<ProcessorResult<Token>> tokenResults,
+    TokenOriginSourceType tokenOriginSourceType,
+    TokenImportType tokenImportType,
+  ) async {
+    final tokensToKeep = await Navigator.of(globalNavigatorKey.currentContext!).push<List<Token>>(
+      MaterialPageRoute<List<Token>>(
+        builder: (context) => ImportPlainTokensPage(
+          titleName: AppLocalizations.of(context)!.importTokens,
+          processorResults: tokenResults,
+          selectedType: tokenImportType,
+        ),
+      ),
+    );
+
+    if (tokensToKeep == null) return;
+    final tokensWithSourceType = _addSourceType(tokenResults.getData(), tokenOriginSourceType);
+    await addNewTokens(tokensWithSourceType);
+  }
+
+  List<Token> _addSourceType(List<Token> tokens, TokenOriginSourceType? tokenOriginSourceType) => tokens
+      .map((e) => e.copyWith(
+            origin: e.origin?.copyWith(source: tokenOriginSourceType) ??
+                TokenOriginSourceType.unknown.toTokenOrigin(data: 'No Origindata available', isPrivacyIdeaToken: null),
+          ))
+      .toList();
 
   Future<RSAPublicKey> _parseRollOutResponse(Response response) async {
     Logger.info('Parsing rollout response, try to extract public_key.');

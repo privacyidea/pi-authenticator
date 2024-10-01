@@ -50,7 +50,7 @@ class ContainerView extends ConsumerView {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            for (var containerCredential in container) ContainerWidget(containerCredential: containerCredential),
+            for (var containerCredential in container) ContainerWidget(container: containerCredential),
           ],
         ),
       ),

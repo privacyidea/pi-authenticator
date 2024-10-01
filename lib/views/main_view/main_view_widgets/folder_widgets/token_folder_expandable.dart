@@ -97,17 +97,18 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
       expandableController.value = widget.expandOverride!;
     }
     final isExpanded = expandableController.value;
+    const double borderRadius = 6;
     return Container(
-      padding: const EdgeInsets.all(2),
+      padding: const EdgeInsets.fromLTRB(0, borderRadius, 0, borderRadius),
       margin: const EdgeInsets.only(bottom: 8, left: 14),
       decoration: BoxDecoration(
         color: isExpanded ? Theme.of(context).scaffoldBackgroundColor : Colors.transparent,
         borderRadius: isExpanded
             ? const BorderRadius.only(
-                topLeft: Radius.circular(6),
-                bottomLeft: Radius.circular(6),
+                topLeft: Radius.circular(borderRadius),
+                bottomLeft: Radius.circular(borderRadius),
               )
-            : const BorderRadius.all(Radius.circular(6)),
+            : const BorderRadius.all(Radius.circular(borderRadius)),
         boxShadow: [
           if (isExpanded)
             BoxShadow(

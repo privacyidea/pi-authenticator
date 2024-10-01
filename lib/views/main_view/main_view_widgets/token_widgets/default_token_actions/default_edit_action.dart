@@ -34,7 +34,7 @@ import '../../../../../widgets/focused_item_as_overlay.dart';
 import '../slideable_action.dart';
 import 'default_edit_action_dialog.dart';
 
-class DefaultEditAction extends PiSlideableAction {
+class DefaultEditAction extends ConsumerSlideableAction {
   final Token token;
   const DefaultEditAction({required this.token, super.key});
 

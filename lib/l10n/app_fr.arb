@@ -208,12 +208,6 @@
   "@generatingPhonePart": {
     "description": "Title of a dialog telling the user that the phone part gets generated right now."
   },
-  "@generatingRSAKeyPair": {
-    "description": "Message for the rollout process"
-  },
-  "@generatingRSAKeyPairFailed": {
-    "description": "Message for the rollout process"
-  },
   "@goToSettingsButton": {
     "description": "Message showed on a button that the user can click to go to settings pages from the current dialog. It is used on both Android and iOS side. Maximum 30 characters."
   },
@@ -382,12 +376,6 @@
     },
     "type": "text"
   },
-  "@parsingResponse": {
-    "description": "Message for the rollout process"
-  },
-  "@parsingResponseFailed": {
-    "description": "Message for the rollout process"
-  },
   "@period": {
     "description": "Title of the dropdown button where the period of the totp token is selected."
   },
@@ -443,7 +431,37 @@
   "@retry": {
     "description": "Label for e.g. a button. Something is tried to be done again."
   },
-  "@rolloutCompleted": {
+  "@rolloutStateCompleted": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateGeneratingKeyPair": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateGeneratingKeyPairCompleted": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateGeneratingKeyPairFailed": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateNotStarted": {
+    "description": "Label that tells the user that the token is being rolled out."
+  },
+  "@rolloutStateParsingResponse": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateParsingResponseCompleted": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateParsingResponseFailed": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateSendingPublicKey": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateSendingPublicKeyCompleted": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateSendingPublicKeyFailed": {
     "description": "Message for the rollout process"
   },
   "@scanQrCode": {
@@ -467,12 +485,6 @@
   "@sendPushRequestResponseFailed": {
     "description": "Error message when the response to a push request could not be sent."
   },
-  "@sendingRSAPublicKey": {
-    "description": "Message for the rollout process"
-  },
-  "@sendingRSAPublicKeyFailed": {
-    "description": "Message for the rollout process"
-  },
   "@serverNotReachable": {
     "description": "Tells the user that the server could not be reached."
   },
@@ -494,9 +506,6 @@
   "@someTokensDoNotSupportPolling": {
     "description": "Tells the user, that the following tokens do not support polling.",
     "type": "text"
-  },
-  "@startRollout": {
-    "description": "Label that tells the user that the token is being rolled out."
   },
   "@statusCode": {
     "description": "Tells the user the status code of the error.",
@@ -714,8 +723,6 @@
   "firebaseToken": "Jeton Firebase",
   "folderName": "Nom du dossier",
   "generatingPhonePart": "Générer la part du téléphone",
-  "generatingRSAKeyPair": "Génération de la paire de clés RSA",
-  "generatingRSAKeyPairFailed": "La génération de la paire de clés RSA a échoué",
   "goToSettingsButton": "Aller aux paramètres",
   "goToSettingsDescription": "L'authentification par identifiants ou biométrie n'est pas configurée sur votre appareil. Veuillez le configurer dans les paramètres de l'appareil.",
   "grantCameraPermissionDialogButton": "Accorder l'autorisation",
@@ -799,8 +806,6 @@
   "originApp": "Application d'origine",
   "originDetails": "Informations sur l'origine",
   "otpValueCopiedMessage": "Le mot de passe \"{otpValue}\" a été copié dans le presse-papier.",
-  "parsingResponse": "Analyse de la réponse",
-  "parsingResponseFailed": "L'analyse de la réponse a échoué",
   "password": "Mot de passe",
   "passwordCannotBeEmpty": "Le mot de passe ne peut pas être vide",
   "passwordCannotContainWhitespace": "Le mot de passe ne peut pas contenir d'espaces",
@@ -854,7 +859,17 @@
   "requestTriggerdByUserQuestion": "Cette demande a-t-elle été déclenchée par vous ?",
   "retry": "Réessayer",
   "retryRollout": "Réessayer le déploiement",
-  "rolloutCompleted": "Déploiement terminé",
+  "rolloutStateCompleted": "Déploiement terminé",
+  "rolloutStateGeneratingKeyPair": "Création d'une paire de clés",
+  "rolloutStateGeneratingKeyPairCompleted": "Génération de la paire de clés terminée",
+  "rolloutStateGeneratingKeyPairFailed": "Échec de la génération de la paire de clés",
+  "rolloutStateNotStarted": "Démarrer le déploiement",
+  "rolloutStateParsingResponse": "Analyse de la réponse",
+  "rolloutStateParsingResponseCompleted": "Analyse de la réponse terminée",
+  "rolloutStateParsingResponseFailed": "L'analyse de la réponse a échoué",
+  "rolloutStateSendingPublicKey": "Envoi de la clé publique",
+  "rolloutStateSendingPublicKeyCompleted": "Envoi de la clé publique terminé",
+  "rolloutStateSendingPublicKeyFailed": "Échec de l'envoi de la clé publique",
   "save": "Enregistrer",
   "scanQrCode": "Numériser QR-Code",
   "scanThisQrWithNewDevice": "Scannez ce code QR avec votre nouvel appareil pour importer le jeton.",
@@ -871,8 +886,6 @@
   "sendErrorDialogBody": "Une erreur inattendue est survenue dans l'application. L'information suivante peut être transmise aux développeurs par email afin d'aider à corriger cette erreur dans le futur.",
   "sendErrorLogDescription": "Un e-mail pré-rempli est créé.\nIl contient des informations sur l'application, l'erreur et le périphérique.\nVous pouvez modifier l'e-mail avant de l'envoyer.\nVous pouvez voir ici comment nous utilisons les informations:",
   "sendPushRequestResponseFailed": "Échec de l'envoi de la réponse.",
-  "sendingRSAPublicKey": "Envoi de la clé publique RSA",
-  "sendingRSAPublicKeyFailed": "L'envoi de la clé publique RSA a échoué",
   "serverNotReachable": "Le serveur n'a pas pu être atteint.",
   "settings": "Paramètres",
   "settingsGroupGeneral": "Généralités",
@@ -881,7 +894,6 @@
   "showPrivacyPolicy": "Afficher la déclaration de confidentialité",
   "signInTitle": "Authentification requise",
   "someTokensDoNotSupportPolling": "Certains jetons sont obsolètes et ne supportent pas l'interrogation due serveur.",
-  "startRollout": "Démarrer le déploiement",
   "statusCode": "Code d'état : {statusCode}",
   "sync": "Synchroniser",
   "syncContainerFailed": "Échec de la synchronisation des conteneurs",

@@ -26,20 +26,22 @@ class LoadingIndicator extends StatelessWidget {
   static double widgetSize = 40;
   static OverlayEntry? _overlayEntry;
 
-  static Future<T?> show<T>(BuildContext context, Future<T> Function() future) async {
+  static Future<T?> show<T>({
+    required BuildContext context,
+    required Future<T> Function() action,
+    void Function(T)? onComplete,
+  }) async {
     if (_overlayEntry != null) return null;
     _overlayEntry = OverlayEntry(
       builder: (context) => const LoadingIndicator._(),
     );
-    Overlay.of(context).insert(_overlayEntry!);
     Logger.info('Showing loading indicator');
-
-    final T result = await future().then((value) {
-      Logger.info('Hiding loading indicator');
-      _overlayEntry?.remove();
-      _overlayEntry = null;
-      return value;
-    });
+    Overlay.of(context).insert(_overlayEntry!);
+    final T result = await action();
+    onComplete?.call(result);
+    Logger.info('Hiding loading indicator');
+    _overlayEntry?.remove();
+    _overlayEntry = null;
     return result;
   }
 

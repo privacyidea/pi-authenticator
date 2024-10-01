@@ -369,6 +369,13 @@ class ThemeCustomization {
             ),
           ),
           scaffoldBackgroundColor: backgroundColor,
+          cardTheme: CardTheme(
+            color: backgroundColor,
+            shadowColor: shadowColor,
+            elevation: 4, // TODO: EDIT THIS
+            margin: const EdgeInsets.all(4),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          ),
           cardColor: backgroundColor,
           shadowColor: shadowColor,
           // shadowColor: Colors.transparent,

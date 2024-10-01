@@ -28,13 +28,14 @@ import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/logger.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
+import '../../token_widgets/slideable_action.dart';
 
-class RenameTokenFolderAction extends StatelessWidget {
+class RenameTokenFolderAction extends ConsumerSlideableAction {
   final TokenFolder folder;
   const RenameTokenFolderAction({required this.folder, super.key});
 
   @override
-  Widget build(BuildContext context) {
+  CustomSlidableAction build(BuildContext context, ref) {
     return CustomSlidableAction(
         backgroundColor: Theme.of(context).extension<ActionTheme>()!.editColor,
         foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,

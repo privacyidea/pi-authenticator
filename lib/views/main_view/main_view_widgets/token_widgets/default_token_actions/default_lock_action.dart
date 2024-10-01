@@ -33,7 +33,7 @@ import '../../../../../utils/riverpod/riverpod_providers/generated_providers/tok
 import '../../../../../widgets/focused_item_as_overlay.dart';
 import '../slideable_action.dart';
 
-class DefaultLockAction extends PiSlideableAction {
+class DefaultLockAction extends ConsumerSlideableAction {
   final Token token;
 
   const DefaultLockAction({required this.token, super.key});

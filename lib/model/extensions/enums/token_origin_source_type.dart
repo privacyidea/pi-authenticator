@@ -17,6 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import '../../../utils/utils.dart';
 import '../../enums/token_origin_source_type.dart';
 import '../../token_import/token_origin_data.dart';

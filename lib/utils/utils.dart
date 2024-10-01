@@ -32,6 +32,7 @@ import 'package:privacyidea_authenticator/mains/main_netknights.dart';
 import 'package:privacyidea_authenticator/model/extensions/sortable_list.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/sortable_notifier.dart';
+import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/loading_indicator.dart';
 
 import '../model/enums/token_origin_source_type.dart';
 import '../model/mixins/sortable_mixin.dart';
@@ -183,7 +184,6 @@ void dragSortableOnAccept({
 
 ByteData bigIntToByteData(BigInt bigInt) {
   final data = ByteData((bigInt.bitLength / 8).ceil());
-
   for (var i = 1; i <= data.lengthInBytes; i++) {
     data.setUint8(data.lengthInBytes - i, bigInt.toUnsigned(8).toInt());
     bigInt = bigInt >> 8;
@@ -205,7 +205,7 @@ Uint8List bigIntToBytes(BigInt bigInt) => bigIntToByteData(bigInt).buffer.asUint
 
 BigInt bytesToBigInt(Uint8List bytes) => byteDataToBigInt(ByteData.sublistView(bytes));
 
-Future<void> scanQrCode(List<ResultHandler> resultHandlerList, Object? qrCode) async {
+Future<void> scanQrCode({BuildContext? context, required List<ResultHandler> resultHandlerList, required Object? qrCode}) async {
   Uri uri;
   try {
     if (qrCode == null) return;
@@ -232,12 +232,20 @@ Future<void> scanQrCode(List<ResultHandler> resultHandlerList, Object? qrCode) a
       resultHandlerTypeMap[validator] = [result];
     }
   }
-
-  for (var resultHandlerType in resultHandlerTypeMap.keys) {
-    final results = resultHandlerTypeMap[resultHandlerType]!;
-    final resultHandler = resultHandlerList.firstWhereOrNull((resultHandler) => resultHandlerType.isTypeOf(resultHandler));
-    if (resultHandler != null) {
-      await resultHandler.handleProcessorResults(results, {'TokenOriginSourceType': TokenOriginSourceType.qrScan}); // TODO: use const IDENTIFIER variable
+  Future<void> handleResults() async {
+    for (var resultHandlerType in resultHandlerTypeMap.keys) {
+      final results = resultHandlerTypeMap[resultHandlerType]!;
+      final resultHandler = resultHandlerList.firstWhereOrNull((resultHandler) => resultHandlerType.isTypeOf(resultHandler));
+      if (resultHandler != null) {
+        await resultHandler.handleProcessorResults(results, {'TokenOriginSourceType': TokenOriginSourceType.qrScan}); // TODO: use const IDENTIFIER variable
+      }
     }
   }
+
+  if (context == null || !context.mounted) return handleResults();
+
+  LoadingIndicator.show(
+    context: context,
+    action: handleResults,
+  );
 }

@@ -208,12 +208,6 @@
   "@generatingPhonePart": {
     "description": "Title of a dialog telling the user that the phone part gets generated right now."
   },
-  "@generatingRSAKeyPair": {
-    "description": "Message for the rollout process"
-  },
-  "@generatingRSAKeyPairFailed": {
-    "description": "Message for the rollout process"
-  },
   "@goToSettingsButton": {
     "description": "Message showed on a button that the user can click to go to settings pages from the current dialog. It is used on both Android and iOS side. Maximum 30 characters."
   },
@@ -382,12 +376,6 @@
     },
     "type": "text"
   },
-  "@parsingResponse": {
-    "description": "Message for the rollout process"
-  },
-  "@parsingResponseFailed": {
-    "description": "Message for the rollout process"
-  },
   "@period": {
     "description": "Title of the dropdown button where the period of the totp token is selected."
   },
@@ -443,7 +431,37 @@
   "@retry": {
     "description": "Label for e.g. a button. Something is tried to be done again."
   },
-  "@rolloutCompleted": {
+  "@rolloutStateCompleted": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateGeneratingKeyPair": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateGeneratingKeyPairCompleted": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateGeneratingKeyPairFailed": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateNotStarted": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateParsingResponse": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateParsingResponseCompleted": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateParsingResponseFailed": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateSendingPublicKey": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateSendingPublicKeyCompleted": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateSendingPublicKeyFailed": {
     "description": "Message for the rollout process"
   },
   "@scanQrCode": {
@@ -467,12 +485,6 @@
   "@sendPushRequestResponseFailed": {
     "description": "Error message when the response to a push request could not be sent."
   },
-  "@sendingRSAPublicKey": {
-    "description": "Message for the rollout process"
-  },
-  "@sendingRSAPublicKeyFailed": {
-    "description": "Message for the rollout process"
-  },
   "@serverNotReachable": {
     "description": "Tells the user that the server could not be reached."
   },
@@ -494,9 +506,6 @@
   "@someTokensDoNotSupportPolling": {
     "description": "Tells the user, that the following tokens do not support polling.",
     "type": "text"
-  },
-  "@startRollout": {
-    "description": "Label that tells the user that the token is being rolled out."
   },
   "@statusCode": {
     "description": "Tells the user the status code of the error.",
@@ -714,8 +723,6 @@
   "firebaseToken": "Token Firebase",
   "folderName": "Název složky",
   "generatingPhonePart": "Generování klientské části",
-  "generatingRSAKeyPair": "Generování párů klíčů RSA",
-  "generatingRSAKeyPairFailed": "Generování páru klíčů RSA se nezdařilo",
   "goToSettingsButton": "Otevřít nastavení",
   "goToSettingsDescription": "Není nastaveno přihlášení zámkem zařízení ani biometrické ověření. Aktivujte je v nastavení zařízení.",
   "grantCameraPermissionDialogButton": "Udělit oprávnění",
@@ -799,8 +806,6 @@
   "originApp": "Aplikace Origin",
   "originDetails": "Podrobnosti o původu",
   "otpValueCopiedMessage": "Heslo \"{otpValue}\" bylo zkopírováno do schránky.",
-  "parsingResponse": "Rozbor odpovědi",
-  "parsingResponseFailed": "Parsování odpovědi se nezdařilo",
   "password": "Heslo",
   "passwordCannotBeEmpty": "Heslo nesmí být prázdné",
   "passwordCannotContainWhitespace": "Heslo nesmí obsahovat mezery",
@@ -854,7 +859,17 @@
   "requestTriggerdByUserQuestion": "Byl tento požadavek vyvolán vámi?",
   "retry": "Zkusit znovu",
   "retryRollout": "Zkusit znovu",
-  "rolloutCompleted": "Zavedení dokončeno",
+  "rolloutStateCompleted": "Zavedení dokončeno",
+  "rolloutStateGeneratingKeyPair": "Generování páru klíčů",
+  "rolloutStateGeneratingKeyPairCompleted": "Generování páru klíčů dokončeno",
+  "rolloutStateGeneratingKeyPairFailed": "Nepodařilo se vygenerovat pár klíčů",
+  "rolloutStateNotStarted": "Začít zavádění",
+  "rolloutStateParsingResponse": "Rozbor odpovědi",
+  "rolloutStateParsingResponseCompleted": "Parsování odpovědi dokončeno",
+  "rolloutStateParsingResponseFailed": "Parsování odpovědi se nezdařilo",
+  "rolloutStateSendingPublicKey": "Odeslání veřejného klíče",
+  "rolloutStateSendingPublicKeyCompleted": "Odeslání veřejného klíče dokončeno",
+  "rolloutStateSendingPublicKeyFailed": "Odeslání veřejného klíče se nezdařilo",
   "save": "Uložit",
   "scanQrCode": "Naskenovat QR kód",
   "scanThisQrWithNewDevice": "Naskenujte tento QR kód svým novým zařízením pro import žetonu.",
@@ -871,8 +886,6 @@
   "sendErrorDialogBody": "V aplikaci se vyskytla neznámá chyba. Informace uvedené níže mohou být odeslány vývojářům e-mailem pro vyřešení chyby v budoucnu.",
   "sendErrorLogDescription": "Vytvoří se připravený e-mail.\nObsahuje informace o aplikaci, chybě a zařízení.\nPřed odesláním můžete e-mail upravit.\nZde se můžete podívat, jak informace používáme:",
   "sendPushRequestResponseFailed": "Odpověď se nepodařilo odeslat.",
-  "sendingRSAPublicKey": "Odeslání veřejného klíče RSA",
-  "sendingRSAPublicKeyFailed": "Nepodařilo se odeslat veřejný klíč RSA",
   "serverNotReachable": "Na server se nepodařilo dovolat.",
   "settings": "Nastavení",
   "settingsGroupGeneral": "Obecné informace",
@@ -881,7 +894,6 @@
   "showPrivacyPolicy": "Zobrazit zásady ochrany osobních údajů",
   "signInTitle": "Vyžadováno přihlášení",
   "someTokensDoNotSupportPolling": "Některé tokeny jsou zastaralé a nepodporují polling",
-  "startRollout": "Začít zavádění",
   "statusCode": "Stavový kód: {statusCode}",
   "sync": "Synchronizovat",
   "syncContainerFailed": "Synchronizace kontejneru se nezdařila",
