@@ -66,7 +66,7 @@ class MainViewTokensList extends ConsumerStatefulWidget {
         widgets.add(
           DragTargetDivider(
             // The divider should be invisible if the upcoming folder is expanded
-            opacity: currentIsExpandedFolder ? 0 : 1,
+            opacity: currentIsExpandedFolder && draggingSortable == null ? 0 : 1,
             dependingFolder: null,
             previousSortable: i == 0 ? null : sortables.elementAtOrNull(i - 1),
             nextSortable: sortables[i],

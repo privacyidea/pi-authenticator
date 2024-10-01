@@ -23,53 +23,57 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../model/token_container.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
-import '../../../widgets/pi_slideable.dart';
+import '../../../widgets/pi_slidable.dart';
 import '../../main_view/main_view_widgets/token_widgets/token_widget_tile.dart';
 import '../container_view.dart';
 import 'container_actions/delete_container_action.dart';
 import 'container_actions/edit_container_action.dart';
 
 class ContainerWidget extends ConsumerWidget {
-  final TokenContainer containerCredential;
+  final TokenContainer container;
+  final bool isPreview;
 
   final List<Widget> stack;
 
   const ContainerWidget({
-    required this.containerCredential,
+    required this.container,
+    this.isPreview = false,
     this.stack = const <Widget>[],
     super.key,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => ClipRRect(
-        child: PiSlideable(
+        child: PiSliable(
           groupTag: groupTag,
-          identifier: containerCredential.serial,
+          identifier: container.serial,
           actions: [
-            DeleteContainerAction(container: containerCredential, key: Key('${containerCredential.serial}-DeleteContainerAction')),
-            EditContainerAction(container: containerCredential, key: Key('${containerCredential.serial}-EditContainerAction')),
+            if (!isPreview) DeleteContainerAction(container: container, key: Key('${container.serial}-DeleteContainerAction')),
+            if (!isPreview) EditContainerAction(container: container, key: Key('${container.serial}-EditContainerAction')),
           ],
           stack: stack,
-          tile: TokenWidgetTile(
-            title: Text(containerCredential.serial),
+          child: TokenWidgetTile(
+            title: Text(container.serial),
             subtitles: [
-              'issuer: ${containerCredential.issuer}',
-              'finalizationState: ${containerCredential.finalizationState.name}',
+              'issuer: ${container.issuer}',
+              'finalizationState: ${container.finalizationState.name}',
             ],
-            trailing: containerCredential is TokenContainerFinalized
-                ? IconButton(
-                    icon: const Icon(Icons.sync),
-                    onPressed: () {
-                      final tokenState = ref.read(tokenProvider);
-                      ref.read(tokenContainerProvider.notifier).syncTokens(tokenState);
-                    },
-                  )
-                : IconButton(
-                    icon: const Icon(Icons.delete),
-                    onPressed: () {
-                      ref.read(tokenContainerProvider.notifier).deleteContainer(containerCredential);
-                    },
-                  ),
+            trailing: isPreview
+                ? null
+                : container is TokenContainerFinalized
+                    ? IconButton(
+                        icon: const Icon(Icons.sync),
+                        onPressed: () {
+                          final tokenState = ref.read(tokenProvider);
+                          ref.read(tokenContainerProvider.notifier).syncTokens(tokenState);
+                        },
+                      )
+                    : IconButton(
+                        icon: const Icon(Icons.delete),
+                        onPressed: () {
+                          ref.read(tokenContainerProvider.notifier).deleteContainer(container);
+                        },
+                      ),
           ),
         ),
       );

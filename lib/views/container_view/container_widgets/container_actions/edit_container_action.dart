@@ -27,7 +27,7 @@ import '../../../../utils/customization/theme_extentions/action_theme.dart';
 import '../../../main_view/main_view_widgets/token_widgets/slideable_action.dart';
 import '../../../view_interface.dart';
 
-class EditContainerAction extends PiSlideableAction {
+class EditContainerAction extends ConsumerSlideableAction {
   final TokenContainer container;
 
   const EditContainerAction({

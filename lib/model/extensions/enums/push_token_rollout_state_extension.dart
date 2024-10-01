@@ -51,13 +51,13 @@ extension PushTokenRollOutStateX on PushTokenRollOutState {
       };
 
   String rolloutMsg(AppLocalizations localizations) => switch (this) {
-        PushTokenRollOutState.rolloutNotStarted => localizations.startRollout,
-        PushTokenRollOutState.generatingRSAKeyPair => localizations.generatingRSAKeyPair,
-        PushTokenRollOutState.generatingRSAKeyPairFailed => localizations.generatingRSAKeyPairFailed,
-        PushTokenRollOutState.sendRSAPublicKey => localizations.sendingRSAPublicKey,
-        PushTokenRollOutState.sendRSAPublicKeyFailed => localizations.sendingRSAPublicKeyFailed,
-        PushTokenRollOutState.parsingResponse => localizations.parsingResponse,
-        PushTokenRollOutState.parsingResponseFailed => localizations.parsingResponseFailed,
-        PushTokenRollOutState.rolloutComplete => localizations.rolloutCompleted,
+        PushTokenRollOutState.rolloutNotStarted => localizations.rolloutStateNotStarted,
+        PushTokenRollOutState.generatingRSAKeyPair => localizations.rolloutStateGeneratingKeyPair,
+        PushTokenRollOutState.generatingRSAKeyPairFailed => localizations.rolloutStateGeneratingKeyPairFailed,
+        PushTokenRollOutState.sendRSAPublicKey => localizations.rolloutStateSendingPublicKey,
+        PushTokenRollOutState.sendRSAPublicKeyFailed => localizations.rolloutStateSendingPublicKeyFailed,
+        PushTokenRollOutState.parsingResponse => localizations.rolloutStateParsingResponse,
+        PushTokenRollOutState.parsingResponseFailed => localizations.rolloutStateParsingResponseFailed,
+        PushTokenRollOutState.rolloutComplete => localizations.rolloutStateCompleted,
       };
 }

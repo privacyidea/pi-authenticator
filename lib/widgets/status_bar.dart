@@ -34,6 +34,7 @@ class _StatusBarState extends ConsumerState<StatusBar> {
   @override
   void initState() {
     onDismissed = (direction) {
+      if (!mounted) return;
       setState(() {
         currentStatusMessage = null;
         statusbarOverlay!.remove();

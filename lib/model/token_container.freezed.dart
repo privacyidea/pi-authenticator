@@ -22,8 +22,7 @@ TokenContainer _$TokenContainerFromJson(Map<String, dynamic> json) {
       return TokenContainerFinalized.fromJson(json);
 
     default:
-      throw CheckedFromJsonException(json, 'runtimeType', 'TokenContainer',
-          'Invalid union type "${json['runtimeType']}"!');
+      throw CheckedFromJsonException(json, 'runtimeType', 'TokenContainer', 'Invalid union type "${json['runtimeType']}"!');
   }
 }
 
@@ -37,8 +36,7 @@ mixin _$TokenContainer {
   EcKeyAlgorithm get ecKeyAlgorithm => throw _privateConstructorUsedError;
   Algorithms get hashAlgorithm => throw _privateConstructorUsedError;
   String get serverName => throw _privateConstructorUsedError;
-  ContainerFinalizationState get finalizationState =>
-      throw _privateConstructorUsedError;
+  RolloutState get finalizationState => throw _privateConstructorUsedError;
   String? get passphraseQuestion => throw _privateConstructorUsedError;
   String? get publicServerKey => throw _privateConstructorUsedError;
   String? get publicClientKey => throw _privateConstructorUsedError;
@@ -55,7 +53,7 @@ mixin _$TokenContainer {
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
             String serverName,
-            ContainerFinalizationState finalizationState,
+            RolloutState finalizationState,
             String? passphraseQuestion,
             String? publicServerKey,
             String? publicClientKey,
@@ -70,7 +68,7 @@ mixin _$TokenContainer {
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
             String serverName,
-            ContainerFinalizationState finalizationState,
+            RolloutState finalizationState,
             String? passphraseQuestion,
             String publicServerKey,
             String publicClientKey,
@@ -90,7 +88,7 @@ mixin _$TokenContainer {
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
             String serverName,
-            ContainerFinalizationState finalizationState,
+            RolloutState finalizationState,
             String? passphraseQuestion,
             String? publicServerKey,
             String? publicClientKey,
@@ -105,7 +103,7 @@ mixin _$TokenContainer {
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
             String serverName,
-            ContainerFinalizationState finalizationState,
+            RolloutState finalizationState,
             String? passphraseQuestion,
             String publicServerKey,
             String publicClientKey,
@@ -125,7 +123,7 @@ mixin _$TokenContainer {
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
             String serverName,
-            ContainerFinalizationState finalizationState,
+            RolloutState finalizationState,
             String? passphraseQuestion,
             String? publicServerKey,
             String? publicClientKey,
@@ -140,7 +138,7 @@ mixin _$TokenContainer {
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
             String serverName,
-            ContainerFinalizationState finalizationState,
+            RolloutState finalizationState,
             String? passphraseQuestion,
             String publicServerKey,
             String publicClientKey,
@@ -175,15 +173,12 @@ mixin _$TokenContainer {
   /// Create a copy of TokenContainer
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $TokenContainerCopyWith<TokenContainer> get copyWith =>
-      throw _privateConstructorUsedError;
+  $TokenContainerCopyWith<TokenContainer> get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $TokenContainerCopyWith<$Res> {
-  factory $TokenContainerCopyWith(
-          TokenContainer value, $Res Function(TokenContainer) then) =
-      _$TokenContainerCopyWithImpl<$Res, TokenContainer>;
+  factory $TokenContainerCopyWith(TokenContainer value, $Res Function(TokenContainer) then) = _$TokenContainerCopyWithImpl<$Res, TokenContainer>;
   @useResult
   $Res call(
       {String issuer,
@@ -194,7 +189,7 @@ abstract class $TokenContainerCopyWith<$Res> {
       EcKeyAlgorithm ecKeyAlgorithm,
       Algorithms hashAlgorithm,
       String serverName,
-      ContainerFinalizationState finalizationState,
+      RolloutState finalizationState,
       String? passphraseQuestion,
       String publicServerKey,
       String publicClientKey,
@@ -202,8 +197,7 @@ abstract class $TokenContainerCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$TokenContainerCopyWithImpl<$Res, $Val extends TokenContainer>
-    implements $TokenContainerCopyWith<$Res> {
+class _$TokenContainerCopyWithImpl<$Res, $Val extends TokenContainer> implements $TokenContainerCopyWith<$Res> {
   _$TokenContainerCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
@@ -266,7 +260,7 @@ class _$TokenContainerCopyWithImpl<$Res, $Val extends TokenContainer>
       finalizationState: null == finalizationState
           ? _value.finalizationState
           : finalizationState // ignore: cast_nullable_to_non_nullable
-              as ContainerFinalizationState,
+              as RolloutState,
       passphraseQuestion: freezed == passphraseQuestion
           ? _value.passphraseQuestion
           : passphraseQuestion // ignore: cast_nullable_to_non_nullable
@@ -288,11 +282,8 @@ class _$TokenContainerCopyWithImpl<$Res, $Val extends TokenContainer>
 }
 
 /// @nodoc
-abstract class _$$TokenContainerUnfinalizedImplCopyWith<$Res>
-    implements $TokenContainerCopyWith<$Res> {
-  factory _$$TokenContainerUnfinalizedImplCopyWith(
-          _$TokenContainerUnfinalizedImpl value,
-          $Res Function(_$TokenContainerUnfinalizedImpl) then) =
+abstract class _$$TokenContainerUnfinalizedImplCopyWith<$Res> implements $TokenContainerCopyWith<$Res> {
+  factory _$$TokenContainerUnfinalizedImplCopyWith(_$TokenContainerUnfinalizedImpl value, $Res Function(_$TokenContainerUnfinalizedImpl) then) =
       __$$TokenContainerUnfinalizedImplCopyWithImpl<$Res>;
   @override
   @useResult
@@ -306,7 +297,7 @@ abstract class _$$TokenContainerUnfinalizedImplCopyWith<$Res>
       EcKeyAlgorithm ecKeyAlgorithm,
       Algorithms hashAlgorithm,
       String serverName,
-      ContainerFinalizationState finalizationState,
+      RolloutState finalizationState,
       String? passphraseQuestion,
       String? publicServerKey,
       String? publicClientKey,
@@ -314,12 +305,9 @@ abstract class _$$TokenContainerUnfinalizedImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$TokenContainerUnfinalizedImplCopyWithImpl<$Res>
-    extends _$TokenContainerCopyWithImpl<$Res, _$TokenContainerUnfinalizedImpl>
+class __$$TokenContainerUnfinalizedImplCopyWithImpl<$Res> extends _$TokenContainerCopyWithImpl<$Res, _$TokenContainerUnfinalizedImpl>
     implements _$$TokenContainerUnfinalizedImplCopyWith<$Res> {
-  __$$TokenContainerUnfinalizedImplCopyWithImpl(
-      _$TokenContainerUnfinalizedImpl _value,
-      $Res Function(_$TokenContainerUnfinalizedImpl) _then)
+  __$$TokenContainerUnfinalizedImplCopyWithImpl(_$TokenContainerUnfinalizedImpl _value, $Res Function(_$TokenContainerUnfinalizedImpl) _then)
       : super(_value, _then);
 
   /// Create a copy of TokenContainer
@@ -382,7 +370,7 @@ class __$$TokenContainerUnfinalizedImplCopyWithImpl<$Res>
       finalizationState: null == finalizationState
           ? _value.finalizationState
           : finalizationState // ignore: cast_nullable_to_non_nullable
-              as ContainerFinalizationState,
+              as RolloutState,
       passphraseQuestion: freezed == passphraseQuestion
           ? _value.passphraseQuestion
           : passphraseQuestion // ignore: cast_nullable_to_non_nullable
@@ -416,7 +404,7 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
       required this.ecKeyAlgorithm,
       required this.hashAlgorithm,
       this.serverName = 'privacyIDEA',
-      this.finalizationState = ContainerFinalizationState.uninitialized,
+      this.finalizationState = RolloutState.notStarted,
       this.passphraseQuestion,
       this.publicServerKey,
       this.publicClientKey,
@@ -425,8 +413,7 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
       : $type = $type ?? 'unfinalized',
         super._();
 
-  factory _$TokenContainerUnfinalizedImpl.fromJson(Map<String, dynamic> json) =>
-      _$$TokenContainerUnfinalizedImplFromJson(json);
+  factory _$TokenContainerUnfinalizedImpl.fromJson(Map<String, dynamic> json) => _$$TokenContainerUnfinalizedImplFromJson(json);
 
   @override
   final String issuer;
@@ -449,7 +436,7 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
   final String serverName;
   @override
   @JsonKey()
-  final ContainerFinalizationState finalizationState;
+  final RolloutState finalizationState;
   @override
   final String? passphraseQuestion;
   @override
@@ -469,57 +456,32 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
             other is _$TokenContainerUnfinalizedImpl &&
             (identical(other.issuer, issuer) || other.issuer == issuer) &&
             (identical(other.nonce, nonce) || other.nonce == nonce) &&
-            (identical(other.timestamp, timestamp) ||
-                other.timestamp == timestamp) &&
-            (identical(other.finalizationUrl, finalizationUrl) ||
-                other.finalizationUrl == finalizationUrl) &&
+            (identical(other.timestamp, timestamp) || other.timestamp == timestamp) &&
+            (identical(other.finalizationUrl, finalizationUrl) || other.finalizationUrl == finalizationUrl) &&
             (identical(other.syncUrl, syncUrl) || other.syncUrl == syncUrl) &&
             (identical(other.serial, serial) || other.serial == serial) &&
-            (identical(other.ecKeyAlgorithm, ecKeyAlgorithm) ||
-                other.ecKeyAlgorithm == ecKeyAlgorithm) &&
-            (identical(other.hashAlgorithm, hashAlgorithm) ||
-                other.hashAlgorithm == hashAlgorithm) &&
-            (identical(other.serverName, serverName) ||
-                other.serverName == serverName) &&
-            (identical(other.finalizationState, finalizationState) ||
-                other.finalizationState == finalizationState) &&
-            (identical(other.passphraseQuestion, passphraseQuestion) ||
-                other.passphraseQuestion == passphraseQuestion) &&
-            (identical(other.publicServerKey, publicServerKey) ||
-                other.publicServerKey == publicServerKey) &&
-            (identical(other.publicClientKey, publicClientKey) ||
-                other.publicClientKey == publicClientKey) &&
-            (identical(other.privateClientKey, privateClientKey) ||
-                other.privateClientKey == privateClientKey));
+            (identical(other.ecKeyAlgorithm, ecKeyAlgorithm) || other.ecKeyAlgorithm == ecKeyAlgorithm) &&
+            (identical(other.hashAlgorithm, hashAlgorithm) || other.hashAlgorithm == hashAlgorithm) &&
+            (identical(other.serverName, serverName) || other.serverName == serverName) &&
+            (identical(other.finalizationState, finalizationState) || other.finalizationState == finalizationState) &&
+            (identical(other.passphraseQuestion, passphraseQuestion) || other.passphraseQuestion == passphraseQuestion) &&
+            (identical(other.publicServerKey, publicServerKey) || other.publicServerKey == publicServerKey) &&
+            (identical(other.publicClientKey, publicClientKey) || other.publicClientKey == publicClientKey) &&
+            (identical(other.privateClientKey, privateClientKey) || other.privateClientKey == privateClientKey));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      issuer,
-      nonce,
-      timestamp,
-      finalizationUrl,
-      syncUrl,
-      serial,
-      ecKeyAlgorithm,
-      hashAlgorithm,
-      serverName,
-      finalizationState,
-      passphraseQuestion,
-      publicServerKey,
-      publicClientKey,
-      privateClientKey);
+  int get hashCode => Object.hash(runtimeType, issuer, nonce, timestamp, finalizationUrl, syncUrl, serial, ecKeyAlgorithm, hashAlgorithm, serverName,
+      finalizationState, passphraseQuestion, publicServerKey, publicClientKey, privateClientKey);
 
   /// Create a copy of TokenContainer
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$TokenContainerUnfinalizedImplCopyWith<_$TokenContainerUnfinalizedImpl>
-      get copyWith => __$$TokenContainerUnfinalizedImplCopyWithImpl<
-          _$TokenContainerUnfinalizedImpl>(this, _$identity);
+  _$$TokenContainerUnfinalizedImplCopyWith<_$TokenContainerUnfinalizedImpl> get copyWith =>
+      __$$TokenContainerUnfinalizedImplCopyWithImpl<_$TokenContainerUnfinalizedImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -534,7 +496,7 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
             String serverName,
-            ContainerFinalizationState finalizationState,
+            RolloutState finalizationState,
             String? passphraseQuestion,
             String? publicServerKey,
             String? publicClientKey,
@@ -549,28 +511,15 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
             String serverName,
-            ContainerFinalizationState finalizationState,
+            RolloutState finalizationState,
             String? passphraseQuestion,
             String publicServerKey,
             String publicClientKey,
             String privateClientKey)
         finalized,
   }) {
-    return unfinalized(
-        issuer,
-        nonce,
-        timestamp,
-        finalizationUrl,
-        syncUrl,
-        serial,
-        ecKeyAlgorithm,
-        hashAlgorithm,
-        serverName,
-        finalizationState,
-        passphraseQuestion,
-        publicServerKey,
-        publicClientKey,
-        privateClientKey);
+    return unfinalized(issuer, nonce, timestamp, finalizationUrl, syncUrl, serial, ecKeyAlgorithm, hashAlgorithm, serverName, finalizationState,
+        passphraseQuestion, publicServerKey, publicClientKey, privateClientKey);
   }
 
   @override
@@ -586,7 +535,7 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
             String serverName,
-            ContainerFinalizationState finalizationState,
+            RolloutState finalizationState,
             String? passphraseQuestion,
             String? publicServerKey,
             String? publicClientKey,
@@ -601,28 +550,15 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
             String serverName,
-            ContainerFinalizationState finalizationState,
+            RolloutState finalizationState,
             String? passphraseQuestion,
             String publicServerKey,
             String publicClientKey,
             String privateClientKey)?
         finalized,
   }) {
-    return unfinalized?.call(
-        issuer,
-        nonce,
-        timestamp,
-        finalizationUrl,
-        syncUrl,
-        serial,
-        ecKeyAlgorithm,
-        hashAlgorithm,
-        serverName,
-        finalizationState,
-        passphraseQuestion,
-        publicServerKey,
-        publicClientKey,
-        privateClientKey);
+    return unfinalized?.call(issuer, nonce, timestamp, finalizationUrl, syncUrl, serial, ecKeyAlgorithm, hashAlgorithm, serverName, finalizationState,
+        passphraseQuestion, publicServerKey, publicClientKey, privateClientKey);
   }
 
   @override
@@ -638,7 +574,7 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
             String serverName,
-            ContainerFinalizationState finalizationState,
+            RolloutState finalizationState,
             String? passphraseQuestion,
             String? publicServerKey,
             String? publicClientKey,
@@ -653,7 +589,7 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
             String serverName,
-            ContainerFinalizationState finalizationState,
+            RolloutState finalizationState,
             String? passphraseQuestion,
             String publicServerKey,
             String publicClientKey,
@@ -662,21 +598,8 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
     required TResult orElse(),
   }) {
     if (unfinalized != null) {
-      return unfinalized(
-          issuer,
-          nonce,
-          timestamp,
-          finalizationUrl,
-          syncUrl,
-          serial,
-          ecKeyAlgorithm,
-          hashAlgorithm,
-          serverName,
-          finalizationState,
-          passphraseQuestion,
-          publicServerKey,
-          publicClientKey,
-          privateClientKey);
+      return unfinalized(issuer, nonce, timestamp, finalizationUrl, syncUrl, serial, ecKeyAlgorithm, hashAlgorithm, serverName, finalizationState,
+          passphraseQuestion, publicServerKey, publicClientKey, privateClientKey);
     }
     return orElse();
   }
@@ -731,15 +654,14 @@ abstract class TokenContainerUnfinalized extends TokenContainer {
       required final EcKeyAlgorithm ecKeyAlgorithm,
       required final Algorithms hashAlgorithm,
       final String serverName,
-      final ContainerFinalizationState finalizationState,
+      final RolloutState finalizationState,
       final String? passphraseQuestion,
       final String? publicServerKey,
       final String? publicClientKey,
       final String? privateClientKey}) = _$TokenContainerUnfinalizedImpl;
   const TokenContainerUnfinalized._() : super._();
 
-  factory TokenContainerUnfinalized.fromJson(Map<String, dynamic> json) =
-      _$TokenContainerUnfinalizedImpl.fromJson;
+  factory TokenContainerUnfinalized.fromJson(Map<String, dynamic> json) = _$TokenContainerUnfinalizedImpl.fromJson;
 
   @override
   String get issuer;
@@ -759,7 +681,7 @@ abstract class TokenContainerUnfinalized extends TokenContainer {
   @override
   String get serverName;
   @override
-  ContainerFinalizationState get finalizationState;
+  RolloutState get finalizationState;
   @override
   String? get passphraseQuestion;
   @override
@@ -773,16 +695,12 @@ abstract class TokenContainerUnfinalized extends TokenContainer {
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$TokenContainerUnfinalizedImplCopyWith<_$TokenContainerUnfinalizedImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  _$$TokenContainerUnfinalizedImplCopyWith<_$TokenContainerUnfinalizedImpl> get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$TokenContainerFinalizedImplCopyWith<$Res>
-    implements $TokenContainerCopyWith<$Res> {
-  factory _$$TokenContainerFinalizedImplCopyWith(
-          _$TokenContainerFinalizedImpl value,
-          $Res Function(_$TokenContainerFinalizedImpl) then) =
+abstract class _$$TokenContainerFinalizedImplCopyWith<$Res> implements $TokenContainerCopyWith<$Res> {
+  factory _$$TokenContainerFinalizedImplCopyWith(_$TokenContainerFinalizedImpl value, $Res Function(_$TokenContainerFinalizedImpl) then) =
       __$$TokenContainerFinalizedImplCopyWithImpl<$Res>;
   @override
   @useResult
@@ -795,7 +713,7 @@ abstract class _$$TokenContainerFinalizedImplCopyWith<$Res>
       EcKeyAlgorithm ecKeyAlgorithm,
       Algorithms hashAlgorithm,
       String serverName,
-      ContainerFinalizationState finalizationState,
+      RolloutState finalizationState,
       String? passphraseQuestion,
       String publicServerKey,
       String publicClientKey,
@@ -803,13 +721,9 @@ abstract class _$$TokenContainerFinalizedImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$TokenContainerFinalizedImplCopyWithImpl<$Res>
-    extends _$TokenContainerCopyWithImpl<$Res, _$TokenContainerFinalizedImpl>
+class __$$TokenContainerFinalizedImplCopyWithImpl<$Res> extends _$TokenContainerCopyWithImpl<$Res, _$TokenContainerFinalizedImpl>
     implements _$$TokenContainerFinalizedImplCopyWith<$Res> {
-  __$$TokenContainerFinalizedImplCopyWithImpl(
-      _$TokenContainerFinalizedImpl _value,
-      $Res Function(_$TokenContainerFinalizedImpl) _then)
-      : super(_value, _then);
+  __$$TokenContainerFinalizedImplCopyWithImpl(_$TokenContainerFinalizedImpl _value, $Res Function(_$TokenContainerFinalizedImpl) _then) : super(_value, _then);
 
   /// Create a copy of TokenContainer
   /// with the given fields replaced by the non-null parameter values.
@@ -866,7 +780,7 @@ class __$$TokenContainerFinalizedImplCopyWithImpl<$Res>
       finalizationState: null == finalizationState
           ? _value.finalizationState
           : finalizationState // ignore: cast_nullable_to_non_nullable
-              as ContainerFinalizationState,
+              as RolloutState,
       passphraseQuestion: freezed == passphraseQuestion
           ? _value.passphraseQuestion
           : passphraseQuestion // ignore: cast_nullable_to_non_nullable
@@ -899,7 +813,7 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
       required this.ecKeyAlgorithm,
       required this.hashAlgorithm,
       this.serverName = 'privacyIDEA',
-      this.finalizationState = ContainerFinalizationState.finalized,
+      this.finalizationState = RolloutState.completed,
       this.passphraseQuestion,
       required this.publicServerKey,
       required this.publicClientKey,
@@ -908,8 +822,7 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
       : $type = $type ?? 'finalized',
         super._();
 
-  factory _$TokenContainerFinalizedImpl.fromJson(Map<String, dynamic> json) =>
-      _$$TokenContainerFinalizedImplFromJson(json);
+  factory _$TokenContainerFinalizedImpl.fromJson(Map<String, dynamic> json) => _$$TokenContainerFinalizedImplFromJson(json);
 
   @override
   final String issuer;
@@ -930,7 +843,7 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
   final String serverName;
   @override
   @JsonKey()
-  final ContainerFinalizationState finalizationState;
+  final RolloutState finalizationState;
   @override
   final String? passphraseQuestion;
   @override
@@ -950,54 +863,31 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
             other is _$TokenContainerFinalizedImpl &&
             (identical(other.issuer, issuer) || other.issuer == issuer) &&
             (identical(other.nonce, nonce) || other.nonce == nonce) &&
-            (identical(other.timestamp, timestamp) ||
-                other.timestamp == timestamp) &&
+            (identical(other.timestamp, timestamp) || other.timestamp == timestamp) &&
             (identical(other.syncUrl, syncUrl) || other.syncUrl == syncUrl) &&
             (identical(other.serial, serial) || other.serial == serial) &&
-            (identical(other.ecKeyAlgorithm, ecKeyAlgorithm) ||
-                other.ecKeyAlgorithm == ecKeyAlgorithm) &&
-            (identical(other.hashAlgorithm, hashAlgorithm) ||
-                other.hashAlgorithm == hashAlgorithm) &&
-            (identical(other.serverName, serverName) ||
-                other.serverName == serverName) &&
-            (identical(other.finalizationState, finalizationState) ||
-                other.finalizationState == finalizationState) &&
-            (identical(other.passphraseQuestion, passphraseQuestion) ||
-                other.passphraseQuestion == passphraseQuestion) &&
-            (identical(other.publicServerKey, publicServerKey) ||
-                other.publicServerKey == publicServerKey) &&
-            (identical(other.publicClientKey, publicClientKey) ||
-                other.publicClientKey == publicClientKey) &&
-            (identical(other.privateClientKey, privateClientKey) ||
-                other.privateClientKey == privateClientKey));
+            (identical(other.ecKeyAlgorithm, ecKeyAlgorithm) || other.ecKeyAlgorithm == ecKeyAlgorithm) &&
+            (identical(other.hashAlgorithm, hashAlgorithm) || other.hashAlgorithm == hashAlgorithm) &&
+            (identical(other.serverName, serverName) || other.serverName == serverName) &&
+            (identical(other.finalizationState, finalizationState) || other.finalizationState == finalizationState) &&
+            (identical(other.passphraseQuestion, passphraseQuestion) || other.passphraseQuestion == passphraseQuestion) &&
+            (identical(other.publicServerKey, publicServerKey) || other.publicServerKey == publicServerKey) &&
+            (identical(other.publicClientKey, publicClientKey) || other.publicClientKey == publicClientKey) &&
+            (identical(other.privateClientKey, privateClientKey) || other.privateClientKey == privateClientKey));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      issuer,
-      nonce,
-      timestamp,
-      syncUrl,
-      serial,
-      ecKeyAlgorithm,
-      hashAlgorithm,
-      serverName,
-      finalizationState,
-      passphraseQuestion,
-      publicServerKey,
-      publicClientKey,
-      privateClientKey);
+  int get hashCode => Object.hash(runtimeType, issuer, nonce, timestamp, syncUrl, serial, ecKeyAlgorithm, hashAlgorithm, serverName, finalizationState,
+      passphraseQuestion, publicServerKey, publicClientKey, privateClientKey);
 
   /// Create a copy of TokenContainer
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$TokenContainerFinalizedImplCopyWith<_$TokenContainerFinalizedImpl>
-      get copyWith => __$$TokenContainerFinalizedImplCopyWithImpl<
-          _$TokenContainerFinalizedImpl>(this, _$identity);
+  _$$TokenContainerFinalizedImplCopyWith<_$TokenContainerFinalizedImpl> get copyWith =>
+      __$$TokenContainerFinalizedImplCopyWithImpl<_$TokenContainerFinalizedImpl>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -1012,7 +902,7 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
             String serverName,
-            ContainerFinalizationState finalizationState,
+            RolloutState finalizationState,
             String? passphraseQuestion,
             String? publicServerKey,
             String? publicClientKey,
@@ -1027,27 +917,15 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
             String serverName,
-            ContainerFinalizationState finalizationState,
+            RolloutState finalizationState,
             String? passphraseQuestion,
             String publicServerKey,
             String publicClientKey,
             String privateClientKey)
         finalized,
   }) {
-    return finalized(
-        issuer,
-        nonce,
-        timestamp,
-        syncUrl,
-        serial,
-        ecKeyAlgorithm,
-        hashAlgorithm,
-        serverName,
-        finalizationState,
-        passphraseQuestion,
-        publicServerKey,
-        publicClientKey,
-        privateClientKey);
+    return finalized(issuer, nonce, timestamp, syncUrl, serial, ecKeyAlgorithm, hashAlgorithm, serverName, finalizationState, passphraseQuestion,
+        publicServerKey, publicClientKey, privateClientKey);
   }
 
   @override
@@ -1063,7 +941,7 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
             String serverName,
-            ContainerFinalizationState finalizationState,
+            RolloutState finalizationState,
             String? passphraseQuestion,
             String? publicServerKey,
             String? publicClientKey,
@@ -1078,27 +956,15 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
             String serverName,
-            ContainerFinalizationState finalizationState,
+            RolloutState finalizationState,
             String? passphraseQuestion,
             String publicServerKey,
             String publicClientKey,
             String privateClientKey)?
         finalized,
   }) {
-    return finalized?.call(
-        issuer,
-        nonce,
-        timestamp,
-        syncUrl,
-        serial,
-        ecKeyAlgorithm,
-        hashAlgorithm,
-        serverName,
-        finalizationState,
-        passphraseQuestion,
-        publicServerKey,
-        publicClientKey,
-        privateClientKey);
+    return finalized?.call(issuer, nonce, timestamp, syncUrl, serial, ecKeyAlgorithm, hashAlgorithm, serverName, finalizationState, passphraseQuestion,
+        publicServerKey, publicClientKey, privateClientKey);
   }
 
   @override
@@ -1114,7 +980,7 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
             String serverName,
-            ContainerFinalizationState finalizationState,
+            RolloutState finalizationState,
             String? passphraseQuestion,
             String? publicServerKey,
             String? publicClientKey,
@@ -1129,7 +995,7 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
             String serverName,
-            ContainerFinalizationState finalizationState,
+            RolloutState finalizationState,
             String? passphraseQuestion,
             String publicServerKey,
             String publicClientKey,
@@ -1138,20 +1004,8 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
     required TResult orElse(),
   }) {
     if (finalized != null) {
-      return finalized(
-          issuer,
-          nonce,
-          timestamp,
-          syncUrl,
-          serial,
-          ecKeyAlgorithm,
-          hashAlgorithm,
-          serverName,
-          finalizationState,
-          passphraseQuestion,
-          publicServerKey,
-          publicClientKey,
-          privateClientKey);
+      return finalized(issuer, nonce, timestamp, syncUrl, serial, ecKeyAlgorithm, hashAlgorithm, serverName, finalizationState, passphraseQuestion,
+          publicServerKey, publicClientKey, privateClientKey);
     }
     return orElse();
   }
@@ -1205,15 +1059,14 @@ abstract class TokenContainerFinalized extends TokenContainer {
       required final EcKeyAlgorithm ecKeyAlgorithm,
       required final Algorithms hashAlgorithm,
       final String serverName,
-      final ContainerFinalizationState finalizationState,
+      final RolloutState finalizationState,
       final String? passphraseQuestion,
       required final String publicServerKey,
       required final String publicClientKey,
       required final String privateClientKey}) = _$TokenContainerFinalizedImpl;
   const TokenContainerFinalized._() : super._();
 
-  factory TokenContainerFinalized.fromJson(Map<String, dynamic> json) =
-      _$TokenContainerFinalizedImpl.fromJson;
+  factory TokenContainerFinalized.fromJson(Map<String, dynamic> json) = _$TokenContainerFinalizedImpl.fromJson;
 
   @override
   String get issuer;
@@ -1232,7 +1085,7 @@ abstract class TokenContainerFinalized extends TokenContainer {
   @override
   String get serverName;
   @override
-  ContainerFinalizationState get finalizationState;
+  RolloutState get finalizationState;
   @override
   String? get passphraseQuestion;
   @override
@@ -1246,6 +1099,5 @@ abstract class TokenContainerFinalized extends TokenContainer {
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$TokenContainerFinalizedImplCopyWith<_$TokenContainerFinalizedImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  _$$TokenContainerFinalizedImplCopyWith<_$TokenContainerFinalizedImpl> get copyWith => throw _privateConstructorUsedError;
 }

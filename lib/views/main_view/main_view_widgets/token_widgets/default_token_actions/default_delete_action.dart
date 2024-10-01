@@ -30,7 +30,7 @@ import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../loading_indicator.dart';
 import '../slideable_action.dart';
 
-class DefaultDeleteAction extends PiSlideableAction {
+class DefaultDeleteAction extends ConsumerSlideableAction {
   final Token token;
 
   const DefaultDeleteAction({super.key, required this.token});
@@ -94,7 +94,10 @@ class DefaultDeleteAction extends PiSlideableAction {
                 ),
                 TextButton(
                   onPressed: () {
-                    LoadingIndicator.show(context, () async => globalRef?.read(tokenProvider.notifier).removeToken(token));
+                    LoadingIndicator.show(
+                      context: context,
+                      action: () async => globalRef?.read(tokenProvider.notifier).removeToken(token),
+                    );
                     Navigator.of(context).pop();
                   },
                   child: Text(

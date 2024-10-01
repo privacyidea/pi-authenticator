@@ -28,13 +28,14 @@ import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
+import '../../token_widgets/slideable_action.dart';
 
-class DeleteTokenFolderAction extends StatelessWidget {
+class DeleteTokenFolderAction extends ConsumerSlideableAction {
   final TokenFolder folder;
 
   const DeleteTokenFolderAction({super.key, required this.folder});
   @override
-  Widget build(BuildContext context) {
+  CustomSlidableAction build(BuildContext context, ref) {
     return CustomSlidableAction(
       backgroundColor: Theme.of(context).extension<ActionTheme>()!.deleteColor,
       foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,

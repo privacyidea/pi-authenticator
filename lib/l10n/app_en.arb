@@ -208,12 +208,6 @@
   "@generatingPhonePart": {
     "description": "Title of a dialog telling the user that the phone part gets generated right now."
   },
-  "@generatingRSAKeyPair": {
-    "description": "Message for the rollout process"
-  },
-  "@generatingRSAKeyPairFailed": {
-    "description": "Message for the rollout process"
-  },
   "@goToSettingsButton": {
     "description": "Message showed on a button that the user can click to go to settings pages from the current dialog. It is used on both Android and iOS side. Maximum 30 characters."
   },
@@ -382,12 +376,6 @@
     },
     "type": "text"
   },
-  "@parsingResponse": {
-    "description": "Message for the rollout process"
-  },
-  "@parsingResponseFailed": {
-    "description": "Message for the rollout process"
-  },
   "@period": {
     "description": "Title of the dropdown button where the period of the totp token is selected."
   },
@@ -443,7 +431,37 @@
   "@retry": {
     "description": "Label for e.g. a button. Something is tried to be done again."
   },
-  "@rolloutCompleted": {
+  "@rolloutStateCompleted": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateGeneratingKeyPair": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateGeneratingKeyPairCompleted": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateGeneratingKeyPairFailed": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateNotStarted": {
+    "description": "Label that tells the user that the token is being rolled out."
+  },
+  "@rolloutStateParsingResponse": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateParsingResponseCompleted": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateParsingResponseFailed": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateSendingPublicKey": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateSendingPublicKeyCompleted": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateSendingPublicKeyFailed": {
     "description": "Message for the rollout process"
   },
   "@scanQrCode": {
@@ -467,12 +485,6 @@
   "@sendPushRequestResponseFailed": {
     "description": "Error message when the response to a push request could not be sent."
   },
-  "@sendingRSAPublicKey": {
-    "description": "Message for the rollout process"
-  },
-  "@sendingRSAPublicKeyFailed": {
-    "description": "Message for the rollout process"
-  },
   "@serverNotReachable": {
     "description": "Tells the user that the server could not be reached."
   },
@@ -494,9 +506,6 @@
   "@someTokensDoNotSupportPolling": {
     "description": "Tells the user, that the following tokens do not support polling.",
     "type": "text"
-  },
-  "@startRollout": {
-    "description": "Label that tells the user that the token is being rolled out."
   },
   "@statusCode": {
     "description": "Tells the user the status code of the error.",
@@ -714,8 +723,6 @@
   "firebaseToken": "Firebase Token",
   "folderName": "Folder name",
   "generatingPhonePart": "Generating phone part",
-  "generatingRSAKeyPair": "Generating RSA key pair",
-  "generatingRSAKeyPairFailed": "Generating RSA key pair failed",
   "goToSettingsButton": "Go to settings",
   "goToSettingsDescription": "Authentication by credentials or biometrics is not set up on your device. Please set it up in the device's settings.",
   "grantCameraPermissionDialogButton": "Grant permission",
@@ -799,8 +806,6 @@
   "originApp": "Origin app",
   "originDetails": "Origin details",
   "otpValueCopiedMessage": "Password \"{otpValue}\" copied to clipboard.",
-  "parsingResponse": "Parsing response",
-  "parsingResponseFailed": "Parsing response failed",
   "password": "Password",
   "passwordCannotBeEmpty": "Password cannot be empty",
   "passwordCannotContainWhitespace": "Password cannot contain whitespace",
@@ -853,7 +858,17 @@
   "requestPushChallengesPeriodically": "Request push challenges from the server periodically. Enable this if push challenges are not received normally.",
   "requestTriggerdByUserQuestion": "Was this request triggered by you?",
   "retryRollout": "Retry rollout",
-  "rolloutCompleted": "Rollout completed",
+  "rolloutStateCompleted": "Rollout completed",
+  "rolloutStateGeneratingKeyPair": "Generating key pair",
+  "rolloutStateGeneratingKeyPairCompleted": "Generating key pair completed",
+  "rolloutStateGeneratingKeyPairFailed": "Generating key pair failed",
+  "rolloutStateNotStarted": "Start rollout",
+  "rolloutStateParsingResponse": "Parsing response",
+  "rolloutStateParsingResponseCompleted": "Parsing response completed",
+  "rolloutStateParsingResponseFailed": "Parsing response failed",
+  "rolloutStateSendingPublicKey": "Sending public key",
+  "rolloutStateSendingPublicKeyCompleted": "Senden des öffentlichen Schlüssels abgeschlossen",
+  "rolloutStateSendingPublicKeyFailed": "Sending public key failed",
   "save": "Save",
   "scanQrCode": "Scan QR-Code",
   "scanThisQrWithNewDevice": "Scan this QR code with your new device to import the token.",
@@ -870,8 +885,6 @@
   "sendErrorDialogBody": "An unexpected error occurred in the application. The information below can be send to the developers by email to help prevent this error in the future.",
   "sendErrorLogDescription": "A predefined email is created.\nIt contains information about the app, the error and the device.\nYou can edit the email before sending it.\nYou can see here how we use the information:",
   "sendPushRequestResponseFailed": "Failed to send the response.",
-  "sendingRSAPublicKey": "Sending public RSA key",
-  "sendingRSAPublicKeyFailed": "Sending public RSA key failed",
   "serverNotReachable": "The server could not be reached.",
   "settings": "Settings",
   "settingsGroupGeneral": "General",
@@ -880,7 +893,6 @@
   "showPrivacyPolicy": "Show privacy policy",
   "signInTitle": "Authentication required",
   "someTokensDoNotSupportPolling": "Some of the tokens are outdated and do not support polling",
-  "startRollout": "Start rollout",
   "statusCode": "Status code: {statusCode}",
   "sync": "Sync",
   "syncContainerFailed": "Container synchronization failed",

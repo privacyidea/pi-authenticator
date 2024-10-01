@@ -21,8 +21,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-abstract class PiSlideableAction extends ConsumerWidget {
-  const PiSlideableAction({super.key});
+abstract class ConsumerSlideableAction extends ConsumerWidget {
+  const ConsumerSlideableAction({super.key});
   @override
   CustomSlidableAction build(BuildContext context, WidgetRef ref);
 }

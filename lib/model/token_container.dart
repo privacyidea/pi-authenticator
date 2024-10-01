@@ -30,7 +30,7 @@ import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import '../utils/ecc_utils.dart';
 import '../utils/logger.dart';
 import '../utils/object_validator.dart';
-import 'enums/container_finalization_state.dart';
+import 'enums/rollout_state.dart';
 import 'enums/ec_key_algorithm.dart';
 import 'enums/token_origin_source_type.dart';
 import 'token_import/token_origin_data.dart';
@@ -90,7 +90,7 @@ class TokenContainer with _$TokenContainer {
     required EcKeyAlgorithm ecKeyAlgorithm,
     required Algorithms hashAlgorithm,
     @Default('privacyIDEA') String serverName,
-    @Default(ContainerFinalizationState.uninitialized) ContainerFinalizationState finalizationState,
+    @Default(RolloutState.notStarted) RolloutState finalizationState,
     String? passphraseQuestion,
     String? publicServerKey,
     String? publicClientKey,
@@ -106,7 +106,7 @@ class TokenContainer with _$TokenContainer {
     required EcKeyAlgorithm ecKeyAlgorithm,
     required Algorithms hashAlgorithm,
     @Default('privacyIDEA') String serverName,
-    @Default(ContainerFinalizationState.finalized) ContainerFinalizationState finalizationState,
+    @Default(RolloutState.completed) RolloutState finalizationState,
     String? passphraseQuestion,
     required String publicServerKey,
     required String publicClientKey,
@@ -140,7 +140,7 @@ class TokenContainer with _$TokenContainer {
       ecKeyAlgorithm: ecKeyAlgorithm,
       hashAlgorithm: hashAlgorithm,
       passphraseQuestion: passphraseQuestion,
-      finalizationState: ContainerFinalizationState.finalized,
+      finalizationState: RolloutState.completed,
       publicServerKey: this.publicServerKey ?? eccUtils.serializeECPublicKey(publicServerKey!),
       publicClientKey: publicClientKey ?? eccUtils.serializeECPublicKey(clientKeyPair!.publicKey),
       privateClientKey: privateClientKey ?? eccUtils.serializeECPrivateKey(clientKeyPair!.privateKey),
@@ -156,7 +156,7 @@ class TokenContainer with _$TokenContainer {
   TokenContainer withClientKeyPair(AsymmetricKeyPair<ECPublicKey, ECPrivateKey> keyPair) => copyWith(
         publicClientKey: eccUtils.serializeECPublicKey(keyPair.publicKey),
         privateClientKey: eccUtils.serializeECPrivateKey(keyPair.privateKey),
-        finalizationState: ContainerFinalizationState.generatingKeyPairCompleted,
+        finalizationState: RolloutState.generatingKeyPairCompleted,
       );
 
   factory TokenContainer.fromJson(Map<String, dynamic> json) => _$TokenContainerFromJson(json);

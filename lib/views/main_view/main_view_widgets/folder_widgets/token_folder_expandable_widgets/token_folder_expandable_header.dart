@@ -22,7 +22,7 @@ import 'dart:async';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:privacyidea_authenticator/widgets/pi_slidable.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/token_folder.dart';
@@ -30,6 +30,7 @@ import '../../../../../model/tokens/token.dart';
 import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/riverpod/riverpod_providers/state_providers/dragging_sortable_provider.dart';
 import '../../../../../utils/utils.dart';
+import '../../token_widgets/token_widget.dart';
 import '../token_folder_actions.dart/delete_token_folder_action.dart';
 import '../token_folder_actions.dart/lock_token_folder_action.dart';
 import '../token_folder_actions.dart/rename_token_folder_action.dart';
@@ -68,20 +69,17 @@ class _TokenFolderExpandableHeaderState extends ConsumerState<TokenFolderExpanda
   Widget build(BuildContext context) {
     final isExpanded = widget.expandableController.value;
     final draggingSortable = ref.watch(draggingSortableProvider);
-    return Padding(
-      padding: const EdgeInsets.only(right: 4),
-      child: Slidable(
-        key: ValueKey('tokenFolder-${widget.folder.folderId}'),
-        groupTag: 'myTag',
-        endActionPane: ActionPane(
-          motion: const DrawerMotion(),
-          extentRatio: 1,
-          children: [
-            DeleteTokenFolderAction(folder: widget.folder),
-            RenameTokenFolderAction(folder: widget.folder),
-            LockTokenFolderAction(folder: widget.folder),
-          ],
-        ),
+    return PiSliable(
+      key: ValueKey('tokenFolder-${widget.folder.folderId}'),
+      groupTag: TokenWidget.groupTag,
+      identifier: widget.folder.folderId.toString(),
+      actions: [
+        DeleteTokenFolderAction(folder: widget.folder),
+        RenameTokenFolderAction(folder: widget.folder),
+        LockTokenFolderAction(folder: widget.folder),
+      ],
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8),
         child: DragTarget<Token>(
           onWillAcceptWithDetails: (details) {
             if (details.data.folderId != widget.folder.folderId) {

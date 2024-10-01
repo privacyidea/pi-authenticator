@@ -264,7 +264,7 @@ void _testTokenNotifier() {
 
       const qrCode = 'otpauth://totp/issuer2:label2?secret=AAAAAAAA2&issuer=issuer2&algorithm=SHA256&digits=6&period=30';
       final tokenNotifier = container.read(tokenProvider.notifier);
-      await scanQrCode([tokenNotifier], qrCode);
+      await scanQrCode(resultHandlerList: [tokenNotifier], qrCode: qrCode);
       final state = container.read(tokenProvider);
       expect(state, isNotNull);
       after.last = after.last.copyWith(id: state.tokens.last.id);
@@ -351,7 +351,7 @@ void _testTokenNotifier() {
       final notifier = container.read(testProvider.notifier);
       final initState = await notifier.initState;
       expect(initState.tokens, before);
-      await scanQrCode([notifier], otpAuth);
+      await scanQrCode(resultHandlerList: [notifier], qrCode: otpAuth);
       final tokenState = container.read(testProvider);
       expect(tokenState, isNotNull);
       expect(tokenState.tokens, after);

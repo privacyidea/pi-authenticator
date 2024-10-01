@@ -26,13 +26,14 @@ import '../../../../../utils/customization/theme_extentions/action_theme.dart';
 import '../../../../../utils/globals.dart';
 import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
+import '../../token_widgets/slideable_action.dart';
 
-class LockTokenFolderAction extends StatelessWidget {
+class LockTokenFolderAction extends ConsumerSlideableAction {
   final TokenFolder folder;
 
   const LockTokenFolderAction({super.key, required this.folder});
   @override
-  Widget build(BuildContext context) {
+  CustomSlidableAction build(BuildContext context, ref) {
     return CustomSlidableAction(
       backgroundColor: Theme.of(context).extension<ActionTheme>()!.lockColor,
       foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,

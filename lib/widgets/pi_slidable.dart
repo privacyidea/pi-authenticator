@@ -22,41 +22,43 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../views/main_view/main_view_widgets/token_widgets/slideable_action.dart';
 
-class PiSlideable extends StatelessWidget {
+class PiSliable extends StatelessWidget {
   final String groupTag;
   final String identifier;
-  final List<PiSlideableAction> actions;
+  final List<ConsumerSlideableAction> actions;
   final List<Widget> stack;
-  final Widget tile;
+  final Widget child;
 
-  const PiSlideable({
+  const PiSliable({
     required this.groupTag,
     required this.identifier,
     required this.actions,
-    required this.stack,
-    required this.tile,
+    required this.child,
+    this.stack = const <Widget>[],
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    final child = Stack(
+    final childStack = Stack(
       children: [
-        tile,
+        child,
         for (var item in stack) item,
       ],
     );
     return actions.isNotEmpty
-        ? Slidable(
-            key: ValueKey('$groupTag-$identifier'),
-            groupTag: groupTag,
-            endActionPane: ActionPane(
-              motion: const DrawerMotion(),
-              extentRatio: 1,
-              children: actions,
+        ? ClipRRect(
+            child: Slidable(
+              key: ValueKey('$groupTag-$identifier'),
+              groupTag: groupTag,
+              endActionPane: ActionPane(
+                motion: const DrawerMotion(),
+                extentRatio: 1,
+                children: actions,
+              ),
+              child: childStack,
             ),
-            child: child,
           )
-        : child;
+        : childStack;
   }
 }

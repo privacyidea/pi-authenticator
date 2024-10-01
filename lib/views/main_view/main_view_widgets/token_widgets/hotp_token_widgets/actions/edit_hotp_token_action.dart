@@ -32,7 +32,7 @@ import '../../../../../../widgets/focused_item_as_overlay.dart';
 import '../../default_token_actions/default_edit_action_dialog.dart';
 import '../../slideable_action.dart';
 
-class EditHOTPTokenAction extends PiSlideableAction {
+class EditHOTPTokenAction extends ConsumerSlideableAction {
   final HOTPToken token;
 
   const EditHOTPTokenAction({
