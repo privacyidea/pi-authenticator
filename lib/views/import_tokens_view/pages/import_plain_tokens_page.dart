@@ -73,7 +73,6 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
   List<Token?>? tokensToKeep;
   bool isMaxScrollOffset = true;
 
-  List<TokenImportEntry> importTokenEntrys = [];
   final List<TokenImportEntry> conflictedImports = [];
   final List<TokenImportEntry> newImports = [];
   final List<TokenImportEntry> appDuplicates = [];
@@ -98,24 +97,8 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
       }
       conflictedImports.add(importTokenEntry);
     }
+    _setTokensToKeep([...newImports, ...conflictedImports]);
     return importTokenEntrys;
-  }
-
-  void _renewLists(List<TokenImportEntry> importTokenEntrys) {
-    newImports.clear();
-    appDuplicates.clear();
-    conflictedImports.clear();
-    for (final importTokenEntry in importTokenEntrys) {
-      if (importTokenEntry.oldToken == null) {
-        newImports.add(importTokenEntry);
-        continue;
-      }
-      if (importTokenEntry.newToken.sameValuesAs(importTokenEntry.oldToken!)) {
-        appDuplicates.add(importTokenEntry);
-        continue;
-      }
-      conflictedImports.add(importTokenEntry);
-    }
   }
 
   @override
@@ -123,13 +106,12 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final map = ref.read(tokenProvider).getSameTokens(widget.importedTokens);
-      importTokenEntrys = [];
+      final importTokenEntrys = <TokenImportEntry>[];
       setState(() {
         map.forEach((key, value) {
           importTokenEntrys.add(TokenImportEntry(newToken: key, oldToken: value));
         });
-        importTokenEntrys = _initBuildLists(importTokenEntrys);
-        _setTokensToKeep(importTokenEntrys);
+        _initBuildLists(importTokenEntrys);
       });
     });
     scrollController.addListener(_updateIsMaxScrollExtent);
@@ -200,7 +182,7 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
                           titlePadding: const EdgeInsets.symmetric(horizontal: 40),
                           leadingDivider: widget.failedImports.isNotEmpty,
                           importEntries: conflictedImports,
-                          onTap: _updateImportTokenEntry,
+                          onTap: _updateConflicted,
                         ),
                       if (newImports.isNotEmpty)
                         NoConflictImportTokensList(
@@ -208,7 +190,7 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
                           titlePadding: const EdgeInsets.symmetric(horizontal: 40),
                           leadingDivider: conflictedImports.isNotEmpty,
                           importEntries: newImports,
-                          onTap: _updateImportTokenEntry,
+                          onTap: _updateNewImports,
                         ),
                       if (appDuplicates.isNotEmpty)
                         NoConflictImportTokensList(
@@ -269,15 +251,23 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
     );
   }
 
-  void _updateImportTokenEntry(TokenImportEntry oldEntry, TokenImportEntry newEntry) {
+  void _updateConflicted(TokenImportEntry oldEntry, TokenImportEntry newEntry) {
     setState(() {
-      importTokenEntrys[importTokenEntrys.indexOf(oldEntry)] = newEntry;
-      _renewLists(importTokenEntrys);
-      _setTokensToKeep(importTokenEntrys);
+      final i = conflictedImports.indexOf(oldEntry);
+      conflictedImports[i] = newEntry;
+      _setTokensToKeep([...newImports, ...conflictedImports]);
     });
   }
 
-  void _setTokensToKeep(List<TokenImportEntry> tokens) {
+  void _updateNewImports(TokenImportEntry oldEntry, TokenImportEntry newEntry) {
+    setState(() {
+      final i = newImports.indexOf(oldEntry);
+      newImports[i] = newEntry;
+      _setTokensToKeep([...newImports, ...conflictedImports]);
+    });
+  }
+
+  void _setTokensToKeep(List<TokenImportEntry> importTokenEntrys) {
     tokensToKeep = [];
     for (final importTokenEntry in importTokenEntrys) {
       if (importTokenEntry.oldToken != null) {

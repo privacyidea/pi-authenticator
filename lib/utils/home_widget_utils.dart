@@ -50,7 +50,6 @@ import '../widgets/home_widgets/home_widget_otp.dart';
 import '../widgets/home_widgets/home_widget_unlinked.dart';
 import 'globals.dart';
 import 'logger.dart';
-import 'riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import 'riverpod/riverpod_providers/state_providers/home_widget_provider.dart';
 
 const appGroupId = 'group.authenticator_home_widget_group';
@@ -79,7 +78,7 @@ class HomeWidgetUtils {
   static const _widgetActionSize = Size(24 * 2, 24 * 2);
 
   /// Default duration for showing the OTP
-  static const _showDuration = Duration(seconds: 15);
+  static const _showDuration = Duration(seconds: 10);
 
   factory HomeWidgetUtils({TokenRepository? tokenRepository, TokenFolderRepository? tokenFolderRepository}) {
     if (kIsWeb || Platform.isIOS) return UnsupportedHomeWidgetUtils(); // Not supported on iOS
@@ -101,10 +100,6 @@ class HomeWidgetUtils {
   static TokenRepository? _tokenRepository;
   static TokenFolderRepository? _folderRepository;
   static final Mutex _repoMutex = Mutex();
-  static Future<List<OTPToken>> get _otpTokens async {
-    final tokens = globalRef?.read(tokenProvider).tokens;
-    return tokens?.whereType<OTPToken>().toList() ?? (await _loadTokensFromRepo()).whereType<OTPToken>().toList();
-  }
 
   static Future<OTPToken?> _getTokenOfTokenId(String tokenId) async {
     await _repoMutex.acquire();

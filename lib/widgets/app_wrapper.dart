@@ -54,10 +54,10 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
       },
       // onInactive: () => log('App inactive'),
       onHide: () async {
-        if (await ref.read(tokenProvider.notifier).saveStateOnMinimizeApp() == false) {
+        if (await ref.read(tokenProvider.notifier).onMinimizeApp() == false) {
           Logger.error('Failed to save tokens on Hide');
         }
-        if (await ref.read(tokenFolderProvider.notifier).collapseLockedFolders() == false) {
+        if ((await ref.read(tokenFolderProvider.notifier).collapseLockedFolders()).folders.any((element) => element.isExpanded)) {
           Logger.error('Failed to collapse locked folders on Hide');
         }
         await FlutterLocalNotificationsPlugin().cancelAll();

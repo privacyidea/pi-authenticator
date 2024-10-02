@@ -159,6 +159,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
 
   /// Adds a list of tokens and returns the tokens that could not be added or replaced.
   Future<List<Token>> _addOrReplaceTokens(List<Token> tokens) async {
+    tokens = _removeDuplicates(tokens);
     if (tokens.isEmpty) return [];
     Logger.debug('Adding ${tokens.length} tokens.', verbose: true);
     await _repoMutex.acquire();
@@ -377,10 +378,10 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   Future<List<Token>> addOrReplaceTokens(List<Token> tokens) => _addOrReplaceTokens(tokens);
 
   /// Updates a token and returns the updated token if successful, the old token if not and null if the token does not exist.
-  Future<T?> updateToken<T extends Token>(T token, T Function(T) updater) async => _updateToken(token, updater);
+  Future<T?> updateToken<T extends Token>(T token, T Function(T) updater) => _updateToken(token, updater);
 
   /// Updates a list of tokens and returns the updated tokens if successful, the old tokens if not and an empty list if the tokens does not exist.
-  Future<List<T>> updateTokens<T extends Token>(List<T> tokens, T Function(T) updater) async => _updateTokens(tokens, updater);
+  Future<List<T>> updateTokens<T extends Token>(List<T> tokens, T Function(T) updater) => _updateTokens(tokens, updater);
 
   /// Increments the counter of a HOTPToken and returns the updated token if successful, the old token if not and null if the token does not exist.
   Future<HOTPToken?> incrementCounter(HOTPToken token) => _updateToken(token, (p0) => p0.copyWith(counter: token.counter + 1));
@@ -437,20 +438,20 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   }
 
   /// Minimizing the app needs to cancel all timers and save the state to the repository.
-  Future<bool> saveStateOnMinimizeApp() async {
+  Future<bool> onMinimizeApp() {
+    Logger.info('TokenNotifier: Preparing to minimize app.');
     _cancelTimers();
-    await hideLockedTokens();
-    return _saveStateToRepo(state);
+    return hideLockedTokens();
   }
 
-  Future<List<Token>> hideLockedTokens() async {
-    final hideLockedTokens = <Token>[];
+  Future<bool> hideLockedTokens() async {
+    final lockedTokens = <Token>[];
     for (var token in state.tokens) {
       if (token.isLocked && !token.isHidden) {
-        hideLockedTokens.add(token);
+        lockedTokens.add(token);
       }
     }
-    return await updateTokens(hideLockedTokens, (p0) => p0.copyWith(isHidden: true));
+    return (await updateTokens(lockedTokens, (p0) => p0.copyWith(isHidden: true))).length == lockedTokens.length;
   }
 
   /// Removes a token from the state and the repository.
@@ -800,6 +801,16 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
 ///////////////////////////// Helper Methods ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////// */
 
+  List<Token> _removeDuplicates(List<Token> tokens) {
+    final uniqueTokens = <Token>[];
+    for (var token in tokens) {
+      if (!uniqueTokens.any((uniqureToken) => uniqureToken.isSameTokenAs(token))) {
+        uniqueTokens.add(token);
+      }
+    }
+    return uniqueTokens;
+  }
+
   Future<void> _showImportTokensPage(
     List<ProcessorResult<Token>> tokenResults,
     TokenOriginSourceType tokenOriginSourceType,
@@ -814,9 +825,8 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
         ),
       ),
     );
-
     if (tokensToKeep == null) return;
-    final tokensWithSourceType = _addSourceType(tokenResults.getData(), tokenOriginSourceType);
+    final tokensWithSourceType = _addSourceType(tokensToKeep, tokenOriginSourceType);
     await addNewTokens(tokensWithSourceType);
   }
 

@@ -266,6 +266,14 @@
   "@isPiTokenQuestion": {
     "description": "Label for the question if the token is a privacyIDEA token."
   },
+  "@issuer": {
+    "description": "Label for the issuer of the token, container... etc.",
+    "placeholders": {
+      "name": {
+        "example": "privacyIDEA"
+      }
+    }
+  },
   "@language": {
     "description": "Title of language setting group."
   },
@@ -771,6 +779,7 @@
   "invalidValueIn": "untranslated",
   "isExpotableQuestion": "¿Es exportable?",
   "isPiTokenQuestion": "¿Es un token de privacyIDEA?",
+  "issuer": "Issuer: {name}",
   "language": "Language",
   "legacySigningErrorMessage": "El token se creó en una versión obsoleta de la aplicación, lo que puede provocar problemas al utilizarlo.\nSe recomienda crear un nuevo token push si el problema persiste.",
   "legacySigningErrorTitle": "Se ha producido un error al utilizar el token obsoleto: {tokenLabel}",
