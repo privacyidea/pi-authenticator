@@ -266,6 +266,14 @@
   "@isPiTokenQuestion": {
     "description": "Label for the question if the token is a privacyIDEA token."
   },
+  "@issuer": {
+    "description": "Label for the issuer of the token, container... etc.",
+    "placeholders": {
+      "name": {
+        "example": "privacyIDEA"
+      }
+    }
+  },
   "@language": {
     "description": "Title of language setting group."
   },
@@ -771,6 +779,7 @@
   "invalidValueIn": "untranslated",
   "isExpotableQuestion": "Is exporteerbaar?",
   "isPiTokenQuestion": "Is het een privacyIDEA token?",
+  "issuer": "Issuer: {name}",
   "language": "Taal",
   "legacySigningErrorMessage": "Het token is aangemaakt in een verouderde versie van de app, wat kan leiden tot problemen bij het gebruik ervan.\nHet wordt aanbevolen om een nieuw push token aan te maken als het probleem zich blijft voordoen!",
   "legacySigningErrorTitle": "Er is een fout opgetreden bij het gebruik van het verouderde token: {tokenLabel}",

@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 /*
  * privacyIDEA Authenticator
  *
@@ -76,8 +78,11 @@ class TokenFolder with SortableMixin {
 
   factory TokenFolder.fromJson(Map<String, dynamic> json) {
     var tokenFolder = _$TokenFolderFromJson(json);
-    if (tokenFolder.isLocked) tokenFolder = tokenFolder.copyWith(isExpanded: false);
-    return tokenFolder;
+    if (tokenFolder.isLocked) {
+      return tokenFolder.copyWith(isExpanded: false);
+    } else {
+      return tokenFolder;
+    }
   }
   Map<String, dynamic> toJson() => _$TokenFolderToJson(this);
 }

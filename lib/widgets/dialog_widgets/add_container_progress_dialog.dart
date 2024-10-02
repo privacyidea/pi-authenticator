@@ -40,15 +40,19 @@ class AddContainerProgressDialog extends StatelessWidget {
     return DefaultDialog(
       hasCloseButton: true,
       title: Text(serials.length == 1 ? 'Adding container' : 'Adding containers'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          for (var serial in serials) ...[
-            AddContainerProgressDialogTile(serial),
-            if (serial != serials.last) const Divider(),
-            if (serial != serials.last) const Divider(),
-          ]
-        ],
+      content: SizedBox(
+        width: double.maxFinite,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (var serial in serials) ...[
+              AddContainerProgressDialogTile(serial),
+              if (serial != serials.last) const Divider(),
+              if (serial != serials.last) const Divider(),
+            ]
+          ],
+        ),
       ),
       actions: [
         TextButton(
@@ -74,8 +78,8 @@ class AddContainerProgressDialogTile extends ConsumerWidget {
       ContainerWidget(container: container, isPreview: true),
     ];
     if (container.finalizationState.isFailed) return Column(children: children);
-    children.add(Divider());
     if (container is TokenContainerFinalized && containerTokens.isNotEmpty) {
+      children.add(Divider());
       for (final token in containerTokens) {
         children.add(
           SizedBox(
@@ -85,7 +89,10 @@ class AddContainerProgressDialogTile extends ConsumerWidget {
         );
       }
     } else {
-      children.add(const CircularProgressIndicator());
+      children.add(Padding(
+        padding: const EdgeInsets.only(top: 16),
+        child: const CircularProgressIndicator(),
+      ));
     }
     return Column(children: children);
   }

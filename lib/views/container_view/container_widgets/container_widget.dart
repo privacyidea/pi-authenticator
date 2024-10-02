@@ -19,6 +19,8 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
+import 'package:privacyidea_authenticator/model/extensions/enums/rollout_state_extension.dart';
 
 import '../../../model/token_container.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
@@ -48,33 +50,42 @@ class ContainerWidget extends ConsumerWidget {
           groupTag: groupTag,
           identifier: container.serial,
           actions: [
-            if (!isPreview) DeleteContainerAction(container: container, key: Key('${container.serial}-DeleteContainerAction')),
-            if (!isPreview) EditContainerAction(container: container, key: Key('${container.serial}-EditContainerAction')),
+            DeleteContainerAction(container: container, key: Key('${container.serial}-DeleteContainerAction')),
+            EditContainerAction(container: container, key: Key('${container.serial}-EditContainerAction')),
           ],
           stack: stack,
           child: TokenWidgetTile(
-            title: Text(container.serial),
+            title: Text(
+              container.serial,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
             subtitles: [
-              'issuer: ${container.issuer}',
-              'finalizationState: ${container.finalizationState.name}',
+              AppLocalizations.of(context)!.issuer(container.issuer),
+              '${container.finalizationState.rolloutMsg(AppLocalizations.of(context)!)}',
             ],
-            trailing: isPreview
-                ? null
-                : container is TokenContainerFinalized
-                    ? IconButton(
-                        icon: const Icon(Icons.sync),
-                        onPressed: () {
-                          final tokenState = ref.read(tokenProvider);
-                          ref.read(tokenContainerProvider.notifier).syncTokens(tokenState);
-                        },
-                      )
-                    : IconButton(
-                        icon: const Icon(Icons.delete),
-                        onPressed: () {
-                          ref.read(tokenContainerProvider.notifier).deleteContainer(container);
-                        },
-                      ),
+            trailing: _getTrailing(context, ref),
           ),
         ),
       );
+
+  Widget _getTrailing(BuildContext context, WidgetRef ref) {
+    if (container is TokenContainerFinalized) {
+      return IconButton(
+        icon: const Icon(Icons.sync),
+        onPressed: () {
+          final tokenState = ref.read(tokenProvider);
+          ref.read(tokenContainerProvider.notifier).syncTokens(tokenState);
+        },
+      );
+    }
+    if (container.finalizationState.isFailed) {
+      return IconButton(
+        icon: const Icon(Icons.sync_problem),
+        onPressed: () {
+          ref.read(tokenContainerProvider.notifier).finalize(container);
+        },
+      );
+    }
+    return SizedBox();
+  }
 }

@@ -90,7 +90,7 @@ class SettingsGroup extends StatelessWidget {
                         ),
                       ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 8.0),
+                  padding: const EdgeInsets.fromLTRB(4, 0, 4, 4),
                   child: Column(children: children),
                 ),
               ],

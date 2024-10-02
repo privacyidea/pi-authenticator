@@ -71,7 +71,7 @@ Future<void> _addTwoStepHotpTokenTest(WidgetTester tester) async {
   const qrCode =
       'otpauth://hotp/OATH0001DBD0?secret=AALIBQJMOGEE7SAVEZ5D3K2ADO7MVFQD&counter=1&digits=6&issuer=privacyIDEA&2step_salt=8&2step_output=20&2step_difficulty=10000';
   final notifier = globalRef!.read(tokenProvider.notifier);
-  await scanQrCode([notifier], qrCode);
+  await scanQrCode(resultHandlerList: [notifier], qrCode: qrCode);
   Logger.info('Finding phone part dialog');
   await pumpUntilFindNWidgets(tester, find.text(AppLocalizationsEn().phonePart), 1, const Duration(seconds: 20));
   expect(find.text(AppLocalizationsEn().phonePart), findsOneWidget);
@@ -95,7 +95,7 @@ Future<void> _addTwoStepTotpTokenTest(WidgetTester tester) async {
   const qrCode =
       'otpauth://totp/TOTP00009D5F?secret=NZ4OPONKAAGDFN2QHV26ZWYVTLFER4C6&period=30&digits=6&issuer=privacyIDEA&2step_salt=8&2step_output=20&2step_difficulty=10000';
   final notifier = globalRef!.read(tokenProvider.notifier);
-  await scanQrCode([notifier], qrCode);
+  await scanQrCode(resultHandlerList: [notifier], qrCode: qrCode);
   Logger.info('Finding phone part dialog');
   await pumpUntilFindNWidgets(tester, find.text(AppLocalizationsEn().phonePart), 1, const Duration(seconds: 20));
   expect(find.text(AppLocalizationsEn().phonePart), findsOneWidget);

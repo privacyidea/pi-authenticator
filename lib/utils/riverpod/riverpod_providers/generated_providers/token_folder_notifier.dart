@@ -180,6 +180,7 @@ class TokenFolderNotifier extends _$TokenFolderNotifier {
       _stateMutex.release();
       return oldState;
     }
+    state = newState;
     _stateMutex.release();
     return newState;
   }

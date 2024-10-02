@@ -62,10 +62,10 @@ class TokenState {
 
   PushToken? getTokenBySerial(String serial) => pushTokens.firstWhereOrNull((element) => element.serial == serial);
 
-  /// Maps the given tokens to the tokens that are already in the state
-  /// It ignores the id that is usually used to identify the token
-  /// Instead it uses the non-changeable values of the token to identify it
-  /// Like the secret and hash algorithm for OTP tokens, or the serial and public server key for push tokens
+  /// Maps the given tokens to the tokens that are already in the state.
+  /// It ignores the id that is usually used to identify the token.
+  /// Instead it uses the non-changeable values of the token to identify it.
+  /// Like the secret, hash algorithm, serial and public server key for push tokens.
   Map<Token, Token?> getSameTokens(List<Token> tokens) {
     final sameTokensMap = <Token, Token?>{};
     final stateTokens = this.tokens;
