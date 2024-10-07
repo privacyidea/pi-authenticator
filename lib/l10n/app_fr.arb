@@ -195,6 +195,17 @@
       }
     }
   },
+  "@failedToFinalizeContainer": {
+    "description": "Error message when finalizing a container failed.",
+    "placeholders": {
+      "error": {
+        "example": "ERR10: Could not verify the signature."
+      },
+      "serial": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
   "@failedToLoad": {
     "placeholders": {
       "name": {
@@ -390,6 +401,14 @@
   "@phonePart": {
     "description": "Title of a dialog telling the user that the phone was generated, and it is shown to the user."
   },
+  "@piServerCode": {
+    "description": "Message when privacyIDEA sends a server code.",
+    "placeholders": {
+      "code": {
+        "example": "10"
+      }
+    }
+  },
   "@pleaseEnterANameForThisToken": {
     "description": "Hint telling the user to enter a name for a token."
   },
@@ -474,6 +493,9 @@
   },
   "@scanQrCode": {
     "description": "The button to scan otpauth qr-codes."
+  },
+  "@secondsUntilNextOTP": {
+    "description": "Semantics label for the animated countdown until the next OTP is generated."
   },
   "@secretIsRequired": {
     "description": "Error message when the secret is missing."
@@ -716,6 +738,7 @@
   "exportNonPrivacyIDEATokens": "Exporter les jetons non privacyIDEA",
   "exportTokens": "Exporter les jetons",
   "exportingTokens": "Exportation des jetons en cours...",
+  "failedToFinalizeContainer": "Échec de la finalisation du conteneur {serial}: {error}",
   "failedToLoad": "Échec du chargement :",
   "feedback": "Retour d'information",
   "feedbackDescription": "Si vous avez des questions, des suggestions ou des problèmes, n'hésitez pas à nous en faire part",
@@ -842,6 +865,7 @@
   "patchNotesV4_4_0NewFeatures2": "Ajout du support pour privacyIDEA's \"require presence\".",
   "period": "Période",
   "phonePart": "Part du téléphone:",
+  "piServerCode": "Code du serveur PI : {code}",
   "pleaseEnterANameForThisToken": "Veuillez saisir un nom pour ce jeton.",
   "pleaseEnterASecretForThisToken": "Veuillez saisir un secret pour ce jeton.",
   "pleaseSyncManuallyWhenNetworkIsAvailable": "Veuillez synchroniser manuellement les jetons Push via les paramètres lorsqu'une connexion réseau est disponible",
@@ -883,6 +907,7 @@
   "scanQrCode": "Numériser QR-Code",
   "scanThisQrWithNewDevice": "Scannez ce code QR avec votre nouvel appareil pour importer le jeton.",
   "searchTokens": "Jetons de recherche",
+  "secondsUntilNextOTP": "Secondes jusqu'au prochain OTP",
   "secretIsRequired": "Secret est nécessaire",
   "secretKey": "Clé secrète",
   "selectFile": "Sélectionner un fichier",

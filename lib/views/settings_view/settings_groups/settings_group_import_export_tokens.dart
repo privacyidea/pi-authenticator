@@ -91,7 +91,7 @@ class _SettingsGroupImportExportTokensState extends ConsumerState<SettingsGroupI
           ),
           CountdownButton(
             onPressed: () => Navigator.of(context).pop(true),
-            countdownSeconds: 5,
+            countdownSeconds: 10,
             child: Text(AppLocalizations.of(context)!.ok),
           ),
         ],

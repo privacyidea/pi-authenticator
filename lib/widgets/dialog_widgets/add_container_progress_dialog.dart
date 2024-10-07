@@ -30,35 +30,44 @@ import '../../views/container_view/container_widgets/container_widget.dart';
 import '../../views/main_view/main_view_widgets/token_widgets/token_widget_builder.dart';
 import 'default_dialog.dart';
 
-class AddContainerProgressDialog extends StatelessWidget {
+class AddContainerProgressDialog extends StatefulWidget {
   final List<String> serials;
 
   const AddContainerProgressDialog(this.serials, {super.key});
 
   @override
+  State<AddContainerProgressDialog> createState() => _AddContainerProgressDialogState();
+}
+
+class _AddContainerProgressDialogState extends State<AddContainerProgressDialog> {
+  late final Map<String, ValueNotifier<bool>> _notifiers = Map.fromEntries(
+    widget.serials.map((serial) => MapEntry(serial, ValueNotifier(false))),
+  );
+
+  @override
   Widget build(BuildContext context) {
     return DefaultDialog(
       hasCloseButton: true,
-      title: Text(serials.length == 1 ? 'Adding container' : 'Adding containers'),
+      title: Text('Adding container'),
       content: SizedBox(
         width: double.maxFinite,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.min,
           children: [
-            for (var serial in serials) ...[
-              AddContainerProgressDialogTile(serial),
-              if (serial != serials.last) const Divider(),
-              if (serial != serials.last) const Divider(),
+            for (var serial in widget.serials) ...[
+              AddContainerProgressDialogTile(serial, _notifiers[serial]),
+              if (serial != widget.serials.last) const Divider(),
             ]
           ],
         ),
       ),
       actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text(AppLocalizations.of(context)!.ok),
-        ),
+        if (!_notifiers.values.any((v) => v.value == false))
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(AppLocalizations.of(context)!.ok),
+          ),
       ],
     );
   }
@@ -66,8 +75,9 @@ class AddContainerProgressDialog extends StatelessWidget {
 
 class AddContainerProgressDialogTile extends ConsumerWidget {
   final String serial;
+  final ValueNotifier<bool>? _notifier;
 
-  const AddContainerProgressDialogTile(this.serial, {super.key});
+  const AddContainerProgressDialogTile(this.serial, this._notifier, {super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -78,7 +88,10 @@ class AddContainerProgressDialogTile extends ConsumerWidget {
       ContainerWidget(container: container, isPreview: true),
     ];
     if (container.finalizationState.isFailed) return Column(children: children);
-    if (container is TokenContainerFinalized && containerTokens.isNotEmpty) {
+    if (container is! TokenContainerFinalized) return Column(children: children);
+    if (container.syncState == SyncState.syncing) return Column(children: children);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _notifier?.value = true);
+    if (containerTokens.isNotEmpty) {
       children.add(Divider());
       for (final token in containerTokens) {
         children.add(
@@ -88,11 +101,6 @@ class AddContainerProgressDialogTile extends ConsumerWidget {
           ),
         );
       }
-    } else {
-      children.add(Padding(
-        padding: const EdgeInsets.only(top: 16),
-        child: const CircularProgressIndicator(),
-      ));
     }
     return Column(children: children);
   }

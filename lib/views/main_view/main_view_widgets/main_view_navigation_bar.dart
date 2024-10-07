@@ -34,13 +34,12 @@ import 'main_view_navigation_buttons/license_push_view_button.dart';
 import 'main_view_navigation_buttons/qr_scanner_button.dart';
 
 class MainViewNavigationBar extends ConsumerWidget {
-  final BoxConstraints appConstraints;
-  const MainViewNavigationBar({super.key, required this.appConstraints});
+  const MainViewNavigationBar({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final introProv = ref.watch(introductionNotifierProvider);
-    final constraints = ref.watch(appConstraintsNotifierProvider) ?? appConstraints;
+    final constraints = ref.watch(appConstraintsNotifierProvider);
     final navWidth = constraints.maxWidth;
     final navHeight = constraints.maxHeight * 0.10;
     return SizedBox(

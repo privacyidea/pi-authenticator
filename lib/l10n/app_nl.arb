@@ -195,6 +195,17 @@
       }
     }
   },
+  "@failedToFinalizeContainer": {
+    "description": "Error message when finalizing a container failed.",
+    "placeholders": {
+      "error": {
+        "example": "ERR10: Could not verify the signature."
+      },
+      "serial": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
   "@failedToLoad": {
     "placeholders": {
       "name": {
@@ -390,6 +401,14 @@
   "@phonePart": {
     "description": "Title of a dialog telling the user that the phone was generated, and it is shown to the user."
   },
+  "@piServerCode": {
+    "description": "Message when privacyIDEA sends a server code.",
+    "placeholders": {
+      "code": {
+        "example": "10"
+      }
+    }
+  },
   "@pleaseEnterANameForThisToken": {
     "description": "Hint telling the user to enter a name for a token."
   },
@@ -474,6 +493,9 @@
   },
   "@scanQrCode": {
     "description": "The button to scan otpauth qr-codes."
+  },
+  "@secondsUntilNextOTP": {
+    "description": "Semantics label for the animated countdown until the next OTP is generated."
   },
   "@secretIsRequired": {
     "description": "Error message when the secret is missing."
@@ -716,6 +738,7 @@
   "exportNonPrivacyIDEATokens": "Niet-privacyIDEA tokens exporteren",
   "exportTokens": "Tokens exporteren",
   "exportingTokens": "Tokens exporteren...",
+  "failedToFinalizeContainer": "Fout bij het afsluiten van de container {serial}: {error}",
   "failedToLoad": "Mislukt bij het laden:",
   "feedback": "Feedback",
   "feedbackDescription": "Als je vragen, suggesties of problemen hebt, laat het ons dan weten.",
@@ -842,6 +865,7 @@
   "patchNotesV4_4_0NewFeatures2": "Ondersteuning toegevoegd voor privacyIDEA's \"require presence\".",
   "period": "Duur",
   "phonePart": "Telefoon gedeelte:",
+  "piServerCode": "PI-servercode: {code}",
   "pleaseEnterANameForThisToken": "Voer de naam in voor deze token.",
   "pleaseEnterASecretForThisToken": "Voer de geheime sleutel in voor deze token.",
   "pleaseSyncManuallyWhenNetworkIsAvailable": "Synchroniseer de push tokens handmatig via de instellingen als er een netwerkverbinding beschikbaar is.",
@@ -882,6 +906,7 @@
   "scanQrCode": "Scan QR-Code",
   "scanThisQrWithNewDevice": "Scan deze QR-code met uw nieuwe apparaat om de token te importeren.",
   "searchTokens": "Zoek tokens",
+  "secondsUntilNextOTP": "Seconden tot volgende OTP",
   "secretIsRequired": "Geheim is vereist",
   "secretKey": "Geheime sleutel",
   "selectFile": "Selecteer bestand",

@@ -50,7 +50,6 @@ class MainView extends ConsumerStatefulView {
   final Widget appImage;
   final String appName;
   final bool disablePatchNotes;
-  final BoxConstraints appConstraints;
 
   const MainView({
     required this.appImage,
@@ -58,7 +57,6 @@ class MainView extends ConsumerStatefulView {
     required this.appName,
     required this.disablePatchNotes,
     super.key,
-    required this.appConstraints,
   });
 
   @override
@@ -124,7 +122,7 @@ class _MainViewState extends ConsumerState<MainView> {
                       children: [
                         MainViewBackgroundImage(appImage: widget.appImage),
                         MainViewTokensList(nestedScrollViewKey: globalKey),
-                        MainViewNavigationBar(appConstraints: widget.appConstraints),
+                        MainViewNavigationBar(),
                       ],
                     )
                   : const MainViewTokensListFiltered(),

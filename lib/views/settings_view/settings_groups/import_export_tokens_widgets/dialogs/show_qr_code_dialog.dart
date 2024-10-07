@@ -37,7 +37,7 @@ class ShowQrCodeDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final appConstraits = ref.watch(appConstraintsNotifierProvider)!;
+    final appConstraits = ref.watch(appConstraintsNotifierProvider);
     final qrSize = min(appConstraits.maxWidth, appConstraits.maxHeight) * 0.85;
     final qrImage = Image.memory(_generateQrCodeImage(data: TokenEncryption.generateExportUri(token: token).toString()));
     return DefaultDialog(

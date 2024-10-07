@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../../model/extensions/color_extension.dart';
+import '../pi_circular_progress_indicator.dart';
 
 class CountdownButton extends StatefulWidget {
   final int countdownSeconds;
@@ -19,8 +18,6 @@ class _CountdownButtonState extends State<CountdownButton> with SingleTickerProv
   late AnimationController animation;
   late DateTime lastCountDateTime;
   Future? countDownFuture;
-  Color color1 = Colors.blue.shade600;
-  Color color2 = Colors.blue.shade700;
 
   @override
   void initState() {
@@ -29,13 +26,7 @@ class _CountdownButtonState extends State<CountdownButton> with SingleTickerProv
       vsync: this,
       duration: const Duration(seconds: 1),
     );
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      setState(() {
-        color1 = widget.color1 ?? Theme.of(context).colorScheme.primary;
-        color2 = widget.color2 ?? Theme.of(context).colorScheme.primary.mixWith(Colors.grey.shade700);
-      });
-    });
+
     _resetCount();
   }
 
@@ -52,12 +43,7 @@ class _CountdownButtonState extends State<CountdownButton> with SingleTickerProv
     await Future.delayed(const Duration(seconds: 1));
     if (!mounted) return false;
     animation.forward(from: 0);
-    setState(() {
-      currentCount--;
-      final temp = color2;
-      color2 = color1;
-      color1 = temp;
-    });
+    setState(() => currentCount--);
     return currentCount > 0;
   }
 
@@ -85,23 +71,19 @@ class _CountdownButtonState extends State<CountdownButton> with SingleTickerProv
                 child: AnimatedBuilder(
                   animation: animation,
                   child: null,
-                  builder: (context, child) => CircularProgressIndicator(
-                    value: animation.value / animation.upperBound,
+                  builder: (context, child) => PiCircularProgressIndicator(
+                    animation.value / animation.upperBound,
                     strokeWidth: 5,
-                    backgroundColor: color1,
-                    valueColor: AlwaysStoppedAnimation<Color>(color2),
+                    swapColors: currentCount % 2 == 0,
+                    backgroundColor: Theme.of(context).elevatedButtonTheme.style!.backgroundColor!.resolve({WidgetState.disabled}),
                   ),
                 ),
               ),
               Opacity(
                 opacity: currentCount > 0 ? 1 : 0,
-                child: AnimatedBuilder(
-                  animation: animation,
-                  child: null,
-                  builder: (context, child) => Text(
-                    currentCount.toString(),
-                    style: const TextStyle(fontSize: 20),
-                  ),
+                child: Text(
+                  currentCount.toString(),
+                  style: const TextStyle(fontSize: 20),
                 ),
               ),
               Opacity(

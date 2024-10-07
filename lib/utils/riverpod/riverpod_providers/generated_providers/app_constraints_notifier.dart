@@ -24,12 +24,12 @@ import '../../../logger.dart';
 
 part 'app_constraints_notifier.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class AppConstraintsNotifier extends _$AppConstraintsNotifier {
   @override
-  BoxConstraints? build() {
+  BoxConstraints build() {
     Logger.info("New AppConstraints created");
-    return null;
+    return BoxConstraints();
   }
 
   void update(BoxConstraints constraints) {

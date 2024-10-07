@@ -20,6 +20,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:privacyidea_authenticator/model/extensions/color_extension.dart';
 
 import 'theme_extentions/action_theme.dart';
 import 'theme_extentions/extended_text_theme.dart';
@@ -336,9 +337,6 @@ class ThemeCustomization {
             /// ...where "light" is `FontWeight.w300`, "regular" is `FontWeight.w400` and
             /// "medium" is `FontWeight.w500`.
             ///
-            /// By default, text styles are initialized to match the 2018 Material Design
-            /// specification as listed above. To provide backwards compatibility, the 2014
-            /// specification is also available.
             displayLarge: TextStyle(color: foregroundColor, fontFamily: fontFamily),
             displayMedium: TextStyle(color: foregroundColor, fontFamily: fontFamily),
             displaySmall: TextStyle(color: foregroundColor, fontFamily: fontFamily),
@@ -346,7 +344,7 @@ class ThemeCustomization {
             headlineSmall: TextStyle(color: foregroundColor, fontFamily: fontFamily),
             titleLarge: TextStyle(color: primaryColor, fontFamily: fontFamily, fontSize: 24),
             titleMedium: TextStyle(color: primaryColor, fontFamily: fontFamily, fontSize: 20, fontWeight: FontWeight.w500),
-            titleSmall: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 16, fontWeight: FontWeight.w500),
+            titleSmall: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 18, fontWeight: FontWeight.w500),
             bodyLarge: TextStyle(color: foregroundColor, fontFamily: fontFamily),
             bodyMedium: TextStyle(color: foregroundColor, fontFamily: fontFamily),
             bodySmall: TextStyle(color: subtitleColor, fontFamily: fontFamily),
@@ -362,6 +360,8 @@ class ThemeCustomization {
             style: ElevatedButton.styleFrom(
               foregroundColor: onPrimary,
               backgroundColor: primaryColor,
+              disabledBackgroundColor: backgroundColor.mixWith(foregroundColor, 0.12),
+              disabledForegroundColor: backgroundColor.mixWith(foregroundColor, 0.38),
               padding: const EdgeInsets.all(6),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
               shadowColor: shadowColor,

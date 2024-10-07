@@ -60,7 +60,7 @@ class _SelectTokensDialogState extends ConsumerState<SelectTokensDialog> {
         ],
       ),
       content: SizedBox(
-        width: ref.watch(appConstraintsNotifierProvider)!.maxWidth * 0.8,
+        width: ref.watch(appConstraintsNotifierProvider).maxWidth * 0.8,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
           child: (tokens.isEmpty)
@@ -74,15 +74,7 @@ class _SelectTokensDialogState extends ConsumerState<SelectTokensDialog> {
                     ...[
                       if (widget.multiSelect)
                         InkWell(
-                          onTap: () {
-                            setState(() {
-                              if (exportEveryToken) {
-                                _selectedTokens.clear();
-                              } else {
-                                _selectedTokens = tokens.toSet();
-                              }
-                            });
-                          },
+                          onTap: () => setState(() => exportEveryToken ? _selectedTokens.clear() : _selectedTokens = tokens.toSet()),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
@@ -108,9 +100,7 @@ class _SelectTokensDialogState extends ConsumerState<SelectTokensDialog> {
                                   padding: const EdgeInsets.symmetric(vertical: 4),
                                   child: TextButton(
                                     style: _selectedTokens.contains(token)
-                                        ? ButtonStyle(
-                                            backgroundColor: WidgetStateProperty.all(theme.colorScheme.secondary.withAlpha(80)),
-                                          )
+                                        ? ButtonStyle(backgroundColor: WidgetStateProperty.all(theme.colorScheme.secondary.withAlpha(80)))
                                         : null,
                                     onPressed: () async {
                                       if (!widget.multiSelect) {
