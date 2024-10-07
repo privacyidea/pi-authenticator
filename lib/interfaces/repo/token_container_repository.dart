@@ -21,10 +21,12 @@ import '../../model/riverpod_states/token_container_state.dart';
 import '../../model/token_container.dart';
 
 abstract class TokenContainerRepository {
-  Future<TokenContainerState> saveContainer(TokenContainer container);
-  Future<TokenContainerState> saveContainerState(TokenContainerState containerState);
   Future<TokenContainerState> loadContainerState();
-  Future<TokenContainer?> loadContainer(String serial);
-  Future<TokenContainerState> deleteAllContainer();
+  Future<TokenContainerState> saveContainerState(TokenContainerState containerState);
+  Future<List<TokenContainer>> loadContainerList();
+  Future<TokenContainerState> saveContainerList(List<TokenContainer> containerList);
   Future<TokenContainerState> deleteContainer(String serial);
+  Future<TokenContainerState> deleteAllContainer();
+  Future<TokenContainer?> loadContainer(String serial);
+  Future<TokenContainerState> saveContainer(TokenContainer container);
 }

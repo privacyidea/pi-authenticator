@@ -19,6 +19,8 @@
  */
 import 'package:flutter/material.dart';
 
+import '../../../../../widgets/pi_circular_progress_indicator.dart';
+
 class TotpTokenWidgetTileCountdown extends StatefulWidget {
   final int period;
   final Function onPeriodEnd;
@@ -73,22 +75,28 @@ class _TotpTokenWidgetTileCountdownState extends State<TotpTokenWidgetTileCountd
   }
 
   @override
-  Widget build(BuildContext context) => Stack(
-        alignment: Alignment.center,
-        children: [
-          Text(
-            '${secondsUntilNextOTP.round()}',
-            overflow: TextOverflow.fade,
-            softWrap: false,
-          ),
-          AnimatedBuilder(
-            animation: animation,
-            builder: (context, child) {
-              return CircularProgressIndicator(
-                value: animation.value,
-              );
-            },
-          ),
-        ],
+  Widget build(BuildContext context) => FittedBox(
+        clipBehavior: Clip.hardEdge,
+        fit: BoxFit.contain,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Text(
+              '${secondsUntilNextOTP.round()}',
+              overflow: TextOverflow.fade,
+              softWrap: false,
+            ),
+            AnimatedBuilder(
+              animation: animation,
+              builder: (context, child) {
+                return PiCircularProgressIndicator(
+                  animation.value,
+                  // semanticsLabel: AppLocalizations.of(context)!.secondsUntilNextOTP, //TODO: add this to the localization file
+                  semanticsValue: '${secondsUntilNextOTP.round()}',
+                );
+              },
+            ),
+          ],
+        ),
       );
 }

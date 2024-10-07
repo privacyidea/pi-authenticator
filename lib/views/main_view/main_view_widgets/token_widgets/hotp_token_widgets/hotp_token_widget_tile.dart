@@ -120,9 +120,12 @@ class _HOTPTokenWidgetTileState extends ConsumerState<HOTPTokenWidgetTile> {
               ],
         trailing: CustomTrailing(
           child: widget.isPreview
-              ? const FittedBox(
+              ? FittedBox(
                   fit: BoxFit.contain,
-                  child: Icon(size: 100, Icons.replay),
+                  child: Icon(
+                    size: 100,
+                    Icons.replay,
+                  ),
                 )
               : HideableWidget(
                   token: widget.token,
@@ -131,9 +134,12 @@ class _HOTPTokenWidgetTileState extends ConsumerState<HOTPTokenWidgetTile> {
                     tooltip: AppLocalizations.of(context)!.increaseCounter,
                     padding: const EdgeInsets.all(0),
                     onPressed: disableTrailingButton ? null : () => _updateOtpValue(),
-                    icon: const FittedBox(
+                    icon: FittedBox(
                       fit: BoxFit.contain,
-                      child: Icon(size: 100, Icons.replay),
+                      child: Icon(
+                        size: 100,
+                        Icons.replay,
+                      ),
                     ),
                   ),
                 ),

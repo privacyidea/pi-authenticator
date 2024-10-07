@@ -19,6 +19,7 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/widgets/pi_text_field.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../../../model/enums/introduction.dart';
@@ -36,17 +37,12 @@ class AddTokenFolderDialog extends ConsumerWidget {
     return DefaultDialog(
       scrollable: true,
       title: Text(AppLocalizations.of(context)!.addANewFolder),
-      content: TextFormField(
+      content: PiTextField(
         controller: textController,
         autofocus: true,
         onChanged: (value) {},
-        decoration: InputDecoration(labelText: AppLocalizations.of(context)!.folderName),
-        validator: (value) {
-          if (value!.isEmpty) {
-            return AppLocalizations.of(context)!.folderName;
-          }
-          return null;
-        },
+        labelText: AppLocalizations.of(context)!.folderName,
+        validator: (value) => value!.isEmpty ? AppLocalizations.of(context)!.folderName : null,
       ),
       actions: [
         TextButton(

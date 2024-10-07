@@ -72,6 +72,7 @@ class _ExportTokensToFileDialogState extends ConsumerState<ExportTokensToFileDia
                         decoration: InputDecoration(
                           labelText: appLocalizations.password,
                           labelStyle: Theme.of(context).textTheme.titleSmall,
+                          errorMaxLines: 2,
                         ),
                       ),
                     ),
@@ -99,6 +100,7 @@ class _ExportTokensToFileDialogState extends ConsumerState<ExportTokensToFileDia
                         decoration: InputDecoration(
                           labelText: appLocalizations.confirmPassword,
                           labelStyle: Theme.of(context).textTheme.titleSmall,
+                          errorMaxLines: 2,
                         ),
                       ),
                     ),

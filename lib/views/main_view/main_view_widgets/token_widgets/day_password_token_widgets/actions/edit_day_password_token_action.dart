@@ -80,15 +80,13 @@ class EditDayPassowrdTokenAction extends ConsumerSlideableAction {
         builder: (BuildContext context) => DefaultEditActionDialog(
           token: token,
           additionalChildren: [
-            TextFormField(
-              initialValue: token.algorithm.name,
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.algorithm),
-              enabled: false,
+            ReadOnlyTextFormField(
+              text: token.algorithm.name,
+              labelText: AppLocalizations.of(context)!.algorithm,
             ),
-            TextFormField(
-              initialValue: token.period.toString().split('.').first,
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.period),
-              enabled: false,
+            ReadOnlyTextFormField(
+              text: token.period.toString().split('.').first,
+              labelText: AppLocalizations.of(context)!.period,
             ),
           ],
         ),

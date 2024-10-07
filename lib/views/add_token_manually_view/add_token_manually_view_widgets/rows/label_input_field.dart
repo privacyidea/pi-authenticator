@@ -18,6 +18,7 @@
  * limitations under the License.
  */
 import 'package:flutter/material.dart';
+import 'package:privacyidea_authenticator/widgets/pi_text_field.dart';
 
 import '../../../../l10n/app_localizations.dart';
 
@@ -60,10 +61,10 @@ class _LabelInputFieldState extends State<LabelInputField> {
   }
 
   @override
-  Widget build(BuildContext context) => TextFormField(
+  Widget build(BuildContext context) => PiTextField(
         controller: widget.controller,
         autovalidateMode: widget.autoValidate.value ? AutovalidateMode.always : AutovalidateMode.disabled,
-        decoration: InputDecoration(labelText: AppLocalizations.of(context)!.name),
+        labelText: AppLocalizations.of(context)!.name,
         validator: (value) => LabelInputField.validator(value, locale: AppLocalizations.of(context)),
         focusNode: LabelInputField.labelFieldFocus,
       );

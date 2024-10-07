@@ -6,17 +6,23 @@ part of 'token_container.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$TokenContainerUnfinalizedImpl _$$TokenContainerUnfinalizedImplFromJson(Map<String, dynamic> json) => _$TokenContainerUnfinalizedImpl(
+_$TokenContainerUnfinalizedImpl _$$TokenContainerUnfinalizedImplFromJson(
+        Map<String, dynamic> json) =>
+    _$TokenContainerUnfinalizedImpl(
       issuer: json['issuer'] as String,
       nonce: json['nonce'] as String,
       timestamp: DateTime.parse(json['timestamp'] as String),
       finalizationUrl: Uri.parse(json['finalizationUrl'] as String),
-      syncUrl: json['syncUrl'] == null ? null : Uri.parse(json['syncUrl'] as String),
+      syncUrl:
+          json['syncUrl'] == null ? null : Uri.parse(json['syncUrl'] as String),
       serial: json['serial'] as String,
-      ecKeyAlgorithm: $enumDecode(_$EcKeyAlgorithmEnumMap, json['ecKeyAlgorithm']),
+      ecKeyAlgorithm:
+          $enumDecode(_$EcKeyAlgorithmEnumMap, json['ecKeyAlgorithm']),
       hashAlgorithm: $enumDecode(_$AlgorithmsEnumMap, json['hashAlgorithm']),
       serverName: json['serverName'] as String? ?? 'privacyIDEA',
-      finalizationState: $enumDecodeNullable(_$ContainerFinalizationStateEnumMap, json['finalizationState']) ?? RolloutState.notStarted,
+      finalizationState: $enumDecodeNullable(
+              _$RolloutStateEnumMap, json['finalizationState']) ??
+          RolloutState.completed,
       passphraseQuestion: json['passphraseQuestion'] as String?,
       publicServerKey: json['publicServerKey'] as String?,
       publicClientKey: json['publicClientKey'] as String?,
@@ -24,7 +30,9 @@ _$TokenContainerUnfinalizedImpl _$$TokenContainerUnfinalizedImplFromJson(Map<Str
       $type: json['runtimeType'] as String?,
     );
 
-Map<String, dynamic> _$$TokenContainerUnfinalizedImplToJson(_$TokenContainerUnfinalizedImpl instance) => <String, dynamic>{
+Map<String, dynamic> _$$TokenContainerUnfinalizedImplToJson(
+        _$TokenContainerUnfinalizedImpl instance) =>
+    <String, dynamic>{
       'issuer': instance.issuer,
       'nonce': instance.nonce,
       'timestamp': instance.timestamp.toIso8601String(),
@@ -34,7 +42,7 @@ Map<String, dynamic> _$$TokenContainerUnfinalizedImplToJson(_$TokenContainerUnfi
       'ecKeyAlgorithm': _$EcKeyAlgorithmEnumMap[instance.ecKeyAlgorithm]!,
       'hashAlgorithm': _$AlgorithmsEnumMap[instance.hashAlgorithm]!,
       'serverName': instance.serverName,
-      'finalizationState': _$ContainerFinalizationStateEnumMap[instance.finalizationState]!,
+      'finalizationState': _$RolloutStateEnumMap[instance.finalizationState]!,
       'passphraseQuestion': instance.passphraseQuestion,
       'publicServerKey': instance.publicServerKey,
       'publicClientKey': instance.publicClientKey,
@@ -92,8 +100,8 @@ const _$AlgorithmsEnumMap = {
   Algorithms.SHA512: 'SHA512',
 };
 
-const _$ContainerFinalizationStateEnumMap = {
-  RolloutState.notStarted: 'uninitialized',
+const _$RolloutStateEnumMap = {
+  RolloutState.notStarted: 'notStarted',
   RolloutState.generatingKeyPair: 'generatingKeyPair',
   RolloutState.generatingKeyPairFailed: 'generatingKeyPairFailed',
   RolloutState.generatingKeyPairCompleted: 'generatingKeyPairCompleted',
@@ -103,19 +111,26 @@ const _$ContainerFinalizationStateEnumMap = {
   RolloutState.parsingResponse: 'parsingResponse',
   RolloutState.parsingResponseFailed: 'parsingResponseFailed',
   RolloutState.parsingResponseCompleted: 'parsingResponseCompleted',
-  RolloutState.completed: 'finalized',
+  RolloutState.completed: 'completed',
 };
 
-_$TokenContainerFinalizedImpl _$$TokenContainerFinalizedImplFromJson(Map<String, dynamic> json) => _$TokenContainerFinalizedImpl(
+_$TokenContainerFinalizedImpl _$$TokenContainerFinalizedImplFromJson(
+        Map<String, dynamic> json) =>
+    _$TokenContainerFinalizedImpl(
       issuer: json['issuer'] as String,
       nonce: json['nonce'] as String,
       timestamp: DateTime.parse(json['timestamp'] as String),
       syncUrl: Uri.parse(json['syncUrl'] as String),
       serial: json['serial'] as String,
-      ecKeyAlgorithm: $enumDecode(_$EcKeyAlgorithmEnumMap, json['ecKeyAlgorithm']),
+      ecKeyAlgorithm:
+          $enumDecode(_$EcKeyAlgorithmEnumMap, json['ecKeyAlgorithm']),
       hashAlgorithm: $enumDecode(_$AlgorithmsEnumMap, json['hashAlgorithm']),
       serverName: json['serverName'] as String? ?? 'privacyIDEA',
-      finalizationState: $enumDecodeNullable(_$ContainerFinalizationStateEnumMap, json['finalizationState']) ?? RolloutState.completed,
+      finalizationState: $enumDecodeNullable(
+              _$RolloutStateEnumMap, json['finalizationState']) ??
+          RolloutState.completed,
+      syncState: $enumDecodeNullable(_$SyncStateEnumMap, json['syncState']) ??
+          SyncState.notStarted,
       passphraseQuestion: json['passphraseQuestion'] as String?,
       publicServerKey: json['publicServerKey'] as String,
       publicClientKey: json['publicClientKey'] as String,
@@ -123,7 +138,9 @@ _$TokenContainerFinalizedImpl _$$TokenContainerFinalizedImplFromJson(Map<String,
       $type: json['runtimeType'] as String?,
     );
 
-Map<String, dynamic> _$$TokenContainerFinalizedImplToJson(_$TokenContainerFinalizedImpl instance) => <String, dynamic>{
+Map<String, dynamic> _$$TokenContainerFinalizedImplToJson(
+        _$TokenContainerFinalizedImpl instance) =>
+    <String, dynamic>{
       'issuer': instance.issuer,
       'nonce': instance.nonce,
       'timestamp': instance.timestamp.toIso8601String(),
@@ -132,10 +149,18 @@ Map<String, dynamic> _$$TokenContainerFinalizedImplToJson(_$TokenContainerFinali
       'ecKeyAlgorithm': _$EcKeyAlgorithmEnumMap[instance.ecKeyAlgorithm]!,
       'hashAlgorithm': _$AlgorithmsEnumMap[instance.hashAlgorithm]!,
       'serverName': instance.serverName,
-      'finalizationState': _$ContainerFinalizationStateEnumMap[instance.finalizationState]!,
+      'finalizationState': _$RolloutStateEnumMap[instance.finalizationState]!,
+      'syncState': _$SyncStateEnumMap[instance.syncState]!,
       'passphraseQuestion': instance.passphraseQuestion,
       'publicServerKey': instance.publicServerKey,
       'publicClientKey': instance.publicClientKey,
       'privateClientKey': instance.privateClientKey,
       'runtimeType': instance.$type,
     };
+
+const _$SyncStateEnumMap = {
+  SyncState.notStarted: 'notStarted',
+  SyncState.syncing: 'syncing',
+  SyncState.completed: 'completed',
+  SyncState.failed: 'failed',
+};

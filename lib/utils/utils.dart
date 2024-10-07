@@ -47,6 +47,8 @@ import 'riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import 'riverpod/riverpod_providers/state_providers/dragging_sortable_provider.dart';
 import 'view_utils.dart';
 
+final urlRegExp = RegExp(r'[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)');
+
 /// Inserts [char] at the position [pos] in the given String ([str]),
 /// and returns the resulting String.
 ///

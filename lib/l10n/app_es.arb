@@ -195,6 +195,17 @@
       }
     }
   },
+  "@failedToFinalizeContainer": {
+    "description": "Error message when finalizing a container failed.",
+    "placeholders": {
+      "error": {
+        "example": "ERR10: Could not verify the signature."
+      },
+      "serial": {
+        "example": "PUSH1234A"
+      }
+    }
+  },
   "@failedToLoad": {
     "placeholders": {
       "name": {
@@ -390,6 +401,14 @@
   "@phonePart": {
     "description": "Title of a dialog telling the user that the phone was generated, and it is shown to the user."
   },
+  "@piServerCode": {
+    "description": "Message when privacyIDEA sends a server code.",
+    "placeholders": {
+      "code": {
+        "example": "10"
+      }
+    }
+  },
   "@pleaseEnterANameForThisToken": {
     "description": "Hint telling the user to enter a name for a token."
   },
@@ -474,6 +493,9 @@
   },
   "@scanQrCode": {
     "description": "The button to scan otpauth qr-codes."
+  },
+  "@secondsUntilNextOTP": {
+    "description": "Semantics label for the animated countdown until the next OTP is generated."
   },
   "@secretIsRequired": {
     "description": "Error message when the secret is missing."
@@ -716,6 +738,7 @@
   "exportNonPrivacyIDEATokens": "Exportar tokens no privacyIDEA",
   "exportTokens": "Exportar tokens",
   "exportingTokens": "Exportando tokens...",
+  "failedToFinalizeContainer": "Fallo al finalizar el contenedor {serial}: {error}",
   "failedToLoad": "Fallo al cargar:",
   "feedback": "Comentarios",
   "feedbackDescription": "Si tienes alguna pregunta, sugerencia o problema, háznoslo saber",
@@ -842,6 +865,7 @@
   "patchNotesV4_4_0NewFeatures2": "Añadido soporte para privacyIDEA's \"require presence\".",
   "period": "Periodo",
   "phonePart": "Pieza de teléfono:",
+  "piServerCode": "Código del servidor PI: {code}",
   "pleaseEnterANameForThisToken": "Introduzca un nombre para este token.",
   "pleaseEnterASecretForThisToken": "Por favor, introduzca un secreto para este token.",
   "pleaseSyncManuallyWhenNetworkIsAvailable": "Por favor, sincronice los tokens push manualmente a través de los ajustes cuando haya una conexión de red disponible.",
@@ -883,6 +907,7 @@
   "scanQrCode": "Escanear código QR",
   "scanThisQrWithNewDevice": "Escanee este código QR con su nuevo dispositivo para importar el token.",
   "searchTokens": "Buscar tokens",
+  "secondsUntilNextOTP": "Segundos hasta el próximo OTP",
   "secretIsRequired": "Se requiere secreto",
   "secretKey": "Clave secreta",
   "selectFile": "Seleccionar archivo",

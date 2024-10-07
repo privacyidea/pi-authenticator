@@ -39,6 +39,7 @@ part 'token_container.freezed.dart';
 part 'token_container.g.dart';
 
 @Freezed(toStringOverride: false)
+@SyncStateJsonConverter()
 class TokenContainer with _$TokenContainer {
   static const SERIAL = 'serial';
   static const eccUtils = EccUtils();
@@ -90,7 +91,7 @@ class TokenContainer with _$TokenContainer {
     required EcKeyAlgorithm ecKeyAlgorithm,
     required Algorithms hashAlgorithm,
     @Default('privacyIDEA') String serverName,
-    @Default(RolloutState.notStarted) RolloutState finalizationState,
+    @Default(RolloutState.completed) RolloutState finalizationState,
     String? passphraseQuestion,
     String? publicServerKey,
     String? publicClientKey,
@@ -107,6 +108,7 @@ class TokenContainer with _$TokenContainer {
     required Algorithms hashAlgorithm,
     @Default('privacyIDEA') String serverName,
     @Default(RolloutState.completed) RolloutState finalizationState,
+    @Default(SyncState.notStarted) @SyncStateJsonConverter() SyncState syncState,
     String? passphraseQuestion,
     required String publicServerKey,
     required String publicClientKey,
@@ -162,16 +164,17 @@ class TokenContainer with _$TokenContainer {
   factory TokenContainer.fromJson(Map<String, dynamic> json) => _$TokenContainerFromJson(json);
 
   @override
-  String toString() => 'TokenContainer('
+  String toString() => '$runtimeType('
       'issuer: $issuer, '
       'nonce: $nonce, '
       'timestamp: $timestamp, '
-      '${(this is TokenContainerUnfinalized) ? ' finalizationUrl: ${(this as TokenContainerUnfinalized).finalizationUrl}, ' : ''}'
+      '${(this is TokenContainerUnfinalized) ? 'finalizationUrl: ${(this as TokenContainerUnfinalized).finalizationUrl}, ' : ''}'
       'syncUrl: $syncUrl, '
       'serial: $serial, '
       'ecKeyAlgorithm: $ecKeyAlgorithm, '
       'hashAlgorithm: $hashAlgorithm, '
       'finalizationState: $finalizationState, '
+      '${(this is TokenContainerFinalized) ? 'syncState: ${(this as TokenContainerFinalized).syncState}, ' : ''}'
       'passphraseQuestion: $passphraseQuestion, '
       'publicServerKey: $publicServerKey, '
       'publicClientKey: $publicClientKey)';
@@ -197,3 +200,27 @@ class TokenContainer with _$TokenContainer {
 //be99ff65b1c38ae8a7d6caf8799a0cce3749fe0e|2024-08-27 14:30:58.371312Z|http://192.168.0.230:5000/container/register/finalize|SMPH0000D49C
 //be99ff65b1c38ae8a7d6caf8799a0cce3749fe0e|2024-08-27T14:30:58.371312+00:00|http://192.168.0.230:5000/container/register/finalize|SMPH0000D49C
 
+enum SyncState { notStarted, syncing, completed, failed }
+
+class SyncStateJsonConverter extends JsonConverter<SyncState?, String?> {
+  const SyncStateJsonConverter();
+  @override
+  SyncState? fromJson(json) {
+    if (json == null) return null;
+    final SyncState syncState;
+    try {
+      syncState = SyncState.values.byName(json);
+    } catch (e) {
+      return null;
+    }
+    return switch (syncState) {
+      SyncState.notStarted => SyncState.notStarted,
+      SyncState.syncing => SyncState.failed,
+      SyncState.completed => SyncState.completed,
+      SyncState.failed => SyncState.failed,
+    };
+  }
+
+  @override
+  toJson(object) => object?.name;
+}

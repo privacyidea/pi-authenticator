@@ -20,11 +20,15 @@
 import 'dart:ui';
 
 extension ColorExtension on Color {
-  Color mixWith(Color other) => Color.fromARGB(
-        (alpha + other.alpha) ~/ 2.clamp(0, 255),
-        (red + other.red) ~/ 2.clamp(0, 255),
-        (green + other.green) ~/ 2.clamp(0, 255),
-        (blue + other.blue) ~/ 2.clamp(0, 255),
+  Color mixWith(
+    Color other, [
+    double factor = 0.5 /* 0.0 - 1.0 */,
+  ]) =>
+      Color.fromARGB(
+        (alpha * (1 - factor) + other.alpha * factor).toInt().clamp(0, 255),
+        (red * (1 - factor) + other.red * factor).toInt().clamp(0, 255),
+        (green * (1 - factor) + other.green * factor).toInt().clamp(0, 255),
+        (blue * (1 - factor) + other.blue * factor).toInt().clamp(0, 255),
       );
 
   Color inverted() => Color.fromARGB(alpha, 255 - red, 255 - green, 255 - blue);

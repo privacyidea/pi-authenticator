@@ -19,6 +19,7 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:privacyidea_authenticator/widgets/pi_text_field.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/token_folder.dart';
@@ -68,11 +69,10 @@ class RenameTokenFolderAction extends ConsumerSlideableAction {
             title: Text(
               AppLocalizations.of(context)!.renameTokenFolder,
             ),
-            content: TextFormField(
+            content: PiTextField(
               autofocus: true,
               controller: nameInputController,
-              onChanged: (value) {},
-              decoration: InputDecoration(labelText: AppLocalizations.of(context)!.name),
+              labelText: AppLocalizations.of(context)!.name,
               validator: (value) {
                 if (value!.isEmpty) {
                   return AppLocalizations.of(context)!.name;

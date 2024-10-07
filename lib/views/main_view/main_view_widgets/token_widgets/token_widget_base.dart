@@ -69,51 +69,54 @@ class TokenWidgetBase extends ConsumerWidget {
       );
     }
     return draggingSortable == null
-        ? LongPressDraggable(
-            maxSimultaneousDrags: 1,
-            onDragStarted: () => ref.read(draggingSortableProvider.notifier).state = token,
-            onDragCompleted: () {
-              Logger.info('Draggable completed');
-              // Will be handled by the sortableNotifier
-            },
-            onDraggableCanceled: (velocity, offset) {
-              Logger.info('Draggable canceled');
-              globalRef?.read(draggingSortableProvider.notifier).state = null;
-            },
-            dragAnchorStrategy: (Draggable<Object> d, BuildContext context, Offset point) {
-              final textSize = textSizeOf(
-                text: token.label,
-                style: Theme.of(context).textTheme.titleMedium!,
-                textScaler: MediaQuery.of(context).textScaler,
-                maxLines: 1,
-              );
-              return Offset(max(textSize.width / 2, 30), textSize.height / 2 + 30);
-            },
-            feedback: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(dragIcon, size: 60),
-                Material(
-                    color: Colors.transparent,
-                    child: Text(
-                      token.label,
-                      style: Theme.of(context).textTheme.titleMedium,
-                      overflow: TextOverflow.fade,
-                      softWrap: false,
-                    )),
-              ],
-            ),
-            data: token,
-            child: Material(
-              color: Colors.transparent,
-              child: DefaultInkWell(
-                onTap: () {},
-                child: PiSliable(
-                  groupTag: TokenWidget.groupTag,
-                  identifier: token.id,
-                  actions: actions,
-                  stack: stack,
-                  child: tile,
+        ? PiSliable(
+            groupTag: TokenWidget.groupTag,
+            identifier: token.id,
+            actions: actions,
+            stack: stack,
+            child: LongPressDraggable(
+              maxSimultaneousDrags: 1,
+              onDragStarted: () => ref.read(draggingSortableProvider.notifier).state = token,
+              onDragCompleted: () {
+                Logger.info('Draggable completed');
+                // Will be handled by the sortableNotifier
+              },
+              onDraggableCanceled: (velocity, offset) {
+                Logger.info('Draggable canceled');
+                globalRef?.read(draggingSortableProvider.notifier).state = null;
+              },
+              dragAnchorStrategy: (Draggable<Object> d, BuildContext context, Offset point) {
+                final textSize = textSizeOf(
+                  text: token.label,
+                  style: Theme.of(context).textTheme.titleMedium!,
+                  textScaler: MediaQuery.of(context).textScaler,
+                  maxLines: 1,
+                );
+                return Offset(max(textSize.width / 2, 30), textSize.height / 2 + 30);
+              },
+              feedback: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(dragIcon, size: 60),
+                  Material(
+                      color: Colors.transparent,
+                      child: Text(
+                        token.label,
+                        style: Theme.of(context).textTheme.titleMedium,
+                        overflow: TextOverflow.fade,
+                        softWrap: false,
+                      )),
+                ],
+              ),
+              data: token,
+              child: Material(
+                color: Colors.transparent,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: DefaultInkWell(
+                    onTap: () {},
+                    child: tile,
+                  ),
                 ),
               ),
             ),

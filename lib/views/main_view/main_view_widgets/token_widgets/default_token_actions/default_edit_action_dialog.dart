@@ -21,12 +21,14 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/widgets/pi_text_field.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/token.dart';
 import '../../../../../utils/globals.dart';
 import '../../../../../utils/logger.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
+import '../../../../../utils/utils.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 
 class DefaultEditActionDialog extends ConsumerStatefulWidget {
@@ -64,12 +66,9 @@ class _DefaultEditActionDialogState extends ConsumerState<DefaultEditActionDialo
   }
 
   String? _validateImageUrl(String? value) {
-    if (value == null) return null;
-    final uri = Uri.tryParse(value);
-    if (value.isNotEmpty && (uri == null || uri.host.isEmpty || uri.scheme.isEmpty || uri.path.isEmpty)) {
-      return AppLocalizations.of(context)!.exampleUrl;
-    }
-    return null;
+    if (value == null || value.isEmpty) return null;
+    if (urlRegExp.hasMatch(value)) return null;
+    return AppLocalizations.of(context)!.exampleUrl;
   }
 
   @override
@@ -91,20 +90,18 @@ class _DefaultEditActionDialogState extends ConsumerState<DefaultEditActionDialo
             mainAxisAlignment: MainAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              TextFormField(
+              PiTextField(
                 key: Key('${widget.token.id}_editName'),
-                autovalidateMode: AutovalidateMode.onUserInteraction,
                 controller: nameInputController,
                 onChanged: (value) => setState(() => _nameIsValid = _validateName(value) == null),
-                decoration: InputDecoration(labelText: appLocalizations.name),
+                labelText: appLocalizations.name,
                 validator: _validateName,
               ),
-              TextFormField(
+              PiTextField(
                 key: Key('${widget.token.id}_editImageUrl'),
-                autovalidateMode: AutovalidateMode.onUserInteraction,
                 controller: imageUrlController,
                 onChanged: (value) => setState(() => _imageUrlIsValid = _validateImageUrl(value) == null),
-                decoration: InputDecoration(labelText: appLocalizations.imageUrl),
+                labelText: appLocalizations.imageUrl,
                 validator: _validateImageUrl,
               ),
               EditActionExpansionTile(
@@ -279,7 +276,7 @@ class _EditActionExpansionTileState extends State<EditActionExpansionTile> with 
       animation: animation!,
       builder: (buildContext, _) => Container(
         margin: const EdgeInsets.symmetric(vertical: 8.0),
-        padding: EdgeInsets.only(bottom: animation!.value * 16.0),
+        padding: EdgeInsets.only(bottom: animation!.value * 16.0, right: 0),
         decoration: BoxDecoration(
           color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(12.0),
@@ -294,7 +291,7 @@ class _EditActionExpansionTileState extends State<EditActionExpansionTile> with 
         child: Theme(
           data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
           child: ExpansionTile(
-            tilePadding: const EdgeInsets.symmetric(horizontal: 6.0),
+            tilePadding: const EdgeInsets.only(left: 8.0, right: 16.0),
             title: Row(
               children: [
                 RotationTransition(

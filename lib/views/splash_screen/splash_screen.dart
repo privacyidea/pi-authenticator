@@ -34,8 +34,7 @@ import '../view_interface.dart';
 class SplashScreen extends ConsumerStatefulWidget {
   static const routeName = '/';
   final ApplicationCustomization customization;
-  final BoxConstraints appConstraints;
-  const SplashScreen({required this.customization, super.key, required this.appConstraints});
+  const SplashScreen({required this.customization, super.key});
   @override
   ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
@@ -105,7 +104,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       appIcon: _customization.appIcon.getWidget,
       appImage: _customization.appImage.getWidget,
       disablePatchNotes: _customization.disabledFeatures.contains(AppFeature.patchNotes),
-      appConstraints: widget.appConstraints,
     );
     final routeBuilder = PageRouteBuilder(pageBuilder: (_, __, ___) => nextView);
     // Idle until the splash screen is the top route.
