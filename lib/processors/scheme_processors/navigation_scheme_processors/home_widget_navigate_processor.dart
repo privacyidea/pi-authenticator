@@ -165,8 +165,9 @@ class NavigationHandler<R> with ResultHandler {
   Future<List<R>?> handleProcessorResults(List<ProcessorResult> results, Map<String, dynamic> args) async {
     final successResults = results.whereType<ProcessorResult<Navigation>>().toList().successResults;
     if (successResults.isEmpty) return null;
+    final BuildContext context;
     try {
-      validate(
+      context = validate(
         value: args['context'],
         validator: const ObjectValidator<BuildContext>(),
         name: 'context',
@@ -180,7 +181,6 @@ class NavigationHandler<R> with ResultHandler {
       return null;
     }
     List<Navigation> navigations = successResults.getData();
-    final context = args['context'];
     final retunValues = <R>[];
     for (final navigation in navigations) {
       retunValues.add(await navigation(context));

@@ -32,7 +32,7 @@ class AppWidgetProvider : HomeWidgetProvider() {
             nightModeSuffix = if(currentThemeMode == "dark") "_dark" else "_light"
         }
         println("nightModeSuffix: $nightModeSuffix")
-        
+
         var editor = widgetData.edit()
         editor.putString("_widgetIds", appWidgetIds.joinToString(","))
         widgetData.getString("_copyText", null)?.let {
@@ -46,7 +46,7 @@ class AppWidgetProvider : HomeWidgetProvider() {
         editor.remove("_rebuildingWidgetIds")
         var rebuildingWidgetIds: IntArray
         if(rebuildingIds == null || rebuildingIds.isEmpty()) {
-            rebuildingWidgetIds = appWidgetIds   
+            rebuildingWidgetIds = appWidgetIds
         } else {
             rebuildingWidgetIds = rebuildingIds?.split(",")?.map { it.toInt() }?.toIntArray() ?: intArrayOf()
         }
@@ -55,7 +55,7 @@ class AppWidgetProvider : HomeWidgetProvider() {
         rebuildingWidgetIds.forEach { widgetId ->
             val views = RemoteViews(context.packageName, R.layout.widget_layout).apply {
                 val tokenId = widgetData.getString("_tokenId$widgetId", null)
-                
+
                 // _loadImageFromWidgetDataString(widgetData, "_tokenBackground$nightModeSuffix", R.id.widget_background, this)
                 _setBackground(context, widgetData, widgetId, nightModeSuffix, this)
                 if(tokenId == null) {
@@ -93,10 +93,12 @@ class AppWidgetProvider : HomeWidgetProvider() {
     }
     fun _setSettingsIcon(context: Context, widgetData: SharedPreferences, widgetId: Int, nightModeSuffix: String, remoteViews: RemoteViews) {
         _loadImageFromWidgetDataString(widgetData, "_settingsIcon$nightModeSuffix", R.id.widget_settings, remoteViews)
-        val pendingIntent = HomeWidgetLaunchIntent.getActivity(context,
+        val pendingIntent = HomeWidgetLaunchIntent.getActivity(
+            context,
             MainActivity::class.java,
-            Uri.parse("homewidgetnavigate://link?id=$widgetId"))
-        remoteViews.setOnClickPendingIntent(R.id.widget_settings, pendingIntent) 
+            Uri.parse("homewidgetnavigate://link?id=$widgetId")
+        )
+        remoteViews.setOnClickPendingIntent(R.id.widget_settings, pendingIntent)
     }
     fun _setActionIcon(context: Context, widgetData: SharedPreferences, widgetId: Int, nightModeSuffix: String, remoteViews: RemoteViews, showToken: Boolean) {
         println("getString: _tokenType$widgetId")
@@ -120,21 +122,27 @@ class AppWidgetProvider : HomeWidgetProvider() {
         _loadImageFromWidgetDataString(widgetData, "_tokenOtp${widgetId}_hidden$nightModeSuffix", R.id.widget_otp, remoteViews)
         println("tokenLocked: $tokenLocked")
         if(tokenLocked) {
-            val pendingIntent = HomeWidgetLaunchIntent.getActivity(context,
+            val pendingIntent = HomeWidgetLaunchIntent.getActivity(
+                context,
                 MainActivity::class.java,
-                Uri.parse("homewidgetnavigate://showlocked?id=$widgetId"))
+                Uri.parse("homewidgetnavigate://showlocked?id=$widgetId")
+            )
             remoteViews.setOnClickPendingIntent(R.id.widget_otp, pendingIntent)
         } else {
-        val backgroundIntent = HomeWidgetBackgroundIntent.getBroadcast(context,
-            Uri.parse("homewidget://show?widgetId=$widgetId"))
+        val backgroundIntent = HomeWidgetBackgroundIntent.getBroadcast(
+            context,
+            Uri.parse("homewidget://show?widgetId=$widgetId")
+        )
         remoteViews.setOnClickPendingIntent(R.id.widget_otp, backgroundIntent)}
     }
 
     fun _setTokenOtp(context: Context, widgetData: SharedPreferences, widgetId: Int, nightModeSuffix: String, remoteViews: RemoteViews) {
         _loadImageFromWidgetDataString(widgetData, "_tokenOtp$widgetId$nightModeSuffix", R.id.widget_otp, remoteViews)
         // Otp is visible, so the user can copy it to the clipboard with the next click
-        val clipIntent = HomeWidgetBackgroundIntent.getBroadcast(context,
-            Uri.parse("homewidget://copy?widgetId=$widgetId"))
+        val clipIntent = HomeWidgetBackgroundIntent.getBroadcast(
+            context,
+            Uri.parse("homewidget://copy?widgetId=$widgetId")
+        )
         remoteViews.setOnClickPendingIntent(R.id.widget_otp, clipIntent)
     }
 
@@ -145,35 +153,38 @@ class AppWidgetProvider : HomeWidgetProvider() {
     }
 
     fun _setContainerEmpty(context: Context, widgetData: SharedPreferences, widgetId: Int, nightModeSuffix: String, remoteViews: RemoteViews) {
+        // No token yet, so the user has to select one
+        val pendingIntent = HomeWidgetLaunchIntent.getActivity(
+            context,
+            MainActivity::class.java,
+            Uri.parse("homewidgetnavigate://link?id=$widgetId")
+        )
+        remoteViews.setOnClickPendingIntent(R.id.widget_background, pendingIntent)
+        remoteViews.setOnClickPendingIntent(R.id.widget_otp, pendingIntent)
         _loadImageFromWidgetDataString(widgetData, "_tokenContainerEmpty$nightModeSuffix", R.id.widget_otp, remoteViews)
         remoteViews.setImageViewBitmap(R.id.widget_settings, null);
         remoteViews.setImageViewBitmap(R.id.widget_action, null);
-        // No token yet, so the user has to select one
-        val pendingIntent = HomeWidgetLaunchIntent.getActivity(context,
-                MainActivity::class.java,
-                Uri.parse("homewidgetnavigate://link?id=$widgetId"))
-        remoteViews.setOnClickPendingIntent(R.id.widget_background, pendingIntent)
     }
 
 
 
     fun _loadImageFromWidgetDataString(widgetData: SharedPreferences, key: String, xmlElement: Int, view: RemoteViews): Boolean {
-        
+
         println("Try to load image from key: $key")
         val imagePath = widgetData.getString("$key", null)
         if(imagePath == null) {
             println("imagePath is null")
             view.setImageViewBitmap(xmlElement, null)
             return false
-        } 
-        
+        }
+
         val imageFile = File(imagePath)
         val imageExists = imageFile.exists()
         if (imageExists && imageFile.absolutePath == null) {
             println("image not found!, looked @: $imagePath")
             return false
         }
-       
+
         println("imagePath is $imagePath")
         try {
             val myBitmap: Bitmap = BitmapFactory.decodeFile(imageFile.absolutePath)
