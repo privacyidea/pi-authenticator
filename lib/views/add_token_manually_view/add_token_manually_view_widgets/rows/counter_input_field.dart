@@ -18,7 +18,6 @@
  * limitations under the License.
  */
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/widgets/pi_text_field.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../add_token_manually_row.dart';
@@ -43,7 +42,9 @@ class CounterInputField extends StatelessWidget {
     counterNotifier.value ??= 0;
     return AddTokenManuallyRow(
       label: AppLocalizations.of(context)!.counter,
-      child: PiTextField(
+      child: TextFormField(
+        decoration: const InputDecoration(errorMaxLines: 2),
+        style: Theme.of(context).textTheme.bodyLarge,
         keyboardType: TextInputType.number,
         initialValue: counterNotifier.value.toString(),
         onChanged: (value) {
@@ -51,6 +52,7 @@ class CounterInputField extends StatelessWidget {
           if (number != null) counterNotifier.value = number;
           counterNotifier.value = int.tryParse(value);
         },
+        autovalidateMode: AutovalidateMode.onUserInteraction,
         validator: (value) => validator(value, locale: AppLocalizations.of(context)),
         focusNode: CounterInputField.counterFieldFocus,
       ),

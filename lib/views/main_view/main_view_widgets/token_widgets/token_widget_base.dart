@@ -68,6 +68,13 @@ class TokenWidgetBase extends ConsumerWidget {
         lockAction ?? DefaultLockAction(token: token, key: Key('${token.id}lockAction')),
       );
     }
+    final child = Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: DefaultInkWell(
+        onTap: () {},
+        child: tile,
+      ),
+    );
     return draggingSortable == null
         ? PiSliable(
             groupTag: TokenWidget.groupTag,
@@ -111,13 +118,7 @@ class TokenWidgetBase extends ConsumerWidget {
               data: token,
               child: Material(
                 color: Colors.transparent,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: DefaultInkWell(
-                    onTap: () {},
-                    child: tile,
-                  ),
-                ),
+                child: child,
               ),
             ),
           )
@@ -128,7 +129,7 @@ class TokenWidgetBase extends ConsumerWidget {
                 identifier: token.id,
                 actions: actions,
                 stack: stack,
-                child: tile,
+                child: child,
               );
   }
 }
