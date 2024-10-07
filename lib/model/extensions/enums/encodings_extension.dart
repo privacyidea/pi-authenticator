@@ -36,8 +36,8 @@ extension EncodingsX on Encodings {
 
   Uint8List decode(String string) => switch (this) {
         Encodings.none => utf8.encode(string),
-        Encodings.base32 => Uint8List.fromList(base32.decode(string)),
-        Encodings.hex => Uint8List.fromList(HEX.decode(string)),
+        Encodings.base32 => Uint8List.fromList(base32.decode(string.toUpperCase())),
+        Encodings.hex => Uint8List.fromList(HEX.decode(string.toUpperCase())),
       };
 
   bool isValidEncoding(String string) {

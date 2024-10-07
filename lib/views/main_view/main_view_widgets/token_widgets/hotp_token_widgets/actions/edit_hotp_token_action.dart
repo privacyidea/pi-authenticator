@@ -42,37 +42,38 @@ class EditHOTPTokenAction extends ConsumerSlideableAction {
 
   @override
   CustomSlidableAction build(BuildContext context, WidgetRef ref) => CustomSlidableAction(
-      backgroundColor: Theme.of(context).extension<ActionTheme>()!.editColor,
-      foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
-      onPressed: (context) async {
-        if (token.isLocked && await lockAuth(localizedReason: AppLocalizations.of(context)!.editLockedToken) == false) {
-          return;
-        }
-        _showDialog();
-      },
-      child: FocusedItemAsOverlay(
-        tooltipWhenFocused: AppLocalizations.of(context)!.introEditToken,
-        childIsMoving: true,
-        alignment: Alignment.bottomCenter,
-        isFocused: ref.watch(introductionNotifierProvider).when(
-              data: (value) => value.isConditionFulfilled(ref, Introduction.editToken),
-              error: (Object error, StackTrace stackTrace) => false,
-              loading: () => false,
-            ),
-        onComplete: () => ref.read(introductionNotifierProvider.notifier).complete(Introduction.editToken),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Icon(Icons.edit),
-            Text(
-              AppLocalizations.of(context)!.edit,
-              overflow: TextOverflow.fade,
-              softWrap: false,
-            ),
-          ],
+        backgroundColor: Theme.of(context).extension<ActionTheme>()!.editColor,
+        foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
+        onPressed: (context) async {
+          if (token.isLocked && await lockAuth(localizedReason: AppLocalizations.of(context)!.editLockedToken) == false) {
+            return;
+          }
+          _showDialog();
+        },
+        child: FocusedItemAsOverlay(
+          tooltipWhenFocused: AppLocalizations.of(context)!.introEditToken,
+          childIsMoving: true,
+          alignment: Alignment.bottomCenter,
+          isFocused: ref.watch(introductionNotifierProvider).when(
+                data: (value) => value.isConditionFulfilled(ref, Introduction.editToken),
+                error: (Object error, StackTrace stackTrace) => false,
+                loading: () => false,
+              ),
+          onComplete: () => ref.read(introductionNotifierProvider.notifier).complete(Introduction.editToken),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Icon(Icons.edit),
+              Text(
+                AppLocalizations.of(context)!.edit,
+                overflow: TextOverflow.fade,
+                softWrap: false,
+              ),
+            ],
+          ),
         ),
-      ));
+      );
 
   void _showDialog() => showDialog(
         useRootNavigator: false,
