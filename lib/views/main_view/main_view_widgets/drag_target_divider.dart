@@ -102,13 +102,11 @@ class _DragTargetDividerState<T extends SortableMixin> extends ConsumerState<Dra
         },
         builder: (context, _, __) {
           final dividerHeight = expansionController.value * widget.dividerExpandedHeight + (1 - expansionController.value) * widget.dividerBaseHeight;
-          return Opacity(
+          return DefaultDivider(
+            dividerHeight: dividerHeight,
             opacity: widget.opacity,
-            child: DefaultDivider(
-              dividerHeight: dividerHeight,
-              padding: EdgeInsets.only(bottom: widget.isLastDivider ? max(widget.bottomPaddingIfLast - dividerHeight + widget.dividerBaseHeight, 0) : 0),
-              margin: EdgeInsets.symmetric(horizontal: 8 - expansionController.value * 2, vertical: 8),
-            ),
+            padding: EdgeInsets.only(bottom: widget.isLastDivider ? max(widget.bottomPaddingIfLast - dividerHeight + widget.dividerBaseHeight, 0) : 0),
+            margin: EdgeInsets.symmetric(horizontal: 8 - expansionController.value * 2, vertical: 8),
           );
         },
       );
@@ -121,24 +119,29 @@ bool _onWillAccept(SortableMixin? data, WidgetRef ref) {
 
 class DefaultDivider extends StatelessWidget {
   final double dividerHeight;
+  final double opacity;
   final EdgeInsets? padding;
-  final EdgeInsets? margin;
+  final EdgeInsets margin;
 
   const DefaultDivider({
-    this.padding,
-    this.margin,
     this.dividerHeight = 1.5,
+    this.opacity = 1,
+    this.padding,
+    this.margin = const EdgeInsets.all(8),
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) => Container(
-        height: dividerHeight,
-        decoration: BoxDecoration(
-          color: Theme.of(context).dividerColor,
-          borderRadius: BorderRadius.circular(dividerHeight / 4),
+  Widget build(BuildContext context) => Opacity(
+        opacity: opacity,
+        child: Container(
+          height: dividerHeight,
+          decoration: BoxDecoration(
+            color: Theme.of(context).dividerColor,
+            borderRadius: BorderRadius.circular(dividerHeight / 4),
+          ),
+          padding: padding,
+          margin: margin,
         ),
-        padding: padding,
-        margin: margin,
       );
 }

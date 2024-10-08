@@ -39,8 +39,9 @@ void showMessage({
 
 void showStatusMessage({required String message, String? subMessage}) {
   final ref = globalRef;
+  Logger.warning('$message : $subMessage');
   if (ref == null) {
-    Logger.warning('Could not show status message: globalRef is null');
+    Logger.error('Could not show status message: globalRef is null');
     return;
   }
   ref.read(statusMessageProvider.notifier).state = (message, subMessage);

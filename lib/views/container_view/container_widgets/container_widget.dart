@@ -77,7 +77,7 @@ class ContainerWidget extends ConsumerWidget {
         isPressable: (container as TokenContainerFinalized).syncState != SyncState.syncing,
         onPressed: () async {
           final tokenState = ref.read(tokenProvider);
-          await ref.read(tokenContainerProvider.notifier).syncTokens(tokenState, containersToSync: [container as TokenContainerFinalized]);
+          await ref.read(tokenContainerProvider.notifier).syncTokens(tokenState, containersToSync: [container as TokenContainerFinalized], isManually: true);
         },
         child: const Icon(Icons.sync),
       );

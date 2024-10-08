@@ -938,7 +938,7 @@
   "theSecretDoesNotFitTheCurrentEncoding": "Le secret n'est pas compatible avec \nl'encodage actuel.",
   "theme": "Thème",
   "thisAppIsOpenSource": "Cette application est open source\nRendez-nous visite sur GitHub",
-  "timeOut": "Délai d'attente",
+  "timeOut": "Dépassement de temps",
   "tokenDataParseError": "Les données du jeton n'ont pas pu être analysées",
   "tokenDetails": "Détails du jeton",
   "tokenLink": "Lien vers le token",

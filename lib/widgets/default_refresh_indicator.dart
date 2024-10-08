@@ -37,7 +37,7 @@ class _DefaultRefreshIndicatorState extends ConsumerState<DefaultRefreshIndicato
             context: context,
             action: () async {
               await PushProvider.instance?.pollForChallenges(isManually: true);
-              await ref.read(tokenContainerProvider.notifier).syncTokens(ref.read(tokenProvider));
+              await ref.read(tokenContainerProvider.notifier).syncTokens(ref.read(tokenProvider), isManually: true);
             });
         if (mounted) setState(() => isRefreshing = false);
       },
