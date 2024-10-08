@@ -47,7 +47,7 @@ class PrivacyideaContainerApi {
   const PrivacyideaContainerApi({required PrivacyideaIOClient ioClient}) : _ioClient = ioClient;
 
   // Returns a tuple of updated/new tokens and serials of deleted tokens
-  Future<(List<Token>, List<String>)?> sync(TokenContainerFinalized container, TokenState tokenState) async {
+  Future<(List<Token>, List<String>)?> sync(TokenContainerFinalized container, TokenState tokenState, {required bool isManually}) async {
     final containerTokenTemplates = tokenState.containerTokens(container.serial).toTemplates();
     final maybePiTokensTemplates = tokenState.maybePiTokens.toTemplates();
 
@@ -57,6 +57,7 @@ class PrivacyideaContainerApi {
     final decryptedContainerDictJson = await _getContainerDict(
       container: container,
       challenge: challenge,
+      isManually: isManually,
       otpAuthMaps: [
         for (var template in [...containerTokenTemplates, ...maybePiTokensTemplates]) template.otpAuthMapSafeToSend
       ],
@@ -151,11 +152,8 @@ class PrivacyideaContainerApi {
     }
   }
 
-  Future<Map<String, dynamic>?> _getContainerDict({
-    required TokenContainerFinalized container,
-    required ContainerChallenge challenge,
-    required List<Map> otpAuthMaps,
-  }) async {
+  Future<Map<String, dynamic>?> _getContainerDict(
+      {required TokenContainerFinalized container, required ContainerChallenge challenge, required List<Map> otpAuthMaps, required bool isManually}) async {
     final encKeyPair = await X25519().newKeyPair();
     final publicKey = await encKeyPair.extractPublicKey();
 
@@ -181,7 +179,7 @@ class PrivacyideaContainerApi {
 
     final response = await _ioClient.doPost(url: Uri.parse(challenge.finalizeSyncUrl), body: body);
     if (response.statusCode != 200) {
-      _showSyncStatusMessage(response);
+      if (isManually) _showSyncStatusMessage(response);
       return null;
     }
     final containerSyncResponse = PiServerResponse<ContainerSyncResult>.fromResponse(response);

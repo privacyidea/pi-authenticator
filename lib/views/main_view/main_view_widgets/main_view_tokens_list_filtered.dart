@@ -20,6 +20,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:privacyidea_authenticator/model/extensions/token_folder_extension.dart';
+import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/drag_target_divider.dart';
 
 import '../../../model/mixins/sortable_mixin.dart';
 import '../../../model/riverpod_states/token_filter.dart';
@@ -54,19 +55,21 @@ class MainViewTokensListFiltered extends ConsumerWidget {
     final allTokens = ref.watch(tokenProvider).tokens;
     final tokensInFolder = allTokens.inFolder();
     final tokensInNoFolder = allTokens.inNoFolder();
-    List<SortableMixin> sortables = [...tokenFolders, ...tokensInNoFolder];
+    final filtered = filter.filterTokens(tokensInNoFolder);
+    List<SortableMixin> sortables = [...tokenFolders, ...filtered];
 
     sortables.sort((a, b) => a.compareTo(b));
     final List<Widget> widgets = [];
     for (int i = 0; i < sortables.length; i++) {
       final sortable = sortables[i];
+      final nextIsFolder = i < sortables.length - 1 && sortables[i + 1] is TokenFolder;
       if (sortable is Token) {
         widgets.add(TokenWidgetBuilder.fromToken(sortable));
         if (i != sortables.length - 1) {
-          widgets.add(const Divider());
+          widgets.add(DefaultDivider(opacity: nextIsFolder ? 0 : 1));
         }
       } else if (sortable is TokenFolder) {
-        widgets.addAll(_buildFilteredFolders(ref: ref, folder: sortable, filter: filter, allFolderTokens: tokensInFolder));
+        widgets.addAll(_buildFilteredFolders(ref: ref, folder: sortable, filter: filter, allFolderTokens: tokensInFolder, isLast: i == sortables.length - 1));
       }
     }
     return widgets;
@@ -77,6 +80,7 @@ class MainViewTokensListFiltered extends ConsumerWidget {
     required TokenFolder folder,
     required TokenFilter filter,
     required List<Token> allFolderTokens,
+    required bool isLast,
   }) {
     final folderTokens = allFolderTokens.inFolder(folder);
     final filtered = filter.filterTokens(folderTokens);
@@ -86,7 +90,7 @@ class MainViewTokensListFiltered extends ConsumerWidget {
     Logger.warning('Expanded: $expanded');
     return [
       TokenFolderExpandable(folder: folder, filter: filter, expandOverride: expanded, key: ValueKey('filteredFolder:${folder.folderId}')),
-      const Divider(),
+      if (!isLast) const Divider(),
     ];
   }
 }

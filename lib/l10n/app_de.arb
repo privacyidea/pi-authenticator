@@ -938,7 +938,7 @@
   "theSecretDoesNotFitTheCurrentEncoding": "Das Geheimnis entspricht nicht der gewählten Verschlüsselung.",
   "theme": "Farbschema",
   "thisAppIsOpenSource": "Diese App ist Open Source\nBesuchen Sie uns auf GitHub",
-  "timeOut": "Zeitlimit",
+  "timeOut": "Zeitüberschreitung",
   "tokenDataParseError": "Token-Daten konnten nicht geparst werden",
   "tokenDetails": "Tokendetails",
   "tokenLink": "Token Link",

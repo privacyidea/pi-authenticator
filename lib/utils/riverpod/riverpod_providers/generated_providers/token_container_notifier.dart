@@ -287,7 +287,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
       finalizeFutures.add(finalize(container));
     }
     await Future.wait(finalizeFutures);
-    await syncTokens(ref.read(tokenProvider));
+    await syncTokens(ref.read(tokenProvider), isManually: true);
 
     return failedToAdd;
   }
@@ -429,7 +429,11 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     return (container, publicServerKey);
   }
 
-  Future<void> syncTokens(TokenState tokenState, {List<TokenContainerFinalized>? containersToSync}) async {
+  Future<void> syncTokens(
+    TokenState tokenState, {
+    List<TokenContainerFinalized>? containersToSync,
+    required bool isManually,
+  }) async {
     Logger.info('Syncing ${containersToSync?.length} tokens');
     if (containersToSync == null || containersToSync.isEmpty) {
       final containerList = (await future).containerList;
@@ -453,6 +457,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
         final syncResult = await _containerApi.sync(
           finalized,
           tokenState,
+          isManually: isManually,
         );
         if (syncResult == null) {
           await updateContainer(finalized, (c) => c.copyWith(syncState: SyncState.failed));
