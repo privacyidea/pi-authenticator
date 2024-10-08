@@ -19,6 +19,7 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/model/extensions/token_folder_extension.dart';
 
 import '../../../model/mixins/sortable_mixin.dart';
 import '../../../model/riverpod_states/token_filter.dart';
@@ -50,7 +51,9 @@ class MainViewTokensListFiltered extends ConsumerWidget {
     final filter = ref.watch(tokenFilterProvider);
     if (filter == null) return [];
     final tokenFolders = ref.watch(tokenFolderProvider).folders;
-    final tokensInNoFolder = filter.filterTokens(ref.watch(tokenProvider).tokensWithoutFolder());
+    final allTokens = ref.watch(tokenProvider).tokens;
+    final tokensInFolder = allTokens.inFolder();
+    final tokensInNoFolder = allTokens.inNoFolder();
     List<SortableMixin> sortables = [...tokenFolders, ...tokensInNoFolder];
 
     sortables.sort((a, b) => a.compareTo(b));
@@ -63,21 +66,27 @@ class MainViewTokensListFiltered extends ConsumerWidget {
           widgets.add(const Divider());
         }
       } else if (sortable is TokenFolder) {
-        widgets.addAll(_buildFilteredFolder(ref: ref, folder: sortable, filter: filter));
+        widgets.addAll(_buildFilteredFolders(ref: ref, folder: sortable, filter: filter, allFolderTokens: tokensInFolder));
       }
     }
     return widgets;
   }
 
-  List<Widget> _buildFilteredFolder({required WidgetRef ref, required TokenFolder folder, required TokenFilter filter}) {
-    if (filter.filterTokens(ref.watch(tokenProvider).tokensInFolder(folder)).isEmpty) return [];
-    final expanded = filter.searchQuery.isNotEmpty && !folder.isLocked ? true : null; // Auto expand if search query is not empty and folder is not locked.
+  List<Widget> _buildFilteredFolders({
+    required WidgetRef ref,
+    required TokenFolder folder,
+    required TokenFilter filter,
+    required List<Token> allFolderTokens,
+  }) {
+    final folderTokens = allFolderTokens.inFolder(folder);
+    final filtered = filter.filterTokens(folderTokens);
+    if (filtered.isEmpty) return [];
+    // Auto expand if search query is not empty and folder is not locked.
+    final expanded = filter.searchQuery.isNotEmpty && !folder.isLocked ? true : null;
     Logger.warning('Expanded: $expanded');
-    final List<Widget> widgets = [];
-    widgets.add(
+    return [
       TokenFolderExpandable(folder: folder, filter: filter, expandOverride: expanded, key: ValueKey('filteredFolder:${folder.folderId}')),
-    );
-    widgets.add(const Divider());
-    return widgets;
+      const Divider(),
+    ];
   }
 }

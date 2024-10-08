@@ -32,6 +32,7 @@ import '../../../logger.dart';
 part 'settings_notifier.g.dart';
 
 final settingsProvider = settingsNotifierProviderOf(repo: PreferenceSettingsRepository());
+final hidePushTokensProvider = settingsProvider.select<bool>((asyncValue) => asyncValue.value?.hidePushTokens ?? false);
 
 @Riverpod(keepAlive: true)
 class SettingsNotifier extends _$SettingsNotifier {

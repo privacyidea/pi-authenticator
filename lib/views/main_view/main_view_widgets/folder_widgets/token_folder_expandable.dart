@@ -21,8 +21,8 @@
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/model/extensions/token_folder_extension.dart';
 
-import '../../../../model/riverpod_states/settings_state.dart';
 import '../../../../model/riverpod_states/token_filter.dart';
 import '../../../../model/token_folder.dart';
 import '../../../../model/tokens/push_token.dart';
@@ -39,7 +39,12 @@ class TokenFolderExpandable extends ConsumerStatefulWidget {
   final TokenFilter? filter;
   final bool? expandOverride;
 
-  const TokenFolderExpandable({super.key, required this.folder, this.filter, this.expandOverride});
+  const TokenFolderExpandable({
+    super.key,
+    required this.folder,
+    this.filter,
+    this.expandOverride,
+  });
 
   @override
   ConsumerState<TokenFolderExpandable> createState() => _TokenFolderExpandableState();
@@ -82,13 +87,14 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
 
   @override
   Widget build(BuildContext context) {
-    final hidePushTokens = ref.watch(settingsProvider).whenOrNull(data: (data) => data.hidePushTokens) ?? SettingsState.hidePushTokensDefault;
-    final tokens = ref.watch(tokenProvider).tokensInFolder(widget.folder, exclude: hidePushTokens ? [PushToken] : []);
-
-    tokens.sort((a, b) => a.compareTo(b));
+    final hidePushTokens = ref.watch(hidePushTokensProvider);
+    final folderTokens = ref.watch(tokenProvider.select((state) => state.tokensInFolder(widget.folder).whereNotType(hidePushTokens ? [PushToken] : [])));
+    final tokensFiltered = widget.filter?.filterTokens(folderTokens) ?? folderTokens;
+    if (tokensFiltered.isEmpty) return const SizedBox();
+    tokensFiltered.sort((a, b) => a.compareTo(b));
     final draggingSortable = ref.watch(draggingSortableProvider);
     if (widget.expandOverride == null) {
-      if (tokens.isEmpty && expandableController.expanded) {
+      if (tokensFiltered.isEmpty && expandableController.expanded) {
         expandableController.value = false;
       } else if (widget.folder.isExpanded != expandableController.expanded) {
         expandableController.value = widget.folder.isExpanded;
@@ -98,52 +104,61 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
     }
     final isExpanded = expandableController.value;
     const double borderRadius = 6;
-    return Container(
-      padding: const EdgeInsets.fromLTRB(0, borderRadius, 0, borderRadius),
-      margin: const EdgeInsets.only(bottom: 8, left: 14),
-      decoration: BoxDecoration(
-        color: isExpanded ? Theme.of(context).scaffoldBackgroundColor : Colors.transparent,
-        borderRadius: isExpanded
-            ? const BorderRadius.only(
-                topLeft: Radius.circular(borderRadius),
-                bottomLeft: Radius.circular(borderRadius),
-              )
-            : const BorderRadius.all(Radius.circular(borderRadius)),
-        boxShadow: [
-          if (isExpanded)
-            BoxShadow(
-              color: Theme.of(context).shadowColor,
-              offset: const Offset(0, 2),
-              blurRadius: 4,
+    return Stack(
+      children: [
+        Positioned.fill(
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: borderRadius),
+            margin: const EdgeInsets.only(bottom: 8, left: 14),
+            decoration: BoxDecoration(
+              color: isExpanded ? Theme.of(context).scaffoldBackgroundColor : Colors.transparent,
+              borderRadius: isExpanded
+                  ? const BorderRadius.only(
+                      topLeft: Radius.circular(borderRadius),
+                      bottomLeft: Radius.circular(borderRadius),
+                    )
+                  : const BorderRadius.all(Radius.circular(borderRadius)),
+              boxShadow: [
+                if (isExpanded)
+                  BoxShadow(
+                    color: Theme.of(context).shadowColor,
+                    offset: const Offset(0, 2),
+                    blurRadius: 4,
+                  ),
+              ],
             ),
-        ],
-      ),
-      child: ExpandablePanel(
-        theme: const ExpandableThemeData(
-          useInkWell: false,
-          hasIcon: false,
-          fadeCurve: InstantCurve(),
-          tapBodyToCollapse: false,
-          tapBodyToExpand: false,
+          ),
         ),
-        controller: expandableController,
-        header: TokenFolderExpandableHeader(
-          tokens: tokens,
-          expandableController: expandableController,
-          animationController: animationController,
-          expandOverride: widget.expandOverride,
-          folder: widget.folder,
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8),
+          child: ExpandablePanel(
+            theme: const ExpandableThemeData(
+              useInkWell: false,
+              hasIcon: false,
+              fadeCurve: InstantCurve(),
+              tapBodyToCollapse: false,
+              tapBodyToExpand: false,
+            ),
+            controller: expandableController,
+            header: TokenFolderExpandableHeader(
+              tokens: tokensFiltered,
+              expandableController: expandableController,
+              animationController: animationController,
+              expandOverride: widget.expandOverride,
+              folder: widget.folder,
+            ),
+            collapsed: const SizedBox(),
+            expanded: tokensFiltered.isEmpty || (tokensFiltered.length == 1 && tokensFiltered.first == draggingSortable)
+                ? const SizedBox()
+                : TokenFolderExpandableBody(
+                    tokens: tokensFiltered,
+                    draggingSortable: draggingSortable,
+                    folder: widget.folder,
+                    isFilterd: widget.filter != null,
+                  ),
+          ),
         ),
-        collapsed: const SizedBox(),
-        expanded: tokens.isEmpty || (tokens.length == 1 && tokens.first == draggingSortable)
-            ? const SizedBox()
-            : TokenFolderExpandableBody(
-                tokens: tokens,
-                draggingSortable: draggingSortable,
-                folder: widget.folder,
-                filter: widget.filter,
-              ),
-      ),
+      ],
     );
   }
 }

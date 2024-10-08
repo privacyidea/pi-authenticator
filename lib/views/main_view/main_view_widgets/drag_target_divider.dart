@@ -104,16 +104,10 @@ class _DragTargetDividerState<T extends SortableMixin> extends ConsumerState<Dra
           final dividerHeight = expansionController.value * widget.dividerExpandedHeight + (1 - expansionController.value) * widget.dividerBaseHeight;
           return Opacity(
             opacity: widget.opacity,
-            child: Padding(
+            child: DefaultDivider(
+              dividerHeight: dividerHeight,
               padding: EdgeInsets.only(bottom: widget.isLastDivider ? max(widget.bottomPaddingIfLast - dividerHeight + widget.dividerBaseHeight, 0) : 0),
-              child: Container(
-                height: dividerHeight,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).dividerColor,
-                  borderRadius: BorderRadius.circular(dividerHeight / 4),
-                ),
-                margin: EdgeInsets.only(left: 8 - expansionController.value * 2, right: 8 - expansionController.value * 2, top: 8, bottom: 8),
-              ),
+              margin: EdgeInsets.symmetric(horizontal: 8 - expansionController.value * 2, vertical: 8),
             ),
           );
         },
@@ -123,4 +117,28 @@ class _DragTargetDividerState<T extends SortableMixin> extends ConsumerState<Dra
 bool _onWillAccept(SortableMixin? data, WidgetRef ref) {
   if (ref.read(dragItemScrollerStateProvider)) return false;
   return true;
+}
+
+class DefaultDivider extends StatelessWidget {
+  final double dividerHeight;
+  final EdgeInsets? padding;
+  final EdgeInsets? margin;
+
+  const DefaultDivider({
+    this.padding,
+    this.margin,
+    this.dividerHeight = 1.5,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) => Container(
+        height: dividerHeight,
+        decoration: BoxDecoration(
+          color: Theme.of(context).dividerColor,
+          borderRadius: BorderRadius.circular(dividerHeight / 4),
+        ),
+        padding: padding,
+        margin: margin,
+      );
 }
