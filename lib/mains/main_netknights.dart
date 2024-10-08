@@ -4,7 +4,7 @@
   Authors: Timo Sturm <timo.sturm@netknights.it>
            Frank Merkel <frank.merkel@netknights.it>
 
-  Copyright (c) 2017-2023 NetKnights GmbH
+  Copyright (c) 2017-2024 NetKnights GmbH
 
   Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.dart';
 
 import '../firebase_options/default_firebase_options.dart';
 import '../l10n/app_localizations.dart';
@@ -31,8 +32,10 @@ import '../utils/customization/application_customization.dart';
 import '../utils/globals.dart';
 import '../utils/home_widget_utils.dart';
 import '../utils/logger.dart';
-import '../utils/riverpod_providers.dart';
+import '../utils/riverpod/riverpod_providers/generated_providers/app_constraints_notifier.dart';
+import '../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import '../views/add_token_manually_view/add_token_manually_view.dart';
+import '../views/container_view/container_view.dart';
 import '../views/feedback_view/feedback_view.dart';
 import '../views/import_tokens_view/import_tokens_view.dart';
 import '../views/license_view/license_view.dart';
@@ -56,10 +59,9 @@ void main() async {
         );
         await app.setAutomaticDataCollectionEnabled(false);
         if (app.isAutomaticDataCollectionEnabled) {
-          Logger.error('Automatic data collection should not be enabled', name: 'main.dart#main');
+          Logger.error('Automatic data collection should not be enabled');
         }
-        final customization = ApplicationCustomization.defaultCustomization;
-        runApp(AppWrapper(child: PrivacyIDEAAuthenticator(customization)));
+        runApp(AppWrapper(child: PrivacyIDEAAuthenticator(ApplicationCustomization.defaultCustomization)));
       });
 }
 
@@ -76,10 +78,9 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     globalRef = ref;
-    final locale = ref.watch(settingsProvider).currentLocale;
     return LayoutBuilder(builder: (context, constraints) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        ref.read(appConstraintsProvider.notifier).state = constraints;
+        ref.read(appConstraintsNotifierProvider.notifier).update(constraints);
       });
       return MaterialApp(
         scrollBehavior: ScrollConfiguration.of(context).copyWith(
@@ -88,9 +89,10 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
         ),
         debugShowCheckedModeBanner: true,
         navigatorKey: globalNavigatorKey,
+
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
-        locale: locale,
+        locale: ref.watch(settingsProvider).whenOrNull(data: (data) => data.currentLocale) ?? SettingsState.localeDefault,
         title: _customization.appName,
         theme: _customization.generateLightTheme(),
         darkTheme: _customization.generateDarkTheme(),
@@ -108,6 +110,7 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
               ),
           MainView.routeName: (context) => MainView(
                 appIcon: _customization.appIcon.getWidget,
+                appImage: _customization.appImage.getWidget,
                 appName: _customization.appName,
                 disablePatchNotes: _customization.disabledFeatures.contains(AppFeature.patchNotes),
               ),
@@ -115,6 +118,7 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
           SettingsView.routeName: (context) => const SettingsView(),
           SplashScreen.routeName: (context) => SplashScreen(customization: _customization),
           QRScannerView.routeName: (context) => const QRScannerView(),
+          ContainerView.routeName: (context) => const ContainerView(),
         },
       );
     });

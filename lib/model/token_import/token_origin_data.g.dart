@@ -41,4 +41,5 @@ const _$TokenOriginSourceTypeEnumMap = {
   TokenOriginSourceType.linkImport: 'linkImport',
   TokenOriginSourceType.manually: 'manually',
   TokenOriginSourceType.unknown: 'unknown',
+  TokenOriginSourceType.container: 'container',
 };

@@ -1,9 +1,28 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2024 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 // ignore_for_file: constant_identifier_names
 
 import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
-import 'dart:math';
+import 'dart:math' show min;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +36,6 @@ import '../utils/app_info_utils.dart';
 import '../utils/pi_mailer.dart';
 import '../views/settings_view/settings_view_widgets/send_error_dialog.dart';
 import 'globals.dart';
-import 'riverpod_providers.dart';
 
 final provider = Provider<int>((ref) => 0);
 
@@ -30,9 +48,11 @@ class Logger {
   static printer.Logger print = printer.Logger(
     printer: printer.PrettyPrinter(
       methodCount: 0,
+      levelColors: {
+        printer.Level.debug: const printer.AnsiColor.fg(040),
+      },
       colors: true,
       printEmojis: true,
-      printTime: false,
     ),
   );
 
@@ -60,7 +80,7 @@ class Logger {
     return file.readAsString();
   }
 
-  /*----------- INSTANCE MEMBER & GETTER -----------*/
+  /*----------- INSTANCE MEMBER & GETTER/SETTER -----------*/
   Function? _appRunner;
   Widget? _app;
   String _lastError = 'No error Message';
@@ -71,10 +91,9 @@ class Logger {
 
   String get _filename => 'logfile.txt';
   String? get _fullPath => _logPath != null ? '$_logPath/$_filename' : null;
-  bool get _verbose {
-    if (globalRef == null) return false;
-    return globalRef!.read(settingsProvider).verboseLogging;
-  }
+  static bool _verboseLogging = false;
+
+  static void setVerboseLogging(bool value) => _verboseLogging = value;
 
   bool get logfileHasContent {
     if (_fullPath == null) return false;
@@ -110,32 +129,75 @@ class Logger {
 
   /*----------- LOGGING METHODS -----------*/
 
-  void logInfo(String message, {dynamic stackTrace, String? name, bool verbose = false}) {
-    String infoString = _convertLogToSingleString(message, stackTrace: stackTrace, name: name, logLevel: LogLevel.INFO);
+  static void info(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) =>
+      instance._logInfo(message, stackTrace: stackTrace, name: name, verbose: verbose);
+
+  void _logInfo(String message, {dynamic stackTrace, String? name, bool verbose = false}) {
+    if (_verboseLogging == false && kDebugMode == false && verbose == false) return;
+    String infoString = _convertLogToSingleString(
+      message,
+      stackTrace: stackTrace,
+      name: name ?? _getCallerMethodName(depth: 2),
+      logLevel: LogLevel.INFO,
+    );
     infoString = _textFilter(infoString);
-    if (_verbose || verbose) {
+    if (_verboseLogging || verbose) {
       _logToFile(infoString);
     }
     _print(infoString);
   }
 
-  static void info(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) =>
-      instance.logInfo(message, stackTrace: stackTrace, name: name, verbose: verbose);
+  static void warning(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) =>
+      instance._logWarning(message, error: error, stackTrace: stackTrace, name: name, verbose: verbose);
 
-  void logWarning(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) {
-    String warningString = _convertLogToSingleString(message, error: error, stackTrace: stackTrace, name: name, logLevel: LogLevel.WARNING);
+  void _logWarning(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) {
+    if (_verboseLogging == false && kDebugMode == false && verbose == false) return;
+    String warningString = _convertLogToSingleString(
+      message,
+      error: error,
+      stackTrace: stackTrace,
+      name: name ?? _getCallerMethodName(depth: 2),
+      logLevel: LogLevel.WARNING,
+    );
     warningString = _textFilter(warningString);
-    if (instance._verbose || verbose) {
+    if (_verboseLogging || verbose) {
       instance._logToFile(warningString);
     }
     _printWarning(warningString);
   }
 
-  static void warning(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) =>
-      instance.logWarning(message, error: error, stackTrace: stackTrace, name: name, verbose: verbose);
+  /// Does nothing if in production/release mode
+  static void debug(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) {
+    if (!kDebugMode) return;
+    instance._logDebug(message, error: error, stackTrace: stackTrace, name: name, verbose: verbose);
+  }
 
-  void logError(String? message, {dynamic error, dynamic stackTrace, String? name}) {
-    String errorString = _convertLogToSingleString(message, error: error, stackTrace: stackTrace, name: name, logLevel: LogLevel.ERROR);
+  void _logDebug(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) {
+    if (_verboseLogging == false && kDebugMode == false && verbose == false) return;
+    String debugString = instance._convertLogToSingleString(
+      message,
+      stackTrace: stackTrace ?? (_verboseLogging || verbose) ? StackTrace.current : null,
+      name: name ?? _getCallerMethodName(depth: 2),
+      logLevel: LogLevel.DEBUG,
+    );
+    debugString = _textFilter(debugString);
+    if (_verboseLogging || verbose) {
+      instance._logToFile(debugString);
+    }
+    _printDebug(debugString);
+  }
+
+  static void error(String? message, {dynamic error, dynamic stackTrace, String? name}) =>
+      instance._logError(message, error: error, stackTrace: stackTrace, name: name);
+
+  void _logError(String? message, {dynamic error, dynamic stackTrace, String? name}) {
+    String errorString = _convertLogToSingleString(
+      message,
+      error: error,
+      stackTrace: stackTrace,
+      name: name ?? _getCallerMethodName(depth: 2),
+      logLevel: LogLevel.ERROR,
+    );
     errorString = _textFilter(errorString);
     if (message != null) {
       _lastError = message.substring(0, min(message.length, 100));
@@ -153,9 +215,6 @@ class Logger {
     _printError(message, error: error, stackTrace: stackTraceObject, name: name);
   }
 
-  static void error(String? message, {dynamic error, dynamic stackTrace, String? name}) =>
-      instance.logError(message, error: error, stackTrace: stackTrace, name: name);
-
   Future<void> _logToFile(String fileMessage) async {
     if (_enableLoggingToFile == false) return;
     await _mutexWriteFile.acquire();
@@ -167,8 +226,6 @@ class Logger {
       await file.writeAsString('\n$fileMessage', mode: FileMode.append);
     } catch (e) {
       _printError(e.toString());
-    } finally {
-      _print('Message logged into file');
     }
     _mutexWriteFile.release();
   }
@@ -277,12 +334,21 @@ Device Parameters $deviceInfo""";
   /*----------- PRINTS -----------*/
 
   static void _print(String message) {
-    if (!kDebugMode) return;
+    if (!kDebugMode) return; // add \n every 1000 characters only if the line is longer than 1000 characters
+    message = message.replaceAllMapped(RegExp(r'.{1000}'), (match) => '${match.group(0)}\n');
     print.i(message);
   }
 
-  static void _printWarning(String message) {
+  static void _printDebug(String message) {
     if (!kDebugMode) return;
+    // add \n every 1000 characters only if the line is longer than 1000 characters
+    message = message.replaceAllMapped(RegExp(r'.{1000}'), (match) => '${match.group(0)}\n');
+    print.d(message);
+  }
+
+  static void _printWarning(String message) {
+    if (!kDebugMode) return; // add \n every 1000 characters only if the line is longer than 1000 characters
+    message = message.replaceAllMapped(RegExp(r'.{1000}'), (match) => '${match.group(0)}\n');
     print.w(message);
   }
 
@@ -290,6 +356,8 @@ Device Parameters $deviceInfo""";
     if (!kDebugMode) return;
     var message0 = DateTime.now().toString();
     message0 += name != null ? ' [$name]\n' : '\n';
+    message = message?.replaceAllMapped(RegExp(r'.{1000}'), (match) => '${match.group(0)}\n');
+    // add \n every 1000 characters only if the line is longer than 1000 characters
     message0 += message ?? '';
     print.e(message0, error: error, stackTrace: stackTrace);
   }
@@ -355,12 +423,24 @@ Device Parameters $deviceInfo""";
     }
     return fileMessage;
   }
+
+  static String? _getCallerMethodName({int depth = 1}) => _getCurrentMethodName(deph: depth + 1);
+  static String? _getCurrentMethodName({int deph = 1}) {
+    final frames = StackTrace.current.toString().split('\n');
+    final frame = frames.elementAtOrNull(deph + 1);
+    if (frame == null) return null;
+    final entry = frame.split(' ');
+    final methodName = entry.elementAtOrNull(entry.length - 2);
+    if (methodName == 'closure>') return RegExp(r'(?<=\s\s)\w+.*(?=\s\()').firstMatch(frame)?.group(0);
+    return methodName;
+  }
 }
 
 final filterParameterKeys = ['fbtoken', 'new_fb_token', 'secret'];
 
 enum LogLevel {
   INFO,
+  DEBUG,
   WARNING,
   ERROR,
 }

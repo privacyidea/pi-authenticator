@@ -1,13 +1,38 @@
+// ignore_for_file: constant_identifier_names
+
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2024 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pointycastle/asymmetric/api.dart';
+import 'package:privacyidea_authenticator/model/token_template.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../utils/custom_int_buffer.dart';
+import '../../utils/errors.dart';
 import '../../utils/identifiers.dart';
+import '../../utils/object_validator.dart';
 import '../../utils/rsa_utils.dart';
 import '../enums/push_token_rollout_state.dart';
 import '../enums/token_types.dart';
 import '../token_import/token_origin_data.dart';
+import '../token_container.dart';
 import 'token.dart';
 
 part 'push_token.g.dart';
@@ -15,8 +40,18 @@ part 'push_token.g.dart';
 @JsonSerializable()
 class PushToken extends Token {
   static RsaUtils rsaParser = const RsaUtils();
+
+  static const String EXPIRATION_DATE = 'expirationDate';
+  static const String ROLLOUT_STATE = 'rolloutState';
+  static const String IS_ROLLED_OUT = 'isRolledOut';
+
+  static const String PUBLIC_SERVER_KEY = 'publicServerKey';
+  static const String PRIVATE_TOKEN_KEY = 'privateTokenKey';
+  static const String PUBLIC_TOKEN_KEY = 'publicTokenKey';
+
   final DateTime? expirationDate;
-  final String serial;
+  @override
+  String get serial => super.serial!;
   final String? fbToken;
 
   @override
@@ -43,9 +78,11 @@ class PushToken extends Token {
   PushToken withPrivateTokenKey(RSAPrivateKey key) => copyWith(privateTokenKey: rsaParser.serializeRSAPrivateKeyPKCS1(key));
 
   PushToken({
-    required this.serial,
+    required String serial,
     super.label,
     super.issuer,
+    super.containerSerial,
+    super.checkedContainer,
     required super.id,
     this.fbToken,
     this.url,
@@ -57,7 +94,7 @@ class PushToken extends Token {
     bool? isRolledOut,
     bool? sslVerify,
     PushTokenRollOutState? rolloutState,
-    String? type, // just for @JsonSerializable(): type of PushToken is always TokenTypes.PIPUSH
+    String? type,
     super.tokenImage,
     super.sortIndex,
     super.folderId,
@@ -68,35 +105,33 @@ class PushToken extends Token {
   })  : isRolledOut = isRolledOut ?? false,
         sslVerify = sslVerify ?? false,
         rolloutState = rolloutState ?? PushTokenRollOutState.rolloutNotStarted,
-        super(type: TokenTypes.PIPUSH.name);
+        super(type: type ?? TokenTypes.PIPUSH.name, serial: serial);
 
   @override
-  bool sameValuesAs(Token other) {
-    return super.sameValuesAs(other) &&
-        other is PushToken &&
-        other.fbToken == fbToken &&
-        other.expirationDate == expirationDate &&
-        other.sslVerify == sslVerify &&
-        other.enrollmentCredentials == enrollmentCredentials &&
-        other.url == url &&
-        other.isRolledOut == isRolledOut;
-  }
+  bool sameValuesAs(Token other) =>
+      super.sameValuesAs(other) &&
+      other is PushToken &&
+      other.fbToken == fbToken &&
+      other.expirationDate == expirationDate &&
+      other.sslVerify == sslVerify &&
+      other.enrollmentCredentials == enrollmentCredentials &&
+      other.url == url &&
+      other.isRolledOut == isRolledOut &&
+      other.rolloutState == rolloutState &&
+      other.publicServerKey == publicServerKey &&
+      other.publicTokenKey == publicTokenKey &&
+      other.privateTokenKey == privateTokenKey;
 
   @override
-  bool isSameTokenAs(Token other) {
-    return super.isSameTokenAs(other) &&
-        other is PushToken &&
-        other.serial == serial &&
-        other.privateTokenKey == privateTokenKey &&
-        other.publicTokenKey == publicTokenKey &&
-        other.publicServerKey == publicServerKey;
-  }
+  bool isSameTokenAs(Token other) => super.isSameTokenAs(other) && (other is PushToken && other.serial == serial);
 
   @override
   PushToken copyWith({
     String? label,
     String? serial,
     String? issuer,
+    String? Function()? containerSerial,
+    List<String>? checkedContainer,
     String? id,
     String? tokenImage,
     String? fbToken,
@@ -123,6 +158,8 @@ class PushToken extends Token {
       issuer: issuer ?? this.issuer,
       tokenImage: tokenImage ?? this.tokenImage,
       fbToken: fbToken ?? this.fbToken,
+      containerSerial: containerSerial != null ? containerSerial() : this.containerSerial,
+      checkedContainer: checkedContainer ?? this.checkedContainer,
       id: id ?? this.id,
       pin: pin ?? this.pin,
       isLocked: isLocked ?? this.isLocked,
@@ -163,20 +200,152 @@ class PushToken extends Token {
         'publicTokenKey: $publicTokenKey}';
   }
 
-  factory PushToken.fromUriMap(Map<String, dynamic> uriMap) => PushToken(
-        serial: uriMap[URI_SERIAL] ?? '',
-        label: uriMap[URI_LABEL] ?? '',
-        issuer: uriMap[URI_ISSUER] ?? '',
-        id: const Uuid().v4(),
-        sslVerify: uriMap[URI_SSL_VERIFY],
-        expirationDate: uriMap[URI_TTL] != null ? DateTime.now().add(Duration(minutes: uriMap[URI_TTL])) : null,
-        enrollmentCredentials: uriMap[URI_ENROLLMENT_CREDENTIAL],
-        url: uriMap[URI_ROLLOUT_URL],
-        tokenImage: uriMap[URI_IMAGE],
-        pin: uriMap[URI_PIN],
-        isLocked: uriMap[URI_PIN],
-        origin: uriMap[URI_ORIGIN],
-      );
+  factory PushToken.fromOtpAuthMap(Map<String, dynamic> otpAuthMap, {Map<String, dynamic> additionalData = const {}}) {
+// Validate map for Push token
+    final validatedMap = validateMap(
+      map: otpAuthMap,
+      validators: {
+        OTP_AUTH_LABEL: const ObjectValidatorNullable<String>(defaultValue: ''),
+        OTP_AUTH_ISSUER: const ObjectValidatorNullable<String>(defaultValue: ''),
+        OTP_AUTH_SERIAL: const ObjectValidator<String>(),
+        OTP_AUTH_PUSH_SSL_VERIFY: stringToBoolValidator.withDefault(true),
+        OTP_AUTH_PUSH_TTL_MINUTES: ObjectValidator<Duration>(
+          transformer: (v) => Duration(minutes: int.parse(v)),
+          defaultValue: const Duration(minutes: 10),
+        ),
+        OTP_AUTH_PUSH_ENROLLMENT_CREDENTIAL: const ObjectValidatorNullable<String>(),
+        OTP_AUTH_PUSH_ROLLOUT_URL: stringToUrivalidator,
+        OTP_AUTH_IMAGE: stringToUriValidatorNullable,
+        OTP_AUTH_PIN: stringToBoolValidatorNullable,
+        OTP_AUTH_VERSION: const ObjectValidator<String>(),
+      },
+      name: 'PushToken',
+    );
+    final validatedAdditionalData = Token.validateAdditionalData(additionalData);
+    validatedAdditionalData.addAll(validateMap(
+      map: additionalData,
+      validators: {
+        EXPIRATION_DATE: const ObjectValidatorNullable<DateTime>(),
+        ROLLOUT_STATE: ObjectValidatorNullable<PushTokenRollOutState>(),
+        IS_ROLLED_OUT: ObjectValidatorNullable<bool>(),
+        PUBLIC_SERVER_KEY: const ObjectValidatorNullable<String>(),
+        PUBLIC_TOKEN_KEY: const ObjectValidatorNullable<String>(),
+        PRIVATE_TOKEN_KEY: const ObjectValidatorNullable<String>(),
+      },
+      name: 'PushToken#additionalData',
+    ));
+    final expirationDate = validatedAdditionalData[EXPIRATION_DATE] as DateTime?;
+    return switch (validatedMap[OTP_AUTH_VERSION]) {
+      '1' => PushToken(
+          label: validatedMap[OTP_AUTH_LABEL] as String,
+          issuer: validatedMap[OTP_AUTH_ISSUER] as String,
+          serial: validatedMap[OTP_AUTH_SERIAL] as String,
+          sslVerify: validatedMap[OTP_AUTH_PUSH_SSL_VERIFY] as bool,
+          expirationDate: expirationDate ?? DateTime.now().add(validatedMap[OTP_AUTH_PUSH_TTL_MINUTES] as Duration),
+          rolloutState: validatedAdditionalData[ROLLOUT_STATE],
+          isRolledOut: validatedAdditionalData[IS_ROLLED_OUT],
+          enrollmentCredentials: validatedMap[OTP_AUTH_PUSH_ENROLLMENT_CREDENTIAL] as String?,
+          url: validatedMap[OTP_AUTH_PUSH_ROLLOUT_URL] as Uri,
+          tokenImage: validatedMap[OTP_AUTH_IMAGE] as String?,
+          pin: validatedMap[OTP_AUTH_PIN] as bool?,
+          isLocked: validatedMap[OTP_AUTH_PIN] as bool?,
+          id: validatedAdditionalData[Token.ID] ?? const Uuid().v4(),
+          origin: validatedAdditionalData[Token.ORIGIN],
+          isHidden: validatedAdditionalData[Token.HIDDEN],
+          checkedContainer: validatedAdditionalData[Token.CHECKED_CONTAINERS] ?? [],
+          folderId: validatedAdditionalData[Token.FOLDER_ID],
+          sortIndex: validatedAdditionalData[Token.SORT_INDEX],
+          publicServerKey: validatedAdditionalData[PUBLIC_SERVER_KEY],
+          publicTokenKey: validatedAdditionalData[PUBLIC_TOKEN_KEY],
+          privateTokenKey: validatedAdditionalData[PRIVATE_TOKEN_KEY],
+        ),
+      _ => throw LocalizedArgumentError(
+          localizedMessage: (localizations, value, name) => localizations.unsupported(value, name),
+          unlocalizedMessage: 'The piauth version [${validatedMap[OTP_AUTH_VERSION]}] is not supported by this version of the app.',
+          invalidValue: validatedMap[OTP_AUTH_VERSION].toString(),
+          name: 'piauth version',
+        ),
+    };
+  }
+
+  @override
+  Token copyUpdateByTemplate(TokenTemplate template) {
+    final uriMap = validateMap(
+      map: template.otpAuthMap,
+      validators: {
+        OTP_AUTH_LABEL: const ObjectValidatorNullable<String>(),
+        OTP_AUTH_ISSUER: const ObjectValidatorNullable<String>(),
+        OTP_AUTH_SERIAL: const ObjectValidatorNullable<String>(),
+        OTP_AUTH_PUSH_SSL_VERIFY: stringToBoolValidatorNullable,
+        OTP_AUTH_PUSH_TTL_MINUTES: ObjectValidatorNullable<Duration>(
+          transformer: (v) => Duration(minutes: int.parse(v)),
+        ),
+        OTP_AUTH_PUSH_ENROLLMENT_CREDENTIAL: const ObjectValidatorNullable<String>(),
+        OTP_AUTH_PUSH_ROLLOUT_URL: stringToUriValidatorNullable,
+        OTP_AUTH_IMAGE: stringToUriValidatorNullable,
+        OTP_AUTH_PIN: stringToBoolValidator,
+        OTP_AUTH_VERSION: stringToIntValidatorNullable,
+      },
+      name: 'PushToken',
+    );
+
+    return copyWith(
+      label: uriMap[OTP_AUTH_LABEL] as String?,
+      issuer: uriMap[OTP_AUTH_ISSUER] as String?,
+      serial: uriMap[OTP_AUTH_SERIAL] as String?,
+      sslVerify: uriMap[OTP_AUTH_PUSH_SSL_VERIFY] as bool?,
+      expirationDate: uriMap[OTP_AUTH_PUSH_TTL_MINUTES] != null ? DateTime.now().add(uriMap[OTP_AUTH_PUSH_TTL_MINUTES] as Duration) : expirationDate,
+      enrollmentCredentials: uriMap[OTP_AUTH_PUSH_ENROLLMENT_CREDENTIAL] as String?,
+      url: uriMap[OTP_AUTH_PUSH_ROLLOUT_URL] as Uri?,
+      tokenImage: uriMap[OTP_AUTH_IMAGE] as String?,
+      pin: uriMap[OTP_AUTH_PIN] as bool?,
+      isLocked: uriMap[OTP_AUTH_PIN] as bool?,
+    );
+  }
+
+  /// This is used to create a map that typically was created from a uri.
+  /// ```dart
+  ///  ---------------------------- [Token] ----------------------------
+  /// | OTP_AUTH_SERIAL: serial, (optional)                              |
+  /// | OTP_AUTH_TYPE: type,                                             |
+  /// | OTP_AUTH_LABEL: label,                                           |
+  /// | OTP_AUTH_ISSUER: issuer,                                         |
+  /// | OTP_AUTH_PIN: pin,                                               |
+  /// | OTP_AUTH_IMAGE: tokenImage, (optional)                           |
+  ///  ------------------------------------------------------------------
+  ///  -------------------------- [PushToken] ---------------------------
+  /// | OTP_AUTH_SSL_VERIFY: sslVerify,                                  |
+  /// | OTP_AUTH_ROLLOUT_TTL_MINUTES: expirationDate, (optional)         |
+  /// | OTP_AUTH_ENROLLMENT_CREDENTIAL: enrollmentCredentials, (optional)|
+  /// | OTP_AUTH_ROLLOUT_URL: url, (optional)                            |
+  /// | OTP_AUTH_IMAGE: tokenImage, (optional)                           |
+  /// | OTP_AUTH_PIN: pin,                                               |
+  /// | OTP_AUTH_VERSION: 1,                                             |
+  ///  ------------------------------------------------------------------
+  /// ```
+  @override
+  Map<String, dynamic> toOtpAuthMap() {
+    return super.toOtpAuthMap()
+      ..addAll({
+        OTP_AUTH_PUSH_SSL_VERIFY: sslVerify ? OTP_AUTH_PUSH_SSL_VERIFY_TRUE : OTP_AUTH_PUSH_SSL_VERIFY_FALSE,
+        if (expirationDate != null) OTP_AUTH_PUSH_TTL_MINUTES: expirationDate!.difference(DateTime.now()).inMinutes.toString(),
+        if (enrollmentCredentials != null) OTP_AUTH_PUSH_ENROLLMENT_CREDENTIAL: enrollmentCredentials!,
+        if (url != null) OTP_AUTH_PUSH_ROLLOUT_URL: url.toString(),
+        if (tokenImage != null) OTP_AUTH_IMAGE: tokenImage!,
+        OTP_AUTH_PIN: pin ? OTP_AUTH_PIN_TRUE : OTP_AUTH_PIN_FALSE,
+        OTP_AUTH_VERSION: '1',
+      });
+  }
+
+  @override
+  TokenTemplate? toTemplate({TokenContainer? container}) => super.toTemplate(container: container)?.withAditionalData({
+        if (expirationDate != null) EXPIRATION_DATE: expirationDate!,
+        ROLLOUT_STATE: rolloutState,
+        IS_ROLLED_OUT: isRolledOut,
+        if (publicServerKey != null) PUBLIC_SERVER_KEY: publicServerKey!,
+        if (publicTokenKey != null) PUBLIC_TOKEN_KEY: publicTokenKey!,
+        if (privateTokenKey != null) PRIVATE_TOKEN_KEY: privateTokenKey!,
+      });
 
   factory PushToken.fromJson(Map<String, dynamic> json) {
     final newToken = _$PushTokenFromJson(json);
