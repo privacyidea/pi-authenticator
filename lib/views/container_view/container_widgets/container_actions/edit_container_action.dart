@@ -20,6 +20,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:privacyidea_authenticator/widgets/dialog_widgets/default_dialog.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../../../model/token_container.dart';
@@ -34,6 +35,10 @@ class EditContainerAction extends ConsumerSlideableAction {
     required this.container,
     super.key,
   });
+
+  void _showEditContainerDialog(BuildContext context) {
+    showDialog(useRootNavigator: false, context: context, builder: (_) => EditContainerDialog(context));
+  }
 
   @override
   CustomSlidableAction build(BuildContext context, WidgetRef ref) => CustomSlidableAction(
@@ -52,4 +57,33 @@ class EditContainerAction extends ConsumerSlideableAction {
           ],
         ),
       );
+}
+
+class EditContainerDialog extends StatelessWidget {
+  final BuildContext context;
+
+  const EditContainerDialog(this.context);
+
+  @override
+  Widget build(BuildContext context) {
+    return DefaultDialog(
+      title: Text('AppLocalizations.of(context)!.editContainer'),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Text('Edit Container'),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(AppLocalizations.of(context)!.cancel),
+        ),
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(AppLocalizations.of(context)!.save),
+        ),
+      ],
+    );
+  }
 }

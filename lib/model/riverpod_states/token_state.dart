@@ -19,11 +19,10 @@
  */
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:privacyidea_authenticator/model/extensions/token_folder_extension.dart';
 
 import '../../utils/logger.dart';
 import '../enums/push_token_rollout_state.dart';
-import '../enums/token_origin_source_type.dart';
-import '../token_template.dart';
 import '../token_folder.dart';
 import '../tokens/otp_token.dart';
 import '../tokens/push_token.dart';
@@ -172,66 +171,15 @@ class TokenState {
     return (TokenState(tokens: newTokens, lastlyUpdatedTokens: updatedTokens), failedToReplace);
   }
 
-  List<Token> tokensInFolder(TokenFolder folder, {List<Type> only = const [], List<Type> exclude = const []}) =>
-      tokens.inFolder(folder, only: only, exclude: exclude);
+  List<Token> tokensInFolder([TokenFolder? folder]) => tokens.inFolder(folder);
 
-  List<Token> tokensWithoutFolder({List<Type> only = const [], List<Type> exclude = const []}) => tokens.withoutFolder(only: only, exclude: exclude);
+  List<Token> tokensInNoFolder() => tokens.inNoFolder();
 
   List<Token> containerTokens(String containerSerial) {
     final piTokens = tokens.piTokens;
-    Logger.debug('PiTokens: ${piTokens}');
+    Logger.debug('PiTokens: $piTokens');
     final containerTokens = piTokens.ofContainer(containerSerial);
     Logger.debug('${containerTokens.length}/${piTokens.length} tokens with containerSerial: $containerSerial');
     return containerTokens;
-  }
-}
-
-extension TokenListExtension on List<Token> {
-  List<Token> get piTokens {
-    final piTokens = where((token) => token.isPrivacyIdeaToken == true).toList();
-    Logger.debug('${piTokens.length}/$length tokens with "isPrivacyIdeaToken == true"');
-    return piTokens;
-  }
-
-  List<Token> get nonPiTokens {
-    final nonPiTokens = where((token) => token.isPrivacyIdeaToken == false).toList();
-    Logger.debug('${nonPiTokens.length}/$length tokens with "isPrivacyIdeaToken == false"');
-    return nonPiTokens;
-  }
-
-  List<Token> get maybePiTokens {
-    final maybePiTokens = where((token) => token.isPrivacyIdeaToken == null).toList();
-    Logger.debug('${maybePiTokens.length}/$length tokens with "isPrivacyIdeaToken == null"');
-    return maybePiTokens;
-  }
-
-  List<Token> inFolder(TokenFolder folder, {List<Type> only = const [], List<Type> exclude = const []}) => where((token) {
-        if (token.folderId != folder.folderId) return false;
-        if (exclude.contains(token.runtimeType)) return false;
-        if (only.isNotEmpty && !only.contains(token.runtimeType)) return false;
-        return true;
-      }).toList();
-
-  List<Token> withoutFolder({List<Type> only = const [], List<Type> exclude = const []}) => where((token) {
-        if (token.folderId != null) return false;
-        if (exclude.contains(token.runtimeType)) return false;
-        if (only.isNotEmpty && !only.contains(token.runtimeType)) return false;
-        return true;
-      }).toList();
-
-  List<Token> ofContainer(String containerSerial) {
-    final filtered = where((token) => token.origin?.source == TokenOriginSourceType.container && token.containerSerial == containerSerial).toList();
-    Logger.debug('${filtered.length}/$length tokens with containerSerial: $containerSerial');
-    return filtered;
-  }
-
-  List<TokenTemplate> toTemplates() {
-    if (isEmpty) return [];
-    final templates = <TokenTemplate>[];
-    for (var token in this) {
-      final template = token.toTemplate();
-      if (template != null) templates.add(template);
-    }
-    return templates;
   }
 }
