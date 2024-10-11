@@ -24,12 +24,13 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:cryptography/cryptography.dart';
 import 'package:http/http.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
 import 'package:privacyidea_authenticator/model/extensions/token_folder_extension.dart';
 import 'package:privacyidea_authenticator/processors/scheme_processors/token_import_scheme_processors/otp_auth_processor.dart';
 import 'package:privacyidea_authenticator/utils/ecc_utils.dart';
+import 'package:privacyidea_authenticator/utils/errors.dart';
 import 'package:privacyidea_authenticator/utils/privacyidea_io_client.dart';
 
-import '../l10n/app_localizations.dart';
 import '../model/api_results/pi_server_results/pi_server_result_value.dart';
 import '../model/pi_server_response.dart';
 import '../model/riverpod_states/token_state.dart';
@@ -39,25 +40,33 @@ import '../model/tokens/token.dart';
 import '../utils/globals.dart';
 import '../utils/identifiers.dart';
 import '../utils/logger.dart';
-import '../utils/view_utils.dart';
 import '../widgets/dialog_widgets/enter_passphrase_dialog.dart';
+
+class PiSyncResponse {
+  final List<Token> updatedTokens;
+  final List<String> deletedSerials;
+
+  const PiSyncResponse({
+    required this.updatedTokens,
+    required this.deletedSerials,
+  });
+}
 
 class PrivacyideaContainerApi {
   final PrivacyideaIOClient _ioClient;
   const PrivacyideaContainerApi({required PrivacyideaIOClient ioClient}) : _ioClient = ioClient;
 
   // Returns a tuple of updated/new tokens and serials of deleted tokens
-  Future<(List<Token>, List<String>)?> sync(TokenContainerFinalized container, TokenState tokenState, {required bool isManually}) async {
+  Future<(List<Token>, List<String>)?> sync(TokenContainerFinalized container, TokenState tokenState) async {
     final containerTokenTemplates = tokenState.containerTokens(container.serial).toTemplates();
     final maybePiTokensTemplates = tokenState.maybePiTokens.toTemplates();
 
-    final ContainerChallenge? challenge = await _getChallenge(container);
+    final ContainerFinalizationChallenge? challenge = await _getChallenge(container);
     if (challenge == null) return null;
 
     final decryptedContainerDictJson = await _getContainerDict(
       container: container,
       challenge: challenge,
-      isManually: isManually,
       otpAuthMaps: [
         for (var template in [...containerTokenTemplates, ...maybePiTokensTemplates]) template.otpAuthMapSafeToSend
       ],
@@ -105,9 +114,11 @@ class PrivacyideaContainerApi {
     return ([...updatedTokens, ...newTokens], deleteSerials);
   }
 
-  Future<Response?> finalizeContainer(TokenContainerUnfinalized container, EccUtils eccUtils) async {
+  Future<Response> finalizeContainer(TokenContainerUnfinalized container, EccUtils eccUtils) async {
     final ecPrivateClientKey = container.ecPrivateClientKey;
-    if (ecPrivateClientKey == null) return null;
+    if (ecPrivateClientKey == null) {
+      throw LocalizedException(localizedMessage: (l) => l.errorMissingPrivateKey, unlocalizedMessage: AppLocalizationsEn().errorMissingPrivateKey);
+    }
 
     final passphrase = container.passphraseQuestion?.isNotEmpty == true ? await EnterPassphraseDialog.show(await globalContext) : null;
     final message = '${container.nonce}'
@@ -123,37 +134,40 @@ class PrivacyideaContainerApi {
       'public_client_key': container.publicClientKey,
       'signature': signature,
     };
-
-    return _ioClient.doPost(url: container.finalizationUrl, body: body, sslVerify: false); //TODO: sslVerify
+    return await _ioClient.doPost(url: container.finalizationUrl, body: body, sslVerify: false); //TODO: sslVerify
   }
 
-  /* ////////////////////////////
-  ////// PRIVATE FUNCTIONS //////
+  /* //////////////////////////////
+  /////// PRIVATE FUNCTIONS ///////
   ////////////////////////////// */
 
-  Future<ContainerChallenge?> _getChallenge(TokenContainerFinalized container) async {
+  Future<ContainerFinalizationChallenge?> _getChallenge(TokenContainerFinalized container) async {
     final initResponse = await _ioClient.doGet(url: container.syncUrl, parameters: {CONTAINER_SERIAL: container.serial});
     if (initResponse.statusCode != 200) {
-      _showSyncStatusMessage(initResponse);
-      return null;
+      final errorResponse = initResponse.asPiErrorResponse();
+      if (errorResponse != null) throw errorResponse.piServerResultError;
+      throw ResponseError(initResponse);
     }
 
     try {
       Logger.debug('Received container sync challenge: ${initResponse.body}');
-      final piResponse = PiServerResponse<ContainerChallenge>.fromResponse(initResponse);
+      final piResponse = PiServerResponse<ContainerFinalizationChallenge>.fromResponse(initResponse);
       if (piResponse.isError) {
-        Logger.error('Error while getting sync challenge: ${piResponse.asError.resultError}');
+        Logger.error('Error while getting sync challenge: ${piResponse.asError!.piServerResultError}');
         return null;
       }
-      return piResponse.asSuccess.resultValue;
+      return piResponse.asSuccess!.resultValue;
     } catch (e, s) {
       Logger.error('Error while getting sync challenge: $e', stackTrace: s);
       return null;
     }
   }
 
-  Future<Map<String, dynamic>?> _getContainerDict(
-      {required TokenContainerFinalized container, required ContainerChallenge challenge, required List<Map> otpAuthMaps, required bool isManually}) async {
+  Future<Map<String, dynamic>?> _getContainerDict({
+    required TokenContainerFinalized container,
+    required ContainerFinalizationChallenge challenge,
+    required List<Map> otpAuthMaps,
+  }) async {
     final encKeyPair = await X25519().newKeyPair();
     final publicKey = await encKeyPair.extractPublicKey();
 
@@ -179,16 +193,18 @@ class PrivacyideaContainerApi {
 
     final response = await _ioClient.doPost(url: Uri.parse(challenge.finalizeSyncUrl), body: body);
     if (response.statusCode != 200) {
-      if (isManually) _showSyncStatusMessage(response);
-      return null;
+      final piErrorResponse = response.asPiErrorResponse();
+      if (piErrorResponse != null) throw piErrorResponse.piServerResultError;
+      throw ResponseError(response);
     }
+
     final containerSyncResponse = PiServerResponse<ContainerSyncResult>.fromResponse(response);
     if (containerSyncResponse.isError) {
-      Logger.error('Error while reciving sync response: ${containerSyncResponse.asError.resultError}');
+      Logger.error('Error while reciving sync response: ${containerSyncResponse.asError!.piServerResultError}');
       return null;
     }
 
-    final syncResult = containerSyncResponse.asSuccess.resultValue;
+    final syncResult = containerSyncResponse.asSuccess!.resultValue;
 
     final remotePublicKey = SimplePublicKey(syncResult.publicServerKeyBytes, type: KeyPairType.x25519);
     final sharedKey = await algorithm.sharedSecretKey(keyPair: encKeyPair, remotePublicKey: remotePublicKey);
@@ -272,25 +288,24 @@ class PrivacyideaContainerApi {
     }
     return (mergedTemplatesWithSerial, deleteSerials);
   }
+}
 
-  void _showSyncStatusMessage(Response response) {
-    assert(response.statusCode != 200, 'Status code should not be 200');
+class ResponseError {
+  final int _statusCode;
+  int get statusCode => _statusCode;
+  final String _message;
+  String get message => _message.substring(0, _message.length > 100 ? 100 : _message.length);
+  String get fullMessage => _message;
 
-    final AppLocalizations appLocalizations = AppLocalizations.of(globalNavigatorKey.currentContext!)!;
-    if (response.statusCode == 525) return;
-    if (response.statusCode == 500) {
-      return showStatusMessage(message: appLocalizations.syncContainerFailed, subMessage: appLocalizations.internalServerError(500));
-    }
-    if (response.statusCode == 408) {
-      return showStatusMessage(message: appLocalizations.timeOut, subMessage: appLocalizations.checkYourNetwork);
-    }
-    if (response.statusCode == 404) {
-      return showStatusMessage(message: appLocalizations.syncContainerFailed, subMessage: appLocalizations.checkYourNetwork);
-    }
-    Logger.error(
-      'Received unexpected response',
-      error: 'StatusCode: ${response.statusCode}',
-      stackTrace: StackTrace.current,
-    );
+  const ResponseError._(int statusCode, String message)
+      : _statusCode = statusCode,
+        _message = message;
+
+  factory ResponseError(Response response) {
+    assert(response.statusCode != 200, 'Status code of an response error should not be 200');
+    return ResponseError._(response.statusCode, response.body);
   }
+
+  @override
+  String toString() => '($statusCode) $message';
 }

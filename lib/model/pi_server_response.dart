@@ -54,21 +54,21 @@ class PiServerResponse<T extends PiServerResultValue> with _$PiServerResponse {
     required double time,
     required String version,
     required String signature,
-  }) = PiServerResponseSuccess;
-  bool get isSuccess => this is PiServerResponseSuccess;
-  PiServerResponseSuccess<T> get asSuccess => this as PiServerResponseSuccess<T>;
+  }) = PiSuccessResponse;
+  bool get isSuccess => this is PiSuccessResponse;
+  PiSuccessResponse<T>? get asSuccess => this is PiSuccessResponse<T> ? this as PiSuccessResponse<T> : null;
 
   factory PiServerResponse.error({
     required dynamic detail,
     required int id,
     required String jsonrpc,
-    required PiServerResultError resultError,
+    required PiServerResultError piServerResultError,
     required double time,
     required String version,
     required String signature,
-  }) = PiServerResponseError;
-  bool get isError => this is PiServerResponseError;
-  PiServerResponseError get asError => this as PiServerResponseError;
+  }) = PiErrorResponse;
+  bool get isError => this is PiErrorResponse;
+  PiErrorResponse<T>? get asError => this is PiErrorResponse<T> ? this as PiErrorResponse<T> : null;
 
   factory PiServerResponse.fromJson(Map<String, dynamic> json) {
     Logger.debug('Received container sync response: $json');
@@ -99,7 +99,7 @@ class PiServerResponse<T extends PiServerResultValue> with _$PiServerResponse {
         detail: map[DETAIL],
         id: map[ID],
         jsonrpc: map[JSONRPC],
-        resultValue: PiServerResultValue.fromJsonOfType<T>(result[RESULT_VALUE]),
+        resultValue: PiServerResultValue.fromJsonOfType<T>(result[RESULT_VALUE])!,
         time: map[TIME],
         version: map[VERSION],
         signature: map[SIGNATURE],
@@ -110,7 +110,7 @@ class PiServerResponse<T extends PiServerResultValue> with _$PiServerResponse {
         detail: map[DETAIL],
         id: json[ID],
         jsonrpc: map[JSONRPC],
-        resultError: PiServerResultError.fromResult(result[RESULT_ERROR]),
+        piServerResultError: PiServerResultError.fromResult(result[RESULT_ERROR]),
         time: map[TIME],
         version: map[VERSION],
         signature: map[SIGNATURE],

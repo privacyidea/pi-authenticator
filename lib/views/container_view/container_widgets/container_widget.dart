@@ -62,7 +62,7 @@ class ContainerWidget extends ConsumerWidget {
             ),
             subtitles: [
               AppLocalizations.of(context)!.issuer(container.issuer),
-              '${container.finalizationState.rolloutMsg(AppLocalizations.of(context)!)}',
+              '${container.finalizationState.rolloutMsgLocalized(AppLocalizations.of(context)!)}',
             ],
             trailing: _getTrailing(context, ref),
           ),
@@ -87,7 +87,7 @@ class ContainerWidget extends ConsumerWidget {
         styleType: CooldownButtonStyleType.iconButton,
         childWhenCooldown: CircularProgressIndicator(),
         onPressed: () async {
-          await ref.read(tokenContainerProvider.notifier).finalize(container);
+          await ref.read(tokenContainerProvider.notifier).finalize(container, isManually: true);
         },
         child: const Icon(Icons.sync_problem),
       );

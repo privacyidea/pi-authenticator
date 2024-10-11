@@ -19,6 +19,7 @@
  */
 
 import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
 
 import '../../enums/rollout_state.dart';
 
@@ -38,6 +39,47 @@ extension RolloutStateX on RolloutState {
         RolloutState.parsingResponseCompleted => false,
         RolloutState.completed => false,
       };
+  RolloutState get asFailed => switch (this) {
+        RolloutState.notStarted => RolloutState.notStarted,
+        RolloutState.generatingKeyPair => RolloutState.generatingKeyPairFailed,
+        RolloutState.generatingKeyPairFailed => RolloutState.generatingKeyPairFailed,
+        RolloutState.generatingKeyPairCompleted => RolloutState.generatingKeyPairFailed,
+        RolloutState.sendingPublicKey => RolloutState.sendingPublicKeyFailed,
+        RolloutState.sendingPublicKeyFailed => RolloutState.sendingPublicKeyFailed,
+        RolloutState.sendingPublicKeyCompleted => RolloutState.sendingPublicKeyFailed,
+        RolloutState.parsingResponse => RolloutState.parsingResponseFailed,
+        RolloutState.parsingResponseFailed => RolloutState.parsingResponseFailed,
+        RolloutState.parsingResponseCompleted => RolloutState.parsingResponseFailed,
+        RolloutState.completed => RolloutState.completed,
+      };
+
+  RolloutState get asCompleted => switch (this) {
+        RolloutState.notStarted => RolloutState.notStarted,
+        RolloutState.generatingKeyPair => RolloutState.generatingKeyPairCompleted,
+        RolloutState.generatingKeyPairFailed => RolloutState.generatingKeyPairCompleted,
+        RolloutState.generatingKeyPairCompleted => RolloutState.generatingKeyPairCompleted,
+        RolloutState.sendingPublicKey => RolloutState.sendingPublicKeyCompleted,
+        RolloutState.sendingPublicKeyFailed => RolloutState.sendingPublicKeyCompleted,
+        RolloutState.sendingPublicKeyCompleted => RolloutState.sendingPublicKeyCompleted,
+        RolloutState.parsingResponse => RolloutState.parsingResponseCompleted,
+        RolloutState.parsingResponseFailed => RolloutState.parsingResponseCompleted,
+        RolloutState.parsingResponseCompleted => RolloutState.parsingResponseCompleted,
+        RolloutState.completed => RolloutState.completed,
+      };
+
+  RolloutState get next => switch (this) {
+        RolloutState.notStarted => RolloutState.generatingKeyPair,
+        RolloutState.generatingKeyPair => RolloutState.sendingPublicKey,
+        RolloutState.generatingKeyPairFailed => RolloutState.generatingKeyPair,
+        RolloutState.generatingKeyPairCompleted => RolloutState.sendingPublicKey,
+        RolloutState.sendingPublicKey => RolloutState.parsingResponse,
+        RolloutState.sendingPublicKeyFailed => RolloutState.sendingPublicKey,
+        RolloutState.sendingPublicKeyCompleted => RolloutState.parsingResponse,
+        RolloutState.parsingResponse => RolloutState.completed,
+        RolloutState.parsingResponseFailed => RolloutState.parsingResponse,
+        RolloutState.parsingResponseCompleted => RolloutState.completed,
+        RolloutState.completed => RolloutState.completed,
+      };
 
   bool get isFailed => switch (this) {
         RolloutState.notStarted => false,
@@ -53,7 +95,8 @@ extension RolloutStateX on RolloutState {
         RolloutState.completed => false,
       };
 
-  String rolloutMsg(AppLocalizations localizations) => switch (this) {
+  String get rolloutMsg => rolloutMsgLocalized(AppLocalizationsEn());
+  String rolloutMsgLocalized(AppLocalizations localizations) => switch (this) {
         RolloutState.notStarted => localizations.rolloutStateNotStarted,
         RolloutState.generatingKeyPair => localizations.rolloutStateGeneratingKeyPair,
         RolloutState.generatingKeyPairFailed => localizations.rolloutStateGeneratingKeyPairFailed,
