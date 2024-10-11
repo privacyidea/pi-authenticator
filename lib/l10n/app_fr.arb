@@ -107,6 +107,11 @@
   "@delete": {
     "description": "Label that describes deleting the token."
   },
+  "@deleteContainerDialogTitle": {
+    "example": {
+      "serial": "SMPH0008CC47"
+    }
+  },
   "@deviceCredentialsRequiredTitle": {
     "description": "Message showed as a title in a dialog which indicates the user has not set up credentials authentication on their device. It is used on Android side. Maximum 60 characters."
   },
@@ -198,18 +203,18 @@
   "@failedToFinalizeContainer": {
     "description": "Error message when finalizing a container failed.",
     "placeholders": {
-      "error": {
-        "example": "ERR10: Could not verify the signature."
-      },
       "serial": {
-        "example": "PUSH1234A"
+        "example": "SMPH0008CC47"
       }
     }
   },
   "@failedToLoad": {
+    "description": "Error message when something could not be loaded."
+  },
+  "@failedToSyncContainer": {
     "placeholders": {
-      "name": {
-        "example": "token data"
+      "serial": {
+        "example": "SMPH0008CC47"
       }
     }
   },
@@ -702,6 +707,7 @@
   "decryptErrorDeleteConfirmationContent": "Êtes-vous sûr de vouloir supprimer les données de l'application ?",
   "decryptErrorTitle": "Erreur de décryptage",
   "delete": "Supprimer",
+  "deleteContainerDialogContent": "Si vous supprimez ce conteneur, le smartphone sera déconnecté du serveur privacyIDEA et les tokens de ce conteneur deviendront inutilisables. Avant de le supprimer, assurez-vous que les tokens correspondants ne sont plus nécessaires !",
   "deleteLockedToken": "Veuillez vous authentifier pour supprimer le jeton verrouillé.",
   "deviceCredentialsRequiredTitle": "Les informations d'identification de l'appareil ne sont pas configurées",
   "deviceCredentialsSetupDescription": "Configurer les informations d'identification de l'appareil dans les paramètres de l'appareil",
@@ -738,7 +744,7 @@
   "exportNonPrivacyIDEATokens": "Exporter les jetons non privacyIDEA",
   "exportTokens": "Exporter les jetons",
   "exportingTokens": "Exportation des jetons en cours...",
-  "failedToFinalizeContainer": "Échec de la finalisation du conteneur {serial}: {error}",
+  "failedToFinalizeContainer": "Échec de la finalisation du conteneur {serial}",
   "failedToLoad": "Échec du chargement :",
   "feedback": "Retour d'information",
   "feedbackDescription": "Si vous avez des questions, des suggestions ou des problèmes, n'hésitez pas à nous en faire part",

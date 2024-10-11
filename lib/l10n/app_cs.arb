@@ -107,6 +107,11 @@
   "@delete": {
     "description": "Label that describes deleting the token."
   },
+  "@deleteContainerDialogTitle": {
+    "example": {
+      "serial": "SMPH0008CC47"
+    }
+  },
   "@deviceCredentialsRequiredTitle": {
     "description": "Message showed as a title in a dialog which indicates the user has not set up credentials authentication on their device. It is used on Android side. Maximum 60 characters."
   },
@@ -198,18 +203,18 @@
   "@failedToFinalizeContainer": {
     "description": "Error message when finalizing a container failed.",
     "placeholders": {
-      "error": {
-        "example": "ERR10: Could not verify the signature."
-      },
       "serial": {
-        "example": "PUSH1234A"
+        "example": "SMPH0008CC47"
       }
     }
   },
   "@failedToLoad": {
+    "description": "Error message when something could not be loaded."
+  },
+  "@failedToSyncContainer": {
     "placeholders": {
-      "name": {
-        "example": "token data"
+      "serial": {
+        "example": "SMPH0008CC47"
       }
     }
   },
@@ -702,6 +707,7 @@
   "decryptErrorDeleteConfirmationContent": "Jste si jisti, že chcete data aplikace odstranit?",
   "decryptErrorTitle": "Chyba dešifrování",
   "delete": "Smazat",
+  "deleteContainerDialogContent": "Pokud tento kontejner odstraníte, smartphone se odpojí od serveru privacyIDEA a tokeny v tomto kontejneru nebudou použitelné. Před odstraněním se ujistěte, že příslušné tokeny již nejsou potřeba!",
   "deleteLockedToken": "Prosím, autentifikujte se pro smazání uzamčeného tokenu.",
   "deviceCredentialsRequiredTitle": "Není nastaven zámek zařízení",
   "deviceCredentialsSetupDescription": "Nastave zámek zařízení v nastavení zařízení",
@@ -738,7 +744,7 @@
   "exportNonPrivacyIDEATokens": "Exportovat ne-privacyIDEA žetony",
   "exportTokens": "Exportovat žetony",
   "exportingTokens": "Probíhá export žetonů...",
-  "failedToFinalizeContainer": "Nepodařilo se dokončit kontejner {serial}: {error}",
+  "failedToFinalizeContainer": "Nepodařilo se dokončit kontejner {serial}",
   "failedToLoad": "Nepodařilo se načíst:",
   "feedback": "Zpětná vazba",
   "feedbackDescription": "Pokud máte nějaké dotazy, návrhy nebo problémy, dejte nám prosím vědět.",
@@ -799,7 +805,7 @@
   "invalidQrFile": "Vybraný soubor neobsahuje platný QR kód z {appName}.",
   "invalidQrScan": "Naskenovaný QR kód není platnou zálohou {appName}.",
   "invalidValue": "untranslated",
-  "invalidValueIn": "untranslated",
+  "invalidValueIn": "Typ {type} \"{value}\" není platná pro \"{parameter}\" v \"{map}\".",
   "isExpotableQuestion": "Lze exportovat?",
   "isPiTokenQuestion": "Je to token privacyIDEA?",
   "issuer": "Issuer: {name}",
