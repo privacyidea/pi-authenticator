@@ -42,7 +42,7 @@ class TokenFolderExpandableBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: EdgeInsets.only(left: 14),
+        padding: const EdgeInsets.only(bottom: 4, left: 14),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
