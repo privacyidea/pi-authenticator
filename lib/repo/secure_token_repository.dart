@@ -25,8 +25,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:mutex/mutex.dart';
 
 import '../interfaces/repo/token_repository.dart';
 import '../l10n/app_localizations.dart';
@@ -39,18 +37,13 @@ import '../utils/view_utils.dart';
 import '../views/settings_view/settings_view_widgets/send_error_dialog.dart';
 import '../widgets/dialog_widgets/default_dialog.dart';
 import '../widgets/dialog_widgets/default_dialog_button.dart';
+import 'secure_storage_mutexed.dart';
 
 // TODO How to test the behavior of this class?
 class SecureTokenRepository implements TokenRepository {
   const SecureTokenRepository();
 
-  // Use this to lock critical sections of code.
-  static final Mutex _m = Mutex();
-
-  /// Function [f] is executed, protected by Mutex [_m].
-  /// That means, that calls of this method will always be executed serial.
-  static Future<T> _protect<T>(Future<T> Function() f) => _m.protect<T>(f);
-  static const FlutterSecureStorage _storage = FlutterSecureStorage();
+  static const SecureStorageMutexed _storage = SecureStorageMutexed();
   static const String _TOKEN_PREFIX = GLOBAL_SECURE_REPO_PREFIX;
 
   // ###########################################################################
@@ -58,8 +51,7 @@ class SecureTokenRepository implements TokenRepository {
   // ###########################################################################
 
   @override
-  Future<Token?> loadToken(String id) => _protect(() => _loadToken(id));
-  Future<Token?> _loadToken(String id) async {
+  Future<Token?> loadToken(String id) async {
     final token = await _storage.read(key: _TOKEN_PREFIX + id);
     Logger.info('Loading token from secure storage: $id');
     if (token == null) {
@@ -73,8 +65,7 @@ class SecureTokenRepository implements TokenRepository {
   /// this device.
   /// If [loadLegacy] is set to true, will attempt to load old android and ios tokens.
   @override
-  Future<List<Token>> loadTokens() => _protect(() => _loadTokens());
-  Future<List<Token>> _loadTokens() async {
+  Future<List<Token>> loadTokens() async {
     late Map<String, String> keyValueMap;
     try {
       keyValueMap = await _storage.readAll();
@@ -133,12 +124,11 @@ class SecureTokenRepository implements TokenRepository {
   /// in the storage the existing value is overwritten.
   /// Returns all tokens that could not be saved.
   @override
-  Future<List<T>> saveOrReplaceTokens<T extends Token>(List<T> tokens) => _protect<List<T>>(() => _saveOrReplaceTokens(tokens));
-  Future<List<T>> _saveOrReplaceTokens<T extends Token>(List<T> tokens) async {
+  Future<List<T>> saveOrReplaceTokens<T extends Token>(List<T> tokens) async {
     if (tokens.isEmpty) return [];
     final failedTokens = <T>[];
     for (var element in tokens) {
-      if (!await _saveOrReplaceToken(element)) {
+      if (!await saveOrReplaceToken(element)) {
         failedTokens.add(element);
       }
     }
@@ -154,8 +144,7 @@ class SecureTokenRepository implements TokenRepository {
   }
 
   @override
-  Future<bool> saveOrReplaceToken(Token token) => _protect<bool>(() => _saveOrReplaceToken(token));
-  Future<bool> _saveOrReplaceToken(Token token) async {
+  Future<bool> saveOrReplaceToken(Token token) async {
     try {
       await _storage.write(key: _TOKEN_PREFIX + token.id, value: jsonEncode(token.toJson()));
     } catch (e) {
@@ -167,11 +156,10 @@ class SecureTokenRepository implements TokenRepository {
 
   /// Deletes the saved jsons of [tokens] from the secure storage.
   @override
-  Future<List<T>> deleteTokens<T extends Token>(List<T> tokens) => _protect<List<T>>(() => _deleteTokens(tokens));
-  Future<List<T>> _deleteTokens<T extends Token>(List<T> tokens) async {
+  Future<List<T>> deleteTokens<T extends Token>(List<T> tokens) async {
     final failedTokens = <T>[];
     for (var element in tokens) {
-      if (!await _deleteToken(element)) {
+      if (!await deleteToken(element)) {
         failedTokens.add(element);
       }
     }
@@ -183,8 +171,7 @@ class SecureTokenRepository implements TokenRepository {
 
   /// Deletes the saved json of [token] from the secure storage.
   @override
-  Future<bool> deleteToken(Token token) => _protect<bool>(() => _deleteToken(token));
-  Future<bool> _deleteToken(Token token) async {
+  Future<bool> deleteToken(Token token) async {
     try {
       _storage.delete(key: _TOKEN_PREFIX + token.id);
     } catch (e, s) {

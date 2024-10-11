@@ -1,25 +1,19 @@
 import 'dart:convert';
 
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:mutex/mutex.dart';
-
 import '../interfaces/repo/token_container_repository.dart';
 import '../model/riverpod_states/token_container_state.dart';
 import '../model/token_container.dart';
 import '../utils/logger.dart';
+import 'secure_storage_mutexed.dart';
 
 class SecureTokenContainerRepository extends TokenContainerRepository {
   String get containerCredentialsKey => 'containerCredentials';
   String _keyOfSerial(String id) => '$containerCredentialsKey.$id';
-  final Mutex _m = Mutex();
-  Future<T> _protect<T>(Future<T> Function() f) => _m.protect(f);
-  final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
-  Future<void> _write(String key, String value) => _protect(() => _storage.write(key: key, value: value));
-  Future<String?> _read(String key) async => await _protect(() async => await _storage.read(key: key));
-  Future<Map<String, String>> _readAll() async =>
-      await _protect(() async => (await _storage.readAll())..removeWhere((key, value) => !key.startsWith(containerCredentialsKey)));
-  Future<void> _delete(String key) => _protect(() => _storage.delete(key: key));
+  final SecureStorageMutexed _storage = const SecureStorageMutexed();
+
+  Future<Map<String, String>> _readAll() async => (await _storage.readAll())..removeWhere((key, value) => !key.startsWith(containerCredentialsKey));
+  Future<void> _delete(String key) => _storage.delete(key: key);
 
   @override
   Future<TokenContainerState> loadContainerState() async {
@@ -76,7 +70,7 @@ class SecureTokenContainerRepository extends TokenContainerRepository {
 
   @override
   Future<TokenContainer?> loadContainer(String serial) async {
-    final containerJsonString = await _read(_keyOfSerial(serial));
+    final containerJsonString = await _storage.read(key: _keyOfSerial(serial));
     if (containerJsonString == null) return null;
     return TokenContainer.fromJson(jsonDecode(containerJsonString));
   }
@@ -84,7 +78,7 @@ class SecureTokenContainerRepository extends TokenContainerRepository {
   @override
   Future<TokenContainerState> saveContainer(TokenContainer container) async {
     final containerJsonString = jsonEncode(container.toJson());
-    await _write(_keyOfSerial(container.serial), containerJsonString);
+    await _storage.write(key: _keyOfSerial(container.serial), value: containerJsonString);
     return await loadContainerState();
   }
 }
