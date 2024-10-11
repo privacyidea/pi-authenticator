@@ -107,6 +107,11 @@
   "@delete": {
     "description": "Label that describes deleting the token."
   },
+  "@deleteContainerDialogTitle": {
+    "example": {
+      "serial": "SMPH0008CC47"
+    }
+  },
   "@deviceCredentialsRequiredTitle": {
     "description": "Message showed as a title in a dialog which indicates the user has not set up credentials authentication on their device. It is used on Android side. Maximum 60 characters."
   },
@@ -198,18 +203,18 @@
   "@failedToFinalizeContainer": {
     "description": "Error message when finalizing a container failed.",
     "placeholders": {
-      "error": {
-        "example": "ERR10: Could not verify the signature."
-      },
       "serial": {
-        "example": "PUSH1234A"
+        "example": "SMPH0008CC47"
       }
     }
   },
   "@failedToLoad": {
+    "description": "Error message when something could not be loaded."
+  },
+  "@failedToSyncContainer": {
     "placeholders": {
-      "name": {
-        "example": "token data"
+      "serial": {
+        "example": "SMPH0008CC47"
       }
     }
   },
@@ -702,6 +707,7 @@
   "decryptErrorDeleteConfirmationContent": "Sind Sie sicher, dass Sie die App Daten löschen möchten?",
   "decryptErrorTitle": "Entschlüsselung fehlgeschlagen",
   "delete": "Löschen",
+  "deleteContainerDialogContent": "Wenn Sie diesen Container löschen, wird das Smartphone vom privacyIDEA Server getrennt und die Token dieses Containers werden unbrauchbar. Stellen Sie vor dem Löschen sicher, dass die entsprechenden Token nicht mehr benötigt werden!",
   "deleteLockedToken": "Bitte authentifizieren Sie sich, um den gesperrten Token zu löschen.",
   "deviceCredentialsRequiredTitle": "Gerätepasswort ist nicht eingerichtet",
   "deviceCredentialsSetupDescription": "Setzen Sie bitte ein Gerätepasswort in den Einstellungen",
@@ -738,7 +744,7 @@
   "exportNonPrivacyIDEATokens": "Nicht-privacyIDEA-Token exportieren",
   "exportTokens": "Tokens exportieren",
   "exportingTokens": "Tokens werden exportiert...",
-  "failedToFinalizeContainer": "Der Container {serial} konnte nicht abgeschlossen werden: {error}",
+  "failedToFinalizeContainer": "Der Container {serial} konnte nicht abgeschlossen werden",
   "failedToLoad": "Fehlgeschlagen zu laden: ",
   "feedback": "Feedback",
   "feedbackDescription": "Wenn Sie Fragen, Anregungen oder Probleme haben, lassen Sie es uns wissen.",
@@ -799,7 +805,7 @@
   "invalidQrFile": "Die ausgewählte Datei enthällt kein gültigen QR-Code von {appName}.",
   "invalidQrScan": "Der gescannte QR-Code ist kein gültiges Backup von {appName}.",
   "invalidValue": "untranslated",
-  "invalidValueIn": "untranslated",
+  "invalidValueIn": "Der {type} \"{value}\" ist nicht gültig für \"{parameter}\" in \"{map}\"",
   "isExpotableQuestion": "Ist exportierbar?",
   "isPiTokenQuestion": "Ist ein privacyIDEA-Token?",
   "issuer": "Issuer: {name}",

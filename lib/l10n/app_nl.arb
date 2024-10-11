@@ -107,6 +107,11 @@
   "@delete": {
     "description": "Label that describes deleting the token."
   },
+  "@deleteContainerDialogTitle": {
+    "example": {
+      "serial": "SMPH0008CC47"
+    }
+  },
   "@deviceCredentialsRequiredTitle": {
     "description": "Message showed as a title in a dialog which indicates the user has not set up credentials authentication on their device. It is used on Android side. Maximum 60 characters."
   },
@@ -198,18 +203,15 @@
   "@failedToFinalizeContainer": {
     "description": "Error message when finalizing a container failed.",
     "placeholders": {
-      "error": {
-        "example": "ERR10: Could not verify the signature."
-      },
       "serial": {
-        "example": "PUSH1234A"
+        "example": "SMPH0008CC47"
       }
     }
   },
-  "@failedToLoad": {
+  "@failedToSyncContainer": {
     "placeholders": {
-      "name": {
-        "example": "token data"
+      "serial": {
+        "example": "SMPH0008CC47"
       }
     }
   },
@@ -563,9 +565,6 @@
   "@synchronizingTokens": {
     "description": "Title of the push synchronization dialog."
   },
-  "@systemTheme": {
-    "description": "The systems theme."
-  },
   "@theSecretDoesNotFitTheCurrentEncoding": {
     "description": "Hint telling the user that the secret does not fit the selected encoding."
   },
@@ -702,6 +701,7 @@
   "decryptErrorDeleteConfirmationContent": "Weet je zeker dat je de app-gegevens wilt verwijderen?",
   "decryptErrorTitle": "Fout bij decoderen",
   "delete": "Verwijderen",
+  "deleteContainerDialogContent": "Als u deze container verwijdert, wordt de smartphone losgekoppeld van de privacyIDEA server en worden de tokens in deze container onbruikbaar. Controleer voor het verwijderen of de bijbehorende tokens niet meer nodig zijn!",
   "deleteLockedToken": "Verifieer om het vergrendelde token te verwijderen.",
   "deviceCredentialsRequiredTitle": "Inloggevens van het apparaat zijn niet ingesteld",
   "deviceCredentialsSetupDescription": "Stel de inloggegevens in, bij de instellingen van het apparaat",
@@ -738,7 +738,7 @@
   "exportNonPrivacyIDEATokens": "Niet-privacyIDEA tokens exporteren",
   "exportTokens": "Tokens exporteren",
   "exportingTokens": "Tokens exporteren...",
-  "failedToFinalizeContainer": "Fout bij het afsluiten van de container {serial}: {error}",
+  "failedToFinalizeContainer": "Fout bij het afsluiten van de container {serial}",
   "failedToLoad": "Mislukt bij het laden:",
   "feedback": "Feedback",
   "feedbackDescription": "Als je vragen, suggesties of problemen hebt, laat het ons dan weten.",

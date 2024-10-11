@@ -4,13 +4,26 @@
   "@accept": {
     "description": "Label for e.g. a button. Something gets accepted by the user."
   },
+  "@addANewFolder": {
+    "description": "description"
+  },
+  "@addFolder": {
+    "description": "description"
+  },
+  "@addSystemInfo": {
+    "description": "description"
+  },
   "@addToken": {
     "description": "The button to open the screen to add tokens by hand."
+  },
+  "@addTokenManually": {
+    "description": "description"
   },
   "@algorithm": {
     "description": "Title of the dropdown button where the encoding is selected."
   },
   "@algorithmUnsupported": {
+    "description": "description",
     "placeholders": {
       "algorithm": {
         "example": "MD5"
@@ -19,6 +32,15 @@
   },
   "@allTokensSynchronized": {
     "description": "Content of the push synchronization dialog. Signaling the user that everything worked."
+  },
+  "@asFile": {
+    "description": "description"
+  },
+  "@asQrCode": {
+    "description": "description"
+  },
+  "@askLogSendedDescription": {
+    "description": "description"
   },
   "@authNotSupportedBody": {
     "description": "Message shown as a dialog body that tells the user that device credentials or biometrics must be setup for this action."
@@ -38,6 +60,9 @@
   "@authenticateToUnLockToken": {
     "description": "Reason to authenticate when trying to lock or unlock a token."
   },
+  "@authentication": {
+    "description": "description"
+  },
   "@biometricHint": {
     "description": "Hint message advising the user how to authenticate with biometrics. It is used on Android side. Maximum 60 characters."
   },
@@ -50,6 +75,9 @@
   "@biometricSuccess": {
     "description": "Message to let the user know that authentication was successful. It is used on Android side. Maximum 60 characters."
   },
+  "@butDiscardIt": {
+    "description": "description"
+  },
   "@cancel": {
     "description": "Button to cancel an action."
   },
@@ -61,6 +89,9 @@
   },
   "@clearErrorLog": {
     "description": "Button to clear the error log."
+  },
+  "@closeSearchTokens": {
+    "description": "description"
   },
   "@confirmDeletion": {
     "description": "Title of the dialog where a token can be deleted."
@@ -77,8 +108,14 @@
   "@confirmFolderDeletionHint": {
     "description": "Gives the user a hint about the consequences of deleting a folder."
   },
+  "@confirmPassword": {
+    "description": "description"
+  },
   "@confirmTokenDeletionHint": {
     "description": "Gives the user a hint about the consequences of deleting a token."
+  },
+  "@confirmation": {
+    "description": "description"
   },
   "@connectionFailed": {
     "description": "Tells the user that the connection failed."
@@ -86,11 +123,23 @@
   "@container": {
     "description": "Title for the container view."
   },
+  "@continueButton": {
+    "description": "description"
+  },
+  "@copyOTPToClipboard": {
+    "description": "description"
+  },
+  "@couldNotConnectToServer": {
+    "description": "description"
+  },
   "@couldNotSignMessage": {
     "description": "Tells the user that the message could not be signed."
   },
   "@counter": {
     "description": "Describes the field where the tokens counter should be entered."
+  },
+  "@create": {
+    "description": "description"
   },
   "@createdAt": {
     "description": "Label for the creation date of the token."
@@ -98,14 +147,49 @@
   "@creator": {
     "description": "Label for the creator of the token."
   },
-  "@darkTheme": {
-    "description": "The dark theme."
-  },
   "@decline": {
     "description": "Label for e.g. a button. Something gets declined by the user."
   },
+  "@declineIt": {
+    "description": "description"
+  },
+  "@decrypt": {
+    "description": "description"
+  },
+  "@decryptErrorButtonDelete": {
+    "description": "description"
+  },
+  "@decryptErrorButtonRetry": {
+    "description": "description"
+  },
+  "@decryptErrorButtonSendError": {
+    "description": "description"
+  },
+  "@decryptErrorContent": {
+    "description": "description"
+  },
+  "@decryptErrorDeleteConfirmationContent": {
+    "description": "description"
+  },
+  "@decryptErrorTitle": {
+    "description": "description"
+  },
   "@delete": {
     "description": "Label that describes deleting the token."
+  },
+  "@deleteContainerDialogContent": {
+    "description": "description"
+  },
+  "@deleteContainerDialogTitle": {
+    "description": "description",
+    "placeholders": {
+      "serial": {
+        "example": "SMPH0008CC47"
+      }
+    }
+  },
+  "@deleteLockedToken": {
+    "description": "description"
   },
   "@deviceCredentialsRequiredTitle": {
     "description": "Message showed as a title in a dialog which indicates the user has not set up credentials authentication on their device. It is used on Android side. Maximum 60 characters."
@@ -119,6 +203,18 @@
   "@dismiss": {
     "description": "Text of a button that closes a dialog."
   },
+  "@done": {
+    "description": "description"
+  },
+  "@edit": {
+    "description": "description"
+  },
+  "@editLockedToken": {
+    "description": "description"
+  },
+  "@editToken": {
+    "description": "description"
+  },
   "@enablePolling": {
     "description": "Name of the setting switch that enables polling."
   },
@@ -127,6 +223,12 @@
   },
   "@enterDetailsForToken": {
     "description": "Title of the screen where tokens are created manually, tells the user to enter all required values."
+  },
+  "@enterLink": {
+    "description": "description"
+  },
+  "@enterPasswordToEncrypt": {
+    "description": "description"
   },
   "@errorLogCleared": {
     "description": "Message that tells the user that the error log was cleared."
@@ -139,6 +241,9 @@
   },
   "@errorMailBody": {
     "description": "Message for email body"
+  },
+  "@errorMissingPrivateKey": {
+    "description": "Error message when the private key is missing."
   },
   "@errorRollOutFailed": {
     "description": "Tells the user that the token could not be rolled out, because a network error occurred.",
@@ -157,6 +262,9 @@
       }
     }
   },
+  "@errorRollOutNotPossibleAnymore": {
+    "description": "description"
+  },
   "@errorRollOutSSLHandshakeFailed": {
     "description": "Tells the user that the roll-out failed because the SSL handshake failed."
   },
@@ -169,10 +277,14 @@
     },
     "type": "text"
   },
+  "@errorSavingFile": {
+    "description": "description"
+  },
   "@errorSynchronizationNoNetworkConnection": {
     "description": "Tells the user that synchronizing the push tokens failed because the server could not be reached."
   },
   "@errorTokenExpired": {
+    "description": "description",
     "placeholders": {
       "name": {
         "example": "PUSH1234A"
@@ -195,26 +307,91 @@
       }
     }
   },
+  "@expandLockedFolder": {
+    "description": "description"
+  },
+  "@export": {
+    "description": "description"
+  },
+  "@exportAllTokens": {
+    "description": "description"
+  },
+  "@exportLockedTokenReason": {
+    "description": "description"
+  },
+  "@exportNonPrivacyIDEATokens": {
+    "description": "description"
+  },
+  "@exportTokens": {
+    "description": "description"
+  },
+  "@exportingTokens": {
+    "description": "description"
+  },
   "@failedToFinalizeContainer": {
     "description": "Error message when finalizing a container failed.",
     "placeholders": {
-      "error": {
-        "example": "ERR10: Could not verify the signature."
-      },
       "serial": {
-        "example": "PUSH1234A"
+        "example": "SMPH0008CC47"
       }
     }
   },
   "@failedToLoad": {
+    "description": "description",
     "placeholders": {
       "name": {
         "example": "token data"
       }
     }
   },
+  "@failedToSyncContainer": {
+    "placeholders": {
+      "serial": {
+        "example": "SMPH0008CC47"
+      }
+    }
+  },
+  "@feedback": {
+    "description": "description"
+  },
+  "@feedbackDescription": {
+    "description": "description"
+  },
+  "@feedbackHint": {
+    "description": "description"
+  },
+  "@feedbackPrivacyPolicy1": {
+    "description": "description"
+  },
   "@feedbackPrivacyPolicy2": {
     "description": "Taping on this should open the privacy policy."
+  },
+  "@feedbackPrivacyPolicy3": {
+    "description": "description"
+  },
+  "@feedbackSentDescription": {
+    "description": "description"
+  },
+  "@feedbackSentTitle": {
+    "description": "description"
+  },
+  "@feedbackTitle": {
+    "description": "description"
+  },
+  "@fileSavedToDownloadsFolder": {
+    "description": "description"
+  },
+  "@finalizeContainerFailed": {
+    "description": "description"
+  },
+  "@findingQrCodeInImage": {
+    "description": "description"
+  },
+  "@firebaseToken": {
+    "description": "description"
+  },
+  "@folderName": {
+    "description": "description"
   },
   "@generatingPhonePart": {
     "description": "Title of a dialog telling the user that the phone part gets generated right now."
@@ -225,19 +402,173 @@
   "@goToSettingsDescription": {
     "description": "Message advising the user to go to the settings and configure device credentials or biometrics on their device."
   },
+  "@grantCameraPermissionDialogButton": {
+    "description": "description"
+  },
+  "@grantCameraPermissionDialogContent": {
+    "description": "description"
+  },
+  "@grantCameraPermissionDialogTitle": {
+    "description": "description"
+  },
   "@guide": {
     "description": "Button to open the guide screen."
   },
   "@handshakeFailed": {
     "description": "Error message when the handshake failed."
   },
+  "@hidePushTokens": {
+    "description": "description"
+  },
+  "@hidePushTokensDescription": {
+    "description": "description"
+  },
+  "@importConflictToken": {
+    "description": "description",
+    "placeholders": {
+      "count": {
+        "example": "5"
+      }
+    }
+  },
+  "@importExistingToken": {
+    "description": "description",
+    "placeholders": {
+      "count": {
+        "example": "5"
+      }
+    }
+  },
+  "@importExportTokens": {
+    "description": "description"
+  },
+  "@importFailedToken": {
+    "description": "description",
+    "placeholders": {
+      "count": {
+        "example": "5"
+      }
+    }
+  },
+  "@importHint2FAS": {
+    "description": "description"
+  },
+  "@importHintAegisBackupFile": {
+    "description": "description"
+  },
+  "@importHintAegisLink": {
+    "description": "description"
+  },
+  "@importHintAegisQrScan": {
+    "description": "description"
+  },
+  "@importHintAuthenticatorProFile": {
+    "description": "description"
+  },
+  "@importHintFreeOtpPlusFile": {
+    "description": "description"
+  },
+  "@importHintFreeOtpPlusQrScan": {
+    "description": "description"
+  },
+  "@importHintGoogleQrFile": {
+    "description": "description"
+  },
+  "@importHintGoogleQrScan": {
+    "description": "description"
+  },
+  "@importHintPrivacyIdeaFile": {
+    "description": "description"
+  },
+  "@importHintPrivacyIdeaQrScan": {
+    "description": "description"
+  },
+  "@importNTokens": {
+    "description": "description",
+    "placeholders": {
+      "count": {
+        "example": "5"
+      }
+    }
+  },
+  "@importNewToken": {
+    "description": "description",
+    "placeholders": {
+      "count": {
+        "example": "5"
+      }
+    }
+  },
+  "@importTokens": {
+    "description": "description"
+  },
   "@importedVia": {
     "description": "Label for the import method of the token."
   },
+  "@increaseCounter": {
+    "description": "description"
+  },
   "@internalServerError": {
+    "description": "description",
     "placeholders": {
       "code": {
         "example": "500"
+      }
+    }
+  },
+  "@introAddFolder": {
+    "description": "description"
+  },
+  "@introDragToken": {
+    "description": "description"
+  },
+  "@introEditToken": {
+    "description": "description"
+  },
+  "@introHidePushTokens": {
+    "description": "description"
+  },
+  "@introLockToken": {
+    "description": "description"
+  },
+  "@introPollForChallenges": {
+    "description": "description"
+  },
+  "@introScanQrCode": {
+    "description": "description"
+  },
+  "@introTokenSwipe": {
+    "description": "description"
+  },
+  "@invalidBackupFile": {
+    "description": "description",
+    "placeholders": {
+      "appName": {
+        "example": "privacyIDEA Authenticator"
+      }
+    }
+  },
+  "@invalidLink": {
+    "description": "description",
+    "placeholders": {
+      "appName": {
+        "example": "privacyIDEA Authenticator"
+      }
+    }
+  },
+  "@invalidQrFile": {
+    "description": "description",
+    "placeholders": {
+      "appName": {
+        "example": "privacyIDEA Authenticator"
+      }
+    }
+  },
+  "@invalidQrScan": {
+    "description": "description",
+    "placeholders": {
+      "appName": {
+        "example": "privacyIDEA Authenticator"
       }
     }
   },
@@ -256,6 +587,7 @@
     }
   },
   "@invalidValueIn": {
+    "description": "description",
     "placeholders": {
       "map": {
         "example": "query parameters"
@@ -273,9 +605,6 @@
   },
   "@isExpotableQuestion": {
     "description": "Label for the question if the token is exportable."
-  },
-  "@isPiTokenQuestion": {
-    "description": "Label for the question if the token is a privacyIDEA token."
   },
   "@issuer": {
     "description": "Label for the issuer of the token, container... etc.",
@@ -299,6 +628,12 @@
       }
     }
   },
+  "@licenses": {
+    "description": "description"
+  },
+  "@licensesAndVersion": {
+    "description": "description"
+  },
   "@lightTheme": {
     "description": "The light theme."
   },
@@ -316,6 +651,9 @@
   },
   "@malformedData": {
     "description": "Error message when the data is malformed."
+  },
+  "@markQrCode": {
+    "description": "description"
   },
   "@missingRequiredParameter": {
     "description": "Error message when a required parameter is missing.",
@@ -337,6 +675,7 @@
     }
   },
   "@mustNotBeEmpty": {
+    "description": "description",
     "placeholders": {
       "field": {
         "example": "Name"
@@ -346,11 +685,23 @@
   "@name": {
     "description": "Describes the field where the tokens name should be entered."
   },
+  "@no": {
+    "description": "description"
+  },
   "@noFbToken": {
     "description": "Tells the user that there is no Firebase token available."
   },
+  "@noMailAppDescription": {
+    "description": "description"
+  },
+  "@noMailAppTitle": {
+    "description": "description"
+  },
   "@noNetworkConnection": {
     "description": "Tells the user that there is no network connection."
+  },
+  "@noPublicKey": {
+    "description": "description"
   },
   "@noResultText1": {
     "description": "first no result text"
@@ -360,6 +711,12 @@
   },
   "@noResultTitle": {
     "description": "No tokens stored yet."
+  },
+  "@noTokenToExport": {
+    "description": "description"
+  },
+  "@noTokenToImport": {
+    "description": "description"
   },
   "@notAnInteger": {
     "description": "Error message when the user entered a value that is not an integer."
@@ -371,14 +728,21 @@
     "description": "Button to confirm an action."
   },
   "@onBoardingTitle1": {
+    "description": "description",
     "placeholders": {
       "appName": {
         "example": "privacyIDEA Authenticator"
       }
     }
   },
+  "@oneMore": {
+    "description": "description"
+  },
   "@open": {
     "description": "Button to open something."
+  },
+  "@optionalMessage": {
+    "description": "description"
   },
   "@originApp": {
     "description": "Label for the origin app."
@@ -394,6 +758,75 @@
       }
     },
     "type": "text"
+  },
+  "@password": {
+    "description": "description"
+  },
+  "@passwordCannotBeEmpty": {
+    "description": "description"
+  },
+  "@passwordCannotContainWhitespace": {
+    "description": "description"
+  },
+  "@passwordMustBeAtLeast8Characters": {
+    "description": "description"
+  },
+  "@passwordMustContainLowercaseLetter": {
+    "description": "description"
+  },
+  "@passwordMustContainNumber": {
+    "description": "description"
+  },
+  "@passwordMustContainSpecialCharacter": {
+    "description": "description"
+  },
+  "@passwordMustContainUppercaseLetter": {
+    "description": "description"
+  },
+  "@passwordsDoNotMatch": {
+    "description": "description"
+  },
+  "@patchNotesBugFixes": {
+    "description": "description"
+  },
+  "@patchNotesImprovements": {
+    "description": "description"
+  },
+  "@patchNotesNewFeatures": {
+    "description": "description"
+  },
+  "@patchNotesV4_3_0NewFeatures1": {
+    "description": "description"
+  },
+  "@patchNotesV4_3_0NewFeatures2": {
+    "description": "description"
+  },
+  "@patchNotesV4_3_0NewFeatures3": {
+    "description": "description"
+  },
+  "@patchNotesV4_3_0NewFeatures4": {
+    "description": "description"
+  },
+  "@patchNotesV4_3_0NewFeatures5": {
+    "description": "description"
+  },
+  "@patchNotesV4_3_0NewFeatures6": {
+    "description": "description"
+  },
+  "@patchNotesV4_3_1BugFix1": {
+    "description": "description"
+  },
+  "@patchNotesV4_3_1Improvement1": {
+    "description": "description"
+  },
+  "@patchNotesV4_4_0Improvement1": {
+    "description": "description"
+  },
+  "@patchNotesV4_4_0Improvement2": {
+    "description": "description"
+  },
+  "@patchNotesV4_4_0NewFeatures1": {
+    "description": "description"
   },
   "@period": {
     "description": "Title of the dropdown button where the period of the totp token is selected."
@@ -415,6 +848,9 @@
   "@pleaseEnterASecretForThisToken": {
     "description": "Hint telling the user to enter a secret for a token."
   },
+  "@pleaseSyncManuallyWhenNetworkIsAvailable": {
+    "description": "description"
+  },
   "@pollingChallenges": {
     "type": "text"
   },
@@ -429,8 +865,41 @@
       }
     }
   },
+  "@privacyPolicy": {
+    "description": "description"
+  },
+  "@publicKey": {
+    "description": "description"
+  },
+  "@pushEndpointUrl": {
+    "description": "description"
+  },
+  "@pushRequestParseError": {
+    "description": "description"
+  },
   "@pushToken": {
     "description": "Title for the settings block concerning the push tokens."
+  },
+  "@pushTokens": {
+    "description": "description"
+  },
+  "@qrFileDecodeError": {
+    "description": "description"
+  },
+  "@qrInFileNotFound": {
+    "description": "description"
+  },
+  "@qrInFileNotFound2": {
+    "description": "description"
+  },
+  "@qrInFileNotFound3": {
+    "description": "description"
+  },
+  "@qrNotFound": {
+    "description": "description"
+  },
+  "@qrScan": {
+    "description": "description"
   },
   "@rename": {
     "description": "Label that describes renaming the token."
@@ -455,8 +924,14 @@
   "@requestPushChallengesPeriodically": {
     "description": "The description of the polling feature."
   },
+  "@requestTriggerdByUserQuestion": {
+    "description": "description"
+  },
   "@retry": {
     "description": "Label for e.g. a button. Something is tried to be done again."
+  },
+  "@retryRollout": {
+    "description": "description"
   },
   "@rolloutStateCompleted": {
     "description": "Message for the rollout process"
@@ -491,8 +966,17 @@
   "@rolloutStateSendingPublicKeyFailed": {
     "description": "Message for the rollout process"
   },
+  "@save": {
+    "description": "description"
+  },
   "@scanQrCode": {
     "description": "The button to scan otpauth qr-codes."
+  },
+  "@scanThisQrWithNewDevice": {
+    "description": "description"
+  },
+  "@searchTokens": {
+    "description": "description"
   },
   "@secondsUntilNextOTP": {
     "description": "Semantics label for the animated countdown until the next OTP is generated."
@@ -502,6 +986,24 @@
   },
   "@secretKey": {
     "description": "Describes the field where the tokens secret should be entered."
+  },
+  "@selectFile": {
+    "description": "description"
+  },
+  "@selectImportSource": {
+    "description": "description"
+  },
+  "@selectImportType": {
+    "description": "description"
+  },
+  "@selectTokensToExport": {
+    "description": "description"
+  },
+  "@selectTokensToExportHelpContent": {
+    "description": "description"
+  },
+  "@selectTokensToExportHelpTitle": {
+    "description": "description"
   },
   "@send": {
     "description": "Button to send the error log."
@@ -520,6 +1022,9 @@
   },
   "@settings": {
     "description": "Button to open the settings page."
+  },
+  "@settingsGroupGeneral": {
+    "description": "description"
   },
   "@showDetails": {
     "description": "Button to show details."
@@ -572,6 +1077,9 @@
   "@theme": {
     "description": "Title of the setting group where the theme can be selected."
   },
+  "@thisAppIsOpenSource": {
+    "description": "description"
+  },
   "@timeOut": {
     "description": "Error message when a request times out."
   },
@@ -581,11 +1089,23 @@
   "@tokenDetails": {
     "description": "Title of the token details menu."
   },
+  "@tokenLink": {
+    "description": "description"
+  },
   "@tokenSerial": {
     "description": "Label for the token serial number."
   },
+  "@tokensAreEncrypted": {
+    "description": "description"
+  },
   "@tokensDoNotSupportSynchronization": {
     "description": "Informs the user that the following tokens cannot be synchronized as they do not support that."
+  },
+  "@tokensNotEncrypted": {
+    "description": "description"
+  },
+  "@tokensSuccessfullyDecrypted": {
+    "description": "description"
   },
   "@type": {
     "description": "Title of the dropdown button where the type of the token is selected."
@@ -600,6 +1120,7 @@
     "description": "Description of button that unlocks a token."
   },
   "@unsupported": {
+    "description": "description",
     "placeholders": {
       "name": {
         "example": "piauth version"
@@ -615,7 +1136,14 @@
   "@useDeviceLocaleTitle": {
     "description": "Title of the switch tile where using the devices language can be enabled."
   },
+  "@validFor": {
+    "description": "description"
+  },
+  "@validUntil": {
+    "description": "description"
+  },
   "@valueNotAllowed": {
+    "description": "description",
     "placeholders": {
       "parameter": {
         "example": "counter"
@@ -629,6 +1157,7 @@
     }
   },
   "@valueNotAllowedIn": {
+    "description": "description",
     "placeholders": {
       "map": {
         "example": "query parameters"
@@ -646,6 +1175,15 @@
   },
   "@verboseLogging": {
     "description": "Title of the switch tile where verbose logging can be enabled."
+  },
+  "@version": {
+    "description": "description"
+  },
+  "@wrongPassword": {
+    "description": "description"
+  },
+  "@yes": {
+    "description": "description"
   },
   "accept": "Accept",
   "addANewFolder": "Create new folder",
@@ -702,6 +1240,8 @@
   "decryptErrorDeleteConfirmationContent": "Are you sure you want to delete the app data?",
   "decryptErrorTitle": "Decryption error",
   "delete": "Delete",
+  "deleteContainerDialogContent": "If you delete this container, the smartphone is disconnected from the privacyIDEA server and the tokens of this container become unusable. Before deleting, make sure that the corresponding tokens are no longer required!",
+  "deleteContainerDialogTitle": "Deleting Container {serial}",
   "deleteLockedToken": "Please authenticate to delete the locked token.",
   "deviceCredentialsRequiredTitle": "Device credentials not set up",
   "deviceCredentialsSetupDescription": "Setup device credentials in the device's settings",
@@ -720,6 +1260,7 @@
   "errorLogEmpty": "The error log is empty.",
   "errorLogTitle": "Error log",
   "errorMailBody": "The error log file is attached.\nYou can replace this text with additional information about the error.",
+  "errorMissingPrivateKey": "Missing private key",
   "errorRollOutFailed": "Rolling out token {name} failed.",
   "errorRollOutNoConnectionToServer": "Rolling out token {name} failed, the server could not be reached.",
   "errorRollOutNotPossibleAnymore": "Rolling out this Token is not possible anymore.",
@@ -738,8 +1279,9 @@
   "exportNonPrivacyIDEATokens": "Export non-privacyIDEA tokens",
   "exportTokens": "Export tokens",
   "exportingTokens": "Exporting tokens...",
-  "failedToFinalizeContainer": "Failed to finalize the container {serial}: {error}",
+  "failedToFinalizeContainer": "Failed to finalize the container {serial}",
   "failedToLoad": "Failed to load: \"{name}\"",
+  "failedToSyncContainer": "Failes to sync container {serial}",
   "feedback": "Feedback",
   "feedbackDescription": "If you have any questions, suggestions or problems, please let us know.",
   "feedbackHint": "A ready-made e-mail will open, which you can send to us. If desired, information about your device and the version of the application will be added. You can check and edit the email before sending it.",
@@ -750,6 +1292,7 @@
   "feedbackSentTitle": "Feedback sent",
   "feedbackTitle": "Your feedback is always welcome!",
   "fileSavedToDownloadsFolder": "File saved to Downloads folder",
+  "finalizeContainerFailed": "Finalize Container Failed",
   "findingQrCodeInImage": "Looking for QR code in image...",
   "firebaseToken": "Firebase Token",
   "folderName": "Folder name",
@@ -764,7 +1307,7 @@
   "hidePushTokens": "Hide push tokens",
   "hidePushTokensDescription": "Hide push tokens from the token list. This will not delete the tokens and they will still be visible on a separate screen.",
   "imageUrl": "Image URL",
-  "importConflictToken": "{count, plural, zero{There is no conflict with existing tokens.} one{There is a conflict with existing tokens.\nPlease select which one you would like to keep.} other{There are conflicts with existing tokens.\nPlease select the tokens you wish to keep.}}",
+  "importConflictToken": "{count, plural, zero{There is no conflict with existing tokens.} one{There is a conflict with existing tokens.\nPlease select which one you would like to keep.} other{There are {count} conflicts with existing tokens.\nPlease select the tokens you wish to keep.}}",
   "importExistingToken": "{count, plural, zero{No token was found that is already in the application.} one{A token was found that already exists in the application.} other{{count} tokens was found that are already in the application.}}",
   "importExportTokens": "Import/Export tokens",
   "importFailedToken": "{count, plural, zero{No token Failed to import.} one{Failed to import a token.} other{Failed to import {count} tokens.}}",
@@ -912,7 +1455,7 @@
   "selectFile": "Select file",
   "selectImportSource": "Select import source",
   "selectImportType": "How do you want to import the tokens?",
-  "selectTokensToExport": "{count, plural, zero{} one{Select token to export} other{Select tokens to export}}",
+  "selectTokensToExport": "Please select the tokens you want to export.",
   "selectTokensToExportHelpContent": "If a token is not listed, it is not guaranteed that it is not a privacyIDEA token.\nCurrently only manually added and imported tokens are exportable.",
   "selectTokensToExportHelpTitle": "Is your token not listed?",
   "send": "Send",

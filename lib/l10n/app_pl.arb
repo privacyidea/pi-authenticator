@@ -107,6 +107,11 @@
   "@delete": {
     "description": "Label that describes deleting the token."
   },
+  "@deleteContainerDialogTitle": {
+    "example": {
+      "serial": "SMPH0008CC47"
+    }
+  },
   "@deviceCredentialsRequiredTitle": {
     "description": "Message showed as a title in a dialog which indicates the user has not set up credentials authentication on their device. It is used on Android side. Maximum 60 characters."
   },
@@ -198,18 +203,15 @@
   "@failedToFinalizeContainer": {
     "description": "Error message when finalizing a container failed.",
     "placeholders": {
-      "error": {
-        "example": "ERR10: Could not verify the signature."
-      },
       "serial": {
-        "example": "PUSH1234A"
+        "example": "SMPH0008CC47"
       }
     }
   },
-  "@failedToLoad": {
+  "@failedToSyncContainer": {
     "placeholders": {
-      "name": {
-        "example": "token data"
+      "serial": {
+        "example": "SMPH0008CC47"
       }
     }
   },
@@ -224,9 +226,6 @@
   },
   "@goToSettingsDescription": {
     "description": "Message advising the user to go to the settings and configure device credentials or biometrics on their device."
-  },
-  "@guide": {
-    "description": "Button to open the guide screen."
   },
   "@handshakeFailed": {
     "description": "Error message when the handshake failed."
@@ -702,6 +701,7 @@
   "decryptErrorDeleteConfirmationContent": "Czy na pewno chcesz usunąć dane aplikacji?",
   "decryptErrorTitle": "Decryption error",
   "delete": "Usuń",
+  "deleteContainerDialogContent": "Jeśli usuniesz ten kontener, smartfon zostanie odłączony od serwera privacyIDEA, a tokeny w tym kontenerze staną się bezużyteczne. Przed usunięciem upewnij się, że odpowiednie tokeny nie są już potrzebne!",
   "deleteLockedToken": "Uwierzytelnij, aby usunąć zablokowany token.",
   "deviceCredentialsRequiredTitle": "Ustawienia zabezpieczeń urządzenia nie zostały skonfigurowane.",
   "deviceCredentialsSetupDescription": "Skonfiguruj ustawienia zabezpieczeń w ustawieniach urządzenia.",
@@ -738,7 +738,7 @@
   "exportNonPrivacyIDEATokens": "Eksportuj tokeny niebędące privacyIDEA",
   "exportTokens": "Eksportuj tokeny",
   "exportingTokens": "Eksportowanie tokenów...",
-  "failedToFinalizeContainer": "Nie udało się sfinalizować kontenera {serial}: {error}.",
+  "failedToFinalizeContainer": "Nie udało się sfinalizować kontenera {serial}",
   "failedToLoad": "Nie udało się załadować:",
   "feedback": "Informacje zwrotne",
   "feedbackDescription": "Jeśli masz jakieś pytania, sugestie lub problemy, daj nam znać.",
