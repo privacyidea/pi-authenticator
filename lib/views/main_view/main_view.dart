@@ -33,10 +33,10 @@ import '../view_interface.dart';
 import 'main_view_widgets/app_bar_item.dart';
 import 'main_view_widgets/connectivity_listener.dart';
 import 'main_view_widgets/expandable_appbar.dart';
+import 'main_view_widgets/main_view_background_image.dart';
 import 'main_view_widgets/main_view_navigation_bar.dart';
 import 'main_view_widgets/main_view_tokens_list.dart';
 import 'main_view_widgets/main_view_tokens_list_filtered.dart';
-import 'main_view_widgets/main_view_background_image.dart';
 
 export '../../views/main_view/main_view.dart';
 
@@ -117,15 +117,13 @@ class _MainViewState extends ConsumerState<MainView> {
               ]),
           body: ConnectivityListener(
             child: StatusBar(
-              child: !hasFilter
-                  ? Stack(
-                      children: [
-                        MainViewBackgroundImage(appImage: widget.appImage),
-                        MainViewTokensList(nestedScrollViewKey: globalKey),
-                        MainViewNavigationBar(),
-                      ],
-                    )
-                  : const MainViewTokensListFiltered(),
+              child: Stack(
+                children: [
+                  MainViewBackgroundImage(appImage: widget.appImage),
+                  hasFilter ? const MainViewTokensListFiltered() : MainViewTokensList(nestedScrollViewKey: globalKey),
+                  if (!hasFilter) MainViewNavigationBar(),
+                ],
+              ),
             ),
           ),
         ),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'push_request_dialog_widgets/push_decline_confirm_button.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../model/push_request.dart';
@@ -11,6 +10,7 @@ import '../../../utils/riverpod/riverpod_providers/generated_providers/push_requ
 import '../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../default_dialog.dart';
 import 'push_request_dialog_widgets/push_accept_button.dart';
+import 'push_request_dialog_widgets/push_decline_confirm_button.dart';
 import 'push_request_dialog_widgets/push_presence_button_row.dart';
 
 class PushRequestDialog extends ConsumerStatefulWidget {

@@ -29,7 +29,6 @@ import '../../../../utils/riverpod/riverpod_providers/generated_providers/token_
 import '../../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../../../widgets/elevated_delete_button.dart';
 import '../../../main_view/main_view_widgets/token_widgets/slideable_action.dart';
-import '../../../view_interface.dart';
 
 class DeleteContainerAction extends ConsumerSlideableAction {
   final TokenContainer container;

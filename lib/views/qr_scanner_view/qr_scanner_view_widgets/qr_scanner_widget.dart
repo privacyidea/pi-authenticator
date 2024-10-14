@@ -19,7 +19,6 @@
  */
 
 import 'package:flutter/material.dart';
-
 import 'package:flutter_zxing/flutter_zxing.dart';
 
 class QRScannerWidget extends StatefulWidget {

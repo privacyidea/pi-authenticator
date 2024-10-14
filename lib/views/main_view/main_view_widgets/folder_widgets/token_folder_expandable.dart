@@ -21,27 +21,26 @@
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/model/extensions/token_folder_extension.dart';
+import 'package:privacyidea_authenticator/model/tokens/token.dart';
 
 import '../../../../model/riverpod_states/token_filter.dart';
 import '../../../../model/token_folder.dart';
-import '../../../../model/tokens/push_token.dart';
 import '../../../../utils/globals.dart';
-import '../../../../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import '../../../../utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
-import '../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../../utils/riverpod/riverpod_providers/state_providers/dragging_sortable_provider.dart';
 import 'token_folder_expandable_widgets/token_folder_expandable_header.dart';
 import 'token_folder_expandable_widgets/token_folder_expandable_body.dart';
 
 class TokenFolderExpandable extends ConsumerStatefulWidget {
   final TokenFolder folder;
+  final List<Token> folderTokens;
   final TokenFilter? filter;
   final bool? expandOverride;
 
   const TokenFolderExpandable({
     super.key,
     required this.folder,
+    required this.folderTokens,
     this.filter,
     this.expandOverride,
   });
@@ -87,10 +86,7 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
 
   @override
   Widget build(BuildContext context) {
-    final hidePushTokens = ref.watch(hidePushTokensProvider);
-    final folderTokens = ref.watch(tokenProvider.select((state) => state.tokensInFolder(widget.folder).whereNotType(hidePushTokens ? [PushToken] : [])));
-    final tokensFiltered = widget.filter?.filterTokens(folderTokens) ?? folderTokens;
-    if (tokensFiltered.isEmpty) return const SizedBox();
+    final tokensFiltered = widget.folderTokens;
     tokensFiltered.sort((a, b) => a.compareTo(b));
     final draggingSortable = ref.watch(draggingSortableProvider);
     if (widget.expandOverride == null) {

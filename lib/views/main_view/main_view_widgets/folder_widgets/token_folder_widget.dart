@@ -22,7 +22,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../model/riverpod_states/token_filter.dart';
 import '../../../../model/token_folder.dart';
+import '../../../../model/tokens/token.dart';
 import '../../../../utils/logger.dart';
 import '../../../../utils/riverpod/riverpod_providers/state_providers/dragging_sortable_provider.dart';
 import '../../../../utils/utils.dart';
@@ -30,8 +32,15 @@ import 'token_folder_expandable.dart';
 
 class TokenFolderWidget extends ConsumerWidget {
   final TokenFolder folder;
+  final List<Token> folderTokens;
+  final TokenFilter? filter;
 
-  const TokenFolderWidget(this.folder, {super.key});
+  const TokenFolderWidget({
+    required this.folder,
+    required this.folderTokens,
+    this.filter,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -80,12 +89,17 @@ class TokenFolderWidget extends ConsumerWidget {
               padding: const EdgeInsets.only(top: 4),
               child: TokenFolderExpandable(
                 folder: folder,
+                folderTokens: folderTokens,
                 key: Key('TokenFolderExpandable#${folder.folderId}'),
               ),
             ),
           )
         : (draggingFolder == folder)
             ? const SizedBox()
-            : TokenFolderExpandable(folder: folder);
+            : TokenFolderExpandable(
+                folder: folder,
+                folderTokens: folderTokens,
+                filter: filter,
+              );
   }
 }

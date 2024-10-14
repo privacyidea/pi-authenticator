@@ -55,7 +55,7 @@ class TokenFolderExpandableBody extends StatelessWidget {
                         previousSortable: (i - 1) < 0 ? null : tokens[i - 1],
                         nextSortable: tokens[i],
                       ),
-              TokenWidgetBuilder.fromToken(tokens[i]),
+              TokenWidgetBuilder.fromToken(token: tokens[i]),
             ],
             if (tokens.isNotEmpty && draggingSortable is Token)
               isFilterd

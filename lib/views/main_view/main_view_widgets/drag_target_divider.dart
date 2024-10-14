@@ -35,22 +35,20 @@ class DragTargetDivider<T extends SortableMixin> extends ConsumerStatefulWidget 
   final SortableMixin? nextSortable;
   final double dividerBaseHeight;
   final double dividerExpandedHeight;
-  final double bottomPaddingIfLast;
+  final double bottomPadding;
   final double opacity;
   final bool isExpandalbe;
-  final bool isLastDivider;
 
   const DragTargetDivider({
     super.key,
     required this.dependingFolder,
     required this.previousSortable,
     required this.nextSortable,
-    this.bottomPaddingIfLast = 0,
+    this.bottomPadding = 0,
     this.dividerBaseHeight = 1.5,
     this.dividerExpandedHeight = 40,
     this.opacity = 1,
     this.isExpandalbe = true,
-    this.isLastDivider = false,
   });
 
   @override
@@ -105,7 +103,7 @@ class _DragTargetDividerState<T extends SortableMixin> extends ConsumerState<Dra
           return DefaultDivider(
             dividerHeight: dividerHeight,
             opacity: widget.opacity,
-            padding: EdgeInsets.only(bottom: widget.isLastDivider ? max(widget.bottomPaddingIfLast - dividerHeight + widget.dividerBaseHeight, 0) : 0),
+            padding: EdgeInsets.only(bottom: max(widget.bottomPadding - dividerHeight + widget.dividerBaseHeight, 0.0)),
             margin: EdgeInsets.symmetric(horizontal: 8 - expansionController.value * 2, vertical: 8),
           );
         },
@@ -134,14 +132,16 @@ class DefaultDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Opacity(
         opacity: opacity,
-        child: Container(
-          height: dividerHeight,
-          decoration: BoxDecoration(
-            color: Theme.of(context).dividerColor,
-            borderRadius: BorderRadius.circular(dividerHeight / 4),
+        child: Padding(
+          padding: padding ?? EdgeInsets.zero,
+          child: Container(
+            height: dividerHeight,
+            decoration: BoxDecoration(
+              color: Theme.of(context).dividerColor,
+              borderRadius: BorderRadius.circular(dividerHeight / 4),
+            ),
+            margin: margin,
           ),
-          padding: padding,
-          margin: margin,
         ),
       );
 }
