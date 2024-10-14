@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../../model/riverpod_states/token_filter.dart';
 import '../../utils/globals.dart';
 import '../../utils/logger.dart';
 import '../../utils/patch_notes_utils.dart';
@@ -116,15 +117,13 @@ class _MainViewState extends ConsumerState<MainView> {
               ]),
           body: ConnectivityListener(
             child: StatusBar(
-              child: !hasFilter
-                  ? Stack(
-                      children: [
-                        MainViewBackgroundImage(appImage: widget.appImage),
-                        MainViewTokensList(nestedScrollViewKey: globalKey),
-                        MainViewNavigationBar(),
-                      ],
-                    )
-                  : const MainViewTokensListFiltered(),
+              child: Stack(
+                children: [
+                  MainViewBackgroundImage(appImage: widget.appImage),
+                  hasFilter ? const MainViewTokensListFiltered() : MainViewTokensList(nestedScrollViewKey: globalKey),
+                  if (!hasFilter) MainViewNavigationBar(),
+                ],
+              ),
             ),
           ),
         ),

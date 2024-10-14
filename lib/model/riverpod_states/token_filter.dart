@@ -17,6 +17,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import 'package:privacyidea_authenticator/model/mixins/sortable_mixin.dart';
+import 'package:privacyidea_authenticator/model/token_folder.dart';
+
 import '../tokens/push_token.dart';
 import '../tokens/token.dart';
 
@@ -37,5 +40,29 @@ class TokenFilter {
       }
     }
     return filteredTokens;
+  }
+
+  List<SortableMixin> filterSortables(List<SortableMixin> sortables) {
+    final filteredSortables = <SortableMixin>[];
+    final RegExp regExp;
+    try {
+      regExp = RegExp(searchQuery, caseSensitive: false);
+    } catch (e) {
+      return [];
+    }
+    for (final sortable in sortables) {
+      if (sortable is TokenFolder) {
+        filteredSortables.add(sortable);
+        continue;
+      }
+      if (sortable is Token &&
+          (regExp.hasMatch(sortable.label) ||
+              regExp.hasMatch(sortable.issuer) ||
+              sortable is PushToken && regExp.hasMatch(sortable.serial) ||
+              regExp.hasMatch(sortable.type))) {
+        filteredSortables.add(sortable);
+      }
+    }
+    return filteredSortables;
   }
 }

@@ -36,7 +36,7 @@ import 'totp_token_widgets/totp_token_widget.dart';
 import 'totp_token_widgets/totp_token_widget_tile.dart';
 
 abstract class TokenWidgetBuilder {
-  static TokenWidget fromToken(Token token, {Key? key}) {
+  static TokenWidget fromToken({required Token token, Key? key}) {
     return switch (token.runtimeType) {
       const (TOTPToken) => TOTPTokenWidget(token as TOTPToken, key: key),
       const (HOTPToken) => HOTPTokenWidget(token as HOTPToken, key: key),

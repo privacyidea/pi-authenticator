@@ -34,7 +34,7 @@ class TokenContainerState with _$TokenContainerState {
     required List<TokenContainer> container,
   }) = _CredentialsState;
 
-  bool get hasFinalizedContainers => containerList.every((container) => container is TokenContainerFinalized);
+  bool get hasFinalizedContainers => containerList.any((container) => container is TokenContainerFinalized);
 
   TokenContainer? containerOf(String containerSerial) => containerList.firstWhereOrNull((container) => container.serial == containerSerial);
   static TokenContainerState fromJsonStringList(List<String> jsonStrings) {

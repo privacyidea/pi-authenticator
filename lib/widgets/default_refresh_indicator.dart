@@ -27,7 +27,9 @@ class _DefaultRefreshIndicatorState extends ConsumerState<DefaultRefreshIndicato
   bool isRefreshing = false;
   @override
   Widget build(BuildContext context) {
-    final allowToRefresh = ref.watch(tokenProvider).hasRolledOutPushTokens || ref.watch(tokenContainerProvider).value?.hasFinalizedContainers == true;
+    final hasRolledOutPushTokens = ref.watch(tokenProvider).hasRolledOutPushTokens;
+    final hasFinalizedContainers = ref.watch(tokenContainerProvider).value?.hasFinalizedContainers == true;
+    final allowToRefresh = hasRolledOutPushTokens || hasFinalizedContainers;
     return DeactivateableRefreshIndicator(
       onRefresh: () async {
         setState(() {

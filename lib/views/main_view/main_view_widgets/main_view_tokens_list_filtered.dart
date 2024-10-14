@@ -19,19 +19,15 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/model/extensions/token_folder_extension.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/drag_target_divider.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 
 import '../../../model/mixins/sortable_mixin.dart';
-import '../../../model/riverpod_states/token_filter.dart';
-import '../../../model/token_folder.dart';
-import '../../../model/tokens/token.dart';
-import '../../../utils/logger.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
+import '../../../utils/riverpod/riverpod_providers/state_providers/dragging_sortable_provider.dart';
 import '../../../utils/riverpod/riverpod_providers/state_providers/token_filter_provider.dart';
-import 'folder_widgets/token_folder_expandable.dart';
-import 'token_widgets/token_widget_builder.dart';
+
+import 'main_view_tokens_list.dart';
 
 class MainViewTokensListFiltered extends ConsumerWidget {
   const MainViewTokensListFiltered({super.key});
@@ -53,44 +49,57 @@ class MainViewTokensListFiltered extends ConsumerWidget {
     if (filter == null) return [];
     final tokenFolders = ref.watch(tokenFolderProvider).folders;
     final allTokens = ref.watch(tokenProvider).tokens;
-    final tokensInFolder = allTokens.inFolder();
-    final tokensInNoFolder = allTokens.inNoFolder();
-    final filtered = filter.filterTokens(tokensInNoFolder);
-    List<SortableMixin> sortables = [...tokenFolders, ...filtered];
+    // final tokensInFolder = allTokens.inFolder();
+    // final tokensInNoFolder = allTokens.inNoFolder();
+    final filteredTokens = filter.filterTokens(allTokens);
+    List<SortableMixin> sortables = [...tokenFolders, ...filteredTokens];
+    final draggingSortable = ref.watch(draggingSortableProvider);
 
     sortables.sort((a, b) => a.compareTo(b));
-    final List<Widget> widgets = [];
-    for (int i = 0; i < sortables.length; i++) {
-      final sortable = sortables[i];
-      final nextIsFolder = i < sortables.length - 1 && sortables[i + 1] is TokenFolder;
-      if (sortable is Token) {
-        widgets.add(TokenWidgetBuilder.fromToken(sortable));
-        if (i != sortables.length - 1) {
-          widgets.add(DefaultDivider(opacity: nextIsFolder ? 0 : 1));
-        }
-      } else if (sortable is TokenFolder) {
-        widgets.addAll(_buildFilteredFolders(ref: ref, folder: sortable, filter: filter, allFolderTokens: tokensInFolder, isLast: i == sortables.length - 1));
-      }
-    }
+    final List<Widget> widgets = MainViewTokensList.buildSortableWidgets(
+      sortables: sortables,
+      draggingSortable: draggingSortable,
+      filter: filter,
+      hidePushTokens: ref.watch(hidePushTokensProvider),
+    );
+    // for (int i = 0; i < sortables.length; i++) {
+    //   final sortable = sortables[i];
+    //   final nextIsFolder = i < sortables.length - 1 && sortables[i + 1] is TokenFolder;
+    //   if (sortable is Token) {
+    //     widgets.add(TokenWidgetBuilder.fromToken(sortable));
+    //     if (i != sortables.length - 1) {
+    //       widgets.add(DefaultDivider(opacity: nextIsFolder ? 0 : 1));
+    //     }
+    //   } else if (sortable is TokenFolder) {
+    //     widgets.addAll(_buildFilteredFolders(ref: ref, folder: sortable, filter: filter, allFolderTokens: tokensInFolder, isLast: i == sortables.length - 1));
+    //   }
+    // }
     return widgets;
   }
 
-  List<Widget> _buildFilteredFolders({
-    required WidgetRef ref,
-    required TokenFolder folder,
-    required TokenFilter filter,
-    required List<Token> allFolderTokens,
-    required bool isLast,
-  }) {
-    final folderTokens = allFolderTokens.inFolder(folder);
-    final filtered = filter.filterTokens(folderTokens);
-    if (filtered.isEmpty) return [];
-    // Auto expand if search query is not empty and folder is not locked.
-    final expanded = filter.searchQuery.isNotEmpty && !folder.isLocked ? true : null;
-    Logger.warning('Expanded: $expanded');
-    return [
-      TokenFolderExpandable(folder: folder, filter: filter, expandOverride: expanded, key: ValueKey('filteredFolder:${folder.folderId}')),
-      if (!isLast) const Divider(),
-    ];
-  }
+  // List<Widget> _buildFilteredFolders({
+  //   required WidgetRef ref,
+  //   required TokenFolder folder,
+  //   required TokenFilter filter,
+  //   required List<Token> allFolderTokens,
+  //   required bool isLast,
+  // }) {
+  //   final folderTokens = allFolderTokens.inFolder(folder);
+  //   final filtered = filter.filterTokens(folderTokens);
+  //   if (filtered.isEmpty) return [];
+  //   // Auto expand if search query is not empty and folder is not locked.
+  //   final expanded = filter.searchQuery.isNotEmpty && !folder.isLocked ? true : null;
+  //   Logger.warning('Expanded: $expanded');
+  //   return [
+  //     TokenFolderExpandable(
+  //         folder: folder,
+  //         folderTokens: ,
+  //         filter: filter,
+  //         expandOverride: expanded,
+  //         key: ValueKey(
+  //           'filteredFolder:${folder.folderId}',
+  //         )),
+  //     if (!isLast) const Divider(),
+  //   ];
+  // }
 }

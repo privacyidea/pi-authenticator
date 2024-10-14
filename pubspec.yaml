@@ -43,7 +43,6 @@ dependencies:
   uuid: ^4.0.0
   flutter_svg: ^2.0.10+1
   riverpod_generator: ^2.4.0
-  freezed: ^2.5.7
   freezed_annotation: ^2.4.4
   json_annotation: ^4.9.0
   # Crypto
