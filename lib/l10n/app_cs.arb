@@ -282,7 +282,7 @@
   "@isPiTokenQuestion": {
     "description": "Label for the question if the token is a privacyIDEA token."
   },
-  "@issuer": {
+  "@issuerLabel": {
     "description": "Label for the issuer of the token, container... etc.",
     "placeholders": {
       "name": {
@@ -808,7 +808,7 @@
   "invalidValueIn": "Typ {type} \"{value}\" není platná pro \"{parameter}\" v \"{map}\".",
   "isExpotableQuestion": "Lze exportovat?",
   "isPiTokenQuestion": "Je to token privacyIDEA?",
-  "issuer": "Issuer: {name}",
+  "issuerLabel": "Issuer: {name}",
   "language": "Jazyk",
   "legacySigningErrorMessage": "Token byl vytvořen v zastaralé verzi aplikace, což může vést k problémům při jeho používání.\nPokud problém přetrvává, doporučujeme vytvořit nový push token!",
   "legacySigningErrorTitle": "Při použití staršího tokenu došlo k chybě: {tokenLabel}",

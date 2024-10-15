@@ -276,7 +276,7 @@
   "@isPiTokenQuestion": {
     "description": "Label for the question if the token is a privacyIDEA token."
   },
-  "@issuer": {
+  "@issuerLabel": {
     "description": "Label for the issuer of the token, container... etc.",
     "placeholders": {
       "name": {
@@ -802,7 +802,7 @@
   "invalidValueIn": "untranslated",
   "isExpotableQuestion": "Czy można eksportować?",
   "isPiTokenQuestion": "To jest token privacyIDEA?",
-  "issuer": "Issuer: {name}",
+  "issuerLabel": "Issuer: {name}",
   "language": "Język",
   "legacySigningErrorMessage": "Token został utworzony w nieaktualnej wersji aplikacji, co może prowadzić do problemów podczas korzystania z niego.\nZaleca się utworzenie nowego tokena push, jeśli problem nadal występuje!",
   "legacySigningErrorTitle": "Wystąpił błąd podczas korzystania z przestarzałego tokena: {tokenLabel}",

@@ -32,6 +32,7 @@ import '../utils/logger.dart';
 import '../utils/object_validator.dart';
 import 'enums/rollout_state.dart';
 import 'enums/ec_key_algorithm.dart';
+import 'enums/sync_state.dart';
 import 'enums/token_origin_source_type.dart';
 import 'token_import/token_origin_data.dart';
 
@@ -197,10 +198,6 @@ class TokenContainer with _$TokenContainer {
               ),
       );
 }
-//be99ff65b1c38ae8a7d6caf8799a0cce3749fe0e|2024-08-27 14:30:58.371312Z|http://192.168.0.230:5000/container/register/finalize|SMPH0000D49C
-//be99ff65b1c38ae8a7d6caf8799a0cce3749fe0e|2024-08-27T14:30:58.371312+00:00|http://192.168.0.230:5000/container/register/finalize|SMPH0000D49C
-
-enum SyncState { notStarted, syncing, completed, failed }
 
 class SyncStateJsonConverter extends JsonConverter<SyncState?, String?> {
   const SyncStateJsonConverter();

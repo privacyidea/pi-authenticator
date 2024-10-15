@@ -23,6 +23,7 @@ import 'package:privacyidea_authenticator/model/extensions/enums/rollout_state_e
 import 'package:privacyidea_authenticator/model/extensions/token_folder_extension.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../../model/enums/sync_state.dart';
 import '../../model/token_container.dart';
 import '../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 import '../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';

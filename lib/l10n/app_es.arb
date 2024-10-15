@@ -86,6 +86,9 @@
   "@container": {
     "description": "Title for the container view."
   },
+  "@containerSerial": {
+    "description": "description"
+  },
   "@couldNotSignMessage": {
     "description": "Tells the user that the message could not be signed."
   },
@@ -282,7 +285,7 @@
   "@isPiTokenQuestion": {
     "description": "Label for the question if the token is a privacyIDEA token."
   },
-  "@issuer": {
+  "@issuerLabel": {
     "description": "Label for the issuer of the token, container... etc.",
     "placeholders": {
       "name": {
@@ -689,6 +692,7 @@
   "confirmation": "confirmación",
   "connectionFailed": "Conexión fallida.",
   "container": "Contenedor",
+  "containerSerial": "Container Serial",
   "continueButton": "Continue",
   "copyOTPToClipboard": "Copiar OTP al portapapeles",
   "couldNotConnectToServer": "No se ha podido conectar con el servidor.",
@@ -808,7 +812,7 @@
   "invalidValueIn": "untranslated",
   "isExpotableQuestion": "¿Es exportable?",
   "isPiTokenQuestion": "¿Es un token de privacyIDEA?",
-  "issuer": "Issuer: {name}",
+  "issuerLabel": "Issuer: {name}",
   "language": "Language",
   "legacySigningErrorMessage": "El token se creó en una versión obsoleta de la aplicación, lo que puede provocar problemas al utilizarlo.\nSe recomienda crear un nuevo token push si el problema persiste.",
   "legacySigningErrorTitle": "Se ha producido un error al utilizar el token obsoleto: {tokenLabel}",

@@ -20,7 +20,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:privacyidea_authenticator/widgets/dialog_widgets/default_dialog.dart';
+import 'package:privacyidea_authenticator/views/container_view/container_widgets/container_actions/details_container_action_dialog.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../../../model/token_container.dart';
@@ -28,21 +28,21 @@ import '../../../../utils/customization/theme_extentions/action_theme.dart';
 import '../../../main_view/main_view_widgets/token_widgets/slideable_action.dart';
 import '../../../view_interface.dart';
 
-class EditContainerAction extends ConsumerSlideableAction {
+class DetailsContainerAction extends ConsumerSlideableAction {
   final TokenContainer container;
 
-  const EditContainerAction({
+  const DetailsContainerAction({
     required this.container,
     super.key,
   });
 
   void _showEditContainerDialog(BuildContext context) {
-    showDialog(useRootNavigator: false, context: context, builder: (_) => EditContainerDialog(context));
+    showDialog(useRootNavigator: false, context: context, builder: (_) => DetailsContainerDialog(context, container: container));
   }
 
   @override
   CustomSlidableAction build(BuildContext context, WidgetRef ref) => CustomSlidableAction(
-        onPressed: (BuildContext context) {},
+        onPressed: (BuildContext context) => _showEditContainerDialog(context),
         backgroundColor: Theme.of(context).extension<ActionTheme>()!.editColor,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -50,40 +50,11 @@ class EditContainerAction extends ConsumerSlideableAction {
           children: [
             const Icon(Icons.edit),
             Text(
-              AppLocalizations.of(context)!.edit,
+              AppLocalizations.of(context)!.details,
               overflow: TextOverflow.fade,
               softWrap: false,
             ),
           ],
         ),
       );
-}
-
-class EditContainerDialog extends StatelessWidget {
-  final BuildContext context;
-
-  const EditContainerDialog(this.context);
-
-  @override
-  Widget build(BuildContext context) {
-    return DefaultDialog(
-      title: Text('AppLocalizations.of(context)!.editContainer'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Text('Edit Container'),
-        ],
-      ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text(AppLocalizations.of(context)!.cancel),
-        ),
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text(AppLocalizations.of(context)!.save),
-        ),
-      ],
-    );
-  }
 }
