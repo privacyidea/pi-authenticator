@@ -17,12 +17,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import '../../exception_errors/pi_server_result_error.dart';
-import 'pi_server_result_value.dart';
+import 'package:http/http.dart';
 
-abstract class PiServerResult {
-  bool get status;
-  PiServerResultError? get asError => this is PiServerResultError ? this as PiServerResultError : null;
-  PiServerResultValue? get asValue => this is PiServerResultValue ? this as PiServerResultValue : null;
-  const PiServerResult();
+class ResponseError {
+  final int _statusCode;
+  int get statusCode => _statusCode;
+  final String _message;
+  String get message => _message.substring(0, _message.length > 100 ? 100 : _message.length);
+  String get fullMessage => _message;
+
+  const ResponseError._(int statusCode, String message)
+      : _statusCode = statusCode,
+        _message = message;
+
+  factory ResponseError(Response response) {
+    assert(response.statusCode != 200, 'Status code of an response error should not be 200');
+    return ResponseError._(response.statusCode, response.body);
+  }
 }

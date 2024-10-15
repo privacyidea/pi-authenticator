@@ -19,8 +19,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import '../../../utils/object_validator.dart';
-import 'pi_server_result.dart';
+import '../../utils/object_validator.dart';
+import '../api_results/pi_server_results/pi_server_result.dart';
 
 class PiServerResultError extends PiServerResult implements Error {
   static const CODE = 'code';

@@ -28,10 +28,10 @@ import 'package:privacyidea_authenticator/model/extensions/enums/encodings_exten
 
 import '../../l10n/app_localizations.dart';
 import '../../model/enums/token_origin_source_type.dart';
+import '../../model/exception_errors/localized_exception.dart';
 import '../../model/extensions/enums/token_origin_source_type.dart';
 import '../../model/processor_result.dart';
 import '../../model/tokens/token.dart';
-import '../../utils/errors.dart';
 import '../../utils/globals.dart';
 import '../../utils/identifiers.dart';
 import '../../utils/logger.dart';

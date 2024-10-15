@@ -17,12 +17,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import '../../exception_errors/pi_server_result_error.dart';
-import 'pi_server_result_value.dart';
 
-abstract class PiServerResult {
-  bool get status;
-  PiServerResultError? get asError => this is PiServerResultError ? this as PiServerResultError : null;
-  PiServerResultValue? get asValue => this is PiServerResultValue ? this as PiServerResultValue : null;
-  const PiServerResult();
+import '../../l10n/app_localizations.dart';
+
+class LocalizedException implements Exception {
+  final String Function(AppLocalizations localizations) localizedMessage;
+  final String unlocalizedMessage;
+
+  const LocalizedException({required this.localizedMessage, required this.unlocalizedMessage});
+
+  @override
+  String toString() => 'Exception: $unlocalizedMessage';
 }

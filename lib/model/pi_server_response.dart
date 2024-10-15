@@ -26,7 +26,7 @@ import 'package:http/http.dart';
 
 import '../utils/logger.dart';
 import '../utils/object_validator.dart';
-import 'api_results/pi_server_results/pi_server_result_error.dart';
+import 'exception_errors/pi_server_result_error.dart';
 import 'api_results/pi_server_results/pi_server_result_value.dart';
 
 part 'pi_server_response.freezed.dart';

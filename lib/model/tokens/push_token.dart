@@ -25,7 +25,7 @@ import 'package:privacyidea_authenticator/model/token_template.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../utils/custom_int_buffer.dart';
-import '../../utils/errors.dart';
+import '../exception_errors/localized_argument_error.dart';
 import '../../utils/identifiers.dart';
 import '../../utils/object_validator.dart';
 import '../../utils/rsa_utils.dart';

@@ -20,16 +20,16 @@
 
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
-import '../../utils/identifiers.dart';
-import '../../utils/object_validator.dart';
-import '../token_template.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../utils/identifiers.dart';
+import '../../utils/object_validator.dart';
 import '../enums/algorithms.dart';
 import '../enums/day_password_token_view_mode.dart';
 import '../enums/token_types.dart';
 import '../extensions/enums/algorithms_extension.dart';
 import '../token_import/token_origin_data.dart';
+import '../token_template.dart';
 import 'otp_token.dart';
 import 'token.dart';
 

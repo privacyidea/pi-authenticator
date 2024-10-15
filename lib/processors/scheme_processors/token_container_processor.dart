@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/utils/errors.dart';
+import 'package:privacyidea_authenticator/model/exception_errors/localized_argument_error.dart';
 import 'package:privacyidea_authenticator/utils/globals.dart';
 
 import '../../model/processor_result.dart';
