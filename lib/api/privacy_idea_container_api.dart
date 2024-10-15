@@ -28,10 +28,10 @@ import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
 import 'package:privacyidea_authenticator/model/extensions/token_folder_extension.dart';
 import 'package:privacyidea_authenticator/processors/scheme_processors/token_import_scheme_processors/otp_auth_processor.dart';
 import 'package:privacyidea_authenticator/utils/ecc_utils.dart';
-import 'package:privacyidea_authenticator/model/exception_errors/localized_argument_error.dart';
 import 'package:privacyidea_authenticator/utils/privacyidea_io_client.dart';
 
 import '../model/api_results/pi_server_results/pi_server_result_value.dart';
+import '../model/exception_errors/localized_exception.dart';
 import '../model/exception_errors/response_error.dart';
 import '../model/pi_server_response.dart';
 import '../model/riverpod_states/token_state.dart';
