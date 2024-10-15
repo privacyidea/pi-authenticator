@@ -113,7 +113,7 @@ class TokenWidgetBase extends ConsumerWidget {
                     opacity: 0.05,
                     child: switch (syncState) {
                       SyncState.notStarted => const Icon(Icons.sync),
-                      SyncState.syncing => const Icon(Icons.sync),
+                      SyncState.syncing => const Icon(Icons.cloud_sync_outlined),
                       SyncState.failed => const Icon(Icons.cloud_off_outlined),
                       SyncState.completed => const Icon(Icons.cloud_done_outlined),
                     },

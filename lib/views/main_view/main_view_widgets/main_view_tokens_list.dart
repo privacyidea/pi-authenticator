@@ -69,7 +69,7 @@ class MainViewTokensList extends ConsumerStatefulWidget {
       final currentIsExpandedFolder = sortable is TokenFolder && sortable.isExpanded;
       final folderTokens = sortable is TokenFolder ? sortables.where((s) => s is Token && s.folderId == sortable.folderId).cast<Token>().toList() : null;
       if (hidePushTokens) folderTokens?.removeWhere((t) => t is PushToken);
-      if (folderTokens?.isEmpty == true) continue;
+      if (filter != null && folderTokens?.isEmpty == true) continue;
       // 1. Add a divider if the current sortable is not the one which is dragged
       // 2. Don't add a divider if the current sortable is the first
       // 3. Don't add a divider after an expanded folder

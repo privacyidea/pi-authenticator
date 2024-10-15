@@ -422,7 +422,7 @@ class ThemeCustomization {
           listTileTheme: ListTileThemeData(
             tileColor: Colors.transparent,
             titleTextStyle: TextStyle(color: tilePrimaryColor),
-            subtitleTextStyle: TextStyle(color: tileSubtitleColor),
+            subtitleTextStyle: TextStyle(color: tileSubtitleColor, fontSize: 14), //bodyMedium fontSize
             iconColor: tileIconColor,
           ),
           colorScheme: brightness == Brightness.light

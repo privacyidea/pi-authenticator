@@ -96,6 +96,7 @@ dependencies:
   image_picker: ^1.1.2
   flutter_zxing: ^1.7.0
   zxing2: ^0.2.3
+  font_awesome_flutter: ^10.7.0
 
 
 dev_dependencies:

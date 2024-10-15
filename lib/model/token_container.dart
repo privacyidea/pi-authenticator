@@ -40,7 +40,6 @@ part 'token_container.freezed.dart';
 part 'token_container.g.dart';
 
 @Freezed(toStringOverride: false)
-@SyncStateJsonConverter()
 class TokenContainer with _$TokenContainer {
   static const SERIAL = 'serial';
   static const eccUtils = EccUtils();
@@ -109,7 +108,7 @@ class TokenContainer with _$TokenContainer {
     required Algorithms hashAlgorithm,
     @Default('privacyIDEA') String serverName,
     @Default(RolloutState.completed) RolloutState finalizationState,
-    @Default(SyncState.notStarted) @SyncStateJsonConverter() SyncState syncState,
+    @Default(SyncState.notStarted) SyncState syncState,
     String? passphraseQuestion,
     required String publicServerKey,
     required String publicClientKey,
@@ -161,8 +160,12 @@ class TokenContainer with _$TokenContainer {
         privateClientKey: eccUtils.serializeECPrivateKey(keyPair.privateKey),
         finalizationState: RolloutState.generatingKeyPairCompleted,
       );
-
   factory TokenContainer.fromJson(Map<String, dynamic> json) => _$TokenContainerFromJson(json);
+
+  //  json["runtimeType"] == "finalized"
+  //     ? (_$TokenContainerFromJson(json) as TokenContainerFinalized)
+  //         .copyWith(syncState: json["syncState"] == "syncing" ? SyncState.failed : SyncState.values.byName(json["syncState"]))
+  //     :
 
   @override
   String toString() => '$runtimeType('
@@ -197,27 +200,4 @@ class TokenContainer with _$TokenContainer {
                 data: token.origin!.data.isEmpty ? tokenData : token.origin!.data,
               ),
       );
-}
-
-class SyncStateJsonConverter extends JsonConverter<SyncState?, String?> {
-  const SyncStateJsonConverter();
-  @override
-  SyncState? fromJson(json) {
-    if (json == null) return null;
-    final SyncState syncState;
-    try {
-      syncState = SyncState.values.byName(json);
-    } catch (e) {
-      return null;
-    }
-    return switch (syncState) {
-      SyncState.notStarted => SyncState.notStarted,
-      SyncState.syncing => SyncState.failed,
-      SyncState.completed => SyncState.completed,
-      SyncState.failed => SyncState.failed,
-    };
-  }
-
-  @override
-  toJson(object) => object?.name;
 }

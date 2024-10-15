@@ -100,7 +100,13 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     _eccUtils = _eccUtilsOverride ?? eccUtils;
     Logger.warning('Building containerProvider');
 
-    final initState = await _repo.loadContainerState();
+    var initState = await _repo.loadContainerState();
+    final containerList = initState.containerList.map((c) {
+      if (c is! TokenContainerFinalized) return c;
+      final fixedSyncState = c.syncState == SyncState.syncing ? SyncState.failed : c.syncState;
+      return c.copyWith(syncState: fixedSyncState);
+    }).toList();
+    initState = initState.copyWith(containerList: containerList);
     for (var container in initState.containerList.whereType<TokenContainerUnfinalized>()) {
       finalize(container, isManually: false);
     }
