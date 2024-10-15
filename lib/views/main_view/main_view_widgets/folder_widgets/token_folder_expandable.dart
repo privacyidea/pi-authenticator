@@ -105,15 +105,10 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
         Positioned.fill(
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: borderRadius),
-            margin: const EdgeInsets.only(bottom: 8, left: 14),
+            margin: const EdgeInsets.only(bottom: 8, left: 14, right: 14),
             decoration: BoxDecoration(
               color: isExpanded ? Theme.of(context).scaffoldBackgroundColor : Colors.transparent,
-              borderRadius: isExpanded
-                  ? const BorderRadius.only(
-                      topLeft: Radius.circular(borderRadius),
-                      bottomLeft: Radius.circular(borderRadius),
-                    )
-                  : const BorderRadius.all(Radius.circular(borderRadius)),
+              borderRadius: const BorderRadius.all(Radius.circular(borderRadius)),
               boxShadow: [
                 if (isExpanded)
                   BoxShadow(

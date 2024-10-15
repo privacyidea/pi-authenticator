@@ -136,7 +136,7 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
         height: double.maxFinite,
         child: CustomTrailing(
           padding: const EdgeInsets.all(0),
-          fit: BoxFit.contain,
+          fit: BoxFit.none,
           child: HideableWidget(
             isHidden: widget.token.isHidden && !widget.isPreview,
             token: widget.token,
@@ -154,26 +154,33 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
                         return;
                       }
                     },
-              child: SizedBox(
-                height: Theme.of(context).textTheme.bodyLarge!.fontSize! * (Theme.of(context).textTheme.bodyLarge?.height ?? 1.2) * 3.1,
+              child: Container(
+                color: Colors.transparent,
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Expanded(
-                      child: Text(
-                        switch (widget.token.viewMode) {
-                          DayPasswordTokenViewMode.VALIDFOR => '${AppLocalizations.of(context)!.validFor}:',
-                          DayPasswordTokenViewMode.VALIDUNTIL => '${AppLocalizations.of(context)!.validUntil}:',
-                        },
-                        style: Theme.of(context).listTileTheme.subtitleTextStyle,
-                        textAlign: TextAlign.center,
-                        overflow: TextOverflow.fade,
-                        softWrap: false,
+                    SizedBox(
+                      height: Theme.of(context).listTileTheme.subtitleTextStyle!.fontSize! * 1.5,
+                      child: Center(
+                        child: Text(
+                          switch (widget.token.viewMode) {
+                            DayPasswordTokenViewMode.VALIDFOR => '${AppLocalizations.of(context)!.validFor}:',
+                            DayPasswordTokenViewMode.VALIDUNTIL => '${AppLocalizations.of(context)!.validUntil}:',
+                          },
+                          style: Theme.of(context).listTileTheme.subtitleTextStyle,
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.fade,
+                          softWrap: false,
+                        ),
                       ),
                     ),
-                    Expanded(
-                      flex: 2,
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
+                    ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: double.infinity,
+                        maxHeight: Theme.of(context).textTheme.bodyLarge!.fontSize! * 3,
+                        minHeight: Theme.of(context).textTheme.bodyLarge!.fontSize! * 3,
+                      ),
+                      child: Center(
                         child: Text(
                           switch (widget.token.viewMode) {
                             DayPasswordTokenViewMode.VALIDFOR => durationString,

@@ -70,7 +70,7 @@ mixin _$TokenContainer {
             Algorithms hashAlgorithm,
             String serverName,
             RolloutState finalizationState,
-            @SyncStateJsonConverter() SyncState syncState,
+            SyncState syncState,
             String? passphraseQuestion,
             String publicServerKey,
             String publicClientKey,
@@ -106,7 +106,7 @@ mixin _$TokenContainer {
             Algorithms hashAlgorithm,
             String serverName,
             RolloutState finalizationState,
-            @SyncStateJsonConverter() SyncState syncState,
+            SyncState syncState,
             String? passphraseQuestion,
             String publicServerKey,
             String publicClientKey,
@@ -142,7 +142,7 @@ mixin _$TokenContainer {
             Algorithms hashAlgorithm,
             String serverName,
             RolloutState finalizationState,
-            @SyncStateJsonConverter() SyncState syncState,
+            SyncState syncState,
             String? passphraseQuestion,
             String publicServerKey,
             String publicClientKey,
@@ -552,7 +552,7 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
             Algorithms hashAlgorithm,
             String serverName,
             RolloutState finalizationState,
-            @SyncStateJsonConverter() SyncState syncState,
+            SyncState syncState,
             String? passphraseQuestion,
             String publicServerKey,
             String publicClientKey,
@@ -605,7 +605,7 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
             Algorithms hashAlgorithm,
             String serverName,
             RolloutState finalizationState,
-            @SyncStateJsonConverter() SyncState syncState,
+            SyncState syncState,
             String? passphraseQuestion,
             String publicServerKey,
             String publicClientKey,
@@ -658,7 +658,7 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
             Algorithms hashAlgorithm,
             String serverName,
             RolloutState finalizationState,
-            @SyncStateJsonConverter() SyncState syncState,
+            SyncState syncState,
             String? passphraseQuestion,
             String publicServerKey,
             String publicClientKey,
@@ -801,7 +801,7 @@ abstract class _$$TokenContainerFinalizedImplCopyWith<$Res>
       Algorithms hashAlgorithm,
       String serverName,
       RolloutState finalizationState,
-      @SyncStateJsonConverter() SyncState syncState,
+      SyncState syncState,
       String? passphraseQuestion,
       String publicServerKey,
       String publicClientKey,
@@ -911,7 +911,7 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
       required this.hashAlgorithm,
       this.serverName = 'privacyIDEA',
       this.finalizationState = RolloutState.completed,
-      @SyncStateJsonConverter() this.syncState = SyncState.notStarted,
+      this.syncState = SyncState.notStarted,
       this.passphraseQuestion,
       required this.publicServerKey,
       required this.publicClientKey,
@@ -945,7 +945,6 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
   final RolloutState finalizationState;
   @override
   @JsonKey()
-  @SyncStateJsonConverter()
   final SyncState syncState;
   @override
   final String? passphraseQuestion;
@@ -1047,7 +1046,7 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
             Algorithms hashAlgorithm,
             String serverName,
             RolloutState finalizationState,
-            @SyncStateJsonConverter() SyncState syncState,
+            SyncState syncState,
             String? passphraseQuestion,
             String publicServerKey,
             String publicClientKey,
@@ -1100,7 +1099,7 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
             Algorithms hashAlgorithm,
             String serverName,
             RolloutState finalizationState,
-            @SyncStateJsonConverter() SyncState syncState,
+            SyncState syncState,
             String? passphraseQuestion,
             String publicServerKey,
             String publicClientKey,
@@ -1153,7 +1152,7 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
             Algorithms hashAlgorithm,
             String serverName,
             RolloutState finalizationState,
-            @SyncStateJsonConverter() SyncState syncState,
+            SyncState syncState,
             String? passphraseQuestion,
             String publicServerKey,
             String publicClientKey,
@@ -1231,7 +1230,7 @@ abstract class TokenContainerFinalized extends TokenContainer {
       required final Algorithms hashAlgorithm,
       final String serverName,
       final RolloutState finalizationState,
-      @SyncStateJsonConverter() final SyncState syncState,
+      final SyncState syncState,
       final String? passphraseQuestion,
       required final String publicServerKey,
       required final String publicClientKey,
@@ -1259,7 +1258,6 @@ abstract class TokenContainerFinalized extends TokenContainer {
   String get serverName;
   @override
   RolloutState get finalizationState;
-  @SyncStateJsonConverter()
   SyncState get syncState;
   @override
   String? get passphraseQuestion;

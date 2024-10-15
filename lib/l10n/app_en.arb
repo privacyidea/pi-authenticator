@@ -123,8 +123,14 @@
   "@container": {
     "description": "Title for the container view."
   },
+  "@containerDetails": {
+    "description": "Title of the container details dialog."
+  },
   "@containerSerial": {
     "description": "description"
+  },
+  "@containerSyncUrl": {
+    "description": "Title of the container sync url field."
   },
   "@continueButton": {
     "description": "description"
@@ -193,6 +199,9 @@
   },
   "@deleteLockedToken": {
     "description": "description"
+  },
+  "@details": {
+    "description": "Title of the details action Button."
   },
   "@deviceCredentialsRequiredTitle": {
     "description": "Message showed as a title in a dialog which indicates the user has not set up credentials authentication on their device. It is used on Android side. Maximum 60 characters."
@@ -307,6 +316,9 @@
       }
     }
   },
+  "@exampleUrl": {
+    "description": "Shows the user an example of a valid URL."
+  },
   "@expandLockedFolder": {
     "description": "description"
   },
@@ -381,6 +393,9 @@
   "@fileSavedToDownloadsFolder": {
     "description": "description"
   },
+  "@finalizationState": {
+    "description": "Title of the finalization state field."
+  },
   "@finalizeContainerFailed": {
     "description": "description"
   },
@@ -416,6 +431,9 @@
   },
   "@hidePushTokensDescription": {
     "description": "description"
+  },
+  "@imageUrl": {
+    "description": "Title of the image url field."
   },
   "@importConflictToken": {
     "description": "description",
@@ -599,6 +617,9 @@
   },
   "@isExpotableQuestion": {
     "description": "Label for the question if the token is exportable."
+  },
+  "@issuer": {
+    "description": "Title of the issuer field."
   },
   "@issuerLabel": {
     "description": "Label for the issuer of the token, container... etc.",
@@ -1039,6 +1060,21 @@
   "@syncFbTokenFailed": {
     "description": "Headline for the list of tokens where the synchronization failed."
   },
+  "@syncState": {
+    "description": "The state of the synchronization of the token"
+  },
+  "@syncStateCompletedDescription": {
+    "description": "The description of the state when the synchronization is completed"
+  },
+  "@syncStateFailedDescription": {
+    "description": "The description of the state when the synchronization failed"
+  },
+  "@syncStateNotStartedDescription": {
+    "description": "The description of the state when the synchronization is not started"
+  },
+  "@syncStateSyncingDescription": {
+    "description": "The description of the state when the synchronization is currently syncing"
+  },
   "@synchronizePushTokens": {
     "description": "Title of synchronizing push tokens in settings."
   },
@@ -1199,6 +1235,7 @@
   "confirmation": "Confirmation",
   "connectionFailed": "Connection failed.",
   "container": "Container",
+  "containerDetails": "Container details",
   "containerSerial": "Container Serial",
   "containerSyncUrl": "Container Sync Url",
   "continueButton": "Continue",
@@ -1229,7 +1266,6 @@
   "dismiss": "Dismiss",
   "done": "Done",
   "edit": "Edit",
-  "editContainer": "Edit Container",
   "editLockedToken": "Please authenticate to edit the locked token.",
   "editToken": "Edit Token",
   "enablePolling": "Enable polling",
@@ -1458,10 +1494,10 @@
   "syncContainerFailed": "Container synchronization failed",
   "syncFbTokenFailed": "Synchronization failed for the following tokens, please try again:",
   "syncState": "Sync State",
-  "syncStateCompletedName": "Sync Completed",
-  "syncStateFailedName": "Sync Failed",
-  "syncStateNotStartedName": "Sync not started",
-  "syncStateSyncingName": "Currently Syncing",
+  "syncStateCompletedDescription": "Sync completed",
+  "syncStateFailedDescription": "Sync Failed",
+  "syncStateNotStartedDescription": "Sync not started",
+  "syncStateSyncingDescription": "Currently Syncing",
   "synchronizePushTokens": "Synchronize push tokens",
   "synchronizesTokensWithServer": "Synchronizes tokens with the privacyIDEA server.",
   "synchronizingTokens": "Synchronizing tokens.",

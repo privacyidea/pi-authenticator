@@ -72,8 +72,9 @@ class _TokenFolderExpandableHeaderState extends ConsumerState<TokenFolderExpanda
   Widget build(BuildContext context) {
     final isExpanded = widget.expandableController.value;
     final draggingSortable = ref.watch(draggingSortableProvider);
-    return Padding(
-      padding: EdgeInsets.fromLTRB(isExpanded ? 14 : 0, 4, 0, 0),
+    return AnimatedContainer(
+      duration: widget.animationController.duration!,
+      padding: isExpanded ? EdgeInsets.fromLTRB(14, 4, 14, 0) : EdgeInsets.only(top: 4),
       child: PiSliable(
         key: ValueKey('tokenFolder-${widget.folder.folderId}'),
         groupTag: TokenWidget.groupTag,
@@ -84,7 +85,7 @@ class _TokenFolderExpandableHeaderState extends ConsumerState<TokenFolderExpanda
           LockTokenFolderAction(folder: widget.folder),
         ],
         child: Padding(
-          padding: EdgeInsets.only(left: isExpanded ? 8 : 14 + 8, right: 8),
+          padding: EdgeInsets.only(left: 8, right: 10),
           child: DragTarget<Token>(
             onWillAcceptWithDetails: (details) {
               if (details.data.folderId != widget.folder.folderId) {
@@ -147,10 +148,13 @@ class _TokenFolderExpandableHeaderState extends ConsumerState<TokenFolderExpanda
                           softWrap: false,
                         ),
                       ),
-                      TokenFolderExpandableHeaderIcon(
-                        showEmptyFolderIcon: (widget.tokens.isEmpty || (widget.tokens.length == 1 && widget.tokens.first == draggingSortable)),
-                        isLocked: widget.folder.isLocked,
-                        isExpanded: isExpanded,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 3),
+                        child: TokenFolderExpandableHeaderIcon(
+                          showEmptyFolderIcon: (widget.tokens.isEmpty || (widget.tokens.length == 1 && widget.tokens.first == draggingSortable)),
+                          isLocked: widget.folder.isLocked,
+                          isExpanded: isExpanded,
+                        ),
                       ),
                     ],
                   ),

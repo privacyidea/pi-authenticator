@@ -19,6 +19,7 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../../../../../utils/customization/theme_extentions/action_theme.dart';
@@ -43,38 +44,55 @@ class TokenFolderExpandableHeaderIcon extends StatelessWidget {
         ),
       );
     }
+
     return CustomTrailing(
-      child: Center(
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            Icon(
-              Icons.folder,
-              color: Theme.of(context).listTileTheme.iconColor,
-            ),
-            if (isLocked)
-              Positioned.fill(
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    return Container(
-                      padding: EdgeInsets.only(left: isExpanded ? 2 : 0, top: 1),
-                      child: Icon(
-                        isExpanded ? MdiIcons.lockOpenVariant : MdiIcons.lock,
-                        color: Theme.of(context).extension<ActionTheme>()?.lockColor,
-                        size: constraints.maxHeight / 2.1,
-                        shadows: [
-                          Shadow(
-                            color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.3),
-                            offset: const Offset(0.5, 0.5),
-                            blurRadius: 2,
-                          )
-                        ],
-                      ),
-                    );
-                  },
-                ),
+      child: Padding(
+        padding: const EdgeInsets.all(2),
+        child: Center(
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Icon(
+                weight: 0.1,
+                isExpanded ? FontAwesomeIcons.folderOpen : FontAwesomeIcons.solidFolderClosed,
+                color: Theme.of(context).listTileTheme.iconColor,
               ),
-          ],
+              if (isLocked)
+                Positioned.fill(
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      return Container(
+                        padding: EdgeInsets.only(left: isExpanded ? 2 : 0.0, top: 6),
+                        child: Center(
+                          child: Transform(
+                            transform: isExpanded
+                                ? Matrix4.fromList([
+                                    01.0, 0.00, 0, 0, //
+                                    -0.5, 0.85, 0, 0, //
+                                    00.0, 0.00, 1, 0, //
+                                    05.5, 2.00, 0, 1, //
+                                  ])
+                                : Matrix4.identity(),
+                            child: Icon(
+                              isExpanded ? MdiIcons.lockOpenVariant : MdiIcons.lock,
+                              color: Theme.of(context).extension<ActionTheme>()?.lockColor,
+                              size: constraints.maxHeight / 2.1,
+                              shadows: [
+                                Shadow(
+                                  color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.3),
+                                  offset: const Offset(0.5, 0.5),
+                                  blurRadius: 2,
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );
