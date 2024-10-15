@@ -28,33 +28,24 @@ import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
 import 'package:privacyidea_authenticator/model/extensions/token_folder_extension.dart';
 import 'package:privacyidea_authenticator/processors/scheme_processors/token_import_scheme_processors/otp_auth_processor.dart';
 import 'package:privacyidea_authenticator/utils/ecc_utils.dart';
-import 'package:privacyidea_authenticator/utils/errors.dart';
+import 'package:privacyidea_authenticator/model/exception_errors/localized_argument_error.dart';
 import 'package:privacyidea_authenticator/utils/privacyidea_io_client.dart';
 
 import '../model/api_results/pi_server_results/pi_server_result_value.dart';
+import '../model/exception_errors/response_error.dart';
 import '../model/pi_server_response.dart';
 import '../model/riverpod_states/token_state.dart';
-import '../model/token_template.dart';
 import '../model/token_container.dart';
+import '../model/token_template.dart';
 import '../model/tokens/token.dart';
 import '../utils/globals.dart';
 import '../utils/identifiers.dart';
 import '../utils/logger.dart';
 import '../widgets/dialog_widgets/enter_passphrase_dialog.dart';
 
-class PiSyncResponse {
-  final List<Token> updatedTokens;
-  final List<String> deletedSerials;
-
-  const PiSyncResponse({
-    required this.updatedTokens,
-    required this.deletedSerials,
-  });
-}
-
-class PrivacyideaContainerApi {
+class PrivacyIdeaContainerApi {
   final PrivacyideaIOClient _ioClient;
-  const PrivacyideaContainerApi({required PrivacyideaIOClient ioClient}) : _ioClient = ioClient;
+  const PrivacyIdeaContainerApi({required PrivacyideaIOClient ioClient}) : _ioClient = ioClient;
 
   // Returns a tuple of updated/new tokens and serials of deleted tokens
   Future<(List<Token>, List<String>)?> sync(TokenContainerFinalized container, TokenState tokenState) async {
@@ -288,24 +279,4 @@ class PrivacyideaContainerApi {
     }
     return (mergedTemplatesWithSerial, deleteSerials);
   }
-}
-
-class ResponseError {
-  final int _statusCode;
-  int get statusCode => _statusCode;
-  final String _message;
-  String get message => _message.substring(0, _message.length > 100 ? 100 : _message.length);
-  String get fullMessage => _message;
-
-  const ResponseError._(int statusCode, String message)
-      : _statusCode = statusCode,
-        _message = message;
-
-  factory ResponseError(Response response) {
-    assert(response.statusCode != 200, 'Status code of an response error should not be 200');
-    return ResponseError._(response.statusCode, response.body);
-  }
-
-  @override
-  String toString() => '($statusCode) $message';
 }

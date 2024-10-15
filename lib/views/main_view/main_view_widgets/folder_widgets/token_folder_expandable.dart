@@ -28,8 +28,8 @@ import '../../../../model/token_folder.dart';
 import '../../../../utils/globals.dart';
 import '../../../../utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
 import '../../../../utils/riverpod/riverpod_providers/state_providers/dragging_sortable_provider.dart';
-import 'token_folder_expandable_widgets/token_folder_expandable_header.dart';
 import 'token_folder_expandable_widgets/token_folder_expandable_body.dart';
+import 'token_folder_expandable_widgets/token_folder_expandable_header.dart';
 
 class TokenFolderExpandable extends ConsumerStatefulWidget {
   final TokenFolder folder;

@@ -22,6 +22,7 @@ import 'dart:async';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/utils/default_inkwell.dart';
 import 'package:privacyidea_authenticator/widgets/pi_slidable.dart';
 
 import '../../../../../l10n/app_localizations.dart';
@@ -157,43 +158,6 @@ class _TokenFolderExpandableHeaderState extends ConsumerState<TokenFolderExpanda
               ),
             ),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class DefaultInkWell extends StatelessWidget {
-  final Widget child;
-  final VoidCallback? onTap;
-  final bool highlight;
-
-  const DefaultInkWell({
-    required this.child,
-    this.highlight = false,
-    this.onTap,
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    List<num> asd = [5];
-    asd.cast<int>();
-
-    return Material(
-      // Material to draw on for the InkWell
-      color: Colors.transparent,
-      child: Container(
-        decoration: BoxDecoration(
-          color: highlight ? Theme.of(context).dividerColor : null,
-          borderRadius: const BorderRadius.all(Radius.circular(4)),
-        ),
-        child: InkWell(
-          customBorder: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(4)),
-          ),
-          onTap: onTap,
-          child: child,
         ),
       ),
     );

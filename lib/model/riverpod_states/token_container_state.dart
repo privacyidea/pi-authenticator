@@ -21,7 +21,9 @@ import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:privacyidea_authenticator/model/tokens/token.dart';
 
+import '../enums/sync_state.dart';
 import '../token_container.dart';
 
 part 'token_container_state.freezed.dart';
@@ -51,4 +53,12 @@ class TokenContainerState with _$TokenContainerState {
   TokenContainer? ofSerial(String serial) => containerList.firstWhereOrNull((container) => container.serial == serial);
 
   factory TokenContainerState.fromJson(Map<String, dynamic> json) => _$TokenContainerStateFromJson(json);
+
+  SyncState? getSyncState(Token token) {
+    if (token.containerSerial == null) return null;
+    final container = containerOf(token.containerSerial!);
+    if (container == null) return null;
+    if (container is TokenContainerFinalized) return container.syncState;
+    return null;
+  }
 }

@@ -23,7 +23,7 @@ import 'package:basic_utils/basic_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:http/http.dart';
 import 'package:mutex/mutex.dart';
-import 'package:privacyidea_authenticator/model/api_results/pi_server_results/pi_server_result_error.dart';
+import 'package:privacyidea_authenticator/model/exception_errors/pi_server_result_error.dart';
 import 'package:privacyidea_authenticator/model/extensions/enums/rollout_state_extension.dart';
 import 'package:privacyidea_authenticator/model/processor_result.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
@@ -34,12 +34,13 @@ import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/stat
 import 'package:privacyidea_authenticator/utils/view_utils.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../../api/token_container_api_endpoint.dart';
+import '../../../../api/privacy_idea_container_api.dart';
 import '../../../../interfaces/repo/token_container_repository.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../model/api_results/pi_server_results/pi_server_result_value.dart';
 import '../../../../model/enums/rollout_state.dart';
 import '../../../../model/enums/sync_state.dart';
+import '../../../../model/exception_errors/response_error.dart';
 import '../../../../model/pi_server_response.dart';
 import '../../../../model/riverpod_states/token_container_state.dart';
 import '../../../../model/riverpod_states/token_state.dart';
@@ -48,14 +49,14 @@ import '../../../../repo/secure_token_container_repository.dart';
 import '../../../../widgets/dialog_widgets/add_container_progress_dialog.dart';
 import '../../../../widgets/dialog_widgets/container_already_exists_dialog.dart';
 import '../../../ecc_utils.dart';
-import '../../../errors.dart';
+import '../../../../model/exception_errors/localized_argument_error.dart';
 import '../../../logger.dart';
 
 part 'token_container_notifier.g.dart';
 
 final tokenContainerProvider = tokenContainerNotifierProviderOf(
   repo: SecureTokenContainerRepository(),
-  containerApi: const PrivacyideaContainerApi(ioClient: PrivacyideaIOClient()),
+  containerApi: const PrivacyIdeaContainerApi(ioClient: PrivacyideaIOClient()),
   eccUtils: const EccUtils(),
 );
 
@@ -66,7 +67,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
 
   TokenContainerNotifier({
     TokenContainerRepository? repoOverride,
-    PrivacyideaContainerApi? containerApiOverride,
+    PrivacyIdeaContainerApi? containerApiOverride,
     EccUtils? eccUtilsOverride,
   })  : _repoOverride = repoOverride,
         _containerApiOverride = containerApiOverride,
@@ -78,9 +79,9 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
   final TokenContainerRepository? _repoOverride;
 
   @override
-  PrivacyideaContainerApi get containerApi => _containerApi;
-  late PrivacyideaContainerApi _containerApi;
-  final PrivacyideaContainerApi? _containerApiOverride;
+  PrivacyIdeaContainerApi get containerApi => _containerApi;
+  late PrivacyIdeaContainerApi _containerApi;
+  final PrivacyIdeaContainerApi? _containerApiOverride;
 
   @override
   EccUtils get eccUtils => _eccUtils;
@@ -90,7 +91,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
   @override
   Future<TokenContainerState> build({
     required TokenContainerRepository repo,
-    required PrivacyideaContainerApi containerApi,
+    required PrivacyIdeaContainerApi containerApi,
     required EccUtils eccUtils,
   }) async {
     await _stateMutex.acquire();

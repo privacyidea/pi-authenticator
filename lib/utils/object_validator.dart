@@ -22,7 +22,7 @@ import 'package:privacyidea_authenticator/model/extensions/enums/encodings_exten
 
 import '../model/enums/algorithms.dart';
 import '../model/enums/encodings.dart';
-import 'errors.dart';
+import '../model/exception_errors/localized_argument_error.dart';
 import 'logger.dart';
 
 final otpAutjPeriodSecondsValidatorNullable = otpAutjPeriodSecondsValidator.nullable();

@@ -26,7 +26,6 @@ import '../../../utils/riverpod/riverpod_providers/generated_providers/token_fol
 import '../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../utils/riverpod/riverpod_providers/state_providers/dragging_sortable_provider.dart';
 import '../../../utils/riverpod/riverpod_providers/state_providers/token_filter_provider.dart';
-
 import 'main_view_tokens_list.dart';
 
 class MainViewTokensListFiltered extends ConsumerWidget {

@@ -17,7 +17,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import '../l10n/app_localizations.dart';
+import '../../l10n/app_localizations.dart';
+import 'localized_exception.dart';
 
 class LocalizedArgumentError extends LocalizedException implements ArgumentError {
   final String _invalidValue;
@@ -59,14 +60,4 @@ class LocalizedArgumentError extends LocalizedException implements ArgumentError
   StackTrace? get stackTrace => _stackTrace;
   @override
   String toString() => 'ArgumentError: $message';
-}
-
-class LocalizedException implements Exception {
-  final String Function(AppLocalizations localizations) localizedMessage;
-  final String unlocalizedMessage;
-
-  const LocalizedException({required this.localizedMessage, required this.unlocalizedMessage});
-
-  @override
-  String toString() => 'Exception: $unlocalizedMessage';
 }

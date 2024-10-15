@@ -21,14 +21,14 @@
  */
 import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/model/token_container.dart';
-import '../../utils/object_validator.dart';
-import '../token_template.dart';
 
 import '../../utils/identifiers.dart';
+import '../../utils/object_validator.dart';
 import '../enums/token_types.dart';
 import '../extensions/enum_extension.dart';
 import '../mixins/sortable_mixin.dart';
 import '../token_import/token_origin_data.dart';
+import '../token_template.dart';
 import 'day_password_token.dart';
 import 'hotp_token.dart';
 import 'push_token.dart';

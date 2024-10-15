@@ -22,9 +22,9 @@ import 'dart:convert';
 import '../../utils/identifiers.dart';
 import '../../utils/logger.dart';
 import '../enums/algorithms.dart';
-import '../token_template.dart';
-import '../token_import/token_origin_data.dart';
 import '../token_container.dart';
+import '../token_import/token_origin_data.dart';
+import '../token_template.dart';
 import 'token.dart';
 
 abstract class OTPToken extends Token {

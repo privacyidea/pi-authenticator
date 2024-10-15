@@ -24,7 +24,6 @@ import 'package:privacyidea_authenticator/widgets/dialog_widgets/default_dialog.
 
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
-
 import '../settings_view_widgets/settings_group.dart';
 
 class SettingsGroupLanguage extends ConsumerWidget {

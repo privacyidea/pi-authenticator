@@ -7,7 +7,7 @@ part of 'token_container_notifier.dart';
 // **************************************************************************
 
 String _$tokenContainerNotifierHash() =>
-    r'82e22b1c0f547326b3066410d429cd814b5897b6';
+    r'ce579b9e2f02bf34af021a6bcb567f0889f8f5ed';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -33,12 +33,12 @@ class _SystemHash {
 abstract class _$TokenContainerNotifier
     extends BuildlessAsyncNotifier<TokenContainerState> {
   late final TokenContainerRepository repo;
-  late final PrivacyideaContainerApi containerApi;
+  late final PrivacyIdeaContainerApi containerApi;
   late final EccUtils eccUtils;
 
   FutureOr<TokenContainerState> build({
     required TokenContainerRepository repo,
-    required PrivacyideaContainerApi containerApi,
+    required PrivacyIdeaContainerApi containerApi,
     required EccUtils eccUtils,
   });
 }
@@ -56,7 +56,7 @@ class TokenContainerNotifierFamily
   /// See also [TokenContainerNotifier].
   TokenContainerNotifierProvider call({
     required TokenContainerRepository repo,
-    required PrivacyideaContainerApi containerApi,
+    required PrivacyIdeaContainerApi containerApi,
     required EccUtils eccUtils,
   }) {
     return TokenContainerNotifierProvider(
@@ -98,7 +98,7 @@ class TokenContainerNotifierProvider extends AsyncNotifierProviderImpl<
   /// See also [TokenContainerNotifier].
   TokenContainerNotifierProvider({
     required TokenContainerRepository repo,
-    required PrivacyideaContainerApi containerApi,
+    required PrivacyIdeaContainerApi containerApi,
     required EccUtils eccUtils,
   }) : this._internal(
           () => TokenContainerNotifier()
@@ -132,7 +132,7 @@ class TokenContainerNotifierProvider extends AsyncNotifierProviderImpl<
   }) : super.internal();
 
   final TokenContainerRepository repo;
-  final PrivacyideaContainerApi containerApi;
+  final PrivacyIdeaContainerApi containerApi;
   final EccUtils eccUtils;
 
   @override
@@ -198,7 +198,7 @@ mixin TokenContainerNotifierRef
   TokenContainerRepository get repo;
 
   /// The parameter `containerApi` of this provider.
-  PrivacyideaContainerApi get containerApi;
+  PrivacyIdeaContainerApi get containerApi;
 
   /// The parameter `eccUtils` of this provider.
   EccUtils get eccUtils;
@@ -213,7 +213,7 @@ class _TokenContainerNotifierProviderElement
   TokenContainerRepository get repo =>
       (origin as TokenContainerNotifierProvider).repo;
   @override
-  PrivacyideaContainerApi get containerApi =>
+  PrivacyIdeaContainerApi get containerApi =>
       (origin as TokenContainerNotifierProvider).containerApi;
   @override
   EccUtils get eccUtils => (origin as TokenContainerNotifierProvider).eccUtils;
