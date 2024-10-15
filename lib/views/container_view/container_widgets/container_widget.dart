@@ -23,6 +23,7 @@ import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/model/extensions/enums/rollout_state_extension.dart';
 import 'package:privacyidea_authenticator/widgets/button_widgets/cooldown_button.dart';
 
+import '../../../model/enums/sync_state.dart';
 import '../../../model/token_container.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
@@ -30,7 +31,7 @@ import '../../../widgets/pi_slidable.dart';
 import '../../main_view/main_view_widgets/token_widgets/token_widget_tile.dart';
 import '../container_view.dart';
 import 'container_actions/delete_container_action.dart';
-import 'container_actions/edit_container_action.dart';
+import 'container_actions/details_container_action.dart';
 
 class ContainerWidget extends ConsumerWidget {
   final TokenContainer container;
@@ -52,7 +53,7 @@ class ContainerWidget extends ConsumerWidget {
           identifier: container.serial,
           actions: [
             DeleteContainerAction(container: container, key: Key('${container.serial}-DeleteContainerAction')),
-            EditContainerAction(container: container, key: Key('${container.serial}-EditContainerAction')),
+            DetailsContainerAction(container: container, key: Key('${container.serial}-EditContainerAction')),
           ],
           stack: stack,
           child: TokenWidgetTile(
@@ -61,7 +62,7 @@ class ContainerWidget extends ConsumerWidget {
               style: Theme.of(context).textTheme.titleMedium,
             ),
             subtitles: [
-              AppLocalizations.of(context)!.issuer(container.issuer),
+              AppLocalizations.of(context)!.issuerLabel(container.issuer),
               '${container.finalizationState.rolloutMsgLocalized(AppLocalizations.of(context)!)}',
             ],
             trailing: _getTrailing(context, ref),

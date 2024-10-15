@@ -39,6 +39,7 @@ import '../../../../interfaces/repo/token_container_repository.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../model/api_results/pi_server_results/pi_server_result_value.dart';
 import '../../../../model/enums/rollout_state.dart';
+import '../../../../model/enums/sync_state.dart';
 import '../../../../model/pi_server_response.dart';
 import '../../../../model/riverpod_states/token_container_state.dart';
 import '../../../../model/riverpod_states/token_state.dart';

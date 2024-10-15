@@ -123,6 +123,9 @@
   "@container": {
     "description": "Title for the container view."
   },
+  "@containerSerial": {
+    "description": "description"
+  },
   "@continueButton": {
     "description": "description"
   },
@@ -193,9 +196,6 @@
   },
   "@deviceCredentialsRequiredTitle": {
     "description": "Message showed as a title in a dialog which indicates the user has not set up credentials authentication on their device. It is used on Android side. Maximum 60 characters."
-  },
-  "@deviceCredentialsSetupDescription": {
-    "description": "Message advising the user to go to the settings and configure device credentials on their device. It shows in a dialog on Android side."
   },
   "@digits": {
     "description": "Title of the dropdown button where the number of digits for the opt value is selected."
@@ -399,9 +399,6 @@
   "@goToSettingsButton": {
     "description": "Message showed on a button that the user can click to go to settings pages from the current dialog. It is used on both Android and iOS side. Maximum 30 characters."
   },
-  "@goToSettingsDescription": {
-    "description": "Message advising the user to go to the settings and configure device credentials or biometrics on their device."
-  },
   "@grantCameraPermissionDialogButton": {
     "description": "description"
   },
@@ -410,9 +407,6 @@
   },
   "@grantCameraPermissionDialogTitle": {
     "description": "description"
-  },
-  "@guide": {
-    "description": "Button to open the guide screen."
   },
   "@handshakeFailed": {
     "description": "Error message when the handshake failed."
@@ -606,7 +600,7 @@
   "@isExpotableQuestion": {
     "description": "Label for the question if the token is exportable."
   },
-  "@issuer": {
+  "@issuerLabel": {
     "description": "Label for the issuer of the token, container... etc.",
     "placeholders": {
       "name": {
@@ -633,9 +627,6 @@
   },
   "@licensesAndVersion": {
     "description": "description"
-  },
-  "@lightTheme": {
-    "description": "The light theme."
   },
   "@linkedContainer": {
     "description": "Label for the linked container serial number."
@@ -726,14 +717,6 @@
   },
   "@ok": {
     "description": "Button to confirm an action."
-  },
-  "@onBoardingTitle1": {
-    "description": "description",
-    "placeholders": {
-      "appName": {
-        "example": "privacyIDEA Authenticator"
-      }
-    }
   },
   "@oneMore": {
     "description": "description"
@@ -927,9 +910,6 @@
   "@requestTriggerdByUserQuestion": {
     "description": "description"
   },
-  "@retry": {
-    "description": "Label for e.g. a button. Something is tried to be done again."
-  },
   "@retryRollout": {
     "description": "description"
   },
@@ -1067,9 +1047,6 @@
   },
   "@synchronizingTokens": {
     "description": "Title of the push synchronization dialog."
-  },
-  "@systemTheme": {
-    "description": "The systems theme."
   },
   "@theSecretDoesNotFitTheCurrentEncoding": {
     "description": "Hint telling the user that the secret does not fit the selected encoding."
@@ -1222,6 +1199,8 @@
   "confirmation": "Confirmation",
   "connectionFailed": "Connection failed.",
   "container": "Container",
+  "containerSerial": "Container Serial",
+  "containerSyncUrl": "Container Sync Url",
   "continueButton": "Continue",
   "copyOTPToClipboard": "Copy OTP to clipboard",
   "couldNotConnectToServer": "Could not connect to server",
@@ -1243,12 +1222,14 @@
   "deleteContainerDialogContent": "If you delete this container, the smartphone is disconnected from the privacyIDEA server and the tokens of this container become unusable. Before deleting, make sure that the corresponding tokens are no longer required!",
   "deleteContainerDialogTitle": "Deleting Container {serial}",
   "deleteLockedToken": "Please authenticate to delete the locked token.",
+  "details": "Details",
   "deviceCredentialsRequiredTitle": "Device credentials not set up",
   "deviceCredentialsSetupDescription": "Setup device credentials in the device's settings",
   "digits": "Digits",
   "dismiss": "Dismiss",
   "done": "Done",
   "edit": "Edit",
+  "editContainer": "Edit Container",
   "editLockedToken": "Please authenticate to edit the locked token.",
   "editToken": "Edit Token",
   "enablePolling": "Enable polling",
@@ -1292,6 +1273,7 @@
   "feedbackSentTitle": "Feedback sent",
   "feedbackTitle": "Your feedback is always welcome!",
   "fileSavedToDownloadsFolder": "File saved to Downloads folder",
+  "finalizationState": "Finalization State",
   "finalizeContainerFailed": "Finalize Container Failed",
   "findingQrCodeInImage": "Looking for QR code in image...",
   "firebaseToken": "Firebase Token",
@@ -1345,7 +1327,8 @@
   "invalidValueIn": "The {type} \"{value}\" is not valid for \"{parameter}\" in \"{map}\"",
   "isExpotableQuestion": "Is exportable?",
   "isPiTokenQuestion": "It's a privacyIDEA token?",
-  "issuer": "Issuer: {name}",
+  "issuer": "Issuer",
+  "issuerLabel": "Issuer: {name}",
   "language": "Language",
   "legacySigningErrorMessage": "The token was enrolled in a old version of this app, which may cause trouble using it.\nIt is suggested to enroll a new push token if the problem persist!",
   "legacySigningErrorTitle": "An error occured while using the legacy token: {tokenLabel}",
@@ -1474,6 +1457,11 @@
   "sync": "Sync",
   "syncContainerFailed": "Container synchronization failed",
   "syncFbTokenFailed": "Synchronization failed for the following tokens, please try again:",
+  "syncState": "Sync State",
+  "syncStateCompletedName": "Sync Completed",
+  "syncStateFailedName": "Sync Failed",
+  "syncStateNotStartedName": "Sync not started",
+  "syncStateSyncingName": "Currently Syncing",
   "synchronizePushTokens": "Synchronize push tokens",
   "synchronizesTokensWithServer": "Synchronizes tokens with the privacyIDEA server.",
   "synchronizingTokens": "Synchronizing tokens.",

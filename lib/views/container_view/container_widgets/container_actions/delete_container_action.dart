@@ -25,10 +25,8 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../model/token_container.dart';
 import '../../../../utils/customization/theme_extentions/action_theme.dart';
-import '../../../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
-import '../../../../widgets/dialog_widgets/default_dialog.dart';
-import '../../../../widgets/elevated_delete_button.dart';
 import '../../../main_view/main_view_widgets/token_widgets/slideable_action.dart';
+import 'delete_container_action_dialog.dart';
 
 class DeleteContainerAction extends ConsumerSlideableAction {
   final TokenContainer container;
@@ -40,7 +38,7 @@ class DeleteContainerAction extends ConsumerSlideableAction {
 
   @override
   CustomSlidableAction build(BuildContext context, WidgetRef ref) => CustomSlidableAction(
-        onPressed: (BuildContext context) => _showDeleteDialog(context, ref), // ref.read(tokenContainerProvider.notifier).deleteContainer(container),
+        onPressed: (BuildContext context) => _showDeleteDialog(context, ref),
         backgroundColor: Theme.of(context).extension<ActionTheme>()!.deleteColor,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -56,38 +54,6 @@ class DeleteContainerAction extends ConsumerSlideableAction {
         ),
       );
   Future<void> _showDeleteDialog(BuildContext context, WidgetRef ref) => showDialog(
-        context: context,
-        builder: (context) => DeleteContainerDialog(container),
-      );
-}
-
-class DeleteContainerDialog extends ConsumerWidget {
-  final TokenContainer container;
-
-  const DeleteContainerDialog(this.container, {super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return DefaultDialog(
-      title: Text(AppLocalizations.of(context)!.deleteContainerDialogTitle(container.serial)),
-      content: Text(AppLocalizations.of(context)!.deleteContainerDialogContent),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text(AppLocalizations.of(context)!.cancel),
-        ),
-        ElevatedDeleteButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-            ref.read(tokenContainerProvider.notifier).deleteContainer(container);
-          },
-          text: AppLocalizations.of(context)!.delete,
-        ),
-      ],
-    );
-  }
-
-  Future<void> _showDeleteConfirmationDialog(BuildContext context, WidgetRef ref) => showDialog(
         context: context,
         builder: (context) => DeleteContainerDialog(container),
       );

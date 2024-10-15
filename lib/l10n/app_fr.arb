@@ -282,7 +282,7 @@
   "@isPiTokenQuestion": {
     "description": "Label for the question if the token is a privacyIDEA token."
   },
-  "@issuer": {
+  "@issuerLabel": {
     "description": "Label for the issuer of the token, container... etc.",
     "placeholders": {
       "name": {
@@ -808,7 +808,7 @@
   "invalidValueIn": "untranslated",
   "isExpotableQuestion": "Est exportable ?",
   "isPiTokenQuestion": "C'est un jeton privacyIDEA ?",
-  "issuer": "Issuer: {name}",
+  "issuerLabel": "Issuer: {name}",
   "language": "Langue",
   "legacySigningErrorMessage": "Le token a été créé dans une version obsolète de l'application, ce qui peut entraîner des problèmes d'utilisation.\nIl est recommandé de créer un nouveau token push si le problème persiste !",
   "legacySigningErrorTitle": "Une erreur s'est produite lors de l'utilisation du jeton obsolète : {tokenLabel}",
