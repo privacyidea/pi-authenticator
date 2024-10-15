@@ -21,7 +21,9 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/folder_widgets/token_folder_expandable_widgets/token_folder_expandable_header.dart';
+import 'package:privacyidea_authenticator/model/enums/sync_state.dart';
+import 'package:privacyidea_authenticator/utils/default_inkwell.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 
 import '../../../../model/mixins/sortable_mixin.dart';
 import '../../../../model/tokens/token.dart';
@@ -45,7 +47,7 @@ class TokenWidgetBase extends ConsumerWidget {
   final List<Widget> stack;
   final IconData dragIcon;
 
-  const TokenWidgetBase({
+  const TokenWidgetBase._({
     required this.tile,
     required this.token,
     this.deleteAction,
@@ -55,6 +57,28 @@ class TokenWidgetBase extends ConsumerWidget {
     this.dragIcon = Icons.drag_handle,
     super.key,
   });
+
+  factory TokenWidgetBase({
+    required Widget tile,
+    required Token token,
+    ConsumerSlideableAction? deleteAction,
+    ConsumerSlideableAction? editAction,
+    ConsumerSlideableAction? lockAction,
+    List<Widget> stack = const <Widget>[],
+    IconData dragIcon = Icons.drag_handle,
+    Key? key,
+  }) {
+    return TokenWidgetBase._(
+      tile: tile,
+      token: token,
+      deleteAction: deleteAction,
+      editAction: editAction,
+      lockAction: lockAction,
+      stack: stack,
+      dragIcon: dragIcon,
+      key: key,
+    );
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -68,68 +92,95 @@ class TokenWidgetBase extends ConsumerWidget {
         lockAction ?? DefaultLockAction(token: token, key: Key('${token.id}lockAction')),
       );
     }
+    final syncState = ref.watch(tokenContainerProvider).valueOrNull?.getSyncState(token);
+
+    if (draggingSortable == token) return const SizedBox();
     final child = Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: DefaultInkWell(
         onTap: () {},
-        child: tile,
+        child: Stack(
+          children: [
+            if (syncState != null)
+              Positioned.fill(
+                top: 8,
+                bottom: 8,
+                left: 0,
+                right: 0,
+                child: FittedBox(
+                  fit: BoxFit.contain,
+                  child: Opacity(
+                    opacity: 0.05,
+                    child: switch (syncState) {
+                      SyncState.notStarted => const Icon(Icons.sync),
+                      SyncState.syncing => const Icon(Icons.sync),
+                      SyncState.failed => const Icon(Icons.cloud_off_outlined),
+                      SyncState.completed => const Icon(Icons.cloud_done_outlined),
+                    },
+                  ),
+                ),
+              ),
+            tile,
+          ],
+        ),
       ),
     );
-    return draggingSortable == null
-        ? PiSliable(
-            groupTag: TokenWidget.groupTag,
-            identifier: token.id,
-            actions: actions,
-            stack: stack,
-            child: LongPressDraggable(
-              maxSimultaneousDrags: 1,
-              onDragStarted: () => ref.read(draggingSortableProvider.notifier).state = token,
-              onDragCompleted: () {
-                Logger.info('Draggable completed');
-                // Will be handled by the sortableNotifier
-              },
-              onDraggableCanceled: (velocity, offset) {
-                Logger.info('Draggable canceled');
-                globalRef?.read(draggingSortableProvider.notifier).state = null;
-              },
-              dragAnchorStrategy: (Draggable<Object> d, BuildContext context, Offset point) {
-                final textSize = textSizeOf(
-                  text: token.label,
-                  style: Theme.of(context).textTheme.titleMedium!,
-                  textScaler: MediaQuery.of(context).textScaler,
-                  maxLines: 1,
-                );
-                return Offset(max(textSize.width / 2, 30), textSize.height / 2 + 30);
-              },
-              feedback: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(dragIcon, size: 60),
-                  Material(
-                      color: Colors.transparent,
-                      child: Text(
-                        token.label,
-                        style: Theme.of(context).textTheme.titleMedium,
-                        overflow: TextOverflow.fade,
-                        softWrap: false,
-                      )),
-                ],
-              ),
-              data: token,
-              child: Material(
+
+    if (draggingSortable != null) {
+      return PiSliable(
+        groupTag: TokenWidget.groupTag,
+        identifier: token.id,
+        actions: actions,
+        stack: stack,
+        child: child,
+      );
+    }
+
+    return PiSliable(
+      groupTag: TokenWidget.groupTag,
+      identifier: token.id,
+      actions: actions,
+      stack: stack,
+      child: LongPressDraggable(
+        maxSimultaneousDrags: 1,
+        onDragStarted: () => ref.read(draggingSortableProvider.notifier).state = token,
+        onDragCompleted: () {
+          Logger.info('Draggable completed');
+          // Will be handled by the sortableNotifier
+        },
+        onDraggableCanceled: (velocity, offset) {
+          Logger.info('Draggable canceled');
+          globalRef?.read(draggingSortableProvider.notifier).state = null;
+        },
+        dragAnchorStrategy: (Draggable<Object> d, BuildContext context, Offset point) {
+          final textSize = textSizeOf(
+            text: token.label,
+            style: Theme.of(context).textTheme.titleMedium!,
+            textScaler: MediaQuery.of(context).textScaler,
+            maxLines: 1,
+          );
+          return Offset(max(textSize.width / 2, 30), textSize.height / 2 + 30);
+        },
+        feedback: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(dragIcon, size: 60),
+            Material(
                 color: Colors.transparent,
-                child: child,
-              ),
-            ),
-          )
-        : draggingSortable == token
-            ? const SizedBox()
-            : PiSliable(
-                groupTag: TokenWidget.groupTag,
-                identifier: token.id,
-                actions: actions,
-                stack: stack,
-                child: child,
-              );
+                child: Text(
+                  token.label,
+                  style: Theme.of(context).textTheme.titleMedium,
+                  overflow: TextOverflow.fade,
+                  softWrap: false,
+                )),
+          ],
+        ),
+        data: token,
+        child: Material(
+          color: Colors.transparent,
+          child: child,
+        ),
+      ),
+    );
   }
 }

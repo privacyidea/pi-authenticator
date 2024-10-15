@@ -80,7 +80,7 @@ class ContainerWidget extends ConsumerWidget {
           final tokenState = ref.read(tokenProvider);
           await ref.read(tokenContainerProvider.notifier).syncTokens(tokenState, containersToSync: [container as TokenContainerFinalized], isManually: true);
         },
-        child: const Icon(Icons.sync),
+        child: (container as TokenContainerFinalized).syncState == SyncState.failed ? const Icon(Icons.sync_problem) : const Icon(Icons.sync),
       );
     }
     if (container.finalizationState.isFailed) {
@@ -90,7 +90,7 @@ class ContainerWidget extends ConsumerWidget {
         onPressed: () async {
           await ref.read(tokenContainerProvider.notifier).finalize(container, isManually: true);
         },
-        child: const Icon(Icons.sync_problem),
+        child: const Icon(Icons.link_rounded),
       );
     }
     return CircularProgressIndicator();
