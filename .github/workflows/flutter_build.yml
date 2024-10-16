@@ -23,13 +23,14 @@ jobs:
     - uses: actions/setup-java@v2
       with:
         distribution: 'zulu'
-        java-version: '11'
+        java-version: '17.0.11'
     - uses: subosito/flutter-action@v2
       with:
         channel: 'stable'
         flutter-version: '3.24.3'
     - run: "flutter --version"
     - run: "flutter pub get"
+    - run: "flutter gen-l10n"
     - run: "flutter build ios -t 'lib/mains/main_netknights.dart' --debug --flavor netknights --no-codesign"
 
   build_appbundle:
@@ -47,8 +48,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with:
-          distribution: 'oracle'
-          java-version: '17'
+          distribution: 'zulu'
+          java-version: '17.0.11'
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
@@ -56,4 +57,5 @@ jobs:
       - run: 'flutter clean'
       - run: "flutter --version"
       - run: "flutter pub get"
+      - run: "flutter gen-l10n"
       - run: "flutter build apk -t 'lib/mains/main_netknights.dart' --debug --flavor netknights"
