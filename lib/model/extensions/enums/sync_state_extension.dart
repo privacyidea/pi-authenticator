@@ -24,9 +24,9 @@ import '../../enums/sync_state.dart';
 
 extension SyncStateX on SyncState {
   String localizedName(AppLocalizations localization) => switch (this) {
-        SyncState.notStarted => localization.syncStateNotStartedName,
-        SyncState.syncing => localization.syncStateSyncingName,
-        SyncState.completed => localization.syncStateCompletedName,
-        SyncState.failed => localization.syncStateFailedName,
+        SyncState.notStarted => localization.syncStateNotStartedDescription,
+        SyncState.syncing => localization.syncStateSyncingDescription,
+        SyncState.completed => localization.syncStateCompletedDescription,
+        SyncState.failed => localization.syncStateFailedDescription,
       };
 }

@@ -58,7 +58,7 @@ class _DetailsContainerDialogState extends ConsumerState<DetailsContainerDialog>
   @override
   Widget build(BuildContext context) {
     return DefaultDialog(
-      title: Text(AppLocalizations.of(context)!.editContainer),
+      title: Text(AppLocalizations.of(context)!.containerDetails),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
