@@ -33,7 +33,11 @@ void showMessage({
     return;
   }
   globalSnackbarKey.currentState!.showSnackBar(
-    SnackBar(content: Text(message), duration: duration),
+    SnackBar(
+      behavior: SnackBarBehavior.floating,
+      content: Text(message),
+      duration: duration,
+    ),
   );
 }
 

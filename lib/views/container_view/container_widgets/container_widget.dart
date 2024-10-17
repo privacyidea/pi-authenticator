@@ -19,19 +19,13 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/rollout_state_extension.dart';
-import 'package:privacyidea_authenticator/widgets/button_widgets/cooldown_button.dart';
 
-import '../../../model/enums/sync_state.dart';
 import '../../../model/token_container.dart';
-import '../../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
-import '../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../widgets/pi_slidable.dart';
-import '../../main_view/main_view_widgets/token_widgets/token_widget_tile.dart';
 import '../container_view.dart';
 import 'container_actions/delete_container_action.dart';
 import 'container_actions/details_container_action.dart';
+import 'container_widget_tile.dart';
 
 class ContainerWidget extends ConsumerWidget {
   final TokenContainer container;
@@ -56,43 +50,7 @@ class ContainerWidget extends ConsumerWidget {
             DetailsContainerAction(container: container, key: Key('${container.serial}-EditContainerAction')),
           ],
           stack: stack,
-          child: TokenWidgetTile(
-            title: Text(
-              container.serial,
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
-            subtitles: [
-              AppLocalizations.of(context)!.issuerLabel(container.issuer),
-              '${container.finalizationState.rolloutMsgLocalized(AppLocalizations.of(context)!)}',
-            ],
-            trailing: _getTrailing(context, ref),
-          ),
+          child: ContainerWidgetTile(container: container),
         ),
       );
-
-  Widget _getTrailing(BuildContext context, WidgetRef ref) {
-    if (container is TokenContainerFinalized) {
-      return CooldownButton(
-        styleType: CooldownButtonStyleType.iconButton,
-        childWhenCooldown: CircularProgressIndicator(),
-        isPressable: (container as TokenContainerFinalized).syncState != SyncState.syncing,
-        onPressed: () async {
-          final tokenState = ref.read(tokenProvider);
-          await ref.read(tokenContainerProvider.notifier).syncTokens(tokenState, containersToSync: [container as TokenContainerFinalized], isManually: true);
-        },
-        child: (container as TokenContainerFinalized).syncState == SyncState.failed ? const Icon(Icons.sync_problem) : const Icon(Icons.sync),
-      );
-    }
-    if (container.finalizationState.isFailed) {
-      return CooldownButton(
-        styleType: CooldownButtonStyleType.iconButton,
-        childWhenCooldown: CircularProgressIndicator(),
-        onPressed: () async {
-          await ref.read(tokenContainerProvider.notifier).finalize(container, isManually: true);
-        },
-        child: const Icon(Icons.link_rounded),
-      );
-    }
-    return CircularProgressIndicator();
-  }
 }

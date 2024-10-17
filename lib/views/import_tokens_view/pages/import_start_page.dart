@@ -139,7 +139,7 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
                           },
                         ),
                       )
-                    : const CircularProgressIndicator(),
+                    : const CircularProgressIndicator.adaptive(),
               ],
             ),
           ),

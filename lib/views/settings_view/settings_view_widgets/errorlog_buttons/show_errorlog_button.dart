@@ -77,7 +77,7 @@ void _pressShowErrorLog(BuildContext context) {
                                 errorLog.data.toString(),
                                 style: const TextStyle(fontFamily: 'monospace', fontSize: 8),
                               )
-                            : const CircularProgressIndicator(),
+                            : const CircularProgressIndicator.adaptive(),
                       );
                     }),
               ),

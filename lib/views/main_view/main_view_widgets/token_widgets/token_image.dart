@@ -122,7 +122,7 @@ class _TokenImageState extends State<TokenImage> {
             child: tokenImage ??
                 const SizedBox(
                   width: 32,
-                  child: CircularProgressIndicator(),
+                  child: CircularProgressIndicator.adaptive(),
                 ),
           ))
       : const SizedBox();

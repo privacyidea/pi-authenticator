@@ -38,6 +38,7 @@ import '../model/riverpod_states/token_state.dart';
 import '../model/token_container.dart';
 import '../model/token_template.dart';
 import '../model/tokens/token.dart';
+import '../utils/app_info_utils.dart';
 import '../utils/globals.dart';
 import '../utils/identifiers.dart';
 import '../utils/logger.dart';
@@ -116,14 +117,16 @@ class PrivacyIdeaContainerApi {
         '|${container.timestamp.toIso8601String().replaceFirst('Z', '+00:00')}'
         '|${container.finalizationUrl}'
         '|${container.serial}'
+        '|${AppInfoUtils.deviceId}'
         '${passphrase != null ? '|$passphrase' : ''}';
 
     final signature = eccUtils.signWithPrivateKey(ecPrivateClientKey, message);
 
     final body = {
-      'container_serial': container.serial,
-      'public_client_key': container.publicClientKey,
-      'signature': signature,
+      CONTAINER_CONTAINER_SERIAL: container.serial,
+      CONTAINER_PUBLIC_CLIENT_KEY: container.publicClientKey,
+      CONTAINER_DEVICE_ID: AppInfoUtils.deviceId,
+      CONTAINER_SIGNATURE: signature,
     };
     return await _ioClient.doPost(url: container.finalizationUrl, body: body, sslVerify: false); //TODO: sslVerify
   }
@@ -168,8 +171,8 @@ class PrivacyIdeaContainerApi {
 
     final containerDict = {
       CONTAINER_DICT_SERIAL: container.serial,
-      CONTAINER_DICT_TYPE: 'smartphone',
-      'tokens': otpAuthMaps,
+      CONTAINER_DICT_TYPE: CONTAINER_DICT_TYPE_SMARTPHONE,
+      CONTAINER_DICT_TOKENS: otpAuthMaps,
     };
     final signMessage =
         '${challenge.nonce}|${challenge.timeStamp}|${container.serial}|${challenge.finalizeSyncUrl}|$publicKeyBase64|${jsonEncode(containerDict)}';

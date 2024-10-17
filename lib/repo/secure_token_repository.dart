@@ -225,7 +225,7 @@ class SecureTokenRepository implements TokenRepository {
                     child: SizedBox(
                       height: 50,
                       width: 50,
-                      child: CircularProgressIndicator(),
+                      child: CircularProgressIndicator.adaptive(),
                     ),
                   ),
                 );

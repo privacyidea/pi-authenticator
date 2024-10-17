@@ -21,9 +21,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/model/enums/sync_state.dart';
 import 'package:privacyidea_authenticator/utils/default_inkwell.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 
 import '../../../../model/mixins/sortable_mixin.dart';
 import '../../../../model/tokens/token.dart';
@@ -92,37 +90,13 @@ class TokenWidgetBase extends ConsumerWidget {
         lockAction ?? DefaultLockAction(token: token, key: Key('${token.id}lockAction')),
       );
     }
-    final syncState = ref.watch(tokenContainerProvider).valueOrNull?.getSyncState(token);
 
     if (draggingSortable == token) return const SizedBox();
     final child = Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: DefaultInkWell(
         onTap: () {},
-        child: Stack(
-          children: [
-            if (syncState != null)
-              Positioned.fill(
-                top: 8,
-                bottom: 8,
-                left: 0,
-                right: 0,
-                child: FittedBox(
-                  fit: BoxFit.contain,
-                  child: Opacity(
-                    opacity: 0.05,
-                    child: switch (syncState) {
-                      SyncState.notStarted => const Icon(Icons.sync),
-                      SyncState.syncing => const Icon(Icons.cloud_sync_outlined),
-                      SyncState.failed => const Icon(Icons.cloud_off_outlined),
-                      SyncState.completed => const Icon(Icons.cloud_done_outlined),
-                    },
-                  ),
-                ),
-              ),
-            tile,
-          ],
-        ),
+        child: tile,
       ),
     );
 

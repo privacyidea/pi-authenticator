@@ -120,6 +120,11 @@ const String CONTAINER_EC_KEY_ALGORITHM = 'key_algorithm';
 const String CONTAINER_HASH_ALGORITHM = 'hash_algorithm';
 const String CONTAINER_PASSPHRASE_QUESTION = 'passphrase';
 
+const String CONTAINER_CONTAINER_SERIAL = 'container_serial';
+const String CONTAINER_PUBLIC_CLIENT_KEY = 'public_client_key';
+const String CONTAINER_DEVICE_ID = 'device_id';
+const String CONTAINER_SIGNATURE = 'signature';
+
 // Container sync:
 const String CONTAINER_SYNC_NONCE = 'nonce';
 const String CONTAINER_SYNC_TIMESTAMP = 'time_stamp';
@@ -132,7 +137,9 @@ const String CONTAINER_SYNC_DICT_CLIENT = 'container_dict_client';
 
 const String CONTAINER_DICT_SERIAL = 'serial';
 const String CONTAINER_DICT_TYPE = 'type';
+const String CONTAINER_DICT_TYPE_SMARTPHONE = 'smartphone';
 const String CONTAINER_DICT_TOKENS = 'tokens';
+
 const String CONTAINER_DICT_TOKENS_ADD = 'add';
 const String CONTAINER_DICT_TOKENS_UPDATE = 'update';
 

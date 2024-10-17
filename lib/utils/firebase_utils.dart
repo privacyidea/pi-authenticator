@@ -66,9 +66,10 @@ class FirebaseUtils {
       );
       String errorMessage = e.message ?? 'no error message';
       final SnackBar snackBar = SnackBar(
+          behavior: SnackBarBehavior.floating,
           content: Text(
-        "Firebase notification permission error! ($errorMessage: ${e.code}",
-      ));
+            "Firebase notification permission error! ($errorMessage: ${e.code}",
+          ));
       globalSnackbarKey.currentState?.showSnackBar(snackBar);
     }
 
@@ -87,28 +88,31 @@ class FirebaseUtils {
       } else {
         String errorMessage = error.message ?? 'no error message';
         final SnackBar snackBar = SnackBar(
+            behavior: SnackBarBehavior.floating,
             content: Text(
-          'Push cant be initialized, restart the app and try again. ${error.code}: $errorMessage',
-          overflow: TextOverflow.fade,
-          softWrap: false,
-        ));
+              'Push cant be initialized, restart the app and try again. ${error.code}: $errorMessage',
+              overflow: TextOverflow.fade,
+              softWrap: false,
+            ));
         globalSnackbarKey.currentState?.showSnackBar(snackBar);
       }
     } on FirebaseException catch (error) {
       final SnackBar snackBar = SnackBar(
+          behavior: SnackBarBehavior.floating,
           content: Text(
-        "Push cant be initialized, restart the app and try again$error",
-        overflow: TextOverflow.fade,
-        softWrap: false,
-      ));
+            "Push cant be initialized, restart the app and try again$error",
+            overflow: TextOverflow.fade,
+            softWrap: false,
+          ));
       globalSnackbarKey.currentState?.showSnackBar(snackBar);
     } catch (error) {
       final SnackBar snackBar = SnackBar(
+          behavior: SnackBarBehavior.floating,
           content: Text(
-        "Unknown error: $error",
-        overflow: TextOverflow.fade,
-        softWrap: false,
-      ));
+            "Unknown error: $error",
+            overflow: TextOverflow.fade,
+            softWrap: false,
+          ));
       globalSnackbarKey.currentState?.showSnackBar(snackBar);
     }
 
@@ -120,11 +124,12 @@ class FirebaseUtils {
           updateFirebaseToken(newToken);
         } catch (error) {
           final SnackBar snackBar = SnackBar(
+              behavior: SnackBarBehavior.floating,
               content: Text(
-            "Unknown error: $error",
-            overflow: TextOverflow.fade,
-            softWrap: false,
-          ));
+                "Unknown error: $error",
+                overflow: TextOverflow.fade,
+                softWrap: false,
+              ));
           globalSnackbarKey.currentState?.showSnackBar(snackBar);
         }
       }

@@ -31,7 +31,6 @@ import '../../../../../model/tokens/day_password_token.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../../../utils/utils.dart';
-import '../../../../../widgets/custom_texts.dart';
 import '../../../../../widgets/custom_trailing.dart';
 import '../../../../../widgets/hideable_widget_.dart';
 import '../token_widget_tile.dart';
@@ -78,6 +77,7 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
     Clipboard.setData(ClipboardData(text: widget.token.otpValue));
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
+        behavior: SnackBarBehavior.floating,
         content: Text(AppLocalizations.of(context)!.otpValueCopiedMessage(widget.token.otpValue)),
       ),
     );
@@ -98,40 +98,20 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
     final durationString = duration.toString().split('.').first;
     return TokenWidgetTile(
       key: Key('${widget.token.hashCode}TokenWidgetTile'),
-      tokenImage: widget.token.tokenImage,
-      tokenIsLocked: widget.token.isLocked,
-      isPreview: widget.isPreview,
-      title: Align(
-        alignment: Alignment.centerLeft,
-        child: Tooltip(
-          triggerMode: TooltipTriggerMode.longPress,
-          message: widget.token.isHidden ? AppLocalizations.of(context)!.authenticateToShowOtp : AppLocalizations.of(context)!.copyOTPToClipboard,
-          child: InkWell(
-            onTap: widget.isPreview
-                ? null
-                : widget.token.isLocked && widget.token.isHidden
-                    ? () async => await ref.read(tokenProvider.notifier).showToken(widget.token)
-                    : _copyOtpValue,
-            child: HideableText(
-                text: insertCharAt(widget.token.otpValue, ' ', (widget.token.digits / 2).ceil()),
-                textScaleFactor: 1.9,
-                enabled: widget.token.isLocked,
-                isHidden: widget.token.isHidden),
-          ),
-        ),
-      ),
-      subtitles: widget.isPreview
+      token: widget.token,
+      titleTooltip: widget.token.isHidden ? AppLocalizations.of(context)!.authenticateToShowOtp : AppLocalizations.of(context)!.copyOTPToClipboard,
+      titleOnTap: widget.isPreview
+          ? null
+          : widget.token.isLocked && widget.token.isHidden
+              ? () async => await ref.read(tokenProvider.notifier).showToken(widget.token)
+              : _copyOtpValue,
+      title: insertCharAt(widget.token.otpValue, ' ', (widget.token.digits / 2).ceil()),
+      additionalSubtitles: widget.isPreview
           ? [
-              (widget.token.label.isNotEmpty && widget.token.issuer.isNotEmpty)
-                  ? '${widget.token.issuer}: ${widget.token.label}'
-                  : widget.token.issuer + widget.token.label,
               'Algorithm: ${widget.token.algorithm.name}',
               'Period: ${widget.token.period.toString().split('.').first}',
             ]
-          : [
-              if (widget.token.label.isNotEmpty) widget.token.label,
-              if (widget.token.issuer.isNotEmpty) widget.token.issuer,
-            ],
+          : [],
       trailing: SizedBox(
         height: double.maxFinite,
         child: CustomTrailing(

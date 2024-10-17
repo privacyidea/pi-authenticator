@@ -19,72 +19,110 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/container_token_sync_icon.dart';
 
+import '../../../../model/tokens/token.dart';
+import '../../../../widgets/custom_texts.dart';
 import 'token_image.dart';
 
 final disableCopyOtpProvider = StateProvider<bool>((ref) => false);
 
 class TokenWidgetTile extends ConsumerWidget {
-  final Widget? title;
-  final List<String> subtitles;
+  final Token token;
+  final String title;
+  final List<String> additionalSubtitles;
   final Widget? leading;
   final Widget? trailing;
   final Function()? onTap;
-  final bool tokenIsLocked;
-  final String? tokenImage;
-
-  final bool isPreview;
+  final String titleTooltip;
+  final Function()? titleOnTap;
 
   const TokenWidgetTile({
+    required this.token,
+    required this.title,
+    required this.titleTooltip,
+    this.additionalSubtitles = const [],
     this.leading,
-    this.title,
-    this.subtitles = const [],
     this.trailing,
     this.onTap,
-    this.tokenIsLocked = false,
-    this.tokenImage,
-    this.isPreview = false,
+    this.titleOnTap,
     super.key,
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 2),
-        titleAlignment: ListTileTitleAlignment.center,
-        horizontalTitleGap: isPreview ? 0 : 8,
-        leading: (leading != null) ? leading! : null,
-        onTap: onTap,
-        title: FittedBox(
-          fit: BoxFit.scaleDown,
-          alignment: Alignment.topLeft,
-          child: title,
+  Widget build(BuildContext context, WidgetRef ref) {
+    String subtitle1 = '';
+    if (token.label != title) subtitle1 = token.label;
+    String subtitle2 = token.issuer;
+    final subtitles = [...additionalSubtitles];
+    if (subtitle1.isEmpty && additionalSubtitles.length < 2) subtitles.add('');
+    if (subtitle2.isEmpty && additionalSubtitles.length < 2) subtitles.add('');
+
+    return ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 2),
+      titleAlignment: ListTileTitleAlignment.center,
+      leading: (leading != null) ? leading! : null,
+      onTap: onTap,
+      title: FittedBox(
+        fit: BoxFit.scaleDown,
+        alignment: Alignment.topLeft,
+        child: Align(
+          alignment: Alignment.centerLeft,
+          child: Tooltip(
+            message: titleTooltip,
+            triggerMode: TooltipTriggerMode.longPress,
+            child: InkWell(
+              onTap: titleOnTap,
+              child: HideableText(textScaleFactor: 1.9, isHidden: token.isHidden, text: title),
+            ),
+          ),
         ),
-        subtitle: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TokenImage(tokenImage: tokenImage),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 4.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    for (var line in subtitles)
-                      Text(
-                        line,
-                        style: Theme.of(context).listTileTheme.subtitleTextStyle,
-                        textAlign: TextAlign.left,
-                        overflow: TextOverflow.fade,
-                        softWrap: false,
-                      ),
-                    for (var i = 0; i < 2 - subtitles.length; i++) Text(''),
-                  ],
-                ),
+      ),
+      subtitle: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TokenImage(tokenImage: token.tokenImage),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 4.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  if (subtitle1.isNotEmpty)
+                    Text(
+                      subtitle1,
+                      textAlign: TextAlign.left,
+                      overflow: TextOverflow.fade,
+                      softWrap: false,
+                    ),
+                  if (subtitle2.isNotEmpty)
+                    Row(
+                      children: [
+                        Text(
+                          subtitle2,
+                          textAlign: TextAlign.left,
+                          overflow: TextOverflow.fade,
+                          softWrap: false,
+                        ),
+                        SizedBox(width: 6),
+                        ContainerTokenSyncIcon(token),
+                      ],
+                    ),
+                  for (var line in additionalSubtitles)
+                    Text(
+                      line,
+                      textAlign: TextAlign.left,
+                      overflow: TextOverflow.fade,
+                      softWrap: false,
+                    ),
+                ],
               ),
             ),
-          ],
-        ),
-        trailing: trailing ?? const SizedBox(),
-      );
+          ),
+        ],
+      ),
+      trailing: trailing ?? const SizedBox(),
+    );
+  }
 }
