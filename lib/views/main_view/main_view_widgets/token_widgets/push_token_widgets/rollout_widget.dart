@@ -31,7 +31,7 @@ class RolloutWidget extends StatelessWidget {
   Widget build(BuildContext context) => Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const CircularProgressIndicator(),
+          const CircularProgressIndicator.adaptive(),
           Text(
             token.rolloutState.rolloutMsg(AppLocalizations.of(context)!),
             style: Theme.of(context).textTheme.bodyLarge,

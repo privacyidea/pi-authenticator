@@ -260,6 +260,7 @@ Device Parameters $deviceInfo""";
     await file.writeAsString('', mode: FileMode.write);
     globalSnackbarKey.currentState?.showSnackBar(
       SnackBar(
+        behavior: SnackBarBehavior.floating,
         content: Text(
           _context != null ? AppLocalizations.of(_context!)!.errorLogCleared : 'Error Log Cleared',
           overflow: TextOverflow.fade,
@@ -369,6 +370,7 @@ Device Parameters $deviceInfo""";
     WidgetsBinding.instance.addPostFrameCallback((_) {
       globalSnackbarKey.currentState?.showSnackBar(
         SnackBar(
+          behavior: SnackBarBehavior.floating,
           content: Text(
             _context != null ? AppLocalizations.of(_context!)!.unexpectedError : 'An unexpected error occurred.',
           ),

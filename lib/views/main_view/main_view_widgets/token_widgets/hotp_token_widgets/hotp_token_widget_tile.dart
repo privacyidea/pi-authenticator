@@ -26,7 +26,6 @@ import '../../../../../model/tokens/hotp_token.dart';
 import '../../../../../utils/globals.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../../../utils/utils.dart';
-import '../../../../../widgets/custom_texts.dart';
 import '../../../../../widgets/custom_trailing.dart';
 import '../../../../../widgets/hideable_widget_.dart';
 import '../token_widget_tile.dart';
@@ -72,6 +71,7 @@ class _HOTPTokenWidgetTileState extends ConsumerState<HOTPTokenWidgetTile> {
     Clipboard.setData(ClipboardData(text: widget.token.otpValue));
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
+        behavior: SnackBarBehavior.floating,
         content: Text(AppLocalizations.of(context)!.otpValueCopiedMessage(widget.token.otpValue)),
       ),
     );
@@ -83,41 +83,20 @@ class _HOTPTokenWidgetTileState extends ConsumerState<HOTPTokenWidgetTile> {
   @override
   Widget build(BuildContext context) => TokenWidgetTile(
         key: Key('${widget.token.hashCode}TokenWidgetTile'),
-        tokenImage: widget.token.tokenImage,
-        tokenIsLocked: widget.token.isLocked,
-        isPreview: widget.isPreview,
-        title: Align(
-          alignment: Alignment.centerLeft,
-          child: Tooltip(
-            message: widget.token.isHidden ? AppLocalizations.of(context)!.authenticateToShowOtp : AppLocalizations.of(context)!.copyOTPToClipboard,
-            triggerMode: TooltipTriggerMode.longPress,
-            child: InkWell(
-              onTap: widget.isPreview
-                  ? null
-                  : widget.token.isLocked && widget.token.isHidden
-                      ? () async => await ref.read(tokenProvider.notifier).showToken(widget.token)
-                      : _copyOtpValue,
-              child: HideableText(
-                textScaleFactor: 1.9,
-                isHidden: widget.token.isHidden,
-                text: insertCharAt(widget.token.otpValue, ' ', (widget.token.digits / 2).ceil()),
-                enabled: widget.token.isLocked,
-              ),
-            ),
-          ),
-        ),
-        subtitles: widget.isPreview
+        token: widget.token,
+        titleTooltip: widget.token.isHidden ? AppLocalizations.of(context)!.authenticateToShowOtp : AppLocalizations.of(context)!.copyOTPToClipboard,
+        titleOnTap: widget.isPreview
+            ? null
+            : widget.token.isLocked && widget.token.isHidden
+                ? () async => await ref.read(tokenProvider.notifier).showToken(widget.token)
+                : _copyOtpValue,
+        title: insertCharAt(widget.token.otpValue, ' ', (widget.token.digits / 2).ceil()),
+        additionalSubtitles: widget.isPreview
             ? [
-                (widget.token.label.isNotEmpty && widget.token.issuer.isNotEmpty)
-                    ? '${widget.token.issuer}: ${widget.token.label}'
-                    : '${widget.token.issuer}${widget.token.label}',
                 'Algorithm: ${widget.token.algorithm.name}',
                 'Counter: ${widget.token.counter}',
               ]
-            : [
-                if (widget.token.label.isNotEmpty) widget.token.label,
-                if (widget.token.issuer.isNotEmpty) widget.token.issuer,
-              ],
+            : [],
         trailing: CustomTrailing(
           child: widget.isPreview
               ? FittedBox(

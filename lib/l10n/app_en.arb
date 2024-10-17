@@ -1298,7 +1298,7 @@
   "exportingTokens": "Exporting tokens...",
   "failedToFinalizeContainer": "Failed to finalize the container {serial}",
   "failedToLoad": "Failed to load: \"{name}\"",
-  "failedToSyncContainer": "Failes to sync container {serial}",
+  "failedToSyncContainer": "Failed to sync container {serial}",
   "feedback": "Feedback",
   "feedbackDescription": "If you have any questions, suggestions or problems, please let us know.",
   "feedbackHint": "A ready-made e-mail will open, which you can send to us. If desired, information about your device and the version of the application will be added. You can check and edit the email before sending it.",

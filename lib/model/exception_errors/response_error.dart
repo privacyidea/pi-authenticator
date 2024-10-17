@@ -34,4 +34,9 @@ class ResponseError {
     assert(response.statusCode != 200, 'Status code of an response error should not be 200');
     return ResponseError._(response.statusCode, response.body);
   }
+
+  @override
+  String toString() {
+    return '$statusCode: $message';
+  }
 }

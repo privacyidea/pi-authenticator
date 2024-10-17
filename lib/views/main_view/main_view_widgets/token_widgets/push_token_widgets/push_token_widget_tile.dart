@@ -37,18 +37,9 @@ class PushTokenWidgetTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return TokenWidgetTile(
       key: Key('${token.hashCode}TokenWidgetTile'),
-      tokenIsLocked: token.isLocked,
-      tokenImage: token.tokenImage,
-      isPreview: isPreview,
-      title: Text(
-        token.label,
-        textScaler: const TextScaler.linear(1.9),
-        overflow: TextOverflow.ellipsis,
-        maxLines: 2,
-      ),
-      subtitles: [
-        if (token.issuer.isNotEmpty) token.issuer,
-      ],
+      token: token,
+      title: token.label,
+      titleTooltip: AppLocalizations.of(context)!.containerSerial,
       trailing: FocusedItemAsOverlay(
         tooltipWhenFocused: AppLocalizations.of(context)!.introPollForChallenges,
         alignment: Alignment.centerLeft,
