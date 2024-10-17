@@ -1,14 +1,32 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2024 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import 'package:base32/base32.dart';
 import 'package:crypto/crypto.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:privacyidea_authenticator/model/token_template.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../utils/errors.dart';
 import '../../utils/identifiers.dart';
+import '../../utils/object_validator.dart';
 import '../enums/algorithms.dart';
-import '../enums/encodings.dart';
 import '../enums/token_types.dart';
-import '../extensions/enums/encodings_extension.dart';
 import '../extensions/int_extension.dart';
 import '../token_import/token_origin_data.dart';
 import 'token.dart';
@@ -26,6 +44,9 @@ class SteamToken extends TOTPToken {
   SteamToken({
     required super.id,
     required super.secret,
+    super.serial,
+    super.containerSerial,
+    super.checkedContainer,
     String? type,
     super.tokenImage,
     super.pin,
@@ -45,8 +66,11 @@ class SteamToken extends TOTPToken {
 
   @override
   SteamToken copyWith({
+    String? serial,
     String? label,
     String? issuer,
+    String? Function()? containerSerial,
+    List<String>? checkedContainer,
     String? id,
     bool? isLocked,
     bool? isHidden,
@@ -55,14 +79,17 @@ class SteamToken extends TOTPToken {
     int? sortIndex,
     int? Function()? folderId,
     TokenOriginData? origin,
+    String? secret,
     int? period, // unused steam tokens always have 30 seconds period
     int? digits, // unused steam tokens always have 5 digits
     Algorithms? algorithm, // unused steam tokens always have SHA1 algorithm
-    String? secret,
   }) {
     return SteamToken(
+      serial: serial ?? this.serial,
       label: label ?? this.label,
       issuer: issuer ?? this.issuer,
+      containerSerial: containerSerial != null ? containerSerial() : this.containerSerial,
+      checkedContainer: checkedContainer ?? this.checkedContainer,
       id: id ?? this.id,
       secret: secret ?? this.secret,
       tokenImage: tokenImage ?? this.tokenImage,
@@ -82,7 +109,8 @@ class SteamToken extends TOTPToken {
   @override
   bool isSameTokenAs(Token other) => super.isSameTokenAs(other) && other is SteamToken;
 
-  String otpOfTime(DateTime time) {
+  @override
+  String otpFromTime(DateTime time) {
     // Flooring time/counter is TOTP default, but yes, steam uses the rounded time/counter.
     final counterBytes = (time.millisecondsSinceEpoch / 1000 / period).round().bytes;
     final secretList = base32.decode(secret.toUpperCase());
@@ -101,27 +129,93 @@ class SteamToken extends TOTPToken {
   }
 
   @override
-  String get otpValue => otpOfTime(DateTime.now());
+  String get otpValue => otpFromTime(DateTime.now());
 
-  static SteamToken fromUriMap(Map<String, dynamic> uriMap) {
-    if (uriMap[URI_SECRET] == null) {
-      throw LocalizedArgumentError(
-        localizedMessage: (localizations, value, name) => localizations.secretIsRequired,
-        unlocalizedMessage: 'Secret is required',
-        invalidValue: uriMap[URI_SECRET],
-        name: 'SteamToken#fromUriMap',
-      );
-    }
-    return SteamToken(
-      label: (uriMap[URI_LABEL] as String?) ?? '',
-      issuer: (uriMap[URI_ISSUER] as String?) ?? '',
-      id: const Uuid().v4(),
-      secret: Encodings.base32.encode(uriMap[URI_SECRET]),
-      tokenImage: uriMap[URI_IMAGE] as String?,
-      pin: uriMap[URI_PIN] as bool?,
-      origin: uriMap[URI_ORIGIN] as TokenOriginData?,
+  @override
+  String toString() {
+    return 'STEAM-${super.toString()}';
+  }
+
+  @override
+  SteamToken copyUpdateByTemplate(TokenTemplate template) {
+    final uriMap = validateMap(
+      map: template.otpAuthMap,
+      validators: {
+        OTP_AUTH_LABEL: const ObjectValidatorNullable<String>(),
+        OTP_AUTH_ISSUER: const ObjectValidatorNullable<String>(),
+        OTP_AUTH_SERIAL: const ObjectValidatorNullable<String>(),
+        OTP_AUTH_SECRET_BASE32: base32SecretValidatorNullable,
+        OTP_AUTH_IMAGE: const ObjectValidatorNullable<String>(),
+        OTP_AUTH_PIN: stringToBoolValidatorNullable,
+      },
+      name: 'SteamToken',
+    );
+    return copyWith(
+      label: uriMap[OTP_AUTH_LABEL] as String?,
+      issuer: uriMap[OTP_AUTH_ISSUER] as String?,
+      serial: uriMap[OTP_AUTH_SERIAL] as String?,
+      secret: uriMap[OTP_AUTH_SECRET_BASE32] as String?,
+      tokenImage: uriMap[OTP_AUTH_IMAGE] as String?,
+      pin: uriMap[OTP_AUTH_PIN] as bool?,
+      isLocked: uriMap[OTP_AUTH_PIN] as bool?,
     );
   }
+
+  static SteamToken fromOtpAuthMap(Map<String, dynamic> uriMap, {Map<String, dynamic> additionalData = const {}}) {
+    uriMap = validateMap(
+      map: uriMap,
+      validators: {
+        OTP_AUTH_LABEL: const ObjectValidator<String>(defaultValue: ''),
+        OTP_AUTH_ISSUER: const ObjectValidator<String>(defaultValue: ''),
+        OTP_AUTH_SERIAL: const ObjectValidatorNullable<String>(),
+        OTP_AUTH_SECRET_BASE32: base32Secretvalidator,
+        OTP_AUTH_IMAGE: const ObjectValidatorNullable<String>(),
+        OTP_AUTH_PIN: stringToBoolValidatorNullable,
+      },
+      name: 'SteamToken#otpAuthMap',
+    );
+    final validatedAdditionalData = Token.validateAdditionalData(additionalData);
+    return SteamToken(
+      label: uriMap[OTP_AUTH_LABEL],
+      issuer: uriMap[OTP_AUTH_ISSUER],
+      serial: uriMap[OTP_AUTH_SERIAL],
+      secret: uriMap[OTP_AUTH_SECRET_BASE32],
+      tokenImage: uriMap[OTP_AUTH_IMAGE],
+      pin: uriMap[OTP_AUTH_PIN],
+      isLocked: uriMap[OTP_AUTH_PIN],
+      id: validatedAdditionalData[Token.ID] ?? const Uuid().v4(),
+      containerSerial: validatedAdditionalData[Token.CONTAINER_SERIAL],
+      checkedContainer: validatedAdditionalData[Token.CHECKED_CONTAINERS] ?? [],
+      sortIndex: validatedAdditionalData[Token.SORT_INDEX],
+      folderId: validatedAdditionalData[Token.FOLDER_ID],
+      origin: validatedAdditionalData[Token.ORIGIN],
+      isHidden: validatedAdditionalData[Token.HIDDEN],
+    );
+  }
+
+  /// This is used to create a map that typically was created from a uri.
+  /// ```dart
+  ///  ------------------------- [Token] -------------------------
+  /// | OTP_AUTH_SERIAL: serial, (optional)                       |
+  /// | OTP_AUTH_TYPE: type,                                      |
+  /// | OTP_AUTH_LABEL: label,                                    |
+  /// | OTP_AUTH_ISSUER: issuer,                                  |
+  /// | OTP_AUTH_PIN: pin,                                        |
+  /// | OTP_AUTH_IMAGE: tokenImage, (optional)                    |
+  ///  -----------------------------------------------------------
+  ///  ----------------------- [OTPToken] ------------------------
+  /// | OTP_AUTH_ALGORITHM: algorithm,                            |
+  /// | OTP_AUTH_DIGITS: digits,                                  |
+  ///  -----------------------------------------------------------
+  ///  ----------------------- [HOTPToken] -----------------------
+  /// | OTP_AUTH_COUNTER: period,                                 |
+  ///  -----------------------------------------------------------
+  ///  ----------------------- [SteamToken] ----------------------
+  /// | /*No additional fields*/                                  |
+  ///  -----------------------------------------------------------
+  /// ```
+  @override
+  Map<String, dynamic> toOtpAuthMap() => super.toOtpAuthMap();
 
   static SteamToken fromJson(Map<String, dynamic> json) => _$SteamTokenFromJson(json);
   @override

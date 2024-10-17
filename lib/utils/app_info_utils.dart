@@ -1,3 +1,22 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2024 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
@@ -20,6 +39,7 @@ class AppInfoUtils {
     _appBuildNumber = packageInfo.buildNumber;
     _androidInfo = !kIsWeb && Platform.isAndroid ? await _deviceInfo.androidInfo : null;
     _iosInfo = !kIsWeb && Platform.isIOS ? await _deviceInfo.iosInfo : null;
+    _deviceId = !kIsWeb ? (Platform.isAndroid ? _androidInfo!.id : _iosInfo!.identifierForVendor ?? 'N/A') : 'Web: Not available.';
 
     isInitialized = true;
   }
@@ -38,6 +58,9 @@ class AppInfoUtils {
 
   static String get currentBuildNumber => isInitialized ? _appBuildNumber : throw Exception('AppInfoUtils not initialized');
   static late final String _appBuildNumber;
+
+  static String get deviceId => isInitialized ? _deviceId : throw Exception('AppInfoUtils not initialized');
+  static late final String _deviceId;
 
   static String get dartVersion => Platform.version;
   static String get platform => Platform.operatingSystem;

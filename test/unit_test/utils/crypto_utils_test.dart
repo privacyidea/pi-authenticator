@@ -409,7 +409,7 @@ void _testDecodeSecretToUint8() {
     });
 
     test('Test non base32 secret', () {
-      expect(() => Encodings.base32.decode('p'), throwsFormatException);
+      expect(() => Encodings.base32.decode('AAA+AAA='), throwsFormatException);
       expect(() => Encodings.base32.decode('AAAAAAöA'), throwsFormatException);
     });
 

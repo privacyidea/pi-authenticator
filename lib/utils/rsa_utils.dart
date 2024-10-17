@@ -3,7 +3,7 @@
 
   Authors: Timo Sturm <timo.sturm@netknights.it>
            Frank Merkel <frank.merkel@netknights.it>
-  Copyright (c) 2017-2023 NetKnights GmbH
+  Copyright (c) 2017-2024 NetKnights GmbH
 
   Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import 'package:asn1lib/asn1lib.dart';
 import 'package:base32/base32.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pointycastle/export.dart';
+
 import '../model/tokens/push_token.dart';
 import '../utils/crypto_utils.dart';
 import '../utils/identifiers.dart';
@@ -199,7 +200,7 @@ class RsaUtils {
     try {
       isVerified = signer.verifySignature(signedMessage, RSASignature(signature));
     } on ArgumentError catch (e, s) {
-      Logger.warning('Verifying signature failed due to ${e.name}', name: 'crypto_utils.dart#verifyRSASignature', error: e, stackTrace: s);
+      Logger.warning('Verifying signature failed due to ${e.name}', error: e, stackTrace: s);
     }
 
     return isVerified;
@@ -219,9 +220,9 @@ class RsaUtils {
   }
 
   Future<AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey>> generateRSAKeyPair() async {
-    Logger.info('Start generating RSA key pair', name: 'crypto_utils.dart#generateRSAKeyPair');
+    Logger.info('Start generating RSA key pair');
     AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey> keyPair = await compute(_generateRSAKeyPairIsolate, 4096);
-    Logger.info('Finished generating RSA key pair', name: 'crypto_utils.dart#generateRSAKeyPair');
+    Logger.info('Finished generating RSA key pair');
     return keyPair;
   }
 
