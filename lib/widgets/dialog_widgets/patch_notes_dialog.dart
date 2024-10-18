@@ -7,7 +7,8 @@ import '../../model/enums/patch_note_type.dart';
 import '../../model/extensions/enums/patch_note_type_extension.dart';
 import '../../model/version.dart';
 import '../../utils/app_info_utils.dart';
-import '../../utils/riverpod_providers.dart';
+import '../../utils/globals.dart';
+import '../../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import 'default_dialog.dart';
 
 class PatchNotesDialog extends StatelessWidget {
@@ -27,7 +28,7 @@ class PatchNotesDialog extends StatelessWidget {
       child: DefaultDialog(
         title: Text(
           localizations.patchNotesDialogTitle,
-          style: Theme.of(context).textTheme.titleLarge,
+          style: Theme.of(context).textTheme.titleMedium,
         ),
         content: SingleChildScrollView(
           child: Column(

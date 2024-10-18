@@ -2,20 +2,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
 import 'package:mockito/mockito.dart';
-import 'package:privacyidea_authenticator/interfaces/repo/push_request_repository.dart';
 import 'package:privacyidea_authenticator/model/push_request.dart';
-import 'package:privacyidea_authenticator/model/states/push_request_state.dart';
+import 'package:privacyidea_authenticator/model/riverpod_states/push_request_state.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
-import 'package:privacyidea_authenticator/state_notifiers/push_request_notifier.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/push_request_provider.dart';
 import 'package:privacyidea_authenticator/utils/custom_int_buffer.dart';
-import 'package:privacyidea_authenticator/utils/privacyidea_io_client.dart';
-import 'package:privacyidea_authenticator/utils/push_provider.dart';
-import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
-import 'package:mockito/annotations.dart';
 
-import 'push_request_notifier_test.mocks.dart';
+import '../../tests_app_wrapper.mocks.dart';
 
-@GenerateMocks([RsaUtils, PrivacyideaIOClient, PushProvider, PushRequestRepository])
 void main() {
   _testPushRequestNotifier();
 }
@@ -28,13 +22,19 @@ void _testPushRequestNotifier() {
       final mockPushProvider = MockPushProvider();
       final mockRsaUtils = MockRsaUtils();
       final mockPushRepo = MockPushRequestRepository();
-      final provider = StateNotifierProvider<PushRequestNotifier, PushRequestState>((ref) => PushRequestNotifier(
-            ref: ref,
-            ioClient: mockIoClient,
-            pushProvider: mockPushProvider,
-            rsaUtils: mockRsaUtils,
-            pushRepo: mockPushRepo,
-          ));
+      final pushProvider = pushRequestNotifierProviderOf(
+        ioClient: mockIoClient,
+        rsaUtils: mockRsaUtils,
+        pushProvider: mockPushProvider,
+        pushRepo: mockPushRepo,
+      );
+      //
+      //StateNotifierProvider<PushRequestNotifier, PushRequestState>((ref) => PushRequestNotifier(
+      //       ioClient: mockIoClient,
+      //       rsaUtils: mockRsaUtils,
+      //       pushProviderOverride: mockPushProvider,
+      //       pushRepoOverride: mockPushRepo,
+      //     ));
       final pr = PushRequest(
         title: 'title',
         question: 'question',
@@ -58,7 +58,8 @@ void _testPushRequestNotifier() {
       )).thenAnswer((_) async => Response('', 200));
       when(mockPushRepo.saveState(any)).thenAnswer((_) async {});
       when(mockPushRepo.loadState()).thenAnswer((_) async => before);
-      final initState = await container.read(provider.notifier).initState;
+      final initState = await container.read(pushProvider.future);
+      verify(mockPushRepo.loadState()).called(1);
       expect(initState, before);
       when(mockRsaUtils.trySignWithToken(any, any)).thenAnswer((_) async => 'signature');
       when(mockIoClient.doPost(
@@ -68,10 +69,9 @@ void _testPushRequestNotifier() {
       )).thenAnswer((_) async => Response('', 200));
       when(mockPushRepo.saveState(any)).thenAnswer((_) async {});
 
-      await container.read(provider.notifier).accept(PushToken(serial: 'serial', id: 'id'), pr);
+      await container.read(pushProvider.notifier).accept(PushToken(serial: 'serial', id: 'id'), pr);
 
-      expect(container.read(provider), after);
-      verify(mockPushRepo.loadState()).called(1);
+      expect(await container.read(pushProvider.future), after);
       verify(mockRsaUtils.trySignWithToken(any, any)).called(1);
       verify(mockIoClient.doPost(
         url: anyNamed('url'),
@@ -86,13 +86,12 @@ void _testPushRequestNotifier() {
       final mockPushProvider = MockPushProvider();
       final mockRsaUtils = MockRsaUtils();
       final mockPushRepo = MockPushRequestRepository();
-      final provider = StateNotifierProvider<PushRequestNotifier, PushRequestState>((ref) => PushRequestNotifier(
-            ref: ref,
-            ioClient: mockIoClient,
-            pushProvider: mockPushProvider,
-            rsaUtils: mockRsaUtils,
-            pushRepo: mockPushRepo,
-          ));
+      final pushProvider = pushRequestNotifierProviderOf(
+        ioClient: mockIoClient,
+        rsaUtils: mockRsaUtils,
+        pushProvider: mockPushProvider,
+        pushRepo: mockPushRepo,
+      );
       final pr = PushRequest(
         title: 'title',
         question: 'question',
@@ -116,7 +115,7 @@ void _testPushRequestNotifier() {
       )).thenAnswer((_) async => Response('', 200));
       when(mockPushRepo.saveState(any)).thenAnswer((_) async {});
       when(mockPushRepo.loadState()).thenAnswer((_) async => before);
-      final initState = await container.read(provider.notifier).initState;
+      final initState = await container.read(pushProvider.future);
       expect(initState, before);
       when(mockRsaUtils.trySignWithToken(any, any)).thenAnswer((_) async => 'signature');
       when(mockIoClient.doPost(
@@ -125,8 +124,8 @@ void _testPushRequestNotifier() {
         sslVerify: anyNamed('sslVerify'),
       )).thenAnswer((_) async => Response('', 200));
       when(mockPushRepo.saveState(any)).thenAnswer((_) async {});
-      await container.read(provider.notifier).decline(PushToken(serial: 'serial', id: 'id'), pr);
-      expect(container.read(provider), after);
+      await container.read(pushProvider.notifier).decline(PushToken(serial: 'serial', id: 'id'), pr);
+      expect((await container.read(pushProvider.future)), after);
       verify(mockPushRepo.loadState()).called(1);
       verify(mockRsaUtils.trySignWithToken(any, any)).called(1);
       verify(mockIoClient.doPost(
@@ -143,13 +142,12 @@ void _testPushRequestNotifier() {
       final mockPushProvider = MockPushProvider();
       final mockRsaUtils = MockRsaUtils();
       final mockPushRepo = MockPushRequestRepository();
-      final provider = StateNotifierProvider<PushRequestNotifier, PushRequestState>((ref) => PushRequestNotifier(
-            ref: ref,
-            ioClient: mockIoClient,
-            pushProvider: mockPushProvider,
-            rsaUtils: mockRsaUtils,
-            pushRepo: mockPushRepo,
-          ));
+      final pushProvider = pushRequestNotifierProviderOf(
+        ioClient: mockIoClient,
+        rsaUtils: mockRsaUtils,
+        pushProvider: mockPushProvider,
+        pushRepo: mockPushRepo,
+      );
       final pr = PushRequest(
         title: 'title',
         question: 'question',
@@ -168,10 +166,10 @@ void _testPushRequestNotifier() {
       when(mockPushRepo.loadState()).thenAnswer((_) async => before);
       when(mockPushRepo.saveState(any)).thenAnswer((_) async {});
 
-      final initState = await container.read(provider.notifier).initState;
+      final initState = await container.read(pushProvider.future);
       expect(initState, before);
-      await container.read(provider.notifier).add(pr2);
-      expect(container.read(provider), after);
+      await container.read(pushProvider.notifier).add(pr2);
+      expect((await container.read(pushProvider.future)), after);
     });
     test('remove', () async {
       final container = ProviderContainer();
@@ -179,13 +177,12 @@ void _testPushRequestNotifier() {
       final mockPushProvider = MockPushProvider();
       final mockRsaUtils = MockRsaUtils();
       final mockPushRepo = MockPushRequestRepository();
-      final provider = StateNotifierProvider<PushRequestNotifier, PushRequestState>((ref) => PushRequestNotifier(
-            ref: ref,
-            ioClient: mockIoClient,
-            pushProvider: mockPushProvider,
-            rsaUtils: mockRsaUtils,
-            pushRepo: mockPushRepo,
-          ));
+      final pushProvider = pushRequestNotifierProviderOf(
+        ioClient: mockIoClient,
+        rsaUtils: mockRsaUtils,
+        pushProvider: mockPushProvider,
+        pushRepo: mockPushRepo,
+      );
       final pr = PushRequest(
         title: 'title',
         question: 'question',
@@ -204,11 +201,11 @@ void _testPushRequestNotifier() {
       when(mockPushRepo.loadState()).thenAnswer((_) async => before);
       when(mockPushRepo.saveState(any)).thenAnswer((_) async {});
 
-      final initState = await container.read(provider.notifier).initState;
+      final initState = await container.read(pushProvider.future);
       expect(initState, before);
-      final success = await container.read(provider.notifier).remove(pr2);
+      final success = await container.read(pushProvider.notifier).remove(pr2);
       expect(success, true);
-      expect(container.read(provider), after);
+      expect(await container.read(pushProvider.future), after);
     });
   });
 }

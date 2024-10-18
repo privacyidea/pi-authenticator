@@ -5,16 +5,18 @@ import 'package:mockito/mockito.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
 import 'package:privacyidea_authenticator/mains/main_netknights.dart';
 import 'package:privacyidea_authenticator/model/enums/introduction.dart';
-import 'package:privacyidea_authenticator/model/states/introduction_state.dart';
-import 'package:privacyidea_authenticator/model/states/settings_state.dart';
-import 'package:privacyidea_authenticator/state_notifiers/completed_introduction_notifier.dart';
-import 'package:privacyidea_authenticator/state_notifiers/settings_notifier.dart';
-import 'package:privacyidea_authenticator/state_notifiers/token_folder_notifier.dart';
-import 'package:privacyidea_authenticator/state_notifiers/token_notifier.dart';
+import 'package:privacyidea_authenticator/model/riverpod_states/introduction_state.dart';
+import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.dart';
+import 'package:privacyidea_authenticator/model/riverpod_states/token_folder_state.dart';
 import 'package:privacyidea_authenticator/utils/customization/application_customization.dart';
+import 'package:privacyidea_authenticator/utils/globals.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
-import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 import 'package:privacyidea_authenticator/model/version.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
+import 'package:privacyidea_authenticator/utils/utils.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/hotp_token_widgets/hotp_token_widget_tile.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/totp_token_widgets/totp_token_widget_tile.dart';
@@ -39,8 +41,8 @@ void main() {
     when(mockTokenRepository.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
     when(mockTokenRepository.deleteTokens(any)).thenAnswer((_) async => []);
     mockTokenFolderRepository = MockTokenFolderRepository();
-    when(mockTokenFolderRepository.loadFolders()).thenAnswer((_) async => []);
-    when(mockTokenFolderRepository.saveReplaceList(any)).thenAnswer((_) async => true);
+    when(mockTokenFolderRepository.loadState()).thenAnswer((_) async => const TokenFolderState(folders: []));
+    when(mockTokenFolderRepository.saveState(any)).thenAnswer((_) async => true);
     mockIntroductionRepository = MockIntroductionRepository();
     when(mockIntroductionRepository.loadCompletedIntroductions())
         .thenAnswer((_) async => const IntroductionState(completedIntroductions: {...Introduction.values}));
@@ -50,10 +52,10 @@ void main() {
     (tester) async {
       await tester.pumpWidget(TestsAppWrapper(
         overrides: [
-          settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepository)),
-          tokenProvider.overrideWith((ref) => TokenNotifier(repository: mockTokenRepository, ref: ref)),
-          tokenFolderProvider.overrideWith((ref) => TokenFolderNotifier(repository: mockTokenFolderRepository)),
-          introductionProvider.overrideWith((ref) => IntroductionNotifier(repository: mockIntroductionRepository)),
+          settingsProvider.overrideWith(() => SettingsNotifier(repoOverride: mockSettingsRepository)),
+          tokenProvider.overrideWith(() => TokenNotifier(repoOverride: mockTokenRepository)),
+          tokenFolderProvider.overrideWith(() => TokenFolderNotifier(repoOverride: mockTokenFolderRepository)),
+          introductionNotifierProvider.overrideWith(() => IntroductionNotifier(repoOverride: mockIntroductionRepository)),
         ],
         child: PrivacyIDEAAuthenticator(ApplicationCustomization.defaultCustomization),
       ));
@@ -66,8 +68,10 @@ void main() {
 
 Future<void> _addTwoStepHotpTokenTest(WidgetTester tester) async {
   await pumpUntilFindNWidgets(tester, find.byType(MainView), 1, const Duration(seconds: 10));
-  globalRef!.read(tokenProvider.notifier).handleQrCode(
-      'otpauth://hotp/OATH0001DBD0?secret=AALIBQJMOGEE7SAVEZ5D3K2ADO7MVFQD&counter=1&digits=6&issuer=privacyIDEA&2step_salt=8&2step_output=20&2step_difficulty=10000');
+  const qrCode =
+      'otpauth://hotp/OATH0001DBD0?secret=AALIBQJMOGEE7SAVEZ5D3K2ADO7MVFQD&counter=1&digits=6&issuer=privacyIDEA&2step_salt=8&2step_output=20&2step_difficulty=10000';
+  final notifier = globalRef!.read(tokenProvider.notifier);
+  await scanQrCode(resultHandlerList: [notifier], qrCode: qrCode);
   Logger.info('Finding phone part dialog');
   await pumpUntilFindNWidgets(tester, find.text(AppLocalizationsEn().phonePart), 1, const Duration(seconds: 20));
   expect(find.text(AppLocalizationsEn().phonePart), findsOneWidget);
@@ -88,8 +92,10 @@ Future<void> _addTwoStepHotpTokenTest(WidgetTester tester) async {
 
 Future<void> _addTwoStepTotpTokenTest(WidgetTester tester) async {
   await pumpUntilFindNWidgets(tester, find.byType(MainView), 1, const Duration(seconds: 10));
-  globalRef!.read(tokenProvider.notifier).handleQrCode(
-      'otpauth://totp/TOTP00009D5F?secret=NZ4OPONKAAGDFN2QHV26ZWYVTLFER4C6&period=30&digits=6&issuer=privacyIDEA&2step_salt=8&2step_output=20&2step_difficulty=10000');
+  const qrCode =
+      'otpauth://totp/TOTP00009D5F?secret=NZ4OPONKAAGDFN2QHV26ZWYVTLFER4C6&period=30&digits=6&issuer=privacyIDEA&2step_salt=8&2step_output=20&2step_difficulty=10000';
+  final notifier = globalRef!.read(tokenProvider.notifier);
+  await scanQrCode(resultHandlerList: [notifier], qrCode: qrCode);
   Logger.info('Finding phone part dialog');
   await pumpUntilFindNWidgets(tester, find.text(AppLocalizationsEn().phonePart), 1, const Duration(seconds: 20));
   expect(find.text(AppLocalizationsEn().phonePart), findsOneWidget);

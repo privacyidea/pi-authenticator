@@ -26,8 +26,7 @@ import 'package:privacyidea_authenticator/widgets/dialog_widgets/push_request_di
 
 import '../../../../l10n/app_localizations.dart';
 import '../../../../utils/customization/theme_extentions/push_request_theme.dart';
-
-import '../../../press_button.dart';
+import '../../../button_widgets/cooldown_button.dart';
 
 class PushDeclineConfirmDialog extends StatefulWidget {
   static Future<void> showDialogWidget({
@@ -89,7 +88,7 @@ class _PushDeclineConfirmDialogState extends State<PushDeclineConfirmDialog> {
     return DefaultDialog(
       title: Text(
         widget.title,
-        style: Theme.of(context).textTheme.titleLarge!,
+        style: Theme.of(context).textTheme.titleMedium!,
         textAlign: TextAlign.center,
       ),
       content: Column(
@@ -112,7 +111,7 @@ class _PushDeclineConfirmDialogState extends State<PushDeclineConfirmDialog> {
                 PaddedRow(
                   peddingPercent: 0.33,
                   child: SizedBox(
-                    child: PressButton(
+                    child: CooldownButton(
                       // Discard button
                       style: ButtonStyle(
                         shape: PushRequestDialog.getButtonShape(context),
@@ -128,14 +127,14 @@ class _PushDeclineConfirmDialogState extends State<PushDeclineConfirmDialog> {
                         children: [
                           Text(
                             localizations.yes,
-                            style: Theme.of(context).textTheme.titleMedium,
+                            style: Theme.of(context).textTheme.titleSmall,
                             textAlign: TextAlign.center,
                           ),
                           FittedBox(
                             fit: BoxFit.scaleDown,
                             child: Text(
                               localizations.butDiscardIt,
-                              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).textTheme.titleMedium?.color),
+                              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).textTheme.titleSmall?.color),
                               textAlign: TextAlign.center,
                               softWrap: false,
                             ),
@@ -147,7 +146,7 @@ class _PushDeclineConfirmDialogState extends State<PushDeclineConfirmDialog> {
                 ),
                 PaddedRow(
                   peddingPercent: 0.33,
-                  child: PressButton(
+                  child: CooldownButton(
                     // Decline button
                     style: ButtonStyle(
                       backgroundColor: WidgetStateProperty.all(pushRequestTheme.declineColor),
@@ -163,12 +162,12 @@ class _PushDeclineConfirmDialogState extends State<PushDeclineConfirmDialog> {
                       children: [
                         Text(
                           localizations.no,
-                          style: Theme.of(context).textTheme.titleMedium,
+                          style: Theme.of(context).textTheme.titleSmall,
                           textAlign: TextAlign.center,
                         ),
                         Text(
                           localizations.declineIt,
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).textTheme.titleMedium?.color),
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).textTheme.titleSmall?.color),
                           textAlign: TextAlign.center,
                           softWrap: false,
                         ),
