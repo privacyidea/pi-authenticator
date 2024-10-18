@@ -45,6 +45,10 @@ class TokenContainer with _$TokenContainer {
   static const eccUtils = EccUtils();
   const TokenContainer._();
 
+  Uri get registrationUrl => serverUrl.replace(path: '/container/register/finalize');
+  Uri get syncUrlInit => serverUrl.replace(path: '/container/sync/$serial/init');
+  Uri get syncUrlFinalize => serverUrl.replace(path: '/container/sync/$serial/finalize');
+
   // example: pia://container/SMPH00134123
   // ?issuer=privacyIDEA
   // &nonce=887197025f5fa59b50f33c15196eb97ee651a5d1
@@ -66,6 +70,7 @@ class TokenContainer with _$TokenContainer {
         CONTAINER_EC_KEY_ALGORITHM: ObjectValidator<EcKeyAlgorithm>(transformer: (v) => EcKeyAlgorithm.values.byCurveName(v)),
         CONTAINER_HASH_ALGORITHM: stringToAlgorithmsValidator,
         CONTAINER_PASSPHRASE_QUESTION: const ObjectValidatorNullable<String>(),
+        CONTAINER_SSL_VERIFY: stringToBoolValidator,
       },
       name: 'Container',
     );
@@ -73,10 +78,11 @@ class TokenContainer with _$TokenContainer {
       issuer: uriMap[CONTAINER_ISSUER],
       nonce: uriMap[CONTAINER_NONCE],
       timestamp: uriMap[CONTAINER_TIMESTAMP],
-      finalizationUrl: uriMap[CONTAINER_FINALIZATION_URL],
+      serverUrl: uriMap[CONTAINER_FINALIZATION_URL],
       serial: uriMap[CONTAINER_SERIAL],
       ecKeyAlgorithm: uriMap[CONTAINER_EC_KEY_ALGORITHM],
       hashAlgorithm: uriMap[CONTAINER_HASH_ALGORITHM],
+      sslVerify: uriMap[CONTAINER_SSL_VERIFY],
       passphraseQuestion: uriMap[CONTAINER_PASSPHRASE_QUESTION],
     );
   }
@@ -85,11 +91,11 @@ class TokenContainer with _$TokenContainer {
     required String issuer,
     required String nonce,
     required DateTime timestamp,
-    required Uri finalizationUrl,
-    Uri? syncUrl,
+    required Uri serverUrl,
     required String serial,
     required EcKeyAlgorithm ecKeyAlgorithm,
     required Algorithms hashAlgorithm,
+    required bool sslVerify,
     @Default('privacyIDEA') String serverName,
     @Default(RolloutState.completed) RolloutState finalizationState,
     String? passphraseQuestion,
@@ -102,10 +108,11 @@ class TokenContainer with _$TokenContainer {
     required String issuer,
     required String nonce,
     required DateTime timestamp,
-    required Uri syncUrl,
+    required Uri serverUrl,
     required String serial,
     required EcKeyAlgorithm ecKeyAlgorithm,
     required Algorithms hashAlgorithm,
+    required bool sslVerify,
     @Default('privacyIDEA') String serverName,
     @Default(RolloutState.completed) RolloutState finalizationState,
     @Default(SyncState.notStarted) SyncState syncState,
@@ -118,7 +125,6 @@ class TokenContainer with _$TokenContainer {
   TokenContainerFinalized? finalize({
     ECPublicKey? publicServerKey,
     AsymmetricKeyPair<ECPublicKey, ECPrivateKey>? clientKeyPair,
-    Uri? syncUrl,
   }) {
     if (this is TokenContainerFinalized) return this as TokenContainerFinalized;
     if (publicServerKey == null && this.publicServerKey == null) {
@@ -129,18 +135,16 @@ class TokenContainer with _$TokenContainer {
       Logger.warning('Unable to finalize without client key pair');
       return null;
     }
-    if (syncUrl == null && this.syncUrl == null) {
-      Logger.warning('Unable to finalize without sync url');
-      return null;
-    }
+
     return TokenContainerFinalized(
       issuer: issuer,
       nonce: nonce,
       timestamp: timestamp,
-      syncUrl: syncUrl ?? this.syncUrl!,
       serial: serial,
+      serverUrl: serverUrl,
       ecKeyAlgorithm: ecKeyAlgorithm,
       hashAlgorithm: hashAlgorithm,
+      sslVerify: sslVerify,
       passphraseQuestion: passphraseQuestion,
       finalizationState: RolloutState.completed,
       publicServerKey: this.publicServerKey ?? eccUtils.serializeECPublicKey(publicServerKey!),
@@ -172,8 +176,7 @@ class TokenContainer with _$TokenContainer {
       'issuer: $issuer, '
       'nonce: $nonce, '
       'timestamp: $timestamp, '
-      '${(this is TokenContainerUnfinalized) ? 'finalizationUrl: ${(this as TokenContainerUnfinalized).finalizationUrl}, ' : ''}'
-      'syncUrl: $syncUrl, '
+      'serverUrl: $serverUrl, '
       'serial: $serial, '
       'ecKeyAlgorithm: $ecKeyAlgorithm, '
       'hashAlgorithm: $hashAlgorithm, '

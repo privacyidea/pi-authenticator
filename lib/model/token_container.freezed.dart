@@ -32,10 +32,11 @@ mixin _$TokenContainer {
   String get issuer => throw _privateConstructorUsedError;
   String get nonce => throw _privateConstructorUsedError;
   DateTime get timestamp => throw _privateConstructorUsedError;
-  Uri? get syncUrl => throw _privateConstructorUsedError;
+  Uri get serverUrl => throw _privateConstructorUsedError;
   String get serial => throw _privateConstructorUsedError;
   EcKeyAlgorithm get ecKeyAlgorithm => throw _privateConstructorUsedError;
   Algorithms get hashAlgorithm => throw _privateConstructorUsedError;
+  bool get sslVerify => throw _privateConstructorUsedError;
   String get serverName => throw _privateConstructorUsedError;
   RolloutState get finalizationState => throw _privateConstructorUsedError;
   String? get passphraseQuestion => throw _privateConstructorUsedError;
@@ -48,11 +49,11 @@ mixin _$TokenContainer {
             String issuer,
             String nonce,
             DateTime timestamp,
-            Uri finalizationUrl,
-            Uri? syncUrl,
+            Uri serverUrl,
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
+            bool sslVerify,
             String serverName,
             RolloutState finalizationState,
             String? passphraseQuestion,
@@ -64,10 +65,11 @@ mixin _$TokenContainer {
             String issuer,
             String nonce,
             DateTime timestamp,
-            Uri syncUrl,
+            Uri serverUrl,
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
+            bool sslVerify,
             String serverName,
             RolloutState finalizationState,
             SyncState syncState,
@@ -84,11 +86,11 @@ mixin _$TokenContainer {
             String issuer,
             String nonce,
             DateTime timestamp,
-            Uri finalizationUrl,
-            Uri? syncUrl,
+            Uri serverUrl,
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
+            bool sslVerify,
             String serverName,
             RolloutState finalizationState,
             String? passphraseQuestion,
@@ -100,10 +102,11 @@ mixin _$TokenContainer {
             String issuer,
             String nonce,
             DateTime timestamp,
-            Uri syncUrl,
+            Uri serverUrl,
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
+            bool sslVerify,
             String serverName,
             RolloutState finalizationState,
             SyncState syncState,
@@ -120,11 +123,11 @@ mixin _$TokenContainer {
             String issuer,
             String nonce,
             DateTime timestamp,
-            Uri finalizationUrl,
-            Uri? syncUrl,
+            Uri serverUrl,
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
+            bool sslVerify,
             String serverName,
             RolloutState finalizationState,
             String? passphraseQuestion,
@@ -136,10 +139,11 @@ mixin _$TokenContainer {
             String issuer,
             String nonce,
             DateTime timestamp,
-            Uri syncUrl,
+            Uri serverUrl,
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
+            bool sslVerify,
             String serverName,
             RolloutState finalizationState,
             SyncState syncState,
@@ -191,10 +195,11 @@ abstract class $TokenContainerCopyWith<$Res> {
       {String issuer,
       String nonce,
       DateTime timestamp,
-      Uri syncUrl,
+      Uri serverUrl,
       String serial,
       EcKeyAlgorithm ecKeyAlgorithm,
       Algorithms hashAlgorithm,
+      bool sslVerify,
       String serverName,
       RolloutState finalizationState,
       String? passphraseQuestion,
@@ -221,10 +226,11 @@ class _$TokenContainerCopyWithImpl<$Res, $Val extends TokenContainer>
     Object? issuer = null,
     Object? nonce = null,
     Object? timestamp = null,
-    Object? syncUrl = null,
+    Object? serverUrl = null,
     Object? serial = null,
     Object? ecKeyAlgorithm = null,
     Object? hashAlgorithm = null,
+    Object? sslVerify = null,
     Object? serverName = null,
     Object? finalizationState = null,
     Object? passphraseQuestion = freezed,
@@ -245,9 +251,9 @@ class _$TokenContainerCopyWithImpl<$Res, $Val extends TokenContainer>
           ? _value.timestamp
           : timestamp // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      syncUrl: null == syncUrl
-          ? _value.syncUrl!
-          : syncUrl // ignore: cast_nullable_to_non_nullable
+      serverUrl: null == serverUrl
+          ? _value.serverUrl
+          : serverUrl // ignore: cast_nullable_to_non_nullable
               as Uri,
       serial: null == serial
           ? _value.serial
@@ -261,6 +267,10 @@ class _$TokenContainerCopyWithImpl<$Res, $Val extends TokenContainer>
           ? _value.hashAlgorithm
           : hashAlgorithm // ignore: cast_nullable_to_non_nullable
               as Algorithms,
+      sslVerify: null == sslVerify
+          ? _value.sslVerify
+          : sslVerify // ignore: cast_nullable_to_non_nullable
+              as bool,
       serverName: null == serverName
           ? _value.serverName
           : serverName // ignore: cast_nullable_to_non_nullable
@@ -302,11 +312,11 @@ abstract class _$$TokenContainerUnfinalizedImplCopyWith<$Res>
       {String issuer,
       String nonce,
       DateTime timestamp,
-      Uri finalizationUrl,
-      Uri? syncUrl,
+      Uri serverUrl,
       String serial,
       EcKeyAlgorithm ecKeyAlgorithm,
       Algorithms hashAlgorithm,
+      bool sslVerify,
       String serverName,
       RolloutState finalizationState,
       String? passphraseQuestion,
@@ -332,11 +342,11 @@ class __$$TokenContainerUnfinalizedImplCopyWithImpl<$Res>
     Object? issuer = null,
     Object? nonce = null,
     Object? timestamp = null,
-    Object? finalizationUrl = null,
-    Object? syncUrl = freezed,
+    Object? serverUrl = null,
     Object? serial = null,
     Object? ecKeyAlgorithm = null,
     Object? hashAlgorithm = null,
+    Object? sslVerify = null,
     Object? serverName = null,
     Object? finalizationState = null,
     Object? passphraseQuestion = freezed,
@@ -357,14 +367,10 @@ class __$$TokenContainerUnfinalizedImplCopyWithImpl<$Res>
           ? _value.timestamp
           : timestamp // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      finalizationUrl: null == finalizationUrl
-          ? _value.finalizationUrl
-          : finalizationUrl // ignore: cast_nullable_to_non_nullable
+      serverUrl: null == serverUrl
+          ? _value.serverUrl
+          : serverUrl // ignore: cast_nullable_to_non_nullable
               as Uri,
-      syncUrl: freezed == syncUrl
-          ? _value.syncUrl
-          : syncUrl // ignore: cast_nullable_to_non_nullable
-              as Uri?,
       serial: null == serial
           ? _value.serial
           : serial // ignore: cast_nullable_to_non_nullable
@@ -377,6 +383,10 @@ class __$$TokenContainerUnfinalizedImplCopyWithImpl<$Res>
           ? _value.hashAlgorithm
           : hashAlgorithm // ignore: cast_nullable_to_non_nullable
               as Algorithms,
+      sslVerify: null == sslVerify
+          ? _value.sslVerify
+          : sslVerify // ignore: cast_nullable_to_non_nullable
+              as bool,
       serverName: null == serverName
           ? _value.serverName
           : serverName // ignore: cast_nullable_to_non_nullable
@@ -412,11 +422,11 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
       {required this.issuer,
       required this.nonce,
       required this.timestamp,
-      required this.finalizationUrl,
-      this.syncUrl,
+      required this.serverUrl,
       required this.serial,
       required this.ecKeyAlgorithm,
       required this.hashAlgorithm,
+      required this.sslVerify,
       this.serverName = 'privacyIDEA',
       this.finalizationState = RolloutState.completed,
       this.passphraseQuestion,
@@ -437,15 +447,15 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
   @override
   final DateTime timestamp;
   @override
-  final Uri finalizationUrl;
-  @override
-  final Uri? syncUrl;
+  final Uri serverUrl;
   @override
   final String serial;
   @override
   final EcKeyAlgorithm ecKeyAlgorithm;
   @override
   final Algorithms hashAlgorithm;
+  @override
+  final bool sslVerify;
   @override
   @JsonKey()
   final String serverName;
@@ -473,14 +483,15 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
             (identical(other.nonce, nonce) || other.nonce == nonce) &&
             (identical(other.timestamp, timestamp) ||
                 other.timestamp == timestamp) &&
-            (identical(other.finalizationUrl, finalizationUrl) ||
-                other.finalizationUrl == finalizationUrl) &&
-            (identical(other.syncUrl, syncUrl) || other.syncUrl == syncUrl) &&
+            (identical(other.serverUrl, serverUrl) ||
+                other.serverUrl == serverUrl) &&
             (identical(other.serial, serial) || other.serial == serial) &&
             (identical(other.ecKeyAlgorithm, ecKeyAlgorithm) ||
                 other.ecKeyAlgorithm == ecKeyAlgorithm) &&
             (identical(other.hashAlgorithm, hashAlgorithm) ||
                 other.hashAlgorithm == hashAlgorithm) &&
+            (identical(other.sslVerify, sslVerify) ||
+                other.sslVerify == sslVerify) &&
             (identical(other.serverName, serverName) ||
                 other.serverName == serverName) &&
             (identical(other.finalizationState, finalizationState) ||
@@ -502,11 +513,11 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
       issuer,
       nonce,
       timestamp,
-      finalizationUrl,
-      syncUrl,
+      serverUrl,
       serial,
       ecKeyAlgorithm,
       hashAlgorithm,
+      sslVerify,
       serverName,
       finalizationState,
       passphraseQuestion,
@@ -530,11 +541,11 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
             String issuer,
             String nonce,
             DateTime timestamp,
-            Uri finalizationUrl,
-            Uri? syncUrl,
+            Uri serverUrl,
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
+            bool sslVerify,
             String serverName,
             RolloutState finalizationState,
             String? passphraseQuestion,
@@ -546,10 +557,11 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
             String issuer,
             String nonce,
             DateTime timestamp,
-            Uri syncUrl,
+            Uri serverUrl,
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
+            bool sslVerify,
             String serverName,
             RolloutState finalizationState,
             SyncState syncState,
@@ -563,11 +575,11 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
         issuer,
         nonce,
         timestamp,
-        finalizationUrl,
-        syncUrl,
+        serverUrl,
         serial,
         ecKeyAlgorithm,
         hashAlgorithm,
+        sslVerify,
         serverName,
         finalizationState,
         passphraseQuestion,
@@ -583,11 +595,11 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
             String issuer,
             String nonce,
             DateTime timestamp,
-            Uri finalizationUrl,
-            Uri? syncUrl,
+            Uri serverUrl,
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
+            bool sslVerify,
             String serverName,
             RolloutState finalizationState,
             String? passphraseQuestion,
@@ -599,10 +611,11 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
             String issuer,
             String nonce,
             DateTime timestamp,
-            Uri syncUrl,
+            Uri serverUrl,
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
+            bool sslVerify,
             String serverName,
             RolloutState finalizationState,
             SyncState syncState,
@@ -616,11 +629,11 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
         issuer,
         nonce,
         timestamp,
-        finalizationUrl,
-        syncUrl,
+        serverUrl,
         serial,
         ecKeyAlgorithm,
         hashAlgorithm,
+        sslVerify,
         serverName,
         finalizationState,
         passphraseQuestion,
@@ -636,11 +649,11 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
             String issuer,
             String nonce,
             DateTime timestamp,
-            Uri finalizationUrl,
-            Uri? syncUrl,
+            Uri serverUrl,
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
+            bool sslVerify,
             String serverName,
             RolloutState finalizationState,
             String? passphraseQuestion,
@@ -652,10 +665,11 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
             String issuer,
             String nonce,
             DateTime timestamp,
-            Uri syncUrl,
+            Uri serverUrl,
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
+            bool sslVerify,
             String serverName,
             RolloutState finalizationState,
             SyncState syncState,
@@ -671,11 +685,11 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
           issuer,
           nonce,
           timestamp,
-          finalizationUrl,
-          syncUrl,
+          serverUrl,
           serial,
           ecKeyAlgorithm,
           hashAlgorithm,
+          sslVerify,
           serverName,
           finalizationState,
           passphraseQuestion,
@@ -730,11 +744,11 @@ abstract class TokenContainerUnfinalized extends TokenContainer {
       {required final String issuer,
       required final String nonce,
       required final DateTime timestamp,
-      required final Uri finalizationUrl,
-      final Uri? syncUrl,
+      required final Uri serverUrl,
       required final String serial,
       required final EcKeyAlgorithm ecKeyAlgorithm,
       required final Algorithms hashAlgorithm,
+      required final bool sslVerify,
       final String serverName,
       final RolloutState finalizationState,
       final String? passphraseQuestion,
@@ -752,15 +766,16 @@ abstract class TokenContainerUnfinalized extends TokenContainer {
   String get nonce;
   @override
   DateTime get timestamp;
-  Uri get finalizationUrl;
   @override
-  Uri? get syncUrl;
+  Uri get serverUrl;
   @override
   String get serial;
   @override
   EcKeyAlgorithm get ecKeyAlgorithm;
   @override
   Algorithms get hashAlgorithm;
+  @override
+  bool get sslVerify;
   @override
   String get serverName;
   @override
@@ -795,10 +810,11 @@ abstract class _$$TokenContainerFinalizedImplCopyWith<$Res>
       {String issuer,
       String nonce,
       DateTime timestamp,
-      Uri syncUrl,
+      Uri serverUrl,
       String serial,
       EcKeyAlgorithm ecKeyAlgorithm,
       Algorithms hashAlgorithm,
+      bool sslVerify,
       String serverName,
       RolloutState finalizationState,
       SyncState syncState,
@@ -825,10 +841,11 @@ class __$$TokenContainerFinalizedImplCopyWithImpl<$Res>
     Object? issuer = null,
     Object? nonce = null,
     Object? timestamp = null,
-    Object? syncUrl = null,
+    Object? serverUrl = null,
     Object? serial = null,
     Object? ecKeyAlgorithm = null,
     Object? hashAlgorithm = null,
+    Object? sslVerify = null,
     Object? serverName = null,
     Object? finalizationState = null,
     Object? syncState = null,
@@ -850,9 +867,9 @@ class __$$TokenContainerFinalizedImplCopyWithImpl<$Res>
           ? _value.timestamp
           : timestamp // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      syncUrl: null == syncUrl
-          ? _value.syncUrl
-          : syncUrl // ignore: cast_nullable_to_non_nullable
+      serverUrl: null == serverUrl
+          ? _value.serverUrl
+          : serverUrl // ignore: cast_nullable_to_non_nullable
               as Uri,
       serial: null == serial
           ? _value.serial
@@ -866,6 +883,10 @@ class __$$TokenContainerFinalizedImplCopyWithImpl<$Res>
           ? _value.hashAlgorithm
           : hashAlgorithm // ignore: cast_nullable_to_non_nullable
               as Algorithms,
+      sslVerify: null == sslVerify
+          ? _value.sslVerify
+          : sslVerify // ignore: cast_nullable_to_non_nullable
+              as bool,
       serverName: null == serverName
           ? _value.serverName
           : serverName // ignore: cast_nullable_to_non_nullable
@@ -905,10 +926,11 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
       {required this.issuer,
       required this.nonce,
       required this.timestamp,
-      required this.syncUrl,
+      required this.serverUrl,
       required this.serial,
       required this.ecKeyAlgorithm,
       required this.hashAlgorithm,
+      required this.sslVerify,
       this.serverName = 'privacyIDEA',
       this.finalizationState = RolloutState.completed,
       this.syncState = SyncState.notStarted,
@@ -930,13 +952,15 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
   @override
   final DateTime timestamp;
   @override
-  final Uri syncUrl;
+  final Uri serverUrl;
   @override
   final String serial;
   @override
   final EcKeyAlgorithm ecKeyAlgorithm;
   @override
   final Algorithms hashAlgorithm;
+  @override
+  final bool sslVerify;
   @override
   @JsonKey()
   final String serverName;
@@ -967,12 +991,15 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
             (identical(other.nonce, nonce) || other.nonce == nonce) &&
             (identical(other.timestamp, timestamp) ||
                 other.timestamp == timestamp) &&
-            (identical(other.syncUrl, syncUrl) || other.syncUrl == syncUrl) &&
+            (identical(other.serverUrl, serverUrl) ||
+                other.serverUrl == serverUrl) &&
             (identical(other.serial, serial) || other.serial == serial) &&
             (identical(other.ecKeyAlgorithm, ecKeyAlgorithm) ||
                 other.ecKeyAlgorithm == ecKeyAlgorithm) &&
             (identical(other.hashAlgorithm, hashAlgorithm) ||
                 other.hashAlgorithm == hashAlgorithm) &&
+            (identical(other.sslVerify, sslVerify) ||
+                other.sslVerify == sslVerify) &&
             (identical(other.serverName, serverName) ||
                 other.serverName == serverName) &&
             (identical(other.finalizationState, finalizationState) ||
@@ -996,10 +1023,11 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
       issuer,
       nonce,
       timestamp,
-      syncUrl,
+      serverUrl,
       serial,
       ecKeyAlgorithm,
       hashAlgorithm,
+      sslVerify,
       serverName,
       finalizationState,
       syncState,
@@ -1024,11 +1052,11 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
             String issuer,
             String nonce,
             DateTime timestamp,
-            Uri finalizationUrl,
-            Uri? syncUrl,
+            Uri serverUrl,
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
+            bool sslVerify,
             String serverName,
             RolloutState finalizationState,
             String? passphraseQuestion,
@@ -1040,10 +1068,11 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
             String issuer,
             String nonce,
             DateTime timestamp,
-            Uri syncUrl,
+            Uri serverUrl,
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
+            bool sslVerify,
             String serverName,
             RolloutState finalizationState,
             SyncState syncState,
@@ -1057,10 +1086,11 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
         issuer,
         nonce,
         timestamp,
-        syncUrl,
+        serverUrl,
         serial,
         ecKeyAlgorithm,
         hashAlgorithm,
+        sslVerify,
         serverName,
         finalizationState,
         syncState,
@@ -1077,11 +1107,11 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
             String issuer,
             String nonce,
             DateTime timestamp,
-            Uri finalizationUrl,
-            Uri? syncUrl,
+            Uri serverUrl,
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
+            bool sslVerify,
             String serverName,
             RolloutState finalizationState,
             String? passphraseQuestion,
@@ -1093,10 +1123,11 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
             String issuer,
             String nonce,
             DateTime timestamp,
-            Uri syncUrl,
+            Uri serverUrl,
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
+            bool sslVerify,
             String serverName,
             RolloutState finalizationState,
             SyncState syncState,
@@ -1110,10 +1141,11 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
         issuer,
         nonce,
         timestamp,
-        syncUrl,
+        serverUrl,
         serial,
         ecKeyAlgorithm,
         hashAlgorithm,
+        sslVerify,
         serverName,
         finalizationState,
         syncState,
@@ -1130,11 +1162,11 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
             String issuer,
             String nonce,
             DateTime timestamp,
-            Uri finalizationUrl,
-            Uri? syncUrl,
+            Uri serverUrl,
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
+            bool sslVerify,
             String serverName,
             RolloutState finalizationState,
             String? passphraseQuestion,
@@ -1146,10 +1178,11 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
             String issuer,
             String nonce,
             DateTime timestamp,
-            Uri syncUrl,
+            Uri serverUrl,
             String serial,
             EcKeyAlgorithm ecKeyAlgorithm,
             Algorithms hashAlgorithm,
+            bool sslVerify,
             String serverName,
             RolloutState finalizationState,
             SyncState syncState,
@@ -1165,10 +1198,11 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
           issuer,
           nonce,
           timestamp,
-          syncUrl,
+          serverUrl,
           serial,
           ecKeyAlgorithm,
           hashAlgorithm,
+          sslVerify,
           serverName,
           finalizationState,
           syncState,
@@ -1224,10 +1258,11 @@ abstract class TokenContainerFinalized extends TokenContainer {
       {required final String issuer,
       required final String nonce,
       required final DateTime timestamp,
-      required final Uri syncUrl,
+      required final Uri serverUrl,
       required final String serial,
       required final EcKeyAlgorithm ecKeyAlgorithm,
       required final Algorithms hashAlgorithm,
+      required final bool sslVerify,
       final String serverName,
       final RolloutState finalizationState,
       final SyncState syncState,
@@ -1247,13 +1282,15 @@ abstract class TokenContainerFinalized extends TokenContainer {
   @override
   DateTime get timestamp;
   @override
-  Uri get syncUrl;
+  Uri get serverUrl;
   @override
   String get serial;
   @override
   EcKeyAlgorithm get ecKeyAlgorithm;
   @override
   Algorithms get hashAlgorithm;
+  @override
+  bool get sslVerify;
   @override
   String get serverName;
   @override

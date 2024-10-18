@@ -19,39 +19,67 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
+import 'package:privacyidea_authenticator/model/token_container.dart';
+import 'package:privacyidea_authenticator/views/container_view/container_widgets/container_widget.dart';
+import 'package:privacyidea_authenticator/widgets/button_widgets/cooldown_button.dart';
 import 'package:privacyidea_authenticator/widgets/dialog_widgets/default_dialog.dart';
 
-class ContainerAlreadyExistsDialog extends StatelessWidget {
-  final List<String> serials;
+import '../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 
-  const ContainerAlreadyExistsDialog(this.serials, {super.key});
+class ContainerAlreadyExistsDialog extends ConsumerStatefulWidget {
+  final List<TokenContainer> containers;
+
+  const ContainerAlreadyExistsDialog(this.containers, {super.key});
+
+  @override
+  ConsumerState<ContainerAlreadyExistsDialog> createState() => _ContainerAlreadyExistsDialogState();
+}
+
+class _ContainerAlreadyExistsDialogState extends ConsumerState<ContainerAlreadyExistsDialog> {
+  late final List<TokenContainer> unhandledContainers;
+  final List<TokenContainer> replaceContainers = [];
+
+  @override
+  void initState() {
+    unhandledContainers = widget.containers;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final container = unhandledContainers.firstOrNull;
+    if (container == null) return SizedBox.shrink();
+    final currentContainer = ref.watch(tokenContainerProvider).valueOrNull?.currentOf(container);
+    if (currentContainer == null) return SizedBox.shrink();
+    final appLocalizations = AppLocalizations.of(context)!;
     return DefaultDialog(
-      title: Text('Container already exists'),
-      content: SizedBox(
-        width: double.maxFinite,
-        child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: serials.length,
-          itemBuilder: (context, index) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Serial: ${serials[index]}'),
-                if (index != serials.length - 1) const Divider(),
-              ],
-            );
-          },
-        ),
-      ),
+      title: Text(appLocalizations.containerAlreadyExists),
+      content: ContainerWidget(container: currentContainer, isPreview: true),
       actions: [
         TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text('OK'),
+          onPressed: () => _dismiss(container),
+          child: Text(appLocalizations.dismiss),
+        ),
+        CooldownButton(
+          onPressed: () => _replace(currentContainer, container),
+          child: Text(appLocalizations.replace),
         ),
       ],
     );
+  }
+
+  void _dismiss(TokenContainer container) {
+    setState(() => unhandledContainers.remove(container));
+    if (unhandledContainers.isEmpty) Navigator.of(context).pop(replaceContainers);
+  }
+
+  Future<void> _replace(TokenContainer oldContainer, TokenContainer newContainer) async {
+    setState(() {
+      unhandledContainers.remove(newContainer);
+      replaceContainers.add(newContainer);
+    });
+    if (unhandledContainers.isEmpty && mounted) Navigator.of(context).pop(replaceContainers);
   }
 }

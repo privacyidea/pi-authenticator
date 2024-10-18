@@ -47,7 +47,7 @@ sealed class PiServerResultValue extends PiServerResult {
 }
 
 class ContainerFinalizationChallenge extends PiServerResultValue {
-  final String finalizeSyncUrl;
+  // final String finalizeSyncUrl;
   final String keyAlgorithm;
   final String nonce;
   final String timeStamp;
@@ -55,7 +55,7 @@ class ContainerFinalizationChallenge extends PiServerResultValue {
   get timeAsDatetime => DateTime.parse(timeStamp);
 
   const ContainerFinalizationChallenge({
-    required this.finalizeSyncUrl,
+    // required this.finalizeSyncUrl,
     required this.keyAlgorithm,
     required this.nonce,
     required this.timeStamp,
@@ -65,7 +65,7 @@ class ContainerFinalizationChallenge extends PiServerResultValue {
     final map = validateMap(
       map: json,
       validators: {
-        CONTAINER_SYNC_URL: const ObjectValidator<String>(),
+        // CONTAINER_SYNC_URL: const ObjectValidator<String>(),
         CONTAINER_SYNC_KEY_ALGORITHM: const ObjectValidator<String>(),
         CONTAINER_SYNC_NONCE: const ObjectValidator<String>(),
         CONTAINER_SYNC_TIMESTAMP: const ObjectValidator<String>(),
@@ -73,7 +73,7 @@ class ContainerFinalizationChallenge extends PiServerResultValue {
       name: 'ContainerChallenge#fromJson',
     );
     return ContainerFinalizationChallenge(
-      finalizeSyncUrl: map[CONTAINER_SYNC_URL] as String,
+      // finalizeSyncUrl: map[CONTAINER_SYNC_URL] as String,
       keyAlgorithm: map[CONTAINER_SYNC_KEY_ALGORITHM] as String,
       nonce: map[CONTAINER_SYNC_NONCE] as String,
       timeStamp: map[CONTAINER_SYNC_TIMESTAMP] as String,
@@ -83,11 +83,11 @@ class ContainerFinalizationChallenge extends PiServerResultValue {
 
 class ContainerFinalizationResponse extends PiServerResultValue {
   final ECPublicKey publicServerKey;
-  final Uri syncUrl;
+  final Uri serverUrl;
 
   const ContainerFinalizationResponse({
     required this.publicServerKey,
-    required this.syncUrl,
+    required this.serverUrl,
   });
 
   static ContainerFinalizationResponse fromJson(Map<String, dynamic> json) {
@@ -101,7 +101,7 @@ class ContainerFinalizationResponse extends PiServerResultValue {
     );
     return ContainerFinalizationResponse(
       publicServerKey: map[CONTAINER_SYNC_PUBLIC_SERVER_KEY] as ECPublicKey,
-      syncUrl: map[CONTAINER_SYNC_URL] as Uri,
+      serverUrl: map[CONTAINER_SYNC_URL] as Uri,
     );
   }
 }

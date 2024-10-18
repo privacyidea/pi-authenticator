@@ -40,6 +40,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../model/api_results/pi_server_results/pi_server_result_value.dart';
 import '../../../../model/enums/rollout_state.dart';
 import '../../../../model/enums/sync_state.dart';
+import '../../../../model/exception_errors/localized_argument_error.dart';
 import '../../../../model/exception_errors/response_error.dart';
 import '../../../../model/pi_server_response.dart';
 import '../../../../model/riverpod_states/token_container_state.dart';
@@ -49,7 +50,6 @@ import '../../../../repo/secure_token_container_repository.dart';
 import '../../../../widgets/dialog_widgets/add_container_progress_dialog.dart';
 import '../../../../widgets/dialog_widgets/container_already_exists_dialog.dart';
 import '../../../ecc_utils.dart';
-import '../../../../model/exception_errors/localized_argument_error.dart';
 import '../../../logger.dart';
 
 part 'token_container_notifier.g.dart';
@@ -341,7 +341,16 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     final newContainerList = containerContainers.where((element) => !stateContainersSerials.contains(element.serial)).toList();
     final existingContainers = containerContainers.where((element) => stateContainersSerials.contains(element.serial)).toList();
     Logger.info('Handling processor results: adding Container');
-    if (existingContainers.isNotEmpty) await _showContainerAlreadyExistsDialog(existingContainers);
+    final replaceContainers = <TokenContainer>[];
+    if (existingContainers.isNotEmpty) {
+      replaceContainers.addAll(await _showContainerAlreadyExistsDialog(existingContainers) ?? []);
+    }
+
+    if (replaceContainers.isNotEmpty) {
+      await deleteContainerList(replaceContainers);
+      newContainerList.addAll(replaceContainers);
+    }
+
     if (newContainerList.isNotEmpty) _showAddContainerProgressDialog(newContainerList);
     final stateAfterAdding = await addContainerList(newContainerList);
     final failedToAdd = [];
@@ -436,9 +445,8 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     showAsyncDialog(builder: (context) => AddContainerProgressDialog(serials), barrierDismissible: false);
   }
 
-  Future<void> _showContainerAlreadyExistsDialog(List<TokenContainer> containers) {
-    final serials = containers.map((e) => e.serial).toList();
-    return showAsyncDialog(builder: (context) => ContainerAlreadyExistsDialog(serials), barrierDismissible: false);
+  Future<List<TokenContainer>?> _showContainerAlreadyExistsDialog(List<TokenContainer> containers) {
+    return showAsyncDialog<List<TokenContainer>>(builder: (context) => ContainerAlreadyExistsDialog(containers), barrierDismissible: false);
   }
 
   /// Finalization substep 1: Generate key pair
@@ -523,7 +531,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
       rethrow;
     }
 
-    container = await updateContainer(container, (c) => c.copyWith(finalizationState: RolloutState.parsingResponseCompleted, syncUrl: resultValue.syncUrl));
+    container = await updateContainer(container, (c) => c.copyWith(finalizationState: RolloutState.parsingResponseCompleted, serverUrl: resultValue.serverUrl));
     if (container == null) throw StateError('Container was removed');
     return resultValue.publicServerKey;
   }

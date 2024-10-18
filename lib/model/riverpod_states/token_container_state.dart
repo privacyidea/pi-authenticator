@@ -61,4 +61,6 @@ class TokenContainerState with _$TokenContainerState {
     if (container is TokenContainerFinalized) return container.syncState;
     return null;
   }
+
+  TokenContainer? currentOfSerial(String serial) => containerList.firstWhereOrNull((container) => container.serial == serial);
 }

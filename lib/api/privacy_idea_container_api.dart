@@ -115,7 +115,7 @@ class PrivacyIdeaContainerApi {
     final passphrase = container.passphraseQuestion?.isNotEmpty == true ? await EnterPassphraseDialog.show(await globalContext) : null;
     final message = '${container.nonce}'
         '|${container.timestamp.toIso8601String().replaceFirst('Z', '+00:00')}'
-        '|${container.finalizationUrl}'
+        '|${container.registrationUrl}'
         '|${container.serial}'
         '|${AppInfoUtils.deviceId}'
         '${passphrase != null ? '|$passphrase' : ''}';
@@ -128,7 +128,7 @@ class PrivacyIdeaContainerApi {
       CONTAINER_DEVICE_ID: AppInfoUtils.deviceId,
       CONTAINER_SIGNATURE: signature,
     };
-    return await _ioClient.doPost(url: container.finalizationUrl, body: body, sslVerify: false); //TODO: sslVerify
+    return await _ioClient.doPost(url: container.registrationUrl, body: body, sslVerify: container.sslVerify);
   }
 
   /* //////////////////////////////
@@ -136,7 +136,7 @@ class PrivacyIdeaContainerApi {
   ////////////////////////////// */
 
   Future<ContainerFinalizationChallenge?> _getChallenge(TokenContainerFinalized container) async {
-    final initResponse = await _ioClient.doGet(url: container.syncUrl, parameters: {CONTAINER_SERIAL: container.serial});
+    final initResponse = await _ioClient.doGet(url: container.syncUrlInit, parameters: {CONTAINER_SERIAL: container.serial});
     if (initResponse.statusCode != 200) {
       final errorResponse = initResponse.asPiErrorResponse();
       if (errorResponse != null) throw errorResponse.piServerResultError;
@@ -175,7 +175,7 @@ class PrivacyIdeaContainerApi {
       CONTAINER_DICT_TOKENS: otpAuthMaps,
     };
     final signMessage =
-        '${challenge.nonce}|${challenge.timeStamp}|${container.serial}|${challenge.finalizeSyncUrl}|$publicKeyBase64|${jsonEncode(containerDict)}';
+        '${challenge.nonce}|${challenge.timeStamp}|${container.serial}|${container.syncUrlFinalize}|$publicKeyBase64|${jsonEncode(containerDict)}';
     Logger.debug(signMessage);
     final signature = container.signMessage(signMessage);
     Logger.debug('Sended container: ${jsonEncode(containerDict)}');
@@ -185,7 +185,7 @@ class PrivacyIdeaContainerApi {
       CONTAINER_SYNC_DICT_CLIENT: jsonEncode(containerDict),
     };
 
-    final response = await _ioClient.doPost(url: Uri.parse(challenge.finalizeSyncUrl), body: body);
+    final response = await _ioClient.doPost(url: container.syncUrlFinalize, body: body);
     if (response.statusCode != 200) {
       final piErrorResponse = response.asPiErrorResponse();
       if (piErrorResponse != null) throw piErrorResponse.piServerResultError;

@@ -86,6 +86,12 @@
   "@container": {
     "description": "Title for the container view."
   },
+  "@containerDetails": {
+    "description": "Title of the container details dialog."
+  },
+  "@containerSyncUrl": {
+    "description": "Title of the container sync url field."
+  },
   "@couldNotSignMessage": {
     "description": "Tells the user that the message could not be signed."
   },
@@ -98,9 +104,6 @@
   "@creator": {
     "description": "Label for the creator of the token."
   },
-  "@darkTheme": {
-    "description": "The dark theme."
-  },
   "@decline": {
     "description": "Label for e.g. a button. Something gets declined by the user."
   },
@@ -108,15 +111,17 @@
     "description": "Label that describes deleting the token."
   },
   "@deleteContainerDialogTitle": {
-    "example": {
-      "serial": "SMPH0008CC47"
+    "placeholders": {
+      "serial": {
+        "example": "SMPH0008CC47"
+      }
     }
+  },
+  "@details": {
+    "description": "Title of the details action Button."
   },
   "@deviceCredentialsRequiredTitle": {
     "description": "Message showed as a title in a dialog which indicates the user has not set up credentials authentication on their device. It is used on Android side. Maximum 60 characters."
-  },
-  "@deviceCredentialsSetupDescription": {
-    "description": "Message advising the user to go to the settings and configure device credentials on their device. It shows in a dialog on Android side."
   },
   "@digits": {
     "description": "Title of the dropdown button where the number of digits for the opt value is selected."
@@ -200,6 +205,9 @@
       }
     }
   },
+  "@exampleUrl": {
+    "description": "Shows the user an example of a valid URL."
+  },
   "@failedToFinalizeContainer": {
     "description": "Error message when finalizing a container failed.",
     "placeholders": {
@@ -209,7 +217,12 @@
     }
   },
   "@failedToLoad": {
-    "description": "Error message when something could not be loaded."
+    "description": "Error message when something could not be loaded.",
+    "placeholders": {
+      "name": {
+        "example": "token data"
+      }
+    }
   },
   "@failedToSyncContainer": {
     "placeholders": {
@@ -221,20 +234,55 @@
   "@feedbackPrivacyPolicy2": {
     "description": "Taping on this should open the privacy policy."
   },
+  "@finalizationState": {
+    "description": "Title of the finalization state field."
+  },
   "@generatingPhonePart": {
     "description": "Title of a dialog telling the user that the phone part gets generated right now."
   },
   "@goToSettingsButton": {
     "description": "Message showed on a button that the user can click to go to settings pages from the current dialog. It is used on both Android and iOS side. Maximum 30 characters."
   },
-  "@goToSettingsDescription": {
-    "description": "Message advising the user to go to the settings and configure device credentials or biometrics on their device."
-  },
-  "@guide": {
-    "description": "Button to open the guide screen."
-  },
   "@handshakeFailed": {
     "description": "Error message when the handshake failed."
+  },
+  "@imageUrl": {
+    "description": "Title of the image url field."
+  },
+  "@importConflictToken": {
+    "placeholders": {
+      "count": {
+        "example": "5"
+      }
+    }
+  },
+  "@importExistingToken": {
+    "placeholders": {
+      "count": {
+        "example": "5"
+      }
+    }
+  },
+  "@importFailedToken": {
+    "placeholders": {
+      "count": {
+        "example": "5"
+      }
+    }
+  },
+  "@importNTokens": {
+    "placeholders": {
+      "count": {
+        "example": "5"
+      }
+    }
+  },
+  "@importNewToken": {
+    "placeholders": {
+      "count": {
+        "example": "5"
+      }
+    }
   },
   "@importedVia": {
     "description": "Label for the import method of the token."
@@ -243,6 +291,34 @@
     "placeholders": {
       "code": {
         "example": "500"
+      }
+    }
+  },
+  "@invalidBackupFile": {
+    "placeholders": {
+      "appName": {
+        "example": "privacyIDEA Authenticator"
+      }
+    }
+  },
+  "@invalidLink": {
+    "placeholders": {
+      "appName": {
+        "example": "privacyIDEA Authenticator"
+      }
+    }
+  },
+  "@invalidQrFile": {
+    "placeholders": {
+      "appName": {
+        "example": "privacyIDEA Authenticator"
+      }
+    }
+  },
+  "@invalidQrScan": {
+    "placeholders": {
+      "appName": {
+        "example": "privacyIDEA Authenticator"
       }
     }
   },
@@ -282,6 +358,9 @@
   "@isPiTokenQuestion": {
     "description": "Label for the question if the token is a privacyIDEA token."
   },
+  "@issuer": {
+    "description": "Title of the issuer field."
+  },
   "@issuerLabel": {
     "description": "Label for the issuer of the token, container... etc.",
     "placeholders": {
@@ -303,9 +382,6 @@
         "example": "PUSH1234A"
       }
     }
-  },
-  "@lightTheme": {
-    "description": "The light theme."
   },
   "@linkedContainer": {
     "description": "Label for the linked container serial number."
@@ -375,13 +451,6 @@
   "@ok": {
     "description": "Button to confirm an action."
   },
-  "@onBoardingTitle1": {
-    "placeholders": {
-      "appName": {
-        "example": "privacyIDEA Authenticator"
-      }
-    }
-  },
   "@open": {
     "description": "Button to open something."
   },
@@ -399,6 +468,9 @@
       }
     },
     "type": "text"
+  },
+  "@patchNotesDialogTitle": {
+    "description": "Title of the dialog that shows the patch notes."
   },
   "@period": {
     "description": "Title of the dropdown button where the period of the totp token is selected."
@@ -459,9 +531,6 @@
   },
   "@requestPushChallengesPeriodically": {
     "description": "The description of the polling feature."
-  },
-  "@retry": {
-    "description": "Label for e.g. a button. Something is tried to be done again."
   },
   "@rolloutStateCompleted": {
     "description": "Message for the rollout process"
@@ -559,6 +628,21 @@
   "@syncFbTokenFailed": {
     "description": "Headline for the list of tokens where the synchronization failed."
   },
+  "@syncState": {
+    "description": "The state of the synchronization of the token"
+  },
+  "@syncStateCompletedDescription": {
+    "description": "The description of the state when the synchronization is completed"
+  },
+  "@syncStateFailedDescription": {
+    "description": "The description of the state when the synchronization failed"
+  },
+  "@syncStateNotStartedDescription": {
+    "description": "The description of the state when the synchronization is not started"
+  },
+  "@syncStateSyncingDescription": {
+    "description": "The description of the state when the synchronization is currently syncing"
+  },
   "@synchronizePushTokens": {
     "description": "Title of synchronizing push tokens in settings."
   },
@@ -567,9 +651,6 @@
   },
   "@synchronizingTokens": {
     "description": "Title of the push synchronization dialog."
-  },
-  "@systemTheme": {
-    "description": "The systems theme."
   },
   "@theSecretDoesNotFitTheCurrentEncoding": {
     "description": "Hint telling the user that the secret does not fit the selected encoding."

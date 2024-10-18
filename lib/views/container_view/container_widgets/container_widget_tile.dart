@@ -61,7 +61,7 @@ class ContainerWidgetTile extends ConsumerWidget {
                 padding: const EdgeInsets.only(left: 4.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.max,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     for (var line in [
                       AppLocalizations.of(context)!.issuerLabel(container.issuer),

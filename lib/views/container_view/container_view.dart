@@ -20,6 +20,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/main_view_navigation_buttons/qr_scanner_button.dart';
 
 import '../../l10n/app_localizations.dart';
@@ -47,11 +48,13 @@ class ContainerView extends ConsumerView {
       floatingActionButton: const QrScannerButton(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            for (var containerCredential in container) ContainerWidget(container: containerCredential),
-          ],
+        child: SlidableAutoCloseBehavior(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              for (var containerCredential in container) ContainerWidget(container: containerCredential),
+            ],
+          ),
         ),
       ),
     );

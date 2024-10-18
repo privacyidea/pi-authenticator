@@ -46,7 +46,7 @@ class _DetailsContainerDialogState extends ConsumerState<DetailsContainerDialog>
   @override
   void initState() {
     super.initState();
-    controller = TextEditingController(text: widget.container.syncUrl.toString());
+    controller = TextEditingController(text: widget.container.serverUrl.toString());
   }
 
   @override
@@ -93,7 +93,7 @@ class _DetailsContainerDialogState extends ConsumerState<DetailsContainerDialog>
         TextButton(
           onPressed: Uri.tryParse(controller.text) != null
               ? () {
-                  ref.read(tokenContainerProvider.notifier).updateContainer(widget.container, (c) => c.copyWith(syncUrl: Uri.parse(controller.text)));
+                  ref.read(tokenContainerProvider.notifier).updateContainer(widget.container, (c) => c.copyWith(serverUrl: Uri.parse(controller.text)));
                   Navigator.of(context).pop();
                 }
               : null,
