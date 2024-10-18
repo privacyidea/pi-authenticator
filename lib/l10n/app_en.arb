@@ -5,25 +5,25 @@
     "description": "Label for e.g. a button. Something gets accepted by the user."
   },
   "@addANewFolder": {
-    "description": "description"
+    "description": "Title of the dialog where a new folder can be added."
   },
   "@addFolder": {
-    "description": "description"
+    "description": "Buttontext to add a new folder."
   },
   "@addSystemInfo": {
-    "description": "description"
+    "description": "Description of the checkbox to add system information to the error report."
   },
   "@addToken": {
     "description": "The button to open the screen to add tokens by hand."
   },
   "@addTokenManually": {
-    "description": "description"
+    "description": "Title of the screen where tokens are created manually."
   },
   "@algorithm": {
     "description": "Title of the dropdown button where the encoding is selected."
   },
   "@algorithmUnsupported": {
-    "description": "description",
+    "description": "Error message when the algorithm is not supported.",
     "placeholders": {
       "algorithm": {
         "example": "MD5"
@@ -34,13 +34,13 @@
     "description": "Content of the push synchronization dialog. Signaling the user that everything worked."
   },
   "@asFile": {
-    "description": "description"
+    "description": "Buttontext to save the backup as a file."
   },
   "@asQrCode": {
-    "description": "description"
+    "description": "Buttontext to export the token as a qr code."
   },
   "@askLogSendedDescription": {
-    "description": "description"
+    "description": "The content of the dialog that asks the user if he sent the error log."
   },
   "@authNotSupportedBody": {
     "description": "Message shown as a dialog body that tells the user that device credentials or biometrics must be setup for this action."
@@ -61,7 +61,7 @@
     "description": "Reason to authenticate when trying to lock or unlock a token."
   },
   "@authentication": {
-    "description": "description"
+    "description": "Title of the authentication dialog."
   },
   "@biometricHint": {
     "description": "Hint message advising the user how to authenticate with biometrics. It is used on Android side. Maximum 60 characters."
@@ -76,7 +76,7 @@
     "description": "Message to let the user know that authentication was successful. It is used on Android side. Maximum 60 characters."
   },
   "@butDiscardIt": {
-    "description": "description"
+    "description": "Smaller text for the button to discard the push request."
   },
   "@cancel": {
     "description": "Button to cancel an action."
@@ -91,7 +91,7 @@
     "description": "Button to clear the error log."
   },
   "@closeSearchTokens": {
-    "description": "description"
+    "description": "A11y label for the button to close the search tokens field."
   },
   "@confirmDeletion": {
     "description": "Title of the dialog where a token can be deleted."
@@ -109,13 +109,13 @@
     "description": "Gives the user a hint about the consequences of deleting a folder."
   },
   "@confirmPassword": {
-    "description": "description"
+    "description": "Title of the input field where the user has to confirm the password."
   },
   "@confirmTokenDeletionHint": {
     "description": "Gives the user a hint about the consequences of deleting a token."
   },
   "@confirmation": {
-    "description": "description"
+    "description": "Title of the confirmation dialog."
   },
   "@connectionFailed": {
     "description": "Tells the user that the connection failed."
@@ -127,19 +127,19 @@
     "description": "Title of the container details dialog."
   },
   "@containerSerial": {
-    "description": "description"
+    "description": "Title of the container serial field."
   },
   "@containerSyncUrl": {
     "description": "Title of the container sync url field."
   },
   "@continueButton": {
-    "description": "description"
+    "description": "Button to continue an action."
   },
   "@copyOTPToClipboard": {
-    "description": "description"
+    "description": "A11y label for the button to copy the otp value to the clipboard."
   },
   "@couldNotConnectToServer": {
-    "description": "description"
+    "description": "Error message when the connection to the server could not be established."
   },
   "@couldNotSignMessage": {
     "description": "Tells the user that the message could not be signed."
@@ -148,7 +148,7 @@
     "description": "Describes the field where the tokens counter should be entered."
   },
   "@create": {
-    "description": "description"
+    "description": "Buttontext to create something e.g. a Folder."
   },
   "@createdAt": {
     "description": "Label for the creation date of the token."
@@ -160,37 +160,37 @@
     "description": "Label for e.g. a button. Something gets declined by the user."
   },
   "@declineIt": {
-    "description": "description"
+    "description": "Smaller text for the button to decline the push request."
   },
   "@decrypt": {
-    "description": "description"
+    "description": "Buttontext to decrypt the tokens."
   },
   "@decryptErrorButtonDelete": {
-    "description": "description"
+    "description": "Buttontext to delete all tokens when they could not be decrypted."
   },
   "@decryptErrorButtonRetry": {
-    "description": "description"
+    "description": "Buttontext to retry decrypting the tokens when a decryption error occurred."
   },
   "@decryptErrorButtonSendError": {
-    "description": "description"
+    "description": "Buttontext to send an error report when a decryption error occurred."
   },
   "@decryptErrorContent": {
-    "description": "description"
+    "description": "Dialog content when the tokens could not be decrypted."
   },
   "@decryptErrorDeleteConfirmationContent": {
-    "description": "description"
+    "description": "Content of the dialog that ensures the user wants to delete all tokens."
   },
   "@decryptErrorTitle": {
-    "description": "description"
+    "description": "Title of the dialog when the tokens could not be decrypted."
   },
   "@delete": {
     "description": "Label that describes deleting the token."
   },
   "@deleteContainerDialogContent": {
-    "description": "description"
+    "description": "Content of the dialog that ensures the user wants to delete a container."
   },
   "@deleteContainerDialogTitle": {
-    "description": "description",
+    "description": "Title of the dialog where a container can be deleted.",
     "placeholders": {
       "serial": {
         "example": "SMPH0008CC47"
@@ -198,7 +198,7 @@
     }
   },
   "@deleteLockedToken": {
-    "description": "description"
+    "description": "Text for the authentication dialog when the user wants to delete a locked token."
   },
   "@details": {
     "description": "Title of the details action Button."
@@ -213,16 +213,16 @@
     "description": "Text of a button that closes a dialog."
   },
   "@done": {
-    "description": "description"
+    "description": "Buttontext for finishing an action."
   },
   "@edit": {
-    "description": "description"
+    "description": "Label for the edit action."
   },
   "@editLockedToken": {
-    "description": "description"
+    "description": "Text for the authentication dialog when the user wants to edit a locked token."
   },
   "@editToken": {
-    "description": "description"
+    "description": "Title for the edit token dialog."
   },
   "@enablePolling": {
     "description": "Name of the setting switch that enables polling."
@@ -234,10 +234,10 @@
     "description": "Title of the screen where tokens are created manually, tells the user to enter all required values."
   },
   "@enterLink": {
-    "description": "description"
+    "description": "Buttontext for the import type link."
   },
   "@enterPasswordToEncrypt": {
-    "description": "description"
+    "description": "Content of the dialog where the user has to enter a password to encrypt the tokens."
   },
   "@errorLogCleared": {
     "description": "Message that tells the user that the error log was cleared."
@@ -272,7 +272,7 @@
     }
   },
   "@errorRollOutNotPossibleAnymore": {
-    "description": "description"
+    "description": "Tells the user that the roll-out and not possible anymore for some reason."
   },
   "@errorRollOutSSLHandshakeFailed": {
     "description": "Tells the user that the roll-out failed because the SSL handshake failed."
@@ -287,13 +287,13 @@
     "type": "text"
   },
   "@errorSavingFile": {
-    "description": "description"
+    "description": "Tells the user that the file could not be saved."
   },
   "@errorSynchronizationNoNetworkConnection": {
     "description": "Tells the user that synchronizing the push tokens failed because the server could not be reached."
   },
   "@errorTokenExpired": {
-    "description": "description",
+    "description": "The submessage (reason) of \"errorRollOutNotPossibleAnymore\" that tells the user that the token is expired.",
     "placeholders": {
       "name": {
         "example": "PUSH1234A"
@@ -320,25 +320,25 @@
     "description": "Shows the user an example of a valid URL."
   },
   "@expandLockedFolder": {
-    "description": "description"
+    "description": "Text for the authentication dialog when the user wants to expand a locked folder."
   },
   "@export": {
-    "description": "description"
+    "description": "Buttontext to export tokens."
   },
   "@exportAllTokens": {
-    "description": "description"
+    "description": "Description of the checkbox to export all tokens."
   },
   "@exportLockedTokenReason": {
-    "description": "description"
+    "description": "Text for the authentication dialog when the user wants to export a locked token."
   },
   "@exportNonPrivacyIDEATokens": {
-    "description": "description"
+    "description": "Buttontext to export non privacyIDEA tokens."
   },
   "@exportTokens": {
-    "description": "description"
+    "description": "Title of the export Tokens dialog."
   },
   "@exportingTokens": {
-    "description": "description"
+    "description": "Text for the loading indicator when exporting tokens."
   },
   "@failedToFinalizeContainer": {
     "description": "Error message when finalizing a container failed.",
@@ -364,49 +364,46 @@
     }
   },
   "@feedback": {
-    "description": "description"
+    "description": "Text for the feedback button and view title of the feedback screen."
   },
   "@feedbackDescription": {
-    "description": "description"
+    "description": "Description for the feedback screen."
   },
   "@feedbackHint": {
-    "description": "description"
+    "description": "Descripes waht happens when the user clicks on the send button."
   },
   "@feedbackPrivacyPolicy1": {
-    "description": "description"
+    "description": "First part of the text that tells the user that he agrees to the privacy policy by sending feedback."
   },
   "@feedbackPrivacyPolicy2": {
     "description": "Taping on this should open the privacy policy."
   },
   "@feedbackPrivacyPolicy3": {
-    "description": "description"
+    "description": "Last part of the text that tells the user that he agrees to the privacy policy by sending feedback."
   },
   "@feedbackSentDescription": {
-    "description": "description"
+    "description": "The content of the dialog that appears after the feedback was sent."
   },
   "@feedbackSentTitle": {
-    "description": "description"
+    "description": "The Title of the dialog that appears after the feedback was sent."
   },
   "@feedbackTitle": {
-    "description": "description"
+    "description": "First big line of the feedback screen."
   },
   "@fileSavedToDownloadsFolder": {
-    "description": "description"
+    "description": "Tells the user that the file was saved to the downloads folder."
   },
   "@finalizationState": {
     "description": "Title of the finalization state field."
   },
   "@finalizeContainerFailed": {
-    "description": "description"
-  },
-  "@findingQrCodeInImage": {
-    "description": "description"
+    "description": "Text for the error message when finalizing a container failed for some reason."
   },
   "@firebaseToken": {
-    "description": "description"
+    "description": "Label for the field where the firebase token is shown."
   },
   "@folderName": {
-    "description": "description"
+    "description": "Label for the input field where the folder name should be entered."
   },
   "@generatingPhonePart": {
     "description": "Title of a dialog telling the user that the phone part gets generated right now."
@@ -415,28 +412,28 @@
     "description": "Message showed on a button that the user can click to go to settings pages from the current dialog. It is used on both Android and iOS side. Maximum 30 characters."
   },
   "@grantCameraPermissionDialogButton": {
-    "description": "description"
+    "description": "Buttontext to grant the camera permission."
   },
   "@grantCameraPermissionDialogContent": {
-    "description": "description"
+    "description": "Content of the dialog that asks the user to grant the camera permission."
   },
   "@grantCameraPermissionDialogTitle": {
-    "description": "description"
+    "description": "Title of the dialog that asks the user to grant the camera permission."
   },
   "@handshakeFailed": {
     "description": "Error message when the handshake failed."
   },
   "@hidePushTokens": {
-    "description": "description"
+    "description": "Label for the switch to hide push tokens."
   },
   "@hidePushTokensDescription": {
-    "description": "description"
+    "description": "Descripes what happens when the user hides the push tokens."
   },
   "@imageUrl": {
     "description": "Title of the image url field."
   },
   "@importConflictToken": {
-    "description": "description",
+    "description": "Title for the section where the user can see the conflicting tokens.",
     "placeholders": {
       "count": {
         "example": "5"
@@ -444,7 +441,7 @@
     }
   },
   "@importExistingToken": {
-    "description": "description",
+    "description": "Title for the section where the user can see the tokens that already exist.",
     "placeholders": {
       "count": {
         "example": "5"
@@ -452,10 +449,10 @@
     }
   },
   "@importExportTokens": {
-    "description": "description"
+    "description": "Title of the import/export settings group."
   },
   "@importFailedToken": {
-    "description": "description",
+    "description": "Title for the section where the user can see the tokens that could not be imported.",
     "placeholders": {
       "count": {
         "example": "5"
@@ -463,40 +460,40 @@
     }
   },
   "@importHint2FAS": {
-    "description": "description"
+    "description": "Tells the user importent information about the import of 2FAS tokens."
   },
   "@importHintAegisBackupFile": {
-    "description": "description"
+    "description": "Tells the user importent information about the import of Aegis backup files."
   },
   "@importHintAegisLink": {
-    "description": "description"
+    "description": "Tells the user importent information about the import of Aegis links."
   },
   "@importHintAegisQrScan": {
-    "description": "description"
+    "description": "Tells the user importent information about the import of Aegis qr codes."
   },
   "@importHintAuthenticatorProFile": {
-    "description": "description"
+    "description": "Tells the user importent information about the import of Authenticator Pro files."
   },
   "@importHintFreeOtpPlusFile": {
-    "description": "description"
+    "description": "Tells the user importent information about the import of FreeOTP+ files."
   },
   "@importHintFreeOtpPlusQrScan": {
-    "description": "description"
+    "description": "Tells the user importent information about the import of FreeOTP+ qr codes."
   },
   "@importHintGoogleQrFile": {
-    "description": "description"
+    "description": "Tells the user importent information about the import of Google qr codes."
   },
   "@importHintGoogleQrScan": {
-    "description": "description"
+    "description": "Tells the user importent information about the import of Google qr codes."
   },
   "@importHintPrivacyIdeaFile": {
-    "description": "description"
+    "description": "Tells the user importent information about the import of privacyIDEA files."
   },
   "@importHintPrivacyIdeaQrScan": {
-    "description": "description"
+    "description": "Tells the user importent information about the import of privacyIDEA qr codes."
   },
   "@importNTokens": {
-    "description": "description",
+    "description": "Buttontext to import n tokens.",
     "placeholders": {
       "count": {
         "example": "5"
@@ -504,7 +501,7 @@
     }
   },
   "@importNewToken": {
-    "description": "description",
+    "description": "Title for the section where the user can see the new tokens.",
     "placeholders": {
       "count": {
         "example": "5"
@@ -512,16 +509,16 @@
     }
   },
   "@importTokens": {
-    "description": "description"
+    "description": "Title of the import Tokens screen when it is not clear where the tokens come from."
   },
   "@importedVia": {
     "description": "Label for the import method of the token."
   },
   "@increaseCounter": {
-    "description": "description"
+    "description": "A11y label for the button that increases the counter."
   },
   "@internalServerError": {
-    "description": "description",
+    "description": "Error message when an internal server error occurred.",
     "placeholders": {
       "code": {
         "example": "500"
@@ -529,31 +526,31 @@
     }
   },
   "@introAddFolder": {
-    "description": "description"
+    "description": "Text for the introduction that explains how to add a folder."
   },
   "@introDragToken": {
-    "description": "description"
+    "description": "Text for the introduction that explains how to drag a token."
   },
   "@introEditToken": {
-    "description": "description"
+    "description": "Text for the introduction that explains how to edit a token."
   },
   "@introHidePushTokens": {
-    "description": "description"
+    "description": "Text for the introduction that explains where the user can find the hidden push tokens."
   },
   "@introLockToken": {
-    "description": "description"
+    "description": "Text for the introduction that explains how to lock a token."
   },
   "@introPollForChallenges": {
-    "description": "description"
+    "description": "Text for the introduction that explains how to poll for challenges."
   },
   "@introScanQrCode": {
-    "description": "description"
+    "description": "Text for the introduction that explains how to scan a qr code."
   },
   "@introTokenSwipe": {
-    "description": "description"
+    "description": "Text for the introduction that explains how to see the available actions for a token."
   },
   "@invalidBackupFile": {
-    "description": "description",
+    "description": "Error message when the backup file is invalid.",
     "placeholders": {
       "appName": {
         "example": "privacyIDEA Authenticator"
@@ -561,7 +558,7 @@
     }
   },
   "@invalidLink": {
-    "description": "description",
+    "description": "Error message when the link is invalid.",
     "placeholders": {
       "appName": {
         "example": "privacyIDEA Authenticator"
@@ -569,7 +566,7 @@
     }
   },
   "@invalidQrFile": {
-    "description": "description",
+    "description": "Error message when the qr file is invalid.",
     "placeholders": {
       "appName": {
         "example": "privacyIDEA Authenticator"
@@ -577,7 +574,7 @@
     }
   },
   "@invalidQrScan": {
-    "description": "description",
+    "description": "Error message when the qr scan is invalid.",
     "placeholders": {
       "appName": {
         "example": "privacyIDEA Authenticator"
@@ -599,7 +596,7 @@
     }
   },
   "@invalidValueIn": {
-    "description": "description",
+    "description": "Text for the error message when a value is not valid for a parameter in a specific map.",
     "placeholders": {
       "map": {
         "example": "query parameters"
@@ -617,9 +614,6 @@
   },
   "@isExpotableQuestion": {
     "description": "Label for the question if the token is exportable."
-  },
-  "@isPiTokenQuestion": {
-    "description": "Label for the question if the token is a privacyIDEA token."
   },
   "@issuer": {
     "description": "Title of the issuer field."
@@ -647,10 +641,10 @@
     }
   },
   "@licenses": {
-    "description": "description"
+    "description": "Title of the licenses screen."
   },
   "@licensesAndVersion": {
-    "description": "description"
+    "description": "Buttontext to open the licenses and version screen."
   },
   "@linkedContainer": {
     "description": "Label for the linked container serial number."
@@ -690,7 +684,7 @@
     }
   },
   "@mustNotBeEmpty": {
-    "description": "description",
+    "description": "Error message when a field must not be empty.",
     "placeholders": {
       "field": {
         "example": "Name"
@@ -701,16 +695,16 @@
     "description": "Describes the field where the tokens name should be entered."
   },
   "@no": {
-    "description": "description"
+    "description": "Content of the field when the answer is no."
   },
   "@noFbToken": {
     "description": "Tells the user that there is no Firebase token available."
   },
   "@noMailAppDescription": {
-    "description": "description"
+    "description": "escription"
   },
   "@noMailAppTitle": {
-    "description": "description"
+    "description": "Title of the dialog that tells the user that there is no mail app available."
   },
   "@noNetworkConnection": {
     "description": "Tells the user that there is no network connection."
@@ -795,9 +789,6 @@
   },
   "@patchNotesBugFixes": {
     "description": "description"
-  },
-  "@patchNotesDialogTitle": {
-    "description": "Title of the dialog that shows the patch notes."
   },
   "@patchNotesImprovements": {
     "description": "description"
@@ -1318,7 +1309,6 @@
   "fileSavedToDownloadsFolder": "File saved to Downloads folder",
   "finalizationState": "Finalization State",
   "finalizeContainerFailed": "Finalize Container Failed",
-  "findingQrCodeInImage": "Looking for QR code in image...",
   "firebaseToken": "Firebase Token",
   "folderName": "Folder name",
   "generatingPhonePart": "Generating phone part",

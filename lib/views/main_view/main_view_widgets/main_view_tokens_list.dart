@@ -59,17 +59,27 @@ class MainViewTokensList extends ConsumerStatefulWidget {
     sortables.sort((a, b) => a.compareTo(b));
     sortables = filter?.filterSortables(sortables) ?? sortables;
     bool introductionAdded = false;
+    int skiped = 0;
     for (var i = 0; i < sortables.length; i++) {
       final sortable = sortables[i];
-      if (hidePushTokens && sortable is PushToken) continue;
-      if (sortable is Token && sortable.folderId != null && !isPushTokensView) continue;
+      if (hidePushTokens && sortable is PushToken) {
+        skiped++;
+        continue;
+      }
+      if (sortable is Token && sortable.folderId != null && !isPushTokensView) {
+        skiped++;
+        continue;
+      }
       final isFirst = i == 0;
       final isDraggingTheCurrent = draggingSortable == sortable;
-      final previousWasExpandedFolder = i > 0 && sortables[i - 1] is TokenFolder && (sortables[i - 1] as TokenFolder).isExpanded;
+      final previousWasExpandedFolder = i > 0 && sortables[i - skiped - 1] is TokenFolder && (sortables[i - skiped - 1] as TokenFolder).isExpanded;
       final currentIsExpandedFolder = sortable is TokenFolder && sortable.isExpanded;
       final folderTokens = sortable is TokenFolder ? sortables.where((s) => s is Token && s.folderId == sortable.folderId).cast<Token>().toList() : null;
       if (hidePushTokens) folderTokens?.removeWhere((t) => t is PushToken);
-      if (filter != null && folderTokens?.isEmpty == true) continue;
+      if (filter != null && folderTokens?.isEmpty == true) {
+        skiped++;
+        continue;
+      }
       // 1. Add a divider if the current sortable is not the one which is dragged
       // 2. Don't add a divider if the current sortable is the first
       // 3. Don't add a divider after an expanded folder
@@ -88,6 +98,7 @@ class MainViewTokensList extends ConsumerStatefulWidget {
       }
 
       if (sortable is Token) {
+        skiped = 0;
         widgets.add(
           introductionAdded
               ? TokenWidgetBuilder.fromToken(token: sortable)
@@ -101,6 +112,7 @@ class MainViewTokensList extends ConsumerStatefulWidget {
       }
 
       if (sortable is TokenFolder) {
+        skiped = 0;
         widgets.add(
           TokenFolderWidget(
             folder: sortable,

@@ -4,13 +4,26 @@
   "@accept": {
     "description": "Label for e.g. a button. Something gets accepted by the user."
   },
+  "@addANewFolder": {
+    "description": "Title of the dialog where a new folder can be added."
+  },
+  "@addFolder": {
+    "description": "Buttontext to add a new folder."
+  },
+  "@addSystemInfo": {
+    "description": "Description of the checkbox to add system information to the error report."
+  },
   "@addToken": {
     "description": "The button to open the screen to add tokens by hand."
+  },
+  "@addTokenManually": {
+    "description": "Title of the screen where tokens are created manually."
   },
   "@algorithm": {
     "description": "Title of the dropdown button where the encoding is selected."
   },
   "@algorithmUnsupported": {
+    "description": "Error message when the algorithm is not supported.",
     "placeholders": {
       "algorithm": {
         "example": "MD5"
@@ -19,6 +32,15 @@
   },
   "@allTokensSynchronized": {
     "description": "Content of the push synchronization dialog. Signaling the user that everything worked."
+  },
+  "@asFile": {
+    "description": "Buttontext to save the backup as a file."
+  },
+  "@asQrCode": {
+    "description": "Buttontext to export the token as a qr code."
+  },
+  "@askLogSendedDescription": {
+    "description": "The content of the dialog that asks the user if he sent the error log."
   },
   "@authNotSupportedBody": {
     "description": "Message shown as a dialog body that tells the user that device credentials or biometrics must be setup for this action."
@@ -38,6 +60,9 @@
   "@authenticateToUnLockToken": {
     "description": "Reason to authenticate when trying to lock or unlock a token."
   },
+  "@authentication": {
+    "description": "Title of the authentication dialog."
+  },
   "@biometricHint": {
     "description": "Hint message advising the user how to authenticate with biometrics. It is used on Android side. Maximum 60 characters."
   },
@@ -50,6 +75,9 @@
   "@biometricSuccess": {
     "description": "Message to let the user know that authentication was successful. It is used on Android side. Maximum 60 characters."
   },
+  "@butDiscardIt": {
+    "description": "Smaller text for the button to discard the push request."
+  },
   "@cancel": {
     "description": "Button to cancel an action."
   },
@@ -61,6 +89,9 @@
   },
   "@clearErrorLog": {
     "description": "Button to clear the error log."
+  },
+  "@closeSearchTokens": {
+    "description": "A11y label for the button to close the search tokens field."
   },
   "@confirmDeletion": {
     "description": "Title of the dialog where a token can be deleted."
@@ -77,8 +108,14 @@
   "@confirmFolderDeletionHint": {
     "description": "Gives the user a hint about the consequences of deleting a folder."
   },
+  "@confirmPassword": {
+    "description": "Title of the input field where the user has to confirm the password."
+  },
   "@confirmTokenDeletionHint": {
     "description": "Gives the user a hint about the consequences of deleting a token."
+  },
+  "@confirmation": {
+    "description": "Title of the confirmation dialog."
   },
   "@connectionFailed": {
     "description": "Tells the user that the connection failed."
@@ -89,14 +126,29 @@
   "@containerDetails": {
     "description": "Title of the container details dialog."
   },
+  "@containerSerial": {
+    "description": "Title of the container serial field."
+  },
   "@containerSyncUrl": {
     "description": "Title of the container sync url field."
+  },
+  "@continueButton": {
+    "description": "Button to continue an action."
+  },
+  "@copyOTPToClipboard": {
+    "description": "A11y label for the button to copy the otp value to the clipboard."
+  },
+  "@couldNotConnectToServer": {
+    "description": "Error message when the connection to the server could not be established."
   },
   "@couldNotSignMessage": {
     "description": "Tells the user that the message could not be signed."
   },
   "@counter": {
     "description": "Describes the field where the tokens counter should be entered."
+  },
+  "@create": {
+    "description": "Buttontext to create something e.g. a Folder."
   },
   "@createdAt": {
     "description": "Label for the creation date of the token."
@@ -107,15 +159,46 @@
   "@decline": {
     "description": "Label for e.g. a button. Something gets declined by the user."
   },
+  "@declineIt": {
+    "description": "Smaller text for the button to decline the push request."
+  },
+  "@decrypt": {
+    "description": "Buttontext to decrypt the tokens."
+  },
+  "@decryptErrorButtonDelete": {
+    "description": "Buttontext to delete all tokens when they could not be decrypted."
+  },
+  "@decryptErrorButtonRetry": {
+    "description": "Buttontext to retry decrypting the tokens when a decryption error occurred."
+  },
+  "@decryptErrorButtonSendError": {
+    "description": "Buttontext to send an error report when a decryption error occurred."
+  },
+  "@decryptErrorContent": {
+    "description": "Dialog content when the tokens could not be decrypted."
+  },
+  "@decryptErrorDeleteConfirmationContent": {
+    "description": "Content of the dialog that ensures the user wants to delete all tokens."
+  },
+  "@decryptErrorTitle": {
+    "description": "Title of the dialog when the tokens could not be decrypted."
+  },
   "@delete": {
     "description": "Label that describes deleting the token."
   },
+  "@deleteContainerDialogContent": {
+    "description": "Content of the dialog that ensures the user wants to delete a container."
+  },
   "@deleteContainerDialogTitle": {
+    "description": "Title of the dialog where a container can be deleted.",
     "placeholders": {
       "serial": {
         "example": "SMPH0008CC47"
       }
     }
+  },
+  "@deleteLockedToken": {
+    "description": "Text for the authentication dialog when the user wants to delete a locked token."
   },
   "@details": {
     "description": "Title of the details action Button."
@@ -129,6 +212,18 @@
   "@dismiss": {
     "description": "Text of a button that closes a dialog."
   },
+  "@done": {
+    "description": "Buttontext for finishing an action."
+  },
+  "@edit": {
+    "description": "Label for the edit action."
+  },
+  "@editLockedToken": {
+    "description": "Text for the authentication dialog when the user wants to edit a locked token."
+  },
+  "@editToken": {
+    "description": "Title for the edit token dialog."
+  },
   "@enablePolling": {
     "description": "Name of the setting switch that enables polling."
   },
@@ -137,6 +232,12 @@
   },
   "@enterDetailsForToken": {
     "description": "Title of the screen where tokens are created manually, tells the user to enter all required values."
+  },
+  "@enterLink": {
+    "description": "Buttontext for the import type link."
+  },
+  "@enterPasswordToEncrypt": {
+    "description": "Content of the dialog where the user has to enter a password to encrypt the tokens."
   },
   "@errorLogCleared": {
     "description": "Message that tells the user that the error log was cleared."
@@ -149,6 +250,9 @@
   },
   "@errorMailBody": {
     "description": "Message for email body"
+  },
+  "@errorMissingPrivateKey": {
+    "description": "Error message when the private key is missing."
   },
   "@errorRollOutFailed": {
     "description": "Tells the user that the token could not be rolled out, because a network error occurred.",
@@ -167,6 +271,9 @@
       }
     }
   },
+  "@errorRollOutNotPossibleAnymore": {
+    "description": "Tells the user that the roll-out and not possible anymore for some reason."
+  },
   "@errorRollOutSSLHandshakeFailed": {
     "description": "Tells the user that the roll-out failed because the SSL handshake failed."
   },
@@ -179,10 +286,14 @@
     },
     "type": "text"
   },
+  "@errorSavingFile": {
+    "description": "Tells the user that the file could not be saved."
+  },
   "@errorSynchronizationNoNetworkConnection": {
     "description": "Tells the user that synchronizing the push tokens failed because the server could not be reached."
   },
   "@errorTokenExpired": {
+    "description": "The submessage (reason) of ",
     "placeholders": {
       "name": {
         "example": "PUSH1234A"
@@ -208,6 +319,27 @@
   "@exampleUrl": {
     "description": "Shows the user an example of a valid URL."
   },
+  "@expandLockedFolder": {
+    "description": "Text for the authentication dialog when the user wants to expand a locked folder."
+  },
+  "@export": {
+    "description": "Buttontext to export tokens."
+  },
+  "@exportAllTokens": {
+    "description": "Description of the checkbox to export all tokens."
+  },
+  "@exportLockedTokenReason": {
+    "description": "Text for the authentication dialog when the user wants to export a locked token."
+  },
+  "@exportNonPrivacyIDEATokens": {
+    "description": "Buttontext to export non privacyIDEA tokens."
+  },
+  "@exportTokens": {
+    "description": "Title of the export Tokens dialog."
+  },
+  "@exportingTokens": {
+    "description": "Text for the loading indicator when exporting tokens."
+  },
   "@failedToFinalizeContainer": {
     "description": "Error message when finalizing a container failed.",
     "placeholders": {
@@ -231,11 +363,47 @@
       }
     }
   },
+  "@feedback": {
+    "description": "Text for the feedback button and view title of the feedback screen."
+  },
+  "@feedbackDescription": {
+    "description": "Description for the feedback screen."
+  },
+  "@feedbackHint": {
+    "description": "Descripes waht happens when the user clicks on the send button."
+  },
+  "@feedbackPrivacyPolicy1": {
+    "description": "First part of the text that tells the user that he agrees to the privacy policy by sending feedback."
+  },
   "@feedbackPrivacyPolicy2": {
     "description": "Tapnięcie na to powinno otworzyć politykę prywatności."
   },
+  "@feedbackPrivacyPolicy3": {
+    "description": "Last part of the text that tells the user that he agrees to the privacy policy by sending feedback."
+  },
+  "@feedbackSentDescription": {
+    "description": "The content of the dialog that appears after the feedback was sent."
+  },
+  "@feedbackSentTitle": {
+    "description": "The Title of the dialog that appears after the feedback was sent."
+  },
+  "@feedbackTitle": {
+    "description": "First big line of the feedback screen."
+  },
+  "@fileSavedToDownloadsFolder": {
+    "description": "Tells the user that the file was saved to the downloads folder."
+  },
   "@finalizationState": {
     "description": "Title of the finalization state field."
+  },
+  "@finalizeContainerFailed": {
+    "description": "Text for the error message when finalizing a container failed for some reason."
+  },
+  "@firebaseToken": {
+    "description": "Label for the field where the firebase token is shown."
+  },
+  "@folderName": {
+    "description": "Label for the input field where the folder name should be entered."
   },
   "@generatingPhonePart": {
     "description": "Title of a dialog telling the user that the phone part gets generated right now."
@@ -243,13 +411,29 @@
   "@goToSettingsButton": {
     "description": "Message showed on a button that the user can click to go to settings pages from the current dialog. It is used on both Android and iOS side. Maximum 30 characters."
   },
+  "@grantCameraPermissionDialogButton": {
+    "description": "Buttontext to grant the camera permission."
+  },
+  "@grantCameraPermissionDialogContent": {
+    "description": "Content of the dialog that asks the user to grant the camera permission."
+  },
+  "@grantCameraPermissionDialogTitle": {
+    "description": "Title of the dialog that asks the user to grant the camera permission."
+  },
   "@handshakeFailed": {
     "description": "Error message when the handshake failed."
+  },
+  "@hidePushTokens": {
+    "description": "Label for the switch to hide push tokens."
+  },
+  "@hidePushTokensDescription": {
+    "description": "Descripes what happens when the user hides the push tokens."
   },
   "@imageUrl": {
     "description": "Title of the image url field."
   },
   "@importConflictToken": {
+    "description": "Title for the section where the user can see the conflicting tokens.",
     "placeholders": {
       "count": {
         "example": "5"
@@ -257,18 +441,41 @@
     }
   },
   "@importExistingToken": {
+    "description": "Title for the section where the user can see the tokens that already exist.",
     "placeholders": {
       "count": {
         "example": "5"
       }
     }
   },
+  "@importExportTokens": {
+    "description": "Title of the import/export settings group."
+  },
   "@importFailedToken": {
+    "description": "Title for the section where the user can see the tokens that could not be imported.",
     "placeholders": {
       "count": {
         "example": "5"
       }
     }
+  },
+  "@importHint2FAS": {
+    "description": "Tells the user importent information about the import of 2FAS tokens."
+  },
+  "@importHintAegisBackupFile": {
+    "description": "Tells the user importent information about the import of Aegis backup files."
+  },
+  "@importHintAegisLink": {
+    "description": "Tells the user importent information about the import of Aegis links."
+  },
+  "@importHintAegisQrScan": {
+    "description": "Tells the user importent information about the import of Aegis qr codes."
+  },
+  "@importHintAuthenticatorProFile": {
+    "description": "Tells the user importent information about the import of Authenticator Pro files."
+  },
+  "@importHintFreeOtpPlusFile": {
+    "description": "Tells the user importent information about the import of FreeOTP+ files."
   },
   "@importNTokens": {
     "placeholders": {
@@ -837,7 +1044,6 @@
   "feedbackSentTitle": "Opinia została wysłana",
   "feedbackTitle": "Twoja opinia jest zawsze mile widziana!",
   "fileSavedToDownloadsFolder": "Plik zapisano w folderze Pobrane",
-  "findingQrCodeInImage": "Szukanie kodu QR na obrazku...",
   "firebaseToken": "Token Firebase",
   "folderName": "Nazwa folderu",
   "generatingPhonePart": "Generowanie sekretu po stronie telefonu...",

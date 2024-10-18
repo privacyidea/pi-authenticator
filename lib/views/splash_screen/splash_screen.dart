@@ -29,7 +29,6 @@ import '../../utils/logger.dart';
 import '../../utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
 import '../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../main_view/main_view.dart';
-import '../view_interface.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   static const routeName = '/';
@@ -97,13 +96,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     if (_customization.disabledFeatures.isNotEmpty) {
       Logger.info('Disabled features: ${_customization.disabledFeatures}');
     }
-    final ViewWidget nextView = MainView(
-      appName: _customization.appName,
-      appIcon: _customization.appIcon.getWidget,
-      appImage: _customization.appImage.getWidget,
-      disablePatchNotes: _customization.disabledFeatures.contains(AppFeature.patchNotes),
-    );
-    final routeBuilder = PageRouteBuilder(pageBuilder: (_, __, ___) => nextView);
+    // final ViewWidget nextView = MainView(
+    //   appName: _customization.appName,
+    //   appIcon: _customization.appIcon.getWidget,
+    //   appImage: _customization.appImage.getWidget,
+    //   disablePatchNotes: _customization.disabledFeatures.contains(AppFeature.patchNotes),
+    // );
+    // final routeBuilder = PageRouteBuilder(pageBuilder: (_, __, ___) => nextView);
     // Idle until the splash screen is the top route.
     // By default it is the top route, but it can be overridden by pushing a new route before initializing the app, e.g. by a deep link.
     await Future.doWhile(() async {
@@ -113,7 +112,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     });
     if (!mounted) return;
     Navigator.of(context).popUntil((route) => route.isFirst);
-    Navigator.pushReplacement(context, routeBuilder);
+    Navigator.pushReplacementNamed(context, MainView.routeName);
   }
 
   @override
