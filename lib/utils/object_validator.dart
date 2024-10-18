@@ -124,10 +124,11 @@ Map<String, RV> validateMap<RV>({required Map<String, dynamic> map, required Map
         final newValue = validator.transform(mapEntry);
         if (newValue != null) validatedMap[key] = newValue;
       } else {
+        Logger.debug('All keys: ${map.keys}');
         throw LocalizedArgumentError(
           localizedMessage: name != null
-              ? (localizations, value, key) => localizations.valueNotAllowedIn(value.runtimeType.toString(), value.toString(), key, name)
-              : (localizations, value, key) => localizations.valueNotAllowed(value.runtimeType.toString(), value.toString(), key),
+              ? (localizations, value, key) => localizations.valueNotAllowedIn(name, key, value.runtimeType.toString(), value.toString())
+              : (localizations, value, key) => localizations.valueNotAllowed(key, value.runtimeType.toString(), value.toString()),
           unlocalizedMessage: 'The ${mapEntry.runtimeType} "$mapEntry" is not an allowed value for "$key"',
           invalidValue: mapEntry.toString(),
           name: key,
@@ -135,9 +136,10 @@ Map<String, RV> validateMap<RV>({required Map<String, dynamic> map, required Map
       }
     } else {
       if (mapEntry == null) {
+        Logger.debug('All keys: ${map.keys}');
         throw LocalizedArgumentError(
           localizedMessage: name != null
-              ? (localizations, value, key) => localizations.missingRequiredParameterIn(key, name)
+              ? (localizations, value, key) => localizations.missingRequiredParameterIn(name, key)
               : (localizations, value, key) => localizations.missingRequiredParameter(key),
           unlocalizedMessage: 'Map does not contain required key "$key"',
           invalidValue: mapEntry.toString(),

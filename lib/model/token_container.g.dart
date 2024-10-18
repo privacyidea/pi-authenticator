@@ -12,13 +12,12 @@ _$TokenContainerUnfinalizedImpl _$$TokenContainerUnfinalizedImplFromJson(
       issuer: json['issuer'] as String,
       nonce: json['nonce'] as String,
       timestamp: DateTime.parse(json['timestamp'] as String),
-      finalizationUrl: Uri.parse(json['finalizationUrl'] as String),
-      syncUrl:
-          json['syncUrl'] == null ? null : Uri.parse(json['syncUrl'] as String),
+      serverUrl: Uri.parse(json['serverUrl'] as String),
       serial: json['serial'] as String,
       ecKeyAlgorithm:
           $enumDecode(_$EcKeyAlgorithmEnumMap, json['ecKeyAlgorithm']),
       hashAlgorithm: $enumDecode(_$AlgorithmsEnumMap, json['hashAlgorithm']),
+      sslVerify: json['sslVerify'] as bool,
       serverName: json['serverName'] as String? ?? 'privacyIDEA',
       finalizationState: $enumDecodeNullable(
               _$RolloutStateEnumMap, json['finalizationState']) ??
@@ -36,11 +35,11 @@ Map<String, dynamic> _$$TokenContainerUnfinalizedImplToJson(
       'issuer': instance.issuer,
       'nonce': instance.nonce,
       'timestamp': instance.timestamp.toIso8601String(),
-      'finalizationUrl': instance.finalizationUrl.toString(),
-      'syncUrl': instance.syncUrl?.toString(),
+      'serverUrl': instance.serverUrl.toString(),
       'serial': instance.serial,
       'ecKeyAlgorithm': _$EcKeyAlgorithmEnumMap[instance.ecKeyAlgorithm]!,
       'hashAlgorithm': _$AlgorithmsEnumMap[instance.hashAlgorithm]!,
+      'sslVerify': instance.sslVerify,
       'serverName': instance.serverName,
       'finalizationState': _$RolloutStateEnumMap[instance.finalizationState]!,
       'passphraseQuestion': instance.passphraseQuestion,
@@ -120,11 +119,12 @@ _$TokenContainerFinalizedImpl _$$TokenContainerFinalizedImplFromJson(
       issuer: json['issuer'] as String,
       nonce: json['nonce'] as String,
       timestamp: DateTime.parse(json['timestamp'] as String),
-      syncUrl: Uri.parse(json['syncUrl'] as String),
+      serverUrl: Uri.parse(json['serverUrl'] as String),
       serial: json['serial'] as String,
       ecKeyAlgorithm:
           $enumDecode(_$EcKeyAlgorithmEnumMap, json['ecKeyAlgorithm']),
       hashAlgorithm: $enumDecode(_$AlgorithmsEnumMap, json['hashAlgorithm']),
+      sslVerify: json['sslVerify'] as bool,
       serverName: json['serverName'] as String? ?? 'privacyIDEA',
       finalizationState: $enumDecodeNullable(
               _$RolloutStateEnumMap, json['finalizationState']) ??
@@ -144,10 +144,11 @@ Map<String, dynamic> _$$TokenContainerFinalizedImplToJson(
       'issuer': instance.issuer,
       'nonce': instance.nonce,
       'timestamp': instance.timestamp.toIso8601String(),
-      'syncUrl': instance.syncUrl.toString(),
+      'serverUrl': instance.serverUrl.toString(),
       'serial': instance.serial,
       'ecKeyAlgorithm': _$EcKeyAlgorithmEnumMap[instance.ecKeyAlgorithm]!,
       'hashAlgorithm': _$AlgorithmsEnumMap[instance.hashAlgorithm]!,
+      'sslVerify': instance.sslVerify,
       'serverName': instance.serverName,
       'finalizationState': _$RolloutStateEnumMap[instance.finalizationState]!,
       'syncState': _$SyncStateEnumMap[instance.syncState]!,

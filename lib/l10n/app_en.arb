@@ -349,7 +349,7 @@
     }
   },
   "@failedToLoad": {
-    "description": "description",
+    "description": "Error message when something could not be loaded.",
     "placeholders": {
       "name": {
         "example": "token data"
@@ -618,6 +618,9 @@
   "@isExpotableQuestion": {
     "description": "Label for the question if the token is exportable."
   },
+  "@isPiTokenQuestion": {
+    "description": "Label for the question if the token is a privacyIDEA token."
+  },
   "@issuer": {
     "description": "Title of the issuer field."
   },
@@ -792,6 +795,9 @@
   },
   "@patchNotesBugFixes": {
     "description": "description"
+  },
+  "@patchNotesDialogTitle": {
+    "description": "Title of the dialog that shows the patch notes."
   },
   "@patchNotesImprovements": {
     "description": "description"
@@ -1235,6 +1241,7 @@
   "confirmation": "Confirmation",
   "connectionFailed": "Connection failed.",
   "container": "Container",
+  "containerAlreadyExists": "Container already exists",
   "containerDetails": "Container details",
   "containerSerial": "Container Serial",
   "containerSyncUrl": "Container Sync Url",
@@ -1449,6 +1456,7 @@
   "rename": "Rename",
   "renameToken": "Rename token",
   "renameTokenFolder": "Rename folder",
+  "replace": "Replace",
   "requestInfo": "Sent by {issuer} for your account: \"{account}\"",
   "requestPushChallengesPeriodically": "Request push challenges from the server periodically. Enable this if push challenges are not received normally.",
   "requestTriggerdByUserQuestion": "Was this request triggered by you?",

@@ -41,16 +41,18 @@ class ContainerWidget extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => ClipRRect(
-        child: PiSliable(
-          groupTag: groupTag,
-          identifier: container.serial,
-          actions: [
-            DeleteContainerAction(container: container, key: Key('${container.serial}-DeleteContainerAction')),
-            DetailsContainerAction(container: container, key: Key('${container.serial}-EditContainerAction')),
-          ],
-          stack: stack,
-          child: ContainerWidgetTile(container: container),
-        ),
-      );
+  Widget build(BuildContext context, WidgetRef ref) => isPreview
+      ? ContainerWidgetTile(container: container)
+      : ClipRRect(
+          child: PiSliable(
+            groupTag: groupTag,
+            identifier: container.serial,
+            actions: [
+              DeleteContainerAction(container: container, key: Key('${container.serial}-DeleteContainerAction')),
+              DetailsContainerAction(container: container, key: Key('${container.serial}-EditContainerAction')),
+            ],
+            stack: stack,
+            child: ContainerWidgetTile(container: container),
+          ),
+        );
 }

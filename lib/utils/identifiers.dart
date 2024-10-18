@@ -119,6 +119,7 @@ const String CONTAINER_SERIAL = 'serial';
 const String CONTAINER_EC_KEY_ALGORITHM = 'key_algorithm';
 const String CONTAINER_HASH_ALGORITHM = 'hash_algorithm';
 const String CONTAINER_PASSPHRASE_QUESTION = 'passphrase';
+const String CONTAINER_SSL_VERIFY = 'ssl_verify';
 
 const String CONTAINER_CONTAINER_SERIAL = 'container_serial';
 const String CONTAINER_PUBLIC_CLIENT_KEY = 'public_client_key';
