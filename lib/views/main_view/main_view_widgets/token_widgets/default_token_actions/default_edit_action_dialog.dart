@@ -191,7 +191,7 @@ class _DefaultEditActionDialogState extends ConsumerState<DefaultEditActionDialo
                       if (context.mounted) Navigator.of(context).pop();
                     },
           child: Text(
-            appLocalizations.save,
+            appLocalizations.saveButton,
             overflow: TextOverflow.fade,
             softWrap: false,
           ),

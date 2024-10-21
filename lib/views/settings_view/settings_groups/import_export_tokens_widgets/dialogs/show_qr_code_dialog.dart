@@ -63,7 +63,7 @@ class ShowQrCodeDialog extends ConsumerWidget {
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Text(AppLocalizations.of(context)!.oneMore),
+          child: Text(AppLocalizations.of(context)!.exportOneMore),
         ),
         TextButton(
           onPressed: () => Navigator.of(context).pop(true),

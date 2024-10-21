@@ -97,7 +97,7 @@ class _DetailsContainerDialogState extends ConsumerState<DetailsContainerDialog>
                   Navigator.of(context).pop();
                 }
               : null,
-          child: Text(AppLocalizations.of(context)!.save),
+          child: Text(AppLocalizations.of(context)!.saveButton),
         ),
       ],
     );

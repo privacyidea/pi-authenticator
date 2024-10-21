@@ -1,13 +1,19 @@
 {
   "@@last_modified": "2024-09-20",
   "@@locale": "de",
+  "@a11yPushTokensButton": {
+    "description": "A11y label for the push tokens button."
+  },
+  "@a11ySearchTokensButton": {
+    "description": "A11y label for the search tokens input field."
+  },
   "@accept": {
     "description": "Label for e.g. a button. Something gets accepted by the user."
   },
   "@addANewFolder": {
     "description": "Title of the dialog where a new folder can be added."
   },
-  "@addFolder": {
+  "@a11yAddFolderButton": {
     "description": "Buttontext to add a new folder."
   },
   "@addSystemInfo": {
@@ -16,8 +22,11 @@
   "@addToken": {
     "description": "The button to open the screen to add tokens by hand."
   },
-  "@addTokenManually": {
+  "@a11yAddTokenManuallyButton": {
     "description": "Title of the screen where tokens are created manually."
+  },
+  "@additionalErrorMessage": {
+    "description": "Label for the box where the user can write somthing about the error."
   },
   "@algorithm": {
     "description": "Title of the dropdown button where the encoding is selected."
@@ -90,7 +99,7 @@
   "@clearErrorLog": {
     "description": "Button to clear the error log."
   },
-  "@closeSearchTokens": {
+  "@a11yCloseSearchTokensButton": {
     "description": "A11y label for the button to close the search tokens field."
   },
   "@confirmDeletion": {
@@ -122,6 +131,9 @@
   },
   "@container": {
     "description": "Title for the container view."
+  },
+  "@containerAlreadyExists": {
+    "description": "Title of the dialog that tells the user that the container already exists."
   },
   "@containerDetails": {
     "description": "Title of the container details dialog."
@@ -155,6 +167,12 @@
   },
   "@creator": {
     "description": "Label for the creator of the token."
+  },
+  "@dayPasswordValidFor": {
+    "description": "Text for the trailing part of the day password token."
+  },
+  "@dayPasswordValidUntil": {
+    "description": "Text for the trailing part of the day password token."
   },
   "@decline": {
     "description": "Label for e.g. a button. Something gets declined by the user."
@@ -205,6 +223,9 @@
   },
   "@deviceCredentialsRequiredTitle": {
     "description": "Message showed as a title in a dialog which indicates the user has not set up credentials authentication on their device. It is used on Android side. Maximum 60 characters."
+  },
+  "@deviceCredentialsSetupDescription": {
+    "description": "Used for 'deviceCredentialsSetupDescription' of 'AndroidAuthMessages'"
   },
   "@digits": {
     "description": "Title of the dropdown button where the number of digits for the opt value is selected."
@@ -408,14 +429,23 @@
   "@generatingPhonePart": {
     "description": "Title of a dialog telling the user that the phone part gets generated right now."
   },
+  "@gitHubButton": {
+    "description": "Buttontext to open the GitHub page."
+  },
   "@goToSettingsButton": {
     "description": "Message showed on a button that the user can click to go to settings pages from the current dialog. It is used on both Android and iOS side. Maximum 30 characters."
+  },
+  "@goToSettingsDescription": {
+    "description": "Tells the user that they need to set up device credentials in the device's settings."
   },
   "@grantCameraPermissionDialogButton": {
     "description": "Buttontext to grant the camera permission."
   },
   "@grantCameraPermissionDialogContent": {
     "description": "Content of the dialog that asks the user to grant the camera permission."
+  },
+  "@grantCameraPermissionDialogPermanentlyDenied": {
+    "description": "Description for the permanently denied camera permission."
   },
   "@grantCameraPermissionDialogTitle": {
     "description": "Title of the dialog that asks the user to grant the camera permission."
@@ -477,7 +507,23 @@
   "@importHintFreeOtpPlusFile": {
     "description": "Tells the user importent information about the import of FreeOTP+ files."
   },
+  "@importHintFreeOtpPlusQrScan": {
+    "description": "Tells the user importent information about the import of FreeOTP+ qr codes."
+  },
+  "@importHintGoogleQrFile": {
+    "description": "Tells the user importent information about the import of Google qr codes."
+  },
+  "@importHintGoogleQrScan": {
+    "description": "Tells the user importent information about the import of Google qr codes."
+  },
+  "@importHintPrivacyIdeaFile": {
+    "description": "Tells the user importent information about the import of privacyIDEA files."
+  },
+  "@importHintPrivacyIdeaQrScan": {
+    "description": "Tells the user importent information about the import of privacyIDEA qr codes."
+  },
   "@importNTokens": {
+    "description": "Buttontext to import n tokens.",
     "placeholders": {
       "count": {
         "example": "5"
@@ -485,23 +531,59 @@
     }
   },
   "@importNewToken": {
+    "description": "Title for the section where the user can see the new tokens.",
     "placeholders": {
       "count": {
         "example": "5"
       }
     }
   },
+  "@importTokens": {
+    "description": "Title of the import Tokens screen when it is not clear where the tokens come from."
+  },
   "@importedVia": {
     "description": "Label for the import method of the token."
   },
+  "@increaseCounter": {
+    "description": "A11y label for the button that increases the counter."
+  },
   "@internalServerError": {
+    "description": "Error message when an internal server error occurred.",
     "placeholders": {
       "code": {
         "example": "500"
       }
     }
   },
+  "@introAddFolder": {
+    "description": "Text for the introduction that explains how to add a folder."
+  },
+  "@introAddTokenManually": {
+    "description": "Introduction text for the manual token enrollment."
+  },
+  "@introDragToken": {
+    "description": "Text for the introduction that explains how to drag a token."
+  },
+  "@introEditToken": {
+    "description": "Text for the introduction that explains how to edit a token."
+  },
+  "@introHidePushTokens": {
+    "description": "Text for the introduction that explains where the user can find the hidden push tokens."
+  },
+  "@introLockToken": {
+    "description": "Text for the introduction that explains how to lock a token."
+  },
+  "@introPollForChallenges": {
+    "description": "Text for the introduction that explains how to poll for challenges."
+  },
+  "@introScanQrCode": {
+    "description": "Text for the introduction that explains how to scan a qr code."
+  },
+  "@introTokenSwipe": {
+    "description": "Text for the introduction that explains how to see the available actions for a token."
+  },
   "@invalidBackupFile": {
+    "description": "Error message when the backup file is invalid.",
     "placeholders": {
       "appName": {
         "example": "privacyIDEA Authenticator"
@@ -509,6 +591,7 @@
     }
   },
   "@invalidLink": {
+    "description": "Error message when the link is invalid.",
     "placeholders": {
       "appName": {
         "example": "privacyIDEA Authenticator"
@@ -516,6 +599,7 @@
     }
   },
   "@invalidQrFile": {
+    "description": "Error message when the qr file is invalid.",
     "placeholders": {
       "appName": {
         "example": "privacyIDEA Authenticator"
@@ -523,6 +607,7 @@
     }
   },
   "@invalidQrScan": {
+    "description": "Error message when the qr scan is invalid.",
     "placeholders": {
       "appName": {
         "example": "privacyIDEA Authenticator"
@@ -544,6 +629,7 @@
     }
   },
   "@invalidValueIn": {
+    "description": "Text for the error message when a value is not valid for a parameter in a specific map.",
     "placeholders": {
       "map": {
         "example": "query parameters"
@@ -590,6 +676,12 @@
       }
     }
   },
+  "@a11yLicensesButton": {
+    "description": "Title of the licenses screen."
+  },
+  "@licensesAndVersion": {
+    "description": "Buttontext to open the licenses and version screen."
+  },
   "@linkedContainer": {
     "description": "Label for the linked container serial number."
   },
@@ -625,6 +717,7 @@
     }
   },
   "@mustNotBeEmpty": {
+    "description": "Error message when a field must not be empty.",
     "placeholders": {
       "field": {
         "example": "Name"
@@ -634,8 +727,14 @@
   "@name": {
     "description": "Describes the field where the tokens name should be entered."
   },
+  "@no": {
+    "description": "Content of the field when the answer is no."
+  },
   "@noFbToken": {
     "description": "Tells the user that there is no Firebase token available."
+  },
+  "@noMailAppTitle": {
+    "description": "Title of the dialog that tells the user that there is no mail app available."
   },
   "@noNetworkConnection": {
     "description": "Tells the user that there is no network connection."
@@ -648,6 +747,12 @@
   },
   "@noResultTitle": {
     "description": "No tokens installed yet."
+  },
+  "@noTokenToExport": {
+    "description": "Tells the user that there are no tokens to export."
+  },
+  "@noTokenToImport": {
+    "description": "Tells the user that there are no tokens to import."
   },
   "@notAnInteger": {
     "description": "Tells the user that there is no Firebase token available."
@@ -676,8 +781,80 @@
     },
     "type": "text"
   },
+  "@password": {
+    "description": "Labeltext for the password input field."
+  },
+  "@passwordCannotBeEmpty": {
+    "description": "Hint telling the user that the password cannot be empty."
+  },
+  "@passwordCannotContainWhitespace": {
+    "description": "Hint telling the user that the password cannot contain whitespace."
+  },
+  "@passwordMustBeAtLeast8Characters": {
+    "description": "Hint telling the user that the password must be at least 8 characters long."
+  },
+  "@passwordMustContainLowercaseLetter": {
+    "description": "Hint telling the user that the password must contain a lowercase letter."
+  },
+  "@passwordMustContainNumber": {
+    "description": "Hint telling the user that the password must contain a number."
+  },
+  "@passwordMustContainSpecialCharacter": {
+    "description": "Hint telling the user that the password must contain a special character."
+  },
+  "@passwordMustContainUppercaseLetter": {
+    "description": "Hint telling the user that the password must contain an uppercase letter."
+  },
+  "@passwordsDoNotMatch": {
+    "description": "Hint telling the user that the confirm password does not match the password."
+  },
+  "@patchNotesBugFixes": {
+    "description": "Title of the section in the patch notes that lists the bug fixes."
+  },
   "@patchNotesDialogTitle": {
     "description": "Title of the dialog that shows the patch notes."
+  },
+  "@patchNotesImprovements": {
+    "description": "Title of the section in the patch notes that lists the improvements."
+  },
+  "@patchNotesNewFeatures": {
+    "description": "Title of the section in the patch notes that lists the new features."
+  },
+  "@patchNotesV4_3_0NewFeatures1": {
+    "description": "Patch notes for a new feature in version 4.3.0."
+  },
+  "@patchNotesV4_3_0NewFeatures2": {
+    "description": "Patch notes for a new feature in version 4.3.0."
+  },
+  "@patchNotesV4_3_0NewFeatures3": {
+    "description": "Patch notes for a new feature in version 4.3.0."
+  },
+  "@patchNotesV4_3_0NewFeatures4": {
+    "description": "Patch notes for a new feature in version 4.3.0."
+  },
+  "@patchNotesV4_3_0NewFeatures5": {
+    "description": "Patch notes for a new feature in version 4.3.0."
+  },
+  "@patchNotesV4_3_0NewFeatures6": {
+    "description": "Patch notes for a new feature in version 4.3.0."
+  },
+  "@patchNotesV4_3_1BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.3.1."
+  },
+  "@patchNotesV4_3_1Improvement1": {
+    "description": "Patch notes for an improvement in version 4.3.1."
+  },
+  "@patchNotesV4_4_0Improvement1": {
+    "description": "Patch notes for an improvement in version 4.4.0."
+  },
+  "@patchNotesV4_4_0Improvement2": {
+    "description": "Patch notes for an improvement in version 4.4.0."
+  },
+  "@patchNotesV4_4_0NewFeatures1": {
+    "description": "Patch notes for a new feature in version 4.4.0."
+  },
+  "@patchNotesV4_4_0NewFeatures2": {
+    "description": "Patch notes for a new feature in version 4.4.0."
   },
   "@period": {
     "description": "Title of the dropdown button where the period of the totp token is selected."
@@ -699,9 +876,6 @@
   "@pleaseEnterASecretForThisToken": {
     "description": "Hint telling the user to enter a secret for a token."
   },
-  "@pollingChallenges": {
-    "type": "text"
-  },
   "@pollingFailed": {
     "description": "Tells the user that the polling failed."
   },
@@ -713,8 +887,35 @@
       }
     }
   },
+  "@privacyPolicy": {
+    "description": "Button to open the privacy policy."
+  },
+  "@publicKey": {
+    "description": "Label for the text field where the public key is shown."
+  },
+  "@pushEndpointUrl": {
+    "description": "Title of the push endpoint url field."
+  },
+  "@pushRequestParseError": {
+    "description": "Error message when the push request could not be parsed."
+  },
   "@pushToken": {
     "description": "Title for the settings block concerning the push tokens."
+  },
+  "@qrFileDecodeError": {
+    "description": "Error message when the qr file could not be decoded."
+  },
+  "@qrInFileNotFound": {
+    "description": "Error message when the qr code in the file could not be found."
+  },
+  "@qrInFileNotFound2": {
+    "description": "Error message when the qr code in the file could not be found."
+  },
+  "@qrInFileNotFound3": {
+    "description": "Error message when the qr code in the file could not be found."
+  },
+  "@qrNotFound": {
+    "description": "Error message when the qr code could not be found."
   },
   "@rename": {
     "description": "Label that describes renaming the token."
@@ -724,6 +925,9 @@
   },
   "@renameTokenFolder": {
     "description": "Title of the dialog where a new name for a token folder can be entered."
+  },
+  "@replaceButton": {
+    "description": "Button to replace something, depending on the context."
   },
   "@requestInfo": {
     "description": "Description of the authentication request.",
@@ -738,6 +942,12 @@
   },
   "@requestPushChallengesPeriodically": {
     "description": "The description of the polling feature."
+  },
+  "@requestTriggerdByUserQuestion": {
+    "description": "Content of the dialog that asks the user if the request was triggered by the user."
+  },
+  "@retryRolloutButton": {
+    "description": "Buttontext to retry the rollout."
   },
   "@rolloutStateCompleted": {
     "description": "Message for the rollout process"
@@ -772,8 +982,14 @@
   "@rolloutStateSendingPublicKeyFailed": {
     "description": "Message for the rollout process"
   },
+  "@saveButton": {
+    "description": "Buttontext to save something, depending on the context."
+  },
   "@scanQrCode": {
     "description": "The button to scan otpauth qr-codes."
+  },
+  "@scanThisQrWithNewDevice": {
+    "description": "Content of the token export dialog that shows the user the qr code."
   },
   "@secondsUntilNextOTP": {
     "description": "Semantics label for the animated countdown until the next OTP is generated."
@@ -783,6 +999,30 @@
   },
   "@secretKey": {
     "description": "Describes the field where the tokens secret should be entered."
+  },
+  "@selectFile": {
+    "description": "Buttontext and Title for the import type file."
+  },
+  "@selectImportSource": {
+    "description": "Title of the screen where the user can select the token import source."
+  },
+  "@selectImportType": {
+    "description": "Title of the screen where the user can select the token import type."
+  },
+  "@selectTokensToExport": {
+    "description": "Title of the screen where the user can select the tokens to export."
+  },
+  "@selectTokensToExportHelpContent1": {
+    "description": "Tells the user why some tokens are not exportable."
+  },
+  "@selectTokensToExportHelpContent2": {
+    "description": "Tells the user why some tokens are not exportable."
+  },
+  "@selectTokensToExportHelpContent3": {
+    "description": "Tells the user why some tokens are not exportable."
+  },
+  "@selectTokensToExportHelpTitle": {
+    "description": "Title of the help dialog that explains why some tokens are not exportable."
   },
   "@send": {
     "description": "Button to send the error log."
@@ -801,6 +1041,9 @@
   },
   "@settings": {
     "description": "Button to open the settings page."
+  },
+  "@settingsGroupGeneral": {
+    "description": "Title for the general settings group."
   },
   "@showDetails": {
     "description": "Button to show details."
@@ -834,6 +1077,9 @@
   },
   "@syncFbTokenFailed": {
     "description": "Headline for the list of tokens where the synchronization failed."
+  },
+  "@syncFbTokenManuallyWhenNetworkIsAvailable": {
+    "description": "Status message that tells the user to sync the Firebase token manually when the network is available."
   },
   "@syncState": {
     "description": "The state of the synchronization of the token"
@@ -874,11 +1120,20 @@
   "@tokenDetails": {
     "description": "Title of the token details menu."
   },
+  "@tokenLinkImport": {
+    "description": "Label for the input field where the token link should be entered."
+  },
   "@tokenSerial": {
     "description": "Label for the token serial number."
   },
+  "@tokensAreEncrypted": {
+    "description": "Content of the import view that tells the user that the tokens are encrypted."
+  },
   "@tokensDoNotSupportSynchronization": {
     "description": "Informs the user that the following tokens cannot be synchronized as they do not support that."
+  },
+  "@tokensSuccessfullyDecrypted": {
+    "description": "Content of the import view that tells the user that the tokens were successfully decrypted."
   },
   "@type": {
     "description": "Title of the dropdown button where the type of the token is selected."
@@ -893,6 +1148,7 @@
     "description": "Description of button that unlocks a token."
   },
   "@unsupported": {
+    "description": "Error message when something is not supported, depending on the context.",
     "placeholders": {
       "name": {
         "example": "piauth version"
@@ -909,6 +1165,7 @@
     "description": "Title of the switch tile where using the devices language can be enabled."
   },
   "@valueNotAllowed": {
+    "description": "Error message when a value is not allowed for a specific parameter.",
     "placeholders": {
       "parameter": {
         "example": "counter"
@@ -922,6 +1179,7 @@
     }
   },
   "@valueNotAllowedIn": {
+    "description": "Error message when a value is not allowed for a specific parameter in a specific map.",
     "placeholders": {
       "map": {
         "example": "query parameters"
@@ -940,12 +1198,24 @@
   "@verboseLogging": {
     "description": "Title of the switch tile where verbose logging can be enabled."
   },
+  "@versionTitle": {
+    "description": "Title of a section of the patch notes."
+  },
+  "@wrongPassword": {
+    "description": "Tells the user that the entered password is wrong."
+  },
+  "@yes": {
+    "description": "Positive answer text to a binary question. Used for buttons and text fields."
+  },
+  "a11yPushTokensButton": "Push-Token",
+  "a11ySearchTokensButton": "Token suchen",
   "accept": "Akzeptieren",
   "addANewFolder": "Neuen Ordner anlegen",
-  "addFolder": "Ordner hinzufügen",
+  "a11yAddFolderButton": "Ordner hinzufügen",
   "addSystemInfo": "Systeminfos hinzufügen",
   "addToken": "Token hinzufügen",
-  "addTokenManually": "Token manuell hinzufügen",
+  "a11yAddTokenManuallyButton": "Token manuell hinzufügen",
+  "additionalErrorMessage": "Optionale Nachricht",
   "algorithm": "Algorithmus",
   "algorithmUnsupported": "Der Algorithmus {algorithm} wird nicht unterstützt",
   "allTokensSynchronized": "Alle Token wurden synchronisiert.",
@@ -968,7 +1238,7 @@
   "checkServerCertificate": "Bitte überprüfen Sie das Serverzertifikat",
   "checkYourNetwork": "Bitte überprüfen Sie Ihre Netzwerkverbindung und versuchen Sie es erneut.",
   "clearErrorLog": "Löschen",
-  "closeSearchTokens": "Suche schließen",
+  "a11yCloseSearchTokensButton": "Suche schließen",
   "confirmDeletion": "Löschen bestätigen",
   "confirmDeletionOf": "Sind Sie sicher dass Sie {name} löschen möchten?",
   "confirmFolderDeletionHint": "Das Löschen eines Ordners hat keine Auswirkungen auf die Token, die sich darin befinden.\nDie Token werden in die Hauptliste verschoben.",
@@ -977,6 +1247,10 @@
   "confirmation": "Confirmation",
   "connectionFailed": "Verbindung fehlgeschlagen.",
   "container": "Container",
+  "containerAlreadyExists": "Container existiert bereits",
+  "containerDetails": "Containerdetails",
+  "containerSerial": "Containerserial",
+  "containerSyncUrl": "Container Sync Url",
   "continueButton": "Weiter",
   "copyOTPToClipboard": "OTP in die Zwischenablage kopieren",
   "couldNotConnectToServer": "Konnte keine Verbindung zum Server herstellen.",
@@ -985,6 +1259,8 @@
   "create": "Erstellen",
   "createdAt": "Erstellt am",
   "creator": "Ersteller",
+  "dayPasswordValidFor": "Gültig für",
+  "dayPasswordValidUntil": "Gültig bis",
   "decline": "Ablehnen",
   "declineIt": "ablehnen",
   "decrypt": "Entschlüsseln",
@@ -996,7 +1272,9 @@
   "decryptErrorTitle": "Entschlüsselung fehlgeschlagen",
   "delete": "Löschen",
   "deleteContainerDialogContent": "Wenn Sie diesen Container löschen, wird das Smartphone vom privacyIDEA Server getrennt und die Token dieses Containers werden unbrauchbar. Stellen Sie vor dem Löschen sicher, dass die entsprechenden Token nicht mehr benötigt werden!",
+  "deleteContainerDialogTitle": "Container {serial} löschen",
   "deleteLockedToken": "Bitte authentifizieren Sie sich, um den gesperrten Token zu löschen.",
+  "details": "Details",
   "deviceCredentialsRequiredTitle": "Gerätepasswort ist nicht eingerichtet",
   "deviceCredentialsSetupDescription": "Setzen Sie bitte ein Gerätepasswort in den Einstellungen",
   "digits": "Ziffern",
@@ -1014,6 +1292,7 @@
   "errorLogEmpty": "Das Fehlerprotokoll ist leer.",
   "errorLogTitle": "Fehlerprotokoll",
   "errorMailBody": "Die Fehlerprotokolldatei ist angehängt.\nSie können diesen Text durch zusätzliche Informationen über den Fehler ersetzen.",
+  "errorMissingPrivateKey": "Privater Schlüssel fehlt",
   "errorRollOutFailed": "Ausrollen von {name} ist fehlgeschlagen.",
   "errorRollOutNoConnectionToServer": "Der Rollout von Token {name} ist fehlgeschlagen, der Server konnte nicht erreicht werden.",
   "errorRollOutNotPossibleAnymore": "Das Ausrollen dieses Tokens ist nicht mehr möglich.",
@@ -1030,10 +1309,12 @@
   "exportAllTokens": "Alle Tokens exportieren",
   "exportLockedTokenReason": "Bitte authentifizieren Sie sich, um gesperrte Tokens zu exportieren.",
   "exportNonPrivacyIDEATokens": "Nicht-privacyIDEA-Token exportieren",
+  "exportOneMore": "Noch eins",
   "exportTokens": "Tokens exportieren",
   "exportingTokens": "Tokens werden exportiert...",
   "failedToFinalizeContainer": "Der Container {serial} konnte nicht abgeschlossen werden",
   "failedToLoad": "Fehlgeschlagen zu laden: ",
+  "failedToSyncContainer": "Container {serial} konnte nicht synchronisiert werden",
   "feedback": "Feedback",
   "feedbackDescription": "Wenn Sie Fragen, Anregungen oder Probleme haben, lassen Sie es uns wissen.",
   "feedbackHint": "Es öffnet sich eine vorgefertigte E-Mail, die Sie an uns senden können. Falls gewünscht, werden Informationen über Ihr Gerät und die Version der Anwendung hinzugefügt. Vor dem Versenden können Sie die E-Mail überprüfen und bearbeiten.",
@@ -1044,9 +1325,12 @@
   "feedbackSentTitle": "Feedback gesendet",
   "feedbackTitle": "Ihr Feedback ist immer willkommen!",
   "fileSavedToDownloadsFolder": "Datei wurde im Download-Ordner gespeichert",
+  "finalizationState": "Status der Finalisierung",
+  "finalizeContainerFailed": "Container finalisieren fehlgeschlagen",
   "firebaseToken": "Firebase Token",
   "folderName": "Ordnername",
   "generatingPhonePart": "Generiere Telefonanteil",
+  "gitHubButton": "Diese App ist Open Source\nBesuchen Sie uns auf GitHub",
   "goToSettingsButton": "Gehe zu Einstellungen",
   "goToSettingsDescription": "Authentifizierung durch Gerätepasswort oder Biometrie ist nicht eingerichtet. Bitte aktivieren Sie dies in den Geräteeinstellungen.",
   "grantCameraPermissionDialogButton": "Berechtigung erteilen",
@@ -1091,15 +1375,14 @@
   "invalidLink": "Der eingegebene Link ist kein gültiger Token von {appName}, oder er wird nicht unterstützt.",
   "invalidQrFile": "Die ausgewählte Datei enthällt kein gültigen QR-Code von {appName}.",
   "invalidQrScan": "Der gescannte QR-Code ist kein gültiges Backup von {appName}.",
-  "invalidValue": "untranslated",
-  "invalidValueIn": "Der {type} \"{value}\" ist nicht gültig für \"{parameter}\" in \"{map}\"",
+  "invalidValue": "Der {type} '{value}' ist für '{parameter}' nicht gültig.",
+  "invalidValueIn": "Der {type} '{value}' ist für '{parameter}' in '{map}' ungültig",
   "isExpotableQuestion": "Ist exportierbar?",
   "isPiTokenQuestion": "Ist ein privacyIDEA-Token?",
-  "issuerLabel": "Issuer: {name}",
   "language": "Sprache",
   "legacySigningErrorMessage": "Der Token wurde in einer veralteten Version der App erstellt, was zu Problemen bei der Verwendung führen kann. Es wird empfohlen, einen neuen Push-Token zu erstellen, wenn das Problem weiterhin besteht!",
   "legacySigningErrorTitle": "Bei der Verwendung des veralteten Tokens ist ein Fehler aufgetreten: {tokenLabel}",
-  "licenses": "Lizenzen",
+  "a11yLicensesButton": "Lizenzen",
   "licensesAndVersion": "Lizenzen und Version",
   "linkedContainer": "Verknüpfter Container",
   "lock": "Sperren",
@@ -1125,9 +1408,7 @@
   "notAnInteger": "Der Wert ist keine Ganzzahl.",
   "notAnNumber": "Der Wert ist keine Zahl.",
   "ok": "Ok",
-  "oneMore": "Noch eins",
   "open": "Öffnen",
-  "optionalMessage": "Optionale Nachricht",
   "originApp": "Ursprungs-App",
   "originDetails": "Angaben zur Herkunft",
   "otpValueCopiedMessage": "Passwort \"{otpValue}\" wurde in Zwischenablage kopiert.",
@@ -1161,8 +1442,6 @@
   "piServerCode": "PI-Server-Code: {code}",
   "pleaseEnterANameForThisToken": "Bitte geben Sie einen Namen ein.",
   "pleaseEnterASecretForThisToken": "Bitte geben Sie ein Geheimnis ein.",
-  "pleaseSyncManuallyWhenNetworkIsAvailable": "Bitte synchronisieren Sie die Push Token über die Einstellungen manuell, wenn eine Netzwerkverbindung verfügbar ist.",
-  "pollingChallenges": "Frage ausstehende Authentifizierungsanfragen ab",
   "pollingFailed": "Abfrage fehlgeschlagen.",
   "pollingFailedFor": "Abfrage für {serial} fehlgeschlagen.",
   "privacyPolicy": "Datenschutzerklärung",
@@ -1170,21 +1449,19 @@
   "pushEndpointUrl": "Push-Endpunkt URL",
   "pushRequestParseError": "Die Push-Anfrage konnte nicht verarbeitet werden.",
   "pushToken": "Push Token",
-  "pushTokens": "Push-Token",
   "qrFileDecodeError": "Es war nicht möglich, den QR-Code aus dem ausgewählten Bild zu dekodieren. Bitte verwenden Sie stattdessen den QR-Code-Scanner.",
   "qrInFileNotFound": "Es wurde kein QR-Code in dem ausgewählten Bild gefunden.",
   "qrInFileNotFound2": "Sie können mir zeigen, wo sich der QR-Code befindet.",
   "qrInFileNotFound3": "Ich erwarte, dass ich den Code finde, wenn er sich in der Mitte des markierten Bereichs befindet.",
   "qrNotFound": "Kein QR-Code gefunden!",
-  "qrScan": "Scannen",
   "rename": "Umbenennen",
   "renameToken": "Token umbenennen",
   "renameTokenFolder": "Ordner umbenennen",
+  "replaceButton": "Ersetzen",
   "requestInfo": "Gesendet von {issuer} für Ihr Konto: \"{account}\"",
   "requestPushChallengesPeriodically": "Fordert regelmäßig Push-Anfragen vom Server an. Aktivieren Sie diese Funktion, wenn Nachrichten ansonsten nicht erhalten werden.",
   "requestTriggerdByUserQuestion": "Wurde diese Anfrage von Ihnen ausgelöst?",
-  "retry": "Erneut versuchen",
-  "retryRollout": "Erneut ausrollen",
+  "retryRolloutButton": "Erneut ausrollen",
   "rolloutStateCompleted": "Ausrollen abgeschlossen",
   "rolloutStateGeneratingKeyPair": "Generiere Schlüsselpaar",
   "rolloutStateGeneratingKeyPairCompleted": "Generieren des Schlüsselpaars abgeschlossen",
@@ -1196,10 +1473,9 @@
   "rolloutStateSendingPublicKey": "Sende öffentlichen Schlüssel",
   "rolloutStateSendingPublicKeyCompleted": "Senden des öffentlichen Schlüssels abgeschlossen",
   "rolloutStateSendingPublicKeyFailed": "Senden des öffentlichen Schlüssels fehlgeschlagen",
-  "save": "Speichern",
+  "saveButton": "Speichern",
   "scanQrCode": "QR-Code scannen",
   "scanThisQrWithNewDevice": "Scannen Sie diesen QR-Code mit Ihrem neuen Gerät, um das Token zu importieren.",
-  "searchTokens": "Token suchen",
   "secondsUntilNextOTP": "Sekunden bis zum nächsten OTP",
   "secretIsRequired": "Secret ist erforderlich",
   "secretKey": "Geheimer Schlüssel",
@@ -1207,7 +1483,10 @@
   "selectImportSource": "Importquelle auswählen",
   "selectImportType": "Wie wollen Sie die Token importieren?",
   "selectTokensToExport": "{count, plural, zero{} one{Wählen Sie das zu exportierende Token aus} other{Wählen Sie die zu exportierenden Tokens aus}}",
-  "selectTokensToExportHelpContent": "Wenn ein Token nicht aufgelistet ist, ist nicht garantiert, dass es sich nicht um ein privacyIDEA-Token handelt.\nZurzeit können nur manuell hinzugefügte und importierte Token exportiert werden.",
+  "selectTokensToExportHelpContent1": "Wenn ein Token nicht aufgelistet ist, ist nicht garantiert, dass es sich nicht um ein privacyIDEA-Token handelt.",
+  "selectTokensToExportHelpContent2": "Zurzeit können nur manuell hinzugefügte und importierte Token exportiert werden.",
+  "selectTokensToExportHelpContent3": "Wir arbeiten an einer Lösung, um zwischen privacyIDEA-Tokens und privaten Tokens zu unterscheiden.",
+  "selectTokensToExportHelpContent4": "Einen neuen QR-Code erhalten Sie bei dem Dienst, von dem Sie den Token erhalten haben.",
   "selectTokensToExportHelpTitle": "Ist Ihr Token nicht aufgelistet?",
   "send": "Senden",
   "sendErrorDialogBody": "Ein unbekannter Fehler ist aufgetreten. Die unten gezeigten Informationen können den Entwicklern per E-Mail zugesendet werden, um zu helfen, diesen Fehler in Zukunft zu vermeiden.",
@@ -1225,20 +1504,19 @@
   "sync": "Sync",
   "syncContainerFailed": "Container synchronisation fehlgeschlagen",
   "syncFbTokenFailed": "Synchronisation ist für die folgenden Token fehlgeschlagen:",
+  "syncFbTokenManuallyWhenNetworkIsAvailable": "Bitte synchronisieren Sie die Push Token über die Einstellungen manuell, wenn eine Netzwerkverbindung verfügbar ist.",
   "synchronizePushTokens": "Synchronisiere Push Token",
   "synchronizesTokensWithServer": "Synchronisiert Token mit dem privacyIDEA Server.",
   "synchronizingTokens": "Synchronisiere Token.",
   "theSecretDoesNotFitTheCurrentEncoding": "Das Geheimnis entspricht nicht der gewählten Verschlüsselung.",
   "theme": "Farbschema",
-  "thisAppIsOpenSource": "Diese App ist Open Source\nBesuchen Sie uns auf GitHub",
   "timeOut": "Zeitüberschreitung",
   "tokenDataParseError": "Token-Daten konnten nicht geparst werden",
   "tokenDetails": "Tokendetails",
-  "tokenLink": "Token Link",
+  "tokenLinkImport": "Token Link",
   "tokenSerial": "Token serial",
   "tokensAreEncrypted": "Die Token sind verschlüsselt. Bitte gib das Passwort ein, um sie zu entschlüsseln.",
   "tokensDoNotSupportSynchronization": "Die folgenden Token unterstützen keine Synchronisation und müssen erneut ausgerollt werden:",
-  "tokensNotEncrypted": "Die Token sind unverschlüsselt und können direkt importiert werden.",
   "tokensSuccessfullyDecrypted": "Die Token wurden erfolgreich entschlüsselt, sie können nun importiert werden.",
   "type": "Art",
   "unexpectedError": "Ein unerwarteter Fehler ist aufgetreten.",
@@ -1247,12 +1525,10 @@
   "unsupported": "Der {name} [{value}] wird von dieser Version der App nicht unterstützt.",
   "useDeviceLocaleDescription": "Nutze Systemsprache, falls diese unterstützt wird. Anderenfalls nutze Englisch. ",
   "useDeviceLocaleTitle": "Nutze Systemsprache",
-  "validFor": "Gültig für",
-  "validUntil": "Gültig bis",
   "valueNotAllowed": "untranslated",
   "valueNotAllowedIn": "untranslated",
   "verboseLogging": "Ausführliche Protokollierung",
-  "version": "Version",
+  "versionTitle": "Version",
   "wrongPassword": "Falsches Passwort",
   "yes": "Ja"
 }

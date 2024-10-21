@@ -144,8 +144,8 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
                       child: Center(
                         child: Text(
                           switch (widget.token.viewMode) {
-                            DayPasswordTokenViewMode.VALIDFOR => '${AppLocalizations.of(context)!.validFor}:',
-                            DayPasswordTokenViewMode.VALIDUNTIL => '${AppLocalizations.of(context)!.validUntil}:',
+                            DayPasswordTokenViewMode.VALIDFOR => '${AppLocalizations.of(context)!.dayPasswordValidFor}:',
+                            DayPasswordTokenViewMode.VALIDUNTIL => '${AppLocalizations.of(context)!.dayPasswordValidUntil}:',
                           },
                           style: Theme.of(context).listTileTheme.subtitleTextStyle,
                           textAlign: TextAlign.center,

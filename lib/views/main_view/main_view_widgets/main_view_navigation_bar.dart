@@ -88,7 +88,7 @@ class MainViewNavigationBar extends ConsumerWidget {
                           child: Padding(
                             padding: EdgeInsets.only(top: navHeight * 0.1, bottom: navHeight * 0.2),
                             child: AppBarItem(
-                              tooltip: AppLocalizations.of(context)!.addTokenManually,
+                              a11y: AppLocalizations.of(context)!.a11yAddTokenManuallyButton,
                               onPressed: () {
                                 Navigator.pushNamed(context, AddTokenManuallyView.routeName);
                               },
@@ -117,7 +117,7 @@ class MainViewNavigationBar extends ConsumerWidget {
                               tooltipWhenFocused: AppLocalizations.of(context)!.introAddFolder,
                               onComplete: () => ref.read(introductionNotifierProvider.notifier).complete(Introduction.addFolder),
                               child: AppBarItem(
-                                tooltip: AppLocalizations.of(context)!.addFolder,
+                                a11y: AppLocalizations.of(context)!.a11yAddFolderButton,
                                 onPressed: () {
                                   showDialog(
                                     context: context,
@@ -141,7 +141,7 @@ class MainViewNavigationBar extends ConsumerWidget {
                           child: Padding(
                             padding: EdgeInsets.only(top: navHeight * 0.2, bottom: navHeight * 0.1),
                             child: AppBarItem(
-                              tooltip: AppLocalizations.of(context)!.settings,
+                              a11y: AppLocalizations.of(context)!.a11ySettingsButton,
                               onPressed: () {
                                 Navigator.pushNamed(context, SettingsView.routeName);
                               },
