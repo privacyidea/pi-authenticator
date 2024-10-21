@@ -62,7 +62,7 @@ class SettingsGroupGeneral extends StatelessWidget {
         SettingsListTileButton(
           onPressed: () => launchUrl(piAuthenticatorGitHubUri),
           title: Text(
-            AppLocalizations.of(context)!.thisAppIsOpenSource,
+            AppLocalizations.of(context)!.gitHubButton,
             //'This Application is a Open Source Project. Visit us on GitHub.',
             style: Theme.of(context).textTheme.bodyMedium,
             maxLines: 2,

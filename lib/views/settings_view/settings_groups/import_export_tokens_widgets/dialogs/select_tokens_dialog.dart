@@ -161,7 +161,24 @@ class _SelectTokensDialogState extends ConsumerState<SelectTokensDialog> {
         context: context,
         builder: (context) => DefaultDialog(
           title: Text(AppLocalizations.of(context)!.selectTokensToExportHelpTitle),
-          content: Text(AppLocalizations.of(context)!.selectTokensToExportHelpContent),
+          content: SelectTokensToExportHelpContentWidget(),
         ),
       );
+}
+
+class SelectTokensToExportHelpContentWidget extends StatelessWidget {
+  const SelectTokensToExportHelpContentWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final appLocalizations = AppLocalizations.of(context)!;
+    return Column(
+      children: [
+        Text(appLocalizations.selectTokensToExportHelpContent1),
+        Text(appLocalizations.selectTokensToExportHelpContent2),
+        Text(appLocalizations.selectTokensToExportHelpContent3),
+        Text(appLocalizations.selectTokensToExportHelpContent4),
+      ],
+    );
+  }
 }

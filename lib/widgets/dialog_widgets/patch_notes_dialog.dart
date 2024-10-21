@@ -38,7 +38,7 @@ class PatchNotesDialog extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('${localizations.version}: ${version.toString()}'),
+                    Text('${localizations.versionTitle}: ${version.toString()}'),
                     const SizedBox(height: 16),
                     ...newNotes[version]!.entries.map(
                       (entry) {

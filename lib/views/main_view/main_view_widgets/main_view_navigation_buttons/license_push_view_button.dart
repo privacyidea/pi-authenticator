@@ -42,13 +42,13 @@ class LicensePushViewButton extends ConsumerWidget {
               tooltipWhenFocused: AppLocalizations.of(context)!.introHidePushTokens,
               onComplete: () => ref.read(introductionNotifierProvider.notifier).complete(Introduction.hidePushTokens),
               child: AppBarItem(
-                tooltip: AppLocalizations.of(context)!.pushTokens,
+                a11y: AppLocalizations.of(context)!.a11yPushTokensButton,
                 onPressed: () => Navigator.pushNamed(context, PushTokensView.routeName),
                 icon: const Icon(Icons.notifications),
               ),
             )
           : AppBarItem(
-              tooltip: AppLocalizations.of(context)!.licenses,
+              a11y: AppLocalizations.of(context)!.a11yLicensesButton,
               onPressed: () => Navigator.of(context).pushNamed(LicenseView.routeName),
               icon: const Icon(Icons.info_outline),
             );

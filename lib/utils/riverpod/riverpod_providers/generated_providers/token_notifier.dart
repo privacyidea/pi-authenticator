@@ -496,7 +496,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
         Logger.warning('Could not update firebase token because no firebase token is available.');
         ref.read(statusMessageProvider.notifier).state = (
           AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorSynchronizationNoNetworkConnection,
-          AppLocalizations.of(globalNavigatorKey.currentContext!)!.pleaseSyncManuallyWhenNetworkIsAvailable,
+          AppLocalizations.of(globalNavigatorKey.currentContext!)!.syncFbTokenManuallyWhenNetworkIsAvailable,
         );
       }
       final (notUpdated, _) = (await updateFirebaseToken(fbToken)) ?? (<PushToken>[], <PushToken>[]);

@@ -45,9 +45,8 @@ class NoTokenScreen extends StatelessWidget {
               overflow: TextOverflow.fade,
               softWrap: false,
             ),
-            Tooltip(
-              message: AppLocalizations.of(context)!.scanQrCode,
-              triggerMode: TooltipTriggerMode.longPress,
+            Semantics(
+              label: AppLocalizations.of(context)!.a11yScanQrCodeButton,
               child: const Icon(Icons.qr_code_scanner_outlined),
             ),
             Text(

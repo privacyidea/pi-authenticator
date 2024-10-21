@@ -64,7 +64,7 @@ class _ContainerAlreadyExistsDialogState extends ConsumerState<ContainerAlreadyE
         ),
         CooldownButton(
           onPressed: () => _replace(currentContainer, container),
-          child: Text(appLocalizations.replace),
+          child: Text(appLocalizations.replaceButton),
         ),
       ],
     );

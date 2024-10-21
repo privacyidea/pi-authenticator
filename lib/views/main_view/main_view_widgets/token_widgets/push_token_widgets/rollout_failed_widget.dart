@@ -62,7 +62,7 @@ class StartRolloutWidget extends ConsumerWidget {
                 child: CooldownButton(
                   onPressed: () => globalRef?.read(tokenProvider.notifier).rolloutPushToken(token) ?? Future.value(),
                   child: Text(
-                    token.rolloutState.rolloutFailed ? localizations.retryRollout : token.rolloutState.rolloutMsg(localizations),
+                    token.rolloutState.rolloutFailed ? localizations.retryRolloutButton : token.rolloutState.rolloutMsg(localizations),
                     style: Theme.of(context).textTheme.bodyMedium,
                     overflow: TextOverflow.fade,
                     softWrap: false,

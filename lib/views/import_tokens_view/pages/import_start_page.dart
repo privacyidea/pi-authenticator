@@ -106,7 +106,7 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
                   TextField(
                     controller: _linkController,
                     decoration: InputDecoration(
-                      labelText: localizations.tokenLink,
+                      labelText: localizations.tokenLinkImport,
                     ),
                   ),
                 ],
@@ -277,7 +277,7 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
 
   Future<String?> _validateLink(TokenImportProcessor? processor) async {
     final localizations = AppLocalizations.of(context)!;
-    if (_linkController.text.isEmpty) return localizations.mustNotBeEmpty(localizations.tokenLink);
+    if (_linkController.text.isEmpty) return localizations.mustNotBeEmpty(localizations.tokenLinkImport);
     assert(processor is TokenImportSchemeProcessor);
     final schemeProcessor = processor as TokenImportSchemeProcessor;
     final Uri uri;

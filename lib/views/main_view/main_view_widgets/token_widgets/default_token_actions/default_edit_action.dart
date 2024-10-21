@@ -64,7 +64,7 @@ class DefaultEditAction extends ConsumerSlideableAction {
             children: [
               const Icon(Icons.edit),
               Text(
-                AppLocalizations.of(context)!.save,
+                AppLocalizations.of(context)!.saveButton,
                 overflow: TextOverflow.fade,
                 softWrap: false,
               ),

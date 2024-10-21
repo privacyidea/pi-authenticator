@@ -30,6 +30,7 @@ import '../../import_tokens_view/import_tokens_view.dart';
 import '../settings_view_widgets/settings_group.dart';
 import '../settings_view_widgets/settings_list_tile_button.dart';
 import 'import_export_tokens_widgets/dialogs/select_export_type_dialog.dart';
+import 'import_export_tokens_widgets/dialogs/select_tokens_dialog.dart';
 
 class SettingsGroupImportExportTokens extends ConsumerStatefulWidget {
   const SettingsGroupImportExportTokens({super.key});
@@ -78,21 +79,22 @@ class _SettingsGroupImportExportTokensState extends ConsumerState<SettingsGroupI
   void _exportDialog() async {
     bool? isAccepted = (await ref.read(introductionNotifierProvider.future)).isCompleted(Introduction.exportTokens) ? true : null;
     if (!mounted) return;
+    final appLocalizations = AppLocalizations.of(context)!;
     isAccepted ??= await showDialog<bool>(
       useRootNavigator: false,
       context: context,
       builder: (context) => DefaultDialog(
-        title: Text(AppLocalizations.of(context)!.confirmation),
-        content: Text(AppLocalizations.of(context)!.selectTokensToExportHelpContent),
+        title: Text(appLocalizations.confirmation),
+        content: SelectTokensToExportHelpContentWidget(),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text(AppLocalizations.of(context)!.cancel),
+            child: Text(appLocalizations.cancel),
           ),
           CountdownButton(
             onPressed: () => Navigator.of(context).pop(true),
             countdownSeconds: 10,
-            child: Text(AppLocalizations.of(context)!.ok),
+            child: Text(appLocalizations.ok),
           ),
         ],
       ),

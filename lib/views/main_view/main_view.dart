@@ -99,14 +99,14 @@ class _MainViewState extends ConsumerState<MainView> {
               actions: [
                 hasFilter
                     ? AppBarItem(
-                        tooltip: AppLocalizations.of(context)!.closeSearchTokens,
+                        a11y: AppLocalizations.of(context)!.a11yCloseSearchTokensButton,
                         onPressed: () {
                           ref.read(tokenFilterProvider.notifier).state = null;
                         },
                         icon: const Icon(Icons.close),
                       )
                     : AppBarItem(
-                        tooltip: AppLocalizations.of(context)!.searchTokens,
+                        a11y: AppLocalizations.of(context)!.a11ySearchTokensButton,
                         onPressed: () {
                           ref.read(tokenFilterProvider.notifier).state = TokenFilter(
                             searchQuery: '',
