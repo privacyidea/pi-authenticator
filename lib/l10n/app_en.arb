@@ -1,11 +1,44 @@
 {
   "@@last_modified": "2024-09-20",
   "@@locale": "en",
+  "@a11yAddFolderButton": {
+    "description": "Buttontext to add a new folder."
+  },
+  "@a11yAddTokenManuallyButton": {
+    "description": "Title of the screen where tokens are created manually."
+  },
+  "@a11yCloseSearchTokensButton": {
+    "description": "A11y label for the button to close the search tokens field."
+  },
+  "@a11yLicensesButton": {
+    "description": "Title of the licenses screen."
+  },
   "@a11yPushTokensButton": {
     "description": "A11y label for the push tokens button."
   },
+  "@a11yScanQrCodeButton": {
+    "description": "Accessibility label for the button to scan qr-codes."
+  },
+  "@a11yScanQrCodeViewActive": {
+    "description": "A11y label for the scan qr code view when the camera is active."
+  },
+  "@a11yScanQrCodeViewFlashlightOff": {
+    "description": "A11y label for the flash light button of the scan qr code view when the flashlight is off."
+  },
+  "@a11yScanQrCodeViewFlashlightOn": {
+    "description": "A11y label for the flash light button of the scan qr code view when the flashlight is on."
+  },
+  "@a11yScanQrCodeViewGallery": {
+    "description": "A11y label for the gallery button of the scan qr code view."
+  },
+  "@a11yScanQrCodeViewInactive": {
+    "description": "A11y label for the scan qr code view when the camera is not active."
+  },
   "@a11ySearchTokensButton": {
     "description": "A11y label for the search tokens input field."
+  },
+  "@a11ySettingsButton": {
+    "description": "Accessibility label for the button to open the settings page."
   },
   "@accept": {
     "description": "Label for e.g. a button. Something gets accepted by the user."
@@ -13,17 +46,11 @@
   "@addANewFolder": {
     "description": "Title of the dialog where a new folder can be added."
   },
-  "@a11yAddFolderButton": {
-    "description": "Buttontext to add a new folder."
-  },
   "@addSystemInfo": {
     "description": "Description of the checkbox to add system information to the error report."
   },
   "@addToken": {
     "description": "The button to open the screen to add tokens by hand."
-  },
-  "@a11yAddTokenManuallyButton": {
-    "description": "Title of the screen where tokens are created manually."
   },
   "@additionalErrorMessage": {
     "description": "Label for the box where the user can write somthing about the error."
@@ -98,9 +125,6 @@
   },
   "@clearErrorLog": {
     "description": "Button to clear the error log."
-  },
-  "@a11yCloseSearchTokensButton": {
-    "description": "A11y label for the button to close the search tokens field."
   },
   "@confirmDeletion": {
     "description": "Title of the dialog where a token can be deleted."
@@ -679,9 +703,6 @@
       }
     }
   },
-  "@a11yLicensesButton": {
-    "description": "Title of the licenses screen."
-  },
   "@licensesAndVersion": {
     "description": "Buttontext to open the licenses and version screen."
   },
@@ -1141,11 +1162,6 @@
   "@tokenSerial": {
     "description": "Label for the token serial number."
   },
-  "a11yScanQrCodeViewActive" : "Scan QR code view. Cammera is active",
-  "a11yScanQrCodeViewInactive" : "Scan QR code view. Cammera is not active",
-  "a11yScanQrCodeViewFlashlightOn": "Tap to turn off flashlight.",
-  "a11yScanQrCodeViewFlashlightOff" : "Tap to turn on flashlight.",
-  "a11yScanQrCodeViewGallery" : "Open gallery",
   "@tokensAreEncrypted": {
     "description": "Content of the import view that tells the user that the tokens are encrypted."
   },
@@ -1227,14 +1243,23 @@
   "@yes": {
     "description": "Positive answer text to a binary question. Used for buttons and text fields."
   },
+  "a11yAddFolderButton": "Add folder",
+  "a11yAddTokenManuallyButton": "Add token manually",
+  "a11yCloseSearchTokensButton": "Close search",
+  "a11yLicensesButton": "Licenses",
   "a11yPushTokensButton": "Push Tokens",
+  "a11yScanQrCodeButton": "Scan QR-Code",
+  "a11yScanQrCodeViewActive": " Scan-QR-code view. Cammera is active",
+  "a11yScanQrCodeViewFlashlightOff": "Tap to turn on flashlight.",
+  "a11yScanQrCodeViewFlashlightOn": "Tap to turn off flashlight.",
+  "a11yScanQrCodeViewGallery": "Open gallery",
+  "a11yScanQrCodeViewInactive": "Scan-QR-code view. Cammera is not active",
   "a11ySearchTokensButton": "Search tokens",
+  "a11ySettingsButton": "Settings",
   "accept": "Accept",
   "addANewFolder": "Create new folder",
-  "a11yAddFolderButton": "Add folder",
   "addSystemInfo": "Add system information",
   "addToken": "Add token",
-  "a11yAddTokenManuallyButton": "Add token manually",
   "additionalErrorMessage": "Optional message",
   "algorithm": "Algorithm",
   "algorithmUnsupported": "The algorithm {algorithm} is not supported",
@@ -1258,7 +1283,6 @@
   "checkServerCertificate": "Please check the server certificate",
   "checkYourNetwork": "Please check your network connection and try again.",
   "clearErrorLog": "Clear",
-  "a11yCloseSearchTokensButton": "Close search",
   "confirmDeletion": "Confirm deletion",
   "confirmDeletionOf": "Are you sure you want to delete {name}?",
   "confirmFolderDeletionHint": "Deleting a folder has no effect on the tokens in it.\nThe tokens are moved to the main list.",
@@ -1404,7 +1428,6 @@
   "language": "Language",
   "legacySigningErrorMessage": "The token was enrolled in a old version of this app, which may cause trouble using it.\nIt is suggested to enroll a new push token if the problem persist!",
   "legacySigningErrorTitle": "An error occured while using the legacy token: {tokenLabel}",
-  "a11yLicensesButton": "Licenses",
   "licensesAndVersion": "Licenses and version",
   "linkedContainer": "Linked container",
   "lock": "Lock",
@@ -1497,10 +1520,6 @@
   "rolloutStateSendingPublicKeyFailed": "Sending public key failed",
   "saveButton": "Save",
   "scanQrCode": "Scan QR-Code",
-  "a11yScanQrCodeButton": "Scan QR-Code",
-  "@a11yScanQrCodeButton": {
-    "description": "Accessibility label for the button to scan qr-codes."
-  },
   "scanThisQrWithNewDevice": "Scan this QR code with your new device to import the token.",
   "secondsUntilNextOTP": "Seconds until next OTP",
   "secretIsRequired": "Secret is required",
@@ -1520,10 +1539,6 @@
   "sendPushRequestResponseFailed": "Failed to send the response.",
   "serverNotReachable": "The server could not be reached.",
   "settings": "Settings",
-  "a11ySettingsButton": "Settings",
-  "@a11ySettingsButton": {
-    "description": "Accessibility label for the button to open the settings page."
-  },
   "settingsGroupGeneral": "General",
   "showDetails": "Show details",
   "showErrorLog": "Show",
@@ -1560,8 +1575,8 @@
   "unsupported": "The {name} [{value}] is not supported by this version of the app.",
   "useDeviceLocaleDescription": "Use device language if it is supported, otherwise default to english.",
   "useDeviceLocaleTitle": "Use device language",
-  "valueNotAllowed": "The {type} \"{value}\" is not an allowed value for \"{parameter}\"",
-  "valueNotAllowedIn": "The {type} \"{value}\" is not an allowed value for \"{parameter}\" in \"{map}\"",
+  "valueNotAllowed": "Type {type} “{value}” is not a permitted value for “{parameter}”",
+  "valueNotAllowedIn": " Type {type} “{value}” is not a valid value for “{parameter}” in “{map}”",
   "verboseLogging": "Verbose logging",
   "versionTitle": "Version",
   "wrongPassword": "Incorrect password",

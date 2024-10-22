@@ -1,10 +1,43 @@
 {
   "@@locale": "id",
+  "@a11yAddFolderButton": {
+    "description": "Buttontext to add a new folder."
+  },
+  "@a11yAddTokenManuallyButton": {
+    "description": "Title of the screen where tokens are created manually."
+  },
+  "@a11yCloseSearchTokensButton": {
+    "description": "A11y label for the button to close the search tokens field."
+  },
+  "@a11yLicensesButton": {
+    "description": "Title of the licenses screen."
+  },
   "@a11yPushTokensButton": {
     "description": "A11y label for the push tokens button."
   },
+  "@a11yScanQrCodeButton": {
+    "description": "Accessibility label for the button to scan qr-codes."
+  },
+  "@a11yScanQrCodeViewActive": {
+    "description": "A11y label for the scan qr code view when the camera is active."
+  },
+  "@a11yScanQrCodeViewFlashlightOff": {
+    "description": "A11y label for the flash light button of the scan qr code view when the flashlight is off."
+  },
+  "@a11yScanQrCodeViewFlashlightOn": {
+    "description": "A11y label for the flash light button of the scan qr code view when the flashlight is on."
+  },
+  "@a11yScanQrCodeViewGallery": {
+    "description": "A11y label for the gallery button of the scan qr code view."
+  },
+  "@a11yScanQrCodeViewInactive": {
+    "description": "A11y label for the scan qr code view when the camera is not active."
+  },
   "@a11ySearchTokensButton": {
     "description": "A11y label for the search tokens input field."
+  },
+  "@a11ySettingsButton": {
+    "description": "Accessibility label for the button to open the settings page."
   },
   "@accept": {
     "description": "Label for e.g. a button. Something gets accepted by the user."
@@ -12,17 +45,11 @@
   "@addANewFolder": {
     "description": "Title of the dialog where a new folder can be added."
   },
-  "@a11yAddFolderButton": {
-    "description": "Buttontext to add a new folder."
-  },
   "@addSystemInfo": {
     "description": "Description of the checkbox to add system information to the error report."
   },
   "@addToken": {
     "description": "The button to open the screen to add tokens by hand."
-  },
-  "@a11yAddTokenManuallyButton": {
-    "description": "Title of the screen where tokens are created manually."
   },
   "@additionalErrorMessage": {
     "description": "Label for the box where the user can write somthing about the error."
@@ -97,9 +124,6 @@
   },
   "@clearErrorLog": {
     "description": "Button to clear the error log."
-  },
-  "@a11yCloseSearchTokensButton": {
-    "description": "A11y label for the button to close the search tokens field."
   },
   "@confirmDeletion": {
     "description": "Title of the dialog where a token can be deleted."
@@ -353,6 +377,9 @@
   },
   "@exportNonPrivacyIDEATokens": {
     "description": "Buttontext to export non privacyIDEA tokens."
+  },
+  "@exportOneMore": {
+    "description": "Button to export one more token."
   },
   "@exportTokens": {
     "description": "Title of the export Tokens dialog."
@@ -675,9 +702,6 @@
       }
     }
   },
-  "@a11yLicensesButton": {
-    "description": "Title of the licenses screen."
-  },
   "@licensesAndVersion": {
     "description": "Buttontext to open the licenses and version screen."
   },
@@ -695,6 +719,9 @@
   },
   "@malformedData": {
     "description": "Error message when the data is malformed."
+  },
+  "@markQrCode": {
+    "description": "Buttontext to mark the qr code."
   },
   "@missingRequiredParameter": {
     "description": "Error message when a required parameter is missing.",
@@ -732,11 +759,17 @@
   "@noFbToken": {
     "description": "Tells the user that there is no Firebase token available."
   },
+  "@noMailAppDescription": {
+    "description": "Description of the dialog that tells the user that there is no mail app available."
+  },
   "@noMailAppTitle": {
     "description": "Title of the dialog that tells the user that there is no mail app available."
   },
   "@noNetworkConnection": {
     "description": "Tells the user that there is no network connection."
+  },
+  "@noPublicKey": {
+    "description": "Error message when the public key is missing."
   },
   "@noResultText1": {
     "description": "first noresult text"
@@ -929,7 +962,7 @@
     "description": "Button to replace something, depending on the context."
   },
   "@requestInfo": {
-    "description": "GitHub",
+    "description": "Description of the authentication request.",
     "placeholders": {
       "account": {
         "example": "GitHub"
@@ -1018,6 +1051,9 @@
     "description": "Tells the user why some tokens are not exportable."
   },
   "@selectTokensToExportHelpContent3": {
+    "description": "Tells the user why some tokens are not exportable."
+  },
+  "@selectTokensToExportHelpContent4": {
     "description": "Tells the user why some tokens are not exportable."
   },
   "@selectTokensToExportHelpTitle": {
@@ -1206,14 +1242,23 @@
   "@yes": {
     "description": "Positive answer text to a binary question. Used for buttons and text fields."
   },
+  "a11yAddFolderButton": "Menambahkan folder",
+  "a11yAddTokenManuallyButton": "Tambahkan token secara manual",
+  "a11yCloseSearchTokensButton": "Tutup pencarian",
+  "a11yLicensesButton": "Lisensi",
   "a11yPushTokensButton": "Token Dorong",
+  "a11yScanQrCodeButton": "Memindai Kode QR",
+  "a11yScanQrCodeViewActive": "Tampilan Pindai-Kode QR. Kamera aktif",
+  "a11yScanQrCodeViewFlashlightOff": "Ketuk untuk menyalakan senter.",
+  "a11yScanQrCodeViewFlashlightOn": "Ketuk untuk mematikan senter.",
+  "a11yScanQrCodeViewGallery": "Buka galeri",
+  "a11yScanQrCodeViewInactive": "Tampilan Pindai-Kode QR. Kamera tidak aktif",
   "a11ySearchTokensButton": "Token pencarian",
+  "a11ySettingsButton": "Pengaturan",
   "accept": "Terima",
   "addANewFolder": "Membuat folder baru",
-  "a11yAddFolderButton": "Menambahkan folder",
   "addSystemInfo": "Menambahkan informasi sistem",
   "addToken": "Tambahkan token",
-  "a11yAddTokenManuallyButton": "Tambahkan token secara manual",
   "additionalErrorMessage": "Pesan opsional",
   "algorithm": "Algoritma",
   "algorithmUnsupported": "Algoritma {algorithm} tidak didukung",
@@ -1237,7 +1282,6 @@
   "checkServerCertificate": "Silakan periksa sertifikat server",
   "checkYourNetwork": "Periksa koneksi jaringan Anda dan coba lagi.",
   "clearErrorLog": "Jelas",
-  "a11yCloseSearchTokensButton": "Tutup pencarian",
   "confirmDeletion": "Konfirmasikan penghapusan",
   "confirmDeletionOf": "Apakah Anda yakin ingin menghapus {name}?",
   "confirmFolderDeletionHint": "Menghapus folder tidak akan berpengaruh pada token yang ada di dalamnya.\nToken dipindahkan ke daftar utama.",
@@ -1383,7 +1427,6 @@
   "language": "Bahasa",
   "legacySigningErrorMessage": "Token didaftarkan di versi lama aplikasi ini, yang dapat menyebabkan masalah saat menggunakannya.\nDisarankan untuk mendaftarkan token push baru jika masalah terus berlanjut!",
   "legacySigningErrorTitle": "Terjadi kesalahan saat menggunakan token lama: {tokenLabel}",
-  "a11yLicensesButton": "Lisensi",
   "licensesAndVersion": "Lisensi dan versi",
   "linkedContainer": "Wadah yang terhubung",
   "lock": "Mengunci",
@@ -1455,12 +1498,11 @@
   "qrInFileNotFound2": "Anda dapat menunjukkan di mana letak kode QR.",
   "qrInFileNotFound3": "Saya berharap saya akan menemukan kode tersebut jika berada di tengah-tengah area yang ditandai.",
   "qrNotFound": "Kode QR tidak ditemukan!",
-  "qrScan": "Memindai",
   "rename": "Ganti nama",
   "renameToken": "Ganti nama token",
   "renameTokenFolder": "Ganti nama folder",
   "replaceButton": "Ganti",
-  "requestInfo": "Dikirim oleh {issuer} untuk akun Anda: ",
+  "requestInfo": "Dikirim oleh {issuer} untuk akun Anda: {account}",
   "requestPushChallengesPeriodically": "Meminta tantangan push dari server secara berkala. Aktifkan ini jika tantangan push tidak diterima secara normal.",
   "requestTriggerdByUserQuestion": "Apakah permintaan ini dipicu oleh Anda?",
   "retryRolloutButton": "Mencoba peluncuran ulang",
@@ -1532,8 +1574,8 @@
   "unsupported": "?",
   "useDeviceLocaleDescription": "Gunakan bahasa perangkat jika didukung, jika tidak, default ke bahasa Inggris.",
   "useDeviceLocaleTitle": "Gunakan bahasa perangkat",
-  "valueNotAllowed": "Jenis {type} ",
-  "valueNotAllowedIn": "Jenis {type} ",
+  "valueNotAllowed": "Ketik {type} “{value}” bukan nilai yang diizinkan untuk ”{parameter}”",
+  "valueNotAllowedIn": "Ketik {type} “{value}” bukan merupakan nilai yang valid untuk ‘{parameter}’ di ”{map}”",
   "verboseLogging": "Penebangan kata demi kata",
   "versionTitle": "Versi",
   "wrongPassword": "Kata sandi salah",

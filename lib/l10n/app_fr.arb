@@ -1,11 +1,44 @@
 {
   "@@last_modified": "2024-09-20",
   "@@locale": "fr",
+  "@a11yAddFolderButton": {
+    "description": "Buttontext to add a new folder."
+  },
+  "@a11yAddTokenManuallyButton": {
+    "description": "Title of the screen where tokens are created manually."
+  },
+  "@a11yCloseSearchTokensButton": {
+    "description": "A11y label for the button to close the search tokens field."
+  },
+  "@a11yLicensesButton": {
+    "description": "Title of the licenses screen."
+  },
   "@a11yPushTokensButton": {
     "description": "A11y label for the push tokens button."
   },
+  "@a11yScanQrCodeButton": {
+    "description": "Accessibility label for the button to scan qr-codes."
+  },
+  "@a11yScanQrCodeViewActive": {
+    "description": "A11y label for the scan qr code view when the camera is active."
+  },
+  "@a11yScanQrCodeViewFlashlightOff": {
+    "description": "A11y label for the flash light button of the scan qr code view when the flashlight is off."
+  },
+  "@a11yScanQrCodeViewFlashlightOn": {
+    "description": "A11y label for the flash light button of the scan qr code view when the flashlight is on."
+  },
+  "@a11yScanQrCodeViewGallery": {
+    "description": "A11y label for the gallery button of the scan qr code view."
+  },
+  "@a11yScanQrCodeViewInactive": {
+    "description": "A11y label for the scan qr code view when the camera is not active."
+  },
   "@a11ySearchTokensButton": {
     "description": "A11y label for the search tokens input field."
+  },
+  "@a11ySettingsButton": {
+    "description": "Accessibility label for the button to open the settings page."
   },
   "@accept": {
     "description": "Label for e.g. a button. Something gets accepted by the user."
@@ -13,17 +46,11 @@
   "@addANewFolder": {
     "description": "Title of the dialog where a new folder can be added."
   },
-  "@a11yAddFolderButton": {
-    "description": "Buttontext to add a new folder."
-  },
   "@addSystemInfo": {
     "description": "Description of the checkbox to add system information to the error report."
   },
   "@addToken": {
     "description": "The button to open the screen to add tokens by hand."
-  },
-  "@a11yAddTokenManuallyButton": {
-    "description": "Title of the screen where tokens are created manually."
   },
   "@additionalErrorMessage": {
     "description": "Label for the box where the user can write somthing about the error."
@@ -98,9 +125,6 @@
   },
   "@clearErrorLog": {
     "description": "Button to clear the error log."
-  },
-  "@a11yCloseSearchTokensButton": {
-    "description": "A11y label for the button to close the search tokens field."
   },
   "@confirmDeletion": {
     "description": "Title of the dialog where a token can be deleted."
@@ -354,6 +378,9 @@
   },
   "@exportNonPrivacyIDEATokens": {
     "description": "Buttontext to export non privacyIDEA tokens."
+  },
+  "@exportOneMore": {
+    "description": "Button to export one more token."
   },
   "@exportTokens": {
     "description": "Title of the export Tokens dialog."
@@ -676,9 +703,6 @@
       }
     }
   },
-  "@a11yLicensesButton": {
-    "description": "Title of the licenses screen."
-  },
   "@licensesAndVersion": {
     "description": "Buttontext to open the licenses and version screen."
   },
@@ -696,6 +720,9 @@
   },
   "@malformedData": {
     "description": "Error message when the data is malformed."
+  },
+  "@markQrCode": {
+    "description": "Buttontext to mark the qr code."
   },
   "@missingRequiredParameter": {
     "description": "Error message when a required parameter is missing.",
@@ -733,11 +760,17 @@
   "@noFbToken": {
     "description": "Tells the user that there is no Firebase token available."
   },
+  "@noMailAppDescription": {
+    "description": "Description of the dialog that tells the user that there is no mail app available."
+  },
   "@noMailAppTitle": {
     "description": "Title of the dialog that tells the user that there is no mail app available."
   },
   "@noNetworkConnection": {
     "description": "Tells the user that there is no network connection."
+  },
+  "@noPublicKey": {
+    "description": "Error message when the public key is missing."
   },
   "@noResultText1": {
     "description": "first noresult text"
@@ -1021,6 +1054,9 @@
   "@selectTokensToExportHelpContent3": {
     "description": "Tells the user why some tokens are not exportable."
   },
+  "@selectTokensToExportHelpContent4": {
+    "description": "Tells the user why some tokens are not exportable."
+  },
   "@selectTokensToExportHelpTitle": {
     "description": "Title of the help dialog that explains why some tokens are not exportable."
   },
@@ -1207,14 +1243,23 @@
   "@yes": {
     "description": "Positive answer text to a binary question. Used for buttons and text fields."
   },
+  "a11yAddFolderButton": "Ajouter un dossier",
+  "a11yAddTokenManuallyButton": "Add token manually",
+  "a11yCloseSearchTokensButton": "Fermer la recherche",
+  "a11yLicensesButton": "Licences",
   "a11yPushTokensButton": "Push Tokens",
+  "a11yScanQrCodeButton": "Scanner le QR-Code",
+  "a11yScanQrCodeViewActive": "Vue Scan-QR-code. Cammera est actif",
+  "a11yScanQrCodeViewFlashlightOff": "Tapez sur pour activer la lampe de poche.",
+  "a11yScanQrCodeViewFlashlightOn": "Pointez pour éteindre la lampe de poche.",
+  "a11yScanQrCodeViewGallery": "Ouvrir la galerie",
+  "a11yScanQrCodeViewInactive": "Vue Scan-QR-code. Cammera n'est pas actif",
   "a11ySearchTokensButton": "Jetons de recherche",
+  "a11ySettingsButton": "Paramètres",
   "accept": "Accepter",
   "addANewFolder": "Créer un nouveau dossier",
-  "a11yAddFolderButton": "Ajouter un dossier",
   "addSystemInfo": "Ajouter des informations sur le système",
   "addToken": "Ajouter un jeton",
-  "a11yAddTokenManuallyButton": "Add token manually",
   "additionalErrorMessage": "Message optionnel",
   "algorithm": "Algorithme",
   "algorithmUnsupported": "L'algorithme {algorithm} n'est pas pris en charge",
@@ -1238,7 +1283,6 @@
   "checkServerCertificate": "Veuillez vérifier le certificat du serveur",
   "checkYourNetwork": "Veuillez vérifier votre connexion réseau et réessayer.",
   "clearErrorLog": "Effacer",
-  "a11yCloseSearchTokensButton": "Fermer la recherche",
   "confirmDeletion": "Confirmer suppression",
   "confirmDeletionOf": "Confirmer la suppression de {name}?",
   "confirmFolderDeletionHint": "La suppression d'un dossier n'a aucun effet sur les tokens qui s'y trouvent.\nLes tokens sont déplacés dans la liste principale.",
@@ -1313,7 +1357,7 @@
   "exportTokens": "Exporter les jetons",
   "exportingTokens": "Exportation des jetons en cours...",
   "failedToFinalizeContainer": "Échec de la finalisation du conteneur {serial}",
-  "failedToLoad": "Échec du chargement :",
+  "failedToLoad": "Échec du chargement : {name}",
   "failedToSyncContainer": "Échec de la synchronisation du conteneur {serial}",
   "feedback": "Retour d'information",
   "feedbackDescription": "Si vous avez des questions, des suggestions ou des problèmes, n'hésitez pas à nous en faire part",
@@ -1379,10 +1423,11 @@
   "invalidValueIn": "Le {type} '{value}' n'est pas valide pour '{parameter}' dans '{map}'",
   "isExpotableQuestion": "Est exportable ?",
   "isPiTokenQuestion": "C'est un jeton privacyIDEA ?",
+  "issuer": "Émetteur",
+  "issuerLabel": "Émetteur : {name}",
   "language": "Langue",
   "legacySigningErrorMessage": "Le token a été créé dans une version obsolète de l'application, ce qui peut entraîner des problèmes d'utilisation.\nIl est recommandé de créer un nouveau token push si le problème persiste !",
   "legacySigningErrorTitle": "Une erreur s'est produite lors de l'utilisation du jeton obsolète : {tokenLabel}",
-  "a11yLicensesButton": "Licences",
   "licensesAndVersion": "Licences et version",
   "linkedContainer": "Conteneur lié",
   "lock": "Bloquer",
@@ -1454,7 +1499,6 @@
   "qrInFileNotFound2": "Vous pouvez me montrer où se trouve le code QR.",
   "qrInFileNotFound3": "Je pense que je trouverai le code s'il se trouve au milieu de la zone marquée.",
   "qrNotFound": "Aucun code QR trouvé !",
-  "qrScan": "Numériser",
   "rename": "Renommer",
   "renameToken": "Renommer jeton",
   "renameTokenFolder": "Renommer le dossier",
@@ -1506,6 +1550,11 @@
   "syncContainerFailed": "Échec de la synchronisation des conteneurs",
   "syncFbTokenFailed": "La synchronisation a échoué pour ces jetons, veuillez reéssayer:",
   "syncFbTokenManuallyWhenNetworkIsAvailable": "Veuillez synchroniser manuellement les jetons Push via les paramètres lorsqu'une connexion réseau est disponible",
+  "syncState": "État de la synchronisation",
+  "syncStateCompletedDescription": "Synchronisation terminée",
+  "syncStateFailedDescription": "Échec de la synchronisation",
+  "syncStateNotStartedDescription": "La synchronisation n'a pas commencé",
+  "syncStateSyncingDescription": "Synchronisation en cours",
   "synchronizePushTokens": "Synchoniser les jetons Push",
   "synchronizesTokensWithServer": "Synchroniser les jetons Push avec le serveur privacyIDEA.",
   "synchronizingTokens": "Synchroniser les jetons.",
@@ -1526,8 +1575,8 @@
   "unsupported": "Le {name} [{value}] n'est pas pris en charge par cette version de l'application.",
   "useDeviceLocaleDescription": "Utilisez la langue de l'appareil si elle est prise en charge, sinon l'anglais par défaut.",
   "useDeviceLocaleTitle": "Utiliser la langue de l'appareil",
-  "valueNotAllowed": "untranslated",
-  "valueNotAllowedIn": "untranslated",
+  "valueNotAllowed": "Type {type} « {value} » n'est pas une valeur autorisée pour »{parameter} »",
+  "valueNotAllowedIn": "Type {type} « {value} » n'est pas une valeur valide pour “{parameter}” dans »{map} »",
   "verboseLogging": "Journalisation verbeuse",
   "versionTitle": "Version",
   "wrongPassword": "Mot de passe incorrect",
