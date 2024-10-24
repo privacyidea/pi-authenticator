@@ -212,6 +212,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
 
   Future<TokenContainerState> addContainer(TokenContainer container) async {
     await _stateMutex.acquire();
+    await future;
     final newState = await _saveContainerToRepo(container);
     await update((_) => newState);
     _stateMutex.release();
@@ -509,6 +510,8 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     }
 
     if (piResponse == null || piResponse.isError) {
+      Logger.debug('Status code: ${response.statusCode}');
+      Logger.debug('Response body: ${response.body}');
       container = await updateContainer(container, (c) => c.copyWith(finalizationState: RolloutState.sendingPublicKeyFailed));
       if (container == null) throw StateError('Container was removed');
       final error = piResponse?.asError;
@@ -531,7 +534,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
       rethrow;
     }
 
-    container = await updateContainer(container, (c) => c.copyWith(finalizationState: RolloutState.parsingResponseCompleted, serverUrl: resultValue.serverUrl));
+    container = await updateContainer(container, (c) => c.copyWith(finalizationState: RolloutState.parsingResponseCompleted));
     if (container == null) throw StateError('Container was removed');
     return resultValue.publicServerKey;
   }

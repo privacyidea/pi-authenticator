@@ -46,9 +46,9 @@ class TokenContainer with _$TokenContainer {
   const TokenContainer._();
 
   Uri get registrationUrl => serverUrl.replace(path: '/container/register/finalize');
-  Uri get syncUrlInit => serverUrl.replace(path: '/container/sync/$serial/init');
-  Uri get syncUrlFinalize => serverUrl.replace(path: '/container/sync/$serial/finalize');
-  Uri get syncUrlTransfer => serverUrl.replace(path: '/container/sync/$serial/transfer');
+  Uri get challengeUrl => serverUrl.replace(path: '/container/$serial/challenge');
+  Uri get syncUrl => serverUrl.replace(path: '/container/$serial/sync');
+  Uri get transferUrl => serverUrl.replace(path: '/container/$serial/transfer');
 
   // example: pia://container/SMPH00134123
   // ?issuer=privacyIDEA

@@ -529,6 +529,8 @@ class _$PiErrorResponseImpl<T extends PiServerResultValue>
   final int id;
   @override
   final String jsonrpc;
+
+  /// This is a throwable error
   @override
   final PiServerResultError piServerResultError;
   @override
@@ -693,6 +695,8 @@ abstract class PiErrorResponse<T extends PiServerResultValue>
   int get id;
   @override
   String get jsonrpc;
+
+  /// This is a throwable error
   PiServerResultError get piServerResultError;
   @override
   double get time;

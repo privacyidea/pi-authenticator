@@ -53,8 +53,7 @@ class PrivacyIdeaContainerApi {
     final containerTokenTemplates = tokenState.containerTokens(container.serial).toTemplates();
     final maybePiTokensTemplates = tokenState.maybePiTokens.toTemplates();
 
-    final ContainerFinalizationChallenge? challenge = await _getChallenge(container, container.syncUrlInit.toString());
-    if (challenge == null) return null;
+    final ContainerChallenge challenge = await _getChallenge(container, container.syncUrl);
 
     final decryptedContainerDictJson = await _getContainerDict(
       container: container,
@@ -115,8 +114,8 @@ class PrivacyIdeaContainerApi {
     final passphrase = container.passphraseQuestion?.isNotEmpty == true ? await EnterPassphraseDialog.show(await globalContext) : null;
     final message = '${container.nonce}'
         '|${container.timestamp.toIso8601String().replaceFirst('Z', '+00:00')}'
-        '|${container.registrationUrl}'
         '|${container.serial}'
+        '|${container.registrationUrl}'
         '|${AppInfoUtils.deviceId}'
         '${passphrase != null ? '|$passphrase' : ''}';
 
@@ -135,31 +134,31 @@ class PrivacyIdeaContainerApi {
   /////// PRIVATE FUNCTIONS ///////
   ////////////////////////////// */
 
-  Future<ContainerFinalizationChallenge?> _getChallenge(TokenContainerFinalized container, String request) async {
-    final initResponse = await _ioClient.doGet(url: container.syncUrlInit, parameters: {CONTAINER_SERIAL: container.serial});
-    if (initResponse.statusCode != 200) {
-      final errorResponse = initResponse.asPiErrorResponse();
+  Future<ContainerChallenge> _getChallenge(TokenContainerFinalized container, Uri requestUrl) async {
+    final body = {
+      CONTAINER_SCOPE: requestUrl.toString(),
+    };
+    final challengeResponse = await _ioClient.doPost(
+      url: container.challengeUrl,
+      body: body,
+    );
+    if (challengeResponse.statusCode != 200) {
+      final errorResponse = challengeResponse.asPiErrorResponse();
       if (errorResponse != null) throw errorResponse.piServerResultError;
-      throw ResponseError(initResponse);
+      throw ResponseError(challengeResponse);
     }
 
-    try {
-      Logger.debug('Received container sync challenge: ${initResponse.body}');
-      final piResponse = PiServerResponse<ContainerFinalizationChallenge>.fromResponse(initResponse);
-      if (piResponse.isError) {
-        Logger.error('Error while getting sync challenge: ${piResponse.asError!.piServerResultError}');
-        return null;
-      }
-      return piResponse.asSuccess!.resultValue;
-    } catch (e, s) {
-      Logger.error('Error while getting sync challenge: $e', stackTrace: s);
-      return null;
+    Logger.debug('Received container sync challenge: ${challengeResponse.body}');
+    final piResponse = PiServerResponse<ContainerChallenge>.fromResponse(challengeResponse);
+    if (piResponse.isError) {
+      throw piResponse.asError!.piServerResultError;
     }
+    return piResponse.asSuccess!.resultValue;
   }
 
   Future<Map<String, dynamic>?> _getContainerDict({
     required TokenContainerFinalized container,
-    required ContainerFinalizationChallenge challenge,
+    required ContainerChallenge challenge,
     required List<Map> otpAuthMaps,
   }) async {
     final encKeyPair = await X25519().newKeyPair();
@@ -174,8 +173,7 @@ class PrivacyIdeaContainerApi {
       CONTAINER_DICT_TYPE: CONTAINER_DICT_TYPE_SMARTPHONE,
       CONTAINER_DICT_TOKENS: otpAuthMaps,
     };
-    final signMessage =
-        '${challenge.nonce}|${challenge.timeStamp}|${container.serial}|${container.syncUrlFinalize}|$publicKeyBase64|${jsonEncode(containerDict)}';
+    final signMessage = '${challenge.nonce}|${challenge.timeStamp}|${container.serial}|${container.syncUrl}|$publicKeyBase64|${jsonEncode(containerDict)}';
     Logger.debug(signMessage);
     final signature = container.signMessage(signMessage);
     Logger.debug('Sended container: ${jsonEncode(containerDict)}');
@@ -185,7 +183,7 @@ class PrivacyIdeaContainerApi {
       CONTAINER_SYNC_DICT_CLIENT: jsonEncode(containerDict),
     };
 
-    final response = await _ioClient.doPost(url: container.syncUrlFinalize, body: body);
+    final response = await _ioClient.doPost(url: container.syncUrl, body: body);
     if (response.statusCode != 200) {
       final piErrorResponse = response.asPiErrorResponse();
       if (piErrorResponse != null) throw piErrorResponse.piServerResultError;
@@ -284,11 +282,8 @@ class PrivacyIdeaContainerApi {
   }
 
   Future<String> getTransferQrData(TokenContainerFinalized container) async {
-    final challenge = await _getChallenge(container, container.syncUrlTransfer.toString());
-    if (challenge == null) {
-      // throw LocalizedException(localizedMessage: (l) => l.errorFailedToGetChallenge, unlocalizedMessage: AppLocalizationsEn().errorFailedToGetChallenge);
-      throw Exception('Failed to get challenge');
-    }
+    final requestUrl = container.transferUrl;
+    final challenge = await _getChallenge(container, requestUrl);
 
     final ecKeyPair = container.ecPrivateClientKey;
     if (ecKeyPair == null) {
@@ -302,7 +297,7 @@ class PrivacyIdeaContainerApi {
       CONTAINER_SIGNATURE: container.signMessage(signMessage),
     };
 
-    final response = await _ioClient.doPost(url: container.syncUrlInit, body: body);
+    final response = await _ioClient.doPost(url: requestUrl, body: body);
     if (response.statusCode != 200) {
       final errorResponse = response.asPiErrorResponse();
       if (errorResponse != null) throw errorResponse.piServerResultError;
