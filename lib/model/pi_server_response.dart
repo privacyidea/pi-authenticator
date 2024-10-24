@@ -62,6 +62,8 @@ class PiServerResponse<T extends PiServerResultValue> with _$PiServerResponse {
     required dynamic detail,
     required int id,
     required String jsonrpc,
+
+    /// This is a throwable error
     required PiServerResultError piServerResultError,
     required double time,
     required String version,

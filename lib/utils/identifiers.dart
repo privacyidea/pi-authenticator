@@ -110,42 +110,41 @@ const String PUSH_REQUEST_SSL_VERIFY = 'sslverify'; // 6.
 const String PUSH_REQUEST_SIGNATURE = 'signature'; // 7.
 const String PUSH_REQUEST_ANSWERS = 'require_presence'; // 8.
 
+// Container challenge:
+const String CONTAINER_CHAL_KEY_ALGORITHM = 'enc_key_algorithm';
+const String CONTAINER_CHAL_NONCE = 'nonce';
+const String CONTAINER_CHAL_TIMESTAMP = 'time_stamp';
+
 // Container registration:
 const String CONTAINER_ISSUER = 'issuer';
 const String CONTAINER_NONCE = 'nonce';
 const String CONTAINER_TIMESTAMP = 'time';
 const String CONTAINER_FINALIZATION_URL = 'url';
-const String CONTAINER_SERIAL = 'serial';
 const String CONTAINER_EC_KEY_ALGORITHM = 'key_algorithm';
+const String CONTAINER_SERIAL = 'serial';
 const String CONTAINER_HASH_ALGORITHM = 'hash_algorithm';
 const String CONTAINER_PASSPHRASE_QUESTION = 'passphrase';
 const String CONTAINER_SSL_VERIFY = 'ssl_verify';
+const String CONTAINER_SERVER_URL = 'container_sync_url';
+const String CONTAINER_SCOPE = 'scope';
 
+// Container finalization:
 const String CONTAINER_CONTAINER_SERIAL = 'container_serial';
 const String CONTAINER_PUBLIC_CLIENT_KEY = 'public_client_key';
 const String CONTAINER_DEVICE_ID = 'device_id';
 const String CONTAINER_SIGNATURE = 'signature';
 
 // Container sync:
-const String CONTAINER_SYNC_NONCE = 'nonce';
-const String CONTAINER_SYNC_TIMESTAMP = 'time_stamp';
-const String CONTAINER_SYNC_KEY_ALGORITHM = 'key_algorithm';
-const String CONTAINER_SYNC_URL = 'container_sync_url';
-const String CONTAINER_SYNC_SIGNATURE = 'signature';
 const String CONTAINER_SYNC_PUBLIC_CLIENT_KEY = 'public_enc_key_client';
 const String CONTAINER_SYNC_DICT_SERVER = 'container_dict_server';
 const String CONTAINER_SYNC_DICT_CLIENT = 'container_dict_client';
-
 const String CONTAINER_DICT_SERIAL = 'serial';
 const String CONTAINER_DICT_TYPE = 'type';
 const String CONTAINER_DICT_TYPE_SMARTPHONE = 'smartphone';
 const String CONTAINER_DICT_TOKENS = 'tokens';
-
 const String CONTAINER_DICT_TOKENS_ADD = 'add';
 const String CONTAINER_DICT_TOKENS_UPDATE = 'update';
-
 const String CONTAINER_SYNC_PUBLIC_SERVER_KEY = 'public_server_key';
-
 const String CONTAINER_SYNC_ENC_ALGORITHM = 'encryption_algorithm';
 const String CONTAINER_SYNC_ENC_PARAMS = 'encryption_params';
 const String CONTAINER_SYNC_ENC_PARAMS_MODE = 'mode';
