@@ -1,11 +1,31 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2024 NetKnights GmbH
+ *
+ * Licensed under the Apache License, emailemailemailVersion 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import 'dart:convert';
 
 import 'package:base32/base32.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import '../utils/globals.dart';
 import '../utils/identifiers.dart';
 import '../utils/logger.dart';
-import '../utils/riverpod_providers.dart';
+import '../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../utils/rsa_utils.dart';
 import 'tokens/push_token.dart';
 
@@ -52,7 +72,7 @@ class PushRequest {
     String? serial,
     String? signature,
     bool? accepted,
-    List<String> Function()? answers,
+    List<String> Function()? possibleAnswers,
     String? Function()? selectedAnswer,
   }) {
     return PushRequest(
@@ -66,7 +86,7 @@ class PushRequest {
       serial: serial ?? this.serial,
       signature: signature ?? this.signature,
       accepted: accepted ?? this.accepted,
-      possibleAnswers: answers != null ? answers() : this.possibleAnswers,
+      possibleAnswers: possibleAnswers != null ? possibleAnswers() : this.possibleAnswers,
       selectedAnswer: selectedAnswer != null ? selectedAnswer() : this.selectedAnswer,
     );
   }
@@ -94,7 +114,7 @@ class PushRequest {
     try {
       verifyData(data);
     } catch (e, s) {
-      Logger.error('Invalid push request data.', name: 'push_request.dart#fromMessageData', error: e, stackTrace: s);
+      Logger.error('Invalid push request data.', error: e, stackTrace: s);
     }
     return PushRequest(
       title: data[PUSH_REQUEST_TITLE],
@@ -139,11 +159,12 @@ class PushRequest {
     if (data[PUSH_REQUEST_ANSWERS] is! String?) {
       throw ArgumentError('Push request answers is ${data[PUSH_REQUEST_ANSWERS].runtimeType}. Expected List<String> or null.');
     }
+    Logger.debug('Push request data ($data) is valid.');
   }
 
   Future<bool> verifySignature(PushToken token, {RsaUtils rsaUtils = const RsaUtils()}) async {
     //5NV6KJCFCLNQURT2ZTBRHHGY6FDXOCOR|http://192.168.178.22:5000/ttype/push|PIPU0000E793|Pick a Number!|privacyIDEA|0|["A", "B", "C"]
-    Logger.info('Adding push request to token', name: 'push_request_notifier.dart#newRequest');
+    Logger.info('Adding push request to token');
     String signedData = '$nonce|'
         '$uri|'
         '$serial|'
@@ -151,7 +172,7 @@ class PushRequest {
         '$title|'
         '${sslVerify ? '1' : '0'}'
         '${possibleAnswers != null ? '|${possibleAnswers!.join(",")}' : ''}';
-    Logger.warning('Signed data: $signedData', name: 'push_request_notifier.dart#newRequest');
+    Logger.warning('Signed data: $signedData');
 
     // Re-add url and sslverify to android legacy tokens:
     if (token.url == null) {
@@ -163,12 +184,11 @@ class PushRequest {
     if (!isVerified) {
       Logger.warning(
         'Validating incoming message failed.',
-        name: 'token_notifier.dart#addPushRequestToToken',
         error: 'Signature does not match signed data.',
       );
       return false;
     }
-    Logger.info('Validating incoming message was successful.', name: 'token_notifier.dart#addPushRequestToToken');
+    Logger.info('Validating incoming message was successful.');
     return true;
   }
 }

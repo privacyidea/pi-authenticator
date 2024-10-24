@@ -5,7 +5,7 @@
 
   Authors: Timo Sturm <timo.sturm@netknights.it>
            Frank Merkel <frank.merkel@netknights.it>
-  Copyright (c) 2017-2023 NetKnights GmbH
+  Copyright (c) 2017-2024 NetKnights GmbH
 
   Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@
 */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../l10n/app_localizations.dart';
 import '../model/enums/patch_note_type.dart';
@@ -82,3 +83,5 @@ final piAuthenticatorGitHubUri = Uri.parse("https://github.com/privacyidea/pi-au
 
 // The highest version of the pipush Tokentype that this client supports.
 const maxPushTokenVersion = 1;
+
+WidgetRef? globalRef;

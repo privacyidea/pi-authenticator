@@ -1,9 +1,10 @@
 flutter_launcher_icons:
   android: true
-  image_path_android: "launcher_icons/netknights/ic_launcher_android.png"
   min_sdk_android: 21 # android min sdk min:16, default 21
+  image_path_android: "launcher_icons/netknights/ic_launcher_android.png"
   adaptive_icon_background: "#FFFFFF"
-  adaptive_icon_foreground: "launcher_icons/netknights/ic_launcher_adaptive.png"
+  adaptive_icon_foreground: "launcher_icons/netknights/ic_launcher_android.png"
+  adaptive_icon_monochrome: "launcher_icons/netknights/ic_launcher_monochrome.png"
   ios: true
   image_path_ios: "launcher_icons/netknights/ic_launcher_ios.png"
   remove_alpha_ios: false # default false x

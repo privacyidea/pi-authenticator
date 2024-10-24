@@ -1,8 +1,29 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2024 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:privacyidea_authenticator/model/extensions/color_extension.dart';
 
 import 'theme_extentions/action_theme.dart';
+import 'theme_extentions/elevated_delete_button_theme.dart';
 import 'theme_extentions/extended_text_theme.dart';
 import 'theme_extentions/push_request_theme.dart';
 
@@ -21,6 +42,7 @@ class ThemeCustomization {
     required this.deleteColor,
     required this.renameColor,
     required this.lockColor,
+    required this.exportColor,
     required this.tileIconColor,
     required this.navigationBarColor,
     Color? pushAuthRequestAcceptColor,
@@ -50,6 +72,7 @@ class ThemeCustomization {
     Color? deleteColor,
     Color? renameColor,
     Color? lockColor,
+    Color? exportColor,
     Color? tileIconColor,
     Color? navigationBarColor,
     // From here on the colors have a default value based on another given color so they can be null
@@ -67,10 +90,11 @@ class ThemeCustomization {
         subtitleColor = subtitleColor ?? const Color(0xff9E9E9E),
         backgroundColor = backgroundColor ?? const Color(0xffEFEFEF),
         foregroundColor = foregroundColor ?? const Color(0xff282828),
-        shadowColor = shadowColor ?? const Color(0xff303030),
-        deleteColor = deleteColor ?? const Color(0xffE04D2D),
-        renameColor = renameColor ?? const Color(0xff6A8FE5),
-        lockColor = lockColor ?? const Color(0xffFFD633),
+        shadowColor = shadowColor ?? const Color(0x4C303030),
+        deleteColor = deleteColor ?? const Color(0xffe85e40),
+        renameColor = renameColor ?? const Color(0xff7f9bdd),
+        lockColor = lockColor ?? const Color(0xffffd633),
+        exportColor = exportColor ?? const Color.fromARGB(255, 49, 197, 74),
         tileIconColor = tileIconColor ?? const Color(0xff757575),
         navigationBarColor = navigationBarColor ?? const Color(0xFFFFFFFF),
         // From here on the colors have a default value based on another given color so they can be null
@@ -93,6 +117,7 @@ class ThemeCustomization {
     Color? deleteColor,
     Color? renameColor,
     Color? lockColor,
+    Color? exportColor,
     Color? tileIconColor,
     Color? navigationBarColor,
     // From here on the colors have a default value based on another given color so they can be null
@@ -110,10 +135,11 @@ class ThemeCustomization {
         subtitleColor = subtitleColor ?? const Color(0xFF9E9E9E),
         backgroundColor = backgroundColor ?? const Color(0xFF303030),
         foregroundColor = foregroundColor ?? const Color(0xffF5F5F5),
-        shadowColor = shadowColor ?? const Color(0xFFEFEFEF),
-        deleteColor = deleteColor ?? const Color(0xffCD3C14),
-        renameColor = renameColor ?? const Color(0xff527EDB),
-        lockColor = lockColor ?? const Color(0xffFFCC00),
+        shadowColor = shadowColor ?? const Color(0x4CEFEFEF),
+        deleteColor = deleteColor ?? const Color(0xffb93f1d),
+        renameColor = renameColor ?? const Color(0xff4a72c6),
+        exportColor = exportColor ?? const Color.fromARGB(255, 36, 148, 45),
+        lockColor = lockColor ?? const Color(0xffe4ba11),
         tileIconColor = tileIconColor ?? const Color(0xffF5F5F5),
         navigationBarColor = navigationBarColor ?? const Color(0xFF282828),
         // From here on the colors have a default value based on another given color so they can be null
@@ -146,6 +172,7 @@ class ThemeCustomization {
   final Color deleteColor;
   final Color renameColor;
   final Color lockColor;
+  final Color exportColor;
   final Color? _actionButtonsForegroundColor; // Default: foregroundColor
   Color get actionButtonsForegroundColor => _actionButtonsForegroundColor ?? foregroundColor;
 
@@ -176,6 +203,7 @@ class ThemeCustomization {
     Color? deleteColor,
     Color? renameColor,
     Color? lockColor,
+    Color? exportColor,
     Color? tileIconColor,
     Color? navigationBarColor,
     // From here on the colors have a default value based on another given color so they can be null
@@ -199,6 +227,7 @@ class ThemeCustomization {
         deleteColor: deleteColor ?? this.deleteColor,
         renameColor: renameColor ?? this.renameColor,
         lockColor: lockColor ?? this.lockColor,
+        exportColor: exportColor ?? this.exportColor,
         tileIconColor: tileIconColor ?? this.tileIconColor,
         navigationBarColor: navigationBarColor ?? this.navigationBarColor,
         // From here on the colors have a default value based on another given color so they can be null
@@ -295,39 +324,36 @@ class ThemeCustomization {
           primaryColor: primaryColor,
           canvasColor: backgroundColor,
           textTheme: const TextTheme().copyWith(
-            /// Copied from \flutter\lib\src\material\text_theme.dart
+            /// Original sheet from \flutter\lib\src\material\text_theme.dart
             ///
             ///
-            /// | NAME           | SIZE |  WEIGHT |  SPACING |             |
+            /// | NAME           | SIZE |  WEIGHT |  SPACING |   Color     |
             /// |----------------|------|---------|----------|-------------|
-            /// | displayLarge   | 96.0 | light   | -1.5     |             |
-            /// | displayMedium  | 60.0 | light   | -0.5     |             |
-            /// | displaySmall   | 48.0 | regular |  0.0     |             |
-            /// | headlineMedium | 34.0 | regular |  0.25    |             |
-            /// | headlineSmall  | 24.0 | regular |  0.0     |             |
-            /// | titleLarge     | 24.0 | medium  |  0.15    |             |
-            /// | titleMedium    | 20.0 | medium  |  0.15    |             |
-            /// | titleSmall     | 16.0 | medium  |  0.1     |             |
-            /// | bodyLarge      | 16.0 | regular |  0.5     |             |
-            /// | bodyMedium     | 14.0 | regular |  0.25    |             |
-            /// | bodySmall      | 12.0 | regular |  0.4     |             |
-            /// | labelLarge     | 14.0 | medium  |  1.25    |             |
-            /// | labelSmall     | 10.0 | regular |  1.5     |             |
+            /// | displayLarge   | 96.0 | light   | -1.5     | foreground  |
+            /// | displayMedium  | 60.0 | light   | -0.5     | foreground  |
+            /// | displaySmall   | 48.0 | regular |  0.0     | foreground  |
+            /// | headlineMedium | 34.0 | regular |  0.25    | foreground  |
+            /// | headlineSmall  | 24.0 | regular |  0.0     | foreground  |
+            /// | titleLarge     | 24.0 | medium  |  0.15    | primary     |
+            /// | titleMedium    | 20.0 | medium  |  0.15    | primary     |
+            /// | titleSmall     | 16.0 | medium  |  0.1     | foreground  |
+            /// | bodyLarge      | 16.0 | regular |  0.5     | foreground  |
+            /// | bodyMedium     | 14.0 | regular |  0.25    | foreground  |
+            /// | bodySmall      | 12.0 | regular |  0.4     | subtitle    |
+            /// | labelLarge     | 14.0 | medium  |  1.25    | foreground  |
+            /// | labelSmall     | 10.0 | regular |  1.5     | foreground  |
             ///
             /// ...where "light" is `FontWeight.w300`, "regular" is `FontWeight.w400` and
             /// "medium" is `FontWeight.w500`.
             ///
-            /// By default, text styles are initialized to match the 2018 Material Design
-            /// specification as listed above. To provide backwards compatibility, the 2014
-            /// specification is also available.
             displayLarge: TextStyle(color: foregroundColor, fontFamily: fontFamily),
             displayMedium: TextStyle(color: foregroundColor, fontFamily: fontFamily),
             displaySmall: TextStyle(color: foregroundColor, fontFamily: fontFamily),
             headlineMedium: TextStyle(color: foregroundColor, fontFamily: fontFamily),
             headlineSmall: TextStyle(color: foregroundColor, fontFamily: fontFamily),
             titleLarge: TextStyle(color: primaryColor, fontFamily: fontFamily, fontSize: 24),
-            titleMedium: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 20, fontWeight: FontWeight.w500),
-            titleSmall: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 16, fontWeight: FontWeight.w500),
+            titleMedium: TextStyle(color: primaryColor, fontFamily: fontFamily, fontSize: 20, fontWeight: FontWeight.w500),
+            titleSmall: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 18, fontWeight: FontWeight.w500),
             bodyLarge: TextStyle(color: foregroundColor, fontFamily: fontFamily),
             bodyMedium: TextStyle(color: foregroundColor, fontFamily: fontFamily),
             bodySmall: TextStyle(color: subtitleColor, fontFamily: fontFamily),
@@ -343,6 +369,8 @@ class ThemeCustomization {
             style: ElevatedButton.styleFrom(
               foregroundColor: onPrimary,
               backgroundColor: primaryColor,
+              disabledBackgroundColor: backgroundColor.mixWith(foregroundColor, 0.12),
+              disabledForegroundColor: backgroundColor.mixWith(foregroundColor, 0.38),
               padding: const EdgeInsets.all(6),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
               shadowColor: shadowColor,
@@ -350,6 +378,13 @@ class ThemeCustomization {
             ),
           ),
           scaffoldBackgroundColor: backgroundColor,
+          cardTheme: CardTheme(
+            color: backgroundColor,
+            shadowColor: shadowColor,
+            elevation: 4, // TODO: EDIT THIS
+            margin: const EdgeInsets.all(4),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          ),
           cardColor: backgroundColor,
           shadowColor: shadowColor,
           // shadowColor: Colors.transparent,
@@ -395,7 +430,7 @@ class ThemeCustomization {
           listTileTheme: ListTileThemeData(
             tileColor: Colors.transparent,
             titleTextStyle: TextStyle(color: tilePrimaryColor),
-            subtitleTextStyle: TextStyle(color: tileSubtitleColor),
+            subtitleTextStyle: TextStyle(color: tileSubtitleColor, fontSize: 14), //bodyMedium fontSize
             iconColor: tileIconColor,
           ),
           colorScheme: brightness == Brightness.light
@@ -459,10 +494,17 @@ class ThemeCustomization {
             }),
           ),
           extensions: [
+            ElevatedDeleteButtonTheme(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: deleteColor,
+                foregroundColor: onPrimary,
+              ),
+            ),
             ActionTheme(
               deleteColor: deleteColor,
               editColor: renameColor,
               lockColor: lockColor,
+              exportColor: exportColor,
               foregroundColor: actionButtonsForegroundColor,
             ),
             ExtendedTextTheme(

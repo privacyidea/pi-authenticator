@@ -1,4 +1,25 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2024 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import 'package:flutter/material.dart';
+
+import '../../../../../widgets/pi_circular_progress_indicator.dart';
 
 class TotpTokenWidgetTileCountdown extends StatefulWidget {
   final int period;
@@ -54,22 +75,28 @@ class _TotpTokenWidgetTileCountdownState extends State<TotpTokenWidgetTileCountd
   }
 
   @override
-  Widget build(BuildContext context) => Stack(
-        alignment: Alignment.center,
-        children: [
-          Text(
-            '${secondsUntilNextOTP.round()}',
-            overflow: TextOverflow.fade,
-            softWrap: false,
-          ),
-          AnimatedBuilder(
-            animation: animation,
-            builder: (context, child) {
-              return CircularProgressIndicator(
-                value: animation.value,
-              );
-            },
-          ),
-        ],
+  Widget build(BuildContext context) => FittedBox(
+        clipBehavior: Clip.hardEdge,
+        fit: BoxFit.contain,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Text(
+              '${secondsUntilNextOTP.round()}',
+              overflow: TextOverflow.fade,
+              softWrap: false,
+            ),
+            AnimatedBuilder(
+              animation: animation,
+              builder: (context, child) {
+                return PiCircularProgressIndicator(
+                  animation.value,
+                  // semanticsLabel: AppLocalizations.of(context)!.secondsUntilNextOTP, //TODO: add this to the localization file
+                  semanticsValue: '${secondsUntilNextOTP.round()}',
+                );
+              },
+            ),
+          ],
+        ),
       );
 }

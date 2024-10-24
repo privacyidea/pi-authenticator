@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 /*
   privacyIDEA Authenticator
 
@@ -35,7 +37,7 @@ const String PARAMETER_SIGNATURE = "signature";
 
 class LegacyUtils {
   const LegacyUtils();
-  static const MethodChannel _channel = const MethodChannel(METHOD_CHANNEL_ID);
+  static const MethodChannel _channel = MethodChannel(METHOD_CHANNEL_ID);
 
   Future<String> sign(String serial, String message) async => await (_channel.invokeMethod(METHOD_SIGN, {
         PARAMETER_SERIAL: serial,

@@ -1,3 +1,22 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2024 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -48,7 +67,7 @@ class _SendErrorDialogState extends State<SendErrorDialog> {
                     border: const OutlineInputBorder(borderSide: BorderSide(width: 1.5)),
                     enabledBorder: const OutlineInputBorder(borderSide: BorderSide(width: 1.5)),
                     focusedBorder: const OutlineInputBorder(borderSide: BorderSide(width: 1.5)),
-                    labelText: AppLocalizations.of(context)!.optionalMessage,
+                    labelText: AppLocalizations.of(context)!.additionalErrorMessage,
                   ),
                   maxLines: 5,
                 ),
@@ -68,7 +87,10 @@ class _SendErrorDialogState extends State<SendErrorDialog> {
           TextButton(
             onPressed: () {
               Logger.sendErrorLog(_textController.text);
-              showDialog(context: context, builder: (context) => const AskLogSendedDialog()).then((value) => value == true ? _popDialogs(context) : null);
+              showDialog(context: context, builder: (context) => const AskLogSendedDialog()).then((value) {
+                if (!context.mounted) return;
+                value == true ? _popDialogs(context) : null;
+              });
             },
             child: const Icon(Icons.email),
           )

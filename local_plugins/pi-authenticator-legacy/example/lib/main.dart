@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
   @override
-  _MyAppState createState() => _MyAppState();
+  State<MyApp> createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
+  String platformVersion = 'Unknown';
 
   @override
   void initState() {
@@ -31,7 +33,7 @@ class _MyAppState extends State<MyApp> {
         ),
         body: Center(
           child: Text(
-            'Running on: $_platformVersion\n',
+            'Running on: $platformVersion\n',
             overflow: TextOverflow.fade,
             softWrap: false,
           ),

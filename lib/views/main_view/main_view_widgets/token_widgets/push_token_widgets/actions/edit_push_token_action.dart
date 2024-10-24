@@ -1,7 +1,25 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2024 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/default_token_actions/default_edit_action_dialog.dart';
 
 import '../../../../../../l10n/app_localizations.dart';
 import '../../../../../../model/enums/introduction.dart';
@@ -9,12 +27,14 @@ import '../../../../../../model/tokens/push_token.dart';
 import '../../../../../../utils/customization/theme_extentions/action_theme.dart';
 import '../../../../../../utils/globals.dart';
 import '../../../../../../utils/lock_auth.dart';
-import '../../../../../../utils/riverpod_providers.dart';
-import '../../../../../../widgets/enable_text_form_field_after_many_taps.dart';
+import '../../../../../../utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
+import '../../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
+import '../../../../../../widgets/enable_text_edit_after_many_taps.dart';
 import '../../../../../../widgets/focused_item_as_overlay.dart';
-import '../../token_action.dart';
+import '../../default_token_actions/default_edit_action_dialog.dart';
+import '../../slideable_action.dart';
 
-class EditPushTokenAction extends TokenAction {
+class EditPushTokenAction extends ConsumerSlideableAction {
   final PushToken token;
 
   const EditPushTokenAction({
@@ -38,8 +58,12 @@ class EditPushTokenAction extends TokenAction {
           tooltipWhenFocused: appLocalizations.introEditToken,
           childIsMoving: true,
           alignment: Alignment.bottomCenter,
-          isFocused: ref.watch(introductionProvider).isConditionFulfilled(ref, Introduction.editToken),
-          onComplete: () => ref.read(introductionProvider.notifier).complete(Introduction.editToken),
+          isFocused: ref.watch(introductionNotifierProvider).when(
+                data: (value) => value.isConditionFulfilled(ref, Introduction.editToken),
+                error: (Object error, StackTrace stackTrace) => false,
+                loading: () => false,
+              ),
+          onComplete: () => ref.read(introductionNotifierProvider.notifier).complete(Introduction.editToken),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -84,17 +108,9 @@ class EditPushTokenAction extends TokenAction {
               Navigator.of(context).pop();
             },
             additionalChildren: [
-              TextFormField(
-                initialValue: token.serial,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).disabledColor),
-                decoration: const InputDecoration(
-                  labelText: 'Serial',
-                ),
-                readOnly: true,
-              ),
-              EnableTextFormFieldAfterManyTaps(
+              EnableTextEditAfterManyTaps(
                 controller: pushUrl,
-                decoration: InputDecoration(labelText: appLocalizations.pushEndpointUrl),
+                labelText: appLocalizations.pushEndpointUrl,
                 autovalidateMode: AutovalidateMode.onUserInteraction,
                 validator: (value) => _validatePushEndpointUrl(value, context),
               ),
@@ -102,7 +118,7 @@ class EditPushTokenAction extends TokenAction {
               ExpansionTile(
                 title: Text(
                   appLocalizations.publicKey,
-                  style: Theme.of(context).textTheme.titleMedium,
+                  style: Theme.of(context).textTheme.titleSmall,
                   overflow: TextOverflow.fade,
                   softWrap: false,
                 ),
@@ -117,7 +133,7 @@ class EditPushTokenAction extends TokenAction {
               ExpansionTile(
                 title: Text(
                   appLocalizations.firebaseToken,
-                  style: Theme.of(context).textTheme.titleMedium,
+                  style: Theme.of(context).textTheme.titleSmall,
                   overflow: TextOverflow.fade,
                   softWrap: false,
                 ),
