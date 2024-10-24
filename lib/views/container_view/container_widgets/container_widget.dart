@@ -25,6 +25,7 @@ import '../../../widgets/pi_slidable.dart';
 import '../container_view.dart';
 import 'container_actions/delete_container_action.dart';
 import 'container_actions/details_container_action.dart';
+import 'container_actions/export_container_action.dart';
 import 'container_widget_tile.dart';
 
 class ContainerWidget extends ConsumerWidget {
@@ -50,6 +51,8 @@ class ContainerWidget extends ConsumerWidget {
             actions: [
               DeleteContainerAction(container: container, key: Key('${container.serial}-DeleteContainerAction')),
               DetailsContainerAction(container: container, key: Key('${container.serial}-EditContainerAction')),
+              if (container is TokenContainerFinalized)
+                ExportContainerAction(container: container as TokenContainerFinalized, key: Key('${container.serial}-ExportContainerAction')),
             ],
             stack: stack,
             child: ContainerWidgetTile(container: container),

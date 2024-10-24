@@ -53,7 +53,7 @@ class PrivacyIdeaContainerApi {
     final containerTokenTemplates = tokenState.containerTokens(container.serial).toTemplates();
     final maybePiTokensTemplates = tokenState.maybePiTokens.toTemplates();
 
-    final ContainerFinalizationChallenge? challenge = await _getChallenge(container);
+    final ContainerFinalizationChallenge? challenge = await _getChallenge(container, container.syncUrlInit.toString());
     if (challenge == null) return null;
 
     final decryptedContainerDictJson = await _getContainerDict(
@@ -135,7 +135,7 @@ class PrivacyIdeaContainerApi {
   /////// PRIVATE FUNCTIONS ///////
   ////////////////////////////// */
 
-  Future<ContainerFinalizationChallenge?> _getChallenge(TokenContainerFinalized container) async {
+  Future<ContainerFinalizationChallenge?> _getChallenge(TokenContainerFinalized container, String request) async {
     final initResponse = await _ioClient.doGet(url: container.syncUrlInit, parameters: {CONTAINER_SERIAL: container.serial});
     if (initResponse.statusCode != 200) {
       final errorResponse = initResponse.asPiErrorResponse();
@@ -281,5 +281,40 @@ class PrivacyIdeaContainerApi {
       }
     }
     return (mergedTemplatesWithSerial, deleteSerials);
+  }
+
+  Future<String> getTransferQrData(TokenContainerFinalized container) async {
+    final challenge = await _getChallenge(container, container.syncUrlTransfer.toString());
+    if (challenge == null) {
+      // throw LocalizedException(localizedMessage: (l) => l.errorFailedToGetChallenge, unlocalizedMessage: AppLocalizationsEn().errorFailedToGetChallenge);
+      throw Exception('Failed to get challenge');
+    }
+
+    final ecKeyPair = container.ecPrivateClientKey;
+    if (ecKeyPair == null) {
+      throw LocalizedException(localizedMessage: (l) => l.errorMissingPrivateKey, unlocalizedMessage: AppLocalizationsEn().errorMissingPrivateKey);
+    }
+
+    final signMessage = '${challenge.nonce}|${challenge.timeStamp}|${container.serial}';
+
+    final body = {
+      CONTAINER_SERIAL: container.serial,
+      CONTAINER_SIGNATURE: container.signMessage(signMessage),
+    };
+
+    final response = await _ioClient.doPost(url: container.syncUrlInit, body: body);
+    if (response.statusCode != 200) {
+      final errorResponse = response.asPiErrorResponse();
+      if (errorResponse != null) throw errorResponse.piServerResultError;
+      throw ResponseError(response);
+    }
+
+    final piResponse = PiServerResponse<TransferQrData>.fromResponse(response);
+    if (piResponse.isError) {
+      Logger.error('Error while getting transfer qr data: ${piResponse.asError!.piServerResultError}');
+      throw piResponse.asError!.piServerResultError;
+    }
+
+    return piResponse.asSuccess!.resultValue.qrData;
   }
 }

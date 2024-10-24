@@ -20,38 +20,38 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:privacyidea_authenticator/views/container_view/container_widgets/container_actions/details_container_action_dialog.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
-import '../../../../l10n/app_localizations.dart';
 import '../../../../model/token_container.dart';
 import '../../../../utils/customization/theme_extentions/action_theme.dart';
 import '../../../main_view/main_view_widgets/token_widgets/slideable_action.dart';
 import '../../../view_interface.dart';
+import 'export_container_action_dialog.dart';
 
-class DetailsContainerAction extends ConsumerSlideableAction {
-  final TokenContainer container;
+class ExportContainerAction extends ConsumerSlideableAction {
+  final TokenContainerFinalized container;
 
-  const DetailsContainerAction({
+  const ExportContainerAction({
     required this.container,
     super.key,
   });
 
-  void _showDetailsContainerDialog(BuildContext context) {
-    showDialog(useRootNavigator: false, context: context, builder: (_) => DetailsContainerDialog(context, container: container));
+  void _showExportContainerDialog(BuildContext context) {
+    showDialog(useRootNavigator: false, context: context, builder: (_) => TransferContainerDialog(container: container));
   }
 
   @override
   CustomSlidableAction build(BuildContext context, WidgetRef ref) => CustomSlidableAction(
-        onPressed: (BuildContext context) => _showDetailsContainerDialog(context),
-        backgroundColor: Theme.of(context).extension<ActionTheme>()!.editColor,
+        onPressed: (BuildContext context) => _showExportContainerDialog(context),
+        backgroundColor: Theme.of(context).extension<ActionTheme>()!.exportColor,
         foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Icon(Icons.edit),
+            Icon(MdiIcons.transfer),
             Text(
-              AppLocalizations.of(context)!.details,
+              'Transfer', //AppLocalizations.of(context)!.transfer,
               overflow: TextOverflow.fade,
               softWrap: false,
             ),

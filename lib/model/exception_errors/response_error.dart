@@ -29,10 +29,15 @@ class ResponseError {
   const ResponseError._(int statusCode, String message)
       : _statusCode = statusCode,
         _message = message;
-
+//<title>405 Method Not Allowed</title>
+//<title>Method Not Allowed</title>
   factory ResponseError(Response response) {
     assert(response.statusCode != 200, 'Status code of an response error should not be 200');
-    return ResponseError._(response.statusCode, response.body);
+    final regexpCode = RegExp(r'<title>(\d{3})');
+    final regexpMessage = RegExp(r'(?<=(<title>\d* ?))[A-Za-z][A-Za-z\s]*(?=</title>)');
+    final message = regexpMessage.firstMatch(response.body)?.group(0) ?? response.body;
+    final statusCode = int.tryParse(regexpCode.firstMatch(response.body)?.group(1) ?? response.statusCode.toString()) ?? response.statusCode;
+    return ResponseError._(statusCode, message);
   }
 
   @override

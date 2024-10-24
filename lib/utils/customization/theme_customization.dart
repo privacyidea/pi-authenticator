@@ -42,6 +42,7 @@ class ThemeCustomization {
     required this.deleteColor,
     required this.renameColor,
     required this.lockColor,
+    required this.exportColor,
     required this.tileIconColor,
     required this.navigationBarColor,
     Color? pushAuthRequestAcceptColor,
@@ -71,6 +72,7 @@ class ThemeCustomization {
     Color? deleteColor,
     Color? renameColor,
     Color? lockColor,
+    Color? exportColor,
     Color? tileIconColor,
     Color? navigationBarColor,
     // From here on the colors have a default value based on another given color so they can be null
@@ -92,6 +94,7 @@ class ThemeCustomization {
         deleteColor = deleteColor ?? const Color(0xffe85e40),
         renameColor = renameColor ?? const Color(0xff7f9bdd),
         lockColor = lockColor ?? const Color(0xffffd633),
+        exportColor = exportColor ?? const Color.fromARGB(255, 49, 197, 74),
         tileIconColor = tileIconColor ?? const Color(0xff757575),
         navigationBarColor = navigationBarColor ?? const Color(0xFFFFFFFF),
         // From here on the colors have a default value based on another given color so they can be null
@@ -114,6 +117,7 @@ class ThemeCustomization {
     Color? deleteColor,
     Color? renameColor,
     Color? lockColor,
+    Color? exportColor,
     Color? tileIconColor,
     Color? navigationBarColor,
     // From here on the colors have a default value based on another given color so they can be null
@@ -134,6 +138,7 @@ class ThemeCustomization {
         shadowColor = shadowColor ?? const Color(0x4CEFEFEF),
         deleteColor = deleteColor ?? const Color(0xffb93f1d),
         renameColor = renameColor ?? const Color(0xff4a72c6),
+        exportColor = exportColor ?? const Color.fromARGB(255, 36, 148, 45),
         lockColor = lockColor ?? const Color(0xffe4ba11),
         tileIconColor = tileIconColor ?? const Color(0xffF5F5F5),
         navigationBarColor = navigationBarColor ?? const Color(0xFF282828),
@@ -167,6 +172,7 @@ class ThemeCustomization {
   final Color deleteColor;
   final Color renameColor;
   final Color lockColor;
+  final Color exportColor;
   final Color? _actionButtonsForegroundColor; // Default: foregroundColor
   Color get actionButtonsForegroundColor => _actionButtonsForegroundColor ?? foregroundColor;
 
@@ -197,6 +203,7 @@ class ThemeCustomization {
     Color? deleteColor,
     Color? renameColor,
     Color? lockColor,
+    Color? exportColor,
     Color? tileIconColor,
     Color? navigationBarColor,
     // From here on the colors have a default value based on another given color so they can be null
@@ -220,6 +227,7 @@ class ThemeCustomization {
         deleteColor: deleteColor ?? this.deleteColor,
         renameColor: renameColor ?? this.renameColor,
         lockColor: lockColor ?? this.lockColor,
+        exportColor: exportColor ?? this.exportColor,
         tileIconColor: tileIconColor ?? this.tileIconColor,
         navigationBarColor: navigationBarColor ?? this.navigationBarColor,
         // From here on the colors have a default value based on another given color so they can be null
@@ -496,6 +504,7 @@ class ThemeCustomization {
               deleteColor: deleteColor,
               editColor: renameColor,
               lockColor: lockColor,
+              exportColor: exportColor,
               foregroundColor: actionButtonsForegroundColor,
             ),
             ExtendedTextTheme(

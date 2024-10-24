@@ -26,8 +26,8 @@ import 'package:http/http.dart';
 
 import '../utils/logger.dart';
 import '../utils/object_validator.dart';
-import 'exception_errors/pi_server_result_error.dart';
 import 'api_results/pi_server_results/pi_server_result_value.dart';
+import 'exception_errors/pi_server_result_error.dart';
 
 part 'pi_server_response.freezed.dart';
 
@@ -99,7 +99,7 @@ class PiServerResponse<T extends PiServerResultValue> with _$PiServerResponse {
         detail: map[DETAIL],
         id: map[ID],
         jsonrpc: map[JSONRPC],
-        resultValue: PiServerResultValue.fromJsonOfType<T>(result[RESULT_VALUE])!,
+        resultValue: PiServerResultValue.fromJsonOfType<T>(result[RESULT_VALUE]),
         time: map[TIME],
         version: map[VERSION],
         signature: map[SIGNATURE],

@@ -40,6 +40,7 @@ class DeleteContainerAction extends ConsumerSlideableAction {
   CustomSlidableAction build(BuildContext context, WidgetRef ref) => CustomSlidableAction(
         onPressed: (BuildContext context) => _showDeleteDialog(context, ref),
         backgroundColor: Theme.of(context).extension<ActionTheme>()!.deleteColor,
+        foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,

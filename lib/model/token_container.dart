@@ -48,6 +48,7 @@ class TokenContainer with _$TokenContainer {
   Uri get registrationUrl => serverUrl.replace(path: '/container/register/finalize');
   Uri get syncUrlInit => serverUrl.replace(path: '/container/sync/$serial/init');
   Uri get syncUrlFinalize => serverUrl.replace(path: '/container/sync/$serial/finalize');
+  Uri get syncUrlTransfer => serverUrl.replace(path: '/container/sync/$serial/transfer');
 
   // example: pia://container/SMPH00134123
   // ?issuer=privacyIDEA
@@ -157,6 +158,8 @@ class TokenContainer with _$TokenContainer {
   TokenContainer withPublicServerKey(ECPublicKey publicServerKey) => copyWith(publicServerKey: eccUtils.serializeECPublicKey(publicServerKey));
   ECPublicKey? get ecPublicClientKey => publicClientKey == null ? null : eccUtils.deserializeECPublicKey(publicClientKey!);
   ECPrivateKey? get ecPrivateClientKey => privateClientKey == null ? null : eccUtils.deserializeECPrivateKey(privateClientKey!);
+  AsymmetricKeyPair<ECPublicKey, ECPrivateKey>? get clientKeyPair =>
+      ecPublicClientKey == null || ecPrivateClientKey == null ? null : AsymmetricKeyPair(ecPublicClientKey!, ecPrivateClientKey!);
 
   /// Add client key pair and set finalization state to generatingKeyPairCompleted
   TokenContainer withClientKeyPair(AsymmetricKeyPair<ECPublicKey, ECPrivateKey> keyPair) => copyWith(

@@ -1043,7 +1043,12 @@
     "description": "Title of the screen where the user can select the token import type."
   },
   "@selectTokensToExport": {
-    "description": "Title of the screen where the user can select the tokens to export."
+    "description": "Title of the screen where the user can select the tokens to export.",
+    "placeholders": {
+      "count": {
+        "example": "5"
+      }
+    }
   },
   "@selectTokensToExportHelpContent1": {
     "description": "Tells the user why some tokens are not exportable."
@@ -1289,6 +1294,7 @@
   "confirmPassword": "Passwort bestätigen",
   "confirmTokenDeletionHint": "Unter Umständen können Sie sich nicht mehr einloggen, wenn Sie diesen Token löschen.\nBitte stellen Sie sicher, dass Sie sich ohne diesen Token in den dazugehörigen Account einloggen können.",
   "confirmation": "Confirmation",
+  "importantInformationTitle": "Wichtige Informationen",
   "connectionFailed": "Verbindung fehlgeschlagen.",
   "container": "Container",
   "containerAlreadyExists": "Container existiert bereits",

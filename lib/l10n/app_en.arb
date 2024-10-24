@@ -1289,6 +1289,7 @@
   "confirmPassword": "Confirm password",
   "confirmTokenDeletionHint": "You may no longer be able to log in if you delete this token.\nPlease make sure that you can log in to the associated account without this token.",
   "confirmation": "Confirmation",
+  "importantInformationTitle": "Important information",
   "connectionFailed": "Connection failed.",
   "container": "Container",
   "containerAlreadyExists": "Container already exists",
