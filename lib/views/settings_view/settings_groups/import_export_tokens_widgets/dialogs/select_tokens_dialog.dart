@@ -173,10 +173,12 @@ class SelectTokensToExportHelpContentWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final appLocalizations = AppLocalizations.of(context)!;
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Text(appLocalizations.selectTokensToExportHelpContent1),
-        Text(appLocalizations.selectTokensToExportHelpContent2),
+        Text('${appLocalizations.selectTokensToExportHelpContent1} ${appLocalizations.selectTokensToExportHelpContent2}'),
+        SizedBox(height: 8),
         Text(appLocalizations.selectTokensToExportHelpContent3),
+        SizedBox(height: 8),
         Text(appLocalizations.selectTokensToExportHelpContent4),
       ],
     );

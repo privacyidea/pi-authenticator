@@ -34,12 +34,13 @@ sealed class PiServerResultValue extends PiServerResult {
   @override
   bool get status => true;
 
-  static T? fromJsonOfType<T extends PiServerResultValue>(Map<String, dynamic> json) {
+  static T fromJsonOfType<T extends PiServerResultValue>(Map<String, dynamic> json) {
     return switch (T) {
       const (ContainerFinalizationChallenge) => ContainerFinalizationChallenge.fromJson(json) as T,
       const (ContainerFinalizationResponse) => ContainerFinalizationResponse.fromJson(json) as T,
       const (ContainerSyncResult) => ContainerSyncResult.fromJson(json) as T,
-      _ => null,
+      const (TransferQrData) => TransferQrData.fromJson(json) as T,
+      _ => throw UnimplementedError('PiServerResultValue.fromJsonOfType<$T>'),
     };
   }
 
@@ -137,5 +138,22 @@ class ContainerSyncResult extends PiServerResultValue {
       encryptionParams: map[CONTAINER_SYNC_ENC_PARAMS] as EncryptionParams,
       containerDictEncrypted: map[CONTAINER_SYNC_DICT_SERVER] as String,
     );
+  }
+}
+
+class TransferQrData extends PiServerResultValue {
+  static const QR_DATA = 'qrdata';
+
+  final String qrData;
+
+  TransferQrData({required this.qrData});
+
+  factory TransferQrData.fromJson(Map<String, dynamic> json) {
+    final qrData = validate<String>(
+      value: json[QR_DATA],
+      validator: ObjectValidator<String>(transformer: (base64) => base64Encode(base64Decode(base64 as String))),
+      name: QR_DATA,
+    );
+    return TransferQrData(qrData: qrData);
   }
 }

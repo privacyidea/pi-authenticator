@@ -535,4 +535,11 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     if (container == null) throw StateError('Container was removed');
     return resultValue.publicServerKey;
   }
+
+  Future<String> getTransferQrData(TokenContainerFinalized container) async {
+    final currentContainer = (await future).currentOf(container);
+    if (currentContainer == null) throw StateError('Container was removed');
+    final qrCode = await _containerApi.getTransferQrData(currentContainer);
+    return qrCode;
+  }
 }

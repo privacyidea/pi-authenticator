@@ -21,6 +21,7 @@ void _testThemeCustomization() {
       deleteColor: Color(0xFF000006),
       renameColor: Color(0xFF000007),
       lockColor: Color(0xFF000008),
+      exportColor: Color(0xFF000009),
       tileIconColor: Color(0xFF000009),
       navigationBarColor: Color(0xFF00000A),
       actionButtonsForegroundColor: Color(0xFF00000B),
@@ -43,6 +44,7 @@ void _testThemeCustomization() {
       expect(customization.renameColor, equals(const Color(0xFF000007)));
       expect(customization.lockColor, equals(const Color(0xFF000008)));
       expect(customization.tileIconColor, equals(const Color(0xFF000009)));
+      expect(customization.exportColor, equals(const Color(0xFF000009)));
       expect(customization.navigationBarColor, equals(const Color(0xFF00000A)));
       expect(customization.actionButtonsForegroundColor, equals(const Color(0xFF00000B)));
       expect(customization.tilePrimaryColor, equals(const Color(0xFF00000C)));

@@ -11,8 +11,8 @@ import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.d
 import 'package:privacyidea_authenticator/model/riverpod_states/token_folder_state.dart';
 import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
-import 'package:privacyidea_authenticator/utils/customization/application_customization.dart';
 import 'package:privacyidea_authenticator/model/version.dart';
+import 'package:privacyidea_authenticator/utils/customization/application_customization.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
@@ -92,7 +92,7 @@ Future<void> _renameToken(WidgetTester tester, String newName) async {
   await tester.pumpAndSettle();
   await tester.enterText(find.byType(TextFormField).first, newName);
   await pumpUntilFindNWidgets(tester, find.widgetWithText(TextFormField, newName), 1, const Duration(seconds: 2));
-  await tester.tap(find.text(AppLocalizationsEn().save));
+  await tester.tap(find.text(AppLocalizationsEn().saveButton));
   await pumpUntilFindNWidgets(tester, find.text(newName), 1, const Duration(seconds: 2));
   expect(find.text(newName), findsOneWidget);
 }

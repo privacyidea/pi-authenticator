@@ -26,6 +26,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
+import 'package:image/image.dart' as img;
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:privacyidea_authenticator/mains/main_netknights.dart';
@@ -33,6 +34,7 @@ import 'package:privacyidea_authenticator/model/extensions/sortable_list.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/sortable_notifier.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/loading_indicator.dart';
+import 'package:zxing2/qrcode.dart';
 
 import '../model/enums/token_origin_source_type.dart';
 import '../model/mixins/sortable_mixin.dart';
@@ -250,4 +252,38 @@ Future<void> scanQrCode({BuildContext? context, required List<ResultHandler> res
     context: context,
     action: handleResults,
   );
+}
+
+Image generateQrCodeImage({required String data}) {
+  final qrcode = Encoder.encode(
+    data,
+    ErrorCorrectionLevel.l,
+    hints: EncodeHints()..put<CharacterSetECI>(EncodeHintType.characterSet, CharacterSetECI.ASCII),
+  );
+  final matrix = qrcode.matrix!;
+  const scale = 4;
+  const padding = 1;
+
+  var image = img.Image(
+    width: (matrix.width + padding + padding) * scale,
+    height: (matrix.height + padding + padding) * scale,
+    numChannels: 4,
+  );
+  img.fill(image, color: img.ColorRgba8(0xFF, 0xFF, 0xFF, 0xFF));
+
+  for (var x = 0; x < matrix.width; x++) {
+    for (var y = 0; y < matrix.height; y++) {
+      if (matrix.get(x, y) == 1) {
+        img.fillRect(
+          image,
+          x1: (x + padding) * scale,
+          y1: (y + padding) * scale,
+          x2: (x + padding) * scale + scale - 1,
+          y2: (y + padding) * scale + scale - 1,
+          color: img.ColorRgba8(0, 0, 0, 0xFF),
+        );
+      }
+    }
+  }
+  return Image.memory(img.encodePng(image));
 }
