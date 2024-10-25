@@ -23,9 +23,9 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:file_selector/file_selector.dart';
-import 'package:privacyidea_authenticator/model/enums/encodings.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/encodings_extension.dart';
 
+import '../../../../../../../model/enums/encodings.dart';
+import '../../../../../../../model/extensions/enums/encodings_extension.dart';
 import '../../l10n/app_localizations.dart';
 import '../../model/enums/token_origin_source_type.dart';
 import '../../model/exception_errors/localized_exception.dart';

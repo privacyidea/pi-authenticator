@@ -19,8 +19,8 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:privacyidea_authenticator/widgets/pi_text_field.dart';
 
+import '../../../../../../../widgets/pi_text_field.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/token_folder.dart';
 import '../../../../../utils/customization/theme_extentions/action_theme.dart';

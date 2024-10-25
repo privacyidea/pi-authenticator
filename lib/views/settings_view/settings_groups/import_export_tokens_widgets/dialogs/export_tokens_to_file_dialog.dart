@@ -24,6 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../../../../../../../utils/view_utils.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../mains/main_netknights.dart';
 import '../../../../../model/tokens/token.dart';
@@ -171,8 +172,7 @@ class _ExportTokensToFileDialogState extends ConsumerState<ExportTokensToFileDia
       final path = 'storage/emulated/0/Download/${_getFileName()}'.replaceAll(RegExp(r'\s'), '-');
       final file = File(path);
       await file.writeAsString(encryptedTokens);
-
-      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(appLocalizations.fileSavedToDownloadsFolder)));
+      showSnackBar(appLocalizations.fileSavedToDownloadsFolder);
       return true;
     } catch (e) {
       if (context.mounted) ref.read(statusMessageProvider.notifier).state = (AppLocalizations.of(context)!.errorSavingFile, null);
@@ -187,7 +187,7 @@ class _ExportTokensToFileDialogState extends ConsumerState<ExportTokensToFileDia
     final file = File('${downloadsDir.path}/${_getFileName()}');
     try {
       await file.writeAsString(encryptedTokens);
-      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(appLocalizations.fileSavedToDownloadsFolder)));
+      showSnackBar(appLocalizations.fileSavedToDownloadsFolder);
       return true;
     } catch (e) {
       if (context.mounted) ref.read(statusMessageProvider.notifier).state = (AppLocalizations.of(context)!.errorSavingFile, null);

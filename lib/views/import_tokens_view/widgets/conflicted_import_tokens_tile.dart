@@ -18,8 +18,8 @@
  * limitations under the License.
  */
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
 
+import '../../../../../../../utils/logger.dart';
 import '../../../model/token_import/token_import_entry.dart';
 import '../../../model/tokens/token.dart';
 import 'no_conflict_import_tokens_tile.dart';

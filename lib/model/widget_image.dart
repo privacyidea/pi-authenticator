@@ -23,8 +23,8 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/image_file_type_extension.dart';
 
+import '../../../../../../../model/extensions/enums/image_file_type_extension.dart';
 import '../utils/logger.dart';
 import 'enums/image_file_type.dart';
 

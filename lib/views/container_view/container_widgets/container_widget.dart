@@ -55,7 +55,10 @@ class ContainerWidget extends ConsumerWidget {
                 ExportContainerAction(container: container as TokenContainerFinalized, key: Key('${container.serial}-ExportContainerAction')),
             ],
             stack: stack,
-            child: ContainerWidgetTile(container: container),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 14),
+              child: ContainerWidgetTile(container: container),
+            ),
           ),
         );
 }

@@ -18,9 +18,8 @@
  * limitations under the License.
  */
 
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
-
+import '../../../../../../../l10n/app_localizations.dart';
+import '../../../../../../../l10n/app_localizations_en.dart';
 import '../../enums/rollout_state.dart';
 
 extension RolloutStateX on RolloutState {

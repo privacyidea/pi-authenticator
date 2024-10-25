@@ -18,9 +18,9 @@
  * limitations under the License.
  */
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/encodings_extension.dart';
-import 'package:privacyidea_authenticator/widgets/pi_text_field.dart';
 
+import '../../../../../../../model/extensions/enums/encodings_extension.dart';
+import '../../../../../../../widgets/pi_text_field.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../model/enums/encodings.dart';
 

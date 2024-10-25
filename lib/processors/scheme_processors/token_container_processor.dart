@@ -17,10 +17,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/model/exception_errors/localized_argument_error.dart';
-import 'package:privacyidea_authenticator/utils/globals.dart';
-
+import '../../../../../../../l10n/app_localizations.dart';
+import '../../../../../../../model/exception_errors/localized_argument_error.dart';
+import '../../../../../../../utils/globals.dart';
 import '../../model/processor_result.dart';
 import '../../model/token_container.dart';
 import '../../utils/logger.dart';

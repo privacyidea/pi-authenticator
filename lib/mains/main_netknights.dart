@@ -23,8 +23,8 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.dart';
 
+import '../../../../../../../model/riverpod_states/settings_state.dart';
 import '../firebase_options/default_firebase_options.dart';
 import '../l10n/app_localizations.dart';
 import '../model/enums/app_feature.dart';

@@ -20,8 +20,8 @@
  * limitations under the License.
  */
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/model/token_container.dart';
 
+import '../../../../../../../model/token_container.dart';
 import '../../utils/identifiers.dart';
 import '../../utils/object_validator.dart';
 import '../enums/token_types.dart';

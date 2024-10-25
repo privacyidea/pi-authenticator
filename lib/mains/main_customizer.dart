@@ -22,8 +22,8 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/utils/customization/application_customization.dart';
 
+import '../../../../../../../utils/customization/application_customization.dart';
 import '../l10n/app_localizations.dart';
 import '../model/enums/app_feature.dart';
 import '../model/riverpod_states/settings_state.dart';

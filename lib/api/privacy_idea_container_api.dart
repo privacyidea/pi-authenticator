@@ -24,12 +24,12 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:cryptography/cryptography.dart';
 import 'package:http/http.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
-import 'package:privacyidea_authenticator/model/extensions/token_folder_extension.dart';
-import 'package:privacyidea_authenticator/processors/scheme_processors/token_import_scheme_processors/otp_auth_processor.dart';
-import 'package:privacyidea_authenticator/utils/ecc_utils.dart';
-import 'package:privacyidea_authenticator/utils/privacyidea_io_client.dart';
 
+import '../../../../../../../l10n/app_localizations_en.dart';
+import '../../../../../../../model/extensions/token_folder_extension.dart';
+import '../../../../../../../processors/scheme_processors/token_import_scheme_processors/otp_auth_processor.dart';
+import '../../../../../../../utils/ecc_utils.dart';
+import '../../../../../../../utils/privacyidea_io_client.dart';
 import '../model/api_results/pi_server_results/pi_server_result_value.dart';
 import '../model/exception_errors/localized_exception.dart';
 import '../model/exception_errors/response_error.dart';

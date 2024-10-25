@@ -20,9 +20,9 @@
 import 'package:base32/base32.dart';
 import 'package:crypto/crypto.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:privacyidea_authenticator/model/token_template.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../../../../../model/token_template.dart';
 import '../../utils/identifiers.dart';
 import '../../utils/object_validator.dart';
 import '../enums/algorithms.dart';

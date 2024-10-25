@@ -19,8 +19,8 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.dart';
 
+import '../../../../../../../model/riverpod_states/settings_state.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../model/enums/introduction.dart';
 import '../../../../utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';

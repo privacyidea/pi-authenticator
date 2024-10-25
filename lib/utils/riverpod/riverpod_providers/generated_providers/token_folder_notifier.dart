@@ -18,9 +18,9 @@
  * limitations under the License.
  */
 import 'package:mutex/mutex.dart';
-import 'package:privacyidea_authenticator/repo/preference_token_folder_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../../../../repo/preference_token_folder_repository.dart';
 import '../../../../interfaces/repo/token_folder_repository.dart';
 import '../../../../model/riverpod_states/token_folder_state.dart';
 import '../../../../model/token_folder.dart';

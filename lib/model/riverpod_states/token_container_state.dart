@@ -21,8 +21,8 @@ import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:privacyidea_authenticator/model/tokens/token.dart';
 
+import '../../../../../../../model/tokens/token.dart';
 import '../enums/sync_state.dart';
 import '../token_container.dart';
 

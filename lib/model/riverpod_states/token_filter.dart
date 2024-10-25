@@ -17,9 +17,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import 'package:privacyidea_authenticator/model/mixins/sortable_mixin.dart';
-import 'package:privacyidea_authenticator/model/token_folder.dart';
-
+import '../../../../../../../model/mixins/sortable_mixin.dart';
+import '../../../../../../../model/token_folder.dart';
 import '../tokens/push_token.dart';
 import '../tokens/token.dart';
 

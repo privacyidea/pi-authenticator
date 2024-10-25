@@ -18,8 +18,7 @@
  * limitations under the License.
  */
 
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
-
+import '../../../../../../../l10n/app_localizations.dart';
 import '../../enums/sync_state.dart';
 
 extension SyncStateX on SyncState {

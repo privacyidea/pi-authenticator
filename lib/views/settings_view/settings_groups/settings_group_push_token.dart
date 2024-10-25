@@ -19,8 +19,8 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/widgets/dialog_widgets/default_dialog.dart';
 
+import '../../../../../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../model/riverpod_states/settings_state.dart';
 import '../../../model/tokens/push_token.dart';

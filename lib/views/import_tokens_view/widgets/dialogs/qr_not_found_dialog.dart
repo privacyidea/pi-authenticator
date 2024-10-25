@@ -22,8 +22,8 @@ import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 
 import '../../../../l10n/app_localizations.dart';
-import '../../../../utils/globals.dart';
 import '../../../../utils/logger.dart';
+import '../../../../utils/view_utils.dart';
 import '../../../../widgets/dialog_widgets/default_dialog.dart';
 
 class QrNotFoundDialog extends StatelessWidget {
@@ -73,12 +73,7 @@ class QrNotFoundDialog extends StatelessWidget {
             } catch (e) {
               if (!context.mounted) return;
               Navigator.of(context).pop();
-              globalSnackbarKey.currentState?.showSnackBar(
-                const SnackBar(
-                  behavior: SnackBarBehavior.floating,
-                  content: Text("File not currently available! Please try again."),
-                ),
-              );
+              showStatusMessage(message: "File not currently available! Please try again.");
               return;
             }
             if (!context.mounted) return;

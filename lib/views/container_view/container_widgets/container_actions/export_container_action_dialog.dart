@@ -20,10 +20,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/model/token_container.dart';
-import 'package:privacyidea_authenticator/utils/view_utils.dart';
-import 'package:privacyidea_authenticator/widgets/button_widgets/cooldown_button.dart';
 
+import '../../../../../../../model/token_container.dart';
+import '../../../../../../../utils/view_utils.dart';
+import '../../../../../../../widgets/button_widgets/cooldown_button.dart';
 import '../../../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 import '../../../../utils/utils.dart';
 import '../../../../widgets/dialog_widgets/default_dialog.dart';

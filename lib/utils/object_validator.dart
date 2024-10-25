@@ -18,8 +18,7 @@
  * limitations under the License.
  */
 
-import 'package:privacyidea_authenticator/model/extensions/enums/encodings_extension.dart';
-
+import '../../../../../../../model/extensions/enums/encodings_extension.dart';
 import '../model/enums/algorithms.dart';
 import '../model/enums/encodings.dart';
 import '../model/exception_errors/localized_argument_error.dart';

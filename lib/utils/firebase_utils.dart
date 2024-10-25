@@ -23,12 +23,11 @@ import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mutex/mutex.dart';
 
-import 'globals.dart';
+import '../../../../../../../utils/view_utils.dart';
 import 'identifiers.dart';
 import 'logger.dart';
 
@@ -54,24 +53,24 @@ class FirebaseUtils {
     _initialized = true;
     Logger.info('Initializing Firebase');
 
-    try {
-      // await FirebaseMessaging.instance.requestPermission();
-    } on FirebaseException catch (e, s) {
-      Logger.warning(
-        'e.code: ${e.code}, '
-        'e.message: ${e.message}, '
-        'e.plugin: ${e.plugin},',
-        error: e,
-        stackTrace: s,
-      );
-      String errorMessage = e.message ?? 'no error message';
-      final SnackBar snackBar = SnackBar(
-          behavior: SnackBarBehavior.floating,
-          content: Text(
-            "Firebase notification permission error! ($errorMessage: ${e.code}",
-          ));
-      globalSnackbarKey.currentState?.showSnackBar(snackBar);
-    }
+    // try {
+    //   // await FirebaseMessaging.instance.requestPermission();
+    // } on FirebaseException catch (e, s) {
+    //   Logger.warning(
+    //     'e.code: ${e.code}, '
+    //     'e.message: ${e.message}, '
+    //     'e.plugin: ${e.plugin},',
+    //     error: e,
+    //     stackTrace: s,
+    //   );
+    //   String errorMessage = e.message ?? 'no error message';
+    //   final SnackBar snackBar = SnackBar(
+    //       behavior: SnackBarBehavior.floating,
+    //       content: Text(
+    //         "Firebase notification permission error! ($errorMessage: ${e.code}",
+    //       ));
+    //   globalSnackbarKey.currentState?.showSnackBar(snackBar);
+    // }
 
     FirebaseMessaging.onMessage.listen(foregroundHandler);
     FirebaseMessaging.onBackgroundMessage(backgroundHandler);
@@ -82,38 +81,24 @@ class FirebaseUtils {
       if (firebaseToken != await getCurrentFirebaseToken() && firebaseToken != null) {
         updateFirebaseToken(firebaseToken);
       }
-    } on PlatformException catch (error) {
-      if (error.code == FIREBASE_TOKEN_ERROR_CODE) {
-        // ignore
-      } else {
-        String errorMessage = error.message ?? 'no error message';
-        final SnackBar snackBar = SnackBar(
-            behavior: SnackBarBehavior.floating,
-            content: Text(
-              'Push cant be initialized, restart the app and try again. ${error.code}: $errorMessage',
-              overflow: TextOverflow.fade,
-              softWrap: false,
-            ));
-        globalSnackbarKey.currentState?.showSnackBar(snackBar);
+    } catch (error, stackTrace) {
+      String? errorMessage;
+      String? subMessage;
+      if (error is PlatformException) {
+        if (error.code == FIREBASE_TOKEN_ERROR_CODE) return; // ignore
+        errorMessage = 'Push cant be initialized, restart the app and try again.';
+        subMessage = '${error.code}: ${error.message ?? 'no error message'}';
       }
-    } on FirebaseException catch (error) {
-      final SnackBar snackBar = SnackBar(
-          behavior: SnackBarBehavior.floating,
-          content: Text(
-            "Push cant be initialized, restart the app and try again$error",
-            overflow: TextOverflow.fade,
-            softWrap: false,
-          ));
-      globalSnackbarKey.currentState?.showSnackBar(snackBar);
-    } catch (error) {
-      final SnackBar snackBar = SnackBar(
-          behavior: SnackBarBehavior.floating,
-          content: Text(
-            "Unknown error: $error",
-            overflow: TextOverflow.fade,
-            softWrap: false,
-          ));
-      globalSnackbarKey.currentState?.showSnackBar(snackBar);
+      if (error is FirebaseException) {
+        if (error.code == FIREBASE_TOKEN_ERROR_CODE) return; // ignore
+        errorMessage = 'Push cant be initialized, restart the app and try again.';
+        subMessage = '${error.code}: ${error.message ?? 'no error message'}';
+      }
+      if (errorMessage != null) {
+        showStatusMessage(message: errorMessage, subMessage: subMessage);
+        return;
+      }
+      Logger.error('Unknown Firebase error', error: error, stackTrace: stackTrace);
     }
 
     FirebaseMessaging.instance.onTokenRefresh.listen((String newToken) async {
@@ -122,15 +107,8 @@ class FirebaseUtils {
         // TODO what if this fails, when should a retry be attempted?
         try {
           updateFirebaseToken(newToken);
-        } catch (error) {
-          final SnackBar snackBar = SnackBar(
-              behavior: SnackBarBehavior.floating,
-              content: Text(
-                "Unknown error: $error",
-                overflow: TextOverflow.fade,
-                softWrap: false,
-              ));
-          globalSnackbarKey.currentState?.showSnackBar(snackBar);
+        } catch (error, stackTrace) {
+          Logger.error('Error updating firebase token', error: error, stackTrace: stackTrace);
         }
       }
     });

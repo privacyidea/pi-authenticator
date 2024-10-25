@@ -20,7 +20,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_zxing/flutter_zxing.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
+
+import '../../../../../../../l10n/app_localizations.dart';
 
 class QRScannerWidget extends StatefulWidget {
   const QRScannerWidget({super.key});

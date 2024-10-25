@@ -21,8 +21,8 @@
 import 'dart:math' show min;
 
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/widgets/button_widgets/cooldown_button.dart';
 
+import '../../../../../../../widgets/button_widgets/cooldown_button.dart';
 import '../../../../utils/customization/theme_extentions/push_request_theme.dart';
 import '../push_request_dialog.dart';
 

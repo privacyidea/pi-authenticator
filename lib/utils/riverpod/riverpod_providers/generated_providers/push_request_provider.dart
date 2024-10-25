@@ -21,10 +21,10 @@ import 'dart:async';
 
 import 'package:http/http.dart';
 import 'package:mutex/mutex.dart';
-import 'package:privacyidea_authenticator/interfaces/repo/push_request_repository.dart';
-import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../../../../interfaces/repo/push_request_repository.dart';
+import '../../../../../../../utils/rsa_utils.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../model/push_request.dart';
 import '../../../../model/riverpod_states/push_request_state.dart';

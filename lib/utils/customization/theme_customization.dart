@@ -20,8 +20,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/model/extensions/color_extension.dart';
 
+import '../../../../../../../model/extensions/color_extension.dart';
 import 'theme_extentions/action_theme.dart';
 import 'theme_extentions/elevated_delete_button_theme.dart';
 import 'theme_extentions/extended_text_theme.dart';

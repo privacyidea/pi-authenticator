@@ -18,7 +18,8 @@
  * limitations under the License.
  */
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/model/extensions/color_extension.dart';
+
+import '../../../../../../../model/extensions/color_extension.dart';
 
 class PiCircularProgressIndicator extends StatelessWidget {
   final double padding;

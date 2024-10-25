@@ -19,8 +19,8 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 
+import '../../../../../../../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import '../../../model/mixins/sortable_mixin.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';

@@ -21,8 +21,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/utils/default_inkwell.dart';
 
+import '../../../../../../../utils/default_inkwell.dart';
 import '../../../../model/mixins/sortable_mixin.dart';
 import '../../../../model/tokens/token.dart';
 import '../../../../utils/globals.dart';

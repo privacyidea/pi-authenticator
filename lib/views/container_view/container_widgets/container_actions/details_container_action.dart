@@ -20,8 +20,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:privacyidea_authenticator/views/container_view/container_widgets/container_actions/details_container_action_dialog.dart';
 
+import '../../../../../../../views/container_view/container_widgets/container_actions/details_container_action_dialog.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../model/token_container.dart';
 import '../../../../utils/customization/theme_extentions/action_theme.dart';

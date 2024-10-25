@@ -17,7 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import 'package:privacyidea_authenticator/model/riverpod_states/token_folder_state.dart';
+import '../../../../../../../model/riverpod_states/token_folder_state.dart';
 
 abstract class TokenFolderRepository {
   /// Overwrite the current state with the new folders

@@ -70,7 +70,10 @@ class _UpdateFirebaseTokenDialogState extends ConsumerState<UpdateFirebaseTokenD
 
     final tuple = await ref.read(tokenProvider.notifier).updateFirebaseToken();
     if (tuple == null) {
-      showMessage(message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorSynchronizationNoNetworkConnection);
+      showStatusMessage(
+        message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.firebaseToken,
+        subMessage: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorSynchronizationNoNetworkConnection,
+      );
       return;
     }
 

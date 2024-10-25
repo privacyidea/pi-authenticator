@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:camera/camera.dart';
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:privacyidea_authenticator/model/processor_result.dart';

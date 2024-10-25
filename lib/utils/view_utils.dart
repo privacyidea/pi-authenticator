@@ -23,20 +23,23 @@ import 'globals.dart';
 import 'logger.dart';
 import 'riverpod/riverpod_providers/state_providers/status_message_provider.dart';
 
+ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? showSnackBar(String message) => _showSnackBar(message, const Duration(seconds: 3));
+ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? showSnackBarLong(String message) => _showSnackBar(message, const Duration(seconds: 10));
+
 /// Shows a snackbar message to the user for a given `Duration`.
-void showMessage({
-  required String message,
-  Duration duration = const Duration(seconds: 5),
-}) {
+ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? _showSnackBar(
+  String message,
+  Duration duration,
+) {
   if (globalSnackbarKey.currentState == null) {
     Logger.warning('globalSnackbarKey.currentState is null');
-    return;
+    return null;
   }
-  globalSnackbarKey.currentState!.showSnackBar(
+  return globalSnackbarKey.currentState!.showSnackBar(
     SnackBar(
       behavior: SnackBarBehavior.floating,
       content: Text(message),
-      duration: duration,
+      duration: const Duration(seconds: 5),
     ),
   );
 }
