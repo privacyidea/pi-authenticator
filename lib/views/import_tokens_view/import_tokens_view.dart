@@ -93,9 +93,27 @@ class _ImportTokensViewState extends ConsumerState<ImportTokensView> {
                     onPressed: () => _onPressed(item),
                     child: Text(item.appName),
                   ),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.arrow_forward_ios),
-                    onPressed: () => _onPressed(item),
+                  trailing: Theme(
+                    data: ThemeData(
+                      iconTheme: const IconThemeData(
+                        color: Colors.red,
+                      ),
+                      primaryIconTheme: const IconThemeData(
+                        color: Colors.blue,
+                      ),
+                      iconButtonTheme: const IconButtonThemeData(
+                        style: ButtonStyle(
+                          foregroundColor: WidgetStatePropertyAll(Colors.green),
+                          backgroundColor: WidgetStatePropertyAll(Colors.green),
+                          iconColor: WidgetStatePropertyAll(Colors.green),
+                          iconSize: WidgetStatePropertyAll(50),
+                        ),
+                      ),
+                    ),
+                    child: IconButton(
+                      icon: const Icon(Icons.arrow_forward_ios),
+                      onPressed: () => _onPressed(item),
+                    ),
                   ),
                 ),
             ],
