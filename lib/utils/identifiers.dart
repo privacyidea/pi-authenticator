@@ -114,6 +114,7 @@ const String PUSH_REQUEST_ANSWERS = 'require_presence'; // 8.
 const String CONTAINER_CHAL_KEY_ALGORITHM = 'enc_key_algorithm';
 const String CONTAINER_CHAL_NONCE = 'nonce';
 const String CONTAINER_CHAL_TIMESTAMP = 'time_stamp';
+const String CONTAINER_CHAL_SIGNATURE = 'signature';
 
 // Container registration:
 const String CONTAINER_ISSUER = 'issuer';
@@ -132,7 +133,6 @@ const String CONTAINER_SCOPE = 'scope';
 const String CONTAINER_CONTAINER_SERIAL = 'container_serial';
 const String CONTAINER_PUBLIC_CLIENT_KEY = 'public_client_key';
 const String CONTAINER_DEVICE_ID = 'device_id';
-const String CONTAINER_SIGNATURE = 'signature';
 
 // Container sync:
 const String CONTAINER_SYNC_PUBLIC_CLIENT_KEY = 'public_enc_key_client';

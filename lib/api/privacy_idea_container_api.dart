@@ -65,7 +65,7 @@ class PrivacyIdeaContainerApi {
     if (decryptedContainerDictJson == null) return null;
 
     final tokens = decryptedContainerDictJson[CONTAINER_DICT_TOKENS] as Map<String, dynamic>;
-    final newOtpAuthTokens = (tokens[CONTAINER_DICT_TOKENS_ADD] as List).cast<String>().map(Uri.parse).toList();
+    final newOtpAuthTokens = (tokens[CONTAINER_DICT_TOKENS_ADD] as List).whereType<String>().map(Uri.parse).toList();
     final newTokens = await _parseNewTokens(otpAuthUris: newOtpAuthTokens, container: container);
 
     // All server tokens should have a serial but if client token has no serial the server token also has otps
@@ -125,7 +125,7 @@ class PrivacyIdeaContainerApi {
       CONTAINER_CONTAINER_SERIAL: container.serial,
       CONTAINER_PUBLIC_CLIENT_KEY: container.publicClientKey,
       CONTAINER_DEVICE_ID: AppInfoUtils.deviceId,
-      CONTAINER_SIGNATURE: signature,
+      CONTAINER_CHAL_SIGNATURE: signature,
     };
     return await _ioClient.doPost(url: container.registrationUrl, body: body, sslVerify: container.sslVerify);
   }
@@ -178,9 +178,9 @@ class PrivacyIdeaContainerApi {
     final signature = container.signMessage(signMessage);
     Logger.debug('Sended container: ${jsonEncode(containerDict)}');
     final body = <String, String>{
-      CONTAINER_SYNC_SIGNATURE: signature,
       CONTAINER_SYNC_PUBLIC_CLIENT_KEY: publicKeyBase64,
       CONTAINER_SYNC_DICT_CLIENT: jsonEncode(containerDict),
+      CONTAINER_CHAL_SIGNATURE: signature,
     };
 
     final response = await _ioClient.doPost(url: container.syncUrl, body: body);
@@ -294,7 +294,7 @@ class PrivacyIdeaContainerApi {
 
     final body = {
       CONTAINER_SERIAL: container.serial,
-      CONTAINER_SIGNATURE: container.signMessage(signMessage),
+      CONTAINER_CHAL_SIGNATURE: container.signMessage(signMessage),
     };
 
     final response = await _ioClient.doPost(url: requestUrl, body: body);

@@ -20,6 +20,7 @@
 // ignore_for_file: constant_identifier_names
 
 import 'dart:async';
+import 'dart:developer';
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:math' show min;
@@ -129,7 +130,7 @@ class Logger {
 
   /*----------- LOGGING METHODS -----------*/
 
-  static void info(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) =>
+  static void info(String message, {dynamic error, StackTrace? stackTrace, String? name, bool verbose = false}) =>
       instance._logInfo(message, stackTrace: stackTrace, name: name, verbose: verbose);
 
   void _logInfo(String message, {dynamic stackTrace, String? name, bool verbose = false}) {
@@ -147,10 +148,10 @@ class Logger {
     _print(infoString);
   }
 
-  static void warning(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) =>
+  static void warning(String message, {dynamic error, StackTrace? stackTrace, String? name, bool verbose = false}) =>
       instance._logWarning(message, error: error, stackTrace: stackTrace, name: name, verbose: verbose);
 
-  void _logWarning(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) {
+  void _logWarning(String message, {dynamic error, StackTrace? stackTrace, String? name, bool verbose = false}) {
     if (_verboseLogging == false && kDebugMode == false && verbose == false) return;
     String warningString = _convertLogToSingleString(
       message,
@@ -167,16 +168,19 @@ class Logger {
   }
 
   /// Does nothing if in production/release mode
-  static void debug(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) {
+  static void debug(String message, {dynamic error, StackTrace? stackTrace, String? name, bool verbose = false}) {
     if (!kDebugMode) return;
     instance._logDebug(message, error: error, stackTrace: stackTrace, name: name, verbose: verbose);
   }
 
-  void _logDebug(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) {
+  void _logDebug(String message, {dynamic error, StackTrace? stackTrace, String? name, bool verbose = false}) {
     if (_verboseLogging == false && kDebugMode == false && verbose == false) return;
+    if (stackTrace != null) {
+      log('Stacktrace is not supported in debug mode');
+    }
     String debugString = instance._convertLogToSingleString(
       message,
-      stackTrace: stackTrace ?? (_verboseLogging || verbose) ? StackTrace.current : null,
+      stackTrace: stackTrace ?? ((_verboseLogging || verbose) ? StackTrace.current : null),
       name: name ?? _getCallerMethodName(depth: 2),
       logLevel: LogLevel.DEBUG,
     );
@@ -408,7 +412,7 @@ Device Parameters $deviceInfo""";
     return text;
   }
 
-  String _convertLogToSingleString(String? message, {dynamic error, dynamic stackTrace, String? name, LogLevel logLevel = LogLevel.INFO}) {
+  String _convertLogToSingleString(String? message, {dynamic error, StackTrace? stackTrace, String? name, LogLevel logLevel = LogLevel.INFO}) {
     String fileMessage = '${DateTime.now().toString()}';
     fileMessage += name != null ? ' [$name]\n' : '\n';
     fileMessage += message ?? '';

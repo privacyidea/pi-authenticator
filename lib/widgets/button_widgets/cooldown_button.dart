@@ -4,6 +4,7 @@ class CooldownButton extends StatefulWidget {
   final Future Function() onPressed;
   final Widget child;
   final Widget? childWhenCooldown;
+  final EdgeInsetsGeometry? padding;
   final int minThreshold;
   final ButtonStyle? style;
   final bool isPressable;
@@ -14,6 +15,7 @@ class CooldownButton extends StatefulWidget {
     required this.onPressed,
     required this.child,
     this.childWhenCooldown,
+    this.padding,
     this.minThreshold = 1000,
     this.isPressable = true,
     this.style,
@@ -43,7 +45,7 @@ class _CooldownButtonState extends State<CooldownButton> {
   @override
   Widget build(BuildContext context) => switch (widget.styleType) {
         CooldownButtonStyleType.elevatedButton => Padding(
-            padding: const EdgeInsets.all(3),
+            padding: widget.padding ?? const EdgeInsets.all(0),
             child: ElevatedButton(
               onPressed: isPressable && widget.isPressable ? press : null,
               style: widget.style?.merge(Theme.of(context).elevatedButtonTheme.style) ?? Theme.of(context).elevatedButtonTheme.style,
@@ -51,6 +53,8 @@ class _CooldownButtonState extends State<CooldownButton> {
             ),
           ),
         CooldownButtonStyleType.iconButton => IconButton(
+            padding: widget.padding ?? const EdgeInsets.all(0),
+            splashRadius: 26,
             onPressed: isPressable && widget.isPressable ? press : null,
             style: widget.style?.merge(Theme.of(context).iconButtonTheme.style) ?? Theme.of(context).iconButtonTheme.style,
             icon: isPressable && widget.isPressable ? widget.child : widget.childWhenCooldown ?? widget.child,

@@ -163,7 +163,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     List<Token> syncedTokens = [];
     List<String> deletedTokens = [];
 
-    containersToSync = await updateContainers(containersToSync, (c) => c.copyWith(syncState: SyncState.syncing));
+    containersToSync = await updateContainerList(containersToSync, (c) => c.copyWith(syncState: SyncState.syncing));
 
     for (var finalizedContainer in containersToSync) {
       syncFutures.add(
@@ -181,7 +181,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
         }).catchError((error, stackTrace) async {
           await updateContainer(finalizedContainer, (c) => c.copyWith(syncState: SyncState.failed));
           if (!isManually) return null;
-          Logger.debug('Failed to sync container ${error.runtimeType}', error: error); //stackTrace: stackTrace);
+          Logger.debug('Failed to sync container ${error.runtimeType}', error: error, stackTrace: stackTrace);
           showStatusMessage(
             message: AppLocalizations.of(await globalContext)!.failedToSyncContainer(finalizedContainer.serial),
             subMessage: error is PiServerResultError ? error.message : error.toString(),
@@ -271,7 +271,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     return updated;
   }
 
-  Future<List<T>> updateContainers<T extends TokenContainer>(List<T> container, T Function(T) updater) async {
+  Future<List<T>> updateContainerList<T extends TokenContainer>(List<T> container, T Function(T) updater) async {
     await _stateMutex.acquire();
     final oldState = await future;
     final currentContainers = <T>[];

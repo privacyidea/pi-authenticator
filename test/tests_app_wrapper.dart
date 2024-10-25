@@ -3,11 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
+import 'package:privacyidea_authenticator/api/privacy_idea_container_api.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/introduction_repository.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/push_request_repository.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/settings_repository.dart';
+import 'package:privacyidea_authenticator/interfaces/repo/token_container_repository.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/token_folder_repository.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/token_repository.dart';
+import 'package:privacyidea_authenticator/utils/ecc_utils.dart';
 import 'package:privacyidea_authenticator/utils/firebase_utils.dart';
 import 'package:privacyidea_authenticator/utils/privacyidea_io_client.dart';
 import 'package:privacyidea_authenticator/utils/push_provider.dart';
@@ -17,12 +20,15 @@ import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
   MockSpec<TokenRepository>(),
   MockSpec<SettingsRepository>(),
   MockSpec<TokenFolderRepository>(),
+  MockSpec<IntroductionRepository>(),
+  MockSpec<PushRequestRepository>(),
+  MockSpec<TokenContainerRepository>(),
+  MockSpec<PrivacyIdeaContainerApi>(),
   MockSpec<PrivacyideaIOClient>(),
   MockSpec<RsaUtils>(),
+  MockSpec<EccUtils>(),
   MockSpec<FirebaseUtils>(),
-  MockSpec<IntroductionRepository>(),
   MockSpec<PushProvider>(),
-  MockSpec<PushRequestRepository>(),
 ])
 @GenerateMocks([])
 class TestsAppWrapper extends StatelessWidget {

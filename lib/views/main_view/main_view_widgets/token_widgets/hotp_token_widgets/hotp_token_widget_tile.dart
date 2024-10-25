@@ -20,6 +20,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/widgets/button_widgets/cooldown_button.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/hotp_token.dart';
@@ -30,49 +31,25 @@ import '../../../../../widgets/custom_trailing.dart';
 import '../../../../../widgets/hideable_widget_.dart';
 import '../token_widget_tile.dart';
 
-class HOTPTokenWidgetTile extends ConsumerStatefulWidget {
+class HOTPTokenWidgetTile extends ConsumerWidget {
   final HOTPToken token;
   final bool isPreview;
 
   const HOTPTokenWidgetTile(this.token, {super.key, this.isPreview = false});
 
-  @override
-  ConsumerState<HOTPTokenWidgetTile> createState() => _HOTPTokenWidgetTileState();
-}
-
-class _HOTPTokenWidgetTileState extends ConsumerState<HOTPTokenWidgetTile> {
-  bool disableTrailingButton = false;
-
   void _updateOtpValue() {
-    setState(() {
-      globalRef?.read(tokenProvider.notifier).incrementCounter(widget.token);
-      disableTrailingButton = true;
-    });
-    _disableButtons();
+    globalRef?.read(tokenProvider.notifier).incrementCounter(token);
   }
 
-  void _disableButtons() {
-    setState(() {
-      disableTrailingButton = true;
-    });
-    Future.delayed(const Duration(seconds: 1), () {
-      if (mounted) {
-        setState(() {
-          disableTrailingButton = false;
-        });
-      }
-    });
-  }
-
-  void _copyOtpValue() {
+  void _copyOtpValue(BuildContext context) {
     if (globalRef?.read(disableCopyOtpProvider) ?? false) return;
 
     globalRef?.read(disableCopyOtpProvider.notifier).state = true;
-    Clipboard.setData(ClipboardData(text: widget.token.otpValue));
+    Clipboard.setData(ClipboardData(text: token.otpValue));
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         behavior: SnackBarBehavior.floating,
-        content: Text(AppLocalizations.of(context)!.otpValueCopiedMessage(widget.token.otpValue)),
+        content: Text(AppLocalizations.of(context)!.otpValueCopiedMessage(token.otpValue)),
       ),
     );
     Future.delayed(const Duration(seconds: 5), () {
@@ -81,24 +58,24 @@ class _HOTPTokenWidgetTileState extends ConsumerState<HOTPTokenWidgetTile> {
   }
 
   @override
-  Widget build(BuildContext context) => TokenWidgetTile(
-        key: Key('${widget.token.hashCode}TokenWidgetTile'),
-        token: widget.token,
-        titleTooltip: widget.token.isHidden ? AppLocalizations.of(context)!.authenticateToShowOtp : AppLocalizations.of(context)!.copyOTPToClipboard,
-        titleOnTap: widget.isPreview
+  Widget build(BuildContext context, WidgetRef ref) => TokenWidgetTile(
+        key: Key('${token.hashCode}TokenWidgetTile'),
+        token: token,
+        titleTooltip: token.isHidden ? AppLocalizations.of(context)!.authenticateToShowOtp : AppLocalizations.of(context)!.copyOTPToClipboard,
+        titleOnTap: isPreview
             ? null
-            : widget.token.isLocked && widget.token.isHidden
-                ? () async => await ref.read(tokenProvider.notifier).showToken(widget.token)
-                : _copyOtpValue,
-        title: insertCharAt(widget.token.otpValue, ' ', (widget.token.digits / 2).ceil()),
-        additionalSubtitles: widget.isPreview
+            : token.isLocked && token.isHidden
+                ? () async => await ref.read(tokenProvider.notifier).showToken(token)
+                : () => _copyOtpValue(context),
+        title: insertCharAt(token.otpValue, ' ', (token.digits / 2).ceil()),
+        additionalSubtitles: isPreview
             ? [
-                'Algorithm: ${widget.token.algorithm.name}',
-                'Counter: ${widget.token.counter}',
+                'Algorithm: ${token.algorithm.name}',
+                'Counter: ${token.counter}',
               ]
             : [],
         trailing: CustomTrailing(
-          child: widget.isPreview
+          child: isPreview
               ? FittedBox(
                   fit: BoxFit.contain,
                   child: Icon(
@@ -107,17 +84,19 @@ class _HOTPTokenWidgetTileState extends ConsumerState<HOTPTokenWidgetTile> {
                   ),
                 )
               : HideableWidget(
-                  token: widget.token,
-                  isHidden: widget.token.isHidden,
-                  child: IconButton(
-                    tooltip: AppLocalizations.of(context)!.increaseCounter,
-                    padding: const EdgeInsets.all(0),
-                    onPressed: disableTrailingButton ? null : () => _updateOtpValue(),
-                    icon: FittedBox(
-                      fit: BoxFit.contain,
-                      child: Icon(
-                        size: 100,
-                        Icons.replay,
+                  token: token,
+                  isHidden: token.isHidden,
+                  child: Semantics(
+                    label: AppLocalizations.of(context)!.increaseCounter,
+                    child: CooldownButton(
+                      styleType: CooldownButtonStyleType.iconButton,
+                      onPressed: () async => _updateOtpValue(),
+                      child: FittedBox(
+                        fit: BoxFit.contain,
+                        child: Icon(
+                          size: 100,
+                          Icons.replay,
+                        ),
                       ),
                     ),
                   ),

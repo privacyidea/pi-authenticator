@@ -360,6 +360,7 @@ class ThemeCustomization {
             labelLarge: TextStyle(color: foregroundColor, fontFamily: fontFamily),
             labelSmall: TextStyle(color: foregroundColor, fontFamily: fontFamily),
           ),
+          disabledColor: tileIconColor.withOpacity(0.38), // 38% opacity used for disabled icon buttons
           iconButtonTheme: IconButtonThemeData(
             style: ButtonStyle(
               foregroundColor: WidgetStateProperty.all(foregroundColor),

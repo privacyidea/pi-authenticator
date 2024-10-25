@@ -66,6 +66,7 @@ void _testThemeCustomization() {
         deleteColor: const Color(0xFFFFFFF9),
         renameColor: const Color(0xFFFFFFF8),
         lockColor: const Color(0xFFFFFFF7),
+        exportColor: const Color(0xFFFFFFF7),
         tileIconColor: const Color(0xFFFFFFF6),
         navigationBarColor: const Color(0xFFFFFFF5),
         actionButtonsForegroundColor: () => const Color(0xFFFFFFF4),
@@ -86,6 +87,7 @@ void _testThemeCustomization() {
       expect(newCustomization.deleteColor, equals(const Color(0xFFFFFFF9)));
       expect(newCustomization.renameColor, equals(const Color(0xFFFFFFF8)));
       expect(newCustomization.lockColor, equals(const Color(0xFFFFFFF7)));
+      expect(newCustomization.exportColor, equals(const Color(0xFFFFFFF7)));
       expect(newCustomization.tileIconColor, equals(const Color(0xFFFFFFF6)));
       expect(newCustomization.navigationBarColor, equals(const Color(0xFFFFFFF5)));
       expect(newCustomization.actionButtonsForegroundColor, equals(const Color(0xFFFFFFF4)));
@@ -108,6 +110,7 @@ void _testThemeCustomization() {
           deleteColor: Color(0xFFFFFFF9),
           renameColor: Color(0xFFFFFFF8),
           lockColor: Color(0xFFFFFFF7),
+          exportColor: Color(0xFFFFFFF7),
           tileIconColor: Color(0xFFFFFFF6),
           navigationBarColor: Color(0xFFFFFFF5),
           actionButtonsForegroundColor: Color(0xFFFFFFF4),
@@ -128,6 +131,7 @@ void _testThemeCustomization() {
         expect(newCustomization.deleteColor, equals(const Color(0xFFFFFFF9)));
         expect(newCustomization.renameColor, equals(const Color(0xFFFFFFF8)));
         expect(newCustomization.lockColor, equals(const Color(0xFFFFFFF7)));
+        expect(newCustomization.exportColor, equals(const Color(0xFFFFFFF7)));
         expect(newCustomization.tileIconColor, equals(const Color(0xFFFFFFF6)));
         expect(newCustomization.navigationBarColor, equals(const Color(0xFFFFFFF5)));
         expect(newCustomization.actionButtonsForegroundColor, equals(const Color(0xFFFFFFF4)));
@@ -149,6 +153,7 @@ void _testThemeCustomization() {
           deleteColor: Color(0xFFFFFFF9),
           renameColor: Color(0xFFFFFFF8),
           lockColor: Color(0xFFFFFFF7),
+          exportColor: Color(0xFFFFFFF7),
           tileIconColor: Color(0xFFFFFFF6),
           navigationBarColor: Color(0xFFFFFFF5),
           actionButtonsForegroundColor: Color(0xFFFFFFF4),
@@ -169,6 +174,7 @@ void _testThemeCustomization() {
         expect(newCustomization.deleteColor, equals(const Color(0xFFFFFFF9)));
         expect(newCustomization.renameColor, equals(const Color(0xFFFFFFF8)));
         expect(newCustomization.lockColor, equals(const Color(0xFFFFFFF7)));
+        expect(newCustomization.exportColor, equals(const Color(0xFFFFFFF7)));
         expect(newCustomization.tileIconColor, equals(const Color(0xFFFFFFF6)));
         expect(newCustomization.navigationBarColor, equals(const Color(0xFFFFFFF5)));
         expect(newCustomization.actionButtonsForegroundColor, equals(const Color(0xFFFFFFF4)));
@@ -193,6 +199,7 @@ void _testThemeCustomization() {
           'deleteColor': 0xFFFFFFF9,
           'renameColor': 0xFFFFFFF8,
           'lockColor': 0xFFFFFFF7,
+          'exportColor': 0xFFFFFFF7,
           'tileIconColor': 0xFFFFFFF6,
           'navigationBarColor': 0xFFFFFFF5,
           '_actionButtonsForegroundColor': 0xFFFFFFF4,
@@ -213,6 +220,7 @@ void _testThemeCustomization() {
         expect(newCustomization.deleteColor, equals(const Color(0xFFFFFFF9)));
         expect(newCustomization.renameColor, equals(const Color(0xFFFFFFF8)));
         expect(newCustomization.lockColor, equals(const Color(0xFFFFFFF7)));
+        expect(newCustomization.exportColor, equals(const Color(0xFFFFFFF7)));
         expect(newCustomization.tileIconColor, equals(const Color(0xFFFFFFF6)));
         expect(newCustomization.navigationBarColor, equals(const Color(0xFFFFFFF5)));
         expect(newCustomization.actionButtonsForegroundColor, equals(const Color(0xFFFFFFF4)));
@@ -236,6 +244,7 @@ void _testThemeCustomization() {
         expect(json['deleteColor'], equals(0xFF000006));
         expect(json['renameColor'], equals(0xFF000007));
         expect(json['lockColor'], equals(0xFF000008));
+        expect(json['exportColor'], equals(0xFF000009));
         expect(json['tileIconColor'], equals(0xFF000009));
         expect(json['navigationBarColor'], equals(0xFF00000A));
         expect(json['_actionButtonsForegroundColor'], equals(0xFF00000B));
