@@ -24,6 +24,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../../../../utils/view_utils.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/enums/day_password_token_view_mode.dart';
 import '../../../../../model/riverpod_states/settings_state.dart';
@@ -75,12 +76,7 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
 
     ref.read(disableCopyOtpProvider.notifier).state = true;
     Clipboard.setData(ClipboardData(text: widget.token.otpValue));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        behavior: SnackBarBehavior.floating,
-        content: Text(AppLocalizations.of(context)!.otpValueCopiedMessage(widget.token.otpValue)),
-      ),
-    );
+    showSnackBar(AppLocalizations.of(context)!.otpValueCopiedMessage(widget.token.otpValue));
     Future.delayed(const Duration(seconds: 5), () {
       ref.read(disableCopyOtpProvider.notifier).state = false;
     });

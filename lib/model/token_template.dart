@@ -23,11 +23,11 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:privacyidea_authenticator/model/enums/token_origin_source_type.dart';
-import 'package:privacyidea_authenticator/model/token_container.dart';
-import 'package:privacyidea_authenticator/model/tokens/otp_token.dart';
-import 'package:privacyidea_authenticator/utils/identifiers.dart';
 
+import '../../../../../../../model/enums/token_origin_source_type.dart';
+import '../../../../../../../model/token_container.dart';
+import '../../../../../../../model/tokens/otp_token.dart';
+import '../../../../../../../utils/identifiers.dart';
 import '../utils/object_validator.dart';
 import 'token_import/token_origin_data.dart';
 import 'tokens/token.dart';

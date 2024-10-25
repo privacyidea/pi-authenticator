@@ -29,13 +29,13 @@ import 'package:http/http.dart';
 import 'package:image/image.dart' as img;
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:privacyidea_authenticator/mains/main_netknights.dart';
-import 'package:privacyidea_authenticator/model/extensions/sortable_list.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/sortable_notifier.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/loading_indicator.dart';
 import 'package:zxing2/qrcode.dart';
 
+import '../../../../../../../mains/main_netknights.dart';
+import '../../../../../../../model/extensions/sortable_list.dart';
+import '../../../../../../../utils/logger.dart';
+import '../../../../../../../utils/riverpod/riverpod_providers/generated_providers/sortable_notifier.dart';
+import '../../../../../../../views/main_view/main_view_widgets/loading_indicator.dart';
 import '../model/enums/token_origin_source_type.dart';
 import '../model/mixins/sortable_mixin.dart';
 import '../model/processor_result.dart';
@@ -219,7 +219,7 @@ Future<void> scanQrCode({BuildContext? context, required List<ResultHandler> res
       _ => throw ArgumentError('Invalid type for qrCode: $qrCode'),
     };
   } catch (e) {
-    showMessage(message: 'The scanned QR code is not a valid URI.', duration: const Duration(seconds: 3));
+    showStatusMessage(message: 'The scanned QR code is not a valid URI.');
     Logger.warning('Scanned Data: $qrCode');
     return;
   }

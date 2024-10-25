@@ -22,11 +22,11 @@
 
 import 'package:basic_utils/basic_utils.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/ec_key_algorithm_extension.dart';
-import 'package:privacyidea_authenticator/model/tokens/token.dart';
-import 'package:privacyidea_authenticator/utils/identifiers.dart';
 
+import '../../../../../../../model/enums/algorithms.dart';
+import '../../../../../../../model/extensions/enums/ec_key_algorithm_extension.dart';
+import '../../../../../../../model/tokens/token.dart';
+import '../../../../../../../utils/identifiers.dart';
 import '../utils/ecc_utils.dart';
 import '../utils/logger.dart';
 import '../utils/object_validator.dart';

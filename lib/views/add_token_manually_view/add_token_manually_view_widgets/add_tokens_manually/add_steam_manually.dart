@@ -19,9 +19,9 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/token_origin_source_type.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../../../../../model/extensions/enums/token_origin_source_type.dart';
 import '../../../../model/enums/algorithms.dart';
 import '../../../../model/enums/duration_unit.dart';
 import '../../../../model/enums/encodings.dart';

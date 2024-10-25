@@ -22,19 +22,18 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_core/firebase_core.dart' show FirebaseException;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'package:mutex/mutex.dart';
 import 'package:pointycastle/asymmetric/api.dart';
-import 'package:privacyidea_authenticator/interfaces/repo/token_repository.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/push_token_rollout_state_extension.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/token_origin_source_type.dart';
-import 'package:privacyidea_authenticator/repo/secure_token_repository.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../../../model/extensions/enums/push_token_rollout_state_extension.dart';
+import '../../../../../../model/extensions/enums/token_origin_source_type.dart';
+import '../../../../interfaces/repo/token_repository.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../model/enums/push_token_rollout_state.dart';
 import '../../../../model/enums/token_import_type.dart';
@@ -46,6 +45,7 @@ import '../../../../model/tokens/otp_token.dart';
 import '../../../../model/tokens/push_token.dart';
 import '../../../../model/tokens/token.dart';
 import '../../../../processors/scheme_processors/token_import_scheme_processors/token_import_scheme_processor_interface.dart';
+import '../../../../repo/secure_token_repository.dart';
 import '../../../../views/import_tokens_view/pages/import_plain_tokens_page.dart';
 import '../../../firebase_utils.dart';
 import '../../../globals.dart';
@@ -615,9 +615,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
             return false;
           }
         } on FormatException catch (e, s) {
-          showMessage(message: "Couldn't parsing RSA public key: ${e.message}", duration: const Duration(seconds: 3));
-
-          Logger.warning('Error while parsing RSA public key.', error: e, stackTrace: s);
+          Logger.error('Error while parsing RSA public key.', error: e, stackTrace: s);
           if (pushToken == null) {
             Logger.warning('Tried to update a token that does not exist.');
             return false;
@@ -666,22 +664,13 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       }
       if (e is PlatformException && e.code == FIREBASE_TOKEN_ERROR_CODE || e is SocketException || e is TimeoutException || e is FirebaseException) {
         Logger.warning('Connection error: Roll out push token failed.', error: e, stackTrace: s);
-        showMessage(
-          message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutNoConnectionToServer(pushToken.label),
-          duration: const Duration(seconds: 3),
-        );
+        showSnackBar(AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutNoConnectionToServer(pushToken.label));
       } else if (e is HandshakeException) {
         Logger.warning('SSL error: Roll out push token failed.', error: e, stackTrace: s);
-        showMessage(
-          message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutSSLHandshakeFailed,
-          duration: const Duration(seconds: 3),
-        );
+        showSnackBar(AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutSSLHandshakeFailed);
       } else {
         if (globalNavigatorKey.currentContext != null) {
-          showMessage(
-            message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutUnknownError(e),
-            duration: const Duration(seconds: 3),
-          );
+          showSnackBar(AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutUnknownError(e));
         }
         Logger.error('Roll out push token failed.', error: e, stackTrace: s);
       }

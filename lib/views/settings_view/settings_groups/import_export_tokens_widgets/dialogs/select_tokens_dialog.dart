@@ -19,8 +19,8 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/model/extensions/token_folder_extension.dart';
 
+import '../../../../../../../model/extensions/token_folder_extension.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/token.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/app_constraints_notifier.dart';

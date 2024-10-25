@@ -18,8 +18,8 @@
  * limitations under the License.
  */
 import 'package:json_annotation/json_annotation.dart';
-import 'package:privacyidea_authenticator/model/token_container.dart';
 
+import '../../../../../../../model/token_container.dart';
 import '../enums/token_origin_source_type.dart';
 import '../version.dart';
 

@@ -17,8 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import 'package:privacyidea_authenticator/model/processor_result.dart';
-
+import '../../../../../../../model/processor_result.dart';
 import '../../utils/logger.dart';
 import 'home_widget_processor.dart';
 import 'navigation_scheme_processors/navigation_scheme_processor_interface.dart';

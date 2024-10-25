@@ -24,7 +24,8 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/services.dart';
-import 'package:pi_authenticator_legacy/identifiers.dart';
+
+import 'identifiers.dart';
 
 const String METHOD_CHANNEL_ID = "it.netknights.piauthenticator.legacy";
 const String METHOD_SIGN = "sign";

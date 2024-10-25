@@ -25,8 +25,8 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
 import 'package:http/io_client.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:privacyidea_authenticator/model/pi_server_response.dart';
 
+import '../../../../../../../model/pi_server_response.dart';
 import '../l10n/app_localizations.dart';
 import '../model/api_results/pi_server_results/pi_server_result_value.dart';
 import '../utils/globals.dart';
@@ -117,7 +117,7 @@ class PrivacyideaIOClient {
       response = await ioClient.post(url, body: body).timeout(const Duration(seconds: 15));
     } on HandshakeException catch (e, _) {
       Logger.info('Handshake failed. sslVerify: $sslVerify');
-      showMessage(message: 'Handshake failed, please check the server certificate and try again.');
+      showStatusMessage(message: 'Handshake failed, please check the server certificate and try again.');
       ioClient.close();
       return ResponseBuilder.fromStatusCode(525);
     } on TimeoutException catch (e, _) {

@@ -20,8 +20,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/widgets/button_widgets/cooldown_button.dart';
 
+import '../../../../../../../utils/view_utils.dart';
+import '../../../../../../../widgets/button_widgets/cooldown_button.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/hotp_token.dart';
 import '../../../../../utils/globals.dart';
@@ -46,12 +47,7 @@ class HOTPTokenWidgetTile extends ConsumerWidget {
 
     globalRef?.read(disableCopyOtpProvider.notifier).state = true;
     Clipboard.setData(ClipboardData(text: token.otpValue));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        behavior: SnackBarBehavior.floating,
-        content: Text(AppLocalizations.of(context)!.otpValueCopiedMessage(token.otpValue)),
-      ),
-    );
+    showSnackBar(AppLocalizations.of(context)!.otpValueCopiedMessage(token.otpValue));
     Future.delayed(const Duration(seconds: 5), () {
       globalRef?.read(disableCopyOtpProvider.notifier).state = false;
     });

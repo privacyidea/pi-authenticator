@@ -20,10 +20,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
-import 'package:privacyidea_authenticator/views/container_view/container_view.dart';
 
+import '../../../../../../../l10n/app_localizations.dart';
+import '../../../../../../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
+import '../../../../../../../views/container_view/container_view.dart';
 import '../settings_view_widgets/settings_group.dart';
 
 class SettingsGroupContainer extends ConsumerWidget {

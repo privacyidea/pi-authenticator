@@ -19,9 +19,9 @@
  */
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/views/feedback_view/widgets/feedback_send_row.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../../../../views/feedback_view/widgets/feedback_send_row.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/globals.dart';
 import '../view_interface.dart';

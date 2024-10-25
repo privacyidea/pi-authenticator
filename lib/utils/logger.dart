@@ -37,6 +37,7 @@ import '../utils/app_info_utils.dart';
 import '../utils/pi_mailer.dart';
 import '../views/settings_view/settings_view_widgets/send_error_dialog.dart';
 import 'globals.dart';
+import 'view_utils.dart';
 
 final provider = Provider<int>((ref) => 0);
 
@@ -209,7 +210,7 @@ class Logger {
       _lastError = error.toString().substring(0, min(error.toString().length, 100));
     }
     _logToFile(errorString);
-    _showSnackbar();
+    _showErrorSnackbar();
     StackTrace? stackTraceObject;
     if (stackTrace is StackTrace) {
       stackTraceObject = stackTrace;
@@ -262,16 +263,7 @@ Device Parameters $deviceInfo""";
     final directory = await getApplicationDocumentsDirectory();
     final file = File('${directory.path}/$_filename');
     await file.writeAsString('', mode: FileMode.write);
-    globalSnackbarKey.currentState?.showSnackBar(
-      SnackBar(
-        behavior: SnackBarBehavior.floating,
-        content: Text(
-          _context != null ? AppLocalizations.of(_context!)!.errorLogCleared : 'Error Log Cleared',
-          overflow: TextOverflow.fade,
-          softWrap: false,
-        ),
-      ),
-    );
+    showSnackBar(_context != null ? AppLocalizations.of(_context!)!.errorLogCleared : 'Error Log Cleared');
   }
 
   /*----------- SETUPS -----------*/
@@ -369,7 +361,7 @@ Device Parameters $deviceInfo""";
 
   /*----------- DISPLAY OUTPUTS -----------*/
 
-  void _showSnackbar() {
+  void _showErrorSnackbar() {
     if (_flutterIsRunning == false) return;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       globalSnackbarKey.currentState?.showSnackBar(

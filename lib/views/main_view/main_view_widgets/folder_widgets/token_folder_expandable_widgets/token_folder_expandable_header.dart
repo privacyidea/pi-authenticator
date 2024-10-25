@@ -22,9 +22,9 @@ import 'dart:async';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/utils/default_inkwell.dart';
-import 'package:privacyidea_authenticator/widgets/pi_slidable.dart';
 
+import '../../../../../../../utils/default_inkwell.dart';
+import '../../../../../../../widgets/pi_slidable.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/token_folder.dart';
 import '../../../../../model/tokens/token.dart';

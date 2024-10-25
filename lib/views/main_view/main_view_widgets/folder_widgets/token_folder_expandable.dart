@@ -21,8 +21,8 @@
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/model/tokens/token.dart';
 
+import '../../../../../../../model/tokens/token.dart';
 import '../../../../model/riverpod_states/token_filter.dart';
 import '../../../../model/token_folder.dart';
 import '../../../../utils/globals.dart';

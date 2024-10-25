@@ -21,8 +21,9 @@
 import 'dart:typed_data';
 
 import 'package:basic_utils/basic_utils.dart';
-import 'package:privacyidea_authenticator/model/enums/ec_key_algorithm.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/ec_key_algorithm_extension.dart';
+
+import '../../../../../../../model/enums/ec_key_algorithm.dart';
+import '../../../../../../../model/extensions/enums/ec_key_algorithm_extension.dart';
 
 class EccUtils {
   const EccUtils();

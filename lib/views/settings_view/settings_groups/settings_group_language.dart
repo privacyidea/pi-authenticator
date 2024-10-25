@@ -19,9 +19,9 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.dart';
-import 'package:privacyidea_authenticator/widgets/dialog_widgets/default_dialog.dart';
 
+import '../../../../../../../model/riverpod_states/settings_state.dart';
+import '../../../../../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import '../settings_view_widgets/settings_group.dart';

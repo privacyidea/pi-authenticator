@@ -20,10 +20,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/rollout_state_extension.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/sync_state_extension.dart';
-import 'package:privacyidea_authenticator/widgets/enable_text_edit_after_many_taps.dart';
 
+import '../../../../../../../model/extensions/enums/rollout_state_extension.dart';
+import '../../../../../../../model/extensions/enums/sync_state_extension.dart';
+import '../../../../../../../widgets/enable_text_edit_after_many_taps.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../model/token_container.dart';
 import '../../../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';

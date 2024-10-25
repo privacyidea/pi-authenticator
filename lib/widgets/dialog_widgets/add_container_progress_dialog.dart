@@ -19,9 +19,9 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/rollout_state_extension.dart';
-import 'package:privacyidea_authenticator/model/extensions/token_folder_extension.dart';
 
+import '../../../../../../../model/extensions/enums/rollout_state_extension.dart';
+import '../../../../../../../model/extensions/token_folder_extension.dart';
 import '../../l10n/app_localizations.dart';
 import '../../model/enums/sync_state.dart';
 import '../../model/token_container.dart';

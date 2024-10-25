@@ -21,8 +21,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/token_widget_builder.dart';
 
+import '../../../../../../../views/main_view/main_view_widgets/token_widgets/token_widget_builder.dart';
 import '../../../model/mixins/sortable_mixin.dart';
 import '../../../model/riverpod_states/settings_state.dart';
 import '../../../model/riverpod_states/token_filter.dart';

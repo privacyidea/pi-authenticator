@@ -21,9 +21,9 @@
  */
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pointycastle/asymmetric/api.dart';
-import 'package:privacyidea_authenticator/model/token_template.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../../../../../model/token_template.dart';
 import '../../utils/custom_int_buffer.dart';
 import '../../utils/identifiers.dart';
 import '../../utils/object_validator.dart';

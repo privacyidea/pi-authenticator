@@ -26,6 +26,7 @@ import '../../../../../model/tokens/totp_token.dart';
 import '../../../../../utils/globals.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../../../utils/utils.dart';
+import '../../../../../utils/view_utils.dart';
 import '../../../../../widgets/custom_trailing.dart';
 import '../../../../../widgets/hideable_widget_.dart';
 import '../token_widget_tile.dart';
@@ -47,9 +48,7 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> {
 
     globalRef?.read(disableCopyOtpProvider.notifier).state = true;
     Clipboard.setData(ClipboardData(text: widget.token.otpValue));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(behavior: SnackBarBehavior.floating, content: Text(AppLocalizations.of(context)!.otpValueCopiedMessage(widget.token.otpValue))),
-    );
+    showSnackBar(AppLocalizations.of(context)!.otpValueCopiedMessage(widget.token.otpValue));
     Future.delayed(const Duration(seconds: 5), () => globalRef?.read(disableCopyOtpProvider.notifier).state = false);
   }
 

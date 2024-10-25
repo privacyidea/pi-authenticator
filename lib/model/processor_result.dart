@@ -55,7 +55,7 @@ extension ListProcessorResult<T> on List<ProcessorResult<T>> {
   List<T> getData() {
     final results = toList();
     if (results.isEmpty) {
-      showMessage(message: 'No data found in QR code.', duration: const Duration(seconds: 3));
+      showStatusMessage(message: 'No data found in QR code.');
       Logger.warning('No data found in QR code.');
       return [];
     }
