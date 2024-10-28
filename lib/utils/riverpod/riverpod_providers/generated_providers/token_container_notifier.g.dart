@@ -6,7 +6,7 @@ part of 'token_container_notifier.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$tokenContainerNotifierHash() => r'40d7e6593f060ef97762b0fe3aa3942cfb5b277a';
+String _$tokenContainerNotifierHash() => r'a2040d0fdc2f8fb3264fb5820342a234f2e77045';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -31,12 +31,12 @@ class _SystemHash {
 
 abstract class _$TokenContainerNotifier extends BuildlessAsyncNotifier<TokenContainerState> {
   late final TokenContainerRepository repo;
-  late final PrivacyIdeaContainerApi containerApi;
+  late final TokenContainerApi containerApi;
   late final EccUtils eccUtils;
 
   FutureOr<TokenContainerState> build({
     required TokenContainerRepository repo,
-    required PrivacyIdeaContainerApi containerApi,
+    required TokenContainerApi containerApi,
     required EccUtils eccUtils,
   });
 }
@@ -53,7 +53,7 @@ class TokenContainerNotifierFamily extends Family<AsyncValue<TokenContainerState
   /// See also [TokenContainerNotifier].
   TokenContainerNotifierProvider call({
     required TokenContainerRepository repo,
-    required PrivacyIdeaContainerApi containerApi,
+    required TokenContainerApi containerApi,
     required EccUtils eccUtils,
   }) {
     return TokenContainerNotifierProvider(
@@ -93,7 +93,7 @@ class TokenContainerNotifierProvider extends AsyncNotifierProviderImpl<TokenCont
   /// See also [TokenContainerNotifier].
   TokenContainerNotifierProvider({
     required TokenContainerRepository repo,
-    required PrivacyIdeaContainerApi containerApi,
+    required TokenContainerApi containerApi,
     required EccUtils eccUtils,
   }) : this._internal(
           () => TokenContainerNotifier()
@@ -123,7 +123,7 @@ class TokenContainerNotifierProvider extends AsyncNotifierProviderImpl<TokenCont
   }) : super.internal();
 
   final TokenContainerRepository repo;
-  final PrivacyIdeaContainerApi containerApi;
+  final TokenContainerApi containerApi;
   final EccUtils eccUtils;
 
   @override
@@ -179,12 +179,14 @@ class TokenContainerNotifierProvider extends AsyncNotifierProviderImpl<TokenCont
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin TokenContainerNotifierRef on AsyncNotifierProviderRef<TokenContainerState> {
   /// The parameter `repo` of this provider.
   TokenContainerRepository get repo;
 
   /// The parameter `containerApi` of this provider.
-  PrivacyIdeaContainerApi get containerApi;
+  TokenContainerApi get containerApi;
 
   /// The parameter `eccUtils` of this provider.
   EccUtils get eccUtils;
@@ -196,9 +198,9 @@ class _TokenContainerNotifierProviderElement extends AsyncNotifierProviderElemen
   @override
   TokenContainerRepository get repo => (origin as TokenContainerNotifierProvider).repo;
   @override
-  PrivacyIdeaContainerApi get containerApi => (origin as TokenContainerNotifierProvider).containerApi;
+  TokenContainerApi get containerApi => (origin as TokenContainerNotifierProvider).containerApi;
   @override
   EccUtils get eccUtils => (origin as TokenContainerNotifierProvider).eccUtils;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -24,7 +24,7 @@ import '../../model/token_container.dart';
 import '../../model/tokens/token.dart';
 import '../../utils/ecc_utils.dart';
 
-abstract class ContainerApi {
+abstract class TokenContainerApi {
   Future<Response> finalizeContainer(TokenContainerUnfinalized container, EccUtils eccUtils);
   Future<String> getTransferQrData(TokenContainerFinalized container);
   Future<(List<Token>, List<String>)?> sync(TokenContainerFinalized container, TokenState tokenState);

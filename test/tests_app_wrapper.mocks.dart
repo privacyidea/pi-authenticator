@@ -701,10 +701,10 @@ class MockTokenContainerRepository extends _i1.Mock
       ) as _i13.Future<_i6.TokenContainerState>);
 }
 
-/// A class which mocks [ContainerApi].
+/// A class which mocks [TokenContainerApi].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockContainerApi extends _i1.Mock implements _i22.ContainerApi {
+class MockTokenContainerApi extends _i1.Mock implements _i22.TokenContainerApi {
   @override
   _i13.Future<_i7.Response> finalizeContainer(
     _i21.TokenContainerUnfinalized? container,

@@ -6,7 +6,7 @@ part of 'token_notifier.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$tokenNotifierHash() => r'dad3219c8ac92b3881adfa0c13386f508c30dea9';
+String _$tokenNotifierHash() => r'042e8f25ab54d1822f980797f4bfd4fa3dbb73ec';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -203,6 +203,8 @@ class TokenNotifierProvider
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin TokenNotifierRef on NotifierProviderRef<TokenState> {
   /// The parameter `repo` of this provider.
   TokenRepository get repo;
@@ -234,4 +236,4 @@ class _TokenNotifierProviderElement
       (origin as TokenNotifierProvider).firebaseUtils;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

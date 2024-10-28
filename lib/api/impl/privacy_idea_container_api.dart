@@ -45,9 +45,9 @@ import '../../utils/logger.dart';
 import '../../widgets/dialog_widgets/enter_passphrase_dialog.dart';
 import '../interfaces/container_api.dart';
 
-class PrivacyIdeaContainerApi implements ContainerApi {
+class PiContainerApi implements TokenContainerApi {
   final PrivacyideaIOClient _ioClient;
-  const PrivacyIdeaContainerApi({required PrivacyideaIOClient ioClient}) : _ioClient = ioClient;
+  const PiContainerApi({required PrivacyideaIOClient ioClient}) : _ioClient = ioClient;
 
   // Returns a tuple of updated/new tokens and serials of deleted tokens
   @override
