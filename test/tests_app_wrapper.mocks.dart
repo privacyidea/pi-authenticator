@@ -6,12 +6,13 @@
 import 'dart:async' as _i13;
 import 'dart:typed_data' as _i26;
 
+import 'package:firebase_core/firebase_core.dart' as _i30;
 import 'package:firebase_messaging/firebase_messaging.dart' as _i29;
 import 'package:http/http.dart' as _i7;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i25;
+import 'package:mockito/src/dummies.dart' as _i24;
 import 'package:pointycastle/export.dart' as _i8;
-import 'package:privacyidea_authenticator/api/privacy_idea_container_api.dart'
+import 'package:privacyidea_authenticator/api/interfaces/container_api.dart'
     as _i22;
 import 'package:privacyidea_authenticator/interfaces/repo/introduction_repository.dart'
     as _i17;
@@ -39,15 +40,15 @@ import 'package:privacyidea_authenticator/model/riverpod_states/token_container_
 import 'package:privacyidea_authenticator/model/riverpod_states/token_folder_state.dart'
     as _i3;
 import 'package:privacyidea_authenticator/model/riverpod_states/token_state.dart'
-    as _i23;
+    as _i25;
 import 'package:privacyidea_authenticator/model/token_container.dart' as _i21;
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart' as _i27;
 import 'package:privacyidea_authenticator/model/tokens/token.dart' as _i14;
-import 'package:privacyidea_authenticator/utils/ecc_utils.dart' as _i24;
+import 'package:privacyidea_authenticator/utils/ecc_utils.dart' as _i23;
 import 'package:privacyidea_authenticator/utils/firebase_utils.dart' as _i9;
 import 'package:privacyidea_authenticator/utils/privacyidea_io_client.dart'
     as _i10;
-import 'package:privacyidea_authenticator/utils/push_provider.dart' as _i30;
+import 'package:privacyidea_authenticator/utils/push_provider.dart' as _i31;
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart' as _i11;
 
 // ignore_for_file: type=lint
@@ -700,33 +701,14 @@ class MockTokenContainerRepository extends _i1.Mock
       ) as _i13.Future<_i6.TokenContainerState>);
 }
 
-/// A class which mocks [PrivacyIdeaContainerApi].
+/// A class which mocks [ContainerApi].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockPrivacyIdeaContainerApi extends _i1.Mock
-    implements _i22.PrivacyIdeaContainerApi {
-  @override
-  _i13.Future<(List<_i14.Token>, List<String>)?> sync(
-    _i21.TokenContainerFinalized? container,
-    _i23.TokenState? tokenState,
-  ) =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #sync,
-          [
-            container,
-            tokenState,
-          ],
-        ),
-        returnValue: _i13.Future<(List<_i14.Token>, List<String>)?>.value(),
-        returnValueForMissingStub:
-            _i13.Future<(List<_i14.Token>, List<String>)?>.value(),
-      ) as _i13.Future<(List<_i14.Token>, List<String>)?>);
-
+class MockContainerApi extends _i1.Mock implements _i22.ContainerApi {
   @override
   _i13.Future<_i7.Response> finalizeContainer(
     _i21.TokenContainerUnfinalized? container,
-    _i24.EccUtils? eccUtils,
+    _i23.EccUtils? eccUtils,
   ) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -767,7 +749,7 @@ class MockPrivacyIdeaContainerApi extends _i1.Mock
           #getTransferQrData,
           [container],
         ),
-        returnValue: _i13.Future<String>.value(_i25.dummyValue<String>(
+        returnValue: _i13.Future<String>.value(_i24.dummyValue<String>(
           this,
           Invocation.method(
             #getTransferQrData,
@@ -775,7 +757,7 @@ class MockPrivacyIdeaContainerApi extends _i1.Mock
           ),
         )),
         returnValueForMissingStub:
-            _i13.Future<String>.value(_i25.dummyValue<String>(
+            _i13.Future<String>.value(_i24.dummyValue<String>(
           this,
           Invocation.method(
             #getTransferQrData,
@@ -783,6 +765,24 @@ class MockPrivacyIdeaContainerApi extends _i1.Mock
           ),
         )),
       ) as _i13.Future<String>);
+
+  @override
+  _i13.Future<(List<_i14.Token>, List<String>)?> sync(
+    _i21.TokenContainerFinalized? container,
+    _i25.TokenState? tokenState,
+  ) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #sync,
+          [
+            container,
+            tokenState,
+          ],
+        ),
+        returnValue: _i13.Future<(List<_i14.Token>, List<String>)?>.value(),
+        returnValueForMissingStub:
+            _i13.Future<(List<_i14.Token>, List<String>)?>.value(),
+      ) as _i13.Future<(List<_i14.Token>, List<String>)?>);
 }
 
 /// A class which mocks [PrivacyideaIOClient].
@@ -931,14 +931,14 @@ class MockRsaUtils extends _i1.Mock implements _i11.RsaUtils {
           #serializeRSAPublicKeyPKCS1,
           [publicKey],
         ),
-        returnValue: _i25.dummyValue<String>(
+        returnValue: _i24.dummyValue<String>(
           this,
           Invocation.method(
             #serializeRSAPublicKeyPKCS1,
             [publicKey],
           ),
         ),
-        returnValueForMissingStub: _i25.dummyValue<String>(
+        returnValueForMissingStub: _i24.dummyValue<String>(
           this,
           Invocation.method(
             #serializeRSAPublicKeyPKCS1,
@@ -977,14 +977,14 @@ class MockRsaUtils extends _i1.Mock implements _i11.RsaUtils {
           #serializeRSAPublicKeyPKCS8,
           [key],
         ),
-        returnValue: _i25.dummyValue<String>(
+        returnValue: _i24.dummyValue<String>(
           this,
           Invocation.method(
             #serializeRSAPublicKeyPKCS8,
             [key],
           ),
         ),
-        returnValueForMissingStub: _i25.dummyValue<String>(
+        returnValueForMissingStub: _i24.dummyValue<String>(
           this,
           Invocation.method(
             #serializeRSAPublicKeyPKCS8,
@@ -1000,14 +1000,14 @@ class MockRsaUtils extends _i1.Mock implements _i11.RsaUtils {
           #serializeRSAPrivateKeyPKCS1,
           [key],
         ),
-        returnValue: _i25.dummyValue<String>(
+        returnValue: _i24.dummyValue<String>(
           this,
           Invocation.method(
             #serializeRSAPrivateKeyPKCS1,
             [key],
           ),
         ),
-        returnValueForMissingStub: _i25.dummyValue<String>(
+        returnValueForMissingStub: _i24.dummyValue<String>(
           this,
           Invocation.method(
             #serializeRSAPrivateKeyPKCS1,
@@ -1118,7 +1118,7 @@ class MockRsaUtils extends _i1.Mock implements _i11.RsaUtils {
             dataToSign,
           ],
         ),
-        returnValue: _i25.dummyValue<String>(
+        returnValue: _i24.dummyValue<String>(
           this,
           Invocation.method(
             #createBase32Signature,
@@ -1128,7 +1128,7 @@ class MockRsaUtils extends _i1.Mock implements _i11.RsaUtils {
             ],
           ),
         ),
-        returnValueForMissingStub: _i25.dummyValue<String>(
+        returnValueForMissingStub: _i24.dummyValue<String>(
           this,
           Invocation.method(
             #createBase32Signature,
@@ -1161,7 +1161,7 @@ class MockRsaUtils extends _i1.Mock implements _i11.RsaUtils {
 /// A class which mocks [EccUtils].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockEccUtils extends _i1.Mock implements _i24.EccUtils {
+class MockEccUtils extends _i1.Mock implements _i23.EccUtils {
   @override
   String serializeECPublicKey(_i8.ECPublicKey? publicKey) =>
       (super.noSuchMethod(
@@ -1169,14 +1169,14 @@ class MockEccUtils extends _i1.Mock implements _i24.EccUtils {
           #serializeECPublicKey,
           [publicKey],
         ),
-        returnValue: _i25.dummyValue<String>(
+        returnValue: _i24.dummyValue<String>(
           this,
           Invocation.method(
             #serializeECPublicKey,
             [publicKey],
           ),
         ),
-        returnValueForMissingStub: _i25.dummyValue<String>(
+        returnValueForMissingStub: _i24.dummyValue<String>(
           this,
           Invocation.method(
             #serializeECPublicKey,
@@ -1215,14 +1215,14 @@ class MockEccUtils extends _i1.Mock implements _i24.EccUtils {
           #serializeECPrivateKey,
           [ecPrivateKey],
         ),
-        returnValue: _i25.dummyValue<String>(
+        returnValue: _i24.dummyValue<String>(
           this,
           Invocation.method(
             #serializeECPrivateKey,
             [ecPrivateKey],
           ),
         ),
-        returnValueForMissingStub: _i25.dummyValue<String>(
+        returnValueForMissingStub: _i24.dummyValue<String>(
           this,
           Invocation.method(
             #serializeECPrivateKey,
@@ -1267,7 +1267,7 @@ class MockEccUtils extends _i1.Mock implements _i24.EccUtils {
             message,
           ],
         ),
-        returnValue: _i25.dummyValue<String>(
+        returnValue: _i24.dummyValue<String>(
           this,
           Invocation.method(
             #signWithPrivateKey,
@@ -1277,7 +1277,7 @@ class MockEccUtils extends _i1.Mock implements _i24.EccUtils {
             ],
           ),
         ),
-        returnValueForMissingStub: _i25.dummyValue<String>(
+        returnValueForMissingStub: _i24.dummyValue<String>(
           this,
           Invocation.method(
             #signWithPrivateKey,
@@ -1399,12 +1399,30 @@ class MockFirebaseUtils extends _i1.Mock implements _i9.FirebaseUtils {
         returnValue: _i13.Future<String?>.value(),
         returnValueForMissingStub: _i13.Future<String?>.value(),
       ) as _i13.Future<String?>);
+
+  @override
+  _i13.Future<_i30.FirebaseApp?> initializeApp({
+    required String? name,
+    required _i30.FirebaseOptions? options,
+  }) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #initializeApp,
+          [],
+          {
+            #name: name,
+            #options: options,
+          },
+        ),
+        returnValue: _i13.Future<_i30.FirebaseApp?>.value(),
+        returnValueForMissingStub: _i13.Future<_i30.FirebaseApp?>.value(),
+      ) as _i13.Future<_i30.FirebaseApp?>);
 }
 
 /// A class which mocks [PushProvider].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockPushProvider extends _i1.Mock implements _i30.PushProvider {
+class MockPushProvider extends _i1.Mock implements _i31.PushProvider {
   @override
   bool get pollingIsEnabled => (super.noSuchMethod(
         Invocation.getter(#pollingIsEnabled),

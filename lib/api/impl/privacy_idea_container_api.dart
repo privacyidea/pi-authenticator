@@ -25,30 +25,32 @@ import 'package:collection/collection.dart';
 import 'package:cryptography/cryptography.dart';
 import 'package:http/http.dart';
 
-import '../../../../../../../l10n/app_localizations_en.dart';
-import '../../../../../../../model/extensions/token_folder_extension.dart';
-import '../../../../../../../processors/scheme_processors/token_import_scheme_processors/otp_auth_processor.dart';
-import '../../../../../../../utils/ecc_utils.dart';
-import '../../../../../../../utils/privacyidea_io_client.dart';
-import '../model/api_results/pi_server_results/pi_server_result_value.dart';
-import '../model/exception_errors/localized_exception.dart';
-import '../model/exception_errors/response_error.dart';
-import '../model/pi_server_response.dart';
-import '../model/riverpod_states/token_state.dart';
-import '../model/token_container.dart';
-import '../model/token_template.dart';
-import '../model/tokens/token.dart';
-import '../utils/app_info_utils.dart';
-import '../utils/globals.dart';
-import '../utils/identifiers.dart';
-import '../utils/logger.dart';
-import '../widgets/dialog_widgets/enter_passphrase_dialog.dart';
+import '../../../../../../../../l10n/app_localizations_en.dart';
+import '../../../../../../../../model/extensions/token_folder_extension.dart';
+import '../../../../../../../../processors/scheme_processors/token_import_scheme_processors/otp_auth_processor.dart';
+import '../../../../../../../../utils/ecc_utils.dart';
+import '../../../../../../../../utils/privacyidea_io_client.dart';
+import '../../model/api_results/pi_server_results/pi_server_result_value.dart';
+import '../../model/exception_errors/localized_exception.dart';
+import '../../model/exception_errors/response_error.dart';
+import '../../model/pi_server_response.dart';
+import '../../model/riverpod_states/token_state.dart';
+import '../../model/token_container.dart';
+import '../../model/token_template.dart';
+import '../../model/tokens/token.dart';
+import '../../utils/app_info_utils.dart';
+import '../../utils/globals.dart';
+import '../../utils/identifiers.dart';
+import '../../utils/logger.dart';
+import '../../widgets/dialog_widgets/enter_passphrase_dialog.dart';
+import '../interfaces/container_api.dart';
 
-class PrivacyIdeaContainerApi {
+class PrivacyIdeaContainerApi implements ContainerApi {
   final PrivacyideaIOClient _ioClient;
   const PrivacyIdeaContainerApi({required PrivacyideaIOClient ioClient}) : _ioClient = ioClient;
 
   // Returns a tuple of updated/new tokens and serials of deleted tokens
+  @override
   Future<(List<Token>, List<String>)?> sync(TokenContainerFinalized container, TokenState tokenState) async {
     final containerTokenTemplates = tokenState.containerTokens(container.serial).toTemplates();
     final maybePiTokensTemplates = tokenState.maybePiTokens.toTemplates();
@@ -105,6 +107,7 @@ class PrivacyIdeaContainerApi {
     return ([...updatedTokens, ...newTokens], deleteSerials);
   }
 
+  @override
   Future<Response> finalizeContainer(TokenContainerUnfinalized container, EccUtils eccUtils) async {
     final ecPrivateClientKey = container.ecPrivateClientKey;
     if (ecPrivateClientKey == null) {
@@ -281,6 +284,7 @@ class PrivacyIdeaContainerApi {
     return (mergedTemplatesWithSerial, deleteSerials);
   }
 
+  @override
   Future<String> getTransferQrData(TokenContainerFinalized container) async {
     final requestUrl = container.transferUrl;
     final challenge = await _getChallenge(container, requestUrl);
