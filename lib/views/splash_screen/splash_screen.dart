@@ -70,7 +70,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
           _navigate();
         },
       ).catchError((error) async {
-        Logger.error('Error while loading the app.');
+        Logger.error('Error while loading the app.', error: error, stackTrace: StackTrace.current);
 
         if (!mounted) return [];
         final tokenState = ref.read(tokenProvider);

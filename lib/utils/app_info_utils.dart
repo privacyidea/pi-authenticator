@@ -39,7 +39,6 @@ class AppInfoUtils {
     _appBuildNumber = packageInfo.buildNumber;
     _androidInfo = !kIsWeb && Platform.isAndroid ? await _deviceInfo.androidInfo : null;
     _iosInfo = !kIsWeb && Platform.isIOS ? await _deviceInfo.iosInfo : null;
-    _deviceId = !kIsWeb ? (Platform.isAndroid ? _androidInfo!.id : _iosInfo!.identifierForVendor ?? 'N/A') : 'Web: Not available.';
 
     isInitialized = true;
   }
@@ -58,9 +57,6 @@ class AppInfoUtils {
 
   static String get currentBuildNumber => isInitialized ? _appBuildNumber : throw Exception('AppInfoUtils not initialized');
   static late final String _appBuildNumber;
-
-  static String get deviceId => isInitialized ? _deviceId : throw Exception('AppInfoUtils not initialized');
-  static late final String _deviceId;
 
   static String get dartVersion => Platform.version;
   static String get platform => Platform.operatingSystem;

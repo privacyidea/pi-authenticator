@@ -38,7 +38,6 @@ import '../../model/riverpod_states/token_state.dart';
 import '../../model/token_container.dart';
 import '../../model/token_template.dart';
 import '../../model/tokens/token.dart';
-import '../../utils/app_info_utils.dart';
 import '../../utils/globals.dart';
 import '../../utils/identifiers.dart';
 import '../../utils/logger.dart';
@@ -119,7 +118,6 @@ class PiContainerApi implements TokenContainerApi {
         '|${container.timestamp.toIso8601String().replaceFirst('Z', '+00:00')}'
         '|${container.serial}'
         '|${container.registrationUrl}'
-        '|${AppInfoUtils.deviceId}'
         '${passphrase != null ? '|$passphrase' : ''}';
 
     final signature = eccUtils.signWithPrivateKey(ecPrivateClientKey, message);
@@ -127,7 +125,6 @@ class PiContainerApi implements TokenContainerApi {
     final body = {
       CONTAINER_CONTAINER_SERIAL: container.serial,
       CONTAINER_PUBLIC_CLIENT_KEY: container.publicClientKey,
-      CONTAINER_DEVICE_ID: AppInfoUtils.deviceId,
       CONTAINER_CHAL_SIGNATURE: signature,
     };
     return await _ioClient.doPost(url: container.registrationUrl, body: body, sslVerify: container.sslVerify);
