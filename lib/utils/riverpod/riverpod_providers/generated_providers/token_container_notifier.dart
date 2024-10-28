@@ -34,7 +34,8 @@ import '../../../../../../../utils/privacyidea_io_client.dart';
 import '../../../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../../../../../utils/riverpod/riverpod_providers/state_providers/status_message_provider.dart';
 import '../../../../../../../utils/view_utils.dart';
-import '../../../../api/privacy_idea_container_api.dart';
+import '../../../../api/impl/privacy_idea_container_api.dart';
+import '../../../../api/interfaces/container_api.dart';
 import '../../../../interfaces/repo/token_container_repository.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../model/api_results/pi_server_results/pi_server_result_value.dart';
@@ -67,7 +68,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
 
   TokenContainerNotifier({
     TokenContainerRepository? repoOverride,
-    PrivacyIdeaContainerApi? containerApiOverride,
+    ContainerApi? containerApiOverride,
     EccUtils? eccUtilsOverride,
   })  : _repoOverride = repoOverride,
         _containerApiOverride = containerApiOverride,

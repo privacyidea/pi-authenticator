@@ -14,7 +14,8 @@ TokenFolder _$TokenFolderFromJson(Map<String, dynamic> json) => TokenFolder(
       sortIndex: (json['sortIndex'] as num?)?.toInt(),
     );
 
-Map<String, dynamic> _$TokenFolderToJson(TokenFolder instance) => <String, dynamic>{
+Map<String, dynamic> _$TokenFolderToJson(TokenFolder instance) =>
+    <String, dynamic>{
       'label': instance.label,
       'folderId': instance.folderId,
       'isExpanded': instance.isExpanded,

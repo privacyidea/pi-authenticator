@@ -23,6 +23,7 @@ import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mutex/mutex.dart';
@@ -33,11 +34,12 @@ import 'logger.dart';
 
 class FirebaseUtils {
   static FirebaseUtils? _instance;
-  bool _initialized = false;
+  bool _initializedHandler = false;
 
   FirebaseUtils._();
 
   factory FirebaseUtils() {
+    if (kIsWeb) _instance ??= FirebaseUtilsWeb();
     _instance ??= FirebaseUtils._();
     return _instance!;
   }
@@ -47,10 +49,10 @@ class FirebaseUtils {
     required Future<void> Function(RemoteMessage) backgroundHandler,
     required dynamic Function(String?) updateFirebaseToken,
   }) async {
-    if (_initialized) {
+    if (_initializedHandler) {
       return;
     }
-    _initialized = true;
+    _initializedHandler = true;
     Logger.info('Initializing Firebase');
 
     // try {
@@ -209,4 +211,41 @@ class FirebaseUtils {
         return _storage.write(key: _NEW_APP_TOKEN_KEY, value: str);
       });
   Future<String?> getNewFirebaseToken() => _protect(() => _storage.read(key: _NEW_APP_TOKEN_KEY));
+
+  Future<FirebaseApp?> initializeApp({required String name, required FirebaseOptions options}) => Firebase.initializeApp(name: name, options: options);
+}
+
+/// This class just is used to disable Firebase for web builds.
+class FirebaseUtilsWeb implements FirebaseUtils {
+  @override
+  bool _initializedHandler = false;
+
+  @override
+  Future<String?> getFBToken() => Future.value(_currentFbToken);
+
+  @override
+  Future<void> initFirebase({
+    required Future<void> Function(RemoteMessage p1) foregroundHandler,
+    required Future<void> Function(RemoteMessage p1) backgroundHandler,
+    required void Function(String? p1) updateFirebaseToken,
+  }) async {}
+
+  @override
+  Future<bool> deleteFirebaseToken() => Future.value(true);
+
+  static String _currentFbToken = 'currentFbToken';
+  static String _newFbToken = 'newFbToken';
+
+  @override
+  Future<void> setCurrentFirebaseToken(String str) async => _currentFbToken = str;
+  @override
+  Future<String?> getCurrentFirebaseToken() => Future.value(_currentFbToken);
+
+  @override
+  Future<void> setNewFirebaseToken(String str) async => _newFbToken = str;
+  @override
+  Future<String?> getNewFirebaseToken() => Future.value(_newFbToken);
+
+  @override
+  Future<FirebaseApp?> initializeApp({required String name, required FirebaseOptions options}) async => null;
 }

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
-import 'package:privacyidea_authenticator/api/privacy_idea_container_api.dart';
+import 'package:privacyidea_authenticator/api/interfaces/container_api.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/introduction_repository.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/push_request_repository.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/settings_repository.dart';
@@ -23,7 +23,7 @@ import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
   MockSpec<IntroductionRepository>(),
   MockSpec<PushRequestRepository>(),
   MockSpec<TokenContainerRepository>(),
-  MockSpec<PrivacyIdeaContainerApi>(),
+  MockSpec<ContainerApi>(),
   MockSpec<PrivacyideaIOClient>(),
   MockSpec<RsaUtils>(),
   MockSpec<EccUtils>(),
