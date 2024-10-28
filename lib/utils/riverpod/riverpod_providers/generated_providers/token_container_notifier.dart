@@ -23,10 +23,10 @@ import 'package:basic_utils/basic_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:http/http.dart';
 import 'package:mutex/mutex.dart';
+import 'package:privacyidea_authenticator/model/extensions/enums/rollout_state_extension.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../../../../model/exception_errors/pi_server_result_error.dart';
-import '../../../../../../../model/extensions/enums/rollout_state_extension.dart';
 import '../../../../../../../model/processor_result.dart';
 import '../../../../../../../model/tokens/token.dart';
 import '../../../../../../../utils/globals.dart';
@@ -57,7 +57,7 @@ part 'token_container_notifier.g.dart';
 
 final tokenContainerProvider = tokenContainerNotifierProviderOf(
   repo: SecureTokenContainerRepository(),
-  containerApi: const PrivacyIdeaContainerApi(ioClient: PrivacyideaIOClient()),
+  containerApi: const PiContainerApi(ioClient: PrivacyideaIOClient()),
   eccUtils: const EccUtils(),
 );
 
@@ -68,7 +68,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
 
   TokenContainerNotifier({
     TokenContainerRepository? repoOverride,
-    ContainerApi? containerApiOverride,
+    TokenContainerApi? containerApiOverride,
     EccUtils? eccUtilsOverride,
   })  : _repoOverride = repoOverride,
         _containerApiOverride = containerApiOverride,
@@ -80,9 +80,9 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
   final TokenContainerRepository? _repoOverride;
 
   @override
-  PrivacyIdeaContainerApi get containerApi => _containerApi;
-  late PrivacyIdeaContainerApi _containerApi;
-  final PrivacyIdeaContainerApi? _containerApiOverride;
+  TokenContainerApi get containerApi => _containerApi;
+  late TokenContainerApi _containerApi;
+  final TokenContainerApi? _containerApiOverride;
 
   @override
   EccUtils get eccUtils => _eccUtils;
@@ -92,7 +92,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
   @override
   Future<TokenContainerState> build({
     required TokenContainerRepository repo,
-    required PrivacyIdeaContainerApi containerApi,
+    required TokenContainerApi containerApi,
     required EccUtils eccUtils,
   }) async {
     await _stateMutex.acquire();

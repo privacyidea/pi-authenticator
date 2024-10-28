@@ -8,6 +8,7 @@ import 'package:privacyidea_authenticator/model/enums/ec_key_algorithm.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/token_container_state.dart';
 import 'package:privacyidea_authenticator/model/token_container.dart';
 import 'package:privacyidea_authenticator/utils/ecc_utils.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 
 import '../../tests_app_wrapper.mocks.dart';
 
@@ -36,7 +37,7 @@ void _testTokenContainerNotifier() {
       final container = ProviderContainer();
       var repoState = _getBaseState();
       final mockRepo = MockTokenContainerRepository();
-      final mockContainerApi = MockPrivacyIdeaContainerApi();
+      final mockContainerApi = MockTokenContainerApi();
       when(mockContainerApi.finalizeContainer(any, any)).thenAnswer((_) async => Response('{}', 404));
       when(mockRepo.loadContainerState()).thenAnswer((_) => Future.value(repoState));
       when(mockRepo.saveContainer(any)).thenAnswer((invocation) {
@@ -77,7 +78,7 @@ void _testTokenContainerNotifier() {
       final container = ProviderContainer();
       var repoState = _getBaseState();
       final mockRepo = MockTokenContainerRepository();
-      final mockContainerApi = MockPrivacyIdeaContainerApi();
+      final mockContainerApi = MockTokenContainerApi();
       when(mockContainerApi.finalizeContainer(any, any)).thenAnswer((_) async => Response('{}', 404));
       when(mockRepo.loadContainerState()).thenAnswer((_) => Future.value(repoState));
       when(mockRepo.saveContainer(any)).thenAnswer((invocation) {
@@ -126,7 +127,7 @@ void _testTokenContainerNotifier() {
       final container = ProviderContainer();
       var repoState = _getBaseState();
       final mockRepo = MockTokenContainerRepository();
-      final mockContainerApi = MockPrivacyIdeaContainerApi();
+      final mockContainerApi = MockTokenContainerApi();
       when(mockContainerApi.finalizeContainer(any, any)).thenAnswer((_) async => Response('{}', 404));
       when(mockRepo.loadContainerState()).thenAnswer((_) => Future.value(repoState));
       when(mockRepo.saveContainer(any)).thenAnswer((invocation) {
@@ -190,7 +191,7 @@ void _testTokenContainerNotifier() {
       final container = ProviderContainer();
       var repoState = _getBaseState();
       final mockRepo = MockTokenContainerRepository();
-      final mockContainerApi = MockPrivacyIdeaContainerApi();
+      final mockContainerApi = MockTokenContainerApi();
       when(mockContainerApi.finalizeContainer(any, any)).thenAnswer((_) async => Response('{}', 404));
       when(mockRepo.loadContainerState()).thenAnswer((_) => Future.value(repoState));
       when(mockRepo.saveContainer(any)).thenAnswer((invocation) {
@@ -246,7 +247,7 @@ void _testTokenContainerNotifier() {
         ],
       );
       final mockRepo = MockTokenContainerRepository();
-      final mockContainerApi = MockPrivacyIdeaContainerApi();
+      final mockContainerApi = MockTokenContainerApi();
       when(mockContainerApi.finalizeContainer(any, any)).thenAnswer((_) async => Response('{}', 404));
       when(mockRepo.loadContainerState()).thenAnswer((_) => Future.value(repoState));
       when(mockRepo.saveContainer(any)).thenAnswer((invocation) {
@@ -298,7 +299,7 @@ void _testTokenContainerNotifier() {
       final container = ProviderContainer();
       var repoState = _getBaseState();
       final mockRepo = MockTokenContainerRepository();
-      final mockContainerApi = MockPrivacyIdeaContainerApi();
+      final mockContainerApi = MockTokenContainerApi();
       when(mockContainerApi.finalizeContainer(any, any)).thenAnswer((_) async => Response('{}', 404));
       when(mockRepo.loadContainerState()).thenAnswer((_) => Future.value(repoState));
       when(mockRepo.saveContainer(any)).thenAnswer((invocation) {
@@ -368,7 +369,7 @@ void _testTokenContainerNotifier() {
         ],
       );
       final mockRepo = MockTokenContainerRepository();
-      final mockContainerApi = MockPrivacyIdeaContainerApi();
+      final mockContainerApi = MockTokenContainerApi();
       when(mockContainerApi.finalizeContainer(any, any)).thenAnswer((_) async => Response('{}', 404));
       when(mockRepo.loadContainerState()).thenAnswer((_) => Future.value(repoState));
       when(mockRepo.saveContainer(any)).thenAnswer((invocation) {
@@ -404,7 +405,7 @@ void _testTokenContainerNotifier() {
       final container = ProviderContainer();
       var repoState = _getBaseState();
       final mockRepo = MockTokenContainerRepository();
-      final mockContainerApi = MockPrivacyIdeaContainerApi();
+      final mockContainerApi = MockTokenContainerApi();
       when(mockContainerApi.finalizeContainer(any, any)).thenAnswer((_) async => Response('{}', 404));
       when(mockRepo.loadContainerState()).thenAnswer((_) => Future.value(repoState));
       when(mockRepo.saveContainer(any)).thenAnswer((invocation) {
@@ -438,7 +439,7 @@ void _testTokenContainerNotifier() {
       final container = ProviderContainer();
       var repoState = _getBaseState();
       final mockRepo = MockTokenContainerRepository();
-      final mockContainerApi = MockPrivacyIdeaContainerApi();
+      final mockContainerApi = MockTokenContainerApi();
       when(mockContainerApi.finalizeContainer(any, any)).thenAnswer((_) async => Response('{}', 404));
       when(mockRepo.loadContainerState()).thenAnswer((_) => Future.value(repoState));
       when(mockRepo.saveContainer(any)).thenAnswer((invocation) {
@@ -472,7 +473,7 @@ void _testTokenContainerNotifier() {
       final container = ProviderContainer();
       var repoState = _getBaseState();
       final mockRepo = MockTokenContainerRepository();
-      final mockContainerApi = MockPrivacyIdeaContainerApi();
+      final mockContainerApi = MockTokenContainerApi();
       when(mockContainerApi.finalizeContainer(any, any)).thenAnswer((_) async => Response('{}', 404));
       when(mockRepo.loadContainerState()).thenAnswer((_) => Future.value(repoState));
       when(mockRepo.saveContainer(any)).thenAnswer((invocation) {
@@ -506,7 +507,7 @@ void _testTokenContainerNotifier() {
       final container = ProviderContainer();
       var repoState = _getBaseState();
       final mockRepo = MockTokenContainerRepository();
-      final mockContainerApi = MockPrivacyIdeaContainerApi();
+      final mockContainerApi = MockTokenContainerApi();
       when(mockContainerApi.finalizeContainer(any, any)).thenAnswer((_) async => Response('{}', 404));
       when(mockRepo.loadContainerState()).thenAnswer((_) => Future.value(repoState));
       when(mockRepo.saveContainer(any)).thenAnswer((invocation) {
@@ -540,7 +541,7 @@ void _testTokenContainerNotifier() {
       final container = ProviderContainer();
       var repoState = _getBaseState();
       final mockRepo = MockTokenContainerRepository();
-      final mockContainerApi = MockPrivacyIdeaContainerApi();
+      final mockContainerApi = MockTokenContainerApi();
       when(mockContainerApi.finalizeContainer(any, any)).thenAnswer((_) async => Response('{}', 404));
       when(mockRepo.loadContainerState()).thenAnswer((_) => Future.value(repoState));
       when(mockRepo.saveContainer(any)).thenAnswer((invocation) {

@@ -23,7 +23,7 @@ import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
   MockSpec<IntroductionRepository>(),
   MockSpec<PushRequestRepository>(),
   MockSpec<TokenContainerRepository>(),
-  MockSpec<ContainerApi>(),
+  MockSpec<TokenContainerApi>(),
   MockSpec<PrivacyideaIOClient>(),
   MockSpec<RsaUtils>(),
   MockSpec<EccUtils>(),
