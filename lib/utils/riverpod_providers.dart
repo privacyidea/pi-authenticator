@@ -1,6 +1,6 @@
 import 'package:app_links/app_links.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:flutter/rendering.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../l10n/app_localizations.dart';
@@ -35,6 +35,8 @@ import 'riverpod_state_listener.dart';
 /// Otherwise the whole app will rebuild on every state change of the provider
 WidgetRef? globalRef;
 
+Future<void> _handleUri(WidgetRef? ref, Uri uri) async => ref?.read(tokenProvider.notifier).handleLink(uri);
+
 final tokenProvider = StateNotifierProvider<TokenNotifier, TokenState>(
   (ref) {
     Logger.info("New TokenNotifier created");
@@ -46,7 +48,10 @@ final tokenProvider = StateNotifierProvider<TokenNotifier, TokenState>(
         return;
       }
       Logger.info("Received new deeplink", name: 'tokenProvider#deeplinkProvider');
-      newTokenNotifier.handleLink(newLink.uri);
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await Future.delayed(Duration(milliseconds: 500));
+        _handleUri(globalRef, newLink.uri);
+      });
     });
 
     return newTokenNotifier;
@@ -102,7 +107,11 @@ final deeplinkProvider = StateNotifierProvider<DeeplinkNotifier, DeepLink?>(
   (ref) {
     Logger.info("New DeeplinkNotifier created", name: 'deeplinkProvider');
     return DeeplinkNotifier(sources: [
-      DeeplinkSource(name: 'uni_links', stream: AppLinks().uriLinkStream, initialUri: AppLinks().getInitialLink()),
+      DeeplinkSource(
+        name: 'uni_links',
+        stream: AppLinks().uriLinkStream,
+        initialUri: Future.value(null), // We got the initial uri from uni_links in both (initial and incoming) cases
+      ),
       DeeplinkSource(
         name: 'home_widget',
         stream: HomeWidgetUtils().widgetClicked,

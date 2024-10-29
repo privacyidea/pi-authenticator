@@ -63,7 +63,7 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
   @override
   Widget build(BuildContext context) {
     final draggingSortable = ref.watch(draggingSortableProvider);
-    final allSortables = ref.watch(sortableProvider);
+    final allSortables = [...ref.watch(tokenProvider).tokens, ...ref.watch(tokenFolderProvider).folders];
     final allowToRefresh = allSortables.any((element) => element is PushToken);
     bool filterPushTokens = ref.watch(settingsProvider).hidePushTokens && allowToRefresh;
 
@@ -77,7 +77,6 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
       if (element.folderId != null) continue;
       showSortables.add(element);
     }
-
     if ((showSortables.isEmpty)) return const NoTokenScreen();
     return Stack(
       children: [
@@ -144,11 +143,9 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
             ),
           ),
         ),
-          ],
-        );
-
+      ],
+    );
   }
-
 
   ScrollPhysics _getScrollPhysics(bool allowToRefresh) =>
       allowToRefresh ? const AlwaysScrollableScrollPhysics(parent: ClampingScrollPhysics()) : const BouncingScrollPhysics();
