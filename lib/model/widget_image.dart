@@ -21,6 +21,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -69,4 +70,8 @@ class WidgetImage {
 
   factory WidgetImage.fromJson(Map<String, dynamic> json) => _$WidgetImageFromJson(json);
   Map<String, dynamic> toJson() => _$WidgetImageToJson(this);
+
+  XFile? toXFile(String? fileName) {
+    return fileType.buildXFile(imageData, fileName ?? 'image-${DateTime.now().millisecondsSinceEpoch}');
+  }
 }

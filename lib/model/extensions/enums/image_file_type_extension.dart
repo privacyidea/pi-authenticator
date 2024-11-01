@@ -21,6 +21,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../enums/image_file_type.dart';
 
@@ -65,4 +66,11 @@ extension ImageFileTypeX on ImageFileType {
             colorBlendMode: BlendMode.srcOver,
           ),
       };
+
+  String get fileExtension => toString().split('.').last;
+
+  /// Builds an [XFile] from the given [imageData] and [fileName].
+  /// The [fileName] is used as the name of the file.
+  /// The file extension is determined by the [ImageFileType].
+  XFile buildXFile(Uint8List imageData, String fileName) => XFile.fromData(imageData, name: "$fileName.$fileExtension");
 }
