@@ -52,6 +52,16 @@ class WidgetImage {
     required this.imageData,
   });
 
+  @override
+  String toString() {
+    return 'WidgetImage{fileType: $fileType, imageData: $imageData}';
+  }
+
+  @override
+  bool operator ==(Object other) => other is WidgetImage && other.fileType == fileType && other.imageData == imageData;
+  @override
+  int get hashCode => Object.hash(runtimeType, fileType, imageData);
+
   Widget? _widget;
   Widget get getWidget {
     if (_widget != null) return _widget!;
@@ -63,7 +73,7 @@ class WidgetImage {
     try {
       return fileType.buildImageWidget(imageData);
     } catch (e) {
-      Logger.error('File type $fileType is not supported or does not match the image data.');
+      Logger.error('Image is not an ${fileType.fileName}, or the image data is corrupted.', error: e);
       rethrow;
     }
   }
