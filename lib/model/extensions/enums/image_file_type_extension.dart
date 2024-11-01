@@ -69,6 +69,17 @@ extension ImageFileTypeX on ImageFileType {
 
   String get fileExtension => toString().split('.').last;
 
+  String get fileName => switch (this) {
+        ImageFileType.svg => 'Scalable Vector Graphic',
+        ImageFileType.svgz => 'Scalable Vector Graphic (compressed)',
+        ImageFileType.png => 'PNG',
+        ImageFileType.jpg => 'JPEG',
+        ImageFileType.jpeg => 'JPEG',
+        ImageFileType.gif => 'GIF',
+        ImageFileType.bmp => 'Bitmap',
+        ImageFileType.webp => 'WebP',
+      };
+
   /// Builds an [XFile] from the given [imageData] and [fileName].
   /// The [fileName] is used as the name of the file.
   /// The file extension is determined by the [ImageFileType].
