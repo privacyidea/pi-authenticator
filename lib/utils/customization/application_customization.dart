@@ -104,6 +104,33 @@ class ApplicationCustomization {
         disabledFeatures: disabledFeatures ?? this.disabledFeatures,
       );
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ApplicationCustomization &&
+          appName == other.appName &&
+          websiteLink == other.websiteLink &&
+          customFontBytes == other.customFontBytes &&
+          fontFamilyName == other.fontFamilyName &&
+          appIcon == other.appIcon &&
+          appImage == other.appImage &&
+          lightTheme == other.lightTheme &&
+          darkTheme == other.darkTheme &&
+          disabledFeatures == other.disabledFeatures;
+
+  @override
+  int get hashCode => Object.hashAll([
+        appName,
+        websiteLink,
+        customFontBytes,
+        fontFamilyName,
+        appIcon,
+        appImage,
+        lightTheme,
+        darkTheme,
+        disabledFeatures,
+      ]);
+
   Future<ApplicationCustomization> updateFont(Uint8List fontBytes, String fontName) async {
     final newState = ApplicationCustomization(
       appName: appName,
