@@ -33,7 +33,8 @@ class AppConstraintsNotifier extends _$AppConstraintsNotifier {
   }
 
   void update(BoxConstraints constraints) {
-    Logger.info("AppConstraints updated");
+    if (state == constraints) return;
+    Logger.debug("AppConstraints updated");
     state = constraints;
   }
 }
