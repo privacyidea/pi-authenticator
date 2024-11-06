@@ -46,7 +46,7 @@ dependencies:
   fluentui_system_icons: ^1.1.260
   flutter:
     sdk: flutter
-  flutter_local_notifications: ^17.2.4
+  flutter_local_notifications: ^18.0.0
   flutter_localizations:
     sdk: flutter
   flutter_mailer: ^2.1.2
@@ -55,7 +55,7 @@ dependencies:
   flutter_slidable: ^3.1.1
   flutter_svg: ^2.0.10+1
   flutter_zxing: ^1.7.0
-  font_awesome_flutter: ^10.7.0
+  font_awesome_flutter: ^10.8.0
   freezed_annotation: ^2.4.4
   hex: ^0.2.0
   home_widget: ^0.7.0

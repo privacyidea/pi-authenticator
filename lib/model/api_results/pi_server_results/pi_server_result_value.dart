@@ -26,6 +26,7 @@ import 'package:pointycastle/ecc/api.dart';
 
 import '../../../utils/ecc_utils.dart';
 import '../../../utils/identifiers.dart';
+import '../../../utils/logger.dart';
 import '../../../utils/object_validator.dart';
 import '../../encryption/encryption_params.dart';
 import 'pi_server_result.dart';
@@ -35,6 +36,7 @@ sealed class PiServerResultValue extends PiServerResult {
   bool get status => true;
 
   static T fromJsonOfType<T extends PiServerResultValue>(Map<String, dynamic> json) {
+    Logger.debug('PiServerResultValue.fromJsonOfType<$T>');
     return switch (T) {
       const (ContainerChallenge) => ContainerChallenge.fromJson(json) as T,
       const (ContainerFinalizationResponse) => ContainerFinalizationResponse.fromJson(json) as T,
@@ -134,18 +136,20 @@ class ContainerSyncResult extends PiServerResultValue {
 }
 
 class TransferQrData extends PiServerResultValue {
-  static const QR_DATA = 'qrdata';
-
-  final String qrData;
-
-  TransferQrData({required this.qrData});
+  final String description;
+  final String value;
+  TransferQrData(this.description, this.value);
 
   factory TransferQrData.fromJson(Map<String, dynamic> json) {
-    final qrData = validate<String>(
-      value: json[QR_DATA],
-      validator: ObjectValidator<String>(transformer: (base64) => base64Encode(base64Decode(base64 as String))),
-      name: QR_DATA,
+    Logger.debug(jsonEncode(json));
+    final map = validateMap<String>(
+      map: json['container_url'] as Map<String, dynamic>,
+      validators: {
+        'description': const ObjectValidator<String>(),
+        'value': const ObjectValidator<String>(),
+      },
+      name: 'TransferQrData',
     );
-    return TransferQrData(qrData: qrData);
+    return TransferQrData(map['description'] as String, map['value'] as String);
   }
 }

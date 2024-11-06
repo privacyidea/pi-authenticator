@@ -52,7 +52,7 @@ class ContainerWidget extends ConsumerWidget {
               DeleteContainerAction(container: container, key: Key('${container.serial}-DeleteContainerAction')),
               DetailsContainerAction(container: container, key: Key('${container.serial}-EditContainerAction')),
               if (container is TokenContainerFinalized)
-                ExportContainerAction(container: container as TokenContainerFinalized, key: Key('${container.serial}-ExportContainerAction')),
+                TransferContainerAction(container: container as TokenContainerFinalized, key: Key('${container.serial}-TransferContainerAction')),
             ],
             stack: stack,
             child: Padding(

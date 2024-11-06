@@ -28,10 +28,10 @@ import '../../../main_view/main_view_widgets/token_widgets/slideable_action.dart
 import '../../../view_interface.dart';
 import 'export_container_action_dialog.dart';
 
-class ExportContainerAction extends ConsumerSlideableAction {
+class TransferContainerAction extends ConsumerSlideableAction {
   final TokenContainerFinalized container;
 
-  const ExportContainerAction({
+  const TransferContainerAction({
     required this.container,
     super.key,
   });
@@ -43,7 +43,7 @@ class ExportContainerAction extends ConsumerSlideableAction {
   @override
   CustomSlidableAction build(BuildContext context, WidgetRef ref) => CustomSlidableAction(
         onPressed: (BuildContext context) => _showExportContainerDialog(context),
-        backgroundColor: Theme.of(context).extension<ActionTheme>()!.exportColor,
+        backgroundColor: Theme.of(context).extension<ActionTheme>()!.transferColor,
         foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

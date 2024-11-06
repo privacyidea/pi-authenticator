@@ -670,7 +670,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
         showSnackBar(AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutSSLHandshakeFailed);
       } else {
         if (globalNavigatorKey.currentContext != null) {
-          showSnackBar(AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutUnknownError(e));
+          showSnackBar(AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutUnknownError('$e'));
         }
         Logger.error('Roll out push token failed.', error: e, stackTrace: s);
       }

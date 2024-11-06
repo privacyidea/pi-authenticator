@@ -43,11 +43,11 @@ class PatchNotesUtils {
   }
 
   static void showPatchNotesIfNeeded(BuildContext context, Version latestStartedVersion) {
-    if (latestStartedVersion < AppInfoUtils.currentVersion) {
-      Logger.info('Showing patch notes between $latestStartedVersion and ${AppInfoUtils.currentVersion}');
+    if (latestStartedVersion < InfoUtils.currentVersion) {
+      Logger.info('Showing patch notes between $latestStartedVersion and ${InfoUtils.currentVersion}');
       return _showPatchNotes(context: context, latestStartedVersion: latestStartedVersion);
     }
-    Logger.info('No patch notes to show. Latest version: $latestStartedVersion. Current version: ${AppInfoUtils.currentVersion}');
+    Logger.info('No patch notes to show. Latest version: $latestStartedVersion. Current version: ${InfoUtils.currentVersion}');
   }
 
   static void _showPatchNotes({required BuildContext context, required Version latestStartedVersion}) {

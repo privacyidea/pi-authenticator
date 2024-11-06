@@ -21,11 +21,19 @@ mixin _$PiServerResponse<T extends PiServerResultValue> {
   String get jsonrpc => throw _privateConstructorUsedError;
   double get time => throw _privateConstructorUsedError;
   String get version => throw _privateConstructorUsedError;
+  String get versionNumber => throw _privateConstructorUsedError;
   String get signature => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(dynamic detail, int id, String jsonrpc,
-            T resultValue, double time, String version, String signature)
+    required TResult Function(
+            dynamic detail,
+            int id,
+            String jsonrpc,
+            T resultValue,
+            double time,
+            String version,
+            String versionNumber,
+            String signature)
         success,
     required TResult Function(
             dynamic detail,
@@ -34,14 +42,22 @@ mixin _$PiServerResponse<T extends PiServerResultValue> {
             PiServerResultError piServerResultError,
             double time,
             String version,
+            String versionNumber,
             String signature)
         error,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(dynamic detail, int id, String jsonrpc, T resultValue,
-            double time, String version, String signature)?
+    TResult? Function(
+            dynamic detail,
+            int id,
+            String jsonrpc,
+            T resultValue,
+            double time,
+            String version,
+            String versionNumber,
+            String signature)?
         success,
     TResult? Function(
             dynamic detail,
@@ -50,14 +66,22 @@ mixin _$PiServerResponse<T extends PiServerResultValue> {
             PiServerResultError piServerResultError,
             double time,
             String version,
+            String versionNumber,
             String signature)?
         error,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(dynamic detail, int id, String jsonrpc, T resultValue,
-            double time, String version, String signature)?
+    TResult Function(
+            dynamic detail,
+            int id,
+            String jsonrpc,
+            T resultValue,
+            double time,
+            String version,
+            String versionNumber,
+            String signature)?
         success,
     TResult Function(
             dynamic detail,
@@ -66,6 +90,7 @@ mixin _$PiServerResponse<T extends PiServerResultValue> {
             PiServerResultError piServerResultError,
             double time,
             String version,
+            String versionNumber,
             String signature)?
         error,
     required TResult orElse(),
@@ -110,6 +135,7 @@ abstract class $PiServerResponseCopyWith<T extends PiServerResultValue, $Res> {
       String jsonrpc,
       double time,
       String version,
+      String versionNumber,
       String signature});
 }
 
@@ -134,6 +160,7 @@ class _$PiServerResponseCopyWithImpl<T extends PiServerResultValue, $Res,
     Object? jsonrpc = null,
     Object? time = null,
     Object? version = null,
+    Object? versionNumber = null,
     Object? signature = null,
   }) {
     return _then(_value.copyWith(
@@ -156,6 +183,10 @@ class _$PiServerResponseCopyWithImpl<T extends PiServerResultValue, $Res,
       version: null == version
           ? _value.version
           : version // ignore: cast_nullable_to_non_nullable
+              as String,
+      versionNumber: null == versionNumber
+          ? _value.versionNumber
+          : versionNumber // ignore: cast_nullable_to_non_nullable
               as String,
       signature: null == signature
           ? _value.signature
@@ -180,6 +211,7 @@ abstract class _$$PiSuccessResponseImplCopyWith<T extends PiServerResultValue,
       T resultValue,
       double time,
       String version,
+      String versionNumber,
       String signature});
 }
 
@@ -202,6 +234,7 @@ class __$$PiSuccessResponseImplCopyWithImpl<T extends PiServerResultValue, $Res>
     Object? resultValue = null,
     Object? time = null,
     Object? version = null,
+    Object? versionNumber = null,
     Object? signature = null,
   }) {
     return _then(_$PiSuccessResponseImpl<T>(
@@ -229,6 +262,10 @@ class __$$PiSuccessResponseImplCopyWithImpl<T extends PiServerResultValue, $Res>
           ? _value.version
           : version // ignore: cast_nullable_to_non_nullable
               as String,
+      versionNumber: null == versionNumber
+          ? _value.versionNumber
+          : versionNumber // ignore: cast_nullable_to_non_nullable
+              as String,
       signature: null == signature
           ? _value.signature
           : signature // ignore: cast_nullable_to_non_nullable
@@ -248,6 +285,7 @@ class _$PiSuccessResponseImpl<T extends PiServerResultValue>
       required this.resultValue,
       required this.time,
       required this.version,
+      required this.versionNumber,
       required this.signature})
       : super._();
 
@@ -264,11 +302,13 @@ class _$PiSuccessResponseImpl<T extends PiServerResultValue>
   @override
   final String version;
   @override
+  final String versionNumber;
+  @override
   final String signature;
 
   @override
   String toString() {
-    return 'PiServerResponse<$T>.success(detail: $detail, id: $id, jsonrpc: $jsonrpc, resultValue: $resultValue, time: $time, version: $version, signature: $signature)';
+    return 'PiServerResponse<$T>.success(detail: $detail, id: $id, jsonrpc: $jsonrpc, resultValue: $resultValue, time: $time, version: $version, versionNumber: $versionNumber, signature: $signature)';
   }
 
   @override
@@ -283,6 +323,8 @@ class _$PiSuccessResponseImpl<T extends PiServerResultValue>
                 .equals(other.resultValue, resultValue) &&
             (identical(other.time, time) || other.time == time) &&
             (identical(other.version, version) || other.version == version) &&
+            (identical(other.versionNumber, versionNumber) ||
+                other.versionNumber == versionNumber) &&
             (identical(other.signature, signature) ||
                 other.signature == signature));
   }
@@ -296,6 +338,7 @@ class _$PiSuccessResponseImpl<T extends PiServerResultValue>
       const DeepCollectionEquality().hash(resultValue),
       time,
       version,
+      versionNumber,
       signature);
 
   /// Create a copy of PiServerResponse
@@ -311,8 +354,15 @@ class _$PiSuccessResponseImpl<T extends PiServerResultValue>
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(dynamic detail, int id, String jsonrpc,
-            T resultValue, double time, String version, String signature)
+    required TResult Function(
+            dynamic detail,
+            int id,
+            String jsonrpc,
+            T resultValue,
+            double time,
+            String version,
+            String versionNumber,
+            String signature)
         success,
     required TResult Function(
             dynamic detail,
@@ -321,17 +371,26 @@ class _$PiSuccessResponseImpl<T extends PiServerResultValue>
             PiServerResultError piServerResultError,
             double time,
             String version,
+            String versionNumber,
             String signature)
         error,
   }) {
-    return success(detail, id, jsonrpc, resultValue, time, version, signature);
+    return success(detail, id, jsonrpc, resultValue, time, version,
+        versionNumber, signature);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(dynamic detail, int id, String jsonrpc, T resultValue,
-            double time, String version, String signature)?
+    TResult? Function(
+            dynamic detail,
+            int id,
+            String jsonrpc,
+            T resultValue,
+            double time,
+            String version,
+            String versionNumber,
+            String signature)?
         success,
     TResult? Function(
             dynamic detail,
@@ -340,18 +399,26 @@ class _$PiSuccessResponseImpl<T extends PiServerResultValue>
             PiServerResultError piServerResultError,
             double time,
             String version,
+            String versionNumber,
             String signature)?
         error,
   }) {
-    return success?.call(
-        detail, id, jsonrpc, resultValue, time, version, signature);
+    return success?.call(detail, id, jsonrpc, resultValue, time, version,
+        versionNumber, signature);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(dynamic detail, int id, String jsonrpc, T resultValue,
-            double time, String version, String signature)?
+    TResult Function(
+            dynamic detail,
+            int id,
+            String jsonrpc,
+            T resultValue,
+            double time,
+            String version,
+            String versionNumber,
+            String signature)?
         success,
     TResult Function(
             dynamic detail,
@@ -360,13 +427,14 @@ class _$PiSuccessResponseImpl<T extends PiServerResultValue>
             PiServerResultError piServerResultError,
             double time,
             String version,
+            String versionNumber,
             String signature)?
         error,
     required TResult orElse(),
   }) {
     if (success != null) {
-      return success(
-          detail, id, jsonrpc, resultValue, time, version, signature);
+      return success(detail, id, jsonrpc, resultValue, time, version,
+          versionNumber, signature);
     }
     return orElse();
   }
@@ -412,6 +480,7 @@ abstract class PiSuccessResponse<T extends PiServerResultValue>
       required final T resultValue,
       required final double time,
       required final String version,
+      required final String versionNumber,
       required final String signature}) = _$PiSuccessResponseImpl<T>;
   PiSuccessResponse._() : super._();
 
@@ -426,6 +495,8 @@ abstract class PiSuccessResponse<T extends PiServerResultValue>
   double get time;
   @override
   String get version;
+  @override
+  String get versionNumber;
   @override
   String get signature;
 
@@ -452,6 +523,7 @@ abstract class _$$PiErrorResponseImplCopyWith<T extends PiServerResultValue,
       PiServerResultError piServerResultError,
       double time,
       String version,
+      String versionNumber,
       String signature});
 }
 
@@ -474,6 +546,7 @@ class __$$PiErrorResponseImplCopyWithImpl<T extends PiServerResultValue, $Res>
     Object? piServerResultError = null,
     Object? time = null,
     Object? version = null,
+    Object? versionNumber = null,
     Object? signature = null,
   }) {
     return _then(_$PiErrorResponseImpl<T>(
@@ -501,6 +574,10 @@ class __$$PiErrorResponseImplCopyWithImpl<T extends PiServerResultValue, $Res>
           ? _value.version
           : version // ignore: cast_nullable_to_non_nullable
               as String,
+      versionNumber: null == versionNumber
+          ? _value.versionNumber
+          : versionNumber // ignore: cast_nullable_to_non_nullable
+              as String,
       signature: null == signature
           ? _value.signature
           : signature // ignore: cast_nullable_to_non_nullable
@@ -520,6 +597,7 @@ class _$PiErrorResponseImpl<T extends PiServerResultValue>
       required this.piServerResultError,
       required this.time,
       required this.version,
+      required this.versionNumber,
       required this.signature})
       : super._();
 
@@ -538,11 +616,13 @@ class _$PiErrorResponseImpl<T extends PiServerResultValue>
   @override
   final String version;
   @override
+  final String versionNumber;
+  @override
   final String signature;
 
   @override
   String toString() {
-    return 'PiServerResponse<$T>.error(detail: $detail, id: $id, jsonrpc: $jsonrpc, piServerResultError: $piServerResultError, time: $time, version: $version, signature: $signature)';
+    return 'PiServerResponse<$T>.error(detail: $detail, id: $id, jsonrpc: $jsonrpc, piServerResultError: $piServerResultError, time: $time, version: $version, versionNumber: $versionNumber, signature: $signature)';
   }
 
   @override
@@ -557,6 +637,8 @@ class _$PiErrorResponseImpl<T extends PiServerResultValue>
                 other.piServerResultError == piServerResultError) &&
             (identical(other.time, time) || other.time == time) &&
             (identical(other.version, version) || other.version == version) &&
+            (identical(other.versionNumber, versionNumber) ||
+                other.versionNumber == versionNumber) &&
             (identical(other.signature, signature) ||
                 other.signature == signature));
   }
@@ -570,6 +652,7 @@ class _$PiErrorResponseImpl<T extends PiServerResultValue>
       piServerResultError,
       time,
       version,
+      versionNumber,
       signature);
 
   /// Create a copy of PiServerResponse
@@ -584,8 +667,15 @@ class _$PiErrorResponseImpl<T extends PiServerResultValue>
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(dynamic detail, int id, String jsonrpc,
-            T resultValue, double time, String version, String signature)
+    required TResult Function(
+            dynamic detail,
+            int id,
+            String jsonrpc,
+            T resultValue,
+            double time,
+            String version,
+            String versionNumber,
+            String signature)
         success,
     required TResult Function(
             dynamic detail,
@@ -594,18 +684,26 @@ class _$PiErrorResponseImpl<T extends PiServerResultValue>
             PiServerResultError piServerResultError,
             double time,
             String version,
+            String versionNumber,
             String signature)
         error,
   }) {
-    return error(
-        detail, id, jsonrpc, piServerResultError, time, version, signature);
+    return error(detail, id, jsonrpc, piServerResultError, time, version,
+        versionNumber, signature);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(dynamic detail, int id, String jsonrpc, T resultValue,
-            double time, String version, String signature)?
+    TResult? Function(
+            dynamic detail,
+            int id,
+            String jsonrpc,
+            T resultValue,
+            double time,
+            String version,
+            String versionNumber,
+            String signature)?
         success,
     TResult? Function(
             dynamic detail,
@@ -614,18 +712,26 @@ class _$PiErrorResponseImpl<T extends PiServerResultValue>
             PiServerResultError piServerResultError,
             double time,
             String version,
+            String versionNumber,
             String signature)?
         error,
   }) {
-    return error?.call(
-        detail, id, jsonrpc, piServerResultError, time, version, signature);
+    return error?.call(detail, id, jsonrpc, piServerResultError, time, version,
+        versionNumber, signature);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(dynamic detail, int id, String jsonrpc, T resultValue,
-            double time, String version, String signature)?
+    TResult Function(
+            dynamic detail,
+            int id,
+            String jsonrpc,
+            T resultValue,
+            double time,
+            String version,
+            String versionNumber,
+            String signature)?
         success,
     TResult Function(
             dynamic detail,
@@ -634,13 +740,14 @@ class _$PiErrorResponseImpl<T extends PiServerResultValue>
             PiServerResultError piServerResultError,
             double time,
             String version,
+            String versionNumber,
             String signature)?
         error,
     required TResult orElse(),
   }) {
     if (error != null) {
-      return error(
-          detail, id, jsonrpc, piServerResultError, time, version, signature);
+      return error(detail, id, jsonrpc, piServerResultError, time, version,
+          versionNumber, signature);
     }
     return orElse();
   }
@@ -686,6 +793,7 @@ abstract class PiErrorResponse<T extends PiServerResultValue>
       required final PiServerResultError piServerResultError,
       required final double time,
       required final String version,
+      required final String versionNumber,
       required final String signature}) = _$PiErrorResponseImpl<T>;
   PiErrorResponse._() : super._();
 
@@ -702,6 +810,8 @@ abstract class PiErrorResponse<T extends PiServerResultValue>
   double get time;
   @override
   String get version;
+  @override
+  String get versionNumber;
   @override
   String get signature;
 
