@@ -20,6 +20,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
+import 'package:privacyidea_authenticator/utils/view_utils.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../../../model/token_container.dart';
@@ -44,17 +46,53 @@ class DeleteContainerDialog extends ConsumerWidget {
         ),
         ElevatedDeleteButton(
           onPressed: () {
-            Navigator.of(context).pop();
-            ref.read(tokenContainerProvider.notifier).deleteContainer(container);
+            DeleteCorrespondingTokenDialog.showDialog(container).then((v) {
+              if (!context.mounted) return;
+              Navigator.of(context).pop();
+            });
           },
           text: AppLocalizations.of(context)!.delete,
         ),
       ],
     );
   }
+}
 
-  Future<void> _showDeleteConfirmationDialog(BuildContext context, WidgetRef ref) => showDialog(
-        context: context,
-        builder: (context) => DeleteContainerDialog(container),
+class DeleteCorrespondingTokenDialog extends ConsumerWidget {
+  final TokenContainer container;
+
+  const DeleteCorrespondingTokenDialog(this.container, {super.key});
+
+  static Future<void> showDialog(TokenContainer container) => showAsyncDialog(
+        builder: (context) => DeleteCorrespondingTokenDialog(container),
       );
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return DefaultDialog(
+      title: Text(AppLocalizations.of(context)!.deleteContainerDialogTitle(container.serial)),
+      content: Text('Do you want to delete the corresponding token as well?'), // Text(AppLocalizations.of(context)!.deleteCorrespondingTokenDialogContent),
+      hasCloseButton: true,
+      actions: [
+        ElevatedDeleteButton(
+          text: 'Only Container',
+          onPressed: () async {
+            await ref.read(tokenContainerProvider.notifier).deleteContainer(container);
+            if (!context.mounted) return;
+            Navigator.of(context).pop();
+          },
+        ),
+        ElevatedDeleteButton(
+          onPressed: () async {
+            final containerTokens = ref.read(tokenProvider).containerTokens(container.serial);
+            await ref.read(tokenProvider.notifier).removeTokens(containerTokens);
+            await ref.read(tokenContainerProvider.notifier).deleteContainer(container);
+            if (!context.mounted) return;
+            Navigator.of(context).pop();
+          },
+          text: 'Delete both',
+        ),
+      ],
+    );
+  }
 }
