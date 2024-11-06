@@ -505,7 +505,7 @@ class ThemeCustomization {
               deleteColor: deleteColor,
               editColor: renameColor,
               lockColor: lockColor,
-              exportColor: exportColor,
+              transferColor: exportColor,
               foregroundColor: actionButtonsForegroundColor,
             ),
             ExtendedTextTheme(

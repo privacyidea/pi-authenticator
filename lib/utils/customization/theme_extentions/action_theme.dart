@@ -23,13 +23,13 @@ class ActionTheme extends ThemeExtension<ActionTheme> {
   final Color deleteColor;
   final Color editColor;
   final Color lockColor;
-  final Color exportColor;
+  final Color transferColor;
   final Color foregroundColor;
   const ActionTheme({
     required this.deleteColor,
     required this.editColor,
     required this.lockColor,
-    required this.exportColor,
+    required this.transferColor,
     required this.foregroundColor,
   });
 
@@ -38,7 +38,7 @@ class ActionTheme extends ThemeExtension<ActionTheme> {
         deleteColor: Color.lerp(deleteColor, other?.deleteColor, t) ?? deleteColor,
         editColor: Color.lerp(editColor, other?.editColor, t) ?? editColor,
         lockColor: Color.lerp(lockColor, other?.lockColor, t) ?? lockColor,
-        exportColor: Color.lerp(exportColor, other?.exportColor, t) ?? exportColor,
+        transferColor: Color.lerp(transferColor, other?.transferColor, t) ?? transferColor,
         foregroundColor: Color.lerp(foregroundColor, other?.foregroundColor, t) ?? foregroundColor,
       );
 
@@ -47,7 +47,7 @@ class ActionTheme extends ThemeExtension<ActionTheme> {
         deleteColor: deleteColor ?? this.deleteColor,
         editColor: editColor ?? this.editColor,
         lockColor: lockColor ?? this.lockColor,
-        exportColor: exportColor ?? this.exportColor,
+        transferColor: exportColor ?? this.transferColor,
         foregroundColor: foregroundColor ?? this.foregroundColor,
       );
 }

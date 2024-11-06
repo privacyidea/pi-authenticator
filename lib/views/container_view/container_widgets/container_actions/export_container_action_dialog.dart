@@ -20,6 +20,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 
 import '../../../../../../../model/token_container.dart';
 import '../../../../../../../utils/view_utils.dart';
@@ -77,18 +78,19 @@ class _TransferContainerDialogState extends ConsumerState<TransferContainerDialo
     Navigator.of(context).pop();
     showDialog(
       context: context,
-      builder: (_) => TransferQrDialog(qrData: qrData),
+      builder: (_) => TransferQrDialog(qrData: qrData, container: container),
     );
   }
 }
 
-class TransferQrDialog extends StatelessWidget {
+class TransferQrDialog extends ConsumerWidget {
   final String qrData;
+  final TokenContainerFinalized container;
 
-  const TransferQrDialog({super.key, required this.qrData});
+  const TransferQrDialog({super.key, required this.qrData, required this.container});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return DefaultDialog(
       title: Text('Transfer Container'),
       content: Column(
@@ -102,10 +104,119 @@ class TransferQrDialog extends StatelessWidget {
       ),
       actions: [
         TextButton(
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () {
+            Navigator.of(context).pop();
+            showDialog(
+              barrierDismissible: false,
+              useRootNavigator: false,
+              context: context,
+              builder: (_) => DeleteContainerAfterTransferDialog(
+                container: container,
+              ),
+            );
+          },
           child: Text('Close'),
         ),
       ],
     );
+  }
+}
+
+class DeleteContainerAfterTransferDialog extends ConsumerStatefulWidget {
+  final TokenContainerFinalized container;
+
+  const DeleteContainerAfterTransferDialog({
+    super.key,
+    required this.container,
+  });
+
+  @override
+  ConsumerState<DeleteContainerAfterTransferDialog> createState() => _DeleteContainerAfterTransferDialogState();
+}
+
+class _DeleteContainerAfterTransferDialogState extends ConsumerState<DeleteContainerAfterTransferDialog> {
+  bool? isUnlinked;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final tokenState = ref.read(tokenProvider);
+      final failedContainers = await ref.read(tokenContainerProvider.notifier).syncTokens(
+            tokenState,
+            containersToSync: [widget.container],
+            isManually: false,
+          );
+      if (!context.mounted) return;
+      if (failedContainers.keys.contains(3002)) {
+        setState(() => isUnlinked = true);
+      } else {
+        setState(() => isUnlinked = false);
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return switch (isUnlinked) {
+      null => DefaultDialog(
+          title: Text('Transfer Container'),
+          content: Padding(
+            padding: const EdgeInsets.all(16),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 32, maxHeight: 32, minHeight: 32, minWidth: 32),
+              child: CircularProgressIndicator(),
+            ),
+          ),
+        ),
+      true => DefaultDialog(
+          title: Text('Transfer Container'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('The container has been transferred successfully to another device.'),
+              SizedBox(height: 8),
+              Text('Do you want to delete the container and its corrosponding tokens from this device?'),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () => onConfirm(context),
+              child: Text('Remove from this device'),
+            ),
+          ],
+        ),
+      false => DefaultDialog(
+          title: Text('Transfer Container'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text('Transfer aborted.'),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text('Ok'),
+            ),
+          ],
+        ),
+    };
+  }
+
+  void onConfirm(BuildContext context) async {
+    final containerTokens = ref.read(tokenProvider).containerTokens(widget.container.serial);
+    await ref.read(tokenProvider.notifier).removeTokens(containerTokens);
+    await ref.read(tokenContainerProvider.notifier).deleteContainer(widget.container);
+    if (!context.mounted) return;
+    Navigator.of(context).popUntil((route) => route.isFirst);
+    showStatusMessage(message: 'Container and corresponding tokens successfully removed from this device.');
   }
 }

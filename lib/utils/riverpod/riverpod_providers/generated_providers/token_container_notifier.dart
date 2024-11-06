@@ -50,6 +50,7 @@ import '../../../../model/token_container.dart';
 import '../../../../repo/secure_token_container_repository.dart';
 import '../../../../widgets/dialog_widgets/add_container_progress_dialog.dart';
 import '../../../../widgets/dialog_widgets/container_already_exists_dialog.dart';
+import '../../../../widgets/dialog_widgets/push_request_dialog/AddDeviceInfosDialog.dart';
 import '../../../ecc_utils.dart';
 import '../../../logger.dart';
 
@@ -143,7 +144,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
 ////////////////////////// PUBLIC METHODS //////////////////////////
 ///////////////////////////////////////////////////////////////// */
 
-  Future<void> syncTokens(
+  Future<Map<int, TokenContainerFinalized>> syncTokens(
     TokenState tokenState, {
     List<TokenContainerFinalized>? containersToSync,
     required bool isManually,
@@ -166,6 +167,8 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
 
     containersToSync = await updateContainerList(containersToSync, (c) => c.copyWith(syncState: SyncState.syncing));
 
+    final failedContainers = <int, TokenContainerFinalized>{};
+
     for (var finalizedContainer in containersToSync) {
       syncFutures.add(
         Future(() async {
@@ -181,6 +184,9 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
           return syncResult;
         }).catchError((error, stackTrace) async {
           await updateContainer(finalizedContainer, (c) => c.copyWith(syncState: SyncState.failed));
+          if (error is PiServerResultError) {
+            failedContainers.addAll({error.code: finalizedContainer});
+          }
           if (!isManually) return null;
           Logger.debug('Failed to sync container ${error.runtimeType}', error: error, stackTrace: stackTrace);
           showStatusMessage(
@@ -207,6 +213,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
 
     await ref.read(tokenProvider.notifier).addOrReplaceTokens(syncedTokens);
     await ref.read(tokenProvider.notifier).removeTokensBySerials(deletedTokens);
+    return failedContainers;
   }
 
 // ADD CONTAINER
@@ -278,7 +285,12 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     final currentContainers = <T>[];
     Logger.info('Updating ${container.length} containers');
     for (var c in container) {
-      currentContainers.add(oldState.currentOf<T>(c)!);
+      final current = oldState.currentOf<T>(c);
+      if (current == null) {
+        Logger.warning('Failed to update container. It was probably removed in the meantime.');
+        continue;
+      }
+      currentContainers.add(current);
     }
     if (currentContainers.isEmpty) {
       Logger.info('Failed to update containers. They were probably removed in the meantime.');
@@ -335,15 +347,15 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
   @override
   Future handleProcessorResults(List<ProcessorResult> results, Map<String, dynamic> args) async {
     Logger.info('Handling processor results');
-    final containerContainers = results.getData().whereType<TokenContainer>().toList();
-    if (containerContainers.isEmpty) return null;
+    final unfinalizedContainers = results.getData().whereType<TokenContainerUnfinalized>().toList();
+    if (unfinalizedContainers.isEmpty) return null;
     final currentState = await future;
     final stateContainers = currentState.containerList;
     final stateContainersSerials = stateContainers.map((e) => e.serial);
-    final newContainerList = containerContainers.where((element) => !stateContainersSerials.contains(element.serial)).toList();
-    final existingContainers = containerContainers.where((element) => stateContainersSerials.contains(element.serial)).toList();
+    List<TokenContainerUnfinalized> newContainerList = unfinalizedContainers.where((element) => !stateContainersSerials.contains(element.serial)).toList();
+    final existingContainers = unfinalizedContainers.where((element) => stateContainersSerials.contains(element.serial)).toList();
     Logger.info('Handling processor results: adding Container');
-    final replaceContainers = <TokenContainer>[];
+    final replaceContainers = <TokenContainerUnfinalized>[];
     if (existingContainers.isNotEmpty) {
       replaceContainers.addAll(await _showContainerAlreadyExistsDialog(existingContainers) ?? []);
     }
@@ -352,6 +364,8 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
       await deleteContainerList(replaceContainers);
       newContainerList.addAll(replaceContainers);
     }
+    final addDeviceInfos = (await SendDeviceInfosDialog.showDialog()) == true;
+    newContainerList = newContainerList.map((e) => e.copyWith(addDeviceInfos: addDeviceInfos)).toList();
 
     if (newContainerList.isNotEmpty) _showAddContainerProgressDialog(newContainerList);
     final stateAfterAdding = await addContainerList(newContainerList);
@@ -365,7 +379,6 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
         failedToAdd.add(container);
         continue;
       }
-      if (container is! TokenContainerUnfinalized) continue;
       Logger.info('Handling processor results: finalize');
       finalizeFutures.add(finalize(container, isManually: true));
     }
@@ -386,7 +399,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     try {
       container = await _generateKeyPair(container);
       container = await _curentOf<TokenContainerUnfinalized>(container);
-      final Response response = await _sendPublicKey((container));
+      final Response response = await _sendPublicKey(container);
       container = await _curentOf<TokenContainerUnfinalized>(container);
       final ECPublicKey publicServerKey = await _parseResponse(await _curentOf(container), response);
       container = await _curentOf<TokenContainerUnfinalized>(container);
@@ -447,8 +460,8 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     showAsyncDialog(builder: (context) => AddContainerProgressDialog(serials), barrierDismissible: false);
   }
 
-  Future<List<TokenContainer>?> _showContainerAlreadyExistsDialog(List<TokenContainer> containers) {
-    return showAsyncDialog<List<TokenContainer>>(builder: (context) => ContainerAlreadyExistsDialog(containers), barrierDismissible: false);
+  Future<List<T>?> _showContainerAlreadyExistsDialog<T extends TokenContainer>(List<T> containers) {
+    return showAsyncDialog<List<T>>(builder: (context) => ContainerAlreadyExistsDialog(containers), barrierDismissible: false);
   }
 
   /// Finalization substep 1: Generate key pair

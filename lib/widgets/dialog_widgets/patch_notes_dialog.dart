@@ -85,7 +85,7 @@ class PatchNotesDialog extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () {
-              globalRef?.read(settingsProvider.notifier).setLatestStartedVersion(AppInfoUtils.currentVersion);
+              globalRef?.read(settingsProvider.notifier).setLatestStartedVersion(InfoUtils.currentVersion);
               Navigator.of(context).pop();
             },
             child: Text(

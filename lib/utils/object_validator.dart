@@ -89,7 +89,7 @@ T? validateOptional<T extends Object>({required dynamic value, required ObjectVa
     throw LocalizedArgumentError(
       localizedMessage: (localizations, value, name) => localizations.invalidValue(value.runtimeType.toString(), value, name),
       unlocalizedMessage: 'The ${value.runtimeType} "$value" is not valid for "$name"',
-      invalidValue: value,
+      invalidValue: '$value',
       name: name,
     );
   }
@@ -102,7 +102,7 @@ T validate<T extends Object>({required dynamic value, required ObjectValidator<T
     throw LocalizedArgumentError(
       localizedMessage: (localizations, value, name) => localizations.invalidValue(value.runtimeType.toString(), value, name),
       unlocalizedMessage: 'The ${value.runtimeType} "$value" is not valid for "$name"',
-      invalidValue: value,
+      invalidValue: '$value',
       name: name,
     );
   }
@@ -198,7 +198,9 @@ class ObjectValidatorNullable<T extends Object?> {
   /// To prevent an error, use isTypeOf before calling transform.
   T? transform(dynamic value) {
     if (value == null) return defaultValue;
-    if (transformer == null) return value as T;
+    if (transformer == null) {
+      return value as T;
+    }
     try {
       return transformer!.call(value);
     } catch (e) {
@@ -243,7 +245,7 @@ class ObjectValidator<T extends Object> extends ObjectValidatorNullable<T> {
       throw LocalizedArgumentError(
         localizedMessage: (localizations, value, name) => localizations.invalidValue(value.runtimeType.toString(), value, name),
         unlocalizedMessage: 'The type ${value.runtimeType} for value "$value" is not valid.',
-        invalidValue: value,
+        invalidValue: '$value',
         name: type,
       );
     }

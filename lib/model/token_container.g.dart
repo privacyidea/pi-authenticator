@@ -22,6 +22,7 @@ _$TokenContainerUnfinalizedImpl _$$TokenContainerUnfinalizedImplFromJson(
       finalizationState: $enumDecodeNullable(
               _$RolloutStateEnumMap, json['finalizationState']) ??
           RolloutState.completed,
+      addDeviceInfos: json['addDeviceInfos'] as bool?,
       passphraseQuestion: json['passphraseQuestion'] as String?,
       publicServerKey: json['publicServerKey'] as String?,
       publicClientKey: json['publicClientKey'] as String?,
@@ -42,6 +43,7 @@ Map<String, dynamic> _$$TokenContainerUnfinalizedImplToJson(
       'sslVerify': instance.sslVerify,
       'serverName': instance.serverName,
       'finalizationState': _$RolloutStateEnumMap[instance.finalizationState]!,
+      'addDeviceInfos': instance.addDeviceInfos,
       'passphraseQuestion': instance.passphraseQuestion,
       'publicServerKey': instance.publicServerKey,
       'publicClientKey': instance.publicClientKey,

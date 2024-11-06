@@ -24,6 +24,7 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:cryptography/cryptography.dart';
 import 'package:http/http.dart';
+import 'package:privacyidea_authenticator/utils/app_info_utils.dart';
 
 import '../../../../../../../../l10n/app_localizations_en.dart';
 import '../../../../../../../../model/extensions/token_folder_extension.dart';
@@ -123,6 +124,8 @@ class PiContainerApi implements TokenContainerApi {
     final signature = eccUtils.signWithPrivateKey(ecPrivateClientKey, message);
 
     final body = {
+      if (container.addDeviceInfos == true) CONTAINER_DEVICE_BRAND: InfoUtils.deviceBrand,
+      if (container.addDeviceInfos == true) CONTAINER_DEVICE_MODEL: InfoUtils.deviceModel,
       CONTAINER_CONTAINER_SERIAL: container.serial,
       CONTAINER_PUBLIC_CLIENT_KEY: container.publicClientKey,
       CONTAINER_CHAL_SIGNATURE: signature,
@@ -291,10 +294,11 @@ class PiContainerApi implements TokenContainerApi {
       throw LocalizedException(localizedMessage: (l) => l.errorMissingPrivateKey, unlocalizedMessage: AppLocalizationsEn().errorMissingPrivateKey);
     }
 
-    final signMessage = '${challenge.nonce}|${challenge.timeStamp}|${container.serial}';
+    final signMessage = '${challenge.nonce}|${challenge.timeStamp}|${container.serial}|$requestUrl';
+    Logger.debug(signMessage);
 
     final body = {
-      CONTAINER_SERIAL: container.serial,
+      'scope': '$requestUrl',
       CONTAINER_CHAL_SIGNATURE: container.signMessage(signMessage),
     };
 
@@ -311,6 +315,6 @@ class PiContainerApi implements TokenContainerApi {
       throw piResponse.asError!.piServerResultError;
     }
 
-    return piResponse.asSuccess!.resultValue.qrData;
+    return piResponse.asSuccess!.resultValue.value;
   }
 }

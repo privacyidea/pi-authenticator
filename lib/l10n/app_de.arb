@@ -62,6 +62,7 @@
     "description": "Error message when the algorithm is not supported.",
     "placeholders": {
       "algorithm": {
+        "type": "String",
         "example": "MD5"
       }
     }
@@ -133,6 +134,7 @@
     "description": "Asks for confirmation on deleting a token.",
     "placeholders": {
       "name": {
+        "type": "String",
         "example": "PUSH1234"
       }
     },
@@ -235,6 +237,7 @@
     "description": "Title of the dialog where a container can be deleted.",
     "placeholders": {
       "serial": {
+        "type": "String",
         "example": "SMPH0008CC47"
       }
     }
@@ -303,6 +306,7 @@
     "description": "Tells the user that the token could not be rolled out, because a network error occurred.",
     "placeholders": {
       "name": {
+        "type": "String",
         "example": "PUSH1234A"
       }
     },
@@ -312,6 +316,7 @@
     "description": "Message for the rollout process",
     "placeholders": {
       "name": {
+        "type": "String",
         "example": "PUSH1234A"
       }
     }
@@ -326,6 +331,7 @@
     "description": "Tells the user that the roll-out failed because of an unknown error.",
     "placeholders": {
       "e": {
+        "type": "String",
         "example": "IllegalArgumentException on Line 5 ..."
       }
     },
@@ -341,6 +347,7 @@
     "description": "The submessage (reason) of ",
     "placeholders": {
       "name": {
+        "type": "String",
         "example": "PUSH1234A"
       }
     }
@@ -349,6 +356,7 @@
     "description": "Error message when unlinking a push token failed.",
     "placeholders": {
       "label": {
+        "type": "String",
         "example": "PUSH1234A"
       }
     }
@@ -357,6 +365,7 @@
     "description": "errorWhenPullingChallenges",
     "placeholders": {
       "name": {
+        "type": "String",
         "example": "PUSH1234A"
       }
     }
@@ -392,6 +401,7 @@
     "description": "Error message when finalizing a container failed.",
     "placeholders": {
       "serial": {
+        "type": "String",
         "example": "SMPH0008CC47"
       }
     }
@@ -400,6 +410,7 @@
     "description": "Error message when something could not be loaded.",
     "placeholders": {
       "name": {
+        "type": "String",
         "example": "token data"
       }
     }
@@ -407,6 +418,7 @@
   "@failedToSyncContainer": {
     "placeholders": {
       "serial": {
+        "type": "String",
         "example": "SMPH0008CC47"
       }
     }
@@ -493,6 +505,7 @@
     "description": "Title for the section where the user can see the conflicting tokens.",
     "placeholders": {
       "count": {
+        "type": "int",
         "example": "5"
       }
     }
@@ -501,6 +514,7 @@
     "description": "Title for the section where the user can see the tokens that already exist.",
     "placeholders": {
       "count": {
+        "type": "int",
         "example": "5"
       }
     }
@@ -512,6 +526,7 @@
     "description": "Title for the section where the user can see the tokens that could not be imported.",
     "placeholders": {
       "count": {
+        "type": "int",
         "example": "5"
       }
     }
@@ -553,6 +568,7 @@
     "description": "Buttontext to import n tokens.",
     "placeholders": {
       "count": {
+        "type": "int",
         "example": "5"
       }
     }
@@ -561,6 +577,7 @@
     "description": "Title for the section where the user can see the new tokens.",
     "placeholders": {
       "count": {
+        "type": "int",
         "example": "5"
       }
     }
@@ -578,6 +595,7 @@
     "description": "Error message when an internal server error occurred.",
     "placeholders": {
       "code": {
+        "type": "String",
         "example": "500"
       }
     }
@@ -613,6 +631,7 @@
     "description": "Error message when the backup file is invalid.",
     "placeholders": {
       "appName": {
+        "type": "String",
         "example": "privacyIDEA Authenticator"
       }
     }
@@ -621,6 +640,7 @@
     "description": "Error message when the link is invalid.",
     "placeholders": {
       "appName": {
+        "type": "String",
         "example": "privacyIDEA Authenticator"
       }
     }
@@ -629,6 +649,7 @@
     "description": "Error message when the qr file is invalid.",
     "placeholders": {
       "appName": {
+        "type": "String",
         "example": "privacyIDEA Authenticator"
       }
     }
@@ -637,6 +658,7 @@
     "description": "Error message when the qr scan is invalid.",
     "placeholders": {
       "appName": {
+        "type": "String",
         "example": "privacyIDEA Authenticator"
       }
     }
@@ -645,12 +667,15 @@
     "description": "Error message when the value is not valid for the parameter.",
     "placeholders": {
       "parameter": {
+        "type": "String",
         "example": "counter"
       },
       "type": {
+        "type": "String",
         "example": "int"
       },
       "value": {
+        "type": "String",
         "example": "5"
       }
     }
@@ -659,15 +684,19 @@
     "description": "Text for the error message when a value is not valid for a parameter in a specific map.",
     "placeholders": {
       "map": {
+        "type": "String",
         "example": "query parameters"
       },
       "parameter": {
+        "type": "String",
         "example": "counter"
       },
       "type": {
+        "type": "String",
         "example": "int"
       },
       "value": {
+        "type": "String",
         "example": "5"
       }
     }
@@ -685,6 +714,7 @@
     "description": "Label for the issuer of the token, container... etc.",
     "placeholders": {
       "name": {
+        "type": "String",
         "example": "privacyIDEA"
       }
     }
@@ -699,6 +729,7 @@
     "description": "Title of the error dialog that is shown when an error occurs while using a legacy token.",
     "placeholders": {
       "tokenLabel": {
+        "type": "String",
         "example": "PUSH1234A"
       }
     }
@@ -728,6 +759,7 @@
     "description": "Error message when a required parameter is missing.",
     "placeholders": {
       "parameter": {
+        "type": "String",
         "example": "counter"
       }
     }
@@ -736,9 +768,11 @@
     "description": "Error message when a required parameter is missing in a specific map.Error message when a required parameter is missing in a specific map.Error message when a required parameter is missing in a specific map.Error message when a required parameter is missing in a specific map.",
     "placeholders": {
       "map": {
+        "type": "String",
         "example": "query parameters"
       },
       "parameter": {
+        "type": "String",
         "example": "counter"
       }
     }
@@ -747,6 +781,7 @@
     "description": "Error message when a field must not be empty.",
     "placeholders": {
       "field": {
+        "type": "String",
         "example": "Name"
       }
     }
@@ -809,6 +844,7 @@
     "description": "Tells the user that the otp value was copied to the clipboard.",
     "placeholders": {
       "otpValue": {
+        "type": "String",
         "example": "055374"
       }
     },
@@ -899,6 +935,7 @@
     "description": "Message when privacyIDEA sends a server code.",
     "placeholders": {
       "code": {
+        "type": "String",
         "example": "10"
       }
     }
@@ -916,6 +953,7 @@
     "description": "Tells the user that the polling failed.",
     "placeholders": {
       "serial": {
+        "type": "String",
         "example": "PUSH1234A"
       }
     }
@@ -966,9 +1004,11 @@
     "description": "Description of the authentication request.",
     "placeholders": {
       "account": {
+        "type": "String",
         "example": "GitHub"
       },
       "issuer": {
+        "type": "String",
         "example": "privacyIDEA"
       }
     }
@@ -1046,6 +1086,7 @@
     "description": "Title of the screen where the user can select the tokens to export.",
     "placeholders": {
       "count": {
+        "type": "int",
         "example": "5"
       }
     }
@@ -1106,6 +1147,7 @@
     "description": "Tells the user the status code of the error.",
     "placeholders": {
       "statusCode": {
+        "type": "int",
         "example": "400"
       }
     }
@@ -1192,9 +1234,11 @@
     "description": "Error message when something is not supported, depending on the context.",
     "placeholders": {
       "name": {
+        "type": "String",
         "example": "piauth version"
       },
       "value": {
+        "type": "String",
         "example": "5"
       }
     }
@@ -1209,12 +1253,15 @@
     "description": "Error message when a value is not allowed for a specific parameter.",
     "placeholders": {
       "parameter": {
+        "type": "String",
         "example": "counter"
       },
       "type": {
+        "type": "String",
         "example": "int"
       },
       "value": {
+        "type": "String",
         "example": "-1"
       }
     }
@@ -1223,15 +1270,19 @@
     "description": "Error message when a value is not allowed for a specific parameter in a specific map.",
     "placeholders": {
       "map": {
+        "type": "String",
         "example": "query parameters"
       },
       "parameter": {
+        "type": "String",
         "example": "counter"
       },
       "type": {
+        "type": "String",
         "example": "int"
       },
       "value": {
+        "type": "String",
         "example": "-1"
       }
     }

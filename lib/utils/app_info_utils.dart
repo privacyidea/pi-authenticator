@@ -25,10 +25,32 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 import '../model/version.dart';
 
-class AppInfoUtils {
+class InfoUtils {
   static bool isInitialized = false;
   static final DeviceInfoPlugin _deviceInfo = DeviceInfoPlugin();
   static final _packageInfo = PackageInfo.fromPlatform();
+
+  static String getDeviceBrand() {
+    if (kIsWeb) return 'Web';
+    if (Platform.isAndroid) {
+      return _androidInfo!.brand;
+    } else if (Platform.isIOS) {
+      return _iosInfo!.model;
+    } else {
+      return 'Unknown';
+    }
+  }
+
+  static String getDeviceModel() {
+    if (kIsWeb) return 'Web';
+    if (Platform.isAndroid) {
+      return _androidInfo!.model;
+    } else if (Platform.isIOS) {
+      return _iosInfo!.model;
+    } else {
+      return 'Unknown';
+    }
+  }
 
   static Future<void> init() async {
     if (isInitialized) return;
@@ -39,6 +61,8 @@ class AppInfoUtils {
     _appBuildNumber = packageInfo.buildNumber;
     _androidInfo = !kIsWeb && Platform.isAndroid ? await _deviceInfo.androidInfo : null;
     _iosInfo = !kIsWeb && Platform.isIOS ? await _deviceInfo.iosInfo : null;
+    _deviceBrand = getDeviceBrand();
+    _deviceModel = getDeviceModel();
 
     isInitialized = true;
   }
@@ -57,6 +81,12 @@ class AppInfoUtils {
 
   static String get currentBuildNumber => isInitialized ? _appBuildNumber : throw Exception('AppInfoUtils not initialized');
   static late final String _appBuildNumber;
+
+  static String get deviceBrand => isInitialized ? _deviceBrand : throw Exception('AppInfoUtils not initialized');
+  static late final String _deviceBrand;
+
+  static String get deviceModel => isInitialized ? _deviceModel : throw Exception('AppInfoUtils not initialized');
+  static late final String _deviceModel;
 
   static String get dartVersion => Platform.version;
   static String get platform => Platform.operatingSystem;

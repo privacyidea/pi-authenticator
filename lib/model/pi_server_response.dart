@@ -39,6 +39,7 @@ class PiServerResponse<T extends PiServerResultValue> with _$PiServerResponse {
   static const JSONRPC = 'jsonrpc';
   static const TIME = 'time';
   static const VERSION = 'version';
+  static const VERSION_NUMBER = 'versionnumber';
   static const SIGNATURE = 'signature';
 
   static const RESULT_STATUS = 'status';
@@ -53,6 +54,7 @@ class PiServerResponse<T extends PiServerResultValue> with _$PiServerResponse {
     required T resultValue,
     required double time,
     required String version,
+    required String versionNumber,
     required String signature,
   }) = PiSuccessResponse;
   bool get isSuccess => this is PiSuccessResponse;
@@ -67,6 +69,7 @@ class PiServerResponse<T extends PiServerResultValue> with _$PiServerResponse {
     required PiServerResultError piServerResultError,
     required double time,
     required String version,
+    required String versionNumber,
     required String signature,
   }) = PiErrorResponse;
   bool get isError => this is PiErrorResponse;
@@ -77,12 +80,13 @@ class PiServerResponse<T extends PiServerResultValue> with _$PiServerResponse {
     final map = validateMap<dynamic>(
       map: json,
       validators: {
-        RESULT: const ObjectValidator<Map<String, dynamic>>(),
         ID: const ObjectValidator<int>(),
         JSONRPC: const ObjectValidator<String>(),
-        DETAIL: const ObjectValidatorNullable<dynamic>(),
+        RESULT: const ObjectValidator<Map<String, dynamic>>(),
         TIME: const ObjectValidator<double>(),
         VERSION: const ObjectValidator<String>(),
+        VERSION_NUMBER: const ObjectValidatorNullable<String>(),
+        DETAIL: const ObjectValidatorNullable<dynamic>(),
         SIGNATURE: const ObjectValidator<String>(),
       },
       name: 'PiServerResponse#fromJson',
@@ -98,12 +102,13 @@ class PiServerResponse<T extends PiServerResultValue> with _$PiServerResponse {
     );
     if (result[RESULT_STATUS] == true && result.containsKey(RESULT_VALUE)) {
       return PiServerResponse.success(
-        detail: map[DETAIL],
         id: map[ID],
         jsonrpc: map[JSONRPC],
         resultValue: PiServerResultValue.fromJsonOfType<T>(result[RESULT_VALUE]),
         time: map[TIME],
         version: map[VERSION],
+        versionNumber: map[VERSION_NUMBER] ?? map[VERSION].split(' ')[1],
+        detail: map[DETAIL],
         signature: map[SIGNATURE],
       );
     }
@@ -115,6 +120,7 @@ class PiServerResponse<T extends PiServerResultValue> with _$PiServerResponse {
         piServerResultError: PiServerResultError.fromResult(result[RESULT_ERROR]),
         time: map[TIME],
         version: map[VERSION],
+        versionNumber: map[VERSION_NUMBER] ?? map[VERSION].split(' ')[1],
         signature: map[SIGNATURE],
       );
     }

@@ -132,6 +132,8 @@ const String CONTAINER_SCOPE = 'scope';
 // Container finalization:
 const String CONTAINER_CONTAINER_SERIAL = 'container_serial';
 const String CONTAINER_PUBLIC_CLIENT_KEY = 'public_client_key';
+const String CONTAINER_DEVICE_BRAND = 'device_brand';
+const String CONTAINER_DEVICE_MODEL = 'device_model';
 
 // Container sync:
 const String CONTAINER_SYNC_PUBLIC_CLIENT_KEY = 'public_enc_key_client';

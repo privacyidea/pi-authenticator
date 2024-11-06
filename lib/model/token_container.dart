@@ -48,7 +48,7 @@ class TokenContainer with _$TokenContainer {
   Uri get registrationUrl => serverUrl.replace(path: '/container/register/finalize');
   Uri get challengeUrl => serverUrl.replace(path: '/container/$serial/challenge');
   Uri get syncUrl => serverUrl.replace(path: '/container/$serial/sync');
-  Uri get transferUrl => serverUrl.replace(path: '/container/$serial/transfer');
+  Uri get transferUrl => serverUrl.replace(path: '/container/$serial/rollover');
 
   // example: pia://container/SMPH00134123
   // ?issuer=privacyIDEA
@@ -99,6 +99,7 @@ class TokenContainer with _$TokenContainer {
     required bool sslVerify,
     @Default('privacyIDEA') String serverName,
     @Default(RolloutState.completed) RolloutState finalizationState,
+    bool? addDeviceInfos,
     String? passphraseQuestion,
     String? publicServerKey,
     String? publicClientKey,
