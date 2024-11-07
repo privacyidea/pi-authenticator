@@ -1844,6 +1844,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Malformed data'**
   String get malformedData;
+
+  /// No description provided for @linkMustOtpAuth.
+  ///
+  /// In en, this message translates to:
+  /// **'The link must start with otpauth://'**
+  String get linkMustOtpAuth;
+
+  /// No description provided for @clipboardEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Clipboard is empty'**
+  String get clipboardEmpty;
+
+  /// No description provided for @invalidUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid URL'**
+  String get invalidUrl;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

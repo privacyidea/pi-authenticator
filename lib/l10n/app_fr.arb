@@ -675,5 +675,8 @@
   "qrInFileNotFound2": "Vous pouvez me montrer où se trouve le code QR.",
   "qrInFileNotFound3": "Je pense que je trouverai le code s'il se trouve au milieu de la zone marquée.",
   "markQrCode": "Marquer le code QR",
-  "malformedData": "Les données ne sont pas valides"
+  "malformedData": "Les données ne sont pas valides",
+  "linkMustOtpAuth": "Le lien doit commencer par otpauth://.",
+  "clipboardEmpty": "Le presse-papiers est vide",
+  "invalidUrl": "URL invalide"
 }

@@ -674,5 +674,8 @@
   "qrInFileNotFound2": "Můžete mi ukázat, kde se QR kód nachází.",
   "qrInFileNotFound3": "Předpokládám, že kód najdu, pokud se nachází uprostřed označené oblasti.",
   "markQrCode": "Označte QR kód",
-  "malformedData": "Data nejsou ve správném formátu"
+  "malformedData": "Data nejsou ve správném formátu",
+  "linkMustOtpAuth" : "Odkaz musí začínat otpauth://",
+  "clipboardEmpty": "Schránka je prázdná",
+  "invalidUrl": "Neplatná adresa URL"
 }

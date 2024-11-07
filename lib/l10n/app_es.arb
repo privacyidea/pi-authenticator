@@ -670,5 +670,8 @@
   "qrInFileNotFound2": "Puedes mostrarme dónde está el código QR.",
   "qrInFileNotFound3": "Espero encontrar el código si está en el centro del área marcada.",
   "markQrCode": "Marcar código QR",
-  "malformedData": "Datos mal formados"
+  "malformedData": "Datos mal formados",
+  "linkMustOtpAuth": "El enlace debe empezar por otpauth://",
+  "clipboardEmpty": "El portapapeles está vacío",
+  "invalidUrl": "URL no válida"
 }

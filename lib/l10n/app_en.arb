@@ -696,5 +696,8 @@
   "qrInFileNotFound2": "You can show me where the QR code is located.",
   "qrInFileNotFound3": "I expect i will find the code if it is in the middle of the marked area.",
   "markQrCode": "Mark QR Code",
-  "malformedData": "Malformed data"
+  "malformedData": "Malformed data",
+  "linkMustOtpAuth" : "The link must start with otpauth://",
+  "clipboardEmpty": "Clipboard is empty",
+  "invalidUrl": "Invalid URL"
 }
