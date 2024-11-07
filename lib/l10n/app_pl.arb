@@ -668,5 +668,8 @@
   "qrInFileNotFound2": "Możesz pokazać mi, gdzie znajduje się kod QR.",
   "qrInFileNotFound3": "Oczekuję, że znajdę kod, jeśli znajduje się w środku zaznaczonego obszaru.",
   "markQrCode": "Zaznacz kod QR",
-  "malformedData": "Nieprawidłowe dane"
+  "malformedData": "Nieprawidłowe dane",
+  "linkMustOtpAuth": "Link musi zaczynać się od otpauth://",
+  "clipboardEmpty": "Schowek jest pusty",
+  "invalidUrl": "Nieprawidłowy adres URL"
 }

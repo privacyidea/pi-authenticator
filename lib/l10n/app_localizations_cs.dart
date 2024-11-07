@@ -975,4 +975,13 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get malformedData => 'Data nejsou ve správném formátu';
+
+  @override
+  String get linkMustOtpAuth => 'Odkaz musí začínat otpauth://';
+
+  @override
+  String get clipboardEmpty => 'Schránka je prázdná';
+
+  @override
+  String get invalidUrl => 'Neplatná adresa URL';
 }

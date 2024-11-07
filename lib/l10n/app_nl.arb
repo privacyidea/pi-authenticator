@@ -671,5 +671,8 @@
   "qrInFileNotFound2": "U kunt mij laten zien waar de QR code is.",
   "qrInFileNotFound3": "Ik verwacht dat ik de code zal vinden als het in het midden van het gemarkeerde gebied is.",
   "markQrCode": "Markeer QR Code",
-  "malformedData": "De QR code bevat onjuiste gegevens."
+  "malformedData": "De QR code bevat onjuiste gegevens.",
+  "linkMustOtpAuth": "De link moet beginnen met otpauth://",
+  "clipboardEmpty": "Klembord is leeg",
+  "invalidUrl": "Ongeldige URL"
 }

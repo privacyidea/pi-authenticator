@@ -975,4 +975,13 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get malformedData => 'Datos mal formados';
+
+  @override
+  String get linkMustOtpAuth => 'El enlace debe empezar por otpauth://';
+
+  @override
+  String get clipboardEmpty => 'El portapapeles está vacío';
+
+  @override
+  String get invalidUrl => 'URL no válida';
 }

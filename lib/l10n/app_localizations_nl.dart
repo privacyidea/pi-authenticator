@@ -975,4 +975,13 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get malformedData => 'De QR code bevat onjuiste gegevens.';
+
+  @override
+  String get linkMustOtpAuth => 'De link moet beginnen met otpauth://';
+
+  @override
+  String get clipboardEmpty => 'Klembord is leeg';
+
+  @override
+  String get invalidUrl => 'Ongeldige URL';
 }

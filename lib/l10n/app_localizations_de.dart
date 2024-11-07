@@ -975,4 +975,13 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get malformedData => 'Fehlerhafte Daten';
+
+  @override
+  String get linkMustOtpAuth => 'Der Link muss mit otpauth:// beginnen';
+
+  @override
+  String get clipboardEmpty => 'Zwischenablage ist leer';
+
+  @override
+  String get invalidUrl => 'Ungültige URL';
 }
