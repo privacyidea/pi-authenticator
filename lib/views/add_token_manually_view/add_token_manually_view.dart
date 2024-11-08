@@ -15,7 +15,7 @@ import '../../model/tokens/token.dart';
 import '../../utils/identifiers.dart';
 import '../../utils/logger.dart';
 import '../../utils/riverpod_providers.dart';
-import 'add_token_manually_view_widgets/PageViewDotIndicator.dart';
+import 'add_token_manually_view_widgets/PageViewIndicator.dart';
 import 'add_token_manually_view_widgets/labeled_dropdown_button.dart';
 import 'add_token_manually_view_widgets/link_input_view.dart';
 
@@ -75,7 +75,7 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
       ),
       body: Column(
         children: [
-          PageViewDotIndicator(
+          PageViewIndicator(
             controller: pageController,
             icons: [
               Icon(Icons.edit),

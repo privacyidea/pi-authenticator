@@ -20,16 +20,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class PageViewDotIndicator extends ConsumerStatefulWidget {
+class PageViewIndicator extends ConsumerStatefulWidget {
   final PageController controller;
   final List<Widget> icons;
-  const PageViewDotIndicator({super.key, required this.controller, required this.icons});
+  const PageViewIndicator({super.key, required this.controller, required this.icons});
 
   @override
-  ConsumerState<PageViewDotIndicator> createState() => _PageViewDotIndicatorState();
+  ConsumerState<PageViewIndicator> createState() => _PageViewDotIndicatorState();
 }
 
-class _PageViewDotIndicatorState extends ConsumerState<PageViewDotIndicator> {
+class _PageViewDotIndicatorState extends ConsumerState<PageViewIndicator> {
   int _currentPage = 0;
 
   @override
@@ -64,7 +64,7 @@ class _PageViewDotIndicatorState extends ConsumerState<PageViewDotIndicator> {
                   width: _currentPage == i ? iconWidth * 2 : iconWidth,
                   decoration: BoxDecoration(
                     color: _currentPage == i ? Theme.of(context).primaryColor : Theme.of(context).disabledColor,
-                    borderRadius: BorderRadius.circular(5),
+                    borderRadius: BorderRadius.circular(99),
                   ),
                   child: widget.icons[i],
                 ),
