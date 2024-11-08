@@ -52,19 +52,21 @@ class _LinkInputViewState extends ConsumerState<LinkInputView> {
           Row(
             children: [
               Expanded(
-                child: TextFormField(
-                  controller: textController,
-                  decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context)!.tokenLink,
+                child: SingleChildScrollView(
+                  child: TextFormField(
+                    controller: textController,
+                    decoration: InputDecoration(
+                      labelText: AppLocalizations.of(context)!.tokenLink,
+                    ),
+                    keyboardType: TextInputType.url,
+                    textInputAction: TextInputAction.done,
+                    onFieldSubmitted: (text) => addToken(Uri.parse(text)),
+                    validator: (value) => value != null
+                        ? Uri.tryParse(value) == null
+                            ? AppLocalizations.of(context)!.invalidUrl
+                            : null
+                        : null,
                   ),
-                  keyboardType: TextInputType.url,
-                  textInputAction: TextInputAction.done,
-                  onFieldSubmitted: (text) => addToken(Uri.parse(text)),
-                  validator: (value) => value != null
-                      ? Uri.tryParse(value) == null
-                          ? AppLocalizations.of(context)!.invalidUrl
-                          : null
-                      : null,
                 ),
               ),
               SizedBox(width: 8),

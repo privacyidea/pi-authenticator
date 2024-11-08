@@ -49,33 +49,29 @@ class _PageViewDotIndicatorState extends ConsumerState<PageViewDotIndicator> {
         final widthPerIcon = constraints.maxWidth / (widget.icons.length + 1);
         final space = widthPerIcon * 0.1;
         final double iconWidth = widthPerIcon - space;
-        return SizedBox(
-          width: constraints.maxWidth,
-          height: 50,
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              for (int i = 0; i < widget.icons.length; i++) ...[
-                GestureDetector(
-                  onTap: () {
-                    final pageDifference = (i - _currentPage).abs();
-                    widget.controller.animateToPage(i, duration: Duration(milliseconds: 200 * pageDifference + 150), curve: Curves.easeInOut);
-                  },
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 150),
-                    width: _currentPage == i ? iconWidth * 2 : iconWidth,
-                    decoration: BoxDecoration(
-                      color: _currentPage == i ? Theme.of(context).primaryColor : Theme.of(context).disabledColor,
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: widget.icons[i],
+        return Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            for (int i = 0; i < widget.icons.length; i++) ...[
+              GestureDetector(
+                onTap: () {
+                  final pageDifference = (i - _currentPage).abs();
+                  widget.controller.animateToPage(i, duration: Duration(milliseconds: 200 * pageDifference + 150), curve: Curves.easeInOut);
+                },
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 150),
+                  width: _currentPage == i ? iconWidth * 2 : iconWidth,
+                  decoration: BoxDecoration(
+                    color: _currentPage == i ? Theme.of(context).primaryColor : Theme.of(context).disabledColor,
+                    borderRadius: BorderRadius.circular(5),
                   ),
+                  child: widget.icons[i],
                 ),
-                if (i < widget.icons.length - 1) SizedBox(width: space),
-              ]
-            ],
-          ),
+              ),
+              if (i < widget.icons.length - 1) SizedBox(width: space),
+            ]
+          ],
         );
       },
     );
