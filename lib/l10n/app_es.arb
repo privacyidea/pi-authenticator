@@ -1629,5 +1629,8 @@
   "verboseLogging": "Registro detallado",
   "versionTitle": "Versión",
   "wrongPassword": "Contraseña incorrecta",
-  "yes": "Sí"
+  "yes": "Sí",
+  "linkMustOtpAuth": "El enlace debe empezar por otpauth://",
+  "clipboardEmpty": "El portapapeles está vacío",
+  "invalidUrl": "URL no válida"
 }

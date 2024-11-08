@@ -52,7 +52,8 @@ class DeeplinkNotifier extends StateNotifier<DeepLink?> {
 
     for (var source in _sources) {
       _subs.add(source.stream.listen((Uri? uri) {
-        Logger.info('Got uri from ${source.name}');
+        if (!_initialUriIsHandled) return;
+        Logger.info('Got uri from ${source.name} (incoming)');
         if (!mounted) return;
         if (uri == null) return;
         state = DeepLink(uri);
@@ -65,14 +66,15 @@ class DeeplinkNotifier extends StateNotifier<DeepLink?> {
   Future<void> _handleInitialUri() async {
     if (_initialUriIsHandled) return;
     _initialUriIsHandled = true;
+
     Logger.info('_handleInitialUri called');
 
     for (var source in _sources) {
       final initialUri = await source.initialUri;
       if (initialUri != null) {
         if (!mounted) return;
+        Logger.info('Got uri from ${source.name} (initial)');
         state = DeepLink(initialUri, fromInit: true);
-        Logger.info('Got initial uri from ${source.name}');
         return; // There should be only one initial uri
       }
     }

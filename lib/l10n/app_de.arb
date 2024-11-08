@@ -1637,5 +1637,8 @@
   "verboseLogging": "Ausführliche Protokollierung",
   "versionTitle": "Version",
   "wrongPassword": "Falsches Passwort",
-  "yes": "Ja"
+  "yes": "Ja",
+  "linkMustOtpAuth" : "Der Link muss mit otpauth:// beginnen",
+  "clipboardEmpty": "Zwischenablage ist leer",
+  "invalidUrl": "Ungültige URL"
 }

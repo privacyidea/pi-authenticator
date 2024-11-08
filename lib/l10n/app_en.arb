@@ -1631,5 +1631,8 @@
   "verboseLogging": "Verbose logging",
   "versionTitle": "Version",
   "wrongPassword": "Incorrect password",
-  "yes": "Yes"
+  "yes": "Yes",
+  "linkMustOtpAuth" : "The link must start with otpauth://",
+  "clipboardEmpty": "Clipboard is empty",
+  "invalidUrl": "Invalid URL"
 }

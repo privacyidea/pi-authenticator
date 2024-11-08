@@ -40,7 +40,7 @@ import '../rows/secret_input_field.dart';
 import '../rows/token_type_dropdown_button.dart';
 import 'add_token_manually_interface.dart';
 
-class AddDayPasswordManually extends AddTokenManually {
+class AddDayPasswordManually extends AddTokenManuallyPage {
   static final allowedPeriodsDayPassword = List.generate(24, (i) => Duration(hours: 24 - i), growable: false);
 
   final TextEditingController labelController;
@@ -93,8 +93,8 @@ class AddDayPasswordManually extends AddTokenManually {
   });
 
   @override
-  Column build(BuildContext context) => Column(
-        children: [
+  AddTokenManually build(BuildContext context) => AddTokenManually(
+        fields: [
           LabelInputField(
             controller: labelController,
             autoValidate: autoValidateLabel,
@@ -113,11 +113,11 @@ class AddDayPasswordManually extends AddTokenManually {
             values: allowedPeriodsDayPassword,
             unit: DurationUnit.hours,
           ),
-          AddTokenButton(
-            autoValidateLabel: autoValidateLabel,
-            autoValidateSecret: autoValidateSecret,
-            tokenBuilder: _tryBuildToken,
-          ),
         ],
+        button: AddTokenButton(
+          autoValidateLabel: autoValidateLabel,
+          autoValidateSecret: autoValidateSecret,
+          tokenBuilder: _tryBuildToken,
+        ),
       );
 }

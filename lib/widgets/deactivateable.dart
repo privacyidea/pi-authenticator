@@ -27,11 +27,8 @@ class Deactivateable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => deactivated
-      ? ColorFiltered(
-          colorFilter: const ColorFilter.mode(
-            Colors.grey,
-            BlendMode.saturation,
-          ),
+      ? Opacity(
+          opacity: 0.3,
           child: AbsorbPointer(child: child),
         )
       : child;

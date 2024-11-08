@@ -1630,5 +1630,10 @@
   "verboseLogging": "Zevrubné protokolování",
   "versionTitle": "Verze",
   "wrongPassword": "Nesprávné heslo",
-  "yes": "Ano"
+  "yes": "Ano",
+  "markQrCode": "Označte QR kód",
+  "malformedData": "Data nejsou ve správném formátu",
+  "linkMustOtpAuth" : "Odkaz musí začínat otpauth://",
+  "clipboardEmpty": "Schránka je prázdná",
+  "invalidUrl": "Neplatná adresa URL"
 }

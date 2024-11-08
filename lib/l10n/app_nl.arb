@@ -1630,5 +1630,8 @@
   "verboseLogging": "Verbose loggen",
   "versionTitle": "Versie",
   "wrongPassword": "Onjuist wachtwoord",
-  "yes": "Ja"
+  "yes": "Ja",
+  "linkMustOtpAuth": "De link moet beginnen met otpauth://",
+  "clipboardEmpty": "Klembord is leeg",
+  "invalidUrl": "Ongeldige URL"
 }

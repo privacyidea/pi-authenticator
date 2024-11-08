@@ -39,7 +39,7 @@ import '../rows/secret_input_field.dart';
 import '../rows/token_type_dropdown_button.dart';
 import 'add_token_manually_interface.dart';
 
-class AddTotpManually extends AddTokenManually {
+class AddTotpManually extends AddTokenManuallyPage {
   static final allowedPeriodsTOTP = [const Duration(seconds: 30), const Duration(seconds: 60)];
 
   final TextEditingController labelController;
@@ -93,8 +93,8 @@ class AddTotpManually extends AddTokenManually {
   }
 
   @override
-  Column build(BuildContext context) => Column(
-        children: [
+  AddTokenManually build(BuildContext context) => AddTokenManually(
+        fields: [
           LabelInputField(
             controller: labelController,
             autoValidate: autoValidateLabel,
@@ -113,11 +113,11 @@ class AddTotpManually extends AddTokenManually {
             values: allowedPeriodsTOTP,
             unit: DurationUnit.seconds,
           ),
-          AddTokenButton(
-            autoValidateLabel: autoValidateLabel,
-            autoValidateSecret: autoValidateSecret,
-            tokenBuilder: _tryBuildToken,
-          ),
         ],
+        button: AddTokenButton(
+          autoValidateLabel: autoValidateLabel,
+          autoValidateSecret: autoValidateSecret,
+          tokenBuilder: _tryBuildToken,
+        ),
       );
 }

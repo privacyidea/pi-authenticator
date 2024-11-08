@@ -27,14 +27,44 @@ import '../../enums/image_file_type.dart';
 
 extension ImageFileTypeX on ImageFileType {
   Widget buildImageWidget(Uint8List imageData) => switch (this) {
-        ImageFileType.svg => SvgPicture.memory(imageData),
-        ImageFileType.svgz => SvgPicture.memory(imageData),
-        ImageFileType.png => Image.memory(imageData),
-        ImageFileType.jpg => Image.memory(imageData),
-        ImageFileType.jpeg => Image.memory(imageData),
-        ImageFileType.gif => Image.memory(imageData),
-        ImageFileType.bmp => Image.memory(imageData),
-        ImageFileType.webp => Image.memory(imageData),
+        ImageFileType.svg => SvgPicture.memory(
+            imageData,
+            colorFilter: ColorFilter.mode(
+              Colors.transparent,
+              BlendMode.srcOver,
+            ),
+          ),
+        ImageFileType.svgz => SvgPicture.memory(
+            imageData,
+            colorFilter: ColorFilter.mode(
+              Colors.transparent,
+              BlendMode.srcOver,
+            ),
+          ),
+        ImageFileType.png => Image.memory(
+            imageData,
+            colorBlendMode: BlendMode.srcOver,
+          ),
+        ImageFileType.jpg => Image.memory(
+            imageData,
+            colorBlendMode: BlendMode.srcOver,
+          ),
+        ImageFileType.jpeg => Image.memory(
+            imageData,
+            colorBlendMode: BlendMode.srcOver,
+          ),
+        ImageFileType.gif => Image.memory(
+            imageData,
+            colorBlendMode: BlendMode.srcOver,
+          ),
+        ImageFileType.bmp => Image.memory(
+            imageData,
+            colorBlendMode: BlendMode.srcOver,
+          ),
+        ImageFileType.webp => Image.memory(
+            imageData,
+            colorBlendMode: BlendMode.srcOver,
+          ),
       };
 
   String get fileExtension => toString().split('.').last;

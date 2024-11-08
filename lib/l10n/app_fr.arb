@@ -1630,5 +1630,8 @@
   "verboseLogging": "Journalisation verbeuse",
   "versionTitle": "Version",
   "wrongPassword": "Mot de passe incorrect",
-  "yes": "Oui"
+  "yes": "Oui",
+  "linkMustOtpAuth": "Le lien doit commencer par otpauth://.",
+  "clipboardEmpty": "Le presse-papiers est vide",
+  "invalidUrl": "URL invalide"
 }

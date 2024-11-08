@@ -44,7 +44,7 @@ class CounterInputField extends StatelessWidget {
       label: AppLocalizations.of(context)!.counter,
       child: TextFormField(
         decoration: const InputDecoration(errorMaxLines: 2),
-        style: Theme.of(context).textTheme.bodyLarge,
+        style: Theme.of(context).textTheme.bodyMedium,
         keyboardType: TextInputType.number,
         initialValue: counterNotifier.value.toString(),
         onChanged: (value) {
