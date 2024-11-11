@@ -62,8 +62,8 @@
     "description": "Error message when the algorithm is not supported.",
     "placeholders": {
       "algorithm": {
-        "type": "String",
-        "example": "MD5"
+        "example": "MD5",
+        "type": "String"
       }
     }
   },
@@ -134,8 +134,8 @@
     "description": "Asks for confirmation on deleting a token.",
     "placeholders": {
       "name": {
-        "type": "String",
-        "example": "PUSH1234"
+        "example": "PUSH1234",
+        "type": "String"
       }
     },
     "type": "text"
@@ -237,8 +237,8 @@
     "description": "Title of the dialog where a container can be deleted.",
     "placeholders": {
       "serial": {
-        "type": "String",
-        "example": "SMPH0008CC47"
+        "example": "SMPH0008CC47",
+        "type": "String"
       }
     }
   },
@@ -306,8 +306,8 @@
     "description": "Tells the user that the token could not be rolled out, because a network error occurred.",
     "placeholders": {
       "name": {
-        "type": "String",
-        "example": "PUSH1234A"
+        "example": "PUSH1234A",
+        "type": "String"
       }
     },
     "type": "text"
@@ -316,8 +316,8 @@
     "description": "Tells the user that the roll-out failed because the server could not be reached.",
     "placeholders": {
       "name": {
-        "type": "String",
-        "example": "PUSH1234A"
+        "example": "PUSH1234A",
+        "type": "String"
       }
     }
   },
@@ -331,8 +331,8 @@
     "description": "Tells the user that the roll-out failed because of an unknown error.",
     "placeholders": {
       "e": {
-        "type": "String",
-        "example": "IllegalArgumentException on Line 5 ..."
+        "example": "IllegalArgumentException on Line 5 ...",
+        "type": "String"
       }
     },
     "type": "text"
@@ -347,8 +347,8 @@
     "description": "The submessage (reason) of \"errorRollOutNotPossibleAnymore\" that tells the user that the token is expired.",
     "placeholders": {
       "name": {
-        "type": "String",
-        "example": "PUSH1234A"
+        "example": "PUSH1234A",
+        "type": "String"
       }
     }
   },
@@ -356,8 +356,8 @@
     "description": "Error message when unlinking a push token failed.",
     "placeholders": {
       "label": {
-        "type": "String",
-        "example": "PUSH1234A"
+        "example": "PUSH1234A",
+        "type": "String"
       }
     }
   },
@@ -365,8 +365,8 @@
     "description": "errorWhenPullingChallenges",
     "placeholders": {
       "name": {
-        "type": "String",
-        "example": "PUSH1234A"
+        "example": "PUSH1234A",
+        "type": "String"
       }
     }
   },
@@ -401,8 +401,8 @@
     "description": "Error message when finalizing a container failed.",
     "placeholders": {
       "serial": {
-        "type": "String",
-        "example": "SMPH0008CC47"
+        "example": "SMPH0008CC47",
+        "type": "String"
       }
     }
   },
@@ -410,16 +410,16 @@
     "description": "Error message when something could not be loaded.",
     "placeholders": {
       "name": {
-        "type": "String",
-        "example": "token data"
+        "example": "token data",
+        "type": "String"
       }
     }
   },
   "@failedToSyncContainer": {
     "placeholders": {
       "serial": {
-        "type": "String",
-        "example": "SMPH0008CC47"
+        "example": "SMPH0008CC47",
+        "type": "String"
       }
     }
   },
@@ -505,8 +505,8 @@
     "description": "Title for the section where the user can see the conflicting tokens.",
     "placeholders": {
       "count": {
-        "type": "int",
-        "example": "5"
+        "example": "5",
+        "type": "int"
       }
     }
   },
@@ -514,8 +514,8 @@
     "description": "Title for the section where the user can see the tokens that already exist.",
     "placeholders": {
       "count": {
-        "type": "int",
-        "example": "5"
+        "example": "5",
+        "type": "int"
       }
     }
   },
@@ -526,8 +526,8 @@
     "description": "Title for the section where the user can see the tokens that could not be imported.",
     "placeholders": {
       "count": {
-        "type": "int",
-        "example": "5"
+        "example": "5",
+        "type": "int"
       }
     }
   },
@@ -568,8 +568,8 @@
     "description": "Buttontext to import n tokens.",
     "placeholders": {
       "count": {
-        "type": "int",
-        "example": "5"
+        "example": "5",
+        "type": "int"
       }
     }
   },
@@ -577,8 +577,8 @@
     "description": "Title for the section where the user can see the new tokens.",
     "placeholders": {
       "count": {
-        "type": "int",
-        "example": "5"
+        "example": "5",
+        "type": "int"
       }
     }
   },
@@ -595,8 +595,8 @@
     "description": "Error message when an internal server error occurred.",
     "placeholders": {
       "code": {
-        "type": "String",
-        "example": "500"
+        "example": "500",
+        "type": "String"
       }
     }
   },
@@ -631,8 +631,8 @@
     "description": "Error message when the backup file is invalid.",
     "placeholders": {
       "appName": {
-        "type": "String",
-        "example": "privacyIDEA Authenticator"
+        "example": "privacyIDEA Authenticator",
+        "type": "String"
       }
     }
   },
@@ -640,8 +640,8 @@
     "description": "Error message when the link is invalid.",
     "placeholders": {
       "appName": {
-        "type": "String",
-        "example": "privacyIDEA Authenticator"
+        "example": "privacyIDEA Authenticator",
+        "type": "String"
       }
     }
   },
@@ -649,8 +649,8 @@
     "description": "Error message when the qr file is invalid.",
     "placeholders": {
       "appName": {
-        "type": "String",
-        "example": "privacyIDEA Authenticator"
+        "example": "privacyIDEA Authenticator",
+        "type": "String"
       }
     }
   },
@@ -658,8 +658,8 @@
     "description": "Error message when the qr scan is invalid.",
     "placeholders": {
       "appName": {
-        "type": "String",
-        "example": "privacyIDEA Authenticator"
+        "example": "privacyIDEA Authenticator",
+        "type": "String"
       }
     }
   },
@@ -667,16 +667,16 @@
     "description": "Error message when the value is not valid for the parameter.",
     "placeholders": {
       "parameter": {
-        "type": "String",
-        "example": "counter"
+        "example": "counter",
+        "type": "String"
       },
       "type": {
-        "type": "String",
-        "example": "int"
+        "example": "int",
+        "type": "String"
       },
       "value": {
-        "type": "String",
-        "example": "5"
+        "example": "5",
+        "type": "String"
       }
     }
   },
@@ -684,20 +684,20 @@
     "description": "Text for the error message when a value is not valid for a parameter in a specific map.",
     "placeholders": {
       "map": {
-        "type": "String",
-        "example": "query parameters"
+        "example": "query parameters",
+        "type": "String"
       },
       "parameter": {
-        "type": "String",
-        "example": "counter"
+        "example": "counter",
+        "type": "String"
       },
       "type": {
-        "type": "String",
-        "example": "int"
+        "example": "int",
+        "type": "String"
       },
       "value": {
-        "type": "String",
-        "example": "5"
+        "example": "5",
+        "type": "String"
       }
     }
   },
@@ -714,8 +714,8 @@
     "description": "Label for the issuer of the token, container... etc.",
     "placeholders": {
       "name": {
-        "type": "String",
-        "example": "privacyIDEA"
+        "example": "privacyIDEA",
+        "type": "String"
       }
     }
   },
@@ -729,8 +729,8 @@
     "description": "Title of the error dialog that is shown when an error occurs while using a legacy token.",
     "placeholders": {
       "tokenLabel": {
-        "type": "String",
-        "example": "PUSH1234A"
+        "example": "PUSH1234A",
+        "type": "String"
       }
     }
   },
@@ -759,8 +759,8 @@
     "description": "Error message when a required parameter is missing.",
     "placeholders": {
       "parameter": {
-        "type": "String",
-        "example": "counter"
+        "example": "counter",
+        "type": "String"
       }
     }
   },
@@ -768,12 +768,12 @@
     "description": "Error message when a required parameter is missing in a specific map.Error message when a required parameter is missing in a specific map.Error message when a required parameter is missing in a specific map.Error message when a required parameter is missing in a specific map.",
     "placeholders": {
       "map": {
-        "type": "String",
-        "example": "query parameters"
+        "example": "query parameters",
+        "type": "String"
       },
       "parameter": {
-        "type": "String",
-        "example": "counter"
+        "example": "counter",
+        "type": "String"
       }
     }
   },
@@ -781,8 +781,8 @@
     "description": "Error message when a field must not be empty.",
     "placeholders": {
       "field": {
-        "type": "String",
-        "example": "Name"
+        "example": "Name",
+        "type": "String"
       }
     }
   },
@@ -844,8 +844,8 @@
     "description": "Tells the user that the otp value was copied to the clipboard.",
     "placeholders": {
       "otpValue": {
-        "type": "String",
-        "example": "055374"
+        "example": "055374",
+        "type": "String"
       }
     },
     "type": "text"
@@ -925,6 +925,15 @@
   "@patchNotesV4_4_0NewFeatures2": {
     "description": "Patch notes for a new feature in version 4.4.0."
   },
+  "@patchNotesV4_4_2Improvement1": {
+    "description": "Patch notes for an improvement in version 4.4.2"
+  },
+  "@patchNotesV4_4_2NewFeatures1": {
+    "description": "Patch notes for a new feature in version 4.4.2"
+  },
+  "@patchNotesV4_4_2NewFeatures2": {
+    "description": "Patch notes for a new feature in version 4.4.2"
+  },
   "@period": {
     "description": "Title of the dropdown button where the period of the totp token is selected."
   },
@@ -935,8 +944,8 @@
     "description": "Message when privacyIDEA sends a server code.",
     "placeholders": {
       "code": {
-        "type": "String",
-        "example": "10"
+        "example": "10",
+        "type": "String"
       }
     }
   },
@@ -953,8 +962,8 @@
     "description": "Tells the user that the polling failed.",
     "placeholders": {
       "serial": {
-        "type": "String",
-        "example": "PUSH1234A"
+        "example": "PUSH1234A",
+        "type": "String"
       }
     }
   },
@@ -1004,12 +1013,12 @@
     "description": "Description of the authentication request.",
     "placeholders": {
       "account": {
-        "type": "String",
-        "example": "GitHub"
+        "example": "GitHub",
+        "type": "String"
       },
       "issuer": {
-        "type": "String",
-        "example": "privacyIDEA"
+        "example": "privacyIDEA",
+        "type": "String"
       }
     }
   },
@@ -1141,8 +1150,8 @@
     "description": "Tells the user the status code of the error.",
     "placeholders": {
       "statusCode": {
-        "type": "int",
-        "example": "400"
+        "example": "400",
+        "type": "int"
       }
     }
   },
@@ -1228,12 +1237,12 @@
     "description": "Error message when something is not supported, depending on the context.",
     "placeholders": {
       "name": {
-        "type": "String",
-        "example": "piauth version"
+        "example": "piauth version",
+        "type": "String"
       },
       "value": {
-        "type": "String",
-        "example": "5"
+        "example": "5",
+        "type": "String"
       }
     }
   },
@@ -1247,16 +1256,16 @@
     "description": "Error message when a value is not allowed for a specific parameter.",
     "placeholders": {
       "parameter": {
-        "type": "String",
-        "example": "counter"
+        "example": "counter",
+        "type": "String"
       },
       "type": {
-        "type": "String",
-        "example": "int"
+        "example": "int",
+        "type": "String"
       },
       "value": {
-        "type": "String",
-        "example": "-1"
+        "example": "-1",
+        "type": "String"
       }
     }
   },
@@ -1264,20 +1273,20 @@
     "description": "Error message when a value is not allowed for a specific parameter in a specific map.",
     "placeholders": {
       "map": {
-        "type": "String",
-        "example": "query parameters"
+        "example": "query parameters",
+        "type": "String"
       },
       "parameter": {
-        "type": "String",
-        "example": "counter"
+        "example": "counter",
+        "type": "String"
       },
       "type": {
-        "type": "String",
-        "example": "int"
+        "example": "int",
+        "type": "String"
       },
       "value": {
-        "type": "String",
-        "example": "-1"
+        "example": "-1",
+        "type": "String"
       }
     }
   },
@@ -1333,13 +1342,13 @@
   "checkServerCertificate": "Please check the server certificate",
   "checkYourNetwork": "Please check your network connection and try again.",
   "clearErrorLog": "Clear",
+  "clipboardEmpty": "Clipboard is empty",
   "confirmDeletion": "Confirm deletion",
   "confirmDeletionOf": "Are you sure you want to delete {name}?",
   "confirmFolderDeletionHint": "Deleting a folder has no effect on the tokens in it.\nThe tokens are moved to the main list.",
   "confirmPassword": "Confirm password",
   "confirmTokenDeletionHint": "You may no longer be able to log in if you delete this token.\nPlease make sure that you can log in to the associated account without this token.",
   "confirmation": "Confirmation",
-  "importantInformationTitle": "Important information",
   "connectionFailed": "Connection failed.",
   "container": "Container",
   "containerAlreadyExists": "Container already exists",
@@ -1454,6 +1463,7 @@
   "importNTokens": "{count, plural, zero{Import no token} one{Import one token} other{Import {count} tokens}}",
   "importNewToken": "{count, plural, zero{No new token was found.} one{A new token was found that can be imported.} other{{count} new tokens were found that can be imported.}}",
   "importTokens": "Import token",
+  "importantInformationTitle": "Important information",
   "importedVia": "Imported via",
   "increaseCounter": "Increase counter",
   "internalServerError": "Internal server error ({code})",
@@ -1470,6 +1480,7 @@
   "invalidLink": "The link entered is not a valid token of {appName}, or it is not supported.",
   "invalidQrFile": "The selected file does not contain a valid QR code from {appName}.",
   "invalidQrScan": "The scanned QR code is not a valid backup of {appName}.",
+  "invalidUrl": "Invalid URL",
   "invalidValue": "The {type} ‘{value}’ is not valid for ‘{parameter}’",
   "invalidValueIn": "The {type} ‘{value}’ is not valid for ‘{parameter}’ in ‘{map}’",
   "isExpotableQuestion": "Is exportable?",
@@ -1480,6 +1491,7 @@
   "legacySigningErrorMessage": "The token was enrolled in a old version of this app, which may cause trouble using it.\nIt is suggested to enroll a new push token if the problem persist!",
   "legacySigningErrorTitle": "An error occured while using the legacy token: {tokenLabel}",
   "licensesAndVersion": "Licenses and version",
+  "linkMustOtpAuth": "The link must start with otpauth://",
   "linkedContainer": "Linked container",
   "lock": "Lock",
   "lockOut": "Biometric authentication is disabled. Please lock and unlock your screen to enable it.",
@@ -1521,21 +1533,21 @@
   "patchNotesDialogTitle": "What's new?",
   "patchNotesImprovements": "Improvements",
   "patchNotesNewFeatures": "New features",
-  "patchNotesV4_4_2NewFeatures1": "Tokens can now be inserted using copy & paste.",
-  "patchNotesV4_4_2NewFeatures2": "Added gallery support for QR code scanning.",
-  "patchNotesV4_4_2Improvement1": "Added flashlight support for QR code scanning.",
-  "patchNotesV4_4_0NewFeatures1": "It is now possible to export tokens where it can be ensured that they are not privacyIDEA tokens. Currently, it cannot be ruled out that tokens added via the QR code scanner originate from privacyIDEA. The differentiation will be improved in future versions.",
-  "patchNotesV4_4_0NewFeatures2": "Added support for privacyIDEA's \"require presence\"",
-  "patchNotesV4_4_0Improvement1": "Further import sources have been added.",
-  "patchNotesV4_4_0Improvement2": "Improved recognition of QR codes from image files.",
-  "patchNotesV4_3_1BugFix1": "Fixed an issue where the otp value was not displayed after authentication on some devices.",
-  "patchNotesV4_3_1Improvement1": "Improved the qr code scanner.",
   "patchNotesV4_3_0NewFeatures1": "Support for importing tokens from Google, Aegis and 2FAS Authenticator has been added. More import sources will be added in the future.",
   "patchNotesV4_3_0NewFeatures2": "Added feedback option to the settings.",
   "patchNotesV4_3_0NewFeatures3": "Push tokens can now be hidden from the token list.",
   "patchNotesV4_3_0NewFeatures4": "Introductions have been added to help new users get started.",
   "patchNotesV4_3_0NewFeatures5": "You can now search for tokens by tapping the magnifying glass in the upper right corner.",
   "patchNotesV4_3_0NewFeatures6": "Added HomeWidget token for Android 12 and later.",
+  "patchNotesV4_3_1BugFix1": "Fixed an issue where the otp value was not displayed after authentication on some devices.",
+  "patchNotesV4_3_1Improvement1": "Improved the qr code scanner.",
+  "patchNotesV4_4_0Improvement1": "Further import sources have been added.",
+  "patchNotesV4_4_0Improvement2": "Improved recognition of QR codes from image files.",
+  "patchNotesV4_4_0NewFeatures1": "It is now possible to export tokens where it can be ensured that they are not privacyIDEA tokens. Currently, it cannot be ruled out that tokens added via the QR code scanner originate from privacyIDEA. The differentiation will be improved in future versions.",
+  "patchNotesV4_4_0NewFeatures2": "Added support for privacyIDEA's \"require presence\"",
+  "patchNotesV4_4_2Improvement1": "Added flashlight support for QR code scanning.",
+  "patchNotesV4_4_2NewFeatures1": "Tokens can now be inserted using copy & paste.",
+  "patchNotesV4_4_2NewFeatures2": "Added gallery support for QR code scanning.",
   "period": "Period",
   "phonePart": "Phone part:",
   "piServerCode": "PI Server Code: {code}",
@@ -1634,8 +1646,5 @@
   "verboseLogging": "Verbose logging",
   "versionTitle": "Version",
   "wrongPassword": "Incorrect password",
-  "yes": "Yes",
-  "linkMustOtpAuth" : "The link must start with otpauth://",
-  "clipboardEmpty": "Clipboard is empty",
-  "invalidUrl": "Invalid URL"
+  "yes": "Yes"
 }
