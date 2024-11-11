@@ -20,6 +20,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/utils/view_utils.dart';
 
 import '../../../../../../../l10n/app_localizations.dart';
 import '../../../../../../../model/token_container.dart';
@@ -29,21 +30,24 @@ import '../../../../../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 
 class ContainerAlreadyExistsDialog extends ConsumerStatefulWidget {
-  final List<TokenContainer> containers;
+  final List<TokenContainerUnfinalized> newContainers;
 
-  const ContainerAlreadyExistsDialog(this.containers, {super.key});
+  static Future<List<TokenContainerUnfinalized>?> showDialog(List<TokenContainerUnfinalized> newContainers) =>
+      showAsyncDialog(builder: (context) => ContainerAlreadyExistsDialog(newContainers));
+
+  const ContainerAlreadyExistsDialog(this.newContainers, {super.key});
 
   @override
   ConsumerState<ContainerAlreadyExistsDialog> createState() => _ContainerAlreadyExistsDialogState();
 }
 
 class _ContainerAlreadyExistsDialogState extends ConsumerState<ContainerAlreadyExistsDialog> {
-  late final List<TokenContainer> unhandledContainers;
-  final List<TokenContainer> replaceContainers = [];
+  late final List<TokenContainerUnfinalized> unhandledContainers;
+  final List<TokenContainerUnfinalized> replaceContainers = [];
 
   @override
   void initState() {
-    unhandledContainers = widget.containers;
+    unhandledContainers = widget.newContainers;
     super.initState();
   }
 
@@ -75,9 +79,9 @@ class _ContainerAlreadyExistsDialogState extends ConsumerState<ContainerAlreadyE
     if (unhandledContainers.isEmpty) Navigator.of(context).pop(replaceContainers);
   }
 
-  Future<void> _replace(TokenContainer oldContainer, TokenContainer newContainer) async {
+  Future<void> _replace(TokenContainer oldContainer, TokenContainerUnfinalized newContainer) async {
     setState(() {
-      unhandledContainers.remove(newContainer);
+      unhandledContainers.remove(oldContainer);
       replaceContainers.add(newContainer);
     });
     if (unhandledContainers.isEmpty && mounted) Navigator.of(context).pop(replaceContainers);

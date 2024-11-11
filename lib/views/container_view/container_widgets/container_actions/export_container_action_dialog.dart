@@ -21,6 +21,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
+import 'package:privacyidea_authenticator/widgets/elevated_delete_button.dart';
 
 import '../../../../../../../model/token_container.dart';
 import '../../../../../../../utils/view_utils.dart';
@@ -184,9 +185,9 @@ class _DeleteContainerAfterTransferDialogState extends ConsumerState<DeleteConta
               onPressed: () => Navigator.of(context).pop(),
               child: Text('Cancel'),
             ),
-            ElevatedButton(
+            ElevatedDeleteButton(
+              text: 'Remove from this device',
               onPressed: () => onConfirm(context),
-              child: Text('Remove from this device'),
             ),
           ],
         ),
