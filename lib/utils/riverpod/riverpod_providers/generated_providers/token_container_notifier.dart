@@ -347,17 +347,17 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
   @override
   Future handleProcessorResults(List<ProcessorResult> results, Map<String, dynamic> args) async {
     Logger.info('Handling processor results');
-    final unfinalizedContainers = results.getData().whereType<TokenContainerUnfinalized>().toList();
-    if (unfinalizedContainers.isEmpty) return null;
+    final newContainers = results.getData().whereType<TokenContainerUnfinalized>().toList();
+    if (newContainers.isEmpty) return null;
     final currentState = await future;
     final stateContainers = currentState.containerList;
     final stateContainersSerials = stateContainers.map((e) => e.serial);
-    List<TokenContainerUnfinalized> newContainerList = unfinalizedContainers.where((element) => !stateContainersSerials.contains(element.serial)).toList();
-    final existingContainers = unfinalizedContainers.where((element) => stateContainersSerials.contains(element.serial)).toList();
+    List<TokenContainerUnfinalized> newContainerList = newContainers.where((element) => !stateContainersSerials.contains(element.serial)).toList();
+    final existingContainers = newContainers.where((element) => stateContainersSerials.contains(element.serial)).toList();
     Logger.info('Handling processor results: adding Container');
     final replaceContainers = <TokenContainerUnfinalized>[];
     if (existingContainers.isNotEmpty) {
-      replaceContainers.addAll(await _showContainerAlreadyExistsDialog(existingContainers) ?? []);
+      replaceContainers.addAll(await ContainerAlreadyExistsDialog.showDialog(existingContainers) ?? []);
     }
 
     if (replaceContainers.isNotEmpty) {
@@ -458,10 +458,6 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
   void _showAddContainerProgressDialog(List<TokenContainer> containers) {
     final serials = containers.map((e) => e.serial).toList();
     showAsyncDialog(builder: (context) => AddContainerProgressDialog(serials), barrierDismissible: false);
-  }
-
-  Future<List<T>?> _showContainerAlreadyExistsDialog<T extends TokenContainer>(List<T> containers) {
-    return showAsyncDialog<List<T>>(builder: (context) => ContainerAlreadyExistsDialog(containers), barrierDismissible: false);
   }
 
   /// Finalization substep 1: Generate key pair
