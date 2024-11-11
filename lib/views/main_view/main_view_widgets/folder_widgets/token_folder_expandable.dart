@@ -133,7 +133,7 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
                 log('Moving token to folder ${widget.folder.label}', name: 'TokenFolderExpandable');
                 ref.read(tokenProvider.notifier).updateToken(
                       details.data,
-                      (p0) => p0.copyWith(folderId: () => widget.folder.folderId, sortIndex: (widget.folder.sortIndex!) + 1),
+                      (p0) => p0.copyWith(folderId: () => widget.folder.folderId, sortIndex: (widget.folder.sortIndex ?? 0) + 1),
                     );
               },
               builder: (context, willAccept, willReject) => Center(

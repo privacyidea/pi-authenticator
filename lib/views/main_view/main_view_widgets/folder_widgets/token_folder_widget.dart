@@ -17,7 +17,6 @@ class TokenFolderWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final draggingSortable = ref.watch(draggingSortableProvider);
-    final draggingSortableNotifier = ref.read(draggingSortableProvider.notifier);
     final TokenFolder? draggingFolder = draggingSortable is TokenFolder ? draggingSortable : null;
     return draggingSortable == null
         ? LongPressDraggable(
@@ -31,14 +30,16 @@ class TokenFolderWidget extends ConsumerWidget {
               );
               return Offset(max(textSize.width / 2, 30), textSize.height / 2 + 30);
             },
-            onDragStarted: () => draggingSortableNotifier.state = folder,
-            onDragCompleted: () {
+            onDragStarted: () => ref.read(draggingSortableProvider.notifier).state = folder,
+            onDragCompleted: () async {
               Logger.info('Draggable completed', name: 'TokenFolderWidget#build');
-              // Will be handled by the sortableNotifier
+              await Future.delayed(const Duration(milliseconds: 100));
+              globalRef?.read(draggingSortableProvider.notifier).state = null;
             },
-            onDraggableCanceled: (velocity, offset) {
+            onDraggableCanceled: (velocity, offset) async {
               Logger.info('Draggable canceled', name: 'TokenFolderWidget#build');
-              draggingSortableNotifier.state = null;
+              await Future.delayed(const Duration(milliseconds: 100));
+              globalRef?.read(draggingSortableProvider.notifier).state = null;
             },
             data: folder,
             childWhenDragging: const SizedBox(),
