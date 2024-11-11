@@ -123,6 +123,24 @@ abstract class AppLocalizations {
   /// **'Bug fixes'**
   String get patchNotesBugFixes;
 
+  /// No description provided for @patchNotesV4_4_2NewFeatures1.
+  ///
+  /// In en, this message translates to:
+  /// **'Tokens can now be inserted using copy & paste.'**
+  String get patchNotesV4_4_2NewFeatures1;
+
+  /// No description provided for @patchNotesV4_4_2NewFeatures2.
+  ///
+  /// In en, this message translates to:
+  /// **'Added gallery support for QR code scanning.'**
+  String get patchNotesV4_4_2NewFeatures2;
+
+  /// No description provided for @patchNotesV4_4_2Improvement1.
+  ///
+  /// In en, this message translates to:
+  /// **'Added flashlight support for QR code scanning.'**
+  String get patchNotesV4_4_2Improvement1;
+
   /// No description provided for @patchNotesV4_4_0NewFeatures1.
   ///
   /// In en, this message translates to:

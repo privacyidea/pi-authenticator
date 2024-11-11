@@ -18,6 +18,15 @@ class AppLocalizationsDe extends AppLocalizations {
   String get patchNotesBugFixes => 'Fehlerbehebungen';
 
   @override
+  String get patchNotesV4_4_2NewFeatures1 => 'Token können jetzt per Copy & Paste eingefügt werden.';
+
+  @override
+  String get patchNotesV4_4_2NewFeatures2 => 'Galerie-Unterstützung für das Scannen von QR-Codes hinzugefügt.';
+
+  @override
+  String get patchNotesV4_4_2Improvement1 => 'Taschenlampenunterstützung für das Scannen von QR-Codes wurde zugefügt.';
+
+  @override
   String get patchNotesV4_4_0NewFeatures1 => 'Es ist nun möglich, Token zu exportieren, bei denen sichergestellt werden kann, dass es sich nicht um privacyIDEA Token handelt. Derzeit kann nicht ausgeschlossen werden, dass über den QR-Code-Scanner hinzugefügte Token von privacyIDEA stammen. Die Differenzierung wird in zukünftigen Versionen verbessert.';
 
   @override

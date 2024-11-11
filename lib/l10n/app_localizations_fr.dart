@@ -18,6 +18,15 @@ class AppLocalizationsFr extends AppLocalizations {
   String get patchNotesBugFixes => 'Bug fixes';
 
   @override
+  String get patchNotesV4_4_2NewFeatures1 => 'Les jetons peuvent désormais être insérés par copier-coller.';
+
+  @override
+  String get patchNotesV4_4_2NewFeatures2 => 'Ajout de la prise en charge de la galerie pour la lecture des codes QR.';
+
+  @override
+  String get patchNotesV4_4_2Improvement1 => 'Ajout de la prise en charge de la lampe de poche pour la lecture des codes QR.';
+
+  @override
   String get patchNotesV4_4_0NewFeatures1 => 'Il est désormais possible d\'exporter des jetons dont on peut s\'assurer qu\'il ne s\'agit pas de jetons privacyIDEA. Actuellement, il n\'est pas possible d\'exclure que des jetons ajoutés via le lecteur de code QR proviennent de privacyIDEA. La différenciation sera améliorée dans les versions futures.';
 
   @override
