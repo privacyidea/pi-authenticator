@@ -28,22 +28,13 @@ import '../model/enums/patch_note_type.dart';
 import '../model/version.dart';
 
 Map<Version, Map<PatchNoteType, List<String>>> getLocalizedPatchNotes(AppLocalizations localizations) => {
-      const Version(4, 3, 0): {
+      const Version(4, 4, 2): {
         PatchNoteType.newFeature: [
-          localizations.patchNotesV4_3_0NewFeatures1,
-          localizations.patchNotesV4_3_0NewFeatures2,
-          localizations.patchNotesV4_3_0NewFeatures3,
-          localizations.patchNotesV4_3_0NewFeatures4,
-          localizations.patchNotesV4_3_0NewFeatures5,
-          localizations.patchNotesV4_3_0NewFeatures6,
-        ],
-      },
-      const Version(4, 3, 1): {
-        PatchNoteType.bugFix: [
-          localizations.patchNotesV4_3_1BugFix1,
+          localizations.patchNotesV4_4_2NewFeatures1,
+          localizations.patchNotesV4_4_2NewFeatures2,
         ],
         PatchNoteType.improvement: [
-          localizations.patchNotesV4_3_1Improvement1,
+          localizations.patchNotesV4_4_2Improvement1,
         ]
       },
       const Version(4, 4, 0): {
@@ -55,6 +46,24 @@ Map<Version, Map<PatchNoteType, List<String>>> getLocalizedPatchNotes(AppLocaliz
           localizations.patchNotesV4_4_0Improvement1,
           localizations.patchNotesV4_4_0Improvement2,
         ]
+      },
+      const Version(4, 3, 1): {
+        PatchNoteType.bugFix: [
+          localizations.patchNotesV4_3_1BugFix1,
+        ],
+        PatchNoteType.improvement: [
+          localizations.patchNotesV4_3_1Improvement1,
+        ]
+      },
+      const Version(4, 3, 0): {
+        PatchNoteType.newFeature: [
+          localizations.patchNotesV4_3_0NewFeatures1,
+          localizations.patchNotesV4_3_0NewFeatures2,
+          localizations.patchNotesV4_3_0NewFeatures3,
+          localizations.patchNotesV4_3_0NewFeatures4,
+          localizations.patchNotesV4_3_0NewFeatures5,
+          localizations.patchNotesV4_3_0NewFeatures6,
+        ],
       },
     };
 
