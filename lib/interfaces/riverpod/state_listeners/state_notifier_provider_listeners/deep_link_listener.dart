@@ -35,12 +35,12 @@ abstract class DeepLinkListener extends StreamNotifierProviderListener<DeeplinkN
 abstract class StreamNotifierProviderListener<T extends StreamNotifier<S>, S> {
   final String listenerName;
   final StreamNotifierProvider<T, S> provider;
-  final void Function(AsyncValue<S>? previous, AsyncValue<S> next) onNewState;
+  final void Function(WidgetRef ref, AsyncValue<S>? previous, AsyncValue<S> next) onNewState;
   const StreamNotifierProviderListener({required this.provider, required this.onNewState, required this.listenerName});
   void buildListen(WidgetRef ref) {
     Logger.debug('("$listenerName") listening to provider ("$provider")');
     ref.listen(provider, (previous, next) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => onNewState(previous, next));
+      WidgetsBinding.instance.addPostFrameCallback((_) => onNewState(ref, previous, next));
     });
   }
 }

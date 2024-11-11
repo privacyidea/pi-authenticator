@@ -17,28 +17,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../interfaces/riverpod/state_listeners/state_notifier_provider_listeners/deep_link_listener.dart';
 import '../../../model/deeplink.dart';
-import '../../../processors/scheme_processors/navigation_scheme_processors/navigation_scheme_processor_interface.dart';
+import '../riverpod_providers/generated_providers/token_notifier.dart';
 
-class NavigationDeepLinkListener extends DeepLinkListener {
-  static BuildContext? _context;
-  NavigationDeepLinkListener({required super.deeplinkProvider, BuildContext? context})
-      : super(
-          onNewState: (WidgetRef ref, AsyncValue<DeepLink>? previous, AsyncValue<DeepLink> next) {
-            _onNewState(previous, next);
-          },
-          listenerName: 'NavigationSchemeProcessor.processUriByAny',
-        ) {
-    _context = context;
-  }
+class TokenImportDeepLinkListener extends DeepLinkListener {
+  const TokenImportDeepLinkListener({
+    required super.deeplinkProvider,
+  }) : super(
+          onNewState: _onNewState,
+          listenerName: 'TokenImportDeepLinkListener().processUri',
+        );
 
-  static void _onNewState(AsyncValue<DeepLink>? previous, AsyncValue<DeepLink> next) {
+  static void _onNewState(WidgetRef ref, AsyncValue<DeepLink>? previous, AsyncValue<DeepLink> next) {
     next.whenData((next) {
-      NavigationSchemeProcessor.processUriByAny(next.uri, context: _context, fromInit: next.fromInit);
+      ref.read(tokenProvider.notifier).handleLink(next.uri);
     });
   }
 }

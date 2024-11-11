@@ -15,6 +15,7 @@ import '../utils/riverpod/riverpod_providers/generated_providers/token_notifier.
 import '../utils/riverpod/state_listeners/home_widget_deep_link_listener.dart';
 import '../utils/riverpod/state_listeners/home_widget_token_state_listener.dart';
 import '../utils/riverpod/state_listeners/navigation_deep_link_listener.dart';
+import '../utils/riverpod/state_listeners/token_deep_link_listener.dart';
 import 'app_wrappers/single_touch_recognizer.dart';
 import 'app_wrappers/state_observer.dart';
 
@@ -93,7 +94,8 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
         ],
         streamNotifierProviderListeners: [
           NavigationDeepLinkListener(deeplinkProvider: deeplinkNotifierProvider),
-          HomeWidgetDeepLinkListener(deeplinkProvider: deeplinkNotifierProvider), // TODO: Nochmal anschauen
+          HomeWidgetDeepLinkListener(deeplinkProvider: deeplinkNotifierProvider),
+          TokenImportDeepLinkListener(deeplinkProvider: deeplinkNotifierProvider),
         ],
         // asyncNotifierProviderListeners: [
         //   ...container.map(
