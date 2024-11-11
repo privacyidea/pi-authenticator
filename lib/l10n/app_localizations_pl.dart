@@ -9,13 +9,49 @@ class AppLocalizationsPl extends AppLocalizations {
   AppLocalizationsPl([String locale = 'pl']) : super(locale);
 
   @override
+  String get a11yAddFolderButton => 'Dodaj folder';
+
+  @override
+  String get a11yAddTokenManuallyButton => 'Dodaj token ręcznie';
+
+  @override
+  String get a11yCloseSearchTokensButton => 'Zamknij wyszukiwanie';
+
+  @override
+  String get a11yLicensesButton => 'Licencja';
+
+  @override
+  String get a11yPushTokensButton => 'Tokeny push';
+
+  @override
+  String get a11yScanQrCodeButton => ' Skanowanie kodu QR';
+
+  @override
+  String get a11yScanQrCodeViewActive => ' Widok skanowania kodów QR. Cammera jest aktywna';
+
+  @override
+  String get a11yScanQrCodeViewFlashlightOff => 'Stuknij, aby włączyć latarkę.';
+
+  @override
+  String get a11yScanQrCodeViewFlashlightOn => 'Stuknij, aby wyłączyć latarkę.';
+
+  @override
+  String get a11yScanQrCodeViewGallery => 'Otwórz galerię';
+
+  @override
+  String get a11yScanQrCodeViewInactive => 'Widok skanowania kodu QR. Cammera nie jest aktywna';
+
+  @override
+  String get a11ySearchTokensButton => 'Wyszukiwanie tokenów';
+
+  @override
+  String get a11ySettingsButton => 'Ustawienia';
+
+  @override
   String get accept => 'Potwierdzam';
 
   @override
   String get addANewFolder => 'Utwórz nowy folder';
-
-  @override
-  String get addFolder => 'Dodaj folder';
 
   @override
   String get addSystemInfo => 'Dodaj informacje systemowe';
@@ -24,13 +60,13 @@ class AppLocalizationsPl extends AppLocalizations {
   String get addToken => 'Dodaj token';
 
   @override
-  String get addTokenManually => 'Dodaj token ręcznie';
+  String get additionalErrorMessage => 'Opcjonalna wiadomość';
 
   @override
   String get algorithm => 'Algorytm';
 
   @override
-  String algorithmUnsupported(Object algorithm) {
+  String algorithmUnsupported(String algorithm) {
     return 'Algorytm $algorithm nie jest obsługiwany';
   }
 
@@ -95,13 +131,13 @@ class AppLocalizationsPl extends AppLocalizations {
   String get clearErrorLog => 'Usuń';
 
   @override
-  String get closeSearchTokens => 'Zamknij wyszukiwanie';
+  String get clipboardEmpty => 'Schowek jest pusty';
 
   @override
   String get confirmDeletion => 'Potwierdź usunięcie';
 
   @override
-  String confirmDeletionOf(Object name) {
+  String confirmDeletionOf(String name) {
     return 'Jesteś pewien, że chcesz usunąć token: $name?';
   }
 
@@ -122,6 +158,18 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get container => 'Pojemnik';
+
+  @override
+  String get containerAlreadyExists => 'Kontener już istnieje';
+
+  @override
+  String get containerDetails => 'Szczegóły kontenera';
+
+  @override
+  String get containerSerial => 'Pojemnik szeregowy';
+
+  @override
+  String get containerSyncUrl => 'Adres URL synchronizacji kontenera';
 
   @override
   String get continueButton => 'Kontynuuj';
@@ -146,6 +194,12 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get creator => 'Twórca';
+
+  @override
+  String get dayPasswordValidFor => 'Ważny przez';
+
+  @override
+  String get dayPasswordValidUntil => 'Ważny do';
 
   @override
   String get decline => 'Odrzucam';
@@ -178,7 +232,18 @@ class AppLocalizationsPl extends AppLocalizations {
   String get delete => 'Usuń';
 
   @override
+  String get deleteContainerDialogContent => 'Jeśli usuniesz ten kontener, smartfon zostanie odłączony od serwera privacyIDEA, a tokeny w tym kontenerze staną się bezużyteczne. Przed usunięciem upewnij się, że odpowiednie tokeny nie są już potrzebne!';
+
+  @override
+  String deleteContainerDialogTitle(String serial) {
+    return 'Usuwanie kontenera $serial';
+  }
+
+  @override
   String get deleteLockedToken => 'Uwierzytelnij, aby usunąć zablokowany token.';
+
+  @override
+  String get details => 'Szczegóły';
 
   @override
   String get deviceCredentialsRequiredTitle => 'Ustawienia zabezpieczeń urządzenia nie zostały skonfigurowane.';
@@ -232,13 +297,16 @@ class AppLocalizationsPl extends AppLocalizations {
   String get errorMailBody => 'Plik dziennika błędów jest dołączony.\nTekst ten można zastąpić dodatkowymi informacjami o błędzie.';
 
   @override
-  String errorRollOutFailed(Object name) {
+  String get errorMissingPrivateKey => 'Brakujący klucz prywatny';
+
+  @override
+  String errorRollOutFailed(String name) {
     return 'Wdrażanie tokenu $name nieudane.';
   }
 
   @override
-  String errorRollOutNoConnectionToServer(Object name) {
-    return 'Brak połączenia z serwerem';
+  String errorRollOutNoConnectionToServer(String name) {
+    return 'Rozwijanie tokena $name nie powiodło się, nie można było uzyskać dostępu do serwera.';
   }
 
   @override
@@ -248,7 +316,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get errorRollOutSSLHandshakeFailed => 'Uścisk dłoni SSL nie powiódł się. Rozwijanie nie jest możliwe.';
 
   @override
-  String errorRollOutUnknownError(Object e) {
+  String errorRollOutUnknownError(String e) {
     return 'Napotkano nieznany błąd. Wdrożenie tokenu niemożliwe: $e';
   }
 
@@ -259,17 +327,17 @@ class AppLocalizationsPl extends AppLocalizations {
   String get errorSynchronizationNoNetworkConnection => 'Synchronizacja tokenów push nieudana, ponieważ serwer privacyIDEA jest nieosiągalny.';
 
   @override
-  String errorTokenExpired(Object name) {
+  String errorTokenExpired(String name) {
     return 'Token $name wygasł.';
   }
 
   @override
-  String errorUnlinkingPushToken(Object label) {
+  String errorUnlinkingPushToken(String label) {
     return 'Nie udało się odłączyć tokenu push $label.';
   }
 
   @override
-  String errorWhenPullingChallenges(Object name) {
+  String errorWhenPullingChallenges(String name) {
     return 'Wystąpił błąd podczas odpytywania o wyzwania $name';
   }
 
@@ -292,14 +360,27 @@ class AppLocalizationsPl extends AppLocalizations {
   String get exportNonPrivacyIDEATokens => 'Eksportuj tokeny niebędące privacyIDEA';
 
   @override
+  String get exportOneMore => 'Jeszcze jeden';
+
+  @override
   String get exportTokens => 'Eksportuj tokeny';
 
   @override
   String get exportingTokens => 'Eksportowanie tokenów...';
 
   @override
-  String failedToLoad(Object name) {
-    return 'Nie udało się załadować:';
+  String failedToFinalizeContainer(String serial) {
+    return 'Nie udało się sfinalizować kontenera $serial';
+  }
+
+  @override
+  String failedToLoad(String name) {
+    return 'Nie udało się załadować: $name';
+  }
+
+  @override
+  String failedToSyncContainer(String serial) {
+    return 'Nie udało się zsynchronizować kontenera $serial';
   }
 
   @override
@@ -333,7 +414,10 @@ class AppLocalizationsPl extends AppLocalizations {
   String get fileSavedToDownloadsFolder => 'Plik zapisano w folderze Pobrane';
 
   @override
-  String get findingQrCodeInImage => 'Szukanie kodu QR na obrazku...';
+  String get finalizationState => 'Stan finalizacji';
+
+  @override
+  String get finalizeContainerFailed => 'Finalizacja kontenera nie powiodła się';
 
   @override
   String get firebaseToken => 'Token Firebase';
@@ -345,10 +429,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get generatingPhonePart => 'Generowanie sekretu po stronie telefonu...';
 
   @override
-  String get generatingRSAKeyPair => 'Generowanie pary kluczy RSA';
-
-  @override
-  String get generatingRSAKeyPairFailed => 'Generowanie pary kluczy RSA nieudane';
+  String get gitHubButton => 'Ta aplikacja jest open source\nOdwiedź nas na GitHub';
 
   @override
   String get goToSettingsButton => 'Idź do ustawień';
@@ -381,7 +462,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get imageUrl => 'Adres URL obrazu';
 
   @override
-  String importConflictToken(num count) {
+  String importConflictToken(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
@@ -393,7 +474,7 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
-  String importExistingToken(num count) {
+  String importExistingToken(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
@@ -408,7 +489,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get importExportTokens => 'Importuj/Eksportuj tokeny';
 
   @override
-  String importFailedToken(num count) {
+  String importFailedToken(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
@@ -453,7 +534,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get importHintPrivacyIdeaQrScan => 'Aby utworzyć kody QR tokenów, przejdź do ustawień i wybierz opcję \"Eksportuj\". Następnie wybierz opcję \"Jako kod QR\" i dotknij tokenu, który ma zostać wyeksportowany. Ten wariant jest odpowiedni tylko do bezpośredniego przesyłania na inne urządzenie, ponieważ kod QR nie jest szyfrowany.';
 
   @override
-  String importNTokens(num count) {
+  String importNTokens(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
@@ -465,7 +546,7 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
-  String importNewToken(num count) {
+  String importNewToken(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
@@ -480,13 +561,16 @@ class AppLocalizationsPl extends AppLocalizations {
   String get importTokens => 'Token importu';
 
   @override
+  String get importantInformationTitle => 'Important information';
+
+  @override
   String get importedVia => 'Importowane przez';
 
   @override
   String get increaseCounter => 'Zwiększ licznik';
 
   @override
-  String internalServerError(Object code) {
+  String internalServerError(String code) {
     return 'Wewnętrzny błąd serwera ($code)';
   }
 
@@ -518,33 +602,36 @@ class AppLocalizationsPl extends AppLocalizations {
   String get introTokenSwipe => 'Przesuń tokeny w lewo, aby zobaczyć dostępne akcje.';
 
   @override
-  String invalidBackupFile(Object appName) {
+  String invalidBackupFile(String appName) {
     return 'Wybrany plik nie jest prawidłową kopią zapasową $appName.';
   }
 
   @override
-  String invalidLink(Object appName) {
+  String invalidLink(String appName) {
     return 'Wprowadzony link nie jest prawidłowym tokenem $appName lub nie jest obsługiwany.';
   }
 
   @override
-  String invalidQrFile(Object appName) {
+  String invalidQrFile(String appName) {
     return 'Wybrany plik nie zawiera prawidłowego kodu QR z $appName.';
   }
 
   @override
-  String invalidQrScan(Object appName) {
+  String invalidQrScan(String appName) {
     return 'Zeskanowany kod QR nie jest prawidłową kopią zapasową $appName.';
   }
 
   @override
-  String invalidValue(Object parameter, Object type, Object value) {
-    return 'untranslated';
+  String get invalidUrl => 'Nieprawidłowy adres URL';
+
+  @override
+  String invalidValue(String parameter, String type, String value) {
+    return 'Typ $type \'$value\' nie jest prawidłowy dla \'$parameter\'.';
   }
 
   @override
-  String invalidValueIn(Object map, Object parameter, Object type, Object value) {
-    return 'untranslated';
+  String invalidValueIn(String map, String parameter, String type, String value) {
+    return ' Typ $type \'$value\' jest nieprawidłowy dla \'$parameter\' w \'$map\'.';
   }
 
   @override
@@ -554,21 +641,29 @@ class AppLocalizationsPl extends AppLocalizations {
   String get isPiTokenQuestion => 'To jest token privacyIDEA?';
 
   @override
+  String get issuer => ' Wydawca';
+
+  @override
+  String issuerLabel(String name) {
+    return 'Wydawca: $name';
+  }
+
+  @override
   String get language => 'Język';
 
   @override
   String get legacySigningErrorMessage => 'Token został utworzony w nieaktualnej wersji aplikacji, co może prowadzić do problemów podczas korzystania z niego.\nZaleca się utworzenie nowego tokena push, jeśli problem nadal występuje!';
 
   @override
-  String legacySigningErrorTitle(Object tokenLabel) {
+  String legacySigningErrorTitle(String tokenLabel) {
     return 'Wystąpił błąd podczas korzystania z przestarzałego tokena: $tokenLabel';
   }
 
   @override
-  String get licenses => 'Licencja';
+  String get licensesAndVersion => 'Licencje i wersja';
 
   @override
-  String get licensesAndVersion => 'Licencje i wersja';
+  String get linkMustOtpAuth => 'Link musi zaczynać się od otpauth://';
 
   @override
   String get linkedContainer => 'Połączony pojemnik';
@@ -589,17 +684,17 @@ class AppLocalizationsPl extends AppLocalizations {
   String get markQrCode => 'Zaznacz kod QR';
 
   @override
-  String missingRequiredParameter(Object parameter) {
+  String missingRequiredParameter(String parameter) {
     return 'Wartość parametru [$parameter] jest wymagana, ale jej brakuje.';
   }
 
   @override
-  String missingRequiredParameterIn(Object map, Object parameter) {
+  String missingRequiredParameterIn(String map, String parameter) {
     return 'Wartość parametru [$parameter] jest wymagana, ale brakuje jej w \"$map\".';
   }
 
   @override
-  String mustNotBeEmpty(Object field) {
+  String mustNotBeEmpty(String field) {
     return '$field nie może być puste';
   }
 
@@ -649,13 +744,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get ok => 'Ok';
 
   @override
-  String get oneMore => 'Jeszcze jeden';
-
-  @override
   String get open => 'Otwórz';
-
-  @override
-  String get optionalMessage => 'Opcjonalna wiadomość';
 
   @override
   String get originApp => 'Aplikacja Origin';
@@ -664,15 +753,9 @@ class AppLocalizationsPl extends AppLocalizations {
   String get originDetails => 'Szczegóły dotyczące pochodzenia';
 
   @override
-  String otpValueCopiedMessage(Object otpValue) {
+  String otpValueCopiedMessage(String otpValue) {
     return 'Jednorazowe hasło \"$otpValue\" skopiowane do schowka.';
   }
-
-  @override
-  String get parsingResponse => 'Analizowanie odpowiedzi';
-
-  @override
-  String get parsingResponseFailed => 'Analizowanie odpowiedzi nieudane';
 
   @override
   String get password => 'Hasło';
@@ -750,10 +833,24 @@ class AppLocalizationsPl extends AppLocalizations {
   String get patchNotesV4_4_0NewFeatures2 => 'Dodano obsługę funkcji privacyIDEA \"require presence\".';
 
   @override
+  String get patchNotesV4_4_2Improvement1 => 'Dodano obsługę latarki dla skanowania kodów QR.';
+
+  @override
+  String get patchNotesV4_4_2NewFeatures1 => 'Tokeny można teraz wstawiać za pomocą funkcji kopiuj i wklej.';
+
+  @override
+  String get patchNotesV4_4_2NewFeatures2 => 'Dodano obsługę galerii dla skanowania kodów QR.';
+
+  @override
   String get period => 'Cykl';
 
   @override
   String get phonePart => 'Sekret po stronie telefonu:';
+
+  @override
+  String piServerCode(String code) {
+    return 'Kod serwera PI: $code';
+  }
 
   @override
   String get pleaseEnterANameForThisToken => 'Wprowadź nazwę dla tokenu';
@@ -762,16 +859,10 @@ class AppLocalizationsPl extends AppLocalizations {
   String get pleaseEnterASecretForThisToken => 'Wprowadź sekret dla tokenu';
 
   @override
-  String get pleaseSyncManuallyWhenNetworkIsAvailable => 'Zsynchronizuj tokeny push ręcznie za pomocą ustawień, gdy dostępne jest połączenie sieciowe';
-
-  @override
-  String get pollingChallenges => 'Sprawdzanie nowych wyzwań';
-
-  @override
   String get pollingFailed => 'Zapytanie nie powiodło się.';
 
   @override
-  String pollingFailedFor(Object serial) {
+  String pollingFailedFor(String serial) {
     return 'Zapytanie dla $serial nie powiodło się.';
   }
 
@@ -791,9 +882,6 @@ class AppLocalizationsPl extends AppLocalizations {
   String get pushToken => 'Push token';
 
   @override
-  String get pushTokens => 'Tokeny push';
-
-  @override
   String get qrFileDecodeError => 'Nie można było zdekodować kodu QR z wybranego obrazu, zamiast tego użyj skanera kodów QR.';
 
   @override
@@ -809,9 +897,6 @@ class AppLocalizationsPl extends AppLocalizations {
   String get qrNotFound => 'Nie znaleziono kodu QR!';
 
   @override
-  String get qrScan => 'Scan';
-
-  @override
   String get rename => 'Zmień nazwę';
 
   @override
@@ -821,7 +906,10 @@ class AppLocalizationsPl extends AppLocalizations {
   String get renameTokenFolder => 'Zmiana nazwy folderu';
 
   @override
-  String requestInfo(Object account, Object issuer) {
+  String get replaceButton => 'Wymienić';
+
+  @override
+  String requestInfo(String account, String issuer) {
     return 'Wysłane przez $issuer dla twojego konta: \"$account\"';
   }
 
@@ -832,13 +920,43 @@ class AppLocalizationsPl extends AppLocalizations {
   String get requestTriggerdByUserQuestion => 'Czy ta prośba została wywołana przez Ciebie?';
 
   @override
-  String get retryRollout => 'Ponowne uruchomienie';
+  String get retryRolloutButton => 'Ponowne uruchomienie';
 
   @override
-  String get rolloutCompleted => 'Wdrożenie zakończone';
+  String get rolloutStateCompleted => 'Wdrożenie zakończone';
 
   @override
-  String get save => 'Zapisz';
+  String get rolloutStateGeneratingKeyPair => 'Generowanie pary kluczy';
+
+  @override
+  String get rolloutStateGeneratingKeyPairCompleted => 'Generowanie pary kluczy zakończone';
+
+  @override
+  String get rolloutStateGeneratingKeyPairFailed => 'Nie udało się wygenerować pary kluczy';
+
+  @override
+  String get rolloutStateNotStarted => 'Rozpocznij wdrożenie';
+
+  @override
+  String get rolloutStateParsingResponse => 'Analizowanie odpowiedzi';
+
+  @override
+  String get rolloutStateParsingResponseCompleted => 'Parsowanie odpowiedzi zakończone';
+
+  @override
+  String get rolloutStateParsingResponseFailed => 'Analizowanie odpowiedzi nieudane';
+
+  @override
+  String get rolloutStateSendingPublicKey => 'Wysyłanie klucza publicznego';
+
+  @override
+  String get rolloutStateSendingPublicKeyCompleted => 'Wysyłanie klucza publicznego zakończone';
+
+  @override
+  String get rolloutStateSendingPublicKeyFailed => 'Wysyłanie klucza publicznego nie powiodło się';
+
+  @override
+  String get saveButton => 'Zapisz';
 
   @override
   String get scanQrCode => 'Zeskanuj kod QR';
@@ -847,7 +965,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get scanThisQrWithNewDevice => 'Zeskanuj ten kod QR za pomocą nowego urządzenia, aby zaimportować token.';
 
   @override
-  String get searchTokens => 'Wyszukiwanie tokenów';
+  String get secondsUntilNextOTP => 'Sekundy do następnego OTP';
 
   @override
   String get secretIsRequired => 'Wymagany jest sekret';
@@ -877,7 +995,16 @@ class AppLocalizationsPl extends AppLocalizations {
   }
 
   @override
-  String get selectTokensToExportHelpContent => 'Jeśli token nie znajduje się na liście, nie ma gwarancji, że nie jest tokenem privacyIDEA.\nObecnie eksportować można tylko tokeny dodane ręcznie i zaimportowane.';
+  String get selectTokensToExportHelpContent1 => 'Jeśli token nie znajduje się na liście, nie ma gwarancji, że nie jest tokenem privacyIDEA.';
+
+  @override
+  String get selectTokensToExportHelpContent2 => 'Obecnie eksportować można tylko tokeny dodane ręcznie i zaimportowane.';
+
+  @override
+  String get selectTokensToExportHelpContent3 => 'Pracujemy nad rozwiązaniem pozwalającym odróżnić tokeny privacyIDEA od tokenów prywatnych.';
+
+  @override
+  String get selectTokensToExportHelpContent4 => 'Nowy kod QR można uzyskać w usłudze, z której otrzymano token.';
 
   @override
   String get selectTokensToExportHelpTitle => 'Czy twój token nie znajduje się na liście?';
@@ -893,12 +1020,6 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get sendPushRequestResponseFailed => 'Nie udało się wysłać odpowiedzi.';
-
-  @override
-  String get sendingRSAPublicKey => 'Wysyłanie publicznego klucza RSA';
-
-  @override
-  String get sendingRSAPublicKeyFailed => 'Wysyłanie publicznego klucza RSA nieudane';
 
   @override
   String get serverNotReachable => 'Nie można uzyskać połączenia z serwerem.';
@@ -925,10 +1046,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get someTokensDoNotSupportPolling => 'Część tokenów jest przestarzała i nie wspiera aktywnego zapytania dla autentykacji przez wiadomość push.';
 
   @override
-  String get startRollout => 'Rozpocznij wdrożenie';
-
-  @override
-  String statusCode(Object statusCode) {
+  String statusCode(int statusCode) {
     return 'Kod statusu: $statusCode';
   }
 
@@ -940,6 +1058,24 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get syncFbTokenFailed => 'Synchronizacja dla poniższych tokenów się nie udała, spróbuj ponownie:';
+
+  @override
+  String get syncFbTokenManuallyWhenNetworkIsAvailable => 'Zsynchronizuj tokeny push ręcznie za pomocą ustawień, gdy dostępne jest połączenie sieciowe';
+
+  @override
+  String get syncState => 'Stan synchronizacji';
+
+  @override
+  String get syncStateCompletedDescription => 'Synchronizacja zakończona';
+
+  @override
+  String get syncStateFailedDescription => 'Synchronizacja nie powiodła się';
+
+  @override
+  String get syncStateNotStartedDescription => 'Synchronizacja nie została uruchomiona';
+
+  @override
+  String get syncStateSyncingDescription => 'Aktualnie synchronizacja';
 
   @override
   String get synchronizePushTokens => 'Synchronizuj tokeny push.';
@@ -957,9 +1093,6 @@ class AppLocalizationsPl extends AppLocalizations {
   String get theme => 'Motyw';
 
   @override
-  String get thisAppIsOpenSource => 'Ta aplikacja jest open source\nOdwiedź nas na GitHub';
-
-  @override
   String get timeOut => 'Limit czasu';
 
   @override
@@ -969,7 +1102,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get tokenDetails => 'Szczegóły tokena';
 
   @override
-  String get tokenLink => 'TokenLink';
+  String get tokenLinkImport => 'TokenLink';
 
   @override
   String get tokenSerial => 'Token serial';
@@ -979,9 +1112,6 @@ class AppLocalizationsPl extends AppLocalizations {
 
   @override
   String get tokensDoNotSupportSynchronization => 'Następujące tokeny nie wspierają synchronizacji i muszą zostać wdrożone od nowa:';
-
-  @override
-  String get tokensNotEncrypted => 'Tokeny nie są zaszyfrowane i mogą być importowane bezpośrednio.';
 
   @override
   String get tokensSuccessfullyDecrypted => 'Tokeny zostały pomyślnie odszyfrowane i można je teraz zaimportować.';
@@ -999,7 +1129,7 @@ class AppLocalizationsPl extends AppLocalizations {
   String get unlock => 'Odblokuj';
 
   @override
-  String unsupported(Object name, Object value) {
+  String unsupported(String name, String value) {
     return 'Opcja $name [$value] nie jest obsługiwana przez tę wersję aplikacji.';
   }
 
@@ -1010,26 +1140,20 @@ class AppLocalizationsPl extends AppLocalizations {
   String get useDeviceLocaleTitle => 'Użyj języka urządzenia.';
 
   @override
-  String get validFor => 'Ważny przez';
-
-  @override
-  String get validUntil => 'Ważny do';
-
-  @override
-  String valueNotAllowed(Object parameter, Object type, Object value) {
-    return 'untranslated';
+  String valueNotAllowed(String parameter, String type, String value) {
+    return 'Typ $type „$value” nie jest dozwoloną wartością dla »$parameter«.';
   }
 
   @override
-  String valueNotAllowedIn(Object map, Object parameter, Object type, Object value) {
-    return 'untranslated';
+  String valueNotAllowedIn(String map, String parameter, String type, String value) {
+    return 'Typ $type „$value” nie jest prawidłową wartością dla »$parameter« w »$map«.';
   }
 
   @override
   String get verboseLogging => 'Wyczerpujące rejestrowanie';
 
   @override
-  String get version => 'Wersja';
+  String get versionTitle => 'Wersja';
 
   @override
   String get wrongPassword => 'Nieprawidłowe hasło';

@@ -9,13 +9,49 @@ class AppLocalizationsNl extends AppLocalizations {
   AppLocalizationsNl([String locale = 'nl']) : super(locale);
 
   @override
+  String get a11yAddFolderButton => 'Map toevoegen';
+
+  @override
+  String get a11yAddTokenManuallyButton => 'Voeg token handmatig toe';
+
+  @override
+  String get a11yCloseSearchTokensButton => 'Zoekopdracht sluiten';
+
+  @override
+  String get a11yLicensesButton => 'Licenties';
+
+  @override
+  String get a11yPushTokensButton => 'Push Tokens';
+
+  @override
+  String get a11yScanQrCodeButton => 'QR-code scannen';
+
+  @override
+  String get a11yScanQrCodeViewActive => 'Scan-QR-codeweergave. Cammera is actief';
+
+  @override
+  String get a11yScanQrCodeViewFlashlightOff => 'Tik om de zaklamp aan te zetten.';
+
+  @override
+  String get a11yScanQrCodeViewFlashlightOn => 'Tik om de zaklamp uit te schakelen.';
+
+  @override
+  String get a11yScanQrCodeViewGallery => 'Galerij openen';
+
+  @override
+  String get a11yScanQrCodeViewInactive => 'Scan-QR-code weergave. Cammera is niet actief';
+
+  @override
+  String get a11ySearchTokensButton => 'Zoek tokens';
+
+  @override
+  String get a11ySettingsButton => 'Instellingen';
+
+  @override
   String get accept => 'Accepteren';
 
   @override
   String get addANewFolder => 'Nieuwe map maken';
-
-  @override
-  String get addFolder => 'Map toevoegen';
 
   @override
   String get addSystemInfo => 'Systeeminformatie toevoegen';
@@ -24,13 +60,13 @@ class AppLocalizationsNl extends AppLocalizations {
   String get addToken => 'Token toevoegen';
 
   @override
-  String get addTokenManually => 'Voeg token handmatig toe';
+  String get additionalErrorMessage => 'Optioneel bericht';
 
   @override
   String get algorithm => 'Algoritme';
 
   @override
-  String algorithmUnsupported(Object algorithm) {
+  String algorithmUnsupported(String algorithm) {
     return 'Het algoritme $algorithm wordt niet ondersteund';
   }
 
@@ -95,13 +131,13 @@ class AppLocalizationsNl extends AppLocalizations {
   String get clearErrorLog => 'Verwijderen';
 
   @override
-  String get closeSearchTokens => 'Zoekopdracht sluiten';
+  String get clipboardEmpty => 'Klembord is leeg';
 
   @override
   String get confirmDeletion => 'Bevestig verwijderen';
 
   @override
-  String confirmDeletionOf(Object name) {
+  String confirmDeletionOf(String name) {
     return 'Weet u zeker dat u $name wilt verwijderen?';
   }
 
@@ -122,6 +158,18 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get container => 'Container';
+
+  @override
+  String get containerAlreadyExists => 'Container bestaat al';
+
+  @override
+  String get containerDetails => 'Containergegevens';
+
+  @override
+  String get containerSerial => 'Container serie';
+
+  @override
+  String get containerSyncUrl => 'Url voor containersynchronisatie';
 
   @override
   String get continueButton => 'Ga verder';
@@ -146,6 +194,12 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get creator => 'Schepper';
+
+  @override
+  String get dayPasswordValidFor => 'Geldig voor';
+
+  @override
+  String get dayPasswordValidUntil => 'Geldig tot';
 
   @override
   String get decline => 'Weigeren';
@@ -178,7 +232,18 @@ class AppLocalizationsNl extends AppLocalizations {
   String get delete => 'Verwijderen';
 
   @override
+  String get deleteContainerDialogContent => 'Als u deze container verwijdert, wordt de smartphone losgekoppeld van de privacyIDEA server en worden de tokens in deze container onbruikbaar. Controleer voor het verwijderen of de bijbehorende tokens niet meer nodig zijn!';
+
+  @override
+  String deleteContainerDialogTitle(String serial) {
+    return 'Container verwijderen $serial';
+  }
+
+  @override
   String get deleteLockedToken => 'Verifieer om het vergrendelde token te verwijderen.';
+
+  @override
+  String get details => 'Details';
 
   @override
   String get deviceCredentialsRequiredTitle => 'Inloggevens van het apparaat zijn niet ingesteld';
@@ -232,13 +297,16 @@ class AppLocalizationsNl extends AppLocalizations {
   String get errorMailBody => 'Het foutlogbestand is bijgevoegd.\nU kunt deze tekst vervangen door aanvullende informatie over de fout.';
 
   @override
-  String errorRollOutFailed(Object name) {
+  String get errorMissingPrivateKey => 'Ontbrekende privésleutel';
+
+  @override
+  String errorRollOutFailed(String name) {
     return 'Uitrollen van token $name mislukt.';
   }
 
   @override
-  String errorRollOutNoConnectionToServer(Object name) {
-    return 'Uitrollen mislukt. Geen verbinding met de server.';
+  String errorRollOutNoConnectionToServer(String name) {
+    return 'Het uitrollen van token $name is mislukt, de server kan niet worden bereikt.';
   }
 
   @override
@@ -248,7 +316,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get errorRollOutSSLHandshakeFailed => 'SSL-handdruk mislukt. Uitrollen niet mogelijk.';
 
   @override
-  String errorRollOutUnknownError(Object e) {
+  String errorRollOutUnknownError(String e) {
     return 'Een onbekende fout heeft plaats gevonden. Uitrollen is niet mogelijk: $e';
   }
 
@@ -259,17 +327,17 @@ class AppLocalizationsNl extends AppLocalizations {
   String get errorSynchronizationNoNetworkConnection => 'Token synchroniseren mislukt, privacyIDEA server kan niet worden bereikt.';
 
   @override
-  String errorTokenExpired(Object name) {
+  String errorTokenExpired(String name) {
     return 'Het token $name is verlopen.';
   }
 
   @override
-  String errorUnlinkingPushToken(Object label) {
+  String errorUnlinkingPushToken(String label) {
     return 'Het is niet gelukt om het push token $label te ontkoppelen.';
   }
 
   @override
-  String errorWhenPullingChallenges(Object name) {
+  String errorWhenPullingChallenges(String name) {
     return 'Er is een fout opgetreden bij het zoeken naar uitdagingen van $name';
   }
 
@@ -292,14 +360,27 @@ class AppLocalizationsNl extends AppLocalizations {
   String get exportNonPrivacyIDEATokens => 'Niet-privacyIDEA tokens exporteren';
 
   @override
+  String get exportOneMore => 'Nog een';
+
+  @override
   String get exportTokens => 'Tokens exporteren';
 
   @override
   String get exportingTokens => 'Tokens exporteren...';
 
   @override
-  String failedToLoad(Object name) {
-    return 'Mislukt bij het laden:';
+  String failedToFinalizeContainer(String serial) {
+    return 'Fout bij het afsluiten van de container $serial';
+  }
+
+  @override
+  String failedToLoad(String name) {
+    return 'Mislukt bij het laden: $name';
+  }
+
+  @override
+  String failedToSyncContainer(String serial) {
+    return 'Synchronisatie van container $serial mislukt';
   }
 
   @override
@@ -333,7 +414,10 @@ class AppLocalizationsNl extends AppLocalizations {
   String get fileSavedToDownloadsFolder => 'Bestand opgeslagen in de map Downloads';
 
   @override
-  String get findingQrCodeInImage => 'Op zoek naar QR code in afbeelding...';
+  String get finalizationState => 'Afrondingsstatus';
+
+  @override
+  String get finalizeContainerFailed => 'Container voltooien mislukt';
 
   @override
   String get firebaseToken => 'Firebase Token';
@@ -345,10 +429,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get generatingPhonePart => 'Genereren telefoon gedeelte';
 
   @override
-  String get generatingRSAKeyPair => 'Genereren RSA sleutelpaar';
-
-  @override
-  String get generatingRSAKeyPairFailed => 'Genereren RSA sleutelpaar mislukt';
+  String get gitHubButton => 'Deze app is open source\nBezoek ons op GitHub';
 
   @override
   String get goToSettingsButton => 'Ga naar instellingen';
@@ -381,7 +462,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get imageUrl => 'Afbeeldings-URL';
 
   @override
-  String importConflictToken(num count) {
+  String importConflictToken(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
@@ -393,7 +474,7 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String importExistingToken(num count) {
+  String importExistingToken(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
@@ -408,7 +489,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get importExportTokens => 'Tokens importeren/exporteren';
 
   @override
-  String importFailedToken(num count) {
+  String importFailedToken(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
@@ -453,7 +534,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get importHintPrivacyIdeaQrScan => 'Om QR-codes van de tokens te maken, navigeer je naar de instellingen en tik je op \"Exporteren\". Selecteer vervolgens \"Als QR-code\" en tik op het muntje dat geëxporteerd moet worden. Deze variant is alleen geschikt voor directe overdracht naar een ander apparaat, omdat de QR-code niet versleuteld is.';
 
   @override
-  String importNTokens(num count) {
+  String importNTokens(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
@@ -465,7 +546,7 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String importNewToken(num count) {
+  String importNewToken(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
@@ -480,13 +561,16 @@ class AppLocalizationsNl extends AppLocalizations {
   String get importTokens => 'Importer un jeton';
 
   @override
+  String get importantInformationTitle => 'Important information';
+
+  @override
   String get importedVia => 'Geïmporteerd via';
 
   @override
   String get increaseCounter => 'Verhoog teller';
 
   @override
-  String internalServerError(Object code) {
+  String internalServerError(String code) {
     return 'Interne serverfout ($code)';
   }
 
@@ -518,33 +602,36 @@ class AppLocalizationsNl extends AppLocalizations {
   String get introTokenSwipe => 'Veeg tokens naar links om beschikbare acties te zien.';
 
   @override
-  String invalidBackupFile(Object appName) {
+  String invalidBackupFile(String appName) {
     return 'Het geselecteerde bestand is geen geldige backup van $appName.';
   }
 
   @override
-  String invalidLink(Object appName) {
+  String invalidLink(String appName) {
     return 'De ingevoerde link is geen geldig token van $appName, of wordt niet ondersteund.';
   }
 
   @override
-  String invalidQrFile(Object appName) {
+  String invalidQrFile(String appName) {
     return 'Het geselecteerde bestand bevat geen geldige QR code van $appName.';
   }
 
   @override
-  String invalidQrScan(Object appName) {
+  String invalidQrScan(String appName) {
     return 'De gescande QR code is geen geldige backup van $appName.';
   }
 
   @override
-  String invalidValue(Object parameter, Object type, Object value) {
-    return 'untranslated';
+  String get invalidUrl => 'Ongeldige URL';
+
+  @override
+  String invalidValue(String parameter, String type, String value) {
+    return 'Het $type \'$value\' is niet geldig voor \'$parameter\'.';
   }
 
   @override
-  String invalidValueIn(Object map, Object parameter, Object type, Object value) {
-    return 'untranslated';
+  String invalidValueIn(String map, String parameter, String type, String value) {
+    return 'Het $type \'$value\' is niet geldig voor \'$parameter\' in \'$map\'.';
   }
 
   @override
@@ -554,21 +641,29 @@ class AppLocalizationsNl extends AppLocalizations {
   String get isPiTokenQuestion => 'Is het een privacyIDEA token?';
 
   @override
+  String get issuer => 'Verstrekker';
+
+  @override
+  String issuerLabel(String name) {
+    return 'Verstrekker: $name';
+  }
+
+  @override
   String get language => 'Taal';
 
   @override
   String get legacySigningErrorMessage => 'Het token is aangemaakt in een verouderde versie van de app, wat kan leiden tot problemen bij het gebruik ervan.\nHet wordt aanbevolen om een nieuw push token aan te maken als het probleem zich blijft voordoen!';
 
   @override
-  String legacySigningErrorTitle(Object tokenLabel) {
+  String legacySigningErrorTitle(String tokenLabel) {
     return 'Er is een fout opgetreden bij het gebruik van het verouderde token: $tokenLabel';
   }
 
   @override
-  String get licenses => 'Licenties';
+  String get licensesAndVersion => 'Licenties en versie';
 
   @override
-  String get licensesAndVersion => 'Licenties en versie';
+  String get linkMustOtpAuth => 'De link moet beginnen met otpauth://';
 
   @override
   String get linkedContainer => 'Gekoppelde container';
@@ -589,17 +684,17 @@ class AppLocalizationsNl extends AppLocalizations {
   String get markQrCode => 'Markeer QR Code';
 
   @override
-  String missingRequiredParameter(Object parameter) {
+  String missingRequiredParameter(String parameter) {
     return 'De waarde voor de parameter [$parameter] is vereist, maar ontbreekt.';
   }
 
   @override
-  String missingRequiredParameterIn(Object map, Object parameter) {
+  String missingRequiredParameterIn(String map, String parameter) {
     return 'De waarde voor de parameter [$parameter] is vereist, maar ontbreekt in \"$map\".';
   }
 
   @override
-  String mustNotBeEmpty(Object field) {
+  String mustNotBeEmpty(String field) {
     return '$field mag niet leeg zijn';
   }
 
@@ -649,13 +744,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get ok => 'Ok';
 
   @override
-  String get oneMore => 'Nog een';
-
-  @override
   String get open => 'Openen';
-
-  @override
-  String get optionalMessage => 'Optioneel bericht';
 
   @override
   String get originApp => 'Oorsprong app';
@@ -664,15 +753,9 @@ class AppLocalizationsNl extends AppLocalizations {
   String get originDetails => 'Details over de oorsprong';
 
   @override
-  String otpValueCopiedMessage(Object otpValue) {
+  String otpValueCopiedMessage(String otpValue) {
     return 'Wachtwoord \"$otpValue\" gekopieerd naar het klembord.';
   }
-
-  @override
-  String get parsingResponse => 'Antwoord analyseren';
-
-  @override
-  String get parsingResponseFailed => 'Antwoord analyseren mislukt';
 
   @override
   String get password => 'Wachtwoord';
@@ -750,10 +833,24 @@ class AppLocalizationsNl extends AppLocalizations {
   String get patchNotesV4_4_0NewFeatures2 => 'Ondersteuning toegevoegd voor privacyIDEA\'s \"require presence\".';
 
   @override
+  String get patchNotesV4_4_2Improvement1 => 'Zaklampondersteuning toegevoegd voor QR-code scannen.';
+
+  @override
+  String get patchNotesV4_4_2NewFeatures1 => 'Tokens kunnen nu worden ingevoegd met kopiëren en plakken.';
+
+  @override
+  String get patchNotesV4_4_2NewFeatures2 => 'Galerijondersteuning toegevoegd voor QR-code scannen.';
+
+  @override
   String get period => 'Duur';
 
   @override
   String get phonePart => 'Telefoon gedeelte:';
+
+  @override
+  String piServerCode(String code) {
+    return 'PI-servercode: $code';
+  }
 
   @override
   String get pleaseEnterANameForThisToken => 'Voer de naam in voor deze token.';
@@ -762,16 +859,10 @@ class AppLocalizationsNl extends AppLocalizations {
   String get pleaseEnterASecretForThisToken => 'Voer de geheime sleutel in voor deze token.';
 
   @override
-  String get pleaseSyncManuallyWhenNetworkIsAvailable => 'Synchroniseer de push tokens handmatig via de instellingen als er een netwerkverbinding beschikbaar is.';
-
-  @override
-  String get pollingChallenges => 'Zoeken naar nieuwe aanvragen';
-
-  @override
   String get pollingFailed => 'Vraag mislukt.';
 
   @override
-  String pollingFailedFor(Object serial) {
+  String pollingFailedFor(String serial) {
     return 'Query voor $serial mislukt.';
   }
 
@@ -791,9 +882,6 @@ class AppLocalizationsNl extends AppLocalizations {
   String get pushToken => 'Push Token';
 
   @override
-  String get pushTokens => 'Push Tokens';
-
-  @override
   String get qrFileDecodeError => 'Het was niet mogelijk om de QR code te decoderen van de geselecteerde afbeelding, gebruik in plaats daarvan de QR code scanner.';
 
   @override
@@ -809,9 +897,6 @@ class AppLocalizationsNl extends AppLocalizations {
   String get qrNotFound => 'Geen QR code gevonden!';
 
   @override
-  String get qrScan => 'Scan';
-
-  @override
   String get rename => 'Wijzigen';
 
   @override
@@ -821,7 +906,10 @@ class AppLocalizationsNl extends AppLocalizations {
   String get renameTokenFolder => 'Map hernoemen';
 
   @override
-  String requestInfo(Object account, Object issuer) {
+  String get replaceButton => 'vervangen';
+
+  @override
+  String requestInfo(String account, String issuer) {
     return 'Verzonden door $issuer voor uw account: \"$account\"';
   }
 
@@ -832,13 +920,43 @@ class AppLocalizationsNl extends AppLocalizations {
   String get requestTriggerdByUserQuestion => 'Is dit verzoek door jou gedaan?';
 
   @override
-  String get retryRollout => 'Opnieuw uitrollen';
+  String get retryRolloutButton => 'Opnieuw uitrollen';
 
   @override
-  String get rolloutCompleted => 'Uitrollen voltooid';
+  String get rolloutStateCompleted => 'Uitrollen voltooid';
 
   @override
-  String get save => 'Opslaan';
+  String get rolloutStateGeneratingKeyPair => 'Sleutelpaar genereren';
+
+  @override
+  String get rolloutStateGeneratingKeyPairCompleted => 'Genereren sleutelpaar voltooid';
+
+  @override
+  String get rolloutStateGeneratingKeyPairFailed => 'Het sleutelpaar is niet gegenereerd';
+
+  @override
+  String get rolloutStateNotStarted => 'Start uitrollen';
+
+  @override
+  String get rolloutStateParsingResponse => 'Antwoord analyseren';
+
+  @override
+  String get rolloutStateParsingResponseCompleted => 'Antwoord ontleden voltooid';
+
+  @override
+  String get rolloutStateParsingResponseFailed => 'Antwoord analyseren mislukt';
+
+  @override
+  String get rolloutStateSendingPublicKey => 'Publieke sleutel verzenden';
+
+  @override
+  String get rolloutStateSendingPublicKeyCompleted => 'Verzenden openbare sleutel voltooid';
+
+  @override
+  String get rolloutStateSendingPublicKeyFailed => 'Versturen openbare sleutel mislukt';
+
+  @override
+  String get saveButton => 'Opslaan';
 
   @override
   String get scanQrCode => 'Scan QR-Code';
@@ -847,7 +965,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get scanThisQrWithNewDevice => 'Scan deze QR-code met uw nieuwe apparaat om de token te importeren.';
 
   @override
-  String get searchTokens => 'Zoek tokens';
+  String get secondsUntilNextOTP => 'Seconden tot volgende OTP';
 
   @override
   String get secretIsRequired => 'Geheim is vereist';
@@ -877,7 +995,16 @@ class AppLocalizationsNl extends AppLocalizations {
   }
 
   @override
-  String get selectTokensToExportHelpContent => 'Als een token niet in de lijst staat, is het niet gegarandeerd dat het geen privacyIDEA token is.\nMomenteel kunnen alleen handmatig toegevoegde en geïmporteerde tokens worden geëxporteerd.';
+  String get selectTokensToExportHelpContent1 => 'Als een token niet in de lijst staat, is het niet gegarandeerd dat het geen privacyIDEA token is.';
+
+  @override
+  String get selectTokensToExportHelpContent2 => 'Momenteel kunnen alleen handmatig toegevoegde en geïmporteerde tokens worden geëxporteerd.';
+
+  @override
+  String get selectTokensToExportHelpContent3 => 'We werken aan een oplossing om onderscheid te maken tussen privacyIDEA tokens en privé tokens.';
+
+  @override
+  String get selectTokensToExportHelpContent4 => ' Je kunt een nieuwe QR code krijgen van de dienst waarvan je het token hebt ontvangen.';
 
   @override
   String get selectTokensToExportHelpTitle => 'Staat jouw token er niet bij?';
@@ -893,12 +1020,6 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get sendPushRequestResponseFailed => 'Het verzenden van het antwoord is mislukt. ';
-
-  @override
-  String get sendingRSAPublicKey => 'Versturen van de openbare RSA sleutel';
-
-  @override
-  String get sendingRSAPublicKeyFailed => 'Versturen van de openbare RSA sleutel mislukt';
 
   @override
   String get serverNotReachable => 'De server kon niet worden bereikt.';
@@ -925,10 +1046,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get someTokensDoNotSupportPolling => 'Sommige tokens zijn verouderd en ondersteunen geen actief zoeken';
 
   @override
-  String get startRollout => 'Start uitrollen';
-
-  @override
-  String statusCode(Object statusCode) {
+  String statusCode(int statusCode) {
     return 'Statuscode: $statusCode';
   }
 
@@ -940,6 +1058,24 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get syncFbTokenFailed => 'Synchroniseren mislukt voor de volgende tokens, probeer het opnieuw:';
+
+  @override
+  String get syncFbTokenManuallyWhenNetworkIsAvailable => 'Synchroniseer de push tokens handmatig via de instellingen als er een netwerkverbinding beschikbaar is.';
+
+  @override
+  String get syncState => 'Sync-status';
+
+  @override
+  String get syncStateCompletedDescription => 'Sync voltooid';
+
+  @override
+  String get syncStateFailedDescription => 'Sync mislukt';
+
+  @override
+  String get syncStateNotStartedDescription => 'Synchronisatie niet gestart';
+
+  @override
+  String get syncStateSyncingDescription => 'Momenteel aan het synchroniseren';
 
   @override
   String get synchronizePushTokens => 'Synchroniseer push tokens';
@@ -957,9 +1093,6 @@ class AppLocalizationsNl extends AppLocalizations {
   String get theme => 'Thema';
 
   @override
-  String get thisAppIsOpenSource => 'Deze app is open source\nBezoek ons op GitHub';
-
-  @override
   String get timeOut => 'Time-out';
 
   @override
@@ -969,7 +1102,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get tokenDetails => 'Details van de token';
 
   @override
-  String get tokenLink => 'tokenlink';
+  String get tokenLinkImport => 'tokenlink';
 
   @override
   String get tokenSerial => 'Token serial';
@@ -979,9 +1112,6 @@ class AppLocalizationsNl extends AppLocalizations {
 
   @override
   String get tokensDoNotSupportSynchronization => 'Voor de volgende tokens wordt synchroniseren niet ondersteunt, ze moeten opnieuw worden aangeleverd:';
-
-  @override
-  String get tokensNotEncrypted => 'De tokens zijn niet versleuteld en kunnen direct worden geïmporteerd.';
 
   @override
   String get tokensSuccessfullyDecrypted => 'De tokens zijn succesvol gedecodeerd en kunnen nu worden geïmporteerd.';
@@ -999,7 +1129,7 @@ class AppLocalizationsNl extends AppLocalizations {
   String get unlock => 'Ontgrendel';
 
   @override
-  String unsupported(Object name, Object value) {
+  String unsupported(String name, String value) {
     return 'De $name [$value] wordt niet ondersteund door deze versie van de app.';
   }
 
@@ -1010,26 +1140,20 @@ class AppLocalizationsNl extends AppLocalizations {
   String get useDeviceLocaleTitle => 'Gebruik de taal van het apparaat';
 
   @override
-  String get validFor => 'Geldig voor';
-
-  @override
-  String get validUntil => 'Geldig tot';
-
-  @override
-  String valueNotAllowed(Object parameter, Object type, Object value) {
-    return 'untranslated';
+  String valueNotAllowed(String parameter, String type, String value) {
+    return 'Type $type “$value” is geen toegestane waarde voor ‘$parameter’';
   }
 
   @override
-  String valueNotAllowedIn(Object map, Object parameter, Object type, Object value) {
-    return 'untranslated';
+  String valueNotAllowedIn(String map, String parameter, String type, String value) {
+    return 'Type $type “$value” is geen geldige waarde voor ‘$parameter’ in ”$map”';
   }
 
   @override
   String get verboseLogging => 'Verbose loggen';
 
   @override
-  String get version => 'Versie';
+  String get versionTitle => 'Versie';
 
   @override
   String get wrongPassword => 'Onjuist wachtwoord';

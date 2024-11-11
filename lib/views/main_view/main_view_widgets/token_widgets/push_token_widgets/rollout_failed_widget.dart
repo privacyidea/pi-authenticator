@@ -25,7 +25,7 @@ import '../../../../../model/extensions/enums/push_token_rollout_state_extension
 import '../../../../../model/tokens/push_token.dart';
 import '../../../../../utils/globals.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
-import '../../../../../widgets/button_widgets/press_button.dart';
+import '../../../../../widgets/button_widgets/cooldown_button.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 
 class StartRolloutWidget extends ConsumerWidget {

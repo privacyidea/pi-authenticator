@@ -9,13 +9,49 @@ class AppLocalizationsCs extends AppLocalizations {
   AppLocalizationsCs([String locale = 'cs']) : super(locale);
 
   @override
+  String get a11yAddFolderButton => 'Přidat složku';
+
+  @override
+  String get a11yAddTokenManuallyButton => 'Přidat token ručně';
+
+  @override
+  String get a11yCloseSearchTokensButton => 'Zavřít vyhledávání';
+
+  @override
+  String get a11yLicensesButton => 'Licence';
+
+  @override
+  String get a11yPushTokensButton => 'Žetony Push';
+
+  @override
+  String get a11yScanQrCodeButton => 'Skenování QR-kódu';
+
+  @override
+  String get a11yScanQrCodeViewActive => 'Zobrazení Scan-QR-code. Cammera je aktivní';
+
+  @override
+  String get a11yScanQrCodeViewFlashlightOff => 'Klepnutím zapněte svítilnu.';
+
+  @override
+  String get a11yScanQrCodeViewFlashlightOn => 'Klepnutím vypnete svítilnu.';
+
+  @override
+  String get a11yScanQrCodeViewGallery => 'Otevřít galerii';
+
+  @override
+  String get a11yScanQrCodeViewInactive => 'Zobrazení skenování QR kódu. Kamera není aktivní';
+
+  @override
+  String get a11ySearchTokensButton => 'Hledat tokeny';
+
+  @override
+  String get a11ySettingsButton => 'Nastavení';
+
+  @override
   String get accept => 'Přijmout';
 
   @override
   String get addANewFolder => 'Vytvoření nové složky';
-
-  @override
-  String get addFolder => 'Přidat složku';
 
   @override
   String get addSystemInfo => 'Přidat systémové informace';
@@ -24,13 +60,13 @@ class AppLocalizationsCs extends AppLocalizations {
   String get addToken => 'Přidat token';
 
   @override
-  String get addTokenManually => 'Přidat token ručně';
+  String get additionalErrorMessage => 'Volitelná zpráva';
 
   @override
   String get algorithm => 'Algoritmus';
 
   @override
-  String algorithmUnsupported(Object algorithm) {
+  String algorithmUnsupported(String algorithm) {
     return 'Algoritmus $algorithm není podporován';
   }
 
@@ -95,13 +131,13 @@ class AppLocalizationsCs extends AppLocalizations {
   String get clearErrorLog => 'Vymazat';
 
   @override
-  String get closeSearchTokens => 'Zavřít vyhledávání';
+  String get clipboardEmpty => 'Schránka je prázdná';
 
   @override
   String get confirmDeletion => 'Potvrdit smazání';
 
   @override
-  String confirmDeletionOf(Object name) {
+  String confirmDeletionOf(String name) {
     return 'Opravdu chcete smazat token $name?';
   }
 
@@ -122,6 +158,18 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get container => 'Kontejner';
+
+  @override
+  String get containerAlreadyExists => 'Kontejner již existuje';
+
+  @override
+  String get containerDetails => 'Podrobnosti o kontejneru';
+
+  @override
+  String get containerSerial => 'Sériový kontejner';
+
+  @override
+  String get containerSyncUrl => 'Url pro synchronizaci kontejnerů';
 
   @override
   String get continueButton => 'Pokračovat';
@@ -146,6 +194,12 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get creator => 'Tvůrce';
+
+  @override
+  String get dayPasswordValidFor => 'Platné pro';
+
+  @override
+  String get dayPasswordValidUntil => 'Platné do';
 
   @override
   String get decline => 'Odmítnout';
@@ -178,7 +232,18 @@ class AppLocalizationsCs extends AppLocalizations {
   String get delete => 'Smazat';
 
   @override
+  String get deleteContainerDialogContent => 'Pokud tento kontejner odstraníte, smartphone se odpojí od serveru privacyIDEA a tokeny v tomto kontejneru nebudou použitelné. Před odstraněním se ujistěte, že příslušné tokeny již nejsou potřeba!';
+
+  @override
+  String deleteContainerDialogTitle(String serial) {
+    return 'Odstranění kontejneru $serial';
+  }
+
+  @override
   String get deleteLockedToken => 'Prosím, autentifikujte se pro smazání uzamčeného tokenu.';
+
+  @override
+  String get details => 'Podrobnosti na';
 
   @override
   String get deviceCredentialsRequiredTitle => 'Není nastaven zámek zařízení';
@@ -232,12 +297,15 @@ class AppLocalizationsCs extends AppLocalizations {
   String get errorMailBody => 'Přiložen je soubor protokolu o chybách.\nTento text můžete nahradit dalšími informacemi o chybě.';
 
   @override
-  String errorRollOutFailed(Object name) {
+  String get errorMissingPrivateKey => 'Chybějící soukromý klíč';
+
+  @override
+  String errorRollOutFailed(String name) {
     return 'Registrace tokenu $name selhala.';
   }
 
   @override
-  String errorRollOutNoConnectionToServer(Object name) {
+  String errorRollOutNoConnectionToServer(String name) {
     return 'Registrace tokenu $name selhala. Server není dostupný.';
   }
 
@@ -248,7 +316,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get errorRollOutSSLHandshakeFailed => 'SSL handshake se nezdařil. Roll-out není možný.';
 
   @override
-  String errorRollOutUnknownError(Object e) {
+  String errorRollOutUnknownError(String e) {
     return 'Vyskytla se neznámá chyba. Registrace není možná: $e';
   }
 
@@ -259,17 +327,17 @@ class AppLocalizationsCs extends AppLocalizations {
   String get errorSynchronizationNoNetworkConnection => 'Synchronizace tokenů selhala, připojení k serveru privacyIDEA se nezdařilo.';
 
   @override
-  String errorTokenExpired(Object name) {
+  String errorTokenExpired(String name) {
     return 'Platnost tokenu $name vypršela.';
   }
 
   @override
-  String errorUnlinkingPushToken(Object label) {
+  String errorUnlinkingPushToken(String label) {
     return 'Nepodařilo se odlinkovat push token $label.';
   }
 
   @override
-  String errorWhenPullingChallenges(Object name) {
+  String errorWhenPullingChallenges(String name) {
     return 'Při dotazování na výzvy $name došlo k chybě.';
   }
 
@@ -292,14 +360,27 @@ class AppLocalizationsCs extends AppLocalizations {
   String get exportNonPrivacyIDEATokens => 'Exportovat ne-privacyIDEA žetony';
 
   @override
+  String get exportOneMore => 'Ještě jeden';
+
+  @override
   String get exportTokens => 'Exportovat žetony';
 
   @override
   String get exportingTokens => 'Probíhá export žetonů...';
 
   @override
-  String failedToLoad(Object name) {
-    return 'Nepodařilo se načíst:';
+  String failedToFinalizeContainer(String serial) {
+    return 'Nepodařilo se dokončit kontejner $serial';
+  }
+
+  @override
+  String failedToLoad(String name) {
+    return 'Nepodařilo se načíst: $name';
+  }
+
+  @override
+  String failedToSyncContainer(String serial) {
+    return 'Nepodařilo se synchronizovat kontejner $serial';
   }
 
   @override
@@ -333,7 +414,10 @@ class AppLocalizationsCs extends AppLocalizations {
   String get fileSavedToDownloadsFolder => 'Soubor uložen do složky Stažené soubory';
 
   @override
-  String get findingQrCodeInImage => 'Hledání QR kódu v obrázku...';
+  String get finalizationState => 'Stav finalizace';
+
+  @override
+  String get finalizeContainerFailed => 'Finalizace kontejneru se nezdařila';
 
   @override
   String get firebaseToken => 'Token Firebase';
@@ -345,10 +429,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get generatingPhonePart => 'Generování klientské části';
 
   @override
-  String get generatingRSAKeyPair => 'Generování párů klíčů RSA';
-
-  @override
-  String get generatingRSAKeyPairFailed => 'Generování páru klíčů RSA se nezdařilo';
+  String get gitHubButton => 'Tato aplikace má otevřený zdrojový kód\nNavštivte nás na GitHub';
 
   @override
   String get goToSettingsButton => 'Otevřít nastavení';
@@ -381,7 +462,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get imageUrl => 'URL obrázku';
 
   @override
-  String importConflictToken(num count) {
+  String importConflictToken(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
@@ -393,7 +474,7 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String importExistingToken(num count) {
+  String importExistingToken(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
@@ -408,7 +489,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get importExportTokens => 'Import/Exportovat žetony';
 
   @override
-  String importFailedToken(num count) {
+  String importFailedToken(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
@@ -453,7 +534,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get importHintPrivacyIdeaQrScan => 'Chcete-li vytvořit QR kódy žetonů, přejděte do nastavení a klepněte na \"Export\". Poté vyberte \"Jako QR kód\" a klepněte na token, který chcete exportovat. Tato varianta je vhodná pouze pro přímý přenos do jiného zařízení, protože QR kód není šifrovaný.';
 
   @override
-  String importNTokens(num count) {
+  String importNTokens(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
@@ -465,7 +546,7 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String importNewToken(num count) {
+  String importNewToken(int count) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
@@ -480,18 +561,21 @@ class AppLocalizationsCs extends AppLocalizations {
   String get importTokens => 'Importní token';
 
   @override
+  String get importantInformationTitle => 'Important information';
+
+  @override
   String get importedVia => 'Dovezeno prostřednictvím';
 
   @override
   String get increaseCounter => 'Zvýšit počítadla';
 
   @override
-  String internalServerError(Object code) {
+  String internalServerError(String code) {
     return 'Interní chyba serveru ($code)';
   }
 
   @override
-  String get introAddFolder => 'Můžete vytvářet složky\npro uspořádání svých tokenů.';
+  String get introAddFolder => 'Můžete vytvářet složky pro uspořádání svých tokenů.';
 
   @override
   String get introAddTokenManually => 'Pokud nechcete skenovat QR kód, můžete tokeny přidávat také ručně.';
@@ -518,33 +602,36 @@ class AppLocalizationsCs extends AppLocalizations {
   String get introTokenSwipe => 'Přejetím po tokenech doleva zobrazíte dostupné akce.';
 
   @override
-  String invalidBackupFile(Object appName) {
+  String invalidBackupFile(String appName) {
     return 'Vybraný soubor není platnou zálohou $appName.';
   }
 
   @override
-  String invalidLink(Object appName) {
+  String invalidLink(String appName) {
     return 'Zadaný odkaz není platným tokenem $appName nebo není podporován.';
   }
 
   @override
-  String invalidQrFile(Object appName) {
+  String invalidQrFile(String appName) {
     return 'Vybraný soubor neobsahuje platný QR kód z $appName.';
   }
 
   @override
-  String invalidQrScan(Object appName) {
+  String invalidQrScan(String appName) {
     return 'Naskenovaný QR kód není platnou zálohou $appName.';
   }
 
   @override
-  String invalidValue(Object parameter, Object type, Object value) {
-    return 'untranslated';
+  String get invalidUrl => 'Neplatná adresa URL';
+
+  @override
+  String invalidValue(String parameter, String type, String value) {
+    return 'Typ $type \'$value\' není platný pro \'$parameter\'.';
   }
 
   @override
-  String invalidValueIn(Object map, Object parameter, Object type, Object value) {
-    return 'untranslated';
+  String invalidValueIn(String map, String parameter, String type, String value) {
+    return '$type \'$value\' není platný pro \'$parameter\' v \'$map\'.';
   }
 
   @override
@@ -554,21 +641,29 @@ class AppLocalizationsCs extends AppLocalizations {
   String get isPiTokenQuestion => 'Je to token privacyIDEA?';
 
   @override
+  String get issuer => 'Vydavatel';
+
+  @override
+  String issuerLabel(String name) {
+    return 'Vydavatel: $name';
+  }
+
+  @override
   String get language => 'Jazyk';
 
   @override
   String get legacySigningErrorMessage => 'Token byl vytvořen v zastaralé verzi aplikace, což může vést k problémům při jeho používání.\nPokud problém přetrvává, doporučujeme vytvořit nový push token!';
 
   @override
-  String legacySigningErrorTitle(Object tokenLabel) {
+  String legacySigningErrorTitle(String tokenLabel) {
     return 'Při použití staršího tokenu došlo k chybě: $tokenLabel';
   }
 
   @override
-  String get licenses => 'Licence';
+  String get licensesAndVersion => 'Licence a verze';
 
   @override
-  String get licensesAndVersion => 'Licence a verze';
+  String get linkMustOtpAuth => 'Odkaz musí začínat otpauth://';
 
   @override
   String get linkedContainer => 'Propojený kontejner';
@@ -589,17 +684,17 @@ class AppLocalizationsCs extends AppLocalizations {
   String get markQrCode => 'Označte QR kód';
 
   @override
-  String missingRequiredParameter(Object parameter) {
+  String missingRequiredParameter(String parameter) {
     return 'Hodnota parametru [$parameter] je povinná, ale chybí.';
   }
 
   @override
-  String missingRequiredParameterIn(Object map, Object parameter) {
+  String missingRequiredParameterIn(String map, String parameter) {
     return 'Hodnota parametru [$parameter] je povinná, ale v \"$map\" chybí.';
   }
 
   @override
-  String mustNotBeEmpty(Object field) {
+  String mustNotBeEmpty(String field) {
     return '$field nesmí být prázdné';
   }
 
@@ -649,13 +744,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get ok => 'Ok';
 
   @override
-  String get oneMore => 'Ještě jeden';
-
-  @override
   String get open => 'Otevřít';
-
-  @override
-  String get optionalMessage => 'Volitelná zpráva';
 
   @override
   String get originApp => 'Aplikace Origin';
@@ -664,15 +753,9 @@ class AppLocalizationsCs extends AppLocalizations {
   String get originDetails => 'Podrobnosti o původu';
 
   @override
-  String otpValueCopiedMessage(Object otpValue) {
+  String otpValueCopiedMessage(String otpValue) {
     return 'Heslo \"$otpValue\" bylo zkopírováno do schránky.';
   }
-
-  @override
-  String get parsingResponse => 'Rozbor odpovědi';
-
-  @override
-  String get parsingResponseFailed => 'Parsování odpovědi se nezdařilo';
 
   @override
   String get password => 'Heslo';
@@ -750,10 +833,24 @@ class AppLocalizationsCs extends AppLocalizations {
   String get patchNotesV4_4_0NewFeatures2 => 'Přidána podpora pro \"require presence\" aplikace privacyIDEA.';
 
   @override
+  String get patchNotesV4_4_2Improvement1 => 'Přidána podpora svítilny pro skenování QR kódů.';
+
+  @override
+  String get patchNotesV4_4_2NewFeatures1 => 'Žetony lze nyní vkládat pomocí kopírování a vkládání.';
+
+  @override
+  String get patchNotesV4_4_2NewFeatures2 => 'Přidána podpora galerie pro skenování QR kódů.';
+
+  @override
   String get period => 'Časový interval';
 
   @override
   String get phonePart => 'Klientská část:';
+
+  @override
+  String piServerCode(String code) {
+    return 'Kód serveru PI: $code';
+  }
 
   @override
   String get pleaseEnterANameForThisToken => 'Vložte název pro tento token.';
@@ -762,16 +859,10 @@ class AppLocalizationsCs extends AppLocalizations {
   String get pleaseEnterASecretForThisToken => 'Vložte tajný klíč pro tento token.';
 
   @override
-  String get pleaseSyncManuallyWhenNetworkIsAvailable => 'Synchronizujte prosím push tokeny ručně prostřednictvím nastavení, když je k dispozici síťové připojení.';
-
-  @override
-  String get pollingChallenges => 'Čekám na nové požadavky';
-
-  @override
   String get pollingFailed => 'Dotaz se nezdařil.';
 
   @override
-  String pollingFailedFor(Object serial) {
+  String pollingFailedFor(String serial) {
     return 'Dotaz na $serial se nezdařil.';
   }
 
@@ -791,9 +882,6 @@ class AppLocalizationsCs extends AppLocalizations {
   String get pushToken => 'Push notifikace';
 
   @override
-  String get pushTokens => 'Žetony Push';
-
-  @override
   String get qrFileDecodeError => 'Z vybraného obrázku nebylo možné dekódovat QR kód, použijte prosím místo toho skener QR kódů.';
 
   @override
@@ -809,9 +897,6 @@ class AppLocalizationsCs extends AppLocalizations {
   String get qrNotFound => 'Žádný QR kód nebyl nalezen!';
 
   @override
-  String get qrScan => 'Skenování';
-
-  @override
   String get rename => 'Přejmenovat';
 
   @override
@@ -821,7 +906,10 @@ class AppLocalizationsCs extends AppLocalizations {
   String get renameTokenFolder => 'Přejmenování složky';
 
   @override
-  String requestInfo(Object account, Object issuer) {
+  String get replaceButton => 'Vyměňte';
+
+  @override
+  String requestInfo(String account, String issuer) {
     return 'Odesláno $issuer pro váš účet: \"$account\"';
   }
 
@@ -832,13 +920,43 @@ class AppLocalizationsCs extends AppLocalizations {
   String get requestTriggerdByUserQuestion => 'Byl tento požadavek vyvolán vámi?';
 
   @override
-  String get retryRollout => 'Zkusit znovu';
+  String get retryRolloutButton => 'Zkusit znovu';
 
   @override
-  String get rolloutCompleted => 'Zavedení dokončeno';
+  String get rolloutStateCompleted => 'Zavedení dokončeno';
 
   @override
-  String get save => 'Uložit';
+  String get rolloutStateGeneratingKeyPair => 'Generování páru klíčů';
+
+  @override
+  String get rolloutStateGeneratingKeyPairCompleted => 'Generování páru klíčů dokončeno';
+
+  @override
+  String get rolloutStateGeneratingKeyPairFailed => 'Nepodařilo se vygenerovat pár klíčů';
+
+  @override
+  String get rolloutStateNotStarted => 'Začít zavádění';
+
+  @override
+  String get rolloutStateParsingResponse => 'Rozbor odpovědi';
+
+  @override
+  String get rolloutStateParsingResponseCompleted => 'Parsování odpovědi dokončeno';
+
+  @override
+  String get rolloutStateParsingResponseFailed => 'Parsování odpovědi se nezdařilo';
+
+  @override
+  String get rolloutStateSendingPublicKey => 'Odeslání veřejného klíče';
+
+  @override
+  String get rolloutStateSendingPublicKeyCompleted => 'Odeslání veřejného klíče dokončeno';
+
+  @override
+  String get rolloutStateSendingPublicKeyFailed => 'Odeslání veřejného klíče se nezdařilo';
+
+  @override
+  String get saveButton => 'Uložit';
 
   @override
   String get scanQrCode => 'Naskenovat QR kód';
@@ -847,7 +965,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get scanThisQrWithNewDevice => 'Naskenujte tento QR kód svým novým zařízením pro import žetonu.';
 
   @override
-  String get searchTokens => 'Hledat tokeny';
+  String get secondsUntilNextOTP => 'Sekundy do dalšího OTP';
 
   @override
   String get secretIsRequired => 'Tajné je vyžadováno';
@@ -877,7 +995,16 @@ class AppLocalizationsCs extends AppLocalizations {
   }
 
   @override
-  String get selectTokensToExportHelpContent => 'Pokud token není uveden v seznamu, není zaručeno, že se nejedná o token privacyIDEA.\nV současné době lze exportovat pouze ručně přidané a importované tokeny.';
+  String get selectTokensToExportHelpContent1 => 'Pokud token není uveden v seznamu, není zaručeno, že se nejedná o token privacyIDEA.';
+
+  @override
+  String get selectTokensToExportHelpContent2 => 'V současné době lze exportovat pouze ručně přidané a importované tokeny.';
+
+  @override
+  String get selectTokensToExportHelpContent3 => 'Pracujeme na řešení, které by umožnilo rozlišovat mezi tokeny privacyIDEA a soukromými tokeny.';
+
+  @override
+  String get selectTokensToExportHelpContent4 => 'Nový QR kód můžete získat od služby, od které jste token obdrželi.';
 
   @override
   String get selectTokensToExportHelpTitle => 'Není váš token uveden?';
@@ -893,12 +1020,6 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get sendPushRequestResponseFailed => 'Odpověď se nepodařilo odeslat.';
-
-  @override
-  String get sendingRSAPublicKey => 'Odeslání veřejného klíče RSA';
-
-  @override
-  String get sendingRSAPublicKeyFailed => 'Nepodařilo se odeslat veřejný klíč RSA';
 
   @override
   String get serverNotReachable => 'Na server se nepodařilo dovolat.';
@@ -925,10 +1046,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get someTokensDoNotSupportPolling => 'Některé tokeny jsou zastaralé a nepodporují polling';
 
   @override
-  String get startRollout => 'Začít zavádění';
-
-  @override
-  String statusCode(Object statusCode) {
+  String statusCode(int statusCode) {
     return 'Stavový kód: $statusCode';
   }
 
@@ -940,6 +1058,24 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get syncFbTokenFailed => 'Synchronizace následujících tokenů selhala, zkuste to znovu:';
+
+  @override
+  String get syncFbTokenManuallyWhenNetworkIsAvailable => 'Synchronizujte prosím push tokeny ručně prostřednictvím nastavení, když je k dispozici síťové připojení.';
+
+  @override
+  String get syncState => 'Stav synchronizace';
+
+  @override
+  String get syncStateCompletedDescription => 'Synchronizace dokončena';
+
+  @override
+  String get syncStateFailedDescription => 'Synchronizace selhala';
+
+  @override
+  String get syncStateNotStartedDescription => 'Synchronizace nebyla spuštěna';
+
+  @override
+  String get syncStateSyncingDescription => 'Aktuálně synchronizováno';
 
   @override
   String get synchronizePushTokens => 'Synchronizace push tokenů';
@@ -957,9 +1093,6 @@ class AppLocalizationsCs extends AppLocalizations {
   String get theme => 'Vzhled';
 
   @override
-  String get thisAppIsOpenSource => 'Tato aplikace má otevřený zdrojový kód\nNavštivte nás na GitHub';
-
-  @override
   String get timeOut => 'Časový limit';
 
   @override
@@ -969,7 +1102,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get tokenDetails => 'Podrobnosti o tokenu';
 
   @override
-  String get tokenLink => 'Token link';
+  String get tokenLinkImport => 'Token link';
 
   @override
   String get tokenSerial => 'Token serial';
@@ -979,9 +1112,6 @@ class AppLocalizationsCs extends AppLocalizations {
 
   @override
   String get tokensDoNotSupportSynchronization => 'Následující tokeny nepodporují synchronizaci a musí být znovu zaregistrovány:';
-
-  @override
-  String get tokensNotEncrypted => 'Tokeny nejsou šifrované a lze je importovat přímo.';
 
   @override
   String get tokensSuccessfullyDecrypted => 'Tokeny byly úspěšně dešifrovány a nyní je lze importovat.';
@@ -999,7 +1129,7 @@ class AppLocalizationsCs extends AppLocalizations {
   String get unlock => 'Odemknout';
 
   @override
-  String unsupported(Object name, Object value) {
+  String unsupported(String name, String value) {
     return 'Příkaz $name [$value] není touto verzí aplikace podporován.';
   }
 
@@ -1010,26 +1140,20 @@ class AppLocalizationsCs extends AppLocalizations {
   String get useDeviceLocaleTitle => 'Použít jazyk zařízení';
 
   @override
-  String get validFor => 'Platné pro';
-
-  @override
-  String get validUntil => 'Platné do';
-
-  @override
-  String valueNotAllowed(Object parameter, Object type, Object value) {
-    return 'untranslated';
+  String valueNotAllowed(String parameter, String type, String value) {
+    return 'Typ $type „$value“ není povolenou hodnotou pro „$parameter“';
   }
 
   @override
-  String valueNotAllowedIn(Object map, Object parameter, Object type, Object value) {
-    return 'untranslated';
+  String valueNotAllowedIn(String map, String parameter, String type, String value) {
+    return 'Typ $type „$value“ není povolenou hodnotou pro „$parameter“ v „$map“';
   }
 
   @override
   String get verboseLogging => 'Zevrubné protokolování';
 
   @override
-  String get version => 'Verze';
+  String get versionTitle => 'Verze';
 
   @override
   String get wrongPassword => 'Nesprávné heslo';

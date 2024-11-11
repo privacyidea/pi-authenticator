@@ -46,6 +46,7 @@ class TokenFolderWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final draggingSortable = ref.watch(draggingSortableProvider);
     final TokenFolder? draggingFolder = draggingSortable is TokenFolder ? draggingSortable : null;
+    final draggingSortableNotifier = ref.read(draggingSortableProvider.notifier);
     return draggingSortable == null
         ? LongPressDraggable(
             maxSimultaneousDrags: 1,

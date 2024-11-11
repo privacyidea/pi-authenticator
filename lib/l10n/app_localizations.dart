@@ -10,6 +10,7 @@ import 'app_localizations_de.dart';
 import 'app_localizations_en.dart';
 import 'app_localizations_es.dart';
 import 'app_localizations_fr.dart';
+import 'app_localizations_id.dart';
 import 'app_localizations_nl.dart';
 import 'app_localizations_pl.dart';
 
@@ -101,9 +102,88 @@ abstract class AppLocalizations {
     Locale('en'),
     Locale('es'),
     Locale('fr'),
+    Locale('id'),
     Locale('nl'),
     Locale('pl')
   ];
+
+  /// Buttontext to add a new folder.
+  ///
+  /// In en, this message translates to:
+  /// **'Add folder'**
+  String get a11yAddFolderButton;
+
+  /// Title of the screen where tokens are created manually.
+  ///
+  /// In en, this message translates to:
+  /// **'Add token manually'**
+  String get a11yAddTokenManuallyButton;
+
+  /// A11y label for the button to close the search tokens field.
+  ///
+  /// In en, this message translates to:
+  /// **'Close search'**
+  String get a11yCloseSearchTokensButton;
+
+  /// Title of the licenses screen.
+  ///
+  /// In en, this message translates to:
+  /// **'Licenses'**
+  String get a11yLicensesButton;
+
+  /// A11y label for the push tokens button.
+  ///
+  /// In en, this message translates to:
+  /// **'Push Tokens'**
+  String get a11yPushTokensButton;
+
+  /// Accessibility label for the button to scan qr-codes.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan QR-Code'**
+  String get a11yScanQrCodeButton;
+
+  /// A11y label for the scan qr code view when the camera is active.
+  ///
+  /// In en, this message translates to:
+  /// **' Scan-QR-code view. Cammera is active'**
+  String get a11yScanQrCodeViewActive;
+
+  /// A11y label for the flash light button of the scan qr code view when the flashlight is off.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to turn on flashlight.'**
+  String get a11yScanQrCodeViewFlashlightOff;
+
+  /// A11y label for the flash light button of the scan qr code view when the flashlight is on.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to turn off flashlight.'**
+  String get a11yScanQrCodeViewFlashlightOn;
+
+  /// A11y label for the gallery button of the scan qr code view.
+  ///
+  /// In en, this message translates to:
+  /// **'Open gallery'**
+  String get a11yScanQrCodeViewGallery;
+
+  /// A11y label for the scan qr code view when the camera is not active.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan-QR-code view. Cammera is not active'**
+  String get a11yScanQrCodeViewInactive;
+
+  /// A11y label for the search tokens input field.
+  ///
+  /// In en, this message translates to:
+  /// **'Search tokens'**
+  String get a11ySearchTokensButton;
+
+  /// Accessibility label for the button to open the settings page.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get a11ySettingsButton;
 
   /// Label for e.g. a button. Something gets accepted by the user.
   ///
@@ -111,19 +191,13 @@ abstract class AppLocalizations {
   /// **'Accept'**
   String get accept;
 
-  /// No description provided for @addANewFolder.
+  /// Title of the dialog where a new folder can be added.
   ///
   /// In en, this message translates to:
   /// **'Create new folder'**
   String get addANewFolder;
 
-  /// No description provided for @addFolder.
-  ///
-  /// In en, this message translates to:
-  /// **'Add folder'**
-  String get addFolder;
-
-  /// No description provided for @addSystemInfo.
+  /// Description of the checkbox to add system information to the error report.
   ///
   /// In en, this message translates to:
   /// **'Add system information'**
@@ -135,11 +209,11 @@ abstract class AppLocalizations {
   /// **'Add token'**
   String get addToken;
 
-  /// No description provided for @addTokenManually.
+  /// Label for the box where the user can write somthing about the error.
   ///
   /// In en, this message translates to:
-  /// **'Add token manually'**
-  String get addTokenManually;
+  /// **'Optional message'**
+  String get additionalErrorMessage;
 
   /// Title of the dropdown button where the encoding is selected.
   ///
@@ -147,11 +221,11 @@ abstract class AppLocalizations {
   /// **'Algorithm'**
   String get algorithm;
 
-  /// No description provided for @algorithmUnsupported.
+  /// Error message when the algorithm is not supported.
   ///
   /// In en, this message translates to:
   /// **'The algorithm {algorithm} is not supported'**
-  String algorithmUnsupported(Object algorithm);
+  String algorithmUnsupported(String algorithm);
 
   /// Content of the push synchronization dialog. Signaling the user that everything worked.
   ///
@@ -159,19 +233,19 @@ abstract class AppLocalizations {
   /// **'All tokens are synchronized.'**
   String get allTokensSynchronized;
 
-  /// No description provided for @asFile.
+  /// Buttontext to save the backup as a file.
   ///
   /// In en, this message translates to:
   /// **'As file'**
   String get asFile;
 
-  /// No description provided for @asQrCode.
+  /// Buttontext to export the token as a qr code.
   ///
   /// In en, this message translates to:
   /// **'As QR code'**
   String get asQrCode;
 
-  /// No description provided for @askLogSendedDescription.
+  /// The content of the dialog that asks the user if he sent the error log.
   ///
   /// In en, this message translates to:
   /// **'Did you send the log, and do you want to clear it now?'**
@@ -243,7 +317,7 @@ abstract class AppLocalizations {
   /// **'Authentication successful'**
   String get biometricSuccess;
 
-  /// No description provided for @butDiscardIt.
+  /// Smaller text for the button to discard the push request.
   ///
   /// In en, this message translates to:
   /// **'but discard it'**
@@ -273,11 +347,11 @@ abstract class AppLocalizations {
   /// **'Clear'**
   String get clearErrorLog;
 
-  /// No description provided for @closeSearchTokens.
+  /// No description provided for @clipboardEmpty.
   ///
   /// In en, this message translates to:
-  /// **'Close search'**
-  String get closeSearchTokens;
+  /// **'Clipboard is empty'**
+  String get clipboardEmpty;
 
   /// Title of the dialog where a token can be deleted.
   ///
@@ -289,7 +363,7 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'Are you sure you want to delete {name}?'**
-  String confirmDeletionOf(Object name);
+  String confirmDeletionOf(String name);
 
   /// Gives the user a hint about the consequences of deleting a folder.
   ///
@@ -297,7 +371,7 @@ abstract class AppLocalizations {
   /// **'Deleting a folder has no effect on the tokens in it.\nThe tokens are moved to the main list.'**
   String get confirmFolderDeletionHint;
 
-  /// No description provided for @confirmPassword.
+  /// Title of the input field where the user has to confirm the password.
   ///
   /// In en, this message translates to:
   /// **'Confirm password'**
@@ -309,7 +383,7 @@ abstract class AppLocalizations {
   /// **'You may no longer be able to log in if you delete this token.\nPlease make sure that you can log in to the associated account without this token.'**
   String get confirmTokenDeletionHint;
 
-  /// No description provided for @confirmation.
+  /// Title of the confirmation dialog.
   ///
   /// In en, this message translates to:
   /// **'Confirmation'**
@@ -327,19 +401,43 @@ abstract class AppLocalizations {
   /// **'Container'**
   String get container;
 
-  /// No description provided for @continueButton.
+  /// Title of the dialog that tells the user that the container already exists.
+  ///
+  /// In en, this message translates to:
+  /// **'Container already exists'**
+  String get containerAlreadyExists;
+
+  /// Title of the container details dialog.
+  ///
+  /// In en, this message translates to:
+  /// **'Container details'**
+  String get containerDetails;
+
+  /// Title of the container serial field.
+  ///
+  /// In en, this message translates to:
+  /// **'Container Serial'**
+  String get containerSerial;
+
+  /// Title of the container sync url field.
+  ///
+  /// In en, this message translates to:
+  /// **'Container Sync Url'**
+  String get containerSyncUrl;
+
+  /// Button to continue an action.
   ///
   /// In en, this message translates to:
   /// **'Continue'**
   String get continueButton;
 
-  /// No description provided for @copyOTPToClipboard.
+  /// A11y label for the button to copy the otp value to the clipboard.
   ///
   /// In en, this message translates to:
   /// **'Copy OTP to clipboard'**
   String get copyOTPToClipboard;
 
-  /// No description provided for @couldNotConnectToServer.
+  /// Error message when the connection to the server could not be established.
   ///
   /// In en, this message translates to:
   /// **'Could not connect to server'**
@@ -357,7 +455,7 @@ abstract class AppLocalizations {
   /// **'Counter'**
   String get counter;
 
-  /// No description provided for @create.
+  /// Buttontext to create something e.g. a Folder.
   ///
   /// In en, this message translates to:
   /// **'Create'**
@@ -375,55 +473,67 @@ abstract class AppLocalizations {
   /// **'Creator'**
   String get creator;
 
+  /// Text for the trailing part of the day password token.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid for'**
+  String get dayPasswordValidFor;
+
+  /// Text for the trailing part of the day password token.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid until'**
+  String get dayPasswordValidUntil;
+
   /// Label for e.g. a button. Something gets declined by the user.
   ///
   /// In en, this message translates to:
   /// **'Decline'**
   String get decline;
 
-  /// No description provided for @declineIt.
+  /// Smaller text for the button to decline the push request.
   ///
   /// In en, this message translates to:
   /// **'decline it'**
   String get declineIt;
 
-  /// No description provided for @decrypt.
+  /// Buttontext to decrypt the tokens.
   ///
   /// In en, this message translates to:
   /// **'Decrypt'**
   String get decrypt;
 
-  /// No description provided for @decryptErrorButtonDelete.
+  /// Buttontext to delete all tokens when they could not be decrypted.
   ///
   /// In en, this message translates to:
   /// **'Delete'**
   String get decryptErrorButtonDelete;
 
-  /// No description provided for @decryptErrorButtonRetry.
+  /// Buttontext to retry decrypting the tokens when a decryption error occurred.
   ///
   /// In en, this message translates to:
   /// **'Retry'**
   String get decryptErrorButtonRetry;
 
-  /// No description provided for @decryptErrorButtonSendError.
+  /// Buttontext to send an error report when a decryption error occurred.
   ///
   /// In en, this message translates to:
   /// **'Send error'**
   String get decryptErrorButtonSendError;
 
-  /// No description provided for @decryptErrorContent.
+  /// Dialog content when the tokens could not be decrypted.
   ///
   /// In en, this message translates to:
   /// **'Unfortunately, the app was unable to decrypt your tokens. This indicates that the encryption key is broken. You can try again or delete the app data, which would delete the tokens in the app.'**
   String get decryptErrorContent;
 
-  /// No description provided for @decryptErrorDeleteConfirmationContent.
+  /// Content of the dialog that ensures the user wants to delete all tokens.
   ///
   /// In en, this message translates to:
   /// **'Are you sure you want to delete the app data?'**
   String get decryptErrorDeleteConfirmationContent;
 
-  /// No description provided for @decryptErrorTitle.
+  /// Title of the dialog when the tokens could not be decrypted.
   ///
   /// In en, this message translates to:
   /// **'Decryption error'**
@@ -435,11 +545,29 @@ abstract class AppLocalizations {
   /// **'Delete'**
   String get delete;
 
-  /// No description provided for @deleteLockedToken.
+  /// Content of the dialog that ensures the user wants to delete a container.
+  ///
+  /// In en, this message translates to:
+  /// **'If you delete this container, the smartphone is disconnected from the privacyIDEA server and the tokens of this container become unusable. Before deleting, make sure that the corresponding tokens are no longer required!'**
+  String get deleteContainerDialogContent;
+
+  /// Title of the dialog where a container can be deleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleting Container {serial}'**
+  String deleteContainerDialogTitle(String serial);
+
+  /// Text for the authentication dialog when the user wants to delete a locked token.
   ///
   /// In en, this message translates to:
   /// **'Please authenticate to delete the locked token.'**
   String get deleteLockedToken;
+
+  /// Title of the details action Button.
+  ///
+  /// In en, this message translates to:
+  /// **'Details'**
+  String get details;
 
   /// Message showed as a title in a dialog which indicates the user has not set up credentials authentication on their device. It is used on Android side. Maximum 60 characters.
   ///
@@ -447,7 +575,7 @@ abstract class AppLocalizations {
   /// **'Device credentials not set up'**
   String get deviceCredentialsRequiredTitle;
 
-  /// Message advising the user to go to the settings and configure device credentials on their device. It shows in a dialog on Android side.
+  /// Used for 'deviceCredentialsSetupDescription' of 'AndroidAuthMessages'
   ///
   /// In en, this message translates to:
   /// **'Setup device credentials in the device\'s settings'**
@@ -465,25 +593,25 @@ abstract class AppLocalizations {
   /// **'Dismiss'**
   String get dismiss;
 
-  /// No description provided for @done.
+  /// Buttontext for finishing an action.
   ///
   /// In en, this message translates to:
   /// **'Done'**
   String get done;
 
-  /// No description provided for @edit.
+  /// Label for the edit action.
   ///
   /// In en, this message translates to:
   /// **'Edit'**
   String get edit;
 
-  /// No description provided for @editLockedToken.
+  /// Text for the authentication dialog when the user wants to edit a locked token.
   ///
   /// In en, this message translates to:
   /// **'Please authenticate to edit the locked token.'**
   String get editLockedToken;
 
-  /// No description provided for @editToken.
+  /// Title for the edit token dialog.
   ///
   /// In en, this message translates to:
   /// **'Edit Token'**
@@ -507,13 +635,13 @@ abstract class AppLocalizations {
   /// **'Enter token details'**
   String get enterDetailsForToken;
 
-  /// No description provided for @enterLink.
+  /// Buttontext for the import type link.
   ///
   /// In en, this message translates to:
   /// **'Enter link'**
   String get enterLink;
 
-  /// No description provided for @enterPasswordToEncrypt.
+  /// Content of the dialog where the user has to enter a password to encrypt the tokens.
   ///
   /// In en, this message translates to:
   /// **'Enter a password to encrypt the tokens. This password will be required to import the tokens.'**
@@ -543,19 +671,25 @@ abstract class AppLocalizations {
   /// **'The error log file is attached.\nYou can replace this text with additional information about the error.'**
   String get errorMailBody;
 
+  /// Error message when the private key is missing.
+  ///
+  /// In en, this message translates to:
+  /// **'Private key missing'**
+  String get errorMissingPrivateKey;
+
   /// Tells the user that the token could not be rolled out, because a network error occurred.
   ///
   /// In en, this message translates to:
   /// **'Rolling out token {name} failed.'**
-  String errorRollOutFailed(Object name);
+  String errorRollOutFailed(String name);
 
   /// Tells the user that the roll-out failed because the server could not be reached.
   ///
   /// In en, this message translates to:
   /// **'Rolling out token {name} failed, the server could not be reached.'**
-  String errorRollOutNoConnectionToServer(Object name);
+  String errorRollOutNoConnectionToServer(String name);
 
-  /// No description provided for @errorRollOutNotPossibleAnymore.
+  /// Tells the user that the roll-out and not possible anymore for some reason.
   ///
   /// In en, this message translates to:
   /// **'Rolling out this Token is not possible anymore.'**
@@ -571,9 +705,9 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'An unknown error occurred. Roll-out not possible: {e}'**
-  String errorRollOutUnknownError(Object e);
+  String errorRollOutUnknownError(String e);
 
-  /// No description provided for @errorSavingFile.
+  /// Tells the user that the file could not be saved.
   ///
   /// In en, this message translates to:
   /// **'Saving to file failed'**
@@ -585,97 +719,115 @@ abstract class AppLocalizations {
   /// **'Synchronizing tokens failed, privacyIDEA server could not be reached.'**
   String get errorSynchronizationNoNetworkConnection;
 
-  /// No description provided for @errorTokenExpired.
+  /// The submessage (reason) of "errorRollOutNotPossibleAnymore" that tells the user that the token is expired.
   ///
   /// In en, this message translates to:
   /// **'The token {name} has expired.'**
-  String errorTokenExpired(Object name);
+  String errorTokenExpired(String name);
 
   /// Error message when unlinking a push token failed.
   ///
   /// In en, this message translates to:
   /// **'Failed to unlink the push token {label}.'**
-  String errorUnlinkingPushToken(Object label);
+  String errorUnlinkingPushToken(String label);
 
   /// errorWhenPullingChallenges
   ///
   /// In en, this message translates to:
   /// **'An error occured when polling for challenges of {name}'**
-  String errorWhenPullingChallenges(Object name);
+  String errorWhenPullingChallenges(String name);
 
-  /// No description provided for @exampleUrl.
+  /// Shows the user an example of a valid URL.
   ///
   /// In en, this message translates to:
   /// **'Please enter a valid URL like: \"https://example.com/\"'**
   String get exampleUrl;
 
-  /// No description provided for @expandLockedFolder.
+  /// Text for the authentication dialog when the user wants to expand a locked folder.
   ///
   /// In en, this message translates to:
   /// **'Please authenticate to uncollapse the locked folder.'**
   String get expandLockedFolder;
 
-  /// No description provided for @export.
+  /// Buttontext to export tokens.
   ///
   /// In en, this message translates to:
   /// **'Export'**
   String get export;
 
-  /// No description provided for @exportAllTokens.
+  /// Description of the checkbox to export all tokens.
   ///
   /// In en, this message translates to:
   /// **'Export all tokens'**
   String get exportAllTokens;
 
-  /// No description provided for @exportLockedTokenReason.
+  /// Text for the authentication dialog when the user wants to export a locked token.
   ///
   /// In en, this message translates to:
   /// **'Please authenticate to export locked tokens.'**
   String get exportLockedTokenReason;
 
-  /// No description provided for @exportNonPrivacyIDEATokens.
+  /// Buttontext to export non privacyIDEA tokens.
   ///
   /// In en, this message translates to:
   /// **'Export non-privacyIDEA tokens'**
   String get exportNonPrivacyIDEATokens;
 
-  /// No description provided for @exportTokens.
+  /// Button to export one more token.
+  ///
+  /// In en, this message translates to:
+  /// **'One more'**
+  String get exportOneMore;
+
+  /// Title of the export Tokens dialog.
   ///
   /// In en, this message translates to:
   /// **'Export tokens'**
   String get exportTokens;
 
-  /// No description provided for @exportingTokens.
+  /// Text for the loading indicator when exporting tokens.
   ///
   /// In en, this message translates to:
   /// **'Exporting tokens...'**
   String get exportingTokens;
 
-  /// No description provided for @failedToLoad.
+  /// Error message when finalizing a container failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to finalize the container {serial}'**
+  String failedToFinalizeContainer(String serial);
+
+  /// Error message when something could not be loaded.
   ///
   /// In en, this message translates to:
   /// **'Failed to load: \"{name}\"'**
-  String failedToLoad(Object name);
+  String failedToLoad(String name);
 
-  /// No description provided for @feedback.
+  /// No description provided for @failedToSyncContainer.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to sync container {serial}'**
+  String failedToSyncContainer(String serial);
+
+  /// Text for the feedback button and view title of the feedback screen.
   ///
   /// In en, this message translates to:
   /// **'Feedback'**
   String get feedback;
 
-  /// No description provided for @feedbackDescription.
+  /// Description for the feedback screen.
   ///
   /// In en, this message translates to:
   /// **'If you have any questions, suggestions or problems, please let us know.'**
   String get feedbackDescription;
 
-  /// No description provided for @feedbackHint.
+  /// Descripes waht happens when the user clicks on the send button.
   ///
   /// In en, this message translates to:
   /// **'A ready-made e-mail will open, which you can send to us. If desired, information about your device and the version of the application will be added. You can check and edit the email before sending it.'**
   String get feedbackHint;
 
-  /// No description provided for @feedbackPrivacyPolicy1.
+  /// First part of the text that tells the user that he agrees to the privacy policy by sending feedback.
   ///
   /// In en, this message translates to:
   /// **'By sending the feedback you agree to our '**
@@ -687,49 +839,55 @@ abstract class AppLocalizations {
   /// **'privacy policy'**
   String get feedbackPrivacyPolicy2;
 
-  /// No description provided for @feedbackPrivacyPolicy3.
+  /// Last part of the text that tells the user that he agrees to the privacy policy by sending feedback.
   ///
   /// In en, this message translates to:
   /// **'.'**
   String get feedbackPrivacyPolicy3;
 
-  /// No description provided for @feedbackSentDescription.
+  /// The content of the dialog that appears after the feedback was sent.
   ///
   /// In en, this message translates to:
   /// **'Thank you very much for your help in making this application better!'**
   String get feedbackSentDescription;
 
-  /// No description provided for @feedbackSentTitle.
+  /// The Title of the dialog that appears after the feedback was sent.
   ///
   /// In en, this message translates to:
   /// **'Feedback sent'**
   String get feedbackSentTitle;
 
-  /// No description provided for @feedbackTitle.
+  /// First big line of the feedback screen.
   ///
   /// In en, this message translates to:
   /// **'Your feedback is always welcome!'**
   String get feedbackTitle;
 
-  /// No description provided for @fileSavedToDownloadsFolder.
+  /// Tells the user that the file was saved to the downloads folder.
   ///
   /// In en, this message translates to:
   /// **'File saved to Downloads folder'**
   String get fileSavedToDownloadsFolder;
 
-  /// No description provided for @findingQrCodeInImage.
+  /// Title of the finalization state field.
   ///
   /// In en, this message translates to:
-  /// **'Looking for QR code in image...'**
-  String get findingQrCodeInImage;
+  /// **'Finalization State'**
+  String get finalizationState;
 
-  /// No description provided for @firebaseToken.
+  /// Text for the error message when finalizing a container failed for some reason.
+  ///
+  /// In en, this message translates to:
+  /// **'Finalize Container Failed'**
+  String get finalizeContainerFailed;
+
+  /// Label for the field where the firebase token is shown.
   ///
   /// In en, this message translates to:
   /// **'Firebase Token'**
   String get firebaseToken;
 
-  /// No description provided for @folderName.
+  /// Label for the input field where the folder name should be entered.
   ///
   /// In en, this message translates to:
   /// **'Folder name'**
@@ -741,17 +899,11 @@ abstract class AppLocalizations {
   /// **'Generating phone part'**
   String get generatingPhonePart;
 
-  /// Message for the rollout process
+  /// Buttontext to open the GitHub page.
   ///
   /// In en, this message translates to:
-  /// **'Generating RSA key pair'**
-  String get generatingRSAKeyPair;
-
-  /// Message for the rollout process
-  ///
-  /// In en, this message translates to:
-  /// **'Generating RSA key pair failed'**
-  String get generatingRSAKeyPairFailed;
+  /// **'This Application is Open Source\nVisit us on GitHub'**
+  String get gitHubButton;
 
   /// Message showed on a button that the user can click to go to settings pages from the current dialog. It is used on both Android and iOS side. Maximum 30 characters.
   ///
@@ -759,31 +911,31 @@ abstract class AppLocalizations {
   /// **'Go to settings'**
   String get goToSettingsButton;
 
-  /// Message advising the user to go to the settings and configure device credentials or biometrics on their device.
+  /// Tells the user that they need to set up device credentials in the device's settings.
   ///
   /// In en, this message translates to:
   /// **'Authentication by credentials or biometrics is not set up on your device. Please set it up in the device\'s settings.'**
   String get goToSettingsDescription;
 
-  /// No description provided for @grantCameraPermissionDialogButton.
+  /// Buttontext to grant the camera permission.
   ///
   /// In en, this message translates to:
   /// **'Grant permission'**
   String get grantCameraPermissionDialogButton;
 
-  /// No description provided for @grantCameraPermissionDialogContent.
+  /// Content of the dialog that asks the user to grant the camera permission.
   ///
   /// In en, this message translates to:
   /// **'Please grant camera permission to scan QR codes.'**
   String get grantCameraPermissionDialogContent;
 
-  /// No description provided for @grantCameraPermissionDialogPermanentlyDenied.
+  /// Description for the permanently denied camera permission.
   ///
   /// In en, this message translates to:
   /// **'Camera permission is permanently denied. Please grant camera permission in your Phone\'s settings.'**
   String get grantCameraPermissionDialogPermanentlyDenied;
 
-  /// No description provided for @grantCameraPermissionDialogTitle.
+  /// Title of the dialog that asks the user to grant the camera permission.
   ///
   /// In en, this message translates to:
   /// **'Camera permission is not granted'**
@@ -795,131 +947,137 @@ abstract class AppLocalizations {
   /// **'Handshake failed'**
   String get handshakeFailed;
 
-  /// No description provided for @hidePushTokens.
+  /// Label for the switch to hide push tokens.
   ///
   /// In en, this message translates to:
   /// **'Hide push tokens'**
   String get hidePushTokens;
 
-  /// No description provided for @hidePushTokensDescription.
+  /// Descripes what happens when the user hides the push tokens.
   ///
   /// In en, this message translates to:
   /// **'Hide push tokens from the token list. This will not delete the tokens and they will still be visible on a separate screen.'**
   String get hidePushTokensDescription;
 
-  /// No description provided for @imageUrl.
+  /// Title of the image url field.
   ///
   /// In en, this message translates to:
   /// **'Image URL'**
   String get imageUrl;
 
-  /// No description provided for @importConflictToken.
+  /// Title for the section where the user can see the conflicting tokens.
   ///
   /// In en, this message translates to:
-  /// **'{count, plural, zero{There is no conflict with existing tokens.} one{There is a conflict with existing tokens.\nPlease select which one you would like to keep.} other{There are conflicts with existing tokens.\nPlease select the tokens you wish to keep.}}'**
-  String importConflictToken(num count);
+  /// **'{count, plural, zero{There is no conflict with existing tokens.} one{There is a conflict with existing tokens.\nPlease select which one you would like to keep.} other{There are {count} conflicts with existing tokens.\nPlease select the tokens you wish to keep.}}'**
+  String importConflictToken(int count);
 
-  /// No description provided for @importExistingToken.
+  /// Title for the section where the user can see the tokens that already exist.
   ///
   /// In en, this message translates to:
   /// **'{count, plural, zero{No token was found that is already in the application.} one{A token was found that already exists in the application.} other{{count} tokens was found that are already in the application.}}'**
-  String importExistingToken(num count);
+  String importExistingToken(int count);
 
-  /// No description provided for @importExportTokens.
+  /// Title of the import/export settings group.
   ///
   /// In en, this message translates to:
   /// **'Import/Export tokens'**
   String get importExportTokens;
 
-  /// No description provided for @importFailedToken.
+  /// Title for the section where the user can see the tokens that could not be imported.
   ///
   /// In en, this message translates to:
   /// **'{count, plural, zero{No token Failed to import.} one{Failed to import a token.} other{Failed to import {count} tokens.}}'**
-  String importFailedToken(num count);
+  String importFailedToken(int count);
 
-  /// No description provided for @importHint2FAS.
+  /// Tells the user importent information about the import of 2FAS tokens.
   ///
   /// In en, this message translates to:
   /// **'Select your 2FAS backup.\nIf you do not have a backup, create one in the 2FAS app. We recommend using a password.'**
   String get importHint2FAS;
 
-  /// No description provided for @importHintAegisBackupFile.
+  /// Tells the user importent information about the import of Aegis backup files.
   ///
   /// In en, this message translates to:
   /// **'Select your Aegis export (.JSON).\nIf you do not have an export, please create one via the settings menu in the Aegis app. The use of a password is recommended.'**
   String get importHintAegisBackupFile;
 
-  /// No description provided for @importHintAegisLink.
+  /// Tells the user importent information about the import of Aegis links.
   ///
   /// In en, this message translates to:
   /// **'Enter the link you receive when you transfer entries from Aegis.'**
   String get importHintAegisLink;
 
-  /// No description provided for @importHintAegisQrScan.
+  /// Tells the user importent information about the import of Aegis qr codes.
   ///
   /// In en, this message translates to:
   /// **'Scan the QR code you receive when you transfer entries from Aegis.'**
   String get importHintAegisQrScan;
 
-  /// No description provided for @importHintAuthenticatorProFile.
+  /// Tells the user importent information about the import of Authenticator Pro files.
   ///
   /// In en, this message translates to:
   /// **'To create a backup of the Authenticator Pro app, navigate to the settings and tap on \"Auto backup\". Select a storage location and set a password. Then press \"Back up now\" to export the tokens.'**
   String get importHintAuthenticatorProFile;
 
-  /// No description provided for @importHintFreeOtpPlusFile.
+  /// Tells the user importent information about the import of FreeOTP+ files.
   ///
   /// In en, this message translates to:
   /// **'To create a backup of the FreeOTP+ app, tap on the three dots in the upper right corner and select \"Export\". You can choose between JSON and URI format. We recommend to delete the backup after importing it, because it is not encrypted.'**
   String get importHintFreeOtpPlusFile;
 
-  /// No description provided for @importHintFreeOtpPlusQrScan.
+  /// Tells the user importent information about the import of FreeOTP+ qr codes.
   ///
   /// In en, this message translates to:
   /// **'Scan the QR code you receive when you press the three dots in the tile of the token and select \"Share QR code\".'**
   String get importHintFreeOtpPlusQrScan;
 
-  /// No description provided for @importHintGoogleQrFile.
+  /// Tells the user importent information about the import of Google qr codes.
   ///
   /// In en, this message translates to:
   /// **'Select an image file with the QR code you receive when you export your accounts from Google Authenticator.\n!! Note that it is not safe to save the QR code on your device as the tokens are not encrypted !!'**
   String get importHintGoogleQrFile;
 
-  /// No description provided for @importHintGoogleQrScan.
+  /// Tells the user importent information about the import of Google qr codes.
   ///
   /// In en, this message translates to:
   /// **'Scan the QR code you receive when you export your accounts from Google Authenticator.'**
   String get importHintGoogleQrScan;
 
-  /// No description provided for @importHintPrivacyIdeaFile.
+  /// Tells the user importent information about the import of privacyIDEA files.
   ///
   /// In en, this message translates to:
   /// **'To create a backup, go to the settings and tap on \"Export\". Select \"As file\", select the tokens you want to export. Then tap on \"Export\" and set a password. The storage location is the download folder on your device.'**
   String get importHintPrivacyIdeaFile;
 
-  /// No description provided for @importHintPrivacyIdeaQrScan.
+  /// Tells the user importent information about the import of privacyIDEA qr codes.
   ///
   /// In en, this message translates to:
   /// **'Um QR-Codes der Token zu erstellen, navigieren Sie zu den Einstellungen und tippen auf \"Exportieren\". Wählen Sie dann \"Als QR-Code\" und tippen Sie auf den zu exportierenden Token. Diese Variante ist nur für die direkte Übertragung auf ein anderes Gerät geeignet, da der QR-Code nicht verschlüsselt ist.'**
   String get importHintPrivacyIdeaQrScan;
 
-  /// No description provided for @importNTokens.
+  /// Buttontext to import n tokens.
   ///
   /// In en, this message translates to:
   /// **'{count, plural, zero{Import no token} one{Import one token} other{Import {count} tokens}}'**
-  String importNTokens(num count);
+  String importNTokens(int count);
 
-  /// No description provided for @importNewToken.
+  /// Title for the section where the user can see the new tokens.
   ///
   /// In en, this message translates to:
   /// **'{count, plural, zero{No new token was found.} one{A new token was found that can be imported.} other{{count} new tokens were found that can be imported.}}'**
-  String importNewToken(num count);
+  String importNewToken(int count);
 
-  /// No description provided for @importTokens.
+  /// Title of the import Tokens screen when it is not clear where the tokens come from.
   ///
   /// In en, this message translates to:
   /// **'Import token'**
   String get importTokens;
+
+  /// No description provided for @importantInformationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Important information'**
+  String get importantInformationTitle;
 
   /// Label for the import method of the token.
   ///
@@ -927,107 +1085,113 @@ abstract class AppLocalizations {
   /// **'Imported via'**
   String get importedVia;
 
-  /// No description provided for @increaseCounter.
+  /// A11y label for the button that increases the counter.
   ///
   /// In en, this message translates to:
   /// **'Increase counter'**
   String get increaseCounter;
 
-  /// No description provided for @internalServerError.
+  /// Error message when an internal server error occurred.
   ///
   /// In en, this message translates to:
   /// **'Internal server error ({code})'**
-  String internalServerError(Object code);
+  String internalServerError(String code);
 
-  /// No description provided for @introAddFolder.
+  /// Text for the introduction that explains how to add a folder.
   ///
   /// In en, this message translates to:
-  /// **'You can create folders\nto organize your tokens.'**
+  /// **'You can create folders to organize your tokens.'**
   String get introAddFolder;
 
-  /// No description provided for @introAddTokenManually.
+  /// Introduction text for the manual token enrollment.
   ///
   /// In en, this message translates to:
   /// **'If you don\'t want to scan a QR code, you can also add tokens manually.'**
   String get introAddTokenManually;
 
-  /// No description provided for @introDragToken.
+  /// Text for the introduction that explains how to drag a token.
   ///
   /// In en, this message translates to:
   /// **'Reorganize your tokens by pressing it for a few seconds and then dragging it to the desired position.'**
   String get introDragToken;
 
-  /// No description provided for @introEditToken.
+  /// Text for the introduction that explains how to edit a token.
   ///
   /// In en, this message translates to:
   /// **'Here you can edit the token name and see some details.'**
   String get introEditToken;
 
-  /// No description provided for @introHidePushTokens.
+  /// Text for the introduction that explains where the user can find the hidden push tokens.
   ///
   /// In en, this message translates to:
   /// **'Your push tokens are hidden now.\nBut you can still see them on the push token screen.'**
   String get introHidePushTokens;
 
-  /// No description provided for @introLockToken.
+  /// Text for the introduction that explains how to lock a token.
   ///
   /// In en, this message translates to:
   /// **'To improve security even more, you can lock tokens.\nThen the token can only be used after authentication.'**
   String get introLockToken;
 
-  /// No description provided for @introPollForChallenges.
+  /// Text for the introduction that explains how to poll for challenges.
   ///
   /// In en, this message translates to:
   /// **'You can check for new challenges by dragging down the token list.'**
   String get introPollForChallenges;
 
-  /// No description provided for @introScanQrCode.
+  /// Text for the introduction that explains how to scan a qr code.
   ///
   /// In en, this message translates to:
   /// **'You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.'**
   String get introScanQrCode;
 
-  /// No description provided for @introTokenSwipe.
+  /// Text for the introduction that explains how to see the available actions for a token.
   ///
   /// In en, this message translates to:
   /// **'Swipe tokens to the left to see available actions.'**
   String get introTokenSwipe;
 
-  /// No description provided for @invalidBackupFile.
+  /// Error message when the backup file is invalid.
   ///
   /// In en, this message translates to:
   /// **'The selected file is not a valid backup of {appName}.'**
-  String invalidBackupFile(Object appName);
+  String invalidBackupFile(String appName);
 
-  /// No description provided for @invalidLink.
+  /// Error message when the link is invalid.
   ///
   /// In en, this message translates to:
   /// **'The link entered is not a valid token of {appName}, or it is not supported.'**
-  String invalidLink(Object appName);
+  String invalidLink(String appName);
 
-  /// No description provided for @invalidQrFile.
+  /// Error message when the qr file is invalid.
   ///
   /// In en, this message translates to:
   /// **'The selected file does not contain a valid QR code from {appName}.'**
-  String invalidQrFile(Object appName);
+  String invalidQrFile(String appName);
 
-  /// No description provided for @invalidQrScan.
+  /// Error message when the qr scan is invalid.
   ///
   /// In en, this message translates to:
   /// **'The scanned QR code is not a valid backup of {appName}.'**
-  String invalidQrScan(Object appName);
+  String invalidQrScan(String appName);
+
+  /// No description provided for @invalidUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid URL'**
+  String get invalidUrl;
 
   /// Error message when the value is not valid for the parameter.
   ///
   /// In en, this message translates to:
-  /// **'The {type} \"{value}\" is not valid for \"{parameter}\"'**
-  String invalidValue(Object parameter, Object type, Object value);
+  /// **'The {type} ‘{value}’ is not valid for ‘{parameter}’'**
+  String invalidValue(String parameter, String type, String value);
 
-  /// No description provided for @invalidValueIn.
+  /// Text for the error message when a value is not valid for a parameter in a specific map.
   ///
   /// In en, this message translates to:
-  /// **'The {type} \"{value}\" is not valid for \"{parameter}\" in \"{map}\"'**
-  String invalidValueIn(Object map, Object parameter, Object type, Object value);
+  /// **'The {type} ‘{value}’ is not valid for ‘{parameter}’ in ‘{map}’'**
+  String invalidValueIn(String map, String parameter, String type, String value);
 
   /// Label for the question if the token is exportable.
   ///
@@ -1035,11 +1199,23 @@ abstract class AppLocalizations {
   /// **'Is exportable?'**
   String get isExpotableQuestion;
 
-  /// Label for the question if the token is a privacyIDEA token.
+  /// Title of the field where the user can see if the token is a privacyIDEA token.
   ///
   /// In en, this message translates to:
   /// **'It\'s a privacyIDEA token?'**
   String get isPiTokenQuestion;
+
+  /// Title of the issuer field.
+  ///
+  /// In en, this message translates to:
+  /// **'Issuer'**
+  String get issuer;
+
+  /// Label for the issuer of the token, container... etc.
+  ///
+  /// In en, this message translates to:
+  /// **'Issuer: {name}'**
+  String issuerLabel(String name);
 
   /// Title of language setting group.
   ///
@@ -1057,19 +1233,19 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'An error occured while using the legacy token: {tokenLabel}'**
-  String legacySigningErrorTitle(Object tokenLabel);
+  String legacySigningErrorTitle(String tokenLabel);
 
-  /// No description provided for @licenses.
-  ///
-  /// In en, this message translates to:
-  /// **'Licenses'**
-  String get licenses;
-
-  /// No description provided for @licensesAndVersion.
+  /// Buttontext to open the licenses and version screen.
   ///
   /// In en, this message translates to:
   /// **'Licenses and version'**
   String get licensesAndVersion;
+
+  /// No description provided for @linkMustOtpAuth.
+  ///
+  /// In en, this message translates to:
+  /// **'The link must start with otpauth://'**
+  String get linkMustOtpAuth;
 
   /// Label for the linked container serial number.
   ///
@@ -1101,7 +1277,7 @@ abstract class AppLocalizations {
   /// **'Malformed data'**
   String get malformedData;
 
-  /// No description provided for @markQrCode.
+  /// Buttontext to mark the qr code.
   ///
   /// In en, this message translates to:
   /// **'Mark QR Code'**
@@ -1111,19 +1287,19 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'The value for the [{parameter}] parameter is required, but is missing.'**
-  String missingRequiredParameter(Object parameter);
+  String missingRequiredParameter(String parameter);
 
   /// Error message when a required parameter is missing in a specific map.Error message when a required parameter is missing in a specific map.Error message when a required parameter is missing in a specific map.Error message when a required parameter is missing in a specific map.
   ///
   /// In en, this message translates to:
   /// **'The value for the parameter [{parameter}] is required, but is missing in \"{map}\".'**
-  String missingRequiredParameterIn(Object map, Object parameter);
+  String missingRequiredParameterIn(String map, String parameter);
 
-  /// No description provided for @mustNotBeEmpty.
+  /// Error message when a field must not be empty.
   ///
   /// In en, this message translates to:
   /// **'{field} must not be empty'**
-  String mustNotBeEmpty(Object field);
+  String mustNotBeEmpty(String field);
 
   /// Describes the field where the tokens name should be entered.
   ///
@@ -1131,7 +1307,7 @@ abstract class AppLocalizations {
   /// **'Name'**
   String get name;
 
-  /// No description provided for @no.
+  /// Content of the field when the answer is no.
   ///
   /// In en, this message translates to:
   /// **'No'**
@@ -1143,13 +1319,13 @@ abstract class AppLocalizations {
   /// **'No Firebase token available'**
   String get noFbToken;
 
-  /// No description provided for @noMailAppDescription.
+  /// Description of the dialog that tells the user that there is no mail app available.
   ///
   /// In en, this message translates to:
   /// **'There is no e-mail app installed or initialised on this device, please try again when you are able to send an email message.'**
   String get noMailAppDescription;
 
-  /// No description provided for @noMailAppTitle.
+  /// Title of the dialog that tells the user that there is no mail app available.
   ///
   /// In en, this message translates to:
   /// **'No mail app found'**
@@ -1161,7 +1337,7 @@ abstract class AppLocalizations {
   /// **'No network connection.'**
   String get noNetworkConnection;
 
-  /// No description provided for @noPublicKey.
+  /// Error message when the public key is missing.
   ///
   /// In en, this message translates to:
   /// **'No public key available'**
@@ -1185,13 +1361,13 @@ abstract class AppLocalizations {
   /// **'No tokens stored yet.'**
   String get noResultTitle;
 
-  /// No description provided for @noTokenToExport.
+  /// Tells the user that there are no tokens to export.
   ///
   /// In en, this message translates to:
   /// **'No token available for export'**
   String get noTokenToExport;
 
-  /// No description provided for @noTokenToImport.
+  /// Tells the user that there are no tokens to import.
   ///
   /// In en, this message translates to:
   /// **'No token found to import'**
@@ -1215,23 +1391,11 @@ abstract class AppLocalizations {
   /// **'Ok'**
   String get ok;
 
-  /// No description provided for @oneMore.
-  ///
-  /// In en, this message translates to:
-  /// **'One more'**
-  String get oneMore;
-
   /// Button to open something.
   ///
   /// In en, this message translates to:
   /// **'Open'**
   String get open;
-
-  /// No description provided for @optionalMessage.
-  ///
-  /// In en, this message translates to:
-  /// **'Optional message'**
-  String get optionalMessage;
 
   /// Label for the origin app.
   ///
@@ -1249,169 +1413,175 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'Password \"{otpValue}\" copied to clipboard.'**
-  String otpValueCopiedMessage(Object otpValue);
+  String otpValueCopiedMessage(String otpValue);
 
-  /// Message for the rollout process
-  ///
-  /// In en, this message translates to:
-  /// **'Parsing response'**
-  String get parsingResponse;
-
-  /// Message for the rollout process
-  ///
-  /// In en, this message translates to:
-  /// **'Parsing response failed'**
-  String get parsingResponseFailed;
-
-  /// No description provided for @password.
+  /// Labeltext for the password input field.
   ///
   /// In en, this message translates to:
   /// **'Password'**
   String get password;
 
-  /// No description provided for @passwordCannotBeEmpty.
+  /// Hint telling the user that the password cannot be empty.
   ///
   /// In en, this message translates to:
   /// **'Password cannot be empty'**
   String get passwordCannotBeEmpty;
 
-  /// No description provided for @passwordCannotContainWhitespace.
+  /// Hint telling the user that the password cannot contain whitespace.
   ///
   /// In en, this message translates to:
   /// **'Password cannot contain whitespace'**
   String get passwordCannotContainWhitespace;
 
-  /// No description provided for @passwordMustBeAtLeast8Characters.
+  /// Hint telling the user that the password must be at least 8 characters long.
   ///
   /// In en, this message translates to:
   /// **'Password must be at least 8 characters'**
   String get passwordMustBeAtLeast8Characters;
 
-  /// No description provided for @passwordMustContainLowercaseLetter.
+  /// Hint telling the user that the password must contain a lowercase letter.
   ///
   /// In en, this message translates to:
   /// **'Password must contain lowercase letter'**
   String get passwordMustContainLowercaseLetter;
 
-  /// No description provided for @passwordMustContainNumber.
+  /// Hint telling the user that the password must contain a number.
   ///
   /// In en, this message translates to:
   /// **'Password must contain number'**
   String get passwordMustContainNumber;
 
-  /// No description provided for @passwordMustContainSpecialCharacter.
+  /// Hint telling the user that the password must contain a special character.
   ///
   /// In en, this message translates to:
   /// **'Password must contain special character'**
   String get passwordMustContainSpecialCharacter;
 
-  /// No description provided for @passwordMustContainUppercaseLetter.
+  /// Hint telling the user that the password must contain an uppercase letter.
   ///
   /// In en, this message translates to:
   /// **'Password must contain uppercase letter'**
   String get passwordMustContainUppercaseLetter;
 
-  /// No description provided for @passwordsDoNotMatch.
+  /// Hint telling the user that the confirm password does not match the password.
   ///
   /// In en, this message translates to:
   /// **'Passwords do not match'**
   String get passwordsDoNotMatch;
 
-  /// No description provided for @patchNotesBugFixes.
+  /// Title of the section in the patch notes that lists the bug fixes.
   ///
   /// In en, this message translates to:
   /// **'Bug fixes'**
   String get patchNotesBugFixes;
 
-  /// No description provided for @patchNotesDialogTitle.
+  /// Title of the dialog that shows the patch notes.
   ///
   /// In en, this message translates to:
   /// **'What\'s new?'**
   String get patchNotesDialogTitle;
 
-  /// No description provided for @patchNotesImprovements.
+  /// Title of the section in the patch notes that lists the improvements.
   ///
   /// In en, this message translates to:
   /// **'Improvements'**
   String get patchNotesImprovements;
 
-  /// No description provided for @patchNotesNewFeatures.
+  /// Title of the section in the patch notes that lists the new features.
   ///
   /// In en, this message translates to:
   /// **'New features'**
   String get patchNotesNewFeatures;
 
-  /// No description provided for @patchNotesV4_3_0NewFeatures1.
+  /// Patch notes for a new feature in version 4.3.0.
   ///
   /// In en, this message translates to:
   /// **'Support for importing tokens from Google, Aegis and 2FAS Authenticator has been added. More import sources will be added in the future.'**
   String get patchNotesV4_3_0NewFeatures1;
 
-  /// No description provided for @patchNotesV4_3_0NewFeatures2.
+  /// Patch notes for a new feature in version 4.3.0.
   ///
   /// In en, this message translates to:
   /// **'Added feedback option to the settings.'**
   String get patchNotesV4_3_0NewFeatures2;
 
-  /// No description provided for @patchNotesV4_3_0NewFeatures3.
+  /// Patch notes for a new feature in version 4.3.0.
   ///
   /// In en, this message translates to:
   /// **'Push tokens can now be hidden from the token list.'**
   String get patchNotesV4_3_0NewFeatures3;
 
-  /// No description provided for @patchNotesV4_3_0NewFeatures4.
+  /// Patch notes for a new feature in version 4.3.0.
   ///
   /// In en, this message translates to:
   /// **'Introductions have been added to help new users get started.'**
   String get patchNotesV4_3_0NewFeatures4;
 
-  /// No description provided for @patchNotesV4_3_0NewFeatures5.
+  /// Patch notes for a new feature in version 4.3.0.
   ///
   /// In en, this message translates to:
   /// **'You can now search for tokens by tapping the magnifying glass in the upper right corner.'**
   String get patchNotesV4_3_0NewFeatures5;
 
-  /// No description provided for @patchNotesV4_3_0NewFeatures6.
+  /// Patch notes for a new feature in version 4.3.0.
   ///
   /// In en, this message translates to:
   /// **'Added HomeWidget token for Android 12 and later.'**
   String get patchNotesV4_3_0NewFeatures6;
 
-  /// No description provided for @patchNotesV4_3_1BugFix1.
+  /// Patch notes for a bug fix in version 4.3.1.
   ///
   /// In en, this message translates to:
   /// **'Fixed an issue where the otp value was not displayed after authentication on some devices.'**
   String get patchNotesV4_3_1BugFix1;
 
-  /// No description provided for @patchNotesV4_3_1Improvement1.
+  /// Patch notes for an improvement in version 4.3.1.
   ///
   /// In en, this message translates to:
   /// **'Improved the qr code scanner.'**
   String get patchNotesV4_3_1Improvement1;
 
-  /// No description provided for @patchNotesV4_4_0Improvement1.
+  /// Patch notes for an improvement in version 4.4.0.
   ///
   /// In en, this message translates to:
   /// **'Further import sources have been added.'**
   String get patchNotesV4_4_0Improvement1;
 
-  /// No description provided for @patchNotesV4_4_0Improvement2.
+  /// Patch notes for an improvement in version 4.4.0.
   ///
   /// In en, this message translates to:
   /// **'Improved recognition of QR codes from image files.'**
   String get patchNotesV4_4_0Improvement2;
 
-  /// No description provided for @patchNotesV4_4_0NewFeatures1.
+  /// Patch notes for a new feature in version 4.4.0.
   ///
   /// In en, this message translates to:
   /// **'It is now possible to export tokens where it can be ensured that they are not privacyIDEA tokens. Currently, it cannot be ruled out that tokens added via the QR code scanner originate from privacyIDEA. The differentiation will be improved in future versions.'**
   String get patchNotesV4_4_0NewFeatures1;
 
-  /// No description provided for @patchNotesV4_4_0NewFeatures2.
+  /// Patch notes for a new feature in version 4.4.0.
   ///
   /// In en, this message translates to:
   /// **'Added support for privacyIDEA\'s \"require presence\"'**
   String get patchNotesV4_4_0NewFeatures2;
+
+  /// Patch notes for an improvement in version 4.4.2
+  ///
+  /// In en, this message translates to:
+  /// **'Added flashlight support for QR code scanning.'**
+  String get patchNotesV4_4_2Improvement1;
+
+  /// Patch notes for a new feature in version 4.4.2
+  ///
+  /// In en, this message translates to:
+  /// **'Tokens can now be inserted using copy & paste.'**
+  String get patchNotesV4_4_2NewFeatures1;
+
+  /// Patch notes for a new feature in version 4.4.2
+  ///
+  /// In en, this message translates to:
+  /// **'Added gallery support for QR code scanning.'**
+  String get patchNotesV4_4_2NewFeatures2;
 
   /// Title of the dropdown button where the period of the totp token is selected.
   ///
@@ -1425,6 +1595,12 @@ abstract class AppLocalizations {
   /// **'Phone part:'**
   String get phonePart;
 
+  /// Message when privacyIDEA sends a server code.
+  ///
+  /// In en, this message translates to:
+  /// **'PI Server Code: {code}'**
+  String piServerCode(String code);
+
   /// Hint telling the user to enter a name for a token.
   ///
   /// In en, this message translates to:
@@ -1437,18 +1613,6 @@ abstract class AppLocalizations {
   /// **'Please enter a secret for this token.'**
   String get pleaseEnterASecretForThisToken;
 
-  /// No description provided for @pleaseSyncManuallyWhenNetworkIsAvailable.
-  ///
-  /// In en, this message translates to:
-  /// **'Please synchronize the push tokens manually via the settings when a network connection is available.'**
-  String get pleaseSyncManuallyWhenNetworkIsAvailable;
-
-  /// No description provided for @pollingChallenges.
-  ///
-  /// In en, this message translates to:
-  /// **'Polling for new challenges'**
-  String get pollingChallenges;
-
   /// Tells the user that the polling failed.
   ///
   /// In en, this message translates to:
@@ -1459,27 +1623,27 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'Polling failed for {serial}'**
-  String pollingFailedFor(Object serial);
+  String pollingFailedFor(String serial);
 
-  /// No description provided for @privacyPolicy.
+  /// Button to open the privacy policy.
   ///
   /// In en, this message translates to:
   /// **'Privacy policy'**
   String get privacyPolicy;
 
-  /// No description provided for @publicKey.
+  /// Label for the text field where the public key is shown.
   ///
   /// In en, this message translates to:
   /// **'Public Key'**
   String get publicKey;
 
-  /// No description provided for @pushEndpointUrl.
+  /// Title of the push endpoint url field.
   ///
   /// In en, this message translates to:
   /// **'Push endpoint URL'**
   String get pushEndpointUrl;
 
-  /// No description provided for @pushRequestParseError.
+  /// Error message when the push request could not be parsed.
   ///
   /// In en, this message translates to:
   /// **'Push request could not be parsed.'**
@@ -1491,47 +1655,35 @@ abstract class AppLocalizations {
   /// **'Push Token'**
   String get pushToken;
 
-  /// No description provided for @pushTokens.
-  ///
-  /// In en, this message translates to:
-  /// **'Push Tokens'**
-  String get pushTokens;
-
-  /// No description provided for @qrFileDecodeError.
+  /// Error message when the qr file could not be decoded.
   ///
   /// In en, this message translates to:
   /// **'It was not possible to decode the QR code from the selected image, please use the QR code scanner instead.'**
   String get qrFileDecodeError;
 
-  /// No description provided for @qrInFileNotFound.
+  /// Error message when the qr code in the file could not be found.
   ///
   /// In en, this message translates to:
   /// **'No QR code was found in the selected image.'**
   String get qrInFileNotFound;
 
-  /// No description provided for @qrInFileNotFound2.
+  /// Error message when the qr code in the file could not be found.
   ///
   /// In en, this message translates to:
   /// **'You can show me where the QR code is located.'**
   String get qrInFileNotFound2;
 
-  /// No description provided for @qrInFileNotFound3.
+  /// Error message when the qr code in the file could not be found.
   ///
   /// In en, this message translates to:
   /// **'I expect i will find the code if it is in the middle of the marked area.'**
   String get qrInFileNotFound3;
 
-  /// No description provided for @qrNotFound.
+  /// Error message when the qr code could not be found.
   ///
   /// In en, this message translates to:
   /// **'No QR code found!'**
   String get qrNotFound;
-
-  /// No description provided for @qrScan.
-  ///
-  /// In en, this message translates to:
-  /// **'Scan'**
-  String get qrScan;
 
   /// Label that describes renaming the token.
   ///
@@ -1551,11 +1703,17 @@ abstract class AppLocalizations {
   /// **'Rename folder'**
   String get renameTokenFolder;
 
+  /// Button to replace something, depending on the context.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace'**
+  String get replaceButton;
+
   /// Description of the authentication request.
   ///
   /// In en, this message translates to:
   /// **'Sent by {issuer} for your account: \"{account}\"'**
-  String requestInfo(Object account, Object issuer);
+  String requestInfo(String account, String issuer);
 
   /// The description of the polling feature.
   ///
@@ -1563,29 +1721,89 @@ abstract class AppLocalizations {
   /// **'Request push challenges from the server periodically. Enable this if push challenges are not received normally.'**
   String get requestPushChallengesPeriodically;
 
-  /// No description provided for @requestTriggerdByUserQuestion.
+  /// Content of the dialog that asks the user if the request was triggered by the user.
   ///
   /// In en, this message translates to:
   /// **'Was this request triggered by you?'**
   String get requestTriggerdByUserQuestion;
 
-  /// No description provided for @retryRollout.
+  /// Buttontext to retry the rollout.
   ///
   /// In en, this message translates to:
   /// **'Retry rollout'**
-  String get retryRollout;
+  String get retryRolloutButton;
 
   /// Message for the rollout process
   ///
   /// In en, this message translates to:
   /// **'Rollout completed'**
-  String get rolloutCompleted;
+  String get rolloutStateCompleted;
 
-  /// No description provided for @save.
+  /// Message for the rollout process
+  ///
+  /// In en, this message translates to:
+  /// **'Generating key pair'**
+  String get rolloutStateGeneratingKeyPair;
+
+  /// Message for the rollout process
+  ///
+  /// In en, this message translates to:
+  /// **'Generating key pair completed'**
+  String get rolloutStateGeneratingKeyPairCompleted;
+
+  /// Message for the rollout process
+  ///
+  /// In en, this message translates to:
+  /// **'Generating key pair failed'**
+  String get rolloutStateGeneratingKeyPairFailed;
+
+  /// Label that tells the user that the token is being rolled out.
+  ///
+  /// In en, this message translates to:
+  /// **'Start rollout'**
+  String get rolloutStateNotStarted;
+
+  /// Message for the rollout process
+  ///
+  /// In en, this message translates to:
+  /// **'Parsing response'**
+  String get rolloutStateParsingResponse;
+
+  /// Message for the rollout process
+  ///
+  /// In en, this message translates to:
+  /// **'Parsing response completed'**
+  String get rolloutStateParsingResponseCompleted;
+
+  /// Message for the rollout process
+  ///
+  /// In en, this message translates to:
+  /// **'Parsing response failed'**
+  String get rolloutStateParsingResponseFailed;
+
+  /// Message for the rollout process
+  ///
+  /// In en, this message translates to:
+  /// **'Sending public key'**
+  String get rolloutStateSendingPublicKey;
+
+  /// Message for the rollout process
+  ///
+  /// In en, this message translates to:
+  /// **'Senden des öffentlichen Schlüssels abgeschlossen'**
+  String get rolloutStateSendingPublicKeyCompleted;
+
+  /// Message for the rollout process
+  ///
+  /// In en, this message translates to:
+  /// **'Sending public key failed'**
+  String get rolloutStateSendingPublicKeyFailed;
+
+  /// Buttontext to save something, depending on the context.
   ///
   /// In en, this message translates to:
   /// **'Save'**
-  String get save;
+  String get saveButton;
 
   /// The button to scan otpauth qr-codes.
   ///
@@ -1593,17 +1811,17 @@ abstract class AppLocalizations {
   /// **'Scan QR-Code'**
   String get scanQrCode;
 
-  /// No description provided for @scanThisQrWithNewDevice.
+  /// Content of the token export dialog that shows the user the qr code.
   ///
   /// In en, this message translates to:
   /// **'Scan this QR code with your new device to import the token.'**
   String get scanThisQrWithNewDevice;
 
-  /// No description provided for @searchTokens.
+  /// Semantics label for the animated countdown until the next OTP is generated.
   ///
   /// In en, this message translates to:
-  /// **'Search tokens'**
-  String get searchTokens;
+  /// **'Seconds until next OTP'**
+  String get secondsUntilNextOTP;
 
   /// Error message when the secret is missing.
   ///
@@ -1617,37 +1835,55 @@ abstract class AppLocalizations {
   /// **'Secret key'**
   String get secretKey;
 
-  /// No description provided for @selectFile.
+  /// Buttontext and Title for the import type file.
   ///
   /// In en, this message translates to:
   /// **'Select file'**
   String get selectFile;
 
-  /// No description provided for @selectImportSource.
+  /// Title of the screen where the user can select the token import source.
   ///
   /// In en, this message translates to:
   /// **'Select import source'**
   String get selectImportSource;
 
-  /// No description provided for @selectImportType.
+  /// Title of the screen where the user can select the token import type.
   ///
   /// In en, this message translates to:
   /// **'How do you want to import the tokens?'**
   String get selectImportType;
 
-  /// No description provided for @selectTokensToExport.
+  /// Title of the screen where the user can select the tokens to export.
   ///
   /// In en, this message translates to:
-  /// **'{count, plural, zero{} one{Select token to export} other{Select tokens to export}}'**
+  /// **'Please select the tokens you want to export.'**
   String selectTokensToExport(num count);
 
-  /// No description provided for @selectTokensToExportHelpContent.
+  /// Tells the user why some tokens are not exportable.
   ///
   /// In en, this message translates to:
-  /// **'If a token is not listed, it is not guaranteed that it is not a privacyIDEA token.\nCurrently only manually added and imported tokens are exportable.'**
-  String get selectTokensToExportHelpContent;
+  /// **'If a token is not listed, it is not guaranteed that it is not a privacyIDEA token.'**
+  String get selectTokensToExportHelpContent1;
 
-  /// No description provided for @selectTokensToExportHelpTitle.
+  /// Tells the user why some tokens are not exportable.
+  ///
+  /// In en, this message translates to:
+  /// **'Currently only manually added and imported tokens are exportable.'**
+  String get selectTokensToExportHelpContent2;
+
+  /// Tells the user why some tokens are not exportable.
+  ///
+  /// In en, this message translates to:
+  /// **'We are working on a solution to differentiate between privacyIDEA tokens and private tokens.'**
+  String get selectTokensToExportHelpContent3;
+
+  /// Tells the user why some tokens are not exportable.
+  ///
+  /// In en, this message translates to:
+  /// **'You can obtain a new QR code from the service from which you received the token.'**
+  String get selectTokensToExportHelpContent4;
+
+  /// Title of the help dialog that explains why some tokens are not exportable.
   ///
   /// In en, this message translates to:
   /// **'Is your token not listed?'**
@@ -1677,18 +1913,6 @@ abstract class AppLocalizations {
   /// **'Failed to send the response.'**
   String get sendPushRequestResponseFailed;
 
-  /// Message for the rollout process
-  ///
-  /// In en, this message translates to:
-  /// **'Sending public RSA key'**
-  String get sendingRSAPublicKey;
-
-  /// Message for the rollout process
-  ///
-  /// In en, this message translates to:
-  /// **'Sending public RSA key failed'**
-  String get sendingRSAPublicKeyFailed;
-
   /// Tells the user that the server could not be reached.
   ///
   /// In en, this message translates to:
@@ -1701,7 +1925,7 @@ abstract class AppLocalizations {
   /// **'Settings'**
   String get settings;
 
-  /// No description provided for @settingsGroupGeneral.
+  /// Title for the general settings group.
   ///
   /// In en, this message translates to:
   /// **'General'**
@@ -1737,17 +1961,11 @@ abstract class AppLocalizations {
   /// **'Some of the tokens are outdated and do not support polling'**
   String get someTokensDoNotSupportPolling;
 
-  /// Label that tells the user that the token is being rolled out.
-  ///
-  /// In en, this message translates to:
-  /// **'Start rollout'**
-  String get startRollout;
-
   /// Tells the user the status code of the error.
   ///
   /// In en, this message translates to:
   /// **'Status code: {statusCode}'**
-  String statusCode(Object statusCode);
+  String statusCode(int statusCode);
 
   /// Text of button that is used to synchronize push tokens.
   ///
@@ -1766,6 +1984,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Synchronization failed for the following tokens, please try again:'**
   String get syncFbTokenFailed;
+
+  /// Status message that tells the user to sync the Firebase token manually when the network is available.
+  ///
+  /// In en, this message translates to:
+  /// **'Please synchronize the push tokens manually via the settings when a network connection is available.'**
+  String get syncFbTokenManuallyWhenNetworkIsAvailable;
+
+  /// The state of the synchronization of the token
+  ///
+  /// In en, this message translates to:
+  /// **'Sync State'**
+  String get syncState;
+
+  /// The description of the state when the synchronization is completed
+  ///
+  /// In en, this message translates to:
+  /// **'Sync completed'**
+  String get syncStateCompletedDescription;
+
+  /// The description of the state when the synchronization failed
+  ///
+  /// In en, this message translates to:
+  /// **'Sync Failed'**
+  String get syncStateFailedDescription;
+
+  /// The description of the state when the synchronization is not started
+  ///
+  /// In en, this message translates to:
+  /// **'Sync not started'**
+  String get syncStateNotStartedDescription;
+
+  /// The description of the state when the synchronization is currently syncing
+  ///
+  /// In en, this message translates to:
+  /// **'Currently Syncing'**
+  String get syncStateSyncingDescription;
 
   /// Title of synchronizing push tokens in settings.
   ///
@@ -1797,12 +2051,6 @@ abstract class AppLocalizations {
   /// **'Theme'**
   String get theme;
 
-  /// No description provided for @thisAppIsOpenSource.
-  ///
-  /// In en, this message translates to:
-  /// **'This Application is Open Source\nVisit us on GitHub'**
-  String get thisAppIsOpenSource;
-
   /// Error message when a request times out.
   ///
   /// In en, this message translates to:
@@ -1821,11 +2069,11 @@ abstract class AppLocalizations {
   /// **'Token details'**
   String get tokenDetails;
 
-  /// No description provided for @tokenLink.
+  /// Label for the input field where the token link should be entered.
   ///
   /// In en, this message translates to:
   /// **'Token link'**
-  String get tokenLink;
+  String get tokenLinkImport;
 
   /// Label for the token serial number.
   ///
@@ -1833,7 +2081,7 @@ abstract class AppLocalizations {
   /// **'Token serial'**
   String get tokenSerial;
 
-  /// No description provided for @tokensAreEncrypted.
+  /// Content of the import view that tells the user that the tokens are encrypted.
   ///
   /// In en, this message translates to:
   /// **'The tokens are encrypted. Please enter the password to decrypt them.'**
@@ -1845,13 +2093,7 @@ abstract class AppLocalizations {
   /// **'The following tokens do not support synchronization and must be rolled out again:'**
   String get tokensDoNotSupportSynchronization;
 
-  /// No description provided for @tokensNotEncrypted.
-  ///
-  /// In en, this message translates to:
-  /// **'The tokens are not encrypted and can be imported directly.'**
-  String get tokensNotEncrypted;
-
-  /// No description provided for @tokensSuccessfullyDecrypted.
+  /// Content of the import view that tells the user that the tokens were successfully decrypted.
   ///
   /// In en, this message translates to:
   /// **'The tokens have been successfully decrypted and can now be imported.'**
@@ -1881,11 +2123,11 @@ abstract class AppLocalizations {
   /// **'Unlock'**
   String get unlock;
 
-  /// No description provided for @unsupported.
+  /// Error message when something is not supported, depending on the context.
   ///
   /// In en, this message translates to:
   /// **'The {name} [{value}] is not supported by this version of the app.'**
-  String unsupported(Object name, Object value);
+  String unsupported(String name, String value);
 
   /// Description of the switch tile where using the devices language can be enabled.
   ///
@@ -1899,29 +2141,17 @@ abstract class AppLocalizations {
   /// **'Use device language'**
   String get useDeviceLocaleTitle;
 
-  /// No description provided for @validFor.
+  /// Error message when a value is not allowed for a specific parameter.
   ///
   /// In en, this message translates to:
-  /// **'Valid for'**
-  String get validFor;
+  /// **'Type {type} “{value}” is not a permitted value for “{parameter}”'**
+  String valueNotAllowed(String parameter, String type, String value);
 
-  /// No description provided for @validUntil.
+  /// Error message when a value is not allowed for a specific parameter in a specific map.
   ///
   /// In en, this message translates to:
-  /// **'Valid until'**
-  String get validUntil;
-
-  /// No description provided for @valueNotAllowed.
-  ///
-  /// In en, this message translates to:
-  /// **'The {type} \"{value}\" is not an allowed value for \"{parameter}\"'**
-  String valueNotAllowed(Object parameter, Object type, Object value);
-
-  /// No description provided for @valueNotAllowedIn.
-  ///
-  /// In en, this message translates to:
-  /// **'The {type} \"{value}\" is not an allowed value for \"{parameter}\" in \"{map}\"'**
-  String valueNotAllowedIn(Object map, Object parameter, Object type, Object value);
+  /// **' Type {type} “{value}” is not a valid value for “{parameter}” in “{map}”'**
+  String valueNotAllowedIn(String map, String parameter, String type, String value);
 
   /// Title of the switch tile where verbose logging can be enabled.
   ///
@@ -1929,19 +2159,19 @@ abstract class AppLocalizations {
   /// **'Verbose logging'**
   String get verboseLogging;
 
-  /// No description provided for @version.
+  /// Title of a section of the patch notes.
   ///
   /// In en, this message translates to:
   /// **'Version'**
-  String get version;
+  String get versionTitle;
 
-  /// No description provided for @wrongPassword.
+  /// Tells the user that the entered password is wrong.
   ///
   /// In en, this message translates to:
   /// **'Incorrect password'**
   String get wrongPassword;
 
-  /// No description provided for @yes.
+  /// Positive answer text to a binary question. Used for buttons and text fields.
   ///
   /// In en, this message translates to:
   /// **'Yes'**
@@ -1957,7 +2187,7 @@ class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> 
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['cs', 'de', 'en', 'es', 'fr', 'nl', 'pl'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['cs', 'de', 'en', 'es', 'fr', 'id', 'nl', 'pl'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_AppLocalizationsDelegate old) => false;
@@ -1973,6 +2203,7 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
     case 'en': return AppLocalizationsEn();
     case 'es': return AppLocalizationsEs();
     case 'fr': return AppLocalizationsFr();
+    case 'id': return AppLocalizationsId();
     case 'nl': return AppLocalizationsNl();
     case 'pl': return AppLocalizationsPl();
   }

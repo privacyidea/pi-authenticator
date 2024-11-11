@@ -108,7 +108,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
       final fixedSyncState = c.syncState == SyncState.syncing ? SyncState.failed : c.syncState;
       return c.copyWith(syncState: fixedSyncState);
     }).toList();
-    initState = initState.copyWith(containerList: containerList);
+    initState = initState.copyWith(container: containerList);
     for (var container in initState.containerList.whereType<TokenContainerUnfinalized>()) {
       finalize(container, isManually: false);
     }

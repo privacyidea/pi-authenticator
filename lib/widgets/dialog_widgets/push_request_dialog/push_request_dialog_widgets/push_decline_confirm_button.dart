@@ -21,10 +21,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/widgets/button_widgets/press_button.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../../../utils/customization/theme_extentions/push_request_theme.dart';
+import '../../../button_widgets/cooldown_button.dart';
 import '../push_request_dialog.dart';
 import 'push_decline_confirm_dialog.dart';
 

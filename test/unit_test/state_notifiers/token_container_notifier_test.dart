@@ -17,7 +17,7 @@ void main() {
 }
 
 TokenContainerState _getBaseState() => TokenContainerState(
-      containerList: [
+      container: [
         TokenContainerUnfinalized(
           issuer: 'issuer',
           nonce: 'nonce',
@@ -49,7 +49,7 @@ void _testTokenContainerNotifier() {
         } else {
           newList = List<TokenContainer>.from(repoState.containerList)..[i] = container;
         }
-        repoState = TokenContainerState(containerList: newList);
+        repoState = TokenContainerState(container: newList);
         return Future.value(repoState);
       });
       final tokenContainerProvider = tokenContainerNotifierProviderOf(
@@ -90,7 +90,7 @@ void _testTokenContainerNotifier() {
         } else {
           newList = List<TokenContainer>.from(repoState.containerList)..[i] = container;
         }
-        repoState = TokenContainerState(containerList: newList);
+        repoState = TokenContainerState(container: newList);
         return Future.value(repoState);
       });
       final tokenContainerProvider = tokenContainerNotifierProviderOf(
@@ -139,7 +139,7 @@ void _testTokenContainerNotifier() {
         } else {
           newList = List<TokenContainer>.from(repoState.containerList)..[i] = container;
         }
-        repoState = TokenContainerState(containerList: newList);
+        repoState = TokenContainerState(container: newList);
         return Future.value(repoState);
       });
       when(mockRepo.saveContainerState(any)).thenAnswer((invocation) {
@@ -203,7 +203,7 @@ void _testTokenContainerNotifier() {
         } else {
           newList = List<TokenContainer>.from(repoState.containerList)..[i] = container;
         }
-        repoState = TokenContainerState(containerList: newList);
+        repoState = TokenContainerState(container: newList);
         return Future.value(repoState);
       });
       final tokenContainerProvider = tokenContainerNotifierProviderOf(
@@ -232,7 +232,7 @@ void _testTokenContainerNotifier() {
       final container = ProviderContainer();
       var repoState = _getBaseState();
       repoState = repoState.copyWith(
-        containerList: [
+        container: [
           repoState.containerList.first,
           TokenContainerUnfinalized(
             issuer: 'issuer2',
@@ -259,7 +259,7 @@ void _testTokenContainerNotifier() {
         } else {
           newList = List<TokenContainer>.from(repoState.containerList)..[i] = container;
         }
-        repoState = TokenContainerState(containerList: newList);
+        repoState = TokenContainerState(container: newList);
         return Future.value(repoState);
       });
       when(mockRepo.saveContainerList(any)).thenAnswer((invocation) {
@@ -269,7 +269,7 @@ void _testTokenContainerNotifier() {
           final i = newList.indexWhere((element) => element.serial == container.serial);
           newList[i] = container;
         }
-        repoState = TokenContainerState(containerList: newList);
+        repoState = TokenContainerState(container: newList);
         return Future.value(repoState);
       });
       final tokenContainerProvider = tokenContainerNotifierProviderOf(
@@ -311,7 +311,7 @@ void _testTokenContainerNotifier() {
         } else {
           newList = List<TokenContainer>.from(repoState.containerList)..[i] = container;
         }
-        repoState = TokenContainerState(containerList: newList);
+        repoState = TokenContainerState(container: newList);
         return Future.value(repoState);
       });
       when(mockRepo.deleteContainer(any)).thenAnswer((invocation) {
@@ -321,7 +321,7 @@ void _testTokenContainerNotifier() {
           return Future.value(repoState);
         }
         final newList = List<TokenContainer>.from(repoState.containerList)..removeAt(i);
-        repoState = TokenContainerState(containerList: newList);
+        repoState = TokenContainerState(container: newList);
         return Future.value(repoState);
       });
       final tokenContainerProvider = tokenContainerNotifierProviderOf(
@@ -344,7 +344,7 @@ void _testTokenContainerNotifier() {
       final container = ProviderContainer();
       var repoState = _getBaseState();
       repoState = repoState.copyWith(
-        containerList: [
+        container: [
           repoState.containerList.first,
           TokenContainerUnfinalized(
             issuer: 'issuer2',
@@ -381,7 +381,7 @@ void _testTokenContainerNotifier() {
         } else {
           newList = List<TokenContainer>.from(repoState.containerList)..[i] = container;
         }
-        repoState = TokenContainerState(containerList: newList);
+        repoState = TokenContainerState(container: newList);
         return Future.value(repoState);
       });
       final tokenContainerProvider = tokenContainerNotifierProviderOf(
@@ -417,7 +417,7 @@ void _testTokenContainerNotifier() {
         } else {
           newList = List<TokenContainer>.from(repoState.containerList)..[i] = container;
         }
-        repoState = TokenContainerState(containerList: newList);
+        repoState = TokenContainerState(container: newList);
         return Future.value(repoState);
       });
       final tokenContainerProvider = tokenContainerNotifierProviderOf(
@@ -451,7 +451,7 @@ void _testTokenContainerNotifier() {
         } else {
           newList = List<TokenContainer>.from(repoState.containerList)..[i] = container;
         }
-        repoState = TokenContainerState(containerList: newList);
+        repoState = TokenContainerState(container: newList);
         return Future.value(repoState);
       });
       final tokenContainerProvider = tokenContainerNotifierProviderOf(
@@ -485,7 +485,7 @@ void _testTokenContainerNotifier() {
         } else {
           newList = List<TokenContainer>.from(repoState.containerList)..[i] = container;
         }
-        repoState = TokenContainerState(containerList: newList);
+        repoState = TokenContainerState(container: newList);
         return Future.value(repoState);
       });
       final tokenContainerProvider = tokenContainerNotifierProviderOf(
@@ -519,7 +519,7 @@ void _testTokenContainerNotifier() {
         } else {
           newList = List<TokenContainer>.from(repoState.containerList)..[i] = container;
         }
-        repoState = TokenContainerState(containerList: newList);
+        repoState = TokenContainerState(container: newList);
         return Future.value(repoState);
       });
       final tokenContainerProvider = tokenContainerNotifierProviderOf(
@@ -553,7 +553,7 @@ void _testTokenContainerNotifier() {
         } else {
           newList = List<TokenContainer>.from(repoState.containerList)..[i] = container;
         }
-        repoState = TokenContainerState(containerList: newList);
+        repoState = TokenContainerState(container: newList);
         return Future.value(repoState);
       });
       final tokenContainerProvider = tokenContainerNotifierProviderOf(
