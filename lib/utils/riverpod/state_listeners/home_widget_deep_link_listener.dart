@@ -31,7 +31,7 @@ class HomeWidgetDeepLinkListener extends DeepLinkListener {
           listenerName: 'HomeWidgetProcessor().processUri',
         );
 
-  static void _onNewState(AsyncValue<DeepLink>? previous, AsyncValue<DeepLink> next) {
+  static void _onNewState(WidgetRef ref, AsyncValue<DeepLink>? previous, AsyncValue<DeepLink> next) {
     next.whenData((next) {
       const HomeWidgetProcessor().processUri(next.uri, fromInit: next.fromInit);
     });
