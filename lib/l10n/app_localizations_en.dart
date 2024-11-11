@@ -18,6 +18,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get patchNotesBugFixes => 'Bug fixes';
 
   @override
+  String get patchNotesV4_4_2NewFeatures1 => 'Tokens can now be inserted using copy & paste.';
+
+  @override
+  String get patchNotesV4_4_2NewFeatures2 => 'Added gallery support for QR code scanning.';
+
+  @override
+  String get patchNotesV4_4_2Improvement1 => 'Added flashlight support for QR code scanning.';
+
+  @override
   String get patchNotesV4_4_0NewFeatures1 => 'It is now possible to export tokens where it can be ensured that they are not privacyIDEA tokens. Currently, it cannot be ruled out that tokens added via the QR code scanner originate from privacyIDEA. The differentiation will be improved in future versions.';
 
   @override

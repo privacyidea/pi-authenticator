@@ -18,6 +18,15 @@ class AppLocalizationsCs extends AppLocalizations {
   String get patchNotesBugFixes => 'Opravy chyb';
 
   @override
+  String get patchNotesV4_4_2NewFeatures1 => 'Žetony lze nyní vkládat pomocí kopírování a vkládání.';
+
+  @override
+  String get patchNotesV4_4_2NewFeatures2 => 'Přidána podpora galerie pro skenování QR kódů.';
+
+  @override
+  String get patchNotesV4_4_2Improvement1 => 'Přidána podpora svítilny pro skenování QR kódů.';
+
+  @override
   String get patchNotesV4_4_0NewFeatures1 => 'Nyní je možné exportovat tokeny, u kterých lze zajistit, že se nejedná o tokeny privacyIDEA. V současné době nelze vyloučit, že tokeny přidané prostřednictvím čtečky QR kódů pocházejí z aplikace privacyIDEA. Rozlišování bude v budoucích verzích vylepšeno.';
 
   @override
