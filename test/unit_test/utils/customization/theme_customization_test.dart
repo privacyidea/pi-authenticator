@@ -22,14 +22,15 @@ void _testThemeCustomization() {
       renameColor: Color(0xFF000007),
       lockColor: Color(0xFF000008),
       exportColor: Color(0xFF000009),
-      tileIconColor: Color(0xFF000009),
-      navigationBarColor: Color(0xFF00000A),
-      actionButtonsForegroundColor: Color(0xFF00000B),
-      tilePrimaryColor: Color(0xFF00000C),
-      tileSubtitleColor: Color(0xFF00000D),
-      navigationBarIconColor: Color(0xFF00000E),
-      qrButtonBackgroundColor: Color(0xFF00000F),
-      qrButtonIconColor: Color(0xFF000010),
+      disabledColor: Color(0xFF00000A),
+      tileIconColor: Color(0xFF00000B),
+      navigationBarColor: Color(0xFF00000C),
+      actionButtonsForegroundColor: Color(0xFF00000D),
+      tilePrimaryColor: Color(0xFF00000E),
+      tileSubtitleColor: Color(0xFF00000F),
+      navigationBarIconColor: Color(0xFF000010),
+      qrButtonBackgroundColor: Color(0xFF000011),
+      qrButtonIconColor: Color(0xFF000012),
     );
     test('constructor', () {
       // Assert
@@ -43,15 +44,16 @@ void _testThemeCustomization() {
       expect(customization.deleteColor, equals(const Color(0xFF000006)));
       expect(customization.renameColor, equals(const Color(0xFF000007)));
       expect(customization.lockColor, equals(const Color(0xFF000008)));
-      expect(customization.tileIconColor, equals(const Color(0xFF000009)));
       expect(customization.exportColor, equals(const Color(0xFF000009)));
-      expect(customization.navigationBarColor, equals(const Color(0xFF00000A)));
-      expect(customization.actionButtonsForegroundColor, equals(const Color(0xFF00000B)));
-      expect(customization.tilePrimaryColor, equals(const Color(0xFF00000C)));
-      expect(customization.tileSubtitleColor, equals(const Color(0xFF00000D)));
-      expect(customization.navigationBarIconColor, equals(const Color(0xFF00000E)));
-      expect(customization.qrButtonBackgroundColor, equals(const Color(0xFF00000F)));
-      expect(customization.qrButtonIconColor, equals(const Color(0xFF000010)));
+      expect(customization.disabledColor, equals(const Color(0xFF00000A)));
+      expect(customization.tileIconColor, equals(const Color(0xFF00000B)));
+      expect(customization.navigationBarColor, equals(const Color(0xFF00000C)));
+      expect(customization.actionButtonsForegroundColor, equals(const Color(0xFF00000D)));
+      expect(customization.tilePrimaryColor, equals(const Color(0xFF00000E)));
+      expect(customization.tileSubtitleColor, equals(const Color(0xFF00000F)));
+      expect(customization.navigationBarIconColor, equals(const Color(0xFF000010)));
+      expect(customization.qrButtonBackgroundColor, equals(const Color(0xFF000011)));
+      expect(customization.qrButtonIconColor, equals(const Color(0xFF000012)));
     });
     test('copyWith', () {
       // Act
@@ -66,15 +68,16 @@ void _testThemeCustomization() {
         deleteColor: const Color(0xFFFFFFF9),
         renameColor: const Color(0xFFFFFFF8),
         lockColor: const Color(0xFFFFFFF7),
-        exportColor: const Color(0xFFFFFFF7),
-        tileIconColor: const Color(0xFFFFFFF6),
-        navigationBarColor: const Color(0xFFFFFFF5),
-        actionButtonsForegroundColor: () => const Color(0xFFFFFFF4),
-        tilePrimaryColor: () => const Color(0xFFFFFFF3),
-        tileSubtitleColor: () => const Color(0xFFFFFFF2),
-        navigationBarIconColor: () => const Color(0xFFFFFFF1),
-        qrButtonBackgroundColor: () => const Color(0xFFFFFFF0),
-        qrButtonIconColor: () => const Color(0xFFFFFFEF),
+        exportColor: const Color(0xFFFFFFF6),
+        disabledColor: const Color(0xFFFFFFF5),
+        tileIconColor: const Color(0xFFFFFFF4),
+        navigationBarColor: const Color(0xFFFFFFF3),
+        actionButtonsForegroundColor: () => const Color(0xFFFFFFF2),
+        tilePrimaryColor: () => const Color(0xFFFFFFF1),
+        tileSubtitleColor: () => const Color(0xFFFFFFF0),
+        navigationBarIconColor: () => const Color(0xFFFFFFEF),
+        qrButtonBackgroundColor: () => const Color(0xFFFFFFEE),
+        qrButtonIconColor: () => const Color(0xFFFFFFED),
       );
       // Assert
       expect(newCustomization.brightness, equals(Brightness.light));
@@ -87,15 +90,16 @@ void _testThemeCustomization() {
       expect(newCustomization.deleteColor, equals(const Color(0xFFFFFFF9)));
       expect(newCustomization.renameColor, equals(const Color(0xFFFFFFF8)));
       expect(newCustomization.lockColor, equals(const Color(0xFFFFFFF7)));
-      expect(newCustomization.exportColor, equals(const Color(0xFFFFFFF7)));
-      expect(newCustomization.tileIconColor, equals(const Color(0xFFFFFFF6)));
-      expect(newCustomization.navigationBarColor, equals(const Color(0xFFFFFFF5)));
-      expect(newCustomization.actionButtonsForegroundColor, equals(const Color(0xFFFFFFF4)));
-      expect(newCustomization.tilePrimaryColor, equals(const Color(0xFFFFFFF3)));
-      expect(newCustomization.tileSubtitleColor, equals(const Color(0xFFFFFFF2)));
-      expect(newCustomization.navigationBarIconColor, equals(const Color(0xFFFFFFF1)));
-      expect(newCustomization.qrButtonBackgroundColor, equals(const Color(0xFFFFFFF0)));
-      expect(newCustomization.qrButtonIconColor, equals(const Color(0xFFFFFFEF)));
+      expect(newCustomization.exportColor, equals(const Color(0xFFFFFFF6)));
+      expect(newCustomization.disabledColor, equals(const Color(0xFFFFFFF5)));
+      expect(newCustomization.tileIconColor, equals(const Color(0xFFFFFFF4)));
+      expect(newCustomization.navigationBarColor, equals(const Color(0xFFFFFFF3)));
+      expect(newCustomization.actionButtonsForegroundColor, equals(const Color(0xFFFFFFF2)));
+      expect(newCustomization.tilePrimaryColor, equals(const Color(0xFFFFFFF1)));
+      expect(newCustomization.tileSubtitleColor, equals(const Color(0xFFFFFFF0)));
+      expect(newCustomization.navigationBarIconColor, equals(const Color(0xFFFFFFEF)));
+      expect(newCustomization.qrButtonBackgroundColor, equals(const Color(0xFFFFFFEE)));
+      expect(newCustomization.qrButtonIconColor, equals(const Color(0xFFFFFFED)));
     });
     group('default themes', () {
       test('defaultLightWith', () {
@@ -110,15 +114,16 @@ void _testThemeCustomization() {
           deleteColor: Color(0xFFFFFFF9),
           renameColor: Color(0xFFFFFFF8),
           lockColor: Color(0xFFFFFFF7),
-          exportColor: Color(0xFFFFFFF7),
-          tileIconColor: Color(0xFFFFFFF6),
-          navigationBarColor: Color(0xFFFFFFF5),
-          actionButtonsForegroundColor: Color(0xFFFFFFF4),
-          tilePrimaryColor: Color(0xFFFFFFF3),
-          tileSubtitleColor: Color(0xFFFFFFF2),
-          navigationBarIconColor: Color(0xFFFFFFF1),
-          qrButtonBackgroundColor: Color(0xFFFFFFF0),
-          qrButtonIconColor: Color(0xFFFFFFEF),
+          exportColor: Color(0xFFFFFFF6),
+          disabledColor: Color(0xFFFFFFF5),
+          tileIconColor: Color(0xFFFFFFF4),
+          navigationBarColor: Color(0xFFFFFFF3),
+          actionButtonsForegroundColor: Color(0xFFFFFFF2),
+          tilePrimaryColor: Color(0xFFFFFFF1),
+          tileSubtitleColor: Color(0xFFFFFFF0),
+          navigationBarIconColor: Color(0xFFFFFFEF),
+          qrButtonBackgroundColor: Color(0xFFFFFFEE),
+          qrButtonIconColor: Color(0xFFFFFFED),
         );
         // Assert
         expect(newCustomization.brightness, equals(Brightness.light));
@@ -131,15 +136,16 @@ void _testThemeCustomization() {
         expect(newCustomization.deleteColor, equals(const Color(0xFFFFFFF9)));
         expect(newCustomization.renameColor, equals(const Color(0xFFFFFFF8)));
         expect(newCustomization.lockColor, equals(const Color(0xFFFFFFF7)));
-        expect(newCustomization.exportColor, equals(const Color(0xFFFFFFF7)));
-        expect(newCustomization.tileIconColor, equals(const Color(0xFFFFFFF6)));
-        expect(newCustomization.navigationBarColor, equals(const Color(0xFFFFFFF5)));
-        expect(newCustomization.actionButtonsForegroundColor, equals(const Color(0xFFFFFFF4)));
-        expect(newCustomization.tilePrimaryColor, equals(const Color(0xFFFFFFF3)));
-        expect(newCustomization.tileSubtitleColor, equals(const Color(0xFFFFFFF2)));
-        expect(newCustomization.navigationBarIconColor, equals(const Color(0xFFFFFFF1)));
-        expect(newCustomization.qrButtonBackgroundColor, equals(const Color(0xFFFFFFF0)));
-        expect(newCustomization.qrButtonIconColor, equals(const Color(0xFFFFFFEF)));
+        expect(newCustomization.exportColor, equals(const Color(0xFFFFFFF6)));
+        expect(newCustomization.disabledColor, equals(const Color(0xFFFFFFF5)));
+        expect(newCustomization.tileIconColor, equals(const Color(0xFFFFFFF4)));
+        expect(newCustomization.navigationBarColor, equals(const Color(0xFFFFFFF3)));
+        expect(newCustomization.actionButtonsForegroundColor, equals(const Color(0xFFFFFFF2)));
+        expect(newCustomization.tilePrimaryColor, equals(const Color(0xFFFFFFF1)));
+        expect(newCustomization.tileSubtitleColor, equals(const Color(0xFFFFFFF0)));
+        expect(newCustomization.navigationBarIconColor, equals(const Color(0xFFFFFFEF)));
+        expect(newCustomization.qrButtonBackgroundColor, equals(const Color(0xFFFFFFEE)));
+        expect(newCustomization.qrButtonIconColor, equals(const Color(0xFFFFFFED)));
       });
       test('defaultDarkWith', () {
         // Act
@@ -153,15 +159,16 @@ void _testThemeCustomization() {
           deleteColor: Color(0xFFFFFFF9),
           renameColor: Color(0xFFFFFFF8),
           lockColor: Color(0xFFFFFFF7),
-          exportColor: Color(0xFFFFFFF7),
-          tileIconColor: Color(0xFFFFFFF6),
-          navigationBarColor: Color(0xFFFFFFF5),
-          actionButtonsForegroundColor: Color(0xFFFFFFF4),
-          tilePrimaryColor: Color(0xFFFFFFF3),
-          tileSubtitleColor: Color(0xFFFFFFF2),
-          navigationBarIconColor: Color(0xFFFFFFF1),
-          qrButtonBackgroundColor: Color(0xFFFFFFF0),
-          qrButtonIconColor: Color(0xFFFFFFEF),
+          exportColor: Color(0xFFFFFFF6),
+          disabledColor: Color(0xFFFFFFF5),
+          tileIconColor: Color(0xFFFFFFF4),
+          navigationBarColor: Color(0xFFFFFFF3),
+          actionButtonsForegroundColor: Color(0xFFFFFFF2),
+          tilePrimaryColor: Color(0xFFFFFFF1),
+          tileSubtitleColor: Color(0xFFFFFFF0),
+          navigationBarIconColor: Color(0xFFFFFFEF),
+          qrButtonBackgroundColor: Color(0xFFFFFFEE),
+          qrButtonIconColor: Color(0xFFFFFFED),
         );
         // Assert
         expect(newCustomization.brightness, equals(Brightness.dark));
@@ -174,15 +181,16 @@ void _testThemeCustomization() {
         expect(newCustomization.deleteColor, equals(const Color(0xFFFFFFF9)));
         expect(newCustomization.renameColor, equals(const Color(0xFFFFFFF8)));
         expect(newCustomization.lockColor, equals(const Color(0xFFFFFFF7)));
-        expect(newCustomization.exportColor, equals(const Color(0xFFFFFFF7)));
-        expect(newCustomization.tileIconColor, equals(const Color(0xFFFFFFF6)));
-        expect(newCustomization.navigationBarColor, equals(const Color(0xFFFFFFF5)));
-        expect(newCustomization.actionButtonsForegroundColor, equals(const Color(0xFFFFFFF4)));
-        expect(newCustomization.tilePrimaryColor, equals(const Color(0xFFFFFFF3)));
-        expect(newCustomization.tileSubtitleColor, equals(const Color(0xFFFFFFF2)));
-        expect(newCustomization.navigationBarIconColor, equals(const Color(0xFFFFFFF1)));
-        expect(newCustomization.qrButtonBackgroundColor, equals(const Color(0xFFFFFFF0)));
-        expect(newCustomization.qrButtonIconColor, equals(const Color(0xFFFFFFEF)));
+        expect(newCustomization.exportColor, equals(const Color(0xFFFFFFF6)));
+        expect(newCustomization.disabledColor, equals(const Color(0xFFFFFFF5)));
+        expect(newCustomization.tileIconColor, equals(const Color(0xFFFFFFF4)));
+        expect(newCustomization.navigationBarColor, equals(const Color(0xFFFFFFF3)));
+        expect(newCustomization.actionButtonsForegroundColor, equals(const Color(0xFFFFFFF2)));
+        expect(newCustomization.tilePrimaryColor, equals(const Color(0xFFFFFFF1)));
+        expect(newCustomization.tileSubtitleColor, equals(const Color(0xFFFFFFF0)));
+        expect(newCustomization.navigationBarIconColor, equals(const Color(0xFFFFFFEF)));
+        expect(newCustomization.qrButtonBackgroundColor, equals(const Color(0xFFFFFFEE)));
+        expect(newCustomization.qrButtonIconColor, equals(const Color(0xFFFFFFED)));
       });
     });
     group('serialization', () {
@@ -199,15 +207,16 @@ void _testThemeCustomization() {
           'deleteColor': 0xFFFFFFF9,
           'renameColor': 0xFFFFFFF8,
           'lockColor': 0xFFFFFFF7,
-          'exportColor': 0xFFFFFFF7,
-          'tileIconColor': 0xFFFFFFF6,
-          'navigationBarColor': 0xFFFFFFF5,
-          '_actionButtonsForegroundColor': 0xFFFFFFF4,
-          '_tilePrimaryColor': 0xFFFFFFF3,
-          '_tileSubtitleColor': 0xFFFFFFF2,
-          '_navigationBarIconColor': 0xFFFFFFF1,
-          '_qrButtonBackgroundColor': 0xFFFFFFF0,
-          '_qrButtonIconColor': 0xFFFFFFEF,
+          'exportColor': 0xFFFFFFF6,
+          'disabledColor': 0xFFFFFFF5,
+          'tileIconColor': 0xFFFFFFF4,
+          'navigationBarColor': 0xFFFFFFF3,
+          '_actionButtonsForegroundColor': 0xFFFFFFF2,
+          '_tilePrimaryColor': 0xFFFFFFF1,
+          '_tileSubtitleColor': 0xFFFFFFF0,
+          '_navigationBarIconColor': 0xFFFFFFEF,
+          '_qrButtonBackgroundColor': 0xFFFFFFEE,
+          '_qrButtonIconColor': 0xFFFFFFED,
         });
         // Assert
         expect(newCustomization.brightness, equals(Brightness.light));
@@ -220,15 +229,16 @@ void _testThemeCustomization() {
         expect(newCustomization.deleteColor, equals(const Color(0xFFFFFFF9)));
         expect(newCustomization.renameColor, equals(const Color(0xFFFFFFF8)));
         expect(newCustomization.lockColor, equals(const Color(0xFFFFFFF7)));
-        expect(newCustomization.exportColor, equals(const Color(0xFFFFFFF7)));
-        expect(newCustomization.tileIconColor, equals(const Color(0xFFFFFFF6)));
-        expect(newCustomization.navigationBarColor, equals(const Color(0xFFFFFFF5)));
-        expect(newCustomization.actionButtonsForegroundColor, equals(const Color(0xFFFFFFF4)));
-        expect(newCustomization.tilePrimaryColor, equals(const Color(0xFFFFFFF3)));
-        expect(newCustomization.tileSubtitleColor, equals(const Color(0xFFFFFFF2)));
-        expect(newCustomization.navigationBarIconColor, equals(const Color(0xFFFFFFF1)));
-        expect(newCustomization.qrButtonBackgroundColor, equals(const Color(0xFFFFFFF0)));
-        expect(newCustomization.qrButtonIconColor, equals(const Color(0xFFFFFFEF)));
+        expect(newCustomization.exportColor, equals(const Color(0xFFFFFFF6)));
+        expect(newCustomization.disabledColor, equals(const Color(0xFFFFFFF5)));
+        expect(newCustomization.tileIconColor, equals(const Color(0xFFFFFFF4)));
+        expect(newCustomization.navigationBarColor, equals(const Color(0xFFFFFFF3)));
+        expect(newCustomization.actionButtonsForegroundColor, equals(const Color(0xFFFFFFF2)));
+        expect(newCustomization.tilePrimaryColor, equals(const Color(0xFFFFFFF1)));
+        expect(newCustomization.tileSubtitleColor, equals(const Color(0xFFFFFFF0)));
+        expect(newCustomization.navigationBarIconColor, equals(const Color(0xFFFFFFEF)));
+        expect(newCustomization.qrButtonBackgroundColor, equals(const Color(0xFFFFFFEE)));
+        expect(newCustomization.qrButtonIconColor, equals(const Color(0xFFFFFFED)));
       });
       test('toJson', () {
         // Act
@@ -245,14 +255,15 @@ void _testThemeCustomization() {
         expect(json['renameColor'], equals(0xFF000007));
         expect(json['lockColor'], equals(0xFF000008));
         expect(json['exportColor'], equals(0xFF000009));
-        expect(json['tileIconColor'], equals(0xFF000009));
-        expect(json['navigationBarColor'], equals(0xFF00000A));
-        expect(json['_actionButtonsForegroundColor'], equals(0xFF00000B));
-        expect(json['_tilePrimaryColor'], equals(0xFF00000C));
-        expect(json['_tileSubtitleColor'], equals(0xFF00000D));
-        expect(json['_navigationBarIconColor'], equals(0xFF00000E));
-        expect(json['_qrButtonBackgroundColor'], equals(0xFF00000F));
-        expect(json['_qrButtonIconColor'], equals(0xFF000010));
+        expect(json['disabledColor'], equals(0xFF00000A));
+        expect(json['tileIconColor'], equals(0xFF00000B));
+        expect(json['navigationBarColor'], equals(0xFF00000C));
+        expect(json['_actionButtonsForegroundColor'], equals(0xFF00000D));
+        expect(json['_tilePrimaryColor'], equals(0xFF00000E));
+        expect(json['_tileSubtitleColor'], equals(0xFF00000F));
+        expect(json['_navigationBarIconColor'], equals(0xFF000010));
+        expect(json['_qrButtonBackgroundColor'], equals(0xFF000011));
+        expect(json['_qrButtonIconColor'], equals(0xFF000012));
       });
     });
   });
