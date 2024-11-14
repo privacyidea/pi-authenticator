@@ -128,6 +128,7 @@ const String CONTAINER_PASSPHRASE_QUESTION = 'passphrase';
 const String CONTAINER_SSL_VERIFY = 'ssl_verify';
 const String CONTAINER_SERVER_URL = 'container_sync_url';
 const String CONTAINER_SCOPE = 'scope';
+const String CONTAINER_POLICIES = 'policies';
 
 // Container finalization:
 const String CONTAINER_CONTAINER_SERIAL = 'container_serial';

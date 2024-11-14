@@ -24,6 +24,7 @@ import 'package:collection/collection.dart';
 import 'package:http/http.dart';
 import 'package:mutex/mutex.dart';
 import 'package:privacyidea_authenticator/model/extensions/enums/rollout_state_extension.dart';
+import 'package:privacyidea_authenticator/processors/scheme_processors/token_container_processor.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../../../../model/exception_errors/pi_server_result_error.dart';
@@ -144,76 +145,38 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
 ////////////////////////// PUBLIC METHODS //////////////////////////
 ///////////////////////////////////////////////////////////////// */
 
-  Future<Map<int, TokenContainerFinalized>> syncTokens(
-    TokenState tokenState, {
-    List<TokenContainerFinalized>? containersToSync,
+  Future<Map<int, TokenContainerFinalized>> syncTokens({
+    required TokenState tokenState,
     required bool isManually,
-  }) async {
-    Logger.info('Syncing ${containersToSync?.length} tokens');
-    if (containersToSync == null || containersToSync.isEmpty) {
-      final containerList = (await future).containerList;
-      containersToSync = containerList.whereType<TokenContainerFinalized>().where((e) => e.syncState != SyncState.syncing).toList();
-    } else {
-      final current = <TokenContainer>[];
-      for (final container in containersToSync) {
-        current.add((await future).currentOf(container)!);
-      }
-      containersToSync = current.whereType<TokenContainerFinalized>().where((e) => e.syncState != SyncState.syncing).toList();
-    }
-    final syncFutures = <Future<(List<Token>, List<String>)?>>[];
 
-    List<Token> syncedTokens = [];
-    List<String> deletedTokens = [];
-
-    containersToSync = await updateContainerList(containersToSync, (c) => c.copyWith(syncState: SyncState.syncing));
-
-    final failedContainers = <int, TokenContainerFinalized>{};
-
-    for (var finalizedContainer in containersToSync) {
-      syncFutures.add(
-        Future(() async {
-          final syncResult = await _containerApi.sync(
-            finalizedContainer,
-            tokenState,
-          );
-          if (syncResult == null) {
-            await updateContainer(finalizedContainer, (c) => c.copyWith(syncState: SyncState.failed));
-            return null;
-          }
-          await updateContainer(finalizedContainer, (c) => c.copyWith(syncState: SyncState.completed));
-          return syncResult;
-        }).catchError((error, stackTrace) async {
-          await updateContainer(finalizedContainer, (c) => c.copyWith(syncState: SyncState.failed));
-          if (error is PiServerResultError) {
-            failedContainers.addAll({error.code: finalizedContainer});
-          }
-          if (!isManually) return null;
-          Logger.debug('Failed to sync container ${error.runtimeType}', error: error, stackTrace: stackTrace);
-          showStatusMessage(
-            message: AppLocalizations.of(await globalContext)!.failedToSyncContainer(finalizedContainer.serial),
-            subMessage: error is PiServerResultError ? error.message : error.toString(),
-          );
-          return null;
-        }),
+    /// If not provided, all containers will be synced
+    List<TokenContainerFinalized>? containersToSync,
+  }) async =>
+      _syncTokens(
+        tokenState: tokenState,
+        containersToSync: containersToSync ?? state.asData?.value.containerList.whereType<TokenContainerFinalized>().toList() ?? [],
+        apiCall: _containerApi.sync,
+        isManually: isManually,
       );
-    }
 
-    await Future.wait(syncFutures).then((tuples) {
-      for (var tuple in tuples) {
-        if (tuple == null) continue;
-        syncedTokens.addAll(tuple.$1);
-        deletedTokens.addAll(tuple.$2);
-      }
-    }).onError((error, stackTrace) {
-      Logger.error('Failed to sync container', error: error, stackTrace: stackTrace);
-    });
+  Future<bool> rolloverTokens({
+    required TokenState tokenState,
+    required TokenContainerFinalized container,
+  }) async {
+    final rollover = await getTransferQrData(container);
+    final uri = Uri.tryParse(rollover);
+    if (uri == null) throw ArgumentError('Invalid rollover uri');
+    final result = (await TokenContainerProcessor().processUri(uri, fromInit: false))?.firstOrNull;
+    if (result == null) throw StateError('Failed to process rollover uri');
+    final success = await handleProcessorResult(result, {}, doReplace: true);
+    return success;
+  }
 
-    // Do not remove tokens that are synced in any other container
-    deletedTokens.removeWhere((serial) => syncedTokens.any((token) => token.serial == serial));
-
-    await ref.read(tokenProvider.notifier).addOrReplaceTokens(syncedTokens);
-    await ref.read(tokenProvider.notifier).removeTokensBySerials(deletedTokens);
-    return failedContainers;
+  Future<String> getTransferQrData(TokenContainerFinalized container) async {
+    final currentContainer = (await future).currentOf(container);
+    if (currentContainer == null) throw StateError('Container was removed');
+    final qrCode = await _containerApi.getTransferQrData(currentContainer);
+    return qrCode;
   }
 
 // ADD CONTAINER
@@ -341,11 +304,20 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
   /////////////////////// HANDLE PROCESSOR RESULTS ///////////////////////////
   ///////////////////////////////////////////////////////////////////////// */
 
+  /// Returns true if the processor result was handled successfully
   @override
-  Future handleProcessorResult(ProcessorResult result, Map<String, dynamic> args) async => (await handleProcessorResults([result], args))?.isEmpty == true;
+  Future<bool> handleProcessorResult(ProcessorResult result, Map<String, dynamic> args, {bool? doReplace}) async {
+    final failedContainer = await handleProcessorResults(
+      [result],
+      args,
+      doReplace: doReplace,
+    );
+    return failedContainer?.isEmpty ?? false;
+  }
 
+  /// Returns a list of containers that failed to add
   @override
-  Future handleProcessorResults(List<ProcessorResult> results, Map<String, dynamic> args) async {
+  Future<List<TokenContainerUnfinalized>?> handleProcessorResults(List<ProcessorResult> results, Map<String, dynamic> args, {bool? doReplace}) async {
     Logger.info('Handling processor results');
     final newContainers = results.getData().whereType<TokenContainerUnfinalized>().toList();
     if (newContainers.isEmpty) return null;
@@ -357,7 +329,11 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     Logger.info('Handling processor results: adding Container');
     final replaceContainers = <TokenContainerUnfinalized>[];
     if (existingContainers.isNotEmpty) {
-      replaceContainers.addAll(await ContainerAlreadyExistsDialog.showDialog(existingContainers) ?? []);
+      replaceContainers.addAll(switch (doReplace) {
+        true => existingContainers,
+        false => [],
+        null => await ContainerAlreadyExistsDialog.showDialog(existingContainers) ?? [],
+      });
     }
 
     if (replaceContainers.isNotEmpty) {
@@ -369,7 +345,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
 
     if (newContainerList.isNotEmpty) _showAddContainerProgressDialog(newContainerList);
     final stateAfterAdding = await addContainerList(newContainerList);
-    final failedToAdd = [];
+    final failedToAdd = <TokenContainerUnfinalized>[];
     Logger.info('Handling processor results: adding done (${newContainerList.length})');
     final List<Future> finalizeFutures = [];
     for (var container in newContainerList) {
@@ -383,7 +359,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
       finalizeFutures.add(finalize(container, isManually: true));
     }
     await Future.wait(finalizeFutures);
-    await syncTokens(ref.read(tokenProvider), isManually: true);
+    await syncTokens(tokenState: ref.read(tokenProvider), containersToSync: [], isManually: true);
 
     return failedToAdd;
   }
@@ -442,11 +418,86 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
       Logger.error('Failed to finalize container ${container.serial}', error: e);
     }
     _finalizationMutex.release();
+
+    return;
   }
 
 /* /////////////////////////////////////////////////////////////////////////
 ////////////////// PRIVATE HELPER METHODS FINALIZATION /////////////////////
 ///////////////////////////////////////////////////////////////////////// */
+
+  Future<Map<int, TokenContainerFinalized>> _syncTokens({
+    required TokenState tokenState,
+    required List<TokenContainerFinalized> containersToSync,
+    required Future<(List<Token>, List<String>)?> Function(TokenContainerFinalized container, TokenState tokenState) apiCall,
+    required bool isManually,
+  }) async {
+    Logger.info('Syncing ${containersToSync.length} tokens');
+    if (containersToSync.isEmpty) {
+      final containerList = (await future).containerList;
+      containersToSync = containerList.whereType<TokenContainerFinalized>().where((e) => e.syncState != SyncState.syncing).toList();
+    } else {
+      final current = <TokenContainer>[];
+      for (final container in containersToSync) {
+        current.add((await future).currentOf(container)!);
+      }
+      containersToSync = current.whereType<TokenContainerFinalized>().where((e) => e.syncState != SyncState.syncing).toList();
+    }
+    final syncFutures = <Future<(List<Token>, List<String>)?>>[];
+
+    List<Token> syncedTokens = [];
+    List<String> deletedTokens = [];
+
+    containersToSync = await updateContainerList(containersToSync, (c) => c.copyWith(syncState: SyncState.syncing));
+
+    final failedContainers = <int, TokenContainerFinalized>{};
+
+    for (var finalizedContainer in containersToSync) {
+      syncFutures.add(
+        Future(() async {
+          final syncResult = await apiCall(
+            finalizedContainer,
+            tokenState,
+          );
+          if (syncResult == null) {
+            await updateContainer(finalizedContainer, (c) => c.copyWith(syncState: SyncState.failed));
+            return null;
+          }
+          await updateContainer(finalizedContainer, (c) => c.copyWith(syncState: SyncState.completed));
+          return syncResult;
+        }).catchError((error, stackTrace) async {
+          await updateContainer(finalizedContainer, (c) => c.copyWith(syncState: SyncState.failed));
+          if (error is PiServerResultError) {
+            failedContainers.addAll({error.code: finalizedContainer});
+          }
+          if (!isManually) return null;
+          Logger.debug('Failed to sync container ${error.runtimeType}', error: error, stackTrace: stackTrace);
+          showStatusMessage(
+            message: AppLocalizations.of(await globalContext)!.failedToSyncContainer(finalizedContainer.serial),
+            subMessage: error is PiServerResultError ? error.message : error.toString(),
+          );
+          return null;
+        }),
+      );
+    }
+
+    await Future.wait(syncFutures).then((tuples) {
+      for (var tuple in tuples) {
+        if (tuple == null) continue;
+        syncedTokens.addAll(tuple.$1);
+        deletedTokens.addAll(tuple.$2);
+      }
+    }).onError((error, stackTrace) {
+      Logger.error('Failed to sync container', error: error, stackTrace: stackTrace);
+    });
+
+    // Do not remove tokens that are synced in any other container
+    deletedTokens.removeWhere((serial) => syncedTokens.any((token) => token.serial == serial));
+
+    await ref.read(tokenProvider.notifier).addOrReplaceTokens(syncedTokens);
+    await ref.read(tokenProvider.notifier).removeTokensBySerials(deletedTokens);
+    return failedContainers;
+  }
 
   Future<T> _curentOf<T extends TokenContainer>(TokenContainer container) async {
     final current = (await future).currentOf(container);
@@ -547,12 +598,5 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     container = await updateContainer(container, (c) => c.copyWith(finalizationState: RolloutState.parsingResponseCompleted));
     if (container == null) throw StateError('Container was removed');
     return resultValue.publicServerKey;
-  }
-
-  Future<String> getTransferQrData(TokenContainerFinalized container) async {
-    final currentContainer = (await future).currentOf(container);
-    if (currentContainer == null) throw StateError('Container was removed');
-    final qrCode = await _containerApi.getTransferQrData(currentContainer);
-    return qrCode;
   }
 }

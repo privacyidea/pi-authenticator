@@ -33,7 +33,7 @@ class ContainerAlreadyExistsDialog extends ConsumerStatefulWidget {
   final List<TokenContainerUnfinalized> newContainers;
 
   static Future<List<TokenContainerUnfinalized>?> showDialog(List<TokenContainerUnfinalized> newContainers) =>
-      showAsyncDialog(builder: (context) => ContainerAlreadyExistsDialog(newContainers));
+      showAsyncDialog<List<TokenContainerUnfinalized>>(builder: (context) => ContainerAlreadyExistsDialog(newContainers));
 
   const ContainerAlreadyExistsDialog(this.newContainers, {super.key});
 
@@ -47,6 +47,7 @@ class _ContainerAlreadyExistsDialogState extends ConsumerState<ContainerAlreadyE
 
   @override
   void initState() {
+    assert(widget.newContainers.isNotEmpty);
     unhandledContainers = widget.newContainers;
     super.initState();
   }
@@ -76,14 +77,14 @@ class _ContainerAlreadyExistsDialogState extends ConsumerState<ContainerAlreadyE
 
   void _dismiss(TokenContainer container) {
     setState(() => unhandledContainers.remove(container));
-    if (unhandledContainers.isEmpty) Navigator.of(context).pop(replaceContainers);
+    if (unhandledContainers.isEmpty) Navigator.of(context).pop<List<TokenContainerUnfinalized>>(replaceContainers);
   }
 
   Future<void> _replace(TokenContainer oldContainer, TokenContainerUnfinalized newContainer) async {
     setState(() {
-      unhandledContainers.remove(oldContainer);
+      unhandledContainers.removeWhere((element) => element.serial == oldContainer.serial);
       replaceContainers.add(newContainer);
     });
-    if (unhandledContainers.isEmpty && mounted) Navigator.of(context).pop(replaceContainers);
+    if (unhandledContainers.isEmpty) Navigator.of(context).pop<List<TokenContainerUnfinalized>>(replaceContainers);
   }
 }

@@ -1645,5 +1645,8 @@
   "verboseLogging": "Journalisation verbeuse",
   "versionTitle": "Version",
   "wrongPassword": "Mot de passe incorrect",
-  "yes": "Oui"
+  "yes": "Oui",
+  "renewSecretsDialogTitle" : "Renouveler les secrets des jetons",
+  "renewSecretsDialogText" : "Vous pouvez renouveler les secrets des jetons. Cette fonction est utile si vous soupçonnez que les secrets ont été compromis. Les jetons de conteneurs sont transmis sous forme cryptée et les secrets sont stockés en toute sécurité sur l'appareil. Le seul cas connu où cela aurait pu se produire serait si le jeton avait été déployé avant le conteneur par le biais d'un code QR.",
+  "renewSecrets" : "Renouveler les secrets"
 }

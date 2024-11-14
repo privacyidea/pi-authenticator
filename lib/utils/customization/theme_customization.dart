@@ -43,6 +43,7 @@ class ThemeCustomization {
     required this.renameColor,
     required this.lockColor,
     required this.exportColor,
+    required this.disabledColor,
     required this.tileIconColor,
     required this.navigationBarColor,
     Color? pushAuthRequestAcceptColor,
@@ -73,6 +74,7 @@ class ThemeCustomization {
     Color? renameColor,
     Color? lockColor,
     Color? exportColor,
+    Color? disabledColor,
     Color? tileIconColor,
     Color? navigationBarColor,
     // From here on the colors have a default value based on another given color so they can be null
@@ -95,6 +97,7 @@ class ThemeCustomization {
         renameColor = renameColor ?? const Color(0xff7f9bdd),
         lockColor = lockColor ?? const Color(0xffffd633),
         exportColor = exportColor ?? const Color.fromARGB(255, 49, 197, 74),
+        disabledColor = disabledColor ?? const Color(0xffAAAAAA),
         tileIconColor = tileIconColor ?? const Color(0xff757575),
         navigationBarColor = navigationBarColor ?? const Color(0xFFFFFFFF),
         // From here on the colors have a default value based on another given color so they can be null
@@ -117,6 +120,7 @@ class ThemeCustomization {
     Color? deleteColor,
     Color? renameColor,
     Color? lockColor,
+    Color? disabledColor,
     Color? exportColor,
     Color? tileIconColor,
     Color? navigationBarColor,
@@ -138,8 +142,9 @@ class ThemeCustomization {
         shadowColor = shadowColor ?? const Color(0x4CEFEFEF),
         deleteColor = deleteColor ?? const Color(0xffb93f1d),
         renameColor = renameColor ?? const Color(0xff4a72c6),
-        exportColor = exportColor ?? const Color.fromARGB(255, 36, 148, 45),
         lockColor = lockColor ?? const Color(0xffe4ba11),
+        exportColor = exportColor ?? const Color.fromARGB(255, 36, 148, 45),
+        disabledColor = disabledColor ?? const Color(0x4C303030),
         tileIconColor = tileIconColor ?? const Color(0xffF5F5F5),
         navigationBarColor = navigationBarColor ?? const Color(0xFF282828),
         // From here on the colors have a default value based on another given color so they can be null
@@ -173,6 +178,7 @@ class ThemeCustomization {
   final Color renameColor;
   final Color lockColor;
   final Color exportColor;
+  final Color disabledColor;
   final Color? _actionButtonsForegroundColor; // Default: foregroundColor
   Color get actionButtonsForegroundColor => _actionButtonsForegroundColor ?? foregroundColor;
 
@@ -204,6 +210,7 @@ class ThemeCustomization {
     Color? renameColor,
     Color? lockColor,
     Color? exportColor,
+    Color? disabledColor,
     Color? tileIconColor,
     Color? navigationBarColor,
     // From here on the colors have a default value based on another given color so they can be null
@@ -228,6 +235,7 @@ class ThemeCustomization {
         renameColor: renameColor ?? this.renameColor,
         lockColor: lockColor ?? this.lockColor,
         exportColor: exportColor ?? this.exportColor,
+        disabledColor: disabledColor ?? this.disabledColor,
         tileIconColor: tileIconColor ?? this.tileIconColor,
         navigationBarColor: navigationBarColor ?? this.navigationBarColor,
         // From here on the colors have a default value based on another given color so they can be null
@@ -259,6 +267,7 @@ class ThemeCustomization {
         renameColor: json['renameColor'] != null ? Color(json['renameColor'] as int) : null,
         lockColor: json['lockColor'] != null ? Color(json['lockColor'] as int) : null,
         exportColor: json['exportColor'] != null ? Color(json['exportColor'] as int) : null,
+        disabledColor: json['disabledColor'] != null ? Color(json['disabledColor'] as int) : null,
         tileIconColor: json['tileIconColor'] != null ? Color(json['tileIconColor'] as int) : null,
         navigationBarColor: json['navigationBarColor'] != null ? Color(json['navigationBarColor'] as int) : null,
         pushAuthRequestAcceptColor: json['_pushAuthRequestAcceptColor'] != null ? Color(json['_pushAuthRequestAcceptColor'] as int) : null,
@@ -283,6 +292,7 @@ class ThemeCustomization {
         renameColor: json['renameColor'] != null ? Color(json['renameColor'] as int) : null,
         lockColor: json['lockColor'] != null ? Color(json['lockColor'] as int) : null,
         exportColor: json['exportColor'] != null ? Color(json['exportColor'] as int) : null,
+        disabledColor: json['disabledColor'] != null ? Color(json['disabledColor'] as int) : null,
         tileIconColor: json['tileIconColor'] != null ? Color(json['tileIconColor'] as int) : null,
         navigationBarColor: json['navigationBarColor'] != null ? Color(json['navigationBarColor'] as int) : null,
         pushAuthRequestAcceptColor: json['_pushAuthRequestAcceptColor'] != null ? Color(json['_pushAuthRequestAcceptColor'] as int) : null,
@@ -309,6 +319,8 @@ class ThemeCustomization {
         'deleteColor': deleteColor.value,
         'renameColor': renameColor.value,
         'lockColor': lockColor.value,
+        'exportColor': exportColor.value,
+        'disabledColor': disabledColor.value,
         'tileIconColor': tileIconColor.value,
         'navigationBarColor': navigationBarColor.value,
         '_pushAuthRequestAcceptColor': _pushAuthRequestAcceptColor?.value,
@@ -508,6 +520,7 @@ class ThemeCustomization {
               editColor: renameColor,
               lockColor: lockColor,
               transferColor: exportColor,
+              disabledColor: disabledColor,
               foregroundColor: actionButtonsForegroundColor,
             ),
             ExtendedTextTheme(
@@ -536,6 +549,8 @@ class ThemeCustomization {
       'deleteColor: $deleteColor, '
       'renameColor: $renameColor, '
       'lockColor: $lockColor, '
+      'exportColor: $exportColor, '
+      'disabledColor: $disabledColor, '
       'tileIconColor: $tileIconColor, '
       'navigationBarColor: $navigationBarColor, '
       'actionButtonsForegroundColor: $actionButtonsForegroundColor, '
@@ -567,6 +582,8 @@ class ThemeCustomization {
         other.deleteColor == deleteColor &&
         other.renameColor == renameColor &&
         other.lockColor == lockColor &&
+        other.exportColor == exportColor &&
+        other.disabledColor == disabledColor &&
         other.actionButtonsForegroundColor == actionButtonsForegroundColor &&
         other.tilePrimaryColor == tilePrimaryColor &&
         other.tileIconColor == tileIconColor &&
@@ -589,6 +606,8 @@ class ThemeCustomization {
         deleteColor,
         renameColor,
         lockColor,
+        exportColor,
+        disabledColor,
         actionButtonsForegroundColor,
         tilePrimaryColor,
         tileIconColor,

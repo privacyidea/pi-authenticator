@@ -1652,5 +1652,8 @@
   "verboseLogging": "Ausführliche Protokollierung",
   "versionTitle": "Version",
   "wrongPassword": "Falsches Passwort",
-  "yes": "Ja"
+  "yes": "Ja",
+  "renewSecretsDialogTitle" : "Token Secrets erneuern",
+  "renewSecretsDialogText" : "Sie können die Geheimnisse der Token erneuern. Dies ist nützlich, wenn Sie vermuten, dass die Geheimnisse kompromittiert wurden. Da Container-Tokens verschlüsselt übertragen werden und die Geheimnisse sicher auf dem Gerät gespeichert sind. Der einzige bekannte Fall, in dem dies geschehen sein könnte, wäre, wenn der Token vor dem Container über einen QR-Code ausgerollt wurde.",
+  "renewSecrets" : "Secrets erneuern"
 }

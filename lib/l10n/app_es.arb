@@ -1644,5 +1644,8 @@
   "verboseLogging": "Registro detallado",
   "versionTitle": "Versión",
   "wrongPassword": "Contraseña incorrecta",
-  "yes": "Sí"
+  "yes": "Sí",
+  "renewSecretsDialogTitle" : "Renovar los secretos de las fichas",
+  "renewSecretsDialogText" : "Puede renovar los secretos de los tokens. Esto es útil si sospecha que los secretos han sido comprometidos. Como los tokens de los contenedores se transmiten cifrados, los secretos se almacenan de forma segura en el dispositivo. El único caso conocido en el que esto podría haber ocurrido sería si el token se hubiera desplegado antes que el contenedor a través de un código QR.",
+  "renewSecrets" : "Renovar secretos"
 }

@@ -1646,5 +1646,8 @@
   "verboseLogging": "Verbose logging",
   "versionTitle": "Version",
   "wrongPassword": "Incorrect password",
-  "yes": "Yes"
+  "yes": "Yes",
+  "renewSecretsDialogTitle" : "Renew Token Secrets",
+  "renewSecretsDialogText" : "You can renew the secrets of the tokens. This is useful if you suspect that the secrets have been compromised. As container tokens are transmitted in encrypted form and the secrets are stored securely on the device. The only known case where this could have happened would be if the token was rolled out before the container via a QR code.",
+  "renewSecrets" : "Renew secrets"
 }

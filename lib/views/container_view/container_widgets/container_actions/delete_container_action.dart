@@ -37,23 +37,28 @@ class DeleteContainerAction extends ConsumerSlideableAction {
   });
 
   @override
-  CustomSlidableAction build(BuildContext context, WidgetRef ref) => CustomSlidableAction(
-        onPressed: (BuildContext context) => _showDeleteDialog(context, ref),
-        backgroundColor: Theme.of(context).extension<ActionTheme>()!.deleteColor,
-        foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Icon(Icons.delete_forever),
-            Text(
-              AppLocalizations.of(context)!.delete,
-              overflow: TextOverflow.fade,
-              softWrap: false,
-            ),
-          ],
-        ),
-      );
+  CustomSlidableAction build(BuildContext context, WidgetRef ref) {
+    final deleteAllowed = container is! TokenContainerFinalized || container.policies.unregisterAllowed;
+    return CustomSlidableAction(
+      onPressed: deleteAllowed ? (BuildContext context) => _showDeleteDialog(context, ref) : null,
+      autoClose: deleteAllowed,
+      backgroundColor: deleteAllowed ? Theme.of(context).extension<ActionTheme>()!.deleteColor : Theme.of(context).extension<ActionTheme>()!.disabledColor,
+      foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Icon(Icons.delete_forever),
+          Text(
+            AppLocalizations.of(context)!.delete,
+            overflow: TextOverflow.fade,
+            softWrap: false,
+          ),
+        ],
+      ),
+    );
+  }
+
   Future<void> _showDeleteDialog(BuildContext context, WidgetRef ref) => showDialog(
         context: context,
         builder: (context) => DeleteContainerDialog(container),

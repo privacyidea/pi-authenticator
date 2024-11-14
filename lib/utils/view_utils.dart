@@ -62,7 +62,7 @@ Future<T?> showAsyncDialog<T>({
     Logger.error('globalContextSync is null');
     return Future.value(null);
   }
-  return showDialog(
+  return showDialog<T>(
     context: globalContextSync!,
     builder: builder,
     useRootNavigator: false,

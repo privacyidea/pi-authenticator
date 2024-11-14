@@ -21,6 +21,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 
 import '../../../../../../../utils/default_inkwell.dart';
 import '../../../../model/mixins/sortable_mixin.dart';
@@ -36,7 +37,7 @@ import 'default_token_actions/default_lock_action.dart';
 import 'slideable_action.dart';
 import 'token_widget.dart';
 
-class TokenWidgetBase extends ConsumerWidget {
+class TokenWidgetBase extends ConsumerStatefulWidget {
   final Widget tile;
   final Token token;
   final ConsumerSlideableAction? deleteAction;
@@ -79,45 +80,65 @@ class TokenWidgetBase extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<TokenWidgetBase> createState() => _TokenWidgetBaseState();
+}
+
+class _TokenWidgetBaseState extends ConsumerState<TokenWidgetBase> {
+  bool tokenIsDeleteable = false;
+
+  @override
+  Widget build(BuildContext context) {
     final SortableMixin? draggingSortable = ref.watch(draggingSortableProvider);
+    final Future<bool?> tokenDeleteable;
+    if (widget.token.containerSerial == null) {
+      tokenDeleteable = Future.value(true);
+    } else {
+      tokenDeleteable = ref.watch(tokenContainerProvider.selectAsync((state) => state.containerOf(widget.token.containerSerial!)?.policies.tokensDeletable));
+    }
+
+    tokenDeleteable.then((value) {
+      setState(() {
+        tokenIsDeleteable = value ?? false;
+      });
+    });
+
     final List<ConsumerSlideableAction> actions = [
-      deleteAction ?? DefaultDeleteAction(token: token, key: Key('${token.id}deleteAction')),
-      editAction ?? DefaultEditAction(token: token, key: Key('${token.id}editAction')),
+      if (tokenIsDeleteable) widget.deleteAction ?? DefaultDeleteAction(token: widget.token, key: Key('${widget.token.id}deleteAction')),
+      widget.editAction ?? DefaultEditAction(token: widget.token, key: Key('${widget.token.id}editAction')),
     ];
-    if ((token.pin == false)) {
+    if ((widget.token.pin == false)) {
       actions.add(
-        lockAction ?? DefaultLockAction(token: token, key: Key('${token.id}lockAction')),
+        widget.lockAction ?? DefaultLockAction(token: widget.token, key: Key('${widget.token.id}lockAction')),
       );
     }
 
-    if (draggingSortable == token) return const SizedBox();
+    if (draggingSortable == widget.token) return const SizedBox();
     final child = Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: DefaultInkWell(
         onTap: () {},
-        child: tile,
+        child: widget.tile,
       ),
     );
 
     if (draggingSortable != null) {
       return PiSliable(
         groupTag: TokenWidget.groupTag,
-        identifier: token.id,
+        identifier: widget.token.id,
         actions: actions,
-        stack: stack,
+        stack: widget.stack,
         child: child,
       );
     }
 
     return PiSliable(
       groupTag: TokenWidget.groupTag,
-      identifier: token.id,
+      identifier: widget.token.id,
       actions: actions,
-      stack: stack,
+      stack: widget.stack,
       child: LongPressDraggable(
         maxSimultaneousDrags: 1,
-        onDragStarted: () => ref.read(draggingSortableProvider.notifier).state = token,
+        onDragStarted: () => ref.read(draggingSortableProvider.notifier).state = widget.token,
         onDragCompleted: () {
           Logger.info('Draggable completed');
           // Will be handled by the sortableNotifier
@@ -128,7 +149,7 @@ class TokenWidgetBase extends ConsumerWidget {
         },
         dragAnchorStrategy: (Draggable<Object> d, BuildContext context, Offset point) {
           final textSize = textSizeOf(
-            text: token.label,
+            text: widget.token.label,
             style: Theme.of(context).textTheme.titleMedium!,
             textScaler: MediaQuery.of(context).textScaler,
             maxLines: 1,
@@ -138,18 +159,18 @@ class TokenWidgetBase extends ConsumerWidget {
         feedback: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(dragIcon, size: 60),
+            Icon(widget.dragIcon, size: 60),
             Material(
                 color: Colors.transparent,
                 child: Text(
-                  token.label,
+                  widget.token.label,
                   style: Theme.of(context).textTheme.titleMedium,
                   overflow: TextOverflow.fade,
                   softWrap: false,
                 )),
           ],
         ),
-        data: token,
+        data: widget.token,
         child: Material(
           color: Colors.transparent,
           child: child,

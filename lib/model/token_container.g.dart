@@ -22,6 +22,10 @@ _$TokenContainerUnfinalizedImpl _$$TokenContainerUnfinalizedImplFromJson(
       finalizationState: $enumDecodeNullable(
               _$RolloutStateEnumMap, json['finalizationState']) ??
           RolloutState.completed,
+      policies: json['policies'] == null
+          ? ContainerPolicies.defaultSetting
+          : ContainerPolicies.fromJson(
+              json['policies'] as Map<String, dynamic>),
       addDeviceInfos: json['addDeviceInfos'] as bool?,
       passphraseQuestion: json['passphraseQuestion'] as String?,
       publicServerKey: json['publicServerKey'] as String?,
@@ -43,6 +47,7 @@ Map<String, dynamic> _$$TokenContainerUnfinalizedImplToJson(
       'sslVerify': instance.sslVerify,
       'serverName': instance.serverName,
       'finalizationState': _$RolloutStateEnumMap[instance.finalizationState]!,
+      'policies': instance.policies,
       'addDeviceInfos': instance.addDeviceInfos,
       'passphraseQuestion': instance.passphraseQuestion,
       'publicServerKey': instance.publicServerKey,
@@ -133,6 +138,10 @@ _$TokenContainerFinalizedImpl _$$TokenContainerFinalizedImplFromJson(
           RolloutState.completed,
       syncState: $enumDecodeNullable(_$SyncStateEnumMap, json['syncState']) ??
           SyncState.notStarted,
+      policies: json['policies'] == null
+          ? ContainerPolicies.defaultSetting
+          : ContainerPolicies.fromJson(
+              json['policies'] as Map<String, dynamic>),
       passphraseQuestion: json['passphraseQuestion'] as String?,
       publicServerKey: json['publicServerKey'] as String,
       publicClientKey: json['publicClientKey'] as String,
@@ -154,6 +163,7 @@ Map<String, dynamic> _$$TokenContainerFinalizedImplToJson(
       'serverName': instance.serverName,
       'finalizationState': _$RolloutStateEnumMap[instance.finalizationState]!,
       'syncState': _$SyncStateEnumMap[instance.syncState]!,
+      'policies': instance.policies,
       'passphraseQuestion': instance.passphraseQuestion,
       'publicServerKey': instance.publicServerKey,
       'publicClientKey': instance.publicClientKey,

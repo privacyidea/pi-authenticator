@@ -28,4 +28,6 @@ extension SyncStateX on SyncState {
         SyncState.completed => localization.syncStateCompletedDescription,
         SyncState.failed => localization.syncStateFailedDescription,
       };
+
+  bool get isIdle => this != SyncState.syncing;
 }
