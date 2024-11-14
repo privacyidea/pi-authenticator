@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class CooldownButton extends StatefulWidget {
-  final Future Function() onPressed;
+  final Future Function()? onPressed;
   final Widget child;
   final Widget? childWhenCooldown;
   final EdgeInsetsGeometry? padding;
@@ -34,7 +34,7 @@ class _CooldownButtonState extends State<CooldownButton> {
       setState(() => isPressable = false);
       await Future.wait(
         [
-          widget.onPressed(),
+          widget.onPressed?.call() ?? Future.delayed(Duration.zero),
           Future.delayed(Duration(milliseconds: widget.minThreshold)),
         ],
       );

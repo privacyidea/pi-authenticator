@@ -1645,5 +1645,8 @@
   "verboseLogging": "Wyczerpujące rejestrowanie",
   "versionTitle": "Wersja",
   "wrongPassword": "Nieprawidłowe hasło",
-  "yes": "Tak"
+  "yes": "Tak",
+  "renewSecretsDialogTitle" : "Odnawianie sekretów tokenów",
+  "renewSecretsDialogText" : "Możesz odnowić sekrety tokenów. Jest to przydatne w przypadku podejrzenia, że sekrety zostały naruszone. Ponieważ tokeny kontenera są przesyłane w postaci zaszyfrowanej, a sekrety są bezpiecznie przechowywane na urządzeniu. Jedynym znanym przypadkiem, w którym mogłoby do tego dojść, byłoby rozwinięcie tokena przed kontenerem za pomocą kodu QR.",
+  "renewSecrets" : "Odnów sekrety"
 }

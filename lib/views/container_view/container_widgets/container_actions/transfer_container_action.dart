@@ -26,7 +26,7 @@ import '../../../../model/token_container.dart';
 import '../../../../utils/customization/theme_extentions/action_theme.dart';
 import '../../../main_view/main_view_widgets/token_widgets/slideable_action.dart';
 import '../../../view_interface.dart';
-import 'export_container_action_dialog.dart';
+import 'transfer_container_action_dialog.dart';
 
 class TransferContainerAction extends ConsumerSlideableAction {
   final TokenContainerFinalized container;

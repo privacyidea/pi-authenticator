@@ -1645,5 +1645,8 @@
   "verboseLogging": "Zevrubné protokolování",
   "versionTitle": "Verze",
   "wrongPassword": "Nesprávné heslo",
-  "yes": "Ano"
+  "yes": "Ano",
+  "renewSecretsDialogTitle" : "Obnovení tajemství žetonů",
+  "renewSecretsDialogText" : "Můžete obnovit tajemství žetonů. To je užitečné, pokud máte podezření, že tajemství byla ohrožena. Protože tokeny kontejnerů jsou přenášeny v zašifrované podobě a tajemství jsou bezpečně uložena v zařízení. Jediným známým případem, kdy by k tomu mohlo dojít, by bylo, kdyby byl token rozvinut před kontejnerem prostřednictvím QR kódu.",
+  "renewSecrets" : "Obnovení tajemství"
 }

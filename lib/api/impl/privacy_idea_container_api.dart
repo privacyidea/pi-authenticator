@@ -53,7 +53,8 @@ class PiContainerApi implements TokenContainerApi {
   @override
   Future<(List<Token>, List<String>)?> sync(TokenContainerFinalized container, TokenState tokenState) async {
     final containerTokenTemplates = tokenState.containerTokens(container.serial).toTemplates();
-    final maybePiTokensTemplates = tokenState.maybePiTokens.toTemplates();
+
+    final maybePiTokensTemplates = (container.policies.initialTokenTransfer) ? tokenState.maybePiTokens.toTemplates() : <TokenTemplate>[];
 
     final ContainerChallenge challenge = await _getChallenge(container, container.syncUrl);
 
@@ -286,6 +287,12 @@ class PiContainerApi implements TokenContainerApi {
 
   @override
   Future<String> getTransferQrData(TokenContainerFinalized container) async {
+    if (container.policies.rolloverAllowed == false) {
+      throw LocalizedException(
+        localizedMessage: (l) => 'l.errorRolloverNotAllowed', // TODO: Add translation
+        unlocalizedMessage: 'AppLocalizationsEn().errorRolloverNotAllowed',
+      );
+    }
     final requestUrl = container.transferUrl;
     final challenge = await _getChallenge(container, requestUrl);
 

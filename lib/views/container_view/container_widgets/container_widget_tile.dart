@@ -20,10 +20,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/model/extensions/enums/sync_state_extension.dart';
+import 'package:privacyidea_authenticator/utils/view_utils.dart';
+import 'package:privacyidea_authenticator/widgets/dialog_widgets/default_dialog.dart';
 
 import '../../../../../../../model/extensions/enums/rollout_state_extension.dart';
 import '../../../l10n/app_localizations.dart';
-import '../../../model/enums/sync_state.dart';
+import '../../../model/riverpod_states/token_state.dart';
 import '../../../model/token_container.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
@@ -80,20 +83,120 @@ class ContainerWidgetTile extends ConsumerWidget {
             ),
           ],
         ),
-        trailing: _getTrailing(context, ref),
+        trailing: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              child: FittedBox(
+                fit: BoxFit.contain,
+                child: ContainerWidgetTileTrailing(container: container),
+              ),
+            ),
+          ],
+        ),
       );
+}
 
-  Widget _getTrailing(BuildContext context, WidgetRef ref) {
+class RolloverContainerTokensDialog extends ConsumerStatefulWidget {
+  final TokenContainerFinalized container;
+
+  static Future<void> showDialog(BuildContext context, TokenContainerFinalized container) async {
+    await showAsyncDialog(builder: (context) => RolloverContainerTokensDialog(container: container));
+  }
+
+  const RolloverContainerTokensDialog({required this.container, super.key});
+
+  @override
+  ConsumerState<RolloverContainerTokensDialog> createState() => _RolloverContainerTokensDialogState();
+}
+
+class _RolloverContainerTokensDialogState extends ConsumerState<RolloverContainerTokensDialog> {
+  @override
+  Widget build(BuildContext context) {
+    return DefaultDialog(
+      title: Text(AppLocalizations.of(context)!.renewSecretsDialogTitle),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(AppLocalizations.of(context)!.renewSecretsDialogText),
+        ],
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(),
+          child: Text(AppLocalizations.of(context)!.cancel),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            final tokenState = ref.read(tokenProvider);
+            _renewSecrets(tokenState: tokenState);
+            Navigator.of(context).pop();
+          },
+          child: Text(AppLocalizations.of(context)!.renewSecrets),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _renewSecrets({required TokenState tokenState}) async {
+    try {
+      await ref.read(tokenContainerProvider.notifier).rolloverTokens(tokenState: tokenState, container: widget.container);
+    } catch (e) {
+      showStatusMessage(message: 'Failed to renew secrets', subMessage: e.toString());
+    }
+  }
+}
+
+class SyncContainerButton extends ConsumerWidget {
+  final TokenContainerFinalized container;
+
+  const SyncContainerButton({required this.container, super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final container = ref.watch(tokenContainerProvider).asData?.value.currentOf(this.container);
+    return CooldownButton(
+      styleType: CooldownButtonStyleType.iconButton,
+      childWhenCooldown: CircularProgressIndicator.adaptive(),
+      isPressable: container != null && container.syncState.isIdle,
+      onPressed: container != null
+          ? () async {
+              final tokenState = ref.read(tokenProvider);
+              await ref.read(tokenContainerProvider.notifier).syncTokens(tokenState: tokenState, containersToSync: [container], isManually: true);
+            }
+          : null,
+      child: const Icon(Icons.sync, size: 40),
+    );
+  }
+}
+
+class ContainerWidgetTileTrailing extends ConsumerWidget {
+  final TokenContainer container;
+
+  const ContainerWidgetTileTrailing({required this.container, super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     if (container is TokenContainerFinalized) {
-      return CooldownButton(
-        styleType: CooldownButtonStyleType.iconButton,
-        childWhenCooldown: CircularProgressIndicator.adaptive(),
-        isPressable: (container as TokenContainerFinalized).syncState != SyncState.syncing,
-        onPressed: () async {
-          final tokenState = ref.read(tokenProvider);
-          await ref.read(tokenContainerProvider.notifier).syncTokens(tokenState, containersToSync: [container as TokenContainerFinalized], isManually: true);
-        },
-        child: (container as TokenContainerFinalized).syncState == SyncState.failed ? const Icon(Icons.sync_problem) : const Icon(Icons.sync),
+      final actions = <Widget>[
+        SyncContainerButton(container: container as TokenContainerFinalized),
+      ];
+      if (container.policies.rolloverAllowed) {
+        actions.add(RolloverContainerTokensButton(container: container as TokenContainerFinalized));
+      }
+      if (actions.length == 1) return actions.first;
+      return DropdownButton(
+        underline: SizedBox(),
+        value: 0,
+        items: [
+          for (var i = 0; i < actions.length; i++)
+            DropdownMenuItem(
+              value: i,
+              child: actions[i],
+            ),
+        ],
+        onChanged: (int? value) {},
       );
     }
     if (container.finalizationState.isFailed) {
@@ -107,5 +210,36 @@ class ContainerWidgetTile extends ConsumerWidget {
       );
     }
     return CircularProgressIndicator.adaptive();
+  }
+}
+
+class RolloverContainerTokensButton extends ConsumerWidget {
+  final TokenContainerFinalized container;
+  static const double size = 40;
+
+  const RolloverContainerTokensButton({required this.container, super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final container = ref.watch(tokenContainerProvider).asData?.value.currentOf(this.container);
+    return CooldownButton(
+      styleType: CooldownButtonStyleType.iconButton,
+      childWhenCooldown: CircularProgressIndicator.adaptive(),
+      isPressable: container != null && container.syncState.isIdle,
+      onPressed: container != null ? () => RolloverContainerTokensDialog.showDialog(context, this.container) : null,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Icon(
+            Icons.sync,
+            size: size * 0.6,
+          ),
+          Icon(
+            Icons.shield_outlined,
+            size: size,
+          ),
+        ],
+      ),
+    );
   }
 }

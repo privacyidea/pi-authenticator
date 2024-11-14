@@ -30,6 +30,7 @@ import '../../../../../../../utils/identifiers.dart';
 import '../utils/ecc_utils.dart';
 import '../utils/logger.dart';
 import '../utils/object_validator.dart';
+import 'container_policies.dart';
 import 'enums/ec_key_algorithm.dart';
 import 'enums/rollout_state.dart';
 import 'enums/sync_state.dart';
@@ -39,7 +40,7 @@ import 'token_import/token_origin_data.dart';
 part 'token_container.freezed.dart';
 part 'token_container.g.dart';
 
-@Freezed(toStringOverride: false)
+@Freezed(toStringOverride: false, addImplicitFinal: true, toJson: true, fromJson: true)
 class TokenContainer with _$TokenContainer {
   static const SERIAL = 'serial';
   static const eccUtils = EccUtils();
@@ -72,6 +73,7 @@ class TokenContainer with _$TokenContainer {
         CONTAINER_HASH_ALGORITHM: stringToAlgorithmsValidator,
         CONTAINER_PASSPHRASE_QUESTION: const ObjectValidatorNullable<String>(),
         CONTAINER_SSL_VERIFY: stringToBoolValidator,
+        CONTAINER_POLICIES: ObjectValidatorNullable<ContainerPolicies>(transformer: (value) => ContainerPolicies.fromUriMap(value)),
       },
       name: 'Container',
     );
@@ -85,6 +87,7 @@ class TokenContainer with _$TokenContainer {
       hashAlgorithm: uriMap[CONTAINER_HASH_ALGORITHM],
       sslVerify: uriMap[CONTAINER_SSL_VERIFY],
       passphraseQuestion: uriMap[CONTAINER_PASSPHRASE_QUESTION],
+      policies: uriMap[CONTAINER_POLICIES] ?? ContainerPolicies.defaultSetting,
     );
   }
 
@@ -99,6 +102,7 @@ class TokenContainer with _$TokenContainer {
     required bool sslVerify,
     @Default('privacyIDEA') String serverName,
     @Default(RolloutState.completed) RolloutState finalizationState,
+    @Default(ContainerPolicies.defaultSetting) ContainerPolicies policies,
     bool? addDeviceInfos,
     String? passphraseQuestion,
     String? publicServerKey,
@@ -118,6 +122,7 @@ class TokenContainer with _$TokenContainer {
     @Default('privacyIDEA') String serverName,
     @Default(RolloutState.completed) RolloutState finalizationState,
     @Default(SyncState.notStarted) SyncState syncState,
+    @Default(ContainerPolicies.defaultSetting) ContainerPolicies policies,
     String? passphraseQuestion,
     required String publicServerKey,
     required String publicClientKey,
@@ -168,12 +173,11 @@ class TokenContainer with _$TokenContainer {
         privateClientKey: eccUtils.serializeECPrivateKey(keyPair.privateKey),
         finalizationState: RolloutState.generatingKeyPairCompleted,
       );
-  factory TokenContainer.fromJson(Map<String, dynamic> json) => _$TokenContainerFromJson(json);
 
-  //  json["runtimeType"] == "finalized"
-  //     ? (_$TokenContainerFromJson(json) as TokenContainerFinalized)
-  //         .copyWith(syncState: json["syncState"] == "syncing" ? SyncState.failed : SyncState.values.byName(json["syncState"]))
-  //     :
+  factory TokenContainer.fromJson(Map<String, dynamic> json) => json["runtimeType"] == "finalized"
+      ? (_$TokenContainerFromJson(json) as TokenContainerFinalized)
+          .copyWith(syncState: json["syncState"] == "syncing" ? SyncState.failed : SyncState.values.byName(json["syncState"]))
+      : _$TokenContainerFromJson(json);
 
   @override
   String toString() => '$runtimeType('

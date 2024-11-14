@@ -144,7 +144,7 @@ class _DeleteContainerAfterTransferDialogState extends ConsumerState<DeleteConta
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final tokenState = ref.read(tokenProvider);
       final failedContainers = await ref.read(tokenContainerProvider.notifier).syncTokens(
-            tokenState,
+            tokenState: tokenState,
             containersToSync: [widget.container],
             isManually: false,
           );

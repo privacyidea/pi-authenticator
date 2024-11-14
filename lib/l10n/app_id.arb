@@ -1641,5 +1641,8 @@
   "verboseLogging": "Penebangan kata demi kata",
   "versionTitle": "Versi",
   "wrongPassword": "Kata sandi salah",
-  "yes": "Ya"
+  "yes": "Ya",
+  "renewSecretsDialogTitle" : "Memperbarui Rahasia Token",
+  "renewSecretsDialogText" : "Anda dapat memperbarui rahasia token. Hal ini berguna jika Anda mencurigai bahwa rahasia tersebut telah dibobol. Karena token kontainer dikirimkan dalam bentuk terenkripsi dan rahasia disimpan dengan aman di perangkat. Satu-satunya kasus yang diketahui di mana hal ini dapat terjadi adalah jika token diluncurkan sebelum kontainer melalui kode QR.",
+  "renewSecrets" : "Memperbarui rahasia"
 }

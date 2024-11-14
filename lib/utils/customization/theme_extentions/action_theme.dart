@@ -24,12 +24,16 @@ class ActionTheme extends ThemeExtension<ActionTheme> {
   final Color editColor;
   final Color lockColor;
   final Color transferColor;
+
+  final Color disabledColor;
+
   final Color foregroundColor;
   const ActionTheme({
     required this.deleteColor,
     required this.editColor,
     required this.lockColor,
     required this.transferColor,
+    required this.disabledColor,
     required this.foregroundColor,
   });
 
@@ -39,15 +43,25 @@ class ActionTheme extends ThemeExtension<ActionTheme> {
         editColor: Color.lerp(editColor, other?.editColor, t) ?? editColor,
         lockColor: Color.lerp(lockColor, other?.lockColor, t) ?? lockColor,
         transferColor: Color.lerp(transferColor, other?.transferColor, t) ?? transferColor,
+        disabledColor: Color.lerp(disabledColor, other?.disabledColor, t) ?? disabledColor,
         foregroundColor: Color.lerp(foregroundColor, other?.foregroundColor, t) ?? foregroundColor,
       );
 
   @override
-  ThemeExtension<ActionTheme> copyWith({Color? deleteColor, Color? editColor, Color? lockColor, Color? exportColor, Color? foregroundColor}) => ActionTheme(
+  ThemeExtension<ActionTheme> copyWith({
+    Color? deleteColor,
+    Color? editColor,
+    Color? lockColor,
+    Color? transferColor,
+    Color? disabledColor,
+    Color? foregroundColor,
+  }) =>
+      ActionTheme(
         deleteColor: deleteColor ?? this.deleteColor,
         editColor: editColor ?? this.editColor,
         lockColor: lockColor ?? this.lockColor,
-        transferColor: exportColor ?? this.transferColor,
+        transferColor: transferColor ?? this.transferColor,
+        disabledColor: disabledColor ?? this.disabledColor,
         foregroundColor: foregroundColor ?? this.foregroundColor,
       );
 }

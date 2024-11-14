@@ -1645,5 +1645,8 @@
   "verboseLogging": "Verbose loggen",
   "versionTitle": "Versie",
   "wrongPassword": "Onjuist wachtwoord",
-  "yes": "Ja"
+  "yes": "Ja",
+  "renewSecretsDialogTitle" : "Token geheimen vernieuwen",
+  "renewSecretsDialogText" : "Je kunt de geheimen van de tokens vernieuwen. Dit is handig als je vermoedt dat de geheimen gecompromitteerd zijn. De tokens worden versleuteld verzonden en de geheimen worden veilig opgeslagen op het apparaat. Het enige bekende geval waarin dit zou kunnen gebeuren, is als de token vóór de container werd uitgerold via een QR-code.",
+  "renewSecrets" : "Geheimen vernieuwen"
 }
