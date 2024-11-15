@@ -83,9 +83,11 @@ class ContainerChallenge extends PiServerResultValue {
 
 class ContainerFinalizationResponse extends PiServerResultValue {
   final ECPublicKey publicServerKey;
+  final ContainerPolicies policies;
 
   const ContainerFinalizationResponse({
     required this.publicServerKey,
+    required this.policies,
   });
 
   static ContainerFinalizationResponse fromJson(Map<String, dynamic> json) {
@@ -93,11 +95,13 @@ class ContainerFinalizationResponse extends PiServerResultValue {
       map: json,
       validators: {
         CONTAINER_SYNC_PUBLIC_SERVER_KEY: ObjectValidator<ECPublicKey>(transformer: (v) => const EccUtils().deserializeECPublicKey(v)),
+        CONTAINER_SYNC_POLICIES: ObjectValidator<ContainerPolicies>(transformer: (v) => ContainerPolicies.fromUriMap(v)),
       },
       name: 'ContainerFinalizationResponse#fromJson',
     );
     return ContainerFinalizationResponse(
       publicServerKey: map[CONTAINER_SYNC_PUBLIC_SERVER_KEY] as ECPublicKey,
+      policies: map[CONTAINER_SYNC_POLICIES] as ContainerPolicies,
     );
   }
 }
