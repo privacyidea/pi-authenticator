@@ -24,7 +24,9 @@ class SecureStorageMutexed {
   const SecureStorageMutexed();
 
   static final Mutex _m = Mutex();
-  static final FlutterSecureStorage storage = const FlutterSecureStorage();
+  static final FlutterSecureStorage storage = const FlutterSecureStorage(
+    aOptions: AndroidOptions(encryptedSharedPreferences: true),
+  );
 
   /// Function [f] is executed, protected by Mutex [_m].
   /// That means, that calls of this method will always be executed serial.

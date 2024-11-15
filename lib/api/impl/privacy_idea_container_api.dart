@@ -135,8 +135,8 @@ class PiContainerApi implements TokenContainerApi {
         '|${container.timestamp.toIso8601String().replaceFirst('Z', '+00:00')}'
         '|${container.serial}'
         '|${container.registrationUrl}'
-        '|${InfoUtils.deviceBrand}'
-        '|${InfoUtils.deviceModel}'
+        '${(container.addDeviceInfos == true) ? '|${InfoUtils.deviceBrand}' : ''}'
+        '${(container.addDeviceInfos == true) ? '|${InfoUtils.deviceModel}' : ''}'
         '${passphrase != null ? '|$passphrase' : ''}';
 
     final signature = eccUtils.signWithPrivateKey(ecPrivateClientKey, message);
