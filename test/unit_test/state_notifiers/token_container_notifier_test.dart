@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
@@ -7,12 +6,14 @@ import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/enums/ec_key_algorithm.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/token_container_state.dart';
 import 'package:privacyidea_authenticator/model/token_container.dart';
+import 'package:privacyidea_authenticator/processors/scheme_processors/token_container_processor.dart';
 import 'package:privacyidea_authenticator/utils/ecc_utils.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 
 import '../../tests_app_wrapper.mocks.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   _testTokenContainerNotifier();
 }
 
@@ -295,7 +296,7 @@ void _testTokenContainerNotifier() {
     });
     test('deleteContainer', () async {
       // prepare
-      WidgetsFlutterBinding.ensureInitialized();
+      TestWidgetsFlutterBinding.ensureInitialized();
       final container = ProviderContainer();
       var repoState = _getBaseState();
       final mockRepo = MockTokenContainerRepository();
@@ -341,6 +342,7 @@ void _testTokenContainerNotifier() {
     });
     test('deleteContainerList', () async {
       // prepare
+      TestWidgetsFlutterBinding.ensureInitialized();
       final container = ProviderContainer();
       var repoState = _getBaseState();
       repoState = repoState.copyWith(
@@ -372,6 +374,10 @@ void _testTokenContainerNotifier() {
       final mockContainerApi = MockTokenContainerApi();
       when(mockContainerApi.finalizeContainer(any, any)).thenAnswer((_) async => Response('{}', 404));
       when(mockRepo.loadContainerState()).thenAnswer((_) => Future.value(repoState));
+      when(mockRepo.saveContainerState(any)).thenAnswer((invocation) {
+        repoState = invocation.positionalArguments[0] as TokenContainerState;
+        return Future.value(repoState);
+      });
       when(mockRepo.saveContainer(any)).thenAnswer((invocation) {
         final container = invocation.positionalArguments[0] as TokenContainer;
         final i = repoState.containerList.indexWhere((element) => element.serial == container.serial);
@@ -397,17 +403,24 @@ void _testTokenContainerNotifier() {
       final state = await container.read(tokenContainerProvider.future);
       verify(mockRepo.loadContainerState()).called(1);
       expect(state.containerList.length, equals(1));
-      expect(state.containerList.where((e) => e.serial == 'serial2').length, equals(0));
+      expect(state.containerList.where((e) => e.serial == 'serial').length, equals(0));
+      expect(state.containerList.where((e) => e.serial == 'serial2').length, equals(1));
+      expect(state.containerList.where((e) => e.serial == 'serial3').length, equals(0));
       expect(state, repoState);
     });
     test('handleProcessorResult', () async {
       // prepare
+      TestWidgetsFlutterBinding.ensureInitialized();
       final container = ProviderContainer();
       var repoState = _getBaseState();
       final mockRepo = MockTokenContainerRepository();
       final mockContainerApi = MockTokenContainerApi();
       when(mockContainerApi.finalizeContainer(any, any)).thenAnswer((_) async => Response('{}', 404));
       when(mockRepo.loadContainerState()).thenAnswer((_) => Future.value(repoState));
+      when(mockRepo.saveContainerState(any)).thenAnswer((invocation) {
+        repoState = invocation.positionalArguments[0] as TokenContainerState;
+        return Future.value(repoState);
+      });
       when(mockRepo.saveContainer(any)).thenAnswer((invocation) {
         final container = invocation.positionalArguments[0] as TokenContainer;
         final i = repoState.containerList.indexWhere((element) => element.serial == container.serial);
@@ -426,8 +439,26 @@ void _testTokenContainerNotifier() {
         eccUtils: EccUtils(),
       );
       await container.read(tokenContainerProvider.future);
+
+      final Uri uri = Uri.parse(
+        'pia://container/SMPH00067A2F?'
+        'issuer=privacyIDEA&'
+        'ttl=10&'
+        'nonce=dbd2ab5aa9b539484fc3b78cd4bb08375d3eb30e&'
+        'time=2024-11-14T09%3A30%3A18.288530%2B00%3A00&'
+        'url=http://192.168.2.118:5000/&'
+        'serial=SMPH00067A2F&'
+        'key_algorithm=secp384r1&'
+        'hash_algorithm=SHA256&'
+        'ssl_verify=True&'
+        'passphrase=',
+      );
       // act
-      // TODO: implement test
+      final processorResults = await TokenContainerProcessor().processUri(uri);
+      expect(processorResults, isNotNull);
+      expect(processorResults!.length, 1);
+      final result = processorResults.first;
+      await container.read(tokenContainerProvider.notifier).handleProcessorResult(result, {});
 
       // assert
       final state = await container.read(tokenContainerProvider.future);

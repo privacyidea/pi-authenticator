@@ -49,25 +49,35 @@ class PiContainerApi implements TokenContainerApi {
   final PrivacyideaIOClient _ioClient;
   const PiContainerApi({required PrivacyideaIOClient ioClient}) : _ioClient = ioClient;
 
-  // Returns a tuple of updated/new tokens and serials of deleted tokens
+  /* //////////////////////////////
+  //////// PUBLIC METHODS /////////
+  ////////////////////////////// */
+
   @override
-  Future<(List<Token>, List<String>)?> sync(TokenContainerFinalized container, TokenState tokenState) async {
+  Future<ContainerSyncUpdates?> sync(TokenContainerFinalized container, TokenState tokenState) async {
     final containerTokenTemplates = tokenState.containerTokens(container.serial).toTemplates();
 
     final maybePiTokensTemplates = (container.policies.initialTokenTransfer) ? tokenState.maybePiTokens.toTemplates() : <TokenTemplate>[];
 
     final ContainerChallenge challenge = await _getChallenge(container, container.syncUrl);
 
-    final decryptedContainerDictJson = await _getContainerDict(
+    final encKeyPair = await X25519().newKeyPair();
+    final syncResult = await _getContainerSyncResult(
       container: container,
       challenge: challenge,
+      encKeyPair: encKeyPair,
       otpAuthMaps: [
         for (var template in [...containerTokenTemplates, ...maybePiTokensTemplates]) template.otpAuthMapSafeToSend
       ],
     );
-    if (decryptedContainerDictJson == null) return null;
 
-    final tokens = decryptedContainerDictJson[CONTAINER_DICT_TOKENS] as Map<String, dynamic>;
+    final decryptedContainerDict = await _getContainerDict(
+      syncResult: syncResult,
+      encKeyPair: encKeyPair,
+    );
+    if (decryptedContainerDict == null) return null;
+
+    final tokens = decryptedContainerDict[CONTAINER_DICT_TOKENS] as Map<String, dynamic>;
     final newOtpAuthTokens = (tokens[CONTAINER_DICT_TOKENS_ADD] as List).whereType<String>().map(Uri.parse).toList();
     final newTokens = await _parseNewTokens(otpAuthUris: newOtpAuthTokens, container: container);
 
@@ -105,7 +115,12 @@ class PiContainerApi implements TokenContainerApi {
       updatedTokens.add(token);
     }
 
-    return ([...updatedTokens, ...newTokens], deleteSerials);
+    return ContainerSyncUpdates(
+      updatedTokens: [...updatedTokens, ...newTokens],
+      deleteTokenSerials: deleteSerials,
+      newPolicies: syncResult.policies,
+      containerSerial: container.serial,
+    );
   }
 
   @override
@@ -134,6 +149,53 @@ class PiContainerApi implements TokenContainerApi {
     return await _ioClient.doPost(url: container.registrationUrl, body: body, sslVerify: container.sslVerify);
   }
 
+  @override
+  Future<String> getTransferQrData(TokenContainerFinalized container) async {
+    if (container.policies.rolloverAllowed == false) {
+      throw LocalizedException(
+        localizedMessage: (l) => 'l.errorRolloverNotAllowed', // TODO: Add translation
+        unlocalizedMessage: 'AppLocalizationsEn().errorRolloverNotAllowed',
+      );
+    }
+    final requestUrl = container.transferUrl;
+    final challenge = await _getChallenge(container, requestUrl);
+
+    final ecKeyPair = container.ecPrivateClientKey;
+    if (ecKeyPair == null) {
+      throw LocalizedException(localizedMessage: (l) => l.errorMissingPrivateKey, unlocalizedMessage: AppLocalizationsEn().errorMissingPrivateKey);
+    }
+
+    final signMessage = '${challenge.nonce}|${challenge.timeStamp}|${container.serial}|$requestUrl';
+    Logger.debug(signMessage);
+
+    final body = {
+      'scope': '$requestUrl',
+      CONTAINER_CHAL_SIGNATURE: container.signMessage(signMessage),
+    };
+
+    final response = await _ioClient.doPost(url: requestUrl, body: body);
+    if (response.statusCode != 200) {
+      final errorResponse = response.asPiErrorResponse();
+      if (errorResponse != null) throw errorResponse.piServerResultError;
+      throw ResponseError(response);
+    }
+
+    final piResponse = PiServerResponse<TransferQrData>.fromResponse(response);
+    if (piResponse.isError) {
+      Logger.error('Error while getting transfer qr data: ${piResponse.asError!.piServerResultError}');
+      throw piResponse.asError!.piServerResultError;
+    }
+
+    return piResponse.asSuccess!.resultValue.value;
+  }
+
+  @override
+  Future<bool> unregister(TokenContainerFinalized container) async {
+    final unregisterUrl = container.unregisterUrl;
+    final ContainerChallenge challenge = await _getChallenge(container, unregisterUrl);
+    throw UnimplementedError();
+  }
+
   /* //////////////////////////////
   /////// PRIVATE FUNCTIONS ///////
   ////////////////////////////// */
@@ -160,15 +222,13 @@ class PiContainerApi implements TokenContainerApi {
     return piResponse.asSuccess!.resultValue;
   }
 
-  Future<Map<String, dynamic>?> _getContainerDict({
+  Future<ContainerSyncResult> _getContainerSyncResult({
     required TokenContainerFinalized container,
     required ContainerChallenge challenge,
-    required List<Map> otpAuthMaps,
+    required List<Map<String, dynamic>> otpAuthMaps,
+    required SimpleKeyPair encKeyPair,
   }) async {
-    final encKeyPair = await X25519().newKeyPair();
     final publicKey = await encKeyPair.extractPublicKey();
-
-    final algorithm = X25519();
 
     final publicKeyBase64 = base64.encode(publicKey.bytes);
 
@@ -196,12 +256,18 @@ class PiContainerApi implements TokenContainerApi {
 
     final containerSyncResponse = PiServerResponse<ContainerSyncResult>.fromResponse(response);
     if (containerSyncResponse.isError) {
-      Logger.error('Error while reciving sync response: ${containerSyncResponse.asError!.piServerResultError}');
-      return null;
+      throw containerSyncResponse.asError!.piServerResultError;
     }
 
     final syncResult = containerSyncResponse.asSuccess!.resultValue;
+    return syncResult;
+  }
 
+  Future<Map<String, dynamic>?> _getContainerDict({
+    required ContainerSyncResult syncResult,
+    required KeyPair encKeyPair,
+  }) async {
+    final algorithm = X25519();
     final remotePublicKey = SimplePublicKey(syncResult.publicServerKeyBytes, type: KeyPairType.x25519);
     final sharedKey = await algorithm.sharedSecretKey(keyPair: encKeyPair, remotePublicKey: remotePublicKey);
     Logger.debug('Shared key: ${await sharedKey.extractBytes()}');
@@ -283,45 +349,5 @@ class PiContainerApi implements TokenContainerApi {
       }
     }
     return (mergedTemplatesWithSerial, deleteSerials);
-  }
-
-  @override
-  Future<String> getTransferQrData(TokenContainerFinalized container) async {
-    if (container.policies.rolloverAllowed == false) {
-      throw LocalizedException(
-        localizedMessage: (l) => 'l.errorRolloverNotAllowed', // TODO: Add translation
-        unlocalizedMessage: 'AppLocalizationsEn().errorRolloverNotAllowed',
-      );
-    }
-    final requestUrl = container.transferUrl;
-    final challenge = await _getChallenge(container, requestUrl);
-
-    final ecKeyPair = container.ecPrivateClientKey;
-    if (ecKeyPair == null) {
-      throw LocalizedException(localizedMessage: (l) => l.errorMissingPrivateKey, unlocalizedMessage: AppLocalizationsEn().errorMissingPrivateKey);
-    }
-
-    final signMessage = '${challenge.nonce}|${challenge.timeStamp}|${container.serial}|$requestUrl';
-    Logger.debug(signMessage);
-
-    final body = {
-      'scope': '$requestUrl',
-      CONTAINER_CHAL_SIGNATURE: container.signMessage(signMessage),
-    };
-
-    final response = await _ioClient.doPost(url: requestUrl, body: body);
-    if (response.statusCode != 200) {
-      final errorResponse = response.asPiErrorResponse();
-      if (errorResponse != null) throw errorResponse.piServerResultError;
-      throw ResponseError(response);
-    }
-
-    final piResponse = PiServerResponse<TransferQrData>.fromResponse(response);
-    if (piResponse.isError) {
-      Logger.error('Error while getting transfer qr data: ${piResponse.asError!.piServerResultError}');
-      throw piResponse.asError!.piServerResultError;
-    }
-
-    return piResponse.asSuccess!.resultValue.value;
   }
 }

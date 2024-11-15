@@ -56,7 +56,7 @@ class _ContainerAlreadyExistsDialogState extends ConsumerState<ContainerAlreadyE
   Widget build(BuildContext context) {
     final container = unhandledContainers.firstOrNull;
     if (container == null) return SizedBox.shrink();
-    final currentContainer = ref.watch(tokenContainerProvider).valueOrNull?.currentOf(container);
+    final currentContainer = ref.watch(tokenContainerProvider).valueOrNull?.currentOf<TokenContainer>(container);
     if (currentContainer == null) return SizedBox.shrink();
     final appLocalizations = AppLocalizations.of(context)!;
     return DefaultDialog(
