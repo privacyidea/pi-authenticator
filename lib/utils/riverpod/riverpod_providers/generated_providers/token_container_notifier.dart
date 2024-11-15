@@ -360,7 +360,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
       finalizeFutures.add(finalize(container, isManually: true));
     }
     await Future.wait(finalizeFutures);
-    // await syncTokens(tokenState: ref.read(tokenProvider), containersToSync: [], isManually: true);
+    await syncTokens(tokenState: ref.read(tokenProvider), containersToSync: [], isManually: true);
 
     return failedToAdd;
   }
