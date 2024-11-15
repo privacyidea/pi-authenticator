@@ -19,7 +19,6 @@
  */
 import 'dart:async';
 
-import 'package:basic_utils/basic_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:http/http.dart';
 import 'package:mutex/mutex.dart';
@@ -361,7 +360,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
       finalizeFutures.add(finalize(container, isManually: true));
     }
     await Future.wait(finalizeFutures);
-    await syncTokens(tokenState: ref.read(tokenProvider), containersToSync: [], isManually: true);
+    // await syncTokens(tokenState: ref.read(tokenProvider), containersToSync: [], isManually: true);
 
     return failedToAdd;
   }
@@ -379,9 +378,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
       container = await _curentOf<TokenContainerUnfinalized>(container);
       final Response response = await _sendPublicKey(container);
       container = await _curentOf<TokenContainerUnfinalized>(container);
-      final ECPublicKey publicServerKey = await _parseResponse(await _curentOf(container), response);
-      container = await _curentOf<TokenContainerUnfinalized>(container);
-      await updateContainer(await _curentOf(container), (c) => c.finalize(publicServerKey: publicServerKey)!);
+      container = await _applyFinalizationResponse(await _curentOf(container), response);
     } on StateError catch (e) {
       final applocalizations = AppLocalizations.of(await globalContext)!;
       if (isManually) {
@@ -560,8 +557,8 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     return response;
   }
 
-  /// Finalization substep 3: Parse response
-  Future<ECPublicKey> _parseResponse(TokenContainer tokenContainer, Response response) async {
+  /// Finalization substep 3: Apply finalization response to container
+  Future<TokenContainerFinalized> _applyFinalizationResponse(TokenContainer tokenContainer, Response response) async {
     // parsingResponse,
     // parsingResponseFailed,
     // parsingResponseCompleted,
@@ -601,8 +598,8 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
       rethrow;
     }
 
-    container = await updateContainer(container, (c) => c.copyWith(finalizationState: RolloutState.parsingResponseCompleted));
-    if (container == null) throw StateError('Container was removed');
-    return resultValue.publicServerKey;
+    container = await updateContainer(container, (c) => c.copyWith(policies: resultValue.policies).finalize(publicServerKey: resultValue.publicServerKey)!);
+    if (container == null) throw StateError('Container was removed or finalization failed');
+    return container as TokenContainerFinalized;
   }
 }
