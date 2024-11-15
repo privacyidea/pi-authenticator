@@ -19,6 +19,7 @@
  */
 import 'package:http/http.dart';
 
+import '../../model/container_policies.dart';
 import '../../model/riverpod_states/token_state.dart';
 import '../../model/token_container.dart';
 import '../../model/tokens/token.dart';
@@ -27,5 +28,20 @@ import '../../utils/ecc_utils.dart';
 abstract class TokenContainerApi {
   Future<Response> finalizeContainer(TokenContainerUnfinalized container, EccUtils eccUtils);
   Future<String> getTransferQrData(TokenContainerFinalized container);
-  Future<(List<Token>, List<String>)?> sync(TokenContainerFinalized container, TokenState tokenState);
+  Future<ContainerSyncUpdates?> sync(TokenContainerFinalized container, TokenState tokenState);
+  Future<bool> unregister(TokenContainerFinalized container);
+}
+
+class ContainerSyncUpdates {
+  final String containerSerial;
+  final List<Token> updatedTokens;
+  final List<String> deleteTokenSerials;
+  final ContainerPolicies newPolicies;
+
+  ContainerSyncUpdates({
+    required this.updatedTokens,
+    required this.deleteTokenSerials,
+    required this.newPolicies,
+    required this.containerSerial,
+  });
 }

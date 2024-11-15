@@ -56,15 +56,23 @@ final stringSecondsToDurationValidator = ObjectValidator<Duration>(
 final stringToUriValidatorNullable = stringToUrivalidator.nullable();
 final stringToUrivalidator = ObjectValidator<Uri>(transformer: (v) => Uri.parse(v));
 
-final stringToBoolValidatorNullable = stringToBoolValidator.nullable();
-final stringToBoolValidator = ObjectValidator<bool>(
-    transformer: (v) => switch ((v as String).toLowerCase()) {
-          'true' => true,
-          '1' => true,
-          'false' => false,
-          '0' => false,
-          _ => throw ArgumentError('Invalid boolean value: $v'),
-        });
+final boolValidatorNullable = boolValidator.nullable();
+final boolValidator = ObjectValidator<bool>(transformer: (v) {
+  if (v is bool) return v;
+  if (v is int) return v == 1;
+  if (v is String) {
+    return switch (v) {
+      'true' => true,
+      'True' => true,
+      '1' => true,
+      'false' => false,
+      'False' => false,
+      '0' => false,
+      _ => throw ArgumentError('Invalid boolean value: $v'),
+    };
+  }
+  throw ArgumentError('Invalid boolean value: $v');
+});
 
 final stringToAlgorithmsValidator = ObjectValidator<Algorithms>(
   transformer: (v) {

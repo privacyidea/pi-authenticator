@@ -145,7 +145,7 @@ class TOTPToken extends OTPToken {
         OTP_AUTH_SECRET_BASE32: base32SecretValidatorNullable,
         OTP_AUTH_PERIOD_SECONDS: stringToIntValidatorNullable,
         OTP_AUTH_IMAGE: const ObjectValidatorNullable<String>(),
-        OTP_AUTH_PIN: stringToBoolValidatorNullable,
+        OTP_AUTH_PIN: boolValidatorNullable,
       },
       name: 'TOTPToken',
     );
@@ -180,7 +180,7 @@ class TOTPToken extends OTPToken {
         OTP_AUTH_SECRET_BASE32: base32Secretvalidator,
         OTP_AUTH_PERIOD_SECONDS: stringToIntvalidator.withDefault(30),
         OTP_AUTH_IMAGE: const ObjectValidatorNullable<String>(),
-        OTP_AUTH_PIN: stringToBoolValidatorNullable,
+        OTP_AUTH_PIN: boolValidatorNullable,
       },
       name: 'TOTPToken#otpAuthMap',
     );

@@ -50,6 +50,7 @@ class TokenContainer with _$TokenContainer {
   Uri get challengeUrl => serverUrl.replace(path: '/container/$serial/challenge');
   Uri get syncUrl => serverUrl.replace(path: '/container/$serial/sync');
   Uri get transferUrl => serverUrl.replace(path: '/container/$serial/rollover');
+  Uri get unregisterUrl => serverUrl.replace(path: '/container/register/$serial/terminate/client');
 
   // example: pia://container/SMPH00134123
   // ?issuer=privacyIDEA
@@ -72,7 +73,7 @@ class TokenContainer with _$TokenContainer {
         CONTAINER_EC_KEY_ALGORITHM: ObjectValidator<EcKeyAlgorithm>(transformer: (v) => EcKeyAlgorithm.values.byCurveName(v)),
         CONTAINER_HASH_ALGORITHM: stringToAlgorithmsValidator,
         CONTAINER_PASSPHRASE_QUESTION: const ObjectValidatorNullable<String>(),
-        CONTAINER_SSL_VERIFY: stringToBoolValidator,
+        CONTAINER_SSL_VERIFY: boolValidator,
         CONTAINER_POLICIES: ObjectValidatorNullable<ContainerPolicies>(transformer: (value) => ContainerPolicies.fromUriMap(value)),
       },
       name: 'Container',

@@ -128,7 +128,7 @@ const String CONTAINER_PASSPHRASE_QUESTION = 'passphrase';
 const String CONTAINER_SSL_VERIFY = 'ssl_verify';
 const String CONTAINER_SERVER_URL = 'container_sync_url';
 const String CONTAINER_SCOPE = 'scope';
-const String CONTAINER_POLICIES = 'policies';
+const String CONTAINER_POLICIES = 'info';
 
 // Container finalization:
 const String CONTAINER_CONTAINER_SERIAL = 'container_serial';
@@ -137,18 +137,24 @@ const String CONTAINER_DEVICE_BRAND = 'device_brand';
 const String CONTAINER_DEVICE_MODEL = 'device_model';
 
 // Container sync:
+
 const String CONTAINER_SYNC_PUBLIC_CLIENT_KEY = 'public_enc_key_client';
 const String CONTAINER_SYNC_DICT_SERVER = 'container_dict_server';
 const String CONTAINER_SYNC_DICT_CLIENT = 'container_dict_client';
+
+const String CONTAINER_SYNC_ENC_ALGORITHM = 'encryption_algorithm';
+const String CONTAINER_SYNC_ENC_PARAMS = 'encryption_params';
+const String CONTAINER_SYNC_POLICIES = 'policies';
+const String CONTAINER_SYNC_PUBLIC_SERVER_KEY = 'public_server_key';
+const String CONTAINER_SYNC_SERVER_URL = 'server_url';
+
+const String CONTAINER_DICT_CONTAINER = 'container';
 const String CONTAINER_DICT_SERIAL = 'serial';
 const String CONTAINER_DICT_TYPE = 'type';
 const String CONTAINER_DICT_TYPE_SMARTPHONE = 'smartphone';
 const String CONTAINER_DICT_TOKENS = 'tokens';
 const String CONTAINER_DICT_TOKENS_ADD = 'add';
 const String CONTAINER_DICT_TOKENS_UPDATE = 'update';
-const String CONTAINER_SYNC_PUBLIC_SERVER_KEY = 'public_server_key';
-const String CONTAINER_SYNC_ENC_ALGORITHM = 'encryption_algorithm';
-const String CONTAINER_SYNC_ENC_PARAMS = 'encryption_params';
 const String CONTAINER_SYNC_ENC_PARAMS_MODE = 'mode';
 const String CONTAINER_SYNC_ENC_PARAMS_IV = 'init_vector';
 const String CONTAINER_SYNC_ENC_PARAMS_TAG = 'tag';

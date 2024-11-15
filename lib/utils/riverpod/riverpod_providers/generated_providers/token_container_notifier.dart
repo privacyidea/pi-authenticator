@@ -23,6 +23,7 @@ import 'package:basic_utils/basic_utils.dart';
 import 'package:collection/collection.dart';
 import 'package:http/http.dart';
 import 'package:mutex/mutex.dart';
+import 'package:privacyidea_authenticator/model/container_policies.dart';
 import 'package:privacyidea_authenticator/model/extensions/enums/rollout_state_extension.dart';
 import 'package:privacyidea_authenticator/processors/scheme_processors/token_container_processor.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -273,6 +274,11 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
 
 // DELETE CONTAINER
 
+  Future<TokenContainerState> unregisterDelete(TokenContainerFinalized container) {
+    final unregisterd = _containerApi.unregister(container);
+    throw UnimplementedError();
+  }
+
   Future<TokenContainerState> deleteContainer(TokenContainer container) async {
     await _stateMutex.acquire();
     final newState = await _deleteContainerFromRepo(container);
@@ -307,11 +313,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
   /// Returns true if the processor result was handled successfully
   @override
   Future<bool> handleProcessorResult(ProcessorResult result, Map<String, dynamic> args, {bool? doReplace}) async {
-    final failedContainer = await handleProcessorResults(
-      [result],
-      args,
-      doReplace: doReplace,
-    );
+    final failedContainer = await handleProcessorResults([result], args, doReplace: doReplace);
     return failedContainer?.isEmpty ?? false;
   }
 
@@ -429,7 +431,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
   Future<Map<int, TokenContainerFinalized>> _syncTokens({
     required TokenState tokenState,
     required List<TokenContainerFinalized> containersToSync,
-    required Future<(List<Token>, List<String>)?> Function(TokenContainerFinalized container, TokenState tokenState) apiCall,
+    required Future<ContainerSyncUpdates?> Function(TokenContainerFinalized container, TokenState tokenState) apiCall,
     required bool isManually,
   }) async {
     Logger.info('Syncing ${containersToSync.length} tokens');
@@ -443,7 +445,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
       }
       containersToSync = current.whereType<TokenContainerFinalized>().where((e) => e.syncState != SyncState.syncing).toList();
     }
-    final syncFutures = <Future<(List<Token>, List<String>)?>>[];
+    final syncFutures = <Future<ContainerSyncUpdates?>>[];
 
     List<Token> syncedTokens = [];
     List<String> deletedTokens = [];
@@ -481,11 +483,14 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
       );
     }
 
-    await Future.wait(syncFutures).then((tuples) {
-      for (var tuple in tuples) {
-        if (tuple == null) continue;
-        syncedTokens.addAll(tuple.$1);
-        deletedTokens.addAll(tuple.$2);
+    Map<String, ContainerPolicies> newPoliciesMap = {};
+
+    await Future.wait(syncFutures).then((containerUpdates) {
+      for (var containerUpdate in containerUpdates) {
+        if (containerUpdate == null) continue;
+        syncedTokens.addAll(containerUpdate.updatedTokens);
+        deletedTokens.addAll(containerUpdate.deleteTokenSerials);
+        newPoliciesMap[containerUpdate.containerSerial] = containerUpdate.newPolicies;
       }
     }).onError((error, stackTrace) {
       Logger.error('Failed to sync container', error: error, stackTrace: stackTrace);
@@ -496,6 +501,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
 
     await ref.read(tokenProvider.notifier).addOrReplaceTokens(syncedTokens);
     await ref.read(tokenProvider.notifier).removeTokensBySerials(deletedTokens);
+    await updateContainerList((await future).containerList, (c) => newPoliciesMap[c.serial] == null ? c : c.copyWith(policies: newPoliciesMap[c.serial]!));
     return failedContainers;
   }
 

@@ -28,6 +28,7 @@ import '../../../utils/ecc_utils.dart';
 import '../../../utils/identifiers.dart';
 import '../../../utils/logger.dart';
 import '../../../utils/object_validator.dart';
+import '../../container_policies.dart';
 import '../../encryption/encryption_params.dart';
 import 'pi_server_result.dart';
 
@@ -102,35 +103,44 @@ class ContainerFinalizationResponse extends PiServerResultValue {
 }
 
 class ContainerSyncResult extends PiServerResultValue {
-  final String publicServerKey;
-  Uint8List get publicServerKeyBytes => base64Decode(publicServerKey);
+  final String containerDictEncrypted;
   final String encryptionAlgorithm;
   final EncryptionParams encryptionParams;
-  final String containerDictEncrypted;
+  final ContainerPolicies policies;
+  final String publicServerKey;
+  final String serverUrl;
+
+  Uint8List get publicServerKeyBytes => base64Decode(publicServerKey);
 
   const ContainerSyncResult({
-    required this.publicServerKey,
+    required this.containerDictEncrypted,
     required this.encryptionAlgorithm,
     required this.encryptionParams,
-    required this.containerDictEncrypted,
+    required this.policies,
+    required this.publicServerKey,
+    required this.serverUrl,
   });
 
   static ContainerSyncResult fromJson(Map<String, dynamic> json) {
     final map = validateMap(
       map: json,
       validators: {
-        CONTAINER_SYNC_PUBLIC_SERVER_KEY: const ObjectValidator<String>(),
+        CONTAINER_SYNC_DICT_SERVER: const ObjectValidator<String>(),
         CONTAINER_SYNC_ENC_ALGORITHM: const ObjectValidator<String>(),
         CONTAINER_SYNC_ENC_PARAMS: ObjectValidator<EncryptionParams>(transformer: (v) => EncryptionParams.fromParams(v)),
-        CONTAINER_SYNC_DICT_SERVER: const ObjectValidator<String>(),
+        CONTAINER_SYNC_POLICIES: ObjectValidator<ContainerPolicies>(transformer: (v) => ContainerPolicies.fromUriMap(v)),
+        CONTAINER_SYNC_PUBLIC_SERVER_KEY: const ObjectValidator<String>(),
+        CONTAINER_SYNC_SERVER_URL: const ObjectValidator<String>(),
       },
       name: 'ContainerSyncResult#fromJson',
     );
     return ContainerSyncResult(
-      publicServerKey: map[CONTAINER_SYNC_PUBLIC_SERVER_KEY] as String,
+      containerDictEncrypted: map[CONTAINER_SYNC_DICT_SERVER] as String,
       encryptionAlgorithm: map[CONTAINER_SYNC_ENC_ALGORITHM] as String,
       encryptionParams: map[CONTAINER_SYNC_ENC_PARAMS] as EncryptionParams,
-      containerDictEncrypted: map[CONTAINER_SYNC_DICT_SERVER] as String,
+      policies: map[CONTAINER_SYNC_POLICIES] as ContainerPolicies,
+      publicServerKey: map[CONTAINER_SYNC_PUBLIC_SERVER_KEY] as String,
+      serverUrl: map[CONTAINER_SYNC_SERVER_URL] as String,
     );
   }
 }

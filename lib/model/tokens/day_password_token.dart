@@ -166,7 +166,7 @@ class DayPasswordToken extends OTPToken {
         OTP_AUTH_SECRET_BASE32: base32SecretValidatorNullable,
         OTP_AUTH_PERIOD_SECONDS: stringSecondsToDurationValidatorNullable,
         OTP_AUTH_IMAGE: const ObjectValidatorNullable<String>(),
-        OTP_AUTH_PIN: stringToBoolValidatorNullable,
+        OTP_AUTH_PIN: boolValidatorNullable,
       },
       name: 'DayPasswordToken',
     );
@@ -196,7 +196,7 @@ class DayPasswordToken extends OTPToken {
         OTP_AUTH_SECRET_BASE32: base32Secretvalidator,
         OTP_AUTH_PERIOD_SECONDS: stringSecondsToDurationValidator.withDefault(const Duration(hours: 24)),
         OTP_AUTH_IMAGE: const ObjectValidatorNullable<String>(),
-        OTP_AUTH_PIN: stringToBoolValidatorNullable,
+        OTP_AUTH_PIN: boolValidatorNullable,
       },
       name: 'DayPasswordToken',
     );

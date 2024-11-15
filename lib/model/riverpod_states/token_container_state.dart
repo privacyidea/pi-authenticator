@@ -23,6 +23,7 @@ import 'package:collection/collection.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../../../../model/tokens/token.dart';
+import '../../utils/logger.dart';
 import '../enums/sync_state.dart';
 import '../token_container.dart';
 
@@ -46,7 +47,11 @@ class TokenContainerState with _$TokenContainerState {
 
   T? currentOf<T extends TokenContainer>(T container) {
     final current = containerOf(container.serial);
-    if (current is T) return current;
+    if (current is T) {
+      Logger.info('Found current container for ${container.serial}');
+      return current;
+    }
+    Logger.info('Current is not of type $T');
     return null;
   }
 

@@ -145,7 +145,7 @@ class HOTPToken extends OTPToken {
         OTP_AUTH_SECRET_BASE32: base32SecretValidatorNullable,
         OTP_AUTH_COUNTER: stringToIntValidatorNullable,
         OTP_AUTH_IMAGE: const ObjectValidatorNullable<String>(),
-        OTP_AUTH_PIN: stringToBoolValidatorNullable,
+        OTP_AUTH_PIN: boolValidatorNullable,
       },
       name: 'HOTPToken',
     );
@@ -175,7 +175,7 @@ class HOTPToken extends OTPToken {
         OTP_AUTH_SECRET_BASE32: base32Secretvalidator,
         OTP_AUTH_COUNTER: otpAuthCounterValidator,
         OTP_AUTH_IMAGE: const ObjectValidatorNullable<String>(),
-        OTP_AUTH_PIN: stringToBoolValidatorNullable,
+        OTP_AUTH_PIN: boolValidatorNullable,
       },
       name: 'HOTPToken#otpAuthMap',
     );
