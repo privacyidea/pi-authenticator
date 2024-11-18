@@ -767,7 +767,7 @@ class MockTokenContainerApi extends _i1.Mock implements _i22.TokenContainerApi {
       ) as _i13.Future<String>);
 
   @override
-  _i13.Future<(List<_i14.Token>, List<String>)?> sync(
+  _i13.Future<_i22.ContainerSyncUpdates?> sync(
     _i21.TokenContainerFinalized? container,
     _i25.TokenState? tokenState,
   ) =>
@@ -779,10 +779,21 @@ class MockTokenContainerApi extends _i1.Mock implements _i22.TokenContainerApi {
             tokenState,
           ],
         ),
-        returnValue: _i13.Future<(List<_i14.Token>, List<String>)?>.value(),
+        returnValue: _i13.Future<_i22.ContainerSyncUpdates?>.value(),
         returnValueForMissingStub:
-            _i13.Future<(List<_i14.Token>, List<String>)?>.value(),
-      ) as _i13.Future<(List<_i14.Token>, List<String>)?>);
+            _i13.Future<_i22.ContainerSyncUpdates?>.value(),
+      ) as _i13.Future<_i22.ContainerSyncUpdates?>);
+
+  @override
+  _i13.Future<bool> unregister(_i21.TokenContainerFinalized? container) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #unregister,
+          [container],
+        ),
+        returnValue: _i13.Future<bool>.value(false),
+        returnValueForMissingStub: _i13.Future<bool>.value(false),
+      ) as _i13.Future<bool>);
 }
 
 /// A class which mocks [PrivacyideaIOClient].
