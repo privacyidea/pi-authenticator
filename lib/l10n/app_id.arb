@@ -1,4 +1,5 @@
 {
+  "@@last_modified": "2024-09-20",
   "@@locale": "id",
   "@a11yAddFolderButton": {
     "description": "Buttontext to add a new folder."
@@ -1091,7 +1092,13 @@
     "description": "Title of the screen where the user can select the token import type."
   },
   "@selectTokensToExport": {
-    "description": "Title of the screen where the user can select the tokens to export."
+    "description": "Title of the screen where the user can select the tokens to export.",
+    "placeholders": {
+      "count": {
+        "example": "5",
+        "type": "intint"
+      }
+    }
   },
   "@selectTokensToExportHelpContent1": {
     "description": "Tells the user why some tokens are not exportable."
@@ -1349,10 +1356,15 @@
   "confirmation": "Konfirmasi",
   "connectionFailed": "Koneksi gagal.",
   "container": "Kontainer",
+  "containerAddTitle": "Tambahkan wadah",
   "containerAlreadyExists": "Wadah sudah ada",
   "containerDetails": "Detail kontainer",
+  "containerRolloutSendDeviceInfoContent": "Apakah Anda ingin memberi tahu penerbit kontainer perangkat mana yang Anda gunakan? Ini mungkin berguna nantinya jika Anda mengalami masalah dengan faktor kedua Anda.",
+  "containerRolloutSendDeviceInfoTitle": "Mengirim informasi perangkat",
   "containerSerial": "Serial Kontainer",
   "containerSyncUrl": "Url Sinkronisasi Kontainer",
+  "containerTransferAborted": "Transfer kontainer dibatalkan.",
+  "containerTransferDeleteTokens": "Hapus dari perangkat ini",
   "continueButton": "Lanjutkan",
   "copyOTPToClipboard": "Salin OTP ke papan klip",
   "couldNotConnectToServer": "Tidak dapat terhubung ke server",
@@ -1373,9 +1385,12 @@
   "decryptErrorDeleteConfirmationContent": "Apakah Anda yakin ingin menghapus data aplikasi?",
   "decryptErrorTitle": "Kesalahan dekripsi",
   "delete": "Menghapus",
+  "deleteAll": "Hapus semua",
   "deleteContainerDialogContent": "Jika Anda menghapus kontainer ini, smartphone akan terputus dari server privacyIDEA dan token dari kontainer ini menjadi tidak dapat digunakan. Sebelum menghapus, pastikan bahwa token yang bersangkutan tidak lagi diperlukan!",
   "deleteContainerDialogTitle": "Menghapus Kontainer {serial}",
+  "deleteCorrespondingTokenDialogContent": "Apakah Anda juga ingin menghapus token yang terkait?",
   "deleteLockedToken": "Lakukan autentikasi untuk menghapus token yang terkunci.",
+  "deleteOnlyContainer": "Hanya kontainer",
   "details": "Detail",
   "deviceCredentialsRequiredTitle": "Kredensial perangkat tidak diatur",
   "deviceCredentialsSetupDescription": "Mengatur kredensial perangkat di pengaturan perangkat",
@@ -1389,6 +1404,8 @@
   "encoding": "Pengkodean",
   "enterDetailsForToken": "Masukkan detail token",
   "enterLink": "Masukkan tautan",
+  "enterPassphrase": "Masukkan kata sandi",
+  "enterPassphraseHint": "Kata sandi",
   "enterPasswordToEncrypt": "Masukkan kata sandi untuk mengenkripsi token. Kata sandi ini akan diperlukan untuk mengimpor token.",
   "errorLogCleared": "Log kesalahan dihapus.",
   "errorLogEmpty": "Log kesalahan kosong.",
@@ -1461,6 +1478,7 @@
   "importNTokens": "{count, plural, zero{Impor tanpa token} one{Impor satu token} other{Impor {count} token}}",
   "importNewToken": "{count, plural, zero{Tidak ada token baru yang ditemukan.} one{Token baru ditemukan dan dapat diimpor.} other{{count} token baru ditemukan dan dapat diimpor.}}",
   "importTokens": "Impor token",
+  "importantInformationTitle": "Informasi penting",
   "importedVia": "Diimpor via",
   "increaseCounter": "Tingkatkan penghitung",
   "internalServerError": "Kesalahan server internal ({code})",
@@ -1487,6 +1505,7 @@
   "legacySigningErrorMessage": "Token didaftarkan di versi lama aplikasi ini, yang dapat menyebabkan masalah saat menggunakannya.\nDisarankan untuk mendaftarkan token push baru jika masalah terus berlanjut!",
   "legacySigningErrorTitle": "Terjadi kesalahan saat menggunakan token lama: {tokenLabel}",
   "licensesAndVersion": "Lisensi dan versi",
+  "linkHomeWidget": "Tautkan widget beranda",
   "linkedContainer": "Wadah yang terhubung",
   "lock": "Mengunci",
   "lockOut": "Autentikasi biometrik dinonaktifkan. Silakan kunci dan buka kunci layar Anda untuk mengaktifkannya.",
@@ -1504,7 +1523,7 @@
   "noNetworkConnection": "Tidak ada koneksi jaringan.",
   "noPublicKey": "Tidak ada kunci publik yang tersedia",
   "noResultText1": "Ketuk tombol ",
-  "noResultText2": " untuk memulai!",
+  "noResultText2": "untuk memulai!",
   "noResultTitle": "Belum ada token yang disimpan.",
   "noTokenToExport": "Tidak ada token yang tersedia untuk ekspor",
   "noTokenToImport": "Tidak ada token yang ditemukan untuk diimpor",
@@ -1555,6 +1574,7 @@
   "pushEndpointUrl": "URL titik akhir push",
   "pushRequestParseError": "Push request could not be parsed.",
   "pushToken": "Token Dorong",
+  "pushTokensViewTitle": "Token Dorong",
   "qrFileDecodeError": "Tidak dapat memecahkan kode QR dari gambar yang dipilih, silakan gunakan pemindai kode QR sebagai gantinya.",
   "qrInFileNotFound": "Tidak ada kode QR yang ditemukan pada gambar yang dipilih.",
   "qrInFileNotFound2": "Anda dapat menunjukkan di mana letak kode QR.",
@@ -1563,6 +1583,9 @@
   "rename": "Ganti nama",
   "renameToken": "Ganti nama token",
   "renameTokenFolder": "Ganti nama folder",
+  "renewSecrets": "Memperbarui rahasia",
+  "renewSecretsDialogText": "Anda dapat memperbarui rahasia token. Hal ini berguna jika Anda mencurigai bahwa rahasia tersebut telah dibobol. Karena token kontainer dikirimkan dalam bentuk terenkripsi dan rahasia disimpan dengan aman di perangkat. Satu-satunya kasus yang diketahui di mana hal ini dapat terjadi adalah jika token diluncurkan sebelum kontainer melalui kode QR.",
+  "renewSecretsDialogTitle": "Memperbarui Rahasia Token",
   "replaceButton": "Ganti",
   "requestInfo": "Dikirim oleh {issuer} untuk akun Anda: {account}",
   "requestPushChallengesPeriodically": "Meminta tantangan push dari server secara berkala. Aktifkan ini jika tantangan push tidak diterima secara normal.",
@@ -1592,7 +1615,7 @@
   "selectTokensToExportHelpContent1": "Jika sebuah token tidak terdaftar, tidak dijamin bahwa token tersebut bukan token privacyIDEA.",
   "selectTokensToExportHelpContent2": "Saat ini hanya token yang ditambahkan dan diimpor secara manual yang dapat diekspor.",
   "selectTokensToExportHelpContent3": "Kami sedang mengerjakan solusi untuk membedakan antara token privacyIDEA dan token pribadi.",
-  "selectTokensToExportHelpContent4": " Anda bisa mendapatkan kode QR baru dari layanan tempat Anda menerima token.",
+  "selectTokensToExportHelpContent4": "Anda bisa mendapatkan kode QR baru dari layanan tempat Anda menerima token.",
   "selectTokensToExportHelpTitle": "Apakah token Anda tidak terdaftar?",
   "send": "Kirim",
   "sendErrorDialogBody": "Terjadi kesalahan yang tidak terduga dalam aplikasi. Informasi di bawah ini dapat dikirimkan ke pengembang melalui email untuk membantu mencegah kesalahan ini di masa mendatang.",
@@ -1606,6 +1629,7 @@
   "showPrivacyPolicy": "Tampilkan kebijakan privasi",
   "signInTitle": "Diperlukan autentikasi",
   "someTokensDoNotSupportPolling": "Beberapa token sudah ketinggalan zaman dan tidak mendukung pemungutan suara",
+  "startTransfer": "Mulai transfer",
   "statusCode": "Kode status: {statusCode}",
   "sync": "Sinkronisasi",
   "syncContainerFailed": "Sinkronisasi kontainer gagal",
@@ -1629,6 +1653,13 @@
   "tokensAreEncrypted": "Tautan tokenToken dienkripsi. Masukkan kata sandi untuk mendekripsi token tersebut.",
   "tokensDoNotSupportSynchronization": "Token berikut ini tidak mendukung sinkronisasi dan harus diluncurkan kembali:",
   "tokensSuccessfullyDecrypted": "Token telah berhasil didekripsi dan sekarang dapat diimpor.",
+  "transferContainerDialogContent1": "Anda bisa mentransfer kontainer ke perangkat lain. Kontainer ditransfer melalui kode QR.",
+  "transferContainerDialogContent2": "Untuk proses ini, diperlukan koneksi internet yang aktif.",
+  "transferContainerDialogTitle": "Mentransfer Kontainer",
+  "transferContainerFailed": "Gagal memulai transfer.",
+  "transferContainerScanQrCode": "Pindai kode QR pada perangkat baru untuk mentransfer kontainer.",
+  "transferContainerSuccessDialogContent1": "Kontainer telah berhasil ditransfer ke perangkat lain.",
+  "transferContainerSuccessDialogContent2": "Apakah Anda ingin menghapus container dan token terkait dari perangkat ini?",
   "type": "Jenis",
   "unexpectedError": "Terjadi kesalahan yang tidak diharapkan.",
   "unknown": "Tidak diketahui",
@@ -1641,8 +1672,5 @@
   "verboseLogging": "Penebangan kata demi kata",
   "versionTitle": "Versi",
   "wrongPassword": "Kata sandi salah",
-  "yes": "Ya",
-  "renewSecretsDialogTitle" : "Memperbarui Rahasia Token",
-  "renewSecretsDialogText" : "Anda dapat memperbarui rahasia token. Hal ini berguna jika Anda mencurigai bahwa rahasia tersebut telah dibobol. Karena token kontainer dikirimkan dalam bentuk terenkripsi dan rahasia disimpan dengan aman di perangkat. Satu-satunya kasus yang diketahui di mana hal ini dapat terjadi adalah jika token diluncurkan sebelum kontainer melalui kode QR.",
-  "renewSecrets" : "Memperbarui rahasia"
+  "yes": "Ya"
 }

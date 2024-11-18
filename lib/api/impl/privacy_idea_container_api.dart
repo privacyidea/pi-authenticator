@@ -40,7 +40,6 @@ import '../../model/riverpod_states/token_state.dart';
 import '../../model/token_container.dart';
 import '../../model/token_template.dart';
 import '../../model/tokens/token.dart';
-import '../../utils/globals.dart';
 import '../../utils/identifiers.dart';
 import '../../utils/logger.dart';
 import '../../widgets/dialog_widgets/enter_passphrase_dialog.dart';
@@ -131,7 +130,7 @@ class PiContainerApi implements TokenContainerApi {
       throw LocalizedException(localizedMessage: (l) => l.errorMissingPrivateKey, unlocalizedMessage: AppLocalizationsEn().errorMissingPrivateKey);
     }
 
-    final passphrase = container.passphraseQuestion?.isNotEmpty == true ? await EnterPassphraseDialog.show(await globalContext) : null;
+    final passphrase = container.passphraseQuestion?.isNotEmpty == true ? await EnterPassphraseDialog.show(container.passphraseQuestion!) : null;
     final message = '${container.nonce}'
         '|${container.timestamp.toIso8601String().replaceFirst('Z', '+00:00')}'
         '|${container.serial}'

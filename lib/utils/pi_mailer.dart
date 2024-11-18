@@ -55,16 +55,19 @@ class PiMailer {
     } on PlatformException catch (e, stackTrace) {
       if (e.code == 'UNAVAILABLE') {
         showAsyncDialog(
-          builder: (context) => DefaultDialog(
-            title: Text(AppLocalizations.of(context)!.noMailAppTitle),
-            content: Text(AppLocalizations.of(context)!.noMailAppDescription),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('OK'),
-              ),
-            ],
-          ),
+          builder: (context) {
+            final AppLocalizations appLocalizations = AppLocalizations.of(context)!;
+            return DefaultDialog(
+              title: Text(appLocalizations.noMailAppTitle),
+              content: Text(appLocalizations.noMailAppDescription),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(appLocalizations.ok),
+                ),
+              ],
+            );
+          },
         );
         return false;
       }

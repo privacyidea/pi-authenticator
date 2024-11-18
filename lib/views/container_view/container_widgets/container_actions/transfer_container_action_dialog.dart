@@ -20,6 +20,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 
 import '../../../../../../../model/token_container.dart';
 import '../../../../../../../utils/view_utils.dart';
@@ -40,24 +41,25 @@ class TransferContainerDialog extends ConsumerStatefulWidget {
 class _TransferContainerDialogState extends ConsumerState<TransferContainerDialog> {
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations appLocalizations = AppLocalizations.of(context)!;
     return DefaultDialog(
-      title: Text('Transfer Container'),
+      title: Text(appLocalizations.transferContainerDialogTitle),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('When the container is transferred successfully to another device, it will be removed from this device with all its tokens.'),
+          Text(appLocalizations.transferContainerDialogContent1),
           SizedBox(height: 8),
-          Text('For the process is an internet connection required.'),
+          Text(appLocalizations.transferContainerDialogContent2),
         ],
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
-          child: Text('Close'),
+          child: Text(appLocalizations.cancel),
         ),
         CooldownButton(
           onPressed: () => _startTransfer(widget.container),
-          child: Text('Start Transfer'),
+          child: Text(appLocalizations.startTransfer),
         ),
       ],
     );
@@ -68,8 +70,9 @@ class _TransferContainerDialogState extends ConsumerState<TransferContainerDialo
     try {
       qrData = await ref.read(tokenContainerProvider.notifier).getTransferQrData(container);
     } catch (e) {
+      if (!mounted) return;
       return showStatusMessage(
-        message: 'Failed to start transfer.',
+        message: AppLocalizations.of(context)!.transferContainerFailed,
         subMessage: e.toString(),
       );
     }

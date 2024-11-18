@@ -20,6 +20,7 @@
 import 'package:app_minimizer/app_minimizer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 
 import '../../utils/customization/theme_extentions/extended_text_theme.dart';
 import '../../utils/home_widget_utils.dart';
@@ -50,7 +51,7 @@ class _LinkHomeWidgetViewState extends ConsumerState<LinkHomeWidgetView> {
     final otpTokens = ref.watch(tokenProvider).otpTokens;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Link Home Widget'),
+        title: Text(AppLocalizations.of(context)!.linkHomeWidget),
       ),
       body: ListView.builder(
         itemBuilder: (context, index) {

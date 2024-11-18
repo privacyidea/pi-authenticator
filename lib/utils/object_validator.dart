@@ -37,7 +37,10 @@ final otpAuthDigitsValidator = ObjectValidator<int>(
   allowedValues: (p0) => p0 > 0,
 );
 final otpAuthCounterValidator = ObjectValidator<int>(
-  transformer: (v) => int.parse(v),
+  transformer: (v) {
+    if (v is int) return v;
+    return int.parse(v);
+  },
   allowedValues: (v) => v >= 0,
 );
 

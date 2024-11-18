@@ -20,6 +20,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/token_container.dart';
 import '../../../../../utils/utils.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
@@ -33,12 +34,13 @@ class TransferQrDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final appLocalizations = AppLocalizations.of(context)!;
     return DefaultDialog(
-      title: Text('Transfer Container'),
+      title: Text(appLocalizations.transferContainerDialogTitle),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text('Scan the QR code with the new device to transfer the container.'),
+          Text(appLocalizations.transferContainerScanQrCode),
           SizedBox(height: 8),
           generateQrCodeImage(data: qrData),
           SizedBox(height: 8),
@@ -57,7 +59,7 @@ class TransferQrDialog extends ConsumerWidget {
               ),
             );
           },
-          child: Text('Close'),
+          child: Text(appLocalizations.cancel),
         ),
       ],
     );
