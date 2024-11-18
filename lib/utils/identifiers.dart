@@ -35,7 +35,7 @@ const OTP_AUTH_SERIAL = 'serial';
 /// [String] (required)
 const OTP_AUTH_SECRET_BASE32 = 'secret';
 
-/// [String] (optional) default =' 0'
+/// [String]/[int] (optional) default = '0'
 const OTP_AUTH_COUNTER = 'counter';
 
 /// [String] (optional) default = '30'

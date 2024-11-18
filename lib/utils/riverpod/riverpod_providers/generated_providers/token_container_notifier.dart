@@ -273,9 +273,14 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
 
 // DELETE CONTAINER
 
-  Future<TokenContainerState> unregisterDelete(TokenContainerFinalized container) {
-    final unregisterd = _containerApi.unregister(container);
-    throw UnimplementedError();
+  Future<TokenContainerState> unregisterDelete(TokenContainerFinalized container) async {
+    if (!await _containerApi.unregister(container)) return await future;
+
+    await _stateMutex.acquire();
+    final newState = await _deleteContainerFromRepo(container);
+    await update((_) => newState);
+    _stateMutex.release();
+    return newState;
   }
 
   Future<TokenContainerState> deleteContainer(TokenContainer container) async {

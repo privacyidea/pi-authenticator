@@ -36,9 +36,9 @@ extension TokenListExtension on List<Token> {
     return nonPiTokens;
   }
 
-  List<Token> get maybePiTokens {
-    final maybePiTokens = where((token) => token.isPrivacyIdeaToken == null).toList();
-    Logger.debug('${maybePiTokens.length}/$length tokens with "isPrivacyIdeaToken == null"');
+  List<Token> get notLinkedTokens {
+    final maybePiTokens = where((token) => token.isPrivacyIdeaToken != false && token.containerSerial == null).toList();
+    Logger.debug('${maybePiTokens.length}/$length unlinked tokens (not in container)');
     return maybePiTokens;
   }
 

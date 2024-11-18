@@ -41,8 +41,11 @@ final otpAuthCounterValidator = ObjectValidator<int>(
   allowedValues: (v) => v >= 0,
 );
 
-final stringToIntValidatorNullable = stringToIntvalidator.nullable();
-final stringToIntvalidator = ObjectValidator<int>(transformer: (v) => int.parse(v));
+final intValidatorNullable = intValidator.nullable();
+final intValidator = ObjectValidator<int>(transformer: (v) {
+  if (v is int) return v;
+  return int.parse(v);
+});
 
 final intToStringValidator = ObjectValidator<String>(transformer: (v) => (v as int).toString());
 final intToStringValidatorNullable = intToStringValidator.nullable();

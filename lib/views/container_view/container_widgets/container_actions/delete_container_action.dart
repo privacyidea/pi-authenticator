@@ -61,6 +61,7 @@ class DeleteContainerAction extends ConsumerSlideableAction {
 
   Future<void> _showDeleteDialog(BuildContext context, WidgetRef ref) => showDialog(
         context: context,
+        useRootNavigator: false,
         builder: (context) => DeleteContainerDialog(container),
       );
 }

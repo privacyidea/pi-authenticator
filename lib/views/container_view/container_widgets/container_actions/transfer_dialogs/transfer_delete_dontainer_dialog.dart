@@ -67,12 +67,21 @@ class _TransferDeleteContainerDialogState extends ConsumerState<TransferDeleteCo
     return switch (isUnlinked) {
       null => DefaultDialog(
           title: Text('Transfer Container'),
-          content: Padding(
-            padding: const EdgeInsets.all(16),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: 32, maxHeight: 32, minHeight: 32, minWidth: 32),
-              child: CircularProgressIndicator(),
-            ),
+          content: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(flex: 2, child: SizedBox()),
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: AspectRatio(
+                    aspectRatio: 1,
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+              ),
+              Expanded(flex: 2, child: SizedBox()),
+            ],
           ),
         ),
       true => DefaultDialog(

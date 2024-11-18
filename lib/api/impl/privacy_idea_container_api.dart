@@ -33,6 +33,7 @@ import '../../../../../../../../utils/ecc_utils.dart';
 import '../../../../../../../../utils/privacyidea_io_client.dart';
 import '../../model/api_results/pi_server_results/pi_server_result_value.dart';
 import '../../model/exception_errors/localized_exception.dart';
+import '../../model/exception_errors/pi_server_result_error.dart';
 import '../../model/exception_errors/response_error.dart';
 import '../../model/pi_server_response.dart';
 import '../../model/riverpod_states/token_state.dart';
@@ -57,7 +58,7 @@ class PiContainerApi implements TokenContainerApi {
   Future<ContainerSyncUpdates?> sync(TokenContainerFinalized container, TokenState tokenState) async {
     final containerTokenTemplates = tokenState.containerTokens(container.serial).toTemplates();
 
-    final maybePiTokensTemplates = (container.policies.initialTokenTransfer) ? tokenState.maybePiTokens.toTemplates() : <TokenTemplate>[];
+    final notLinkedTokenTemplates = (container.policies.initialTokenTransfer) ? tokenState.notLinkedTokens.toTemplates() : <TokenTemplate>[];
 
     final ContainerChallenge challenge = await _getChallenge(container, container.syncUrl);
 
@@ -67,7 +68,7 @@ class PiContainerApi implements TokenContainerApi {
       challenge: challenge,
       encKeyPair: encKeyPair,
       otpAuthMaps: [
-        for (var template in [...containerTokenTemplates, ...maybePiTokensTemplates]) template.otpAuthMapSafeToSend
+        for (var template in [...containerTokenTemplates, ...notLinkedTokenTemplates]) template.otpAuthMapSafeToSend
       ],
     );
 
@@ -91,7 +92,7 @@ class PiContainerApi implements TokenContainerApi {
 
     // MaybePiTokens Should not be deleted
     final mergedTemplatesWithOtps = _handleMaybePiTokens(
-      maybePiTokensTemplates: maybePiTokensTemplates,
+      maybePiTokensTemplates: notLinkedTokenTemplates,
       serverTokensWithOtps: serverTokensWithOtps,
       container: container,
     );
@@ -194,8 +195,29 @@ class PiContainerApi implements TokenContainerApi {
   @override
   Future<bool> unregister(TokenContainerFinalized container) async {
     final unregisterUrl = container.unregisterUrl;
-    final ContainerChallenge challenge = await _getChallenge(container, unregisterUrl);
-    throw UnimplementedError();
+    final ContainerChallenge challenge;
+    try {
+      challenge = await _getChallenge(container, unregisterUrl);
+    } on PiServerResultError catch (e) {
+      if (e.code == 3001) {
+        return true;
+      }
+      rethrow;
+    }
+
+    final body = {
+      CONTAINER_SCOPE: unregisterUrl.toString(),
+      CONTAINER_CHAL_SIGNATURE: container.signMessage('${challenge.nonce}|${challenge.timeStamp}|${container.serial}|$unregisterUrl'),
+    };
+
+    final response = await _ioClient.doPost(url: unregisterUrl, body: body);
+
+    final piResponse = response.asPiServerResponse<UnregisterContainerResultValue>();
+    final errorResponse = piResponse?.asError;
+    if (errorResponse != null) throw errorResponse.piServerResultError;
+    if (response.statusCode != 200 || piResponse == null) throw ResponseError(response);
+
+    return piResponse.asSuccess!.resultValue.success;
   }
 
   /* //////////////////////////////

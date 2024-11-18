@@ -43,6 +43,7 @@ sealed class PiServerResultValue extends PiServerResult {
       const (ContainerFinalizationResponse) => ContainerFinalizationResponse.fromJson(json) as T,
       const (ContainerSyncResult) => ContainerSyncResult.fromJson(json) as T,
       const (TransferQrData) => TransferQrData.fromJson(json) as T,
+      const (UnregisterContainerResultValue) => UnregisterContainerResultValue.fromJson(json) as T,
       _ => throw UnimplementedError('PiServerResultValue.fromJsonOfType<$T>'),
     };
   }
@@ -165,5 +166,28 @@ class TransferQrData extends PiServerResultValue {
       name: 'TransferQrData',
     );
     return TransferQrData(map['description'] as String, map['value'] as String);
+  }
+}
+
+class UnregisterContainerResultValue extends PiServerResultValue {
+  static const String CONTAINER_UNREGISTER_SUCCESS = 'success';
+
+  final bool success;
+
+  const UnregisterContainerResultValue({
+    required this.success,
+  });
+
+  factory UnregisterContainerResultValue.fromJson(Map<String, dynamic> json) {
+    final map = validateMap(
+      map: json,
+      validators: {
+        CONTAINER_UNREGISTER_SUCCESS: const ObjectValidator<bool>(),
+      },
+      name: 'UnregisterContainerResultValue#fromJson',
+    );
+    return UnregisterContainerResultValue(
+      success: map[CONTAINER_UNREGISTER_SUCCESS] as bool,
+    );
   }
 }

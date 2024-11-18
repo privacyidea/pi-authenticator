@@ -132,6 +132,6 @@ class PiServerResponse<T extends PiServerResultValue> with _$PiServerResponse {
   }
 
   factory PiServerResponse.fromResponse(Response response) {
-    return PiServerResponse.fromJson(jsonDecode(response.body));
+    return PiServerResponse<T>.fromJson(jsonDecode(response.body));
   }
 }
