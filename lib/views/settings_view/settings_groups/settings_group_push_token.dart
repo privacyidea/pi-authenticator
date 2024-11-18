@@ -164,7 +164,7 @@ class SettingsGroupPushTokenDialog extends ConsumerWidget {
               child: ListView.separated(
                 shrinkWrap: true,
                 itemCount: unsupported.length,
-                itemBuilder: (context, index) => Text('${unsupported[index].label}'),
+                itemBuilder: (context, index) => Text(unsupported[index].label.toString()),
                 separatorBuilder: (context, index) => const Divider(),
               ),
             ),

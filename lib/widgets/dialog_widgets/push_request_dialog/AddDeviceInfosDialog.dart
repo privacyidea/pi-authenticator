@@ -18,6 +18,7 @@
  * limitations under the License.
  */
 import 'package:flutter/material.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/widgets/dialog_widgets/default_dialog.dart';
 
 import '../../../utils/view_utils.dart';
@@ -31,20 +32,21 @@ class SendDeviceInfosDialog extends StatelessWidget {
       );
 
   @override
-  Widget build(BuildContext context) => DefaultDialog(
-        title: Text('Send Device Info'),
-        content: Text(
-          'Would you like to tell the publisher of the container which device you are using? This may be useful later if you have problems with your second factor.',
+  Widget build(BuildContext context) {
+    final AppLocalizations appLocalizations = AppLocalizations.of(context)!;
+    return DefaultDialog(
+      title: Text(appLocalizations.containerRolloutSendDeviceInfoTitle),
+      content: Text(appLocalizations.containerRolloutSendDeviceInfoContent),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(false),
+          child: Text(appLocalizations.no),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text('No'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text('Yes'),
-          ),
-        ],
-      );
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(true),
+          child: Text(appLocalizations.yes),
+        ),
+      ],
+    );
+  }
 }

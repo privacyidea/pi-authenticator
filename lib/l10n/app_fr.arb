@@ -1092,7 +1092,13 @@
     "description": "Title of the screen where the user can select the token import type."
   },
   "@selectTokensToExport": {
-    "description": "Title of the screen where the user can select the tokens to export."
+    "description": "Title of the screen where the user can select the tokens to export.",
+    "placeholders": {
+      "count": {
+        "example": "5",
+        "type": "int"
+      }
+    }
   },
   "@selectTokensToExportHelpContent1": {
     "description": "Tells the user why some tokens are not exportable."
@@ -1351,10 +1357,15 @@
   "confirmation": "Confirmation",
   "connectionFailed": "La connexion a échoué.",
   "container": "Conteneur",
+  "containerAddTitle": "Ajouter un conteneur",
   "containerAlreadyExists": "Le conteneur existe déjà",
   "containerDetails": "Détails du conteneur",
+  "containerRolloutSendDeviceInfoContent": "Souhaitez-vous indiquer à l'éditeur du conteneur quel appareil vous utilisez ? Cela peut être utile plus tard si vous avez des problèmes avec votre deuxième facteur.",
+  "containerRolloutSendDeviceInfoTitle": "Envoyer les informations sur l'appareil",
   "containerSerial": "Conteneur en série",
   "containerSyncUrl": "Url de synchronisation du conteneur",
+  "containerTransferAborted": "Le transfert du conteneur a été interrompu.",
+  "containerTransferDeleteTokens": "Retirer de cet appareil",
   "continueButton": "Continue",
   "copyOTPToClipboard": "Copier l'OTP dans le presse-papiers",
   "couldNotConnectToServer": "Impossible de se connecter au serveur.",
@@ -1375,9 +1386,12 @@
   "decryptErrorDeleteConfirmationContent": "Êtes-vous sûr de vouloir supprimer les données de l'application ?",
   "decryptErrorTitle": "Erreur de décryptage",
   "delete": "Supprimer",
+  "deleteAll": "Supprimer tout",
   "deleteContainerDialogContent": "Si vous supprimez ce conteneur, le smartphone sera déconnecté du serveur privacyIDEA et les tokens de ce conteneur deviendront inutilisables. Avant de le supprimer, assurez-vous que les tokens correspondants ne sont plus nécessaires !",
   "deleteContainerDialogTitle": "Suppression du conteneur {serial}",
+  "deleteCorrespondingTokenDialogContent": "Souhaitez-vous également supprimer les jetons correspondants ?",
   "deleteLockedToken": "Veuillez vous authentifier pour supprimer le jeton verrouillé.",
+  "deleteOnlyContainer": "Seulement le conteneur",
   "details": "Détails",
   "deviceCredentialsRequiredTitle": "Les informations d'identification de l'appareil ne sont pas configurées",
   "deviceCredentialsSetupDescription": "Configurer les informations d'identification de l'appareil dans les paramètres de l'appareil",
@@ -1391,6 +1405,8 @@
   "encoding": "Encodage",
   "enterDetailsForToken": "Saisissez les détails du jeton",
   "enterLink": "Saisir le lien",
+  "enterPassphrase": "Saisir la phrase d'authentification",
+  "enterPassphraseHint": "Phrase de passe",
   "enterPasswordToEncrypt": "Entrez un mot de passe pour chiffrer les jetons. Ce mot de passe sera requis pour importer les jetons.",
   "errorLogCleared": "Journal d'erreur nettoyé",
   "errorLogEmpty": "Le journal des erreurs est vide",
@@ -1463,6 +1479,7 @@
   "importNTokens": "{count, plural, zero{N'importer aucun jeton} one{Importer un jeton} other{Importer {count} tokens}}",
   "importNewToken": "{count, plural, zero{Aucun nouveau jeton n'a été trouvé.} one{Un nouveau token a été trouvé et peut être importé.} other{{count} nouveaux tokens ont été trouvés et peuvent être importés.}}",
   "importTokens": "Importer un jeton",
+  "importantInformationTitle": "Informations importantes",
   "importedVia": "Importé via",
   "increaseCounter": "Augmenter le compteur",
   "internalServerError": "Erreur interne du serveur ({code})",
@@ -1490,6 +1507,7 @@
   "legacySigningErrorMessage": "Le token a été créé dans une version obsolète de l'application, ce qui peut entraîner des problèmes d'utilisation.\nIl est recommandé de créer un nouveau token push si le problème persiste !",
   "legacySigningErrorTitle": "Une erreur s'est produite lors de l'utilisation du jeton obsolète : {tokenLabel}",
   "licensesAndVersion": "Licences et version",
+  "linkHomeWidget": "Lier le widget d'accueil",
   "linkMustOtpAuth": "Le lien doit commencer par otpauth://.",
   "linkedContainer": "Conteneur lié",
   "lock": "Bloquer",
@@ -1559,6 +1577,7 @@
   "pushEndpointUrl": "URL de l'endpoint Push",
   "pushRequestParseError": "La demande push n'a pas pu être traitée.",
   "pushToken": "Jeton de type Push",
+  "pushTokensViewTitle": "Jetons de poussée",
   "qrFileDecodeError": "Il n'a pas été possible de décoder le code QR à partir de l'image sélectionnée, veuillez utiliser le scanner de code QR à la place",
   "qrInFileNotFound": "Aucun code QR n'a été trouvé dans l'image sélectionnée.",
   "qrInFileNotFound2": "Vous pouvez me montrer où se trouve le code QR.",
@@ -1567,6 +1586,9 @@
   "rename": "Renommer",
   "renameToken": "Renommer jeton",
   "renameTokenFolder": "Renommer le dossier",
+  "renewSecrets": "Renouveler les secrets",
+  "renewSecretsDialogText": "Vous pouvez renouveler les secrets des jetons. Cette fonction est utile si vous soupçonnez que les secrets ont été compromis. Les jetons de conteneurs sont transmis sous forme cryptée et les secrets sont stockés en toute sécurité sur l'appareil. Le seul cas connu où cela aurait pu se produire serait si le jeton avait été déployé avant le conteneur par le biais d'un code QR.",
+  "renewSecretsDialogTitle": "Renouveler les secrets des jetons",
   "replaceButton": "Remplacer",
   "requestInfo": "Envoyé par {issuer} pour votre compte : \"{account}\"",
   "requestPushChallengesPeriodically": "Demander des challenges push depuis le serveur périodiquement. Activer cette fonction si les challenges push ne sont pas reçus normalement.",
@@ -1610,6 +1632,7 @@
   "showPrivacyPolicy": "Afficher la déclaration de confidentialité",
   "signInTitle": "Authentification requise",
   "someTokensDoNotSupportPolling": "Certains jetons sont obsolètes et ne supportent pas l'interrogation due serveur.",
+  "startTransfer": "Démarrer le transfert",
   "statusCode": "Code d'état : {statusCode}",
   "sync": "Synchroniser",
   "syncContainerFailed": "Échec de la synchronisation des conteneurs",
@@ -1633,6 +1656,13 @@
   "tokensAreEncrypted": "Les jetons sont cryptés. Veuillez saisir le mot de passe pour les décrypter",
   "tokensDoNotSupportSynchronization": "Ces jetons ne supportent pas la synchronisation et doivent être de nouveau générés:",
   "tokensSuccessfullyDecrypted": "Les tokens ont été décryptés avec succès, ils peuvent maintenant être importés.",
+  "transferContainerDialogContent1": "Vous pouvez transférer le conteneur vers un autre appareil. Le conteneur est transféré via un code QR.",
+  "transferContainerDialogContent2": "Une connexion internet active est nécessaire pour ce processus.",
+  "transferContainerDialogTitle": "Transférer le conteneur",
+  "transferContainerFailed": "Échec du démarrage du transfert.",
+  "transferContainerScanQrCode": "Scannez le code QR sur le nouvel appareil pour transférer le conteneur.",
+  "transferContainerSuccessDialogContent1": "Le conteneur a été transféré avec succès vers un autre appareil.",
+  "transferContainerSuccessDialogContent2": "Voulez-vous supprimer le conteneur et les jetons correspondants de cet appareil ?",
   "type": "Type",
   "unexpectedError": "Une erreur inattendue s'est produite.",
   "unknown": "Inconnu",
@@ -1645,8 +1675,5 @@
   "verboseLogging": "Journalisation verbeuse",
   "versionTitle": "Version",
   "wrongPassword": "Mot de passe incorrect",
-  "yes": "Oui",
-  "renewSecretsDialogTitle" : "Renouveler les secrets des jetons",
-  "renewSecretsDialogText" : "Vous pouvez renouveler les secrets des jetons. Cette fonction est utile si vous soupçonnez que les secrets ont été compromis. Les jetons de conteneurs sont transmis sous forme cryptée et les secrets sont stockés en toute sécurité sur l'appareil. Le seul cas connu où cela aurait pu se produire serait si le jeton avait été déployé avant le conteneur par le biais d'un code QR.",
-  "renewSecrets" : "Renouveler les secrets"
+  "yes": "Oui"
 }

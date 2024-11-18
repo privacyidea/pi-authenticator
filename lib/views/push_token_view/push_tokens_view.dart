@@ -18,6 +18,7 @@
  * limitations under the License.
  */
 import 'package:flutter/material.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 
 import '../../widgets/push_request_listener.dart';
 import '../view_interface.dart';
@@ -34,7 +35,7 @@ class PushTokensView extends StatelessView {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: const Text('Push Tokens'),
+        title: Text(AppLocalizations.of(context)!.pushTokensViewTitle),
       ),
       body: PushRequestListener(
         child: Stack(

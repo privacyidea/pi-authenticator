@@ -49,7 +49,7 @@ class _AddContainerProgressDialogState extends State<AddContainerProgressDialog>
   Widget build(BuildContext context) {
     return DefaultDialog(
       hasCloseButton: true,
-      title: Text('Adding container'),
+      title: Text(AppLocalizations.of(context)!.containerAddTitle),
       content: SizedBox(
         width: double.maxFinite,
         child: Column(

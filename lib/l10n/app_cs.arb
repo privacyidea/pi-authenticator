@@ -1092,7 +1092,13 @@
     "description": "Title of the screen where the user can select the token import type."
   },
   "@selectTokensToExport": {
-    "description": "Title of the screen where the user can select the tokens to export."
+    "description": "Title of the screen where the user can select the tokens to export.",
+    "placeholders": {
+      "count": {
+        "example": "5",
+        "type": "int"
+      }
+    }
   },
   "@selectTokensToExportHelpContent1": {
     "description": "Tells the user why some tokens are not exportable."
@@ -1351,10 +1357,15 @@
   "confirmation": "Potvrzení",
   "connectionFailed": "Připojení se nezdařilo.",
   "container": "Kontejner",
+  "containerAddTitle": "Přidat kontejner",
   "containerAlreadyExists": "Kontejner již existuje",
   "containerDetails": "Podrobnosti o kontejneru",
+  "containerRolloutSendDeviceInfoContent": "Chcete vydavateli kontejneru sdělit, jaké zařízení používáte? To může být později užitečné, pokud budete mít problémy s druhým faktorem.",
+  "containerRolloutSendDeviceInfoTitle": "Odeslání informací o zařízení",
   "containerSerial": "Sériový kontejner",
   "containerSyncUrl": "Url pro synchronizaci kontejnerů",
+  "containerTransferAborted": "Přenos kontejneru byl přerušen.",
+  "containerTransferDeleteTokens": "Odebrat z tohoto zařízení",
   "continueButton": "Pokračovat",
   "copyOTPToClipboard": "Zkopírovat OTP do schránky",
   "couldNotConnectToServer": "Nepodařilo se připojit k serveru.",
@@ -1375,9 +1386,12 @@
   "decryptErrorDeleteConfirmationContent": "Jste si jisti, že chcete data aplikace odstranit?",
   "decryptErrorTitle": "Chyba dešifrování",
   "delete": "Smazat",
+  "deleteAll": "Odstranit vše",
   "deleteContainerDialogContent": "Pokud tento kontejner odstraníte, smartphone se odpojí od serveru privacyIDEA a tokeny v tomto kontejneru nebudou použitelné. Před odstraněním se ujistěte, že příslušné tokeny již nejsou potřeba!",
   "deleteContainerDialogTitle": "Odstranění kontejneru {serial}",
+  "deleteCorrespondingTokenDialogContent": "Chcete odstranit i odpovídající tokeny?",
   "deleteLockedToken": "Prosím, autentifikujte se pro smazání uzamčeného tokenu.",
+  "deleteOnlyContainer": "Pouze kontejner",
   "details": "Podrobnosti na",
   "deviceCredentialsRequiredTitle": "Není nastaven zámek zařízení",
   "deviceCredentialsSetupDescription": "Nastave zámek zařízení v nastavení zařízení",
@@ -1391,6 +1405,8 @@
   "encoding": "Kódování",
   "enterDetailsForToken": "Vložte podrobnosti tokenu",
   "enterLink": "Zadejte odkaz",
+  "enterPassphrase": "Zadejte přístupovou frázi",
+  "enterPassphraseHint": "Přístupová fráze",
   "enterPasswordToEncrypt": "Zadejte heslo pro šifrování žetonů. Toto heslo bude vyžadováno k importu žetonů.",
   "errorLogCleared": "Protokol chyb vymazán.",
   "errorLogEmpty": "Protokol chyb je prázdný.",
@@ -1463,6 +1479,7 @@
   "importNTokens": "{count, plural, zero{Neimportujte žádné tokeny} one{Importovat jeden token} other{Importovat {count} tokenů}}",
   "importNewToken": "{count, plural, zero{Nebyl nalezen žádný nový token.} one{Byl nalezen nový token, který lze importovat.} other{Bylo nalezeno {count} nových tokenů, které lze importovat.}}",
   "importTokens": "Importní token",
+  "importantInformationTitle": "Důležité informace",
   "importedVia": "Dovezeno prostřednictvím",
   "increaseCounter": "Zvýšit počítadla",
   "internalServerError": "Interní chyba serveru ({code})",
@@ -1490,6 +1507,7 @@
   "legacySigningErrorMessage": "Token byl vytvořen v zastaralé verzi aplikace, což může vést k problémům při jeho používání.\nPokud problém přetrvává, doporučujeme vytvořit nový push token!",
   "legacySigningErrorTitle": "Při použití staršího tokenu došlo k chybě: {tokenLabel}",
   "licensesAndVersion": "Licence a verze",
+  "linkHomeWidget": "Propojení domovského widgetu",
   "linkMustOtpAuth": "Odkaz musí začínat otpauth://",
   "linkedContainer": "Propojený kontejner",
   "lock": "Zamknout",
@@ -1508,7 +1526,7 @@
   "noNetworkConnection": "Žádné připojení k síti.",
   "noPublicKey": "Není k dispozici žádný veřejný klíč.",
   "noResultText1": "stiskněte tlačítko ",
-  "noResultText2": " a začněte s používáním.",
+  "noResultText2": "a začněte s používáním.",
   "noResultTitle": "Nejsou nainstalovány žádné tokeny.",
   "noTokenToExport": "Pro export není k dispozici žádný token",
   "noTokenToImport": "Nebyl nalezen žádný token pro import",
@@ -1559,6 +1577,7 @@
   "pushEndpointUrl": "URL koncového bodu push",
   "pushRequestParseError": "Požadavek na odeslání se nepodařilo zpracovat.",
   "pushToken": "Push notifikace",
+  "pushTokensViewTitle": "Push-Tokens",
   "qrFileDecodeError": "Z vybraného obrázku nebylo možné dekódovat QR kód, použijte prosím místo toho skener QR kódů.",
   "qrInFileNotFound": "Ve vybraném obrázku nebyl nalezen žádný QR kód.",
   "qrInFileNotFound2": "Můžete mi ukázat, kde se QR kód nachází.",
@@ -1567,6 +1586,9 @@
   "rename": "Přejmenovat",
   "renameToken": "Přejmenovat token",
   "renameTokenFolder": "Přejmenování složky",
+  "renewSecrets": "Obnovení tajemství",
+  "renewSecretsDialogText": "Můžete obnovit tajemství žetonů. To je užitečné, pokud máte podezření, že tajemství byla ohrožena. Protože tokeny kontejnerů jsou přenášeny v zašifrované podobě a tajemství jsou bezpečně uložena v zařízení. Jediným známým případem, kdy by k tomu mohlo dojít, by bylo, kdyby byl token rozvinut před kontejnerem prostřednictvím QR kódu.",
+  "renewSecretsDialogTitle": "Obnovení tajemství žetonů",
   "replaceButton": "Vyměňte",
   "requestInfo": "Odesláno {issuer} pro váš účet: \"{account}\"",
   "requestPushChallengesPeriodically": "Periodicky získávat výzvy ze serveru. Povolte pokud nefunguje příjem push notifikací.",
@@ -1610,6 +1632,7 @@
   "showPrivacyPolicy": "Zobrazit zásady ochrany osobních údajů",
   "signInTitle": "Vyžadováno přihlášení",
   "someTokensDoNotSupportPolling": "Některé tokeny jsou zastaralé a nepodporují polling",
+  "startTransfer": "Spustit přenos",
   "statusCode": "Stavový kód: {statusCode}",
   "sync": "Synchronizovat",
   "syncContainerFailed": "Synchronizace kontejneru se nezdařila",
@@ -1633,6 +1656,13 @@
   "tokensAreEncrypted": "Tokeny jsou zašifrované. Please enter the password to decrypt them.",
   "tokensDoNotSupportSynchronization": "Následující tokeny nepodporují synchronizaci a musí být znovu zaregistrovány:",
   "tokensSuccessfullyDecrypted": "Tokeny byly úspěšně dešifrovány a nyní je lze importovat.",
+  "transferContainerDialogContent1": "Kontejner můžete přenést do jiného zařízení. Kontejner se přenáší prostřednictvím QR kódu.",
+  "transferContainerDialogContent2": "Pro tento proces je vyžadováno aktivní připojení k internetu.",
+  "transferContainerDialogTitle": "Přenos kontejneru",
+  "transferContainerFailed": "Nepodařilo se zahájit přenos.",
+  "transferContainerScanQrCode": "Naskenujte QR kód na novém zařízení a přeneste kontejner.",
+  "transferContainerSuccessDialogContent1": "Kontejner byl úspěšně přenesen do jiného zařízení.",
+  "transferContainerSuccessDialogContent2": "Chcete z tohoto zařízení smazat kontejner a odpovídající tokeny?",
   "type": "Typ",
   "unexpectedError": "Nastala neočekávaná chyba.",
   "unknown": "Neznámý",
@@ -1645,8 +1675,5 @@
   "verboseLogging": "Zevrubné protokolování",
   "versionTitle": "Verze",
   "wrongPassword": "Nesprávné heslo",
-  "yes": "Ano",
-  "renewSecretsDialogTitle" : "Obnovení tajemství žetonů",
-  "renewSecretsDialogText" : "Můžete obnovit tajemství žetonů. To je užitečné, pokud máte podezření, že tajemství byla ohrožena. Protože tokeny kontejnerů jsou přenášeny v zašifrované podobě a tajemství jsou bezpečně uložena v zařízení. Jediným známým případem, kdy by k tomu mohlo dojít, by bylo, kdyby byl token rozvinut před kontejnerem prostřednictvím QR kódu.",
-  "renewSecrets" : "Obnovení tajemství"
+  "yes": "Ano"
 }

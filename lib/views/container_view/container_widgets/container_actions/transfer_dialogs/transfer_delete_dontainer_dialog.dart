@@ -20,6 +20,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 
 import '../../../../../model/token_container.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
@@ -64,9 +65,10 @@ class _TransferDeleteContainerDialogState extends ConsumerState<TransferDeleteCo
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations appLocalizations = AppLocalizations.of(context)!;
     return switch (isUnlinked) {
       null => DefaultDialog(
-          title: Text('Transfer Container'),
+          title: Text(appLocalizations.transferContainerDialogTitle),
           content: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -85,41 +87,41 @@ class _TransferDeleteContainerDialogState extends ConsumerState<TransferDeleteCo
           ),
         ),
       true => DefaultDialog(
-          title: Text('Transfer Container'),
+          title: Text(appLocalizations.transferContainerDialogTitle),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('The container has been transferred successfully to another device.'),
+              Text(appLocalizations.transferContainerSuccessDialogContent1),
               SizedBox(height: 8),
-              Text('Do you want to delete the container and its corrosponding tokens from this device?'),
+              Text(appLocalizations.transferContainerSuccessDialogContent2),
             ],
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text('Cancel'),
+              child: Text(appLocalizations.cancel),
             ),
             ElevatedDeleteButton(
-              text: 'Remove from this device',
+              text: appLocalizations.containerTransferDeleteTokens,
               onPressed: () => confirmDeleteLocaly(context),
             ),
           ],
         ),
       false => DefaultDialog(
-          title: Text('Transfer Container'),
+          title: Text(appLocalizations.transferContainerDialogTitle),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text('Transfer aborted.'),
+                child: Text(appLocalizations.containerTransferAborted),
               ),
             ],
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text('Ok'),
+              child: Text(appLocalizations.ok),
             ),
           ],
         ),

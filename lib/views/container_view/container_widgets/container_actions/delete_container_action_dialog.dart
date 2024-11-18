@@ -69,13 +69,14 @@ class DeleteCorrespondingTokenDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final AppLocalizations appLocalizations = AppLocalizations.of(context)!;
     return DefaultDialog(
       title: Text(AppLocalizations.of(context)!.deleteContainerDialogTitle(container.serial)),
-      content: Text('Do you want to delete the corresponding tokens as well?'), // Text(AppLocalizations.of(context)!.deleteCorrespondingTokenDialogContent),
+      content: Text(appLocalizations.deleteCorrespondingTokenDialogContent),
       hasCloseButton: true,
       actions: [
         ElevatedDeleteButton(
-          text: 'Only Container',
+          text: appLocalizations.deleteOnlyContainer,
           onPressed: () async {
             await _deleteContainer(ref);
             if (!context.mounted) return;
@@ -90,7 +91,7 @@ class DeleteCorrespondingTokenDialog extends ConsumerWidget {
             if (!context.mounted) return;
             Navigator.of(context).pop();
           },
-          text: 'Delete All',
+          text: appLocalizations.deleteAll,
         ),
       ],
     );

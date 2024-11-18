@@ -143,7 +143,7 @@ class HOTPToken extends OTPToken {
         OTP_AUTH_ALGORITHM: stringToAlgorithmsValidatorNullable,
         OTP_AUTH_DIGITS: intValidatorNullable,
         OTP_AUTH_SECRET_BASE32: base32SecretValidatorNullable,
-        OTP_AUTH_COUNTER: intValidatorNullable,
+        OTP_AUTH_COUNTER: otpAuthCounterValidator,
         OTP_AUTH_IMAGE: const ObjectValidatorNullable<String>(),
         OTP_AUTH_PIN: boolValidatorNullable,
       },
