@@ -180,9 +180,9 @@ Future<String?>? _parse2StepSecret(Uri uri) {
     map: queryParameters,
     validators: {
       OTP_AUTH_SECRET_BASE32: ObjectValidator<Uint8List>(transformer: (v) => Encodings.base32.decode(v)),
-      OTP_AUTH_2STEP_SALT_LENTH: stringToIntvalidator,
-      OTP_AUTH_2STEP_OUTPUT_LENTH: stringToIntvalidator,
-      OTP_AUTH_2STEP_ITERATIONS: stringToIntvalidator,
+      OTP_AUTH_2STEP_SALT_LENTH: intValidator,
+      OTP_AUTH_2STEP_OUTPUT_LENTH: intValidator,
+      OTP_AUTH_2STEP_ITERATIONS: intValidator,
     },
     name: '2StepSecret',
   );

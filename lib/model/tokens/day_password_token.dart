@@ -162,7 +162,7 @@ class DayPasswordToken extends OTPToken {
         OTP_AUTH_ISSUER: const ObjectValidatorNullable<String>(),
         OTP_AUTH_SERIAL: const ObjectValidatorNullable<String>(),
         OTP_AUTH_ALGORITHM: stringToAlgorithmsValidatorNullable,
-        OTP_AUTH_DIGITS: stringToIntValidatorNullable,
+        OTP_AUTH_DIGITS: intValidatorNullable,
         OTP_AUTH_SECRET_BASE32: base32SecretValidatorNullable,
         OTP_AUTH_PERIOD_SECONDS: stringSecondsToDurationValidatorNullable,
         OTP_AUTH_IMAGE: const ObjectValidatorNullable<String>(),
@@ -229,7 +229,7 @@ class DayPasswordToken extends OTPToken {
   /// | OTP_AUTH_LABEL: label,                                          |
   /// | OTP_AUTH_ISSUER: issuer,                                        |
   /// | CONTAINER_SERIAL: containerSerial, (optional)                   |
-  /// | CHECKED_CONTAINERS: checkedContainer,                          |
+  /// | CHECKED_CONTAINERS: checkedContainer,                           |
   /// | TOKEN_ID: id,                                                   |
   /// | OTP_AUTH_TYPE: type,                                            |
   /// | OTP_AUTH_IMAGE: tokenImage, (optional)                          |

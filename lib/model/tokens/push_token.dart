@@ -284,7 +284,7 @@ class PushToken extends Token {
         OTP_AUTH_PUSH_ROLLOUT_URL: stringToUriValidatorNullable,
         OTP_AUTH_IMAGE: stringToUriValidatorNullable,
         OTP_AUTH_PIN: boolValidator,
-        OTP_AUTH_VERSION: stringToIntValidatorNullable,
+        OTP_AUTH_VERSION: intValidatorNullable,
       },
       name: 'PushToken',
     );

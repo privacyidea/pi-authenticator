@@ -32,20 +32,23 @@ import '../slideable_action.dart';
 
 class DefaultDeleteAction extends ConsumerSlideableAction {
   final Token token;
+  final bool isEnabled;
 
-  const DefaultDeleteAction({super.key, required this.token});
+  const DefaultDeleteAction({super.key, required this.isEnabled, required this.token});
 
   @override
   CustomSlidableAction build(context, ref) {
     return CustomSlidableAction(
-      backgroundColor: Theme.of(context).extension<ActionTheme>()!.deleteColor,
+      backgroundColor: isEnabled ? Theme.of(context).extension<ActionTheme>()!.deleteColor : Theme.of(context).extension<ActionTheme>()!.disabledColor,
       foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
-      onPressed: (_) async {
-        if (token.isLocked && await lockAuth(localizedReason: AppLocalizations.of(context)!.deleteLockedToken) == false) {
-          return;
-        }
-        _showDialog();
-      },
+      onPressed: isEnabled
+          ? (_) async {
+              if (token.isLocked && await lockAuth(localizedReason: AppLocalizations.of(context)!.deleteLockedToken) == false) {
+                return;
+              }
+              _showDialog();
+            }
+          : null,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,

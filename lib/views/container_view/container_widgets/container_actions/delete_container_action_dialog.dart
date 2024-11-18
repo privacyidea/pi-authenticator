@@ -71,13 +71,13 @@ class DeleteCorrespondingTokenDialog extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return DefaultDialog(
       title: Text(AppLocalizations.of(context)!.deleteContainerDialogTitle(container.serial)),
-      content: Text('Do you want to delete the corresponding token as well?'), // Text(AppLocalizations.of(context)!.deleteCorrespondingTokenDialogContent),
+      content: Text('Do you want to delete the corresponding tokens as well?'), // Text(AppLocalizations.of(context)!.deleteCorrespondingTokenDialogContent),
       hasCloseButton: true,
       actions: [
         ElevatedDeleteButton(
           text: 'Only Container',
           onPressed: () async {
-            await ref.read(tokenContainerProvider.notifier).deleteContainer(container);
+            await _deleteContainer(ref);
             if (!context.mounted) return;
             Navigator.of(context).pop();
           },
@@ -86,13 +86,21 @@ class DeleteCorrespondingTokenDialog extends ConsumerWidget {
           onPressed: () async {
             final containerTokens = ref.read(tokenProvider).containerTokens(container.serial);
             await ref.read(tokenProvider.notifier).removeTokens(containerTokens);
-            await ref.read(tokenContainerProvider.notifier).deleteContainer(container);
+            await _deleteContainer(ref);
             if (!context.mounted) return;
             Navigator.of(context).pop();
           },
-          text: 'Delete both',
+          text: 'Delete All',
         ),
       ],
     );
+  }
+
+  Future<void> _deleteContainer(WidgetRef ref) {
+    if (container is TokenContainerFinalized) {
+      return ref.read(tokenContainerProvider.notifier).unregisterDelete(container as TokenContainerFinalized);
+    } else {
+      return ref.read(tokenContainerProvider.notifier).deleteContainer(container);
+    }
   }
 }

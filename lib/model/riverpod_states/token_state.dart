@@ -44,7 +44,8 @@ class TokenState {
   List<PushToken> get pushTokensToRollOut =>
       pushTokens.where((element) => !element.isRolledOut && element.rolloutState == PushTokenRollOutState.rolloutNotStarted).toList();
 
-  List<Token> get maybePiTokens => tokens.maybePiTokens;
+  /// Tokens that are not in a container but possibly can
+  List<Token> get notLinkedTokens => tokens.notLinkedTokens;
 
   const TokenState({
     required this.tokens,
@@ -54,7 +55,7 @@ class TokenState {
         lastlyDeletedTokens = lastlyDeletedTokens ?? const [];
 
   List<Token> get tokensNotInContainer {
-    final tokensNotInContainer = tokens.maybePiTokens.where((token) => token.containerSerial != null).toList();
+    final tokensNotInContainer = tokens.notLinkedTokens.where((token) => token.containerSerial != null).toList();
     Logger.debug('${tokensNotInContainer.length}/${tokens.length} tokens not in container');
     return tokensNotInContainer;
   }

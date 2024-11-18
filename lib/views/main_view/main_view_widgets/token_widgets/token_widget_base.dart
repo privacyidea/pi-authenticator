@@ -98,12 +98,17 @@ class _TokenWidgetBaseState extends ConsumerState<TokenWidgetBase> {
 
     tokenDeleteable.then((value) {
       setState(() {
-        tokenIsDeleteable = value ?? false;
+        tokenIsDeleteable = value ?? true;
       });
     });
 
     final List<ConsumerSlideableAction> actions = [
-      if (tokenIsDeleteable) widget.deleteAction ?? DefaultDeleteAction(token: widget.token, key: Key('${widget.token.id}deleteAction')),
+      widget.deleteAction ??
+          DefaultDeleteAction(
+            token: widget.token,
+            isEnabled: tokenIsDeleteable,
+            key: Key('${widget.token.id}deleteAction'),
+          ),
       widget.editAction ?? DefaultEditAction(token: widget.token, key: Key('${widget.token.id}editAction')),
     ];
     if ((widget.token.pin == false)) {
