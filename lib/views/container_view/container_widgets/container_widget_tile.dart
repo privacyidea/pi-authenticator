@@ -133,7 +133,7 @@ class _RolloverContainerTokensDialogState extends ConsumerState<RolloverContaine
             _renewSecrets(tokenState: tokenState);
             Navigator.of(context).pop();
           },
-          child: Text(AppLocalizations.of(context)!.renewSecrets),
+          child: Text(AppLocalizations.of(context)!.renewSecretsButtonText),
         ),
       ],
     );

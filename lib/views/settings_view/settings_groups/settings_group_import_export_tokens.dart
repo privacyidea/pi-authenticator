@@ -84,7 +84,7 @@ class _SettingsGroupImportExportTokensState extends ConsumerState<SettingsGroupI
       useRootNavigator: false,
       context: context,
       builder: (context) => DefaultDialog(
-        title: Text(appLocalizations.importantInformationTitle),
+        title: Text(appLocalizations.exportTokensHintDialogTitle),
         content: SelectTokensToExportHelpContentWidget(),
         actions: [
           TextButton(

@@ -59,7 +59,7 @@ class _TransferContainerDialogState extends ConsumerState<TransferContainerDialo
         ),
         CooldownButton(
           onPressed: () => _startTransfer(widget.container),
-          child: Text(appLocalizations.startTransfer),
+          child: Text(appLocalizations.startTransferButtonText),
         ),
       ],
     );

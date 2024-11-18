@@ -1,5 +1,5 @@
 {
-  "@@last_modified": "2024-09-20",
+  "@@last_modified": "2024-11-18",
   "@@locale": "id",
   "@a11yAddFolderButton": {
     "description": "Buttontext to add a new folder."
@@ -127,6 +127,9 @@
   "@clearErrorLog": {
     "description": "Button to clear the error log."
   },
+  "@clipboardEmpty": {
+    "description": "Status message when trying to copy from an empty clipboard."
+  },
   "@confirmDeletion": {
     "description": "Title of the dialog where a token can be deleted."
   },
@@ -158,17 +161,35 @@
   "@container": {
     "description": "Title for the container view."
   },
+  "@containerAddDialogTitle": {
+    "description": "Title of the add container Dialog"
+  },
   "@containerAlreadyExists": {
     "description": "Title of the dialog that tells the user that the container already exists."
   },
+  "@containerDeleteCorrespondingTokenDialogContent": {
+    "description": "Content of the dialog that asks the user if they want to delete the corresponding tokens."
+  },
   "@containerDetails": {
     "description": "Title of the container details dialog."
+  },
+  "@containerRolloutSendDeviceInfoDialogContent": {
+    "description": "Content of the dialog that asks the user if they want to send device information."
+  },
+  "@containerRolloutSendDeviceInfoDialogTitle": {
+    "description": "Title of the dialog that asks the user if they want to send device information."
   },
   "@containerSerial": {
     "description": "Title of the container serial field."
   },
   "@containerSyncUrl": {
     "description": "Title of the container sync url field."
+  },
+  "@containerTransferDeleteTokensButtonText": {
+    "description": "Button text to delete corresponding tokens after container transfer."
+  },
+  "@containerTransferDialogContentAborted": {
+    "description": "Content of the dialog that tells the user that the container transfer was aborted."
   },
   "@continueButton": {
     "description": "Button to continue an action."
@@ -230,6 +251,9 @@
   "@delete": {
     "description": "Label that describes deleting the token."
   },
+  "@deleteAllButtonText": {
+    "description": "Button text to delete corresponding tokens after container deletion."
+  },
   "@deleteContainerDialogContent": {
     "description": "Content of the dialog that ensures the user wants to delete a container."
   },
@@ -244,6 +268,9 @@
   },
   "@deleteLockedToken": {
     "description": "Text for the authentication dialog when the user wants to delete a locked token."
+  },
+  "@deleteOnlyContainerButtonText": {
+    "description": "Button text to delete only the container not the corresponding tokens."
   },
   "@details": {
     "description": "Title of the details action Button."
@@ -283,6 +310,12 @@
   },
   "@enterLink": {
     "description": "Buttontext for the import type link."
+  },
+  "@enterPassphraseDialogHint": {
+    "description": "Hint of the Textfield in the enter passphrase Dialog"
+  },
+  "@enterPassphraseDialogTitle": {
+    "description": "Title of the enter passphrase Dialog"
   },
   "@enterPasswordToEncrypt": {
     "description": "Content of the dialog where the user has to enter a password to encrypt the tokens."
@@ -393,6 +426,9 @@
   },
   "@exportTokens": {
     "description": "Title of the export Tokens dialog."
+  },
+  "@exportTokensHintDialogTitle": {
+    "description": "Title of the dialog that informs the user about the export of tokens."
   },
   "@exportingTokens": {
     "description": "Text for the loading indicator when exporting tokens."
@@ -663,6 +699,9 @@
       }
     }
   },
+  "@invalidUrl": {
+    "description": "Error message when the entered URL is invalid."
+  },
   "@invalidValue": {
     "description": "Error message when the value is not valid for the parameter.",
     "placeholders": {
@@ -737,6 +776,12 @@
   "@licensesAndVersion": {
     "description": "Buttontext to open the licenses and version screen."
   },
+  "@linkHomeWidgetViewTitle": {
+    "description": "Title of the link home widget view."
+  },
+  "@linkMustOtpAuth": {
+    "description": "Error message when the link does not start with otpauth://."
+  },
   "@linkedContainer": {
     "description": "Label for the linked container serial number."
   },
@@ -765,7 +810,7 @@
     }
   },
   "@missingRequiredParameterIn": {
-    "description": "Error message when a required parameter is missing in a specific map.Error message when a required parameter is missing in a specific map.Error message when a required parameter is missing in a specific map.Error message when a required parameter is missing in a specific map.",
+    "description": "Error message when a required parameter is missing in a specific map. Error message when a required parameter is missing in a specific map.Error message when a required parameter is missing in a specific map.Error message when a required parameter is missing in a specific map.",
     "placeholders": {
       "map": {
         "example": "query parameters",
@@ -982,6 +1027,9 @@
   "@pushToken": {
     "description": "Title for the settings block concerning the push tokens."
   },
+  "@pushTokensViewTitle": {
+    "description": "Title of the push tokens view."
+  },
   "@qrFileDecodeError": {
     "description": "Error message when the qr file could not be decoded."
   },
@@ -1005,6 +1053,15 @@
   },
   "@renameTokenFolder": {
     "description": "Title of the dialog where a new name for a token folder can be entered."
+  },
+  "@renewSecretsButtonText": {
+    "description": "Button text to renew the secrets of the tokens."
+  },
+  "@renewSecretsDialogText": {
+    "description": "Content of the dialog that tells the user that the secrets of the tokens can be renewed."
+  },
+  "@renewSecretsDialogTitle": {
+    "description": "Title of the dialog that tells the user that the secrets of the tokens can be renewed."
   },
   "@replaceButton": {
     "description": "Button to replace something, depending on the context."
@@ -1096,7 +1153,7 @@
     "placeholders": {
       "count": {
         "example": "5",
-        "type": "intint"
+        "type": "int"
       }
     }
   },
@@ -1151,6 +1208,9 @@
   "@someTokensDoNotSupportPolling": {
     "description": "Tells the user, that the following tokens do not support polling.",
     "type": "text"
+  },
+  "@startTransferButtonText": {
+    "description": "Button text to start the container transfer."
   },
   "@statusCode": {
     "description": "Tells the user the status code of the error.",
@@ -1226,6 +1286,27 @@
   },
   "@tokensSuccessfullyDecrypted": {
     "description": "Content of the import view that tells the user that the tokens were successfully decrypted."
+  },
+  "@transferContainerDialogContent1": {
+    "description": "Content of the dialog that tells the user that the container can be transferred."
+  },
+  "@transferContainerDialogContent2": {
+    "description": "Content of the dialog that tells the user that an active internet connection is required for the container transfer."
+  },
+  "@transferContainerDialogTitle": {
+    "description": "Title of the dialog that tells the user that the container can be transferred."
+  },
+  "@transferContainerFailed": {
+    "description": "Error message when the container transfer failed."
+  },
+  "@transferContainerScanQrCode": {
+    "description": "Content of the dialog that tells the user to scan the QR code on the new device to transfer the container."
+  },
+  "@transferContainerSuccessDialogContent1": {
+    "description": "Content of the dialog that tells the user that the container has been transferred successfully."
+  },
+  "@transferContainerSuccessDialogContent2": {
+    "description": "Content of the dialog that asks the user if they want to delete the container and its corresponding tokens from this device."
   },
   "@type": {
     "description": "Title of the dropdown button where the type of the token is selected."
@@ -1348,6 +1429,7 @@
   "checkServerCertificate": "Silakan periksa sertifikat server",
   "checkYourNetwork": "Periksa koneksi jaringan Anda dan coba lagi.",
   "clearErrorLog": "Jelas",
+  "clipboardEmpty": "Papan klip kosong",
   "confirmDeletion": "Konfirmasikan penghapusan",
   "confirmDeletionOf": "Apakah Anda yakin ingin menghapus {name}?",
   "confirmFolderDeletionHint": "Menghapus folder tidak akan berpengaruh pada token yang ada di dalamnya.\nToken dipindahkan ke daftar utama.",
@@ -1356,15 +1438,16 @@
   "confirmation": "Konfirmasi",
   "connectionFailed": "Koneksi gagal.",
   "container": "Kontainer",
-  "containerAddTitle": "Tambahkan wadah",
+  "containerAddDialogTitle": "Tambahkan wadah",
   "containerAlreadyExists": "Wadah sudah ada",
+  "containerDeleteCorrespondingTokenDialogContent": "Apakah Anda juga ingin menghapus token yang terkait?",
   "containerDetails": "Detail kontainer",
-  "containerRolloutSendDeviceInfoContent": "Apakah Anda ingin memberi tahu penerbit kontainer perangkat mana yang Anda gunakan? Ini mungkin berguna nantinya jika Anda mengalami masalah dengan faktor kedua Anda.",
-  "containerRolloutSendDeviceInfoTitle": "Mengirim informasi perangkat",
+  "containerRolloutSendDeviceInfoDialogContent": "Apakah Anda ingin memberi tahu penerbit kontainer perangkat mana yang Anda gunakan? Ini mungkin berguna nantinya jika Anda mengalami masalah dengan faktor kedua Anda.",
+  "containerRolloutSendDeviceInfoDialogTitle": "Mengirim informasi perangkat",
   "containerSerial": "Serial Kontainer",
   "containerSyncUrl": "Url Sinkronisasi Kontainer",
-  "containerTransferAborted": "Transfer kontainer dibatalkan.",
-  "containerTransferDeleteTokens": "Hapus dari perangkat ini",
+  "containerTransferDeleteTokensButtonText": "Hapus dari perangkat ini",
+  "containerTransferDialogContentAborted": "Transfer kontainer dibatalkan.",
   "continueButton": "Lanjutkan",
   "copyOTPToClipboard": "Salin OTP ke papan klip",
   "couldNotConnectToServer": "Tidak dapat terhubung ke server",
@@ -1385,12 +1468,11 @@
   "decryptErrorDeleteConfirmationContent": "Apakah Anda yakin ingin menghapus data aplikasi?",
   "decryptErrorTitle": "Kesalahan dekripsi",
   "delete": "Menghapus",
-  "deleteAll": "Hapus semua",
+  "deleteAllButtonText": "Hapus semua",
   "deleteContainerDialogContent": "Jika Anda menghapus kontainer ini, smartphone akan terputus dari server privacyIDEA dan token dari kontainer ini menjadi tidak dapat digunakan. Sebelum menghapus, pastikan bahwa token yang bersangkutan tidak lagi diperlukan!",
   "deleteContainerDialogTitle": "Menghapus Kontainer {serial}",
-  "deleteCorrespondingTokenDialogContent": "Apakah Anda juga ingin menghapus token yang terkait?",
   "deleteLockedToken": "Lakukan autentikasi untuk menghapus token yang terkunci.",
-  "deleteOnlyContainer": "Hanya kontainer",
+  "deleteOnlyContainerButtonText": "Hanya kontainer",
   "details": "Detail",
   "deviceCredentialsRequiredTitle": "Kredensial perangkat tidak diatur",
   "deviceCredentialsSetupDescription": "Mengatur kredensial perangkat di pengaturan perangkat",
@@ -1404,8 +1486,8 @@
   "encoding": "Pengkodean",
   "enterDetailsForToken": "Masukkan detail token",
   "enterLink": "Masukkan tautan",
-  "enterPassphrase": "Masukkan kata sandi",
-  "enterPassphraseHint": "Kata sandi",
+  "enterPassphraseDialogHint": "Kata sandi",
+  "enterPassphraseDialogTitle": "Masukkan kata sandi",
   "enterPasswordToEncrypt": "Masukkan kata sandi untuk mengenkripsi token. Kata sandi ini akan diperlukan untuk mengimpor token.",
   "errorLogCleared": "Log kesalahan dihapus.",
   "errorLogEmpty": "Log kesalahan kosong.",
@@ -1430,9 +1512,10 @@
   "exportNonPrivacyIDEATokens": "Ekspor token non-privacyIDEA",
   "exportOneMore": "Satu lagi.",
   "exportTokens": "Ekspor token",
+  "exportTokensHintDialogTitle": "Informasi penting",
   "exportingTokens": "Mengekspor token...",
   "failedToFinalizeContainer": "Gagal menyelesaikan kontainer {serial}",
-  "failedToLoad": "Gagal memuat: ",
+  "failedToLoad": "Gagal memuat: \"{name}\"",
   "failedToSyncContainer": "Gagal menyinkronkan wadah {serial}",
   "feedback": "Umpan balik",
   "feedbackDescription": "Jika Anda memiliki pertanyaan, saran, atau masalah, silakan beritahu kami.",
@@ -1478,7 +1561,6 @@
   "importNTokens": "{count, plural, zero{Impor tanpa token} one{Impor satu token} other{Impor {count} token}}",
   "importNewToken": "{count, plural, zero{Tidak ada token baru yang ditemukan.} one{Token baru ditemukan dan dapat diimpor.} other{{count} token baru ditemukan dan dapat diimpor.}}",
   "importTokens": "Impor token",
-  "importantInformationTitle": "Informasi penting",
   "importedVia": "Diimpor via",
   "increaseCounter": "Tingkatkan penghitung",
   "internalServerError": "Kesalahan server internal ({code})",
@@ -1495,6 +1577,7 @@
   "invalidLink": "Tautan yang dimasukkan bukan merupakan token yang valid dari {appName}, atau tidak didukung.",
   "invalidQrFile": "File yang dipilih tidak berisi kode QR yang valid dari {appName}.",
   "invalidQrScan": "Kode QR yang dipindai bukan merupakan cadangan yang valid dari {appName}.",
+  "invalidUrl": "URL tidak valid",
   "invalidValue": "Tipe {type} '{value}' tidak valid untuk '{parameter}'",
   "invalidValueIn": "Tipe {type} '{value}' tidak valid untuk '{parameter}' di '{map}'",
   "isExpotableQuestion": "Apakah dapat diekspor?",
@@ -1505,7 +1588,8 @@
   "legacySigningErrorMessage": "Token didaftarkan di versi lama aplikasi ini, yang dapat menyebabkan masalah saat menggunakannya.\nDisarankan untuk mendaftarkan token push baru jika masalah terus berlanjut!",
   "legacySigningErrorTitle": "Terjadi kesalahan saat menggunakan token lama: {tokenLabel}",
   "licensesAndVersion": "Lisensi dan versi",
-  "linkHomeWidget": "Tautkan widget beranda",
+  "linkHomeWidgetViewTitle": "Tautkan widget beranda",
+  "linkMustOtpAuth": "Tautan harus dimulai dengan otpauth://",
   "linkedContainer": "Wadah yang terhubung",
   "lock": "Mengunci",
   "lockOut": "Autentikasi biometrik dinonaktifkan. Silakan kunci dan buka kunci layar Anda untuk mengaktifkannya.",
@@ -1513,7 +1597,7 @@
   "malformedData": "Data cacat",
   "markQrCode": "Tandai Kode QR",
   "missingRequiredParameter": "Nilai untuk parameter [{parameter}] diperlukan, tetapi tidak ada.",
-  "missingRequiredParameterIn": "Nilai untuk parameter [{parameter}] diperlukan, tetapi tidak ada di ",
+  "missingRequiredParameterIn": "Nilai untuk parameter [{parameter}] diperlukan, tetapi tidak ada dalam \"{map}\".",
   "mustNotBeEmpty": "{field} tidak boleh kosong",
   "name": "Nama",
   "no": "Tidak.",
@@ -1533,7 +1617,7 @@
   "open": "Buka",
   "originApp": "Aplikasi asal",
   "originDetails": "Rincian asal",
-  "otpValueCopiedMessage": "Kata sandi ",
+  "otpValueCopiedMessage": "Kata sandi \"{otpValue}\" disalin ke papan klip.",
   "password": "Kata sandi",
   "passwordCannotBeEmpty": "Kata sandi tidak boleh kosong",
   "passwordCannotContainWhitespace": "Kata sandi tidak boleh mengandung spasi",
@@ -1583,8 +1667,8 @@
   "rename": "Ganti nama",
   "renameToken": "Ganti nama token",
   "renameTokenFolder": "Ganti nama folder",
-  "renewSecrets": "Memperbarui rahasia",
-  "renewSecretsDialogText": "Anda dapat memperbarui rahasia token. Hal ini berguna jika Anda mencurigai bahwa rahasia tersebut telah dibobol. Karena token kontainer dikirimkan dalam bentuk terenkripsi dan rahasia disimpan dengan aman di perangkat. Satu-satunya kasus yang diketahui di mana hal ini dapat terjadi adalah jika token diluncurkan sebelum kontainer melalui kode QR.",
+  "renewSecretsButtonText": "Memperbarui rahasia",
+  "renewSecretsDialogText": "Anda dapat memperbarui rahasia token. Hal ini berguna jika Anda mencurigai bahwa rahasia tersebut telah dibobol.",
   "renewSecretsDialogTitle": "Memperbarui Rahasia Token",
   "replaceButton": "Ganti",
   "requestInfo": "Dikirim oleh {issuer} untuk akun Anda: {account}",
@@ -1611,7 +1695,7 @@
   "selectFile": "Pilih file",
   "selectImportSource": "Pilih sumber impor",
   "selectImportType": "Bagaimana cara mengimpor token?",
-  "selectTokensToExport": "Pilih token yang ingin Anda ekspor.",
+  "selectTokensToExport": "{count, plural, one{pilih token yang akan diekspor} other{pilih token yang akan diekspor}}",
   "selectTokensToExportHelpContent1": "Jika sebuah token tidak terdaftar, tidak dijamin bahwa token tersebut bukan token privacyIDEA.",
   "selectTokensToExportHelpContent2": "Saat ini hanya token yang ditambahkan dan diimpor secara manual yang dapat diekspor.",
   "selectTokensToExportHelpContent3": "Kami sedang mengerjakan solusi untuk membedakan antara token privacyIDEA dan token pribadi.",
@@ -1629,7 +1713,7 @@
   "showPrivacyPolicy": "Tampilkan kebijakan privasi",
   "signInTitle": "Diperlukan autentikasi",
   "someTokensDoNotSupportPolling": "Beberapa token sudah ketinggalan zaman dan tidak mendukung pemungutan suara",
-  "startTransfer": "Mulai transfer",
+  "startTransferButtonText": "Mulai transfer",
   "statusCode": "Kode status: {statusCode}",
   "sync": "Sinkronisasi",
   "syncContainerFailed": "Sinkronisasi kontainer gagal",
@@ -1664,7 +1748,7 @@
   "unexpectedError": "Terjadi kesalahan yang tidak diharapkan.",
   "unknown": "Tidak diketahui",
   "unlock": "Buka kunci",
-  "unsupported": "?",
+  "unsupported": "Nama {name} [{value}] tidak didukung oleh versi aplikasi ini.",
   "useDeviceLocaleDescription": "Gunakan bahasa perangkat jika didukung, jika tidak, default ke bahasa Inggris.",
   "useDeviceLocaleTitle": "Gunakan bahasa perangkat",
   "valueNotAllowed": "Ketik {type} “{value}” bukan nilai yang diizinkan untuk ”{parameter}”",
