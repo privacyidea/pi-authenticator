@@ -34,7 +34,7 @@ class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
   HomeWidgetNavigateProcessor();
 
   static final Map<String, Future<List<ProcessorResult<dynamic>>?> Function(Uri, BuildContext, {bool fromInit})> _processors = {
-    'link': _linkHomeWidgetProcessor,
+    'link': _linkHomeWidgetViewTitleProcessor,
     'showlocked': _showLockedHomeWidgetProcessor,
   };
 
@@ -70,7 +70,7 @@ class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
   @override
   Set<String> get supportedSchemes => {'homewidgetnavigate'};
 
-  static Future<List<ProcessorResult<dynamic>>?> _linkHomeWidgetProcessor(Uri uri, BuildContext context, {bool fromInit = false}) async {
+  static Future<List<ProcessorResult<dynamic>>?> _linkHomeWidgetViewTitleProcessor(Uri uri, BuildContext context, {bool fromInit = false}) async {
     if (uri.host != 'link') {
       Logger.warning('HomeWidgetNavigateProcessor: Invalid host for link: ${uri.host}');
       return [];

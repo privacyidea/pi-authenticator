@@ -47,7 +47,7 @@ class _EnterPassphraseDialogState extends State<EnterPassphraseDialog> {
   Widget build(BuildContext context) {
     final AppLocalizations appLocalizations = AppLocalizations.of(context)!;
     return DefaultDialog(
-      title: Text(appLocalizations.enterPassphrase),
+      title: Text(appLocalizations.enterPassphraseDialogTitle),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -56,7 +56,7 @@ class _EnterPassphraseDialogState extends State<EnterPassphraseDialog> {
           TextField(
             style: Theme.of(context).textTheme.bodyMedium,
             decoration: InputDecoration(
-              labelText: appLocalizations.enterPassphraseHint,
+              labelText: appLocalizations.enterPassphraseDialogHint,
               labelStyle: Theme.of(context).textTheme.bodyMedium,
             ),
             onChanged: (value) => setState(() {

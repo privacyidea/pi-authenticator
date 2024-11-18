@@ -102,7 +102,7 @@ class _TransferDeleteContainerDialogState extends ConsumerState<TransferDeleteCo
               child: Text(appLocalizations.cancel),
             ),
             ElevatedDeleteButton(
-              text: appLocalizations.containerTransferDeleteTokens,
+              text: appLocalizations.containerTransferDeleteTokensButtonText,
               onPressed: () => confirmDeleteLocaly(context),
             ),
           ],
@@ -114,7 +114,7 @@ class _TransferDeleteContainerDialogState extends ConsumerState<TransferDeleteCo
             children: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text(appLocalizations.containerTransferAborted),
+                child: Text(appLocalizations.containerTransferDialogContentAborted),
               ),
             ],
           ),

@@ -1,5 +1,5 @@
 {
-  "@@last_modified": "2024-09-20",
+  "@@last_modified": "2024-11-18",
   "@@locale": "fr",
   "@a11yAddFolderButton": {
     "description": "Buttontext to add a new folder."
@@ -127,6 +127,9 @@
   "@clearErrorLog": {
     "description": "Button to clear the error log."
   },
+  "@clipboardEmpty": {
+    "description": "Status message when trying to copy from an empty clipboard."
+  },
   "@confirmDeletion": {
     "description": "Title of the dialog where a token can be deleted."
   },
@@ -158,17 +161,35 @@
   "@container": {
     "description": "Title for the container view."
   },
+  "@containerAddDialogTitle": {
+    "description": "Title of the add container Dialog"
+  },
   "@containerAlreadyExists": {
     "description": "Title of the dialog that tells the user that the container already exists."
   },
+  "@containerDeleteCorrespondingTokenDialogContent": {
+    "description": "Content of the dialog that asks the user if they want to delete the corresponding tokens."
+  },
   "@containerDetails": {
     "description": "Title of the container details dialog."
+  },
+  "@containerRolloutSendDeviceInfoDialogContent": {
+    "description": "Content of the dialog that asks the user if they want to send device information."
+  },
+  "@containerRolloutSendDeviceInfoDialogTitle": {
+    "description": "Title of the dialog that asks the user if they want to send device information."
   },
   "@containerSerial": {
     "description": "Title of the container serial field."
   },
   "@containerSyncUrl": {
     "description": "Title of the container sync url field."
+  },
+  "@containerTransferDeleteTokensButtonText": {
+    "description": "Button text to delete corresponding tokens after container transfer."
+  },
+  "@containerTransferDialogContentAborted": {
+    "description": "Content of the dialog that tells the user that the container transfer was aborted."
   },
   "@continueButton": {
     "description": "Button to continue an action."
@@ -230,6 +251,9 @@
   "@delete": {
     "description": "Label that describes deleting the token."
   },
+  "@deleteAllButtonText": {
+    "description": "Button text to delete corresponding tokens after container deletion."
+  },
   "@deleteContainerDialogContent": {
     "description": "Content of the dialog that ensures the user wants to delete a container."
   },
@@ -244,6 +268,9 @@
   },
   "@deleteLockedToken": {
     "description": "Text for the authentication dialog when the user wants to delete a locked token."
+  },
+  "@deleteOnlyContainerButtonText": {
+    "description": "Button text to delete only the container not the corresponding tokens."
   },
   "@details": {
     "description": "Title of the details action Button."
@@ -283,6 +310,12 @@
   },
   "@enterLink": {
     "description": "Buttontext for the import type link."
+  },
+  "@enterPassphraseDialogHint": {
+    "description": "Hint of the Textfield in the enter passphrase Dialog"
+  },
+  "@enterPassphraseDialogTitle": {
+    "description": "Title of the enter passphrase Dialog"
   },
   "@enterPasswordToEncrypt": {
     "description": "Content of the dialog where the user has to enter a password to encrypt the tokens."
@@ -393,6 +426,9 @@
   },
   "@exportTokens": {
     "description": "Title of the export Tokens dialog."
+  },
+  "@exportTokensHintDialogTitle": {
+    "description": "Title of the dialog that informs the user about the export of tokens."
   },
   "@exportingTokens": {
     "description": "Text for the loading indicator when exporting tokens."
@@ -663,6 +699,9 @@
       }
     }
   },
+  "@invalidUrl": {
+    "description": "Error message when the entered URL is invalid."
+  },
   "@invalidValue": {
     "description": "Error message when the value is not valid for the parameter.",
     "placeholders": {
@@ -736,6 +775,12 @@
   },
   "@licensesAndVersion": {
     "description": "Buttontext to open the licenses and version screen."
+  },
+  "@linkHomeWidgetViewTitle": {
+    "description": "Title of the link home widget view."
+  },
+  "@linkMustOtpAuth": {
+    "description": "Error message when the link does not start with otpauth://."
   },
   "@linkedContainer": {
     "description": "Label for the linked container serial number."
@@ -982,6 +1027,9 @@
   "@pushToken": {
     "description": "Title for the settings block concerning the push tokens."
   },
+  "@pushTokensViewTitle": {
+    "description": "Title of the push tokens view."
+  },
   "@qrFileDecodeError": {
     "description": "Error message when the qr file could not be decoded."
   },
@@ -1005,6 +1053,15 @@
   },
   "@renameTokenFolder": {
     "description": "Title of the dialog where a new name for a token folder can be entered."
+  },
+  "@renewSecretsButtonText": {
+    "description": "Button text to renew the secrets of the tokens."
+  },
+  "@renewSecretsDialogText": {
+    "description": "Content of the dialog that tells the user that the secrets of the tokens can be renewed."
+  },
+  "@renewSecretsDialogTitle": {
+    "description": "Title of the dialog that tells the user that the secrets of the tokens can be renewed."
   },
   "@replaceButton": {
     "description": "Button to replace something, depending on the context."
@@ -1152,6 +1209,9 @@
     "description": "Tells the user, that the following tokens do not support polling.",
     "type": "text"
   },
+  "@startTransferButtonText": {
+    "description": "Button text to start the container transfer."
+  },
   "@statusCode": {
     "description": "Tells the user the status code of the error.",
     "placeholders": {
@@ -1226,6 +1286,27 @@
   },
   "@tokensSuccessfullyDecrypted": {
     "description": "Content of the import view that tells the user that the tokens were successfully decrypted."
+  },
+  "@transferContainerDialogContent1": {
+    "description": "Content of the dialog that tells the user that the container can be transferred."
+  },
+  "@transferContainerDialogContent2": {
+    "description": "Content of the dialog that tells the user that an active internet connection is required for the container transfer."
+  },
+  "@transferContainerDialogTitle": {
+    "description": "Title of the dialog that tells the user that the container can be transferred."
+  },
+  "@transferContainerFailed": {
+    "description": "Error message when the container transfer failed."
+  },
+  "@transferContainerScanQrCode": {
+    "description": "Content of the dialog that tells the user to scan the QR code on the new device to transfer the container."
+  },
+  "@transferContainerSuccessDialogContent1": {
+    "description": "Content of the dialog that tells the user that the container has been transferred successfully."
+  },
+  "@transferContainerSuccessDialogContent2": {
+    "description": "Content of the dialog that asks the user if they want to delete the container and its corresponding tokens from this device."
   },
   "@type": {
     "description": "Title of the dropdown button where the type of the token is selected."
@@ -1357,15 +1438,16 @@
   "confirmation": "Confirmation",
   "connectionFailed": "La connexion a échoué.",
   "container": "Conteneur",
-  "containerAddTitle": "Ajouter un conteneur",
+  "containerAddDialogTitle": "Ajouter un conteneur",
   "containerAlreadyExists": "Le conteneur existe déjà",
+  "containerDeleteCorrespondingTokenDialogContent": "Souhaitez-vous également supprimer les jetons correspondants ?",
   "containerDetails": "Détails du conteneur",
-  "containerRolloutSendDeviceInfoContent": "Souhaitez-vous indiquer à l'éditeur du conteneur quel appareil vous utilisez ? Cela peut être utile plus tard si vous avez des problèmes avec votre deuxième facteur.",
-  "containerRolloutSendDeviceInfoTitle": "Envoyer les informations sur l'appareil",
+  "containerRolloutSendDeviceInfoDialogContent": "Souhaitez-vous indiquer à l'éditeur du conteneur quel appareil vous utilisez ? Cela peut être utile plus tard si vous avez des problèmes avec votre deuxième facteur.",
+  "containerRolloutSendDeviceInfoDialogTitle": "Envoyer les informations sur l'appareil",
   "containerSerial": "Conteneur en série",
   "containerSyncUrl": "Url de synchronisation du conteneur",
-  "containerTransferAborted": "Le transfert du conteneur a été interrompu.",
-  "containerTransferDeleteTokens": "Retirer de cet appareil",
+  "containerTransferDeleteTokensButtonText": "Retirer de cet appareil",
+  "containerTransferDialogContentAborted": "Le transfert du conteneur a été interrompu.",
   "continueButton": "Continue",
   "copyOTPToClipboard": "Copier l'OTP dans le presse-papiers",
   "couldNotConnectToServer": "Impossible de se connecter au serveur.",
@@ -1386,12 +1468,11 @@
   "decryptErrorDeleteConfirmationContent": "Êtes-vous sûr de vouloir supprimer les données de l'application ?",
   "decryptErrorTitle": "Erreur de décryptage",
   "delete": "Supprimer",
-  "deleteAll": "Supprimer tout",
+  "deleteAllButtonText": "Supprimer tout",
   "deleteContainerDialogContent": "Si vous supprimez ce conteneur, le smartphone sera déconnecté du serveur privacyIDEA et les tokens de ce conteneur deviendront inutilisables. Avant de le supprimer, assurez-vous que les tokens correspondants ne sont plus nécessaires !",
   "deleteContainerDialogTitle": "Suppression du conteneur {serial}",
-  "deleteCorrespondingTokenDialogContent": "Souhaitez-vous également supprimer les jetons correspondants ?",
   "deleteLockedToken": "Veuillez vous authentifier pour supprimer le jeton verrouillé.",
-  "deleteOnlyContainer": "Seulement le conteneur",
+  "deleteOnlyContainerButtonText": "Seulement le conteneur",
   "details": "Détails",
   "deviceCredentialsRequiredTitle": "Les informations d'identification de l'appareil ne sont pas configurées",
   "deviceCredentialsSetupDescription": "Configurer les informations d'identification de l'appareil dans les paramètres de l'appareil",
@@ -1405,8 +1486,8 @@
   "encoding": "Encodage",
   "enterDetailsForToken": "Saisissez les détails du jeton",
   "enterLink": "Saisir le lien",
-  "enterPassphrase": "Saisir la phrase d'authentification",
-  "enterPassphraseHint": "Phrase de passe",
+  "enterPassphraseDialogHint": "Phrase de passe",
+  "enterPassphraseDialogTitle": "Saisir la phrase d'authentification",
   "enterPasswordToEncrypt": "Entrez un mot de passe pour chiffrer les jetons. Ce mot de passe sera requis pour importer les jetons.",
   "errorLogCleared": "Journal d'erreur nettoyé",
   "errorLogEmpty": "Le journal des erreurs est vide",
@@ -1431,6 +1512,7 @@
   "exportNonPrivacyIDEATokens": "Exporter les jetons non privacyIDEA",
   "exportOneMore": "Encore un",
   "exportTokens": "Exporter les jetons",
+  "exportTokensHintDialogTitle": "Informations importantes",
   "exportingTokens": "Exportation des jetons en cours...",
   "failedToFinalizeContainer": "Échec de la finalisation du conteneur {serial}",
   "failedToLoad": "Échec du chargement : {name}",
@@ -1479,7 +1561,6 @@
   "importNTokens": "{count, plural, zero{N'importer aucun jeton} one{Importer un jeton} other{Importer {count} tokens}}",
   "importNewToken": "{count, plural, zero{Aucun nouveau jeton n'a été trouvé.} one{Un nouveau token a été trouvé et peut être importé.} other{{count} nouveaux tokens ont été trouvés et peuvent être importés.}}",
   "importTokens": "Importer un jeton",
-  "importantInformationTitle": "Informations importantes",
   "importedVia": "Importé via",
   "increaseCounter": "Augmenter le compteur",
   "internalServerError": "Erreur interne du serveur ({code})",
@@ -1507,7 +1588,7 @@
   "legacySigningErrorMessage": "Le token a été créé dans une version obsolète de l'application, ce qui peut entraîner des problèmes d'utilisation.\nIl est recommandé de créer un nouveau token push si le problème persiste !",
   "legacySigningErrorTitle": "Une erreur s'est produite lors de l'utilisation du jeton obsolète : {tokenLabel}",
   "licensesAndVersion": "Licences et version",
-  "linkHomeWidget": "Lier le widget d'accueil",
+  "linkHomeWidgetViewTitle": "Lier le widget d'accueil",
   "linkMustOtpAuth": "Le lien doit commencer par otpauth://.",
   "linkedContainer": "Conteneur lié",
   "lock": "Bloquer",
@@ -1586,8 +1667,8 @@
   "rename": "Renommer",
   "renameToken": "Renommer jeton",
   "renameTokenFolder": "Renommer le dossier",
-  "renewSecrets": "Renouveler les secrets",
-  "renewSecretsDialogText": "Vous pouvez renouveler les secrets des jetons. Cette fonction est utile si vous soupçonnez que les secrets ont été compromis. Les jetons de conteneurs sont transmis sous forme cryptée et les secrets sont stockés en toute sécurité sur l'appareil. Le seul cas connu où cela aurait pu se produire serait si le jeton avait été déployé avant le conteneur par le biais d'un code QR.",
+  "renewSecretsButtonText": "Renouveler les secrets",
+  "renewSecretsDialogText": "Vous pouvez renouveler les secrets des jetons. Cette fonction est utile si vous soupçonnez que les secrets ont été compromis.",
   "renewSecretsDialogTitle": "Renouveler les secrets des jetons",
   "replaceButton": "Remplacer",
   "requestInfo": "Envoyé par {issuer} pour votre compte : \"{account}\"",
@@ -1614,7 +1695,7 @@
   "selectFile": "Sélectionner un fichier",
   "selectImportSource": "Sélectionner la source d'importation",
   "selectImportType": "Comment voulez-vous importer les jetons ?",
-  "selectTokensToExport": "{count, plural, zero{} one{Sélectionner le jeton à exporter} other{Sélectionner les jetons à exporter}}",
+  "selectTokensToExport": "{count, plural, one{Sélectionner le jeton à exporter} other{Sélectionner les jetons à exporter}}",
   "selectTokensToExportHelpContent1": "Si un jeton n'est pas répertorié, il n'est pas garanti qu'il ne s'agisse pas d'un jeton privacyIDEA.",
   "selectTokensToExportHelpContent2": "Actuellement, seuls les jetons ajoutés manuellement et importés sont exportables.",
   "selectTokensToExportHelpContent3": "Nous travaillons sur une solution permettant de différencier les jetons privacyIDEA des jetons privés.",
@@ -1632,7 +1713,7 @@
   "showPrivacyPolicy": "Afficher la déclaration de confidentialité",
   "signInTitle": "Authentification requise",
   "someTokensDoNotSupportPolling": "Certains jetons sont obsolètes et ne supportent pas l'interrogation due serveur.",
-  "startTransfer": "Démarrer le transfert",
+  "startTransferButtonText": "Démarrer le transfert",
   "statusCode": "Code d'état : {statusCode}",
   "sync": "Synchroniser",
   "syncContainerFailed": "Échec de la synchronisation des conteneurs",
