@@ -175,7 +175,7 @@ class PiContainerApi implements TokenContainerApi {
       CONTAINER_CHAL_SIGNATURE: container.signMessage(signMessage),
     };
 
-    final response = await _ioClient.doPost(url: requestUrl, body: body);
+    final response = await _ioClient.doPost(url: requestUrl, body: body, sslVerify: container.sslVerify);
     if (response.statusCode != 200) {
       final errorResponse = response.asPiErrorResponse();
       if (errorResponse != null) throw errorResponse.piServerResultError;
@@ -209,7 +209,7 @@ class PiContainerApi implements TokenContainerApi {
       CONTAINER_CHAL_SIGNATURE: container.signMessage('${challenge.nonce}|${challenge.timeStamp}|${container.serial}|$unregisterUrl'),
     };
 
-    final response = await _ioClient.doPost(url: unregisterUrl, body: body);
+    final response = await _ioClient.doPost(url: unregisterUrl, body: body, sslVerify: container.sslVerify);
 
     final piResponse = response.asPiServerResponse<UnregisterContainerResultValue>();
     final errorResponse = piResponse?.asError;
@@ -227,10 +227,7 @@ class PiContainerApi implements TokenContainerApi {
     final body = {
       CONTAINER_SCOPE: requestUrl.toString(),
     };
-    final challengeResponse = await _ioClient.doPost(
-      url: container.challengeUrl,
-      body: body,
-    );
+    final challengeResponse = await _ioClient.doPost(url: container.challengeUrl, body: body, sslVerify: container.sslVerify);
     if (challengeResponse.statusCode != 200) {
       final errorResponse = challengeResponse.asPiErrorResponse();
       if (errorResponse != null) throw errorResponse.piServerResultError;
@@ -270,7 +267,7 @@ class PiContainerApi implements TokenContainerApi {
       CONTAINER_CHAL_SIGNATURE: signature,
     };
 
-    final response = await _ioClient.doPost(url: container.syncUrl, body: body);
+    final response = await _ioClient.doPost(url: container.syncUrl, body: body, sslVerify: container.sslVerify);
     if (response.statusCode != 200) {
       final piErrorResponse = response.asPiErrorResponse();
       if (piErrorResponse != null) throw piErrorResponse.piServerResultError;

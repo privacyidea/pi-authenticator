@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 /*
  * privacyIDEA Authenticator
  *
@@ -31,6 +33,20 @@ class TokenContainerProcessor extends SchemeProcessor {
   static const resultHandlerType = ObjectValidator<TokenContainerNotifier>();
   static const scheme = 'pia';
   static const host = 'container';
+
+  static const String ARG_DO_REPLACE = 'doReplace';
+  static const String ARG_ADD_DEVICE_INFOS = 'addDeviceInfos';
+  static const String ARG_INIT_SYNC = 'initSync';
+
+  static Map<String, bool?> validateArgs(Map<String, dynamic> args) => validateMap(
+        map: args,
+        validators: {
+          TokenContainerProcessor.ARG_DO_REPLACE: boolValidatorNullable,
+          TokenContainerProcessor.ARG_ADD_DEVICE_INFOS: boolValidatorNullable,
+          TokenContainerProcessor.ARG_INIT_SYNC: boolValidatorNullable,
+        },
+        name: 'TokenContainerProcessor#validateArgs',
+      );
 
   @override
   Set<String> get supportedSchemes => {scheme};

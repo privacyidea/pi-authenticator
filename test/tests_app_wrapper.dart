@@ -30,7 +30,6 @@ import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
   MockSpec<FirebaseUtils>(),
   MockSpec<PushProvider>(),
 ])
-@GenerateMocks([])
 class TestsAppWrapper extends StatelessWidget {
   final Widget child;
   final List<Override> overrides;

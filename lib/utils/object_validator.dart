@@ -24,18 +24,26 @@ import '../model/enums/encodings.dart';
 import '../model/exception_errors/localized_argument_error.dart';
 import 'logger.dart';
 
-final otpAutjPeriodSecondsValidatorNullable = otpAutjPeriodSecondsValidator.nullable();
-final otpAutjPeriodSecondsValidator = ObjectValidator<int>(
-  transformer: (v) => int.parse(v),
+final otpAutjPeriodSecondsValidatorNullable = otpAuthPeriodSecondsValidator.nullable();
+final otpAuthPeriodSecondsValidator = ObjectValidator<int>(
+  transformer: (v) {
+    if (v is int) return v;
+    return int.parse(v);
+  },
+  defaultValue: 30,
   allowedValues: (v) => v > 0,
 );
 
 final otpAuthDigitsValidatorNullable = otpAuthDigitsValidator.nullable();
 final otpAuthDigitsValidator = ObjectValidator<int>(
-  transformer: (v) => int.parse(v),
+  transformer: (v) {
+    if (v is int) return v;
+    return int.parse(v);
+  },
   defaultValue: 6,
   allowedValues: (p0) => p0 > 0,
 );
+
 final otpAuthCounterValidator = ObjectValidator<int>(
   transformer: (v) {
     if (v is int) return v;

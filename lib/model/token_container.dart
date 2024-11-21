@@ -44,6 +44,7 @@ part 'token_container.g.dart';
 class TokenContainer with _$TokenContainer {
   static const SERIAL = 'serial';
   static const eccUtils = EccUtils();
+
   const TokenContainer._();
 
   Uri get registrationUrl => serverUrl.replace(path: '/container/register/finalize');

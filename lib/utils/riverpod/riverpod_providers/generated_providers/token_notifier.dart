@@ -159,7 +159,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
 
   /// Adds a list of tokens and returns the tokens that could not be added or replaced.
   Future<List<Token>> _addOrReplaceTokens(List<Token> tokens) async {
-    tokens = _removeDuplicates(tokens);
+    tokens = _filterDuplicates([...tokens, ...state.tokens]);
     if (tokens.isEmpty) return [];
     Logger.debug('Adding ${tokens.length} tokens.', verbose: true);
     await _repoMutex.acquire();
@@ -790,7 +790,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
 ///////////////////////////// Helper Methods ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////// */
 
-  List<Token> _removeDuplicates(List<Token> tokens) {
+  List<Token> _filterDuplicates(List<Token> tokens) {
     final uniqueTokens = <Token>[];
     for (var token in tokens) {
       if (!uniqueTokens.any((uniqureToken) => uniqureToken.isSameTokenAs(token))) {

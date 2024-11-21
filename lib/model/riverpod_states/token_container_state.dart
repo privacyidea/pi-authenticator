@@ -39,13 +39,17 @@ class TokenContainerState with _$TokenContainerState {
 
   bool get hasFinalizedContainers => containerList.any((container) => container is TokenContainerFinalized);
 
-  TokenContainer? containerOf(String containerSerial) => containerList.firstWhereOrNull((container) => container.serial == containerSerial);
+  TokenContainer? containerOf(String containerSerial) {
+    if (containerList.isEmpty) return null;
+    return containerList.firstWhereOrNull((container) => container.serial == containerSerial);
+  }
+
   static TokenContainerState fromJsonStringList(List<String> jsonStrings) {
     final containerList = jsonStrings.map((jsonString) => TokenContainer.fromJson(jsonDecode(jsonString))).toList();
     return TokenContainerState(containerList: containerList);
   }
 
-  T? currentOf<T extends TokenContainer>(T container) {
+  T? currentOf<T extends TokenContainer>(TokenContainer container) {
     final current = containerOf(container.serial);
     if (current is T) {
       Logger.info('Found current container for ${container.serial}');

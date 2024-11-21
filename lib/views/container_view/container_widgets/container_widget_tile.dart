@@ -155,7 +155,7 @@ class SyncContainerButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final container = ref.watch(tokenContainerProvider).asData?.value.currentOf(this.container);
+    final container = ref.watch(tokenContainerProvider).asData?.value.currentOf<TokenContainerFinalized>(this.container);
     return CooldownButton(
       styleType: CooldownButtonStyleType.iconButton,
       childWhenCooldown: CircularProgressIndicator.adaptive(),
@@ -163,7 +163,7 @@ class SyncContainerButton extends ConsumerWidget {
       onPressed: container != null
           ? () async {
               final tokenState = ref.read(tokenProvider);
-              await ref.read(tokenContainerProvider.notifier).syncTokens(tokenState: tokenState, containersToSync: [container], isManually: true);
+              await ref.read(tokenContainerProvider.notifier).sync(tokenState: tokenState, containersToSync: [container], isManually: true);
             }
           : null,
       child: const Icon(Icons.sync, size: 40),
@@ -221,7 +221,7 @@ class RolloverContainerTokensButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final container = ref.watch(tokenContainerProvider).asData?.value.currentOf(this.container);
+    final container = ref.watch(tokenContainerProvider).asData?.value.currentOf<TokenContainerFinalized>(this.container);
     return CooldownButton(
       styleType: CooldownButtonStyleType.iconButton,
       childWhenCooldown: CircularProgressIndicator.adaptive(),
