@@ -129,7 +129,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
             child: SizedBox(
               height: 99999,
               width: 99999,
-              child: _customization.appImage.getWidget,
+              child: _customization.splashScreenImage.getWidget,
             ),
           ),
         ),

@@ -26,6 +26,18 @@ import 'package:image_picker/image_picker.dart';
 import '../../enums/image_file_type.dart';
 
 extension ImageFileTypeX on ImageFileType {
+  static ImageFileType fromExtensionString(String ex) => switch (ex) {
+        'svg' => ImageFileType.svg,
+        'svgz' => ImageFileType.svgz,
+        'png' => ImageFileType.png,
+        'jpg' => ImageFileType.jpg,
+        'jpeg' => ImageFileType.jpeg,
+        'gif' => ImageFileType.gif,
+        'bmp' => ImageFileType.bmp,
+        'webp' => ImageFileType.webp,
+        _ => throw Exception('Unknown extension: $ex'),
+      };
+
   Widget buildImageWidget(Uint8List imageData) => switch (this) {
         ImageFileType.svg => SvgPicture.memory(
             imageData,
@@ -67,9 +79,9 @@ extension ImageFileTypeX on ImageFileType {
           ),
       };
 
-  String get fileExtension => toString().split('.').last;
+  String get extension => toString().split('.').last;
 
-  String get fileType => switch (this) {
+  String get typeName => switch (this) {
         ImageFileType.svg => 'Scalable Vector Graphic',
         ImageFileType.svgz => 'Scalable Vector Graphic (compressed)',
         ImageFileType.png => 'PNG',
@@ -80,8 +92,19 @@ extension ImageFileTypeX on ImageFileType {
         ImageFileType.webp => 'WebP',
       };
 
+  String get mimeType => switch (this) {
+        ImageFileType.svg => 'image/svg+xml',
+        ImageFileType.svgz => 'image/svg+xml',
+        ImageFileType.png => 'image/png',
+        ImageFileType.jpg => 'image/jpeg',
+        ImageFileType.jpeg => 'image/jpeg',
+        ImageFileType.gif => 'image/gif',
+        ImageFileType.bmp => 'image/bmp',
+        ImageFileType.webp => 'image/webp',
+      };
+
   /// Builds an [XFile] from the given [imageData] and [fileName].
-  /// The [fileType] is used as the name of the file.
+  /// The [fileName] is used as the name of the file.
   /// The file extension is determined by the [ImageFileType].
-  XFile buildXFile(Uint8List imageData, String fileName) => XFile.fromData(imageData, name: "$fileName.$fileExtension");
+  XFile buildXFile(Uint8List imageData, String fileName) => XFile.fromData(imageData, name: "$fileName.$extension");
 }

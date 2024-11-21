@@ -62,9 +62,14 @@ class ApplicationCustomization {
 
   final String appName;
   final String websiteLink;
-  final WidgetImage appIcon;
-
-  final WidgetImage appImage;
+  final WidgetImage appbarIcon;
+  static const String appbarIconFileName = 'appbar_icon';
+  final WidgetImage splashScreenImage;
+  static const String splashScreenImageFileName = 'splash_screen_image';
+  final WidgetImage backgroundImage;
+  static const String backgroundImageFileName = 'background_image';
+  final WidgetImage licensesViewImage;
+  static const String licensesViewImageFileName = 'licenses_view_image';
 
   final ThemeCustomization lightTheme;
   final ThemeCustomization darkTheme;
@@ -77,19 +82,27 @@ class ApplicationCustomization {
     this.websiteLink = 'https://netknights.it/',
     this.fontFamilyName = _defaultFontName,
     this.customFontBytes,
-    WidgetImage? appIcon,
-    WidgetImage? appImage,
+    WidgetImage? appbarIcon,
+    WidgetImage? splashScreenImage,
+    WidgetImage? backgroundImage,
+    WidgetImage? licensesViewImage,
     this.lightTheme = ThemeCustomization.defaultLightTheme,
     this.darkTheme = ThemeCustomization.defaultDarkTheme,
     this.disabledFeatures = const {},
-  })  : appIcon = appIcon ?? WidgetImage(fileType: ImageFileType.png, imageData: defaultIconUint8List, fileName: 'appIcon'),
-        appImage = appImage ?? WidgetImage(fileType: ImageFileType.png, imageData: defaultImageUint8List, fileName: 'appImage');
+  })  : appbarIcon = appbarIcon ?? WidgetImage(fileType: ImageFileType.png, imageData: defaultIconUint8List, fileName: appbarIconFileName),
+        splashScreenImage =
+            splashScreenImage ?? WidgetImage(fileType: ImageFileType.png, imageData: defaultImageUint8List, fileName: splashScreenImageFileName),
+        backgroundImage = backgroundImage ?? WidgetImage(fileType: ImageFileType.png, imageData: defaultImageUint8List, fileName: backgroundImageFileName),
+        licensesViewImage =
+            licensesViewImage ?? WidgetImage(fileType: ImageFileType.png, imageData: defaultImageUint8List, fileName: licensesViewImageFileName);
 
   ApplicationCustomization copyWith({
     String? appName,
     String? websiteLink,
-    WidgetImage? appIcon,
-    WidgetImage? appImage,
+    WidgetImage? appbarIcon,
+    WidgetImage? splashScreenImage,
+    WidgetImage? backgroundImage,
+    WidgetImage? licensesViewImage,
     ThemeCustomization? lightTheme,
     ThemeCustomization? darkTheme,
     Set<AppFeature>? disabledFeatures,
@@ -97,8 +110,10 @@ class ApplicationCustomization {
       ApplicationCustomization(
         appName: appName ?? this.appName,
         websiteLink: websiteLink ?? this.websiteLink,
-        appIcon: appIcon ?? this.appIcon,
-        appImage: appImage ?? this.appImage,
+        appbarIcon: appbarIcon ?? this.appbarIcon,
+        splashScreenImage: splashScreenImage ?? this.splashScreenImage,
+        backgroundImage: backgroundImage ?? this.backgroundImage,
+        licensesViewImage: licensesViewImage ?? this.licensesViewImage,
         lightTheme: lightTheme ?? this.lightTheme,
         darkTheme: darkTheme ?? this.darkTheme,
         disabledFeatures: disabledFeatures ?? this.disabledFeatures,
@@ -112,8 +127,10 @@ class ApplicationCustomization {
           websiteLink == other.websiteLink &&
           customFontBytes == other.customFontBytes &&
           fontFamilyName == other.fontFamilyName &&
-          appIcon == other.appIcon &&
-          appImage == other.appImage &&
+          appbarIcon == other.appbarIcon &&
+          splashScreenImage == other.splashScreenImage &&
+          backgroundImage == other.backgroundImage &&
+          licensesViewImage == other.licensesViewImage &&
           lightTheme == other.lightTheme &&
           darkTheme == other.darkTheme &&
           disabledFeatures == other.disabledFeatures;
@@ -124,8 +141,10 @@ class ApplicationCustomization {
         websiteLink,
         customFontBytes,
         fontFamilyName,
-        appIcon,
-        appImage,
+        appbarIcon,
+        splashScreenImage,
+        backgroundImage,
+        licensesViewImage,
         lightTheme,
         darkTheme,
         disabledFeatures,
@@ -137,8 +156,10 @@ class ApplicationCustomization {
       websiteLink: websiteLink,
       customFontBytes: fontBytes,
       fontFamilyName: fontName,
-      appIcon: appIcon,
-      appImage: appImage,
+      appbarIcon: appbarIcon,
+      splashScreenImage: splashScreenImage,
+      backgroundImage: backgroundImage,
+      licensesViewImage: licensesViewImage,
       lightTheme: lightTheme,
       darkTheme: darkTheme,
       disabledFeatures: disabledFeatures,
@@ -163,8 +184,26 @@ class ApplicationCustomization {
         websiteLink: json['websiteLink'] as String? ?? 'https://netknights.it/',
         customFontBytes: json['customFontBytes'] != null ? base64Decode(json['customFontBytes'] as String) : null,
         fontFamilyName: json['fontFamilyName'] as String? ?? _defaultFontName,
-        appIcon: json['appIcon'] == null ? null : WidgetImage.fromJson(json['appIcon'] as Map<String, dynamic>),
-        appImage: json['appImage'] == null ? null : WidgetImage.fromJson(json['appImage'] as Map<String, dynamic>),
+        appbarIcon: json['appbarIcon'] != null
+            ? WidgetImage.fromJson(json['appbarIcon'] as Map<String, dynamic>)
+            : json['appIcon'] != null
+                ? WidgetImage.fromJson(json['appIcon'] as Map<String, dynamic>)
+                : null,
+        splashScreenImage: json['splashScreenImage'] != null
+            ? WidgetImage.fromJson(json['splashScreenImage'] as Map<String, dynamic>)
+            : json['appImage'] != null
+                ? WidgetImage.fromJson(json['appImage'] as Map<String, dynamic>)
+                : null,
+        backgroundImage: json['backgroundImage'] != null
+            ? WidgetImage.fromJson(json['backgroundImage'] as Map<String, dynamic>)
+            : json['appImage'] != null
+                ? WidgetImage.fromJson(json['appImage'] as Map<String, dynamic>)
+                : null,
+        licensesViewImage: json['licensesViewImage'] != null
+            ? WidgetImage.fromJson(json['licensesViewImage'] as Map<String, dynamic>)
+            : json['appImage'] != null
+                ? WidgetImage.fromJson(json['appImage'] as Map<String, dynamic>)
+                : null,
         lightTheme: json['lightTheme'] != null ? ThemeCustomization.fromJson(json['lightTheme'] as Map<String, dynamic>) : ThemeCustomization.defaultLightTheme,
         darkTheme: json['darkTheme'] != null ? ThemeCustomization.fromJson(json['darkTheme'] as Map<String, dynamic>) : ThemeCustomization.defaultDarkTheme,
         disabledFeatures:
@@ -176,8 +215,10 @@ class ApplicationCustomization {
         'websiteLink': websiteLink,
         'customFontBytes': customFontBytes != null ? base64Encode(customFontBytes!) : null,
         'fontFamilyName': fontFamilyName,
-        'appIcon': appIcon.toJson(),
-        'appImage': appImage.toJson(),
+        'appbarIcon': appbarIcon.toJson(),
+        'splashScreenImage': splashScreenImage.toJson(),
+        'backgroundImage': backgroundImage.toJson(),
+        'licensesViewImage': licensesViewImage.toJson(),
         'lightTheme': lightTheme.toJson(),
         'darkTheme': darkTheme.toJson(),
         'disabledFeatures': disabledFeatures.map((e) => e.name).toList(),

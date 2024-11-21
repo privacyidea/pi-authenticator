@@ -48,7 +48,7 @@ class WidgetImage {
   final Uint8List imageData;
   final String fileName;
 
-  String get fullFileName => '$fileName.${fileType.fileType}';
+  String get fullFileName => '$fileName.${fileType.extension}';
 
   WidgetImage({
     required this.fileType,
@@ -77,7 +77,7 @@ class WidgetImage {
     try {
       return fileType.buildImageWidget(imageData);
     } catch (e) {
-      Logger.error('Image is not an ${fileType.fileType}, or the image data is corrupted.', error: e);
+      Logger.error('Image is not an ${fileType.typeName}, or the image data is corrupted.', error: e);
       rethrow;
     }
   }
