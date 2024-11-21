@@ -46,10 +46,14 @@ class Uint8ListConverter implements JsonConverter<Uint8List, String> {
 class WidgetImage {
   final ImageFileType fileType;
   final Uint8List imageData;
+  final String fileName;
+
+  String get fullFileName => '$fileName.${fileType.fileType}';
 
   WidgetImage({
     required this.fileType,
     required this.imageData,
+    required this.fileName,
   });
 
   @override
@@ -73,7 +77,7 @@ class WidgetImage {
     try {
       return fileType.buildImageWidget(imageData);
     } catch (e) {
-      Logger.error('Image is not an ${fileType.fileName}, or the image data is corrupted.', error: e);
+      Logger.error('Image is not an ${fileType.fileType}, or the image data is corrupted.', error: e);
       rethrow;
     }
   }
@@ -81,7 +85,7 @@ class WidgetImage {
   factory WidgetImage.fromJson(Map<String, dynamic> json) => _$WidgetImageFromJson(json);
   Map<String, dynamic> toJson() => _$WidgetImageToJson(this);
 
-  XFile? toXFile(String? fileName) {
-    return fileType.buildXFile(imageData, fileName ?? 'image-${DateTime.now().millisecondsSinceEpoch}');
+  XFile? toXFile() {
+    return fileType.buildXFile(imageData, fileName);
   }
 }
