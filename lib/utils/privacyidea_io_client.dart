@@ -354,8 +354,18 @@ extension ResponseBuilder on Response {
     508: 'Loop Detected',
     510: 'Not Extended',
     511: 'Network Authentication Required',
-    599: 'Network Connect Timeout Error',
     520: 'Unknown Error',
+    521: 'Web Server Is Down',
+    522: 'Connection Timed Out',
+    523: 'Origin Is Unreachable',
+    524: 'A Timeout Occurred',
+    525: 'Handshake Failed',
+    526: 'Invalid SSL Certificate',
+    527: 'Railgun Error',
+    528: 'Transport Error',
+    529: 'Service is Overloaded',
+    530: 'Site is Frozen',
+    599: 'Network Connect Timeout Error',
   };
 }
 
