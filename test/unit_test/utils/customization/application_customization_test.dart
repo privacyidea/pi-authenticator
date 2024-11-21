@@ -20,10 +20,12 @@ void _testAppCustomizer() {
       appIcon: WidgetImage(
         fileType: ImageFileType.png,
         imageData: defaultIconUint8List,
+        fileName: "appIcon",
       ),
       appImage: WidgetImage(
         fileType: ImageFileType.png,
         imageData: defaultImageUint8List,
+        fileName: "appImage",
       ),
       lightTheme: ApplicationCustomization.defaultCustomization.lightTheme,
       darkTheme: ApplicationCustomization.defaultCustomization.darkTheme,
@@ -51,10 +53,12 @@ void _testAppCustomizer() {
         appIcon: WidgetImage(
           fileType: ImageFileType.png,
           imageData: defaultImageUint8List,
+          fileName: "appIcon",
         ),
         appImage: WidgetImage(
           fileType: ImageFileType.png,
           imageData: defaultIconUint8List,
+          fileName: "appImage",
         ),
         lightTheme: ApplicationCustomization.defaultCustomization.darkTheme,
         darkTheme: ApplicationCustomization.defaultCustomization.lightTheme,
