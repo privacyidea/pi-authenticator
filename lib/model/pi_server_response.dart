@@ -48,6 +48,7 @@ class PiServerResponse<T extends PiServerResultValue> with _$PiServerResponse {
 
   const PiServerResponse._();
   factory PiServerResponse.success({
+    required int statusCode,
     required dynamic detail,
     required int id,
     required String jsonrpc,
@@ -61,6 +62,7 @@ class PiServerResponse<T extends PiServerResultValue> with _$PiServerResponse {
   PiSuccessResponse<T>? get asSuccess => this is PiSuccessResponse<T> ? this as PiSuccessResponse<T> : null;
 
   factory PiServerResponse.error({
+    required int statusCode,
     required dynamic detail,
     required int id,
     required String jsonrpc,
@@ -75,7 +77,7 @@ class PiServerResponse<T extends PiServerResultValue> with _$PiServerResponse {
   bool get isError => this is PiErrorResponse;
   PiErrorResponse<T>? get asError => this is PiErrorResponse<T> ? this as PiErrorResponse<T> : null;
 
-  factory PiServerResponse.fromJson(Map<String, dynamic> json) {
+  factory PiServerResponse.fromJson(Map<String, dynamic> json, {int statisCode = 200}) {
     Logger.debug('Received container sync response: $json');
     final map = validateMap<dynamic>(
       map: json,
@@ -102,6 +104,7 @@ class PiServerResponse<T extends PiServerResultValue> with _$PiServerResponse {
     );
     if (result[RESULT_STATUS] == true && result.containsKey(RESULT_VALUE)) {
       return PiServerResponse.success(
+        statusCode: statisCode,
         id: map[ID],
         jsonrpc: map[JSONRPC],
         resultValue: PiServerResultValue.fromJsonOfType<T>(result[RESULT_VALUE]),
@@ -114,6 +117,7 @@ class PiServerResponse<T extends PiServerResultValue> with _$PiServerResponse {
     }
     if (result[RESULT_STATUS] == false && result.containsKey(RESULT_ERROR)) {
       return PiServerResponse.error(
+        statusCode: statisCode,
         detail: map[DETAIL],
         id: json[ID],
         jsonrpc: map[JSONRPC],
@@ -132,6 +136,6 @@ class PiServerResponse<T extends PiServerResultValue> with _$PiServerResponse {
   }
 
   factory PiServerResponse.fromResponse(Response response) {
-    return PiServerResponse<T>.fromJson(jsonDecode(response.body));
+    return PiServerResponse<T>.fromJson(jsonDecode(response.body), statisCode: response.statusCode);
   }
 }

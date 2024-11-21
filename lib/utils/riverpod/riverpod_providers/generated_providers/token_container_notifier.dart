@@ -145,19 +145,82 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
 ////////////////////////// PUBLIC METHODS //////////////////////////
 ///////////////////////////////////////////////////////////////// */
 
-  Future<Map<int, TokenContainerFinalized>> syncTokens({
+  Future<Map<int, TokenContainerFinalized>> sync({
     required TokenState tokenState,
     required bool isManually,
-
-    /// If not provided, all containers will be synced
     List<TokenContainerFinalized>? containersToSync,
-  }) async =>
-      _syncTokens(
-        tokenState: tokenState,
-        containersToSync: containersToSync ?? state.asData?.value.containerList.whereType<TokenContainerFinalized>().toList() ?? [],
-        apiCall: _containerApi.sync,
-        isManually: isManually,
+  }) async {
+    containersToSync ??= state.asData?.value.containerList.whereType<TokenContainerFinalized>().toList() ?? [];
+    Logger.info('Syncing ${containersToSync.length} tokens');
+    if (containersToSync.isEmpty) {
+      final containerList = (await future).containerList;
+      containersToSync = containerList.whereType<TokenContainerFinalized>().where((e) => e.syncState != SyncState.syncing).toList();
+    } else {
+      final current = <TokenContainer>[];
+      for (final container in containersToSync) {
+        current.add((await future).currentOf(container)!);
+      }
+      containersToSync = current.whereType<TokenContainerFinalized>().where((e) => e.syncState != SyncState.syncing).toList();
+    }
+    final syncFutures = <Future<ContainerSyncUpdates?>>[];
+
+    List<Token> syncedTokens = [];
+    List<String> deletedTokens = [];
+
+    containersToSync = await updateContainerList(containersToSync, (c) => c.copyWith(syncState: SyncState.syncing));
+
+    final failedContainers = <int, TokenContainerFinalized>{};
+
+    for (var finalizedContainer in containersToSync) {
+      syncFutures.add(
+        Future(() async {
+          final syncResult = await _containerApi.sync(
+            finalizedContainer,
+            tokenState,
+          );
+          if (syncResult == null) {
+            await updateContainer(finalizedContainer, (TokenContainerFinalized c) => c.copyWith(syncState: SyncState.failed));
+            return null;
+          }
+          await updateContainer(finalizedContainer, (TokenContainerFinalized c) => c.copyWith(syncState: SyncState.completed));
+          return syncResult;
+        }).catchError((error, stackTrace) async {
+          await updateContainer(finalizedContainer, (TokenContainerFinalized c) => c.copyWith(syncState: SyncState.failed));
+          if (error is PiServerResultError) {
+            failedContainers.addAll({error.code: finalizedContainer});
+          }
+          if (!isManually) return null;
+          Logger.debug('Failed to sync container ${error.runtimeType}', error: error, stackTrace: stackTrace);
+          showStatusMessage(
+            message: AppLocalizations.of(await globalContext)!.failedToSyncContainer(finalizedContainer.serial),
+            subMessage: error is PiServerResultError ? error.message : error.toString(),
+          );
+          return null;
+        }),
       );
+    }
+
+    Map<String, ContainerPolicies> newPoliciesMap = {};
+
+    await Future.wait(syncFutures).then((containerUpdates) {
+      for (var containerUpdate in containerUpdates) {
+        if (containerUpdate == null) continue;
+        syncedTokens.addAll(containerUpdate.updatedTokens);
+        deletedTokens.addAll(containerUpdate.deleteTokenSerials);
+        newPoliciesMap[containerUpdate.containerSerial] = containerUpdate.newPolicies;
+      }
+    }).onError((error, stackTrace) {
+      Logger.error('Failed to sync container', error: error, stackTrace: stackTrace);
+    });
+
+    // Do not remove tokens that are synced in any other container
+    deletedTokens.removeWhere((serial) => syncedTokens.any((token) => token.serial == serial));
+
+    await ref.read(tokenProvider.notifier).addOrReplaceTokens(syncedTokens);
+    await ref.read(tokenProvider.notifier).removeTokensBySerials(deletedTokens);
+    await updateContainerList((await future).containerList, (c) => newPoliciesMap[c.serial] == null ? c : c.copyWith(policies: newPoliciesMap[c.serial]!));
+    return failedContainers;
+  }
 
   Future<bool> rolloverTokens({
     required TokenState tokenState,
@@ -168,12 +231,12 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     if (uri == null) throw ArgumentError('Invalid rollover uri');
     final result = (await TokenContainerProcessor().processUri(uri, fromInit: false))?.firstOrNull;
     if (result == null) throw StateError('Failed to process rollover uri');
-    final success = await handleProcessorResult(result, {}, doReplace: true);
+    final success = await handleProcessorResult(result, {TokenContainerProcessor.ARG_DO_REPLACE: true});
     return success;
   }
 
   Future<String> getTransferQrData(TokenContainerFinalized container) async {
-    final currentContainer = (await future).currentOf(container);
+    final currentContainer = (await future).currentOf<TokenContainerFinalized>(container);
     if (currentContainer == null) throw StateError('Container was removed');
     final qrCode = await _containerApi.getTransferQrData(currentContainer);
     return qrCode;
@@ -226,7 +289,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     return super.update(cb, onError: onError);
   }
 
-  Future<T?> updateContainer<T extends TokenContainer>(T container, T Function(T) updater) async {
+  Future<R?> updateContainer<R extends TokenContainer, T extends TokenContainer>(TokenContainer container, R Function(T) updater) async {
     await _stateMutex.acquire();
     final oldState = await future;
     final currentContainer = oldState.currentOf<T>(container);
@@ -235,6 +298,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
       _stateMutex.release();
       return null;
     }
+    Logger.info('Updating container ${currentContainer.serial}');
     final updated = updater(currentContainer);
     final newState = await _saveContainerToRepo(updated);
     await update((_) => newState);
@@ -316,16 +380,21 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
 
   /// Returns true if the processor result was handled successfully
   @override
-  Future<bool> handleProcessorResult(ProcessorResult result, Map<String, dynamic> args, {bool? doReplace}) async {
-    final failedContainer = await handleProcessorResults([result], args, doReplace: doReplace);
+  Future<bool> handleProcessorResult(ProcessorResult result, Map<String, dynamic> args) async {
+    final failedContainer = await handleProcessorResults([result], args);
     return failedContainer?.isEmpty ?? false;
   }
 
   /// Returns a list of containers that failed to add
   @override
-  Future<List<TokenContainerUnfinalized>?> handleProcessorResults(List<ProcessorResult> results, Map<String, dynamic> args, {bool? doReplace}) async {
+  Future<List<TokenContainerUnfinalized>?> handleProcessorResults(List<ProcessorResult> results, Map<String, dynamic> args) async {
     Logger.info('Handling processor results');
     final newContainers = results.getData().whereType<TokenContainerUnfinalized>().toList();
+    final validatedArgs = TokenContainerProcessor.validateArgs(args);
+    final doReplace = validatedArgs[TokenContainerProcessor.ARG_DO_REPLACE];
+    bool? addDeviceInfos = validatedArgs[TokenContainerProcessor.ARG_ADD_DEVICE_INFOS];
+    final initSync = validatedArgs[TokenContainerProcessor.ARG_INIT_SYNC] ?? true;
+
     if (newContainers.isEmpty) return null;
     final currentState = await future;
     final stateContainers = currentState.containerList;
@@ -346,7 +415,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
       await deleteContainerList(replaceContainers);
       newContainerList.addAll(replaceContainers);
     }
-    final addDeviceInfos = (await SendDeviceInfosDialog.showDialog()) == true;
+    addDeviceInfos ??= (await SendDeviceInfosDialog.showDialog()) == true;
     newContainerList = newContainerList.map((e) => e.copyWith(addDeviceInfos: addDeviceInfos)).toList();
 
     if (newContainerList.isNotEmpty) _showAddContainerProgressDialog(newContainerList);
@@ -365,7 +434,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
       finalizeFutures.add(finalize(container, isManually: true));
     }
     await Future.wait(finalizeFutures);
-    await syncTokens(tokenState: ref.read(tokenProvider), containersToSync: [], isManually: true);
+    if (initSync) await sync(tokenState: ref.read(tokenProvider), containersToSync: [], isManually: true);
 
     return failedToAdd;
   }
@@ -393,26 +462,26 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
         );
       }
     } on LocalizedArgumentError catch (e) {
-      final applocalizations = AppLocalizations.of(await globalContext)!;
       if (isManually) {
+        final applocalizations = AppLocalizations.of(await globalContext)!;
         ref.read(statusMessageProvider.notifier).state = (
           container.finalizationState.asFailed.rolloutMsgLocalized(applocalizations),
           e.localizedMessage(applocalizations),
         );
       }
-      await updateContainer(container, (c) => c.copyWith(finalizationState: c.finalizationState.asFailed));
+      await updateContainer(container, (TokenContainerFinalized c) => c.copyWith(finalizationState: c.finalizationState.asFailed));
     } on PiErrorResponse catch (e) {
-      final applocalizations = AppLocalizations.of(await globalContext)!;
       if (isManually) {
+        final applocalizations = AppLocalizations.of(await globalContext)!;
         ref.read(statusMessageProvider.notifier).state = (
           container.finalizationState.asFailed.rolloutMsgLocalized(applocalizations),
           e.piServerResultError.message,
         );
       }
-      await updateContainer(container, (c) => c.copyWith(finalizationState: c.finalizationState.asFailed));
+      await updateContainer(container, (TokenContainerFinalized c) => c.copyWith(finalizationState: c.finalizationState.asFailed));
     } on ResponseError catch (e) {
-      final applocalizations = AppLocalizations.of(await globalContext)!;
       if (isManually) {
+        final applocalizations = AppLocalizations.of(await globalContext)!;
         ref.read(statusMessageProvider.notifier).state = (
           container.finalizationState.asFailed.rolloutMsgLocalized(applocalizations),
           e.toString(),
@@ -429,83 +498,6 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
 /* /////////////////////////////////////////////////////////////////////////
 ////////////////// PRIVATE HELPER METHODS FINALIZATION /////////////////////
 ///////////////////////////////////////////////////////////////////////// */
-
-  Future<Map<int, TokenContainerFinalized>> _syncTokens({
-    required TokenState tokenState,
-    required List<TokenContainerFinalized> containersToSync,
-    required Future<ContainerSyncUpdates?> Function(TokenContainerFinalized container, TokenState tokenState) apiCall,
-    required bool isManually,
-  }) async {
-    Logger.info('Syncing ${containersToSync.length} tokens');
-    if (containersToSync.isEmpty) {
-      final containerList = (await future).containerList;
-      containersToSync = containerList.whereType<TokenContainerFinalized>().where((e) => e.syncState != SyncState.syncing).toList();
-    } else {
-      final current = <TokenContainer>[];
-      for (final container in containersToSync) {
-        current.add((await future).currentOf(container)!);
-      }
-      containersToSync = current.whereType<TokenContainerFinalized>().where((e) => e.syncState != SyncState.syncing).toList();
-    }
-    final syncFutures = <Future<ContainerSyncUpdates?>>[];
-
-    List<Token> syncedTokens = [];
-    List<String> deletedTokens = [];
-
-    containersToSync = await updateContainerList(containersToSync, (c) => c.copyWith(syncState: SyncState.syncing));
-
-    final failedContainers = <int, TokenContainerFinalized>{};
-
-    for (var finalizedContainer in containersToSync) {
-      syncFutures.add(
-        Future(() async {
-          final syncResult = await apiCall(
-            finalizedContainer,
-            tokenState,
-          );
-          if (syncResult == null) {
-            await updateContainer(finalizedContainer, (c) => c.copyWith(syncState: SyncState.failed));
-            return null;
-          }
-          await updateContainer(finalizedContainer, (c) => c.copyWith(syncState: SyncState.completed));
-          return syncResult;
-        }).catchError((error, stackTrace) async {
-          await updateContainer(finalizedContainer, (c) => c.copyWith(syncState: SyncState.failed));
-          if (error is PiServerResultError) {
-            failedContainers.addAll({error.code: finalizedContainer});
-          }
-          if (!isManually) return null;
-          Logger.debug('Failed to sync container ${error.runtimeType}', error: error, stackTrace: stackTrace);
-          showStatusMessage(
-            message: AppLocalizations.of(await globalContext)!.failedToSyncContainer(finalizedContainer.serial),
-            subMessage: error is PiServerResultError ? error.message : error.toString(),
-          );
-          return null;
-        }),
-      );
-    }
-
-    Map<String, ContainerPolicies> newPoliciesMap = {};
-
-    await Future.wait(syncFutures).then((containerUpdates) {
-      for (var containerUpdate in containerUpdates) {
-        if (containerUpdate == null) continue;
-        syncedTokens.addAll(containerUpdate.updatedTokens);
-        deletedTokens.addAll(containerUpdate.deleteTokenSerials);
-        newPoliciesMap[containerUpdate.containerSerial] = containerUpdate.newPolicies;
-      }
-    }).onError((error, stackTrace) {
-      Logger.error('Failed to sync container', error: error, stackTrace: stackTrace);
-    });
-
-    // Do not remove tokens that are synced in any other container
-    deletedTokens.removeWhere((serial) => syncedTokens.any((token) => token.serial == serial));
-
-    await ref.read(tokenProvider.notifier).addOrReplaceTokens(syncedTokens);
-    await ref.read(tokenProvider.notifier).removeTokensBySerials(deletedTokens);
-    await updateContainerList((await future).containerList, (c) => newPoliciesMap[c.serial] == null ? c : c.copyWith(policies: newPoliciesMap[c.serial]!));
-    return failedContainers;
-  }
 
   Future<T> _curentOf<T extends TokenContainer>(TokenContainer container) async {
     final current = (await future).currentOf(container);
@@ -525,10 +517,12 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     // generatingKeyPairFailed,
     // generatingKeyPairCompleted,
     TokenContainerUnfinalized? container = tokenContainer;
-    container = await updateContainer(container, (c) => c.copyWith(finalizationState: RolloutState.generatingKeyPair));
+    container = await updateContainer<TokenContainerUnfinalized, TokenContainerUnfinalized>(
+        container, (c) => c.copyWith(finalizationState: RolloutState.generatingKeyPair));
     if (container == null) throw StateError('Container was removed');
     final keyPair = eccUtils.generateKeyPair(container.ecKeyAlgorithm);
-    container = await updateContainer(container, (c) => c.withClientKeyPair(keyPair) as TokenContainerUnfinalized);
+    container = await updateContainer<TokenContainerUnfinalized, TokenContainerUnfinalized>(
+        container, (c) => c.withClientKeyPair(keyPair) as TokenContainerUnfinalized);
     if (container == null) throw StateError('Container was removed');
     return container;
   }
@@ -548,17 +542,17 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
 
     TokenContainerUnfinalized? container = tokenContainer;
 
-    final Response? response;
-    container = await updateContainer<TokenContainerUnfinalized>(container, (c) => c.copyWith(finalizationState: RolloutState.sendingPublicKey));
+    final Response response;
+    container = await updateContainer(container, (TokenContainerUnfinalized c) => c.copyWith(finalizationState: RolloutState.sendingPublicKey));
     if (container == null) throw StateError('Container was removed');
 
     response = (await _containerApi.finalizeContainer(container, eccUtils));
     if (response.statusCode != 200) {
-      container = await updateContainer(container, (c) => c.copyWith(finalizationState: RolloutState.sendingPublicKeyFailed));
-      if (container == null) throw StateError('Container was removed');
-      return response;
+      container = await updateContainer(container, (TokenContainerUnfinalized c) => c.copyWith(finalizationState: RolloutState.sendingPublicKeyFailed));
+      throw ResponseError(response);
     }
 
+    container = await updateContainer(container, (TokenContainerUnfinalized c) => c.copyWith(finalizationState: RolloutState.sendingPublicKeyCompleted));
     return response;
   }
 
@@ -573,38 +567,39 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
       piResponse = response.asPiServerResponse<ContainerFinalizationResponse>();
     } catch (e) {
       Logger.error('Failed to parse response', error: e);
-      container = await updateContainer(container, (c) => c.copyWith(finalizationState: RolloutState.parsingResponseFailed));
-      if (container == null) throw StateError('Container was removed');
+      container = await updateContainer(container, (TokenContainerUnfinalized c) => c.copyWith(finalizationState: RolloutState.parsingResponseFailed));
       rethrow;
     }
 
     if (piResponse == null || piResponse.isError) {
       Logger.debug('Status code: ${response.statusCode}');
       Logger.debug('Response body: ${response.body}');
-      container = await updateContainer(container, (c) => c.copyWith(finalizationState: RolloutState.sendingPublicKeyFailed));
-      if (container == null) throw StateError('Container was removed');
+      container = await updateContainer(container, (TokenContainerUnfinalized c) => c.copyWith(finalizationState: RolloutState.sendingPublicKeyFailed));
       final error = piResponse?.asError;
       if (error != null) throw error;
       throw ResponseError(response);
     }
 
-    container = await updateContainer(container, (c) => c.copyWith(finalizationState: RolloutState.sendingPublicKeyCompleted));
+    container = await updateContainer(container, (TokenContainerUnfinalized c) => c.copyWith(finalizationState: RolloutState.sendingPublicKeyCompleted));
     if (container == null) throw StateError('Container was removed');
 
-    container = await updateContainer(container, (c) => c.copyWith(finalizationState: RolloutState.parsingResponse));
+    container = await updateContainer(container, (TokenContainerUnfinalized c) => c.copyWith(finalizationState: RolloutState.parsingResponse));
     if (container == null) throw StateError('Container was removed');
-    ContainerFinalizationResponse resultValue = piResponse.asSuccess!.resultValue;
+    ContainerFinalizationResponse finalizationResponse = piResponse.asSuccess!.resultValue;
     try {
-      resultValue = piResponse.asSuccess!.resultValue;
+      finalizationResponse = piResponse.asSuccess!.resultValue;
     } catch (e) {
       Logger.error('Failed to parse response', error: e);
-      container = await updateContainer(container, (c) => c.copyWith(finalizationState: RolloutState.parsingResponseFailed));
-      if (container == null) throw StateError('Container was removed');
+      container = await updateContainer(container, (TokenContainerUnfinalized c) => c.copyWith(finalizationState: RolloutState.parsingResponseFailed));
       rethrow;
     }
 
-    container = await updateContainer(container, (c) => c.copyWith(policies: resultValue.policies).finalize(publicServerKey: resultValue.publicServerKey)!);
-    if (container == null) throw StateError('Container was removed or finalization failed');
-    return container as TokenContainerFinalized;
+    // final signature = finalizationResponse.signature;
+    final finalizedContainer = await updateContainer(
+      container,
+      (TokenContainerUnfinalized c) => c.copyWith(policies: finalizationResponse.policies).finalize(publicServerKey: finalizationResponse.publicServerKey)!,
+    );
+    if (finalizedContainer == null) throw StateError('Container was removed');
+    return finalizedContainer;
   }
 }

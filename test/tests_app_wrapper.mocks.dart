@@ -575,19 +575,6 @@ class MockTokenContainerRepository extends _i1.Mock
       ) as _i13.Future<_i6.TokenContainerState>);
 
   @override
-  _i13.Future<List<_i21.TokenContainer>> loadContainerList() =>
-      (super.noSuchMethod(
-        Invocation.method(
-          #loadContainerList,
-          [],
-        ),
-        returnValue: _i13.Future<List<_i21.TokenContainer>>.value(
-            <_i21.TokenContainer>[]),
-        returnValueForMissingStub: _i13.Future<List<_i21.TokenContainer>>.value(
-            <_i21.TokenContainer>[]),
-      ) as _i13.Future<List<_i21.TokenContainer>>);
-
-  @override
   _i13.Future<_i6.TokenContainerState> saveContainerList(
           List<_i21.TokenContainer>? containerList) =>
       (super.noSuchMethod(

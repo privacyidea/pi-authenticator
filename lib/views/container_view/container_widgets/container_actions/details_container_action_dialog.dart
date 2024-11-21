@@ -93,7 +93,9 @@ class _DetailsContainerDialogState extends ConsumerState<DetailsContainerDialog>
         TextButton(
           onPressed: Uri.tryParse(controller.text) != null
               ? () {
-                  ref.read(tokenContainerProvider.notifier).updateContainer(widget.container, (c) => c.copyWith(serverUrl: Uri.parse(controller.text)));
+                  ref
+                      .read(tokenContainerProvider.notifier)
+                      .updateContainer(widget.container, (TokenContainer c) => c.copyWith(serverUrl: Uri.parse(controller.text)));
                   Navigator.of(context).pop();
                 }
               : null,

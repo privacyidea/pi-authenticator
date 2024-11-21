@@ -34,13 +34,6 @@ class SecureTokenContainerRepository extends TokenContainerRepository {
   }
 
   @override
-  Future<List<TokenContainer>> loadContainerList() async {
-    final containerJsonString = await _readAll();
-    Logger.warning('Loaded container: $containerJsonString');
-    return containerJsonString.values.map((jsonString) => TokenContainer.fromJson(jsonDecode(jsonString))).toList();
-  }
-
-  @override
   Future<TokenContainerState> saveContainerList(List<TokenContainer> containerList) async {
     Logger.warning('Saving container: $containerList');
     final futures = <Future>[];
