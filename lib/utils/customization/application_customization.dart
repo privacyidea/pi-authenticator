@@ -32,7 +32,9 @@ class ApplicationCustomization {
   static const _defaultAppName = 'privacyIDEA Authenticator';
   static const _defaultWebsiteLink = 'https://netknights.it/';
   static const _defaultCrashRecipient = 'app-crash@netknights.it';
+  static const _defaultCrashSubjectPrefix = '(\$version) privacyIDEA Authenticator >>>';
   static const _defaultFeedbackRecipient = 'app-crash@netknights.it';
+  static const _defaultFeedbackSubjectPrefix = '(\$version) privacyIDEA Authenticator >>> [Feedback]';
 
   static const String _defaultFontName = 'defaultFont';
   final String fontFamilyName;
@@ -69,7 +71,9 @@ class ApplicationCustomization {
   final String appName;
   final String websiteLink;
   final String crashRecipient;
+  final String crashSubjectPrefix;
   final String feedbackRecipient;
+  final String feedbackSubjectPrefix;
   final WidgetImage appbarIcon;
   static const String appbarIconFileName = 'appbar_icon';
   final WidgetImage splashScreenImage;
@@ -87,7 +91,9 @@ class ApplicationCustomization {
     this.appName = _defaultAppName,
     this.websiteLink = _defaultWebsiteLink,
     this.crashRecipient = _defaultCrashRecipient,
+    this.crashSubjectPrefix = _defaultCrashSubjectPrefix,
     this.feedbackRecipient = _defaultFeedbackRecipient,
+    this.feedbackSubjectPrefix = _defaultFeedbackSubjectPrefix,
     this.fontFamilyName = _defaultFontName,
     this.customFontBytes,
     WidgetImage? appbarIcon,
@@ -108,7 +114,9 @@ class ApplicationCustomization {
     String? appName,
     String? websiteLink,
     String? crashRecipient,
+    String? crashSubjectPrefix,
     String? feedbackRecipient,
+    String? feedbackSubjectPrefix,
     WidgetImage? appbarIcon,
     WidgetImage? splashScreenImage,
     WidgetImage? backgroundImage,
@@ -121,7 +129,9 @@ class ApplicationCustomization {
         appName: appName ?? this.appName,
         websiteLink: websiteLink ?? this.websiteLink,
         crashRecipient: crashRecipient ?? this.crashRecipient,
+        crashSubjectPrefix: crashSubjectPrefix ?? this.crashSubjectPrefix,
         feedbackRecipient: feedbackRecipient ?? this.feedbackRecipient,
+        feedbackSubjectPrefix: feedbackSubjectPrefix ?? this.feedbackSubjectPrefix,
         fontFamilyName: fontFamilyName,
         customFontBytes: customFontBytes,
         appbarIcon: appbarIcon ?? this.appbarIcon,
@@ -140,7 +150,9 @@ class ApplicationCustomization {
           appName == other.appName &&
           websiteLink == other.websiteLink &&
           crashRecipient == other.crashRecipient &&
+          crashSubjectPrefix == other.crashSubjectPrefix &&
           feedbackRecipient == other.feedbackRecipient &&
+          feedbackSubjectPrefix == other.feedbackSubjectPrefix &&
           fontFamilyName == other.fontFamilyName &&
           customFontBytes == other.customFontBytes &&
           appbarIcon == other.appbarIcon &&
@@ -156,7 +168,9 @@ class ApplicationCustomization {
         appName,
         websiteLink,
         crashRecipient,
+        crashSubjectPrefix,
         feedbackRecipient,
+        feedbackSubjectPrefix,
         fontFamilyName,
         customFontBytes,
         appbarIcon,
@@ -173,7 +187,9 @@ class ApplicationCustomization {
       appName: appName,
       websiteLink: websiteLink,
       crashRecipient: crashRecipient,
+      crashSubjectPrefix: crashSubjectPrefix,
       feedbackRecipient: feedbackRecipient,
+      feedbackSubjectPrefix: feedbackSubjectPrefix,
       fontFamilyName: fontName,
       customFontBytes: fontBytes,
       appbarIcon: appbarIcon,
@@ -203,7 +219,9 @@ class ApplicationCustomization {
         appName: json['appName'] as String? ?? _defaultAppName,
         websiteLink: json['websiteLink'] as String? ?? _defaultWebsiteLink,
         crashRecipient: json['crashRecipient'] as String? ?? _defaultCrashRecipient,
+        crashSubjectPrefix: json['crashSubjectPrefix'] as String? ?? _defaultCrashSubjectPrefix,
         feedbackRecipient: json['feedbackRecipient'] as String? ?? _defaultFeedbackRecipient,
+        feedbackSubjectPrefix: json['feedbackSubjectPrefix'] as String? ?? _defaultFeedbackSubjectPrefix,
         customFontBytes: json['customFontBytes'] != null ? base64Decode(json['customFontBytes'] as String) : null,
         fontFamilyName: json['fontFamilyName'] as String? ?? _defaultFontName,
         appbarIcon: json['appbarIcon'] != null
@@ -236,7 +254,9 @@ class ApplicationCustomization {
         'appName': appName,
         'websiteLink': websiteLink,
         'crashRecipient': crashRecipient,
+        'crashSubjectPrefix': crashSubjectPrefix,
         'feedbackRecipient': feedbackRecipient,
+        'feedbackSubjectPrefix': feedbackSubjectPrefix,
         'fontFamilyName': fontFamilyName,
         'customFontBytes': customFontBytes != null ? base64Encode(customFontBytes!) : null,
         'appbarIcon': appbarIcon.toJson(),
