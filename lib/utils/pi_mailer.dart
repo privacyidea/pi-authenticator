@@ -23,24 +23,17 @@ import 'package:flutter_mailer/flutter_mailer.dart';
 
 import '../l10n/app_localizations.dart';
 import '../widgets/dialog_widgets/default_dialog.dart';
-import 'app_info_utils.dart';
 import 'logger.dart';
 import 'view_utils.dart';
 
 class PiMailer {
-  final Set<String> mailRecipients;
-  const PiMailer({required this.mailRecipients});
-
-  static String _mailSubject(String? subject, String? subjectPrefix, bool subjectAppVersion) {
-    String mailSubject = subjectPrefix != null ? '[$subjectPrefix] ' : '';
-    if (subjectAppVersion) mailSubject += '(${InfoUtils.currentVersionString}+${InfoUtils.currentBuildNumber}) ';
-    mailSubject += '${InfoUtils.appName}';
-    if (subject != null) mailSubject += ' >>> $subject';
-    return mailSubject;
+  static String _mailSubject(String subject, String? subjectPrefix, bool subjectAppVersion) {
+    return subjectPrefix != null ? '$subjectPrefix $subject' : subject;
   }
 
-  Future<bool> sendMail({
-    String? subject,
+  static Future<bool> sendMail({
+    required Set<String> mailRecipients,
+    required String subject,
     String? subjectPrefix,
     bool subjectAppVersion = true,
     required String body,

@@ -257,7 +257,13 @@ class Logger {
 ---------------------------------------------------------
 
 Device Parameters $deviceInfo""";
-    return PiMailer(mailRecipients: _mailRecipients).sendMail(subject: _lastError, body: completeMailBody, attachments: [_fullPath!]);
+    return PiMailer.sendMail(
+      mailRecipients: _mailRecipients,
+      subjectPrefix: PrivacyIDEAAuthenticator.currentCustomization?.crashSubjectPrefix,
+      subject: _lastError,
+      body: completeMailBody,
+      attachments: [_fullPath!],
+    );
   }
 
   static void clearErrorLog() {
