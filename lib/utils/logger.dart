@@ -50,7 +50,7 @@ class Logger {
   static BuildContext? get _context => navigatorKey.currentContext;
   static String get _mailBody => _context != null ? AppLocalizations.of(_context!)!.errorMailBody : 'Error Log File Attached';
   static Set<String> get _mailRecipients => {
-        ...globalRef?.read(settingsProvider).crashReportRecipients ?? {},
+        // ...globalRef?.read(settingsProvider).crashReportRecipients ?? {},
         ...PrivacyIDEAAuthenticator.currentCustomization != null ? {PrivacyIDEAAuthenticator.currentCustomization!.crashRecipient} : {}
       };
   static printer.Logger print = printer.Logger(
