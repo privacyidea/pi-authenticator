@@ -53,7 +53,7 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
         if (await ref.read(tokenProvider.notifier).saveStateOnMinimizeApp() == false) {
           Logger.error('Failed to save tokens on Hide', name: 'tokenProvider#appStateProvider');
         }
-        if (ref.read(tokenFolderProvider.notifier).collapseLockedFolders() == false) {
+        if (await ref.read(tokenFolderProvider.notifier).collapseLockedFolders() == false) {
           Logger.error('Failed to collapse locked folders on Hide', name: 'tokenFolderProvider#appStateProvider');
         }
         await FlutterLocalNotificationsPlugin().cancelAll();
