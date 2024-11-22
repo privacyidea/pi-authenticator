@@ -28,7 +28,9 @@ import 'logger.dart';
 import 'view_utils.dart';
 
 class PiMailer {
-  static String get _mailRecipient => 'app-crash@netknights.it';
+  final Set<String> mailRecipients;
+  const PiMailer({required this.mailRecipients});
+
   static String _mailSubject(String? subject, String? subjectPrefix, bool subjectAppVersion) {
     String mailSubject = subjectPrefix != null ? '[$subjectPrefix] ' : '';
     if (subjectAppVersion) mailSubject += '(${InfoUtils.currentVersionString}+${InfoUtils.currentBuildNumber}) ';
@@ -37,7 +39,7 @@ class PiMailer {
     return mailSubject;
   }
 
-  static Future<bool> sendMail({
+  Future<bool> sendMail({
     String? subject,
     String? subjectPrefix,
     bool subjectAppVersion = true,
@@ -48,7 +50,7 @@ class PiMailer {
       final MailOptions mailOptions = MailOptions(
         body: body,
         subject: _mailSubject(subject, subjectPrefix, subjectAppVersion),
-        recipients: [_mailRecipient],
+        recipients: [...mailRecipients],
         attachments: attachments,
       );
       await FlutterMailer.send(mailOptions);

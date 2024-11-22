@@ -19,6 +19,8 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:privacyidea_authenticator/mains/main_netknights.dart';
+import 'package:privacyidea_authenticator/utils/globals.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/app_info_utils.dart';
@@ -133,5 +135,10 @@ class _FeedbackSendRowState extends State<FeedbackSendRow> {
   }
 
   String _addDeviceInfoToMail(String feedback) => '$feedback\n\n[${InfoUtils.currentVersionAndBuildNumber}] ${InfoUtils.deviceInfoString}';
-  Future<bool> _sendMail(String mailText) => PiMailer.sendMail(subjectPrefix: 'Feedback', body: mailText, subjectAppVersion: false);
+  Future<bool> _sendMail(String mailText) => globalRef != null
+      ? PiMailer(mailRecipients: _mailRecipients).sendMail(subjectPrefix: 'Feedback', body: mailText, subjectAppVersion: false)
+      : Future.value(false);
+
+  Set<String> get _mailRecipients =>
+      PrivacyIDEAAuthenticator.currentCustomization != null ? {PrivacyIDEAAuthenticator.currentCustomization!.feedbackRecipient} : {};
 }
