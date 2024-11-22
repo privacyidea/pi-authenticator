@@ -21,10 +21,11 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/image_file_type_extension.dart';
 
+import '../../../../../../../model/extensions/enums/image_file_type_extension.dart';
 import '../utils/logger.dart';
 import 'enums/image_file_type.dart';
 
@@ -45,11 +46,25 @@ class Uint8ListConverter implements JsonConverter<Uint8List, String> {
 class WidgetImage {
   final ImageFileType fileType;
   final Uint8List imageData;
+  final String fileName;
+
+  String get fullFileName => '$fileName.${fileType.extension}';
 
   WidgetImage({
     required this.fileType,
     required this.imageData,
+    required this.fileName,
   });
+
+  @override
+  String toString() {
+    return 'WidgetImage{fileType: $fileType, imageData: $imageData}';
+  }
+
+  @override
+  bool operator ==(Object other) => other is WidgetImage && other.fileType == fileType && other.imageData == imageData;
+  @override
+  int get hashCode => Object.hash(runtimeType, fileType, imageData);
 
   Widget? _widget;
   Widget get getWidget {
@@ -62,11 +77,15 @@ class WidgetImage {
     try {
       return fileType.buildImageWidget(imageData);
     } catch (e) {
-      Logger.error('File type $fileType is not supported or does not match the image data.', name: 'WidgetImage#_buildImageWidget');
+      Logger.error('Image is not an ${fileType.typeName}, or the image data is corrupted.', error: e);
       rethrow;
     }
   }
 
   factory WidgetImage.fromJson(Map<String, dynamic> json) => _$WidgetImageFromJson(json);
   Map<String, dynamic> toJson() => _$WidgetImageToJson(this);
+
+  XFile? toXFile() {
+    return fileType.buildXFile(imageData, fileName);
+  }
 }
