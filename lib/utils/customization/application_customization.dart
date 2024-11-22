@@ -28,6 +28,12 @@ import '../../model/enums/image_file_type.dart';
 import '../../model/widget_image.dart';
 
 class ApplicationCustomization {
+  static final defaultCustomization = ApplicationCustomization();
+  static const _defaultAppName = 'privacyIDEA Authenticator';
+  static const _defaultWebsiteLink = 'https://netknights.it/';
+  static const _defaultCrashRecipient = 'app-crash@netknights.it';
+  static const _defaultFeedbackRecipient = 'app-crash@netknights.it';
+
   static const String _defaultFontName = 'defaultFont';
   final String fontFamilyName;
   final Uint8List? customFontBytes;
@@ -62,6 +68,8 @@ class ApplicationCustomization {
 
   final String appName;
   final String websiteLink;
+  final String crashRecipient;
+  final String feedbackRecipient;
   final WidgetImage appbarIcon;
   static const String appbarIconFileName = 'appbar_icon';
   final WidgetImage splashScreenImage;
@@ -75,11 +83,11 @@ class ApplicationCustomization {
   final ThemeCustomization darkTheme;
   final Set<AppFeature> disabledFeatures;
 
-  static final defaultCustomization = ApplicationCustomization();
-
   ApplicationCustomization({
-    this.appName = 'privacyIDEA Authenticator',
-    this.websiteLink = 'https://netknights.it/',
+    this.appName = _defaultAppName,
+    this.websiteLink = _defaultWebsiteLink,
+    this.crashRecipient = _defaultCrashRecipient,
+    this.feedbackRecipient = _defaultFeedbackRecipient,
     this.fontFamilyName = _defaultFontName,
     this.customFontBytes,
     WidgetImage? appbarIcon,
@@ -99,6 +107,8 @@ class ApplicationCustomization {
   ApplicationCustomization copyWith({
     String? appName,
     String? websiteLink,
+    String? crashRecipient,
+    String? feedbackRecipient,
     WidgetImage? appbarIcon,
     WidgetImage? splashScreenImage,
     WidgetImage? backgroundImage,
@@ -110,6 +120,10 @@ class ApplicationCustomization {
       ApplicationCustomization(
         appName: appName ?? this.appName,
         websiteLink: websiteLink ?? this.websiteLink,
+        crashRecipient: crashRecipient ?? this.crashRecipient,
+        feedbackRecipient: feedbackRecipient ?? this.feedbackRecipient,
+        fontFamilyName: fontFamilyName,
+        customFontBytes: customFontBytes,
         appbarIcon: appbarIcon ?? this.appbarIcon,
         splashScreenImage: splashScreenImage ?? this.splashScreenImage,
         backgroundImage: backgroundImage ?? this.backgroundImage,
@@ -125,8 +139,10 @@ class ApplicationCustomization {
       other is ApplicationCustomization &&
           appName == other.appName &&
           websiteLink == other.websiteLink &&
-          customFontBytes == other.customFontBytes &&
+          crashRecipient == other.crashRecipient &&
+          feedbackRecipient == other.feedbackRecipient &&
           fontFamilyName == other.fontFamilyName &&
+          customFontBytes == other.customFontBytes &&
           appbarIcon == other.appbarIcon &&
           splashScreenImage == other.splashScreenImage &&
           backgroundImage == other.backgroundImage &&
@@ -139,8 +155,10 @@ class ApplicationCustomization {
   int get hashCode => Object.hashAll([
         appName,
         websiteLink,
-        customFontBytes,
+        crashRecipient,
+        feedbackRecipient,
         fontFamilyName,
+        customFontBytes,
         appbarIcon,
         splashScreenImage,
         backgroundImage,
@@ -154,8 +172,10 @@ class ApplicationCustomization {
     final newState = ApplicationCustomization(
       appName: appName,
       websiteLink: websiteLink,
-      customFontBytes: fontBytes,
+      crashRecipient: crashRecipient,
+      feedbackRecipient: feedbackRecipient,
       fontFamilyName: fontName,
+      customFontBytes: fontBytes,
       appbarIcon: appbarIcon,
       splashScreenImage: splashScreenImage,
       backgroundImage: backgroundImage,
@@ -180,8 +200,10 @@ class ApplicationCustomization {
   ThemeData generateDarkTheme() => darkTheme.generateTheme(fontFamily: customFontBytes != null ? fontFamilyName : null);
 
   factory ApplicationCustomization.fromJson(Map<String, dynamic> json) => ApplicationCustomization(
-        appName: json['appName'] as String? ?? 'privacyIDEA Authenticator',
-        websiteLink: json['websiteLink'] as String? ?? 'https://netknights.it/',
+        appName: json['appName'] as String? ?? _defaultAppName,
+        websiteLink: json['websiteLink'] as String? ?? _defaultWebsiteLink,
+        crashRecipient: json['crashRecipient'] as String? ?? _defaultCrashRecipient,
+        feedbackRecipient: json['feedbackRecipient'] as String? ?? _defaultFeedbackRecipient,
         customFontBytes: json['customFontBytes'] != null ? base64Decode(json['customFontBytes'] as String) : null,
         fontFamilyName: json['fontFamilyName'] as String? ?? _defaultFontName,
         appbarIcon: json['appbarIcon'] != null
@@ -213,8 +235,10 @@ class ApplicationCustomization {
   Map<String, dynamic> toJson() => {
         'appName': appName,
         'websiteLink': websiteLink,
-        'customFontBytes': customFontBytes != null ? base64Encode(customFontBytes!) : null,
+        'crashRecipient': crashRecipient,
+        'feedbackRecipient': feedbackRecipient,
         'fontFamilyName': fontFamilyName,
+        'customFontBytes': customFontBytes != null ? base64Encode(customFontBytes!) : null,
         'appbarIcon': appbarIcon.toJson(),
         'splashScreenImage': splashScreenImage.toJson(),
         'backgroundImage': backgroundImage.toJson(),

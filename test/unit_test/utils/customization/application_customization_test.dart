@@ -17,15 +17,15 @@ void _testAppCustomizer() {
     final customization = ApplicationCustomization(
       appName: 'test',
       websiteLink: 'https://test',
-      appIcon: WidgetImage(
+      appbarIcon: WidgetImage(
         fileType: ImageFileType.png,
         imageData: defaultIconUint8List,
-        fileName: "appIcon",
+        fileName: "appbarIcon",
       ),
-      appImage: WidgetImage(
+      splashScreenImage: WidgetImage(
         fileType: ImageFileType.png,
         imageData: defaultImageUint8List,
-        fileName: "appImage",
+        fileName: "splashScreenImage",
       ),
       lightTheme: ApplicationCustomization.defaultCustomization.lightTheme,
       darkTheme: ApplicationCustomization.defaultCustomization.darkTheme,
@@ -35,12 +35,12 @@ void _testAppCustomizer() {
       // Assert
       expect(customization.appName, equals('test'));
       expect(customization.websiteLink, equals('https://test'));
-      expect(customization.appIcon.imageData, equals(defaultIconUint8List));
-      expect(() => customization.appIcon.getWidget, returnsNormally);
-      expect(customization.appImage.getWidget, isA<Widget>());
-      expect(customization.appImage.imageData, equals(defaultImageUint8List));
-      expect(() => customization.appImage.getWidget, returnsNormally);
-      expect(customization.appImage.getWidget, isA<Widget>());
+      expect(customization.appbarIcon.imageData, equals(defaultIconUint8List));
+      expect(() => customization.appbarIcon.getWidget, returnsNormally);
+      expect(customization.splashScreenImage.getWidget, isA<Widget>());
+      expect(customization.splashScreenImage.imageData, equals(defaultImageUint8List));
+      expect(() => customization.splashScreenImage.getWidget, returnsNormally);
+      expect(customization.splashScreenImage.getWidget, isA<Widget>());
       expect(customization.lightTheme, equals(ApplicationCustomization.defaultCustomization.lightTheme));
       expect(customization.darkTheme, equals(ApplicationCustomization.defaultCustomization.darkTheme));
       expect(customization.disabledFeatures, equals({AppFeature.patchNotes}));
@@ -50,12 +50,12 @@ void _testAppCustomizer() {
       final newCustomization = customization.copyWith(
         appName: 'test2',
         websiteLink: 'https://test2',
-        appIcon: WidgetImage(
+        appbarIcon: WidgetImage(
           fileType: ImageFileType.png,
           imageData: defaultImageUint8List,
-          fileName: "appIcon",
+          fileName: "appbarIcon",
         ),
-        appImage: WidgetImage(
+        splashScreenImage: WidgetImage(
           fileType: ImageFileType.png,
           imageData: defaultIconUint8List,
           fileName: "appImage",
@@ -67,8 +67,8 @@ void _testAppCustomizer() {
       // Assert
       expect(newCustomization.appName, equals('test2'));
       expect(newCustomization.websiteLink, equals('https://test2'));
-      expect(newCustomization.appIcon.imageData, equals(defaultImageUint8List));
-      expect(newCustomization.appImage.imageData, equals(defaultIconUint8List));
+      expect(newCustomization.appbarIcon.imageData, equals(defaultImageUint8List));
+      expect(newCustomization.splashScreenImage.imageData, equals(defaultIconUint8List));
     });
     group('serialization', () {
       test('toJson', () {
@@ -97,8 +97,8 @@ void _testAppCustomizer() {
         // Assert
         expect(newCustomization.appName, equals('test2'));
         expect(newCustomization.websiteLink, equals('https://test2'));
-        expect(newCustomization.appIcon.imageData, equals(defaultIconUint8List));
-        expect(newCustomization.appImage.imageData, equals(defaultImageUint8List));
+        expect(newCustomization.appbarIcon.imageData, equals(defaultIconUint8List));
+        expect(newCustomization.splashScreenImage.imageData, equals(defaultImageUint8List));
         expect(newCustomization.lightTheme, equals(ApplicationCustomization.defaultCustomization.lightTheme));
         expect(newCustomization.darkTheme, equals(ApplicationCustomization.defaultCustomization.darkTheme));
         expect(newCustomization.disabledFeatures, isA<Set>());

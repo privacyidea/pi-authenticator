@@ -33,10 +33,12 @@ import 'package:mutex/mutex.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../l10n/app_localizations.dart';
+import '../mains/main_netknights.dart';
 import '../utils/app_info_utils.dart';
 import '../utils/pi_mailer.dart';
 import '../views/settings_view/settings_view_widgets/send_error_dialog.dart';
 import 'globals.dart';
+import 'riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import 'view_utils.dart';
 
 final provider = Provider<int>((ref) => 0);
@@ -47,6 +49,10 @@ class Logger {
   static Logger? _instance;
   static BuildContext? get _context => navigatorKey.currentContext;
   static String get _mailBody => _context != null ? AppLocalizations.of(_context!)!.errorMailBody : 'Error Log File Attached';
+  static Set<String> get _mailRecipients => {
+        ...globalRef?.read(settingsProvider).value?.crashReportRecipients ?? {},
+        ...PrivacyIDEAAuthenticator.currentCustomization != null ? {PrivacyIDEAAuthenticator.currentCustomization!.crashRecipient} : {}
+      };
   static printer.Logger print = printer.Logger(
     printer: printer.PrettyPrinter(
       methodCount: 0,
@@ -251,8 +257,7 @@ class Logger {
 ---------------------------------------------------------
 
 Device Parameters $deviceInfo""";
-
-    return PiMailer.sendMail(subject: _lastError, body: completeMailBody, attachments: [_fullPath!]);
+    return PiMailer(mailRecipients: _mailRecipients).sendMail(subject: _lastError, body: completeMailBody, attachments: [_fullPath!]);
   }
 
   static void clearErrorLog() {
