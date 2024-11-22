@@ -73,11 +73,11 @@ class ApplicationCustomization {
   final String appName;
   final String websiteLink;
   final String crashRecipient;
-  final String _crashSubjectPrefix;
-  String get crashSubjectPrefix => _crashSubjectPrefix.replaceAll(prefixVersionVariable, InfoUtils.currentVersionAndBuildNumber);
+  final String rawCrashSubjectPrefix;
+  String get crashSubjectPrefix => rawCrashSubjectPrefix.replaceAll(prefixVersionVariable, InfoUtils.currentVersionAndBuildNumber);
   final String feedbackRecipient;
-  final String _feedbackSubjectPrefix;
-  String get feedbackSubjectPrefix => _feedbackSubjectPrefix.replaceAll(prefixVersionVariable, InfoUtils.currentVersionAndBuildNumber);
+  final String rawFeedbackSubjectPrefix;
+  String get feedbackSubjectPrefix => rawFeedbackSubjectPrefix.replaceAll(prefixVersionVariable, InfoUtils.currentVersionAndBuildNumber);
   final WidgetImage appbarIcon;
   static const String appbarIconFileName = 'appbar_icon';
   final WidgetImage splashScreenImage;
@@ -95,9 +95,9 @@ class ApplicationCustomization {
     this.appName = _defaultAppName,
     this.websiteLink = _defaultWebsiteLink,
     this.crashRecipient = _defaultCrashRecipient,
-    String crashSubjectPrefix = _defaultCrashSubjectPrefix,
+    this.rawCrashSubjectPrefix = _defaultCrashSubjectPrefix,
     this.feedbackRecipient = _defaultFeedbackRecipient,
-    String feedbackSubjectPrefix = _defaultFeedbackSubjectPrefix,
+    this.rawFeedbackSubjectPrefix = _defaultFeedbackSubjectPrefix,
     this.fontFamilyName = _defaultFontName,
     this.customFontBytes,
     WidgetImage? appbarIcon,
@@ -107,9 +107,7 @@ class ApplicationCustomization {
     this.lightTheme = ThemeCustomization.defaultLightTheme,
     this.darkTheme = ThemeCustomization.defaultDarkTheme,
     this.disabledFeatures = const {},
-  })  : _crashSubjectPrefix = crashSubjectPrefix,
-        _feedbackSubjectPrefix = feedbackSubjectPrefix,
-        appbarIcon = appbarIcon ?? WidgetImage(fileType: ImageFileType.png, imageData: defaultIconUint8List, fileName: appbarIconFileName),
+  })  : appbarIcon = appbarIcon ?? WidgetImage(fileType: ImageFileType.png, imageData: defaultIconUint8List, fileName: appbarIconFileName),
         splashScreenImage =
             splashScreenImage ?? WidgetImage(fileType: ImageFileType.png, imageData: defaultImageUint8List, fileName: splashScreenImageFileName),
         backgroundImage = backgroundImage ?? WidgetImage(fileType: ImageFileType.png, imageData: defaultImageUint8List, fileName: backgroundImageFileName),
@@ -135,9 +133,9 @@ class ApplicationCustomization {
         appName: appName ?? this.appName,
         websiteLink: websiteLink ?? this.websiteLink,
         crashRecipient: crashRecipient ?? this.crashRecipient,
-        crashSubjectPrefix: crashSubjectPrefix ?? _crashSubjectPrefix,
+        rawCrashSubjectPrefix: crashSubjectPrefix ?? rawCrashSubjectPrefix,
         feedbackRecipient: feedbackRecipient ?? this.feedbackRecipient,
-        feedbackSubjectPrefix: feedbackSubjectPrefix ?? _feedbackSubjectPrefix,
+        rawFeedbackSubjectPrefix: feedbackSubjectPrefix ?? rawFeedbackSubjectPrefix,
         fontFamilyName: fontFamilyName,
         customFontBytes: customFontBytes,
         appbarIcon: appbarIcon ?? this.appbarIcon,
@@ -156,9 +154,9 @@ class ApplicationCustomization {
           appName == other.appName &&
           websiteLink == other.websiteLink &&
           crashRecipient == other.crashRecipient &&
-          _crashSubjectPrefix == other._crashSubjectPrefix &&
+          rawCrashSubjectPrefix == other.rawCrashSubjectPrefix &&
           feedbackRecipient == other.feedbackRecipient &&
-          _feedbackSubjectPrefix == other._feedbackSubjectPrefix &&
+          rawFeedbackSubjectPrefix == other.rawFeedbackSubjectPrefix &&
           fontFamilyName == other.fontFamilyName &&
           customFontBytes == other.customFontBytes &&
           appbarIcon == other.appbarIcon &&
@@ -174,9 +172,9 @@ class ApplicationCustomization {
         appName,
         websiteLink,
         crashRecipient,
-        _crashSubjectPrefix,
+        rawCrashSubjectPrefix,
         feedbackRecipient,
-        _feedbackSubjectPrefix,
+        rawFeedbackSubjectPrefix,
         fontFamilyName,
         customFontBytes,
         appbarIcon,
@@ -193,9 +191,9 @@ class ApplicationCustomization {
       appName: appName,
       websiteLink: websiteLink,
       crashRecipient: crashRecipient,
-      crashSubjectPrefix: _crashSubjectPrefix,
+      rawCrashSubjectPrefix: rawCrashSubjectPrefix,
       feedbackRecipient: feedbackRecipient,
-      feedbackSubjectPrefix: _feedbackSubjectPrefix,
+      rawFeedbackSubjectPrefix: rawFeedbackSubjectPrefix,
       fontFamilyName: fontName,
       customFontBytes: fontBytes,
       appbarIcon: appbarIcon,
@@ -225,9 +223,9 @@ class ApplicationCustomization {
         appName: json['appName'] as String? ?? _defaultAppName,
         websiteLink: json['websiteLink'] as String? ?? _defaultWebsiteLink,
         crashRecipient: json['crashRecipient'] as String? ?? _defaultCrashRecipient,
-        crashSubjectPrefix: json['crashSubjectPrefix'] as String? ?? _defaultCrashSubjectPrefix,
+        rawCrashSubjectPrefix: json['crashSubjectPrefix'] as String? ?? _defaultCrashSubjectPrefix,
         feedbackRecipient: json['feedbackRecipient'] as String? ?? _defaultFeedbackRecipient,
-        feedbackSubjectPrefix: json['feedbackSubjectPrefix'] as String? ?? _defaultFeedbackSubjectPrefix,
+        rawFeedbackSubjectPrefix: json['feedbackSubjectPrefix'] as String? ?? _defaultFeedbackSubjectPrefix,
         customFontBytes: json['customFontBytes'] != null ? base64Decode(json['customFontBytes'] as String) : null,
         fontFamilyName: json['fontFamilyName'] as String? ?? _defaultFontName,
         appbarIcon: json['appbarIcon'] != null
@@ -260,9 +258,9 @@ class ApplicationCustomization {
         'appName': appName,
         'websiteLink': websiteLink,
         'crashRecipient': crashRecipient,
-        'crashSubjectPrefix': _crashSubjectPrefix,
+        'crashSubjectPrefix': rawCrashSubjectPrefix,
         'feedbackRecipient': feedbackRecipient,
-        'feedbackSubjectPrefix': _feedbackSubjectPrefix,
+        'feedbackSubjectPrefix': rawFeedbackSubjectPrefix,
         'fontFamilyName': fontFamilyName,
         'customFontBytes': customFontBytes != null ? base64Encode(customFontBytes!) : null,
         'appbarIcon': appbarIcon.toJson(),
