@@ -23,7 +23,6 @@ import 'dart:ui';
 import 'package:flutter/foundation.dart';
 
 import '../../l10n/app_localizations.dart';
-import '../../utils/identifiers.dart';
 import '../version.dart';
 
 /// This class contains all device specific settings. E.g., the language used, whether to show the guide on start, etc.
@@ -32,7 +31,7 @@ class SettingsState {
   static bool get showGuideOnStartDefault => true;
   static bool get hideOtpsDefault => false;
   static bool get enablePollingDefault => false;
-  static Set<String> get crashReportRecipientsDefault => {defaultCrashReportRecipient};
+  static Set<String> get crashReportRecipientsDefault => {};
   static Locale get localeDefault => AppLocalizations.supportedLocales
       .firstWhere((locale) => locale.languageCode == (!kIsWeb ? Platform.localeName.substring(0, 2) : 'en'), orElse: () => const Locale('en'));
 
