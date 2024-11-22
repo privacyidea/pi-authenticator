@@ -20,10 +20,6 @@
   limitations under the License.
 */
 
-// default email address for crash reports
-
-const defaultCrashReportRecipient = 'app-crash@netknights.it';
-
 // otp auth
 const OTP_AUTH_VERSION = 'v';
 const OTP_AUTH_CREATOR = 'creator';
