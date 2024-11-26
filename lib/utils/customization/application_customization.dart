@@ -1,14 +1,43 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2024 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import '../../../utils/customization/theme_customization.dart';
+import 'package:privacyidea_authenticator/utils/app_info_utils.dart';
 
+import '../../../utils/customization/theme_customization.dart';
 import '../../model/enums/app_feature.dart';
 import '../../model/enums/image_file_type.dart';
 import '../../model/widget_image.dart';
 
 class ApplicationCustomization {
+  static final defaultCustomization = ApplicationCustomization();
+  static const _defaultAppName = 'privacyIDEA Authenticator';
+  static const _defaultWebsiteLink = 'https://netknights.it/';
+  static const _defaultCrashRecipient = 'app-crash@netknights.it';
+  static const _defaultCrashSubjectPrefix = '(\$version) privacyIDEA Authenticator >>>';
+  static const _defaultFeedbackRecipient = 'app-crash@netknights.it';
+  static const _defaultFeedbackSubjectPrefix = '(\$version) privacyIDEA Authenticator >>> Feedback';
+  static const prefixVersionVariable = '\$version';
+
   static const String _defaultFontName = 'defaultFont';
   final String fontFamilyName;
   final Uint8List? customFontBytes;
@@ -43,34 +72,59 @@ class ApplicationCustomization {
 
   final String appName;
   final String websiteLink;
-  final WidgetImage appIcon;
-
-  final WidgetImage appImage;
+  final String crashRecipient;
+  final String rawCrashSubjectPrefix;
+  String get crashSubjectPrefix => rawCrashSubjectPrefix.replaceAll(prefixVersionVariable, AppInfoUtils.currentVersionAndBuildNumber);
+  final String feedbackRecipient;
+  final String rawFeedbackSubjectPrefix;
+  String get feedbackSubjectPrefix => rawFeedbackSubjectPrefix.replaceAll(prefixVersionVariable, AppInfoUtils.currentVersionAndBuildNumber);
+  final WidgetImage appbarIcon;
+  static const String appbarIconFileName = 'appbar_icon';
+  final WidgetImage splashScreenImage;
+  static const String splashScreenImageFileName = 'splash_screen_image';
+  final WidgetImage backgroundImage;
+  static const String backgroundImageFileName = 'background_image';
+  final WidgetImage licensesViewImage;
+  static const String licensesViewImageFileName = 'licenses_view_image';
 
   final ThemeCustomization lightTheme;
   final ThemeCustomization darkTheme;
   final Set<AppFeature> disabledFeatures;
 
-  static final defaultCustomization = ApplicationCustomization();
-
   ApplicationCustomization({
-    this.appName = 'privacyIDEA Authenticator',
-    this.websiteLink = 'https://netknights.it/',
+    this.appName = _defaultAppName,
+    this.websiteLink = _defaultWebsiteLink,
+    this.crashRecipient = _defaultCrashRecipient,
+    this.rawCrashSubjectPrefix = _defaultCrashSubjectPrefix,
+    this.feedbackRecipient = _defaultFeedbackRecipient,
+    this.rawFeedbackSubjectPrefix = _defaultFeedbackSubjectPrefix,
     this.fontFamilyName = _defaultFontName,
     this.customFontBytes,
-    WidgetImage? appIcon,
-    WidgetImage? appImage,
+    WidgetImage? appbarIcon,
+    WidgetImage? splashScreenImage,
+    WidgetImage? backgroundImage,
+    WidgetImage? licensesViewImage,
     this.lightTheme = ThemeCustomization.defaultLightTheme,
     this.darkTheme = ThemeCustomization.defaultDarkTheme,
     this.disabledFeatures = const {},
-  })  : appIcon = appIcon ?? WidgetImage(fileType: ImageFileType.png, imageData: defaultIconUint8List),
-        appImage = appImage ?? WidgetImage(fileType: ImageFileType.png, imageData: defaultImageUint8List);
+  })  : appbarIcon = appbarIcon ?? WidgetImage(fileType: ImageFileType.png, imageData: defaultIconUint8List, fileName: appbarIconFileName),
+        splashScreenImage =
+            splashScreenImage ?? WidgetImage(fileType: ImageFileType.png, imageData: defaultImageUint8List, fileName: splashScreenImageFileName),
+        backgroundImage = backgroundImage ?? WidgetImage(fileType: ImageFileType.png, imageData: defaultImageUint8List, fileName: backgroundImageFileName),
+        licensesViewImage =
+            licensesViewImage ?? WidgetImage(fileType: ImageFileType.png, imageData: defaultImageUint8List, fileName: licensesViewImageFileName);
 
   ApplicationCustomization copyWith({
     String? appName,
     String? websiteLink,
-    WidgetImage? appIcon,
-    WidgetImage? appImage,
+    String? crashRecipient,
+    String? crashSubjectPrefix,
+    String? feedbackRecipient,
+    String? feedbackSubjectPrefix,
+    WidgetImage? appbarIcon,
+    WidgetImage? splashScreenImage,
+    WidgetImage? backgroundImage,
+    WidgetImage? licensesViewImage,
     ThemeCustomization? lightTheme,
     ThemeCustomization? darkTheme,
     Set<AppFeature>? disabledFeatures,
@@ -78,21 +132,74 @@ class ApplicationCustomization {
       ApplicationCustomization(
         appName: appName ?? this.appName,
         websiteLink: websiteLink ?? this.websiteLink,
-        appIcon: appIcon ?? this.appIcon,
-        appImage: appImage ?? this.appImage,
+        crashRecipient: crashRecipient ?? this.crashRecipient,
+        rawCrashSubjectPrefix: crashSubjectPrefix ?? rawCrashSubjectPrefix,
+        feedbackRecipient: feedbackRecipient ?? this.feedbackRecipient,
+        rawFeedbackSubjectPrefix: feedbackSubjectPrefix ?? rawFeedbackSubjectPrefix,
+        fontFamilyName: fontFamilyName,
+        customFontBytes: customFontBytes,
+        appbarIcon: appbarIcon ?? this.appbarIcon,
+        splashScreenImage: splashScreenImage ?? this.splashScreenImage,
+        backgroundImage: backgroundImage ?? this.backgroundImage,
+        licensesViewImage: licensesViewImage ?? this.licensesViewImage,
         lightTheme: lightTheme ?? this.lightTheme,
         darkTheme: darkTheme ?? this.darkTheme,
         disabledFeatures: disabledFeatures ?? this.disabledFeatures,
       );
 
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ApplicationCustomization &&
+          appName == other.appName &&
+          websiteLink == other.websiteLink &&
+          crashRecipient == other.crashRecipient &&
+          rawCrashSubjectPrefix == other.rawCrashSubjectPrefix &&
+          feedbackRecipient == other.feedbackRecipient &&
+          rawFeedbackSubjectPrefix == other.rawFeedbackSubjectPrefix &&
+          fontFamilyName == other.fontFamilyName &&
+          customFontBytes == other.customFontBytes &&
+          appbarIcon == other.appbarIcon &&
+          splashScreenImage == other.splashScreenImage &&
+          backgroundImage == other.backgroundImage &&
+          licensesViewImage == other.licensesViewImage &&
+          lightTheme == other.lightTheme &&
+          darkTheme == other.darkTheme &&
+          disabledFeatures == other.disabledFeatures;
+
+  @override
+  int get hashCode => Object.hashAll([
+        appName,
+        websiteLink,
+        crashRecipient,
+        rawCrashSubjectPrefix,
+        feedbackRecipient,
+        rawFeedbackSubjectPrefix,
+        fontFamilyName,
+        customFontBytes,
+        appbarIcon,
+        splashScreenImage,
+        backgroundImage,
+        licensesViewImage,
+        lightTheme,
+        darkTheme,
+        disabledFeatures,
+      ]);
+
   Future<ApplicationCustomization> updateFont(Uint8List fontBytes, String fontName) async {
     final newState = ApplicationCustomization(
       appName: appName,
       websiteLink: websiteLink,
-      customFontBytes: fontBytes,
+      crashRecipient: crashRecipient,
+      rawCrashSubjectPrefix: rawCrashSubjectPrefix,
+      feedbackRecipient: feedbackRecipient,
+      rawFeedbackSubjectPrefix: rawFeedbackSubjectPrefix,
       fontFamilyName: fontName,
-      appIcon: appIcon,
-      appImage: appImage,
+      customFontBytes: fontBytes,
+      appbarIcon: appbarIcon,
+      splashScreenImage: splashScreenImage,
+      backgroundImage: backgroundImage,
+      licensesViewImage: licensesViewImage,
       lightTheme: lightTheme,
       darkTheme: darkTheme,
       disabledFeatures: disabledFeatures,
@@ -113,12 +220,34 @@ class ApplicationCustomization {
   ThemeData generateDarkTheme() => darkTheme.generateTheme(fontFamily: customFontBytes != null ? fontFamilyName : null);
 
   factory ApplicationCustomization.fromJson(Map<String, dynamic> json) => ApplicationCustomization(
-        appName: json['appName'] as String? ?? 'privacyIDEA Authenticator',
-        websiteLink: json['websiteLink'] as String? ?? 'https://netknights.it/',
+        appName: json['appName'] as String? ?? _defaultAppName,
+        websiteLink: json['websiteLink'] as String? ?? _defaultWebsiteLink,
+        crashRecipient: json['crashRecipient'] as String? ?? _defaultCrashRecipient,
+        rawCrashSubjectPrefix: json['crashSubjectPrefix'] as String? ?? _defaultCrashSubjectPrefix,
+        feedbackRecipient: json['feedbackRecipient'] as String? ?? _defaultFeedbackRecipient,
+        rawFeedbackSubjectPrefix: json['feedbackSubjectPrefix'] as String? ?? _defaultFeedbackSubjectPrefix,
         customFontBytes: json['customFontBytes'] != null ? base64Decode(json['customFontBytes'] as String) : null,
         fontFamilyName: json['fontFamilyName'] as String? ?? _defaultFontName,
-        appIcon: json['appIcon'] == null ? null : WidgetImage.fromJson(json['appIcon'] as Map<String, dynamic>),
-        appImage: json['appImage'] == null ? null : WidgetImage.fromJson(json['appImage'] as Map<String, dynamic>),
+        appbarIcon: json['appbarIcon'] != null
+            ? WidgetImage.fromJson(json['appbarIcon'] as Map<String, dynamic>)
+            : json['appIcon'] != null
+                ? WidgetImage.fromJson(json['appIcon'] as Map<String, dynamic>)
+                : null,
+        splashScreenImage: json['splashScreenImage'] != null
+            ? WidgetImage.fromJson(json['splashScreenImage'] as Map<String, dynamic>)
+            : json['appImage'] != null
+                ? WidgetImage.fromJson(json['appImage'] as Map<String, dynamic>)
+                : null,
+        backgroundImage: json['backgroundImage'] != null
+            ? WidgetImage.fromJson(json['backgroundImage'] as Map<String, dynamic>)
+            : json['appImage'] != null
+                ? WidgetImage.fromJson(json['appImage'] as Map<String, dynamic>)
+                : null,
+        licensesViewImage: json['licensesViewImage'] != null
+            ? WidgetImage.fromJson(json['licensesViewImage'] as Map<String, dynamic>)
+            : json['appImage'] != null
+                ? WidgetImage.fromJson(json['appImage'] as Map<String, dynamic>)
+                : null,
         lightTheme: json['lightTheme'] != null ? ThemeCustomization.fromJson(json['lightTheme'] as Map<String, dynamic>) : ThemeCustomization.defaultLightTheme,
         darkTheme: json['darkTheme'] != null ? ThemeCustomization.fromJson(json['darkTheme'] as Map<String, dynamic>) : ThemeCustomization.defaultDarkTheme,
         disabledFeatures:
@@ -128,10 +257,16 @@ class ApplicationCustomization {
   Map<String, dynamic> toJson() => {
         'appName': appName,
         'websiteLink': websiteLink,
-        'customFontBytes': customFontBytes != null ? base64Encode(customFontBytes!) : null,
+        'crashRecipient': crashRecipient,
+        'crashSubjectPrefix': rawCrashSubjectPrefix,
+        'feedbackRecipient': feedbackRecipient,
+        'feedbackSubjectPrefix': rawFeedbackSubjectPrefix,
         'fontFamilyName': fontFamilyName,
-        'appIcon': appIcon.toJson(),
-        'appImage': appImage.toJson(),
+        'customFontBytes': customFontBytes != null ? base64Encode(customFontBytes!) : null,
+        'appbarIcon': appbarIcon.toJson(),
+        'splashScreenImage': splashScreenImage.toJson(),
+        'backgroundImage': backgroundImage.toJson(),
+        'licensesViewImage': licensesViewImage.toJson(),
         'lightTheme': lightTheme.toJson(),
         'darkTheme': darkTheme.toJson(),
         'disabledFeatures': disabledFeatures.map((e) => e.name).toList(),

@@ -11,11 +11,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
 import 'package:mutex/mutex.dart';
 import 'package:pointycastle/asymmetric/api.dart';
-import '../model/enums/token_import_type.dart';
 
 import '../interfaces/repo/token_repository.dart';
 import '../l10n/app_localizations.dart';
 import '../model/enums/push_token_rollout_state.dart';
+import '../model/enums/token_import_type.dart';
 import '../model/enums/token_origin_source_type.dart';
 import '../model/extensions/enums/push_token_rollout_state_extension.dart';
 import '../model/extensions/enums/token_origin_source_type.dart';
@@ -375,7 +375,7 @@ class TokenNotifier extends StateNotifier<TokenState> {
         hideLockedTokens.add(token);
       }
     }
-    return await updateTokens(hideLockedTokens, (p0) => p0.copyWith(isHidden: true));
+    return await _updateTokens(hideLockedTokens, (p0) => p0.copyWith(isHidden: true));
   }
 
   Future<void> removeToken(Token token) async {
