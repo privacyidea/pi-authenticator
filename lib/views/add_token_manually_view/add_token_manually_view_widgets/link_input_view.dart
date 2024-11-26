@@ -37,7 +37,7 @@ class _LinkInputViewState extends ConsumerState<LinkInputView> {
 
   Future<void> addToken(Uri link) async {
     if (link.scheme != 'otpauth') {
-      ref.read(statusMessageProvider.notifier).state = (AppLocalizations.of(context)!.linkMustOtpAuth, '');
+      ref.read(statusMessageProvider.notifier).state = (AppLocalizations.of(context)!.linkMustOtpAuth, null);
       return;
     }
     await ref.read(tokenProvider.notifier).handleLink(link);
@@ -76,7 +76,7 @@ class _LinkInputViewState extends ConsumerState<LinkInputView> {
                 onPressed: () async {
                   ClipboardData? data = await Clipboard.getData('text/plain');
                   if (data == null || data.text == null || data.text!.isEmpty) {
-                    if (context.mounted) ref.read(statusMessageProvider.notifier).state = (AppLocalizations.of(context)!.clipboardEmpty, '');
+                    if (context.mounted) ref.read(statusMessageProvider.notifier).state = (AppLocalizations.of(context)!.clipboardEmpty, null);
                     return;
                   }
                   setState(() => textController.text = data.text ?? '');

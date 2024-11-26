@@ -23,7 +23,10 @@ import 'globals.dart';
 import 'logger.dart';
 import 'riverpod/riverpod_providers/state_providers/status_message_provider.dart';
 
+/// Shows a snackbar message to the user for 3 seconds.
 ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? showSnackBar(String message) => _showSnackBar(message, const Duration(seconds: 3));
+
+/// Shows a snackbar message to the user for 10 seconds.
 ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? showSnackBarLong(String message) => _showSnackBar(message, const Duration(seconds: 10));
 
 /// Shows a snackbar message to the user for a given `Duration`.
