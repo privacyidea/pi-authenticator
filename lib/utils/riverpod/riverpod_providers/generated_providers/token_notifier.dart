@@ -479,7 +479,10 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     await removeTokens(tokens);
   }
 
-  Future<void> _removePushToken(PushToken token) async {
+  Future<bool> _removePushToken(PushToken token) async {
+    if (token.fbToken == null) {
+      return _removeToken(token);
+    }
     try {
       await _firebaseUtils.deleteFirebaseToken();
     } on SocketException {
@@ -488,23 +491,36 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
         AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorUnlinkingPushToken(token.label),
         AppLocalizations.of(globalNavigatorKey.currentContext!)!.checkYourNetwork,
       );
+      return false;
+    }
+    final deleted = await _removeToken(token);
+    if (deleted) {
+      Logger.info('Push token "${token.id}" removed successfully.');
+    } else {
+      Logger.warning('Push token "${token.id}" could not be removed.');
+    }
+    final fbToken = await _firebaseUtils.getFBToken();
+
+    if (fbToken == null) {
+      await _updateTokens(state.pushTokens, (p0) => p0.copyWith(fbToken: null));
+      Logger.warning('Could not update firebase token because no firebase token is available.');
+      ref.read(statusMessageProvider.notifier).state = (
+        AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorSynchronizationNoNetworkConnection,
+        AppLocalizations.of(globalNavigatorKey.currentContext!)!.syncFbTokenManuallyWhenNetworkIsAvailable,
+      );
+      return deleted;
     }
 
-    _firebaseUtils.getFBToken().then((fbToken) async {
-      if (fbToken == null) {
-        await _updateTokens(state.pushTokens, (p0) => p0.copyWith(fbToken: null));
-        Logger.warning('Could not update firebase token because no firebase token is available.');
-        ref.read(statusMessageProvider.notifier).state = (
-          AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorSynchronizationNoNetworkConnection,
-          AppLocalizations.of(globalNavigatorKey.currentContext!)!.syncFbTokenManuallyWhenNetworkIsAvailable,
-        );
-      }
-      final (notUpdated, _) = (await updateFirebaseToken(fbToken)) ?? (<PushToken>[], <PushToken>[]);
-      await _updateTokens(notUpdated, (p0) => p0.copyWith(fbToken: null));
-      return;
-    });
-    await _removeToken(token);
-    Logger.info('Push token "${token.id}" removed successfully.');
+    final (notUpdated, _) = (await updateFirebaseToken(fbToken)) ?? (<PushToken>[], <PushToken>[]);
+    await _updateTokens(notUpdated, (p0) => p0.copyWith(fbToken: null));
+    if (notUpdated.isNotEmpty) {
+      Logger.warning('Could not update firebase token for ${notUpdated.length} tokens.');
+      ref.read(statusMessageProvider.notifier).state = (
+        AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorSynchronizationNoNetworkConnection,
+        AppLocalizations.of(globalNavigatorKey.currentContext!)!.syncFbTokenManuallyWhenNetworkIsAvailable,
+      );
+    }
+    return deleted;
   }
 
   Future<bool> rolloutPushToken(PushToken token) async {
