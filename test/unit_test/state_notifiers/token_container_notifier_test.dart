@@ -32,7 +32,7 @@ void main() {
 }
 
 TokenContainerState _buildUnfinalizedContainerState() => TokenContainerState(
-      container: [
+      containerList: [
         TokenContainerUnfinalized(
           issuer: 'issuer',
           nonce: 'nonce',
@@ -47,7 +47,7 @@ TokenContainerState _buildUnfinalizedContainerState() => TokenContainerState(
     );
 
 TokenContainerState _buildFinalizedContainerState() => TokenContainerState(
-      container: [
+      containerList: [
         TokenContainerFinalized(
           serverName: 'privacyIDEA',
           issuer: 'privacyIDEA',
@@ -92,7 +92,7 @@ void _testTokenContainerNotifier() {
         } else {
           newList = List<TokenContainer>.from(containerRepoState.containerList)..[i] = container;
         }
-        containerRepoState = TokenContainerState(container: newList);
+        containerRepoState = TokenContainerState(containerList: newList);
         return Future.value(containerRepoState);
       });
       final tokenContainerProvider = tokenContainerNotifierProviderOf(
@@ -122,7 +122,7 @@ void _testTokenContainerNotifier() {
         } else {
           newList = List<TokenContainer>.from(containerRepoState.containerList)..[i] = container;
         }
-        containerRepoState = TokenContainerState(container: newList);
+        containerRepoState = TokenContainerState(containerList: newList);
         return Future.value(containerRepoState);
       });
       final tokenContainerProvider = tokenContainerNotifierProviderOf(
@@ -171,7 +171,7 @@ void _testTokenContainerNotifier() {
         } else {
           newList = List<TokenContainer>.from(containerRepoState.containerList)..[i] = container;
         }
-        containerRepoState = TokenContainerState(container: newList);
+        containerRepoState = TokenContainerState(containerList: newList);
         return Future.value(containerRepoState);
       });
       when(mockContainerRepo.saveContainerState(any)).thenAnswer((invocation) {
@@ -235,7 +235,7 @@ void _testTokenContainerNotifier() {
         } else {
           newList = List<TokenContainer>.from(containerRepoState.containerList)..[i] = container;
         }
-        containerRepoState = TokenContainerState(container: newList);
+        containerRepoState = TokenContainerState(containerList: newList);
         return Future.value(containerRepoState);
       });
       final tokenContainerProvider = tokenContainerNotifierProviderOf(
@@ -264,7 +264,7 @@ void _testTokenContainerNotifier() {
       final container = ProviderContainer();
       var containerRepoState = _buildUnfinalizedContainerState();
       containerRepoState = containerRepoState.copyWith(
-        container: [
+        containerList: [
           containerRepoState.containerList.first,
           TokenContainerUnfinalized(
             issuer: 'issuer2',
@@ -291,7 +291,7 @@ void _testTokenContainerNotifier() {
         } else {
           newList = List<TokenContainer>.from(containerRepoState.containerList)..[i] = container;
         }
-        containerRepoState = TokenContainerState(container: newList);
+        containerRepoState = TokenContainerState(containerList: newList);
         return Future.value(containerRepoState);
       });
       when(mockContainerRepo.saveContainerList(any)).thenAnswer((invocation) {
@@ -301,7 +301,7 @@ void _testTokenContainerNotifier() {
           final i = newList.indexWhere((element) => element.serial == container.serial);
           newList[i] = container;
         }
-        containerRepoState = TokenContainerState(container: newList);
+        containerRepoState = TokenContainerState(containerList: newList);
         return Future.value(containerRepoState);
       });
       final tokenContainerProvider = tokenContainerNotifierProviderOf(
@@ -343,7 +343,7 @@ void _testTokenContainerNotifier() {
         } else {
           newList = List<TokenContainer>.from(containerRepoState.containerList)..[i] = container;
         }
-        containerRepoState = TokenContainerState(container: newList);
+        containerRepoState = TokenContainerState(containerList: newList);
         return Future.value(containerRepoState);
       });
       when(mockContainerRepo.deleteContainer(any)).thenAnswer((invocation) {
@@ -353,7 +353,7 @@ void _testTokenContainerNotifier() {
           return Future.value(containerRepoState);
         }
         final newList = List<TokenContainer>.from(containerRepoState.containerList)..removeAt(i);
-        containerRepoState = TokenContainerState(container: newList);
+        containerRepoState = TokenContainerState(containerList: newList);
         return Future.value(containerRepoState);
       });
       final tokenContainerProvider = tokenContainerNotifierProviderOf(
@@ -377,7 +377,7 @@ void _testTokenContainerNotifier() {
       final container = ProviderContainer();
       var containerRepoState = _buildUnfinalizedContainerState();
       containerRepoState = containerRepoState.copyWith(
-        container: [
+        containerList: [
           containerRepoState.containerList.first,
           TokenContainerUnfinalized(
             issuer: 'issuer2',
@@ -418,7 +418,7 @@ void _testTokenContainerNotifier() {
         } else {
           newList = List<TokenContainer>.from(containerRepoState.containerList)..[i] = container;
         }
-        containerRepoState = TokenContainerState(container: newList);
+        containerRepoState = TokenContainerState(containerList: newList);
         return Future.value(containerRepoState);
       });
       final tokenContainerProvider = tokenContainerNotifierProviderOf(
@@ -442,7 +442,7 @@ void _testTokenContainerNotifier() {
     test('handleProcessorResult', () async {
       // prepare
       TestWidgetsFlutterBinding.ensureInitialized();
-      var containerRepoState = TokenContainerState(container: []);
+      var containerRepoState = TokenContainerState(containerList: []);
       final mockContainerRepo = MockTokenContainerRepository();
       final mockContainerApi = MockTokenContainerApi();
       when(mockContainerApi.finalizeContainer(any, any)).thenAnswer(
@@ -492,7 +492,7 @@ void _testTokenContainerNotifier() {
         } else {
           newList = List<TokenContainer>.from(containerRepoState.containerList)..[i] = container;
         }
-        containerRepoState = TokenContainerState(container: newList);
+        containerRepoState = TokenContainerState(containerList: newList);
         return Future.value(containerRepoState);
       });
 
@@ -633,7 +633,7 @@ void _testTokenContainerNotifier() {
         } else {
           newList = List<TokenContainer>.from(containerRepoState.containerList)..[i] = container;
         }
-        containerRepoState = TokenContainerState(container: newList);
+        containerRepoState = TokenContainerState(containerList: newList);
         return Future.value(containerRepoState);
       });
 
@@ -876,7 +876,7 @@ MockTokenContainerRepository _setupMockContainerRepo(
     } else {
       newList = List<TokenContainer>.from(stateGetter().containerList)..[i] = container;
     }
-    stateSetter(TokenContainerState(container: newList));
+    stateSetter(TokenContainerState(containerList: newList));
     return Future.value(stateGetter());
   });
   when(mockContainerRepo.saveContainerState(any)).thenAnswer((invocation) {
@@ -894,7 +894,7 @@ MockTokenContainerRepository _setupMockContainerRepo(
         newList[i] = container;
       }
     }
-    stateSetter(TokenContainerState(container: newList));
+    stateSetter(TokenContainerState(containerList: newList));
     return Future.value(stateGetter());
   });
   when(mockContainerRepo.deleteContainer(any)).thenAnswer((invocation) {
@@ -904,11 +904,11 @@ MockTokenContainerRepository _setupMockContainerRepo(
       return Future.value(stateGetter());
     }
     final newList = List<TokenContainer>.from(stateGetter().containerList)..removeAt(i);
-    stateSetter(TokenContainerState(container: newList));
+    stateSetter(TokenContainerState(containerList: newList));
     return Future.value(stateGetter());
   });
   when(mockContainerRepo.deleteAllContainer()).thenAnswer((_) {
-    stateSetter(TokenContainerState(container: []));
+    stateSetter(TokenContainerState(containerList: []));
     return Future.value(stateGetter());
   });
 
@@ -921,7 +921,7 @@ MockTokenContainerRepository _setupMockContainerRepo(
     } else {
       newList = List<TokenContainer>.from(stateGetter().containerList)..[i] = container;
     }
-    stateSetter(TokenContainerState(container: newList));
+    stateSetter(TokenContainerState(containerList: newList));
     return Future.value(stateGetter());
   });
   return mockContainerRepo;

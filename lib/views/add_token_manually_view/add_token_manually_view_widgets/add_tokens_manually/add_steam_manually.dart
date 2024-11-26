@@ -39,7 +39,7 @@ import '../rows/secret_input_field.dart';
 import '../rows/token_type_dropdown_button.dart';
 import 'add_token_manually_interface.dart';
 
-class AddSteamManually extends AddTokenManually {
+class AddSteamManually extends AddTokenManuallyPage {
   final TextEditingController labelController;
 
   final TextEditingController secretController;
@@ -61,7 +61,7 @@ class AddSteamManually extends AddTokenManually {
       autoValidateLabel.value = true;
       return null;
     }
-    if (SecretInputField.validator(secretController.text, Encodings.none) != null) {
+    if (SecretInputField.validator(secretController.text, Encodings.base32) != null) {
       autoValidateSecret.value = true;
       return null;
     }
@@ -79,8 +79,8 @@ class AddSteamManually extends AddTokenManually {
   // int? digits, // unused steam tokens always have 5 digits
   // Algorithms? algorithm, // unused steam tokens always have SHA1 algorithm
   @override
-  Column build(BuildContext context) => Column(
-        children: [
+  AddTokenManually build(BuildContext context) => AddTokenManually(
+        fields: [
           LabelInputField(
             controller: labelController,
             autoValidate: autoValidateLabel,
@@ -88,12 +88,12 @@ class AddSteamManually extends AddTokenManually {
           SecretInputField(
             controller: secretController,
             autoValidate: autoValidateSecret,
-            encodingNotifier: ValueNotifier(Encodings.none),
+            encodingNotifier: ValueNotifier(Encodings.base32),
           ),
           TokenTypeDropdownButton(typeNotifier: typeNotifier),
           const EncodingsDropdownButton(
             enabled: false,
-            values: [Encodings.none],
+            values: [Encodings.base32],
           ),
           const AlgorithmsDropdownButton(
             enabled: false,
@@ -108,11 +108,11 @@ class AddSteamManually extends AddTokenManually {
             unit: DurationUnit.seconds,
             values: [Duration(seconds: 30)],
           ),
-          AddTokenButton(
-            autoValidateLabel: autoValidateLabel,
-            autoValidateSecret: autoValidateSecret,
-            tokenBuilder: _tokenBuilder,
-          ),
         ],
+        button: AddTokenButton(
+          autoValidateLabel: autoValidateLabel,
+          autoValidateSecret: autoValidateSecret,
+          tokenBuilder: _tokenBuilder,
+        ),
       );
 }

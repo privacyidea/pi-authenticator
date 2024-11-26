@@ -23,9 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_zxing/flutter_zxing.dart' as zxing;
 import 'package:flutter_zxing/flutter_zxing.dart';
-import 'package:image/image.dart' as img_lib;
 import 'package:image_picker/image_picker.dart';
-import 'package:zxing2/qrcode.dart';
 
 import '../../../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../l10n/app_localizations.dart';
@@ -345,33 +343,4 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
     Navigator.of(context).pop(tokensToImport);
     return null;
   }
-}
-
-Future<Result?> _decodeQrImageIsolate(List<dynamic> args) async {
-  var image = args[0] as img_lib.Image;
-  final int rotation = args[1] as int;
-  final int zoomLevel = args[2] as int;
-  if (zoomLevel > 0) {
-    final size = image.width < image.height ? image.width : image.height;
-    final crop = (size * 0.02).floor() * zoomLevel;
-    final x = (image.width - size) ~/ 2 + crop;
-    final y = (image.height - size) ~/ 2 + crop;
-    image = img_lib.copyCrop(image, x: x, y: y, width: size - crop, height: size - crop);
-  }
-  if (rotation > 0) {
-    image = img_lib.copyRotate(image, angle: rotation);
-  }
-
-  LuminanceSource source = RGBLuminanceSource(
-    image.width,
-    image.height,
-    image.convert(numChannels: 4).getBytes(order: img_lib.ChannelOrder.abgr).buffer.asInt32List(),
-  );
-
-  return QRCodeReader().decode(
-    BinaryBitmap(GlobalHistogramBinarizer(source)),
-    hints: DecodeHints()
-      ..put(DecodeHintType.tryHarder)
-      ..put(DecodeHintType.possibleFormats, [BarcodeFormat.qrCode]),
-  );
 }

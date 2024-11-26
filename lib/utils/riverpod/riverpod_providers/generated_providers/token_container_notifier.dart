@@ -109,7 +109,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
       final fixedSyncState = c.syncState == SyncState.syncing ? SyncState.failed : c.syncState;
       return c.copyWith(syncState: fixedSyncState);
     }).toList();
-    initState = initState.copyWith(container: containerList);
+    initState = initState.copyWith(containerList: containerList);
     for (var container in initState.containerList.whereType<TokenContainerUnfinalized>()) {
       finalize(container, isManually: false);
     }
@@ -270,7 +270,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     }
     combinedContainers.addAll(newContainers);
     Logger.debug('Combined container: $combinedContainers');
-    final newState = await _saveContainersStateToRepo(TokenContainerState(container: combinedContainers));
+    final newState = await _saveContainersStateToRepo(TokenContainerState(containerList: combinedContainers));
     Logger.debug('Saved container: $newState');
     await update((_) => newState);
     Logger.debug('Updated container: $newState');
@@ -368,7 +368,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
         newContainers.remove(newContainer);
       }
     }
-    final newState = await _saveContainersStateToRepo(TokenContainerState(container: combinedContainers));
+    final newState = await _saveContainersStateToRepo(TokenContainerState(containerList: combinedContainers));
     await update((_) => newState);
     _stateMutex.release();
     return newState;

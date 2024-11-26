@@ -57,7 +57,7 @@ class _LinkInputViewState extends ConsumerState<LinkInputView> {
                   child: TextFormField(
                     controller: textController,
                     decoration: InputDecoration(
-                      labelText: AppLocalizations.of(context)!.tokenLink,
+                      labelText: AppLocalizations.of(context)!.tokenLinkImport,
                     ),
                     keyboardType: TextInputType.url,
                     textInputAction: TextInputAction.done,

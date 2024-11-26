@@ -34,8 +34,8 @@ part 'token_container_state.g.dart';
 class TokenContainerState with _$TokenContainerState {
   const TokenContainerState._();
   const factory TokenContainerState({
-    required List<TokenContainer> container,
-  }) = _CredentialsState;
+    required List<TokenContainer> containerList,
+  }) = _TokenContainerState;
 
   bool get hasFinalizedContainers => containerList.any((container) => container is TokenContainerFinalized);
 
@@ -45,8 +45,8 @@ class TokenContainerState with _$TokenContainerState {
   }
 
   static TokenContainerState fromJsonStringList(List<String> jsonStrings) {
-    final container = jsonStrings.map((jsonString) => TokenContainer.fromJson(jsonDecode(jsonString))).toList();
-    return TokenContainerState(container: container);
+    final containerList = jsonStrings.map((jsonString) => TokenContainer.fromJson(jsonDecode(jsonString))).toList();
+    return TokenContainerState(containerList: containerList);
   }
 
   T? currentOf<T extends TokenContainer>(TokenContainer container) {

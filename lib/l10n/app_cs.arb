@@ -1419,7 +1419,7 @@
   "authToDeclinePushRequest": "Pro odmítnutí požadavku na push notifikaci se přihlaste.",
   "authenticateToShowOtp": "Pro zobrazení jednorázového kódu se přihlaste.",
   "authenticateToUnLockToken": "Pro změnu uzamčení tokenu se přihlaste.",
-  "authenticationRequest": "Žádost o ověření",
+  "authentication": "Žádost o ověření",
   "biometricHint": "Vyžadováno přihlášení",
   "biometricNotRecognized": "Ověření se nezdařilo. Zkuste to znovu.",
   "biometricRequiredTitle": "Biometrické ověření není nastaveno",

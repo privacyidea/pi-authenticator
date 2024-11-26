@@ -25,11 +25,13 @@ import '../../l10n/app_localizations.dart';
 import '../../model/enums/algorithms.dart';
 import '../../model/enums/encodings.dart';
 import '../../model/enums/token_types.dart';
+import 'add_token_manually_view_widgets/PageViewIndicator.dart';
 import 'add_token_manually_view_widgets/add_tokens_manually/add_daypassword_manually.dart';
 import 'add_token_manually_view_widgets/add_tokens_manually/add_hotp_manually.dart';
 import 'add_token_manually_view_widgets/add_tokens_manually/add_steam_manually.dart';
 import 'add_token_manually_view_widgets/add_tokens_manually/add_token_manually_interface.dart';
 import 'add_token_manually_view_widgets/add_tokens_manually/add_totp_manually.dart';
+import 'add_token_manually_view_widgets/link_input_field.dart';
 
 class AddTokenManuallyView extends ConsumerStatefulWidget {
   static const routeName = '/add_token_manually';
@@ -45,6 +47,9 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
 
   late TextEditingController labelController;
   late TextEditingController secretController;
+  final PageController pageController = PageController();
+
+  // fields needed to manage the widget
 
   late ValueNotifier<bool> autoValidateLabel;
   late ValueNotifier<bool> autoValidateSecret;
@@ -91,7 +96,7 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
 
   @override
   Widget build(BuildContext context) {
-    final AddTokenManually column = switch (selectedTypeNotifier.value) {
+    final AddTokenManuallyPage page = switch (selectedTypeNotifier.value) {
       const (TokenTypes.HOTP) => AddHotpManually(
           labelController: labelController,
           secretController: secretController,
@@ -144,9 +149,31 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
           maxLines: 2, // Title can be shown on small screens too.
         ),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
-        child: column,
+      body: Column(
+        children: [
+          PageViewIndicator(
+            controller: pageController,
+            icons: [
+              Icon(Icons.edit),
+              Icon(Icons.link),
+            ],
+          ),
+          Expanded(
+            child: PageView(
+              controller: pageController,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+                  child: page,
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+                  child: LinkInputView(),
+                )
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -39,7 +39,7 @@ import '../rows/secret_input_field.dart';
 import '../rows/token_type_dropdown_button.dart';
 import 'add_token_manually_interface.dart';
 
-class AddHotpManually extends AddTokenManually {
+class AddHotpManually extends AddTokenManuallyPage {
   final TextEditingController labelController;
   final TextEditingController secretController;
 
@@ -90,8 +90,8 @@ class AddHotpManually extends AddTokenManually {
   }
 
   @override
-  Column build(BuildContext context) => Column(
-        children: [
+  AddTokenManually build(BuildContext context) => AddTokenManually(
+        fields: [
           LabelInputField(
             controller: labelController,
             autoValidate: autoValidateLabel,
@@ -106,11 +106,11 @@ class AddHotpManually extends AddTokenManually {
           AlgorithmsDropdownButton(algorithmsNotifier: algorithmsNotifier),
           DigitsDropdownButton(digitsNotifier: digitsNotifier),
           CounterInputField(counterNotifier: counterNotifier),
-          AddTokenButton(
-            autoValidateLabel: autoValidateLabel,
-            autoValidateSecret: autoValidateSecret,
-            tokenBuilder: _tryBuildToken,
-          ),
         ],
+        button: AddTokenButton(
+          autoValidateLabel: autoValidateLabel,
+          autoValidateSecret: autoValidateSecret,
+          tokenBuilder: _tryBuildToken,
+        ),
       );
 }

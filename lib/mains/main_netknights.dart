@@ -61,8 +61,7 @@ void main() async {
         if (app?.isAutomaticDataCollectionEnabled == true) {
           Logger.error('Automatic data collection should not be enabled');
         }
-        final customization = ApplicationCustomization.defaultCustomization;
-        runApp(AppWrapper(child: PrivacyIDEAAuthenticator(customization)));
+        runApp(AppWrapper(child: PrivacyIDEAAuthenticator(ApplicationCustomization.defaultCustomization)));
       });
 }
 

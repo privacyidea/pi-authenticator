@@ -1419,7 +1419,7 @@
   "authToDeclinePushRequest": "Authenticeer om de push aanvraag te weigeren.",
   "authenticateToShowOtp": "Authenticeer om het eenmalige wachtwoord te tonen.",
   "authenticateToUnLockToken": "Authenticeer om de vergrendeling van de token te wijzigen.",
-  "authenticationRequest": "Verificatieverzoek",
+  "authentication": "Verificatieverzoek",
   "biometricHint": "Authenticatie vereist",
   "biometricNotRecognized": "Niet herkend. Probeer opnieuw.",
   "biometricRequiredTitle": "Biometrie is niet ingesteld",
