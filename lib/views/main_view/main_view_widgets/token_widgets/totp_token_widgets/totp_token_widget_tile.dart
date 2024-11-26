@@ -58,7 +58,7 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> {
   Widget build(BuildContext context) {
     return TokenWidgetTile(
       key: Key('${widget.token.hashCode}TokenWidgetTile'),
-      titleTooltip: widget.token.isHidden ? AppLocalizations.of(context)!.authenticateToShowOtp : AppLocalizations.of(context)!.copyOTPToClipboard,
+      semanticsLabel: widget.token.isHidden ? AppLocalizations.of(context)!.authenticateToShowOtp : AppLocalizations.of(context)!.copyOTPToClipboard,
       titleOnTap: widget.isPreview
           ? null
           : widget.token.isLocked && widget.token.isHidden

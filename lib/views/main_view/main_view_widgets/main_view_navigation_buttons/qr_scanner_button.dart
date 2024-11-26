@@ -35,30 +35,32 @@ class QrScannerButton extends ConsumerWidget {
   const QrScannerButton({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => FloatingActionButton(
-        onPressed: () async {
-          if (await Permission.camera.isPermanentlyDenied) {
-            showAsyncDialog(
-              builder: (_) => DefaultDialog(
-                title: Text(AppLocalizations.of(context)!.grantCameraPermissionDialogTitle),
-                content: Text(AppLocalizations.of(context)!.grantCameraPermissionDialogPermanentlyDenied),
-              ),
-            );
-            return;
-          }
-          if (globalNavigatorKey.currentContext == null) return;
+  Widget build(BuildContext context, WidgetRef ref) => Semantics(
+        label: AppLocalizations.of(context)!.a11yScanQrCodeButton,
+        child: FloatingActionButton(
+          onPressed: () async {
+            if (await Permission.camera.isPermanentlyDenied) {
+              showAsyncDialog(
+                builder: (_) => DefaultDialog(
+                  title: Text(AppLocalizations.of(context)!.grantCameraPermissionDialogTitle),
+                  content: Text(AppLocalizations.of(context)!.grantCameraPermissionDialogPermanentlyDenied),
+                ),
+              );
+              return;
+            }
+            if (globalNavigatorKey.currentContext == null) return;
 
-          /// Open the QR-code scanner and call `handleQrCode`, with the scanned code as the argument.
-          Navigator.pushNamed(globalNavigatorKey.currentContext!, QRScannerView.routeName).then((qrCode) {
-            final resultHandlers = <ResultHandler>[
-              ref.read(tokenProvider.notifier),
-              ref.read(tokenContainerProvider.notifier),
-            ];
-            if (qrCode == null || !context.mounted) return;
-            scanQrCode(context: context, resultHandlerList: resultHandlers, qrCode: qrCode);
-          });
-        },
-        tooltip: AppLocalizations.of(context)!.scanQrCode,
-        child: const Icon(Icons.qr_code_scanner_outlined),
+            /// Open the QR-code scanner and call `handleQrCode`, with the scanned code as the argument.
+            Navigator.pushNamed(globalNavigatorKey.currentContext!, QRScannerView.routeName).then((qrCode) {
+              final resultHandlers = <ResultHandler>[
+                ref.read(tokenProvider.notifier),
+                ref.read(tokenContainerProvider.notifier),
+              ];
+              if (qrCode == null || !context.mounted) return;
+              scanQrCode(context: context, resultHandlerList: resultHandlers, qrCode: qrCode);
+            });
+          },
+          child: const Icon(Icons.qr_code_scanner_outlined),
+        ),
       );
 }

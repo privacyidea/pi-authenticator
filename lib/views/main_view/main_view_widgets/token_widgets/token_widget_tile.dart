@@ -34,13 +34,13 @@ class TokenWidgetTile extends ConsumerWidget {
   final Widget? leading;
   final Widget? trailing;
   final Function()? onTap;
-  final String titleTooltip;
+  final String semanticsLabel;
   final Function()? titleOnTap;
 
   const TokenWidgetTile({
     required this.token,
     required this.title,
-    required this.titleTooltip,
+    required this.semanticsLabel,
     this.additionalSubtitles = const [],
     this.leading,
     this.trailing,
@@ -68,9 +68,8 @@ class TokenWidgetTile extends ConsumerWidget {
         alignment: Alignment.topLeft,
         child: Align(
           alignment: Alignment.centerLeft,
-          child: Tooltip(
-            message: titleTooltip,
-            triggerMode: TooltipTriggerMode.longPress,
+          child: Semantics(
+            label: semanticsLabel,
             child: InkWell(
               onTap: titleOnTap,
               child: HideableText(textScaleFactor: 1.9, isHidden: token.isHidden, text: title),

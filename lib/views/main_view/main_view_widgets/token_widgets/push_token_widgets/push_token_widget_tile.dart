@@ -39,7 +39,7 @@ class PushTokenWidgetTile extends ConsumerWidget {
       key: Key('${token.hashCode}TokenWidgetTile'),
       token: token,
       title: token.label,
-      titleTooltip: AppLocalizations.of(context)!.containerSerial,
+      semanticsLabel: AppLocalizations.of(context)!.containerSerial,
       trailing: FocusedItemAsOverlay(
         tooltipWhenFocused: AppLocalizations.of(context)!.introPollForChallenges,
         alignment: Alignment.centerLeft,

@@ -74,7 +74,7 @@ class SettingsGroup extends StatelessWidget {
                             softWrap: false,
                           ),
                           trailing: DefaultIconButton(
-                            tooltip: title,
+                            semanticsLabel: title,
                             onPressed: isActive ? onPressed! : null,
                             icon: trailingIcon ?? Icons.arrow_forward_ios,
                           ),

@@ -57,7 +57,7 @@ class HOTPTokenWidgetTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) => TokenWidgetTile(
         key: Key('${token.hashCode}TokenWidgetTile'),
         token: token,
-        titleTooltip: token.isHidden ? AppLocalizations.of(context)!.authenticateToShowOtp : AppLocalizations.of(context)!.copyOTPToClipboard,
+        semanticsLabel: token.isHidden ? AppLocalizations.of(context)!.authenticateToShowOtp : AppLocalizations.of(context)!.copyOTPToClipboard,
         titleOnTap: isPreview
             ? null
             : token.isLocked && token.isHidden

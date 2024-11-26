@@ -22,7 +22,7 @@ import 'package:flutter/material.dart';
 class DefaultIconButton extends StatelessWidget {
   final IconData icon;
   final Function()? onPressed;
-  final String tooltip;
+  final String semanticsLabel;
   final Color? color;
   final double size;
   final double padding;
@@ -31,7 +31,7 @@ class DefaultIconButton extends StatelessWidget {
     super.key,
     required this.icon,
     required this.onPressed,
-    required this.tooltip,
+    required this.semanticsLabel,
     this.color,
     this.size = 24,
     this.padding = 0,
@@ -39,15 +39,17 @@ class DefaultIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(padding),
-      child: IconButton(
-        icon: Icon(icon),
-        onPressed: onPressed,
-        tooltip: tooltip,
-        color: color,
-        iconSize: size,
-        splashRadius: size + padding,
+    return Semantics(
+      label: semanticsLabel,
+      child: Padding(
+        padding: EdgeInsets.all(padding),
+        child: IconButton(
+          icon: Icon(icon),
+          onPressed: onPressed,
+          color: color,
+          iconSize: size,
+          splashRadius: size + padding,
+        ),
       ),
     );
   }
