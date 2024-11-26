@@ -101,7 +101,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get authenticateToUnLockToken => 'Lakukan autentikasi untuk mengubah status kunci token.';
 
   @override
-  String get authenticationRequest => 'Authentication request';
+  String get authentication => 'Otentikasi';
 
   @override
   String get biometricHint => 'Diperlukan autentikasi';
@@ -131,7 +131,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get clearErrorLog => 'Jelas';
 
   @override
-  String get clipboardEmpty => 'Clipboard is empty';
+  String get clipboardEmpty => 'Papan klip kosong';
 
   @override
   String get confirmDeletion => 'Konfirmasikan penghapusan';
@@ -160,16 +160,34 @@ class AppLocalizationsId extends AppLocalizations {
   String get container => 'Kontainer';
 
   @override
+  String get containerAddDialogTitle => 'Tambahkan wadah';
+
+  @override
   String get containerAlreadyExists => 'Wadah sudah ada';
 
   @override
+  String get containerDeleteCorrespondingTokenDialogContent => 'Apakah Anda juga ingin menghapus token yang terkait?';
+
+  @override
   String get containerDetails => 'Detail kontainer';
+
+  @override
+  String get containerRolloutSendDeviceInfoDialogContent => 'Apakah Anda ingin memberi tahu penerbit kontainer perangkat mana yang Anda gunakan? Ini mungkin berguna nantinya jika Anda mengalami masalah dengan faktor kedua Anda.';
+
+  @override
+  String get containerRolloutSendDeviceInfoDialogTitle => 'Mengirim informasi perangkat';
 
   @override
   String get containerSerial => 'Serial Kontainer';
 
   @override
   String get containerSyncUrl => 'Url Sinkronisasi Kontainer';
+
+  @override
+  String get containerTransferDeleteTokensButtonText => 'Hapus dari perangkat ini';
+
+  @override
+  String get containerTransferDialogContentAborted => 'Transfer kontainer dibatalkan.';
 
   @override
   String get continueButton => 'Lanjutkan';
@@ -232,6 +250,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get delete => 'Menghapus';
 
   @override
+  String get deleteAllButtonText => 'Hapus semua';
+
+  @override
   String get deleteContainerDialogContent => 'Jika Anda menghapus kontainer ini, smartphone akan terputus dari server privacyIDEA dan token dari kontainer ini menjadi tidak dapat digunakan. Sebelum menghapus, pastikan bahwa token yang bersangkutan tidak lagi diperlukan!';
 
   @override
@@ -241,6 +262,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get deleteLockedToken => 'Lakukan autentikasi untuk menghapus token yang terkunci.';
+
+  @override
+  String get deleteOnlyContainerButtonText => 'Hanya kontainer';
 
   @override
   String get details => 'Detail';
@@ -280,6 +304,12 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get enterLink => 'Masukkan tautan';
+
+  @override
+  String get enterPassphraseDialogHint => 'Kata sandi';
+
+  @override
+  String get enterPassphraseDialogTitle => 'Masukkan kata sandi';
 
   @override
   String get enterPasswordToEncrypt => 'Masukkan kata sandi untuk mengenkripsi token. Kata sandi ini akan diperlukan untuk mengimpor token.';
@@ -366,6 +396,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get exportTokens => 'Ekspor token';
 
   @override
+  String get exportTokensHintDialogTitle => 'Informasi penting';
+
+  @override
   String get exportingTokens => 'Mengekspor token...';
 
   @override
@@ -375,7 +408,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String failedToLoad(String name) {
-    return 'Gagal memuat: ';
+    return 'Gagal memuat: \"$name\"';
   }
 
   @override
@@ -561,9 +594,6 @@ class AppLocalizationsId extends AppLocalizations {
   String get importTokens => 'Impor token';
 
   @override
-  String get importantInformationTitle => 'Important information';
-
-  @override
   String get importedVia => 'Diimpor via';
 
   @override
@@ -622,7 +652,7 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
-  String get invalidUrl => 'Invalid URL';
+  String get invalidUrl => 'URL tidak valid';
 
   @override
   String invalidValue(String parameter, String type, String value) {
@@ -663,7 +693,10 @@ class AppLocalizationsId extends AppLocalizations {
   String get licensesAndVersion => 'Lisensi dan versi';
 
   @override
-  String get linkMustOtpAuth => 'The link must start with otpauth://';
+  String get linkHomeWidgetViewTitle => 'Tautkan widget beranda';
+
+  @override
+  String get linkMustOtpAuth => 'Tautan harus dimulai dengan otpauth://';
 
   @override
   String get linkedContainer => 'Wadah yang terhubung';
@@ -690,7 +723,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String missingRequiredParameterIn(String map, String parameter) {
-    return 'Nilai untuk parameter [$parameter] diperlukan, tetapi tidak ada di ';
+    return 'Nilai untuk parameter [$parameter] diperlukan, tetapi tidak ada dalam \"$map\".';
   }
 
   @override
@@ -723,7 +756,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get noResultText1 => 'Ketuk tombol ';
 
   @override
-  String get noResultText2 => ' untuk memulai!';
+  String get noResultText2 => 'untuk memulai!';
 
   @override
   String get noResultTitle => 'Belum ada token yang disimpan.';
@@ -754,7 +787,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String otpValueCopiedMessage(String otpValue) {
-    return 'Kata sandi ';
+    return 'Kata sandi \"$otpValue\" disalin ke papan klip.';
   }
 
   @override
@@ -882,6 +915,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get pushToken => 'Token Dorong';
 
   @override
+  String get pushTokensViewTitle => 'Token Dorong';
+
+  @override
   String get qrFileDecodeError => 'Tidak dapat memecahkan kode QR dari gambar yang dipilih, silakan gunakan pemindai kode QR sebagai gantinya.';
 
   @override
@@ -904,6 +940,15 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get renameTokenFolder => 'Ganti nama folder';
+
+  @override
+  String get renewSecretsButtonText => 'Memperbarui rahasia';
+
+  @override
+  String get renewSecretsDialogText => 'Anda dapat memperbarui rahasia token. Hal ini berguna jika Anda mencurigai bahwa rahasia tersebut telah dibobol.';
+
+  @override
+  String get renewSecretsDialogTitle => 'Memperbarui Rahasia Token';
 
   @override
   String get replaceButton => 'Ganti';
@@ -983,8 +1028,14 @@ class AppLocalizationsId extends AppLocalizations {
   String get selectImportType => 'Bagaimana cara mengimpor token?';
 
   @override
-  String selectTokensToExport(num count) {
-    return 'Pilih token yang ingin Anda ekspor.';
+  String selectTokensToExport(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: 'pilih token yang akan diekspor',
+      one: 'pilih token yang akan diekspor',
+    );
+    return '$_temp0';
   }
 
   @override
@@ -997,7 +1048,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get selectTokensToExportHelpContent3 => 'Kami sedang mengerjakan solusi untuk membedakan antara token privacyIDEA dan token pribadi.';
 
   @override
-  String get selectTokensToExportHelpContent4 => ' Anda bisa mendapatkan kode QR baru dari layanan tempat Anda menerima token.';
+  String get selectTokensToExportHelpContent4 => 'Anda bisa mendapatkan kode QR baru dari layanan tempat Anda menerima token.';
 
   @override
   String get selectTokensToExportHelpTitle => 'Apakah token Anda tidak terdaftar?';
@@ -1037,6 +1088,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get someTokensDoNotSupportPolling => 'Beberapa token sudah ketinggalan zaman dan tidak mendukung pemungutan suara';
+
+  @override
+  String get startTransferButtonText => 'Mulai transfer';
 
   @override
   String statusCode(int statusCode) {
@@ -1110,6 +1164,27 @@ class AppLocalizationsId extends AppLocalizations {
   String get tokensSuccessfullyDecrypted => 'Token telah berhasil didekripsi dan sekarang dapat diimpor.';
 
   @override
+  String get transferContainerDialogContent1 => 'Anda bisa mentransfer kontainer ke perangkat lain. Kontainer ditransfer melalui kode QR.';
+
+  @override
+  String get transferContainerDialogContent2 => 'Untuk proses ini, diperlukan koneksi internet yang aktif.';
+
+  @override
+  String get transferContainerDialogTitle => 'Mentransfer Kontainer';
+
+  @override
+  String get transferContainerFailed => 'Gagal memulai transfer.';
+
+  @override
+  String get transferContainerScanQrCode => 'Pindai kode QR pada perangkat baru untuk mentransfer kontainer.';
+
+  @override
+  String get transferContainerSuccessDialogContent1 => 'Kontainer telah berhasil ditransfer ke perangkat lain.';
+
+  @override
+  String get transferContainerSuccessDialogContent2 => 'Apakah Anda ingin menghapus container dan token terkait dari perangkat ini?';
+
+  @override
   String get type => 'Jenis';
 
   @override
@@ -1123,7 +1198,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String unsupported(String name, String value) {
-    return '?';
+    return 'Nama $name [$value] tidak didukung oleh versi aplikasi ini.';
   }
 
   @override
