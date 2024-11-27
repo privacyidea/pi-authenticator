@@ -51,14 +51,14 @@ class WidgetImage {
   String get fullFileName => '$fileName.${fileType.extension}';
 
   WidgetImage({
+    required this.fileName,
     required this.fileType,
     required this.imageData,
-    required this.fileName,
   });
 
   @override
   String toString() {
-    return 'WidgetImage{fileType: $fileType, imageData: $imageData}';
+    return 'WidgetImage(fileName: $fileName, fileType: $fileType, imageData: $imageData)';
   }
 
   @override
