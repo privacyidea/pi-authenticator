@@ -1390,10 +1390,10 @@
     "description": "Positive answer text to a binary question. Used for buttons and text fields."
   },
   "a11yAddFolderButton": "Ajouter un dossier",
-  "a11yAddTokenManuallyButton": "Add token manually",
+  "a11yAddTokenManuallyButton": "Ajouter un jeton manuellement",
   "a11yCloseSearchTokensButton": "Fermer la recherche",
   "a11yLicensesButton": "Licences",
-  "a11yPushTokensButton": "Push Tokens",
+  "a11yPushTokensButton": "Jetons de poussée",
   "a11yScanQrCodeButton": "Scanner le QR-Code",
   "a11yScanQrCodeViewActive": "Vue Scan-QR-code. Cammera est actif",
   "a11yScanQrCodeViewFlashlightOff": "Tapez sur pour activer la lampe de poche.",
