@@ -81,7 +81,7 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
                 children: [
                   const SizedBox(height: 12),
                   Text(
-                    localizations.requestInfo(token.issuer, token.label),
+                    localizations.requestInfo(token.label, token.issuer),
                     style: Theme.of(context).textTheme.bodyLarge!,
                     textAlign: TextAlign.center,
                   ),
@@ -105,6 +105,7 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
                             onAccept: (answer) => _onAccept(token, answer: answer),
                           ),
                   ),
+                  const SizedBox(height: 8),
                   PaddedRow(
                     peddingPercent: 0.33,
                     child: PushDeclineConfirmButton(

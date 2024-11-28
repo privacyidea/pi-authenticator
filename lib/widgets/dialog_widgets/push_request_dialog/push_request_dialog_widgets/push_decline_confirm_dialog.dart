@@ -130,6 +130,7 @@ class _PushDeclineConfirmDialogState extends State<PushDeclineConfirmDialog> {
                             style: Theme.of(context).textTheme.titleSmall,
                             textAlign: TextAlign.center,
                           ),
+                          SizedBox(height: 8),
                           FittedBox(
                             fit: BoxFit.scaleDown,
                             child: Text(
