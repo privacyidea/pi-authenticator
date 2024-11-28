@@ -130,7 +130,6 @@ class _PushDeclineConfirmDialogState extends State<PushDeclineConfirmDialog> {
                             style: Theme.of(context).textTheme.titleSmall,
                             textAlign: TextAlign.center,
                           ),
-                          SizedBox(height: 8),
                           FittedBox(
                             fit: BoxFit.scaleDown,
                             child: Text(
@@ -145,6 +144,7 @@ class _PushDeclineConfirmDialogState extends State<PushDeclineConfirmDialog> {
                     ),
                   ),
                 ),
+                SizedBox(height: 8),
                 PaddedRow(
                   peddingPercent: 0.33,
                   child: CooldownButton(
