@@ -96,13 +96,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     if (_customization.disabledFeatures.isNotEmpty) {
       Logger.info('Disabled features: ${_customization.disabledFeatures}');
     }
-    // final ViewWidget nextView = MainView(
-    //   appName: _customization.appName,
-    //   appIcon: _customization.appIcon.getWidget,
-    //   appImage: _customization.appImage.getWidget,
-    //   disablePatchNotes: _customization.disabledFeatures.contains(AppFeature.patchNotes),
-    // );
-    // final routeBuilder = PageRouteBuilder(pageBuilder: (_, __, ___) => nextView);
     // Idle until the splash screen is the top route.
     // By default it is the top route, but it can be overridden by pushing a new route before initializing the app, e.g. by a deep link.
     await Future.doWhile(() async {

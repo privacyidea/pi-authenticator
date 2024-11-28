@@ -46,14 +46,14 @@ class MainView extends ConsumerStatefulView {
   @override
   RouteSettings get routeSettings => const RouteSettings(name: routeName);
 
-  final Widget appIcon;
-  final Widget appImage;
+  final Widget appbarIcon;
+  final Widget? backgroundImage;
   final String appName;
   final bool disablePatchNotes;
 
   const MainView({
-    required this.appImage,
-    required this.appIcon,
+    required this.backgroundImage,
+    required this.appbarIcon,
     required this.appName,
     required this.disablePatchNotes,
     super.key,
@@ -95,7 +95,7 @@ class _MainViewState extends ConsumerState<MainView> {
                 // maxLines: 2 only works like this.
                 maxLines: 2, // Title can be shown on small screens too.
               ),
-              leading: widget.appIcon,
+              leading: widget.appbarIcon,
               actions: [
                 hasFilter
                     ? AppBarItem(
@@ -119,7 +119,7 @@ class _MainViewState extends ConsumerState<MainView> {
             child: StatusBar(
               child: Stack(
                 children: [
-                  MainViewBackgroundImage(appImage: widget.appImage),
+                  if (widget.backgroundImage != null) MainViewBackgroundImage(appImage: widget.backgroundImage!),
                   hasFilter ? const MainViewTokensListFiltered() : MainViewTokensList(nestedScrollViewKey: globalKey),
                   if (!hasFilter) MainViewNavigationBar(),
                 ],

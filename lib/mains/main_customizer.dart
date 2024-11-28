@@ -82,13 +82,13 @@ class CustomizationAuthenticator extends ConsumerWidget {
             FeedbackView.routeName: (context) => const FeedbackView(),
             ImportTokensView.routeName: (context) => const ImportTokensView(),
             LicenseView.routeName: (context) => LicenseView(
-                  appImage: applicationCustomizer.licensesViewImage.getWidget,
+                  appImage: applicationCustomizer.licensesViewImage?.getWidget ?? applicationCustomizer.splashScreenImage.getWidget,
                   appName: applicationCustomizer.appName,
                   websiteLink: applicationCustomizer.websiteLink,
                 ),
             MainView.routeName: (context) => MainView(
-                  appIcon: applicationCustomizer.appbarIcon.getWidget,
-                  appImage: applicationCustomizer.splashScreenImage.getWidget,
+                  appbarIcon: applicationCustomizer.appbarIcon.getWidget,
+                  backgroundImage: applicationCustomizer.backgroundImage?.getWidget,
                   appName: applicationCustomizer.appName,
                   disablePatchNotes: applicationCustomizer.disabledFeatures.contains(AppFeature.patchNotes),
                 ),
