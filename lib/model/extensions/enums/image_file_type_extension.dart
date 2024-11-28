@@ -81,7 +81,7 @@ extension ImageFileTypeX on ImageFormat {
 
   String get extension => toString().split('.').last;
 
-  String get typeName => switch (this) {
+  String get name => switch (this) {
         ImageFormat.svg => 'Scalable Vector Graphic',
         ImageFormat.svgz => 'Scalable Vector Graphic (compressed)',
         ImageFormat.png => 'PNG',

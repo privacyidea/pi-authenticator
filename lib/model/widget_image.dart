@@ -44,27 +44,27 @@ class Uint8ListConverter implements JsonConverter<Uint8List, String> {
 @JsonSerializable()
 @Uint8ListConverter()
 class WidgetImage {
-  final ImageFormat fileType;
+  final ImageFormat imageFormat;
   final Uint8List imageData;
   final String fileName;
 
-  String get fullFileName => '$fileName.${fileType.extension}';
+  String get fullFileName => '$fileName.${imageFormat.extension}';
 
   WidgetImage({
     required this.fileName,
-    required this.fileType,
+    required this.imageFormat,
     required this.imageData,
   });
 
   @override
   String toString() {
-    return 'WidgetImage(fileName: $fileName, fileType: $fileType, imageData: $imageData)';
+    return 'WidgetImage(fileName: $fileName, imageFormat: $imageFormat, imageData: $imageData)';
   }
 
   @override
-  bool operator ==(Object other) => other is WidgetImage && other.fileType == fileType && other.imageData == imageData;
+  bool operator ==(Object other) => other is WidgetImage && other.imageFormat == imageFormat && other.imageData == imageData;
   @override
-  int get hashCode => Object.hash(runtimeType, fileType, imageData);
+  int get hashCode => Object.hash(runtimeType, imageFormat, imageData);
 
   Widget? _widget;
   Widget get getWidget {
@@ -75,9 +75,9 @@ class WidgetImage {
 
   Widget _buildImageWidget() {
     try {
-      return fileType.buildImageWidget(imageData);
+      return imageFormat.buildImageWidget(imageData);
     } catch (e) {
-      Logger.error('Image is not an ${fileType.typeName}, or the image data is corrupted.', error: e);
+      Logger.error('Image is not an ${imageFormat.name}, or the image data is corrupted.', error: e);
       rethrow;
     }
   }
@@ -86,6 +86,6 @@ class WidgetImage {
   Map<String, dynamic> toJson() => _$WidgetImageToJson(this);
 
   XFile? toXFile() {
-    return fileType.buildXFile(imageData, fileName);
+    return imageFormat.buildXFile(imageData, fileName);
   }
 }

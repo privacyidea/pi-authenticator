@@ -18,12 +18,12 @@ void _testAppCustomizer() {
       appName: 'test',
       websiteLink: 'https://test',
       appbarIcon: WidgetImage(
-        fileType: ImageFormat.png,
+        imageFormat: ImageFormat.png,
         imageData: defaultIconUint8List,
         fileName: "appbarIcon",
       ),
       splashScreenImage: WidgetImage(
-        fileType: ImageFormat.png,
+        imageFormat: ImageFormat.png,
         imageData: defaultImageUint8List,
         fileName: "splashScreenImage",
       ),
@@ -51,12 +51,12 @@ void _testAppCustomizer() {
         appName: 'test2',
         websiteLink: 'https://test2',
         appbarIcon: WidgetImage(
-          fileType: ImageFormat.png,
+          imageFormat: ImageFormat.png,
           imageData: defaultImageUint8List,
           fileName: "appbarIcon",
         ),
         splashScreenImage: WidgetImage(
-          fileType: ImageFormat.png,
+          imageFormat: ImageFormat.png,
           imageData: defaultIconUint8List,
           fileName: "appImage",
         ),
@@ -118,10 +118,10 @@ void _testAppCustomizer() {
         // Assert
         expect(newCustomization.appName, equals('test2'));
         expect(newCustomization.websiteLink, equals('https://test2'));
-        expect(newCustomization.appbarIcon.fileType, equals(ImageFormat.png));
+        expect(newCustomization.appbarIcon.imageFormat, equals(ImageFormat.png));
         expect(newCustomization.appbarIcon.imageData, equals(defaultIconUint8List));
         expect(newCustomization.appbarIcon.fileName, equals('appbarIcon'));
-        expect(newCustomization.splashScreenImage.fileType, equals(ImageFormat.png));
+        expect(newCustomization.splashScreenImage.imageFormat, equals(ImageFormat.png));
         expect(newCustomization.splashScreenImage.imageData, equals(defaultImageUint8List));
         expect(newCustomization.splashScreenImage.fileName, equals('splashScreenImage'));
         expect(newCustomization.lightTheme, equals(ApplicationCustomization.defaultCustomization.lightTheme));
