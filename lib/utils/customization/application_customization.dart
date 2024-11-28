@@ -107,12 +107,10 @@ class ApplicationCustomization {
     this.lightTheme = ThemeCustomization.defaultLightTheme,
     this.darkTheme = ThemeCustomization.defaultDarkTheme,
     this.disabledFeatures = const {},
-  })  : appbarIcon = appbarIcon ?? WidgetImage(fileType: ImageFileType.png, imageData: defaultIconUint8List, fileName: appbarIconFileName),
-        splashScreenImage =
-            splashScreenImage ?? WidgetImage(fileType: ImageFileType.png, imageData: defaultImageUint8List, fileName: splashScreenImageFileName),
-        backgroundImage = backgroundImage ?? WidgetImage(fileType: ImageFileType.png, imageData: defaultImageUint8List, fileName: backgroundImageFileName),
-        licensesViewImage =
-            licensesViewImage ?? WidgetImage(fileType: ImageFileType.png, imageData: defaultImageUint8List, fileName: licensesViewImageFileName);
+  })  : appbarIcon = appbarIcon ?? WidgetImage(fileType: ImageFormat.png, imageData: defaultIconUint8List, fileName: appbarIconFileName),
+        splashScreenImage = splashScreenImage ?? WidgetImage(fileType: ImageFormat.png, imageData: defaultImageUint8List, fileName: splashScreenImageFileName),
+        backgroundImage = backgroundImage ?? WidgetImage(fileType: ImageFormat.png, imageData: defaultImageUint8List, fileName: backgroundImageFileName),
+        licensesViewImage = licensesViewImage ?? WidgetImage(fileType: ImageFormat.png, imageData: defaultImageUint8List, fileName: licensesViewImageFileName);
 
   ApplicationCustomization copyWith({
     String? appName,

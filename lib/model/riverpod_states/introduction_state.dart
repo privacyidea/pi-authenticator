@@ -46,9 +46,21 @@ class IntroductionState with _$IntroductionState {
     return IntroductionState(completedIntroductions: newCompletedIntroductions);
   }
 
+  IntroductionState withCompletedIntroductions(List<Introduction> values) {
+    final newCompletedIntroductions = {...completedIntroductions};
+    newCompletedIntroductions.addAll(values);
+    return IntroductionState(completedIntroductions: newCompletedIntroductions);
+  }
+
   IntroductionState withoutCompletedIntroduction(Introduction introduction) {
     final newCompletedIntroductions = {...completedIntroductions};
     newCompletedIntroductions.remove(introduction);
+    return IntroductionState(completedIntroductions: newCompletedIntroductions);
+  }
+
+  IntroductionState withoutCompletedIntroductions(List<Introduction> values) {
+    final newCompletedIntroductions = {...completedIntroductions};
+    newCompletedIntroductions.removeAll(values);
     return IntroductionState(completedIntroductions: newCompletedIntroductions);
   }
 

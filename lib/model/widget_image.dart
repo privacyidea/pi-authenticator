@@ -44,7 +44,7 @@ class Uint8ListConverter implements JsonConverter<Uint8List, String> {
 @JsonSerializable()
 @Uint8ListConverter()
 class WidgetImage {
-  final ImageFileType fileType;
+  final ImageFormat fileType;
   final Uint8List imageData;
   final String fileName;
 

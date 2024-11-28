@@ -68,9 +68,23 @@ class IntroductionNotifier extends _$IntroductionNotifier {
     Logger.debug('New saved state after completion: ${await future}');
   }
 
+  Future<void> completeMultiple(List<Introduction> values) async {
+    Logger.info('Completing multiple introductions: $values');
+    final newState = (await future).withCompletedIntroductions(values);
+    await _saveToRepo(newState);
+    state = AsyncValue.data(newState);
+  }
+
   Future<void> uncomplete(Introduction introduction) async {
     Logger.info('Uncompleting introduction: $introduction');
     final newState = (await future).withoutCompletedIntroduction(introduction);
+    await _saveToRepo(newState);
+    state = AsyncValue.data(newState);
+  }
+
+  Future<void> uncompleteMultiple(List<Introduction> values) async {
+    Logger.info('Uncompleting multiple introductions: $values');
+    final newState = (await future).withoutCompletedIntroductions(values);
     await _saveToRepo(newState);
     state = AsyncValue.data(newState);
   }
