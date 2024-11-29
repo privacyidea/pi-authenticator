@@ -55,25 +55,6 @@ class FirebaseUtils {
     _initializedHandler = true;
     Logger.info('Initializing Firebase');
 
-    // try {
-    //   // await FirebaseMessaging.instance.requestPermission();
-    // } on FirebaseException catch (e, s) {
-    //   Logger.warning(
-    //     'e.code: ${e.code}, '
-    //     'e.message: ${e.message}, '
-    //     'e.plugin: ${e.plugin},',
-    //     error: e,
-    //     stackTrace: s,
-    //   );
-    //   String errorMessage = e.message ?? 'no error message';
-    //   final SnackBar snackBar = SnackBar(
-    //       behavior: SnackBarBehavior.floating,
-    //       content: Text(
-    //         "Firebase notification permission error! ($errorMessage: ${e.code}",
-    //       ));
-    //   globalSnackbarKey.currentState?.showSnackBar(snackBar);
-    // }
-
     FirebaseMessaging.onMessage.listen(foregroundHandler);
     FirebaseMessaging.onBackgroundMessage(backgroundHandler);
 

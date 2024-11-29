@@ -24,10 +24,14 @@ import 'logger.dart';
 import 'riverpod/riverpod_providers/state_providers/status_message_provider.dart';
 
 /// Shows a snackbar message to the user for 3 seconds.
-ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? showSnackBar(String message) => _showSnackBar(message, const Duration(seconds: 3));
+ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? showSnackBarShort(String message) => _showSnackBar(message, const Duration(seconds: 3));
 
 /// Shows a snackbar message to the user for 10 seconds.
 ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? showSnackBarLong(String message) => _showSnackBar(message, const Duration(seconds: 10));
+
+/// Shows a snackbar message to the user for 1 second per 15 characters of the message.
+ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? showSnackBar(String message) =>
+    _showSnackBar(message, Duration(milliseconds: message.length * 1000 ~/ 20 + 500));
 
 /// Shows a snackbar message to the user for a given `Duration`.
 ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? _showSnackBar(
@@ -42,7 +46,7 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? _showSnackBar(
     SnackBar(
       behavior: SnackBarBehavior.floating,
       content: Text(message),
-      duration: const Duration(seconds: 5),
+      duration: duration,
     ),
   );
 }
