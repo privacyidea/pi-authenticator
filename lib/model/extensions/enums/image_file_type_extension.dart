@@ -25,55 +25,55 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../enums/image_file_type.dart';
 
-extension ImageFileTypeX on ImageFileType {
-  static ImageFileType fromExtensionString(String ex) => switch (ex) {
-        'svg' => ImageFileType.svg,
-        'svgz' => ImageFileType.svgz,
-        'png' => ImageFileType.png,
-        'jpg' => ImageFileType.jpg,
-        'jpeg' => ImageFileType.jpeg,
-        'gif' => ImageFileType.gif,
-        'bmp' => ImageFileType.bmp,
-        'webp' => ImageFileType.webp,
+extension ImageFileTypeX on ImageFormat {
+  static ImageFormat fromExtensionString(String ex) => switch (ex) {
+        'svg' => ImageFormat.svg,
+        'svgz' => ImageFormat.svgz,
+        'png' => ImageFormat.png,
+        'jpg' => ImageFormat.jpg,
+        'jpeg' => ImageFormat.jpeg,
+        'gif' => ImageFormat.gif,
+        'bmp' => ImageFormat.bmp,
+        'webp' => ImageFormat.webp,
         _ => throw Exception('Unknown extension: $ex'),
       };
 
   Widget buildImageWidget(Uint8List imageData) => switch (this) {
-        ImageFileType.svg => SvgPicture.memory(
+        ImageFormat.svg => SvgPicture.memory(
             imageData,
             colorFilter: ColorFilter.mode(
               Colors.transparent,
               BlendMode.srcOver,
             ),
           ),
-        ImageFileType.svgz => SvgPicture.memory(
+        ImageFormat.svgz => SvgPicture.memory(
             imageData,
             colorFilter: ColorFilter.mode(
               Colors.transparent,
               BlendMode.srcOver,
             ),
           ),
-        ImageFileType.png => Image.memory(
+        ImageFormat.png => Image.memory(
             imageData,
             colorBlendMode: BlendMode.srcOver,
           ),
-        ImageFileType.jpg => Image.memory(
+        ImageFormat.jpg => Image.memory(
             imageData,
             colorBlendMode: BlendMode.srcOver,
           ),
-        ImageFileType.jpeg => Image.memory(
+        ImageFormat.jpeg => Image.memory(
             imageData,
             colorBlendMode: BlendMode.srcOver,
           ),
-        ImageFileType.gif => Image.memory(
+        ImageFormat.gif => Image.memory(
             imageData,
             colorBlendMode: BlendMode.srcOver,
           ),
-        ImageFileType.bmp => Image.memory(
+        ImageFormat.bmp => Image.memory(
             imageData,
             colorBlendMode: BlendMode.srcOver,
           ),
-        ImageFileType.webp => Image.memory(
+        ImageFormat.webp => Image.memory(
             imageData,
             colorBlendMode: BlendMode.srcOver,
           ),
@@ -81,30 +81,33 @@ extension ImageFileTypeX on ImageFileType {
 
   String get extension => toString().split('.').last;
 
-  String get typeName => switch (this) {
-        ImageFileType.svg => 'Scalable Vector Graphic',
-        ImageFileType.svgz => 'Scalable Vector Graphic (compressed)',
-        ImageFileType.png => 'PNG',
-        ImageFileType.jpg => 'JPEG',
-        ImageFileType.jpeg => 'JPEG',
-        ImageFileType.gif => 'GIF',
-        ImageFileType.bmp => 'Bitmap',
-        ImageFileType.webp => 'WebP',
+  String get name => switch (this) {
+        ImageFormat.svg => 'Scalable Vector Graphic',
+        ImageFormat.svgz => 'Scalable Vector Graphic (compressed)',
+        ImageFormat.png => 'PNG',
+        ImageFormat.jpg => 'JPEG',
+        ImageFormat.jpeg => 'JPEG',
+        ImageFormat.gif => 'GIF',
+        ImageFormat.bmp => 'Bitmap',
+        ImageFormat.webp => 'WebP',
       };
 
   String get mimeType => switch (this) {
-        ImageFileType.svg => 'image/svg+xml',
-        ImageFileType.svgz => 'image/svg+xml',
-        ImageFileType.png => 'image/png',
-        ImageFileType.jpg => 'image/jpeg',
-        ImageFileType.jpeg => 'image/jpeg',
-        ImageFileType.gif => 'image/gif',
-        ImageFileType.bmp => 'image/bmp',
-        ImageFileType.webp => 'image/webp',
+        ImageFormat.svg => 'image/svg+xml',
+        ImageFormat.svgz => 'image/svg+xml',
+        ImageFormat.png => 'image/png',
+        ImageFormat.jpg => 'image/jpeg',
+        ImageFormat.jpeg => 'image/jpeg',
+        ImageFormat.gif => 'image/gif',
+        ImageFormat.bmp => 'image/bmp',
+        ImageFormat.webp => 'image/webp',
       };
 
   /// Builds an [XFile] from the given [imageData] and [fileName].
   /// The [fileName] is used as the name of the file.
-  /// The file extension is determined by the [ImageFileType].
+  /// The file extension is determined by the [ImageFormat].
   XFile buildXFile(Uint8List imageData, String fileName) => XFile.fromData(imageData, name: "$fileName.$extension");
+
+  /// Compares the given [extension] with the extension of this [ImageFormat] case-insensitive.
+  bool matches(String extension) => extension.toLowerCase() == this.extension.toLowerCase();
 }

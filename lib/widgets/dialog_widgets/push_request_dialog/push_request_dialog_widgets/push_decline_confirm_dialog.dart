@@ -144,6 +144,7 @@ class _PushDeclineConfirmDialogState extends State<PushDeclineConfirmDialog> {
                     ),
                   ),
                 ),
+                SizedBox(height: 8),
                 PaddedRow(
                   peddingPercent: 0.33,
                   child: CooldownButton(

@@ -48,7 +48,7 @@ class _CooldownButtonState extends State<CooldownButton> {
             padding: widget.padding ?? const EdgeInsets.all(0),
             child: ElevatedButton(
               onPressed: isPressable && widget.isPressable ? press : null,
-              style: widget.style?.merge(Theme.of(context).elevatedButtonTheme.style) ?? Theme.of(context).elevatedButtonTheme.style,
+              style: widget.style ?? Theme.of(context).elevatedButtonTheme.style,
               child: isPressable && widget.isPressable ? widget.child : widget.childWhenCooldown ?? widget.child,
             ),
           ),
@@ -56,8 +56,13 @@ class _CooldownButtonState extends State<CooldownButton> {
             padding: widget.padding ?? const EdgeInsets.all(0),
             splashRadius: 26,
             onPressed: isPressable && widget.isPressable ? press : null,
-            style: widget.style?.merge(Theme.of(context).iconButtonTheme.style) ?? Theme.of(context).iconButtonTheme.style,
+            style: widget.style ?? Theme.of(context).iconButtonTheme.style,
             icon: isPressable && widget.isPressable ? widget.child : widget.childWhenCooldown ?? widget.child,
+          ),
+        CooldownButtonStyleType.textButton => TextButton(
+            onPressed: isPressable && widget.isPressable ? press : null,
+            style: widget.style ?? Theme.of(context).textButtonTheme.style,
+            child: isPressable && widget.isPressable ? widget.child : widget.childWhenCooldown ?? widget.child,
           ),
       };
 }
@@ -65,4 +70,5 @@ class _CooldownButtonState extends State<CooldownButton> {
 enum CooldownButtonStyleType {
   elevatedButton,
   iconButton,
+  textButton,
 }
