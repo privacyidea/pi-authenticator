@@ -28,11 +28,16 @@ part 'application_customizer_provider.g.dart';
 /// Only used for the app customizer
 @riverpod
 class ApplicationCustomizer extends _$ApplicationCustomizer {
-  @override
-  Future<ApplicationCustomization> build() async {
-    final customization = ApplicationCustomization.defaultCustomization.copyWith(disabledFeatures: AppFeature.values.toSet());
-    return customization;
+  static ApplicationCustomization get initialState =>
+      _initialState ?? ApplicationCustomization.defaultCustomization.copyWith(disabledFeatures: AppFeature.values.toSet());
+  static ApplicationCustomization? _initialState;
+
+  static void setInitialState(ApplicationCustomization initialState) {
+    _initialState = initialState;
   }
+
+  @override
+  Future<ApplicationCustomization> build() async => initialState;
 
   Future<ApplicationCustomization> setState(ApplicationCustomization newState) async {
     state = AsyncValue.data(newState);
