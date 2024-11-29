@@ -116,9 +116,4 @@ flutter:
   #  - images/a_dot_burr.jpeg
   #  - images/a_dot_ham.jpeg
   assets:
-    - res/logo/
-    - CHANGELOG.md
-    - res/guide/
-    - res/gif/
-    - res/lottie/
-    - res/rive/
+
