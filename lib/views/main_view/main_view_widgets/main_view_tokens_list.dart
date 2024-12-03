@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/sortable_notifier.dart';
 
 import '../../../../../../../views/main_view/main_view_widgets/token_widgets/token_widget_builder.dart';
 import '../../../model/mixins/sortable_mixin.dart';
@@ -29,8 +30,8 @@ import '../../../model/riverpod_states/token_filter.dart';
 import '../../../model/token_folder.dart';
 import '../../../model/tokens/push_token.dart';
 import '../../../model/tokens/token.dart';
+import '../../../utils/logger.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
-import '../../../utils/riverpod/riverpod_providers/generated_providers/sortable_notifier.dart';
 import '../../../utils/riverpod/riverpod_providers/state_providers/dragging_sortable_provider.dart';
 import '../../../widgets/default_refresh_indicator.dart';
 import '../../../widgets/drag_item_scroller.dart';
@@ -55,31 +56,42 @@ class MainViewTokensList extends ConsumerStatefulWidget {
     TokenFilter? filter,
   }) {
     List<Widget> widgets = [];
+    sortables = sortables.toList();
     if (sortables.isEmpty) return [];
+    Logger.debug('Building sortable widgets: ${sortables.length}');
     sortables.sort((a, b) => a.compareTo(b));
+    Logger.debug('Sorted sortables: ${sortables.length}');
     sortables = filter?.filterSortables(sortables) ?? sortables;
+    Logger.debug('Filtered sortables: ${sortables.length}');
+    //sortables = sortables.where((sortable) => !(hidePushTokens && sortable is PushToken)).toList();
+    sortables.removeWhere((sortable) => hidePushTokens && sortable is PushToken);
+    Logger.debug('Removed push tokens: ${sortables.length}');
+    //sortables = sortables.where((sortable) => !(sortable is Token && sortable.folderId != null && !isPushTokensView)).toList();
+
+    Map<TokenFolder, List<Token>> folderTokensMap = {};
+    for (var sortable in sortables) {
+      if (sortable is TokenFolder) {
+        folderTokensMap[sortable] = sortables.where((s) => s is Token && s.folderId == sortable.folderId).cast<Token>().toList();
+      }
+    }
+    sortables.removeWhere((sortable) => sortable is Token && folderTokensMap.keys.any((f) => f.folderId == sortable.folderId) && !isPushTokensView);
+
+    Logger.debug('Removed tokens in (existing) folders: ${sortables.length}');
+    if (filter != null) sortables.removeWhere((sortable) => sortable is TokenFolder && folderTokensMap[sortable]!.isEmpty);
+    Logger.debug('Removed empty folders (only with filter): ${sortables.length}');
     bool introductionAdded = false;
-    int skiped = 0;
+
     for (var i = 0; i < sortables.length; i++) {
       final sortable = sortables[i];
-      if (hidePushTokens && sortable is PushToken) {
-        skiped++;
-        continue;
-      }
-      if (sortable is Token && sortable.folderId != null && !isPushTokensView) {
-        skiped++;
-        continue;
-      }
+      final previousSortable = i == 0 ? null : sortables.elementAtOrNull(i - 1);
       final isFirst = i == 0;
       final isDraggingTheCurrent = draggingSortable == sortable;
-      final previousWasExpandedFolder = i > 0 && sortables[i - skiped - 1] is TokenFolder && (sortables[i - skiped - 1] as TokenFolder).isExpanded;
+      final previousWasExpandedFolder = previousSortable is TokenFolder && previousSortable.isExpanded;
       final currentIsExpandedFolder = sortable is TokenFolder && sortable.isExpanded;
-      final folderTokens = sortable is TokenFolder ? sortables.where((s) => s is Token && s.folderId == sortable.folderId).cast<Token>().toList() : null;
+      final folderTokens = sortable is TokenFolder ? folderTokensMap[sortable] : null;
+
       if (hidePushTokens) folderTokens?.removeWhere((t) => t is PushToken);
-      if (filter != null && folderTokens?.isEmpty == true) {
-        skiped++;
-        continue;
-      }
+
       // 1. Add a divider if the current sortable is not the one which is dragged
       // 2. Don't add a divider if the current sortable is the first
       // 3. Don't add a divider after an expanded folder
@@ -91,14 +103,13 @@ class MainViewTokensList extends ConsumerStatefulWidget {
             // The divider should be invisible if the upcoming folder is expanded
             opacity: currentIsExpandedFolder && draggingSortable == null ? 0 : 1,
             dependingFolder: null,
-            previousSortable: i == 0 ? null : sortables.elementAtOrNull(i - 1),
+            previousSortable: previousSortable,
             nextSortable: sortable,
           ),
         );
       }
 
       if (sortable is Token) {
-        skiped = 0;
         widgets.add(
           introductionAdded
               ? TokenWidgetBuilder.fromToken(token: sortable)
@@ -112,7 +123,6 @@ class MainViewTokensList extends ConsumerStatefulWidget {
       }
 
       if (sortable is TokenFolder) {
-        skiped = 0;
         widgets.add(
           TokenFolderWidget(
             folder: sortable,
