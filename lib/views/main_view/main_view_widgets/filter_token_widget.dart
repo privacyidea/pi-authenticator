@@ -80,8 +80,10 @@ class _SearchInputFieldState extends ConsumerState<SearchInputField> {
   Widget build(BuildContext context) => TextField(
         controller: _controller,
         focusNode: _focusNode,
-        decoration: const InputDecoration(
+        style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface),
+        decoration: InputDecoration(
           hintText: 'Label / Serial / Issuer / Type',
+          hintStyle: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface),
           border: InputBorder.none,
           focusedBorder: InputBorder.none,
           enabledBorder: InputBorder.none,

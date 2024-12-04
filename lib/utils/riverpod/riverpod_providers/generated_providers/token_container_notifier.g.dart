@@ -6,7 +6,8 @@ part of 'token_container_notifier.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$tokenContainerNotifierHash() => r'a54590476e980e31528f4b833b50bb5786168964';
+String _$tokenContainerNotifierHash() =>
+    r'a54590476e980e31528f4b833b50bb5786168964';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,7 +30,8 @@ class _SystemHash {
   }
 }
 
-abstract class _$TokenContainerNotifier extends BuildlessAsyncNotifier<TokenContainerState> {
+abstract class _$TokenContainerNotifier
+    extends BuildlessAsyncNotifier<TokenContainerState> {
   late final TokenContainerRepository repo;
   late final TokenContainerApi containerApi;
   late final EccUtils eccUtils;
@@ -46,7 +48,8 @@ abstract class _$TokenContainerNotifier extends BuildlessAsyncNotifier<TokenCont
 const tokenContainerNotifierProviderOf = TokenContainerNotifierFamily();
 
 /// See also [TokenContainerNotifier].
-class TokenContainerNotifierFamily extends Family<AsyncValue<TokenContainerState>> {
+class TokenContainerNotifierFamily
+    extends Family<AsyncValue<TokenContainerState>> {
   /// See also [TokenContainerNotifier].
   const TokenContainerNotifierFamily();
 
@@ -82,14 +85,16 @@ class TokenContainerNotifierFamily extends Family<AsyncValue<TokenContainerState
   static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
 
   @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies => _allTransitiveDependencies;
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
+      _allTransitiveDependencies;
 
   @override
   String? get name => r'tokenContainerNotifierProviderOf';
 }
 
 /// See also [TokenContainerNotifier].
-class TokenContainerNotifierProvider extends AsyncNotifierProviderImpl<TokenContainerNotifier, TokenContainerState> {
+class TokenContainerNotifierProvider extends AsyncNotifierProviderImpl<
+    TokenContainerNotifier, TokenContainerState> {
   /// See also [TokenContainerNotifier].
   TokenContainerNotifierProvider({
     required TokenContainerRepository repo,
@@ -102,9 +107,13 @@ class TokenContainerNotifierProvider extends AsyncNotifierProviderImpl<TokenCont
             ..eccUtils = eccUtils,
           from: tokenContainerNotifierProviderOf,
           name: r'tokenContainerNotifierProviderOf',
-          debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product') ? null : _$tokenContainerNotifierHash,
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$tokenContainerNotifierHash,
           dependencies: TokenContainerNotifierFamily._dependencies,
-          allTransitiveDependencies: TokenContainerNotifierFamily._allTransitiveDependencies,
+          allTransitiveDependencies:
+              TokenContainerNotifierFamily._allTransitiveDependencies,
           repo: repo,
           containerApi: containerApi,
           eccUtils: eccUtils,
@@ -159,13 +168,17 @@ class TokenContainerNotifierProvider extends AsyncNotifierProviderImpl<TokenCont
   }
 
   @override
-  AsyncNotifierProviderElement<TokenContainerNotifier, TokenContainerState> createElement() {
+  AsyncNotifierProviderElement<TokenContainerNotifier, TokenContainerState>
+      createElement() {
     return _TokenContainerNotifierProviderElement(this);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is TokenContainerNotifierProvider && other.repo == repo && other.containerApi == containerApi && other.eccUtils == eccUtils;
+    return other is TokenContainerNotifierProvider &&
+        other.repo == repo &&
+        other.containerApi == containerApi &&
+        other.eccUtils == eccUtils;
   }
 
   @override
@@ -181,7 +194,8 @@ class TokenContainerNotifierProvider extends AsyncNotifierProviderImpl<TokenCont
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin TokenContainerNotifierRef on AsyncNotifierProviderRef<TokenContainerState> {
+mixin TokenContainerNotifierRef
+    on AsyncNotifierProviderRef<TokenContainerState> {
   /// The parameter `repo` of this provider.
   TokenContainerRepository get repo;
 
@@ -192,13 +206,17 @@ mixin TokenContainerNotifierRef on AsyncNotifierProviderRef<TokenContainerState>
   EccUtils get eccUtils;
 }
 
-class _TokenContainerNotifierProviderElement extends AsyncNotifierProviderElement<TokenContainerNotifier, TokenContainerState> with TokenContainerNotifierRef {
+class _TokenContainerNotifierProviderElement
+    extends AsyncNotifierProviderElement<TokenContainerNotifier,
+        TokenContainerState> with TokenContainerNotifierRef {
   _TokenContainerNotifierProviderElement(super.provider);
 
   @override
-  TokenContainerRepository get repo => (origin as TokenContainerNotifierProvider).repo;
+  TokenContainerRepository get repo =>
+      (origin as TokenContainerNotifierProvider).repo;
   @override
-  TokenContainerApi get containerApi => (origin as TokenContainerNotifierProvider).containerApi;
+  TokenContainerApi get containerApi =>
+      (origin as TokenContainerNotifierProvider).containerApi;
   @override
   EccUtils get eccUtils => (origin as TokenContainerNotifierProvider).eccUtils;
 }

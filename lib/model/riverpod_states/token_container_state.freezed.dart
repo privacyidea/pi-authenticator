@@ -28,19 +28,22 @@ mixin _$TokenContainerState {
   /// Create a copy of TokenContainerState
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $TokenContainerStateCopyWith<TokenContainerState> get copyWith => throw _privateConstructorUsedError;
+  $TokenContainerStateCopyWith<TokenContainerState> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $TokenContainerStateCopyWith<$Res> {
-  factory $TokenContainerStateCopyWith(TokenContainerState value, $Res Function(TokenContainerState) then) =
+  factory $TokenContainerStateCopyWith(
+          TokenContainerState value, $Res Function(TokenContainerState) then) =
       _$TokenContainerStateCopyWithImpl<$Res, TokenContainerState>;
   @useResult
   $Res call({List<TokenContainer> containerList});
 }
 
 /// @nodoc
-class _$TokenContainerStateCopyWithImpl<$Res, $Val extends TokenContainerState> implements $TokenContainerStateCopyWith<$Res> {
+class _$TokenContainerStateCopyWithImpl<$Res, $Val extends TokenContainerState>
+    implements $TokenContainerStateCopyWith<$Res> {
   _$TokenContainerStateCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
@@ -65,8 +68,10 @@ class _$TokenContainerStateCopyWithImpl<$Res, $Val extends TokenContainerState> 
 }
 
 /// @nodoc
-abstract class _$$TokenContainerStateImplCopyWith<$Res> implements $TokenContainerStateCopyWith<$Res> {
-  factory _$$TokenContainerStateImplCopyWith(_$TokenContainerStateImpl value, $Res Function(_$TokenContainerStateImpl) then) =
+abstract class _$$TokenContainerStateImplCopyWith<$Res>
+    implements $TokenContainerStateCopyWith<$Res> {
+  factory _$$TokenContainerStateImplCopyWith(_$TokenContainerStateImpl value,
+          $Res Function(_$TokenContainerStateImpl) then) =
       __$$TokenContainerStateImplCopyWithImpl<$Res>;
   @override
   @useResult
@@ -74,9 +79,12 @@ abstract class _$$TokenContainerStateImplCopyWith<$Res> implements $TokenContain
 }
 
 /// @nodoc
-class __$$TokenContainerStateImplCopyWithImpl<$Res> extends _$TokenContainerStateCopyWithImpl<$Res, _$TokenContainerStateImpl>
+class __$$TokenContainerStateImplCopyWithImpl<$Res>
+    extends _$TokenContainerStateCopyWithImpl<$Res, _$TokenContainerStateImpl>
     implements _$$TokenContainerStateImplCopyWith<$Res> {
-  __$$TokenContainerStateImplCopyWithImpl(_$TokenContainerStateImpl _value, $Res Function(_$TokenContainerStateImpl) _then) : super(_value, _then);
+  __$$TokenContainerStateImplCopyWithImpl(_$TokenContainerStateImpl _value,
+      $Res Function(_$TokenContainerStateImpl) _then)
+      : super(_value, _then);
 
   /// Create a copy of TokenContainerState
   /// with the given fields replaced by the non-null parameter values.
@@ -97,11 +105,13 @@ class __$$TokenContainerStateImplCopyWithImpl<$Res> extends _$TokenContainerStat
 /// @nodoc
 @JsonSerializable()
 class _$TokenContainerStateImpl extends _TokenContainerState {
-  const _$TokenContainerStateImpl({required final List<TokenContainer> containerList})
+  const _$TokenContainerStateImpl(
+      {required final List<TokenContainer> containerList})
       : _containerList = containerList,
         super._();
 
-  factory _$TokenContainerStateImpl.fromJson(Map<String, dynamic> json) => _$$TokenContainerStateImplFromJson(json);
+  factory _$TokenContainerStateImpl.fromJson(Map<String, dynamic> json) =>
+      _$$TokenContainerStateImplFromJson(json);
 
   final List<TokenContainer> _containerList;
   @override
@@ -119,12 +129,16 @@ class _$TokenContainerStateImpl extends _TokenContainerState {
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$TokenContainerStateImpl && const DeepCollectionEquality().equals(other._containerList, _containerList));
+        (other.runtimeType == runtimeType &&
+            other is _$TokenContainerStateImpl &&
+            const DeepCollectionEquality()
+                .equals(other._containerList, _containerList));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, const DeepCollectionEquality().hash(_containerList));
+  int get hashCode => Object.hash(
+      runtimeType, const DeepCollectionEquality().hash(_containerList));
 
   /// Create a copy of TokenContainerState
   /// with the given fields replaced by the non-null parameter values.
@@ -132,7 +146,8 @@ class _$TokenContainerStateImpl extends _TokenContainerState {
   @override
   @pragma('vm:prefer-inline')
   _$$TokenContainerStateImplCopyWith<_$TokenContainerStateImpl> get copyWith =>
-      __$$TokenContainerStateImplCopyWithImpl<_$TokenContainerStateImpl>(this, _$identity);
+      __$$TokenContainerStateImplCopyWithImpl<_$TokenContainerStateImpl>(
+          this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
@@ -143,10 +158,13 @@ class _$TokenContainerStateImpl extends _TokenContainerState {
 }
 
 abstract class _TokenContainerState extends TokenContainerState {
-  const factory _TokenContainerState({required final List<TokenContainer> containerList}) = _$TokenContainerStateImpl;
+  const factory _TokenContainerState(
+          {required final List<TokenContainer> containerList}) =
+      _$TokenContainerStateImpl;
   const _TokenContainerState._() : super._();
 
-  factory _TokenContainerState.fromJson(Map<String, dynamic> json) = _$TokenContainerStateImpl.fromJson;
+  factory _TokenContainerState.fromJson(Map<String, dynamic> json) =
+      _$TokenContainerStateImpl.fromJson;
 
   @override
   List<TokenContainer> get containerList;
@@ -155,5 +173,6 @@ abstract class _TokenContainerState extends TokenContainerState {
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$TokenContainerStateImplCopyWith<_$TokenContainerStateImpl> get copyWith => throw _privateConstructorUsedError;
+  _$$TokenContainerStateImplCopyWith<_$TokenContainerStateImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }

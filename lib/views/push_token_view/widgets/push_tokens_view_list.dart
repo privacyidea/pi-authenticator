@@ -21,6 +21,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
+import '../../../model/mixins/sortable_mixin.dart';
+import '../../../model/tokens/push_token.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../utils/riverpod/riverpod_providers/state_providers/dragging_sortable_provider.dart';
 import '../../../widgets/default_refresh_indicator.dart';
@@ -30,6 +32,18 @@ import '../../main_view/main_view_widgets/main_view_tokens_list.dart';
 
 class PushTokensViwList extends ConsumerStatefulWidget {
   const PushTokensViwList({super.key});
+
+  static List<Widget> _buildSortableWidgets({
+    required List<SortableMixin> sortables,
+    required SortableMixin? draggingSortable,
+    // bool hidePushTokens = false,
+    // TokenFilter? filter,
+  }) {
+    if (sortables.isEmpty) return [];
+    sortables = sortables.toList();
+    sortables = sortables.whereType<PushToken>().toList();
+    return MainViewTokensList.buildSortableWidgets(sortables: sortables, draggingSortable: draggingSortable);
+  }
 
   @override
   ConsumerState<PushTokensViwList> createState() => _PushTokensViwListState();
@@ -77,13 +91,10 @@ class _PushTokensViwListState extends ConsumerState<PushTokensViwList> {
               scrollController: scrollController,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                children: [
-                  ...MainViewTokensList.buildSortableWidgets(
-                    sortables: pushTokens,
-                    draggingSortable: draggingSortable,
-                    isPushTokensView: true,
-                  ),
-                ],
+                children: PushTokensViwList._buildSortableWidgets(
+                  sortables: pushTokens,
+                  draggingSortable: draggingSortable,
+                ),
               ),
             ),
           ),

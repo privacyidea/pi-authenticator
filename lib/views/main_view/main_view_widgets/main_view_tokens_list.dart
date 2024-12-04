@@ -26,11 +26,8 @@ import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/gene
 import '../../../../../../../views/main_view/main_view_widgets/token_widgets/token_widget_builder.dart';
 import '../../../model/mixins/sortable_mixin.dart';
 import '../../../model/riverpod_states/settings_state.dart';
-import '../../../model/riverpod_states/token_filter.dart';
 import '../../../model/token_folder.dart';
-import '../../../model/tokens/push_token.dart';
 import '../../../model/tokens/token.dart';
-import '../../../utils/logger.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import '../../../utils/riverpod/riverpod_providers/state_providers/dragging_sortable_provider.dart';
 import '../../../widgets/default_refresh_indicator.dart';
@@ -48,25 +45,24 @@ class MainViewTokensList extends ConsumerStatefulWidget {
   @override
   ConsumerState<MainViewTokensList> createState() => _MainViewTokensListState();
 
-  static List<Widget> buildSortableWidgets({
+  static List<Widget> _buildSortableWidgets({
     required List<SortableMixin> sortables,
     required SortableMixin? draggingSortable,
     bool hidePushTokens = false,
-    bool isPushTokensView = false,
-    TokenFilter? filter,
+  }) {
+    if (sortables.isEmpty) return [];
+    sortables = sortables.toList();
+    return buildSortableWidgets(sortables: sortables, draggingSortable: draggingSortable);
+  }
+
+  static List<Widget> buildSortableWidgets({
+    required List<SortableMixin> sortables,
+    required SortableMixin? draggingSortable,
   }) {
     List<Widget> widgets = [];
     sortables = sortables.toList();
     if (sortables.isEmpty) return [];
-    Logger.debug('Building sortable widgets: ${sortables.length}');
     sortables.sort((a, b) => a.compareTo(b));
-    Logger.debug('Sorted sortables: ${sortables.length}');
-    sortables = filter?.filterSortables(sortables) ?? sortables;
-    Logger.debug('Filtered sortables: ${sortables.length}');
-    //sortables = sortables.where((sortable) => !(hidePushTokens && sortable is PushToken)).toList();
-    sortables.removeWhere((sortable) => hidePushTokens && sortable is PushToken);
-    Logger.debug('Removed push tokens: ${sortables.length}');
-    //sortables = sortables.where((sortable) => !(sortable is Token && sortable.folderId != null && !isPushTokensView)).toList();
 
     Map<TokenFolder, List<Token>> folderTokensMap = {};
     for (var sortable in sortables) {
@@ -74,11 +70,7 @@ class MainViewTokensList extends ConsumerStatefulWidget {
         folderTokensMap[sortable] = sortables.where((s) => s is Token && s.folderId == sortable.folderId).cast<Token>().toList();
       }
     }
-    sortables.removeWhere((sortable) => sortable is Token && folderTokensMap.keys.any((f) => f.folderId == sortable.folderId) && !isPushTokensView);
-
-    Logger.debug('Removed tokens in (existing) folders: ${sortables.length}');
-    if (filter != null) sortables.removeWhere((sortable) => sortable is TokenFolder && folderTokensMap[sortable]!.isEmpty);
-    Logger.debug('Removed empty folders (only with filter): ${sortables.length}');
+    sortables.removeWhere((sortable) => sortable is Token && folderTokensMap.keys.any((f) => f.folderId == sortable.folderId));
     bool introductionAdded = false;
 
     for (var i = 0; i < sortables.length; i++) {
@@ -89,8 +81,6 @@ class MainViewTokensList extends ConsumerStatefulWidget {
       final previousWasExpandedFolder = previousSortable is TokenFolder && previousSortable.isExpanded;
       final currentIsExpandedFolder = sortable is TokenFolder && sortable.isExpanded;
       final folderTokens = sortable is TokenFolder ? folderTokensMap[sortable] : null;
-
-      if (hidePushTokens) folderTokens?.removeWhere((t) => t is PushToken);
 
       // 1. Add a divider if the current sortable is not the one which is dragged
       // 2. Don't add a divider if the current sortable is the first
@@ -128,7 +118,7 @@ class MainViewTokensList extends ConsumerStatefulWidget {
             folder: sortable,
             folderTokens: folderTokens!,
             key: Key('mainview_${sortable.runtimeType}${sortable.hashCode}'),
-            filter: filter,
+            filter: null,
           ),
         );
         continue;
@@ -191,9 +181,11 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
               scrollController: scrollController,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                children: [
-                  ...MainViewTokensList.buildSortableWidgets(sortables: sortables, draggingSortable: draggingSortable, hidePushTokens: hidePushTokens),
-                ],
+                children: MainViewTokensList._buildSortableWidgets(
+                  sortables: sortables,
+                  draggingSortable: draggingSortable,
+                  hidePushTokens: hidePushTokens,
+                ),
               ),
             ),
           ),
