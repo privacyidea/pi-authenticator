@@ -77,8 +77,8 @@ void _testAppCustomizer() {
         // Assert
         expect(json['appName'], equals('test'));
         expect(json['websiteLink'], equals('https://test'));
-        expect(json['appbarIcon'], equals({'fileType': 'png', 'imageData': base64Encode(defaultIconUint8List), 'fileName': 'appbarIcon'}));
-        expect(json['splashScreenImage'], equals({'fileType': 'png', 'imageData': base64Encode(defaultImageUint8List), 'fileName': 'splashScreenImage'}));
+        expect(json['appbarIcon'], equals({'imageFormat': 'png', 'imageData': base64Encode(defaultIconUint8List), 'fileName': 'appbarIcon'}));
+        expect(json['splashScreenImage'], equals({'imageFormat': 'png', 'imageData': base64Encode(defaultImageUint8List), 'fileName': 'splashScreenImage'}));
         expect(json['lightTheme'], equals(ApplicationCustomization.defaultCustomization.lightTheme.toJson()));
         expect(json['darkTheme'], equals(ApplicationCustomization.defaultCustomization.darkTheme.toJson()));
         expect(json['disabledFeatures'], equals({AppFeature.patchNotes.name}));
@@ -109,8 +109,8 @@ void _testAppCustomizer() {
         final newCustomization = ApplicationCustomization.fromJson({
           'appName': 'test2',
           'websiteLink': 'https://test2',
-          'appbarIcon': {'fileType': 'png', 'imageData': base64Encode(defaultIconUint8List), 'fileName': 'appbarIcon'},
-          'splashScreenImage': {'fileType': 'png', 'imageData': base64Encode(defaultImageUint8List), 'fileName': 'splashScreenImage'},
+          'appbarIcon': {'imageFormat': 'png', 'imageData': base64Encode(defaultIconUint8List), 'fileName': 'appbarIcon'},
+          'splashScreenImage': {'imageFormat': 'png', 'imageData': base64Encode(defaultImageUint8List), 'fileName': 'splashScreenImage'},
           'lightTheme': ApplicationCustomization.defaultCustomization.lightTheme.toJson(),
           'darkTheme': ApplicationCustomization.defaultCustomization.darkTheme.toJson(),
           'disabledFeatures': [],

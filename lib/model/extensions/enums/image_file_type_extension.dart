@@ -25,7 +25,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../enums/image_file_type.dart';
 
-extension ImageFileTypeX on ImageFormat {
+extension ImageFormatX on ImageFormat {
   static ImageFormat fromExtensionString(String ex) => switch (ex) {
         'svg' => ImageFormat.svg,
         'svgz' => ImageFormat.svgz,
