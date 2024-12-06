@@ -39,6 +39,35 @@ part 'token_container.g.dart';
 
 @Freezed(toStringOverride: false, addImplicitFinal: true, toJson: true, fromJson: true)
 class TokenContainer with _$TokenContainer {
+// Container finalization:
+  static const String FINALIZE_CONTAINER_SERIAL = 'container_serial';
+  static const String FINALIZE_PUBLIC_CLIENT_KEY = 'public_client_key';
+  static const String FINALIZE_DEVICE_BRAND = 'device_brand';
+  static const String FINALIZE_DEVICE_MODEL = 'device_model';
+
+// Container sync:
+  static const String SYNC_PUBLIC_CLIENT_KEY = 'public_enc_key_client';
+  static const String SYNC_DICT_SERVER = 'container_dict_server';
+  static const String SYNC_DICT_CLIENT = 'container_dict_client';
+  static const String SYNC_ENC_ALGORITHM = 'encryption_algorithm';
+  static const String SYNC_ENC_PARAMS = 'encryption_params';
+  static const String SYNC_POLICIES = 'policies';
+  static const String SYNC_PUBLIC_SERVER_KEY = 'public_server_key';
+  static const String SYNC_SERVER_URL = 'server_url';
+//  static const String SYNC_ENC_PARAMS_MODE = 'mode';
+//  static const String SYNC_ENC_PARAMS_IV = 'init_vector';
+//  static const String SYNC_ENC_PARAMS_TAG = 'tag';
+//  static const String SYNC_DICT_ENCRYPTED = 'container_dict_encrypted';
+
+// Container Mapping:
+  static const String DICT_CONTAINER = 'container';
+  static const String DICT_SERIAL = 'serial';
+  static const String DICT_TYPE = 'type';
+  static const String DICT_TYPE_SMARTPHONE = 'smartphone';
+  static const String DICT_TOKENS = 'tokens';
+  static const String DICT_TOKENS_ADD = 'add';
+  static const String DICT_TOKENS_UPDATE = 'update';
+
 // Container registration:
   static const String ISSUER = 'issuer';
   static const String TTL = 'ttl';

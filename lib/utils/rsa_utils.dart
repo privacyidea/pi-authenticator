@@ -193,7 +193,7 @@ class RsaUtils {
 
   /// signedMessage is what was allegedly signed, signature gets validated
   bool verifyRSASignature(RSAPublicKey publicKey, Uint8List signedMessage, Uint8List signature) {
-    RSASigner signer = Signer(SIGNING_ALGORITHM) as RSASigner; // Get algorithm from registry
+    RSASigner signer = Signer(DEFAULT_SIGNING_ALGORITHM) as RSASigner; // Get algorithm from registry
     signer.init(false, PublicKeyParameter<RSAPublicKey>(publicKey)); // false to validate
 
     bool isVerified = false;
@@ -240,7 +240,7 @@ class RsaUtils {
   }
 
   Uint8List createRSASignature(RSAPrivateKey privateKey, Uint8List dataToSign) {
-    RSASigner signer = Signer(SIGNING_ALGORITHM) as RSASigner; // Get algorithm from registry
+    RSASigner signer = Signer(DEFAULT_SIGNING_ALGORITHM) as RSASigner; // Get algorithm from registry
     signer.init(true, PrivateKeyParameter<RSAPrivateKey>(privateKey)); // true to sign
 
     return signer.generateSignature(dataToSign).bytes;

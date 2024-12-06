@@ -19,7 +19,6 @@
  */
 import 'dart:convert';
 
-import '../../utils/identifiers.dart';
 import '../../utils/logger.dart';
 import '../enums/algorithms.dart';
 import '../token_container.dart';
@@ -36,6 +35,12 @@ abstract class OTPToken extends Token {
 
   /// [String] (required)
   static const String SECRET_BASE32 = 'secret';
+
+  // additional data for the token
+
+  /// If there is no serial, two otp values are stored in the otpAuthMap under this key as [List<String>] to identify the token.
+  /// The first value is the current otp value, the second value is the next otp value.
+  static const String OTP_VALUES = 'otp';
 
   final Algorithms algorithm; // the hashing algorithm that is used to calculate the otp value
   final int digits; // the number of digits the otp value will have
@@ -128,13 +133,13 @@ abstract class OTPToken extends Token {
   /// ```
   @override
   Map<String, dynamic> toOtpAuthMap() {
-    Logger.debug('$OTP_AUTH_OTP_VALUES ${jsonEncode([otpValue, nextValue])}');
+    Logger.debug('$OTP_VALUES ${jsonEncode([otpValue, nextValue])}');
     return super.toOtpAuthMap()
       ..addAll({
         ALGORITHM: algorithm.name,
         DIGITS: digits.toString(),
         SECRET_BASE32: secret,
-        if (serial == null) OTP_AUTH_OTP_VALUES: [otpValue, nextValue],
+        if (serial == null) OTP_VALUES: [otpValue, nextValue],
       });
   }
 

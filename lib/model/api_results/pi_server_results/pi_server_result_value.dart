@@ -23,11 +23,11 @@ import 'dart:typed_data';
 import 'package:pointycastle/ecc/api.dart';
 
 import '../../../utils/ecc_utils.dart';
-import '../../../utils/identifiers.dart';
 import '../../../utils/logger.dart';
 import '../../../utils/object_validator.dart';
 import '../../container_policies.dart';
 import '../../encryption/encryption_params.dart';
+import '../../token_container.dart';
 import 'pi_server_result.dart';
 
 sealed class PiServerResultValue extends PiServerResult {
@@ -99,14 +99,14 @@ class ContainerFinalizationResponse extends PiServerResultValue {
     final map = validateMap(
       map: json,
       validators: {
-        CONTAINER_SYNC_PUBLIC_SERVER_KEY: ObjectValidator<ECPublicKey>(transformer: (v) => const EccUtils().deserializeECPublicKey(v)),
-        CONTAINER_SYNC_POLICIES: ObjectValidator<ContainerPolicies>(transformer: (v) => ContainerPolicies.fromUriMap(v)),
+        TokenContainer.SYNC_PUBLIC_SERVER_KEY: ObjectValidator<ECPublicKey>(transformer: (v) => const EccUtils().deserializeECPublicKey(v)),
+        TokenContainer.SYNC_POLICIES: ObjectValidator<ContainerPolicies>(transformer: (v) => ContainerPolicies.fromUriMap(v)),
       },
       name: 'ContainerFinalizationResponse#fromJson',
     );
     return ContainerFinalizationResponse(
-      publicServerKey: map[CONTAINER_SYNC_PUBLIC_SERVER_KEY] as ECPublicKey,
-      policies: map[CONTAINER_SYNC_POLICIES] as ContainerPolicies,
+      publicServerKey: map[TokenContainer.SYNC_PUBLIC_SERVER_KEY] as ECPublicKey,
+      policies: map[TokenContainer.SYNC_POLICIES] as ContainerPolicies,
     );
   }
 }
@@ -134,22 +134,22 @@ class ContainerSyncResult extends PiServerResultValue {
     final map = validateMap(
       map: json,
       validators: {
-        CONTAINER_SYNC_DICT_SERVER: const ObjectValidator<String>(),
-        CONTAINER_SYNC_ENC_ALGORITHM: const ObjectValidator<String>(),
-        CONTAINER_SYNC_ENC_PARAMS: ObjectValidator<EncryptionParams>(transformer: (v) => EncryptionParams.fromParams(v)),
-        CONTAINER_SYNC_POLICIES: ObjectValidator<ContainerPolicies>(transformer: (v) => ContainerPolicies.fromUriMap(v)),
-        CONTAINER_SYNC_PUBLIC_SERVER_KEY: const ObjectValidator<String>(),
-        CONTAINER_SYNC_SERVER_URL: const ObjectValidator<String>(),
+        TokenContainer.SYNC_DICT_SERVER: const ObjectValidator<String>(),
+        TokenContainer.SYNC_ENC_ALGORITHM: const ObjectValidator<String>(),
+        TokenContainer.SYNC_ENC_PARAMS: ObjectValidator<EncryptionParams>(transformer: (v) => EncryptionParams.fromParams(v)),
+        TokenContainer.SYNC_POLICIES: ObjectValidator<ContainerPolicies>(transformer: (v) => ContainerPolicies.fromUriMap(v)),
+        TokenContainer.SYNC_PUBLIC_SERVER_KEY: const ObjectValidator<String>(),
+        TokenContainer.SYNC_SERVER_URL: const ObjectValidator<String>(),
       },
       name: 'ContainerSyncResult#fromJson',
     );
     return ContainerSyncResult(
-      containerDictEncrypted: map[CONTAINER_SYNC_DICT_SERVER] as String,
-      encryptionAlgorithm: map[CONTAINER_SYNC_ENC_ALGORITHM] as String,
-      encryptionParams: map[CONTAINER_SYNC_ENC_PARAMS] as EncryptionParams,
-      policies: map[CONTAINER_SYNC_POLICIES] as ContainerPolicies,
-      publicServerKey: map[CONTAINER_SYNC_PUBLIC_SERVER_KEY] as String,
-      serverUrl: map[CONTAINER_SYNC_SERVER_URL] as String,
+      containerDictEncrypted: map[TokenContainer.SYNC_DICT_SERVER] as String,
+      encryptionAlgorithm: map[TokenContainer.SYNC_ENC_ALGORITHM] as String,
+      encryptionParams: map[TokenContainer.SYNC_ENC_PARAMS] as EncryptionParams,
+      policies: map[TokenContainer.SYNC_POLICIES] as ContainerPolicies,
+      publicServerKey: map[TokenContainer.SYNC_PUBLIC_SERVER_KEY] as String,
+      serverUrl: map[TokenContainer.SYNC_SERVER_URL] as String,
     );
   }
 }

@@ -64,6 +64,7 @@ abstract class Token with SortableMixin {
   static const String CHECKED_CONTAINERS = 'checkedContainer';
   static const String FOLDER_ID = 'folderId';
   static const String SORT_INDEX = SortableMixin.SORT_INDEX;
+  static const String CREATOR = 'creator';
 
   // otp auth 2step
   /// [String] (required for 2step)

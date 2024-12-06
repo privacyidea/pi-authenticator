@@ -24,6 +24,7 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:cryptography/cryptography.dart';
 import 'package:http/http.dart';
+import 'package:privacyidea_authenticator/model/tokens/otp_token.dart';
 import 'package:privacyidea_authenticator/utils/app_info_utils.dart';
 
 import '../../../../../../../../l10n/app_localizations_en.dart';
@@ -40,7 +41,6 @@ import '../../model/riverpod_states/token_state.dart';
 import '../../model/token_container.dart';
 import '../../model/token_template.dart';
 import '../../model/tokens/token.dart';
-import '../../utils/identifiers.dart';
 import '../../utils/logger.dart';
 import '../../widgets/dialog_widgets/enter_passphrase_dialog.dart';
 import '../interfaces/container_api.dart';
@@ -77,13 +77,13 @@ class PiContainerApi implements TokenContainerApi {
     );
     if (decryptedContainerDict == null) return null;
 
-    final tokens = decryptedContainerDict[CONTAINER_DICT_TOKENS] as Map<String, dynamic>;
-    final newOtpAuthTokens = (tokens[CONTAINER_DICT_TOKENS_ADD] as List).whereType<String>().map(Uri.parse).toList();
+    final tokens = decryptedContainerDict[TokenContainer.DICT_TOKENS] as Map<String, dynamic>;
+    final newOtpAuthTokens = (tokens[TokenContainer.DICT_TOKENS_ADD] as List).whereType<String>().map(Uri.parse).toList();
     final newTokens = await _parseNewTokens(otpAuthUris: newOtpAuthTokens, container: container);
 
     // All server tokens should have a serial but if client token has no serial the server token also has otps
-    final serverTokensUpdate = (tokens[CONTAINER_DICT_TOKENS_UPDATE] as List).cast<Map<String, dynamic>>();
-    final serverTokensWithOtps = serverTokensUpdate.where((element) => element[OTP_AUTH_OTP_VALUES] != null).toList();
+    final serverTokensUpdate = (tokens[TokenContainer.DICT_TOKENS_UPDATE] as List).cast<Map<String, dynamic>>();
+    final serverTokensWithOtps = serverTokensUpdate.where((element) => element[OTPToken.OTP_VALUES] != null).toList();
     serverTokensWithOtps.forEach(serverTokensUpdate.remove);
 
     // Now we have to find all tokens that are in the server lists but not in the local list
@@ -142,10 +142,10 @@ class PiContainerApi implements TokenContainerApi {
     final signature = eccUtils.signWithPrivateKey(ecPrivateClientKey, message);
 
     final body = {
-      if (container.addDeviceInfos == true) CONTAINER_DEVICE_BRAND: InfoUtils.deviceBrand,
-      if (container.addDeviceInfos == true) CONTAINER_DEVICE_MODEL: InfoUtils.deviceModel,
-      CONTAINER_CONTAINER_SERIAL: container.serial,
-      CONTAINER_PUBLIC_CLIENT_KEY: container.publicClientKey,
+      if (container.addDeviceInfos == true) TokenContainer.FINALIZE_DEVICE_BRAND: InfoUtils.deviceBrand,
+      if (container.addDeviceInfos == true) TokenContainer.FINALIZE_DEVICE_MODEL: InfoUtils.deviceModel,
+      TokenContainer.FINALIZE_CONTAINER_SERIAL: container.serial,
+      TokenContainer.FINALIZE_PUBLIC_CLIENT_KEY: container.publicClientKey,
       ContainerChallenge.SIGNATURE: signature,
     };
     return await _ioClient.doPost(url: container.registrationUrl, body: body, sslVerify: container.sslVerify);
@@ -253,17 +253,17 @@ class PiContainerApi implements TokenContainerApi {
     final publicKeyBase64 = base64.encode(publicKey.bytes);
 
     final containerDict = {
-      CONTAINER_DICT_SERIAL: container.serial,
-      CONTAINER_DICT_TYPE: CONTAINER_DICT_TYPE_SMARTPHONE,
-      CONTAINER_DICT_TOKENS: otpAuthMaps,
+      TokenContainer.DICT_SERIAL: container.serial,
+      TokenContainer.DICT_TYPE: TokenContainer.DICT_TYPE_SMARTPHONE,
+      TokenContainer.DICT_TOKENS: otpAuthMaps,
     };
     final signMessage = '${challenge.nonce}|${challenge.timeStamp}|${container.serial}|${container.syncUrl}|$publicKeyBase64|${jsonEncode(containerDict)}';
     Logger.debug(signMessage);
     final signature = container.signMessage(signMessage);
     Logger.debug('Sended container: ${jsonEncode(containerDict)}');
     final body = <String, String>{
-      CONTAINER_SYNC_PUBLIC_CLIENT_KEY: publicKeyBase64,
-      CONTAINER_SYNC_DICT_CLIENT: jsonEncode(containerDict),
+      TokenContainer.SYNC_PUBLIC_CLIENT_KEY: publicKeyBase64,
+      TokenContainer.SYNC_DICT_CLIENT: jsonEncode(containerDict),
       ContainerChallenge.SIGNATURE: signature,
     };
 
@@ -331,11 +331,11 @@ class PiContainerApi implements TokenContainerApi {
   }) {
     final merged = <TokenTemplate>[];
     for (var serverTokenWithOtp in serverTokensWithOtps) {
-      final otps = (serverTokenWithOtp[OTP_AUTH_OTP_VALUES] as List).cast<String>();
+      final otps = (serverTokenWithOtp[OTPToken.OTP_VALUES] as List).cast<String>();
       var mergedTemplate = maybePiTokensTemplates.firstWhere(
         (maybePiToken) => const IterableEquality().equals(otps, maybePiToken.otpValues),
         orElse: () => TokenTemplate.withOtps(
-          otps: serverTokenWithOtp[OTP_AUTH_OTP_VALUES]!,
+          otps: serverTokenWithOtp[OTPToken.OTP_VALUES]!,
           otpAuthMap: serverTokenWithOtp,
           container: container,
           additionalData: {

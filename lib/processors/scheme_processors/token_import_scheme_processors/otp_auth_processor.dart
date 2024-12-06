@@ -28,7 +28,6 @@ import '../../../model/processor_result.dart';
 import '../../../model/token_import/token_origin_data.dart';
 import '../../../model/tokens/otp_token.dart';
 import '../../../model/tokens/token.dart';
-import '../../../utils/identifiers.dart';
 import '../../../utils/logger.dart';
 import '../../../utils/object_validator.dart';
 import '../../../utils/utils.dart';
@@ -98,29 +97,13 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
   }
 }
 
-// Map<String, dynamic> _parseOtpToken(Uri uri) {
-//   final type = uri.host;
-//   if (TokenTypes.PIPUSH.isName(type, caseSensitive: false)) {
-//     // otpauth://pipush/LABEL?PARAMETERS
-//     return _parsePiPushToken(uri);
-//   }
-//   if (TokenTypes.values.firstWhereOrNull((element) => element.isName(type, caseSensitive: false)) != null) {
-//     return _parseOtpAuth(uri);
-//   }
-//   throw ArgumentError.value(
-//     'Invalid type: $type',
-//     'QrParser#_parseOtpToken',
-//     'The type [$type] is not supported.',
-//   );
-// }
-
 TokenOriginData _parseCreatorToOrigin(Uri uri) {
   final origin = TokenOriginSourceType.unknown.toTokenOrigin(
     data: uri.toString(),
     originName: getCurrentAppName(),
     // If creator is present, it is a privacyIDEA token. If not it could be from an old version of the server too.
-    isPrivacyIdeaToken: uri.queryParameters[OTP_AUTH_CREATOR] != null ? true : null,
-    creator: uri.queryParameters[OTP_AUTH_CREATOR],
+    isPrivacyIdeaToken: uri.queryParameters[Token.CREATOR] != null ? true : null,
+    creator: uri.queryParameters[Token.CREATOR],
     createdAt: DateTime.now(),
   );
   return origin;
