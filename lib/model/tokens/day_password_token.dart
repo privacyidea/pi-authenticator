@@ -20,9 +20,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../utils/identifiers.dart';
 import '../../utils/object_validator.dart';
 import '../enums/algorithms.dart';
 import '../enums/day_password_token_view_mode.dart';
@@ -158,29 +158,29 @@ class DayPasswordToken extends OTPToken {
     final uriMap = validateMap(
       map: template.otpAuthMap,
       validators: {
-        OTP_AUTH_LABEL: const ObjectValidatorNullable<String>(),
-        OTP_AUTH_ISSUER: const ObjectValidatorNullable<String>(),
-        OTP_AUTH_SERIAL: const ObjectValidatorNullable<String>(),
-        OTP_AUTH_ALGORITHM: stringToAlgorithmsValidatorNullable,
-        OTP_AUTH_DIGITS: intValidatorNullable,
-        OTP_AUTH_SECRET_BASE32: base32SecretValidatorNullable,
-        OTP_AUTH_PERIOD_SECONDS: stringSecondsToDurationValidatorNullable,
-        OTP_AUTH_IMAGE: const ObjectValidatorNullable<String>(),
-        OTP_AUTH_PIN: boolValidatorNullable,
+        Token.LABEL: const ObjectValidatorNullable<String>(),
+        Token.ISSUER: const ObjectValidatorNullable<String>(),
+        Token.SERIAL: const ObjectValidatorNullable<String>(),
+        Token.IMAGE: const ObjectValidatorNullable<String>(),
+        Token.PIN: boolValidatorNullable,
+        OTPToken.ALGORITHM: stringToAlgorithmsValidatorNullable,
+        OTPToken.DIGITS: intValidatorNullable,
+        OTPToken.SECRET_BASE32: base32SecretValidatorNullable,
+        TOTPToken.PERIOD_SECONDS: stringSecondsToDurationValidatorNullable,
       },
       name: 'DayPasswordToken',
     );
     return copyWith(
-      label: uriMap[OTP_AUTH_LABEL] as String?,
-      issuer: uriMap[OTP_AUTH_ISSUER] as String?,
-      serial: uriMap[OTP_AUTH_SERIAL] as String?,
-      algorithm: uriMap[OTP_AUTH_ALGORITHM] as Algorithms?,
-      digits: uriMap[OTP_AUTH_DIGITS] as int?,
-      secret: uriMap[OTP_AUTH_SECRET_BASE32] as String?,
-      period: uriMap[OTP_AUTH_PERIOD_SECONDS] as Duration?,
-      tokenImage: uriMap[OTP_AUTH_IMAGE] as String?,
-      pin: uriMap[OTP_AUTH_PIN] as bool?,
-      isLocked: uriMap[OTP_AUTH_PIN] as bool?,
+      label: uriMap[Token.LABEL] as String?,
+      issuer: uriMap[Token.ISSUER] as String?,
+      serial: uriMap[Token.SERIAL] as String?,
+      tokenImage: uriMap[Token.IMAGE] as String?,
+      pin: uriMap[Token.PIN] as bool?,
+      isLocked: uriMap[Token.PIN] as bool?,
+      algorithm: uriMap[OTPToken.ALGORITHM] as Algorithms?,
+      digits: uriMap[OTPToken.DIGITS] as int?,
+      secret: uriMap[OTPToken.SECRET_BASE32] as String?,
+      period: uriMap[TOTPToken.PERIOD_SECONDS] as Duration?,
     );
   }
 
@@ -188,30 +188,26 @@ class DayPasswordToken extends OTPToken {
     uriMap = validateMap(
       map: uriMap,
       validators: {
-        OTP_AUTH_LABEL: const ObjectValidator<String>(defaultValue: ''),
-        OTP_AUTH_ISSUER: const ObjectValidator<String>(defaultValue: ''),
-        OTP_AUTH_SERIAL: const ObjectValidatorNullable<String>(),
-        OTP_AUTH_ALGORITHM: stringToAlgorithmsValidator.withDefault(Algorithms.SHA1),
-        OTP_AUTH_DIGITS: otpAuthDigitsValidatorNullable,
-        OTP_AUTH_SECRET_BASE32: base32Secretvalidator,
-        OTP_AUTH_PERIOD_SECONDS: stringSecondsToDurationValidator.withDefault(const Duration(hours: 24)),
-        OTP_AUTH_IMAGE: const ObjectValidatorNullable<String>(),
-        OTP_AUTH_PIN: boolValidatorNullable,
+        Token.LABEL: const ObjectValidator<String>(defaultValue: ''),
+        Token.ISSUER: const ObjectValidator<String>(defaultValue: ''),
+        Token.SERIAL: const ObjectValidatorNullable<String>(),
+        Token.IMAGE: const ObjectValidatorNullable<String>(),
+        Token.PIN: boolValidatorNullable,
+        OTPToken.ALGORITHM: stringToAlgorithmsValidator.withDefault(Algorithms.SHA1),
+        OTPToken.DIGITS: otpAuthDigitsValidatorNullable,
+        OTPToken.SECRET_BASE32: base32Secretvalidator,
+        TOTPToken.PERIOD_SECONDS: stringSecondsToDurationValidator.withDefault(const Duration(hours: 24)),
       },
       name: 'DayPasswordToken',
     );
     final validatedAdditionalData = Token.validateAdditionalData(additionalData);
     return DayPasswordToken(
-      label: uriMap[OTP_AUTH_LABEL],
-      issuer: uriMap[OTP_AUTH_ISSUER],
-      serial: uriMap[OTP_AUTH_SERIAL],
-      algorithm: uriMap[OTP_AUTH_ALGORITHM],
-      digits: uriMap[OTP_AUTH_DIGITS],
-      secret: uriMap[OTP_AUTH_SECRET_BASE32],
-      period: uriMap[OTP_AUTH_PERIOD_SECONDS],
-      tokenImage: uriMap[OTP_AUTH_IMAGE],
-      pin: uriMap[OTP_AUTH_PIN],
-      isLocked: uriMap[OTP_AUTH_PIN],
+      label: uriMap[Token.LABEL],
+      issuer: uriMap[Token.ISSUER],
+      serial: uriMap[Token.SERIAL],
+      tokenImage: uriMap[Token.IMAGE],
+      pin: uriMap[Token.PIN],
+      isLocked: uriMap[Token.PIN],
       id: validatedAdditionalData[Token.ID] ?? const Uuid().v4(),
       containerSerial: validatedAdditionalData[Token.CONTAINER_SERIAL],
       checkedContainer: validatedAdditionalData[Token.CHECKED_CONTAINERS] ?? [],
@@ -219,41 +215,45 @@ class DayPasswordToken extends OTPToken {
       folderId: validatedAdditionalData[Token.FOLDER_ID],
       origin: validatedAdditionalData[Token.ORIGIN],
       isHidden: validatedAdditionalData[Token.HIDDEN],
+      algorithm: uriMap[OTPToken.ALGORITHM],
+      digits: uriMap[OTPToken.DIGITS],
+      secret: uriMap[OTPToken.SECRET_BASE32],
+      period: uriMap[TOTPToken.PERIOD_SECONDS],
     );
   }
 
   /// This is used to create a map that typically was created from a uri.
   /// ```dart
-  /// -------------------------- [Token] --------------------------------
-  /// | OTP_AUTH_SERIAL: serial, (optional)                             |
-  /// | OTP_AUTH_LABEL: label,                                          |
-  /// | OTP_AUTH_ISSUER: issuer,                                        |
-  /// | CONTAINER_SERIAL: containerSerial, (optional)                   |
-  /// | CHECKED_CONTAINERS: checkedContainer,                           |
-  /// | TOKEN_ID: id,                                                   |
-  /// | OTP_AUTH_TYPE: type,                                            |
-  /// | OTP_AUTH_IMAGE: tokenImage, (optional)                          |
-  /// | SORTABLE_INDEX: sortIndex, (optional)                           |
-  /// | FOLDER_ID: folderId, (optional)                                 |
-  /// | TOKEN_ORIGIN: origin, (optional)                                |
-  /// | OTP_AUTH_PIN: pin,                                              |
-  /// | TOKEN_HIDDEN: isHidden,                                         |
-  /// -------------------------------------------------------------------
-  /// ------------------------- [OTPToken] ------------------------------
-  /// | OTP_AUTH_ALGORITHM: algorithm,                                  |
-  /// | OTP_AUTH_DIGITS: digits,                                        |
-  /// | OTP_AUTH_SECRET_BASE32: secret,                                 |
-  /// | OTP_AUTH_OTP_VALUES: [otpValue, nextValue], (if serial is null) |
-  /// -------------------------------------------------------------------
-  /// -------------------- [DayPasswordToken] ---------------------------
-  /// | OTP_AUTH_PERIOD: period,                                        |
-  /// -------------------------------------------------------------------
+  ///  ------------------------- [Token] --------------------------------
+  /// | Token.SERIAL: serial, (optional)                                 |
+  /// | Token.LABEL: label,                                              |
+  /// | Token.ISSUER: issuer,                                            |
+  /// | CONTAINER_SERIAL: containerSerial, (optional)                    |
+  /// | CHECKED_CONTAINERS: checkedContainer,                            |
+  /// | TOKEN_ID: id,                                                    |
+  /// | Token.TYPE: type,                                                |
+  /// | Token.IMAGE: tokenImage, (optional)                              |
+  /// | SORTABLE_INDEX: sortIndex, (optional)                            |
+  /// | FOLDER_ID: folderId, (optional)                                  |
+  /// | TOKEN_ORIGIN: origin, (optional)                                 |
+  /// | Token.PIN: pin,                                                  |
+  /// | TOKEN_HIDDEN: isHidden,                                          |
+  ///  ------------------------------------------------------------------
+  ///  ------------------------ [OTPToken] ------------------------------
+  /// | OTPToken.ALGORITHM: algorithm,                                   |
+  /// | OTPToken.DIGITS: digits,                                         |
+  /// | OTPToken.SECRET_BASE32: secret,                                  |
+  /// | OTPToken.OTP_VALUES: [otpValue, nextValue], (if serial is null)  |
+  ///  ------------------------------------------------------------------
+  ///  ------------------- [DayPasswordToken] ---------------------------
+  /// | TOTPToken.PERIOD_SECONDS: period,                                |
+  ///  ------------------------------------------------------------------
   /// ```
   @override
   Map<String, dynamic> toOtpAuthMap() {
     return super.toOtpAuthMap()
       ..addAll({
-        OTP_AUTH_PERIOD_SECONDS: period.inSeconds.toString(),
+        TOTPToken.PERIOD_SECONDS: period.inSeconds.toString(),
       });
   }
 

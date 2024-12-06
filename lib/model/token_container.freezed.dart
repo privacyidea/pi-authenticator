@@ -48,6 +48,7 @@ mixin _$TokenContainer {
   TResult when<TResult extends Object?>({
     required TResult Function(
             String issuer,
+            Duration ttl,
             String nonce,
             DateTime timestamp,
             Uri serverUrl,
@@ -88,6 +89,7 @@ mixin _$TokenContainer {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(
             String issuer,
+            Duration ttl,
             String nonce,
             DateTime timestamp,
             Uri serverUrl,
@@ -128,6 +130,7 @@ mixin _$TokenContainer {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(
             String issuer,
+            Duration ttl,
             String nonce,
             DateTime timestamp,
             Uri serverUrl,
@@ -338,6 +341,7 @@ abstract class _$$TokenContainerUnfinalizedImplCopyWith<$Res>
   @useResult
   $Res call(
       {String issuer,
+      Duration ttl,
       String nonce,
       DateTime timestamp,
       Uri serverUrl,
@@ -373,6 +377,7 @@ class __$$TokenContainerUnfinalizedImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? issuer = null,
+    Object? ttl = null,
     Object? nonce = null,
     Object? timestamp = null,
     Object? serverUrl = null,
@@ -394,6 +399,10 @@ class __$$TokenContainerUnfinalizedImplCopyWithImpl<$Res>
           ? _value.issuer
           : issuer // ignore: cast_nullable_to_non_nullable
               as String,
+      ttl: null == ttl
+          ? _value.ttl
+          : ttl // ignore: cast_nullable_to_non_nullable
+              as Duration,
       nonce: null == nonce
           ? _value.nonce
           : nonce // ignore: cast_nullable_to_non_nullable
@@ -463,6 +472,7 @@ class __$$TokenContainerUnfinalizedImplCopyWithImpl<$Res>
 class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
   const _$TokenContainerUnfinalizedImpl(
       {required this.issuer,
+      required this.ttl,
       required this.nonce,
       required this.timestamp,
       required this.serverUrl,
@@ -487,6 +497,8 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
 
   @override
   final String issuer;
+  @override
+  final Duration ttl;
   @override
   final String nonce;
   @override
@@ -530,6 +542,7 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
         (other.runtimeType == runtimeType &&
             other is _$TokenContainerUnfinalizedImpl &&
             (identical(other.issuer, issuer) || other.issuer == issuer) &&
+            (identical(other.ttl, ttl) || other.ttl == ttl) &&
             (identical(other.nonce, nonce) || other.nonce == nonce) &&
             (identical(other.timestamp, timestamp) ||
                 other.timestamp == timestamp) &&
@@ -565,6 +578,7 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
   int get hashCode => Object.hash(
       runtimeType,
       issuer,
+      ttl,
       nonce,
       timestamp,
       serverUrl,
@@ -595,6 +609,7 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
   TResult when<TResult extends Object?>({
     required TResult Function(
             String issuer,
+            Duration ttl,
             String nonce,
             DateTime timestamp,
             Uri serverUrl,
@@ -632,6 +647,7 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
   }) {
     return unfinalized(
         issuer,
+        ttl,
         nonce,
         timestamp,
         serverUrl,
@@ -654,6 +670,7 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(
             String issuer,
+            Duration ttl,
             String nonce,
             DateTime timestamp,
             Uri serverUrl,
@@ -691,6 +708,7 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
   }) {
     return unfinalized?.call(
         issuer,
+        ttl,
         nonce,
         timestamp,
         serverUrl,
@@ -713,6 +731,7 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(
             String issuer,
+            Duration ttl,
             String nonce,
             DateTime timestamp,
             Uri serverUrl,
@@ -752,6 +771,7 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
     if (unfinalized != null) {
       return unfinalized(
           issuer,
+          ttl,
           nonce,
           timestamp,
           serverUrl,
@@ -813,6 +833,7 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
 abstract class TokenContainerUnfinalized extends TokenContainer {
   const factory TokenContainerUnfinalized(
       {required final String issuer,
+      required final Duration ttl,
       required final String nonce,
       required final DateTime timestamp,
       required final Uri serverUrl,
@@ -835,6 +856,7 @@ abstract class TokenContainerUnfinalized extends TokenContainer {
 
   @override
   String get issuer;
+  Duration get ttl;
   @override
   String get nonce;
   @override
@@ -1142,6 +1164,7 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
   TResult when<TResult extends Object?>({
     required TResult Function(
             String issuer,
+            Duration ttl,
             String nonce,
             DateTime timestamp,
             Uri serverUrl,
@@ -1201,6 +1224,7 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(
             String issuer,
+            Duration ttl,
             String nonce,
             DateTime timestamp,
             Uri serverUrl,
@@ -1260,6 +1284,7 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(
             String issuer,
+            Duration ttl,
             String nonce,
             DateTime timestamp,
             Uri serverUrl,

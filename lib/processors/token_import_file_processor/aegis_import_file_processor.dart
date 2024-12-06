@@ -17,7 +17,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// ignore_for_file: constant_identifier_names
 
 import 'dart:convert';
 import 'dart:isolate';
@@ -36,9 +35,11 @@ import '../../model/exception_errors/localized_exception.dart';
 import '../../model/extensions/enums/encodings_extension.dart';
 import '../../model/extensions/enums/token_origin_source_type.dart';
 import '../../model/processor_result.dart';
+import '../../model/tokens/hotp_token.dart';
+import '../../model/tokens/otp_token.dart';
 import '../../model/tokens/token.dart';
+import '../../model/tokens/totp_token.dart';
 import '../../utils/globals.dart';
-import '../../utils/identifiers.dart';
 import '../../utils/logger.dart';
 import '../../utils/object_validator.dart';
 import '../../utils/token_import_origins.dart';
@@ -190,26 +191,26 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
         Map<String, dynamic> info = entry[AEGIS_ENTRY_INFO];
         final otpAuthMap = validateMap<String>(
           map: {
-            OTP_AUTH_TYPE: entry[AEGIS_ENTRY_TYPE],
-            OTP_AUTH_LABEL: entry[AEGIS_ENTRY_LABEL],
-            OTP_AUTH_ISSUER: entry[AEGIS_ENTRY_ISSUER],
-            OTP_AUTH_SECRET_BASE32: entry[AEGIS_INFO_SECRET],
-            OTP_AUTH_ALGORITHM: info[AEGIS_INFO_ALGORITHM],
-            OTP_AUTH_DIGITS: info[AEGIS_INFO_DIGITS],
-            OTP_AUTH_PERIOD_SECONDS: info[AEGIS_INFO_PERIOD],
-            OTP_AUTH_COUNTER: info[AEGIS_INFO_COUNTER],
-            OTP_AUTH_PIN: info[AEGIS_INFO_PIN],
+            Token.TYPE: entry[AEGIS_ENTRY_TYPE],
+            Token.LABEL: entry[AEGIS_ENTRY_LABEL],
+            Token.ISSUER: entry[AEGIS_ENTRY_ISSUER],
+            Token.PIN: info[AEGIS_INFO_PIN],
+            OTPToken.SECRET_BASE32: entry[AEGIS_INFO_SECRET],
+            OTPToken.ALGORITHM: info[AEGIS_INFO_ALGORITHM],
+            OTPToken.DIGITS: info[AEGIS_INFO_DIGITS],
+            TOTPToken.PERIOD_SECONDS: info[AEGIS_INFO_PERIOD],
+            HOTPToken.COUNTER: info[AEGIS_INFO_COUNTER],
           },
           validators: {
-            OTP_AUTH_TYPE: const ObjectValidator<String>(),
-            OTP_AUTH_LABEL: const ObjectValidator<String>(defaultValue: ''),
-            OTP_AUTH_ISSUER: const ObjectValidator<String>(defaultValue: ''),
-            OTP_AUTH_SECRET_BASE32: ObjectValidator<String>(transformer: (v) => Encodings.none.encodeStringTo(Encodings.base32, info[AEGIS_INFO_SECRET])),
-            OTP_AUTH_ALGORITHM: const ObjectValidatorNullable<String>(),
-            OTP_AUTH_DIGITS: ObjectValidatorNullable<String>(transformer: (v) => (v as int).toString()),
-            OTP_AUTH_PERIOD_SECONDS: ObjectValidatorNullable<String>(transformer: (v) => (v as int).toString()),
-            OTP_AUTH_COUNTER: ObjectValidatorNullable<String>(transformer: (v) => (v as int).toString()),
-            OTP_AUTH_PIN: const ObjectValidatorNullable<String>(),
+            Token.TYPE: const ObjectValidator<String>(),
+            Token.LABEL: const ObjectValidator<String>(defaultValue: ''),
+            Token.ISSUER: const ObjectValidator<String>(defaultValue: ''),
+            Token.PIN: const ObjectValidatorNullable<String>(),
+            OTPToken.SECRET_BASE32: ObjectValidator<String>(transformer: (v) => Encodings.none.encodeStringTo(Encodings.base32, info[AEGIS_INFO_SECRET])),
+            OTPToken.ALGORITHM: const ObjectValidatorNullable<String>(),
+            OTPToken.DIGITS: ObjectValidatorNullable<String>(transformer: (v) => (v as int).toString()),
+            TOTPToken.PERIOD_SECONDS: ObjectValidatorNullable<String>(transformer: (v) => (v as int).toString()),
+            HOTPToken.COUNTER: ObjectValidatorNullable<String>(transformer: (v) => (v as int).toString()),
           },
           name: 'aegisV2Entry',
         );
@@ -250,26 +251,26 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
         Map<String, dynamic> info = entry[AEGIS_ENTRY_INFO];
         final otpAuthMap = validateMap<String>(
           map: {
-            OTP_AUTH_TYPE: entry[AEGIS_ENTRY_TYPE],
-            OTP_AUTH_LABEL: entry[AEGIS_ENTRY_LABEL],
-            OTP_AUTH_ISSUER: entry[AEGIS_ENTRY_ISSUER],
-            OTP_AUTH_SECRET_BASE32: info[AEGIS_INFO_SECRET],
-            OTP_AUTH_ALGORITHM: info[AEGIS_INFO_ALGORITHM],
-            OTP_AUTH_DIGITS: info[AEGIS_INFO_DIGITS],
-            OTP_AUTH_PERIOD_SECONDS: info[AEGIS_INFO_PERIOD],
-            OTP_AUTH_COUNTER: info[AEGIS_INFO_COUNTER],
-            OTP_AUTH_PIN: info[AEGIS_INFO_PIN],
+            Token.TYPE: entry[AEGIS_ENTRY_TYPE],
+            Token.LABEL: entry[AEGIS_ENTRY_LABEL],
+            Token.ISSUER: entry[AEGIS_ENTRY_ISSUER],
+            OTPToken.SECRET_BASE32: info[AEGIS_INFO_SECRET],
+            OTPToken.ALGORITHM: info[AEGIS_INFO_ALGORITHM],
+            OTPToken.DIGITS: info[AEGIS_INFO_DIGITS],
+            TOTPToken.PERIOD_SECONDS: info[AEGIS_INFO_PERIOD],
+            HOTPToken.COUNTER: info[AEGIS_INFO_COUNTER],
+            Token.PIN: info[AEGIS_INFO_PIN],
           },
           validators: {
-            OTP_AUTH_TYPE: const ObjectValidator<String>(),
-            OTP_AUTH_LABEL: const ObjectValidator<String>(defaultValue: ''),
-            OTP_AUTH_ISSUER: const ObjectValidator<String>(defaultValue: ''),
-            OTP_AUTH_SECRET_BASE32: ObjectValidator<String>(transformer: (v) => Encodings.base32.encodeStringTo(Encodings.base32, v)),
-            OTP_AUTH_ALGORITHM: const ObjectValidatorNullable<String>(),
-            OTP_AUTH_DIGITS: intToStringValidatorNullable,
-            OTP_AUTH_PERIOD_SECONDS: intToStringValidatorNullable,
-            OTP_AUTH_COUNTER: intToStringValidatorNullable,
-            OTP_AUTH_PIN: const ObjectValidatorNullable<String>(),
+            Token.TYPE: const ObjectValidator<String>(),
+            Token.LABEL: const ObjectValidator<String>(defaultValue: ''),
+            Token.ISSUER: const ObjectValidator<String>(defaultValue: ''),
+            OTPToken.SECRET_BASE32: ObjectValidator<String>(transformer: (v) => Encodings.base32.encodeStringTo(Encodings.base32, v)),
+            OTPToken.ALGORITHM: const ObjectValidatorNullable<String>(),
+            OTPToken.DIGITS: intToStringValidatorNullable,
+            TOTPToken.PERIOD_SECONDS: intToStringValidatorNullable,
+            HOTPToken.COUNTER: intToStringValidatorNullable,
+            Token.PIN: const ObjectValidatorNullable<String>(),
           },
           name: 'aegisV3Entry',
         );

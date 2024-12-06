@@ -96,7 +96,7 @@ class PiContainerApi implements TokenContainerApi {
       container: container,
     );
 
-    final serverTokensWithSerial = serverTokensUpdate.where((element) => element[OTP_AUTH_SERIAL] != null).toList();
+    final serverTokensWithSerial = serverTokensUpdate.where((element) => element[Token.SERIAL] != null).toList();
     serverTokensWithSerial.forEach(serverTokensUpdate.remove);
     assert(serverTokensUpdate.isEmpty, 'Server token otps map should be empty after removing all tokens with serial and otps');
     // Container tokens can be deleted if they are not in the server list
@@ -146,7 +146,7 @@ class PiContainerApi implements TokenContainerApi {
       if (container.addDeviceInfos == true) CONTAINER_DEVICE_MODEL: InfoUtils.deviceModel,
       CONTAINER_CONTAINER_SERIAL: container.serial,
       CONTAINER_PUBLIC_CLIENT_KEY: container.publicClientKey,
-      CONTAINER_CHAL_SIGNATURE: signature,
+      ContainerChallenge.SIGNATURE: signature,
     };
     return await _ioClient.doPost(url: container.registrationUrl, body: body, sslVerify: container.sslVerify);
   }
@@ -171,8 +171,8 @@ class PiContainerApi implements TokenContainerApi {
     Logger.debug(signMessage);
 
     final body = {
-      'scope': '$requestUrl',
-      CONTAINER_CHAL_SIGNATURE: container.signMessage(signMessage),
+      TokenContainer.SCOPE: '$requestUrl',
+      ContainerChallenge.SIGNATURE: container.signMessage(signMessage),
     };
 
     final response = await _ioClient.doPost(url: requestUrl, body: body, sslVerify: container.sslVerify);
@@ -205,8 +205,8 @@ class PiContainerApi implements TokenContainerApi {
     }
 
     final body = {
-      CONTAINER_SCOPE: unregisterUrl.toString(),
-      CONTAINER_CHAL_SIGNATURE: container.signMessage('${challenge.nonce}|${challenge.timeStamp}|${container.serial}|$unregisterUrl'),
+      TokenContainer.SCOPE: unregisterUrl.toString(),
+      ContainerChallenge.SIGNATURE: container.signMessage('${challenge.nonce}|${challenge.timeStamp}|${container.serial}|$unregisterUrl'),
     };
 
     final response = await _ioClient.doPost(url: unregisterUrl, body: body, sslVerify: container.sslVerify);
@@ -225,7 +225,7 @@ class PiContainerApi implements TokenContainerApi {
 
   Future<ContainerChallenge> _getChallenge(TokenContainerFinalized container, Uri requestUrl) async {
     final body = {
-      CONTAINER_SCOPE: requestUrl.toString(),
+      TokenContainer.SCOPE: requestUrl.toString(),
     };
     final challengeResponse = await _ioClient.doPost(url: container.challengeUrl, body: body, sslVerify: container.sslVerify);
     if (challengeResponse.statusCode != 200) {
@@ -264,7 +264,7 @@ class PiContainerApi implements TokenContainerApi {
     final body = <String, String>{
       CONTAINER_SYNC_PUBLIC_CLIENT_KEY: publicKeyBase64,
       CONTAINER_SYNC_DICT_CLIENT: jsonEncode(containerDict),
-      CONTAINER_CHAL_SIGNATURE: signature,
+      ContainerChallenge.SIGNATURE: signature,
     };
 
     final response = await _ioClient.doPost(url: container.syncUrl, body: body, sslVerify: container.sslVerify);
@@ -358,7 +358,7 @@ class PiContainerApi implements TokenContainerApi {
     final deleteSerials = <String>[];
     final mergedTemplatesWithSerial = <TokenTemplate>[];
     for (var containerToken in containerTokenTemplates) {
-      final serverToken = serverTokensWithSerial.firstWhereOrNull((element) => element[OTP_AUTH_SERIAL] == containerToken.serial);
+      final serverToken = serverTokensWithSerial.firstWhereOrNull((element) => element[Token.SERIAL] == containerToken.serial);
       serverTokensWithSerial.remove(serverToken);
       if (serverToken == null) {
         deleteSerials.add(containerToken.serial!);

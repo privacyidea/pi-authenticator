@@ -49,7 +49,7 @@ void _testFreeOtpPlusQrProcessor() {
       expect(result0, isA<ProcessorResultFailed<Token>>());
       final message = result0.asFailed!.message;
       final error = result0.asFailed!.error;
-      expect(message.toLowerCase().contains(OTP_AUTH_COUNTER) || error.toString().toLowerCase().contains(OTP_AUTH_COUNTER), isTrue);
+      expect(message.toLowerCase().contains(HOTPToken.COUNTER) || error.toString().toLowerCase().contains(HOTPToken.COUNTER), isTrue);
     });
   });
 }

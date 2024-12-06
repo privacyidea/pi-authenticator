@@ -35,6 +35,7 @@ TokenContainerState _buildUnfinalizedContainerState() => TokenContainerState(
       containerList: [
         TokenContainerUnfinalized(
           issuer: 'issuer',
+          ttl: Duration(minutes: 10),
           nonce: 'nonce',
           timestamp: DateTime.now(),
           serverUrl: Uri.parse('https://example.com'),
@@ -135,6 +136,7 @@ void _testTokenContainerNotifier() {
       await container.read(tokenContainerProvider.notifier).addContainer(
             TokenContainerUnfinalized(
               issuer: 'issuer2',
+              ttl: Duration(minutes: 10),
               nonce: 'nonce2',
               timestamp: DateTime.now().add(const Duration(days: 1)),
               serverUrl: Uri.parse('https://example.com'),
@@ -188,6 +190,7 @@ void _testTokenContainerNotifier() {
       await container.read(tokenContainerProvider.notifier).addContainerList([
         TokenContainerUnfinalized(
           issuer: 'issuer2',
+          ttl: Duration(minutes: 10),
           nonce: 'nonce2',
           timestamp: DateTime.now().add(const Duration(days: 1)),
           serverUrl: Uri.parse('https://example.com'),
@@ -198,6 +201,7 @@ void _testTokenContainerNotifier() {
         ),
         TokenContainerUnfinalized(
           issuer: 'issuer3',
+          ttl: Duration(minutes: 10),
           nonce: 'nonce3',
           timestamp: DateTime.now().add(const Duration(days: 2)),
           serverUrl: Uri.parse('https://example.com'),
@@ -268,6 +272,7 @@ void _testTokenContainerNotifier() {
           containerRepoState.containerList.first,
           TokenContainerUnfinalized(
             issuer: 'issuer2',
+            ttl: Duration(minutes: 10),
             nonce: 'nonce2',
             timestamp: DateTime.now().add(const Duration(days: 1)),
             serverUrl: Uri.parse('https://example.com'),
@@ -381,6 +386,7 @@ void _testTokenContainerNotifier() {
           containerRepoState.containerList.first,
           TokenContainerUnfinalized(
             issuer: 'issuer2',
+            ttl: Duration(minutes: 10),
             nonce: 'nonce2',
             timestamp: DateTime.now().add(const Duration(days: 1)),
             serverUrl: Uri.parse('https://example.com'),
@@ -391,6 +397,7 @@ void _testTokenContainerNotifier() {
           ),
           TokenContainerUnfinalized(
             issuer: 'issuer3',
+            ttl: Duration(minutes: 10),
             nonce: 'nonce3',
             timestamp: DateTime.now().add(const Duration(days: 2)),
             serverUrl: Uri.parse('https://example.com'),

@@ -27,7 +27,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../../../../../../model/enums/token_origin_source_type.dart';
 import '../../../../../../../model/token_container.dart';
 import '../../../../../../../model/tokens/otp_token.dart';
-import '../../../../../../../utils/identifiers.dart';
 import '../utils/object_validator.dart';
 import 'token_import/token_origin_data.dart';
 import 'tokens/token.dart';
@@ -58,26 +57,26 @@ class TokenTemplate with _$TokenTemplate {
   List<dynamic> get values => otpAuthMap.values.toList();
 
   String? get serial => validateOptional(
-        value: otpAuthMap[OTP_AUTH_SERIAL],
+        value: otpAuthMap[Token.SERIAL],
         validator: const ObjectValidatorNullable<String>(),
-        name: OTP_AUTH_SERIAL,
+        name: Token.SERIAL,
       );
 
   String? get type => validateOptional(
-        value: otpAuthMap[OTP_AUTH_TYPE],
+        value: otpAuthMap[Token.TYPE],
         validator: const ObjectValidatorNullable<String>(),
-        name: OTP_AUTH_TYPE,
+        name: Token.TYPE,
       );
 
   List<String>? get otpValues => this is _TokenTemplateWithOtps ? (this as _TokenTemplateWithOtps).otps : null;
 
   String? get containerSerial => validateOptional(
-        value: otpAuthMap[CONTAINER_SERIAL],
+        value: otpAuthMap[TokenContainer.SERIAL],
         validator: const ObjectValidatorNullable<String>(),
-        name: CONTAINER_SERIAL,
+        name: TokenContainer.SERIAL,
       );
 
-  Map<String, dynamic> get otpAuthMapSafeToSend => Map<String, dynamic>.from(otpAuthMap)..remove(OTP_AUTH_SECRET_BASE32);
+  Map<String, dynamic> get otpAuthMapSafeToSend => Map<String, dynamic>.from(otpAuthMap)..remove(OTPToken.SECRET_BASE32);
 
   @override
   operator ==(Object other) {

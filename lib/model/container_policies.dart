@@ -1,5 +1,3 @@
-// ignore_for_file: constant_identifier_names
-
 /*
  * privacyIDEA Authenticator
  *
@@ -71,9 +69,7 @@ class ContainerPolicies with _$ContainerPolicies {
 }
 /**
  *
- * // ignore_for_file: constant_identifier_names
-
-/*
+ * /*
  * privacyIDEA Authenticator
  *
  * Author: Frank Merkel <frank.merkel@netknights.it>

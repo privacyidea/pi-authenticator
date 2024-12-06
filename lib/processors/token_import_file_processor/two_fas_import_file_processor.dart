@@ -17,7 +17,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// ignore_for_file: constant_identifier_names
 
 import 'dart:convert';
 
@@ -29,10 +28,12 @@ import '../../model/enums/token_origin_source_type.dart';
 import '../../model/exception_errors/localized_exception.dart';
 import '../../model/extensions/enums/token_origin_source_type.dart';
 import '../../model/processor_result.dart';
+import '../../model/tokens/hotp_token.dart';
+import '../../model/tokens/otp_token.dart';
 import '../../model/tokens/token.dart';
+import '../../model/tokens/totp_token.dart';
 import '../../utils/encryption/aes_encrypted.dart';
 import '../../utils/globals.dart';
-import '../../utils/identifiers.dart';
 import '../../utils/logger.dart';
 import '../../utils/object_validator.dart';
 import '../../utils/token_import_origins.dart';
@@ -175,24 +176,24 @@ class TwoFasAuthenticatorImportFileProcessor extends TokenImportFileProcessor {
     Map<String, dynamic> twoFasOTP = twoFasToken[TWOFAS_OTP];
     return validateMap(
       map: {
-        OTP_AUTH_ISSUER: twoFasToken[TWOFAS_ISSUER],
-        OTP_AUTH_SECRET_BASE32: twoFasToken[TWOFAS_SECRET],
-        OTP_AUTH_TYPE: twoFasOTP[TWOFAS_TYPE],
-        OTP_AUTH_LABEL: twoFasOTP[TWOFAS_LABEL],
-        OTP_AUTH_ALGORITHM: twoFasOTP[TWOFAS_ALGORITHM],
-        OTP_AUTH_DIGITS: twoFasOTP[TWOFAS_DIGITS],
-        OTP_AUTH_PERIOD_SECONDS: twoFasOTP[TWOFAS_PERIOD],
-        OTP_AUTH_COUNTER: twoFasOTP[TWOFAS_COUNTER],
+        Token.ISSUER: twoFasToken[TWOFAS_ISSUER],
+        Token.TYPE: twoFasOTP[TWOFAS_TYPE],
+        Token.LABEL: twoFasOTP[TWOFAS_LABEL],
+        OTPToken.SECRET_BASE32: twoFasToken[TWOFAS_SECRET],
+        OTPToken.ALGORITHM: twoFasOTP[TWOFAS_ALGORITHM],
+        OTPToken.DIGITS: twoFasOTP[TWOFAS_DIGITS],
+        TOTPToken.PERIOD_SECONDS: twoFasOTP[TWOFAS_PERIOD],
+        HOTPToken.COUNTER: twoFasOTP[TWOFAS_COUNTER],
       },
       validators: {
-        OTP_AUTH_TYPE: const ObjectValidator<String>(),
-        OTP_AUTH_ISSUER: const ObjectValidatorNullable<String>(),
-        OTP_AUTH_LABEL: const ObjectValidatorNullable<String>(),
-        OTP_AUTH_SECRET_BASE32: const ObjectValidator<String>(),
-        OTP_AUTH_ALGORITHM: const ObjectValidatorNullable<String>(),
-        OTP_AUTH_DIGITS: intToStringValidatorNullable,
-        OTP_AUTH_PERIOD_SECONDS: intToStringValidatorNullable,
-        OTP_AUTH_COUNTER: intToStringValidatorNullable,
+        Token.TYPE: const ObjectValidator<String>(),
+        Token.ISSUER: const ObjectValidatorNullable<String>(),
+        Token.LABEL: const ObjectValidatorNullable<String>(),
+        OTPToken.SECRET_BASE32: const ObjectValidator<String>(),
+        OTPToken.ALGORITHM: const ObjectValidatorNullable<String>(),
+        OTPToken.DIGITS: intToStringValidatorNullable,
+        TOTPToken.PERIOD_SECONDS: intToStringValidatorNullable,
+        HOTPToken.COUNTER: intToStringValidatorNullable,
       },
       name: '2FAS token',
     );

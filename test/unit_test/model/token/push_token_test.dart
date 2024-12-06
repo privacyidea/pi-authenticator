@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:privacyidea_authenticator/model/enums/push_token_rollout_state.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
-import 'package:privacyidea_authenticator/utils/identifiers.dart';
+import 'package:privacyidea_authenticator/model/tokens/token.dart';
 
 void main() {
   _testPushToken();
@@ -169,15 +169,15 @@ void _testPushToken() {
     group('fromUriMap', () {
       test('with full map', () {
         final uriMap = <String, dynamic>{
-          OTP_AUTH_TYPE: 'PIPUSH',
-          OTP_AUTH_LABEL: 'label',
-          OTP_AUTH_ISSUER: 'issuer',
-          OTP_AUTH_SERIAL: 'serial',
-          OTP_AUTH_PUSH_SSL_VERIFY: 'False',
-          OTP_AUTH_PUSH_ENROLLMENT_CREDENTIAL: 'enrollmentCredentials',
-          OTP_AUTH_PUSH_ROLLOUT_URL: 'http://www.example.com',
-          OTP_AUTH_PUSH_TTL_MINUTES: '10',
-          OTP_AUTH_VERSION: '1',
+          Token.TYPE: 'PIPUSH',
+          Token.LABEL: 'label',
+          Token.ISSUER: 'issuer',
+          Token.SERIAL: 'serial',
+          PushToken.SSL_VERIFY: 'False',
+          PushToken.ENROLLMENT_CREDENTIAL: 'enrollmentCredentials',
+          PushToken.ROLLOUT_URL: 'http://www.example.com',
+          PushToken.TTL_MINUTES: '10',
+          PushToken.VERSION: '1',
         };
         final token = PushToken.fromOtpAuthMap(uriMap);
         expect(token.type, 'PIPUSH');

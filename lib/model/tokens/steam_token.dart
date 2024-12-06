@@ -23,12 +23,12 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../../../../model/token_template.dart';
-import '../../utils/identifiers.dart';
 import '../../utils/object_validator.dart';
 import '../enums/algorithms.dart';
 import '../enums/token_types.dart';
 import '../extensions/int_extension.dart';
 import '../token_import/token_origin_data.dart';
+import 'otp_token.dart';
 import 'token.dart';
 import 'totp_token.dart';
 
@@ -36,6 +36,8 @@ part 'steam_token.g.dart';
 
 @JsonSerializable()
 class SteamToken extends TOTPToken {
+  static const STEAM_ISSUER = 'Steam';
+
   @override
   bool get isPrivacyIdeaToken => false;
   static String get tokenType => TokenTypes.STEAM.name;
@@ -141,23 +143,23 @@ class SteamToken extends TOTPToken {
     final uriMap = validateMap(
       map: template.otpAuthMap,
       validators: {
-        OTP_AUTH_LABEL: const ObjectValidatorNullable<String>(),
-        OTP_AUTH_ISSUER: const ObjectValidatorNullable<String>(),
-        OTP_AUTH_SERIAL: const ObjectValidatorNullable<String>(),
-        OTP_AUTH_SECRET_BASE32: base32SecretValidatorNullable,
-        OTP_AUTH_IMAGE: const ObjectValidatorNullable<String>(),
-        OTP_AUTH_PIN: boolValidatorNullable,
+        Token.LABEL: const ObjectValidatorNullable<String>(),
+        Token.ISSUER: const ObjectValidatorNullable<String>(),
+        Token.SERIAL: const ObjectValidatorNullable<String>(),
+        OTPToken.SECRET_BASE32: base32SecretValidatorNullable,
+        Token.IMAGE: const ObjectValidatorNullable<String>(),
+        Token.PIN: boolValidatorNullable,
       },
       name: 'SteamToken',
     );
     return copyWith(
-      label: uriMap[OTP_AUTH_LABEL] as String?,
-      issuer: uriMap[OTP_AUTH_ISSUER] as String?,
-      serial: uriMap[OTP_AUTH_SERIAL] as String?,
-      secret: uriMap[OTP_AUTH_SECRET_BASE32] as String?,
-      tokenImage: uriMap[OTP_AUTH_IMAGE] as String?,
-      pin: uriMap[OTP_AUTH_PIN] as bool?,
-      isLocked: uriMap[OTP_AUTH_PIN] as bool?,
+      label: uriMap[Token.LABEL] as String?,
+      issuer: uriMap[Token.ISSUER] as String?,
+      serial: uriMap[Token.SERIAL] as String?,
+      secret: uriMap[OTPToken.SECRET_BASE32] as String?,
+      tokenImage: uriMap[Token.IMAGE] as String?,
+      pin: uriMap[Token.PIN] as bool?,
+      isLocked: uriMap[Token.PIN] as bool?,
     );
   }
 
@@ -165,24 +167,24 @@ class SteamToken extends TOTPToken {
     uriMap = validateMap(
       map: uriMap,
       validators: {
-        OTP_AUTH_LABEL: const ObjectValidator<String>(defaultValue: ''),
-        OTP_AUTH_ISSUER: const ObjectValidator<String>(defaultValue: ''),
-        OTP_AUTH_SERIAL: const ObjectValidatorNullable<String>(),
-        OTP_AUTH_SECRET_BASE32: base32Secretvalidator,
-        OTP_AUTH_IMAGE: const ObjectValidatorNullable<String>(),
-        OTP_AUTH_PIN: boolValidatorNullable,
+        Token.LABEL: const ObjectValidator<String>(defaultValue: ''),
+        Token.ISSUER: const ObjectValidator<String>(defaultValue: ''),
+        Token.SERIAL: const ObjectValidatorNullable<String>(),
+        OTPToken.SECRET_BASE32: base32Secretvalidator,
+        Token.IMAGE: const ObjectValidatorNullable<String>(),
+        Token.PIN: boolValidatorNullable,
       },
       name: 'SteamToken#otpAuthMap',
     );
     final validatedAdditionalData = Token.validateAdditionalData(additionalData);
     return SteamToken(
-      label: uriMap[OTP_AUTH_LABEL],
-      issuer: uriMap[OTP_AUTH_ISSUER],
-      serial: uriMap[OTP_AUTH_SERIAL],
-      secret: uriMap[OTP_AUTH_SECRET_BASE32],
-      tokenImage: uriMap[OTP_AUTH_IMAGE],
-      pin: uriMap[OTP_AUTH_PIN],
-      isLocked: uriMap[OTP_AUTH_PIN],
+      label: uriMap[Token.LABEL],
+      issuer: uriMap[Token.ISSUER],
+      serial: uriMap[Token.SERIAL],
+      secret: uriMap[OTPToken.SECRET_BASE32],
+      tokenImage: uriMap[Token.IMAGE],
+      pin: uriMap[Token.PIN],
+      isLocked: uriMap[Token.PIN],
       id: validatedAdditionalData[Token.ID] ?? const Uuid().v4(),
       containerSerial: validatedAdditionalData[Token.CONTAINER_SERIAL],
       checkedContainer: validatedAdditionalData[Token.CHECKED_CONTAINERS] ?? [],
@@ -196,19 +198,19 @@ class SteamToken extends TOTPToken {
   /// This is used to create a map that typically was created from a uri.
   /// ```dart
   ///  ------------------------- [Token] -------------------------
-  /// | OTP_AUTH_SERIAL: serial, (optional)                       |
-  /// | OTP_AUTH_TYPE: type,                                      |
-  /// | OTP_AUTH_LABEL: label,                                    |
-  /// | OTP_AUTH_ISSUER: issuer,                                  |
-  /// | OTP_AUTH_PIN: pin,                                        |
-  /// | OTP_AUTH_IMAGE: tokenImage, (optional)                    |
+  /// | Token.SERIAL: serial, (optional)                          |
+  /// | Token.TYPE: type,                                         |
+  /// | Token.LABEL: label,                                       |
+  /// | Token.ISSUER: issuer,                                     |
+  /// | Token.PIN: pin,                                           |
+  /// | Token.IMAGE: tokenImage, (optional)                       |
   ///  -----------------------------------------------------------
   ///  ----------------------- [OTPToken] ------------------------
-  /// | OTP_AUTH_ALGORITHM: algorithm,                            |
-  /// | OTP_AUTH_DIGITS: digits,                                  |
+  /// | OTPToken.ALGORITHM: algorithm,                            |
+  /// | OTPToken.DIGITS: digits,                                  |
   ///  -----------------------------------------------------------
   ///  ----------------------- [HOTPToken] -----------------------
-  /// | OTP_AUTH_COUNTER: period,                                 |
+  /// | HOTPToken.COUNTER: period,                                |
   ///  -----------------------------------------------------------
   ///  ----------------------- [SteamToken] ----------------------
   /// | /*No additional fields*/                                  |

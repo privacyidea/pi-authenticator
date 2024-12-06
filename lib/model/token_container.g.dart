@@ -10,6 +10,7 @@ _$TokenContainerUnfinalizedImpl _$$TokenContainerUnfinalizedImplFromJson(
         Map<String, dynamic> json) =>
     _$TokenContainerUnfinalizedImpl(
       issuer: json['issuer'] as String,
+      ttl: Duration(microseconds: (json['ttl'] as num).toInt()),
       nonce: json['nonce'] as String,
       timestamp: DateTime.parse(json['timestamp'] as String),
       serverUrl: Uri.parse(json['serverUrl'] as String),
@@ -38,6 +39,7 @@ Map<String, dynamic> _$$TokenContainerUnfinalizedImplToJson(
         _$TokenContainerUnfinalizedImpl instance) =>
     <String, dynamic>{
       'issuer': instance.issuer,
+      'ttl': instance.ttl.inMicroseconds,
       'nonce': instance.nonce,
       'timestamp': instance.timestamp.toIso8601String(),
       'serverUrl': instance.serverUrl.toString(),

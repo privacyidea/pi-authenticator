@@ -1,5 +1,3 @@
-// ignore_for_file: constant_identifier_names
-
 /*
  * privacyIDEA Authenticator
  *
@@ -25,7 +23,6 @@ import 'package:uuid/uuid.dart';
 
 import '../../../../../../../model/token_template.dart';
 import '../../utils/custom_int_buffer.dart';
-import '../../utils/identifiers.dart';
 import '../../utils/object_validator.dart';
 import '../../utils/rsa_utils.dart';
 import '../enums/push_token_rollout_state.dart';
@@ -41,6 +38,19 @@ part 'push_token.g.dart';
 class PushToken extends Token {
   static RsaUtils rsaParser = const RsaUtils();
 
+  /// [String] (required for PUSH)
+  static const String ROLLOUT_URL = 'url';
+  static const String TTL_MINUTES = 'ttl';
+
+  /// [String] (optional) default = null
+  static const String ENROLLMENT_CREDENTIAL = 'enrollment_credential';
+
+  /// [String] '1' / '0' (optional) default = '1'
+  static const String SSL_VERIFY = 'sslverify';
+  static const String SSL_VERIFY_VALUE_TRUE = '1';
+  static const String SSL_VERIFY_VALUE_FALSE = '0';
+
+  static const String VERSION = 'v';
   static const String EXPIRATION_DATE = 'expirationDate';
   static const String ROLLOUT_STATE = 'rolloutState';
   static const String IS_ROLLED_OUT = 'isRolledOut';
@@ -205,19 +215,19 @@ class PushToken extends Token {
     final validatedMap = validateMap(
       map: otpAuthMap,
       validators: {
-        OTP_AUTH_LABEL: const ObjectValidatorNullable<String>(defaultValue: ''),
-        OTP_AUTH_ISSUER: const ObjectValidatorNullable<String>(defaultValue: ''),
-        OTP_AUTH_SERIAL: const ObjectValidator<String>(),
-        OTP_AUTH_PUSH_SSL_VERIFY: boolValidator.withDefault(true),
-        OTP_AUTH_PUSH_TTL_MINUTES: ObjectValidator<Duration>(
+        Token.LABEL: const ObjectValidatorNullable<String>(defaultValue: ''),
+        Token.ISSUER: const ObjectValidatorNullable<String>(defaultValue: ''),
+        Token.SERIAL: const ObjectValidator<String>(),
+        SSL_VERIFY: boolValidator.withDefault(true),
+        TTL_MINUTES: ObjectValidator<Duration>(
           transformer: (v) => Duration(minutes: int.parse(v)),
           defaultValue: const Duration(minutes: 10),
         ),
-        OTP_AUTH_PUSH_ENROLLMENT_CREDENTIAL: const ObjectValidatorNullable<String>(),
-        OTP_AUTH_PUSH_ROLLOUT_URL: stringToUrivalidator,
-        OTP_AUTH_IMAGE: stringToUriValidatorNullable,
-        OTP_AUTH_PIN: boolValidatorNullable,
-        OTP_AUTH_VERSION: const ObjectValidator<String>(),
+        ENROLLMENT_CREDENTIAL: const ObjectValidatorNullable<String>(),
+        ROLLOUT_URL: stringToUrivalidator,
+        Token.IMAGE: stringToUriValidatorNullable,
+        Token.PIN: boolValidatorNullable,
+        VERSION: const ObjectValidator<String>(),
       },
       name: 'PushToken',
     );
@@ -235,20 +245,20 @@ class PushToken extends Token {
       name: 'PushToken#additionalData',
     ));
     final expirationDate = validatedAdditionalData[EXPIRATION_DATE] as DateTime?;
-    return switch (validatedMap[OTP_AUTH_VERSION]) {
+    return switch (validatedMap[VERSION]) {
       '1' => PushToken(
-          label: validatedMap[OTP_AUTH_LABEL] as String,
-          issuer: validatedMap[OTP_AUTH_ISSUER] as String,
-          serial: validatedMap[OTP_AUTH_SERIAL] as String,
-          sslVerify: validatedMap[OTP_AUTH_PUSH_SSL_VERIFY] as bool,
-          expirationDate: expirationDate ?? DateTime.now().add(validatedMap[OTP_AUTH_PUSH_TTL_MINUTES] as Duration),
+          label: validatedMap[Token.LABEL] as String,
+          issuer: validatedMap[Token.ISSUER] as String,
+          serial: validatedMap[Token.SERIAL] as String,
+          sslVerify: validatedMap[SSL_VERIFY] as bool,
+          expirationDate: expirationDate ?? DateTime.now().add(validatedMap[TTL_MINUTES] as Duration),
           rolloutState: validatedAdditionalData[ROLLOUT_STATE],
           isRolledOut: validatedAdditionalData[IS_ROLLED_OUT],
-          enrollmentCredentials: validatedMap[OTP_AUTH_PUSH_ENROLLMENT_CREDENTIAL] as String?,
-          url: validatedMap[OTP_AUTH_PUSH_ROLLOUT_URL] as Uri,
-          tokenImage: validatedMap[OTP_AUTH_IMAGE] as String?,
-          pin: validatedMap[OTP_AUTH_PIN] as bool?,
-          isLocked: validatedMap[OTP_AUTH_PIN] as bool?,
+          enrollmentCredentials: validatedMap[ENROLLMENT_CREDENTIAL] as String?,
+          url: validatedMap[ROLLOUT_URL] as Uri,
+          tokenImage: validatedMap[Token.IMAGE] as String?,
+          pin: validatedMap[Token.PIN] as bool?,
+          isLocked: validatedMap[Token.PIN] as bool?,
           id: validatedAdditionalData[Token.ID] ?? const Uuid().v4(),
           origin: validatedAdditionalData[Token.ORIGIN],
           isHidden: validatedAdditionalData[Token.HIDDEN],
@@ -261,8 +271,8 @@ class PushToken extends Token {
         ),
       _ => throw LocalizedArgumentError(
           localizedMessage: (localizations, value, name) => localizations.unsupported(value, name),
-          unlocalizedMessage: 'The piauth version [${validatedMap[OTP_AUTH_VERSION]}] is not supported by this version of the app.',
-          invalidValue: validatedMap[OTP_AUTH_VERSION].toString(),
+          unlocalizedMessage: 'The piauth version [${validatedMap[VERSION]}] is not supported by this version of the app.',
+          invalidValue: validatedMap[VERSION].toString(),
           name: 'piauth version',
         ),
     };
@@ -273,67 +283,67 @@ class PushToken extends Token {
     final uriMap = validateMap(
       map: template.otpAuthMap,
       validators: {
-        OTP_AUTH_LABEL: const ObjectValidatorNullable<String>(),
-        OTP_AUTH_ISSUER: const ObjectValidatorNullable<String>(),
-        OTP_AUTH_SERIAL: const ObjectValidatorNullable<String>(),
-        OTP_AUTH_PUSH_SSL_VERIFY: boolValidatorNullable,
-        OTP_AUTH_PUSH_TTL_MINUTES: ObjectValidatorNullable<Duration>(
+        Token.LABEL: const ObjectValidatorNullable<String>(),
+        Token.ISSUER: const ObjectValidatorNullable<String>(),
+        Token.SERIAL: const ObjectValidatorNullable<String>(),
+        SSL_VERIFY: boolValidatorNullable,
+        TTL_MINUTES: ObjectValidatorNullable<Duration>(
           transformer: (v) => Duration(minutes: int.parse(v)),
         ),
-        OTP_AUTH_PUSH_ENROLLMENT_CREDENTIAL: const ObjectValidatorNullable<String>(),
-        OTP_AUTH_PUSH_ROLLOUT_URL: stringToUriValidatorNullable,
-        OTP_AUTH_IMAGE: stringToUriValidatorNullable,
-        OTP_AUTH_PIN: boolValidator,
-        OTP_AUTH_VERSION: intValidatorNullable,
+        ENROLLMENT_CREDENTIAL: const ObjectValidatorNullable<String>(),
+        ROLLOUT_URL: stringToUriValidatorNullable,
+        Token.IMAGE: stringToUriValidatorNullable,
+        Token.PIN: boolValidator,
+        VERSION: intValidatorNullable,
       },
       name: 'PushToken',
     );
 
     return copyWith(
-      label: uriMap[OTP_AUTH_LABEL] as String?,
-      issuer: uriMap[OTP_AUTH_ISSUER] as String?,
-      serial: uriMap[OTP_AUTH_SERIAL] as String?,
-      sslVerify: uriMap[OTP_AUTH_PUSH_SSL_VERIFY] as bool?,
-      expirationDate: uriMap[OTP_AUTH_PUSH_TTL_MINUTES] != null ? DateTime.now().add(uriMap[OTP_AUTH_PUSH_TTL_MINUTES] as Duration) : expirationDate,
-      enrollmentCredentials: uriMap[OTP_AUTH_PUSH_ENROLLMENT_CREDENTIAL] as String?,
-      url: uriMap[OTP_AUTH_PUSH_ROLLOUT_URL] as Uri?,
-      tokenImage: uriMap[OTP_AUTH_IMAGE] as String?,
-      pin: uriMap[OTP_AUTH_PIN] as bool?,
-      isLocked: uriMap[OTP_AUTH_PIN] as bool?,
+      label: uriMap[Token.LABEL] as String?,
+      issuer: uriMap[Token.ISSUER] as String?,
+      serial: uriMap[Token.SERIAL] as String?,
+      sslVerify: uriMap[SSL_VERIFY] as bool?,
+      expirationDate: uriMap[TTL_MINUTES] != null ? DateTime.now().add(uriMap[TTL_MINUTES] as Duration) : expirationDate,
+      enrollmentCredentials: uriMap[ENROLLMENT_CREDENTIAL] as String?,
+      url: uriMap[ROLLOUT_URL] as Uri?,
+      tokenImage: uriMap[Token.IMAGE] as String?,
+      pin: uriMap[Token.PIN] as bool?,
+      isLocked: uriMap[Token.PIN] as bool?,
     );
   }
 
   /// This is used to create a map that typically was created from a uri.
   /// ```dart
   ///  ---------------------------- [Token] ----------------------------
-  /// | OTP_AUTH_SERIAL: serial, (optional)                              |
-  /// | OTP_AUTH_TYPE: type,                                             |
-  /// | OTP_AUTH_LABEL: label,                                           |
-  /// | OTP_AUTH_ISSUER: issuer,                                         |
-  /// | OTP_AUTH_PIN: pin,                                               |
-  /// | OTP_AUTH_IMAGE: tokenImage, (optional)                           |
+  /// | Token.SERIAL: serial, (optional)                                 |
+  /// | Token.TYPE: type,                                                |
+  /// | Token.LABEL: label,                                              |
+  /// | Token.ISSUER: issuer,                                            |
+  /// | Token.PIN: pin,                                                  |
+  /// | Token.IMAGE: tokenImage, (optional)                              |
   ///  ------------------------------------------------------------------
   ///  -------------------------- [PushToken] ---------------------------
-  /// | OTP_AUTH_SSL_VERIFY: sslVerify,                                  |
-  /// | OTP_AUTH_ROLLOUT_TTL_MINUTES: expirationDate, (optional)         |
-  /// | OTP_AUTH_ENROLLMENT_CREDENTIAL: enrollmentCredentials, (optional)|
-  /// | OTP_AUTH_ROLLOUT_URL: url, (optional)                            |
-  /// | OTP_AUTH_IMAGE: tokenImage, (optional)                           |
-  /// | OTP_AUTH_PIN: pin,                                               |
-  /// | OTP_AUTH_VERSION: 1,                                             |
+  /// | Token.SSL_VERIFY: sslVerify,                                     |
+  /// | Token.ROLLOUT_TTL_MINUTES: expirationDate, (optional)            |
+  /// | Token.ENROLLMENT_CREDENTIAL: enrollmentCredentials, (optional)   |
+  /// | Token.ROLLOUT_URL: url, (optional)                               |
+  /// | Token.IMAGE: tokenImage, (optional)                              |
+  /// | Token.PIN: pin,                                                  |
+  /// | Token.VERSION: 1,                                                |
   ///  ------------------------------------------------------------------
   /// ```
   @override
   Map<String, dynamic> toOtpAuthMap() {
     return super.toOtpAuthMap()
       ..addAll({
-        OTP_AUTH_PUSH_SSL_VERIFY: sslVerify ? OTP_AUTH_PUSH_SSL_VERIFY_TRUE : OTP_AUTH_PUSH_SSL_VERIFY_FALSE,
-        if (expirationDate != null) OTP_AUTH_PUSH_TTL_MINUTES: expirationDate!.difference(DateTime.now()).inMinutes.toString(),
-        if (enrollmentCredentials != null) OTP_AUTH_PUSH_ENROLLMENT_CREDENTIAL: enrollmentCredentials!,
-        if (url != null) OTP_AUTH_PUSH_ROLLOUT_URL: url.toString(),
-        if (tokenImage != null) OTP_AUTH_IMAGE: tokenImage!,
-        OTP_AUTH_PIN: pin ? OTP_AUTH_PIN_TRUE : OTP_AUTH_PIN_FALSE,
-        OTP_AUTH_VERSION: '1',
+        SSL_VERIFY: sslVerify ? SSL_VERIFY_VALUE_TRUE : SSL_VERIFY_VALUE_FALSE,
+        if (expirationDate != null) TTL_MINUTES: expirationDate!.difference(DateTime.now()).inMinutes.toString(),
+        if (enrollmentCredentials != null) ENROLLMENT_CREDENTIAL: enrollmentCredentials!,
+        if (url != null) ROLLOUT_URL: url.toString(),
+        if (tokenImage != null) Token.IMAGE: tokenImage!,
+        Token.PIN: pin ? Token.PIN_VALUE_TRUE : Token.PIN_VALUE_FALSE,
+        VERSION: '1',
       });
   }
 

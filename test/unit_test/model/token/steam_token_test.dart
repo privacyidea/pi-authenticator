@@ -4,9 +4,10 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/enums/encodings.dart';
 import 'package:privacyidea_authenticator/model/extensions/enums/encodings_extension.dart';
+import 'package:privacyidea_authenticator/model/tokens/otp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/steam_token.dart';
+import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
-import 'package:privacyidea_authenticator/utils/identifiers.dart';
 
 void main() {
   _testSteamToken();
@@ -73,12 +74,12 @@ void _testSteamToken() {
       group('fromUriMap', () {
         test('with full map', () {
           final uriMap = {
-            OTP_AUTH_LABEL: 'label',
-            OTP_AUTH_ISSUER: 'issuer',
-            OTP_AUTH_SECRET_BASE32: Encodings.base32.encode(utf8.encode('secret')),
-            OTP_AUTH_TYPE: 'totp',
-            OTP_AUTH_PIN: 'False',
-            OTP_AUTH_IMAGE: 'example.png',
+            Token.LABEL: 'label',
+            Token.ISSUER: 'issuer',
+            Token.TYPE: 'totp',
+            Token.PIN: Token.PIN_VALUE_FALSE,
+            Token.IMAGE: 'example.png',
+            OTPToken.SECRET_BASE32: Encodings.base32.encode(utf8.encode('secret')),
           };
           final totpFromUriMap = SteamToken.fromOtpAuthMap(uriMap);
           expect(totpFromUriMap.period, 30);
@@ -93,11 +94,11 @@ void _testSteamToken() {
         });
         test('with missing secret', () {
           final uriMap = {
-            OTP_AUTH_LABEL: 'label',
-            OTP_AUTH_ISSUER: 'issuer',
-            OTP_AUTH_TYPE: 'totp',
-            OTP_AUTH_PIN: 'False',
-            OTP_AUTH_IMAGE: 'example.png',
+            Token.LABEL: 'label',
+            Token.ISSUER: 'issuer',
+            Token.TYPE: 'totp',
+            Token.PIN: Token.PIN_VALUE_FALSE,
+            Token.IMAGE: 'example.png',
           };
           expect(() => SteamToken.fromOtpAuthMap(uriMap), throwsA(isA<ArgumentError>()));
         });

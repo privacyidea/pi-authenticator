@@ -6,8 +6,9 @@ import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/enums/encodings.dart';
 import 'package:privacyidea_authenticator/model/extensions/enums/encodings_extension.dart';
 import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
+import 'package:privacyidea_authenticator/model/tokens/otp_token.dart';
+import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
-import 'package:privacyidea_authenticator/utils/identifiers.dart';
 
 void main() {
   _testTotpToken();
@@ -76,15 +77,15 @@ void _testTotpToken() {
     group('fromUriMap', () {
       test('with full map', () {
         final uriMap = {
-          OTP_AUTH_PERIOD_SECONDS: '30',
-          OTP_AUTH_LABEL: 'label',
-          OTP_AUTH_ISSUER: 'issuer',
-          OTP_AUTH_ALGORITHM: 'SHA1',
-          OTP_AUTH_DIGITS: '6',
-          OTP_AUTH_SECRET_BASE32: Encodings.base32.encode(utf8.encode('secret')),
-          OTP_AUTH_TYPE: 'totp',
-          OTP_AUTH_PIN: 'False',
-          OTP_AUTH_IMAGE: 'example.png',
+          Token.LABEL: 'label',
+          Token.ISSUER: 'issuer',
+          Token.TYPE: 'totp',
+          Token.PIN: Token.PIN_VALUE_FALSE,
+          Token.IMAGE: 'example.png',
+          OTPToken.ALGORITHM: 'SHA1',
+          OTPToken.DIGITS: '6',
+          OTPToken.SECRET_BASE32: Encodings.base32.encode(utf8.encode('secret')),
+          TOTPToken.PERIOD_SECONDS: '30',
         };
         final totpFromUriMap = TOTPToken.fromOtpAuthMap(uriMap);
         expect(totpFromUriMap.period, 30);
@@ -99,56 +100,56 @@ void _testTotpToken() {
       });
       test('with missing secret', () {
         final uriMap = {
-          OTP_AUTH_PERIOD_SECONDS: 30,
-          OTP_AUTH_LABEL: 'label',
-          OTP_AUTH_ISSUER: 'issuer',
-          OTP_AUTH_ALGORITHM: 'SHA1',
-          OTP_AUTH_DIGITS: 6,
-          OTP_AUTH_TYPE: 'totp',
-          OTP_AUTH_PIN: 'False',
-          OTP_AUTH_IMAGE: 'example.png',
+          Token.LABEL: 'label',
+          Token.ISSUER: 'issuer',
+          Token.TYPE: 'totp',
+          Token.PIN: Token.PIN_VALUE_FALSE,
+          Token.IMAGE: 'example.png',
+          OTPToken.ALGORITHM: 'SHA1',
+          OTPToken.DIGITS: 6,
+          TOTPToken.PERIOD_SECONDS: 30,
         };
         expect(() => TOTPToken.fromOtpAuthMap(uriMap), throwsA(isA<ArgumentError>()));
       });
       test('with zero period', () {
         final uriMap = {
-          OTP_AUTH_PERIOD_SECONDS: 0,
-          OTP_AUTH_LABEL: 'label',
-          OTP_AUTH_ISSUER: 'issuer',
-          OTP_AUTH_ALGORITHM: 'SHA1',
-          OTP_AUTH_DIGITS: 6,
-          OTP_AUTH_SECRET_BASE32: Uint8List.fromList(utf8.encode('secret')),
-          OTP_AUTH_TYPE: 'totp',
-          OTP_AUTH_PIN: 'False',
-          OTP_AUTH_IMAGE: 'example.png',
+          Token.LABEL: 'label',
+          Token.ISSUER: 'issuer',
+          Token.TYPE: 'totp',
+          Token.PIN: Token.PIN_VALUE_FALSE,
+          Token.IMAGE: 'example.png',
+          OTPToken.ALGORITHM: 'SHA1',
+          OTPToken.DIGITS: 6,
+          OTPToken.SECRET_BASE32: Uint8List.fromList(utf8.encode('secret')),
+          TOTPToken.PERIOD_SECONDS: 0,
         };
         expect(() => TOTPToken.fromOtpAuthMap(uriMap), throwsA(isA<ArgumentError>()));
       });
       test('with zero digits', () {
         final uriMap = {
-          OTP_AUTH_PERIOD_SECONDS: 30,
-          OTP_AUTH_LABEL: 'label',
-          OTP_AUTH_ISSUER: 'issuer',
-          OTP_AUTH_ALGORITHM: 'SHA1',
-          OTP_AUTH_DIGITS: 0,
-          OTP_AUTH_SECRET_BASE32: Uint8List.fromList(utf8.encode('secret')),
-          OTP_AUTH_TYPE: 'totp',
-          OTP_AUTH_PIN: 'False',
-          OTP_AUTH_IMAGE: 'example.png',
+          Token.LABEL: 'label',
+          Token.ISSUER: 'issuer',
+          Token.TYPE: 'totp',
+          Token.PIN: Token.PIN_VALUE_FALSE,
+          Token.IMAGE: 'example.png',
+          OTPToken.ALGORITHM: 'SHA1',
+          OTPToken.DIGITS: 0,
+          OTPToken.SECRET_BASE32: Uint8List.fromList(utf8.encode('secret')),
+          TOTPToken.PERIOD_SECONDS: 30,
         };
         expect(() => TOTPToken.fromOtpAuthMap(uriMap), throwsA(isA<ArgumentError>()));
       });
       test('with lowercase algorithm', () {
         final uriMap = {
-          OTP_AUTH_PERIOD_SECONDS: '30',
-          OTP_AUTH_LABEL: 'label',
-          OTP_AUTH_ISSUER: 'issuer',
-          OTP_AUTH_ALGORITHM: 'sha1',
-          OTP_AUTH_DIGITS: '6',
-          OTP_AUTH_SECRET_BASE32: Uint8List.fromList(utf8.encode('secret')),
-          OTP_AUTH_TYPE: 'totp',
-          OTP_AUTH_PIN: 'False',
-          OTP_AUTH_IMAGE: 'example.png',
+          Token.LABEL: 'label',
+          Token.ISSUER: 'issuer',
+          Token.TYPE: 'totp',
+          Token.PIN: Token.PIN_VALUE_FALSE,
+          Token.IMAGE: 'example.png',
+          OTPToken.ALGORITHM: 'sha1',
+          OTPToken.DIGITS: '6',
+          OTPToken.SECRET_BASE32: Uint8List.fromList(utf8.encode('secret')),
+          TOTPToken.PERIOD_SECONDS: '30',
         };
         final totpFromUriMap = TOTPToken.fromOtpAuthMap(uriMap);
         expect(totpFromUriMap.algorithm, Algorithms.SHA1);

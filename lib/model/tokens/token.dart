@@ -1,5 +1,3 @@
-// ignore_for_file: constant_identifier_names
-
 /*
  * privacyIDEA Authenticator
  *
@@ -22,7 +20,6 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../../../model/token_container.dart';
-import '../../utils/identifiers.dart';
 import '../../utils/object_validator.dart';
 import '../enums/token_types.dart';
 import '../extensions/enum_extension.dart';
@@ -37,13 +34,46 @@ import 'totp_token.dart';
 
 @immutable
 abstract class Token with SortableMixin {
-  static const CONTAINER_SERIAL = 'containerSerial';
-  static const ID = 'id';
-  static const ORIGIN = 'origin';
-  static const HIDDEN = 'hidden';
-  static const CHECKED_CONTAINERS = 'checkedContainer';
-  static const FOLDER_ID = 'folderId';
-  static const SORT_INDEX = SortableMixin.SORT_INDEX;
+  /// [String] (optional) default = 'False'
+  static const String PIN_VALUE_TRUE = 'True';
+  static const String PIN_VALUE_FALSE = 'False';
+
+  /// [String] (optional) default = ''
+  static const String IMAGE = 'image';
+
+  // Default data keys
+  static const String TYPE = 'type';
+
+  /// [String] (optional) default = ''
+  static const String LABEL = 'label';
+
+  /// [String] (optional) default = ''
+  static const String ISSUER = 'issuer';
+
+  /// [String] 'True' / 'False' (optional) default = 'False'
+  static const String PIN = 'pin';
+
+  /// [String] (optional) default = null
+  static const String SERIAL = 'serial';
+
+  // Additional data keys
+  static const String CONTAINER_SERIAL = 'containerSerial';
+  static const String ID = 'id';
+  static const String ORIGIN = 'origin';
+  static const String HIDDEN = 'hidden';
+  static const String CHECKED_CONTAINERS = 'checkedContainer';
+  static const String FOLDER_ID = 'folderId';
+  static const String SORT_INDEX = SortableMixin.SORT_INDEX;
+
+  // otp auth 2step
+  /// [String] (required for 2step)
+  static const String TWO_STEP_SALT_LENTH = '2step_salt';
+
+  /// [String] (required for 2step)
+  static const String TWO_STEP_OUTPUT_LENTH = '2step_output';
+
+  /// [String] (required for 2step)
+  static const String TWO_STEP_ITERATIONS = '2step_difficulty';
 
   bool? get isPrivacyIdeaToken => origin?.isPrivacyIdeaToken;
   final String tokenVersion = 'v1.0.0'; // The version of this token, this is used for serialization.
@@ -67,7 +97,7 @@ abstract class Token with SortableMixin {
 
   /// Creates a token from a json map.
   factory Token.fromJson(Map<String, dynamic> json) {
-    String? type = json['type'];
+    String? type = json[TYPE];
     if (type == null) throw ArgumentError.value(json, 'Token#fromJson', 'Token type is not defined in the json');
     if (TokenTypes.HOTP.isName(type, caseSensitive: false)) return HOTPToken.fromJson(json);
     if (TokenTypes.TOTP.isName(type, caseSensitive: false)) return TOTPToken.fromJson(json);
@@ -79,7 +109,7 @@ abstract class Token with SortableMixin {
 
   /// Creates a token from a uri map.
   factory Token.fromOtpAuthMap(Map<String, dynamic> otpAuthMap, {Map<String, dynamic> additionalData = const {}}) {
-    String? type = otpAuthMap[OTP_AUTH_TYPE];
+    String? type = otpAuthMap[TYPE];
     if (type == null) throw ArgumentError.value(otpAuthMap, 'Token#fromUriMap', 'Token type is not defined in the uri map');
     if (TokenTypes.HOTP.isName(type, caseSensitive: false)) return HOTPToken.fromOtpAuthMap(otpAuthMap, additionalData: additionalData);
     if (TokenTypes.TOTP.isName(type, caseSensitive: false)) return TOTPToken.fromOtpAuthMap(otpAuthMap, additionalData: additionalData);
@@ -181,23 +211,23 @@ abstract class Token with SortableMixin {
   /// This is used to create a map that typically was created from a uri.
   /// ```dart
   ///  ------------------------- [Token] -------------------------
-  /// | OTP_AUTH_SERIAL: serial, (optional)                       |
-  /// | OTP_AUTH_TYPE: type,                                      |
-  /// | OTP_AUTH_LABEL: label,                                    |
-  /// | OTP_AUTH_ISSUER: issuer,                                  |
-  /// | OTP_AUTH_PIN: pin,                                        |
-  /// | OTP_AUTH_IMAGE: tokenImage, (optional)                    |
+  /// | SERIAL: serial, (optional)                                |
+  /// | TYPE: type,                                               |
+  /// | LABEL: label,                                             |
+  /// | ISSUER: issuer,                                           |
+  /// | PIN: pin,                                                 |
+  /// | IMAGE: tokenImage, (optional)                             |
   ///  -----------------------------------------------------------
   ///
   /// ```
   Map<String, dynamic> toOtpAuthMap() {
     return {
-      if (serial != null) OTP_AUTH_SERIAL: serial!,
-      OTP_AUTH_TYPE: type,
-      OTP_AUTH_LABEL: label,
-      OTP_AUTH_ISSUER: issuer,
-      OTP_AUTH_PIN: pin ? OTP_AUTH_PIN_TRUE : OTP_AUTH_PIN_FALSE,
-      if (tokenImage != null) OTP_AUTH_IMAGE: tokenImage!,
+      if (serial != null) SERIAL: serial!,
+      TYPE: type,
+      LABEL: label,
+      ISSUER: issuer,
+      PIN: pin ? PIN_VALUE_TRUE : PIN_VALUE_FALSE,
+      if (tokenImage != null) IMAGE: tokenImage!,
     };
   }
 

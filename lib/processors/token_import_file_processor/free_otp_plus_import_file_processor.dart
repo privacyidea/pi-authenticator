@@ -17,7 +17,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// ignore_for_file: constant_identifier_names
 
 import 'dart:convert';
 import 'dart:typed_data';
@@ -31,9 +30,11 @@ import '../../model/enums/token_origin_source_type.dart';
 import '../../model/exception_errors/localized_exception.dart';
 import '../../model/extensions/enums/token_origin_source_type.dart';
 import '../../model/processor_result.dart';
+import '../../model/tokens/hotp_token.dart';
+import '../../model/tokens/otp_token.dart';
 import '../../model/tokens/token.dart';
+import '../../model/tokens/totp_token.dart';
 import '../../utils/globals.dart';
-import '../../utils/identifiers.dart';
 import '../../utils/logger.dart';
 import '../../utils/object_validator.dart';
 import '../../utils/token_import_origins.dart';
@@ -157,25 +158,25 @@ class FreeOtpPlusImportFileProcessor extends TokenImportFileProcessor {
         name: 'FreeOtpPlusToken',
         map: {
           /// Steam is a special case, its hardcoded in the original app.
-          OTP_AUTH_TYPE: tokenJson[_FREE_OTP_PLUS_ISSUER] == _steamTokenIssuer ? _steamTokenType : tokenJson[_FREE_OTP_PLUS_TYPE],
-          OTP_AUTH_LABEL: tokenJson[_FREE_OTP_PLUS_LABEL],
-          OTP_AUTH_SECRET_BASE32: tokenJson[_FREE_OTP_PLUS_SECRET],
-          OTP_AUTH_ISSUER: tokenJson[_FREE_OTP_PLUS_ISSUER],
-          OTP_AUTH_ALGORITHM: tokenJson[_FREE_OTP_PLUS_ALGORITHM],
-          OTP_AUTH_DIGITS: tokenJson[_FREE_OTP_PLUS_DIGITS],
-          OTP_AUTH_COUNTER: tokenJson[_FREE_OTP_PLUS_COUNTER],
-          OTP_AUTH_PERIOD_SECONDS: tokenJson[_FREE_OTP_PLUS_PERIOD],
+          Token.TYPE: tokenJson[_FREE_OTP_PLUS_ISSUER] == _steamTokenIssuer ? _steamTokenType : tokenJson[_FREE_OTP_PLUS_TYPE],
+          Token.LABEL: tokenJson[_FREE_OTP_PLUS_LABEL],
+          Token.ISSUER: tokenJson[_FREE_OTP_PLUS_ISSUER],
+          OTPToken.SECRET_BASE32: tokenJson[_FREE_OTP_PLUS_SECRET],
+          OTPToken.ALGORITHM: tokenJson[_FREE_OTP_PLUS_ALGORITHM],
+          OTPToken.DIGITS: tokenJson[_FREE_OTP_PLUS_DIGITS],
+          HOTPToken.COUNTER: tokenJson[_FREE_OTP_PLUS_COUNTER],
+          TOTPToken.PERIOD_SECONDS: tokenJson[_FREE_OTP_PLUS_PERIOD],
         },
         validators: {
-          OTP_AUTH_TYPE: const ObjectValidator<String>(),
-          OTP_AUTH_LABEL: const ObjectValidator<String>(),
-          OTP_AUTH_SECRET_BASE32: ObjectValidator<String>(transformer: (value) => Encodings.base32.encode(Uint8List.fromList((value as List).cast<int>()))),
-          OTP_AUTH_ISSUER: const ObjectValidator<String>(),
-          OTP_AUTH_ALGORITHM: const ObjectValidator<String>(),
-          OTP_AUTH_DIGITS: intToStringValidator,
+          Token.TYPE: const ObjectValidator<String>(),
+          Token.LABEL: const ObjectValidator<String>(),
+          Token.ISSUER: const ObjectValidator<String>(),
+          OTPToken.SECRET_BASE32: ObjectValidator<String>(transformer: (value) => Encodings.base32.encode(Uint8List.fromList((value as List).cast<int>()))),
+          OTPToken.ALGORITHM: const ObjectValidator<String>(),
+          OTPToken.DIGITS: intToStringValidator,
           // FreeOTP+ saves the counter 1 less than the actual value
-          OTP_AUTH_COUNTER: ObjectValidatorNullable<String>(transformer: (value) => ((value as int) + 1).toString()),
-          OTP_AUTH_PERIOD_SECONDS: intToStringValidatorNullable,
+          HOTPToken.COUNTER: ObjectValidatorNullable<String>(transformer: (value) => ((value as int) + 1).toString()),
+          TOTPToken.PERIOD_SECONDS: intToStringValidatorNullable,
         },
       );
 }

@@ -28,6 +28,15 @@ import '../token_template.dart';
 import 'token.dart';
 
 abstract class OTPToken extends Token {
+  /// [String] (optional) default = 'SHA1'
+  static const String ALGORITHM = 'algorithm';
+
+  /// [String] (optional) default = '6'
+  static const String DIGITS = 'digits';
+
+  /// [String] (required)
+  static const String SECRET_BASE32 = 'secret';
+
   final Algorithms algorithm; // the hashing algorithm that is used to calculate the otp value
   final int digits; // the number of digits the otp value will have
   final String secret; // the secret based on which the otp value is calculated in base32
@@ -95,36 +104,36 @@ abstract class OTPToken extends Token {
 
   /// This is used to create a map that typically was created from a uri.
   /// ```dart
-  /// -------------------------- [Token] -------------------------------
-  /// | OTP_AUTH_SERIAL: serial, (optional)                             |
-  /// | OTP_AUTH_LABEL: label,                                          |
-  /// | OTP_AUTH_ISSUER: issuer,                                        |
-  /// | CONTAINER_SERIAL: containerSerial, (optional)                   |
-  /// | CHECKED_CONTAINERS: checkedContainer,                          |
-  /// | TOKEN_ID: id,                                                   |
-  /// | OTP_AUTH_TYPE: type,                                            |
-  /// | OTP_AUTH_IMAGE: tokenImage, (optional)                          |
-  /// | SORTABLE_INDEX: sortIndex, (optional)                           |
-  /// | FOLDER_ID: folderId, (optional)                                 |
-  /// | TOKEN_ORIGIN: origin, (optional)                                |
-  /// | OTP_AUTH_PIN: pin,                                              |
-  /// | TOKEN_HIDDEN: isHidden,                                         |
-  /// -------------------------------------------------------------------
-  /// ------------------------- [OTPToken] ------------------------------
-  /// | OTP_AUTH_ALGORITHM: algorithm,                                  |
-  /// | OTP_AUTH_DIGITS: digits,                                        |
-  /// | OTP_AUTH_SECRET_BASE32: secret,                                 |
-  /// | OTP_AUTH_OTP_VALUES: [otpValue, nextValue], (if serial is null) |
-  /// -------------------------------------------------------------------
+  ///  ------------------------- [Token] -------------------------------
+  /// | Token.SERIAL: serial, (optional)                                |
+  /// | Token.LABEL: label,                                             |
+  /// | Token.ISSUER: issuer,                                           |
+  /// | Token.CONTAINER_SERIAL: containerSerial, (optional)             |
+  /// | Token.CHECKED_CONTAINERS: checkedContainer,                     |
+  /// | Token.TOKEN_ID: id,                                             |
+  /// | Token.TYPE: type,                                               |
+  /// | Token.IMAGE: tokenImage, (optional)                             |
+  /// | Token.SORTABLE_INDEX: sortIndex, (optional)                     |
+  /// | Token.FOLDER_ID: folderId, (optional)                           |
+  /// | Token.TOKEN_ORIGIN: origin, (optional)                          |
+  /// | Token.PIN: pin,                                                 |
+  /// | Token.TOKEN_HIDDEN: isHidden,                                   |
+  ///  -----------------------------------------------------------------
+  ///  ------------------------- [OTPToken] ----------------------------
+  /// | ALGORITHM: algorithm,                                           |
+  /// | DIGITS: digits,                                                 |
+  /// | SECRET_BASE32: secret,                                          |
+  /// | OTP_VALUES: [otpValue, nextValue], (if serial is null)          |
+  ///  -----------------------------------------------------------------
   /// ```
   @override
   Map<String, dynamic> toOtpAuthMap() {
     Logger.debug('$OTP_AUTH_OTP_VALUES ${jsonEncode([otpValue, nextValue])}');
     return super.toOtpAuthMap()
       ..addAll({
-        OTP_AUTH_ALGORITHM: algorithm.name,
-        OTP_AUTH_DIGITS: digits.toString(),
-        OTP_AUTH_SECRET_BASE32: secret,
+        ALGORITHM: algorithm.name,
+        DIGITS: digits.toString(),
+        SECRET_BASE32: secret,
         if (serial == null) OTP_AUTH_OTP_VALUES: [otpValue, nextValue],
       });
   }

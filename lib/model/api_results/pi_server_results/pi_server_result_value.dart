@@ -1,5 +1,3 @@
-// ignore_for_file: constant_identifier_names
-
 /*
  * privacyIDEA Authenticator
  *
@@ -52,6 +50,12 @@ sealed class PiServerResultValue extends PiServerResult {
 }
 
 class ContainerChallenge extends PiServerResultValue {
+// Container challenge:
+  static const String KEY_ALGORITHM = 'enc_key_algorithm';
+  static const String NONCE = 'nonce';
+  static const String TIMESTAMP = 'time_stamp';
+  static const String SIGNATURE = 'signature';
+
   final String keyAlgorithm;
   final String nonce;
   final String timeStamp;
@@ -68,16 +72,16 @@ class ContainerChallenge extends PiServerResultValue {
     final map = validateMap(
       map: json,
       validators: {
-        CONTAINER_CHAL_KEY_ALGORITHM: const ObjectValidator<String>(),
-        CONTAINER_CHAL_NONCE: const ObjectValidator<String>(),
-        CONTAINER_CHAL_TIMESTAMP: const ObjectValidator<String>(),
+        KEY_ALGORITHM: const ObjectValidator<String>(),
+        NONCE: const ObjectValidator<String>(),
+        TIMESTAMP: const ObjectValidator<String>(),
       },
       name: 'ContainerChallenge#fromJson',
     );
     return ContainerChallenge(
-      keyAlgorithm: map[CONTAINER_CHAL_KEY_ALGORITHM] as String,
-      nonce: map[CONTAINER_CHAL_NONCE] as String,
-      timeStamp: map[CONTAINER_CHAL_TIMESTAMP] as String,
+      keyAlgorithm: map[KEY_ALGORITHM] as String,
+      nonce: map[NONCE] as String,
+      timeStamp: map[TIMESTAMP] as String,
     );
   }
 }

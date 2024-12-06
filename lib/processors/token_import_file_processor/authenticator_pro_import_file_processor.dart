@@ -32,12 +32,14 @@ import '../../model/enums/token_types.dart';
 import '../../model/exception_errors/localized_exception.dart';
 import '../../model/extensions/enums/token_origin_source_type.dart';
 import '../../model/processor_result.dart';
+import '../../model/tokens/hotp_token.dart';
+import '../../model/tokens/otp_token.dart';
 import '../../model/tokens/token.dart';
+import '../../model/tokens/totp_token.dart';
 import '../../processors/scheme_processors/token_import_scheme_processors/otp_auth_processor.dart';
 import '../../processors/token_import_file_processor/two_fas_import_file_processor.dart';
 import '../../utils/encryption/aes_encrypted.dart';
 import '../../utils/globals.dart';
-import '../../utils/identifiers.dart';
 import '../../utils/logger.dart';
 import '../../utils/object_validator.dart';
 import '../../utils/token_import_origins.dart';
@@ -321,24 +323,24 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
 
         final otpAuthMap = validateMap<String>(
           map: {
-            OTP_AUTH_TYPE: tokenType,
-            OTP_AUTH_ISSUER: tokenMap[_AUTHENTICATOR_PRO_ISSUER],
-            OTP_AUTH_LABEL: tokenMap[_AUTHENTICATOR_PRO_LABEL],
-            OTP_AUTH_SECRET_BASE32: tokenMap[_AUTHENTICATOR_PRO_SECRET],
-            OTP_AUTH_DIGITS: tokenMap[_AUTHENTICATOR_PRO_DIGITS],
-            OTP_AUTH_PERIOD_SECONDS: tokenMap[_AUTHENTICATOR_PRO_PERIOD],
-            OTP_AUTH_ALGORITHM: tokenMap[_AUTHENTICATOR_PRO_ALGORITHM],
-            OTP_AUTH_COUNTER: tokenMap[_AUTHENTICATOR_PRO_COUNTER],
+            Token.TYPE: tokenType,
+            Token.ISSUER: tokenMap[_AUTHENTICATOR_PRO_ISSUER],
+            Token.LABEL: tokenMap[_AUTHENTICATOR_PRO_LABEL],
+            OTPToken.SECRET_BASE32: tokenMap[_AUTHENTICATOR_PRO_SECRET],
+            OTPToken.DIGITS: tokenMap[_AUTHENTICATOR_PRO_DIGITS],
+            OTPToken.ALGORITHM: tokenMap[_AUTHENTICATOR_PRO_ALGORITHM],
+            TOTPToken.PERIOD_SECONDS: tokenMap[_AUTHENTICATOR_PRO_PERIOD],
+            HOTPToken.COUNTER: tokenMap[_AUTHENTICATOR_PRO_COUNTER],
           },
           validators: {
-            OTP_AUTH_TYPE: const ObjectValidator<String>(),
-            OTP_AUTH_ISSUER: const ObjectValidator<String>(),
-            OTP_AUTH_LABEL: const ObjectValidator<String>(),
-            OTP_AUTH_SECRET_BASE32: const ObjectValidator<String>(),
-            OTP_AUTH_DIGITS: intToStringValidator,
-            OTP_AUTH_PERIOD_SECONDS: intToStringValidator,
-            OTP_AUTH_ALGORITHM: ObjectValidator<String>(transformer: (value) => algorithmMap[value]!),
-            OTP_AUTH_COUNTER: intToStringValidator,
+            Token.TYPE: const ObjectValidator<String>(),
+            Token.ISSUER: const ObjectValidator<String>(),
+            Token.LABEL: const ObjectValidator<String>(),
+            OTPToken.SECRET_BASE32: const ObjectValidator<String>(),
+            OTPToken.DIGITS: intToStringValidator,
+            TOTPToken.PERIOD_SECONDS: intToStringValidator,
+            HOTPToken.COUNTER: intToStringValidator,
+            OTPToken.ALGORITHM: ObjectValidator<String>(transformer: (value) => algorithmMap[value]!),
           },
           name: 'AuthenticatorProToken',
         );

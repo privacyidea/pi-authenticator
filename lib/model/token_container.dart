@@ -1,5 +1,3 @@
-// ignore_for_file: constant_identifier_names
-
 /*
  * privacyIDEA Authenticator
  *
@@ -26,7 +24,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../../../../../../model/enums/algorithms.dart';
 import '../../../../../../../model/extensions/enums/ec_key_algorithm_extension.dart';
 import '../../../../../../../model/tokens/token.dart';
-import '../../../../../../../utils/identifiers.dart';
 import '../utils/ecc_utils.dart';
 import '../utils/logger.dart';
 import '../utils/object_validator.dart';
@@ -42,7 +39,21 @@ part 'token_container.g.dart';
 
 @Freezed(toStringOverride: false, addImplicitFinal: true, toJson: true, fromJson: true)
 class TokenContainer with _$TokenContainer {
-  static const SERIAL = 'serial';
+// Container registration:
+  static const String ISSUER = 'issuer';
+  static const String TTL = 'ttl';
+  static const String NONCE = 'nonce';
+  static const String TIMESTAMP = 'time';
+  static const String FINALIZATION_URL = 'url';
+  static const String EC_KEY_ALGORITHM = 'key_algorithm';
+  static const String SERIAL = 'serial';
+  static const String HASH_ALGORITHM = 'hash_algorithm';
+  static const String PASSPHRASE_QUESTION = 'passphrase';
+  static const String SSL_VERIFY = 'ssl_verify';
+  static const String SERVER_URL = 'container_sync_url';
+  static const String SCOPE = 'scope';
+  static const String POLICIES = 'info';
+
   static const eccUtils = EccUtils();
 
   const TokenContainer._();
@@ -53,48 +64,53 @@ class TokenContainer with _$TokenContainer {
   Uri get transferUrl => serverUrl.replace(path: '/container/$serial/rollover');
   Uri get unregisterUrl => serverUrl.replace(path: '/container/register/$serial/terminate/client');
 
-  // example: pia://container/SMPH00134123
-  // ?issuer=privacyIDEA
-  // &nonce=887197025f5fa59b50f33c15196eb97ee651a5d1
-  // &time=2024-08-21T07%3A43%3A07.086670%2B00%3A00
-  // &url=http://127.0.0.1:5000/container/register/initialize
-  // &serial=SMPH00134123
-  // &key_algorithm=secp384r1
-  // &hash_algorithm=SHA256
-  // &passphrase=Enter%20your%20passphrase
+  // example: "pia://container/SMPH00067A2F"
+  // "?issuer=privacyIDEA"
+  // "&ttl=10"
+  // "&nonce=b33d3a11c8d1b45f19640035e27944ccf0b2383d"
+  // "&time=2024-12-06T11%3A14%3A26.885409%2B00%3A00"
+  // "&url=http://192.168.0.230:5000/"
+  // "&serial=SMPH00067A2F"
+  // "&key_algorithm=secp384r1"
+  // "&hash_algorithm=SHA256"
+  // "&ssl_verify=False"
+  // "&passphrase=Enter%20your%20password"
   factory TokenContainer.fromUriMap(Map<String, dynamic> uriMap) {
     uriMap = validateMap(
       map: uriMap,
       validators: {
-        CONTAINER_ISSUER: const ObjectValidator<String>(),
-        CONTAINER_NONCE: const ObjectValidator<String>(),
-        CONTAINER_TIMESTAMP: ObjectValidator<DateTime>(transformer: (v) => DateTime.parse(v)),
-        CONTAINER_FINALIZATION_URL: stringToUrivalidator,
-        CONTAINER_SERIAL: const ObjectValidator<String>(),
-        CONTAINER_EC_KEY_ALGORITHM: ObjectValidator<EcKeyAlgorithm>(transformer: (v) => EcKeyAlgorithm.values.byCurveName(v)),
-        CONTAINER_HASH_ALGORITHM: stringToAlgorithmsValidator,
-        CONTAINER_PASSPHRASE_QUESTION: const ObjectValidatorNullable<String>(),
-        CONTAINER_SSL_VERIFY: boolValidator,
-        CONTAINER_POLICIES: ObjectValidatorNullable<ContainerPolicies>(transformer: (value) => ContainerPolicies.fromUriMap(value)),
+        ISSUER: const ObjectValidator<String>(),
+        TTL: ObjectValidator<Duration>(transformer: (value) => Duration(minutes: value)),
+        NONCE: const ObjectValidator<String>(),
+        TIMESTAMP: ObjectValidator<DateTime>(transformer: (v) => DateTime.parse(v)),
+        FINALIZATION_URL: stringToUrivalidator,
+        SERIAL: const ObjectValidator<String>(),
+        EC_KEY_ALGORITHM: ObjectValidator<EcKeyAlgorithm>(transformer: (v) => EcKeyAlgorithm.values.byCurveName(v)),
+        HASH_ALGORITHM: stringToAlgorithmsValidator,
+        PASSPHRASE_QUESTION: const ObjectValidatorNullable<String>(),
+        SSL_VERIFY: boolValidator,
+        POLICIES: ObjectValidatorNullable<ContainerPolicies>(transformer: (value) => ContainerPolicies.fromUriMap(value)),
       },
       name: 'Container',
     );
     return TokenContainer.unfinalized(
-      issuer: uriMap[CONTAINER_ISSUER],
-      nonce: uriMap[CONTAINER_NONCE],
-      timestamp: uriMap[CONTAINER_TIMESTAMP],
-      serverUrl: uriMap[CONTAINER_FINALIZATION_URL],
-      serial: uriMap[CONTAINER_SERIAL],
-      ecKeyAlgorithm: uriMap[CONTAINER_EC_KEY_ALGORITHM],
-      hashAlgorithm: uriMap[CONTAINER_HASH_ALGORITHM],
-      sslVerify: uriMap[CONTAINER_SSL_VERIFY],
-      passphraseQuestion: uriMap[CONTAINER_PASSPHRASE_QUESTION],
-      policies: uriMap[CONTAINER_POLICIES] ?? ContainerPolicies.defaultSetting,
+      issuer: uriMap[ISSUER],
+      ttl: uriMap[TTL],
+      nonce: uriMap[NONCE],
+      timestamp: uriMap[TIMESTAMP],
+      serverUrl: uriMap[FINALIZATION_URL],
+      serial: uriMap[SERIAL],
+      ecKeyAlgorithm: uriMap[EC_KEY_ALGORITHM],
+      hashAlgorithm: uriMap[HASH_ALGORITHM],
+      sslVerify: uriMap[SSL_VERIFY],
+      passphraseQuestion: uriMap[PASSPHRASE_QUESTION],
+      policies: uriMap[POLICIES] ?? ContainerPolicies.defaultSetting,
     );
   }
 
   const factory TokenContainer.unfinalized({
     required String issuer,
+    required Duration ttl,
     required String nonce,
     required DateTime timestamp,
     required Uri serverUrl,

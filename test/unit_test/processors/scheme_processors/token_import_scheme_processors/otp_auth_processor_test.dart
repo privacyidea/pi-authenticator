@@ -2,11 +2,11 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:privacyidea_authenticator/model/processor_result.dart';
 import 'package:privacyidea_authenticator/model/tokens/day_password_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
+import 'package:privacyidea_authenticator/model/tokens/otp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
 import 'package:privacyidea_authenticator/processors/scheme_processors/token_import_scheme_processors/otp_auth_processor.dart';
 import 'package:privacyidea_authenticator/utils/customization/application_customization.dart';
-import 'package:privacyidea_authenticator/utils/identifiers.dart';
 
 void main() {
   _testOtpAuthProcessor();
@@ -238,7 +238,7 @@ void _testOtpAuthProcessor() {
         expect(result0, isA<ProcessorResultFailed>());
         final message = result0.asFailed!.message;
         final error = result0.asFailed!.error;
-        expect(message.toLowerCase().contains(OTP_AUTH_COUNTER) || error.toString().toLowerCase().contains(OTP_AUTH_COUNTER), isTrue);
+        expect(message.toLowerCase().contains(HOTPToken.COUNTER) || error.toString().toLowerCase().contains(HOTPToken.COUNTER), isTrue);
       });
       test('processUri missing secret', () async {
         // Arrange
@@ -253,7 +253,7 @@ void _testOtpAuthProcessor() {
         expect(result0, isA<ProcessorResultFailed>());
         final message = result0.asFailed!.message;
         final error = result0.asFailed!.error;
-        expect(message.toLowerCase().contains(OTP_AUTH_SECRET_BASE32) || error.toString().toLowerCase().contains(OTP_AUTH_SECRET_BASE32), isTrue);
+        expect(message.toLowerCase().contains(OTPToken.SECRET_BASE32) || error.toString().toLowerCase().contains(OTPToken.SECRET_BASE32), isTrue);
       });
       test('processUri issuer from path', () async {
         // Arrange

@@ -23,7 +23,6 @@ import 'package:base32/base32.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../utils/globals.dart';
-import '../utils/identifiers.dart';
 import '../utils/logger.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../utils/rsa_utils.dart';
@@ -33,6 +32,16 @@ part 'push_request.g.dart';
 
 @JsonSerializable()
 class PushRequest {
+// Push request:
+  static const String NONCE = 'nonce'; // 1.
+  static const String URL = 'url'; // 2.
+  static const String SERIAL = 'serial'; // 3.
+  static const String QUESTION = 'question'; // 4.
+  static const String TITLE = 'title'; // 5.
+  static const String SSL_VERIFY = 'sslverify'; // 6.
+  static const String SIGNATURE = 'signature'; // 7.
+  static const String ANSWERS = 'require_presence'; // 8.
+
   final String title;
   final String question;
   final int id;
@@ -117,47 +126,47 @@ class PushRequest {
       Logger.error('Invalid push request data.', error: e, stackTrace: s);
     }
     return PushRequest(
-      title: data[PUSH_REQUEST_TITLE],
-      question: data[PUSH_REQUEST_QUESTION],
-      uri: Uri.parse(data[PUSH_REQUEST_URL]),
-      nonce: data[PUSH_REQUEST_NONCE],
-      id: data[PUSH_REQUEST_NONCE].hashCode,
-      sslVerify: data[PUSH_REQUEST_SSL_VERIFY] == '1',
-      serial: data[PUSH_REQUEST_SERIAL],
+      title: data[TITLE],
+      question: data[QUESTION],
+      uri: Uri.parse(data[URL]),
+      nonce: data[NONCE],
+      id: data[NONCE].hashCode,
+      sslVerify: data[SSL_VERIFY] == '1',
+      serial: data[SERIAL],
       expirationDate: DateTime.now().add(const Duration(minutes: 2)),
-      signature: data[PUSH_REQUEST_SIGNATURE],
-      possibleAnswers: data[PUSH_REQUEST_ANSWERS] != null ? (data[PUSH_REQUEST_ANSWERS] as String).split(',') : null,
+      signature: data[SIGNATURE],
+      possibleAnswers: data[ANSWERS] != null ? (data[ANSWERS] as String).split(',') : null,
     );
   }
 
   /// Verify that the data is valid.
   /// Throws ArgumentError if data is invalid
   static void verifyData(Map<String, dynamic> data) {
-    if (data[PUSH_REQUEST_TITLE] is! String) {
-      throw ArgumentError('Push request title is ${data[PUSH_REQUEST_TITLE].runtimeType}. Expected String.');
+    if (data[TITLE] is! String) {
+      throw ArgumentError('Push request title is ${data[TITLE].runtimeType}. Expected String.');
     }
-    if (data[PUSH_REQUEST_QUESTION] is! String) {
-      throw ArgumentError('Push request question is ${data[PUSH_REQUEST_QUESTION].runtimeType}. Expected String.');
+    if (data[QUESTION] is! String) {
+      throw ArgumentError('Push request question is ${data[QUESTION].runtimeType}. Expected String.');
     }
-    if (data[PUSH_REQUEST_URL] is! String) {
-      throw ArgumentError('Push request url is ${data[PUSH_REQUEST_URL].runtimeType}. Expected String.');
-    } else if (Uri.tryParse(data[PUSH_REQUEST_URL]) == null) {
+    if (data[URL] is! String) {
+      throw ArgumentError('Push request url is ${data[URL].runtimeType}. Expected String.');
+    } else if (Uri.tryParse(data[URL]) == null) {
       throw ArgumentError('Push request url is a String but not a valid Uri.');
     }
-    if (data[PUSH_REQUEST_NONCE] is! String) {
-      throw ArgumentError('Push request nonce is ${data[PUSH_REQUEST_NONCE].runtimeType}. Expected String.');
+    if (data[NONCE] is! String) {
+      throw ArgumentError('Push request nonce is ${data[NONCE].runtimeType}. Expected String.');
     }
-    if (data[PUSH_REQUEST_SSL_VERIFY] is! String) {
-      throw ArgumentError('Push request sslVerify is ${data[PUSH_REQUEST_SSL_VERIFY].runtimeType}. Expected String.');
+    if (data[SSL_VERIFY] is! String) {
+      throw ArgumentError('Push request sslVerify is ${data[SSL_VERIFY].runtimeType}. Expected String.');
     }
-    if (data[PUSH_REQUEST_SERIAL] is! String) {
-      throw ArgumentError('Push request serial is ${data[PUSH_REQUEST_SERIAL].runtimeType}. Expected String.');
+    if (data[SERIAL] is! String) {
+      throw ArgumentError('Push request serial is ${data[SERIAL].runtimeType}. Expected String.');
     }
-    if (data[PUSH_REQUEST_SIGNATURE] is! String) {
-      throw ArgumentError('Push request signature is ${data[PUSH_REQUEST_SIGNATURE].runtimeType}. Expected String.');
+    if (data[SIGNATURE] is! String) {
+      throw ArgumentError('Push request signature is ${data[SIGNATURE].runtimeType}. Expected String.');
     }
-    if (data[PUSH_REQUEST_ANSWERS] is! String?) {
-      throw ArgumentError('Push request answers is ${data[PUSH_REQUEST_ANSWERS].runtimeType}. Expected List<String> or null.');
+    if (data[ANSWERS] is! String?) {
+      throw ArgumentError('Push request answers is ${data[ANSWERS].runtimeType}. Expected List<String> or null.');
     }
     Logger.debug('Push request data ($data) is valid.');
   }

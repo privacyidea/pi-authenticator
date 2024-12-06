@@ -21,7 +21,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../utils/identifiers.dart';
 import '../../utils/object_validator.dart';
 import '../enums/algorithms.dart';
 import '../enums/token_types.dart';
@@ -35,6 +34,9 @@ part 'hotp_token.g.dart';
 
 @JsonSerializable()
 class HOTPToken extends OTPToken {
+  /// [String]/[int] (optional) default = '0'
+  static const String COUNTER = 'counter';
+
   static String get tokenType => TokenTypes.HOTP.name;
   final int counter; // this value is used to calculate the current otp value
 
@@ -137,29 +139,29 @@ class HOTPToken extends OTPToken {
     final uriMap = validateMap(
       map: template.otpAuthMap,
       validators: {
-        OTP_AUTH_LABEL: const ObjectValidatorNullable<String>(),
-        OTP_AUTH_ISSUER: const ObjectValidatorNullable<String>(),
-        OTP_AUTH_SERIAL: const ObjectValidatorNullable<String>(),
-        OTP_AUTH_ALGORITHM: stringToAlgorithmsValidatorNullable,
-        OTP_AUTH_DIGITS: intValidatorNullable,
-        OTP_AUTH_SECRET_BASE32: base32SecretValidatorNullable,
-        OTP_AUTH_COUNTER: otpAuthCounterValidator,
-        OTP_AUTH_IMAGE: const ObjectValidatorNullable<String>(),
-        OTP_AUTH_PIN: boolValidatorNullable,
+        Token.LABEL: const ObjectValidatorNullable<String>(),
+        Token.ISSUER: const ObjectValidatorNullable<String>(),
+        Token.SERIAL: const ObjectValidatorNullable<String>(),
+        Token.IMAGE: const ObjectValidatorNullable<String>(),
+        Token.PIN: boolValidatorNullable,
+        OTPToken.ALGORITHM: stringToAlgorithmsValidatorNullable,
+        OTPToken.DIGITS: intValidatorNullable,
+        OTPToken.SECRET_BASE32: base32SecretValidatorNullable,
+        COUNTER: otpAuthCounterValidator,
       },
       name: 'HOTPToken',
     );
     return copyWith(
-      label: uriMap[OTP_AUTH_LABEL] as String?,
-      issuer: uriMap[OTP_AUTH_ISSUER] as String?,
-      serial: uriMap[OTP_AUTH_SERIAL] as String?,
-      algorithm: uriMap[OTP_AUTH_ALGORITHM] as Algorithms?,
-      digits: uriMap[OTP_AUTH_DIGITS] as int?,
-      secret: uriMap[OTP_AUTH_SECRET_BASE32] as String?,
-      counter: uriMap[OTP_AUTH_COUNTER] as int?,
-      tokenImage: uriMap[OTP_AUTH_IMAGE] as String?,
-      pin: uriMap[OTP_AUTH_PIN] as bool?,
-      isLocked: uriMap[OTP_AUTH_PIN] as bool?,
+      label: uriMap[Token.LABEL] as String?,
+      issuer: uriMap[Token.ISSUER] as String?,
+      serial: uriMap[Token.SERIAL] as String?,
+      tokenImage: uriMap[Token.IMAGE] as String?,
+      pin: uriMap[Token.PIN] as bool?,
+      isLocked: uriMap[Token.PIN] as bool?,
+      algorithm: uriMap[OTPToken.ALGORITHM] as Algorithms?,
+      digits: uriMap[OTPToken.DIGITS] as int?,
+      secret: uriMap[OTPToken.SECRET_BASE32] as String?,
+      counter: uriMap[COUNTER] as int?,
     );
   }
 
@@ -167,30 +169,26 @@ class HOTPToken extends OTPToken {
     final validatedMap = validateMap(
       map: otpAuthMap,
       validators: {
-        OTP_AUTH_LABEL: const ObjectValidator<String>(defaultValue: ''),
-        OTP_AUTH_ISSUER: const ObjectValidator<String>(defaultValue: ''),
-        OTP_AUTH_SERIAL: const ObjectValidatorNullable<String>(),
-        OTP_AUTH_ALGORITHM: stringToAlgorithmsValidator.withDefault(Algorithms.SHA1),
-        OTP_AUTH_DIGITS: otpAuthDigitsValidatorNullable,
-        OTP_AUTH_SECRET_BASE32: base32Secretvalidator,
-        OTP_AUTH_COUNTER: otpAuthCounterValidator,
-        OTP_AUTH_IMAGE: const ObjectValidatorNullable<String>(),
-        OTP_AUTH_PIN: boolValidatorNullable,
+        Token.LABEL: const ObjectValidator<String>(defaultValue: ''),
+        Token.ISSUER: const ObjectValidator<String>(defaultValue: ''),
+        Token.SERIAL: const ObjectValidatorNullable<String>(),
+        Token.IMAGE: const ObjectValidatorNullable<String>(),
+        Token.PIN: boolValidatorNullable,
+        OTPToken.ALGORITHM: stringToAlgorithmsValidator.withDefault(Algorithms.SHA1),
+        OTPToken.DIGITS: otpAuthDigitsValidatorNullable,
+        OTPToken.SECRET_BASE32: base32Secretvalidator,
+        COUNTER: otpAuthCounterValidator,
       },
       name: 'HOTPToken#otpAuthMap',
     );
     final validatedAdditionalData = Token.validateAdditionalData(additionalData);
     return HOTPToken(
-      label: validatedMap[OTP_AUTH_LABEL] as String,
-      issuer: validatedMap[OTP_AUTH_ISSUER] as String,
-      serial: validatedMap[OTP_AUTH_SERIAL] as String?,
-      algorithm: validatedMap[OTP_AUTH_ALGORITHM] as Algorithms,
-      digits: validatedMap[OTP_AUTH_DIGITS] as int,
-      secret: validatedMap[OTP_AUTH_SECRET_BASE32] as String,
-      counter: validatedMap[OTP_AUTH_COUNTER] as int,
-      tokenImage: validatedMap[OTP_AUTH_IMAGE] as String?,
-      pin: validatedMap[OTP_AUTH_PIN] as bool?,
-      isLocked: validatedMap[OTP_AUTH_PIN] as bool?,
+      label: validatedMap[Token.LABEL] as String,
+      issuer: validatedMap[Token.ISSUER] as String,
+      serial: validatedMap[Token.SERIAL] as String?,
+      tokenImage: validatedMap[Token.IMAGE] as String?,
+      pin: validatedMap[Token.PIN] as bool?,
+      isLocked: validatedMap[Token.PIN] as bool?,
       containerSerial: validatedAdditionalData[Token.CONTAINER_SERIAL],
       id: validatedAdditionalData[Token.ID] ?? const Uuid().v4(),
       origin: validatedAdditionalData[Token.ORIGIN],
@@ -198,41 +196,45 @@ class HOTPToken extends OTPToken {
       checkedContainer: validatedAdditionalData[Token.CHECKED_CONTAINERS] ?? [],
       folderId: validatedAdditionalData[Token.FOLDER_ID],
       sortIndex: validatedAdditionalData[Token.SORT_INDEX],
+      algorithm: validatedMap[OTPToken.ALGORITHM] as Algorithms,
+      digits: validatedMap[OTPToken.DIGITS] as int,
+      secret: validatedMap[OTPToken.SECRET_BASE32] as String,
+      counter: validatedMap[COUNTER] as int,
     );
   }
 
   /// This is used to create a map that typically was created from a uri.
   /// ```dart
   /// -------------------------- [Token] --------------------------------
-  /// | OTP_AUTH_SERIAL: serial, (optional)                             |
-  /// | OTP_AUTH_LABEL: label,                                          |
-  /// | OTP_AUTH_ISSUER: issuer,                                        |
+  /// | Token.SERIAL: serial, (optional)                             |
+  /// | Token.LABEL: label,                                          |
+  /// | Token.ISSUER: issuer,                                        |
   /// | CONTAINER_SERIAL: containerSerial, (optional)                   |
   /// | CHECKED_CONTAINERS: checkedContainer,                          |
   /// | TOKEN_ID: id,                                                   |
-  /// | OTP_AUTH_TYPE: type,                                            |
-  /// | OTP_AUTH_IMAGE: tokenImage, (optional)                          |
+  /// | Token.TYPE: type,                                            |
+  /// | Token.IMAGE: tokenImage, (optional)                          |
   /// | SORTABLE_INDEX: sortIndex, (optional)                           |
   /// | FOLDER_ID: folderId, (optional)                                 |
   /// | TOKEN_ORIGIN: origin, (optional)                                |
-  /// | OTP_AUTH_PIN: pin,                                              |
+  /// | Token.PIN: pin,                                              |
   /// | TOKEN_HIDDEN: isHidden,                                         |
   /// -------------------------------------------------------------------
   /// ------------------------- [OTPToken] ------------------------------
-  /// | OTP_AUTH_ALGORITHM: algorithm,                                  |
-  /// | OTP_AUTH_DIGITS: digits,                                        |
-  /// | OTP_AUTH_SECRET_BASE32: secret,                                 |
-  /// | OTP_AUTH_OTP_VALUES: [otpValue, nextValue], (if serial is null) |
+  /// | OTPToken.ALGORITHM: algorithm,                                  |
+  /// | OTPToken.DIGITS: digits,                                        |
+  /// | OTPToken.SECRET_BASE32: secret,                                 |
+  /// | OTPToken.OTP_VALUES: [otpValue, nextValue], (if serial is null) |
   /// -------------------------------------------------------------------
   /// ------------------------ [HOTPToken] ------------------------------
-  /// | OTP_AUTH_COUNTER: counter,                                      |
+  /// | COUNTER: counter,                                      |
   /// -------------------------------------------------------------------
   /// ```
   @override
   Map<String, dynamic> toOtpAuthMap() {
     return super.toOtpAuthMap()
       ..addAll({
-        OTP_AUTH_COUNTER: counter.toString(),
+        COUNTER: counter.toString(),
       });
   }
 

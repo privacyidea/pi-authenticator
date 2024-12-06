@@ -26,6 +26,7 @@ import '../../../model/extensions/enums/encodings_extension.dart';
 import '../../../model/extensions/enums/token_origin_source_type.dart';
 import '../../../model/processor_result.dart';
 import '../../../model/token_import/token_origin_data.dart';
+import '../../../model/tokens/otp_token.dart';
 import '../../../model/tokens/token.dart';
 import '../../../utils/identifiers.dart';
 import '../../../utils/logger.dart';
@@ -58,9 +59,9 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
     Map<String, String> queryParameters = {...uri.queryParameters};
 
     final (label, issuer) = _parseLabelAndIssuer(uri);
-    queryParameters[OTP_AUTH_LABEL] = label;
-    queryParameters[OTP_AUTH_ISSUER] = issuer;
-    queryParameters[OTP_AUTH_TYPE] = _parseTokenType(uri);
+    queryParameters[Token.LABEL] = label;
+    queryParameters[Token.ISSUER] = issuer;
+    queryParameters[Token.TYPE] = _parseTokenType(uri);
     queryParameters = _secretAddPadding(queryParameters);
 
     _logInfo(uri);
@@ -76,7 +77,7 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
         ];
       }
       // Update the secret with the two step secret.
-      queryParameters[OTP_AUTH_SECRET_BASE32] = twoStepSecretString;
+      queryParameters[OTPToken.SECRET_BASE32] = twoStepSecretString;
     }
     try {
       return [
@@ -150,9 +151,9 @@ TokenOriginData _parseCreatorToOrigin(Uri uri) {
 
 String _parseIssuer(Uri uri) {
   final param = validate(
-    value: uri.queryParameters[OTP_AUTH_ISSUER],
+    value: uri.queryParameters[Token.ISSUER],
     validator: const ObjectValidator<String>(defaultValue: ''),
-    name: OTP_AUTH_ISSUER,
+    name: Token.ISSUER,
   );
   try {
     return Uri.decodeFull(param);
@@ -163,9 +164,9 @@ String _parseIssuer(Uri uri) {
 
 bool _is2StepURI(Uri uri) {
   final queryParameters = uri.queryParameters;
-  return queryParameters[OTP_AUTH_2STEP_SALT_LENTH] != null ||
-      queryParameters[OTP_AUTH_2STEP_OUTPUT_LENTH] != null ||
-      queryParameters[OTP_AUTH_2STEP_ITERATIONS] != null;
+  return queryParameters[Token.TWO_STEP_SALT_LENTH] != null ||
+      queryParameters[Token.TWO_STEP_OUTPUT_LENTH] != null ||
+      queryParameters[Token.TWO_STEP_ITERATIONS] != null;
 }
 
 /// This method parses the 2 step secret from the uri.
@@ -179,22 +180,22 @@ Future<String?>? _parse2StepSecret(Uri uri) {
   validateMap(
     map: queryParameters,
     validators: {
-      OTP_AUTH_SECRET_BASE32: ObjectValidator<Uint8List>(transformer: (v) => Encodings.base32.decode(v)),
-      OTP_AUTH_2STEP_SALT_LENTH: intValidator,
-      OTP_AUTH_2STEP_OUTPUT_LENTH: intValidator,
-      OTP_AUTH_2STEP_ITERATIONS: intValidator,
+      OTPToken.SECRET_BASE32: ObjectValidator<Uint8List>(transformer: (v) => Encodings.base32.decode(v)),
+      Token.TWO_STEP_SALT_LENTH: intValidator,
+      Token.TWO_STEP_OUTPUT_LENTH: intValidator,
+      Token.TWO_STEP_ITERATIONS: intValidator,
     },
     name: '2StepSecret',
   );
-  final secret = Encodings.base32.decode(queryParameters[OTP_AUTH_SECRET_BASE32]!);
+  final secret = Encodings.base32.decode(queryParameters[OTPToken.SECRET_BASE32]!);
   // Calculate the whole secret.
 
   final twoStepSecret = showAsyncDialog<Uint8List>(
     barrierDismissible: false,
     builder: (context) => GenerateTwoStepDialog(
-      iterations: int.parse(queryParameters[OTP_AUTH_2STEP_ITERATIONS]!),
-      keyLength: int.parse(queryParameters[OTP_AUTH_2STEP_OUTPUT_LENTH]!),
-      saltLength: int.parse(queryParameters[OTP_AUTH_2STEP_SALT_LENTH]!),
+      iterations: int.parse(queryParameters[Token.TWO_STEP_ITERATIONS]!),
+      keyLength: int.parse(queryParameters[Token.TWO_STEP_OUTPUT_LENTH]!),
+      saltLength: int.parse(queryParameters[Token.TWO_STEP_SALT_LENTH]!),
       password: secret,
     ),
   );
@@ -224,20 +225,20 @@ void _logInfo(Uri uri) {
 // According to https://github.com/google/google-authenticator/wiki/Key-Uri-Format,
 // the padding can be omitted, but the libraries for base32 do not allow this.
 Map<String, String> _secretAddPadding(Map<String, String> queryParameters) {
-  if (queryParameters[OTP_AUTH_SECRET_BASE32] == null) return queryParameters;
-  final secret = queryParameters[OTP_AUTH_SECRET_BASE32]!;
-  return {...queryParameters}..addAll({OTP_AUTH_SECRET_BASE32: '$secret${secret.length % 2 == 1 ? '=' : ''}'});
+  if (queryParameters[OTPToken.SECRET_BASE32] == null) return queryParameters;
+  final secret = queryParameters[OTPToken.SECRET_BASE32]!;
+  return {...queryParameters}..addAll({OTPToken.SECRET_BASE32: '$secret${secret.length % 2 == 1 ? '=' : ''}'});
 }
 
 String _parseTokenType(Uri uri) {
   if (_parseIssuer(uri) == "Steam") return TokenTypes.STEAM.name;
   Logger.debug('Token type host: ${uri.host}');
-  Logger.debug('Token type queryParameters: ${uri.queryParameters[OTP_AUTH_TYPE]}');
-  final value = uri.queryParameters[OTP_AUTH_TYPE] ?? uri.host;
+  Logger.debug('Token type queryParameters: ${uri.queryParameters[Token.TYPE]}');
+  final value = uri.queryParameters[Token.TYPE] ?? uri.host;
   Logger.debug('Token type value: $value');
   return validate(
-    value: uri.queryParameters[OTP_AUTH_TYPE] ?? uri.host,
+    value: uri.queryParameters[Token.TYPE] ?? uri.host,
     validator: ObjectValidator<String>(defaultValue: uri.host),
-    name: OTP_AUTH_TYPE,
+    name: Token.TYPE,
   );
 }
