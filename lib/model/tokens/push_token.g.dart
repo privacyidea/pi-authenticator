@@ -10,6 +10,11 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) => PushToken(
       serial: json['serial'] as String,
       label: json['label'] as String? ?? '',
       issuer: json['issuer'] as String? ?? '',
+      containerSerial: json['containerSerial'] as String?,
+      checkedContainer: (json['checkedContainer'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
       id: json['id'] as String,
       fbToken: json['fbToken'] as String?,
       url: json['url'] == null ? null : Uri.parse(json['url'] as String),
@@ -37,8 +42,10 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) => PushToken(
     );
 
 Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
+      'checkedContainer': instance.checkedContainer,
       'label': instance.label,
       'issuer': instance.issuer,
+      'containerSerial': instance.containerSerial,
       'id': instance.id,
       'pin': instance.pin,
       'isLocked': instance.isLocked,

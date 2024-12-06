@@ -7,8 +7,146 @@ void main() {
 }
 
 void _testAlgorithmsExtension() {
+  final zeroTimestamp = DateTime.fromMillisecondsSinceEpoch(0);
+
+  final oneYearFromEpoch = DateTime.fromMillisecondsSinceEpoch(31536000 * 1000);
   group('Algorithms Extension', () {
-    group('generateTOTPCodeString', () {});
+    group('generateTOTPCodeString', () {
+      group('OTP default (lengh 6, interval 30, SHA1)', () {
+        test('OTP for zero seconds from epoch', () {
+          final otpValue = Algorithms.SHA1.generateTOTPCodeString(
+            secret: 'secret',
+            length: 6,
+            interval: Duration(seconds: 30),
+            time: zeroTimestamp,
+          );
+          expect(otpValue, equals('328482'));
+        });
+        test('OTP for one year from epoch', () {
+          final otpValue = Algorithms.SHA1.generateTOTPCodeString(
+            secret: 'secret',
+            length: 6,
+            interval: Duration(seconds: 30),
+            time: oneYearFromEpoch,
+          );
+          expect(otpValue, equals('869960'));
+        });
+      });
+      group('different length 8 digits', () {
+        test('OTP for zero seconds from epoch', () {
+          final otpValue = Algorithms.SHA1.generateTOTPCodeString(
+            secret: 'secret',
+            length: 8,
+            interval: Duration(seconds: 30),
+            time: zeroTimestamp,
+          );
+          expect(otpValue, equals('35328482'));
+        });
+        test('OTP for one year from epoch', () {
+          final otpValue = Algorithms.SHA1.generateTOTPCodeString(
+            secret: 'secret',
+            length: 8,
+            interval: Duration(seconds: 30),
+            time: oneYearFromEpoch,
+          );
+          expect(otpValue, equals('15869960'));
+        });
+      });
+      group('different algorithms SHA 256', () {
+        test('OTP for zero seconds from epoch', () {
+          final otpValue = Algorithms.SHA256.generateTOTPCodeString(
+            secret: 'secret',
+            length: 6,
+            interval: Duration(seconds: 30),
+            time: zeroTimestamp,
+          );
+          expect(otpValue, equals('356306'));
+        });
+        test('OTP for one year from epoch', () {
+          final otpValue = Algorithms.SHA256.generateTOTPCodeString(
+            secret: 'secret',
+            length: 6,
+            interval: Duration(seconds: 30),
+            time: oneYearFromEpoch,
+          );
+          expect(otpValue, equals('213627'));
+        });
+      });
+      group('different algorithms SHA 512', () {
+        test('OTP for zero seconds from epoch', () {
+          final otpValue = Algorithms.SHA512.generateTOTPCodeString(
+            secret: 'secret',
+            length: 6,
+            interval: Duration(seconds: 30),
+            time: zeroTimestamp,
+          );
+          expect(otpValue, equals('674061'));
+        });
+        test('OTP for one year from epoch', () {
+          final otpValue = Algorithms.SHA512.generateTOTPCodeString(
+            secret: 'secret',
+            length: 6,
+            interval: Duration(seconds: 30),
+            time: oneYearFromEpoch,
+          );
+          expect(otpValue, equals('495577'));
+        });
+      });
+      group('different interval 60 Seconds', () {
+        test('OTP for zero seconds from epoch', () {
+          final otpValue = Algorithms.SHA1.generateTOTPCodeString(
+            secret: 'secret',
+            length: 6,
+            interval: Duration(seconds: 60),
+            time: zeroTimestamp,
+          );
+          expect(otpValue, equals('328482'));
+        });
+        test('OTP for one year from epoch', () {
+          final otpValue = Algorithms.SHA1.generateTOTPCodeString(
+            secret: 'secret',
+            length: 6,
+            interval: Duration(seconds: 60),
+            time: oneYearFromEpoch,
+          );
+          expect(otpValue, equals('383428'));
+        });
+        test('compare half year 60 sec, 1 year 30 sec & hotp value', () {
+          final oneYear60SecCounter = 31536000 ~/ 60;
+          final halfYear30SecCounter = 15768000 ~/ 30;
+          expect(oneYear60SecCounter, equals(halfYear30SecCounter));
+          final hotpValue = Algorithms.SHA1.generateHOTPCodeString(secret: 'secret', counter: oneYear60SecCounter, length: 6);
+
+          final otpValueOneYear60Sec = Algorithms.SHA1.generateTOTPCodeString(
+            secret: 'secret',
+            length: 6,
+            interval: Duration(seconds: 60),
+            time: DateTime.fromMillisecondsSinceEpoch(31536000 * 1000),
+          );
+          final otpValueHalfYear30Sec = Algorithms.SHA1.generateTOTPCodeString(
+            secret: 'secret',
+            length: 6,
+            interval: Duration(seconds: 30),
+            time: DateTime.fromMillisecondsSinceEpoch(15768000 * 1000),
+          );
+          expect(otpValueOneYear60Sec, equals(otpValueHalfYear30Sec));
+          expect(otpValueOneYear60Sec, equals(hotpValue));
+        });
+      });
+      group('is not google', () {
+        test('OTP for zero seconds from epoch', () {
+          final otpValue =
+              Algorithms.SHA1.generateTOTPCodeString(secret: 'secret', length: 6, interval: Duration(seconds: 30), time: zeroTimestamp, isGoogle: false);
+          expect(otpValue, equals('862089'));
+        });
+        test('OTP for one year from epoch', () {
+          final otpValue =
+              Algorithms.SHA1.generateTOTPCodeString(secret: 'secret', length: 6, interval: Duration(seconds: 30), time: oneYearFromEpoch, isGoogle: false);
+          expect(otpValue, equals('265498'));
+        });
+      });
+    });
+
     group('generateHOTPCodeString', () {
       group('different couters 6 digits', () {
         test('OTP for counter == 0', () {

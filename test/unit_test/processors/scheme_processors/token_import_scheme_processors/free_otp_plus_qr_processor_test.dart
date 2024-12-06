@@ -14,7 +14,7 @@ void _testFreeOtpPlusQrProcessor() {
     FreeOtpPlusQrProcessor;
     test('processUri', () async {
       // Arrange
-      final normalOtpAuthUri = Uri.parse('otpauth://totp/FreeOTP+:alice?secret=secret&issuer=FreeOTP&algorithm=SHA1&digits=6&period=30');
+      final normalOtpAuthUri = Uri.parse('otpauth://totp/FreeOTP+:alice?secret=AAAAAAAA&issuer=FreeOTP&algorithm=SHA1&digits=6&period=30');
       // Act
       final results = await const FreeOtpPlusQrProcessor().processUri(normalOtpAuthUri);
       // Assert
@@ -40,20 +40,16 @@ void _testFreeOtpPlusQrProcessor() {
     });
     test('processUri without counter', () async {
       // Arrange
-      final normalOtpAuthUri = Uri.parse('otpauth://hotp/FreeOTP+:alice?secret=secret&issuer=FreeOTP&algorithm=SHA1&digits=6');
+      final normalOtpAuthUri = Uri.parse('otpauth://hotp/FreeOTP+:alice?secret=AAAAAAAA&issuer=FreeOTP&algorithm=SHA1&digits=6');
       // Act
       final results = await const FreeOtpPlusQrProcessor().processUri(normalOtpAuthUri);
       // Assert
       expect(results.length, equals(1));
-      expect(results.first, isA<ProcessorResultSuccess<Token>>());
-      final firstResult = results.first.asSuccess!;
-      expect(firstResult.resultData, isA<Token>());
-      expect(firstResult.resultData.issuer, equals('FreeOTP+'));
-      expect(firstResult.resultData.label, equals('alice'));
-      expect(firstResult.resultData, isA<HOTPToken>());
-      expect(firstResult.resultData.origin!.appName, equals('FreeOTP+'));
-      final hotpToken = firstResult.resultData as HOTPToken;
-      expect(hotpToken.counter, equals(0));
+      final result0 = results[0];
+      expect(result0, isA<ProcessorResultFailed<Token>>());
+      final message = result0.asFailed!.message;
+      final error = result0.asFailed!.error;
+      expect(message.toLowerCase().contains(HOTPToken.COUNTER) || error.toString().toLowerCase().contains(HOTPToken.COUNTER), isTrue);
     });
   });
 }

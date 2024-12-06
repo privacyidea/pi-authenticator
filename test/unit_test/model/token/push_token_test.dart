@@ -1,8 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:privacyidea_authenticator/model/enums/push_token_rollout_state.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
+import 'package:privacyidea_authenticator/model/tokens/token.dart';
 
 void main() {
   _testPushToken();
@@ -24,7 +23,6 @@ void _testPushToken() {
       privateTokenKey: 'privateTokenKey',
       isRolledOut: true,
       rolloutState: PushTokenRollOutState.rolloutNotStarted,
-      type: 'type',
       sortIndex: 0,
       tokenImage: 'example.png',
       folderId: 0,
@@ -139,6 +137,8 @@ void _testPushToken() {
     test('toJson', () {
       final tokenJson = pushToken.toJson();
       final json = <String, dynamic>{
+        "checkedContainer": [],
+        "containerSerial": null,
         "label": "label",
         "issuer": "issuer",
         "id": "id",
@@ -162,21 +162,24 @@ void _testPushToken() {
         "privateTokenKey": "privateTokenKey",
         "publicTokenKey": "publicTokenKey"
       };
-      expect(jsonEncode(tokenJson), jsonEncode(json));
+      for (final key in json.keys) {
+        expect(tokenJson[key], json[key]);
+      }
     });
     group('fromUriMap', () {
       test('with full map', () {
         final uriMap = <String, dynamic>{
-          'URI_TYPE': 'PIPUSH',
-          'URI_LABEL': 'label',
-          'URI_ISSUER': 'issuer',
-          'URI_SERIAL': 'serial',
-          'URI_SSL_VERIFY': false,
-          'URI_ENROLLMENT_CREDENTIAL': 'enrollmentCredentials',
-          'URI_ROLLOUT_URL': Uri.parse('http://www.example.com'),
-          'URI_TTL': 10,
+          Token.TYPE: 'PIPUSH',
+          Token.LABEL: 'label',
+          Token.ISSUER: 'issuer',
+          Token.SERIAL: 'serial',
+          PushToken.SSL_VERIFY: 'False',
+          PushToken.ENROLLMENT_CREDENTIAL: 'enrollmentCredentials',
+          PushToken.ROLLOUT_URL: 'http://www.example.com',
+          PushToken.TTL_MINUTES: '10',
+          PushToken.VERSION: '1',
         };
-        final token = PushToken.fromUriMap(uriMap);
+        final token = PushToken.fromOtpAuthMap(uriMap);
         expect(token.type, 'PIPUSH');
         expect(token.label, 'label');
         expect(token.issuer, 'issuer');
@@ -187,7 +190,7 @@ void _testPushToken() {
       });
       test('with empty map', () {
         final uriMap = <String, dynamic>{};
-        expect(PushToken.fromUriMap(uriMap), isA<PushToken>());
+        expect(() => PushToken.fromOtpAuthMap(uriMap), throwsA(isA<ArgumentError>()));
       });
     });
   });

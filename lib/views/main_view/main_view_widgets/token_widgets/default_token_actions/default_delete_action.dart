@@ -1,3 +1,22 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2024 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
@@ -6,27 +25,30 @@ import '../../../../../model/tokens/token.dart';
 import '../../../../../utils/customization/theme_extentions/action_theme.dart';
 import '../../../../../utils/globals.dart';
 import '../../../../../utils/lock_auth.dart';
-import '../../../../../utils/riverpod_providers.dart';
+import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../loading_indicator.dart';
-import '../token_action.dart';
+import '../slideable_action.dart';
 
-class DefaultDeleteAction extends TokenAction {
+class DefaultDeleteAction extends ConsumerSlideableAction {
   final Token token;
+  final bool isEnabled;
 
-  const DefaultDeleteAction({super.key, required this.token});
+  const DefaultDeleteAction({super.key, required this.isEnabled, required this.token});
 
   @override
   CustomSlidableAction build(context, ref) {
     return CustomSlidableAction(
-      backgroundColor: Theme.of(context).extension<ActionTheme>()!.deleteColor,
+      backgroundColor: isEnabled ? Theme.of(context).extension<ActionTheme>()!.deleteColor : Theme.of(context).extension<ActionTheme>()!.disabledColor,
       foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
-      onPressed: (_) async {
-        if (token.isLocked && await lockAuth(localizedReason: AppLocalizations.of(context)!.deleteLockedToken) == false) {
-          return;
-        }
-        _showDialog();
-      },
+      onPressed: isEnabled
+          ? (_) async {
+              if (token.isLocked && await lockAuth(localizedReason: AppLocalizations.of(context)!.deleteLockedToken) == false) {
+                return;
+              }
+              _showDialog();
+            }
+          : null,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -52,7 +74,7 @@ class DefaultDeleteAction extends TokenAction {
               scrollable: true,
               title: Text(
                 AppLocalizations.of(context)!.confirmDeletion,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Theme.of(context).colorScheme.error),
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.error),
               ),
               content: Column(
                 children: [
@@ -75,7 +97,10 @@ class DefaultDeleteAction extends TokenAction {
                 ),
                 TextButton(
                   onPressed: () {
-                    LoadingIndicator.show(context, () async => globalRef?.read(tokenProvider.notifier).removeToken(token));
+                    LoadingIndicator.show(
+                      context: context,
+                      action: () async => globalRef?.read(tokenProvider.notifier).removeToken(token),
+                    );
                     Navigator.of(context).pop();
                   },
                   child: Text(

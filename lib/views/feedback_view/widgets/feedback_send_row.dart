@@ -26,6 +26,7 @@ import '../../../utils/app_info_utils.dart';
 import '../../../utils/pi_mailer.dart';
 import '../../../utils/view_utils.dart';
 import '../../../widgets/dialog_widgets/default_dialog.dart';
+import '../../main_view/main_view.dart';
 
 class FeedbackSendRow extends StatefulWidget {
   final TextEditingController feedbackController;
@@ -109,9 +110,8 @@ class _FeedbackSendRowState extends State<FeedbackSendRow> {
                       actionsAlignment: MainAxisAlignment.center,
                       actions: [
                         ElevatedButton(
-                          onPressed: () => Navigator.of(context).popUntil((route) => route.isFirst),
-                          child: Text(AppLocalizations.of(context)!.ok),
-                        )
+                            onPressed: () => Navigator.of(context).popUntil((route) => route.settings.name == MainView.routeName),
+                            child: Text(AppLocalizations.of(context)!.ok))
                       ],
                     ),
                     barrierDismissible: false,
@@ -133,7 +133,7 @@ class _FeedbackSendRowState extends State<FeedbackSendRow> {
     );
   }
 
-  String _addDeviceInfoToMail(String feedback) => '$feedback\n\n[${AppInfoUtils.currentVersionAndBuildNumber}] ${AppInfoUtils.deviceInfoString}';
+  String _addDeviceInfoToMail(String feedback) => '$feedback\n\n[${InfoUtils.currentVersionAndBuildNumber}] ${InfoUtils.deviceInfoString}';
   Future<bool> _sendMail(String mailText) => PiMailer.sendMail(
         mailRecipients: _mailRecipients,
         subjectPrefix: PrivacyIDEAAuthenticator.currentCustomization?.feedbackSubjectPrefix,
