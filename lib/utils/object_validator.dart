@@ -24,12 +24,6 @@ import '../model/enums/encodings.dart';
 import '../model/exception_errors/localized_argument_error.dart';
 import 'logger.dart';
 
-final durationValidatorNullable = durationValidator.nullable();
-final durationValidator = ObjectValidator<Duration>(
-  transformer: (v) => Duration(seconds: v is int ? v : int.parse(v)),
-  allowedValues: (v) => v.inSeconds > 0,
-);
-
 final otpAutjPeriodSecondsValidatorNullable = otpAuthPeriodSecondsValidator.nullable();
 final otpAuthPeriodSecondsValidator = ObjectValidator<int>(
   transformer: (v) {
@@ -67,14 +61,20 @@ final intValidator = ObjectValidator<int>(transformer: (v) {
 final intToStringValidator = ObjectValidator<String>(transformer: (v) => (v as int).toString());
 final intToStringValidatorNullable = intToStringValidator.nullable();
 
-final stringSecondsToDurationValidatorNullable = stringSecondsToDurationValidator.nullable();
-final stringSecondsToDurationValidator = ObjectValidator<Duration>(
-  transformer: (v) => Duration(seconds: int.parse(v)),
+final secondsDurationValidatorNullable = secondsDurationValidator.nullable();
+final secondsDurationValidator = ObjectValidator<Duration>(
+  transformer: (v) => v is Duration ? v : Duration(seconds: v is int ? v : int.parse(v)),
   allowedValues: (v) => v.inSeconds > 0,
 );
 
-final stringToUriValidatorNullable = stringToUrivalidator.nullable();
-final stringToUrivalidator = ObjectValidator<Uri>(transformer: (v) => Uri.parse(v));
+final minutesDurationValidatorNullable = minutesDurationValidator.nullable();
+final minutesDurationValidator = ObjectValidator<Duration>(
+  transformer: (v) => v is Duration ? v : Duration(minutes: v is int ? v : int.parse(v)),
+  allowedValues: (v) => v.inSeconds > 0,
+);
+
+final uriValidatorNullable = uriValidator.nullable();
+final uriValidator = ObjectValidator<Uri>(transformer: (v) => v is Uri ? v : Uri.parse(v));
 
 final boolValidatorNullable = boolValidator.nullable();
 final boolValidator = ObjectValidator<bool>(transformer: (v) {

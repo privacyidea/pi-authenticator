@@ -93,6 +93,8 @@ class TokenContainer with _$TokenContainer {
   Uri get transferUrl => serverUrl.replace(path: '/container/$serial/rollover');
   Uri get unregisterUrl => serverUrl.replace(path: '/container/register/$serial/terminate/client');
 
+  DateTime? get expirationDate => this is TokenContainerUnfinalized ? timestamp.add((this as TokenContainerUnfinalized).ttl) : null;
+
   // example: "pia://container/SMPH00067A2F"
   // "?issuer=privacyIDEA"
   // "&ttl=10"
@@ -109,10 +111,10 @@ class TokenContainer with _$TokenContainer {
       map: uriMap,
       validators: {
         ISSUER: const ObjectValidator<String>(),
-        TTL_MINUTES: durationValidator.withDefault(const Duration(minutes: 10)),
+        TTL_MINUTES: minutesDurationValidator.withDefault(const Duration(minutes: 10)),
         NONCE: const ObjectValidator<String>(),
         TIMESTAMP: ObjectValidator<DateTime>(transformer: (v) => DateTime.parse(v)),
-        FINALIZATION_URL: stringToUrivalidator,
+        FINALIZATION_URL: uriValidator,
         SERIAL: const ObjectValidator<String>(),
         EC_KEY_ALGORITHM: ObjectValidator<EcKeyAlgorithm>(transformer: (v) => EcKeyAlgorithm.values.byCurveName(v)),
         HASH_ALGORITHM: stringToAlgorithmsValidator,

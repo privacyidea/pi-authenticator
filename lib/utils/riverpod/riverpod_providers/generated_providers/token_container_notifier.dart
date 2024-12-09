@@ -446,6 +446,12 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
       _finalizationMutex.release();
       throw ArgumentError('Container must not be finalized');
     }
+    if (container.expirationDate != null && container.expirationDate!.isBefore(DateTime.now())) {
+      showStatusMessage(message: 'Container ${container.serial} has expired and can not be rolled out anymore');
+      await deleteContainer(container);
+      _finalizationMutex.release();
+      return;
+    }
     Logger.info('Finalizing container ${container.serial}');
     try {
       container = await _generateKeyPair(container);
