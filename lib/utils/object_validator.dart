@@ -24,6 +24,12 @@ import '../model/enums/encodings.dart';
 import '../model/exception_errors/localized_argument_error.dart';
 import 'logger.dart';
 
+final durationValidatorNullable = durationValidator.nullable();
+final durationValidator = ObjectValidator<Duration>(
+  transformer: (v) => Duration(seconds: v is int ? v : int.parse(v)),
+  allowedValues: (v) => v.inSeconds > 0,
+);
+
 final otpAutjPeriodSecondsValidatorNullable = otpAuthPeriodSecondsValidator.nullable();
 final otpAuthPeriodSecondsValidator = ObjectValidator<int>(
   transformer: (v) {

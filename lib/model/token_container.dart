@@ -70,7 +70,7 @@ class TokenContainer with _$TokenContainer {
 
 // Container registration:
   static const String ISSUER = 'issuer';
-  static const String TTL = 'ttl';
+  static const String TTL_MINUTES = 'ttl';
   static const String NONCE = 'nonce';
   static const String TIMESTAMP = 'time';
   static const String FINALIZATION_URL = 'url';
@@ -109,7 +109,7 @@ class TokenContainer with _$TokenContainer {
       map: uriMap,
       validators: {
         ISSUER: const ObjectValidator<String>(),
-        TTL: ObjectValidator<Duration>(transformer: (value) => Duration(minutes: value)),
+        TTL_MINUTES: durationValidator.withDefault(const Duration(minutes: 10)),
         NONCE: const ObjectValidator<String>(),
         TIMESTAMP: ObjectValidator<DateTime>(transformer: (v) => DateTime.parse(v)),
         FINALIZATION_URL: stringToUrivalidator,
@@ -124,7 +124,7 @@ class TokenContainer with _$TokenContainer {
     );
     return TokenContainer.unfinalized(
       issuer: uriMap[ISSUER],
-      ttl: uriMap[TTL],
+      ttl: uriMap[TTL_MINUTES],
       nonce: uriMap[NONCE],
       timestamp: uriMap[TIMESTAMP],
       serverUrl: uriMap[FINALIZATION_URL],
