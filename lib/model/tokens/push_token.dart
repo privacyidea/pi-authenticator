@@ -284,7 +284,6 @@ class PushToken extends Token {
         Token.ISSUER: const ObjectValidatorNullable<String>(),
         Token.SERIAL: const ObjectValidatorNullable<String>(),
         SSL_VERIFY: boolValidatorNullable,
-        TTL_MINUTES: durationValidator.withDefault(const Duration(minutes: 3)),
         ENROLLMENT_CREDENTIAL: const ObjectValidatorNullable<String>(),
         ROLLOUT_URL: stringToUriValidatorNullable,
         Token.IMAGE: stringToUriValidatorNullable,
@@ -299,7 +298,6 @@ class PushToken extends Token {
       issuer: uriMap[Token.ISSUER] as String?,
       serial: uriMap[Token.SERIAL] as String?,
       sslVerify: uriMap[SSL_VERIFY] as bool?,
-      expirationDate: uriMap[TTL_MINUTES] != null ? DateTime.now().add(uriMap[TTL_MINUTES] as Duration) : expirationDate,
       enrollmentCredentials: uriMap[ENROLLMENT_CREDENTIAL] as String?,
       url: uriMap[ROLLOUT_URL] as Uri?,
       tokenImage: uriMap[Token.IMAGE] as String?,
@@ -333,7 +331,6 @@ class PushToken extends Token {
     return super.toOtpAuthMap()
       ..addAll({
         SSL_VERIFY: sslVerify ? SSL_VERIFY_VALUE_TRUE : SSL_VERIFY_VALUE_FALSE,
-        if (expirationDate != null) TTL_MINUTES: expirationDate!.difference(DateTime.now()).inMinutes.toString(),
         if (enrollmentCredentials != null) ENROLLMENT_CREDENTIAL: enrollmentCredentials!,
         if (url != null) ROLLOUT_URL: url.toString(),
         if (tokenImage != null) Token.IMAGE: tokenImage!,
