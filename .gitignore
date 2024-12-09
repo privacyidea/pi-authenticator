@@ -896,3 +896,4 @@ ios/Flutter/flutter_export_environment.sh
 *firebase_options.dart
 !default_firebase_options.dart
 firebase.json
+lib/l10n/app_localizations*

@@ -21,10 +21,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/widgets/press_button.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../../../utils/customization/theme_extentions/push_request_theme.dart';
+import '../../../button_widgets/cooldown_button.dart';
 import '../push_request_dialog.dart';
 import 'push_decline_confirm_dialog.dart';
 
@@ -48,7 +48,7 @@ class PushDeclineConfirmButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final pushRequestTheme = (Theme.of(context).extensions[PushRequestTheme] as PushRequestTheme);
     final localizations = AppLocalizations.of(context)!;
-    return PressButton(
+    return CooldownButton(
       style: ButtonStyle(
         backgroundColor: WidgetStateProperty.all(pushRequestTheme.declineColor),
         shape: PushRequestDialog.getButtonShape(context),

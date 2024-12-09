@@ -3,7 +3,7 @@
 
   Authors: Timo Sturm <timo.sturm@netknights.it>
            Frank Merkel <frank.merkel@netknights.it>
-  Copyright (c) 2017-2023 NetKnights GmbH
+  Copyright (c) 2017-2024 NetKnights GmbH
 
   Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
@@ -21,15 +21,35 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart';
+import 'package:image/image.dart' as img;
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:privacyidea_authenticator/mains/main_netknights.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
+import 'package:zxing2/qrcode.dart';
 
+import '../../../../../../../mains/main_netknights.dart';
+import '../../../../../../../model/extensions/sortable_list.dart';
+import '../../../../../../../utils/logger.dart';
+import '../../../../../../../utils/riverpod/riverpod_providers/generated_providers/sortable_notifier.dart';
+import '../../../../../../../views/main_view/main_view_widgets/loading_indicator.dart';
+import '../model/enums/token_origin_source_type.dart';
+import '../model/mixins/sortable_mixin.dart';
+import '../model/processor_result.dart';
+import '../model/token_folder.dart';
+import '../model/tokens/token.dart';
+import '../processors/scheme_processors/scheme_processor_interface.dart';
 import 'customization/application_customization.dart' show ApplicationCustomization;
+import 'object_validator.dart';
+import 'riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
+import 'riverpod/riverpod_providers/generated_providers/token_notifier.dart';
+import 'riverpod/riverpod_providers/state_providers/dragging_sortable_provider.dart';
+import 'view_utils.dart';
+
+final urlRegExp = RegExp(r'[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)');
 
 /// Inserts [char] at the position [pos] in the given String ([str]),
 /// and returns the resulting String.
@@ -132,4 +152,138 @@ dynamic tryJsonDecode(String json) {
   } catch (_) {
     return null;
   }
+}
+
+void dragSortableOnAccept({
+  required SortableMixin? previousSortable,
+  required SortableMixin dragedSortable,
+  required SortableMixin? nextSortable,
+  TokenFolder? dependingFolder,
+  required WidgetRef ref,
+}) {
+  var allSortables = ref.read(sortablesProvider);
+  if (dragedSortable is TokenFolder) {
+    final tokensInFolder = ref.read(tokenProvider).tokens.where((element) => element.folderId == dragedSortable.folderId).toList();
+    final allMovingItems = [dragedSortable, ...tokensInFolder];
+    allSortables = allSortables.moveAllBetween(moveAfter: previousSortable, movedItems: allMovingItems, moveBefore: nextSortable);
+  } else if (dragedSortable is Token) {
+    allSortables = allSortables.moveBetween(moveAfter: previousSortable, movedItem: dragedSortable, moveBefore: nextSortable);
+    allSortables = allSortables.map((e) {
+      return e is Token && e.id == dragedSortable.id ? e.copyWith(folderId: () => dependingFolder?.folderId) : e;
+    }).toList();
+  }
+  final modifiedTokens = allSortables.whereType<Token>().toList();
+  final modifiedFolders = allSortables.whereType<TokenFolder>().toList();
+  final futures = [
+    ref.read(tokenProvider.notifier).addOrReplaceTokens(modifiedTokens),
+    ref.read(tokenFolderProvider.notifier).addOrReplaceFolders(modifiedFolders),
+  ];
+  final draggingSortableProviderNotifier = ref.read(draggingSortableProvider.notifier);
+  Future.wait(futures).then((_) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      draggingSortableProviderNotifier.state = null;
+    });
+  });
+}
+
+ByteData bigIntToByteData(BigInt bigInt) {
+  final data = ByteData((bigInt.bitLength / 8).ceil());
+  for (var i = 1; i <= data.lengthInBytes; i++) {
+    data.setUint8(data.lengthInBytes - i, bigInt.toUnsigned(8).toInt());
+    bigInt = bigInt >> 8;
+  }
+
+  return data;
+}
+
+BigInt byteDataToBigInt(ByteData data) {
+  BigInt result = BigInt.zero;
+  for (var i = 0; i < data.lengthInBytes; i++) {
+    result = result << 8;
+    result = result | BigInt.from(data.getUint8(i));
+  }
+  return result;
+}
+
+Uint8List bigIntToBytes(BigInt bigInt) => bigIntToByteData(bigInt).buffer.asUint8List();
+
+BigInt bytesToBigInt(Uint8List bytes) => byteDataToBigInt(ByteData.sublistView(bytes));
+
+Future<void> scanQrCode({BuildContext? context, required List<ResultHandler> resultHandlerList, required Object? qrCode}) async {
+  Uri uri;
+  try {
+    if (qrCode == null) return;
+    uri = switch (qrCode.runtimeType) {
+      const (String) => Uri.parse(qrCode as String),
+      const (Uri) => qrCode as Uri,
+      _ => throw ArgumentError('Invalid type for qrCode: $qrCode'),
+    };
+  } catch (e) {
+    showStatusMessage(message: 'The scanned QR code is not a valid URI.');
+    Logger.warning('Scanned Data: $qrCode');
+    return;
+  }
+  final processorResults = await SchemeProcessor.processUriByAny(uri);
+  if (processorResults == null) return;
+  final resultHandlerTypeMap = <ObjectValidator<ResultHandler>, List<ProcessorResult>>{};
+
+  for (var result in processorResults) {
+    final validator = result.resultHandlerType;
+    if (validator == null) continue;
+    if (resultHandlerTypeMap.containsKey(result.resultHandlerType)) {
+      resultHandlerTypeMap[validator]!.add(result);
+    } else {
+      resultHandlerTypeMap[validator] = [result];
+    }
+  }
+  Future<void> handleResults() async {
+    for (var resultHandlerType in resultHandlerTypeMap.keys) {
+      final results = resultHandlerTypeMap[resultHandlerType]!;
+      final resultHandler = resultHandlerList.firstWhereOrNull((resultHandler) => resultHandlerType.isTypeOf(resultHandler));
+      if (resultHandler != null) {
+        await resultHandler.handleProcessorResults(results, {'TokenOriginSourceType': TokenOriginSourceType.qrScan}); // TODO: use const IDENTIFIER variable
+      }
+    }
+  }
+
+  if (context == null || !context.mounted) return handleResults();
+
+  LoadingIndicator.show(
+    context: context,
+    action: handleResults,
+  );
+}
+
+Image generateQrCodeImage({required String data}) {
+  final qrcode = Encoder.encode(
+    data,
+    ErrorCorrectionLevel.l,
+    hints: EncodeHints()..put<CharacterSetECI>(EncodeHintType.characterSet, CharacterSetECI.ASCII),
+  );
+  final matrix = qrcode.matrix!;
+  const scale = 4;
+  const padding = 1;
+
+  var image = img.Image(
+    width: (matrix.width + padding + padding) * scale,
+    height: (matrix.height + padding + padding) * scale,
+    numChannels: 4,
+  );
+  img.fill(image, color: img.ColorRgba8(0xFF, 0xFF, 0xFF, 0xFF));
+
+  for (var x = 0; x < matrix.width; x++) {
+    for (var y = 0; y < matrix.height; y++) {
+      if (matrix.get(x, y) == 1) {
+        img.fillRect(
+          image,
+          x1: (x + padding) * scale,
+          y1: (y + padding) * scale,
+          x2: (x + padding) * scale + scale - 1,
+          y2: (y + padding) * scale + scale - 1,
+          color: img.ColorRgba8(0, 0, 0, 0xFF),
+        );
+      }
+    }
+  }
+  return Image.memory(img.encodePng(image));
 }

@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/widgets/dialog_widgets/push_request_dialog/push_request_dialog_widgets/push_decline_confirm_button.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../model/push_request.dart';
 import '../../../model/tokens/push_token.dart';
 import '../../../utils/globals.dart';
 import '../../../utils/lock_auth.dart';
-import '../../../utils/riverpod_providers.dart';
+import '../../../utils/riverpod/riverpod_providers/generated_providers/push_request_provider.dart';
+import '../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../default_dialog.dart';
 import 'push_request_dialog_widgets/push_accept_button.dart';
+import 'push_request_dialog_widgets/push_decline_confirm_button.dart';
 import 'push_request_dialog_widgets/push_presence_button_row.dart';
 
 class PushRequestDialog extends ConsumerStatefulWidget {
@@ -69,7 +70,7 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
               scrollable: false,
               title: Text(
                 title,
-                style: Theme.of(context).textTheme.titleLarge!,
+                style: Theme.of(context).textTheme.titleMedium!,
                 maxLines: 2,
                 textAlign: TextAlign.center,
                 overflow: TextOverflow.ellipsis,
@@ -80,7 +81,7 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
                 children: [
                   const SizedBox(height: 12),
                   Text(
-                    localizations.requestInfo(token.issuer, token.label),
+                    localizations.requestInfo(token.label, token.issuer),
                     style: Theme.of(context).textTheme.bodyLarge!,
                     textAlign: TextAlign.center,
                   ),
@@ -104,6 +105,7 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
                             onAccept: (answer) => _onAccept(token, answer: answer),
                           ),
                   ),
+                  const SizedBox(height: 8),
                   PaddedRow(
                     peddingPercent: 0.33,
                     child: PushDeclineConfirmButton(

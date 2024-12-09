@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
@@ -8,6 +7,9 @@ import 'package:privacyidea_authenticator/model/enums/encodings.dart';
 import 'package:privacyidea_authenticator/model/extensions/enums/encodings_extension.dart';
 import 'package:privacyidea_authenticator/model/tokens/day_password_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
+import 'package:privacyidea_authenticator/model/tokens/otp_token.dart';
+import 'package:privacyidea_authenticator/model/tokens/token.dart';
+import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
 
 void main() {
   _testDayPasswordToken();
@@ -77,17 +79,17 @@ void _testDayPasswordToken() {
     group('fromUriMap', () {
       test('with full map', () {
         final uriMap = {
-          'URI_PERIOD': 30,
-          'URI_LABEL': 'label',
-          'URI_ISSUER': 'issuer',
-          'URI_ALGORITHM': 'SHA1',
-          'URI_DIGITS': 6,
-          'URI_SECRET': Uint8List.fromList(utf8.encode('secret')),
-          'URI_TYPE': 'DAYPASSWORD',
-          'URI_PIN': false,
-          'URI_IMAGE': 'example.png',
+          Token.LABEL: 'label',
+          Token.ISSUER: 'issuer',
+          Token.TYPE: 'DAYPASSWORD',
+          Token.PIN: Token.PIN_VALUE_FALSE,
+          Token.IMAGE: 'example.png',
+          OTPToken.ALGORITHM: 'SHA1',
+          OTPToken.DIGITS: '6',
+          OTPToken.SECRET_BASE32: Encodings.base32.encode(utf8.encode('secret')),
+          TOTPToken.PERIOD_SECONDS: '30',
         };
-        final totpFromUriMap = DayPasswordToken.fromUriMap(uriMap);
+        final totpFromUriMap = DayPasswordToken.fromOtpAuthMap(uriMap);
         expect(totpFromUriMap.period, const Duration(seconds: 30));
         expect(totpFromUriMap.label, 'label');
         expect(totpFromUriMap.issuer, 'issuer');
@@ -100,63 +102,77 @@ void _testDayPasswordToken() {
       });
       test('with missing secret', () {
         final uriMap = {
-          'URI_PERIOD': 30,
-          'URI_LABEL': 'label',
-          'URI_ISSUER': 'issuer',
-          'URI_ALGORITHM': 'SHA1',
-          'URI_DIGITS': 6,
-          'URI_TYPE': 'DAYPASSWORD',
-          'URI_PIN': false,
-          'URI_IMAGE': 'example.png',
+          Token.LABEL: 'label',
+          Token.ISSUER: 'issuer',
+          Token.TYPE: 'DAYPASSWORD',
+          Token.PIN: Token.PIN_VALUE_FALSE,
+          Token.IMAGE: 'example.png',
+          OTPToken.ALGORITHM: 'SHA1',
+          OTPToken.DIGITS: 6,
+          TOTPToken.PERIOD_SECONDS: 30,
         };
-        expect(() => DayPasswordToken.fromUriMap(uriMap), throwsA(isA<ArgumentError>()));
+        expect(() => DayPasswordToken.fromOtpAuthMap(uriMap), throwsA(isA<ArgumentError>()));
       });
       test('with zero period', () {
         final uriMap = {
-          'URI_PERIOD': 0,
-          'URI_LABEL': 'label',
-          'URI_ISSUER': 'issuer',
-          'URI_ALGORITHM': 'SHA1',
-          'URI_DIGITS': 6,
-          'URI_SECRET': Uint8List.fromList(utf8.encode('secret')),
-          'URI_TYPE': 'DAYPASSWORD',
-          'URI_PIN': false,
-          'URI_IMAGE': 'example.png',
+          Token.LABEL: 'label',
+          Token.ISSUER: 'issuer',
+          Token.TYPE: 'DAYPASSWORD',
+          Token.PIN: Token.PIN_VALUE_FALSE,
+          Token.IMAGE: 'example.png',
+          OTPToken.ALGORITHM: 'SHA1',
+          OTPToken.DIGITS: '6',
+          OTPToken.SECRET_BASE32: Encodings.base32.encode(utf8.encode('secret')),
+          TOTPToken.PERIOD_SECONDS: '0',
         };
-        expect(() => DayPasswordToken.fromUriMap(uriMap), throwsA(isA<ArgumentError>()));
+        expect(() => DayPasswordToken.fromOtpAuthMap(uriMap), throwsA(isA<ArgumentError>()));
+        var errorContainsPeriod = false;
+        try {
+          DayPasswordToken.fromOtpAuthMap(uriMap);
+        } catch (e) {
+          errorContainsPeriod = e.toString().contains(TOTPToken.PERIOD_SECONDS);
+        }
+        expect(errorContainsPeriod, true);
       });
       test('with zero digits', () {
         final uriMap = {
-          'URI_PERIOD': 30,
-          'URI_LABEL': 'label',
-          'URI_ISSUER': 'issuer',
-          'URI_ALGORITHM': 'SHA1',
-          'URI_DIGITS': 0,
-          'URI_SECRET': Uint8List.fromList(utf8.encode('secret')),
-          'URI_TYPE': 'DAYPASSWORD',
-          'URI_PIN': false,
-          'URI_IMAGE': 'example.png',
+          Token.LABEL: 'label',
+          Token.ISSUER: 'issuer',
+          Token.TYPE: 'DAYPASSWORD',
+          Token.PIN: Token.PIN_VALUE_FALSE,
+          Token.IMAGE: 'example.png',
+          OTPToken.ALGORITHM: 'SHA1',
+          OTPToken.DIGITS: '0',
+          OTPToken.SECRET_BASE32: Encodings.base32.encode(utf8.encode('secret')),
+          TOTPToken.PERIOD_SECONDS: '30',
         };
-        expect(() => DayPasswordToken.fromUriMap(uriMap), throwsA(isA<ArgumentError>()));
+        expect(() => DayPasswordToken.fromOtpAuthMap(uriMap), throwsA(isA<ArgumentError>()));
+        var errorContainsDigits = false;
+        try {
+          DayPasswordToken.fromOtpAuthMap(uriMap);
+        } catch (e) {
+          errorContainsDigits = e.toString().contains(OTPToken.DIGITS);
+        }
+        expect(errorContainsDigits, true);
       });
       test('with lowercase algorithm', () {
         final uriMap = {
-          'URI_PERIOD': 30,
-          'URI_LABEL': 'label',
-          'URI_ISSUER': 'issuer',
-          'URI_ALGORITHM': 'sha1',
-          'URI_DIGITS': 6,
-          'URI_SECRET': Uint8List.fromList(utf8.encode('secret')),
-          'URI_TYPE': 'DAYPASSWORD',
-          'URI_PIN': false,
-          'URI_IMAGE': 'example.png',
+          Token.LABEL: 'label',
+          Token.ISSUER: 'issuer',
+          Token.TYPE: 'DAYPASSWORD',
+          Token.PIN: Token.PIN_VALUE_FALSE,
+          Token.IMAGE: 'example.png',
+          OTPToken.ALGORITHM: 'sha1',
+          OTPToken.DIGITS: '6',
+          OTPToken.SECRET_BASE32: Encodings.base32.encode(utf8.encode('secret')),
+          TOTPToken.PERIOD_SECONDS: '30',
         };
-        final totpFromUriMap = DayPasswordToken.fromUriMap(uriMap);
+        final totpFromUriMap = DayPasswordToken.fromOtpAuthMap(uriMap);
         expect(totpFromUriMap.algorithm, Algorithms.SHA1);
       });
       test('with empty map', () {
         final uriMap = <String, dynamic>{};
-        expect(() => DayPasswordToken.fromUriMap(uriMap), throwsA(isA<ArgumentError>()));
+        expect(() => DayPasswordToken.fromOtpAuthMap(uriMap), throwsA(isA<ArgumentError>()));
       });
     });
     test('fromJson', () {

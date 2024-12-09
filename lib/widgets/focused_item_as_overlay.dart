@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import '../l10n/app_localizations.dart';
 import '../utils/globals.dart';
 import '../utils/logger.dart';
-import '../utils/riverpod_providers.dart';
+import '../utils/riverpod/riverpod_providers/generated_providers/app_constraints_notifier.dart';
 import '../utils/utils.dart';
 import 'pulse_icon.dart';
 import 'tooltip_container.dart';
@@ -135,14 +135,13 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
       return;
     }
     _disposeOverlay();
-    final screenSize = (globalRef?.read(appConstraintsProvider) ?? const BoxConstraints()).biggest;
+    final screenSize = (globalRef?.read(appConstraintsNotifierProvider) ?? const BoxConstraints()).biggest;
     final textScaler = MediaQuery.of(context).textScaler;
     if (widget.tooltipWhenFocused != null) {
       final textSize = textSizeOf(
         text: widget.tooltipWhenFocused!,
         style: Theme.of(context).textTheme.bodyLarge!,
-        maxWidth: screenSize.width / 3 * 2 -
-            (tooltipPadding.left + tooltipPadding.right + tooltipMargin.left + tooltipMargin.right + tooltipBorderWidth * 2),
+        maxWidth: screenSize.width / 3 * 2 - (tooltipPadding.left + tooltipPadding.right + tooltipMargin.left + tooltipMargin.right + tooltipBorderWidth * 2),
         textScaler: textScaler,
       );
 
@@ -218,18 +217,15 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
             ),
           ),
           Positioned.fill(
-
-              child: GestureDetector(
-
-                onTapDown: (details) {
-                  widget.onComplete?.call();
-                },
+            child: GestureDetector(
+              onTapDown: (details) {
+                widget.onComplete?.call();
+              },
               child: Text(
                 AppLocalizations.of(context)!.continueButton,
                 style: const TextStyle(fontSize: 0),
               ),
             ),
-
           ),
         ],
       ),

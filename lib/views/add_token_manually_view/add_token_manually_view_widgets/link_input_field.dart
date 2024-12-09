@@ -20,9 +20,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 
 import '../../../l10n/app_localizations.dart';
+import '../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
+import '../../../utils/riverpod/riverpod_providers/state_providers/status_message_provider.dart';
 
 class LinkInputView extends ConsumerStatefulWidget {
   const LinkInputView({super.key});
@@ -54,9 +55,7 @@ class _LinkInputViewState extends ConsumerState<LinkInputView> {
               Expanded(
                 child: TextFormField(
                   controller: textController,
-                  decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context)!.tokenLink,
-                  ),
+                  decoration: InputDecoration(labelText: AppLocalizations.of(context)!.tokenLinkImport),
                   keyboardType: TextInputType.url,
                   textInputAction: TextInputAction.done,
                   onFieldSubmitted: (text) => addToken(Uri.parse(text)),
