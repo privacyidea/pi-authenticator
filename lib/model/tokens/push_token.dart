@@ -219,10 +219,7 @@ class PushToken extends Token {
         Token.ISSUER: const ObjectValidatorNullable<String>(defaultValue: ''),
         Token.SERIAL: const ObjectValidator<String>(),
         SSL_VERIFY: boolValidator.withDefault(true),
-        TTL_MINUTES: ObjectValidator<Duration>(
-          transformer: (v) => Duration(minutes: int.parse(v)),
-          defaultValue: const Duration(minutes: 10),
-        ),
+        TTL_MINUTES: intValidatorNullable,
         ENROLLMENT_CREDENTIAL: const ObjectValidatorNullable<String>(),
         ROLLOUT_URL: stringToUrivalidator,
         Token.IMAGE: stringToUriValidatorNullable,
