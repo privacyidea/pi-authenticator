@@ -102,8 +102,9 @@ class PiContainerApi implements TokenContainerApi {
     // Container tokens can be deleted if they are not in the server list
     final List<TokenTemplate> mergedTemplatesWithSerial;
     final List<String> deleteSerials;
+    final notLinkedSerialTemplates = notLinkedTokenTemplates.where((e) => e.serial != null).toList();
     (mergedTemplatesWithSerial, deleteSerials) = _handlePiTokens(
-      containerTokenTemplates: containerTokenTemplates,
+      containerTokenTemplates: [...containerTokenTemplates, ...notLinkedSerialTemplates],
       serverTokensWithSerial: serverTokensWithSerial,
       container: container,
     );
