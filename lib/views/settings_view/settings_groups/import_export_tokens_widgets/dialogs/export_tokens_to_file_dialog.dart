@@ -141,7 +141,8 @@ class _ExportTokensToFileDialogState extends ConsumerState<ExportTokensToFileDia
                             return;
                           }
                           final authenticated = await lockAuth(
-                            localizedReason: AppLocalizations.of(context)!.exportLockedTokenReason,
+                            reason: (localization) => localization.exportLockedTokenReason,
+                            localization: appLocalizations,
                             autoAuthIfUnsupported: true,
                           );
                           if (!authenticated || !mounted) return;
@@ -175,7 +176,7 @@ class _ExportTokensToFileDialogState extends ConsumerState<ExportTokensToFileDia
       showSnackBar(appLocalizations.fileSavedToDownloadsFolder);
       return true;
     } catch (e) {
-      if (context.mounted) ref.read(statusMessageProvider.notifier).state = (AppLocalizations.of(context)!.errorSavingFile, null);
+      if (context.mounted) ref.read(statusMessageProvider.notifier).state = StatusMessage(message: (l) => l.errorSavingFile);
       setState(() => _exportPressed = false);
       return false;
     }
@@ -190,7 +191,7 @@ class _ExportTokensToFileDialogState extends ConsumerState<ExportTokensToFileDia
       showSnackBar(appLocalizations.fileSavedToDownloadsFolder);
       return true;
     } catch (e) {
-      if (context.mounted) ref.read(statusMessageProvider.notifier).state = (AppLocalizations.of(context)!.errorSavingFile, null);
+      if (context.mounted) ref.read(statusMessageProvider.notifier).state = StatusMessage(message: (l) => l.errorSavingFile);
       setState(() => _exportPressed = false);
       return false;
     }

@@ -54,7 +54,7 @@ class PiContainerApi implements TokenContainerApi {
   ////////////////////////////// */
 
   @override
-  Future<ContainerSyncUpdates?> sync(TokenContainerFinalized container, TokenState tokenState) async {
+  Future<ContainerSyncUpdates> sync(TokenContainerFinalized container, TokenState tokenState) async {
     final containerTokenTemplates = tokenState.containerTokens(container.serial).toTemplates();
 
     final notLinkedTokenTemplates = (container.policies.initialTokenTransfer) ? tokenState.notLinkedTokens.toTemplates() : <TokenTemplate>[];
@@ -75,7 +75,6 @@ class PiContainerApi implements TokenContainerApi {
       syncResult: syncResult,
       encKeyPair: encKeyPair,
     );
-    if (decryptedContainerDict == null) return null;
 
     final tokens = decryptedContainerDict[TokenContainer.DICT_TOKENS] as Map<String, dynamic>;
     final newOtpAuthTokens = (tokens[TokenContainer.DICT_TOKENS_ADD] as List).whereType<String>().map(Uri.parse).toList();
@@ -125,7 +124,7 @@ class PiContainerApi implements TokenContainerApi {
   }
 
   @override
-  Future<Response> finalizeContainer(TokenContainerUnfinalized container, EccUtils eccUtils) async {
+  Future<ContainerFinalizationResponse> finalizeContainer(TokenContainerUnfinalized container, [EccUtils eccUtils = const EccUtils()]) async {
     final ecPrivateClientKey = container.ecPrivateClientKey;
     if (ecPrivateClientKey == null) {
       throw LocalizedException(localizedMessage: (l) => l.errorMissingPrivateKey, unlocalizedMessage: AppLocalizationsEn().errorMissingPrivateKey);
@@ -143,17 +142,48 @@ class PiContainerApi implements TokenContainerApi {
     final signature = eccUtils.signWithPrivateKey(ecPrivateClientKey, message);
 
     final body = {
-      if (container.addDeviceInfos == true) TokenContainer.FINALIZE_DEVICE_BRAND: InfoUtils.deviceBrand,
-      if (container.addDeviceInfos == true) TokenContainer.FINALIZE_DEVICE_MODEL: InfoUtils.deviceModel,
-      TokenContainer.FINALIZE_CONTAINER_SERIAL: container.serial,
-      TokenContainer.FINALIZE_PUBLIC_CLIENT_KEY: container.publicClientKey,
-      ContainerChallenge.SIGNATURE: signature,
+      'container_serial': container.serial,
+      'public_client_key': container.publicClientKey,
+      'device_brand': InfoUtils.deviceBrand,
+      'device_model': InfoUtils.deviceModel,
+      'signature': signature,
     };
-    return await _ioClient.doPost(url: container.registrationUrl, body: body, sslVerify: container.sslVerify);
+    final Response response = await _ioClient.doPost(url: container.registrationUrl, body: body, sslVerify: container.sslVerify);
+
+    PiServerResponse<ContainerFinalizationResponse>? piResponse;
+    try {
+      piResponse = response.asPiServerResponse<ContainerFinalizationResponse>();
+    } catch (e) {
+      Logger.error('Failed to parse response', error: e);
+      rethrow;
+    }
+
+    if (piResponse == null || piResponse.isError) {
+      Logger.debug('Status code: ${response.statusCode}');
+      Logger.debug('Response body: ${response.body}');
+      final error = piResponse?.asError;
+      if (error != null) throw error;
+      throw ResponseError(response);
+    }
+
+    ContainerFinalizationResponse finalizationResponse;
+    try {
+      finalizationResponse = piResponse.asSuccess!.resultValue;
+    } catch (e) {
+      Logger.error('Failed to parse response', error: e);
+      rethrow;
+    }
+
+    if (piResponse.isError) {
+      Logger.error('Error while getting container finalization response: ${piResponse.asError!.piServerResultError}');
+      throw piResponse.asError!.piServerResultError;
+    }
+
+    return finalizationResponse;
   }
 
   @override
-  Future<String> getTransferQrData(TokenContainerFinalized container) async {
+  Future<TransferQrData> getRolloverQrData(TokenContainerFinalized container) async {
     if (container.policies.rolloverAllowed == false) {
       throw LocalizedException(
         localizedMessage: (l) => 'l.errorRolloverNotAllowed', // TODO: Add translation
@@ -189,18 +219,24 @@ class PiContainerApi implements TokenContainerApi {
       throw piResponse.asError!.piServerResultError;
     }
 
-    return piResponse.asSuccess!.resultValue.value;
+    return piResponse.asSuccess!.resultValue;
   }
 
   @override
-  Future<bool> unregister(TokenContainerFinalized container) async {
+  Future<UnregisterContainerResult> unregister(TokenContainerFinalized container) async {
+    if (container.policies.unregisterAllowed == false) {
+      throw LocalizedException(
+        localizedMessage: (l) => 'l.errorUnregisterNotAllowed', // TODO: Add translation
+        unlocalizedMessage: 'AppLocalizationsEn().errorUnregisterNotAllowed',
+      );
+    }
     final unregisterUrl = container.unregisterUrl;
     final ContainerChallenge challenge;
     try {
       challenge = await _getChallenge(container, unregisterUrl);
     } on PiServerResultError catch (e) {
       if (e.code == 3001) {
-        return true;
+        return UnregisterContainerResult(success: false);
       }
       rethrow;
     }
@@ -212,12 +248,12 @@ class PiContainerApi implements TokenContainerApi {
 
     final response = await _ioClient.doPost(url: unregisterUrl, body: body, sslVerify: container.sslVerify);
 
-    final piResponse = response.asPiServerResponse<UnregisterContainerResultValue>();
+    final piResponse = response.asPiServerResponse<UnregisterContainerResult>();
     final errorResponse = piResponse?.asError;
     if (errorResponse != null) throw errorResponse.piServerResultError;
     if (response.statusCode != 200 || piResponse == null) throw ResponseError(response);
 
-    return piResponse.asSuccess!.resultValue.success;
+    return piResponse.asSuccess!.resultValue;
   }
 
   /* //////////////////////////////
@@ -284,7 +320,7 @@ class PiContainerApi implements TokenContainerApi {
     return syncResult;
   }
 
-  Future<Map<String, dynamic>?> _getContainerDict({
+  Future<Map<String, dynamic>> _getContainerDict({
     required ContainerSyncResult syncResult,
     required KeyPair encKeyPair,
   }) async {

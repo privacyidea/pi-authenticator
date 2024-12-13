@@ -19,6 +19,7 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/utils/view_utils.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/extensions/enums/push_token_rollout_state_extension.dart';
@@ -97,10 +98,7 @@ class StartRolloutWidget extends ConsumerWidget {
     );
   }
 
-  Future<void> _showDialog() => showDialog(
-      useRootNavigator: false,
-      context: globalNavigatorKey.currentContext!,
-      builder: (BuildContext context) {
+  Future<void> _showDialog() => showAsyncDialog(builder: (BuildContext context) {
         final localizations = AppLocalizations.of(context)!;
         return DefaultDialog(
           scrollable: true,

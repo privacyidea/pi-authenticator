@@ -22,90 +22,90 @@ import '../../../../../../../l10n/app_localizations.dart';
 import '../../../../../../../l10n/app_localizations_en.dart';
 import '../../enums/rollout_state.dart';
 
-extension RolloutStateX on RolloutState {
-  bool get rolloutStarted => this != RolloutState.notStarted;
+extension RolloutStateX on FinalizationState {
+  bool get rolloutStarted => this != FinalizationState.notStarted;
 
   bool get rollOutInProgress => switch (this) {
-        RolloutState.notStarted => false,
-        RolloutState.generatingKeyPair => true,
-        RolloutState.generatingKeyPairFailed => false,
-        RolloutState.generatingKeyPairCompleted => false,
-        RolloutState.sendingPublicKey => true,
-        RolloutState.sendingPublicKeyFailed => false,
-        RolloutState.sendingPublicKeyCompleted => false,
-        RolloutState.parsingResponse => true,
-        RolloutState.parsingResponseFailed => false,
-        RolloutState.parsingResponseCompleted => false,
-        RolloutState.completed => false,
+        FinalizationState.notStarted => false,
+        FinalizationState.generatingKeyPair => true,
+        FinalizationState.generatingKeyPairFailed => false,
+        FinalizationState.generatingKeyPairCompleted => false,
+        FinalizationState.sendingPublicKey => true,
+        FinalizationState.sendingPublicKeyFailed => false,
+        FinalizationState.sendingPublicKeyCompleted => false,
+        FinalizationState.parsingResponse => true,
+        FinalizationState.parsingResponseFailed => false,
+        FinalizationState.parsingResponseCompleted => false,
+        FinalizationState.completed => false,
       };
-  RolloutState get asFailed => switch (this) {
-        RolloutState.notStarted => RolloutState.notStarted,
-        RolloutState.generatingKeyPair => RolloutState.generatingKeyPairFailed,
-        RolloutState.generatingKeyPairFailed => RolloutState.generatingKeyPairFailed,
-        RolloutState.generatingKeyPairCompleted => RolloutState.generatingKeyPairFailed,
-        RolloutState.sendingPublicKey => RolloutState.sendingPublicKeyFailed,
-        RolloutState.sendingPublicKeyFailed => RolloutState.sendingPublicKeyFailed,
-        RolloutState.sendingPublicKeyCompleted => RolloutState.sendingPublicKeyFailed,
-        RolloutState.parsingResponse => RolloutState.parsingResponseFailed,
-        RolloutState.parsingResponseFailed => RolloutState.parsingResponseFailed,
-        RolloutState.parsingResponseCompleted => RolloutState.parsingResponseFailed,
-        RolloutState.completed => RolloutState.completed,
-      };
-
-  RolloutState get asCompleted => switch (this) {
-        RolloutState.notStarted => RolloutState.notStarted,
-        RolloutState.generatingKeyPair => RolloutState.generatingKeyPairCompleted,
-        RolloutState.generatingKeyPairFailed => RolloutState.generatingKeyPairCompleted,
-        RolloutState.generatingKeyPairCompleted => RolloutState.generatingKeyPairCompleted,
-        RolloutState.sendingPublicKey => RolloutState.sendingPublicKeyCompleted,
-        RolloutState.sendingPublicKeyFailed => RolloutState.sendingPublicKeyCompleted,
-        RolloutState.sendingPublicKeyCompleted => RolloutState.sendingPublicKeyCompleted,
-        RolloutState.parsingResponse => RolloutState.parsingResponseCompleted,
-        RolloutState.parsingResponseFailed => RolloutState.parsingResponseCompleted,
-        RolloutState.parsingResponseCompleted => RolloutState.parsingResponseCompleted,
-        RolloutState.completed => RolloutState.completed,
+  FinalizationState get asFailed => switch (this) {
+        FinalizationState.notStarted => FinalizationState.notStarted,
+        FinalizationState.generatingKeyPair => FinalizationState.generatingKeyPairFailed,
+        FinalizationState.generatingKeyPairFailed => FinalizationState.generatingKeyPairFailed,
+        FinalizationState.generatingKeyPairCompleted => FinalizationState.generatingKeyPairFailed,
+        FinalizationState.sendingPublicKey => FinalizationState.sendingPublicKeyFailed,
+        FinalizationState.sendingPublicKeyFailed => FinalizationState.sendingPublicKeyFailed,
+        FinalizationState.sendingPublicKeyCompleted => FinalizationState.sendingPublicKeyFailed,
+        FinalizationState.parsingResponse => FinalizationState.parsingResponseFailed,
+        FinalizationState.parsingResponseFailed => FinalizationState.parsingResponseFailed,
+        FinalizationState.parsingResponseCompleted => FinalizationState.parsingResponseFailed,
+        FinalizationState.completed => FinalizationState.completed,
       };
 
-  RolloutState get next => switch (this) {
-        RolloutState.notStarted => RolloutState.generatingKeyPair,
-        RolloutState.generatingKeyPair => RolloutState.sendingPublicKey,
-        RolloutState.generatingKeyPairFailed => RolloutState.generatingKeyPair,
-        RolloutState.generatingKeyPairCompleted => RolloutState.sendingPublicKey,
-        RolloutState.sendingPublicKey => RolloutState.parsingResponse,
-        RolloutState.sendingPublicKeyFailed => RolloutState.sendingPublicKey,
-        RolloutState.sendingPublicKeyCompleted => RolloutState.parsingResponse,
-        RolloutState.parsingResponse => RolloutState.completed,
-        RolloutState.parsingResponseFailed => RolloutState.parsingResponse,
-        RolloutState.parsingResponseCompleted => RolloutState.completed,
-        RolloutState.completed => RolloutState.completed,
+  FinalizationState get asCompleted => switch (this) {
+        FinalizationState.notStarted => FinalizationState.notStarted,
+        FinalizationState.generatingKeyPair => FinalizationState.generatingKeyPairCompleted,
+        FinalizationState.generatingKeyPairFailed => FinalizationState.generatingKeyPairCompleted,
+        FinalizationState.generatingKeyPairCompleted => FinalizationState.generatingKeyPairCompleted,
+        FinalizationState.sendingPublicKey => FinalizationState.sendingPublicKeyCompleted,
+        FinalizationState.sendingPublicKeyFailed => FinalizationState.sendingPublicKeyCompleted,
+        FinalizationState.sendingPublicKeyCompleted => FinalizationState.sendingPublicKeyCompleted,
+        FinalizationState.parsingResponse => FinalizationState.parsingResponseCompleted,
+        FinalizationState.parsingResponseFailed => FinalizationState.parsingResponseCompleted,
+        FinalizationState.parsingResponseCompleted => FinalizationState.parsingResponseCompleted,
+        FinalizationState.completed => FinalizationState.completed,
+      };
+
+  FinalizationState get next => switch (this) {
+        FinalizationState.notStarted => FinalizationState.generatingKeyPair,
+        FinalizationState.generatingKeyPair => FinalizationState.sendingPublicKey,
+        FinalizationState.generatingKeyPairFailed => FinalizationState.generatingKeyPair,
+        FinalizationState.generatingKeyPairCompleted => FinalizationState.sendingPublicKey,
+        FinalizationState.sendingPublicKey => FinalizationState.parsingResponse,
+        FinalizationState.sendingPublicKeyFailed => FinalizationState.sendingPublicKey,
+        FinalizationState.sendingPublicKeyCompleted => FinalizationState.parsingResponse,
+        FinalizationState.parsingResponse => FinalizationState.completed,
+        FinalizationState.parsingResponseFailed => FinalizationState.parsingResponse,
+        FinalizationState.parsingResponseCompleted => FinalizationState.completed,
+        FinalizationState.completed => FinalizationState.completed,
       };
 
   bool get isFailed => switch (this) {
-        RolloutState.notStarted => false,
-        RolloutState.generatingKeyPair => false,
-        RolloutState.generatingKeyPairFailed => true,
-        RolloutState.generatingKeyPairCompleted => false,
-        RolloutState.sendingPublicKey => false,
-        RolloutState.sendingPublicKeyFailed => true,
-        RolloutState.sendingPublicKeyCompleted => false,
-        RolloutState.parsingResponse => false,
-        RolloutState.parsingResponseFailed => true,
-        RolloutState.parsingResponseCompleted => false,
-        RolloutState.completed => false,
+        FinalizationState.notStarted => false,
+        FinalizationState.generatingKeyPair => false,
+        FinalizationState.generatingKeyPairFailed => true,
+        FinalizationState.generatingKeyPairCompleted => false,
+        FinalizationState.sendingPublicKey => false,
+        FinalizationState.sendingPublicKeyFailed => true,
+        FinalizationState.sendingPublicKeyCompleted => false,
+        FinalizationState.parsingResponse => false,
+        FinalizationState.parsingResponseFailed => true,
+        FinalizationState.parsingResponseCompleted => false,
+        FinalizationState.completed => false,
       };
 
   String get rolloutMsg => rolloutMsgLocalized(AppLocalizationsEn());
   String rolloutMsgLocalized(AppLocalizations localizations) => switch (this) {
-        RolloutState.notStarted => localizations.rolloutStateNotStarted,
-        RolloutState.generatingKeyPair => localizations.rolloutStateGeneratingKeyPair,
-        RolloutState.generatingKeyPairFailed => localizations.rolloutStateGeneratingKeyPairFailed,
-        RolloutState.generatingKeyPairCompleted => localizations.rolloutStateGeneratingKeyPairCompleted,
-        RolloutState.sendingPublicKey => localizations.rolloutStateSendingPublicKey,
-        RolloutState.sendingPublicKeyFailed => localizations.rolloutStateSendingPublicKeyFailed,
-        RolloutState.sendingPublicKeyCompleted => localizations.rolloutStateSendingPublicKeyCompleted,
-        RolloutState.parsingResponse => localizations.rolloutStateParsingResponse,
-        RolloutState.parsingResponseFailed => localizations.rolloutStateParsingResponseFailed,
-        RolloutState.parsingResponseCompleted => localizations.rolloutStateParsingResponseCompleted,
-        RolloutState.completed => localizations.rolloutStateCompleted,
+        FinalizationState.notStarted => localizations.rolloutStateNotStarted,
+        FinalizationState.generatingKeyPair => localizations.rolloutStateGeneratingKeyPair,
+        FinalizationState.generatingKeyPairFailed => localizations.rolloutStateGeneratingKeyPairFailed,
+        FinalizationState.generatingKeyPairCompleted => localizations.rolloutStateGeneratingKeyPairCompleted,
+        FinalizationState.sendingPublicKey => localizations.rolloutStateSendingPublicKey,
+        FinalizationState.sendingPublicKeyFailed => localizations.rolloutStateSendingPublicKeyFailed,
+        FinalizationState.sendingPublicKeyCompleted => localizations.rolloutStateSendingPublicKeyCompleted,
+        FinalizationState.parsingResponse => localizations.rolloutStateParsingResponse,
+        FinalizationState.parsingResponseFailed => localizations.rolloutStateParsingResponseFailed,
+        FinalizationState.parsingResponseCompleted => localizations.rolloutStateParsingResponseCompleted,
+        FinalizationState.completed => localizations.rolloutStateCompleted,
       };
 }

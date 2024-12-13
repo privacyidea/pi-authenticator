@@ -145,12 +145,13 @@ class __$$ContainerPoliciesImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$ContainerPoliciesImpl implements _ContainerPolicies {
+class _$ContainerPoliciesImpl extends _ContainerPolicies {
   const _$ContainerPoliciesImpl(
       {required this.rolloverAllowed,
       required this.initialTokenTransfer,
       required this.tokensDeletable,
-      required this.unregisterAllowed});
+      required this.unregisterAllowed})
+      : super._();
 
   factory _$ContainerPoliciesImpl.fromJson(Map<String, dynamic> json) =>
       _$$ContainerPoliciesImplFromJson(json);
@@ -201,12 +202,13 @@ class _$ContainerPoliciesImpl implements _ContainerPolicies {
   }
 }
 
-abstract class _ContainerPolicies implements ContainerPolicies {
+abstract class _ContainerPolicies extends ContainerPolicies {
   const factory _ContainerPolicies(
       {required final bool rolloverAllowed,
       required final bool initialTokenTransfer,
       required final bool tokensDeletable,
       required final bool unregisterAllowed}) = _$ContainerPoliciesImpl;
+  const _ContainerPolicies._() : super._();
 
   factory _ContainerPolicies.fromJson(Map<String, dynamic> json) =
       _$ContainerPoliciesImpl.fromJson;

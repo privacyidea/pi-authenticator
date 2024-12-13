@@ -44,7 +44,7 @@ class DefaultLockAction extends ConsumerSlideableAction {
       backgroundColor: Theme.of(context).extension<ActionTheme>()!.lockColor,
       foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
       onPressed: (context) async {
-        if (await lockAuth(localizedReason: AppLocalizations.of(context)!.authenticateToUnLockToken) == false) return;
+        if (!await lockAuth(reason: (localization) => localization.authenticateToUnLockToken, localization: AppLocalizations.of(context)!)) return;
         Logger.info('Changing lock status of token to isLocked = ${!token.isLocked}');
 
         globalRef?.read(tokenProvider.notifier).updateToken(token, (p0) => p0.copyWith(isLocked: !token.isLocked, isHidden: !token.isLocked));

@@ -29,8 +29,6 @@ import 'logger.dart';
 
 class PatchNotesUtils {
   static Map<Version, Map<PatchNoteType, List<String>>> _getNewPatchNotes({required BuildContext context, required Version latestStartedVersion}) {
-    final context = globalNavigatorKey.currentContext;
-    if (context == null) return {};
     final Map<Version, Map<PatchNoteType, List<String>>> newNotes = {};
     final allNotes = getLocalizedPatchNotes(AppLocalizations.of(context)!);
     for (Version noteVersion in allNotes.keys) {

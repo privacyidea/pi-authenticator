@@ -73,7 +73,7 @@ class QrNotFoundDialog extends StatelessWidget {
             } catch (e) {
               if (!context.mounted) return;
               Navigator.of(context).pop();
-              showStatusMessage(message: "File not currently available! Please try again.");
+              showStatusMessage(message: (_) => "File not currently available! Please try again."); // TODO: Add to localization
               return;
             }
             if (!context.mounted) return;

@@ -72,7 +72,7 @@ class PrivacyIDEAAuthenticatorImportFileProcessor extends TokenImportFileProcess
       Logger.error('Failed to process file', error: e, stackTrace: StackTrace.current);
       return [
         ProcessorResult.failed(
-          e.toString(),
+          (_) => e.toString(),
           resultHandlerType: resultHandlerType,
         )
       ];

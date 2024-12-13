@@ -219,7 +219,7 @@ Future<void> scanQrCode({BuildContext? context, required List<ResultHandler> res
       _ => throw ArgumentError('Invalid type for qrCode: $qrCode'),
     };
   } catch (e) {
-    showStatusMessage(message: 'The scanned QR code is not a valid URI.');
+    showStatusMessage(message: (_) => 'The scanned QR code is not a valid URI.'); // TODO: Localize
     Logger.warning('Scanned Data: $qrCode');
     return;
   }

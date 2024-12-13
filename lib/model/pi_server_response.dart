@@ -105,7 +105,7 @@ class PiServerResponse<T extends PiServerResultValue> with _$PiServerResponse {
         statusCode: statisCode,
         id: map[ID],
         jsonrpc: map[JSONRPC],
-        resultValue: PiServerResultValue.fromJsonOfType<T>(result[RESULT_VALUE]),
+        resultValue: PiServerResultValue.uriMapOfType<T>(result[RESULT_VALUE]),
         time: map[TIME],
         version: map[VERSION],
         versionNumber: map[VERSION_NUMBER] ?? map[VERSION].split(' ')[1],

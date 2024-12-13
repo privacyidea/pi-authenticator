@@ -17,30 +17,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
 
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+import '../../../../l10n/app_localizations_en.dart';
 import '../../../logger.dart';
 
-final statusMessageProvider = StateProvider<StatusMessage?>(
-  (ref) {
-    Logger.info("New statusMessageProvider created");
-    return null;
-  },
-);
+part 'localization_notifier.g.dart';
 
-class StatusMessage {
-  String Function(AppLocalizations localization) message;
-  String Function(AppLocalizations localization)? details;
-
-  StatusMessage({
-    required this.message,
-    this.details,
-  });
-
+@Riverpod(keepAlive: true)
+class LocalizationNotifier extends _$LocalizationNotifier {
   @override
-  String toString() {
-    return 'StatusMessage{message: ${message(AppLocalizationsEn())}, details: ${details?.call(AppLocalizationsEn())}}';
+  AppLocalizations build() {
+    Logger.info("New AppConstraints created");
+    return AppLocalizationsEn();
+  }
+
+  void update(AppLocalizations localizations) {
+    if (state == localizations) return;
+    Logger.debug("AppLocalizations updated");
+    state = localizations;
   }
 }

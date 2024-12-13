@@ -20,7 +20,6 @@
 import 'dart:async';
 
 import 'package:collection/collection.dart';
-import 'package:http/http.dart';
 import 'package:mutex/mutex.dart';
 import 'package:privacyidea_authenticator/model/container_policies.dart';
 import 'package:privacyidea_authenticator/model/extensions/enums/rollout_state_extension.dart';
@@ -30,7 +29,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../../../../model/exception_errors/pi_server_result_error.dart';
 import '../../../../../../../model/processor_result.dart';
 import '../../../../../../../model/tokens/token.dart';
-import '../../../../../../../utils/globals.dart';
 import '../../../../../../../utils/privacyidea_io_client.dart';
 import '../../../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../../../../../utils/riverpod/riverpod_providers/state_providers/status_message_provider.dart';
@@ -38,7 +36,6 @@ import '../../../../../../../utils/view_utils.dart';
 import '../../../../api/impl/privacy_idea_container_api.dart';
 import '../../../../api/interfaces/container_api.dart';
 import '../../../../interfaces/repo/token_container_repository.dart';
-import '../../../../l10n/app_localizations.dart';
 import '../../../../model/api_results/pi_server_results/pi_server_result_value.dart';
 import '../../../../model/enums/rollout_state.dart';
 import '../../../../model/enums/sync_state.dart';
@@ -192,8 +189,8 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
           if (!isManually) return null;
           Logger.debug('Failed to sync container ${error.runtimeType}', error: error, stackTrace: stackTrace);
           showStatusMessage(
-            message: AppLocalizations.of(await globalContext)!.failedToSyncContainer(finalizedContainer.serial),
-            subMessage: error is PiServerResultError ? error.message : error.toString(),
+            message: (localization) => localization.failedToSyncContainer(finalizedContainer.serial),
+            details: error is PiServerResultError ? (_) => error.message : (_) => error.toString(),
           );
           return null;
         }),
@@ -226,7 +223,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     required TokenState tokenState,
     required TokenContainerFinalized container,
   }) async {
-    final rollover = await getTransferQrData(container);
+    final rollover = await getRolloverQrData(container);
     final uri = Uri.tryParse(rollover);
     if (uri == null) throw ArgumentError('Invalid rollover uri');
     final result = (await TokenContainerProcessor().processUri(uri, fromInit: false))?.firstOrNull;
@@ -235,11 +232,11 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     return success;
   }
 
-  Future<String> getTransferQrData(TokenContainerFinalized container) async {
+  Future<String> getRolloverQrData(TokenContainerFinalized container) async {
     final currentContainer = (await future).currentOf<TokenContainerFinalized>(container);
     if (currentContainer == null) throw StateError('Container was removed');
-    final qrCode = await _containerApi.getTransferQrData(currentContainer);
-    return qrCode;
+    final qrCodeData = await _containerApi.getRolloverQrData(currentContainer);
+    return qrCodeData.value;
   }
 
 // ADD CONTAINER
@@ -338,7 +335,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
 // DELETE CONTAINER
 
   Future<TokenContainerState> unregisterDelete(TokenContainerFinalized container) async {
-    if (!await _containerApi.unregister(container)) return await future;
+    if (!(await _containerApi.unregister(container)).success) return await future;
 
     await _stateMutex.acquire();
     final newState = await _deleteContainerFromRepo(container);
@@ -447,7 +444,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
       throw ArgumentError('Container must not be finalized');
     }
     if (container.expirationDate != null && container.expirationDate!.isBefore(DateTime.now())) {
-      showStatusMessage(message: 'Container ${container.serial} has expired and can not be rolled out anymore');
+      showStatusMessage(message: (_) => 'Container ${container.serial} has expired and can not be rolled out anymore'); // TODO: Localize
       await deleteContainer(container);
       _finalizationMutex.release();
       return;
@@ -456,41 +453,37 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     try {
       container = await _generateKeyPair(container);
       container = await _curentOf<TokenContainerUnfinalized>(container);
-      final Response response = await _sendPublicKey(container);
+      final ContainerFinalizationResponse response = await _sendPublicKey(container);
       container = await _curentOf<TokenContainerUnfinalized>(container);
       container = await _applyFinalizationResponse(await _curentOf(container), response);
     } on StateError catch (e) {
-      final applocalizations = AppLocalizations.of(await globalContext)!;
       if (isManually) {
-        ref.read(statusMessageProvider.notifier).state = (
-          container.finalizationState.asFailed.rolloutMsgLocalized(applocalizations),
-          e.toString(),
+        ref.read(statusMessageProvider.notifier).state = StatusMessage(
+          message: (localization) => container.finalizationState.asFailed.rolloutMsgLocalized(localization),
+          details: (localization) => e.toString(),
         );
       }
     } on LocalizedArgumentError catch (e) {
       if (isManually) {
-        final applocalizations = AppLocalizations.of(await globalContext)!;
-        ref.read(statusMessageProvider.notifier).state = (
-          container.finalizationState.asFailed.rolloutMsgLocalized(applocalizations),
-          e.localizedMessage(applocalizations),
+        ref.read(statusMessageProvider.notifier).state = StatusMessage(
+          message: (localization) => container.finalizationState.asFailed.rolloutMsgLocalized(localization),
+          details: (localization) => e.localizedMessage(localization),
         );
       }
       await updateContainer(container, (TokenContainerFinalized c) => c.copyWith(finalizationState: c.finalizationState.asFailed));
     } on PiErrorResponse catch (e) {
       if (isManually) {
-        final applocalizations = AppLocalizations.of(await globalContext)!;
-        ref.read(statusMessageProvider.notifier).state = (
-          container.finalizationState.asFailed.rolloutMsgLocalized(applocalizations),
-          e.piServerResultError.message,
+        ref.read(statusMessageProvider.notifier).state = StatusMessage(
+          message: (localization) => container.finalizationState.asFailed.rolloutMsgLocalized(localization),
+          details: (localization) => e.piServerResultError.message,
         );
       }
       await updateContainer(container, (TokenContainerFinalized c) => c.copyWith(finalizationState: c.finalizationState.asFailed));
     } on ResponseError catch (e) {
       if (isManually) {
-        final applocalizations = AppLocalizations.of(await globalContext)!;
-        ref.read(statusMessageProvider.notifier).state = (
-          container.finalizationState.asFailed.rolloutMsgLocalized(applocalizations),
-          e.toString(),
+        ref.read(statusMessageProvider.notifier).state = StatusMessage(
+          message: (localization) => container.finalizationState.asFailed.rolloutMsgLocalized(localization),
+          details: (localization) => e.toString(),
         );
       }
     } catch (e) {
@@ -524,7 +517,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     // generatingKeyPairCompleted,
     TokenContainerUnfinalized? container = tokenContainer;
     container = await updateContainer<TokenContainerUnfinalized, TokenContainerUnfinalized>(
-        container, (c) => c.copyWith(finalizationState: RolloutState.generatingKeyPair));
+        container, (c) => c.copyWith(finalizationState: FinalizationState.generatingKeyPair));
     if (container == null) throw StateError('Container was removed');
     final keyPair = eccUtils.generateKeyPair(container.ecKeyAlgorithm);
     container = await updateContainer<TokenContainerUnfinalized, TokenContainerUnfinalized>(
@@ -534,7 +527,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
   }
 
   /// Finalization substep 2: Send public key
-  Future<Response> _sendPublicKey(TokenContainerUnfinalized tokenContainer) async {
+  Future<ContainerFinalizationResponse> _sendPublicKey(TokenContainerUnfinalized tokenContainer) async {
     // sendingPublicKey,
     // sendingPublicKeyFailed,
     // sendingPublicKeyCompleted,
@@ -548,62 +541,37 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
 
     TokenContainerUnfinalized? container = tokenContainer;
 
-    final Response response;
-    container = await updateContainer(container, (TokenContainerUnfinalized c) => c.copyWith(finalizationState: RolloutState.sendingPublicKey));
+    final ContainerFinalizationResponse response;
+    container = await updateContainer(container, (TokenContainerUnfinalized c) => c.copyWith(finalizationState: FinalizationState.sendingPublicKey));
     if (container == null) throw StateError('Container was removed');
-
-    response = (await _containerApi.finalizeContainer(container, eccUtils));
-    if (response.statusCode != 200) {
-      container = await updateContainer(container, (TokenContainerUnfinalized c) => c.copyWith(finalizationState: RolloutState.sendingPublicKeyFailed));
-      throw ResponseError(response);
+    try {
+      response = (await _containerApi.finalizeContainer(container, eccUtils));
+    } catch (_) {
+      container = await updateContainer(container, (TokenContainerUnfinalized c) => c.copyWith(finalizationState: FinalizationState.sendingPublicKeyFailed));
+      rethrow;
     }
 
-    container = await updateContainer(container, (TokenContainerUnfinalized c) => c.copyWith(finalizationState: RolloutState.sendingPublicKeyCompleted));
+    container = await updateContainer(container, (TokenContainerUnfinalized c) => c.copyWith(finalizationState: FinalizationState.sendingPublicKeyCompleted));
     return response;
   }
 
   /// Finalization substep 3: Apply finalization response to container
-  Future<TokenContainerFinalized> _applyFinalizationResponse(TokenContainer tokenContainer, Response response) async {
+  Future<TokenContainerFinalized> _applyFinalizationResponse(TokenContainer tokenContainer, ContainerFinalizationResponse response) async {
     // parsingResponse,
     // parsingResponseFailed,
     // parsingResponseCompleted,
     TokenContainer? container = tokenContainer;
-    PiServerResponse<ContainerFinalizationResponse>? piResponse;
-    try {
-      piResponse = response.asPiServerResponse<ContainerFinalizationResponse>();
-    } catch (e) {
-      Logger.error('Failed to parse response', error: e);
-      container = await updateContainer(container, (TokenContainerUnfinalized c) => c.copyWith(finalizationState: RolloutState.parsingResponseFailed));
-      rethrow;
-    }
 
-    if (piResponse == null || piResponse.isError) {
-      Logger.debug('Status code: ${response.statusCode}');
-      Logger.debug('Response body: ${response.body}');
-      container = await updateContainer(container, (TokenContainerUnfinalized c) => c.copyWith(finalizationState: RolloutState.sendingPublicKeyFailed));
-      final error = piResponse?.asError;
-      if (error != null) throw error;
-      throw ResponseError(response);
-    }
-
-    container = await updateContainer(container, (TokenContainerUnfinalized c) => c.copyWith(finalizationState: RolloutState.sendingPublicKeyCompleted));
+    container = await updateContainer(container, (TokenContainerUnfinalized c) => c.copyWith(finalizationState: FinalizationState.sendingPublicKeyCompleted));
     if (container == null) throw StateError('Container was removed');
 
-    container = await updateContainer(container, (TokenContainerUnfinalized c) => c.copyWith(finalizationState: RolloutState.parsingResponse));
+    container = await updateContainer(container, (TokenContainerUnfinalized c) => c.copyWith(finalizationState: FinalizationState.parsingResponse));
     if (container == null) throw StateError('Container was removed');
-    ContainerFinalizationResponse finalizationResponse = piResponse.asSuccess!.resultValue;
-    try {
-      finalizationResponse = piResponse.asSuccess!.resultValue;
-    } catch (e) {
-      Logger.error('Failed to parse response', error: e);
-      container = await updateContainer(container, (TokenContainerUnfinalized c) => c.copyWith(finalizationState: RolloutState.parsingResponseFailed));
-      rethrow;
-    }
 
     // final signature = finalizationResponse.signature;
     final finalizedContainer = await updateContainer(
       container,
-      (TokenContainerUnfinalized c) => c.copyWith(policies: finalizationResponse.policies).finalize(publicServerKey: finalizationResponse.publicServerKey)!,
+      (TokenContainerUnfinalized c) => c.copyWith(policies: response.policies).finalize(publicServerKey: response.publicServerKey)!,
     );
     if (finalizedContainer == null) throw StateError('Container was removed');
     return finalizedContainer;

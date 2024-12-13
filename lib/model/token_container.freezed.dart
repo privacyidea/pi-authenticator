@@ -38,7 +38,7 @@ mixin _$TokenContainer {
   Algorithms get hashAlgorithm => throw _privateConstructorUsedError;
   bool get sslVerify => throw _privateConstructorUsedError;
   String get serverName => throw _privateConstructorUsedError;
-  RolloutState get finalizationState => throw _privateConstructorUsedError;
+  FinalizationState get finalizationState => throw _privateConstructorUsedError;
   ContainerPolicies get policies => throw _privateConstructorUsedError;
   String? get passphraseQuestion => throw _privateConstructorUsedError;
   String? get publicServerKey => throw _privateConstructorUsedError;
@@ -57,7 +57,7 @@ mixin _$TokenContainer {
             Algorithms hashAlgorithm,
             bool sslVerify,
             String serverName,
-            RolloutState finalizationState,
+            FinalizationState finalizationState,
             ContainerPolicies policies,
             bool? addDeviceInfos,
             String? passphraseQuestion,
@@ -75,7 +75,7 @@ mixin _$TokenContainer {
             Algorithms hashAlgorithm,
             bool sslVerify,
             String serverName,
-            RolloutState finalizationState,
+            FinalizationState finalizationState,
             SyncState syncState,
             ContainerPolicies policies,
             String? passphraseQuestion,
@@ -98,7 +98,7 @@ mixin _$TokenContainer {
             Algorithms hashAlgorithm,
             bool sslVerify,
             String serverName,
-            RolloutState finalizationState,
+            FinalizationState finalizationState,
             ContainerPolicies policies,
             bool? addDeviceInfos,
             String? passphraseQuestion,
@@ -116,7 +116,7 @@ mixin _$TokenContainer {
             Algorithms hashAlgorithm,
             bool sslVerify,
             String serverName,
-            RolloutState finalizationState,
+            FinalizationState finalizationState,
             SyncState syncState,
             ContainerPolicies policies,
             String? passphraseQuestion,
@@ -139,7 +139,7 @@ mixin _$TokenContainer {
             Algorithms hashAlgorithm,
             bool sslVerify,
             String serverName,
-            RolloutState finalizationState,
+            FinalizationState finalizationState,
             ContainerPolicies policies,
             bool? addDeviceInfos,
             String? passphraseQuestion,
@@ -157,7 +157,7 @@ mixin _$TokenContainer {
             Algorithms hashAlgorithm,
             bool sslVerify,
             String serverName,
-            RolloutState finalizationState,
+            FinalizationState finalizationState,
             SyncState syncState,
             ContainerPolicies policies,
             String? passphraseQuestion,
@@ -214,7 +214,7 @@ abstract class $TokenContainerCopyWith<$Res> {
       Algorithms hashAlgorithm,
       bool sslVerify,
       String serverName,
-      RolloutState finalizationState,
+      FinalizationState finalizationState,
       ContainerPolicies policies,
       String? passphraseQuestion,
       String publicServerKey,
@@ -295,7 +295,7 @@ class _$TokenContainerCopyWithImpl<$Res, $Val extends TokenContainer>
       finalizationState: null == finalizationState
           ? _value.finalizationState
           : finalizationState // ignore: cast_nullable_to_non_nullable
-              as RolloutState,
+              as FinalizationState,
       policies: null == policies
           ? _value.policies
           : policies // ignore: cast_nullable_to_non_nullable
@@ -350,7 +350,7 @@ abstract class _$$TokenContainerUnfinalizedImplCopyWith<$Res>
       Algorithms hashAlgorithm,
       bool sslVerify,
       String serverName,
-      RolloutState finalizationState,
+      FinalizationState finalizationState,
       ContainerPolicies policies,
       bool? addDeviceInfos,
       String? passphraseQuestion,
@@ -438,7 +438,7 @@ class __$$TokenContainerUnfinalizedImplCopyWithImpl<$Res>
       finalizationState: null == finalizationState
           ? _value.finalizationState
           : finalizationState // ignore: cast_nullable_to_non_nullable
-              as RolloutState,
+              as FinalizationState,
       policies: null == policies
           ? _value.policies
           : policies // ignore: cast_nullable_to_non_nullable
@@ -481,7 +481,7 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
       required this.hashAlgorithm,
       required this.sslVerify,
       this.serverName = 'privacyIDEA',
-      this.finalizationState = RolloutState.completed,
+      this.finalizationState = FinalizationState.completed,
       this.policies = ContainerPolicies.defaultSetting,
       this.addDeviceInfos,
       this.passphraseQuestion,
@@ -518,7 +518,7 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
   final String serverName;
   @override
   @JsonKey()
-  final RolloutState finalizationState;
+  final FinalizationState finalizationState;
   @override
   @JsonKey()
   final ContainerPolicies policies;
@@ -618,7 +618,7 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
             Algorithms hashAlgorithm,
             bool sslVerify,
             String serverName,
-            RolloutState finalizationState,
+            FinalizationState finalizationState,
             ContainerPolicies policies,
             bool? addDeviceInfos,
             String? passphraseQuestion,
@@ -636,7 +636,7 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
             Algorithms hashAlgorithm,
             bool sslVerify,
             String serverName,
-            RolloutState finalizationState,
+            FinalizationState finalizationState,
             SyncState syncState,
             ContainerPolicies policies,
             String? passphraseQuestion,
@@ -679,7 +679,7 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
             Algorithms hashAlgorithm,
             bool sslVerify,
             String serverName,
-            RolloutState finalizationState,
+            FinalizationState finalizationState,
             ContainerPolicies policies,
             bool? addDeviceInfos,
             String? passphraseQuestion,
@@ -697,7 +697,7 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
             Algorithms hashAlgorithm,
             bool sslVerify,
             String serverName,
-            RolloutState finalizationState,
+            FinalizationState finalizationState,
             SyncState syncState,
             ContainerPolicies policies,
             String? passphraseQuestion,
@@ -740,7 +740,7 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
             Algorithms hashAlgorithm,
             bool sslVerify,
             String serverName,
-            RolloutState finalizationState,
+            FinalizationState finalizationState,
             ContainerPolicies policies,
             bool? addDeviceInfos,
             String? passphraseQuestion,
@@ -758,7 +758,7 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
             Algorithms hashAlgorithm,
             bool sslVerify,
             String serverName,
-            RolloutState finalizationState,
+            FinalizationState finalizationState,
             SyncState syncState,
             ContainerPolicies policies,
             String? passphraseQuestion,
@@ -842,7 +842,7 @@ abstract class TokenContainerUnfinalized extends TokenContainer {
       required final Algorithms hashAlgorithm,
       required final bool sslVerify,
       final String serverName,
-      final RolloutState finalizationState,
+      final FinalizationState finalizationState,
       final ContainerPolicies policies,
       final bool? addDeviceInfos,
       final String? passphraseQuestion,
@@ -874,7 +874,7 @@ abstract class TokenContainerUnfinalized extends TokenContainer {
   @override
   String get serverName;
   @override
-  RolloutState get finalizationState;
+  FinalizationState get finalizationState;
   @override
   ContainerPolicies get policies;
   bool? get addDeviceInfos;
@@ -914,7 +914,7 @@ abstract class _$$TokenContainerFinalizedImplCopyWith<$Res>
       Algorithms hashAlgorithm,
       bool sslVerify,
       String serverName,
-      RolloutState finalizationState,
+      FinalizationState finalizationState,
       SyncState syncState,
       ContainerPolicies policies,
       String? passphraseQuestion,
@@ -997,7 +997,7 @@ class __$$TokenContainerFinalizedImplCopyWithImpl<$Res>
       finalizationState: null == finalizationState
           ? _value.finalizationState
           : finalizationState // ignore: cast_nullable_to_non_nullable
-              as RolloutState,
+              as FinalizationState,
       syncState: null == syncState
           ? _value.syncState
           : syncState // ignore: cast_nullable_to_non_nullable
@@ -1039,7 +1039,7 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
       required this.hashAlgorithm,
       required this.sslVerify,
       this.serverName = 'privacyIDEA',
-      this.finalizationState = RolloutState.completed,
+      this.finalizationState = FinalizationState.completed,
       this.syncState = SyncState.notStarted,
       this.policies = ContainerPolicies.defaultSetting,
       this.passphraseQuestion,
@@ -1074,7 +1074,7 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
   final String serverName;
   @override
   @JsonKey()
-  final RolloutState finalizationState;
+  final FinalizationState finalizationState;
   @override
   @JsonKey()
   final SyncState syncState;
@@ -1173,7 +1173,7 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
             Algorithms hashAlgorithm,
             bool sslVerify,
             String serverName,
-            RolloutState finalizationState,
+            FinalizationState finalizationState,
             ContainerPolicies policies,
             bool? addDeviceInfos,
             String? passphraseQuestion,
@@ -1191,7 +1191,7 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
             Algorithms hashAlgorithm,
             bool sslVerify,
             String serverName,
-            RolloutState finalizationState,
+            FinalizationState finalizationState,
             SyncState syncState,
             ContainerPolicies policies,
             String? passphraseQuestion,
@@ -1233,7 +1233,7 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
             Algorithms hashAlgorithm,
             bool sslVerify,
             String serverName,
-            RolloutState finalizationState,
+            FinalizationState finalizationState,
             ContainerPolicies policies,
             bool? addDeviceInfos,
             String? passphraseQuestion,
@@ -1251,7 +1251,7 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
             Algorithms hashAlgorithm,
             bool sslVerify,
             String serverName,
-            RolloutState finalizationState,
+            FinalizationState finalizationState,
             SyncState syncState,
             ContainerPolicies policies,
             String? passphraseQuestion,
@@ -1293,7 +1293,7 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
             Algorithms hashAlgorithm,
             bool sslVerify,
             String serverName,
-            RolloutState finalizationState,
+            FinalizationState finalizationState,
             ContainerPolicies policies,
             bool? addDeviceInfos,
             String? passphraseQuestion,
@@ -1311,7 +1311,7 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
             Algorithms hashAlgorithm,
             bool sslVerify,
             String serverName,
-            RolloutState finalizationState,
+            FinalizationState finalizationState,
             SyncState syncState,
             ContainerPolicies policies,
             String? passphraseQuestion,
@@ -1393,7 +1393,7 @@ abstract class TokenContainerFinalized extends TokenContainer {
       required final Algorithms hashAlgorithm,
       required final bool sslVerify,
       final String serverName,
-      final RolloutState finalizationState,
+      final FinalizationState finalizationState,
       final SyncState syncState,
       final ContainerPolicies policies,
       final String? passphraseQuestion,
@@ -1424,7 +1424,7 @@ abstract class TokenContainerFinalized extends TokenContainer {
   @override
   String get serverName;
   @override
-  RolloutState get finalizationState;
+  FinalizationState get finalizationState;
   SyncState get syncState;
   @override
   ContainerPolicies get policies;

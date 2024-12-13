@@ -206,18 +206,18 @@ class HOTPToken extends OTPToken {
   /// This is used to create a map that typically was created from a uri.
   /// ```dart
   /// -------------------------- [Token] --------------------------------
-  /// | Token.SERIAL: serial, (optional)                             |
-  /// | Token.LABEL: label,                                          |
-  /// | Token.ISSUER: issuer,                                        |
+  /// | Token.SERIAL: serial, (optional)                                |
+  /// | Token.LABEL: label,                                             |
+  /// | Token.ISSUER: issuer,                                           |
   /// | CONTAINER_SERIAL: containerSerial, (optional)                   |
-  /// | CHECKED_CONTAINERS: checkedContainer,                          |
+  /// | CHECKED_CONTAINERS: checkedContainer,                           |
   /// | TOKEN_ID: id,                                                   |
-  /// | Token.TYPE: type,                                            |
-  /// | Token.IMAGE: tokenImage, (optional)                          |
+  /// | Token.TYPE: type,                                               |
+  /// | Token.IMAGE: tokenImage, (optional)                             |
   /// | SORTABLE_INDEX: sortIndex, (optional)                           |
   /// | FOLDER_ID: folderId, (optional)                                 |
   /// | TOKEN_ORIGIN: origin, (optional)                                |
-  /// | Token.PIN: pin,                                              |
+  /// | Token.PIN: pin,                                                 |
   /// | TOKEN_HIDDEN: isHidden,                                         |
   /// -------------------------------------------------------------------
   /// ------------------------- [OTPToken] ------------------------------
@@ -227,7 +227,7 @@ class HOTPToken extends OTPToken {
   /// | OTPToken.OTP_VALUES: [otpValue, nextValue], (if serial is null) |
   /// -------------------------------------------------------------------
   /// ------------------------ [HOTPToken] ------------------------------
-  /// | COUNTER: counter,                                      |
+  /// | COUNTER: counter,                                               |
   /// -------------------------------------------------------------------
   /// ```
   @override

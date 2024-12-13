@@ -19,8 +19,8 @@
  */
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 
-import '../l10n/app_localizations.dart';
 import '../utils/globals.dart';
 import '../utils/logger.dart';
 import '../utils/object_validator.dart';
@@ -37,7 +37,7 @@ abstract class ProcessorResult<T> with _$ProcessorResult<T> {
     ObjectValidator<ResultHandler>? resultHandlerType,
   }) = ProcessorResultSuccess;
   const factory ProcessorResult.failed(
-    String message, {
+    String Function(AppLocalizations) message, {
     dynamic error,
     ObjectValidator<ResultHandler>? resultHandlerType,
   }) = ProcessorResultFailed;
@@ -55,7 +55,7 @@ extension ListProcessorResult<T> on List<ProcessorResult<T>> {
   List<T> getData() {
     final results = toList();
     if (results.isEmpty) {
-      showStatusMessage(message: 'No data found in QR code.');
+      showStatusMessage(message: (_) => 'No data found in QR code.'); // TODO: Localize
       Logger.warning('No data found in QR code.');
       return [];
     }
@@ -64,7 +64,10 @@ extension ListProcessorResult<T> on List<ProcessorResult<T>> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       for (var failedResult in failedResults) {
-        globalRef?.read(statusMessageProvider.notifier).state = (AppLocalizations.of((await globalContext))!.malformedData, failedResult.message);
+        globalRef?.read(statusMessageProvider.notifier).state = StatusMessage(
+          message: (localization) => localization.malformedData,
+          details: failedResult.message,
+        );
       }
     });
 

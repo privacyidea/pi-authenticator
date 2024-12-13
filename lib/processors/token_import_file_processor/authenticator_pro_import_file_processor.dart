@@ -24,7 +24,6 @@ import 'dart:convert';
 import 'package:cryptography/cryptography.dart';
 import 'package:file_selector/file_selector.dart';
 
-import '../../l10n/app_localizations.dart';
 import '../../model/encryption/uint_8_buffer.dart';
 import '../../model/enums/algorithms.dart';
 import '../../model/enums/token_origin_source_type.dart';
@@ -39,7 +38,6 @@ import '../../model/tokens/totp_token.dart';
 import '../../processors/scheme_processors/token_import_scheme_processors/otp_auth_processor.dart';
 import '../../processors/token_import_file_processor/two_fas_import_file_processor.dart';
 import '../../utils/encryption/aes_encrypted.dart';
-import '../../utils/globals.dart';
 import '../../utils/logger.dart';
 import '../../utils/object_validator.dart';
 import '../../utils/token_import_origins.dart';
@@ -253,14 +251,14 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
         final newResults = await const OtpAuthProcessor().processUri(uri);
         results.addAll(newResults);
       } on LocalizedException catch (e) {
-        results.add(ProcessorResultFailed(
-          e.localizedMessage(AppLocalizations.of(await globalContext)!),
+        results.add(ProcessorResult.failed(
+          (localization) => e.localizedMessage(localization),
           resultHandlerType: resultHandlerType,
         ));
       } catch (e) {
         Logger.error('Failed to parse token.', error: e, stackTrace: StackTrace.current);
         results.add(ProcessorResultFailed(
-          e.toString(),
+          (_) => e.toString(),
           resultHandlerType: resultHandlerType,
         ));
       }
@@ -295,14 +293,14 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
         }
       }
     } on LocalizedException catch (e) {
-      results.add(ProcessorResultFailed(
-        e.localizedMessage(AppLocalizations.of(await globalContext)!),
+      results.add(ProcessorResult.failed(
+        (localization) => e.localizedMessage(localization),
         resultHandlerType: resultHandlerType,
       ));
     } catch (e) {
       Logger.error('Failed to parse token.', error: e, stackTrace: StackTrace.current);
       results.add(ProcessorResultFailed(
-        e.toString(),
+        (_) => e.toString(),
         resultHandlerType: resultHandlerType,
       ));
     }
@@ -360,14 +358,14 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
           resultHandlerType: resultHandlerType,
         ));
       } on LocalizedException catch (e) {
-        result.add(ProcessorResultFailed(
-          e.localizedMessage(AppLocalizations.of(await globalContext)!),
+        result.add(ProcessorResult.failed(
+          (localization) => e.localizedMessage(localization),
           resultHandlerType: resultHandlerType,
         ));
       } catch (e) {
         Logger.error('Failed to parse token.', error: e, stackTrace: StackTrace.current);
         result.add(ProcessorResultFailed(
-          e.toString(),
+          (_) => e.toString(),
           resultHandlerType: resultHandlerType,
         ));
       }

@@ -17,9 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import '../../../../../../../l10n/app_localizations.dart';
 import '../../../../../../../model/exception_errors/localized_argument_error.dart';
-import '../../../../../../../utils/globals.dart';
 import '../../model/processor_result.dart';
 import '../../model/token_container.dart';
 import '../../utils/logger.dart';
@@ -68,7 +66,7 @@ class TokenContainerProcessor extends SchemeProcessor {
       Logger.warning('Error while processing URI ${uri.scheme}', error: e.message);
       return [
         ProcessorResult.failed(
-          e.localizedMessage(AppLocalizations.of(await globalContext)!),
+          (localization) => e.localizedMessage(localization),
           resultHandlerType: resultHandlerType,
         )
       ];

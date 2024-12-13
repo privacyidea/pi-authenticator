@@ -26,10 +26,10 @@ import 'package:collection/collection.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
 
 import '../../../../../../../repo/secure_push_request_repository.dart';
 import '../../../../../../../utils/pi_notifications.dart';
-import '../l10n/app_localizations.dart';
 import '../model/push_request.dart';
 import '../model/tokens/push_token.dart';
 import '../repo/secure_token_repository.dart';
@@ -176,7 +176,7 @@ class PushProvider {
       return _handleIncomingRequestForeground(data);
     } catch (e, s) {
       Logger.error(
-        AppLocalizations.of(globalNavigatorKey.currentContext!)!.unexpectedError,
+        AppLocalizationsEn().unexpectedError,
         error: e,
         stackTrace: s,
       );
@@ -213,9 +213,9 @@ class PushProvider {
     // PiNotifications.show('Push request', 'A new push request has been received.');
     if (remoteMessage.notification == null) {
       PiNotifications.show(
-        // AppLocalizations.of(globalNavigatorKey.currentContext!)!.notificationTitle,
+        // message:   (localization) => localization.notificationTitle,
         'Notification Title',
-        // AppLocalizations.of(globalNavigatorKey.currentContext!)!.notificationBody,
+        // message:   (localization) => localization.notificationBody,
         'Notification Body',
       );
     }
@@ -305,9 +305,9 @@ class PushProvider {
     if (connectivityResult.contains(ConnectivityResult.none)) {
       if (isManually) {
         Logger.info('Tried to poll without any internet connection available.');
-        globalRef?.read(statusMessageProvider.notifier).state = (
-          AppLocalizations.of(globalNavigatorKey.currentContext!)!.pollingFailed,
-          AppLocalizations.of(globalNavigatorKey.currentContext!)!.noNetworkConnection,
+        globalRef?.read(statusMessageProvider.notifier).state = StatusMessage(
+          message: (localization) => localization.pollingFailed,
+          details: (localization) => localization.noNetworkConnection,
         );
       }
       return;
@@ -336,9 +336,9 @@ class PushProvider {
     Logger.info(rsaUtils.runtimeType.toString());
     String? signature = await rsaUtils.trySignWithToken(token, message);
     if (signature == null) {
-      globalRef?.read(statusMessageProvider.notifier).state = (
-        AppLocalizations.of(globalNavigatorKey.currentContext!)!.pollingFailedFor(token.serial),
-        AppLocalizations.of(globalNavigatorKey.currentContext!)!.couldNotSignMessage,
+      globalRef?.read(statusMessageProvider.notifier).state = StatusMessage(
+        message: (localization) => localization.pollingFailedFor(token.serial),
+        details: (localization) => localization.couldNotSignMessage,
       );
       Logger.warning('Polling push tokens failed because signing the message failed.');
       return;
@@ -357,9 +357,9 @@ class PushProvider {
           : await const PrivacyideaIOClient().doGet(url: token.url!, parameters: parameters, sslVerify: token.sslVerify);
     } catch (_) {
       if (isManually) {
-        globalRef?.read(statusMessageProvider.notifier).state = (
-          AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorWhenPullingChallenges(token.serial),
-          AppLocalizations.of(globalNavigatorKey.currentContext!)!.couldNotConnectToServer,
+        globalRef?.read(statusMessageProvider.notifier).state = StatusMessage(
+          message: (localization) => localization.errorWhenPullingChallenges(token.serial),
+          details: (localization) => localization.couldNotConnectToServer,
         );
       }
       return;
@@ -372,9 +372,9 @@ class PushProvider {
           challengeList = _getAndValidateDataFromResponse(response);
         } catch (_) {
           if (isManually) {
-            globalRef?.read(statusMessageProvider.notifier).state = (
-              AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorWhenPullingChallenges(token.serial),
-              AppLocalizations.of(globalNavigatorKey.currentContext!)!.pushRequestParseError,
+            globalRef?.read(statusMessageProvider.notifier).state = StatusMessage(
+              message: (localization) => localization.errorWhenPullingChallenges(token.serial),
+              details: (localization) => localization.pushRequestParseError,
             );
           }
           return;
@@ -385,9 +385,9 @@ class PushProvider {
       case 403:
         final error = getErrorMessageFromResponse(response);
         if (isManually) {
-          globalRef?.read(statusMessageProvider.notifier).state = (
-            AppLocalizations.of(globalNavigatorKey.currentContext!)!.pollingFailedFor(token.serial),
-            error ?? AppLocalizations.of(globalNavigatorKey.currentContext!)!.statusCode(response.statusCode),
+          globalRef?.read(statusMessageProvider.notifier).state = StatusMessage(
+            message: (localization) => localization.pollingFailedFor(token.serial),
+            details: error != null ? (_) => error : (localization) => localization.statusCode(response.statusCode),
           );
         }
         Logger.warning('Polling push token failed with status code ${response.statusCode}', error: getErrorMessageFromResponse(response));
@@ -396,9 +396,9 @@ class PushProvider {
       default:
         final error = getErrorMessageFromResponse(response);
         if (isManually) {
-          globalRef?.read(statusMessageProvider.notifier).state = (
-            AppLocalizations.of(globalNavigatorKey.currentContext!)!.pollingFailedFor(token.serial),
-            error ?? AppLocalizations.of(globalNavigatorKey.currentContext!)!.statusCode(response.statusCode),
+          globalRef?.read(statusMessageProvider.notifier).state = StatusMessage(
+            message: (localization) => localization.pollingFailedFor(token.serial),
+            details: error != null ? (_) => error : (localization) => localization.statusCode(response.statusCode),
           );
         }
         return;

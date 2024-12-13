@@ -27,7 +27,6 @@ import 'package:encrypt/encrypt.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:pointycastle/export.dart';
 
-import '../../l10n/app_localizations.dart';
 import '../../model/enums/encodings.dart';
 import '../../model/enums/token_origin_source_type.dart';
 import '../../model/exception_errors/localized_argument_error.dart';
@@ -39,7 +38,6 @@ import '../../model/tokens/hotp_token.dart';
 import '../../model/tokens/otp_token.dart';
 import '../../model/tokens/token.dart';
 import '../../model/tokens/totp_token.dart';
-import '../../utils/globals.dart';
 import '../../utils/logger.dart';
 import '../../utils/object_validator.dart';
 import '../../utils/token_import_origins.dart';
@@ -185,7 +183,6 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
 
   Future<List<ProcessorResult<Token>>> _processPlainV2(Map<String, dynamic> json) {
     final results = <ProcessorResult<Token>>[];
-    final localization = globalContextSync != null ? AppLocalizations.of(globalContextSync!)! : null;
     for (Map<String, dynamic> entry in json[AEGIS_JSON_DB][AEGIS_DB_ENTRIES]) {
       try {
         Map<String, dynamic> info = entry[AEGIS_ENTRY_INFO];
@@ -228,13 +225,13 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
         ));
       } on LocalizedException catch (e) {
         results.add(ProcessorResult.failed(
-          localization != null ? e.localizedMessage(localization) : e.unlocalizedMessage,
+          (localization) => e.localizedMessage(localization),
           resultHandlerType: resultHandlerType,
         ));
       } catch (e) {
         Logger.error('Failed to parse token.', error: e, stackTrace: StackTrace.current);
         results.add(ProcessorResult.failed(
-          e.toString(),
+          (_) => e.toString(),
           resultHandlerType: resultHandlerType,
         ));
       }
@@ -244,7 +241,6 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
 
   Future<List<ProcessorResult<Token>>> _processPlainV3(Map<String, dynamic> json) {
     final results = <ProcessorResult<Token>>[];
-    final localization = globalContextSync != null ? AppLocalizations.of(globalContextSync!)! : null;
     final entries = json[AEGIS_JSON_DB][AEGIS_DB_ENTRIES] as List;
     for (Map<String, dynamic> entry in entries) {
       try {
@@ -289,13 +285,13 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
         ));
       } on LocalizedException catch (e) {
         results.add(ProcessorResultFailed(
-          localization != null ? e.localizedMessage(localization) : e.unlocalizedMessage,
+          (localization) => e.localizedMessage(localization),
           resultHandlerType: resultHandlerType,
         ));
       } catch (e) {
         Logger.error('Failed to parse token.', error: e, stackTrace: StackTrace.current);
         results.add(ProcessorResultFailed(
-          e.toString(),
+          (_) => e.toString(),
           resultHandlerType: resultHandlerType,
         ));
       }

@@ -53,7 +53,6 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
         final hidden = await HomeWidgetUtils().hideAllOtps();
         if (hidden) Logger.info('Hid all HomeWidget OTPs on resume');
       },
-      // onInactive: () => log('App inactive'),
       onHide: () async {
         if (await ref.read(tokenProvider.notifier).onMinimizeApp() == false) {
           Logger.error('Failed to save tokens on Hide');
@@ -64,10 +63,6 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
         await FlutterLocalNotificationsPlugin().cancelAll();
         Logger.info('Collapsed locked folders on Hide');
       },
-      //     onShow: () => log('App shown'),
-      //     onPause: () => log('App paused'),
-      //     onRestart: () => log('App restarted'),
-      //     onDetach: () => log('App detached'),
       onExitRequested: () async {
         Logger.info('Exit requested');
         return AppExitResponse.exit;
@@ -90,23 +85,13 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
         stateNotifierProviderListeners: const [],
         buildlessProviderListener: [
           HomeWidgetTokenStateListener(provider: tokenProvider),
-          // ContainerListensToTokenState(provider: tokenProvider, ref: ref),
         ],
         streamNotifierProviderListeners: [
           NavigationDeepLinkListener(deeplinkProvider: deeplinkNotifierProvider),
           HomeWidgetDeepLinkListener(deeplinkProvider: deeplinkNotifierProvider),
           TokenImportDeepLinkListener(deeplinkProvider: deeplinkNotifierProvider),
         ],
-        // asyncNotifierProviderListeners: [
-        //   ...container.map(
-        //     (container) {
-        //       return TokenStateListensToContainer(
-        //         containerProvider: tokenContainerNotifierProviderOf(container: container),
-        //         ref: ref,
-        //       );
-        //     },
-        //   ),
-        // ],
+        asyncNotifierProviderListeners: [],
         child: EasyDynamicThemeWidget(
           child: widget.child,
         ),
@@ -114,26 +99,3 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
     );
   }
 }
-
-// class TokenStateListensToContainer extends AsyncContainerListener {
-//   final WidgetRef ref;
-//   TokenStateListensToContainer({
-//     required super.containerProvider,
-//     required this.ref,
-//   }) : super(onNewState: (previous, next) => _onNewState(previous, next, ref));
-
-//   static Future<void> _onNewState(AsyncValue<TokenContainer?>? previous, AsyncValue<TokenContainer?> next, WidgetRef ref) async {
-//     Logger.info('TokenState got new container state', name: 'TokenStateListensToContainer');
-//     final value = next.value;
-//     if (value == null) return;
-//     final provider = ref.read(tokenProvider.notifier);
-//     provider.updateContainerTokens(value);
-//   }
-// }
-
-// abstract class AsyncContainerListener extends AsyncNotifierProviderListener<TokenContainerNotifier, TokenContainer?> {
-//   const AsyncContainerListener({
-//     required TokenContainerNotifierProvider containerProvider,
-//     required super.onNewState,
-//   }) : super(provider: containerProvider);
-// }

@@ -68,12 +68,12 @@ class _TransferContainerDialogState extends ConsumerState<TransferContainerDialo
   Future<void> _startTransfer(TokenContainerFinalized container) async {
     final String qrData;
     try {
-      qrData = await ref.read(tokenContainerProvider.notifier).getTransferQrData(container);
+      qrData = await ref.read(tokenContainerProvider.notifier).getRolloverQrData(container);
     } catch (e) {
       if (!mounted) return;
       return showStatusMessage(
-        message: AppLocalizations.of(context)!.transferContainerFailed,
-        subMessage: e.toString(),
+        message: (localization) => localization.transferContainerFailed,
+        details: (_) => e.toString(),
       );
     }
     if (!mounted) return;

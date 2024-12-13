@@ -120,7 +120,8 @@ class _TokenFolderExpandableHeaderState extends ConsumerState<TokenFolderExpanda
                       return;
                     }
                     if (widget.tokens.isEmpty || (widget.tokens.length == 1 && widget.tokens.first == draggingSortable)) return;
-                    if (widget.folder.isLocked && await lockAuth(localizedReason: AppLocalizations.of(context)!.expandLockedFolder) == false) {
+                    if (widget.folder.isLocked &&
+                        !await lockAuth(reason: (localization) => localization.expandLockedFolder, localization: AppLocalizations.of(context)!)) {
                       return;
                     }
                     if (!mounted) return;

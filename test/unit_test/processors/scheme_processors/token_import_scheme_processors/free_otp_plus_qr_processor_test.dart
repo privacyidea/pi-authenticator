@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
 import 'package:privacyidea_authenticator/model/processor_result.dart';
 import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
@@ -36,7 +37,7 @@ void _testFreeOtpPlusQrProcessor() {
       expect(results.length, equals(1));
       expect(results.first, isA<ProcessorResultFailed<Token>>());
       final firstResult = results.first as ProcessorResultFailed<Token>;
-      expect(firstResult.message.isNotEmpty, equals(true));
+      expect(firstResult.message(AppLocalizationsEn()).isNotEmpty, equals(true));
     });
     test('processUri without counter', () async {
       // Arrange
@@ -47,7 +48,7 @@ void _testFreeOtpPlusQrProcessor() {
       expect(results.length, equals(1));
       final result0 = results[0];
       expect(result0, isA<ProcessorResultFailed<Token>>());
-      final message = result0.asFailed!.message;
+      final message = result0.asFailed!.message(AppLocalizationsEn());
       final error = result0.asFailed!.error;
       expect(message.toLowerCase().contains(HOTPToken.COUNTER) || error.toString().toLowerCase().contains(HOTPToken.COUNTER), isTrue);
     });

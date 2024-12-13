@@ -29,6 +29,7 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'package:mutex/mutex.dart';
 import 'package:pointycastle/asymmetric/api.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/localization_notifier.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../../../model/extensions/enums/push_token_rollout_state_extension.dart';
@@ -55,7 +56,6 @@ import '../../../logger.dart';
 import '../../../privacyidea_io_client.dart';
 import '../../../rsa_utils.dart';
 import '../../../utils.dart';
-import '../../../view_utils.dart';
 import '../state_providers/status_message_provider.dart';
 import 'settings_notifier.dart';
 
@@ -391,7 +391,10 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
 
   /// Shows a token and returns the updated token if successful, the old token if not and null if the token does not exist or the user is not authenticated.
   Future<T?> showToken<T extends OTPToken>(T token) async {
-    final authenticated = await lockAuth(localizedReason: AppLocalizations.of(globalNavigatorKey.currentContext!)!.authenticateToShowOtp);
+    final authenticated = await lockAuth(
+      localization: ref.read(localizationNotifierProvider),
+      reason: (localization) => localization.authenticateToShowOtp,
+    );
     if (!authenticated) return null;
     final updated = await _updateToken(token, (p0) => p0.copyWith(isHidden: false) as T);
     if (updated?.isHidden == false) {
@@ -487,9 +490,9 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       await _firebaseUtils.deleteFirebaseToken();
     } on SocketException {
       Logger.warning('Could not delete firebase token.');
-      ref.read(statusMessageProvider.notifier).state = (
-        AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorUnlinkingPushToken(token.label),
-        AppLocalizations.of(globalNavigatorKey.currentContext!)!.checkYourNetwork,
+      ref.read(statusMessageProvider.notifier).state = StatusMessage(
+        message: (localization) => localization.errorUnlinkingPushToken(token.label),
+        details: (localization) => localization.checkYourNetwork,
       );
       return false;
     }
@@ -504,9 +507,9 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     if (fbToken == null) {
       await _updateTokens(state.pushTokens, (p0) => p0.copyWith(fbToken: null));
       Logger.warning('Could not update firebase token because no firebase token is available.');
-      ref.read(statusMessageProvider.notifier).state = (
-        AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorSynchronizationNoNetworkConnection,
-        AppLocalizations.of(globalNavigatorKey.currentContext!)!.syncFbTokenManuallyWhenNetworkIsAvailable,
+      ref.read(statusMessageProvider.notifier).state = StatusMessage(
+        message: (localization) => localization.errorSynchronizationNoNetworkConnection,
+        details: (localization) => localization.syncFbTokenManuallyWhenNetworkIsAvailable,
       );
       return deleted;
     }
@@ -515,9 +518,9 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     await _updateTokens(notUpdated, (p0) => p0.copyWith(fbToken: null));
     if (notUpdated.isNotEmpty) {
       Logger.warning('Could not update firebase token for ${notUpdated.length} tokens.');
-      ref.read(statusMessageProvider.notifier).state = (
-        AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorSynchronizationNoNetworkConnection,
-        AppLocalizations.of(globalNavigatorKey.currentContext!)!.syncFbTokenManuallyWhenNetworkIsAvailable,
+      ref.read(statusMessageProvider.notifier).state = StatusMessage(
+        message: (localization) => localization.errorSynchronizationNoNetworkConnection,
+        details: (localization) => localization.syncFbTokenManuallyWhenNetworkIsAvailable,
       );
     }
     return deleted;
@@ -544,12 +547,11 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     if (pushToken.expirationDate?.isBefore(DateTime.now()) == true) {
       Logger.info('Ignoring rollout request: Token "${pushToken.id}" is expired. ');
 
-      if (globalNavigatorKey.currentContext != null) {
-        ref.read(statusMessageProvider.notifier).state = (
-          AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutNotPossibleAnymore,
-          AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorTokenExpired(pushToken.label),
-        );
-      }
+      ref.read(statusMessageProvider.notifier).state = StatusMessage(
+        message: (localization) => localization.errorRollOutNotPossibleAnymore,
+        details: (localization) => localization.errorTokenExpired(pushToken!.label),
+      );
+
       await _removeToken(pushToken);
       return false;
     }
@@ -594,7 +596,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     }
     if (!kIsWeb && Platform.isIOS) {
       Logger.warning('Triggering network access permission for token "${pushToken.id}"');
-      if (await _ioClient.triggerNetworkAccessPermission(url: pushToken.url!, sslVerify: pushToken.sslVerify) == false) {
+      if (!await _ioClient.triggerNetworkAccessPermission(url: pushToken.url!, sslVerify: pushToken.sslVerify)) {
         Logger.warning('Network access permission for token "${pushToken.id}" failed.');
         _updateToken(pushToken, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed));
         return false;
@@ -652,16 +654,16 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
 
         try {
           final message = response.body.isNotEmpty ? (json.decode(response.body)['result']?['error']?['message']) : '';
-          ref.read(statusMessageProvider.notifier).state = (
-            AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutFailed(pushToken.label),
-            message,
+          ref.read(statusMessageProvider.notifier).state = StatusMessage(
+            message: (localization) => localization.errorRollOutFailed(pushToken!.label),
+            details: message,
           );
         } on FormatException {
           // Format Exception is thrown if the response body is not a valid json. This happens if the server is not reachable.
 
-          ref.read(statusMessageProvider.notifier).state = (
-            AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutFailed(pushToken.label),
-            AppLocalizations.of(globalNavigatorKey.currentContext!)!.statusCode(response.statusCode)
+          ref.read(statusMessageProvider.notifier).state = StatusMessage(
+            message: (localization) => localization.errorRollOutFailed(pushToken!.label),
+            details: (localization) => localization.statusCode(response.statusCode),
           );
         }
 
@@ -680,14 +682,18 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       }
       if (e is PlatformException && e.code == FIREBASE_TOKEN_ERROR_CODE || e is SocketException || e is TimeoutException || e is FirebaseException) {
         Logger.warning('Connection error: Roll out push token failed.', error: e, stackTrace: s);
-        showSnackBar(AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutNoConnectionToServer(pushToken.label));
+        ref.read(statusMessageProvider.notifier).state = StatusMessage(
+          message: (localization) => localization.errorRollOutNoConnectionToServer(pushToken!.label),
+        );
       } else if (e is HandshakeException) {
         Logger.warning('SSL error: Roll out push token failed.', error: e, stackTrace: s);
-        showSnackBar(AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutSSLHandshakeFailed);
+        ref.read(statusMessageProvider.notifier).state = StatusMessage(
+          message: (localization) => localization.errorRollOutSSLHandshakeFailed,
+        );
       } else {
-        if (globalNavigatorKey.currentContext != null) {
-          showSnackBar(AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorRollOutUnknownError('$e'));
-        }
+        ref.read(statusMessageProvider.notifier).state = StatusMessage(
+          message: (localization) => localization.errorRollOutUnknownError(pushToken!.label),
+        );
         Logger.error('Roll out push token failed.', error: e, stackTrace: s);
       }
       return false;

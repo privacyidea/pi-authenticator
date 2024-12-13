@@ -38,7 +38,7 @@ class LockTokenFolderAction extends ConsumerSlideableAction {
       backgroundColor: Theme.of(context).extension<ActionTheme>()!.lockColor,
       foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
       onPressed: (context) async {
-        if (await lockAuth(localizedReason: AppLocalizations.of(context)!.unlock) == false) return;
+        if (await lockAuth(reason: (localization) => localization.unlock, localization: AppLocalizations.of(context)!) == false) return;
         globalRef?.read(tokenFolderProvider.notifier).toggleFolderLock(folder);
       },
       child: Column(

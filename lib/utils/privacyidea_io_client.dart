@@ -32,7 +32,6 @@ import '../model/api_results/pi_server_results/pi_server_result_value.dart';
 import '../utils/globals.dart';
 import '../utils/logger.dart';
 import '../utils/view_utils.dart';
-import 'riverpod/riverpod_providers/state_providers/status_message_provider.dart';
 
 class PrivacyideaIOClient {
   const PrivacyideaIOClient();
@@ -56,10 +55,9 @@ class PrivacyideaIOClient {
     } on ClientException {
       Logger.warning('ClientException');
       ioClient.close();
-      if (globalNavigatorKey.currentState?.context == null) return false;
-      globalRef?.read(statusMessageProvider.notifier).state = (
-        AppLocalizations.of(await globalContext)!.connectionFailed,
-        AppLocalizations.of(await globalContext)!.checkYourNetwork,
+      showStatusMessage(
+        message: (localization) => localization.connectionFailed,
+        details: (localization) => localization.checkYourNetwork,
       );
       return false;
     } catch (e, _) {
@@ -68,12 +66,11 @@ class PrivacyideaIOClient {
       }
       if (isRetry) {
         Logger.warning('SocketException while retrying');
-        if (globalNavigatorKey.currentState?.context != null) {
-          globalRef?.read(statusMessageProvider.notifier).state = (
-            AppLocalizations.of(await globalContext)!.connectionFailed,
-            AppLocalizations.of(await globalContext)!.checkYourNetwork,
-          );
-        }
+        showStatusMessage(
+          message: (localization) => localization.connectionFailed,
+          details: (localization) => localization.checkYourNetwork,
+        );
+
         ioClient.close();
         return false;
       }
@@ -117,7 +114,7 @@ class PrivacyideaIOClient {
       response = await ioClient.post(url, body: body).timeout(const Duration(seconds: 15));
     } on HandshakeException catch (e, _) {
       Logger.info('Handshake failed. sslVerify: $sslVerify');
-      showStatusMessage(message: 'Handshake failed, please check the server certificate and try again.');
+      showStatusMessage(message: (_) => 'Handshake failed, please check the server certificate and try again.'); // TODO: Localize
       ioClient.close();
       return ResponseBuilder.fromStatusCode(525);
     } on TimeoutException catch (e, _) {
@@ -185,8 +182,8 @@ class PrivacyideaIOClient {
     } on HandshakeException catch (e, _) {
       Logger.warning('Handshake failed. sslVerify: $sslVerify');
       showStatusMessage(
-        message: AppLocalizations.of(await globalContext)!.handshakeFailed,
-        subMessage: AppLocalizations.of(await globalContext)!.checkServerCertificate,
+        message: (localization) => localization.handshakeFailed,
+        details: (localization) => localization.checkServerCertificate,
       );
       response = Response('${e.runtimeType}', 525);
     } on TimeoutException catch (e, _) {

@@ -123,7 +123,7 @@ class GoogleAuthenticatorQrProcessor extends TokenImportSchemeProcessor {
           error: e,
           stackTrace: StackTrace.current,
         );
-        results.add(ProcessorResultFailed(e.toString(), resultHandlerType: resultHandlerType));
+        results.add(ProcessorResultFailed((_) => e.toString(), resultHandlerType: resultHandlerType));
         continue;
       }
     }

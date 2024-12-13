@@ -17,7 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-enum RolloutState {
+enum FinalizationState {
   notStarted,
   generatingKeyPair,
   generatingKeyPairFailed,

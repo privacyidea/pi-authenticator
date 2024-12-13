@@ -38,7 +38,7 @@ class HomeWidgetProcessor implements SchemeProcessor {
     if (processor == null) {
       return [
         ProcessorResult.failed(
-          'No processor found for host: ${uri.host}',
+          (_) => 'No processor found for host: ${uri.host}', // TODO: Localize
           resultHandlerType: null,
         )
       ];
@@ -54,7 +54,7 @@ class HomeWidgetProcessor implements SchemeProcessor {
     if (uri.host != 'show') {
       return [
         ProcessorResult.failed(
-          'Invalid host: ${uri.host} for scheme: ${uri.scheme}',
+          (_) => 'Invalid host: ${uri.host} for scheme: ${uri.scheme}', // TODO: Localize
           resultHandlerType: null,
         )
       ];
@@ -62,8 +62,8 @@ class HomeWidgetProcessor implements SchemeProcessor {
     final widgetId = uri.queryParameters['widgetId'];
     if (widgetId == null) {
       return [
-        const ProcessorResult.failed(
-          'Missing widgetId',
+        ProcessorResult.failed(
+          (_) => 'Missing widgetId', // TODO: Localize
           resultHandlerType: null,
         )
       ];
@@ -77,7 +77,7 @@ class HomeWidgetProcessor implements SchemeProcessor {
     if (uri.host != 'copy') {
       return [
         ProcessorResult.failed(
-          'Invalid host: ${uri.host} for scheme: ${uri.scheme}',
+          (_) => 'Invalid host: ${uri.host} for scheme: ${uri.scheme}', // TODO: Localize
           resultHandlerType: null,
         )
       ];
@@ -85,8 +85,8 @@ class HomeWidgetProcessor implements SchemeProcessor {
     final widgetId = uri.queryParameters['widgetId'];
     if (widgetId == null) {
       return [
-        const ProcessorResult.failed(
-          'Missing widgetId',
+        ProcessorResult.failed(
+          (_) => 'Missing widgetId', // TODO: Localize
           resultHandlerType: null,
         )
       ];
@@ -100,7 +100,7 @@ class HomeWidgetProcessor implements SchemeProcessor {
     if (uri.host != 'action') {
       return [
         ProcessorResult.failed(
-          'Invalid host: ${uri.host} for scheme: ${uri.scheme}',
+          (_) => 'Invalid host: ${uri.host} for scheme: ${uri.scheme}', // TODO: Localize
           resultHandlerType: null,
         )
       ];
@@ -108,8 +108,8 @@ class HomeWidgetProcessor implements SchemeProcessor {
     final widgetId = uri.queryParameters['widgetId'];
     if (widgetId == null) {
       return [
-        const ProcessorResult.failed(
-          'Missing widgetId',
+        ProcessorResult.failed(
+          (_) => 'Missing widgetId', // TODO: Localize
           resultHandlerType: null,
         )
       ];

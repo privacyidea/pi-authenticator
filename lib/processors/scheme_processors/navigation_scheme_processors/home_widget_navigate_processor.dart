@@ -47,8 +47,8 @@ class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
         stackTrace: StackTrace.current,
       );
       return [
-        const ProcessorResult.failed(
-          'Cannot Navigate without context',
+        ProcessorResult.failed(
+          (_) => 'Cannot Navigate without context', // TODO: Localize
           resultHandlerType: resultHandlerType,
         )
       ];
@@ -59,7 +59,7 @@ class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
       Logger.warning('HomeWidgetNavigateProcessor: No processor found for host: ${uri.host}');
       return [
         ProcessorResult.failed(
-          'No processor found for host: ${uri.host}',
+          (_) => 'No processor found for host: ${uri.host}', // TODO: Localize
           resultHandlerType: resultHandlerType,
         )
       ];
@@ -79,7 +79,7 @@ class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
       Logger.warning('HomeWidgetNavigateProcessor: Missing id for link: ${uri.host}');
       return [
         ProcessorResult.failed(
-          'Missing id for link: ${uri.host}',
+          (_) => 'Missing id for link: ${uri.host}', // TODO: Localize
           resultHandlerType: resultHandlerType,
         )
       ];
@@ -106,7 +106,7 @@ class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
       Logger.warning('Invalid query parameters for showlocked: ${uri.queryParameters}');
       return [
         ProcessorResult.failed(
-          'Missing id for showlocked: ${uri.host}',
+          (_) => 'Missing id for showlocked: ${uri.host}',
           resultHandlerType: resultHandlerType,
         )
       ];
@@ -119,7 +119,7 @@ class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
       Logger.warning('Could not find token for widget id: ${uri.queryParameters['id']}');
       return [
         ProcessorResult.failed(
-          'Could not find token for widget id: ${uri.queryParameters['id}']}',
+          (_) => 'Could not find token for widget id: ${uri.queryParameters['id}']}', // TODO: Localize
           resultHandlerType: resultHandlerType,
         )
       ];
@@ -128,8 +128,8 @@ class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
     if (globalRef == null) {
       Logger.warning('Could not find globalRef');
       return [
-        const ProcessorResult.failed(
-          'Could not find globalRef',
+        ProcessorResult.failed(
+          (_) => 'Could not find globalRef', // TODO: Localize
           resultHandlerType: resultHandlerType,
         )
       ];

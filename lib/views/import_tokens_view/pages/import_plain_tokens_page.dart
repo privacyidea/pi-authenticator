@@ -19,6 +19,7 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../model/enums/token_import_type.dart';
@@ -49,7 +50,7 @@ class ImportPlainTokensPage extends ConsumerStatefulWidget {
     return ImportPlainTokensPage._(
       key: key,
       importedTokens: importedTokens,
-      failedImports: failedImports,
+      failedImports: failedImports.map((failedImport) => failedImport(AppLocalizationsEn())).toList(),
       titleName: titleName,
       selectedType: selectedType,
       // numOfDuplicates: duplicates.length,

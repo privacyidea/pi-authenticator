@@ -24,7 +24,6 @@ import 'package:permission_handler/permission_handler.dart';
 import '../../../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../model/processor_result.dart';
-import '../../../../utils/globals.dart';
 import '../../../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 import '../../../../utils/utils.dart';
 import '../../../../utils/view_utils.dart';
@@ -48,10 +47,10 @@ class QrScannerButton extends ConsumerWidget {
               );
               return;
             }
-            if (globalNavigatorKey.currentContext == null) return;
+            if (!context.mounted) return;
 
             /// Open the QR-code scanner and call `handleQrCode`, with the scanned code as the argument.
-            Navigator.pushNamed(globalNavigatorKey.currentContext!, QRScannerView.routeName).then((qrCode) {
+            Navigator.pushNamed(context, QRScannerView.routeName).then((qrCode) {
               final resultHandlers = <ResultHandler>[
                 ref.read(tokenProvider.notifier),
                 ref.read(tokenContainerProvider.notifier),

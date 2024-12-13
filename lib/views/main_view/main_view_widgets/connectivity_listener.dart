@@ -39,7 +39,7 @@ class ConnectivityListener extends ConsumerWidget {
         if (newState.hasPushTokens) {
           Logger.info("Connectivity changed: $connectivity");
           if (!context.mounted) return;
-          ref.read(statusMessageProvider.notifier).state = (AppLocalizations.of(context)!.noNetworkConnection, null);
+          ref.read(statusMessageProvider.notifier).state = StatusMessage(message: (localization) => AppLocalizations.of(context)!.noNetworkConnection);
         }
       });
     }

@@ -13,7 +13,7 @@ void _testProcessorResult() {
         expect(result.resultData, 'data');
       });
       test('error', () {
-        const result = ProcessorResultFailed('error');
+        final result = ProcessorResultFailed((_) => 'error');
         expect(result, isA<ProcessorResultFailed>());
         expect(result.message, 'error');
       });
@@ -25,7 +25,7 @@ void _testProcessorResult() {
         expect((result as ProcessorResultSuccess).resultData, 'data');
       });
       test('error', () {
-        final ProcessorResult<String> result = ProcessorResult.failed('error');
+        final ProcessorResult<String> result = ProcessorResult.failed((_) => 'error');
         expect(result, isA<ProcessorResultFailed>());
         expect((result as ProcessorResultFailed).message, 'error');
       });
@@ -33,12 +33,12 @@ void _testProcessorResult() {
 
     group('is', () {
       test('success', () {
-        const ProcessorResult<String> result = ProcessorResultSuccess('data');
+        final ProcessorResult<String> result = ProcessorResultSuccess('data');
         expect(result.isSuccess, isTrue);
         expect(result.isFailed, isFalse);
       });
       test('error', () {
-        const ProcessorResult<String> result = ProcessorResultFailed('error');
+        final ProcessorResult<String> result = ProcessorResultFailed((_) => 'error');
         expect(result.isSuccess, isFalse);
         expect(result.isFailed, isTrue);
       });
@@ -51,7 +51,7 @@ void _testProcessorResult() {
         expect(() => result.asFailed, throwsA(isA<AssertionError>()));
       });
       test('error', () {
-        const ProcessorResult<String> result = ProcessorResultFailed('error');
+        final ProcessorResult<String> result = ProcessorResultFailed((_) => 'error');
         expect(result.asFailed, 'error');
         expect(() => result.asSuccess, throwsA(isA<AssertionError>()));
       });

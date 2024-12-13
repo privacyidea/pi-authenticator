@@ -22,6 +22,7 @@
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/localization_notifier.dart';
 
 import '../../../../../../../model/riverpod_states/settings_state.dart';
 import '../firebase_options/default_firebase_options.dart';
@@ -80,6 +81,8 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
     globalRef = ref;
     return LayoutBuilder(builder: (context, constraints) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        final localizations = AppLocalizations.of(context);
+        if (localizations != null) ref.read(localizationNotifierProvider.notifier).update(localizations);
         ref.read(appConstraintsNotifierProvider.notifier).update(constraints);
       });
       return MaterialApp(
@@ -88,15 +91,14 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
           overscroll: false,
         ),
         debugShowCheckedModeBanner: true,
-        navigatorKey: globalNavigatorKey,
-
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         locale: ref.watch(settingsProvider).whenOrNull(data: (data) => data.currentLocale) ?? SettingsState.localeDefault,
         title: _customization.appName,
         theme: _customization.generateLightTheme(),
         darkTheme: _customization.generateDarkTheme(),
-        scaffoldMessengerKey: globalSnackbarKey, // <= this
+        scaffoldMessengerKey: globalSnackbarKey,
+        navigatorKey: globalNavigatorKey,
         themeMode: EasyDynamicTheme.of(context).themeMode,
         initialRoute: SplashScreen.routeName,
         routes: {

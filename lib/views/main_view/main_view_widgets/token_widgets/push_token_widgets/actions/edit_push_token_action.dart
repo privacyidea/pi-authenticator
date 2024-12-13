@@ -20,6 +20,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:privacyidea_authenticator/utils/view_utils.dart';
 
 import '../../../../../../l10n/app_localizations.dart';
 import '../../../../../../model/enums/introduction.dart';
@@ -49,7 +50,7 @@ class EditPushTokenAction extends ConsumerSlideableAction {
         backgroundColor: Theme.of(context).extension<ActionTheme>()!.editColor,
         foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
         onPressed: (context) async {
-          if (token.isLocked && await lockAuth(localizedReason: appLocalizations.editLockedToken) == false) {
+          if (token.isLocked && !await lockAuth(reason: (localization) => localization.editLockedToken, localization: appLocalizations)) {
             return;
           }
           _showDialog();
@@ -88,9 +89,7 @@ class EditPushTokenAction extends ConsumerSlideableAction {
     return null;
   }
 
-  void _showDialog() => showDialog(
-        useRootNavigator: false,
-        context: globalNavigatorKey.currentContext!,
+  void _showDialog() => showAsyncDialog(
         builder: (BuildContext context) {
           final pushUrl = TextEditingController(text: token.url.toString());
           final appLocalizations = AppLocalizations.of(context)!;

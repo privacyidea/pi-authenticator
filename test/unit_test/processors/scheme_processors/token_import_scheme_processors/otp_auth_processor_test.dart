@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
 import 'package:privacyidea_authenticator/model/processor_result.dart';
 import 'package:privacyidea_authenticator/model/tokens/day_password_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
@@ -122,7 +123,7 @@ void _testOtpAuthProcessor() {
         expect(results.length, equals(1));
         final result0 = results[0];
         expect(result0, isA<ProcessorResultFailed>());
-        final message = result0.asFailed!.message;
+        final message = result0.asFailed!.message(AppLocalizationsEn());
         final error = result0.asFailed!.error;
         expect(message.toLowerCase().contains('secret') || error.toString().toLowerCase().contains('secret'), isTrue);
       });
@@ -236,7 +237,7 @@ void _testOtpAuthProcessor() {
         expect(results.length, equals(1));
         final result0 = results[0];
         expect(result0, isA<ProcessorResultFailed>());
-        final message = result0.asFailed!.message;
+        final message = result0.asFailed!.message(AppLocalizationsEn());
         final error = result0.asFailed!.error;
         expect(message.toLowerCase().contains(HOTPToken.COUNTER) || error.toString().toLowerCase().contains(HOTPToken.COUNTER), isTrue);
       });
@@ -251,7 +252,7 @@ void _testOtpAuthProcessor() {
         expect(results.length, equals(1));
         final result0 = results[0];
         expect(result0, isA<ProcessorResultFailed>());
-        final message = result0.asFailed!.message;
+        final message = result0.asFailed!.message(AppLocalizationsEn());
         final error = result0.asFailed!.error;
         expect(message.toLowerCase().contains(OTPToken.SECRET_BASE32) || error.toString().toLowerCase().contains(OTPToken.SECRET_BASE32), isTrue);
       });
@@ -406,7 +407,7 @@ void _testOtpAuthProcessor() {
         expect(results.length, equals(1));
         final result0 = results[0];
         expect(result0, isA<ProcessorResultFailed>());
-        final message = result0.asFailed!.message;
+        final message = result0.asFailed!.message(AppLocalizationsEn());
         final error = result0.asFailed!.error;
         expect(message.toLowerCase().contains('secret') || error.toString().toLowerCase().contains('secret'), isTrue);
       });

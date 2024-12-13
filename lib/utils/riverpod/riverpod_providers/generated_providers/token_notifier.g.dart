@@ -6,7 +6,7 @@ part of 'token_notifier.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$tokenNotifierHash() => r'e1caf9d769fe53c8ecdd382d9c414a3252d0ec49';
+String _$tokenNotifierHash() => r'd5ee1c8cb58e467fe230dd97341996d08e2b9dba';
 
 /// Copied from Dart SDK
 class _SystemHash {

@@ -54,10 +54,6 @@ class TokenContainer with _$TokenContainer {
   static const String SYNC_POLICIES = 'policies';
   static const String SYNC_PUBLIC_SERVER_KEY = 'public_server_key';
   static const String SYNC_SERVER_URL = 'server_url';
-//  static const String SYNC_ENC_PARAMS_MODE = 'mode';
-//  static const String SYNC_ENC_PARAMS_IV = 'init_vector';
-//  static const String SYNC_ENC_PARAMS_TAG = 'tag';
-//  static const String SYNC_DICT_ENCRYPTED = 'container_dict_encrypted';
 
 // Container Mapping:
   static const String DICT_CONTAINER = 'container';
@@ -150,7 +146,7 @@ class TokenContainer with _$TokenContainer {
     required Algorithms hashAlgorithm,
     required bool sslVerify,
     @Default('privacyIDEA') String serverName,
-    @Default(RolloutState.completed) RolloutState finalizationState,
+    @Default(FinalizationState.completed) FinalizationState finalizationState,
     @Default(ContainerPolicies.defaultSetting) ContainerPolicies policies,
     bool? addDeviceInfos,
     String? passphraseQuestion,
@@ -169,7 +165,7 @@ class TokenContainer with _$TokenContainer {
     required Algorithms hashAlgorithm,
     required bool sslVerify,
     @Default('privacyIDEA') String serverName,
-    @Default(RolloutState.completed) RolloutState finalizationState,
+    @Default(FinalizationState.completed) FinalizationState finalizationState,
     @Default(SyncState.notStarted) SyncState syncState,
     @Default(ContainerPolicies.defaultSetting) ContainerPolicies policies,
     String? passphraseQuestion,
@@ -202,7 +198,7 @@ class TokenContainer with _$TokenContainer {
       hashAlgorithm: hashAlgorithm,
       sslVerify: sslVerify,
       passphraseQuestion: passphraseQuestion,
-      finalizationState: RolloutState.completed,
+      finalizationState: FinalizationState.completed,
       serverName: serverName,
       policies: policies,
       syncState: SyncState.notStarted,
@@ -223,13 +219,18 @@ class TokenContainer with _$TokenContainer {
   TokenContainer withClientKeyPair(AsymmetricKeyPair<ECPublicKey, ECPrivateKey> keyPair) => copyWith(
         publicClientKey: eccUtils.serializeECPublicKey(keyPair.publicKey),
         privateClientKey: eccUtils.serializeECPrivateKey(keyPair.privateKey),
-        finalizationState: RolloutState.generatingKeyPairCompleted,
+        finalizationState: FinalizationState.generatingKeyPairCompleted,
       );
 
-  factory TokenContainer.fromJson(Map<String, dynamic> json) => json["runtimeType"] == "finalized"
-      ? (_$TokenContainerFromJson(json) as TokenContainerFinalized)
-          .copyWith(syncState: json["syncState"] == "syncing" ? SyncState.failed : SyncState.values.byName(json["syncState"]))
-      : _$TokenContainerFromJson(json);
+  factory TokenContainer.fromJson(Map<String, dynamic> json) {
+    print('PublicServerKey: ${json['publicServerKey']}');
+    print('PrivateClientKey: ${json['privateClientKey']}');
+    print('PublicClientKey: ${json['publicClientKey']}');
+    return json["runtimeType"] == "finalized"
+        ? (_$TokenContainerFromJson(json) as TokenContainerFinalized)
+            .copyWith(syncState: json["syncState"] == "syncing" ? SyncState.failed : SyncState.values.byName(json["syncState"]))
+        : _$TokenContainerFromJson(json);
+  }
 
   @override
   String toString() => '$runtimeType('

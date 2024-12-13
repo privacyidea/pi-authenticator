@@ -34,17 +34,19 @@ sealed class PiServerResultValue extends PiServerResult {
   @override
   bool get status => true;
 
-  static T fromJsonOfType<T extends PiServerResultValue>(Map<String, dynamic> json) {
-    Logger.debug('PiServerResultValue.fromJsonOfType<$T>');
+  static T uriMapOfType<T extends PiServerResultValue>(Map<String, dynamic> uriMap) {
+    Logger.debug('PiServerResultValue.uriMapOfType<$T>');
     return switch (T) {
-      const (ContainerChallenge) => ContainerChallenge.fromJson(json) as T,
-      const (ContainerFinalizationResponse) => ContainerFinalizationResponse.fromJson(json) as T,
-      const (ContainerSyncResult) => ContainerSyncResult.fromJson(json) as T,
-      const (TransferQrData) => TransferQrData.fromJson(json) as T,
-      const (UnregisterContainerResultValue) => UnregisterContainerResultValue.fromJson(json) as T,
-      _ => throw UnimplementedError('PiServerResultValue.fromJsonOfType<$T>'),
+      const (ContainerChallenge) => ContainerChallenge.fromUriMap(uriMap) as T,
+      const (ContainerFinalizationResponse) => ContainerFinalizationResponse.fromUriMap(uriMap) as T,
+      const (ContainerSyncResult) => ContainerSyncResult.fromUriMap(uriMap) as T,
+      const (TransferQrData) => TransferQrData.fromUriMap(uriMap) as T,
+      const (UnregisterContainerResult) => UnregisterContainerResult.fromUriMap(uriMap) as T,
+      _ => throw UnimplementedError('PiServerResultValue.fromUriMapOfType<$T>'),
     };
   }
+
+  Map<String, dynamic> toUriMap();
 
   const PiServerResultValue();
 }
@@ -68,21 +70,30 @@ class ContainerChallenge extends PiServerResultValue {
     required this.timeStamp,
   });
 
-  factory ContainerChallenge.fromJson(Map<String, dynamic> json) {
+  factory ContainerChallenge.fromUriMap(Map<String, dynamic> uriMap) {
     final map = validateMap(
-      map: json,
+      map: uriMap,
       validators: {
         KEY_ALGORITHM: const ObjectValidator<String>(),
         NONCE: const ObjectValidator<String>(),
         TIMESTAMP: const ObjectValidator<String>(),
       },
-      name: 'ContainerChallenge#fromJson',
+      name: 'ContainerChallenge#fromUriMap',
     );
     return ContainerChallenge(
       keyAlgorithm: map[KEY_ALGORITHM] as String,
       nonce: map[NONCE] as String,
       timeStamp: map[TIMESTAMP] as String,
     );
+  }
+
+  @override
+  Map<String, dynamic> toUriMap() {
+    return {
+      KEY_ALGORITHM: keyAlgorithm,
+      NONCE: nonce,
+      TIMESTAMP: timeStamp,
+    };
   }
 }
 
@@ -95,19 +106,27 @@ class ContainerFinalizationResponse extends PiServerResultValue {
     required this.policies,
   });
 
-  static ContainerFinalizationResponse fromJson(Map<String, dynamic> json) {
+  static ContainerFinalizationResponse fromUriMap(Map<String, dynamic> uriMap) {
     final map = validateMap(
-      map: json,
+      map: uriMap,
       validators: {
         TokenContainer.SYNC_PUBLIC_SERVER_KEY: ObjectValidator<ECPublicKey>(transformer: (v) => const EccUtils().deserializeECPublicKey(v)),
         TokenContainer.SYNC_POLICIES: ObjectValidator<ContainerPolicies>(transformer: (v) => ContainerPolicies.fromUriMap(v)),
       },
-      name: 'ContainerFinalizationResponse#fromJson',
+      name: 'ContainerFinalizationResponse#fromUriMap',
     );
     return ContainerFinalizationResponse(
       publicServerKey: map[TokenContainer.SYNC_PUBLIC_SERVER_KEY] as ECPublicKey,
       policies: map[TokenContainer.SYNC_POLICIES] as ContainerPolicies,
     );
+  }
+
+  @override
+  Map<String, dynamic> toUriMap() {
+    return {
+      TokenContainer.SYNC_PUBLIC_SERVER_KEY: const EccUtils().serializeECPublicKey(publicServerKey),
+      TokenContainer.SYNC_POLICIES: policies.toJson(),
+    };
   }
 }
 
@@ -130,18 +149,18 @@ class ContainerSyncResult extends PiServerResultValue {
     required this.serverUrl,
   });
 
-  static ContainerSyncResult fromJson(Map<String, dynamic> json) {
+  static ContainerSyncResult fromUriMap(Map<String, dynamic> uriMap) {
     final map = validateMap(
-      map: json,
+      map: uriMap,
       validators: {
         TokenContainer.SYNC_DICT_SERVER: const ObjectValidator<String>(),
         TokenContainer.SYNC_ENC_ALGORITHM: const ObjectValidator<String>(),
-        TokenContainer.SYNC_ENC_PARAMS: ObjectValidator<EncryptionParams>(transformer: (v) => EncryptionParams.fromParams(v)),
+        TokenContainer.SYNC_ENC_PARAMS: ObjectValidator<EncryptionParams>(transformer: (v) => EncryptionParams.fromUriMap(v)),
         TokenContainer.SYNC_POLICIES: ObjectValidator<ContainerPolicies>(transformer: (v) => ContainerPolicies.fromUriMap(v)),
         TokenContainer.SYNC_PUBLIC_SERVER_KEY: const ObjectValidator<String>(),
         TokenContainer.SYNC_SERVER_URL: const ObjectValidator<String>(),
       },
-      name: 'ContainerSyncResult#fromJson',
+      name: 'ContainerSyncResult#fromUriMap',
     );
     return ContainerSyncResult(
       containerDictEncrypted: map[TokenContainer.SYNC_DICT_SERVER] as String,
@@ -152,46 +171,74 @@ class ContainerSyncResult extends PiServerResultValue {
       serverUrl: map[TokenContainer.SYNC_SERVER_URL] as String,
     );
   }
+
+  @override
+  Map<String, dynamic> toUriMap() {
+    return {
+      TokenContainer.SYNC_DICT_SERVER: containerDictEncrypted,
+      TokenContainer.SYNC_ENC_ALGORITHM: encryptionAlgorithm,
+      TokenContainer.SYNC_ENC_PARAMS: encryptionParams.toUriMap(),
+      TokenContainer.SYNC_POLICIES: policies.toUriMap(),
+      TokenContainer.SYNC_PUBLIC_SERVER_KEY: publicServerKey,
+      TokenContainer.SYNC_SERVER_URL: serverUrl,
+    };
+  }
 }
 
 class TransferQrData extends PiServerResultValue {
   final String description;
   final String value;
-  TransferQrData(this.description, this.value);
+  const TransferQrData({required this.description, required this.value});
 
-  factory TransferQrData.fromJson(Map<String, dynamic> json) {
-    Logger.debug(jsonEncode(json));
+  factory TransferQrData.fromUriMap(Map<String, dynamic> uriMap) {
     final map = validateMap<String>(
-      map: json['container_url'] as Map<String, dynamic>,
+      map: uriMap['container_url'] as Map<String, dynamic>,
       validators: {
         'description': const ObjectValidator<String>(),
         'value': const ObjectValidator<String>(),
       },
       name: 'TransferQrData',
     );
-    return TransferQrData(map['description'] as String, map['value'] as String);
+    return TransferQrData(description: map['description'] as String, value: map['value'] as String);
+  }
+
+  @override
+  Map<String, dynamic> toUriMap() {
+    return {
+      'container_url': {
+        'description': description,
+        'value': value,
+      }
+    };
   }
 }
 
-class UnregisterContainerResultValue extends PiServerResultValue {
+class UnregisterContainerResult extends PiServerResultValue {
   static const String CONTAINER_UNREGISTER_SUCCESS = 'success';
 
   final bool success;
 
-  const UnregisterContainerResultValue({
+  const UnregisterContainerResult({
     required this.success,
   });
 
-  factory UnregisterContainerResultValue.fromJson(Map<String, dynamic> json) {
+  factory UnregisterContainerResult.fromUriMap(Map<String, dynamic> uriMap) {
     final map = validateMap(
-      map: json,
+      map: uriMap,
       validators: {
         CONTAINER_UNREGISTER_SUCCESS: const ObjectValidator<bool>(),
       },
-      name: 'UnregisterContainerResultValue#fromJson',
+      name: 'UnregisterContainerResultValue#fromUriMap',
     );
-    return UnregisterContainerResultValue(
+    return UnregisterContainerResult(
       success: map[CONTAINER_UNREGISTER_SUCCESS] as bool,
     );
+  }
+
+  @override
+  Map<String, dynamic> toUriMap() {
+    return {
+      CONTAINER_UNREGISTER_SUCCESS: success,
+    };
   }
 }

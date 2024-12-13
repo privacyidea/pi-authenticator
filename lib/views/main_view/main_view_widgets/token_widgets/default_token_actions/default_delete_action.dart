@@ -19,6 +19,7 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:privacyidea_authenticator/utils/view_utils.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/token.dart';
@@ -43,7 +44,7 @@ class DefaultDeleteAction extends ConsumerSlideableAction {
       foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
       onPressed: isEnabled
           ? (_) async {
-              if (token.isLocked && await lockAuth(localizedReason: AppLocalizations.of(context)!.deleteLockedToken) == false) {
+              if (token.isLocked && !await lockAuth(reason: (localization) => localization.deleteLockedToken, localization: AppLocalizations.of(context)!)) {
                 return;
               }
               _showDialog();
@@ -64,53 +65,47 @@ class DefaultDeleteAction extends ConsumerSlideableAction {
     );
   }
 
-  void _showDialog() => globalNavigatorKey.currentContext == null
-      ? null
-      : showDialog(
-          useRootNavigator: false,
-          context: globalNavigatorKey.currentContext!,
-          builder: (BuildContext context) {
-            return DefaultDialog(
-              scrollable: true,
-              title: Text(
-                AppLocalizations.of(context)!.confirmDeletion,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.error),
-              ),
-              content: Column(
-                children: [
-                  Text(AppLocalizations.of(context)!.confirmDeletionOf(token.label), style: Theme.of(context).textTheme.bodyMedium),
-                  const SizedBox(height: 8),
-                  Text(
-                    AppLocalizations.of(context)!.confirmTokenDeletionHint,
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ],
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: Text(
-                    AppLocalizations.of(context)!.cancel,
-                    overflow: TextOverflow.fade,
-                    softWrap: false,
-                  ),
-                ),
-                TextButton(
-                  onPressed: () {
-                    LoadingIndicator.show(
-                      context: context,
-                      action: () async => globalRef?.read(tokenProvider.notifier).removeToken(token),
-                    );
-                    Navigator.of(context).pop();
-                  },
-                  child: Text(
-                    AppLocalizations.of(context)!.delete,
-                    style: TextStyle(color: Theme.of(context).colorScheme.error),
-                    overflow: TextOverflow.fade,
-                    softWrap: false,
-                  ),
+  void _showDialog() => showAsyncDialog(
+      builder: (BuildContext context) => DefaultDialog(
+            scrollable: true,
+            title: Text(
+              AppLocalizations.of(context)!.confirmDeletion,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.error),
+            ),
+            content: Column(
+              children: [
+                Text(AppLocalizations.of(context)!.confirmDeletionOf(token.label), style: Theme.of(context).textTheme.bodyMedium),
+                const SizedBox(height: 8),
+                Text(
+                  AppLocalizations.of(context)!.confirmTokenDeletionHint,
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
               ],
-            );
-          });
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(
+                  AppLocalizations.of(context)!.cancel,
+                  overflow: TextOverflow.fade,
+                  softWrap: false,
+                ),
+              ),
+              TextButton(
+                onPressed: () {
+                  LoadingIndicator.show(
+                    context: context,
+                    action: () async => globalRef?.read(tokenProvider.notifier).removeToken(token),
+                  );
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  AppLocalizations.of(context)!.delete,
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                  overflow: TextOverflow.fade,
+                  softWrap: false,
+                ),
+              ),
+            ],
+          ));
 }

@@ -123,7 +123,7 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
   }
 
   Future<void> _onAccept(PushToken token, {String? answer}) async {
-    if (token.isLocked && await lockAuth(localizedReason: AppLocalizations.of(context)!.authToAcceptPushRequest) == false) {
+    if (token.isLocked && !await lockAuth(reason: (localization) => localization.authToAcceptPushRequest, localization: AppLocalizations.of(context)!)) {
       return;
     }
     await ref.read(pushRequestProvider.notifier).accept(token, widget.pushRequest, selectedAnswer: answer);
@@ -131,7 +131,7 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
   }
 
   Future<void> _onDecline(PushToken token) async {
-    if (token.isLocked && await lockAuth(localizedReason: AppLocalizations.of(context)!.authToDeclinePushRequest) == false) {
+    if (token.isLocked && !await lockAuth(reason: (localization) => localization.authToDeclinePushRequest, localization: AppLocalizations.of(context)!)) {
       return;
     }
     await ref.read(pushRequestProvider.notifier).decline(token, widget.pushRequest);
@@ -139,7 +139,7 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
   }
 
   Future<void> _onDiscard(PushToken token) async {
-    if (token.isLocked && await lockAuth(localizedReason: AppLocalizations.of(context)!.authToDeclinePushRequest) == false) {
+    if (token.isLocked && !await lockAuth(reason: (localization) => localization.authToDeclinePushRequest, localization: AppLocalizations.of(context)!)) {
       return;
     }
     await ref.read(pushRequestProvider.notifier).remove(widget.pushRequest);

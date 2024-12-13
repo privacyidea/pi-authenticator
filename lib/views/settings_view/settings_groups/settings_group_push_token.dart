@@ -83,7 +83,7 @@ class SettingsGroupPushTokenDialog extends ConsumerWidget {
                 useRootNavigator: false,
                 context: context,
                 barrierDismissible: false,
-                builder: (context) => const UpdateFirebaseTokenDialog(),
+                builder: (context) => UpdateFirebaseTokenDialog(AppLocalizations.of(context)!),
               ),
               child: Text(
                 AppLocalizations.of(context)!.sync,

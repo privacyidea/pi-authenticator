@@ -158,7 +158,7 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
       Logger.warning("No file selected");
       return null;
     }
-    if (await fileProcessor.fileIsValid(file) == false) {
+    if (!await fileProcessor.fileIsValid(file)) {
       return localizations.invalidBackupFile(widget.appName);
     }
     setState(() => _errorText = null);

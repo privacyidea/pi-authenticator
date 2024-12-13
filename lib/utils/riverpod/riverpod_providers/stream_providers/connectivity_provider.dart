@@ -20,8 +20,6 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../l10n/app_localizations.dart';
-import '../../../globals.dart';
 import '../../../logger.dart';
 import '../generated_providers/token_notifier.dart';
 import '../state_providers/status_message_provider.dart';
@@ -34,8 +32,8 @@ final connectivityProvider = StreamProvider<List<ConnectivityResult>>(
         Connectivity().checkConnectivity().then((connectivity) {
           Logger.info("First connectivity check: $connectivity");
           final hasNoConnection = connectivity.contains(ConnectivityResult.none);
-          if (hasNoConnection && newState.hasPushTokens && globalNavigatorKey.currentContext != null) {
-            ref.read(statusMessageProvider.notifier).state = (AppLocalizations.of(globalNavigatorKey.currentContext!)!.noNetworkConnection, null);
+          if (hasNoConnection && newState.hasPushTokens) {
+            ref.read(statusMessageProvider.notifier).state = StatusMessage(message: (localization) => localization.noNetworkConnection);
           }
         });
       },

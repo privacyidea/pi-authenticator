@@ -44,4 +44,9 @@ class EccUtils {
     final private = keyPair.privateKey;
     return AsymmetricKeyPair(public as ECPublicKey, private as ECPrivateKey);
   }
+
+  bool validateSignature(ECPublicKey publicKey, String signature, String message) {
+    final ecSignature = CryptoUtils.ecSignatureFromBase64(signature);
+    return CryptoUtils.ecVerify(publicKey, Uint8List.fromList(message.codeUnits), ecSignature, algorithm: 'SHA-256/ECDSA');
+  }
 }

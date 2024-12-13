@@ -64,22 +64,21 @@ class FirebaseUtils {
         updateFirebaseToken(firebaseToken);
       }
     } catch (error, stackTrace) {
-      String? errorMessage;
-      String? subMessage;
       if (error is PlatformException) {
         if (error.code == FIREBASE_TOKEN_ERROR_CODE) return; // ignore
-        errorMessage = 'Push cant be initialized, restart the app and try again.';
-        subMessage = '${error.code}: ${error.message ?? 'no error message'}';
+        showStatusMessage(
+          message: (_) => 'Push cant be initialized, restart the app and try again.', // TODO: localize
+          details: (_) => '${error.code}: ${error.message ?? 'no error message'}',
+        );
       }
       if (error is FirebaseException) {
         if (error.code == FIREBASE_TOKEN_ERROR_CODE) return; // ignore
-        errorMessage = 'Push cant be initialized, restart the app and try again.';
-        subMessage = '${error.code}: ${error.message ?? 'no error message'}';
+        showStatusMessage(
+          message: (_) => 'Push cant be initialized, restart the app and try again.', // TODO: localize
+          details: (_) => '${error.code}: ${error.message ?? 'no error message'}',
+        );
       }
-      if (errorMessage != null) {
-        showStatusMessage(message: errorMessage, subMessage: subMessage);
-        return;
-      }
+
       Logger.error('Unknown Firebase error', error: error, stackTrace: stackTrace);
     }
 

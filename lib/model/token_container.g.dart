@@ -21,8 +21,8 @@ _$TokenContainerUnfinalizedImpl _$$TokenContainerUnfinalizedImplFromJson(
       sslVerify: json['sslVerify'] as bool,
       serverName: json['serverName'] as String? ?? 'privacyIDEA',
       finalizationState: $enumDecodeNullable(
-              _$RolloutStateEnumMap, json['finalizationState']) ??
-          RolloutState.completed,
+              _$FinalizationStateEnumMap, json['finalizationState']) ??
+          FinalizationState.completed,
       policies: json['policies'] == null
           ? ContainerPolicies.defaultSetting
           : ContainerPolicies.fromJson(
@@ -48,7 +48,8 @@ Map<String, dynamic> _$$TokenContainerUnfinalizedImplToJson(
       'hashAlgorithm': _$AlgorithmsEnumMap[instance.hashAlgorithm]!,
       'sslVerify': instance.sslVerify,
       'serverName': instance.serverName,
-      'finalizationState': _$RolloutStateEnumMap[instance.finalizationState]!,
+      'finalizationState':
+          _$FinalizationStateEnumMap[instance.finalizationState]!,
       'policies': instance.policies,
       'addDeviceInfos': instance.addDeviceInfos,
       'passphraseQuestion': instance.passphraseQuestion,
@@ -108,18 +109,18 @@ const _$AlgorithmsEnumMap = {
   Algorithms.SHA512: 'SHA512',
 };
 
-const _$RolloutStateEnumMap = {
-  RolloutState.notStarted: 'notStarted',
-  RolloutState.generatingKeyPair: 'generatingKeyPair',
-  RolloutState.generatingKeyPairFailed: 'generatingKeyPairFailed',
-  RolloutState.generatingKeyPairCompleted: 'generatingKeyPairCompleted',
-  RolloutState.sendingPublicKey: 'sendingPublicKey',
-  RolloutState.sendingPublicKeyFailed: 'sendingPublicKeyFailed',
-  RolloutState.sendingPublicKeyCompleted: 'sendingPublicKeyCompleted',
-  RolloutState.parsingResponse: 'parsingResponse',
-  RolloutState.parsingResponseFailed: 'parsingResponseFailed',
-  RolloutState.parsingResponseCompleted: 'parsingResponseCompleted',
-  RolloutState.completed: 'completed',
+const _$FinalizationStateEnumMap = {
+  FinalizationState.notStarted: 'notStarted',
+  FinalizationState.generatingKeyPair: 'generatingKeyPair',
+  FinalizationState.generatingKeyPairFailed: 'generatingKeyPairFailed',
+  FinalizationState.generatingKeyPairCompleted: 'generatingKeyPairCompleted',
+  FinalizationState.sendingPublicKey: 'sendingPublicKey',
+  FinalizationState.sendingPublicKeyFailed: 'sendingPublicKeyFailed',
+  FinalizationState.sendingPublicKeyCompleted: 'sendingPublicKeyCompleted',
+  FinalizationState.parsingResponse: 'parsingResponse',
+  FinalizationState.parsingResponseFailed: 'parsingResponseFailed',
+  FinalizationState.parsingResponseCompleted: 'parsingResponseCompleted',
+  FinalizationState.completed: 'completed',
 };
 
 _$TokenContainerFinalizedImpl _$$TokenContainerFinalizedImplFromJson(
@@ -136,8 +137,8 @@ _$TokenContainerFinalizedImpl _$$TokenContainerFinalizedImplFromJson(
       sslVerify: json['sslVerify'] as bool,
       serverName: json['serverName'] as String? ?? 'privacyIDEA',
       finalizationState: $enumDecodeNullable(
-              _$RolloutStateEnumMap, json['finalizationState']) ??
-          RolloutState.completed,
+              _$FinalizationStateEnumMap, json['finalizationState']) ??
+          FinalizationState.completed,
       syncState: $enumDecodeNullable(_$SyncStateEnumMap, json['syncState']) ??
           SyncState.notStarted,
       policies: json['policies'] == null
@@ -163,7 +164,8 @@ Map<String, dynamic> _$$TokenContainerFinalizedImplToJson(
       'hashAlgorithm': _$AlgorithmsEnumMap[instance.hashAlgorithm]!,
       'sslVerify': instance.sslVerify,
       'serverName': instance.serverName,
-      'finalizationState': _$RolloutStateEnumMap[instance.finalizationState]!,
+      'finalizationState':
+          _$FinalizationStateEnumMap[instance.finalizationState]!,
       'syncState': _$SyncStateEnumMap[instance.syncState]!,
       'policies': instance.policies,
       'passphraseQuestion': instance.passphraseQuestion,

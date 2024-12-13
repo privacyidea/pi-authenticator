@@ -23,8 +23,8 @@ mixin _$ProcessorResult<T> {
     required TResult Function(
             T resultData, ObjectValidator<ResultHandler>? resultHandlerType)
         success,
-    required TResult Function(String message, dynamic error,
-            ObjectValidator<ResultHandler>? resultHandlerType)
+    required TResult Function(String Function(AppLocalizations) message,
+            dynamic error, ObjectValidator<ResultHandler>? resultHandlerType)
         failed,
   }) =>
       throw _privateConstructorUsedError;
@@ -33,7 +33,7 @@ mixin _$ProcessorResult<T> {
     TResult? Function(
             T resultData, ObjectValidator<ResultHandler>? resultHandlerType)?
         success,
-    TResult? Function(String message, dynamic error,
+    TResult? Function(String Function(AppLocalizations) message, dynamic error,
             ObjectValidator<ResultHandler>? resultHandlerType)?
         failed,
   }) =>
@@ -43,7 +43,7 @@ mixin _$ProcessorResult<T> {
     TResult Function(
             T resultData, ObjectValidator<ResultHandler>? resultHandlerType)?
         success,
-    TResult Function(String message, dynamic error,
+    TResult Function(String Function(AppLocalizations) message, dynamic error,
             ObjectValidator<ResultHandler>? resultHandlerType)?
         failed,
     required TResult orElse(),
@@ -200,8 +200,8 @@ class _$ProcessorResultSuccessImpl<T> extends ProcessorResultSuccess<T> {
     required TResult Function(
             T resultData, ObjectValidator<ResultHandler>? resultHandlerType)
         success,
-    required TResult Function(String message, dynamic error,
-            ObjectValidator<ResultHandler>? resultHandlerType)
+    required TResult Function(String Function(AppLocalizations) message,
+            dynamic error, ObjectValidator<ResultHandler>? resultHandlerType)
         failed,
   }) {
     return success(resultData, resultHandlerType);
@@ -213,7 +213,7 @@ class _$ProcessorResultSuccessImpl<T> extends ProcessorResultSuccess<T> {
     TResult? Function(
             T resultData, ObjectValidator<ResultHandler>? resultHandlerType)?
         success,
-    TResult? Function(String message, dynamic error,
+    TResult? Function(String Function(AppLocalizations) message, dynamic error,
             ObjectValidator<ResultHandler>? resultHandlerType)?
         failed,
   }) {
@@ -226,7 +226,7 @@ class _$ProcessorResultSuccessImpl<T> extends ProcessorResultSuccess<T> {
     TResult Function(
             T resultData, ObjectValidator<ResultHandler>? resultHandlerType)?
         success,
-    TResult Function(String message, dynamic error,
+    TResult Function(String Function(AppLocalizations) message, dynamic error,
             ObjectValidator<ResultHandler>? resultHandlerType)?
         failed,
     required TResult orElse(),
@@ -297,7 +297,7 @@ abstract class _$$ProcessorResultFailedImplCopyWith<T, $Res>
   @override
   @useResult
   $Res call(
-      {String message,
+      {String Function(AppLocalizations) message,
       dynamic error,
       ObjectValidator<ResultHandler>? resultHandlerType});
 }
@@ -325,7 +325,7 @@ class __$$ProcessorResultFailedImplCopyWithImpl<T, $Res>
       null == message
           ? _value.message
           : message // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String Function(AppLocalizations),
       error: freezed == error
           ? _value.error
           : error // ignore: cast_nullable_to_non_nullable
@@ -346,7 +346,7 @@ class _$ProcessorResultFailedImpl<T> extends ProcessorResultFailed<T> {
       : super._();
 
   @override
-  final String message;
+  final String Function(AppLocalizations) message;
   @override
   final dynamic error;
   @override
@@ -387,8 +387,8 @@ class _$ProcessorResultFailedImpl<T> extends ProcessorResultFailed<T> {
     required TResult Function(
             T resultData, ObjectValidator<ResultHandler>? resultHandlerType)
         success,
-    required TResult Function(String message, dynamic error,
-            ObjectValidator<ResultHandler>? resultHandlerType)
+    required TResult Function(String Function(AppLocalizations) message,
+            dynamic error, ObjectValidator<ResultHandler>? resultHandlerType)
         failed,
   }) {
     return failed(message, error, resultHandlerType);
@@ -400,7 +400,7 @@ class _$ProcessorResultFailedImpl<T> extends ProcessorResultFailed<T> {
     TResult? Function(
             T resultData, ObjectValidator<ResultHandler>? resultHandlerType)?
         success,
-    TResult? Function(String message, dynamic error,
+    TResult? Function(String Function(AppLocalizations) message, dynamic error,
             ObjectValidator<ResultHandler>? resultHandlerType)?
         failed,
   }) {
@@ -413,7 +413,7 @@ class _$ProcessorResultFailedImpl<T> extends ProcessorResultFailed<T> {
     TResult Function(
             T resultData, ObjectValidator<ResultHandler>? resultHandlerType)?
         success,
-    TResult Function(String message, dynamic error,
+    TResult Function(String Function(AppLocalizations) message, dynamic error,
             ObjectValidator<ResultHandler>? resultHandlerType)?
         failed,
     required TResult orElse(),
@@ -457,13 +457,14 @@ class _$ProcessorResultFailedImpl<T> extends ProcessorResultFailed<T> {
 }
 
 abstract class ProcessorResultFailed<T> extends ProcessorResult<T> {
-  const factory ProcessorResultFailed(final String message,
+  const factory ProcessorResultFailed(
+          final String Function(AppLocalizations) message,
           {final dynamic error,
           final ObjectValidator<ResultHandler>? resultHandlerType}) =
       _$ProcessorResultFailedImpl<T>;
   const ProcessorResultFailed._() : super._();
 
-  String get message;
+  String Function(AppLocalizations) get message;
   dynamic get error;
   @override
   ObjectValidator<ResultHandler>? get resultHandlerType;

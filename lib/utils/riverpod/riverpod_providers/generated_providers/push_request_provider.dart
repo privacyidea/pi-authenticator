@@ -25,12 +25,10 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../../../../interfaces/repo/push_request_repository.dart';
 import '../../../../../../../utils/rsa_utils.dart';
-import '../../../../l10n/app_localizations.dart';
 import '../../../../model/push_request.dart';
 import '../../../../model/riverpod_states/push_request_state.dart';
 import '../../../../model/tokens/push_token.dart';
 import '../../../../repo/secure_push_request_repository.dart';
-import '../../../globals.dart';
 import '../../../logger.dart';
 import '../../../privacyidea_io_client.dart';
 import '../../../push_provider.dart';
@@ -390,15 +388,14 @@ class PushRequestNotifier extends _$PushRequestNotifier {
         response = await _ioClient.doPost(sslVerify: pushRequest.sslVerify, url: pushRequest.uri, body: body);
       } catch (e) {
         Logger.warning('Sending push request response failed consistently.', error: e);
-        ref.read(statusMessageProvider.notifier).state = (AppLocalizations.of(await globalContext)!.connectionFailed, null);
+        ref.read(statusMessageProvider.notifier).state = StatusMessage(message: (l) => l.connectionFailed, details: null);
         return false;
       }
     }
     if (response.statusCode != 200) {
-      final appLocalizations = AppLocalizations.of(await globalContext)!;
-      ref.read(statusMessageProvider.notifier).state = (
-        '${appLocalizations.sendPushRequestResponseFailed}\n${appLocalizations.statusCode(response.statusCode)}',
-        tryJsonDecode(response.body)?["result"]?["error"]?["message"],
+      ref.read(statusMessageProvider.notifier).state = StatusMessage(
+        message: (l) => '${l.sendPushRequestResponseFailed}\n${l.statusCode(response.statusCode)}',
+        details: tryJsonDecode(response.body)?['result']?['error']?['message'],
       );
       Logger.warning('Sending push request response failed.');
       return false;

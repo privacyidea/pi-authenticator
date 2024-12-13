@@ -71,8 +71,10 @@ class SelectExportTypeDialog extends StatelessWidget {
   }
 
   void _selectTokenDialog(BuildContext context) async {
+    final localization = AppLocalizations.of(context)!;
     final authenticated = await lockAuth(
-      localizedReason: AppLocalizations.of(context)!.exportLockedTokenReason,
+      reason: (l) => l.exportLockedTokenReason,
+      localization: localization,
       autoAuthIfUnsupported: true,
     );
     if (!authenticated || !context.mounted) return;
@@ -84,7 +86,7 @@ class SelectExportTypeDialog extends StatelessWidget {
         exportDialogBuilder: (tokens) {
           if (tokens.isEmpty) {
             return DefaultDialog(
-              content: Text(AppLocalizations.of(context)!.noTokenToExport),
+              content: Text(localization.noTokenToExport),
             );
           }
 

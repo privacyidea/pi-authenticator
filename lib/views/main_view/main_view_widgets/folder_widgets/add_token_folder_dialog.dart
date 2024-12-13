@@ -60,7 +60,7 @@ class AddTokenFolderDialog extends ConsumerWidget {
               softWrap: false,
             ),
             onPressed: () async {
-              if ((await ref.read(introductionNotifierProvider.future)).isCompleted(Introduction.addFolder) == false) {
+              if (!(await ref.read(introductionNotifierProvider.future)).isCompleted(Introduction.addFolder)) {
                 ref.read(introductionNotifierProvider.notifier).complete(Introduction.addFolder);
               }
               ref.read(tokenFolderProvider.notifier).addNewFolder(textController.text);

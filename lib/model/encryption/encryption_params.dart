@@ -20,6 +20,13 @@
 import '../../utils/object_validator.dart';
 
 class EncryptionParams {
+  static const String SYNC_ENC_PARAMS_ALGORITHM = 'algorithm';
+  static const String SYNC_ENC_PARAMS_IV = 'init_vector';
+  static const String SYNC_ENC_PARAMS_MODE = 'mode';
+  static const String SYNC_ENC_PARAMS_TAG = 'tag';
+
+  //  static const String SYNC_DICT_ENCRYPTED = 'container_dict_encrypted';
+
   final String algorithm;
   final String initVector;
   final String mode;
@@ -32,22 +39,29 @@ class EncryptionParams {
     required this.tag,
   });
 
-  static EncryptionParams fromParams(Map<String, dynamic> json) {
+  static EncryptionParams fromUriMap(Map<String, dynamic> responseBody) {
     final map = validateMap(
-      map: json,
+      map: responseBody,
       validators: {
-        'algorithm': const ObjectValidator<String>(),
-        'init_vector': const ObjectValidator<String>(),
-        'mode': const ObjectValidator<String>(),
-        'tag': const ObjectValidator<String>(),
+        SYNC_ENC_PARAMS_ALGORITHM: const ObjectValidator<String>(),
+        SYNC_ENC_PARAMS_IV: const ObjectValidator<String>(),
+        SYNC_ENC_PARAMS_MODE: const ObjectValidator<String>(),
+        SYNC_ENC_PARAMS_TAG: const ObjectValidator<String>(),
       },
-      name: 'EncryptionParams#fromJson',
+      name: 'EncryptionParams#fromResponseBody',
     );
     return EncryptionParams(
-      algorithm: map['algorithm'] as String,
-      initVector: map['init_vector'] as String,
-      mode: map['mode'] as String,
-      tag: map['tag'] as String,
+      algorithm: map[SYNC_ENC_PARAMS_ALGORITHM] as String,
+      initVector: map[SYNC_ENC_PARAMS_IV] as String,
+      mode: map[SYNC_ENC_PARAMS_MODE] as String,
+      tag: map[SYNC_ENC_PARAMS_TAG] as String,
     );
   }
+
+  Map<String, dynamic> toUriMap() => {
+        SYNC_ENC_PARAMS_ALGORITHM: algorithm,
+        SYNC_ENC_PARAMS_IV: initVector,
+        SYNC_ENC_PARAMS_MODE: mode,
+        SYNC_ENC_PARAMS_TAG: tag,
+      };
 }

@@ -19,6 +19,7 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:privacyidea_authenticator/utils/view_utils.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/token_folder.dart';
@@ -40,7 +41,9 @@ class DeleteTokenFolderAction extends ConsumerSlideableAction {
       backgroundColor: Theme.of(context).extension<ActionTheme>()!.deleteColor,
       foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
       onPressed: (context) async {
-        if (folder.isLocked && await lockAuth(localizedReason: AppLocalizations.of(context)!.unlock) == false) return;
+        if (folder.isLocked && !await lockAuth(reason: (localization) => localization.unlock, localization: AppLocalizations.of(context)!)) {
+          return;
+        }
         _showDialog();
       },
       child: Column(
@@ -58,11 +61,8 @@ class DeleteTokenFolderAction extends ConsumerSlideableAction {
     );
   }
 
-  void _showDialog() => showDialog(
-      useRootNavigator: false,
-      context: globalNavigatorKey.currentContext!,
-      builder: (BuildContext context) {
-        return DefaultDialog(
+  void _showDialog() => showAsyncDialog(
+        builder: (BuildContext context) => DefaultDialog(
           scrollable: true,
           title: Text(
             AppLocalizations.of(context)!.confirmDeletion,
@@ -92,6 +92,6 @@ class DeleteTokenFolderAction extends ConsumerSlideableAction {
               ),
             ),
           ],
-        );
-      });
+        ),
+      );
 }

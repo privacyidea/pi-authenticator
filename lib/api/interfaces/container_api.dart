@@ -17,8 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import 'package:http/http.dart';
-
+import '../../model/api_results/pi_server_results/pi_server_result_value.dart';
 import '../../model/container_policies.dart';
 import '../../model/riverpod_states/token_state.dart';
 import '../../model/token_container.dart';
@@ -26,10 +25,10 @@ import '../../model/tokens/token.dart';
 import '../../utils/ecc_utils.dart';
 
 abstract class TokenContainerApi {
-  Future<Response> finalizeContainer(TokenContainerUnfinalized container, EccUtils eccUtils);
-  Future<String> getTransferQrData(TokenContainerFinalized container);
+  Future<ContainerFinalizationResponse> finalizeContainer(TokenContainerUnfinalized container, EccUtils eccUtils);
+  Future<TransferQrData> getRolloverQrData(TokenContainerFinalized container);
   Future<ContainerSyncUpdates?> sync(TokenContainerFinalized container, TokenState tokenState);
-  Future<bool> unregister(TokenContainerFinalized container);
+  Future<UnregisterContainerResult> unregister(TokenContainerFinalized container);
 }
 
 class ContainerSyncUpdates {

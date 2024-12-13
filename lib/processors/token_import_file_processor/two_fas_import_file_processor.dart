@@ -23,7 +23,6 @@ import 'dart:convert';
 import 'package:cryptography/cryptography.dart';
 import 'package:file_selector/file_selector.dart';
 
-import '../../l10n/app_localizations.dart';
 import '../../model/enums/token_origin_source_type.dart';
 import '../../model/exception_errors/localized_exception.dart';
 import '../../model/extensions/enums/token_origin_source_type.dart';
@@ -33,7 +32,6 @@ import '../../model/tokens/otp_token.dart';
 import '../../model/tokens/token.dart';
 import '../../model/tokens/totp_token.dart';
 import '../../utils/encryption/aes_encrypted.dart';
-import '../../utils/globals.dart';
 import '../../utils/logger.dart';
 import '../../utils/object_validator.dart';
 import '../../utils/token_import_origins.dart';
@@ -156,14 +154,14 @@ class TwoFasAuthenticatorImportFileProcessor extends TokenImportFileProcessor {
           resultHandlerType: resultHandlerType,
         ));
       } on LocalizedException catch (e) {
-        results.add(ProcessorResultFailed(
-          e.localizedMessage(AppLocalizations.of(await globalContext)!),
+        results.add(ProcessorResult.failed(
+          (localization) => e.localizedMessage(localization),
           resultHandlerType: resultHandlerType,
         ));
       } catch (e) {
         Logger.error('Failed to parse token.', error: e, stackTrace: StackTrace.current);
         results.add(ProcessorResultFailed(
-          e.toString(),
+          (_) => e.toString(),
           resultHandlerType: resultHandlerType,
         ));
       }

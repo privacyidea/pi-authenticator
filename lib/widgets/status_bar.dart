@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../l10n/app_localizations.dart';
 import '../utils/riverpod/riverpod_providers/state_providers/status_message_provider.dart';
 import '../utils/utils.dart';
 
@@ -15,9 +16,9 @@ class StatusBar extends ConsumerStatefulWidget {
 }
 
 class _StatusBarState extends ConsumerState<StatusBar> {
-  (String, String?)? previousStatusMessage;
-  (String, String?)? currentStatusMessage;
-  Queue<(String, String?)> statusbarQueue = Queue();
+  StatusMessage? previousStatusMessage;
+  StatusMessage? currentStatusMessage;
+  Queue<StatusMessage> statusbarQueue = Queue();
 
   late Function(DismissDirection) onDismissed;
 
@@ -47,7 +48,7 @@ class _StatusBarState extends ConsumerState<StatusBar> {
     super.initState();
   }
 
-  void _addToQueueIfNotInQueue((String, String?)? statusMessage) {
+  void _addToQueueIfNotInQueue(StatusMessage? statusMessage) {
     if (statusMessage == null) return;
     if (!statusbarQueue.contains(statusMessage) && currentStatusMessage != statusMessage) {
       statusbarQueue.add(statusMessage);
@@ -62,9 +63,10 @@ class _StatusBarState extends ConsumerState<StatusBar> {
     }
   }
 
-  void _showStatusbarOverlay((String, String?) statusMessage) {
-    final statusText = statusMessage.$1;
-    final statusSubText = statusMessage.$2;
+  void _showStatusbarOverlay(StatusMessage statusMessage) {
+    final localizations = AppLocalizations.of(context)!;
+    final statusText = statusMessage.message(localizations);
+    final statusSubText = statusMessage.details?.call(localizations);
     if (statusbarOverlay != null) {
       statusbarOverlay?.remove();
       statusbarOverlay = null;
