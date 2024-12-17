@@ -42,7 +42,7 @@ abstract class Token with SortableMixin {
   static const String IMAGE = 'image';
 
   // Default data keys
-  static const String TYPE = 'type';
+  static const String TYPE = 'tokentype';
 
   /// [String] (optional) default = ''
   static const String LABEL = 'label';

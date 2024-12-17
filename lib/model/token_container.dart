@@ -188,6 +188,9 @@ class TokenContainer with _$TokenContainer {
       return null;
     }
 
+    Logger.warning('PublicServerKey: $publicServerKey'); // TODO: remove
+    Logger.warning('PublicClientKey: $publicClientKey'); // TODO: remove
+    Logger.warning('PrivateClientKey: $privateClientKey'); // TODO: remove
     return TokenContainerFinalized(
       issuer: issuer,
       nonce: nonce,
@@ -223,9 +226,6 @@ class TokenContainer with _$TokenContainer {
       );
 
   factory TokenContainer.fromJson(Map<String, dynamic> json) {
-    print('PublicServerKey: ${json['publicServerKey']}');
-    print('PrivateClientKey: ${json['privateClientKey']}');
-    print('PublicClientKey: ${json['publicClientKey']}');
     return json["runtimeType"] == "finalized"
         ? (_$TokenContainerFromJson(json) as TokenContainerFinalized)
             .copyWith(syncState: json["syncState"] == "syncing" ? SyncState.failed : SyncState.values.byName(json["syncState"]))

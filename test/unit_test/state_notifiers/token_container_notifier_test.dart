@@ -467,49 +467,13 @@ void _testTokenContainerNotifier() {
       final mockContainerRepo = MockTokenContainerRepository();
       final mockContainerApi = MockTokenContainerApi();
 
-      when(mockContainerApi.finalizeContainer(any, any)).thenAnswer(
-        (_) async {
-          // final json = {
-          //   "id": 1,
-          //   "jsonrpc": "2.0",
-          //   "result": {
-          //     "status": true,
-          //     "value": {
-          //       "policies": {
-          //         "client_container_unregister": true,
-          //         "client_token_deletable": true,
-          //         "container_client_rollover": true,
-          //         "container_initial_token_transfer": true
-          //       },
-          //       "public_server_key": "-----BEGIN PUBLIC KEY-----\n"
-          //           "MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAEaik84am1122p15/8Z6FYW+q5DYe22RV0\n"
-          //           "6jimjkz/5J6vDkafcP1oq5fRgIEXTTU6uKarvSrOxcV8nNuW6o80L55iT1ZmZJ+q\n"
-          //           "tx/ncmaloOEFY4dMh1XNs0TayAxKrCNg\n"
-          //           "-----END PUBLIC KEY-----",
-          //     }
-          //   },
-          //   "time": 1731941387.8622696,
-          //   "version": "privacyIDEA 3.10",
-          //   "versionnumber": "3.10",
-          //   "signature":
-          //       "rsa_sha256_pss:5d71b5a47b9330cdb26f090b8197fdf76df34919636cc54acf476185e1282beba9a8a800dbcfd834e0068a7d3f653e2193c9b0d2c80b44801d4f85d18c0a7af554d1d9659600a5570106a595687c5131b20a4793e0992dd11c138990c47e959aa391845010f4c85dbeb35aded5a57e85d20f544d79e35b06c3231323e50c2699af6758aeeb6aafb3c9e507c7c2c0d23230e5ec09b7c26b535cd43f51368b3edc1cf4148125f8b92263c7a52eaa0def49db1a6347edc12aa9151ede67a5ab114a72b860ebdd7d9c8b48851e981fa8582a4865389bc14eea26143d36b891278be097bf841bf75697cdb16ce1bba15dcb9ffe9d4717b6f8e8780040fe078f55f7d0"
-          // };
-          return ContainerFinalizationResponse(
-            policies: ContainerPolicies(
-              unregisterAllowed: true,
-              tokensDeletable: true,
-              rolloverAllowed: true,
-              initialTokenTransfer: true,
-            ),
-            publicServerKey: EccUtils().deserializeECPublicKey(publicServerKeyExample),
-          );
+      when(mockContainerRepo.loadContainerState()).thenAnswer((_) => Future.value(containerRepoState));
+      when(mockContainerRepo.saveContainerState(any)).thenAnswer(
+        (invocation) {
+          containerRepoState = invocation.positionalArguments[0] as TokenContainerState;
+          return Future.value(containerRepoState);
         },
       );
-      when(mockContainerRepo.loadContainerState()).thenAnswer((_) => Future.value(containerRepoState));
-      when(mockContainerRepo.saveContainerState(any)).thenAnswer((invocation) {
-        containerRepoState = invocation.positionalArguments[0] as TokenContainerState;
-        return Future.value(containerRepoState);
-      });
       when(mockContainerRepo.saveContainer(any)).thenAnswer((invocation) {
         final container = invocation.positionalArguments[0] as TokenContainer;
         final i = containerRepoState.containerList.indexWhere((element) => element.serial == container.serial);
@@ -574,8 +538,9 @@ void _testTokenContainerNotifier() {
       final state = await providerContainer.read(tokenContainerProvider.future);
       verify(mockContainerRepo.loadContainerState()).called(1);
       expect(state, containerRepoState);
-      final stateContainer = state.containerList.first as TokenContainerFinalized;
-      final expectedContainer = TokenContainerFinalized(
+      final stateContainer = state.containerList.first as TokenContainerUnfinalized;
+      final expectedContainer = TokenContainerUnfinalized(
+        ttl: Duration(minutes: 10),
         issuer: "privacyIDEA",
         nonce: "dbd2ab5aa9b539484fc3b78cd4bb08375d3eb30e",
         timestamp: DateTime.parse("2024-11-14 09:30:18.288530Z"),
@@ -584,17 +549,13 @@ void _testTokenContainerNotifier() {
         ecKeyAlgorithm: EcKeyAlgorithm.secp384r1,
         hashAlgorithm: Algorithms.SHA256,
         finalizationState: FinalizationState.completed,
-        syncState: SyncState.notStarted,
         passphraseQuestion: "",
         sslVerify: true,
-        privateClientKey: "random",
-        publicServerKey: "-----BEGIN PUBLIC KEY-----\n"
-            "MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAEaik84am1122p15/8Z6FYW+q5DYe22RV0\n"
-            "6jimjkz/5J6vDkafcP1oq5fRgIEXTTU6uKarvSrOxcV8nNuW6o80L55iT1ZmZJ+q\n"
-            "tx/ncmaloOEFY4dMh1XNs0TayAxKrCNg\n"
-            "-----END PUBLIC KEY-----",
-        publicClientKey: "random",
+        privateClientKey: null,
+        publicServerKey: null,
+        publicClientKey: null,
       );
+      expect(stateContainer.ttl, expectedContainer.ttl);
       expect(stateContainer.issuer, expectedContainer.issuer);
       expect(stateContainer.nonce, expectedContainer.nonce);
       expect(stateContainer.timestamp, expectedContainer.timestamp);
@@ -603,12 +564,12 @@ void _testTokenContainerNotifier() {
       expect(stateContainer.ecKeyAlgorithm, expectedContainer.ecKeyAlgorithm);
       expect(stateContainer.hashAlgorithm, expectedContainer.hashAlgorithm);
       expect(stateContainer.finalizationState, expectedContainer.finalizationState);
-      expect(stateContainer.syncState, expectedContainer.syncState);
+
       expect(stateContainer.passphraseQuestion, expectedContainer.passphraseQuestion);
       expect(stateContainer.sslVerify, expectedContainer.sslVerify);
-      expect(stateContainer.privateClientKey, isNotEmpty);
-      expect(stateContainer.publicServerKey, expectedContainer.publicServerKey);
-      expect(stateContainer.publicClientKey, isNotEmpty);
+      expect(stateContainer.privateClientKey, null);
+      expect(stateContainer.publicServerKey, null);
+      expect(stateContainer.publicClientKey, null);
     });
     test('finalizeContainer', () async {
       // prepare
@@ -616,37 +577,12 @@ void _testTokenContainerNotifier() {
       var containerRepoState = _buildUnfinalizedContainerState();
       final mockContainerRepo = MockTokenContainerRepository();
       final mockContainerApi = MockTokenContainerApi();
-      when(mockContainerApi.finalizeContainer(any, any)).thenAnswer((_) async {
-        // final json = {
-        //   "id": 1,
-        //   "jsonrpc": "2.0",
-        //   "result": {
-        //     "status": true,
-        //     "value": {
-        //       "policies": {
-        //         "client_container_unregister": true,
-        //         "client_token_deletable": true,
-        //         "container_client_rollover": true,
-        //         "container_initial_token_transfer": true
-        //       },
-        //       "public_server_key": "-----BEGIN PUBLIC KEY-----\n"
-        //           "MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAEaik84am1122p15/8Z6FYW+q5DYe22RV0\n"
-        //           "6jimjkz/5J6vDkafcP1oq5fRgIEXTTU6uKarvSrOxcV8nNuW6o80L55iT1ZmZJ+q\n"
-        //           "tx/ncmaloOEFY4dMh1XNs0TayAxKrCNg\n"
-        //           "-----END PUBLIC KEY-----",
-        //     }
-        //   },
-        //   "time": 1731941387.8622696,
-        //   "version": "privacyIDEA 3.10",
-        //   "versionnumber": "3.10",
-        //   "signature":
-        //       "rsa_sha256_pss:5d71b5a47b9330cdb26f090b8197fdf76df34919636cc54acf476185e1282beba9a8a800dbcfd834e0068a7d3f653e2193c9b0d2c80b44801d4f85d18c0a7af554d1d9659600a5570106a595687c5131b20a4793e0992dd11c138990c47e959aa391845010f4c85dbeb35aded5a57e85d20f544d79e35b06c3231323e50c2699af6758aeeb6aafb3c9e507c7c2c0d23230e5ec09b7c26b535cd43f51368b3edc1cf4148125f8b92263c7a52eaa0def49db1a6347edc12aa9151ede67a5ab114a72b860ebdd7d9c8b48851e981fa8582a4865389bc14eea26143d36b891278be097bf841bf75697cdb16ce1bba15dcb9ffe9d4717b6f8e8780040fe078f55f7d0"
-        // };
-        return ContainerFinalizationResponse(
+      when(mockContainerApi.finalizeContainer(any, any)).thenAnswer(
+        (_) async => ContainerFinalizationResponse(
           policies: ContainerPolicies(initialTokenTransfer: true, rolloverAllowed: true, tokensDeletable: true, unregisterAllowed: true),
           publicServerKey: EccUtils().deserializeECPublicKey(publicServerKeyExample),
-        );
-      });
+        ),
+      );
       when(mockContainerRepo.loadContainerState()).thenAnswer((_) => Future.value(containerRepoState));
       when(mockContainerRepo.saveContainerState(any)).thenAnswer((invocation) {
         containerRepoState = invocation.positionalArguments[0] as TokenContainerState;

@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
 import 'package:privacyidea_authenticator/model/processor_result.dart';
 
 void main() {
@@ -6,6 +7,7 @@ void main() {
 }
 
 void _testProcessorResult() {
+  final l = AppLocalizationsEn();
   group('Processor Result', () {
     group('constructors', () {
       test('success', () {
@@ -15,7 +17,7 @@ void _testProcessorResult() {
       test('error', () {
         final result = ProcessorResultFailed((_) => 'error');
         expect(result, isA<ProcessorResultFailed>());
-        expect(result.message, 'error');
+        expect(result.message(l), 'error');
       });
     });
     group('factories', () {
@@ -27,7 +29,7 @@ void _testProcessorResult() {
       test('error', () {
         final ProcessorResult<String> result = ProcessorResult.failed((_) => 'error');
         expect(result, isA<ProcessorResultFailed>());
-        expect((result as ProcessorResultFailed).message, 'error');
+        expect((result as ProcessorResultFailed).message(l), 'error');
       });
     });
 
@@ -47,13 +49,13 @@ void _testProcessorResult() {
     group('as', () {
       test('success', () {
         const ProcessorResult<String> result = ProcessorResultSuccess('data');
-        expect(result.asSuccess, 'data');
-        expect(() => result.asFailed, throwsA(isA<AssertionError>()));
+        expect(result.asSuccess?.resultData, 'data');
+        expect(result.asFailed, isNull);
       });
       test('error', () {
         final ProcessorResult<String> result = ProcessorResultFailed((_) => 'error');
-        expect(result.asFailed, 'error');
-        expect(() => result.asSuccess, throwsA(isA<AssertionError>()));
+        expect(result.asFailed?.message(l), 'error');
+        expect(result.asSuccess, isNull);
       });
     });
   });

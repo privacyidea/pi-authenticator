@@ -21,6 +21,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/enums/ec_key_algorithm.dart';
+import 'package:privacyidea_authenticator/model/processor_result.dart';
 import 'package:privacyidea_authenticator/model/token_container.dart';
 import 'package:privacyidea_authenticator/processors/scheme_processors/token_container_processor.dart';
 
@@ -92,7 +93,7 @@ void _testTokenContainerProcessor() {
         expect(container.sslVerify, true);
         expect(container.passphraseQuestion, "Enter your password");
       });
-      test('missing nonce', () {
+      test('missing nonce', () async {
         final uriString = "pia://container/SMPH00067A2F2"
             "?issuer=privacyIDEA2"
             "&ttl=100"
@@ -104,7 +105,10 @@ void _testTokenContainerProcessor() {
             "&ssl_verify=True"
             "&passphrase=Enter%20your%20password";
         final uri = Uri.parse(uriString);
-        expect(processor.processUri(uri), completion(isNull));
+        final result = (await processor.processUri(uri));
+        expect(result != null, true);
+        expect(result!.length, 1);
+        expect(result.first, isA<ProcessorResultFailed>());
       });
     });
   });
