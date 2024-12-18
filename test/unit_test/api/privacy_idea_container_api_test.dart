@@ -393,7 +393,7 @@ void _testPrivacyIdeaContainerApi() {
           }
           final publicEncKeyClientB64 = invocationBody['public_enc_key_client'];
           final containerDictClient =
-              '{"serial":"SMPH00067A2F","type":"smartphone","tokens":[{"6":"HOTP","label":"label1","issuer":"privacyIDEA","pin":"False","algorithm":"SHA1","digits":"6","otp":["435986","964213"],"counter":"5"}]}';
+              '{"serial":"SMPH00067A2F","type":"smartphone","tokens":[{"tokentype":"HOTP","label":"label1","issuer":"privacyIDEA","pin":"False","algorithm":"SHA1","digits":"6","otp":["435986","964213"],"counter":"5"}]}';
 
           final signMessage2 = '$containerChallengeNonce|'
               '$containerChallengeTimeStamp|'
@@ -961,34 +961,6 @@ void _testPrivacyIdeaContainerApi() {
     });
   });
   group('Unallowed', () {
-    test('rollover', () {
-      // Arrange
-      final containerApi = PiContainerApi(ioClient: MockPrivacyideaIOClient());
-      final tokenContainer = getFinalizedTokenContainer(
-        withPolicies: ContainerPolicies(
-          rolloverAllowed: false,
-          initialTokenTransfer: true,
-          tokensDeletable: true,
-          unregisterAllowed: true,
-        ),
-      );
-      // Act & Assert
-      expect(() => containerApi.getRolloverQrData(tokenContainer), throwsA(isA<Exception>()));
-    });
-    test('finalizeContainer', () {
-      // Arrange
-      final containerApi = PiContainerApi(ioClient: MockPrivacyideaIOClient());
-      final tokenContainer = getNewTokenContainer(
-        withPolicies: ContainerPolicies(
-          rolloverAllowed: true,
-          initialTokenTransfer: true,
-          tokensDeletable: true,
-          unregisterAllowed: false,
-        ),
-      );
-      // Act & Assert
-      expect(() => containerApi.finalizeContainer(tokenContainer), throwsA(isA<Exception>()));
-    });
     test('rollover', () {
       // Arrange
       final containerApi = PiContainerApi(ioClient: MockPrivacyideaIOClient());
