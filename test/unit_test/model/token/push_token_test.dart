@@ -169,7 +169,7 @@ void _testPushToken() {
     group('fromUriMap', () {
       test('with full map', () {
         final uriMap = <String, dynamic>{
-          Token.TYPE: 'PIPUSH',
+          Token.OTPAUTH_TYPE: 'PIPUSH',
           Token.LABEL: 'label',
           Token.ISSUER: 'issuer',
           Token.SERIAL: 'serial',

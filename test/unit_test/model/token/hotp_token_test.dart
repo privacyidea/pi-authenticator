@@ -82,7 +82,7 @@ void _testHotpToken() {
         final uriMap = {
           Token.LABEL: 'label',
           Token.ISSUER: 'issuer',
-          Token.TYPE: 'HOTP',
+          Token.OTPAUTH_TYPE: 'HOTP',
           Token.PIN: Token.PIN_VALUE_TRUE,
           Token.IMAGE: 'example.png',
           OTPToken.ALGORITHM: 'SHA1',
@@ -105,7 +105,7 @@ void _testHotpToken() {
         final uriMap = {
           Token.LABEL: 'label',
           Token.ISSUER: 'issuer',
-          Token.TYPE: 'HOTP',
+          Token.OTPAUTH_TYPE: 'HOTP',
           Token.PIN: Token.PIN_VALUE_TRUE,
           Token.IMAGE: 'example.png',
           OTPToken.ALGORITHM: 'SHA1',
@@ -118,7 +118,7 @@ void _testHotpToken() {
         final uriMap = {
           Token.LABEL: 'label',
           Token.ISSUER: 'issuer',
-          Token.TYPE: 'HOTP',
+          Token.OTPAUTH_TYPE: 'HOTP',
           Token.PIN: Token.PIN_VALUE_TRUE,
           Token.IMAGE: 'example.png',
           OTPToken.ALGORITHM: 'SHA1',
@@ -139,7 +139,7 @@ void _testHotpToken() {
         final uriMap = {
           Token.LABEL: 'label',
           Token.ISSUER: 'issuer',
-          Token.TYPE: 'HOTP',
+          Token.OTPAUTH_TYPE: 'HOTP',
           Token.PIN: Token.PIN_VALUE_TRUE,
           Token.IMAGE: 'example.png',
           OTPToken.ALGORITHM: 'sha1',

@@ -81,7 +81,7 @@ void _testDayPasswordToken() {
         final uriMap = {
           Token.LABEL: 'label',
           Token.ISSUER: 'issuer',
-          Token.TYPE: 'DAYPASSWORD',
+          Token.OTPAUTH_TYPE: 'DAYPASSWORD',
           Token.PIN: Token.PIN_VALUE_FALSE,
           Token.IMAGE: 'example.png',
           OTPToken.ALGORITHM: 'SHA1',
@@ -104,7 +104,7 @@ void _testDayPasswordToken() {
         final uriMap = {
           Token.LABEL: 'label',
           Token.ISSUER: 'issuer',
-          Token.TYPE: 'DAYPASSWORD',
+          Token.OTPAUTH_TYPE: 'DAYPASSWORD',
           Token.PIN: Token.PIN_VALUE_FALSE,
           Token.IMAGE: 'example.png',
           OTPToken.ALGORITHM: 'SHA1',
@@ -117,7 +117,7 @@ void _testDayPasswordToken() {
         final uriMap = {
           Token.LABEL: 'label',
           Token.ISSUER: 'issuer',
-          Token.TYPE: 'DAYPASSWORD',
+          Token.OTPAUTH_TYPE: 'DAYPASSWORD',
           Token.PIN: Token.PIN_VALUE_FALSE,
           Token.IMAGE: 'example.png',
           OTPToken.ALGORITHM: 'SHA1',
@@ -138,7 +138,7 @@ void _testDayPasswordToken() {
         final uriMap = {
           Token.LABEL: 'label',
           Token.ISSUER: 'issuer',
-          Token.TYPE: 'DAYPASSWORD',
+          Token.OTPAUTH_TYPE: 'DAYPASSWORD',
           Token.PIN: Token.PIN_VALUE_FALSE,
           Token.IMAGE: 'example.png',
           OTPToken.ALGORITHM: 'SHA1',
@@ -159,7 +159,7 @@ void _testDayPasswordToken() {
         final uriMap = {
           Token.LABEL: 'label',
           Token.ISSUER: 'issuer',
-          Token.TYPE: 'DAYPASSWORD',
+          Token.OTPAUTH_TYPE: 'DAYPASSWORD',
           Token.PIN: Token.PIN_VALUE_FALSE,
           Token.IMAGE: 'example.png',
           OTPToken.ALGORITHM: 'sha1',

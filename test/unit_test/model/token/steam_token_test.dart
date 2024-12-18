@@ -76,7 +76,7 @@ void _testSteamToken() {
           final uriMap = {
             Token.LABEL: 'label',
             Token.ISSUER: 'issuer',
-            Token.TYPE: 'totp',
+            Token.OTPAUTH_TYPE: 'totp',
             Token.PIN: Token.PIN_VALUE_FALSE,
             Token.IMAGE: 'example.png',
             OTPToken.SECRET_BASE32: Encodings.base32.encode(utf8.encode('secret')),
@@ -96,7 +96,7 @@ void _testSteamToken() {
           final uriMap = {
             Token.LABEL: 'label',
             Token.ISSUER: 'issuer',
-            Token.TYPE: 'totp',
+            Token.OTPAUTH_TYPE: 'totp',
             Token.PIN: Token.PIN_VALUE_FALSE,
             Token.IMAGE: 'example.png',
           };

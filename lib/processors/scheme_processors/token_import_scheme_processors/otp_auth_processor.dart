@@ -60,7 +60,7 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
     final (label, issuer) = _parseLabelAndIssuer(uri);
     queryParameters[Token.LABEL] = label;
     queryParameters[Token.ISSUER] = issuer;
-    queryParameters[Token.TYPE] = _parseTokenType(uri);
+    queryParameters[Token.OTPAUTH_TYPE] = _parseTokenType(uri);
     queryParameters = _secretAddPadding(queryParameters);
 
     _logInfo(uri);
@@ -216,12 +216,12 @@ Map<String, String> _secretAddPadding(Map<String, String> queryParameters) {
 String _parseTokenType(Uri uri) {
   if (_parseIssuer(uri) == "Steam") return TokenTypes.STEAM.name;
   Logger.debug('Token type host: ${uri.host}');
-  Logger.debug('Token type queryParameters: ${uri.queryParameters[Token.TYPE]}');
-  final value = uri.queryParameters[Token.TYPE] ?? uri.host;
+  Logger.debug('Token type queryParameters: ${uri.queryParameters[Token.OTPAUTH_TYPE]}');
+  final value = uri.queryParameters[Token.OTPAUTH_TYPE] ?? uri.host;
   Logger.debug('Token type value: $value');
   return validate(
-    value: uri.queryParameters[Token.TYPE] ?? uri.host,
+    value: uri.queryParameters[Token.OTPAUTH_TYPE] ?? uri.host,
     validator: ObjectValidator<String>(defaultValue: uri.host),
-    name: Token.TYPE,
+    name: Token.OTPAUTH_TYPE,
   );
 }

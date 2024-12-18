@@ -188,7 +188,7 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
         Map<String, dynamic> info = entry[AEGIS_ENTRY_INFO];
         final otpAuthMap = validateMap<String>(
           map: {
-            Token.TYPE: entry[AEGIS_ENTRY_TYPE],
+            Token.OTPAUTH_TYPE: entry[AEGIS_ENTRY_TYPE],
             Token.LABEL: entry[AEGIS_ENTRY_LABEL],
             Token.ISSUER: entry[AEGIS_ENTRY_ISSUER],
             Token.PIN: info[AEGIS_INFO_PIN],
@@ -199,7 +199,7 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
             HOTPToken.COUNTER: info[AEGIS_INFO_COUNTER],
           },
           validators: {
-            Token.TYPE: const ObjectValidator<String>(),
+            Token.OTPAUTH_TYPE: const ObjectValidator<String>(),
             Token.LABEL: const ObjectValidator<String>(defaultValue: ''),
             Token.ISSUER: const ObjectValidator<String>(defaultValue: ''),
             Token.PIN: const ObjectValidatorNullable<String>(),
@@ -247,7 +247,7 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
         Map<String, dynamic> info = entry[AEGIS_ENTRY_INFO];
         final otpAuthMap = validateMap<String>(
           map: {
-            Token.TYPE: entry[AEGIS_ENTRY_TYPE],
+            Token.OTPAUTH_TYPE: entry[AEGIS_ENTRY_TYPE],
             Token.LABEL: entry[AEGIS_ENTRY_LABEL],
             Token.ISSUER: entry[AEGIS_ENTRY_ISSUER],
             OTPToken.SECRET_BASE32: info[AEGIS_INFO_SECRET],
@@ -258,7 +258,7 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
             Token.PIN: info[AEGIS_INFO_PIN],
           },
           validators: {
-            Token.TYPE: const ObjectValidator<String>(),
+            Token.OTPAUTH_TYPE: const ObjectValidator<String>(),
             Token.LABEL: const ObjectValidator<String>(defaultValue: ''),
             Token.ISSUER: const ObjectValidator<String>(defaultValue: ''),
             OTPToken.SECRET_BASE32: ObjectValidator<String>(transformer: (v) => Encodings.base32.encodeStringTo(Encodings.base32, v)),

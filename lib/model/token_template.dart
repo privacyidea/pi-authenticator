@@ -63,9 +63,9 @@ class TokenTemplate with _$TokenTemplate {
       );
 
   String? get type => validateOptional(
-        value: otpAuthMap[Token.TYPE],
+        value: otpAuthMap[Token.OTPAUTH_TYPE],
         validator: const ObjectValidatorNullable<String>(),
-        name: Token.TYPE,
+        name: Token.OTPAUTH_TYPE,
       );
 
   List<String>? get otpValues => this is _TokenTemplateWithOtps ? (this as _TokenTemplateWithOtps).otps : null;

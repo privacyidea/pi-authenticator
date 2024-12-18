@@ -367,79 +367,6 @@ void _testPrivacyIdeaContainerApi() {
         return Response(jsonEncode(exampleError), 400);
       });
 
-      final asd = {
-        "container": {
-          "description": "",
-          "info": {
-            "challenge_ttl": "2",
-            "device": "samsung SM-A546B",
-            "encrypt_algorithm": "AES",
-            "encrypt_key_algorithm": "x25519",
-            "encrypt_mode": "GCM",
-            "hash_algorithm": "SHA256",
-            "initial_synchronized": "True",
-            "key_algorithm": "secp384r1",
-            "registration_state": "registered",
-            "server_url": "http://192.168.0.70:5000/"
-          },
-          "last_authentication": null,
-          "last_synchronization": "Tue, 17 Dec 2024 08:45:34 GMT",
-          "realms": [],
-          "serial": "SMPH00096DE9",
-          "states": ["active"],
-          "template": "",
-          "type": "smartphone",
-          "users": []
-        },
-        "tokens": {
-          "add": [],
-          "update": [
-            {
-              "active": true,
-              "count_window": 10,
-              "counter": 0,
-              "description": "",
-              "failcount": 0,
-              "id": 54,
-              "info": {"hashlib": "sha1", "timeShift": "0.0", "timeStep": "30", "timeWindow": "180", "tokenkind": "software"},
-              "locked": false,
-              "maxfail": 10,
-              "otplen": 6,
-              "realms": [],
-              "resolver": "",
-              "revoked": false,
-              "rollout_state": "",
-              "serial": "TOTP00011B1F",
-              "sync_window": 1000,
-              "tokengroup": [],
-              "tokentype": "totp",
-              "user_id": ""
-            },
-            {
-              "active": true,
-              "count_window": 10,
-              "counter": 0,
-              "description": "",
-              "failcount": 0,
-              "id": 89,
-              "info": {"hashlib": "sha1", "tokenkind": "software"},
-              "locked": false,
-              "maxfail": 10,
-              "otp": ["079447", "501895"],
-              "otplen": 6,
-              "realms": [],
-              "resolver": "",
-              "revoked": false,
-              "rollout_state": "",
-              "serial": "OATH00166051",
-              "sync_window": 1000,
-              "tokengroup": [],
-              "tokentype": "hotp",
-              "user_id": ""
-            }
-          ]
-        }
-      };
       // Act
       final result = await containerApi.unregister(tokenContainer);
       // Assert
@@ -466,7 +393,7 @@ void _testPrivacyIdeaContainerApi() {
           }
           final publicEncKeyClientB64 = invocationBody['public_enc_key_client'];
           final containerDictClient =
-              '{"serial":"SMPH00067A2F","type":"smartphone","tokens":[{"tokentype":"HOTP","label":"label1","issuer":"privacyIDEA","pin":"False","algorithm":"SHA1","digits":"6","otp":["435986","964213"],"counter":"5"}]}';
+              '{"serial":"SMPH00067A2F","type":"smartphone","tokens":[{"6":"HOTP","label":"label1","issuer":"privacyIDEA","pin":"False","algorithm":"SHA1","digits":"6","otp":["435986","964213"],"counter":"5"}]}';
 
           final signMessage2 = '$containerChallengeNonce|'
               '$containerChallengeTimeStamp|'
@@ -670,14 +597,6 @@ void _testPrivacyIdeaContainerApi() {
       });
     });
     test('update unlinked token (without serial)', () async {
-      /*
-otpauth://hotp/OATH00166051?secret=KWS3LTJ2L7NW4KGHL5W5OABWR4PLJIDL&counter=1&digits=6&creator=privacyidea&issuer=privacyIDEA
-
-I/flutter (32352): │ ! [WARNING] Public key base64: 4/d5K2gycwPxeIVHuHQvlq6tb7BDQ7HkQ/g8JBBmVHw=
-I/flutter (32352): │ ! [WARNING] Private key bytes: uCyfofJSNWX08K8omYeR43nwoPUE++niUrxDB43noVc=
-
-res: ${'encryption_algorithm': 'AES', 'encryption_params': {'algorithm': 'AES', 'mode': 'GCM', 'init_vector': 'AZbBMH7imo5q-uFrPbVhTw==', 'tag': 'HIWDZ6mXNdWA9zYLJa9-WA=='}, 'container_dict_server': 'jeOQQ05zabAlDb3inp4DFplsZ_K9BW1MjhLIrM7CTD48D9bcxjA6C0FZm7rUGMqP8ZjwAIVaVkv6tTW5-Ycfez3o8RW-TtWq68xgPHCYEGp9IPWAymY58eF8Cpvy5r7ykDlGeekqnap6TwjS8KqlW54RZNwKSe7pcFd0Z0SX2TByx6CkmPguNOIjx_3eQSx87P9GuGn3-9wKpZykWJbNJgUyzMH2d4Qz55fwQ1IXI6nfbUk6sd67YmGWK1hc4tW43LHFaIIjKwzL4BkJnyPKi4gGeDRw0UxUfquc4KYqyqFmeCZj_Jc5OL9igUqBbIS4yhgsk39K6ldAYM79gY78ihcOHIJPafcFu8C4ie-yOeEPcxnN1m4vyebHAC_nQNEEXxI7k1A4MwAFak8daUdO5axNEwpJWOVfEaPDjcaeuudsrc90nOkhiZ1GAxrlb9j549sVCbx9zLUEAu90OCiu3tyuUYIAR9-YvYbyY3g6Kp8qtSmZDXnN5mPbX1ikxgg8kaez87fLkP9-wcWaaALGxx07Jlt4l2os7HOqP1w7HZbEcZze3ndoGygw18wEqYOl2BXyOfAVfIDzA1jawuFeZ2UctnprzMdI1FYNEw5po-Tz209dJYMvtihuF9PCGyluqBOTn1lT5kIQXatSb1G7D0esfMc4xhhbHTQY04B9o7I2epNWCkFqZhklNm-pW7HQPJEY0ob3z2f9uzVU5e1YZd5JQrw60--vuECTcdU1en5fkPoV1sC0dFmjVIUu8xJuyytnRY6HxiUSabBIWpIcuZrPkBc4gE4fGk9fpxVJXsf6P8Ki9hb1IWZslCaiPnt_bkhsFygaEhxG3Kp1kp8BkiofAZB3rB_hx06lXptuWjmG6Kcm1WUBL5HAL5bwBXgsRw6EBSGARs5vBRq7KBwpEkDjqFhgbpTZlVvTk11rG2tMMVX1vdF4_yjSkFu2WE4bmPSR6dYsN7KjNswtIUA26y9KWYIFcoK8oYbT_pUVAa1Pb81Y3obJDtX95iSdKvrht0xRhCoEegoYLwq57IUc1y3jL0OoPKJUD-MSO4YXvwxP4ZErIBz8HCNp2NqtMsyYHcZfaqJtvHScZI_Z28HndMrlPQMBxDsX4U8mD1Ev5QZAadAF2qQQVka9QUJP86nOi53l2WQsW9gMDqMjaG235veAM1mh4a_vrsJYAngAdCC1Jlw6dgplIg4P_iJmMpvrlKeeFw5-Dh_fGVnM_mK9vaF9Nuhk6yU07weS78GV5oD9XQ-YviZXCg-FWq_lXCVUC4TEsrnNyBJxA8Otpymj7NHv-1Xt3LzOYihvzD1XgGc6wELQGhhTp826BOm1u8OidC1gNR0uAcoP5ChZvOrYYgTsS--0hZKG4XZ75mNZgb1JkVdyjkp8g1w7YEZ-HABk55_aBbK_2nt5UKvDx459KyGNyJbi-sbs5Ap1BaI7PDu6dKeNVPPMk892zmw8GjT8zqjfnt6qHJp3lxUId8gwz5SCRMCgF1CeZJZSlXbxb6BxpiCHQeSOhFms3sWewwLYnzW-H-GokiHtkLXwOSkgECHs4lxKFQ14IOIBDCpMRfLlGA4QbOTIkcFnT9QMcUzs27c39cKZhjBXGKtIg3cWwoxyCJZpoc5_rg6_PHRTkkfSzUuBFA-0i5RTbieZqqZlRjfzkK-sz9vJ0zmEWSQQlAOuHCSg68dBUwjHn-FLaVunGWUbRvGPSdp9pIoIdDQ8XSpTmjtYiArbDcVzZEJmEdRtwmYL-Ygv-15D3OLylm-mx2fX5GUIK4czrJJlE34GYykGuWnG_AL-res8zF0vbGzyIhsW_MxNIGViQjDy5nmiJ55XPVVufCFGOgVioGdwcd3OFjopLL5cVx2Qiw==', 'public_server_key': 'aK_oH0ycoKrXoIMbTlQ7_adxUe7JVAuPCbcoOUBKYBY='}
-*/
       // Arrange
       final mockIoClient = MockPrivacyideaIOClient();
       final containerApi = PiContainerApi(ioClient: mockIoClient);
@@ -715,7 +634,7 @@ res: ${'encryption_algorithm': 'AES', 'encryption_params': {'algorithm': 'AES', 
         }
         final publicEncKeyClientB64 = invocationBody['public_enc_key_client'];
         final containerDictClient =
-            '{"serial":"OATH00166051","type":"smartphone","tokens":[{"tokentype":"HOTP","label":"OATH00068B93","issuer":"privacyIDEA","pin":"False","algorithm":"SHA1","digits":"6","counter":"1"}]}';
+            '{"serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"TOTP00011B1F","tokentype":"TOTP","label":"TOTP00011B1F","issuer":"privacyIDEA","pin":"False","algorithm":"SHA1","digits":"6","period":"30"},{"tokentype":"HOTP","label":"OATH00166051","issuer":"privacyIDEA","pin":"False","algorithm":"SHA1","digits":"6","otp":["079447","501895"],"counter":"1"}]}';
 
         final signMessage2 = '$containerChallengeNonce|'
             '$containerChallengeTimeStamp|'
@@ -724,10 +643,9 @@ res: ${'encryption_algorithm': 'AES', 'encryption_params': {'algorithm': 'AES', 
             '$publicEncKeyClientB64|'
             '$containerDictClient';
 
-        if (invocationUrl.toString() == 'http://example.com/container/${tokenContainer.serial}/sync') {
-          // &&
-          // invocationBody['container_dict_client'] == containerDictClient &&
-          // EccUtils().validateSignature(tokenContainer.ecPublicClientKey!, invocationBody['signature']!, signMessage2)) {
+        if (invocationUrl.toString() == 'http://example.com/container/${tokenContainer.serial}/sync' &&
+            invocationBody['container_dict_client'] == containerDictClient &&
+            EccUtils().validateSignature(tokenContainer.ecPublicClientKey!, invocationBody['signature']!, signMessage2)) {
           return Response(
             jsonEncode({
               'id': 5,
@@ -803,7 +721,125 @@ res: ${'encryption_algorithm': 'AES', 'encryption_params': {'algorithm': 'AES', 
       expect(token1.digits, 6);
       expect(token1.secret, 'CDLDLKLUMPDR2IJJZJHF5XKFKBABU4XR');
     });
-    test('sync with unknown tokens (with serial)', () async {});
+    test('sync with unknown tokens (with serial)', () async {
+      // Arrange
+      final mockIoClient = MockPrivacyideaIOClient();
+      final containerApi = PiContainerApi(ioClient: mockIoClient);
+      final tokenContainer = getFinalizedTokenContainer();
+      final tokenState = TokenState(
+        tokens: [
+          TOTPToken(
+            label: 'TOTP00011B1F',
+            serial: 'TOTP00011B1F',
+            issuer: 'privacyIDEA',
+            period: 30,
+            id: 'id0',
+            algorithm: Algorithms.SHA1,
+            digits: 6,
+            secret: 'CDLDLKLUMPDR2IJJZJHF5XKFKBABU4XR',
+          ),
+          HOTPToken(
+            label: "OATH00166051",
+            issuer: "privacyIDEA",
+            counter: 1,
+            id: 'id1',
+            algorithm: Algorithms.SHA1,
+            digits: 6,
+            secret: 'KWS3LTJ2L7NW4KGHL5W5OABWR4PLJIDL',
+          ),
+        ],
+      );
+      when(mockIoClient.doPost(url: anyNamed('url'), body: anyNamed('body'), sslVerify: anyNamed('sslVerify'))).thenAnswer((invocation) async {
+        final Uri invocationUrl = invocation.namedArguments[Symbol('url')];
+        final Map<String, String?> invocationBody = invocation.namedArguments[Symbol('body')];
+        Logger.info('Body: $invocationBody');
+        if (invocationUrl.toString() == 'http://example.com/container/${tokenContainer.serial}/challenge' &&
+            invocationBody['scope'] == 'http://example.com/container/${tokenContainer.serial}/sync') {
+          return containerChallengeResponse;
+        }
+        final publicEncKeyClientB64 = invocationBody['public_enc_key_client'];
+        final containerDictClient =
+            '{"serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"TOTP00011B1F","tokentype":"TOTP","label":"TOTP00011B1F","issuer":"privacyIDEA","pin":"False","algorithm":"SHA1","digits":"6","period":"30"},{"tokentype":"HOTP","label":"OATH00166051","issuer":"privacyIDEA","pin":"False","algorithm":"SHA1","digits":"6","otp":["079447","501895"],"counter":"1"}]}';
+
+        final signMessage2 = '$containerChallengeNonce|'
+            '$containerChallengeTimeStamp|'
+            '${tokenContainer.serial}|'
+            '$invocationUrl|'
+            '$publicEncKeyClientB64|'
+            '$containerDictClient';
+
+        if (invocationUrl.toString() == 'http://example.com/container/${tokenContainer.serial}/sync' &&
+            invocationBody['container_dict_client'] == containerDictClient &&
+            EccUtils().validateSignature(tokenContainer.ecPublicClientKey!, invocationBody['signature']!, signMessage2)) {
+          return Response(
+            jsonEncode({
+              'id': 5,
+              'jsonrpc': '2.0',
+              'result': {
+                'status': true,
+                'value': {
+                  'container_dict_server':
+                      'GKgkhASAEDYmXRJo2f-ixn6RsnWTuOjzK3mvBmJu9alQhbkcXIRf135wMI9YsErJI_soNDiP2ySR3lHdumEYxmcjW1r1ZbxM-KfMqUPaM56b7oet2MQh5TdlIBKib-UhSyxZ5SpKK26tHIYMjxw3IJMKADMzI5NVrj-F0KCburg_54v4GkJh_gWb5_F6pDw45O_AoEm1d6ANk-QHjg4_10-WFSEdKU6_LsixqIGjQPuRY9YBO5lxav_hWPzJw76UC80D8LpVi5IgJASU0uyo65PN3enczq6OOGmsc2IWP8Wl544qEpQaPGXnw0MvJxs139NIMMZLEyU-tRATIlWNYlLeN2SYW3xFyMB19pSpqIO3GFOChIhfsa_E6w-AMUR2I3s0e9vlbUPYsIpJ_wG7pS-PdWCkaJpvV1i7G_z73R-27tfmeKPaMVA2elGl-XIP8gnqMh0Igx2EtmkR2rQhGWf5XaU7fSGGbuNA81mR8dEJhiMHooIEqrPRzlRy0lwMapfe8lBiGBRFf6bpFEaT18--gh4qMWOLS1DK_q16b1tuNNnFmgafGkBsLDuvU6T23nOM14FqPD-GJGHJ0ju5ItWODUn2gCGPYmnolWorRqpeTDYylKJdNEl5r76WSVz1W9KpTjnq6-e6OkZC6w1VpzfFG_tOWmVKZ5wb8QDGDaF37d-LTAcykSRRa-0EfHS_uDWr94oiv7YjUnyD7C9zuiZe9qkgoeQdSYK-Kyw9lkkZc85ANcK3fQHOc08E3dt-OTVEjFlU750zCxs7xt06TTBS_dXdzyTdu2rHvosOvvCSwGM3h_942B9IAdcm2MkRtTpi2OlGgl7j8IGNxojCEO0Y03-H4GSoiaNfa7DGbka4QOTP6Gv9S1r4qzSN1oSnHwtN3_x7obh229rYoGjz3NfjnWLDjM_HLAqSWVabredReNpoX-uBzP5LzkAMusPJ34HCufm8Ka4mhpW-BRZXXWwwtStpdNKlrgr_QDEatJBe9ZdU9SL5JTHe3ICyJIjOmyN-qwC2IwhkxGx6rq1RcUNDwgeCMXO2peicQ8uWJiqmot-a-40y7Hwr49grjmRNFM-iIoMr1PaAvAhLkeaTGiZvoRN2a3jNx0YTGTQ_xIPuiizPKVJBBghVjfFJoMvrl0bLDjHnSqMbR-FQ1etu5lVqRt1t7RXpROvBj41WqaJQG3yDyOk8JKE4yhZ-FFFr6usgQudNhglKe1IJl05X5wAHIRMacMz9cuWS-FDoNSdsOx9QjqVsVYPg2NXaTj_75I8Obuxh6kLRlAZMPVQRHhb_NkF5rOrnuhOZWbCCDqEiSI7FW3Ixsx1vQ0swipATYoU=',
+                  'encryption_algorithm': 'AES',
+                  'encryption_params': {
+                    'algorithm': 'AES',
+                    'mode': 'GCM',
+                    'init_vector': '7gDUfdpZm15ew5jJqzISTA==',
+                    'tag': 'lnAF6Md0EkSq8bKt5eetpg==',
+                  },
+                  'policies': {
+                    'container_client_rollover': false,
+                    'container_initial_token_transfer': false,
+                    'client_token_deletable': true,
+                    'client_container_unregister': true,
+                  },
+                  'public_server_key': 'Od5nNdvC3iVYTK5aA5e-c1-f3FhSe4MH4apaNDRkSQA=',
+                  'server_url': 'http://example.com/container/${tokenContainer.serial}/sync',
+                }
+              },
+              'time': 1.0,
+              'version': 'privacyIDEA 3.6.2',
+              'versionnumber': '3.6.2',
+              'detail': null,
+              'signature': 'signature',
+            }),
+            200,
+          );
+        }
+        return Response(jsonEncode(exampleError), 400);
+      });
+
+      final type = X25519().keyPairType;
+      final publicSimpleKeyPair = SimpleKeyPairData(
+        base64Decode("YIgUiisLPu5dq3KQUMksNVEq12NG2mIM32E13UkQwWQ="),
+        publicKey: SimplePublicKey(base64Decode("ScZtrNZ3Zay12x+eQDyz4a2wafvZqk7BVzBNTchXc2w="), type: type),
+        type: type,
+      );
+
+      // Act
+      final result = await containerApi.sync(tokenContainer, tokenState, withX25519Key: publicSimpleKeyPair);
+      // Asserta
+      expect(result, isNotNull);
+      final newPolicies = result.newPolicies;
+      expect(newPolicies.initialTokenTransfer, false);
+      expect(newPolicies.rolloverAllowed, false);
+      expect(newPolicies.tokensDeletable, true);
+      expect(newPolicies.unregisterAllowed, true);
+      final updatedTokens = result.updatedTokens;
+      final deleteTokenSerials = result.deleteTokenSerials;
+      expect(deleteTokenSerials.length, 0);
+      expect(updatedTokens.length, 1);
+      final token0 = updatedTokens[0];
+      expect(token0, isA<TOTPToken>());
+      expect((token0 as TOTPToken).label, 'TOTP00011B1F');
+      expect(token0.issuer, 'privacyIDEA');
+      expect(token0.period, 30);
+      expect(token0.id, 'id0');
+      expect(token0.algorithm, Algorithms.SHA1);
+      expect(token0.digits, 6);
+      expect(token0.secret, 'CDLDLKLUMPDR2IJJZJHF5XKFKBABU4XR');
+      expect(token0.serial, 'TOTP00011B1F');
+    });
     test('sync with unknown tokens (without serial)', () async {});
   });
   group('Unallowed', () {
