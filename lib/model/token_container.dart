@@ -188,9 +188,6 @@ class TokenContainer with _$TokenContainer {
       return null;
     }
 
-    Logger.warning('PublicServerKey: $publicServerKey'); // TODO: remove
-    Logger.warning('PublicClientKey: $publicClientKey'); // TODO: remove
-    Logger.warning('PrivateClientKey: $privateClientKey'); // TODO: remove
     return TokenContainerFinalized(
       issuer: issuer,
       nonce: nonce,

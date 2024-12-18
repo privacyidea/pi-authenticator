@@ -264,7 +264,7 @@ void _testPrivacyIdeaContainerApi() {
       });
       // Act
       print('');
-      final data = await containerApi.finalizeContainer(tokenContainer, EccUtils());
+      final data = await containerApi.finalizeContainer(tokenContainer);
       final policies = data.policies;
       final responsePublicServerKey = data.publicServerKey;
       // Assert

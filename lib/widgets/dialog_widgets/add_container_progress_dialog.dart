@@ -52,15 +52,17 @@ class _AddContainerProgressDialogState extends State<AddContainerProgressDialog>
       title: Text(AppLocalizations.of(context)!.containerAddDialogTitle),
       content: SizedBox(
         width: double.maxFinite,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            for (var serial in widget.serials) ...[
-              AddContainerProgressDialogTile(serial, _notifiers[serial]),
-              if (serial != widget.serials.last) const Divider(),
-            ]
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (var serial in widget.serials) ...[
+                AddContainerProgressDialogTile(serial, _notifiers[serial]),
+                if (serial != widget.serials.last) const Divider(),
+              ]
+            ],
+          ),
         ),
       ),
       actions: [
