@@ -235,8 +235,8 @@ class PiContainerApi implements TokenContainerApi {
     try {
       challenge = await _getChallenge(container, unregisterUrl);
     } on PiServerResultError catch (e) {
-      if (e.code == 3001) {
-        return UnregisterContainerResult(success: false);
+      if (e.code == 3001 || e.code == 601) {
+        return UnregisterContainerResult(success: true);
       }
       rethrow;
     }
@@ -251,9 +251,6 @@ class PiContainerApi implements TokenContainerApi {
     final piResponse = response.asPiServerResponse<UnregisterContainerResult>();
     final errorResponse = piResponse?.asError;
     if (errorResponse != null) {
-      if (errorResponse.piServerResultError.code == 3002) {
-        return UnregisterContainerResult(success: true);
-      }
       throw errorResponse.piServerResultError;
     }
     if (response.statusCode != 200 || piResponse == null) throw ResponseError(response);
