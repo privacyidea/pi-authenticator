@@ -23,7 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 
-import '../../enums/image_file_type.dart';
+import '../../enums/image_format.dart';
 
 extension ImageFormatX on ImageFormat {
   static ImageFormat fromExtensionString(String ex) => switch (ex) {

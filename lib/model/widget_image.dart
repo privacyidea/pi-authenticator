@@ -25,9 +25,9 @@ import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../../../../../../model/extensions/enums/image_file_type_extension.dart';
 import '../utils/logger.dart';
-import 'enums/image_file_type.dart';
+import 'enums/image_format.dart';
+import 'extensions/enums/image_format_extension.dart';
 
 part 'widget_image.g.dart';
 

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:privacyidea_authenticator/model/enums/app_feature.dart';
-import 'package:privacyidea_authenticator/model/enums/image_file_type.dart';
+import 'package:privacyidea_authenticator/model/enums/image_format.dart';
 import 'package:privacyidea_authenticator/model/widget_image.dart';
 import 'package:privacyidea_authenticator/utils/customization/application_customization.dart';
 
