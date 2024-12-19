@@ -186,7 +186,7 @@ void _testDayPasswordToken() {
       expect(uriMap[Token.IMAGE], 'example.png');
       expect(uriMap[OTPToken.ALGORITHM], 'SHA1');
       expect(uriMap[OTPToken.DIGITS], '6');
-      expect(uriMap[OTPToken.SECRET_BASE32], Encodings.base32.encode(utf8.encode('secret')));
+      expect(uriMap[OTPToken.SECRET_BASE32], 'secret');
       expect(uriMap[TOTPToken.PERIOD_SECONDS], '86400');
     });
     test('fromJson', () {

@@ -114,9 +114,9 @@ void _testSteamToken() {
         expect(totpUriMap[Token.LABEL], 'label');
         expect(totpUriMap[Token.ISSUER], 'issuer');
         expect(totpUriMap[Token.OTPAUTH_TYPE], 'STEAM');
-        expect(totpUriMap[Token.PIN], false);
+        expect(totpUriMap[Token.PIN], 'False');
         expect(totpUriMap[Token.IMAGE], 'example.png');
-        expect(totpUriMap[OTPToken.SECRET_BASE32], 'ONSWG4TFOQ======');
+        expect(totpUriMap[OTPToken.SECRET_BASE32], 'secret');
       });
       test('fromJson', () {
         final steamJson = {

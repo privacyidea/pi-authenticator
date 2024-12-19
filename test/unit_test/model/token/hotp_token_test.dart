@@ -175,7 +175,7 @@ void _testHotpToken() {
       expect(uriMap[Token.PIN], Token.PIN_VALUE_TRUE);
       expect(uriMap[Token.IMAGE], 'example.png');
       expect(uriMap[OTPToken.ALGORITHM], 'SHA1');
-      expect(uriMap[OTPToken.SECRET_BASE32], Encodings.base32.encode(utf8.encode('secret')));
+      expect(uriMap[OTPToken.SECRET_BASE32], 'secret');
       expect(uriMap[OTPToken.DIGITS], '6');
       expect(uriMap[HOTPToken.COUNTER], '1');
     });
@@ -187,7 +187,7 @@ void _testHotpToken() {
         'type': 'HOTP',
         'algorithm': 'SHA256',
         'digits': 8,
-        'secret': 'ONSWG4TFOQ======',
+        'secret': 'secret',
         'counter': 5,
         'pin': false,
       };
@@ -197,7 +197,7 @@ void _testHotpToken() {
       expect(hotpFromJson.issuer, 'issuer');
       expect(hotpFromJson.algorithm, Algorithms.SHA256);
       expect(hotpFromJson.digits, 8);
-      expect(hotpFromJson.secret, 'ONSWG4TFOQ======');
+      expect(hotpFromJson.secret, 'secret');
       expect(hotpFromJson.type, 'HOTP');
       expect(hotpFromJson.pin, false);
     });

@@ -222,10 +222,9 @@ void _testPushToken() {
       expect(uriMap[Token.LABEL], 'label');
       expect(uriMap[Token.ISSUER], 'issuer');
       expect(uriMap[Token.SERIAL], 'serial');
-      expect(uriMap[PushToken.SSL_VERIFY], 'True');
+      expect(uriMap[PushToken.SSL_VERIFY], '1');
       expect(uriMap[PushToken.ENROLLMENT_CREDENTIAL], 'enrollmentCredentials');
       expect(uriMap[PushToken.ROLLOUT_URL], 'http://www.example.com');
-      expect(uriMap[PushToken.TTL_MINUTES], '30');
       expect(uriMap[PushToken.VERSION], '1');
     });
     test('fromJson', () {

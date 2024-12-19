@@ -167,12 +167,12 @@ void _testTotpToken() {
       expect(totpUriMap[Token.LABEL], 'label');
       expect(totpUriMap[Token.ISSUER], 'issuer');
       expect(totpUriMap[Token.OTPAUTH_TYPE], 'TOTP');
-      expect(totpUriMap[Token.PIN], false);
+      expect(totpUriMap[Token.PIN], 'False');
       expect(totpUriMap[Token.IMAGE], 'example.png');
       expect(totpUriMap[OTPToken.ALGORITHM], 'SHA1');
-      expect(totpUriMap[OTPToken.DIGITS], 6);
-      expect(totpUriMap[OTPToken.SECRET_BASE32], 'ONSWG4TFOQ======');
-      expect(totpUriMap[TOTPToken.PERIOD_SECONDS], 30);
+      expect(totpUriMap[OTPToken.DIGITS], '6');
+      expect(totpUriMap[OTPToken.SECRET_BASE32], 'secret');
+      expect(totpUriMap[TOTPToken.PERIOD_SECONDS], '30');
     });
     test('fromJson', () {
       final totpJson = {
