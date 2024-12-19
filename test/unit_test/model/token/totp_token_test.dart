@@ -10,13 +10,7 @@ import 'package:privacyidea_authenticator/model/tokens/otp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
 
-void main() {
-  _testTotpToken();
-}
-
-void _testTotpToken() {
-  group('TOTP Token creation/method', () {
-    final totpToken = TOTPToken(
+TOTPToken get totpToken => TOTPToken(
       period: 30,
       label: 'label',
       issuer: 'issuer',
@@ -30,6 +24,13 @@ void _testTotpToken() {
       isLocked: false,
       folderId: 0,
     );
+
+void main() {
+  _testTotpToken();
+}
+
+void _testTotpToken() {
+  group('TOTP Token creation', () {
     test('constructor', () {
       expect(totpToken.period, 30);
       expect(totpToken.label, 'label');
@@ -74,6 +75,8 @@ void _testTotpToken() {
       expect(totpCopy.isLocked, true);
       expect(totpCopy.folderId, 1);
     });
+  });
+  group('serialization', () {
     group('fromUriMap', () {
       test('with full map', () {
         final uriMap = {
@@ -159,6 +162,18 @@ void _testTotpToken() {
         expect(() => TOTPToken.fromOtpAuthMap(uriMap), throwsA(isA<ArgumentError>()));
       });
     });
+    test('toUriMap', () {
+      final totpUriMap = totpToken.toOtpAuthMap();
+      expect(totpUriMap[Token.LABEL], 'label');
+      expect(totpUriMap[Token.ISSUER], 'issuer');
+      expect(totpUriMap[Token.OTPAUTH_TYPE], 'TOTP');
+      expect(totpUriMap[Token.PIN], false);
+      expect(totpUriMap[Token.IMAGE], 'example.png');
+      expect(totpUriMap[OTPToken.ALGORITHM], 'SHA1');
+      expect(totpUriMap[OTPToken.DIGITS], 6);
+      expect(totpUriMap[OTPToken.SECRET_BASE32], 'ONSWG4TFOQ======');
+      expect(totpUriMap[TOTPToken.PERIOD_SECONDS], 30);
+    });
     test('fromJson', () {
       final totpJson = {
         'period': 11,
@@ -207,7 +222,109 @@ void _testTotpToken() {
       expect(totpJson['folderId'], 0);
     });
   });
+  group('isSameTokenAs', () {
+    test('no serial | same id | same parameters', () {
+      // No serial. Should recognize by id or parameters
+      final totpToken = TOTPToken(
+        period: 30,
+        label: 'label',
+        issuer: 'issuer',
+        id: 'id',
+        algorithm: Algorithms.SHA1,
+        digits: 6,
+        secret: 'secret',
+      );
 
+      expect(totpToken.isSameTokenAs(totpToken.copyWith()), isTrue);
+    });
+    test('no serial | same id | different parameters', () {
+      // No serial. Should recognize by id
+      final totpToken = TOTPToken(
+        period: 30,
+        label: 'label',
+        issuer: 'issuer',
+        id: 'id',
+        algorithm: Algorithms.SHA1,
+        digits: 6,
+        secret: 'secret',
+      );
+
+      expect(totpToken.isSameTokenAs(totpToken.copyWith(algorithm: Algorithms.SHA256)), isTrue);
+    });
+    test('no serial | different id | same parameters', () {
+      // No serial, different id. Should recognize by parameters
+      final totpToken = TOTPToken(
+        period: 30,
+        label: 'label',
+        issuer: 'issuer',
+        id: 'id',
+        algorithm: Algorithms.SHA1,
+        digits: 6,
+        secret: 'secret',
+      );
+
+      expect(totpToken.isSameTokenAs(totpToken.copyWith(id: 'id2')), isTrue);
+    });
+    test('no serial | different id | different parameters', () {
+      // No serial, different id, different parameters. Should not recognize
+      final totpToken = TOTPToken(
+        period: 30,
+        label: 'label',
+        issuer: 'issuer',
+        id: 'id',
+        algorithm: Algorithms.SHA1,
+        digits: 6,
+        secret: 'secret',
+      );
+
+      expect(totpToken.isSameTokenAs(totpToken.copyWith(id: 'id2', algorithm: Algorithms.SHA256)), isFalse);
+    });
+    test('same serial | different id | different parameters', () {
+      // Different id, different parameters. Should recognize by serial
+      final totpToken = TOTPToken(
+        period: 30,
+        label: 'label',
+        issuer: 'issuer',
+        serial: 'serial',
+        id: 'id',
+        algorithm: Algorithms.SHA1,
+        digits: 6,
+        secret: 'secret',
+      );
+
+      expect(totpToken.isSameTokenAs(totpToken.copyWith(id: 'id2', algorithm: Algorithms.SHA256)), isTrue);
+    });
+    test('different serial | same id | different parameters', () {
+      // Different serial, different parameters. Should recognize by id
+      final totpToken = TOTPToken(
+        period: 30,
+        label: 'label',
+        issuer: 'issuer',
+        serial: 'serial',
+        id: 'id',
+        algorithm: Algorithms.SHA1,
+        digits: 6,
+        secret: 'secret',
+      );
+
+      expect(totpToken.isSameTokenAs(totpToken.copyWith(serial: 'serial2', algorithm: Algorithms.SHA256)), isTrue);
+    });
+    test('different serial | different id | same parameters', () {
+      // Different serial, different id. Should NOT recognize by parameters
+      final totpToken = TOTPToken(
+        period: 30,
+        label: 'label',
+        issuer: 'issuer',
+        serial: 'serial',
+        id: 'id',
+        algorithm: Algorithms.SHA1,
+        digits: 6,
+        secret: 'secret',
+      );
+
+      expect(totpToken.isSameTokenAs(totpToken.copyWith(serial: 'serial2', id: 'id2')), isFalse);
+    });
+  });
   group('Calculate TOTP Token values', () {
     // Basicly the TOTP token is a HOTP token but the counter is calculated based on the current time.
     // So we can test TOTP token by comparing its OTP value with a HOTP value with the same counter.

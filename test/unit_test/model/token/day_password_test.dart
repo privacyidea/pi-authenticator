@@ -11,13 +11,7 @@ import 'package:privacyidea_authenticator/model/tokens/otp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
 
-void main() {
-  _testDayPasswordToken();
-}
-
-void _testDayPasswordToken() {
-  group('Day password creation/method', () {
-    final dayPasswordToken = DayPasswordToken(
+DayPasswordToken get dayPasswordToken => DayPasswordToken(
       period: const Duration(hours: 24),
       viewMode: DayPasswordTokenViewMode.VALIDUNTIL,
       label: 'label',
@@ -32,6 +26,12 @@ void _testDayPasswordToken() {
       isLocked: false, // if pin is true, its automatically forced to be locked=true
       folderId: 0,
     );
+void main() {
+  _testDayPasswordToken();
+}
+
+void _testDayPasswordToken() {
+  group('Day password creation', () {
     test('constructor', () {
       expect(dayPasswordToken.period, const Duration(hours: 24));
       expect(dayPasswordToken.viewMode, DayPasswordTokenViewMode.VALIDUNTIL);
@@ -76,6 +76,8 @@ void _testDayPasswordToken() {
       expect(totpCopy.isLocked, true);
       expect(totpCopy.folderId, 1);
     });
+  });
+  group('serialization', () {
     group('fromUriMap', () {
       test('with full map', () {
         final uriMap = {
@@ -175,6 +177,18 @@ void _testDayPasswordToken() {
         expect(() => DayPasswordToken.fromOtpAuthMap(uriMap), throwsA(isA<ArgumentError>()));
       });
     });
+    test('toUriMap', () {
+      final uriMap = dayPasswordToken.toOtpAuthMap();
+      expect(uriMap[Token.LABEL], 'label');
+      expect(uriMap[Token.ISSUER], 'issuer');
+      expect(uriMap[Token.OTPAUTH_TYPE], 'DAYPASSWORD');
+      expect(uriMap[Token.PIN], Token.PIN_VALUE_TRUE);
+      expect(uriMap[Token.IMAGE], 'example.png');
+      expect(uriMap[OTPToken.ALGORITHM], 'SHA1');
+      expect(uriMap[OTPToken.DIGITS], '6');
+      expect(uriMap[OTPToken.SECRET_BASE32], Encodings.base32.encode(utf8.encode('secret')));
+      expect(uriMap[TOTPToken.PERIOD_SECONDS], '86400');
+    });
     test('fromJson', () {
       final totpJson = {
         'period': 11000000,
@@ -221,6 +235,151 @@ void _testDayPasswordToken() {
       expect(totpJson['sortIndex'], 0);
       expect(totpJson['isLocked'], true);
       expect(totpJson['folderId'], 0);
+    });
+  });
+  group('isSameTokenAs', () {
+    test('no serial | same id | same parameters', () {
+      // No serial. Should recognize by id or parameters
+      final dayPasswordToken = DayPasswordToken(
+        period: const Duration(hours: 24),
+        viewMode: DayPasswordTokenViewMode.VALIDUNTIL,
+        label: 'label',
+        issuer: 'issuer',
+        id: 'id',
+        algorithm: Algorithms.SHA1,
+        digits: 6,
+        secret: 'secret',
+        pin: true,
+        tokenImage: 'example.png',
+        sortIndex: 0,
+        isLocked: true,
+        folderId: 0,
+      );
+
+      expect(dayPasswordToken.isSameTokenAs(dayPasswordToken.copyWith()), true);
+    });
+    test('no serial | same id | different parameters', () {
+      // No serial. Should recognize by id
+      final dayPasswordToken = DayPasswordToken(
+        period: const Duration(hours: 24),
+        viewMode: DayPasswordTokenViewMode.VALIDUNTIL,
+        label: 'label',
+        issuer: 'issuer',
+        id: 'id',
+        algorithm: Algorithms.SHA1,
+        digits: 6,
+        secret: 'secret',
+        pin: true,
+        tokenImage: 'example.png',
+        sortIndex: 0,
+        isLocked: true,
+        folderId: 0,
+      );
+
+      expect(dayPasswordToken.isSameTokenAs(dayPasswordToken.copyWith(algorithm: Algorithms.SHA256)), true);
+    });
+    test('no serial | different id | same parameters', () {
+      // No serial, different id. Should recognize by parameters
+      final dayPasswordToken = DayPasswordToken(
+        period: const Duration(hours: 24),
+        viewMode: DayPasswordTokenViewMode.VALIDUNTIL,
+        label: 'label',
+        issuer: 'issuer',
+        id: 'id',
+        algorithm: Algorithms.SHA1,
+        digits: 6,
+        secret: 'secret',
+        pin: true,
+        tokenImage: 'example.png',
+        sortIndex: 0,
+        isLocked: true,
+        folderId: 0,
+      );
+
+      expect(dayPasswordToken.isSameTokenAs(dayPasswordToken.copyWith(id: 'id2')), true);
+    });
+    test('no serial | different id | different parameters', () {
+      // No serial, different id, different parameters. Should not recognize
+      final dayPasswordToken = DayPasswordToken(
+        period: const Duration(hours: 24),
+        viewMode: DayPasswordTokenViewMode.VALIDUNTIL,
+        label: 'label',
+        issuer: 'issuer',
+        id: 'id',
+        algorithm: Algorithms.SHA1,
+        digits: 6,
+        secret: 'secret',
+        pin: true,
+        tokenImage: 'example.png',
+        sortIndex: 0,
+        isLocked: true,
+        folderId: 0,
+      );
+
+      expect(dayPasswordToken.isSameTokenAs(dayPasswordToken.copyWith(id: 'id2', algorithm: Algorithms.SHA256)), false);
+    });
+    test('same serial | different id | different parameters', () {
+      // Different id, different parameters. Should recognize by serial
+      final dayPasswordToken = DayPasswordToken(
+        period: const Duration(hours: 24),
+        viewMode: DayPasswordTokenViewMode.VALIDUNTIL,
+        label: 'label',
+        issuer: 'issuer',
+        serial: 'serial',
+        id: 'id',
+        algorithm: Algorithms.SHA1,
+        digits: 6,
+        secret: 'secret',
+        pin: true,
+        tokenImage: 'example.png',
+        sortIndex: 0,
+        isLocked: true,
+        folderId: 0,
+      );
+
+      expect(dayPasswordToken.isSameTokenAs(dayPasswordToken.copyWith(id: 'id2', algorithm: Algorithms.SHA256)), true);
+    });
+    test('different serial | same id | different parameters', () {
+      // Different serial, different parameters. Should recognize by id
+      final dayPasswordToken = DayPasswordToken(
+        period: const Duration(hours: 24),
+        viewMode: DayPasswordTokenViewMode.VALIDUNTIL,
+        label: 'label',
+        issuer: 'issuer',
+        serial: 'serial',
+        id: 'id',
+        algorithm: Algorithms.SHA1,
+        digits: 6,
+        secret: 'secret',
+        pin: true,
+        tokenImage: 'example.png',
+        sortIndex: 0,
+        isLocked: true,
+        folderId: 0,
+      );
+
+      expect(dayPasswordToken.isSameTokenAs(dayPasswordToken.copyWith(serial: 'serial2', algorithm: Algorithms.SHA256)), true);
+    });
+    test('different serial | different id | same parameters', () {
+      // Different serial, different id. Should NOT recognize by parameters
+      final dayPasswordToken = DayPasswordToken(
+        period: const Duration(hours: 24),
+        viewMode: DayPasswordTokenViewMode.VALIDUNTIL,
+        label: 'label',
+        issuer: 'issuer',
+        serial: 'serial',
+        id: 'id',
+        algorithm: Algorithms.SHA1,
+        digits: 6,
+        secret: 'secret',
+        pin: true,
+        tokenImage: 'example.png',
+        sortIndex: 0,
+        isLocked: true,
+        folderId: 0,
+      );
+
+      expect(dayPasswordToken.isSameTokenAs(dayPasswordToken.copyWith(serial: 'serial2', id: 'id2')), false);
     });
   });
   group('Calculate day password values', () {

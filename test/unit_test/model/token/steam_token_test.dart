@@ -9,24 +9,24 @@ import 'package:privacyidea_authenticator/model/tokens/steam_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
 
+SteamToken get steamToken => SteamToken(
+      label: 'label',
+      issuer: 'issuer',
+      id: 'id',
+      secret: 'secret',
+      pin: false,
+      tokenImage: 'example.png',
+      sortIndex: 0,
+      isLocked: false,
+      folderId: 0,
+    );
 void main() {
   _testSteamToken();
 }
 
 void _testSteamToken() {
   group('Steam Token', () {
-    group('TOTP Token creation/method', () {
-      final steamToken = SteamToken(
-        label: 'label',
-        issuer: 'issuer',
-        id: 'id',
-        secret: 'secret',
-        pin: false,
-        tokenImage: 'example.png',
-        sortIndex: 0,
-        isLocked: false,
-        folderId: 0,
-      );
+    group('TOTP Token creation', () {
       test('constructor', () {
         expect(steamToken.period, 30); // default period
         expect(steamToken.label, 'label');
@@ -71,6 +71,8 @@ void _testSteamToken() {
         expect(totpCopy.isLocked, true);
         expect(totpCopy.folderId, 1);
       });
+    });
+    group('Serialization', () {
       group('fromUriMap', () {
         test('with full map', () {
           final uriMap = {
@@ -106,6 +108,15 @@ void _testSteamToken() {
           final uriMap = <String, dynamic>{};
           expect(() => TOTPToken.fromOtpAuthMap(uriMap), throwsA(isA<ArgumentError>()));
         });
+      });
+      test('toUriMap', () {
+        final totpUriMap = steamToken.toOtpAuthMap();
+        expect(totpUriMap[Token.LABEL], 'label');
+        expect(totpUriMap[Token.ISSUER], 'issuer');
+        expect(totpUriMap[Token.OTPAUTH_TYPE], 'STEAM');
+        expect(totpUriMap[Token.PIN], false);
+        expect(totpUriMap[Token.IMAGE], 'example.png');
+        expect(totpUriMap[OTPToken.SECRET_BASE32], 'ONSWG4TFOQ======');
       });
       test('fromJson', () {
         final steamJson = {
@@ -147,6 +158,52 @@ void _testSteamToken() {
         expect(totpJson['sortIndex'], 0);
         expect(totpJson['isLocked'], false);
         expect(totpJson['folderId'], 0);
+      });
+    });
+    group('isSameTokenAs', () {
+      test('no serial | same id | same parameters', () {
+        // No serial. Should recognize by id or parameters
+        final steamToken = SteamToken(
+          label: 'label',
+          issuer: 'issuer',
+          id: 'id',
+          secret: 'secret',
+        );
+
+        expect(steamToken.isSameTokenAs(steamToken.copyWith()), isTrue);
+      });
+      test('no serial | same id | different parameters', () {
+        // No serial. Should recognize by id
+        final steamToken = SteamToken(
+          label: 'label',
+          issuer: 'issuer',
+          id: 'id',
+          secret: 'secret',
+        );
+
+        expect(steamToken.isSameTokenAs(steamToken.copyWith(secret: 'secret2')), isTrue);
+      });
+      test('no serial | different id | same parameters', () {
+        // No serial, different id. Should recognize by parameters
+        final steamToken = SteamToken(
+          label: 'label',
+          issuer: 'issuer',
+          id: 'id',
+          secret: 'secret',
+        );
+
+        expect(steamToken.isSameTokenAs(steamToken.copyWith(id: 'id2')), isTrue);
+      });
+      test('no serial | different id | different parameters', () {
+        // No serial, different id, different parameters. Should not recognize
+        final steamToken = SteamToken(
+          label: 'label',
+          issuer: 'issuer',
+          id: 'id',
+          secret: 'secret',
+        );
+
+        expect(steamToken.isSameTokenAs(steamToken.copyWith(id: 'id2', secret: 'secret2')), isFalse);
       });
     });
     test('otpValue', () {

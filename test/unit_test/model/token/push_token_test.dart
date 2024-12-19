@@ -3,13 +3,7 @@ import 'package:privacyidea_authenticator/model/enums/push_token_rollout_state.d
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 
-void main() {
-  _testPushToken();
-}
-
-void _testPushToken() {
-  group('Push Token creation/method', () {
-    final pushToken = PushToken(
+PushToken get pushToken => PushToken(
       serial: 'serial',
       expirationDate: DateTime(2017, 9, 7, 17, 30),
       label: 'label',
@@ -29,6 +23,12 @@ void _testPushToken() {
       isLocked: true,
       pin: true,
     );
+void main() {
+  _testPushToken();
+}
+
+void _testPushToken() {
+  group('Push Token creation', () {
     test('constructor', () {
       expect(pushToken.serial, 'serial');
       expect(pushToken.expirationDate, DateTime(2017, 9, 7, 17, 30));
@@ -90,6 +90,8 @@ void _testPushToken() {
       expect(copy.isLocked, false);
       expect(copy.pin, false);
     });
+  });
+  group('serialization', () {
     test('fromJson', () {
       final json = <String, dynamic>{
         "label": "label",
@@ -192,6 +194,147 @@ void _testPushToken() {
         final uriMap = <String, dynamic>{};
         expect(() => PushToken.fromOtpAuthMap(uriMap), throwsA(isA<ArgumentError>()));
       });
+    });
+
+    test('toUriMap', () {
+      final token = PushToken(
+        serial: 'serial',
+        expirationDate: DateTime(2017, 9, 7, 17, 30),
+        label: 'label',
+        issuer: 'issuer',
+        id: 'id',
+        sslVerify: true,
+        enrollmentCredentials: 'enrollmentCredentials',
+        url: Uri.parse('http://www.example.com'),
+        publicServerKey: 'publicServerKey',
+        publicTokenKey: 'publicTokenKey',
+        privateTokenKey: 'privateTokenKey',
+        isRolledOut: true,
+        rolloutState: PushTokenRollOutState.rolloutNotStarted,
+        sortIndex: 0,
+        tokenImage: 'example.png',
+        folderId: 0,
+        isLocked: true,
+        pin: true,
+      );
+      final uriMap = token.toOtpAuthMap();
+      expect(uriMap[Token.OTPAUTH_TYPE], 'PIPUSH');
+      expect(uriMap[Token.LABEL], 'label');
+      expect(uriMap[Token.ISSUER], 'issuer');
+      expect(uriMap[Token.SERIAL], 'serial');
+      expect(uriMap[PushToken.SSL_VERIFY], 'True');
+      expect(uriMap[PushToken.ENROLLMENT_CREDENTIAL], 'enrollmentCredentials');
+      expect(uriMap[PushToken.ROLLOUT_URL], 'http://www.example.com');
+      expect(uriMap[PushToken.TTL_MINUTES], '30');
+      expect(uriMap[PushToken.VERSION], '1');
+    });
+    test('fromJson', () {
+      final json = {
+        'label': 'label',
+        'issuer': 'issuer',
+        'id': 'id',
+        'isLocked': true,
+        'pin': true,
+        'tokenImage': 'example.png',
+        'folderId': 0,
+        'sortIndex': 0,
+        'type': 'PIPUSH',
+        'expirationDate': '2017-09-07T17:30:00.000',
+        'serial': 'serial',
+        'sslVerify': true,
+        'enrollmentCredentials': 'enrollmentCredentials',
+        'url': 'http://www.example.com',
+        'isRolledOut': true,
+        'rolloutState': 'generatingRSAKeyPair',
+        'publicServerKey': 'publicServerKey',
+        'privateTokenKey': 'privateTokenKey',
+        'publicTokenKey': 'publicTokenKey',
+      };
+      final token = PushToken.fromJson(json);
+      expect(token.label, 'label');
+      expect(token.issuer, 'issuer');
+      expect(token.id, 'id');
+      expect(token.isLocked, true);
+      expect(token.pin, true);
+      expect(token.tokenImage, 'example.png');
+      expect(token.folderId, 0);
+      expect(token.sortIndex, 0);
+      expect(token.type, 'PIPUSH');
+      expect(token.expirationDate.toString(), DateTime(2017, 9, 7, 17, 30).toString());
+      expect(token.serial, 'serial');
+      expect(token.sslVerify, true);
+      expect(token.enrollmentCredentials, 'enrollmentCredentials');
+      expect(token.url, Uri.parse('http://www.example.com'));
+      expect(token.isRolledOut, true);
+      expect(token.rolloutState,
+          PushTokenRollOutState.generatingRSAKeyPairFailed); // When loading from json, an processing state should be converted to a failed state.
+      expect(token.publicServerKey, 'publicServerKey');
+      expect(token.privateTokenKey, 'privateTokenKey');
+      expect(token.publicTokenKey, 'publicTokenKey');
+    });
+    test('toJson', () {
+      final tokenJson = pushToken.toJson();
+      final json = {
+        "checkedContainer": [],
+        "containerSerial": null,
+        "label": "label",
+        "issuer": "issuer",
+        "id": "id",
+        "pin": true,
+        "isLocked": true,
+        "isHidden": false,
+        "tokenImage": "example.png",
+        "folderId": 0,
+        "sortIndex": 0,
+        "origin": null,
+        "type": "PIPUSH",
+        "expirationDate": "2017-09-07T17:30:00.000",
+        "serial": "serial",
+        "fbToken": null,
+        "sslVerify": true,
+        "enrollmentCredentials": "enrollmentCredentials",
+        "url": "http://www.example.com",
+        "isRolledOut": true,
+        "rolloutState": "rolloutNotStarted",
+        "publicServerKey": "publicServerKey",
+        "privateTokenKey": "privateTokenKey",
+        "publicTokenKey": "publicTokenKey"
+      };
+      for (final key in json.keys) {
+        expect(tokenJson[key], json[key]);
+      }
+    });
+  });
+  group('isSameTokenAs', () {
+    test('same serial | different id | different parameters', () {
+      // Different id, different parameters. Should recognize by serial
+      final pushToken = PushToken(
+        serial: 'serial',
+        id: 'id',
+        privateTokenKey: 'privateTokenKey',
+      );
+
+      expect(pushToken.isSameTokenAs(pushToken.copyWith(id: 'id2', privateTokenKey: 'privateTokenKey2')), true);
+    });
+    test('different serial | same id | different parameters', () {
+      // Different serial, different parameters. Should recognize by id
+      final pushToken = PushToken(
+        serial: 'serial',
+        id: 'id',
+        privateTokenKey: 'privateTokenKey',
+      );
+
+      expect(pushToken.isSameTokenAs(pushToken.copyWith(serial: 'serial2', privateTokenKey: 'privateTokenKey2')), true);
+    });
+    test('different serial | different id | same parameters', () {
+      // Different serial, different id. Should NOT recognize by parameters
+      final pushToken = PushToken(
+        serial: 'serial',
+        id: 'id',
+        privateTokenKey: 'privateTokenKey',
+      );
+
+      expect(pushToken.isSameTokenAs(pushToken.copyWith(serial: 'serial2', id: 'id2')), false);
     });
   });
 }

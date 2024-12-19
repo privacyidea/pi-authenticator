@@ -40,13 +40,14 @@ class SteamToken extends TOTPToken {
 
   @override
   bool get isPrivacyIdeaToken => false;
+  @override
+  Null get serial => null;
   static String get tokenType => TokenTypes.STEAM.name;
   static const String steamAlphabet = "23456789BCDFGHJKMNPQRTVWXY";
 
   SteamToken({
     required super.id,
     required super.secret,
-    super.serial,
     super.containerSerial,
     super.checkedContainer,
     String? type,
@@ -87,7 +88,6 @@ class SteamToken extends TOTPToken {
     Algorithms? algorithm, // unused steam tokens always have SHA1 algorithm
   }) {
     return SteamToken(
-      serial: serial ?? this.serial,
       label: label ?? this.label,
       issuer: issuer ?? this.issuer,
       containerSerial: containerSerial != null ? containerSerial() : this.containerSerial,
@@ -180,7 +180,6 @@ class SteamToken extends TOTPToken {
     return SteamToken(
       label: uriMap[Token.LABEL],
       issuer: uriMap[Token.ISSUER],
-      serial: uriMap[Token.SERIAL],
       secret: uriMap[OTPToken.SECRET_BASE32],
       tokenImage: uriMap[Token.IMAGE],
       pin: uriMap[Token.PIN],

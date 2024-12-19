@@ -12,10 +12,10 @@ import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.d
 import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
-import 'package:privacyidea_authenticator/utils/privacyidea_io_client.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
+import 'package:privacyidea_authenticator/utils/privacyidea_io_client.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 
@@ -145,7 +145,7 @@ void _testTokenNotifier() {
       verify(mockRepo.deleteToken(before.last)).called(1);
     });
     group('addOrReplaceToken', () {
-      test('add Token', () async {
+      test('add new Token', () async {
         final mockSettingsRepo = MockSettingsRepository();
         when(mockSettingsRepo.loadSettings()).thenAnswer((_) async => SettingsState());
         final container = ProviderContainer(overrides: [settingsProvider.overrideWith(() => SettingsNotifier(repoOverride: mockSettingsRepo))]);

@@ -664,135 +664,137 @@ void _testTokenContainerNotifier() {
       expect(stateContainer.publicServerKey, expectedContainer.publicServerKey);
       expect(stateContainer.publicClientKey, isNotEmpty);
     });
-    test('sync', () async {
-      // prepare
-      TestWidgetsFlutterBinding.ensureInitialized();
-      var containerRepoState = _buildFinalizedContainerState();
-      final containerToSync = containerRepoState.containerList.first as TokenContainerFinalized;
-      final mockContainerApi = MockTokenContainerApi();
-      final updatedTokens = <Token>[
-        HOTPToken(
-          id: 'ID01',
-          serial: "HOTPTOKEN01",
-          containerSerial: "CONTAINER01",
-          algorithm: Algorithms.SHA256,
-          digits: 6,
-          secret: "SECRET01",
-          counter: 8,
-        ),
-        TOTPToken(
-          id: "ID03",
-          serial: "TOTPTOKEN01",
-          period: 30,
-          algorithm: Algorithms.SHA256,
-          digits: 8,
-          secret: "SECRET03",
-        ),
-      ];
-      when(mockContainerApi.sync(any, any)).thenAnswer(
-        (v) async => ContainerSyncUpdates(
-          containerSerial: 'CONTAINER01',
-          updatedTokens: updatedTokens,
-          deleteTokenSerials: ["HOTPTOKEN02"],
-          newPolicies: ContainerPolicies(
+    group('sync', () async {
+      test('sync', () async {
+        // prepare
+        TestWidgetsFlutterBinding.ensureInitialized();
+        var containerRepoState = _buildFinalizedContainerState();
+        final containerToSync = containerRepoState.containerList.first as TokenContainerFinalized;
+        final mockContainerApi = MockTokenContainerApi();
+        final updatedTokens = <Token>[
+          HOTPToken(
+            id: 'ID01',
+            serial: "HOTPTOKEN01",
+            containerSerial: "CONTAINER01",
+            algorithm: Algorithms.SHA256,
+            digits: 6,
+            secret: "SECRET01",
+            counter: 8,
+          ),
+          TOTPToken(
+            id: "ID03",
+            serial: "TOTPTOKEN01",
+            period: 30,
+            algorithm: Algorithms.SHA256,
+            digits: 8,
+            secret: "SECRET03",
+          ),
+        ];
+        when(mockContainerApi.sync(any, any)).thenAnswer(
+          (v) async => ContainerSyncUpdates(
+            containerSerial: 'CONTAINER01',
+            updatedTokens: updatedTokens,
+            deleteTokenSerials: ["HOTPTOKEN02"],
+            newPolicies: ContainerPolicies(
+              rolloverAllowed: true,
+              initialTokenTransfer: true,
+              tokensDeletable: true,
+              unregisterAllowed: true,
+            ),
+          ),
+        );
+
+        final mockContainerRepo = _setupMockContainerRepo(() => containerRepoState, (state) => containerRepoState = state);
+
+        final mockTokenContainerProvider = TokenContainerNotifier(
+          repoOverride: mockContainerRepo,
+          containerApiOverride: mockContainerApi,
+          eccUtilsOverride: EccUtils(),
+        );
+        // prepare - token notifier
+        var repoTokens = <String, Token>{
+          'ID01': HOTPToken(
+            id: 'ID01',
+            serial: "HOTPTOKEN01",
+            containerSerial: "CONTAINER01",
+            algorithm: Algorithms.SHA256,
+            digits: 8,
+            secret: "SECRET01",
+            counter: 10,
+          ),
+          "ID02": HOTPToken(
+            id: "ID02",
+            serial: "HOTPTOKEN02",
+            containerSerial: null,
+            algorithm: Algorithms.SHA256,
+            digits: 6,
+            secret: "SECRET02",
+            counter: 12,
+          ),
+          "ID04": TOTPToken(
+            id: "ID04",
+            serial: "TOTPTOKEN02",
+            period: 30,
+            algorithm: Algorithms.SHA512,
+            digits: 6,
+            secret: "SECRET04",
+          ),
+        };
+        final mockTokenRepo = MockTokenRepository();
+        when(mockTokenRepo.loadTokens()).thenAnswer((_) => Future.value(repoTokens.values.toList()));
+        when(mockTokenRepo.saveOrReplaceTokens(any)).thenAnswer((invocation) {
+          final tokens = invocation.positionalArguments[0] as List<Token>;
+          for (final token in tokens) {
+            repoTokens[token.id] = token;
+          }
+          return Future.value([]);
+        });
+
+        final mockTokenNotifier = TokenNotifier(
+          repoOverride: mockTokenRepo,
+        );
+
+        // prepare - settings notifier
+        final MockSettingsRepository mockSettingsRepo = MockSettingsRepository();
+        when(mockSettingsRepo.loadSettings()).thenAnswer((_) => Future.value(SettingsState()));
+        when(mockSettingsRepo.saveSettings(any)).thenAnswer((invocation) => Future.value(invocation.positionalArguments[0]));
+        final SettingsNotifier settingsNotifier = SettingsNotifier(repoOverride: mockSettingsRepo);
+
+        // prepare - provider container
+        final providerContainer = ProviderContainer(
+          overrides: [
+            tokenContainerProvider.overrideWith(() => mockTokenContainerProvider),
+            tokenProvider.overrideWith(() => mockTokenNotifier),
+            settingsProvider.overrideWith(() => settingsNotifier),
+          ],
+        );
+
+        // act
+        var tokenState = providerContainer.read(tokenProvider);
+        await providerContainer.read(tokenContainerProvider.notifier).sync(tokenState: tokenState, isManually: false);
+
+        // assert
+        final expectedStateUnordered = TokenState(tokens: [...updatedTokens, repoTokens["ID04"]!]);
+        final containerState = await providerContainer.read(tokenContainerProvider.future);
+        await Future.delayed(const Duration(milliseconds: 1000)); // wait for the sync to finish
+        tokenState = providerContainer.read(tokenProvider);
+        verify(mockContainerRepo.loadContainerState()).called(1);
+        expect(containerState, containerRepoState);
+        final stateContainer = containerState.containerList.first as TokenContainerFinalized;
+        final expectedContainer = containerToSync.copyWith(
+          policies: ContainerPolicies(
             rolloverAllowed: true,
             initialTokenTransfer: true,
             tokensDeletable: true,
             unregisterAllowed: true,
           ),
-        ),
-      );
-
-      final mockContainerRepo = _setupMockContainerRepo(() => containerRepoState, (state) => containerRepoState = state);
-
-      final mockTokenContainerProvider = TokenContainerNotifier(
-        repoOverride: mockContainerRepo,
-        containerApiOverride: mockContainerApi,
-        eccUtilsOverride: EccUtils(),
-      );
-      // prepare - token notifier
-      var repoTokens = <String, Token>{
-        'ID01': HOTPToken(
-          id: 'ID01',
-          serial: "HOTPTOKEN01",
-          containerSerial: "CONTAINER01",
-          algorithm: Algorithms.SHA256,
-          digits: 8,
-          secret: "SECRET01",
-          counter: 10,
-        ),
-        "ID02": HOTPToken(
-          id: "ID02",
-          serial: "HOTPTOKEN02",
-          containerSerial: null,
-          algorithm: Algorithms.SHA256,
-          digits: 6,
-          secret: "SECRET02",
-          counter: 12,
-        ),
-        "ID04": TOTPToken(
-          id: "ID04",
-          serial: "TOTPTOKEN02",
-          period: 30,
-          algorithm: Algorithms.SHA512,
-          digits: 6,
-          secret: "SECRET04",
-        ),
-      };
-      final mockTokenRepo = MockTokenRepository();
-      when(mockTokenRepo.loadTokens()).thenAnswer((_) => Future.value(repoTokens.values.toList()));
-      when(mockTokenRepo.saveOrReplaceTokens(any)).thenAnswer((invocation) {
-        final tokens = invocation.positionalArguments[0] as List<Token>;
-        for (final token in tokens) {
-          repoTokens[token.id] = token;
-        }
-        return Future.value([]);
+        );
+        verify(mockContainerApi.sync(any, any)).called(1);
+        expect(stateContainer.policies, expectedContainer.policies);
+        expect(stateContainer.syncState, SyncState.completed);
+        expect(tokenState.tokens.length, 3);
+        expect(tokenState.tokens, unorderedEquals(expectedStateUnordered.tokens));
       });
-
-      final mockTokenNotifier = TokenNotifier(
-        repoOverride: mockTokenRepo,
-      );
-
-      // prepare - settings notifier
-      final MockSettingsRepository mockSettingsRepo = MockSettingsRepository();
-      when(mockSettingsRepo.loadSettings()).thenAnswer((_) => Future.value(SettingsState()));
-      when(mockSettingsRepo.saveSettings(any)).thenAnswer((invocation) => Future.value(invocation.positionalArguments[0]));
-      final SettingsNotifier settingsNotifier = SettingsNotifier(repoOverride: mockSettingsRepo);
-
-      // prepare - provider container
-      final providerContainer = ProviderContainer(
-        overrides: [
-          tokenContainerProvider.overrideWith(() => mockTokenContainerProvider),
-          tokenProvider.overrideWith(() => mockTokenNotifier),
-          settingsProvider.overrideWith(() => settingsNotifier),
-        ],
-      );
-
-      // act
-      var tokenState = providerContainer.read(tokenProvider);
-      await providerContainer.read(tokenContainerProvider.notifier).sync(tokenState: tokenState, isManually: false);
-
-      // assert
-      final expectedStateUnordered = TokenState(tokens: [...updatedTokens, repoTokens["ID04"]!]);
-      final containerState = await providerContainer.read(tokenContainerProvider.future);
-      await Future.delayed(const Duration(milliseconds: 1000)); // wait for the sync to finish
-      tokenState = providerContainer.read(tokenProvider);
-      verify(mockContainerRepo.loadContainerState()).called(1);
-      expect(containerState, containerRepoState);
-      final stateContainer = containerState.containerList.first as TokenContainerFinalized;
-      final expectedContainer = containerToSync.copyWith(
-        policies: ContainerPolicies(
-          rolloverAllowed: true,
-          initialTokenTransfer: true,
-          tokensDeletable: true,
-          unregisterAllowed: true,
-        ),
-      );
-      verify(mockContainerApi.sync(any, any)).called(1);
-      expect(stateContainer.policies, expectedContainer.policies);
-      expect(stateContainer.syncState, SyncState.completed);
-      expect(tokenState.tokens.length, 3);
-      expect(tokenState.tokens, unorderedEquals(expectedStateUnordered.tokens));
     });
     test('getRolloverQrData', () async {
       // prepare
