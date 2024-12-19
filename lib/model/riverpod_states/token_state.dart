@@ -71,12 +71,12 @@ class TokenState {
     final stateTokens = this.tokens;
 
     for (var token in tokens) {
-      sameTokensMap[token] = stateTokens.firstWhereOrNull((element) => element.isSameTokenAs(token));
+      sameTokensMap[token] = stateTokens.firstWhereOrNull((element) => element.isSameTokenAs(token) == true);
     }
     return sameTokensMap;
   }
 
-  T? currentOf<T extends Token>(T token) => tokens.firstWhereOrNull((element) => element.isSameTokenAs(token)) as T?;
+  T? currentOf<T extends Token>(T token) => tokens.firstWhereOrNull((element) => element.isSameTokenAs(token) == true) as T?;
   T? currentOfId<T extends Token>(String id) => tokens.firstWhereOrNull((element) => element.id == id) as T?;
 
   TokenState withToken(Token token) {

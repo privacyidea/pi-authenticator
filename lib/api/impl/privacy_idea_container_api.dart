@@ -288,13 +288,7 @@ class PiContainerApi implements TokenContainerApi {
     required SimpleKeyPair encKeyPair,
   }) async {
     final publicKey = await encKeyPair.extractPublicKey();
-    final privateKeyBytes = await encKeyPair.extractPrivateKeyBytes();
-
     final publicKeyBase64 = base64.encode(publicKey.bytes);
-
-    Logger.warning('Public key base64: $publicKeyBase64');
-    Logger.warning('Private key bytes: ${base64.encode(privateKeyBytes)}');
-
     final containerDict = {
       TokenContainer.DICT_SERIAL: container.serial,
       TokenContainer.DICT_TYPE: TokenContainer.DICT_TYPE_SMARTPHONE,

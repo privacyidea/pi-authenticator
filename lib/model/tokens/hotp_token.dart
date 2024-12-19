@@ -69,7 +69,11 @@ class HOTPToken extends OTPToken {
 
   @override
   // Counter can be changed even if its the same token
-  bool isSameTokenAs(Token other) => super.isSameTokenAs(other) && other is HOTPToken;
+  bool isSameTokenAs(Token other) {
+    if (super.isSameTokenAs(other) != null) return super.isSameTokenAs(other)!;
+    if (other is! HOTPToken) return false;
+    return true;
+  }
 
   @override
   String get otpValue => algorithm.generateHOTPCodeString(

@@ -162,8 +162,10 @@ abstract class Token with SortableMixin {
       other.label == label && other.issuer == issuer && other.pin == pin && other.isLocked == isLocked && other.tokenImage == tokenImage;
 
   /// This is used to identify the same token even if the id is different.
-  bool isSameTokenAs(Token other) {
-    return (other.id == id && other.type == type) || (other.serial == serial && other.type == type);
+  ///
+  bool? isSameTokenAs(Token other) {
+    if (serial != null && serial == other.serial && issuer == other.issuer) return true;
+    return null;
   }
 
   @override

@@ -91,7 +91,12 @@ class TOTPToken extends OTPToken {
   // bool sameValuesAs(Token other) => super.sameValuesAs(other);
 
   @override
-  bool isSameTokenAs(Token other) => super.isSameTokenAs(other) && other is TOTPToken && other.period == period;
+  bool isSameTokenAs(Token other) {
+    if (super.isSameTokenAs(other) != null) return super.isSameTokenAs(other)!;
+    if (other is! TOTPToken) return false;
+    if (period != other.period) return false;
+    return true;
+  }
 
   @override
   TOTPToken copyWith({

@@ -82,7 +82,7 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
   List<TokenImportEntry> _initBuildLists(List<TokenImportEntry> importTokenEntrys) {
     for (var i = 0; i < importTokenEntrys.length; i++) {
       final importTokenEntry = importTokenEntrys[i];
-      if ([...newImports, ...appDuplicates, ...conflictedImports].any((import) => import.newToken.isSameTokenAs(importTokenEntry.newToken))) {
+      if ([...newImports, ...appDuplicates, ...conflictedImports].any((import) => import.newToken.isSameTokenAs(importTokenEntry.newToken) == true)) {
         importDuplicates.add(importTokenEntry);
         importTokenEntrys.remove(importTokenEntry);
         i--;

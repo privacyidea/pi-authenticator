@@ -815,7 +815,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   List<Token> _filterDuplicates(List<Token> tokens) {
     final uniqueTokens = <Token>[];
     for (var token in tokens) {
-      if (!uniqueTokens.any((uniqureToken) => uniqureToken.isSameTokenAs(token))) {
+      if (!uniqueTokens.any((uniqureToken) => uniqureToken.isSameTokenAs(token) == true)) {
         uniqueTokens.add(token);
       }
     }

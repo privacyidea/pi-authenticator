@@ -74,7 +74,10 @@ class DayPasswordToken extends OTPToken {
   @override
   // It is the same token the the period as to be the same
   bool isSameTokenAs(Token other) {
-    return super.isSameTokenAs(other) && other is DayPasswordToken && other.period == period;
+    if (super.isSameTokenAs(other) != null) return super.isSameTokenAs(other)!;
+    if (other is! DayPasswordToken) return false;
+    if (period != other.period) return false;
+    return true;
   }
 
   @override

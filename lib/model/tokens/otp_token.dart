@@ -78,8 +78,13 @@ abstract class OTPToken extends Token {
   // bool sameValuesAs(Token other) => super.sameValuesAs(other);
 
   @override
-  bool isSameTokenAs(Token other) {
-    return super.isSameTokenAs(other) && (other is OTPToken && other.secret == secret) && other.algorithm == algorithm && other.digits == digits;
+  bool? isSameTokenAs(Token other) {
+    if (other is! OTPToken) return false;
+    if (super.isSameTokenAs(other) != null) return super.isSameTokenAs(other)!;
+    if (secret != other.secret) return false;
+    if (algorithm != other.algorithm) return false;
+    if (digits != other.digits) return false;
+    return null;
   }
 
   @override

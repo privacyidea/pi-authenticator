@@ -98,11 +98,13 @@ class TokenWidgetTile extends ConsumerWidget {
                   if (subtitle2.isNotEmpty)
                     Row(
                       children: [
-                        Text(
-                          subtitle2,
-                          textAlign: TextAlign.left,
-                          overflow: TextOverflow.fade,
-                          softWrap: false,
+                        Flexible(
+                          child: Text(
+                            subtitle2,
+                            textAlign: TextAlign.left,
+                            overflow: TextOverflow.fade,
+                            softWrap: false,
+                          ),
                         ),
                         SizedBox(width: 6),
                         ContainerTokenSyncIcon(token),

@@ -44,6 +44,11 @@ class _TokenImageState extends State<TokenImage> {
         tokenImages[tokenImageUrl] = null;
         return null;
       }
+      final uri = Uri.parse(tokenImageUrl);
+      if (uri.host == '') {
+        tokenImages[tokenImageUrl] = null;
+        return null;
+      }
       http.Response response = await http.get(Uri.parse(tokenImageUrl));
       final newTokenImage = response.bodyBytes;
       tokenImages[tokenImageUrl] = newTokenImage;
