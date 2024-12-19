@@ -1684,7 +1684,7 @@
   "rolloutStateParsingResponseCompleted": "Parsing response completed",
   "rolloutStateParsingResponseFailed": "Parsing response failed",
   "rolloutStateSendingPublicKey": "Sending public key",
-  "rolloutStateSendingPublicKeyCompleted": "Senden des öffentlichen Schlüssels abgeschlossen",
+  "rolloutStateSendingPublicKeyCompleted": "Sending public key completed",
   "rolloutStateSendingPublicKeyFailed": "Sending public key failed",
   "saveButton": "Save",
   "scanQrCode": "Scan QR-Code",
