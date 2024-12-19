@@ -25,7 +25,6 @@ import '../../l10n/app_localizations.dart';
 import '../../utils/logger.dart';
 import '../../views/view_interface.dart';
 import '../../widgets/dialog_widgets/default_dialog.dart';
-import '../../widgets/dialog_widgets/default_dialog_button.dart';
 import 'qr_scanner_view_widgets/qr_scanner_widget.dart';
 
 class QRScannerView extends StatefulView {
@@ -84,18 +83,18 @@ class _QRScannerViewState extends State<QRScannerView> {
                 title: Text(AppLocalizations.of(context)!.grantCameraPermissionDialogTitle),
                 content: Text(AppLocalizations.of(context)!.grantCameraPermissionDialogContent),
                 actions: [
-                  DefaultDialogButton(
+                  TextButton(
+                    child: Text(AppLocalizations.of(context)!.cancel),
+                    onPressed: () {
+                      Navigator.pop(context, null);
+                    },
+                  ),
+                  ElevatedButton(
                     child: Text(AppLocalizations.of(context)!.grantCameraPermissionDialogButton),
                     onPressed: () async {
                       //Trigger the permission to request it
                       final cameraPermission = await _requestCameraPermission();
                       setState(() => _cameraPermission = cameraPermission);
-                    },
-                  ),
-                  DefaultDialogButton(
-                    child: Text(AppLocalizations.of(context)!.cancel),
-                    onPressed: () {
-                      Navigator.pop(context, null);
                     },
                   ),
                 ],

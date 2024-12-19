@@ -8,10 +8,16 @@ part of 'hotp_token.dart';
 
 HOTPToken _$HOTPTokenFromJson(Map<String, dynamic> json) => HOTPToken(
       counter: (json['counter'] as num?)?.toInt() ?? 0,
+      containerSerial: json['containerSerial'] as String?,
+      checkedContainer: (json['checkedContainer'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
       id: json['id'] as String,
       algorithm: $enumDecode(_$AlgorithmsEnumMap, json['algorithm']),
       digits: (json['digits'] as num).toInt(),
       secret: json['secret'] as String,
+      serial: json['serial'] as String?,
       type: json['type'] as String?,
       tokenImage: json['tokenImage'] as String?,
       pin: json['pin'] as bool?,
@@ -27,9 +33,12 @@ HOTPToken _$HOTPTokenFromJson(Map<String, dynamic> json) => HOTPToken(
     );
 
 Map<String, dynamic> _$HOTPTokenToJson(HOTPToken instance) => <String, dynamic>{
+      'checkedContainer': instance.checkedContainer,
       'label': instance.label,
       'issuer': instance.issuer,
+      'containerSerial': instance.containerSerial,
       'id': instance.id,
+      'serial': instance.serial,
       'pin': instance.pin,
       'isLocked': instance.isLocked,
       'isHidden': instance.isHidden,

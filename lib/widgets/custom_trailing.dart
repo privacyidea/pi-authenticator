@@ -23,12 +23,9 @@ class CustomTrailing extends StatelessWidget {
       return SizedBox(
         width: boxSize,
         height: boxSize,
-        child: Padding(
-          padding: padding ?? EdgeInsets.all(boxSize / 16),
-          child: FittedBox(
-            fit: fit,
-            child: child,
-          ),
+        child: FittedBox(
+          fit: fit,
+          child: child,
         ),
       );
     });

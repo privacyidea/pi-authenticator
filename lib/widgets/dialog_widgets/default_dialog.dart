@@ -9,7 +9,7 @@ class DefaultDialog extends StatelessWidget {
   final MainAxisAlignment? actionsAlignment;
   final Widget? content;
   final bool hasCloseButton;
-  final double closeButtonSize = 22;
+  final double closeButtonSize;
 
   const DefaultDialog({
     this.scrollable,
@@ -18,6 +18,7 @@ class DefaultDialog extends StatelessWidget {
     this.actionsAlignment,
     this.content,
     this.hasCloseButton = false,
+    this.closeButtonSize = 22,
     super.key,
   });
 
