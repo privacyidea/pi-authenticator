@@ -91,6 +91,9 @@
   "@authToDeclinePushRequest": {
     "description": "Message for declining a push request for authentication."
   },
+  "@authToDiscardPushRequest": {
+    "description": "Message for discarding a push request for authentication."
+  },
   "@authenticateToShowOtp": {
     "description": "Reason to authenticate when trying to view a one time password."
   },
@@ -1417,6 +1420,7 @@
   "authNotSupportedTitle": "Apparaat inloggevens of biometrie is vereist",
   "authToAcceptPushRequest": "Authenticeer om de push aanvraag te accepteren.",
   "authToDeclinePushRequest": "Authenticeer om de push aanvraag te weigeren.",
+  "authToDiscardPushRequest": "Verifieer om het push verzoek te verwerpen.",
   "authenticateToShowOtp": "Authenticeer om het eenmalige wachtwoord te tonen.",
   "authenticateToUnLockToken": "Authenticeer om de vergrendeling van de token te wijzigen.",
   "authentication": "Verificatieverzoek",

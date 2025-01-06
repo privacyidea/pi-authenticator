@@ -91,6 +91,9 @@
   "@authToDeclinePushRequest": {
     "description": "Message for declining a push request for authentication."
   },
+  "@authToDiscardPushRequest": {
+    "description": "Message for discarding a push request for authentication."
+  },
   "@authenticateToShowOtp": {
     "description": "Reason to authenticate when trying to view a one time password."
   },
@@ -1417,6 +1420,7 @@
   "authNotSupportedTitle": "Informations d'identification de l'appareil ou données biométriques requises",
   "authToAcceptPushRequest": "Veuillez vous authentifier pour accepter la demande de connexion.",
   "authToDeclinePushRequest": "Veuillez vous authentifier pour refuser la demande de connexion.",
+  "authToDiscardPushRequest": "Veuillez vous authentifier pour rejeter la demande de push.",
   "authenticateToShowOtp": "Veuillez vous authentifier pour afficher un mot de passe à usage unique.",
   "authenticateToUnLockToken": "Veuillez vous authentifier pour modifier l'état de verrouillage du jeton.",
   "authentication": "Authentification",

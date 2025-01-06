@@ -91,6 +91,9 @@
   "@authToDeclinePushRequest": {
     "description": "Message for declining a push request for authentication."
   },
+  "@authToDiscardPushRequest": {
+    "description": "Message for discarding a push request for authentication."
+  },
   "@authenticateToShowOtp": {
     "description": "Reason to authenticate when trying to view a one time password."
   },
@@ -1417,6 +1420,7 @@
   "authNotSupportedTitle": "Skonfigurowane ustawienia zabezpieczeń albo uwierzytelnianie biometryczne jest wymagane.",
   "authToAcceptPushRequest": "Uwierzytelnij, aby zaakceptować żądanie push.",
   "authToDeclinePushRequest": "Uwierzytelnij, aby odrzucić żądanie push.",
+  "authToDiscardPushRequest": "Uwierzytelnij, aby wyrzucić żądanie.",
   "authenticateToShowOtp": "Zweryfikuj tożsamość, by pokazać hasło jednorazowe.",
   "authenticateToUnLockToken": "Zweryfikuj tożsamość, aby odblokować / zablokować token.",
   "authentication": "Uwierzytelnianie",
@@ -1424,7 +1428,7 @@
   "biometricNotRecognized": "Nie rozpoznano. Spróbuj ponownie.",
   "biometricRequiredTitle": "Uwierzytelnianie biometryczne nie jest skonfigurowane.",
   "biometricSuccess": "Autentykacja zakończona sukcesem!",
-  "butDiscardIt": "ale odrzucić go",
+  "butDiscardIt": "ale wyrzucić go",
   "cancel": "Anuluj",
   "checkServerCertificate": "Sprawdź certyfikat serwera",
   "checkYourNetwork": "Sprawdź połączenie sieciowe i spróbuj ponownie.",

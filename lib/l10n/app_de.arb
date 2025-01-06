@@ -91,6 +91,9 @@
   "@authToDeclinePushRequest": {
     "description": "Message for declining a push request for authentication."
   },
+  "@authToDiscardPushRequest": {
+    "description": "Message for discarding a push request for authentication."
+  },
   "@authenticateToShowOtp": {
     "description": "Reason to authenticate when trying to view a one time password."
   },
@@ -1417,6 +1420,7 @@
   "authNotSupportedTitle": "Gerätepasswort oder Biometrie wird benötigt",
   "authToAcceptPushRequest": "Bitte authentifizieren Sie sich, um die Anfrage anzunehmen.",
   "authToDeclinePushRequest": "Bitte authentifizieren Sie sich, um die Anfrage abzulehnen.",
+  "authToDiscardPushRequest": "Bitte authentifizieren Sie sich, um die Push-Anfrage zu verwerfen.",
   "authenticateToShowOtp": "Bitte authentifizieren Sie sich, um das Einmalpasswort anzuzeigen.",
   "authenticateToUnLockToken": "Bitte authentifizieren Sie sich, um den Sperrstatus des Tokens zu ändern.",
   "authentication": "Authentifizierung",

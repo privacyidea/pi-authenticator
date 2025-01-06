@@ -91,6 +91,9 @@
   "@authToDeclinePushRequest": {
     "description": "Message for declining a push request for authentication."
   },
+  "@authToDiscardPushRequest": {
+    "description": "Message for discarding a push request for authentication."
+  },
   "@authenticateToShowOtp": {
     "description": "Reason to authenticate when trying to view a one time password."
   },
@@ -1417,6 +1420,7 @@
   "authNotSupportedTitle": "Vyžadován zámek zařízení nebo biometrické ověření",
   "authToAcceptPushRequest": "Pro přijetí požadavku na push notifikaci se přihlaste.",
   "authToDeclinePushRequest": "Pro odmítnutí požadavku na push notifikaci se přihlaste.",
+  "authToDiscardPushRequest": "Ověřte, zda chcete požadavek na odeslání odmítnout.",
   "authenticateToShowOtp": "Pro zobrazení jednorázového kódu se přihlaste.",
   "authenticateToUnLockToken": "Pro změnu uzamčení tokenu se přihlaste.",
   "authentication": "Žádost o ověření",

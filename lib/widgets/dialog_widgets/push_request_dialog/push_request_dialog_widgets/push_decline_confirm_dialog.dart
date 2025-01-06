@@ -27,6 +27,7 @@ import '../../../../../../../widgets/dialog_widgets/push_request_dialog/push_req
 import '../../../../l10n/app_localizations.dart';
 import '../../../../utils/customization/theme_extentions/push_request_theme.dart';
 import '../../../button_widgets/cooldown_button.dart';
+import '../../../padded_row.dart';
 
 class PushDeclineConfirmDialog extends StatefulWidget {
   static Future<void> showDialogWidget({

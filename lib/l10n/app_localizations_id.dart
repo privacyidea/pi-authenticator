@@ -95,6 +95,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get authToDeclinePushRequest => 'Lakukan autentikasi untuk menolak permintaan push.';
 
   @override
+  String get authToDiscardPushRequest => 'Harap lakukan autentikasi untuk membuang permintaan push.';
+
+  @override
   String get authenticateToShowOtp => 'Harap lakukan autentikasi untuk menunjukkan kata sandi sekali pakai.';
 
   @override

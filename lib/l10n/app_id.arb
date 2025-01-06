@@ -91,6 +91,9 @@
   "@authToDeclinePushRequest": {
     "description": "Message for declining a push request for authentication."
   },
+  "@authToDiscardPushRequest": {
+    "description": "Message for discarding a push request for authentication."
+  },
   "@authenticateToShowOtp": {
     "description": "Reason to authenticate when trying to view a one time password."
   },
@@ -1417,6 +1420,7 @@
   "authNotSupportedTitle": "Diperlukan kredensial atau biometrik perangkat",
   "authToAcceptPushRequest": "Lakukan autentikasi untuk menerima permintaan push.",
   "authToDeclinePushRequest": "Lakukan autentikasi untuk menolak permintaan push.",
+  "authToDiscardPushRequest": "Harap lakukan autentikasi untuk membuang permintaan push.",
   "authenticateToShowOtp": "Harap lakukan autentikasi untuk menunjukkan kata sandi sekali pakai.",
   "authenticateToUnLockToken": "Lakukan autentikasi untuk mengubah status kunci token.",
   "authentication": "Otentikasi",

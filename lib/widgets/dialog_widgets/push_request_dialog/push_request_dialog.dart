@@ -8,6 +8,7 @@ import '../../../utils/globals.dart';
 import '../../../utils/lock_auth.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/push_request_provider.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
+import '../../padded_row.dart';
 import '../default_dialog.dart';
 import 'push_request_dialog_widgets/push_accept_button.dart';
 import 'push_request_dialog_widgets/push_decline_confirm_button.dart';
@@ -110,8 +111,8 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
                     peddingPercent: 0.33,
                     child: PushDeclineConfirmButton(
                       height: PushRequestDialog.buttonHeight,
-                      onDecline: () => _onDecline(token),
                       onDiscard: () => _onDiscard(token),
+                      onDecline: () => _onDecline(token),
                       confirmationTitle: title,
                       expirationDate: widget.pushRequest.expirationDate,
                     ),
@@ -130,6 +131,14 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
     if (mounted) setState(() => isHandled = true);
   }
 
+  Future<void> _onDiscard(PushToken token) async {
+    if (token.isLocked && !await lockAuth(reason: (localization) => localization.authToDiscardPushRequest, localization: AppLocalizations.of(context)!)) {
+      return;
+    }
+    await ref.read(pushRequestProvider.notifier).remove(widget.pushRequest);
+    if (mounted) setState(() => isHandled = true);
+  }
+
   Future<void> _onDecline(PushToken token) async {
     if (token.isLocked && !await lockAuth(reason: (localization) => localization.authToDeclinePushRequest, localization: AppLocalizations.of(context)!)) {
       return;
@@ -137,43 +146,4 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
     await ref.read(pushRequestProvider.notifier).decline(token, widget.pushRequest);
     if (mounted) setState(() => isHandled = true);
   }
-
-  Future<void> _onDiscard(PushToken token) async {
-    if (token.isLocked && !await lockAuth(reason: (localization) => localization.authToDeclinePushRequest, localization: AppLocalizations.of(context)!)) {
-      return;
-    }
-    await ref.read(pushRequestProvider.notifier).remove(widget.pushRequest);
-    if (mounted) setState(() => isHandled = true);
-  }
-}
-
-class PaddedRow extends StatelessWidget {
-  final double peddingPercent;
-  final Widget child;
-
-  /// Creates a row with padding on both sides of the child.
-  /// Example with 0.25 padding:
-  /// [ 0.125 | child | 0.125 ]
-  ///
-  /// Assert that [peddingPercent] is higher than 0 and lower than 1.
-  const PaddedRow({super.key, required this.child, this.peddingPercent = 0.25}) : assert(peddingPercent > 0 && peddingPercent < 1);
-
-  @override
-  Widget build(BuildContext context) => Row(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Expanded(
-            flex: (peddingPercent * 50).toInt(),
-            child: const SizedBox(),
-          ),
-          Expanded(
-            flex: 100 - (peddingPercent * 100).toInt(),
-            child: child,
-          ),
-          Expanded(
-            flex: (peddingPercent * 50).toInt(),
-            child: const SizedBox(),
-          ),
-        ],
-      );
 }
