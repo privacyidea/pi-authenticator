@@ -664,7 +664,7 @@ void _testTokenContainerNotifier() {
       expect(stateContainer.publicServerKey, expectedContainer.publicServerKey);
       expect(stateContainer.publicClientKey, isNotEmpty);
     });
-    group('sync', () async {
+    group('sync', () {
       test('sync', () async {
         // prepare
         TestWidgetsFlutterBinding.ensureInitialized();
