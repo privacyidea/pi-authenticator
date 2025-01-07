@@ -7,6 +7,13 @@ plugins {
     id "dev.flutter.flutter-gradle-plugin"
 }
 
+
+
+dependencies {
+    // Add this [coreLibraryDesugaring] inside [dependencies]
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'// use compatible version e.g 2.1.4
+}
+
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
 if (localPropertiesFile.exists()) {
@@ -40,17 +47,24 @@ if (keystorePropertiesFileNetknightsDebug.exists()) {
 
 
 android {
-    compileSdkVersion 34
+    namespace 'it.netknights.piauthenticator'
+
+    compileSdkVersion 35
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
 
+    compileOptions {
+        coreLibraryDesugaringEnabled true
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
 
     defaultConfig {
         applicationId "it.netknights.piauthenticator"
-        minSdkVersion 21    
-        targetSdkVersion 34
+        minSdkVersion 21
+        targetSdkVersion 35
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         manifestPlaceholders = [applicationName: "io.flutter.app.FlutterApplication"]
@@ -62,7 +76,7 @@ android {
             storePassword keystorePropertiesNetknights['storePassword']
             keyAlias keystorePropertiesNetknights['keyAlias']
             keyPassword keystorePropertiesNetknights['keyPassword']
-        }        
+        }
         netknights_debug {
             storeFile keystorePropertiesNetknightsDebug['storeFile'] ? file(keystorePropertiesNetknightsDebug['storeFile']) : null
             storePassword keystorePropertiesNetknightsDebug['storePassword']
@@ -72,7 +86,7 @@ android {
     }
 
     flavorDimensions "pi-authenticator"
-    
+
     productFlavors {
         netknights{
             dimension "pi-authenticator"
@@ -87,7 +101,7 @@ android {
             signingConfig signingConfigs.netknights_debug
         }
     }
-   
+
     buildTypes {
         release {
             // Enables code shrinking, obfuscation, and optimization for only

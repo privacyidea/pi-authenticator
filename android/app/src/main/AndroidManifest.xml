@@ -1,5 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="it.netknights.piauthenticator">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- io.flutter.app.FlutterApplication is an android.app.Application that
          calls FlutterMain.startInitialization(this); in its onCreate method.
@@ -11,12 +10,12 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <!-- To read all files until API level 32 -->
     <uses-permission
-        android:name="android.permission.READ_EXTERNAL_STORAGE" 
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
 
     <!-- To write all files until API level 29. We will MediaStore from API level 30 -->
     <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE" 
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
 
 
@@ -63,7 +62,7 @@
             <!-- <meta-data
                     android:name="io.flutter.embedding.android.SplashScreenDrawable"
                     android:resource="@drawable/launch_background" /> -->
-                    
+
             <!-- This is used for the home screen widget -->
             <intent-filter>
                 <action android:name="es.antonborri.home_widget.action.LAUNCH" />
@@ -93,7 +92,7 @@
             android:name="es.antonborri.home_widget.HomeWidgetBackgroundService"
             android:permission="android.permission.BIND_JOB_SERVICE"
             android:exported="true"/>
-           
+
 
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
@@ -108,4 +107,3 @@
       </intent>
     </queries>
 </manifest>
- 
