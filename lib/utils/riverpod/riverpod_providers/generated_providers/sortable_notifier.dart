@@ -19,6 +19,7 @@
 */
 
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../../../../model/extensions/sortable_list.dart';
@@ -31,7 +32,7 @@ import 'token_notifier.dart';
 part 'sortable_notifier.g.dart';
 
 @riverpod
-List<SortableMixin> sortables(SortablesRef ref) {
+List<SortableMixin> sortables(Ref ref) {
   final tokenFolders = ref.watch(tokenFolderProvider).folders;
   final tokens = ref.watch(tokenProvider).tokens;
 
