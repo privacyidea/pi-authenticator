@@ -22,6 +22,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/sortable_notifier.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 
 import '../../../../../../../views/main_view/main_view_widgets/token_widgets/token_widget_builder.dart';
 import '../../../model/mixins/sortable_mixin.dart';
@@ -147,7 +148,9 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
     final draggingSortable = ref.watch(draggingSortableProvider);
     final sortables = ref.watch(sortablesProvider);
     final hidePushTokens = ref.watch(settingsProvider).whenOrNull(data: (data) => data.hidePushTokens) ?? SettingsState.hidePushTokensDefault;
-    if ((sortables.isEmpty)) return const NoTokenScreen();
+
+    final hasFinalizedContainers = ref.watch(tokenContainerProvider).whenOrNull(data: (data) => data.hasFinalizedContainers);
+    if ((sortables.isEmpty && hasFinalizedContainers != true)) return const NoTokenScreen();
 
     return Stack(
       children: [
@@ -161,7 +164,7 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
                     opacity: 0,
                     child: DragTargetDivider(
                       dependingFolder: null,
-                      previousSortable: sortables.last,
+                      previousSortable: sortables.isNotEmpty ? sortables.last : null,
                       nextSortable: null,
                       bottomPadding: 1,
                     ),
