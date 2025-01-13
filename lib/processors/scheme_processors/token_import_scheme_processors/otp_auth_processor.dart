@@ -48,7 +48,7 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
     if (!supportedSchemes.contains(uri.scheme)) {
       return [
         ProcessorResultFailed(
-          (_) => 'The scheme [${uri.scheme}] not supported', // TODO: Localize
+          (l) => l.notSupported('scheme', uri.scheme),
           resultHandlerType: resultHandlerType,
         )
       ];
@@ -70,7 +70,7 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
       if (twoStepSecretString == null) {
         return [
           ProcessorResultFailed(
-            (_) => 'The two step secret could not be generated, or was canceled.', // TODO: Localize
+            (l) => l.twoStepSecretFailed,
             resultHandlerType: resultHandlerType,
           )
         ];
@@ -88,7 +88,7 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
     } catch (e) {
       return [
         ProcessorResultFailed(
-          (_) => 'The token could not be created.', // TODO: Localize
+          (l) => l.unableToCreateToken,
           error: e,
           resultHandlerType: resultHandlerType,
         )

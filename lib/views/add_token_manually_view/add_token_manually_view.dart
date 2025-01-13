@@ -25,13 +25,13 @@ import '../../l10n/app_localizations.dart';
 import '../../model/enums/algorithms.dart';
 import '../../model/enums/encodings.dart';
 import '../../model/enums/token_types.dart';
-import 'add_token_manually_view_widgets/PageViewIndicator.dart';
 import 'add_token_manually_view_widgets/add_tokens_manually/add_daypassword_manually.dart';
 import 'add_token_manually_view_widgets/add_tokens_manually/add_hotp_manually.dart';
 import 'add_token_manually_view_widgets/add_tokens_manually/add_steam_manually.dart';
 import 'add_token_manually_view_widgets/add_tokens_manually/add_token_manually_interface.dart';
 import 'add_token_manually_view_widgets/add_tokens_manually/add_totp_manually.dart';
 import 'add_token_manually_view_widgets/link_input_field.dart';
+import 'add_token_manually_view_widgets/page_view_indicator.dart';
 
 class AddTokenManuallyView extends ConsumerStatefulWidget {
   static const routeName = '/add_token_manually';

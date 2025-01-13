@@ -48,7 +48,7 @@ import '../../../../model/token_container.dart';
 import '../../../../repo/secure_token_container_repository.dart';
 import '../../../../widgets/dialog_widgets/add_container_progress_dialog.dart';
 import '../../../../widgets/dialog_widgets/container_already_exists_dialog.dart';
-import '../../../../widgets/dialog_widgets/push_request_dialog/AddDeviceInfosDialog.dart';
+import '../../../../widgets/dialog_widgets/push_request_dialog/add_device_infos_dialog.dart';
 import '../../../ecc_utils.dart';
 import '../../../logger.dart';
 
@@ -132,10 +132,6 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
 
   Future<TokenContainerState> _deleteContainerFromRepo(TokenContainer container) async {
     return await _repoMutex.protect(() async => await _repo.deleteContainer(container.serial));
-  }
-
-  Future<TokenContainerState> _deleteContainersStateToRepo() async {
-    return await _repoMutex.protect(() async => await _repo.deleteAllContainer());
   }
 
 /*//////////////////////////////////////////////////////////////////
@@ -444,7 +440,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
       throw ArgumentError('Container must not be finalized');
     }
     if (container.expirationDate != null && container.expirationDate!.isBefore(DateTime.now())) {
-      showStatusMessage(message: (_) => 'Container ${container.serial} has expired and can not be rolled out anymore'); // TODO: Localize
+      showStatusMessage(message: (l) => l.containerRolloutExpired(container.serial));
       await deleteContainer(container);
       _finalizationMutex.release();
       return;

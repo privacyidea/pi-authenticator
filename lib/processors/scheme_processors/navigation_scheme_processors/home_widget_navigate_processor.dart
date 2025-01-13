@@ -48,7 +48,7 @@ class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
       );
       return [
         ProcessorResult.failed(
-          (_) => 'Cannot Navigate without context', // TODO: Localize
+          (l) => l.cannotNavigateWithoutContext,
           resultHandlerType: resultHandlerType,
         )
       ];
@@ -59,7 +59,7 @@ class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
       Logger.warning('HomeWidgetNavigateProcessor: No processor found for host: ${uri.host}');
       return [
         ProcessorResult.failed(
-          (_) => 'No processor found for host: ${uri.host}', // TODO: Localize
+          (l) => l.noProcessorFoundForHost(uri.host),
           resultHandlerType: resultHandlerType,
         )
       ];
@@ -79,7 +79,7 @@ class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
       Logger.warning('HomeWidgetNavigateProcessor: Missing id for link: ${uri.host}');
       return [
         ProcessorResult.failed(
-          (_) => 'Missing id for link: ${uri.host}', // TODO: Localize
+          (l) => l.missingIdForLink(uri.host),
           resultHandlerType: resultHandlerType,
         )
       ];
@@ -119,7 +119,7 @@ class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
       Logger.warning('Could not find token for widget id: ${uri.queryParameters['id']}');
       return [
         ProcessorResult.failed(
-          (_) => 'Could not find token for widget id: ${uri.queryParameters['id}']}', // TODO: Localize
+          (l) => l.couldNotFundTokenForWidgetId(uri.queryParameters['id']!),
           resultHandlerType: resultHandlerType,
         )
       ];
@@ -129,7 +129,7 @@ class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
       Logger.warning('Could not find globalRef');
       return [
         ProcessorResult.failed(
-          (_) => 'Could not find globalRef', // TODO: Localize
+          (l) => l.couldNotFindGlobalRef,
           resultHandlerType: resultHandlerType,
         )
       ];

@@ -143,7 +143,7 @@ class _RolloverContainerTokensDialogState extends ConsumerState<RolloverContaine
     try {
       await ref.read(tokenContainerProvider.notifier).rolloverTokens(tokenState: tokenState, container: widget.container);
     } catch (e) {
-      showStatusMessage(message: (_) => 'Failed to renew secrets', details: (_) => e.toString()); // TODO: localize
+      showStatusMessage(message: (l) => l.failedToRenewSecrets, details: (_) => e.toString());
     }
   }
 }

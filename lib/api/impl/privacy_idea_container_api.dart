@@ -186,8 +186,8 @@ class PiContainerApi implements TokenContainerApi {
   Future<TransferQrData> getRolloverQrData(TokenContainerFinalized container) async {
     if (container.policies.rolloverAllowed == false) {
       throw LocalizedException(
-        localizedMessage: (l) => 'l.errorRolloverNotAllowed', // TODO: Add translation
-        unlocalizedMessage: 'AppLocalizationsEn().errorRolloverNotAllowed',
+        localizedMessage: (l) => l.errorRolloverNotAllowed,
+        unlocalizedMessage: AppLocalizationsEn().errorRolloverNotAllowed,
       );
     }
     final requestUrl = container.transferUrl;
@@ -226,8 +226,8 @@ class PiContainerApi implements TokenContainerApi {
   Future<UnregisterContainerResult> unregister(TokenContainerFinalized container) async {
     if (container.policies.unregisterAllowed == false) {
       throw LocalizedException(
-        localizedMessage: (l) => 'l.errorUnregisterNotAllowed', // TODO: Add translation
-        unlocalizedMessage: 'AppLocalizationsEn().errorUnregisterNotAllowed',
+        localizedMessage: (l) => l.errorUnregisterNotAllowed,
+        unlocalizedMessage: AppLocalizationsEn().errorUnregisterNotAllowed,
       );
     }
     final unregisterUrl = container.unregisterUrl;

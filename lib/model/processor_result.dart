@@ -55,7 +55,7 @@ extension ListProcessorResult<T> on List<ProcessorResult<T>> {
   List<T> getData() {
     final results = toList();
     if (results.isEmpty) {
-      showStatusMessage(message: (_) => 'No data found in QR code.'); // TODO: Localize
+      showStatusMessage(message: (l) => l.noDataFoundInQrCode);
       Logger.warning('No data found in QR code.');
       return [];
     }
@@ -77,6 +77,7 @@ extension ListProcessorResult<T> on List<ProcessorResult<T>> {
 }
 
 mixin ResultHandler {
+  static const argTokenOriginSourceType = "TokenOriginSourceType";
   Future handleProcessorResult(ProcessorResult result, Map<String, dynamic> args);
   Future handleProcessorResults(List<ProcessorResult> results, Map<String, dynamic> args);
 }

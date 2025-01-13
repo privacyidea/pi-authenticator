@@ -67,14 +67,14 @@ class FirebaseUtils {
       if (error is PlatformException) {
         if (error.code == FIREBASE_TOKEN_ERROR_CODE) return; // ignore
         showStatusMessage(
-          message: (_) => 'Push cant be initialized, restart the app and try again.', // TODO: localize
+          message: (l) => l.pushInitializeUnavailable,
           details: (_) => '${error.code}: ${error.message ?? 'no error message'}',
         );
       }
       if (error is FirebaseException) {
         if (error.code == FIREBASE_TOKEN_ERROR_CODE) return; // ignore
         showStatusMessage(
-          message: (_) => 'Push cant be initialized, restart the app and try again.', // TODO: localize
+          message: (l) => l.pushInitializeUnavailable,
           details: (_) => '${error.code}: ${error.message ?? 'no error message'}',
         );
       }

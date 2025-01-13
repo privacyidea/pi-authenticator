@@ -114,7 +114,7 @@ class PrivacyideaIOClient {
       response = await ioClient.post(url, body: body).timeout(const Duration(seconds: 15));
     } on HandshakeException catch (e, _) {
       Logger.info('Handshake failed. sslVerify: $sslVerify');
-      showStatusMessage(message: (_) => 'Handshake failed, please check the server certificate and try again.'); // TODO: Localize
+      showStatusMessage(message: (l) => l.handshakeFailedLongText);
       ioClient.close();
       return ResponseBuilder.fromStatusCode(525);
     } on TimeoutException catch (e, _) {

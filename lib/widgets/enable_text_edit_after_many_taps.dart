@@ -36,7 +36,6 @@ class _EnableTextEditAfterManyTapsState extends State<EnableTextEditAfterManyTap
       timer = null;
     });
     counter += taps;
-    print('Tapped $counter times');
     if (counter == widget.maxTaps) {
       setState(() {
         enabled = true;

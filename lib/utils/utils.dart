@@ -219,7 +219,7 @@ Future<void> scanQrCode({BuildContext? context, required List<ResultHandler> res
       _ => throw ArgumentError('Invalid type for qrCode: $qrCode'),
     };
   } catch (e) {
-    showStatusMessage(message: (_) => 'The scanned QR code is not a valid URI.'); // TODO: Localize
+    showStatusMessage(message: (l) => l.invalidUrl);
     Logger.warning('Scanned Data: $qrCode');
     return;
   }
@@ -241,7 +241,7 @@ Future<void> scanQrCode({BuildContext? context, required List<ResultHandler> res
       final results = resultHandlerTypeMap[resultHandlerType]!;
       final resultHandler = resultHandlerList.firstWhereOrNull((resultHandler) => resultHandlerType.isTypeOf(resultHandler));
       if (resultHandler != null) {
-        await resultHandler.handleProcessorResults(results, {'TokenOriginSourceType': TokenOriginSourceType.qrScan}); // TODO: use const IDENTIFIER variable
+        await resultHandler.handleProcessorResults(results, {ResultHandler.argTokenOriginSourceType: TokenOriginSourceType.qrScan});
       }
     }
   }

@@ -45,6 +45,11 @@ class AppLocalizationsId extends AppLocalizations {
   String get a11ySearchTokensButton => 'Token pencarian';
 
   @override
+  String a11ySecondsUntilNextOTP(Object seconds) {
+    return '$seconds Seconds until the next OTP will be generated.';
+  }
+
+  @override
   String get a11ySettingsButton => 'Pengaturan';
 
   @override
@@ -125,6 +130,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get cancel => 'Batal';
 
   @override
+  String get cannotNavigateWithoutContext => 'Cannot navigate without context';
+
+  @override
   String get checkServerCertificate => 'Silakan periksa sertifikat server';
 
   @override
@@ -175,6 +183,11 @@ class AppLocalizationsId extends AppLocalizations {
   String get containerDetails => 'Detail kontainer';
 
   @override
+  String containerRolloutExpired(Object serial) {
+    return 'Container $serial has expired and can not be rolled out anymore';
+  }
+
+  @override
   String get containerRolloutSendDeviceInfoDialogContent => 'Apakah Anda ingin memberi tahu penerbit kontainer perangkat mana yang Anda gunakan? Ini mungkin berguna nantinya jika Anda mengalami masalah dengan faktor kedua Anda.';
 
   @override
@@ -190,6 +203,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get containerTransferDeleteTokensButtonText => 'Hapus dari perangkat ini';
 
   @override
+  String get containerTransferDeleteTokensSuccessMessage => 'Container and corresponding tokens successfully removed from this device.';
+
+  @override
   String get containerTransferDialogContentAborted => 'Transfer kontainer dibatalkan.';
 
   @override
@@ -200,6 +216,14 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get couldNotConnectToServer => 'Tidak dapat terhubung ke server';
+
+  @override
+  String get couldNotFindGlobalRef => 'Could not find globalRef';
+
+  @override
+  String couldNotFundTokenForWidgetId(Object id) {
+    return 'Could not find token for widget id: $id';
+  }
 
   @override
   String get couldNotSignMessage => 'Tidak dapat menandatangani pesan.';
@@ -354,6 +378,9 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
+  String get errorRolloverNotAllowed => 'Rollover for this container is not allowed.';
+
+  @override
   String get errorSavingFile => 'Menyimpan ke file gagal';
 
   @override
@@ -368,6 +395,9 @@ class AppLocalizationsId extends AppLocalizations {
   String errorUnlinkingPushToken(String label) {
     return 'Gagal memutuskan tautan token push $label.';
   }
+
+  @override
+  String get errorUnregisterNotAllowed => 'Unregistering for this container is not allowed.';
 
   @override
   String errorWhenPullingChallenges(String name) {
@@ -415,6 +445,9 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
+  String get failedToRenewSecrets => 'Failed to renew secrets';
+
+  @override
   String failedToSyncContainer(String serial) {
     return 'Gagal menyinkronkan wadah $serial';
   }
@@ -445,6 +478,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get feedbackTitle => 'Umpan balik Anda selalu diterima!';
+
+  @override
+  String get fileNotAvailable => 'The File is currently not available! Please try again.';
 
   @override
   String get fileSavedToDownloadsFolder => 'File disimpan ke folder Unduhan';
@@ -487,6 +523,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get handshakeFailed => 'Jabat tangan gagal';
+
+  @override
+  String get handshakeFailedLongText => 'Handshake failed, please check the server certificate and try again.';
 
   @override
   String get hidePushTokens => 'Menyembunyikan token push';
@@ -640,6 +679,11 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
+  String invalidHostForScheme(Object host, Object scheme) {
+    return 'Invalid host: $host for scheme: $scheme';
+  }
+
+  @override
   String invalidLink(String appName) {
     return 'Tautan yang dimasukkan bukan merupakan token yang valid dari $appName, atau tidak didukung.';
   }
@@ -720,6 +764,11 @@ class AppLocalizationsId extends AppLocalizations {
   String get markQrCode => 'Tandai Kode QR';
 
   @override
+  String missingIdForLink(Object host) {
+    return 'Missing id for link: $host';
+  }
+
+  @override
   String missingRequiredParameter(String parameter) {
     return 'Nilai untuk parameter [$parameter] diperlukan, tetapi tidak ada.';
   }
@@ -728,6 +777,9 @@ class AppLocalizationsId extends AppLocalizations {
   String missingRequiredParameterIn(String map, String parameter) {
     return 'Nilai untuk parameter [$parameter] diperlukan, tetapi tidak ada dalam \"$map\".';
   }
+
+  @override
+  String get missingWidgetId => 'Missing widgetId';
 
   @override
   String mustNotBeEmpty(String field) {
@@ -741,6 +793,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get no => 'Tidak.';
 
   @override
+  String get noDataFoundInQrCode => 'No data found in the QR code.';
+
+  @override
   String get noFbToken => 'Tidak ada token Firebase yang tersedia';
 
   @override
@@ -751,6 +806,11 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get noNetworkConnection => 'Tidak ada koneksi jaringan.';
+
+  @override
+  String noProcessorFoundForHost(Object host) {
+    return 'No processor found for host: $host';
+  }
 
   @override
   String get noPublicKey => 'Tidak ada kunci publik yang tersedia';
@@ -775,6 +835,11 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get notAnNumber => 'Nilainya bukan berupa angka.';
+
+  @override
+  String notSupported(Object name, Object value) {
+    return 'The $name [$value] not supported';
+  }
 
   @override
   String get ok => 'Ok';
@@ -910,6 +975,9 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get pushEndpointUrl => 'URL titik akhir push';
+
+  @override
+  String get pushInitializeUnavailable => 'Push cant be initialized, restart the app and try again.';
 
   @override
   String get pushRequestParseError => 'Push request could not be parsed.';
@@ -1188,7 +1256,13 @@ class AppLocalizationsId extends AppLocalizations {
   String get transferContainerSuccessDialogContent2 => 'Apakah Anda ingin menghapus container dan token terkait dari perangkat ini?';
 
   @override
+  String get twoStepSecretFailed => 'The two step secret could not be generated, or was canceled.';
+
+  @override
   String get type => 'Jenis';
+
+  @override
+  String get unableToCreateToken => 'The token could not be created.';
 
   @override
   String get unexpectedError => 'Terjadi kesalahan yang tidak diharapkan.';

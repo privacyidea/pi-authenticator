@@ -396,7 +396,7 @@ class ThemeCustomization {
           cardTheme: CardTheme(
             color: backgroundColor,
             shadowColor: shadowColor,
-            elevation: 4, // TODO: EDIT THIS
+            elevation: 4,
             margin: const EdgeInsets.all(4),
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           ),

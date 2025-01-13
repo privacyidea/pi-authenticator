@@ -50,7 +50,7 @@ class PrivacyIDEAAuthenticatorQrProcessor extends TokenImportSchemeProcessor {
       Logger.error('Error while processing URI ${uri.scheme}', error: e);
       return [
         ProcessorResult.failed(
-          (_) => 'Invalid URI', // TODO: Localize
+          (l) => l.invalidUrl,
           resultHandlerType: resultHandlerType,
         )
       ];

@@ -263,7 +263,6 @@ void _testPrivacyIdeaContainerApi() {
         return Response(jsonEncode(exampleError), 400);
       });
       // Act
-      print('');
       final data = await containerApi.finalizeContainer(tokenContainer);
       final policies = data.policies;
       final responsePublicServerKey = data.publicServerKey;

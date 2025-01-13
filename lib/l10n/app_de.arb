@@ -1503,6 +1503,7 @@
   "errorRollOutNotPossibleAnymore": "Das Ausrollen dieses Tokens ist nicht mehr möglich.",
   "errorRollOutSSLHandshakeFailed": "SSL-Handshake fehlgeschlagen. Roll-out nicht möglich.",
   "errorRollOutUnknownError": "Ein unbekannter Fehler ist aufgetreten. Aurollen nicht möglich: {e}",
+  "errorRolloverNotAllowed": "Ein Rollover für diesen Container ist nicht erlaubt.",
   "errorSavingFile": "Fehler beim Speichern der Datei",
   "errorSynchronizationNoNetworkConnection": "Die Synchronisation ist fehlgeschlagen, da der privacyIDEA Server nicht erreicht werden konnte.",
   "errorTokenExpired": "Der Token {name} ist abgelaufen.",

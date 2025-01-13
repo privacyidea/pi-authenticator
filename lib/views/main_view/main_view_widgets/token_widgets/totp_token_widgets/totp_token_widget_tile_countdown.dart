@@ -19,6 +19,7 @@
  */
 import 'package:flutter/material.dart';
 
+import '../../../../../l10n/app_localizations.dart';
 import '../../../../../widgets/pi_circular_progress_indicator.dart';
 
 class TotpTokenWidgetTileCountdown extends StatefulWidget {
@@ -91,7 +92,7 @@ class _TotpTokenWidgetTileCountdownState extends State<TotpTokenWidgetTileCountd
               builder: (context, child) {
                 return PiCircularProgressIndicator(
                   animation.value,
-                  // semanticsLabel: AppLocalizations.of(context)!.secondsUntilNextOTP, //TODO: add this to the localization file
+                  semanticsLabel: AppLocalizations.of(context)!.a11ySecondsUntilNextOTP(secondsUntilNextOTP.round()),
                   semanticsValue: '${secondsUntilNextOTP.round()}',
                 );
               },

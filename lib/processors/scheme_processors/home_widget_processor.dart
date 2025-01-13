@@ -38,7 +38,7 @@ class HomeWidgetProcessor implements SchemeProcessor {
     if (processor == null) {
       return [
         ProcessorResult.failed(
-          (_) => 'No processor found for host: ${uri.host}', // TODO: Localize
+          (l) => l.noProcessorFoundForHost(uri.host),
           resultHandlerType: null,
         )
       ];
@@ -54,7 +54,7 @@ class HomeWidgetProcessor implements SchemeProcessor {
     if (uri.host != 'show') {
       return [
         ProcessorResult.failed(
-          (_) => 'Invalid host: ${uri.host} for scheme: ${uri.scheme}', // TODO: Localize
+          (l) => l.invalidHostForScheme(uri.host, uri.scheme),
           resultHandlerType: null,
         )
       ];
@@ -63,7 +63,7 @@ class HomeWidgetProcessor implements SchemeProcessor {
     if (widgetId == null) {
       return [
         ProcessorResult.failed(
-          (_) => 'Missing widgetId', // TODO: Localize
+          (l) => l.missingWidgetId,
           resultHandlerType: null,
         )
       ];
@@ -77,7 +77,7 @@ class HomeWidgetProcessor implements SchemeProcessor {
     if (uri.host != 'copy') {
       return [
         ProcessorResult.failed(
-          (_) => 'Invalid host: ${uri.host} for scheme: ${uri.scheme}', // TODO: Localize
+          (l) => l.invalidHostForScheme(uri.host, uri.scheme),
           resultHandlerType: null,
         )
       ];
@@ -86,7 +86,7 @@ class HomeWidgetProcessor implements SchemeProcessor {
     if (widgetId == null) {
       return [
         ProcessorResult.failed(
-          (_) => 'Missing widgetId', // TODO: Localize
+          (l) => l.missingWidgetId,
           resultHandlerType: null,
         )
       ];
@@ -100,7 +100,7 @@ class HomeWidgetProcessor implements SchemeProcessor {
     if (uri.host != 'action') {
       return [
         ProcessorResult.failed(
-          (_) => 'Invalid host: ${uri.host} for scheme: ${uri.scheme}', // TODO: Localize
+          (l) => l.invalidHostForScheme(uri.host, uri.scheme),
           resultHandlerType: null,
         )
       ];
@@ -109,7 +109,7 @@ class HomeWidgetProcessor implements SchemeProcessor {
     if (widgetId == null) {
       return [
         ProcessorResult.failed(
-          (_) => 'Missing widgetId', // TODO: Localize
+          (l) => l.missingWidgetId,
           resultHandlerType: null,
         )
       ];
