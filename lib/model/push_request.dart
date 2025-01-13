@@ -181,7 +181,7 @@ class PushRequest {
         '$title|'
         '${sslVerify ? '1' : '0'}'
         '${possibleAnswers != null ? '|${possibleAnswers!.join(",")}' : ''}';
-    Logger.warning('Signed data: $signedData');
+    Logger.info('Signed data: $signedData');
 
     // Re-add url and sslverify to android legacy tokens:
     if (token.url == null) {
