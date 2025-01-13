@@ -27,7 +27,7 @@ jobs:
     - uses: subosito/flutter-action@v2
       with:
         channel: 'stable'
-        flutter-version: '3.24.3'
+        flutter-version: '3.27.1'
     - run: 'flutter --version'
     - run: 'flutter doctor -v'
     - run: 'flutter pub get'
@@ -54,7 +54,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          flutter-version: '3.24.3'
+          flutter-version: '3.27.1'
       - run: 'flutter clean'
       - run: 'flutter --version'
       - run: 'flutter doctor -v'
