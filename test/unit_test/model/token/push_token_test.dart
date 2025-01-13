@@ -171,7 +171,7 @@ void _testPushToken() {
     group('fromUriMap', () {
       test('with full map', () {
         final uriMap = <String, dynamic>{
-          Token.OTPAUTH_TYPE: 'PIPUSH',
+          Token.TOKENTYPE_OTPAUTH: 'PIPUSH',
           Token.LABEL: 'label',
           Token.ISSUER: 'issuer',
           Token.SERIAL: 'serial',
@@ -218,7 +218,7 @@ void _testPushToken() {
         pin: true,
       );
       final uriMap = token.toOtpAuthMap();
-      expect(uriMap[Token.OTPAUTH_TYPE], 'PIPUSH');
+      expect(uriMap[Token.TOKENTYPE_OTPAUTH], 'PIPUSH');
       expect(uriMap[Token.LABEL], 'label');
       expect(uriMap[Token.ISSUER], 'issuer');
       expect(uriMap[Token.SERIAL], 'serial');

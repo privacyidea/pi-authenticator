@@ -198,7 +198,7 @@ class SteamToken extends TOTPToken {
   /// ```dart
   ///  ------------------------- [Token] -------------------------
   /// | Token.SERIAL: serial, (optional)                          |
-  /// | Token.TYPE: type,                                         |
+  /// | Token.TOKENTYPE_JSON: type,                                         |
   /// | Token.LABEL: label,                                       |
   /// | Token.ISSUER: issuer,                                     |
   /// | Token.PIN: pin,                                           |

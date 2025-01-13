@@ -42,8 +42,8 @@ abstract class Token with SortableMixin {
   static const String IMAGE = 'image';
 
   // Default data keys
-  static const String OTPAUTH_TYPE = 'tokentype';
-  static const String TYPE = 'type';
+  static const String TOKENTYPE_OTPAUTH = 'tokentype';
+  static const String TOKENTYPE_JSON = 'type';
 
   /// [String] (optional) default = ''
   static const String LABEL = 'label';
@@ -99,7 +99,7 @@ abstract class Token with SortableMixin {
 
   /// Creates a token from a json map.
   factory Token.fromJson(Map<String, dynamic> json) {
-    String? type = json[TYPE];
+    String? type = json[TOKENTYPE_JSON];
     if (type == null) throw ArgumentError.value(json, 'Token#fromJson', 'Token type is not defined in the json');
     if (TokenTypes.HOTP.isName(type, caseSensitive: false)) return HOTPToken.fromJson(json);
     if (TokenTypes.TOTP.isName(type, caseSensitive: false)) return TOTPToken.fromJson(json);
@@ -111,7 +111,7 @@ abstract class Token with SortableMixin {
 
   /// Creates a token from a uri map.
   factory Token.fromOtpAuthMap(Map<String, dynamic> otpAuthMap, {Map<String, dynamic> additionalData = const {}}) {
-    String? type = otpAuthMap[OTPAUTH_TYPE];
+    String? type = otpAuthMap[TOKENTYPE_OTPAUTH];
     if (type == null) throw ArgumentError.value(otpAuthMap, 'Token#fromUriMap', 'Token type is not defined in the uri map');
     if (TokenTypes.HOTP.isName(type, caseSensitive: false)) return HOTPToken.fromOtpAuthMap(otpAuthMap, additionalData: additionalData);
     if (TokenTypes.TOTP.isName(type, caseSensitive: false)) return TOTPToken.fromOtpAuthMap(otpAuthMap, additionalData: additionalData);
@@ -231,7 +231,7 @@ abstract class Token with SortableMixin {
   Map<String, dynamic> toOtpAuthMap() {
     return {
       if (serial != null) SERIAL: serial!,
-      OTPAUTH_TYPE: type,
+      TOKENTYPE_OTPAUTH: type,
       LABEL: label,
       ISSUER: issuer,
       PIN: pin ? PIN_VALUE_TRUE : PIN_VALUE_FALSE,

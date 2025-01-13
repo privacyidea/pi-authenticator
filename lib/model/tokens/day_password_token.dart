@@ -234,7 +234,7 @@ class DayPasswordToken extends OTPToken {
   /// | CONTAINER_SERIAL: containerSerial, (optional)                    |
   /// | CHECKED_CONTAINERS: checkedContainer,                            |
   /// | TOKEN_ID: id,                                                    |
-  /// | Token.TYPE: type,                                                |
+  /// | Token.TOKENTYPE_JSON: type,                                                |
   /// | Token.IMAGE: tokenImage, (optional)                              |
   /// | SORTABLE_INDEX: sortIndex, (optional)                            |
   /// | FOLDER_ID: folderId, (optional)                                  |

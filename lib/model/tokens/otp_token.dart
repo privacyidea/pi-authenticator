@@ -121,7 +121,7 @@ abstract class OTPToken extends Token {
   /// | Token.CONTAINER_SERIAL: containerSerial, (optional)             |
   /// | Token.CHECKED_CONTAINERS: checkedContainer,                     |
   /// | Token.TOKEN_ID: id,                                             |
-  /// | Token.TYPE: type,                                               |
+  /// | Token.TOKENTYPE_JSON: type,                                               |
   /// | Token.IMAGE: tokenImage, (optional)                             |
   /// | Token.SORTABLE_INDEX: sortIndex, (optional)                     |
   /// | Token.FOLDER_ID: folderId, (optional)                           |

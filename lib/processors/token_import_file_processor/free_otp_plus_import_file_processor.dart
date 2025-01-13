@@ -156,7 +156,7 @@ class FreeOtpPlusImportFileProcessor extends TokenImportFileProcessor {
         name: 'FreeOtpPlusToken',
         map: {
           /// Steam is a special case, its hardcoded in the original app.
-          Token.OTPAUTH_TYPE: tokenJson[_FREE_OTP_PLUS_ISSUER] == _steamTokenIssuer ? _steamTokenType : tokenJson[_FREE_OTP_PLUS_TYPE],
+          Token.TOKENTYPE_OTPAUTH: tokenJson[_FREE_OTP_PLUS_ISSUER] == _steamTokenIssuer ? _steamTokenType : tokenJson[_FREE_OTP_PLUS_TYPE],
           Token.LABEL: tokenJson[_FREE_OTP_PLUS_LABEL],
           Token.ISSUER: tokenJson[_FREE_OTP_PLUS_ISSUER],
           OTPToken.SECRET_BASE32: tokenJson[_FREE_OTP_PLUS_SECRET],
@@ -166,7 +166,7 @@ class FreeOtpPlusImportFileProcessor extends TokenImportFileProcessor {
           TOTPToken.PERIOD_SECONDS: tokenJson[_FREE_OTP_PLUS_PERIOD],
         },
         validators: {
-          Token.OTPAUTH_TYPE: const ObjectValidator<String>(),
+          Token.TOKENTYPE_OTPAUTH: const ObjectValidator<String>(),
           Token.LABEL: const ObjectValidator<String>(),
           Token.ISSUER: const ObjectValidator<String>(),
           OTPToken.SECRET_BASE32: ObjectValidator<String>(transformer: (value) => Encodings.base32.encode(Uint8List.fromList((value as List).cast<int>()))),

@@ -83,7 +83,7 @@ void _testDayPasswordToken() {
         final uriMap = {
           Token.LABEL: 'label',
           Token.ISSUER: 'issuer',
-          Token.OTPAUTH_TYPE: 'DAYPASSWORD',
+          Token.TOKENTYPE_OTPAUTH: 'DAYPASSWORD',
           Token.PIN: Token.PIN_VALUE_FALSE,
           Token.IMAGE: 'example.png',
           OTPToken.ALGORITHM: 'SHA1',
@@ -106,7 +106,7 @@ void _testDayPasswordToken() {
         final uriMap = {
           Token.LABEL: 'label',
           Token.ISSUER: 'issuer',
-          Token.OTPAUTH_TYPE: 'DAYPASSWORD',
+          Token.TOKENTYPE_OTPAUTH: 'DAYPASSWORD',
           Token.PIN: Token.PIN_VALUE_FALSE,
           Token.IMAGE: 'example.png',
           OTPToken.ALGORITHM: 'SHA1',
@@ -119,7 +119,7 @@ void _testDayPasswordToken() {
         final uriMap = {
           Token.LABEL: 'label',
           Token.ISSUER: 'issuer',
-          Token.OTPAUTH_TYPE: 'DAYPASSWORD',
+          Token.TOKENTYPE_OTPAUTH: 'DAYPASSWORD',
           Token.PIN: Token.PIN_VALUE_FALSE,
           Token.IMAGE: 'example.png',
           OTPToken.ALGORITHM: 'SHA1',
@@ -140,7 +140,7 @@ void _testDayPasswordToken() {
         final uriMap = {
           Token.LABEL: 'label',
           Token.ISSUER: 'issuer',
-          Token.OTPAUTH_TYPE: 'DAYPASSWORD',
+          Token.TOKENTYPE_OTPAUTH: 'DAYPASSWORD',
           Token.PIN: Token.PIN_VALUE_FALSE,
           Token.IMAGE: 'example.png',
           OTPToken.ALGORITHM: 'SHA1',
@@ -161,7 +161,7 @@ void _testDayPasswordToken() {
         final uriMap = {
           Token.LABEL: 'label',
           Token.ISSUER: 'issuer',
-          Token.OTPAUTH_TYPE: 'DAYPASSWORD',
+          Token.TOKENTYPE_OTPAUTH: 'DAYPASSWORD',
           Token.PIN: Token.PIN_VALUE_FALSE,
           Token.IMAGE: 'example.png',
           OTPToken.ALGORITHM: 'sha1',
@@ -181,7 +181,7 @@ void _testDayPasswordToken() {
       final uriMap = dayPasswordToken.toOtpAuthMap();
       expect(uriMap[Token.LABEL], 'label');
       expect(uriMap[Token.ISSUER], 'issuer');
-      expect(uriMap[Token.OTPAUTH_TYPE], 'DAYPASSWORD');
+      expect(uriMap[Token.TOKENTYPE_OTPAUTH], 'DAYPASSWORD');
       expect(uriMap[Token.PIN], Token.PIN_VALUE_TRUE);
       expect(uriMap[Token.IMAGE], 'example.png');
       expect(uriMap[OTPToken.ALGORITHM], 'SHA1');

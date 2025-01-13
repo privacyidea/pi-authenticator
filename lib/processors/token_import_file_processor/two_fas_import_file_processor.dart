@@ -175,7 +175,7 @@ class TwoFasAuthenticatorImportFileProcessor extends TokenImportFileProcessor {
     return validateMap(
       map: {
         Token.ISSUER: twoFasToken[TWOFAS_ISSUER],
-        Token.OTPAUTH_TYPE: twoFasOTP[TWOFAS_TYPE],
+        Token.TOKENTYPE_OTPAUTH: twoFasOTP[TWOFAS_TYPE],
         Token.LABEL: twoFasOTP[TWOFAS_LABEL],
         OTPToken.SECRET_BASE32: twoFasToken[TWOFAS_SECRET],
         OTPToken.ALGORITHM: twoFasOTP[TWOFAS_ALGORITHM],
@@ -184,7 +184,7 @@ class TwoFasAuthenticatorImportFileProcessor extends TokenImportFileProcessor {
         HOTPToken.COUNTER: twoFasOTP[TWOFAS_COUNTER],
       },
       validators: {
-        Token.OTPAUTH_TYPE: const ObjectValidator<String>(),
+        Token.TOKENTYPE_OTPAUTH: const ObjectValidator<String>(),
         Token.ISSUER: const ObjectValidatorNullable<String>(),
         Token.LABEL: const ObjectValidatorNullable<String>(),
         OTPToken.SECRET_BASE32: const ObjectValidator<String>(),

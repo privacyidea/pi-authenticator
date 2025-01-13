@@ -85,7 +85,7 @@ void _testHotpToken() {
         final uriMap = {
           Token.LABEL: 'label',
           Token.ISSUER: 'issuer',
-          Token.OTPAUTH_TYPE: 'HOTP',
+          Token.TOKENTYPE_OTPAUTH: 'HOTP',
           Token.PIN: Token.PIN_VALUE_TRUE,
           Token.IMAGE: 'example.png',
           OTPToken.ALGORITHM: 'SHA1',
@@ -108,7 +108,7 @@ void _testHotpToken() {
         final uriMap = {
           Token.LABEL: 'label',
           Token.ISSUER: 'issuer',
-          Token.OTPAUTH_TYPE: 'HOTP',
+          Token.TOKENTYPE_OTPAUTH: 'HOTP',
           Token.PIN: Token.PIN_VALUE_TRUE,
           Token.IMAGE: 'example.png',
           OTPToken.ALGORITHM: 'SHA1',
@@ -121,7 +121,7 @@ void _testHotpToken() {
         final uriMap = {
           Token.LABEL: 'label',
           Token.ISSUER: 'issuer',
-          Token.OTPAUTH_TYPE: 'HOTP',
+          Token.TOKENTYPE_OTPAUTH: 'HOTP',
           Token.PIN: Token.PIN_VALUE_TRUE,
           Token.IMAGE: 'example.png',
           OTPToken.ALGORITHM: 'SHA1',
@@ -142,7 +142,7 @@ void _testHotpToken() {
         final uriMap = {
           Token.LABEL: 'label',
           Token.ISSUER: 'issuer',
-          Token.OTPAUTH_TYPE: 'HOTP',
+          Token.TOKENTYPE_OTPAUTH: 'HOTP',
           Token.PIN: Token.PIN_VALUE_TRUE,
           Token.IMAGE: 'example.png',
           OTPToken.ALGORITHM: 'sha1',
@@ -171,7 +171,7 @@ void _testHotpToken() {
       final uriMap = hotpToken.toOtpAuthMap();
       expect(uriMap[Token.LABEL], 'label');
       expect(uriMap[Token.ISSUER], 'issuer');
-      expect(uriMap[Token.OTPAUTH_TYPE], 'HOTP');
+      expect(uriMap[Token.TOKENTYPE_OTPAUTH], 'HOTP');
       expect(uriMap[Token.PIN], Token.PIN_VALUE_TRUE);
       expect(uriMap[Token.IMAGE], 'example.png');
       expect(uriMap[OTPToken.ALGORITHM], 'SHA1');

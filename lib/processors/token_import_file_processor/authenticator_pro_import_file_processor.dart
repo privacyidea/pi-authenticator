@@ -321,7 +321,7 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
 
         final otpAuthMap = validateMap<String>(
           map: {
-            Token.OTPAUTH_TYPE: tokenType,
+            Token.TOKENTYPE_OTPAUTH: tokenType,
             Token.ISSUER: tokenMap[_AUTHENTICATOR_PRO_ISSUER],
             Token.LABEL: tokenMap[_AUTHENTICATOR_PRO_LABEL],
             OTPToken.SECRET_BASE32: tokenMap[_AUTHENTICATOR_PRO_SECRET],
@@ -331,7 +331,7 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
             HOTPToken.COUNTER: tokenMap[_AUTHENTICATOR_PRO_COUNTER],
           },
           validators: {
-            Token.OTPAUTH_TYPE: const ObjectValidator<String>(),
+            Token.TOKENTYPE_OTPAUTH: const ObjectValidator<String>(),
             Token.ISSUER: const ObjectValidator<String>(),
             Token.LABEL: const ObjectValidator<String>(),
             OTPToken.SECRET_BASE32: const ObjectValidator<String>(),
