@@ -93,13 +93,7 @@ class PushRequestState {
   /////////////// Json Serialization ///////////////
   //////////////////////////////////////////////////
   */
-  Map<String, dynamic> toJson() => {
-        'pushRequests': pushRequests.map((e) => e.toJson()).toList(),
-        'knownPushRequests': knownPushRequests.toJson(),
-      };
+  Map<String, dynamic> toJson() => _$PushRequestStateToJson(this);
 
-  factory PushRequestState.fromJson(Map<String, dynamic> json) => PushRequestState(
-        pushRequests: (json['pushRequests'] as List).map((e) => PushRequest.fromJson(e)).toList(),
-        knownPushRequests: CustomIntBuffer.fromJson(json['knownPushRequests']),
-      );
+  factory PushRequestState.fromJson(Map<String, dynamic> json) => _$PushRequestStateFromJson(json);
 }
