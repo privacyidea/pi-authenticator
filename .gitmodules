@@ -1,0 +1,3 @@
+[submodule "flutter_zxing"]
+	path = flutter_zxing
+	url = git@github.com:frankmer/flutter_zxing.git
