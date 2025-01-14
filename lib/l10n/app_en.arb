@@ -37,6 +37,15 @@
   "@a11ySearchTokensButton": {
     "description": "A11y label for the search tokens input field."
   },
+  "@a11ySecondsUntilNextOTP": {
+    "description": "A11y label for the animated countdown until the next OTP is generated.",
+    "placeholders": {
+      "seconds": {
+        "example": "30",
+        "type": "int"
+      }
+    }
+  },
   "@a11ySettingsButton": {
     "description": "Accessibility label for the button to open the settings page."
   },
@@ -121,6 +130,9 @@
   "@cancel": {
     "description": "Button to cancel an action."
   },
+  "@cannotNavigateWithoutContext": {
+    "description": "Error message when the user tries to navigate to a screen without providing the necessary context."
+  },
   "@checkServerCertificate": {
     "description": "Error message when the server certificate should be checked."
   },
@@ -176,6 +188,15 @@
   "@containerDetails": {
     "description": "Title of the container details dialog."
   },
+  "@containerRolloutExpired": {
+    "description": "Message when a container has expired and can not be rolled out anymore",
+    "placeholders": {
+      "serial": {
+        "example": "PUSH1234A",
+        "type": "String"
+      }
+    }
+  },
   "@containerRolloutSendDeviceInfoDialogContent": {
     "description": "Content of the dialog that asks the user if they want to send device information."
   },
@@ -191,6 +212,9 @@
   "@containerTransferDeleteTokensButtonText": {
     "description": "Button text to delete corresponding tokens after container transfer."
   },
+  "@containerTransferDeleteTokensSuccessMessage": {
+    "description": "Message when a container and its corresponding tokens have been successfully removed from the device."
+  },
   "@containerTransferDialogContentAborted": {
     "description": "Content of the dialog that tells the user that the container transfer was aborted."
   },
@@ -202,6 +226,18 @@
   },
   "@couldNotConnectToServer": {
     "description": "Error message when the connection to the server could not be established."
+  },
+  "@couldNotFindGlobalRef": {
+    "description": "Error message when a global reference could not be found."
+  },
+  "@couldNotFundTokenForWidgetId": {
+    "description": "Error message when a token could not be found for a widget id.",
+    "placeholders": {
+      "id": {
+        "example": "1234",
+        "type": "String"
+      }
+    }
   },
   "@couldNotSignMessage": {
     "description": "Tells the user that the message could not be signed."
@@ -373,6 +409,9 @@
     },
     "type": "text"
   },
+  "@errorRolloverNotAllowed": {
+    "description": "Error message when the rollover for a container is not allowed."
+  },
   "@errorSavingFile": {
     "description": "Tells the user that the file could not be saved."
   },
@@ -396,6 +435,9 @@
         "type": "String"
       }
     }
+  },
+  "@errorUnregisterNotAllowed": {
+    "description": "Error message when unregistering for a container is not allowed."
   },
   "@errorWhenPullingChallenges": {
     "description": "errorWhenPullingChallenges",
@@ -454,6 +496,9 @@
       }
     }
   },
+  "@failedToRenewSecrets": {
+    "description": "Error message when the secrets of the tokens could not be renewed."
+  },
   "@failedToSyncContainer": {
     "placeholders": {
       "serial": {
@@ -488,6 +533,9 @@
   },
   "@feedbackTitle": {
     "description": "First big line of the feedback screen."
+  },
+  "@fileNotAvailable": {
+    "description": "Error message when the file is not available."
   },
   "@fileSavedToDownloadsFolder": {
     "description": "Tells the user that the file was saved to the downloads folder."
@@ -530,6 +578,9 @@
   },
   "@handshakeFailed": {
     "description": "Error message when the handshake failed."
+  },
+  "@handshakeFailedLongText": {
+    "description": "Error message when the handshake with the server failed."
   },
   "@hidePushTokens": {
     "description": "Label for the switch to hide push tokens."
@@ -671,6 +722,19 @@
     "placeholders": {
       "appName": {
         "example": "privacyIDEA Authenticator",
+        "type": "String"
+      }
+    }
+  },
+  "@invalidHostForScheme": {
+    "description": "Error message when the host is invalid for the scheme.",
+    "placeholders": {
+      "host": {
+        "example": "example.com",
+        "type": "String"
+      },
+      "scheme": {
+        "example": "pia",
         "type": "String"
       }
     }
@@ -825,6 +889,9 @@
       }
     }
   },
+  "@missingWidgetId": {
+    "description": "Error message when the widget id is missing."
+  },
   "@mustNotBeEmpty": {
     "description": "Error message when a field must not be empty.",
     "placeholders": {
@@ -840,6 +907,9 @@
   "@no": {
     "description": "Content of the field when the answer is no."
   },
+  "@noDataFoundInQrCode": {
+    "description": "Error message when no data is found in the QR code."
+  },
   "@noFbToken": {
     "description": "Tells the user that there is no Firebase token available."
   },
@@ -851,6 +921,15 @@
   },
   "@noNetworkConnection": {
     "description": "Tells the user that there is no network connection."
+  },
+  "@noProcessorFoundForHost": {
+    "description": "Error message when no processor is found for the host.",
+    "placeholders": {
+      "host": {
+        "example": "example.com",
+        "type": "String"
+      }
+    }
   },
   "@noPublicKey": {
     "description": "Error message when the public key is missing."
@@ -875,6 +954,19 @@
   },
   "@notAnNumber": {
     "description": "Error message when the user entered a value that is not a number."
+  },
+  "@notSupported": {
+    "description": "Error message when something is not supported, depending on the context.",
+    "placeholders": {
+      "name": {
+        "example": "piauth version",
+        "type": "String"
+      },
+      "value": {
+        "example": "5",
+        "type": "String"
+      }
+    }
   },
   "@ok": {
     "description": "Button to confirm an action."
@@ -1023,6 +1115,9 @@
   },
   "@pushEndpointUrl": {
     "description": "Title of the push endpoint url field."
+  },
+  "@pushInitializeUnavailable": {
+    "description": "Error message when push can't be initialized."
   },
   "@pushRequestParseError": {
     "description": "Error message when the push request could not be parsed."
@@ -1311,8 +1406,14 @@
   "@transferContainerSuccessDialogContent2": {
     "description": "Content of the dialog that asks the user if they want to delete the container and its corresponding tokens from this device."
   },
+  "@twoStepSecretFailed": {
+    "description": "Error message when the two step secret could not be generated, or was canceled."
+  },
   "@type": {
     "description": "Title of the dropdown button where the type of the token is selected."
+  },
+  "@unableToCreateToken": {
+    "description": "Error message when a token could not be created."
   },
   "@unexpectedError": {
     "description": "Title of page report mode."
@@ -1431,7 +1532,7 @@
   "biometricSuccess": "Authentication successful",
   "butDiscardIt": "but discard it",
   "cancel": "Cancel",
-  "cannotNavigateWithoutContext": "Cannot navigate without context",
+  "cannotNavigateWithoutContext": "Cannot navigate without context.",
   "checkServerCertificate": "Please check the server certificate",
   "checkYourNetwork": "Please check your network connection and try again.",
   "clearErrorLog": "Clear",
@@ -1612,7 +1713,6 @@
   "logMenu": "Log menu",
   "malformedData": "Malformed data",
   "markQrCode": "Mark QR Code",
-  "missingIdForLink": "Missing id for link: {host}",
   "missingRequiredParameter": "The value for the [{parameter}] parameter is required, but is missing.",
   "missingRequiredParameterIn": "The value for the parameter [{parameter}] is required, but is missing in \"{map}\".",
   "missingWidgetId": "Missing widgetId",
@@ -1768,7 +1868,7 @@
   "transferContainerSuccessDialogContent2": "Do you want to delete the container and its corresponding tokens from this device?",
   "twoStepSecretFailed": "The two step secret could not be generated, or was canceled.",
   "type": "Type",
-  "unableToCreateToken": "The token could not be created.",
+  "unableToCreateToken": "The Token could not be created.",
   "unexpectedError": "An unexpected error occurred.",
   "unknown": "Unknown",
   "unlock": "Unlock",

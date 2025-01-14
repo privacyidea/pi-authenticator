@@ -37,6 +37,15 @@
   "@a11ySearchTokensButton": {
     "description": "A11y label for the search tokens input field."
   },
+  "@a11ySecondsUntilNextOTP": {
+    "description": "A11y label for the animated countdown until the next OTP is generated.",
+    "placeholders": {
+      "seconds": {
+        "example": "30",
+        "type": "int"
+      }
+    }
+  },
   "@a11ySettingsButton": {
     "description": "Accessibility label for the button to open the settings page."
   },
@@ -121,6 +130,9 @@
   "@cancel": {
     "description": "Button to cancel an action."
   },
+  "@cannotNavigateWithoutContext": {
+    "description": "Error message when the user tries to navigate to a screen without providing the necessary context."
+  },
   "@checkServerCertificate": {
     "description": "Error message when the server certificate should be checked."
   },
@@ -176,6 +188,15 @@
   "@containerDetails": {
     "description": "Title of the container details dialog."
   },
+  "@containerRolloutExpired": {
+    "description": "Message when a container has expired and can not be rolled out anymore",
+    "placeholders": {
+      "serial": {
+        "example": "PUSH1234A",
+        "type": "String"
+      }
+    }
+  },
   "@containerRolloutSendDeviceInfoDialogContent": {
     "description": "Content of the dialog that asks the user if they want to send device information."
   },
@@ -191,6 +212,9 @@
   "@containerTransferDeleteTokensButtonText": {
     "description": "Button text to delete corresponding tokens after container transfer."
   },
+  "@containerTransferDeleteTokensSuccessMessage": {
+    "description": "Message when a container and its corresponding tokens have been successfully removed from the device."
+  },
   "@containerTransferDialogContentAborted": {
     "description": "Content of the dialog that tells the user that the container transfer was aborted."
   },
@@ -202,6 +226,18 @@
   },
   "@couldNotConnectToServer": {
     "description": "Error message when the connection to the server could not be established."
+  },
+  "@couldNotFindGlobalRef": {
+    "description": "Error message when a global reference could not be found."
+  },
+  "@couldNotFundTokenForWidgetId": {
+    "description": "Error message when a token could not be found for a widget id.",
+    "placeholders": {
+      "id": {
+        "example": "1234",
+        "type": "String"
+      }
+    }
   },
   "@couldNotSignMessage": {
     "description": "Tells the user that the message could not be signed."
@@ -373,6 +409,9 @@
     },
     "type": "text"
   },
+  "@errorRolloverNotAllowed": {
+    "description": "Error message when the rollover for a container is not allowed."
+  },
   "@errorSavingFile": {
     "description": "Tells the user that the file could not be saved."
   },
@@ -396,6 +435,9 @@
         "type": "String"
       }
     }
+  },
+  "@errorUnregisterNotAllowed": {
+    "description": "Error message when unregistering for a container is not allowed."
   },
   "@errorWhenPullingChallenges": {
     "description": "errorWhenPullingChallenges",
@@ -454,6 +496,9 @@
       }
     }
   },
+  "@failedToRenewSecrets": {
+    "description": "Error message when the secrets of the tokens could not be renewed."
+  },
   "@failedToSyncContainer": {
     "placeholders": {
       "serial": {
@@ -488,6 +533,9 @@
   },
   "@feedbackTitle": {
     "description": "First big line of the feedback screen."
+  },
+  "@fileNotAvailable": {
+    "description": "Error message when the file is not available."
   },
   "@fileSavedToDownloadsFolder": {
     "description": "Tells the user that the file was saved to the downloads folder."
@@ -530,6 +578,9 @@
   },
   "@handshakeFailed": {
     "description": "Error message when the handshake failed."
+  },
+  "@handshakeFailedLongText": {
+    "description": "Error message when the handshake with the server failed."
   },
   "@hidePushTokens": {
     "description": "Label for the switch to hide push tokens."
@@ -671,6 +722,19 @@
     "placeholders": {
       "appName": {
         "example": "privacyIDEA Authenticator",
+        "type": "String"
+      }
+    }
+  },
+  "@invalidHostForScheme": {
+    "description": "Error message when the host is invalid for the scheme.",
+    "placeholders": {
+      "host": {
+        "example": "example.com",
+        "type": "String"
+      },
+      "scheme": {
+        "example": "pia",
         "type": "String"
       }
     }
@@ -825,6 +889,9 @@
       }
     }
   },
+  "@missingWidgetId": {
+    "description": "Error message when the widget id is missing."
+  },
   "@mustNotBeEmpty": {
     "description": "Error message when a field must not be empty.",
     "placeholders": {
@@ -840,6 +907,9 @@
   "@no": {
     "description": "Content of the field when the answer is no."
   },
+  "@noDataFoundInQrCode": {
+    "description": "Error message when no data is found in the QR code."
+  },
   "@noFbToken": {
     "description": "Tells the user that there is no Firebase token available."
   },
@@ -851,6 +921,15 @@
   },
   "@noNetworkConnection": {
     "description": "Tells the user that there is no network connection."
+  },
+  "@noProcessorFoundForHost": {
+    "description": "Error message when no processor is found for the host.",
+    "placeholders": {
+      "host": {
+        "example": "example.com",
+        "type": "String"
+      }
+    }
   },
   "@noPublicKey": {
     "description": "Error message when the public key is missing."
@@ -875,6 +954,19 @@
   },
   "@notAnNumber": {
     "description": "Error message when the user entered a value that is not a number."
+  },
+  "@notSupported": {
+    "description": "Error message when something is not supported, depending on the context.",
+    "placeholders": {
+      "name": {
+        "example": "piauth version",
+        "type": "String"
+      },
+      "value": {
+        "example": "5",
+        "type": "String"
+      }
+    }
   },
   "@ok": {
     "description": "Button to confirm an action."
@@ -1023,6 +1115,9 @@
   },
   "@pushEndpointUrl": {
     "description": "Title of the push endpoint url field."
+  },
+  "@pushInitializeUnavailable": {
+    "description": "Error message when push can't be initialized."
   },
   "@pushRequestParseError": {
     "description": "Error message when the push request could not be parsed."
@@ -1311,8 +1406,14 @@
   "@transferContainerSuccessDialogContent2": {
     "description": "Content of the dialog that asks the user if they want to delete the container and its corresponding tokens from this device."
   },
+  "@twoStepSecretFailed": {
+    "description": "Error message when the two step secret could not be generated, or was canceled."
+  },
   "@type": {
     "description": "Title of the dropdown button where the type of the token is selected."
+  },
+  "@unableToCreateToken": {
+    "description": "Error message when a token could not be created."
   },
   "@unexpectedError": {
     "description": "Title of page report mode."
@@ -1404,6 +1505,7 @@
   "a11yScanQrCodeViewGallery": "Galerij openen",
   "a11yScanQrCodeViewInactive": "Scan-QR-code weergave. Cammera is niet actief",
   "a11ySearchTokensButton": "Zoek tokens",
+  "a11ySecondsUntilNextOTP": "{seconds} Seconden tot de volgende OTP wordt gegenereerd.",
   "a11ySettingsButton": "Instellingen",
   "accept": "Accepteren",
   "addANewFolder": "Nieuwe map maken",
@@ -1430,6 +1532,7 @@
   "biometricSuccess": "Authenticatie geslaagd",
   "butDiscardIt": "maar verwijder",
   "cancel": "Annuleren",
+  "cannotNavigateWithoutContext": "Kan niet navigeren zonder context.",
   "checkServerCertificate": "Controleer het servercertificaat",
   "checkYourNetwork": "Controleer je netwerkverbinding en probeer het opnieuw.",
   "clearErrorLog": "Verwijderen",
@@ -1446,15 +1549,19 @@
   "containerAlreadyExists": "Container bestaat al",
   "containerDeleteCorrespondingTokenDialogContent": "Wilt u de bijbehorende tokens ook verwijderen?",
   "containerDetails": "Containergegevens",
+  "containerRolloutExpired": "Container {serial} is verlopen en kan niet langer worden uitgerold.",
   "containerRolloutSendDeviceInfoDialogContent": "Wil je de uitgever van de container vertellen welk apparaat je gebruikt? Dit kan later handig zijn als je problemen hebt met je tweede factor.",
   "containerRolloutSendDeviceInfoDialogTitle": "Apparaatinformatie verzenden",
   "containerSerial": "Container serie",
   "containerSyncUrl": "Url voor containersynchronisatie",
   "containerTransferDeleteTokensButtonText": "Van dit apparaat verwijderen",
+  "containerTransferDeleteTokensSuccessMessage": " Container en bijbehorende tokens zijn succesvol verwijderd van dit apparaat.",
   "containerTransferDialogContentAborted": "Containeroverdracht afgebroken.",
   "continueButton": "Ga verder",
   "copyOTPToClipboard": "Kopieer OTP naar klembord",
   "couldNotConnectToServer": "Kan geen verbinding maken met de server.",
+  "couldNotFindGlobalRef": " Kon globalRef niet vinden",
+  "couldNotFundTokenForWidgetId": " Token voor widget ID: {id} kon niet worden gevonden",
   "couldNotSignMessage": "Bericht niet kunnen ondertekenen.",
   "counter": "Tegen",
   "create": "Creëer",
@@ -1503,10 +1610,12 @@
   "errorRollOutNotPossibleAnymore": "Het uitrollen van dit token is niet meer mogelijk.",
   "errorRollOutSSLHandshakeFailed": "SSL-handdruk mislukt. Uitrollen niet mogelijk.",
   "errorRollOutUnknownError": "Een onbekende fout heeft plaats gevonden. Uitrollen is niet mogelijk: {e}",
+  "errorRolloverNotAllowed": " Een rollover voor deze container is niet toegestaan.",
   "errorSavingFile": "Fout bij het opslaan van het bestand",
   "errorSynchronizationNoNetworkConnection": "Token synchroniseren mislukt, privacyIDEA server kan niet worden bereikt.",
   "errorTokenExpired": "Het token {name} is verlopen.",
   "errorUnlinkingPushToken": "Het is niet gelukt om het push token {label} te ontkoppelen.",
+  "errorUnregisterNotAllowed": " Uitschrijving voor deze container is niet toegestaan.",
   "errorWhenPullingChallenges": "Er is een fout opgetreden bij het zoeken naar uitdagingen van {name}",
   "exampleUrl": "Voer een geldige URL in zoals: \"https://example.com/\"",
   "expandLockedFolder": "Verifieer om de vergrendelde map te openen.",
@@ -1520,6 +1629,7 @@
   "exportingTokens": "Tokens exporteren...",
   "failedToFinalizeContainer": "Fout bij het afsluiten van de container {serial}",
   "failedToLoad": "Mislukt bij het laden: {name}",
+  "failedToRenewSecrets": " Vernieuwing van de geheimen mislukt",
   "failedToSyncContainer": "Synchronisatie van container {serial} mislukt",
   "feedback": "Feedback",
   "feedbackDescription": "Als je vragen, suggesties of problemen hebt, laat het ons dan weten.",
@@ -1530,6 +1640,7 @@
   "feedbackSentDescription": "Hartelijk dank voor je hulp om deze applicatie beter te maken!",
   "feedbackSentTitle": "Feedback verzonden",
   "feedbackTitle": "Uw feedback is altijd welkom!",
+  "fileNotAvailable": " Het bestand is momenteel niet beschikbaar! Probeer het opnieuw.",
   "fileSavedToDownloadsFolder": "Bestand opgeslagen in de map Downloads",
   "finalizationState": "Afrondingsstatus",
   "finalizeContainerFailed": "Container voltooien mislukt",
@@ -1544,6 +1655,7 @@
   "grantCameraPermissionDialogPermanentlyDenied": "Cameratoestemming is permanent geweigerd. Geef de camera toestemming in de instellingen van uw telefoon.",
   "grantCameraPermissionDialogTitle": "Cameratoestemming is niet verleend",
   "handshakeFailed": "Handshake mislukt",
+  "handshakeFailedLongText": " Handshake mislukt, controleer het servercertificaat en probeer het opnieuw.",
   "hidePushTokens": "Verberg push tokens",
   "hidePushTokensDescription": "Verberg push tokens uit de token lijst. Hierdoor worden de tokens niet verwijderd en blijven ze zichtbaar op een apart scherm.",
   "imageUrl": "Afbeeldings-URL",
@@ -1578,6 +1690,7 @@
   "introScanQrCode": "Je kunt QR-codes scannen om tokens toe te voegen.We ondersteunen alle gangbare Two-Factor-Authenticatie tokens en ook de privacyIDEA tokens.",
   "introTokenSwipe": "Veeg tokens naar links om beschikbare acties te zien.",
   "invalidBackupFile": "Het geselecteerde bestand is geen geldige backup van {appName}.",
+  "invalidHostForScheme": " Ongeldige host: {host} voor schema: {scheme}",
   "invalidLink": "De ingevoerde link is geen geldig token van {appName}, of wordt niet ondersteund.",
   "invalidQrFile": "Het geselecteerde bestand bevat geen geldige QR code van {appName}.",
   "invalidQrScan": "De gescande QR code is geen geldige backup van {appName}.",
@@ -1602,13 +1715,16 @@
   "markQrCode": "Markeer QR Code",
   "missingRequiredParameter": "De waarde voor de parameter [{parameter}] is vereist, maar ontbreekt.",
   "missingRequiredParameterIn": "De waarde voor de parameter [{parameter}] is vereist, maar ontbreekt in \"{map}\".",
+  "missingWidgetId": " Ontbrekende widgetId",
   "mustNotBeEmpty": "{field} mag niet leeg zijn",
   "name": "Naam",
   "no": "Nee",
+  "noDataFoundInQrCode": " Geen data gevonden in QR code.",
   "noFbToken": "Geen Firebase Token beschikbaar",
   "noMailAppDescription": "Er is geen e-mail app geïnstalleerd of geïnitialiseerd op dit apparaat, probeer het opnieuw wanneer u in staat bent om een e-mailbericht te verzenden.",
   "noMailAppTitle": "Geen mail app gevonden",
   "noNetworkConnection": "Geen netwerkverbinding.",
+  "noProcessorFoundForHost": " Geen processor gevonden voor host: {host}",
   "noPublicKey": "Geen openbare sleutel beschikbaar",
   "noResultText1": "Tik op ",
   "noResultText2": "de knop om te beginnen!",
@@ -1617,6 +1733,7 @@
   "noTokenToImport": "Geen token gevonden om te importeren",
   "notAnInteger": "De waarde is geen geheel getal.",
   "notAnNumber": "De waarde is geen getal.",
+  "notSupported": " De {name} [{value}] wordt niet ondersteund.",
   "ok": "Ok",
   "open": "Openen",
   "originApp": "Oorsprong app",
@@ -1660,6 +1777,7 @@
   "privacyPolicy": "Privacybeleid",
   "publicKey": "Openbare sleutel",
   "pushEndpointUrl": "Push Endpoint URL",
+  "pushInitializeUnavailable": "Push kan niet worden geïnitialiseerd, start de app opnieuw op en probeer het opnieuw.",
   "pushRequestParseError": "Het pushverzoek kon niet worden verwerkt.",
   "pushToken": "Push Token",
   "pushTokensViewTitle": "Push tokens",
@@ -1748,7 +1866,9 @@
   "transferContainerScanQrCode": "Scan de QR-code op het nieuwe apparaat om de container over te zetten.",
   "transferContainerSuccessDialogContent1": "De container is succesvol overgezet naar een ander apparaat.",
   "transferContainerSuccessDialogContent2": "Wilt u de container en de bijbehorende tokens van dit apparaat verwijderen?",
+  "twoStepSecretFailed": "Het tweestapsgeheim kon niet worden gegenereerd of werd geannuleerd.",
   "type": "Type",
+  "unableToCreateToken": "Het token kon niet worden aangemaakt.",
   "unexpectedError": "Er is een onverwachte fout opgetreden.",
   "unknown": "Onbekend",
   "unlock": "Ontgrendel",

@@ -79,7 +79,7 @@ class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
       Logger.warning('HomeWidgetNavigateProcessor: Missing id for link: ${uri.host}');
       return [
         ProcessorResult.failed(
-          (l) => l.missingIdForLink(uri.host),
+          (l) => l.missingWidgetId,
           resultHandlerType: resultHandlerType,
         )
       ];
