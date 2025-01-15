@@ -757,7 +757,7 @@ packages:
       path: flutter_zxing
       relative: true
     source: path
-    version: "1.7.0"
+    version: "1.8.2"
   font_awesome_flutter:
     dependency: "direct main"
     description:
