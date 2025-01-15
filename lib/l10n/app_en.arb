@@ -130,6 +130,20 @@
   "@cancel": {
     "description": "Button to cancel an action."
   },
+  "httpError": "{statusCode, select, 100{{statusCode}: Continue} 101{{statusCode}: Switching Protocols} 102{{statusCode}: Processing} 103{{statusCode}: Early Hints} 104{{statusCode}: Connection Reset By Peer} 200{{statusCode}: OK} 201{{statusCode}: Created} 202{{statusCode}: Accepted} 203{{statusCode}: Non-Authoritative Information} 204{{statusCode}: No Content} 205{{statusCode}: Reset Content} 206{{statusCode}: Partial Content} 207{{statusCode}: Multi-Status} 208{{statusCode}: Already Reported} 300{{statusCode}: Multiple Choices} 301{{statusCode}: Moved Permanently} 302{{statusCode}: Found} 303{{statusCode}: See Other} 304{{statusCode}: Not Modified} 305{{statusCode}: Use Proxy} 307{{statusCode}: Temporary Redirect} 308{{statusCode}: Permanent Redirect} 400{{statusCode}: Bad Request} 401{{statusCode}: Unauthorized} 402{{statusCode}: Payment Required} 403{{statusCode}: Forbidden} 404{{statusCode}: Not Found} 405{{statusCode}: Method Not Allowed} 406{{statusCode}: Not Acceptable} 407{{statusCode}: Proxy Authentication Required} 408{{statusCode}: Request Timeout} 409{{statusCode}: Conflict} 410{{statusCode}: Gone} 411{{statusCode}: Length Required} 412{{statusCode}: Precondition Failed} 413{{statusCode}: Payload Too Large} 414{{statusCode}: Request-URI Too Long} 415{{statusCode}: Unsupported Media Type} 416{{statusCode}: Requested Range Not Satisfiable} 417{{statusCode}: Expectation Failed} 418{{statusCode}: I'm a teapot} 420{{statusCode}: Enhance Your Calm} 421{{statusCode}: Misdirected Request} 422{{statusCode}: Unprocessable Entity} 423{{statusCode}: Locked} 424{{statusCode}: Failed Dependency} 426{{statusCode}: Upgrade Required} 428{{statusCode}: Precondition Required} 429{{statusCode}: Too Many Requests} 431{{statusCode}: Request Header Fields Too Large} 444{{statusCode}: Connection Closed Without Response} 451{{statusCode}: Unavailable For Legal Reasons} 499{{statusCode}: Client Closed Request} 500{{statusCode}: Internal Server Error} 501{{statusCode}: Not Implemented} 502{{statusCode}: Bad Gateway} 503{{statusCode}: Service Unavailable} 504{{statusCode}: Gateway Timeout} 505{{statusCode}: HTTP Version Not Supported} 506{{statusCode}: Variant Also Negotiates} 507{{statusCode}: Insufficient Storage} 508{{statusCode}: Loop Detected} 510{{statusCode}: Not Extended} 511{{statusCode}: Network Authentication Required} 520{{statusCode}: Unknown Error} 521{{statusCode}: Web Server Is Down} 522{{statusCode}: Connection Timed Out} 523{{statusCode}: Origin Is Unreachable} 524{{statusCode}: A Timeout Occurred} 525{{statusCode}: Handshake Failed} 526{{statusCode}: Invalid SSL Certificate} 527{{statusCode}: Railgun Error} 528{{statusCode}: Transport Error} 529{{statusCode}: Service is Overloaded} 530{{statusCode}: Site is Frozen} 599{{statusCode}: Network Connect Timeout Error} other{{statusCode}: {statusMessageUntranslated}}}",
+  "@httpError": {
+    "description": "Error message when an HTTP error occurred. 'statusMessageUntranslated' will be used when the status code is not known.",
+    "placeholders": {
+      "statusCode": {
+        "example": "404",
+        "type": "String"
+      },
+      "statusMessageUntranslated": {
+        "example": "Not Found",
+        "type": "String"
+      }
+    }
+  },
   "@cannotNavigateWithoutContext": {
     "description": "Error message when the user tries to navigate to a screen without providing the necessary context."
   },
@@ -1620,6 +1634,17 @@
   "exampleUrl": "Please enter a valid URL like: \"https://example.com/\"",
   "expandLockedFolder": "Please authenticate to uncollapse the locked folder.",
   "export": "Export",
+  "httpStatus" : "{httpCode, select, 100{{httpCode}: Continue} 101{{httpCode}: Switching Protocols} 102{{httpCode}: Processing} 103{{httpCode}: Early Hints} 104{{httpCode}: Connection Reset By Peer} 200{{httpCode}: OK} 201{{httpCode}: Created} 202{{httpCode}: Accepted} 203{{httpCode}: Non-Authoritative Information} 204{{httpCode}: No Content} 205{{httpCode}: Reset Content} 206{{httpCode}: Partial Content} 207{{httpCode}: Multi-Status} 208{{httpCode}: Already Reported} 300{{httpCode}: Multiple Choices} 301{{httpCode}: Moved Permanently} 302{{httpCode}: Found} 303{{httpCode}: See Other} 304{{httpCode}: Not Modified} 305{{httpCode}: Use Proxy} 307{{httpCode}: Temporary Redirect} 308{{httpCode}: Permanent Redirect} 400{{httpCode}: Bad Request} 401{{httpCode}: Unauthorized} 402{{httpCode}: Payment Required} 403{{httpCode}: Forbidden} 404{{httpCode}: Not Found} 405{{httpCode}: Method Not Allowed} 406{{httpCode}: Not Acceptable} 407{{httpCode}: Proxy Authentication Required} 408{{httpCode}: Request Timeout} 409{{httpCode}: Conflict} 410{{httpCode}: Gone} 411{{httpCode}: Length Required} 412{{httpCode}: Precondition Failed} 413{{httpCode}: Payload Too Large} 414{{httpCode}: Request-URI Too Long} 415{{httpCode}: Unsupported Media Type} 416{{httpCode}: Requested Range Not Satisfiable} 417{{httpCode}: Expectation Failed} 418{{httpCode}: I'm a teapot} 420{{httpCode}: Enhance Your Calm} 421{{httpCode}: Misdirected Request} 422{{httpCode}: Unprocessable Entity} 423{{httpCode}: Locked} 424{{httpCode}: Failed Dependency} 426{{httpCode}: Upgrade Required} 428{{httpCode}: Precondition Required} 429{{httpCode}: Too Many Requests} 431{{httpCode}: Request Header Fields Too Large} 444{{httpCode}: Connection Closed Without Response} 451{{httpCode}: Unavailable For Legal Reasons} 499{{httpCode}: Client Closed Request} 500{{httpCode}: Internal Server Error} 501{{httpCode}: Not Implemented} 502{{httpCode}: Bad Gateway} 503{{httpCode}: Service Unavailable} 504{{httpCode}: Gateway Timeout} 505{{httpCode}: HTTP Version Not Supported} 506{{httpCode}: Variant Also Negotiates} 507{{httpCode}: Insufficient Storage} 508{{httpCode}: Loop Detected} 510{{httpCode}: Not Extended} 511{{httpCode}: Network Authentication Required} 520{{httpCode}: Unknown Error} 521{{httpCode}: Web Server Is Down} 522{{httpCode}: Connection Timed Out} 523{{httpCode}: Origin Is Unreachable} 524{{httpCode}: A Timeout Occurred} 525{{httpCode}: Handshake Failed} 526{{httpCode}: Invalid SSL Certificate} 527{{httpCode}: Railgun Error} 528{{httpCode}: Transport Error} 529{{httpCode}: Service is Overloaded} 530{{httpCode}: Site is Frozen} 599{{httpCode}: Network Connect Timeout Error} other{{httpCode}: Unknown Error}}",
+  "@httpStatus": {
+    "description": "HTTP status code",
+    "placeholders": {
+      "httpCode": {
+        "example": "404",
+        "type": "String"
+      }
+    }
+  },
+
   "exportAllTokens": "Export all tokens",
   "exportLockedTokenReason": "Please authenticate to export locked tokens.",
   "exportNonPrivacyIDEATokens": "Export non-privacyIDEA tokens",

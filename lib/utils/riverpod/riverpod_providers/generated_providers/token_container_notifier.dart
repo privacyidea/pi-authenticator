@@ -330,22 +330,44 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
 
 // DELETE CONTAINER
 
-  Future<TokenContainerState> unregisterDelete(TokenContainerFinalized container) async {
-    if (!(await _containerApi.unregister(container)).success) return await future;
+  Future<bool> unregisterDelete(TokenContainerFinalized container) async {
+    try {
+      if (!(await _containerApi.unregister(container)).success) return false;
+    } on PiServerResultError catch (e) {
+      if (e.code != PiServerResultErrorCodes.couldNotVerifySignature) {
+        showStatusMessage(
+          message: (localization) => localization.piServerCode(e.code.toString()),
+          details: (localization) => e.message,
+        );
+        return false;
+      }
+    } on ResponseError catch (e) {
+      if (e.statusCode == 520 && e.message != "Unknown Error") {
+        showStatusMessage(
+          message: (localization) => e.toString(),
+        );
+        return false;
+      } else {
+        showStatusMessage(
+          message: (localization) => localization.httpStatus(e.statusCode.toString()),
+        );
+      }
+      return false;
+    }
 
     await _stateMutex.acquire();
     final newState = await _deleteContainerFromRepo(container);
     await update((_) => newState);
     _stateMutex.release();
-    return newState;
+    return true;
   }
 
-  Future<TokenContainerState> deleteContainer(TokenContainer container) async {
+  Future<bool> deleteContainer(TokenContainer container) async {
     await _stateMutex.acquire();
     final newState = await _deleteContainerFromRepo(container);
     await update((_) => newState);
     _stateMutex.release();
-    return newState;
+    return true;
   }
 
   Future<TokenContainerState> deleteContainerList(List<TokenContainer> container) async {
@@ -567,9 +589,13 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     // final signature = finalizationResponse.signature;
     final finalizedContainer = await updateContainer(
       container,
-      (TokenContainerUnfinalized c) => c.copyWith(policies: response.policies).finalize(publicServerKey: response.publicServerKey)!,
+      (TokenContainerUnfinalized c) => c.copyWith(policies: response.policies).finalize()!,
     );
     if (finalizedContainer == null) throw StateError('Container was removed');
     return finalizedContainer;
   }
+}
+
+class PiServerResultErrorCodes {
+  static const couldNotVerifySignature = 3002;
 }

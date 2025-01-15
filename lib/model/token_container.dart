@@ -150,7 +150,6 @@ class TokenContainer with _$TokenContainer {
     @Default(ContainerPolicies.defaultSetting) ContainerPolicies policies,
     bool? addDeviceInfos,
     String? passphraseQuestion,
-    String? publicServerKey,
     String? publicClientKey,
     String? privateClientKey,
   }) = TokenContainerUnfinalized;
@@ -169,20 +168,14 @@ class TokenContainer with _$TokenContainer {
     @Default(SyncState.notStarted) SyncState syncState,
     @Default(ContainerPolicies.defaultSetting) ContainerPolicies policies,
     String? passphraseQuestion,
-    required String publicServerKey,
     required String publicClientKey,
     required String privateClientKey,
   }) = TokenContainerFinalized;
 
   TokenContainerFinalized? finalize({
-    ECPublicKey? publicServerKey,
     AsymmetricKeyPair<ECPublicKey, ECPrivateKey>? clientKeyPair,
   }) {
     if (this is TokenContainerFinalized) return this as TokenContainerFinalized;
-    if (publicServerKey == null && this.publicServerKey == null) {
-      Logger.warning('Unable to finalize without public server key');
-      return null;
-    }
     if (clientKeyPair == null && (publicClientKey == null || privateClientKey == null)) {
       Logger.warning('Unable to finalize without client key pair');
       return null;
@@ -202,14 +195,11 @@ class TokenContainer with _$TokenContainer {
       serverName: serverName,
       policies: policies,
       syncState: SyncState.notStarted,
-      publicServerKey: this.publicServerKey ?? eccUtils.serializeECPublicKey(publicServerKey!),
       publicClientKey: publicClientKey ?? eccUtils.serializeECPublicKey(clientKeyPair!.publicKey),
       privateClientKey: privateClientKey ?? eccUtils.serializeECPrivateKey(clientKeyPair!.privateKey),
     );
   }
 
-  ECPublicKey? get ecPublicServerKey => publicServerKey == null ? null : eccUtils.deserializeECPublicKey(publicServerKey!);
-  TokenContainer withPublicServerKey(ECPublicKey publicServerKey) => copyWith(publicServerKey: eccUtils.serializeECPublicKey(publicServerKey));
   ECPublicKey? get ecPublicClientKey => publicClientKey == null ? null : eccUtils.deserializeECPublicKey(publicClientKey!);
   ECPrivateKey? get ecPrivateClientKey => privateClientKey == null ? null : eccUtils.deserializeECPrivateKey(privateClientKey!);
   AsymmetricKeyPair<ECPublicKey, ECPrivateKey>? get clientKeyPair =>
@@ -241,7 +231,6 @@ class TokenContainer with _$TokenContainer {
       'finalizationState: $finalizationState, '
       '${(this is TokenContainerFinalized) ? 'syncState: ${(this as TokenContainerFinalized).syncState}, ' : ''}'
       'passphraseQuestion: $passphraseQuestion, '
-      'publicServerKey: $publicServerKey, '
       'publicClientKey: $publicClientKey)';
 
   String signMessage(String msg) {

@@ -41,7 +41,6 @@ mixin _$TokenContainer {
   FinalizationState get finalizationState => throw _privateConstructorUsedError;
   ContainerPolicies get policies => throw _privateConstructorUsedError;
   String? get passphraseQuestion => throw _privateConstructorUsedError;
-  String? get publicServerKey => throw _privateConstructorUsedError;
   String? get publicClientKey => throw _privateConstructorUsedError;
   String? get privateClientKey => throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -61,7 +60,6 @@ mixin _$TokenContainer {
             ContainerPolicies policies,
             bool? addDeviceInfos,
             String? passphraseQuestion,
-            String? publicServerKey,
             String? publicClientKey,
             String? privateClientKey)
         unfinalized,
@@ -79,7 +77,6 @@ mixin _$TokenContainer {
             SyncState syncState,
             ContainerPolicies policies,
             String? passphraseQuestion,
-            String publicServerKey,
             String publicClientKey,
             String privateClientKey)
         finalized,
@@ -102,7 +99,6 @@ mixin _$TokenContainer {
             ContainerPolicies policies,
             bool? addDeviceInfos,
             String? passphraseQuestion,
-            String? publicServerKey,
             String? publicClientKey,
             String? privateClientKey)?
         unfinalized,
@@ -120,7 +116,6 @@ mixin _$TokenContainer {
             SyncState syncState,
             ContainerPolicies policies,
             String? passphraseQuestion,
-            String publicServerKey,
             String publicClientKey,
             String privateClientKey)?
         finalized,
@@ -143,7 +138,6 @@ mixin _$TokenContainer {
             ContainerPolicies policies,
             bool? addDeviceInfos,
             String? passphraseQuestion,
-            String? publicServerKey,
             String? publicClientKey,
             String? privateClientKey)?
         unfinalized,
@@ -161,7 +155,6 @@ mixin _$TokenContainer {
             SyncState syncState,
             ContainerPolicies policies,
             String? passphraseQuestion,
-            String publicServerKey,
             String publicClientKey,
             String privateClientKey)?
         finalized,
@@ -217,7 +210,6 @@ abstract class $TokenContainerCopyWith<$Res> {
       FinalizationState finalizationState,
       ContainerPolicies policies,
       String? passphraseQuestion,
-      String publicServerKey,
       String publicClientKey,
       String privateClientKey});
 
@@ -251,7 +243,6 @@ class _$TokenContainerCopyWithImpl<$Res, $Val extends TokenContainer>
     Object? finalizationState = null,
     Object? policies = null,
     Object? passphraseQuestion = freezed,
-    Object? publicServerKey = null,
     Object? publicClientKey = null,
     Object? privateClientKey = null,
   }) {
@@ -304,10 +295,6 @@ class _$TokenContainerCopyWithImpl<$Res, $Val extends TokenContainer>
           ? _value.passphraseQuestion
           : passphraseQuestion // ignore: cast_nullable_to_non_nullable
               as String?,
-      publicServerKey: null == publicServerKey
-          ? _value.publicServerKey!
-          : publicServerKey // ignore: cast_nullable_to_non_nullable
-              as String,
       publicClientKey: null == publicClientKey
           ? _value.publicClientKey!
           : publicClientKey // ignore: cast_nullable_to_non_nullable
@@ -354,7 +341,6 @@ abstract class _$$TokenContainerUnfinalizedImplCopyWith<$Res>
       ContainerPolicies policies,
       bool? addDeviceInfos,
       String? passphraseQuestion,
-      String? publicServerKey,
       String? publicClientKey,
       String? privateClientKey});
 
@@ -390,7 +376,6 @@ class __$$TokenContainerUnfinalizedImplCopyWithImpl<$Res>
     Object? policies = null,
     Object? addDeviceInfos = freezed,
     Object? passphraseQuestion = freezed,
-    Object? publicServerKey = freezed,
     Object? publicClientKey = freezed,
     Object? privateClientKey = freezed,
   }) {
@@ -451,10 +436,6 @@ class __$$TokenContainerUnfinalizedImplCopyWithImpl<$Res>
           ? _value.passphraseQuestion
           : passphraseQuestion // ignore: cast_nullable_to_non_nullable
               as String?,
-      publicServerKey: freezed == publicServerKey
-          ? _value.publicServerKey
-          : publicServerKey // ignore: cast_nullable_to_non_nullable
-              as String?,
       publicClientKey: freezed == publicClientKey
           ? _value.publicClientKey
           : publicClientKey // ignore: cast_nullable_to_non_nullable
@@ -485,7 +466,6 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
       this.policies = ContainerPolicies.defaultSetting,
       this.addDeviceInfos,
       this.passphraseQuestion,
-      this.publicServerKey,
       this.publicClientKey,
       this.privateClientKey,
       final String? $type})
@@ -527,8 +507,6 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
   @override
   final String? passphraseQuestion;
   @override
-  final String? publicServerKey;
-  @override
   final String? publicClientKey;
   @override
   final String? privateClientKey;
@@ -565,8 +543,6 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
                 other.addDeviceInfos == addDeviceInfos) &&
             (identical(other.passphraseQuestion, passphraseQuestion) ||
                 other.passphraseQuestion == passphraseQuestion) &&
-            (identical(other.publicServerKey, publicServerKey) ||
-                other.publicServerKey == publicServerKey) &&
             (identical(other.publicClientKey, publicClientKey) ||
                 other.publicClientKey == publicClientKey) &&
             (identical(other.privateClientKey, privateClientKey) ||
@@ -591,7 +567,6 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
       policies,
       addDeviceInfos,
       passphraseQuestion,
-      publicServerKey,
       publicClientKey,
       privateClientKey);
 
@@ -622,7 +597,6 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
             ContainerPolicies policies,
             bool? addDeviceInfos,
             String? passphraseQuestion,
-            String? publicServerKey,
             String? publicClientKey,
             String? privateClientKey)
         unfinalized,
@@ -640,7 +614,6 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
             SyncState syncState,
             ContainerPolicies policies,
             String? passphraseQuestion,
-            String publicServerKey,
             String publicClientKey,
             String privateClientKey)
         finalized,
@@ -660,7 +633,6 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
         policies,
         addDeviceInfos,
         passphraseQuestion,
-        publicServerKey,
         publicClientKey,
         privateClientKey);
   }
@@ -683,7 +655,6 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
             ContainerPolicies policies,
             bool? addDeviceInfos,
             String? passphraseQuestion,
-            String? publicServerKey,
             String? publicClientKey,
             String? privateClientKey)?
         unfinalized,
@@ -701,7 +672,6 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
             SyncState syncState,
             ContainerPolicies policies,
             String? passphraseQuestion,
-            String publicServerKey,
             String publicClientKey,
             String privateClientKey)?
         finalized,
@@ -721,7 +691,6 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
         policies,
         addDeviceInfos,
         passphraseQuestion,
-        publicServerKey,
         publicClientKey,
         privateClientKey);
   }
@@ -744,7 +713,6 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
             ContainerPolicies policies,
             bool? addDeviceInfos,
             String? passphraseQuestion,
-            String? publicServerKey,
             String? publicClientKey,
             String? privateClientKey)?
         unfinalized,
@@ -762,7 +730,6 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
             SyncState syncState,
             ContainerPolicies policies,
             String? passphraseQuestion,
-            String publicServerKey,
             String publicClientKey,
             String privateClientKey)?
         finalized,
@@ -784,7 +751,6 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
           policies,
           addDeviceInfos,
           passphraseQuestion,
-          publicServerKey,
           publicClientKey,
           privateClientKey);
     }
@@ -846,7 +812,6 @@ abstract class TokenContainerUnfinalized extends TokenContainer {
       final ContainerPolicies policies,
       final bool? addDeviceInfos,
       final String? passphraseQuestion,
-      final String? publicServerKey,
       final String? publicClientKey,
       final String? privateClientKey}) = _$TokenContainerUnfinalizedImpl;
   const TokenContainerUnfinalized._() : super._();
@@ -880,8 +845,6 @@ abstract class TokenContainerUnfinalized extends TokenContainer {
   bool? get addDeviceInfos;
   @override
   String? get passphraseQuestion;
-  @override
-  String? get publicServerKey;
   @override
   String? get publicClientKey;
   @override
@@ -918,7 +881,6 @@ abstract class _$$TokenContainerFinalizedImplCopyWith<$Res>
       SyncState syncState,
       ContainerPolicies policies,
       String? passphraseQuestion,
-      String publicServerKey,
       String publicClientKey,
       String privateClientKey});
 
@@ -953,7 +915,6 @@ class __$$TokenContainerFinalizedImplCopyWithImpl<$Res>
     Object? syncState = null,
     Object? policies = null,
     Object? passphraseQuestion = freezed,
-    Object? publicServerKey = null,
     Object? publicClientKey = null,
     Object? privateClientKey = null,
   }) {
@@ -1010,10 +971,6 @@ class __$$TokenContainerFinalizedImplCopyWithImpl<$Res>
           ? _value.passphraseQuestion
           : passphraseQuestion // ignore: cast_nullable_to_non_nullable
               as String?,
-      publicServerKey: null == publicServerKey
-          ? _value.publicServerKey
-          : publicServerKey // ignore: cast_nullable_to_non_nullable
-              as String,
       publicClientKey: null == publicClientKey
           ? _value.publicClientKey
           : publicClientKey // ignore: cast_nullable_to_non_nullable
@@ -1043,7 +1000,6 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
       this.syncState = SyncState.notStarted,
       this.policies = ContainerPolicies.defaultSetting,
       this.passphraseQuestion,
-      required this.publicServerKey,
       required this.publicClientKey,
       required this.privateClientKey,
       final String? $type})
@@ -1084,8 +1040,6 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
   @override
   final String? passphraseQuestion;
   @override
-  final String publicServerKey;
-  @override
   final String publicClientKey;
   @override
   final String privateClientKey;
@@ -1121,8 +1075,6 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
                 other.policies == policies) &&
             (identical(other.passphraseQuestion, passphraseQuestion) ||
                 other.passphraseQuestion == passphraseQuestion) &&
-            (identical(other.publicServerKey, publicServerKey) ||
-                other.publicServerKey == publicServerKey) &&
             (identical(other.publicClientKey, publicClientKey) ||
                 other.publicClientKey == publicClientKey) &&
             (identical(other.privateClientKey, privateClientKey) ||
@@ -1146,7 +1098,6 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
       syncState,
       policies,
       passphraseQuestion,
-      publicServerKey,
       publicClientKey,
       privateClientKey);
 
@@ -1177,7 +1128,6 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
             ContainerPolicies policies,
             bool? addDeviceInfos,
             String? passphraseQuestion,
-            String? publicServerKey,
             String? publicClientKey,
             String? privateClientKey)
         unfinalized,
@@ -1195,7 +1145,6 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
             SyncState syncState,
             ContainerPolicies policies,
             String? passphraseQuestion,
-            String publicServerKey,
             String publicClientKey,
             String privateClientKey)
         finalized,
@@ -1214,7 +1163,6 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
         syncState,
         policies,
         passphraseQuestion,
-        publicServerKey,
         publicClientKey,
         privateClientKey);
   }
@@ -1237,7 +1185,6 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
             ContainerPolicies policies,
             bool? addDeviceInfos,
             String? passphraseQuestion,
-            String? publicServerKey,
             String? publicClientKey,
             String? privateClientKey)?
         unfinalized,
@@ -1255,7 +1202,6 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
             SyncState syncState,
             ContainerPolicies policies,
             String? passphraseQuestion,
-            String publicServerKey,
             String publicClientKey,
             String privateClientKey)?
         finalized,
@@ -1274,7 +1220,6 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
         syncState,
         policies,
         passphraseQuestion,
-        publicServerKey,
         publicClientKey,
         privateClientKey);
   }
@@ -1297,7 +1242,6 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
             ContainerPolicies policies,
             bool? addDeviceInfos,
             String? passphraseQuestion,
-            String? publicServerKey,
             String? publicClientKey,
             String? privateClientKey)?
         unfinalized,
@@ -1315,7 +1259,6 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
             SyncState syncState,
             ContainerPolicies policies,
             String? passphraseQuestion,
-            String publicServerKey,
             String publicClientKey,
             String privateClientKey)?
         finalized,
@@ -1336,7 +1279,6 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
           syncState,
           policies,
           passphraseQuestion,
-          publicServerKey,
           publicClientKey,
           privateClientKey);
     }
@@ -1397,7 +1339,6 @@ abstract class TokenContainerFinalized extends TokenContainer {
       final SyncState syncState,
       final ContainerPolicies policies,
       final String? passphraseQuestion,
-      required final String publicServerKey,
       required final String publicClientKey,
       required final String privateClientKey}) = _$TokenContainerFinalizedImpl;
   const TokenContainerFinalized._() : super._();
@@ -1430,8 +1371,6 @@ abstract class TokenContainerFinalized extends TokenContainer {
   ContainerPolicies get policies;
   @override
   String? get passphraseQuestion;
-  @override
-  String get publicServerKey;
   @override
   String get publicClientKey;
   @override

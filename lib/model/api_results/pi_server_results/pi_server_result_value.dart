@@ -20,9 +20,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:pointycastle/ecc/api.dart';
-
-import '../../../utils/ecc_utils.dart';
 import '../../../utils/logger.dart';
 import '../../../utils/object_validator.dart';
 import '../../container_policies.dart';
@@ -98,11 +95,9 @@ class ContainerChallenge extends PiServerResultValue {
 }
 
 class ContainerFinalizationResponse extends PiServerResultValue {
-  final ECPublicKey publicServerKey;
   final ContainerPolicies policies;
 
   const ContainerFinalizationResponse({
-    required this.publicServerKey,
     required this.policies,
   });
 
@@ -110,13 +105,11 @@ class ContainerFinalizationResponse extends PiServerResultValue {
     final map = validateMap(
       map: uriMap,
       validators: {
-        TokenContainer.SYNC_PUBLIC_SERVER_KEY: ObjectValidator<ECPublicKey>(transformer: (v) => const EccUtils().deserializeECPublicKey(v)),
         TokenContainer.SYNC_POLICIES: ObjectValidator<ContainerPolicies>(transformer: (v) => ContainerPolicies.fromUriMap(v)),
       },
       name: 'ContainerFinalizationResponse#fromUriMap',
     );
     return ContainerFinalizationResponse(
-      publicServerKey: map[TokenContainer.SYNC_PUBLIC_SERVER_KEY] as ECPublicKey,
       policies: map[TokenContainer.SYNC_POLICIES] as ContainerPolicies,
     );
   }
@@ -124,7 +117,6 @@ class ContainerFinalizationResponse extends PiServerResultValue {
   @override
   Map<String, dynamic> toUriMap() {
     return {
-      TokenContainer.SYNC_PUBLIC_SERVER_KEY: const EccUtils().serializeECPublicKey(publicServerKey),
       TokenContainer.SYNC_POLICIES: policies.toJson(),
     };
   }

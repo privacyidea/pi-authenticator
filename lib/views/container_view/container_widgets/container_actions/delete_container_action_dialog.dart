@@ -86,8 +86,8 @@ class DeleteCorrespondingTokenDialog extends ConsumerWidget {
         ElevatedDeleteButton(
           onPressed: () async {
             final containerTokens = ref.read(tokenProvider).containerTokens(container.serial);
-            await ref.read(tokenProvider.notifier).removeTokens(containerTokens);
-            await _deleteContainer(ref);
+            final success = await _deleteContainer(ref);
+            if (success) await ref.read(tokenProvider.notifier).removeTokens(containerTokens);
             if (!context.mounted) return;
             Navigator.of(context).pop();
           },
@@ -97,7 +97,7 @@ class DeleteCorrespondingTokenDialog extends ConsumerWidget {
     );
   }
 
-  Future<void> _deleteContainer(WidgetRef ref) {
+  Future<bool> _deleteContainer(WidgetRef ref) {
     if (container is TokenContainerFinalized) {
       return ref.read(tokenContainerProvider.notifier).unregisterDelete(container as TokenContainerFinalized);
     } else {
