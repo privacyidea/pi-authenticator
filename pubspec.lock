@@ -754,9 +754,11 @@ packages:
   flutter_zxing:
     dependency: "direct main"
     description:
-      path: flutter_zxing
-      relative: true
-    source: path
+      path: "."
+      ref: HEAD
+      resolved-ref: "4d3d9e7d3c21adc19edd83184b783f47188ee4e5"
+      url: "git@github.com:frankmer/flutter_zxing.git"
+    source: git
     version: "1.8.2"
   font_awesome_flutter:
     dependency: "direct main"
