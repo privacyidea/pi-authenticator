@@ -24,5 +24,6 @@ jobs:
       - run: 'flutter --version'
       - run: 'flutter doctor -v'
       - run: 'flutter pub get'
+      - run: 'git submodule update --init --recursive'
       - run: 'flutter gen-l10n'
       - run: 'flutter test'
