@@ -23,7 +23,6 @@ jobs:
       - run: 'flutter clean'
       - run: 'flutter --version'
       - run: 'flutter doctor -v'
-      - run: 'git submodule update --init --recursive'
       - run: 'flutter pub get'
       - run: 'flutter gen-l10n'
       - run: 'flutter test'
