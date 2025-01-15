@@ -31,8 +31,8 @@ jobs:
     - run: 'flutter clean'
     - run: 'flutter --version'
     - run: 'flutter doctor -v'
-    - run: 'flutter pub get'
     - run: 'git submodule update --init --recursive'
+    - run: 'flutter pub get'
     - run: 'flutter gen-l10n'
     - run: 'flutter build ios -t "lib/mains/main_netknights.dart" --debug --flavor netknights --no-codesign'
 
@@ -60,7 +60,7 @@ jobs:
       - run: 'flutter clean'
       - run: 'flutter --version'
       - run: 'flutter doctor -v'
-      - run: 'flutter pub get'
       - run: 'git submodule update --init --recursive'
+      - run: 'flutter pub get'
       - run: 'flutter gen-l10n'
       - run: 'flutter build apk -t "lib/mains/main_netknights.dart" --debug --flavor netknights'
