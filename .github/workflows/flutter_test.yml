@@ -11,6 +11,11 @@ jobs:
     timeout-minutes: 40
 
     steps:
+      - uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          name: id_rsa
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with:
