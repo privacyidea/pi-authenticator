@@ -27,7 +27,8 @@
                 "netknights",
                 "--target",
                 "lib/mains/main_netknights.dart",
-                "--debug"
+                "--debug",
+                "--no-enable-impeller"
             ]
         },
         {
