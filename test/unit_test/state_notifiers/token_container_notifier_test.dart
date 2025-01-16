@@ -57,7 +57,6 @@ TokenContainerState _buildFinalizedContainerState() => TokenContainerState(
           ecKeyAlgorithm: EcKeyAlgorithm.secp384r1,
           hashAlgorithm: Algorithms.SHA256,
           sslVerify: false,
-          publicServerKey: 'publicServerKey',
           publicClientKey: 'publicClientKey',
           privateClientKey: 'privateClientKey',
           finalizationState: FinalizationState.completed,
@@ -74,15 +73,7 @@ TokenContainerState _buildFinalizedContainerState() => TokenContainerState(
     );
 
 void _testTokenContainerNotifier() {
-  final publicServerKeyExample = "-----BEGIN PUBLIC KEY-----\n"
-      "MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAEaik84am1122p15/8Z6FYW+q5DYe22RV0\n"
-      "6jimjkz/5J6vDkafcP1oq5fRgIEXTTU6uKarvSrOxcV8nNuW6o80L55iT1ZmZJ+q\n"
-      "tx/ncmaloOEFY4dMh1XNs0TayAxKrCNg\n"
-      "-----END PUBLIC KEY-----";
-  final ecPublicServerKeyExample = EccUtils().deserializeECPublicKey(publicServerKeyExample);
-
   final ContainerFinalizationResponse containerFinalizationResponseExample = ContainerFinalizationResponse(
-    publicServerKey: ecPublicServerKeyExample,
     policies: ContainerPolicies(
       rolloverAllowed: false,
       initialTokenTransfer: false,
@@ -552,7 +543,6 @@ void _testTokenContainerNotifier() {
         passphraseQuestion: "",
         sslVerify: true,
         privateClientKey: null,
-        publicServerKey: null,
         publicClientKey: null,
       );
       expect(stateContainer.ttl, expectedContainer.ttl);
@@ -568,7 +558,6 @@ void _testTokenContainerNotifier() {
       expect(stateContainer.passphraseQuestion, expectedContainer.passphraseQuestion);
       expect(stateContainer.sslVerify, expectedContainer.sslVerify);
       expect(stateContainer.privateClientKey, null);
-      expect(stateContainer.publicServerKey, null);
       expect(stateContainer.publicClientKey, null);
     });
     test('finalizeContainer', () async {
@@ -580,7 +569,6 @@ void _testTokenContainerNotifier() {
       when(mockContainerApi.finalizeContainer(any, any)).thenAnswer(
         (_) async => ContainerFinalizationResponse(
           policies: ContainerPolicies(initialTokenTransfer: true, rolloverAllowed: true, tokensDeletable: true, unregisterAllowed: true),
-          publicServerKey: EccUtils().deserializeECPublicKey(publicServerKeyExample),
         ),
       );
       when(mockContainerRepo.loadContainerState()).thenAnswer((_) => Future.value(containerRepoState));
@@ -641,11 +629,6 @@ void _testTokenContainerNotifier() {
         passphraseQuestion: null,
         sslVerify: true,
         privateClientKey: "random",
-        publicServerKey: "-----BEGIN PUBLIC KEY-----\n"
-            "MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAEaik84am1122p15/8Z6FYW+q5DYe22RV0\n"
-            "6jimjkz/5J6vDkafcP1oq5fRgIEXTTU6uKarvSrOxcV8nNuW6o80L55iT1ZmZJ+q\n"
-            "tx/ncmaloOEFY4dMh1XNs0TayAxKrCNg\n"
-            "-----END PUBLIC KEY-----",
         publicClientKey: "random",
       );
       verify(mockContainerApi.finalizeContainer(any, any)).called(1);
@@ -661,7 +644,6 @@ void _testTokenContainerNotifier() {
       expect(stateContainer.passphraseQuestion, expectedContainer.passphraseQuestion);
       expect(stateContainer.sslVerify, expectedContainer.sslVerify);
       expect(stateContainer.privateClientKey, isNotEmpty);
-      expect(stateContainer.publicServerKey, expectedContainer.publicServerKey);
       expect(stateContainer.publicClientKey, isNotEmpty);
     });
     group('sync', () {

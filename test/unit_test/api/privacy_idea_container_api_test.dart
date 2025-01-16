@@ -134,7 +134,6 @@ void _testPrivacyIdeaContainerApi() {
         hashAlgorithm: withHashAlgorithm ?? Algorithms.SHA256,
         sslVerify: withSslVerify ?? false,
         passphraseQuestion: withPassphraseQuestion,
-        publicServerKey: publicServerKey,
         publicClientKey: publicClientKey,
         privateClientKey: privateClientKey,
         policies: withPolicies ??
@@ -177,7 +176,6 @@ void _testPrivacyIdeaContainerApi() {
         hashAlgorithm: withHashAlgorithm ?? Algorithms.SHA256,
         sslVerify: withSslVerify ?? false,
         passphraseQuestion: withPassphraseQuestion,
-        publicServerKey: publicServerKey,
         publicClientKey: publicClientKey,
         privateClientKey: privateClientKey,
         policies: withPolicies ??
@@ -265,14 +263,12 @@ void _testPrivacyIdeaContainerApi() {
       // Act
       final data = await containerApi.finalizeContainer(tokenContainer);
       final policies = data.policies;
-      final responsePublicServerKey = data.publicServerKey;
       // Assert
       expect(policies, isA<ContainerPolicies>());
       expect(policies.rolloverAllowed, false);
       expect(policies.initialTokenTransfer, false);
       expect(policies.tokensDeletable, true);
       expect(policies.unregisterAllowed, true);
-      expect(eccUtils.serializeECPublicKey(responsePublicServerKey), publicServerKey);
     });
     test('getRolloverQrData', () async {
       // Arrange
