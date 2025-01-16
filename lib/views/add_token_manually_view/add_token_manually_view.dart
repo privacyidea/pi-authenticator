@@ -138,6 +138,7 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
           typeNotifier: selectedTypeNotifier,
         ),
       TokenTypes.PIPUSH => throw UnimplementedError(),
+      TokenTypes.PUSH => throw UnimplementedError(),
     };
 
     return Scaffold(
