@@ -103,10 +103,10 @@ abstract class Token with SortableMixin {
     if (type == null) throw ArgumentError.value(json, 'Token#fromJson', 'Token type is not defined in the json');
     if (TokenTypes.HOTP.isName(type, caseSensitive: false)) return HOTPToken.fromJson(json);
     if (TokenTypes.TOTP.isName(type, caseSensitive: false)) return TOTPToken.fromJson(json);
-    if (TokenTypes.PIPUSH.isName(type, caseSensitive: false)) return PushToken.fromJson(json);
+    if (TokenTypes.PIPUSH.isName(type, caseSensitive: false) || TokenTypes.PUSH.isName(type, caseSensitive: false)) return PushToken.fromJson(json);
     if (TokenTypes.DAYPASSWORD.isName(type, caseSensitive: false)) return DayPasswordToken.fromJson(json);
     if (TokenTypes.STEAM.isName(type, caseSensitive: false)) return SteamToken.fromJson(json);
-    throw ArgumentError.value(json, 'Token#fromJson', 'Token type [$type] is not a supported');
+    throw ArgumentError.value(json, 'Token#fromJson', 'Token type [$type] is not supported');
   }
 
   /// Creates a token from a uri map.
@@ -115,12 +115,14 @@ abstract class Token with SortableMixin {
     if (type == null) throw ArgumentError.value(otpAuthMap, 'Token#fromUriMap', 'Token type is not defined in the uri map');
     if (TokenTypes.HOTP.isName(type, caseSensitive: false)) return HOTPToken.fromOtpAuthMap(otpAuthMap, additionalData: additionalData);
     if (TokenTypes.TOTP.isName(type, caseSensitive: false)) return TOTPToken.fromOtpAuthMap(otpAuthMap, additionalData: additionalData);
-    if (TokenTypes.PIPUSH.isName(type, caseSensitive: false)) return PushToken.fromOtpAuthMap(otpAuthMap, additionalData: additionalData);
+    if (TokenTypes.PIPUSH.isName(type, caseSensitive: false) || TokenTypes.PUSH.isName(type, caseSensitive: false)) {
+      return PushToken.fromOtpAuthMap(otpAuthMap, additionalData: additionalData);
+    }
     if (TokenTypes.DAYPASSWORD.isName(type, caseSensitive: false)) {
       return DayPasswordToken.fromOtpAuthMap(otpAuthMap, additionalData: additionalData);
     }
     if (TokenTypes.STEAM.isName(type, caseSensitive: false)) return SteamToken.fromOtpAuthMap(otpAuthMap, additionalData: additionalData);
-    throw ArgumentError.value(otpAuthMap, 'Token#fromUriMap', 'Token type [$type] is not a supported');
+    throw ArgumentError.value(otpAuthMap, 'Token#fromUriMap', 'Token type [$type] is not supported');
   }
 
   static Map<String, dynamic> validateAdditionalData(Map<String, dynamic> additionalData) => validateMap(

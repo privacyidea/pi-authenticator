@@ -22,6 +22,7 @@ enum TokenTypes {
   HOTP,
   TOTP,
   PIPUSH,
+  PUSH,
   DAYPASSWORD,
   STEAM,
 }
