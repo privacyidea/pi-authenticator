@@ -53,7 +53,6 @@ class TokenContainer with _$TokenContainer {
   static const String SYNC_ENC_PARAMS = 'encryption_params';
   static const String SYNC_POLICIES = 'policies';
   static const String SYNC_PUBLIC_SERVER_KEY = 'public_server_key';
-  static const String SYNC_SERVER_URL = 'server_url';
 
 // Container Mapping:
   static const String DICT_CONTAINER = 'container';

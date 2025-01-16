@@ -128,7 +128,6 @@ class ContainerSyncResult extends PiServerResultValue {
   final EncryptionParams encryptionParams;
   final ContainerPolicies policies;
   final String publicServerKey;
-  final String serverUrl;
 
   Uint8List get publicServerKeyBytes => base64Decode(publicServerKey);
 
@@ -138,7 +137,6 @@ class ContainerSyncResult extends PiServerResultValue {
     required this.encryptionParams,
     required this.policies,
     required this.publicServerKey,
-    required this.serverUrl,
   });
 
   static ContainerSyncResult fromUriMap(Map<String, dynamic> uriMap) {
@@ -150,7 +148,6 @@ class ContainerSyncResult extends PiServerResultValue {
         TokenContainer.SYNC_ENC_PARAMS: ObjectValidator<EncryptionParams>(transformer: (v) => EncryptionParams.fromUriMap(v)),
         TokenContainer.SYNC_POLICIES: ObjectValidator<ContainerPolicies>(transformer: (v) => ContainerPolicies.fromUriMap(v)),
         TokenContainer.SYNC_PUBLIC_SERVER_KEY: const ObjectValidator<String>(),
-        TokenContainer.SYNC_SERVER_URL: const ObjectValidator<String>(),
       },
       name: 'ContainerSyncResult#fromUriMap',
     );
@@ -160,7 +157,6 @@ class ContainerSyncResult extends PiServerResultValue {
       encryptionParams: map[TokenContainer.SYNC_ENC_PARAMS] as EncryptionParams,
       policies: map[TokenContainer.SYNC_POLICIES] as ContainerPolicies,
       publicServerKey: map[TokenContainer.SYNC_PUBLIC_SERVER_KEY] as String,
-      serverUrl: map[TokenContainer.SYNC_SERVER_URL] as String,
     );
   }
 
@@ -172,7 +168,6 @@ class ContainerSyncResult extends PiServerResultValue {
       TokenContainer.SYNC_ENC_PARAMS: encryptionParams.toUriMap(),
       TokenContainer.SYNC_POLICIES: policies.toUriMap(),
       TokenContainer.SYNC_PUBLIC_SERVER_KEY: publicServerKey,
-      TokenContainer.SYNC_SERVER_URL: serverUrl,
     };
   }
 }
