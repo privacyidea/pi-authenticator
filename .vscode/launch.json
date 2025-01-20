@@ -14,8 +14,7 @@
                 "netknights",
                 "--target",
                 "lib/mains/main_netknights.dart",
-                "--release",
-                "--no-enable-impeller"
+                "--release"
             ]
         },
         {
@@ -28,8 +27,7 @@
                 "netknights",
                 "--target",
                 "lib/mains/main_netknights.dart",
-                "--debug",
-                "--no-enable-impeller"
+                "--debug"
             ]
         },
         {
@@ -42,8 +40,7 @@
                 "netknights_debug",
                 "--target",
                 "lib/mains/main_netknights.dart",
-                "--release",
-                "--no-enable-impeller"
+                "--release"
             ]
         },
         {
@@ -56,8 +53,7 @@
                 "netknights_debug",
                 "--target",
                 "lib/mains/main_netknights.dart",
-                "--debug",
-                "--no-enable-impeller"
+                "--debug"
             ]
         },
     ]
