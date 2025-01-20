@@ -588,6 +588,15 @@
   "@hidePushTokensDescription": {
     "description": "Descripes what happens when the user hides the push tokens."
   },
+  "@httpStatus": {
+    "description": "HTTP status code",
+    "placeholders": {
+      "httpCode": {
+        "example": "404",
+        "type": "String"
+      }
+    }
+  },
   "@imageUrl": {
     "description": "Title of the image url field."
   },
@@ -1073,6 +1082,9 @@
   },
   "@patchNotesV4_4_2NewFeatures2": {
     "description": "Patch notes for a new feature in version 4.4.2"
+  },
+  "@patchNotesV4_5_0NewFeatures1": {
+    "description": "Patch notes for version 4.5.0"
   },
   "@period": {
     "description": "Title of the dropdown button where the period of the totp token is selected."
@@ -1658,6 +1670,7 @@
   "handshakeFailedLongText": " Handshake mislukt, controleer het servercertificaat en probeer het opnieuw.",
   "hidePushTokens": "Verberg push tokens",
   "hidePushTokensDescription": "Verberg push tokens uit de token lijst. Hierdoor worden de tokens niet verwijderd en blijven ze zichtbaar op een apart scherm.",
+  "httpStatus": "{httpCode, select, 100{{httpCode}: Doorgaan} 101{{httpCode}: Protocollen schakelen} 102{{httpCode}: Verwerking} 103{{httpCode}: Eerste hints} 104{{httpCode}: Connection Reset By Peer} 111{{httpCode}: Verbinding geweigerd} 200{{httpCode}: OK} 201{{httpCode}: Created} 202{{httpCode}: Geaccepteerd} 203{{httpCode}: Non-Authoritative Information} 204{{httpCode}: Geen inhoud} 205{{httpCode}: Reset Inhoud} 206{{httpCode}: Partial Content} 207{{httpCode}: Multi-Status} 208{{httpCode}: Already Reported} 300{{httpCode}: Multiple Choices} 301{{httpCode}: Permanent verplaatst} 302{{httpCode}: Gevonden} 303{{httpCode}: See Other} 304{{httpCode}: Niet gewijzigd} 305{{httpCode}: Proxy gebruiken} 307{{httpCode}: Tijdelijke omleiding} 308{{httpCode}: Permanent omleiden} 400{{httpCode}: Slecht Verzoek} 401{{httpCode}: Niet geautoriseerd} 402{{httpCode}: Betaling vereist} 403{{httpCode}: Verboden} 404{{httpCode}: Niet gevonden} 405{{httpCode}: Methode niet toegestaan} 406{{httpCode}: Niet aanvaardbaar} 407{{httpCode}: Proxy Authentication Required} 408{{httpCode}: Time-out verzoek} 409{{httpCode}: Conflict} 410{{httpCode}: Gone} 411{{httpCode}: Length Required} 412{{httpCode}: Precondition Failed} 413{{httpCode}: Payload te groot} 414{{httpCode}: Request-URI Too Long} 415{{httpCode}: Unsupported Media Type} 416{{httpCode}: Requested Range Not Satisfiable} 417{{httpCode}: Expectation Failed} 418{{httpCode}: Ik ben een theepot} 420{{httpCode}: Vergroot uw kalmte} 421{{httpCode}: Misdirected Request} 422{{httpCode}: Onverwerkbare entiteit} 423{{httpCode}: Vergrendeld} 424{{httpCode}: Mislukte afhankelijkheid} 426{{httpCode}: Upgrade vereist} 428{{httpCode}: Precondition Required} 429{{httpCode}: Too Many Requests} 431{{httpCode}: Request Header Fields Too Large} 444{{httpCode}: Connection Closed Without Response} 451{{httpCode}: Niet beschikbaar om juridische redenen} 499{{httpCode}: Client Gesloten Verzoek} 500{{httpCode}: Interne Serverfout} 501{{httpCode}: Niet geïmplementeerd} 502{{httpCode}: Bad Gateway} 503{{httpCode}: Service Unavailable} 504{{httpCode}: Gateway Timeout} 505{{httpCode}: HTTP Version Not Supported} 506{{httpCode}: Variant onderhandelt ook} 507{{httpCode}: Onvoldoende opslagruimte} 508{{httpCode}: Loop Detected} 510{{httpCode}: Not Extended} 511{{httpCode}: Netwerkverificatie vereist} 520{{httpCode}: Onbekende fout} 521{{httpCode}: Web Server Is Down} 522{{httpCode}: Connection Timed Out} 523{{httpCode}: Origin is onbereikbaar} 524{{httpCode}: Er is een time-out opgetreden} 525{{httpCode}: Handshake mislukt} 526{{httpCode}: Ongeldig SSL Certificaat} 527{{httpCode}: Railgun Error} 528{{httpCode}: Transportfout} 529{{httpCode}: Service is overbelast} 530{{httpCode}: Site is bevroren} 599{{httpCode}: Network Connect Timeout Error} other{{httpCode}: Onbekende fout}}",
   "imageUrl": "Afbeeldings-URL",
   "importConflictToken": "{count, plural, zero{Er is geen conflict met tokens die al bestaan.} one{Er is een conflict met tokens die al bestaan.Selecteer welke u wilt behouden.} other{Er is een conflict met tokens die al bestaan.Selecteer welke u wilt behouden.}}",
   "importExistingToken": "{count, plural, zero{Er is geen token gevonden dat al in de toepassing aanwezig is.} one{Er is een token gevonden dat al bestaat in de applicatie.} other{{count} tokens gevonden die al in de applicatie staan.}}",
@@ -1767,6 +1780,7 @@
   "patchNotesV4_4_2Improvement1": "Zaklampondersteuning toegevoegd voor QR-code scannen.",
   "patchNotesV4_4_2NewFeatures1": "Tokens kunnen nu worden ingevoegd met kopiëren en plakken.",
   "patchNotesV4_4_2NewFeatures2": "Galerijondersteuning toegevoegd voor QR-code scannen.",
+  "patchNotesV4_5_0NewFeatures1": "Ondersteuning van het privacyIDEA containersysteem voor eenvoudiger beheer van tokens",
   "period": "Duur",
   "phonePart": "Telefoon gedeelte:",
   "piServerCode": "PI-servercode: {code}",

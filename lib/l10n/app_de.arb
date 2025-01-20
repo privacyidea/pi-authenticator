@@ -588,6 +588,15 @@
   "@hidePushTokensDescription": {
     "description": "Descripes what happens when the user hides the push tokens."
   },
+  "@httpStatus": {
+    "description": "HTTP status code",
+    "placeholders": {
+      "httpCode": {
+        "example": "404",
+        "type": "String"
+      }
+    }
+  },
   "@imageUrl": {
     "description": "Title of the image url field."
   },
@@ -1073,6 +1082,9 @@
   },
   "@patchNotesV4_4_2NewFeatures2": {
     "description": "Patch notes for a new feature in version 4.4.2"
+  },
+  "@patchNotesV4_5_0NewFeatures1": {
+    "description": "Patch notes for version 4.5.0"
   },
   "@period": {
     "description": "Title of the dropdown button where the period of the totp token is selected."
@@ -1658,6 +1670,7 @@
   "handshakeFailedLongText": "Handshake fehlgeschlagen, bitte überprüfen Sie das Serverzertifikat und versuchen Sie es erneut.",
   "hidePushTokens": "Push-Token ausblenden",
   "hidePushTokensDescription": "Push-Token aus der Token-Liste ausblenden. Dadurch werden die Token nicht gelöscht und sind weiterhin auf einem separaten Bildschirm sichtbar.",
+  "httpStatus": "{httpCode, select, 100{{httpCode}: Weiter} 101{{httpCode}: Umschalten von Protokollen} 102{{httpCode}: Verarbeitung} 103{{httpCode}: Erste Hinweise} 104{{httpCode}: Verbindungsrücksetzung durch Peer} 111{{httpCode}: Verbindung abgelehnt} 200{{httpCode}: OK} 201{{httpCode}: Erstellt} 202{{httpCode}: Angenommen} 203{{httpCode}: Nicht-autoritative Informationen} 204{{httpCode}: Kein Inhalt} 205{{httpCode}: Inhalt zurücksetzen} 206{{httpCode}: Teilweiser Inhalt} 207{{httpCode}: Mehrfach-Status} 208{{httpCode}: Bereits gemeldet} 300{{httpCode}: Mehrere Auswahlmöglichkeiten} 301{{httpCode}: Dauerhaft verschoben} 302{{httpCode}: Gefunden} 303{{httpCode}: Siehe Sonstiges} 304{{httpCode}: Nicht geändert} 305{{httpCode}: Proxy verwenden} 307{{httpCode}: Temporäre Umleitung} 308{{httpCode}: Dauerhafte Umleitung} 400{{httpCode}: Schlechte Anfrage} 401{{httpCode}: Unautorisiert} 402{{httpCode}: Zahlung erforderlich} 403{{httpCode}: Verboten} 404{{httpCode}: Nicht gefunden} 405{{httpCode}: Methode nicht erlaubt} 406{{httpCode}: Nicht akzeptabel} 407{{httpCode}: Proxy-Authentifizierung erforderlich} 408{{httpCode}: Anfragezeitüberschreitung} 409{{httpCode}: Conflict} 410{{httpCode}: Erledigt} 411{{httpCode}: Länge erforderlich} 412{{httpCode}: Vorbedingung fehlgeschlagen} 413{{httpCode}: Nutzlast zu groß} 414{{httpCode}: Anfrage-URI zu lang} 415{{httpCode}: Nicht unterstützter Medientyp} 416{{httpCode}: Angeforderter Bereich nicht zufriedenstellend} 417{{httpCode}: Erwartung fehlgeschlagen} 418{{httpCode}: Ich bin eine Teekanne} 420{{httpCode}: Verbessern Sie Ihre Ruhe} 421{{httpCode}: Fehlgeleitete Anfrage} 422{{httpCode}: Unverarbeitbare Entität} 423{{httpCode}: Gesperrt} 424{{httpCode}: Failed Dependency} 426{{httpCode}: Upgrade erforderlich} 428{{httpCode}: Vorbedingung erforderlich} 429{{httpCode}: Zu viele Anfragen} 431{{httpCode}: Anfrage-Header-Felder zu groß} 444{{httpCode}: Verbindung ohne Antwort geschlossen} 451{{httpCode}: Aus rechtlichen Gründen nicht verfügbar} 499{{httpCode}: Client hat Anfrage geschlossen} 500{{httpCode}: Interner Serverfehler} 501{{httpCode}: Nicht implementiert} 502{{httpCode}: Schlechtes Gateway} 503{{httpCode}: Dienst nicht verfügbar} 504{{httpCode}: Gateway-Zeitüberschreitung} 505{{httpCode}: HTTP-Version wird nicht unterstützt} 506{{httpCode}: Variante wird auch ausgehandelt} 507{{httpCode}: Unzureichender Speicherplatz} 508{{httpCode}: Schleife erkannt} 510{{httpCode}: Nicht erweitert} 511{{httpCode}: Netzwerkauthentifizierung erforderlich} 520{{httpCode}: Unbekannter Fehler} 521{{httpCode}: Webserver ist ausgefallen} 522{{httpCode}: Connection Timed Out} 523{{httpCode}: Origin Is Unreachable} 524{{httpCode}: Eine Zeitüberschreitung ist aufgetreten} 525{{httpCode}: Handshake fehlgeschlagen} 526{{httpCode}: Ungültiges SSL-Zertifikat} 527{{httpCode}: Railgun-Fehler} 528{{httpCode}: Transportfehler} 529{{httpCode}: Dienst ist überlastet} 530{{httpCode}: Website ist eingefroren} 599{{httpCode}: Netzwerkverbindungs-Timeout-Fehler} other{{httpCode}: Unbekannter Fehler}}",
   "imageUrl": "Bild URL",
   "importConflictToken": "{count, plural, zero{Es besteht kein Konflikt mit bereits existierenden Token.} one{Es besteht ein Konflikt mit bereits vorhandenen Token.\nBitte wählen Sie aus, welches Sie behalten möchten.} other{Es bestehen Konflikte mit bereits vorhandenen Token.\nBitte wählen Sie die Token aus, die Sie behalten möchten.}}",
   "importExistingToken": "{count, plural, zero{Es wurde kein Token gefunden, das sich bereits in der App befindet.} one{Es wurde ein Token gefunden, das sich bereits in der Anwendung befindet.} other{Es wurden {count} Token gefunden, die sich bereits in der Anwendung befinden.}}",
@@ -1767,6 +1780,7 @@
   "patchNotesV4_4_2Improvement1": "Taschenlampenunterstützung für das Scannen von QR-Codes wurde zugefügt.",
   "patchNotesV4_4_2NewFeatures1": "Token können jetzt per Copy & Paste eingefügt werden.",
   "patchNotesV4_4_2NewFeatures2": "Galerie-Unterstützung für das Scannen von QR-Codes hinzugefügt.",
+  "patchNotesV4_5_0NewFeatures1": "Unterstützung des privacyIDEA Containersystems zur einfacheren Verwaltung von Token",
   "period": "Periode",
   "phonePart": "Telefonanteil:",
   "piServerCode": "PI-Server-Code: {code}",

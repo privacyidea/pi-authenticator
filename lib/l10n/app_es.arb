@@ -588,6 +588,15 @@
   "@hidePushTokensDescription": {
     "description": "Descripes what happens when the user hides the push tokens."
   },
+  "@httpStatus": {
+    "description": "HTTP status code",
+    "placeholders": {
+      "httpCode": {
+        "example": "404",
+        "type": "String"
+      }
+    }
+  },
   "@imageUrl": {
     "description": "Title of the image url field."
   },
@@ -1073,6 +1082,9 @@
   },
   "@patchNotesV4_4_2NewFeatures2": {
     "description": "Patch notes for a new feature in version 4.4.2"
+  },
+  "@patchNotesV4_5_0NewFeatures1": {
+    "description": "Patch notes for version 4.5.0"
   },
   "@period": {
     "description": "Title of the dropdown button where the period of the totp token is selected."
@@ -1658,6 +1670,7 @@
   "handshakeFailedLongText": " Handshake fallido, por favor compruebe el certificado del servidor e inténtelo de nuevo.",
   "hidePushTokens": "Ocultar tokens push",
   "hidePushTokensDescription": "Ocultar tokens push de la lista de tokens. Esto no borrará los tokens y seguirán siendo visibles en una pantalla aparte",
+  "httpStatus": "{httpCode, select, 100{{httpCode}: Continuar} 101{{httpCode}: Cambiar protocolos} 102{{httpCode}: Procesamiento} 103{{httpCode}: Primeros consejos} 104{{httpCode}: Connection Reset By Peer} 111{{httpCode}: Conexión denegada} 200{{httpCode}: OK} 201{{httpCode}: Creado} 202{{httpCode}: Aceptado} 203{{httpCode}: Información no autorizada} 204{{httpCode}: Sin contenido} 205{{httpCode}: Restablecer contenido} 206{{httpCode}: Contenido Parcial} 207{{httpCode}: Multi-Estado} 208{{httpCode}: Ya Informado} 300{{httpCode}: Múltiples opciones} 301{{httpCode}: Movido permanentemente} 302{{httpCode}: Encontrado} 303{{httpCode}: Ver otro} 304{{httpCode}: No Modificado} 305{{httpCode}: Usar Proxy} 307{{httpCode}: Redirección temporal} 308{{httpCode}: Redirección permanente} 400{{httpCode}: Solicitud incorrecta} 401{{httpCode}: No autorizado} 402{{httpCode}: Pago requerido} 403{{httpCode}: Prohibido} 404{{httpCode}: No encontrado} 405{{httpCode}: Método no permitido} 406{{httpCode}: No aceptable} 407{{httpCode}: Proxy Authentication Required} 408{{httpCode}: Tiempo de espera de la solicitud} 409{{httpCode}: Conflicto} 410{{httpCode}: Desaparecido} 411{{httpCode}: Longitud Requerida} 412{{httpCode}: Precondición fallida} 413{{httpCode}: Payload Too Large} 414{{httpCode}: Request-URI Too Long} 415{{httpCode}: Tipo de medio no admitido} 416{{httpCode}: Requested Range Not Satisfiable} 417{{httpCode}: Expectation Failed} 418{{httpCode}: Soy una tetera} 420{{httpCode}: Aumentar la Calma} 421{{httpCode}: Misdirected Request} 422{{httpCode}: Entidad no procesable} 423{{httpCode}: Bloqueado} 424{{httpCode}: Dependencia Fallida} 426{{httpCode}: Upgrade Required} 428{{httpCode}: Precondición Requerida} 429{{httpCode}: Demasiadas solicitudes} 431{{httpCode}: Request Header Fields Too Large} 444{{httpCode}: Conexión cerrada sin respuesta} 451{{httpCode}: No disponible por motivos legales} 499{{httpCode}: Solicitud Cerrada por el Cliente} 500{{httpCode}: Error interno del servidor} 501{{httpCode}: No implementado} 502{{httpCode}: Puerta de enlace incorrecta} 503{{httpCode}: Servicio no disponible} 504{{httpCode}: Tiempo de espera de la puerta de enlace} 505{{httpCode}: Versión HTTP no admitida} 506{{httpCode}: La variante también negocia} 507{{httpCode}: Almacenamiento insuficiente} 508{{httpCode}: Bucle detectado} 510{{httpCode}: No ampliado} 511{{httpCode}: Se requiere autenticación de red} 520{{httpCode}: Error desconocido} 521{{httpCode}: Web Server Is Down} 522{{httpCode}: Se ha agotado el tiempo de conexión} 523{{httpCode}: Origen inalcanzable} 524{{httpCode}: Se ha agotado el tiempo de espera} 525{{httpCode}: Handshake Failed} 526{{httpCode}: Certificado SSL no válido} 527{{httpCode}: Error de Railgun} 528{{httpCode}: Error de transporte} 529{{httpCode}: Servicio sobrecargado} 530{{httpCode}: El sitio está congelado} 599{{httpCode}: Network Connect Timeout Error} other{{httpCode}: Error desconocido}}",
   "imageUrl": "URL de la imagen",
   "importConflictToken": "{count, plural, zero{No hay conflicto con tokens que ya existen.} one{Hay un conflicto con tokens que ya existen.\nPor favor, seleccione cuál le gustaría conservar.} other{Hay un conflicto con tokens que ya existen.\nPor favor, seleccione cuál le gustaría conservar.}}",
   "importExistingToken": "{count, plural, zero{No se ha encontrado ningún token que ya esté en la aplicación.} one{Se ha encontrado un token que ya existe en la aplicación.} other{Se han encontrado {count} tokens que ya están en la aplicación.}}",
@@ -1767,6 +1780,7 @@
   "patchNotesV4_4_2Improvement1": "Añadido soporte linterna para el escaneo de códigos QR.",
   "patchNotesV4_4_2NewFeatures1": "Ahora es posible insertar tokens copiando y pegando.",
   "patchNotesV4_4_2NewFeatures2": "Añadido soporte de galería para el escaneo de códigos QR.",
+  "patchNotesV4_5_0NewFeatures1": "Compatibilidad con el sistema de contenedores privacyIDEA para facilitar la gestión de tokens.",
   "period": "Periodo",
   "phonePart": "Pieza de teléfono:",
   "piServerCode": "Código del servidor PI: {code}",

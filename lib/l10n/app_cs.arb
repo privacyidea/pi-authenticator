@@ -588,6 +588,15 @@
   "@hidePushTokensDescription": {
     "description": "Descripes what happens when the user hides the push tokens."
   },
+  "@httpStatus": {
+    "description": "HTTP status code",
+    "placeholders": {
+      "httpCode": {
+        "example": "404",
+        "type": "String"
+      }
+    }
+  },
   "@imageUrl": {
     "description": "Title of the image url field."
   },
@@ -1073,6 +1082,9 @@
   },
   "@patchNotesV4_4_2NewFeatures2": {
     "description": "Patch notes for a new feature in version 4.4.2"
+  },
+  "@patchNotesV4_5_0NewFeatures1": {
+    "description": "Patch notes for version 4.5.0"
   },
   "@period": {
     "description": "Title of the dropdown button where the period of the totp token is selected."
@@ -1658,7 +1670,8 @@
   "handshakeFailedLongText": "Handshake se nezdařil, zkontrolujte prosím certifikát serveru a zkuste to znovu.",
   "hidePushTokens": "Skrýt push tokeny",
   "hidePushTokensDescription": "Skrýt push tokeny ze seznamu tokenů. Tím se tokeny neodstraní a budou stále viditelné na samostatné obrazovce.",
-  "imageUrl": "URL obrázku",
+  "httpStatus": "{httpCode, select, 100{{httpCode}: Pokračovat} 101{{httpCode}: Přepínání protokolů} 102{{httpCode}: Zpracování} 103{{httpCode}: Early Hints} 104{{httpCode}: Obnovení spojení partnerem} 111{{httpCode}: Odmítnutí spojení} 200{{httpCode}: OK} 201{{httpCode}: Created} 202{{httpCode}: Accepted} 203{{httpCode}: Neautoritativní informace} 204{{httpCode}: Žádný obsah} 205{{httpCode}: Obnovit obsah} 206{{httpCode}: Částečný obsah} 207{{httpCode}: Multi-Status} 208{{httpCode}: Already Reported} 300{{httpCode}: Více možností} 301{{httpCode}: Přesunuto trvale} 302{{httpCode}: Nalezeno} 303{{httpCode}: Viz ostatní} 304{{httpCode}: Nezměněno} 305{{httpCode}: Použít proxy} 307{{httpCode}: Dočasné přesměrování} 308{{httpCode}: Trvalé přesměrování} 400{{httpCode}: Špatný požadavek} 401{{httpCode}: Niet geautoriseerd} 402{{httpCode}: Požadovaná platba} 403{{httpCode}: Forbidden} 404{{httpCode}: Not Found} 405{{httpCode}: Metoda není povolena} 406{{httpCode}: Not Acceptable} 407{{httpCode}: Proxy Authentication Required} 408{{httpCode}: Timeout požadavku} 409{{httpCode}: Conflict} 410{{httpCode}: Gone} 411{{httpCode}: Požadovaná délka} 412{{httpCode}: Předběžná podmínka se nezdařila} 413{{httpCode}: Payload Too Large} 414{{httpCode}: Request-URI Too Long} 415{{httpCode}: Unsupported Media Type} 416{{httpCode}: Požadovaný rozsah není splnitelný} 417{{httpCode}: Expectation Failed} 418{{httpCode}: I'm a teapot} 420{{httpCode}: Zlepšete svůj klid} 421{{httpCode}: Chybně směrovaný požadavek} 422{{httpCode}: Nezpracovatelná entita} 423{{httpCode}: Zamčeno}  424{{httpCode}: Neúspěšná závislost} 426{{httpCode}: Vyžadována aktualizace} 428{{httpCode}: Precondition Required} 429{{httpCode}: Příliš mnoho požadavků} 431{{httpCode}: Příliš velká pole hlavičky požadavku} 444{{httpCode}: Spojení uzavřeno bez odpovědi} 451{{httpCode}: Nedostupné z právních důvodů} 499{{httpCode}: Klient ukončil požadavek} 500{{httpCode}: Vnitřní chyba serveru} 501{{httpCode}: Not Implemented} 502{{httpCode}: Špatná brána} 503{{httpCode}: Service Unavailable} 504{{httpCode}: Gateway Timeout} 505{{httpCode}: HTTP Version Not Supported} 506{{httpCode}: Variant Also Negotiates} 507{{httpCode}: Nedostatečné úložiště} 508{{httpCode}: Detekována smyčka} 510{{httpCode}: Not Extended} 511{{httpCode}: Vyžadováno síťové ověření} 520{{httpCode}: Neznámá chyba} 521{{httpCode}: Webový server je mimo provoz} 522{{httpCode}: Connection Timed Out} 523{{httpCode}: Origin Is Unreachable} 524{{httpCode}: A Timeout Occurred} 525{{httpCode}: Handshake selhal} 526{{httpCode}: Invalid SSL Certificate} 527{{httpCode}: Railgun Error} 528{{httpCode}: Transport Error} 529{{httpCode}: Služba je přetížená} 530{{httpCode}: Stránka je zamrzlá}  599{{httpCode}: Chybný časový limit síťového připojení} other{{httpCode}: Neznámá chyba}}",
+    "imageUrl": "URL obrázku",
   "importConflictToken": "{count, plural, zero{Není žádný konflikt s tokeny, které již existují.} one{Je konflikt s tokeny, které již existují.\nProsím, vyberte, který z nich chcete zachovat.} other{Je konflikt s tokeny, které již existují.\nProsím, vyberte, který z nich chcete zachovat.}}",
   "importExistingToken": "{count, plural, zero{Nebyl nalezen žádný token, který by se již v aplikaci nacházel.} one{Byl nalezen token, který již v aplikaci existuje.} other{{count} byly nalezeny tokeny, které se již v aplikaci nacházejí.}}",
   "importExportTokens": "Import/Exportovat žetony",
@@ -1767,6 +1780,7 @@
   "patchNotesV4_4_2Improvement1": "Přidána podpora svítilny pro skenování QR kódů.",
   "patchNotesV4_4_2NewFeatures1": "Žetony lze nyní vkládat pomocí kopírování a vkládání.",
   "patchNotesV4_4_2NewFeatures2": "Přidána podpora galerie pro skenování QR kódů.",
+  "patchNotesV4_5_0NewFeatures1": "Podpora kontejnerového systému privacyIDEA pro snadnější správu tokenů",
   "period": "Časový interval",
   "phonePart": "Klientská část:",
   "piServerCode": "Kód serveru PI: {code}",
