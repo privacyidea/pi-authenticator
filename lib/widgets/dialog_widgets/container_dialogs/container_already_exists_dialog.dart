@@ -22,12 +22,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:privacyidea_authenticator/utils/view_utils.dart';
 
-import '../../../../../../../l10n/app_localizations.dart';
-import '../../../../../../../model/token_container.dart';
-import '../../../../../../../views/container_view/container_widgets/container_widget.dart';
-import '../../../../../../../widgets/button_widgets/cooldown_button.dart';
-import '../../../../../../../widgets/dialog_widgets/default_dialog.dart';
-import '../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
+import '../../../../../../../../l10n/app_localizations.dart';
+import '../../../../../../../../model/token_container.dart';
+import '../../../../../../../../views/container_view/container_widgets/container_widget.dart';
+import '../../../../../../../../widgets/button_widgets/cooldown_button.dart';
+import '../../../../../../../../widgets/dialog_widgets/default_dialog.dart';
+import '../../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 
 class ContainerAlreadyExistsDialog extends ConsumerStatefulWidget {
   final List<TokenContainerUnfinalized> newContainers;

@@ -55,7 +55,7 @@ class PrivacyideaIOClient {
     } on ClientException {
       Logger.warning('ClientException');
       ioClient.close();
-      showStatusMessage(
+      showErrorStatusMessage(
         message: (localization) => localization.connectionFailed,
         details: (localization) => localization.checkYourNetwork,
       );
@@ -66,7 +66,7 @@ class PrivacyideaIOClient {
       }
       if (isRetry) {
         Logger.warning('SocketException while retrying');
-        showStatusMessage(
+        showErrorStatusMessage(
           message: (localization) => localization.connectionFailed,
           details: (localization) => localization.checkYourNetwork,
         );
@@ -114,7 +114,7 @@ class PrivacyideaIOClient {
       response = await ioClient.post(url, body: body).timeout(const Duration(seconds: 15));
     } on HandshakeException catch (e, _) {
       Logger.info('Handshake failed. sslVerify: $sslVerify');
-      showStatusMessage(message: (l) => l.handshakeFailedLongText);
+      showErrorStatusMessage(message: (l) => l.handshakeFailedLongText);
       ioClient.close();
       return ResponseBuilder.fromStatusCode(525);
     } on TimeoutException catch (e, _) {
@@ -181,7 +181,7 @@ class PrivacyideaIOClient {
       response = await ioClient.get(uri).timeout(const Duration(seconds: 15));
     } on HandshakeException catch (e, _) {
       Logger.warning('Handshake failed. sslVerify: $sslVerify');
-      showStatusMessage(
+      showErrorStatusMessage(
         message: (localization) => localization.handshakeFailed,
         details: (localization) => localization.checkServerCertificate,
       );

@@ -21,9 +21,9 @@ ContainerPolicies _$ContainerPoliciesFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$ContainerPolicies {
   bool get rolloverAllowed => throw _privateConstructorUsedError;
-  bool get initialTokenTransfer => throw _privateConstructorUsedError;
-  bool get tokensDeletable => throw _privateConstructorUsedError;
-  bool get unregisterAllowed => throw _privateConstructorUsedError;
+  bool get initialTokenAssignment => throw _privateConstructorUsedError;
+  bool get disabledTokenDeletion => throw _privateConstructorUsedError;
+  bool get disabledUnregister => throw _privateConstructorUsedError;
 
   /// Serializes this ContainerPolicies to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -43,9 +43,9 @@ abstract class $ContainerPoliciesCopyWith<$Res> {
   @useResult
   $Res call(
       {bool rolloverAllowed,
-      bool initialTokenTransfer,
-      bool tokensDeletable,
-      bool unregisterAllowed});
+      bool initialTokenAssignment,
+      bool disabledTokenDeletion,
+      bool disabledUnregister});
 }
 
 /// @nodoc
@@ -64,26 +64,26 @@ class _$ContainerPoliciesCopyWithImpl<$Res, $Val extends ContainerPolicies>
   @override
   $Res call({
     Object? rolloverAllowed = null,
-    Object? initialTokenTransfer = null,
-    Object? tokensDeletable = null,
-    Object? unregisterAllowed = null,
+    Object? initialTokenAssignment = null,
+    Object? disabledTokenDeletion = null,
+    Object? disabledUnregister = null,
   }) {
     return _then(_value.copyWith(
       rolloverAllowed: null == rolloverAllowed
           ? _value.rolloverAllowed
           : rolloverAllowed // ignore: cast_nullable_to_non_nullable
               as bool,
-      initialTokenTransfer: null == initialTokenTransfer
-          ? _value.initialTokenTransfer
-          : initialTokenTransfer // ignore: cast_nullable_to_non_nullable
+      initialTokenAssignment: null == initialTokenAssignment
+          ? _value.initialTokenAssignment
+          : initialTokenAssignment // ignore: cast_nullable_to_non_nullable
               as bool,
-      tokensDeletable: null == tokensDeletable
-          ? _value.tokensDeletable
-          : tokensDeletable // ignore: cast_nullable_to_non_nullable
+      disabledTokenDeletion: null == disabledTokenDeletion
+          ? _value.disabledTokenDeletion
+          : disabledTokenDeletion // ignore: cast_nullable_to_non_nullable
               as bool,
-      unregisterAllowed: null == unregisterAllowed
-          ? _value.unregisterAllowed
-          : unregisterAllowed // ignore: cast_nullable_to_non_nullable
+      disabledUnregister: null == disabledUnregister
+          ? _value.disabledUnregister
+          : disabledUnregister // ignore: cast_nullable_to_non_nullable
               as bool,
     ) as $Val);
   }
@@ -99,9 +99,9 @@ abstract class _$$ContainerPoliciesImplCopyWith<$Res>
   @useResult
   $Res call(
       {bool rolloverAllowed,
-      bool initialTokenTransfer,
-      bool tokensDeletable,
-      bool unregisterAllowed});
+      bool initialTokenAssignment,
+      bool disabledTokenDeletion,
+      bool disabledUnregister});
 }
 
 /// @nodoc
@@ -118,26 +118,26 @@ class __$$ContainerPoliciesImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? rolloverAllowed = null,
-    Object? initialTokenTransfer = null,
-    Object? tokensDeletable = null,
-    Object? unregisterAllowed = null,
+    Object? initialTokenAssignment = null,
+    Object? disabledTokenDeletion = null,
+    Object? disabledUnregister = null,
   }) {
     return _then(_$ContainerPoliciesImpl(
       rolloverAllowed: null == rolloverAllowed
           ? _value.rolloverAllowed
           : rolloverAllowed // ignore: cast_nullable_to_non_nullable
               as bool,
-      initialTokenTransfer: null == initialTokenTransfer
-          ? _value.initialTokenTransfer
-          : initialTokenTransfer // ignore: cast_nullable_to_non_nullable
+      initialTokenAssignment: null == initialTokenAssignment
+          ? _value.initialTokenAssignment
+          : initialTokenAssignment // ignore: cast_nullable_to_non_nullable
               as bool,
-      tokensDeletable: null == tokensDeletable
-          ? _value.tokensDeletable
-          : tokensDeletable // ignore: cast_nullable_to_non_nullable
+      disabledTokenDeletion: null == disabledTokenDeletion
+          ? _value.disabledTokenDeletion
+          : disabledTokenDeletion // ignore: cast_nullable_to_non_nullable
               as bool,
-      unregisterAllowed: null == unregisterAllowed
-          ? _value.unregisterAllowed
-          : unregisterAllowed // ignore: cast_nullable_to_non_nullable
+      disabledUnregister: null == disabledUnregister
+          ? _value.disabledUnregister
+          : disabledUnregister // ignore: cast_nullable_to_non_nullable
               as bool,
     ));
   }
@@ -148,9 +148,9 @@ class __$$ContainerPoliciesImplCopyWithImpl<$Res>
 class _$ContainerPoliciesImpl extends _ContainerPolicies {
   const _$ContainerPoliciesImpl(
       {required this.rolloverAllowed,
-      required this.initialTokenTransfer,
-      required this.tokensDeletable,
-      required this.unregisterAllowed})
+      required this.initialTokenAssignment,
+      required this.disabledTokenDeletion,
+      required this.disabledUnregister})
       : super._();
 
   factory _$ContainerPoliciesImpl.fromJson(Map<String, dynamic> json) =>
@@ -159,11 +159,11 @@ class _$ContainerPoliciesImpl extends _ContainerPolicies {
   @override
   final bool rolloverAllowed;
   @override
-  final bool initialTokenTransfer;
+  final bool initialTokenAssignment;
   @override
-  final bool tokensDeletable;
+  final bool disabledTokenDeletion;
   @override
-  final bool unregisterAllowed;
+  final bool disabledUnregister;
 
   @override
   bool operator ==(Object other) {
@@ -172,18 +172,18 @@ class _$ContainerPoliciesImpl extends _ContainerPolicies {
             other is _$ContainerPoliciesImpl &&
             (identical(other.rolloverAllowed, rolloverAllowed) ||
                 other.rolloverAllowed == rolloverAllowed) &&
-            (identical(other.initialTokenTransfer, initialTokenTransfer) ||
-                other.initialTokenTransfer == initialTokenTransfer) &&
-            (identical(other.tokensDeletable, tokensDeletable) ||
-                other.tokensDeletable == tokensDeletable) &&
-            (identical(other.unregisterAllowed, unregisterAllowed) ||
-                other.unregisterAllowed == unregisterAllowed));
+            (identical(other.initialTokenAssignment, initialTokenAssignment) ||
+                other.initialTokenAssignment == initialTokenAssignment) &&
+            (identical(other.disabledTokenDeletion, disabledTokenDeletion) ||
+                other.disabledTokenDeletion == disabledTokenDeletion) &&
+            (identical(other.disabledUnregister, disabledUnregister) ||
+                other.disabledUnregister == disabledUnregister));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, rolloverAllowed,
-      initialTokenTransfer, tokensDeletable, unregisterAllowed);
+      initialTokenAssignment, disabledTokenDeletion, disabledUnregister);
 
   /// Create a copy of ContainerPolicies
   /// with the given fields replaced by the non-null parameter values.
@@ -205,9 +205,9 @@ class _$ContainerPoliciesImpl extends _ContainerPolicies {
 abstract class _ContainerPolicies extends ContainerPolicies {
   const factory _ContainerPolicies(
       {required final bool rolloverAllowed,
-      required final bool initialTokenTransfer,
-      required final bool tokensDeletable,
-      required final bool unregisterAllowed}) = _$ContainerPoliciesImpl;
+      required final bool initialTokenAssignment,
+      required final bool disabledTokenDeletion,
+      required final bool disabledUnregister}) = _$ContainerPoliciesImpl;
   const _ContainerPolicies._() : super._();
 
   factory _ContainerPolicies.fromJson(Map<String, dynamic> json) =
@@ -216,11 +216,11 @@ abstract class _ContainerPolicies extends ContainerPolicies {
   @override
   bool get rolloverAllowed;
   @override
-  bool get initialTokenTransfer;
+  bool get initialTokenAssignment;
   @override
-  bool get tokensDeletable;
+  bool get disabledTokenDeletion;
   @override
-  bool get unregisterAllowed;
+  bool get disabledUnregister;
 
   /// Create a copy of ContainerPolicies
   /// with the given fields replaced by the non-null parameter values.

@@ -176,9 +176,6 @@
   "@container": {
     "description": "Title for the container view."
   },
-  "@containerAddDialogTitle": {
-    "description": "Title of the add container Dialog"
-  },
   "@containerAlreadyExists": {
     "description": "Title of the dialog that tells the user that the container already exists."
   },
@@ -205,6 +202,15 @@
   },
   "@containerSerial": {
     "description": "Title of the container serial field."
+  },
+  "@containerSyncDialogNewTokens": {
+    "description": "The title of the part of the dialog that tells the user that new tokens were added."
+  },
+  "@containerSyncDialogRemovedTokens": {
+    "description": "The title of the part of the dialog that tells the user that tokens were removed."
+  },
+  "@containerSyncDialogTitle": {
+    "description": "Title of the add container Dialog"
   },
   "@containerSyncUrl": {
     "description": "Title of the container sync url field."
@@ -551,6 +557,9 @@
   },
   "@folderName": {
     "description": "Label for the input field where the folder name should be entered."
+  },
+  "@forceDeleteDialogContent": {
+    "description": "Content of the dialog that tells the user that the server was unreachable and asks if the user wants to delete the container anyway."
   },
   "@generatingPhonePart": {
     "description": "Title of a dialog telling the user that the phone part gets generated right now."
@@ -1291,6 +1300,9 @@
   "@sendErrorLogDescription": {
     "description": "Explanation for the user what he will send."
   },
+  "@sendOtps": {
+    "description": "Text the the Button to send OTPs to the server."
+  },
   "@sendPushRequestResponseFailed": {
     "description": "Error message when the response to a push request could not be sent."
   },
@@ -1302,6 +1314,21 @@
   },
   "@settingsGroupGeneral": {
     "description": "Title for the general settings group."
+  },
+  "@showContainerUrlDialogContent": {
+    "description": "Dialog content to show the container URL.",
+    "placeholders": {
+      "url": {
+        "description": "The URL of the container.",
+        "example": "https://example.com/"
+      }
+    }
+  },
+  "@showContainerUrlDialogSslWarning": {
+    "description": "Warning message that the SSL is deactivated."
+  },
+  "@showContainerUrlDialogTitle": {
+    "description": "Title of the dialog that shows the server url."
   },
   "@showDetails": {
     "description": "Button to show details."
@@ -1557,7 +1584,6 @@
   "confirmation": "Bevestiging",
   "connectionFailed": "Verbinding mislukt.",
   "container": "Container",
-  "containerAddDialogTitle": "Container toevoegen",
   "containerAlreadyExists": "Container bestaat al",
   "containerDeleteCorrespondingTokenDialogContent": "Wilt u de bijbehorende tokens ook verwijderen?",
   "containerDetails": "Containergegevens",
@@ -1565,6 +1591,9 @@
   "containerRolloutSendDeviceInfoDialogContent": "Wil je de uitgever van de container vertellen welk apparaat je gebruikt? Dit kan later handig zijn als je problemen hebt met je tweede factor.",
   "containerRolloutSendDeviceInfoDialogTitle": "Apparaatinformatie verzenden",
   "containerSerial": "Container serie",
+  "containerSyncDialogNewTokens": "Tokens toegevoegd door containersynchronisatie:",
+  "containerSyncDialogRemovedTokens": "Tokens verwijderd door containersynchronisatie:",
+  "containerSyncDialogTitle": "Container synchronisatie",
   "containerSyncUrl": "Url voor containersynchronisatie",
   "containerTransferDeleteTokensButtonText": "Van dit apparaat verwijderen",
   "containerTransferDeleteTokensSuccessMessage": " Container en bijbehorende tokens zijn succesvol verwijderd van dit apparaat.",
@@ -1658,6 +1687,7 @@
   "finalizeContainerFailed": "Container voltooien mislukt",
   "firebaseToken": "Firebase Token",
   "folderName": "Mapnaam",
+  "forceDeleteDialogContent": "De server was onbereikbaar. Weet u zeker dat u de container wilt verwijderen?",
   "generatingPhonePart": "Genereren telefoon gedeelte",
   "gitHubButton": "Deze app is open source\nBezoek ons op GitHub",
   "goToSettingsButton": "Ga naar instellingen",
@@ -1840,10 +1870,14 @@
   "send": "verzenden",
   "sendErrorDialogBody": "Een onverwachte fout heeft plaatsgevonden in de applicatie. De onderstaande informatie kan worden verstuurd naar de ontwikkelaars via e-mail om het probleem in de toekomst te voorkomen.",
   "sendErrorLogDescription": "Er wordt een kant-en-klare e-mail gemaakt die informatie bevat over de app, de fout en het apparaat.\nJe kunt de e-mail bewerken voordat je hem verstuurt.\nJe kunt hier zien hoe we de informatie gebruiken:",
+  "sendOtps": "OTP's verzenden",
   "sendPushRequestResponseFailed": "Het verzenden van het antwoord is mislukt. ",
   "serverNotReachable": "De server kon niet worden bereikt.",
   "settings": "Instellingen",
   "settingsGroupGeneral": "Algemene informatie",
+  "showContainerUrlDialogContent": " De container maakt verbinding met de server onder de volgende URL: {url}",
+  "showContainerUrlDialogSslWarning": "SSL is uitgeschakeld, wat een veiligheidsrisico is. Wilt u doorgaan?",
+  "showContainerUrlDialogTitle": "Server Url bevestigen",
   "showDetails": "Details tonen",
   "showErrorLog": "Weergeven",
   "showPrivacyPolicy": "Privacybeleid tonen",

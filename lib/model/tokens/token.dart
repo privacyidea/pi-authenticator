@@ -54,6 +54,9 @@ abstract class Token with SortableMixin {
   /// [String] 'True' / 'False' (optional) default = 'False'
   static const String PIN = 'pin';
 
+  /// [String] 'True' / 'False' (optional) default = 'False'
+  static const String OFFLINE = 'offline';
+
   /// [String] (optional) default = null
   static const String SERIAL = 'serial';
 
@@ -90,6 +93,7 @@ abstract class Token with SortableMixin {
   final bool isHidden;
   final String? tokenImage;
   final int? folderId;
+  final bool isOffline;
   @override
   final int? sortIndex;
   final TokenOriginData? origin;
@@ -151,6 +155,7 @@ abstract class Token with SortableMixin {
     this.sortIndex,
     this.folderId,
     this.origin,
+    this.isOffline = false,
     bool? pin,
     bool? isLocked,
     bool? isHidden,
@@ -189,6 +194,7 @@ abstract class Token with SortableMixin {
     int? sortIndex,
     int? Function()? folderId,
     TokenOriginData? origin,
+    bool? isOffline,
   });
 
   @override
@@ -212,7 +218,8 @@ abstract class Token with SortableMixin {
         'sortIndex: $sortIndex, '
         'folderId: $folderId, '
         'origin: $origin, '
-        'containerSerial: $containerSerial, ';
+        'containerSerial: $containerSerial, '
+        'isOffline: $isOffline';
   }
 
   /// This is used to create a map that can be used to serialize the token.
@@ -237,6 +244,7 @@ abstract class Token with SortableMixin {
       LABEL: label,
       ISSUER: issuer,
       PIN: pin ? PIN_VALUE_TRUE : PIN_VALUE_FALSE,
+      OFFLINE: isOffline,
       if (tokenImage != null) IMAGE: tokenImage!,
     };
   }
@@ -250,6 +258,7 @@ abstract class Token with SortableMixin {
         FOLDER_ID: folderId,
         HIDDEN: isHidden,
         CHECKED_CONTAINERS: checkedContainer,
+        CONTAINER_SERIAL: containerSerial,
       };
 
   TokenTemplate? toTemplate({TokenContainer? container}) => serial != null

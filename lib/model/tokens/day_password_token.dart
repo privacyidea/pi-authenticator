@@ -62,6 +62,7 @@ class DayPasswordToken extends OTPToken {
     super.origin,
     super.label = '',
     super.issuer = '',
+    super.isOffline,
   })  : period = period.inSeconds > 0 ? period : const Duration(hours: 24),
         super(type: TokenTypes.DAYPASSWORD.name);
 
@@ -108,6 +109,7 @@ class DayPasswordToken extends OTPToken {
     int? sortIndex,
     int? Function()? folderId,
     TokenOriginData? origin,
+    bool? isOffline,
   }) =>
       DayPasswordToken(
         serial: serial ?? this.serial,
@@ -129,6 +131,7 @@ class DayPasswordToken extends OTPToken {
         isHidden: isHidden ?? this.isHidden,
         folderId: folderId != null ? folderId() : this.folderId,
         origin: origin ?? this.origin,
+        isOffline: isOffline ?? this.isOffline,
       );
 
   String otpFromTime(DateTime time) => algorithm.generateTOTPCodeString(

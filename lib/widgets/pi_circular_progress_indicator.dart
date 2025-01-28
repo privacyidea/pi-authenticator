@@ -23,6 +23,7 @@ import '../../../../../../../model/extensions/color_extension.dart';
 
 class PiCircularProgressIndicator extends StatelessWidget {
   final double padding;
+  final double size;
   final double strokeWidth;
   final double value;
   final String? semanticsLabel;
@@ -33,13 +34,15 @@ class PiCircularProgressIndicator extends StatelessWidget {
   const PiCircularProgressIndicator(
     this.value, {
     this.padding = 2.0,
-    this.strokeWidth = 3.0,
+    double? strokeWidth,
+    this.size = 30,
     this.swapColors = false,
     Color? backgroundColor,
     this.semanticsLabel,
     this.semanticsValue,
     super.key,
-  }) : _backgroundColor = backgroundColor;
+  })  : _backgroundColor = backgroundColor,
+        strokeWidth = size / 8;
 
   @override
   Widget build(BuildContext context) {
@@ -47,14 +50,18 @@ class PiCircularProgressIndicator extends StatelessWidget {
     var backgroundColor = _backgroundColor ?? theme.scaffoldBackgroundColor;
     return Padding(
       padding: EdgeInsets.all(strokeWidth / 2 + padding),
-      child: CircularProgressIndicator(
-        value: value,
-        color: swapColors ? theme.colorScheme.primary.mixWith(backgroundColor, 0.6).withOpacity(1) : theme.colorScheme.primary,
-        backgroundColor: swapColors ? theme.colorScheme.primary : theme.colorScheme.primary.mixWith(backgroundColor, 0.6).withOpacity(1),
-        strokeCap: StrokeCap.round,
-        strokeWidth: strokeWidth,
-        semanticsLabel: semanticsLabel,
-        semanticsValue: semanticsValue,
+      child: SizedBox(
+        width: size,
+        height: size,
+        child: CircularProgressIndicator(
+          value: value,
+          color: swapColors ? theme.colorScheme.primary.mixWith(backgroundColor, 0.6).withOpacity(1) : theme.colorScheme.primary,
+          backgroundColor: swapColors ? theme.colorScheme.primary : theme.colorScheme.primary.mixWith(backgroundColor, 0.6).withOpacity(1),
+          strokeCap: StrokeCap.round,
+          strokeWidth: strokeWidth,
+          semanticsLabel: semanticsLabel,
+          semanticsValue: semanticsValue,
+        ),
       ),
     );
   }

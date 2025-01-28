@@ -219,7 +219,7 @@ Future<void> scanQrCode({BuildContext? context, required List<ResultHandler> res
       _ => throw ArgumentError('Invalid type for qrCode: $qrCode'),
     };
   } catch (e) {
-    showStatusMessage(message: (l) => l.invalidUrl);
+    showErrorStatusMessage(message: (l) => l.invalidUrl);
     Logger.warning('Scanned Data: $qrCode');
     return;
   }

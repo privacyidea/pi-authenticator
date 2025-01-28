@@ -23,11 +23,11 @@ import 'package:privacyidea_authenticator/widgets/dialog_widgets/default_dialog.
 
 import '../../../utils/view_utils.dart';
 
-class SendDeviceInfosDialog extends StatelessWidget {
-  const SendDeviceInfosDialog({super.key});
+class ContainerSendDeviceInfosDialog extends StatelessWidget {
+  const ContainerSendDeviceInfosDialog({super.key});
 
   static Future<bool?> showDialog() => showAsyncDialog<bool>(
-        builder: (context) => SendDeviceInfosDialog(),
+        builder: (context) => ContainerSendDeviceInfosDialog(),
         barrierDismissible: false,
       );
 

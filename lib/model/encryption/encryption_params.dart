@@ -25,8 +25,6 @@ class EncryptionParams {
   static const String SYNC_ENC_PARAMS_MODE = 'mode';
   static const String SYNC_ENC_PARAMS_TAG = 'tag';
 
-  //  static const String SYNC_DICT_ENCRYPTED = 'container_dict_encrypted';
-
   final String algorithm;
   final String initVector;
   final String mode;

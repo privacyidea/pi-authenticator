@@ -39,11 +39,13 @@ part 'token_container.g.dart';
 
 @Freezed(toStringOverride: false, addImplicitFinal: true, toJson: true, fromJson: true)
 class TokenContainer with _$TokenContainer {
+  static const String CONTAINER_SERIAL = 'container_serial';
+
 // Container finalization:
-  static const String FINALIZE_CONTAINER_SERIAL = 'container_serial';
   static const String FINALIZE_PUBLIC_CLIENT_KEY = 'public_client_key';
   static const String FINALIZE_DEVICE_BRAND = 'device_brand';
   static const String FINALIZE_DEVICE_MODEL = 'device_model';
+  static const String FINALIZE_SIGNATURE = 'signature';
 
 // Container sync:
   static const String SYNC_PUBLIC_CLIENT_KEY = 'public_enc_key_client';
@@ -56,7 +58,6 @@ class TokenContainer with _$TokenContainer {
 
 // Container Mapping:
   static const String DICT_CONTAINER = 'container';
-  static const String DICT_SERIAL = 'serial';
   static const String DICT_TYPE = 'type';
   static const String DICT_TYPE_SMARTPHONE = 'smartphone';
   static const String DICT_TOKENS = 'tokens';
@@ -83,10 +84,10 @@ class TokenContainer with _$TokenContainer {
   const TokenContainer._();
 
   Uri get registrationUrl => serverUrl.replace(path: '/container/register/finalize');
-  Uri get challengeUrl => serverUrl.replace(path: '/container/$serial/challenge');
-  Uri get syncUrl => serverUrl.replace(path: '/container/$serial/sync');
-  Uri get transferUrl => serverUrl.replace(path: '/container/$serial/rollover');
-  Uri get unregisterUrl => serverUrl.replace(path: '/container/register/$serial/terminate/client');
+  Uri get challengeUrl => serverUrl.replace(path: '/container/challenge');
+  Uri get syncUrl => serverUrl.replace(path: '/container/synchronize');
+  Uri get transferUrl => serverUrl.replace(path: '/container/rollover');
+  Uri get unregisterUrl => serverUrl.replace(path: '/container/register/terminate/client');
 
   DateTime? get expirationDate => this is TokenContainerUnfinalized ? timestamp.add((this as TokenContainerUnfinalized).ttl) : null;
 
@@ -145,7 +146,7 @@ class TokenContainer with _$TokenContainer {
     required Algorithms hashAlgorithm,
     required bool sslVerify,
     @Default('privacyIDEA') String serverName,
-    @Default(FinalizationState.completed) FinalizationState finalizationState,
+    @Default(FinalizationState.notStarted) FinalizationState finalizationState,
     @Default(ContainerPolicies.defaultSetting) ContainerPolicies policies,
     bool? addDeviceInfos,
     String? passphraseQuestion,

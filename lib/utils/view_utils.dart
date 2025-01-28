@@ -52,14 +52,24 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? _showSnackBar(
   );
 }
 
-void showStatusMessage({required String Function(AppLocalizations) message, String Function(AppLocalizations)? details}) {
+void showErrorStatusMessage({required String Function(AppLocalizations) message, String Function(AppLocalizations)? details}) {
   final ref = globalRef;
   Logger.warning('$message : $details');
   if (ref == null) {
     Logger.error('Could not show status message: globalRef is null');
     return;
   }
-  ref.read(statusMessageProvider.notifier).state = StatusMessage(message: message, details: details);
+  ref.read(statusMessageProvider.notifier).state = StatusMessage(message: message, details: details, isError: true);
+}
+
+void showSuccessStatusMessage({required String Function(AppLocalizations) message, String Function(AppLocalizations)? details}) {
+  final ref = globalRef;
+  Logger.warning('$message : $details');
+  if (ref == null) {
+    Logger.error('Could not show status message: globalRef is null');
+    return;
+  }
+  ref.read(statusMessageProvider.notifier).state = StatusMessage(message: message, details: details, isError: false);
 }
 
 Future<T?> showAsyncDialog<T>({

@@ -84,21 +84,22 @@ class TokenWidgetBase extends ConsumerStatefulWidget {
 }
 
 class _TokenWidgetBaseState extends ConsumerState<TokenWidgetBase> {
-  bool tokenIsDeleteable = false;
+  bool tokenDeletationDisabled = false;
 
   @override
   Widget build(BuildContext context) {
     final SortableMixin? draggingSortable = ref.watch(draggingSortableProvider);
-    final Future<bool?> tokenDeleteable;
+    final Future<bool?> deletationDisabled;
     if (widget.token.containerSerial == null) {
-      tokenDeleteable = Future.value(true);
+      deletationDisabled = Future.value(true);
     } else {
-      tokenDeleteable = ref.watch(tokenContainerProvider.selectAsync((state) => state.containerOf(widget.token.containerSerial!)?.policies.tokensDeletable));
+      final selector = tokenContainerProvider.selectAsync((state) => state.containerOf(widget.token.containerSerial!)?.policies.disabledTokenDeletion);
+      deletationDisabled = ref.watch(selector);
     }
 
-    tokenDeleteable.then((value) {
+    deletationDisabled.then((value) {
       setState(() {
-        tokenIsDeleteable = value ?? true;
+        tokenDeletationDisabled = value ?? false;
       });
     });
 
@@ -106,7 +107,7 @@ class _TokenWidgetBaseState extends ConsumerState<TokenWidgetBase> {
       widget.deleteAction ??
           DefaultDeleteAction(
             token: widget.token,
-            isEnabled: tokenIsDeleteable,
+            isEnabled: !tokenDeletationDisabled,
             key: Key('${widget.token.id}deleteAction'),
           ),
       widget.editAction ?? DefaultEditAction(token: widget.token, key: Key('${widget.token.id}editAction')),

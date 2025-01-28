@@ -52,10 +52,9 @@ class TokenContainerState with _$TokenContainerState {
   T? currentOf<T extends TokenContainer>(TokenContainer container) {
     final current = containerOf(container.serial);
     if (current is T) {
-      Logger.info('Found current container for ${container.serial}');
       return current;
     }
-    Logger.info('Current is not of type $T');
+    Logger.warning('Current is not of type $T');
     return null;
   }
 

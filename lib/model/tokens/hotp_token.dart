@@ -62,6 +62,7 @@ class HOTPToken extends OTPToken {
     super.origin,
     super.label = '',
     super.issuer = '',
+    super.isOffline,
   }) : super(type: TokenTypes.HOTP.name);
 
   @override
@@ -112,6 +113,7 @@ class HOTPToken extends OTPToken {
     int? sortIndex,
     int? Function()? folderId,
     TokenOriginData? origin,
+    bool? isOffline,
   }) =>
       HOTPToken(
         serial: serial ?? this.serial,
@@ -131,6 +133,7 @@ class HOTPToken extends OTPToken {
         sortIndex: sortIndex ?? this.sortIndex,
         folderId: folderId != null ? folderId() : this.folderId,
         origin: origin ?? this.origin,
+        isOffline: isOffline ?? this.isOffline,
       );
 
   @override

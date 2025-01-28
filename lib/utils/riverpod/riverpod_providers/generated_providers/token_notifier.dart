@@ -375,7 +375,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   Future<bool> addOrReplaceToken(Token token) => _addOrReplaceToken(token);
 
   /// Adds or replaces a list of tokens and returns the tokens that could not be added or replaced.
-  Future<List<Token>> addOrReplaceTokens(List<Token> tokens) => _addOrReplaceTokens(tokens);
+  Future<List<Token>> addOrReplaceTokens(List<Token> tokens) => _addOrReplaceTokens(tokens)..then((value) => _handlePushTokensIfExist());
 
   /// Updates a token and returns the updated token if successful, the old token if not and null if the token does not exist.
   Future<T?> updateToken<T extends Token>(T token, T Function(T) updater) => _updateToken(token, updater);

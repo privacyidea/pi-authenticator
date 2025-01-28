@@ -71,6 +71,7 @@ abstract class OTPToken extends Token {
     super.origin,
     super.label = '',
     super.issuer = '',
+    super.isOffline,
   });
 
   // @override
@@ -105,6 +106,7 @@ abstract class OTPToken extends Token {
     int? sortIndex,
     int? Function()? folderId,
     TokenOriginData? origin,
+    bool? isOffline,
   });
 
   @override

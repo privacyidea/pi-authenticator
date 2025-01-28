@@ -3,7 +3,7 @@
  *
  * Author: Frank Merkel <frank.merkel@netknights.it>
  *
- * Copyright (c) 2024 NetKnights GmbH
+ * Copyright (c) 2025 NetKnights GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
@@ -20,51 +20,23 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
-import 'package:privacyidea_authenticator/utils/view_utils.dart';
 
-import '../../../../l10n/app_localizations.dart';
-import '../../../../model/token_container.dart';
-import '../../../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
-import '../../../../widgets/dialog_widgets/default_dialog.dart';
-import '../../../../widgets/elevated_delete_button.dart';
+import '../../../../../l10n/app_localizations.dart';
+import '../../../../../model/token_container.dart';
+import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
+import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
+import '../../../../../utils/view_utils.dart';
+import '../../../../../widgets/dialog_widgets/default_dialog.dart';
+import '../../../../../widgets/elevated_delete_button.dart';
+import 'delete_container_force_dialog.dart';
 
-class DeleteContainerDialog extends ConsumerWidget {
+class DeleteContainerTokenDialog extends ConsumerWidget {
   final TokenContainer container;
 
-  const DeleteContainerDialog(this.container, {super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return DefaultDialog(
-      title: Text(AppLocalizations.of(context)!.deleteContainerDialogTitle(container.serial)),
-      content: Text(AppLocalizations.of(context)!.deleteContainerDialogContent),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text(AppLocalizations.of(context)!.cancel),
-        ),
-        ElevatedDeleteButton(
-          onPressed: () {
-            DeleteCorrespondingTokenDialog.showDialog(container).then((v) {
-              if (!context.mounted) return;
-              Navigator.of(context).pop();
-            });
-          },
-          text: AppLocalizations.of(context)!.delete,
-        ),
-      ],
-    );
-  }
-}
-
-class DeleteCorrespondingTokenDialog extends ConsumerWidget {
-  final TokenContainer container;
-
-  const DeleteCorrespondingTokenDialog(this.container, {super.key});
+  const DeleteContainerTokenDialog(this.container, {super.key});
 
   static Future<void> showDialog(TokenContainer container) => showAsyncDialog(
-        builder: (context) => DeleteCorrespondingTokenDialog(container),
+        builder: (context) => DeleteContainerTokenDialog(container),
       );
 
   @override
@@ -78,7 +50,10 @@ class DeleteCorrespondingTokenDialog extends ConsumerWidget {
         ElevatedDeleteButton(
           text: appLocalizations.deleteOnlyContainerButtonText,
           onPressed: () async {
-            await _deleteContainer(ref);
+            final success = await _deleteContainer(ref);
+            if (!success) {
+              await ForceDeleteContainerDialog.showDialog(container);
+            }
             if (!context.mounted) return;
             Navigator.of(context).pop();
           },
@@ -86,7 +61,10 @@ class DeleteCorrespondingTokenDialog extends ConsumerWidget {
         ElevatedDeleteButton(
           onPressed: () async {
             final containerTokens = ref.read(tokenProvider).containerTokens(container.serial);
-            final success = await _deleteContainer(ref);
+            var success = await _deleteContainer(ref);
+            if (!success) {
+              success = (await ForceDeleteContainerDialog.showDialog(container)) == true;
+            }
             if (success) await ref.read(tokenProvider.notifier).removeTokens(containerTokens);
             if (!context.mounted) return;
             Navigator.of(context).pop();

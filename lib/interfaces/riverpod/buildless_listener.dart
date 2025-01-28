@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_internal_member
+
 /*
  * privacyIDEA Authenticator
  *
@@ -18,17 +20,14 @@
  * limitations under the License.
  */
 
-// ignore: invalid_use_of_internal_member
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../utils/logger.dart';
 
-// ignore: invalid_use_of_internal_member
 abstract class BuildlessListener<T extends BuildlessNotifier<S>, S> {
   final String listenerName;
-  // ignore: invalid_use_of_internal_member
   final NotifierProviderImpl<T, S> provider;
   final void Function(S? previous, S next) onNewState;
   const BuildlessListener({required this.provider, required this.onNewState, required this.listenerName});

@@ -462,7 +462,7 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
       required this.hashAlgorithm,
       required this.sslVerify,
       this.serverName = 'privacyIDEA',
-      this.finalizationState = FinalizationState.completed,
+      this.finalizationState = FinalizationState.notStarted,
       this.policies = ContainerPolicies.defaultSetting,
       this.addDeviceInfos,
       this.passphraseQuestion,

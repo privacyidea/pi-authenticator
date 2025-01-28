@@ -43,7 +43,7 @@ class ContainerWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => isPreview
-      ? ContainerWidgetTile(container: container)
+      ? ContainerWidgetTile(container: container, isPreview: isPreview)
       : ClipRRect(
           child: PiSliable(
             groupTag: groupTag,

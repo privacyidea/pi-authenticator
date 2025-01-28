@@ -176,9 +176,6 @@
   "@container": {
     "description": "Title for the container view."
   },
-  "@containerAddDialogTitle": {
-    "description": "Title of the add container Dialog"
-  },
   "@containerAlreadyExists": {
     "description": "Title of the dialog that tells the user that the container already exists."
   },
@@ -205,6 +202,15 @@
   },
   "@containerSerial": {
     "description": "Title of the container serial field."
+  },
+  "@containerSyncDialogNewTokens": {
+    "description": "The title of the part of the dialog that tells the user that new tokens were added."
+  },
+  "@containerSyncDialogRemovedTokens": {
+    "description": "The title of the part of the dialog that tells the user that tokens were removed."
+  },
+  "@containerSyncDialogTitle": {
+    "description": "Title of the add container Dialog"
   },
   "@containerSyncUrl": {
     "description": "Title of the container sync url field."
@@ -551,6 +557,9 @@
   },
   "@folderName": {
     "description": "Label for the input field where the folder name should be entered."
+  },
+  "@forceDeleteDialogContent": {
+    "description": "Content of the dialog that tells the user that the server was unreachable and asks if the user wants to delete the container anyway."
   },
   "@generatingPhonePart": {
     "description": "Title of a dialog telling the user that the phone part gets generated right now."
@@ -1291,6 +1300,9 @@
   "@sendErrorLogDescription": {
     "description": "Explanation for the user what he will send."
   },
+  "@sendOtps": {
+    "description": "Text the the Button to send OTPs to the server."
+  },
   "@sendPushRequestResponseFailed": {
     "description": "Error message when the response to a push request could not be sent."
   },
@@ -1302,6 +1314,21 @@
   },
   "@settingsGroupGeneral": {
     "description": "Title for the general settings group."
+  },
+  "@showContainerUrlDialogContent": {
+    "description": "Dialog content to show the container URL.",
+    "placeholders": {
+      "url": {
+        "description": "The URL of the container.",
+        "example": "https://example.com/"
+      }
+    }
+  },
+  "@showContainerUrlDialogSslWarning": {
+    "description": "Warning message that the SSL is deactivated."
+  },
+  "@showContainerUrlDialogTitle": {
+    "description": "Title of the dialog that shows the server url."
   },
   "@showDetails": {
     "description": "Button to show details."
@@ -1557,7 +1584,6 @@
   "confirmation": "Potvrzení",
   "connectionFailed": "Připojení se nezdařilo.",
   "container": "Kontejner",
-  "containerAddDialogTitle": "Přidat kontejner",
   "containerAlreadyExists": "Kontejner již existuje",
   "containerDeleteCorrespondingTokenDialogContent": "Chcete odstranit i odpovídající tokeny?",
   "containerDetails": "Podrobnosti o kontejneru",
@@ -1565,6 +1591,9 @@
   "containerRolloutSendDeviceInfoDialogContent": "Chcete vydavateli kontejneru sdělit, jaké zařízení používáte? To může být později užitečné, pokud budete mít problémy s druhým faktorem.",
   "containerRolloutSendDeviceInfoDialogTitle": "Odeslání informací o zařízení",
   "containerSerial": "Sériový kontejner",
+  "containerSyncDialogNewTokens": "Tokeny přidané synchronizací kontejneru:",
+  "containerSyncDialogRemovedTokens": " Tokeny odstraněny synchronizací kontejneru:",
+  "containerSyncDialogTitle": "Synchronizace kontejnerů",
   "containerSyncUrl": "Url pro synchronizaci kontejnerů",
   "containerTransferDeleteTokensButtonText": "Odebrat z tohoto zařízení",
   "containerTransferDeleteTokensSuccessMessage": " Kontejner a související tokeny byly úspěšně odstraněny z tohoto zařízení.",
@@ -1658,6 +1687,7 @@
   "finalizeContainerFailed": "Finalizace kontejneru se nezdařila",
   "firebaseToken": "Token Firebase",
   "folderName": "Název složky",
+  "forceDeleteDialogContent": "Server nebyl dosažitelný. Opravdu chcete kontejner odstranit?",
   "generatingPhonePart": "Generování klientské části",
   "gitHubButton": "Tato aplikace má otevřený zdrojový kód\nNavštivte nás na GitHub",
   "goToSettingsButton": "Otevřít nastavení",
@@ -1671,7 +1701,7 @@
   "hidePushTokens": "Skrýt push tokeny",
   "hidePushTokensDescription": "Skrýt push tokeny ze seznamu tokenů. Tím se tokeny neodstraní a budou stále viditelné na samostatné obrazovce.",
   "httpStatus": "{httpCode, select, 100{{httpCode}: Pokračovat} 101{{httpCode}: Přepínání protokolů} 102{{httpCode}: Zpracování} 103{{httpCode}: Early Hints} 104{{httpCode}: Obnovení spojení partnerem} 111{{httpCode}: Odmítnutí spojení} 200{{httpCode}: OK} 201{{httpCode}: Created} 202{{httpCode}: Accepted} 203{{httpCode}: Neautoritativní informace} 204{{httpCode}: Žádný obsah} 205{{httpCode}: Obnovit obsah} 206{{httpCode}: Částečný obsah} 207{{httpCode}: Multi-Status} 208{{httpCode}: Already Reported} 300{{httpCode}: Více možností} 301{{httpCode}: Přesunuto trvale} 302{{httpCode}: Nalezeno} 303{{httpCode}: Viz ostatní} 304{{httpCode}: Nezměněno} 305{{httpCode}: Použít proxy} 307{{httpCode}: Dočasné přesměrování} 308{{httpCode}: Trvalé přesměrování} 400{{httpCode}: Špatný požadavek} 401{{httpCode}: Niet geautoriseerd} 402{{httpCode}: Požadovaná platba} 403{{httpCode}: Forbidden} 404{{httpCode}: Not Found} 405{{httpCode}: Metoda není povolena} 406{{httpCode}: Not Acceptable} 407{{httpCode}: Proxy Authentication Required} 408{{httpCode}: Timeout požadavku} 409{{httpCode}: Conflict} 410{{httpCode}: Gone} 411{{httpCode}: Požadovaná délka} 412{{httpCode}: Předběžná podmínka se nezdařila} 413{{httpCode}: Payload Too Large} 414{{httpCode}: Request-URI Too Long} 415{{httpCode}: Unsupported Media Type} 416{{httpCode}: Požadovaný rozsah není splnitelný} 417{{httpCode}: Expectation Failed} 418{{httpCode}: I'm a teapot} 420{{httpCode}: Zlepšete svůj klid} 421{{httpCode}: Chybně směrovaný požadavek} 422{{httpCode}: Nezpracovatelná entita} 423{{httpCode}: Zamčeno}  424{{httpCode}: Neúspěšná závislost} 426{{httpCode}: Vyžadována aktualizace} 428{{httpCode}: Precondition Required} 429{{httpCode}: Příliš mnoho požadavků} 431{{httpCode}: Příliš velká pole hlavičky požadavku} 444{{httpCode}: Spojení uzavřeno bez odpovědi} 451{{httpCode}: Nedostupné z právních důvodů} 499{{httpCode}: Klient ukončil požadavek} 500{{httpCode}: Vnitřní chyba serveru} 501{{httpCode}: Not Implemented} 502{{httpCode}: Špatná brána} 503{{httpCode}: Service Unavailable} 504{{httpCode}: Gateway Timeout} 505{{httpCode}: HTTP Version Not Supported} 506{{httpCode}: Variant Also Negotiates} 507{{httpCode}: Nedostatečné úložiště} 508{{httpCode}: Detekována smyčka} 510{{httpCode}: Not Extended} 511{{httpCode}: Vyžadováno síťové ověření} 520{{httpCode}: Neznámá chyba} 521{{httpCode}: Webový server je mimo provoz} 522{{httpCode}: Connection Timed Out} 523{{httpCode}: Origin Is Unreachable} 524{{httpCode}: A Timeout Occurred} 525{{httpCode}: Handshake selhal} 526{{httpCode}: Invalid SSL Certificate} 527{{httpCode}: Railgun Error} 528{{httpCode}: Transport Error} 529{{httpCode}: Služba je přetížená} 530{{httpCode}: Stránka je zamrzlá}  599{{httpCode}: Chybný časový limit síťového připojení} other{{httpCode}: Neznámá chyba}}",
-    "imageUrl": "URL obrázku",
+  "imageUrl": "URL obrázku",
   "importConflictToken": "{count, plural, zero{Není žádný konflikt s tokeny, které již existují.} one{Je konflikt s tokeny, které již existují.\nProsím, vyberte, který z nich chcete zachovat.} other{Je konflikt s tokeny, které již existují.\nProsím, vyberte, který z nich chcete zachovat.}}",
   "importExistingToken": "{count, plural, zero{Nebyl nalezen žádný token, který by se již v aplikaci nacházel.} one{Byl nalezen token, který již v aplikaci existuje.} other{{count} byly nalezeny tokeny, které se již v aplikaci nacházejí.}}",
   "importExportTokens": "Import/Exportovat žetony",
@@ -1840,10 +1870,14 @@
   "send": "Odeslat",
   "sendErrorDialogBody": "V aplikaci se vyskytla neznámá chyba. Informace uvedené níže mohou být odeslány vývojářům e-mailem pro vyřešení chyby v budoucnu.",
   "sendErrorLogDescription": "Vytvoří se připravený e-mail.\nObsahuje informace o aplikaci, chybě a zařízení.\nPřed odesláním můžete e-mail upravit.\nZde se můžete podívat, jak informace používáme:",
+  "sendOtps": "Odešlete OTP",
   "sendPushRequestResponseFailed": "Odpověď se nepodařilo odeslat.",
   "serverNotReachable": "Na server se nepodařilo dovolat.",
   "settings": "Nastavení",
   "settingsGroupGeneral": "Obecné informace",
+  "showContainerUrlDialogContent": "Kontejner se připojí k serveru na následující adrese URL: {url}",
+  "showContainerUrlDialogSslWarning": " Protokol SSL je vypnut, což představuje bezpečnostní riziko. Chcete pokračovat?",
+  "showContainerUrlDialogTitle": " Potvrďte url adresu serveru",
   "showDetails": "Zobrazit podrobnosti",
   "showErrorLog": "Zobrazit",
   "showPrivacyPolicy": "Zobrazit zásady ochrany osobních údajů",

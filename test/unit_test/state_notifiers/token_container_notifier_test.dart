@@ -64,9 +64,9 @@ TokenContainerState _buildFinalizedContainerState() => TokenContainerState(
           passphraseQuestion: null,
           policies: ContainerPolicies(
             rolloverAllowed: false,
-            initialTokenTransfer: false,
-            tokensDeletable: false,
-            unregisterAllowed: false,
+            initialTokenAssignment: false,
+            disabledTokenDeletion: true,
+            disabledUnregister: true,
           ),
         ),
       ],
@@ -76,9 +76,9 @@ void _testTokenContainerNotifier() {
   final ContainerFinalizationResponse containerFinalizationResponseExample = ContainerFinalizationResponse(
     policies: ContainerPolicies(
       rolloverAllowed: false,
-      initialTokenTransfer: false,
-      tokensDeletable: false,
-      unregisterAllowed: false,
+      initialTokenAssignment: false,
+      disabledTokenDeletion: true,
+      disabledUnregister: true,
     ),
   );
   group('Token Container Notifier Test', () {
@@ -568,7 +568,7 @@ void _testTokenContainerNotifier() {
       final mockContainerApi = MockTokenContainerApi();
       when(mockContainerApi.finalizeContainer(any, any)).thenAnswer(
         (_) async => ContainerFinalizationResponse(
-          policies: ContainerPolicies(initialTokenTransfer: true, rolloverAllowed: true, tokensDeletable: true, unregisterAllowed: true),
+          policies: ContainerPolicies(initialTokenAssignment: true, rolloverAllowed: true, disabledTokenDeletion: false, disabledUnregister: false),
         ),
       );
       when(mockContainerRepo.loadContainerState()).thenAnswer((_) => Future.value(containerRepoState));
@@ -653,35 +653,37 @@ void _testTokenContainerNotifier() {
         var containerRepoState = _buildFinalizedContainerState();
         final containerToSync = containerRepoState.containerList.first as TokenContainerFinalized;
         final mockContainerApi = MockTokenContainerApi();
-        final updatedTokens = <Token>[
-          HOTPToken(
-            id: 'ID01',
-            serial: "HOTPTOKEN01",
-            containerSerial: "CONTAINER01",
-            algorithm: Algorithms.SHA256,
-            digits: 6,
-            secret: "SECRET01",
-            counter: 8,
-          ),
-          TOTPToken(
-            id: "ID03",
-            serial: "TOTPTOKEN01",
-            period: 30,
-            algorithm: Algorithms.SHA256,
-            digits: 8,
-            secret: "SECRET03",
-          ),
-        ];
+        final updatedTokens = <Token>[];
         when(mockContainerApi.sync(any, any)).thenAnswer(
           (v) async => ContainerSyncUpdates(
             containerSerial: 'CONTAINER01',
-            updatedTokens: updatedTokens,
+            newTokens: [
+              TOTPToken(
+                id: "ID03",
+                serial: "TOTPTOKEN01",
+                period: 30,
+                algorithm: Algorithms.SHA256,
+                digits: 8,
+                secret: "SECRET03",
+              ),
+            ],
+            updatedTokens: [
+              HOTPToken(
+                id: 'ID01',
+                serial: "HOTPTOKEN01",
+                containerSerial: "CONTAINER01",
+                algorithm: Algorithms.SHA256,
+                digits: 6,
+                secret: "SECRET01",
+                counter: 8,
+              ),
+            ],
             deleteTokenSerials: ["HOTPTOKEN02"],
             newPolicies: ContainerPolicies(
               rolloverAllowed: true,
-              initialTokenTransfer: true,
-              tokensDeletable: true,
-              unregisterAllowed: true,
+              initialTokenAssignment: true,
+              disabledTokenDeletion: false,
+              disabledUnregister: false,
             ),
           ),
         );
@@ -766,9 +768,9 @@ void _testTokenContainerNotifier() {
         final expectedContainer = containerToSync.copyWith(
           policies: ContainerPolicies(
             rolloverAllowed: true,
-            initialTokenTransfer: true,
-            tokensDeletable: true,
-            unregisterAllowed: true,
+            initialTokenAssignment: true,
+            disabledTokenDeletion: false,
+            disabledUnregister: false,
           ),
         );
         verify(mockContainerApi.sync(any, any)).called(1);

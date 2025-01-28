@@ -139,9 +139,9 @@ void _testPrivacyIdeaContainerApi() {
         policies: withPolicies ??
             ContainerPolicies(
               rolloverAllowed: true,
-              initialTokenTransfer: true,
-              tokensDeletable: true,
-              unregisterAllowed: true,
+              initialTokenAssignment: true,
+              disabledTokenDeletion: false,
+              disabledUnregister: false,
             ),
         serverName: withServerName ?? 'privacyIDEA',
         ttl: withTtl ?? Duration(minutes: 10),
@@ -181,9 +181,9 @@ void _testPrivacyIdeaContainerApi() {
         policies: withPolicies ??
             ContainerPolicies(
               rolloverAllowed: true,
-              initialTokenTransfer: true,
-              tokensDeletable: true,
-              unregisterAllowed: true,
+              initialTokenAssignment: true,
+              disabledTokenDeletion: false,
+              disabledUnregister: false,
             ),
         syncState: withSyncState ?? SyncState.completed,
         serverName: withServerName ?? 'privacyIDEA',
@@ -266,9 +266,9 @@ void _testPrivacyIdeaContainerApi() {
       // Assert
       expect(policies, isA<ContainerPolicies>());
       expect(policies.rolloverAllowed, false);
-      expect(policies.initialTokenTransfer, false);
-      expect(policies.tokensDeletable, true);
-      expect(policies.unregisterAllowed, true);
+      expect(policies.initialTokenAssignment, false);
+      expect(policies.disabledTokenDeletion, false);
+      expect(policies.disabledUnregister, false);
     });
     test('getRolloverQrData', () async {
       // Arrange
@@ -450,10 +450,10 @@ void _testPrivacyIdeaContainerApi() {
         // Asserta
         expect(result, isNotNull);
         final newPolicies = result.newPolicies;
-        expect(newPolicies.initialTokenTransfer, false);
+        expect(newPolicies.initialTokenAssignment, false);
         expect(newPolicies.rolloverAllowed, false);
-        expect(newPolicies.tokensDeletable, true);
-        expect(newPolicies.unregisterAllowed, true);
+        expect(newPolicies.disabledTokenDeletion, false);
+        expect(newPolicies.disabledUnregister, false);
         final updatedTokens = result.updatedTokens;
         expect(updatedTokens.length, 2);
         final token0 = updatedTokens[0];
@@ -564,10 +564,10 @@ void _testPrivacyIdeaContainerApi() {
         // Asserta
         expect(result, isNotNull);
         final newPolicies = result.newPolicies;
-        expect(newPolicies.initialTokenTransfer, false);
+        expect(newPolicies.initialTokenAssignment, false);
         expect(newPolicies.rolloverAllowed, false);
-        expect(newPolicies.tokensDeletable, true);
-        expect(newPolicies.unregisterAllowed, true);
+        expect(newPolicies.disabledTokenDeletion, false);
+        expect(newPolicies.disabledUnregister, false);
         final updatedTokens = result.updatedTokens;
         final deleteTokenSerials = result.deleteTokenSerials;
         expect(deleteTokenSerials.length, 0);
@@ -689,10 +689,10 @@ void _testPrivacyIdeaContainerApi() {
         // Asserta
         expect(result, isNotNull);
         final newPolicies = result.newPolicies;
-        expect(newPolicies.initialTokenTransfer, false);
+        expect(newPolicies.initialTokenAssignment, false);
         expect(newPolicies.rolloverAllowed, false);
-        expect(newPolicies.tokensDeletable, true);
-        expect(newPolicies.unregisterAllowed, true);
+        expect(newPolicies.disabledTokenDeletion, false);
+        expect(newPolicies.disabledUnregister, false);
         final updatedTokens = result.updatedTokens;
         final deleteTokenSerials = result.deleteTokenSerials;
         expect(deleteTokenSerials.length, 0);
@@ -815,10 +815,10 @@ void _testPrivacyIdeaContainerApi() {
         // Asserta
         expect(result, isNotNull);
         final newPolicies = result.newPolicies;
-        expect(newPolicies.initialTokenTransfer, false);
+        expect(newPolicies.initialTokenAssignment, false);
         expect(newPolicies.rolloverAllowed, false);
-        expect(newPolicies.tokensDeletable, true);
-        expect(newPolicies.unregisterAllowed, true);
+        expect(newPolicies.disabledTokenDeletion, false);
+        expect(newPolicies.disabledUnregister, false);
         final updatedTokens = result.updatedTokens;
         final deleteTokenSerials = result.deleteTokenSerials;
         expect(deleteTokenSerials.length, 0);
@@ -934,10 +934,10 @@ void _testPrivacyIdeaContainerApi() {
         // Asserta
         expect(result, isNotNull);
         final newPolicies = result.newPolicies;
-        expect(newPolicies.initialTokenTransfer, false);
+        expect(newPolicies.initialTokenAssignment, false);
         expect(newPolicies.rolloverAllowed, false);
-        expect(newPolicies.tokensDeletable, true);
-        expect(newPolicies.unregisterAllowed, true);
+        expect(newPolicies.disabledTokenDeletion, false);
+        expect(newPolicies.disabledUnregister, false);
         final updatedTokens = result.updatedTokens;
         final deleteTokenSerials = result.deleteTokenSerials;
         expect(deleteTokenSerials.length, 0);
@@ -962,9 +962,9 @@ void _testPrivacyIdeaContainerApi() {
       final tokenContainer = getFinalizedTokenContainer(
         withPolicies: ContainerPolicies(
           rolloverAllowed: false,
-          initialTokenTransfer: true,
-          tokensDeletable: true,
-          unregisterAllowed: true,
+          initialTokenAssignment: true,
+          disabledTokenDeletion: false,
+          disabledUnregister: false,
         ),
       );
       // Act & Assert
@@ -977,9 +977,9 @@ void _testPrivacyIdeaContainerApi() {
       final tokenContainer = getFinalizedTokenContainer(
         withPolicies: ContainerPolicies(
           rolloverAllowed: true,
-          initialTokenTransfer: true,
-          tokensDeletable: true,
-          unregisterAllowed: false,
+          initialTokenAssignment: true,
+          disabledTokenDeletion: false,
+          disabledUnregister: true,
         ),
       );
       // Act & Assert

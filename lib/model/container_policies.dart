@@ -27,25 +27,25 @@ part 'container_policies.g.dart';
 
 @Freezed(toStringOverride: false, addImplicitFinal: true, toJson: true, fromJson: true)
 class ContainerPolicies with _$ContainerPolicies {
-  static const UNREGISTER_ALLOWED = 'client_container_unregister';
-  static const TOKENS_DELETABLE = 'client_token_deletable';
+  static const DISABLED_UNREGISTER = 'disable_client_container_unregister';
+  static const DISABLED_TOKEN_DELETION = 'disable_client_token_deletion';
   static const ROLLOVER_ALLOWED = 'container_client_rollover';
-  static const INITIAL_TOKEN_TRANSFER = 'container_initial_token_transfer';
+  static const INITIAL_TOKEN_ASSIGNMENT = 'initially_add_tokens_to_container';
 
   const ContainerPolicies._();
 
   const factory ContainerPolicies({
     required bool rolloverAllowed,
-    required bool initialTokenTransfer,
-    required bool tokensDeletable,
-    required bool unregisterAllowed,
+    required bool initialTokenAssignment,
+    required bool disabledTokenDeletion,
+    required bool disabledUnregister,
   }) = _ContainerPolicies;
 
   static const ContainerPolicies defaultSetting = ContainerPolicies(
     rolloverAllowed: false,
-    initialTokenTransfer: false,
-    tokensDeletable: false,
-    unregisterAllowed: false,
+    initialTokenAssignment: false,
+    disabledTokenDeletion: false,
+    disabledUnregister: false,
   );
 
   static ContainerPolicies fromUriMap(Map<String, dynamic> map) {
@@ -53,25 +53,25 @@ class ContainerPolicies with _$ContainerPolicies {
       map: map,
       validators: {
         ROLLOVER_ALLOWED: boolValidator,
-        INITIAL_TOKEN_TRANSFER: boolValidator,
-        TOKENS_DELETABLE: boolValidator,
-        UNREGISTER_ALLOWED: boolValidator,
+        INITIAL_TOKEN_ASSIGNMENT: boolValidator,
+        DISABLED_TOKEN_DELETION: boolValidator,
+        DISABLED_UNREGISTER: boolValidator,
       },
       name: 'ContainerPolicies',
     );
     return ContainerPolicies(
       rolloverAllowed: validated[ROLLOVER_ALLOWED]!,
-      initialTokenTransfer: validated[INITIAL_TOKEN_TRANSFER]!,
-      tokensDeletable: validated[TOKENS_DELETABLE]!,
-      unregisterAllowed: validated[UNREGISTER_ALLOWED]!,
+      initialTokenAssignment: validated[INITIAL_TOKEN_ASSIGNMENT]!,
+      disabledTokenDeletion: validated[DISABLED_TOKEN_DELETION]!,
+      disabledUnregister: validated[DISABLED_UNREGISTER]!,
     );
   }
 
   Map<String, dynamic> toUriMap() => {
         ROLLOVER_ALLOWED: rolloverAllowed,
-        INITIAL_TOKEN_TRANSFER: initialTokenTransfer,
-        TOKENS_DELETABLE: tokensDeletable,
-        UNREGISTER_ALLOWED: unregisterAllowed,
+        INITIAL_TOKEN_ASSIGNMENT: initialTokenAssignment,
+        DISABLED_TOKEN_DELETION: disabledTokenDeletion,
+        DISABLED_UNREGISTER: disabledUnregister,
       };
 
   factory ContainerPolicies.fromJson(Map<String, dynamic> json) => _$ContainerPoliciesFromJson(json);

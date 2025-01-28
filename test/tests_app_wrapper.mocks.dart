@@ -796,8 +796,9 @@ class MockTokenContainerApi extends _i1.Mock implements _i23.TokenContainerApi {
   @override
   _i14.Future<_i23.ContainerSyncUpdates?> sync(
     _i22.TokenContainerFinalized? container,
-    _i25.TokenState? tokenState,
-  ) =>
+    _i25.TokenState? tokenState, {
+    bool? isInitSync = false,
+  }) =>
       (super.noSuchMethod(
         Invocation.method(
           #sync,
@@ -805,6 +806,7 @@ class MockTokenContainerApi extends _i1.Mock implements _i23.TokenContainerApi {
             container,
             tokenState,
           ],
+          {#isInitSync: isInitSync},
         ),
         returnValue: _i14.Future<_i23.ContainerSyncUpdates?>.value(),
         returnValueForMissingStub:

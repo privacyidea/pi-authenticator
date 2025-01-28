@@ -9,7 +9,6 @@ import '../utils/home_widget_utils.dart';
 import '../utils/logger.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/deeplink_notifier.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/push_request_provider.dart';
-import '../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../utils/riverpod/state_listeners/home_widget_deep_link_listener.dart';
@@ -78,8 +77,6 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    final container = ref.watch(tokenContainerProvider).value?.containerList ?? [];
-    Logger.debug('Credentials: $container');
     return SingleTouchRecognizer(
       child: StateObserver(
         stateNotifierProviderListeners: const [],

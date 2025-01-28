@@ -24,7 +24,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../model/enums/introduction.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
-import '../../../widgets/button_widgets/countdown_button.dart';
+import '../../../widgets/button_widgets/delayed_elevated_button.dart';
 import '../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../import_tokens_view/import_tokens_view.dart';
 import '../settings_view_widgets/settings_group.dart';
@@ -91,9 +91,9 @@ class _SettingsGroupImportExportTokensState extends ConsumerState<SettingsGroupI
             onPressed: () => Navigator.of(context).pop(false),
             child: Text(appLocalizations.cancel),
           ),
-          CountdownButton(
+          DelayedElevatedButton(
             onPressed: () => Navigator.of(context).pop(true),
-            countdownSeconds: 10,
+            delaySeconds: 10,
             child: Text(appLocalizations.ok),
           ),
         ],

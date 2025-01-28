@@ -22,7 +22,7 @@ _$TokenContainerUnfinalizedImpl _$$TokenContainerUnfinalizedImplFromJson(
       serverName: json['serverName'] as String? ?? 'privacyIDEA',
       finalizationState: $enumDecodeNullable(
               _$FinalizationStateEnumMap, json['finalizationState']) ??
-          FinalizationState.completed,
+          FinalizationState.notStarted,
       policies: json['policies'] == null
           ? ContainerPolicies.defaultSetting
           : ContainerPolicies.fromJson(

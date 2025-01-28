@@ -112,6 +112,7 @@ class PushToken extends Token {
     super.isLocked,
     super.isHidden,
     super.origin,
+    super.isOffline,
   })  : isRolledOut = isRolledOut ?? false,
         sslVerify = sslVerify ?? false,
         rolloutState = rolloutState ?? PushTokenRollOutState.rolloutNotStarted,
@@ -169,6 +170,7 @@ class PushToken extends Token {
     int? sortIndex,
     int? Function()? folderId,
     TokenOriginData? origin,
+    bool? isOffline,
   }) {
     return PushToken(
       label: label ?? this.label,
@@ -194,6 +196,7 @@ class PushToken extends Token {
       sortIndex: sortIndex ?? this.sortIndex,
       folderId: folderId != null ? folderId() : this.folderId,
       origin: origin ?? this.origin,
+      isOffline: isOffline ?? this.isOffline,
     );
   }
 

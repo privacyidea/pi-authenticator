@@ -66,14 +66,14 @@ class FirebaseUtils {
     } catch (error, stackTrace) {
       if (error is PlatformException) {
         if (error.code == FIREBASE_TOKEN_ERROR_CODE) return; // ignore
-        showStatusMessage(
+        showErrorStatusMessage(
           message: (l) => l.pushInitializeUnavailable,
           details: (_) => '${error.code}: ${error.message ?? 'no error message'}',
         );
       }
       if (error is FirebaseException) {
         if (error.code == FIREBASE_TOKEN_ERROR_CODE) return; // ignore
-        showStatusMessage(
+        showErrorStatusMessage(
           message: (l) => l.pushInitializeUnavailable,
           details: (_) => '${error.code}: ${error.message ?? 'no error message'}',
         );

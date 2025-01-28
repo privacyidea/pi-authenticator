@@ -134,6 +134,6 @@ class _TransferDeleteContainerDialogState extends ConsumerState<TransferDeleteCo
     await ref.read(tokenContainerProvider.notifier).deleteContainer(widget.container);
     if (!context.mounted) return;
     Navigator.of(context).popUntil((route) => route.isFirst);
-    showStatusMessage(message: (l) => l.containerTransferDeleteTokensSuccessMessage);
+    showSuccessStatusMessage(message: (l) => l.containerTransferDeleteTokensSuccessMessage);
   }
 }

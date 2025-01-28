@@ -31,6 +31,8 @@ void _testThemeCustomization() {
       navigationBarIconColor: Color(0xFF000010),
       qrButtonBackgroundColor: Color(0xFF000011),
       qrButtonIconColor: Color(0xFF000012),
+      warningColor: Color(0xFF000013),
+      successColor: Color(0xFF000014),
     );
     test('constructor', () {
       // Assert
@@ -54,6 +56,8 @@ void _testThemeCustomization() {
       expect(customization.navigationBarIconColor, equals(const Color(0xFF000010)));
       expect(customization.qrButtonBackgroundColor, equals(const Color(0xFF000011)));
       expect(customization.qrButtonIconColor, equals(const Color(0xFF000012)));
+      expect(customization.warningColor, equals(const Color(0xFF000013)));
+      expect(customization.successColor, equals(const Color(0xFF000014)));
     });
     test('copyWith', () {
       // Act
@@ -78,6 +82,8 @@ void _testThemeCustomization() {
         navigationBarIconColor: () => const Color(0xFFFFFFEF),
         qrButtonBackgroundColor: () => const Color(0xFFFFFFEE),
         qrButtonIconColor: () => const Color(0xFFFFFFED),
+        warningColor: const Color(0xFFFFFFEC),
+        successColor: const Color(0xFFFFFFEB),
       );
       // Assert
       expect(newCustomization.brightness, equals(Brightness.light));
@@ -100,6 +106,8 @@ void _testThemeCustomization() {
       expect(newCustomization.navigationBarIconColor, equals(const Color(0xFFFFFFEF)));
       expect(newCustomization.qrButtonBackgroundColor, equals(const Color(0xFFFFFFEE)));
       expect(newCustomization.qrButtonIconColor, equals(const Color(0xFFFFFFED)));
+      expect(newCustomization.warningColor, equals(const Color(0xFFFFFFEC)));
+      expect(newCustomization.successColor, equals(const Color(0xFFFFFFEB)));
     });
     group('default themes', () {
       test('defaultLightWith', () {
@@ -124,6 +132,8 @@ void _testThemeCustomization() {
           navigationBarIconColor: Color(0xFFFFFFEF),
           qrButtonBackgroundColor: Color(0xFFFFFFEE),
           qrButtonIconColor: Color(0xFFFFFFED),
+          warningColor: Color(0xFFFFFFEC),
+          successColor: Color(0xFFFFFFEB),
         );
         // Assert
         expect(newCustomization.brightness, equals(Brightness.light));
@@ -146,6 +156,8 @@ void _testThemeCustomization() {
         expect(newCustomization.navigationBarIconColor, equals(const Color(0xFFFFFFEF)));
         expect(newCustomization.qrButtonBackgroundColor, equals(const Color(0xFFFFFFEE)));
         expect(newCustomization.qrButtonIconColor, equals(const Color(0xFFFFFFED)));
+        expect(newCustomization.warningColor, equals(const Color(0xFFFFFFEC)));
+        expect(newCustomization.successColor, equals(const Color(0xFFFFFFEB)));
       });
       test('defaultDarkWith', () {
         // Act
@@ -169,6 +181,8 @@ void _testThemeCustomization() {
           navigationBarIconColor: Color(0xFFFFFFEF),
           qrButtonBackgroundColor: Color(0xFFFFFFEE),
           qrButtonIconColor: Color(0xFFFFFFED),
+          warningColor: Color(0xFFFFFFEC),
+          successColor: Color(0xFFFFFFEB),
         );
         // Assert
         expect(newCustomization.brightness, equals(Brightness.dark));
@@ -191,6 +205,8 @@ void _testThemeCustomization() {
         expect(newCustomization.navigationBarIconColor, equals(const Color(0xFFFFFFEF)));
         expect(newCustomization.qrButtonBackgroundColor, equals(const Color(0xFFFFFFEE)));
         expect(newCustomization.qrButtonIconColor, equals(const Color(0xFFFFFFED)));
+        expect(newCustomization.warningColor, equals(const Color(0xFFFFFFEC)));
+        expect(newCustomization.successColor, equals(const Color(0xFFFFFFEB)));
       });
     });
     group('serialization', () {
@@ -217,6 +233,8 @@ void _testThemeCustomization() {
           '_navigationBarIconColor': 0xFFFFFFEF,
           '_qrButtonBackgroundColor': 0xFFFFFFEE,
           '_qrButtonIconColor': 0xFFFFFFED,
+          'warningColor': 0xFFFFFFEC,
+          'successColor': 0xFFFFFFEB,
         });
         // Assert
         expect(newCustomization.brightness, equals(Brightness.light));
@@ -239,6 +257,8 @@ void _testThemeCustomization() {
         expect(newCustomization.navigationBarIconColor, equals(const Color(0xFFFFFFEF)));
         expect(newCustomization.qrButtonBackgroundColor, equals(const Color(0xFFFFFFEE)));
         expect(newCustomization.qrButtonIconColor, equals(const Color(0xFFFFFFED)));
+        expect(newCustomization.warningColor, equals(const Color(0xFFFFFFEC)));
+        expect(newCustomization.successColor, equals(const Color(0xFFFFFFEB)));
       });
       test('toJson', () {
         // Act
@@ -264,6 +284,8 @@ void _testThemeCustomization() {
         expect(json['_navigationBarIconColor'], equals(0xFF000010));
         expect(json['_qrButtonBackgroundColor'], equals(0xFF000011));
         expect(json['_qrButtonIconColor'], equals(0xFF000012));
+        expect(json['warningColor'], equals(0xFF000013));
+        expect(json['successColor'], equals(0xFF000014));
       });
     });
   });

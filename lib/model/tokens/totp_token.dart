@@ -83,6 +83,7 @@ class TOTPToken extends OTPToken {
     super.origin,
     super.label = '',
     super.issuer = '',
+    super.isOffline,
   })  : period = period < 1 ? 30 : period, // period must be greater than 0 otherwise IntegerDivisionByZeroException is thrown in OTP.generateTOTPCodeString
         super(type: type ?? tokenType);
 
@@ -117,6 +118,7 @@ class TOTPToken extends OTPToken {
     int? sortIndex,
     int? Function()? folderId,
     TokenOriginData? origin,
+    bool? isOffline,
   }) {
     return TOTPToken(
       serial: serial ?? this.serial,
@@ -136,6 +138,7 @@ class TOTPToken extends OTPToken {
       sortIndex: sortIndex ?? this.sortIndex,
       folderId: folderId != null ? folderId() : this.folderId,
       origin: origin ?? this.origin,
+      isOffline: isOffline ?? this.isOffline,
     );
   }
 

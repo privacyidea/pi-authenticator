@@ -60,6 +60,7 @@ class SteamToken extends TOTPToken {
     super.origin,
     super.label = '',
     super.issuer = '',
+    super.isOffline,
   }) : super(
           type: type ?? tokenType,
           period: 30,
@@ -86,6 +87,7 @@ class SteamToken extends TOTPToken {
     int? period, // unused steam tokens always have 30 seconds period
     int? digits, // unused steam tokens always have 5 digits
     Algorithms? algorithm, // unused steam tokens always have SHA1 algorithm
+    bool? isOffline,
   }) {
     return SteamToken(
       label: label ?? this.label,
@@ -101,6 +103,7 @@ class SteamToken extends TOTPToken {
       sortIndex: sortIndex ?? this.sortIndex,
       folderId: folderId != null ? folderId() : this.folderId,
       origin: origin ?? this.origin,
+      isOffline: isOffline ?? this.isOffline,
     );
   }
 

@@ -26,6 +26,7 @@ import 'theme_extentions/action_theme.dart';
 import 'theme_extentions/elevated_delete_button_theme.dart';
 import 'theme_extentions/extended_text_theme.dart';
 import 'theme_extentions/push_request_theme.dart';
+import 'theme_extentions/status_colors.dart';
 
 class ThemeCustomization {
   static const ThemeCustomization defaultLightTheme = ThemeCustomization.defaultLightWith();
@@ -46,6 +47,8 @@ class ThemeCustomization {
     required this.disabledColor,
     required this.tileIconColor,
     required this.navigationBarColor,
+    required this.warningColor,
+    required this.successColor,
     Color? pushAuthRequestAcceptColor,
     Color? pushAuthRequestDeclineColor,
     Color? actionButtonsForegroundColor,
@@ -77,6 +80,8 @@ class ThemeCustomization {
     Color? disabledColor,
     Color? tileIconColor,
     Color? navigationBarColor,
+    Color? warningColor,
+    Color? successColor,
     // From here on the colors have a default value based on another given color so they can be null
     Color? pushAuthRequestAcceptColor, // Default: primaryColor
     Color? pushAuthRequestDeclineColor, // Default: deleteColor
@@ -100,6 +105,8 @@ class ThemeCustomization {
         disabledColor = disabledColor ?? const Color(0xffAAAAAA),
         tileIconColor = tileIconColor ?? const Color(0xff757575),
         navigationBarColor = navigationBarColor ?? const Color(0xFFFFFFFF),
+        warningColor = warningColor ?? const Color(0xFFFFB833),
+        successColor = successColor ?? const Color(0xFF4CAF50),
         // From here on the colors have a default value based on another given color so they can be null
         _pushAuthRequestAcceptColor = pushAuthRequestAcceptColor,
         _pushAuthRequestDeclineColor = pushAuthRequestDeclineColor,
@@ -124,6 +131,8 @@ class ThemeCustomization {
     Color? exportColor,
     Color? tileIconColor,
     Color? navigationBarColor,
+    Color? warningColor,
+    Color? successColor,
     // From here on the colors have a default value based on another given color so they can be null
     Color? pushAuthRequestAcceptColor, // Default: primaryColor
     Color? pushAuthRequestDeclineColor, // Default: deleteColor
@@ -147,6 +156,8 @@ class ThemeCustomization {
         disabledColor = disabledColor ?? const Color(0x4C303030),
         tileIconColor = tileIconColor ?? const Color(0xffF5F5F5),
         navigationBarColor = navigationBarColor ?? const Color(0xFF282828),
+        warningColor = warningColor ?? const Color(0xFFFFB833),
+        successColor = successColor ?? const Color(0xFF4CAF50),
         // From here on the colors have a default value based on another given color so they can be null
         _pushAuthRequestAcceptColor = pushAuthRequestAcceptColor,
         _pushAuthRequestDeclineColor = pushAuthRequestDeclineColor,
@@ -166,6 +177,8 @@ class ThemeCustomization {
   final Color backgroundColor;
   final Color foregroundColor;
   final Color shadowColor;
+  final Color warningColor;
+  final Color successColor;
 
   // Push Request colors
   final Color? _pushAuthRequestAcceptColor;
@@ -213,6 +226,8 @@ class ThemeCustomization {
     Color? disabledColor,
     Color? tileIconColor,
     Color? navigationBarColor,
+    Color? warningColor,
+    Color? successColor,
     // From here on the colors have a default value based on another given color so they can be null
     Color? Function()? pushAuthRequestAcceptColor, // Default: primaryColor
     Color? Function()? pushAuthRequestDeclineColor, // Default: deleteColor
@@ -238,6 +253,8 @@ class ThemeCustomization {
         disabledColor: disabledColor ?? this.disabledColor,
         tileIconColor: tileIconColor ?? this.tileIconColor,
         navigationBarColor: navigationBarColor ?? this.navigationBarColor,
+        warningColor: warningColor ?? this.warningColor,
+        successColor: successColor ?? this.successColor,
         // From here on the colors have a default value based on another given color so they can be null
         pushAuthRequestAcceptColor: pushAuthRequestAcceptColor != null ? pushAuthRequestAcceptColor() : _pushAuthRequestAcceptColor,
         pushAuthRequestDeclineColor: pushAuthRequestDeclineColor != null ? pushAuthRequestDeclineColor() : _pushAuthRequestDeclineColor,
@@ -270,6 +287,8 @@ class ThemeCustomization {
         disabledColor: json['disabledColor'] != null ? Color(json['disabledColor'] as int) : null,
         tileIconColor: json['tileIconColor'] != null ? Color(json['tileIconColor'] as int) : null,
         navigationBarColor: json['navigationBarColor'] != null ? Color(json['navigationBarColor'] as int) : null,
+        warningColor: json['warningColor'] != null ? Color(json['warningColor'] as int) : null,
+        successColor: json['successColor'] != null ? Color(json['successColor'] as int) : null,
         pushAuthRequestAcceptColor: json['_pushAuthRequestAcceptColor'] != null ? Color(json['_pushAuthRequestAcceptColor'] as int) : null,
         pushAuthRequestDeclineColor: json['_pushAuthRequestDeclineColor'] != null ? Color(json['_pushAuthRequestDeclineColor'] as int) : null,
         actionButtonsForegroundColor: json['_actionButtonsForegroundColor'] != null ? Color(json['_actionButtonsForegroundColor'] as int) : null,
@@ -295,6 +314,8 @@ class ThemeCustomization {
         disabledColor: json['disabledColor'] != null ? Color(json['disabledColor'] as int) : null,
         tileIconColor: json['tileIconColor'] != null ? Color(json['tileIconColor'] as int) : null,
         navigationBarColor: json['navigationBarColor'] != null ? Color(json['navigationBarColor'] as int) : null,
+        warningColor: json['warningColor'] != null ? Color(json['warningColor'] as int) : null,
+        successColor: json['successColor'] != null ? Color(json['successColor'] as int) : null,
         pushAuthRequestAcceptColor: json['_pushAuthRequestAcceptColor'] != null ? Color(json['_pushAuthRequestAcceptColor'] as int) : null,
         pushAuthRequestDeclineColor: json['_pushAuthRequestDeclineColor'] != null ? Color(json['_pushAuthRequestDeclineColor'] as int) : null,
         actionButtonsForegroundColor: json['_actionButtonsForegroundColor'] != null ? Color(json['_actionButtonsForegroundColor'] as int) : null,
@@ -323,6 +344,8 @@ class ThemeCustomization {
         'disabledColor': disabledColor.value,
         'tileIconColor': tileIconColor.value,
         'navigationBarColor': navigationBarColor.value,
+        'warningColor': warningColor.value,
+        'successColor': successColor.value,
         '_pushAuthRequestAcceptColor': _pushAuthRequestAcceptColor?.value,
         '_actionButtonsForegroundColor': _actionButtonsForegroundColor?.value,
         '_tilePrimaryColor': _tilePrimaryColor?.value,
@@ -535,6 +558,11 @@ class ThemeCustomization {
               acceptColor: pushAuthRequestAcceptColor,
               declineColor: pushAuthRequestDeclineColor,
             ),
+            StatusColors(
+              error: deleteColor,
+              warning: warningColor,
+              success: successColor,
+            ),
           ]);
 
   @override
@@ -553,6 +581,8 @@ class ThemeCustomization {
       'disabledColor: $disabledColor, '
       'tileIconColor: $tileIconColor, '
       'navigationBarColor: $navigationBarColor, '
+      'warningColor: $warningColor, '
+      'successColor: $successColor, '
       'actionButtonsForegroundColor: $actionButtonsForegroundColor, '
       '_actionButtonsForegroundColor: $_actionButtonsForegroundColor, '
       'tilePrimaryColor: $tilePrimaryColor, '
@@ -584,11 +614,13 @@ class ThemeCustomization {
         other.lockColor == lockColor &&
         other.exportColor == exportColor &&
         other.disabledColor == disabledColor &&
+        other.tileIconColor == tileIconColor &&
+        other.navigationBarColor == navigationBarColor &&
+        other.warningColor == warningColor &&
+        other.successColor == successColor &&
         other.actionButtonsForegroundColor == actionButtonsForegroundColor &&
         other.tilePrimaryColor == tilePrimaryColor &&
-        other.tileIconColor == tileIconColor &&
         other.tileSubtitleColor == tileSubtitleColor &&
-        other.navigationBarColor == navigationBarColor &&
         other.navigationBarIconColor == navigationBarIconColor &&
         other.qrButtonBackgroundColor == qrButtonBackgroundColor &&
         other.qrButtonIconColor == qrButtonIconColor;
@@ -608,11 +640,13 @@ class ThemeCustomization {
         lockColor,
         exportColor,
         disabledColor,
+        tileIconColor,
+        navigationBarColor,
+        warningColor,
+        successColor,
         actionButtonsForegroundColor,
         tilePrimaryColor,
-        tileIconColor,
         tileSubtitleColor,
-        navigationBarColor,
         navigationBarIconColor,
         qrButtonBackgroundColor,
         qrButtonIconColor,

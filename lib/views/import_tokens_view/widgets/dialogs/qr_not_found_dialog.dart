@@ -73,7 +73,7 @@ class QrNotFoundDialog extends StatelessWidget {
             } catch (e) {
               if (!context.mounted) return;
               Navigator.of(context).pop();
-              showStatusMessage(message: (l) => l.fileNotAvailable);
+              showErrorStatusMessage(message: (l) => l.fileNotAvailable);
               return;
             }
             if (!context.mounted) return;

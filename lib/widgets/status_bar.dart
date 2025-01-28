@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../l10n/app_localizations.dart';
+import '../utils/customization/theme_extentions/status_colors.dart';
 import '../utils/riverpod/riverpod_providers/state_providers/status_message_provider.dart';
 import '../utils/utils.dart';
 
@@ -77,6 +78,7 @@ class _StatusBarState extends ConsumerState<StatusBar> {
         onDismissed: onDismissed,
         statusText: statusText,
         statusSubText: statusSubText,
+        isError: statusMessage.isError,
       ),
     );
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -88,9 +90,10 @@ class _StatusBarState extends ConsumerState<StatusBar> {
 class StatusBarOverlayEntry extends StatefulWidget {
   final String statusText;
   final String? statusSubText;
+  final bool isError;
   final Function(DismissDirection) onDismissed;
 
-  const StatusBarOverlayEntry({super.key, required this.statusText, required this.onDismissed, this.statusSubText});
+  const StatusBarOverlayEntry({super.key, required this.statusText, required this.onDismissed, this.statusSubText, required this.isError});
 
   @override
   State<StatusBarOverlayEntry> createState() => _StatusBarOverlayEntryState();
@@ -145,6 +148,7 @@ class _StatusBarOverlayEntryState extends State<StatusBarOverlayEntry> with Sing
     final maxWidth = MediaQuery.of(context).size.width - margin * 2 - padding * 2;
     final statusTextStyle = Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.white) ?? const TextStyle();
     final statusSubTextStyle = Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white) ?? const TextStyle();
+    final statusColors = Theme.of(context).extension<StatusColors>()!;
     final statusTextHeight = textSizeOf(
       text: widget.statusText,
       style: statusTextStyle,
@@ -198,7 +202,7 @@ class _StatusBarOverlayEntryState extends State<StatusBarOverlayEntry> with Sing
                 Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(padding),
-                    color: Theme.of(context).colorScheme.error,
+                    color: widget.isError ? statusColors.error : statusColors.success,
                   ),
                   padding: const EdgeInsets.all(padding),
                   child: SizedBox(

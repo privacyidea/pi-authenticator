@@ -42,6 +42,7 @@ import '../../model/token_container.dart';
 import '../../model/token_template.dart';
 import '../../model/tokens/token.dart';
 import '../../utils/logger.dart';
+import '../../widgets/dialog_widgets/container_dialogs/InitialTokenAssignmentDialog.dart';
 import '../../widgets/dialog_widgets/enter_passphrase_dialog.dart';
 import '../interfaces/container_api.dart';
 
@@ -54,10 +55,13 @@ class PiContainerApi implements TokenContainerApi {
   ////////////////////////////// */
 
   @override
-  Future<ContainerSyncUpdates> sync(TokenContainerFinalized container, TokenState tokenState, {SimpleKeyPair? withX25519Key}) async {
+  Future<ContainerSyncUpdates> sync(TokenContainerFinalized container, TokenState tokenState, {SimpleKeyPair? withX25519Key, bool isInitSync = false}) async {
     final containerTokenTemplates = tokenState.containerTokens(container.serial).toTemplates();
 
-    final notLinkedTokenTemplates = (container.policies.initialTokenTransfer) ? tokenState.notLinkedTokens.toTemplates() : <TokenTemplate>[];
+    final initialTokenAssignment =
+        isInitSync && container.policies.initialTokenAssignment && ((await InitialTokenAssignmentDialog.showDialog(container)) ?? false);
+
+    final notLinkedTokenTemplates = initialTokenAssignment ? tokenState.notLinkedTokens.toTemplates() : <TokenTemplate>[];
 
     final ContainerChallenge challenge = await _getChallenge(container, container.syncUrl);
 
@@ -116,7 +120,8 @@ class PiContainerApi implements TokenContainerApi {
     }
 
     return ContainerSyncUpdates(
-      updatedTokens: [...updatedTokens, ...newTokens],
+      newTokens: newTokens,
+      updatedTokens: updatedTokens,
       deleteTokenSerials: deleteSerials,
       newPolicies: syncResult.policies,
       containerSerial: container.serial,
@@ -142,11 +147,11 @@ class PiContainerApi implements TokenContainerApi {
     final signature = eccUtils.signWithPrivateKey(ecPrivateClientKey, message);
 
     final body = {
-      'container_serial': container.serial,
-      'public_client_key': container.publicClientKey,
-      if (container.addDeviceInfos == true) 'device_brand': InfoUtils.deviceBrand,
-      if (container.addDeviceInfos == true) 'device_model': InfoUtils.deviceModel,
-      'signature': signature,
+      TokenContainer.CONTAINER_SERIAL: container.serial,
+      TokenContainer.FINALIZE_PUBLIC_CLIENT_KEY: container.publicClientKey,
+      if (container.addDeviceInfos == true) TokenContainer.FINALIZE_DEVICE_BRAND: InfoUtils.deviceBrand,
+      if (container.addDeviceInfos == true) TokenContainer.FINALIZE_DEVICE_MODEL: InfoUtils.deviceModel,
+      TokenContainer.FINALIZE_SIGNATURE: signature,
     };
     final Response response = await _ioClient.doPost(url: container.registrationUrl, body: body, sslVerify: container.sslVerify);
 
@@ -202,6 +207,7 @@ class PiContainerApi implements TokenContainerApi {
     Logger.debug(signMessage);
 
     final body = {
+      TokenContainer.CONTAINER_SERIAL: container.serial,
       TokenContainer.SCOPE: '$requestUrl',
       ContainerChallenge.SIGNATURE: container.signMessage(signMessage),
     };
@@ -224,7 +230,7 @@ class PiContainerApi implements TokenContainerApi {
 
   @override
   Future<UnregisterContainerResult> unregister(TokenContainerFinalized container) async {
-    if (container.policies.unregisterAllowed == false) {
+    if (container.policies.disabledUnregister) {
       throw LocalizedException(
         localizedMessage: (l) => l.errorUnregisterNotAllowed,
         unlocalizedMessage: AppLocalizationsEn().errorUnregisterNotAllowed,
@@ -242,6 +248,7 @@ class PiContainerApi implements TokenContainerApi {
     }
 
     final body = {
+      TokenContainer.CONTAINER_SERIAL: container.serial,
       TokenContainer.SCOPE: unregisterUrl.toString(),
       ContainerChallenge.SIGNATURE: container.signMessage('${challenge.nonce}|${challenge.timeStamp}|${container.serial}|$unregisterUrl'),
     };
@@ -264,6 +271,7 @@ class PiContainerApi implements TokenContainerApi {
 
   Future<ContainerChallenge> _getChallenge(TokenContainerFinalized container, Uri requestUrl) async {
     final body = {
+      TokenContainer.CONTAINER_SERIAL: container.serial,
       TokenContainer.SCOPE: requestUrl.toString(),
     };
     final challengeResponse = await _ioClient.doPost(url: container.challengeUrl, body: body, sslVerify: container.sslVerify);
@@ -290,7 +298,7 @@ class PiContainerApi implements TokenContainerApi {
     final publicKey = await encKeyPair.extractPublicKey();
     final publicKeyBase64 = base64.encode(publicKey.bytes);
     final containerDict = {
-      TokenContainer.DICT_SERIAL: container.serial,
+      TokenContainer.CONTAINER_SERIAL: container.serial,
       TokenContainer.DICT_TYPE: TokenContainer.DICT_TYPE_SMARTPHONE,
       TokenContainer.DICT_TOKENS: otpAuthMaps,
     };
@@ -298,7 +306,8 @@ class PiContainerApi implements TokenContainerApi {
     Logger.debug(signMessage);
     final signature = container.signMessage(signMessage);
     Logger.debug('Sended container: ${jsonEncode(containerDict)}');
-    final body = <String, String>{
+    final body = {
+      TokenContainer.CONTAINER_SERIAL: container.serial,
       TokenContainer.SYNC_PUBLIC_CLIENT_KEY: publicKeyBase64,
       TokenContainer.SYNC_DICT_CLIENT: jsonEncode(containerDict),
       ContainerChallenge.SIGNATURE: signature,

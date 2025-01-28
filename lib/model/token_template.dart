@@ -71,9 +71,9 @@ class TokenTemplate with _$TokenTemplate {
   List<String>? get otpValues => this is _TokenTemplateWithOtps ? (this as _TokenTemplateWithOtps).otps : null;
 
   String? get containerSerial => validateOptional(
-        value: otpAuthMap[TokenContainer.SERIAL],
+        value: additionalData[Token.CONTAINER_SERIAL],
         validator: const ObjectValidatorNullable<String>(),
-        name: TokenContainer.SERIAL,
+        name: Token.CONTAINER_SERIAL,
       );
 
   Map<String, dynamic> get otpAuthMapSafeToSend => Map<String, dynamic>.from(otpAuthMap)..remove(OTPToken.SECRET_BASE32);
@@ -144,27 +144,4 @@ class TokenTemplate with _$TokenTemplate {
     if (otpValues != null && otpValues!.isNotEmpty && other is OTPToken && otpValues == other.otpValues) return true;
     return false;
   }
-
-  // bool hasSameValuesAs(TokenTemplate serverTokenTemplate) {
-  //   Logger.debug('serverTokenTemplate.keys: ${serverTokenTemplate.keys}');
-  //   for (var key in serverTokenTemplate.keys) {
-  //     if (otpAuthMap[key] != serverTokenTemplate.otpAuthMap[key]) {
-  //       Logger.debug('TokenTemplate has different values for key "$key": ${otpAuthMap[key]} != ${serverTokenTemplate.otpAuthMap[key]}',
-  //           name: 'TokenTemplate#hasSameValuesAs');
-  //       return false;
-  //     }
-  //   }
-  //   Logger.debug(
-  //     'AppTokenTemplate serial $serial/otp ($otpValues) has same values as serverTokenTemplate serial ${serverTokenTemplate.serial}/id ${serverTokenTemplate.otpValues}',
-  //     name: 'TokenTemplate#hasSameValuesAs',
-  //   );
-  //   return true;
-  // }
-
-  // bool tokenWouldBeUpdated(Token token) {
-  //   Logger.debug('Checking if token would be updated');
-  //   final tokenTemplate = token.toTemplate(this);
-  //   Logger.debug('TokenTemplate: \n$tokenTemplate\n has same values as \n$this\n ?');
-  //   return tokenTemplate?.hasSameValuesAs(this) == false;
-  // }
 }

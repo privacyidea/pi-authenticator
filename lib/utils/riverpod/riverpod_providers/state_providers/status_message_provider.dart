@@ -33,10 +33,12 @@ final statusMessageProvider = StateProvider<StatusMessage?>(
 class StatusMessage {
   String Function(AppLocalizations localization) message;
   String Function(AppLocalizations localization)? details;
+  bool isError;
 
   StatusMessage({
     required this.message,
     this.details,
+    this.isError = true,
   });
 
   @override

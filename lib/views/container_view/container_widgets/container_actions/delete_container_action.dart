@@ -26,7 +26,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../model/token_container.dart';
 import '../../../../utils/customization/theme_extentions/action_theme.dart';
 import '../../../main_view/main_view_widgets/token_widgets/slideable_action.dart';
-import 'delete_container_action_dialog.dart';
+import 'delete_container_dialogs.dart/delete_container_dialog.dart';
 
 class DeleteContainerAction extends ConsumerSlideableAction {
   final TokenContainer container;
@@ -38,9 +38,9 @@ class DeleteContainerAction extends ConsumerSlideableAction {
 
   @override
   CustomSlidableAction build(BuildContext context, WidgetRef ref) {
-    final deleteAllowed = container is! TokenContainerFinalized || container.policies.unregisterAllowed;
+    final deleteAllowed = container is! TokenContainerFinalized || container.policies.disabledUnregister == false;
     return CustomSlidableAction(
-      onPressed: deleteAllowed ? (BuildContext context) => _showDeleteDialog(context, ref) : null,
+      onPressed: deleteAllowed ? (BuildContext context) => DeleteContainerDialog.showDialog(container) : null,
       autoClose: deleteAllowed,
       backgroundColor: deleteAllowed ? Theme.of(context).extension<ActionTheme>()!.deleteColor : Theme.of(context).extension<ActionTheme>()!.disabledColor,
       foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
@@ -58,10 +58,4 @@ class DeleteContainerAction extends ConsumerSlideableAction {
       ),
     );
   }
-
-  Future<void> _showDeleteDialog(BuildContext context, WidgetRef ref) => showDialog(
-        context: context,
-        useRootNavigator: false,
-        builder: (context) => DeleteContainerDialog(container),
-      );
 }

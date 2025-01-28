@@ -18,13 +18,13 @@ class SecureTokenContainerRepository extends TokenContainerRepository {
   @override
   Future<TokenContainerState> loadContainerState() async {
     final containerJsonString = await _readAll();
-    Logger.warning('Loaded container: $containerJsonString');
+    Logger.info('Loaded container: $containerJsonString');
     return TokenContainerState.fromJsonStringList(containerJsonString.values.toList());
   }
 
   @override
   Future<TokenContainerState> saveContainerState(TokenContainerState containerState) async {
-    Logger.warning('Saving container: $containerState');
+    Logger.info('Saving container: $containerState');
     final futures = <Future>[];
     for (var container in containerState.containerList) {
       futures.add(saveContainer(container));
@@ -35,7 +35,7 @@ class SecureTokenContainerRepository extends TokenContainerRepository {
 
   @override
   Future<TokenContainerState> saveContainerList(List<TokenContainer> containerList) async {
-    Logger.warning('Saving container: $containerList');
+    Logger.info('Saving container: $containerList');
     final futures = <Future>[];
     for (var container in containerList) {
       futures.add(saveContainer(container));
