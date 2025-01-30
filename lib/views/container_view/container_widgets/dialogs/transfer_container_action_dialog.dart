@@ -26,7 +26,9 @@ import '../../../../../../../model/token_container.dart';
 import '../../../../../../../utils/view_utils.dart';
 import '../../../../../../../widgets/button_widgets/cooldown_button.dart';
 import '../../../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
+import '../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../../widgets/dialog_widgets/default_dialog.dart';
+import 'transfer_dialogs/transfer_offline_token_dialog.dart';
 import 'transfer_dialogs/transfer_qr_dialog.dart';
 
 class TransferContainerDialog extends ConsumerStatefulWidget {
@@ -67,6 +69,11 @@ class _TransferContainerDialogState extends ConsumerState<TransferContainerDialo
 
   Future<void> _startTransfer(TokenContainerFinalized container) async {
     final String qrData;
+    final hasOfflineToken = ref.read(tokenProvider).containerTokens(container.serial).where((token) => token.isOffline);
+    if (hasOfflineToken.isNotEmpty) {
+      final continueTransfer = await showDialog(context: context, builder: (_) => TransferOfflineTokenDialog(hasOfflineToken.length));
+      if (continueTransfer != true) return;
+    }
     try {
       qrData = await ref.read(tokenContainerProvider.notifier).getRolloverQrData(container);
     } catch (e) {

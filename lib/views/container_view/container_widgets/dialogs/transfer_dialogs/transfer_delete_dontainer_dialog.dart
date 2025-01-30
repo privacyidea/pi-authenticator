@@ -21,6 +21,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
+import 'package:privacyidea_authenticator/model/extensions/token_folder_extension.dart';
 
 import '../../../../../model/token_container.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
@@ -130,7 +131,7 @@ class _TransferDeleteContainerDialogState extends ConsumerState<TransferDeleteCo
 
   void confirmDeleteLocaly(BuildContext context) async {
     final containerTokens = ref.read(tokenProvider).containerTokens(widget.container.serial);
-    await ref.read(tokenProvider.notifier).removeTokens(containerTokens);
+    await ref.read(tokenProvider.notifier).removeTokens(containerTokens.noOffline);
     await ref.read(tokenContainerProvider.notifier).deleteContainer(widget.container);
     if (!context.mounted) return;
     Navigator.of(context).popUntil((route) => route.isFirst);

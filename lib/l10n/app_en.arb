@@ -1424,6 +1424,9 @@
   "@tokensSuccessfullyDecrypted": {
     "description": "Content of the import view that tells the user that the tokens were successfully decrypted."
   },
+  "@transferButton": {
+    "description": "Label of the button to start the transfer of the container."
+  },
   "@transferContainerDialogContent1": {
     "description": "Content of the dialog that tells the user that the container can be transferred."
   },
@@ -1444,6 +1447,18 @@
   },
   "@transferContainerSuccessDialogContent2": {
     "description": "Content of the dialog that asks the user if they want to delete the container and its corresponding tokens from this device."
+  },
+  "@transferOfflineTokenDialogContent": {
+    "description": "Content of the dialog that informs the user that the container has offline tokens.",
+    "placeholders": {
+      "count": {
+        "description": "The number of offline tokens.",
+        "example": "2"
+      }
+    }
+  },
+  "@transferOfflineTokenDialogTitle": {
+    "description": "Title of the dialog that informs the user that the container has offline tokens."
   },
   "@twoStepSecretFailed": {
     "description": "Error message when the two step secret could not be generated, or was canceled."
@@ -1907,6 +1922,7 @@
   "tokensAreEncrypted": "The tokens are encrypted. Please enter the password to decrypt them.",
   "tokensDoNotSupportSynchronization": "The following tokens do not support synchronization and must be rolled out again:",
   "tokensSuccessfullyDecrypted": "The tokens have been successfully decrypted and can now be imported.",
+  "transferButton": "Transfer",
   "transferContainerDialogContent1": "You can transfer the container to another device. The container is transferred via a QR code.",
   "transferContainerDialogContent2": "For the process is an active internet connection required.",
   "transferContainerDialogTitle": "Transfer Container",
@@ -1914,6 +1930,8 @@
   "transferContainerScanQrCode": "Scan the QR code on the new device to transfer the container.",
   "transferContainerSuccessDialogContent1": "The container has been transferred successfully to another device.",
   "transferContainerSuccessDialogContent2": "Do you want to delete the container and its corresponding tokens from this device?",
+  "transferOfflineTokenDialogContent": "Your container has {count} offline tokens. Wich can not be transferred to another device. Do you want to continue?",
+  "transferOfflineTokenDialogTitle": "Offline token",
   "twoStepSecretFailed": "The two step secret could not be generated, or was canceled.",
   "type": "Type",
   "unableToCreateToken": "The Token could not be created.",

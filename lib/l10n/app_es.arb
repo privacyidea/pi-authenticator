@@ -1424,6 +1424,9 @@
   "@tokensSuccessfullyDecrypted": {
     "description": "Content of the import view that tells the user that the tokens were successfully decrypted."
   },
+  "@transferButton": {
+    "description": "Label of the button to start the transfer of the container."
+  },
   "@transferContainerDialogContent1": {
     "description": "Content of the dialog that tells the user that the container can be transferred."
   },
@@ -1444,6 +1447,18 @@
   },
   "@transferContainerSuccessDialogContent2": {
     "description": "Content of the dialog that asks the user if they want to delete the container and its corresponding tokens from this device."
+  },
+  "@transferOfflineTokenDialogContent": {
+    "description": "Content of the dialog that informs the user that the container has offline tokens.",
+    "placeholders": {
+      "count": {
+        "description": "The number of offline tokens.",
+        "example": "2"
+      }
+    }
+  },
+  "@transferOfflineTokenDialogTitle": {
+    "description": "Title of the dialog that informs the user that the container has offline tokens."
   },
   "@twoStepSecretFailed": {
     "description": "Error message when the two step secret could not be generated, or was canceled."
@@ -1907,6 +1922,7 @@
   "tokensAreEncrypted": "Los tokens están encriptados. Por favor, introduce la contraseña para descifrarlos",
   "tokensDoNotSupportSynchronization": "Las siguientes tokens no admiten la sincronización y deben volver a desplegarse:",
   "tokensSuccessfullyDecrypted": "Los tokens se han descifrado correctamente y ya se pueden importar.",
+  "transferButton": "Transferencia",
   "transferContainerDialogContent1": "Puede transferir el contenedor a otro dispositivo. El contenedor se transfiere mediante un código QR.",
   "transferContainerDialogContent2": "Para el proceso se requiere una conexión activa a Internet.",
   "transferContainerDialogTitle": "Transferir contenedor",
@@ -1914,6 +1930,8 @@
   "transferContainerScanQrCode": "Escanee el código QR en el nuevo dispositivo para transferir el contenedor.",
   "transferContainerSuccessDialogContent1": "El contenedor se ha transferido correctamente a otro dispositivo.",
   "transferContainerSuccessDialogContent2": "¿Desea eliminar el contenedor y sus tokens correspondientes de este dispositivo?",
+  "transferOfflineTokenDialogContent": "Su contenedor tiene {count} tokens sin conexión. Los cuales no pueden ser transferidos a otro dispositivo. ¿Desea continuar?",
+  "transferOfflineTokenDialogTitle": "Token sin conexión",
   "twoStepSecretFailed": "El secreto de dos pasos no pudo ser generado o fue cancelado.",
   "type": "Tipo",
   "unableToCreateToken": "No se ha podido crear el token.",

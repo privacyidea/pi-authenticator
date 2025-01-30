@@ -862,15 +862,19 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     }
   }
 
+  final _pushTokenHandlerMutex = Mutex();
   Future<void> _handlePushTokensIfExist() async {
     Logger.info('Handling push tokens if they exist.');
-    final pushTokens = state.pushTokens;
-    if (pushTokens.isEmpty || state.pushTokens.isEmpty) {
+    await _pushTokenHandlerMutex.acquire();
+
+    if (state.pushTokens.isEmpty) {
       if ((await ref.read(settingsProvider.future)).hidePushTokens == true) {
         ref.read(settingsProvider.notifier).setHidePushTokens(false);
       }
+      _pushTokenHandlerMutex.release();
+      return;
     }
-    if (pushTokens.firstWhereOrNull((element) => element.isRolledOut && element.fbToken == null) != null) {
+    if (state.pushTokens.firstWhereOrNull((element) => element.isRolledOut && element.fbToken == null) != null) {
       // If there is a push token without fbToken, then update the fbToken
       await updateFirebaseToken();
     }
@@ -881,6 +885,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       Logger.info('Handling push token "${element.id}"');
       await rolloutPushToken(element);
     }
+    _pushTokenHandlerMutex.release();
   }
 
   Token? getTokenById(String id) {

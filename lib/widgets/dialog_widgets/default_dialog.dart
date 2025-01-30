@@ -61,7 +61,7 @@ class DefaultDialog extends StatelessWidget {
             ],
           ),
           actions: actions,
-          content: content,
+          content: SingleChildScrollView(child: content),
         ),
       );
 }

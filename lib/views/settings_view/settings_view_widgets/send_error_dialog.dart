@@ -43,36 +43,33 @@ class _SendErrorDialogState extends State<SendErrorDialog> {
           overflow: TextOverflow.fade,
           softWrap: false,
         ),
-        content: SingleChildScrollView(
-          controller: ScrollController(),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 8.0,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  AppLocalizations.of(context)!.sendErrorLogDescription,
-                ),
-                TextButton(
-                    child: Text(
-                      AppLocalizations.of(context)!.showPrivacyPolicy,
-                    ),
-                    onPressed: () => launchUrl(Uri.parse('https://netknights.it/en/privacy-statement/'))),
-                const SizedBox(height: 8.0),
-                TextField(
-                  controller: _textController,
-                  decoration: InputDecoration(
-                    border: const OutlineInputBorder(borderSide: BorderSide(width: 1.5)),
-                    enabledBorder: const OutlineInputBorder(borderSide: BorderSide(width: 1.5)),
-                    focusedBorder: const OutlineInputBorder(borderSide: BorderSide(width: 1.5)),
-                    labelText: AppLocalizations.of(context)!.additionalErrorMessage,
+        content: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 8.0,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                AppLocalizations.of(context)!.sendErrorLogDescription,
+              ),
+              TextButton(
+                  child: Text(
+                    AppLocalizations.of(context)!.showPrivacyPolicy,
                   ),
-                  maxLines: 5,
+                  onPressed: () => launchUrl(Uri.parse('https://netknights.it/en/privacy-statement/'))),
+              const SizedBox(height: 8.0),
+              TextField(
+                controller: _textController,
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(borderSide: BorderSide(width: 1.5)),
+                  enabledBorder: const OutlineInputBorder(borderSide: BorderSide(width: 1.5)),
+                  focusedBorder: const OutlineInputBorder(borderSide: BorderSide(width: 1.5)),
+                  labelText: AppLocalizations.of(context)!.additionalErrorMessage,
                 ),
-              ],
-            ),
+                maxLines: 5,
+              ),
+            ],
           ),
         ),
         actions: [

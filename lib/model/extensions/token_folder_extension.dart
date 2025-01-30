@@ -24,6 +24,8 @@ import '../token_template.dart';
 import '../tokens/token.dart';
 
 extension TokenListExtension on List<Token> {
+  List<Token> get noOffline => where((token) => token.isOffline == false).toList();
+
   List<Token> get piTokens {
     final piTokens = where((token) => token.isPrivacyIdeaToken == true).toList();
     Logger.debug('${piTokens.length}/$length tokens with "isPrivacyIdeaToken == true"');

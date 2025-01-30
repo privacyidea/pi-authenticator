@@ -200,7 +200,6 @@ class ObjectValidatorNullable<T extends Object?> {
   /// Checks if the value is of the correct type, or sub-type.
   /// If the transformer is provided, the value will be transformed before checking the type.
   bool isTypeOf(dynamic value) {
-    Logger.debug('Checking type (${T.runtimeType}) of nullable value "$value" and default value "$defaultValue" with transformer "$transformer".');
     if (value == null) return true;
     if (transformer == null) return value is T?;
     try {

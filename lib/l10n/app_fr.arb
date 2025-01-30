@@ -1424,6 +1424,9 @@
   "@tokensSuccessfullyDecrypted": {
     "description": "Content of the import view that tells the user that the tokens were successfully decrypted."
   },
+  "@transferButton": {
+    "description": "Label of the button to start the transfer of the container."
+  },
   "@transferContainerDialogContent1": {
     "description": "Content of the dialog that tells the user that the container can be transferred."
   },
@@ -1444,6 +1447,18 @@
   },
   "@transferContainerSuccessDialogContent2": {
     "description": "Content of the dialog that asks the user if they want to delete the container and its corresponding tokens from this device."
+  },
+  "@transferOfflineTokenDialogContent": {
+    "description": "Content of the dialog that informs the user that the container has offline tokens.",
+    "placeholders": {
+      "count": {
+        "description": "The number of offline tokens.",
+        "example": "2"
+      }
+    }
+  },
+  "@transferOfflineTokenDialogTitle": {
+    "description": "Title of the dialog that informs the user that the container has offline tokens."
   },
   "@twoStepSecretFailed": {
     "description": "Error message when the two step secret could not be generated, or was canceled."
@@ -1907,6 +1922,7 @@
   "tokensAreEncrypted": "Les jetons sont cryptés. Veuillez saisir le mot de passe pour les décrypter",
   "tokensDoNotSupportSynchronization": "Ces jetons ne supportent pas la synchronisation et doivent être de nouveau générés:",
   "tokensSuccessfullyDecrypted": "Les tokens ont été décryptés avec succès, ils peuvent maintenant être importés.",
+  "transferButton": "Transmettre",
   "transferContainerDialogContent1": "Vous pouvez transférer le conteneur vers un autre appareil. Le conteneur est transféré via un code QR.",
   "transferContainerDialogContent2": "Une connexion internet active est nécessaire pour ce processus.",
   "transferContainerDialogTitle": "Transférer le conteneur",
@@ -1914,6 +1930,8 @@
   "transferContainerScanQrCode": "Scannez le code QR sur le nouvel appareil pour transférer le conteneur.",
   "transferContainerSuccessDialogContent1": "Le conteneur a été transféré avec succès vers un autre appareil.",
   "transferContainerSuccessDialogContent2": "Voulez-vous supprimer le conteneur et les jetons correspondants de cet appareil ?",
+  "transferOfflineTokenDialogContent": "Votre conteneur a {count} des jetons hors ligne. Qui ne peuvent pas être transférés vers un autre appareil. Vous souhaitez continuer ?",
+  "transferOfflineTokenDialogTitle": "Jeton hors ligne",
   "twoStepSecretFailed": "Le secret à deux niveaux n'a pas pu être généré ou a été annulé.",
   "type": "Type",
   "unableToCreateToken": " Le token n'a pas pu être généré.",

@@ -57,8 +57,8 @@ class SettingsGroupLanguageDialog extends ConsumerWidget {
     return DefaultDialog(
       title: Text(localizations.language),
       content: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SwitchListTile(
               title: Text(

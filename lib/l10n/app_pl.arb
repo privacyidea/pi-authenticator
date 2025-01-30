@@ -1424,6 +1424,9 @@
   "@tokensSuccessfullyDecrypted": {
     "description": "Content of the import view that tells the user that the tokens were successfully decrypted."
   },
+  "@transferButton": {
+    "description": "Label of the button to start the transfer of the container."
+  },
   "@transferContainerDialogContent1": {
     "description": "Content of the dialog that tells the user that the container can be transferred."
   },
@@ -1444,6 +1447,18 @@
   },
   "@transferContainerSuccessDialogContent2": {
     "description": "Content of the dialog that asks the user if they want to delete the container and its corresponding tokens from this device."
+  },
+  "@transferOfflineTokenDialogContent": {
+    "description": "Content of the dialog that informs the user that the container has offline tokens.",
+    "placeholders": {
+      "count": {
+        "description": "The number of offline tokens.",
+        "example": "2"
+      }
+    }
+  },
+  "@transferOfflineTokenDialogTitle": {
+    "description": "Title of the dialog that informs the user that the container has offline tokens."
   },
   "@twoStepSecretFailed": {
     "description": "Error message when the two step secret could not be generated, or was canceled."
@@ -1907,6 +1922,7 @@
   "tokensAreEncrypted": "Tokeny są zaszyfrowane. Wprowadź hasło, aby je odszyfrować",
   "tokensDoNotSupportSynchronization": "Następujące tokeny nie wspierają synchronizacji i muszą zostać wdrożone od nowa:",
   "tokensSuccessfullyDecrypted": "Tokeny zostały pomyślnie odszyfrowane i można je teraz zaimportować.",
+  "transferButton": "Transfer",
   "transferContainerDialogContent1": "Możesz przenieść kontener na inne urządzenie. Kontener jest przesyłany za pomocą kodu QR.",
   "transferContainerDialogContent2": "Do tego procesu wymagane jest aktywne połączenie internetowe.",
   "transferContainerDialogTitle": "Transfer kontenera",
@@ -1914,6 +1930,8 @@
   "transferContainerScanQrCode": "Zeskanuj kod QR na nowym urządzeniu, aby przesłać kontener.",
   "transferContainerSuccessDialogContent1": "Kontener został pomyślnie przeniesiony na inne urządzenie.",
   "transferContainerSuccessDialogContent2": "Czy chcesz usunąć kontener i odpowiadające mu tokeny z tego urządzenia?",
+  "transferOfflineTokenDialogContent": "W kontenerze znajduje się {count} tokenów offline. Nie można ich przenieść na inne urządzenie. Czy chcesz kontynuować?",
+  "transferOfflineTokenDialogTitle": "Token offline",
   "twoStepSecretFailed": "Nie można wygenerować dwuetapowego klucza tajnego lub został on anulowany.",
   "type": "Typ",
   "unableToCreateToken": "Nie można utworzyć tokena.",

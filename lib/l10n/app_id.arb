@@ -1424,6 +1424,9 @@
   "@tokensSuccessfullyDecrypted": {
     "description": "Content of the import view that tells the user that the tokens were successfully decrypted."
   },
+  "@transferButton": {
+    "description": "Label of the button to start the transfer of the container."
+  },
   "@transferContainerDialogContent1": {
     "description": "Content of the dialog that tells the user that the container can be transferred."
   },
@@ -1444,6 +1447,18 @@
   },
   "@transferContainerSuccessDialogContent2": {
     "description": "Content of the dialog that asks the user if they want to delete the container and its corresponding tokens from this device."
+  },
+  "@transferOfflineTokenDialogContent": {
+    "description": "Content of the dialog that informs the user that the container has offline tokens.",
+    "placeholders": {
+      "count": {
+        "description": "The number of offline tokens.",
+        "example": "2"
+      }
+    }
+  },
+  "@transferOfflineTokenDialogTitle": {
+    "description": "Title of the dialog that informs the user that the container has offline tokens."
   },
   "@twoStepSecretFailed": {
     "description": "Error message when the two step secret could not be generated, or was canceled."
@@ -1907,6 +1922,7 @@
   "tokensAreEncrypted": "Tautan tokenToken dienkripsi. Masukkan kata sandi untuk mendekripsi token tersebut.",
   "tokensDoNotSupportSynchronization": "Token berikut ini tidak mendukung sinkronisasi dan harus diluncurkan kembali:",
   "tokensSuccessfullyDecrypted": "Token telah berhasil didekripsi dan sekarang dapat diimpor.",
+  "transferButton": "Transfer",
   "transferContainerDialogContent1": "Anda bisa mentransfer kontainer ke perangkat lain. Kontainer ditransfer melalui kode QR.",
   "transferContainerDialogContent2": "Untuk proses ini, diperlukan koneksi internet yang aktif.",
   "transferContainerDialogTitle": "Mentransfer Kontainer",
@@ -1914,6 +1930,8 @@
   "transferContainerScanQrCode": "Pindai kode QR pada perangkat baru untuk mentransfer kontainer.",
   "transferContainerSuccessDialogContent1": "Kontainer telah berhasil ditransfer ke perangkat lain.",
   "transferContainerSuccessDialogContent2": "Apakah Anda ingin menghapus container dan token terkait dari perangkat ini?",
+  "transferOfflineTokenDialogContent": "Kontainer Anda memiliki {count} token offline. Yang tidak dapat ditransfer ke perangkat lain. Apakah Anda ingin melanjutkan?",
+  "transferOfflineTokenDialogTitle": "Token offline",
   "twoStepSecretFailed": " Rahasia dua langkah tidak dapat dibuat atau dibatalkan.",
   "type": "Jenis",
   "unableToCreateToken": "Token tidak dapat dibuat.",

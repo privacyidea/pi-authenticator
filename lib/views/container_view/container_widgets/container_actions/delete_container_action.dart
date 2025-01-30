@@ -26,7 +26,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../model/token_container.dart';
 import '../../../../utils/customization/theme_extentions/action_theme.dart';
 import '../../../main_view/main_view_widgets/token_widgets/slideable_action.dart';
-import 'delete_container_dialogs.dart/delete_container_dialog.dart';
+import '../dialogs/delete_container_dialogs.dart/delete_container_dialog.dart';
 
 class DeleteContainerAction extends ConsumerSlideableAction {
   final TokenContainer container;

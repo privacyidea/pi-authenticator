@@ -82,80 +82,78 @@ class _DefaultEditActionDialogState extends ConsumerState<DefaultEditActionDialo
         overflow: TextOverflow.fade,
         softWrap: false,
       ),
-      content: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              PiTextField(
-                key: Key('${widget.token.id}_editName'),
-                controller: nameInputController,
-                onChanged: (value) => setState(() => _nameIsValid = _validateName(value) == null),
-                labelText: appLocalizations.name,
-                validator: _validateName,
-              ),
-              PiTextField(
-                key: Key('${widget.token.id}_editImageUrl'),
-                controller: imageUrlController,
-                onChanged: (value) => setState(() => _imageUrlIsValid = _validateImageUrl(value) == null),
-                labelText: appLocalizations.imageUrl,
-                validator: _validateImageUrl,
-              ),
+      content: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            PiTextField(
+              key: Key('${widget.token.id}_editName'),
+              controller: nameInputController,
+              onChanged: (value) => setState(() => _nameIsValid = _validateName(value) == null),
+              labelText: appLocalizations.name,
+              validator: _validateName,
+            ),
+            PiTextField(
+              key: Key('${widget.token.id}_editImageUrl'),
+              controller: imageUrlController,
+              onChanged: (value) => setState(() => _imageUrlIsValid = _validateImageUrl(value) == null),
+              labelText: appLocalizations.imageUrl,
+              validator: _validateImageUrl,
+            ),
+            EditActionExpansionTile(
+              title: appLocalizations.tokenDetails,
+              children: [
+                if (token.serial != null)
+                  ReadOnlyTextFormField(
+                    text: token.serial!,
+                    labelText: appLocalizations.tokenSerial,
+                  ),
+                ReadOnlyTextFormField(
+                  text: token.isPrivacyIdeaToken == false ? appLocalizations.yes : appLocalizations.no,
+                  labelText: appLocalizations.isExpotableQuestion,
+                ),
+                if (widget.token.containerSerial != null)
+                  ReadOnlyTextFormField(
+                    text: token.containerSerial!,
+                    labelText: appLocalizations.linkedContainer,
+                  ),
+                ...widget.additionalChildren,
+              ],
+            ),
+            if (origin != null)
               EditActionExpansionTile(
-                title: appLocalizations.tokenDetails,
+                title: appLocalizations.originDetails,
                 children: [
-                  if (token.serial != null)
+                  ReadOnlyTextFormField(
+                    labelText: appLocalizations.originApp,
+                    text: origin.appName,
+                  ),
+                  if (origin.creator != null)
                     ReadOnlyTextFormField(
-                      text: token.serial!,
-                      labelText: appLocalizations.tokenSerial,
+                      labelText: appLocalizations.creator,
+                      text: origin.creator!,
                     ),
                   ReadOnlyTextFormField(
-                    text: token.isPrivacyIdeaToken == false ? appLocalizations.yes : appLocalizations.no,
-                    labelText: appLocalizations.isExpotableQuestion,
+                    labelText: appLocalizations.createdAt,
+                    text: origin.createdAt.toString().split('.').first,
                   ),
-                  if (widget.token.containerSerial != null)
-                    ReadOnlyTextFormField(
-                      text: token.containerSerial!,
-                      labelText: appLocalizations.linkedContainer,
-                    ),
-                  ...widget.additionalChildren,
+                  ReadOnlyTextFormField(
+                      labelText: appLocalizations.isPiTokenQuestion, //'Is privacyIDEA Token?',
+                      text: origin.isPrivacyIdeaToken == null
+                          ? appLocalizations.unknown
+                          : origin.isPrivacyIdeaToken!
+                              ? appLocalizations.yes
+                              : appLocalizations.no),
+                  ReadOnlyTextFormField(
+                    text: origin.source.name,
+                    labelText: appLocalizations.importedVia, //'Imported via',
+                  ),
                 ],
               ),
-              if (origin != null)
-                EditActionExpansionTile(
-                  title: appLocalizations.originDetails,
-                  children: [
-                    ReadOnlyTextFormField(
-                      labelText: appLocalizations.originApp,
-                      text: origin.appName,
-                    ),
-                    if (origin.creator != null)
-                      ReadOnlyTextFormField(
-                        labelText: appLocalizations.creator,
-                        text: origin.creator!,
-                      ),
-                    ReadOnlyTextFormField(
-                      labelText: appLocalizations.createdAt,
-                      text: origin.createdAt.toString().split('.').first,
-                    ),
-                    ReadOnlyTextFormField(
-                        labelText: appLocalizations.isPiTokenQuestion, //'Is privacyIDEA Token?',
-                        text: origin.isPrivacyIdeaToken == null
-                            ? appLocalizations.unknown
-                            : origin.isPrivacyIdeaToken!
-                                ? appLocalizations.yes
-                                : appLocalizations.no),
-                    ReadOnlyTextFormField(
-                      text: origin.source.name,
-                      labelText: appLocalizations.importedVia, //'Imported via',
-                    ),
-                  ],
-                ),
-            ],
-          ),
+          ],
         ),
       ),
       actions: [

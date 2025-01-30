@@ -35,19 +35,16 @@ class AskLogSendedDialog extends StatelessWidget {
         overflow: TextOverflow.fade,
         softWrap: false,
       ),
-      content: SingleChildScrollView(
-        controller: ScrollController(),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-              child: Text(
-                AppLocalizations.of(context)!.askLogSendedDescription,
-              ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+            child: Text(
+              AppLocalizations.of(context)!.askLogSendedDescription,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
       actions: [
         TextButton(

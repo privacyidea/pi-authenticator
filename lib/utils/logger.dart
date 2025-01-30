@@ -408,7 +408,7 @@ Device Parameters $deviceInfo""";
   static String _textFilter(String text) {
     for (var key in filterParameterKeys) {
       // It searches for the key, ignores following characters until it finds base64 caracters (plus padding and separator) and replaces it with "******"
-      final regex = RegExp(r'(?<=' + key + r'[^A-Z0-9+/=,]*)[A-Z0-9+/=,]+', caseSensitive: false);
+      final regex = RegExp(r'(?<=' + key + r'[^A-Z0-9+/=,]*)[A-Z0-9+/=,:_-]+', caseSensitive: false);
       text = text.replaceAll(regex, '******');
     }
     return text;

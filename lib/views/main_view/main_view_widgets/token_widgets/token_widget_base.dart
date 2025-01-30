@@ -99,7 +99,7 @@ class _TokenWidgetBaseState extends ConsumerState<TokenWidgetBase> {
 
     deletationDisabled.then((value) {
       setState(() {
-        tokenDeletationDisabled = value ?? false;
+        tokenDeletationDisabled = value ?? true;
       });
     });
 

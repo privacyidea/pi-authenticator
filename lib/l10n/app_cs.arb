@@ -1424,6 +1424,9 @@
   "@tokensSuccessfullyDecrypted": {
     "description": "Content of the import view that tells the user that the tokens were successfully decrypted."
   },
+  "@transferButton": {
+    "description": "Label of the button to start the transfer of the container."
+  },
   "@transferContainerDialogContent1": {
     "description": "Content of the dialog that tells the user that the container can be transferred."
   },
@@ -1444,6 +1447,18 @@
   },
   "@transferContainerSuccessDialogContent2": {
     "description": "Content of the dialog that asks the user if they want to delete the container and its corresponding tokens from this device."
+  },
+  "@transferOfflineTokenDialogContent": {
+    "description": "Content of the dialog that informs the user that the container has offline tokens.",
+    "placeholders": {
+      "count": {
+        "description": "The number of offline tokens.",
+        "example": "2"
+      }
+    }
+  },
+  "@transferOfflineTokenDialogTitle": {
+    "description": "Title of the dialog that informs the user that the container has offline tokens."
   },
   "@twoStepSecretFailed": {
     "description": "Error message when the two step secret could not be generated, or was canceled."
@@ -1907,6 +1922,7 @@
   "tokensAreEncrypted": "Tokeny jsou zašifrované. Please enter the password to decrypt them.",
   "tokensDoNotSupportSynchronization": "Následující tokeny nepodporují synchronizaci a musí být znovu zaregistrovány:",
   "tokensSuccessfullyDecrypted": "Tokeny byly úspěšně dešifrovány a nyní je lze importovat.",
+  "transferButton": "Přenos",
   "transferContainerDialogContent1": "Kontejner můžete přenést do jiného zařízení. Kontejner se přenáší prostřednictvím QR kódu.",
   "transferContainerDialogContent2": "Pro tento proces je vyžadováno aktivní připojení k internetu.",
   "transferContainerDialogTitle": "Přenos kontejneru",
@@ -1914,6 +1930,8 @@
   "transferContainerScanQrCode": "Naskenujte QR kód na novém zařízení a přeneste kontejner.",
   "transferContainerSuccessDialogContent1": "Kontejner byl úspěšně přenesen do jiného zařízení.",
   "transferContainerSuccessDialogContent2": "Chcete z tohoto zařízení smazat kontejner a odpovídající tokeny?",
+  "transferOfflineTokenDialogContent": "Váš kontejner má {count} offline tokenů. Které nelze přenést do jiného zařízení. Chcete pokračovat?",
+  "transferOfflineTokenDialogTitle": "Offline tokeny",
   "twoStepSecretFailed": " Dvoufázové tajemství se nepodařilo vygenerovat nebo bylo zrušeno.",
   "type": "Typ",
   "unableToCreateToken": "Token se nepodařilo vytvořit.",

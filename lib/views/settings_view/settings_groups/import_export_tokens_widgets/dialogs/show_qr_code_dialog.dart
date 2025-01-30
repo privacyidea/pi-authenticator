@@ -40,23 +40,21 @@ class ShowQrCodeDialog extends ConsumerWidget {
     final qrImage = generateQrCodeImage(data: TokenEncryption.generateExportUri(token: token).toString());
     return DefaultDialog(
       title: Text(AppLocalizations.of(context)!.asQrCode),
-      content: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(AppLocalizations.of(context)!.scanThisQrWithNewDevice),
-            Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: qrSize, maxHeight: qrSize, minHeight: qrSize, minWidth: qrSize),
-                child: GestureDetector(
-                  onTap: () => _showQrMaximized(context, qrImage),
-                  child: qrImage,
-                ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(AppLocalizations.of(context)!.scanThisQrWithNewDevice),
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: qrSize, maxHeight: qrSize, minHeight: qrSize, minWidth: qrSize),
+              child: GestureDetector(
+                onTap: () => _showQrMaximized(context, qrImage),
+                child: qrImage,
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
       actions: [
         TextButton(

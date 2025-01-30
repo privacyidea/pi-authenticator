@@ -21,12 +21,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-import '../../../../../../../views/container_view/container_widgets/container_actions/details_container_action_dialog.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../model/token_container.dart';
 import '../../../../utils/customization/theme_extentions/action_theme.dart';
 import '../../../main_view/main_view_widgets/token_widgets/slideable_action.dart';
 import '../../../view_interface.dart';
+import '../dialogs/details_container_action_dialog.dart';
 
 class DetailsContainerAction extends ConsumerSlideableAction {
   final TokenContainer container;

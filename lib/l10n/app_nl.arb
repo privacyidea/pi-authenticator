@@ -1424,6 +1424,9 @@
   "@tokensSuccessfullyDecrypted": {
     "description": "Content of the import view that tells the user that the tokens were successfully decrypted."
   },
+  "@transferButton": {
+    "description": "Label of the button to start the transfer of the container."
+  },
   "@transferContainerDialogContent1": {
     "description": "Content of the dialog that tells the user that the container can be transferred."
   },
@@ -1444,6 +1447,18 @@
   },
   "@transferContainerSuccessDialogContent2": {
     "description": "Content of the dialog that asks the user if they want to delete the container and its corresponding tokens from this device."
+  },
+  "@transferOfflineTokenDialogContent": {
+    "description": "Content of the dialog that informs the user that the container has offline tokens.",
+    "placeholders": {
+      "count": {
+        "description": "The number of offline tokens.",
+        "example": "2"
+      }
+    }
+  },
+  "@transferOfflineTokenDialogTitle": {
+    "description": "Title of the dialog that informs the user that the container has offline tokens."
   },
   "@twoStepSecretFailed": {
     "description": "Error message when the two step secret could not be generated, or was canceled."
@@ -1907,6 +1922,7 @@
   "tokensAreEncrypted": "De tokens zijn gecodeerd. Voer het wachtwoord in om ze te decoderen.",
   "tokensDoNotSupportSynchronization": "Voor de volgende tokens wordt synchroniseren niet ondersteunt, ze moeten opnieuw worden aangeleverd:",
   "tokensSuccessfullyDecrypted": "De tokens zijn succesvol gedecodeerd en kunnen nu worden geïmporteerd.",
+  "transferButton": "overzetten",
   "transferContainerDialogContent1": "U kunt de container overzetten naar een ander apparaat. De container wordt overgezet via een QR-code.",
   "transferContainerDialogContent2": "Voor dit proces is een actieve internetverbinding vereist.",
   "transferContainerDialogTitle": "Container overzetten",
@@ -1914,6 +1930,8 @@
   "transferContainerScanQrCode": "Scan de QR-code op het nieuwe apparaat om de container over te zetten.",
   "transferContainerSuccessDialogContent1": "De container is succesvol overgezet naar een ander apparaat.",
   "transferContainerSuccessDialogContent2": "Wilt u de container en de bijbehorende tokens van dit apparaat verwijderen?",
+  "transferOfflineTokenDialogContent": "Uw container heeft {count} offline tokens. Deze kunnen niet worden overgedragen naar een ander apparaat. Wilt u doorgaan?",
+  "transferOfflineTokenDialogTitle": " Offline token",
   "twoStepSecretFailed": "Het tweestapsgeheim kon niet worden gegenereerd of werd geannuleerd.",
   "type": "Type",
   "unableToCreateToken": "Het token kon niet worden aangemaakt.",

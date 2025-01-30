@@ -30,57 +30,57 @@ class PatchNotesDialog extends StatelessWidget {
           localizations.patchNotesDialogTitle,
           style: Theme.of(context).textTheme.titleMedium,
         ),
-        content: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              for (var version in sortedKeys)
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('${localizations.versionTitle}: ${version.toString()}'),
-                    const SizedBox(height: 16),
-                    ...newNotes[version]!.entries.map(
-                      (entry) {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              entry.key.localizedName(localizations),
-                              style: Theme.of(context).textTheme.titleSmall?.copyWith(color: theme.primaryColor),
-                            ),
-                            const SizedBox(height: 8),
-                            ...entry.value.map(
-                              (note) => Padding(
-                                padding: const EdgeInsets.only(bottom: 8),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 3, right: 4),
-                                      child: Icon(
-                                        Icons.circle,
-                                        size: 12,
-                                        color: theme.primaryColor,
-                                      ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            for (var version in sortedKeys)
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('${localizations.versionTitle}: ${version.toString()}'),
+                  const SizedBox(height: 16),
+                  ...newNotes[version]!.entries.map(
+                    (entry) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            entry.key.localizedName(localizations),
+                            style: Theme.of(context).textTheme.titleSmall?.copyWith(color: theme.primaryColor),
+                          ),
+                          const SizedBox(height: 8),
+                          ...entry.value.map(
+                            (note) => Padding(
+                              padding: const EdgeInsets.only(bottom: 8),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.max,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 3, right: 4),
+                                    child: Icon(
+                                      Icons.circle,
+                                      size: 12,
+                                      color: theme.primaryColor,
                                     ),
-                                    Expanded(
-                                      child: Text(note, style: Theme.of(context).textTheme.bodyLarge),
-                                    ),
-                                  ],
-                                ),
+                                  ),
+                                  Expanded(
+                                    child: Text(note, style: Theme.of(context).textTheme.bodyLarge),
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
-                        );
-                      },
-                    ),
-                    if (sortedKeys.last != version) const Divider()
-                  ],
-                )
-            ],
-          ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                  if (sortedKeys.last != version) const Divider()
+                ],
+              )
+          ],
         ),
         actions: [
           TextButton(

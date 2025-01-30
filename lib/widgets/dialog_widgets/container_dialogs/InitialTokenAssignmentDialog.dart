@@ -88,9 +88,9 @@ class InitialTokenAssignmentDialog extends StatelessWidget {
         ],
       ),
       actions: [
-        ElevatedButton(onPressed: () => Navigator.of(context).pop(), child: Text(localizations.no)),
+        ElevatedButton(onPressed: () => Navigator.of(context).pop(false), child: Text(localizations.no)),
         DelayedElevatedButton(
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => Navigator.of(context).pop(true),
           child: Text(localizations.sendOtps),
         ),
       ],

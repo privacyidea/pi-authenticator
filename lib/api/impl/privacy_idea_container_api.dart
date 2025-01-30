@@ -58,10 +58,14 @@ class PiContainerApi implements TokenContainerApi {
   Future<ContainerSyncUpdates> sync(TokenContainerFinalized container, TokenState tokenState, {SimpleKeyPair? withX25519Key, bool isInitSync = false}) async {
     final containerTokenTemplates = tokenState.containerTokens(container.serial).toTemplates();
 
-    final initialTokenAssignment =
-        isInitSync && container.policies.initialTokenAssignment && ((await InitialTokenAssignmentDialog.showDialog(container)) ?? false);
-
+    final initialTokenAssignment = isInitSync && container.policies.initialTokenAssignment;
     final notLinkedTokenTemplates = initialTokenAssignment ? tokenState.notLinkedTokens.toTemplates() : <TokenTemplate>[];
+    if (initialTokenAssignment) {
+      final sendOTPs = await InitialTokenAssignmentDialog.showDialog(container) ?? false;
+      if (!sendOTPs) {
+        notLinkedTokenTemplates.removeWhere((element) => element.otpValues != null && element.otpValues!.isNotEmpty);
+      }
+    }
 
     final ContainerChallenge challenge = await _getChallenge(container, container.syncUrl);
 

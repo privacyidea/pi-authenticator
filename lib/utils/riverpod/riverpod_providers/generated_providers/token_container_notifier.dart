@@ -470,17 +470,22 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
   final Mutex _finalizationMutex = Mutex();
   Future<TokenContainerFinalized?> finalize(TokenContainer container, {required bool isManually, bool? addDeviceInfos}) async {
     await _finalizationMutex.acquire();
-    addDeviceInfos ??= (await ContainerSendDeviceInfosDialog.showDialog()) == true;
+    if (container is! TokenContainerUnfinalized) {
+      _finalizationMutex.release();
+      throw ArgumentError('Container must not be finalized');
+    }
     if (await ContainerShowContainerUrlDialog.showDialog(container) != true) {
       Logger.info('Url check declined: Aborting finalization (${container.serial})');
       _finalizationMutex.release();
       return null;
     }
-
-    if (container is! TokenContainerUnfinalized) {
+    addDeviceInfos ??= (await ContainerSendDeviceInfosDialog.showDialog()) == true;
+    final updatedContainer = await updateContainer(container, (TokenContainerUnfinalized c) => c.copyWith(addDeviceInfos: addDeviceInfos));
+    if (updatedContainer == null) {
       _finalizationMutex.release();
-      throw ArgumentError('Container must not be finalized');
+      return null;
     }
+    container = updatedContainer;
     if (container.expirationDate != null && container.expirationDate!.isBefore(DateTime.now())) {
       showErrorStatusMessage(message: (l) => l.containerRolloutExpired(container.serial));
       await deleteContainer(container);

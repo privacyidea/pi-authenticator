@@ -22,11 +22,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../../model/token_container.dart';
 import '../../../../utils/customization/theme_extentions/action_theme.dart';
 import '../../../main_view/main_view_widgets/token_widgets/slideable_action.dart';
 import '../../../view_interface.dart';
-import 'transfer_container_action_dialog.dart';
+import '../dialogs/transfer_container_action_dialog.dart';
 
 class TransferContainerAction extends ConsumerSlideableAction {
   final TokenContainerFinalized container;
@@ -51,7 +52,7 @@ class TransferContainerAction extends ConsumerSlideableAction {
           children: [
             Icon(MdiIcons.transfer),
             Text(
-              'Transfer', //AppLocalizations.of(context)!.transfer,
+              AppLocalizations.of(context)!.transferButton,
               overflow: TextOverflow.fade,
               softWrap: false,
             ),

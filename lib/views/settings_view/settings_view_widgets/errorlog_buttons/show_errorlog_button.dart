@@ -58,30 +58,22 @@ void _pressShowErrorLog(BuildContext context) {
               child: Text(AppLocalizations.of(context)!.dismiss),
             )
           ],
-          content: Scrollbar(
-            scrollbarOrientation: ScrollbarOrientation.right,
-            thumbVisibility: true,
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              scrollDirection: Axis.horizontal,
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                scrollDirection: Axis.vertical,
-                child: FutureBuilder<Object>(
-                    future: Logger.getErrorLog(),
-                    builder: (context, errorLog) {
-                      return Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: errorLog.data != null
-                            ? Text(
-                                errorLog.data.toString(),
-                                style: const TextStyle(fontFamily: 'monospace', fontSize: 8),
-                              )
-                            : const CircularProgressIndicator.adaptive(),
-                      );
-                    }),
-              ),
-            ),
+          content: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            scrollDirection: Axis.vertical,
+            child: FutureBuilder<Object>(
+                future: Logger.getErrorLog(),
+                builder: (context, errorLog) {
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: errorLog.data != null
+                        ? Text(
+                            errorLog.data.toString(),
+                            style: const TextStyle(fontFamily: 'monospace', fontSize: 8),
+                          )
+                        : const CircularProgressIndicator.adaptive(),
+                  );
+                }),
           ),
         ),
       );

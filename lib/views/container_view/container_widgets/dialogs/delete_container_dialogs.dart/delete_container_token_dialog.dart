@@ -20,6 +20,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/model/extensions/token_folder_extension.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/token_container.dart';
@@ -60,12 +61,12 @@ class DeleteContainerTokenDialog extends ConsumerWidget {
         ),
         ElevatedDeleteButton(
           onPressed: () async {
-            final containerTokens = ref.read(tokenProvider).containerTokens(container.serial);
             var success = await _deleteContainer(ref);
             if (!success) {
               success = (await ForceDeleteContainerDialog.showDialog(container)) == true;
             }
-            if (success) await ref.read(tokenProvider.notifier).removeTokens(containerTokens);
+            final containerTokens = ref.read(tokenProvider).containerTokens(container.serial);
+            if (success) await ref.read(tokenProvider.notifier).removeTokens(containerTokens.noOffline);
             if (!context.mounted) return;
             Navigator.of(context).pop();
           },
