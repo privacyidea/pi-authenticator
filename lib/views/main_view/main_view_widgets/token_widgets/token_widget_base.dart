@@ -84,23 +84,25 @@ class TokenWidgetBase extends ConsumerStatefulWidget {
 }
 
 class _TokenWidgetBaseState extends ConsumerState<TokenWidgetBase> {
-  bool tokenDeletationDisabled = false;
+  bool tokenDeletationDisabled = true;
 
   @override
   Widget build(BuildContext context) {
     final SortableMixin? draggingSortable = ref.watch(draggingSortableProvider);
     final Future<bool?> deletationDisabled;
     if (widget.token.containerSerial == null) {
-      deletationDisabled = Future.value(true);
+      deletationDisabled = Future.value(false);
     } else {
       final selector = tokenContainerProvider.selectAsync((state) => state.containerOf(widget.token.containerSerial!)?.policies.disabledTokenDeletion);
       deletationDisabled = ref.watch(selector);
     }
 
     deletationDisabled.then((value) {
-      setState(() {
-        tokenDeletationDisabled = value ?? true;
-      });
+      if (tokenDeletationDisabled != value) {
+        setState(() {
+          tokenDeletationDisabled = value ?? false;
+        });
+      }
     });
 
     final List<ConsumerSlideableAction> actions = [
