@@ -14,7 +14,7 @@ publish_to: none
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 4.5.0+405007 # TODO Set the right version number
+version: 4.5.0+405008 # TODO Set the right version number
 
 # version: major.minor.build          + 2x major|2x minor|3x build
 # version: version number             + build number (optional)
@@ -29,6 +29,7 @@ dependencies:
   async: ^2.11.0
   base32: ^2.1.3
   basic_utils: ^5.7.0
+  camera_android: ^0.10.10
   collection: ^1.18.0
   connectivity_plus: ^6.1.0
   crypto: ^3.0.6
