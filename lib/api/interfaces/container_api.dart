@@ -35,13 +35,13 @@ class ContainerSyncUpdates {
   final String containerSerial;
   final List<Token> newTokens;
   final List<Token> updatedTokens;
-  final List<String> deleteTokenSerials;
+  final List<Token> deletedTokens;
   final ContainerPolicies newPolicies;
 
   ContainerSyncUpdates({
     required this.newTokens,
     required this.updatedTokens,
-    required this.deleteTokenSerials,
+    required this.deletedTokens,
     required this.newPolicies,
     required this.containerSerial,
   });

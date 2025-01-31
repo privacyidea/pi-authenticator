@@ -23,6 +23,7 @@ import 'package:collection/collection.dart';
 import 'package:mutex/mutex.dart';
 import 'package:privacyidea_authenticator/model/container_policies.dart';
 import 'package:privacyidea_authenticator/model/extensions/enums/rollout_state_extension.dart';
+import 'package:privacyidea_authenticator/model/extensions/token_folder_extension.dart';
 import 'package:privacyidea_authenticator/processors/scheme_processors/token_container_processor.dart';
 import 'package:privacyidea_authenticator/widgets/dialog_widgets/container_dialogs/container_rollout_dialog.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -164,7 +165,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
 
     List<Token> newTokens = [];
     List<Token> syncedTokens = [];
-    List<String> deletedTokens = [];
+    List<Token> deletedTokensNoOffline = [];
 
     Logger.debug('Change to sync state to syncing');
     containersToSync = await updateContainerList(containersToSync, (c) => c.copyWith(syncState: SyncState.syncing));
@@ -188,7 +189,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
           ContainerSyncResultDialog.showDialog(
             container: finalizedContainer,
             addedTokens: syncUpdate.newTokens,
-            removedTokens: syncUpdate.deleteTokenSerials,
+            removedTokens: syncUpdate.deletedTokens.noOffline,
           );
           return syncUpdate;
         }).catchError((error, stackTrace) async {
@@ -214,7 +215,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
         if (syncUpdate == null) continue;
         newTokens.addAll(syncUpdate.newTokens);
         syncedTokens.addAll(syncUpdate.updatedTokens);
-        deletedTokens.addAll(syncUpdate.deleteTokenSerials);
+        deletedTokensNoOffline.addAll(syncUpdate.deletedTokens.noOffline);
         newPoliciesMap[syncUpdate.containerSerial] = syncUpdate.newPolicies;
       }
     }).onError((error, stackTrace) {
@@ -222,9 +223,9 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     });
 
     // Do not remove tokens that are synced in any other container
-    deletedTokens.removeWhere((serial) => syncedTokens.any((token) => token.serial == serial));
+    deletedTokensNoOffline.removeWhere((deletedToken) => syncedTokens.any((syncedToken) => deletedToken.serial == syncedToken.serial));
 
-    await ref.read(tokenProvider.notifier).removeTokensBySerials(deletedTokens);
+    await ref.read(tokenProvider.notifier).removeTokens(deletedTokensNoOffline);
     await ref.read(tokenProvider.notifier).addOrReplaceTokens([...syncedTokens, ...newTokens]);
     await updateContainerList((await future).containerList, (c) => newPoliciesMap[c.serial] == null ? c : c.copyWith(policies: newPoliciesMap[c.serial]!));
     return failedContainers;
@@ -426,6 +427,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     final doReplace = validatedArgs[TokenContainerProcessor.ARG_DO_REPLACE];
     bool? addDeviceInfos = validatedArgs[TokenContainerProcessor.ARG_ADD_DEVICE_INFOS];
     final initSync = validatedArgs[TokenContainerProcessor.ARG_INIT_SYNC] ?? true;
+    final urlIsOk = validatedArgs[TokenContainerProcessor.ARG_URL_IS_OK];
 
     if (newContainers.isEmpty) return null;
     final currentState = await future;
@@ -458,7 +460,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
         continue;
       }
       Logger.info('Handling processor results: finalize');
-      finalizeFutures.add(finalize(container, isManually: true, addDeviceInfos: addDeviceInfos));
+      finalizeFutures.add(finalize(container, isManually: true, addDeviceInfos: addDeviceInfos, urlIsOk: urlIsOk));
     }
 
     final containersForInitSync = (await Future.wait(finalizeFutures)).whereType<TokenContainerFinalized>().toList();
@@ -468,13 +470,14 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
   }
 
   final Mutex _finalizationMutex = Mutex();
-  Future<TokenContainerFinalized?> finalize(TokenContainer container, {required bool isManually, bool? addDeviceInfos}) async {
+  Future<TokenContainerFinalized?> finalize(TokenContainer container, {required bool isManually, bool? addDeviceInfos, bool? urlIsOk}) async {
     await _finalizationMutex.acquire();
     if (container is! TokenContainerUnfinalized) {
       _finalizationMutex.release();
       throw ArgumentError('Container must not be finalized');
     }
-    if (await ContainerShowContainerUrlDialog.showDialog(container) != true) {
+    urlIsOk ??= await ContainerShowContainerUrlDialog.showDialog(container) != true;
+    if (!urlIsOk) {
       Logger.info('Url check declined: Aborting finalization (${container.serial})');
       _finalizationMutex.release();
       return null;

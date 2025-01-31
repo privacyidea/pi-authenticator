@@ -155,7 +155,7 @@ void _testTokenContainerNotifier() {
       // assert
       final state = await container.read(tokenContainerProvider.future);
       verify(mockContainerRepo.loadContainerState()).called(1);
-      verify(mockContainerRepo.saveContainer(any)).called(greaterThanOrEqualTo(2));
+      verify(mockContainerRepo.saveContainer(any)).called(greaterThanOrEqualTo(1));
       expect(state.containerList.length, equals(2));
       expect(state.containerList.where((e) => e.nonce == 'nonce').length, equals(1));
       expect(state.containerList.where((e) => e.nonce == 'nonce2').length, equals(1));
@@ -263,7 +263,7 @@ void _testTokenContainerNotifier() {
       // assert
       final state = await container.read(tokenContainerProvider.future);
       verify(mockContainerRepo.loadContainerState()).called(1);
-      verify(mockContainerRepo.saveContainer(any)).called(2);
+      verify(mockContainerRepo.saveContainer(any)).called(1);
       expect(state.containerList.length, equals(1));
       expect(state.containerList.first.issuer, equals('issuer2'));
       expect(state, containerRepoState);
@@ -457,7 +457,11 @@ void _testTokenContainerNotifier() {
       var containerRepoState = TokenContainerState(containerList: []);
       final mockContainerRepo = MockTokenContainerRepository();
       final mockContainerApi = MockTokenContainerApi();
-
+      when(mockContainerApi.finalizeContainer(any, any)).thenAnswer(
+        (_) async => ContainerFinalizationResponse(
+          policies: ContainerPolicies(initialTokenAssignment: true, rolloverAllowed: true, disabledTokenDeletion: false, disabledUnregister: false),
+        ),
+      );
       when(mockContainerRepo.loadContainerState()).thenAnswer((_) => Future.value(containerRepoState));
       when(mockContainerRepo.saveContainerState(any)).thenAnswer(
         (invocation) {
@@ -481,12 +485,13 @@ void _testTokenContainerNotifier() {
         return Future.value(containerRepoState);
       });
 
+      final timeStamp = DateTime.now();
       final Uri uri = Uri.parse(
         'pia://container/SMPH00067A2F?'
         'issuer=privacyIDEA&'
         'ttl=10&'
         'nonce=dbd2ab5aa9b539484fc3b78cd4bb08375d3eb30e&'
-        'time=2024-11-14T09%3A30%3A18.288530%2B00%3A00&'
+        'time=$timeStamp&'
         'url=http://192.168.2.118:5000/&'
         'serial=SMPH00067A2F&'
         'key_algorithm=secp384r1&'
@@ -523,42 +528,28 @@ void _testTokenContainerNotifier() {
         TokenContainerProcessor.ARG_DO_REPLACE: true,
         TokenContainerProcessor.ARG_ADD_DEVICE_INFOS: true,
         TokenContainerProcessor.ARG_INIT_SYNC: false,
+        TokenContainerProcessor.ARG_URL_IS_OK: true,
       });
 
       // assert
       final state = await providerContainer.read(tokenContainerProvider.future);
       verify(mockContainerRepo.loadContainerState()).called(1);
       expect(state, containerRepoState);
-      final stateContainer = state.containerList.first as TokenContainerUnfinalized;
-      final expectedContainer = TokenContainerUnfinalized(
-        ttl: Duration(minutes: 10),
-        issuer: "privacyIDEA",
-        nonce: "dbd2ab5aa9b539484fc3b78cd4bb08375d3eb30e",
-        timestamp: DateTime.parse("2024-11-14 09:30:18.288530Z"),
-        serverUrl: Uri.parse("http://192.168.2.118:5000/"),
-        serial: "SMPH00067A2F",
-        ecKeyAlgorithm: EcKeyAlgorithm.secp384r1,
-        hashAlgorithm: Algorithms.SHA256,
-        finalizationState: FinalizationState.completed,
-        passphraseQuestion: "",
-        sslVerify: true,
-        privateClientKey: null,
-        publicClientKey: null,
-      );
-      expect(stateContainer.ttl, expectedContainer.ttl);
-      expect(stateContainer.issuer, expectedContainer.issuer);
-      expect(stateContainer.nonce, expectedContainer.nonce);
-      expect(stateContainer.timestamp, expectedContainer.timestamp);
-      expect(stateContainer.serverUrl, expectedContainer.serverUrl);
-      expect(stateContainer.serial, expectedContainer.serial);
-      expect(stateContainer.ecKeyAlgorithm, expectedContainer.ecKeyAlgorithm);
-      expect(stateContainer.hashAlgorithm, expectedContainer.hashAlgorithm);
-      expect(stateContainer.finalizationState, expectedContainer.finalizationState);
+      final stateContainer = state.containerList.first as TokenContainerFinalized;
 
-      expect(stateContainer.passphraseQuestion, expectedContainer.passphraseQuestion);
-      expect(stateContainer.sslVerify, expectedContainer.sslVerify);
-      expect(stateContainer.privateClientKey, null);
-      expect(stateContainer.publicClientKey, null);
+      expect(stateContainer.issuer, "privacyIDEA");
+      expect(stateContainer.nonce, "dbd2ab5aa9b539484fc3b78cd4bb08375d3eb30e");
+      expect(stateContainer.timestamp, timeStamp);
+      expect(stateContainer.serverUrl, Uri.parse("http://192.168.2.118:5000/"));
+      expect(stateContainer.serial, "SMPH00067A2F");
+      expect(stateContainer.ecKeyAlgorithm, EcKeyAlgorithm.secp384r1);
+      expect(stateContainer.hashAlgorithm, Algorithms.SHA256);
+      expect(stateContainer.finalizationState, FinalizationState.completed);
+
+      expect(stateContainer.passphraseQuestion, "");
+      expect(stateContainer.sslVerify, true);
+      expect(stateContainer.privateClientKey, isNotNull);
+      expect(stateContainer.publicClientKey, isNotNull);
     });
     test('finalizeContainer', () async {
       // prepare
@@ -609,7 +600,7 @@ void _testTokenContainerNotifier() {
       final container = containerRepoState.containerList.first as TokenContainerUnfinalized;
       // act
 
-      await providerContainer.read(tokenContainerProvider.notifier).finalize(containerRepoState.containerList.first, isManually: false);
+      await providerContainer.read(tokenContainerProvider.notifier).finalize(containerRepoState.containerList.first, isManually: false, urlIsOk: true);
 
       // assert
       final state = await providerContainer.read(tokenContainerProvider.future);
@@ -653,7 +644,7 @@ void _testTokenContainerNotifier() {
         var containerRepoState = _buildFinalizedContainerState();
         final containerToSync = containerRepoState.containerList.first as TokenContainerFinalized;
         final mockContainerApi = MockTokenContainerApi();
-        final updatedTokens = <Token>[];
+        // final updatedTokens = <Token>[];
         when(mockContainerApi.sync(any, any)).thenAnswer(
           (v) async => ContainerSyncUpdates(
             containerSerial: 'CONTAINER01',
@@ -678,7 +669,17 @@ void _testTokenContainerNotifier() {
                 counter: 8,
               ),
             ],
-            deleteTokenSerials: ["HOTPTOKEN02"],
+            deletedTokens: [
+              HOTPToken(
+                id: "ID02",
+                serial: "HOTPTOKEN02",
+                containerSerial: "CONTAINER01",
+                algorithm: Algorithms.SHA256,
+                digits: 6,
+                secret: "SECRET02",
+                counter: 12,
+              ),
+            ],
             newPolicies: ContainerPolicies(
               rolloverAllowed: true,
               initialTokenAssignment: true,
@@ -709,7 +710,7 @@ void _testTokenContainerNotifier() {
           "ID02": HOTPToken(
             id: "ID02",
             serial: "HOTPTOKEN02",
-            containerSerial: null,
+            containerSerial: "CONTAINER01",
             algorithm: Algorithms.SHA256,
             digits: 6,
             secret: "SECRET02",
@@ -758,7 +759,33 @@ void _testTokenContainerNotifier() {
         await providerContainer.read(tokenContainerProvider.notifier).sync(tokenState: tokenState, isManually: false);
 
         // assert
-        final expectedStateUnordered = TokenState(tokens: [...updatedTokens, repoTokens["ID04"]!]);
+        final expectedStateUnordered = TokenState(tokens: [
+          HOTPToken(
+            id: 'ID01',
+            serial: "HOTPTOKEN01",
+            containerSerial: "CONTAINER01",
+            algorithm: Algorithms.SHA256,
+            digits: 6,
+            secret: "SECRET01",
+            counter: 8,
+          ),
+          TOTPToken(
+            id: "ID03",
+            serial: "TOTPTOKEN01",
+            period: 30,
+            algorithm: Algorithms.SHA256,
+            digits: 8,
+            secret: "SECRET03",
+          ),
+          TOTPToken(
+            id: "ID04",
+            serial: "TOTPTOKEN02",
+            period: 30,
+            algorithm: Algorithms.SHA512,
+            digits: 6,
+            secret: "SECRET04",
+          ),
+        ]);
         final containerState = await providerContainer.read(tokenContainerProvider.future);
         await Future.delayed(const Duration(milliseconds: 1000)); // wait for the sync to finish
         tokenState = providerContainer.read(tokenProvider);

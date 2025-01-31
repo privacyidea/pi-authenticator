@@ -33,6 +33,7 @@ class TokenContainerProcessor extends SchemeProcessor {
   static const String ARG_DO_REPLACE = 'doReplace';
   static const String ARG_ADD_DEVICE_INFOS = 'addDeviceInfos';
   static const String ARG_INIT_SYNC = 'initSync';
+  static const String ARG_URL_IS_OK = 'urlIsOk';
 
   static Map<String, bool?> validateArgs(Map<String, dynamic> args) => validateMap(
         map: args,
@@ -40,6 +41,7 @@ class TokenContainerProcessor extends SchemeProcessor {
           TokenContainerProcessor.ARG_DO_REPLACE: boolValidatorNullable,
           TokenContainerProcessor.ARG_ADD_DEVICE_INFOS: boolValidatorNullable,
           TokenContainerProcessor.ARG_INIT_SYNC: boolValidatorNullable,
+          TokenContainerProcessor.ARG_URL_IS_OK: boolValidatorNullable,
         },
         name: 'TokenContainerProcessor#validateArgs',
       );

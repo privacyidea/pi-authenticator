@@ -42,7 +42,7 @@ import '../../model/token_container.dart';
 import '../../model/token_template.dart';
 import '../../model/tokens/token.dart';
 import '../../utils/logger.dart';
-import '../../widgets/dialog_widgets/container_dialogs/InitialTokenAssignmentDialog.dart';
+import '../../widgets/dialog_widgets/container_dialogs/initial_token_assignment_dialog.dart';
 import '../../widgets/dialog_widgets/enter_passphrase_dialog.dart';
 import '../interfaces/container_api.dart';
 
@@ -55,14 +55,20 @@ class PiContainerApi implements TokenContainerApi {
   ////////////////////////////// */
 
   @override
-  Future<ContainerSyncUpdates> sync(TokenContainerFinalized container, TokenState tokenState, {SimpleKeyPair? withX25519Key, bool isInitSync = false}) async {
+  Future<ContainerSyncUpdates> sync(
+    TokenContainerFinalized container,
+    TokenState tokenState, {
+    SimpleKeyPair? withX25519Key,
+    bool isInitSync = false,
+    bool? sendOTPs,
+  }) async {
     final containerTokenTemplates = tokenState.containerTokens(container.serial).toTemplates();
 
     final initialTokenAssignment = isInitSync && container.policies.initialTokenAssignment;
     final notLinkedTokenTemplates = initialTokenAssignment ? tokenState.notLinkedTokens.toTemplates() : <TokenTemplate>[];
     if (initialTokenAssignment) {
-      final sendOTPs = await InitialTokenAssignmentDialog.showDialog(container) ?? false;
-      if (!sendOTPs) {
+      sendOTPs ??= await InitialTokenAssignmentDialog.showDialog(container) ?? false;
+      if (sendOTPs == false) {
         notLinkedTokenTemplates.removeWhere((element) => element.otpValues != null && element.otpValues!.isNotEmpty);
       }
     }
@@ -108,9 +114,9 @@ class PiContainerApi implements TokenContainerApi {
     assert(serverTokensUpdate.isEmpty, 'Server token otps map should be empty after removing all tokens with serial and otps');
     // Container tokens can be deleted if they are not in the server list
     final List<TokenTemplate> mergedTemplatesWithSerial;
-    final List<String> deleteSerials;
+    final List<TokenTemplate> deleteTemplates;
     final notLinkedSerialTemplates = notLinkedTokenTemplates.where((e) => e.serial != null).toList();
-    (mergedTemplatesWithSerial, deleteSerials) = _handlePiTokens(
+    (mergedTemplatesWithSerial, deleteTemplates) = _handlePiTokens(
       containerTokenTemplates: [...containerTokenTemplates, ...notLinkedSerialTemplates],
       serverTokensWithSerial: serverTokensWithSerial,
       container: container,
@@ -123,10 +129,12 @@ class PiContainerApi implements TokenContainerApi {
       updatedTokens.add(token);
     }
 
+    final deleteTokens = deleteTemplates.map((e) => container.addOriginToToken(token: e.toToken())).toList();
+
     return ContainerSyncUpdates(
       newTokens: newTokens,
       updatedTokens: updatedTokens,
-      deleteTokenSerials: deleteSerials,
+      deletedTokens: deleteTokens,
       newPolicies: syncResult.policies,
       containerSerial: container.serial,
     );
@@ -396,19 +404,19 @@ class PiContainerApi implements TokenContainerApi {
     return merged;
   }
 
-  (List<TokenTemplate>, List<String>) _handlePiTokens({
+  (List<TokenTemplate>, List<TokenTemplate>) _handlePiTokens({
     required List<TokenTemplate> containerTokenTemplates,
     required List<Map<String, dynamic>> serverTokensWithSerial,
     required TokenContainerFinalized container,
   }) {
-    final deleteSerials = <String>[];
+    final deleteSerials = <TokenTemplate>[];
     final mergedTemplatesWithSerial = <TokenTemplate>[];
     for (var containerToken in containerTokenTemplates) {
       final serverToken = serverTokensWithSerial.firstWhereOrNull((element) => element[Token.SERIAL] == containerToken.serial);
       serverTokensWithSerial.remove(serverToken);
       if (serverToken == null) {
         if (containerToken.containerSerial == container.serial) {
-          deleteSerials.add(containerToken.serial!);
+          deleteSerials.add(containerToken);
         }
       } else {
         var mergedTemplate = containerToken.withOtpAuthData(serverToken);

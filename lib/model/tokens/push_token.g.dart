@@ -39,6 +39,7 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) => PushToken(
       origin: json['origin'] == null
           ? null
           : TokenOriginData.fromJson(json['origin'] as Map<String, dynamic>),
+      isOffline: json['isOffline'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
@@ -52,6 +53,7 @@ Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
       'isHidden': instance.isHidden,
       'tokenImage': instance.tokenImage,
       'folderId': instance.folderId,
+      'isOffline': instance.isOffline,
       'sortIndex': instance.sortIndex,
       'origin': instance.origin,
       'type': instance.type,

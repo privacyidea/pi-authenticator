@@ -29,9 +29,9 @@ import '../default_dialog.dart';
 class ContainerSyncResultDialog extends StatelessWidget {
   final TokenContainerFinalized container;
   final List<Token> addedTokens;
-  final List<String> removedTokens;
+  final List<Token> removedTokens;
 
-  static showDialog({required TokenContainerFinalized container, required List<Token> addedTokens, required List<String> removedTokens}) {
+  static showDialog({required TokenContainerFinalized container, required List<Token> addedTokens, required List<Token> removedTokens}) {
     if (addedTokens.isEmpty && removedTokens.isEmpty) {
       // Nothing to show
       return null;
@@ -93,11 +93,11 @@ class ContainerSyncResultDialog extends StatelessWidget {
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
                 ),
-                for (var tokenSerial in removedTokens)
+                for (var token in removedTokens)
                   Padding(
                     padding: const EdgeInsets.only(left: 4),
                     child: Text(
-                      '• $tokenSerial',
+                      '• ${token.label}',
                       style: Theme.of(context).textTheme.bodyLarge,
                     ),
                   ),

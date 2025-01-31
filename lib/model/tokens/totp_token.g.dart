@@ -30,6 +30,7 @@ TOTPToken _$TOTPTokenFromJson(Map<String, dynamic> json) => TOTPToken(
           : TokenOriginData.fromJson(json['origin'] as Map<String, dynamic>),
       label: json['label'] as String? ?? '',
       issuer: json['issuer'] as String? ?? '',
+      isOffline: json['isOffline'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$TOTPTokenToJson(TOTPToken instance) => <String, dynamic>{
@@ -44,6 +45,7 @@ Map<String, dynamic> _$TOTPTokenToJson(TOTPToken instance) => <String, dynamic>{
       'isHidden': instance.isHidden,
       'tokenImage': instance.tokenImage,
       'folderId': instance.folderId,
+      'isOffline': instance.isOffline,
       'sortIndex': instance.sortIndex,
       'origin': instance.origin,
       'type': instance.type,

@@ -26,6 +26,7 @@ SteamToken _$SteamTokenFromJson(Map<String, dynamic> json) => SteamToken(
           : TokenOriginData.fromJson(json['origin'] as Map<String, dynamic>),
       label: json['label'] as String? ?? '',
       issuer: json['issuer'] as String? ?? '',
+      isOffline: json['isOffline'] as bool? ?? false,
     );
 
 Map<String, dynamic> _$SteamTokenToJson(SteamToken instance) =>
@@ -40,6 +41,7 @@ Map<String, dynamic> _$SteamTokenToJson(SteamToken instance) =>
       'isHidden': instance.isHidden,
       'tokenImage': instance.tokenImage,
       'folderId': instance.folderId,
+      'isOffline': instance.isOffline,
       'sortIndex': instance.sortIndex,
       'origin': instance.origin,
       'type': instance.type,

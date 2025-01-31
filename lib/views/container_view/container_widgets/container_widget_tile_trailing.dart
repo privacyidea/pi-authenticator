@@ -82,6 +82,9 @@ class ContainerWidgetTileTrailing extends ConsumerWidget {
         child: const Icon(Icons.link_rounded),
       );
     }
-    return CircularProgressIndicator.adaptive();
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: CircularProgressIndicator.adaptive(),
+    );
   }
 }

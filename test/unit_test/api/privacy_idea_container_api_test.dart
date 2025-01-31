@@ -224,10 +224,10 @@ void _testPrivacyIdeaContainerApi() {
               'value': {
                 'public_server_key': publicServerKey,
                 'policies': {
+                  'disable_client_container_unregister': true,
+                  'disable_client_token_deletion': true,
                   'container_client_rollover': false,
-                  'container_initial_token_transfer': false,
-                  'client_token_deletable': true,
-                  'client_container_unregister': true,
+                  'initially_add_tokens_to_container': false,
                 },
               },
             },
@@ -267,8 +267,8 @@ void _testPrivacyIdeaContainerApi() {
       expect(policies, isA<ContainerPolicies>());
       expect(policies.rolloverAllowed, false);
       expect(policies.initialTokenAssignment, false);
-      expect(policies.disabledTokenDeletion, false);
-      expect(policies.disabledUnregister, false);
+      expect(policies.disabledTokenDeletion, true);
+      expect(policies.disabledUnregister, true);
     });
     test('getRolloverQrData', () async {
       // Arrange
@@ -282,14 +282,13 @@ void _testPrivacyIdeaContainerApi() {
         final Map<String, String?> invocationBody = invocation.namedArguments[Symbol('body')];
         Logger.info('Body: $invocationBody');
 
-        if (invocationUrl.toString() == 'http://example.com/container/${tokenContainer.serial}/challenge' &&
-            invocationBody['scope'] == 'http://example.com/container/${tokenContainer.serial}/rollover') {
+        if (invocationUrl.toString() == 'http://example.com/container/challenge' && invocationBody['scope'] == 'http://example.com/container/rollover') {
           return containerChallengeResponse;
         }
 
         final signMessage = '$containerChallengeNonce|$containerChallengeTimeStamp|${tokenContainer.serial}|$invocationUrl';
-        if (invocationUrl.toString() == 'http://example.com/container/${tokenContainer.serial}/rollover' &&
-            invocationBody['scope'] == 'http://example.com/container/${tokenContainer.serial}/rollover' &&
+        if (invocationUrl.toString() == 'http://example.com/container/rollover' &&
+            invocationBody['scope'] == 'http://example.com/container/rollover' &&
             EccUtils().validateSignature(tokenContainer.ecPublicClientKey!, invocationBody['signature']!, signMessage)) {
           return Response(
             jsonEncode({
@@ -332,13 +331,13 @@ void _testPrivacyIdeaContainerApi() {
         final Uri invocationUrl = invocation.namedArguments[Symbol('url')];
         final Map<String, String?> invocationBody = invocation.namedArguments[Symbol('body')];
         Logger.info('Body: $invocationBody');
-        if (invocationUrl.toString() == 'http://example.com/container/${tokenContainer.serial}/challenge' &&
-            invocationBody['scope'] == 'http://example.com/container/register/${tokenContainer.serial}/terminate/client') {
+        if (invocationUrl.toString() == 'http://example.com/container/challenge' &&
+            invocationBody['scope'] == 'http://example.com/container/register/terminate/client') {
           return containerChallengeResponse;
         }
         final signMessage = '$containerChallengeNonce|$containerChallengeTimeStamp|${tokenContainer.serial}|$invocationUrl';
-        if (invocationUrl.toString() == 'http://example.com/container/register/${tokenContainer.serial}/terminate/client' &&
-            invocationBody['scope'] == 'http://example.com/container/register/${tokenContainer.serial}/terminate/client' &&
+        if (invocationUrl.toString() == 'http://example.com/container/register/terminate/client' &&
+            invocationBody['scope'] == 'http://example.com/container/register/terminate/client' &&
             EccUtils().validateSignature(tokenContainer.ecPublicClientKey!, invocationBody['signature']!, signMessage)) {
           return Response(
             jsonEncode({
@@ -375,6 +374,7 @@ void _testPrivacyIdeaContainerApi() {
         final tokenContainer = getFinalizedTokenContainer();
         final tokenState = TokenState(
           tokens: [
+            // Token is not in the container
             HOTPToken(label: "label1", issuer: "privacyIDEA", counter: 5, id: 'id1', algorithm: Algorithms.SHA1, digits: 6, secret: 'AAAAAAAA'),
           ],
         );
@@ -382,13 +382,12 @@ void _testPrivacyIdeaContainerApi() {
           final Uri invocationUrl = invocation.namedArguments[Symbol('url')];
           final Map<String, String?> invocationBody = invocation.namedArguments[Symbol('body')];
           Logger.info('Body: $invocationBody');
-          if (invocationUrl.toString() == 'http://example.com/container/${tokenContainer.serial}/challenge' &&
-              invocationBody['scope'] == 'http://example.com/container/${tokenContainer.serial}/sync') {
+          if (invocationUrl.toString() == 'http://example.com/container/challenge' && invocationBody['scope'] == 'http://example.com/container/synchronize') {
             return containerChallengeResponse;
           }
           final publicEncKeyClientB64 = invocationBody['public_enc_key_client'];
           final containerDictClient =
-              '{"serial":"SMPH00067A2F","type":"smartphone","tokens":[{"tokentype":"HOTP","label":"label1","issuer":"privacyIDEA","pin":"False","algorithm":"SHA1","digits":"6","otp":["435986","964213"],"counter":"5"}]}';
+              '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"tokentype":"HOTP","label":"label1","issuer":"privacyIDEA","pin":"False","offline":false,"algorithm":"SHA1","digits":"6","otp":["435986","964213"],"counter":"5"}]}';
 
           final signMessage2 = '$containerChallengeNonce|'
               '$containerChallengeTimeStamp|'
@@ -397,7 +396,7 @@ void _testPrivacyIdeaContainerApi() {
               '$publicEncKeyClientB64|'
               '$containerDictClient';
 
-          if (invocationUrl.toString() == 'http://example.com/container/${tokenContainer.serial}/sync' &&
+          if (invocationUrl.toString() == 'http://example.com/container/synchronize' &&
               invocationBody['container_dict_client'] == containerDictClient &&
               EccUtils().validateSignature(tokenContainer.ecPublicClientKey!, invocationBody['signature']!, signMessage2)) {
             return Response(
@@ -417,13 +416,13 @@ void _testPrivacyIdeaContainerApi() {
                       'tag': 'iThLozfTiK4twnPXnvF0nA==',
                     },
                     'policies': {
+                      'disable_client_container_unregister': true,
+                      'disable_client_token_deletion': true,
                       'container_client_rollover': false,
-                      'container_initial_token_transfer': false,
-                      'client_token_deletable': true,
-                      'client_container_unregister': true,
+                      'initially_add_tokens_to_container': false,
                     },
                     'public_server_key': 'AMc1nbpqrEOgQLe1-nR2ExnqE1IM8qMDETYw65IU6wQ=',
-                    'server_url': 'http://example.com/container/${tokenContainer.serial}/sync',
+                    'server_url': 'http://example.com/container/synchronize',
                   }
                 },
                 'time': 1.0,
@@ -446,18 +445,21 @@ void _testPrivacyIdeaContainerApi() {
         );
 
         // Act
-        final result = await containerApi.sync(tokenContainer, tokenState, withX25519Key: publicSimpleKeyPair);
+        final result = await containerApi.sync(tokenContainer, tokenState, withX25519Key: publicSimpleKeyPair, isInitSync: true, sendOTPs: true);
+
         // Asserta
         expect(result, isNotNull);
         final newPolicies = result.newPolicies;
         expect(newPolicies.initialTokenAssignment, false);
         expect(newPolicies.rolloverAllowed, false);
-        expect(newPolicies.disabledTokenDeletion, false);
-        expect(newPolicies.disabledUnregister, false);
-        final updatedTokens = result.updatedTokens;
-        expect(updatedTokens.length, 2);
-        final token0 = updatedTokens[0];
-        final token1 = updatedTokens[1];
+        expect(newPolicies.disabledTokenDeletion, true);
+        expect(newPolicies.disabledUnregister, true);
+        final newTokens = result.newTokens;
+        expect(newTokens.length, 2);
+        expect(result.updatedTokens.length, 0);
+        expect(result.deletedTokens.length, 0);
+        final token0 = newTokens[0];
+        final token1 = newTokens[1];
         expect(token0, isA<HOTPToken>());
         expect((token0 as HOTPToken).label, 'OATH00068B93');
         expect(token0.issuer, 'privacyIDEA');
@@ -496,13 +498,12 @@ void _testPrivacyIdeaContainerApi() {
           final Uri invocationUrl = invocation.namedArguments[Symbol('url')];
           final Map<String, String?> invocationBody = invocation.namedArguments[Symbol('body')];
           Logger.info('Body: $invocationBody');
-          if (invocationUrl.toString() == 'http://example.com/container/${tokenContainer.serial}/challenge' &&
-              invocationBody['scope'] == 'http://example.com/container/${tokenContainer.serial}/sync') {
+          if (invocationUrl.toString() == 'http://example.com/container/challenge' && invocationBody['scope'] == 'http://example.com/container/synchronize') {
             return containerChallengeResponse;
           }
           final publicEncKeyClientB64 = invocationBody['public_enc_key_client'];
           final containerDictClient =
-              '{"serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"OATH00068B93","tokentype":"HOTP","label":"OATH00068B93","issuer":"privacyIDEA","pin":"False","algorithm":"SHA1","digits":"6","counter":"1"}]}';
+              '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"OATH00068B93","tokentype":"HOTP","label":"OATH00068B93","issuer":"privacyIDEA","pin":"False","offline":false,"algorithm":"SHA1","digits":"6","counter":"1"}]}';
 
           final signMessage2 = '$containerChallengeNonce|'
               '$containerChallengeTimeStamp|'
@@ -511,7 +512,7 @@ void _testPrivacyIdeaContainerApi() {
               '$publicEncKeyClientB64|'
               '$containerDictClient';
 
-          if (invocationUrl.toString() == 'http://example.com/container/${tokenContainer.serial}/sync' &&
+          if (invocationUrl.toString() == 'http://example.com/container/synchronize' &&
               invocationBody['container_dict_client'] == containerDictClient &&
               EccUtils().validateSignature(tokenContainer.ecPublicClientKey!, invocationBody['signature']!, signMessage2)) {
             return Response(
@@ -531,13 +532,13 @@ void _testPrivacyIdeaContainerApi() {
                       'tag': 'bGIenivUR2QS5T1H37rJQg==',
                     },
                     'policies': {
+                      'disable_client_container_unregister': true,
+                      'disable_client_token_deletion': true,
                       'container_client_rollover': false,
-                      'container_initial_token_transfer': false,
-                      'client_token_deletable': true,
-                      'client_container_unregister': true,
+                      'initially_add_tokens_to_container': false,
                     },
                     'public_server_key': '4HUJxDV2j1dguSOUGmupScPqjNJL-sATSvmYujP3STo=',
-                    'server_url': 'http://example.com/container/${tokenContainer.serial}/sync',
+                    'server_url': 'http://example.com/container/synchronize',
                   }
                 },
                 'time': 1.0,
@@ -560,20 +561,22 @@ void _testPrivacyIdeaContainerApi() {
         );
 
         // Act
-        final result = await containerApi.sync(tokenContainer, tokenState, withX25519Key: publicSimpleKeyPair);
-        // Asserta
+        final result = await containerApi.sync(tokenContainer, tokenState, withX25519Key: publicSimpleKeyPair, isInitSync: true, sendOTPs: true);
+
+        // Assert
         expect(result, isNotNull);
         final newPolicies = result.newPolicies;
         expect(newPolicies.initialTokenAssignment, false);
         expect(newPolicies.rolloverAllowed, false);
-        expect(newPolicies.disabledTokenDeletion, false);
-        expect(newPolicies.disabledUnregister, false);
+        expect(newPolicies.disabledTokenDeletion, true);
+        expect(newPolicies.disabledUnregister, true);
+        final newTokens = result.newTokens;
         final updatedTokens = result.updatedTokens;
-        final deleteTokenSerials = result.deleteTokenSerials;
-        expect(deleteTokenSerials.length, 0);
-        expect(updatedTokens.length, 2);
+        final deleteTokens = result.deletedTokens;
+        expect(newTokens.length, 1);
+        expect(deleteTokens.length, 0);
+        expect(updatedTokens.length, 1);
         final token0 = updatedTokens[0];
-        final token1 = updatedTokens[1];
         expect(token0, isA<HOTPToken>());
         expect((token0 as HOTPToken).label, 'OATH00068B93');
         expect(token0.issuer, 'privacyIDEA');
@@ -581,6 +584,7 @@ void _testPrivacyIdeaContainerApi() {
         expect(token0.algorithm, Algorithms.SHA1);
         expect(token0.digits, 6);
         expect(token0.secret, 'CDLDLKLUMPDR2IJJZJHF5XKFKBABU4XR');
+        final token1 = newTokens[0];
         expect(token1, isA<TOTPToken>());
         expect((token1 as TOTPToken).label, 'TOTP00011B1F');
         expect(token1.issuer, 'privacyIDEA');
@@ -621,13 +625,12 @@ void _testPrivacyIdeaContainerApi() {
           final Uri invocationUrl = invocation.namedArguments[Symbol('url')];
           final Map<String, String?> invocationBody = invocation.namedArguments[Symbol('body')];
           Logger.info('Body: $invocationBody');
-          if (invocationUrl.toString() == 'http://example.com/container/${tokenContainer.serial}/challenge' &&
-              invocationBody['scope'] == 'http://example.com/container/${tokenContainer.serial}/sync') {
+          if (invocationUrl.toString() == 'http://example.com/container/challenge' && invocationBody['scope'] == 'http://example.com/container/synchronize') {
             return containerChallengeResponse;
           }
           final publicEncKeyClientB64 = invocationBody['public_enc_key_client'];
           final containerDictClient =
-              '{"serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"TOTP00011B1F","tokentype":"TOTP","label":"TOTP00011B1F","issuer":"privacyIDEA","pin":"False","algorithm":"SHA1","digits":"6","period":"30"},{"tokentype":"HOTP","label":"OATH00166051","issuer":"privacyIDEA","pin":"False","algorithm":"SHA1","digits":"6","otp":["079447","501895"],"counter":"1"}]}';
+              '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"TOTP00011B1F","tokentype":"TOTP","label":"TOTP00011B1F","issuer":"privacyIDEA","pin":"False","offline":false,"algorithm":"SHA1","digits":"6","period":"30"},{"tokentype":"HOTP","label":"OATH00166051","issuer":"privacyIDEA","pin":"False","offline":false,"algorithm":"SHA1","digits":"6","otp":["079447","501895"],"counter":"1"}]}';
 
           final signMessage2 = '$containerChallengeNonce|'
               '$containerChallengeTimeStamp|'
@@ -636,7 +639,7 @@ void _testPrivacyIdeaContainerApi() {
               '$publicEncKeyClientB64|'
               '$containerDictClient';
 
-          if (invocationUrl.toString() == 'http://example.com/container/${tokenContainer.serial}/sync' &&
+          if (invocationUrl.toString() == 'http://example.com/container/synchronize' &&
               invocationBody['container_dict_client'] == containerDictClient &&
               EccUtils().validateSignature(tokenContainer.ecPublicClientKey!, invocationBody['signature']!, signMessage2)) {
             return Response(
@@ -656,13 +659,13 @@ void _testPrivacyIdeaContainerApi() {
                       'tag': 'HIWDZ6mXNdWA9zYLJa9-WA==',
                     },
                     'policies': {
+                      'disable_client_container_unregister': true,
+                      'disable_client_token_deletion': true,
                       'container_client_rollover': false,
-                      'container_initial_token_transfer': false,
-                      'client_token_deletable': true,
-                      'client_container_unregister': true,
+                      'initially_add_tokens_to_container': false,
                     },
                     'public_server_key': 'aK_oH0ycoKrXoIMbTlQ7_adxUe7JVAuPCbcoOUBKYBY=',
-                    'server_url': 'http://example.com/container/${tokenContainer.serial}/sync',
+                    'server_url': 'http://example.com/container/synchronize',
                   }
                 },
                 'time': 1.0,
@@ -685,17 +688,17 @@ void _testPrivacyIdeaContainerApi() {
         );
 
         // Act
-        final result = await containerApi.sync(tokenContainer, tokenState, withX25519Key: publicSimpleKeyPair);
+        final result = await containerApi.sync(tokenContainer, tokenState, withX25519Key: publicSimpleKeyPair, isInitSync: true, sendOTPs: true);
         // Asserta
         expect(result, isNotNull);
         final newPolicies = result.newPolicies;
         expect(newPolicies.initialTokenAssignment, false);
         expect(newPolicies.rolloverAllowed, false);
-        expect(newPolicies.disabledTokenDeletion, false);
-        expect(newPolicies.disabledUnregister, false);
+        expect(newPolicies.disabledTokenDeletion, true);
+        expect(newPolicies.disabledUnregister, true);
         final updatedTokens = result.updatedTokens;
-        final deleteTokenSerials = result.deleteTokenSerials;
-        expect(deleteTokenSerials.length, 0);
+        final deleteTokens = result.deletedTokens;
+        expect(deleteTokens.length, 0);
         expect(updatedTokens.length, 2);
         final token0 = updatedTokens[0];
         final token1 = updatedTokens[1];
@@ -747,13 +750,12 @@ void _testPrivacyIdeaContainerApi() {
           final Uri invocationUrl = invocation.namedArguments[Symbol('url')];
           final Map<String, String?> invocationBody = invocation.namedArguments[Symbol('body')];
           Logger.info('Body: $invocationBody');
-          if (invocationUrl.toString() == 'http://example.com/container/${tokenContainer.serial}/challenge' &&
-              invocationBody['scope'] == 'http://example.com/container/${tokenContainer.serial}/sync') {
+          if (invocationUrl.toString() == 'http://example.com/container/challenge' && invocationBody['scope'] == 'http://example.com/container/synchronize') {
             return containerChallengeResponse;
           }
           final publicEncKeyClientB64 = invocationBody['public_enc_key_client'];
           final containerDictClient =
-              '{"serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"TOTP00011B1F","tokentype":"TOTP","label":"TOTP00011B1F","issuer":"privacyIDEA","pin":"False","algorithm":"SHA1","digits":"6","period":"30"},{"serial":"OATH00166051","tokentype":"HOTP","label":"OATH00166051","issuer":"privacyIDEA","pin":"False","algorithm":"SHA1","digits":"6","counter":"1"}]}';
+              '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"TOTP00011B1F","tokentype":"TOTP","label":"TOTP00011B1F","issuer":"privacyIDEA","pin":"False","offline":false,"algorithm":"SHA1","digits":"6","period":"30"},{"serial":"OATH00166051","tokentype":"HOTP","label":"OATH00166051","issuer":"privacyIDEA","pin":"False","offline":false,"algorithm":"SHA1","digits":"6","counter":"1"}]}';
 
           final signMessage2 = '$containerChallengeNonce|'
               '$containerChallengeTimeStamp|'
@@ -762,7 +764,7 @@ void _testPrivacyIdeaContainerApi() {
               '$publicEncKeyClientB64|'
               '$containerDictClient';
 
-          if (invocationUrl.toString() == 'http://example.com/container/${tokenContainer.serial}/sync' &&
+          if (invocationUrl.toString() == 'http://example.com/container/synchronize' &&
               invocationBody['container_dict_client'] == containerDictClient &&
               EccUtils().validateSignature(tokenContainer.ecPublicClientKey!, invocationBody['signature']!, signMessage2)) {
             return Response(
@@ -782,13 +784,13 @@ void _testPrivacyIdeaContainerApi() {
                       'tag': 'lnAF6Md0EkSq8bKt5eetpg==',
                     },
                     'policies': {
+                      'disable_client_container_unregister': true,
+                      'disable_client_token_deletion': true,
                       'container_client_rollover': false,
-                      'container_initial_token_transfer': false,
-                      'client_token_deletable': true,
-                      'client_container_unregister': true,
+                      'initially_add_tokens_to_container': false,
                     },
                     'public_server_key': 'Od5nNdvC3iVYTK5aA5e-c1-f3FhSe4MH4apaNDRkSQA=',
-                    'server_url': 'http://example.com/container/${tokenContainer.serial}/sync',
+                    'server_url': 'http://example.com/container/synchronize',
                   }
                 },
                 'time': 1.0,
@@ -811,17 +813,17 @@ void _testPrivacyIdeaContainerApi() {
         );
 
         // Act
-        final result = await containerApi.sync(tokenContainer, tokenState, withX25519Key: publicSimpleKeyPair);
+        final result = await containerApi.sync(tokenContainer, tokenState, withX25519Key: publicSimpleKeyPair, isInitSync: true, sendOTPs: true);
         // Asserta
         expect(result, isNotNull);
         final newPolicies = result.newPolicies;
         expect(newPolicies.initialTokenAssignment, false);
         expect(newPolicies.rolloverAllowed, false);
-        expect(newPolicies.disabledTokenDeletion, false);
-        expect(newPolicies.disabledUnregister, false);
+        expect(newPolicies.disabledTokenDeletion, true);
+        expect(newPolicies.disabledUnregister, true);
         final updatedTokens = result.updatedTokens;
-        final deleteTokenSerials = result.deleteTokenSerials;
-        expect(deleteTokenSerials.length, 0);
+        final deleteTokens = result.deletedTokens;
+        expect(deleteTokens.length, 0);
         expect(updatedTokens.length, 1);
         final token0 = updatedTokens[0];
         expect(token0, isA<TOTPToken>());
@@ -866,13 +868,13 @@ void _testPrivacyIdeaContainerApi() {
           final Uri invocationUrl = invocation.namedArguments[Symbol('url')];
           final Map<String, String?> invocationBody = invocation.namedArguments[Symbol('body')];
           Logger.info('Body: $invocationBody');
-          if (invocationUrl.toString() == 'http://example.com/container/${tokenContainer.serial}/challenge' &&
-              invocationBody['scope'] == 'http://example.com/container/${tokenContainer.serial}/sync') {
+          if (invocationUrl.toString() == 'http://example.com/container/challenge' && invocationBody['scope'] == 'http://example.com/container/synchronize') {
             return containerChallengeResponse;
           }
           final publicEncKeyClientB64 = invocationBody['public_enc_key_client'];
+
           final containerDictClient =
-              '{"serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"TOTP00011B1F","tokentype":"TOTP","label":"TOTP00011B1F","issuer":"privacyIDEA","pin":"False","algorithm":"SHA1","digits":"6","period":"30"},{"tokentype":"HOTP","label":"OATH00166051","issuer":"privacyIDEA","pin":"False","algorithm":"SHA1","digits":"6","otp":["079447","501895"],"counter":"1"}]}';
+              '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"TOTP00011B1F","tokentype":"TOTP","label":"TOTP00011B1F","issuer":"privacyIDEA","pin":"False","offline":false,"algorithm":"SHA1","digits":"6","period":"30"},{"tokentype":"HOTP","label":"OATH00166051","issuer":"privacyIDEA","pin":"False","offline":false,"algorithm":"SHA1","digits":"6","otp":["079447","501895"],"counter":"1"}]}';
 
           final signMessage2 = '$containerChallengeNonce|'
               '$containerChallengeTimeStamp|'
@@ -881,7 +883,7 @@ void _testPrivacyIdeaContainerApi() {
               '$publicEncKeyClientB64|'
               '$containerDictClient';
 
-          if (invocationUrl.toString() == 'http://example.com/container/${tokenContainer.serial}/sync' &&
+          if (invocationUrl.toString() == 'http://example.com/container/synchronize' &&
               invocationBody['container_dict_client'] == containerDictClient &&
               EccUtils().validateSignature(tokenContainer.ecPublicClientKey!, invocationBody['signature']!, signMessage2)) {
             return Response(
@@ -901,13 +903,13 @@ void _testPrivacyIdeaContainerApi() {
                       'tag': 'lnAF6Md0EkSq8bKt5eetpg==',
                     },
                     'policies': {
+                      'disable_client_container_unregister': true,
+                      'disable_client_token_deletion': true,
                       'container_client_rollover': false,
-                      'container_initial_token_transfer': false,
-                      'client_token_deletable': true,
-                      'client_container_unregister': true,
+                      'initially_add_tokens_to_container': false,
                     },
                     'public_server_key': 'Od5nNdvC3iVYTK5aA5e-c1-f3FhSe4MH4apaNDRkSQA=',
-                    'server_url': 'http://example.com/container/${tokenContainer.serial}/sync',
+                    'server_url': 'http://example.com/container/synchronize',
                   }
                 },
                 'time': 1.0,
@@ -930,17 +932,17 @@ void _testPrivacyIdeaContainerApi() {
         );
 
         // Act
-        final result = await containerApi.sync(tokenContainer, tokenState, withX25519Key: publicSimpleKeyPair);
+        final result = await containerApi.sync(tokenContainer, tokenState, withX25519Key: publicSimpleKeyPair, isInitSync: true, sendOTPs: true);
         // Asserta
         expect(result, isNotNull);
         final newPolicies = result.newPolicies;
         expect(newPolicies.initialTokenAssignment, false);
         expect(newPolicies.rolloverAllowed, false);
-        expect(newPolicies.disabledTokenDeletion, false);
-        expect(newPolicies.disabledUnregister, false);
+        expect(newPolicies.disabledTokenDeletion, true);
+        expect(newPolicies.disabledUnregister, true);
         final updatedTokens = result.updatedTokens;
-        final deleteTokenSerials = result.deleteTokenSerials;
-        expect(deleteTokenSerials.length, 0);
+        final deleteTokens = result.deletedTokens;
+        expect(deleteTokens.length, 0);
         expect(updatedTokens.length, 1);
         final token0 = updatedTokens[0];
         expect(token0, isA<TOTPToken>());
