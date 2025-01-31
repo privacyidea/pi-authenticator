@@ -699,6 +699,30 @@
   "@increaseCounter": {
     "description": "A11y label for the button that increases the counter."
   },
+  "@initialTokenAssignmentDialogContent1": {
+    "description": "First part of the dialog content to ask the user if he wants to automatically assign a token to a container",
+    "placeholders": {
+      "serial": {
+        "description": "The serial number of the container",
+        "example": "123456"
+      }
+    }
+  },
+  "@initialTokenAssignmentDialogContent2": {
+    "description": "Second part of the dialog content to ask the user if he wants to automatically assign a token to a container"
+  },
+  "@initialTokenAssignmentDialogQuestion": {
+    "description": "Question if the user wants to continue with the automatic assignment of a token to a container"
+  },
+  "@initialTokenAssignmentDialogSSLWarning1": {
+    "description": "First part of the warning that tells the user that SSL verification is disabled."
+  },
+  "@initialTokenAssignmentDialogSSLWarning2": {
+    "description": "Second part of the warning that tells the user that SSL verification is disabled."
+  },
+  "@initialTokenAssignmentDialogTitle": {
+    "description": "Title of the dialog to ask the user if he wants to automatically assign a token to a container"
+  },
   "@internalServerError": {
     "description": "Error message when an internal server error occurred.",
     "placeholders": {
@@ -1684,7 +1708,7 @@
   "exportTokensHintDialogTitle": "Informasi penting",
   "exportingTokens": "Mengekspor token...",
   "failedToFinalizeContainer": "Gagal menyelesaikan kontainer {serial}",
-  "failedToLoad": "Gagal memuat: \"{name}\"",
+  "failedToLoad": "Gagal memuat: “{name}“",
   "failedToRenewSecrets": "Gagal memperbarui rahasia",
   "failedToSyncContainer": "Gagal menyinkronkan wadah {serial}",
   "feedback": "Umpan balik",
@@ -1737,6 +1761,12 @@
   "importTokens": "Impor token",
   "importedVia": "Diimpor via",
   "increaseCounter": "Tingkatkan penghitung",
+  "initialTokenAssignmentDialogContent1": "Dua OTP berikutnya dari token Anda yang tidak diketahui asalnya akan dikirim ke server yang terhubung dengan kontainer “{serial}”.",
+  "initialTokenAssignmentDialogContent2": "Ini akan secara otomatis menetapkan token privacyIDEA Anda ke wadah ini.",
+  "initialTokenAssignmentDialogQuestion": "Apakah Anda ingin melanjutkan?",
+  "initialTokenAssignmentDialogSSLWarning1": "Verifikasi SSL dinonaktifkan!",
+  "initialTokenAssignmentDialogSSLWarning2": "Mengirim OTP ke server yang tidak terverifikasi memiliki risiko keamanan yang tinggi!",
+  "initialTokenAssignmentDialogTitle": "Penugasan otomatis",
   "internalServerError": "Kesalahan server internal ({code})",
   "introAddFolder": "Anda dapat membuat folder untuk mengatur token Anda.",
   "introAddTokenManually": "Jika Anda tidak ingin memindai kode QR, Anda juga dapat menambahkan token secara manual.",
@@ -1772,7 +1802,7 @@
   "malformedData": "Data cacat",
   "markQrCode": "Tandai Kode QR",
   "missingRequiredParameter": "Nilai untuk parameter [{parameter}] diperlukan, tetapi tidak ada.",
-  "missingRequiredParameterIn": "Nilai untuk parameter [{parameter}] diperlukan, tetapi tidak ada dalam \"{map}\".",
+  "missingRequiredParameterIn": "Nilai untuk parameter [{parameter}] diperlukan, tetapi tidak ada dalam “{map}“.",
   "missingWidgetId": "WidgetId hilang",
   "mustNotBeEmpty": "{field} tidak boleh kosong",
   "name": "Nama",
@@ -1796,7 +1826,7 @@
   "open": "Buka",
   "originApp": "Aplikasi asal",
   "originDetails": "Rincian asal",
-  "otpValueCopiedMessage": "Kata sandi \"{otpValue}\" disalin ke papan klip.",
+  "otpValueCopiedMessage": "Kata sandi “{otpValue}“ disalin ke papan klip.",
   "password": "Kata sandi",
   "passwordCannotBeEmpty": "Kata sandi tidak boleh kosong",
   "passwordCannotContainWhitespace": "Kata sandi tidak boleh mengandung spasi",
@@ -1942,7 +1972,7 @@
   "useDeviceLocaleDescription": "Gunakan bahasa perangkat jika didukung, jika tidak, default ke bahasa Inggris.",
   "useDeviceLocaleTitle": "Gunakan bahasa perangkat",
   "valueNotAllowed": "Ketik {type} “{value}” bukan nilai yang diizinkan untuk ”{parameter}”",
-  "valueNotAllowedIn": "Ketik {type} “{value}” bukan merupakan nilai yang valid untuk ‘{parameter}’ di ”{map}”",
+  "valueNotAllowedIn": "Ketik {type} “{value}” bukan merupakan nilai yang valid untuk “{parameter}“ di ”{map}”",
   "verboseLogging": "Penebangan kata demi kata",
   "versionTitle": "Versi",
   "wrongPassword": "Kata sandi salah",

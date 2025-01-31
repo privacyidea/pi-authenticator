@@ -38,13 +38,13 @@ class InitialTokenAssignmentDialog extends StatelessWidget {
     final AppLocalizations localizations = AppLocalizations.of(context)!;
 
     return DefaultDialog(
-      title: Text('Automatic Assignment'),
+      title: Text(localizations.initialTokenAssignmentDialogTitle),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text('The next two OTPs of your tokens with unknown origin will be send to the server that the container "${container.serial}" is connected with.'),
-          Text('This will be used to automaticly assign your privacyIDEA token to this Container.'),
+          Text(localizations.initialTokenAssignmentDialogContent1(container.serial)),
+          Text(localizations.initialTokenAssignmentDialogContent2),
           if (!container.sslVerify)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 12.0),
@@ -60,14 +60,14 @@ class InitialTokenAssignmentDialog extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(
-                          'SSL Verification is disabled!',
-                          style: Theme.of(context).textTheme.bodyLarge,
+                          localizations.initialTokenAssignmentDialogSSLWarning1,
+                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Theme.of(context).extension<StatusColors>()!.warning),
                           textAlign: TextAlign.center,
                         ),
                         SizedBox(height: 4),
                         Text(
-                          'To send OTPs to an unverified server is a high security risk!',
-                          style: Theme.of(context).textTheme.bodyLarge,
+                          localizations.initialTokenAssignmentDialogSSLWarning2,
+                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Theme.of(context).extension<StatusColors>()!.warning),
                           textAlign: TextAlign.center,
                         ),
                       ],
@@ -83,7 +83,7 @@ class InitialTokenAssignmentDialog extends StatelessWidget {
             ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12.0),
-            child: Text('Do you agree to send the information?'),
+            child: Text(localizations.initialTokenAssignmentDialogQuestion),
           ),
         ],
       ),

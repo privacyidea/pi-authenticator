@@ -699,6 +699,30 @@
   "@increaseCounter": {
     "description": "A11y label for the button that increases the counter."
   },
+  "@initialTokenAssignmentDialogContent1": {
+    "description": "First part of the dialog content to ask the user if he wants to automatically assign a token to a container",
+    "placeholders": {
+      "serial": {
+        "description": "The serial number of the container",
+        "example": "123456"
+      }
+    }
+  },
+  "@initialTokenAssignmentDialogContent2": {
+    "description": "Second part of the dialog content to ask the user if he wants to automatically assign a token to a container"
+  },
+  "@initialTokenAssignmentDialogQuestion": {
+    "description": "Question if the user wants to continue with the automatic assignment of a token to a container"
+  },
+  "@initialTokenAssignmentDialogSSLWarning1": {
+    "description": "First part of the warning that tells the user that SSL verification is disabled."
+  },
+  "@initialTokenAssignmentDialogSSLWarning2": {
+    "description": "Second part of the warning that tells the user that SSL verification is disabled."
+  },
+  "@initialTokenAssignmentDialogTitle": {
+    "description": "Title of the dialog to ask the user if he wants to automatically assign a token to a container"
+  },
   "@internalServerError": {
     "description": "Error message when an internal server error occurred.",
     "placeholders": {
@@ -1673,7 +1697,7 @@
   "errorUnlinkingPushToken": "Error al desvincular el token push {label}",
   "errorUnregisterNotAllowed": "No se permite el cierre de sesión para este contenedor.",
   "errorWhenPullingChallenges": "Se ha producido un error al buscar retos de {name}",
-  "exampleUrl": "Por favor, introduzca una URL válida como: \"https://example.com/\"",
+  "exampleUrl": "Por favor, introduzca una URL válida como: “https://example.com/“",
   "expandLockedFolder": "Por favor, autentifíquese para abrir la carpeta bloqueada.",
   "export": "Exportar",
   "exportAllTokens": "Exportar todos los tokens",
@@ -1725,18 +1749,24 @@
   "importHintAegisBackupFile": "Seleccione su exportación de Aegis (.JSON).\nSi no tiene una exportación, cree una a través del menú de configuración en la app de Aegis. Se recomienda utilizar una contraseña",
   "importHintAegisLink": "Introduzca el enlace que recibe al transferir entradas desde Aegis",
   "importHintAegisQrScan": "Escanea el código QR que recibes al transferir entradas desde Aegis",
-  "importHintAuthenticatorProFile": "Para crear una copia de seguridad de la aplicación Authenticator Pro, vaya a la configuración y pulse en \"Copia de seguridad automática\". Seleccione una ubicación de almacenamiento y establezca una contraseña. A continuación, pulse \"Hacer copia de seguridad ahora\" para exportar los tokens.",
-  "importHintFreeOtpPlusFile": "Para crear una copia de seguridad de la app FreeOTP+, pulse los tres puntos de la esquina superior derecha y seleccione \"Exportar\". Puede elegir entre los formatos JSON y URI. Recomendamos eliminar la copia de seguridad después de importarla, ya que no está cifrada.",
-  "importHintFreeOtpPlusQrScan": "Escanea el código QR que recibes al pulsar los tres puntos en el azulejo de la ficha y selecciona \"Compartir código QR\".",
+  "importHintAuthenticatorProFile": "Para crear una copia de seguridad de la aplicación Authenticator Pro, vaya a la configuración y pulse en “Copia de seguridad automática“. Seleccione una ubicación de almacenamiento y establezca una contraseña. A continuación, pulse “Hacer copia de seguridad ahora“ para exportar los tokens.",
+  "importHintFreeOtpPlusFile": "Para crear una copia de seguridad de la app FreeOTP+, pulse los tres puntos de la esquina superior derecha y seleccione “Exportar“. Puede elegir entre los formatos JSON y URI. Recomendamos eliminar la copia de seguridad después de importarla, ya que no está cifrada.",
+  "importHintFreeOtpPlusQrScan": "Escanea el código QR que recibes al pulsar los tres puntos en el azulejo de la ficha y selecciona “Compartir código QR“.",
   "importHintGoogleQrFile": "Selecciona un archivo de imagen con el código QR que recibes al exportar tus cuentas desde Google Authenticator.\n!! Tenga en cuenta que no es seguro guardar el código QR en su dispositivo, ya que los tokens no están cifrados !!",
   "importHintGoogleQrScan": "Escanea el código QR que recibes al exportar tus cuentas desde Google Authenticator",
-  "importHintPrivacyIdeaFile": "Para crear una copia de seguridad, vaya a los ajustes y pulse sobre \"Exportar\". Seleccione \"Como archivo\", seleccione los tokens que desea exportar. A continuación, pulse \"Exportar\" y establezca una contraseña. La ubicación de almacenamiento es la carpeta de descargas de su dispositivo.",
-  "importHintPrivacyIdeaQrScan": "Para crear códigos QR de las fichas, vaya a la configuración y pulse sobre \"Exportar\". A continuación, seleccione \"Como código QR\" y pulse sobre la ficha que desea exportar. Esta variante sólo es adecuada para la transferencia directa a otro dispositivo, ya que el código QR no está cifrado.",
+  "importHintPrivacyIdeaFile": "Para crear una copia de seguridad, vaya a los ajustes y pulse sobre “Exportar“. Seleccione “Como archivo“, seleccione los tokens que desea exportar. A continuación, pulse “Exportar“ y establezca una contraseña. La ubicación de almacenamiento es la carpeta de descargas de su dispositivo.",
+  "importHintPrivacyIdeaQrScan": "Para crear códigos QR de las fichas, vaya a la configuración y pulse sobre “Exportar“. A continuación, seleccione “Como código QR“ y pulse sobre la ficha que desea exportar. Esta variante sólo es adecuada para la transferencia directa a otro dispositivo, ya que el código QR no está cifrado.",
   "importNTokens": "{count, plural, zero{No importar tokens} one{Importar un token} other{Importar {count} tokens}}",
   "importNewToken": "{count, plural, zero{No se ha encontrado ningún token nuevo.} one{Se ha encontrado un nuevo token que se puede importar.} other{Se han encontrado {count} nuevos tokens que se pueden importar.}}",
   "importTokens": "Importar token",
   "importedVia": "Importado a través de",
   "increaseCounter": "Incrementar contador",
+  "initialTokenAssignmentDialogContent1": "Las próximas dos OTPs de tus tokens con origen desconocido serán enviadas al servidor al que está conectado el contenedor «{serial}».",
+  "initialTokenAssignmentDialogContent2": "Esto asignará automáticamente su token privacyIDEA a este contenedor.",
+  "initialTokenAssignmentDialogQuestion": "¿Desea continuar?",
+  "initialTokenAssignmentDialogSSLWarning1": "¡La verificación SSL está desactivada!",
+  "initialTokenAssignmentDialogSSLWarning2": "¡El envío de OTPs a un servidor no verificado supone un alto riesgo para la seguridad!",
+  "initialTokenAssignmentDialogTitle": "Asignación automática",
   "internalServerError": "Error interno del servidor ({code})",
   "introAddFolder": "Puedes crear carpetas para organizar tus tokens",
   "introAddTokenManually": "Si no quieres escanear un código QR, también puedes añadir tokens manualmente",
@@ -1772,7 +1802,7 @@
   "malformedData": "Datos mal formados",
   "markQrCode": "Marcar código QR",
   "missingRequiredParameter": "El valor del parámetro [{parameter}] es obligatorio, pero falta.",
-  "missingRequiredParameterIn": "El valor del parámetro [{parameter}] es obligatorio, pero falta en \"{map}\".",
+  "missingRequiredParameterIn": "El valor del parámetro [{parameter}] es obligatorio, pero falta en “{map}“.",
   "missingWidgetId": "Falta widgetId",
   "mustNotBeEmpty": "{field} no debe estar vacío",
   "name": "Nombre",
@@ -1796,7 +1826,7 @@
   "open": "Abrir",
   "originApp": "Aplicación Origen",
   "originDetails": "Datos de origen",
-  "otpValueCopiedMessage": "Contraseña \"{otpValue}\" copiada en el portapapeles.",
+  "otpValueCopiedMessage": "Contraseña “{otpValue}“ copiada en el portapapeles.",
   "password": "Contraseña",
   "passwordCannotBeEmpty": "La contraseña no puede estar vacía",
   "passwordCannotContainWhitespace": "La contraseña no puede contener espacios en blanco",
@@ -1821,7 +1851,7 @@
   "patchNotesV4_4_0Improvement1": "Se han añadido más fuentes de importación.",
   "patchNotesV4_4_0Improvement2": "Se ha mejorado el reconocimiento de códigos QR a partir de archivos de imagen.",
   "patchNotesV4_4_0NewFeatures1": "Ahora es posible exportar tokens cuando se puede garantizar que no son tokens de privacyIDEA. Actualmente, no se puede descartar que los tokens añadidos a través del escáner de código QR procedan de privacyIDEA. La diferenciación se mejorará en futuras versiones.",
-  "patchNotesV4_4_0NewFeatures2": "Añadido soporte para privacyIDEA's \"require presence\".",
+  "patchNotesV4_4_0NewFeatures2": "Añadido soporte para privacyIDEA's “require presence“.",
   "patchNotesV4_4_2Improvement1": "Añadido soporte linterna para el escaneo de códigos QR.",
   "patchNotesV4_4_2NewFeatures1": "Ahora es posible insertar tokens copiando y pegando.",
   "patchNotesV4_4_2NewFeatures2": "Añadido soporte de galería para el escaneo de códigos QR.",
@@ -1852,7 +1882,7 @@
   "renewSecretsDialogText": "Puede renovar los secretos de los tokens. Esto es útil si sospecha que los secretos han sido comprometidos. Como los tokens de los contenedores se transmiten cifrados, los secretos se almacenan de forma segura en el dispositivo. El único caso conocido en el que esto podría haber ocurrido sería si el token se hubiera desplegado antes que el contenedor a través de un código QR.",
   "renewSecretsDialogTitle": "Renovar los secretos de las fichas",
   "replaceButton": "Sustituir",
-  "requestInfo": "Enviado por {issuer} para su cuenta: \"{account}\"",
+  "requestInfo": "Enviado por {issuer} para su cuenta: “{account}“",
   "requestPushChallengesPeriodically": "Solicita retos push al servidor periódicamente. Habilite esta opción si los retos push no se reciben normalmente.",
   "requestTriggerdByUserQuestion": "¿Fue usted quien provocó esta petición?",
   "retryRolloutButton": "Reintentar despliegue",

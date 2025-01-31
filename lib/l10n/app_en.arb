@@ -425,7 +425,7 @@
     "description": "Tells the user that synchronizing the push tokens failed because the server could not be reached."
   },
   "@errorTokenExpired": {
-    "description": "The submessage (reason) of \"errorRollOutNotPossibleAnymore\" that tells the user that the token is expired.",
+    "description": "The submessage (reason) of “errorRollOutNotPossibleAnymore“ that tells the user that the token is expired.",
     "placeholders": {
       "name": {
         "example": "PUSH1234A",
@@ -698,6 +698,30 @@
   },
   "@increaseCounter": {
     "description": "A11y label for the button that increases the counter."
+  },
+  "@initialTokenAssignmentDialogContent1": {
+    "description": "First part of the dialog content to ask the user if he wants to automatically assign a token to a container",
+    "placeholders": {
+      "serial": {
+        "description": "The serial number of the container",
+        "example": "123456"
+      }
+    }
+  },
+  "@initialTokenAssignmentDialogContent2": {
+    "description": "Second part of the dialog content to ask the user if he wants to automatically assign a token to a container"
+  },
+  "@initialTokenAssignmentDialogQuestion": {
+    "description": "Question if the user wants to continue with the automatic assignment of a token to a container"
+  },
+  "@initialTokenAssignmentDialogSSLWarning1": {
+    "description": "First part of the warning that tells the user that SSL verification is disabled."
+  },
+  "@initialTokenAssignmentDialogSSLWarning2": {
+    "description": "Second part of the warning that tells the user that SSL verification is disabled."
+  },
+  "@initialTokenAssignmentDialogTitle": {
+    "description": "Title of the dialog to ask the user if he wants to automatically assign a token to a container"
   },
   "@internalServerError": {
     "description": "Error message when an internal server error occurred.",
@@ -1673,7 +1697,7 @@
   "errorUnlinkingPushToken": "Failed to unlink the push token {label}.",
   "errorUnregisterNotAllowed": "Unregistering for this container is not allowed.",
   "errorWhenPullingChallenges": "An error occured when polling for challenges of {name}",
-  "exampleUrl": "Please enter a valid URL like: \"https://example.com/\"",
+  "exampleUrl": "Please enter a valid URL like: “https://example.com/“",
   "expandLockedFolder": "Please authenticate to uncollapse the locked folder.",
   "export": "Export",
   "exportAllTokens": "Export all tokens",
@@ -1684,7 +1708,7 @@
   "exportTokensHintDialogTitle": "Important information",
   "exportingTokens": "Exporting tokens...",
   "failedToFinalizeContainer": "Failed to finalize the container {serial}",
-  "failedToLoad": "Failed to load: \"{name}\"",
+  "failedToLoad": "Failed to load: “{name}“",
   "failedToRenewSecrets": "Failed to renew secrets",
   "failedToSyncContainer": "Failed to sync container {serial}",
   "feedback": "Feedback",
@@ -1725,18 +1749,24 @@
   "importHintAegisBackupFile": "Select your Aegis export (.JSON).\nIf you do not have an export, please create one via the settings menu in the Aegis app. The use of a password is recommended.",
   "importHintAegisLink": "Enter the link you receive when you transfer entries from Aegis.",
   "importHintAegisQrScan": "Scan the QR code you receive when you transfer entries from Aegis.",
-  "importHintAuthenticatorProFile": "To create a backup of the Authenticator Pro app, navigate to the settings and tap on \"Auto backup\". Select a storage location and set a password. Then press \"Back up now\" to export the tokens.",
-  "importHintFreeOtpPlusFile": "To create a backup of the FreeOTP+ app, tap on the three dots in the upper right corner and select \"Export\". You can choose between JSON and URI format. We recommend to delete the backup after importing it, because it is not encrypted.",
-  "importHintFreeOtpPlusQrScan": "Scan the QR code you receive when you press the three dots in the tile of the token and select \"Share QR code\".",
+  "importHintAuthenticatorProFile": "To create a backup of the Authenticator Pro app, navigate to the settings and tap on “Auto backup“. Select a storage location and set a password. Then press “Back up now“ to export the tokens.",
+  "importHintFreeOtpPlusFile": "To create a backup of the FreeOTP+ app, tap on the three dots in the upper right corner and select “Export“. You can choose between JSON and URI format. We recommend to delete the backup after importing it, because it is not encrypted.",
+  "importHintFreeOtpPlusQrScan": "Scan the QR code you receive when you press the three dots in the tile of the token and select “Share QR code“.",
   "importHintGoogleQrFile": "Select an image file with the QR code you receive when you export your accounts from Google Authenticator.\n!! Note that it is not safe to save the QR code on your device as the tokens are not encrypted !!",
   "importHintGoogleQrScan": "Scan the QR code you receive when you export your accounts from Google Authenticator.",
-  "importHintPrivacyIdeaFile": "To create a backup, go to the settings and tap on \"Export\". Select \"As file\", select the tokens you want to export. Then tap on \"Export\" and set a password. The storage location is the download folder on your device.",
-  "importHintPrivacyIdeaQrScan": "Um QR-Codes der Token zu erstellen, navigieren Sie zu den Einstellungen und tippen auf \"Exportieren\". Wählen Sie dann \"Als QR-Code\" und tippen Sie auf den zu exportierenden Token. Diese Variante ist nur für die direkte Übertragung auf ein anderes Gerät geeignet, da der QR-Code nicht verschlüsselt ist.",
+  "importHintPrivacyIdeaFile": "To create a backup, go to the settings and tap on “Export“. Select “As file“, select the tokens you want to export. Then tap on “Export“ and set a password. The storage location is the download folder on your device.",
+  "importHintPrivacyIdeaQrScan": "Um QR-Codes der Token zu erstellen, navigieren Sie zu den Einstellungen und tippen auf “Exportieren“. Wählen Sie dann “Als QR-Code“ und tippen Sie auf den zu exportierenden Token. Diese Variante ist nur für die direkte Übertragung auf ein anderes Gerät geeignet, da der QR-Code nicht verschlüsselt ist.",
   "importNTokens": "{count, plural, zero{Import no token} one{Import one token} other{Import {count} tokens}}",
   "importNewToken": "{count, plural, zero{No new token was found.} one{A new token was found that can be imported.} other{{count} new tokens were found that can be imported.}}",
   "importTokens": "Import token",
   "importedVia": "Imported via",
   "increaseCounter": "Increase counter",
+  "initialTokenAssignmentDialogContent1": "The next two OTPs of your tokens with unknown origin will be sent to the server to which the container ‘{serial}’ is connected.",
+  "initialTokenAssignmentDialogContent2": "This will be used to automaticly assign your privacyIDEA token to this Container.",
+  "initialTokenAssignmentDialogQuestion": "Do you want to continue?",
+  "initialTokenAssignmentDialogSSLWarning1": "SSL Verification is disabled!",
+  "initialTokenAssignmentDialogSSLWarning2": "To send OTPs to an unverified server is a high security risk!",
+  "initialTokenAssignmentDialogTitle": "Automatic Assignment",
   "internalServerError": "Internal server error ({code})",
   "introAddFolder": "You can create folders to organize your tokens.",
   "introAddTokenManually": "If you don't want to scan a QR code, you can also add tokens manually.",
@@ -1753,8 +1783,8 @@
   "invalidQrFile": "The selected file does not contain a valid QR code from {appName}.",
   "invalidQrScan": "The scanned QR code is not a valid backup of {appName}.",
   "invalidUrl": "Invalid URL",
-  "invalidValue": "The {type} ‘{value}’ is not valid for ‘{parameter}’",
-  "invalidValueIn": "The {type} ‘{value}’ is not valid for ‘{parameter}’ in ‘{map}’",
+  "invalidValue": "The {type} “{value}“ is not valid for “{parameter}“",
+  "invalidValueIn": "The {type} “{value}“ is not valid for “{parameter}“ in “{map}“",
   "isExpotableQuestion": "Is exportable?",
   "isPiTokenQuestion": "It's a privacyIDEA token?",
   "issuer": "Issuer",
@@ -1772,7 +1802,7 @@
   "malformedData": "Malformed data",
   "markQrCode": "Mark QR Code",
   "missingRequiredParameter": "The value for the [{parameter}] parameter is required, but is missing.",
-  "missingRequiredParameterIn": "The value for the parameter [{parameter}] is required, but is missing in \"{map}\".",
+  "missingRequiredParameterIn": "The value for the parameter [{parameter}] is required, but is missing in “{map}“.",
   "missingWidgetId": "Missing widgetId",
   "mustNotBeEmpty": "{field} must not be empty",
   "name": "Name",
@@ -1796,7 +1826,7 @@
   "open": "Open",
   "originApp": "Origin app",
   "originDetails": "Origin details",
-  "otpValueCopiedMessage": "Password \"{otpValue}\" copied to clipboard.",
+  "otpValueCopiedMessage": "Password “{otpValue}“ copied to clipboard.",
   "password": "Password",
   "passwordCannotBeEmpty": "Password cannot be empty",
   "passwordCannotContainWhitespace": "Password cannot contain whitespace",
@@ -1821,7 +1851,7 @@
   "patchNotesV4_4_0Improvement1": "Further import sources have been added.",
   "patchNotesV4_4_0Improvement2": "Improved recognition of QR codes from image files.",
   "patchNotesV4_4_0NewFeatures1": "It is now possible to export tokens where it can be ensured that they are not privacyIDEA tokens. Currently, it cannot be ruled out that tokens added via the QR code scanner originate from privacyIDEA. The differentiation will be improved in future versions.",
-  "patchNotesV4_4_0NewFeatures2": "Added support for privacyIDEA's \"require presence\"",
+  "patchNotesV4_4_0NewFeatures2": "Added support for privacyIDEA's “require presence“",
   "patchNotesV4_4_2Improvement1": "Added flashlight support for QR code scanning.",
   "patchNotesV4_4_2NewFeatures1": "Tokens can now be inserted using copy & paste.",
   "patchNotesV4_4_2NewFeatures2": "Added gallery support for QR code scanning.",
@@ -1852,7 +1882,7 @@
   "renewSecretsDialogText": "You can renew the secrets of the tokens. This is useful if you suspect that the secrets have been compromised.",
   "renewSecretsDialogTitle": "Renew Token Secrets",
   "replaceButton": "Replace",
-  "requestInfo": "Sent by {issuer} for your account: \"{account}\"",
+  "requestInfo": "Sent by {issuer} for your account: “{account}“",
   "requestPushChallengesPeriodically": "Request push challenges from the server periodically. Enable this if push challenges are not received normally.",
   "requestTriggerdByUserQuestion": "Was this request triggered by you?",
   "retryRolloutButton": "Retry rollout",

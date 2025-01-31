@@ -699,6 +699,30 @@
   "@increaseCounter": {
     "description": "A11y label for the button that increases the counter."
   },
+  "@initialTokenAssignmentDialogContent1": {
+    "description": "First part of the dialog content to ask the user if he wants to automatically assign a token to a container",
+    "placeholders": {
+      "serial": {
+        "description": "The serial number of the container",
+        "example": "123456"
+      }
+    }
+  },
+  "@initialTokenAssignmentDialogContent2": {
+    "description": "Second part of the dialog content to ask the user if he wants to automatically assign a token to a container"
+  },
+  "@initialTokenAssignmentDialogQuestion": {
+    "description": "Question if the user wants to continue with the automatic assignment of a token to a container"
+  },
+  "@initialTokenAssignmentDialogSSLWarning1": {
+    "description": "First part of the warning that tells the user that SSL verification is disabled."
+  },
+  "@initialTokenAssignmentDialogSSLWarning2": {
+    "description": "Second part of the warning that tells the user that SSL verification is disabled."
+  },
+  "@initialTokenAssignmentDialogTitle": {
+    "description": "Title of the dialog to ask the user if he wants to automatically assign a token to a container"
+  },
   "@internalServerError": {
     "description": "Error message when an internal server error occurred.",
     "placeholders": {
@@ -1673,7 +1697,7 @@
   "errorUnlinkingPushToken": "Nepodařilo se odlinkovat push token {label}.",
   "errorUnregisterNotAllowed": "Odhlášení není pro tento kontejner povoleno.",
   "errorWhenPullingChallenges": "Při dotazování na výzvy {name} došlo k chybě.",
-  "exampleUrl": "Zadejte prosím platnou adresu URL, například: \"https://example.com/\"",
+  "exampleUrl": "Zadejte prosím platnou adresu URL, například: “https://example.com/“",
   "expandLockedFolder": "Chcete-li otevřít uzamčenou složku, ověřte se.",
   "export": "Export",
   "exportAllTokens": "Exportovat všechny žetony",
@@ -1725,18 +1749,24 @@
   "importHintAegisBackupFile": "Vyberte svůj export Aegis (.JSON).\nPokud nemáte export, vytvořte si jej prostřednictvím nabídky nastavení v aplikaci Aegis. Doporučujeme použít heslo.",
   "importHintAegisLink": "Zadejte odkaz, který obdržíte při přenosu záznamů ze systému Aegis.",
   "importHintAegisQrScan": "Naskenujte QR kód, který obdržíte při přenosu záznamů z aplikace Aegis.",
-  "importHintAuthenticatorProFile": "Chcete-li vytvořit zálohu aplikace Authenticator Pro, přejděte do nastavení a klepněte na položku \"Automatické zálohování\". Vyberte umístění úložiště a nastavte heslo. Poté stiskněte \"Zálohovat nyní\" a exportujte tokeny.",
-  "importHintFreeOtpPlusFile": "Chcete-li vytvořit zálohu aplikace FreeOTP+, klepněte na tři tečky v pravém horním rohu a vyberte možnost \"Exportovat\". Můžete si vybrat mezi formátem JSON a URI. Zálohu doporučujeme po importu odstranit, protože není šifrovaná.",
-  "importHintFreeOtpPlusQrScan": "Naskenujte QR kód, který obdržíte po stisknutí tří teček na dlaždici tokenu, a vyberte možnost \"Sdílet QR kód\".",
+  "importHintAuthenticatorProFile": "Chcete-li vytvořit zálohu aplikace Authenticator Pro, přejděte do nastavení a klepněte na položku “Automatické zálohování“. Vyberte umístění úložiště a nastavte heslo. Poté stiskněte “Zálohovat nyní“ a exportujte tokeny.",
+  "importHintFreeOtpPlusFile": "Chcete-li vytvořit zálohu aplikace FreeOTP+, klepněte na tři tečky v pravém horním rohu a vyberte možnost “Exportovat“. Můžete si vybrat mezi formátem JSON a URI. Zálohu doporučujeme po importu odstranit, protože není šifrovaná.",
+  "importHintFreeOtpPlusQrScan": "Naskenujte QR kód, který obdržíte po stisknutí tří teček na dlaždici tokenu, a vyberte možnost “Sdílet QR kód“.",
   "importHintGoogleQrFile": "Vyberte obrazový soubor s QR kódem, který obdržíte při exportu účtů z Google Authenticator.\n!! Upozorňujeme, že není bezpečné ukládat QR kód do zařízení, protože tokeny nejsou šifrovány !!",
   "importHintGoogleQrScan": "Naskenujte QR kód, který obdržíte při exportu účtů z Google Authenticator.",
-  "importHintPrivacyIdeaFile": "Chcete-li vytvořit zálohu, přejděte do nastavení a klepněte na položku \"Export\". Vyberte \"Jako soubor\" a vyberte tokeny, které chcete exportovat. Potom klepněte na \"Exportovat\" a nastavte heslo. Úložištěm je složka pro stahování ve vašem zařízení.",
-  "importHintPrivacyIdeaQrScan": "Chcete-li vytvořit QR kódy žetonů, přejděte do nastavení a klepněte na \"Export\". Poté vyberte \"Jako QR kód\" a klepněte na token, který chcete exportovat. Tato varianta je vhodná pouze pro přímý přenos do jiného zařízení, protože QR kód není šifrovaný.",
+  "importHintPrivacyIdeaFile": "Chcete-li vytvořit zálohu, přejděte do nastavení a klepněte na položku “Export“. Vyberte “Jako soubor“ a vyberte tokeny, které chcete exportovat. Potom klepněte na “Exportovat“ a nastavte heslo. Úložištěm je složka pro stahování ve vašem zařízení.",
+  "importHintPrivacyIdeaQrScan": "Chcete-li vytvořit QR kódy žetonů, přejděte do nastavení a klepněte na “Export“. Poté vyberte “Jako QR kód“ a klepněte na token, který chcete exportovat. Tato varianta je vhodná pouze pro přímý přenos do jiného zařízení, protože QR kód není šifrovaný.",
   "importNTokens": "{count, plural, zero{Neimportujte žádné tokeny} one{Importovat jeden token} other{Importovat {count} tokenů}}",
   "importNewToken": "{count, plural, zero{Nebyl nalezen žádný nový token.} one{Byl nalezen nový token, který lze importovat.} other{Bylo nalezeno {count} nových tokenů, které lze importovat.}}",
   "importTokens": "Importní token",
   "importedVia": "Dovezeno prostřednictvím",
   "increaseCounter": "Zvýšit počítadla",
+  "initialTokenAssignmentDialogContent1": "Další dva OTP vaše tokeny s neznámým původem budou odeslány na server, ke kterému je připojen kontejner „{serial}“.",
+  "initialTokenAssignmentDialogContent2": "Tím se automaticky přiřadí váš token privacyIDEA k tomuto kontejneru.",
+  "initialTokenAssignmentDialogQuestion": "Chcete pokračovat?",
+  "initialTokenAssignmentDialogSSLWarning1": "Ověřování SSL je deaktivováno!",
+  "initialTokenAssignmentDialogSSLWarning2": "Odesílání OTP na neověřený server představuje vysoké bezpečnostní riziko!",
+  "initialTokenAssignmentDialogTitle": "Automatické přiřazení",
   "internalServerError": "Interní chyba serveru ({code})",
   "introAddFolder": "Můžete vytvářet složky pro uspořádání svých tokenů.",
   "introAddTokenManually": "Pokud nechcete skenovat QR kód, můžete tokeny přidávat také ručně.",
@@ -1772,7 +1802,7 @@
   "malformedData": "Data nejsou ve správném formátu",
   "markQrCode": "Označte QR kód",
   "missingRequiredParameter": "Hodnota parametru [{parameter}] je povinná, ale chybí.",
-  "missingRequiredParameterIn": "Hodnota parametru [{parameter}] je povinná, ale v \"{map}\" chybí.",
+  "missingRequiredParameterIn": "Hodnota parametru [{parameter}] je povinná, ale v “{map}“ chybí.",
   "missingWidgetId": "Chybí widgetId",
   "mustNotBeEmpty": "{field} nesmí být prázdné",
   "name": "Název",
@@ -1796,7 +1826,7 @@
   "open": "Otevřít",
   "originApp": "Aplikace Origin",
   "originDetails": "Podrobnosti o původu",
-  "otpValueCopiedMessage": "Heslo \"{otpValue}\" bylo zkopírováno do schránky.",
+  "otpValueCopiedMessage": "Heslo “{otpValue}“ bylo zkopírováno do schránky.",
   "password": "Heslo",
   "passwordCannotBeEmpty": "Heslo nesmí být prázdné",
   "passwordCannotContainWhitespace": "Heslo nesmí obsahovat mezery",
@@ -1821,7 +1851,7 @@
   "patchNotesV4_4_0Improvement1": "Byly přidány další dovozní zdroje.",
   "patchNotesV4_4_0Improvement2": "Bylo vylepšeno rozpoznávání QR kódů z obrazových souborů.",
   "patchNotesV4_4_0NewFeatures1": "Nyní je možné exportovat tokeny, u kterých lze zajistit, že se nejedná o tokeny privacyIDEA. V současné době nelze vyloučit, že tokeny přidané prostřednictvím čtečky QR kódů pocházejí z aplikace privacyIDEA. Rozlišování bude v budoucích verzích vylepšeno.",
-  "patchNotesV4_4_0NewFeatures2": "Přidána podpora pro \"require presence\" aplikace privacyIDEA.",
+  "patchNotesV4_4_0NewFeatures2": "Přidána podpora pro “require presence“ aplikace privacyIDEA.",
   "patchNotesV4_4_2Improvement1": "Přidána podpora svítilny pro skenování QR kódů.",
   "patchNotesV4_4_2NewFeatures1": "Žetony lze nyní vkládat pomocí kopírování a vkládání.",
   "patchNotesV4_4_2NewFeatures2": "Přidána podpora galerie pro skenování QR kódů.",
@@ -1852,7 +1882,7 @@
   "renewSecretsDialogText": "Můžete obnovit tajemství žetonů. To je užitečné, pokud máte podezření, že tajemství byla ohrožena.",
   "renewSecretsDialogTitle": "Obnovení tajemství žetonů",
   "replaceButton": "Vyměňte",
-  "requestInfo": "Odesláno {issuer} pro váš účet: \"{account}\"",
+  "requestInfo": "Odesláno {issuer} pro váš účet: “{account}“",
   "requestPushChallengesPeriodically": "Periodicky získávat výzvy ze serveru. Povolte pokud nefunguje příjem push notifikací.",
   "requestTriggerdByUserQuestion": "Byl tento požadavek vyvolán vámi?",
   "retryRolloutButton": "Zkusit znovu",

@@ -699,6 +699,30 @@
   "@increaseCounter": {
     "description": "A11y label for the button that increases the counter."
   },
+  "@initialTokenAssignmentDialogContent1": {
+    "description": "First part of the dialog content to ask the user if he wants to automatically assign a token to a container",
+    "placeholders": {
+      "serial": {
+        "description": "The serial number of the container",
+        "example": "123456"
+      }
+    }
+  },
+  "@initialTokenAssignmentDialogContent2": {
+    "description": "Second part of the dialog content to ask the user if he wants to automatically assign a token to a container"
+  },
+  "@initialTokenAssignmentDialogQuestion": {
+    "description": "Question if the user wants to continue with the automatic assignment of a token to a container"
+  },
+  "@initialTokenAssignmentDialogSSLWarning1": {
+    "description": "First part of the warning that tells the user that SSL verification is disabled."
+  },
+  "@initialTokenAssignmentDialogSSLWarning2": {
+    "description": "Second part of the warning that tells the user that SSL verification is disabled."
+  },
+  "@initialTokenAssignmentDialogTitle": {
+    "description": "Title of the dialog to ask the user if he wants to automatically assign a token to a container"
+  },
   "@internalServerError": {
     "description": "Error message when an internal server error occurred.",
     "placeholders": {
@@ -1673,7 +1697,7 @@
   "errorUnlinkingPushToken": "Echec du découplage du push token {label}",
   "errorUnregisterNotAllowed": "La déconnexion n'est pas autorisée pour ce conteneur.",
   "errorWhenPullingChallenges": "Une erreur s'est produite lors de l'interrogation des défis de {name}",
-  "exampleUrl": "Veuillez saisir une URL valide comme : \"https://example.com/\"",
+  "exampleUrl": "Veuillez saisir une URL valide comme : “https://example.com/“",
   "expandLockedFolder": "Veuillez vous authentifier pour ouvrir le dossier verrouillé.",
   "export": "Exporter",
   "exportAllTokens": "Exporter tous les jetons",
@@ -1725,18 +1749,24 @@
   "importHintAegisBackupFile": "Choisissez votre exportation Aegis (.JSON).\nSi vous n'avez pas d'exportation, veuillez en créer une via le menu Paramètres dans l'application Aegis. Il est recommandé d'utiliser un mot de passe",
   "importHintAegisLink": "Saisissez le lien que vous recevez lorsque vous transférez des entrées depuis Aegis",
   "importHintAegisQrScan": "Scannez le code QR que vous recevez lorsque vous transférez des entrées depuis Aegis",
-  "importHintAuthenticatorProFile": "Pour créer une sauvegarde de l'application Authenticator Pro, accédez aux paramètres et appuyez sur \"Sauvegarde automatique\". Sélectionnez un emplacement de stockage et définissez un mot de passe. Puis appuyez sur \"Sauvegarder maintenant\" pour exporter les tokens.",
-  "importHintFreeOtpPlusFile": "Pour créer une sauvegarde de l'application FreeOTP+, appuyez sur les trois points dans le coin supérieur droit et sélectionnez \"Exporter\". Vous pouvez choisir entre les formats JSON et URI. Nous recommandons de supprimer la sauvegarde après l'avoir importée, car elle n'est pas cryptée.",
-  "importHintFreeOtpPlusQrScan": "Scannez le code QR que vous recevez lorsque vous appuyez sur les trois points dans la tuile du jeton et sélectionnez \"Partager le code QR\".",
+  "importHintAuthenticatorProFile": "Pour créer une sauvegarde de l'application Authenticator Pro, accédez aux paramètres et appuyez sur “Sauvegarde automatique“. Sélectionnez un emplacement de stockage et définissez un mot de passe. Puis appuyez sur “Sauvegarder maintenant“ pour exporter les tokens.",
+  "importHintFreeOtpPlusFile": "Pour créer une sauvegarde de l'application FreeOTP+, appuyez sur les trois points dans le coin supérieur droit et sélectionnez “Exporter“. Vous pouvez choisir entre les formats JSON et URI. Nous recommandons de supprimer la sauvegarde après l'avoir importée, car elle n'est pas cryptée.",
+  "importHintFreeOtpPlusQrScan": "Scannez le code QR que vous recevez lorsque vous appuyez sur les trois points dans la tuile du jeton et sélectionnez “Partager le code QR“.",
   "importHintGoogleQrFile": "Sélectionnez un fichier image avec le code QR que vous obtenez lorsque vous exportez vos comptes depuis Google Authenticator.\n!! Notez qu'il n'est pas sûr d'enregistrer le code QR sur votre appareil, car les jetons ne sont pas cryptés !!",
   "importHintGoogleQrScan": "Scannez le code QR que vous recevez lorsque vous exportez vos comptes depuis Google Authenticator",
-  "importHintPrivacyIdeaFile": "Pour créer une sauvegarde, allez dans les paramètres et tapez sur \"Exporter\". Choisissez \"En tant que fichier\", sélectionnez les jetons que vous souhaitez exporter. Ensuite, appuyez sur \"Exporter\" et définissez un mot de passe. L'emplacement de stockage est le dossier de téléchargement sur votre appareil.",
-  "importHintPrivacyIdeaQrScan": "Pour créer des codes QR des jetons, accédez aux paramètres et appuyez sur \"Exporter\". Sélectionnez ensuite \"En tant que code QR\" et tapez sur le jeton à exporter. Cette variante ne convient que pour un transfert direct vers un autre appareil, car le code QR n'est pas crypté.",
+  "importHintPrivacyIdeaFile": "Pour créer une sauvegarde, allez dans les paramètres et tapez sur “Exporter“. Choisissez “En tant que fichier“, sélectionnez les jetons que vous souhaitez exporter. Ensuite, appuyez sur “Exporter“ et définissez un mot de passe. L'emplacement de stockage est le dossier de téléchargement sur votre appareil.",
+  "importHintPrivacyIdeaQrScan": "Pour créer des codes QR des jetons, accédez aux paramètres et appuyez sur “Exporter“. Sélectionnez ensuite “En tant que code QR“ et tapez sur le jeton à exporter. Cette variante ne convient que pour un transfert direct vers un autre appareil, car le code QR n'est pas crypté.",
   "importNTokens": "{count, plural, zero{N'importer aucun jeton} one{Importer un jeton} other{Importer {count} tokens}}",
   "importNewToken": "{count, plural, zero{Aucun nouveau jeton n'a été trouvé.} one{Un nouveau token a été trouvé et peut être importé.} other{{count} nouveaux tokens ont été trouvés et peuvent être importés.}}",
   "importTokens": "Importer un jeton",
   "importedVia": "Importé via",
   "increaseCounter": "Augmenter le compteur",
+  "initialTokenAssignmentDialogContent1": "Les deux OTP suivants de votre token d'origine inconnue seront envoyés au serveur auquel le conteneur « {serial} » est connecté.",
+  "initialTokenAssignmentDialogContent2": " Votre token privacyIDEA sera ainsi automatiquement attribué à ce conteneur.",
+  "initialTokenAssignmentDialogQuestion": "Vous souhaitez continuer ?",
+  "initialTokenAssignmentDialogSSLWarning1": "La vérification SSL est désactivée !",
+  "initialTokenAssignmentDialogSSLWarning2": "L'envoi d'OTP à un serveur non vérifié représente un risque de sécurité élevé !",
+  "initialTokenAssignmentDialogTitle": "Attribution automatique",
   "internalServerError": "Erreur interne du serveur ({code})",
   "introAddFolder": "Vous pouvez créer des dossiers pour organiser vos jetons",
   "introAddTokenManually": "Si vous ne souhaitez pas scanner un code QR, vous pouvez également ajouter des jetons manuellement.",
@@ -1772,7 +1802,7 @@
   "malformedData": "Les données ne sont pas valides",
   "markQrCode": "Marquer le code QR",
   "missingRequiredParameter": "La valeur du paramètre [{parameter}] est requise, mais elle est manquante.",
-  "missingRequiredParameterIn": "La valeur du paramètre [{parameter}] est requise, mais elle est absente de \"{map}\".",
+  "missingRequiredParameterIn": "La valeur du paramètre [{parameter}] est requise, mais elle est absente de “{map}“.",
   "missingWidgetId": "widgetId manquant",
   "mustNotBeEmpty": "{field} ne doit pas être vide",
   "name": "Nom",
@@ -1796,7 +1826,7 @@
   "open": "Ouvrir",
   "originApp": "Application d'origine",
   "originDetails": "Informations sur l'origine",
-  "otpValueCopiedMessage": "Le mot de passe \"{otpValue}\" a été copié dans le presse-papier.",
+  "otpValueCopiedMessage": "Le mot de passe “{otpValue}“ a été copié dans le presse-papier.",
   "password": "Mot de passe",
   "passwordCannotBeEmpty": "Le mot de passe ne peut pas être vide",
   "passwordCannotContainWhitespace": "Le mot de passe ne peut pas contenir d'espaces",
@@ -1821,7 +1851,7 @@
   "patchNotesV4_4_0Improvement1": "D'autres sources d'importation ont été ajoutées.",
   "patchNotesV4_4_0Improvement2": "La reconnaissance des codes QR à partir des fichiers image a été améliorée.",
   "patchNotesV4_4_0NewFeatures1": "Il est désormais possible d'exporter des jetons dont on peut s'assurer qu'il ne s'agit pas de jetons privacyIDEA. Actuellement, il n'est pas possible d'exclure que des jetons ajoutés via le lecteur de code QR proviennent de privacyIDEA. La différenciation sera améliorée dans les versions futures.",
-  "patchNotesV4_4_0NewFeatures2": "Ajout du support pour privacyIDEA's \"require presence\".",
+  "patchNotesV4_4_0NewFeatures2": "Ajout du support pour privacyIDEA's “require presence“.",
   "patchNotesV4_4_2Improvement1": "Ajout de la prise en charge de la lampe de poche pour la lecture des codes QR.",
   "patchNotesV4_4_2NewFeatures1": "Les jetons peuvent désormais être insérés par copier-coller.",
   "patchNotesV4_4_2NewFeatures2": "Ajout de la prise en charge de la galerie pour la lecture des codes QR.",
@@ -1852,7 +1882,7 @@
   "renewSecretsDialogText": "Vous pouvez renouveler les secrets des jetons. Cette fonction est utile si vous soupçonnez que les secrets ont été compromis.",
   "renewSecretsDialogTitle": "Renouveler les secrets des jetons",
   "replaceButton": "Remplacer",
-  "requestInfo": "Envoyé par {issuer} pour votre compte : \"{account}\"",
+  "requestInfo": "Envoyé par {issuer} pour votre compte : “{account}“",
   "requestPushChallengesPeriodically": "Demander des challenges push depuis le serveur périodiquement. Activer cette fonction si les challenges push ne sont pas reçus normalement.",
   "requestTriggerdByUserQuestion": "Cette demande a-t-elle été déclenchée par vous ?",
   "retryRolloutButton": "Réessayer le déploiement",
