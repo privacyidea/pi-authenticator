@@ -702,9 +702,9 @@
   "@initialTokenAssignmentDialogContent1": {
     "description": "First part of the dialog content to ask the user if he wants to automatically assign a token to a container",
     "placeholders": {
-      "serial": {
-        "description": "The serial number of the container",
-        "example": "123456"
+      "url": {
+        "description": "The server URL from the container",
+        "example": "https://example.com/"
       }
     }
   },
@@ -1324,9 +1324,6 @@
   "@sendErrorLogDescription": {
     "description": "Explanation for the user what he will send."
   },
-  "@sendOtps": {
-    "description": "Text the the Button to send OTPs to the server."
-  },
   "@sendPushRequestResponseFailed": {
     "description": "Error message when the response to a push request could not be sent."
   },
@@ -1761,7 +1758,7 @@
   "importTokens": "Importer un jeton",
   "importedVia": "Geïmporteerd via",
   "increaseCounter": "Verhoog teller",
-  "initialTokenAssignmentDialogContent1": "De volgende twee OTP's van uw tokens met onbekende oorsprong zullen worden verzonden naar de server waarmee de container “{serial}” is verbonden.",
+  "initialTokenAssignmentDialogContent1": "Twee eenmalige wachtwoorden van de geselecteerde tokens worden verzonden naar:{url}.",
   "initialTokenAssignmentDialogContent2": "Dit zal automatisch uw privacyIDEA token toewijzen aan deze container.",
   "initialTokenAssignmentDialogQuestion": "Wilt u doorgaan?",
   "initialTokenAssignmentDialogSSLWarning1": "SSL-verificatie is uitgeschakeld!",
@@ -1822,6 +1819,7 @@
   "notAnInteger": "De waarde is geen geheel getal.",
   "notAnNumber": "De waarde is geen getal.",
   "notSupported": "De {name} [{value}] wordt niet ondersteund.",
+  "nothingToSelect": "Er valt niets te selecteren.",
   "ok": "Ok",
   "open": "Openen",
   "originApp": "Oorsprong app",
@@ -1903,6 +1901,7 @@
   "secondsUntilNextOTP": "Seconden tot volgende OTP",
   "secretIsRequired": "Geheim is vereist",
   "secretKey": "Geheime sleutel",
+  "selectAll": "Alles selecteren",
   "selectFile": "Selecteer bestand",
   "selectImportSource": "Selecteer importbron",
   "selectImportType": "Hoe wilt u de tokens importeren?",
@@ -1915,7 +1914,6 @@
   "send": "verzenden",
   "sendErrorDialogBody": "Een onverwachte fout heeft plaatsgevonden in de applicatie. De onderstaande informatie kan worden verstuurd naar de ontwikkelaars via e-mail om het probleem in de toekomst te voorkomen.",
   "sendErrorLogDescription": "Er wordt een kant-en-klare e-mail gemaakt die informatie bevat over de app, de fout en het apparaat.\nJe kunt de e-mail bewerken voordat je hem verstuurt.\nJe kunt hier zien hoe we de informatie gebruiken:",
-  "sendOtps": "OTP's verzenden",
   "sendPushRequestResponseFailed": "Het verzenden van het antwoord is mislukt. ",
   "serverNotReachable": "De server kon niet worden bereikt.",
   "settings": "Instellingen",

@@ -19,6 +19,7 @@
  */
 import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/model/token_container.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/view_utils.dart';
 
 import '../../../l10n/app_localizations.dart';
@@ -31,12 +32,13 @@ class ContainerSyncResultDialog extends StatelessWidget {
   final List<Token> addedTokens;
   final List<Token> removedTokens;
 
-  static showDialog({required TokenContainerFinalized container, required List<Token> addedTokens, required List<Token> removedTokens}) {
+  static void showDialog({required TokenContainerFinalized container, required List<Token> addedTokens, required List<Token> removedTokens}) {
     if (addedTokens.isEmpty && removedTokens.isEmpty) {
       // Nothing to show
-      return null;
+      Logger.debug('No tokens added or removed during sync.');
+      return;
     }
-    return showAsyncDialog(builder: (context) => ContainerSyncResultDialog(container: container, addedTokens: addedTokens, removedTokens: removedTokens));
+    showAsyncDialog(builder: (context) => ContainerSyncResultDialog(container: container, addedTokens: addedTokens, removedTokens: removedTokens));
   }
 
   const ContainerSyncResultDialog({

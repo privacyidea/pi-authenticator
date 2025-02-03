@@ -680,6 +680,7 @@ void _testTokenContainerNotifier() {
                 counter: 12,
               ),
             ],
+            initAssignmentChecked: [],
             newPolicies: ContainerPolicies(
               rolloverAllowed: true,
               initialTokenAssignment: true,

@@ -702,9 +702,9 @@
   "@initialTokenAssignmentDialogContent1": {
     "description": "First part of the dialog content to ask the user if he wants to automatically assign a token to a container",
     "placeholders": {
-      "serial": {
-        "description": "The serial number of the container",
-        "example": "123456"
+      "url": {
+        "description": "The server URL from the container",
+        "example": "https://example.com/"
       }
     }
   },
@@ -1324,9 +1324,6 @@
   "@sendErrorLogDescription": {
     "description": "Explanation for the user what he will send."
   },
-  "@sendOtps": {
-    "description": "Text the the Button to send OTPs to the server."
-  },
   "@sendPushRequestResponseFailed": {
     "description": "Error message when the response to a push request could not be sent."
   },
@@ -1761,8 +1758,8 @@
   "importTokens": "Importer un jeton",
   "importedVia": "Importé via",
   "increaseCounter": "Augmenter le compteur",
-  "initialTokenAssignmentDialogContent1": "Les deux OTP suivants de votre token d'origine inconnue seront envoyés au serveur auquel le conteneur « {serial} » est connecté.",
-  "initialTokenAssignmentDialogContent2": " Votre token privacyIDEA sera ainsi automatiquement attribué à ce conteneur.",
+  "initialTokenAssignmentDialogContent1": "Deux mots de passe à usage unique des jetons sélectionnés sont envoyés à:\n{url}",
+  "initialTokenAssignmentDialogContent2": "Votre token privacyIDEA sera ainsi automatiquement attribué à ce conteneur.",
   "initialTokenAssignmentDialogQuestion": "Vous souhaitez continuer ?",
   "initialTokenAssignmentDialogSSLWarning1": "La vérification SSL est désactivée !",
   "initialTokenAssignmentDialogSSLWarning2": "L'envoi d'OTP à un serveur non vérifié représente un risque de sécurité élevé !",
@@ -1822,6 +1819,7 @@
   "notAnInteger": "La valeur n'est pas un nombre entier.",
   "notAnNumber": "La valeur n'est pas un nombre.",
   "notSupported": "Le {name} [{value}] n'est pas supporté.",
+  "nothingToSelect": "Il n'y a rien à sélectionner.",
   "ok": "Ok",
   "open": "Ouvrir",
   "originApp": "Application d'origine",
@@ -1903,6 +1901,7 @@
   "secondsUntilNextOTP": "Secondes jusqu'au prochain OTP",
   "secretIsRequired": "Secret est nécessaire",
   "secretKey": "Clé secrète",
+  "selectAll": "Sélectionner tout",
   "selectFile": "Sélectionner un fichier",
   "selectImportSource": "Sélectionner la source d'importation",
   "selectImportType": "Comment voulez-vous importer les jetons ?",
@@ -1915,7 +1914,6 @@
   "send": "Envoyer",
   "sendErrorDialogBody": "Une erreur inattendue est survenue dans l'application. L'information suivante peut être transmise aux développeurs par email afin d'aider à corriger cette erreur dans le futur.",
   "sendErrorLogDescription": "Un e-mail pré-rempli est créé.\nIl contient des informations sur l'application, l'erreur et le périphérique.\nVous pouvez modifier l'e-mail avant de l'envoyer.\nVous pouvez voir ici comment nous utilisons les informations:",
-  "sendOtps": "Envoyer les OTP",
   "sendPushRequestResponseFailed": "Échec de l'envoi de la réponse.",
   "serverNotReachable": "Le serveur n'a pas pu être atteint.",
   "settings": "Paramètres",

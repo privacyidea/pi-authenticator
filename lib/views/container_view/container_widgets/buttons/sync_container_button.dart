@@ -29,25 +29,24 @@ import '../../../../widgets/button_widgets/cooldown_button.dart';
 
 class SyncContainerButton extends ConsumerWidget {
   final TokenContainerFinalized container;
+  final bool isPreview;
 
-  const SyncContainerButton({required this.container, super.key});
+  const SyncContainerButton({required this.isPreview, required this.container, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final container = ref.watch(tokenContainerProvider).asData?.value.currentOf<TokenContainerFinalized>(this.container);
+    if (isPreview) return const Icon(Icons.sync, size: 40);
     return CooldownButton(
       styleType: CooldownButtonStyleType.iconButton,
       childWhenCooldown: Padding(
         padding: const EdgeInsets.all(8.0),
         child: CircularProgressIndicator.adaptive(),
       ),
-      isPressable: container != null && container.syncState.isIdle,
-      onPressed: container != null
-          ? () async {
-              final tokenState = ref.read(tokenProvider);
-              await ref.read(tokenContainerProvider.notifier).sync(tokenState: tokenState, containersToSync: [container], isManually: true);
-            }
-          : null,
+      isPressable: container.syncState.isIdle,
+      onPressed: () async {
+        final tokenState = ref.read(tokenProvider);
+        await ref.read(tokenContainerProvider.notifier).sync(tokenState: tokenState, containersToSync: [container], isManually: true);
+      },
       child: const Icon(Icons.sync, size: 40),
     );
   }

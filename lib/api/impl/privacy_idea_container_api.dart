@@ -55,21 +55,32 @@ class PiContainerApi implements TokenContainerApi {
   ////////////////////////////// */
 
   @override
-  Future<ContainerSyncUpdates> sync(
+  Future<ContainerSyncUpdates?> sync(
     TokenContainerFinalized container,
     TokenState tokenState, {
     SimpleKeyPair? withX25519Key,
     bool isInitSync = false,
-    bool? sendOTPs,
+    bool? sendAllOTPs,
   }) async {
     final containerTokenTemplates = tokenState.containerTokens(container.serial).toTemplates();
 
     final initialTokenAssignment = isInitSync && container.policies.initialTokenAssignment;
-    final notLinkedTokenTemplates = initialTokenAssignment ? tokenState.notLinkedTokens.toTemplates() : <TokenTemplate>[];
-    if (initialTokenAssignment) {
-      sendOTPs ??= await InitialTokenAssignmentDialog.showDialog(container) ?? false;
-      if (sendOTPs == false) {
-        notLinkedTokenTemplates.removeWhere((element) => element.otpValues != null && element.otpValues!.isNotEmpty);
+    final notLinkedTokens = tokenState.tokens.maybeContainerTokensOf(container.serial);
+    final templatesForAssignment = notLinkedTokens.withSerial.toTemplates();
+
+    final tokensWithoutSerial = notLinkedTokens.withoutSerial;
+    List<Token>? selectedTokens;
+    if (initialTokenAssignment && tokensWithoutSerial.isNotEmpty) {
+      if (sendAllOTPs == true) {
+        templatesForAssignment.addAll(tokensWithoutSerial.toTemplates());
+      } else {
+        selectedTokens = (await InitialTokenAssignmentDialog.showDialog(container, tokensWithoutSerial))?.toList();
+
+        if (selectedTokens == null) {
+          // User canceled the dialog => cancel sync
+          return null;
+        }
+        templatesForAssignment.addAll(selectedTokens.toTemplates());
       }
     }
 
@@ -81,7 +92,7 @@ class PiContainerApi implements TokenContainerApi {
       challenge: challenge,
       encKeyPair: encKeyPair,
       otpAuthMaps: [
-        for (var template in [...containerTokenTemplates, ...notLinkedTokenTemplates]) template.otpAuthMapSafeToSend
+        for (var template in [...containerTokenTemplates, ...templatesForAssignment]) template.otpAuthMapSafeToSend
       ],
     );
 
@@ -104,7 +115,7 @@ class PiContainerApi implements TokenContainerApi {
 
     // MaybePiTokens Should not be deleted
     final mergedTemplatesWithOtps = _handleMaybePiTokens(
-      maybePiTokensTemplates: notLinkedTokenTemplates,
+      maybePiTokensTemplates: templatesForAssignment,
       serverTokensWithOtps: serverTokensWithOtps,
       container: container,
     );
@@ -115,7 +126,7 @@ class PiContainerApi implements TokenContainerApi {
     // Container tokens can be deleted if they are not in the server list
     final List<TokenTemplate> mergedTemplatesWithSerial;
     final List<TokenTemplate> deleteTemplates;
-    final notLinkedSerialTemplates = notLinkedTokenTemplates.where((e) => e.serial != null).toList();
+    final notLinkedSerialTemplates = templatesForAssignment.where((e) => e.serial != null).toList();
     (mergedTemplatesWithSerial, deleteTemplates) = _handlePiTokens(
       containerTokenTemplates: [...containerTokenTemplates, ...notLinkedSerialTemplates],
       serverTokensWithSerial: serverTokensWithSerial,
@@ -135,6 +146,7 @@ class PiContainerApi implements TokenContainerApi {
       newTokens: newTokens,
       updatedTokens: updatedTokens,
       deletedTokens: deleteTokens,
+      initAssignmentChecked: selectedTokens ?? [],
       newPolicies: syncResult.policies,
       containerSerial: container.serial,
     );

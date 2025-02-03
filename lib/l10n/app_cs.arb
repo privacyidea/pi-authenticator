@@ -702,9 +702,9 @@
   "@initialTokenAssignmentDialogContent1": {
     "description": "First part of the dialog content to ask the user if he wants to automatically assign a token to a container",
     "placeholders": {
-      "serial": {
-        "description": "The serial number of the container",
-        "example": "123456"
+      "url": {
+        "description": "The server URL from the container",
+        "example": "https://example.com/"
       }
     }
   },
@@ -1324,9 +1324,6 @@
   "@sendErrorLogDescription": {
     "description": "Explanation for the user what he will send."
   },
-  "@sendOtps": {
-    "description": "Text the the Button to send OTPs to the server."
-  },
   "@sendPushRequestResponseFailed": {
     "description": "Error message when the response to a push request could not be sent."
   },
@@ -1761,7 +1758,7 @@
   "importTokens": "Importní token",
   "importedVia": "Dovezeno prostřednictvím",
   "increaseCounter": "Zvýšit počítadla",
-  "initialTokenAssignmentDialogContent1": "Další dva OTP vaše tokeny s neznámým původem budou odeslány na server, ke kterému je připojen kontejner „{serial}“.",
+  "initialTokenAssignmentDialogContent1": "Dvě jednorázová hesla vybraných tokenů jsou odeslána na adresu:\n{url}",
   "initialTokenAssignmentDialogContent2": "Tím se automaticky přiřadí váš token privacyIDEA k tomuto kontejneru.",
   "initialTokenAssignmentDialogQuestion": "Chcete pokračovat?",
   "initialTokenAssignmentDialogSSLWarning1": "Ověřování SSL je deaktivováno!",
@@ -1822,6 +1819,7 @@
   "notAnInteger": "Hodnota není celé číslo.",
   "notAnNumber": "Hodnota není číslo.",
   "notSupported": "{name} [{value}] není podporován.",
+  "nothingToSelect": "Není co vybrat.",
   "ok": "Ok",
   "open": "Otevřít",
   "originApp": "Aplikace Origin",
@@ -1903,6 +1901,7 @@
   "secondsUntilNextOTP": "Sekundy do dalšího OTP",
   "secretIsRequired": "Tajné je vyžadováno",
   "secretKey": "Tajný klíč",
+  "selectAll": "Vyberte vše",
   "selectFile": "Vybrat soubor",
   "selectImportSource": "Vyberte zdroj importu",
   "selectImportType": "Jak chcete importovat žetony?",
@@ -1915,7 +1914,6 @@
   "send": "Odeslat",
   "sendErrorDialogBody": "V aplikaci se vyskytla neznámá chyba. Informace uvedené níže mohou být odeslány vývojářům e-mailem pro vyřešení chyby v budoucnu.",
   "sendErrorLogDescription": "Vytvoří se připravený e-mail.\nObsahuje informace o aplikaci, chybě a zařízení.\nPřed odesláním můžete e-mail upravit.\nZde se můžete podívat, jak informace používáme:",
-  "sendOtps": "Odešlete OTP",
   "sendPushRequestResponseFailed": "Odpověď se nepodařilo odeslat.",
   "serverNotReachable": "Na server se nepodařilo dovolat.",
   "settings": "Nastavení",

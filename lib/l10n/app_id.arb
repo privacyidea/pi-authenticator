@@ -702,9 +702,9 @@
   "@initialTokenAssignmentDialogContent1": {
     "description": "First part of the dialog content to ask the user if he wants to automatically assign a token to a container",
     "placeholders": {
-      "serial": {
-        "description": "The serial number of the container",
-        "example": "123456"
+      "url": {
+        "description": "The server URL from the container",
+        "example": "https://example.com/"
       }
     }
   },
@@ -1324,9 +1324,6 @@
   "@sendErrorLogDescription": {
     "description": "Explanation for the user what he will send."
   },
-  "@sendOtps": {
-    "description": "Text the the Button to send OTPs to the server."
-  },
   "@sendPushRequestResponseFailed": {
     "description": "Error message when the response to a push request could not be sent."
   },
@@ -1761,7 +1758,7 @@
   "importTokens": "Impor token",
   "importedVia": "Diimpor via",
   "increaseCounter": "Tingkatkan penghitung",
-  "initialTokenAssignmentDialogContent1": "Dua OTP berikutnya dari token Anda yang tidak diketahui asalnya akan dikirim ke server yang terhubung dengan kontainer “{serial}”.",
+  "initialTokenAssignmentDialogContent1": "Dua kata sandi satu kali dari token yang dipilih dikirim ke:\n{url}",
   "initialTokenAssignmentDialogContent2": "Ini akan secara otomatis menetapkan token privacyIDEA Anda ke wadah ini.",
   "initialTokenAssignmentDialogQuestion": "Apakah Anda ingin melanjutkan?",
   "initialTokenAssignmentDialogSSLWarning1": "Verifikasi SSL dinonaktifkan!",
@@ -1822,6 +1819,7 @@
   "notAnInteger": "Nilainya bukan bilangan bulat.",
   "notAnNumber": "Nilainya bukan berupa angka.",
   "notSupported": "{name} [{value}] tidak didukung",
+  "nothingToSelect": "Tidak ada yang perlu dipilih.",
   "ok": "Ok",
   "open": "Buka",
   "originApp": "Aplikasi asal",
@@ -1903,6 +1901,7 @@
   "secondsUntilNextOTP": "Detik hingga OTP berikutnya",
   "secretIsRequired": "Rahasia diperlukan",
   "secretKey": "Kunci rahasia",
+  "selectAll": "Pilih semua",
   "selectFile": "Pilih file",
   "selectImportSource": "Pilih sumber impor",
   "selectImportType": "Bagaimana cara mengimpor token?",
@@ -1915,7 +1914,6 @@
   "send": "Kirim",
   "sendErrorDialogBody": "Terjadi kesalahan yang tidak terduga dalam aplikasi. Informasi di bawah ini dapat dikirimkan ke pengembang melalui email untuk membantu mencegah kesalahan ini di masa mendatang.",
   "sendErrorLogDescription": "Email yang telah ditentukan sebelumnya akan dibuat.\nEmail ini berisi informasi tentang aplikasi, kesalahan, dan perangkat.\nAnda dapat mengedit email sebelum mengirimnya.\nAnda dapat melihat di sini bagaimana kami menggunakan informasi tersebut:",
-  "sendOtps": "Kirim OTP",
   "sendPushRequestResponseFailed": "Gagal mengirim tanggapan.",
   "serverNotReachable": "Server tidak dapat dihubungi.",
   "settings": "Pengaturan",

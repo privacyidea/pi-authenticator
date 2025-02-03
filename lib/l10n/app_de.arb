@@ -702,9 +702,9 @@
   "@initialTokenAssignmentDialogContent1": {
     "description": "First part of the dialog content to ask the user if he wants to automatically assign a token to a container",
     "placeholders": {
-      "serial": {
-        "description": "The serial number of the container",
-        "example": "123456"
+      "url": {
+        "description": "The server URL from the container",
+        "example": "https://example.com/"
       }
     }
   },
@@ -1324,9 +1324,6 @@
   "@sendErrorLogDescription": {
     "description": "Explanation for the user what he will send."
   },
-  "@sendOtps": {
-    "description": "Text the the Button to send OTPs to the server."
-  },
   "@sendPushRequestResponseFailed": {
     "description": "Error message when the response to a push request could not be sent."
   },
@@ -1761,9 +1758,11 @@
   "importTokens": "Token importieren",
   "importedVia": "Importiert über",
   "increaseCounter": "Zähler erhöhen",
-  "initialTokenAssignmentDialogContent1": "Die nächsten beiden OTPs Ihrer Token mit unbekannter Herkunft werden an den Server gesendet, mit dem der Container „{serial}“ verbunden ist.",
-  "initialTokenAssignmentDialogContent2": "Dies wird verwendet, um Ihr privacyIDEA-Token automatisch diesem Container zuzuordnen.",
-  "initialTokenAssignmentDialogQuestion": "Möchten Sie fortfahren?",
+  "initialTokenAssignmentDialogButtonSelected": "Ausgewählte OTPs senden",
+  "initialTokenAssignmentDialogButtonZero": "Keine OTPs senden",
+  "initialTokenAssignmentDialogContent1": "Zwei einmalpasswörter der ausgewählten Token werden gesendet an:\n{url}",
+  "initialTokenAssignmentDialogContent2": "Dies wird verwendet, um Ihre privacyIDEA-Token automatisch diesem Container zuzuordnen. Dies kann übersprungen werden, wenn Sie noch keine Token von privacyIDEA haben.",
+  "initialTokenAssignmentDialogQuestion": "Welche einmalpasswörter möchten Sie senden?",
   "initialTokenAssignmentDialogSSLWarning1": "Die SSL-Verifizierung ist deaktiviert!",
   "initialTokenAssignmentDialogSSLWarning2": "Das Senden von OTPs an einen nicht verifizierten Server stellt ein hohes Sicherheitsrisiko dar!",
   "initialTokenAssignmentDialogTitle": "Automatische Zuweisung",
@@ -1822,6 +1821,7 @@
   "notAnInteger": "Der Wert ist keine Ganzzahl.",
   "notAnNumber": "Der Wert ist keine Zahl.",
   "notSupported": "Der {name} [{value}] wird nicht unterstützt",
+  "nothingToSelect": "Es gibt nichts zu wählen.",
   "ok": "Ok",
   "open": "Öffnen",
   "originApp": "Ursprungs-App",
@@ -1903,6 +1903,7 @@
   "secondsUntilNextOTP": "Sekunden bis zum nächsten OTP",
   "secretIsRequired": "Secret ist erforderlich",
   "secretKey": "Geheimer Schlüssel",
+  "selectAll": "Alles auswählen",
   "selectFile": "Datei auswählen",
   "selectImportSource": "Importquelle auswählen",
   "selectImportType": "Wie wollen Sie die Token importieren?",
@@ -1915,7 +1916,6 @@
   "send": "Senden",
   "sendErrorDialogBody": "Ein unbekannter Fehler ist aufgetreten. Die unten gezeigten Informationen können den Entwicklern per E-Mail zugesendet werden, um zu helfen, diesen Fehler in Zukunft zu vermeiden.",
   "sendErrorLogDescription": "Es wird eine vorgefertigte E-Mail erstellt.\nSie enthält Informationen über die App, den Fehler und das Gerät.\nSie können die E-Mail vor dem Senden bearbeiten.\nWie wir die Informationen verwenden, sehen Sie hier:",
-  "sendOtps": "OTPs senden",
   "sendPushRequestResponseFailed": "Senden der Antwort fehlgeschlagen.",
   "serverNotReachable": "Der Server konnte nicht erreicht werden.",
   "settings": "Einstellungen",

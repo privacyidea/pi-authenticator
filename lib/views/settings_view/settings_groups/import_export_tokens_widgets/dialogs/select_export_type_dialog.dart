@@ -56,8 +56,8 @@ class SelectExportTypeDialog extends StatelessWidget {
     final isExported = await showDialog<bool>(
       useRootNavigator: false,
       context: context,
-      builder: (context) => SelectTokensDialog(
-        exportDialogBuilder: (tokens) {
+      builder: (context) => SelectExportTokensDialog(
+        dialogBuilder: (tokens) {
           if (tokens.isEmpty) {
             return DefaultDialog(
               content: Text(AppLocalizations.of(context)!.noTokenToExport),
@@ -81,9 +81,9 @@ class SelectExportTypeDialog extends StatelessWidget {
     final isExported = await showDialog<bool>(
       useRootNavigator: false,
       context: context,
-      builder: (context) => SelectTokensDialog(
+      builder: (context) => SelectExportTokensDialog(
         multiSelect: false,
-        exportDialogBuilder: (tokens) {
+        dialogBuilder: (tokens) {
           if (tokens.isEmpty) {
             return DefaultDialog(
               content: Text(localization.noTokenToExport),

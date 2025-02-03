@@ -702,9 +702,9 @@
   "@initialTokenAssignmentDialogContent1": {
     "description": "First part of the dialog content to ask the user if he wants to automatically assign a token to a container",
     "placeholders": {
-      "serial": {
-        "description": "The serial number of the container",
-        "example": "123456"
+      "url": {
+        "description": "The server URL from the container",
+        "example": "https://example.com/"
       }
     }
   },
@@ -1324,9 +1324,6 @@
   "@sendErrorLogDescription": {
     "description": "Explanation for the user what he will send."
   },
-  "@sendOtps": {
-    "description": "Text the the Button to send OTPs to the server."
-  },
   "@sendPushRequestResponseFailed": {
     "description": "Error message when the response to a push request could not be sent."
   },
@@ -1761,7 +1758,7 @@
   "importTokens": "Importar token",
   "importedVia": "Importado a través de",
   "increaseCounter": "Incrementar contador",
-  "initialTokenAssignmentDialogContent1": "Las próximas dos OTPs de tus tokens con origen desconocido serán enviadas al servidor al que está conectado el contenedor «{serial}».",
+  "initialTokenAssignmentDialogContent1": "Se envían dos contraseñas de un solo uso de los tokens seleccionados a:\n{url}",
   "initialTokenAssignmentDialogContent2": "Esto asignará automáticamente su token privacyIDEA a este contenedor.",
   "initialTokenAssignmentDialogQuestion": "¿Desea continuar?",
   "initialTokenAssignmentDialogSSLWarning1": "¡La verificación SSL está desactivada!",
@@ -1822,6 +1819,7 @@
   "notAnInteger": "El valor no es un entero.",
   "notAnNumber": "El valor no es un número.",
   "notSupported": "No se admite {name} [{value}].",
+  "nothingToSelect": "No hay nada que seleccionar.",
   "ok": "Ok",
   "open": "Abrir",
   "originApp": "Aplicación Origen",
@@ -1903,6 +1901,7 @@
   "secondsUntilNextOTP": "Segundos hasta el próximo OTP",
   "secretIsRequired": "Se requiere secreto",
   "secretKey": "Clave secreta",
+  "selectAll": "Seleccionar todo",
   "selectFile": "Seleccionar archivo",
   "selectImportSource": "Seleccionar fuente de importación",
   "selectImportType": "Jak chcete importovat žetony?",
@@ -1915,7 +1914,6 @@
   "send": "Enviar",
   "sendErrorDialogBody": "Se ha producido un error inesperado en la aplicación. La siguiente información puede ser enviada a los desarrolladores por correo electrónico para ayudar a prevenir este error en el futuro.",
   "sendErrorLogDescription": "Se crea un correo electrónico listo.\nContiene información sobre la app, el error y el dispositivo.\nPuedes editar el correo antes de enviarlo.\nAquí puede ver cómo utilizamos la información:",
-  "sendOtps": "Enviar OTPs",
   "sendPushRequestResponseFailed": "No se ha podido enviar la respuesta.",
   "serverNotReachable": "No se ha podido acceder al servidor.",
   "settings": "Configuración",

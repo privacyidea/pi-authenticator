@@ -7,7 +7,7 @@ part of 'token_container_notifier.dart';
 // **************************************************************************
 
 String _$tokenContainerNotifierHash() =>
-    r'c5f2aa30384ddc574bfdafe33372ebb90ad17870';
+    r'f01b0b8c1794b63e62404e1b65d403765b4c57a9';
 
 /// Copied from Dart SDK
 class _SystemHash {

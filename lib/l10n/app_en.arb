@@ -702,9 +702,9 @@
   "@initialTokenAssignmentDialogContent1": {
     "description": "First part of the dialog content to ask the user if he wants to automatically assign a token to a container",
     "placeholders": {
-      "serial": {
-        "description": "The serial number of the container",
-        "example": "123456"
+      "url": {
+        "description": "The server URL from the container",
+        "example": "https://example.com/"
       }
     }
   },
@@ -1324,9 +1324,6 @@
   "@sendErrorLogDescription": {
     "description": "Explanation for the user what he will send."
   },
-  "@sendOtps": {
-    "description": "Text the the Button to send OTPs to the server."
-  },
   "@sendPushRequestResponseFailed": {
     "description": "Error message when the response to a push request could not be sent."
   },
@@ -1692,6 +1689,10 @@
   "errorRollOutUnknownError": "An unknown error occurred. Roll-out not possible: {e}",
   "errorRolloverNotAllowed": "Rollover for this container is not allowed.",
   "errorSavingFile": "Saving to file failed",
+    "@nothingToSelect": {
+    "description": "Text to show when there is nothing to select."
+
+  },
   "errorSynchronizationNoNetworkConnection": "Synchronizing tokens failed, privacyIDEA server could not be reached.",
   "errorTokenExpired": "The token {name} has expired.",
   "errorUnlinkingPushToken": "Failed to unlink the push token {label}.",
@@ -1761,7 +1762,15 @@
   "importTokens": "Import token",
   "importedVia": "Imported via",
   "increaseCounter": "Increase counter",
-  "initialTokenAssignmentDialogContent1": "The next two OTPs of your tokens with unknown origin will be sent to the server to which the container ‘{serial}’ is connected.",
+  "initialTokenAssignmentDialogButtonSelected": "Send selected OTPs",
+  "@initialTokenAssignmentDialogButtonSelected": {
+    "description": "Button text to send selected OTPs."
+  },
+  "initialTokenAssignmentDialogButtonZero": "Send no OTPs",
+  "@initialTokenAssignmentDialogButtonZero": {
+    "description": "Button text to send no OTPs."
+  },
+  "initialTokenAssignmentDialogContent1": "Two one-time passwords of the selected tokens are sent to:\n{url}",
   "initialTokenAssignmentDialogContent2": "This will be used to automaticly assign your privacyIDEA token to this Container.",
   "initialTokenAssignmentDialogQuestion": "Do you want to continue?",
   "initialTokenAssignmentDialogSSLWarning1": "SSL Verification is disabled!",
@@ -1822,6 +1831,7 @@
   "notAnInteger": "The value is not an integer.",
   "notAnNumber": "The value is not a number.",
   "notSupported": "The {name} [{value}] not supported",
+  "nothingToSelect": "There is nothing to select.",
   "ok": "Ok",
   "open": "Open",
   "originApp": "Origin app",
@@ -1903,6 +1913,7 @@
   "secondsUntilNextOTP": "Seconds until next OTP",
   "secretIsRequired": "Secret is required",
   "secretKey": "Secret key",
+  "selectAll": "Select all",
   "selectFile": "Select file",
   "selectImportSource": "Select import source",
   "selectImportType": "How do you want to import the tokens?",
@@ -1915,7 +1926,6 @@
   "send": "Send",
   "sendErrorDialogBody": "An unexpected error occurred in the application. The information below can be send to the developers by email to help prevent this error in the future.",
   "sendErrorLogDescription": "A predefined email is created.\nIt contains information about the app, the error and the device.\nYou can edit the email before sending it.\nYou can see here how we use the information:",
-  "sendOtps": "Send OTPs",
   "sendPushRequestResponseFailed": "Failed to send the response.",
   "serverNotReachable": "The server could not be reached.",
   "settings": "Settings",

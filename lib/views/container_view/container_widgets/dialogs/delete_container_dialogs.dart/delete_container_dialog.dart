@@ -31,7 +31,7 @@ import 'delete_container_token_dialog.dart';
 class DeleteContainerDialog extends ConsumerWidget {
   final TokenContainer container;
 
-  static showDialog(TokenContainer container) => showAsyncDialog(builder: (context) => DeleteContainerDialog(container));
+  static void showDialog(TokenContainer container) => showAsyncDialog(builder: (context) => DeleteContainerDialog(container));
 
   const DeleteContainerDialog(this.container, {super.key});
 

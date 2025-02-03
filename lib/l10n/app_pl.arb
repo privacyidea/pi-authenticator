@@ -702,9 +702,9 @@
   "@initialTokenAssignmentDialogContent1": {
     "description": "First part of the dialog content to ask the user if he wants to automatically assign a token to a container",
     "placeholders": {
-      "serial": {
-        "description": "The serial number of the container",
-        "example": "123456"
+      "url": {
+        "description": "The server URL from the container",
+        "example": "https://example.com/"
       }
     }
   },
@@ -1324,9 +1324,6 @@
   "@sendErrorLogDescription": {
     "description": "Explanation for the user what he will send."
   },
-  "@sendOtps": {
-    "description": "Text the the Button to send OTPs to the server."
-  },
   "@sendPushRequestResponseFailed": {
     "description": "Error message when the response to a push request could not be sent."
   },
@@ -1761,8 +1758,8 @@
   "importTokens": "Token importu",
   "importedVia": "Importowane przez",
   "increaseCounter": "Zwiększ licznik",
-  "initialTokenAssignmentDialogContent1": "Kolejne dwa OTP z tokenów o nieznanym pochodzeniu zostaną wysłane do serwera, z którym połączony jest kontener „{serial}”.",
-  "initialTokenAssignmentDialogContent2": " Spowoduje to automatyczne przypisanie tokenu privacyIDEA do tego kontenera.",
+  "initialTokenAssignmentDialogContent1": "Dwa jednorazowe hasła wybranych tokenów są wysyłane do:\n{url}",
+  "initialTokenAssignmentDialogContent2": "Spowoduje to automatyczne przypisanie tokenu privacyIDEA do tego kontenera.",
   "initialTokenAssignmentDialogQuestion": "Czy chcesz kontynuować?",
   "initialTokenAssignmentDialogSSLWarning1": "Weryfikacja SSL jest wyłączona!",
   "initialTokenAssignmentDialogSSLWarning2": "Wysyłanie OTP do niezweryfikowanego serwera stwarza wysokie ryzyko dla bezpieczeństwa!",
@@ -1822,6 +1819,7 @@
   "notAnInteger": "Wartość nie jest liczbą całkowitą.Wartość nie jest liczbą całkowitą.",
   "notAnNumber": "Wartość nie jest liczbą.",
   "notSupported": "Nazwa {name} [{value}] nie jest obsługiwana",
+  "nothingToSelect": "Nie ma nic do wybrania.",
   "ok": "Ok",
   "open": "Otwórz",
   "originApp": "Aplikacja Origin",
@@ -1903,6 +1901,7 @@
   "secondsUntilNextOTP": "Sekundy do następnego OTP",
   "secretIsRequired": "Wymagany jest sekret",
   "secretKey": "Tajny klucz",
+  "selectAll": "Wybierz wszystko",
   "selectFile": "Wybierz plik",
   "selectImportSource": "Wybierz źródło importu",
   "selectImportType": "Jak chcesz zaimportować tokeny?",
@@ -1915,7 +1914,6 @@
   "send": "Wyślij",
   "sendErrorDialogBody": "Napotkano nieoczekiwany błąd w aplikacji. Poniższa wiadomość może zostać wysłana do deweloperów poprzez email, żeby pomóc uniknąć tego problemu w przyszłości.",
   "sendErrorLogDescription": "Tworzona jest gotowa wiadomość e-mail zawierająca informacje o aplikacji, błędzie i urządzeniu.\nMożesz edytować wiadomość e-mail przed jej wysłaniem.\nTutaj można zobaczyć, w jaki sposób wykorzystujemy te informacje:",
-  "sendOtps": "Wyślij OTP",
   "sendPushRequestResponseFailed": "Nie udało się wysłać odpowiedzi.",
   "serverNotReachable": "Nie można uzyskać połączenia z serwerem.",
   "settings": "Ustawienia",

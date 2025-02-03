@@ -49,10 +49,10 @@ class ContainerWidgetTileTrailing extends ConsumerWidget {
   }
 
   Widget _buildFinalizedContainer(TokenContainerFinalized container, BuildContext context) {
-    final actions = <Widget>[
-      SyncContainerButton(container: container),
-    ];
     Logger.debug('Is preview: $isPreview');
+    final actions = <Widget>[
+      SyncContainerButton(container: container, isPreview: isPreview),
+    ];
     if (container.policies.rolloverAllowed && !isPreview) {
       actions.add(RolloverContainerTokensButton(container: container));
     }

@@ -464,7 +464,9 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     }
 
     final containersForInitSync = (await Future.wait(finalizeFutures)).whereType<TokenContainerFinalized>().toList();
-    if (initSync) await sync(tokenState: ref.read(tokenProvider), containersToSync: containersForInitSync, isManually: true, isInitSync: initSync);
+    if (initSync) {
+      sync(tokenState: ref.read(tokenProvider), containersToSync: containersForInitSync, isManually: true, isInitSync: initSync);
+    }
 
     return failedToAdd;
   }
@@ -476,7 +478,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
       _finalizationMutex.release();
       throw ArgumentError('Container must not be finalized');
     }
-    urlIsOk ??= await ContainerShowContainerUrlDialog.showDialog(container) != true;
+    urlIsOk ??= ((await ContainerShowContainerUrlDialog.showDialog(container)) == true);
     if (!urlIsOk) {
       Logger.info('Url check declined: Aborting finalization (${container.serial})');
       _finalizationMutex.release();

@@ -23,26 +23,24 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../../../model/extensions/token_folder_extension.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/token.dart';
-import '../../../../../utils/riverpod/riverpod_providers/generated_providers/app_constraints_notifier.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
-import '../../../../main_view/main_view_widgets/token_widgets/token_widget_builder.dart';
+import '../../../../../widgets/select_tokens_widget.dart';
 
-class SelectTokensDialog extends ConsumerStatefulWidget {
+class SelectExportTokensDialog extends ConsumerStatefulWidget {
   final bool multiSelect;
-  final Widget Function(Iterable<Token> tokens) exportDialogBuilder;
-  const SelectTokensDialog({this.multiSelect = true, required this.exportDialogBuilder, super.key});
+  final Widget Function(Set<Token> tokens) dialogBuilder;
+  const SelectExportTokensDialog({this.multiSelect = true, required this.dialogBuilder, super.key});
 
   @override
-  ConsumerState<SelectTokensDialog> createState() => _SelectTokensDialogState();
+  ConsumerState<SelectExportTokensDialog> createState() => _SelectTokensDialogState();
 }
 
-class _SelectTokensDialogState extends ConsumerState<SelectTokensDialog> {
-  Set<Token> _selectedTokens = {};
+class _SelectTokensDialogState extends ConsumerState<SelectExportTokensDialog> {
+  final Set<Token> _selectedTokens = {};
   @override
   Widget build(BuildContext context) {
-    final tokens = ref.read(tokenProvider).tokens.nonPiTokens;
-    final exportEveryToken = tokens.length == _selectedTokens.length && _selectedTokens.containsAll(tokens);
+    final tokens = ref.read(tokenProvider).tokens.nonPiTokens.toSet();
     final theme = Theme.of(context);
     final appLocalizations = AppLocalizations.of(context)!;
     return DefaultDialog(
@@ -59,75 +57,19 @@ class _SelectTokensDialogState extends ConsumerState<SelectTokensDialog> {
           ),
         ],
       ),
-      content: SizedBox(
-        width: ref.watch(appConstraintsNotifierProvider).maxWidth * 0.8,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: (tokens.isEmpty)
-              ? Text(
-                  appLocalizations.noTokenToExport,
-                  textAlign: TextAlign.center,
-                )
-              : Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ...[
-                      if (widget.multiSelect)
-                        InkWell(
-                          onTap: () => setState(() => exportEveryToken ? _selectedTokens.clear() : _selectedTokens = tokens.toSet()),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Text(
-                                appLocalizations.exportAllTokens,
-                                textAlign: TextAlign.right,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 8),
-                                child: Checkbox(
-                                    value: exportEveryToken,
-                                    onChanged: ((value) => setState(() => value == true ? _selectedTokens = tokens.toSet() : _selectedTokens.clear()))),
-                              ),
-                            ],
-                          ),
-                        ),
-                      Flexible(
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              for (final token in tokens)
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 4),
-                                  child: TextButton(
-                                    style: _selectedTokens.contains(token)
-                                        ? ButtonStyle(backgroundColor: WidgetStateProperty.all(theme.colorScheme.secondary.withAlpha(80)))
-                                        : null,
-                                    onPressed: () async {
-                                      if (!widget.multiSelect) {
-                                        _showExportDialog([token]);
-                                        return;
-                                      }
-                                      setState(() {
-                                        if (_selectedTokens.contains(token)) {
-                                          _selectedTokens.remove(token);
-                                        } else {
-                                          if (widget.multiSelect || _selectedTokens.isEmpty) {
-                                            _selectedTokens.add(token);
-                                          }
-                                        }
-                                      });
-                                    },
-                                    child: TokenWidgetBuilder.previewFromToken(token),
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ]
-                  ],
-                ),
-        ),
+      content: SelectTokensWidget(
+        multiSelect: widget.multiSelect,
+        tokens: tokens,
+        onSelect: widget.multiSelect
+            ? (selected, _) {
+                setState(() {
+                  _selectedTokens.clear();
+                  _selectedTokens.addAll(selected);
+                });
+              }
+            : (selected, _) {
+                _showExportDialog(_selectedTokens);
+              },
       ),
       actions: [
         TextButton(
@@ -147,12 +89,12 @@ class _SelectTokensDialogState extends ConsumerState<SelectTokensDialog> {
     );
   }
 
-  void _showExportDialog(Iterable<Token> tokens) async {
+  void _showExportDialog(Set<Token> tokens) async {
     if (tokens.isEmpty) return;
     final isExported = await showDialog<bool>(
       useRootNavigator: false,
       context: context,
-      builder: (context) => widget.exportDialogBuilder(tokens),
+      builder: (context) => widget.dialogBuilder(tokens),
     );
     if (isExported == true && mounted) Navigator.of(context).pop(isExported);
   }

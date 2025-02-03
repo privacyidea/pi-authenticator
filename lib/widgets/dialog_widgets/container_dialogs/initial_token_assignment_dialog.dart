@@ -19,79 +19,84 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/utils/customization/theme_extentions/status_colors.dart';
 import 'package:privacyidea_authenticator/utils/view_utils.dart';
 import 'package:privacyidea_authenticator/widgets/dialog_widgets/default_dialog.dart';
 
 import '../../../model/token_container.dart';
-import '../../button_widgets/delayed_elevated_button.dart';
+import '../../../model/tokens/token.dart';
+import '../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
+import '../../select_tokens_widget.dart';
+import 'send_otps_without_ssl_dialog.dart';
 
-class InitialTokenAssignmentDialog extends StatelessWidget {
+class InitialTokenAssignmentDialog extends ConsumerStatefulWidget {
   final TokenContainer container;
-  const InitialTokenAssignmentDialog({super.key, required this.container});
+  final List<Token> tokens;
+  const InitialTokenAssignmentDialog({super.key, required this.tokens, required this.container});
 
-  static showDialog(TokenContainer container) => showAsyncDialog(builder: (context) => InitialTokenAssignmentDialog(container: container));
+  static Future<Iterable<Token>?> showDialog(TokenContainer container, List<Token> tokens) async {
+    final returnValue = await showAsyncDialog(builder: (context) => InitialTokenAssignmentDialog(container: container, tokens: tokens));
+    assert(returnValue is Iterable<Token>?, "The return value of the InitialTokenAssignmentDialog must be an Iterable<Token> or null.");
+    return returnValue;
+  }
+
+  @override
+  ConsumerState<InitialTokenAssignmentDialog> createState() => _InitialTokenAssignmentDialogState();
+}
+
+class _InitialTokenAssignmentDialogState extends ConsumerState<InitialTokenAssignmentDialog> {
+  Set<Token> _selectedTokens = {};
+  Set<Token> _unselectedTokens = {};
 
   @override
   Widget build(BuildContext context) {
     final AppLocalizations localizations = AppLocalizations.of(context)!;
-
     return DefaultDialog(
       title: Text(localizations.initialTokenAssignmentDialogTitle),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(localizations.initialTokenAssignmentDialogContent1(container.serial)),
+          Text(localizations.initialTokenAssignmentDialogContent1(widget.container.syncUrl.toString())),
+          SizedBox(height: 8),
           Text(localizations.initialTokenAssignmentDialogContent2),
-          if (!container.sslVerify)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Icon(
-                    Icons.warning_amber_rounded,
-                    size: 36,
-                    color: Theme.of(context).extension<StatusColors>()!.warning,
-                  ),
-                  Flexible(
-                    child: Column(
-                      children: [
-                        Text(
-                          localizations.initialTokenAssignmentDialogSSLWarning1,
-                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Theme.of(context).extension<StatusColors>()!.warning),
-                          textAlign: TextAlign.center,
-                        ),
-                        SizedBox(height: 4),
-                        Text(
-                          localizations.initialTokenAssignmentDialogSSLWarning2,
-                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Theme.of(context).extension<StatusColors>()!.warning),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    ),
-                  ),
-                  Icon(
-                    Icons.warning_amber_rounded,
-                    size: 36,
-                    color: Theme.of(context).extension<StatusColors>()!.warning,
-                  ),
-                ],
-              ),
-            ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12.0),
             child: Text(localizations.initialTokenAssignmentDialogQuestion),
           ),
+          SelectTokensWidget(
+            multiSelect: true,
+            tokens: widget.tokens.toSet(),
+            onSelect: (selected, unselected) => setState(() {
+              _selectedTokens = selected;
+              _unselectedTokens = unselected;
+            }),
+          ),
         ],
       ),
       actions: [
-        ElevatedButton(onPressed: () => Navigator.of(context).pop(false), child: Text(localizations.no)),
-        DelayedElevatedButton(
-          onPressed: () => Navigator.of(context).pop(true),
-          child: Text(localizations.sendOtps),
+        ElevatedButton(
+          child: Text(localizations.cancel),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        ElevatedButton(
+          onPressed: _selectedTokens.isEmpty
+              ? () => Navigator.of(context).pop(_selectedTokens)
+              : () async {
+                  if (!widget.container.sslVerify) {
+                    final ok = await SendOTPsWithoutSSLDialog.showDialog();
+                    if (ok != true || !context.mounted) return;
+                  }
+                  ref.read(tokenProvider.notifier).updateTokens(
+                        _unselectedTokens.toList(),
+                        (t) => t.copyWith(checkedContainer: t.checkedContainer..add(widget.container.serial)),
+                      );
+                  Navigator.of(context).pop(_selectedTokens);
+                },
+          child: _selectedTokens.isEmpty
+              ? Text(localizations.initialTokenAssignmentDialogButtonZero)
+              : Text(localizations.initialTokenAssignmentDialogButtonSelected),
         ),
       ],
     );

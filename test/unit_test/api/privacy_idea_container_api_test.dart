@@ -445,11 +445,11 @@ void _testPrivacyIdeaContainerApi() {
         );
 
         // Act
-        final result = await containerApi.sync(tokenContainer, tokenState, withX25519Key: publicSimpleKeyPair, isInitSync: true, sendOTPs: true);
+        final result = await containerApi.sync(tokenContainer, tokenState, withX25519Key: publicSimpleKeyPair, isInitSync: true, sendAllOTPs: true);
 
         // Asserta
         expect(result, isNotNull);
-        final newPolicies = result.newPolicies;
+        final newPolicies = result!.newPolicies;
         expect(newPolicies.initialTokenAssignment, false);
         expect(newPolicies.rolloverAllowed, false);
         expect(newPolicies.disabledTokenDeletion, true);
@@ -561,11 +561,11 @@ void _testPrivacyIdeaContainerApi() {
         );
 
         // Act
-        final result = await containerApi.sync(tokenContainer, tokenState, withX25519Key: publicSimpleKeyPair, isInitSync: true, sendOTPs: true);
+        final result = await containerApi.sync(tokenContainer, tokenState, withX25519Key: publicSimpleKeyPair, isInitSync: true, sendAllOTPs: true);
 
         // Assert
         expect(result, isNotNull);
-        final newPolicies = result.newPolicies;
+        final newPolicies = result!.newPolicies;
         expect(newPolicies.initialTokenAssignment, false);
         expect(newPolicies.rolloverAllowed, false);
         expect(newPolicies.disabledTokenDeletion, true);
@@ -688,10 +688,10 @@ void _testPrivacyIdeaContainerApi() {
         );
 
         // Act
-        final result = await containerApi.sync(tokenContainer, tokenState, withX25519Key: publicSimpleKeyPair, isInitSync: true, sendOTPs: true);
+        final result = await containerApi.sync(tokenContainer, tokenState, withX25519Key: publicSimpleKeyPair, isInitSync: true, sendAllOTPs: true);
         // Asserta
         expect(result, isNotNull);
-        final newPolicies = result.newPolicies;
+        final newPolicies = result!.newPolicies;
         expect(newPolicies.initialTokenAssignment, false);
         expect(newPolicies.rolloverAllowed, false);
         expect(newPolicies.disabledTokenDeletion, true);
@@ -813,10 +813,10 @@ void _testPrivacyIdeaContainerApi() {
         );
 
         // Act
-        final result = await containerApi.sync(tokenContainer, tokenState, withX25519Key: publicSimpleKeyPair, isInitSync: true, sendOTPs: true);
+        final result = await containerApi.sync(tokenContainer, tokenState, withX25519Key: publicSimpleKeyPair, isInitSync: true, sendAllOTPs: true);
         // Asserta
         expect(result, isNotNull);
-        final newPolicies = result.newPolicies;
+        final newPolicies = result!.newPolicies;
         expect(newPolicies.initialTokenAssignment, false);
         expect(newPolicies.rolloverAllowed, false);
         expect(newPolicies.disabledTokenDeletion, true);
@@ -932,10 +932,10 @@ void _testPrivacyIdeaContainerApi() {
         );
 
         // Act
-        final result = await containerApi.sync(tokenContainer, tokenState, withX25519Key: publicSimpleKeyPair, isInitSync: true, sendOTPs: true);
+        final result = await containerApi.sync(tokenContainer, tokenState, withX25519Key: publicSimpleKeyPair, isInitSync: true, sendAllOTPs: true);
         // Asserta
         expect(result, isNotNull);
-        final newPolicies = result.newPolicies;
+        final newPolicies = result!.newPolicies;
         expect(newPolicies.initialTokenAssignment, false);
         expect(newPolicies.rolloverAllowed, false);
         expect(newPolicies.disabledTokenDeletion, true);

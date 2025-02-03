@@ -212,13 +212,7 @@ class TokenContainer with _$TokenContainer {
         finalizationState: FinalizationState.generatingKeyPairCompleted,
       );
 
-  factory TokenContainer.fromJson(Map<String, dynamic> json) {
-    return json["runtimeType"] == "finalized"
-        ? (_$TokenContainerFromJson(json) as TokenContainerFinalized)
-            .copyWith(syncState: json["syncState"] == "syncing" ? SyncState.failed : SyncState.values.byName(json["syncState"]))
-        : _$TokenContainerFromJson(json);
-  }
-
+  factory TokenContainer.fromJson(Map<String, dynamic> json) => _$TokenContainerFromJson(json);
   @override
   String toString() => '$runtimeType('
       'issuer: $issuer, '

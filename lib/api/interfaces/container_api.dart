@@ -36,12 +36,14 @@ class ContainerSyncUpdates {
   final List<Token> newTokens;
   final List<Token> updatedTokens;
   final List<Token> deletedTokens;
+  final List<Token> initAssignmentChecked;
   final ContainerPolicies newPolicies;
 
   ContainerSyncUpdates({
     required this.newTokens,
     required this.updatedTokens,
     required this.deletedTokens,
+    required this.initAssignmentChecked,
     required this.newPolicies,
     required this.containerSerial,
   });
