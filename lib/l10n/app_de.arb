@@ -699,6 +699,12 @@
   "@increaseCounter": {
     "description": "A11y label for the button that increases the counter."
   },
+  "@initialTokenAssignmentDialogButtonSelected": {
+    "description": "Button text to send selected OTPs."
+  },
+  "@initialTokenAssignmentDialogButtonZero": {
+    "description": "Button text to send no OTPs."
+  },
   "@initialTokenAssignmentDialogContent1": {
     "description": "First part of the dialog content to ask the user if he wants to automatically assign a token to a container",
     "placeholders": {
@@ -1010,6 +1016,9 @@
       }
     }
   },
+  "@nothingToSelect": {
+    "description": "Text to show when there is nothing to select."
+  },
   "@ok": {
     "description": "Button to confirm an action."
   },
@@ -1115,6 +1124,9 @@
   },
   "@patchNotesV4_4_2NewFeatures2": {
     "description": "Patch notes for a new feature in version 4.4.2"
+  },
+  "@patchNotesV4_5_0BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.5.0."
   },
   "@patchNotesV4_5_0NewFeatures1": {
     "description": "Patch notes for version 4.5.0"
@@ -1855,6 +1867,7 @@
   "patchNotesV4_4_2Improvement1": "Taschenlampenunterstützung für das Scannen von QR-Codes wurde zugefügt.",
   "patchNotesV4_4_2NewFeatures1": "Token können jetzt per Copy & Paste eingefügt werden.",
   "patchNotesV4_4_2NewFeatures2": "Galerie-Unterstützung für das Scannen von QR-Codes hinzugefügt.",
+  "patchNotesV4_5_0BugFix1": "Kleinere Probleme behoben",
   "patchNotesV4_5_0NewFeatures1": "Unterstützung des privacyIDEA Containersystems zur einfacheren Verwaltung von Token",
   "period": "Periode",
   "phonePart": "Telefonanteil:",

@@ -699,6 +699,12 @@
   "@increaseCounter": {
     "description": "A11y label for the button that increases the counter."
   },
+  "@initialTokenAssignmentDialogButtonSelected": {
+    "description": "Button text to send selected OTPs."
+  },
+  "@initialTokenAssignmentDialogButtonZero": {
+    "description": "Button text to send no OTPs."
+  },
   "@initialTokenAssignmentDialogContent1": {
     "description": "First part of the dialog content to ask the user if he wants to automatically assign a token to a container",
     "placeholders": {
@@ -1010,6 +1016,9 @@
       }
     }
   },
+  "@nothingToSelect": {
+    "description": "Text to show when there is nothing to select."
+  },
   "@ok": {
     "description": "Button to confirm an action."
   },
@@ -1115,6 +1124,9 @@
   },
   "@patchNotesV4_4_2NewFeatures2": {
     "description": "Patch notes for a new feature in version 4.4.2"
+  },
+  "@patchNotesV4_5_0BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.5.0."
   },
   "@patchNotesV4_5_0NewFeatures1": {
     "description": "Patch notes for version 4.5.0"
@@ -1758,6 +1770,8 @@
   "importTokens": "Importar token",
   "importedVia": "Importado a través de",
   "increaseCounter": "Incrementar contador",
+  "initialTokenAssignmentDialogButtonSelected": "Enviar OTP seleccionadas",
+  "initialTokenAssignmentDialogButtonZero": "No enviar OTPs",
   "initialTokenAssignmentDialogContent1": "Se envían dos contraseñas de un solo uso de los tokens seleccionados a:\n{url}",
   "initialTokenAssignmentDialogContent2": "Esto asignará automáticamente su token privacyIDEA a este contenedor.",
   "initialTokenAssignmentDialogQuestion": "¿Desea continuar?",
@@ -1853,6 +1867,7 @@
   "patchNotesV4_4_2Improvement1": "Añadido soporte linterna para el escaneo de códigos QR.",
   "patchNotesV4_4_2NewFeatures1": "Ahora es posible insertar tokens copiando y pegando.",
   "patchNotesV4_4_2NewFeatures2": "Añadido soporte de galería para el escaneo de códigos QR.",
+  "patchNotesV4_5_0BugFix1": "Problemas menores corregidos",
   "patchNotesV4_5_0NewFeatures1": "Compatibilidad con el sistema de contenedores privacyIDEA para facilitar la gestión de tokens.",
   "period": "Periodo",
   "phonePart": "Pieza de teléfono:",

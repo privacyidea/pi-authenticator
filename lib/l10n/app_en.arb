@@ -699,6 +699,12 @@
   "@increaseCounter": {
     "description": "A11y label for the button that increases the counter."
   },
+  "@initialTokenAssignmentDialogButtonSelected": {
+    "description": "Button text to send selected OTPs."
+  },
+  "@initialTokenAssignmentDialogButtonZero": {
+    "description": "Button text to send no OTPs."
+  },
   "@initialTokenAssignmentDialogContent1": {
     "description": "First part of the dialog content to ask the user if he wants to automatically assign a token to a container",
     "placeholders": {
@@ -1010,6 +1016,9 @@
       }
     }
   },
+  "@nothingToSelect": {
+    "description": "Text to show when there is nothing to select."
+  },
   "@ok": {
     "description": "Button to confirm an action."
   },
@@ -1115,6 +1124,9 @@
   },
   "@patchNotesV4_4_2NewFeatures2": {
     "description": "Patch notes for a new feature in version 4.4.2"
+  },
+  "@patchNotesV4_5_0BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.5.0."
   },
   "@patchNotesV4_5_0NewFeatures1": {
     "description": "Patch notes for version 4.5.0"
@@ -1689,10 +1701,6 @@
   "errorRollOutUnknownError": "An unknown error occurred. Roll-out not possible: {e}",
   "errorRolloverNotAllowed": "Rollover for this container is not allowed.",
   "errorSavingFile": "Saving to file failed",
-    "@nothingToSelect": {
-    "description": "Text to show when there is nothing to select."
-
-  },
   "errorSynchronizationNoNetworkConnection": "Synchronizing tokens failed, privacyIDEA server could not be reached.",
   "errorTokenExpired": "The token {name} has expired.",
   "errorUnlinkingPushToken": "Failed to unlink the push token {label}.",
@@ -1763,13 +1771,7 @@
   "importedVia": "Imported via",
   "increaseCounter": "Increase counter",
   "initialTokenAssignmentDialogButtonSelected": "Send selected OTPs",
-  "@initialTokenAssignmentDialogButtonSelected": {
-    "description": "Button text to send selected OTPs."
-  },
   "initialTokenAssignmentDialogButtonZero": "Send no OTPs",
-  "@initialTokenAssignmentDialogButtonZero": {
-    "description": "Button text to send no OTPs."
-  },
   "initialTokenAssignmentDialogContent1": "Two one-time passwords of the selected tokens are sent to:\n{url}",
   "initialTokenAssignmentDialogContent2": "This will be used to automaticly assign your privacyIDEA token to this Container.",
   "initialTokenAssignmentDialogQuestion": "Do you want to continue?",
@@ -1865,6 +1867,7 @@
   "patchNotesV4_4_2Improvement1": "Added flashlight support for QR code scanning.",
   "patchNotesV4_4_2NewFeatures1": "Tokens can now be inserted using copy & paste.",
   "patchNotesV4_4_2NewFeatures2": "Added gallery support for QR code scanning.",
+  "patchNotesV4_5_0BugFix1": "Fixed minor Issues",
   "patchNotesV4_5_0NewFeatures1": "Now supports the container feature of privacyIDEA.",
   "period": "Period",
   "phonePart": "Phone part:",

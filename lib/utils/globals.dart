@@ -30,6 +30,9 @@ Map<Version, Map<PatchNoteType, List<String>>> getLocalizedPatchNotes(AppLocaliz
         PatchNoteType.newFeature: [
           localizations.patchNotesV4_5_0NewFeatures1,
         ],
+        PatchNoteType.bugFix: [
+          localizations.patchNotesV4_5_0BugFix1,
+        ],
       },
       const Version(4, 4, 2): {
         PatchNoteType.newFeature: [
