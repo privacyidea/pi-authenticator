@@ -216,6 +216,9 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
         newTokens.addAll(syncUpdate.newTokens);
         syncedTokens.addAll(syncUpdate.updatedTokens);
         deletedTokensNoOffline.addAll(syncUpdate.deletedTokens.noOffline);
+        ref
+            .read(tokenProvider.notifier)
+            .updateTokens(syncUpdate.initAssignmentChecked, (t) => t.copyWith(checkedContainer: t.checkedContainer..add(syncUpdate.containerSerial)));
         newPoliciesMap[syncUpdate.containerSerial] = syncUpdate.newPolicies;
       }
     }).onError((error, stackTrace) {
@@ -463,8 +466,8 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
       finalizeFutures.add(finalize(container, isManually: true, addDeviceInfos: addDeviceInfos, urlIsOk: urlIsOk));
     }
 
-    final containersForInitSync = (await Future.wait(finalizeFutures)).whereType<TokenContainerFinalized>().toList();
     if (initSync) {
+      final containersForInitSync = (await Future.wait(finalizeFutures)).whereType<TokenContainerFinalized>().toList();
       sync(tokenState: ref.read(tokenProvider), containersToSync: containersForInitSync, isManually: true, isInitSync: initSync);
     }
 

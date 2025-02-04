@@ -76,6 +76,7 @@ mixin _$TokenContainer {
             FinalizationState finalizationState,
             SyncState syncState,
             ContainerPolicies policies,
+            bool initSynced,
             String? passphraseQuestion,
             String publicClientKey,
             String privateClientKey)
@@ -115,6 +116,7 @@ mixin _$TokenContainer {
             FinalizationState finalizationState,
             SyncState syncState,
             ContainerPolicies policies,
+            bool initSynced,
             String? passphraseQuestion,
             String publicClientKey,
             String privateClientKey)?
@@ -154,6 +156,7 @@ mixin _$TokenContainer {
             FinalizationState finalizationState,
             SyncState syncState,
             ContainerPolicies policies,
+            bool initSynced,
             String? passphraseQuestion,
             String publicClientKey,
             String privateClientKey)?
@@ -613,6 +616,7 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
             FinalizationState finalizationState,
             SyncState syncState,
             ContainerPolicies policies,
+            bool initSynced,
             String? passphraseQuestion,
             String publicClientKey,
             String privateClientKey)
@@ -671,6 +675,7 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
             FinalizationState finalizationState,
             SyncState syncState,
             ContainerPolicies policies,
+            bool initSynced,
             String? passphraseQuestion,
             String publicClientKey,
             String privateClientKey)?
@@ -729,6 +734,7 @@ class _$TokenContainerUnfinalizedImpl extends TokenContainerUnfinalized {
             FinalizationState finalizationState,
             SyncState syncState,
             ContainerPolicies policies,
+            bool initSynced,
             String? passphraseQuestion,
             String publicClientKey,
             String privateClientKey)?
@@ -880,6 +886,7 @@ abstract class _$$TokenContainerFinalizedImplCopyWith<$Res>
       FinalizationState finalizationState,
       SyncState syncState,
       ContainerPolicies policies,
+      bool initSynced,
       String? passphraseQuestion,
       String publicClientKey,
       String privateClientKey});
@@ -914,6 +921,7 @@ class __$$TokenContainerFinalizedImplCopyWithImpl<$Res>
     Object? finalizationState = null,
     Object? syncState = null,
     Object? policies = null,
+    Object? initSynced = null,
     Object? passphraseQuestion = freezed,
     Object? publicClientKey = null,
     Object? privateClientKey = null,
@@ -967,6 +975,10 @@ class __$$TokenContainerFinalizedImplCopyWithImpl<$Res>
           ? _value.policies
           : policies // ignore: cast_nullable_to_non_nullable
               as ContainerPolicies,
+      initSynced: null == initSynced
+          ? _value.initSynced
+          : initSynced // ignore: cast_nullable_to_non_nullable
+              as bool,
       passphraseQuestion: freezed == passphraseQuestion
           ? _value.passphraseQuestion
           : passphraseQuestion // ignore: cast_nullable_to_non_nullable
@@ -999,6 +1011,7 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
       this.finalizationState = FinalizationState.completed,
       this.syncState = SyncState.notStarted,
       this.policies = ContainerPolicies.defaultSetting,
+      this.initSynced = false,
       this.passphraseQuestion,
       required this.publicClientKey,
       required this.privateClientKey,
@@ -1038,6 +1051,9 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
   @JsonKey()
   final ContainerPolicies policies;
   @override
+  @JsonKey()
+  final bool initSynced;
+  @override
   final String? passphraseQuestion;
   @override
   final String publicClientKey;
@@ -1073,6 +1089,8 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
                 other.syncState == syncState) &&
             (identical(other.policies, policies) ||
                 other.policies == policies) &&
+            (identical(other.initSynced, initSynced) ||
+                other.initSynced == initSynced) &&
             (identical(other.passphraseQuestion, passphraseQuestion) ||
                 other.passphraseQuestion == passphraseQuestion) &&
             (identical(other.publicClientKey, publicClientKey) ||
@@ -1097,6 +1115,7 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
       finalizationState,
       syncState,
       policies,
+      initSynced,
       passphraseQuestion,
       publicClientKey,
       privateClientKey);
@@ -1144,6 +1163,7 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
             FinalizationState finalizationState,
             SyncState syncState,
             ContainerPolicies policies,
+            bool initSynced,
             String? passphraseQuestion,
             String publicClientKey,
             String privateClientKey)
@@ -1162,6 +1182,7 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
         finalizationState,
         syncState,
         policies,
+        initSynced,
         passphraseQuestion,
         publicClientKey,
         privateClientKey);
@@ -1201,6 +1222,7 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
             FinalizationState finalizationState,
             SyncState syncState,
             ContainerPolicies policies,
+            bool initSynced,
             String? passphraseQuestion,
             String publicClientKey,
             String privateClientKey)?
@@ -1219,6 +1241,7 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
         finalizationState,
         syncState,
         policies,
+        initSynced,
         passphraseQuestion,
         publicClientKey,
         privateClientKey);
@@ -1258,6 +1281,7 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
             FinalizationState finalizationState,
             SyncState syncState,
             ContainerPolicies policies,
+            bool initSynced,
             String? passphraseQuestion,
             String publicClientKey,
             String privateClientKey)?
@@ -1278,6 +1302,7 @@ class _$TokenContainerFinalizedImpl extends TokenContainerFinalized {
           finalizationState,
           syncState,
           policies,
+          initSynced,
           passphraseQuestion,
           publicClientKey,
           privateClientKey);
@@ -1338,6 +1363,7 @@ abstract class TokenContainerFinalized extends TokenContainer {
       final FinalizationState finalizationState,
       final SyncState syncState,
       final ContainerPolicies policies,
+      final bool initSynced,
       final String? passphraseQuestion,
       required final String publicClientKey,
       required final String privateClientKey}) = _$TokenContainerFinalizedImpl;
@@ -1369,6 +1395,7 @@ abstract class TokenContainerFinalized extends TokenContainer {
   SyncState get syncState;
   @override
   ContainerPolicies get policies;
+  bool get initSynced;
   @override
   String? get passphraseQuestion;
   @override

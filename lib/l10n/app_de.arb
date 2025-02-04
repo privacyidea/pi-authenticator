@@ -1761,7 +1761,7 @@
   "initialTokenAssignmentDialogButtonSelected": "Ausgewählte OTPs senden",
   "initialTokenAssignmentDialogButtonZero": "Keine OTPs senden",
   "initialTokenAssignmentDialogContent1": "Zwei einmalpasswörter der ausgewählten Token werden gesendet an:\n{url}",
-  "initialTokenAssignmentDialogContent2": "Dies wird verwendet, um Ihre privacyIDEA-Token automatisch diesem Container zuzuordnen. Dies kann übersprungen werden, wenn Sie noch keine Token von privacyIDEA haben.",
+  "initialTokenAssignmentDialogContent2": "Diese werden verwendet, um Ihre privacyIDEA-Token automatisch diesem Container zuzuordnen. Dies kann übersprungen werden, wenn Sie noch keine Token von privacyIDEA haben.",
   "initialTokenAssignmentDialogQuestion": "Welche einmalpasswörter möchten Sie senden?",
   "initialTokenAssignmentDialogSSLWarning1": "Die SSL-Verifizierung ist deaktiviert!",
   "initialTokenAssignmentDialogSSLWarning2": "Das Senden von OTPs an einen nicht verifizierten Server stellt ein hohes Sicherheitsrisiko dar!",

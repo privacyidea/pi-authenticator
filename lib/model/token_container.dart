@@ -167,6 +167,7 @@ class TokenContainer with _$TokenContainer {
     @Default(FinalizationState.completed) FinalizationState finalizationState,
     @Default(SyncState.notStarted) SyncState syncState,
     @Default(ContainerPolicies.defaultSetting) ContainerPolicies policies,
+    @Default(false) bool initSynced,
     String? passphraseQuestion,
     required String publicClientKey,
     required String privateClientKey,

@@ -143,6 +143,7 @@ _$TokenContainerFinalizedImpl _$$TokenContainerFinalizedImplFromJson(
           ? ContainerPolicies.defaultSetting
           : ContainerPolicies.fromJson(
               json['policies'] as Map<String, dynamic>),
+      initSynced: json['initSynced'] as bool? ?? false,
       passphraseQuestion: json['passphraseQuestion'] as String?,
       publicClientKey: json['publicClientKey'] as String,
       privateClientKey: json['privateClientKey'] as String,
@@ -165,6 +166,7 @@ Map<String, dynamic> _$$TokenContainerFinalizedImplToJson(
           _$FinalizationStateEnumMap[instance.finalizationState]!,
       'syncState': _$SyncStateEnumMap[instance.syncState]!,
       'policies': instance.policies,
+      'initSynced': instance.initSynced,
       'passphraseQuestion': instance.passphraseQuestion,
       'publicClientKey': instance.publicClientKey,
       'privateClientKey': instance.privateClientKey,
