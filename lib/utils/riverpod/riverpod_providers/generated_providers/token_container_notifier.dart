@@ -145,7 +145,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     required TokenState tokenState,
     required bool isManually,
     List<TokenContainerFinalized>? containersToSync,
-    bool isInitSync = false,
+    bool? isInitSync,
   }) async {
     if (containersToSync?.isEmpty ?? false) {
       return {};
@@ -466,8 +466,8 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
       finalizeFutures.add(finalize(container, isManually: true, addDeviceInfos: addDeviceInfos, urlIsOk: urlIsOk));
     }
 
+    final containersForInitSync = (await Future.wait(finalizeFutures)).whereType<TokenContainerFinalized>().toList();
     if (initSync) {
-      final containersForInitSync = (await Future.wait(finalizeFutures)).whereType<TokenContainerFinalized>().toList();
       sync(tokenState: ref.read(tokenProvider), containersToSync: containersForInitSync, isManually: true, isInitSync: initSync);
     }
 

@@ -59,12 +59,12 @@ class PiContainerApi implements TokenContainerApi {
     TokenContainerFinalized container,
     TokenState tokenState, {
     SimpleKeyPair? withX25519Key,
-    bool isInitSync = false,
+    bool? isInitSync,
     bool? sendAllOTPs,
   }) async {
     final containerTokenTemplates = tokenState.containerTokens(container.serial).toTemplates();
 
-    final initialTokenAssignment = (isInitSync || !container.initSynced) && container.policies.initialTokenAssignment;
+    final initialTokenAssignment = container.policies.initialTokenAssignment && (isInitSync ?? !container.initSynced);
     final notLinkedTokens = tokenState.tokens.maybeContainerTokensOf(container.serial);
     final templatesForAssignment = notLinkedTokens.withSerial.toTemplates();
 

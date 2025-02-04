@@ -27,7 +27,7 @@ import '../../utils/ecc_utils.dart';
 abstract class TokenContainerApi {
   Future<ContainerFinalizationResponse> finalizeContainer(TokenContainerUnfinalized container, EccUtils eccUtils);
   Future<TransferQrData> getRolloverQrData(TokenContainerFinalized container);
-  Future<ContainerSyncUpdates?> sync(TokenContainerFinalized container, TokenState tokenState, {bool isInitSync = false});
+  Future<ContainerSyncUpdates?> sync(TokenContainerFinalized container, TokenState tokenState, {bool? isInitSync});
   Future<UnregisterContainerResult> unregister(TokenContainerFinalized container);
 }
 
