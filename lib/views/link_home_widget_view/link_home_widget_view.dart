@@ -1,5 +1,5 @@
-import 'package:app_minimizer/app_minimizer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../utils/customization/theme_extentions/extended_text_theme.dart';
@@ -46,7 +46,7 @@ class _LinkHomeWidgetViewState extends ConsumerState<LinkHomeWidgetView> {
                     if (alreadyTapped) return;
                     setState(() => alreadyTapped = true);
                     await HomeWidgetUtils().link(widget.homeWidgetId, otpToken.id);
-                    await FlutterAppMinimizer.minimize();
+                    await SystemNavigator.pop();
                     await Future.delayed(const Duration(milliseconds: 500));
                     if (context.mounted) Navigator.pop(context);
                   },
