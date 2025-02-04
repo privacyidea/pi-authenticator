@@ -757,7 +757,7 @@ void _testTokenContainerNotifier() {
 
         // act
         var tokenState = providerContainer.read(tokenProvider);
-        await providerContainer.read(tokenContainerProvider.notifier).sync(tokenState: tokenState, isManually: false);
+        await providerContainer.read(tokenContainerProvider.notifier).sync(tokenState: tokenState, isManually: false, isInitSync: false);
 
         // assert
         final expectedStateUnordered = TokenState(tokens: [
