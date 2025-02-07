@@ -69,13 +69,7 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
             color: Colors.transparent,
             child: DefaultDialog(
               scrollable: false,
-              title: Text(
-                title,
-                style: Theme.of(context).textTheme.titleMedium!,
-                maxLines: 2,
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
-              ),
+              title: Text(title),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,

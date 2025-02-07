@@ -3,7 +3,7 @@
  *
  * Author: Frank Merkel <frank.merkel@netknights.it>
  *
- * Copyright (c) 2025 NetKnights GmbH
+ * Copyright (c) 2024-2025 NetKnights GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
@@ -84,7 +84,7 @@ class _SendErrorDialogState extends State<SendErrorDialog> {
           TextButton(
             onPressed: () {
               Logger.sendErrorLog(_textController.text);
-              showDialog(context: context, builder: (context) => const AskLogSendedDialog()).then((value) {
+              showDialog(context: context, builder: (context) => const AskLogSentDialog()).then((value) {
                 if (!context.mounted) return;
                 value == true ? _popDialogs(context) : null;
               });

@@ -46,7 +46,14 @@ class DefaultDialog extends StatelessWidget {
           title: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(child: title ?? const SizedBox()),
+              Expanded(
+                child: DefaultTextStyle(
+                  style: Theme.of(context).textTheme.titleLarge!,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  child: title ?? const SizedBox(),
+                ),
+              ),
               if (hasCloseButton)
                 SizedBox(
                   width: closeButtonSize,

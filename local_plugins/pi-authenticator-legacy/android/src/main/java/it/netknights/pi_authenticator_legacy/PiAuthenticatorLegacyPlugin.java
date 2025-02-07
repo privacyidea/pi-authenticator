@@ -129,7 +129,7 @@ public class PiAuthenticatorLegacyPlugin implements FlutterPlugin, MethodCallHan
             }
         } catch (Exception e) {
             result.error("500",
-                    "An unknown error occured: " + e,
+                    "An unknown error occurred: " + e,
                     null);
         }
     }

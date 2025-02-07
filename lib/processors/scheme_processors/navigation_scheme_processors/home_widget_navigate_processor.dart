@@ -119,7 +119,7 @@ class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
       Logger.warning('Could not find token for widget id: ${uri.queryParameters['id']}');
       return [
         ProcessorResult.failed(
-          (l) => l.couldNotFundTokenForWidgetId(uri.queryParameters['id']!),
+          (l) => l.couldNotFindTokenForWidgetId(uri.queryParameters['id']!),
           resultHandlerType: resultHandlerType,
         )
       ];

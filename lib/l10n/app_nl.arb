@@ -85,7 +85,7 @@
   "@asQrCode": {
     "description": "Buttontext to export the token as a qr code."
   },
-  "@askLogSendedDescription": {
+  "@askLogSentDescription": {
     "description": "The content of the dialog that asks the user if he sent the error log."
   },
   "@authNotSupportedBody": {
@@ -236,7 +236,7 @@
   "@couldNotFindGlobalRef": {
     "description": "Error message when a global reference could not be found."
   },
-  "@couldNotFundTokenForWidgetId": {
+  "@couldNotFindTokenForWidgetId": {
     "description": "Error message when a token could not be found for a widget id.",
     "placeholders": {
       "id": {
@@ -1604,7 +1604,7 @@
   "allTokensSynchronized": "Alle tokens zijn gesynchroniseerd.",
   "asFile": "Als bestand",
   "asQrCode": "Als QR-code",
-  "askLogSendedDescription": "Heb je het logboek verzonden en wil je het nu wissen?",
+  "askLogSentDescription": "Heb je het logboek verzonden en wil je het nu wissen?",
   "authNotSupportedBody": "Deze actie vereist dat het apparaat is beveiligd met inlogggevens of biometrie.",
   "authNotSupportedTitle": "Apparaat inloggevens of biometrie is vereist",
   "authToAcceptPushRequest": "Authenticeer om de push aanvraag te accepteren.",
@@ -1650,7 +1650,7 @@
   "copyOTPToClipboard": "Kopieer OTP naar klembord",
   "couldNotConnectToServer": "Kan geen verbinding maken met de server.",
   "couldNotFindGlobalRef": "Kon globalRef niet vinden",
-  "couldNotFundTokenForWidgetId": "Token voor widget ID: {id} kon niet worden gevonden",
+  "couldNotFindTokenForWidgetId": "Token voor widget ID: {id} kon niet worden gevonden",
   "couldNotSignMessage": "Bericht niet kunnen ondertekenen.",
   "counter": "Tegen",
   "create": "Creëer",
