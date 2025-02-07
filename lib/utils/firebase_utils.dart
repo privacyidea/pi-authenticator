@@ -52,7 +52,7 @@ class FirebaseUtils {
       return;
     }
     _initializedHandler = true;
-    Logger.info('Initializing Firebase');
+    Logger.info('FirebaseUtils: Initializing Firebase');
 
     FirebaseMessaging.onMessage.listen(foregroundHandler);
     FirebaseMessaging.onBackgroundMessage(backgroundHandler);

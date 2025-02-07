@@ -3,7 +3,7 @@
  *
  * Author: Frank Merkel <frank.merkel@netknights.it>
  *
- * Copyright (c) 2024 NetKnights GmbH
+ * Copyright (c) 2025 NetKnights GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
@@ -22,14 +22,13 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
-import 'package:firebase_core/firebase_core.dart' show FirebaseException;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'package:mutex/mutex.dart';
 import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/localization_notifier.dart';
+import 'package:privacyidea_authenticator/utils/view_utils.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../../../model/extensions/enums/push_token_rollout_state_extension.dart';
@@ -50,7 +49,6 @@ import '../../../../repo/secure_token_repository.dart';
 import '../../../../views/import_tokens_view/pages/import_plain_tokens_page.dart';
 import '../../../firebase_utils.dart';
 import '../../../globals.dart';
-import '../../../identifiers.dart';
 import '../../../lock_auth.dart';
 import '../../../logger.dart';
 import '../../../privacyidea_io_client.dart';
@@ -588,7 +586,26 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
         return false;
       }
     }
-
+    String? fbToken;
+    if (pushToken.isPollOnly != true) {
+      pushToken = await _updateToken(pushToken, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.receivingFirebaseToken));
+      if (pushToken == null) {
+        Logger.warning('Tried to update a token that does not exist.');
+        return false;
+      }
+      try {
+        fbToken = await _firebaseUtils.getFBToken();
+      } catch (e, s) {
+        Logger.warning('Could not get firebase token.', error: e, stackTrace: s);
+        showErrorStatusMessage(
+          message: (l) => l.errorRollOutFailed(pushToken!.label),
+          details: (l) => l.noFbToken,
+        );
+        pushToken = await _updateToken(pushToken, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed));
+        if (pushToken == null) Logger.warning('Tried to update a token that does not exist.');
+        return false;
+      }
+    }
     pushToken = await _updateToken(pushToken, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKey));
     if (pushToken == null) {
       Logger.warning('Tried to update a token that does not exist.');
@@ -603,18 +620,18 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       }
       Logger.warning('Network access permission for token "${pushToken.id}" successful.');
     }
+
     try {
       // TODO What to do with poll only tokens if google-services is used?
 
       Logger.warning('SSLVerify: ${pushToken.sslVerify}');
-      final fbToken = await _firebaseUtils.getFBToken();
       Response response = await _ioClient.doPost(
         sslVerify: pushToken.sslVerify,
         url: pushToken.url!,
         body: {
           'enrollment_credential': pushToken.enrollmentCredentials,
           'serial': pushToken.serial,
-          'fbtoken': fbToken,
+          'fbtoken': fbToken ?? 'no firebase token',
           'pubkey': _rsaUtils.serializeRSAPublicKeyPKCS8(pushToken.rsaPublicTokenKey!),
         },
       );
@@ -653,10 +670,10 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
         );
 
         try {
-          final message = response.body.isNotEmpty ? (json.decode(response.body)['result']?['error']?['message']) : '';
+          final String message = response.body.isNotEmpty ? (json.decode(response.body)['result']?['error']?['message']) : '';
           ref.read(statusMessageProvider.notifier).state = StatusMessage(
             message: (localization) => localization.errorRollOutFailed(pushToken!.label),
-            details: message,
+            details: (_) => message,
           );
         } on FormatException {
           // Format Exception is thrown if the response body is not a valid json. This happens if the server is not reachable.
@@ -680,7 +697,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
         Logger.warning('Tried to update a token that does not exist.');
         return false;
       }
-      if (e is PlatformException && e.code == FIREBASE_TOKEN_ERROR_CODE || e is SocketException || e is TimeoutException || e is FirebaseException) {
+      if (e is SocketException || e is TimeoutException) {
         Logger.warning('Connection error: Roll out push token failed.', error: e, stackTrace: s);
         ref.read(statusMessageProvider.notifier).state = StatusMessage(
           message: (localization) => localization.errorRollOutNoConnectionToServer(pushToken!.label),

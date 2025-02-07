@@ -147,9 +147,6 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     List<TokenContainerFinalized>? containersToSync,
     bool? isInitSync,
   }) async {
-    if (containersToSync?.isEmpty ?? false) {
-      return {};
-    }
     if (containersToSync == null) {
       final containerList = (await future).containerList;
       containersToSync = containerList.whereType<TokenContainerFinalized>().where((e) => e.syncState != SyncState.syncing).toList();
@@ -159,6 +156,9 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
         current.add((await future).currentOf(container)!);
       }
       containersToSync = current.whereType<TokenContainerFinalized>().where((e) => e.syncState != SyncState.syncing).toList();
+    }
+    if (containersToSync.isEmpty) {
+      return {};
     }
     Logger.info('Syncing ${containersToSync.length} tokens');
     final syncFutures = <Future<ContainerSyncUpdates?>>[];

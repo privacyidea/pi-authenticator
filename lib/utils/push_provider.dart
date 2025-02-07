@@ -75,6 +75,7 @@ class PushProvider {
   }
 
   void _initFirebase() async {
+    Logger.info('PushProvider: Initializing Firebase');
     if (_firebaseInitialized) return;
     try {
       await _firebaseUtils.initFirebase(

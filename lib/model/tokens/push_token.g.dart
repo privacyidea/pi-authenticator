@@ -25,6 +25,7 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) => PushToken(
       publicServerKey: json['publicServerKey'] as String?,
       publicTokenKey: json['publicTokenKey'] as String?,
       privateTokenKey: json['privateTokenKey'] as String?,
+      isPollOnly: json['isPollOnly'] as bool?,
       isRolledOut: json['isRolledOut'] as bool?,
       sslVerify: json['sslVerify'] as bool?,
       rolloutState: $enumDecodeNullable(
@@ -61,6 +62,7 @@ Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
       'serial': instance.serial,
       'fbToken': instance.fbToken,
       'sslVerify': instance.sslVerify,
+      'isPollOnly': instance.isPollOnly,
       'enrollmentCredentials': instance.enrollmentCredentials,
       'url': instance.url?.toString(),
       'isRolledOut': instance.isRolledOut,
@@ -75,6 +77,9 @@ const _$PushTokenRollOutStateEnumMap = {
   PushTokenRollOutState.generatingRSAKeyPair: 'generatingRSAKeyPair',
   PushTokenRollOutState.generatingRSAKeyPairFailed:
       'generatingRSAKeyPairFailed',
+  PushTokenRollOutState.receivingFirebaseToken: 'receivingFirebaseToken',
+  PushTokenRollOutState.receivingFirebaseTokenFailed:
+      'receivingFirebaseTokenFailed',
   PushTokenRollOutState.sendRSAPublicKey: 'sendRSAPublicKey',
   PushTokenRollOutState.sendRSAPublicKeyFailed: 'sendRSAPublicKeyFailed',
   PushTokenRollOutState.parsingResponse: 'parsingResponse',

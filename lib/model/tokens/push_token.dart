@@ -69,6 +69,7 @@ class PushToken extends Token {
 
   // Roll out
   final bool sslVerify;
+  final bool? isPollOnly;
   final String? enrollmentCredentials;
   final Uri? url;
   final bool isRolledOut;
@@ -101,6 +102,7 @@ class PushToken extends Token {
     this.publicServerKey,
     this.publicTokenKey,
     this.privateTokenKey,
+    this.isPollOnly,
     bool? isRolledOut,
     bool? sslVerify,
     PushTokenRollOutState? rolloutState,
@@ -163,6 +165,7 @@ class PushToken extends Token {
     String? publicServerKey,
     String? publicTokenKey,
     String? privateTokenKey,
+    bool? isPollOnly,
     DateTime? expirationDate,
     bool? isRolledOut,
     PushTokenRollOutState? rolloutState,
@@ -217,7 +220,6 @@ class PushToken extends Token {
         'isRolledOut: $isRolledOut, '
         'rolloutState: $rolloutState, '
         'publicServerKey: $publicServerKey, '
-        'privateTokenKey: $privateTokenKey, '
         'publicTokenKey: $publicTokenKey}';
   }
 
@@ -365,6 +367,7 @@ class PushToken extends Token {
     final currentRolloutState = switch (newToken.rolloutState) {
       PushTokenRollOutState.rolloutNotStarted => PushTokenRollOutState.rolloutNotStarted,
       PushTokenRollOutState.generatingRSAKeyPair || PushTokenRollOutState.generatingRSAKeyPairFailed => PushTokenRollOutState.generatingRSAKeyPairFailed,
+      PushTokenRollOutState.receivingFirebaseToken || PushTokenRollOutState.receivingFirebaseTokenFailed => PushTokenRollOutState.receivingFirebaseTokenFailed,
       PushTokenRollOutState.sendRSAPublicKey || PushTokenRollOutState.sendRSAPublicKeyFailed => PushTokenRollOutState.sendRSAPublicKeyFailed,
       PushTokenRollOutState.parsingResponse || PushTokenRollOutState.parsingResponseFailed => PushTokenRollOutState.parsingResponseFailed,
       PushTokenRollOutState.rolloutComplete => PushTokenRollOutState.rolloutComplete,

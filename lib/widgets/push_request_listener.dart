@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 
 import '../utils/push_provider.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/push_request_provider.dart';
@@ -24,6 +25,8 @@ class _PushRequestListenerState extends ConsumerState<PushRequestListener> {
 
   @override
   Widget build(BuildContext context) {
+    final hasPushToken = ref.watch(tokenProvider).hasPushTokens;
+    if (!hasPushToken) return widget.child;
     final pushRequest = ref.watch(pushRequestProvider).whenOrNull(data: (data) => data.pushRequests.firstOrNull);
     if (pushRequest == null) return widget.child;
     return Stack(

@@ -43,12 +43,15 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
     super.initState();
     _listener = AppLifecycleListener(
       onResume: () async {
-        await ref.read(tokenProvider.notifier).loadStateFromRepo();
+        final state = await ref.read(tokenProvider.notifier).loadStateFromRepo();
         Logger.info('Refreshed tokens on resume');
-        final prProvider = ref.read(pushRequestProvider.notifier);
-        await prProvider.loadStateFromRepo();
-        await prProvider.pollForChallenges(isManually: false);
-        Logger.info('Polled for challenges on resume');
+        final hasPushToken = state?.hasPushTokens == true;
+        if (hasPushToken) {
+          final prProvider = ref.read(pushRequestProvider.notifier);
+          await prProvider.loadStateFromRepo();
+          await prProvider.pollForChallenges(isManually: false);
+          Logger.info('Polled for challenges on resume');
+        }
         final hidden = await HomeWidgetUtils().hideAllOtps();
         if (hidden) Logger.info('Hid all HomeWidget OTPs on resume');
       },
