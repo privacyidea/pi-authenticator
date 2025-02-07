@@ -24,8 +24,8 @@ import '../../../../utils/logger.dart';
 import '../../../../widgets/dialog_widgets/default_dialog.dart';
 
 /// A dialog that asks the user if they sended the log. Clear logs if he did.
-class AskLogSendedDialog extends StatelessWidget {
-  const AskLogSendedDialog({super.key});
+class AskLogSentDialog extends StatelessWidget {
+  const AskLogSentDialog({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +41,7 @@ class AskLogSendedDialog extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
             child: Text(
-              AppLocalizations.of(context)!.askLogSendedDescription,
+              AppLocalizations.of(context)!.askLogSentDescription,
             ),
           ),
         ],

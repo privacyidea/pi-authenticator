@@ -85,7 +85,7 @@
   "@asQrCode": {
     "description": "Buttontext to export the token as a qr code."
   },
-  "@askLogSendedDescription": {
+  "@askLogSentDescription": {
     "description": "The content of the dialog that asks the user if he sent the error log."
   },
   "@authNotSupportedBody": {
@@ -236,7 +236,7 @@
   "@couldNotFindGlobalRef": {
     "description": "Error message when a global reference could not be found."
   },
-  "@couldNotFundTokenForWidgetId": {
+  "@couldNotFindTokenForWidgetId": {
     "description": "Error message when a token could not be found for a widget id.",
     "placeholders": {
       "id": {
@@ -1604,7 +1604,7 @@
   "allTokensSynchronized": "Wszystkie tokeny są zsynchronizowane.",
   "asFile": "Jako plik",
   "asQrCode": "Jako kod QR",
-  "askLogSendedDescription": "Czy wysłałeś dziennik i czy chcesz go teraz wyczyścić?",
+  "askLogSentDescription": "Czy wysłałeś dziennik i czy chcesz go teraz wyczyścić?",
   "authNotSupportedBody": "To działanie wymaga skonfigurowania ustawień zabezpieczeń albo uwierzytelniania biometrycznego.",
   "authNotSupportedTitle": "Skonfigurowane ustawienia zabezpieczeń albo uwierzytelnianie biometryczne jest wymagane.",
   "authToAcceptPushRequest": "Uwierzytelnij, aby zaakceptować żądanie push.",
@@ -1650,7 +1650,7 @@
   "copyOTPToClipboard": "Kopiowanie OTP do schowka",
   "couldNotConnectToServer": "Nie można połączyć się z serwerem.",
   "couldNotFindGlobalRef": "Nie można znaleźć globalRef",
-  "couldNotFundTokenForWidgetId": "Nie można znaleźć tokenu dla identyfikatora widżetu: {id}.",
+  "couldNotFindTokenForWidgetId": "Nie można znaleźć tokenu dla identyfikatora widżetu: {id}.",
   "couldNotSignMessage": "Nie można podpisać wiadomości.",
   "counter": "Licznik",
   "create": "Utwórz",

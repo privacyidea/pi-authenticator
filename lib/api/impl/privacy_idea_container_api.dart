@@ -329,7 +329,7 @@ class PiContainerApi implements TokenContainerApi {
     final signMessage = '${challenge.nonce}|${challenge.timeStamp}|${container.serial}|${container.syncUrl}|$publicKeyBase64|${jsonEncode(containerDict)}';
     Logger.debug(signMessage);
     final signature = container.signMessage(signMessage);
-    Logger.debug('Sended container: ${jsonEncode(containerDict)}');
+    Logger.debug('Sent container: ${jsonEncode(containerDict)}');
     final body = {
       TokenContainer.CONTAINER_SERIAL: container.serial,
       TokenContainer.SYNC_PUBLIC_CLIENT_KEY: publicKeyBase64,

@@ -85,7 +85,7 @@
   "@asQrCode": {
     "description": "Buttontext to export the token as a qr code."
   },
-  "@askLogSendedDescription": {
+  "@askLogSentDescription": {
     "description": "The content of the dialog that asks the user if he sent the error log."
   },
   "@authNotSupportedBody": {
@@ -236,7 +236,7 @@
   "@couldNotFindGlobalRef": {
     "description": "Error message when a global reference could not be found."
   },
-  "@couldNotFundTokenForWidgetId": {
+  "@couldNotFindTokenForWidgetId": {
     "description": "Error message when a token could not be found for a widget id.",
     "placeholders": {
       "id": {
@@ -1604,7 +1604,7 @@
   "allTokensSynchronized": "Tous les jetons ont été synchronisés.",
   "asFile": "En tant que fichier",
   "asQrCode": "Sous forme de code QR",
-  "askLogSendedDescription": "Avez-vous envoyé le journal et voulez-vous l'effacer maintenant ?",
+  "askLogSentDescription": "Avez-vous envoyé le journal et voulez-vous l'effacer maintenant ?",
   "authNotSupportedBody": "Cette action nécessite que l'appareil soit sécurisé par des identifiants ou des données biométriques.",
   "authNotSupportedTitle": "Informations d'identification de l'appareil ou données biométriques requises",
   "authToAcceptPushRequest": "Veuillez vous authentifier pour accepter la demande de connexion.",
@@ -1650,7 +1650,7 @@
   "copyOTPToClipboard": "Copier l'OTP dans le presse-papiers",
   "couldNotConnectToServer": "Impossible de se connecter au serveur.",
   "couldNotFindGlobalRef": "Impossible de trouver globalRef",
-  "couldNotFundTokenForWidgetId": "Token pour l'ID du widget : {id} n'a pas pu être trouvé.",
+  "couldNotFindTokenForWidgetId": "Token pour l'ID du widget : {id} n'a pas pu être trouvé.",
   "couldNotSignMessage": "Impossible de signer le message.",
   "counter": "Compteur",
   "create": "créer",

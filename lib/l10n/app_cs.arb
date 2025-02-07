@@ -85,7 +85,7 @@
   "@asQrCode": {
     "description": "Buttontext to export the token as a qr code."
   },
-  "@askLogSendedDescription": {
+  "@askLogSentDescription": {
     "description": "The content of the dialog that asks the user if he sent the error log."
   },
   "@authNotSupportedBody": {
@@ -236,7 +236,7 @@
   "@couldNotFindGlobalRef": {
     "description": "Error message when a global reference could not be found."
   },
-  "@couldNotFundTokenForWidgetId": {
+  "@couldNotFindTokenForWidgetId": {
     "description": "Error message when a token could not be found for a widget id.",
     "placeholders": {
       "id": {
@@ -1604,7 +1604,7 @@
   "allTokensSynchronized": "Všechny tokeny jsou synchronizované.",
   "asFile": "Jako soubor",
   "asQrCode": "Jako QR kód",
-  "askLogSendedDescription": "Odeslali jste protokol a chcete jej nyní vymazat?",
+  "askLogSentDescription": "Odeslali jste protokol a chcete jej nyní vymazat?",
   "authNotSupportedBody": "Tato akce vyžaduje, aby bylo zařízení chráněno zámkem zařízení nebo biometrickým ověřením.",
   "authNotSupportedTitle": "Vyžadován zámek zařízení nebo biometrické ověření",
   "authToAcceptPushRequest": "Pro přijetí požadavku na push notifikaci se přihlaste.",
@@ -1650,7 +1650,7 @@
   "copyOTPToClipboard": "Zkopírovat OTP do schránky",
   "couldNotConnectToServer": "Nepodařilo se připojit k serveru.",
   "couldNotFindGlobalRef": "Nepodařilo se najít globalRef",
-  "couldNotFundTokenForWidgetId": "Token pro ID widgetu: {id} se nepodařilo najít.",
+  "couldNotFindTokenForWidgetId": "Token pro ID widgetu: {id} se nepodařilo najít.",
   "couldNotSignMessage": "Zprávu se nepodařilo podepsat.",
   "counter": "Pult",
   "create": "Vytvořit",

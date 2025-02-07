@@ -85,7 +85,7 @@
   "@asQrCode": {
     "description": "Buttontext to export the token as a qr code."
   },
-  "@askLogSendedDescription": {
+  "@askLogSentDescription": {
     "description": "The content of the dialog that asks the user if he sent the error log."
   },
   "@authNotSupportedBody": {
@@ -236,7 +236,7 @@
   "@couldNotFindGlobalRef": {
     "description": "Error message when a global reference could not be found."
   },
-  "@couldNotFundTokenForWidgetId": {
+  "@couldNotFindTokenForWidgetId": {
     "description": "Error message when a token could not be found for a widget id.",
     "placeholders": {
       "id": {
@@ -1604,7 +1604,7 @@
   "allTokensSynchronized": "Alle Token wurden synchronisiert.",
   "asFile": "Als Datei",
   "asQrCode": "Als QR-Code",
-  "askLogSendedDescription": "Haben Sie das Protokoll gesendet, und möchten Sie es jetzt löschen?",
+  "askLogSentDescription": "Haben Sie das Protokoll gesendet, und möchten Sie es jetzt löschen?",
   "authNotSupportedBody": "Diese Aktion erfordert, dass auf dem Gerät ein Passwort oder Biometrie eingerichtet ist.",
   "authNotSupportedTitle": "Gerätepasswort oder Biometrie wird benötigt",
   "authToAcceptPushRequest": "Bitte authentifizieren Sie sich, um die Anfrage anzunehmen.",
@@ -1650,7 +1650,7 @@
   "copyOTPToClipboard": "OTP in die Zwischenablage kopieren",
   "couldNotConnectToServer": "Konnte keine Verbindung zum Server herstellen.",
   "couldNotFindGlobalRef": "Konnte globalRef nicht finden",
-  "couldNotFundTokenForWidgetId": "Token für Widget-ID: {id} konnte nicht gefunden werden",
+  "couldNotFindTokenForWidgetId": "Token für Widget-ID: {id} konnte nicht gefunden werden",
   "couldNotSignMessage": "Nachricht konnte nicht signiert werden.",
   "counter": "Zähler",
   "create": "Erstellen",

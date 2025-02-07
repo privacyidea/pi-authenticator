@@ -85,7 +85,7 @@
   "@asQrCode": {
     "description": "Buttontext to export the token as a qr code."
   },
-  "@askLogSendedDescription": {
+  "@askLogSentDescription": {
     "description": "The content of the dialog that asks the user if he sent the error log."
   },
   "@authNotSupportedBody": {
@@ -236,7 +236,7 @@
   "@couldNotFindGlobalRef": {
     "description": "Error message when a global reference could not be found."
   },
-  "@couldNotFundTokenForWidgetId": {
+  "@couldNotFindTokenForWidgetId": {
     "description": "Error message when a token could not be found for a widget id.",
     "placeholders": {
       "id": {
@@ -1604,7 +1604,7 @@
   "allTokensSynchronized": "Semua token disinkronkan.",
   "asFile": "Sebagai file",
   "asQrCode": "Sebagai kode QR",
-  "askLogSendedDescription": "Apakah Anda telah mengirim log, dan apakah Anda ingin menghapusnya sekarang?",
+  "askLogSentDescription": "Apakah Anda telah mengirim log, dan apakah Anda ingin menghapusnya sekarang?",
   "authNotSupportedBody": "Tindakan ini mengharuskan perangkat diamankan dengan kredensial atau biometrik.",
   "authNotSupportedTitle": "Diperlukan kredensial atau biometrik perangkat",
   "authToAcceptPushRequest": "Lakukan autentikasi untuk menerima permintaan push.",
@@ -1650,7 +1650,7 @@
   "copyOTPToClipboard": "Salin OTP ke papan klip",
   "couldNotConnectToServer": "Tidak dapat terhubung ke server",
   "couldNotFindGlobalRef": "Tidak dapat menemukan globalRef",
-  "couldNotFundTokenForWidgetId": "Token untuk ID widget: {id} tidak dapat ditemukan",
+  "couldNotFindTokenForWidgetId": "Token untuk ID widget: {id} tidak dapat ditemukan",
   "couldNotSignMessage": "Tidak dapat menandatangani pesan.",
   "counter": "Penghitung",
   "create": "Membuat",
