@@ -656,7 +656,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
           final message = response.body.isNotEmpty ? (json.decode(response.body)['result']?['error']?['message']) : '';
           ref.read(statusMessageProvider.notifier).state = StatusMessage(
             message: (localization) => localization.errorRollOutFailed(pushToken!.label),
-            details: message,
+            details: (_) => message.toString(),
           );
         } on FormatException {
           // Format Exception is thrown if the response body is not a valid json. This happens if the server is not reachable.

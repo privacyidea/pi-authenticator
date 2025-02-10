@@ -32,6 +32,12 @@ class TokenOriginData {
   final String data; // The data that was used to create the token. Contains the secret!!
   final DateTime createdAt; // The time when the token was created. If imported from another app, this is the time of the import
   final bool? isPrivacyIdeaToken; // True if the token was created by a privacyIDEA server. Null if unknown. False if not created by a privacyIDEA server
+  bool get isExportable {
+    if (isPrivacyIdeaToken == false) return true;
+    if (source == TokenOriginSourceType.manually) return true;
+    return false;
+  }
+
   final String? creator; // like issuer, but only for privacyIDEA servers. This is only set if the token was created by a privacyIDEA server
   final Version?
       piServerVersion; // The version of the privacyIDEA server that created the token. This is only set if the token was created by a privacyIDEA server

@@ -56,7 +56,7 @@ class PushTokenWidget extends TokenWidget {
               child: ClipRect(
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                  child: token.rolloutState.rollOutInProgress ? RolloutWidget(token: token) : StartRolloutWidget(token: token),
+                  child: token.rolloutState.rollOutInProgress ? RolloutWidget(token: token) : PushTokenStartRolloutWidget(token: token),
                 ),
               ),
             ),

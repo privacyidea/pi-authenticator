@@ -38,9 +38,9 @@ class DefaultDialog extends StatelessWidget {
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
           actionsPadding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
           buttonPadding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-          insetPadding: const EdgeInsets.fromLTRB(16, 32, 16, 12),
-          titlePadding: const EdgeInsets.all(12),
-          contentPadding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          insetPadding: const EdgeInsets.fromLTRB(12, 24, 12, 8),
+          titlePadding: const EdgeInsets.all(10),
+          contentPadding: const EdgeInsets.fromLTRB(14, 0, 14, 8),
           contentTextStyle: Theme.of(context).textTheme.bodyMedium,
           elevation: 2,
           title: Row(
@@ -68,7 +68,10 @@ class DefaultDialog extends StatelessWidget {
             ],
           ),
           actions: actions,
-          content: SingleChildScrollView(child: content),
+          content: DefaultTextStyle(
+            style: Theme.of(context).textTheme.bodyLarge!,
+            child: SingleChildScrollView(child: content),
+          ),
         ),
       );
 }

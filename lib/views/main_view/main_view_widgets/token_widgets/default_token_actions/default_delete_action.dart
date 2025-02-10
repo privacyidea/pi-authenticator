@@ -30,6 +30,7 @@ import '../../../../../utils/riverpod/riverpod_providers/generated_providers/tok
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../loading_indicator.dart';
 import '../slideable_action.dart';
+import 'container_token_indelible_dialog.dart';
 
 class DefaultDeleteAction extends ConsumerSlideableAction {
   final Token token;
@@ -49,7 +50,7 @@ class DefaultDeleteAction extends ConsumerSlideableAction {
               }
               _showDialog();
             }
-          : null,
+          : (_) => ContainerTokenIndelibleDialog.showDialog(),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,

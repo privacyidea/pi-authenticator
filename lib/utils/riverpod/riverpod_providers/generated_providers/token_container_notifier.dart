@@ -25,6 +25,8 @@ import 'package:privacyidea_authenticator/model/container_policies.dart';
 import 'package:privacyidea_authenticator/model/extensions/enums/rollout_state_extension.dart';
 import 'package:privacyidea_authenticator/model/extensions/token_folder_extension.dart';
 import 'package:privacyidea_authenticator/processors/scheme_processors/token_container_processor.dart';
+import 'package:privacyidea_authenticator/utils/globals.dart';
+import 'package:privacyidea_authenticator/views/container_view/container_widgets/dialogs/delete_container_dialogs.dart/delete_container_dialog.dart';
 import 'package:privacyidea_authenticator/widgets/dialog_widgets/container_dialogs/container_rollout_dialog.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -38,6 +40,7 @@ import '../../../../../../../utils/view_utils.dart';
 import '../../../../api/impl/privacy_idea_container_api.dart';
 import '../../../../api/interfaces/container_api.dart';
 import '../../../../interfaces/repo/token_container_repository.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../model/api_results/pi_server_results/pi_server_result_value.dart';
 import '../../../../model/enums/rollout_state.dart';
 import '../../../../model/enums/sync_state.dart';
@@ -141,7 +144,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
 ////////////////////////// PUBLIC METHODS //////////////////////////
 ///////////////////////////////////////////////////////////////// */
 
-  Future<Map<int, TokenContainerFinalized>> sync({
+  Future<Map<int, TokenContainerFinalized>> syncContainers({
     required TokenState tokenState,
     required bool isManually,
     List<TokenContainerFinalized>? containersToSync,
@@ -174,35 +177,11 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
 
     for (var finalizedContainer in containersToSync) {
       syncFutures.add(
-        Future(() async {
-          final syncUpdate = await _containerApi.sync(
-            finalizedContainer,
-            tokenState,
-            isInitSync: isInitSync,
-          );
-          if (syncUpdate == null) {
-            Logger.warning('Failed to sync container ${finalizedContainer.serial}');
-            await updateContainer(finalizedContainer, (TokenContainerFinalized c) => c.copyWith(syncState: SyncState.failed));
-            return null;
-          }
-          await updateContainer(finalizedContainer, (TokenContainerFinalized c) => c.copyWith(syncState: SyncState.completed));
-          ContainerSyncResultDialog.showDialog(
-            container: finalizedContainer,
-            addedTokens: syncUpdate.newTokens,
-            removedTokens: syncUpdate.deletedTokens.noOffline,
-          );
-          return syncUpdate;
-        }).catchError((error, stackTrace) async {
-          Logger.warning('Failed to sync container ${finalizedContainer.serial}', error: error, stackTrace: stackTrace);
-          await updateContainer(finalizedContainer, (TokenContainerFinalized c) => c.copyWith(syncState: SyncState.failed));
-          if (error is PiServerResultError) {
-            failedContainers.addAll({error.code: finalizedContainer});
-          }
-          if (!isManually) return null;
-          showErrorStatusMessage(
-            message: (localization) => localization.failedToSyncContainer(finalizedContainer.serial),
-            details: error is PiServerResultError ? (_) => error.message : (_) => error.toString(),
-          );
+        _syncContainer(finalizedContainer, tokenState, isInitSync, isManually).onError((error, stackTrace) async {
+          // Only PiServerResultError is rethrown from the _syncContainer method
+          assert(error is PiServerResultError, 'Only PiServerResultError is rethrown from the _syncContainer method');
+          failedContainers[(error as PiServerResultError).code] = finalizedContainer;
+          await _handlePiServerResultError(error, finalizedContainer, isManually);
           return null;
         }),
       );
@@ -232,6 +211,40 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     await ref.read(tokenProvider.notifier).addOrReplaceTokens([...syncedTokens, ...newTokens]);
     await updateContainerList((await future).containerList, (c) => newPoliciesMap[c.serial] == null ? c : c.copyWith(policies: newPoliciesMap[c.serial]!));
     return failedContainers;
+  }
+
+  Future<ContainerSyncUpdates?> _syncContainer(TokenContainerFinalized finalizedContainer, TokenState tokenState, bool? isInitSync, bool isManually) async {
+    try {
+      final syncUpdate = await _containerApi.sync(
+        finalizedContainer,
+        tokenState,
+        isInitSync: isInitSync,
+      );
+      if (syncUpdate == null) {
+        Logger.warning('Failed to sync container ${finalizedContainer.serial}');
+        await updateContainer(finalizedContainer, (TokenContainerFinalized c) => c.copyWith(syncState: SyncState.failed));
+        return null;
+      }
+      await updateContainer(finalizedContainer, (TokenContainerFinalized c) => c.copyWith(syncState: SyncState.completed));
+      ContainerSyncResultDialog.showDialog(
+        container: finalizedContainer,
+        addedTokens: syncUpdate.newTokens,
+        removedTokens: syncUpdate.deletedTokens.noOffline,
+      );
+      return syncUpdate;
+    } catch (error, stackTrace) {
+      Logger.warning('Failed to sync container ${finalizedContainer.serial}', error: error, stackTrace: stackTrace);
+      await updateContainer(finalizedContainer, (TokenContainerFinalized c) => c.copyWith(syncState: SyncState.failed));
+      if (error is PiServerResultError) {
+        rethrow;
+      }
+      if (!isManually) return null;
+      showErrorStatusMessage(
+        message: (localization) => localization.failedToSyncContainer(finalizedContainer.serial),
+        details: error is PiServerResultError ? (_) => error.message : (_) => error.toString(),
+      );
+    }
+    return null;
   }
 
   Future<bool> rolloverTokens({
@@ -468,7 +481,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
 
     final containersForInitSync = (await Future.wait(finalizeFutures)).whereType<TokenContainerFinalized>().toList();
     if (initSync) {
-      sync(tokenState: ref.read(tokenProvider), containersToSync: containersForInitSync, isManually: true, isInitSync: initSync);
+      syncContainers(tokenState: ref.read(tokenProvider), containersToSync: containersForInitSync, isManually: true, isInitSync: initSync);
     }
 
     return failedToAdd;
@@ -534,7 +547,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
       if (isManually) {
         showErrorStatusMessage(
           message: container.finalizationState.asFailed.rolloutMsgLocalized,
-          details: (localization) => e.toString(),
+          details: (_) => e.toString(),
         );
       }
     } catch (e) {
@@ -622,8 +635,22 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     if (finalizedContainer == null) throw StateError('Container was removed');
     return finalizedContainer;
   }
+
+  Future<void> _handlePiServerResultError(PiServerResultError error, TokenContainerFinalized container, bool isManually) async {
+    final context = (await contextedGlobalNavigatorKey).currentContext;
+    if (error.code == PiServerResultErrorCodes.containerNotFound) {
+      if (context == null || !context.mounted || !isManually) return;
+      DeleteContainerDialog.showDialog(
+        container,
+        titleOverride: AppLocalizations.of(context)!.syncContainerNotFoundDialogTitle(container.serial),
+        contentOverride: AppLocalizations.of(context)!.syncContainerNotFoundDialogContent,
+      );
+    }
+  }
 }
 
 class PiServerResultErrorCodes {
+  // Unable to find container with serial {serial}.
+  static const containerNotFound = 601;
   static const couldNotVerifySignature = 3002;
 }

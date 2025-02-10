@@ -6,23 +6,17 @@ part of 'token_origin_data.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-TokenOriginData _$TokenOriginDataFromJson(Map<String, dynamic> json) =>
-    TokenOriginData(
+TokenOriginData _$TokenOriginDataFromJson(Map<String, dynamic> json) => TokenOriginData(
       source: $enumDecode(_$TokenOriginSourceTypeEnumMap, json['source']),
       appName: json['appName'] as String,
       data: json['data'] as String,
-      createdAt: json['createdAt'] == null
-          ? null
-          : DateTime.parse(json['createdAt'] as String),
+      createdAt: json['createdAt'] == null ? null : DateTime.parse(json['createdAt'] as String),
       isPrivacyIdeaToken: json['isPrivacyIdeaToken'] as bool?,
       creator: json['creator'] as String?,
-      piServerVersion: json['piServerVersion'] == null
-          ? null
-          : Version.fromJson(json['piServerVersion'] as Map<String, dynamic>),
+      piServerVersion: json['piServerVersion'] == null ? null : Version.fromJson(json['piServerVersion'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$TokenOriginDataToJson(TokenOriginData instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$TokenOriginDataToJson(TokenOriginData instance) => <String, dynamic>{
       'source': _$TokenOriginSourceTypeEnumMap[instance.source]!,
       'appName': instance.appName,
       'data': instance.data,

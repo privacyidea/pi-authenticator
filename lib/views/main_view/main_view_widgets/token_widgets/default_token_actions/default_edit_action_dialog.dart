@@ -112,8 +112,8 @@ class _DefaultEditActionDialogState extends ConsumerState<DefaultEditActionDialo
                     labelText: appLocalizations.tokenSerial,
                   ),
                 ReadOnlyTextFormField(
-                  text: token.isPrivacyIdeaToken == false ? appLocalizations.yes : appLocalizations.no,
                   labelText: appLocalizations.isExpotableQuestion,
+                  text: token.isExportable ? appLocalizations.yes : appLocalizations.no,
                 ),
                 if (widget.token.containerSerial != null)
                   ReadOnlyTextFormField(

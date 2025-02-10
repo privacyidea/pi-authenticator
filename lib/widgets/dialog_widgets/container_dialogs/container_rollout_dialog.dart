@@ -24,7 +24,6 @@ import 'package:privacyidea_authenticator/utils/view_utils.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../model/tokens/token.dart';
-import '../../../views/container_view/container_widgets/container_widget.dart';
 import '../default_dialog.dart';
 
 class ContainerSyncResultDialog extends StatelessWidget {
@@ -59,7 +58,7 @@ class ContainerSyncResultDialog extends StatelessWidget {
     }
     return DefaultDialog(
       hasCloseButton: true,
-      title: Text(AppLocalizations.of(context)!.containerSyncDialogTitle),
+      title: Text(AppLocalizations.of(context)!.containerSyncDialogTitle(container.serial)),
       content: SizedBox(
         width: double.maxFinite,
         child: SingleChildScrollView(
@@ -67,7 +66,6 @@ class ContainerSyncResultDialog extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisSize: MainAxisSize.min,
             children: [
-              ContainerWidget(container: container, isPreview: true),
               if (addedTokens.isNotEmpty) ...[
                 Divider(),
                 Padding(
@@ -80,9 +78,19 @@ class ContainerSyncResultDialog extends StatelessWidget {
                 for (var tokenType in tokenTypes.keys)
                   Padding(
                     padding: const EdgeInsets.only(left: 4),
-                    child: Text(
-                      '• ${tokenTypes[tokenType]}x $tokenType',
-                      style: Theme.of(context).textTheme.bodyLarge,
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.add_circle,
+                          size: Theme.of(context).textTheme.bodyLarge?.fontSize ?? 16,
+                        ),
+                        Expanded(
+                          child: Text(
+                            ' ${tokenTypes[tokenType]}x $tokenType',
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
               ],
@@ -98,9 +106,19 @@ class ContainerSyncResultDialog extends StatelessWidget {
                 for (var token in removedTokens)
                   Padding(
                     padding: const EdgeInsets.only(left: 4),
-                    child: Text(
-                      '• ${token.label}',
-                      style: Theme.of(context).textTheme.bodyLarge,
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.remove_circle,
+                          size: Theme.of(context).textTheme.bodyLarge?.fontSize ?? 16,
+                        ),
+                        Expanded(
+                          child: Text(
+                            ' ${token.label}',
+                            style: Theme.of(context).textTheme.bodyLarge,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
               ],

@@ -39,7 +39,7 @@ class SteamToken extends TOTPToken {
   static const STEAM_ISSUER = 'Steam';
 
   @override
-  bool get isPrivacyIdeaToken => false;
+  bool get isPrivacyIdeaTokenna => false;
   @override
   Null get serial => null;
   static String get tokenType => TokenTypes.STEAM.name;

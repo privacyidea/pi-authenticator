@@ -56,7 +56,6 @@ class AppWidgetProvider : HomeWidgetProvider() {
             val views = RemoteViews(context.packageName, R.layout.widget_layout).apply {
                 val tokenId = widgetData.getString("_tokenId$widgetId", null)
 
-                // _loadImageFromWidgetDataString(widgetData, "_tokenBackground$nightModeSuffix", R.id.widget_background, this)
                 _setBackground(context, widgetData, widgetId, nightModeSuffix, this)
                 if(tokenId == null) {
                     _setContainerEmpty(context, widgetData, widgetId, nightModeSuffix, this)
