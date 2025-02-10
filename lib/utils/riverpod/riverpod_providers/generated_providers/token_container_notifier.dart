@@ -243,7 +243,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
     if (uri == null) throw ArgumentError('Invalid rollover uri');
     final result = (await TokenContainerProcessor().processUri(uri, fromInit: false))?.firstOrNull;
     if (result == null) throw StateError('Failed to process rollover uri');
-    final success = await handleProcessorResult(result, {TokenContainerProcessor.ARG_DO_REPLACE: true});
+    final success = await handleProcessorResult(result, args: {TokenContainerProcessor.ARG_DO_REPLACE: true});
     return success;
   }
 
@@ -416,14 +416,14 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
 
   /// Returns true if the processor result was handled successfully
   @override
-  Future<bool> handleProcessorResult(ProcessorResult result, Map<String, dynamic> args) async {
-    final failedContainer = await handleProcessorResults([result], args);
+  Future<bool> handleProcessorResult(ProcessorResult result, {Map<String, dynamic> args = const {}}) async {
+    final failedContainer = await handleProcessorResults([result], args: args);
     return failedContainer?.isEmpty ?? false;
   }
 
   /// Returns a list of containers that failed to add
   @override
-  Future<List<TokenContainerUnfinalized>?> handleProcessorResults(List<ProcessorResult> results, Map<String, dynamic> args) async {
+  Future<List<TokenContainerUnfinalized>?> handleProcessorResults(List<ProcessorResult> results, {Map<String, dynamic> args = const {}}) async {
     Logger.info('Handling processor results');
     final newContainers = results.getData().whereType<TokenContainerUnfinalized>().toList();
     final validatedArgs = TokenContainerProcessor.validateArgs(args);

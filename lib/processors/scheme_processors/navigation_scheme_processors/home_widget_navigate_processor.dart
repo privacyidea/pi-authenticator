@@ -148,7 +148,7 @@ class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
 
 class NavigationHandler<R> with ResultHandler {
   @override
-  Future<R?> handleProcessorResult(ProcessorResult result, Map<String, dynamic> args) async {
+  Future<R?> handleProcessorResult(ProcessorResult result, {Map<String, dynamic> args = const {}}) async {
     if (result is! ProcessorResult<Navigation>) return null;
     if (result.isFailed) return null;
     validate(
@@ -162,7 +162,7 @@ class NavigationHandler<R> with ResultHandler {
   }
 
   @override
-  Future<List<R>?> handleProcessorResults(List<ProcessorResult> results, Map<String, dynamic> args) async {
+  Future<List<R>?> handleProcessorResults(List<ProcessorResult> results, {Map<String, dynamic> args = const {}}) async {
     final successResults = results.whereType<ProcessorResult<Navigation>>().toList().successResults;
     if (successResults.isEmpty) return null;
     final BuildContext context;

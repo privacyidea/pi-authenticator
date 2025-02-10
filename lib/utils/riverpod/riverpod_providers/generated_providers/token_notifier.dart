@@ -775,19 +775,19 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   Future<void> handleLink(Uri uri) async {
     final tokenResults = await TokenImportSchemeProcessor.processUriByAny(uri);
     if (tokenResults == null) return;
-    await handleProcessorResults(tokenResults, {'TokenOriginSourceType': TokenOriginSourceType.link});
+    await handleProcessorResults(tokenResults, args: {'TokenOriginSourceType': TokenOriginSourceType.link});
   }
 
   @override
-  Future<void> handleProcessorResult(ProcessorResult result, Map<String, dynamic> args) {
+  Future<void> handleProcessorResult(ProcessorResult result, {Map<String, dynamic> args = const {}}) {
     if (result is ProcessorResult<Token>) {
-      return handleProcessorResults([result], args);
+      return handleProcessorResults([result], args: args);
     }
     return Future.value();
   }
 
   @override
-  Future handleProcessorResults(List<ProcessorResult> results, Map<String, dynamic> args) async {
+  Future handleProcessorResults(List<ProcessorResult> results, {Map<String, dynamic> args = const {}}) async {
     final List<ProcessorResult<Token>> tokenResults = results.whereType<ProcessorResult<Token>>().toList();
     if (tokenResults.isEmpty) return;
     final List<Token> resultTokens = tokenResults.getData();

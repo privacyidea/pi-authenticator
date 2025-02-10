@@ -1920,7 +1920,7 @@
   "selectFile": "Select file",
   "selectImportSource": "Select import source",
   "selectImportType": "How do you want to import the tokens?",
-  "selectTokensToExport": "{count, plural, one{select the token to be exported} other{select the tokens to be exported}}",
+  "selectTokensToExport": "{count, plural, one{Select the token to be exported} other{Select the tokens to be exported}}",
   "selectTokensToExportHelpContent1": "If a token is not listed, it is not guaranteed that it is not a privacyIDEA token.",
   "selectTokensToExportHelpContent2": "Currently only manually added and imported tokens are exportable.",
   "selectTokensToExportHelpContent3": "We are working on a solution to differentiate between privacyIDEA tokens and private tokens.",

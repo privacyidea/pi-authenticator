@@ -68,7 +68,7 @@ class _SelectTokensDialogState extends ConsumerState<SelectExportTokensDialog> {
                 });
               }
             : (selected, _) {
-                _showExportDialog(_selectedTokens);
+                _showExportDialog(selected);
               },
       ),
       actions: [

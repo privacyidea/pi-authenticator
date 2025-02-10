@@ -241,7 +241,7 @@ Future<void> scanQrCode({BuildContext? context, required List<ResultHandler> res
       final results = resultHandlerTypeMap[resultHandlerType]!;
       final resultHandler = resultHandlerList.firstWhereOrNull((resultHandler) => resultHandlerType.isTypeOf(resultHandler));
       if (resultHandler != null) {
-        await resultHandler.handleProcessorResults(results, {ResultHandler.argTokenOriginSourceType: TokenOriginSourceType.qrScan});
+        await resultHandler.handleProcessorResults(results, args: {ResultHandler.argTokenOriginSourceType: TokenOriginSourceType.qrScan});
       }
     }
   }

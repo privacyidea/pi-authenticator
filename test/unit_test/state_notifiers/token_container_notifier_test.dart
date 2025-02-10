@@ -524,7 +524,7 @@ void _testTokenContainerNotifier() {
       expect(processorResults, isNotNull);
       expect(processorResults!.length, 1);
       final result = processorResults.first;
-      await providerContainer.read(tokenContainerProvider.notifier).handleProcessorResult(result, {
+      await providerContainer.read(tokenContainerProvider.notifier).handleProcessorResult(result, args: {
         TokenContainerProcessor.ARG_DO_REPLACE: true,
         TokenContainerProcessor.ARG_ADD_DEVICE_INFOS: true,
         TokenContainerProcessor.ARG_INIT_SYNC: false,
