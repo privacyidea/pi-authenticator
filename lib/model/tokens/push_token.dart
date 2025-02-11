@@ -299,7 +299,7 @@ class PushToken extends Token {
         SSL_VERIFY: boolValidatorNullable,
         ENROLLMENT_CREDENTIAL: const ObjectValidatorNullable<String>(),
         ROLLOUT_URL: uriValidatorNullable,
-        Token.IMAGE: uriValidatorNullable,
+        Token.IMAGE: const ObjectValidatorNullable<String>(),
         Token.PIN: boolValidator,
         VERSION: intValidatorNullable,
       },
