@@ -65,7 +65,7 @@ class PushToken extends Token {
   final String? fbToken;
 
   @override
-  bool? get isPrivacyIdeaToken => true;
+  bool? get isPrivacyIdeaTokenna => true;
 
   // Roll out
   final bool sslVerify;

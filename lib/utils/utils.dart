@@ -76,24 +76,11 @@ String splitPeriodically(String str, int period) {
   return result.trim();
 }
 
-// / This implementation is taken from the library
-// / [foundation](https://api.flutter.dev/flutter/foundation/describeEnum.html).
-// / That library sadly depends on [dart.ui] and thus cannot be used in tests.
-// / Therefore, only using this code enables us to use this library ([utils.dart])
-// / in tests.
-// String enumAsString(Enum enumEntry) {
-//   final String description = enumEntry.toString();
-//   final int indexOfDot = description.indexOf('.');
-//   assert(indexOfDot != -1 && indexOfDot < description.length - 1);
-//   return description.substring(indexOfDot + 1);
-// }
-
 /// If permission is already given, this function does nothing
 void checkNotificationPermission() async {
   if (kIsWeb || !Platform.isAndroid && !Platform.isIOS) return;
   var status = await Permission.notification.status;
   Logger.info('Notification permission status: $status');
-  // TODO what to do if permanently denied?
   // Add a dialog before requesting?
 
   if (!status.isPermanentlyDenied) {
@@ -241,7 +228,7 @@ Future<void> scanQrCode({BuildContext? context, required List<ResultHandler> res
       final results = resultHandlerTypeMap[resultHandlerType]!;
       final resultHandler = resultHandlerList.firstWhereOrNull((resultHandler) => resultHandlerType.isTypeOf(resultHandler));
       if (resultHandler != null) {
-        await resultHandler.handleProcessorResults(results, {ResultHandler.argTokenOriginSourceType: TokenOriginSourceType.qrScan});
+        await resultHandler.handleProcessorResults(results, args: {ResultHandler.argTokenOriginSourceType: TokenOriginSourceType.qrScan});
       }
     }
   }

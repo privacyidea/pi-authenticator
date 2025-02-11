@@ -20,25 +20,25 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/model/extensions/token_folder_extension.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/token_container.dart';
-import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
-import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../../../utils/view_utils.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../../../../widgets/elevated_delete_button.dart';
-import 'delete_container_force_dialog.dart';
 
 class DeleteContainerTokenDialog extends ConsumerWidget {
   final TokenContainer container;
 
   const DeleteContainerTokenDialog(this.container, {super.key});
 
-  static Future<void> showDialog(TokenContainer container) => showAsyncDialog(
-        builder: (context) => DeleteContainerTokenDialog(container),
-      );
+  static Future<bool?> showDialog(TokenContainer container) async {
+    final returnValue = await showAsyncDialog(
+      builder: (context) => DeleteContainerTokenDialog(container),
+    );
+    assert(returnValue is bool?, "The return value of the DeleteContainerTokenDialog must be a bool or null.");
+    return returnValue;
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -51,36 +51,16 @@ class DeleteContainerTokenDialog extends ConsumerWidget {
         ElevatedDeleteButton(
           text: appLocalizations.deleteOnlyContainerButtonText,
           onPressed: () async {
-            final success = await _deleteContainer(ref);
-            if (!success) {
-              await ForceDeleteContainerDialog.showDialog(container);
-            }
-            if (!context.mounted) return;
-            Navigator.of(context).pop();
+            Navigator.of(context).pop(false);
           },
         ),
         ElevatedDeleteButton(
           onPressed: () async {
-            var success = await _deleteContainer(ref);
-            if (!success) {
-              success = (await ForceDeleteContainerDialog.showDialog(container)) == true;
-            }
-            final containerTokens = ref.read(tokenProvider).containerTokens(container.serial);
-            if (success) await ref.read(tokenProvider.notifier).removeTokens(containerTokens.noOffline);
-            if (!context.mounted) return;
-            Navigator.of(context).pop();
+            Navigator.of(context).pop(true);
           },
           text: appLocalizations.deleteAllButtonText,
         ),
       ],
     );
-  }
-
-  Future<bool> _deleteContainer(WidgetRef ref) {
-    if (container is TokenContainerFinalized) {
-      return ref.read(tokenContainerProvider.notifier).unregisterDelete(container as TokenContainerFinalized);
-    } else {
-      return ref.read(tokenContainerProvider.notifier).deleteContainer(container);
-    }
   }
 }

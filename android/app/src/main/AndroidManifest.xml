@@ -46,6 +46,7 @@
                 <!-- Accepts URIs that begin with YOUR_SCHEME://-->
                 <data android:scheme="otpauth" />
                 <data android:scheme="otpauth-migration" />
+                <data android:scheme="pia" />
             </intent-filter>
             <!-- Specifies an Android theme to apply to this Activity as soon as
                  the Android process has started. This theme is visible to the user

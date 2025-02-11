@@ -29,10 +29,10 @@ import '../../../../../utils/riverpod/riverpod_providers/generated_providers/tok
 import '../../../../../widgets/button_widgets/cooldown_button.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 
-class StartRolloutWidget extends ConsumerWidget {
+class PushTokenStartRolloutWidget extends ConsumerWidget {
   final PushToken token;
 
-  const StartRolloutWidget({super.key, required this.token});
+  const PushTokenStartRolloutWidget({super.key, required this.token});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

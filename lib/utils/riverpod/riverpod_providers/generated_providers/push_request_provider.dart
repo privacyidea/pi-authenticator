@@ -388,14 +388,14 @@ class PushRequestNotifier extends _$PushRequestNotifier {
         response = await _ioClient.doPost(sslVerify: pushRequest.sslVerify, url: pushRequest.uri, body: body);
       } catch (e) {
         Logger.warning('Sending push request response failed consistently.', error: e);
-        ref.read(statusMessageProvider.notifier).state = StatusMessage(message: (l) => l.connectionFailed, details: null);
+        ref.read(statusMessageProvider.notifier).state = StatusMessage(message: (l) => l.connectionFailed);
         return false;
       }
     }
     if (response.statusCode != 200) {
       ref.read(statusMessageProvider.notifier).state = StatusMessage(
         message: (l) => '${l.sendPushRequestResponseFailed}\n${l.statusCode(response.statusCode)}',
-        details: tryJsonDecode(response.body)?['result']?['error']?['message'],
+        details: (_) => (tryJsonDecode(response.body)?['result']?['error']?['message']) ?? '',
       );
       Logger.warning('Sending push request response failed.');
       return false;

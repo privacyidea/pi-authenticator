@@ -30,21 +30,21 @@ extension TokenListExtension on List<Token> {
 
   /// Returns all tokens that are privacyIDEA tokens.
   List<Token> get piTokens {
-    final piTokens = where((token) => token.isPrivacyIdeaToken == true).toList();
+    final piTokens = where((token) => token.isPrivacyIdeaTokenna == true).toList();
     Logger.debug('${piTokens.length}/$length tokens with "isPrivacyIdeaToken == true"');
     return piTokens;
   }
 
-  /// Returns all tokens that are not privacyIDEA tokens.
-  List<Token> get nonPiTokens {
-    final nonPiTokens = where((token) => token.isPrivacyIdeaToken == false).toList();
-    Logger.debug('${nonPiTokens.length}/$length tokens with "isPrivacyIdeaToken == false"');
-    return nonPiTokens;
+  /// Returns all tokens that are exportable.
+  List<Token> get exportableTokens {
+    final exportableTokens = where((token) => token.isExportable).toList();
+    Logger.debug('${exportableTokens.length}/$length tokens with "isPrivacyIdeaToken == false"');
+    return exportableTokens;
   }
 
   /// Returns all tokens that are privacyIDEA tokens or have no information about it.
   List<Token> get filterNonPiTokens {
-    final nonPiTokens = where((token) => token.isPrivacyIdeaToken != false).toList();
+    final nonPiTokens = where((token) => token.isPrivacyIdeaTokenna != false).toList();
     Logger.debug('${nonPiTokens.length}/$length tokens with "isPrivacyIdeaToken != false"');
     return nonPiTokens;
   }

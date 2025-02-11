@@ -975,7 +975,15 @@ void _testPrivacyIdeaContainerApi() {
 
     test('unregister', () {
       // Arrange
-      final containerApi = PiContainerApi(ioClient: MockPrivacyideaIOClient());
+      final mockIoClient = MockPrivacyideaIOClient();
+      when(mockIoClient.doPost(url: anyNamed('url'), body: anyNamed('body'), sslVerify: anyNamed('sslVerify'))).thenAnswer((invocation) async {
+        return Response(
+          '{"id": 1, "jsonrpc": "2.0", "result": {"status": true, "value": {"enc_key_algorithm": "x25519", "nonce": "d77ff7bf0174815aeea29f68aef4ae6cec6616c2", "time_stamp": "2025-02-11T08:56:45.696499+00:00"}}, "time": 1739264205.7145326, "version": "privacyIDEA 3.11.dev2", "versionnumber": "3.11.dev2", "signature": "rsa_sha256_pss:03a857d6e1941488c368286d1f55c6896c018729d17fb68e0fc5b7c1d956ba54cc657c785b9d284ad6fc34ec17370c7fdd0a0f6255a0fd630dfb97e6659b7af6fc9370cb2a7d0b0d055904145fdf21af40d15b15727bacac59bc79a4941df75d24efbb0b74e6e40561984ac73ca8392382100623bc51cb9e043915535a96fe9ac2b417cbd1e55977a04fdd992ae3758db66a9dcf265f956c9e37faeea3fd5614fd8c88030364a9ef4021cb79128a3bdeb0694bdf45e9cedf4507ee5e5715b9b1f68454b67c5642416c4b226302a50b887233c364acbf1cbc07bf7b3bdda884ca052c15f65b0724ef4bfafe411311ffe85683946e5f0c899377d4d95c66db4147"}',
+          200,
+        );
+      });
+
+      final containerApi = PiContainerApi(ioClient: mockIoClient);
       final tokenContainer = getFinalizedTokenContainer(
         withPolicies: ContainerPolicies(
           rolloverAllowed: true,

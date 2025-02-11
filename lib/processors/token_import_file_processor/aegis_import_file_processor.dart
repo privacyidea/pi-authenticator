@@ -44,8 +44,6 @@ import '../../utils/token_import_origins.dart';
 import 'token_import_file_processor_interface.dart';
 import 'two_fas_import_file_processor.dart';
 
-//TODO:Test Again
-
 /// Args: [SendPort] sendPort, [ScryptParameters] scryptParameters, [String] password
 void _isolatedKdf(List args) {
   final SendPort sendPort = args[0] as SendPort;

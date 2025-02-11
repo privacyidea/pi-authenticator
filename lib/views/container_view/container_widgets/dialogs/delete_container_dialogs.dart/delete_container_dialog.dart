@@ -20,41 +20,65 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/model/extensions/token_folder_extension.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import 'package:privacyidea_authenticator/utils/view_utils.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/token_container.dart';
+import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../../../../widgets/elevated_delete_button.dart';
+import 'delete_container_force_dialog.dart';
 import 'delete_container_token_dialog.dart';
 
 class DeleteContainerDialog extends ConsumerWidget {
   final TokenContainer container;
+  final String? titleOverride;
+  final String? contentOverride;
 
-  static void showDialog(TokenContainer container) => showAsyncDialog(builder: (context) => DeleteContainerDialog(container));
+  static void showDialog(TokenContainer container, {String? titleOverride, String? contentOverride}) =>
+      showAsyncDialog(builder: (context) => DeleteContainerDialog(container, titleOverride: titleOverride, contentOverride: contentOverride));
 
-  const DeleteContainerDialog(this.container, {super.key});
+  const DeleteContainerDialog(this.container, {this.titleOverride, this.contentOverride, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final containerToken = ref.watch(tokenProvider).containerTokens(container.serial);
     return DefaultDialog(
-      title: Text(AppLocalizations.of(context)!.deleteContainerDialogTitle(container.serial)),
-      content: Text(AppLocalizations.of(context)!.deleteContainerDialogContent),
+      title: Text(titleOverride ?? AppLocalizations.of(context)!.deleteContainerDialogTitle(container.serial)),
+      content: Text(contentOverride ?? AppLocalizations.of(context)!.deleteContainerDialogContent),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(),
           child: Text(AppLocalizations.of(context)!.cancel),
         ),
         ElevatedDeleteButton(
-          onPressed: () {
-            DeleteContainerTokenDialog.showDialog(container).then((v) {
-              if (!context.mounted) return;
-              Navigator.of(context).pop();
-            });
+          onPressed: () async {
+            final deleteContainerTokens = containerToken.isEmpty ? false : await DeleteContainerTokenDialog.showDialog(container);
+            if (deleteContainerTokens == null) return;
+
+            var wasContainerDeleted = await _deleteContainer(ref);
+            if (!wasContainerDeleted) {
+              wasContainerDeleted = (await ForceDeleteContainerDialog.showDialog(container)) == true;
+            }
+            final containerTokens = ref.read(tokenProvider).containerTokens(container.serial);
+            if (wasContainerDeleted && deleteContainerTokens) await ref.read(tokenProvider.notifier).removeTokens(containerTokens.noOffline);
+
+            if (!context.mounted) return;
+            Navigator.of(context).pop();
           },
           text: AppLocalizations.of(context)!.delete,
         ),
       ],
     );
+  }
+
+  Future<bool> _deleteContainer(WidgetRef ref) {
+    if (container is TokenContainerFinalized) {
+      return ref.read(tokenContainerProvider.notifier).unregisterDelete(container as TokenContainerFinalized);
+    } else {
+      return ref.read(tokenContainerProvider.notifier).deleteContainer(container);
+    }
   }
 }

@@ -254,12 +254,6 @@ class PiContainerApi implements TokenContainerApi {
 
   @override
   Future<UnregisterContainerResult> unregister(TokenContainerFinalized container) async {
-    if (container.policies.disabledUnregister) {
-      throw LocalizedException(
-        localizedMessage: (l) => l.errorUnregisterNotAllowed,
-        unlocalizedMessage: AppLocalizationsEn().errorUnregisterNotAllowed,
-      );
-    }
     final unregisterUrl = container.unregisterUrl;
     final ContainerChallenge challenge;
     try {
@@ -269,6 +263,12 @@ class PiContainerApi implements TokenContainerApi {
         return UnregisterContainerResult(success: true);
       }
       rethrow;
+    }
+    if (container.policies.disabledUnregister) {
+      throw LocalizedException(
+        localizedMessage: (l) => l.errorUnregisterNotAllowed,
+        unlocalizedMessage: AppLocalizationsEn().errorUnregisterNotAllowed,
+      );
     }
 
     final body = {

@@ -176,7 +176,6 @@ class FirebaseUtils {
     return true;
   }
 
-  // FIXME: WHY CURRENT AND NEW TOKEN?
   Future<void> setCurrentFirebaseToken(String str) {
     Logger.info('Setting current firebase token');
     return _protect(() => _storage.write(key: _CURRENT_APP_TOKEN_KEY, value: str));

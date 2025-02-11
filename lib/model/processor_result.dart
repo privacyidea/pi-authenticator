@@ -78,6 +78,6 @@ extension ListProcessorResult<T> on List<ProcessorResult<T>> {
 
 mixin ResultHandler {
   static const argTokenOriginSourceType = "TokenOriginSourceType";
-  Future handleProcessorResult(ProcessorResult result, Map<String, dynamic> args);
-  Future handleProcessorResults(List<ProcessorResult> results, Map<String, dynamic> args);
+  Future handleProcessorResult(ProcessorResult result, {Map<String, dynamic> args = const {}});
+  Future handleProcessorResults(List<ProcessorResult> results, {Map<String, dynamic> args = const {}});
 }

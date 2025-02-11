@@ -373,12 +373,12 @@ class ThemeCustomization {
             /// | headlineSmall  | 24.0 | regular |  0.0     | foreground  |
             /// | titleLarge     | 24.0 | medium  |  0.15    | primary     |
             /// | titleMedium    | 20.0 | medium  |  0.15    | primary     |
-            /// | titleSmall     | 16.0 | medium  |  0.1     | foreground  |
+            /// | titleSmall     | 18.0 | medium  |  0.1     | foreground  |
             /// | bodyLarge      | 16.0 | regular |  0.5     | foreground  |
             /// | bodyMedium     | 14.0 | regular |  0.25    | foreground  |
             /// | bodySmall      | 12.0 | regular |  0.4     | subtitle    |
             /// | labelLarge     | 14.0 | medium  |  1.25    | foreground  |
-            /// | labelSmall     | 10.0 | regular |  1.5     | foreground  |
+            /// | labelSmall     | 12.0 | regular |  1.5     | foreground  |
             ///
             /// ...where "light" is `FontWeight.w300`, "regular" is `FontWeight.w400` and
             /// "medium" is `FontWeight.w500`.
@@ -391,11 +391,11 @@ class ThemeCustomization {
             titleLarge: TextStyle(color: primaryColor, fontFamily: fontFamily, fontSize: 24),
             titleMedium: TextStyle(color: primaryColor, fontFamily: fontFamily, fontSize: 20, fontWeight: FontWeight.w500),
             titleSmall: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 18, fontWeight: FontWeight.w500),
-            bodyLarge: TextStyle(color: foregroundColor, fontFamily: fontFamily),
-            bodyMedium: TextStyle(color: foregroundColor, fontFamily: fontFamily),
-            bodySmall: TextStyle(color: subtitleColor, fontFamily: fontFamily),
-            labelLarge: TextStyle(color: foregroundColor, fontFamily: fontFamily),
-            labelSmall: TextStyle(color: foregroundColor, fontFamily: fontFamily),
+            bodyLarge: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 16, fontWeight: FontWeight.w400),
+            bodyMedium: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 14, fontWeight: FontWeight.w400),
+            bodySmall: TextStyle(color: subtitleColor, fontFamily: fontFamily, fontSize: 12, fontWeight: FontWeight.w400),
+            labelLarge: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 14, fontWeight: FontWeight.w500),
+            labelSmall: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 12, fontWeight: FontWeight.w400),
           ),
           disabledColor: tileIconColor.withOpacity(0.38), // 38% opacity used for disabled icon buttons
           iconButtonTheme: IconButtonThemeData(

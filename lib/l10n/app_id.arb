@@ -210,10 +210,16 @@
     "description": "The title of the part of the dialog that tells the user that tokens were removed."
   },
   "@containerSyncDialogTitle": {
-    "description": "Title of the add container Dialog"
+    "description": "Title of the add container Dialog",
+    "placeholders": {
+      "serial": {
+        "example": "SMPH0008CC47",
+        "type": "String"
+      }
+    }
   },
   "@containerSyncUrl": {
-    "description": "Title of the container sync url field."
+    "description": "Title of the container sync URL field."
   },
   "@containerTransferDeleteTokensButtonText": {
     "description": "Button text to delete corresponding tokens after container transfer."
@@ -607,7 +613,7 @@
     }
   },
   "@imageUrl": {
-    "description": "Title of the image url field."
+    "description": "Title of the image URL field."
   },
   "@importConflictToken": {
     "description": "Title for the section where the user can see the conflicting tokens.",
@@ -698,6 +704,12 @@
   },
   "@increaseCounter": {
     "description": "A11y label for the button that increases the counter."
+  },
+  "@indelibleTokenContent": {
+    "description": "Content for the indelible token dialog"
+  },
+  "@indelibleTokenTitle": {
+    "description": "Title for the indelible token dialog"
   },
   "@initialTokenAssignmentDialogButtonSelected": {
     "description": "Button text to send selected OTPs."
@@ -1171,7 +1183,7 @@
     "description": "Label for the text field where the public key is shown."
   },
   "@pushEndpointUrl": {
-    "description": "Title of the push endpoint url field."
+    "description": "Title of the push endpoint URL field."
   },
   "@pushInitializeUnavailable": {
     "description": "Error message when push can't be initialized."
@@ -1294,6 +1306,9 @@
   "@secretKey": {
     "description": "Describes the field where the tokens secret should be entered."
   },
+  "@selectAll": {
+    "description": "Button to select all items in a list"
+  },
   "@selectFile": {
     "description": "Buttontext and Title for the import type file."
   },
@@ -1361,7 +1376,7 @@
     "description": "Warning message that the SSL is deactivated."
   },
   "@showContainerUrlDialogTitle": {
-    "description": "Title of the dialog that shows the server url."
+    "description": "Title of the dialog that shows the server URL."
   },
   "@showDetails": {
     "description": "Button to show details."
@@ -1396,6 +1411,18 @@
   },
   "@syncContainerFailed": {
     "description": "Error message when synchronizing a container failed."
+  },
+  "@syncContainerNotFoundDialogContent": {
+    "description": "Content for the dialog that appears when a container could not be found on the server."
+  },
+  "@syncContainerNotFoundDialogTitle": {
+    "description": "Title for the dialog that appears when a container could not be found on the server.",
+    "placeholders": {
+      "serial": {
+        "example": "123456",
+        "type": "String"
+      }
+    }
   },
   "@syncFbTokenFailed": {
     "description": "Headline for the list of tokens where the synchronization failed."
@@ -1641,7 +1668,7 @@
   "containerSerial": "Serial Kontainer",
   "containerSyncDialogNewTokens": "Token yang ditambahkan oleh sinkronisasi kontainer:",
   "containerSyncDialogRemovedTokens": "Token yang dihapus oleh sinkronisasi kontainer:",
-  "containerSyncDialogTitle": "Sinkronisasi kontainer",
+  "containerSyncDialogTitle": "Menyinkronkan wadah {serial}",
   "containerSyncUrl": "Url Sinkronisasi Kontainer",
   "containerTransferDeleteTokensButtonText": "Hapus dari perangkat ini",
   "containerTransferDeleteTokensSuccessMessage": "Wadah dan token terkait telah berhasil dihapus dari perangkat ini.",
@@ -1770,6 +1797,8 @@
   "importTokens": "Impor token",
   "importedVia": "Diimpor via",
   "increaseCounter": "Tingkatkan penghitung",
+  "indelibleTokenContent": "Token yang tidak dapat dihapus",
+  "indelibleTokenTitle": "Pengaturan kontainer mencegah token ini dihapus.",
   "initialTokenAssignmentDialogButtonSelected": "Kirim OTP yang dipilih",
   "initialTokenAssignmentDialogButtonZero": "Tidak mengirim OTP",
   "initialTokenAssignmentDialogContent1": "Dua kata sandi satu kali dari token yang dipilih dikirim ke:\n{url}",
@@ -1933,9 +1962,9 @@
   "serverNotReachable": "Server tidak dapat dihubungi.",
   "settings": "Pengaturan",
   "settingsGroupGeneral": "Umum",
-  "showContainerUrlDialogContent": "Kontainer akan terhubung dengan server di bawah URL berikut: {url}",
+  "showContainerUrlDialogContent": "Kontainer akan terhubung dengan server di bawah URL berikut:\n{url}",
   "showContainerUrlDialogSslWarning": "SSL dinonaktifkan, yang merupakan risiko keamanan. Apakah Anda ingin melanjutkan?",
-  "showContainerUrlDialogTitle": "Konfirmasikan Url Server.",
+  "showContainerUrlDialogTitle": "Konfirmasikan URL Server.",
   "showDetails": "Tampilkan detail",
   "showErrorLog": "Tampilkan",
   "showPrivacyPolicy": "Tampilkan kebijakan privasi",
@@ -1945,6 +1974,8 @@
   "statusCode": "Kode status: {statusCode}",
   "sync": "Sinkronisasi",
   "syncContainerFailed": "Sinkronisasi kontainer gagal",
+  "syncContainerNotFoundDialogContent": "Kontainer tidak dapat ditemukan di server. Apakah Anda ingin menghapusnya dari aplikasi?",
+  "syncContainerNotFoundDialogTitle": "Kontainer {serial} tidak ditemukan",
   "syncFbTokenFailed": "Sinkronisasi gagal untuk token berikut ini, silakan coba lagi:",
   "syncFbTokenManuallyWhenNetworkIsAvailable": "Harap sinkronkan token push secara manual melalui pengaturan ketika koneksi jaringan tersedia.",
   "syncState": "Status Sinkronisasi",

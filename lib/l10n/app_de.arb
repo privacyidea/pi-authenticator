@@ -210,10 +210,16 @@
     "description": "The title of the part of the dialog that tells the user that tokens were removed."
   },
   "@containerSyncDialogTitle": {
-    "description": "Title of the add container Dialog"
+    "description": "Title of the add container Dialog",
+    "placeholders": {
+      "serial": {
+        "example": "SMPH0008CC47",
+        "type": "String"
+      }
+    }
   },
   "@containerSyncUrl": {
-    "description": "Title of the container sync url field."
+    "description": "Title of the container sync URL field."
   },
   "@containerTransferDeleteTokensButtonText": {
     "description": "Button text to delete corresponding tokens after container transfer."
@@ -607,7 +613,7 @@
     }
   },
   "@imageUrl": {
-    "description": "Title of the image url field."
+    "description": "Title of the image URL field."
   },
   "@importConflictToken": {
     "description": "Title for the section where the user can see the conflicting tokens.",
@@ -698,6 +704,12 @@
   },
   "@increaseCounter": {
     "description": "A11y label for the button that increases the counter."
+  },
+  "@indelibleTokenContent": {
+    "description": "Content for the indelible token dialog"
+  },
+  "@indelibleTokenTitle": {
+    "description": "Title for the indelible token dialog"
   },
   "@initialTokenAssignmentDialogButtonSelected": {
     "description": "Button text to send selected OTPs."
@@ -1171,7 +1183,7 @@
     "description": "Label for the text field where the public key is shown."
   },
   "@pushEndpointUrl": {
-    "description": "Title of the push endpoint url field."
+    "description": "Title of the push endpoint URL field."
   },
   "@pushInitializeUnavailable": {
     "description": "Error message when push can't be initialized."
@@ -1294,6 +1306,9 @@
   "@secretKey": {
     "description": "Describes the field where the tokens secret should be entered."
   },
+  "@selectAll": {
+    "description": "Button to select all items in a list"
+  },
   "@selectFile": {
     "description": "Buttontext and Title for the import type file."
   },
@@ -1361,7 +1376,7 @@
     "description": "Warning message that the SSL is deactivated."
   },
   "@showContainerUrlDialogTitle": {
-    "description": "Title of the dialog that shows the server url."
+    "description": "Title of the dialog that shows the server URL."
   },
   "@showDetails": {
     "description": "Button to show details."
@@ -1396,6 +1411,18 @@
   },
   "@syncContainerFailed": {
     "description": "Error message when synchronizing a container failed."
+  },
+  "@syncContainerNotFoundDialogContent": {
+    "description": "Content for the dialog that appears when a container could not be found on the server."
+  },
+  "@syncContainerNotFoundDialogTitle": {
+    "description": "Title for the dialog that appears when a container could not be found on the server.",
+    "placeholders": {
+      "serial": {
+        "example": "123456",
+        "type": "String"
+      }
+    }
   },
   "@syncFbTokenFailed": {
     "description": "Headline for the list of tokens where the synchronization failed."
@@ -1641,8 +1668,8 @@
   "containerSerial": "Containerserial",
   "containerSyncDialogNewTokens": "Durch die Containersynchronisierung hinzugefügte Token:",
   "containerSyncDialogRemovedTokens": "Durch die Container-Synchronisierung entfernte Token:",
-  "containerSyncDialogTitle": "Container-Synchronisierung",
-  "containerSyncUrl": "Container Sync Url",
+  "containerSyncDialogTitle": "Synchronisiere Container {serial}",
+  "containerSyncUrl": "Container Sync URL",
   "containerTransferDeleteTokensButtonText": "Von diesem Gerät entfernen",
   "containerTransferDeleteTokensSuccessMessage": "Container und zugehörige Token wurden erfolgreich von diesem Gerät entfernt.",
   "containerTransferDialogContentAborted": "Die Übertragung des Containers wurde abgebrochen.",
@@ -1770,6 +1797,8 @@
   "importTokens": "Token importieren",
   "importedVia": "Importiert über",
   "increaseCounter": "Zähler erhöhen",
+  "indelibleTokenContent": "Die Container-Einstellungen verhindern, dass dieser Token gelöscht wird.",
+  "indelibleTokenTitle": "Unlöschbarer Token",
   "initialTokenAssignmentDialogButtonSelected": "Ausgewählte OTPs senden",
   "initialTokenAssignmentDialogButtonZero": "Keine OTPs senden",
   "initialTokenAssignmentDialogContent1": "Zwei einmalpasswörter der ausgewählten Token werden gesendet an:\n{url}",
@@ -1933,9 +1962,9 @@
   "serverNotReachable": "Der Server konnte nicht erreicht werden.",
   "settings": "Einstellungen",
   "settingsGroupGeneral": "Allgemeines",
-  "showContainerUrlDialogContent": "Der Container wird sich mit dem Server unter der folgenden URL verbinden: {url}",
+  "showContainerUrlDialogContent": "Der Container wird sich mit dem Server unter der folgenden URL verbinden:\n{url}",
   "showContainerUrlDialogSslWarning": "SSL ist deaktiviert, was ein Sicherheitsrisiko darstellt. Möchten Sie fortfahren?",
-  "showContainerUrlDialogTitle": "Server Url Bestätigen",
+  "showContainerUrlDialogTitle": "ServerURL Bestätigen",
   "showDetails": "Details anzeigen",
   "showErrorLog": "Anzeigen",
   "showPrivacyPolicy": "Datenschutzerklärung anzeigen",
@@ -1945,6 +1974,8 @@
   "statusCode": "Statuscode: {statusCode}",
   "sync": "Sync",
   "syncContainerFailed": "Container synchronisation fehlgeschlagen",
+  "syncContainerNotFoundDialogContent": "Der Container konnte auf dem Server nicht gefunden werden. Möchten Sie ihn aus der App löschen?",
+  "syncContainerNotFoundDialogTitle": "Container {serial} nicht gefunden",
   "syncFbTokenFailed": "Synchronisation ist für die folgenden Token fehlgeschlagen:",
   "syncFbTokenManuallyWhenNetworkIsAvailable": "Bitte synchronisieren Sie die Push Token über die Einstellungen manuell, wenn eine Netzwerkverbindung verfügbar ist.",
   "syncState": "Sync-Status",

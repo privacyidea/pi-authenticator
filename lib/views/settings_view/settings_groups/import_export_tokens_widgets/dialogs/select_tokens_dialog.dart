@@ -40,7 +40,7 @@ class _SelectTokensDialogState extends ConsumerState<SelectExportTokensDialog> {
   final Set<Token> _selectedTokens = {};
   @override
   Widget build(BuildContext context) {
-    final tokens = ref.read(tokenProvider).tokens.nonPiTokens.toSet();
+    final exportableTokens = ref.read(tokenProvider).tokens.exportableTokens.toSet();
     final theme = Theme.of(context);
     final appLocalizations = AppLocalizations.of(context)!;
     return DefaultDialog(
@@ -59,7 +59,7 @@ class _SelectTokensDialogState extends ConsumerState<SelectExportTokensDialog> {
       ),
       content: SelectTokensWidget(
         multiSelect: widget.multiSelect,
-        tokens: tokens,
+        tokens: exportableTokens,
         onSelect: widget.multiSelect
             ? (selected, _) {
                 setState(() {
@@ -68,7 +68,7 @@ class _SelectTokensDialogState extends ConsumerState<SelectExportTokensDialog> {
                 });
               }
             : (selected, _) {
-                _showExportDialog(_selectedTokens);
+                _showExportDialog(selected);
               },
       ),
       actions: [

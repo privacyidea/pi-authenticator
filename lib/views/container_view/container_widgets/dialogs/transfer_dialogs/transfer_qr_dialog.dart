@@ -59,7 +59,7 @@ class TransferQrDialog extends ConsumerWidget {
               ),
             );
           },
-          child: Text(appLocalizations.cancel),
+          child: Text(appLocalizations.done),
         ),
       ],
     );
