@@ -233,7 +233,7 @@ class PushToken extends Token {
         TTL_MINUTES: minutesDurationValidator.withDefault(const Duration(minutes: 3)),
         ENROLLMENT_CREDENTIAL: const ObjectValidatorNullable<String>(),
         ROLLOUT_URL: uriValidator,
-        Token.IMAGE: uriValidatorNullable,
+        Token.IMAGE: const ObjectValidatorNullable<String>(),
         Token.PIN: boolValidatorNullable,
         VERSION: const ObjectValidator<String>(),
       },
