@@ -19,11 +19,13 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/push_request_provider.dart';
 
 import '../../../../../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../model/riverpod_states/settings_state.dart';
 import '../../../model/tokens/push_token.dart';
+import '../../../utils/firebase_utils.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../settings_view_widgets/settings_group.dart';
@@ -64,34 +66,36 @@ class SettingsGroupPushTokenDialog extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settingsState = ref.watch(settingsProvider).whenOrNull(data: (data) => data);
+    final hasNoFb = ref.read(pushRequestProvider.notifier).pushProvider.firebaseUtils is NoFirebaseUtils;
     return DefaultDialog(
       title: Text(AppLocalizations.of(context)!.pushToken),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          ListTile(
-            title: Text(
-              AppLocalizations.of(context)!.synchronizePushTokens,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            subtitle: Text(
-              AppLocalizations.of(context)!.synchronizesTokensWithServer,
-              overflow: TextOverflow.fade,
-            ),
-            trailing: ElevatedButton(
-              onPressed: () => showDialog(
-                useRootNavigator: false,
-                context: context,
-                barrierDismissible: false,
-                builder: (context) => UpdateFirebaseTokenDialog(AppLocalizations.of(context)!),
+          if (!hasNoFb)
+            ListTile(
+              title: Text(
+                AppLocalizations.of(context)!.synchronizePushTokens,
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
-              child: Text(
-                AppLocalizations.of(context)!.sync,
+              subtitle: Text(
+                AppLocalizations.of(context)!.synchronizesTokensWithServer,
                 overflow: TextOverflow.fade,
-                softWrap: false,
+              ),
+              trailing: ElevatedButton(
+                onPressed: () => showDialog(
+                  useRootNavigator: false,
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (context) => UpdateFirebaseTokenDialog(AppLocalizations.of(context)!),
+                ),
+                child: Text(
+                  AppLocalizations.of(context)!.sync,
+                  overflow: TextOverflow.fade,
+                  softWrap: false,
+                ),
               ),
             ),
-          ),
           ListTile(
             title: RichText(
               text: TextSpan(

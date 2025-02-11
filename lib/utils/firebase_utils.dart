@@ -25,9 +25,11 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:gms_check/gms_check.dart';
 import 'package:mutex/mutex.dart';
 
 import '../../../../../../../utils/view_utils.dart';
+import '../firebase_options/default_firebase_options.dart';
 import 'identifiers.dart';
 import 'logger.dart';
 
@@ -38,8 +40,13 @@ class FirebaseUtils {
   FirebaseUtils._();
 
   factory FirebaseUtils() {
-    if (kIsWeb) _instance ??= FirebaseUtilsWeb();
-    _instance ??= FirebaseUtils._();
+    if (_instance != null) return _instance!;
+    if (!kIsWeb && (GmsCheck().isGmsAvailable || Platform.isIOS)) {
+      _instance ??= FirebaseUtils._();
+    } else {
+      _instance ??= NoFirebaseUtils();
+    }
+
     return _instance!;
   }
 
@@ -53,6 +60,12 @@ class FirebaseUtils {
     }
     _initializedHandler = true;
     Logger.info('FirebaseUtils: Initializing Firebase');
+
+    final app = await Firebase.initializeApp(name: 'netknights', options: DefaultFirebaseOptions.currentPlatformOf('netknights'));
+    await app.setAutomaticDataCollectionEnabled(false);
+    if (app.isAutomaticDataCollectionEnabled) {
+      Logger.error('Automatic data collection should not be enabled');
+    }
 
     FirebaseMessaging.onMessage.listen(foregroundHandler);
     FirebaseMessaging.onBackgroundMessage(backgroundHandler);
@@ -189,12 +202,10 @@ class FirebaseUtils {
         return _storage.write(key: _NEW_APP_TOKEN_KEY, value: str);
       });
   Future<String?> getNewFirebaseToken() => _protect(() => _storage.read(key: _NEW_APP_TOKEN_KEY));
-
-  Future<FirebaseApp?> initializeApp({required String name, required FirebaseOptions options}) => Firebase.initializeApp(name: name, options: options);
 }
 
 /// This class just is used to disable Firebase for web builds.
-class FirebaseUtilsWeb implements FirebaseUtils {
+class NoFirebaseUtils implements FirebaseUtils {
   @override
   bool _initializedHandler = false;
 
@@ -223,7 +234,4 @@ class FirebaseUtilsWeb implements FirebaseUtils {
   Future<void> setNewFirebaseToken(String str) async => _newFbToken = str;
   @override
   Future<String?> getNewFirebaseToken() => Future.value(_newFbToken);
-
-  @override
-  Future<FirebaseApp?> initializeApp({required String name, required FirebaseOptions options}) async => null;
 }

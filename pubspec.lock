@@ -218,10 +218,10 @@ packages:
     dependency: transitive
     description:
       name: camera_avfoundation
-      sha256: "823436c028c27222da6e82c8b644acf00bd2adb69bda78bc8ae479bb8e21f43a"
+      sha256: "49cc403dc2aec719cc70ba23419c932f1245d990e43f3c8336014b895751454a"
       url: "https://pub.dev"
     source: hosted
-    version: "0.9.18+2"
+    version: "0.9.18+4"
   camera_platform_interface:
     dependency: transitive
     description:
@@ -665,10 +665,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_mailer
-      sha256: "4fffaa35e911ff5ec2e5a4ebbca62c372e99a154eb3bb2c0bf79f09adf6ecf4c"
+      sha256: "1e249fec0143295559fb6355c6f5d313d4db6616cccb7b9f2cf7069ca756e6c9"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.2"
+    version: "3.0.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -737,10 +737,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_slidable
-      sha256: a857de7ea701f276fd6a6c4c67ae885b60729a3449e42766bb0e655171042801
+      sha256: ab7dbb16f783307c9d7762ede2593ce32c220ba2ba0fd540a3db8e9a3acba71a
       url: "https://pub.dev"
     source: hosted
-    version: "3.1.2"
+    version: "4.0.0"
   flutter_svg:
     dependency: "direct main"
     description:
@@ -812,6 +812,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.3"
+  gms_check:
+    dependency: "direct main"
+    description:
+      name: gms_check
+      sha256: "0546a85f0a348711f6dc49b0bf86193111d9d22f95f056848f54023c5c3e2aef"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.3"
   graphs:
     dependency: transitive
     description:
@@ -888,10 +896,10 @@ packages:
     dependency: "direct main"
     description:
       name: image_cropper
-      sha256: "266760ed426d7121f0ada02c672bfe5c1b5c714e908328716aee756f045709dc"
+      sha256: "0c6ea3f96ccdcbe855fc86e9de582fdd6a94d578be8d817a05d9ecef9f1a258b"
       url: "https://pub.dev"
     source: hosted
-    version: "8.1.0"
+    version: "9.0.0"
   image_cropper_for_web:
     dependency: transitive
     description:
@@ -1461,18 +1469,18 @@ packages:
     dependency: "direct main"
     description:
       name: shared_preferences
-      sha256: "688ee90fbfb6989c980254a56cb26ebe9bb30a3a2dff439a78894211f73de67a"
+      sha256: "846849e3e9b68f3ef4b60c60cf4b3e02e9321bc7f4d8c4692cf87ffa82fc8a3a"
       url: "https://pub.dev"
     source: hosted
-    version: "2.5.1"
+    version: "2.5.2"
   shared_preferences_android:
     dependency: transitive
     description:
       name: shared_preferences_android
-      sha256: "650584dcc0a39856f369782874e562efd002a9c94aec032412c9eb81419cce1f"
+      sha256: ea86be7b7114f9e94fddfbb52649e59a03d6627ccd2387ebddcd6624719e9f16
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.4"
+    version: "2.4.5"
   shared_preferences_foundation:
     dependency: transitive
     description:
