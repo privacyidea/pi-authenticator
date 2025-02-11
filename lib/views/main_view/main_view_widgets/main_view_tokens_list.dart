@@ -28,6 +28,7 @@ import '../../../../../../../views/main_view/main_view_widgets/token_widgets/tok
 import '../../../model/mixins/sortable_mixin.dart';
 import '../../../model/riverpod_states/settings_state.dart';
 import '../../../model/token_folder.dart';
+import '../../../model/tokens/push_token.dart';
 import '../../../model/tokens/token.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import '../../../utils/riverpod/riverpod_providers/state_providers/dragging_sortable_provider.dart';
@@ -49,10 +50,11 @@ class MainViewTokensList extends ConsumerStatefulWidget {
   static List<Widget> _buildSortableWidgets({
     required List<SortableMixin> sortables,
     required SortableMixin? draggingSortable,
-    bool hidePushTokens = false,
+    required bool hidePushTokens,
   }) {
     if (sortables.isEmpty) return [];
     sortables = sortables.toList();
+    if (hidePushTokens) sortables.removeWhere((t) => t is PushToken);
     return buildSortableWidgets(sortables: sortables, draggingSortable: draggingSortable);
   }
 
