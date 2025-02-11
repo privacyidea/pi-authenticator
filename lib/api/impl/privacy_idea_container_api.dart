@@ -264,6 +264,12 @@ class PiContainerApi implements TokenContainerApi {
       }
       rethrow;
     }
+    if (container.policies.disabledUnregister) {
+      throw LocalizedException(
+        localizedMessage: (l) => l.errorUnregisterNotAllowed,
+        unlocalizedMessage: AppLocalizationsEn().errorUnregisterNotAllowed,
+      );
+    }
 
     final body = {
       TokenContainer.CONTAINER_SERIAL: container.serial,

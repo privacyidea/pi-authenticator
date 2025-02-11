@@ -645,7 +645,7 @@ void _testTokenContainerNotifier() {
         final containerToSync = containerRepoState.containerList.first as TokenContainerFinalized;
         final mockContainerApi = MockTokenContainerApi();
         // final updatedTokens = <Token>[];
-        when(mockContainerApi.sync(any, any)).thenAnswer(
+        when(mockContainerApi.sync(any, any, isInitSync: anyNamed('isInitSync'))).thenAnswer(
           (v) async => ContainerSyncUpdates(
             containerSerial: 'CONTAINER01',
             newTokens: [
@@ -801,7 +801,7 @@ void _testTokenContainerNotifier() {
             disabledUnregister: false,
           ),
         );
-        verify(mockContainerApi.sync(any, any)).called(1);
+        verify(mockContainerApi.sync(any, any, isInitSync: anyNamed('isInitSync'))).called(1);
         expect(stateContainer.policies, expectedContainer.policies);
         expect(stateContainer.syncState, SyncState.completed);
         expect(tokenState.tokens.length, 3);
@@ -827,7 +827,6 @@ void _testTokenContainerNotifier() {
       await providerContainer.read(tokenContainerProvider.future);
 
       // act
-      // TODO: implement test
       final qrData = await providerContainer.read(tokenContainerProvider.notifier).getRolloverQrData(qrDataContainer);
 
       // assert

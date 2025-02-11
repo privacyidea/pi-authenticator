@@ -37,7 +37,6 @@ import '../views/settings_view/settings_view_widgets/send_error_dialog.dart';
 import '../widgets/dialog_widgets/default_dialog.dart';
 import 'secure_storage_mutexed.dart';
 
-// TODO How to test the behavior of this class?
 class SecureTokenRepository implements TokenRepository {
   const SecureTokenRepository();
 
@@ -104,8 +103,7 @@ class SecureTokenRepository implements TokenRepository {
         continue;
       }
 
-      // TODO token.version might be deprecated, is there a reason to use it?
-      // TODO when the token version (token.version) changed handle this here.
+      // When the token version (token.version) changed handle this here.
       Logger.info('Loading token from secure storage: ${valueJson['id']}');
       try {
         tokenList.add(Token.fromJson(valueJson));
