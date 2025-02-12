@@ -222,8 +222,8 @@ class NoFirebaseUtils implements FirebaseUtils {
   @override
   Future<bool> deleteFirebaseToken() => Future.value(true);
 
-  static String _currentFbToken = 'currentFbToken';
-  static String _newFbToken = 'newFbToken';
+  static String _currentFbToken = 'no_firebase_token';
+  static String _newFbToken = 'no_firebase_token';
 
   @override
   Future<void> setCurrentFirebaseToken(String str) async => _currentFbToken = str;
