@@ -1,18 +1,46 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2024-2025 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
 
+import '../../../../model/riverpod_states/token_filter.dart';
 import '../../../../model/token_folder.dart';
-import '../../../../utils/riverpod_providers.dart';
+import '../../../../model/tokens/token.dart';
+import '../../../../utils/logger.dart';
+import '../../../../utils/riverpod/riverpod_providers/state_providers/dragging_sortable_provider.dart';
 import '../../../../utils/utils.dart';
 import 'token_folder_expandable.dart';
 
 class TokenFolderWidget extends ConsumerWidget {
   final TokenFolder folder;
+  final List<Token> folderTokens;
+  final TokenFilter? filter;
 
-  const TokenFolderWidget(this.folder, {super.key});
+  const TokenFolderWidget({
+    required this.folder,
+    required this.folderTokens,
+    this.filter,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -24,22 +52,20 @@ class TokenFolderWidget extends ConsumerWidget {
             dragAnchorStrategy: (draggable, context, position) {
               final textSize = textSizeOf(
                 text: folder.label,
-                style: Theme.of(context).textTheme.titleLarge!,
+                style: Theme.of(context).textTheme.titleMedium!,
                 textScaler: MediaQuery.of(context).textScaler,
                 maxLines: 1,
               );
               return Offset(max(textSize.width / 2, 30), textSize.height / 2 + 30);
             },
             onDragStarted: () => ref.read(draggingSortableProvider.notifier).state = folder,
-            onDragCompleted: () async {
-              Logger.info('Draggable completed', name: 'TokenFolderWidget#build');
-              await Future.delayed(const Duration(milliseconds: 100));
-              globalRef?.read(draggingSortableProvider.notifier).state = null;
+            onDragCompleted: () {
+              Logger.info('Draggable completed');
+              // Will be handled by the sortableNotifier
             },
-            onDraggableCanceled: (velocity, offset) async {
-              Logger.info('Draggable canceled', name: 'TokenFolderWidget#build');
-              await Future.delayed(const Duration(milliseconds: 100));
-              globalRef?.read(draggingSortableProvider.notifier).state = null;
+            onDraggableCanceled: (velocity, offset) {
+              Logger.info('Draggable canceled');
+              ref.read(draggingSortableProvider.notifier).state = null;
             },
             data: folder,
             childWhenDragging: const SizedBox(),
@@ -51,20 +77,28 @@ class TokenFolderWidget extends ConsumerWidget {
                   color: Colors.transparent,
                   child: Text(
                     folder.label,
-                    style: Theme.of(context).textTheme.titleLarge,
+                    style: Theme.of(context).textTheme.titleMedium,
                     overflow: TextOverflow.fade,
                     softWrap: false,
                   ),
                 ),
               ],
             ),
-            child: TokenFolderExpandable(
-              folder: folder,
-              key: Key('TokenFolderExpandable#${folder.folderId}'),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 4),
+              child: TokenFolderExpandable(
+                folder: folder,
+                folderTokens: folderTokens,
+                key: Key('TokenFolderExpandable#${folder.folderId}'),
+              ),
             ),
           )
         : (draggingFolder == folder)
             ? const SizedBox()
-            : TokenFolderExpandable(folder: folder);
+            : TokenFolderExpandable(
+                folder: folder,
+                folderTokens: folderTokens,
+                filter: filter,
+              );
   }
 }

@@ -3,7 +3,7 @@
  *
  * Author: Frank Merkel <frank.merkel@netknights.it>
  *
- * Copyright (c) 2024 NetKnights GmbH
+ * Copyright (c) 2025 NetKnights GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import 'package:privacyidea_authenticator/utils/app_info_utils.dart';
 
 import '../../../utils/customization/theme_customization.dart';
 import '../../model/enums/app_feature.dart';
-import '../../model/enums/image_file_type.dart';
+import '../../model/enums/image_format.dart';
 import '../../model/widget_image.dart';
 
 class ApplicationCustomization {
@@ -74,17 +74,17 @@ class ApplicationCustomization {
   final String websiteLink;
   final String crashRecipient;
   final String rawCrashSubjectPrefix;
-  String get crashSubjectPrefix => rawCrashSubjectPrefix.replaceAll(prefixVersionVariable, AppInfoUtils.currentVersionAndBuildNumber);
+  String get crashSubjectPrefix => rawCrashSubjectPrefix.replaceAll(prefixVersionVariable, InfoUtils.currentVersionAndBuildNumber);
   final String feedbackRecipient;
   final String rawFeedbackSubjectPrefix;
-  String get feedbackSubjectPrefix => rawFeedbackSubjectPrefix.replaceAll(prefixVersionVariable, AppInfoUtils.currentVersionAndBuildNumber);
+  String get feedbackSubjectPrefix => rawFeedbackSubjectPrefix.replaceAll(prefixVersionVariable, InfoUtils.currentVersionAndBuildNumber);
   final WidgetImage appbarIcon;
   static const String appbarIconFileName = 'appbar_icon';
   final WidgetImage splashScreenImage;
   static const String splashScreenImageFileName = 'splash_screen_image';
-  final WidgetImage backgroundImage;
+  final WidgetImage? backgroundImage;
   static const String backgroundImageFileName = 'background_image';
-  final WidgetImage licensesViewImage;
+  final WidgetImage? licensesViewImage;
   static const String licensesViewImageFileName = 'licenses_view_image';
 
   final ThemeCustomization lightTheme;
@@ -102,17 +102,17 @@ class ApplicationCustomization {
     this.customFontBytes,
     WidgetImage? appbarIcon,
     WidgetImage? splashScreenImage,
-    WidgetImage? backgroundImage,
-    WidgetImage? licensesViewImage,
+    WidgetImage? Function()? backgroundImage,
+    this.licensesViewImage,
     this.lightTheme = ThemeCustomization.defaultLightTheme,
     this.darkTheme = ThemeCustomization.defaultDarkTheme,
     this.disabledFeatures = const {},
-  })  : appbarIcon = appbarIcon ?? WidgetImage(fileType: ImageFileType.png, imageData: defaultIconUint8List, fileName: appbarIconFileName),
+  })  : appbarIcon = appbarIcon ?? WidgetImage(imageFormat: ImageFormat.png, imageData: defaultIconUint8List, fileName: appbarIconFileName),
         splashScreenImage =
-            splashScreenImage ?? WidgetImage(fileType: ImageFileType.png, imageData: defaultImageUint8List, fileName: splashScreenImageFileName),
-        backgroundImage = backgroundImage ?? WidgetImage(fileType: ImageFileType.png, imageData: defaultImageUint8List, fileName: backgroundImageFileName),
-        licensesViewImage =
-            licensesViewImage ?? WidgetImage(fileType: ImageFileType.png, imageData: defaultImageUint8List, fileName: licensesViewImageFileName);
+            splashScreenImage ?? WidgetImage(imageFormat: ImageFormat.png, imageData: defaultImageUint8List, fileName: splashScreenImageFileName),
+        backgroundImage = backgroundImage != null
+            ? backgroundImage()
+            : WidgetImage(imageFormat: ImageFormat.png, imageData: defaultImageUint8List, fileName: splashScreenImageFileName);
 
   ApplicationCustomization copyWith({
     String? appName,
@@ -123,8 +123,8 @@ class ApplicationCustomization {
     String? feedbackSubjectPrefix,
     WidgetImage? appbarIcon,
     WidgetImage? splashScreenImage,
-    WidgetImage? backgroundImage,
-    WidgetImage? licensesViewImage,
+    WidgetImage? Function()? backgroundImage,
+    WidgetImage? Function()? licensesViewImage,
     ThemeCustomization? lightTheme,
     ThemeCustomization? darkTheme,
     Set<AppFeature>? disabledFeatures,
@@ -140,8 +140,8 @@ class ApplicationCustomization {
         customFontBytes: customFontBytes,
         appbarIcon: appbarIcon ?? this.appbarIcon,
         splashScreenImage: splashScreenImage ?? this.splashScreenImage,
-        backgroundImage: backgroundImage ?? this.backgroundImage,
-        licensesViewImage: licensesViewImage ?? this.licensesViewImage,
+        backgroundImage: backgroundImage ?? () => this.backgroundImage,
+        licensesViewImage: licensesViewImage != null ? licensesViewImage() : this.licensesViewImage,
         lightTheme: lightTheme ?? this.lightTheme,
         darkTheme: darkTheme ?? this.darkTheme,
         disabledFeatures: disabledFeatures ?? this.disabledFeatures,
@@ -198,7 +198,7 @@ class ApplicationCustomization {
       customFontBytes: fontBytes,
       appbarIcon: appbarIcon,
       splashScreenImage: splashScreenImage,
-      backgroundImage: backgroundImage,
+      backgroundImage: () => backgroundImage,
       licensesViewImage: licensesViewImage,
       lightTheme: lightTheme,
       darkTheme: darkTheme,
@@ -238,11 +238,7 @@ class ApplicationCustomization {
             : json['appImage'] != null
                 ? WidgetImage.fromJson(json['appImage'] as Map<String, dynamic>)
                 : null,
-        backgroundImage: json['backgroundImage'] != null
-            ? WidgetImage.fromJson(json['backgroundImage'] as Map<String, dynamic>)
-            : json['appImage'] != null
-                ? WidgetImage.fromJson(json['appImage'] as Map<String, dynamic>)
-                : null,
+        backgroundImage: json.containsKey('backgroundImage') ? () => WidgetImage.fromJson(json['backgroundImage'] as Map<String, dynamic>) : () => null,
         licensesViewImage: json['licensesViewImage'] != null
             ? WidgetImage.fromJson(json['licensesViewImage'] as Map<String, dynamic>)
             : json['appImage'] != null
@@ -265,8 +261,8 @@ class ApplicationCustomization {
         'customFontBytes': customFontBytes != null ? base64Encode(customFontBytes!) : null,
         'appbarIcon': appbarIcon.toJson(),
         'splashScreenImage': splashScreenImage.toJson(),
-        'backgroundImage': backgroundImage.toJson(),
-        'licensesViewImage': licensesViewImage.toJson(),
+        if (backgroundImage != null) 'backgroundImage': backgroundImage?.toJson(),
+        if (licensesViewImage != null) 'licensesViewImage': licensesViewImage?.toJson(),
         'lightTheme': lightTheme.toJson(),
         'darkTheme': darkTheme.toJson(),
         'disabledFeatures': disabledFeatures.map((e) => e.name).toList(),

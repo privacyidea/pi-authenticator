@@ -3,7 +3,7 @@
  *
  * Author: Frank Merkel <frank.merkel@netknights.it>
  *
- * Copyright (c) 2024 NetKnights GmbH
+ * Copyright (c) 2025 NetKnights GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// ignore_for_file: constant_identifier_names
 
 import 'dart:async';
 import 'dart:developer';
@@ -38,7 +37,7 @@ import '../utils/app_info_utils.dart';
 import '../utils/pi_mailer.dart';
 import '../views/settings_view/settings_view_widgets/send_error_dialog.dart';
 import 'globals.dart';
-import 'riverpod_providers.dart';
+import 'riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import 'view_utils.dart';
 
 final provider = Provider<int>((ref) => 0);
@@ -50,7 +49,7 @@ class Logger {
   static BuildContext? get _context => navigatorKey.currentContext;
   static String get _mailBody => _context != null ? AppLocalizations.of(_context!)!.errorMailBody : 'Error Log File Attached';
   static Set<String> get _mailRecipients => {
-        // ...globalRef?.read(settingsProvider).crashReportRecipients ?? {},
+        ...globalRef?.read(settingsProvider).value?.crashReportRecipients ?? {},
         ...PrivacyIDEAAuthenticator.currentCustomization != null ? {PrivacyIDEAAuthenticator.currentCustomization!.crashRecipient} : {}
       };
   static printer.Logger print = printer.Logger(
@@ -99,10 +98,9 @@ class Logger {
 
   String get _filename => 'logfile.txt';
   String? get _fullPath => _logPath != null ? '$_logPath/$_filename' : null;
-  bool get _verboseLogging {
-    if (globalRef == null) return false;
-    return globalRef!.read(settingsProvider).verboseLogging;
-  }
+  static bool _verboseLogging = false;
+
+  static void setVerboseLogging(bool value) => _verboseLogging = value;
 
   bool get logfileHasContent {
     if (_fullPath == null) return false;
@@ -252,7 +250,7 @@ class Logger {
     if (!file.existsSync() || file.lengthSync() == 0) {
       return Future.value(false);
     }
-    String deviceInfo = AppInfoUtils.deviceInfoString;
+    String deviceInfo = InfoUtils.deviceInfoString;
 
     final completeMailBody = """${message ?? _mailBody}
 ---------------------------------------------------------
@@ -410,7 +408,7 @@ Device Parameters $deviceInfo""";
   static String _textFilter(String text) {
     for (var key in filterParameterKeys) {
       // It searches for the key, ignores following characters until it finds base64 caracters (plus padding and separator) and replaces it with "******"
-      final regex = RegExp(r'(?<=' + key + r'[^A-Z0-9+/=,]*)[A-Z0-9+/=,]+', caseSensitive: false);
+      final regex = RegExp(r'(?<=' + key + r'[^A-Z0-9+/=,]*)[A-Z0-9+/=,:_-]+', caseSensitive: false);
       text = text.replaceAll(regex, '******');
     }
     return text;

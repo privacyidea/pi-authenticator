@@ -6,17 +6,17 @@ import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
 import 'package:privacyidea_authenticator/mains/main_netknights.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/enums/introduction.dart';
-import 'package:privacyidea_authenticator/model/states/introduction_state.dart';
-import 'package:privacyidea_authenticator/model/states/settings_state.dart';
+import 'package:privacyidea_authenticator/model/riverpod_states/introduction_state.dart';
+import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.dart';
+import 'package:privacyidea_authenticator/model/riverpod_states/token_folder_state.dart';
 import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
-import 'package:privacyidea_authenticator/state_notifiers/completed_introduction_notifier.dart';
-import 'package:privacyidea_authenticator/state_notifiers/settings_notifier.dart';
-import 'package:privacyidea_authenticator/state_notifiers/token_folder_notifier.dart';
-import 'package:privacyidea_authenticator/state_notifiers/token_notifier.dart';
-import 'package:privacyidea_authenticator/utils/customization/application_customization.dart';
-import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 import 'package:privacyidea_authenticator/model/version.dart';
+import 'package:privacyidea_authenticator/utils/customization/application_customization.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/default_token_actions/default_delete_action.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/hotp_token_widgets/actions/edit_hotp_token_action.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/hotp_token_widgets/hotp_token_widget.dart';
@@ -53,8 +53,8 @@ void main() {
       return true;
     });
     mockTokenFolderRepository = MockTokenFolderRepository();
-    when(mockTokenFolderRepository.loadFolders()).thenAnswer((_) async => []);
-    when(mockTokenFolderRepository.saveReplaceList(any)).thenAnswer((_) async => true);
+    when(mockTokenFolderRepository.loadState()).thenAnswer((_) async => const TokenFolderState(folders: []));
+    when(mockTokenFolderRepository.saveState(any)).thenAnswer((_) async => true);
     mockIntroductionRepository = MockIntroductionRepository();
     when(mockIntroductionRepository.loadCompletedIntroductions())
         .thenAnswer((_) async => const IntroductionState(completedIntroductions: {...Introduction.values}));
@@ -62,10 +62,10 @@ void main() {
   testWidgets('Rename and Delete Token', (tester) async {
     await tester.pumpWidget(TestsAppWrapper(
       overrides: [
-        settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepository)),
-        tokenProvider.overrideWith((ref) => TokenNotifier(repository: mockTokenRepository, ref: ref)),
-        tokenFolderProvider.overrideWith((ref) => TokenFolderNotifier(repository: mockTokenFolderRepository)),
-        introductionProvider.overrideWith((ref) => IntroductionNotifier(repository: mockIntroductionRepository)),
+        settingsProvider.overrideWith(() => SettingsNotifier(repoOverride: mockSettingsRepository)),
+        tokenProvider.overrideWith(() => TokenNotifier(repoOverride: mockTokenRepository)),
+        tokenFolderProvider.overrideWith(() => TokenFolderNotifier(repoOverride: mockTokenFolderRepository)),
+        introductionNotifierProvider.overrideWith(() => IntroductionNotifier(repoOverride: mockIntroductionRepository)),
       ],
       child: PrivacyIDEAAuthenticator(ApplicationCustomization.defaultCustomization),
     ));
@@ -92,7 +92,7 @@ Future<void> _renameToken(WidgetTester tester, String newName) async {
   await tester.pumpAndSettle();
   await tester.enterText(find.byType(TextFormField).first, newName);
   await pumpUntilFindNWidgets(tester, find.widgetWithText(TextFormField, newName), 1, const Duration(seconds: 2));
-  await tester.tap(find.text(AppLocalizationsEn().save));
+  await tester.tap(find.text(AppLocalizationsEn().saveButton));
   await pumpUntilFindNWidgets(tester, find.text(newName), 1, const Duration(seconds: 2));
   expect(find.text(newName), findsOneWidget);
 }

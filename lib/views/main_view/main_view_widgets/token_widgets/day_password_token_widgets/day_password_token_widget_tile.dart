@@ -1,3 +1,22 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2025 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -5,12 +24,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../../../../utils/view_utils.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/enums/day_password_token_view_mode.dart';
+import '../../../../../model/riverpod_states/settings_state.dart';
 import '../../../../../model/tokens/day_password_token.dart';
-import '../../../../../utils/riverpod_providers.dart';
+import '../../../../../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
+import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../../../utils/utils.dart';
-import '../../../../../widgets/custom_texts.dart';
 import '../../../../../widgets/custom_trailing.dart';
 import '../../../../../widgets/hideable_widget_.dart';
 import '../token_widget_tile.dart';
@@ -51,23 +72,19 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
   }
 
   void _copyOtpValue() {
-    if (globalRef?.read(disableCopyOtpProvider) ?? false) return;
+    if (ref.read(disableCopyOtpProvider) ?? false) return;
 
-    globalRef?.read(disableCopyOtpProvider.notifier).state = true;
+    ref.read(disableCopyOtpProvider.notifier).state = true;
     Clipboard.setData(ClipboardData(text: widget.token.otpValue));
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(AppLocalizations.of(context)!.otpValueCopiedMessage(widget.token.otpValue)),
-      ),
-    );
+    showSnackBar(AppLocalizations.of(context)!.otpValueCopiedMessage(widget.token.otpValue));
     Future.delayed(const Duration(seconds: 5), () {
-      globalRef?.read(disableCopyOtpProvider.notifier).state = false;
+      ref.read(disableCopyOtpProvider.notifier).state = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final currentLocale = ref.watch(settingsProvider).currentLocale;
+    final currentLocale = ref.watch(settingsProvider).whenOrNull(data: (data) => data.currentLocale) ?? SettingsState.localeDefault;
     final dateTimeTokenEnd = widget.token.nextOTPTimeStart;
     final yMdFormat = DateFormat.yMMMd(currentLocale.languageCode);
     final yMdString = yMdFormat.format(dateTimeTokenEnd);
@@ -77,45 +94,25 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
     final durationString = duration.toString().split('.').first;
     return TokenWidgetTile(
       key: Key('${widget.token.hashCode}TokenWidgetTile'),
-      tokenImage: widget.token.tokenImage,
-      tokenIsLocked: widget.token.isLocked,
-      isPreview: widget.isPreview,
-      title: Align(
-        alignment: Alignment.centerLeft,
-        child: Tooltip(
-          triggerMode: TooltipTriggerMode.longPress,
-          message: widget.token.isHidden ? AppLocalizations.of(context)!.authenticateToShowOtp : AppLocalizations.of(context)!.copyOTPToClipboard,
-          child: InkWell(
-            onTap: widget.isPreview
-                ? null
-                : widget.token.isLocked && widget.token.isHidden
-                    ? () async => await ref.read(tokenProvider.notifier).showToken(widget.token)
-                    : _copyOtpValue,
-            child: HideableText(
-                text: insertCharAt(widget.token.otpValue, ' ', (widget.token.digits / 2).ceil()),
-                textScaleFactor: 1.9,
-                enabled: widget.token.isLocked,
-                isHidden: widget.token.isHidden),
-          ),
-        ),
-      ),
-      subtitles: widget.isPreview
+      token: widget.token,
+      semanticsLabel: widget.token.isHidden ? AppLocalizations.of(context)!.authenticateToShowOtp : AppLocalizations.of(context)!.copyOTPToClipboard,
+      titleOnTap: widget.isPreview
+          ? null
+          : widget.token.isLocked && widget.token.isHidden
+              ? () async => await ref.read(tokenProvider.notifier).showToken(widget.token)
+              : _copyOtpValue,
+      title: insertCharAt(widget.token.otpValue, ' ', (widget.token.digits / 2).ceil()),
+      additionalSubtitles: widget.isPreview
           ? [
-              (widget.token.label.isNotEmpty && widget.token.issuer.isNotEmpty)
-                  ? '${widget.token.issuer}: ${widget.token.label}'
-                  : widget.token.issuer + widget.token.label,
               'Algorithm: ${widget.token.algorithm.name}',
               'Period: ${widget.token.period.toString().split('.').first}',
             ]
-          : [
-              if (widget.token.label.isNotEmpty) widget.token.label,
-              if (widget.token.issuer.isNotEmpty) widget.token.issuer,
-            ],
+          : [],
       trailing: SizedBox(
         height: double.maxFinite,
         child: CustomTrailing(
           padding: const EdgeInsets.all(0),
-          fit: BoxFit.contain,
+          fit: BoxFit.none,
           child: HideableWidget(
             isHidden: widget.token.isHidden && !widget.isPreview,
             token: widget.token,
@@ -125,34 +122,41 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
                   ? null
                   : () {
                       if (widget.token.viewMode == DayPasswordTokenViewMode.VALIDFOR) {
-                        globalRef?.read(tokenProvider.notifier).updateToken(widget.token, (p0) => p0.copyWith(viewMode: DayPasswordTokenViewMode.VALIDUNTIL));
+                        ref.read(tokenProvider.notifier).updateToken(widget.token, (p0) => p0.copyWith(viewMode: DayPasswordTokenViewMode.VALIDUNTIL));
                         return;
                       }
                       if (widget.token.viewMode == DayPasswordTokenViewMode.VALIDUNTIL) {
-                        globalRef?.read(tokenProvider.notifier).updateToken(widget.token, (p0) => p0.copyWith(viewMode: DayPasswordTokenViewMode.VALIDFOR));
+                        ref.read(tokenProvider.notifier).updateToken(widget.token, (p0) => p0.copyWith(viewMode: DayPasswordTokenViewMode.VALIDFOR));
                         return;
                       }
                     },
-              child: SizedBox(
-                height: Theme.of(context).textTheme.bodyLarge!.fontSize! * (Theme.of(context).textTheme.bodyLarge?.height ?? 1.2) * 3.1,
+              child: Container(
+                color: Colors.transparent,
                 child: Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Expanded(
-                      child: Text(
-                        switch (widget.token.viewMode) {
-                          DayPasswordTokenViewMode.VALIDFOR => '${AppLocalizations.of(context)!.validFor}:',
-                          DayPasswordTokenViewMode.VALIDUNTIL => '${AppLocalizations.of(context)!.validUntil}:',
-                        },
-                        style: Theme.of(context).listTileTheme.subtitleTextStyle,
-                        textAlign: TextAlign.center,
-                        overflow: TextOverflow.fade,
-                        softWrap: false,
+                    SizedBox(
+                      height: Theme.of(context).listTileTheme.subtitleTextStyle!.fontSize! * 1.5,
+                      child: Center(
+                        child: Text(
+                          switch (widget.token.viewMode) {
+                            DayPasswordTokenViewMode.VALIDFOR => '${AppLocalizations.of(context)!.dayPasswordValidFor}:',
+                            DayPasswordTokenViewMode.VALIDUNTIL => '${AppLocalizations.of(context)!.dayPasswordValidUntil}:',
+                          },
+                          style: Theme.of(context).listTileTheme.subtitleTextStyle,
+                          textAlign: TextAlign.center,
+                          overflow: TextOverflow.fade,
+                          softWrap: false,
+                        ),
                       ),
                     ),
-                    Expanded(
-                      flex: 2,
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
+                    ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: double.infinity,
+                        maxHeight: Theme.of(context).textTheme.bodyLarge!.fontSize! * 3,
+                        minHeight: Theme.of(context).textTheme.bodyLarge!.fontSize! * 3,
+                      ),
+                      child: Center(
                         child: Text(
                           switch (widget.token.viewMode) {
                             DayPasswordTokenViewMode.VALIDFOR => durationString,

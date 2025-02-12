@@ -3,7 +3,7 @@
  *
  * Author: Frank Merkel <frank.merkel@netknights.it>
  *
- * Copyright (c) 2024 NetKnights GmbH
+ * Copyright (c) 2025 NetKnights GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
@@ -20,9 +20,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
 
 import '../../../l10n/app_localizations.dart';
+import '../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
+import '../../../utils/riverpod/riverpod_providers/state_providers/status_message_provider.dart';
 
 class LinkInputView extends ConsumerStatefulWidget {
   const LinkInputView({super.key});
@@ -36,7 +37,7 @@ class _LinkInputViewState extends ConsumerState<LinkInputView> {
 
   Future<void> addToken(Uri link) async {
     if (link.scheme != 'otpauth') {
-      ref.read(statusMessageProvider.notifier).state = (AppLocalizations.of(context)!.linkMustOtpAuth, '');
+      ref.read(statusMessageProvider.notifier).state = StatusMessage(message: (localization) => localization.linkMustOtpAuth);
       return;
     }
     await ref.read(tokenProvider.notifier).handleLink(link);
@@ -54,9 +55,7 @@ class _LinkInputViewState extends ConsumerState<LinkInputView> {
               Expanded(
                 child: TextFormField(
                   controller: textController,
-                  decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context)!.tokenLink,
-                  ),
+                  decoration: InputDecoration(labelText: AppLocalizations.of(context)!.tokenLinkImport),
                   keyboardType: TextInputType.url,
                   textInputAction: TextInputAction.done,
                   onFieldSubmitted: (text) => addToken(Uri.parse(text)),
@@ -73,7 +72,7 @@ class _LinkInputViewState extends ConsumerState<LinkInputView> {
                 onPressed: () async {
                   ClipboardData? data = await Clipboard.getData('text/plain');
                   if (data == null || data.text == null || data.text!.isEmpty) {
-                    if (context.mounted) ref.read(statusMessageProvider.notifier).state = (AppLocalizations.of(context)!.clipboardEmpty, null);
+                    if (context.mounted) ref.read(statusMessageProvider.notifier).state = StatusMessage(message: (localization) => localization.clipboardEmpty);
                     return;
                   }
                   setState(() => textController.text = data.text ?? '');

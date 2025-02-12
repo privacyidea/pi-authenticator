@@ -1,11 +1,9 @@
-// ignore_for_file: constant_identifier_names
-
 /*
   privacyIDEA Authenticator
 
   Authors: Timo Sturm <timo.sturm@netknights.it>
            Frank Merkel <frank.merkel@netknights.it>
-  Copyright (c) 2017-2024 NetKnights GmbH
+  Copyright (c) 2017-2025 NetKnights GmbH
 
   Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
@@ -25,20 +23,20 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:privacyidea_authenticator/widgets/elevated_delete_button.dart';
 
 import '../interfaces/repo/token_repository.dart';
 import '../l10n/app_localizations.dart';
 import '../model/tokens/token.dart';
+import '../utils/globals.dart';
 import '../utils/identifiers.dart';
 import '../utils/logger.dart';
-import '../utils/riverpod_providers.dart';
+import '../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../utils/view_utils.dart';
 import '../views/settings_view/settings_view_widgets/send_error_dialog.dart';
 import '../widgets/dialog_widgets/default_dialog.dart';
-import '../widgets/dialog_widgets/default_dialog_button.dart';
 import 'secure_storage_mutexed.dart';
 
-// TODO How to test the behavior of this class?
 class SecureTokenRepository implements TokenRepository {
   const SecureTokenRepository();
 
@@ -90,23 +88,22 @@ class SecureTokenRepository implements TokenRepository {
         valueJson = jsonDecode(value);
       } on FormatException catch (_) {
         // Value should be a json. Skip everything that is not a json.
-        Logger.info('Value is not a json.. skipping');
+        Logger.debug('Value is not a json');
         continue;
       }
 
       if (valueJson == null) {
         // If valueJson is null or does not contain a type, it can't be a token. Skip it.
-        Logger.info('Value Json is null.. skipping');
+        Logger.debug('Value Json is null');
         continue;
       }
       if (!valueJson.containsKey('type')) {
         // If valueJson is null or does not contain a type, it can't be a token. Skip it.
-        Logger.info('Value Json does not contain a type.. skipping');
+        Logger.debug('Value Json does not contain a type');
         continue;
       }
 
-      // TODO token.version might be deprecated, is there a reason to use it?
-      // TODO when the token version (token.version) changed handle this here.
+      // When the token version (token.version) changed handle this here.
       Logger.info('Loading token from secure storage: ${valueJson['id']}');
       try {
         tokenList.add(Token.fromJson(valueJson));
@@ -191,21 +188,7 @@ class SecureTokenRepository implements TokenRepository {
           title: Text(AppLocalizations.of(context)!.decryptErrorTitle),
           content: Text(AppLocalizations.of(context)!.decryptErrorContent),
           actions: [
-            DefaultDialogButton(
-              onPressed: () async {
-                final isDataDeleted = await _decryptErrorDeleteTokenConfirmationDialog();
-                if (isDataDeleted == true) {
-                  // ignore: use_build_context_synchronously
-                  Navigator.pop(context);
-                  globalRef?.read(tokenProvider.notifier).loadStateFromRepo();
-                }
-              },
-              child: Text(
-                AppLocalizations.of(context)!.decryptErrorButtonDelete,
-                style: TextStyle(color: Theme.of(context).colorScheme.error),
-              ),
-            ),
-            DefaultDialogButton(
+            TextButton(
                 child: Text(AppLocalizations.of(context)!.decryptErrorButtonSendError),
                 onPressed: () async {
                   Logger.info('Sending error report');
@@ -215,7 +198,18 @@ class SecureTokenRepository implements TokenRepository {
                     useRootNavigator: false,
                   );
                 }),
-            DefaultDialogButton(
+            ElevatedDeleteButton(
+              onPressed: () async {
+                final isDataDeleted = await _decryptErrorDeleteTokenConfirmationDialog();
+                if (isDataDeleted == true) {
+                  // ignore: use_build_context_synchronously
+                  Navigator.pop(context);
+                  globalRef?.read(tokenProvider.notifier).loadStateFromRepo();
+                }
+              },
+              text: AppLocalizations.of(context)!.decryptErrorButtonDelete,
+            ),
+            ElevatedButton(
               onPressed: () async {
                 showDialog(
                   barrierDismissible: false,
@@ -248,11 +242,11 @@ class SecureTokenRepository implements TokenRepository {
           title: Text(AppLocalizations.of(context)!.decryptErrorTitle),
           content: Text(AppLocalizations.of(context)!.decryptErrorDeleteConfirmationContent),
           actions: [
-            DefaultDialogButton(
+            TextButton(
               onPressed: () => Navigator.pop(context, false),
               child: Text(AppLocalizations.of(context)!.cancel),
             ),
-            DefaultDialogButton(
+            ElevatedDeleteButton(
               onPressed: () async {
                 Logger.info(
                   'Deleting all tokens from secure storage',
@@ -261,10 +255,7 @@ class SecureTokenRepository implements TokenRepository {
                 Navigator.pop(context, true);
                 await SecureTokenRepository._storage.deleteAll();
               },
-              child: Text(
-                AppLocalizations.of(context)!.decryptErrorButtonDelete,
-                style: TextStyle(color: Theme.of(context).colorScheme.error),
-              ),
+              text: AppLocalizations.of(context)!.decryptErrorButtonDelete,
             ),
           ],
         ),

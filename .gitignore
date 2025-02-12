@@ -891,6 +891,7 @@ DerivedData/
 lib/l10n/untranslated.txt
 *.jks
 ios/Flutter/flutter_export_environment.sh
+lib/l10n/app_localizations*.dart
 
 # Firebase
 *firebase_options.dart

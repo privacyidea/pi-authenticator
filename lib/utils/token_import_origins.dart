@@ -1,3 +1,22 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2025 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import '../mains/main_netknights.dart';
 import '../model/enums/token_import_type.dart';
 import '../model/token_import/token_import_origin.dart';
@@ -9,7 +28,6 @@ import '../processors/scheme_processors/token_import_scheme_processors/privacyid
 import '../processors/token_import_file_processor/aegis_import_file_processor.dart';
 import '../processors/token_import_file_processor/authenticator_pro_import_file_processor.dart';
 import '../processors/token_import_file_processor/free_otp_plus_import_file_processor.dart';
-import '../processors/token_import_file_processor/google_authenticator_qrfile_processor.dart';
 import '../processors/token_import_file_processor/privacyidea_authenticator_import_file_processor.dart';
 import '../processors/token_import_file_processor/two_fas_import_file_processor.dart';
 
@@ -52,7 +70,7 @@ class TokenImportOrigins {
         importHint: (localizations) => localizations.importHintGoogleQrScan,
       ),
       TokenImportSource(
-        processor: const GoogleAuthenticatorQrfileProcessor(),
+        processor: const GoogleAuthenticatorQrProcessor(),
         type: TokenImportType.qrFile,
         importHint: (localizations) => localizations.importHintGoogleQrFile,
       ),

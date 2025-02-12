@@ -3,7 +3,7 @@
  *
  * Author: Frank Merkel <frank.merkel@netknights.it>
  *
- * Copyright (c) 2024 NetKnights GmbH
+ * Copyright (c) 2024-2025 NetKnights GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,8 @@ import 'dart:math' show min;
 
 import 'package:flutter/material.dart';
 
+import '../../../../../../../widgets/button_widgets/cooldown_button.dart';
 import '../../../../utils/customization/theme_extentions/push_request_theme.dart';
-import '../../../press_button.dart';
 import '../push_request_dialog.dart';
 
 class RequirePresenceButtonRow<T> extends StatelessWidget {
@@ -63,7 +63,7 @@ class RequirePresenceButtonRow<T> extends StatelessWidget {
               for (final possibleAnswer in answersThisRow)
                 Expanded(
                   flex: answersThisRow.length * 2,
-                  child: PressButton(
+                  child: CooldownButton(
                     style: ButtonStyle(
                       shape: PushRequestDialog.getButtonShape(context),
                       backgroundColor: WidgetStateProperty.all(pushRequestTheme.acceptColor),

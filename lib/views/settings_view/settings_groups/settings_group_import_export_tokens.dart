@@ -1,16 +1,36 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2024-2025 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/model/enums/introduction.dart';
-import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
-import 'package:privacyidea_authenticator/widgets/countdown_button.dart';
 
 import '../../../l10n/app_localizations.dart';
+import '../../../model/enums/introduction.dart';
+import '../../../utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
+import '../../../widgets/button_widgets/delayed_elevated_button.dart';
 import '../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../import_tokens_view/import_tokens_view.dart';
-import '../settings_view_widgets/settings_groups.dart';
+import '../settings_view_widgets/settings_group.dart';
 import '../settings_view_widgets/settings_list_tile_button.dart';
 import 'import_export_tokens_widgets/dialogs/select_export_type_dialog.dart';
+import 'import_export_tokens_widgets/dialogs/select_tokens_dialog.dart';
 
 class SettingsGroupImportExportTokens extends ConsumerStatefulWidget {
   const SettingsGroupImportExportTokens({super.key});
@@ -27,7 +47,7 @@ class _SettingsGroupImportExportTokensState extends ConsumerState<SettingsGroupI
       title: appLocalizations.importExportTokens,
       children: [
         SettingsListTileButton(
-          onPressed: _importDialog,
+          onPressed: _routeToImport,
           title: Text(
             appLocalizations.importTokens,
             style: Theme.of(context).textTheme.bodyMedium,
@@ -57,27 +77,29 @@ class _SettingsGroupImportExportTokensState extends ConsumerState<SettingsGroupI
   }
 
   void _exportDialog() async {
-    bool? isAccepted = ref.read(introductionProvider).isCompleted(Introduction.exportTokens) ? true : null;
+    bool? isAccepted = (await ref.read(introductionNotifierProvider.future)).isCompleted(Introduction.exportTokens) ? true : null;
+    if (!mounted) return;
+    final appLocalizations = AppLocalizations.of(context)!;
     isAccepted ??= await showDialog<bool>(
       useRootNavigator: false,
       context: context,
       builder: (context) => DefaultDialog(
-        title: Text(AppLocalizations.of(context)!.confirmation),
-        content: Text(AppLocalizations.of(context)!.selectTokensToExportHelpContent),
+        title: Text(appLocalizations.exportTokensHintDialogTitle),
+        content: SelectTokensToExportHelpContentWidget(),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text(AppLocalizations.of(context)!.cancel),
+            child: Text(appLocalizations.cancel),
           ),
-          CountdownButton(
+          DelayedElevatedButton(
             onPressed: () => Navigator.of(context).pop(true),
-            countdownSeconds: 5,
-            child: Text(AppLocalizations.of(context)!.ok),
+            delaySeconds: 10,
+            child: Text(appLocalizations.ok),
           ),
         ],
       ),
     );
-    if (isAccepted == true) await ref.read(introductionProvider.notifier).complete(Introduction.exportTokens);
+    if (isAccepted == true) await ref.read(introductionNotifierProvider.notifier).complete(Introduction.exportTokens);
     if (isAccepted != true || !mounted) return;
     final isExported = await showDialog<bool>(
       useRootNavigator: false,
@@ -87,11 +109,6 @@ class _SettingsGroupImportExportTokensState extends ConsumerState<SettingsGroupI
     if (isExported == true && mounted) Navigator.of(context).pop(isExported);
   }
 
-  void _importDialog() async {
-    final isImported = await Navigator.pushNamed(
-      context,
-      ImportTokensView.routeName,
-    );
-    if (isImported == true && mounted) Navigator.of(context).pop(isImported);
-  }
+  void _routeToImport() => Navigator.pushNamed(context, ImportTokensView.routeName)
+      .then((isImported) => (isImported == true && mounted) ? Navigator.of(context).pop(isImported) : null);
 }

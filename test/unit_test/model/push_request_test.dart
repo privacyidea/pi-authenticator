@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:privacyidea_authenticator/model/push_request.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
-import 'package:privacyidea_authenticator/utils/identifiers.dart';
 
 void main() {
   _testPushRequest();
@@ -73,13 +72,13 @@ void _testPushRequest() {
       test('fromMessageData', () {
         // Arrange
         final data = <String, dynamic>{
-          PUSH_REQUEST_TITLE: 'title',
-          PUSH_REQUEST_QUESTION: 'question',
-          PUSH_REQUEST_URL: 'https://example.com',
-          PUSH_REQUEST_NONCE: 'nonce',
-          PUSH_REQUEST_SSL_VERIFY: '1',
-          PUSH_REQUEST_SERIAL: 'serial',
-          PUSH_REQUEST_SIGNATURE: 'signature',
+          PushRequest.TITLE: 'title',
+          PushRequest.QUESTION: 'question',
+          PushRequest.URL: 'https://example.com',
+          PushRequest.NONCE: 'nonce',
+          PushRequest.SSL_VERIFY: '1',
+          PushRequest.SERIAL: 'serial',
+          PushRequest.SIGNATURE: 'signature',
         };
         // Act
         final request = PushRequest.fromMessageData(data);
@@ -157,13 +156,13 @@ void _testPushRequest() {
     test('verifyData', () {
       // Arrange
       final data = <String, dynamic>{
-        PUSH_REQUEST_TITLE: 'title',
-        PUSH_REQUEST_QUESTION: 'question',
-        PUSH_REQUEST_URL: 'https://example.com',
-        PUSH_REQUEST_NONCE: 'nonce',
-        PUSH_REQUEST_SSL_VERIFY: '1',
-        PUSH_REQUEST_SERIAL: 'serial',
-        PUSH_REQUEST_SIGNATURE: 'signature',
+        PushRequest.TITLE: 'title',
+        PushRequest.QUESTION: 'question',
+        PushRequest.URL: 'https://example.com',
+        PushRequest.NONCE: 'nonce',
+        PushRequest.SSL_VERIFY: '1',
+        PushRequest.SERIAL: 'serial',
+        PushRequest.SIGNATURE: 'signature',
       };
       // Assert
       expect(() => PushRequest.verifyData(data), returnsNormally);

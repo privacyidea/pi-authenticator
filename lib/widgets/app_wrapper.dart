@@ -7,8 +7,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../utils/home_widget_utils.dart';
 import '../utils/logger.dart';
-import '../utils/riverpod_providers.dart';
-import '../utils/riverpod_state_listener.dart';
+import '../utils/riverpod/riverpod_providers/generated_providers/deeplink_notifier.dart';
+import '../utils/riverpod/riverpod_providers/generated_providers/push_request_provider.dart';
+import '../utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
+import '../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
+import '../utils/riverpod/state_listeners/home_widget_deep_link_listener.dart';
+import '../utils/riverpod/state_listeners/home_widget_token_state_listener.dart';
+import '../utils/riverpod/state_listeners/navigation_deep_link_listener.dart';
+import '../utils/riverpod/state_listeners/token_container_deep_link_listener.dart';
+import '../utils/riverpod/state_listeners/token_deep_link_listener.dart';
 import 'app_wrappers/single_touch_recognizer.dart';
 import 'app_wrappers/state_observer.dart';
 
@@ -18,9 +25,7 @@ class AppWrapper extends StatelessWidget {
   const AppWrapper({required this.child, super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return ProviderScope(child: _AppWrapper(key: key, child: child));
-  }
+  Widget build(BuildContext context) => ProviderScope(child: _AppWrapper(key: key, child: child));
 }
 
 class _AppWrapper extends ConsumerStatefulWidget {
@@ -39,32 +44,30 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
     super.initState();
     _listener = AppLifecycleListener(
       onResume: () async {
-        await ref.read(tokenProvider.notifier).loadStateFromRepo();
-        Logger.info('Refreshed tokens on resume', name: 'tokenProvider#appStateProvider');
-        final prProvider = ref.read(pushRequestProvider.notifier);
-        await prProvider.loadStateFromRepo();
-        await prProvider.pollForChallenges(isManually: false);
-        Logger.info('Polled for challenges on resume', name: 'pushRequestProvider#appStateProvider');
-        final hidden = await HomeWidgetUtils().hideAllOtps();
-        if (hidden) Logger.info('Hid all HomeWidget OTPs on resume', name: 'tokenProvider#appStateProvider');
-      },
-      // onInactive: () => log('App inactive'),
-      onHide: () async {
-        if (await ref.read(tokenProvider.notifier).saveStateOnMinimizeApp() == false) {
-          Logger.error('Failed to save tokens on Hide', name: 'tokenProvider#appStateProvider');
+        final state = await ref.read(tokenProvider.notifier).loadStateFromRepo();
+        Logger.info('Refreshed tokens on resume');
+        final hasPushToken = state?.hasPushTokens == true;
+        if (hasPushToken) {
+          final prProvider = ref.read(pushRequestProvider.notifier);
+          await prProvider.loadStateFromRepo();
+          await prProvider.pollForChallenges(isManually: false);
+          Logger.info('Polled for challenges on resume');
         }
-        if (await ref.read(tokenFolderProvider.notifier).collapseLockedFolders() == false) {
-          Logger.error('Failed to collapse locked folders on Hide', name: 'tokenFolderProvider#appStateProvider');
+        final hidden = await HomeWidgetUtils().hideAllOtps();
+        if (hidden) Logger.info('Hid all HomeWidget OTPs on resume');
+      },
+      onHide: () async {
+        if (await ref.read(tokenProvider.notifier).onMinimizeApp() == false) {
+          Logger.error('Failed to save tokens on Hide');
+        }
+        if ((await ref.read(tokenFolderProvider.notifier).collapseLockedFolders()).folders.any((folder) => folder.isLocked && folder.isExpanded)) {
+          Logger.error('Failed to collapse locked folders on Hide');
         }
         await FlutterLocalNotificationsPlugin().cancelAll();
-        Logger.info('Collapsed locked folders on Hide', name: 'tokenFolderProvider#appStateProvider');
+        Logger.info('Collapsed locked folders on Hide');
       },
-      //     onShow: () => log('App shown'),
-      //     onPause: () => log('App paused'),
-      //     onRestart: () => log('App restarted'),
-      //     onDetach: () => log('App detached'),
       onExitRequested: () async {
-        Logger.info('Exit requested', name: 'onExitRequested#AppWrapper');
+        Logger.info('Exit requested');
         return AppExitResponse.exit;
       },
     );
@@ -80,10 +83,17 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
   Widget build(BuildContext context) {
     return SingleTouchRecognizer(
       child: StateObserver(
-        listeners: [
-          NavigationDeepLinkListener(deeplinkProvider: deeplinkProvider),
-          HomeWidgetTokenStateListener(tokenProvider: tokenProvider),
+        stateNotifierProviderListeners: const [],
+        buildlessProviderListener: [
+          HomeWidgetTokenStateListener(provider: tokenProvider),
         ],
+        streamNotifierProviderListeners: [
+          NavigationDeepLinkListener(deeplinkProvider: deeplinkNotifierProvider),
+          HomeWidgetDeepLinkListener(deeplinkProvider: deeplinkNotifierProvider),
+          TokenImportDeepLinkListener(deeplinkProvider: deeplinkNotifierProvider),
+          TokenContainerDeepLinkListener(deeplinkProvider: deeplinkNotifierProvider),
+        ],
+        asyncNotifierProviderListeners: [],
         child: EasyDynamicThemeWidget(
           child: widget.child,
         ),

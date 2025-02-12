@@ -22,7 +22,8 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:flutter/services.dart';
-import 'package:pi_authenticator_legacy/identifiers.dart';
+
+import 'identifiers.dart';
 
 const String METHOD_CHANNEL_ID = "it.netknights.piauthenticator.legacy";
 const String METHOD_SIGN = "sign";
@@ -35,7 +36,7 @@ const String PARAMETER_SIGNATURE = "signature";
 
 class LegacyUtils {
   const LegacyUtils();
-  static const MethodChannel _channel = const MethodChannel(METHOD_CHANNEL_ID);
+  static const MethodChannel _channel = MethodChannel(METHOD_CHANNEL_ID);
 
   Future<String> sign(String serial, String message) async => await (_channel.invokeMethod(METHOD_SIGN, {
         PARAMETER_SERIAL: serial,

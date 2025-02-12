@@ -1,3 +1,22 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2024-2025 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -5,12 +24,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 
+import '../../../../../../../utils/view_utils.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../mains/main_netknights.dart';
 import '../../../../../model/tokens/token.dart';
 import '../../../../../utils/encryption/token_encryption.dart';
 import '../../../../../utils/lock_auth.dart';
-import '../../../../../utils/riverpod_providers.dart';
+import '../../../../../utils/riverpod/riverpod_providers/state_providers/status_message_provider.dart';
 import '../../../../../utils/validators.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 
@@ -52,7 +72,8 @@ class _ExportTokensToFileDialogState extends ConsumerState<ExportTokensToFileDia
                         validator: Validators(appLocalizations).password,
                         decoration: InputDecoration(
                           labelText: appLocalizations.password,
-                          labelStyle: Theme.of(context).textTheme.titleMedium,
+                          labelStyle: Theme.of(context).textTheme.titleSmall,
+                          errorMaxLines: 2,
                         ),
                       ),
                     ),
@@ -79,7 +100,8 @@ class _ExportTokensToFileDialogState extends ConsumerState<ExportTokensToFileDia
                         validator: (value) => Validators(appLocalizations).confirmPassword(_passwordTextController.text, value),
                         decoration: InputDecoration(
                           labelText: appLocalizations.confirmPassword,
-                          labelStyle: Theme.of(context).textTheme.titleMedium,
+                          labelStyle: Theme.of(context).textTheme.titleSmall,
+                          errorMaxLines: 2,
                         ),
                       ),
                     ),
@@ -119,7 +141,8 @@ class _ExportTokensToFileDialogState extends ConsumerState<ExportTokensToFileDia
                             return;
                           }
                           final authenticated = await lockAuth(
-                            localizedReason: AppLocalizations.of(context)!.exportLockedTokenReason,
+                            reason: (localization) => localization.exportLockedTokenReason,
+                            localization: appLocalizations,
                             autoAuthIfUnsupported: true,
                           );
                           if (!authenticated || !mounted) return;
@@ -150,11 +173,10 @@ class _ExportTokensToFileDialogState extends ConsumerState<ExportTokensToFileDia
       final path = 'storage/emulated/0/Download/${_getFileName()}'.replaceAll(RegExp(r'\s'), '-');
       final file = File(path);
       await file.writeAsString(encryptedTokens);
-
-      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(appLocalizations.fileSavedToDownloadsFolder)));
+      showSnackBar(appLocalizations.fileSavedToDownloadsFolder);
       return true;
     } catch (e) {
-      if (context.mounted) ref.read(statusMessageProvider.notifier).state = (AppLocalizations.of(context)!.errorSavingFile, null);
+      if (context.mounted) ref.read(statusMessageProvider.notifier).state = StatusMessage(message: (l) => l.errorSavingFile);
       setState(() => _exportPressed = false);
       return false;
     }
@@ -166,10 +188,10 @@ class _ExportTokensToFileDialogState extends ConsumerState<ExportTokensToFileDia
     final file = File('${downloadsDir.path}/${_getFileName()}');
     try {
       await file.writeAsString(encryptedTokens);
-      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(appLocalizations.fileSavedToDownloadsFolder)));
+      showSnackBar(appLocalizations.fileSavedToDownloadsFolder);
       return true;
     } catch (e) {
-      if (context.mounted) ref.read(statusMessageProvider.notifier).state = (AppLocalizations.of(context)!.errorSavingFile, null);
+      if (context.mounted) ref.read(statusMessageProvider.notifier).state = StatusMessage(message: (l) => l.errorSavingFile);
       setState(() => _exportPressed = false);
       return false;
     }

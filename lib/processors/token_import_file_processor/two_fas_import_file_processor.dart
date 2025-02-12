@@ -1,27 +1,46 @@
-// ignore_for_file: constant_identifier_names
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2025 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 import 'dart:convert';
 
 import 'package:cryptography/cryptography.dart';
 import 'package:file_selector/file_selector.dart';
 
-import '../../l10n/app_localizations.dart';
-import '../../utils/encryption/aes_encrypted.dart';
-import '../../model/enums/encodings.dart';
 import '../../model/enums/token_origin_source_type.dart';
-import '../../model/extensions/enums/encodings_extension.dart';
+import '../../model/exception_errors/localized_exception.dart';
 import '../../model/extensions/enums/token_origin_source_type.dart';
 import '../../model/processor_result.dart';
+import '../../model/tokens/hotp_token.dart';
+import '../../model/tokens/otp_token.dart';
 import '../../model/tokens/token.dart';
-import '../../utils/errors.dart';
-import '../../utils/globals.dart';
-import '../../utils/identifiers.dart';
+import '../../model/tokens/totp_token.dart';
+import '../../utils/encryption/aes_encrypted.dart';
 import '../../utils/logger.dart';
+import '../../utils/object_validator.dart';
 import '../../utils/token_import_origins.dart';
 import 'token_import_file_processor_interface.dart';
 
 class TwoFasAuthenticatorImportFileProcessor extends TokenImportFileProcessor {
+  static get resultHandlerType => TokenImportFileProcessor.resultHandlerType;
   const TwoFasAuthenticatorImportFileProcessor();
+  static const String TWOFAS_OTP = 'otp';
   static const String TWOFAS_TYPE = 'tokenType';
   static const String TWOFAS_ISSUER = 'name';
   static const String TWOFAS_SECRET = 'secret';
@@ -40,7 +59,7 @@ class TwoFasAuthenticatorImportFileProcessor extends TokenImportFileProcessor {
     } catch (e) {
       throw InvalidFileContentException('No valid 2FAS import file');
     }
-    if (password == null) return _processPlainFile(jsonString: fileContent, json: json);
+    if (password == null) return _processPlainFile(json: json);
     return processEncryptedFile(jsonString: fileContent, json: json, password: password);
   }
 
@@ -92,7 +111,7 @@ class TwoFasAuthenticatorImportFileProcessor extends TokenImportFileProcessor {
         iv: iv,
       ).decryptToString(password);
     } catch (e) {
-      Logger.warning('Failed to decrypt 2FAS import file', error: e, name: 'two_fas_import_file_processor.dart#processEncryptedFile');
+      Logger.warning('Failed to decrypt 2FAS import file');
       throw BadDecryptionPasswordException('Wrong decryption password');
     }
     try {
@@ -103,22 +122,17 @@ class TwoFasAuthenticatorImportFileProcessor extends TokenImportFileProcessor {
     return await _processPlainTokens(decryptedTokensJsonList.cast<Map<String, dynamic>>());
   }
 
-  Future<List<ProcessorResult<Token>>> _processPlainFile({String? jsonString, Map<String, dynamic>? json}) async {
-    try {
-      json ??= jsonDecode(jsonString!) as Map<String, dynamic>;
-    } catch (e) {
-      throw InvalidFileContentException('No valid 2FAS import file');
-    }
+  Future<List<ProcessorResult<Token>>> _processPlainFile({required Map<String, dynamic> json}) async {
     final tokensJsonList = json['services'] as List<dynamic>?;
     if (tokensJsonList == null || tokensJsonList.isEmpty) {
       if (json['servicesEncrypted'] == null) {
         throw InvalidFileContentException('No valid 2FAS import file');
       } else {
-        Logger.warning('2FAS import file is encrypted', name: 'two_fas_import_file_processor.dart#processPlainFile');
+        Logger.warning('2FAS import file is encrypted');
         throw BadDecryptionPasswordException('2FAS import file is encrypted');
       }
     }
-    Logger.info('2FAS import file contains ${tokensJsonList.length} tokens', name: 'two_fas_import_file_processor.dart#processPlainFile');
+    Logger.info('2FAS import file contains ${tokensJsonList.length} tokens');
     return _processPlainTokens(tokensJsonList.cast<Map<String, dynamic>>());
   }
 
@@ -126,35 +140,61 @@ class TwoFasAuthenticatorImportFileProcessor extends TokenImportFileProcessor {
     final results = <ProcessorResult<Token>>[];
     for (Map<String, dynamic> twoFasToken in tokensJsonList) {
       try {
-        results.add(ProcessorResultSuccess(Token.fromUriMap(_twoFasToUriMap(twoFasToken))));
+        results.add(ProcessorResult.success(
+          Token.fromOtpAuthMap(
+            _twoFasToOtpAuth(twoFasToken),
+            additionalData: {
+              Token.ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
+                originName: TokenImportOrigins.twoFasAuthenticator.appName,
+                isPrivacyIdeaToken: false,
+                data: jsonEncode(twoFasToken),
+              ),
+            },
+          ),
+          resultHandlerType: resultHandlerType,
+        ));
       } on LocalizedException catch (e) {
-        results.add(ProcessorResultFailed(e.localizedMessage(AppLocalizations.of(await globalContext)!)));
+        results.add(ProcessorResult.failed(
+          (localization) => e.localizedMessage(localization),
+          resultHandlerType: resultHandlerType,
+        ));
       } catch (e) {
-        Logger.error('Failed to parse token.', name: 'two_fas_import_file_processor.dart#_processPlainTokens', error: e, stackTrace: StackTrace.current);
-        results.add(ProcessorResultFailed(e.toString()));
+        Logger.error('Failed to parse token.', error: e, stackTrace: StackTrace.current);
+        results.add(ProcessorResultFailed(
+          (_) => e.toString(),
+          resultHandlerType: resultHandlerType,
+        ));
       }
     }
-    Logger.info('successfully imported ${results.length} tokens', name: 'two_fas_import_file_processor.dart#processPlainTokens');
+    Logger.info('successfully imported ${results.length} tokens');
     return results;
   }
 
-  Map<String, dynamic> _twoFasToUriMap(Map<String, dynamic> twoFasToken) {
-    final twoFasOTP = twoFasToken['otp'];
-    return {
-      URI_TYPE: twoFasOTP[TWOFAS_TYPE],
-      URI_ISSUER: twoFasToken[TWOFAS_ISSUER],
-      URI_SECRET: Encodings.base32.decode(twoFasToken[TWOFAS_SECRET]),
-      URI_ALGORITHM: twoFasOTP[TWOFAS_ALGORITHM],
-      URI_LABEL: twoFasOTP[TWOFAS_LABEL],
-      URI_DIGITS: twoFasOTP[TWOFAS_DIGITS],
-      URI_PERIOD: twoFasOTP[TWOFAS_PERIOD],
-      URI_COUNTER: twoFasOTP[TWOFAS_COUNTER],
-      URI_ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
-        originName: TokenImportOrigins.twoFasAuthenticator.appName,
-        isPrivacyIdeaToken: false,
-        data: jsonEncode(twoFasToken),
-      ),
-    };
+  Map<String, String> _twoFasToOtpAuth(Map<String, dynamic> twoFasToken) {
+    Map<String, dynamic> twoFasOTP = twoFasToken[TWOFAS_OTP];
+    return validateMap(
+      map: {
+        Token.ISSUER: twoFasToken[TWOFAS_ISSUER],
+        Token.TOKENTYPE_OTPAUTH: twoFasOTP[TWOFAS_TYPE],
+        Token.LABEL: twoFasOTP[TWOFAS_LABEL],
+        OTPToken.SECRET_BASE32: twoFasToken[TWOFAS_SECRET],
+        OTPToken.ALGORITHM: twoFasOTP[TWOFAS_ALGORITHM],
+        OTPToken.DIGITS: twoFasOTP[TWOFAS_DIGITS],
+        TOTPToken.PERIOD_SECONDS: twoFasOTP[TWOFAS_PERIOD],
+        HOTPToken.COUNTER: twoFasOTP[TWOFAS_COUNTER],
+      },
+      validators: {
+        Token.TOKENTYPE_OTPAUTH: const ObjectValidator<String>(),
+        Token.ISSUER: const ObjectValidatorNullable<String>(),
+        Token.LABEL: const ObjectValidatorNullable<String>(),
+        OTPToken.SECRET_BASE32: const ObjectValidator<String>(),
+        OTPToken.ALGORITHM: const ObjectValidatorNullable<String>(),
+        OTPToken.DIGITS: intToStringValidatorNullable,
+        TOTPToken.PERIOD_SECONDS: intToStringValidatorNullable,
+        HOTPToken.COUNTER: intToStringValidatorNullable,
+      },
+      name: '2FAS token',
+    );
   }
 }
 

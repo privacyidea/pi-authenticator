@@ -37,6 +37,8 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>otpauth</string>
+				<string>otpauth-migration</string>
+				<string>pia</string>
 			</array>
 		</dict>
 	</array>

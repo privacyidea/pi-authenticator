@@ -3,7 +3,7 @@
 
   Authors: Timo Sturm <timo.sturm@netknights.it>
            Frank Merkel <frank.merkel@netknights.it>
-  Copyright (c) 2017-2023 NetKnights GmbH
+  Copyright (c) 2017-2025 NetKnights GmbH
 
   Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
@@ -409,7 +409,7 @@ void _testDecodeSecretToUint8() {
     });
 
     test('Test non base32 secret', () {
-      expect(() => Encodings.base32.decode('p'), throwsFormatException);
+      expect(() => Encodings.base32.decode('AAA+AAA='), throwsFormatException);
       expect(() => Encodings.base32.decode('AAAAAAöA'), throwsFormatException);
     });
 

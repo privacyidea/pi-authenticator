@@ -3,7 +3,7 @@
  *
  * Author: Frank Merkel <frank.merkel@netknights.it>
  *
- * Copyright (c) 2024 NetKnights GmbH
+ * Copyright (c) 2025 NetKnights GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
@@ -17,14 +17,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// ignore_for_file: constant_identifier_names
 
 import 'dart:convert';
 
 import '../interfaces/repo/push_request_repository.dart';
 import '../model/push_request.dart';
-import '../model/states/push_request_state.dart';
+import '../model/riverpod_states/push_request_state.dart';
 import '../utils/custom_int_buffer.dart';
+import '../utils/logger.dart';
 import 'secure_storage_mutexed.dart';
 
 class SecurePushRequestRepository implements PushRequestRepository {
@@ -40,6 +40,7 @@ class SecurePushRequestRepository implements PushRequestRepository {
   @override
   Future<void> saveState(PushRequestState pushRequestState) async {
     final stateJson = jsonEncode(pushRequestState.toJson());
+    Logger.debug('Saving state: $stateJson');
     await _storage.write(key: _securePushRequestKey, value: stateJson);
   }
 
@@ -59,7 +60,7 @@ class SecurePushRequestRepository implements PushRequestRepository {
   /// If no state is given, the current state is loaded from the secure storage.
   /// This is a critical section, so it is protected by Mutex.
   @override
-  Future<PushRequestState> add(PushRequest pushRequest, {PushRequestState? state}) async {
+  Future<PushRequestState> addRequest(PushRequest pushRequest, {PushRequestState? state}) async {
     state ??= await loadState();
     if (state.knowsRequest(pushRequest)) {
       return state;
@@ -73,7 +74,7 @@ class SecurePushRequestRepository implements PushRequestRepository {
   /// If no state is given, the current state is loaded from the secure storage.
   /// This is a critical section, so it is protected by Mutex.
   @override
-  Future<PushRequestState> remove(PushRequest pushRequest, {PushRequestState? state}) async {
+  Future<PushRequestState> removeRequest(PushRequest pushRequest, {PushRequestState? state}) async {
     state ??= await loadState();
     final newState = state.withoutRequest(pushRequest);
     await saveState(newState);

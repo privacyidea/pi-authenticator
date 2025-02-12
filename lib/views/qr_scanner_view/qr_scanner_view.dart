@@ -3,7 +3,7 @@
 
   Authors: Timo Sturm <timo.sturm@netknights.it>
            Frank Merkel <frank.merkel@netknights.it>
-  Copyright (c) 2017-2024 NetKnights GmbH
+  Copyright (c) 2017-2025 NetKnights GmbH
 
   Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ import '../../l10n/app_localizations.dart';
 import '../../utils/logger.dart';
 import '../../views/view_interface.dart';
 import '../../widgets/dialog_widgets/default_dialog.dart';
-import '../../widgets/dialog_widgets/default_dialog_button.dart';
 import 'qr_scanner_view_widgets/qr_scanner_widget.dart';
 
 class QRScannerView extends StatefulView {
@@ -84,18 +83,18 @@ class _QRScannerViewState extends State<QRScannerView> {
                 title: Text(AppLocalizations.of(context)!.grantCameraPermissionDialogTitle),
                 content: Text(AppLocalizations.of(context)!.grantCameraPermissionDialogContent),
                 actions: [
-                  DefaultDialogButton(
+                  TextButton(
+                    child: Text(AppLocalizations.of(context)!.cancel),
+                    onPressed: () {
+                      Navigator.pop(context, null);
+                    },
+                  ),
+                  ElevatedButton(
                     child: Text(AppLocalizations.of(context)!.grantCameraPermissionDialogButton),
                     onPressed: () async {
                       //Trigger the permission to request it
                       final cameraPermission = await _requestCameraPermission();
                       setState(() => _cameraPermission = cameraPermission);
-                    },
-                  ),
-                  DefaultDialogButton(
-                    child: Text(AppLocalizations.of(context)!.cancel),
-                    onPressed: () {
-                      Navigator.pop(context, null);
                     },
                   ),
                 ],

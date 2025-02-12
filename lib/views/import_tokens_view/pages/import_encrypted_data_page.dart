@@ -1,3 +1,22 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2025 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import 'package:flutter/material.dart';
 
 import '../../../l10n/app_localizations.dart';
@@ -70,7 +89,7 @@ class _ImportEncryptedDataPageState extends State<ImportEncryptedDataPage> {
                             style: Theme.of(context).textTheme.bodyMedium,
                             decoration: InputDecoration(
                               labelText: AppLocalizations.of(context)!.password,
-                              labelStyle: Theme.of(context).textTheme.titleMedium,
+                              labelStyle: Theme.of(context).textTheme.titleSmall,
                               errorText: wrongPassword ? AppLocalizations.of(context)!.wrongPassword : null,
                             ),
                             onChanged: (value) => setState(() {
@@ -115,6 +134,7 @@ class _ImportEncryptedDataPageState extends State<ImportEncryptedDataPage> {
                                         () async {
                                           try {
                                             final processorResults = await widget.processor.processTokenMigrate(widget.data, args: _passwordController.text);
+                                            if (processorResults == null) return;
                                             _pushImportPlainTokensPage(processorResults);
                                           } on BadDecryptionPasswordException catch (_) {
                                             setState(() {

@@ -3,7 +3,7 @@
 
   Authors: Timo Sturm <timo.sturm@netknights.it>
            Frank Merkel <frank.merkel@netknights.it>
-  Copyright (c) 2017-2023 NetKnights GmbH
+  Copyright (c) 2017-2025 NetKnights GmbH
 
   Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
@@ -23,14 +23,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../model/tokens/push_token.dart';
-import '../../../utils/globals.dart';
 import '../../../utils/logger.dart';
-import '../../../utils/riverpod_providers.dart';
+import '../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../utils/view_utils.dart';
 import '../../../widgets/dialog_widgets/default_dialog.dart';
 
 class UpdateFirebaseTokenDialog extends ConsumerStatefulWidget {
-  const UpdateFirebaseTokenDialog({super.key});
+  final AppLocalizations appLocalizations;
+  const UpdateFirebaseTokenDialog(this.appLocalizations, {super.key});
 
   @override
   ConsumerState<UpdateFirebaseTokenDialog> createState() => _UpdateFirebaseTokenDialogState();
@@ -45,7 +45,7 @@ class _UpdateFirebaseTokenDialogState extends ConsumerState<UpdateFirebaseTokenD
   @override
   void initState() {
     super.initState();
-    _updateFbTokens();
+    _updateFbTokens(widget.appLocalizations);
   }
 
   @override
@@ -63,14 +63,17 @@ class _UpdateFirebaseTokenDialogState extends ConsumerState<UpdateFirebaseTokenD
     );
   }
 
-  void _updateFbTokens() async {
-    Logger.info('Starting update of firebase token.', name: 'update_firebase_token_dialog.dart#_updateFbTokens');
+  void _updateFbTokens(AppLocalizations localizations) async {
+    Logger.info('Starting update of firebase token.');
 
     // TODO What to do with poll only tokens if google-services is used?
 
     final tuple = await ref.read(tokenProvider.notifier).updateFirebaseToken();
     if (tuple == null) {
-      showMessage(message: AppLocalizations.of(globalNavigatorKey.currentContext!)!.errorSynchronizationNoNetworkConnection);
+      showErrorStatusMessage(
+        message: (l) => l.firebaseToken,
+        details: (l) => l.errorSynchronizationNoNetworkConnection,
+      );
       return;
     }
 
@@ -86,7 +89,7 @@ class _UpdateFirebaseTokenDialogState extends ConsumerState<UpdateFirebaseTokenD
 
       if (tokenWithFailedUpdate.isNotEmpty) {
         children.add(
-          Text('${AppLocalizations.of(globalNavigatorKey.currentContext!)!.synchronizationFailed}\n'),
+          Text('${localizations.syncFbTokenFailed}\n'),
         );
         for (PushToken p in tokenWithFailedUpdate) {
           children.add(Text('• ${p.label}'));
@@ -98,7 +101,7 @@ class _UpdateFirebaseTokenDialogState extends ConsumerState<UpdateFirebaseTokenD
           children.add(const Divider());
         }
 
-        children.add(Text(AppLocalizations.of(globalNavigatorKey.currentContext!)!.tokensDoNotSupportSynchronization));
+        children.add(Text(localizations.tokensDoNotSupportSynchronization));
         for (PushToken p in tokenWithOutUrl) {
           children.add(Text('• ${p.label}'));
         }

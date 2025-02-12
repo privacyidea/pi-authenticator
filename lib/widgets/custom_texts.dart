@@ -4,7 +4,7 @@
   Authors: Timo Sturm <timo.sturm@netknights.it>
            Frank Merkel <frank.merkel@netknights.it>
 
-  Copyright (c) 2017-2023 NetKnights GmbH
+  Copyright (c) 2017-2025 NetKnights GmbH
 
   Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
@@ -26,10 +26,7 @@ import 'package:flutter/material.dart';
 /// If [hideOnDefault] is true, the [text] is obfuscated, if set to false the
 /// [text] is visible to the user.
 /// [textScaleFactor] mirrors the field of the [Text] widget.
-/// [showDuration] specifies how long the [text] should be shown to the user
-/// before it is hidden again.
 /// [textStyle] mirrors the field of the [Text] widget.
-/// If [enabled] is set to true, the widget can be toggled to show its content.
 /// [replaceCharacter] defines the character that is shown to the user instead
 /// of the real characters in [text].
 /// If [replaceWhitespaces] is true, whitespaces in [text] are replaced by
@@ -40,7 +37,6 @@ class HideableText extends StatelessWidget {
   final bool hideOnDefault;
   final double textScaleFactor;
   final TextStyle? textStyle;
-  final bool enabled;
   final String replaceCharacter;
   final bool replaceWhitespaces;
   final bool isHidden;
@@ -52,7 +48,6 @@ class HideableText extends StatelessWidget {
     this.hideOnDefault = true,
     this.textScaleFactor = 1.0,
     this.textStyle,
-    this.enabled = true,
     this.replaceCharacter = '\u2022',
     this.replaceWhitespaces = false,
   });
@@ -60,7 +55,7 @@ class HideableText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      isHidden && enabled ? text.replaceAll(RegExp(replaceWhitespaces ? r'.' : r'[^\s]'), replaceCharacter) : text,
+      isHidden ? text.replaceAll(RegExp(replaceWhitespaces ? r'.' : r'[^\s]'), replaceCharacter) : text,
       textScaler: const TextScaler.linear(1.9),
       style: textStyle != null
           ? textStyle!.copyWith(fontFamily: 'monospace', fontWeight: FontWeight.bold)

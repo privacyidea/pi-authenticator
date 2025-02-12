@@ -1,14 +1,31 @@
-import 'dart:io';
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2025 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image/image.dart' as img_lib;
-import 'package:path_provider/path_provider.dart';
-import 'package:privacyidea_authenticator/views/import_tokens_view/widgets/dialogs/qr_not_found_dialog.dart';
-import 'package:zxing2/qrcode.dart';
-import 'package:zxing2/zxing2.dart';
+import 'package:flutter_zxing/flutter_zxing.dart' as zxing;
+import 'package:flutter_zxing/flutter_zxing.dart';
+import 'package:image_picker/image_picker.dart';
 
+import '../../../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../model/enums/token_import_type.dart';
 import '../../../model/enums/token_origin_source_type.dart';
@@ -21,7 +38,7 @@ import '../../../processors/mixins/token_import_processor.dart';
 import '../../../processors/scheme_processors/token_import_scheme_processors/token_import_scheme_processor_interface.dart';
 import '../../../processors/token_import_file_processor/token_import_file_processor_interface.dart';
 import '../../../utils/logger.dart';
-import '../../../utils/riverpod_providers.dart';
+import '../../../utils/object_validator.dart';
 import '../../qr_scanner_view/qr_scanner_view.dart';
 import '../import_tokens_view.dart';
 import 'import_encrypted_data_page.dart';
@@ -43,28 +60,21 @@ class ImportStartPage extends ConsumerStatefulWidget {
 
 class _ImportStartPageState extends ConsumerState<ImportStartPage> {
   final _linkController = TextEditingController();
-  bool _copyShouldExist = false;
 
-  String? _progessLabel;
-  // Widget? _buttonWhileProcessing;
   String? _errorText;
-  Future? future;
+  Future<String?>? future;
 
   @override
   void dispose() {
     _linkController.dispose();
-    _deleteCopyOfXFile();
     future?.ignore();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      globalRef?.read(progressStateProvider.notifier).deleteProgress();
-    });
+
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
-    final currentLoadingProgress = ref.watch(progressStateProvider)?.progress;
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.appName),
@@ -94,7 +104,7 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
                   TextField(
                     controller: _linkController,
                     decoration: InputDecoration(
-                      labelText: localizations.tokenLink,
+                      labelText: localizations.tokenLinkImport,
                     ),
                   ),
                 ],
@@ -115,49 +125,21 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
                               future = Future(() => switch (widget.selectedSource.type) {
                                     const (TokenImportType.backupFile) => _pickBackupFile(widget.selectedSource.processor),
                                     const (TokenImportType.qrScan) => _scanQrCode(widget.selectedSource.processor),
-                                    const (TokenImportType.qrFile) => _pickQrFile(widget.selectedSource.processor),
+                                    const (TokenImportType.qrFile) => _pickQrImage(widget.selectedSource.processor),
                                     const (TokenImportType.link) => _validateLink(widget.selectedSource.processor),
                                   });
-                              future?.then((value) {
+                              future!.then((errorText) {
                                 if (!mounted) return;
-                                setState(() => future = null);
+                                setState(() {
+                                  future = null;
+                                  _errorText = errorText;
+                                });
                               });
                             });
                           },
                         ),
                       )
-                    : Column(
-                        children: [
-                          Stack(
-                            children: [
-                              LinearProgressIndicator(
-                                minHeight: _progessLabel != null ? 16 : null,
-                                value: currentLoadingProgress,
-                                semanticsLabel: _progessLabel,
-                              ),
-                              if (_progessLabel != null)
-                                Positioned.fill(
-                                  child: Center(
-                                    child: FittedBox(
-                                      fit: BoxFit.fitHeight,
-                                      child: Text(
-                                        _progessLabel!,
-                                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                          shadows: <Shadow>[
-                                            Shadow(
-                                              color: Theme.of(context).colorScheme.onPrimary,
-                                              blurRadius: 5,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                            ],
-                          ),
-                        ],
-                      ),
+                    : const CircularProgressIndicator.adaptive(),
               ],
             ),
           ),
@@ -166,31 +148,26 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
     );
   }
 
-  Future<void> _pickBackupFile(TokenImportProcessor? processor) async {
+  Future<String?> _pickBackupFile(TokenImportProcessor? processor) async {
     assert(processor is TokenImportFileProcessor);
     final fileProcessor = processor as TokenImportFileProcessor;
     final localizations = AppLocalizations.of(context)!;
     final XTypeGroup typeGroup = XTypeGroup(label: localizations.selectFile);
-    final XFile? file = await openFile(acceptedTypeGroups: <XTypeGroup>[typeGroup]);
+    final XFile? file = await openFile(acceptedTypeGroups: [typeGroup]);
     if (file == null) {
-      Logger.warning("No file selected", name: "_pickAFile#ImportSelectFilePage");
-      return;
+      Logger.warning("No file selected");
+      return null;
     }
-    if (await fileProcessor.fileIsValid(file) == false) {
-      if (mounted == false) return;
-      setState(() => _errorText = localizations.invalidBackupFile(widget.appName));
-      return;
+    if (!await fileProcessor.fileIsValid(file)) {
+      return localizations.invalidBackupFile(widget.appName);
     }
     setState(() => _errorText = null);
     if (await fileProcessor.fileNeedsPassword(file)) {
-      await _routeEncryptedData<XFile, String?>(data: file, processor: fileProcessor);
-      return;
+      return _routeEncryptedData<XFile, String?>(data: file, processor: fileProcessor);
     }
     var importResults = await fileProcessor.processFile(file);
     if (importResults.isEmpty) {
-      if (mounted == false) return;
-      setState(() => _errorText = localizations.invalidBackupFile(widget.appName));
-      return;
+      return localizations.invalidBackupFile(widget.appName);
     }
     String fileString;
     try {
@@ -209,28 +186,30 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
           isPrivacyIdeaToken: false,
           data: t.resultData.origin?.data ?? fileString,
         ),
+        resultHandlerType: const ObjectValidator<TokenNotifier>(),
       );
     }).toList();
 
-    Logger.info("Backup file imported successfully", name: "_pickBackupFile#ImportStartPage");
-    await _routeImportPlainTokensPage(importResults: importResults);
+    Logger.info("Backup file imported successfully");
+    return _routeImportPlainTokensPage(importResults: importResults);
   }
 
-  Future<void> _scanQrCode(TokenImportProcessor? processor) async {
+  Future<String?> _scanQrCode(TokenImportProcessor? processor) async {
     assert(processor is TokenImportSchemeProcessor);
     final localizations = AppLocalizations.of(context)!;
     final schemeProcessor = processor as TokenImportSchemeProcessor;
     final result = await Navigator.of(context).pushNamed(QRScannerView.routeName);
-    if (result is! String) return;
+    if (result is! String) return localizations.invalidQrScan(widget.appName);
     final Uri uri;
     try {
       uri = Uri.parse(result);
     } on FormatException catch (_) {
-      if (mounted == false) return;
-      setState(() => _errorText = localizations.invalidQrScan(widget.appName));
-      return;
+      return localizations.invalidQrScan(widget.appName);
     }
     var results = await schemeProcessor.processUri(uri);
+    if (results == null || results.isEmpty) {
+      return localizations.invalidQrScan(widget.appName);
+    }
     results = results.map<ProcessorResult<Token>>((t) {
       if (t is! ProcessorResultSuccess<Token>) return t;
       return ProcessorResultSuccess(
@@ -240,109 +219,95 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
           token: t.resultData,
           data: t.resultData.origin?.data ?? uri.toString(),
         ),
+        resultHandlerType: const ObjectValidator<TokenNotifier>(),
       );
     }).toList();
-    Logger.info("QR code scanned successfully", name: "_scanQrCode#ImportStartPage");
-    _routeImportPlainTokensPage(importResults: results);
-    return;
+    Logger.info("QR code scanned successfully");
+    return _routeImportPlainTokensPage(importResults: results);
   }
 
-  Future<XFile> _saveCopyOfXFile(XFile xFile) async {
-    Logger.warning("Saving copy of file", name: "_saveCopyOfXFile#ImportStartPage");
-    final path = '${(await getApplicationCacheDirectory()).path}/copy_of_xFile';
-    await xFile.saveTo(path);
-    _copyShouldExist = true;
-    return XFile(path);
-  }
-
-  Future<void> _deleteCopyOfXFile() async {
-    if (_copyShouldExist == false) return;
-    File('${(await getApplicationCacheDirectory()).path}/copy_of_xFile').delete();
-    _copyShouldExist = false;
-  }
-
-  Future<void> _pickQrFile(TokenImportProcessor? processor) async {
-    assert(processor is TokenImportFileProcessor);
-    final schemeProcessor = processor as TokenImportFileProcessor;
-    final localizations = AppLocalizations.of(context)!;
-    List<ProcessorResult<Token>>? processorResults;
-    var xFile = await openFile();
-    if (xFile == null) return;
-    xFile = await _saveCopyOfXFile(xFile);
-
-    if (!mounted) return;
-    setState(() => _progessLabel = localizations.findingQrCodeInImage);
-    if (await schemeProcessor.fileIsValid(xFile) == false) {
-      if (!mounted) return;
-      setState(() => _errorText = localizations.invalidQrFile(widget.appName));
-      return;
+  Future<String?> _pickQrImage(TokenImportProcessor? processor) async {
+    final file = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (file == null) {
+      Logger.info("No file selected");
+      return null;
     }
-    try {
-      try {
-        processorResults = await schemeProcessor.processFile(xFile);
-      } on NotFoundException catch (_) {
-        if (!mounted) return;
-        xFile = await QrNotFoundDialog(xFile: xFile).show(context);
-        Logger.warning('Got cropped file: $xFile', name: '_pickQrFile#ImportStartPage');
-        if (xFile != null) processorResults = await schemeProcessor.processFile(xFile);
-        if (processorResults == null) {
-          if (!mounted) return;
-          setState(() => _errorText = localizations.qrNotFound);
-          return;
-        }
-      }
-    } on FormatReaderException catch (_) {
-      if (!mounted) return;
-      setState(() => _errorText = localizations.invalidQrFile(widget.appName));
-      return;
-    } on NotFoundException catch (_) {
-      if (!mounted) return;
-      setState(() => _errorText = localizations.qrNotFound);
-      return;
-    }
-
-    Logger.info("QR file imported successfully", name: "_pickQrFile#ImportStartPage");
-    _routeImportPlainTokensPage(importResults: processorResults);
+    return await _processQrImage(processor: processor, file: file);
   }
 
-  Future<void> _validateLink(TokenImportProcessor? processor) async {
-    if (_linkController.text.isEmpty) {
-      return;
-    }
+  Future<String?> _processQrImage({
+    required TokenImportProcessor? processor,
+    required XFile file,
+    bool tryHarder = false,
+    bool tryInverted = false,
+  }) async {
     assert(processor is TokenImportSchemeProcessor);
+    final schemeProcessor = processor as TokenImportSchemeProcessor;
     final localizations = AppLocalizations.of(context)!;
+
+    final DecodeParams params = DecodeParams(
+      imageFormat: zxing.ImageFormat.rgb,
+      format: Format.any,
+      tryHarder: tryHarder,
+      tryInverted: tryInverted,
+      isMultiScan: false,
+    );
+    final text = (await zx.readBarcodeImagePath(file, params)).text;
+    if (text == null) {
+      if (!mounted) return null;
+      if (tryHarder == false) {
+        return _processQrImage(processor: processor, tryHarder: true, tryInverted: tryInverted, file: file);
+      }
+      if (tryInverted == false) {
+        return _processQrImage(processor: processor, tryHarder: tryHarder, tryInverted: true, file: file);
+      }
+      return localizations.invalidQrFile(widget.appName);
+    }
+    final uri = Uri.tryParse(text);
+    if (uri == null) return localizations.invalidQrFile(widget.appName);
+
+    final processorResults = await schemeProcessor.processUri(uri);
+    if (processorResults == null || processorResults.isEmpty) return _errorText;
+
+    Logger.info("QR file imported successfully");
+    return _routeImportPlainTokensPage(importResults: processorResults);
+  }
+
+  Future<String?> _validateLink(TokenImportProcessor? processor) async {
+    final localizations = AppLocalizations.of(context)!;
+    if (_linkController.text.isEmpty) return localizations.mustNotBeEmpty(localizations.tokenLinkImport);
+    assert(processor is TokenImportSchemeProcessor);
     final schemeProcessor = processor as TokenImportSchemeProcessor;
     final Uri uri;
     try {
       uri = Uri.parse(_linkController.text);
     } on FormatException catch (_) {
-      if (!mounted) return;
-      setState(() => _errorText = localizations.invalidLink(widget.appName));
-      return;
+      return localizations.invalidLink(widget.appName);
     }
     var results = await schemeProcessor.processUri(uri);
-    if (results.isEmpty) {
-      if (!mounted) return;
-      setState(() => _errorText = localizations.invalidLink(widget.appName));
-      return;
+    if (results == null || results.isEmpty) {
+      return localizations.invalidLink(widget.appName);
     }
     results = results.map<ProcessorResult<Token>>((t) {
       if (t is! ProcessorResultSuccess<Token>) return t;
-      return ProcessorResultSuccess(TokenOriginSourceType.linkImport.addOriginToToken(
-        appName: widget.appName,
-        token: t.resultData,
-        isPrivacyIdeaToken: false,
-        data: _linkController.text,
-      ));
+      return ProcessorResultSuccess(
+        TokenOriginSourceType.linkImport.addOriginToToken(
+          appName: widget.appName,
+          token: t.resultData,
+          isPrivacyIdeaToken: false,
+          data: _linkController.text,
+        ),
+        resultHandlerType: const ObjectValidator<TokenNotifier>(),
+      );
     }).toList();
-    if (!mounted) return;
+    if (!mounted) return null;
     setState(() => FocusScope.of(context).unfocus());
-    Logger.info("Link imported successfully", name: "_validateLink#ImportStartPage");
-    _routeImportPlainTokensPage(importResults: results);
+    Logger.info("Link imported successfully");
+    return _routeImportPlainTokensPage(importResults: results);
   }
 
-  Future<void> _routeImportPlainTokensPage({required List<ProcessorResult<Token>> importResults}) async {
-    if (mounted == false) return;
+  Future<String?> _routeImportPlainTokensPage({required List<ProcessorResult<Token>> importResults}) async {
+    if (mounted == false) return null;
     final tokensToImport = await Navigator.of(context).push<List<Token>>(
       MaterialPageRoute(builder: (context) {
         return ImportPlainTokensPage(
@@ -352,15 +317,16 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
         );
       }),
     );
-    Logger.info('Imported tokens: ${tokensToImport?.length}', name: '_routeImportPlainTokensPage#ImportStartPage');
-    if (tokensToImport != null) {
-      if (!mounted) return;
-      Navigator.of(context).pop(tokensToImport);
-    }
+    Logger.info('Imported tokens: ${tokensToImport?.length}');
+
+    if (!mounted) return null;
+    if (tokensToImport == null) return null;
+    Navigator.of(context).pop(tokensToImport);
+    return null;
   }
 
-  Future<void> _routeEncryptedData<T, V extends String?>({required T data, required TokenImportProcessor<T, V> processor}) async {
-    if (mounted == false) return;
+  Future<String?> _routeEncryptedData<T, V extends String?>({required T data, required TokenImportProcessor<T, V> processor}) async {
+    if (mounted == false) return null;
     final tokensToImport = await Navigator.of(context).push(
       MaterialPageRoute(builder: (context) {
         return ImportEncryptedDataPage<T, V>(
@@ -371,39 +337,10 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
         );
       }),
     );
-    Logger.info('Imported encrypted tokens: ${tokensToImport?.length}', name: '_routeEncryptedData#ImportStartPage');
-    if (tokensToImport != null) {
-      if (!mounted) return;
-      Navigator.of(context).pop(tokensToImport);
-    }
+    Logger.info('Imported encrypted tokens: ${tokensToImport?.length}');
+    if (!mounted) return null;
+    if (tokensToImport == null) return null;
+    Navigator.of(context).pop(tokensToImport);
+    return null;
   }
-}
-
-Future<Result?> _decodeQrImageIsolate(List<dynamic> args) async {
-  var image = args[0] as img_lib.Image;
-  final int rotation = args[1] as int;
-  final int zoomLevel = args[2] as int;
-  if (zoomLevel > 0) {
-    final size = image.width < image.height ? image.width : image.height;
-    final crop = (size * 0.02).floor() * zoomLevel;
-    final x = (image.width - size) ~/ 2 + crop;
-    final y = (image.height - size) ~/ 2 + crop;
-    image = img_lib.copyCrop(image, x: x, y: y, width: size - crop, height: size - crop);
-  }
-  if (rotation > 0) {
-    image = img_lib.copyRotate(image, angle: rotation);
-  }
-
-  LuminanceSource source = RGBLuminanceSource(
-    image.width,
-    image.height,
-    image.convert(numChannels: 4).getBytes(order: img_lib.ChannelOrder.abgr).buffer.asInt32List(),
-  );
-
-  return QRCodeReader().decode(
-    BinaryBitmap(GlobalHistogramBinarizer(source)),
-    hints: DecodeHints()
-      ..put(DecodeHintType.tryHarder)
-      ..put(DecodeHintType.possibleFormats, [BarcodeFormat.qrCode]),
-  );
 }

@@ -3,7 +3,7 @@
  *
  * Author: Frank Merkel <frank.merkel@netknights.it>
  *
- * Copyright (c) 2024 NetKnights GmbH
+ * Copyright (c) 2025 NetKnights GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,9 @@ class SecureStorageMutexed {
   const SecureStorageMutexed();
 
   static final Mutex _m = Mutex();
-  static final FlutterSecureStorage storage = const FlutterSecureStorage();
+  static final FlutterSecureStorage storage = const FlutterSecureStorage(
+    aOptions: AndroidOptions(encryptedSharedPreferences: true),
+  );
 
   /// Function [f] is executed, protected by Mutex [_m].
   /// That means, that calls of this method will always be executed serial.

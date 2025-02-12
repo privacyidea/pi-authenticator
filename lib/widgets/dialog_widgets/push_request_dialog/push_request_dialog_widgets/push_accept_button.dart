@@ -3,7 +3,7 @@
  *
  * Author: Frank Merkel <frank.merkel@netknights.it>
  *
- * Copyright (c) 2024 NetKnights GmbH
+ * Copyright (c) 2024-2025 NetKnights GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../../../utils/customization/theme_extentions/push_request_theme.dart';
-
-import '../../../press_button.dart';
+import '../../../button_widgets/cooldown_button.dart';
 import '../push_request_dialog.dart';
 
 class PushAcceptButton extends StatelessWidget {
@@ -39,7 +38,7 @@ class PushAcceptButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final pushRequestTheme = (Theme.of(context).extensions[PushRequestTheme] as PushRequestTheme);
     final localizations = AppLocalizations.of(context)!;
-    return PressButton(
+    return CooldownButton(
       style: ButtonStyle(
         backgroundColor: WidgetStateProperty.all(pushRequestTheme.acceptColor),
         shape: PushRequestDialog.getButtonShape(context),

@@ -1,14 +1,39 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2025 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import 'package:flutter/material.dart';
 
 class ActionTheme extends ThemeExtension<ActionTheme> {
   final Color deleteColor;
   final Color editColor;
   final Color lockColor;
+  final Color transferColor;
+
+  final Color disabledColor;
+
   final Color foregroundColor;
   const ActionTheme({
     required this.deleteColor,
     required this.editColor,
     required this.lockColor,
+    required this.transferColor,
+    required this.disabledColor,
     required this.foregroundColor,
   });
 
@@ -17,14 +42,26 @@ class ActionTheme extends ThemeExtension<ActionTheme> {
         deleteColor: Color.lerp(deleteColor, other?.deleteColor, t) ?? deleteColor,
         editColor: Color.lerp(editColor, other?.editColor, t) ?? editColor,
         lockColor: Color.lerp(lockColor, other?.lockColor, t) ?? lockColor,
+        transferColor: Color.lerp(transferColor, other?.transferColor, t) ?? transferColor,
+        disabledColor: Color.lerp(disabledColor, other?.disabledColor, t) ?? disabledColor,
         foregroundColor: Color.lerp(foregroundColor, other?.foregroundColor, t) ?? foregroundColor,
       );
 
   @override
-  ThemeExtension<ActionTheme> copyWith({Color? deleteColor, Color? editColor, Color? lockColor, Color? foregroundColor}) => ActionTheme(
+  ThemeExtension<ActionTheme> copyWith({
+    Color? deleteColor,
+    Color? editColor,
+    Color? lockColor,
+    Color? transferColor,
+    Color? disabledColor,
+    Color? foregroundColor,
+  }) =>
+      ActionTheme(
         deleteColor: deleteColor ?? this.deleteColor,
         editColor: editColor ?? this.editColor,
         lockColor: lockColor ?? this.lockColor,
+        transferColor: transferColor ?? this.transferColor,
+        disabledColor: disabledColor ?? this.disabledColor,
         foregroundColor: foregroundColor ?? this.foregroundColor,
       );
 }

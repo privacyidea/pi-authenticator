@@ -1,31 +1,50 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2025 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 // ignore_for_file: constant_identifier_names, empty_catches
 
 import 'dart:convert';
 
 import 'package:cryptography/cryptography.dart';
 import 'package:file_selector/file_selector.dart';
+
+import '../../model/encryption/uint_8_buffer.dart';
 import '../../model/enums/algorithms.dart';
-import '../../model/enums/encodings.dart';
+import '../../model/enums/token_origin_source_type.dart';
 import '../../model/enums/token_types.dart';
-import '../../model/extensions/enums/encodings_extension.dart';
+import '../../model/exception_errors/localized_exception.dart';
 import '../../model/extensions/enums/token_origin_source_type.dart';
+import '../../model/processor_result.dart';
+import '../../model/tokens/hotp_token.dart';
+import '../../model/tokens/otp_token.dart';
 import '../../model/tokens/token.dart';
+import '../../model/tokens/totp_token.dart';
 import '../../processors/scheme_processors/token_import_scheme_processors/otp_auth_processor.dart';
 import '../../processors/token_import_file_processor/two_fas_import_file_processor.dart';
-import '../../utils/identifiers.dart';
-import '../../utils/logger.dart';
-import '../../utils/token_import_origins.dart';
-
-import '../../l10n/app_localizations.dart';
 import '../../utils/encryption/aes_encrypted.dart';
-import '../../model/encryption/uint_8_buffer.dart';
-import '../../model/enums/token_origin_source_type.dart';
-import '../../model/processor_result.dart';
-import '../../utils/errors.dart';
-import '../../utils/globals.dart';
+import '../../utils/logger.dart';
+import '../../utils/object_validator.dart';
+import '../../utils/token_import_origins.dart';
 import 'token_import_file_processor_interface.dart';
 
 class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
+  static get resultHandlerType => TokenImportFileProcessor.resultHandlerType;
   static const String header = "AUTHENTICATORPRO";
   static const String headerLegacy = "AuthenticatorPro";
 
@@ -76,7 +95,6 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
       Logger.warning(
         'File is not a valid Authenticator Pro backup file',
         error: 'Invalid content: $contentString',
-        name: 'authenticator_pro_import_file_processor#fileIsValid',
       );
       return false;
     } catch (e) {
@@ -92,7 +110,6 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
       Logger.warning(
         'File is not a valid Authenticator Pro backup file',
         error: 'Content Bytes: $contentBytes',
-        name: 'authenticator_pro_import_file_processor#fileIsValid',
       );
     }
     // It's not utf8 encoded and not encrypted, so it's not valid -> return false
@@ -126,7 +143,7 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
     Uint8Buffer uint8buffer = Uint8Buffer(data: bytes);
     final headerByteLength = utf8.encode(header).length;
     final fileHeader = utf8.decode(uint8buffer.readBytes(headerByteLength));
-    Logger.info('File header: $fileHeader', name: 'authenticator_pro_import_file_processor#processFile');
+    Logger.info('File header: $fileHeader');
     final plainText = switch (fileHeader) {
       header => await _processEncrypted(uint8buffer: uint8buffer, password: password ?? ''),
       headerLegacy => await _processEncryptedLegacy(uint8buffer: uint8buffer, password: password ?? ''),
@@ -136,12 +153,15 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
 
     return results.map((t) {
       if (t is! ProcessorResultSuccess<Token>) return t;
-      return ProcessorResultSuccess(TokenOriginSourceType.backupFile.addOriginToToken(
-        appName: TokenImportOrigins.authenticatorPro.appName,
-        token: t.resultData,
-        isPrivacyIdeaToken: false,
-        data: t.resultData.origin!.data,
-      ));
+      return ProcessorResultSuccess(
+        TokenOriginSourceType.backupFile.addOriginToToken(
+          appName: TokenImportOrigins.authenticatorPro.appName,
+          token: t.resultData,
+          isPrivacyIdeaToken: false,
+          data: t.resultData.origin!.data,
+        ),
+        resultHandlerType: resultHandlerType,
+      );
     }).toList();
   }
 
@@ -231,10 +251,16 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
         final newResults = await const OtpAuthProcessor().processUri(uri);
         results.addAll(newResults);
       } on LocalizedException catch (e) {
-        results.add(ProcessorResultFailed(e.localizedMessage(AppLocalizations.of(await globalContext)!)));
+        results.add(ProcessorResult.failed(
+          (localization) => e.localizedMessage(localization),
+          resultHandlerType: resultHandlerType,
+        ));
       } catch (e) {
-        Logger.error('Failed to parse token.', name: 'authenticator_pro_import_file_processor#_processUriList', error: e, stackTrace: StackTrace.current);
-        results.add(ProcessorResultFailed(e.toString()));
+        Logger.error('Failed to parse token.', error: e, stackTrace: StackTrace.current);
+        results.add(ProcessorResultFailed(
+          (_) => e.toString(),
+          resultHandlerType: resultHandlerType,
+        ));
       }
     }
     return results;
@@ -261,21 +287,28 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
                 token: newResult.resultData,
                 data: uri.toString(),
               ),
+              resultHandlerType: resultHandlerType,
             ),
           );
         }
       }
     } on LocalizedException catch (e) {
-      results.add(ProcessorResultFailed(e.localizedMessage(AppLocalizations.of(await globalContext)!)));
+      results.add(ProcessorResult.failed(
+        (localization) => e.localizedMessage(localization),
+        resultHandlerType: resultHandlerType,
+      ));
     } catch (e) {
-      Logger.error('Failed to parse token.', name: 'authenticator_pro_import_file_processor#_processHtml', error: e, stackTrace: StackTrace.current);
-      results.add(ProcessorResultFailed(e.toString()));
+      Logger.error('Failed to parse token.', error: e, stackTrace: StackTrace.current);
+      results.add(ProcessorResultFailed(
+        (_) => e.toString(),
+        resultHandlerType: resultHandlerType,
+      ));
     }
     return results;
   }
 
   Future<List<ProcessorResult<Token>>> _processJson({required List<Map<String, dynamic>> tokensMap}) async {
-    Logger.info('Processing plain file', name: 'authenticator_pro_import_file_processor#_processAuthPro');
+    Logger.info('Processing plain file');
     final result = <ProcessorResult<Token>>[];
     for (var tokenMap in tokensMap) {
       try {
@@ -285,29 +318,56 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
           Logger.warning('Unsupported token type: $typeInt');
           continue;
         }
-        final uriMap = {
-          URI_TYPE: tokenType,
-          URI_ISSUER: tokenMap[_AUTHENTICATOR_PRO_ISSUER] as String,
-          URI_LABEL: tokenMap[_AUTHENTICATOR_PRO_LABEL] as String,
-          URI_SECRET: Encodings.base32.decode(tokenMap[_AUTHENTICATOR_PRO_SECRET] as String),
-          URI_DIGITS: tokenMap[_AUTHENTICATOR_PRO_DIGITS] as int,
-          URI_PERIOD: tokenMap[_AUTHENTICATOR_PRO_PERIOD] as int,
-          URI_ALGORITHM: algorithmMap[tokenMap[_AUTHENTICATOR_PRO_ALGORITHM] as int],
-          URI_COUNTER: tokenMap[_AUTHENTICATOR_PRO_COUNTER] as int,
-          URI_ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
-            originName: TokenImportOrigins.authenticatorPro.appName,
-            isPrivacyIdeaToken: false,
-            data: jsonEncode(tokenMap),
-          ),
-        };
 
-        final token = Token.fromUriMap(uriMap);
-        result.add(ProcessorResultSuccess(token));
+        final otpAuthMap = validateMap<String>(
+          map: {
+            Token.TOKENTYPE_OTPAUTH: tokenType,
+            Token.ISSUER: tokenMap[_AUTHENTICATOR_PRO_ISSUER],
+            Token.LABEL: tokenMap[_AUTHENTICATOR_PRO_LABEL],
+            OTPToken.SECRET_BASE32: tokenMap[_AUTHENTICATOR_PRO_SECRET],
+            OTPToken.DIGITS: tokenMap[_AUTHENTICATOR_PRO_DIGITS],
+            OTPToken.ALGORITHM: tokenMap[_AUTHENTICATOR_PRO_ALGORITHM],
+            TOTPToken.PERIOD_SECONDS: tokenMap[_AUTHENTICATOR_PRO_PERIOD],
+            HOTPToken.COUNTER: tokenMap[_AUTHENTICATOR_PRO_COUNTER],
+          },
+          validators: {
+            Token.TOKENTYPE_OTPAUTH: const ObjectValidator<String>(),
+            Token.ISSUER: const ObjectValidator<String>(),
+            Token.LABEL: const ObjectValidator<String>(),
+            OTPToken.SECRET_BASE32: const ObjectValidator<String>(),
+            OTPToken.DIGITS: intToStringValidator,
+            TOTPToken.PERIOD_SECONDS: intToStringValidator,
+            HOTPToken.COUNTER: intToStringValidator,
+            OTPToken.ALGORITHM: ObjectValidator<String>(transformer: (value) => algorithmMap[value]!),
+          },
+          name: 'AuthenticatorProToken',
+        );
+
+        final token = Token.fromOtpAuthMap(
+          otpAuthMap,
+          additionalData: {
+            Token.ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
+              originName: TokenImportOrigins.authenticatorPro.appName,
+              isPrivacyIdeaToken: false,
+              data: jsonEncode(tokenMap),
+            ),
+          },
+        );
+        result.add(ProcessorResultSuccess(
+          token,
+          resultHandlerType: resultHandlerType,
+        ));
       } on LocalizedException catch (e) {
-        result.add(ProcessorResultFailed(e.localizedMessage(AppLocalizations.of(await globalContext)!)));
+        result.add(ProcessorResult.failed(
+          (localization) => e.localizedMessage(localization),
+          resultHandlerType: resultHandlerType,
+        ));
       } catch (e) {
-        Logger.error('Failed to parse token.', name: 'authenticator_pro_import_file_processor#_processAuthPro', error: e, stackTrace: StackTrace.current);
-        result.add(ProcessorResultFailed(e.toString()));
+        Logger.error('Failed to parse token.', error: e, stackTrace: StackTrace.current);
+        result.add(ProcessorResultFailed(
+          (_) => e.toString(),
+          resultHandlerType: resultHandlerType,
+        ));
       }
     }
     return result;

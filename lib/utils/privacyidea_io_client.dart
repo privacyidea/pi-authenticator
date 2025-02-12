@@ -3,7 +3,7 @@
 
   Authors: Timo Sturm <timo.sturm@netknights.it>
            Frank Merkel <frank.merkel@netknights.it>
-  Copyright (c) 2017-2023 NetKnights GmbH
+  Copyright (c) 2017-2025 NetKnights GmbH
 
   Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
@@ -26,10 +26,11 @@ import 'package:http/http.dart';
 import 'package:http/io_client.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../../../../../../../model/pi_server_response.dart';
 import '../l10n/app_localizations.dart';
+import '../model/api_results/pi_server_results/pi_server_result_value.dart';
 import '../utils/globals.dart';
 import '../utils/logger.dart';
-import '../utils/riverpod_providers.dart';
 import '../utils/view_utils.dart';
 
 class PrivacyideaIOClient {
@@ -52,12 +53,11 @@ class PrivacyideaIOClient {
     try {
       await ioClient.post(url, body: '').timeout(const Duration(seconds: 15));
     } on ClientException {
-      Logger.warning('ClientException', name: 'utils.dart#triggerNetworkAccessPermission');
+      Logger.warning('ClientException');
       ioClient.close();
-      if (globalNavigatorKey.currentState?.context == null) return false;
-      globalRef?.read(statusMessageProvider.notifier).state = (
-        AppLocalizations.of(await globalContext)!.connectionFailed,
-        AppLocalizations.of(await globalContext)!.checkYourNetwork,
+      showErrorStatusMessage(
+        message: (localization) => localization.connectionFailed,
+        details: (localization) => localization.checkYourNetwork,
       );
       return false;
     } catch (e, _) {
@@ -65,13 +65,12 @@ class PrivacyideaIOClient {
         rethrow;
       }
       if (isRetry) {
-        Logger.warning('SocketException while retrying', name: 'utils.dart#triggerNetworkAccessPermission');
-        if (globalNavigatorKey.currentState?.context != null) {
-          globalRef?.read(statusMessageProvider.notifier).state = (
-            AppLocalizations.of(await globalContext)!.connectionFailed,
-            AppLocalizations.of(await globalContext)!.checkYourNetwork,
-          );
-        }
+        Logger.warning('SocketException while retrying');
+        showErrorStatusMessage(
+          message: (localization) => localization.connectionFailed,
+          details: (localization) => localization.checkYourNetwork,
+        );
+
         ioClient.close();
         return false;
       }
@@ -89,7 +88,7 @@ class PrivacyideaIOClient {
   /// Custom POST request allows to not verify certificates.
   Future<Response> doPost({required Uri url, required Map<String, String?> body, bool sslVerify = true}) async {
     if (kIsWeb) return Response('Platform not supported', 405);
-    Logger.info('Sending post request (SSLVerify: $sslVerify)', name: 'utils.dart#doPost');
+    Logger.info('Sending post request (SSLVerify: $sslVerify)');
 
     List<MapEntry> entries = body.entries.where((element) => element.value == null).toList();
     if (entries.isNotEmpty) {
@@ -114,24 +113,31 @@ class PrivacyideaIOClient {
     try {
       response = await ioClient.post(url, body: body).timeout(const Duration(seconds: 15));
     } on HandshakeException catch (e, _) {
-      Logger.info('Handshake failed. sslVerify: $sslVerify', name: 'utils.dart#doPost');
-      showMessage(message: 'Handshake failed, please check the server certificate and try again.');
-      response = Response('${e.runtimeType}', 525);
+      Logger.info('Handshake failed. sslVerify: $sslVerify');
+      showErrorStatusMessage(message: (l) => l.handshakeFailedLongText);
+      ioClient.close();
+      return ResponseBuilder.fromStatusCode(525);
     } on TimeoutException catch (e, _) {
-      Logger.info('TimeoutException', name: 'utils.dart#doPost');
-      response = Response('${e.runtimeType}', 408);
+      Logger.info('Post request timed out');
+      ioClient.close();
+      return ResponseBuilder.fromStatusCode(408);
     } on SocketException catch (e, _) {
-      Logger.info('SocketException', name: 'utils.dart#doPost');
-      response = Response('${e.runtimeType}', 404);
+      Logger.info('Post request failed ($e)');
+      ioClient.close();
+      return ResponseBuilder.fromMessage(e.message);
+    } on ClientException catch (e, _) {
+      Logger.info('Post request failed ($e)');
+      ioClient.close();
+      return ResponseBuilder.fromMessage(e.message);
     } catch (e, _) {
-      Logger.info('Unknown exception', name: 'utils.dart#doPost');
-      response = Response('${e.runtimeType}', 404);
+      Logger.warning('Something unexpected happened');
+      ioClient.close();
+      return ResponseBuilder.fromStatusCode(520);
     }
 
     if (response.statusCode != 200) {
       Logger.warning(
         'Received unexpected response',
-        name: 'utils.dart#doPost',
         error: 'Status code: ${response.statusCode}' '\nPosted body: $body' '\nResponse: ${response.body}\n',
         stackTrace: StackTrace.current,
       );
@@ -143,7 +149,7 @@ class PrivacyideaIOClient {
 
   Future<Response> doGet({required Uri url, required Map<String, String?> parameters, bool sslVerify = true}) async {
     if (kIsWeb) return Response('', 405);
-    Logger.info('Sending get request (SSLVerify: $sslVerify)', name: 'utils.dart#doGet');
+    Logger.info('Sending get request (SSLVerify: $sslVerify)');
     List<MapEntry> entries = parameters.entries.where((element) => element.value == null).toList();
     if (entries.isNotEmpty) {
       List<String> nullEntries = [];
@@ -174,25 +180,216 @@ class PrivacyideaIOClient {
     try {
       response = await ioClient.get(uri).timeout(const Duration(seconds: 15));
     } on HandshakeException catch (e, _) {
-      Logger.info('Handshake failed. sslVerify: $sslVerify', name: 'utils.dart#doGet');
-      showMessage(message: 'Handshake failed, please check the server certificate and try again.');
+      Logger.warning('Handshake failed. sslVerify: $sslVerify');
+      showErrorStatusMessage(
+        message: (localization) => localization.handshakeFailed,
+        details: (localization) => localization.checkServerCertificate,
+      );
       response = Response('${e.runtimeType}', 525);
     } on TimeoutException catch (e, _) {
-      Logger.info('TimeoutException', name: 'utils.dart#doGet');
-      response = Response('${e.runtimeType}', 408);
+      Logger.info('Get request timed out');
+      response = Response('${AppLocalizations.of(await globalContext)!.timeOut}', 408);
     } on SocketException catch (e, _) {
-      Logger.info('SocketException', name: 'utils.dart#doGet');
-      response = Response('${e.runtimeType}', 404);
+      Logger.info('Get request failed');
+      response = Response('${AppLocalizations.of(await globalContext)!.connectionFailed}', 404);
+    } on ClientException catch (e, _) {
+      Logger.info('Get request failed');
+      response = Response('${AppLocalizations.of(await globalContext)!.connectionFailed}', 404);
     } catch (e, _) {
-      Logger.info('Unknown exception', name: 'utils.dart#doGet');
-      response = Response('${e.runtimeType}', 404);
+      Logger.warning('Something unexpected happened');
+      response = Response('${AppLocalizations.of(await globalContext)!.unexpectedError}', 520);
     }
 
     if (response.statusCode != 200) {
-      Logger.warning('Received unexpected response: ${response.statusCode}', name: 'utils.dart#doGet');
+      Logger.warning('Received unexpected response: ${response.statusCode}');
     }
 
     ioClient.close();
     return response;
   }
+}
+
+extension ResponseBuilder on Response {
+  static Response fromMessage(String message) => _getResponseFromMessage(message);
+  static Response fromStatusCode(int statusCode) => _getResponseFromStatusCode(statusCode);
+
+  static Response _getResponseFromMessage(String message) => Response(message, messageToCode[message] ?? 520);
+  static Response _getResponseFromStatusCode(int statusCode) => Response(codeToMessage[statusCode] ?? 'Unknown Error', statusCode);
+
+  static final messageToCode = {
+    'Continue': 100,
+    'Switching Protocols': 101,
+    'Processing': 102,
+    'Early Hints': 103,
+    'Connection Reset By Peer': 104,
+    'Connection refused': 111,
+    'OK': 200,
+    'Created': 201,
+    'Accepted': 202,
+    'Non-Authoritative Information': 203,
+    'No Content': 204,
+    'Reset Content': 205,
+    'Partial Content': 206,
+    'Multi-Status': 207,
+    'Already Reported': 208,
+    'Multiple Choices': 300,
+    'Moved Permanently': 301,
+    'Found': 302,
+    'See Other': 303,
+    'Not Modified': 304,
+    'Use Proxy': 305,
+    'Temporary Redirect': 307,
+    'Permanent Redirect': 308,
+    'Bad Request': 400,
+    'Unauthorized': 401,
+    'Payment Required': 402,
+    'Forbidden': 403,
+    'Not Found': 404,
+    'Method Not Allowed': 405,
+    'Not Acceptable': 406,
+    'Proxy Authentication Required': 407,
+    'Request Timeout': 408,
+    'Conflict': 409,
+    'Gone': 410,
+    'Length Required': 411,
+    'Precondition Failed': 412,
+    'Payload Too Large': 413,
+    'Request-URI Too Long': 414,
+    'Unsupported Media Type': 415,
+    'Requested Range Not Satisfiable': 416,
+    'Expectation Failed': 417,
+    "I'm a teapot": 418,
+    'Enhance Your Calm': 420,
+    'Misdirected Request': 421,
+    'Unprocessable Entity': 422,
+    'Locked': 423,
+    'Failed Dependency': 424,
+    'Upgrade Required': 426,
+    'Precondition Required': 428,
+    'Too Many Requests': 429,
+    'Request Header Fields Too Large': 431,
+    'Connection Closed Without Response': 444,
+    'Unavailable For Legal Reasons': 451,
+    'Client Closed Request': 499,
+    'Internal Server Error': 500,
+    'Not Implemented': 501,
+    'Bad Gateway': 502,
+    'Service Unavailable': 503,
+    'Connection failed': 503,
+    'Gateway Timeout': 504,
+    'HTTP Version Not Supported': 505,
+    'Variant Also Negotiates': 506,
+    'Insufficient Storage': 507,
+    'Loop Detected': 508,
+    'Not Extended': 510,
+    'Network Authentication Required': 511,
+    'Network Connect Timeout Error': 599,
+    'Unknown Error': 520,
+  };
+
+  static final codeToMessage = {
+    100: 'Continue',
+    101: 'Switching Protocols',
+    102: 'Processing',
+    103: 'Early Hints',
+    104: 'Connection Reset By Peer',
+    111: 'Connection refused',
+    200: 'OK',
+    201: 'Created',
+    202: 'Accepted',
+    203: 'Non-Authoritative Information',
+    204: 'No Content',
+    205: 'Reset Content',
+    206: 'Partial Content',
+    207: 'Multi-Status',
+    208: 'Already Reported',
+    300: 'Multiple Choices',
+    301: 'Moved Permanently',
+    302: 'Found',
+    303: 'See Other',
+    304: 'Not Modified',
+    305: 'Use Proxy',
+    307: 'Temporary Redirect',
+    308: 'Permanent Redirect',
+    400: 'Bad Request',
+    401: 'Unauthorized',
+    402: 'Payment Required',
+    403: 'Forbidden',
+    404: 'Not Found',
+    405: 'Method Not Allowed',
+    406: 'Not Acceptable',
+    407: 'Proxy Authentication Required',
+    408: 'Request Timeout',
+    409: 'Conflict',
+    410: 'Gone',
+    411: 'Length Required',
+    412: 'Precondition Failed',
+    413: 'Payload Too Large',
+    414: 'Request-URI Too Long',
+    415: 'Unsupported Media Type',
+    416: 'Requested Range Not Satisfiable',
+    417: 'Expectation Failed',
+    418: "I'm a teapot",
+    420: 'Enhance Your Calm',
+    421: 'Misdirected Request',
+    422: 'Unprocessable Entity',
+    423: 'Locked',
+    424: 'Failed Dependency',
+    426: 'Upgrade Required',
+    428: 'Precondition Required',
+    429: 'Too Many Requests',
+    431: 'Request Header Fields Too Large',
+    444: 'Connection Closed Without Response',
+    451: 'Unavailable For Legal Reasons',
+    499: 'Client Closed Request',
+    500: 'Internal Server Error',
+    501: 'Not Implemented',
+    502: 'Bad Gateway',
+    503: 'Service Unavailable',
+    504: 'Gateway Timeout',
+    505: 'HTTP Version Not Supported',
+    506: 'Variant Also Negotiates',
+    507: 'Insufficient Storage',
+    508: 'Loop Detected',
+    510: 'Not Extended',
+    511: 'Network Authentication Required',
+    520: 'Unknown Error',
+    521: 'Web Server Is Down',
+    522: 'Connection Timed Out',
+    523: 'Origin Is Unreachable',
+    524: 'A Timeout Occurred',
+    525: 'Handshake Failed',
+    526: 'Invalid SSL Certificate',
+    527: 'Railgun Error',
+    528: 'Transport Error',
+    529: 'Service is Overloaded',
+    530: 'Site is Frozen',
+    599: 'Network Connect Timeout Error',
+  };
+}
+
+extension PiResponse on Response {
+  PiServerResponse<T>? asPiServerResponse<T extends PiServerResultValue>() {
+    try {
+      return PiServerResponse<T>.fromResponse(this);
+    } catch (e) {
+      Logger.info('Response could not be parsed as PiServerResponse', error: e);
+      return null;
+    }
+  }
+
+  PiSuccessResponse<T>? asPiResponseSuccess<T extends PiServerResultValue>() {
+    final piServerResponse = asPiServerResponse<T>();
+    if (piServerResponse?.isSuccess != true) return null;
+    return piServerResponse!.asSuccess;
+  }
+
+  PiErrorResponse<T>? asPiErrorResponse<T extends PiServerResultValue>() {
+    final piServerResponse = asPiServerResponse<T>();
+    if (piServerResponse?.isError != true) return null;
+    return piServerResponse!.asError;
+  }
+
+  String? get piErrorMessage => asPiErrorResponse()?.piServerResultError.message;
+  int? get piErrorCode => asPiErrorResponse()?.piServerResultError.code;
 }
