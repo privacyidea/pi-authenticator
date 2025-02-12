@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:gms_check/gms_check.dart';
 import 'package:http/http.dart';
 import 'package:mockito/mockito.dart';
 import 'package:pointycastle/export.dart';
@@ -213,6 +214,7 @@ void _testTokenNotifier() {
     });
     test('addOrReplaceTokens', () async {
       final mockSettingsRepo = MockSettingsRepository();
+      await GmsCheck().checkGmsAvailability();
       when(mockSettingsRepo.loadSettings()).thenAnswer((_) async => SettingsState());
       final container = ProviderContainer(overrides: [settingsProvider.overrideWith(() => SettingsNotifier(repoOverride: mockSettingsRepo))]);
       final mockRepo = MockTokenRepository();
@@ -243,6 +245,7 @@ void _testTokenNotifier() {
     });
     test('addTokenFromOtpAuth', () async {
       WidgetsFlutterBinding.ensureInitialized();
+      await GmsCheck().checkGmsAvailability();
       final mockSettingsRepo = MockSettingsRepository();
       when(mockSettingsRepo.loadSettings()).thenAnswer((_) async => SettingsState());
 

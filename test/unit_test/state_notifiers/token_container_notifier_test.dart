@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:gms_check/gms_check.dart';
 import 'package:mockito/mockito.dart';
 import 'package:privacyidea_authenticator/api/interfaces/container_api.dart';
 import 'package:privacyidea_authenticator/model/api_results/pi_server_results/pi_server_result_value.dart';
@@ -454,6 +455,7 @@ void _testTokenContainerNotifier() {
     test('handleProcessorResult', () async {
       // prepare
       TestWidgetsFlutterBinding.ensureInitialized();
+      await GmsCheck().checkGmsAvailability();
       var containerRepoState = TokenContainerState(containerList: []);
       final mockContainerRepo = MockTokenContainerRepository();
       final mockContainerApi = MockTokenContainerApi();
@@ -554,6 +556,7 @@ void _testTokenContainerNotifier() {
     test('finalizeContainer', () async {
       // prepare
       TestWidgetsFlutterBinding.ensureInitialized();
+      await GmsCheck().checkGmsAvailability();
       var containerRepoState = _buildUnfinalizedContainerState();
       final mockContainerRepo = MockTokenContainerRepository();
       final mockContainerApi = MockTokenContainerApi();
@@ -641,6 +644,7 @@ void _testTokenContainerNotifier() {
       test('sync', () async {
         // prepare
         TestWidgetsFlutterBinding.ensureInitialized();
+        await GmsCheck().checkGmsAvailability();
         var containerRepoState = _buildFinalizedContainerState();
         final containerToSync = containerRepoState.containerList.first as TokenContainerFinalized;
         final mockContainerApi = MockTokenContainerApi();

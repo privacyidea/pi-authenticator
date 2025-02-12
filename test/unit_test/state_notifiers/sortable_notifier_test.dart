@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:gms_check/gms_check.dart';
 import 'package:mockito/mockito.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.dart';
@@ -10,8 +11,8 @@ import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/sortable_notifier.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/sortable_notifier.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 
@@ -25,6 +26,7 @@ void _testSortableNotifier() {
   group('SortableNotifier test', () {
     test('handleNewList', () async {
       final mockSettingsRepo = MockSettingsRepository();
+      await GmsCheck().checkGmsAvailability();
       when(mockSettingsRepo.loadSettings()).thenAnswer((_) async => SettingsState());
       final MockTokenFolderRepository mockTokenFolderRepository = MockTokenFolderRepository();
       final MockTokenRepository mockTokenRepository = MockTokenRepository();
