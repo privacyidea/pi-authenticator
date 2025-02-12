@@ -78,7 +78,7 @@ class HomeWidgetUtils {
   static const _widgetActionSize = Size(24 * 2, 24 * 2);
 
   /// Default duration for showing the OTP
-  static const _showDuration = Duration(seconds: 10);
+  static const _showDuration = Duration(seconds: 8);
 
   factory HomeWidgetUtils({TokenRepository? tokenRepository, TokenFolderRepository? tokenFolderRepository}) {
     if (kIsWeb || Platform.isIOS) return UnsupportedHomeWidgetUtils(); // Not supported on iOS

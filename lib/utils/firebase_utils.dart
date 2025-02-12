@@ -29,7 +29,6 @@ import 'package:gms_check/gms_check.dart';
 import 'package:mutex/mutex.dart';
 
 import '../../../../../../../utils/view_utils.dart';
-import '../firebase_options/default_firebase_options.dart';
 import 'identifiers.dart';
 import 'logger.dart';
 
@@ -50,7 +49,17 @@ class FirebaseUtils {
     return _instance!;
   }
 
-  Future<void> initFirebase({
+  /// Must be used in the main method before runApp() is called.
+  Future<FirebaseApp?> initializeApp({required String name, required FirebaseOptions options}) async {
+    try {
+      return Firebase.initializeApp(name: name, options: options);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// This method sets up the Firebase messaging handler for the app. It must be called after initializeApp().
+  Future<void> setupHandler({
     required Future<void> Function(RemoteMessage) foregroundHandler,
     required Future<void> Function(RemoteMessage) backgroundHandler,
     required dynamic Function(String?) updateFirebaseToken,
@@ -60,12 +69,6 @@ class FirebaseUtils {
     }
     _initializedHandler = true;
     Logger.info('FirebaseUtils: Initializing Firebase');
-
-    final app = await Firebase.initializeApp(name: 'netknights', options: DefaultFirebaseOptions.currentPlatformOf('netknights'));
-    await app.setAutomaticDataCollectionEnabled(false);
-    if (app.isAutomaticDataCollectionEnabled) {
-      Logger.error('Automatic data collection should not be enabled');
-    }
 
     FirebaseMessaging.onMessage.listen(foregroundHandler);
     FirebaseMessaging.onBackgroundMessage(backgroundHandler);
@@ -213,7 +216,7 @@ class NoFirebaseUtils implements FirebaseUtils {
   Future<String?> getFBToken() => Future.value(_currentFbToken);
 
   @override
-  Future<void> initFirebase({
+  Future<void> setupHandler({
     required Future<void> Function(RemoteMessage p1) foregroundHandler,
     required Future<void> Function(RemoteMessage p1) backgroundHandler,
     required void Function(String? p1) updateFirebaseToken,
@@ -234,4 +237,7 @@ class NoFirebaseUtils implements FirebaseUtils {
   Future<void> setNewFirebaseToken(String str) async => _newFbToken = str;
   @override
   Future<String?> getNewFirebaseToken() => Future.value(_newFbToken);
+
+  @override
+  Future<FirebaseApp?> initializeApp({required String name, required FirebaseOptions options}) async => null;
 }

@@ -78,7 +78,7 @@ class PushProvider {
     Logger.info('PushProvider: Initializing Firebase');
     if (_firebaseInitialized) return;
     try {
-      await _firebaseUtils.initFirebase(
+      await _firebaseUtils.setupHandler(
         foregroundHandler: _foregroundHandler,
         backgroundHandler: _backgroundHandler,
         updateFirebaseToken: updateFirebaseToken,
