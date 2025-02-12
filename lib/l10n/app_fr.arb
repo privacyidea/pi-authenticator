@@ -1279,6 +1279,12 @@
   "@rolloutStateParsingResponseFailed": {
     "description": "Message for the rollout process"
   },
+  "@rolloutStateReceivingFirebaseToken": {
+    "description": "Message for the rollout process"
+  },
+  "@rolloutStateReceivingFirebaseTokenFailed": {
+    "description": "Message for the rollout process"
+  },
   "@rolloutStateSendingPublicKey": {
     "description": "Message for the rollout process"
   },
@@ -1936,6 +1942,8 @@
   "rolloutStateParsingResponse": "Analyse de la réponse",
   "rolloutStateParsingResponseCompleted": "Analyse de la réponse terminée",
   "rolloutStateParsingResponseFailed": "L'analyse de la réponse a échoué",
+  "rolloutStateReceivingFirebaseToken": "Réception du jeton Firebase",
+  "rolloutStateReceivingFirebaseTokenFailed": "Échec de la réception du jeton Firebase",
   "rolloutStateSendingPublicKey": "Envoi de la clé publique",
   "rolloutStateSendingPublicKeyCompleted": "Envoi de la clé publique terminé",
   "rolloutStateSendingPublicKeyFailed": "Échec de l'envoi de la clé publique",
