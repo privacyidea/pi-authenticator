@@ -58,7 +58,7 @@ class PushProvider {
 
   FirebaseUtils _firebaseUtils;
   FirebaseUtils get firebaseUtils => _firebaseUtils;
-  bool _firebaseInitialized = false;
+
   PrivacyideaIOClient _ioClient;
   PrivacyideaIOClient get ioClient => _ioClient;
   RsaUtils _rsaUtils;
@@ -70,21 +70,26 @@ class PushProvider {
     RsaUtils? rsaUtils,
   })  : _firebaseUtils = firebaseUtils ?? FirebaseUtils(),
         _ioClient = ioClient ?? const PrivacyideaIOClient(),
-        _rsaUtils = rsaUtils ?? const RsaUtils() {
-    _initFirebase();
-  }
+        _rsaUtils = rsaUtils ?? const RsaUtils();
 
-  void _initFirebase() async {
+  Future<void> initFirebase() async {
     Logger.info('PushProvider: Initializing Firebase');
-    if (_firebaseInitialized) return;
     try {
-      await _firebaseUtils.setupHandler(
-        foregroundHandler: _foregroundHandler,
-        backgroundHandler: _backgroundHandler,
-        updateFirebaseToken: updateFirebaseToken,
-      );
-      _firebaseInitialized = true;
-      Logger.info('Firebase initialized.');
+      if (_firebaseUtils.initializedFirebase) {
+        Logger.warning('PushProvider: Firebase already initialized.');
+      } else {
+        await _firebaseUtils.initializeApp();
+      }
+      if (_firebaseUtils.initializedHandler) {
+        Logger.warning('PushProvider: Firebase handler already initialized.');
+      } else {
+        await _firebaseUtils.setupHandler(
+          foregroundHandler: _foregroundHandler,
+          backgroundHandler: _backgroundHandler,
+          updateFirebaseToken: updateAllFirebaseTokens,
+        );
+      }
+      Logger.info('PushProvider: Firebase initialized.');
     } on IOException catch (e, s) {
       if (e.toString().contains('SERVICE_NOT_AVAILABLE')) {
         Logger.warning('Could not initialize Firebase.', error: e, stackTrace: s);
@@ -120,12 +125,7 @@ class PushProvider {
         instance!._rsaUtils = rsaUtils;
       }
       if (firebaseUtils != null) {
-        if (!instance!._firebaseInitialized) {
-          instance!._firebaseUtils = firebaseUtils;
-          instance!._initFirebase();
-        } else {
-          Logger.warning('Firebase is already initialized.');
-        }
+        instance!._firebaseUtils = firebaseUtils;
       }
     }
     instance!.setPollingEnabled(pollingEnabled);
@@ -412,8 +412,8 @@ class PushProvider {
     return;
   }
 
-  Future<(List<PushToken>, List<PushToken>)?> updateFirebaseToken([String? firebaseToken]) async =>
-      globalRef?.read(tokenProvider.notifier).updateFirebaseToken(firebaseToken);
+  Future<(List<PushToken>, List<PushToken>)?> updateAllFirebaseTokens({String? firebaseToken}) async =>
+      globalRef?.read(tokenProvider.notifier).updateAllFirebaseTokens(firebaseToken: firebaseToken);
 
   void unsubscribe(void Function(PushRequest pushRequest) newRequest) => _subscribers.remove(newRequest);
   void subscribe(void Function(PushRequest pushRequest) newRequest) => _subscribers.add(newRequest);
@@ -459,9 +459,7 @@ class PlaceholderPushProvider implements PushProvider {
   @override
   void unsubscribe(void Function(PushRequest pushRequest) newRequest) {}
   @override
-  Future<(List<PushToken>, List<PushToken>)?> updateFirebaseToken([String? firebaseToken]) => Future.value(null);
+  Future<(List<PushToken>, List<PushToken>)?> updateAllFirebaseTokens({String? firebaseToken}) => Future.value(null);
   @override
-  bool _firebaseInitialized = false;
-  @override
-  void _initFirebase() {}
+  Future<void> initFirebase() async {}
 }

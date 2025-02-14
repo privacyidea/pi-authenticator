@@ -23,7 +23,6 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gms_check/gms_check.dart';
-import 'package:privacyidea_authenticator/utils/firebase_utils.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/localization_notifier.dart';
 
 import '../../../../../../../model/riverpod_states/settings_state.dart';
@@ -56,12 +55,7 @@ void main() async {
         await GmsCheck().checkGmsAvailability();
         await HomeWidgetUtils().registerInteractivityCallback(homeWidgetBackgroundCallback);
         await HomeWidgetUtils().setAppGroupId(appGroupId);
-        final app = await FirebaseUtils().initializeApp(name: 'netknights', options: DefaultFirebaseOptions.currentPlatformOf('netknights'));
-        await app?.setAutomaticDataCollectionEnabled(false);
-        if (app?.isAutomaticDataCollectionEnabled == true) {
-          Logger.error('Automatic data collection should not be enabled');
-        }
-
+        appFirebaseOptions = DefaultFirebaseOptions.currentPlatformOf('netknights');
         runApp(AppWrapper(child: PrivacyIDEAAuthenticator(ApplicationCustomization.defaultCustomization)));
       });
 }

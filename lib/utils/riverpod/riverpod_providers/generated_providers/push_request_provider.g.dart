@@ -7,7 +7,7 @@ part of 'push_request_provider.dart';
 // **************************************************************************
 
 String _$pushRequestNotifierHash() =>
-    r'9cc62b1336895b6499849a0fcae82947fc71cfac';
+    r'0a4c900fd048e8da29a6756ee7c0c6d578986953';
 
 /// Copied from Dart SDK
 class _SystemHash {

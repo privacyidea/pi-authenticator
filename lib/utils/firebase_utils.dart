@@ -22,25 +22,28 @@ import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:gms_check/gms_check.dart';
 import 'package:mutex/mutex.dart';
+import 'package:privacyidea_authenticator/utils/utils.dart';
 
 import '../../../../../../../utils/view_utils.dart';
+import 'globals.dart';
 import 'identifiers.dart';
 import 'logger.dart';
 
 class FirebaseUtils {
   static FirebaseUtils? _instance;
-  bool _initializedHandler = false;
+  final Mutex _initFbMutex = Mutex();
+  bool initializedFirebase = false;
+  final Mutex _initHandlerMutex = Mutex();
+  bool initializedHandler = false;
 
   FirebaseUtils._();
 
   factory FirebaseUtils() {
     if (_instance != null) return _instance!;
-    if (!kIsWeb && (GmsCheck().isGmsAvailable || Platform.isIOS)) {
+    if (deviceHasFirebaseMessaging) {
       _instance ??= FirebaseUtils._();
     } else {
       _instance ??= NoFirebaseUtils();
@@ -50,10 +53,25 @@ class FirebaseUtils {
   }
 
   /// Must be used in the main method before runApp() is called.
-  Future<FirebaseApp?> initializeApp({required String name, required FirebaseOptions options}) async {
+  Future<FirebaseApp?> initializeApp() async {
     try {
-      return Firebase.initializeApp(name: name, options: options);
-    } catch (_) {
+      await _initFbMutex.acquire();
+      if (initializedFirebase) {
+        Logger.warning('Firebase already initialized');
+        _initFbMutex.release();
+        return null;
+      }
+      assert(appFirebaseOptions != null, 'Firebase options must be set before initializing Firebase');
+      final FirebaseOptions options = appFirebaseOptions!;
+      final app = await Firebase.initializeApp(name: "fb.${options.appId}", options: options);
+      app.setAutomaticDataCollectionEnabled(false);
+      initializedFirebase = true;
+      _initFbMutex.release();
+      assert(app.isAutomaticDataCollectionEnabled == false, 'Automatic data collection should be disabled');
+      return app;
+    } catch (e, s) {
+      _initFbMutex.release();
+      Logger.error('Error while initializing Firebase', error: e, stackTrace: s);
       return null;
     }
   }
@@ -62,12 +80,22 @@ class FirebaseUtils {
   Future<void> setupHandler({
     required Future<void> Function(RemoteMessage) foregroundHandler,
     required Future<void> Function(RemoteMessage) backgroundHandler,
-    required dynamic Function(String?) updateFirebaseToken,
+    required dynamic Function({String? firebaseToken}) updateFirebaseToken,
   }) async {
-    if (_initializedHandler) {
+    print('setupHandler');
+    await _initFbMutex.acquire();
+    if (!initializedFirebase) {
+      Logger.error('Initialize Firebase before setting up the handler');
+      _initFbMutex.release();
       return;
     }
-    _initializedHandler = true;
+    _initFbMutex.release();
+    await _initHandlerMutex.acquire();
+    if (initializedHandler) {
+      Logger.warning('Firebase handler already initialized');
+      return;
+    }
+
     Logger.info('FirebaseUtils: Initializing Firebase');
 
     FirebaseMessaging.onMessage.listen(foregroundHandler);
@@ -77,7 +105,7 @@ class FirebaseUtils {
       String? firebaseToken = await getFBToken();
 
       if (firebaseToken != await getCurrentFirebaseToken() && firebaseToken != null) {
-        updateFirebaseToken(firebaseToken);
+        updateFirebaseToken(firebaseToken: firebaseToken);
       }
     } catch (error, stackTrace) {
       if (error is PlatformException) {
@@ -103,12 +131,15 @@ class FirebaseUtils {
         await setNewFirebaseToken(newToken);
         // TODO what if this fails, when should a retry be attempted?
         try {
-          updateFirebaseToken(newToken);
+          updateFirebaseToken(firebaseToken: newToken);
         } catch (error, stackTrace) {
           Logger.error('Error updating firebase token', error: error, stackTrace: stackTrace);
         }
       }
     });
+
+    initializedHandler = true;
+    _initHandlerMutex.release();
   }
 
   /// Returns the current firebase token of the app / device. Throws a
@@ -210,7 +241,14 @@ class FirebaseUtils {
 /// This class just is used to disable Firebase for web builds.
 class NoFirebaseUtils implements FirebaseUtils {
   @override
-  bool _initializedHandler = false;
+  Mutex get _initFbMutex => Mutex();
+  @override
+  bool initializedFirebase = false;
+
+  @override
+  Mutex get _initHandlerMutex => Mutex();
+  @override
+  bool initializedHandler = false;
 
   @override
   Future<String?> getFBToken() => Future.value(_currentFbToken);
@@ -219,7 +257,7 @@ class NoFirebaseUtils implements FirebaseUtils {
   Future<void> setupHandler({
     required Future<void> Function(RemoteMessage p1) foregroundHandler,
     required Future<void> Function(RemoteMessage p1) backgroundHandler,
-    required void Function(String? p1) updateFirebaseToken,
+    required void Function({String? firebaseToken}) updateFirebaseToken,
   }) async {}
 
   @override
@@ -239,5 +277,5 @@ class NoFirebaseUtils implements FirebaseUtils {
   Future<String?> getNewFirebaseToken() => Future.value(_newFbToken);
 
   @override
-  Future<FirebaseApp?> initializeApp({required String name, required FirebaseOptions options}) async => null;
+  Future<FirebaseApp?> initializeApp() async => null;
 }

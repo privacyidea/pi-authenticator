@@ -92,6 +92,7 @@ class PushRequestNotifier extends _$PushRequestNotifier {
     _ioClient = _ioClientOverride ?? ioClient;
     _pushProvider = _pushProviderOverride ?? pushProvider;
     _pushRepo = _pushRepoOverride ?? pushRepo;
+
     Logger.info('New PushRequestNotifier created');
     _pushProvider.subscribe(add);
     return _loadFromRepo();
@@ -294,6 +295,8 @@ class PushRequestNotifier extends _$PushRequestNotifier {
   }
 
   Future<bool> remove(PushRequest pushRequest) => _remove(pushRequest);
+
+  Future<void> initFirebase() => pushProvider.initFirebase();
 
   //////////////////////////////////////////////////////////////////////////////
   ///////////////////////// Helper Methods /////////////////////////////////////
