@@ -57,7 +57,7 @@ class ContainerShowContainerUrlDialog extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            appLocalizations.showContainerUrlDialogContent(container.serverUrl),
+            appLocalizations.showContainerUrlDialogContent(container.serverUrl.toString()),
             style: Theme.of(context).textTheme.bodyLarge,
           ),
           if (container.sslVerify == false) SizedBox(height: 8),
