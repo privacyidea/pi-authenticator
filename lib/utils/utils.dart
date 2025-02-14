@@ -25,6 +25,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gms_check/gms_check.dart';
 import 'package:http/http.dart';
 import 'package:image/image.dart' as img;
 import 'package:package_info_plus/package_info_plus.dart';
@@ -274,3 +275,5 @@ Image generateQrCodeImage({required String data}) {
   }
   return Image.memory(img.encodePng(image));
 }
+
+bool get deviceHasFirebaseMessaging => !kIsWeb && (GmsCheck().isGmsAvailable || Platform.isIOS);

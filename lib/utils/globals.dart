@@ -18,6 +18,7 @@
   limitations under the License.
 */
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -100,3 +101,6 @@ final piAuthenticatorGitHubUri = Uri.parse("https://github.com/privacyidea/pi-au
 const maxPushTokenVersion = 1;
 
 WidgetRef? globalRef;
+
+// Must be set before runApp() is called.
+FirebaseOptions? appFirebaseOptions;

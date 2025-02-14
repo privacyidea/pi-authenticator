@@ -70,7 +70,6 @@ final tokenProvider = tokenNotifierProviderOf(
 class TokenNotifier extends _$TokenNotifier with ResultHandler {
   static final Map<String, Timer> _hidingTimers = {};
   late final Future<TokenState> initState;
-  // final StateNotifierProviderRef ref;
   final _repoMutex = Mutex();
   final _stateMutex = Mutex();
 
@@ -512,7 +511,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       return deleted;
     }
 
-    final (notUpdated, _) = (await updateFirebaseToken(fbToken)) ?? (<PushToken>[], <PushToken>[]);
+    final (notUpdated, _) = (await updateFirebaseTokens(tokens: state.pushTokens, firebaseToken: fbToken)) ?? (<PushToken>[], <PushToken>[]);
     await _updateTokens(notUpdated, (p0) => p0.copyWith(fbToken: null));
     if (notUpdated.isNotEmpty) {
       Logger.warning('Could not update firebase token for ${notUpdated.length} tokens.');
@@ -717,6 +716,12 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     }
   }
 
+  final _updateFbTokenMutex = Mutex();
+
+  Future<(List<PushToken>, List<PushToken>)?> updateAllFirebaseTokens({String? firebaseToken}) async {
+    return updateFirebaseTokens(tokens: state.pushTokens, firebaseToken: firebaseToken);
+  }
+
   /// This method attempts to update the fbToken for all PushTokens that can be
   /// updated. I.e. all tokens that know the url of their respective privacyIDEA
   /// server.
@@ -729,59 +734,101 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   /// This should only be used to attempt to update the fbToken automatically,
   /// as this can not be guaranteed to work. There is a manual option available
   /// through the settings also.
-  Future<(List<PushToken>, List<PushToken>)?> updateFirebaseToken([String? firebaseToken]) async {
-    Logger.info('Updating firebase token for all push tokens.');
-    firebaseToken ??= await _firebaseUtils.getFBToken();
-    if (firebaseToken == null) {
-      Logger.warning('Could not update firebase token because no firebase token is available.');
+  Future<(List<PushToken>, List<PushToken>)?> updateFirebaseTokens({required List<PushToken> tokens, String? firebaseToken}) async {
+    if (tokens.isEmpty) {
+      Logger.info('No tokens to update.');
       return null;
     }
-    List<PushToken> tokenList = state.pushTokens.where((t) => t.isRolledOut && t.fbToken != firebaseToken).toList();
-    Logger.info('Updating firebase token for ${tokenList.length} push tokens.');
-    bool allUpdated = true;
+
+    Logger.info('Updating firebase token for ${tokens.length} push tokens.');
+    await _updateFbTokenMutex.acquire();
     final List<PushToken> failedTokens = [];
     final List<PushToken> unsuportedTokens = [];
+    final pollOnlyTokens = tokens.where((t) => t.isPollOnly == true).toList();
+    final notPollOnlyTokens = tokens.where((t) => t.isPollOnly != true).toList();
 
-    for (PushToken p in tokenList) {
-      if (p.url == null) {
-        unsuportedTokens.add(p);
-        continue;
-      }
-      // POST /ttype/push HTTP/1.1
-      //Host: example.com
-      //
-      //new_fb_token=<new firebase token>
-      //serial=<tokenserial>element
-      //timestamp=<timestamp>
-      //signature=SIGNATURE(<new firebase token>|<tokenserial>|<timestamp>)
-      Logger.warning('Updating firebase token for push token "${p.serial}"');
-      String timestamp = DateTime.now().toUtc().toIso8601String();
-      String message = '$firebaseToken|${p.serial}|$timestamp';
-      String? signature = await _rsaUtils.trySignWithToken(p, message);
-      if (signature == null) {
-        failedTokens.add(p);
-        allUpdated = false;
-        continue;
-      }
-      Response response = await _ioClient.doPost(
-        url: p.url!,
-        body: {'new_fb_token': firebaseToken, 'serial': p.serial, 'timestamp': timestamp, 'signature': signature},
-        sslVerify: p.sslVerify,
-      );
-      if (response.statusCode == 200) {
-        Logger.info('Updating firebase token for push token succeeded!');
-        _updateToken(p, (p0) => p0.copyWith(fbToken: firebaseToken));
-      } else {
-        Logger.warning('Updating firebase token for push token failed!');
-        failedTokens.add(p);
-        allUpdated = false;
-      }
-    }
+    try {
+      Logger.info('Updating firebase token if needed.');
 
-    if (allUpdated) {
-      await _firebaseUtils.setCurrentFirebaseToken(firebaseToken);
+      if (notPollOnlyTokens.isNotEmpty) {
+        if (_firebaseUtils.initializedFirebase == false) {
+          await _firebaseUtils.initializeApp();
+        }
+        firebaseToken ??= await _firebaseUtils.getFBToken();
+        if (firebaseToken != null) {
+          for (final token in notPollOnlyTokens) {
+            if (token.url == null) {
+              unsuportedTokens.add(token);
+              continue;
+            }
+            final success = await updateFirebaseToken(token, firebaseToken);
+            if (!success) {
+              failedTokens.add(token);
+            }
+          }
+        } else {
+          Logger.warning('Could not update firebase token because no firebase token is available.');
+        }
+      }
+
+      if (pollOnlyTokens.isNotEmpty) {
+        final noFbToken = await NoFirebaseUtils().getFBToken();
+        if (noFbToken != null) {
+          for (final token in pollOnlyTokens) {
+            if (token.url == null) {
+              unsuportedTokens.add(token);
+              continue;
+            }
+            final success = await updateFirebaseToken(token, noFbToken);
+            if (!success) {
+              failedTokens.add(token);
+            }
+          }
+        } else {
+          Logger.warning('Could not update firebase token because no firebase token is available.');
+        }
+      }
+
+      final allUpdated = failedTokens.isEmpty && unsuportedTokens.isEmpty;
+      if (allUpdated && firebaseToken != null) {
+        await _firebaseUtils.setCurrentFirebaseToken(firebaseToken);
+      }
+    } catch (e, s) {
+      Logger.error('Error while updating firebase token.', error: e, stackTrace: s);
+      _updateFbTokenMutex.release();
+      return null;
     }
+    _updateFbTokenMutex.release();
     return (failedTokens, unsuportedTokens);
+  }
+
+  Future<bool> updateFirebaseToken(PushToken token, String firebaseToken) async {
+    // POST /ttype/push HTTP/1.1
+    //Host: example.com
+    //
+    //new_fb_token=<new firebase token>
+    //serial=<tokenserial>element
+    //timestamp=<timestamp>
+    //signature=SIGNATURE(<new firebase token>|<tokenserial>|<timestamp>)
+    Logger.info('Updating firebase token for push token "${token.serial}"');
+    String timestamp = DateTime.now().toUtc().toIso8601String();
+    String message = '$firebaseToken|${token.serial}|$timestamp';
+    String? signature = await _rsaUtils.trySignWithToken(token, message);
+    if (signature == null) {
+      return false;
+    }
+    Response response = await _ioClient.doPost(
+      url: token.url!,
+      body: {'new_fb_token': firebaseToken, 'serial': token.serial, 'timestamp': timestamp, 'signature': signature},
+      sslVerify: token.sslVerify,
+    );
+    if (response.statusCode != 200) {
+      Logger.warning('Updating firebase token for push token failed!');
+      return false;
+    }
+    Logger.info('Updating firebase token for push token succeeded!');
+    _updateToken(token, (p0) => p0.copyWith(fbToken: firebaseToken));
+    return true;
   }
 
   /* ////////////////////////////////////////////////////////////////////////////
@@ -891,9 +938,10 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       _pushTokenHandlerMutex.release();
       return;
     }
-    if (state.pushTokens.firstWhereOrNull((element) => element.isRolledOut && element.fbToken == null) != null) {
+    final pushTokensWithoutFbToken = state.pushTokens.where((element) => element.fbToken == null).toList();
+    if (pushTokensWithoutFbToken.isNotEmpty) {
       // If there is a push token without fbToken, then update the fbToken
-      await updateFirebaseToken();
+      await updateFirebaseTokens(tokens: pushTokensWithoutFbToken);
     }
     if (state.hasRolledOutPushTokens) {
       checkNotificationPermission();
