@@ -638,7 +638,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
 
   Future<void> _handlePiServerResultError(PiServerResultError error, TokenContainerFinalized container, bool isManually) async {
     final context = (await contextedGlobalNavigatorKey).currentContext;
-    if (error.code == PiServerResultErrorCodes.containerNotFound) {
+    if (error.code == PiServerResultErrorCodes.containerNotFound || error.code == PiServerResultErrorCodes.containerNotRegistered) {
       if (context == null || !context.mounted || !isManually) return;
       DeleteContainerDialog.showDialog(
         container,
@@ -652,5 +652,9 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
 class PiServerResultErrorCodes {
   // Unable to find container with serial {serial}.
   static const containerNotFound = 601;
+
+  // Container is not registered.
+  static const containerNotRegistered = 3001;
+
   static const couldNotVerifySignature = 3002;
 }

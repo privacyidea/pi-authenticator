@@ -49,6 +49,9 @@ class PushToken extends Token {
   static const String SSL_VERIFY = 'sslverify';
   static const String SSL_VERIFY_VALUE_TRUE = '1';
   static const String SSL_VERIFY_VALUE_FALSE = '0';
+  static const String IS_POLL_ONLY = 'poll_only';
+  static const String IS_POLL_ONLY_VALUE_TRUE = 'True';
+  static const String IS_POLL_ONLY_VALUE_FALSE = 'False';
 
   static const String VERSION = 'v';
   static const String EXPIRATION_DATE = 'expirationDate';
@@ -160,12 +163,12 @@ class PushToken extends Token {
     bool? isLocked,
     bool? isHidden,
     bool? sslVerify,
+    bool? Function()? isPollOnly,
     String? enrollmentCredentials,
     Uri? url,
     String? publicServerKey,
     String? publicTokenKey,
     String? privateTokenKey,
-    bool? isPollOnly,
     DateTime? expirationDate,
     bool? isRolledOut,
     PushTokenRollOutState? rolloutState,
@@ -188,6 +191,7 @@ class PushToken extends Token {
       isLocked: isLocked ?? this.isLocked,
       isHidden: isHidden ?? this.isHidden,
       sslVerify: sslVerify ?? this.sslVerify,
+      isPollOnly: isPollOnly != null ? isPollOnly() : this.isPollOnly,
       enrollmentCredentials: enrollmentCredentials ?? this.enrollmentCredentials,
       url: url ?? this.url,
       publicServerKey: publicServerKey ?? this.publicServerKey,
@@ -232,6 +236,7 @@ class PushToken extends Token {
         Token.ISSUER: const ObjectValidatorNullable<String>(defaultValue: ''),
         Token.SERIAL: const ObjectValidator<String>(),
         SSL_VERIFY: boolValidator.withDefault(true),
+        IS_POLL_ONLY: boolValidatorNullable,
         TTL_MINUTES: minutesDurationValidator.withDefault(const Duration(minutes: 3)),
         ENROLLMENT_CREDENTIAL: const ObjectValidatorNullable<String>(),
         ROLLOUT_URL: uriValidator,
@@ -261,6 +266,7 @@ class PushToken extends Token {
           issuer: validatedMap[Token.ISSUER] as String,
           serial: validatedMap[Token.SERIAL] as String,
           sslVerify: validatedMap[SSL_VERIFY] as bool,
+          isPollOnly: validatedMap[IS_POLL_ONLY] as bool?,
           expirationDate: expirationDate ?? DateTime.now().add(validatedMap[TTL_MINUTES] as Duration),
           rolloutState: validatedAdditionalData[ROLLOUT_STATE],
           isRolledOut: validatedAdditionalData[IS_ROLLED_OUT],
@@ -297,6 +303,7 @@ class PushToken extends Token {
         Token.ISSUER: const ObjectValidatorNullable<String>(),
         Token.SERIAL: const ObjectValidatorNullable<String>(),
         SSL_VERIFY: boolValidatorNullable,
+        IS_POLL_ONLY: boolValidatorNullable,
         ENROLLMENT_CREDENTIAL: const ObjectValidatorNullable<String>(),
         ROLLOUT_URL: uriValidatorNullable,
         Token.IMAGE: const ObjectValidatorNullable<String>(),
@@ -311,6 +318,7 @@ class PushToken extends Token {
       issuer: uriMap[Token.ISSUER] as String?,
       serial: uriMap[Token.SERIAL] as String?,
       sslVerify: uriMap[SSL_VERIFY] as bool?,
+      isPollOnly: uriMap[IS_POLL_ONLY] != null ? () => (uriMap[IS_POLL_ONLY] as bool) : () => isPollOnly,
       enrollmentCredentials: uriMap[ENROLLMENT_CREDENTIAL] as String?,
       url: uriMap[ROLLOUT_URL] as Uri?,
       tokenImage: uriMap[Token.IMAGE] as String?,
@@ -323,7 +331,7 @@ class PushToken extends Token {
   /// ```dart
   ///  ---------------------------- [Token] ----------------------------
   /// | Token.SERIAL: serial, (optional)                                 |
-  /// | Token.TOKENTYPE_JSON: type,                                                |
+  /// | Token.TOKENTYPE_JSON: type,                                      |
   /// | Token.LABEL: label,                                              |
   /// | Token.ISSUER: issuer,                                            |
   /// | Token.PIN: pin,                                                  |
@@ -344,6 +352,7 @@ class PushToken extends Token {
     return super.toOtpAuthMap()
       ..addAll({
         SSL_VERIFY: sslVerify ? SSL_VERIFY_VALUE_TRUE : SSL_VERIFY_VALUE_FALSE,
+        if (isPollOnly != null) IS_POLL_ONLY: isPollOnly! ? IS_POLL_ONLY_VALUE_TRUE : IS_POLL_ONLY_VALUE_FALSE,
         if (enrollmentCredentials != null) ENROLLMENT_CREDENTIAL: enrollmentCredentials!,
         if (url != null) ROLLOUT_URL: url.toString(),
         if (tokenImage != null) Token.IMAGE: tokenImage!,

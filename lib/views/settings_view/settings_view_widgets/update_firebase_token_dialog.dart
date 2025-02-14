@@ -67,8 +67,9 @@ class _UpdateFirebaseTokenDialogState extends ConsumerState<UpdateFirebaseTokenD
     Logger.info('Starting update of firebase token.');
 
     // TODO What to do with poll only tokens if google-services is used?
+    final pushTokensNotPollOnly = ref.read(tokenProvider).pushTokensNotPollOnly;
 
-    final tuple = await ref.read(tokenProvider.notifier).updateFirebaseToken();
+    final tuple = await ref.read(tokenProvider.notifier).updateFirebaseTokens(tokens: pushTokensNotPollOnly);
     if (tuple == null) {
       showErrorStatusMessage(
         message: (l) => l.firebaseToken,
@@ -77,9 +78,9 @@ class _UpdateFirebaseTokenDialogState extends ConsumerState<UpdateFirebaseTokenD
       return;
     }
 
-    final (tokenWithFailedUpdate, tokenWithOutUrl) = tuple;
+    final (tokenWithFailedUpdate, tokenWithoutUrl) = tuple;
 
-    if (tokenWithFailedUpdate.isEmpty && tokenWithOutUrl.isEmpty) {
+    if (tokenWithFailedUpdate.isEmpty && tokenWithoutUrl.isEmpty) {
       if (!mounted) return;
       setState(() {
         _content = Text(AppLocalizations.of(context)!.allTokensSynchronized);
@@ -96,13 +97,13 @@ class _UpdateFirebaseTokenDialogState extends ConsumerState<UpdateFirebaseTokenD
         }
       }
 
-      if (tokenWithOutUrl.isNotEmpty) {
+      if (tokenWithoutUrl.isNotEmpty) {
         if (children.isNotEmpty) {
           children.add(const Divider());
         }
 
         children.add(Text(localizations.tokensDoNotSupportSynchronization));
-        for (PushToken p in tokenWithOutUrl) {
+        for (PushToken p in tokenWithoutUrl) {
           children.add(Text('• ${p.label}'));
         }
       }

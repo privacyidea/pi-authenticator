@@ -4,6 +4,7 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/state_listeners/push_token_state_listener.dart';
 
 import '../utils/home_widget_utils.dart';
 import '../utils/logger.dart';
@@ -86,6 +87,7 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
         stateNotifierProviderListeners: const [],
         buildlessProviderListener: [
           HomeWidgetTokenStateListener(provider: tokenProvider),
+          PushProviderTokenStateListener(provider: tokenProvider),
         ],
         streamNotifierProviderListeners: [
           NavigationDeepLinkListener(deeplinkProvider: deeplinkNotifierProvider),

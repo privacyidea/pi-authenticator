@@ -38,8 +38,14 @@ class TokenState {
   bool get hasOTPTokens => otpTokens.isNotEmpty;
 
   List<PushToken> get pushTokens => tokens.whereType<PushToken>().toList();
+
+  List<PushToken> get pollOnlyPushTokens => pushTokens.where((element) => element.isPollOnly == true).toList();
+  List<PushToken> get pushTokensNotPollOnly => pushTokens.where((element) => element.isPollOnly != true).toList();
+
   bool get hasPushTokens => pushTokens.isNotEmpty;
   bool get hasRolledOutPushTokens => pushTokens.any((element) => element.isRolledOut);
+
+  bool get needsFirebase => pushTokens.any((element) => element.isPollOnly != true);
 
   List<PushToken> get pushTokensToRollOut =>
       pushTokens.where((element) => !element.isRolledOut && element.rolloutState == PushTokenRollOutState.rolloutNotStarted).toList();

@@ -1396,18 +1396,42 @@ class MockEccUtils extends _i1.Mock implements _i24.EccUtils {
 /// See the documentation for Mockito's code generation for more information.
 class MockFirebaseUtils extends _i1.Mock implements _i10.FirebaseUtils {
   @override
-  _i14.Future<_i30.FirebaseApp?> initializeApp({
-    required String? name,
-    required _i30.FirebaseOptions? options,
-  }) =>
-      (super.noSuchMethod(
+  bool get initializedFirebase => (super.noSuchMethod(
+        Invocation.getter(#initializedFirebase),
+        returnValue: false,
+        returnValueForMissingStub: false,
+      ) as bool);
+
+  @override
+  set initializedFirebase(bool? _initializedFirebase) => super.noSuchMethod(
+        Invocation.setter(
+          #initializedFirebase,
+          _initializedFirebase,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  bool get initializedHandler => (super.noSuchMethod(
+        Invocation.getter(#initializedHandler),
+        returnValue: false,
+        returnValueForMissingStub: false,
+      ) as bool);
+
+  @override
+  set initializedHandler(bool? _initializedHandler) => super.noSuchMethod(
+        Invocation.setter(
+          #initializedHandler,
+          _initializedHandler,
+        ),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  _i14.Future<_i30.FirebaseApp?> initializeApp() => (super.noSuchMethod(
         Invocation.method(
           #initializeApp,
           [],
-          {
-            #name: name,
-            #options: options,
-          },
         ),
         returnValue: _i14.Future<_i30.FirebaseApp?>.value(),
         returnValueForMissingStub: _i14.Future<_i30.FirebaseApp?>.value(),
@@ -1417,7 +1441,7 @@ class MockFirebaseUtils extends _i1.Mock implements _i10.FirebaseUtils {
   _i14.Future<void> setupHandler({
     required _i14.Future<void> Function(_i31.RemoteMessage)? foregroundHandler,
     required _i14.Future<void> Function(_i31.RemoteMessage)? backgroundHandler,
-    required dynamic Function(String?)? updateFirebaseToken,
+    required dynamic Function({String? firebaseToken})? updateFirebaseToken,
   }) =>
       (super.noSuchMethod(
         Invocation.method(
@@ -1554,6 +1578,16 @@ class MockPushProvider extends _i1.Mock implements _i32.PushProvider {
       ) as _i12.RsaUtils);
 
   @override
+  _i14.Future<void> initFirebase() => (super.noSuchMethod(
+        Invocation.method(
+          #initFirebase,
+          [],
+        ),
+        returnValue: _i14.Future<void>.value(),
+        returnValueForMissingStub: _i14.Future<void>.value(),
+      ) as _i14.Future<void>);
+
+  @override
   void setPollingEnabled(bool? enablePolling) => super.noSuchMethod(
         Invocation.method(
           #setPollingEnabled,
@@ -1591,12 +1625,13 @@ class MockPushProvider extends _i1.Mock implements _i32.PushProvider {
 
   @override
   _i14.Future<
-      (List<_i28.PushToken>, List<_i28.PushToken>)?> updateFirebaseToken(
-          [String? firebaseToken]) =>
+      (List<_i28.PushToken>, List<_i28.PushToken>)?> updateAllFirebaseTokens(
+          {String? firebaseToken}) =>
       (super.noSuchMethod(
         Invocation.method(
-          #updateFirebaseToken,
-          [firebaseToken],
+          #updateAllFirebaseTokens,
+          [],
+          {#firebaseToken: firebaseToken},
         ),
         returnValue:
             _i14.Future<(List<_i28.PushToken>, List<_i28.PushToken>)?>.value(),

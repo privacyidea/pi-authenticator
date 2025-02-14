@@ -19,15 +19,14 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/push_request_provider.dart';
 
 import '../../../../../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../model/riverpod_states/settings_state.dart';
 import '../../../model/tokens/push_token.dart';
-import '../../../utils/firebase_utils.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
+import '../../../utils/utils.dart';
 import '../settings_view_widgets/settings_group.dart';
 import '../settings_view_widgets/update_firebase_token_dialog.dart';
 
@@ -66,13 +65,13 @@ class SettingsGroupPushTokenDialog extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settingsState = ref.watch(settingsProvider).whenOrNull(data: (data) => data);
-    final hasNoFb = ref.read(pushRequestProvider.notifier).pushProvider.firebaseUtils is NoFirebaseUtils;
+    final needsFirebaseMessaging = ref.watch(tokenProvider).pushTokensNotPollOnly.isNotEmpty;
     return DefaultDialog(
       title: Text(AppLocalizations.of(context)!.pushToken),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (!hasNoFb)
+          if (deviceHasFirebaseMessaging && needsFirebaseMessaging)
             ListTile(
               title: Text(
                 AppLocalizations.of(context)!.synchronizePushTokens,
