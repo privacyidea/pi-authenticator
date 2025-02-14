@@ -722,7 +722,8 @@
     "placeholders": {
       "url": {
         "description": "The server URL from the container",
-        "example": "https://example.com/"
+        "example": "https://example.com/",
+        "type": "String"
       }
     }
   },
@@ -1374,7 +1375,8 @@
     "placeholders": {
       "url": {
         "description": "The URL of the container.",
-        "example": "https://example.com/"
+        "example": "https://example.com/",
+        "type": "String"
       }
     }
   },
@@ -1519,7 +1521,8 @@
     "placeholders": {
       "count": {
         "description": "The number of offline tokens.",
-        "example": "2"
+        "example": "2",
+        "type": "int"
       }
     }
   },
