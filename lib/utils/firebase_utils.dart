@@ -54,8 +54,8 @@ class FirebaseUtils {
 
   /// Must be used in the main method before runApp() is called.
   Future<FirebaseApp?> initializeApp() async {
+    await _initFbMutex.acquire();
     try {
-      await _initFbMutex.acquire();
       if (initializedFirebase) {
         Logger.warning('Firebase already initialized');
         _initFbMutex.release();
@@ -63,11 +63,11 @@ class FirebaseUtils {
       }
       assert(appFirebaseOptions != null, 'Firebase options must be set before initializing Firebase');
       final FirebaseOptions options = appFirebaseOptions!;
-      final app = await Firebase.initializeApp(name: "fb.${options.appId}", options: options);
+      final app = await Firebase.initializeApp(name: "fb-${options.projectId}", options: options);
       app.setAutomaticDataCollectionEnabled(false);
       initializedFirebase = true;
-      _initFbMutex.release();
       assert(app.isAutomaticDataCollectionEnabled == false, 'Automatic data collection should be disabled');
+      _initFbMutex.release();
       return app;
     } catch (e, s) {
       _initFbMutex.release();
@@ -82,7 +82,6 @@ class FirebaseUtils {
     required Future<void> Function(RemoteMessage) backgroundHandler,
     required dynamic Function({String? firebaseToken}) updateFirebaseToken,
   }) async {
-    print('setupHandler');
     await _initFbMutex.acquire();
     if (!initializedFirebase) {
       Logger.error('Initialize Firebase before setting up the handler');
