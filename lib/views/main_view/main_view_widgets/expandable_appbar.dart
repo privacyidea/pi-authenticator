@@ -112,7 +112,7 @@ class _ExpandableAppBarState extends State<ExpandableAppBar> {
               color: Theme.of(context).canvasColor,
               boxShadow: [
                 BoxShadow(
-                  color: Theme.of(context).shadowColor,
+                  color: searchActive && expandTarget != minExpansion ? Theme.of(context).shadowColor : Colors.transparent,
                   blurRadius: 2,
                   offset: const Offset(0, 2),
                 ),
