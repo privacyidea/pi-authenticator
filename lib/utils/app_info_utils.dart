@@ -26,6 +26,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import '../model/version.dart';
 
 class InfoUtils {
+  static bool initCalled = false;
   static bool isInitialized = false;
   static final DeviceInfoPlugin _deviceInfo = DeviceInfoPlugin();
   static final _packageInfo = PackageInfo.fromPlatform();
@@ -53,7 +54,8 @@ class InfoUtils {
   }
 
   static Future<void> init() async {
-    if (isInitialized) return;
+    if (initCalled) return;
+    initCalled = true;
     final packageInfo = await _packageInfo;
     _appName = packageInfo.appName;
     _packageName = packageInfo.packageName;
@@ -63,29 +65,28 @@ class InfoUtils {
     _iosInfo = !kIsWeb && Platform.isIOS ? await _deviceInfo.iosInfo : null;
     _deviceBrand = getDeviceBrand();
     _deviceModel = getDeviceModel();
-
     isInitialized = true;
   }
 
-  static String get appName => isInitialized ? _appName : throw Exception('AppInfoUtils not initialized');
+  static String get appName => initCalled ? _appName : throw Exception('AppInfoUtils not initialized');
   static late final String _appName;
 
-  static String get packageName => isInitialized ? _packageName : throw Exception('AppInfoUtils not initialized');
+  static String get packageName => initCalled ? _packageName : throw Exception('AppInfoUtils not initialized');
   static late final String _packageName;
 
-  static String get currentVersionAndBuildNumber => isInitialized ? 'v$currentVersion+$currentBuildNumber' : throw Exception('AppInfoUtils not initialized');
+  static String get currentVersionAndBuildNumber => initCalled ? 'v$currentVersion+$currentBuildNumber' : throw Exception('AppInfoUtils not initialized');
 
-  static Version get currentVersion => isInitialized ? _appVersion : throw Exception('AppInfoUtils not initialized');
-  static String get currentVersionString => isInitialized ? _appVersion.toString() : throw Exception('AppInfoUtils not initialized');
+  static Version get currentVersion => initCalled ? _appVersion : throw Exception('AppInfoUtils not initialized');
+  static String get currentVersionString => initCalled ? _appVersion.toString() : throw Exception('AppInfoUtils not initialized');
   static late final Version _appVersion;
 
-  static String get currentBuildNumber => isInitialized ? _appBuildNumber : throw Exception('AppInfoUtils not initialized');
+  static String get currentBuildNumber => initCalled ? _appBuildNumber : throw Exception('AppInfoUtils not initialized');
   static late final String _appBuildNumber;
 
-  static String get deviceBrand => isInitialized ? _deviceBrand : throw Exception('AppInfoUtils not initialized');
+  static String get deviceBrand => initCalled ? _deviceBrand : throw Exception('AppInfoUtils not initialized');
   static late final String _deviceBrand;
 
-  static String get deviceModel => isInitialized ? _deviceModel : throw Exception('AppInfoUtils not initialized');
+  static String get deviceModel => initCalled ? _deviceModel : throw Exception('AppInfoUtils not initialized');
   static late final String _deviceModel;
 
   static String get dartVersion => Platform.version;
@@ -102,7 +103,7 @@ class InfoUtils {
     }
   }
 
-  static AndroidDeviceInfo? get androidInfo => isInitialized ? _androidInfo : throw Exception('AppInfoUtils not initialized');
+  static AndroidDeviceInfo? get androidInfo => initCalled ? _androidInfo : throw Exception('AppInfoUtils not initialized');
   static late final AndroidDeviceInfo? _androidInfo;
 
   static String get androidDeviceInfoString => _androidDeviceInfoString;
@@ -134,7 +135,7 @@ class InfoUtils {
           '\ntype: ${androidInfo!.type}'
           '\nisPhysicalDevice: ${androidInfo!.isPhysicalDevice}';
 
-  static IosDeviceInfo? get iosInfo => isInitialized ? _iosInfo : throw Exception('AppInfoUtils not initialized');
+  static IosDeviceInfo? get iosInfo => initCalled ? _iosInfo : throw Exception('AppInfoUtils not initialized');
   static late final IosDeviceInfo? _iosInfo;
 
   String get iosDeviceInfoString => _iosDeviceInfoString;
