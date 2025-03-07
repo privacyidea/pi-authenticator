@@ -146,7 +146,7 @@ class PiContainerApi implements TokenContainerApi {
       newTokens: newTokens,
       updatedTokens: updatedTokens,
       deletedTokens: deleteTokens,
-      initAssignmentChecked: selectedTokens ?? [],
+      initAssignmentChecked: tokensWithoutSerial,
       newPolicies: syncResult.policies,
       containerSerial: container.serial,
     );
