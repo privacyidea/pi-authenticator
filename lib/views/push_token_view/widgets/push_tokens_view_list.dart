@@ -1,18 +1,49 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2024-2025 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../../model/mixins/sortable_mixin.dart';
-import '../../../model/token_folder.dart';
-import '../../../utils/riverpod_providers.dart';
-import '../../../widgets/deactivateable_refresh_indicator.dart';
+import '../../../model/tokens/push_token.dart';
+import '../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
+import '../../../utils/riverpod/riverpod_providers/state_providers/dragging_sortable_provider.dart';
+import '../../../widgets/default_refresh_indicator.dart';
 import '../../../widgets/drag_item_scroller.dart';
 import '../../main_view/main_view_widgets/drag_target_divider.dart';
-import '../../main_view/main_view_widgets/poll_loading_indicator.dart';
-import '../../main_view/main_view_widgets/sortable_widget_builder.dart';
+import '../../main_view/main_view_widgets/main_view_tokens_list.dart';
 
 class PushTokensViwList extends ConsumerStatefulWidget {
   const PushTokensViwList({super.key});
+
+  static List<Widget> _buildSortableWidgets({
+    required List<SortableMixin> sortables,
+    required SortableMixin? draggingSortable,
+    // bool hidePushTokens = false,
+    // TokenFilter? filter,
+  }) {
+    if (sortables.isEmpty) return [];
+    sortables = sortables.toList();
+    sortables = sortables.whereType<PushToken>().toList();
+    return MainViewTokensList.buildSortableWidgets(sortables: sortables, draggingSortable: draggingSortable);
+  }
 
   @override
   ConsumerState<PushTokensViwList> createState() => _PushTokensViwListState();
@@ -22,37 +53,48 @@ class _PushTokensViwListState extends ConsumerState<PushTokensViwList> {
   final listViewKey = GlobalKey();
   final scrollController = ScrollController();
 
-  Duration? lastTimeStamp;
-
   @override
   Widget build(BuildContext context) {
     final tokenState = ref.watch(tokenProvider);
     final pushTokens = tokenState.pushTokens;
-    final allowToRefresh = pushTokens.isNotEmpty;
     final draggingSortable = ref.watch(draggingSortableProvider);
 
-    List<SortableMixin> sortables = [...pushTokens];
     return Stack(
       children: [
-        DeactivateableRefreshIndicator(
-          allowToRefresh: allowToRefresh,
-          onRefresh: () async => PollLoadingIndicator.pollForChallenges(context),
+        Column(
+          children: [
+            Flexible(
+              child: DefaultRefreshIndicator(
+                child: SizedBox(
+                  height: 9999,
+                  child: Opacity(
+                    opacity: 0,
+                    child: DragTargetDivider(
+                      dependingFolder: null,
+                      previousSortable: pushTokens.lastOrNull,
+                      nextSortable: null,
+                      bottomPadding: 0,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        DefaultRefreshIndicator(
+          listViewKey: listViewKey,
+          scrollController: scrollController,
           child: SlidableAutoCloseBehavior(
             child: DragItemScroller(
               listViewKey: listViewKey,
               itemIsDragged: draggingSortable != null,
               scrollController: scrollController,
-              child: CustomScrollView(
-                key: listViewKey,
-                physics: allowToRefresh ? const AlwaysScrollableScrollPhysics() : null,
-                controller: scrollController,
-                slivers: [
-                  SliverList(
-                    delegate: SliverChildListDelegate(
-                      [..._buildSortableWidgets(sortables, draggingSortable)],
-                    ),
-                  ),
-                ],
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: PushTokensViwList._buildSortableWidgets(
+                  sortables: pushTokens,
+                  draggingSortable: draggingSortable,
+                ),
               ),
             ),
           ),
@@ -60,31 +102,4 @@ class _PushTokensViwListState extends ConsumerState<PushTokensViwList> {
       ],
     );
   }
-}
-
-List<Widget> _buildSortableWidgets(List<SortableMixin> sortables, SortableMixin? draggingSortable) {
-  List<Widget> widgets = [];
-  if (sortables.isEmpty) return widgets;
-  sortables.sort((a, b) => a.compareTo(b));
-  for (var i = 0; i < sortables.length; i++) {
-    final isFirst = i == 0;
-    final isDraggingTheCurrent = draggingSortable == sortables[i];
-    final previousWasExpandedFolder = i > 0 && sortables[i - 1] is TokenFolder && (sortables[i - 1] as TokenFolder).isExpanded;
-    // 1. Add a divider if the current sortable is not the one which is dragged
-    // 2. Dont add a divider if the current sortable is the first
-    // 3. Dont add a divider if the previous sortable was an expanded folder
-    // 4. Ignore 2. and 3. if there is a sortable that is dragged
-    //           1                     2                     3                         4
-    if (!isDraggingTheCurrent && ((!isFirst && !previousWasExpandedFolder) || draggingSortable != null)) {
-      widgets.add(
-        DragTargetDivider(dependingFolder: null, nextSortable: sortables[i], ignoreFolderId: true),
-      );
-    }
-    widgets.add(SortableWidgetBuilder.fromSortable(sortables[i]));
-  }
-  if (draggingSortable != null) {
-    widgets.add(const DragTargetDivider(dependingFolder: null, nextSortable: null, isLastDivider: true, ignoreFolderId: true));
-  }
-  widgets.add(const SizedBox(height: 80));
-  return widgets;
 }

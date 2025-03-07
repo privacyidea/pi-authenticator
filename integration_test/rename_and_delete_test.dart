@@ -6,15 +6,17 @@ import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
 import 'package:privacyidea_authenticator/mains/main_netknights.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/enums/introduction.dart';
-import 'package:privacyidea_authenticator/model/states/introduction_state.dart';
-import 'package:privacyidea_authenticator/model/states/settings_state.dart';
+import 'package:privacyidea_authenticator/model/riverpod_states/introduction_state.dart';
+import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.dart';
+import 'package:privacyidea_authenticator/model/riverpod_states/token_folder_state.dart';
 import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
-import 'package:privacyidea_authenticator/state_notifiers/settings_notifier.dart';
-import 'package:privacyidea_authenticator/state_notifiers/token_folder_notifier.dart';
-import 'package:privacyidea_authenticator/state_notifiers/token_notifier.dart';
-import 'package:privacyidea_authenticator/utils/app_customizer.dart';
-import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
-import 'package:privacyidea_authenticator/utils/version.dart';
+import 'package:privacyidea_authenticator/model/tokens/token.dart';
+import 'package:privacyidea_authenticator/model/version.dart';
+import 'package:privacyidea_authenticator/utils/customization/application_customization.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/default_token_actions/default_delete_action.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/hotp_token_widgets/actions/edit_hotp_token_action.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/hotp_token_widgets/hotp_token_widget.dart';
@@ -31,29 +33,41 @@ void main() {
   setUp(() {
     mockSettingsRepository = MockSettingsRepository();
     when(mockSettingsRepository.loadSettings()).thenAnswer((_) async =>
-        SettingsState(isFirstRun: false, useSystemLocale: false, localePreference: const Locale('en'), latestVersion: Version.parse('999.999.999')));
+        SettingsState(isFirstRun: false, useSystemLocale: false, localePreference: const Locale('en'), latestStartedVersion: Version.parse('999.999.999')));
     when(mockSettingsRepository.saveSettings(any)).thenAnswer((_) async => true);
     mockTokenRepository = MockTokenRepository();
-    when(mockTokenRepository.loadTokens()).thenAnswer((_) async => [
-          HOTPToken(label: 'test', issuer: 'test', id: 'id', algorithm: Algorithms.SHA256, digits: 6, secret: 'secret', counter: 0),
-        ]);
-    when(mockTokenRepository.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
-    when(mockTokenRepository.deleteTokens(any)).thenAnswer((_) async => []);
+    var tokens = <Token>[
+      HOTPToken(label: 'test', issuer: 'test', id: 'id', algorithm: Algorithms.SHA256, digits: 6, secret: 'secret', counter: 0),
+    ];
+    when(mockTokenRepository.loadTokens()).thenAnswer((_) async {
+      return tokens;
+    });
+    when(mockTokenRepository.saveOrReplaceToken(any)).thenAnswer((invocation) async {
+      final arguments = invocation.positionalArguments;
+      tokens.removeWhere((element) => element.id == (arguments[0] as Token).id);
+      tokens.add(arguments[0] as Token);
+      return true;
+    });
+    when(mockTokenRepository.deleteToken(tokens.first)).thenAnswer((_) async {
+      tokens.remove(tokens.first);
+      return true;
+    });
     mockTokenFolderRepository = MockTokenFolderRepository();
-    when(mockTokenFolderRepository.loadFolders()).thenAnswer((_) async => []);
-    when(mockTokenFolderRepository.saveOrReplaceFolders(any)).thenAnswer((_) async => []);
+    when(mockTokenFolderRepository.loadState()).thenAnswer((_) async => const TokenFolderState(folders: []));
+    when(mockTokenFolderRepository.saveState(any)).thenAnswer((_) async => true);
     mockIntroductionRepository = MockIntroductionRepository();
-    final introductions = {...Introduction.values}..remove(Introduction.introductionScreen);
-    when(mockIntroductionRepository.loadCompletedIntroductions()).thenAnswer((_) async => IntroductionState(completedIntroductions: introductions));
+    when(mockIntroductionRepository.loadCompletedIntroductions())
+        .thenAnswer((_) async => const IntroductionState(completedIntroductions: {...Introduction.values}));
   });
   testWidgets('Rename and Delete Token', (tester) async {
     await tester.pumpWidget(TestsAppWrapper(
       overrides: [
-        settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepository)),
-        tokenProvider.overrideWith((ref) => TokenNotifier(repository: mockTokenRepository)),
-        tokenFolderProvider.overrideWith((ref) => TokenFolderNotifier(repository: mockTokenFolderRepository)),
+        settingsProvider.overrideWith(() => SettingsNotifier(repoOverride: mockSettingsRepository)),
+        tokenProvider.overrideWith(() => TokenNotifier(repoOverride: mockTokenRepository)),
+        tokenFolderProvider.overrideWith(() => TokenFolderNotifier(repoOverride: mockTokenFolderRepository)),
+        introductionNotifierProvider.overrideWith(() => IntroductionNotifier(repoOverride: mockIntroductionRepository)),
       ],
-      child: PrivacyIDEAAuthenticator(customization: ApplicationCustomization.defaultCustomization),
+      child: PrivacyIDEAAuthenticator(ApplicationCustomization.defaultCustomization),
     ));
     await _renameToken(tester, 'Renamed Token');
     await _renameToken(tester, 'Renamed Token Again');
@@ -72,12 +86,13 @@ Future<void> _renameToken(WidgetTester tester, String newName) async {
   await tester.tap(find.byType(EditHOTPTokenAction));
   await tester.pumpAndSettle();
   expect(find.text(AppLocalizationsEn().editToken), findsOneWidget);
-  expect(find.byType(TextFormField), findsNWidgets(3));
+  expect(find.byType(TextFormField), findsNWidgets(4));
   await tester.pumpAndSettle();
   await tester.enterText(find.byType(TextFormField).first, '');
+  await tester.pumpAndSettle();
   await tester.enterText(find.byType(TextFormField).first, newName);
   await pumpUntilFindNWidgets(tester, find.widgetWithText(TextFormField, newName), 1, const Duration(seconds: 2));
-  await tester.tap(find.text(AppLocalizationsEn().save));
+  await tester.tap(find.text(AppLocalizationsEn().saveButton));
   await pumpUntilFindNWidgets(tester, find.text(newName), 1, const Duration(seconds: 2));
   expect(find.text(newName), findsOneWidget);
 }
@@ -94,6 +109,6 @@ Future<void> _deleteToken(WidgetTester tester) async {
   expect(find.text(AppLocalizationsEn().confirmDeletion), findsOneWidget);
   expect(find.text(AppLocalizationsEn().delete), findsOneWidget);
   await tester.tap(find.text(AppLocalizationsEn().delete));
-  await tester.pumpAndSettle();
+  await pumpUntilFindNWidgets(tester, find.byType(HOTPTokenWidget), 0, const Duration(seconds: 2));
   expect(find.byType(HOTPTokenWidget), findsNothing);
 }

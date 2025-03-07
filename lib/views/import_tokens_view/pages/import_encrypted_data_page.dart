@@ -1,7 +1,27 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2025 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import 'package:flutter/material.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../model/enums/token_import_type.dart';
+import '../../../model/processor_result.dart';
 import '../../../model/tokens/token.dart';
 import '../../../processors/mixins/token_import_processor.dart';
 import '../../../processors/token_import_file_processor/two_fas_import_file_processor.dart';
@@ -29,7 +49,8 @@ class ImportEncryptedDataPage<T, V extends String?> extends StatefulWidget {
 
 class _ImportEncryptedDataPageState extends State<ImportEncryptedDataPage> {
   final _passwordController = TextEditingController();
-  Future? future;
+  final _passwordFocusNode = FocusNode();
+  Future? processingFuture;
   bool isPasswordVisible = false;
   bool wrongPassword = false;
 
@@ -63,8 +84,12 @@ class _ImportEncryptedDataPageState extends State<ImportEncryptedDataPage> {
                           flex: 9,
                           child: TextField(
                             controller: _passwordController,
+                            focusNode: _passwordFocusNode,
+                            enabled: processingFuture == null,
+                            style: Theme.of(context).textTheme.bodyMedium,
                             decoration: InputDecoration(
                               labelText: AppLocalizations.of(context)!.password,
+                              labelStyle: Theme.of(context).textTheme.titleSmall,
                               errorText: wrongPassword ? AppLocalizations.of(context)!.wrongPassword : null,
                             ),
                             onChanged: (value) => setState(() {
@@ -96,7 +121,7 @@ class _ImportEncryptedDataPageState extends State<ImportEncryptedDataPage> {
                     ),
                   ),
                   const SizedBox(height: ImportTokensView.itemSpacingHorizontal),
-                  future != null
+                  processingFuture != null
                       ? const CircularProgressIndicator()
                       : SizedBox(
                           width: double.infinity,
@@ -105,30 +130,29 @@ class _ImportEncryptedDataPageState extends State<ImportEncryptedDataPage> {
                                 ? null
                                 : () async {
                                     setState(() {
-                                      future = Future<void>(
+                                      processingFuture = Future<void>(
                                         () async {
-                                          // Future.delayed(const Duration(seconds: 1)).then((value) => null);
-                                          List<Token> tokens;
                                           try {
-                                            tokens = await widget.processor.processTokenMigrate(widget.data, args: _passwordController.text);
+                                            final processorResults = await widget.processor.processTokenMigrate(widget.data, args: _passwordController.text);
+                                            if (processorResults == null) return;
+                                            _pushImportPlainTokensPage(processorResults);
                                           } on BadDecryptionPasswordException catch (_) {
                                             setState(() {
                                               wrongPassword = true;
-                                              future = null;
+                                              processingFuture = null;
+                                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                                _passwordFocusNode.requestFocus();
+                                              });
                                             });
                                             return;
                                           }
-                                          setState(() {
-                                            future = null;
-                                          });
-                                          _pushImportPlainTokensPage(tokens);
                                         },
-                                      );
+                                      )..then((_) => setState(() => processingFuture = null));
                                     });
                                   },
                             child: Text(
                               AppLocalizations.of(context)!.decrypt,
-                              style: Theme.of(context).textTheme.titleLarge?.copyWith(color: Theme.of(context).colorScheme.onPrimary),
+                              style: Theme.of(context).textTheme.headlineSmall,
                               overflow: TextOverflow.fade,
                               softWrap: false,
                             ),
@@ -141,15 +165,19 @@ class _ImportEncryptedDataPageState extends State<ImportEncryptedDataPage> {
         ),
       );
 
-  void _pushImportPlainTokensPage(List<Token> tokens) {
-    Navigator.of(context).pushReplacement(
+  void _pushImportPlainTokensPage(List<ProcessorResult<Token>> processorResults) async {
+    final tokensToImport = await Navigator.of(context).push<List<Token>>(
       MaterialPageRoute(
         builder: (context) => ImportPlainTokensPage(
-          appName: widget.appName,
-          importedTokens: tokens,
+          titleName: widget.appName,
+          processorResults: processorResults,
           selectedType: widget.selectedType,
         ),
       ),
     );
+    if (tokensToImport != null) {
+      if (!mounted) return;
+      Navigator.of(context).pop(tokensToImport);
+    }
   }
 }

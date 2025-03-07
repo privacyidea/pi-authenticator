@@ -1,22 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:http/http.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
 import 'package:privacyidea_authenticator/mains/main_netknights.dart';
 import 'package:privacyidea_authenticator/model/enums/introduction.dart';
-import 'package:privacyidea_authenticator/model/states/introduction_state.dart';
-import 'package:privacyidea_authenticator/model/states/settings_state.dart';
-import 'package:privacyidea_authenticator/state_notifiers/settings_notifier.dart';
-import 'package:privacyidea_authenticator/state_notifiers/token_folder_notifier.dart';
-import 'package:privacyidea_authenticator/state_notifiers/token_notifier.dart';
-import 'package:privacyidea_authenticator/utils/app_customizer.dart';
-import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
+import 'package:privacyidea_authenticator/model/push_request.dart';
+import 'package:privacyidea_authenticator/model/riverpod_states/introduction_state.dart';
+import 'package:privacyidea_authenticator/model/riverpod_states/push_request_state.dart';
+import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.dart';
+import 'package:privacyidea_authenticator/model/riverpod_states/token_folder_state.dart';
+import 'package:privacyidea_authenticator/model/tokens/token.dart';
+import 'package:privacyidea_authenticator/model/version.dart';
+import 'package:privacyidea_authenticator/utils/custom_int_buffer.dart';
+import 'package:privacyidea_authenticator/utils/customization/application_customization.dart';
+import 'package:privacyidea_authenticator/utils/globals.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/push_request_provider.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
-import 'package:privacyidea_authenticator/utils/version.dart';
-import 'package:privacyidea_authenticator/views/settings_view/settings_view_widgets/settings_groups.dart';
+import 'package:privacyidea_authenticator/utils/utils.dart';
+import 'package:privacyidea_authenticator/views/settings_view/settings_view_widgets/settings_group.dart';
 
 import '../test/tests_app_wrapper.dart';
 import '../test/tests_app_wrapper.mocks.dart';
@@ -27,48 +34,95 @@ void main() {
   late final MockTokenRepository mockTokenRepository;
   late final MockTokenFolderRepository mockTokenFolderRepository;
   late final MockRsaUtils mockRsaUtils;
-  late final MockPrivacyIdeaIOClient mockIOClient;
+  // late final MockPrivacyIdeaIOClient mockIOClient;
   late final MockIntroductionRepository mockIntroductionRepository;
+  late final MockPushRequestRepository mockPushRequestRepository;
   setUp(() {
     mockSettingsRepository = MockSettingsRepository();
     when(mockSettingsRepository.loadSettings()).thenAnswer((_) async =>
-        SettingsState(isFirstRun: false, useSystemLocale: false, localePreference: const Locale('en'), latestVersion: Version.parse('999.999.999')));
+        SettingsState(isFirstRun: false, useSystemLocale: false, localePreference: const Locale('en'), latestStartedVersion: Version.parse('999.999.999')));
     when(mockSettingsRepository.saveSettings(any)).thenAnswer((_) async => true);
+
     mockTokenRepository = MockTokenRepository();
-    when(mockTokenRepository.loadTokens()).thenAnswer((_) async => []);
-    when(mockTokenRepository.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
-    when(mockTokenRepository.deleteTokens(any)).thenAnswer((_) async => []);
+    var tokens = <Token>[];
+    when(mockTokenRepository.loadTokens()).thenAnswer((_) async => tokens);
+    when(mockTokenRepository.saveOrReplaceToken(any)).thenAnswer((invocation) async {
+      final arguments = invocation.positionalArguments;
+      tokens.removeWhere((element) => element.id == (arguments[0] as Token).id);
+      tokens.add(arguments[0] as Token);
+      return true;
+    });
+    when(mockTokenRepository.deleteToken(any)).thenAnswer((invocation) async {
+      final arguments = invocation.positionalArguments;
+      tokens.removeWhere((element) => element.id == (arguments[0] as Token).id);
+      return true;
+    });
+
     mockTokenFolderRepository = MockTokenFolderRepository();
-    when(mockTokenFolderRepository.loadFolders()).thenAnswer((_) async => []);
-    when(mockTokenFolderRepository.saveOrReplaceFolders(any)).thenAnswer((_) async => []);
+    when(mockTokenFolderRepository.loadState()).thenAnswer((_) async => const TokenFolderState(folders: []));
+    when(mockTokenFolderRepository.saveState(any)).thenAnswer((_) async => true);
     mockRsaUtils = MockRsaUtils();
     when(mockRsaUtils.serializeRSAPublicKeyPKCS8(any)).thenAnswer((_) => 'publicKey');
     when(mockRsaUtils.generateRSAKeyPair()).thenAnswer((_) => const RsaUtils()
         .generateRSAKeyPair()); // We get here a random result anyway and is it more likely to make errors by mocking it than by using the real method
     when(mockRsaUtils.deserializeRSAPublicKeyPKCS1('publicKey')).thenAnswer((_) => RSAPublicKey(BigInt.one, BigInt.one));
-    mockIOClient = MockPrivacyIdeaIOClient();
-    when(mockIOClient.doPost(
-      url: anyNamed('url'),
-      body: anyNamed('body'),
-      sslVerify: anyNamed('sslVerify'),
-    )).thenAnswer((_) => Future.value(Response('{"detail": {"public_key": "publicKey"}}', 200)));
+
+    // mockIOClient = MockPrivacyideaIOClient();
+    // when(mockIOClient.doPost(
+    //   url: anyNamed('url'),
+    //   body: anyNamed('body'),
+    //   sslVerify: anyNamed('sslVerify'),
+    // )).thenAnswer((_) => Future.value(Response('{"detail": {"public_key": "publicKey"}}', 200)));
     mockIntroductionRepository = MockIntroductionRepository();
-    final introductions = {...Introduction.values}..remove(Introduction.introductionScreen);
-    when(mockIntroductionRepository.loadCompletedIntroductions()).thenAnswer((_) async => IntroductionState(completedIntroductions: introductions));
+    when(mockIntroductionRepository.loadCompletedIntroductions())
+        .thenAnswer((_) async => const IntroductionState(completedIntroductions: {...Introduction.values}));
+
+    mockPushRequestRepository = MockPushRequestRepository();
+    var state = PushRequestState(pushRequests: [], knownPushRequests: CustomIntBuffer(list: []));
+    when(mockPushRequestRepository.saveState(any)).thenAnswer((invocation) async {
+      final arguments = invocation.positionalArguments;
+      state = arguments[0] as PushRequestState;
+    });
+    when(mockPushRequestRepository.loadState()).thenAnswer((_) async => state);
+    when(mockPushRequestRepository.addRequest(any)).thenAnswer((invocation) async {
+      final arguments = invocation.positionalArguments;
+      state = state.withRequest(arguments[0] as PushRequest);
+      return state;
+    });
+    when(mockPushRequestRepository.removeRequest(any)).thenAnswer((invocation) async {
+      final arguments = invocation.positionalArguments;
+      state = state.withoutRequest(arguments[0] as PushRequest);
+      return state;
+    });
+    when(mockPushRequestRepository.clearState()).thenAnswer((_) async {
+      state = PushRequestState(pushRequests: [], knownPushRequests: CustomIntBuffer(list: []));
+    });
   });
 
   testWidgets('Views Test', (tester) async {
     await tester.pumpWidget(TestsAppWrapper(
       overrides: [
-        settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepository)),
-        tokenProvider.overrideWith((ref) => TokenNotifier(
-              repository: mockTokenRepository,
-              rsaUtils: mockRsaUtils,
-              ioClient: mockIOClient,
+        settingsProvider.overrideWith(() => SettingsNotifier(repoOverride: mockSettingsRepository)),
+        tokenProvider.overrideWith(() => TokenNotifier(
+              repoOverride: mockTokenRepository,
+              rsaUtilsOverride: mockRsaUtils,
+              // ioClientOverride: mockIOClient,
             )),
-        tokenFolderProvider.overrideWith((ref) => TokenFolderNotifier(repository: mockTokenFolderRepository)),
+        pushRequestProvider.overrideWith(
+          () => PushRequestNotifier(
+            rsaUtilsOverride: mockRsaUtils,
+            // ioClientOverride: mockIOClient,
+            pushRepoOverride: mockPushRequestRepository,
+            // pushProviderOverride: PushProvider(
+            //   rsaUtils: mockRsaUtils,
+            //   ioClient: mockIOClient,
+            // ),
+          ),
+        ),
+        tokenFolderProvider.overrideWith(() => TokenFolderNotifier(repoOverride: mockTokenFolderRepository)),
+        introductionNotifierProvider.overrideWith(() => IntroductionNotifier(repoOverride: mockIntroductionRepository)),
       ],
-      child: PrivacyIDEAAuthenticator(customization: ApplicationCustomization.defaultCustomization),
+      child: PrivacyIDEAAuthenticator(ApplicationCustomization.defaultCustomization),
     ));
 
     await _licensesViewTest(tester);
@@ -104,10 +158,13 @@ Future<void> _settingsViewTest(WidgetTester tester) async {
   expect(find.text(AppLocalizationsEn().theme), findsOneWidget);
   expect(find.text(AppLocalizationsEn().language), findsOneWidget);
   expect(find.text(AppLocalizationsEn().errorLogTitle), findsOneWidget);
-  expect(find.byType(SettingsGroup), findsNWidgets(5));
-  globalRef!.read(tokenProvider.notifier).handleQrCode(
-      'otpauth://pipush/label?url=http%3A%2F%2Fwww.example.com&ttl=10&issuer=issuer&enrollment_credential=enrollmentCredentials&v=1&serial=serial&serial=serial&sslverify=0');
+  expect(find.byType(SettingsGroup), findsNWidgets(6));
+  const qrCode =
+      'otpauth://pipush/label?url=http%3A%2F%2Fwww.example.com&ttl=10&issuer=issuer&enrollment_container=enrollmentCredentials&v=1&serial=serial&serial=serial&sslverify=0';
+  final notifier = globalRef!.read(tokenProvider.notifier);
+  await scanQrCode(resultHandlerList: [notifier], qrCode: qrCode);
+
   await pumpUntilFindNWidgets(tester, find.text(AppLocalizationsEn().pushToken), 1, const Duration(minutes: 5));
   expect(find.text(AppLocalizationsEn().pushToken), findsOneWidget);
-  expect(find.byType(SettingsGroup), findsNWidgets(5));
+  expect(find.byType(SettingsGroup), findsNWidgets(6));
 }

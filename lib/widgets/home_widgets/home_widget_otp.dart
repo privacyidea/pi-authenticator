@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../utils/app_customizer.dart';
+import '../../utils/customization/theme_extentions/extended_text_theme.dart';
 import '../../utils/utils.dart';
 import 'interfaces/flutter_home_widget_base.dart';
 import 'interfaces/flutter_home_widget_builder.dart';
@@ -48,7 +48,7 @@ class HomeWidgetOtp extends FlutterHomeWidgetBase {
 
   @override
   Widget build(BuildContext context) {
-    String text = otp.length > 10 ? insertCharAt(otp, '\n', otp.length ~/ 2) : insertCharAt(otp, ' ', otp.length ~/ 2);
+    String text = insertCharAt(otp, otp.length > 10 ? '\n' : ' ', (otp.length / 2).ceil());
     return SizedBox(
       width: logicalSize.width,
       height: logicalSize.height,

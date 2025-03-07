@@ -1,9 +1,29 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2025 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../model/enums/introduction.dart';
-import '../../../utils/riverpod_providers.dart';
+import '../../../utils/riverpod/riverpod_providers/generated_providers/app_constraints_notifier.dart';
+import '../../../utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
 import '../../../widgets/focused_item_as_overlay.dart';
 import '../../add_token_manually_view/add_token_manually_view.dart';
 import '../../settings_view/settings_view.dart';
@@ -18,8 +38,8 @@ class MainViewNavigationBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    BoxConstraints? constraints = ref.watch(appConstraintsProvider);
-    constraints ??= const BoxConstraints();
+    final introProv = ref.watch(introductionNotifierProvider);
+    final constraints = ref.watch(appConstraintsNotifierProvider);
     final navWidth = constraints.maxWidth;
     final navHeight = constraints.maxHeight * 0.10;
     return SizedBox(
@@ -44,9 +64,9 @@ class MainViewNavigationBar extends ConsumerWidget {
                   heightFactor: 0.6,
                   child: FocusedItemAsOverlay(
                       onComplete: () {
-                        ref.read(introductionProvider.notifier).complete(Introduction.scanQrCode);
+                        ref.read(introductionNotifierProvider.notifier).complete(Introduction.scanQrCode);
                       },
-                      isFocused: ref.watch(introductionProvider).isConditionFulfilled(ref, Introduction.scanQrCode),
+                      isFocused: introProv.whenOrNull(data: (data) => data.isConditionFulfilled(ref, Introduction.scanQrCode)) ?? false,
                       tooltipWhenFocused: AppLocalizations.of(context)!.introScanQrCode,
                       child: const QrScannerButton()),
                 ),
@@ -68,14 +88,13 @@ class MainViewNavigationBar extends ConsumerWidget {
                           child: Padding(
                             padding: EdgeInsets.only(top: navHeight * 0.1, bottom: navHeight * 0.2),
                             child: AppBarItem(
+                              a11y: AppLocalizations.of(context)!.a11yAddTokenManuallyButton,
                               onPressed: () {
                                 Navigator.pushNamed(context, AddTokenManuallyView.routeName);
                               },
                               icon: FocusedItemAsOverlay(
-                                onComplete: () {
-                                  ref.read(introductionProvider.notifier).complete(Introduction.addTokenManually);
-                                },
-                                isFocused: ref.watch(introductionProvider).isConditionFulfilled(ref, Introduction.addTokenManually),
+                                onComplete: () => ref.read(introductionNotifierProvider.notifier).complete(Introduction.addManually),
+                                isFocused: introProv.whenOrNull(data: (data) => data.isConditionFulfilled(ref, Introduction.addManually)) ?? false,
                                 tooltipWhenFocused: AppLocalizations.of(context)!.introAddTokenManually,
                                 child: FittedBox(
                                   child: Icon(
@@ -94,10 +113,11 @@ class MainViewNavigationBar extends ConsumerWidget {
                           child: Padding(
                             padding: EdgeInsets.only(top: navHeight * 0.1, bottom: navHeight * 0.2),
                             child: FocusedItemAsOverlay(
-                              isFocused: ref.watch(introductionProvider).isConditionFulfilled(ref, Introduction.addFolder),
+                              isFocused: introProv.whenOrNull(data: (data) => data.isConditionFulfilled(ref, Introduction.addFolder)) ?? false,
                               tooltipWhenFocused: AppLocalizations.of(context)!.introAddFolder,
-                              onComplete: () => ref.read(introductionProvider.notifier).complete(Introduction.addFolder),
+                              onComplete: () => ref.read(introductionNotifierProvider.notifier).complete(Introduction.addFolder),
                               child: AppBarItem(
+                                a11y: AppLocalizations.of(context)!.a11yAddFolderButton,
                                 onPressed: () {
                                   showDialog(
                                     context: context,
@@ -121,6 +141,7 @@ class MainViewNavigationBar extends ConsumerWidget {
                           child: Padding(
                             padding: EdgeInsets.only(top: navHeight * 0.2, bottom: navHeight * 0.1),
                             child: AppBarItem(
+                              a11y: AppLocalizations.of(context)!.a11ySettingsButton,
                               onPressed: () {
                                 Navigator.pushNamed(context, SettingsView.routeName);
                               },

@@ -1,21 +1,38 @@
-import 'dart:ui';
-
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2025 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:privacyidea_authenticator/utils/view_utils.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../../../l10n/app_localizations.dart';
 import '../../../../../../model/enums/introduction.dart';
 import '../../../../../../model/tokens/day_password_token.dart';
-import '../../../../../../utils/app_customizer.dart';
-import '../../../../../../utils/globals.dart';
+import '../../../../../../utils/customization/theme_extentions/action_theme.dart';
 import '../../../../../../utils/lock_auth.dart';
-import '../../../../../../utils/riverpod_providers.dart';
-import '../../../../../../utils/utils.dart';
-import '../../../../../../widgets/dialog_widgets/default_dialog.dart';
+import '../../../../../../utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
 import '../../../../../../widgets/focused_item_as_overlay.dart';
-import '../../token_action.dart';
+import '../../default_token_actions/default_edit_action_dialog.dart';
+import '../../slideable_action.dart';
 
-class EditDayPassowrdTokenAction extends TokenAction {
+class EditDayPassowrdTokenAction extends ConsumerSlideableAction {
   final DayPasswordToken token;
 
   const EditDayPassowrdTokenAction({
@@ -28,7 +45,7 @@ class EditDayPassowrdTokenAction extends TokenAction {
       backgroundColor: Theme.of(context).extension<ActionTheme>()!.editColor,
       foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
       onPressed: (context) async {
-        if (token.isLocked && await lockAuth(localizedReason: AppLocalizations.of(context)!.editLockedToken) == false) {
+        if (token.isLocked && !await lockAuth(reason: (localization) => localization.editLockedToken, localization: AppLocalizations.of(context)!)) {
           return;
         }
         _showDialog();
@@ -37,8 +54,12 @@ class EditDayPassowrdTokenAction extends TokenAction {
         tooltipWhenFocused: AppLocalizations.of(context)!.introEditToken,
         childIsMoving: true,
         alignment: Alignment.bottomCenter,
-        isFocused: ref.watch(introductionProvider).isConditionFulfilled(ref, Introduction.editToken),
-        onComplete: () => ref.read(introductionProvider.notifier).complete(Introduction.editToken),
+        isFocused: ref.watch(introductionNotifierProvider).when(
+              data: (value) => value.isConditionFulfilled(ref, Introduction.editToken),
+              error: (Object error, StackTrace stackTrace) => false,
+              loading: () => false,
+            ),
+        onComplete: () => ref.read(introductionNotifierProvider.notifier).complete(Introduction.editToken),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -53,92 +74,19 @@ class EditDayPassowrdTokenAction extends TokenAction {
         ),
       ));
 
-  void _showDialog() {
-    final tokenLabel = TextEditingController(text: token.label);
-    final imageUrl = TextEditingController(text: token.tokenImage);
-    final period = token.period;
-    final algorithm = token.algorithm;
-
-    showDialog(
-      useRootNavigator: false,
-      context: globalNavigatorKey.currentContext!,
-      builder: (BuildContext context) => BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-        child: DefaultDialog(
-          scrollable: true,
-          title: Text(
-            AppLocalizations.of(context)!.editToken,
-            overflow: TextOverflow.fade,
-            softWrap: false,
-          ),
-          actions: [
-            TextButton(
-              child: Text(
-                AppLocalizations.of(context)!.cancel,
-                overflow: TextOverflow.fade,
-                softWrap: false,
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+  void _showDialog() => showAsyncDialog(
+        builder: (BuildContext context) => DefaultEditActionDialog(
+          token: token,
+          additionalChildren: [
+            ReadOnlyTextFormField(
+              text: token.algorithm.name,
+              labelText: AppLocalizations.of(context)!.algorithm,
             ),
-            TextButton(
-                child: Text(
-                  AppLocalizations.of(context)!.save,
-                  overflow: TextOverflow.fade,
-                  softWrap: false,
-                ),
-                onPressed: () async {
-                  globalRef
-                      ?.read(tokenProvider.notifier)
-                      .updateToken(token, (p0) => p0.copyWith(label: tokenLabel.text, tokenImage: imageUrl.text, period: period, algorithm: algorithm));
-                  Navigator.of(context).pop();
-                }),
+            ReadOnlyTextFormField(
+              text: token.period.toString().split('.').first,
+              labelText: AppLocalizations.of(context)!.period,
+            ),
           ],
-          content: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextFormField(
-                    controller: tokenLabel,
-                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.name),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return AppLocalizations.of(context)!.name;
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    controller: imageUrl,
-                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.imageUrl),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return AppLocalizations.of(context)!.imageUrl;
-                      }
-                      return null;
-                    },
-                  ),
-                  TextFormField(
-                    initialValue: enumAsString(algorithm),
-                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.algorithm),
-                    enabled: false,
-                  ),
-                  TextFormField(
-                    initialValue: period.toString().split('.').first,
-                    decoration: InputDecoration(labelText: AppLocalizations.of(context)!.period),
-                    enabled: false,
-                  ),
-                ],
-              ),
-            ),
-          ),
         ),
-      ),
-    );
-  }
+      );
 }

@@ -1,21 +1,41 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2025 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:privacyidea_authenticator/utils/view_utils.dart';
 
 import '../../../../../../l10n/app_localizations.dart';
 import '../../../../../../model/enums/introduction.dart';
 import '../../../../../../model/tokens/push_token.dart';
-import '../../../../../../repo/secure_token_repository.dart';
-import '../../../../../../utils/app_customizer.dart';
+import '../../../../../../utils/customization/theme_extentions/action_theme.dart';
 import '../../../../../../utils/globals.dart';
 import '../../../../../../utils/lock_auth.dart';
-import '../../../../../../utils/riverpod_providers.dart';
-import '../../../../../../widgets/dialog_widgets/default_dialog.dart';
-import '../../../../../../widgets/enable_text_form_field_after_many_taps.dart';
+import '../../../../../../utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
+import '../../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
+import '../../../../../../widgets/enable_text_edit_after_many_taps.dart';
 import '../../../../../../widgets/focused_item_as_overlay.dart';
-import '../../token_action.dart';
+import '../../default_token_actions/default_edit_action_dialog.dart';
+import '../../slideable_action.dart';
 
-class EditPushTokenAction extends TokenAction {
+class EditPushTokenAction extends ConsumerSlideableAction {
   final PushToken token;
 
   const EditPushTokenAction({
@@ -24,129 +44,86 @@ class EditPushTokenAction extends TokenAction {
   });
 
   @override
-  CustomSlidableAction build(BuildContext context, WidgetRef ref) => CustomSlidableAction(
-      backgroundColor: Theme.of(context).extension<ActionTheme>()!.editColor,
-      foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
-      onPressed: (context) async {
-        if (token.isLocked && await lockAuth(localizedReason: AppLocalizations.of(context)!.editLockedToken) == false) {
-          return;
-        }
-        _showDialog();
-      },
-      child: FocusedItemAsOverlay(
-        tooltipWhenFocused: AppLocalizations.of(context)!.introEditToken,
-        childIsMoving: true,
-        alignment: Alignment.bottomCenter,
-        isFocused: ref.watch(introductionProvider).isConditionFulfilled(ref, Introduction.editToken),
-        onComplete: () => ref.read(introductionProvider.notifier).complete(Introduction.editToken),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Icon(Icons.edit),
-            Text(
-              AppLocalizations.of(context)!.edit,
-              overflow: TextOverflow.fade,
-              softWrap: false,
-            ),
-          ],
-        ),
-      ));
-
-  void _showDialog() {
-    final tokenLabel = TextEditingController(text: token.label);
-    final pushUrl = TextEditingController(text: token.url.toString());
-    final imageUrl = TextEditingController(text: token.tokenImage);
-    final tokenSersial = token.serial;
-    final publicTokenKey = token.publicTokenKey;
-
-    showDialog(
-      useRootNavigator: false,
-      context: globalNavigatorKey.currentContext!,
-      builder: (BuildContext context) => DefaultDialog(
-        scrollable: true,
-        title: Text(
-          AppLocalizations.of(context)!.editToken,
-          overflow: TextOverflow.fade,
-          softWrap: false,
-        ),
-        actions: [
-          TextButton(
-            child: Text(
-              AppLocalizations.of(context)!.cancel,
-              overflow: TextOverflow.fade,
-              softWrap: false,
-            ),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          TextButton(
-              child: Text(
-                AppLocalizations.of(context)!.save,
+  CustomSlidableAction build(BuildContext context, WidgetRef ref) {
+    final appLocalizations = AppLocalizations.of(context)!;
+    return CustomSlidableAction(
+        backgroundColor: Theme.of(context).extension<ActionTheme>()!.editColor,
+        foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
+        onPressed: (context) async {
+          if (token.isLocked && !await lockAuth(reason: (localization) => localization.editLockedToken, localization: appLocalizations)) {
+            return;
+          }
+          _showDialog();
+        },
+        child: FocusedItemAsOverlay(
+          tooltipWhenFocused: appLocalizations.introEditToken,
+          childIsMoving: true,
+          alignment: Alignment.bottomCenter,
+          isFocused: ref.watch(introductionNotifierProvider).when(
+                data: (value) => value.isConditionFulfilled(ref, Introduction.editToken),
+                error: (Object error, StackTrace stackTrace) => false,
+                loading: () => false,
+              ),
+          onComplete: () => ref.read(introductionNotifierProvider.notifier).complete(Introduction.editToken),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Icon(Icons.edit),
+              Text(
+                appLocalizations.edit,
                 overflow: TextOverflow.fade,
                 softWrap: false,
               ),
-              onPressed: () async {
-                globalRef?.read(tokenProvider.notifier).updateToken(
-                      token,
-                      (p0) => p0.copyWith(
-                        label: tokenLabel.text,
-                        url: Uri.parse(pushUrl.text),
-                        tokenImage: imageUrl.text,
-                      ),
-                    );
-                Navigator.of(context).pop();
-              }),
-        ],
-        content: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormField(
-                initialValue: tokenSersial,
-                decoration: const InputDecoration(labelText: 'Serial'),
-                enabled: false,
-              ),
-              EnableTextFormFieldAfterManyTaps(
-                  controller: pushUrl,
-                  decoration: const InputDecoration(labelText: 'URL'),
-                  validator: (value) {
-                    if (value!.isEmpty) return 'URL';
-                    return null;
-                  }),
-              TextFormField(
-                controller: tokenLabel,
-                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.name),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return AppLocalizations.of(context)!.name;
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: imageUrl,
-                decoration: InputDecoration(labelText: AppLocalizations.of(context)!.imageUrl),
-                validator: (value) {
-                  if (value!.isEmpty) return AppLocalizations.of(context)!.imageUrl;
-                  return null;
-                },
+            ],
+          ),
+        ));
+  }
+
+  String? _validatePushEndpointUrl(String? value, BuildContext context) {
+    if (value == null || value.isEmpty) return AppLocalizations.of(context)!.mustNotBeEmpty(AppLocalizations.of(context)!.pushEndpointUrl);
+    final uri = Uri.tryParse(value);
+    if (uri == null || uri.host.isEmpty || uri.scheme.isEmpty || uri.path.isEmpty) {
+      return AppLocalizations.of(context)!.exampleUrl;
+    }
+    return null;
+  }
+
+  void _showDialog() => showAsyncDialog(
+        builder: (BuildContext context) {
+          final pushUrl = TextEditingController(text: token.url.toString());
+          final appLocalizations = AppLocalizations.of(context)!;
+          return DefaultEditActionDialog(
+            token: token,
+            onSaveButtonPressed: ({required newLabel, newImageUrl}) async {
+              globalRef?.read(tokenProvider.notifier).updateToken(
+                    token,
+                    (p0) => p0.copyWith(
+                      label: newLabel,
+                      url: Uri.parse(pushUrl.text),
+                      tokenImage: newImageUrl,
+                    ),
+                  );
+              Navigator.of(context).pop();
+            },
+            additionalChildren: [
+              EnableTextEditAfterManyTaps(
+                controller: pushUrl,
+                labelText: appLocalizations.pushEndpointUrl,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                validator: (value) => _validatePushEndpointUrl(value, context),
               ),
               const SizedBox(height: 10),
               ExpansionTile(
                 title: Text(
-                  AppLocalizations.of(context)!.publicKey,
-                  style: Theme.of(context).textTheme.titleMedium,
+                  appLocalizations.publicKey,
+                  style: Theme.of(context).textTheme.titleSmall,
                   overflow: TextOverflow.fade,
                   softWrap: false,
                 ),
                 children: [
-                  Text(
-                    publicTokenKey ?? AppLocalizations.of(context)!.noPublicKey,
+                  SelectableText(
+                    token.publicTokenKey ?? appLocalizations.noPublicKey,
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ],
@@ -154,35 +131,20 @@ class EditPushTokenAction extends TokenAction {
               const Divider(),
               ExpansionTile(
                 title: Text(
-                  AppLocalizations.of(context)!.firebaseToken,
-                  style: Theme.of(context).textTheme.titleMedium,
+                  appLocalizations.firebaseToken,
+                  style: Theme.of(context).textTheme.titleSmall,
                   overflow: TextOverflow.fade,
                   softWrap: false,
                 ),
                 children: [
-                  FutureBuilder(
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return Text(
-                          snapshot.data != null ? snapshot.data.toString() : AppLocalizations.of(context)!.noFbToken,
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        );
-                      } else {
-                        return const Text(
-                          '',
-                          overflow: TextOverflow.fade,
-                          softWrap: false,
-                        );
-                      }
-                    },
-                    future: SecureTokenRepository.getCurrentFirebaseToken(),
-                  ),
+                  SelectableText(
+                    token.fbToken != null ? token.fbToken.toString() : appLocalizations.noFbToken,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  )
                 ],
               ),
             ],
-          ),
-        ),
-      ),
-    );
-  }
+          );
+        },
+      );
 }

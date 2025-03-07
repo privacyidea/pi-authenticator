@@ -1,11 +1,9 @@
-// ignore_for_file: constant_identifier_names
-
 /*
   privacyIDEA Authenticator
 
   Authors: Timo Sturm <timo.sturm@netknights.it>
            Frank Merkel <frank.merkel@netknights.it>
-  Copyright (c) 2017-2023 NetKnights GmbH
+  Copyright (c) 2017-2025 NetKnights GmbH
 
   Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
@@ -20,68 +18,44 @@
   limitations under the License.
 */
 
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:mutex/mutex.dart';
-import 'package:privacyidea_authenticator/interfaces/repo/token_repository.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/model/tokens/token.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
-import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
-import 'package:privacyidea_authenticator/utils/view_utils.dart';
+import 'package:privacyidea_authenticator/widgets/elevated_delete_button.dart';
 
+import '../interfaces/repo/token_repository.dart';
+import '../l10n/app_localizations.dart';
+import '../model/tokens/token.dart';
+import '../utils/globals.dart';
+import '../utils/identifiers.dart';
+import '../utils/logger.dart';
+import '../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
+import '../utils/view_utils.dart';
 import '../views/settings_view/settings_view_widgets/send_error_dialog.dart';
 import '../widgets/dialog_widgets/default_dialog.dart';
-import '../widgets/dialog_widgets/default_dialog_button.dart';
+import 'secure_storage_mutexed.dart';
 
-// TODO How to test the behavior of this class?
 class SecureTokenRepository implements TokenRepository {
   const SecureTokenRepository();
 
-  // Use this to lock critical sections of code.
-  static final Mutex _m = Mutex();
-
-  /// Function [f] is executed, protected by Mutex [_m].
-  /// That means, that calls of this method will always be executed serial.
-  static protect(Future<dynamic> Function() f) => _m.protect(f);
-
-  static const FlutterSecureStorage _storage = FlutterSecureStorage();
-
-  static const String _GLOBAL_PREFIX = 'app_v3_';
+  static const SecureStorageMutexed _storage = SecureStorageMutexed();
+  static const String _TOKEN_PREFIX = GLOBAL_SECURE_REPO_PREFIX;
 
   // ###########################################################################
   // TOKENS
   // ###########################################################################
 
-  /// Saves [token]s securely on the device, if [token] already exists
-  /// in the storage the existing value is overwritten.
-  /// Returns all tokens that could not be saved.
   @override
-  Future<List<Token>> saveOrReplaceTokens(List<Token> tokens) async {
-    final failedTokens = <Token>[];
-    for (var element in tokens) {
-      if (!await _saveOrReplaceToken(element)) {
-        failedTokens.add(element);
-      }
+  Future<Token?> loadToken(String id) async {
+    final token = await _storage.read(key: _TOKEN_PREFIX + id);
+    Logger.info('Loading token from secure storage: $id');
+    if (token == null) {
+      Logger.warning('Token not found in secure storage');
+      return null;
     }
-    if (failedTokens.isNotEmpty) {
-      Logger.warning('Could not save all tokens to secure storage', name: 'storage_utils.dart#saveOrReplaceTokens', stackTrace: StackTrace.current);
-    } else {
-      Logger.info('Saved all (${tokens.length}) tokens to secure storage');
-    }
-    return failedTokens;
-  }
-
-  Future<bool> _saveOrReplaceToken(Token token) async {
-    try {
-      await _storage.write(key: _GLOBAL_PREFIX + token.id, value: jsonEncode(token));
-    } catch (_) {
-      return false;
-    }
-    return true;
+    return Token.fromJson(jsonDecode(token));
   }
 
   /// Returns a list of all tokens that are saved in the secure storage of
@@ -93,7 +67,7 @@ class SecureTokenRepository implements TokenRepository {
     try {
       keyValueMap = await _storage.readAll();
     } on PlatformException catch (e, s) {
-      Logger.warning("Token found, but could not be decrypted.", name: 'storage_utils.dart#loadTokens', error: e, stackTrace: s, verbose: true);
+      Logger.warning("Token found, but could not be decrypted.", error: e, stackTrace: s, verbose: true);
       _decryptErrorDialog();
       return [];
     }
@@ -103,71 +77,101 @@ class SecureTokenRepository implements TokenRepository {
     for (var i = 0; i < keyValueMap.length; i++) {
       final value = keyValueMap.values.elementAt(i);
       final key = keyValueMap.keys.elementAt(i);
-      Map<String, dynamic>? serializedToken;
+      Map<String, dynamic>? valueJson;
+      if (!key.startsWith(_TOKEN_PREFIX)) {
+        // Every token should start with the global prefix.
+        // But not everything that starts with the global prefix is a token.
+        continue;
+      }
 
       try {
-        serializedToken = jsonDecode(value);
-      } on FormatException catch (e, s) {
-        if (key == _CURRENT_APP_TOKEN_KEY || key == _NEW_APP_TOKEN_KEY) {
-          continue;
-        }
-        _storage.delete(key: key);
-        Logger.warning(
-          'Could not deserialize token from secure storage. Value: $value, key: $key',
-          name: 'storage_utils.dart#loadAllTokens',
-          error: e,
-          stackTrace: s,
-          verbose: true,
-        );
-        // Skip everything that does not fit a serialized token
+        valueJson = jsonDecode(value);
+      } on FormatException catch (_) {
+        // Value should be a json. Skip everything that is not a json.
+        Logger.debug('Value is not a json');
         continue;
       }
 
-      if (serializedToken == null || !serializedToken.containsKey('type')) {
-        Logger.warning(
-            'Could not deserialize token from secure storage. Value: $value\nserializedToken = $serializedToken\ncontainsKey(type) = ${serializedToken?.containsKey('type')} ',
-            name: 'storage_utils.dart#loadAllTokens');
-        // Skip everything that fits for deserialization but is not a token
+      if (valueJson == null) {
+        // If valueJson is null or does not contain a type, it can't be a token. Skip it.
+        Logger.debug('Value Json is null');
+        continue;
+      }
+      if (!valueJson.containsKey('type')) {
+        // If valueJson is null or does not contain a type, it can't be a token. Skip it.
+        Logger.debug('Value Json does not contain a type');
         continue;
       }
 
-      // TODO token.version might be deprecated, is there a reason to use it?
-      // TODO when the token version (token.version) changed handle this here.
-
-      // TODO Is this still needed? Can a json annotation be used instead to
-      //  define default values?
-      // Handle new fields here
-      serializedToken['issuer'] ??= '';
-      serializedToken['label'] ??= '';
-
-      tokenList.add(Token.fromJson(serializedToken));
+      // When the token version (token.version) changed handle this here.
+      Logger.info('Loading token from secure storage: ${valueJson['id']}');
+      try {
+        tokenList.add(Token.fromJson(valueJson));
+      } catch (e, s) {
+        Logger.error('Could not load token from secure storage', error: e, stackTrace: s);
+      }
     }
 
     //Logger.info('Loaded ${tokenList.length} tokens from secure storage');
     return tokenList;
   }
 
+  /// Saves [token]s securely on the device, if [token] already exists
+  /// in the storage the existing value is overwritten.
+  /// Returns all tokens that could not be saved.
   @override
-  Future<List<Token>> deleteTokens(List<Token> tokens) async {
-    final failedTokens = <Token>[];
+  Future<List<T>> saveOrReplaceTokens<T extends Token>(List<T> tokens) async {
+    if (tokens.isEmpty) return [];
+    final failedTokens = <T>[];
     for (var element in tokens) {
-      if (!await _deleteToken(element)) {
+      if (!await saveOrReplaceToken(element)) {
         failedTokens.add(element);
       }
     }
     if (failedTokens.isNotEmpty) {
-      Logger.warning('Could not delete all tokens from secure storage',
-          name: 'storage_utils.dart#deleteTokens', error: 'Failed tokens: $failedTokens', stackTrace: StackTrace.current);
+      Logger.error(
+        'Could not save all tokens (${tokens.length - failedTokens.length}/${tokens.length}) to secure storage',
+        stackTrace: StackTrace.current,
+      );
+    } else {
+      Logger.info('Saved ${tokens.length}/${tokens.length} tokens to secure storage');
+    }
+    return failedTokens;
+  }
+
+  @override
+  Future<bool> saveOrReplaceToken(Token token) async {
+    try {
+      await _storage.write(key: _TOKEN_PREFIX + token.id, value: jsonEncode(token.toJson()));
+    } catch (e) {
+      Logger.warning('Could not save token to secure storage', error: e, verbose: true);
+      return false;
+    }
+    return true;
+  }
+
+  /// Deletes the saved jsons of [tokens] from the secure storage.
+  @override
+  Future<List<T>> deleteTokens<T extends Token>(List<T> tokens) async {
+    final failedTokens = <T>[];
+    for (var element in tokens) {
+      if (!await deleteToken(element)) {
+        failedTokens.add(element);
+      }
+    }
+    if (failedTokens.isNotEmpty) {
+      Logger.warning('Could not delete all tokens from secure storage', error: 'Failed tokens: $failedTokens', stackTrace: StackTrace.current);
     }
     return failedTokens;
   }
 
   /// Deletes the saved json of [token] from the secure storage.
-  Future<bool> _deleteToken(Token token) async {
+  @override
+  Future<bool> deleteToken(Token token) async {
     try {
-      _storage.delete(key: _GLOBAL_PREFIX + token.id);
+      _storage.delete(key: _TOKEN_PREFIX + token.id);
     } catch (e, s) {
-      Logger.warning('Could not delete token from secure storage', name: 'storage_utils.dart#deleteToken', error: e, stackTrace: s);
+      Logger.warning('Could not delete token from secure storage', error: e, stackTrace: s);
       return false;
     }
     Logger.info('Token deleted from secure storage');
@@ -175,105 +179,85 @@ class SecureTokenRepository implements TokenRepository {
   }
 
   // ###########################################################################
-  // FIREBASE CONFIG
+  // ERROR HANDLING
   // ###########################################################################
 
-  static const _CURRENT_APP_TOKEN_KEY = '${_GLOBAL_PREFIX}CURRENT_APP_TOKEN';
-
-  static Future<void> setCurrentFirebaseToken(String str) async => _storage.write(key: _CURRENT_APP_TOKEN_KEY, value: str);
-
-  static Future<String?> getCurrentFirebaseToken() async => _storage.read(key: _CURRENT_APP_TOKEN_KEY);
-
-  static const _NEW_APP_TOKEN_KEY = '${_GLOBAL_PREFIX}NEW_APP_TOKEN';
-
-  // This is used for checking if the token was updated.
-  static Future<void> setNewFirebaseToken(String str) async => _storage.write(key: _NEW_APP_TOKEN_KEY, value: str);
-
-  static Future<String?> getNewFirebaseToken() async => _storage.read(key: _NEW_APP_TOKEN_KEY);
-}
-
-Future<void> _decryptErrorDialog() => showAsyncDialog(
-      barrierDismissible: false,
-      builder: (context) => DefaultDialog(
-        title: Text(AppLocalizations.of(context)!.decryptErrorTitle),
-        content: Text(AppLocalizations.of(context)!.decryptErrorContent),
-        actions: [
-          DefaultDialogButton(
-            onPressed: () async {
-              final isDataDeleted = await _decryptErrorDeleteTokenConfirmationDialog();
-              if (isDataDeleted == true) {
+  Future<void> _decryptErrorDialog() => showAsyncDialog(
+        barrierDismissible: false,
+        builder: (context) => DefaultDialog(
+          title: Text(AppLocalizations.of(context)!.decryptErrorTitle),
+          content: Text(AppLocalizations.of(context)!.decryptErrorContent),
+          actions: [
+            TextButton(
+                child: Text(AppLocalizations.of(context)!.decryptErrorButtonSendError),
+                onPressed: () async {
+                  Logger.info('Sending error report');
+                  await showDialog(
+                    context: context,
+                    builder: (context) => const SendErrorDialog(),
+                    useRootNavigator: false,
+                  );
+                }),
+            ElevatedDeleteButton(
+              onPressed: () async {
+                final isDataDeleted = await _decryptErrorDeleteTokenConfirmationDialog();
+                if (isDataDeleted == true) {
+                  // ignore: use_build_context_synchronously
+                  Navigator.pop(context);
+                  globalRef?.read(tokenProvider.notifier).loadStateFromRepo();
+                }
+              },
+              text: AppLocalizations.of(context)!.decryptErrorButtonDelete,
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                showDialog(
+                  barrierDismissible: false,
+                  context: context,
+                  builder: (context) => const Center(
+                    child: SizedBox(
+                      height: 50,
+                      width: 50,
+                      child: CircularProgressIndicator.adaptive(),
+                    ),
+                  ),
+                );
+                await Future.delayed(
+                  const Duration(milliseconds: 500),
+                );
+                // ignore: use_build_context_synchronously
+                Navigator.pop(context);
                 // ignore: use_build_context_synchronously
                 Navigator.pop(context);
                 globalRef?.read(tokenProvider.notifier).loadStateFromRepo();
-              }
-            },
-            child: Text(
-              AppLocalizations.of(context)!.decryptErrorButtonDelete,
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
+              },
+              child: Text(AppLocalizations.of(context)!.decryptErrorButtonRetry),
             ),
-          ),
-          DefaultDialogButton(
-              child: Text(AppLocalizations.of(context)!.decryptErrorButtonSendError),
-              onPressed: () async {
-                Logger.info('Sending error report', name: 'storage_utils.dart#_decryptErrorDialog');
-                await showDialog(
-                  context: context,
-                  builder: (context) => const SendErrorDialog(),
-                  useRootNavigator: false,
-                );
-              }),
-          DefaultDialogButton(
-            onPressed: () async {
-              showDialog(
-                barrierDismissible: false,
-                context: context,
-                builder: (context) => const Center(
-                  child: SizedBox(
-                    height: 50,
-                    width: 50,
-                    child: CircularProgressIndicator(),
-                  ),
-                ),
-              );
-              await Future.delayed(
-                const Duration(milliseconds: 500),
-              );
-              // ignore: use_build_context_synchronously
-              Navigator.pop(context);
-              // ignore: use_build_context_synchronously
-              Navigator.pop(context);
-              globalRef?.read(tokenProvider.notifier).loadStateFromRepo();
-            },
-            child: Text(AppLocalizations.of(context)!.decryptErrorButtonRetry),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
 
-Future<bool?> _decryptErrorDeleteTokenConfirmationDialog() => showAsyncDialog<bool>(
-      builder: (context) => DefaultDialog(
-        title: Text(AppLocalizations.of(context)!.decryptErrorTitle),
-        content: Text(AppLocalizations.of(context)!.decryptErrorDeleteConfirmationContent),
-        actions: [
-          DefaultDialogButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(AppLocalizations.of(context)!.cancel),
-          ),
-          DefaultDialogButton(
-            onPressed: () async {
-              Logger.info(
-                'Deleting all tokens from secure storage',
-                name: 'storage_utils.dart#_decryptErrorDeleteTokenConfirmationDialog',
-                verbose: true,
-              );
-              Navigator.pop(context, true);
-              await SecureTokenRepository._storage.deleteAll();
-            },
-            child: Text(
-              AppLocalizations.of(context)!.decryptErrorButtonDelete,
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
+  Future<bool?> _decryptErrorDeleteTokenConfirmationDialog() => showAsyncDialog<bool>(
+        builder: (context) => DefaultDialog(
+          title: Text(AppLocalizations.of(context)!.decryptErrorTitle),
+          content: Text(AppLocalizations.of(context)!.decryptErrorDeleteConfirmationContent),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text(AppLocalizations.of(context)!.cancel),
             ),
-          ),
-        ],
-      ),
-    );
+            ElevatedDeleteButton(
+              onPressed: () async {
+                Logger.info(
+                  'Deleting all tokens from secure storage',
+                  verbose: true,
+                );
+                Navigator.pop(context, true);
+                await SecureTokenRepository._storage.deleteAll();
+              },
+              text: AppLocalizations.of(context)!.decryptErrorButtonDelete,
+            ),
+          ],
+        ),
+      );
+}

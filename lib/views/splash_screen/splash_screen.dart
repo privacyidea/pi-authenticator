@@ -1,124 +1,111 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2024-2025 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../model/enums/introduction.dart';
+import '../../../../../../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
+import '../../model/enums/app_feature.dart';
 import '../../utils/app_info_utils.dart';
+import '../../utils/customization/application_customization.dart';
 import '../../utils/home_widget_utils.dart';
 import '../../utils/logger.dart';
-import '../../utils/riverpod_providers.dart';
+import '../../utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
+import '../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../main_view/main_view.dart';
-import '../onboarding_view/onboarding_view.dart';
-import '../view_interface.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   static const routeName = '/';
-  static Widget? _initialView;
-  static bool didNavigated = false;
-
-  final Widget appImage;
-  final Widget appIcon;
-  final String appName;
-
-  const SplashScreen({required this.appImage, required this.appIcon, required this.appName, super.key});
-
+  final ApplicationCustomization customization;
+  const SplashScreen({required this.customization, super.key});
   @override
   ConsumerState<SplashScreen> createState() => _SplashScreenState();
-
-  static void setInitialView(Widget initialView) {
-    if (_initialView != null) {
-      Logger.warning('Initial view is already set. Ignoring new initial view: $initialView', name: 'splash_screen.dart#setInitialView');
-      return;
-    }
-    if (didNavigated) {
-      Logger.warning('Splashscreen already navigated. Ignoring new initial view: $initialView', name: 'splash_screen.dart#setInitialView');
-      return;
-    }
-    _initialView = initialView;
-  }
 }
 
 class _SplashScreenState extends ConsumerState<SplashScreen> {
   var _appIconIsVisible = false;
   final _splashScreenDuration = const Duration(milliseconds: 400);
   final _splashScreenDelay = const Duration(milliseconds: 250);
+  late final ApplicationCustomization _customization;
 
   @override
   void initState() {
     super.initState();
-
-    Logger.info('Starting app.', name: 'main.dart#initState');
-    Future.delayed(_splashScreenDelay, () {
-      if (mounted) {
-        setState(() {
-          _appIconIsVisible = true;
-        });
+    _customization = widget.customization;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_customization.disabledFeatures.contains(AppFeature.introductions)) {
+        ref.read(introductionNotifierProvider.notifier).completeAll();
       }
+    });
+
+    Logger.info('Starting app.');
+    Future.delayed(_splashScreenDelay, () {
+      if (mounted) setState(() => _appIconIsVisible = true);
+
       Future.wait(
         <Future>[
           Future.delayed(_splashScreenDuration),
-          ref.read(settingsProvider.notifier).loadingRepo,
-          ref.read(tokenProvider.notifier).loadingRepo,
-          ref.read(introductionProvider.notifier).loadingRepo,
-          AppInfoUtils.init(),
+          ref.read(tokenProvider.notifier).initState,
+          InfoUtils.init(),
           HomeWidgetUtils().homeWidgetInit(),
         ],
         eagerError: true,
-        cleanUp: (error) {
-          Logger.error('Error while loading the app.', error: error, stackTrace: StackTrace.current, name: 'main.dart#initState');
+        cleanUp: (_) {
+          _navigate();
         },
-      ).then((values) => _navigate());
+      ).catchError((error) async {
+        Logger.error('Error while loading the app.', error: error, stackTrace: StackTrace.current);
+
+        if (!mounted) return [];
+        final tokenState = ref.read(tokenProvider);
+        ref.read(tokenContainerProvider.notifier).syncContainers(tokenState: tokenState, isManually: false);
+        _navigate();
+        return [];
+      }).then((values) async {
+        if (!mounted) return;
+        final tokenState = ref.read(tokenProvider);
+        ref.read(tokenContainerProvider.notifier).syncContainers(tokenState: tokenState, isManually: false);
+        return _navigate();
+      });
     });
   }
 
   @override
   void dispose() {
-    Logger.info('Disposing Splash Screen', name: 'main.dart#dispose');
+    Logger.info('Disposing Splash Screen');
     super.dispose();
   }
 
-  Future<void> _navigate() async {
-    SplashScreen.didNavigated = true;
-    if (SplashScreen._initialView != null) {
-      await Navigator.push<bool>(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (_, __, ___) => SplashScreen._initialView!,
-          transitionDuration: _splashScreenDuration,
-          transitionsBuilder: (_, a, __, view) => FadeTransition(
-            opacity: CurvedAnimation(
-              curve: const Interval(0, 1, curve: Curves.easeOut),
-              parent: a,
-            ),
-            child: view,
-          ),
-        ),
-      );
+  void _navigate() async {
+    if (_customization.disabledFeatures.isNotEmpty) {
+      Logger.info('Disabled features: ${_customization.disabledFeatures}');
     }
-
-    _pushReplace();
-  }
-
-  void _pushReplace() {
-    final isFirstRun = ref.read(introductionProvider).isConditionFulfilled(ref, Introduction.introductionScreen) && ref.read(settingsProvider).isFirstRun;
-    final ViewWidget nextView = isFirstRun ? OnboardingView(appName: widget.appName) : MainView(appName: widget.appName, appIcon: widget.appIcon);
-    final routeBuilder = SplashScreen._initialView == null
-        ? PageRouteBuilder(
-            pageBuilder: (_, __, ___) => nextView,
-            transitionDuration: _splashScreenDuration,
-            settings: nextView.routeSettings,
-            transitionsBuilder: (_, a, __, view) => FadeTransition(
-              opacity: CurvedAnimation(
-                curve: const Interval(0, 1, curve: Curves.easeOut),
-                parent: a,
-              ),
-              child: view,
-            ),
-          )
-        : PageRouteBuilder(
-            pageBuilder: (_, __, ___) => nextView,
-          );
+    // Idle until the splash screen is the top route.
+    // By default it is the top route, but it can be overridden by pushing a new route before initializing the app, e.g. by a deep link.
+    await Future.doWhile(() async {
+      await Future.delayed(const Duration(milliseconds: 100));
+      if (!mounted) return false;
+      return (ModalRoute.of(context)?.isCurrent == false);
+    });
+    if (!mounted) return;
     Navigator.of(context).popUntil((route) => route.isFirst);
-    Navigator.pushReplacement(context, routeBuilder);
+    Navigator.pushReplacementNamed(context, MainView.routeName);
   }
 
   @override
@@ -132,7 +119,11 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
           curve: Curves.easeOut,
           child: Padding(
             padding: const EdgeInsets.all(32.0),
-            child: widget.appImage,
+            child: SizedBox(
+              height: 99999,
+              width: 99999,
+              child: _customization.splashScreenImage.getWidget,
+            ),
           ),
         ),
       ),

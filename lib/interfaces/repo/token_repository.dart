@@ -1,9 +1,40 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2025 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import '../../model/tokens/token.dart';
 
 abstract class TokenRepository {
-  Future<List<Token>> saveOrReplaceTokens(List<Token> tokens);
+  /// Returns the saved Token with the given id.
+  Future<Token?> loadToken(String id);
+
+  /// Returns all saved Tokens.
   Future<List<Token>> loadTokens();
 
-  //Returns the tokens that were not deleted
-  Future<List<Token>> deleteTokens(List<Token> tokens);
+  /// Returns true if the Token was saved successfully.
+  Future<bool> saveOrReplaceToken(Token token);
+
+  /// Returns the tokens that were not saved successfully.
+  Future<List<T>> saveOrReplaceTokens<T extends Token>(List<T> tokens);
+
+  /// Returns true if the Token was deleted successfully.
+  Future<bool> deleteToken(Token token);
+
+  /// Returns the tokens that were not deleted successfully.
+  Future<List<T>> deleteTokens<T extends Token>(List<T> tokens);
 }

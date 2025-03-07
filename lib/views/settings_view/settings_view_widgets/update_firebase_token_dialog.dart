@@ -3,7 +3,7 @@
 
   Authors: Timo Sturm <timo.sturm@netknights.it>
            Frank Merkel <frank.merkel@netknights.it>
-  Copyright (c) 2017-2023 NetKnights GmbH
+  Copyright (c) 2017-2025 NetKnights GmbH
 
   Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
@@ -19,19 +19,25 @@
 */
 
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../l10n/app_localizations.dart';
+import '../../../model/tokens/push_token.dart';
+import '../../../utils/logger.dart';
+import '../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
+import '../../../utils/view_utils.dart';
 import '../../../widgets/dialog_widgets/default_dialog.dart';
 
-class UpdateFirebaseTokenDialog extends StatefulWidget {
-  const UpdateFirebaseTokenDialog({super.key});
+class UpdateFirebaseTokenDialog extends ConsumerStatefulWidget {
+  final AppLocalizations appLocalizations;
+  const UpdateFirebaseTokenDialog(this.appLocalizations, {super.key});
 
   @override
-  State<StatefulWidget> createState() => _UpdateFirebaseTokenDialogState();
+  ConsumerState<UpdateFirebaseTokenDialog> createState() => _UpdateFirebaseTokenDialogState();
 }
 
-class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
-  final Widget _content = const Row(
+class _UpdateFirebaseTokenDialogState extends ConsumerState<UpdateFirebaseTokenDialog> {
+  Widget _content = const Row(
     mainAxisAlignment: MainAxisAlignment.center,
     children: [CircularProgressIndicator()],
   );
@@ -39,6 +45,7 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
   @override
   void initState() {
     super.initState();
+    _updateFbTokens(widget.appLocalizations);
   }
 
   @override
@@ -54,5 +61,68 @@ class _UpdateFirebaseTokenDialogState extends State<UpdateFirebaseTokenDialog> {
         ),
       ],
     );
+  }
+
+  void _updateFbTokens(AppLocalizations localizations) async {
+    Logger.info('Starting update of firebase token.');
+
+    // TODO What to do with poll only tokens if google-services is used?
+    final pushTokensNotPollOnly = ref.read(tokenProvider).pushTokensNotPollOnly;
+
+    final tuple = await ref.read(tokenProvider.notifier).updateFirebaseTokens(tokens: pushTokensNotPollOnly);
+    if (tuple == null) {
+      showErrorStatusMessage(
+        message: (l) => l.firebaseToken,
+        details: (l) => l.errorSynchronizationNoNetworkConnection,
+      );
+      return;
+    }
+
+    final (tokenWithFailedUpdate, tokenWithoutUrl) = tuple;
+
+    if (tokenWithFailedUpdate.isEmpty && tokenWithoutUrl.isEmpty) {
+      if (!mounted) return;
+      setState(() {
+        _content = Text(AppLocalizations.of(context)!.allTokensSynchronized);
+      });
+    } else {
+      List<Widget> children = [];
+
+      if (tokenWithFailedUpdate.isNotEmpty) {
+        children.add(
+          Text('${localizations.syncFbTokenFailed}\n'),
+        );
+        for (PushToken p in tokenWithFailedUpdate) {
+          children.add(Text('• ${p.label}'));
+        }
+      }
+
+      if (tokenWithoutUrl.isNotEmpty) {
+        if (children.isNotEmpty) {
+          children.add(const Divider());
+        }
+
+        children.add(Text(localizations.tokensDoNotSupportSynchronization));
+        for (PushToken p in tokenWithoutUrl) {
+          children.add(Text('• ${p.label}'));
+        }
+      }
+
+      final ScrollController controller = ScrollController();
+      if (!mounted) return;
+      setState(() {
+        _content = Scrollbar(
+          thumbVisibility: true,
+          controller: controller,
+          child: SingleChildScrollView(
+            controller: controller,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: children,
+            ),
+          ),
+        );
+      });
+    }
   }
 }

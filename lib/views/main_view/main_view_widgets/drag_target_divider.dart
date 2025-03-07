@@ -1,29 +1,54 @@
-import 'package:collection/collection.dart';
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2025 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../model/mixins/sortable_mixin.dart';
 import '../../../model/token_folder.dart';
-import '../../../model/tokens/token.dart';
-import '../../../utils/riverpod_providers.dart';
+import '../../../utils/utils.dart';
 import '../../../widgets/drag_item_scroller.dart';
 
 /// DragTargetDivider is used to create a divider that can be used to move a sortable up or down in the list
 /// It will accept a Sortable from the type T
 class DragTargetDivider<T extends SortableMixin> extends ConsumerStatefulWidget {
   final TokenFolder? dependingFolder;
+  final SortableMixin? previousSortable;
   final SortableMixin? nextSortable;
-  final double? bottomPaddingIfLast;
-  final bool ignoreFolderId;
-  final bool isLastDivider;
+  final double dividerBaseHeight;
+  final double dividerExpandedHeight;
+  final double bottomPadding;
+  final double opacity;
+  final bool isExpandalbe;
 
   const DragTargetDivider({
     super.key,
     required this.dependingFolder,
+    required this.previousSortable,
     required this.nextSortable,
-    this.bottomPaddingIfLast,
-    this.ignoreFolderId = false,
-    this.isLastDivider = false,
+    this.bottomPadding = 0,
+    this.dividerBaseHeight = 1.5,
+    this.dividerExpandedHeight = 40,
+    this.opacity = 1,
+    this.isExpandalbe = true,
   });
 
   @override
@@ -52,10 +77,10 @@ class _DragTargetDividerState<T extends SortableMixin> extends ConsumerState<Dra
   }
 
   @override
-  Widget build(BuildContext context) => DragTarget(
-        onWillAccept: (data) {
-          final willAccept = _onWillAccept<T>(data, ref);
-          if (willAccept) {
+  Widget build(BuildContext context) => DragTarget<T>(
+        onWillAcceptWithDetails: (details) {
+          final willAccept = _onWillAccept(details.data, ref);
+          if (willAccept && widget.isExpandalbe) {
             expansionController.forward();
           }
           return willAccept;
@@ -63,96 +88,60 @@ class _DragTargetDividerState<T extends SortableMixin> extends ConsumerState<Dra
         onLeave: (data) {
           expansionController.reverse();
         },
-        onAccept: (dragedSortable) {
+        onAcceptWithDetails: (details) {
           expansionController.reset();
-          _onAccept(
-            dragedSortable: dragedSortable,
+          dragSortableOnAccept(
+            previousSortable: widget.previousSortable,
+            dragedSortable: details.data,
             nextSortable: widget.nextSortable,
-            ignoreFolderId: widget.ignoreFolderId,
             dependingFolder: widget.dependingFolder,
             ref: ref,
           );
         },
         builder: (context, _, __) {
-          final dividerHeight = expansionController.value * 40 + 1.5;
-          return Container(
-            height: dividerHeight,
-            decoration: BoxDecoration(
-              color: Theme.of(context).dividerColor,
-              borderRadius: BorderRadius.circular(dividerHeight / 4),
-            ),
-            margin: EdgeInsets.only(left: 8 - expansionController.value * 2, right: 8 - expansionController.value * 2, top: 8, bottom: 8),
+          final dividerHeight = expansionController.value * widget.dividerExpandedHeight + (1 - expansionController.value) * widget.dividerBaseHeight;
+          return DefaultDivider(
+            dividerHeight: dividerHeight,
+            opacity: widget.opacity,
+            padding: EdgeInsets.only(bottom: max(widget.bottomPadding - dividerHeight + widget.dividerBaseHeight, 0.0)),
+            margin: EdgeInsets.symmetric(horizontal: 8 - expansionController.value * 2, vertical: 8),
           );
         },
       );
 }
 
-bool _onWillAccept<T>(Object? data, WidgetRef ref) {
-  if (data is! T) return false;
+bool _onWillAccept(SortableMixin? data, WidgetRef ref) {
   if (ref.read(dragItemScrollerStateProvider)) return false;
-
   return true;
 }
 
-void _onAccept({
-  required Object? dragedSortable,
-  SortableMixin? nextSortable,
-  required bool ignoreFolderId,
-  TokenFolder? dependingFolder,
-  required WidgetRef ref,
-}) {
-  if (dragedSortable is! SortableMixin) return;
-  // Higher index = lower in the list
-  final allTokens = ref.read(tokenProvider).tokens;
-  final allFolders = ref.read(tokenFolderProvider).folders;
-  final allSortables = [...allTokens, ...allFolders];
-  allSortables.sort((a, b) => a.compareTo(b));
-  final oldIndex = allSortables.indexOf(dragedSortable);
-  if (oldIndex == -1) return; // If the draged item is not in the list we dont need to do anything
-  int newIndex;
-  if (nextSortable == null) {
-    // If the draged item is moved to the end of the list the nextSortable is null. The newIndex will be set to the last index
-    newIndex = allSortables.length - 1;
-  } else {
-    if (oldIndex < allSortables.indexOf(nextSortable)) {
-      // If the draged item is moved down it dont pass the nextSortable so the newIndex is before the nextSortable
-      newIndex = allSortables.indexOf(nextSortable) - 1;
-    } else {
-      // If the draged item is moved up it pass the nextSortable so the newIndex will be the place of the nextSortable
-      newIndex = allSortables.indexOf(nextSortable);
-    }
-  }
-  final dragedItemMovedUp = newIndex < oldIndex;
+class DefaultDivider extends StatelessWidget {
+  final double dividerHeight;
+  final double opacity;
+  final EdgeInsets? padding;
+  final EdgeInsets margin;
 
-  final modifiedSortables = [];
-  for (var i = 0; i < allSortables.length; i++) {
-    if (i < oldIndex && i < newIndex) {
-      // This is before dragedSortable and newIndex so no changes needed
-      continue;
-    }
-    if (i > oldIndex && i > newIndex) {
-      // This is after dragedSortable and newIndex so no changes needed
-      continue;
-    }
-    if (i == oldIndex) {
-      // This is dragedSortable so it needs to be moved to newIndex
-      SortableMixin currentSortable = allSortables[i];
-      if (currentSortable is Token && !ignoreFolderId) {
-        // When the draged Sortable is a Token we need to update the folderId so it is in the correct folder
-        final previousFolderId = dependingFolder?.folderId;
-        currentSortable = currentSortable.copyWith(folderId: () => previousFolderId);
-      }
-      modifiedSortables.add(currentSortable.copyWith(sortIndex: newIndex));
-      continue;
-    }
-    modifiedSortables.add(allSortables[i]
-        .copyWith(sortIndex: i + (dragedItemMovedUp ? 1 : -1))); // This is between dragedSortable and newIndex so it needs to be moved up (-1) or down (+1)
-    continue;
-  }
-
-  globalRef?.read(tokenProvider.notifier).updateTokens(allTokens, (p0) {
-    final modifiedToken = modifiedSortables.whereType<Token>().firstWhereOrNull((updated) => updated.id == p0.id);
-    return p0.copyWith(sortIndex: modifiedToken?.sortIndex, folderId: modifiedToken != null ? () => modifiedToken.folderId : null);
+  const DefaultDivider({
+    this.dividerHeight = 1.5,
+    this.opacity = 1,
+    this.padding,
+    this.margin = const EdgeInsets.all(8),
+    super.key,
   });
-  globalRef?.read(tokenFolderProvider.notifier).updateFolders(modifiedSortables.whereType<TokenFolder>().toList());
+
+  @override
+  Widget build(BuildContext context) => Opacity(
+        opacity: opacity,
+        child: Padding(
+          padding: padding ?? EdgeInsets.zero,
+          child: Container(
+            height: dividerHeight,
+            decoration: BoxDecoration(
+              color: Theme.of(context).dividerColor,
+              borderRadius: BorderRadius.circular(dividerHeight / 4),
+            ),
+            margin: margin,
+          ),
+        ),
+      );
 }

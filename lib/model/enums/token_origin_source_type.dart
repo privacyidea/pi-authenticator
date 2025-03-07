@@ -1,19 +1,31 @@
-import '../../mains/main_netknights.dart';
-import '../token_origin.dart';
-import '../tokens/token.dart';
-
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2025 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+// Do not rename or remove values, they are used for serialization. Only add new values at the end of the list.
 enum TokenOriginSourceType {
   backupFile,
   qrScan,
   qrFile,
+  qrScanImport,
   link,
+  linkImport,
   manually,
   unknown,
-}
-
-extension TokenSourceTypeExtension on TokenOriginSourceType {
-  TokenOriginData toTokenOrigin({String data = '', String? appName}) =>
-      TokenOriginData(source: this, data: data, appName: appName ?? PrivacyIDEAAuthenticator.currentCustomization?.appName);
-
-  Token addOriginToToken({required Token token, required String data, String? appName}) => token.copyWith(origin: toTokenOrigin(data: data, appName: appName));
+  container,
 }

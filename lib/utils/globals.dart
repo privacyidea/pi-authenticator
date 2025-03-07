@@ -1,11 +1,9 @@
-// ignore_for_file: constant_identifier_names
-
 /*
   privacyIDEA Authenticator
 
   Authors: Timo Sturm <timo.sturm@netknights.it>
            Frank Merkel <frank.merkel@netknights.it>
-  Copyright (c) 2017-2023 NetKnights GmbH
+  Copyright (c) 2017-2025 NetKnights GmbH
 
   Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
@@ -21,12 +19,48 @@
 */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../l10n/app_localizations.dart';
 import '../model/enums/patch_note_type.dart';
-import 'version.dart';
+import '../model/version.dart';
 
 Map<Version, Map<PatchNoteType, List<String>>> getLocalizedPatchNotes(AppLocalizations localizations) => {
+      const Version(4, 5, 0): {
+        PatchNoteType.newFeature: [
+          localizations.patchNotesV4_5_0NewFeatures1,
+        ],
+        PatchNoteType.bugFix: [
+          localizations.patchNotesV4_5_0BugFix1,
+        ],
+      },
+      const Version(4, 4, 2): {
+        PatchNoteType.newFeature: [
+          localizations.patchNotesV4_4_2NewFeatures1,
+          localizations.patchNotesV4_4_2NewFeatures2,
+        ],
+        PatchNoteType.improvement: [
+          localizations.patchNotesV4_4_2Improvement1,
+        ]
+      },
+      const Version(4, 4, 0): {
+        PatchNoteType.newFeature: [
+          localizations.patchNotesV4_4_0NewFeatures1,
+          localizations.patchNotesV4_4_0NewFeatures2,
+        ],
+        PatchNoteType.improvement: [
+          localizations.patchNotesV4_4_0Improvement1,
+          localizations.patchNotesV4_4_0Improvement2,
+        ]
+      },
+      const Version(4, 3, 1): {
+        PatchNoteType.bugFix: [
+          localizations.patchNotesV4_3_1BugFix1,
+        ],
+        PatchNoteType.improvement: [
+          localizations.patchNotesV4_3_1Improvement1,
+        ]
+      },
       const Version(4, 3, 0): {
         PatchNoteType.newFeature: [
           localizations.patchNotesV4_3_0NewFeatures1,
@@ -36,13 +70,20 @@ Map<Version, Map<PatchNoteType, List<String>>> getLocalizedPatchNotes(AppLocaliz
           localizations.patchNotesV4_3_0NewFeatures5,
           localizations.patchNotesV4_3_0NewFeatures6,
         ],
-      }
+      },
     };
 
 final globalSnackbarKey = GlobalKey<ScaffoldMessengerState>();
 final globalNavigatorKey = GlobalKey<NavigatorState>();
 final Future<GlobalKey<NavigatorState>> contextedGlobalNavigatorKey = Future(() async => await _getContextedGlobalNavigatorKey());
-BuildContext? globalContextSync = globalNavigatorKey.currentContext;
+BuildContext? get globalContextSync {
+  try {
+    return globalNavigatorKey.currentContext;
+  } catch (e) {
+    return null;
+  }
+}
+
 final Future<BuildContext> globalContext = Future(() async => await _getContextedGlobalNavigatorKey()).then((value) => value.currentContext!);
 Future<GlobalKey<NavigatorState>> _getContextedGlobalNavigatorKey() async {
   if (globalNavigatorKey.currentContext != null) {
@@ -53,3 +94,9 @@ Future<GlobalKey<NavigatorState>> _getContextedGlobalNavigatorKey() async {
 }
 
 final policyStatementUri = Uri.parse("https://netknights.it/en/privacy-statement/");
+final piAuthenticatorGitHubUri = Uri.parse("https://github.com/privacyidea/pi-authenticator");
+
+// The highest version of the pipush Tokentype that this client supports.
+const maxPushTokenVersion = 1;
+
+WidgetRef? globalRef;

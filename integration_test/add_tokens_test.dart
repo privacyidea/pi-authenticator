@@ -8,16 +8,20 @@ import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/enums/encodings.dart';
 import 'package:privacyidea_authenticator/model/enums/introduction.dart';
 import 'package:privacyidea_authenticator/model/enums/token_types.dart';
-import 'package:privacyidea_authenticator/model/states/introduction_state.dart';
-import 'package:privacyidea_authenticator/model/states/settings_state.dart';
-import 'package:privacyidea_authenticator/state_notifiers/completed_introduction_notifier.dart';
-import 'package:privacyidea_authenticator/state_notifiers/settings_notifier.dart';
-import 'package:privacyidea_authenticator/state_notifiers/token_folder_notifier.dart';
-import 'package:privacyidea_authenticator/state_notifiers/token_notifier.dart';
-import 'package:privacyidea_authenticator/utils/app_customizer.dart';
-import 'package:privacyidea_authenticator/utils/riverpod_providers.dart';
+import 'package:privacyidea_authenticator/model/riverpod_states/introduction_state.dart';
+import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.dart';
+import 'package:privacyidea_authenticator/model/riverpod_states/token_folder_state.dart';
+import 'package:privacyidea_authenticator/model/tokens/token.dart';
+import 'package:privacyidea_authenticator/model/version.dart';
+import 'package:privacyidea_authenticator/utils/customization/application_customization.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import 'package:privacyidea_authenticator/views/add_token_manually_view/add_token_manually_view.dart';
 import 'package:privacyidea_authenticator/views/add_token_manually_view/add_token_manually_view_widgets/labeled_dropdown_button.dart';
+import 'package:privacyidea_authenticator/views/add_token_manually_view/add_token_manually_view_widgets/rows/label_input_field.dart';
+import 'package:privacyidea_authenticator/views/add_token_manually_view/add_token_manually_view_widgets/rows/secret_input_field.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/app_bar_item.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/drag_target_divider.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/folder_widgets/token_folder_widget.dart';
@@ -37,34 +41,48 @@ void main() {
   late final MockIntroductionRepository mockIntroductionRepository;
   setUp(() {
     mockSettingsRepository = MockSettingsRepository();
-    when(mockSettingsRepository.loadSettings()).thenAnswer((_) async => SettingsState(useSystemLocale: false, localePreference: const Locale('en')));
+    when(mockSettingsRepository.loadSettings()).thenAnswer(
+      (_) async => SettingsState(
+        useSystemLocale: false,
+        localePreference: const Locale('en'),
+        latestStartedVersion: Version.parse('999.999.999'),
+      ),
+    );
     when(mockSettingsRepository.saveSettings(any)).thenAnswer((_) async => true);
     mockTokenRepository = MockTokenRepository();
-    when(mockTokenRepository.loadTokens()).thenAnswer((_) async => []);
-    when(mockTokenRepository.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
-    when(mockTokenRepository.deleteTokens(any)).thenAnswer((_) async => []);
+    var tokens = <Token>[];
+    when(mockTokenRepository.loadTokens()).thenAnswer((_) async => tokens);
+    when(mockTokenRepository.saveOrReplaceToken(any)).thenAnswer((invocation) async {
+      final arguments = invocation.positionalArguments;
+      tokens.removeWhere((element) => element.id == (arguments[0] as Token).id);
+      tokens.add(arguments[0] as Token);
+      return true;
+    });
+    when(mockTokenRepository.deleteToken(any)).thenAnswer((invocation) async {
+      final arguments = invocation.positionalArguments;
+      tokens.removeWhere((element) => element.id == (arguments[0] as Token).id);
+      return true;
+    });
     mockTokenFolderRepository = MockTokenFolderRepository();
-    when(mockTokenFolderRepository.loadFolders()).thenAnswer((_) async => []);
-    when(mockTokenFolderRepository.saveOrReplaceFolders(any)).thenAnswer((_) async => []);
+    when(mockTokenFolderRepository.loadState()).thenAnswer((_) async => const TokenFolderState(folders: []));
+    when(mockTokenFolderRepository.saveState(any)).thenAnswer((_) async => true);
     mockIntroductionRepository = MockIntroductionRepository();
-    final introductions = {...Introduction.values}..remove(Introduction.introductionScreen);
-    when(mockIntroductionRepository.loadCompletedIntroductions()).thenAnswer((_) async => IntroductionState(completedIntroductions: introductions));
+    when(mockIntroductionRepository.loadCompletedIntroductions())
+        .thenAnswer((_) async => const IntroductionState(completedIntroductions: {...Introduction.values}));
   });
   testWidgets(
     'Add Tokens Test',
     (tester) async {
       await tester.pumpWidget(TestsAppWrapper(
         overrides: [
-          settingsProvider.overrideWith((ref) => SettingsNotifier(repository: mockSettingsRepository)),
-          tokenProvider.overrideWith((ref) => TokenNotifier(repository: mockTokenRepository)),
-          tokenFolderProvider.overrideWith((ref) => TokenFolderNotifier(repository: mockTokenFolderRepository)),
-          introductionProvider.overrideWith((ref) => InrtroductionNotifier(repository: mockIntroductionRepository)),
+          settingsProvider.overrideWith(() => SettingsNotifier(repoOverride: mockSettingsRepository)),
+          tokenProvider.overrideWith(() => TokenNotifier(repoOverride: mockTokenRepository)),
+          tokenFolderProvider.overrideWith(() => TokenFolderNotifier(repoOverride: mockTokenFolderRepository)),
+          introductionNotifierProvider.overrideWith(() => IntroductionNotifier(repoOverride: mockIntroductionRepository)),
         ],
-        child: PrivacyIDEAAuthenticator(customization: ApplicationCustomization.defaultCustomization),
+        child: PrivacyIDEAAuthenticator(ApplicationCustomization.defaultCustomization),
       ));
-
-      await _introToMainView(tester);
-      expectMainViewIsEmptyAndCorrect();
+      await expectMainViewIsEmptyAndCorrect(tester);
       await _addHotpToken(tester);
       expect(find.byType(HOTPTokenWidget), findsOneWidget);
       await _addTotpToken(tester);
@@ -89,27 +107,12 @@ void main() {
   );
 }
 
-Future<void> _introToMainView(WidgetTester tester) async {
-  var finder = find.byType(FloatingActionButton);
-  await pumpUntilFindNWidgets(tester, finder, 1, const Duration(seconds: 20));
-  await tester.tap(finder);
-  await tester.pump(const Duration(milliseconds: 2000));
-  await tester.tap(finder);
-  await tester.pump(const Duration(milliseconds: 2000));
-  await tester.tap(finder);
-  await tester.pump(const Duration(milliseconds: 2000));
-  finder = find.text(AppLocalizationsEn().ok);
-  await pumpUntilFindNWidgets(tester, finder, 1, const Duration(seconds: 10));
-  await tester.tap(finder);
-  await tester.pump(const Duration(milliseconds: 1000));
-}
-
 Future<void> _addHotpToken(WidgetTester tester) async {
   await tester.pump();
   await tester.tap(find.byIcon(Icons.add_moderator));
   await tester.pump(const Duration(milliseconds: 1000));
   expect(find.byType(AddTokenManuallyView), findsOneWidget);
-  expect(find.byType(TextField), findsNWidgets(2));
+  expect(find.byType(TextField), findsNWidgets(3));
   expect(find.byType(LabeledDropdownButton<Encodings>), findsOneWidget);
   expect(find.byType(LabeledDropdownButton<Algorithms>), findsOneWidget);
   expect(find.byType(LabeledDropdownButton<int>), findsOneWidget);
@@ -117,11 +120,11 @@ Future<void> _addHotpToken(WidgetTester tester) async {
   expect(find.text(AppLocalizationsEn().addToken), findsOneWidget);
   await tester.tap(find.text(AppLocalizationsEn().name));
   await tester.pump();
-  await tester.enterText(find.byType(TextField).first, 'test');
+  await tester.enterText(find.byType(LabelInputField), 'test');
   await tester.pump();
   await tester.tap(find.text(AppLocalizationsEn().secretKey));
   await tester.pump();
-  await tester.enterText(find.byType(TextField).last, 'test');
+  await tester.enterText(find.byType(SecretInputField), 'AAAABBBB');
   await tester.pump();
   await tester.tap(find.text(AppLocalizationsEn().addToken));
   await tester.pump(const Duration(milliseconds: 1000));
@@ -133,17 +136,18 @@ Future<void> _addTotpToken(WidgetTester tester) async {
   await tester.pump(const Duration(milliseconds: 1000));
   await tester.tap(find.text(AppLocalizationsEn().name));
   await tester.pump();
-  await tester.enterText(find.byType(TextField).first, 'test');
+  await tester.enterText(find.byType(LabelInputField), 'test');
   await tester.pump();
   await tester.tap(find.text(AppLocalizationsEn().secretKey));
   await tester.pump();
-  await tester.enterText(find.byType(TextField).last, 'test');
+  await tester.enterText(find.byType(SecretInputField), 'AAAABBBB');
   await tester.pump();
   await tester.tap(find.byType(DropdownButton<TokenTypes>));
   await tester.pump();
   await tester.tap(find.text('TOTP'));
   await tester.pump();
-  expect(find.byType(DropdownButton<int>), findsNWidgets(2));
+  expect(find.byType(DropdownButton<int>), findsNWidgets(1));
+  expect(find.byType(DropdownButton<Duration>), findsNWidgets(1));
   await tester.tap(find.text(AppLocalizationsEn().addToken));
   await tester.pump(const Duration(milliseconds: 1000));
 }
@@ -152,11 +156,11 @@ Future<void> _addDaypasswordToken(WidgetTester tester) async {
   await tester.pump();
   await tester.tap(find.byIcon(Icons.add_moderator));
   await tester.pump(const Duration(milliseconds: 1000));
-  await tester.enterText(find.byType(TextField).first, 'test');
+  await tester.enterText(find.byType(LabelInputField), 'test');
   await tester.pump();
   await tester.tap(find.text(AppLocalizationsEn().secretKey));
   await tester.pump();
-  await tester.enterText(find.byType(TextField).last, 'test');
+  await tester.enterText(find.byType(SecretInputField), 'AAAABBBB');
   await tester.pump();
   await tester.tap(find.byType(DropdownButton<TokenTypes>));
   await tester.pump();
@@ -218,7 +222,8 @@ Future<void> _openFolder(WidgetTester tester) async {
   await tester.pump();
 }
 
-void expectMainViewIsEmptyAndCorrect() {
+Future<void> expectMainViewIsEmptyAndCorrect(WidgetTester tester) async {
+  await pumpUntilFindNWidgets(tester, find.byType(FloatingActionButton), 1, const Duration(seconds: 10));
   expect(find.byType(FloatingActionButton), findsOneWidget);
   expect(find.byType(AppBarItem), findsNWidgets(5)); // 4 at BottomNavigationBar and 1 at AppBar
   expect(find.byType(TokenWidgetBase), findsNothing);

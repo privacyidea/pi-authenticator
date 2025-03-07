@@ -3,7 +3,7 @@
 
   Authors: Timo Sturm <timo.sturm@netknights.it>
            Frank Merkel <frank.merkel@netknights.it>
-  Copyright (c) 2017-2023 NetKnights GmbH
+  Copyright (c) 2017-2025 NetKnights GmbH
 
   Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
@@ -22,13 +22,13 @@ import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
-import 'package:privacyidea_authenticator/utils/utils.dart';
-import 'package:privacyidea_authenticator/utils/view_utils.dart';
-import 'package:privacyidea_authenticator/widgets/dialog_widgets/default_dialog.dart';
 
+import '../../l10n/app_localizations.dart';
+import '../../utils/crypto_utils.dart';
 import '../../utils/logger.dart';
+import '../../utils/utils.dart';
+import '../../utils/view_utils.dart';
+import '../../widgets/dialog_widgets/default_dialog.dart';
 import '../widget_keys.dart';
 
 class GenerateTwoStepDialog extends StatelessWidget {
@@ -62,12 +62,8 @@ class GenerateTwoStepDialog extends StatelessWidget {
     }
 
     // 3. Show phone part if this widget is still mounted.
-    Navigator.of(context).pop(generatedSecret);
-    showAsyncDialog(
-        barrierDismissible: false,
-        builder: (context) => TwoStepDialog(
-              phoneChecksum: phoneChecksum,
-            ));
+    if (context.mounted) Navigator.of(context).pop(generatedSecret);
+    showAsyncDialog(barrierDismissible: false, builder: (context) => TwoStepDialog(phoneChecksum: phoneChecksum));
   }
 
   @override
@@ -119,7 +115,9 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () {
+                if (context.mounted) Navigator.of(context).pop();
+              },
               child: Text(
                 AppLocalizations.of(context)!.dismiss,
                 overflow: TextOverflow.fade,

@@ -3,8 +3,11 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import '../utils/logger.dart';
 
+import '../l10n/app_localizations.dart';
+import '../utils/globals.dart';
+import '../utils/logger.dart';
+import '../utils/riverpod/riverpod_providers/generated_providers/app_constraints_notifier.dart';
 import '../utils/utils.dart';
 import 'pulse_icon.dart';
 import 'tooltip_container.dart';
@@ -82,7 +85,7 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
 
   @override
   void initState() {
-    Logger.warning("FocusedItemOverlay: initState");
+    Logger.info("FocusedItemOverlay: initState");
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _updateOverlay();
 
@@ -132,13 +135,14 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
       return;
     }
     _disposeOverlay();
+    final screenSize = (globalRef?.read(appConstraintsNotifierProvider) ?? const BoxConstraints()).biggest;
+    final textScaler = MediaQuery.of(context).textScaler;
     if (widget.tooltipWhenFocused != null) {
       final textSize = textSizeOf(
-        widget.tooltipWhenFocused!,
-        Theme.of(context).textTheme.bodyLarge!,
-        maxWidth: MediaQuery.of(context).size.width / 3 * 2 -
-            (tooltipPadding.left + tooltipPadding.right + tooltipMargin.left + tooltipMargin.right + tooltipBorderWidth * 2),
-        maxLines: null,
+        text: widget.tooltipWhenFocused!,
+        style: Theme.of(context).textTheme.bodyLarge!,
+        maxWidth: screenSize.width / 3 * 2 - (tooltipPadding.left + tooltipPadding.right + tooltipMargin.left + tooltipMargin.right + tooltipBorderWidth * 2),
+        textScaler: textScaler,
       );
 
       final overlaySize = Size(
@@ -149,7 +153,7 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
         overlaySize: overlaySize,
         alignment: widget.alignment,
         anchor: context.findRenderObject() as RenderBox?,
-        screenSize: MediaQuery.of(context).size,
+        screenSize: screenSize,
       );
       _overlayEntryText = OverlayEntry(
         builder: (overlayContext) => Positioned(
@@ -163,6 +167,7 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
             margin: tooltipMargin,
             border: tooltipBorderWidth,
             textStyle: Theme.of(context).textTheme.bodyLarge!,
+            onComplete: widget.onComplete,
           ),
         ),
       );
@@ -170,8 +175,8 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
 
     final renderBox = context.findRenderObject() as RenderBox;
     final boxsize = renderBox.size;
-
-    final renderBoxOffset = renderBox.localToGlobal(Offset.zero);
+    final materialApp = globalContextSync?.findRenderObject();
+    final renderBoxOffset = renderBox.localToGlobal(Offset.zero, ancestor: materialApp);
 
     const circleThinkness = 2.0;
     final circlePadding = min(renderBoxOffset.dy - circleThinkness, min(renderBoxOffset.dx, 25.0));
@@ -216,10 +221,9 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
               onTapDown: (details) {
                 widget.onComplete?.call();
               },
-              child: Container(
-                height: double.maxFinite,
-                width: double.maxFinite,
-                color: Colors.transparent,
+              child: Text(
+                AppLocalizations.of(context)!.continueButton,
+                style: const TextStyle(fontSize: 0),
               ),
             ),
           ),
@@ -228,10 +232,12 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
     );
 
     _overlayEntryBackdrop = OverlayEntry(
-      builder: (overlayContext) => BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
-        child: const Center(
-          child: SizedBox(),
+      builder: (overlayContext) => ClipRRect(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+          child: const Center(
+            child: SizedBox(),
+          ),
         ),
       ),
     );
@@ -259,7 +265,8 @@ Offset _getClampedOverlayOffset({
   required Size screenSize,
 }) {
   final anchorSize = anchor?.size ?? Size.zero;
-  final anchorOffset = anchor?.localToGlobal(Offset.zero) ?? Offset.zero;
+  final materialApp = globalContextSync?.findRenderObject();
+  final anchorOffset = anchor?.localToGlobal(Offset.zero, ancestor: materialApp) ?? Offset.zero;
   final preferredOffset = Offset(
     anchorOffset.dx + (anchorSize.width - overlaySize.width) / 2 + alignment.x * ((anchorSize.width + overlaySize.width) / 2 + padding),
     anchorOffset.dy + (anchorSize.height - overlaySize.height) / 2 + alignment.y * ((anchorSize.height + overlaySize.height) / 2 + padding),

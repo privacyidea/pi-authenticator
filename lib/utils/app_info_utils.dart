@@ -1,21 +1,68 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2025 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'version.dart';
 
-class AppInfoUtils {
+import '../model/version.dart';
+
+class InfoUtils {
   static bool isInitialized = false;
   static final DeviceInfoPlugin _deviceInfo = DeviceInfoPlugin();
-  static final packageInfo = PackageInfo.fromPlatform();
+  static final _packageInfo = PackageInfo.fromPlatform();
+
+  static String getDeviceBrand() {
+    if (kIsWeb) return 'Web';
+    if (Platform.isAndroid) {
+      return _androidInfo!.brand;
+    } else if (Platform.isIOS) {
+      return _iosInfo!.model;
+    } else {
+      return 'Unknown';
+    }
+  }
+
+  static String getDeviceModel() {
+    if (kIsWeb) return 'Web';
+    if (Platform.isAndroid) {
+      return _androidInfo!.model;
+    } else if (Platform.isIOS) {
+      return _iosInfo!.model;
+    } else {
+      return 'Unknown';
+    }
+  }
 
   static Future<void> init() async {
-    _appName = (await packageInfo).appName;
-    _packageName = (await packageInfo).packageName;
-    _appVersion = Version.parse((await packageInfo).version);
-    _appBuildNumber = (await packageInfo).buildNumber;
-    _androidInfo = Platform.isAndroid ? await _deviceInfo.androidInfo : null;
-    _iosInfo = Platform.isIOS ? await _deviceInfo.iosInfo : null;
+    if (isInitialized) return;
+    final packageInfo = await _packageInfo;
+    _appName = packageInfo.appName;
+    _packageName = packageInfo.packageName;
+    _appVersion = Version.parse(packageInfo.version);
+    _appBuildNumber = packageInfo.buildNumber;
+    _androidInfo = !kIsWeb && Platform.isAndroid ? await _deviceInfo.androidInfo : null;
+    _iosInfo = !kIsWeb && Platform.isIOS ? await _deviceInfo.iosInfo : null;
+    _deviceBrand = getDeviceBrand();
+    _deviceModel = getDeviceModel();
 
     isInitialized = true;
   }
@@ -35,10 +82,17 @@ class AppInfoUtils {
   static String get currentBuildNumber => isInitialized ? _appBuildNumber : throw Exception('AppInfoUtils not initialized');
   static late final String _appBuildNumber;
 
+  static String get deviceBrand => isInitialized ? _deviceBrand : throw Exception('AppInfoUtils not initialized');
+  static late final String _deviceBrand;
+
+  static String get deviceModel => isInitialized ? _deviceModel : throw Exception('AppInfoUtils not initialized');
+  static late final String _deviceModel;
+
   static String get dartVersion => Platform.version;
   static String get platform => Platform.operatingSystem;
 
   static String get deviceInfoString {
+    if (kIsWeb) return 'Web: Not available.';
     if (Platform.isAndroid) {
       return 'Android:\n$_androidDeviceInfoString';
     } else if (Platform.isIOS) {
@@ -78,15 +132,7 @@ class AppInfoUtils {
           '\nsupportedAbis: ${androidInfo!.supportedAbis}'
           '\ntags: ${androidInfo!.tags}'
           '\ntype: ${androidInfo!.type}'
-          '\nisPhysicalDevice: ${androidInfo!.isPhysicalDevice}'
-          '\ndisplaySizeInches: ${((androidInfo!.displayMetrics.sizeInches * 10).roundToDouble() / 10)}'
-          '\ndisplayWidthPixels: ${androidInfo!.displayMetrics.widthPx}'
-          '\ndisplayWidthInches: ${androidInfo!.displayMetrics.widthInches}'
-          '\ndisplayHeightPixels: ${androidInfo!.displayMetrics.heightPx}'
-          '\ndisplayHeightInches: ${androidInfo!.displayMetrics.heightInches}'
-          '\ndisplayXDpi: ${androidInfo!.displayMetrics.xDpi}'
-          '\ndisplayYDpi: ${androidInfo!.displayMetrics.yDpi}'
-          '\nserialNumber: ${androidInfo!.serialNumber}';
+          '\nisPhysicalDevice: ${androidInfo!.isPhysicalDevice}';
 
   static IosDeviceInfo? get iosInfo => isInitialized ? _iosInfo : throw Exception('AppInfoUtils not initialized');
   static late final IosDeviceInfo? _iosInfo;
