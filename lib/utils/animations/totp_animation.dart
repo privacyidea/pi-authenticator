@@ -53,7 +53,7 @@ class TotpAnimation {
 
   DateTime lastResync = DateTime.now();
 
-  /// The initial expired time is [initPassedTime].
+  /// The initial elapsed time is [initPassedTime].
   AnimationController createAnimation() {
     final colorAnimation = AnimationController(
       vsync: vsync,
