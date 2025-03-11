@@ -20,9 +20,6 @@
 import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/model/extensions/color_extension.dart';
 
-// const int warningTime = 2;
-// const int criticalTime = 3;
-
 class TotpAnimation {
   final BuildContext context;
   final TickerProvider vsync;
