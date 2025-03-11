@@ -23,6 +23,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/totp_token.dart';
+import '../../../../../utils/animations/totp_animation.dart';
+import '../../../../../utils/customization/theme_extentions/status_colors.dart';
 import '../../../../../utils/globals.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../../../utils/utils.dart';
@@ -42,7 +44,12 @@ class TOTPTokenWidgetTile extends ConsumerStatefulWidget {
   ConsumerState<TOTPTokenWidgetTile> createState() => _TOTPTokenWidgetTileState();
 }
 
-class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> {
+class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with SingleTickerProviderStateMixin {
+  late String currentOtpValue = widget.token.otpValue;
+  late AnimationController _animationController;
+  Color? _currentColor;
+  double _secondsUntilNextOTP = 0;
+
   void _copyOtpValue(BuildContext context) {
     if (globalRef?.read(disableCopyOtpProvider) ?? false) return;
 
@@ -52,7 +59,41 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> {
     Future.delayed(const Duration(seconds: 5), () => globalRef?.read(disableCopyOtpProvider.notifier).state = false);
   }
 
-  late String currentOtpValue = widget.token.otpValue;
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _initAnimation());
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  void _initAnimation() {
+    _animationController = TotpAnimation(
+      context: context,
+      vsync: this,
+      onPeriodEnd: () {
+        if (!mounted) return;
+        setState(() => currentOtpValue = widget.token.otpValue);
+      },
+      callback: (v) {
+        if (!mounted) return;
+        setState(() {
+          _currentColor = v.color;
+          _secondsUntilNextOTP = v.secondsUntilNextOTP;
+        });
+      },
+      totalDuration: Duration(seconds: widget.token.period),
+      defaultColor: Theme.of(context).colorScheme.primary,
+      warningColor: Theme.of(context).extension<StatusColors>()!.warning,
+      warningDuration: Duration(seconds: 2),
+      criticalColor: Theme.of(context).extension<StatusColors>()!.error,
+      criticalDuration: Duration(seconds: 3),
+    ).createAnimation();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +107,9 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> {
               : () => _copyOtpValue(context),
       token: widget.token,
       title: insertCharAt(widget.token.otpValue, ' ', (widget.token.digits / 2).ceil()),
+      titleStyle: TextStyle(
+        color: _currentColor,
+      ),
       additionalSubtitles: widget.isPreview
           ? [
               'Algorithm: ${widget.token.algorithm.name}',
@@ -78,9 +122,8 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> {
           isHidden: widget.token.isHidden && !widget.isPreview,
           child: TotpTokenWidgetTileCountdown(
             period: widget.token.period,
-            onPeriodEnd: () => setState(
-              () => currentOtpValue = widget.token.otpValue,
-            ),
+            currentColor: _currentColor ?? Theme.of(context).colorScheme.primary,
+            secondsUntilNextOTP: _secondsUntilNextOTP,
           ),
         ),
       ),
