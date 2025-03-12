@@ -72,7 +72,6 @@ android {
         targetSdkVersion 35
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
-        manifestPlaceholders = [applicationName: "io.flutter.app.FlutterApplication"]
     }
 
     signingConfigs {
