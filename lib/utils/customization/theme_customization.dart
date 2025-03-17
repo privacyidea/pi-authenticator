@@ -270,60 +270,60 @@ class ThemeCustomization {
     bool isLightTheme = json['brightness'] == 'light';
     bool isDarkTheme = json['brightness'] == 'dark';
     if (json['brightness'] == null && json['primaryColor'] != null) {
-      isLightTheme = _isColorBright(Color(json['primaryColor'] as int));
+      isLightTheme = _isColorBright(ColorExtension.fromJson(json['primaryColor'] as int));
     }
     if (isLightTheme) {
       return ThemeCustomization.defaultLightWith(
-        primaryColor: json['primaryColor'] != null ? Color(json['primaryColor'] as int) : null,
-        onPrimary: json['onPrimary'] != null ? Color(json['onPrimary'] as int) : null,
-        subtitleColor: json['subtitleColor'] != null ? Color(json['subtitleColor'] as int) : null,
-        backgroundColor: json['backgroundColor'] != null ? Color(json['backgroundColor'] as int) : null,
-        foregroundColor: json['foregroundColor'] != null ? Color(json['foregroundColor'] as int) : null,
-        shadowColor: json['shadowColor'] != null ? Color(json['shadowColor'] as int) : null,
-        deleteColor: json['deleteColor'] != null ? Color(json['deleteColor'] as int) : null,
-        renameColor: json['renameColor'] != null ? Color(json['renameColor'] as int) : null,
-        lockColor: json['lockColor'] != null ? Color(json['lockColor'] as int) : null,
-        exportColor: json['exportColor'] != null ? Color(json['exportColor'] as int) : null,
-        disabledColor: json['disabledColor'] != null ? Color(json['disabledColor'] as int) : null,
-        tileIconColor: json['tileIconColor'] != null ? Color(json['tileIconColor'] as int) : null,
-        navigationBarColor: json['navigationBarColor'] != null ? Color(json['navigationBarColor'] as int) : null,
-        warningColor: json['warningColor'] != null ? Color(json['warningColor'] as int) : null,
-        successColor: json['successColor'] != null ? Color(json['successColor'] as int) : null,
-        pushAuthRequestAcceptColor: json['_pushAuthRequestAcceptColor'] != null ? Color(json['_pushAuthRequestAcceptColor'] as int) : null,
-        pushAuthRequestDeclineColor: json['_pushAuthRequestDeclineColor'] != null ? Color(json['_pushAuthRequestDeclineColor'] as int) : null,
-        actionButtonsForegroundColor: json['_actionButtonsForegroundColor'] != null ? Color(json['_actionButtonsForegroundColor'] as int) : null,
-        tilePrimaryColor: json['_tilePrimaryColor'] != null ? Color(json['_tilePrimaryColor'] as int) : null,
-        tileSubtitleColor: json['_tileSubtitleColor'] != null ? Color(json['_tileSubtitleColor'] as int) : null,
-        navigationBarIconColor: json['_navigationBarIconColor'] != null ? Color(json['_navigationBarIconColor'] as int) : null,
-        qrButtonBackgroundColor: json['_qrButtonBackgroundColor'] != null ? Color(json['_qrButtonBackgroundColor'] as int) : null,
-        qrButtonIconColor: json['_qrButtonIconColor'] != null ? Color(json['_qrButtonIconColor'] as int) : null,
+        primaryColor: json['primaryColor'] != null ? ColorExtension.fromJson(json['primaryColor']) : null,
+        onPrimary: json['onPrimary'] != null ? ColorExtension.fromJson(json['onPrimary']) : null,
+        subtitleColor: json['subtitleColor'] != null ? ColorExtension.fromJson(json['subtitleColor']) : null,
+        backgroundColor: json['backgroundColor'] != null ? ColorExtension.fromJson(json['backgroundColor']) : null,
+        foregroundColor: json['foregroundColor'] != null ? ColorExtension.fromJson(json['foregroundColor']) : null,
+        shadowColor: json['shadowColor'] != null ? ColorExtension.fromJson(json['shadowColor']) : null,
+        deleteColor: json['deleteColor'] != null ? ColorExtension.fromJson(json['deleteColor']) : null,
+        renameColor: json['renameColor'] != null ? ColorExtension.fromJson(json['renameColor']) : null,
+        lockColor: json['lockColor'] != null ? ColorExtension.fromJson(json['lockColor']) : null,
+        exportColor: json['exportColor'] != null ? ColorExtension.fromJson(json['exportColor']) : null,
+        disabledColor: json['disabledColor'] != null ? ColorExtension.fromJson(json['disabledColor']) : null,
+        tileIconColor: json['tileIconColor'] != null ? ColorExtension.fromJson(json['tileIconColor']) : null,
+        navigationBarColor: json['navigationBarColor'] != null ? ColorExtension.fromJson(json['navigationBarColor']) : null,
+        warningColor: json['warningColor'] != null ? ColorExtension.fromJson(json['warningColor']) : null,
+        successColor: json['successColor'] != null ? ColorExtension.fromJson(json['successColor']) : null,
+        pushAuthRequestAcceptColor: json['_pushAuthRequestAcceptColor'] != null ? ColorExtension.fromJson(json['_pushAuthRequestAcceptColor']) : null,
+        pushAuthRequestDeclineColor: json['_pushAuthRequestDeclineColor'] != null ? ColorExtension.fromJson(json['_pushAuthRequestDeclineColor']) : null,
+        actionButtonsForegroundColor: json['_actionButtonsForegroundColor'] != null ? ColorExtension.fromJson(json['_actionButtonsForegroundColor']) : null,
+        tilePrimaryColor: json['_tilePrimaryColor'] != null ? ColorExtension.fromJson(json['_tilePrimaryColor']) : null,
+        tileSubtitleColor: json['_tileSubtitleColor'] != null ? ColorExtension.fromJson(json['_tileSubtitleColor']) : null,
+        navigationBarIconColor: json['_navigationBarIconColor'] != null ? ColorExtension.fromJson(json['_navigationBarIconColor']) : null,
+        qrButtonBackgroundColor: json['_qrButtonBackgroundColor'] != null ? ColorExtension.fromJson(json['_qrButtonBackgroundColor']) : null,
+        qrButtonIconColor: json['_qrButtonIconColor'] != null ? ColorExtension.fromJson(json['_qrButtonIconColor']) : null,
       );
     }
     if (isDarkTheme) {
       return ThemeCustomization.defaultDarkWith(
-        primaryColor: json['primaryColor'] != null ? Color(json['primaryColor'] as int) : null,
-        onPrimary: json['onPrimary'] != null ? Color(json['onPrimary'] as int) : null,
-        subtitleColor: json['subtitleColor'] != null ? Color(json['subtitleColor'] as int) : null,
-        backgroundColor: json['backgroundColor'] != null ? Color(json['backgroundColor'] as int) : null,
-        foregroundColor: json['foregroundColor'] != null ? Color(json['foregroundColor'] as int) : null,
-        shadowColor: json['shadowColor'] != null ? Color(json['shadowColor'] as int) : null,
-        deleteColor: json['deleteColor'] != null ? Color(json['deleteColor'] as int) : null,
-        renameColor: json['renameColor'] != null ? Color(json['renameColor'] as int) : null,
-        lockColor: json['lockColor'] != null ? Color(json['lockColor'] as int) : null,
-        exportColor: json['exportColor'] != null ? Color(json['exportColor'] as int) : null,
-        disabledColor: json['disabledColor'] != null ? Color(json['disabledColor'] as int) : null,
-        tileIconColor: json['tileIconColor'] != null ? Color(json['tileIconColor'] as int) : null,
-        navigationBarColor: json['navigationBarColor'] != null ? Color(json['navigationBarColor'] as int) : null,
-        warningColor: json['warningColor'] != null ? Color(json['warningColor'] as int) : null,
-        successColor: json['successColor'] != null ? Color(json['successColor'] as int) : null,
-        pushAuthRequestAcceptColor: json['_pushAuthRequestAcceptColor'] != null ? Color(json['_pushAuthRequestAcceptColor'] as int) : null,
-        pushAuthRequestDeclineColor: json['_pushAuthRequestDeclineColor'] != null ? Color(json['_pushAuthRequestDeclineColor'] as int) : null,
-        actionButtonsForegroundColor: json['_actionButtonsForegroundColor'] != null ? Color(json['_actionButtonsForegroundColor'] as int) : null,
-        tilePrimaryColor: json['_tilePrimaryColor'] != null ? Color(json['_tilePrimaryColor'] as int) : null,
-        tileSubtitleColor: json['_tileSubtitleColor'] != null ? Color(json['_tileSubtitleColor'] as int) : null,
-        navigationBarIconColor: json['_navigationBarIconColor'] != null ? Color(json['_navigationBarIconColor'] as int) : null,
-        qrButtonBackgroundColor: json['_qrButtonBackgroundColor'] != null ? Color(json['_qrButtonBackgroundColor'] as int) : null,
-        qrButtonIconColor: json['_qrButtonIconColor'] != null ? Color(json['_qrButtonIconColor'] as int) : null,
+        primaryColor: json['primaryColor'] != null ? ColorExtension.fromJson(json['primaryColor']) : null,
+        onPrimary: json['onPrimary'] != null ? ColorExtension.fromJson(json['onPrimary']) : null,
+        subtitleColor: json['subtitleColor'] != null ? ColorExtension.fromJson(json['subtitleColor']) : null,
+        backgroundColor: json['backgroundColor'] != null ? ColorExtension.fromJson(json['backgroundColor']) : null,
+        foregroundColor: json['foregroundColor'] != null ? ColorExtension.fromJson(json['foregroundColor']) : null,
+        shadowColor: json['shadowColor'] != null ? ColorExtension.fromJson(json['shadowColor']) : null,
+        deleteColor: json['deleteColor'] != null ? ColorExtension.fromJson(json['deleteColor']) : null,
+        renameColor: json['renameColor'] != null ? ColorExtension.fromJson(json['renameColor']) : null,
+        lockColor: json['lockColor'] != null ? ColorExtension.fromJson(json['lockColor']) : null,
+        exportColor: json['exportColor'] != null ? ColorExtension.fromJson(json['exportColor']) : null,
+        disabledColor: json['disabledColor'] != null ? ColorExtension.fromJson(json['disabledColor']) : null,
+        tileIconColor: json['tileIconColor'] != null ? ColorExtension.fromJson(json['tileIconColor']) : null,
+        navigationBarColor: json['navigationBarColor'] != null ? ColorExtension.fromJson(json['navigationBarColor']) : null,
+        warningColor: json['warningColor'] != null ? ColorExtension.fromJson(json['warningColor']) : null,
+        successColor: json['successColor'] != null ? ColorExtension.fromJson(json['successColor']) : null,
+        pushAuthRequestAcceptColor: json['_pushAuthRequestAcceptColor'] != null ? ColorExtension.fromJson(json['_pushAuthRequestAcceptColor']) : null,
+        pushAuthRequestDeclineColor: json['_pushAuthRequestDeclineColor'] != null ? ColorExtension.fromJson(json['_pushAuthRequestDeclineColor']) : null,
+        actionButtonsForegroundColor: json['_actionButtonsForegroundColor'] != null ? ColorExtension.fromJson(json['_actionButtonsForegroundColor']) : null,
+        tilePrimaryColor: json['_tilePrimaryColor'] != null ? ColorExtension.fromJson(json['_tilePrimaryColor']) : null,
+        tileSubtitleColor: json['_tileSubtitleColor'] != null ? ColorExtension.fromJson(json['_tileSubtitleColor']) : null,
+        navigationBarIconColor: json['_navigationBarIconColor'] != null ? ColorExtension.fromJson(json['_navigationBarIconColor']) : null,
+        qrButtonBackgroundColor: json['_qrButtonBackgroundColor'] != null ? ColorExtension.fromJson(json['_qrButtonBackgroundColor']) : null,
+        qrButtonIconColor: json['_qrButtonIconColor'] != null ? ColorExtension.fromJson(json['_qrButtonIconColor']) : null,
       );
     }
     throw Exception('Invalid brightness value: ${json['brightness']}');
@@ -331,28 +331,28 @@ class ThemeCustomization {
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'brightness': brightness == Brightness.light ? 'light' : 'dark',
-        'primaryColor': primaryColor.value,
-        'onPrimary': onPrimary.value,
-        'subtitleColor': subtitleColor.value,
-        'backgroundColor': backgroundColor.value,
-        'foregroundColor': foregroundColor.value,
-        'shadowColor': shadowColor.value,
-        'deleteColor': deleteColor.value,
-        'renameColor': renameColor.value,
-        'lockColor': lockColor.value,
-        'exportColor': exportColor.value,
-        'disabledColor': disabledColor.value,
-        'tileIconColor': tileIconColor.value,
-        'navigationBarColor': navigationBarColor.value,
-        'warningColor': warningColor.value,
-        'successColor': successColor.value,
-        '_pushAuthRequestAcceptColor': _pushAuthRequestAcceptColor?.value,
-        '_actionButtonsForegroundColor': _actionButtonsForegroundColor?.value,
-        '_tilePrimaryColor': _tilePrimaryColor?.value,
-        '_tileSubtitleColor': _tileSubtitleColor?.value,
-        '_navigationBarIconColor': _navigationBarIconColor?.value,
-        '_qrButtonBackgroundColor': _qrButtonBackgroundColor?.value,
-        '_qrButtonIconColor': _qrButtonIconColor?.value,
+        'primaryColor': primaryColor.toJson(),
+        'onPrimary': onPrimary.toJson(),
+        'subtitleColor': subtitleColor.toJson(),
+        'backgroundColor': backgroundColor.toJson(),
+        'foregroundColor': foregroundColor.toJson(),
+        'shadowColor': shadowColor.toJson(),
+        'deleteColor': deleteColor.toJson(),
+        'renameColor': renameColor.toJson(),
+        'lockColor': lockColor.toJson(),
+        'exportColor': exportColor.toJson(),
+        'disabledColor': disabledColor.toJson(),
+        'tileIconColor': tileIconColor.toJson(),
+        'navigationBarColor': navigationBarColor.toJson(),
+        'warningColor': warningColor.toJson(),
+        'successColor': successColor.toJson(),
+        '_pushAuthRequestAcceptColor': _pushAuthRequestAcceptColor?.toJson(),
+        '_actionButtonsForegroundColor': _actionButtonsForegroundColor?.toJson(),
+        '_tilePrimaryColor': _tilePrimaryColor?.toJson(),
+        '_tileSubtitleColor': _tileSubtitleColor?.toJson(),
+        '_navigationBarIconColor': _navigationBarIconColor?.toJson(),
+        '_qrButtonBackgroundColor': _qrButtonBackgroundColor?.toJson(),
+        '_qrButtonIconColor': _qrButtonIconColor?.toJson(),
       };
 
   ThemeData generateTheme({String? fontFamily}) => ThemeData(
@@ -397,7 +397,7 @@ class ThemeCustomization {
             labelLarge: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 14, fontWeight: FontWeight.w500),
             labelSmall: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 12, fontWeight: FontWeight.w400),
           ),
-          disabledColor: tileIconColor.withOpacity(0.38), // 38% opacity used for disabled icon buttons
+          disabledColor: tileIconColor.withValues(alpha: 0.38), // 38% opacity used for disabled icon buttons
           iconButtonTheme: IconButtonThemeData(
             style: ButtonStyle(
               foregroundColor: WidgetStateProperty.all(foregroundColor),
@@ -462,7 +462,7 @@ class ThemeCustomization {
           ),
           textButtonTheme: TextButtonThemeData(
             style: ButtonStyle(
-              overlayColor: WidgetStateColor.resolveWith((states) => foregroundColor.withOpacity(0.1)),
+              overlayColor: WidgetStateColor.resolveWith((states) => foregroundColor.withValues(alpha: 0.1)),
             ),
           ),
           listTileTheme: ListTileThemeData(
@@ -657,5 +657,5 @@ class ThemeCustomization {
 // /// brightness  =  sqrt( .299 R^2 + .587 G^2 + .114 B^2 )
 // /// c.f., http://alienryderflex.com/hsp.html
 bool _isColorBright(Color color) {
-  return sqrt(0.299 * pow(color.red, 2) + 0.587 * pow(color.green, 2) + 0.114 * pow(color.blue, 2)) > 150;
+  return sqrt(0.299 * pow(color.r, 2) + 0.587 * pow(color.g, 2) + 0.114 * pow(color.b, 2)) * 255 > 150;
 }

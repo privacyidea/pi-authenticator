@@ -79,7 +79,7 @@ class TokenFolderExpandableHeaderIcon extends StatelessWidget {
                               size: constraints.maxHeight / 2.1,
                               shadows: [
                                 Shadow(
-                                  color: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.3),
+                                  color: Theme.of(context).scaffoldBackgroundColor.withValues(alpha: 0.3),
                                   offset: const Offset(0.5, 0.5),
                                   blurRadius: 2,
                                 )

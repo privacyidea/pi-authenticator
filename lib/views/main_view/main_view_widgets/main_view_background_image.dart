@@ -35,7 +35,7 @@ class MainViewBackgroundImage extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(36, 4, 36, 60),
         child: FittedBox(
           child: ColorFiltered(
-            colorFilter: ColorFilter.mode(scaffoldBackgroundColor.withOpacity(1 - base), blendMode),
+            colorFilter: ColorFilter.mode(scaffoldBackgroundColor.withValues(alpha: 1 - base), blendMode),
             child: ColorFiltered(
               colorFilter: ColorFilter.mode(scaffoldBackgroundColor, BlendMode.color),
               child: appImage,
