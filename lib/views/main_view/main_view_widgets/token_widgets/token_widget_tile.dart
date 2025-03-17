@@ -30,6 +30,7 @@ final disableCopyOtpProvider = StateProvider<bool>((ref) => false);
 class TokenWidgetTile extends ConsumerWidget {
   final Token token;
   final String title;
+  final TextStyle? titleStyle;
   final List<String> additionalSubtitles;
   final Widget? leading;
   final Widget? trailing;
@@ -41,6 +42,7 @@ class TokenWidgetTile extends ConsumerWidget {
     required this.token,
     required this.title,
     required this.semanticsLabel,
+    this.titleStyle,
     this.additionalSubtitles = const [],
     this.leading,
     this.trailing,
@@ -72,7 +74,12 @@ class TokenWidgetTile extends ConsumerWidget {
             label: semanticsLabel,
             child: InkWell(
               onTap: titleOnTap,
-              child: HideableText(textScaleFactor: 1.9, isHidden: token.isHidden, text: title),
+              child: HideableText(
+                textScaleFactor: 1.9,
+                isHidden: token.isHidden,
+                text: title,
+                textStyle: titleStyle,
+              ),
             ),
           ),
         ),
