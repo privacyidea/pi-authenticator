@@ -82,6 +82,22 @@ class WidgetImage {
     }
   }
 
+  Size? _size;
+  Future<Size?> get size {
+    if (_size != null) return Future.value(_size);
+    final future = _getImageSize()..then((value) => _size = value);
+    return future;
+  }
+
+  Future<Size> _getImageSize() async {
+    try {
+      return await imageFormat.getImageSize(imageData) ?? Size.zero;
+    } catch (e) {
+      Logger.error('Image is not an ${imageFormat.name}, or the image data is corrupted.', error: e);
+      rethrow;
+    }
+  }
+
   factory WidgetImage.fromJson(Map<String, dynamic> json) => _$WidgetImageFromJson(json);
   Map<String, dynamic> toJson() => _$WidgetImageToJson(this);
 
