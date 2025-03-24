@@ -28,7 +28,6 @@ import '../../../../../model/tokens/token.dart';
 import '../../../../../utils/globals.dart';
 import '../../../../../utils/logger.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
-import '../../../../../utils/utils.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 
 class DefaultEditActionDialog extends ConsumerStatefulWidget {
@@ -67,8 +66,17 @@ class _DefaultEditActionDialogState extends ConsumerState<DefaultEditActionDialo
 
   String? _validateImageUrl(String? value) {
     if (value == null || value.isEmpty) return null;
-    if (urlRegExp.hasMatch(value)) return null;
-    return AppLocalizations.of(context)!.exampleUrl;
+    final uri = Uri.tryParse(value);
+    if (uri == null || !uri.isAbsolute) {
+      // Check if the value is a valid URL
+      return AppLocalizations.of(context)!.invalidUrl;
+    }
+    if (uri.host != 'http' && uri.host != 'https') {
+      // Check if the URL has a valid scheme
+      return AppLocalizations.of(context)!.exampleUrl;
+    }
+
+    return null;
   }
 
   @override
