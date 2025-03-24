@@ -17,12 +17,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../../utils/logger.dart';
 import '../../enums/image_format.dart';
 
 extension ImageFormatX on ImageFormat {
@@ -78,6 +80,35 @@ extension ImageFormatX on ImageFormat {
             colorBlendMode: BlendMode.srcOver,
           ),
       };
+
+  Future<Size?> getImageSize(Uint8List imageData) async {
+    double? width;
+    double? height;
+    switch (this) {
+      case ImageFormat.svg:
+      case ImageFormat.svgz:
+        final image = SvgPicture.memory(imageData);
+        width = image.width;
+        height = image.height;
+        break;
+      // The following image formats are supported by decodeImageFromList JPEG, PNG, GIF, Animated GIF, WebP, Animated WebP, BMP, and WBMP.
+      case ImageFormat.png:
+      case ImageFormat.jpg:
+      case ImageFormat.jpeg:
+      case ImageFormat.gif:
+      case ImageFormat.bmp:
+      case ImageFormat.webp:
+        final decodedImage = await decodeImageFromList(imageData);
+        width = decodedImage.width.toDouble();
+        height = decodedImage.height.toDouble();
+        break;
+    }
+    if (width == null || height == null) {
+      Logger.warning('Could not determine the size of the image.');
+      return null;
+    }
+    return Size(width, height);
+  }
 
   String get extension => toString().split('.').last;
 
