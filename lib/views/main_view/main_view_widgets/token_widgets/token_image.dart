@@ -63,9 +63,7 @@ class _TokenImageState extends State<TokenImage> {
     return null;
   }
 
-  @override
-  void initState() {
-    super.initState();
+  void _updateImageWidget() {
     hasImage = widget.tokenImage != null && widget.tokenImage!.isNotEmpty;
     final imageBytes = getTokenImageBytesSync(widget.tokenImage);
     if (imageBytes != null) {
@@ -88,9 +86,21 @@ class _TokenImageState extends State<TokenImage> {
     }
   }
 
-  void _loadImage() {
-    if (!hasImage || tokenImage != null) return;
+  @override
+  void initState() {
+    super.initState();
+    _updateImageWidget();
+  }
 
+  @override
+  void didUpdateWidget(TokenImage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.tokenImage != widget.tokenImage) {
+      _updateImageWidget();
+    }
+  }
+
+  void _loadImage() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (!mounted) return;
       final uint8List = await getTokenImageBytesAsync(widget.tokenImage);

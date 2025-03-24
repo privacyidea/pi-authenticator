@@ -71,7 +71,7 @@ class _DefaultEditActionDialogState extends ConsumerState<DefaultEditActionDialo
       // Check if the value is a valid URL
       return AppLocalizations.of(context)!.invalidUrl;
     }
-    if (uri.host != 'http' && uri.host != 'https') {
+    if (uri.scheme != 'http' && uri.scheme != 'https') {
       // Check if the URL has a valid scheme
       return AppLocalizations.of(context)!.exampleUrl;
     }
