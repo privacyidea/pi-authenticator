@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.dart';
+import 'package:privacyidea_authenticator/model/version.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 
 import '../../tests_app_wrapper.mocks.dart';
@@ -26,6 +27,7 @@ void main() {
 void _testSettingsNotifier() {
   group('SettingsNotifier', () {
     final mockRepo = MockSettingsRepository();
+
     test('load state from repo on creation', () async {
       final container = ProviderContainer();
       when(mockRepo.loadSettings()).thenAnswer((_) async => _state);
@@ -55,6 +57,83 @@ void _testSettingsNotifier() {
         verify(mockRepo.saveSettings(copyWithSettings)).called(1);
       });
     });
+
+    test('removeCrashReportRecipient', () {
+      final container = ProviderContainer();
+      final copyWithSettings = _state.copyWith(
+        crashReportRecipients: {},
+      );
+      when(mockRepo.loadSettings()).thenAnswer((_) async => _state);
+      when(mockRepo.saveSettings(copyWithSettings)).thenAnswer((_) async => true);
+
+      final testProvider = settingsNotifierProviderOf(repo: mockRepo);
+      final notifier = container.read(testProvider.notifier);
+      notifier.removeCrashReportRecipient('someone');
+      Future.delayed(const Duration(milliseconds: 1000)).then((value) {
+        final state = container.read(testProvider);
+        expect(state, isNotNull);
+        expect(state, copyWithSettings);
+        verify(mockRepo.saveSettings(copyWithSettings)).called(1);
+      });
+    });
+
+    test('setIsFirstRun', () {
+      final container = ProviderContainer();
+      final copyWithSettings = _state.copyWith(
+        isFirstRun: !_state.isFirstRun,
+      );
+      when(mockRepo.loadSettings()).thenAnswer((_) async => _state);
+      when(mockRepo.saveSettings(copyWithSettings)).thenAnswer((_) async => true);
+
+      final testProvider = settingsNotifierProviderOf(repo: mockRepo);
+      final notifier = container.read(testProvider.notifier);
+      notifier.setIsFirstRun(!_state.isFirstRun);
+      Future.delayed(const Duration(milliseconds: 1000)).then((value) {
+        final state = container.read(testProvider);
+        expect(state, isNotNull);
+        expect(state, copyWithSettings);
+        verify(mockRepo.saveSettings(copyWithSettings)).called(1);
+      });
+    });
+
+    test('setHideOpts', () {
+      final container = ProviderContainer();
+      final copyWithSettings = _state.copyWith(
+        hideOpts: !_state.hideOpts,
+      );
+      when(mockRepo.loadSettings()).thenAnswer((_) async => _state);
+      when(mockRepo.saveSettings(copyWithSettings)).thenAnswer((_) async => true);
+
+      final testProvider = settingsNotifierProviderOf(repo: mockRepo);
+      final notifier = container.read(testProvider.notifier);
+      notifier.setHideOTPs(!_state.hideOpts);
+      Future.delayed(const Duration(milliseconds: 1000)).then((value) {
+        final state = container.read(testProvider);
+        expect(state, isNotNull);
+        expect(state, copyWithSettings);
+        verify(mockRepo.saveSettings(copyWithSettings)).called(1);
+      });
+    });
+
+    test('setShowGuideOnStart', () {
+      final container = ProviderContainer();
+      final copyWithSettings = _state.copyWith(
+        showGuideOnStart: !_state.showGuideOnStart,
+      );
+      when(mockRepo.loadSettings()).thenAnswer((_) async => _state);
+      when(mockRepo.saveSettings(copyWithSettings)).thenAnswer((_) async => true);
+
+      final testProvider = settingsNotifierProviderOf(repo: mockRepo);
+      final notifier = container.read(testProvider.notifier);
+      notifier.setShowGuideOnStart(!_state.showGuideOnStart);
+      Future.delayed(const Duration(milliseconds: 1000)).then((value) {
+        final state = container.read(testProvider);
+        expect(state, isNotNull);
+        expect(state, copyWithSettings);
+        verify(mockRepo.saveSettings(copyWithSettings)).called(1);
+      });
+    });
+
     test('setLocalePreference', () {
       final container = ProviderContainer();
       final copyWithSettings = _state.copyWith(
@@ -91,6 +170,7 @@ void _testSettingsNotifier() {
         verify(mockRepo.saveSettings(copyWithSettings)).called(1);
       });
     });
+
     test('setPolling', () {
       final container = ProviderContainer();
       final copyWithSettings = _state.copyWith(
@@ -145,17 +225,75 @@ void _testSettingsNotifier() {
         verify(mockRepo.saveSettings(copyWithSettings)).called(1);
       });
     });
-    test('setFirstRun', () {
+
+    test('setHidePushTokens', () {
       final container = ProviderContainer();
       final copyWithSettings = _state.copyWith(
-        isFirstRun: !_state.isFirstRun,
+        hidePushTokens: !_state.hidePushTokens,
       );
       when(mockRepo.loadSettings()).thenAnswer((_) async => _state);
       when(mockRepo.saveSettings(copyWithSettings)).thenAnswer((_) async => true);
 
       final testProvider = settingsNotifierProviderOf(repo: mockRepo);
       final notifier = container.read(testProvider.notifier);
-      notifier.setFirstRun(!_state.isFirstRun);
+      notifier.setHidePushTokens(!_state.hidePushTokens);
+      Future.delayed(const Duration(milliseconds: 1000)).then((value) {
+        final state = container.read(testProvider);
+        expect(state, isNotNull);
+        expect(state, copyWithSettings);
+        verify(mockRepo.saveSettings(copyWithSettings)).called(1);
+      });
+    });
+
+    test('setLatestStartedVersion', () {
+      final container = ProviderContainer();
+      final copyWithSettings = _state.copyWith(
+        latestStartedVersion: Version(1, 0, 0),
+      );
+      when(mockRepo.loadSettings()).thenAnswer((_) async => _state);
+      when(mockRepo.saveSettings(copyWithSettings)).thenAnswer((_) async => true);
+
+      final testProvider = settingsNotifierProviderOf(repo: mockRepo);
+      final notifier = container.read(testProvider.notifier);
+      notifier.setLatestStartedVersion(Version(1, 0, 0));
+      Future.delayed(const Duration(milliseconds: 1000)).then((value) {
+        final state = container.read(testProvider);
+        expect(state, isNotNull);
+        expect(state, copyWithSettings);
+        verify(mockRepo.saveSettings(copyWithSettings)).called(1);
+      });
+    });
+
+    test('setShowBackgroundImage', () {
+      final container = ProviderContainer();
+      final copyWithSettings = _state.copyWith(
+        showBackgroundImage: !_state.showBackgroundImage,
+      );
+      when(mockRepo.loadSettings()).thenAnswer((_) async => _state);
+      when(mockRepo.saveSettings(copyWithSettings)).thenAnswer((_) async => true);
+
+      final testProvider = settingsNotifierProviderOf(repo: mockRepo);
+      final notifier = container.read(testProvider.notifier);
+      notifier.setShowBackgroundImage(!_state.showBackgroundImage);
+      Future.delayed(const Duration(milliseconds: 1000)).then((value) {
+        final state = container.read(testProvider);
+        expect(state, isNotNull);
+        expect(state, copyWithSettings);
+        verify(mockRepo.saveSettings(copyWithSettings)).called(1);
+      });
+    });
+
+    test('toggleShowBackgroundImage', () {
+      final container = ProviderContainer();
+      final copyWithSettings = _state.copyWith(
+        showBackgroundImage: !_state.showBackgroundImage,
+      );
+      when(mockRepo.loadSettings()).thenAnswer((_) async => _state);
+      when(mockRepo.saveSettings(copyWithSettings)).thenAnswer((_) async => true);
+
+      final testProvider = settingsNotifierProviderOf(repo: mockRepo);
+      final notifier = container.read(testProvider.notifier);
+      notifier.toggleShowBackgroundImage();
       Future.delayed(const Duration(milliseconds: 1000)).then((value) {
         final state = container.read(testProvider);
         expect(state, isNotNull);

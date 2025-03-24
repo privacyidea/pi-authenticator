@@ -1649,6 +1649,7 @@
   "authenticateToShowOtp": "Veuillez vous authentifier pour afficher un mot de passe à usage unique.",
   "authenticateToUnLockToken": "Veuillez vous authentifier pour modifier l'état de verrouillage du jeton.",
   "authentication": "Authentification",
+  "backgroundImage": "Fond d'écran",
   "biometricHint": "Authentification requise",
   "biometricNotRecognized": "Pas reconnu. Réessayer.",
   "biometricRequiredTitle": "La biométrie n'est pas configurée",

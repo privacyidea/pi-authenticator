@@ -22,6 +22,7 @@ import 'package:flutter/material.dart';
 import '../../l10n/app_localizations.dart';
 import '../../widgets/push_request_listener.dart';
 import '../view_interface.dart';
+import 'settings_groups/settings_group_background_image.dart';
 import 'settings_groups/settings_group_container.dart';
 import 'settings_groups/settings_group_error_log.dart';
 import 'settings_groups/settings_group_feedback.dart';
@@ -58,6 +59,7 @@ class SettingsView extends ConsumerView {
                 SettingsGroupPushToken(),
                 SettingsGroupContainer(),
                 SettingsGroupTheme(),
+                SettingsGroupBackroundImage(),
                 SettingsGroupLanguage(),
                 SettingsGroupErrorLog(),
                 SettingsGroupGeneral(),

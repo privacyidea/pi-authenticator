@@ -39,6 +39,7 @@ class SettingsState {
   static bool get verboseLoggingDefault => false;
   static bool get hidePushTokensDefault => false;
   static Version get latestStartedVersionDefault => Version.parse('0.0.0');
+  static bool get showBackgroundImageDefault => false;
 
   final bool isFirstRun;
   final bool showGuideOnStart;
@@ -54,6 +55,7 @@ class SettingsState {
   final bool verboseLogging;
   final bool hidePushTokens;
   final Version latestStartedVersion;
+  final bool showBackgroundImage;
 
   SettingsState({
     bool? isFirstRun,
@@ -66,6 +68,7 @@ class SettingsState {
     bool? verboseLogging,
     bool? hidePushTokens,
     Version? latestStartedVersion,
+    bool? showBackgroundImage,
   })  : isFirstRun = isFirstRun ?? isFirstRunDefault,
         showGuideOnStart = showGuideOnStart ?? showGuideOnStartDefault,
         hideOpts = hideOpts ?? hideOtpsDefault,
@@ -75,7 +78,8 @@ class SettingsState {
         useSystemLocale = useSystemLocale ?? useSystemLocaleDefault,
         verboseLogging = verboseLogging ?? verboseLoggingDefault,
         hidePushTokens = hidePushTokens ?? hidePushTokensDefault,
-        latestStartedVersion = latestStartedVersion ?? latestStartedVersionDefault;
+        latestStartedVersion = latestStartedVersion ?? latestStartedVersionDefault,
+        showBackgroundImage = showBackgroundImage ?? showBackgroundImageDefault;
 
   SettingsState copyWith({
     bool? isFirstRun,
@@ -88,6 +92,7 @@ class SettingsState {
     bool? verboseLogging,
     bool? hidePushTokens,
     Version? latestStartedVersion,
+    bool? showBackgroundImage,
   }) {
     return SettingsState(
       isFirstRun: isFirstRun ?? this.isFirstRun,
@@ -100,13 +105,14 @@ class SettingsState {
       verboseLogging: verboseLogging ?? this.verboseLogging,
       hidePushTokens: hidePushTokens ?? this.hidePushTokens,
       latestStartedVersion: latestStartedVersion ?? this.latestStartedVersion,
+      showBackgroundImage: showBackgroundImage ?? this.showBackgroundImage,
     );
   }
 
   @override
   String toString() => 'SettingsState(isFirstRun: $isFirstRun, showGuideOnStart: $showGuideOnStart, hideOpts: $hideOpts, enablePolling: $enablePolling, '
       'crashReportRecipients: $crashReportRecipients, localePreference: $localePreference, useSystemLocale: $useSystemLocale, verboseLogging: $verboseLogging, '
-      'hidePushTokens: $hidePushTokens)';
+      'hidePushTokens: $hidePushTokens, latestStartedVersion: $latestStartedVersion, showBackgroundImage: $showBackgroundImage)';
 
   static String encodeLocale(Locale locale) {
     return '${locale.languageCode}#${locale.countryCode}';
@@ -126,7 +132,9 @@ class SettingsState {
         other.localePreference.toString() == localePreference.toString() &&
         other.useSystemLocale == useSystemLocale &&
         other.verboseLogging == verboseLogging &&
-        other.hidePushTokens == hidePushTokens;
+        other.hidePushTokens == hidePushTokens &&
+        other.latestStartedVersion == latestStartedVersion &&
+        other.showBackgroundImage == showBackgroundImage;
   }
 
   static Locale decodeLocale(String str) {

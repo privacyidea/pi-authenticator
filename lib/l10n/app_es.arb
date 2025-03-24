@@ -1649,6 +1649,7 @@
   "authenticateToShowOtp": "Por favor, autentifíquese para mostrar la contraseña de una sola vez.",
   "authenticateToUnLockToken": "Por favor, autentifíquese para cambiar el estado de bloqueo del token.",
   "authentication": "Autenticación",
+  "backgroundImage": "Imagen de fondo",
   "biometricHint": "AAutenticación necesaria",
   "biometricNotRecognized": "No reconocido. Inténtelo de nuevo.",
   "biometricRequiredTitle": "Biometría no configurada",

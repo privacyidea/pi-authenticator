@@ -1649,6 +1649,7 @@
   "authenticateToShowOtp": "Authenticeer om het eenmalige wachtwoord te tonen.",
   "authenticateToUnLockToken": "Authenticeer om de vergrendeling van de token te wijzigen.",
   "authentication": "Verificatieverzoek",
+  "backgroundImage": "Achtergrondafbeelding",
   "biometricHint": "Authenticatie vereist",
   "biometricNotRecognized": "Niet herkend. Probeer opnieuw.",
   "biometricRequiredTitle": "Biometrie is niet ingesteld",

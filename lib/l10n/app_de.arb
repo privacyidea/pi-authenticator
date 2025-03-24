@@ -1649,6 +1649,7 @@
   "authenticateToShowOtp": "Bitte authentifizieren Sie sich, um das Einmalpasswort anzuzeigen.",
   "authenticateToUnLockToken": "Bitte authentifizieren Sie sich, um den Sperrstatus des Tokens zu ändern.",
   "authentication": "Authentifizierung",
+  "backgroundImage": "Hintergrundbild",
   "biometricHint": "Authentifizierung wird benötigt",
   "biometricNotRecognized": "Biometrie wurde nicht erkannt, bitte versuchen Sie es erneut",
   "biometricRequiredTitle": "Biometrie ist nicht eingerichtet",

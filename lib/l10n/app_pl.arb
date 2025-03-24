@@ -1649,6 +1649,7 @@
   "authenticateToShowOtp": "Zweryfikuj tożsamość, by pokazać hasło jednorazowe.",
   "authenticateToUnLockToken": "Zweryfikuj tożsamość, aby odblokować / zablokować token.",
   "authentication": "Uwierzytelnianie",
+  "backgroundImage": "Obraz tła",
   "biometricHint": "Wymagana autentykacja",
   "biometricNotRecognized": "Nie rozpoznano. Spróbuj ponownie.",
   "biometricRequiredTitle": "Uwierzytelnianie biometryczne nie jest skonfigurowane.",

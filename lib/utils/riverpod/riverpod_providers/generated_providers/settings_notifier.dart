@@ -103,17 +103,17 @@ class SettingsNotifier extends _$SettingsNotifier {
     });
   }
 
-  Future<SettingsState> setisFirstRun(bool value) {
+  Future<SettingsState> setIsFirstRun(bool value) {
     Logger.info('First run set to $value');
     return updateState((oldState) => oldState.copyWith(isFirstRun: value));
   }
 
-  Future<SettingsState> sethideOTPs(bool value) {
+  Future<SettingsState> setHideOTPs(bool value) {
     Logger.info('Hide OTPs set to $value');
     return updateState((oldState) => oldState.copyWith(hideOpts: value));
   }
 
-  Future<SettingsState> setshowGuideOnStart(bool value) {
+  Future<SettingsState> setShowGuideOnStart(bool value) {
     Logger.info('Show guide on start set to $value');
     return updateState((oldState) => oldState.copyWith(showGuideOnStart: value));
   }
@@ -128,24 +128,9 @@ class SettingsNotifier extends _$SettingsNotifier {
     return updateState((oldState) => oldState.copyWith(useSystemLocale: value));
   }
 
-  Future<SettingsState> enablePolling() {
-    Logger.info('Polling set to true');
-    return updateState((oldState) => oldState.copyWith(enablePolling: true));
-  }
-
-  Future<SettingsState> disablePolling() {
-    Logger.info('Polling set to false');
-    return updateState((oldState) => oldState.copyWith(enablePolling: false));
-  }
-
   Future<SettingsState> setPolling(bool value) {
     Logger.info('Polling set to $value');
     return updateState((oldState) => oldState.copyWith(enablePolling: value));
-  }
-
-  Future<SettingsState> setLocale(Locale locale) {
-    Logger.info('Locale set to $locale');
-    return updateState((oldState) => oldState.copyWith(localePreference: locale));
   }
 
   Future<SettingsState> setVerboseLogging(bool value) async {
@@ -160,11 +145,6 @@ class SettingsNotifier extends _$SettingsNotifier {
     return updateState((oldState) => oldState.copyWith(verboseLogging: !oldState.verboseLogging));
   }
 
-  Future<SettingsState> setFirstRun(bool value) {
-    Logger.info('First run set to $value');
-    return updateState((oldState) => oldState.copyWith(isFirstRun: value));
-  }
-
   Future<SettingsState> setHidePushTokens(bool value) {
     Logger.info('Hide push tokens set to $value');
     return updateState((oldState) => oldState.copyWith(hidePushTokens: value));
@@ -173,5 +153,15 @@ class SettingsNotifier extends _$SettingsNotifier {
   Future<SettingsState> setLatestStartedVersion(Version version) {
     Logger.info('Latest started version set to $version');
     return updateState((oldState) => oldState.copyWith(latestStartedVersion: version));
+  }
+
+  Future<SettingsState> setShowBackgroundImage(bool value) {
+    Logger.info('Hide background image set to $value');
+    return updateState((oldState) => oldState.copyWith(showBackgroundImage: value));
+  }
+
+  Future<SettingsState> toggleShowBackgroundImage() {
+    Logger.info('Toggling hide background image');
+    return updateState((oldState) => oldState.copyWith(showBackgroundImage: !oldState.showBackgroundImage));
   }
 }
