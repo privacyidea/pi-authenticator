@@ -22,21 +22,27 @@ import 'package:no_screenshot/no_screenshot.dart';
 import 'logger.dart';
 
 class AllowScreenshotUtils {
+  /// Enables the ability to take screenshots
+  /// Returns true if the operation was successful
   Future<bool> allowScreenshots() {
     Logger.info("Screenshots allowed");
     return NoScreenshot.instance.screenshotOn();
   }
 
-  Future<bool> notAllowScreenshots() {
+  /// Disables the ability to take screenshots
+  /// Returns true if the operation was successful
+  Future<bool> disallowScreenshots() {
     Logger.info("Screenshots not allowed");
     return NoScreenshot.instance.screenshotOff();
   }
 
+  /// Toggles the ability to take screenshots
+  /// Returns true if the operation was successful
   Future<bool> toggleAllowScreenshots(bool oldState) {
     if (oldState) {
       return allowScreenshots();
     } else {
-      return notAllowScreenshots();
+      return disallowScreenshots();
     }
   }
 }

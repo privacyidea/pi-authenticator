@@ -33,9 +33,8 @@ final allowScreenshotProvider = allowScreenshotNotifierProviderOf(
 @Riverpod(keepAlive: true)
 class AllowScreenshotNotifier extends _$AllowScreenshotNotifier {
   @override
-  AllowScreenshotUtils get screenshotUtils => _screenshotUtilsOverride ?? _screenshotUtils;
+  AllowScreenshotUtils get screenshotUtils => _screenshotUtilsOverride ?? super.screenshotUtils;
   final AllowScreenshotUtils? _screenshotUtilsOverride;
-  late final AllowScreenshotUtils _screenshotUtils;
 
   AllowScreenshotNotifier({AllowScreenshotUtils? screenshotUtilsOverride}) : _screenshotUtilsOverride = screenshotUtilsOverride;
 
@@ -44,28 +43,29 @@ class AllowScreenshotNotifier extends _$AllowScreenshotNotifier {
     required AllowScreenshotUtils screenshotUtils,
   }) async {
     Logger.info("New ScreenshotNotifier created");
-
     final allowScreenshot = await ref.watch(settingsProvider.selectAsync((settings) => settings.allowScreenshots));
-    allowScreenshot ? screenshotUtils.allowScreenshots() : screenshotUtils.notAllowScreenshots();
+    allowScreenshot ? this.screenshotUtils.allowScreenshots() : this.screenshotUtils.disallowScreenshots();
     return allowScreenshot;
   }
 
   /// Enables the ability to take screenshots and passes the new state to the settings provider
   /// Returns true if the operation was successful
-  Future<bool> screenshotOn() async {
+  Future<bool> allowScreenshots() async {
+    // TODO: Add a mutex
     final success = await screenshotUtils.allowScreenshots();
     if (success) {
-      ref.read(settingsProvider.notifier).updateState((state) => state.copyWith(allowScreenshots: true));
+      await ref.read(settingsProvider.notifier).updateState((state) => state.copyWith(allowScreenshots: true));
     }
     return success;
   }
 
   /// Disables the ability to take screenshots and passes the new state to the settings provider
   /// Returns true if the operation was successful
-  Future<bool> screenshotOff() async {
-    final success = await screenshotUtils.notAllowScreenshots();
+  Future<bool> disallowScreenshots() async {
+    // TODO: Add a mutex
+    final success = await screenshotUtils.disallowScreenshots();
     if (success) {
-      ref.read(settingsProvider.notifier).updateState((state) => state.copyWith(allowScreenshots: false));
+      await ref.read(settingsProvider.notifier).updateState((state) => state.copyWith(allowScreenshots: false));
     }
     return success;
   }
@@ -77,7 +77,7 @@ class AllowScreenshotNotifier extends _$AllowScreenshotNotifier {
     final oldState = await future;
     final bool success = await screenshotUtils.toggleAllowScreenshots(oldState);
     if (success) {
-      ref.read(settingsProvider.notifier).updateState((state) => state.copyWith(allowScreenshots: !oldState));
+      await ref.read(settingsProvider.notifier).updateState((state) => state.copyWith(allowScreenshots: !oldState));
       return !oldState;
     } else {
       return oldState;

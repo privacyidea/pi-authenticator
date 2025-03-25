@@ -7,7 +7,7 @@ part of 'allow_screenshot_notifier.dart';
 // **************************************************************************
 
 String _$allowScreenshotNotifierHash() =>
-    r'7cfe8ea2c24b6ef5a9c9267b575e18252e11b82c';
+    r'65722f0e9e3ad83966c09a9c7fad177a1f5a7c15';
 
 /// Copied from Dart SDK
 class _SystemHash {

@@ -44,9 +44,9 @@ class SettingsGroupAllowScreenshot extends ConsumerWidget {
             value: snapshot.data!,
             onChanged: (value) {
               if (value) {
-                ref.read(allowScreenshotProvider.notifier).screenshotOn();
+                ref.read(allowScreenshotProvider.notifier).allowScreenshots();
               } else {
-                ref.read(allowScreenshotProvider.notifier).screenshotOff();
+                ref.read(allowScreenshotProvider.notifier).disallowScreenshots();
               }
             },
           ),
