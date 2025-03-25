@@ -18,30 +18,42 @@
  * limitations under the License.
 */
 
-import 'package:no_screenshot/no_screenshot.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../allow_screenshot_utils.dart';
 import '../../../logger.dart';
 import 'settings_notifier.dart';
 
-part 'screenshot_notifier.g.dart';
+part 'allow_screenshot_notifier.g.dart';
+
+final allowScreenshotProvider = allowScreenshotNotifierProviderOf(
+  screenshotUtils: AllowScreenshotUtils(),
+);
 
 @Riverpod(keepAlive: true)
-class ScreenshotNotifier extends _$ScreenshotNotifier {
-  final _ssHelper = NoScreenshot.instance;
+class AllowScreenshotNotifier extends _$AllowScreenshotNotifier {
+  @override
+  AllowScreenshotUtils get screenshotUtils => _screenshotUtilsOverride ?? _screenshotUtils;
+  final AllowScreenshotUtils? _screenshotUtilsOverride;
+  late final AllowScreenshotUtils _screenshotUtils;
+
+  AllowScreenshotNotifier({AllowScreenshotUtils? screenshotUtilsOverride}) : _screenshotUtilsOverride = screenshotUtilsOverride;
 
   @override
-  Future<bool> build() {
+  Future<bool> build({
+    required AllowScreenshotUtils screenshotUtils,
+  }) async {
     Logger.info("New ScreenshotNotifier created");
-    final allowScreenshot = ref.watch(settingsProvider.selectAsync((settings) => settings.allowScreenshots));
-    allowScreenshot.then((value) => value ? _ssHelper.screenshotOn() : _ssHelper.screenshotOff());
+
+    final allowScreenshot = await ref.watch(settingsProvider.selectAsync((settings) => settings.allowScreenshots));
+    allowScreenshot ? screenshotUtils.allowScreenshots() : screenshotUtils.notAllowScreenshots();
     return allowScreenshot;
   }
 
   /// Enables the ability to take screenshots and passes the new state to the settings provider
   /// Returns true if the operation was successful
   Future<bool> screenshotOn() async {
-    final success = await _ssHelper.screenshotOn();
+    final success = await screenshotUtils.allowScreenshots();
     if (success) {
       ref.read(settingsProvider.notifier).updateState((state) => state.copyWith(allowScreenshots: true));
     }
@@ -51,7 +63,7 @@ class ScreenshotNotifier extends _$ScreenshotNotifier {
   /// Disables the ability to take screenshots and passes the new state to the settings provider
   /// Returns true if the operation was successful
   Future<bool> screenshotOff() async {
-    final success = await _ssHelper.screenshotOff();
+    final success = await screenshotUtils.notAllowScreenshots();
     if (success) {
       ref.read(settingsProvider.notifier).updateState((state) => state.copyWith(allowScreenshots: false));
     }
@@ -62,13 +74,8 @@ class ScreenshotNotifier extends _$ScreenshotNotifier {
   /// Returns the new state if the operation was successful
   /// Returns the old state if the operation was not successful
   Future<bool> toggleAllowScreenshots() async {
-    final bool success;
     final oldState = await future;
-    if (oldState) {
-      success = await screenshotOff();
-    } else {
-      success = await screenshotOn();
-    }
+    final bool success = await screenshotUtils.toggleAllowScreenshots(oldState);
     if (success) {
       ref.read(settingsProvider.notifier).updateState((state) => state.copyWith(allowScreenshots: !oldState));
       return !oldState;

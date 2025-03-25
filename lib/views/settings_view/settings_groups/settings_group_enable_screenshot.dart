@@ -31,7 +31,7 @@ class SettingsGroupAllowScreenshot extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return FutureBuilder(
-      future: ref.watch(screenshotNotifierProvider.future),
+      future: ref.watch(allowScreenshotProvider.future),
       builder: (context, snapshot) {
         if (snapshot.hasError || snapshot.data == null) {
           return const SizedBox();
@@ -39,14 +39,14 @@ class SettingsGroupAllowScreenshot extends ConsumerWidget {
         final isAllowed = snapshot.data!;
         return SettingsGroup(
           title: isAllowed ? AppLocalizations.of(context)!.screenshotsAllowed : AppLocalizations.of(context)!.screenshotsNotAllowed,
-          onPressed: () => ref.read(screenshotNotifierProvider.notifier).toggleAllowScreenshots(),
+          onPressed: () => ref.read(allowScreenshotProvider.notifier).toggleAllowScreenshots(),
           trailingWidget: Switch(
             value: snapshot.data!,
             onChanged: (value) {
               if (value) {
-                ref.read(screenshotNotifierProvider.notifier).screenshotOn();
+                ref.read(allowScreenshotProvider.notifier).screenshotOn();
               } else {
-                ref.read(screenshotNotifierProvider.notifier).screenshotOff();
+                ref.read(allowScreenshotProvider.notifier).screenshotOff();
               }
             },
           ),
