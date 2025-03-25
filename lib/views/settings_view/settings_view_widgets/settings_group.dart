@@ -69,7 +69,8 @@ class SettingsGroup extends StatelessWidget {
                         onTap: isActive ? onPressed : null,
                         child: ListTile(
                           dense: true,
-                          leading: Text(
+                          isThreeLine: false,
+                          title: Text(
                             title,
                             style: theme.textTheme.titleMedium?.copyWith(color: isActive ? null : Colors.grey),
                             overflow: TextOverflow.fade,
@@ -89,7 +90,8 @@ class SettingsGroup extends StatelessWidget {
                       )
                     : ListTile(
                         dense: true,
-                        leading: Text(
+                        isThreeLine: false,
+                        title: Text(
                           title,
                           style: theme.textTheme.titleMedium?.copyWith(color: isActive ? null : Colors.grey),
                           overflow: TextOverflow.fade,

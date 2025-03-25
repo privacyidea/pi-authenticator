@@ -36,6 +36,7 @@ class PreferenceSettingsRepository extends SettingsRepository {
   static const String _hidePushTokensKey = 'KEY_HIDE_PUSH_TOKENS';
   static const String _latestVersionKey = 'KEY_LATEST_VERSION';
   static const String _showBackgroundImageKey = 'KEY_HIDE_BACKGROUND_IMAGE';
+  static const String _allowScreenshotKey = 'KEY_ALLOW_SCREENSHOTS';
 
   static final Future<SharedPreferences> _preferences = SharedPreferences.getInstance();
   static SettingsState? _lastState;
@@ -60,6 +61,7 @@ class PreferenceSettingsRepository extends SettingsRepository {
       hidePushTokens: prefs.getBool(_hidePushTokensKey),
       latestStartedVersion: prefs.getString(_latestVersionKey) != null ? Version.parse(prefs.getString(_latestVersionKey)!) : null,
       showBackgroundImage: prefs.getBool(_showBackgroundImageKey),
+      allowScreenshots: prefs.getBool(_allowScreenshotKey),
     );
     _lastState = newState;
     return newState;
@@ -83,6 +85,7 @@ class PreferenceSettingsRepository extends SettingsRepository {
       if (_lastState?.hidePushTokens != settings.hidePushTokens) prefs.setBool(_hidePushTokensKey, settings.hidePushTokens),
       if (_lastState?.latestStartedVersion != settings.latestStartedVersion) prefs.setString(_latestVersionKey, settings.latestStartedVersion.toString()),
       if (_lastState?.showBackgroundImage != settings.showBackgroundImage) prefs.setBool(_showBackgroundImageKey, settings.showBackgroundImage),
+      if (_lastState?.allowScreenshots != settings.allowScreenshots) prefs.setBool(_allowScreenshotKey, settings.allowScreenshots),
     ];
     await Future.wait(futures);
     _lastState = settings;

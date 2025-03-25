@@ -24,6 +24,7 @@ import '../../widgets/push_request_listener.dart';
 import '../view_interface.dart';
 import 'settings_groups/settings_group_background_image.dart';
 import 'settings_groups/settings_group_container.dart';
+import 'settings_groups/settings_group_enable_screenshot.dart';
 import 'settings_groups/settings_group_error_log.dart';
 import 'settings_groups/settings_group_feedback.dart';
 import 'settings_groups/settings_group_general.dart';
@@ -61,6 +62,7 @@ class SettingsView extends ConsumerView {
                 SettingsGroupTheme(),
                 SettingsGroupBackroundImage(),
                 SettingsGroupLanguage(),
+                SettingsGroupAllowScreenshot(),
                 SettingsGroupErrorLog(),
                 SettingsGroupGeneral(),
               ],

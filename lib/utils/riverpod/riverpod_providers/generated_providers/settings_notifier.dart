@@ -50,7 +50,7 @@ class SettingsNotifier extends _$SettingsNotifier {
   Future<SettingsState> build({
     required SettingsRepository repo,
   }) async {
-    // Logger.info('New settings notifier created');
+    Logger.info('New settings notifier created');
     _repo = _repoOverride ?? repo;
     final newState = await _loadFromRepo();
     return newState;

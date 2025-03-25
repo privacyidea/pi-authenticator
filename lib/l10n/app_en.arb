@@ -1954,6 +1954,8 @@
   "saveButton": "Save",
   "scanQrCode": "Scan QR-Code",
   "scanThisQrWithNewDevice": "Scan this QR code with your new device to import the token.",
+  "screenshotsAllowed": "Screenshots allowed",
+  "screenshotsNotAllowed": "Screenshots not allowed",
   "secondsUntilNextOTP": "Seconds until next OTP",
   "secretIsRequired": "Secret is required",
   "secretKey": "Secret key",
