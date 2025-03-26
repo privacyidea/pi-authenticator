@@ -859,8 +859,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     final tokenOriginSourceType = (args['TokenOriginSourceType'] as TokenOriginSourceType?);
     var tokenImportType = (args['TokenImportType'] as TokenImportType?) ?? TokenImportType.qrScan;
     try {
-      if (resultTokens.length > 1 || stateTokens.any((e) => resultTokens.first.isSameTokenAs(e) == true)) {
-        // Navigator.of(globalNavigatorKey.currentContext!).popUntil((route) => route.isFirst);
+      if (resultTokens.isNotEmpty && (resultTokens.length > 1 || stateTokens.any((e) => resultTokens.first.isSameTokenAs(e) == true))) {
         _showImportTokensPage(tokenResults, tokenOriginSourceType!, tokenImportType);
         return;
       }

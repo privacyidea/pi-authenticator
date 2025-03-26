@@ -210,7 +210,7 @@ void _testThemeCustomization() {
       });
     });
     group('serialization', () {
-      test('fromJson', () {
+      test('fromJson (old)', () {
         // Act
         final newCustomization = ThemeCustomization.fromJson({
           'brightness': 'light',
@@ -260,32 +260,82 @@ void _testThemeCustomization() {
         expect(newCustomization.warningColor, equals(const Color(0xFFFFFFEC)));
         expect(newCustomization.successColor, equals(const Color(0xFFFFFFEB)));
       });
-      test('toJson', () {
+      test('fromJson (new)', () {
+        // Act
+        final newCustomization = ThemeCustomization.fromJson({
+          'brightness': 'light',
+          'primaryColor': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 1.0},
+          'onPrimary': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 0.996078431372549},
+          'subtitleColor': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 0.9921568627450981},
+          'backgroundColor': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 0.9882352941176471},
+          'foregroundColor': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 0.984313725490196},
+          'shadowColor': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 0.9803921568627451},
+          'deleteColor': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 0.9764705882352941},
+          'renameColor': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 0.9725490196078431},
+          'lockColor': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 0.9686274509803922},
+          'exportColor': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 0.9647058823529412},
+          'disabledColor': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 0.9607843137254902},
+          'tileIconColor': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 0.9568627450980393},
+          'navigationBarColor': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 0.9529411764705882},
+          '_actionButtonsForegroundColor': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 0.9490196078431372},
+          '_tilePrimaryColor': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 0.9450980392156862},
+          '_tileSubtitleColor': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 0.9411764705882353},
+          '_navigationBarIconColor': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 0.9372549019607843},
+          '_qrButtonBackgroundColor': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 0.9333333333333333},
+          '_qrButtonIconColor': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 0.9294117647058824},
+          'warningColor': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 0.9254901960784314},
+          'successColor': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 0.9215686274509803},
+        });
+        // Assert
+        expect(newCustomization.brightness, equals(Brightness.light));
+        expect(newCustomization.primaryColor, equals(const Color(0xFFFFFFFF)));
+        expect(newCustomization.onPrimary, equals(const Color(0xFFFFFFFE)));
+        expect(newCustomization.subtitleColor, equals(const Color(0xFFFFFFFD)));
+        expect(newCustomization.backgroundColor, equals(const Color(0xFFFFFFFC)));
+        expect(newCustomization.foregroundColor, equals(const Color(0xFFFFFFFB)));
+        expect(newCustomization.shadowColor, equals(const Color(0xFFFFFFFA)));
+        expect(newCustomization.deleteColor, equals(const Color(0xFFFFFFF9)));
+        expect(newCustomization.renameColor, equals(const Color(0xFFFFFFF8)));
+        expect(newCustomization.lockColor, equals(const Color(0xFFFFFFF7)));
+        expect(newCustomization.exportColor, equals(const Color(0xFFFFFFF6)));
+        expect(newCustomization.disabledColor, equals(const Color(0xFFFFFFF5)));
+        expect(newCustomization.tileIconColor, equals(const Color(0xFFFFFFF4)));
+        expect(newCustomization.navigationBarColor, equals(const Color(0xFFFFFFF3)));
+        expect(newCustomization.actionButtonsForegroundColor, equals(const Color(0xFFFFFFF2)));
+        expect(newCustomization.tilePrimaryColor, equals(const Color(0xFFFFFFF1)));
+        expect(newCustomization.tileSubtitleColor, equals(const Color(0xFFFFFFF0)));
+        expect(newCustomization.navigationBarIconColor, equals(const Color(0xFFFFFFEF)));
+        expect(newCustomization.qrButtonBackgroundColor, equals(const Color(0xFFFFFFEE)));
+        expect(newCustomization.qrButtonIconColor, equals(const Color(0xFFFFFFED)));
+        expect(newCustomization.warningColor, equals(const Color(0xFFFFFFEC)));
+        expect(newCustomization.successColor, equals(const Color(0xFFFFFFEB)));
+      });
+      test('toJson (new)', () {
         // Act
         final json = customization.toJson();
         // Assert
         expect(json['brightness'], equals('dark'));
-        expect(json['primaryColor'], equals(0xFF000000));
-        expect(json['onPrimary'], equals(0xFF000001));
-        expect(json['subtitleColor'], equals(0xFF000002));
-        expect(json['backgroundColor'], equals(0xFF000003));
-        expect(json['foregroundColor'], equals(0xFF000004));
-        expect(json['shadowColor'], equals(0xFF000005));
-        expect(json['deleteColor'], equals(0xFF000006));
-        expect(json['renameColor'], equals(0xFF000007));
-        expect(json['lockColor'], equals(0xFF000008));
-        expect(json['exportColor'], equals(0xFF000009));
-        expect(json['disabledColor'], equals(0xFF00000A));
-        expect(json['tileIconColor'], equals(0xFF00000B));
-        expect(json['navigationBarColor'], equals(0xFF00000C));
-        expect(json['_actionButtonsForegroundColor'], equals(0xFF00000D));
-        expect(json['_tilePrimaryColor'], equals(0xFF00000E));
-        expect(json['_tileSubtitleColor'], equals(0xFF00000F));
-        expect(json['_navigationBarIconColor'], equals(0xFF000010));
-        expect(json['_qrButtonBackgroundColor'], equals(0xFF000011));
-        expect(json['_qrButtonIconColor'], equals(0xFF000012));
-        expect(json['warningColor'], equals(0xFF000013));
-        expect(json['successColor'], equals(0xFF000014));
+        expect(json['primaryColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.0}));
+        expect(json['onPrimary'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.00392156862745098}));
+        expect(json['subtitleColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.00784313725490196}));
+        expect(json['backgroundColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.011764705882352941}));
+        expect(json['foregroundColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.01568627450980392}));
+        expect(json['shadowColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.0196078431372549}));
+        expect(json['deleteColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.023529411764705882}));
+        expect(json['renameColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.027450980392156862}));
+        expect(json['lockColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.03137254901960784}));
+        expect(json['exportColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.03529411764705882}));
+        expect(json['disabledColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.0392156862745098}));
+        expect(json['tileIconColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.043137254901960784}));
+        expect(json['navigationBarColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.047058823529411764}));
+        expect(json['_actionButtonsForegroundColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.050980392156862744}));
+        expect(json['_tilePrimaryColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.054901960784313725}));
+        expect(json['_tileSubtitleColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.058823529411764705}));
+        expect(json['_navigationBarIconColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.06274509803921569}));
+        expect(json['_qrButtonBackgroundColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.06666666666666667}));
+        expect(json['_qrButtonIconColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.07058823529411765}));
+        expect(json['warningColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.07450980392156863}));
+        expect(json['successColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.0784313725490196}));
       });
     });
   });

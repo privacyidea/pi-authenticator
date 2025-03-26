@@ -27,7 +27,7 @@ class TooltipContainer extends StatelessWidget {
           border: Border.all(color: Theme.of(context).primaryColor, width: border),
           boxShadow: [
             BoxShadow(
-              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.3),
+              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
               blurRadius: 8,
               spreadRadius: 1,
             ),
@@ -43,6 +43,5 @@ class TooltipContainer extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
         ),
-
       );
 }
