@@ -1649,6 +1649,7 @@
   "authenticateToShowOtp": "Harap lakukan autentikasi untuk menunjukkan kata sandi sekali pakai.",
   "authenticateToUnLockToken": "Lakukan autentikasi untuk mengubah status kunci token.",
   "authentication": "Otentikasi",
+  "backgroundImage": "Gambar latar belakang",
   "biometricHint": "Diperlukan autentikasi",
   "biometricNotRecognized": "Tidak dikenali. Coba lagi.",
   "biometricRequiredTitle": "Biometrik tidak diatur",

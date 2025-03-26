@@ -39,6 +39,8 @@ class SettingsState {
   static bool get verboseLoggingDefault => false;
   static bool get hidePushTokensDefault => false;
   static Version get latestStartedVersionDefault => Version.parse('0.0.0');
+  static bool get showBackgroundImageDefault => false;
+  static bool get allowScreenshotsDefault => false;
 
   final bool isFirstRun;
   final bool showGuideOnStart;
@@ -54,6 +56,8 @@ class SettingsState {
   final bool verboseLogging;
   final bool hidePushTokens;
   final Version latestStartedVersion;
+  final bool showBackgroundImage;
+  final bool allowScreenshots;
 
   SettingsState({
     bool? isFirstRun,
@@ -66,6 +70,8 @@ class SettingsState {
     bool? verboseLogging,
     bool? hidePushTokens,
     Version? latestStartedVersion,
+    bool? showBackgroundImage,
+    bool? allowScreenshots,
   })  : isFirstRun = isFirstRun ?? isFirstRunDefault,
         showGuideOnStart = showGuideOnStart ?? showGuideOnStartDefault,
         hideOpts = hideOpts ?? hideOtpsDefault,
@@ -75,7 +81,9 @@ class SettingsState {
         useSystemLocale = useSystemLocale ?? useSystemLocaleDefault,
         verboseLogging = verboseLogging ?? verboseLoggingDefault,
         hidePushTokens = hidePushTokens ?? hidePushTokensDefault,
-        latestStartedVersion = latestStartedVersion ?? latestStartedVersionDefault;
+        latestStartedVersion = latestStartedVersion ?? latestStartedVersionDefault,
+        showBackgroundImage = showBackgroundImage ?? showBackgroundImageDefault,
+        allowScreenshots = allowScreenshots ?? allowScreenshotsDefault;
 
   SettingsState copyWith({
     bool? isFirstRun,
@@ -88,6 +96,8 @@ class SettingsState {
     bool? verboseLogging,
     bool? hidePushTokens,
     Version? latestStartedVersion,
+    bool? showBackgroundImage,
+    bool? allowScreenshots,
   }) {
     return SettingsState(
       isFirstRun: isFirstRun ?? this.isFirstRun,
@@ -100,13 +110,15 @@ class SettingsState {
       verboseLogging: verboseLogging ?? this.verboseLogging,
       hidePushTokens: hidePushTokens ?? this.hidePushTokens,
       latestStartedVersion: latestStartedVersion ?? this.latestStartedVersion,
+      showBackgroundImage: showBackgroundImage ?? this.showBackgroundImage,
+      allowScreenshots: allowScreenshots ?? this.allowScreenshots,
     );
   }
 
   @override
   String toString() => 'SettingsState(isFirstRun: $isFirstRun, showGuideOnStart: $showGuideOnStart, hideOpts: $hideOpts, enablePolling: $enablePolling, '
       'crashReportRecipients: $crashReportRecipients, localePreference: $localePreference, useSystemLocale: $useSystemLocale, verboseLogging: $verboseLogging, '
-      'hidePushTokens: $hidePushTokens)';
+      'hidePushTokens: $hidePushTokens, latestStartedVersion: $latestStartedVersion, showBackgroundImage: $showBackgroundImage, allowScreenshots: $allowScreenshots)';
 
   static String encodeLocale(Locale locale) {
     return '${locale.languageCode}#${locale.countryCode}';
@@ -126,7 +138,10 @@ class SettingsState {
         other.localePreference.toString() == localePreference.toString() &&
         other.useSystemLocale == useSystemLocale &&
         other.verboseLogging == verboseLogging &&
-        other.hidePushTokens == hidePushTokens;
+        other.hidePushTokens == hidePushTokens &&
+        other.latestStartedVersion == latestStartedVersion &&
+        other.showBackgroundImage == showBackgroundImage &&
+        other.allowScreenshots == allowScreenshots;
   }
 
   static Locale decodeLocale(String str) {

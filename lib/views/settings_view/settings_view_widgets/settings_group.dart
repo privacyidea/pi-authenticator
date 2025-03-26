@@ -29,6 +29,7 @@ class SettingsGroup extends StatelessWidget {
   final bool isActive;
   final void Function()? onPressed;
   final IconData? trailingIcon;
+  final Widget? trailingWidget;
 
   const SettingsGroup({
     super.key,
@@ -37,7 +38,8 @@ class SettingsGroup extends StatelessWidget {
     this.isActive = true,
     this.onPressed,
     this.trailingIcon,
-  });
+    this.trailingWidget,
+  }) : assert(trailingIcon == null || trailingWidget == null, 'Only one of trailingIcon or trailingWidget can be set.');
 
   @override
   Widget build(BuildContext context) {
@@ -67,22 +69,29 @@ class SettingsGroup extends StatelessWidget {
                         onTap: isActive ? onPressed : null,
                         child: ListTile(
                           dense: true,
-                          leading: Text(
+                          isThreeLine: false,
+                          title: Text(
                             title,
                             style: theme.textTheme.titleMedium?.copyWith(color: isActive ? null : Colors.grey),
                             overflow: TextOverflow.fade,
                             softWrap: false,
                           ),
-                          trailing: DefaultIconButton(
-                            semanticsLabel: title,
-                            onPressed: isActive ? onPressed! : null,
-                            icon: trailingIcon ?? Icons.arrow_forward_ios,
+                          trailing: SizedBox(
+                            width: 48,
+                            child: trailingWidget != null
+                                ? Center(child: trailingWidget)
+                                : DefaultIconButton(
+                                    semanticsLabel: title,
+                                    onPressed: isActive ? onPressed! : null,
+                                    icon: trailingIcon ?? Icons.arrow_forward_ios,
+                                  ),
                           ),
                         ),
                       )
                     : ListTile(
                         dense: true,
-                        leading: Text(
+                        isThreeLine: false,
+                        title: Text(
                           title,
                           style: theme.textTheme.titleMedium?.copyWith(color: isActive ? null : Colors.grey),
                           overflow: TextOverflow.fade,

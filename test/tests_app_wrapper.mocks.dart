@@ -46,6 +46,8 @@ import 'package:privacyidea_authenticator/model/riverpod_states/token_state.dart
 import 'package:privacyidea_authenticator/model/token_container.dart' as _i22;
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart' as _i28;
 import 'package:privacyidea_authenticator/model/tokens/token.dart' as _i15;
+import 'package:privacyidea_authenticator/utils/allow_screenshot_utils.dart'
+    as _i33;
 import 'package:privacyidea_authenticator/utils/ecc_utils.dart' as _i24;
 import 'package:privacyidea_authenticator/utils/firebase_utils.dart' as _i10;
 import 'package:privacyidea_authenticator/utils/privacyidea_io_client.dart'
@@ -1658,4 +1660,41 @@ class MockPushProvider extends _i1.Mock implements _i32.PushProvider {
         ),
         returnValueForMissingStub: null,
       );
+}
+
+/// A class which mocks [AllowScreenshotUtils].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockAllowScreenshotUtils extends _i1.Mock
+    implements _i33.AllowScreenshotUtils {
+  @override
+  _i14.Future<bool> allowScreenshots() => (super.noSuchMethod(
+        Invocation.method(
+          #allowScreenshots,
+          [],
+        ),
+        returnValue: _i14.Future<bool>.value(false),
+        returnValueForMissingStub: _i14.Future<bool>.value(false),
+      ) as _i14.Future<bool>);
+
+  @override
+  _i14.Future<bool> disallowScreenshots() => (super.noSuchMethod(
+        Invocation.method(
+          #disallowScreenshots,
+          [],
+        ),
+        returnValue: _i14.Future<bool>.value(false),
+        returnValueForMissingStub: _i14.Future<bool>.value(false),
+      ) as _i14.Future<bool>);
+
+  @override
+  _i14.Future<bool> toggleAllowScreenshots(bool? oldState) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #toggleAllowScreenshots,
+          [oldState],
+        ),
+        returnValue: _i14.Future<bool>.value(false),
+        returnValueForMissingStub: _i14.Future<bool>.value(false),
+      ) as _i14.Future<bool>);
 }
