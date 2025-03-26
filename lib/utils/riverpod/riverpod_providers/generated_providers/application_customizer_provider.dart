@@ -27,7 +27,7 @@ part 'application_customizer_provider.g.dart';
 
 /// Only used for the app customizer
 @riverpod
-class ApplicationCustomizer extends _$ApplicationCustomizer {
+class AppCustomizationProvider extends _$ApplicationCustomizer {
   static ApplicationCustomization get initialState =>
       _initialState ?? ApplicationCustomization.defaultCustomization.copyWith(disabledFeatures: AppFeature.values.toSet());
   static ApplicationCustomization? _initialState;
