@@ -18,6 +18,7 @@
  * limitations under the License.
 */
 
+import 'package:mutex/mutex.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../allow_screenshot_utils.dart';
@@ -32,6 +33,8 @@ final allowScreenshotProvider = allowScreenshotNotifierProviderOf(
 
 @Riverpod(keepAlive: true)
 class AllowScreenshotNotifier extends _$AllowScreenshotNotifier {
+  final _mutex = Mutex();
+
   @override
   AllowScreenshotUtils get screenshotUtils => _screenshotUtilsOverride ?? super.screenshotUtils;
   final AllowScreenshotUtils? _screenshotUtilsOverride;
@@ -51,22 +54,26 @@ class AllowScreenshotNotifier extends _$AllowScreenshotNotifier {
   /// Enables the ability to take screenshots and passes the new state to the settings provider
   /// Returns true if the operation was successful
   Future<bool> allowScreenshots() async {
-    // TODO: Add a mutex
+    await _mutex.acquire();
     final success = await screenshotUtils.allowScreenshots();
     if (success) {
+      await future;
       await ref.read(settingsProvider.notifier).updateState((state) => state.copyWith(allowScreenshots: true));
     }
+    _mutex.release();
     return success;
   }
 
   /// Disables the ability to take screenshots and passes the new state to the settings provider
   /// Returns true if the operation was successful
   Future<bool> disallowScreenshots() async {
-    // TODO: Add a mutex
+    await _mutex.acquire();
     final success = await screenshotUtils.disallowScreenshots();
     if (success) {
+      await future;
       await ref.read(settingsProvider.notifier).updateState((state) => state.copyWith(allowScreenshots: false));
     }
+    _mutex.release();
     return success;
   }
 
