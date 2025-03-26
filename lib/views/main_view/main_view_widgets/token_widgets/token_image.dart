@@ -32,31 +32,33 @@ class TokenImage extends StatefulWidget {
 }
 
 class _TokenImageState extends State<TokenImage> {
-  static final tokenImages = <String?, Uint8List?>{};
+  static final tokenImages = <String, Uint8List?>{};
   late bool hasImage;
   Image? tokenImage;
 
-  Future<Uint8List?> getTokenImageBytesAsync(String? tokenImageUrl) async {
+  Future<Uint8List?> _getTokenImageBytesAsync(String? tokenImageUrl) async {
+    if (tokenImageUrl == null) return null;
     if (tokenImages.containsKey(tokenImageUrl)) {
-      return tokenImages[tokenImageUrl]!;
-    } else {
-      if (tokenImageUrl == null || tokenImageUrl.isEmpty || Uri.tryParse(tokenImageUrl) == null) {
-        tokenImages[tokenImageUrl] = null;
-        return null;
-      }
-      final uri = Uri.parse(tokenImageUrl);
-      if (uri.host == '') {
-        tokenImages[tokenImageUrl] = null;
-        return null;
-      }
+      return tokenImages[tokenImageUrl];
+    }
+    final uri = Uri.tryParse(tokenImageUrl);
+    if (uri == null) {
+      tokenImages[tokenImageUrl] = null;
+      return null;
+    }
+    try {
       http.Response response = await http.get(Uri.parse(tokenImageUrl));
       final newTokenImage = response.bodyBytes;
+      _createImage(newTokenImage);
       tokenImages[tokenImageUrl] = newTokenImage;
       return newTokenImage;
+    } catch (e) {
+      tokenImages[tokenImageUrl] = null;
+      return null;
     }
   }
 
-  Uint8List? getTokenImageBytesSync(String? tokenImageUrl) {
+  Uint8List? _getTokenImageBytesSync(String? tokenImageUrl) {
     final bytes = tokenImages[tokenImageUrl];
     if (bytes != null) return bytes;
     WidgetsBinding.instance.addPostFrameCallback((_) => _loadImage());
@@ -65,10 +67,16 @@ class _TokenImageState extends State<TokenImage> {
 
   void _updateImageWidget() {
     hasImage = widget.tokenImage != null && widget.tokenImage!.isNotEmpty;
-    final imageBytes = getTokenImageBytesSync(widget.tokenImage);
+    final imageBytes = _getTokenImageBytesSync(widget.tokenImage);
     if (imageBytes != null) {
-      tokenImage = Image.memory(
-        imageBytes,
+      tokenImage = _createImage(imageBytes);
+    } else {
+      _loadImage();
+    }
+  }
+
+  Image _createImage(Uint8List uint8List) => Image.memory(
+        uint8List,
         fit: BoxFit.fitHeight,
         errorBuilder: (context, error, stackTrace) {
           if (!mounted) return const SizedBox();
@@ -81,10 +89,6 @@ class _TokenImageState extends State<TokenImage> {
           return const SizedBox();
         },
       );
-    } else {
-      _loadImage();
-    }
-  }
 
   @override
   void initState() {
@@ -103,27 +107,14 @@ class _TokenImageState extends State<TokenImage> {
   void _loadImage() {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (!mounted) return;
-      final uint8List = await getTokenImageBytesAsync(widget.tokenImage);
+      final uint8List = await _getTokenImageBytesAsync(widget.tokenImage);
       if (!mounted) return;
       if (uint8List == null) {
         setState(() => hasImage = false);
         return;
       }
       setState(() {
-        tokenImage = Image.memory(
-          uint8List,
-          fit: BoxFit.fitHeight,
-          errorBuilder: (context, error, stackTrace) {
-            if (!mounted) return const SizedBox();
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (!mounted) return;
-              setState(() {
-                hasImage = false;
-              });
-            });
-            return const SizedBox();
-          },
-        );
+        tokenImage = _createImage(uint8List);
       });
     });
   }
