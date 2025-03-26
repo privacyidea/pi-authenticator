@@ -29,6 +29,7 @@ class PiCircularProgressIndicator extends StatelessWidget {
   final String? semanticsLabel;
   final String? semanticsValue;
   final Color? _backgroundColor;
+  final Color? _foregroundColor;
   final bool swapColors;
 
   const PiCircularProgressIndicator(
@@ -38,16 +39,19 @@ class PiCircularProgressIndicator extends StatelessWidget {
     this.size = 30,
     this.swapColors = false,
     Color? backgroundColor,
+    Color? foregroundColor,
     this.semanticsLabel,
     this.semanticsValue,
     super.key,
   })  : _backgroundColor = backgroundColor,
+        _foregroundColor = foregroundColor,
         strokeWidth = size / 8;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    var backgroundColor = _backgroundColor ?? theme.scaffoldBackgroundColor;
+    final backgroundColor = _backgroundColor ?? theme.scaffoldBackgroundColor;
+    final foregroundColor = _foregroundColor ?? theme.colorScheme.primary;
     return Padding(
       padding: EdgeInsets.all(strokeWidth / 2 + padding),
       child: SizedBox(
@@ -55,11 +59,11 @@ class PiCircularProgressIndicator extends StatelessWidget {
         height: size,
         child: CircularProgressIndicator(
           value: value,
-          color: swapColors ? theme.colorScheme.primary.mixWith(backgroundColor, 0.6).withValues(alpha: 1) : theme.colorScheme.primary,
-          backgroundColor: swapColors ? theme.colorScheme.primary : theme.colorScheme.primary.mixWith(backgroundColor, 0.6).withValues(alpha: 1),
+          color: swapColors ? foregroundColor.mixWith(backgroundColor, 0.6).withValues(alpha: 1) : foregroundColor,
+          backgroundColor: swapColors ? foregroundColor : foregroundColor.mixWith(backgroundColor, 0.6).withValues(alpha: 1),
           strokeCap: StrokeCap.round,
           strokeWidth: strokeWidth,
-          semanticsLabel: semanticsLabel,
+          semanticsLabel: '$semanticsLabel',
           semanticsValue: semanticsValue,
         ),
       ),
