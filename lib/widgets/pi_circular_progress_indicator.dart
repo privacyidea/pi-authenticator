@@ -59,8 +59,8 @@ class PiCircularProgressIndicator extends StatelessWidget {
         height: size,
         child: CircularProgressIndicator(
           value: value,
-          color: swapColors ? foregroundColor.mixWith(backgroundColor, 0.6).withOpacity(1) : foregroundColor,
-          backgroundColor: swapColors ? foregroundColor : foregroundColor.mixWith(backgroundColor, 0.6).withOpacity(1),
+          color: swapColors ? foregroundColor.mixWith(backgroundColor, 0.6).withValues(alpha: 1) : foregroundColor,
+          backgroundColor: swapColors ? foregroundColor : foregroundColor.mixWith(backgroundColor, 0.6).withValues(alpha: 1),
           strokeCap: StrokeCap.round,
           strokeWidth: strokeWidth,
           semanticsLabel: '$semanticsLabel',
