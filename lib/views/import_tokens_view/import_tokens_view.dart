@@ -76,7 +76,11 @@ class _ImportTokensViewState extends ConsumerState<ImportTokensView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.selectImportSource),
+        title: Text(
+          AppLocalizations.of(context)!.selectImportSource,
+          overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
+          maxLines: 2, // Title can be shown on small screens too.
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),

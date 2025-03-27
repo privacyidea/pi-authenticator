@@ -383,12 +383,12 @@ class ThemeCustomization {
             /// ...where "light" is `FontWeight.w300`, "regular" is `FontWeight.w400` and
             /// "medium" is `FontWeight.w500`.
             ///
-            displayLarge: TextStyle(color: foregroundColor, fontFamily: fontFamily),
-            displayMedium: TextStyle(color: foregroundColor, fontFamily: fontFamily),
-            displaySmall: TextStyle(color: foregroundColor, fontFamily: fontFamily),
-            headlineMedium: TextStyle(color: foregroundColor, fontFamily: fontFamily),
-            headlineSmall: TextStyle(color: foregroundColor, fontFamily: fontFamily),
-            titleLarge: TextStyle(color: primaryColor, fontFamily: fontFamily, fontSize: 24),
+            displayLarge: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 96, fontWeight: FontWeight.w300),
+            displayMedium: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 60, fontWeight: FontWeight.w300),
+            displaySmall: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 48, fontWeight: FontWeight.w400),
+            headlineMedium: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 34, fontWeight: FontWeight.w400),
+            headlineSmall: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 24, fontWeight: FontWeight.w400),
+            titleLarge: TextStyle(color: primaryColor, fontFamily: fontFamily, fontSize: 24, fontWeight: FontWeight.w500),
             titleMedium: TextStyle(color: primaryColor, fontFamily: fontFamily, fontSize: 20, fontWeight: FontWeight.w500),
             titleSmall: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 18, fontWeight: FontWeight.w500),
             bodyLarge: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 16, fontWeight: FontWeight.w400),
@@ -398,6 +398,7 @@ class ThemeCustomization {
             labelSmall: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 12, fontWeight: FontWeight.w400),
           ),
           disabledColor: tileIconColor.withValues(alpha: 0.38), // 38% opacity used for disabled icon buttons
+
           iconButtonTheme: IconButtonThemeData(
             style: ButtonStyle(
               foregroundColor: WidgetStateProperty.all(foregroundColor),
@@ -427,6 +428,8 @@ class ThemeCustomization {
           shadowColor: shadowColor,
           // shadowColor: Colors.transparent,
           appBarTheme: const AppBarTheme().copyWith(
+            // Title Medium but with color foregroundColor
+            titleTextStyle: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 20, fontWeight: FontWeight.w500),
             backgroundColor: backgroundColor,
             shadowColor: shadowColor,
             foregroundColor: foregroundColor,

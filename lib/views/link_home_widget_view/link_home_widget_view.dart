@@ -51,7 +51,11 @@ class _LinkHomeWidgetViewState extends ConsumerState<LinkHomeWidgetView> {
     final otpTokens = ref.watch(tokenProvider).valueOrNull?.otpTokens;
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.linkHomeWidgetViewTitle),
+        title: Text(
+          AppLocalizations.of(context)!.linkHomeWidgetViewTitle,
+          overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
+          maxLines: 2, // Title can be shown on small screens too.
+        ),
       ),
       body: ListView.builder(
         itemBuilder: (context, index) {

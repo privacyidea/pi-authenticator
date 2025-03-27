@@ -43,6 +43,7 @@ class _QRScannerWidgetState extends State<QRScannerWidget> {
               if (!mounted) return;
               setState(() => isInitialized = controller != null);
             },
+            actionButtonsAlignment: Alignment.bottomRight,
             showFlashlight: true,
             flashOnIcon: Semantics(
               label: AppLocalizations.of(context)!.a11yScanQrCodeViewFlashlightOn,

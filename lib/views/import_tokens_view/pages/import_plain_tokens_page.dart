@@ -150,7 +150,11 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.titleName),
+        title: Text(
+          widget.titleName,
+          overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
+          maxLines: 2, // Title can be shown on small screens too.
+        ),
       ),
       body: Column(
         mainAxisSize: MainAxisSize.max,

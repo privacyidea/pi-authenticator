@@ -39,7 +39,11 @@ class SelectImportTypePage extends StatelessWidget {
     final localizations = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: Text(tokenImportOrigin.appName),
+        title: Text(
+          tokenImportOrigin.appName,
+          overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
+          maxLines: 2, // Title can be shown on small screens too.
+        ),
       ),
       body: Center(
         child: SingleChildScrollView(

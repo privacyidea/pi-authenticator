@@ -35,7 +35,11 @@ class PushTokensView extends StatelessView {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.pushTokensViewTitle),
+        title: Text(
+          AppLocalizations.of(context)!.pushTokensViewTitle,
+          overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
+          maxLines: 2, // Title can be shown on small screens too.
+        ),
       ),
       body: PushRequestListener(
         child: Stack(

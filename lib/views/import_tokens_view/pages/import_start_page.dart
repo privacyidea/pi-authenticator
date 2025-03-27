@@ -77,7 +77,11 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
     final localizations = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.appName),
+        title: Text(
+          widget.appName,
+          overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
+          maxLines: 2, // Title can be shown on small screens too.
+        ),
       ),
       body: Center(
         child: SingleChildScrollView(
