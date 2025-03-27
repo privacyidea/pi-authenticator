@@ -17,20 +17,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// ignore_for_file: invalid_use_of_internal_member
-
+import 'package:flutter/material.dart' show WidgetsBinding;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../utils/logger.dart';
+import '../../../../utils/logger.dart';
 
-abstract class AsyncNotifierProviderListener<T extends BuildlessAutoDisposeAsyncNotifier<S>, S> {
-  final AutoDisposeAsyncNotifierProviderImpl<T, S>? provider;
-  final void Function(AsyncValue<S>? previous, AsyncValue<S> next)? onNewState;
-  const AsyncNotifierProviderListener({this.provider, this.onNewState});
+abstract class StreamNotifierListener<T extends StreamNotifier<S>, S> {
+  final String listenerName;
+  final StreamNotifierProvider<T, S> provider;
+  final void Function(WidgetRef ref, AsyncValue<S>? previous, AsyncValue<S> next) onNewState;
+  const StreamNotifierListener({required this.provider, required this.onNewState, required this.listenerName});
   void buildListen(WidgetRef ref) {
-    Logger.debug('Listening to $provider');
-    if (provider == null || onNewState == null) return;
-    ref.listen(provider!, onNewState!);
+    Logger.debug('("$listenerName") listening to provider ("$provider")');
+    ref.listen(provider, (previous, next) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => onNewState(ref, previous, next));
+    });
   }
 }

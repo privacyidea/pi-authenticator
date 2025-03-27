@@ -85,17 +85,17 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
     return SingleTouchRecognizer(
       child: StateObserver(
         stateNotifierProviderListeners: const [],
-        buildlessProviderListener: [
-          HomeWidgetTokenStateListener(provider: tokenProvider),
-          PushProviderTokenStateListener(provider: tokenProvider),
-        ],
+        buildlessProviderListener: [],
         streamNotifierProviderListeners: [
           NavigationDeepLinkListener(deeplinkProvider: deeplinkNotifierProvider),
           HomeWidgetDeepLinkListener(deeplinkProvider: deeplinkNotifierProvider),
           TokenImportDeepLinkListener(deeplinkProvider: deeplinkNotifierProvider),
           TokenContainerDeepLinkListener(deeplinkProvider: deeplinkNotifierProvider),
         ],
-        asyncNotifierProviderListeners: [],
+        asyncNotifierProviderListeners: [
+          PushProviderTokenStateListener(provider: tokenProvider),
+          HomeWidgetTokenStateListener(provider: tokenProvider),
+        ],
         child: EasyDynamicThemeWidget(
           child: widget.child,
         ),

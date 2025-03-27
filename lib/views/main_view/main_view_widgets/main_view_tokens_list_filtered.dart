@@ -67,7 +67,7 @@ class MainViewTokensListFiltered extends ConsumerWidget {
     final filter = ref.watch(tokenFilterProvider);
     if (filter == null) return [];
     final tokenFolders = ref.watch(tokenFolderProvider).folders;
-    final allTokens = ref.watch(tokenProvider).tokens;
+    final allTokens = ref.watch(tokenProvider).valueOrNull?.tokens ?? [];
     final filteredTokens = filter.filterTokens(allTokens);
     List<SortableMixin> sortables = [...tokenFolders, ...filteredTokens];
     final draggingSortable = ref.watch(draggingSortableProvider);

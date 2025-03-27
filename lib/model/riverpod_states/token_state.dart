@@ -20,9 +20,9 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../../../model/extensions/token_folder_extension.dart';
 import '../../utils/logger.dart';
 import '../enums/push_token_rollout_state.dart';
+import '../extensions/token_list_extension.dart';
 import '../token_folder.dart';
 import '../tokens/otp_token.dart';
 import '../tokens/push_token.dart';
@@ -47,6 +47,7 @@ class TokenState {
 
   bool get needsFirebase => pushTokens.any((element) => element.isPollOnly != true);
 
+  List<PushToken> get rolledOutPushTokens => pushTokens.where((t) => t.isRolledOut && t.url != null).toList();
   List<PushToken> get pushTokensToRollOut =>
       pushTokens.where((element) => !element.isRolledOut && element.rolloutState == PushTokenRollOutState.rolloutNotStarted).toList();
 
@@ -153,9 +154,8 @@ class TokenState {
 
   // Replace the tokens if it does exist
   // Do nothing if it does not exist
-  (TokenState, List<T>) replaceTokens<T extends Token>(List<T> tokens) {
+  List<T> replaceTokens<T extends Token>(List<T> tokens) {
     final newTokens = List<Token>.from(this.tokens);
-    final updatedTokens = <T>[];
     final failedToReplace = <T>[];
     for (var token in tokens) {
       final index = newTokens.indexWhere((element) => element.id == token.id);
@@ -166,7 +166,7 @@ class TokenState {
       }
       newTokens[index] = token;
     }
-    return (TokenState(tokens: newTokens, lastlyUpdatedTokens: updatedTokens), failedToReplace);
+    return failedToReplace;
   }
 
   List<Token> tokensInFolder([TokenFolder? folder]) => tokens.inFolder(folder);

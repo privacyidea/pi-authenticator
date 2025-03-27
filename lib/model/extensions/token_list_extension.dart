@@ -95,6 +95,16 @@ extension TokenListExtension on List<Token> {
   /// Sorts out all tokens that type is in the given list.
   List<Token> whereNotType(List<Type> types) => where((token) => !types.contains(token.runtimeType)).toList();
 
+  List<Token> filterDuplicates() {
+    final uniqueTokens = <Token>[];
+    for (var token in this) {
+      if (!uniqueTokens.any((uniqureToken) => uniqureToken.isSameTokenAs(token) == true)) {
+        uniqueTokens.add(token);
+      }
+    }
+    return uniqueTokens;
+  }
+
   /// Transforms all tokens into templates.
   List<TokenTemplate> toTemplates() {
     if (isEmpty) return [];

@@ -28,7 +28,6 @@ import 'package:privacyidea_authenticator/model/tokens/otp_token.dart';
 import 'package:privacyidea_authenticator/utils/app_info_utils.dart';
 
 import '../../../../../../../../l10n/app_localizations_en.dart';
-import '../../../../../../../../model/extensions/token_folder_extension.dart';
 import '../../../../../../../../processors/scheme_processors/token_import_scheme_processors/otp_auth_processor.dart';
 import '../../../../../../../../utils/ecc_utils.dart';
 import '../../../../../../../../utils/privacyidea_io_client.dart';
@@ -36,6 +35,7 @@ import '../../model/api_results/pi_server_results/pi_server_result_value.dart';
 import '../../model/exception_errors/localized_exception.dart';
 import '../../model/exception_errors/pi_server_result_error.dart';
 import '../../model/exception_errors/response_error.dart';
+import '../../model/extensions/token_list_extension.dart';
 import '../../model/pi_server_response.dart';
 import '../../model/riverpod_states/token_state.dart';
 import '../../model/token_container.dart';

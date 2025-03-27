@@ -146,10 +146,10 @@ void dragSortableOnAccept({
   required SortableMixin? nextSortable,
   TokenFolder? dependingFolder,
   required WidgetRef ref,
-}) {
-  var allSortables = ref.read(sortablesProvider);
+}) async {
+  var allSortables = await ref.read(sortablesProvider.future);
   if (dragedSortable is TokenFolder) {
-    final tokensInFolder = ref.read(tokenProvider).tokens.where((element) => element.folderId == dragedSortable.folderId).toList();
+    final tokensInFolder = (await ref.read(tokenProvider.future)).tokens.where((element) => element.folderId == dragedSortable.folderId).toList();
     final allMovingItems = [dragedSortable, ...tokensInFolder];
     allSortables = allSortables.moveAllBetween(moveAfter: previousSortable, movedItems: allMovingItems, moveBefore: nextSortable);
   } else if (dragedSortable is Token) {

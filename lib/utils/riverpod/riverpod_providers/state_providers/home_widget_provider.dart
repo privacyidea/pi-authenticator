@@ -28,7 +28,10 @@ final homeWidgetProvider = StateProvider<Map<String, OTPToken>>(
   (ref) {
     Logger.info("New homeWidgetProvider created");
     ref.listen(tokenProvider, (previous, next) {
-      HomeWidgetUtils().updateTokensIfLinked(next.lastlyUpdatedTokens);
+      if (!next.hasValue) {
+        return;
+      }
+      HomeWidgetUtils().updateTokensIfLinked(next.value!.lastlyUpdatedTokens);
     });
     return {};
   },

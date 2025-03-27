@@ -39,13 +39,15 @@ class AllowScreenshotNotifier extends _$AllowScreenshotNotifier {
   AllowScreenshotUtils get screenshotUtils => _screenshotUtilsOverride ?? super.screenshotUtils;
   final AllowScreenshotUtils? _screenshotUtilsOverride;
 
-  AllowScreenshotNotifier({AllowScreenshotUtils? screenshotUtilsOverride}) : _screenshotUtilsOverride = screenshotUtilsOverride;
+  AllowScreenshotNotifier({
+    AllowScreenshotUtils? screenshotUtilsOverride,
+  }) : _screenshotUtilsOverride = screenshotUtilsOverride;
 
   @override
   Future<bool> build({
     required AllowScreenshotUtils screenshotUtils,
   }) async {
-    Logger.info("New ScreenshotNotifier created");
+    Logger.info("New AllowScreenshotNotifier created");
     final allowScreenshot = await ref.watch(settingsProvider.selectAsync((settings) => settings.allowScreenshots));
     allowScreenshot ? this.screenshotUtils.allowScreenshots() : this.screenshotUtils.disallowScreenshots();
     return allowScreenshot;

@@ -27,7 +27,7 @@ import '../state_providers/status_message_provider.dart';
 final connectivityProvider = StreamProvider<List<ConnectivityResult>>(
   (ref) {
     Logger.info("New connectivityProvider created");
-    ref.read(tokenProvider.notifier).initState.then(
+    ref.read(tokenProvider.future).then(
       (newState) {
         Connectivity().checkConnectivity().then((connectivity) {
           Logger.info("First connectivity check: $connectivity");

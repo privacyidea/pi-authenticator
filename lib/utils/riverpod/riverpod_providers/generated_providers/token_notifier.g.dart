@@ -6,7 +6,7 @@ part of 'token_notifier.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$tokenNotifierHash() => r'e78c9cc72e32e782140c9dc67f9bca3d15094623';
+String _$tokenNotifierHash() => r'1505196e579f209710411733ce1301983865408e';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -29,13 +29,13 @@ class _SystemHash {
   }
 }
 
-abstract class _$TokenNotifier extends BuildlessNotifier<TokenState> {
+abstract class _$TokenNotifier extends BuildlessAsyncNotifier<TokenState> {
   late final TokenRepository repo;
   late final RsaUtils rsaUtils;
   late final PrivacyideaIOClient ioClient;
   late final FirebaseUtils firebaseUtils;
 
-  TokenState build({
+  FutureOr<TokenState> build({
     required TokenRepository repo,
     required RsaUtils rsaUtils,
     required PrivacyideaIOClient ioClient,
@@ -48,7 +48,7 @@ abstract class _$TokenNotifier extends BuildlessNotifier<TokenState> {
 const tokenNotifierProviderOf = TokenNotifierFamily();
 
 /// See also [TokenNotifier].
-class TokenNotifierFamily extends Family<TokenState> {
+class TokenNotifierFamily extends Family<AsyncValue<TokenState>> {
   /// See also [TokenNotifier].
   const TokenNotifierFamily();
 
@@ -96,7 +96,7 @@ class TokenNotifierFamily extends Family<TokenState> {
 
 /// See also [TokenNotifier].
 class TokenNotifierProvider
-    extends NotifierProviderImpl<TokenNotifier, TokenState> {
+    extends AsyncNotifierProviderImpl<TokenNotifier, TokenState> {
   /// See also [TokenNotifier].
   TokenNotifierProvider({
     required TokenRepository repo,
@@ -143,7 +143,7 @@ class TokenNotifierProvider
   final FirebaseUtils firebaseUtils;
 
   @override
-  TokenState runNotifierBuild(
+  FutureOr<TokenState> runNotifierBuild(
     covariant TokenNotifier notifier,
   ) {
     return notifier.build(
@@ -178,7 +178,7 @@ class TokenNotifierProvider
   }
 
   @override
-  NotifierProviderElement<TokenNotifier, TokenState> createElement() {
+  AsyncNotifierProviderElement<TokenNotifier, TokenState> createElement() {
     return _TokenNotifierProviderElement(this);
   }
 
@@ -205,7 +205,7 @@ class TokenNotifierProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin TokenNotifierRef on NotifierProviderRef<TokenState> {
+mixin TokenNotifierRef on AsyncNotifierProviderRef<TokenState> {
   /// The parameter `repo` of this provider.
   TokenRepository get repo;
 
@@ -220,7 +220,7 @@ mixin TokenNotifierRef on NotifierProviderRef<TokenState> {
 }
 
 class _TokenNotifierProviderElement
-    extends NotifierProviderElement<TokenNotifier, TokenState>
+    extends AsyncNotifierProviderElement<TokenNotifier, TokenState>
     with TokenNotifierRef {
   _TokenNotifierProviderElement(super.provider);
 

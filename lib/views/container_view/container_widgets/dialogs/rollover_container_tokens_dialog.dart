@@ -59,9 +59,10 @@ class _RolloverContainerTokensDialogState extends ConsumerState<RolloverContaine
           child: Text(AppLocalizations.of(context)!.cancel),
         ),
         ElevatedButton(
-          onPressed: () {
-            final tokenState = ref.read(tokenProvider);
+          onPressed: () async {
+            final tokenState = await ref.read(tokenProvider.future);
             _renewSecrets(tokenState: tokenState);
+            if (!context.mounted) return;
             Navigator.of(context).pop();
           },
           child: Text(AppLocalizations.of(context)!.renewSecretsButtonText),

@@ -44,7 +44,7 @@ class SyncContainerButton extends ConsumerWidget {
       ),
       isPressable: container.syncState.isIdle,
       onPressed: () async {
-        final tokenState = ref.read(tokenProvider);
+        final tokenState = await ref.read(tokenProvider.future);
         await ref.read(tokenContainerProvider.notifier).syncContainers(tokenState: tokenState, containersToSync: [container], isManually: true);
       },
       child: const Icon(Icons.sync, size: 40),

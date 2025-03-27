@@ -18,6 +18,7 @@
  * limitations under the License.
  */
 import 'package:collection/collection.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../interfaces/riverpod/state_listeners/state_notifier_provider_listeners/token_state_listener.dart';
 import '../../../model/riverpod_states/token_state.dart';
@@ -32,25 +33,21 @@ class HomeWidgetTokenStateListener extends TokenStateListener {
           listenerName: 'HomeWidgetUtils().updateTokensIfLinked',
         );
 
-  static void _onNewState(TokenState? previous, TokenState next) {
+  static void _onNewState(AsyncValue<TokenState>? previous, AsyncValue<TokenState> next) {
     final updateTokens = <Token>[];
-    if (previous == null) {
-      updateTokens.addAll(next.lastlyUpdatedTokens);
-    } else {
-      final previousTokens = previous.tokens;
-      final nextTokens = next.lastlyUpdatedTokens;
-      for (final nextToken in nextTokens) {
-        final previousToken = previousTokens.firstWhereOrNull((previousToken) => previousToken.id == nextToken.id);
-        if (previousToken == null) {
-          updateTokens.add(nextToken);
-          continue;
-        }
-        if (previousToken.issuer != nextToken.issuer ||
-            previousToken.label != nextToken.label ||
-            previousToken.isLocked != nextToken.isLocked ||
-            (previousToken is HOTPToken && nextToken is HOTPToken && previousToken.counter != nextToken.counter)) {
-          updateTokens.add(nextToken);
-        }
+    final previousTokens = previous?.valueOrNull?.tokens ?? [];
+    final nextTokens = next.valueOrNull?.lastlyUpdatedTokens ?? [];
+    for (final nextToken in nextTokens) {
+      final previousToken = previousTokens.firstWhereOrNull((previousToken) => previousToken.id == nextToken.id);
+      if (previousToken == null) {
+        updateTokens.add(nextToken);
+        continue;
+      }
+      if (previousToken.issuer != nextToken.issuer ||
+          previousToken.label != nextToken.label ||
+          previousToken.isLocked != nextToken.isLocked ||
+          (previousToken is HOTPToken && nextToken is HOTPToken && previousToken.counter != nextToken.counter)) {
+        updateTokens.add(nextToken);
       }
     }
     HomeWidgetUtils().updateTokensIfLinked(updateTokens);

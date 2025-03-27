@@ -19,6 +19,7 @@
  */
 import 'package:privacyidea_authenticator/utils/globals.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/push_request_provider.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../interfaces/riverpod/state_listeners/state_notifier_provider_listeners/token_state_listener.dart';
 import '../../../model/riverpod_states/token_state.dart';
@@ -30,9 +31,11 @@ class PushProviderTokenStateListener extends TokenStateListener {
           listenerName: 'pushRequestProvider: initFirebase',
         );
 
-  static void _onNewState(TokenState? previous, TokenState next) {
-    if (previous?.needsFirebase == next.needsFirebase) return;
-    if (!next.needsFirebase) return;
+  static void _onNewState(AsyncValue<TokenState>? previous, AsyncValue<TokenState> next) {
+    final previousValue = previous?.valueOrNull;
+    final nextValue = next.valueOrNull;
+    if (previousValue?.needsFirebase == nextValue?.needsFirebase) return;
+    if (nextValue?.needsFirebase != true) return;
     assert(globalRef != null, 'PushProviderTokenStateListener: globalRef should not be null at this point');
     globalRef!.read(pushRequestProvider.notifier).initFirebase();
   }

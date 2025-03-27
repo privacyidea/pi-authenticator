@@ -55,10 +55,8 @@ class _PushTokensViwListState extends ConsumerState<PushTokensViwList> {
 
   @override
   Widget build(BuildContext context) {
-    final tokenState = ref.watch(tokenProvider);
-    final pushTokens = tokenState.pushTokens;
+    final pushTokens = ref.watch(tokenProvider).valueOrNull?.pushTokens ?? [];
     final draggingSortable = ref.watch(draggingSortableProvider);
-
     return Stack(
       children: [
         Column(

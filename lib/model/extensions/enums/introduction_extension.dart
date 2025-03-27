@@ -14,17 +14,22 @@ extension IntroductionX on Introduction {
         Introduction.introductionScreen => state.isUncompleted(Introduction.introductionScreen),
         Introduction.scanQrCode => state.isUncompleted(Introduction.scanQrCode),
         Introduction.addManually => state.isCompleted(Introduction.scanQrCode) && state.isUncompleted(Introduction.addManually),
-        Introduction.tokenSwipe =>
-          ref.watch(tokenProvider).tokens.isNotEmpty && state.isCompleted(Introduction.addManually) && state.isUncompleted(Introduction.tokenSwipe),
+        Introduction.tokenSwipe => ref.watch(tokenProvider).valueOrNull?.tokens.isNotEmpty == true &&
+            state.isCompleted(Introduction.addManually) &&
+            state.isUncompleted(Introduction.tokenSwipe),
         Introduction.editToken => state.isCompleted(Introduction.tokenSwipe) && state.isUncompleted(Introduction.editToken),
         Introduction.lockToken => state.isCompleted(Introduction.editToken) && state.isUncompleted(Introduction.lockToken),
-        Introduction.dragToken =>
-          ref.watch(tokenProvider).tokens.length >= 2 && state.isCompleted(Introduction.tokenSwipe) && state.isUncompleted(Introduction.dragToken),
-        Introduction.addFolder => ref.watch(tokenProvider).tokens.length >= 3 &&
+        Introduction.dragToken => ref.watch(tokenProvider).hasValue &&
+            ref.watch(tokenProvider).value!.tokens.length >= 2 &&
+            state.isCompleted(Introduction.tokenSwipe) &&
+            state.isUncompleted(Introduction.dragToken),
+        Introduction.addFolder => ref.watch(tokenProvider).hasValue &&
+            ref.watch(tokenProvider).value!.tokens.length >= 3 &&
             state.isCompleted(Introduction.dragToken) &&
             state.isUncompleted(Introduction.addFolder) &&
             Introduction.dragToken.isConditionFulfilled(ref, state) == false,
-        Introduction.pollForChallenges => ref.watch(tokenProvider).pushTokens.firstOrNull?.isRolledOut == true &&
+        Introduction.pollForChallenges => ref.watch(tokenProvider).hasValue &&
+            ref.watch(tokenProvider).value!.pushTokens.firstOrNull?.isRolledOut == true &&
             state.isCompleted(Introduction.tokenSwipe) &&
             state.isUncompleted(Introduction.pollForChallenges) &&
             Introduction.dragToken.isConditionFulfilled(ref, state) == false &&

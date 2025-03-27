@@ -20,6 +20,7 @@
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/model/extensions/token_list_extension.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../../../../model/extensions/sortable_list.dart';
@@ -32,9 +33,9 @@ import 'token_notifier.dart';
 part 'sortable_notifier.g.dart';
 
 @riverpod
-List<SortableMixin> sortables(Ref ref) {
+Future<List<SortableMixin>> sortables(Ref ref) async {
   final tokenFolders = ref.watch(tokenFolderProvider).folders;
-  final tokens = ref.watch(tokenProvider).tokens;
+  final tokens = await ref.watch(tokenProvider.selectAsync((state) => state.tokens.filterDuplicates()));
 
   var sortablesWithNulls = List<SortableMixin>.from([...tokens, ...tokenFolders]);
 
