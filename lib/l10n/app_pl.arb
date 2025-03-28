@@ -79,6 +79,18 @@
   "@allTokensSynchronized": {
     "description": "Content of the push synchronization dialog. Signaling the user that everything worked."
   },
+  "@allowButton": {
+    "description": "Buttontext to allow something."
+  },
+  "@allowScreenshotsDescription": {
+    "description": "Description for the allow screenshots dialog."
+  },
+  "@allowScreenshotsReason": {
+    "description": "Authenticate reason for the allow screenshots dialog."
+  },
+  "@allowScreenshotsTitle": {
+    "description": "Title for the allow screenshots dialog."
+  },
   "@asFile": {
     "description": "Buttontext to save the backup as a file."
   },
@@ -111,6 +123,9 @@
   },
   "@authentication": {
     "description": "Title of the authentication dialog."
+  },
+  "@backgroundImage": {
+    "description": "Label for the background image setting."
   },
   "@biometricHint": {
     "description": "Hint message advising the user how to authenticate with biometrics. It is used on Android side. Maximum 60 characters."
@@ -809,8 +824,8 @@
       }
     }
   },
-  "@invalidQrFile": {
-    "description": "Error message when the qr file is invalid.",
+  "@invalidQrBackup": {
+    "description": "Error message when the scanned qr backup is invalid.",
     "placeholders": {
       "appName": {
         "example": "privacyIDEA Authenticator",
@@ -818,8 +833,8 @@
       }
     }
   },
-  "@invalidQrScan": {
-    "description": "Error message when the qr scan is invalid.",
+  "@invalidQrFile": {
+    "description": "Error message when the qr file is invalid.",
     "placeholders": {
       "appName": {
         "example": "privacyIDEA Authenticator",
@@ -1144,6 +1159,18 @@
   "@patchNotesV4_5_0NewFeatures1": {
     "description": "Patch notes for version 4.5.0"
   },
+  "@patchNotesV4_5_1BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.5.1"
+  },
+  "@patchNotesV4_5_1NewFeatures1": {
+    "description": "Patch notes for a new feature in version 4.5.1"
+  },
+  "@patchNotesV4_5_1NewFeatures2": {
+    "description": "Patch notes for a new feature in version 4.5.1"
+  },
+  "@patchNotesV4_5_1NewFeatures3": {
+    "description": "Patch notes for a new feature in version 4.5.1"
+  },
   "@period": {
     "description": "Title of the dropdown button where the period of the totp token is selected."
   },
@@ -1303,6 +1330,12 @@
   },
   "@scanThisQrWithNewDevice": {
     "description": "Content of the token export dialog that shows the user the qr code."
+  },
+  "@screenshotsAllowed": {
+    "description": "Label for the screenshots allowed setting."
+  },
+  "@screenshotsNotAllowed": {
+    "description": "Label for the screenshots allowed setting."
   },
   "@secondsUntilNextOTP": {
     "description": "Semantics label for the animated countdown until the next OTP is generated."
@@ -1638,6 +1671,10 @@
   "algorithm": "Algorytm",
   "algorithmUnsupported": "Algorytm {algorithm} nie jest obsługiwany",
   "allTokensSynchronized": "Wszystkie tokeny są zsynchronizowane.",
+  "allowButton": "Zezwalaj",
+  "allowScreenshotsDescription": "Zezwalaj na zrzuty ekranu tylko wtedy, gdy jest to konieczne. Może to stanowić potencjalne zagrożenie dla bezpieczeństwa, jeśli na urządzeniu znajduje się aplikacja, która widzi ekran.",
+  "allowScreenshotsReason": "Uwierzytelnij się, aby zezwolić na zrzuty ekranu. Możesz to wyłączyć w dowolnym momencie.",
+  "allowScreenshotsTitle": "Zezwalaj na zrzuty ekranu",
   "asFile": "Jako plik",
   "asQrCode": "Jako kod QR",
   "askLogSentDescription": "Czy wysłałeś dziennik i czy chcesz go teraz wyczyścić?",
@@ -1830,8 +1867,9 @@
   "invalidBackupFile": "Wybrany plik nie jest prawidłową kopią zapasową {appName}.",
   "invalidHostForScheme": "Nieprawidłowy host: {host} dla schematu: {scheme}",
   "invalidLink": "Wprowadzony link nie jest prawidłowym tokenem {appName} lub nie jest obsługiwany.",
+  "invalidQrBackup": "Zeskanowany kod QR nie jest prawidłową kopią zapasową {appName}.",
   "invalidQrFile": "Wybrany plik nie zawiera prawidłowego kodu QR z {appName}.",
-  "invalidQrScan": "Zeskanowany kod QR nie jest prawidłową kopią zapasową {appName}.",
+  "invalidQrScan": "Zeskanowany kod QR nie zawierał prawidłowych danych",
   "invalidUrl": "Nieprawidłowy adres URL",
   "invalidValue": "Typ {type} '{value}' nie jest prawidłowy dla '{parameter}'.",
   "invalidValueIn": "Typ {type} '{value}' jest nieprawidłowy dla '{parameter}' w '{map}'.",
@@ -1954,6 +1992,8 @@
   "saveButton": "Zapisz",
   "scanQrCode": "Zeskanuj kod QR",
   "scanThisQrWithNewDevice": "Zeskanuj ten kod QR za pomocą nowego urządzenia, aby zaimportować token.",
+  "screenshotsAllowed": " Zrzuty ekranu dozwolone",
+  "screenshotsNotAllowed": "Zrzuty ekranu niedozwolone",
   "secondsUntilNextOTP": "Sekundy do następnego OTP",
   "secretIsRequired": "Wymagany jest sekret",
   "secretKey": "Tajny klucz",

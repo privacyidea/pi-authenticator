@@ -39,7 +39,7 @@ class SettingsState {
   static bool get verboseLoggingDefault => false;
   static bool get hidePushTokensDefault => false;
   static Version get latestStartedVersionDefault => Version.parse('0.0.0');
-  static bool get showBackgroundImageDefault => false;
+  static bool get showBackgroundImageDefault => true;
   static bool get allowScreenshotsDefault => false;
 
   final bool isFirstRun;

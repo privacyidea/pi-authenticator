@@ -1,6 +1,16 @@
 # Changelog
 
-## [4.4.0] - 
+## [4.5.1]
+ - Added setting to show/hide background image
+ - Added setting to allow taking screenshots
+ - TOTP token now changes color in the last 5 seconds to indicate end of period
+ - Fixed some minor issues
+
+## [4.5.0]
+ - Now supports the privacyIDEA container system
+ - Fixed some minor issues
+
+## [4.4.0] -
  - It is now possible to export tokens where it can be ensured that they are not privacyIDEA tokens.
    Currently, it cannot be ruled out that tokens added via the QR code scanner originate from privacyIDEA.
    The differentiation will be improved in future versions.
@@ -46,7 +56,7 @@
 
 ## [4.1.1] - 2023-05-12
 
-- Communicate declined push requests to the server 
+- Communicate declined push requests to the server
 - Fixed notification permissions for Android 13
 - Fixed causes for crashes related to networking
 

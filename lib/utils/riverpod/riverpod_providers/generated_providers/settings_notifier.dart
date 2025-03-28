@@ -156,7 +156,7 @@ class SettingsNotifier extends _$SettingsNotifier {
   }
 
   Future<SettingsState> setShowBackgroundImage(bool value) {
-    Logger.info('Hide background image set to $value');
+    Logger.info('Show background image set to $value');
     return updateState((oldState) => oldState.copyWith(showBackgroundImage: value));
   }
 

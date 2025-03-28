@@ -21,9 +21,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/allow_screenshot_notifier.dart';
+import 'package:privacyidea_authenticator/views/settings_view/settings_groups/settings_group_allow_screenshot/dialogs/allow_screenshot_dialog.dart';
 
-import '../../../l10n/app_localizations.dart';
-import '../settings_view_widgets/settings_group.dart';
+import '../../../../l10n/app_localizations.dart';
+import '../../settings_view_widgets/settings_group.dart';
 
 class SettingsGroupAllowScreenshot extends ConsumerWidget {
   const SettingsGroupAllowScreenshot({super.key});
@@ -39,11 +40,19 @@ class SettingsGroupAllowScreenshot extends ConsumerWidget {
         final isAllowed = snapshot.data!;
         return SettingsGroup(
           title: isAllowed ? AppLocalizations.of(context)!.screenshotsAllowed : AppLocalizations.of(context)!.screenshotsNotAllowed,
-          onPressed: () => ref.read(allowScreenshotProvider.notifier).toggleAllowScreenshots(),
+          onPressed: () async {
+            if (!isAllowed) {
+              final allowed = await AllowScreenshotDialog.showDialog();
+              if (allowed != true) return;
+            }
+            ref.read(allowScreenshotProvider.notifier).toggleAllowScreenshots();
+          },
           trailingWidget: Switch(
             value: snapshot.data!,
-            onChanged: (value) {
+            onChanged: (value) async {
               if (value) {
+                final allowed = await AllowScreenshotDialog.showDialog();
+                if (allowed != true) return;
                 ref.read(allowScreenshotProvider.notifier).allowScreenshots();
               } else {
                 ref.read(allowScreenshotProvider.notifier).disallowScreenshots();

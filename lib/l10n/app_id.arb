@@ -79,6 +79,18 @@
   "@allTokensSynchronized": {
     "description": "Content of the push synchronization dialog. Signaling the user that everything worked."
   },
+  "@allowButton": {
+    "description": "Buttontext to allow something."
+  },
+  "@allowScreenshotsDescription": {
+    "description": "Description for the allow screenshots dialog."
+  },
+  "@allowScreenshotsReason": {
+    "description": "Authenticate reason for the allow screenshots dialog."
+  },
+  "@allowScreenshotsTitle": {
+    "description": "Title for the allow screenshots dialog."
+  },
   "@asFile": {
     "description": "Buttontext to save the backup as a file."
   },
@@ -111,6 +123,9 @@
   },
   "@authentication": {
     "description": "Title of the authentication dialog."
+  },
+  "@backgroundImage": {
+    "description": "Label for the background image setting."
   },
   "@biometricHint": {
     "description": "Hint message advising the user how to authenticate with biometrics. It is used on Android side. Maximum 60 characters."
@@ -809,8 +824,8 @@
       }
     }
   },
-  "@invalidQrFile": {
-    "description": "Error message when the qr file is invalid.",
+  "@invalidQrBackup": {
+    "description": "Error message when the scanned qr backup is invalid.",
     "placeholders": {
       "appName": {
         "example": "privacyIDEA Authenticator",
@@ -818,8 +833,8 @@
       }
     }
   },
-  "@invalidQrScan": {
-    "description": "Error message when the qr scan is invalid.",
+  "@invalidQrFile": {
+    "description": "Error message when the qr file is invalid.",
     "placeholders": {
       "appName": {
         "example": "privacyIDEA Authenticator",
@@ -1144,6 +1159,18 @@
   "@patchNotesV4_5_0NewFeatures1": {
     "description": "Patch notes for version 4.5.0"
   },
+  "@patchNotesV4_5_1BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.5.1"
+  },
+  "@patchNotesV4_5_1NewFeatures1": {
+    "description": "Patch notes for a new feature in version 4.5.1"
+  },
+  "@patchNotesV4_5_1NewFeatures2": {
+    "description": "Patch notes for a new feature in version 4.5.1"
+  },
+  "@patchNotesV4_5_1NewFeatures3": {
+    "description": "Patch notes for a new feature in version 4.5.1"
+  },
   "@period": {
     "description": "Title of the dropdown button where the period of the totp token is selected."
   },
@@ -1303,6 +1330,12 @@
   },
   "@scanThisQrWithNewDevice": {
     "description": "Content of the token export dialog that shows the user the qr code."
+  },
+  "@screenshotsAllowed": {
+    "description": "Label for the screenshots allowed setting."
+  },
+  "@screenshotsNotAllowed": {
+    "description": "Label for the screenshots allowed setting."
   },
   "@secondsUntilNextOTP": {
     "description": "Semantics label for the animated countdown until the next OTP is generated."
@@ -1638,6 +1671,10 @@
   "algorithm": "Algoritma",
   "algorithmUnsupported": "Algoritma {algorithm} tidak didukung",
   "allTokensSynchronized": "Semua token disinkronkan.",
+  "allowButton": "Izinkan",
+  "allowScreenshotsDescription": "Izinkan pengambilan tangkapan layar hanya jika diperlukan. Hal ini dapat menimbulkan risiko keamanan potensial jika Anda memiliki aplikasi pada perangkat yang dapat melihat layar Anda.",
+  "allowScreenshotsReason": "Silakan mengautentikasi untuk mengizinkan tangkapan layar. Anda dapat menonaktifkannya kapan saja.",
+  "allowScreenshotsTitle": "Izinkan Tangkapan Layar",
   "asFile": "Sebagai file",
   "asQrCode": "Sebagai kode QR",
   "askLogSentDescription": "Apakah Anda telah mengirim log, dan apakah Anda ingin menghapusnya sekarang?",
@@ -1830,8 +1867,9 @@
   "invalidBackupFile": "File yang dipilih bukan merupakan cadangan yang valid dari {appName}.",
   "invalidHostForScheme": "Host tidak valid: {host} untuk skema: {scheme}",
   "invalidLink": "Tautan yang dimasukkan bukan merupakan token yang valid dari {appName}, atau tidak didukung.",
+  "invalidQrBackup": "Kode QR yang dipindai bukan merupakan cadangan yang valid dari {appName}.",
   "invalidQrFile": "File yang dipilih tidak berisi kode QR yang valid dari {appName}.",
-  "invalidQrScan": "Kode QR yang dipindai bukan merupakan cadangan yang valid dari {appName}.",
+  "invalidQrScan": "Kode QR yang dipindai tidak berisi data yang valid",
   "invalidUrl": "URL tidak valid",
   "invalidValue": "Tipe {type} '{value}' tidak valid untuk '{parameter}'",
   "invalidValueIn": "Tipe {type} '{value}' tidak valid untuk '{parameter}' di '{map}'",
@@ -1908,6 +1946,10 @@
   "patchNotesV4_4_2NewFeatures2": "Menambahkan dukungan galeri untuk pemindaian kode QR.",
   "patchNotesV4_5_0BugFix1": "Memperbaiki masalah kecil",
   "patchNotesV4_5_0NewFeatures1": "Dukungan sistem kontainer privacyIDEA untuk pengelolaan token yang lebih mudah",
+  "patchNotesV4_5_1BugFix1": "Memperbaiki beberapa masalah kecil",
+  "patchNotesV4_5_1NewFeatures1": "Menambahkan pengaturan untuk menampilkan/menyembunyikan gambar latar belakang",
+  "patchNotesV4_5_1NewFeatures2": " Menambahkan pengaturan untuk memungkinkan pengambilan tangkapan layar",
+  "patchNotesV4_5_1NewFeatures3": "Token TOTP sekarang berubah warna dalam 5 detik terakhir untuk menunjukkan akhir periode",
   "period": "Periode",
   "phonePart": "Bagian telepon:",
   "piServerCode": "Kode Server PI: {code}",
@@ -1954,6 +1996,8 @@
   "saveButton": "Simpan",
   "scanQrCode": "Pindai Kode QR",
   "scanThisQrWithNewDevice": "Pindai kode QR ini dengan perangkat baru Anda untuk mengimpor token.",
+  "screenshotsAllowed": "Tangkapan layar diizinkan",
+  "screenshotsNotAllowed": "Tangkapan layar tidak diizinkan",
   "secondsUntilNextOTP": "Detik hingga OTP berikutnya",
   "secretIsRequired": "Rahasia diperlukan",
   "secretKey": "Kunci rahasia",

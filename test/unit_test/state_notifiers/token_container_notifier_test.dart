@@ -760,7 +760,7 @@ void _testTokenContainerNotifier() {
         );
 
         // act
-        var tokenState = providerContainer.read(tokenProvider);
+        var tokenState = await providerContainer.read(tokenProvider.future);
         await providerContainer.read(tokenContainerProvider.notifier).syncContainers(tokenState: tokenState, isManually: false, isInitSync: false);
 
         // assert
@@ -793,7 +793,7 @@ void _testTokenContainerNotifier() {
         ]);
         final containerState = await providerContainer.read(tokenContainerProvider.future);
         await Future.delayed(const Duration(milliseconds: 1000)); // wait for the sync to finish
-        tokenState = providerContainer.read(tokenProvider);
+        tokenState = await providerContainer.read(tokenProvider.future);
         verify(mockContainerRepo.loadContainerState()).called(1);
         expect(containerState, containerRepoState);
         final stateContainer = containerState.containerList.first as TokenContainerFinalized;

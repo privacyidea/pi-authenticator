@@ -50,14 +50,16 @@ class QrScannerButton extends ConsumerWidget {
             if (!context.mounted) return;
 
             /// Open the QR-code scanner and call `handleQrCode`, with the scanned code as the argument.
-            Navigator.pushNamed(context, QRScannerView.routeName).then((qrCode) {
-              final resultHandlers = <ResultHandler>[
-                ref.read(tokenProvider.notifier),
-                ref.read(tokenContainerProvider.notifier),
-              ];
-              if (qrCode == null || !context.mounted) return;
-              scanQrCode(context: context, resultHandlerList: resultHandlers, qrCode: qrCode);
-            });
+            final qrCode = await Navigator.pushNamed(context, QRScannerView.routeName);
+            final resultHandlers = <ResultHandler>[
+              ref.read(tokenProvider.notifier),
+              ref.read(tokenContainerProvider.notifier),
+            ];
+            if (qrCode == null || !context.mounted) return;
+            final handled = await scanQrCode(context: context, resultHandlerList: resultHandlers, qrCode: qrCode);
+            if (!handled) {
+              showErrorStatusMessage(message: (l) => l.invalidQrScan);
+            }
           },
           child: const Icon(Icons.qr_code_scanner_outlined),
         ),

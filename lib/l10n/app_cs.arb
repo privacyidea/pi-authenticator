@@ -79,6 +79,18 @@
   "@allTokensSynchronized": {
     "description": "Content of the push synchronization dialog. Signaling the user that everything worked."
   },
+  "@allowButton": {
+    "description": "Buttontext to allow something."
+  },
+  "@allowScreenshotsDescription": {
+    "description": "Description for the allow screenshots dialog."
+  },
+  "@allowScreenshotsReason": {
+    "description": "Authenticate reason for the allow screenshots dialog."
+  },
+  "@allowScreenshotsTitle": {
+    "description": "Title for the allow screenshots dialog."
+  },
   "@asFile": {
     "description": "Buttontext to save the backup as a file."
   },
@@ -111,6 +123,9 @@
   },
   "@authentication": {
     "description": "Title of the authentication dialog."
+  },
+  "@backgroundImage": {
+    "description": "Label for the background image setting."
   },
   "@biometricHint": {
     "description": "Hint message advising the user how to authenticate with biometrics. It is used on Android side. Maximum 60 characters."
@@ -809,8 +824,8 @@
       }
     }
   },
-  "@invalidQrFile": {
-    "description": "Error message when the qr file is invalid.",
+  "@invalidQrBackup": {
+    "description": "Error message when the scanned qr backup is invalid.",
     "placeholders": {
       "appName": {
         "example": "privacyIDEA Authenticator",
@@ -818,8 +833,8 @@
       }
     }
   },
-  "@invalidQrScan": {
-    "description": "Error message when the qr scan is invalid.",
+  "@invalidQrFile": {
+    "description": "Error message when the qr file is invalid.",
     "placeholders": {
       "appName": {
         "example": "privacyIDEA Authenticator",
@@ -1144,6 +1159,18 @@
   "@patchNotesV4_5_0NewFeatures1": {
     "description": "Patch notes for version 4.5.0"
   },
+  "@patchNotesV4_5_1BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.5.1"
+  },
+  "@patchNotesV4_5_1NewFeatures1": {
+    "description": "Patch notes for a new feature in version 4.5.1"
+  },
+  "@patchNotesV4_5_1NewFeatures2": {
+    "description": "Patch notes for a new feature in version 4.5.1"
+  },
+  "@patchNotesV4_5_1NewFeatures3": {
+    "description": "Patch notes for a new feature in version 4.5.1"
+  },
   "@period": {
     "description": "Title of the dropdown button where the period of the totp token is selected."
   },
@@ -1303,6 +1330,12 @@
   },
   "@scanThisQrWithNewDevice": {
     "description": "Content of the token export dialog that shows the user the qr code."
+  },
+  "@screenshotsAllowed": {
+    "description": "Label for the screenshots allowed setting."
+  },
+  "@screenshotsNotAllowed": {
+    "description": "Label for the screenshots allowed setting."
   },
   "@secondsUntilNextOTP": {
     "description": "Semantics label for the animated countdown until the next OTP is generated."
@@ -1638,6 +1671,10 @@
   "algorithm": "Algoritmus",
   "algorithmUnsupported": "Algoritmus {algorithm} není podporován",
   "allTokensSynchronized": "Všechny tokeny jsou synchronizované.",
+  "allowButton": "Povolit",
+  "allowScreenshotsDescription": "Snímky obrazovky povolte pouze v případě potřeby. Pokud máte v zařízení aplikaci, která vidí vaši obrazovku, mohlo by to představovat potenciální bezpečnostní riziko.",
+  "allowScreenshotsReason": "Pro povolení snímků obrazovky se prosím ověřte. Snímání můžete kdykoli zakázat.",
+  "allowScreenshotsTitle": "Povolit snímky obrazovky",
   "asFile": "Jako soubor",
   "asQrCode": "Jako QR kód",
   "askLogSentDescription": "Odeslali jste protokol a chcete jej nyní vymazat?",
@@ -1830,8 +1867,9 @@
   "invalidBackupFile": "Vybraný soubor není platnou zálohou {appName}.",
   "invalidHostForScheme": "Neplatný hostitel: {host} pro schéma: {scheme}",
   "invalidLink": "Zadaný odkaz není platným tokenem {appName} nebo není podporován.",
+  "invalidQrBackup": "Naskenovaný QR kód není platnou zálohou {appName}.",
   "invalidQrFile": "Vybraný soubor neobsahuje platný QR kód z {appName}.",
-  "invalidQrScan": "Naskenovaný QR kód není platnou zálohou {appName}.",
+  "invalidQrScan": "Naskenovaný kód QR neobsahoval platná data",
   "invalidUrl": "Neplatná adresa URL",
   "invalidValue": "Typ {type} '{value}' není platný pro '{parameter}'.",
   "invalidValueIn": "{type} '{value}' není platný pro '{parameter}' v '{map}'.",
@@ -1908,6 +1946,10 @@
   "patchNotesV4_4_2NewFeatures2": "Přidána podpora galerie pro skenování QR kódů.",
   "patchNotesV4_5_0BugFix1": "Opravené drobné problémy",
   "patchNotesV4_5_0NewFeatures1": "Podpora kontejnerového systému privacyIDEA pro snadnější správu tokenů",
+  "patchNotesV4_5_1BugFix1": "Opraveno několik drobných problémů",
+  "patchNotesV4_5_1NewFeatures1": "Přidáno nastavení pro zobrazení/skrytí obrázku na pozadí",
+  "patchNotesV4_5_1NewFeatures2": "Přidáno nastavení umožňující pořizování snímků obrazovky",
+  "patchNotesV4_5_1NewFeatures3": "Žeton TOTP nyní mění barvu v posledních 5 sekundách, aby indikoval konec periody.",
   "period": "Časový interval",
   "phonePart": "Klientská část:",
   "piServerCode": "Kód serveru PI: {code}",
@@ -1954,6 +1996,8 @@
   "saveButton": "Uložit",
   "scanQrCode": "Naskenovat QR kód",
   "scanThisQrWithNewDevice": "Naskenujte tento QR kód svým novým zařízením pro import žetonu.",
+  "screenshotsAllowed": "Snímky obrazovky povoleny",
+  "screenshotsNotAllowed": "Snímky obrazovky nejsou povoleny",
   "secondsUntilNextOTP": "Sekundy do dalšího OTP",
   "secretIsRequired": "Tajné je vyžadováno",
   "secretKey": "Tajný klíč",

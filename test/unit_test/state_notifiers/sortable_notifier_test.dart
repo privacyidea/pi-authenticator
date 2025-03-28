@@ -69,8 +69,7 @@ void _testSortableNotifier() {
       await container.read(tokenProvider.notifier).addNewToken(newToken);
 
       await container.read(tokenFolderProvider.notifier).addNewFolder('Folder 3');
-      await Future.delayed(const Duration(milliseconds: 1000));
-      final newSortableState = container.read(sortablesProvider);
+      final newSortableState = await container.read(sortablesProvider.future);
 
       expect(newSortableState.length, 7);
       expect(newSortableState[0], isA<Token>());

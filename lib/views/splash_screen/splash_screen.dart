@@ -28,6 +28,7 @@ import '../../utils/customization/application_customization.dart';
 import '../../utils/home_widget_utils.dart';
 import '../../utils/logger.dart';
 import '../../utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
+import '../../utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
 import '../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../main_view/main_view.dart';
 
@@ -66,6 +67,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
           InfoUtils.init(),
           HomeWidgetUtils().homeWidgetInit(),
           ref.read(allowScreenshotProvider.future),
+          ref.read(tokenFolderProvider.notifier).initState,
         ],
         eagerError: true,
         cleanUp: (_) {

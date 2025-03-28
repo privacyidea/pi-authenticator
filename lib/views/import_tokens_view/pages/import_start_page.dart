@@ -203,16 +203,16 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
     final localizations = AppLocalizations.of(context)!;
     final schemeProcessor = processor as TokenImportSchemeProcessor;
     final result = await Navigator.of(context).pushNamed(QRScannerView.routeName);
-    if (result is! String) return localizations.invalidQrScan(widget.appName);
+    if (result is! String) return localizations.invalidQrBackup(widget.appName);
     final Uri uri;
     try {
       uri = Uri.parse(result);
     } on FormatException catch (_) {
-      return localizations.invalidQrScan(widget.appName);
+      return localizations.invalidQrBackup(widget.appName);
     }
     var results = await schemeProcessor.processUri(uri);
     if (results == null || results.isEmpty) {
-      return localizations.invalidQrScan(widget.appName);
+      return localizations.invalidQrBackup(widget.appName);
     }
     results = results.map<ProcessorResult<Token>>((t) {
       if (t is! ProcessorResultSuccess<Token>) return t;

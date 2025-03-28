@@ -79,6 +79,18 @@
   "@allTokensSynchronized": {
     "description": "Content of the push synchronization dialog. Signaling the user that everything worked."
   },
+  "@allowButton": {
+    "description": "Buttontext to allow something."
+  },
+  "@allowScreenshotsDescription": {
+    "description": "Description for the allow screenshots dialog."
+  },
+  "@allowScreenshotsReason": {
+    "description": "Authenticate reason for the allow screenshots dialog."
+  },
+  "@allowScreenshotsTitle": {
+    "description": "Title for the allow screenshots dialog."
+  },
   "@asFile": {
     "description": "Buttontext to save the backup as a file."
   },
@@ -111,6 +123,9 @@
   },
   "@authentication": {
     "description": "Title of the authentication dialog."
+  },
+  "@backgroundImage": {
+    "description": "Label for the background image setting."
   },
   "@biometricHint": {
     "description": "Hint message advising the user how to authenticate with biometrics. It is used on Android side. Maximum 60 characters."
@@ -809,8 +824,8 @@
       }
     }
   },
-  "@invalidQrFile": {
-    "description": "Error message when the qr file is invalid.",
+  "@invalidQrBackup": {
+    "description": "Error message when the scanned qr backup is invalid.",
     "placeholders": {
       "appName": {
         "example": "privacyIDEA Authenticator",
@@ -818,8 +833,8 @@
       }
     }
   },
-  "@invalidQrScan": {
-    "description": "Error message when the qr scan is invalid.",
+  "@invalidQrFile": {
+    "description": "Error message when the qr file is invalid.",
     "placeholders": {
       "appName": {
         "example": "privacyIDEA Authenticator",
@@ -1144,6 +1159,18 @@
   "@patchNotesV4_5_0NewFeatures1": {
     "description": "Patch notes for version 4.5.0"
   },
+  "@patchNotesV4_5_1BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.5.1"
+  },
+  "@patchNotesV4_5_1NewFeatures1": {
+    "description": "Patch notes for a new feature in version 4.5.1"
+  },
+  "@patchNotesV4_5_1NewFeatures2": {
+    "description": "Patch notes for a new feature in version 4.5.1"
+  },
+  "@patchNotesV4_5_1NewFeatures3": {
+    "description": "Patch notes for a new feature in version 4.5.1"
+  },
   "@period": {
     "description": "Title of the dropdown button where the period of the totp token is selected."
   },
@@ -1303,6 +1330,12 @@
   },
   "@scanThisQrWithNewDevice": {
     "description": "Content of the token export dialog that shows the user the qr code."
+  },
+  "@screenshotsAllowed": {
+    "description": "Label for the screenshots allowed setting."
+  },
+  "@screenshotsNotAllowed": {
+    "description": "Label for the screenshots allowed setting."
   },
   "@secondsUntilNextOTP": {
     "description": "Semantics label for the animated countdown until the next OTP is generated."
@@ -1638,6 +1671,10 @@
   "algorithm": "Algoritme",
   "algorithmUnsupported": "Het algoritme {algorithm} wordt niet ondersteund",
   "allTokensSynchronized": "Alle tokens zijn gesynchroniseerd.",
+  "allowButton": "Sta  toe",
+  "allowScreenshotsDescription": "Sta schermafbeeldingen alleen toe als dat nodig is. Het kan een potentieel veiligheidsrisico zijn als je een applicatie op je apparaat hebt die je scherm kan zien.",
+  "allowScreenshotsReason": "Verifieer om screenshots toe te staan. Je kunt het op elk moment weer uitschakelen.",
+  "allowScreenshotsTitle": "Screenshots toestaan",
   "asFile": "Als bestand",
   "asQrCode": "Als QR-code",
   "askLogSentDescription": "Heb je het logboek verzonden en wil je het nu wissen?",
@@ -1830,8 +1867,9 @@
   "invalidBackupFile": "Het geselecteerde bestand is geen geldige backup van {appName}.",
   "invalidHostForScheme": "Ongeldige host: {host} voor schema: {scheme}",
   "invalidLink": "De ingevoerde link is geen geldig token van {appName}, of wordt niet ondersteund.",
+  "invalidQrBackup": "De gescande QR code is geen geldige backup van {appName}.",
   "invalidQrFile": "Het geselecteerde bestand bevat geen geldige QR code van {appName}.",
-  "invalidQrScan": "De gescande QR code is geen geldige backup van {appName}.",
+  "invalidQrScan": "De gescande QR-code bevatte geen geldige gegevens",
   "invalidUrl": "Ongeldige URL",
   "invalidValue": "Het {type} '{value}' is niet geldig voor '{parameter}'.",
   "invalidValueIn": "Het {type} '{value}' is niet geldig voor '{parameter}' in '{map}'.",
@@ -1954,6 +1992,8 @@
   "saveButton": "Opslaan",
   "scanQrCode": "Scan QR-Code",
   "scanThisQrWithNewDevice": "Scan deze QR-code met uw nieuwe apparaat om de token te importeren.",
+  "screenshotsAllowed": "Screenshots toegestaan",
+  "screenshotsNotAllowed": "Screenshots niet toegestaan",
   "secondsUntilNextOTP": "Seconden tot volgende OTP",
   "secretIsRequired": "Geheim is vereist",
   "secretKey": "Geheime sleutel",

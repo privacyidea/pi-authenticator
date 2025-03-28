@@ -250,7 +250,7 @@ class NoFirebaseUtils implements FirebaseUtils {
   bool initializedHandler = false;
 
   @override
-  Future<String?> getFBToken() => Future.value(_currentFbToken);
+  Future<String?> getFBToken() => Future.value(NO_FIREBASE_TOKEN);
 
   @override
   Future<void> setupHandler({
@@ -262,18 +262,17 @@ class NoFirebaseUtils implements FirebaseUtils {
   @override
   Future<bool> deleteFirebaseToken() => Future.value(true);
 
-  static String _currentFbToken = 'no_firebase_token';
-  static String _newFbToken = 'no_firebase_token';
+  static const String NO_FIREBASE_TOKEN = 'no_firebase_token';
 
   @override
-  Future<void> setCurrentFirebaseToken(String str) async => _currentFbToken = str;
+  Future<void> setCurrentFirebaseToken(String str) async {}
   @override
-  Future<String?> getCurrentFirebaseToken() => Future.value(_currentFbToken);
+  Future<String?> getCurrentFirebaseToken() => Future.value(NO_FIREBASE_TOKEN);
 
   @override
-  Future<void> setNewFirebaseToken(String str) async => _newFbToken = str;
+  Future<void> setNewFirebaseToken(String str) async {}
   @override
-  Future<String?> getNewFirebaseToken() => Future.value(_newFbToken);
+  Future<String?> getNewFirebaseToken() => Future.value(NO_FIREBASE_TOKEN);
 
   @override
   Future<FirebaseApp?> initializeApp() async => null;

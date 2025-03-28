@@ -600,7 +600,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
         body: {
           'enrollment_credential': pushToken.enrollmentCredentials,
           'serial': pushToken.serial,
-          'fbtoken': fbToken ?? 'no firebase token',
+          'fbtoken': fbToken ?? NoFirebaseUtils.NO_FIREBASE_TOKEN,
           'pubkey': rsaUtils.serializeRSAPublicKeyPKCS8(pushToken.rsaPublicTokenKey!),
         },
       );
@@ -729,6 +729,10 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
           failedTokens.addAll(notPollOnlyTokens);
         } else {
           for (final token in notPollOnlyTokens) {
+            if (!token.isRolledOut || token.fbToken == firebaseToken) {
+              // Skip if the token is not rolled out or the fbToken is already up to date
+              continue;
+            }
             if (token.url == null) {
               unsuportedTokens.add(token);
               continue;

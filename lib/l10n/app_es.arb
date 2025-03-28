@@ -79,6 +79,18 @@
   "@allTokensSynchronized": {
     "description": "Content of the push synchronization dialog. Signaling the user that everything worked."
   },
+  "@allowButton": {
+    "description": "Buttontext to allow something."
+  },
+  "@allowScreenshotsDescription": {
+    "description": "Description for the allow screenshots dialog."
+  },
+  "@allowScreenshotsReason": {
+    "description": "Authenticate reason for the allow screenshots dialog."
+  },
+  "@allowScreenshotsTitle": {
+    "description": "Title for the allow screenshots dialog."
+  },
   "@asFile": {
     "description": "Buttontext to save the backup as a file."
   },
@@ -111,6 +123,9 @@
   },
   "@authentication": {
     "description": "Title of the authentication dialog."
+  },
+  "@backgroundImage": {
+    "description": "Label for the background image setting."
   },
   "@biometricHint": {
     "description": "Hint message advising the user how to authenticate with biometrics. It is used on Android side. Maximum 60 characters."
@@ -809,8 +824,8 @@
       }
     }
   },
-  "@invalidQrFile": {
-    "description": "Error message when the qr file is invalid.",
+  "@invalidQrBackup": {
+    "description": "Error message when the scanned qr backup is invalid.",
     "placeholders": {
       "appName": {
         "example": "privacyIDEA Authenticator",
@@ -818,8 +833,8 @@
       }
     }
   },
-  "@invalidQrScan": {
-    "description": "Error message when the qr scan is invalid.",
+  "@invalidQrFile": {
+    "description": "Error message when the qr file is invalid.",
     "placeholders": {
       "appName": {
         "example": "privacyIDEA Authenticator",
@@ -1144,6 +1159,18 @@
   "@patchNotesV4_5_0NewFeatures1": {
     "description": "Patch notes for version 4.5.0"
   },
+  "@patchNotesV4_5_1BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.5.1"
+  },
+  "@patchNotesV4_5_1NewFeatures1": {
+    "description": "Patch notes for a new feature in version 4.5.1"
+  },
+  "@patchNotesV4_5_1NewFeatures2": {
+    "description": "Patch notes for a new feature in version 4.5.1"
+  },
+  "@patchNotesV4_5_1NewFeatures3": {
+    "description": "Patch notes for a new feature in version 4.5.1"
+  },
   "@period": {
     "description": "Title of the dropdown button where the period of the totp token is selected."
   },
@@ -1303,6 +1330,12 @@
   },
   "@scanThisQrWithNewDevice": {
     "description": "Content of the token export dialog that shows the user the qr code."
+  },
+  "@screenshotsAllowed": {
+    "description": "Label for the screenshots allowed setting."
+  },
+  "@screenshotsNotAllowed": {
+    "description": "Label for the screenshots allowed setting."
   },
   "@secondsUntilNextOTP": {
     "description": "Semantics label for the animated countdown until the next OTP is generated."
@@ -1638,6 +1671,10 @@
   "algorithm": "Algorithmo",
   "algorithmUnsupported": "El algoritmo {algorithm} no es compatible",
   "allTokensSynchronized": "Todas los tokens están sincronizadas.",
+  "allowButton": "Permitir",
+  "allowScreenshotsDescription": "Por favor, permite capturas de pantalla sólo cuando sea necesario. Podría ser un riesgo potencial para la seguridad si tienes una aplicación en tu dispositivo que pueda ver tu pantalla.",
+  "allowScreenshotsReason": "Por favor, autentifícate para permitir capturas de pantalla. Puedes desactivarlo en cualquier momento.",
+  "allowScreenshotsTitle": "Permitir capturas de pantalla",
   "asFile": "Como archivo",
   "asQrCode": "Como código QR",
   "askLogSentDescription": "¿Ha enviado el registro y desea borrarlo ahora?",
@@ -1830,8 +1867,9 @@
   "invalidBackupFile": "El archivo seleccionado no es una copia de seguridad válida de {appName}",
   "invalidHostForScheme": "Host inválido: {host} para esquema: {scheme}",
   "invalidLink": "El enlace introducido no es un token válido de {appName}, o no es compatible",
+  "invalidQrBackup": "El código QR escaneado no es una copia de seguridad válida de {appName}",
   "invalidQrFile": "El archivo seleccionado no contiene un código QR válido de {appName}",
-  "invalidQrScan": "El código QR escaneado no es una copia de seguridad válida de {appName}",
+  "invalidQrScan": "El código QR escaneado no contenía datos válidos",
   "invalidUrl": "URL no válida",
   "invalidValue": "El {type} '{value}' no es válido para '{parameter}'.",
   "invalidValueIn": "El {type} '{value}' no es válido para '{parameter}' en '{map}'",
@@ -1908,6 +1946,10 @@
   "patchNotesV4_4_2NewFeatures2": "Añadido soporte de galería para el escaneo de códigos QR.",
   "patchNotesV4_5_0BugFix1": "Problemas menores corregidos",
   "patchNotesV4_5_0NewFeatures1": "Compatibilidad con el sistema de contenedores privacyIDEA para facilitar la gestión de tokens.",
+  "patchNotesV4_5_1BugFix1": "Corregidos algunos problemas menores",
+  "patchNotesV4_5_1NewFeatures1": "Añadida opción para mostrar/ocultar la imagen de fondo",
+  "patchNotesV4_5_1NewFeatures2": "Añadida configuración para permitir hacer capturas de pantalla",
+  "patchNotesV4_5_1NewFeatures3": "El token TOTP ahora cambia de color en los últimos 5 segundos para indicar el final del periodo.",
   "period": "Periodo",
   "phonePart": "Pieza de teléfono:",
   "piServerCode": "Código del servidor PI: {code}",
@@ -1954,6 +1996,8 @@
   "saveButton": "Guardar",
   "scanQrCode": "Escanear código QR",
   "scanThisQrWithNewDevice": "Escanee este código QR con su nuevo dispositivo para importar el token.",
+  "screenshotsAllowed": "Capturas de pantalla permitidas",
+  "screenshotsNotAllowed": "Capturas de pantalla no permitidas",
   "secondsUntilNextOTP": "Segundos hasta el próximo OTP",
   "secretIsRequired": "Se requiere secreto",
   "secretKey": "Clave secreta",
