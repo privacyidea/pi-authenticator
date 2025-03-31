@@ -89,8 +89,8 @@ class TokenState {
     return TokenState(tokens: newTokens, lastlyUpdatedTokens: tokens);
   }
 
-  // Removes the token from the State
-  // Sets the lastlyUpdatedTokens to an empty list because no token was updated only removed
+  /// Removes the token from the State
+  /// Sets the lastlyUpdatedTokens to an empty list because no token was updated only removed
   TokenState withoutToken(Token token) {
     final newTokens = List<Token>.from(tokens);
     newTokens.removeWhere((element) => element.id == token.id);
@@ -106,8 +106,8 @@ class TokenState {
     return TokenState(tokens: newTokens, lastlyUpdatedTokens: const [], lastlyDeletedTokens: tokens);
   }
 
-  // Add a token if it does not exist yet
-  // Replace the token if it does exist
+  /// Add a token if it does not exist yet
+  /// Replace the token if it does exist
   TokenState addOrReplaceToken(Token token) {
     final newTokens = List<Token>.from(tokens);
     final index = newTokens.indexWhere((element) => element.id == token.id);
@@ -119,10 +119,10 @@ class TokenState {
     return TokenState(tokens: newTokens, lastlyUpdatedTokens: [token]);
   }
 
-  // Replace the token if it does exist
-  // Do nothing if it does not exist
-  // Return the new state and a boolean = true if the token was replaced
-  // Return the old state and a boolean = false if the token was not replaced
+  /// Replace the token if it does exist
+  /// Do nothing if it does not exist
+  /// Return the new state and a boolean = true if the token was replaced
+  /// Return the old state and a boolean = false if the token was not replaced
   (TokenState, bool) replaceToken(Token token) {
     final newTokens = tokens.toList();
     final index = newTokens.indexWhere((element) => element.id == token.id);
@@ -134,8 +134,8 @@ class TokenState {
     return (TokenState(tokens: newTokens, lastlyUpdatedTokens: [token]), true);
   }
 
-  // replace all tokens where the id is the same
-  // if the id is none, add it to the list
+  /// replace all tokens where the id is the same
+  /// if the id is none, add it to the list
   TokenState addOrReplaceTokens<T extends Token>(List<T> tokens) {
     final newTokens = List<Token>.from(this.tokens);
     final updatedTokens = <Token>[];
@@ -152,8 +152,9 @@ class TokenState {
     return TokenState(tokens: newTokens, lastlyUpdatedTokens: updatedTokens);
   }
 
-  // Replace the tokens if it does exist
-  // Do nothing if it does not exist
+  /// Replace the tokens if it does exist.</br>
+  /// Do nothing if it does not exist</br>
+  /// Returns the tokens that could not be replaced
   List<T> replaceTokens<T extends Token>(List<T> tokens) {
     final newTokens = List<Token>.from(this.tokens);
     final failedToReplace = <T>[];

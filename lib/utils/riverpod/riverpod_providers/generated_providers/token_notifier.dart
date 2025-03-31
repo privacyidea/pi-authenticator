@@ -70,7 +70,11 @@ final tokenProvider = tokenNotifierProviderOf(
 @Riverpod(keepAlive: true)
 class TokenNotifier extends _$TokenNotifier with ResultHandler {
   static final Map<String, Timer> _hidingTimers = {};
+
+  /// Lock the repo before any update (e.g. [repo.saveOrReplaceTokens]) and release it after the change is done (await or .then).
   final _repoMutex = Mutex();
+
+  /// Lock the state before accessing it and release it after the change is done.
   final _stateMutex = Mutex();
 
   TokenNotifier({
@@ -133,6 +137,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     await _repoMutex.acquire();
     final success = await repo.saveOrReplaceToken(token);
     _repoMutex.release();
+    await _stateMutex.acquire();
     final currentId = (await future).currentOf(token)?.id;
     if (currentId != null) {
       token = token.copyWith(id: currentId);
@@ -141,7 +146,6 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       Logger.warning('Saving token failed. Token: ${token.id}');
       return false;
     }
-    await _stateMutex.acquire();
     state = AsyncValue.data((await future).addOrReplaceToken(token));
     _stateMutex.release();
     return true;
@@ -150,10 +154,10 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   /// Adds a list of tokens and returns the tokens that could not be added or replaced.
   /// Updates repo and state.
   Future<List<Token>> _addOrReplaceTokens(List<Token> tokens) async {
+    await _stateMutex.acquire();
     tokens = [...tokens, ...(await future).tokens].filterDuplicates();
     if (tokens.isEmpty) return [];
     Logger.debug('Adding ${tokens.length} tokens.', verbose: true);
-    await _repoMutex.acquire();
     // We set currentState because the map function cant be async
     final currentState = await future;
     tokens = tokens.map((token) {
@@ -161,7 +165,9 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       if (currentId != null) return token.copyWith(id: currentId);
       return token;
     }).toList();
+    await _repoMutex.acquire();
     final failedTokens = await repo.saveOrReplaceTokens(tokens);
+    _repoMutex.release();
     if (failedTokens.isNotEmpty) {
       Logger.warning('Saving tokens failed. Failed Tokens: ${failedTokens.length}');
     }
@@ -169,55 +175,52 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     final savedTokens = tokens.where((element) => !failedTokens.contains(element)).toList();
     // Add the saved tokens to the state
     Logger.info('Saved ${savedTokens.length} Tokens to storage.');
-    await _stateMutex.acquire();
     state = AsyncValue.data((await future).addOrReplaceTokens(savedTokens));
-    _stateMutex.release();
     Logger.debug('New State: ${(await future).tokens.length} Tokens');
-    _repoMutex.release();
+    _stateMutex.release();
     return [];
   }
 
   /// Replaces a token if it exists and returns true if successful, false if not.
   /// Updates repo and state.
   Future<bool> _replaceToken(Token token) async {
-    await _repoMutex.acquire();
+    await _stateMutex.acquire();
     final (newState, replaced) = (await future).replaceToken(token);
     if (!replaced) {
       Logger.warning('Tried to replace a token that does not exist.');
-      _repoMutex.release();
       return false;
     }
+    await _repoMutex.acquire();
     final saved = await repo.saveOrReplaceToken(token);
+    _repoMutex.release();
     if (!saved) {
       Logger.warning('Saving token failed. Token: ${token.id}');
-      _repoMutex.release();
       return false;
     }
-    await _stateMutex.acquire();
     state = AsyncValue.data(newState);
     _stateMutex.release();
-    _repoMutex.release();
     return true;
   }
 
   /// Returns a list of tokens that could not be replaced
   /// Updates repo and state.
   Future<List<T>> _replaceTokens<T extends Token>(List<T> tokens) async {
+    await _stateMutex.acquire();
     final failedToReplace = (await future).replaceTokens(tokens);
-    if (failedToReplace.isEmpty) {
+    if (failedToReplace.isNotEmpty) {
       Logger.warning('Failed to replace ${failedToReplace.length} tokens');
+      return failedToReplace;
     }
-
     tokens = tokens.where((element) => !failedToReplace.contains(element)).toList();
-
     await _repoMutex.acquire();
     final failedToSave = await repo.saveOrReplaceTokens<T>(tokens);
     _repoMutex.release();
     if (failedToSave.isNotEmpty) {
       Logger.warning('Failed to save ${failedToSave.length} tokens');
-      return failedToSave;
     }
     tokens = tokens.where((element) => !failedToSave.contains(element)).toList();
+    state = AsyncValue.data((await future).addOrReplaceTokens(tokens));
+    _stateMutex.release();
     return [];
   }
 
@@ -228,7 +231,6 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     _repoMutex.release();
     if (!success) {
       Logger.warning('Deleting token failed. Token: ${token.id}');
-
       return false;
     }
     await _stateMutex.acquire();
@@ -247,7 +249,6 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     _repoMutex.release();
     if (failedTokens.isNotEmpty) {
       Logger.warning('Deleting tokens failed. Failed Tokens: ${failedTokens.length}');
-
       return failedTokens;
     }
     tokens = tokens.where((element) => !failedTokens.contains(element)).toList();

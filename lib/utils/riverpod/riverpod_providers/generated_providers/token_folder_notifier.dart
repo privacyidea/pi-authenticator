@@ -25,6 +25,7 @@ import '../../../../interfaces/repo/token_folder_repository.dart';
 import '../../../../model/riverpod_states/token_folder_state.dart';
 import '../../../../model/token_folder.dart';
 import '../../../logger.dart';
+import 'token_notifier.dart';
 
 part 'token_folder_notifier.g.dart';
 
@@ -96,6 +97,11 @@ class TokenFolderNotifier extends _$TokenFolderNotifier {
     final oldState = state;
     final newState = oldState.removeFolder(folder);
     final success = await _saveToRepo(newState);
+    final folderTokens = await ref.read(tokenProvider.selectAsync((v) => v.tokensInFolder(folder)));
+    ref.read(tokenProvider.notifier).updateTokens(folderTokens, (t) {
+      final updated = t.copyWith(folderId: () => null);
+      return updated;
+    });
     if (!success) {
       Logger.warning('Failed to remove folder');
       _stateMutex.release();
