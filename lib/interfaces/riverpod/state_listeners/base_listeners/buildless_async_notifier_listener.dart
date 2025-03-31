@@ -28,11 +28,11 @@ abstract class BuildlessAsyncNotifierListener<T extends BuildlessAsyncNotifier<S
   final String listenerName;
   // ignore: invalid_use_of_visible_for_testing_member
   final AsyncNotifierProviderImpl<T, S>? provider;
-  final void Function(AsyncValue<S>? previous, AsyncValue<S> next)? onNewState;
+  final void Function(AsyncValue<S>? previous, AsyncValue<S> next, WidgetRef ref)? onNewState;
   const BuildlessAsyncNotifierListener({this.provider, this.onNewState, required this.listenerName});
   void buildListen(WidgetRef ref) {
     Logger.debug('("$listenerName") listening to provider ("$provider")');
     if (provider == null || onNewState == null) return;
-    ref.listen(provider!, onNewState!);
+    ref.listen(provider!, (AsyncValue<S>? previous, AsyncValue<S> next) => onNewState!(previous, next, ref));
   }
 }

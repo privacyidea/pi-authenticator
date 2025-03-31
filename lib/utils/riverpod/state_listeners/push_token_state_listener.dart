@@ -17,8 +17,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import 'package:privacyidea_authenticator/utils/globals.dart';
+import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/push_request_provider.dart';
+import 'package:privacyidea_authenticator/views/view_interface.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../interfaces/riverpod/state_listeners/state_notifier_provider_listeners/token_state_listener.dart';
@@ -31,12 +32,13 @@ class PushProviderTokenStateListener extends TokenStateListener {
           listenerName: 'pushRequestProvider: initFirebase',
         );
 
-  static void _onNewState(AsyncValue<TokenState>? previous, AsyncValue<TokenState> next) {
+  static void _onNewState(AsyncValue<TokenState>? previous, AsyncValue<TokenState> next, WidgetRef ref) {
     final previousValue = previous?.valueOrNull;
     final nextValue = next.valueOrNull;
     if (previousValue?.needsFirebase == nextValue?.needsFirebase) return;
     if (nextValue?.needsFirebase != true) return;
-    assert(globalRef != null, 'PushProviderTokenStateListener: globalRef should not be null at this point');
-    globalRef!.read(pushRequestProvider.notifier).initFirebase();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(pushRequestProvider.notifier).initFirebase();
+    });
   }
 }

@@ -64,7 +64,7 @@ class FirebaseUtils {
       assert(appFirebaseOptions != null, 'Firebase options must be set before initializing Firebase');
       final FirebaseOptions options = appFirebaseOptions!;
       final app = await Firebase.initializeApp(name: "fb-${options.projectId}", options: options);
-      app.setAutomaticDataCollectionEnabled(false);
+      await app.setAutomaticDataCollectionEnabled(false);
       initializedFirebase = true;
       assert(app.isAutomaticDataCollectionEnabled == false, 'Automatic data collection should be disabled');
       _initFbMutex.release();

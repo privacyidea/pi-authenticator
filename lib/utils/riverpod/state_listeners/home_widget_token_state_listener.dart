@@ -33,7 +33,7 @@ class HomeWidgetTokenStateListener extends TokenStateListener {
           listenerName: 'HomeWidgetUtils().updateTokensIfLinked',
         );
 
-  static void _onNewState(AsyncValue<TokenState>? previous, AsyncValue<TokenState> next) {
+  static void _onNewState(AsyncValue<TokenState>? previous, AsyncValue<TokenState> next, WidgetRef ref) {
     final updateTokens = <Token>[];
     final previousTokens = previous?.valueOrNull?.tokens ?? [];
     final nextTokens = next.valueOrNull?.lastlyUpdatedTokens ?? [];
