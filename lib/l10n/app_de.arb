@@ -1949,7 +1949,7 @@
   "patchNotesV4_5_1BugFix1": "Einige kleinere Probleme behoben",
   "patchNotesV4_5_1NewFeatures1": "Einstellung zum Ein-/Ausblenden des Hintergrundbildes hinzugefügt",
   "patchNotesV4_5_1NewFeatures2": "Einstellung hinzugefügt, um das Erstellen von Screenshots zu erlauben",
-  "patchNotesV4_5_1NewFeatures3": " TOTP-Token ändert jetzt in den letzten 5 Sekunden die Farbe, um das Ende des Zeitraums anzuzeigen",
+  "patchNotesV4_5_1NewFeatures3": "TOTP-Token ändert jetzt in den letzten 5 Sekunden die Farbe, um das Ende des Zeitraums anzuzeigen",
   "period": "Periode",
   "phonePart": "Telefonanteil:",
   "piServerCode": "PI-Server-Code: {code}",

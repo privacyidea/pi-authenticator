@@ -1988,7 +1988,7 @@
   "rolloutStateParsingResponse": "Rozbor odpovědi",
   "rolloutStateParsingResponseCompleted": "Parsování odpovědi dokončeno",
   "rolloutStateParsingResponseFailed": "Parsování odpovědi se nezdařilo",
-  "rolloutStateReceivingFirebaseToken": " Přijetí tokenu Firebase",
+  "rolloutStateReceivingFirebaseToken": "Přijetí tokenu Firebase",
   "rolloutStateReceivingFirebaseTokenFailed": "Příjem tokenu Firebase se nezdařil",
   "rolloutStateSendingPublicKey": "Odeslání veřejného klíče",
   "rolloutStateSendingPublicKeyCompleted": "Odeslání veřejného klíče dokončeno",
