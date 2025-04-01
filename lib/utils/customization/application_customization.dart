@@ -204,11 +204,11 @@ class ApplicationCustomization {
       darkTheme: darkTheme,
       disabledFeatures: disabledFeatures,
     );
-    await newState.loadCustomFonts(fontBytes);
+    await newState.loadFonts();
     return newState;
   }
 
-  Future<void> loadCustomFonts(fontBytes) async {
+  Future<void> loadFonts() async {
     if (customFontBytes == null) return;
     var fontLoader = FontLoader(fontFamilyName);
     final byteData = ByteData.view(customFontBytes!.buffer);
