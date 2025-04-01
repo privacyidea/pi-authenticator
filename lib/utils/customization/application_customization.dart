@@ -38,7 +38,7 @@ class ApplicationCustomization {
   static const _defaultFeedbackSubjectPrefix = '(\$version) privacyIDEA Authenticator >>> Feedback';
   static const prefixVersionVariable = '\$version';
 
-  static const String _defaultFontName = 'defaultFont';
+  static const String defaultFontName = 'defaultFont';
   final String fontFamilyName;
   final Uint8List? customFontBytes;
   // Edit in android/app/src/main/AndroidManifest.xml file
@@ -98,7 +98,7 @@ class ApplicationCustomization {
     this.rawCrashSubjectPrefix = _defaultCrashSubjectPrefix,
     this.feedbackRecipient = _defaultFeedbackRecipient,
     this.rawFeedbackSubjectPrefix = _defaultFeedbackSubjectPrefix,
-    this.fontFamilyName = _defaultFontName,
+    this.fontFamilyName = defaultFontName,
     this.customFontBytes,
     WidgetImage? appbarIcon,
     WidgetImage? splashScreenImage,
@@ -186,7 +186,7 @@ class ApplicationCustomization {
         disabledFeatures,
       ]);
 
-  Future<ApplicationCustomization> updateFont(Uint8List fontBytes, String fontName) async {
+  Future<ApplicationCustomization> updateFont(Uint8List? fontBytes, String fontName) async {
     final newState = ApplicationCustomization(
       appName: appName,
       websiteLink: websiteLink,
@@ -208,6 +208,24 @@ class ApplicationCustomization {
     return newState;
   }
 
+  ApplicationCustomization resetFont() => ApplicationCustomization(
+        appName: appName,
+        websiteLink: websiteLink,
+        crashRecipient: crashRecipient,
+        rawCrashSubjectPrefix: rawCrashSubjectPrefix,
+        feedbackRecipient: feedbackRecipient,
+        rawFeedbackSubjectPrefix: rawFeedbackSubjectPrefix,
+        fontFamilyName: defaultFontName,
+        customFontBytes: null,
+        appbarIcon: appbarIcon,
+        splashScreenImage: splashScreenImage,
+        backgroundImage: () => backgroundImage,
+        licensesViewImage: licensesViewImage,
+        lightTheme: lightTheme,
+        darkTheme: darkTheme,
+        disabledFeatures: disabledFeatures,
+      );
+
   Future<void> loadFonts() async {
     if (customFontBytes == null) return;
     var fontLoader = FontLoader(fontFamilyName);
@@ -227,7 +245,7 @@ class ApplicationCustomization {
         feedbackRecipient: json['feedbackRecipient'] as String? ?? _defaultFeedbackRecipient,
         rawFeedbackSubjectPrefix: json['feedbackSubjectPrefix'] as String? ?? _defaultFeedbackSubjectPrefix,
         customFontBytes: json['customFontBytes'] != null ? base64Decode(json['customFontBytes'] as String) : null,
-        fontFamilyName: json['fontFamilyName'] as String? ?? _defaultFontName,
+        fontFamilyName: json['fontFamilyName'] as String? ?? defaultFontName,
         appbarIcon: json['appbarIcon'] != null
             ? WidgetImage.fromJson(json['appbarIcon'] as Map<String, dynamic>)
             : json['appIcon'] != null
