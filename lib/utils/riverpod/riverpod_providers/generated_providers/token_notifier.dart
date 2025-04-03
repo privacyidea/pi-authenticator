@@ -590,12 +590,12 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       }
       Logger.warning('Network access permission for token "${pushToken.id}" successful.');
     }
-
+    Response response;
     try {
       // TODO What to do with poll only tokens if google-services is used?
 
-      Logger.warning('SSLVerify: ${pushToken.sslVerify}');
-      Response response = await ioClient.doPost(
+      Logger.info('SSLVerify: ${pushToken.sslVerify}');
+      response = await ioClient.doPost(
         sslVerify: pushToken.sslVerify,
         url: pushToken.url!,
         body: {
@@ -605,86 +605,54 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
           'pubkey': rsaUtils.serializeRSAPublicKeyPKCS8(pushToken.rsaPublicTokenKey!),
         },
       );
-
-      if (response.statusCode == 200) {
-        pushToken = await _updateToken(pushToken, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.parsingResponse, fbToken: fbToken));
-        if (pushToken == null) {
-          Logger.warning('Tried to update a token that does not exist.');
-          return false;
-        }
-        try {
-          RSAPublicKey publicServerKey = await _parseRollOutResponse(response);
-          pushToken = await _updateToken(pushToken, (p0) => p0.withPublicServerKey(publicServerKey));
-          if (pushToken == null) {
-            Logger.warning('Tried to update a token that does not exist.');
-            return false;
-          }
-        } on FormatException catch (e, s) {
-          Logger.error('Error while parsing RSA public key.', error: e, stackTrace: s);
-          if (pushToken == null) {
-            Logger.warning('Tried to update a token that does not exist.');
-            return false;
-          }
-          pushToken = await _updateToken(pushToken, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.parsingResponseFailed));
-          return false;
-        }
-        Logger.info('Roll out successful');
-        pushToken = await _updateToken(pushToken, (p0) => p0.copyWith(isRolledOut: true, rolloutState: PushTokenRollOutState.rolloutComplete));
-        checkNotificationPermission();
-
-        return true;
-      } else {
-        Logger.warning(
-          'Post request on roll out failed.',
-          error: 'Token: ${pushToken.serial}\nStatus code: ${response.statusCode},\nURL:${response.request?.url}\nBody: ${response.body}',
-        );
-
-        try {
-          final String message = response.body.isNotEmpty ? (json.decode(response.body)['result']?['error']?['message']) : '';
-          ref.read(statusMessageProvider.notifier).state = StatusMessage(
-            message: (localization) => localization.errorRollOutFailed(pushToken!.label),
-            details: (_) => message.toString(),
-          );
-        } on FormatException {
-          // Format Exception is thrown if the response body is not a valid json. This happens if the server is not reachable.
-
-          ref.read(statusMessageProvider.notifier).state = StatusMessage(
-            message: (localization) => localization.errorRollOutFailed(pushToken!.label),
-            details: (localization) => localization.statusCode(response.statusCode),
-          );
-        }
-
-        pushToken = await _updateToken(pushToken, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed));
-        return false;
-      }
     } catch (e, s) {
-      if (pushToken == null) {
-        Logger.warning('Tried to update a token that does not exist.');
-        return false;
-      }
       pushToken = await _updateToken(pushToken, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed));
       if (pushToken == null) {
         Logger.warning('Tried to update a token that does not exist.');
         return false;
       }
-      if (e is SocketException || e is TimeoutException) {
-        Logger.warning('Connection error: Roll out push token failed.', error: e, stackTrace: s);
-        ref.read(statusMessageProvider.notifier).state = StatusMessage(
-          message: (localization) => localization.errorRollOutNoConnectionToServer(pushToken!.label),
-        );
-      } else if (e is HandshakeException) {
-        Logger.warning('SSL error: Roll out push token failed.', error: e, stackTrace: s);
-        ref.read(statusMessageProvider.notifier).state = StatusMessage(
-          message: (localization) => localization.errorRollOutSSLHandshakeFailed,
-        );
-      } else {
-        ref.read(statusMessageProvider.notifier).state = StatusMessage(
-          message: (localization) => localization.errorRollOutUnknownError(pushToken!.label),
-        );
-        Logger.error('Roll out push token failed.', error: e, stackTrace: s);
-      }
+      ref.read(statusMessageProvider.notifier).state = StatusMessage(
+        message: (localization) => localization.errorRollOutUnknownError(pushToken!.label),
+      );
+      Logger.error('Roll out push token failed.', error: e, stackTrace: s);
       return false;
     }
+
+    if (response.statusCode != 200) {
+      Logger.warning(
+        'Post request on roll out failed.',
+        error: 'Token: ${pushToken.serial}\nStatus code: ${response.statusCode},\nURL:${response.request?.url}\nBody: ${response.body}',
+      );
+      _showPushRolloutStatus(response, pushToken.label);
+      pushToken = await _updateToken(pushToken, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed));
+      return false;
+    }
+    pushToken = await _updateToken(pushToken, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.parsingResponse, fbToken: fbToken));
+    if (pushToken == null) {
+      Logger.warning('Tried to update a token that does not exist.');
+      return false;
+    }
+    try {
+      RSAPublicKey publicServerKey = await _parseRollOutResponse(response);
+      pushToken = await _updateToken(pushToken, (p0) => p0.withPublicServerKey(publicServerKey));
+      if (pushToken == null) {
+        Logger.warning('Tried to update a token that does not exist.');
+        return false;
+      }
+    } on FormatException catch (e, s) {
+      Logger.error('Error while parsing RSA public key.', error: e, stackTrace: s);
+      if (pushToken == null) {
+        Logger.warning('Tried to update a token that does not exist.');
+        return false;
+      }
+      pushToken = await _updateToken(pushToken, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.parsingResponseFailed));
+      return false;
+    }
+    Logger.info('Roll out successful');
+    pushToken = await _updateToken(pushToken, (p0) => p0.copyWith(isRolledOut: true, rolloutState: PushTokenRollOutState.rolloutComplete));
+    checkNotificationPermission();
+
+    return true;
   }
 
   final _updateFbTokenMutex = Mutex();
@@ -748,19 +716,15 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
 
       if (pollOnlyTokens.isNotEmpty) {
         final noFbToken = await NoFirebaseUtils().getFBToken();
-        if (noFbToken != null) {
-          for (final token in pollOnlyTokens) {
-            if (token.url == null) {
-              unsuportedTokens.add(token);
-              continue;
-            }
-            final success = await updateFirebaseToken(token, noFbToken);
-            if (!success) {
-              failedTokens.add(token);
-            }
+        for (final token in pollOnlyTokens) {
+          if (token.url == null) {
+            unsuportedTokens.add(token);
+            continue;
           }
-        } else {
-          Logger.warning('Could not update firebase token because no firebase token is available.');
+          final success = await updateFirebaseToken(token, noFbToken);
+          if (!success) {
+            failedTokens.add(token);
+          }
         }
       }
 
@@ -789,6 +753,10 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     String timestamp = DateTime.now().toUtc().toIso8601String();
     String message = '$firebaseToken|${token.serial}|$timestamp';
     String? signature = await rsaUtils.trySignWithToken(token, message);
+    if (signature == null) {
+      Logger.error('Cannot update firebase token for push token "${token.serial}". No signature available.');
+      return false;
+    }
     Response response = await ioClient.doPost(
       url: token.url!,
       body: {'new_fb_token': firebaseToken, 'serial': token.serial, 'timestamp': timestamp, 'signature': signature},
@@ -899,10 +867,10 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       _pushTokenHandlerMutex.release();
       return;
     }
-    final pushTokensWithoutFbToken = (await future).pushTokens.where((element) => element.fbToken == null).toList();
-    if (pushTokensWithoutFbToken.isNotEmpty) {
-      // If there is a push token without fbToken, then update the fbToken
-      await updateFirebaseTokens(tokens: pushTokensWithoutFbToken);
+    final rolledOutPushNoFb = (await future).rolledOutPushTokens.where((element) => element.fbToken == null).toList();
+    if (rolledOutPushNoFb.isNotEmpty) {
+      // If there is rolled out push tokens without fbToken, we need to update the firebase token for them.
+      await updateFirebaseTokens(tokens: rolledOutPushNoFb);
     }
     if ((await future).hasRolledOutPushTokens) {
       checkNotificationPermission();
@@ -923,5 +891,39 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       _hidingTimers[key]?.cancel();
     }
     _hidingTimers.clear();
+  }
+
+  void _showPushRolloutStatus(Response response, String tokenLabel) {
+    // Show more detailed error messages for specific status codes
+    StatusMessage? statusMessage = switch (response.statusCode) {
+      408 => StatusMessage(
+          message: (l) => l.errorRollOutNoConnectionToServer(tokenLabel),
+        ),
+      525 => StatusMessage(
+          message: (l) => l.errorRollOutSSLHandshakeFailed,
+          details: (l) => l.checkServerCertificate,
+        ),
+      _ => null,
+    };
+
+    // If no specific status message was set, try to extract the error message from the response body
+    // or fallback to a generic error message and the status code as details.
+    if (statusMessage == null) {
+      try {
+        final String message = response.body.isNotEmpty ? (json.decode(response.body)['result']?['error']?['message']) : '';
+        statusMessage = StatusMessage(
+          message: (localization) => localization.errorRollOutFailed(tokenLabel),
+          details: (_) => message.toString(),
+        );
+      } on FormatException {
+        // Format Exception is thrown if the response body is not a valid json. This happens if the server is not reachable.
+
+        statusMessage = StatusMessage(
+          message: (localization) => localization.errorRollOutFailed(tokenLabel),
+          details: (localization) => localization.statusCode(response.statusCode),
+        );
+      }
+    }
+    ref.read(statusMessageProvider.notifier).state = statusMessage;
   }
 }

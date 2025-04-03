@@ -250,7 +250,7 @@ class NoFirebaseUtils implements FirebaseUtils {
   bool initializedHandler = false;
 
   @override
-  Future<String?> getFBToken() => Future.value(NO_FIREBASE_TOKEN);
+  Future<String> getFBToken() => Future.value(NO_FIREBASE_TOKEN);
 
   @override
   Future<void> setupHandler({
