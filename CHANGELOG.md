@@ -1,16 +1,16 @@
 # Changelog
 
-## [4.5.1]
+## [4.5.1] - 2025.04.07
  - Added setting to show/hide background image
  - Added setting to allow taking screenshots
  - TOTP token now changes color in the last 5 seconds to indicate end of period
  - Fixed some minor issues
 
-## [4.5.0]
+## [4.5.0] - 2025.02.18
  - Now supports the privacyIDEA container system
  - Fixed some minor issues
 
-## [4.4.0] -
+## [4.4.0] - 2024.11.22
  - It is now possible to export tokens where it can be ensured that they are not privacyIDEA tokens.
    Currently, it cannot be ruled out that tokens added via the QR code scanner originate from privacyIDEA.
    The differentiation will be improved in future versions.
