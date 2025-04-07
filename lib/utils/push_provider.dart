@@ -422,7 +422,7 @@ class PushProvider {
 /// It is used to prevent the app from crashing when the features of the [PushProvider] are not available (e.g., on web).
 class PlaceholderPushProvider implements PushProvider {
   @override
-  FirebaseUtils _firebaseUtils = FirebaseUtils();
+  FirebaseUtils _firebaseUtils = NoFirebaseUtils();
   @override
   FirebaseUtils get firebaseUtils => _firebaseUtils;
   @override
