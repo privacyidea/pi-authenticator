@@ -104,4 +104,15 @@ class WidgetImage {
   XFile? toXFile() {
     return imageFormat.buildXFile(imageData, fileName);
   }
+
+  WidgetImage copyWith({
+    String? fileName,
+    ImageFormat? imageFormat,
+    Uint8List? imageData,
+  }) =>
+      WidgetImage(
+        fileName: fileName ?? this.fileName,
+        imageFormat: imageFormat ?? this.imageFormat,
+        imageData: imageData ?? this.imageData,
+      );
 }
