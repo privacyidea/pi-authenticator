@@ -20,7 +20,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/model/extensions/token_folder_extension.dart';
+import 'package:privacyidea_authenticator/model/extensions/token_list_extension.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import 'package:privacyidea_authenticator/utils/view_utils.dart';
 
@@ -44,7 +44,7 @@ class DeleteContainerDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final containerToken = ref.watch(tokenProvider).containerTokens(container.serial);
+    final containerToken = ref.watch(tokenProvider).valueOrNull?.containerTokens(container.serial) ?? [];
     return DefaultDialog(
       title: Text(titleOverride ?? AppLocalizations.of(context)!.deleteContainerDialogTitle(container.serial)),
       content: Text(contentOverride ?? AppLocalizations.of(context)!.deleteContainerDialogContent),
@@ -62,7 +62,7 @@ class DeleteContainerDialog extends ConsumerWidget {
             if (!wasContainerDeleted) {
               wasContainerDeleted = (await ForceDeleteContainerDialog.showDialog(container)) == true;
             }
-            final containerTokens = ref.read(tokenProvider).containerTokens(container.serial);
+            final containerTokens = (await ref.read(tokenProvider.future)).containerTokens(container.serial);
             if (wasContainerDeleted && deleteContainerTokens) await ref.read(tokenProvider.notifier).removeTokens(containerTokens.noOffline);
 
             if (!context.mounted) return;

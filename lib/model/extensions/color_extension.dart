@@ -24,12 +24,37 @@ extension ColorExtension on Color {
     Color other, [
     double factor = 0.5 /* 0.0 - 1.0 */,
   ]) =>
-      Color.fromARGB(
-        (alpha * (1 - factor) + other.alpha * factor).toInt().clamp(0, 255),
-        (red * (1 - factor) + other.red * factor).toInt().clamp(0, 255),
-        (green * (1 - factor) + other.green * factor).toInt().clamp(0, 255),
-        (blue * (1 - factor) + other.blue * factor).toInt().clamp(0, 255),
+      Color.from(
+        alpha: (a * (1 - factor) + other.a * factor).clamp(0, 1),
+        red: (r * (1 - factor) + other.r * factor).clamp(0, 1),
+        green: (g * (1 - factor) + other.g * factor).clamp(0, 1),
+        blue: (b * (1 - factor) + other.b * factor).clamp(0, 1),
       );
 
-  Color inverted() => Color.fromARGB(alpha, 255 - red, 255 - green, 255 - blue);
+  Color inverted() => Color.from(
+        alpha: a,
+        red: 1 - r,
+        green: 1 - g,
+        blue: 1 - b,
+      );
+
+  toJson() => {
+        'a': a,
+        'r': r,
+        'g': g,
+        'b': b,
+      };
+  static Color fromJson(dynamic json) {
+    if (json is int) return Color(json);
+    if (json is String) return Color(int.parse(json));
+    if (json is Map) {
+      return Color.from(
+        alpha: json['a'] as double,
+        red: json['r'] as double,
+        green: json['g'] as double,
+        blue: json['b'] as double,
+      );
+    }
+    throw ArgumentError.value(json, 'json', 'Invalid color value');
+  }
 }

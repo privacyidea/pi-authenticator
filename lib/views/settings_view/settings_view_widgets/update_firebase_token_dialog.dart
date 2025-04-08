@@ -67,7 +67,7 @@ class _UpdateFirebaseTokenDialogState extends ConsumerState<UpdateFirebaseTokenD
     Logger.info('Starting update of firebase token.');
 
     // TODO What to do with poll only tokens if google-services is used?
-    final pushTokensNotPollOnly = ref.read(tokenProvider).pushTokensNotPollOnly;
+    final pushTokensNotPollOnly = (await ref.read(tokenProvider.future)).pushTokensNotPollOnly;
 
     final tuple = await ref.read(tokenProvider.notifier).updateFirebaseTokens(tokens: pushTokensNotPollOnly);
     if (tuple == null) {

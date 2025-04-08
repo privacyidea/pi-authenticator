@@ -41,7 +41,9 @@ void _testTokenNotifier() {
       ];
       final responses = [before, after];
       when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
-      when(mockRepo.loadTokens()).thenAnswer((_) async => responses.removeAt(0));
+      when(mockRepo.loadTokens()).thenAnswer((_) async {
+        return responses.removeAt(0);
+      });
       when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
       when(mockFirebaseUtils.getFBToken()).thenAnswer((_) async => 'mockFbToken');
       final testProvider = tokenNotifierProviderOf(
@@ -50,9 +52,10 @@ void _testTokenNotifier() {
         ioClient: const PrivacyideaIOClient(),
         firebaseUtils: mockFirebaseUtils,
       );
-      final notifier = container.read(testProvider.notifier);
-      expect((await notifier.loadStateFromRepo())?.tokens, after);
-      final state = container.read(testProvider);
+      expect((await container.read(testProvider.future)).tokens, before); // Should load the state from the repo
+      expect((await container.read(testProvider.future)).tokens, before); // But only once
+      expect((await container.read(testProvider.notifier).loadStateFromRepo())?.tokens, after); // Exept we tell them to do so.
+      final state = await container.read(testProvider.future);
       expect(state, isNotNull);
       expect(state.tokens, after);
       verify(mockRepo.loadTokens()).called(2);
@@ -76,9 +79,8 @@ void _testTokenNotifier() {
         firebaseUtils: mockFirebaseUtils,
       );
       final notifier = container.read(testProvider.notifier);
-      await notifier.initState;
-      expect(notifier.getTokenById(before.first.id), before.first);
-      final state = container.read(testProvider);
+      expect(await notifier.getTokenById(before.first.id), before.first);
+      final state = await container.read(testProvider.future);
       expect(state, isNotNull);
       expect(state.tokens, after);
     });
@@ -105,10 +107,10 @@ void _testTokenNotifier() {
         firebaseUtils: mockFirebaseUtils,
       );
       final notifier = container.read(testProvider.notifier);
-      final initState = await notifier.initState;
-      expect(initState.tokens, before);
+      final stateBefore = await container.read(testProvider.future);
+      expect(stateBefore.tokens, before);
       await notifier.incrementCounter(before.first);
-      final state = container.read(testProvider);
+      final state = await container.read(testProvider.future);
       expect(state, isNotNull);
       expect(state.tokens, after);
       verify(mockRepo.saveOrReplaceToken(after.first)).called(1);
@@ -137,10 +139,11 @@ void _testTokenNotifier() {
         firebaseUtils: mockFirebaseUtils,
       );
       final notifier = container.read(testProvider.notifier);
-      final initState = await notifier.initState;
-      expect(initState.tokens, before);
+
+      final stateBefore = await container.read(testProvider.future);
+      expect(stateBefore.tokens, before);
       await notifier.removeToken(before.last);
-      final state = container.read(testProvider);
+      final state = await container.read(testProvider.future);
       expect(state, isNotNull);
       expect(state.tokens, after);
       verify(mockRepo.deleteToken(before.last)).called(1);
@@ -170,10 +173,11 @@ void _testTokenNotifier() {
           firebaseUtils: mockFirebaseUtils,
         );
         final notifier = container.read(testProvider.notifier);
-        final initState = await notifier.initState;
-        expect(initState.tokens, before);
+
+        final stateBefore = await container.read(testProvider.future);
+        expect(stateBefore.tokens, before);
         await notifier.addOrReplaceToken(after.last);
-        final state = container.read(testProvider);
+        final state = await container.read(testProvider.future);
         expect(state, isNotNull);
         expect(state.tokens, after);
         verify(mockRepo.saveOrReplaceToken(after.last)).called(1);
@@ -203,10 +207,11 @@ void _testTokenNotifier() {
           firebaseUtils: mockFirebaseUtils,
         );
         final notifier = container.read(testProvider.notifier);
-        final initState = await notifier.initState;
-        expect(initState.tokens, before);
+
+        final stateBefore = await container.read(testProvider.future);
+        expect(stateBefore.tokens, before);
         await notifier.addOrReplaceToken(after.last);
-        final state = container.read(testProvider);
+        final state = await container.read(testProvider.future);
         expect(state, isNotNull);
         expect(state.tokens, after);
         verify(mockRepo.saveOrReplaceToken(after.last)).called(1);
@@ -239,7 +244,7 @@ void _testTokenNotifier() {
       );
       final notifier = container.read(testProvider.notifier);
       await notifier.addOrReplaceTokens([...after]);
-      final state = container.read(testProvider);
+      final state = await container.read(testProvider.future);
       expect(state, isNotNull);
       expect(state.tokens, after);
     });
@@ -269,7 +274,7 @@ void _testTokenNotifier() {
       final tokenNotifier = container.read(tokenProvider.notifier);
       await scanQrCode(resultHandlerList: [tokenNotifier], qrCode: qrCode);
       await Future.delayed(const Duration(seconds: 5)); // Wait for the rollout to finish
-      final state = container.read(tokenProvider);
+      final state = await container.read(tokenProvider.future);
       expect(state, isNotNull);
       after.last = after.last.copyWith(id: state.tokens.last.id);
       expect(state.tokens, after);
@@ -339,11 +344,9 @@ void _testTokenNotifier() {
         body: anyNamed('body'),
         sslVerify: anyNamed('sslVerify'),
       )).thenAnswer(
-        (_) => Future.value(
-          Response(
-            '{"detail": {"public_key": "$publicServerKeyString", "rollout_state": "enrolled", "serial": "PIPU0006BF18", "threadid": 140024860083968}, "id": 1, "jsonrpc": "2.0", "result": {"status": true, "value": true}, "time": 1701091444.6211884, "version": "privacyIDEA 3.9.dev3", "versionnumber": "3.9.dev3", "signature": "rsa_sha256_pss:c137b543b0df817ebd89ff53c5924c94f916c2bfebbe03ceb14e806ffdb46deb00fd336c83f3e0fb06ffbdf4926e83b5440f7f117498341608d644e4c1f2bbf9319eb59b98d5485c42b40325c9f29427cc8ae67728e486db247be0510a92f74936ea57436ecbe5304bcc50fcb624c3bde8e3039419592e9fbe8c0cb85431c2931ea8d6a6369fccf7e4c15c9cfaea896d8ec7896811545083bd6d3f5416e7d54b43f1f4752bf2a57c2b12a139fe217d1eec1292b071b9c6cef31e5f6eb957c7ad2a1d3bd105a74c80f961f5e307393824b8767807116a8573448f45f6cc112317105fb4e9e294f1a99faaf78b2f902ea1553cf5e428bfa98041c74cc23302df6f"}',
-            200,
-          ),
+        (_) async => Response(
+          '{"detail": {"public_key": "$publicServerKeyString", "rollout_state": "enrolled", "serial": "PIPU0006BF18", "threadid": 140024860083968}, "id": 1, "jsonrpc": "2.0", "result": {"status": true, "value": true}, "time": 1701091444.6211884, "version": "privacyIDEA 3.9.dev3", "versionnumber": "3.9.dev3", "signature": "rsa_sha256_pss:c137b543b0df817ebd89ff53c5924c94f916c2bfebbe03ceb14e806ffdb46deb00fd336c83f3e0fb06ffbdf4926e83b5440f7f117498341608d644e4c1f2bbf9319eb59b98d5485c42b40325c9f29427cc8ae67728e486db247be0510a92f74936ea57436ecbe5304bcc50fcb624c3bde8e3039419592e9fbe8c0cb85431c2931ea8d6a6369fccf7e4c15c9cfaea896d8ec7896811545083bd6d3f5416e7d54b43f1f4752bf2a57c2b12a139fe217d1eec1292b071b9c6cef31e5f6eb957c7ad2a1d3bd105a74c80f961f5e307393824b8767807116a8573448f45f6cc112317105fb4e9e294f1a99faaf78b2f902ea1553cf5e428bfa98041c74cc23302df6f"}',
+          200,
         ),
       );
       final testProvider = tokenNotifierProviderOf(
@@ -352,12 +355,12 @@ void _testTokenNotifier() {
         rsaUtils: mockRsaUtils,
         firebaseUtils: mockFirebaseUtils,
       );
-      final notifier = container.read(testProvider.notifier);
-      final initState = await notifier.initState;
-      expect(initState.tokens, before);
-      await scanQrCode(resultHandlerList: [notifier], qrCode: otpAuth);
+
+      final stateBefore = await container.read(testProvider.future);
+      expect(stateBefore.tokens, before);
+      await scanQrCode(resultHandlerList: [container.read(testProvider.notifier)], qrCode: otpAuth);
       await Future.delayed(const Duration(seconds: 5)); // Wait for the rollout to finish
-      final tokenState = container.read(testProvider);
+      final tokenState = await container.read(testProvider.future);
       expect(tokenState, isNotNull);
       expect(tokenState.tokens, after);
       verify(mockRsaUtils.generateRSAKeyPair()).called(1);
@@ -418,13 +421,13 @@ void _testTokenNotifier() {
         rsaUtils: mockRsaUtils,
         firebaseUtils: mockFirebaseUtils,
       );
-      final notifier = container.read(testProvider.notifier);
-      final initState = await notifier.initState;
-      expect(initState.tokens, before);
+
+      final stateBefore = await container.read(testProvider.future);
+      expect(stateBefore.tokens, before);
       Logger.info('before rolloutPushToken');
-      expect(await notifier.rolloutPushToken(before.first), true);
+      expect(await container.read(testProvider.notifier).rolloutPushToken(before.first), true);
       Logger.info('after rolloutPushToken');
-      final state = container.read(testProvider);
+      final state = await container.read(testProvider.future);
       expect(state, isNotNull);
       expect(state.tokens, after);
       verify(mockRepo.saveOrReplaceToken(after.first)).called(greaterThan(0));
@@ -456,12 +459,11 @@ void _testTokenNotifier() {
         ioClient: const PrivacyideaIOClient(),
         firebaseUtils: mockFirebaseUtils,
       );
-      final notifier = container.read(testProvider.notifier);
       Logger.info('before loadFromRepo');
-      final newState = await notifier.loadStateFromRepo();
+      final newState = await container.read(testProvider.notifier).loadStateFromRepo();
       Logger.info('after loadFromRepo');
       expect(newState?.tokens, before);
-      expect(notifier.state.tokens, before);
+      expect((await container.read(testProvider.future)).tokens, before);
     });
   });
 }

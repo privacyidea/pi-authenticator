@@ -1,9 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:gms_check/gms_check.dart';
 import 'package:mockito/mockito.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/token_folder_state.dart';
 import 'package:privacyidea_authenticator/model/token_folder.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 
 import '../../tests_app_wrapper.mocks.dart';
 
@@ -30,8 +32,15 @@ void _testTokenFolderNotifier() {
     });
 
     test('removeFolder', () async {
+      await GmsCheck().checkGmsAvailability();
       final mockRepo = MockTokenFolderRepository();
-      final container = ProviderContainer();
+      final mockTokenRepo = MockTokenRepository();
+      when(mockTokenRepo.loadTokens()).thenAnswer((_) async => const []);
+      final container = ProviderContainer(
+        overrides: [
+          tokenProvider.overrideWith(() => TokenNotifier(repoOverride: mockTokenRepo)),
+        ],
+      );
       const before = TokenFolderState(folders: [TokenFolder(label: 'test', folderId: 1, isExpanded: true, isLocked: false, sortIndex: null)]);
       const after = TokenFolderState(folders: []);
       when(mockRepo.loadState()).thenAnswer((_) async => before);

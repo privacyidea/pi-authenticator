@@ -69,9 +69,9 @@ class _TransferContainerDialogState extends ConsumerState<TransferContainerDialo
 
   Future<void> _startTransfer(TokenContainerFinalized container) async {
     final String qrData;
-    final hasOfflineToken = ref.read(tokenProvider).containerTokens(container.serial).where((token) => token.isOffline);
+    final hasOfflineToken = (await ref.read(tokenProvider.future)).containerTokens(container.serial).where((token) => token.isOffline);
     if (hasOfflineToken.isNotEmpty) {
-      final continueTransfer = await showDialog(context: context, builder: (_) => TransferOfflineTokenDialog(hasOfflineToken.length));
+      final continueTransfer = await showAsyncDialog(builder: (_) => TransferOfflineTokenDialog(hasOfflineToken.length));
       if (continueTransfer != true) return;
     }
     try {

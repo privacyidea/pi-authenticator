@@ -79,6 +79,18 @@
   "@allTokensSynchronized": {
     "description": "Content of the push synchronization dialog. Signaling the user that everything worked."
   },
+  "@allowButton": {
+    "description": "Buttontext to allow something."
+  },
+  "@allowScreenshotsDescription": {
+    "description": "Description for the allow screenshots dialog."
+  },
+  "@allowScreenshotsReason": {
+    "description": "Authenticate reason for the allow screenshots dialog."
+  },
+  "@allowScreenshotsTitle": {
+    "description": "Title for the allow screenshots dialog."
+  },
   "@asFile": {
     "description": "Buttontext to save the backup as a file."
   },
@@ -111,6 +123,9 @@
   },
   "@authentication": {
     "description": "Title of the authentication dialog."
+  },
+  "@backgroundImage": {
+    "description": "Label for the background image setting."
   },
   "@biometricHint": {
     "description": "Hint message advising the user how to authenticate with biometrics. It is used on Android side. Maximum 60 characters."
@@ -594,9 +609,6 @@
   "@handshakeFailed": {
     "description": "Error message when the handshake failed."
   },
-  "@handshakeFailedLongText": {
-    "description": "Error message when the handshake with the server failed."
-  },
   "@hidePushTokens": {
     "description": "Label for the switch to hide push tokens."
   },
@@ -809,8 +821,8 @@
       }
     }
   },
-  "@invalidQrFile": {
-    "description": "Error message when the qr file is invalid.",
+  "@invalidQrBackup": {
+    "description": "Error message when the scanned qr backup is invalid.",
     "placeholders": {
       "appName": {
         "example": "privacyIDEA Authenticator",
@@ -818,8 +830,8 @@
       }
     }
   },
-  "@invalidQrScan": {
-    "description": "Error message when the qr scan is invalid.",
+  "@invalidQrFile": {
+    "description": "Error message when the qr file is invalid.",
     "placeholders": {
       "appName": {
         "example": "privacyIDEA Authenticator",
@@ -1144,6 +1156,18 @@
   "@patchNotesV4_5_0NewFeatures1": {
     "description": "Patch notes for version 4.5.0"
   },
+  "@patchNotesV4_5_1BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.5.1"
+  },
+  "@patchNotesV4_5_1NewFeatures1": {
+    "description": "Patch notes for a new feature in version 4.5.1"
+  },
+  "@patchNotesV4_5_1NewFeatures2": {
+    "description": "Patch notes for a new feature in version 4.5.1"
+  },
+  "@patchNotesV4_5_1NewFeatures3": {
+    "description": "Patch notes for a new feature in version 4.5.1"
+  },
   "@period": {
     "description": "Title of the dropdown button where the period of the totp token is selected."
   },
@@ -1303,6 +1327,12 @@
   },
   "@scanThisQrWithNewDevice": {
     "description": "Content of the token export dialog that shows the user the qr code."
+  },
+  "@screenshotsAllowed": {
+    "description": "Label for the screenshots allowed setting."
+  },
+  "@screenshotsNotAllowed": {
+    "description": "Label for the screenshots allowed setting."
   },
   "@secondsUntilNextOTP": {
     "description": "Semantics label for the animated countdown until the next OTP is generated."
@@ -1638,6 +1668,10 @@
   "algorithm": "Algoritmus",
   "algorithmUnsupported": "Algoritmus {algorithm} není podporován",
   "allTokensSynchronized": "Všechny tokeny jsou synchronizované.",
+  "allowButton": "Povolit",
+  "allowScreenshotsDescription": "Snímky obrazovky povolte pouze v případě potřeby. Pokud máte v zařízení aplikaci, která vidí vaši obrazovku, mohlo by to představovat potenciální bezpečnostní riziko.",
+  "allowScreenshotsReason": "Pro povolení snímků obrazovky se prosím ověřte. Snímání můžete kdykoli zakázat.",
+  "allowScreenshotsTitle": "Povolit snímky obrazovky",
   "asFile": "Jako soubor",
   "asQrCode": "Jako QR kód",
   "askLogSentDescription": "Odeslali jste protokol a chcete jej nyní vymazat?",
@@ -1649,6 +1683,7 @@
   "authenticateToShowOtp": "Pro zobrazení jednorázového kódu se přihlaste.",
   "authenticateToUnLockToken": "Pro změnu uzamčení tokenu se přihlaste.",
   "authentication": "Žádost o ověření",
+  "backgroundImage": "Obrázek na pozadí",
   "biometricHint": "Vyžadováno přihlášení",
   "biometricNotRecognized": "Ověření se nezdařilo. Zkuste to znovu.",
   "biometricRequiredTitle": "Biometrické ověření není nastaveno",
@@ -1781,7 +1816,6 @@
   "grantCameraPermissionDialogPermanentlyDenied": "Oprávnění kamery je trvale odepřeno. Udělte prosím oprávnění fotoaparátu v nastavení telefonu.",
   "grantCameraPermissionDialogTitle": "Camera permission is not granted",
   "handshakeFailed": "Handshake se nezdařil",
-  "handshakeFailedLongText": "Handshake se nezdařil, zkontrolujte prosím certifikát serveru a zkuste to znovu.",
   "hidePushTokens": "Skrýt push tokeny",
   "hidePushTokensDescription": "Skrýt push tokeny ze seznamu tokenů. Tím se tokeny neodstraní a budou stále viditelné na samostatné obrazovce.",
   "httpStatus": "{httpCode, select, 100{{httpCode}: Pokračovat} 101{{httpCode}: Přepínání protokolů} 102{{httpCode}: Zpracování} 103{{httpCode}: Early Hints} 104{{httpCode}: Obnovení spojení partnerem} 111{{httpCode}: Odmítnutí spojení} 200{{httpCode}: OK} 201{{httpCode}: Created} 202{{httpCode}: Accepted} 203{{httpCode}: Neautoritativní informace} 204{{httpCode}: Žádný obsah} 205{{httpCode}: Obnovit obsah} 206{{httpCode}: Částečný obsah} 207{{httpCode}: Multi-Status} 208{{httpCode}: Already Reported} 300{{httpCode}: Více možností} 301{{httpCode}: Přesunuto trvale} 302{{httpCode}: Nalezeno} 303{{httpCode}: Viz ostatní} 304{{httpCode}: Nezměněno} 305{{httpCode}: Použít proxy} 307{{httpCode}: Dočasné přesměrování} 308{{httpCode}: Trvalé přesměrování} 400{{httpCode}: Špatný požadavek} 401{{httpCode}: Niet geautoriseerd} 402{{httpCode}: Požadovaná platba} 403{{httpCode}: Forbidden} 404{{httpCode}: Not Found} 405{{httpCode}: Metoda není povolena} 406{{httpCode}: Not Acceptable} 407{{httpCode}: Proxy Authentication Required} 408{{httpCode}: Timeout požadavku} 409{{httpCode}: Conflict} 410{{httpCode}: Gone} 411{{httpCode}: Požadovaná délka} 412{{httpCode}: Předběžná podmínka se nezdařila} 413{{httpCode}: Payload Too Large} 414{{httpCode}: Request-URI Too Long} 415{{httpCode}: Unsupported Media Type} 416{{httpCode}: Požadovaný rozsah není splnitelný} 417{{httpCode}: Expectation Failed} 418{{httpCode}: I'm a teapot} 420{{httpCode}: Zlepšete svůj klid} 421{{httpCode}: Chybně směrovaný požadavek} 422{{httpCode}: Nezpracovatelná entita} 423{{httpCode}: Zamčeno}  424{{httpCode}: Neúspěšná závislost} 426{{httpCode}: Vyžadována aktualizace} 428{{httpCode}: Precondition Required} 429{{httpCode}: Příliš mnoho požadavků} 431{{httpCode}: Příliš velká pole hlavičky požadavku} 444{{httpCode}: Spojení uzavřeno bez odpovědi} 451{{httpCode}: Nedostupné z právních důvodů} 499{{httpCode}: Klient ukončil požadavek} 500{{httpCode}: Vnitřní chyba serveru} 501{{httpCode}: Not Implemented} 502{{httpCode}: Špatná brána} 503{{httpCode}: Service Unavailable} 504{{httpCode}: Gateway Timeout} 505{{httpCode}: HTTP Version Not Supported} 506{{httpCode}: Variant Also Negotiates} 507{{httpCode}: Nedostatečné úložiště} 508{{httpCode}: Detekována smyčka} 510{{httpCode}: Not Extended} 511{{httpCode}: Vyžadováno síťové ověření} 520{{httpCode}: Neznámá chyba} 521{{httpCode}: Webový server je mimo provoz} 522{{httpCode}: Connection Timed Out} 523{{httpCode}: Origin Is Unreachable} 524{{httpCode}: A Timeout Occurred} 525{{httpCode}: Handshake selhal} 526{{httpCode}: Invalid SSL Certificate} 527{{httpCode}: Railgun Error} 528{{httpCode}: Transport Error} 529{{httpCode}: Služba je přetížená} 530{{httpCode}: Stránka je zamrzlá}  599{{httpCode}: Chybný časový limit síťového připojení} other{{httpCode}: Neznámá chyba}}",
@@ -1829,8 +1863,9 @@
   "invalidBackupFile": "Vybraný soubor není platnou zálohou {appName}.",
   "invalidHostForScheme": "Neplatný hostitel: {host} pro schéma: {scheme}",
   "invalidLink": "Zadaný odkaz není platným tokenem {appName} nebo není podporován.",
+  "invalidQrBackup": "Naskenovaný QR kód není platnou zálohou {appName}.",
   "invalidQrFile": "Vybraný soubor neobsahuje platný QR kód z {appName}.",
-  "invalidQrScan": "Naskenovaný QR kód není platnou zálohou {appName}.",
+  "invalidQrScan": "Naskenovaný kód QR neobsahoval platná data",
   "invalidUrl": "Neplatná adresa URL",
   "invalidValue": "Typ {type} '{value}' není platný pro '{parameter}'.",
   "invalidValueIn": "{type} '{value}' není platný pro '{parameter}' v '{map}'.",
@@ -1907,6 +1942,10 @@
   "patchNotesV4_4_2NewFeatures2": "Přidána podpora galerie pro skenování QR kódů.",
   "patchNotesV4_5_0BugFix1": "Opravené drobné problémy",
   "patchNotesV4_5_0NewFeatures1": "Podpora kontejnerového systému privacyIDEA pro snadnější správu tokenů",
+  "patchNotesV4_5_1BugFix1": "Opraveno několik drobných problémů",
+  "patchNotesV4_5_1NewFeatures1": "Přidáno nastavení pro zobrazení/skrytí obrázku na pozadí",
+  "patchNotesV4_5_1NewFeatures2": "Přidáno nastavení umožňující pořizování snímků obrazovky",
+  "patchNotesV4_5_1NewFeatures3": "Žeton TOTP nyní mění barvu v posledních 5 sekundách, aby indikoval konec periody.",
   "period": "Časový interval",
   "phonePart": "Klientská část:",
   "piServerCode": "Kód serveru PI: {code}",
@@ -1945,7 +1984,7 @@
   "rolloutStateParsingResponse": "Rozbor odpovědi",
   "rolloutStateParsingResponseCompleted": "Parsování odpovědi dokončeno",
   "rolloutStateParsingResponseFailed": "Parsování odpovědi se nezdařilo",
-  "rolloutStateReceivingFirebaseToken": " Přijetí tokenu Firebase",
+  "rolloutStateReceivingFirebaseToken": "Přijetí tokenu Firebase",
   "rolloutStateReceivingFirebaseTokenFailed": "Příjem tokenu Firebase se nezdařil",
   "rolloutStateSendingPublicKey": "Odeslání veřejného klíče",
   "rolloutStateSendingPublicKeyCompleted": "Odeslání veřejného klíče dokončeno",
@@ -1953,6 +1992,8 @@
   "saveButton": "Uložit",
   "scanQrCode": "Naskenovat QR kód",
   "scanThisQrWithNewDevice": "Naskenujte tento QR kód svým novým zařízením pro import žetonu.",
+  "screenshotsAllowed": "Snímky obrazovky povoleny",
+  "screenshotsNotAllowed": "Snímky obrazovky nejsou povoleny",
   "secondsUntilNextOTP": "Sekundy do dalšího OTP",
   "secretIsRequired": "Tajné je vyžadováno",
   "secretKey": "Tajný klíč",

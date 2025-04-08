@@ -148,7 +148,7 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
   @override
   Widget build(BuildContext context) {
     final draggingSortable = ref.watch(draggingSortableProvider);
-    final sortables = ref.watch(sortablesProvider);
+    final sortables = ref.watch(sortablesProvider).valueOrNull ?? [];
     final hidePushTokens = ref.watch(settingsProvider).whenOrNull(data: (data) => data.hidePushTokens) ?? SettingsState.hidePushTokensDefault;
 
     final hasFinalizedContainers = ref.watch(tokenContainerProvider).whenOrNull(data: (data) => data.hasFinalizedContainers);

@@ -35,7 +35,7 @@ class ConnectivityListener extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final connectivity = ref.watch(connectivityProvider).asData?.value;
     if (connectivity != null && connectivity.contains(ConnectivityResult.none)) {
-      ref.read(tokenProvider.notifier).initState.then((newState) {
+      ref.read(tokenProvider.future).then((newState) {
         if (newState.hasPushTokens) {
           Logger.info("Connectivity changed: $connectivity");
           if (!context.mounted) return;

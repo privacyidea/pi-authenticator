@@ -43,7 +43,7 @@ class TokenFolder with SortableMixin {
   const TokenFolder({
     required this.label,
     required this.folderId,
-    this.isExpanded = true,
+    this.isExpanded = false,
     this.isLocked = false,
     this.sortIndex,
   });

@@ -79,6 +79,18 @@
   "@allTokensSynchronized": {
     "description": "Content of the push synchronization dialog. Signaling the user that everything worked."
   },
+  "@allowButton": {
+    "description": "Buttontext to allow something."
+  },
+  "@allowScreenshotsDescription": {
+    "description": "Description for the allow screenshots dialog."
+  },
+  "@allowScreenshotsReason": {
+    "description": "Authenticate reason for the allow screenshots dialog."
+  },
+  "@allowScreenshotsTitle": {
+    "description": "Title for the allow screenshots dialog."
+  },
   "@asFile": {
     "description": "Buttontext to save the backup as a file."
   },
@@ -111,6 +123,9 @@
   },
   "@authentication": {
     "description": "Title of the authentication dialog."
+  },
+  "@backgroundImage": {
+    "description": "Label for the background image setting."
   },
   "@biometricHint": {
     "description": "Hint message advising the user how to authenticate with biometrics. It is used on Android side. Maximum 60 characters."
@@ -594,9 +609,6 @@
   "@handshakeFailed": {
     "description": "Error message when the handshake failed."
   },
-  "@handshakeFailedLongText": {
-    "description": "Error message when the handshake with the server failed."
-  },
   "@hidePushTokens": {
     "description": "Label for the switch to hide push tokens."
   },
@@ -809,8 +821,8 @@
       }
     }
   },
-  "@invalidQrFile": {
-    "description": "Error message when the qr file is invalid.",
+  "@invalidQrBackup": {
+    "description": "Error message when the scanned qr backup is invalid.",
     "placeholders": {
       "appName": {
         "example": "privacyIDEA Authenticator",
@@ -818,8 +830,8 @@
       }
     }
   },
-  "@invalidQrScan": {
-    "description": "Error message when the qr scan is invalid.",
+  "@invalidQrFile": {
+    "description": "Error message when the qr file is invalid.",
     "placeholders": {
       "appName": {
         "example": "privacyIDEA Authenticator",
@@ -1144,6 +1156,18 @@
   "@patchNotesV4_5_0NewFeatures1": {
     "description": "Patch notes for version 4.5.0"
   },
+  "@patchNotesV4_5_1BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.5.1"
+  },
+  "@patchNotesV4_5_1NewFeatures1": {
+    "description": "Patch notes for a new feature in version 4.5.1"
+  },
+  "@patchNotesV4_5_1NewFeatures2": {
+    "description": "Patch notes for a new feature in version 4.5.1"
+  },
+  "@patchNotesV4_5_1NewFeatures3": {
+    "description": "Patch notes for a new feature in version 4.5.1"
+  },
   "@period": {
     "description": "Title of the dropdown button where the period of the totp token is selected."
   },
@@ -1303,6 +1327,12 @@
   },
   "@scanThisQrWithNewDevice": {
     "description": "Content of the token export dialog that shows the user the qr code."
+  },
+  "@screenshotsAllowed": {
+    "description": "Label for the screenshots allowed setting."
+  },
+  "@screenshotsNotAllowed": {
+    "description": "Label for the screenshots allowed setting."
   },
   "@secondsUntilNextOTP": {
     "description": "Semantics label for the animated countdown until the next OTP is generated."
@@ -1638,6 +1668,10 @@
   "algorithm": "Algorithmus",
   "algorithmUnsupported": "Der Algorithmus {algorithm} wird nicht unterstützt",
   "allTokensSynchronized": "Alle Token wurden synchronisiert.",
+  "allowButton": "Erlauben",
+  "allowScreenshotsDescription": "Bitte erlauben Sie Screenshots nur, wenn es notwendig ist. Es könnte ein potenzielles Sicherheitsrisiko darstellen, wenn Sie eine App auf Ihrem Gerät haben, die Ihren Bildschirm sehen kann.",
+  "allowScreenshotsReason": "Bitte authentifizieren Sie sich, um Screenshots zuzulassen. Sie können dies jederzeit deaktivieren.",
+  "allowScreenshotsTitle": "Screenshots zulassen",
   "asFile": "Als Datei",
   "asQrCode": "Als QR-Code",
   "askLogSentDescription": "Haben Sie das Protokoll gesendet, und möchten Sie es jetzt löschen?",
@@ -1649,6 +1683,7 @@
   "authenticateToShowOtp": "Bitte authentifizieren Sie sich, um das Einmalpasswort anzuzeigen.",
   "authenticateToUnLockToken": "Bitte authentifizieren Sie sich, um den Sperrstatus des Tokens zu ändern.",
   "authentication": "Authentifizierung",
+  "backgroundImage": "Hintergrundbild",
   "biometricHint": "Authentifizierung wird benötigt",
   "biometricNotRecognized": "Biometrie wurde nicht erkannt, bitte versuchen Sie es erneut",
   "biometricRequiredTitle": "Biometrie ist nicht eingerichtet",
@@ -1781,7 +1816,6 @@
   "grantCameraPermissionDialogPermanentlyDenied": "Sie haben die Berechtigung für den Kamerazugriff permanent verweigert. Bitte aktivieren Sie die Berechtigung in den Einstellungen ihres Smartphones.",
   "grantCameraPermissionDialogTitle": "Kamera-Berechtigung erforderlich",
   "handshakeFailed": "Handshake fehlgeschlagen",
-  "handshakeFailedLongText": "Handshake fehlgeschlagen, bitte überprüfen Sie das Serverzertifikat und versuchen Sie es erneut.",
   "hidePushTokens": "Push-Token ausblenden",
   "hidePushTokensDescription": "Push-Token aus der Token-Liste ausblenden. Dadurch werden die Token nicht gelöscht und sind weiterhin auf einem separaten Bildschirm sichtbar.",
   "httpStatus": "{httpCode, select, 100{{httpCode}: Weiter} 101{{httpCode}: Umschalten von Protokollen} 102{{httpCode}: Verarbeitung} 103{{httpCode}: Erste Hinweise} 104{{httpCode}: Verbindungsrücksetzung durch Peer} 111{{httpCode}: Verbindung abgelehnt} 200{{httpCode}: OK} 201{{httpCode}: Erstellt} 202{{httpCode}: Angenommen} 203{{httpCode}: Nicht-autoritative Informationen} 204{{httpCode}: Kein Inhalt} 205{{httpCode}: Inhalt zurücksetzen} 206{{httpCode}: Teilweiser Inhalt} 207{{httpCode}: Mehrfach-Status} 208{{httpCode}: Bereits gemeldet} 300{{httpCode}: Mehrere Auswahlmöglichkeiten} 301{{httpCode}: Dauerhaft verschoben} 302{{httpCode}: Gefunden} 303{{httpCode}: Siehe Sonstiges} 304{{httpCode}: Nicht geändert} 305{{httpCode}: Proxy verwenden} 307{{httpCode}: Temporäre Umleitung} 308{{httpCode}: Dauerhafte Umleitung} 400{{httpCode}: Schlechte Anfrage} 401{{httpCode}: Unautorisiert} 402{{httpCode}: Zahlung erforderlich} 403{{httpCode}: Verboten} 404{{httpCode}: Nicht gefunden} 405{{httpCode}: Methode nicht erlaubt} 406{{httpCode}: Nicht akzeptabel} 407{{httpCode}: Proxy-Authentifizierung erforderlich} 408{{httpCode}: Anfragezeitüberschreitung} 409{{httpCode}: Conflict} 410{{httpCode}: Erledigt} 411{{httpCode}: Länge erforderlich} 412{{httpCode}: Vorbedingung fehlgeschlagen} 413{{httpCode}: Nutzlast zu groß} 414{{httpCode}: Anfrage-URI zu lang} 415{{httpCode}: Nicht unterstützter Medientyp} 416{{httpCode}: Angeforderter Bereich nicht zufriedenstellend} 417{{httpCode}: Erwartung fehlgeschlagen} 418{{httpCode}: Ich bin eine Teekanne} 420{{httpCode}: Verbessern Sie Ihre Ruhe} 421{{httpCode}: Fehlgeleitete Anfrage} 422{{httpCode}: Unverarbeitbare Entität} 423{{httpCode}: Gesperrt} 424{{httpCode}: Failed Dependency} 426{{httpCode}: Upgrade erforderlich} 428{{httpCode}: Vorbedingung erforderlich} 429{{httpCode}: Zu viele Anfragen} 431{{httpCode}: Anfrage-Header-Felder zu groß} 444{{httpCode}: Verbindung ohne Antwort geschlossen} 451{{httpCode}: Aus rechtlichen Gründen nicht verfügbar} 499{{httpCode}: Client hat Anfrage geschlossen} 500{{httpCode}: Interner Serverfehler} 501{{httpCode}: Nicht implementiert} 502{{httpCode}: Schlechtes Gateway} 503{{httpCode}: Dienst nicht verfügbar} 504{{httpCode}: Gateway-Zeitüberschreitung} 505{{httpCode}: HTTP-Version wird nicht unterstützt} 506{{httpCode}: Variante wird auch ausgehandelt} 507{{httpCode}: Unzureichender Speicherplatz} 508{{httpCode}: Schleife erkannt} 510{{httpCode}: Nicht erweitert} 511{{httpCode}: Netzwerkauthentifizierung erforderlich} 520{{httpCode}: Unbekannter Fehler} 521{{httpCode}: Webserver ist ausgefallen} 522{{httpCode}: Connection Timed Out} 523{{httpCode}: Origin Is Unreachable} 524{{httpCode}: Eine Zeitüberschreitung ist aufgetreten} 525{{httpCode}: Handshake fehlgeschlagen} 526{{httpCode}: Ungültiges SSL-Zertifikat} 527{{httpCode}: Railgun-Fehler} 528{{httpCode}: Transportfehler} 529{{httpCode}: Dienst ist überlastet} 530{{httpCode}: Website ist eingefroren} 599{{httpCode}: Netzwerkverbindungs-Timeout-Fehler} other{{httpCode}: Unbekannter Fehler}}",
@@ -1829,8 +1863,9 @@
   "invalidBackupFile": "Die ausgewählte Datei ist kein gültiges Backup von {appName}.",
   "invalidHostForScheme": "Ungültiger Host: {host} für Schema: {scheme}",
   "invalidLink": "Der eingegebene Link ist kein gültiger Token von {appName}, oder er wird nicht unterstützt.",
+  "invalidQrBackup": "Der gescannte QR-Code ist kein gültiges Backup von {appName}.",
   "invalidQrFile": "Die ausgewählte Datei enthällt kein gültigen QR-Code von {appName}.",
-  "invalidQrScan": "Der gescannte QR-Code ist kein gültiges Backup von {appName}.",
+  "invalidQrScan": "Der gescannte QR-Code enthielt keine gültigen Daten",
   "invalidUrl": "Ungültige URL",
   "invalidValue": "Der {type} '{value}' ist für '{parameter}' nicht gültig.",
   "invalidValueIn": "Der {type} '{value}' ist für '{parameter}' in '{map}' ungültig",
@@ -1907,6 +1942,10 @@
   "patchNotesV4_4_2NewFeatures2": "Galerie-Unterstützung für das Scannen von QR-Codes hinzugefügt.",
   "patchNotesV4_5_0BugFix1": "Kleinere Probleme behoben",
   "patchNotesV4_5_0NewFeatures1": "Unterstützung des privacyIDEA Containersystems zur einfacheren Verwaltung von Token",
+  "patchNotesV4_5_1BugFix1": "Einige kleinere Probleme behoben",
+  "patchNotesV4_5_1NewFeatures1": "Einstellung zum Ein-/Ausblenden des Hintergrundbildes hinzugefügt",
+  "patchNotesV4_5_1NewFeatures2": "Einstellung hinzugefügt, um das Erstellen von Screenshots zu erlauben",
+  "patchNotesV4_5_1NewFeatures3": "TOTP-Token ändert jetzt in den letzten 5 Sekunden die Farbe, um das Ende des Zeitraums anzuzeigen",
   "period": "Periode",
   "phonePart": "Telefonanteil:",
   "piServerCode": "PI-Server-Code: {code}",
@@ -1953,6 +1992,8 @@
   "saveButton": "Speichern",
   "scanQrCode": "QR-Code scannen",
   "scanThisQrWithNewDevice": "Scannen Sie diesen QR-Code mit Ihrem neuen Gerät, um das Token zu importieren.",
+  "screenshotsAllowed": "Screenshots erlaubt",
+  "screenshotsNotAllowed": "Screenshots nicht erlaubt",
   "secondsUntilNextOTP": "Sekunden bis zum nächsten OTP",
   "secretIsRequired": "Secret ist erforderlich",
   "secretKey": "Geheimer Schlüssel",

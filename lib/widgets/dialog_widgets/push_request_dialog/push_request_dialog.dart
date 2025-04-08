@@ -54,10 +54,11 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final token = ref.watch(tokenProvider).getTokenBySerial(widget.pushRequest.serial);
+    final tokenState = ref.watch(tokenProvider).valueOrNull;
+    final token = ref.watch(tokenProvider).valueOrNull?.getTokenBySerial(widget.pushRequest.serial);
     final localizations = AppLocalizations.of(context)!;
     final title = widget.pushRequest.title == 'privacyIDEA' ? localizations.authentication : widget.pushRequest.title;
-    if (token == null) {
+    if (token == null || tokenState == null) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         if (mounted) ref.read(pushRequestProvider.notifier).remove(widget.pushRequest);
       });

@@ -50,8 +50,6 @@ import 'riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import 'riverpod/riverpod_providers/state_providers/dragging_sortable_provider.dart';
 import 'view_utils.dart';
 
-final urlRegExp = RegExp(r'[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)');
-
 /// Inserts [char] at the position [pos] in the given String ([str]),
 /// and returns the resulting String.
 ///
@@ -148,10 +146,10 @@ void dragSortableOnAccept({
   required SortableMixin? nextSortable,
   TokenFolder? dependingFolder,
   required WidgetRef ref,
-}) {
-  var allSortables = ref.read(sortablesProvider);
+}) async {
+  var allSortables = await ref.read(sortablesProvider.future);
   if (dragedSortable is TokenFolder) {
-    final tokensInFolder = ref.read(tokenProvider).tokens.where((element) => element.folderId == dragedSortable.folderId).toList();
+    final tokensInFolder = (await ref.read(tokenProvider.future)).tokens.where((element) => element.folderId == dragedSortable.folderId).toList();
     final allMovingItems = [dragedSortable, ...tokensInFolder];
     allSortables = allSortables.moveAllBetween(moveAfter: previousSortable, movedItems: allMovingItems, moveBefore: nextSortable);
   } else if (dragedSortable is Token) {
@@ -197,10 +195,10 @@ Uint8List bigIntToBytes(BigInt bigInt) => bigIntToByteData(bigInt).buffer.asUint
 
 BigInt bytesToBigInt(Uint8List bytes) => byteDataToBigInt(ByteData.sublistView(bytes));
 
-Future<void> scanQrCode({BuildContext? context, required List<ResultHandler> resultHandlerList, required Object? qrCode}) async {
+Future<bool> scanQrCode({BuildContext? context, required List<ResultHandler> resultHandlerList, required Object? qrCode}) async {
   Uri uri;
   try {
-    if (qrCode == null) return;
+    if (qrCode == null) return false;
     uri = switch (qrCode.runtimeType) {
       const (String) => Uri.parse(qrCode as String),
       const (Uri) => qrCode as Uri,
@@ -209,10 +207,10 @@ Future<void> scanQrCode({BuildContext? context, required List<ResultHandler> res
   } catch (e) {
     showErrorStatusMessage(message: (l) => l.invalidUrl);
     Logger.warning('Scanned Data: $qrCode');
-    return;
+    return false;
   }
   final processorResults = await SchemeProcessor.processUriByAny(uri);
-  if (processorResults == null) return;
+  if (processorResults == null) return false;
   final resultHandlerTypeMap = <ObjectValidator<ResultHandler>, List<ProcessorResult>>{};
 
   for (var result in processorResults) {
@@ -224,22 +222,26 @@ Future<void> scanQrCode({BuildContext? context, required List<ResultHandler> res
       resultHandlerTypeMap[validator] = [result];
     }
   }
-  Future<void> handleResults() async {
+  Future<bool> handleResults() async {
+    bool handled = false;
     for (var resultHandlerType in resultHandlerTypeMap.keys) {
       final results = resultHandlerTypeMap[resultHandlerType]!;
       final resultHandler = resultHandlerList.firstWhereOrNull((resultHandler) => resultHandlerType.isTypeOf(resultHandler));
       if (resultHandler != null) {
+        handled = true;
         await resultHandler.handleProcessorResults(results, args: {ResultHandler.argTokenOriginSourceType: TokenOriginSourceType.qrScan});
       }
     }
+    return handled;
   }
 
-  if (context == null || !context.mounted) return handleResults();
+  if (context == null || !context.mounted) return await handleResults();
 
-  LoadingIndicator.show(
+  final handled = await LoadingIndicator.show(
     context: context,
     action: handleResults,
   );
+  return handled ?? false;
 }
 
 Image generateQrCodeImage({required String data}) {

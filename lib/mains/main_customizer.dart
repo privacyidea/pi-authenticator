@@ -29,7 +29,7 @@ import '../model/enums/app_feature.dart';
 import '../model/riverpod_states/settings_state.dart';
 import '../utils/globals.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/app_constraints_notifier.dart';
-import '../utils/riverpod/riverpod_providers/generated_providers/application_customizer_provider.dart';
+import '../utils/riverpod/riverpod_providers/generated_providers/app_customization_notifier.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import '../views/add_token_manually_view/add_token_manually_view.dart';
 import '../views/feedback_view/feedback_view.dart';
@@ -53,7 +53,7 @@ class CustomizationAuthenticator extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     WidgetsFlutterBinding.ensureInitialized();
-    final applicationCustomizer = ref.watch(applicationCustomizerProvider).maybeWhen(
+    final applicationCustomizer = ref.watch(appCustomizationNotifierProvider).maybeWhen(
           data: (data) => data,
           orElse: () => initialCustomization,
         );

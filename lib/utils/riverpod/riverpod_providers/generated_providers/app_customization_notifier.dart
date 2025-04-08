@@ -23,11 +23,11 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../model/enums/app_feature.dart';
 import '../../../customization/application_customization.dart';
 
-part 'application_customizer_provider.g.dart';
+part 'app_customization_notifier.g.dart';
 
 /// Only used for the app customizer
 @riverpod
-class AppCustomizationProvider extends _$ApplicationCustomizer {
+class AppCustomizationNotifier extends _$AppCustomizationNotifier {
   static ApplicationCustomization get initialState =>
       _initialState ?? ApplicationCustomization.defaultCustomization.copyWith(disabledFeatures: AppFeature.values.toSet());
   static ApplicationCustomization? _initialState;

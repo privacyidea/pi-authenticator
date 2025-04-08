@@ -78,11 +78,12 @@ class DeleteTokenFolderAction extends ConsumerSlideableAction {
               ),
             ),
             TextButton(
-              onPressed: () {
-                final tokens = globalRef?.read(tokenProvider).tokensInFolder(folder);
+              onPressed: () async {
+                final tokens = (await globalRef?.read(tokenProvider.future))?.tokensInFolder(folder);
                 if (tokens == null) return;
                 globalRef?.read(tokenProvider.notifier).updateTokens(tokens, (p0) => p0.copyWith(folderId: () => null));
                 globalRef?.read(tokenFolderProvider.notifier).removeFolder(folder);
+                if (!context.mounted) return;
                 Navigator.of(context).pop();
               },
               child: Text(

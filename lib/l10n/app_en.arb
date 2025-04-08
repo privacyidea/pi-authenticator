@@ -79,6 +79,18 @@
   "@allTokensSynchronized": {
     "description": "Content of the push synchronization dialog. Signaling the user that everything worked."
   },
+  "@allowButton": {
+    "description": "Buttontext to allow something."
+  },
+  "@allowScreenshotsDescription": {
+    "description": "Description for the allow screenshots dialog."
+  },
+  "@allowScreenshotsReason": {
+    "description": "Authenticate reason for the allow screenshots dialog."
+  },
+  "@allowScreenshotsTitle": {
+    "description": "Title for the allow screenshots dialog."
+  },
   "@asFile": {
     "description": "Buttontext to save the backup as a file."
   },
@@ -111,6 +123,9 @@
   },
   "@authentication": {
     "description": "Title of the authentication dialog."
+  },
+  "@backgroundImage": {
+    "description": "Label for the background image setting."
   },
   "@biometricHint": {
     "description": "Hint message advising the user how to authenticate with biometrics. It is used on Android side. Maximum 60 characters."
@@ -594,9 +609,6 @@
   "@handshakeFailed": {
     "description": "Error message when the handshake failed."
   },
-  "@handshakeFailedLongText": {
-    "description": "Error message when the handshake with the server failed."
-  },
   "@hidePushTokens": {
     "description": "Label for the switch to hide push tokens."
   },
@@ -809,8 +821,8 @@
       }
     }
   },
-  "@invalidQrFile": {
-    "description": "Error message when the qr file is invalid.",
+  "@invalidQrBackup": {
+    "description": "Error message when the scanned qr backup is invalid.",
     "placeholders": {
       "appName": {
         "example": "privacyIDEA Authenticator",
@@ -818,8 +830,8 @@
       }
     }
   },
-  "@invalidQrScan": {
-    "description": "Error message when the qr scan is invalid.",
+  "@invalidQrFile": {
+    "description": "Error message when the qr file is invalid.",
     "placeholders": {
       "appName": {
         "example": "privacyIDEA Authenticator",
@@ -1142,7 +1154,19 @@
     "description": "Patch notes for a bug fix in version 4.5.0."
   },
   "@patchNotesV4_5_0NewFeatures1": {
-    "description": "Patch notes for version 4.5.0"
+    "description": "Patch notes for a new feature in version 4.5.0."
+  },
+  "@patchNotesV4_5_1BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.5.1"
+  },
+  "@patchNotesV4_5_1NewFeatures1": {
+    "description": "Patch notes for a new feature in version 4.5.1"
+  },
+  "@patchNotesV4_5_1NewFeatures2": {
+    "description": "Patch notes for a new feature in version 4.5.1"
+  },
+  "@patchNotesV4_5_1NewFeatures3": {
+    "description": "Patch notes for a new feature in version 4.5.1"
   },
   "@period": {
     "description": "Title of the dropdown button where the period of the totp token is selected."
@@ -1303,6 +1327,12 @@
   },
   "@scanThisQrWithNewDevice": {
     "description": "Content of the token export dialog that shows the user the qr code."
+  },
+  "@screenshotsAllowed": {
+    "description": "Label for the screenshots allowed setting."
+  },
+  "@screenshotsNotAllowed": {
+    "description": "Label for the screenshots allowed setting."
   },
   "@secondsUntilNextOTP": {
     "description": "Semantics label for the animated countdown until the next OTP is generated."
@@ -1638,6 +1668,10 @@
   "algorithm": "Algorithm",
   "algorithmUnsupported": "The algorithm {algorithm} is not supported",
   "allTokensSynchronized": "All tokens are synchronized.",
+  "allowButton": "Allow",
+  "allowScreenshotsDescription": "Please allow screenshots only when necessary. It could be a potential security risk if you have an application on your device that can see your screen.",
+  "allowScreenshotsReason": "Please authenticate to allow screenshots. You can disable it at any time.",
+  "allowScreenshotsTitle": "Allow Screenshots",
   "asFile": "As file",
   "asQrCode": "As QR code",
   "askLogSentDescription": "Did you sent the log, and do you want to clear it now?",
@@ -1649,6 +1683,7 @@
   "authenticateToShowOtp": "Please authenticate to show one time password.",
   "authenticateToUnLockToken": "Please authenticate to change the lock status of the token.",
   "authentication": "Authentication",
+  "backgroundImage": "Background image",
   "biometricHint": "Authentication required",
   "biometricNotRecognized": "Not recognized. Try again.",
   "biometricRequiredTitle": "Biometrics not setup",
@@ -1781,7 +1816,6 @@
   "grantCameraPermissionDialogPermanentlyDenied": "Camera permission is permanently denied. Please grant camera permission in your phone's settings.",
   "grantCameraPermissionDialogTitle": "Camera permission is not granted",
   "handshakeFailed": "Handshake failed",
-  "handshakeFailedLongText": "Handshake failed. Please check the server certificate and try again.",
   "hidePushTokens": "Hide push tokens",
   "hidePushTokensDescription": "Hide push tokens from the token list. This will not delete the tokens and they will still be visible on a separate screen.",
   "httpStatus": "{httpCode, select, 100{{httpCode}: Continue} 101{{httpCode}: Switching Protocols} 102{{httpCode}: Processing} 103{{httpCode}: Early Hints} 104{{httpCode}: Connection Reset By Peer} 111{{httpCode}: Connection refused} 200{{httpCode}: OK} 201{{httpCode}: Created} 202{{httpCode}: Accepted} 203{{httpCode}: Non-Authoritative Information} 204{{httpCode}: No Content} 205{{httpCode}: Reset Content} 206{{httpCode}: Partial Content} 207{{httpCode}: Multi-Status} 208{{httpCode}: Already Reported} 300{{httpCode}: Multiple Choices} 301{{httpCode}: Moved Permanently} 302{{httpCode}: Found} 303{{httpCode}: See Other} 304{{httpCode}: Not Modified} 305{{httpCode}: Use Proxy} 307{{httpCode}: Temporary Redirect} 308{{httpCode}: Permanent Redirect} 400{{httpCode}: Bad Request} 401{{httpCode}: Unauthorized} 402{{httpCode}: Payment Required} 403{{httpCode}: Forbidden} 404{{httpCode}: Not Found} 405{{httpCode}: Method Not Allowed} 406{{httpCode}: Not Acceptable} 407{{httpCode}: Proxy Authentication Required} 408{{httpCode}: Request Timeout} 409{{httpCode}: Conflict} 410{{httpCode}: Gone} 411{{httpCode}: Length Required} 412{{httpCode}: Precondition Failed} 413{{httpCode}: Payload Too Large} 414{{httpCode}: Request-URI Too Long} 415{{httpCode}: Unsupported Media Type} 416{{httpCode}: Requested Range Not Satisfiable} 417{{httpCode}: Expectation Failed} 418{{httpCode}: I'm a teapot} 420{{httpCode}: Enhance Your Calm} 421{{httpCode}: Misdirected Request} 422{{httpCode}: Unprocessable Entity} 423{{httpCode}: Locked} 424{{httpCode}: Failed Dependency} 426{{httpCode}: Upgrade Required} 428{{httpCode}: Precondition Required} 429{{httpCode}: Too Many Requests} 431{{httpCode}: Request Header Fields Too Large} 444{{httpCode}: Connection Closed Without Response} 451{{httpCode}: Unavailable For Legal Reasons} 499{{httpCode}: Client Closed Request} 500{{httpCode}: Internal Server Error} 501{{httpCode}: Not Implemented} 502{{httpCode}: Bad Gateway} 503{{httpCode}: Service Unavailable} 504{{httpCode}: Gateway Timeout} 505{{httpCode}: HTTP Version Not Supported} 506{{httpCode}: Variant Also Negotiates} 507{{httpCode}: Insufficient Storage} 508{{httpCode}: Loop Detected} 510{{httpCode}: Not Extended} 511{{httpCode}: Network Authentication Required} 520{{httpCode}: Unknown Error} 521{{httpCode}: Web Server Is Down} 522{{httpCode}: Connection Timed Out} 523{{httpCode}: Origin Is Unreachable} 524{{httpCode}: A Timeout Occurred} 525{{httpCode}: Handshake Failed} 526{{httpCode}: Invalid SSL Certificate} 527{{httpCode}: Railgun Error} 528{{httpCode}: Transport Error} 529{{httpCode}: Service is Overloaded} 530{{httpCode}: Site is Frozen} 599{{httpCode}: Network Connect Timeout Error} other{{httpCode}: Unknown Error}}",
@@ -1829,8 +1863,9 @@
   "invalidBackupFile": "The selected file is not a valid backup of {appName}.",
   "invalidHostForScheme": "Invalid host: {host} for scheme: {scheme}",
   "invalidLink": "The link entered is not a valid token of {appName}, or it is not supported.",
+  "invalidQrBackup": "The scanned QR code is not a valid backup of {appName}.",
   "invalidQrFile": "The selected file does not contain a valid QR code from {appName}.",
-  "invalidQrScan": "The scanned QR code is not a valid backup of {appName}.",
+  "invalidQrScan": "The QR code that was scanned did not contain valid data",
   "invalidUrl": "Invalid URL",
   "invalidValue": "The {type} “{value}“ is not valid for “{parameter}“",
   "invalidValueIn": "The {type} “{value}“ is not valid for “{parameter}“ in “{map}“",
@@ -1907,6 +1942,10 @@
   "patchNotesV4_4_2NewFeatures2": "Added image gallery support for QR code scanning.",
   "patchNotesV4_5_0BugFix1": "Fixed minor issues",
   "patchNotesV4_5_0NewFeatures1": "Now supports the container feature of privacyIDEA.",
+  "patchNotesV4_5_1BugFix1": "Fixed some minor issues",
+  "patchNotesV4_5_1NewFeatures1": "Added setting to show/hide background image",
+  "patchNotesV4_5_1NewFeatures2": "Added setting to allow taking screenshots",
+  "patchNotesV4_5_1NewFeatures3": "TOTP token now changes color in the last 5 seconds to indicate end of period",
   "period": "Period",
   "phonePart": "Phone part:",
   "piServerCode": "PI Server Code: {code}",
@@ -1953,6 +1992,8 @@
   "saveButton": "Save",
   "scanQrCode": "Scan QR-Code",
   "scanThisQrWithNewDevice": "Scan this QR code with your new device to import the token.",
+  "screenshotsAllowed": "Screenshots allowed",
+  "screenshotsNotAllowed": "Screenshots not allowed",
   "secondsUntilNextOTP": "Seconds until next OTP",
   "secretIsRequired": "Secret is required",
   "secretKey": "Secret key",

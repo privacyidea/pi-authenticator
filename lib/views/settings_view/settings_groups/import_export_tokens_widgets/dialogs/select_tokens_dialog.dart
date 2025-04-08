@@ -20,8 +20,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../../../../model/extensions/token_folder_extension.dart';
 import '../../../../../l10n/app_localizations.dart';
+import '../../../../../model/extensions/token_list_extension.dart';
 import '../../../../../model/tokens/token.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
@@ -40,7 +40,7 @@ class _SelectTokensDialogState extends ConsumerState<SelectExportTokensDialog> {
   final Set<Token> _selectedTokens = {};
   @override
   Widget build(BuildContext context) {
-    final exportableTokens = ref.read(tokenProvider).tokens.exportableTokens.toSet();
+    final exportableTokens = ref.read(tokenProvider).valueOrNull?.tokens.exportableTokens.toSet() ?? {};
     final theme = Theme.of(context);
     final appLocalizations = AppLocalizations.of(context)!;
     return DefaultDialog(

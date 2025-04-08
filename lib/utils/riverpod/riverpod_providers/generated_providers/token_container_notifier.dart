@@ -23,7 +23,7 @@ import 'package:collection/collection.dart';
 import 'package:mutex/mutex.dart';
 import 'package:privacyidea_authenticator/model/container_policies.dart';
 import 'package:privacyidea_authenticator/model/extensions/enums/rollout_state_extension.dart';
-import 'package:privacyidea_authenticator/model/extensions/token_folder_extension.dart';
+import 'package:privacyidea_authenticator/model/extensions/token_list_extension.dart';
 import 'package:privacyidea_authenticator/processors/scheme_processors/token_container_processor.dart';
 import 'package:privacyidea_authenticator/utils/globals.dart';
 import 'package:privacyidea_authenticator/views/container_view/container_widgets/dialogs/delete_container_dialogs.dart/delete_container_dialog.dart';
@@ -481,7 +481,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier with ResultHandler
 
     final containersForInitSync = (await Future.wait(finalizeFutures)).whereType<TokenContainerFinalized>().toList();
     if (initSync) {
-      syncContainers(tokenState: ref.read(tokenProvider), containersToSync: containersForInitSync, isManually: true, isInitSync: initSync);
+      syncContainers(tokenState: await ref.read(tokenProvider.future), containersToSync: containersForInitSync, isManually: true, isInitSync: initSync);
     }
 
     return failedToAdd;

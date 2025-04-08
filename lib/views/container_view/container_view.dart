@@ -44,7 +44,11 @@ class ContainerView extends ConsumerView {
     final containerList = ref.watch(tokenContainerProvider).whenOrNull(data: (data) => data.containerList) ?? [];
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.container),
+        title: Text(
+          AppLocalizations.of(context)!.container,
+          overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
+          maxLines: 2, // Title can be shown on small screens too.
+        ),
       ),
       floatingActionButton: const QrScannerButton(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

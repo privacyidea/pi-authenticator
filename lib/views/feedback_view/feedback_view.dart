@@ -61,7 +61,11 @@ class _FeedbackViewState extends State<FeedbackView> {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.feedback),
+          title: Text(
+            AppLocalizations.of(context)!.feedback,
+            overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
+            maxLines: 2, // Title can be shown on small screens too.
+          ),
         ),
         body: Padding(
           padding: const EdgeInsets.all(14.0),

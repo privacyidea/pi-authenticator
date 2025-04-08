@@ -137,7 +137,7 @@ class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
     final showedToken = await globalRef!.read(tokenProvider.notifier).showTokenById(tokenId);
 
     if (showedToken?.isHidden == false) {
-      final folderId = globalRef!.read(tokenProvider).currentOfId(tokenId)?.folderId;
+      final folderId = (await globalRef!.read(tokenProvider.future)).currentOfId(tokenId)?.folderId;
       if (folderId != null) {
         globalRef!.read(tokenFolderProvider.notifier).expandFolderById(folderId);
       }

@@ -27,9 +27,7 @@ import 'package:http/io_client.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../../../../../model/pi_server_response.dart';
-import '../l10n/app_localizations.dart';
 import '../model/api_results/pi_server_results/pi_server_result_value.dart';
-import '../utils/globals.dart';
 import '../utils/logger.dart';
 import '../utils/view_utils.dart';
 
@@ -114,25 +112,22 @@ class PrivacyideaIOClient {
       response = await ioClient.post(url, body: body).timeout(const Duration(seconds: 15));
     } on HandshakeException catch (e, _) {
       Logger.info('Handshake failed. sslVerify: $sslVerify');
-      showErrorStatusMessage(message: (l) => l.handshakeFailedLongText);
-      ioClient.close();
       return ResponseBuilder.fromStatusCode(525);
     } on TimeoutException catch (e, _) {
       Logger.info('Post request timed out');
-      ioClient.close();
       return ResponseBuilder.fromStatusCode(408);
     } on SocketException catch (e, _) {
       Logger.info('Post request failed ($e)');
-      ioClient.close();
       return ResponseBuilder.fromMessage(e.message);
     } on ClientException catch (e, _) {
       Logger.info('Post request failed ($e)');
-      ioClient.close();
       return ResponseBuilder.fromMessage(e.message);
     } catch (e, _) {
       Logger.warning('Something unexpected happened');
-      ioClient.close();
       return ResponseBuilder.fromStatusCode(520);
+    } finally {
+      ioClient.close();
+      Logger.info('Post request finished');
     }
 
     if (response.statusCode != 200) {
@@ -180,31 +175,29 @@ class PrivacyideaIOClient {
     try {
       response = await ioClient.get(uri).timeout(const Duration(seconds: 15));
     } on HandshakeException catch (e, _) {
-      Logger.warning('Handshake failed. sslVerify: $sslVerify');
-      showErrorStatusMessage(
-        message: (localization) => localization.handshakeFailed,
-        details: (localization) => localization.checkServerCertificate,
-      );
-      response = Response('${e.runtimeType}', 525);
+      Logger.info('Handshake failed. sslVerify: $sslVerify');
+      return ResponseBuilder.fromStatusCode(525);
     } on TimeoutException catch (e, _) {
-      Logger.info('Get request timed out');
-      response = Response('${AppLocalizations.of(await globalContext)!.timeOut}', 408);
+      Logger.info('Post request timed out');
+      return ResponseBuilder.fromStatusCode(408);
     } on SocketException catch (e, _) {
-      Logger.info('Get request failed');
-      response = Response('${AppLocalizations.of(await globalContext)!.connectionFailed}', 404);
+      Logger.info('Post request failed ($e)');
+      return ResponseBuilder.fromMessage(e.message);
     } on ClientException catch (e, _) {
-      Logger.info('Get request failed');
-      response = Response('${AppLocalizations.of(await globalContext)!.connectionFailed}', 404);
+      Logger.info('Post request failed ($e)');
+      return ResponseBuilder.fromMessage(e.message);
     } catch (e, _) {
       Logger.warning('Something unexpected happened');
-      response = Response('${AppLocalizations.of(await globalContext)!.unexpectedError}', 520);
+      return ResponseBuilder.fromStatusCode(520);
+    } finally {
+      ioClient.close();
+      Logger.info('Post request finished');
     }
 
     if (response.statusCode != 200) {
       Logger.warning('Received unexpected response: ${response.statusCode}');
     }
 
-    ioClient.close();
     return response;
   }
 }

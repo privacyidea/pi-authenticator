@@ -28,7 +28,7 @@ class PatchNotesDialog extends StatelessWidget {
       child: DefaultDialog(
         title: Text(
           localizations.patchNotesDialogTitle,
-          style: Theme.of(context).textTheme.titleMedium,
+          style: Theme.of(context).textTheme.titleLarge,
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,

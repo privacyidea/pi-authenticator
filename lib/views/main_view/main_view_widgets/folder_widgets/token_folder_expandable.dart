@@ -126,7 +126,6 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
             theme: const ExpandableThemeData(
               useInkWell: false,
               hasIcon: false,
-              fadeCurve: InstantCurve(),
               tapBodyToCollapse: false,
               tapBodyToExpand: false,
             ),
@@ -152,11 +151,4 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable> w
       ],
     );
   }
-}
-
-class InstantCurve extends Curve {
-  const InstantCurve();
-
-  @override
-  double transformInternal(double t) => t < 1 ? 1 : 0;
 }

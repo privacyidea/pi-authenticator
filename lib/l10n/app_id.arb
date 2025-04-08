@@ -79,6 +79,18 @@
   "@allTokensSynchronized": {
     "description": "Content of the push synchronization dialog. Signaling the user that everything worked."
   },
+  "@allowButton": {
+    "description": "Buttontext to allow something."
+  },
+  "@allowScreenshotsDescription": {
+    "description": "Description for the allow screenshots dialog."
+  },
+  "@allowScreenshotsReason": {
+    "description": "Authenticate reason for the allow screenshots dialog."
+  },
+  "@allowScreenshotsTitle": {
+    "description": "Title for the allow screenshots dialog."
+  },
   "@asFile": {
     "description": "Buttontext to save the backup as a file."
   },
@@ -111,6 +123,9 @@
   },
   "@authentication": {
     "description": "Title of the authentication dialog."
+  },
+  "@backgroundImage": {
+    "description": "Label for the background image setting."
   },
   "@biometricHint": {
     "description": "Hint message advising the user how to authenticate with biometrics. It is used on Android side. Maximum 60 characters."
@@ -594,9 +609,6 @@
   "@handshakeFailed": {
     "description": "Error message when the handshake failed."
   },
-  "@handshakeFailedLongText": {
-    "description": "Error message when the handshake with the server failed."
-  },
   "@hidePushTokens": {
     "description": "Label for the switch to hide push tokens."
   },
@@ -809,8 +821,8 @@
       }
     }
   },
-  "@invalidQrFile": {
-    "description": "Error message when the qr file is invalid.",
+  "@invalidQrBackup": {
+    "description": "Error message when the scanned qr backup is invalid.",
     "placeholders": {
       "appName": {
         "example": "privacyIDEA Authenticator",
@@ -818,8 +830,8 @@
       }
     }
   },
-  "@invalidQrScan": {
-    "description": "Error message when the qr scan is invalid.",
+  "@invalidQrFile": {
+    "description": "Error message when the qr file is invalid.",
     "placeholders": {
       "appName": {
         "example": "privacyIDEA Authenticator",
@@ -1144,6 +1156,18 @@
   "@patchNotesV4_5_0NewFeatures1": {
     "description": "Patch notes for version 4.5.0"
   },
+  "@patchNotesV4_5_1BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.5.1"
+  },
+  "@patchNotesV4_5_1NewFeatures1": {
+    "description": "Patch notes for a new feature in version 4.5.1"
+  },
+  "@patchNotesV4_5_1NewFeatures2": {
+    "description": "Patch notes for a new feature in version 4.5.1"
+  },
+  "@patchNotesV4_5_1NewFeatures3": {
+    "description": "Patch notes for a new feature in version 4.5.1"
+  },
   "@period": {
     "description": "Title of the dropdown button where the period of the totp token is selected."
   },
@@ -1303,6 +1327,12 @@
   },
   "@scanThisQrWithNewDevice": {
     "description": "Content of the token export dialog that shows the user the qr code."
+  },
+  "@screenshotsAllowed": {
+    "description": "Label for the screenshots allowed setting."
+  },
+  "@screenshotsNotAllowed": {
+    "description": "Label for the screenshots allowed setting."
   },
   "@secondsUntilNextOTP": {
     "description": "Semantics label for the animated countdown until the next OTP is generated."
@@ -1638,6 +1668,10 @@
   "algorithm": "Algoritma",
   "algorithmUnsupported": "Algoritma {algorithm} tidak didukung",
   "allTokensSynchronized": "Semua token disinkronkan.",
+  "allowButton": "Izinkan",
+  "allowScreenshotsDescription": "Izinkan pengambilan tangkapan layar hanya jika diperlukan. Hal ini dapat menimbulkan risiko keamanan potensial jika Anda memiliki aplikasi pada perangkat yang dapat melihat layar Anda.",
+  "allowScreenshotsReason": "Silakan mengautentikasi untuk mengizinkan tangkapan layar. Anda dapat menonaktifkannya kapan saja.",
+  "allowScreenshotsTitle": "Izinkan Tangkapan Layar",
   "asFile": "Sebagai file",
   "asQrCode": "Sebagai kode QR",
   "askLogSentDescription": "Apakah Anda telah mengirim log, dan apakah Anda ingin menghapusnya sekarang?",
@@ -1649,6 +1683,7 @@
   "authenticateToShowOtp": "Harap lakukan autentikasi untuk menunjukkan kata sandi sekali pakai.",
   "authenticateToUnLockToken": "Lakukan autentikasi untuk mengubah status kunci token.",
   "authentication": "Otentikasi",
+  "backgroundImage": "Gambar latar belakang",
   "biometricHint": "Diperlukan autentikasi",
   "biometricNotRecognized": "Tidak dikenali. Coba lagi.",
   "biometricRequiredTitle": "Biometrik tidak diatur",
@@ -1781,7 +1816,6 @@
   "grantCameraPermissionDialogPermanentlyDenied": "Izin kamera ditolak secara permanen. Harap berikan izin kamera di pengaturan Telepon Anda.",
   "grantCameraPermissionDialogTitle": "Izin kamera tidak diberikan",
   "handshakeFailed": "Jabat tangan gagal",
-  "handshakeFailedLongText": "Jabat tangan gagal, periksa sertifikat server dan coba lagi.",
   "hidePushTokens": "Menyembunyikan token push",
   "hidePushTokensDescription": "Menyembunyikan token push dari daftar token. Ini tidak akan menghapus token dan masih akan terlihat di layar terpisah.",
   "httpStatus": "{httpCode, select, 100{{httpCode}: Lanjutkan} 101{{httpCode}: Mengganti Protokol} 102{{httpCode}: Memproses} 103{{httpCode}: Petunjuk Awal} 104{{httpCode}: Koneksi Diatur Ulang Oleh Rekan} 111{{httpCode}: Koneksi ditolak} 200{{httpCode}: OK} 201{{httpCode}: Dibuat} 202{{httpCode}: Diterima} 203{{httpCode}: Informasi Tidak Berwenang} 204{{httpCode}: Tidak Ada Konten} 205{{httpCode}: Atur Ulang Isi} 206{{httpCode}: Konten Sebagian} 207{{httpCode}: Multi-Status} 208{{httpCode}: Sudah Dilaporkan} 300{{httpCode}: Pilihan Ganda} 301{{httpCode}: Dipindahkan Secara Permanen} 302{{httpCode}: Ditemukan} 303{{httpCode}: Lihat Lainnya} 304{{httpCode}: Tidak Dimodifikasi} 305{{httpCode}: Gunakan Proxy} 307{{httpCode}: Pengalihan Sementara} 308{{httpCode}: Pengalihan Permanen} 400{{httpCode}: Permintaan Buruk} 401{{httpCode}: Tidak Sah} 402{{httpCode}: Diperlukan Pembayaran} 403{{httpCode}: Dilarang} 404{{httpCode}: Tidak Ditemukan} 405{{httpCode}: Metode Tidak Diizinkan} 406{{httpCode}: Tidak Dapat Diterima} 407{{httpCode}: Otentikasi Proxy Diperlukan} 408{{httpCode}: Batas Waktu Permintaan} 409{{httpCode}: Konflik} 410{{httpCode}: Hilang} 411{{httpCode}: Panjang yang Dibutuhkan} 412{{httpCode}: Prasyarat Gagal} 413{{httpCode}: Muatan Terlalu Besar} 414{{httpCode}: Request-URI Terlalu Panjang} 415{{httpCode}: Jenis Media Tidak Didukung} 416{{httpCode}: Rentang yang Diminta Tidak Dapat Dipenuhi} 417{{httpCode}: Harapan Gagal} 418{{httpCode}: Saya adalah teko} 420{{httpCode}: Tingkatkan Ketenangan Anda} 421{{httpCode}: Permintaan yang salah sasaran} 422{{httpCode}: Entitas Tidak Dapat Diproses} 423{{httpCode}: Terkunci} 424{{httpCode}: Ketergantungan Gagal} 426{{httpCode}: Upgrade Diperlukan} 428{{httpCode}: Prasyarat Diperlukan} 429{{httpCode}: Terlalu Banyak Permintaan} 431{{httpCode}: Bidang Header Permintaan Terlalu Besar} 444{{httpCode}: Koneksi Ditutup Tanpa Respons} 451{{httpCode}: Tidak Tersedia Karena Alasan Hukum} 499{{httpCode}: Permintaan Klien Ditutup} 500{{httpCode}: Kesalahan Server Internal} 501{{httpCode}: Tidak Diterapkan} 502{{httpCode}: Bad Gateway} 503{{httpCode}: Layanan Tidak Tersedia} 504{{httpCode}: Gateway Timeout} 505{{httpCode}: Versi HTTP Tidak Didukung} 506{{httpCode}: Varian Juga Bernegosiasi} 507{{httpCode}: Penyimpanan Tidak Memadai} 508{{httpCode}: Loop Terdeteksi} 510{{httpCode}: Tidak Diperpanjang} 511{{httpCode}: Otentikasi Jaringan Diperlukan} 520{{httpCode}: Kesalahan Tidak Dikenal} 521{{httpCode}: Server Web Sedang Down} 522{{httpCode}: Koneksi Habis Waktu Tunggu} 523{{httpCode}: Asal Tidak Dapat Dijangkau} 524{{httpCode}: Waktu Habis} 525{{httpCode}: Jabat Tangan Gagal} 526{{httpCode}: Sertifikat SSL Tidak Valid} 527{{httpCode}: Kesalahan Railgun} 528{{httpCode}: Kesalahan Transportasi} 529{{httpCode}: Layanan Kelebihan Beban} 530{{httpCode}: Situs Dibekukan} 599{{httpCode}: Kesalahan Waktu Habis Sambungan Jaringan} other{{httpCode}: Kesalahan Tidak Dikenal}}",
@@ -1829,8 +1863,9 @@
   "invalidBackupFile": "File yang dipilih bukan merupakan cadangan yang valid dari {appName}.",
   "invalidHostForScheme": "Host tidak valid: {host} untuk skema: {scheme}",
   "invalidLink": "Tautan yang dimasukkan bukan merupakan token yang valid dari {appName}, atau tidak didukung.",
+  "invalidQrBackup": "Kode QR yang dipindai bukan merupakan cadangan yang valid dari {appName}.",
   "invalidQrFile": "File yang dipilih tidak berisi kode QR yang valid dari {appName}.",
-  "invalidQrScan": "Kode QR yang dipindai bukan merupakan cadangan yang valid dari {appName}.",
+  "invalidQrScan": "Kode QR yang dipindai tidak berisi data yang valid",
   "invalidUrl": "URL tidak valid",
   "invalidValue": "Tipe {type} '{value}' tidak valid untuk '{parameter}'",
   "invalidValueIn": "Tipe {type} '{value}' tidak valid untuk '{parameter}' di '{map}'",
@@ -1907,6 +1942,10 @@
   "patchNotesV4_4_2NewFeatures2": "Menambahkan dukungan galeri untuk pemindaian kode QR.",
   "patchNotesV4_5_0BugFix1": "Memperbaiki masalah kecil",
   "patchNotesV4_5_0NewFeatures1": "Dukungan sistem kontainer privacyIDEA untuk pengelolaan token yang lebih mudah",
+  "patchNotesV4_5_1BugFix1": "Memperbaiki beberapa masalah kecil",
+  "patchNotesV4_5_1NewFeatures1": "Menambahkan pengaturan untuk menampilkan/menyembunyikan gambar latar belakang",
+  "patchNotesV4_5_1NewFeatures2": "Menambahkan pengaturan untuk memungkinkan pengambilan tangkapan layar",
+  "patchNotesV4_5_1NewFeatures3": "Token TOTP sekarang berubah warna dalam 5 detik terakhir untuk menunjukkan akhir periode",
   "period": "Periode",
   "phonePart": "Bagian telepon:",
   "piServerCode": "Kode Server PI: {code}",
@@ -1953,6 +1992,8 @@
   "saveButton": "Simpan",
   "scanQrCode": "Pindai Kode QR",
   "scanThisQrWithNewDevice": "Pindai kode QR ini dengan perangkat baru Anda untuk mengimpor token.",
+  "screenshotsAllowed": "Tangkapan layar diizinkan",
+  "screenshotsNotAllowed": "Tangkapan layar tidak diizinkan",
   "secondsUntilNextOTP": "Detik hingga OTP berikutnya",
   "secretIsRequired": "Rahasia diperlukan",
   "secretKey": "Kunci rahasia",

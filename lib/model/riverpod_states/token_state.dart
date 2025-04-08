@@ -20,9 +20,9 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../../../model/extensions/token_folder_extension.dart';
 import '../../utils/logger.dart';
 import '../enums/push_token_rollout_state.dart';
+import '../extensions/token_list_extension.dart';
 import '../token_folder.dart';
 import '../tokens/otp_token.dart';
 import '../tokens/push_token.dart';
@@ -47,6 +47,7 @@ class TokenState {
 
   bool get needsFirebase => pushTokens.any((element) => element.isPollOnly != true);
 
+  List<PushToken> get rolledOutPushTokens => pushTokens.where((t) => t.isRolledOut && t.url != null).toList();
   List<PushToken> get pushTokensToRollOut =>
       pushTokens.where((element) => !element.isRolledOut && element.rolloutState == PushTokenRollOutState.rolloutNotStarted).toList();
 
@@ -88,8 +89,8 @@ class TokenState {
     return TokenState(tokens: newTokens, lastlyUpdatedTokens: tokens);
   }
 
-  // Removes the token from the State
-  // Sets the lastlyUpdatedTokens to an empty list because no token was updated only removed
+  /// Removes the token from the State
+  /// Sets the lastlyUpdatedTokens to an empty list because no token was updated only removed
   TokenState withoutToken(Token token) {
     final newTokens = List<Token>.from(tokens);
     newTokens.removeWhere((element) => element.id == token.id);
@@ -105,8 +106,8 @@ class TokenState {
     return TokenState(tokens: newTokens, lastlyUpdatedTokens: const [], lastlyDeletedTokens: tokens);
   }
 
-  // Add a token if it does not exist yet
-  // Replace the token if it does exist
+  /// Add a token if it does not exist yet
+  /// Replace the token if it does exist
   TokenState addOrReplaceToken(Token token) {
     final newTokens = List<Token>.from(tokens);
     final index = newTokens.indexWhere((element) => element.id == token.id);
@@ -118,10 +119,10 @@ class TokenState {
     return TokenState(tokens: newTokens, lastlyUpdatedTokens: [token]);
   }
 
-  // Replace the token if it does exist
-  // Do nothing if it does not exist
-  // Return the new state and a boolean = true if the token was replaced
-  // Return the old state and a boolean = false if the token was not replaced
+  /// Replace the token if it does exist
+  /// Do nothing if it does not exist
+  /// Return the new state and a boolean = true if the token was replaced
+  /// Return the old state and a boolean = false if the token was not replaced
   (TokenState, bool) replaceToken(Token token) {
     final newTokens = tokens.toList();
     final index = newTokens.indexWhere((element) => element.id == token.id);
@@ -133,8 +134,8 @@ class TokenState {
     return (TokenState(tokens: newTokens, lastlyUpdatedTokens: [token]), true);
   }
 
-  // replace all tokens where the id is the same
-  // if the id is none, add it to the list
+  /// replace all tokens where the id is the same
+  /// if the id is none, add it to the list
   TokenState addOrReplaceTokens<T extends Token>(List<T> tokens) {
     final newTokens = List<Token>.from(this.tokens);
     final updatedTokens = <Token>[];
@@ -151,11 +152,11 @@ class TokenState {
     return TokenState(tokens: newTokens, lastlyUpdatedTokens: updatedTokens);
   }
 
-  // Replace the tokens if it does exist
-  // Do nothing if it does not exist
-  (TokenState, List<T>) replaceTokens<T extends Token>(List<T> tokens) {
+  /// Replace the tokens if it does exist.</br>
+  /// Do nothing if it does not exist</br>
+  /// Returns the tokens that could not be replaced
+  List<T> replaceTokens<T extends Token>(List<T> tokens) {
     final newTokens = List<Token>.from(this.tokens);
-    final updatedTokens = <T>[];
     final failedToReplace = <T>[];
     for (var token in tokens) {
       final index = newTokens.indexWhere((element) => element.id == token.id);
@@ -166,7 +167,7 @@ class TokenState {
       }
       newTokens[index] = token;
     }
-    return (TokenState(tokens: newTokens, lastlyUpdatedTokens: updatedTokens), failedToReplace);
+    return failedToReplace;
   }
 
   List<Token> tokensInFolder([TokenFolder? folder]) => tokens.inFolder(folder);

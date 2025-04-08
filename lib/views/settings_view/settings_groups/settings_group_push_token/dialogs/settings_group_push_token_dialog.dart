@@ -3,7 +3,7 @@
  *
  * Author: Frank Merkel <frank.merkel@netknights.it>
  *
- * Copyright (c) 2024-2025 NetKnights GmbH
+ * Copyright (c) 2025 NetKnights GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
@@ -20,40 +20,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../../../../widgets/dialog_widgets/default_dialog.dart';
-import '../../../l10n/app_localizations.dart';
-import '../../../model/riverpod_states/settings_state.dart';
-import '../../../model/tokens/push_token.dart';
-import '../../../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
-import '../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
-import '../../../utils/utils.dart';
-import '../settings_view_widgets/settings_group.dart';
-import '../settings_view_widgets/update_firebase_token_dialog.dart';
-
-class SettingsGroupPushToken extends ConsumerWidget {
-  const SettingsGroupPushToken({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = ref.watch(tokenProvider).tokens;
-    final enrolledPushTokenList = tokens.whereType<PushToken>().where((e) => e.isRolledOut).toList();
-    final unsupportedPushTokens = enrolledPushTokenList.where((e) => e.url == null).toList();
-    return SettingsGroup(
-      title: AppLocalizations.of(context)!.pushToken,
-      isActive: enrolledPushTokenList.isNotEmpty,
-      onPressed: () => showDialog(
-        useRootNavigator: false,
-        context: context,
-        builder: (_) => SettingsGroupPushTokenDialog(
-          unsupportedPushTokens: unsupportedPushTokens,
-        ),
-      ),
-      trailingIcon: Icons.notifications,
-    );
-  }
-}
+import '../../../../../l10n/app_localizations.dart';
+import '../../../../../model/riverpod_states/settings_state.dart';
+import '../../../../../model/tokens/push_token.dart';
+import '../../../../../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
+import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
+import '../../../../../utils/utils.dart';
+import '../../../../../widgets/dialog_widgets/default_dialog.dart';
+import '../../../settings_view_widgets/update_firebase_token_dialog.dart';
 
 class SettingsGroupPushTokenDialog extends ConsumerWidget {
   final List<PushToken> unsupportedPushTokens;
@@ -65,7 +39,7 @@ class SettingsGroupPushTokenDialog extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settingsState = ref.watch(settingsProvider).whenOrNull(data: (data) => data);
-    final needsFirebaseMessaging = ref.watch(tokenProvider).pushTokensNotPollOnly.isNotEmpty;
+    final needsFirebaseMessaging = ref.watch(tokenProvider).valueOrNull?.pushTokensNotPollOnly.isNotEmpty ?? false;
     return DefaultDialog(
       title: Text(AppLocalizations.of(context)!.pushToken),
       content: Column(

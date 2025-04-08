@@ -230,7 +230,7 @@ class PushProvider {
     PushRequest pushRequest = PushRequest.fromMessageData(data);
     Logger.info("PushRequest.possibleAnswers: ${pushRequest.possibleAnswers}");
     Logger.info('Parsing data of push request succeeded.');
-    final pushToken = globalRef?.read(tokenProvider).getTokenBySerial(pushRequest.serial);
+    final pushToken = (await globalRef?.read(tokenProvider.future))?.getTokenBySerial(pushRequest.serial);
     if (pushToken == null) {
       Logger.warning('No token found for serial ${pushRequest.serial}.');
       return;
@@ -291,10 +291,9 @@ class PushProvider {
 
   Future<void> pollForChallenges({required bool isManually}) async {
     // Get all push tokens
-    await globalRef?.read(tokenProvider.notifier).initState;
-    List<PushToken> pushTokens = globalRef?.read(tokenProvider).tokens.whereType<PushToken>().where((t) => t.isRolledOut && t.url != null).toList() ?? [];
+    final rolledOutPushTokens = await globalRef?.read(tokenProvider.selectAsync((state) => state.rolledOutPushTokens)) ?? [];
     // Disable polling if no push tokens exist
-    if (pushTokens.isEmpty) {
+    if (rolledOutPushTokens.isEmpty) {
       if ((await globalRef?.read(settingsProvider.future))?.enablePolling == true) {
         Logger.info('No push token is available for polling, polling is disabled.');
         globalRef?.read(settingsProvider.notifier).setPolling(false);
@@ -315,9 +314,9 @@ class PushProvider {
     }
 
     // Start request for each token
-    Logger.info('Polling for challenges: ${pushTokens.length} Tokens');
+    Logger.info('Polling for challenges: ${rolledOutPushTokens.length} Tokens');
     final List<Future<void>> futures = [];
-    for (PushToken p in pushTokens) {
+    for (PushToken p in rolledOutPushTokens) {
       futures.add(pollForChallenge(p, isManually: isManually));
     }
     await Future.wait(futures);
@@ -423,7 +422,7 @@ class PushProvider {
 /// It is used to prevent the app from crashing when the features of the [PushProvider] are not available (e.g., on web).
 class PlaceholderPushProvider implements PushProvider {
   @override
-  FirebaseUtils _firebaseUtils = FirebaseUtils();
+  FirebaseUtils _firebaseUtils = NoFirebaseUtils();
   @override
   FirebaseUtils get firebaseUtils => _firebaseUtils;
   @override

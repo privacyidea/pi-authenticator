@@ -48,14 +48,18 @@ class _LinkHomeWidgetViewState extends ConsumerState<LinkHomeWidgetView> {
   @override
   Widget build(BuildContext context) {
     final veilingCharacter = Theme.of(context).extension<ExtendedTextTheme>()?.veilingCharacter ?? '●';
-    final otpTokens = ref.watch(tokenProvider).otpTokens;
+    final otpTokens = ref.watch(tokenProvider).valueOrNull?.otpTokens;
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.linkHomeWidgetViewTitle),
+        title: Text(
+          AppLocalizations.of(context)!.linkHomeWidgetViewTitle,
+          overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
+          maxLines: 2, // Title can be shown on small screens too.
+        ),
       ),
       body: ListView.builder(
         itemBuilder: (context, index) {
-          final otpToken = otpTokens[index];
+          final otpToken = otpTokens![index];
           final folderIsLocked = ref.watch(tokenFolderProvider).currentOfId(otpToken.folderId)?.isLocked ?? false;
           final otpString = otpToken.isLocked || folderIsLocked ? veilingCharacter * otpToken.otpValue.length : otpToken.otpValue;
           return ListTile(
@@ -73,7 +77,7 @@ class _LinkHomeWidgetViewState extends ConsumerState<LinkHomeWidgetView> {
                   },
           );
         },
-        itemCount: otpTokens.length,
+        itemCount: otpTokens?.length ?? 0,
       ),
     );
   }

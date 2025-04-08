@@ -25,7 +25,7 @@ class _PushRequestListenerState extends ConsumerState<PushRequestListener> {
 
   @override
   Widget build(BuildContext context) {
-    final hasPushToken = ref.watch(tokenProvider).hasPushTokens;
+    final hasPushToken = ref.watch(tokenProvider).valueOrNull?.hasPushTokens ?? false;
     if (!hasPushToken) return widget.child;
     final pushRequest = ref.watch(pushRequestProvider).whenOrNull(data: (data) => data.pushRequests.firstOrNull);
     if (pushRequest == null) return widget.child;
