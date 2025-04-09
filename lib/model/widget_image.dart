@@ -21,9 +21,11 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:archive/archive.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:privacyidea_authenticator/model/mixins/fileable_mixin.dart';
 
 import '../utils/logger.dart';
 import 'enums/image_format.dart';
@@ -43,12 +45,16 @@ class Uint8ListConverter implements JsonConverter<Uint8List, String> {
 
 @JsonSerializable()
 @Uint8ListConverter()
-class WidgetImage {
+class WidgetImage with FileableMixin {
   final ImageFormat imageFormat;
   final Uint8List imageData;
+
+  /// The file name without extension.
+  @override
   final String fileName;
 
-  String get fullFileName => '$fileName.${imageFormat.extension}';
+  @override
+  String get fileExtension => imageFormat.extension;
 
   WidgetImage({
     required this.fileName,
@@ -115,4 +121,19 @@ class WidgetImage {
         imageFormat: imageFormat ?? this.imageFormat,
         imageData: imageData ?? this.imageData,
       );
+
+  @override
+  ArchiveFile toFile(path) {
+    path = path.endsWith('/') ? path : '$path/';
+    return ArchiveFile('$path$fileName.$fileExtension', imageData.length, imageData);
+  }
+
+  factory WidgetImage.fromFile(ArchiveFile file) {
+    final imageData = file.readBytes() ?? Uint8List(0);
+    return WidgetImage(
+      fileName: file.name.split('.').first,
+      imageFormat: ImageFormatX.fromFileName(file.name),
+      imageData: imageData,
+    );
+  }
 }
