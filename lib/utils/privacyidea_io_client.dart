@@ -58,6 +58,14 @@ class PrivacyideaIOClient {
         details: (localization) => localization.checkYourNetwork,
       );
       return false;
+    } on ArgumentError catch (e, _) {
+      Logger.warning('ArgumentError: $e');
+      ioClient.close();
+      showErrorStatusMessage(
+        message: (localization) => localization.connectionFailed,
+        details: (localization) => localization.invalidUrl,
+      );
+      return false;
     } catch (e, _) {
       if (e is! SocketException && e is! TimeoutException) {
         rethrow;

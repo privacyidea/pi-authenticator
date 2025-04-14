@@ -867,26 +867,30 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   Future<void> _handlePushTokensIfExist() async {
     Logger.info('Handling push tokens if they exist.');
     await _pushTokenHandlerMutex.acquire();
-
-    if ((await future).pushTokens.isEmpty) {
-      if ((await ref.read(settingsProvider.future)).hidePushTokens == true) {
-        ref.read(settingsProvider.notifier).setHidePushTokens(false);
+    try {
+      if ((await future).pushTokens.isEmpty) {
+        if ((await ref.read(settingsProvider.future)).hidePushTokens == true) {
+          ref.read(settingsProvider.notifier).setHidePushTokens(false);
+        }
+        _pushTokenHandlerMutex.release();
+        return;
       }
+      final rolledOutPushNoFb = (await future).rolledOutPushTokens.where((element) => element.fbToken == null).toList();
+      if (rolledOutPushNoFb.isNotEmpty) {
+        // If there is rolled out push tokens without fbToken, we need to update the firebase token for them.
+        await updateFirebaseTokens(tokens: rolledOutPushNoFb);
+      }
+      if ((await future).hasRolledOutPushTokens) {
+        checkNotificationPermission();
+      }
+      for (final element in (await future).pushTokensToRollOut) {
+        Logger.info('Handling push token "${element.id}"');
+        await rolloutPushToken(element);
+      }
+    } catch (e, s) {
+      Logger.error('Unexpected error while handling push tokens.', error: e, stackTrace: s);
       _pushTokenHandlerMutex.release();
-      return;
-    }
-    final rolledOutPushNoFb = (await future).rolledOutPushTokens.where((element) => element.fbToken == null).toList();
-    if (rolledOutPushNoFb.isNotEmpty) {
-      // If there is rolled out push tokens without fbToken, we need to update the firebase token for them.
-      await updateFirebaseTokens(tokens: rolledOutPushNoFb);
-    }
-    if ((await future).hasRolledOutPushTokens) {
-      checkNotificationPermission();
-    }
-    for (final element in (await future).pushTokensToRollOut) {
-      Logger.info('Handling push token "${element.id}"');
-      await rolloutPushToken(element);
-    }
+    } finally {}
     _pushTokenHandlerMutex.release();
   }
 
