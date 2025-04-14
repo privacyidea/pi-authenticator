@@ -144,6 +144,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     }
     if (!success) {
       Logger.warning('Saving token failed. Token: ${token.id}');
+      _stateMutex.release();
       return false;
     }
     state = AsyncValue.data((await future).addOrReplaceToken(token));
@@ -156,7 +157,10 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   Future<List<Token>> _addOrReplaceTokens(List<Token> tokens) async {
     await _stateMutex.acquire();
     tokens = [...tokens, ...(await future).tokens].filterDuplicates();
-    if (tokens.isEmpty) return [];
+    if (tokens.isEmpty) {
+      _stateMutex.release();
+      return [];
+    }
     Logger.debug('Adding ${tokens.length} tokens.', verbose: true);
     // We set currentState because the map function cant be async
     final currentState = await future;
@@ -188,6 +192,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     final (newState, replaced) = (await future).replaceToken(token);
     if (!replaced) {
       Logger.warning('Tried to replace a token that does not exist.');
+      _stateMutex.release();
       return false;
     }
     await _repoMutex.acquire();
@@ -195,6 +200,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     _repoMutex.release();
     if (!saved) {
       Logger.warning('Saving token failed. Token: ${token.id}');
+      _stateMutex.release();
       return false;
     }
     state = AsyncValue.data(newState);
@@ -209,6 +215,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     final failedToReplace = (await future).replaceTokens(tokens);
     if (failedToReplace.isNotEmpty) {
       Logger.warning('Failed to replace ${failedToReplace.length} tokens');
+      _stateMutex.release();
       return failedToReplace;
     }
     tokens = tokens.where((element) => !failedToReplace.contains(element)).toList();
@@ -262,12 +269,13 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   /// Loads the tokens from the repository sets it as the new state and returns the new(await future).
   Future<TokenState> _updateStateFromRepo() async {
     TokenState newState;
+
     try {
+      await _stateMutex.acquire();
       List<Token> tokens;
       await _repoMutex.acquire();
       tokens = await repo.loadTokens();
       _repoMutex.release();
-      await _stateMutex.acquire();
       newState = TokenState(tokens: tokens, lastlyUpdatedTokens: tokens);
       state = AsyncValue.data(newState);
       _stateMutex.release();
@@ -276,6 +284,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
         'Loading tokens from storage failed.',
         error: e,
       );
+      _stateMutex.release();
       return (await future);
     }
     await _handlePushTokensIfExist();
@@ -307,7 +316,6 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     final current = (await future).currentOf<T>(token);
     if (current == null) {
       Logger.warning('Tried to update a token that does not exist.');
-      _stateMutex.release();
       return null;
     }
     final updated = updater(current);
