@@ -1328,12 +1328,6 @@
   "@scanThisQrWithNewDevice": {
     "description": "Content of the token export dialog that shows the user the qr code."
   },
-  "@screenshotsAllowed": {
-    "description": "Label for the screenshots allowed setting."
-  },
-  "@screenshotsNotAllowed": {
-    "description": "Label for the screenshots allowed setting."
-  },
   "@secondsUntilNextOTP": {
     "description": "Semantics label for the animated countdown until the next OTP is generated."
   },
@@ -1992,8 +1986,6 @@
   "saveButton": "Zapisz",
   "scanQrCode": "Zeskanuj kod QR",
   "scanThisQrWithNewDevice": "Zeskanuj ten kod QR za pomocą nowego urządzenia, aby zaimportować token.",
-  "screenshotsAllowed": "Zrzuty ekranu dozwolone",
-  "screenshotsNotAllowed": "Zrzuty ekranu niedozwolone",
   "secondsUntilNextOTP": "Sekundy do następnego OTP",
   "secretIsRequired": "Wymagany jest sekret",
   "secretKey": "Tajny klucz",
