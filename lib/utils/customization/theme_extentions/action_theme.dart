@@ -29,7 +29,13 @@ class TokenTileTheme extends ThemeExtension<TokenTileTheme> {
 
   final Color actionForegroundColor;
 
-  final Color tilePrimaryColor;
+  final Color defaultOtpColor;
+  final Color? warningOtpColor;
+  final Color? criticalOtpColor;
+  final Color defaultCountdownColor;
+  final Color? warningCountdownColor;
+  final Color? criticalCountdownColor;
+
   final Color tileSubtitleColor;
   final Color tileIconColor;
 
@@ -40,7 +46,12 @@ class TokenTileTheme extends ThemeExtension<TokenTileTheme> {
     required this.transferColor,
     required this.actionDisabledColor,
     required this.actionForegroundColor,
-    required this.tilePrimaryColor,
+    required this.defaultOtpColor,
+    this.warningOtpColor,
+    this.criticalOtpColor,
+    required this.defaultCountdownColor,
+    this.warningCountdownColor,
+    this.criticalCountdownColor,
     required this.tileSubtitleColor,
     required this.tileIconColor,
   });
@@ -53,7 +64,12 @@ class TokenTileTheme extends ThemeExtension<TokenTileTheme> {
         transferColor: Color.lerp(transferColor, other?.transferColor, t) ?? transferColor,
         actionDisabledColor: Color.lerp(actionDisabledColor, other?.actionDisabledColor, t) ?? actionDisabledColor,
         actionForegroundColor: Color.lerp(actionForegroundColor, other?.actionForegroundColor, t) ?? actionForegroundColor,
-        tilePrimaryColor: Color.lerp(tilePrimaryColor, other?.tilePrimaryColor, t) ?? tilePrimaryColor,
+        defaultOtpColor: Color.lerp(defaultOtpColor, other?.defaultOtpColor, t) ?? defaultOtpColor,
+        warningOtpColor: Color.lerp(warningOtpColor, other?.warningOtpColor, t) ?? warningOtpColor,
+        criticalOtpColor: Color.lerp(criticalOtpColor, other?.criticalOtpColor, t) ?? criticalOtpColor,
+        defaultCountdownColor: Color.lerp(defaultCountdownColor, other?.defaultCountdownColor, t) ?? defaultCountdownColor,
+        warningCountdownColor: Color.lerp(warningCountdownColor, other?.warningCountdownColor, t) ?? warningCountdownColor,
+        criticalCountdownColor: Color.lerp(criticalCountdownColor, other?.criticalCountdownColor, t) ?? criticalCountdownColor,
         tileSubtitleColor: Color.lerp(tileSubtitleColor, other?.tileSubtitleColor, t) ?? tileSubtitleColor,
         tileIconColor: Color.lerp(tileIconColor, other?.tileIconColor, t) ?? tileIconColor,
       );
@@ -66,7 +82,12 @@ class TokenTileTheme extends ThemeExtension<TokenTileTheme> {
     Color? transferColor,
     Color? actionDisabledColor,
     Color? actionForegroundColor,
-    Color? tilePrimaryColor,
+    Color? defaultOtpColor,
+    Color? Function()? warningOtpColor,
+    Color? Function()? criticalOtpColor,
+    Color? defaultCountdownColor,
+    Color? Function()? warningCountdownColor,
+    Color? Function()? criticalCountdownColor,
     Color? tileSubtitleColor,
     Color? tileIconColor,
   }) =>
@@ -77,7 +98,12 @@ class TokenTileTheme extends ThemeExtension<TokenTileTheme> {
         transferColor: transferColor ?? this.transferColor,
         actionDisabledColor: actionDisabledColor ?? this.actionDisabledColor,
         actionForegroundColor: actionForegroundColor ?? this.actionForegroundColor,
-        tilePrimaryColor: tilePrimaryColor ?? this.tilePrimaryColor,
+        defaultOtpColor: defaultOtpColor ?? this.defaultOtpColor,
+        warningOtpColor: warningOtpColor != null ? warningOtpColor() : this.warningOtpColor,
+        criticalOtpColor: criticalOtpColor != null ? criticalOtpColor() : this.criticalOtpColor,
+        defaultCountdownColor: defaultCountdownColor ?? this.defaultCountdownColor,
+        warningCountdownColor: warningCountdownColor != null ? warningCountdownColor() : this.warningCountdownColor,
+        criticalCountdownColor: criticalCountdownColor != null ? criticalCountdownColor() : this.criticalCountdownColor,
         tileSubtitleColor: tileSubtitleColor ?? this.tileSubtitleColor,
         tileIconColor: tileIconColor ?? this.tileIconColor,
       );

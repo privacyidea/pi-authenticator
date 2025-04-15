@@ -25,28 +25,40 @@ class TotpAnimation {
   final TickerProvider vsync;
   final Function(TotpAnimationCallback) callback;
   final Function onPeriodEnd;
-  final Color defaultColor;
+
   final Duration totalDuration;
-  final Color warningColor;
   final Duration warningDuration;
-  final Color criticalColor;
   final Duration criticalDuration;
 
+  final Color defaultOtpColor;
+  final Color warningOtpColor;
+  final Color criticalOtpColor;
+
+  final Color defaultCountdownColor;
+  final Color warningCountdownColor;
+  final Color criticalCountdownColor;
+
   /// Creates a new animation that changes the color of a circle based on the time left.</br>
-  /// The color will fade from [defaultColor] to [warningColor] for [warningDuration] before entering [criticalColor].</br>
-  /// The color will fade from [warningColor] to [criticalColor] for [criticalDuration] before the period ends. Will fade from [defaultColor] to [criticalColor] if [warningDuration] is 0.
+  /// The color will fade from [defaultOtpColor] to [warningOtpColor] for [warningDuration] before entering [criticalOtpColor].</br>
+  /// The color will fade from [warningOtpColor] to [criticalOtpColor] for [criticalDuration] before the period ends. Will fade from [defaultOtpColor] to [criticalOtpColor] if [warningDuration] is 0.
   TotpAnimation({
     required this.context,
     required this.vsync,
     required this.callback,
     required this.onPeriodEnd,
-    required this.defaultColor,
     required this.totalDuration,
-    this.warningColor = const Color(0xFFFFD3AC),
-    this.warningDuration = const Duration(seconds: 0),
-    required this.criticalColor,
+    required this.warningDuration,
     required this.criticalDuration,
-  });
+    required this.defaultOtpColor,
+    Color? warningOtpColor,
+    Color? criticalOtpColor,
+    required this.defaultCountdownColor,
+    Color? warningCountdownColor,
+    Color? criticalCountdownColor,
+  })  : warningOtpColor = warningOtpColor ?? defaultOtpColor,
+        criticalOtpColor = criticalOtpColor ?? warningOtpColor ?? defaultOtpColor,
+        warningCountdownColor = warningCountdownColor ?? defaultCountdownColor,
+        criticalCountdownColor = criticalCountdownColor ?? warningCountdownColor ?? defaultCountdownColor;
 
   DateTime lastResync = DateTime.now();
 
@@ -67,19 +79,24 @@ class TotpAnimation {
     colorAnimation.forward(from: DateTime.now().millisecondsSinceEpoch % (totalDuration.inMilliseconds) / 1000);
     colorAnimation.addListener(() {
       final passedDuration = Duration(milliseconds: (colorAnimation.value * 1000).toInt());
-      Color color;
+      Color otpColor;
+      Color countdownColor;
       if (passedDuration > (totalDuration - criticalDuration)) {
         final factor = (totalDuration - passedDuration).inMilliseconds / criticalDuration.inMilliseconds;
-        color = criticalColor.mixWith(warningDuration.inMilliseconds < 1 ? defaultColor : warningColor, factor);
+        otpColor = criticalOtpColor.mixWith(warningDuration.inMilliseconds < 1 ? defaultOtpColor : warningOtpColor, factor);
+        countdownColor = criticalCountdownColor.mixWith(warningDuration.inMilliseconds < 1 ? defaultCountdownColor : warningCountdownColor, factor);
       } else if (passedDuration > (totalDuration - warningDuration - criticalDuration)) {
         final factor = (totalDuration - passedDuration - criticalDuration).inMilliseconds / warningDuration.inMilliseconds; // 0-1
-        color = warningColor.mixWith(defaultColor, factor);
+        otpColor = warningOtpColor.mixWith(defaultOtpColor, factor);
+        countdownColor = warningCountdownColor.mixWith(defaultCountdownColor, factor);
       } else {
-        color = defaultColor;
+        otpColor = defaultOtpColor;
+        countdownColor = defaultCountdownColor;
       }
       final callbackValue = TotpAnimationCallback(
-        color,
-        (totalDuration.inMilliseconds - passedDuration.inMilliseconds) / 1000,
+        otpColor: otpColor,
+        countdownColor: countdownColor,
+        secondsUntilNextOTP: (totalDuration.inMilliseconds - passedDuration.inMilliseconds) / 1000,
       );
       callback(callbackValue);
 
@@ -94,8 +111,13 @@ class TotpAnimation {
 }
 
 class TotpAnimationCallback {
-  final Color color;
+  final Color otpColor;
+  final Color countdownColor;
   final double secondsUntilNextOTP;
 
-  TotpAnimationCallback(this.color, this.secondsUntilNextOTP);
+  TotpAnimationCallback({
+    required this.otpColor,
+    required this.countdownColor,
+    required this.secondsUntilNextOTP,
+  });
 }

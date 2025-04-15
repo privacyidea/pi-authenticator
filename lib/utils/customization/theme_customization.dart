@@ -52,15 +52,21 @@ class ThemeCustomization {
     Color? pushAuthRequestAcceptColor,
     Color? pushAuthRequestDeclineColor,
     Color? actionButtonsForegroundColor,
-    Color? tilePrimaryColor,
+    Color? tileDefaultOtpColor,
+    Color? tileDefaultCountdownColor,
     Color? tileSubtitleColor,
     Color? navigationBarIconColor,
     Color? qrButtonBackgroundColor,
     Color? qrButtonIconColor,
+    this.tileWarningOtpColor,
+    this.tileCriticalOtpColor,
+    this.tileWarningCountdownColor,
+    this.tileCriticalCountdownColor,
   })  : _pushAuthRequestAcceptColor = pushAuthRequestAcceptColor,
         _pushAuthRequestDeclineColor = pushAuthRequestDeclineColor,
         _actionButtonsForegroundColor = actionButtonsForegroundColor,
-        _tilePrimaryColor = tilePrimaryColor,
+        _tileDefaultOtpColor = tileDefaultOtpColor,
+        _tileDefaultCountdownColor = tileDefaultCountdownColor,
         _tileSubtitleColor = tileSubtitleColor,
         _navigationBarIconColor = navigationBarIconColor,
         _qrButtonBackgroundColor = qrButtonBackgroundColor,
@@ -86,11 +92,17 @@ class ThemeCustomization {
     Color? pushAuthRequestAcceptColor, // Default: primaryColor
     Color? pushAuthRequestDeclineColor, // Default: deleteColor
     Color? actionButtonsForegroundColor, // Default: foregroundColor
-    Color? tilePrimaryColor, // Default: primaryColor
+    Color? tileDefaultOtpColor, // Default: primaryColor
+    Color? tileDefaultCountdownColor, // Default: primaryColor
     Color? tileSubtitleColor, // Default: subtitleColor
     Color? navigationBarIconColor, // Default: foregroundColor
     Color? qrButtonBackgroundColor, // Default: primaryColor
     Color? qrButtonIconColor, // Default: onPrimary
+    // From here the colors are optional and can be null
+    this.tileWarningOtpColor = const Color(0xFFFFB833),
+    this.tileCriticalOtpColor = const Color(0xffb93f1d),
+    this.tileWarningCountdownColor = const Color(0xFFFFB833),
+    this.tileCriticalCountdownColor = const Color(0xffb93f1d),
   })  : brightness = Brightness.light,
         primaryColor = primaryColor ?? const Color(0xff03A9F4),
         onPrimary = onPrimary ?? const Color(0xff282828),
@@ -111,7 +123,8 @@ class ThemeCustomization {
         _pushAuthRequestAcceptColor = pushAuthRequestAcceptColor,
         _pushAuthRequestDeclineColor = pushAuthRequestDeclineColor,
         _actionButtonsForegroundColor = actionButtonsForegroundColor,
-        _tilePrimaryColor = tilePrimaryColor,
+        _tileDefaultOtpColor = tileDefaultOtpColor,
+        _tileDefaultCountdownColor = tileDefaultCountdownColor,
         _tileSubtitleColor = tileSubtitleColor,
         _navigationBarIconColor = navigationBarIconColor,
         _qrButtonBackgroundColor = qrButtonBackgroundColor,
@@ -137,11 +150,17 @@ class ThemeCustomization {
     Color? pushAuthRequestAcceptColor, // Default: primaryColor
     Color? pushAuthRequestDeclineColor, // Default: deleteColor
     Color? actionButtonsForegroundColor, // Default: foregroundColor
-    Color? tilePrimaryColor, // Default: primaryColor
+    Color? tileDefaultOtpColor, // Default: primaryColor
+    Color? tileDefaultCountdownColor, // Default: primaryColor
     Color? tileSubtitleColor, // Default: subtitleColor
     Color? navigationBarIconColor, // Default: foregroundColor
     Color? qrButtonBackgroundColor, // Default: primaryColor
     Color? qrButtonIconColor, // Default: onPrimary
+    // From here the colors are optional and can be null
+    this.tileWarningOtpColor = const Color(0xFFFFB833),
+    this.tileCriticalOtpColor = const Color(0xffb93f1d),
+    this.tileWarningCountdownColor = const Color(0xFFFFB833),
+    this.tileCriticalCountdownColor = const Color(0xffb93f1d),
   })  : brightness = Brightness.dark,
         primaryColor = primaryColor ?? const Color(0xff03A9F4),
         onPrimary = onPrimary ?? const Color(0xFF282828),
@@ -162,7 +181,8 @@ class ThemeCustomization {
         _pushAuthRequestAcceptColor = pushAuthRequestAcceptColor,
         _pushAuthRequestDeclineColor = pushAuthRequestDeclineColor,
         _actionButtonsForegroundColor = actionButtonsForegroundColor,
-        _tilePrimaryColor = tilePrimaryColor,
+        _tileDefaultOtpColor = tileDefaultOtpColor,
+        _tileDefaultCountdownColor = tileDefaultCountdownColor,
         _tileSubtitleColor = tileSubtitleColor,
         _navigationBarIconColor = navigationBarIconColor,
         _qrButtonBackgroundColor = qrButtonBackgroundColor,
@@ -196,8 +216,16 @@ class ThemeCustomization {
   Color get actionButtonsForegroundColor => _actionButtonsForegroundColor ?? foregroundColor;
 
   // List tile
-  final Color? _tilePrimaryColor; // Default: primaryColor
-  Color get tilePrimaryColor => _tilePrimaryColor ?? primaryColor;
+  final Color? _tileDefaultOtpColor; // Default: primaryColor
+  Color get tileDefaultOtpColor => _tileDefaultOtpColor ?? primaryColor;
+  final Color? tileWarningOtpColor; // Optional, not default
+  final Color? tileCriticalOtpColor; // Optional, not default
+
+  final Color? _tileDefaultCountdownColor; // Default: primaryColor
+  Color get tileDefaultCountdownColor => _tileDefaultCountdownColor ?? primaryColor;
+  final Color? tileWarningCountdownColor; // Optional, not default
+  final Color? tileCriticalCountdownColor; // Optional, not default
+
   final Color tileIconColor;
   final Color? _tileSubtitleColor; // Default: subtitleColor
   Color get tileSubtitleColor => _tileSubtitleColor ?? subtitleColor;
@@ -232,11 +260,17 @@ class ThemeCustomization {
     Color? Function()? pushAuthRequestAcceptColor, // Default: primaryColor
     Color? Function()? pushAuthRequestDeclineColor, // Default: deleteColor
     Color? Function()? actionButtonsForegroundColor, // Default: foregroundColor
-    Color? Function()? tilePrimaryColor, // Default: primaryColor
+    Color? Function()? tileDefaultOtpColor, // Default: primaryColor
+    Color? Function()? tileDefaultCountdownColor, // Default: primaryColor
     Color? Function()? tileSubtitleColor, // Default: subtitleColor
     Color? Function()? navigationBarIconColor, // Default: foregroundColor
     Color? Function()? qrButtonBackgroundColor, // Default: primaryColor
     Color? Function()? qrButtonIconColor, // Default: onPrimary
+    // From here the colors are optional and can be null
+    Color? Function()? tileWarningOtpColor, // Optional, not default
+    Color? Function()? tileCriticalOtpColor, // Optional, not default
+    Color? Function()? tileWarningCountdownColor, // Optional, not default
+    Color? Function()? tileCriticalCountdownColor, // Optional, not default
   }) =>
       ThemeCustomization(
         brightness: brightness ?? this.brightness,
@@ -259,11 +293,17 @@ class ThemeCustomization {
         pushAuthRequestAcceptColor: pushAuthRequestAcceptColor != null ? pushAuthRequestAcceptColor() : _pushAuthRequestAcceptColor,
         pushAuthRequestDeclineColor: pushAuthRequestDeclineColor != null ? pushAuthRequestDeclineColor() : _pushAuthRequestDeclineColor,
         actionButtonsForegroundColor: actionButtonsForegroundColor != null ? actionButtonsForegroundColor() : _actionButtonsForegroundColor,
-        tilePrimaryColor: tilePrimaryColor != null ? tilePrimaryColor() : _tilePrimaryColor,
+        tileDefaultOtpColor: tileDefaultOtpColor != null ? tileDefaultOtpColor() : _tileDefaultOtpColor,
+        tileDefaultCountdownColor: tileDefaultCountdownColor != null ? tileDefaultCountdownColor() : _tileDefaultCountdownColor,
         tileSubtitleColor: tileSubtitleColor != null ? tileSubtitleColor() : _tileSubtitleColor,
         navigationBarIconColor: navigationBarIconColor != null ? navigationBarIconColor() : _navigationBarIconColor,
         qrButtonBackgroundColor: qrButtonBackgroundColor != null ? qrButtonBackgroundColor() : _qrButtonBackgroundColor,
         qrButtonIconColor: qrButtonIconColor != null ? qrButtonIconColor() : _qrButtonIconColor,
+        // From here the colors are optional and can be null
+        tileWarningOtpColor: tileWarningOtpColor != null ? tileWarningOtpColor() : this.tileWarningOtpColor,
+        tileCriticalOtpColor: tileCriticalOtpColor != null ? tileCriticalOtpColor() : this.tileCriticalOtpColor,
+        tileWarningCountdownColor: tileWarningCountdownColor != null ? tileWarningCountdownColor() : this.tileWarningCountdownColor,
+        tileCriticalCountdownColor: tileCriticalCountdownColor != null ? tileCriticalCountdownColor() : this.tileCriticalCountdownColor,
       );
 
   factory ThemeCustomization.fromJson(Map<String, dynamic> json) {
@@ -292,11 +332,24 @@ class ThemeCustomization {
         pushAuthRequestAcceptColor: json['_pushAuthRequestAcceptColor'] != null ? ColorExtension.fromJson(json['_pushAuthRequestAcceptColor']) : null,
         pushAuthRequestDeclineColor: json['_pushAuthRequestDeclineColor'] != null ? ColorExtension.fromJson(json['_pushAuthRequestDeclineColor']) : null,
         actionButtonsForegroundColor: json['_actionButtonsForegroundColor'] != null ? ColorExtension.fromJson(json['_actionButtonsForegroundColor']) : null,
-        tilePrimaryColor: json['_tilePrimaryColor'] != null ? ColorExtension.fromJson(json['_tilePrimaryColor']) : null,
+        tileDefaultOtpColor: json['_tileDefaultOtpColor'] != null
+            ? ColorExtension.fromJson(json['_tileDefaultOtpColor'])
+            : json['_tilePrimaryColor'] != null
+                ? ColorExtension.fromJson(json['_tilePrimaryColor'])
+                : null,
+        tileDefaultCountdownColor: json['_tileDefaultCountdownColor'] != null
+            ? ColorExtension.fromJson(json['_tileDefaultCountdownColor'])
+            : json['_tilePrimaryColor'] != null
+                ? ColorExtension.fromJson(json['_tilePrimaryColor'])
+                : null,
         tileSubtitleColor: json['_tileSubtitleColor'] != null ? ColorExtension.fromJson(json['_tileSubtitleColor']) : null,
         navigationBarIconColor: json['_navigationBarIconColor'] != null ? ColorExtension.fromJson(json['_navigationBarIconColor']) : null,
         qrButtonBackgroundColor: json['_qrButtonBackgroundColor'] != null ? ColorExtension.fromJson(json['_qrButtonBackgroundColor']) : null,
         qrButtonIconColor: json['_qrButtonIconColor'] != null ? ColorExtension.fromJson(json['_qrButtonIconColor']) : null,
+        tileWarningOtpColor: json['tileWarningOtpColor'] != null ? ColorExtension.fromJson(json['tileWarningOtpColor']) : null,
+        tileCriticalOtpColor: json['tileCriticalOtpColor'] != null ? ColorExtension.fromJson(json['tileCriticalOtpColor']) : null,
+        tileWarningCountdownColor: json['tileWarningCountdownColor'] != null ? ColorExtension.fromJson(json['tileWarningCountdownColor']) : null,
+        tileCriticalCountdownColor: json['tileCriticalCountdownColor'] != null ? ColorExtension.fromJson(json['tileCriticalCountdownColor']) : null,
       );
     }
     if (isDarkTheme) {
@@ -319,11 +372,24 @@ class ThemeCustomization {
         pushAuthRequestAcceptColor: json['_pushAuthRequestAcceptColor'] != null ? ColorExtension.fromJson(json['_pushAuthRequestAcceptColor']) : null,
         pushAuthRequestDeclineColor: json['_pushAuthRequestDeclineColor'] != null ? ColorExtension.fromJson(json['_pushAuthRequestDeclineColor']) : null,
         actionButtonsForegroundColor: json['_actionButtonsForegroundColor'] != null ? ColorExtension.fromJson(json['_actionButtonsForegroundColor']) : null,
-        tilePrimaryColor: json['_tilePrimaryColor'] != null ? ColorExtension.fromJson(json['_tilePrimaryColor']) : null,
+        tileDefaultOtpColor: json['_tileDefaultOtpColor'] != null
+            ? ColorExtension.fromJson(json['_tileDefaultOtpColor'])
+            : json['_tilePrimaryColor'] != null
+                ? ColorExtension.fromJson(json['_tilePrimaryColor'])
+                : null,
+        tileDefaultCountdownColor: json['_tileDefaultCountdownColor'] != null
+            ? ColorExtension.fromJson(json['_tileDefaultCountdownColor'])
+            : json['_tilePrimaryColor'] != null
+                ? ColorExtension.fromJson(json['_tilePrimaryColor'])
+                : null,
         tileSubtitleColor: json['_tileSubtitleColor'] != null ? ColorExtension.fromJson(json['_tileSubtitleColor']) : null,
         navigationBarIconColor: json['_navigationBarIconColor'] != null ? ColorExtension.fromJson(json['_navigationBarIconColor']) : null,
         qrButtonBackgroundColor: json['_qrButtonBackgroundColor'] != null ? ColorExtension.fromJson(json['_qrButtonBackgroundColor']) : null,
         qrButtonIconColor: json['_qrButtonIconColor'] != null ? ColorExtension.fromJson(json['_qrButtonIconColor']) : null,
+        tileWarningOtpColor: json['tileWarningOtpColor'] != null ? ColorExtension.fromJson(json['tileWarningOtpColor']) : null,
+        tileCriticalOtpColor: json['tileCriticalOtpColor'] != null ? ColorExtension.fromJson(json['tileCriticalOtpColor']) : null,
+        tileWarningCountdownColor: json['tileWarningCountdownColor'] != null ? ColorExtension.fromJson(json['tileWarningCountdownColor']) : null,
+        tileCriticalCountdownColor: json['tileCriticalCountdownColor'] != null ? ColorExtension.fromJson(json['tileCriticalCountdownColor']) : null,
       );
     }
     throw Exception('Invalid brightness value: ${json['brightness']}');
@@ -348,11 +414,16 @@ class ThemeCustomization {
         'successColor': successColor.toJson(),
         '_pushAuthRequestAcceptColor': _pushAuthRequestAcceptColor?.toJson(),
         '_actionButtonsForegroundColor': _actionButtonsForegroundColor?.toJson(),
-        '_tilePrimaryColor': _tilePrimaryColor?.toJson(),
+        '_tileDefaultOtpColor': _tileDefaultOtpColor?.toJson(),
+        '_tileDefaultCountdownColor': _tileDefaultCountdownColor?.toJson(),
         '_tileSubtitleColor': _tileSubtitleColor?.toJson(),
         '_navigationBarIconColor': _navigationBarIconColor?.toJson(),
         '_qrButtonBackgroundColor': _qrButtonBackgroundColor?.toJson(),
         '_qrButtonIconColor': _qrButtonIconColor?.toJson(),
+        'tileWarningOtpColor': tileWarningOtpColor?.toJson(),
+        'tileCriticalOtpColor': tileCriticalOtpColor?.toJson(),
+        'tileWarningCountdownColor': tileWarningCountdownColor?.toJson(),
+        'tileCriticalCountdownColor': tileCriticalCountdownColor?.toJson(),
       };
 
   ThemeData generateTheme({String? fontFamily}) => ThemeData(
@@ -470,7 +541,7 @@ class ThemeCustomization {
           ),
           listTileTheme: ListTileThemeData(
             tileColor: Colors.transparent,
-            titleTextStyle: TextStyle(color: tilePrimaryColor),
+            titleTextStyle: TextStyle(color: tileDefaultOtpColor),
             subtitleTextStyle: TextStyle(color: tileSubtitleColor, fontSize: 14), //bodyMedium fontSize
             iconColor: tileIconColor,
           ),
@@ -548,7 +619,12 @@ class ThemeCustomization {
               transferColor: exportColor,
               actionDisabledColor: disabledColor,
               actionForegroundColor: actionButtonsForegroundColor,
-              tilePrimaryColor: tilePrimaryColor,
+              defaultOtpColor: tileDefaultOtpColor,
+              warningOtpColor: tileWarningOtpColor,
+              criticalOtpColor: tileCriticalOtpColor,
+              defaultCountdownColor: tileDefaultCountdownColor,
+              warningCountdownColor: tileWarningCountdownColor,
+              criticalCountdownColor: tileCriticalCountdownColor,
               tileSubtitleColor: tileSubtitleColor,
               tileIconColor: tileIconColor,
             ),
@@ -591,8 +667,14 @@ class ThemeCustomization {
       'successColor: $successColor, '
       'actionButtonsForegroundColor: $actionButtonsForegroundColor, '
       '_actionButtonsForegroundColor: $_actionButtonsForegroundColor, '
-      'tilePrimaryColor: $tilePrimaryColor, '
-      '_tilePrimaryColor: $_tilePrimaryColor, '
+      'tileDefaultOtpColor: $tileDefaultOtpColor, '
+      '_tileDefaultOtpColor: $_tileDefaultOtpColor, '
+      'tileWarningOtpColor: $tileWarningOtpColor, '
+      'tileCriticalOtpColor: $tileCriticalOtpColor, '
+      'tileDefaultCountdownColor: $tileDefaultCountdownColor, '
+      '_tileDefaultCountdownColor: $_tileDefaultCountdownColor, '
+      'tileWarningCountdownColor: $tileWarningCountdownColor, '
+      'tileCriticalCountdownColor: $tileCriticalCountdownColor, '
       'tileSubtitleColor: $tileSubtitleColor, '
       '_tileSubtitleColor: $_tileSubtitleColor, '
       'navigationBarIconColor: $navigationBarIconColor, '
@@ -625,7 +707,12 @@ class ThemeCustomization {
         other.warningColor == warningColor &&
         other.successColor == successColor &&
         other.actionButtonsForegroundColor == actionButtonsForegroundColor &&
-        other.tilePrimaryColor == tilePrimaryColor &&
+        other.tileDefaultOtpColor == tileDefaultOtpColor &&
+        other.tileWarningOtpColor == tileWarningOtpColor &&
+        other.tileCriticalOtpColor == tileCriticalOtpColor &&
+        other.tileDefaultCountdownColor == tileDefaultCountdownColor &&
+        other.tileWarningCountdownColor == tileWarningCountdownColor &&
+        other.tileCriticalCountdownColor == tileCriticalCountdownColor &&
         other.tileSubtitleColor == tileSubtitleColor &&
         other.navigationBarIconColor == navigationBarIconColor &&
         other.qrButtonBackgroundColor == qrButtonBackgroundColor &&
@@ -651,7 +738,12 @@ class ThemeCustomization {
         warningColor,
         successColor,
         actionButtonsForegroundColor,
-        tilePrimaryColor,
+        tileDefaultOtpColor,
+        tileWarningOtpColor,
+        tileCriticalOtpColor,
+        tileDefaultCountdownColor,
+        tileWarningCountdownColor,
+        tileCriticalCountdownColor,
         tileSubtitleColor,
         navigationBarIconColor,
         qrButtonBackgroundColor,
