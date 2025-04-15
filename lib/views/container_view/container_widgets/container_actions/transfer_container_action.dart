@@ -44,8 +44,8 @@ class TransferContainerAction extends ConsumerSlideableAction {
   @override
   CustomSlidableAction build(BuildContext context, WidgetRef ref) => CustomSlidableAction(
         onPressed: (BuildContext context) => _showExportContainerDialog(context),
-        backgroundColor: Theme.of(context).extension<ActionTheme>()!.transferColor,
-        foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
+        backgroundColor: Theme.of(context).extension<TokenTileTheme>()!.transferColor,
+        foregroundColor: Theme.of(context).extension<TokenTileTheme>()!.actionForegroundColor,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,

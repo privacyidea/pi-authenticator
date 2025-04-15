@@ -19,49 +19,66 @@
  */
 import 'package:flutter/material.dart';
 
-class ActionTheme extends ThemeExtension<ActionTheme> {
+class TokenTileTheme extends ThemeExtension<TokenTileTheme> {
   final Color deleteColor;
   final Color editColor;
   final Color lockColor;
   final Color transferColor;
 
-  final Color disabledColor;
+  final Color actionDisabledColor;
 
-  final Color foregroundColor;
-  const ActionTheme({
+  final Color actionForegroundColor;
+
+  final Color tilePrimaryColor;
+  final Color tileSubtitleColor;
+  final Color tileIconColor;
+
+  const TokenTileTheme({
     required this.deleteColor,
     required this.editColor,
     required this.lockColor,
     required this.transferColor,
-    required this.disabledColor,
-    required this.foregroundColor,
+    required this.actionDisabledColor,
+    required this.actionForegroundColor,
+    required this.tilePrimaryColor,
+    required this.tileSubtitleColor,
+    required this.tileIconColor,
   });
 
   @override
-  ThemeExtension<ActionTheme> lerp(covariant ActionTheme? other, double t) => ActionTheme(
+  ThemeExtension<TokenTileTheme> lerp(covariant TokenTileTheme? other, double t) => TokenTileTheme(
         deleteColor: Color.lerp(deleteColor, other?.deleteColor, t) ?? deleteColor,
         editColor: Color.lerp(editColor, other?.editColor, t) ?? editColor,
         lockColor: Color.lerp(lockColor, other?.lockColor, t) ?? lockColor,
         transferColor: Color.lerp(transferColor, other?.transferColor, t) ?? transferColor,
-        disabledColor: Color.lerp(disabledColor, other?.disabledColor, t) ?? disabledColor,
-        foregroundColor: Color.lerp(foregroundColor, other?.foregroundColor, t) ?? foregroundColor,
+        actionDisabledColor: Color.lerp(actionDisabledColor, other?.actionDisabledColor, t) ?? actionDisabledColor,
+        actionForegroundColor: Color.lerp(actionForegroundColor, other?.actionForegroundColor, t) ?? actionForegroundColor,
+        tilePrimaryColor: Color.lerp(tilePrimaryColor, other?.tilePrimaryColor, t) ?? tilePrimaryColor,
+        tileSubtitleColor: Color.lerp(tileSubtitleColor, other?.tileSubtitleColor, t) ?? tileSubtitleColor,
+        tileIconColor: Color.lerp(tileIconColor, other?.tileIconColor, t) ?? tileIconColor,
       );
 
   @override
-  ThemeExtension<ActionTheme> copyWith({
+  ThemeExtension<TokenTileTheme> copyWith({
     Color? deleteColor,
     Color? editColor,
     Color? lockColor,
     Color? transferColor,
-    Color? disabledColor,
-    Color? foregroundColor,
+    Color? actionDisabledColor,
+    Color? actionForegroundColor,
+    Color? tilePrimaryColor,
+    Color? tileSubtitleColor,
+    Color? tileIconColor,
   }) =>
-      ActionTheme(
+      TokenTileTheme(
         deleteColor: deleteColor ?? this.deleteColor,
         editColor: editColor ?? this.editColor,
         lockColor: lockColor ?? this.lockColor,
         transferColor: transferColor ?? this.transferColor,
-        disabledColor: disabledColor ?? this.disabledColor,
-        foregroundColor: foregroundColor ?? this.foregroundColor,
+        actionDisabledColor: actionDisabledColor ?? this.actionDisabledColor,
+        actionForegroundColor: actionForegroundColor ?? this.actionForegroundColor,
+        tilePrimaryColor: tilePrimaryColor ?? this.tilePrimaryColor,
+        tileSubtitleColor: tileSubtitleColor ?? this.tileSubtitleColor,
+        tileIconColor: tileIconColor ?? this.tileIconColor,
       );
 }

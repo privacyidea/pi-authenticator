@@ -41,8 +41,8 @@ class DefaultLockAction extends ConsumerSlideableAction {
   @override
   CustomSlidableAction build(context, ref) {
     return CustomSlidableAction(
-      backgroundColor: Theme.of(context).extension<ActionTheme>()!.lockColor,
-      foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
+      backgroundColor: Theme.of(context).extension<TokenTileTheme>()!.lockColor,
+      foregroundColor: Theme.of(context).extension<TokenTileTheme>()!.actionForegroundColor,
       onPressed: (context) async {
         if (!await lockAuth(reason: (localization) => localization.authenticateToUnLockToken, localization: AppLocalizations.of(context)!)) return;
         Logger.info('Changing lock status of token to isLocked = ${!token.isLocked}');

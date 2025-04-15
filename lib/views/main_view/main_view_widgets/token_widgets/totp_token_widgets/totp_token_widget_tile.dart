@@ -20,6 +20,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/utils/customization/theme_extentions/action_theme.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/totp_token.dart';
@@ -87,7 +88,7 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
         });
       },
       totalDuration: Duration(seconds: widget.token.period),
-      defaultColor: Theme.of(context).colorScheme.primary,
+      defaultColor: Theme.of(context).extension<TokenTileTheme>()!.tilePrimaryColor,
       warningColor: Theme.of(context).extension<StatusColors>()!.warning,
       warningDuration: Duration(seconds: 2),
       criticalColor: Theme.of(context).extension<StatusColors>()!.error,

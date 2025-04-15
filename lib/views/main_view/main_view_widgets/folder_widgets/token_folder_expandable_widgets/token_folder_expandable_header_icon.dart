@@ -75,7 +75,7 @@ class TokenFolderExpandableHeaderIcon extends StatelessWidget {
                                 : Matrix4.identity(),
                             child: Icon(
                               isExpanded ? MdiIcons.lockOpenVariant : MdiIcons.lock,
-                              color: Theme.of(context).extension<ActionTheme>()?.lockColor,
+                              color: Theme.of(context).extension<TokenTileTheme>()?.lockColor,
                               size: constraints.maxHeight / 2.1,
                               shadows: [
                                 Shadow(

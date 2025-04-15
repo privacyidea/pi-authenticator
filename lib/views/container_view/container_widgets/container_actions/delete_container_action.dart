@@ -42,8 +42,9 @@ class DeleteContainerAction extends ConsumerSlideableAction {
     return CustomSlidableAction(
       onPressed: deleteAllowed ? (BuildContext context) => DeleteContainerDialog.showDialog(container) : null,
       autoClose: deleteAllowed,
-      backgroundColor: deleteAllowed ? Theme.of(context).extension<ActionTheme>()!.deleteColor : Theme.of(context).extension<ActionTheme>()!.disabledColor,
-      foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
+      backgroundColor:
+          deleteAllowed ? Theme.of(context).extension<TokenTileTheme>()!.deleteColor : Theme.of(context).extension<TokenTileTheme>()!.actionDisabledColor,
+      foregroundColor: Theme.of(context).extension<TokenTileTheme>()!.actionForegroundColor,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,

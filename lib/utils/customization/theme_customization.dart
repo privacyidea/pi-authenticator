@@ -541,13 +541,16 @@ class ThemeCustomization {
                 foregroundColor: onPrimary,
               ),
             ),
-            ActionTheme(
+            TokenTileTheme(
               deleteColor: deleteColor,
               editColor: renameColor,
               lockColor: lockColor,
               transferColor: exportColor,
-              disabledColor: disabledColor,
-              foregroundColor: actionButtonsForegroundColor,
+              actionDisabledColor: disabledColor,
+              actionForegroundColor: actionButtonsForegroundColor,
+              tilePrimaryColor: tilePrimaryColor,
+              tileSubtitleColor: tileSubtitleColor,
+              tileIconColor: tileIconColor,
             ),
             ExtendedTextTheme(
               tokenTile: TextStyle(

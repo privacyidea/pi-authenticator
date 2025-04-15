@@ -42,8 +42,8 @@ class EditHOTPTokenAction extends ConsumerSlideableAction {
 
   @override
   CustomSlidableAction build(BuildContext context, WidgetRef ref) => CustomSlidableAction(
-        backgroundColor: Theme.of(context).extension<ActionTheme>()!.editColor,
-        foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
+        backgroundColor: Theme.of(context).extension<TokenTileTheme>()!.editColor,
+        foregroundColor: Theme.of(context).extension<TokenTileTheme>()!.actionForegroundColor,
         onPressed: (context) async {
           if (token.isLocked && !await lockAuth(reason: (localization) => localization.editLockedToken, localization: AppLocalizations.of(context)!)) {
             return;

@@ -28,7 +28,7 @@ class ElevatedDeleteButtonTheme extends ThemeExtension<ElevatedDeleteButtonTheme
   ThemeExtension<ElevatedDeleteButtonTheme> copyWith({
     WidgetStateProperty<TextStyle?>? textStyle,
     WidgetStateProperty<Color?>? backgroundColor,
-    WidgetStateProperty<Color?>? foregroundColor,
+    WidgetStateProperty<Color?>? actionForegroundColor,
     WidgetStateProperty<Color?>? overlayColor,
     WidgetStateProperty<Color?>? shadowColor,
     WidgetStateProperty<Color?>? surfaceTintColor,
@@ -55,7 +55,7 @@ class ElevatedDeleteButtonTheme extends ThemeExtension<ElevatedDeleteButtonTheme
         style: style.copyWith(
           textStyle: textStyle,
           backgroundColor: backgroundColor,
-          foregroundColor: foregroundColor,
+          foregroundColor: actionForegroundColor,
           overlayColor: overlayColor,
           shadowColor: shadowColor,
           surfaceTintColor: surfaceTintColor,

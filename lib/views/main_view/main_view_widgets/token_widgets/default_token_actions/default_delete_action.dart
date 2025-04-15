@@ -41,8 +41,9 @@ class DefaultDeleteAction extends ConsumerSlideableAction {
   @override
   CustomSlidableAction build(context, ref) {
     return CustomSlidableAction(
-      backgroundColor: isEnabled ? Theme.of(context).extension<ActionTheme>()!.deleteColor : Theme.of(context).extension<ActionTheme>()!.disabledColor,
-      foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
+      backgroundColor:
+          isEnabled ? Theme.of(context).extension<TokenTileTheme>()!.deleteColor : Theme.of(context).extension<TokenTileTheme>()!.actionDisabledColor,
+      foregroundColor: Theme.of(context).extension<TokenTileTheme>()!.actionForegroundColor,
       onPressed: isEnabled
           ? (_) async {
               if (token.isLocked && !await lockAuth(reason: (localization) => localization.deleteLockedToken, localization: AppLocalizations.of(context)!)) {
