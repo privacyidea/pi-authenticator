@@ -39,8 +39,8 @@ class RenameTokenFolderAction extends ConsumerSlideableAction {
   @override
   CustomSlidableAction build(BuildContext context, ref) {
     return CustomSlidableAction(
-        backgroundColor: Theme.of(context).extension<ActionTheme>()!.editColor,
-        foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
+        backgroundColor: Theme.of(context).extension<TokenTileTheme>()!.editColor,
+        foregroundColor: Theme.of(context).extension<TokenTileTheme>()!.actionForegroundColor,
         onPressed: (context) async {
           if (folder.isLocked && !await lockAuth(reason: (localization) => localization.unlock, localization: AppLocalizations.of(context)!)) {
             return;

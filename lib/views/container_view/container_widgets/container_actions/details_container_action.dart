@@ -43,8 +43,8 @@ class DetailsContainerAction extends ConsumerSlideableAction {
   @override
   CustomSlidableAction build(BuildContext context, WidgetRef ref) => CustomSlidableAction(
         onPressed: (BuildContext context) => _showDetailsContainerDialog(context),
-        backgroundColor: Theme.of(context).extension<ActionTheme>()!.editColor,
-        foregroundColor: Theme.of(context).extension<ActionTheme>()!.foregroundColor,
+        backgroundColor: Theme.of(context).extension<TokenTileTheme>()!.editColor,
+        foregroundColor: Theme.of(context).extension<TokenTileTheme>()!.actionForegroundColor,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,

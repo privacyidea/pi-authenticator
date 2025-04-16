@@ -20,11 +20,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/utils/customization/theme_extentions/action_theme.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/totp_token.dart';
 import '../../../../../utils/animations/totp_animation.dart';
-import '../../../../../utils/customization/theme_extentions/status_colors.dart';
 import '../../../../../utils/globals.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../../../utils/utils.dart';
@@ -47,7 +47,8 @@ class TOTPTokenWidgetTile extends ConsumerStatefulWidget {
 class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with SingleTickerProviderStateMixin {
   late String currentOtpValue = widget.token.otpValue;
   late AnimationController _animationController;
-  Color? _currentColor;
+  Color? _currentOtpColor;
+  Color? _currentCountdownColor;
   double _secondsUntilNextOTP = 0;
 
   void _copyOtpValue(BuildContext context) {
@@ -82,16 +83,20 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
       callback: (v) {
         if (!mounted) return;
         setState(() {
-          _currentColor = v.color;
+          _currentOtpColor = v.otpColor;
+          _currentCountdownColor = v.countdownColor;
           _secondsUntilNextOTP = v.secondsUntilNextOTP;
         });
       },
       totalDuration: Duration(seconds: widget.token.period),
-      defaultColor: Theme.of(context).colorScheme.primary,
-      warningColor: Theme.of(context).extension<StatusColors>()!.warning,
       warningDuration: Duration(seconds: 2),
-      criticalColor: Theme.of(context).extension<StatusColors>()!.error,
       criticalDuration: Duration(seconds: 3),
+      defaultOtpColor: Theme.of(context).extension<TokenTileTheme>()!.defaultOtpColor,
+      warningOtpColor: Theme.of(context).extension<TokenTileTheme>()!.warningOtpColor,
+      criticalOtpColor: Theme.of(context).extension<TokenTileTheme>()!.criticalOtpColor,
+      defaultCountdownColor: Theme.of(context).extension<TokenTileTheme>()!.defaultCountdownColor,
+      warningCountdownColor: Theme.of(context).extension<TokenTileTheme>()!.warningCountdownColor,
+      criticalCountdownColor: Theme.of(context).extension<TokenTileTheme>()!.criticalCountdownColor,
     ).createAnimation();
   }
 
@@ -108,7 +113,7 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
       token: widget.token,
       title: insertCharAt(widget.token.otpValue, ' ', (widget.token.digits / 2).ceil()),
       titleStyle: TextStyle(
-        color: _currentColor,
+        color: _currentOtpColor,
       ),
       additionalSubtitles: widget.isPreview
           ? [
@@ -122,7 +127,7 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
           isHidden: widget.token.isHidden && !widget.isPreview,
           child: TotpTokenWidgetTileCountdown(
             period: widget.token.period,
-            currentColor: _currentColor ?? Theme.of(context).colorScheme.primary,
+            currentColor: _currentCountdownColor ?? Theme.of(context).extension<TokenTileTheme>()!.defaultCountdownColor,
             secondsUntilNextOTP: _secondsUntilNextOTP,
           ),
         ),

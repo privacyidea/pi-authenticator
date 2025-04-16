@@ -39,7 +39,7 @@ class SettingsGroupAllowScreenshot extends ConsumerWidget {
         }
         final isAllowed = snapshot.data!;
         return SettingsGroup(
-          title: isAllowed ? AppLocalizations.of(context)!.screenshotsAllowed : AppLocalizations.of(context)!.screenshotsNotAllowed,
+          title: AppLocalizations.of(context)!.allowScreenshotsTitle,
           onPressed: () async {
             if (!isAllowed) {
               final allowed = await AllowScreenshotDialog.showDialog();
