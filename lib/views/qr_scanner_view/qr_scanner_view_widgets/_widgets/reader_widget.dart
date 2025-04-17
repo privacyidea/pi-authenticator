@@ -82,12 +82,18 @@ class _ReaderWidgetState extends State<ReaderWidget> {
                         await controller?.toggleFlash();
                         setState(() {});
                       },
-                      icon: snapshot.data == true ? const Icon(Icons.flash_on) : const Icon(Icons.flash_off),
+                      icon: Icon(
+                        snapshot.data == true ? Icons.flash_on : Icons.flash_off,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                   IconButton(
                     onPressed: _onGalleryButtonTapped,
-                    icon: const Icon(Icons.image),
+                    icon: const Icon(
+                      Icons.image,
+                      color: Colors.white,
+                    ),
                   ),
                 ],
               ),
