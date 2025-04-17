@@ -25,37 +25,19 @@ import 'package:archive/archive.dart' show ArchiveFile;
 /// <br>
 /// You should also implement the following factory method for consistency:</br>
 /// ```dart
-/// factory FileablesMixin.fromFiles(Map<String, InputStream> files)
+/// factory FileablesMixin.fromFiles(List<ArchiveFile> files)
 /// ```
 mixin FileablesMixin {
-  /// The path where the file should be stored.
-  /// This is typically a directory path, e.g. '/path/to/directory/'.
-  String get filePath;
+  /// The name of the folder where the files are stored. (e.g. 'customization' without '/')
+  String get currentFolderName;
 
-  /// The file name without extension.
-  List<String> get fileNames;
+  /// All files in the folder. The path of ALL files should be begin with:
+  /// ```dart
+  /// '$currentFolderName/'
+  /// ```
+  List<ArchiveFile> toFiles();
 
-  /// The extension of the file, e.g. 'txt', 'json', etc.
-  Map<String, String> get fileExtensions;
-
-  /// The file name with extension and path.
-  List<String> get fullFileNames {
-    final fullFileNames = <String>[];
-    for (var fileName in fileNames) {
-      final fileExtension = fileExtensions[fileName] ?? 'txt';
-      if (filePath.isEmpty || !filePath.endsWith('/')) {
-        fullFileNames.add('$filePath$fileName.$fileExtension');
-      } else {
-        fullFileNames.add('$filePath/$fileName.$fileExtension');
-      }
-    }
-    return fullFileNames;
-  }
-
-  List<ArchiveFile> toFiles(String folderName);
-  List<String> getFileNames();
-
-  bool isFileName(String fileName);
+  /// factory FileablesMixin.fromFiles(List<ArchiveFile> files)
 
   static List<ArchiveFile> filesFromFolder(String folderName, List<ArchiveFile> files) {
     final archiveFiles = <ArchiveFile>[];
@@ -79,6 +61,4 @@ mixin FileablesMixin {
     }
     return archiveFiles;
   }
-
-  /// factory FileablesMixin.fromFiles(Map<String, InputStream> files)
 }

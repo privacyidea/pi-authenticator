@@ -50,10 +50,9 @@ class WidgetImage with FileableMixin {
   final Uint8List imageData;
 
   /// The file name without extension.
-  @override
+
   final String fileName;
 
-  @override
   String get fileExtension => imageFormat.extension;
 
   WidgetImage({
@@ -123,9 +122,8 @@ class WidgetImage with FileableMixin {
       );
 
   @override
-  ArchiveFile toFile(path) {
-    path = path.endsWith('/') ? path : '$path/';
-    return ArchiveFile('$path$fileName.$fileExtension', imageData.length, imageData);
+  ArchiveFile toFile() {
+    return ArchiveFile('$fileName.$fileExtension', imageData.length, imageData);
   }
 
   factory WidgetImage.fromFile(ArchiveFile file) {

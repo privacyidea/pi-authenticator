@@ -25,18 +25,10 @@ import 'package:archive/archive.dart' show ArchiveFile;
 /// <br>
 /// You should also implement the following static methods for consistency:</br>
 /// ```dart
-/// static bool isFileName(String fileName)
 /// factory FileableMixin.fromFile(ArchiveFile file)
 /// ```
 mixin FileableMixin {
-  /// The file name without extension.
-  String get fileName;
+  ArchiveFile toFile();
 
-  /// The extension of the file, e.g. 'txt', 'json', etc.
-  String get fileExtension;
-
-  ArchiveFile toFile(String path);
-
-  /// static bool isFileName(String fileName)
-  /// factory FileableMixin.fromFile(ArchiveFile file)
+  /// factory FileablesMixin.fromFile(ArchiveFile file)
 }

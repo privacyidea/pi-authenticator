@@ -40,6 +40,11 @@ extension ImageFormatX on ImageFormat {
         _ => throw Exception('Unknown extension: $ex'),
       };
 
+  static ImageFormat fromFileName(String fileName) {
+    final extension = fileName.split('.').last.toLowerCase();
+    return fromExtensionString(extension);
+  }
+
   Widget buildImageWidget(Uint8List imageData) => switch (this) {
         ImageFormat.svg => SvgPicture.memory(
             imageData,

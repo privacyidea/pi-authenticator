@@ -26,7 +26,12 @@ void _testThemeCustomization() {
       tileIconColor: Color(0xFF00000B),
       navigationBarColor: Color(0xFF00000C),
       actionButtonsForegroundColor: Color(0xFF00000D),
-      tilePrimaryColor: Color(0xFF00000E),
+      tileDefaultOtpColor: Color(0xFF00000E),
+      tileWarningOtpColor: Color(0xFF00001E),
+      tileCriticalOtpColor: Color(0xFF00002E),
+      tileDefaultCountdownColor: Color(0xFF00003E),
+      tileWarningCountdownColor: Color(0xFF00004E),
+      tileCriticalCountdownColor: Color(0xFF00005E),
       tileSubtitleColor: Color(0xFF00000F),
       navigationBarIconColor: Color(0xFF000010),
       qrButtonBackgroundColor: Color(0xFF000011),
@@ -51,7 +56,12 @@ void _testThemeCustomization() {
       expect(customization.tileIconColor, equals(const Color(0xFF00000B)));
       expect(customization.navigationBarColor, equals(const Color(0xFF00000C)));
       expect(customization.actionButtonsForegroundColor, equals(const Color(0xFF00000D)));
-      expect(customization.tilePrimaryColor, equals(const Color(0xFF00000E)));
+      expect(customization.tileDefaultOtpColor, equals(const Color(0xFF00000E)));
+      expect(customization.tileWarningOtpColor, equals(const Color(0xFF00001E)));
+      expect(customization.tileCriticalOtpColor, equals(const Color(0xFF00002E)));
+      expect(customization.tileDefaultCountdownColor, equals(const Color(0xFF00003E)));
+      expect(customization.tileWarningCountdownColor, equals(const Color(0xFF00004E)));
+      expect(customization.tileCriticalCountdownColor, equals(const Color(0xFF00005E)));
       expect(customization.tileSubtitleColor, equals(const Color(0xFF00000F)));
       expect(customization.navigationBarIconColor, equals(const Color(0xFF000010)));
       expect(customization.qrButtonBackgroundColor, equals(const Color(0xFF000011)));
@@ -77,7 +87,12 @@ void _testThemeCustomization() {
         tileIconColor: const Color(0xFFFFFFF4),
         navigationBarColor: const Color(0xFFFFFFF3),
         actionButtonsForegroundColor: () => const Color(0xFFFFFFF2),
-        tilePrimaryColor: () => const Color(0xFFFFFFF1),
+        tileDefaultOtpColor: () => const Color(0xFFFFFFF1),
+        tileWarningOtpColor: () => const Color(0xFFFFFFF0),
+        tileCriticalOtpColor: () => const Color(0xFFFFFFEF),
+        tileDefaultCountdownColor: () => const Color(0xFFFFFFEE),
+        tileWarningCountdownColor: () => const Color(0xFFFFFFED),
+        tileCriticalCountdownColor: () => const Color(0xFFFFFFEC),
         tileSubtitleColor: () => const Color(0xFFFFFFF0),
         navigationBarIconColor: () => const Color(0xFFFFFFEF),
         qrButtonBackgroundColor: () => const Color(0xFFFFFFEE),
@@ -101,7 +116,12 @@ void _testThemeCustomization() {
       expect(newCustomization.tileIconColor, equals(const Color(0xFFFFFFF4)));
       expect(newCustomization.navigationBarColor, equals(const Color(0xFFFFFFF3)));
       expect(newCustomization.actionButtonsForegroundColor, equals(const Color(0xFFFFFFF2)));
-      expect(newCustomization.tilePrimaryColor, equals(const Color(0xFFFFFFF1)));
+      expect(newCustomization.tileDefaultOtpColor, equals(const Color(0xFFFFFFF1)));
+      expect(newCustomization.tileWarningOtpColor, equals(const Color(0xFFFFFFF0)));
+      expect(newCustomization.tileCriticalOtpColor, equals(const Color(0xFFFFFFEF)));
+      expect(newCustomization.tileDefaultCountdownColor, equals(const Color(0xFFFFFFEE)));
+      expect(newCustomization.tileWarningCountdownColor, equals(const Color(0xFFFFFFED)));
+      expect(newCustomization.tileCriticalCountdownColor, equals(const Color(0xFFFFFFEC)));
       expect(newCustomization.tileSubtitleColor, equals(const Color(0xFFFFFFF0)));
       expect(newCustomization.navigationBarIconColor, equals(const Color(0xFFFFFFEF)));
       expect(newCustomization.qrButtonBackgroundColor, equals(const Color(0xFFFFFFEE)));
@@ -127,7 +147,12 @@ void _testThemeCustomization() {
           tileIconColor: Color(0xFFFFFFF4),
           navigationBarColor: Color(0xFFFFFFF3),
           actionButtonsForegroundColor: Color(0xFFFFFFF2),
-          tilePrimaryColor: Color(0xFFFFFFF1),
+          tileDefaultOtpColor: Color(0xFFFFFFF1),
+          tileWarningOtpColor: Color(0xFFFFFFF0),
+          tileCriticalOtpColor: Color(0xFFFFFFEF),
+          tileDefaultCountdownColor: Color(0xFFFFFFEE),
+          tileWarningCountdownColor: Color(0xFFFFFFED),
+          tileCriticalCountdownColor: Color(0xFFFFFFEC),
           tileSubtitleColor: Color(0xFFFFFFF0),
           navigationBarIconColor: Color(0xFFFFFFEF),
           qrButtonBackgroundColor: Color(0xFFFFFFEE),
@@ -151,7 +176,12 @@ void _testThemeCustomization() {
         expect(newCustomization.tileIconColor, equals(const Color(0xFFFFFFF4)));
         expect(newCustomization.navigationBarColor, equals(const Color(0xFFFFFFF3)));
         expect(newCustomization.actionButtonsForegroundColor, equals(const Color(0xFFFFFFF2)));
-        expect(newCustomization.tilePrimaryColor, equals(const Color(0xFFFFFFF1)));
+        expect(newCustomization.tileDefaultOtpColor, equals(const Color(0xFFFFFFF1)));
+        expect(newCustomization.tileWarningOtpColor, equals(const Color(0xFFFFFFF0)));
+        expect(newCustomization.tileCriticalOtpColor, equals(const Color(0xFFFFFFEF)));
+        expect(newCustomization.tileDefaultCountdownColor, equals(const Color(0xFFFFFFEE)));
+        expect(newCustomization.tileWarningCountdownColor, equals(const Color(0xFFFFFFED)));
+        expect(newCustomization.tileCriticalCountdownColor, equals(const Color(0xFFFFFFEC)));
         expect(newCustomization.tileSubtitleColor, equals(const Color(0xFFFFFFF0)));
         expect(newCustomization.navigationBarIconColor, equals(const Color(0xFFFFFFEF)));
         expect(newCustomization.qrButtonBackgroundColor, equals(const Color(0xFFFFFFEE)));
@@ -176,7 +206,12 @@ void _testThemeCustomization() {
           tileIconColor: Color(0xFFFFFFF4),
           navigationBarColor: Color(0xFFFFFFF3),
           actionButtonsForegroundColor: Color(0xFFFFFFF2),
-          tilePrimaryColor: Color(0xFFFFFFF1),
+          tileDefaultOtpColor: Color(0xFFFFFFF1),
+          tileWarningOtpColor: Color(0xFFFFFFF0),
+          tileCriticalOtpColor: Color(0xFFFFFFEF),
+          tileDefaultCountdownColor: Color(0xFFFFFFEE),
+          tileWarningCountdownColor: Color(0xFFFFFFED),
+          tileCriticalCountdownColor: Color(0xFFFFFFEC),
           tileSubtitleColor: Color(0xFFFFFFF0),
           navigationBarIconColor: Color(0xFFFFFFEF),
           qrButtonBackgroundColor: Color(0xFFFFFFEE),
@@ -200,7 +235,12 @@ void _testThemeCustomization() {
         expect(newCustomization.tileIconColor, equals(const Color(0xFFFFFFF4)));
         expect(newCustomization.navigationBarColor, equals(const Color(0xFFFFFFF3)));
         expect(newCustomization.actionButtonsForegroundColor, equals(const Color(0xFFFFFFF2)));
-        expect(newCustomization.tilePrimaryColor, equals(const Color(0xFFFFFFF1)));
+        expect(newCustomization.tileDefaultOtpColor, equals(const Color(0xFFFFFFF1)));
+        expect(newCustomization.tileWarningOtpColor, equals(const Color(0xFFFFFFF0)));
+        expect(newCustomization.tileCriticalOtpColor, equals(const Color(0xFFFFFFEF)));
+        expect(newCustomization.tileDefaultCountdownColor, equals(const Color(0xFFFFFFEE)));
+        expect(newCustomization.tileWarningCountdownColor, equals(const Color(0xFFFFFFED)));
+        expect(newCustomization.tileCriticalCountdownColor, equals(const Color(0xFFFFFFEC)));
         expect(newCustomization.tileSubtitleColor, equals(const Color(0xFFFFFFF0)));
         expect(newCustomization.navigationBarIconColor, equals(const Color(0xFFFFFFEF)));
         expect(newCustomization.qrButtonBackgroundColor, equals(const Color(0xFFFFFFEE)));
@@ -252,7 +292,12 @@ void _testThemeCustomization() {
         expect(newCustomization.tileIconColor, equals(const Color(0xFFFFFFF4)));
         expect(newCustomization.navigationBarColor, equals(const Color(0xFFFFFFF3)));
         expect(newCustomization.actionButtonsForegroundColor, equals(const Color(0xFFFFFFF2)));
-        expect(newCustomization.tilePrimaryColor, equals(const Color(0xFFFFFFF1)));
+        expect(newCustomization.tileDefaultOtpColor, equals(const Color(0xFFFFFFF1)));
+        expect(newCustomization.tileWarningOtpColor, equals(const Color(0xFFFFFFF0)));
+        expect(newCustomization.tileCriticalOtpColor, equals(const Color(0xFFFFFFEF)));
+        expect(newCustomization.tileDefaultCountdownColor, equals(const Color(0xFFFFFFEE)));
+        expect(newCustomization.tileWarningCountdownColor, equals(const Color(0xFFFFFFED)));
+        expect(newCustomization.tileCriticalCountdownColor, equals(const Color(0xFFFFFFEC)));
         expect(newCustomization.tileSubtitleColor, equals(const Color(0xFFFFFFF0)));
         expect(newCustomization.navigationBarIconColor, equals(const Color(0xFFFFFFEF)));
         expect(newCustomization.qrButtonBackgroundColor, equals(const Color(0xFFFFFFEE)));
@@ -302,7 +347,12 @@ void _testThemeCustomization() {
         expect(newCustomization.tileIconColor, equals(const Color(0xFFFFFFF4)));
         expect(newCustomization.navigationBarColor, equals(const Color(0xFFFFFFF3)));
         expect(newCustomization.actionButtonsForegroundColor, equals(const Color(0xFFFFFFF2)));
-        expect(newCustomization.tilePrimaryColor, equals(const Color(0xFFFFFFF1)));
+        expect(newCustomization.tileDefaultOtpColor, equals(const Color(0xFFFFFFF1)));
+        expect(newCustomization.tileWarningOtpColor, equals(const Color(0xFFFFFFF0)));
+        expect(newCustomization.tileCriticalOtpColor, equals(const Color(0xFFFFFFEF)));
+        expect(newCustomization.tileDefaultCountdownColor, equals(const Color(0xFFFFFFEE)));
+        expect(newCustomization.tileWarningCountdownColor, equals(const Color(0xFFFFFFED)));
+        expect(newCustomization.tileCriticalCountdownColor, equals(const Color(0xFFFFFFEC)));
         expect(newCustomization.tileSubtitleColor, equals(const Color(0xFFFFFFF0)));
         expect(newCustomization.navigationBarIconColor, equals(const Color(0xFFFFFFEF)));
         expect(newCustomization.qrButtonBackgroundColor, equals(const Color(0xFFFFFFEE)));
