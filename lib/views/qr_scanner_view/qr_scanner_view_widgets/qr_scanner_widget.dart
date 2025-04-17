@@ -19,9 +19,10 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:flutter_zxing/flutter_zxing.dart';
+import 'package:privacyidea_authenticator/utils/view_utils.dart';
 
 import '../../../../../../../l10n/app_localizations.dart';
+import '_widgets/reader_widget.dart';
 
 class QRScannerWidget extends StatefulWidget {
   const QRScannerWidget({super.key});
@@ -39,42 +40,17 @@ class _QRScannerWidgetState extends State<QRScannerWidget> {
         child: Semantics(
           label: isInitialized ? AppLocalizations.of(context)!.a11yScanQrCodeViewActive : AppLocalizations.of(context)!.a11yScanQrCodeViewInactive,
           child: ReaderWidget(
-            onControllerCreated: (controller, _) {
+            onQrCaptured: (barcode) {
               if (!mounted) return;
-              setState(() => isInitialized = controller != null);
+              Navigator.of(context).maybePop(barcode.code);
             },
-            actionButtonsAlignment: Alignment.bottomRight,
-            showFlashlight: true,
-            flashOnIcon: Semantics(
-              label: AppLocalizations.of(context)!.a11yScanQrCodeViewFlashlightOn,
-              child: const Icon(Icons.flash_on),
-            ),
-            flashOffIcon: Semantics(
-              label: AppLocalizations.of(context)!.a11yScanQrCodeViewFlashlightOff,
-              child: const Icon(Icons.flash_off),
-            ),
-            showGallery: true,
-            galleryIcon: Semantics(
-              label: AppLocalizations.of(context)!.a11yScanQrCodeViewGallery,
-              child: const Icon(Icons.image),
-            ),
-            showToggleCamera: false,
-            codeFormat: Format.qrCode,
-            cropPercent: 0.70,
-            scannerOverlay: const DynamicScannerOverlay(
-              borderColor: Colors.white,
-              overlayColor: Colors.black54,
-              borderLength: 32,
-              borderWidth: 6,
-              cutOutSize: 0.7,
-            ),
-            onScan: _onQrCaptured,
+            onQrInvalid: () {
+              if (!mounted) return;
+              showErrorStatusMessage(
+                message: (l) => l.qrFileDecodeError,
+              );
+            },
           ),
         ),
       );
-
-  void _onQrCaptured(Code qrCode) {
-    if (!mounted) return;
-    Navigator.of(context).maybePop(qrCode.text);
-  }
 }
