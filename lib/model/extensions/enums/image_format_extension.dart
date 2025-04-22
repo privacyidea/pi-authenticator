@@ -37,7 +37,7 @@ extension ImageFormatX on ImageFormat {
         'gif' => ImageFormat.gif,
         'bmp' => ImageFormat.bmp,
         'webp' => ImageFormat.webp,
-        _ => throw Exception('Unknown extension: $ex'),
+        _ => ImageFormat.unknown,
       };
 
   static ImageFormat fromFileName(String fileName) {
@@ -45,7 +45,43 @@ extension ImageFormatX on ImageFormat {
     return fromExtensionString(extension);
   }
 
+  String get extension => switch (this) {
+        ImageFormat.unknown => '',
+        ImageFormat.svg => 'svg',
+        ImageFormat.svgz => 'svgz',
+        ImageFormat.png => 'png',
+        ImageFormat.jpg => 'jpg',
+        ImageFormat.jpeg => 'jpeg',
+        ImageFormat.gif => 'gif',
+        ImageFormat.bmp => 'bmp',
+        ImageFormat.webp => 'webp',
+      };
+
+  Widget _tryAllFormats(Uint8List imageData) {
+    try {
+      return SvgPicture.memory(
+        imageData,
+        colorFilter: ColorFilter.mode(
+          Colors.transparent,
+          BlendMode.srcOver,
+        ),
+      );
+      // ignore: empty_catches
+    } catch (e) {}
+
+    try {
+      return Image.memory(
+        imageData,
+        colorBlendMode: BlendMode.srcOver,
+      );
+      // ignore: empty_catches
+    } catch (e) {}
+    Logger.warning('Could not decode image data for format: $this');
+    return const SizedBox.shrink();
+  }
+
   Widget buildImageWidget(Uint8List imageData) => switch (this) {
+        ImageFormat.unknown => _tryAllFormats(imageData),
         ImageFormat.svg => SvgPicture.memory(
             imageData,
             colorFilter: ColorFilter.mode(
@@ -90,6 +126,17 @@ extension ImageFormatX on ImageFormat {
     double? width;
     double? height;
     switch (this) {
+      case ImageFormat.unknown:
+        final image = _tryAllFormats(imageData);
+        if (image is SvgPicture) {
+          width = image.width;
+          height = image.height;
+        } else if (image is Image) {
+          final decodedImage = await decodeImageFromList(imageData);
+          width = decodedImage.width.toDouble();
+          height = decodedImage.height.toDouble();
+        }
+        break;
       case ImageFormat.svg:
       case ImageFormat.svgz:
         final image = SvgPicture.memory(imageData);
@@ -115,9 +162,17 @@ extension ImageFormatX on ImageFormat {
     return Size(width, height);
   }
 
-  String get extension => toString().split('.').last;
+  /// Adds the file extension to the given [fileName] based on the [ImageFormat] if it is not already present.
+  /// If the [ImageFormat] is [ImageFormat.unknown], it returns the original [fileName].
+  String addExtension(String fileName) {
+    if (this == ImageFormat.unknown) return fileName;
+    final extension = toString().split('.').last;
+    if (fileName.endsWith(extension)) return fileName;
+    return '$fileName.$extension';
+  }
 
   String get name => switch (this) {
+        ImageFormat.unknown => 'Unknown',
         ImageFormat.svg => 'Scalable Vector Graphic',
         ImageFormat.svgz => 'Scalable Vector Graphic (compressed)',
         ImageFormat.png => 'PNG',
@@ -129,6 +184,7 @@ extension ImageFormatX on ImageFormat {
       };
 
   String get mimeType => switch (this) {
+        ImageFormat.unknown => 'application/octet-stream',
         ImageFormat.svg => 'image/svg+xml',
         ImageFormat.svgz => 'image/svg+xml',
         ImageFormat.png => 'image/png',
@@ -142,8 +198,8 @@ extension ImageFormatX on ImageFormat {
   /// Builds an [XFile] from the given [imageData] and [fileName].
   /// The [fileName] is used as the name of the file.
   /// The file extension is determined by the [ImageFormat].
-  XFile buildXFile(Uint8List imageData, String fileName) => XFile.fromData(imageData, name: "$fileName.$extension");
+  XFile buildXFile(Uint8List imageData, String fileName) => XFile.fromData(imageData, name: addExtension(fileName), mimeType: mimeType);
 
   /// Compares the given [extension] with the extension of this [ImageFormat] case-insensitive.
-  bool matches(String extension) => extension.toLowerCase() == this.extension.toLowerCase();
+  bool matches(String extension) => extension.toLowerCase() == toString().split('.').last.toLowerCase();
 }
