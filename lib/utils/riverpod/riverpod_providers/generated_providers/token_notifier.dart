@@ -122,6 +122,32 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   //   /// Repository layer is always use _repoMutex for the latest state
   //   */
 
+  Future<TokenState> _setState(TokenState tokenState) async {
+    await _stateMutex.acquire();
+    final repoTokens = await repo.loadTokens();
+    final notRemoved = await repo.deleteTokens(repoTokens);
+    if (notRemoved.isNotEmpty) {
+      Logger.error('Failed to set state: Removing old tokens unsuccessful. (${notRemoved.length}/${repoTokens.length})... Undoing changes.');
+      repo.saveOrReplaceTokens(repoTokens);
+      _stateMutex.release();
+      return await future;
+    }
+    var notSaved = await repo.saveOrReplaceTokens(tokenState.tokens);
+    if (notSaved.isNotEmpty) {
+      Logger.warning('Retrying to set state: Saving new tokens unsuccessful. (${notSaved.length}/${tokenState.tokens.length})... Retrying.');
+      notSaved = await repo.saveOrReplaceTokens(notSaved);
+      if (notSaved.isNotEmpty) {
+        Logger.error('Failed to set state: Retry Saving new tokens unsuccessful. (${notSaved.length}/${tokenState.tokens.length})... .');
+        _stateMutex.release();
+        state = AsyncValue.data(tokenState.withoutTokens(notSaved));
+        return await future;
+      }
+    }
+    state = AsyncValue.data(tokenState);
+    _stateMutex.release();
+    return tokenState;
+  }
+
   /// Loads the tokens from the repository and returns them as a [TokenState].
   Future<TokenState> _loadStateFromRepo() async {
     await _repoMutex.acquire();
@@ -346,6 +372,8 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   //////////////////////////////////////////////////////////////////////////////
   /// There is no need to use mutexes because the updating functions are always using the latest version of the updating tokens.
   */
+
+  Future<bool> setState(TokenState tokenState) async => await _setState(tokenState) == tokenState;
 
   /// Adds a new token and returns true if successful, false if not.
   Future<bool> addNewToken(Token token) async {

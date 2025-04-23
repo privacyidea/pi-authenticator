@@ -77,6 +77,20 @@ class TokenFolderNotifier extends _$TokenFolderNotifier {
     return true;
   }
 
+  Future<TokenFolderState> setState(TokenFolderState folderState1) async {
+    await _stateMutex.acquire();
+    final oldState = state;
+    final success = await _saveToRepo(folderState1);
+    if (!success) {
+      Logger.warning('Failed to set folders');
+      _stateMutex.release();
+      return oldState;
+    }
+    state = folderState1;
+    _stateMutex.release();
+    return folderState1;
+  }
+
   Future<TokenFolderState> addNewFolder(String name) async {
     await _stateMutex.acquire();
     final oldState = state;

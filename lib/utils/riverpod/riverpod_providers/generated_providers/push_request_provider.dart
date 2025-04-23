@@ -127,6 +127,20 @@ class PushRequestNotifier extends _$PushRequestNotifier {
     return loadedState;
   }
 
+  /// Saves the current state to the repo. Returns true if successful, false if not.
+  Future<bool> _saveToRepo(PushRequestState state) async {
+    await loadingRepoMutex.acquire();
+    try {
+      await _pushRepo.saveState(state);
+    } catch (e) {
+      Logger.error('Failed to save push request state to repo.', error: e);
+      loadingRepoMutex.release();
+      return false;
+    }
+    loadingRepoMutex.release();
+    return true;
+  }
+
   /// Adds a PushRequest to repo and state. Returns true if successful, false if not.
   /// If the request already exists, it will be replaced.
   Future<bool> _addOrReplacePushRequest(PushRequest pushRequest) async {
@@ -202,6 +216,17 @@ class PushRequestNotifier extends _$PushRequestNotifier {
   /// Updating layer is always use updatingRequestMutex for the latest state
   */
 
+  Future<PushRequestState> _setState(PushRequestState pushState) async {
+    final success = await _saveToRepo(pushState);
+    if (!success) {
+      Logger.warning('Failed to set push request state.');
+      return (await future);
+    }
+    state = AsyncValue.data(pushState);
+    _renewTimers(pushState.pushRequests);
+    return pushState;
+  }
+
   /// Updates a PushRequest of the current state. The updated PushRequest is saved to the repo and the state. Returns the updated PushRequest if successful, null if not.
   Future<PushRequest?> _updatePushRequest(PushRequest pushRequest, Future<PushRequest> Function(PushRequest) updater) async {
     await updatingRequestMutex.acquire();
@@ -223,6 +248,8 @@ class PushRequestNotifier extends _$PushRequestNotifier {
   //////////////////////////////////////////////////////////////////////////////
   /// There is no need to use mutexes because the updating functions are always using the latest version of the updating tokens.
   */
+
+  Future<PushRequestState> setState(PushRequestState pushState) => _setState(pushState);
 
   Future<void> pollForChallenges({required bool isManually}) => pushProvider.pollForChallenges(isManually: isManually);
 
