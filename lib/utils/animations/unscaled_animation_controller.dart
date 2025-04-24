@@ -45,8 +45,9 @@ class UnscaledAnimationController extends Animation<double> {
         assert(duration.inMicroseconds > 0, 'duration must be greater than 0'),
         value = lowerBound;
 
-  void _setStatus(AnimationStatus status) {
-    this.status = status;
+  void _setStatus(AnimationStatus newStatus) {
+    if (status == newStatus) return;
+    status = newStatus;
     for (var statusListener in _statusListeners) {
       statusListener(status);
     }
@@ -54,11 +55,10 @@ class UnscaledAnimationController extends Animation<double> {
 
   void _setValue(double newValue) {
     newValue = newValue.clamp(lowerBound, upperBound);
-    if (value != newValue) {
-      value = newValue;
-      for (var listener in _listeners) {
-        listener();
-      }
+    if (newValue == value) return;
+    value = newValue;
+    for (var listener in _listeners) {
+      listener();
     }
   }
 
@@ -76,10 +76,12 @@ class UnscaledAnimationController extends Animation<double> {
     _timer?.cancel();
     _timer = Timer.periodic(Duration(milliseconds: (_refreshInterval * 1000).toInt()), (timer) {
       final newValue = value + _refreshInterval * (upperBound - lowerBound) / duration.inSeconds;
-      _setValue(newValue);
       if (value >= upperBound) {
+        _setValue(upperBound);
         timer.cancel();
         _setStatus(AnimationStatus.completed);
+      } else {
+        _setValue(newValue);
       }
     });
   }
@@ -90,23 +92,21 @@ class UnscaledAnimationController extends Animation<double> {
     _timer?.cancel();
     _timer = Timer.periodic(Duration(milliseconds: (_refreshInterval * 1000).toInt()), (timer) {
       final newValue = value + _refreshInterval * (upperBound - lowerBound) / duration.inSeconds;
-      _setValue(newValue);
       if (value <= lowerBound) {
+        _setValue(lowerBound);
         timer.cancel();
         _setStatus(AnimationStatus.dismissed);
+      } else {
+        _setValue(newValue);
       }
     });
   }
 
   void stop() {
     _timer?.cancel();
-    if (value == lowerBound) {
-      _setStatus(AnimationStatus.dismissed);
-    } else if (value == upperBound) {
-      _setStatus(AnimationStatus.completed);
-    } else {
-      _setStatus(AnimationStatus.forward);
-    }
+    _timer = null;
+    _setValue(lowerBound);
+    _setStatus(AnimationStatus.dismissed);
   }
 
   @override

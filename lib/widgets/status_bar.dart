@@ -117,10 +117,10 @@ class _StatusBarOverlayEntryState extends State<StatusBarOverlayEntry> with Sing
       ..addListener(() {
         setState(() {});
       });
-    autoDismissAnimation.addListener(() {
+    autoDismissAnimation.addStatusListener((status) {
       if (mounted) {
         setState(() {});
-        if (autoDismissAnimation.isCompleted) {
+        if (status.isCompleted) {
           onDismissed(DismissDirection.endToStart);
         }
       }
