@@ -24,7 +24,12 @@ import '../../../../model/enums/token_types.dart';
 import '../labeled_dropdown_button.dart';
 
 class TokenTypeDropdownButton extends StatelessWidget {
-  static List<TokenTypes> values = TokenTypes.values.toList()..remove(TokenTypes.PIPUSH);
+  static List<TokenTypes> values = [
+    TokenTypes.HOTP,
+    TokenTypes.TOTP,
+    TokenTypes.DAYPASSWORD,
+    TokenTypes.STEAM,
+  ];
 
   final ValueNotifier<TokenTypes> typeNotifier;
   const TokenTypeDropdownButton({super.key, required this.typeNotifier});

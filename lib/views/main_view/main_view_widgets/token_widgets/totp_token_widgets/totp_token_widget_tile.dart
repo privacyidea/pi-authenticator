@@ -25,6 +25,7 @@ import 'package:privacyidea_authenticator/utils/customization/theme_extentions/a
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/totp_token.dart';
 import '../../../../../utils/animations/totp_animation.dart';
+import '../../../../../utils/animations/unscaled_animation_controller.dart';
 import '../../../../../utils/globals.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../../../utils/utils.dart';
@@ -46,7 +47,7 @@ class TOTPTokenWidgetTile extends ConsumerStatefulWidget {
 
 class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with SingleTickerProviderStateMixin {
   late String currentOtpValue = widget.token.otpValue;
-  late AnimationController _animationController;
+  late UnscaledAnimationController _animationController;
   Color? _currentOtpColor;
   Color? _currentCountdownColor;
   double _secondsUntilNextOTP = 0;

@@ -26,6 +26,7 @@ void _testThemeCustomization() {
       tileIconColor: Color(0xFF00000B),
       navigationBarColor: Color(0xFF00000C),
       actionButtonsForegroundColor: Color(0xFF00000D),
+      pushAuthRequestAcceptColor: Color(0xFF00000E),
       tileDefaultOtpColor: Color(0xFF00000E),
       tileWarningOtpColor: Color(0xFF00001E),
       tileCriticalOtpColor: Color(0xFF00002E),
@@ -267,14 +268,15 @@ void _testThemeCustomization() {
           'disabledColor': 0xFFFFFFF5,
           'tileIconColor': 0xFFFFFFF4,
           'navigationBarColor': 0xFFFFFFF3,
-          '_actionButtonsForegroundColor': 0xFFFFFFF2,
-          '_tilePrimaryColor': 0xFFFFFFF1,
-          '_tileSubtitleColor': 0xFFFFFFF0,
-          '_navigationBarIconColor': 0xFFFFFFEF,
-          '_qrButtonBackgroundColor': 0xFFFFFFEE,
-          '_qrButtonIconColor': 0xFFFFFFED,
-          'warningColor': 0xFFFFFFEC,
-          'successColor': 0xFFFFFFEB,
+          'warningColor': 0xFFFFFFF2,
+          'successColor': 0xFFFFFFF1,
+          '_pushAuthRequestAcceptColor': 0xFFFFFFF0,
+          '_actionButtonsForegroundColor': 0xFFFFFFEF,
+          '_tilePrimaryColor': 0xFFFFFFEE,
+          '_tileSubtitleColor': 0xFFFFFFED,
+          '_navigationBarIconColor': 0xFFFFFFEC,
+          '_qrButtonBackgroundColor': 0xFFFFFFEB,
+          '_qrButtonIconColor': 0xFFFFFFEA,
         });
         // Assert
         expect(newCustomization.brightness, equals(Brightness.light));
@@ -291,46 +293,55 @@ void _testThemeCustomization() {
         expect(newCustomization.disabledColor, equals(const Color(0xFFFFFFF5)));
         expect(newCustomization.tileIconColor, equals(const Color(0xFFFFFFF4)));
         expect(newCustomization.navigationBarColor, equals(const Color(0xFFFFFFF3)));
-        expect(newCustomization.actionButtonsForegroundColor, equals(const Color(0xFFFFFFF2)));
-        expect(newCustomization.tileDefaultOtpColor, equals(const Color(0xFFFFFFF1)));
-        expect(newCustomization.tileWarningOtpColor, equals(const Color(0xFFFFFFF0)));
-        expect(newCustomization.tileCriticalOtpColor, equals(const Color(0xFFFFFFEF)));
+        expect(newCustomization.warningColor, equals(const Color(0xFFFFFFF2)));
+        expect(newCustomization.successColor, equals(const Color(0xFFFFFFF1)));
+        expect(newCustomization.pushAuthRequestAcceptColor, equals(const Color(0xFFFFFFF0)));
+        expect(newCustomization.actionButtonsForegroundColor, equals(const Color(0xFFFFFFEF)));
+        expect(newCustomization.tileDefaultOtpColor, equals(const Color(0xFFFFFFEE)));
         expect(newCustomization.tileDefaultCountdownColor, equals(const Color(0xFFFFFFEE)));
-        expect(newCustomization.tileWarningCountdownColor, equals(const Color(0xFFFFFFED)));
-        expect(newCustomization.tileCriticalCountdownColor, equals(const Color(0xFFFFFFEC)));
-        expect(newCustomization.tileSubtitleColor, equals(const Color(0xFFFFFFF0)));
-        expect(newCustomization.navigationBarIconColor, equals(const Color(0xFFFFFFEF)));
-        expect(newCustomization.qrButtonBackgroundColor, equals(const Color(0xFFFFFFEE)));
-        expect(newCustomization.qrButtonIconColor, equals(const Color(0xFFFFFFED)));
-        expect(newCustomization.warningColor, equals(const Color(0xFFFFFFEC)));
-        expect(newCustomization.successColor, equals(const Color(0xFFFFFFEB)));
+        expect(newCustomization.tileSubtitleColor, equals(const Color(0xFFFFFFED)));
+        expect(newCustomization.navigationBarIconColor, equals(const Color(0xFFFFFFEC)));
+        expect(newCustomization.qrButtonBackgroundColor, equals(const Color(0xFFFFFFEB)));
+        expect(newCustomization.qrButtonIconColor, equals(const Color(0xFFFFFFEA)));
+        expect(newCustomization.tileWarningOtpColor, equals(null));
+        expect(newCustomization.tileCriticalOtpColor, equals(null));
+        expect(newCustomization.tileWarningCountdownColor, equals(null));
+        expect(newCustomization.tileCriticalCountdownColor, equals(null));
       });
       test('fromJson (new)', () {
+        // Arrange
+        final json = {
+          "brightness": "light",
+          "primaryColor": {"a": 1.0, "r": 1.0, "g": 1.0, "b": 1.0},
+          "onPrimary": {"a": 1.0, "r": 1.0, "g": 1.0, "b": 0.996078431372549},
+          "subtitleColor": {"a": 1.0, "r": 1.0, "g": 1.0, "b": 0.9921568627450981},
+          "backgroundColor": {"a": 1.0, "r": 1.0, "g": 1.0, "b": 0.9882352941176471},
+          "foregroundColor": {"a": 1.0, "r": 1.0, "g": 1.0, "b": 0.984313725490196},
+          "shadowColor": {"a": 1.0, "r": 1.0, "g": 1.0, "b": 0.9803921568627451},
+          "deleteColor": {"a": 1.0, "r": 1.0, "g": 1.0, "b": 0.9764705882352941},
+          "renameColor": {"a": 1.0, "r": 1.0, "g": 1.0, "b": 0.9725490196078431},
+          "lockColor": {"a": 1.0, "r": 1.0, "g": 1.0, "b": 0.9686274509803922},
+          "exportColor": {"a": 1.0, "r": 1.0, "g": 1.0, "b": 0.9647058823529412},
+          "disabledColor": {"a": 1.0, "r": 1.0, "g": 1.0, "b": 0.9607843137254902},
+          "tileIconColor": {"a": 1.0, "r": 1.0, "g": 1.0, "b": 0.9568627450980393},
+          "navigationBarColor": {"a": 1.0, "r": 1.0, "g": 1.0, "b": 0.9529411764705882},
+          "warningColor": {"a": 1.0, "r": 1.0, "g": 1.0, "b": 0.9490196078431372},
+          "successColor": {"a": 1.0, "r": 1.0, "g": 1.0, "b": 0.9450980392156862},
+          "_pushAuthRequestAcceptColor": {"a": 1.0, "r": 1.0, "g": 1.0, "b": 0.9411764705882353},
+          "_actionButtonsForegroundColor": {"a": 1.0, "r": 1.0, "g": 1.0, "b": 0.9372549019607843},
+          "_tileDefaultOtpColor": {"a": 1.0, "r": 1.0, "g": 1.0, "b": 0.9333333333333333},
+          "_tileDefaultCountdownColor": {"a": 1.0, "r": 1.0, "g": 1.0, "b": 0.9294117647058824},
+          "_tileSubtitleColor": {"a": 1.0, "r": 1.0, "g": 1.0, "b": 0.9254901960784314},
+          "_navigationBarIconColor": {"a": 1.0, "r": 1.0, "g": 1.0, "b": 0.9215686274509803},
+          "_qrButtonBackgroundColor": {"a": 1.0, "r": 1.0, "g": 1.0, "b": 0.9176470588235294},
+          "_qrButtonIconColor": {"a": 1.0, "r": 1.0, "g": 1.0, "b": 0.9137254901960784},
+          "tileWarningOtpColor": {"a": 1.0, "r": 1.0, "g": 1.0, "b": 0.9098039215686274},
+          "tileCriticalOtpColor": {"a": 1.0, "r": 1.0, "g": 1.0, "b": 0.9058823529411765},
+          "tileWarningCountdownColor": {"a": 1.0, "r": 1.0, "g": 1.0, "b": 0.9019607843137255},
+          "tileCriticalCountdownColor": {"a": 1.0, "r": 1.0, "g": 1.0, "b": 0.8980392156862745}
+        };
         // Act
-        final newCustomization = ThemeCustomization.fromJson({
-          'brightness': 'light',
-          'primaryColor': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 1.0},
-          'onPrimary': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 0.996078431372549},
-          'subtitleColor': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 0.9921568627450981},
-          'backgroundColor': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 0.9882352941176471},
-          'foregroundColor': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 0.984313725490196},
-          'shadowColor': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 0.9803921568627451},
-          'deleteColor': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 0.9764705882352941},
-          'renameColor': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 0.9725490196078431},
-          'lockColor': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 0.9686274509803922},
-          'exportColor': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 0.9647058823529412},
-          'disabledColor': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 0.9607843137254902},
-          'tileIconColor': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 0.9568627450980393},
-          'navigationBarColor': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 0.9529411764705882},
-          '_actionButtonsForegroundColor': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 0.9490196078431372},
-          '_tilePrimaryColor': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 0.9450980392156862},
-          '_tileSubtitleColor': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 0.9411764705882353},
-          '_navigationBarIconColor': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 0.9372549019607843},
-          '_qrButtonBackgroundColor': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 0.9333333333333333},
-          '_qrButtonIconColor': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 0.9294117647058824},
-          'warningColor': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 0.9254901960784314},
-          'successColor': {'a': 1.0, 'r': 1.0, 'g': 1.0, 'b': 0.9215686274509803},
-        });
+        final newCustomization = ThemeCustomization.fromJson(json);
         // Assert
         expect(newCustomization.brightness, equals(Brightness.light));
         expect(newCustomization.primaryColor, equals(const Color(0xFFFFFFFF)));
@@ -346,24 +357,27 @@ void _testThemeCustomization() {
         expect(newCustomization.disabledColor, equals(const Color(0xFFFFFFF5)));
         expect(newCustomization.tileIconColor, equals(const Color(0xFFFFFFF4)));
         expect(newCustomization.navigationBarColor, equals(const Color(0xFFFFFFF3)));
-        expect(newCustomization.actionButtonsForegroundColor, equals(const Color(0xFFFFFFF2)));
-        expect(newCustomization.tileDefaultOtpColor, equals(const Color(0xFFFFFFF1)));
-        expect(newCustomization.tileWarningOtpColor, equals(const Color(0xFFFFFFF0)));
-        expect(newCustomization.tileCriticalOtpColor, equals(const Color(0xFFFFFFEF)));
-        expect(newCustomization.tileDefaultCountdownColor, equals(const Color(0xFFFFFFEE)));
-        expect(newCustomization.tileWarningCountdownColor, equals(const Color(0xFFFFFFED)));
-        expect(newCustomization.tileCriticalCountdownColor, equals(const Color(0xFFFFFFEC)));
-        expect(newCustomization.tileSubtitleColor, equals(const Color(0xFFFFFFF0)));
-        expect(newCustomization.navigationBarIconColor, equals(const Color(0xFFFFFFEF)));
-        expect(newCustomization.qrButtonBackgroundColor, equals(const Color(0xFFFFFFEE)));
-        expect(newCustomization.qrButtonIconColor, equals(const Color(0xFFFFFFED)));
-        expect(newCustomization.warningColor, equals(const Color(0xFFFFFFEC)));
-        expect(newCustomization.successColor, equals(const Color(0xFFFFFFEB)));
+        expect(newCustomization.warningColor, equals(const Color(0xFFFFFFF2)));
+        expect(newCustomization.successColor, equals(const Color(0xFFFFFFF1)));
+        expect(newCustomization.pushAuthRequestAcceptColor, equals(const Color(0xFFFFFFF0)));
+        expect(newCustomization.actionButtonsForegroundColor, equals(const Color(0xFFFFFFEF)));
+        expect(newCustomization.tileDefaultOtpColor, equals(const Color(0xFFFFFFEE)));
+        expect(newCustomization.tileDefaultCountdownColor, equals(const Color(0xFFFFFFED)));
+        expect(newCustomization.tileSubtitleColor, equals(const Color(0xFFFFFFEC)));
+        expect(newCustomization.navigationBarIconColor, equals(const Color(0xFFFFFFEB)));
+        expect(newCustomization.qrButtonBackgroundColor, equals(const Color(0xFFFFFFEA)));
+        expect(newCustomization.qrButtonIconColor, equals(const Color(0xFFFFFFE9)));
+        expect(newCustomization.tileWarningOtpColor, equals(const Color(0xFFFFFFE8)));
+        expect(newCustomization.tileCriticalOtpColor, equals(const Color(0xFFFFFFE7)));
+        expect(newCustomization.tileWarningCountdownColor, equals(const Color(0xFFFFFFE6)));
+        expect(newCustomization.tileCriticalCountdownColor, equals(const Color(0xFFFFFFE5)));
       });
       test('toJson (new)', () {
         // Act
         final json = customization.toJson();
+        print(json);
         // Assert
+
         expect(json['brightness'], equals('dark'));
         expect(json['primaryColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.0}));
         expect(json['onPrimary'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.00392156862745098}));
@@ -378,14 +392,20 @@ void _testThemeCustomization() {
         expect(json['disabledColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.0392156862745098}));
         expect(json['tileIconColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.043137254901960784}));
         expect(json['navigationBarColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.047058823529411764}));
+        expect(json['warningColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.07450980392156863}));
+        expect(json['successColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.0784313725490196}));
+        expect(json['_pushAuthRequestAcceptColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.054901960784313725}));
         expect(json['_actionButtonsForegroundColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.050980392156862744}));
-        expect(json['_tilePrimaryColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.054901960784313725}));
+        expect(json['_tileDefaultOtpColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.054901960784313725}));
+        expect(json['_tileDefaultCountdownColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.24313725490196078}));
         expect(json['_tileSubtitleColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.058823529411764705}));
         expect(json['_navigationBarIconColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.06274509803921569}));
         expect(json['_qrButtonBackgroundColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.06666666666666667}));
         expect(json['_qrButtonIconColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.07058823529411765}));
-        expect(json['warningColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.07450980392156863}));
-        expect(json['successColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.0784313725490196}));
+        expect(json['tileWarningOtpColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.11764705882352941}));
+        expect(json['tileCriticalOtpColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.1803921568627451}));
+        expect(json['tileWarningCountdownColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.3058823529411765}));
+        expect(json['tileCriticalCountdownColor'], equals({'a': 1.0, 'r': 0.0, 'g': 0.0, 'b': 0.3686274509803922}));
       });
     });
   });

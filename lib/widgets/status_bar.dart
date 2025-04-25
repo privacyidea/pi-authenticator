@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/utils/animations/unscaled_animation_controller.dart';
 
 import '../l10n/app_localizations.dart';
 import '../utils/customization/theme_extentions/status_colors.dart';
@@ -104,29 +105,29 @@ class _StatusBarOverlayEntryState extends State<StatusBarOverlayEntry> with Sing
   static const double margin = 10;
   static const double padding = 10;
   static const Duration showDuration = Duration(seconds: 5);
-  late AnimationController autoDismissAnimationController;
+  late UnscaledAnimationController controller;
   late Animation autoDismissAnimation;
   late Function(DismissDirection) onDismissed;
 
   @override
   void initState() {
-    autoDismissAnimationController = AnimationController(vsync: this, duration: showDuration);
-    final curvedAnimation = CurvedAnimation(parent: autoDismissAnimationController, curve: Curves.easeOut);
+    controller = UnscaledAnimationController(duration: showDuration);
+    final curvedAnimation = CurvedAnimation(parent: controller, curve: Curves.easeOut);
     autoDismissAnimation = Tween<double>(begin: 1, end: 0).animate(curvedAnimation)
       ..addListener(() {
         setState(() {});
       });
-    autoDismissAnimation.addListener(() {
+    autoDismissAnimation.addStatusListener((status) {
       if (mounted) {
         setState(() {});
-        if (autoDismissAnimation.isCompleted) {
+        if (status.isCompleted) {
           onDismissed(DismissDirection.endToStart);
         }
       }
     });
 
     onDismissed = (DismissDirection direction) {
-      autoDismissAnimationController.stop();
+      controller.stop();
       widget.onDismissed(direction);
     };
 
@@ -169,7 +170,7 @@ class _StatusBarOverlayEntryState extends State<StatusBarOverlayEntry> with Sing
       onEnd: () {
         if (mounted) {
           setState(() {
-            autoDismissAnimationController.forward();
+            controller.forward();
           });
         }
       },
@@ -183,10 +184,10 @@ class _StatusBarOverlayEntryState extends State<StatusBarOverlayEntry> with Sing
         child: GestureDetector(
           onTap: () {
             if (mounted) {
-              if (autoDismissAnimationController.isAnimating) {
-                autoDismissAnimationController.stop();
+              if (controller.isAnimating) {
+                controller.stop();
               } else {
-                autoDismissAnimationController.forward();
+                controller.forward();
               }
             }
           },
