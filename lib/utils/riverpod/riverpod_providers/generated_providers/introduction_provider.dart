@@ -96,5 +96,9 @@ class IntroductionNotifier extends _$IntroductionNotifier {
     state = AsyncValue.data(newState);
   }
 
-  setState(IntroductionState introductionState) {}
+  Future<void> setState(IntroductionState introductionState) async {
+    Logger.info('Setting introduction state: $introductionState');
+    await _saveToRepo(introductionState);
+    state = AsyncValue.data(introductionState);
+  }
 }

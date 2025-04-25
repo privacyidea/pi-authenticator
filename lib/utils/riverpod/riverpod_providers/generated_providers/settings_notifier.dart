@@ -165,5 +165,8 @@ class SettingsNotifier extends _$SettingsNotifier {
     return updateState((oldState) => oldState.copyWith(showBackgroundImage: !oldState.showBackgroundImage));
   }
 
-  setState(SettingsState settingsState) {}
+  Future<SettingsState> setState(SettingsState settingsState) {
+    Logger.info('Setting settings state: $settingsState');
+    return updateState((oldState) => settingsState);
+  }
 }
