@@ -52,6 +52,7 @@ class _MutexButtonState extends State<MutexButton> {
               ? () => m.protect(() async {
                     setState(() => isPressable = false);
                     await widget.onPressed!();
+                    if (!mounted) return;
                     setState(() => isPressable = true);
                   })
               : null,

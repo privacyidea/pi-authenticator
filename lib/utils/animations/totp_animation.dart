@@ -19,6 +19,7 @@
  */
 import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/model/extensions/color_extension.dart';
+import 'package:privacyidea_authenticator/utils/animations/unscaled_animation_controller.dart';
 
 class TotpAnimation {
   final BuildContext context;
@@ -63,9 +64,8 @@ class TotpAnimation {
   DateTime lastResync = DateTime.now();
 
   /// The initial elapsed time is [initPassedTime].
-  AnimationController createAnimation() {
-    final colorAnimation = AnimationController(
-      vsync: vsync,
+  UnscaledAnimationController createAnimation() {
+    final colorAnimation = UnscaledAnimationController(
       lowerBound: 0,
       upperBound: totalDuration.inSeconds.toDouble(),
       duration: totalDuration,
