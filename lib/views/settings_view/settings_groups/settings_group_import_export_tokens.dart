@@ -77,7 +77,7 @@ class _SettingsGroupImportExportTokensState extends ConsumerState<SettingsGroupI
   }
 
   void _exportDialog() async {
-    bool? isAccepted = (await ref.read(introductionNotifierProvider.future)).isCompleted(Introduction.exportTokens) ? true : null;
+    bool? isAccepted = (await ref.read(introductionProvider.future)).isCompleted(Introduction.exportTokens) ? true : null;
     if (!mounted) return;
     final appLocalizations = AppLocalizations.of(context)!;
     isAccepted ??= await showDialog<bool>(
@@ -99,7 +99,7 @@ class _SettingsGroupImportExportTokensState extends ConsumerState<SettingsGroupI
         ],
       ),
     );
-    if (isAccepted == true) await ref.read(introductionNotifierProvider.notifier).complete(Introduction.exportTokens);
+    if (isAccepted == true) await ref.read(introductionProvider.notifier).complete(Introduction.exportTokens);
     if (isAccepted != true || !mounted) return;
     final isExported = await showDialog<bool>(
       useRootNavigator: false,

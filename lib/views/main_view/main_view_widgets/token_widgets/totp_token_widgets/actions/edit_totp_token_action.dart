@@ -54,12 +54,12 @@ class EditTOTPTokenAction extends ConsumerSlideableAction {
         tooltipWhenFocused: AppLocalizations.of(context)!.introEditToken,
         childIsMoving: true,
         alignment: Alignment.bottomCenter,
-        isFocused: ref.watch(introductionNotifierProvider).when(
+        isFocused: ref.watch(introductionProvider).when(
               data: (value) => value.isConditionFulfilled(ref, Introduction.editToken),
               error: (Object error, StackTrace stackTrace) => false,
               loading: () => false,
             ),
-        onComplete: () => ref.read(introductionNotifierProvider.notifier).complete(Introduction.editToken),
+        onComplete: () => ref.read(introductionProvider.notifier).complete(Introduction.editToken),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,

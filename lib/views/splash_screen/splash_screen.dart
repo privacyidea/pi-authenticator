@@ -52,7 +52,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     _customization = widget.customization;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_customization.disabledFeatures.contains(AppFeature.introductions)) {
-        ref.read(introductionNotifierProvider.notifier).completeAll();
+        ref.read(introductionProvider.notifier).completeAll();
       }
     });
 

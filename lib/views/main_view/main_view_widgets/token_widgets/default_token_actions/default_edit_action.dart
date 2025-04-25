@@ -53,12 +53,12 @@ class DefaultEditAction extends ConsumerSlideableAction {
         child: FocusedItemAsOverlay(
           tooltipWhenFocused: AppLocalizations.of(context)!.editToken,
           childIsMoving: true,
-          isFocused: ref.watch(introductionNotifierProvider).when(
+          isFocused: ref.watch(introductionProvider).when(
                 data: (value) => value.isConditionFulfilled(ref, Introduction.editToken),
                 error: (Object error, StackTrace stackTrace) => false,
                 loading: () => false,
               ),
-          onComplete: () => ref.read(introductionNotifierProvider.notifier).complete(Introduction.editToken),
+          onComplete: () => ref.read(introductionProvider.notifier).complete(Introduction.editToken),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,

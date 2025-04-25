@@ -38,7 +38,7 @@ class MainViewNavigationBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final introProv = ref.watch(introductionNotifierProvider);
+    final introProv = ref.watch(introductionProvider);
     final constraints = ref.watch(appConstraintsNotifierProvider);
     final navWidth = constraints.maxWidth;
     final navHeight = constraints.maxHeight * 0.10;
@@ -64,7 +64,7 @@ class MainViewNavigationBar extends ConsumerWidget {
                   heightFactor: 0.6,
                   child: FocusedItemAsOverlay(
                       onComplete: () {
-                        ref.read(introductionNotifierProvider.notifier).complete(Introduction.scanQrCode);
+                        ref.read(introductionProvider.notifier).complete(Introduction.scanQrCode);
                       },
                       isFocused: introProv.whenOrNull(data: (data) => data.isConditionFulfilled(ref, Introduction.scanQrCode)) ?? false,
                       tooltipWhenFocused: AppLocalizations.of(context)!.introScanQrCode,
@@ -93,7 +93,7 @@ class MainViewNavigationBar extends ConsumerWidget {
                                 Navigator.pushNamed(context, AddTokenManuallyView.routeName);
                               },
                               icon: FocusedItemAsOverlay(
-                                onComplete: () => ref.read(introductionNotifierProvider.notifier).complete(Introduction.addManually),
+                                onComplete: () => ref.read(introductionProvider.notifier).complete(Introduction.addManually),
                                 isFocused: introProv.whenOrNull(data: (data) => data.isConditionFulfilled(ref, Introduction.addManually)) ?? false,
                                 tooltipWhenFocused: AppLocalizations.of(context)!.introAddTokenManually,
                                 child: FittedBox(
@@ -115,7 +115,7 @@ class MainViewNavigationBar extends ConsumerWidget {
                             child: FocusedItemAsOverlay(
                               isFocused: introProv.whenOrNull(data: (data) => data.isConditionFulfilled(ref, Introduction.addFolder)) ?? false,
                               tooltipWhenFocused: AppLocalizations.of(context)!.introAddFolder,
-                              onComplete: () => ref.read(introductionNotifierProvider.notifier).complete(Introduction.addFolder),
+                              onComplete: () => ref.read(introductionProvider.notifier).complete(Introduction.addFolder),
                               child: AppBarItem(
                                 a11y: AppLocalizations.of(context)!.a11yAddFolderButton,
                                 onPressed: () {

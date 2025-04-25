@@ -65,7 +65,7 @@ void main() {
         settingsProvider.overrideWith(() => SettingsNotifier(repoOverride: mockSettingsRepository)),
         tokenProvider.overrideWith(() => TokenNotifier(repoOverride: mockTokenRepository)),
         tokenFolderProvider.overrideWith(() => TokenFolderNotifier(repoOverride: mockTokenFolderRepository)),
-        introductionNotifierProvider.overrideWith(() => IntroductionNotifier(repoOverride: mockIntroductionRepository)),
+        introductionProvider.overrideWith(() => IntroductionNotifier(repoOverride: mockIntroductionRepository)),
       ],
       child: PrivacyIDEAAuthenticator(ApplicationCustomization.defaultCustomization),
     ));

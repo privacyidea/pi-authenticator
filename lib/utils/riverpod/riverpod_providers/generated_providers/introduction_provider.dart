@@ -27,7 +27,7 @@ import '../../../logger.dart';
 
 part 'introduction_provider.g.dart';
 
-final introductionNotifierProvider = introductionNotifierProviderOf(repo: PreferenceIntroductionRepository());
+final introductionProvider = introductionNotifierProviderOf(repo: PreferenceIntroductionRepository());
 
 @Riverpod(keepAlive: true)
 class IntroductionNotifier extends _$IntroductionNotifier {
@@ -95,4 +95,6 @@ class IntroductionNotifier extends _$IntroductionNotifier {
     await _saveToRepo(newState);
     state = AsyncValue.data(newState);
   }
+
+  setState(IntroductionState introductionState) {}
 }

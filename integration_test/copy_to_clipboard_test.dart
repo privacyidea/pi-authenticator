@@ -10,8 +10,8 @@ import 'package:privacyidea_authenticator/model/riverpod_states/introduction_sta
 import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/token_folder_state.dart';
 import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
-import 'package:privacyidea_authenticator/utils/customization/application_customization.dart';
 import 'package:privacyidea_authenticator/model/version.dart';
+import 'package:privacyidea_authenticator/utils/customization/application_customization.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
@@ -50,7 +50,7 @@ void main() {
         settingsProvider.overrideWith(() => SettingsNotifier(repoOverride: mockSettingsRepository)),
         tokenProvider.overrideWith(() => TokenNotifier(repoOverride: mockTokenRepository)),
         tokenFolderProvider.overrideWith(() => TokenFolderNotifier(repoOverride: mockTokenFolderRepository)),
-        introductionNotifierProvider.overrideWith(() => IntroductionNotifier(repoOverride: mockIntroductionRepository)),
+        introductionProvider.overrideWith(() => IntroductionNotifier(repoOverride: mockIntroductionRepository)),
       ],
       child: PrivacyIDEAAuthenticator(ApplicationCustomization.defaultCustomization),
     ));

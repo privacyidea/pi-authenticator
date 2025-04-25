@@ -164,4 +164,6 @@ class SettingsNotifier extends _$SettingsNotifier {
     Logger.info('Toggling hide background image');
     return updateState((oldState) => oldState.copyWith(showBackgroundImage: !oldState.showBackgroundImage));
   }
+
+  setState(SettingsState settingsState) {}
 }

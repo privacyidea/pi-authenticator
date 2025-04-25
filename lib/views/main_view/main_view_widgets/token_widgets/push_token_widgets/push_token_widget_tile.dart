@@ -43,13 +43,13 @@ class PushTokenWidgetTile extends ConsumerWidget {
       trailing: FocusedItemAsOverlay(
         tooltipWhenFocused: AppLocalizations.of(context)!.introPollForChallenges,
         alignment: Alignment.centerLeft,
-        isFocused: ref.watch(introductionNotifierProvider).when(
+        isFocused: ref.watch(introductionProvider).when(
               data: (value) => value.isConditionFulfilled(ref, Introduction.pollForChallenges),
               error: (Object error, StackTrace stackTrace) => false,
               loading: () => false,
             ),
         onComplete: () {
-          ref.read(introductionNotifierProvider.notifier).complete(Introduction.pollForChallenges);
+          ref.read(introductionProvider.notifier).complete(Introduction.pollForChallenges);
         },
         child: const CustomTrailing(
           child: FittedBox(

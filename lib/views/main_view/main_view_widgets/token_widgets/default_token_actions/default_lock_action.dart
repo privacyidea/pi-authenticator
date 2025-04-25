@@ -53,12 +53,12 @@ class DefaultLockAction extends ConsumerSlideableAction {
         tooltipWhenFocused: AppLocalizations.of(context)!.introLockToken,
         childIsMoving: true,
         alignment: Alignment.bottomCenter,
-        isFocused: ref.watch(introductionNotifierProvider).when(
+        isFocused: ref.watch(introductionProvider).when(
               data: (value) => value.isConditionFulfilled(ref, Introduction.lockToken),
               error: (Object error, StackTrace stackTrace) => false,
               loading: () => false,
             ),
-        onComplete: () => ref.read(introductionNotifierProvider.notifier).complete(Introduction.lockToken),
+        onComplete: () => ref.read(introductionProvider.notifier).complete(Introduction.lockToken),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
