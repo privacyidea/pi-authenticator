@@ -50,6 +50,8 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
   late UnscaledAnimationController _animationController;
   Color? _currentOtpColor;
   Color? _currentCountdownColor;
+
+  TokenTileTheme? _currentTokenTileTheme;
   double _secondsUntilNextOTP = 0;
 
   void _copyOtpValue(BuildContext context) {
@@ -71,6 +73,15 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
   void dispose() {
     _animationController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant TOTPTokenWidgetTile oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (Theme.of(context).extension<TokenTileTheme>()! != _currentTokenTileTheme) {
+      _animationController.dispose();
+      _initAnimation();
+    }
   }
 
   void _initAnimation() {
