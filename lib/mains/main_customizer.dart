@@ -29,7 +29,6 @@ import '../model/enums/app_feature.dart';
 import '../model/riverpod_states/settings_state.dart';
 import '../utils/globals.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/app_constraints_notifier.dart';
-import '../utils/riverpod/riverpod_providers/generated_providers/app_customization_notifier.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import '../views/add_token_manually_view/add_token_manually_view.dart';
 import '../views/feedback_view/feedback_view.dart';
@@ -44,20 +43,17 @@ import '../widgets/app_wrapper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(AppWrapper(child: CustomizationAuthenticator(initialCustomization: ApplicationCustomization.defaultCustomization)));
+  runApp(AppWrapper(child: CustomizationAuthenticator(customization: ApplicationCustomization.defaultCustomization)));
 }
 
 // test
 class CustomizationAuthenticator extends ConsumerWidget {
-  final ApplicationCustomization initialCustomization;
-  const CustomizationAuthenticator({required this.initialCustomization, super.key});
+  final ApplicationCustomization customization;
+  const CustomizationAuthenticator({required this.customization, super.key});
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     WidgetsFlutterBinding.ensureInitialized();
-    final applicationCustomizer = ref.watch(appCustomizationNotifierProvider).maybeWhen(
-          data: (data) => data,
-          orElse: () => initialCustomization,
-        );
+
     return LayoutBuilder(
       builder: (context, constraints) {
         WidgetsBinding.instance.addPostFrameCallback((_) async => ref.read(appConstraintsNotifierProvider.notifier).update(constraints));
@@ -72,9 +68,9 @@ class CustomizationAuthenticator extends ConsumerWidget {
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           locale: ref.watch(settingsProvider).whenOrNull(data: (data) => data.currentLocale) ?? SettingsState.localeDefault,
-          title: applicationCustomizer.appName,
-          theme: applicationCustomizer.generateLightTheme(),
-          darkTheme: applicationCustomizer.generateDarkTheme(),
+          title: customization.appName,
+          theme: customization.generateLightTheme(),
+          darkTheme: customization.generateDarkTheme(),
           scaffoldMessengerKey: globalSnackbarKey,
           themeMode: EasyDynamicTheme.of(context).themeMode,
           initialRoute: SplashScreen.routeName,
@@ -83,19 +79,19 @@ class CustomizationAuthenticator extends ConsumerWidget {
             FeedbackView.routeName: (context) => const FeedbackView(),
             ImportTokensView.routeName: (context) => const ImportTokensView(),
             LicenseView.routeName: (context) => LicenseView(
-                  appImage: applicationCustomizer.licensesViewImage?.getWidget ?? applicationCustomizer.splashScreenImage.getWidget,
-                  appName: applicationCustomizer.appName,
-                  websiteLink: applicationCustomizer.websiteLink,
+                  appImage: customization.licensesViewImage?.getWidget ?? customization.splashScreenImage.getWidget,
+                  appName: customization.appName,
+                  websiteLink: customization.websiteLink,
                 ),
             MainView.routeName: (context) => MainView(
-                  appbarIcon: applicationCustomizer.appbarIcon.getWidget,
-                  backgroundImage: applicationCustomizer.backgroundImage?.getWidget,
-                  appName: applicationCustomizer.appName,
-                  disablePatchNotes: applicationCustomizer.disabledFeatures.contains(AppFeature.patchNotes),
+                  appbarIcon: customization.appbarIcon.getWidget,
+                  backgroundImage: customization.backgroundImage?.getWidget,
+                  appName: customization.appName,
+                  disablePatchNotes: customization.disabledFeatures.contains(AppFeature.patchNotes),
                 ),
             PushTokensView.routeName: (context) => const PushTokensView(),
             SettingsView.routeName: (context) => const SettingsView(),
-            SplashScreen.routeName: (context) => SplashScreen(customization: applicationCustomizer),
+            SplashScreen.routeName: (context) => SplashScreen(customization: customization),
             QRScannerView.routeName: (context) => const QRScannerView(),
           },
         );
