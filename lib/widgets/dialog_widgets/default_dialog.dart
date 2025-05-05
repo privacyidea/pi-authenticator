@@ -28,7 +28,7 @@ class DefaultDialog extends StatelessWidget {
         child: AlertDialog(
           shape: RoundedRectangleBorder(
             side: BorderSide(
-              color: Theme.of(context).colorScheme.primary.withAlpha(127),
+              color: Theme.of(context).dividerColor,
               width: 2,
             ),
             borderRadius: BorderRadius.circular(16),
