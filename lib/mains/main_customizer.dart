@@ -47,6 +47,7 @@ void main() async {
   runApp(AppWrapper(child: CustomizationAuthenticator(initialCustomization: ApplicationCustomization.defaultCustomization)));
 }
 
+// test
 class CustomizationAuthenticator extends ConsumerWidget {
   final ApplicationCustomization initialCustomization;
   const CustomizationAuthenticator({required this.initialCustomization, super.key});
