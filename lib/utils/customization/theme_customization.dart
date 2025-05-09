@@ -218,13 +218,13 @@ class ThemeCustomization {
   // List tile
   final Color? _tileDefaultOtpColor; // Default: primaryColor
   Color get tileDefaultOtpColor => _tileDefaultOtpColor ?? primaryColor;
-  final Color? tileWarningOtpColor; // Optional, not default
-  final Color? tileCriticalOtpColor; // Optional, not default
+  final Color? tileWarningOtpColor; // Optional, no default
+  final Color? tileCriticalOtpColor; // Optional, no default
 
-  final Color? _tileDefaultCountdownColor; // Default: primaryColor
-  Color get tileDefaultCountdownColor => _tileDefaultCountdownColor ?? primaryColor;
-  final Color? tileWarningCountdownColor; // Optional, not default
-  final Color? tileCriticalCountdownColor; // Optional, not default
+  final Color? _tileDefaultCountdownColor; // Default: tileDefaultOtpColor
+  Color get tileDefaultCountdownColor => _tileDefaultCountdownColor ?? tileDefaultOtpColor;
+  final Color? tileWarningCountdownColor; // Optional, no default
+  final Color? tileCriticalCountdownColor; // Optional, no default
 
   final Color tileIconColor;
   final Color? _tileSubtitleColor; // Default: subtitleColor
