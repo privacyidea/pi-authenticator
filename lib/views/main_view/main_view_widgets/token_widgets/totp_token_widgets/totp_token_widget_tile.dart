@@ -45,7 +45,7 @@ class TOTPTokenWidgetTile extends ConsumerStatefulWidget {
   ConsumerState<TOTPTokenWidgetTile> createState() => _TOTPTokenWidgetTileState();
 }
 
-class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with SingleTickerProviderStateMixin {
+class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> {
   late String currentOtpValue = widget.token.otpValue;
   late UnscaledAnimationController _animationController;
   Color? _currentOtpColor;
@@ -87,7 +87,6 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
   void _initAnimation() {
     _animationController = TotpAnimation(
       context: context,
-      vsync: this,
       onPeriodEnd: () {
         if (!mounted) return;
         setState(() => currentOtpValue = widget.token.otpValue);

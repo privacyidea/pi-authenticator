@@ -70,12 +70,20 @@ class UnscaledAnimationController extends Animation<double> {
     _statusListeners.clear();
   }
 
+  DateTime lastDateTime = DateTime.now();
+  double get elapsedSecs {
+    final elapsedSecs = DateTime.now().difference(lastDateTime).inMilliseconds / 1000;
+    lastDateTime = DateTime.now();
+    return elapsedSecs;
+  }
+
   void forward({double? from}) {
     if (from != null) _setValue(from);
     _setStatus(AnimationStatus.forward);
     _timer?.cancel();
+    lastDateTime = DateTime.now();
     _timer = Timer.periodic(Duration(milliseconds: (_refreshInterval * 1000).toInt()), (timer) {
-      final newValue = value + _refreshInterval * (upperBound - lowerBound) / duration.inSeconds;
+      final newValue = value + elapsedSecs * (upperBound - lowerBound) / duration.inSeconds;
       if (value >= upperBound) {
         _setValue(upperBound);
         timer.cancel();

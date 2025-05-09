@@ -23,7 +23,6 @@ import 'package:privacyidea_authenticator/utils/animations/unscaled_animation_co
 
 class TotpAnimation {
   final BuildContext context;
-  final TickerProvider vsync;
   final Function(TotpAnimationCallback) callback;
   final Function onPeriodEnd;
 
@@ -44,7 +43,6 @@ class TotpAnimation {
   /// The color will fade from [warningOtpColor] to [criticalOtpColor] for [criticalDuration] before the period ends. Will fade from [defaultOtpColor] to [criticalOtpColor] if [warningDuration] is 0.
   TotpAnimation({
     required this.context,
-    required this.vsync,
     required this.callback,
     required this.onPeriodEnd,
     required this.totalDuration,
@@ -60,8 +58,6 @@ class TotpAnimation {
         criticalOtpColor = criticalOtpColor ?? warningOtpColor ?? defaultOtpColor,
         warningCountdownColor = warningCountdownColor ?? defaultCountdownColor,
         criticalCountdownColor = criticalCountdownColor ?? warningCountdownColor ?? defaultCountdownColor;
-
-  DateTime lastResync = DateTime.now();
 
   /// The initial elapsed time is [initPassedTime].
   UnscaledAnimationController createAnimation() {
@@ -99,12 +95,6 @@ class TotpAnimation {
         secondsUntilNextOTP: (totalDuration.inMilliseconds - passedDuration.inMilliseconds) / 1000,
       );
       callback(callbackValue);
-
-      // Resync every second but do not skip the AnimationStatus.completed
-      if (DateTime.now().difference(lastResync).inSeconds > 1 && colorAnimation.value > 0.5) {
-        lastResync = DateTime.now();
-        colorAnimation.forward(from: DateTime.now().millisecondsSinceEpoch % (totalDuration.inMilliseconds) / 1000);
-      }
     });
     return colorAnimation;
   }
