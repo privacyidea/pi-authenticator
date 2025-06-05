@@ -65,10 +65,14 @@ class PushToken extends Token {
   final DateTime? expirationDate;
   @override
   String get serial => super.serial!;
+
+  @override
+  bool get isHidden => false;
+
   final String? fbToken;
 
   @override
-  bool? get isPrivacyIdeaTokenna => true;
+  bool? get isPrivacyIdeaToken => true;
 
   // Roll out
   final bool sslVerify;
