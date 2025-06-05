@@ -30,7 +30,7 @@ extension TokenListExtension on List<Token> {
 
   /// Returns all tokens that are privacyIDEA tokens.
   List<Token> get piTokens {
-    final piTokens = where((token) => token.isPrivacyIdeaTokenna == true).toList();
+    final piTokens = where((token) => token.isPrivacyIdeaToken == true).toList();
     Logger.debug('${piTokens.length}/$length tokens with "isPrivacyIdeaToken == true"');
     return piTokens;
   }
@@ -44,7 +44,7 @@ extension TokenListExtension on List<Token> {
 
   /// Returns all tokens that are privacyIDEA tokens or have no information about it.
   List<Token> get filterNonPiTokens {
-    final nonPiTokens = where((token) => token.isPrivacyIdeaTokenna != false).toList();
+    final nonPiTokens = where((token) => token.isPrivacyIdeaToken != false).toList();
     Logger.debug('${nonPiTokens.length}/$length tokens with "isPrivacyIdeaToken != false"');
     return nonPiTokens;
   }
