@@ -27,6 +27,11 @@ import '../model/enums/patch_note_type.dart';
 import '../model/version.dart';
 
 Map<Version, Map<PatchNoteType, List<String>>> getLocalizedPatchNotes(AppLocalizations localizations) => {
+      const Version(4, 5, 3): {
+        PatchNoteType.bugFix: [
+          localizations.patchNotesV4_5_3BugFix1,
+        ],
+      },
       const Version(4, 5, 1): {
         PatchNoteType.newFeature: [
           localizations.patchNotesV4_5_1NewFeatures1,

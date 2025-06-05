@@ -1168,6 +1168,9 @@
   "@patchNotesV4_5_1NewFeatures3": {
     "description": "Patch notes for a new feature in version 4.5.1"
   },
+  "@patchNotesV4_5_3BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.5.2"
+  },
   "@period": {
     "description": "Title of the dropdown button where the period of the totp token is selected."
   },
@@ -1940,6 +1943,7 @@
   "patchNotesV4_5_1NewFeatures1": "Added setting to show/hide background image",
   "patchNotesV4_5_1NewFeatures2": "Added setting to allow taking screenshots",
   "patchNotesV4_5_1NewFeatures3": "TOTP token now changes color in the last 5 seconds to indicate end of period",
+  "patchNotesV4_5_3BugFix1": "Fixed an issue where the Label of the Push Token was hidden when the token was locked.",
   "period": "Period",
   "phonePart": "Phone part:",
   "piServerCode": "PI Server Code: {code}",
