@@ -1171,6 +1171,9 @@
   "@patchNotesV4_5_3BugFix1": {
     "description": "Patch notes for a bug fix in version 4.5.2"
   },
+  "@patchNotesV4_5_3BugFix2": {
+    "description": "Patch notes for a bug fix in version 4.5.2"
+  },
   "@period": {
     "description": "Title of the dropdown button where the period of the totp token is selected."
   },
@@ -1950,6 +1953,7 @@
   "patchNotesV4_5_1NewFeatures2": "Přidáno nastavení umožňující pořizování snímků obrazovky",
   "patchNotesV4_5_1NewFeatures3": "Žeton TOTP nyní mění barvu v posledních 5 sekundách, aby indikoval konec periody.",
   "patchNotesV4_5_3BugFix1": "Opraven problém, kdy byl popisek Push tokenu skrytý, když byl token uzamčený.",
+  "patchNotesV4_5_3BugFix2": "Navigační lišta na některých zařízeních již není překryta přes obsah aplikace.",
   "period": "Časový interval",
   "phonePart": "Klientská část:",
   "piServerCode": "Kód serveru PI: {code}",

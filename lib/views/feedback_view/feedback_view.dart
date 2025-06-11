@@ -59,77 +59,79 @@ class _FeedbackViewState extends State<FeedbackView> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        appBar: AppBar(
-          title: Text(
-            AppLocalizations.of(context)!.feedback,
-            overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
-            maxLines: 2, // Title can be shown on small screens too.
+  Widget build(BuildContext context) => SafeArea(
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(
+              AppLocalizations.of(context)!.feedback,
+              overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
+              maxLines: 2, // Title can be shown on small screens too.
+            ),
           ),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.all(14.0),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  child: Text(
-                    AppLocalizations.of(context)!.feedbackTitle,
-                    style: Theme.of(context).textTheme.titleMedium,
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Text(
-                          AppLocalizations.of(context)!.feedbackDescription,
-                          style: Theme.of(context).textTheme.bodyMedium,
-                          textAlign: TextAlign.justify,
-                        ),
-                        const SizedBox(height: 16),
-                        TextField(
-                          focusNode: _focusNode,
-                          controller: _feedbackController,
-                          decoration: InputDecoration(
-                            border: const OutlineInputBorder(borderSide: BorderSide(width: 1.5)),
-                            enabledBorder: const OutlineInputBorder(borderSide: BorderSide(width: 1.5)),
-                            focusedBorder: const OutlineInputBorder(borderSide: BorderSide(width: 1.5)),
-                            labelText: AppLocalizations.of(context)!.feedback,
-                          ),
-                          maxLines: 5,
-                        ),
-                        const SizedBox(height: 16),
-                        RichText(
-                          textAlign: TextAlign.justify,
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: '${AppLocalizations.of(context)!.feedbackHint} ',
-                                style: Theme.of(context).textTheme.bodySmall,
-                              ),
-                              TextSpan(text: AppLocalizations.of(context)!.feedbackPrivacyPolicy1, style: Theme.of(context).textTheme.bodySmall),
-                              TextSpan(
-                                text: AppLocalizations.of(context)!.feedbackPrivacyPolicy2,
-                                style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.blue),
-                                recognizer: TapGestureRecognizer()..onTap = () => launchUrl(policyStatementUri),
-                              ),
-                              TextSpan(text: AppLocalizations.of(context)!.feedbackPrivacyPolicy3, style: Theme.of(context).textTheme.bodySmall),
-                            ],
-                          ),
-                        ),
-                        FeedbackSendRow(feedbackController: _feedbackController),
-                      ],
+          body: Padding(
+            padding: const EdgeInsets.all(14.0),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    child: Text(
+                      AppLocalizations.of(context)!.feedbackTitle,
+                      style: Theme.of(context).textTheme.titleMedium,
+                      textAlign: TextAlign.center,
                     ),
                   ),
-                ),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Text(
+                            AppLocalizations.of(context)!.feedbackDescription,
+                            style: Theme.of(context).textTheme.bodyMedium,
+                            textAlign: TextAlign.justify,
+                          ),
+                          const SizedBox(height: 16),
+                          TextField(
+                            focusNode: _focusNode,
+                            controller: _feedbackController,
+                            decoration: InputDecoration(
+                              border: const OutlineInputBorder(borderSide: BorderSide(width: 1.5)),
+                              enabledBorder: const OutlineInputBorder(borderSide: BorderSide(width: 1.5)),
+                              focusedBorder: const OutlineInputBorder(borderSide: BorderSide(width: 1.5)),
+                              labelText: AppLocalizations.of(context)!.feedback,
+                            ),
+                            maxLines: 5,
+                          ),
+                          const SizedBox(height: 16),
+                          RichText(
+                            textAlign: TextAlign.justify,
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: '${AppLocalizations.of(context)!.feedbackHint} ',
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                ),
+                                TextSpan(text: AppLocalizations.of(context)!.feedbackPrivacyPolicy1, style: Theme.of(context).textTheme.bodySmall),
+                                TextSpan(
+                                  text: AppLocalizations.of(context)!.feedbackPrivacyPolicy2,
+                                  style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.blue),
+                                  recognizer: TapGestureRecognizer()..onTap = () => launchUrl(policyStatementUri),
+                                ),
+                                TextSpan(text: AppLocalizations.of(context)!.feedbackPrivacyPolicy3, style: Theme.of(context).textTheme.bodySmall),
+                              ],
+                            ),
+                          ),
+                          FeedbackSendRow(feedbackController: _feedbackController),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

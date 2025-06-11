@@ -1171,6 +1171,9 @@
   "@patchNotesV4_5_3BugFix1": {
     "description": "Patch notes for a bug fix in version 4.5.2"
   },
+  "@patchNotesV4_5_3BugFix2": {
+    "description": "Patch notes for a bug fix in version 4.5.2"
+  },
   "@period": {
     "description": "Title of the dropdown button where the period of the totp token is selected."
   },
@@ -1944,6 +1947,7 @@
   "patchNotesV4_5_1NewFeatures2": "Einstellung hinzugefügt, um das Erstellen von Screenshots zu erlauben",
   "patchNotesV4_5_1NewFeatures3": "TOTP-Token ändert jetzt in den letzten 5 Sekunden die Farbe, um das Ende des Zeitraums anzuzeigen",
   "patchNotesV4_5_3BugFix1": "Ein Problem wurde behoben, bei dem das Label des Push-Tokens ausgeblendet war, wenn der Token gesperrt war.",
+  "patchNotesV4_5_3BugFix2": "Die Navigationsleiste einiger Geräte wird nun nicht mehr über den App-Inhalt gelegt.",
   "period": "Periode",
   "phonePart": "Telefonanteil:",
   "piServerCode": "PI-Server-Code: {code}",

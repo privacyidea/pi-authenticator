@@ -42,26 +42,28 @@ class ContainerView extends ConsumerView {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final containerList = ref.watch(tokenContainerProvider).whenOrNull(data: (data) => data.containerList) ?? [];
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          AppLocalizations.of(context)!.container,
-          overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
-          maxLines: 2, // Title can be shown on small screens too.
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            AppLocalizations.of(context)!.container,
+            overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
+            maxLines: 2, // Title can be shown on small screens too.
+          ),
         ),
-      ),
-      floatingActionButton: const QrScannerButton(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      body: Center(
-        child: SlidableAutoCloseBehavior(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              for (var container in containerList) ...[
-                if (containerList.indexOf(container) != 0) const DefaultDivider(),
-                ContainerWidget(container: container),
+        floatingActionButton: const QrScannerButton(),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        body: Center(
+          child: SlidableAutoCloseBehavior(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                for (var container in containerList) ...[
+                  if (containerList.indexOf(container) != 0) const DefaultDivider(),
+                  ContainerWidget(container: container),
+                ],
               ],
-            ],
+            ),
           ),
         ),
       ),

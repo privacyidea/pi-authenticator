@@ -81,45 +81,47 @@ class _MainViewState extends ConsumerState<MainView> {
   Widget build(BuildContext context) {
     final hasFilter = ref.watch(tokenFilterProvider) != null;
 
-    return PushRequestListener(
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        body: ExpandableAppBar(
-          startExpand: hasFilter,
-          appBar: AppBar(
-              title: Text(
-                widget.appName,
-                overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
-                maxLines: 2, // Title can be shown on small screens too.
-              ),
-              leading: widget.appbarIcon,
-              actions: [
-                hasFilter
-                    ? AppBarItem(
-                        a11y: AppLocalizations.of(context)!.a11yCloseSearchTokensButton,
-                        onPressed: () {
-                          ref.read(tokenFilterProvider.notifier).state = null;
-                        },
-                        icon: const Icon(Icons.close),
-                      )
-                    : AppBarItem(
-                        a11y: AppLocalizations.of(context)!.a11ySearchTokensButton,
-                        onPressed: () {
-                          ref.read(tokenFilterProvider.notifier).state = TokenFilter(
-                            searchQuery: '',
-                          );
-                        },
-                        icon: const Icon(Icons.search),
-                      ),
-              ]),
-          body: ConnectivityListener(
-            child: StatusBar(
-              child: Stack(
-                children: [
-                  if (widget.backgroundImage != null) MainViewBackgroundImage(appImage: widget.backgroundImage!),
-                  hasFilter ? const MainViewTokensListFiltered() : MainViewTokensList(nestedScrollViewKey: globalKey),
-                  if (!hasFilter) MainViewNavigationBar(),
-                ],
+    return SafeArea(
+      child: PushRequestListener(
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: ExpandableAppBar(
+            startExpand: hasFilter,
+            appBar: AppBar(
+                title: Text(
+                  widget.appName,
+                  overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
+                  maxLines: 2, // Title can be shown on small screens too.
+                ),
+                leading: widget.appbarIcon,
+                actions: [
+                  hasFilter
+                      ? AppBarItem(
+                          a11y: AppLocalizations.of(context)!.a11yCloseSearchTokensButton,
+                          onPressed: () {
+                            ref.read(tokenFilterProvider.notifier).state = null;
+                          },
+                          icon: const Icon(Icons.close),
+                        )
+                      : AppBarItem(
+                          a11y: AppLocalizations.of(context)!.a11ySearchTokensButton,
+                          onPressed: () {
+                            ref.read(tokenFilterProvider.notifier).state = TokenFilter(
+                              searchQuery: '',
+                            );
+                          },
+                          icon: const Icon(Icons.search),
+                        ),
+                ]),
+            body: ConnectivityListener(
+              child: StatusBar(
+                child: Stack(
+                  children: [
+                    if (widget.backgroundImage != null) MainViewBackgroundImage(appImage: widget.backgroundImage!),
+                    hasFilter ? const MainViewTokensListFiltered() : MainViewTokensList(nestedScrollViewKey: globalKey),
+                    if (!hasFilter) MainViewNavigationBar(),
+                  ],
+                ),
               ),
             ),
           ),

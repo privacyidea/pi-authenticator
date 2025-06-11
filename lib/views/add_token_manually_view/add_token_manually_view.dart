@@ -141,40 +141,42 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
       TokenTypes.PUSH => throw UnimplementedError(),
     };
 
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: Text(
-          AppLocalizations.of(context)!.enterDetailsForToken,
-          overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
-          maxLines: 2, // Title can be shown on small screens too.
-        ),
-      ),
-      body: Column(
-        children: [
-          PageViewIndicator(
-            controller: pageController,
-            icons: [
-              Icon(Icons.edit),
-              Icon(Icons.link),
-            ],
+    return SafeArea(
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          title: Text(
+            AppLocalizations.of(context)!.enterDetailsForToken,
+            overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
+            maxLines: 2, // Title can be shown on small screens too.
           ),
-          Expanded(
-            child: PageView(
+        ),
+        body: Column(
+          children: [
+            PageViewIndicator(
               controller: pageController,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
-                  child: page,
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
-                  child: LinkInputView(),
-                )
+              icons: [
+                Icon(Icons.edit),
+                Icon(Icons.link),
               ],
             ),
-          ),
-        ],
+            Expanded(
+              child: PageView(
+                controller: pageController,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+                    child: page,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+                    child: LinkInputView(),
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

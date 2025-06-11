@@ -30,6 +30,7 @@ Map<Version, Map<PatchNoteType, List<String>>> getLocalizedPatchNotes(AppLocaliz
       const Version(4, 5, 3): {
         PatchNoteType.bugFix: [
           localizations.patchNotesV4_5_3BugFix1,
+          localizations.patchNotesV4_5_3BugFix2,
         ],
       },
       const Version(4, 5, 1): {

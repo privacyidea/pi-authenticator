@@ -1171,6 +1171,9 @@
   "@patchNotesV4_5_3BugFix1": {
     "description": "Patch notes for a bug fix in version 4.5.2"
   },
+  "@patchNotesV4_5_3BugFix2": {
+    "description": "Patch notes for a bug fix in version 4.5.2"
+  },
   "@period": {
     "description": "Title of the dropdown button where the period of the totp token is selected."
   },
@@ -1944,6 +1947,7 @@
   "patchNotesV4_5_1NewFeatures2": "Ajout d'un paramètre permettant de prendre des captures d'écran",
   "patchNotesV4_5_1NewFeatures3": "Le jeton TOTP change désormais de couleur dans les 5 dernières secondes pour indiquer la fin de la période.",
   "patchNotesV4_5_3BugFix1": "Correction d’un problème où le libellé du jeton Push était masqué lorsque le jeton était verrouillé.",
+  "patchNotesV4_5_3BugFix2": "La barre de navigation sur certains appareils ne chevauche plus le contenu de l'application.",
   "period": "Période",
   "phonePart": "Part du téléphone:",
   "piServerCode": "Code du serveur PI : {code}",

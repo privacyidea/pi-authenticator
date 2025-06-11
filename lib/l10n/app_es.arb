@@ -1171,6 +1171,9 @@
   "@patchNotesV4_5_3BugFix1": {
     "description": "Patch notes for a bug fix in version 4.5.2"
   },
+  "@patchNotesV4_5_3BugFix2": {
+    "description": "Patch notes for a bug fix in version 4.5.2"
+  },
   "@period": {
     "description": "Title of the dropdown button where the period of the totp token is selected."
   },
@@ -1944,6 +1947,7 @@
   "patchNotesV4_5_1NewFeatures2": "Añadida configuración para permitir hacer capturas de pantalla",
   "patchNotesV4_5_1NewFeatures3": "El token TOTP ahora cambia de color en los últimos 5 segundos para indicar el final del periodo.",
   "patchNotesV4_5_3BugFix1": "Se solucionó un problema por el cual la etiqueta del token push estaba oculta cuando el token estaba bloqueado.",
+  "patchNotesV4_5_3BugFix2": "La barra de navegación en algunos dispositivos ya no se superpone al contenido de la aplicación.",
   "period": "Periodo",
   "phonePart": "Pieza de teléfono:",
   "piServerCode": "Código del servidor PI: {code}",

@@ -1171,6 +1171,9 @@
   "@patchNotesV4_5_3BugFix1": {
     "description": "Patch notes for a bug fix in version 4.5.2"
   },
+  "@patchNotesV4_5_3BugFix2": {
+    "description": "Patch notes for a bug fix in version 4.5.2"
+  },
   "@period": {
     "description": "Title of the dropdown button where the period of the totp token is selected."
   },
@@ -1944,6 +1947,7 @@
   "patchNotesV4_5_1NewFeatures2": "Menambahkan pengaturan untuk memungkinkan pengambilan tangkapan layar",
   "patchNotesV4_5_1NewFeatures3": "Token TOTP sekarang berubah warna dalam 5 detik terakhir untuk menunjukkan akhir periode",
   "patchNotesV4_5_3BugFix1": "Memperbaiki masalah di mana Label Token Push disembunyikan saat token dikunci.",
+  "patchNotesV4_5_3BugFix2": "Bilah navigasi di beberapa perangkat tidak lagi menutupi konten aplikasi.",
   "period": "Periode",
   "phonePart": "Bagian telepon:",
   "piServerCode": "Kode Server PI: {code}",
