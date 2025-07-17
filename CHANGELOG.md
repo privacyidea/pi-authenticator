@@ -1,4 +1,10 @@
 # Changelog
+## [4.5.3] - 2025.06.05
+ - An issue has been fixed where the label of the push token was hidden when the token was locked.
+ - The navigation bar is no longer superimposed over the app content on some devices.
+
+## [4.5.2] - 2025.04.25
+ - Removed Push Token from the type selection of the "Add Token manually" scrren 
 
 ## [4.5.1] - 2025.04.07
  - Added setting to show/hide background image
