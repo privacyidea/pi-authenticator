@@ -41,31 +41,33 @@ class SettingsView extends ConsumerView {
   const SettingsView({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => PushRequestListener(
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text(
-              AppLocalizations.of(context)!.settings,
-              overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
-              maxLines: 2, // Title can be shown on small screens too.
+  Widget build(BuildContext context, WidgetRef ref) => SafeArea(
+        child: PushRequestListener(
+          child: Scaffold(
+            appBar: AppBar(
+              title: Text(
+                AppLocalizations.of(context)!.settings,
+                overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
+                maxLines: 2, // Title can be shown on small screens too.
+              ),
             ),
-          ),
-          body: const SingleChildScrollView(
-            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SettingsGroupFeedback(),
-                SettingsGroupImportExportTokens(),
-                SettingsGroupPushToken(),
-                SettingsGroupContainer(),
-                SettingsGroupLanguage(),
-                SettingsGroupTheme(),
-                SettingsGroupBackroundImage(),
-                SettingsGroupAllowScreenshot(),
-                SettingsGroupErrorLog(),
-                SettingsGroupGeneral(),
-              ],
+            body: const SingleChildScrollView(
+              padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SettingsGroupFeedback(),
+                  SettingsGroupImportExportTokens(),
+                  SettingsGroupPushToken(),
+                  SettingsGroupContainer(),
+                  SettingsGroupLanguage(),
+                  SettingsGroupTheme(),
+                  SettingsGroupBackroundImage(),
+                  SettingsGroupAllowScreenshot(),
+                  SettingsGroupErrorLog(),
+                  SettingsGroupGeneral(),
+                ],
+              ),
             ),
           ),
         ),

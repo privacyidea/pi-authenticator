@@ -80,7 +80,7 @@ abstract class Token with SortableMixin {
   /// [String] (required for 2step)
   static const String TWO_STEP_ITERATIONS = '2step_difficulty';
 
-  bool? get isPrivacyIdeaTokenna => origin?.isPrivacyIdeaToken;
+  bool? get isPrivacyIdeaToken => origin?.isPrivacyIdeaToken;
   bool get isExportable => origin?.isExportable ?? false;
   final String tokenVersion = 'v1.0.0'; // The version of this token, this is used for serialization.
   final List<String> checkedContainer; // The serials of the container this token should not be in.

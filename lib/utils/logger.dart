@@ -204,7 +204,7 @@ class Logger {
     String errorString = _convertLogToSingleString(
       message,
       error: error,
-      stackTrace: stackTrace,
+      stackTrace: stackTrace ?? StackTrace.current,
       name: name ?? _getCallerMethodName(depth: 2),
       logLevel: LogLevel.ERROR,
     );
