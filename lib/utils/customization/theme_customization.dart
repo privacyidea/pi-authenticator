@@ -488,7 +488,7 @@ class ThemeCustomization {
             ),
           ),
           scaffoldBackgroundColor: backgroundColor,
-          cardTheme: CardTheme(
+          cardTheme: CardThemeData(
             color: backgroundColor,
             shadowColor: shadowColor,
             elevation: 4,

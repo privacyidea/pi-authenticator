@@ -61,12 +61,12 @@ class _QRScannerWidgetState extends State<QRScannerWidget> {
             showToggleCamera: false,
             codeFormat: Format.qrCode,
             cropPercent: 0.70,
-            scannerOverlay: const DynamicScannerOverlay(
+            scannerOverlay: ScannerOverlayBorder(
               borderColor: Colors.white,
               overlayColor: Colors.black54,
               borderLength: 32,
               borderWidth: 6,
-              cutOutSize: 0.7,
+              cutOutSize: MediaQuery.of(context).size.width * 0.7,
             ),
             onScan: _onQrCaptured,
           ),
