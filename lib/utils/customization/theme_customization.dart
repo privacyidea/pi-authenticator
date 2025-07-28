@@ -459,7 +459,7 @@ class ThemeCustomization {
             displaySmall: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 48, fontWeight: FontWeight.w400),
             headlineMedium: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 34, fontWeight: FontWeight.w400),
             headlineSmall: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 24, fontWeight: FontWeight.w400),
-            titleLarge: TextStyle(color: primaryColor, fontFamily: fontFamily, fontSize: 24, fontWeight: FontWeight.w500),
+            titleLarge: TextStyle(color: primaryColor, fontFamily: fontFamily, fontSize: 24, fontWeight: FontWeight.w600),
             titleMedium: TextStyle(color: primaryColor, fontFamily: fontFamily, fontSize: 20, fontWeight: FontWeight.w500),
             titleSmall: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 18, fontWeight: FontWeight.w500),
             bodyLarge: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 16, fontWeight: FontWeight.w400),
