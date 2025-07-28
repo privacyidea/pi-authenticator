@@ -73,7 +73,9 @@ class CustomPaintNavigationBar extends CustomPainter {
       ..arcToPoint(Offset(size.width * 0.5 + radiusPx, size.height * 0.2), radius: Radius.circular(radiusPx), clockwise: false) // point 4
       ..quadraticBezierTo(size.width * 0.5 + radiusPx, size.height * 0.0, size.width * 0.5 + radiusPx + 15, size.height * 0.0) // point 5
       ..quadraticBezierTo(size.width * 0.80, 0, size.width, size.height * 0.3) // point 6
-      ..lineTo(size.width, size.height * 0.3); // Close the top part
+      //Skip the bottomline but dont cross the middle curve gap.  // below point 3
+      ..lineTo(size.width * 0.5, size.height * 0.9) // point 3
+      ..close();
 
     // Draw the shadow only for the top curve
     canvas.translate(0, -elevation); // Apply translation for shadow

@@ -40,15 +40,17 @@ class MainViewBackgroundImage extends ConsumerWidget {
         final scaffoldBackgroundColor = Theme.of(context).scaffoldBackgroundColor;
         final base = isDarkMode ? 0.3 : 0.08;
         final blendMode = isDarkMode ? BlendMode.darken : BlendMode.lighten;
-        return Positioned.fill(
+        return Center(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(36, 4, 36, 60),
             child: FittedBox(
-              child: ColorFiltered(
-                colorFilter: ColorFilter.mode(scaffoldBackgroundColor.withValues(alpha: 1 - base), blendMode),
+              child: ClipRect(
                 child: ColorFiltered(
-                  colorFilter: ColorFilter.mode(scaffoldBackgroundColor, BlendMode.color),
-                  child: appImage,
+                  colorFilter: ColorFilter.mode(scaffoldBackgroundColor.withValues(alpha: 1 - base), blendMode),
+                  child: ColorFiltered(
+                    colorFilter: ColorFilter.mode(scaffoldBackgroundColor, BlendMode.color),
+                    child: appImage,
+                  ),
                 ),
               ),
             ),
