@@ -17,12 +17,12 @@ jobs:
     - name: Set Xcode version
       uses: maxim-lobanov/setup-xcode@v1
       with:
-        xcode-version: '16.2.0' # Set to a specific recent stable Xcode version
+        xcode-version: '16.2.0'
 
     - uses: actions/setup-java@v2
       with:
         distribution: 'zulu'
-        java-version: '17' # Use JDK 17 for better compatibility
+        java-version: '17'
 
     - uses: subosito/flutter-action@v2
       with:
@@ -40,15 +40,6 @@ jobs:
     name: (Android)
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    strategy:
-      fail-fast: false
-      matrix:
-        # Define API levels relevant for testing/targetSdk.
-        # Consider adding '35' as it's the latest required by Google Play.
-        api-level: [ 21, 30, 34 ] # Example: [minSdk, older_target, current_target]
-        # 'target' matrix might only be relevant if you're building emulator images with different targets,
-        # but for a standard app bundle build, it's often not directly used in the build command.
-        target: [ default ]
     steps:
       - uses: actions/checkout@v4
 
@@ -56,13 +47,12 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
-          java-version: '17' # Recommended for broader Android/Gradle compatibility
+          java-version: '21'
 
       - name: Set up Flutter SDK
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          # Update to the absolute latest stable Flutter version if available and compatible
           flutter-version: '3.32.8' # Current latest as of July 25, 2025
 
       - name: Clean Flutter project
@@ -92,14 +82,9 @@ jobs:
             ${{ runner.os }}-gradle-
 
       # Build the Android App Bundle for release (recommended for Play Store)
-      # Note: This will run for each matrix combination. If you only need one AAB,
-      # you might move this outside the matrix or add a condition.
       - name: Build Android App Bundle (Release)
         run: flutter build appbundle -t "lib/mains/main_netknights.dart" --flavor netknights --release
-        # Add `--target-platform android-arm64 --target-platform android-x64`
-        # if you need to explicitly specify architectures, though `appbundle` handles this.
 
       # If you still need APKs for debugging or specific testing:
       - name: Build Android APK (Debug)
         run: flutter build apk -t "lib/mains/main_netknights.dart" --debug --flavor netknights
-
