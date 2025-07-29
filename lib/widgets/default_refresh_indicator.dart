@@ -58,5 +58,5 @@ class _DefaultRefreshIndicatorState extends ConsumerState<DefaultRefreshIndicato
   }
 
   ScrollPhysics _getScrollPhysics(bool allowToRefresh) =>
-      allowToRefresh ? const AlwaysScrollableScrollPhysics(parent: ClampingScrollPhysics()) : const BouncingScrollPhysics();
+      allowToRefresh ? const AlwaysScrollableScrollPhysics(parent: ClampingScrollPhysics()) : const ClampingScrollPhysics();
 }

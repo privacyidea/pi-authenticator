@@ -141,17 +141,17 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
       TokenTypes.PUSH => throw UnimplementedError(),
     };
 
-    return SafeArea(
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
-          title: Text(
-            AppLocalizations.of(context)!.enterDetailsForToken,
-            overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
-            maxLines: 2, // Title can be shown on small screens too.
-          ),
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        title: Text(
+          AppLocalizations.of(context)!.enterDetailsForToken,
+          overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
+          maxLines: 2, // Title can be shown on small screens too.
         ),
-        body: Column(
+      ),
+      body: SafeArea(
+        child: Column(
           children: [
             PageViewIndicator(
               controller: pageController,

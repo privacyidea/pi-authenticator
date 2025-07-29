@@ -23,10 +23,10 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gms_check/gms_check.dart';
+import 'package:privacyidea_authenticator/firebase_options/default_firebase_options.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/localization_notifier.dart';
 
 import '../../../../../../../model/riverpod_states/settings_state.dart';
-import '../firebase_options/default_firebase_options.dart';
 import '../l10n/app_localizations.dart';
 import '../model/enums/app_feature.dart';
 import '../utils/customization/application_customization.dart';

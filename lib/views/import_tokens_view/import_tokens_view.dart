@@ -74,55 +74,53 @@ class _ImportTokensViewState extends ConsumerState<ImportTokensView> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(
-            AppLocalizations.of(context)!.selectImportSource,
-            overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
-            maxLines: 2, // Title can be shown on small screens too.
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          AppLocalizations.of(context)!.selectImportSource,
+          overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
+          maxLines: 2, // Title can be shown on small screens too.
         ),
-        body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: SingleChildScrollView(
-            physics: const BouncingScrollPhysics(),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                for (final item in TokenImportOrigins.appList)
-                  ListTile(
-                    // leading: Image.asset(appList[index].iconPath!),
-                    title: TextButton(
-                      onPressed: () => _onPressed(item),
-                      child: Text(item.appName),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              for (final item in TokenImportOrigins.appList)
+                ListTile(
+                  // leading: Image.asset(appList[index].iconPath!),
+                  title: TextButton(
+                    onPressed: () => _onPressed(item),
+                    child: Text(item.appName),
+                  ),
+                  trailing: Theme(
+                    data: ThemeData(
+                      iconTheme: const IconThemeData(
+                        color: Colors.red,
+                      ),
+                      primaryIconTheme: const IconThemeData(
+                        color: Colors.blue,
+                      ),
+                      iconButtonTheme: const IconButtonThemeData(
+                        style: ButtonStyle(
+                          foregroundColor: WidgetStatePropertyAll(Colors.green),
+                          backgroundColor: WidgetStatePropertyAll(Colors.green),
+                          iconColor: WidgetStatePropertyAll(Colors.green),
+                          iconSize: WidgetStatePropertyAll(50),
+                        ),
+                      ),
                     ),
-                    trailing: Theme(
-                      data: ThemeData(
-                        iconTheme: const IconThemeData(
-                          color: Colors.red,
-                        ),
-                        primaryIconTheme: const IconThemeData(
-                          color: Colors.blue,
-                        ),
-                        iconButtonTheme: const IconButtonThemeData(
-                          style: ButtonStyle(
-                            foregroundColor: WidgetStatePropertyAll(Colors.green),
-                            backgroundColor: WidgetStatePropertyAll(Colors.green),
-                            iconColor: WidgetStatePropertyAll(Colors.green),
-                            iconSize: WidgetStatePropertyAll(50),
-                          ),
-                        ),
-                      ),
-                      child: IconButton(
-                        icon: const Icon(Icons.arrow_forward_ios),
-                        onPressed: () => _onPressed(item),
-                      ),
+                    child: IconButton(
+                      icon: const Icon(Icons.arrow_forward_ios),
+                      onPressed: () => _onPressed(item),
                     ),
                   ),
-              ],
-            ),
+                ),
+            ],
           ),
         ),
       ),

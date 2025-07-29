@@ -11,54 +11,77 @@ jobs:
     name: (iOS)
     runs-on: macos-latest
     timeout-minutes: 15
-    strategy:
-      # When set to true, GitHub cancels all in-progress jobs if any
-      # matrix job fails.
-      fail-fast: false
-      matrix:
-        api-level: [21,31,34] # [minSdk, most used, newest (30 is not working :(] 19 would be minSDK but does not support x86_64
-        target: [default] # [default, google_apis]
     steps:
     - uses: actions/checkout@v3
+
+    - name: Set Xcode version
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: '16.2' # Set to a specific recent stable Xcode version
+
     - uses: actions/setup-java@v2
       with:
         distribution: 'zulu'
-        java-version: '21'
+        java-version: '17' # Use JDK 17 for better compatibility
+
     - uses: subosito/flutter-action@v2
       with:
         channel: 'stable'
-        flutter-version: '3.27.1'
-    - run: 'flutter clean'
-    - run: 'flutter --version'
-    - run: 'flutter doctor -v'
-    - run: 'flutter pub get'
-    - run: 'flutter gen-l10n'
-    - run: 'flutter build ios -t "lib/mains/main_netknights.dart" --debug --flavor netknights --no-codesign'
+        flutter-version: '3.32.8' # Use the latest stable Flutter version
+
+    - run: flutter clean
+    - run: flutter --version
+    - run: flutter doctor -v
+    - run: flutter pub get
+    - run: flutter gen-l10n
+    - run: flutter build ios -t "lib/mains/main_netknights.dart" --debug --flavor netknights --no-codesign
 
   build_appbundle:
     name: (Android)
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    strategy:
-      # When set to true, GitHub cancels all in-progress jobs if any
-      # matrix job fails.
-      fail-fast: false
-      matrix:
-        api-level: [ 21, 30, 34 ] # [minSdk, most used, newest]
-        target: [ default ] # [default, google_apis]
+    # Removed the 'strategy' block with 'api-level' and 'target' matrix
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+
+      - name: Set up Java Development Kit
+        uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
-          java-version: '21'
-      - uses: subosito/flutter-action@v2
+          java-version: '21' # Keeping Java 21 as per your current setup
+
+      - name: Set up Flutter SDK
+        uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          flutter-version: '3.27.1'
-      - run: 'flutter clean'
-      - run: 'flutter --version'
-      - run: 'flutter doctor -v'
-      - run: 'flutter pub get'
-      - run: 'flutter gen-l10n'
-      - run: 'flutter build apk -t "lib/mains/main_netknights.dart" --debug --flavor netknights'
+          flutter-version: '3.32.8' # Current latest as of July 25, 2025
+
+      - name: Clean Flutter project
+        run: flutter clean
+
+      - name: Display Flutter version
+        run: flutter --version
+
+      - name: Run Flutter Doctor
+        run: flutter doctor -v
+
+      - name: Get Flutter dependencies
+        run: flutter pub get
+
+      - name: Generate localization files
+        run: flutter gen-l10n
+
+      # Cache Gradle dependencies for faster subsequent builds
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      # Build the Android APK (Debug)
+      - name: Build Android APK (Debug)
+        run: flutter build apk -t "lib/mains/main_netknights.dart" --debug --flavor netknights

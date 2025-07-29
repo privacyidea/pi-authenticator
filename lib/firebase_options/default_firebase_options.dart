@@ -21,6 +21,7 @@
 // ignore_for_file: type=lint
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart' show defaultTargetPlatform, kIsWeb, TargetPlatform;
+// import 'package:privacyidea_authenticator/firebase_options/netknights_firebase_options.dart';
 
 // import 'netknights_firebase_options.dart';
 
