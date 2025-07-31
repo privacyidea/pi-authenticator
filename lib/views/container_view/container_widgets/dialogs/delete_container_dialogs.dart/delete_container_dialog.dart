@@ -26,6 +26,7 @@ import 'package:privacyidea_authenticator/utils/view_utils.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/token_container.dart';
+import '../../../../../utils/logger.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../../../../widgets/elevated_delete_button.dart';
@@ -63,7 +64,21 @@ class DeleteContainerDialog extends ConsumerWidget {
               wasContainerDeleted = (await ForceDeleteContainerDialog.showDialog(container)) == true;
             }
             final containerTokens = (await ref.read(tokenProvider.future)).containerTokens(container.serial);
-            if (wasContainerDeleted && deleteContainerTokens) await ref.read(tokenProvider.notifier).removeTokens(containerTokens.noOffline);
+            if (wasContainerDeleted) {
+              if (deleteContainerTokens) {
+                await ref.read(tokenProvider.notifier).removeTokens(containerTokens.noOffline);
+              } else {
+                Logger.info("Container ${container.serial} deleted, but tokens were not removed.");
+                Logger.info("Tokens: ${containerTokens.noOffline.map((token) => token.serial).join(", ")}");
+                await ref.read(tokenProvider.notifier).updateTokens(
+                      containerTokens.noOffline,
+                      (token) => token.copyWith(
+                        containerSerial: () => null,
+                        checkedContainer: [...token.checkedContainer, container.serial],
+                      ),
+                    );
+              }
+            }
 
             if (!context.mounted) return;
             Navigator.of(context).pop();
