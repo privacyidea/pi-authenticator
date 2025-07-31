@@ -137,12 +137,13 @@ class Logger {
   /*----------- LOGGING METHODS -----------*/
 
   static void info(String message, {dynamic error, StackTrace? stackTrace, String? name, bool verbose = false}) =>
-      instance._logInfo(message, stackTrace: stackTrace, name: name, verbose: verbose);
+      instance._logInfo(message, error: error, stackTrace: stackTrace, name: name, verbose: verbose);
 
-  void _logInfo(String message, {dynamic stackTrace, String? name, bool verbose = false}) {
+  void _logInfo(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) {
     if (_verboseLogging == false && kDebugMode == false && verbose == false) return;
     String infoString = _convertLogToSingleString(
       message,
+      error: error,
       stackTrace: stackTrace,
       name: name ?? _getCallerMethodName(depth: 2),
       logLevel: LogLevel.INFO,

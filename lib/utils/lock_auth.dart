@@ -92,11 +92,11 @@ Future<bool> lockAuth({required String Function(AppLocalizations) reason, requir
         androidAuthStrings,
         iOSAuthStrings,
       ]);
-      _authenticationInProgress = false;
     }
   } on PlatformException catch (e, s) {
+    Logger.warning("Authentication failed", error: e, stackTrace: s);
+  } finally {
     _authenticationInProgress = false;
-    Logger.info("Authentication failed", error: e, stackTrace: s);
   }
   return didAuthenticate;
 }
