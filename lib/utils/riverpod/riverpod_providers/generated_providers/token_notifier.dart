@@ -784,10 +784,13 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   ///////////////////////////////////////////////////////////////////////////////
   /// Does not need to wait for updating functions because they doesn't depend on any state */
 
-  Future<void> handleLink(Uri uri) async {
+  /// Handles a link and returns true if the link was handled, false if not.
+  Future<bool> handleLink(Uri uri) async {
     final tokenResults = await TokenImportSchemeProcessor.processUriByAny(uri);
-    if (tokenResults == null) return;
+    if (tokenResults == null) return false; // Not a valid token link
+    if (tokenResults.isEmpty) return true; // Link was valid but contained no tokens
     await handleProcessorResults(tokenResults, args: {'TokenOriginSourceType': TokenOriginSourceType.link});
+    return true; // Link was valid and contained tokens
   }
 
   @override
