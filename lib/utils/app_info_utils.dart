@@ -109,7 +109,9 @@ class InfoUtils {
   static String get androidDeviceInfoString => _androidDeviceInfoString;
   static final String _androidDeviceInfoString = androidInfo == null
       ? 'It\'s not an Android device.'
-      : 'version.securityPatch: ${androidInfo!.version.securityPatch}'
+      : 'Appversion: $currentVersionAndBuildNumber'
+          '\n'
+          '\nversion.securityPatch: ${androidInfo!.version.securityPatch}'
           '\nversion.sdkInt: ${androidInfo!.version.sdkInt}'
           '\nversion.release: ${_androidInfo!.version.release}'
           '\nversion.previewSdkInt: ${androidInfo!.version.previewSdkInt}'
@@ -141,7 +143,9 @@ class InfoUtils {
   String get iosDeviceInfoString => _iosDeviceInfoString;
   static final String _iosDeviceInfoString = iosInfo == null
       ? 'It\'s not an iOS device.'
-      : 'name: ${iosInfo!.name}'
+      : 'Appversion: $currentVersionAndBuildNumber'
+          '\n'
+          '\nname: ${iosInfo!.name}'
           '\nsystemName: ${iosInfo!.systemName}'
           '\nsystemVersion: ${iosInfo!.systemVersion}'
           '\nmodel: ${iosInfo!.model}'
