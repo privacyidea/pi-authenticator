@@ -36,10 +36,10 @@ import '../../../widgets/dialog_widgets/two_step_dialog.dart';
 import 'token_import_scheme_processor_interface.dart';
 
 class OtpAuthProcessor extends TokenImportSchemeProcessor {
-  static get resultHandlerType => TokenImportSchemeProcessor.resultHandlerType;
+  static dynamic get resultHandlerType => TokenImportSchemeProcessor.resultHandlerType;
   const OtpAuthProcessor();
   @override
-  Set<String> get supportedSchemes => {'otpauth'};
+  Set<String> get supportedSchemes => {'otpauth', 'pia'};
 
   /// This method parses otpauth uris according
   /// to https://github.com/google/google-authenticator/wiki/Key-Uri-Format.
