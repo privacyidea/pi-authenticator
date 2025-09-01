@@ -19,6 +19,9 @@
  * limitations under the License.
  */
 
+import 'package:privacyidea_authenticator/utils/object_validator.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
+
 import '../../../model/processor_result.dart';
 import '../../../model/tokens/token.dart';
 import '../../mixins/token_import_processor.dart';
@@ -28,7 +31,7 @@ import 'otp_auth_processor.dart';
 import 'privacyidea_authenticator_qr_processor.dart';
 
 abstract class TokenImportSchemeProcessor with TokenImportProcessor<Uri, bool> implements SchemeProcessor {
-  static get resultHandlerType => TokenImportProcessor.resultHandlerType;
+  static ObjectValidator<TokenNotifier> get resultHandlerType => TokenImportProcessor.resultHandlerType;
   const TokenImportSchemeProcessor();
 
   static Set<String> get allSupportedSchemes => {
@@ -52,12 +55,14 @@ abstract class TokenImportSchemeProcessor with TokenImportProcessor<Uri, bool> i
   @override
   Future<List<ProcessorResult<Token>>?> processUri(Uri uri, {bool fromInit = false});
 
+  /// Tries to find a suitable processor for the given uri and process it.
+  /// Returns null if no suitable processor was found.
   static Future<List<ProcessorResult<Token>>?> processUriByAny(Uri uri) async {
     for (TokenImportSchemeProcessor processor in implementations) {
       if (processor.supportedSchemes.contains(uri.scheme)) {
         return await processor.processUri(uri);
       }
     }
-    return [];
+    return null;
   }
 }

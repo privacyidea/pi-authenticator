@@ -36,11 +36,11 @@ class _LinkInputViewState extends ConsumerState<LinkInputView> {
   final textController = TextEditingController();
 
   Future<void> addToken(Uri link) async {
-    if (link.scheme != 'otpauth') {
+    final linkHandled = await ref.read(tokenProvider.notifier).handleLink(link);
+    if (!linkHandled) {
       ref.read(statusMessageProvider.notifier).state = StatusMessage(message: (localization) => localization.linkMustOtpAuth);
       return;
     }
-    await ref.read(tokenProvider.notifier).handleLink(link);
     if (!mounted) return;
     Navigator.of(context).pop();
   }
