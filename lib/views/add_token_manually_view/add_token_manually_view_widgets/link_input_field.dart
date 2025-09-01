@@ -58,7 +58,13 @@ class _LinkInputViewState extends ConsumerState<LinkInputView> {
                   decoration: InputDecoration(labelText: AppLocalizations.of(context)!.tokenLinkImport),
                   keyboardType: TextInputType.url,
                   textInputAction: TextInputAction.done,
-                  onFieldSubmitted: (text) => addToken(Uri.parse(text)),
+                    onFieldSubmitted: (text) {
+                      try {
+                        addToken(Uri.parse(text));
+                      } catch (e) {
+                        ref.read(statusMessageProvider.notifier).state = StatusMessage(message: (localization) => localization.invalidUrl);
+                      }
+                    },
                   validator: (value) => value != null
                       ? Uri.tryParse(value) == null
                           ? AppLocalizations.of(context)!.invalidUrl
@@ -90,7 +96,13 @@ class _LinkInputViewState extends ConsumerState<LinkInputView> {
                 overflow: TextOverflow.fade,
                 softWrap: false,
               ),
-              onPressed: () => addToken(Uri.parse(textController.text)),
+                onPressed: () {
+                  try {
+                    addToken(Uri.parse(textController.text));
+                  } catch (e) {
+                    ref.read(statusMessageProvider.notifier).state = StatusMessage(message: (localization) => localization.invalidUrl);
+                  }
+                },
             ),
           ),
         ],
