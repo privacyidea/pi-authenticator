@@ -18,7 +18,6 @@
  * limitations under the License.
  */
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/sortable_notifier.dart';
@@ -35,6 +34,7 @@ import '../../../utils/riverpod/riverpod_providers/state_providers/dragging_sort
 import '../../../widgets/default_refresh_indicator.dart';
 import '../../../widgets/drag_item_scroller.dart';
 import '../../../widgets/introduction_widgets/token_introduction.dart';
+import '../../../widgets/pi_slidable.dart';
 import 'drag_target_divider.dart';
 import 'folder_widgets/token_folder_widget.dart';
 import 'no_token_screen.dart';
@@ -154,48 +154,69 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
     final hasFinalizedContainers = ref.watch(tokenContainerProvider).whenOrNull(data: (data) => data.hasFinalizedContainers);
     if ((sortables.isEmpty && hasFinalizedContainers != true)) return const NoTokenScreen();
 
-    return Stack(
-      children: [
-        Column(
-          children: [
-            Flexible(
-              child: DefaultRefreshIndicator(
-                child: SizedBox(
-                  height: 9999,
-                  child: Opacity(
-                    opacity: 0,
-                    child: DragTargetDivider(
-                      dependingFolder: null,
-                      previousSortable: sortables.isNotEmpty ? sortables.last : null,
-                      nextSortable: null,
-                      bottomPadding: 1,
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      behavior: HitTestBehavior.translucent,
+      child: SlidableAutoCloseBehavior(
+        child: Builder(builder: (innerContext) {
+          return GestureDetector(
+            onTap: () async {
+              for (var controller in ref.read(piSlidablesRef)) {
+                controller.close();
+              }
+            },
+            child: Stack(
+              children: [
+                Column(
+                  children: [
+                    Flexible(
+                      child: DefaultRefreshIndicator(
+                        child: SizedBox(
+                          height: 9999,
+                          child: Stack(
+                            children: [
+                              Positioned.fill(
+                                child: Opacity(
+                                  opacity: 0,
+                                  child: DragTargetDivider(
+                                    dependingFolder: null,
+                                    previousSortable: sortables.isNotEmpty ? sortables.last : null,
+                                    nextSortable: null,
+                                    bottomPadding: 1,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                DefaultRefreshIndicator(
+                  listViewKey: listViewKey,
+                  scrollController: scrollController,
+                  child: DragItemScroller(
+                    listViewKey: listViewKey,
+                    itemIsDragged: draggingSortable != null,
+                    scrollController: scrollController,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: MainViewTokensList._buildSortableWidgets(
+                        sortables: sortables,
+                        draggingSortable: draggingSortable,
+                        hidePushTokens: hidePushTokens,
+                      ),
                     ),
                   ),
                 ),
-              ),
+              ],
             ),
-          ],
-        ),
-        DefaultRefreshIndicator(
-          listViewKey: listViewKey,
-          scrollController: scrollController,
-          child: SlidableAutoCloseBehavior(
-            child: DragItemScroller(
-              listViewKey: listViewKey,
-              itemIsDragged: draggingSortable != null,
-              scrollController: scrollController,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: MainViewTokensList._buildSortableWidgets(
-                  sortables: sortables,
-                  draggingSortable: draggingSortable,
-                  hidePushTokens: hidePushTokens,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
+          );
+        }),
+      ),
     );
   }
 }
