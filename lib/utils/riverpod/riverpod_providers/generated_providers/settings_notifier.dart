@@ -164,4 +164,9 @@ class SettingsNotifier extends _$SettingsNotifier {
     Logger.info('Toggling hide background image');
     return updateState((oldState) => oldState.copyWith(showBackgroundImage: !oldState.showBackgroundImage));
   }
+
+  Future<SettingsState> setAutoCloseAppAfterAcceptingPushRequest(bool value) {
+    Logger.info('Auto close app after accepting push request set to $value');
+    return updateState((oldState) => oldState.copyWith(autoCloseAppAfterAcceptingPushRequest: value));
+  }
 }

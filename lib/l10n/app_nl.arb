@@ -1683,6 +1683,8 @@
   "authenticateToShowOtp": "Authenticeer om het eenmalige wachtwoord te tonen.",
   "authenticateToUnLockToken": "Authenticeer om de vergrendeling van de token te wijzigen.",
   "authentication": "Verificatieverzoek",
+  "autoCloseAppAfterAcceptingPushRequestDescription": "Indien ingeschakeld, wordt de app automatisch gesloten na het accepteren van een push-verzoek.",
+  "autoCloseAppAfterAcceptingPushRequestTitle": "App sluiten na push-verzoek",
   "backgroundImage": "Achtergrondafbeelding",
   "biometricHint": "Authenticatie vereist",
   "biometricNotRecognized": "Niet herkend. Probeer opnieuw.",

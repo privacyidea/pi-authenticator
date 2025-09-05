@@ -1683,6 +1683,8 @@
   "authenticateToShowOtp": "Bitte authentifizieren Sie sich, um das Einmalpasswort anzuzeigen.",
   "authenticateToUnLockToken": "Bitte authentifizieren Sie sich, um den Sperrstatus des Tokens zu ändern.",
   "authentication": "Authentifizierung",
+  "autoCloseAppAfterAcceptingPushRequestDescription": "Wenn aktiviert, schließt sich die App automatisch, nachdem eine Push-Anfrage akzeptiert wurde.",
+  "autoCloseAppAfterAcceptingPushRequestTitle": "App nach Push-Anfrage schließen",
   "backgroundImage": "Hintergrundbild",
   "biometricHint": "Authentifizierung wird benötigt",
   "biometricNotRecognized": "Biometrie wurde nicht erkannt, bitte versuchen Sie es erneut",

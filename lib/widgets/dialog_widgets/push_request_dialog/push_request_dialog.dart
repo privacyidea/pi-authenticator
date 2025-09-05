@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../l10n/app_localizations.dart';
@@ -7,6 +8,7 @@ import '../../../model/tokens/push_token.dart';
 import '../../../utils/globals.dart';
 import '../../../utils/lock_auth.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/push_request_provider.dart';
+import '../../../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../padded_row.dart';
 import '../default_dialog.dart';
@@ -122,8 +124,13 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
     if (token.isLocked && !await lockAuth(reason: (localization) => localization.authToAcceptPushRequest, localization: AppLocalizations.of(context)!)) {
       return;
     }
-    await ref.read(pushRequestProvider.notifier).accept(token, widget.pushRequest, selectedAnswer: answer);
-    if (mounted) setState(() => isHandled = true);
+    final success = await ref.read(pushRequestProvider.notifier).accept(token, widget.pushRequest, selectedAnswer: answer);
+    if (!mounted) return;
+
+    if (success && ref.read(settingsProvider).value?.autoCloseAppAfterAcceptingPushRequest == true) {
+      SystemNavigator.pop();
+    }
+    setState(() => isHandled = true);
   }
 
   Future<void> _onDiscard(PushToken token) async {

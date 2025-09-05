@@ -1683,6 +1683,8 @@
   "authenticateToShowOtp": "Veuillez vous authentifier pour afficher un mot de passe à usage unique.",
   "authenticateToUnLockToken": "Veuillez vous authentifier pour modifier l'état de verrouillage du jeton.",
   "authentication": "Authentification",
+  "autoCloseAppAfterAcceptingPushRequestDescription": "Si cette option est activée, l'application se fermera automatiquement après avoir accepté une demande push.",
+  "autoCloseAppAfterAcceptingPushRequestTitle": "Fermer l'app après acceptation",
   "backgroundImage": "Fond d'écran",
   "biometricHint": "Authentification requise",
   "biometricNotRecognized": "Pas reconnu. Réessayer.",

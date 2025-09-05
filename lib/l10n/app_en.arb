@@ -1683,6 +1683,8 @@
   "authenticateToShowOtp": "Please authenticate to show one time password.",
   "authenticateToUnLockToken": "Please authenticate to change the lock status of the token.",
   "authentication": "Authentication",
+  "autoCloseAppAfterAcceptingPushRequestDescription": "If enabled, the app will close automatically after accepting a push request.",
+  "autoCloseAppAfterAcceptingPushRequestTitle": "Close app after accepting push request",
   "backgroundImage": "Background image",
   "biometricHint": "Authentication required",
   "biometricNotRecognized": "Not recognized. Try again.",

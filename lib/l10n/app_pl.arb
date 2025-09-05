@@ -1683,6 +1683,8 @@
   "authenticateToShowOtp": "Zweryfikuj tożsamość, by pokazać hasło jednorazowe.",
   "authenticateToUnLockToken": "Zweryfikuj tożsamość, aby odblokować / zablokować token.",
   "authentication": "Uwierzytelnianie",
+  "autoCloseAppAfterAcceptingPushRequestDescription": "Jeśli włączone, aplikacja zostanie automatycznie zamknięta po zaakceptowaniu prośby push.",
+  "autoCloseAppAfterAcceptingPushRequestTitle": "Zamknij aplikację po zaakceptowaniu prośby",
   "backgroundImage": "Obraz tła",
   "biometricHint": "Wymagana autentykacja",
   "biometricNotRecognized": "Nie rozpoznano. Spróbuj ponownie.",
