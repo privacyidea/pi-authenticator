@@ -18,11 +18,14 @@
  * limitations under the License.
  */
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../views/main_view/main_view_widgets/token_widgets/slideable_action.dart';
 
-class PiSliable extends StatelessWidget {
+final piSlidablesRef = StateProvider<List<SlidableController>>((ref) => []);
+
+class PiSliable extends ConsumerStatefulWidget {
   final String groupTag;
   final String identifier;
   final List<ConsumerSlideableAction> actions;
@@ -39,22 +42,52 @@ class PiSliable extends StatelessWidget {
   });
 
   @override
+  ConsumerState<PiSliable> createState() => _PiSliableState();
+}
+
+class _PiSliableState extends ConsumerState<PiSliable> with TickerProviderStateMixin {
+  late SlidableController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = SlidableController(this);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      final list = ref.read(piSlidablesRef);
+      list.add(controller);
+      ref.read(piSlidablesRef.notifier).state = list;
+    });
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      final list = ref.read(piSlidablesRef);
+      list.remove(controller);
+      ref.read(piSlidablesRef.notifier).state = list;
+    });
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final childStack = Stack(
       children: [
-        child,
-        for (var item in stack) item,
+        widget.child,
+        for (var item in widget.stack) item,
       ],
     );
-    return actions.isNotEmpty
+    return widget.actions.isNotEmpty
         ? ClipRRect(
             child: Slidable(
-              key: ValueKey('$groupTag-$identifier'),
-              groupTag: groupTag,
+              controller: controller,
+              key: ValueKey('${widget.groupTag}-${widget.identifier}'),
+              groupTag: widget.groupTag,
               endActionPane: ActionPane(
                 motion: const DrawerMotion(),
                 extentRatio: 1,
-                children: actions,
+                children: widget.actions,
               ),
               child: childStack,
             ),
