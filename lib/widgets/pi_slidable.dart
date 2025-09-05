@@ -20,6 +20,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:privacyidea_authenticator/utils/globals.dart';
 
 import '../views/main_view/main_view_widgets/token_widgets/slideable_action.dart';
 
@@ -53,6 +54,7 @@ class _PiSliableState extends ConsumerState<PiSliable> with TickerProviderStateM
     super.initState();
     controller = SlidableController(this);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (mounted == false) return;
       final list = ref.read(piSlidablesRef);
       list.add(controller);
       ref.read(piSlidablesRef.notifier).state = list;
@@ -62,9 +64,10 @@ class _PiSliableState extends ConsumerState<PiSliable> with TickerProviderStateM
   @override
   void dispose() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      final list = ref.read(piSlidablesRef);
+      final list = globalRef?.read(piSlidablesRef);
+      if (list == null) return;
       list.remove(controller);
-      ref.read(piSlidablesRef.notifier).state = list;
+      globalRef?.read(piSlidablesRef.notifier).state = list;
     });
     controller.dispose();
     super.dispose();

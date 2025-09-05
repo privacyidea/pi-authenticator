@@ -17,6 +17,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -124,6 +126,26 @@ class SettingsGroupPushTokenDialog extends ConsumerWidget {
               onChanged: (value) => ref.read(settingsProvider.notifier).setHidePushTokens(value),
             ),
           ),
+          if (Platform.isAndroid)
+            ListTile(
+              title: Text(
+                AppLocalizations.of(context)!.autoCloseAppAfterAcceptingPushRequestTitle,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              subtitle: Text(
+                AppLocalizations.of(context)!.autoCloseAppAfterAcceptingPushRequestDescription,
+                overflow: TextOverflow.fade,
+              ),
+              trailing: Switch(
+                value: ref.watch(settingsProvider).valueOrNull?.autoCloseAppAfterAcceptingPushRequest ?? false,
+                onChanged: (value) async {
+                  final currentSettings = ref.read(settingsProvider).valueOrNull;
+                  if (currentSettings != null) {
+                    (await ref.read(settingsProvider.notifier).setAutoCloseAppAfterAcceptingPushRequest(value));
+                  }
+                },
+              ),
+            )
         ],
       ),
     );

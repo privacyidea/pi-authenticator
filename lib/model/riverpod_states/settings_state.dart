@@ -41,6 +41,7 @@ class SettingsState {
   static Version get latestStartedVersionDefault => Version.parse('0.0.0');
   static bool get showBackgroundImageDefault => true;
   static bool get allowScreenshotsDefault => false;
+  static bool get autoCloseAppAfterAcceptingPushRequestDefault => false;
 
   final bool isFirstRun;
   final bool showGuideOnStart;
@@ -58,6 +59,7 @@ class SettingsState {
   final Version latestStartedVersion;
   final bool showBackgroundImage;
   final bool allowScreenshots;
+  final bool autoCloseAppAfterAcceptingPushRequest;
 
   SettingsState({
     bool? isFirstRun,
@@ -72,6 +74,7 @@ class SettingsState {
     Version? latestStartedVersion,
     bool? showBackgroundImage,
     bool? allowScreenshots,
+    bool? autoCloseAppAfterAcceptingPushRequest,
   })  : isFirstRun = isFirstRun ?? isFirstRunDefault,
         showGuideOnStart = showGuideOnStart ?? showGuideOnStartDefault,
         hideOpts = hideOpts ?? hideOtpsDefault,
@@ -83,7 +86,8 @@ class SettingsState {
         hidePushTokens = hidePushTokens ?? hidePushTokensDefault,
         latestStartedVersion = latestStartedVersion ?? latestStartedVersionDefault,
         showBackgroundImage = showBackgroundImage ?? showBackgroundImageDefault,
-        allowScreenshots = allowScreenshots ?? allowScreenshotsDefault;
+        allowScreenshots = allowScreenshots ?? allowScreenshotsDefault,
+        autoCloseAppAfterAcceptingPushRequest = autoCloseAppAfterAcceptingPushRequest ?? autoCloseAppAfterAcceptingPushRequestDefault;
 
   SettingsState copyWith({
     bool? isFirstRun,
@@ -98,6 +102,7 @@ class SettingsState {
     Version? latestStartedVersion,
     bool? showBackgroundImage,
     bool? allowScreenshots,
+    bool? autoCloseAppAfterAcceptingPushRequest,
   }) {
     return SettingsState(
       isFirstRun: isFirstRun ?? this.isFirstRun,
@@ -112,17 +117,14 @@ class SettingsState {
       latestStartedVersion: latestStartedVersion ?? this.latestStartedVersion,
       showBackgroundImage: showBackgroundImage ?? this.showBackgroundImage,
       allowScreenshots: allowScreenshots ?? this.allowScreenshots,
+      autoCloseAppAfterAcceptingPushRequest: autoCloseAppAfterAcceptingPushRequest ?? this.autoCloseAppAfterAcceptingPushRequest,
     );
   }
 
   @override
   String toString() => 'SettingsState(isFirstRun: $isFirstRun, showGuideOnStart: $showGuideOnStart, hideOpts: $hideOpts, enablePolling: $enablePolling, '
       'crashReportRecipients: $crashReportRecipients, localePreference: $localePreference, useSystemLocale: $useSystemLocale, verboseLogging: $verboseLogging, '
-      'hidePushTokens: $hidePushTokens, latestStartedVersion: $latestStartedVersion, showBackgroundImage: $showBackgroundImage, allowScreenshots: $allowScreenshots)';
-
-  static String encodeLocale(Locale locale) {
-    return '${locale.languageCode}#${locale.countryCode}';
-  }
+      'hidePushTokens: $hidePushTokens, latestStartedVersion: $latestStartedVersion, showBackgroundImage: $showBackgroundImage, allowScreenshots: $allowScreenshots, autoCloseAppAfterAcceptingPushRequestDefault: $autoCloseAppAfterAcceptingPushRequest)';
 
   @override
   // ignore: hash_and_equals
@@ -142,6 +144,10 @@ class SettingsState {
         other.latestStartedVersion == latestStartedVersion &&
         other.showBackgroundImage == showBackgroundImage &&
         other.allowScreenshots == allowScreenshots;
+  }
+
+  static String encodeLocale(Locale locale) {
+    return '${locale.languageCode}#${locale.countryCode}';
   }
 
   static Locale decodeLocale(String str) {

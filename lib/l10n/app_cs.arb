@@ -1334,12 +1334,6 @@
   "@scanThisQrWithNewDevice": {
     "description": "Content of the token export dialog that shows the user the qr code."
   },
-  "@screenshotsAllowed": {
-    "description": "Label for the screenshots allowed setting."
-  },
-  "@screenshotsNotAllowed": {
-    "description": "Label for the screenshots allowed setting."
-  },
   "@secondsUntilNextOTP": {
     "description": "Semantics label for the animated countdown until the next OTP is generated."
   },
@@ -1689,6 +1683,8 @@
   "authenticateToShowOtp": "Pro zobrazení jednorázového kódu se přihlaste.",
   "authenticateToUnLockToken": "Pro změnu uzamčení tokenu se přihlaste.",
   "authentication": "Žádost o ověření",
+  "autoCloseAppAfterAcceptingPushRequestDescription": "Pokud je povoleno, aplikace se automaticky zavře po přijetí požadavku na push.",
+  "autoCloseAppAfterAcceptingPushRequestTitle": "Zavřít aplikaci po přijetí požadavku",
   "backgroundImage": "Obrázek na pozadí",
   "biometricHint": "Vyžadováno přihlášení",
   "biometricNotRecognized": "Ověření se nezdařilo. Zkuste to znovu.",
@@ -2000,8 +1996,6 @@
   "saveButton": "Uložit",
   "scanQrCode": "Naskenovat QR kód",
   "scanThisQrWithNewDevice": "Naskenujte tento QR kód svým novým zařízením pro import žetonu.",
-  "screenshotsAllowed": "Snímky obrazovky povoleny",
-  "screenshotsNotAllowed": "Snímky obrazovky nejsou povoleny",
   "secondsUntilNextOTP": "Sekundy do dalšího OTP",
   "secretIsRequired": "Tajné je vyžadováno",
   "secretKey": "Tajný klíč",

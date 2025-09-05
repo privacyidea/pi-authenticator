@@ -1683,6 +1683,8 @@
   "authenticateToShowOtp": "Harap lakukan autentikasi untuk menunjukkan kata sandi sekali pakai.",
   "authenticateToUnLockToken": "Lakukan autentikasi untuk mengubah status kunci token.",
   "authentication": "Otentikasi",
+  "autoCloseAppAfterAcceptingPushRequestDescription": "Jika diaktifkan, aplikasi akan secara otomatis menutup setelah menerima permintaan push.",
+  "autoCloseAppAfterAcceptingPushRequestTitle": "Tutup aplikasi setelah menerima permintaan",
   "backgroundImage": "Gambar latar belakang",
   "biometricHint": "Diperlukan autentikasi",
   "biometricNotRecognized": "Tidak dikenali. Coba lagi.",
