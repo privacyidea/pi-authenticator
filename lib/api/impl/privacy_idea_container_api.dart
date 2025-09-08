@@ -41,6 +41,7 @@ import '../../model/riverpod_states/token_state.dart';
 import '../../model/token_container.dart';
 import '../../model/token_template.dart';
 import '../../model/tokens/token.dart';
+import '../../utils/http_status_checker.dart';
 import '../../utils/logger.dart';
 import '../../widgets/dialog_widgets/container_dialogs/initial_token_assignment_dialog.dart';
 import '../../widgets/dialog_widgets/enter_passphrase_dialog.dart';
@@ -237,7 +238,7 @@ class PiContainerApi implements TokenContainerApi {
     };
 
     final response = await _ioClient.doPost(url: requestUrl, body: body, sslVerify: container.sslVerify);
-    if (response.statusCode != 200) {
+    if (HttpStatusChecker.isError(response.statusCode)) {
       final errorResponse = response.asPiErrorResponse();
       if (errorResponse != null) throw errorResponse.piServerResultError;
       throw ResponseError(response);
@@ -284,7 +285,7 @@ class PiContainerApi implements TokenContainerApi {
     if (errorResponse != null) {
       throw errorResponse.piServerResultError;
     }
-    if (response.statusCode != 200 || piResponse == null) throw ResponseError(response);
+    if (HttpStatusChecker.isError(response.statusCode) || piResponse == null) throw ResponseError(response);
 
     return piResponse.asSuccess!.resultValue;
   }
@@ -299,7 +300,7 @@ class PiContainerApi implements TokenContainerApi {
       TokenContainer.SCOPE: requestUrl.toString(),
     };
     final challengeResponse = await _ioClient.doPost(url: container.challengeUrl, body: body, sslVerify: container.sslVerify);
-    if (challengeResponse.statusCode != 200) {
+    if (HttpStatusChecker.isError(challengeResponse.statusCode)) {
       final errorResponse = challengeResponse.asPiErrorResponse();
       if (errorResponse != null) throw errorResponse.piServerResultError;
       throw ResponseError(challengeResponse);
@@ -338,7 +339,7 @@ class PiContainerApi implements TokenContainerApi {
     };
 
     final response = await _ioClient.doPost(url: container.syncUrl, body: body, sslVerify: container.sslVerify);
-    if (response.statusCode != 200) {
+    if (HttpStatusChecker.isError(response.statusCode)) {
       final piErrorResponse = response.asPiErrorResponse();
       if (piErrorResponse != null) throw piErrorResponse.piServerResultError;
       throw ResponseError(response);

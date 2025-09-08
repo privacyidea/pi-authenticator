@@ -29,6 +29,7 @@ import '../../../../model/push_request.dart';
 import '../../../../model/riverpod_states/push_request_state.dart';
 import '../../../../model/tokens/push_token.dart';
 import '../../../../repo/secure_push_request_repository.dart';
+import '../../../http_status_checker.dart';
 import '../../../logger.dart';
 import '../../../privacyidea_io_client.dart';
 import '../../../push_provider.dart';
@@ -395,7 +396,7 @@ class PushRequestNotifier extends _$PushRequestNotifier {
         return false;
       }
     }
-    if (response.statusCode != 200) {
+    if (HttpStatusChecker.isError(response.statusCode)) {
       ref.read(statusMessageProvider.notifier).state = StatusMessage(
         message: (l) => '${l.sendPushRequestResponseFailed}\n${l.statusCode(response.statusCode)}',
         details: (_) => (tryJsonDecode(response.body)?['result']?['error']?['message']) ?? '',

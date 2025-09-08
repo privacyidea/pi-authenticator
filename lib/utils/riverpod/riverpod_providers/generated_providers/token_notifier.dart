@@ -50,6 +50,7 @@ import '../../../../repo/secure_token_repository.dart';
 import '../../../../views/import_tokens_view/pages/import_plain_tokens_page.dart';
 import '../../../firebase_utils.dart';
 import '../../../globals.dart';
+import '../../../http_status_checker.dart';
 import '../../../lock_auth.dart';
 import '../../../logger.dart';
 import '../../../privacyidea_io_client.dart';
@@ -626,7 +627,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       return false;
     }
 
-    if (response.statusCode != 200) {
+    if (HttpStatusChecker.isError(response.statusCode)) {
       Logger.warning(
         'Post request on roll out failed.',
         error: 'Token: ${pushToken.serial}\nStatus code: ${response.statusCode},\nURL:${response.request?.url}\nBody: ${response.body}',
@@ -770,7 +771,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       body: {'new_fb_token': firebaseToken, 'serial': token.serial, 'timestamp': timestamp, 'signature': signature},
       sslVerify: token.sslVerify,
     );
-    if (response.statusCode != 200) {
+    if (HttpStatusChecker.isError(response.statusCode)) {
       Logger.warning('Updating firebase token for push token failed!');
       return false;
     }
