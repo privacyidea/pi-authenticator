@@ -30,6 +30,7 @@ import '../../../../../../../model/pi_server_response.dart';
 import '../model/api_results/pi_server_results/pi_server_result_value.dart';
 import '../utils/logger.dart';
 import '../utils/view_utils.dart';
+import 'http_status_checker.dart';
 
 class PrivacyideaIOClient {
   const PrivacyideaIOClient();
@@ -138,7 +139,7 @@ class PrivacyideaIOClient {
       Logger.info('Post request finished');
     }
 
-    if (response.statusCode != 200) {
+    if (HttpStatusChecker.isError(response.statusCode)) {
       Logger.warning(
         'Received unexpected response',
         error: 'Status code: ${response.statusCode}' '\nPosted body: $body' '\nResponse: ${response.body}\n',
@@ -202,7 +203,7 @@ class PrivacyideaIOClient {
       Logger.info('Post request finished');
     }
 
-    if (response.statusCode != 200) {
+    if (HttpStatusChecker.isError(response.statusCode)) {
       Logger.warning('Received unexpected response: ${response.statusCode}');
     }
 

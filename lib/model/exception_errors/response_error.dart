@@ -19,6 +19,8 @@
  */
 import 'package:http/http.dart';
 
+import '../../utils/http_status_checker.dart';
+
 class ResponseError {
   final int _statusCode;
   int get statusCode => _statusCode;
@@ -32,7 +34,7 @@ class ResponseError {
 //<title>405 Method Not Allowed</title>
 //<title>Method Not Allowed</title>
   factory ResponseError(Response response) {
-    assert(response.statusCode != 200, 'Status code of an response error should not be 200');
+    assert(HttpStatusChecker.isError(response.statusCode), 'Status code of an response error should not be 200');
     final regexpCode = RegExp(r'<title>(\d{3})');
     final regexpMessage = RegExp(r'(?<=(<title>\d* ?))[A-Za-z][A-Za-z\s]*(?=</title>)');
     final message = regexpMessage.firstMatch(response.body)?.group(0) ?? response.body;
