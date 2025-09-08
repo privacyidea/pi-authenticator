@@ -1,4 +1,8 @@
 abstract class HttpStatusChecker {
+  static bool isInformational(int statusCode) {
+    return statusCode >= 100 && statusCode < 200;
+  }
+
   static bool isSuccessful(int statusCode) {
     return statusCode >= 200 && statusCode < 300;
   }
