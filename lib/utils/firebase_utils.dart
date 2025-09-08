@@ -25,6 +25,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mutex/mutex.dart';
+import 'package:privacyidea_authenticator/repo/secure_storage_mutexed.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 
 import '../../../../../../../utils/view_utils.dart';
@@ -176,34 +177,26 @@ class FirebaseUtils {
   // ###########################################################################
   // FIREBASE CONFIG
   // ###########################################################################
-  static const _CURRENT_APP_TOKEN_KEY = '${GLOBAL_SECURE_REPO_PREFIX}CURRENT_APP_TOKEN';
-  static const _NEW_APP_TOKEN_KEY = '${GLOBAL_SECURE_REPO_PREFIX}NEW_APP_TOKEN';
-  static const _storage = FlutterSecureStorage();
-  static final _m = Mutex();
-  static Future<T> _protect<T>(Future<T> Function() f) => _m.protect<T>(f);
+  static const _FIREBASE_TOKEN_KEY_PREFIX_LEGACY = GLOBAL_SECURE_REPO_PREFIX_LEGACY;
+  static const _CURRENT_APP_TOKEN_KEY_LEGACY = 'CURRENT_APP_TOKEN';
+  static const _NEW_APP_TOKEN_KEY_LEGACY = 'NEW_APP_TOKEN';
 
-  // Future<bool> deleteFirebaseToken() => _protect(() async {
-  //       final firebaseToken = await getCurrentFirebaseToken();
-  //       if (firebaseToken == null) {
-  //         return false;
-  //       }
-  //       await _storage.delete(key: _CURRENT_APP_TOKEN_KEY);
-  //       return true;
-  //     });
+  static const _FIREBASE_TOKEN_KEY_PREFIX = '${GLOBAL_SECURE_REPO_PREFIX}_firebase';
+  static const _CURRENT_APP_TOKEN_KEY = 'current';
+  static const _NEW_APP_TOKEN_KEY = 'new';
 
-  // Future<String?> renewFirebaseToken() async {
-  //   if (_initialized == false || await deleteFirebaseToken() == false) {
-  //     return null;
-  //   }
-
-  //   String? newToken = await FirebaseMessaging.instance.getToken();
-  //   if (newToken == null) {
-  //     return null;
-  //   }
-  //   await setNewFirebaseToken(newToken);
-  //   await setCurrentFirebaseToken(newToken);
-  //   return newToken;
-  // }
+  static final _storageLegacy = SecureStorageMutexed(
+    storagePrefix: _FIREBASE_TOKEN_KEY_PREFIX_LEGACY,
+    aOptions: AndroidOptions(encryptedSharedPreferences: true),
+  );
+  static final _storage = SecureStorageMutexed(
+    storagePrefix: _FIREBASE_TOKEN_KEY_PREFIX,
+    aOptions: AndroidOptions(encryptedSharedPreferences: true),
+    iOptions: IOSOptions(
+      accessibility: KeychainAccessibility.first_unlock_this_device,
+      synchronizable: false,
+    ),
+  );
 
   Future<bool> deleteFirebaseToken() async {
     Logger.info('Deleting firebase token..');
@@ -224,17 +217,42 @@ class FirebaseUtils {
 
   Future<void> setCurrentFirebaseToken(String str) {
     Logger.info('Setting current firebase token');
-    return _protect(() => _storage.write(key: _CURRENT_APP_TOKEN_KEY, value: str));
+    return _storage.write(key: _CURRENT_APP_TOKEN_KEY, value: str);
   }
 
-  Future<String?> getCurrentFirebaseToken() => _protect(() => _storage.read(key: _CURRENT_APP_TOKEN_KEY));
+  Future<String?> getCurrentFirebaseToken() async {
+    final current = await _storage.read(key: _CURRENT_APP_TOKEN_KEY);
+    if (current != null) return current;
+    final legacyCurrent = await _storageLegacy.read(key: _CURRENT_APP_TOKEN_KEY_LEGACY);
+    if (legacyCurrent != null) {
+      Logger.info('Loaded legacy current firebase token from secure storage');
+      await _storage.write(key: _CURRENT_APP_TOKEN_KEY, value: legacyCurrent);
+      await _storageLegacy.delete(key: _CURRENT_APP_TOKEN_KEY_LEGACY);
+      Logger.info('Migrated legacy current firebase token to new secure storage');
+      return legacyCurrent;
+    }
+    return null;
+  }
 
   // This is used for checking if the token was updated.
-  Future<void> setNewFirebaseToken(String str) => _protect(() {
-        Logger.info('Setting new firebase token');
-        return _storage.write(key: _NEW_APP_TOKEN_KEY, value: str);
-      });
-  Future<String?> getNewFirebaseToken() => _protect(() => _storage.read(key: _NEW_APP_TOKEN_KEY));
+  Future<void> setNewFirebaseToken(String str) {
+    Logger.info('Setting new firebase token');
+    return _storage.write(key: _NEW_APP_TOKEN_KEY, value: str);
+  }
+
+  Future<String?> getNewFirebaseToken() async {
+    final newFbToken = await _storage.read(key: _NEW_APP_TOKEN_KEY);
+    if (newFbToken != null) return newFbToken;
+    final legacyNewFbToken = await _storageLegacy.read(key: _NEW_APP_TOKEN_KEY_LEGACY);
+    if (legacyNewFbToken != null) {
+      Logger.info('Loaded legacy new firebase token from secure storage');
+      await _storage.write(key: _NEW_APP_TOKEN_KEY, value: legacyNewFbToken);
+      await _storageLegacy.delete(key: _NEW_APP_TOKEN_KEY_LEGACY);
+      Logger.info('Migrated legacy new firebase token to new secure storage');
+      return legacyNewFbToken;
+    }
+    return null;
+  }
 }
 
 /// This class just is used to disable Firebase for web builds.

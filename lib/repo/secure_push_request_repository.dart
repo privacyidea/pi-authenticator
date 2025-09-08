@@ -20,6 +20,9 @@
 
 import 'dart:convert';
 
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:privacyidea_authenticator/utils/identifiers.dart';
+
 import '../interfaces/repo/push_request_repository.dart';
 import '../model/push_request.dart';
 import '../model/riverpod_states/push_request_state.dart';
@@ -28,12 +31,26 @@ import '../utils/logger.dart';
 import 'secure_storage_mutexed.dart';
 
 class SecurePushRequestRepository implements PushRequestRepository {
-  const SecurePushRequestRepository();
+  SecurePushRequestRepository();
+
+  static const String _PUSH_REQUEST_PREFIX_LEGACY = GLOBAL_SECURE_REPO_PREFIX_LEGACY;
+  static const String _KEY_LEGACY = 'pr_state';
+  static const String _PUSH_REQUEST_PREFIX = '${GLOBAL_SECURE_REPO_PREFIX}_push_request';
+  static const String _KEY = 'state';
 
   // Use this to lock critical sections of code.
-  final SecureStorageMutexed _storage = const SecureStorageMutexed();
-
-  static const String _securePushRequestKey = 'app_v3_pr_state';
+  static final _storageLegacy = SecureStorageMutexed(
+    storagePrefix: _PUSH_REQUEST_PREFIX_LEGACY,
+    aOptions: AndroidOptions(encryptedSharedPreferences: true),
+  );
+  static final _storage = SecureStorageMutexed(
+    storagePrefix: _PUSH_REQUEST_PREFIX,
+    aOptions: AndroidOptions(encryptedSharedPreferences: true),
+    iOptions: IOSOptions(
+      accessibility: KeychainAccessibility.first_unlock_this_device,
+      synchronizable: false,
+    ),
+  );
 
   /// Save the state to the secure storage.
   /// This is a critical section, so it is protected by Mutex.
@@ -41,7 +58,17 @@ class SecurePushRequestRepository implements PushRequestRepository {
   Future<void> saveState(PushRequestState pushRequestState) async {
     final stateJson = jsonEncode(pushRequestState.toJson());
     Logger.debug('Saving state: $stateJson');
-    await _storage.write(key: _securePushRequestKey, value: stateJson);
+    await _storage.write(key: _KEY, value: stateJson);
+  }
+
+  Future<String?> _migrate() async {
+    final stateJson = await _storageLegacy.read(key: _KEY_LEGACY);
+    if (stateJson == null) return null;
+    Logger.info('Loaded legacy push request state from secure storage');
+    await _storage.write(key: _KEY, value: stateJson);
+    await _storageLegacy.delete(key: _KEY_LEGACY);
+    Logger.info('Migrated legacy push request state to new secure storage');
+    return stateJson;
   }
 
   /// Load the state from the secure storage.
@@ -49,9 +76,15 @@ class SecurePushRequestRepository implements PushRequestRepository {
   /// This is a critical section, so it is protected by Mutex.
   @override
   Future<PushRequestState> loadState() async {
-    final String? stateJson = await _storage.read(key: _securePushRequestKey);
+    String? stateJson = await _storage.read(key: _KEY);
     if (stateJson == null) {
-      return PushRequestState(pushRequests: [], knownPushRequests: CustomIntBuffer(list: []));
+      // Try to load legacy state if no state is found.
+      stateJson = await _migrate();
+      if (stateJson == null) {
+        Logger.info('No push request state found in secure storage, returning empty state');
+        return PushRequestState(pushRequests: [], knownPushRequests: CustomIntBuffer(list: []));
+      }
+      Logger.info('Loaded migrated push request state from secure storage');
     }
     return PushRequestState.fromJson(jsonDecode(stateJson));
   }
@@ -85,5 +118,5 @@ class SecurePushRequestRepository implements PushRequestRepository {
   /// If no state is saved, nothing will happen.
   /// This is a critical section, so it is protected by Mutex.
   @override
-  Future<void> clearState() => _storage.delete(key: _securePushRequestKey);
+  Future<void> clearState() => _storage.delete(key: _KEY);
 }

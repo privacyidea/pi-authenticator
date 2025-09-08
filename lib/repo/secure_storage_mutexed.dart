@@ -21,20 +21,52 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mutex/mutex.dart';
 
 class SecureStorageMutexed {
-  const SecureStorageMutexed();
-
   static final Mutex _m = Mutex();
-  static final FlutterSecureStorage storage = const FlutterSecureStorage(
-    aOptions: AndroidOptions(encryptedSharedPreferences: true),
-  );
+  final FlutterSecureStorage storage;
+  final String storagePrefix;
+
+  SecureStorageMutexed({
+    required this.storagePrefix,
+    AndroidOptions aOptions = const AndroidOptions(),
+    IOSOptions iOptions = const IOSOptions(),
+    LinuxOptions lOptions = const LinuxOptions(),
+    MacOsOptions mOptions = const MacOsOptions(),
+    WindowsOptions wOptions = const WindowsOptions(),
+  }) : storage = FlutterSecureStorage(aOptions: aOptions, iOptions: iOptions, lOptions: lOptions, mOptions: mOptions, wOptions: wOptions);
+
+  String _fullKey(String key) => "${storagePrefix}_$key";
 
   /// Function [f] is executed, protected by Mutex [_m].
   /// That means, that calls of this method will always be executed serial.
   Future<T> _protect<T>(Future<T> Function() f) => _m.protect<T>(f);
 
-  Future<void> write({required String key, required String value}) => _protect(() => storage.write(key: key, value: value));
-  Future<String?> read({required String key}) => _protect(() => storage.read(key: key));
-  Future<Map<String, String>> readAll() => _protect(() => storage.readAll());
-  Future<void> delete({required String key}) => _protect(() => storage.delete(key: key));
-  Future<void> deleteAll() => _protect(() => storage.deleteAll());
+  /// Writes the given key-value pair to the secure storage.
+  Future<void> write({required String key, required String value}) => _protect(() => storage.write(key: _fullKey(key), value: value));
+
+  /// Reads the value for the given key from the secure storage.
+  Future<String?> read({required String key}) => _protect(() => storage.read(key: _fullKey(key)));
+
+  /// Reads all key-value pairs from the secure storage that start with the storagePrefix.
+  Future<Map<String, String>> readAll() => _protect(() async {
+        final allPairs = await storage.readAll();
+        final allKeys = allPairs.keys.where((key) => key.startsWith(storagePrefix)).toList();
+        final result = <String, String>{};
+        for (var key in allKeys) {
+          final shortKey = key.substring(storagePrefix.length + 1);
+          result[shortKey] = allPairs[key]!;
+        }
+        return result;
+      });
+
+  /// Deletes the entry with the given key from the secure storage.
+  Future<void> delete({required String key}) => _protect(() => storage.delete(key: _fullKey(key)));
+
+  /// Deletes all entries from the secure storage that start with the storagePrefix.
+  Future<void> deleteAll() => _protect(() async {
+        final allPairs = await storage.readAll();
+        final allKeys = allPairs.keys.where((key) => key.startsWith(storagePrefix)).toList();
+        for (var key in allKeys) {
+          await storage.delete(key: key);
+        }
+      });
 }
