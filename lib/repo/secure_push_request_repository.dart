@@ -20,7 +20,7 @@
 
 import 'dart:convert';
 
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 
 import '../interfaces/repo/push_request_repository.dart';
@@ -39,18 +39,8 @@ class SecurePushRequestRepository implements PushRequestRepository {
   static const String _KEY = 'state';
 
   // Use this to lock critical sections of code.
-  static final _storageLegacy = SecureStorageMutexed(
-    storagePrefix: _PUSH_REQUEST_PREFIX_LEGACY,
-    aOptions: AndroidOptions(encryptedSharedPreferences: true),
-  );
-  static final _storage = SecureStorageMutexed(
-    storagePrefix: _PUSH_REQUEST_PREFIX,
-    aOptions: AndroidOptions(encryptedSharedPreferences: true),
-    iOptions: IOSOptions(
-      accessibility: KeychainAccessibility.first_unlock_this_device,
-      synchronizable: false,
-    ),
-  );
+  static final _storageLegacy = SecureStorageMutexed.legacy(storagePrefix: _PUSH_REQUEST_PREFIX_LEGACY);
+  static final _storage = SecureStorageMutexed.create(storagePrefix: _PUSH_REQUEST_PREFIX);
 
   /// Save the state to the secure storage.
   /// This is a critical section, so it is protected by Mutex.

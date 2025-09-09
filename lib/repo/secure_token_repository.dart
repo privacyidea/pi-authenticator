@@ -23,7 +23,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 import 'package:privacyidea_authenticator/widgets/elevated_delete_button.dart';
 
 import '../interfaces/repo/token_repository.dart';
@@ -43,18 +43,8 @@ class SecureTokenRepository implements TokenRepository {
   static const String _TOKEN_PREFIX_LEGACY = GLOBAL_SECURE_REPO_PREFIX_LEGACY;
   static const String _TOKEN_PREFIX = '${GLOBAL_SECURE_REPO_PREFIX}_token';
 
-  static final _storageLegacy = SecureStorageMutexed(
-    storagePrefix: _TOKEN_PREFIX_LEGACY,
-    aOptions: AndroidOptions(encryptedSharedPreferences: true),
-  );
-  static final _storage = SecureStorageMutexed(
-    storagePrefix: _TOKEN_PREFIX,
-    aOptions: AndroidOptions(encryptedSharedPreferences: true),
-    iOptions: IOSOptions(
-      accessibility: KeychainAccessibility.first_unlock_this_device,
-      synchronizable: false,
-    ),
-  );
+  static final _storageLegacy = SecureStorageMutexed.legacy(storagePrefix: _TOKEN_PREFIX_LEGACY);
+  static final _storage = SecureStorageMutexed.create(storagePrefix: _TOKEN_PREFIX);
 
   // ###########################################################################
   // TOKENS

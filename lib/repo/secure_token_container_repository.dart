@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 
 import '../interfaces/repo/token_container_repository.dart';
@@ -13,18 +13,8 @@ class SecureTokenContainerRepository extends TokenContainerRepository {
   static const String _TOKEN_CONTAINER_PREFIX_LEGACY = 'containerCredentials';
   static const String _TOKEN_CONTAINER_PREFIX = '${GLOBAL_SECURE_REPO_PREFIX}_token_container';
 
-  static final _storageLegacy = SecureStorageMutexed(
-    storagePrefix: _TOKEN_CONTAINER_PREFIX_LEGACY,
-    aOptions: AndroidOptions(encryptedSharedPreferences: true),
-  );
-  static final _storage = SecureStorageMutexed(
-    storagePrefix: _TOKEN_CONTAINER_PREFIX,
-    aOptions: AndroidOptions(encryptedSharedPreferences: true),
-    iOptions: IOSOptions(
-      accessibility: KeychainAccessibility.first_unlock_this_device,
-      synchronizable: false,
-    ),
-  );
+  static final _storageLegacy = SecureStorageMutexed.legacy(storagePrefix: _TOKEN_CONTAINER_PREFIX_LEGACY);
+  static final _storage = SecureStorageMutexed.create(storagePrefix: _TOKEN_CONTAINER_PREFIX);
 
   /// Takes all containers from the legacy storage and saves them to the new storage.
   /// Afterwards, the containers are deleted from the legacy storage.

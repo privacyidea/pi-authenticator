@@ -25,7 +25,7 @@ class SecureStorageMutexed {
   final FlutterSecureStorage storage;
   final String storagePrefix;
 
-  SecureStorageMutexed({
+  SecureStorageMutexed._({
     required this.storagePrefix,
     AndroidOptions aOptions = const AndroidOptions(),
     IOSOptions iOptions = const IOSOptions(),
@@ -33,6 +33,24 @@ class SecureStorageMutexed {
     MacOsOptions mOptions = const MacOsOptions(),
     WindowsOptions wOptions = const WindowsOptions(),
   }) : storage = FlutterSecureStorage(aOptions: aOptions, iOptions: iOptions, lOptions: lOptions, mOptions: mOptions, wOptions: wOptions);
+
+  factory SecureStorageMutexed.create({required String storagePrefix}) {
+    return SecureStorageMutexed._(
+      storagePrefix: storagePrefix,
+      aOptions: AndroidOptions(encryptedSharedPreferences: true),
+      iOptions: IOSOptions(
+        accessibility: KeychainAccessibility.first_unlock_this_device,
+        synchronizable: false,
+      ),
+    );
+  }
+
+  factory SecureStorageMutexed.legacy({required String storagePrefix}) {
+    return SecureStorageMutexed._(
+      storagePrefix: storagePrefix,
+      aOptions: AndroidOptions(encryptedSharedPreferences: true),
+    );
+  }
 
   String _fullKey(String key) => "${storagePrefix}_$key";
 

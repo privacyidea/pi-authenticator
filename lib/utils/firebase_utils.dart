@@ -23,7 +23,7 @@ import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 import 'package:mutex/mutex.dart';
 import 'package:privacyidea_authenticator/repo/secure_storage_mutexed.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
@@ -185,18 +185,8 @@ class FirebaseUtils {
   static const _CURRENT_APP_TOKEN_KEY = 'current';
   static const _NEW_APP_TOKEN_KEY = 'new';
 
-  static final _storageLegacy = SecureStorageMutexed(
-    storagePrefix: _FIREBASE_TOKEN_KEY_PREFIX_LEGACY,
-    aOptions: AndroidOptions(encryptedSharedPreferences: true),
-  );
-  static final _storage = SecureStorageMutexed(
-    storagePrefix: _FIREBASE_TOKEN_KEY_PREFIX,
-    aOptions: AndroidOptions(encryptedSharedPreferences: true),
-    iOptions: IOSOptions(
-      accessibility: KeychainAccessibility.first_unlock_this_device,
-      synchronizable: false,
-    ),
-  );
+  static final _storageLegacy = SecureStorageMutexed.legacy(storagePrefix: _FIREBASE_TOKEN_KEY_PREFIX_LEGACY);
+  static final _storage = SecureStorageMutexed.create(storagePrefix: _FIREBASE_TOKEN_KEY_PREFIX);
 
   Future<bool> deleteFirebaseToken() async {
     Logger.info('Deleting firebase token..');
