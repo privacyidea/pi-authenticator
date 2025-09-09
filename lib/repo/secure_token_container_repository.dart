@@ -7,14 +7,14 @@ import '../interfaces/repo/token_container_repository.dart';
 import '../model/riverpod_states/token_container_state.dart';
 import '../model/token_container.dart';
 import '../utils/logger.dart';
-import 'secure_storage_mutexed.dart';
+import 'secure_storage.dart';
 
 class SecureTokenContainerRepository extends TokenContainerRepository {
   static const String _TOKEN_CONTAINER_PREFIX_LEGACY = 'containerCredentials';
   static const String _TOKEN_CONTAINER_PREFIX = '${GLOBAL_SECURE_REPO_PREFIX}_token_container';
 
-  static final _storageLegacy = SecureStorageMutexed.legacy(storagePrefix: _TOKEN_CONTAINER_PREFIX_LEGACY);
-  static final _storage = SecureStorageMutexed.create(storagePrefix: _TOKEN_CONTAINER_PREFIX);
+  static final _storageLegacy = SecureStorage.legacy(storagePrefix: _TOKEN_CONTAINER_PREFIX_LEGACY);
+  static final _storage = SecureStorage.create(storagePrefix: _TOKEN_CONTAINER_PREFIX);
 
   /// Takes all containers from the legacy storage and saves them to the new storage.
   /// Afterwards, the containers are deleted from the legacy storage.

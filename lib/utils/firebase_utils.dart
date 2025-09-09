@@ -25,7 +25,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
 
 import 'package:mutex/mutex.dart';
-import 'package:privacyidea_authenticator/repo/secure_storage_mutexed.dart';
+import 'package:privacyidea_authenticator/repo/secure_storage.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 
 import '../../../../../../../utils/view_utils.dart';
@@ -185,8 +185,8 @@ class FirebaseUtils {
   static const _CURRENT_APP_TOKEN_KEY = 'current';
   static const _NEW_APP_TOKEN_KEY = 'new';
 
-  static final _storageLegacy = SecureStorageMutexed.legacy(storagePrefix: _FIREBASE_TOKEN_KEY_PREFIX_LEGACY);
-  static final _storage = SecureStorageMutexed.create(storagePrefix: _FIREBASE_TOKEN_KEY_PREFIX);
+  static final _storageLegacy = SecureStorage.legacy(storagePrefix: _FIREBASE_TOKEN_KEY_PREFIX_LEGACY);
+  static final _storage = SecureStorage.create(storagePrefix: _FIREBASE_TOKEN_KEY_PREFIX);
 
   Future<bool> deleteFirebaseToken() async {
     Logger.info('Deleting firebase token..');

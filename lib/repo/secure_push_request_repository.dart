@@ -28,7 +28,7 @@ import '../model/push_request.dart';
 import '../model/riverpod_states/push_request_state.dart';
 import '../utils/custom_int_buffer.dart';
 import '../utils/logger.dart';
-import 'secure_storage_mutexed.dart';
+import 'secure_storage.dart';
 
 class SecurePushRequestRepository implements PushRequestRepository {
   SecurePushRequestRepository();
@@ -39,8 +39,8 @@ class SecurePushRequestRepository implements PushRequestRepository {
   static const String _KEY = 'state';
 
   // Use this to lock critical sections of code.
-  static final _storageLegacy = SecureStorageMutexed.legacy(storagePrefix: _PUSH_REQUEST_PREFIX_LEGACY);
-  static final _storage = SecureStorageMutexed.create(storagePrefix: _PUSH_REQUEST_PREFIX);
+  static final _storageLegacy = SecureStorage.legacy(storagePrefix: _PUSH_REQUEST_PREFIX_LEGACY);
+  static final _storage = SecureStorage.create(storagePrefix: _PUSH_REQUEST_PREFIX);
 
   /// Save the state to the secure storage.
   /// This is a critical section, so it is protected by Mutex.

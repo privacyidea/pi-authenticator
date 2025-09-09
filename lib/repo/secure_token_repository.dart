@@ -36,15 +36,15 @@ import '../utils/riverpod/riverpod_providers/generated_providers/token_notifier.
 import '../utils/view_utils.dart';
 import '../views/settings_view/settings_view_widgets/send_error_dialog.dart';
 import '../widgets/dialog_widgets/default_dialog.dart';
-import 'secure_storage_mutexed.dart';
+import 'secure_storage.dart';
 
 class SecureTokenRepository implements TokenRepository {
   const SecureTokenRepository();
   static const String _TOKEN_PREFIX_LEGACY = GLOBAL_SECURE_REPO_PREFIX_LEGACY;
   static const String _TOKEN_PREFIX = '${GLOBAL_SECURE_REPO_PREFIX}_token';
 
-  static final _storageLegacy = SecureStorageMutexed.legacy(storagePrefix: _TOKEN_PREFIX_LEGACY);
-  static final _storage = SecureStorageMutexed.create(storagePrefix: _TOKEN_PREFIX);
+  static final _storageLegacy = SecureStorage.legacy(storagePrefix: _TOKEN_PREFIX_LEGACY);
+  static final _storage = SecureStorage.create(storagePrefix: _TOKEN_PREFIX);
 
   // ###########################################################################
   // TOKENS

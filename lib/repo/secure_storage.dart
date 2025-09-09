@@ -20,12 +20,12 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mutex/mutex.dart';
 
-class SecureStorageMutexed {
+class SecureStorage {
   static final Mutex _m = Mutex();
   final FlutterSecureStorage storage;
   final String storagePrefix;
 
-  SecureStorageMutexed._({
+  SecureStorage._({
     required this.storagePrefix,
     AndroidOptions aOptions = const AndroidOptions(),
     IOSOptions iOptions = const IOSOptions(),
@@ -34,8 +34,8 @@ class SecureStorageMutexed {
     WindowsOptions wOptions = const WindowsOptions(),
   }) : storage = FlutterSecureStorage(aOptions: aOptions, iOptions: iOptions, lOptions: lOptions, mOptions: mOptions, wOptions: wOptions);
 
-  factory SecureStorageMutexed.create({required String storagePrefix}) {
-    return SecureStorageMutexed._(
+  factory SecureStorage.create({required String storagePrefix}) {
+    return SecureStorage._(
       storagePrefix: storagePrefix,
       aOptions: AndroidOptions(encryptedSharedPreferences: true),
       iOptions: IOSOptions(
@@ -45,8 +45,8 @@ class SecureStorageMutexed {
     );
   }
 
-  factory SecureStorageMutexed.legacy({required String storagePrefix}) {
-    return SecureStorageMutexed._(
+  factory SecureStorage.legacy({required String storagePrefix}) {
+    return SecureStorage._(
       storagePrefix: storagePrefix,
       aOptions: AndroidOptions(encryptedSharedPreferences: true),
     );
