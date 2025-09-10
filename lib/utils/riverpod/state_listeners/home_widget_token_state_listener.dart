@@ -27,16 +27,12 @@ import '../../../model/tokens/token.dart';
 import '../../home_widget_utils.dart';
 
 class HomeWidgetTokenStateListener extends TokenStateListener {
-  const HomeWidgetTokenStateListener({required super.provider})
-      : super(
-          onNewState: _onNewState,
-          listenerName: 'HomeWidgetUtils().updateTokensIfLinked',
-        );
+  const HomeWidgetTokenStateListener({required super.provider}) : super(onNewState: _onNewState, listenerName: 'HomeWidgetUtils().updateTokensIfLinked');
 
   static void _onNewState(AsyncValue<TokenState>? previous, AsyncValue<TokenState> next, WidgetRef ref) {
     final updateTokens = <Token>[];
-    final previousTokens = previous?.valueOrNull?.tokens ?? [];
-    final nextTokens = next.valueOrNull?.lastlyUpdatedTokens ?? [];
+    final previousTokens = previous?.value?.tokens ?? [];
+    final nextTokens = next.value?.lastlyUpdatedTokens ?? [];
     for (final nextToken in nextTokens) {
       final previousToken = previousTokens.firstWhereOrNull((previousToken) => previousToken.id == nextToken.id);
       if (previousToken == null) {

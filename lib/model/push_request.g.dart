@@ -7,21 +7,21 @@ part of 'push_request.dart';
 // **************************************************************************
 
 PushRequest _$PushRequestFromJson(Map<String, dynamic> json) => PushRequest(
-      title: json['title'] as String,
-      question: json['question'] as String,
-      uri: Uri.parse(json['uri'] as String),
-      nonce: json['nonce'] as String,
-      sslVerify: json['sslVerify'] as bool,
-      id: (json['id'] as num).toInt(),
-      expirationDate: DateTime.parse(json['expirationDate'] as String),
-      serial: json['serial'] as String? ?? '',
-      signature: json['signature'] as String? ?? '',
-      accepted: json['accepted'] as bool?,
-      possibleAnswers: (json['possibleAnswers'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList(),
-      selectedAnswer: json['selectedAnswer'] as String?,
-    );
+  title: json['title'] as String,
+  question: json['question'] as String,
+  uri: Uri.parse(json['uri'] as String),
+  nonce: json['nonce'] as String,
+  sslVerify: json['sslVerify'] as bool,
+  id: (json['id'] as num).toInt(),
+  expirationDate: DateTime.parse(json['expirationDate'] as String),
+  serial: json['serial'] as String? ?? '',
+  signature: json['signature'] as String? ?? '',
+  accepted: json['accepted'] as bool?,
+  possibleAnswers: (json['possibleAnswers'] as List<dynamic>?)
+      ?.map((e) => e as String)
+      .toList(),
+  selectedAnswer: json['selectedAnswer'] as String?,
+);
 
 Map<String, dynamic> _$PushRequestToJson(PushRequest instance) =>
     <String, dynamic>{

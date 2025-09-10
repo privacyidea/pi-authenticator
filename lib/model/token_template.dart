@@ -35,7 +35,7 @@ part 'token_template.freezed.dart';
 part 'token_template.g.dart';
 
 @freezed
-class TokenTemplate with _$TokenTemplate {
+sealed class TokenTemplate with _$TokenTemplate {
   TokenTemplate._();
 
   factory TokenTemplate.withSerial({
@@ -56,25 +56,15 @@ class TokenTemplate with _$TokenTemplate {
   List<String> get keys => otpAuthMap.keys.toList();
   List<dynamic> get values => otpAuthMap.values.toList();
 
-  String? get serial => validateOptional(
-        value: otpAuthMap[Token.SERIAL],
-        validator: const ObjectValidatorNullable<String>(),
-        name: Token.SERIAL,
-      );
+  String? get serial => validateOptional(value: otpAuthMap[Token.SERIAL], validator: const ObjectValidatorNullable<String>(), name: Token.SERIAL);
 
-  String? get type => validateOptional(
-        value: otpAuthMap[Token.TOKENTYPE_OTPAUTH],
-        validator: const ObjectValidatorNullable<String>(),
-        name: Token.TOKENTYPE_OTPAUTH,
-      );
+  String? get type =>
+      validateOptional(value: otpAuthMap[Token.TOKENTYPE_OTPAUTH], validator: const ObjectValidatorNullable<String>(), name: Token.TOKENTYPE_OTPAUTH);
 
   List<String>? get otpValues => this is _TokenTemplateWithOtps ? (this as _TokenTemplateWithOtps).otps : null;
 
-  String? get containerSerial => validateOptional(
-        value: additionalData[Token.CONTAINER_SERIAL],
-        validator: const ObjectValidatorNullable<String>(),
-        name: Token.CONTAINER_SERIAL,
-      );
+  String? get containerSerial =>
+      validateOptional(value: additionalData[Token.CONTAINER_SERIAL], validator: const ObjectValidatorNullable<String>(), name: Token.CONTAINER_SERIAL);
 
   Map<String, dynamic> get otpAuthMapSafeToSend => Map<String, dynamic>.from(otpAuthMap)..remove(OTPToken.SECRET_BASE32);
 
@@ -133,10 +123,8 @@ class TokenTemplate with _$TokenTemplate {
   }
 
   @override
-  int get hashCode => Object.hashAllUnordered([
-        ...otpAuthMap.keys.map((key) => '$key:${otpAuthMap[key]}'),
-        ...additionalData.keys.map((key) => '$key:${additionalData[key]}'),
-      ]);
+  int get hashCode =>
+      Object.hashAllUnordered([...otpAuthMap.keys.map((key) => '$key:${otpAuthMap[key]}'), ...additionalData.keys.map((key) => '$key:${additionalData[key]}')]);
 
   bool isSameTokenAs(TokenTemplate? other) {
     if (other == null) return false;

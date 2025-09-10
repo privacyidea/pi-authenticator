@@ -20,6 +20,7 @@
 
 import 'dart:ui';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mutex/mutex.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -47,9 +48,7 @@ class SettingsNotifier extends _$SettingsNotifier {
   late final SettingsRepository _repo;
 
   @override
-  Future<SettingsState> build({
-    required SettingsRepository repo,
-  }) async {
+  Future<SettingsState> build({required SettingsRepository repo}) async {
     Logger.info('New settings notifier created');
     _repo = _repoOverride ?? repo;
     final newState = await _loadFromRepo();

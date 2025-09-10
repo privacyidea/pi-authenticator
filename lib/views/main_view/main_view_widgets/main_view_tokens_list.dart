@@ -47,21 +47,14 @@ class MainViewTokensList extends ConsumerStatefulWidget {
   @override
   ConsumerState<MainViewTokensList> createState() => _MainViewTokensListState();
 
-  static List<Widget> _buildSortableWidgets({
-    required List<SortableMixin> sortables,
-    required SortableMixin? draggingSortable,
-    required bool hidePushTokens,
-  }) {
+  static List<Widget> _buildSortableWidgets({required List<SortableMixin> sortables, required SortableMixin? draggingSortable, required bool hidePushTokens}) {
     if (sortables.isEmpty) return [];
     sortables = sortables.toList();
     if (hidePushTokens) sortables.removeWhere((t) => t is PushToken);
     return buildSortableWidgets(sortables: sortables, draggingSortable: draggingSortable);
   }
 
-  static List<Widget> buildSortableWidgets({
-    required List<SortableMixin> sortables,
-    required SortableMixin? draggingSortable,
-  }) {
+  static List<Widget> buildSortableWidgets({required List<SortableMixin> sortables, required SortableMixin? draggingSortable}) {
     List<Widget> widgets = [];
     sortables = sortables.toList();
     if (sortables.isEmpty) return [];
@@ -117,24 +110,14 @@ class MainViewTokensList extends ConsumerStatefulWidget {
 
       if (sortable is TokenFolder) {
         widgets.add(
-          TokenFolderWidget(
-            folder: sortable,
-            folderTokens: folderTokens!,
-            key: Key('mainview_${sortable.runtimeType}${sortable.hashCode}'),
-            filter: null,
-          ),
+          TokenFolderWidget(folder: sortable, folderTokens: folderTokens!, key: Key('mainview_${sortable.runtimeType}${sortable.hashCode}'), filter: null),
         );
         continue;
       }
     }
     widgets.add(
       (draggingSortable != null)
-          ? DragTargetDivider(
-              dependingFolder: null,
-              previousSortable: sortables.last,
-              nextSortable: null,
-              bottomPadding: 110,
-            )
+          ? DragTargetDivider(dependingFolder: null, previousSortable: sortables.last, nextSortable: null, bottomPadding: 110)
           : const SizedBox(height: 110),
     );
     return widgets;
@@ -148,7 +131,7 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
   @override
   Widget build(BuildContext context) {
     final draggingSortable = ref.watch(draggingSortableProvider);
-    final sortables = ref.watch(sortablesProvider).valueOrNull ?? [];
+    final sortables = ref.watch(sortablesProvider).value ?? [];
     final hidePushTokens = ref.watch(settingsProvider).whenOrNull(data: (data) => data.hidePushTokens) ?? SettingsState.hidePushTokensDefault;
 
     final hasFinalizedContainers = ref.watch(tokenContainerProvider).whenOrNull(data: (data) => data.hasFinalizedContainers);
@@ -160,62 +143,64 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
       },
       behavior: HitTestBehavior.translucent,
       child: SlidableAutoCloseBehavior(
-        child: Builder(builder: (innerContext) {
-          return GestureDetector(
-            onTap: () async {
-              for (var controller in ref.read(piSlidablesRef)) {
-                controller.close();
-              }
-            },
-            child: Stack(
-              children: [
-                Column(
-                  children: [
-                    Flexible(
-                      child: DefaultRefreshIndicator(
-                        child: SizedBox(
-                          height: 9999,
-                          child: Stack(
-                            children: [
-                              Positioned.fill(
-                                child: Opacity(
-                                  opacity: 0,
-                                  child: DragTargetDivider(
-                                    dependingFolder: null,
-                                    previousSortable: sortables.isNotEmpty ? sortables.last : null,
-                                    nextSortable: null,
-                                    bottomPadding: 1,
+        child: Builder(
+          builder: (innerContext) {
+            return GestureDetector(
+              onTap: () async {
+                for (var controller in ref.read(piSlidablesRef)) {
+                  controller.close();
+                }
+              },
+              child: Stack(
+                children: [
+                  Column(
+                    children: [
+                      Flexible(
+                        child: DefaultRefreshIndicator(
+                          child: SizedBox(
+                            height: 9999,
+                            child: Stack(
+                              children: [
+                                Positioned.fill(
+                                  child: Opacity(
+                                    opacity: 0,
+                                    child: DragTargetDivider(
+                                      dependingFolder: null,
+                                      previousSortable: sortables.isNotEmpty ? sortables.last : null,
+                                      nextSortable: null,
+                                      bottomPadding: 1,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                DefaultRefreshIndicator(
-                  listViewKey: listViewKey,
-                  scrollController: scrollController,
-                  child: DragItemScroller(
+                    ],
+                  ),
+                  DefaultRefreshIndicator(
                     listViewKey: listViewKey,
-                    itemIsDragged: draggingSortable != null,
                     scrollController: scrollController,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: MainViewTokensList._buildSortableWidgets(
-                        sortables: sortables,
-                        draggingSortable: draggingSortable,
-                        hidePushTokens: hidePushTokens,
+                    child: DragItemScroller(
+                      listViewKey: listViewKey,
+                      itemIsDragged: draggingSortable != null,
+                      scrollController: scrollController,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: MainViewTokensList._buildSortableWidgets(
+                          sortables: sortables,
+                          draggingSortable: draggingSortable,
+                          hidePushTokens: hidePushTokens,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          );
-        }),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }

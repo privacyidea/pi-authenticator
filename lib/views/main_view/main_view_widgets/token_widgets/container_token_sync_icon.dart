@@ -31,17 +31,14 @@ class ContainerTokenSyncIcon extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final syncState = ref.watch(tokenContainerProvider).valueOrNull?.getSyncState(token);
+    final syncState = ref.watch(tokenContainerProvider).value?.getSyncState(token);
     if (syncState == null) return const SizedBox.shrink();
     final color = Theme.of(context).listTileTheme.subtitleTextStyle?.color ?? Colors.grey;
-    return Icon(
-      color: color,
-      switch (syncState) {
-        SyncState.notStarted => Icons.sync,
-        SyncState.syncing => Icons.cloud_sync_outlined,
-        SyncState.failed => Icons.cloud_off_outlined,
-        SyncState.completed => Icons.cloud_done_outlined,
-      },
-    );
+    return Icon(color: color, switch (syncState) {
+      SyncState.notStarted => Icons.sync,
+      SyncState.syncing => Icons.cloud_sync_outlined,
+      SyncState.failed => Icons.cloud_off_outlined,
+      SyncState.completed => Icons.cloud_done_outlined,
+    });
   }
 }

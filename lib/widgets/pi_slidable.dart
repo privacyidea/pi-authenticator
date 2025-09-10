@@ -19,6 +19,7 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:privacyidea_authenticator/utils/globals.dart';
 
@@ -33,14 +34,7 @@ class PiSliable extends ConsumerStatefulWidget {
   final List<Widget> stack;
   final Widget child;
 
-  const PiSliable({
-    required this.groupTag,
-    required this.identifier,
-    required this.actions,
-    required this.child,
-    this.stack = const <Widget>[],
-    super.key,
-  });
+  const PiSliable({required this.groupTag, required this.identifier, required this.actions, required this.child, this.stack = const <Widget>[], super.key});
 
   @override
   ConsumerState<PiSliable> createState() => _PiSliableState();
@@ -75,23 +69,14 @@ class _PiSliableState extends ConsumerState<PiSliable> with TickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    final childStack = Stack(
-      children: [
-        widget.child,
-        for (var item in widget.stack) item,
-      ],
-    );
+    final childStack = Stack(children: [widget.child, for (var item in widget.stack) item]);
     return widget.actions.isNotEmpty
         ? ClipRRect(
             child: Slidable(
               controller: controller,
               key: ValueKey('${widget.groupTag}-${widget.identifier}'),
               groupTag: widget.groupTag,
-              endActionPane: ActionPane(
-                motion: const DrawerMotion(),
-                extentRatio: 1,
-                children: widget.actions,
-              ),
+              endActionPane: ActionPane(motion: const DrawerMotion(), extentRatio: 1, children: widget.actions),
               child: childStack,
             ),
           )

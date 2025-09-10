@@ -6,219 +6,131 @@ part of 'token_container_notifier.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$tokenContainerNotifierHash() =>
-    r'445416971629b37af94af24bc921514ea0e2d8d7';
+@ProviderFor(TokenContainerNotifier)
+const tokenContainerNotifierProviderOf = TokenContainerNotifierFamily._();
 
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
+final class TokenContainerNotifierProvider
+    extends
+        $AsyncNotifierProvider<TokenContainerNotifier, TokenContainerState> {
+  const TokenContainerNotifierProvider._({
+    required TokenContainerNotifierFamily super.from,
+    required ({
+      TokenContainerRepository repo,
+      TokenContainerApi containerApi,
+      EccUtils eccUtils,
+    })
+    super.argument,
+  }) : super(
+         retry: null,
+         name: r'tokenContainerNotifierProviderOf',
+         isAutoDispose: false,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
+  @override
+  String debugGetCreateSourceHash() => _$tokenContainerNotifierHash();
+
+  @override
+  String toString() {
+    return r'tokenContainerNotifierProviderOf'
+        ''
+        '$argument';
   }
 
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
+  @$internal
+  @override
+  TokenContainerNotifier create() => TokenContainerNotifier();
+
+  @override
+  bool operator ==(Object other) {
+    return other is TokenContainerNotifierProvider &&
+        other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
   }
 }
 
+String _$tokenContainerNotifierHash() =>
+    r'445416971629b37af94af24bc921514ea0e2d8d7';
+
+final class TokenContainerNotifierFamily extends $Family
+    with
+        $ClassFamilyOverride<
+          TokenContainerNotifier,
+          AsyncValue<TokenContainerState>,
+          TokenContainerState,
+          FutureOr<TokenContainerState>,
+          ({
+            TokenContainerRepository repo,
+            TokenContainerApi containerApi,
+            EccUtils eccUtils,
+          })
+        > {
+  const TokenContainerNotifierFamily._()
+    : super(
+        retry: null,
+        name: r'tokenContainerNotifierProviderOf',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: false,
+      );
+
+  TokenContainerNotifierProvider call({
+    required TokenContainerRepository repo,
+    required TokenContainerApi containerApi,
+    required EccUtils eccUtils,
+  }) => TokenContainerNotifierProvider._(
+    argument: (repo: repo, containerApi: containerApi, eccUtils: eccUtils),
+    from: this,
+  );
+
+  @override
+  String toString() => r'tokenContainerNotifierProviderOf';
+}
+
 abstract class _$TokenContainerNotifier
-    extends BuildlessAsyncNotifier<TokenContainerState> {
-  late final TokenContainerRepository repo;
-  late final TokenContainerApi containerApi;
-  late final EccUtils eccUtils;
+    extends $AsyncNotifier<TokenContainerState> {
+  late final _$args =
+      ref.$arg
+          as ({
+            TokenContainerRepository repo,
+            TokenContainerApi containerApi,
+            EccUtils eccUtils,
+          });
+  TokenContainerRepository get repo => _$args.repo;
+  TokenContainerApi get containerApi => _$args.containerApi;
+  EccUtils get eccUtils => _$args.eccUtils;
 
   FutureOr<TokenContainerState> build({
     required TokenContainerRepository repo,
     required TokenContainerApi containerApi,
     required EccUtils eccUtils,
   });
-}
-
-/// See also [TokenContainerNotifier].
-@ProviderFor(TokenContainerNotifier)
-const tokenContainerNotifierProviderOf = TokenContainerNotifierFamily();
-
-/// See also [TokenContainerNotifier].
-class TokenContainerNotifierFamily
-    extends Family<AsyncValue<TokenContainerState>> {
-  /// See also [TokenContainerNotifier].
-  const TokenContainerNotifierFamily();
-
-  /// See also [TokenContainerNotifier].
-  TokenContainerNotifierProvider call({
-    required TokenContainerRepository repo,
-    required TokenContainerApi containerApi,
-    required EccUtils eccUtils,
-  }) {
-    return TokenContainerNotifierProvider(
-      repo: repo,
-      containerApi: containerApi,
-      eccUtils: eccUtils,
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build(
+      repo: _$args.repo,
+      containerApi: _$args.containerApi,
+      eccUtils: _$args.eccUtils,
     );
-  }
-
-  @override
-  TokenContainerNotifierProvider getProviderOverride(
-    covariant TokenContainerNotifierProvider provider,
-  ) {
-    return call(
-      repo: provider.repo,
-      containerApi: provider.containerApi,
-      eccUtils: provider.eccUtils,
-    );
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'tokenContainerNotifierProviderOf';
-}
-
-/// See also [TokenContainerNotifier].
-class TokenContainerNotifierProvider extends AsyncNotifierProviderImpl<
-    TokenContainerNotifier, TokenContainerState> {
-  /// See also [TokenContainerNotifier].
-  TokenContainerNotifierProvider({
-    required TokenContainerRepository repo,
-    required TokenContainerApi containerApi,
-    required EccUtils eccUtils,
-  }) : this._internal(
-          () => TokenContainerNotifier()
-            ..repo = repo
-            ..containerApi = containerApi
-            ..eccUtils = eccUtils,
-          from: tokenContainerNotifierProviderOf,
-          name: r'tokenContainerNotifierProviderOf',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$tokenContainerNotifierHash,
-          dependencies: TokenContainerNotifierFamily._dependencies,
-          allTransitiveDependencies:
-              TokenContainerNotifierFamily._allTransitiveDependencies,
-          repo: repo,
-          containerApi: containerApi,
-          eccUtils: eccUtils,
-        );
-
-  TokenContainerNotifierProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.repo,
-    required this.containerApi,
-    required this.eccUtils,
-  }) : super.internal();
-
-  final TokenContainerRepository repo;
-  final TokenContainerApi containerApi;
-  final EccUtils eccUtils;
-
-  @override
-  FutureOr<TokenContainerState> runNotifierBuild(
-    covariant TokenContainerNotifier notifier,
-  ) {
-    return notifier.build(
-      repo: repo,
-      containerApi: containerApi,
-      eccUtils: eccUtils,
-    );
-  }
-
-  @override
-  Override overrideWith(TokenContainerNotifier Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: TokenContainerNotifierProvider._internal(
-        () => create()
-          ..repo = repo
-          ..containerApi = containerApi
-          ..eccUtils = eccUtils,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        repo: repo,
-        containerApi: containerApi,
-        eccUtils: eccUtils,
-      ),
-    );
-  }
-
-  @override
-  AsyncNotifierProviderElement<TokenContainerNotifier, TokenContainerState>
-      createElement() {
-    return _TokenContainerNotifierProviderElement(this);
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is TokenContainerNotifierProvider &&
-        other.repo == repo &&
-        other.containerApi == containerApi &&
-        other.eccUtils == eccUtils;
-  }
-
-  @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, repo.hashCode);
-    hash = _SystemHash.combine(hash, containerApi.hashCode);
-    hash = _SystemHash.combine(hash, eccUtils.hashCode);
-
-    return _SystemHash.finish(hash);
+    final ref =
+        this.ref as $Ref<AsyncValue<TokenContainerState>, TokenContainerState>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<TokenContainerState>, TokenContainerState>,
+              AsyncValue<TokenContainerState>,
+              Object?,
+              Object?
+            >;
+    element.handleValue(ref, created);
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin TokenContainerNotifierRef
-    on AsyncNotifierProviderRef<TokenContainerState> {
-  /// The parameter `repo` of this provider.
-  TokenContainerRepository get repo;
-
-  /// The parameter `containerApi` of this provider.
-  TokenContainerApi get containerApi;
-
-  /// The parameter `eccUtils` of this provider.
-  EccUtils get eccUtils;
-}
-
-class _TokenContainerNotifierProviderElement
-    extends AsyncNotifierProviderElement<TokenContainerNotifier,
-        TokenContainerState> with TokenContainerNotifierRef {
-  _TokenContainerNotifierProviderElement(super.provider);
-
-  @override
-  TokenContainerRepository get repo =>
-      (origin as TokenContainerNotifierProvider).repo;
-  @override
-  TokenContainerApi get containerApi =>
-      (origin as TokenContainerNotifierProvider).containerApi;
-  @override
-  EccUtils get eccUtils => (origin as TokenContainerNotifierProvider).eccUtils;
-}
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

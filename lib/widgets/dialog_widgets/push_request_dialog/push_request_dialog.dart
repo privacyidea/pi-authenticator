@@ -18,19 +18,14 @@ import 'push_request_dialog_widgets/push_presence_button_row.dart';
 
 class PushRequestDialog extends ConsumerStatefulWidget {
   static WidgetStateProperty<OutlinedBorder?> getButtonShape(BuildContext context) => WidgetStateProperty.all(
-        Theme.of(context).elevatedButtonTheme.style?.shape?.resolve({})?.copyWith(
-          side: BorderSide(color: Theme.of(context).colorScheme.onPrimary, width: 2.5),
-        ),
-      );
+    Theme.of(context).elevatedButtonTheme.style?.shape?.resolve({})?.copyWith(side: BorderSide(color: Theme.of(context).colorScheme.onPrimary, width: 2.5)),
+  );
 
   static double buttonHeight = 36;
 
   final PushRequest pushRequest;
 
-  const PushRequestDialog({
-    required this.pushRequest,
-    super.key,
-  });
+  const PushRequestDialog({required this.pushRequest, super.key});
 
   @override
   ConsumerState<PushRequestDialog> createState() => _PushRequestDialogState();
@@ -56,8 +51,8 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final tokenState = ref.watch(tokenProvider).valueOrNull;
-    final token = ref.watch(tokenProvider).valueOrNull?.getTokenBySerial(widget.pushRequest.serial);
+    final tokenState = ref.watch(tokenProvider).value;
+    final token = ref.watch(tokenProvider).value?.getTokenBySerial(widget.pushRequest.serial);
     final localizations = AppLocalizations.of(context)!;
     final title = widget.pushRequest.title == 'privacyIDEA' ? localizations.authentication : widget.pushRequest.title;
     if (token == null || tokenState == null) {
@@ -78,25 +73,14 @@ class _PushRequestDialogState extends ConsumerState<PushRequestDialog> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const SizedBox(height: 12),
-                  Text(
-                    localizations.requestInfo(token.label, token.issuer),
-                    style: Theme.of(context).textTheme.bodyLarge!,
-                    textAlign: TextAlign.center,
-                  ),
+                  Text(localizations.requestInfo(token.label, token.issuer), style: Theme.of(context).textTheme.bodyLarge!, textAlign: TextAlign.center),
                   const SizedBox(height: 10),
-                  Text(
-                    widget.pushRequest.question,
-                    style: Theme.of(context).textTheme.bodyLarge!,
-                    textAlign: TextAlign.center,
-                  ),
+                  Text(widget.pushRequest.question, style: Theme.of(context).textTheme.bodyLarge!, textAlign: TextAlign.center),
                   const SizedBox(height: 24),
                   PaddedRow(
                     peddingPercent: 0.33,
                     child: widget.pushRequest.possibleAnswers == null
-                        ? PushAcceptButton(
-                            height: PushRequestDialog.buttonHeight,
-                            onAccept: () => _onAccept(token),
-                          )
+                        ? PushAcceptButton(height: PushRequestDialog.buttonHeight, onAccept: () => _onAccept(token))
                         : RequirePresenceButtonRow(
                             rowHeight: PushRequestDialog.buttonHeight,
                             possibleAnswers: widget.pushRequest.possibleAnswers!,

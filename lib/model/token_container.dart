@@ -38,16 +38,16 @@ part 'token_container.freezed.dart';
 part 'token_container.g.dart';
 
 @Freezed(toStringOverride: false, addImplicitFinal: true, toJson: true, fromJson: true)
-class TokenContainer with _$TokenContainer {
+sealed class TokenContainer with _$TokenContainer {
   static const String CONTAINER_SERIAL = 'container_serial';
 
-// Container finalization:
+  // Container finalization:
   static const String FINALIZE_PUBLIC_CLIENT_KEY = 'public_client_key';
   static const String FINALIZE_DEVICE_BRAND = 'device_brand';
   static const String FINALIZE_DEVICE_MODEL = 'device_model';
   static const String FINALIZE_SIGNATURE = 'signature';
 
-// Container sync:
+  // Container sync:
   static const String SYNC_PUBLIC_CLIENT_KEY = 'public_enc_key_client';
   static const String SYNC_DICT_SERVER = 'container_dict_server';
   static const String SYNC_DICT_CLIENT = 'container_dict_client';
@@ -56,7 +56,7 @@ class TokenContainer with _$TokenContainer {
   static const String SYNC_POLICIES = 'policies';
   static const String SYNC_PUBLIC_SERVER_KEY = 'public_server_key';
 
-// Container Mapping:
+  // Container Mapping:
   static const String DICT_CONTAINER = 'container';
   static const String DICT_TYPE = 'type';
   static const String DICT_TYPE_SMARTPHONE = 'smartphone';
@@ -64,7 +64,7 @@ class TokenContainer with _$TokenContainer {
   static const String DICT_TOKENS_ADD = 'add';
   static const String DICT_TOKENS_UPDATE = 'update';
 
-// Container registration:
+  // Container registration:
   static const String ISSUER = 'issuer';
   static const String TTL_MINUTES = 'ttl';
   static const String NONCE = 'nonce';
@@ -173,9 +173,7 @@ class TokenContainer with _$TokenContainer {
     required String privateClientKey,
   }) = TokenContainerFinalized;
 
-  TokenContainerFinalized? finalize({
-    AsymmetricKeyPair<ECPublicKey, ECPrivateKey>? clientKeyPair,
-  }) {
+  TokenContainerFinalized? finalize({AsymmetricKeyPair<ECPublicKey, ECPrivateKey>? clientKeyPair}) {
     if (this is TokenContainerFinalized) return this as TokenContainerFinalized;
     if (clientKeyPair == null && (publicClientKey == null || privateClientKey == null)) {
       Logger.warning('Unable to finalize without client key pair');
@@ -208,14 +206,15 @@ class TokenContainer with _$TokenContainer {
 
   /// Add client key pair and set finalization state to generatingKeyPairCompleted
   TokenContainer withClientKeyPair(AsymmetricKeyPair<ECPublicKey, ECPrivateKey> keyPair) => copyWith(
-        publicClientKey: eccUtils.serializeECPublicKey(keyPair.publicKey),
-        privateClientKey: eccUtils.serializeECPrivateKey(keyPair.privateKey),
-        finalizationState: FinalizationState.generatingKeyPairCompleted,
-      );
+    publicClientKey: eccUtils.serializeECPublicKey(keyPair.publicKey),
+    privateClientKey: eccUtils.serializeECPrivateKey(keyPair.privateKey),
+    finalizationState: FinalizationState.generatingKeyPairCompleted,
+  );
 
   factory TokenContainer.fromJson(Map<String, dynamic> json) => _$TokenContainerFromJson(json);
   @override
-  String toString() => '$runtimeType('
+  String toString() =>
+      '$runtimeType('
       'issuer: $issuer, '
       'nonce: $nonce, '
       'timestamp: $timestamp, '
@@ -236,13 +235,13 @@ class TokenContainer with _$TokenContainer {
   String? trySignMessage(String msg) => ecPrivateClientKey == null ? null : eccUtils.signWithPrivateKey(ecPrivateClientKey!, msg);
 
   Token addOriginToToken({required Token token, String? tokenData}) => token.copyWith(
-        containerSerial: () => serial,
-        origin: token.origin == null
-            ? TokenOriginData.fromContainer(container: this, tokenData: tokenData ?? '')
-            : token.origin!.copyWith(
-                source: TokenOriginSourceType.container,
-                isPrivacyIdeaToken: () => true,
-                data: token.origin!.data.isEmpty ? tokenData : token.origin!.data,
-              ),
-      );
+    containerSerial: () => serial,
+    origin: token.origin == null
+        ? TokenOriginData.fromContainer(container: this, tokenData: tokenData ?? '')
+        : token.origin!.copyWith(
+            source: TokenOriginSourceType.container,
+            isPrivacyIdeaToken: () => true,
+            data: token.origin!.data.isEmpty ? tokenData : token.origin!.data,
+          ),
+  );
 }

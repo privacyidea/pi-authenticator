@@ -18,21 +18,20 @@
  * limitations under the License.
  */
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import '../../../../model/tokens/otp_token.dart';
 import '../../../home_widget_utils.dart';
 import '../../../logger.dart';
 import '../generated_providers/token_notifier.dart';
 
-final homeWidgetProvider = StateProvider<Map<String, OTPToken>>(
-  (ref) {
-    Logger.info("New homeWidgetProvider created");
-    ref.listen(tokenProvider, (previous, next) {
-      if (!next.hasValue) {
-        return;
-      }
-      HomeWidgetUtils().updateTokensIfLinked(next.value!.lastlyUpdatedTokens);
-    });
-    return {};
-  },
-);
+final homeWidgetProvider = StateProvider<Map<String, OTPToken>>((ref) {
+  Logger.info("New homeWidgetProvider created");
+  ref.listen(tokenProvider, (previous, next) {
+    if (!next.hasValue) {
+      return;
+    }
+    HomeWidgetUtils().updateTokensIfLinked(next.value!.lastlyUpdatedTokens);
+  });
+  return {};
+});

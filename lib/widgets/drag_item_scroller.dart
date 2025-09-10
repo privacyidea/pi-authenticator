@@ -2,7 +2,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import '../utils/globals.dart';
 import '../utils/logger.dart';
@@ -55,7 +55,7 @@ class _DragItemScrollerState extends State<DragItemScroller> {
   bool canScroll(ScrollController? controller) =>
       controller != null && ((controller.offset > 0 && currentSpeed < 0) || (controller.offset < controller.position.maxScrollExtent && currentSpeed > 0));
 
-  _scrollJump() {
+  void _scrollJump() {
     if (currentSpeed == 0) return; // no speed, no jump
     final innerController = widget.nestedScrollViewKey?.currentState?.innerController ?? widget.scrollController;
     final outerController = widget.nestedScrollViewKey?.currentState?.outerController;
@@ -73,7 +73,7 @@ class _DragItemScrollerState extends State<DragItemScroller> {
     }
   }
 
-  _startScrolling(double speedInPercent, {bool moveUp = false}) {
+  void _startScrolling(double speedInPercent, {bool moveUp = false}) {
     double nextScrollingSpeed = max(DragItemScroller.minScrollingSpeed, DragItemScroller.maxScrollingSpeed * speedInPercent);
     if (moveUp) nextScrollingSpeed = -nextScrollingSpeed; // if moveUp is true, the speed is negative
     if (currentSpeed == nextScrollingSpeed) return;
@@ -86,7 +86,7 @@ class _DragItemScrollerState extends State<DragItemScroller> {
     }
   }
 
-  _stopScrolling() {
+  void _stopScrolling() {
     currentSpeed = 0; // to stop set speed to 0
     if (globalRef?.read(dragItemScrollerStateProvider.notifier).state == true) {
       globalRef?.read(dragItemScrollerStateProvider.notifier).state = false; // set scrolling state to false if there is no speed

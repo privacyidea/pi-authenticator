@@ -45,7 +45,7 @@ class DeleteContainerDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final containerToken = ref.watch(tokenProvider).valueOrNull?.containerTokens(container.serial) ?? [];
+    final containerToken = ref.watch(tokenProvider).value?.containerTokens(container.serial) ?? [];
     return DefaultDialog(
       title: Text(titleOverride ?? AppLocalizations.of(context)!.deleteContainerDialogTitle(container.serial)),
       content: Text(contentOverride ?? AppLocalizations.of(context)!.deleteContainerDialogContent),

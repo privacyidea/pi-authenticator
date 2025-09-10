@@ -26,7 +26,7 @@ part 'container_policies.freezed.dart';
 part 'container_policies.g.dart';
 
 @Freezed(toStringOverride: false, addImplicitFinal: true, toJson: true, fromJson: true)
-class ContainerPolicies with _$ContainerPolicies {
+sealed class ContainerPolicies with _$ContainerPolicies {
   static const DISABLED_UNREGISTER = 'disable_client_container_unregister';
   static const DISABLED_TOKEN_DELETION = 'disable_client_token_deletion';
   static const ROLLOVER_ALLOWED = 'container_client_rollover';
@@ -68,11 +68,11 @@ class ContainerPolicies with _$ContainerPolicies {
   }
 
   Map<String, dynamic> toUriMap() => {
-        ROLLOVER_ALLOWED: rolloverAllowed,
-        INITIAL_TOKEN_ASSIGNMENT: initialTokenAssignment,
-        DISABLED_TOKEN_DELETION: disabledTokenDeletion,
-        DISABLED_UNREGISTER: disabledUnregister,
-      };
+    ROLLOVER_ALLOWED: rolloverAllowed,
+    INITIAL_TOKEN_ASSIGNMENT: initialTokenAssignment,
+    DISABLED_TOKEN_DELETION: disabledTokenDeletion,
+    DISABLED_UNREGISTER: disabledUnregister,
+  };
 
   factory ContainerPolicies.fromJson(Map<String, dynamic> json) => _$ContainerPoliciesFromJson(json);
 }

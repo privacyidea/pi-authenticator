@@ -22,13 +22,12 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../utils/logger.dart';
 
-abstract class BuildlessListener<T extends BuildlessNotifier<S>, S> {
+abstract class BuildlessListener<T extends Notifier<S>, S> {
   final String listenerName;
-  final NotifierProviderImpl<T, S> provider;
+  final NotifierProvider<T, S> provider;
   final void Function(S? previous, S next) onNewState;
   const BuildlessListener({required this.provider, required this.onNewState, required this.listenerName});
   void buildListen(WidgetRef ref) {

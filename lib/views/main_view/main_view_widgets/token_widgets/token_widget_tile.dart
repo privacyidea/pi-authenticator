@@ -19,6 +19,7 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import '../../../../../../../views/main_view/main_view_widgets/token_widgets/container_token_sync_icon.dart';
 import '../../../../model/tokens/token.dart';
@@ -74,12 +75,7 @@ class TokenWidgetTile extends ConsumerWidget {
             label: semanticsLabel,
             child: InkWell(
               onTap: titleOnTap,
-              child: HideableText(
-                textScaleFactor: 1.9,
-                isHidden: token.isHidden,
-                text: title,
-                textStyle: titleStyle,
-              ),
+              child: HideableText(textScaleFactor: 1.9, isHidden: token.isHidden, text: title, textStyle: titleStyle),
             ),
           ),
         ),
@@ -95,35 +91,18 @@ class TokenWidgetTile extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  if (subtitle1.isNotEmpty)
-                    Text(
-                      subtitle1,
-                      textAlign: TextAlign.left,
-                      overflow: TextOverflow.fade,
-                      softWrap: false,
-                    ),
+                  if (subtitle1.isNotEmpty) Text(subtitle1, textAlign: TextAlign.left, overflow: TextOverflow.fade, softWrap: false),
                   if (subtitle2.isNotEmpty)
                     Row(
                       children: [
                         Flexible(
-                          child: Text(
-                            subtitle2,
-                            textAlign: TextAlign.left,
-                            overflow: TextOverflow.fade,
-                            softWrap: false,
-                          ),
+                          child: Text(subtitle2, textAlign: TextAlign.left, overflow: TextOverflow.fade, softWrap: false),
                         ),
                         SizedBox(width: 6),
                         ContainerTokenSyncIcon(token),
                       ],
                     ),
-                  for (var line in additionalSubtitles)
-                    Text(
-                      line,
-                      textAlign: TextAlign.left,
-                      overflow: TextOverflow.fade,
-                      softWrap: false,
-                    ),
+                  for (var line in additionalSubtitles) Text(line, textAlign: TextAlign.left, overflow: TextOverflow.fade, softWrap: false),
                 ],
               ),
             ),

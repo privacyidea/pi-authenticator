@@ -12,7 +12,8 @@ PushRequestState _$PushRequestStateFromJson(Map<String, dynamic> json) =>
           .map((e) => PushRequest.fromJson(e as Map<String, dynamic>))
           .toList(),
       knownPushRequests: CustomIntBuffer.fromJson(
-          json['knownPushRequests'] as Map<String, dynamic>),
+        json['knownPushRequests'] as Map<String, dynamic>,
+      ),
     );
 
 Map<String, dynamic> _$PushRequestStateToJson(PushRequestState instance) =>

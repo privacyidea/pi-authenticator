@@ -56,9 +56,7 @@ class MainViewTokensListFiltered extends ConsumerWidget {
     return SingleChildScrollView(
       child: Column(
         mainAxisSize: MainAxisSize.max,
-        children: [
-          ..._mapTokensToWidgets(ref: ref),
-        ],
+        children: [..._mapTokensToWidgets(ref: ref)],
       ),
     );
   }
@@ -67,7 +65,7 @@ class MainViewTokensListFiltered extends ConsumerWidget {
     final filter = ref.watch(tokenFilterProvider);
     if (filter == null) return [];
     final tokenFolders = ref.watch(tokenFolderProvider).folders;
-    final allTokens = ref.watch(tokenProvider).valueOrNull?.tokens ?? [];
+    final allTokens = ref.watch(tokenProvider).value?.tokens ?? [];
     final filteredTokens = filter.filterTokens(allTokens);
     List<SortableMixin> sortables = [...tokenFolders, ...filteredTokens];
     final draggingSortable = ref.watch(draggingSortableProvider);

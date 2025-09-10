@@ -56,21 +56,15 @@ class _ContainerAlreadyExistsDialogState extends ConsumerState<ContainerAlreadyE
   Widget build(BuildContext context) {
     final container = unhandledContainers.firstOrNull;
     if (container == null) return SizedBox.shrink();
-    final currentContainer = ref.watch(tokenContainerProvider).valueOrNull?.currentOf<TokenContainer>(container);
+    final currentContainer = ref.watch(tokenContainerProvider).value?.currentOf<TokenContainer>(container);
     if (currentContainer == null) return SizedBox.shrink();
     final appLocalizations = AppLocalizations.of(context)!;
     return DefaultDialog(
       title: Text(appLocalizations.containerAlreadyExists),
       content: ContainerWidget(container: currentContainer, isPreview: true),
       actions: [
-        TextButton(
-          onPressed: () => _dismiss(container),
-          child: Text(appLocalizations.dismiss),
-        ),
-        CooldownButton(
-          onPressed: () => _replace(currentContainer, container),
-          child: Text(appLocalizations.replaceButton),
-        ),
+        TextButton(onPressed: () => _dismiss(container), child: Text(appLocalizations.dismiss)),
+        CooldownButton(onPressed: () => _replace(currentContainer, container), child: Text(appLocalizations.replaceButton)),
       ],
     );
   }

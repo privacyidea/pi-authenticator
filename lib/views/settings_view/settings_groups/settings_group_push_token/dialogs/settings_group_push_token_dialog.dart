@@ -33,15 +33,12 @@ import '../../../settings_view_widgets/update_firebase_token_dialog.dart';
 
 class SettingsGroupPushTokenDialog extends ConsumerWidget {
   final List<PushToken> unsupportedPushTokens;
-  const SettingsGroupPushTokenDialog({
-    super.key,
-    required this.unsupportedPushTokens,
-  });
+  const SettingsGroupPushTokenDialog({super.key, required this.unsupportedPushTokens});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settingsState = ref.watch(settingsProvider).whenOrNull(data: (data) => data);
-    final needsFirebaseMessaging = ref.watch(tokenProvider).valueOrNull?.pushTokensNotPollOnly.isNotEmpty ?? false;
+    final needsFirebaseMessaging = ref.watch(tokenProvider).value?.pushTokensNotPollOnly.isNotEmpty ?? false;
     return DefaultDialog(
       title: Text(AppLocalizations.of(context)!.pushToken),
       content: Column(
@@ -49,14 +46,8 @@ class SettingsGroupPushTokenDialog extends ConsumerWidget {
         children: [
           if (deviceHasFirebaseMessaging && needsFirebaseMessaging)
             ListTile(
-              title: Text(
-                AppLocalizations.of(context)!.synchronizePushTokens,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              subtitle: Text(
-                AppLocalizations.of(context)!.synchronizesTokensWithServer,
-                overflow: TextOverflow.fade,
-              ),
+              title: Text(AppLocalizations.of(context)!.synchronizePushTokens, style: Theme.of(context).textTheme.bodyMedium),
+              subtitle: Text(AppLocalizations.of(context)!.synchronizesTokensWithServer, overflow: TextOverflow.fade),
               trailing: ElevatedButton(
                 onPressed: () => showDialog(
                   useRootNavigator: false,
@@ -64,21 +55,14 @@ class SettingsGroupPushTokenDialog extends ConsumerWidget {
                   barrierDismissible: false,
                   builder: (context) => UpdateFirebaseTokenDialog(AppLocalizations.of(context)!),
                 ),
-                child: Text(
-                  AppLocalizations.of(context)!.sync,
-                  overflow: TextOverflow.fade,
-                  softWrap: false,
-                ),
+                child: Text(AppLocalizations.of(context)!.sync, overflow: TextOverflow.fade, softWrap: false),
               ),
             ),
           ListTile(
             title: RichText(
               text: TextSpan(
                 children: [
-                  TextSpan(
-                    text: AppLocalizations.of(context)!.enablePolling,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
+                  TextSpan(text: AppLocalizations.of(context)!.enablePolling, style: Theme.of(context).textTheme.bodyMedium),
                   // Add clickable icon to inform user of unsupported push tokens (for polling)
                   WidgetSpan(
                     child: Padding(
@@ -86,10 +70,7 @@ class SettingsGroupPushTokenDialog extends ConsumerWidget {
                       child: unsupportedPushTokens.isNotEmpty
                           ? GestureDetector(
                               onTap: () => _showPollingInfo(context, unsupportedPushTokens),
-                              child: const Icon(
-                                Icons.info_outline,
-                                color: Colors.red,
-                              ),
+                              child: const Icon(Icons.info_outline, color: Colors.red),
                             )
                           : null,
                     ),
@@ -97,10 +78,7 @@ class SettingsGroupPushTokenDialog extends ConsumerWidget {
                 ],
               ),
             ),
-            subtitle: Text(
-              AppLocalizations.of(context)!.requestPushChallengesPeriodically,
-              overflow: TextOverflow.fade,
-            ),
+            subtitle: Text(AppLocalizations.of(context)!.requestPushChallengesPeriodically, overflow: TextOverflow.fade),
             trailing: Switch(
               value: settingsState?.enablePolling ?? SettingsState.enablePollingDefault,
               onChanged: (value) => ref.read(settingsProvider.notifier).setPolling(value),
@@ -109,18 +87,10 @@ class SettingsGroupPushTokenDialog extends ConsumerWidget {
           ListTile(
             title: RichText(
               text: TextSpan(
-                children: [
-                  TextSpan(
-                    text: AppLocalizations.of(context)!.hidePushTokens,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                ],
+                children: [TextSpan(text: AppLocalizations.of(context)!.hidePushTokens, style: Theme.of(context).textTheme.bodyMedium)],
               ),
             ),
-            subtitle: Text(
-              AppLocalizations.of(context)!.hidePushTokensDescription,
-              overflow: TextOverflow.fade,
-            ),
+            subtitle: Text(AppLocalizations.of(context)!.hidePushTokensDescription, overflow: TextOverflow.fade),
             trailing: Switch(
               value: settingsState?.hidePushTokens ?? SettingsState.hidePushTokensDefault,
               onChanged: (value) => ref.read(settingsProvider.notifier).setHidePushTokens(value),
@@ -128,24 +98,18 @@ class SettingsGroupPushTokenDialog extends ConsumerWidget {
           ),
           if (Platform.isAndroid)
             ListTile(
-              title: Text(
-                AppLocalizations.of(context)!.autoCloseAppAfterAcceptingPushRequestTitle,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              subtitle: Text(
-                AppLocalizations.of(context)!.autoCloseAppAfterAcceptingPushRequestDescription,
-                overflow: TextOverflow.fade,
-              ),
+              title: Text(AppLocalizations.of(context)!.autoCloseAppAfterAcceptingPushRequestTitle, style: Theme.of(context).textTheme.bodyMedium),
+              subtitle: Text(AppLocalizations.of(context)!.autoCloseAppAfterAcceptingPushRequestDescription, overflow: TextOverflow.fade),
               trailing: Switch(
-                value: ref.watch(settingsProvider).valueOrNull?.autoCloseAppAfterAcceptingPushRequest ?? false,
+                value: ref.watch(settingsProvider).value?.autoCloseAppAfterAcceptingPushRequest ?? false,
                 onChanged: (value) async {
-                  final currentSettings = ref.read(settingsProvider).valueOrNull;
+                  final currentSettings = ref.read(settingsProvider).value;
                   if (currentSettings != null) {
                     (await ref.read(settingsProvider.notifier).setAutoCloseAppAfterAcceptingPushRequest(value));
                   }
                 },
               ),
-            )
+            ),
         ],
       ),
     );
@@ -154,29 +118,26 @@ class SettingsGroupPushTokenDialog extends ConsumerWidget {
   /// Shows a dialog to the user that displays all push tokens that do not
   /// support polling.
   void _showPollingInfo(BuildContext context, List<PushToken> unsupported) => showDialog(
-        useRootNavigator: false,
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('${AppLocalizations.of(context)!.someTokensDoNotSupportPolling}:'),
-            content: Scrollbar(
-              child: ListView.separated(
-                shrinkWrap: true,
-                itemCount: unsupported.length,
-                itemBuilder: (context, index) => Text(unsupported[index].label.toString()),
-                separatorBuilder: (context, index) => const Divider(),
-              ),
-            ),
-            actions: <Widget>[
-              TextButton(
-                child: Text(
-                  AppLocalizations.of(context)!.dismiss,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-            ],
-          );
-        },
+    useRootNavigator: false,
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('${AppLocalizations.of(context)!.someTokensDoNotSupportPolling}:'),
+        content: Scrollbar(
+          child: ListView.separated(
+            shrinkWrap: true,
+            itemCount: unsupported.length,
+            itemBuilder: (context, index) => Text(unsupported[index].label.toString()),
+            separatorBuilder: (context, index) => const Divider(),
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text(AppLocalizations.of(context)!.dismiss, style: Theme.of(context).textTheme.titleMedium),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
       );
+    },
+  );
 }

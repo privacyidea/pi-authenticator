@@ -29,7 +29,7 @@ class StateObserver extends ConsumerWidget {
   final List<StateNotifierProviderListener> stateNotifierProviderListeners;
   final List<BuildlessListener> buildlessProviderListener;
   final List<BuildlessAsyncNotifierListener> asyncNotifierProviderListeners;
-  final List<StreamNotifierListener> streamNotifierProviderListeners;
+  final List<BuildlessStreamNotifierListener> streamNotifierProviderListeners;
   final Widget child;
 
   const StateObserver({

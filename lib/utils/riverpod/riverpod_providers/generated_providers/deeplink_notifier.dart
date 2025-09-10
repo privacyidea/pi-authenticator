@@ -32,16 +32,8 @@ import '../../state_notifiers/deeplink_notifier.dart';
 part 'deeplink_notifier.g.dart';
 
 final sources = [
-  DeeplinkSource(
-    name: 'uni_links',
-    stream: AppLinks().uriLinkStream,
-    initialUri: AppLinks().getInitialLink(),
-  ),
-  DeeplinkSource(
-    name: 'home_widget',
-    stream: HomeWidgetUtils().widgetClicked,
-    initialUri: HomeWidgetUtils().initiallyLaunchedFromHomeWidget(),
-  ),
+  DeeplinkSource(name: 'uni_links', stream: AppLinks().uriLinkStream, initialUri: AppLinks().getInitialLink()),
+  DeeplinkSource(name: 'home_widget', stream: HomeWidgetUtils().widgetClicked, initialUri: HomeWidgetUtils().initiallyLaunchedFromHomeWidget()),
 ];
 
 @Riverpod(keepAlive: true)

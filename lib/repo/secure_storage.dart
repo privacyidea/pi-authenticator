@@ -20,12 +20,16 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mutex/mutex.dart';
 
-class SecureStorage {
+import '../interfaces/repo/secure_storage.dart';
+
+class SecureStorage implements SecureStorageInterface {
   static final Mutex _m = Mutex();
+  @override
   final FlutterSecureStorage storage;
+  @override
   final String storagePrefix;
 
-  SecureStorage._({
+  SecureStorage({
     required this.storagePrefix,
     AndroidOptions aOptions = const AndroidOptions(),
     IOSOptions iOptions = const IOSOptions(),
@@ -35,7 +39,7 @@ class SecureStorage {
   }) : storage = FlutterSecureStorage(aOptions: aOptions, iOptions: iOptions, lOptions: lOptions, mOptions: mOptions, wOptions: wOptions);
 
   factory SecureStorage.create({required String storagePrefix}) {
-    return SecureStorage._(
+    return SecureStorage(
       storagePrefix: storagePrefix,
       aOptions: AndroidOptions(encryptedSharedPreferences: true),
       iOptions: IOSOptions(
@@ -46,25 +50,29 @@ class SecureStorage {
   }
 
   factory SecureStorage.legacy({required String storagePrefix}) {
-    return SecureStorage._(
+    return SecureStorage(
       storagePrefix: storagePrefix,
       aOptions: AndroidOptions(encryptedSharedPreferences: true),
     );
   }
 
-  String _fullKey(String key) => "${storagePrefix}_$key";
+  @override
+  String getFullKey(String key) => "${storagePrefix}_$key";
 
   /// Function [f] is executed, protected by Mutex [_m].
   /// That means, that calls of this method will always be executed serial.
   Future<T> _protect<T>(Future<T> Function() f) => _m.protect<T>(f);
 
   /// Writes the given key-value pair to the secure storage.
-  Future<void> write({required String key, required String value}) => _protect(() => storage.write(key: _fullKey(key), value: value));
+  @override
+  Future<void> write({required String key, required String value}) => _protect(() => storage.write(key: getFullKey(key), value: value));
 
   /// Reads the value for the given key from the secure storage.
-  Future<String?> read({required String key}) => _protect(() => storage.read(key: _fullKey(key)));
+  @override
+  Future<String?> read({required String key}) => _protect(() => storage.read(key: getFullKey(key)));
 
   /// Reads all key-value pairs from the secure storage that start with the storagePrefix.
+  @override
   Future<Map<String, String>> readAll() => _protect(() async {
         final allPairs = await storage.readAll();
         final allKeys = allPairs.keys.where((key) => key.startsWith(storagePrefix)).toList();
@@ -77,9 +85,11 @@ class SecureStorage {
       });
 
   /// Deletes the entry with the given key from the secure storage.
-  Future<void> delete({required String key}) => _protect(() => storage.delete(key: _fullKey(key)));
+  @override
+  Future<void> delete({required String key}) => _protect(() => storage.delete(key: getFullKey(key)));
 
   /// Deletes all entries from the secure storage that start with the storagePrefix.
+  @override
   Future<void> deleteAll() => _protect(() async {
         final allPairs = await storage.readAll();
         final allKeys = allPairs.keys.where((key) => key.startsWith(storagePrefix)).toList();

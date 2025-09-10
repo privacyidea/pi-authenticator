@@ -26,13 +26,13 @@ import '../../../processors/scheme_processors/navigation_scheme_processors/navig
 
 class NavigationDeepLinkListener extends DeepLinkListener {
   static BuildContext? _context;
-  NavigationDeepLinkListener({required super.deeplinkProvider, BuildContext? context})
-      : super(
-          onNewState: (WidgetRef ref, AsyncValue<DeepLink>? previous, AsyncValue<DeepLink> next) {
-            _onNewState(previous, next);
-          },
-          listenerName: 'NavigationSchemeProcessor.processUriByAny',
-        ) {
+  NavigationDeepLinkListener({required super.provider, BuildContext? context})
+    : super(
+        onNewState: (WidgetRef ref, AsyncValue<DeepLink>? previous, AsyncValue<DeepLink> next) {
+          _onNewState(previous, next);
+        },
+        listenerName: 'NavigationSchemeProcessor.processUriByAny',
+      ) {
     _context = context;
   }
 

@@ -6,16 +6,13 @@ part of 'token_container_state.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$TokenContainerStateImpl _$$TokenContainerStateImplFromJson(
-        Map<String, dynamic> json) =>
-    _$TokenContainerStateImpl(
+_TokenContainerState _$TokenContainerStateFromJson(Map<String, dynamic> json) =>
+    _TokenContainerState(
       containerList: (json['containerList'] as List<dynamic>)
           .map((e) => TokenContainer.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
-Map<String, dynamic> _$$TokenContainerStateImplToJson(
-        _$TokenContainerStateImpl instance) =>
-    <String, dynamic>{
-      'containerList': instance.containerList,
-    };
+Map<String, dynamic> _$TokenContainerStateToJson(
+  _TokenContainerState instance,
+) => <String, dynamic>{'containerList': instance.containerList};

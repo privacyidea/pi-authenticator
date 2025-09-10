@@ -31,11 +31,9 @@ part 'token_container_state.freezed.dart';
 part 'token_container_state.g.dart';
 
 @freezed
-class TokenContainerState with _$TokenContainerState {
+sealed class TokenContainerState with _$TokenContainerState {
   const TokenContainerState._();
-  const factory TokenContainerState({
-    required List<TokenContainer> containerList,
-  }) = _TokenContainerState;
+  const factory TokenContainerState({required List<TokenContainer> containerList}) = _TokenContainerState;
 
   bool get hasFinalizedContainers => containerList.any((container) => container is TokenContainerFinalized);
 

@@ -12,12 +12,7 @@ class DefaultRefreshIndicator extends ConsumerStatefulWidget {
   final GlobalKey? listViewKey;
   final ScrollController? scrollController;
 
-  const DefaultRefreshIndicator({
-    super.key,
-    this.listViewKey,
-    this.scrollController,
-    required this.child,
-  });
+  const DefaultRefreshIndicator({super.key, this.listViewKey, this.scrollController, required this.child});
 
   @override
   ConsumerState<DefaultRefreshIndicator> createState() => _DefaultRefreshIndicatorState();
@@ -27,7 +22,7 @@ class _DefaultRefreshIndicatorState extends ConsumerState<DefaultRefreshIndicato
   bool isRefreshing = false;
   @override
   Widget build(BuildContext context) {
-    final hasRolledOutPushTokens = ref.watch(tokenProvider).valueOrNull?.hasRolledOutPushTokens ?? false;
+    final hasRolledOutPushTokens = ref.watch(tokenProvider).value?.hasRolledOutPushTokens ?? false;
     final hasFinalizedContainers = ref.watch(tokenContainerProvider).value?.hasFinalizedContainers == true;
     final allowToRefresh = hasRolledOutPushTokens || hasFinalizedContainers;
     return DeactivateableRefreshIndicator(
@@ -36,15 +31,16 @@ class _DefaultRefreshIndicatorState extends ConsumerState<DefaultRefreshIndicato
           isRefreshing = true;
         });
         await LoadingIndicator.show(
-            context: context,
-            action: () async {
-              final tokenState = await ref.read(tokenProvider.future);
-              if (!mounted) return Future.value();
-              return Future.wait([
-                if (PushProvider.instance != null) PushProvider.instance!.pollForChallenges(isManually: true),
-                ref.read(tokenContainerProvider.notifier).syncContainers(tokenState: tokenState, isManually: true),
-              ]);
-            });
+          context: context,
+          action: () async {
+            final tokenState = await ref.read(tokenProvider.future);
+            if (!mounted) return Future.value();
+            return Future.wait([
+              if (PushProvider.instance != null) PushProvider.instance!.pollForChallenges(isManually: true),
+              ref.read(tokenContainerProvider.notifier).syncContainers(tokenState: tokenState, isManually: true),
+            ]);
+          },
+        );
         if (mounted) setState(() => isRefreshing = false);
       },
       allowToRefresh: allowToRefresh && !isRefreshing,

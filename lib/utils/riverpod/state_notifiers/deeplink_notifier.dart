@@ -20,7 +20,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 import '../../../model/deeplink.dart';
 import '../../logger.dart';
@@ -30,9 +30,7 @@ bool _initialUriIsHandled = false;
 class DeeplinkNotifier extends StateNotifier<DeepLink?> {
   final List<StreamSubscription> _subs = [];
   final List<DeeplinkSource> _sources;
-  DeeplinkNotifier({required List<DeeplinkSource> sources})
-      : _sources = sources,
-        super(null) {
+  DeeplinkNotifier({required List<DeeplinkSource> sources}) : _sources = sources, super(null) {
     _handleInitialUri();
     _handleIncomingLinks();
   }
@@ -51,15 +49,20 @@ class DeeplinkNotifier extends StateNotifier<DeepLink?> {
     if (kIsWeb) return;
 
     for (var source in _sources) {
-      _subs.add(source.stream.listen((Uri? uri) {
-        if (!_initialUriIsHandled) return;
-        Logger.info('Got uri from ${source.name} (incoming)');
-        if (!mounted) return;
-        if (uri == null) return;
-        state = DeepLink(uri);
-      }, onError: (Object err) {
-        Logger.error('Error getting uri from ${source.name}', error: err, stackTrace: StackTrace.current);
-      }));
+      _subs.add(
+        source.stream.listen(
+          (Uri? uri) {
+            if (!_initialUriIsHandled) return;
+            Logger.info('Got uri from ${source.name} (incoming)');
+            if (!mounted) return;
+            if (uri == null) return;
+            state = DeepLink(uri);
+          },
+          onError: (Object err) {
+            Logger.error('Error getting uri from ${source.name}', error: err, stackTrace: StackTrace.current);
+          },
+        ),
+      );
     }
   }
 

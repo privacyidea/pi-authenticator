@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:privacyidea_authenticator/model/deeplink.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/state_notifiers/deeplink_notifier.dart';
@@ -13,7 +14,9 @@ void _testDeeplinkNotifier() {
       final container = ProviderContainer();
       final initUri = Uri.parse('otpauth://hotp/issuer?secret=AAAAAAAA&counter=0&digits=6&algorithm=SHA1');
       final deeplinkProvider = StateNotifierProvider<DeeplinkNotifier, DeepLink?>(
-        (ref) => DeeplinkNotifier(sources: [DeeplinkSource(name: 'test', stream: const Stream.empty(), initialUri: Future.value(initUri))]),
+        (ref) => DeeplinkNotifier(
+          sources: [DeeplinkSource(name: 'test', stream: const Stream.empty(), initialUri: Future.value(initUri))],
+        ),
       );
       container.listen(deeplinkProvider, (prev, next) {
         expect(prev, isNull);
@@ -26,10 +29,12 @@ void _testDeeplinkNotifier() {
       final initUri = Uri.parse('otpauth://hotp/issuer?secret=AAAAAAAA&counter=0&digits=6&algorithm=SHA1');
       final initUri2 = Uri.parse('otpauth://totp/issuer?secret=AAAAAAAA&period=30&digits=6&algorithm=SHA1');
       final deeplinkProvider = StateNotifierProvider<DeeplinkNotifier, DeepLink?>(
-        (ref) => DeeplinkNotifier(sources: [
-          DeeplinkSource(name: 'test', stream: const Stream.empty(), initialUri: Future.value(initUri)),
-          DeeplinkSource(name: 'test2', stream: const Stream.empty(), initialUri: Future.value(initUri2)),
-        ]),
+        (ref) => DeeplinkNotifier(
+          sources: [
+            DeeplinkSource(name: 'test', stream: const Stream.empty(), initialUri: Future.value(initUri)),
+            DeeplinkSource(name: 'test2', stream: const Stream.empty(), initialUri: Future.value(initUri2)),
+          ],
+        ),
       );
       container.listen(deeplinkProvider, (prev, next) {
         // There should be only one initial uri, others will be ignored
@@ -47,9 +52,9 @@ void _testDeeplinkNotifier() {
       final list = [uri1, uri2, uri3, uri4];
       Stream<Uri?> stream = Stream.fromIterable([...list]);
       final deeplinkProvider = StateNotifierProvider<DeeplinkNotifier, DeepLink?>(
-        (ref) => DeeplinkNotifier(sources: [
-          DeeplinkSource(name: 'test', stream: stream, initialUri: Future.value(null)),
-        ]),
+        (ref) => DeeplinkNotifier(
+          sources: [DeeplinkSource(name: 'test', stream: stream, initialUri: Future.value(null))],
+        ),
       );
       container.listen(deeplinkProvider, (prev, next) {
         expect(next?.uri, equals(list.removeAt(0)));
@@ -72,10 +77,12 @@ void _testDeeplinkNotifier() {
       Stream<Uri?> hotpStream = Stream.fromIterable([...hotpList]);
       Stream<Uri?> totpStream = Stream.fromIterable([...totpList]);
       final deeplinkProvider = StateNotifierProvider<DeeplinkNotifier, DeepLink?>(
-        (ref) => DeeplinkNotifier(sources: [
-          DeeplinkSource(name: 'HOTPs', stream: hotpStream, initialUri: Future.value(null)),
-          DeeplinkSource(name: 'TOTPs', stream: totpStream, initialUri: Future.value(null)),
-        ]),
+        (ref) => DeeplinkNotifier(
+          sources: [
+            DeeplinkSource(name: 'HOTPs', stream: hotpStream, initialUri: Future.value(null)),
+            DeeplinkSource(name: 'TOTPs', stream: totpStream, initialUri: Future.value(null)),
+          ],
+        ),
       );
       container.listen(deeplinkProvider, (prev, next) {
         if (hotpList.length == totpList.length) {
