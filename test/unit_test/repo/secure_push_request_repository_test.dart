@@ -5,37 +5,66 @@ import 'package:mockito/mockito.dart';
 import 'package:privacyidea_authenticator/model/push_request.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/push_request_state.dart';
 import 'package:privacyidea_authenticator/repo/secure_push_request_repository.dart';
+import 'package:privacyidea_authenticator/repo/secure_storage.dart';
 import 'package:privacyidea_authenticator/utils/custom_int_buffer.dart';
 
 import '../../tests_app_wrapper.mocks.dart';
 
 void main() {
-  late MockSecureStorage mockStorage;
-  late MockSecureStorage mockLegacyStorage;
+  late MockFlutterSecureStorage mockFlutterStorage;
+  late SecureStorage storage;
+  late MockFlutterSecureStorage mockLegacyFlutterStorage;
+  late SecureStorage legacyStorage;
   late SecurePushRequestRepository repository;
 
   setUp(() {
-    mockStorage = MockSecureStorage();
-    mockLegacyStorage = MockSecureStorage();
-    repository = SecurePushRequestRepository(secureStorage: mockStorage, legacySecureStorage: mockLegacyStorage);
+    mockFlutterStorage = MockFlutterSecureStorage();
+    storage = SecureStorage(storagePrefix: SecurePushRequestRepository.PUSH_REQUEST_PREFIX, storage: mockFlutterStorage);
+    mockLegacyFlutterStorage = MockFlutterSecureStorage();
+    legacyStorage = SecureStorage(storagePrefix: SecurePushRequestRepository.PUSH_REQUEST_PREFIX_LEGACY, storage: mockLegacyFlutterStorage);
+
+    repository = SecurePushRequestRepository(secureStorage: storage, legacySecureStorage: legacyStorage);
   });
+
+  PushRequestState createState(List<int> pushRequestIds) {
+    return PushRequestState(
+      pushRequests: pushRequestIds
+          .map(
+            (id) => PushRequest(
+              id: id,
+              title: 'title$id',
+              question: 'question$id',
+              uri: Uri.parse('https://example.com/$id'),
+              nonce: 'nonce$id',
+              sslVerify: true,
+              expirationDate: DateTime.now().add(const Duration(minutes: 5)),
+            ),
+          )
+          .toList(),
+      knownPushRequests: CustomIntBuffer(list: pushRequestIds),
+    );
+  }
 
   group('SecurePushRequestRepository', () {
     test('saveState stores PushRequestState as JSON', () async {
-      final state = PushRequestState(
-        pushRequests: [
-          PushRequest(id: 1, title: 'a', question: '', uri: Uri(), nonce: '', sslVerify: false, expirationDate: DateTime.parse('2024-01-01T00:00:00Z')),
-        ],
-        knownPushRequests: CustomIntBuffer(list: [1]),
-      );
-      when(mockStorage.write(key: anyNamed('key'), value: anyNamed('value'))).thenAnswer((_) async => {});
+      final state = createState([1, 2, 3]);
+      when(mockFlutterStorage.write(key: SecurePushRequestRepository.KEY, value: anyNamed('value'))).thenAnswer((_) async => {});
       await repository.saveState(state);
-      verify(mockStorage.write(key: anyNamed('key'), value: jsonEncode(state.toJson()))).called(1);
+      final captured = verify(mockFlutterStorage.write(key: captureAnyNamed('key'), value: captureAnyNamed('value'))).captured;
+      expect(captured[0], 'app_v4_push_request_state');
+      final storedJson = captured[1] as String;
+      final decoded = jsonDecode(storedJson) as Map<String, dynamic>;
+      expect(decoded['pushRequests'], isA<List<dynamic>>());
+      expect((decoded['pushRequests'] as List).length, 3);
+      expect(decoded['knownPushRequests'], {
+        'maxSize': 100,
+        'list': [1, 2, 3],
+      });
     });
 
     test('loadState returns empty state if nothing stored', () async {
-      when(mockStorage.read(key: anyNamed('key'))).thenAnswer((_) async => null);
-      when(mockLegacyStorage.read(key: anyNamed('key'))).thenAnswer((_) async => null);
+      when(mockFlutterStorage.read(key: 'app_v4_push_request_state')).thenAnswer((_) async => null);
+      // when(legacyStorage.read(key: SecurePushRequestRepository.KEY)).thenAnswer((_) async => null);
       final state = await repository.loadState();
       expect(state.pushRequests, isEmpty);
       expect(state.knownPushRequests.list, isEmpty);
@@ -51,105 +80,105 @@ void main() {
         sslVerify: false,
         expirationDate: DateTime.parse('2024-01-01T00:00:00Z'),
       );
-      final initialState = PushRequestState(
-        pushRequests: [],
-        knownPushRequests: CustomIntBuffer(list: []),
-      );
-      when(mockStorage.read(key: anyNamed('key'))).thenAnswer((_) async => jsonEncode(initialState.toJson()));
-      when(mockStorage.write(key: anyNamed('key'), value: anyNamed('value'))).thenAnswer((_) async => {});
+      final initialState = createState([1]);
+      when(mockFlutterStorage.read(key: 'app_v4_push_request_state')).thenAnswer((_) async => jsonEncode(initialState.toJson()));
+      when(mockFlutterStorage.write(key: 'app_v4_push_request_state', value: anyNamed('value'))).thenAnswer((_) async => {});
       final newState = await repository.addRequest(pushRequest);
+      expect(newState.pushRequests.length, 2);
+      expect(newState.pushRequests.any((r) => r.id == 1), isTrue);
       expect(newState.pushRequests.any((r) => r.id == 2), isTrue);
     });
 
     test('addRequest does not duplicate existing request', () async {
-      final pushRequest = PushRequest(
-        id: 3,
-        title: 'c',
-        question: '',
-        uri: Uri(),
-        nonce: '',
-        sslVerify: false,
-        expirationDate: DateTime.parse('2024-01-01T00:00:00Z'),
-      );
-      final initialState = PushRequestState(
-        pushRequests: [pushRequest],
-        knownPushRequests: CustomIntBuffer(list: [3]),
-      );
-      when(mockStorage.read(key: anyNamed('key'))).thenAnswer((_) async => jsonEncode(initialState.toJson()));
+      final initialState = createState([3]);
+      final pushRequest = initialState.pushRequests.first;
+      when(mockFlutterStorage.read(key: 'app_v4_push_request_state')).thenAnswer((_) async => jsonEncode(initialState.toJson()));
       final newState = await repository.addRequest(pushRequest);
       expect(newState.pushRequests.length, 1);
+      expect(newState.pushRequests.first.id, 3);
+      verifyNever(mockFlutterStorage.write(key: 'app_v4_push_request_state', value: anyNamed('value')));
     });
 
     test('removeRequest removes request and saves state', () async {
-      final pushRequest = PushRequest(
-        id: 4,
-        title: 'd',
-        question: '',
-        uri: Uri(),
-        nonce: '',
-        sslVerify: false,
-        expirationDate: DateTime.parse('2024-01-01T00:00:00Z'),
-      );
-      final initialState = PushRequestState(
-        pushRequests: [pushRequest],
-        knownPushRequests: CustomIntBuffer(list: [4]),
-      );
-      when(mockStorage.read(key: anyNamed('key'))).thenAnswer((_) async => jsonEncode(initialState.toJson()));
-      when(mockStorage.write(key: anyNamed('key'), value: anyNamed('value'))).thenAnswer((_) async => {});
+      final initialState = createState([4]);
+      final pushRequest = initialState.pushRequests.first;
+      when(mockFlutterStorage.read(key: 'app_v4_push_request_state')).thenAnswer((_) async => jsonEncode(initialState.toJson()));
+      when(mockFlutterStorage.write(key: 'app_v4_push_request_state', value: anyNamed('value'))).thenAnswer((_) async => {});
       final newState = await repository.removeRequest(pushRequest);
       expect(newState.pushRequests, isEmpty);
+      expect(newState.knownPushRequests.list, [4]);
     });
 
     test('clearState deletes state from storage', () async {
-      when(mockStorage.delete(key: anyNamed('key'))).thenAnswer((_) async => {});
+      final initialState = createState([5]);
+      String? mockState = jsonEncode(initialState.toJson());
+      when(mockFlutterStorage.read(key: 'app_v4_push_request_state')).thenAnswer((_) async => mockState);
+      final loadedState = await repository.loadState();
+      expect(loadedState.pushRequests.length, 1);
+      expect(loadedState.pushRequests.first.id, 5);
+      when(mockFlutterStorage.delete(key: 'app_v4_push_request_state')).thenAnswer((_) async {
+        mockState = null;
+      });
       await repository.clearState();
-      verify(mockStorage.delete(key: anyNamed('key'))).called(1);
+      verify(mockFlutterStorage.delete(key: 'app_v4_push_request_state')).called(1);
+      final newState = await repository.loadState();
+      expect(newState.pushRequests, isEmpty);
+      expect(newState.knownPushRequests.list, isEmpty);
     });
   });
 
+  // I/flutter (26225): │ 🐛 [DEBUG] SecureStorageMutexed: write key=containerCredentials.SMPH001807FF valueType=String
+  // I/flutter (26225): │ 🐛 [DEBUG] SecureStorageMutexed: write key=app_v3_51fff717-03b5-424c-a03d-eb7dd5fdf6bd valueType=String
+  // I/flutter (26225): │ 🐛 [DEBUG] SecureStorageMutexed: write key=app_v3_9aca2562-f32d-42ce-9bbe-383b0faecf2c valueType=String
+  // I/flutter (26225): │ 🐛 [DEBUG] SecureStorageMutexed: write key=app_v3_f3da004e-a59a-427f-8bc0-6d64b9e8549b valueType=String
+  // I/flutter (26225): │ 🐛 [DEBUG] SecureStorageMutexed: write key=containerCredentials.SMPH001807FF valueType=String
+  // I/flutter (26225): │ 🐛 [DEBUG] SecureStorageMutexed: write key=app_v3_9aca2562-f32d-42ce-9bbe-383b0faecf2c valueType=String
+  // I/flutter (26225): │ 🐛 [DEBUG] SecureStorageMutexed: write key=app_v3_51fff717-03b5-424c-a03d-eb7dd5fdf6bd valueType=String
+  // I/flutter (26225): │ 🐛 [DEBUG] SecureStorageMutexed: write key=app_v3_9aca2562-f32d-42ce-9bbe-383b0faecf2c valueType=String
+  // I/flutter (26225): │ 🐛 [DEBUG] SecureStorageMutexed: write key=app_v3_f3da004e-a59a-427f-8bc0-6d64b9e8549b valueType=String
+  // I/flutter (26225): │ 🐛 [DEBUG] SecureStorageMutexed: write key=app_v3_51fff717-03b5-424c-a03d-eb7dd5fdf6bd valueType=String
+  // I/flutter (26225): │ 🐛 [DEBUG] SecureStorageMutexed: write key=app_v3_9aca2562-f32d-42ce-9bbe-383b0faecf2c valueType=String
+  // I/flutter (26225): │ 🐛 [DEBUG] SecureStorageMutexed: write key=app_v3_f3da004e-a59a-427f-8bc0-6d64b9e8549b valueType=String
+  // I/flutter (26225): │ 🐛 [DEBUG] SecureStorageMutexed: write key=app_v3_9aca2562-f32d-42ce-9bbe-383b0faecf2c valueType=String
+  // I/flutter (26225): │ 🐛 [DEBUG] SecureStorageMutexed: write key=app_v3_9aca2562-f32d-42ce-9bbe-383b0faecf2c valueType=String
+  // I/flutter (26225): │ 🐛 [DEBUG] SecureStorageMutexed: write key=app_v3_9aca2562-f32d-42ce-9bbe-383b0faecf2c valueType=String
+  // I/flutter (26225): │ 🐛 [DEBUG] SecureStorageMutexed: write key=app_v3_9aca2562-f32d-42ce-9bbe-383b0faecf2c valueType=String
+  // I/flutter (26225): │ 🐛 [DEBUG] SecureStorageMutexed: write key=app_v3_9aca2562-f32d-42ce-9bbe-383b0faecf2c valueType=String
+  // I/flutter (26225): │ 🐛 [DEBUG] SecureStorageMutexed: write key=app_v3_9aca2562-f32d-42ce-9bbe-383b0faecf2c valueType=String
+
+  // THIS:
+  // I/flutter (26225): │ 🐛 [DEBUG] SecureStorageMutexed: write key=app_v3_pr_state valueType=String
+
   group('Legacy migration', () {
     test('loadState migrates legacy state if no default state exists', () async {
-      final legacyState = PushRequestState(
-        pushRequests: [
-          PushRequest(id: 5, title: 'e', question: '', uri: Uri(), nonce: '', sslVerify: false, expirationDate: DateTime.parse('2024-01-01T00:00:00Z')),
-        ],
-        knownPushRequests: CustomIntBuffer(list: [5]),
-      );
-      when(mockStorage.read(key: anyNamed('key'))).thenAnswer((_) async => null);
-      when(mockLegacyStorage.read(key: anyNamed('key'))).thenAnswer((_) async => jsonEncode(legacyState.toJson()));
-      when(mockStorage.write(key: anyNamed('key'), value: anyNamed('value'))).thenAnswer((_) async => {});
-      when(mockLegacyStorage.delete(key: anyNamed('key'))).thenAnswer((_) async => {});
-      final state = await repository.loadState();
-      expect(state.pushRequests.length, 1);
-      expect(state.pushRequests.first.id, 5);
-      verify(mockStorage.write(key: anyNamed('key'), value: anyNamed('value'))).called(1);
-      verify(mockLegacyStorage.delete(key: anyNamed('key'))).called(1);
+      final legacyState = createState([5]);
+      final legacyStateJson = jsonEncode(legacyState.toJson());
+      when(mockFlutterStorage.read(key: 'app_v4_push_request_state')).thenAnswer((args) async => null);
+      when(mockLegacyFlutterStorage.read(key: 'app_v3_pr_state')).thenAnswer((args) async => legacyStateJson);
+      final asd = await repository.loadState();
+      expect(asd.pushRequests.length, 1);
+      expect(asd.knownPushRequests.list, [5]);
     });
 
     test('loadState prefers default state over legacy', () async {
-      final defaultState = PushRequestState(
-        pushRequests: [
-          PushRequest(id: 6, title: 'f', question: '', uri: Uri(), nonce: '', sslVerify: false, expirationDate: DateTime.parse('2024-01-01T00:00:00Z')),
-        ],
-        knownPushRequests: CustomIntBuffer(list: [6]),
-      );
-      final legacyState = PushRequestState(
-        pushRequests: [
-          PushRequest(id: 7, title: 'g', question: '', uri: Uri(), nonce: '', sslVerify: false, expirationDate: DateTime.parse('2024-01-01T00:00:00Z')),
-        ],
-        knownPushRequests: CustomIntBuffer(list: [7]),
-      );
-      when(mockStorage.read(key: anyNamed('key'))).thenAnswer((_) async => jsonEncode(defaultState.toJson()));
-      when(mockLegacyStorage.read(key: anyNamed('key'))).thenAnswer((_) async => jsonEncode(legacyState.toJson()));
-      final state = await repository.loadState();
-      expect(state.pushRequests.length, 1);
-      expect(state.pushRequests.first.id, 6);
+      final defaultState = createState([4]);
+      final defaultStateJson = jsonEncode(defaultState.toJson());
+      final legacyState = createState([5]);
+      final legacyStateJson = jsonEncode(legacyState.toJson());
+      when(mockFlutterStorage.read(key: 'app_v4_push_request_state')).thenAnswer((args) async => defaultStateJson);
+      when(mockLegacyFlutterStorage.read(key: 'app_v3_pr_state')).thenAnswer((args) async => legacyStateJson);
+      final asd = await repository.loadState();
+
+      expect(asd.pushRequests.length, 1);
+      expect(asd.knownPushRequests.list, [4]);
     });
 
-    test('migration does nothing if no legacy state exists', () async {
-      when(mockLegacyStorage.read(key: anyNamed('key'))).thenAnswer((_) async => null);
+    test('migration does nothing and returns an empty state if no legacy state exists', () async {
+      when(mockFlutterStorage.read(key: 'app_v4_push_request_state')).thenAnswer((args) async => null);
+      when(mockLegacyFlutterStorage.read(key: 'app_v3_pr_state')).thenAnswer((args) async => null);
       final result = await repository.loadState();
       expect(result.pushRequests, isEmpty);
+      expect(result.knownPushRequests.list, isEmpty);
     });
   });
 }

@@ -35,11 +35,13 @@ class SecureStorage implements SecureStorageInterface {
   final FlutterSecureStorage storage;
   @override
   final String storagePrefix;
+  @override
+  final String seperator;
 
-  SecureStorage({required this.storagePrefix, required this.storage});
+  SecureStorage({required this.storagePrefix, required this.storage, this.seperator = '_'});
 
   @override
-  String getFullKey(String key) => "${storagePrefix}_$key";
+  String getFullKey(String key) => "$storagePrefix$seperator$key";
 
   /// Function [f] is executed, protected by Mutex [_m].
   /// That means, that calls of this method will always be executed serial.
