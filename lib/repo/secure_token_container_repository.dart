@@ -9,11 +9,15 @@ import '../utils/logger.dart';
 import 'secure_storage.dart';
 
 class SecureTokenContainerRepository extends TokenContainerRepository {
-  static const String _TOKEN_CONTAINER_PREFIX_LEGACY = 'containerCredentials';
-  static const String _TOKEN_CONTAINER_PREFIX = '${GLOBAL_SECURE_REPO_PREFIX}_token_container';
+  static const String TOKEN_CONTAINER_PREFIX_LEGACY = 'containerCredentials';
+  static const String TOKEN_CONTAINER_PREFIX = '${GLOBAL_SECURE_REPO_PREFIX}_token_container';
 
-  static final _storageLegacy = SecureStorage(storagePrefix: _TOKEN_CONTAINER_PREFIX_LEGACY, storage: SecureStorage.legacyStorage, seperator: '.');
-  static final _storage = SecureStorage(storagePrefix: _TOKEN_CONTAINER_PREFIX, storage: SecureStorage.defaultStorage);
+  final SecureStorage _storageLegacy;
+  final SecureStorage _storage;
+
+  SecureTokenContainerRepository({SecureStorage? storage, SecureStorage? legacyStorage})
+    : _storage = storage ?? SecureStorage(storagePrefix: TOKEN_CONTAINER_PREFIX, storage: SecureStorage.defaultStorage),
+      _storageLegacy = legacyStorage ?? SecureStorage(storagePrefix: TOKEN_CONTAINER_PREFIX_LEGACY, storage: SecureStorage.legacyStorage, seperator: '.');
 
   /// Takes all containers from the legacy storage and saves them to the new storage.
   /// Afterwards, the containers are deleted from the legacy storage.

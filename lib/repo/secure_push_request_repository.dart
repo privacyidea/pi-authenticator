@@ -30,10 +30,6 @@ import '../utils/logger.dart';
 import 'secure_storage.dart';
 
 class SecurePushRequestRepository implements PushRequestRepository {
-  SecurePushRequestRepository({SecureStorage? secureStorage, SecureStorage? legacySecureStorage})
-    : _storage = secureStorage ?? SecureStorage(storagePrefix: PUSH_REQUEST_PREFIX, storage: SecureStorage.defaultStorage),
-      _storageLegacy = legacySecureStorage ?? SecureStorage(storagePrefix: PUSH_REQUEST_PREFIX_LEGACY, storage: SecureStorage.legacyStorage);
-
   static const String PUSH_REQUEST_PREFIX_LEGACY = GLOBAL_SECURE_REPO_PREFIX_LEGACY;
   static const String KEY_LEGACY = 'pr_state';
   static const String PUSH_REQUEST_PREFIX = '${GLOBAL_SECURE_REPO_PREFIX}_push_request';
@@ -41,6 +37,10 @@ class SecurePushRequestRepository implements PushRequestRepository {
 
   final SecureStorage _storageLegacy;
   final SecureStorage _storage;
+
+  SecurePushRequestRepository({SecureStorage? secureStorage, SecureStorage? legacySecureStorage})
+    : _storage = secureStorage ?? SecureStorage(storagePrefix: PUSH_REQUEST_PREFIX, storage: SecureStorage.defaultStorage),
+      _storageLegacy = legacySecureStorage ?? SecureStorage(storagePrefix: PUSH_REQUEST_PREFIX_LEGACY, storage: SecureStorage.legacyStorage);
 
   /// Save the state to the secure storage.
   /// This is a critical section, so it is protected by Mutex.
