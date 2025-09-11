@@ -38,12 +38,15 @@ import '../widgets/dialog_widgets/default_dialog.dart';
 import 'secure_storage.dart';
 
 class SecureTokenRepository implements TokenRepository {
-  const SecureTokenRepository();
   static const String _TOKEN_PREFIX_LEGACY = GLOBAL_SECURE_REPO_PREFIX_LEGACY;
   static const String _TOKEN_PREFIX = '${GLOBAL_SECURE_REPO_PREFIX}_token';
 
-  static final _storageLegacy = SecureStorage(storagePrefix: _TOKEN_PREFIX_LEGACY, storage: SecureStorage.legacyStorage);
-  static final _storage = SecureStorage(storagePrefix: _TOKEN_PREFIX, storage: SecureStorage.defaultStorage);
+  final SecureStorage _storageLegacy;
+  final SecureStorage _storage;
+
+  SecureTokenRepository({SecureStorage? storage, SecureStorage? legacyStorage})
+      : _storage = storage ?? SecureStorage(storagePrefix: _TOKEN_PREFIX, storage: SecureStorage.defaultStorage),
+        _storageLegacy = legacyStorage ?? SecureStorage(storagePrefix: _TOKEN_PREFIX_LEGACY, storage: SecureStorage.legacyStorage);
 
   // ###########################################################################
   // TOKENS
@@ -255,7 +258,7 @@ class SecureTokenRepository implements TokenRepository {
           onPressed: () async {
             Logger.info('Deleting all tokens from secure storage', verbose: true);
             Navigator.pop(context, true);
-            await SecureTokenRepository._storage.deleteAll();
+            await _storage.deleteAll();
           },
           text: AppLocalizations.of(context)!.decryptErrorButtonDelete,
         ),

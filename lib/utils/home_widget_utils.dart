@@ -83,7 +83,7 @@ class HomeWidgetUtils {
   factory HomeWidgetUtils({TokenRepository? tokenRepository, TokenFolderRepository? tokenFolderRepository}) {
     if (kIsWeb || Platform.isIOS) return UnsupportedHomeWidgetUtils(); // Not supported on iOS
     _instance ??= HomeWidgetUtils._();
-    _tokenRepository = tokenRepository ?? const SecureTokenRepository();
+    _tokenRepository = tokenRepository ?? SecureTokenRepository();
     _folderRepository = tokenFolderRepository ?? PreferenceTokenFolderRepository();
     return _instance!;
   }
@@ -209,11 +209,13 @@ class HomeWidgetUtils {
   ThemeData? _themeDataLight;
   Future<ThemeData> _getThemeData({bool dark = false}) async {
     if (dark) {
-      return _themeDataDark ??=
-          ThemeCustomization.fromJson(jsonDecode(await HomeWidget.getWidgetData<String>('$keyThemeCustomization$keySuffixDark') ?? '{}')).generateTheme();
+      return _themeDataDark ??= ThemeCustomization.fromJson(
+        jsonDecode(await HomeWidget.getWidgetData<String>('$keyThemeCustomization$keySuffixDark') ?? '{}'),
+      ).generateTheme();
     } else {
-      return _themeDataLight ??=
-          ThemeCustomization.fromJson(jsonDecode(await HomeWidget.getWidgetData<String>('$keyThemeCustomization$keySuffixLight') ?? '{}')).generateTheme();
+      return _themeDataLight ??= ThemeCustomization.fromJson(
+        jsonDecode(await HomeWidget.getWidgetData<String>('$keyThemeCustomization$keySuffixLight') ?? '{}'),
+      ).generateTheme();
     }
   }
 
@@ -272,10 +274,7 @@ class HomeWidgetUtils {
     for (String widgetId in linkedWidgetIds.keys) {
       final hotpToken = hotpTokens.firstWhereOrNull((element) => element.id == linkedWidgetIds[widgetId]);
       if (hotpToken == null) continue;
-      futures.addAll([
-        _updateHomeWidgetHideOtp(hotpToken, widgetId),
-        _updateHomeWidgetShowOtp(hotpToken, widgetId),
-      ]);
+      futures.addAll([_updateHomeWidgetHideOtp(hotpToken, widgetId), _updateHomeWidgetShowOtp(hotpToken, widgetId)]);
     }
     await Future.wait(futures);
     await _notifyUpdate(linkedWidgetIds.keys);
@@ -502,93 +501,89 @@ class HomeWidgetUtils {
   ////////////// Rendering ///////////////
   ////////////////////////////////////////
   Future<dynamic> renderFlutterWidget(Widget widget, {required String key, required Size logicalSize}) async {
-    return HomeWidget.renderFlutterWidget(
-      widget,
-      key: '$key',
-      logicalSize: logicalSize,
-    );
+    return HomeWidget.renderFlutterWidget(widget, key: '$key', logicalSize: logicalSize);
   }
 
   Future<void> _updateHwackground() async => await HomeWidgetBackgroundBuilder(
-        lightTheme: await _getThemeData(),
-        darkTheme: await _getThemeData(dark: true),
-        logicalSize: _widgetBackgroundSize,
-        homeWidgetKey: keyTokenBackground,
-        utils: this,
-      ).renderFlutterWidgets();
+    lightTheme: await _getThemeData(),
+    darkTheme: await _getThemeData(dark: true),
+    logicalSize: _widgetBackgroundSize,
+    homeWidgetKey: keyTokenBackground,
+    utils: this,
+  ).renderFlutterWidgets();
 
   Future<void> _updateHotpActionIcon() async => await HomeWidgetActionBuilder(
-        icon: Icons.replay,
-        lightTheme: await _getThemeData(),
-        darkTheme: await _getThemeData(dark: true),
-        logicalSize: _widgetActionSize,
-        homeWidgetKey: '$keyTokenAction$keyHotpToken',
-        utils: this,
-      ).renderFlutterWidgets(); //  1. Action 2. type 3. active/inactive 4. dark/light Example:   _tokenAction_hotp_active_light or _tokenAction_hotp_inactive_dark
+    icon: Icons.replay,
+    lightTheme: await _getThemeData(),
+    darkTheme: await _getThemeData(dark: true),
+    logicalSize: _widgetActionSize,
+    homeWidgetKey: '$keyTokenAction$keyHotpToken',
+    utils: this,
+  ).renderFlutterWidgets(); //  1. Action 2. type 3. active/inactive 4. dark/light Example:   _tokenAction_hotp_active_light or _tokenAction_hotp_inactive_dark
 
   Future<void> _updateTotpActionIcon() async => await HomeWidgetActionBuilder(
-        icon: Icons.timer_outlined,
-        lightTheme: await _getThemeData(),
-        darkTheme: await _getThemeData(dark: true),
-        logicalSize: _widgetActionSize,
-        homeWidgetKey: '$keyTokenAction$keyTotpToken',
-        utils: this,
-      ).renderFlutterWidgets();
+    icon: Icons.timer_outlined,
+    lightTheme: await _getThemeData(),
+    darkTheme: await _getThemeData(dark: true),
+    logicalSize: _widgetActionSize,
+    homeWidgetKey: '$keyTokenAction$keyTotpToken',
+    utils: this,
+  ).renderFlutterWidgets();
 
   Future<void> _updateDayPasswordActionIcon() async => await HomeWidgetActionBuilder(
-        icon: Icons.calendar_today_outlined,
-        lightTheme: await _getThemeData(),
-        darkTheme: await _getThemeData(dark: true),
-        logicalSize: _widgetActionSize,
-        homeWidgetKey: '$keyTokenAction$keyDayPasswordToken',
-        utils: this,
-      ).renderFlutterWidgets();
+    icon: Icons.calendar_today_outlined,
+    lightTheme: await _getThemeData(),
+    darkTheme: await _getThemeData(dark: true),
+    logicalSize: _widgetActionSize,
+    homeWidgetKey: '$keyTokenAction$keyDayPasswordToken',
+    utils: this,
+  ).renderFlutterWidgets();
 
   Future<void> _updateHomeWidgetShowOtp(OTPToken token, String homeWidgetId) async => await HomeWidgetOtpBuilder(
-        otp: token.otpValue,
-        label: token.label,
-        issuer: token.issuer,
-        lightTheme: await _getThemeData(),
-        darkTheme: await _getThemeData(dark: true),
-        logicalSize: _widgetOtpSize,
-        homeWidgetKey: '$keyTokenOtp$homeWidgetId',
-        utils: this,
-      ).renderFlutterWidgets(); // saved in shared preferences under example: _tokenContainer32_light and _tokenContainer32_dark
+    otp: token.otpValue,
+    label: token.label,
+    issuer: token.issuer,
+    lightTheme: await _getThemeData(),
+    darkTheme: await _getThemeData(dark: true),
+    logicalSize: _widgetOtpSize,
+    homeWidgetKey: '$keyTokenOtp$homeWidgetId',
+    utils: this,
+  ).renderFlutterWidgets(); // saved in shared preferences under example: _tokenContainer32_light and _tokenContainer32_dark
 
   Future<void> _updateHomeWidgetHideOtp(OTPToken token, String homeWidgetId) async => await HomeWidgetHiddenBuilder(
-        otpLength: token.otpValue.length,
-        label: token.label,
-        issuer: token.issuer,
-        lightTheme: await _getThemeData(),
-        darkTheme: await _getThemeData(dark: true),
-        logicalSize: _widgetOtpSize,
-        homeWidgetKey: '$keyTokenOtp$homeWidgetId$keySuffixHidden',
-        utils: this,
-      ).renderFlutterWidgets();
+    otpLength: token.otpValue.length,
+    label: token.label,
+    issuer: token.issuer,
+    lightTheme: await _getThemeData(),
+    darkTheme: await _getThemeData(dark: true),
+    logicalSize: _widgetOtpSize,
+    homeWidgetKey: '$keyTokenOtp$homeWidgetId$keySuffixHidden',
+    utils: this,
+  ).renderFlutterWidgets();
 
   Future<void> _updateHwConfigIcon() async => await HomeWidgetConfigBuilder(
-        lightTheme: await _getThemeData(),
-        darkTheme: await _getThemeData(dark: true),
-        logicalSize: _widgetSettingsSize,
-        homeWidgetKey: keySettingsIcon,
-        utils: this,
-      ).renderFlutterWidgets();
+    lightTheme: await _getThemeData(),
+    darkTheme: await _getThemeData(dark: true),
+    logicalSize: _widgetSettingsSize,
+    homeWidgetKey: keySettingsIcon,
+    utils: this,
+  ).renderFlutterWidgets();
 
   Future<void> _updateHomeWidgetUnlinked() async => await HomeWidgetUnlinkedBuilder(
-        lightTheme: await _getThemeData(),
-        darkTheme: await _getThemeData(dark: true),
-        logicalSize: _widgetOtpSize,
-        homeWidgetKey: keyTokenContainerEmpty,
-        utils: this,
-      ).renderFlutterWidgets();
+    lightTheme: await _getThemeData(),
+    darkTheme: await _getThemeData(dark: true),
+    logicalSize: _widgetOtpSize,
+    homeWidgetKey: keyTokenContainerEmpty,
+    utils: this,
+  ).renderFlutterWidgets();
 
   Future<void> _updateHomeWidgetCopied() async => await HomeWidgetCopiedBuilder(
-        lightTheme: await _getThemeData(),
-        darkTheme: await _getThemeData(dark: true),
-        logicalSize: _widgetOtpSize,
-        homeWidgetKey: '$keyTokenCopy',
-        utils: this,
-      ).renderFlutterWidgets();
+    lightTheme: await _getThemeData(),
+    darkTheme: await _getThemeData(dark: true),
+    logicalSize: _widgetOtpSize,
+    homeWidgetKey: '$keyTokenCopy',
+    utils: this,
+  ).renderFlutterWidgets();
 
   ////////////////////////////////////////
   //////// Saving to SharedPrefs /////////

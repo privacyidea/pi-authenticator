@@ -50,7 +50,7 @@ class PushProvider {
   // Needed for background handling
   static final _defaultPushRequestRepo = SecurePushRequestRepository();
   // Needed for background handling
-  static const _defaultTokenRepo = SecureTokenRepository();
+  static final _defaultTokenRepo = SecureTokenRepository();
 
   bool pollingIsEnabled = false;
   Timer? _pollTimer;
