@@ -23,7 +23,6 @@ import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
-
 import 'package:mutex/mutex.dart';
 import 'package:privacyidea_authenticator/repo/secure_storage.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
@@ -110,17 +109,11 @@ class FirebaseUtils {
     } catch (error, stackTrace) {
       if (error is PlatformException) {
         if (error.code == FIREBASE_TOKEN_ERROR_CODE) return; // ignore
-        showErrorStatusMessage(
-          message: (l) => l.pushInitializeUnavailable,
-          details: (_) => '${error.code}: ${error.message ?? 'no error message'}',
-        );
+        showErrorStatusMessage(message: (l) => l.pushInitializeUnavailable, details: (_) => '${error.code}: ${error.message ?? 'no error message'}');
       }
       if (error is FirebaseException) {
         if (error.code == FIREBASE_TOKEN_ERROR_CODE) return; // ignore
-        showErrorStatusMessage(
-          message: (l) => l.pushInitializeUnavailable,
-          details: (_) => '${error.code}: ${error.message ?? 'no error message'}',
-        );
+        showErrorStatusMessage(message: (l) => l.pushInitializeUnavailable, details: (_) => '${error.code}: ${error.message ?? 'no error message'}');
       }
 
       Logger.error('Unknown Firebase error', error: error, stackTrace: stackTrace);
@@ -166,9 +159,11 @@ class FirebaseUtils {
       // This error should be handled in all cases, the user might be informed
       // in the form of a pop-up message.
       throw PlatformException(
-          message: 'Firebase token could not be retrieved, the only know cause of this is'
-              ' that the firebase servers could not be reached.',
-          code: FIREBASE_TOKEN_ERROR_CODE);
+        message:
+            'Firebase token could not be retrieved, the only know cause of this is'
+            ' that the firebase servers could not be reached.',
+        code: FIREBASE_TOKEN_ERROR_CODE,
+      );
     }
 
     return firebaseToken;
@@ -185,8 +180,8 @@ class FirebaseUtils {
   static const _CURRENT_APP_TOKEN_KEY = 'current';
   static const _NEW_APP_TOKEN_KEY = 'new';
 
-  static final _storageLegacy = SecureStorage.legacy(storagePrefix: _FIREBASE_TOKEN_KEY_PREFIX_LEGACY);
-  static final _storage = SecureStorage.create(storagePrefix: _FIREBASE_TOKEN_KEY_PREFIX);
+  static final _storageLegacy = SecureStorage(storagePrefix: _FIREBASE_TOKEN_KEY_PREFIX_LEGACY, storage: SecureStorage.legacyStorage);
+  static final _storage = SecureStorage(storagePrefix: _FIREBASE_TOKEN_KEY_PREFIX, storage: SecureStorage.defaultStorage);
 
   Future<bool> deleteFirebaseToken() async {
     Logger.info('Deleting firebase token..');

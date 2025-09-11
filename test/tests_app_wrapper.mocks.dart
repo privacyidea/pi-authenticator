@@ -8,6 +8,7 @@ import 'dart:typed_data' as _i28;
 
 import 'package:firebase_core/firebase_core.dart' as _i31;
 import 'package:firebase_messaging/firebase_messaging.dart' as _i32;
+import 'package:flutter/foundation.dart' as _i35;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i11;
 import 'package:http/http.dart' as _i6;
 import 'package:mockito/mockito.dart' as _i1;
@@ -47,7 +48,7 @@ import 'package:privacyidea_authenticator/model/riverpod_states/token_state.dart
 import 'package:privacyidea_authenticator/model/token_container.dart' as _i24;
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart' as _i29;
 import 'package:privacyidea_authenticator/model/tokens/token.dart' as _i14;
-import 'package:privacyidea_authenticator/repo/secure_storage.dart' as _i35;
+import 'package:privacyidea_authenticator/repo/secure_storage.dart' as _i36;
 import 'package:privacyidea_authenticator/utils/allow_screenshot_utils.dart'
     as _i34;
 import 'package:privacyidea_authenticator/utils/ecc_utils.dart' as _i26;
@@ -159,9 +160,41 @@ class _FakeRsaUtils_14 extends _i1.SmartFake implements _i10.RsaUtils {
     : super(parent, parentInvocation);
 }
 
-class _FakeFlutterSecureStorage_15 extends _i1.SmartFake
+class _FakeIOSOptions_15 extends _i1.SmartFake implements _i11.IOSOptions {
+  _FakeIOSOptions_15(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+class _FakeAndroidOptions_16 extends _i1.SmartFake
+    implements _i11.AndroidOptions {
+  _FakeAndroidOptions_16(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+class _FakeLinuxOptions_17 extends _i1.SmartFake implements _i11.LinuxOptions {
+  _FakeLinuxOptions_17(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+class _FakeWindowsOptions_18 extends _i1.SmartFake
+    implements _i11.WindowsOptions {
+  _FakeWindowsOptions_18(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+class _FakeWebOptions_19 extends _i1.SmartFake implements _i11.WebOptions {
+  _FakeWebOptions_19(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+class _FakeMacOsOptions_20 extends _i1.SmartFake implements _i11.MacOsOptions {
+  _FakeMacOsOptions_20(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+class _FakeFlutterSecureStorage_21 extends _i1.SmartFake
     implements _i11.FlutterSecureStorage {
-  _FakeFlutterSecureStorage_15(Object parent, Invocation parentInvocation)
+  _FakeFlutterSecureStorage_21(Object parent, Invocation parentInvocation)
     : super(parent, parentInvocation);
 }
 
@@ -1325,19 +1358,307 @@ class MockAllowScreenshotUtils extends _i1.Mock
           as _i13.Future<bool>);
 }
 
+/// A class which mocks [FlutterSecureStorage].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockFlutterSecureStorage extends _i1.Mock
+    implements _i11.FlutterSecureStorage {
+  @override
+  _i11.IOSOptions get iOptions =>
+      (super.noSuchMethod(
+            Invocation.getter(#iOptions),
+            returnValue: _FakeIOSOptions_15(this, Invocation.getter(#iOptions)),
+            returnValueForMissingStub: _FakeIOSOptions_15(
+              this,
+              Invocation.getter(#iOptions),
+            ),
+          )
+          as _i11.IOSOptions);
+
+  @override
+  _i11.AndroidOptions get aOptions =>
+      (super.noSuchMethod(
+            Invocation.getter(#aOptions),
+            returnValue: _FakeAndroidOptions_16(
+              this,
+              Invocation.getter(#aOptions),
+            ),
+            returnValueForMissingStub: _FakeAndroidOptions_16(
+              this,
+              Invocation.getter(#aOptions),
+            ),
+          )
+          as _i11.AndroidOptions);
+
+  @override
+  _i11.LinuxOptions get lOptions =>
+      (super.noSuchMethod(
+            Invocation.getter(#lOptions),
+            returnValue: _FakeLinuxOptions_17(
+              this,
+              Invocation.getter(#lOptions),
+            ),
+            returnValueForMissingStub: _FakeLinuxOptions_17(
+              this,
+              Invocation.getter(#lOptions),
+            ),
+          )
+          as _i11.LinuxOptions);
+
+  @override
+  _i11.WindowsOptions get wOptions =>
+      (super.noSuchMethod(
+            Invocation.getter(#wOptions),
+            returnValue: _FakeWindowsOptions_18(
+              this,
+              Invocation.getter(#wOptions),
+            ),
+            returnValueForMissingStub: _FakeWindowsOptions_18(
+              this,
+              Invocation.getter(#wOptions),
+            ),
+          )
+          as _i11.WindowsOptions);
+
+  @override
+  _i11.WebOptions get webOptions =>
+      (super.noSuchMethod(
+            Invocation.getter(#webOptions),
+            returnValue: _FakeWebOptions_19(
+              this,
+              Invocation.getter(#webOptions),
+            ),
+            returnValueForMissingStub: _FakeWebOptions_19(
+              this,
+              Invocation.getter(#webOptions),
+            ),
+          )
+          as _i11.WebOptions);
+
+  @override
+  _i11.MacOsOptions get mOptions =>
+      (super.noSuchMethod(
+            Invocation.getter(#mOptions),
+            returnValue: _FakeMacOsOptions_20(
+              this,
+              Invocation.getter(#mOptions),
+            ),
+            returnValueForMissingStub: _FakeMacOsOptions_20(
+              this,
+              Invocation.getter(#mOptions),
+            ),
+          )
+          as _i11.MacOsOptions);
+
+  @override
+  void registerListener({
+    required String? key,
+    required _i35.ValueChanged<String?>? listener,
+  }) => super.noSuchMethod(
+    Invocation.method(#registerListener, [], {#key: key, #listener: listener}),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void unregisterListener({
+    required String? key,
+    required _i35.ValueChanged<String?>? listener,
+  }) => super.noSuchMethod(
+    Invocation.method(#unregisterListener, [], {
+      #key: key,
+      #listener: listener,
+    }),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  void unregisterAllListenersForKey({required String? key}) =>
+      super.noSuchMethod(
+        Invocation.method(#unregisterAllListenersForKey, [], {#key: key}),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  void unregisterAllListeners() => super.noSuchMethod(
+    Invocation.method(#unregisterAllListeners, []),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  _i13.Future<void> write({
+    required String? key,
+    required String? value,
+    _i11.IOSOptions? iOptions,
+    _i11.AndroidOptions? aOptions,
+    _i11.LinuxOptions? lOptions,
+    _i11.WebOptions? webOptions,
+    _i11.MacOsOptions? mOptions,
+    _i11.WindowsOptions? wOptions,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#write, [], {
+              #key: key,
+              #value: value,
+              #iOptions: iOptions,
+              #aOptions: aOptions,
+              #lOptions: lOptions,
+              #webOptions: webOptions,
+              #mOptions: mOptions,
+              #wOptions: wOptions,
+            }),
+            returnValue: _i13.Future<void>.value(),
+            returnValueForMissingStub: _i13.Future<void>.value(),
+          )
+          as _i13.Future<void>);
+
+  @override
+  _i13.Future<String?> read({
+    required String? key,
+    _i11.IOSOptions? iOptions,
+    _i11.AndroidOptions? aOptions,
+    _i11.LinuxOptions? lOptions,
+    _i11.WebOptions? webOptions,
+    _i11.MacOsOptions? mOptions,
+    _i11.WindowsOptions? wOptions,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#read, [], {
+              #key: key,
+              #iOptions: iOptions,
+              #aOptions: aOptions,
+              #lOptions: lOptions,
+              #webOptions: webOptions,
+              #mOptions: mOptions,
+              #wOptions: wOptions,
+            }),
+            returnValue: _i13.Future<String?>.value(),
+            returnValueForMissingStub: _i13.Future<String?>.value(),
+          )
+          as _i13.Future<String?>);
+
+  @override
+  _i13.Future<bool> containsKey({
+    required String? key,
+    _i11.IOSOptions? iOptions,
+    _i11.AndroidOptions? aOptions,
+    _i11.LinuxOptions? lOptions,
+    _i11.WebOptions? webOptions,
+    _i11.MacOsOptions? mOptions,
+    _i11.WindowsOptions? wOptions,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#containsKey, [], {
+              #key: key,
+              #iOptions: iOptions,
+              #aOptions: aOptions,
+              #lOptions: lOptions,
+              #webOptions: webOptions,
+              #mOptions: mOptions,
+              #wOptions: wOptions,
+            }),
+            returnValue: _i13.Future<bool>.value(false),
+            returnValueForMissingStub: _i13.Future<bool>.value(false),
+          )
+          as _i13.Future<bool>);
+
+  @override
+  _i13.Future<void> delete({
+    required String? key,
+    _i11.IOSOptions? iOptions,
+    _i11.AndroidOptions? aOptions,
+    _i11.LinuxOptions? lOptions,
+    _i11.WebOptions? webOptions,
+    _i11.MacOsOptions? mOptions,
+    _i11.WindowsOptions? wOptions,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#delete, [], {
+              #key: key,
+              #iOptions: iOptions,
+              #aOptions: aOptions,
+              #lOptions: lOptions,
+              #webOptions: webOptions,
+              #mOptions: mOptions,
+              #wOptions: wOptions,
+            }),
+            returnValue: _i13.Future<void>.value(),
+            returnValueForMissingStub: _i13.Future<void>.value(),
+          )
+          as _i13.Future<void>);
+
+  @override
+  _i13.Future<Map<String, String>> readAll({
+    _i11.IOSOptions? iOptions,
+    _i11.AndroidOptions? aOptions,
+    _i11.LinuxOptions? lOptions,
+    _i11.WebOptions? webOptions,
+    _i11.MacOsOptions? mOptions,
+    _i11.WindowsOptions? wOptions,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#readAll, [], {
+              #iOptions: iOptions,
+              #aOptions: aOptions,
+              #lOptions: lOptions,
+              #webOptions: webOptions,
+              #mOptions: mOptions,
+              #wOptions: wOptions,
+            }),
+            returnValue: _i13.Future<Map<String, String>>.value(
+              <String, String>{},
+            ),
+            returnValueForMissingStub: _i13.Future<Map<String, String>>.value(
+              <String, String>{},
+            ),
+          )
+          as _i13.Future<Map<String, String>>);
+
+  @override
+  _i13.Future<void> deleteAll({
+    _i11.IOSOptions? iOptions,
+    _i11.AndroidOptions? aOptions,
+    _i11.LinuxOptions? lOptions,
+    _i11.WebOptions? webOptions,
+    _i11.MacOsOptions? mOptions,
+    _i11.WindowsOptions? wOptions,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteAll, [], {
+              #iOptions: iOptions,
+              #aOptions: aOptions,
+              #lOptions: lOptions,
+              #webOptions: webOptions,
+              #mOptions: mOptions,
+              #wOptions: wOptions,
+            }),
+            returnValue: _i13.Future<void>.value(),
+            returnValueForMissingStub: _i13.Future<void>.value(),
+          )
+          as _i13.Future<void>);
+
+  @override
+  _i13.Future<bool?> isCupertinoProtectedDataAvailable() =>
+      (super.noSuchMethod(
+            Invocation.method(#isCupertinoProtectedDataAvailable, []),
+            returnValue: _i13.Future<bool?>.value(),
+            returnValueForMissingStub: _i13.Future<bool?>.value(),
+          )
+          as _i13.Future<bool?>);
+}
+
 /// A class which mocks [SecureStorage].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockSecureStorage extends _i1.Mock implements _i35.SecureStorage {
+class MockSecureStorage extends _i1.Mock implements _i36.SecureStorage {
   @override
   _i11.FlutterSecureStorage get storage =>
       (super.noSuchMethod(
             Invocation.getter(#storage),
-            returnValue: _FakeFlutterSecureStorage_15(
+            returnValue: _FakeFlutterSecureStorage_21(
               this,
               Invocation.getter(#storage),
             ),
-            returnValueForMissingStub: _FakeFlutterSecureStorage_15(
+            returnValueForMissingStub: _FakeFlutterSecureStorage_21(
               this,
               Invocation.getter(#storage),
             ),

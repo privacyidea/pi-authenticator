@@ -23,7 +23,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'package:privacyidea_authenticator/widgets/elevated_delete_button.dart';
 
 import '../interfaces/repo/token_repository.dart';
@@ -43,8 +42,8 @@ class SecureTokenRepository implements TokenRepository {
   static const String _TOKEN_PREFIX_LEGACY = GLOBAL_SECURE_REPO_PREFIX_LEGACY;
   static const String _TOKEN_PREFIX = '${GLOBAL_SECURE_REPO_PREFIX}_token';
 
-  static final _storageLegacy = SecureStorage.legacy(storagePrefix: _TOKEN_PREFIX_LEGACY);
-  static final _storage = SecureStorage.create(storagePrefix: _TOKEN_PREFIX);
+  static final _storageLegacy = SecureStorage(storagePrefix: _TOKEN_PREFIX_LEGACY, storage: SecureStorage.legacyStorage);
+  static final _storage = SecureStorage(storagePrefix: _TOKEN_PREFIX, storage: SecureStorage.defaultStorage);
 
   // ###########################################################################
   // TOKENS
@@ -153,10 +152,7 @@ class SecureTokenRepository implements TokenRepository {
       }
     }
     if (failedTokens.isNotEmpty) {
-      Logger.error(
-        'Could not save all tokens (${tokens.length - failedTokens.length}/${tokens.length}) to secure storage',
-        stackTrace: StackTrace.current,
-      );
+      Logger.error('Could not save all tokens (${tokens.length - failedTokens.length}/${tokens.length}) to secure storage', stackTrace: StackTrace.current);
     } else {
       Logger.info('Saved ${tokens.length}/${tokens.length} tokens to secure storage');
     }
@@ -207,80 +203,63 @@ class SecureTokenRepository implements TokenRepository {
   // ###########################################################################
 
   Future<void> _decryptErrorDialog() => showAsyncDialog(
-        barrierDismissible: false,
-        builder: (context) => DefaultDialog(
-          title: Text(AppLocalizations.of(context)!.decryptErrorTitle),
-          content: Text(AppLocalizations.of(context)!.decryptErrorContent),
-          actions: [
-            TextButton(
-                child: Text(AppLocalizations.of(context)!.decryptErrorButtonSendError),
-                onPressed: () async {
-                  Logger.info('Sending error report');
-                  await showDialog(
-                    context: context,
-                    builder: (context) => const SendErrorDialog(),
-                    useRootNavigator: false,
-                  );
-                }),
-            ElevatedDeleteButton(
-              onPressed: () async {
-                final isDataDeleted = await _decryptErrorDeleteTokenConfirmationDialog();
-                if (isDataDeleted == true) {
-                  // ignore: use_build_context_synchronously
-                  Navigator.pop(context);
-                  globalRef?.read(tokenProvider.notifier).loadStateFromRepo();
-                }
-              },
-              text: AppLocalizations.of(context)!.decryptErrorButtonDelete,
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                showDialog(
-                  barrierDismissible: false,
-                  context: context,
-                  builder: (context) => const Center(
-                    child: SizedBox(
-                      height: 50,
-                      width: 50,
-                      child: CircularProgressIndicator.adaptive(),
-                    ),
-                  ),
-                );
-                await Future.delayed(
-                  const Duration(milliseconds: 500),
-                );
-                if (!context.mounted) return;
-                Navigator.pop(context);
-                Navigator.pop(context);
-                globalRef?.read(tokenProvider.notifier).loadStateFromRepo();
-              },
-              child: Text(AppLocalizations.of(context)!.decryptErrorButtonRetry),
-            ),
-          ],
+    barrierDismissible: false,
+    builder: (context) => DefaultDialog(
+      title: Text(AppLocalizations.of(context)!.decryptErrorTitle),
+      content: Text(AppLocalizations.of(context)!.decryptErrorContent),
+      actions: [
+        TextButton(
+          child: Text(AppLocalizations.of(context)!.decryptErrorButtonSendError),
+          onPressed: () async {
+            Logger.info('Sending error report');
+            await showDialog(context: context, builder: (context) => const SendErrorDialog(), useRootNavigator: false);
+          },
         ),
-      );
+        ElevatedDeleteButton(
+          onPressed: () async {
+            final isDataDeleted = await _decryptErrorDeleteTokenConfirmationDialog();
+            if (isDataDeleted == true) {
+              // ignore: use_build_context_synchronously
+              Navigator.pop(context);
+              globalRef?.read(tokenProvider.notifier).loadStateFromRepo();
+            }
+          },
+          text: AppLocalizations.of(context)!.decryptErrorButtonDelete,
+        ),
+        ElevatedButton(
+          onPressed: () async {
+            showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (context) => const Center(child: SizedBox(height: 50, width: 50, child: CircularProgressIndicator.adaptive())),
+            );
+            await Future.delayed(const Duration(milliseconds: 500));
+            if (!context.mounted) return;
+            Navigator.pop(context);
+            Navigator.pop(context);
+            globalRef?.read(tokenProvider.notifier).loadStateFromRepo();
+          },
+          child: Text(AppLocalizations.of(context)!.decryptErrorButtonRetry),
+        ),
+      ],
+    ),
+  );
 
   Future<bool?> _decryptErrorDeleteTokenConfirmationDialog() => showAsyncDialog<bool>(
-        builder: (context) => DefaultDialog(
-          title: Text(AppLocalizations.of(context)!.decryptErrorTitle),
-          content: Text(AppLocalizations.of(context)!.decryptErrorDeleteConfirmationContent),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: Text(AppLocalizations.of(context)!.cancel),
-            ),
-            ElevatedDeleteButton(
-              onPressed: () async {
-                Logger.info(
-                  'Deleting all tokens from secure storage',
-                  verbose: true,
-                );
-                Navigator.pop(context, true);
-                await SecureTokenRepository._storage.deleteAll();
-              },
-              text: AppLocalizations.of(context)!.decryptErrorButtonDelete,
-            ),
-          ],
+    builder: (context) => DefaultDialog(
+      title: Text(AppLocalizations.of(context)!.decryptErrorTitle),
+      content: Text(AppLocalizations.of(context)!.decryptErrorDeleteConfirmationContent),
+      actions: [
+        TextButton(onPressed: () => Navigator.pop(context, false), child: Text(AppLocalizations.of(context)!.cancel)),
+        ElevatedDeleteButton(
+          onPressed: () async {
+            Logger.info('Deleting all tokens from secure storage', verbose: true);
+            Navigator.pop(context, true);
+            await SecureTokenRepository._storage.deleteAll();
+          },
+          text: AppLocalizations.of(context)!.decryptErrorButtonDelete,
         ),
-      );
+      ],
+    ),
+  );
 }

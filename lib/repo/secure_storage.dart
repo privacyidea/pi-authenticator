@@ -23,38 +23,20 @@ import 'package:mutex/mutex.dart';
 import '../interfaces/repo/secure_storage.dart';
 
 class SecureStorage implements SecureStorageInterface {
+  static const defaultStorage = FlutterSecureStorage(
+    aOptions: AndroidOptions(encryptedSharedPreferences: true),
+    iOptions: IOSOptions(accessibility: KeychainAccessibility.first_unlock_this_device, synchronizable: false),
+  );
+
+  static const legacyStorage = FlutterSecureStorage(aOptions: AndroidOptions(encryptedSharedPreferences: true));
+
   static final Mutex _m = Mutex();
   @override
   final FlutterSecureStorage storage;
   @override
   final String storagePrefix;
 
-  SecureStorage({
-    required this.storagePrefix,
-    AndroidOptions aOptions = const AndroidOptions(),
-    IOSOptions iOptions = const IOSOptions(),
-    LinuxOptions lOptions = const LinuxOptions(),
-    MacOsOptions mOptions = const MacOsOptions(),
-    WindowsOptions wOptions = const WindowsOptions(),
-  }) : storage = FlutterSecureStorage(aOptions: aOptions, iOptions: iOptions, lOptions: lOptions, mOptions: mOptions, wOptions: wOptions);
-
-  factory SecureStorage.create({required String storagePrefix}) {
-    return SecureStorage(
-      storagePrefix: storagePrefix,
-      aOptions: AndroidOptions(encryptedSharedPreferences: true),
-      iOptions: IOSOptions(
-        accessibility: KeychainAccessibility.first_unlock_this_device,
-        synchronizable: false,
-      ),
-    );
-  }
-
-  factory SecureStorage.legacy({required String storagePrefix}) {
-    return SecureStorage(
-      storagePrefix: storagePrefix,
-      aOptions: AndroidOptions(encryptedSharedPreferences: true),
-    );
-  }
+  SecureStorage({required this.storagePrefix, required this.storage});
 
   @override
   String getFullKey(String key) => "${storagePrefix}_$key";
@@ -74,15 +56,15 @@ class SecureStorage implements SecureStorageInterface {
   /// Reads all key-value pairs from the secure storage that start with the storagePrefix.
   @override
   Future<Map<String, String>> readAll() => _protect(() async {
-        final allPairs = await storage.readAll();
-        final allKeys = allPairs.keys.where((key) => key.startsWith(storagePrefix)).toList();
-        final result = <String, String>{};
-        for (var key in allKeys) {
-          final shortKey = key.substring(storagePrefix.length + 1);
-          result[shortKey] = allPairs[key]!;
-        }
-        return result;
-      });
+    final allPairs = await storage.readAll();
+    final allKeys = allPairs.keys.where((key) => key.startsWith(storagePrefix)).toList();
+    final result = <String, String>{};
+    for (var key in allKeys) {
+      final shortKey = key.substring(storagePrefix.length + 1);
+      result[shortKey] = allPairs[key]!;
+    }
+    return result;
+  });
 
   /// Deletes the entry with the given key from the secure storage.
   @override
@@ -91,10 +73,10 @@ class SecureStorage implements SecureStorageInterface {
   /// Deletes all entries from the secure storage that start with the storagePrefix.
   @override
   Future<void> deleteAll() => _protect(() async {
-        final allPairs = await storage.readAll();
-        final allKeys = allPairs.keys.where((key) => key.startsWith(storagePrefix)).toList();
-        for (var key in allKeys) {
-          await storage.delete(key: key);
-        }
-      });
+    final allPairs = await storage.readAll();
+    final allKeys = allPairs.keys.where((key) => key.startsWith(storagePrefix)).toList();
+    for (var key in allKeys) {
+      await storage.delete(key: key);
+    }
+  });
 }

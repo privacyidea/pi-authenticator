@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 
 import '../interfaces/repo/token_container_repository.dart';
@@ -13,8 +12,8 @@ class SecureTokenContainerRepository extends TokenContainerRepository {
   static const String _TOKEN_CONTAINER_PREFIX_LEGACY = 'containerCredentials';
   static const String _TOKEN_CONTAINER_PREFIX = '${GLOBAL_SECURE_REPO_PREFIX}_token_container';
 
-  static final _storageLegacy = SecureStorage.legacy(storagePrefix: _TOKEN_CONTAINER_PREFIX_LEGACY);
-  static final _storage = SecureStorage.create(storagePrefix: _TOKEN_CONTAINER_PREFIX);
+  static final _storageLegacy = SecureStorage(storagePrefix: _TOKEN_CONTAINER_PREFIX_LEGACY, storage: SecureStorage.legacyStorage);
+  static final _storage = SecureStorage(storagePrefix: _TOKEN_CONTAINER_PREFIX, storage: SecureStorage.defaultStorage);
 
   /// Takes all containers from the legacy storage and saves them to the new storage.
   /// Afterwards, the containers are deleted from the legacy storage.
