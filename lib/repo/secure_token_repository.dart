@@ -38,15 +38,15 @@ import '../widgets/dialog_widgets/default_dialog.dart';
 import 'secure_storage.dart';
 
 class SecureTokenRepository implements TokenRepository {
-  static const String _TOKEN_PREFIX_LEGACY = GLOBAL_SECURE_REPO_PREFIX_LEGACY;
-  static const String _TOKEN_PREFIX = '${GLOBAL_SECURE_REPO_PREFIX}_token';
+  static const String TOKEN_PREFIX_LEGACY = GLOBAL_SECURE_REPO_PREFIX_LEGACY;
+  static const String TOKEN_PREFIX = '${GLOBAL_SECURE_REPO_PREFIX}_token';
 
   final SecureStorage _storageLegacy;
   final SecureStorage _storage;
 
   SecureTokenRepository({SecureStorage? storage, SecureStorage? legacyStorage})
-      : _storage = storage ?? SecureStorage(storagePrefix: _TOKEN_PREFIX, storage: SecureStorage.defaultStorage),
-        _storageLegacy = legacyStorage ?? SecureStorage(storagePrefix: _TOKEN_PREFIX_LEGACY, storage: SecureStorage.legacyStorage);
+    : _storage = storage ?? SecureStorage(storagePrefix: TOKEN_PREFIX, storage: SecureStorage.defaultStorage),
+      _storageLegacy = legacyStorage ?? SecureStorage(storagePrefix: TOKEN_PREFIX_LEGACY, storage: SecureStorage.legacyStorage);
 
   // ###########################################################################
   // TOKENS

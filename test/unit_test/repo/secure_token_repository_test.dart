@@ -22,21 +22,13 @@ void main() {
   setUp(() {
     mockStorage = MockFlutterSecureStorage();
     mockLegacyStorage = MockFlutterSecureStorage();
-    storage = SecureStorage(storagePrefix: newPrefix, storage: mockStorage);
-    legacyStorage = SecureStorage(storagePrefix: legacyPrefix, storage: mockLegacyStorage);
+    storage = SecureStorage(storagePrefix: SecureTokenRepository.TOKEN_PREFIX, storage: mockStorage);
+    legacyStorage = SecureStorage(storagePrefix: SecureTokenRepository.TOKEN_PREFIX_LEGACY, storage: mockLegacyStorage);
     repository = SecureTokenRepository(storage: storage, legacyStorage: legacyStorage);
   });
 
   TOTPToken createToken(String id) {
-    return TOTPToken(
-      label: id,
-      issuer: 'issuer',
-      secret: 'SECRET',
-      id: id,
-      algorithm: Algorithms.SHA1,
-      digits: 6,
-      period: 30,
-    );
+    return TOTPToken(label: id, issuer: 'issuer', secret: 'SECRET', id: id, algorithm: Algorithms.SHA1, digits: 6, period: 30);
   }
 
   group('SecureTokenRepository', () {
@@ -53,10 +45,7 @@ void main() {
       final token1 = createToken('id1');
       final token2 = createToken('id2');
       // readAll on the raw storage returns prefixed keys
-      final tokenMap = {
-        '${newPrefix}_${token1.id}': jsonEncode(token1.toJson()),
-        '${newPrefix}_${token2.id}': jsonEncode(token2.toJson()),
-      };
+      final tokenMap = {'${newPrefix}_${token1.id}': jsonEncode(token1.toJson()), '${newPrefix}_${token2.id}': jsonEncode(token2.toJson())};
 
       when(mockStorage.readAll()).thenAnswer((_) async => tokenMap);
       when(mockLegacyStorage.readAll()).thenAnswer((_) async => {});
@@ -140,9 +129,7 @@ void main() {
         '${legacyPrefix}_missing_type': jsonEncode({'some_key': 'some_value'}), // Valid JSON, but not a token
       };
 
-      final expectedNewTokenMap = {
-        validNewKey: validTokenValue,
-      };
+      final expectedNewTokenMap = {validNewKey: validTokenValue};
 
       when(mockLegacyStorage.readAll()).thenAnswer((_) async => legacyData);
       when(mockStorage.readAll()).thenAnswer((_) async => expectedNewTokenMap);

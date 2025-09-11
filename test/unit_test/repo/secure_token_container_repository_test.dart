@@ -25,8 +25,8 @@ void main() {
     mockStorage = MockFlutterSecureStorage();
     mockLegacyStorage = MockFlutterSecureStorage();
     // The repository uses these prefixes internally to create SecureStorage instances.
-    storage = SecureStorage(storagePrefix: newPrefix, storage: mockStorage);
-    legacyStorage = SecureStorage(storagePrefix: legacyPrefix, storage: mockLegacyStorage, seperator: '.');
+    storage = SecureStorage(storagePrefix: SecureTokenContainerRepository.TOKEN_CONTAINER_PREFIX, storage: mockStorage);
+    legacyStorage = SecureStorage(storagePrefix: SecureTokenContainerRepository.TOKEN_CONTAINER_PREFIX_LEGACY, storage: mockLegacyStorage, seperator: '.');
     repository = SecureTokenContainerRepository(storage: storage, legacyStorage: legacyStorage);
   });
 
