@@ -17,11 +17,16 @@ void main() {
   late SecureStorage legacyStorage;
   late SecureTokenContainerRepository repository;
 
+  // Prefixes are derived from the repository implementation.
+  const legacyPrefix = 'containerCredentials';
+  const newPrefix = 'app_v4_token_container';
+
   setUp(() {
     mockStorage = MockFlutterSecureStorage();
     mockLegacyStorage = MockFlutterSecureStorage();
-    storage = SecureStorage(storagePrefix: SecureTokenContainerRepository.TOKEN_CONTAINER_PREFIX, storage: mockStorage);
-    legacyStorage = SecureStorage(storagePrefix: SecureTokenContainerRepository.TOKEN_CONTAINER_PREFIX_LEGACY, storage: mockLegacyStorage, seperator: '.');
+    // The repository uses these prefixes internally to create SecureStorage instances.
+    storage = SecureStorage(storagePrefix: newPrefix, storage: mockStorage);
+    legacyStorage = SecureStorage(storagePrefix: legacyPrefix, storage: mockLegacyStorage, seperator: '.');
     repository = SecureTokenContainerRepository(storage: storage, legacyStorage: legacyStorage);
   });
 
@@ -51,9 +56,12 @@ void main() {
     });
 
     test('loadContainerState loads containers from storage', () async {
-      final container1 = createContainer('serial1');
-      final container2 = createContainer('serial2');
-      final containerMap = {'serial1': jsonEncode(container1.toJson()), 'serial2': jsonEncode(container2.toJson())};
+      final containerMap = {
+        // SecureStorage prefixes keys, so mocks must use prefixed keys.
+        "${newPrefix}_serial1": jsonEncode(createContainer('serial1').toJson()),
+        "${newPrefix}_serial2": jsonEncode(createContainer('serial2').toJson()),
+      };
+
       when(mockStorage.readAll()).thenAnswer((_) async => containerMap);
       when(mockLegacyStorage.readAll()).thenAnswer((_) async => {});
 
@@ -66,50 +74,87 @@ void main() {
 
     test('saveContainer saves a container to storage', () async {
       final container = createContainer('serial1');
-      when(mockStorage.write(key: 'serial1', value: anyNamed('value'))).thenAnswer((_) async {});
-      when(mockStorage.readAll()).thenAnswer((_) async => {'serial1': jsonEncode(container.toJson())});
+      final expectedKey = '${newPrefix}_${container.serial}';
+      final expectedValue = jsonEncode(container.toJson());
+
+      when(mockStorage.write(key: expectedKey, value: expectedValue)).thenAnswer((_) async {});
+      // The method under test reloads the state, so we need to mock readAll.
+      when(mockStorage.readAll()).thenAnswer((_) async => {expectedKey: expectedValue});
       when(mockLegacyStorage.readAll()).thenAnswer((_) async => {});
 
       await repository.saveContainer(container);
 
-      verify(mockStorage.write(key: 'serial1', value: jsonEncode(container.toJson()))).called(1);
+      verify(mockStorage.write(key: expectedKey, value: expectedValue)).called(1);
     });
 
     test('deleteContainer removes a container from storage', () async {
-      when(mockStorage.delete(key: 'serial1')).thenAnswer((_) async {});
+      const serial = 'serial1';
+      final expectedKey = '${newPrefix}_$serial';
+      when(mockStorage.delete(key: expectedKey)).thenAnswer((_) async {});
+      // The method under test reloads the state, so we need to mock readAll.
       when(mockStorage.readAll()).thenAnswer((_) async => {});
       when(mockLegacyStorage.readAll()).thenAnswer((_) async => {});
 
-      await repository.deleteContainer('serial1');
+      await repository.deleteContainer(serial);
 
-      verify(mockStorage.delete(key: 'serial1')).called(1);
+      verify(mockStorage.delete(key: expectedKey)).called(1);
     });
 
     test('deleteAllContainer removes all containers from storage', () async {
-      when(mockStorage.deleteAll()).thenAnswer((_) async {});
-      when(mockStorage.readAll()).thenAnswer((_) async => {});
+      // This test reflects the implementation of SecureStorage.deleteAll(), which
+      // reads all, filters by prefix, and then deletes one by one.
+      final containerMap = {
+        "${newPrefix}_serial1": jsonEncode(createContainer('serial1').toJson()),
+        "${newPrefix}_serial2": jsonEncode(createContainer('serial2').toJson()),
+        "some_other_key": "some_other_value",
+      };
+      // 1. Mock readAll to return some values
+      when(mockStorage.readAll()).thenAnswer((_) async => containerMap);
+      // 2. Mock delete for the keys that should be deleted
+      when(mockStorage.delete(key: "${newPrefix}_serial1")).thenAnswer((_) async {});
+      when(mockStorage.delete(key: "${newPrefix}_serial2")).thenAnswer((_) async {});
+      // 3. Mock legacy readAll for the subsequent loadContainerState call
       when(mockLegacyStorage.readAll()).thenAnswer((_) async => {});
 
       await repository.deleteAllContainer();
 
-      verify(mockStorage.deleteAll()).called(1);
+      // 4. Verify delete was called for the correct keys
+      verify(mockStorage.delete(key: "${newPrefix}_serial1")).called(1);
+      verify(mockStorage.delete(key: "${newPrefix}_serial2")).called(1);
+      // 5. Verify delete was NOT called for the other key
+      verifyNever(mockStorage.delete(key: "some_other_key"));
+      // 6. Verify the underlying deleteAll is never called
+      verifyNever(mockStorage.deleteAll());
     });
   });
 
   group('Migration', () {
-    test('loadContainerState migrates legacy containers', () async {
+    test('loadContainerState migrates legacy containers and returns them in state', () async {
       final container1 = createContainer('serial1');
-      final legacyContainerMap = {'serial1': jsonEncode(container1.toJson())};
+      final legacyKey = '$legacyPrefix.${container1.serial}';
+      final newKey = '${newPrefix}_${container1.serial}';
+      final value = jsonEncode(container1.toJson());
+
+      final legacyContainerMap = {legacyKey: value};
+      final newContainerMap = <String, String>{newKey: value}; // This is what readAll should find AFTER migration
 
       when(mockLegacyStorage.readAll()).thenAnswer((_) async => legacyContainerMap);
-      when(mockStorage.readAll()).thenAnswer((_) async => {});
-      when(mockStorage.write(key: 'serial1', value: anyNamed('value'))).thenAnswer((_) async {});
-      when(mockLegacyStorage.delete(key: 'serial1')).thenAnswer((_) async {});
+      // When _migrate runs, it will write to the new storage.
+      when(mockStorage.write(key: newKey, value: value)).thenAnswer((_) async {});
+      // When loadContainerState then reads from the new storage, it should find the migrated data.
+      when(mockStorage.readAll()).thenAnswer((_) async => newContainerMap);
+      // The migration also deletes the old data.
+      when(mockLegacyStorage.delete(key: legacyKey)).thenAnswer((_) async {});
 
-      await repository.loadContainerState();
+      final state = await repository.loadContainerState();
 
-      verify(mockStorage.write(key: 'serial1', value: jsonEncode(container1.toJson()))).called(1);
-      verify(mockLegacyStorage.delete(key: 'serial1')).called(1);
+      // Verify migration calls happened
+      verify(mockStorage.write(key: newKey, value: value)).called(1);
+      verify(mockLegacyStorage.delete(key: legacyKey)).called(1);
+
+      // Verify the final state contains the migrated container
+      expect(state.containerList.length, 1);
+      expect(state.containerList.first.serial, 'serial1');
     });
 
     test('loadContainerState does not migrate if no legacy containers exist', () async {
