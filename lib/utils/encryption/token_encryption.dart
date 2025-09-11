@@ -22,7 +22,7 @@ import 'dart:convert';
 import 'package:zxing2/qrcode.dart';
 
 import '../../model/tokens/token.dart';
-import '../../processors/scheme_processors/token_import_scheme_processors/privacyidea_authenticator_qr_processor.dart';
+import '../../processors/scheme_processors/token_import_scheme_processors/pia_scheme_processor.dart';
 import '../../utils/encryption/aes_encrypted.dart';
 import '../../utils/logger.dart';
 
@@ -68,7 +68,7 @@ class TokenEncryption {
       final encoded = json.encode(tokenJson);
       final bytes = utf8.encode(encoded);
       final base64 = base64Url.encode(bytes);
-      uri = Uri.parse('${PrivacyIDEAAuthenticatorQrProcessor.scheme}://${PrivacyIDEAAuthenticatorQrProcessor.host}?data=$base64');
+      uri = Uri.parse('${PiaSchemeProcessor.scheme}://${PiaSchemeProcessor.qrBackupHost}?data=$base64');
     } catch (e, s) {
       Logger.error('Failed to generate export URI', error: e, stackTrace: s);
       rethrow;

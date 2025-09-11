@@ -24,7 +24,7 @@ import '../model/token_import/token_import_source.dart';
 import '../processors/scheme_processors/token_import_scheme_processors/free_otp_plus_qr_processor.dart';
 import '../processors/scheme_processors/token_import_scheme_processors/google_authenticator_qr_processor.dart';
 import '../processors/scheme_processors/token_import_scheme_processors/otp_auth_processor.dart';
-import '../processors/scheme_processors/token_import_scheme_processors/privacyidea_authenticator_qr_processor.dart';
+import '../processors/scheme_processors/token_import_scheme_processors/pia_scheme_processor.dart';
 import '../processors/token_import_file_processor/aegis_import_file_processor.dart';
 import '../processors/token_import_file_processor/authenticator_pro_import_file_processor.dart';
 import '../processors/token_import_file_processor/free_otp_plus_import_file_processor.dart';
@@ -48,7 +48,7 @@ class TokenImportOrigins {
     iconPath: '${_importSourceIconFolder}privacyidea_authenticator.png',
     importSources: [
       TokenImportSource(
-        processor: const PrivacyIDEAAuthenticatorQrProcessor(),
+        processor: const PiaSchemeProcessor(),
         type: TokenImportType.qrScan,
         importHint: (localizations) => localizations.importHintPrivacyIdeaQrScan,
       ),
