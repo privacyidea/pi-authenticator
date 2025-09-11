@@ -39,9 +39,29 @@ class FirebaseUtils {
   final Mutex _initHandlerMutex = Mutex();
   bool initializedHandler = false;
 
-  FirebaseUtils._();
+  // ###########################################################################
+  // FIREBASE CONFIG
+  // ###########################################################################
+  static const FIREBASE_TOKEN_KEY_PREFIX_LEGACY = GLOBAL_SECURE_REPO_PREFIX_LEGACY;
+  static const CURRENT_APP_TOKEN_KEY_LEGACY = 'CURRENT_APP_TOKEN';
+  static const NEW_APP_TOKEN_KEY_LEGACY = 'NEW_APP_TOKEN';
 
-  factory FirebaseUtils() {
+  static const FIREBASE_TOKEN_KEY_PREFIX = '${GLOBAL_SECURE_REPO_PREFIX}_firebase';
+  static const CURRENT_APP_TOKEN_KEY = 'current';
+  static const NEW_APP_TOKEN_KEY = 'new';
+
+  final SecureStorage _storageLegacy;
+  final SecureStorage _storage;
+
+  FirebaseUtils._({SecureStorage? storage, SecureStorage? legacyStorage})
+      : _storage = storage ?? SecureStorage(storagePrefix: FIREBASE_TOKEN_KEY_PREFIX, storage: SecureStorage.defaultStorage),
+        _storageLegacy = legacyStorage ?? SecureStorage(storagePrefix: FIREBASE_TOKEN_KEY_PREFIX_LEGACY, storage: SecureStorage.legacyStorage);
+
+  factory FirebaseUtils({SecureStorage? storage, SecureStorage? legacyStorage}) {
+    if (storage != null || legacyStorage != null) {
+      // For testing, return a new instance with mocked storage
+      return FirebaseUtils._(storage: storage, legacyStorage: legacyStorage);
+    }
     if (_instance != null) return _instance!;
     if (deviceHasFirebaseMessaging) {
       _instance ??= FirebaseUtils._();
@@ -169,20 +189,6 @@ class FirebaseUtils {
     return firebaseToken;
   }
 
-  // ###########################################################################
-  // FIREBASE CONFIG
-  // ###########################################################################
-  static const _FIREBASE_TOKEN_KEY_PREFIX_LEGACY = GLOBAL_SECURE_REPO_PREFIX_LEGACY;
-  static const _CURRENT_APP_TOKEN_KEY_LEGACY = 'CURRENT_APP_TOKEN';
-  static const _NEW_APP_TOKEN_KEY_LEGACY = 'NEW_APP_TOKEN';
-
-  static const _FIREBASE_TOKEN_KEY_PREFIX = '${GLOBAL_SECURE_REPO_PREFIX}_firebase';
-  static const _CURRENT_APP_TOKEN_KEY = 'current';
-  static const _NEW_APP_TOKEN_KEY = 'new';
-
-  static final _storageLegacy = SecureStorage(storagePrefix: _FIREBASE_TOKEN_KEY_PREFIX_LEGACY, storage: SecureStorage.legacyStorage);
-  static final _storage = SecureStorage(storagePrefix: _FIREBASE_TOKEN_KEY_PREFIX, storage: SecureStorage.defaultStorage);
-
   Future<bool> deleteFirebaseToken() async {
     Logger.info('Deleting firebase token..');
     try {
@@ -194,25 +200,25 @@ class FirebaseUtils {
       if (e.message?.contains('IOException') == true) throw SocketException(e.message!);
       rethrow;
     }
-    await _storage.delete(key: _CURRENT_APP_TOKEN_KEY);
-    await _storage.delete(key: _NEW_APP_TOKEN_KEY);
+    await _storage.delete(key: CURRENT_APP_TOKEN_KEY);
+    await _storage.delete(key: NEW_APP_TOKEN_KEY);
     Logger.info('Firebase token deleted from secure storage');
     return true;
   }
 
   Future<void> setCurrentFirebaseToken(String str) {
     Logger.info('Setting current firebase token');
-    return _storage.write(key: _CURRENT_APP_TOKEN_KEY, value: str);
+    return _storage.write(key: CURRENT_APP_TOKEN_KEY, value: str);
   }
 
   Future<String?> getCurrentFirebaseToken() async {
-    final current = await _storage.read(key: _CURRENT_APP_TOKEN_KEY);
+    final current = await _storage.read(key: CURRENT_APP_TOKEN_KEY);
     if (current != null) return current;
-    final legacyCurrent = await _storageLegacy.read(key: _CURRENT_APP_TOKEN_KEY_LEGACY);
+    final legacyCurrent = await _storageLegacy.read(key: CURRENT_APP_TOKEN_KEY_LEGACY);
     if (legacyCurrent != null) {
       Logger.info('Loaded legacy current firebase token from secure storage');
-      await _storage.write(key: _CURRENT_APP_TOKEN_KEY, value: legacyCurrent);
-      await _storageLegacy.delete(key: _CURRENT_APP_TOKEN_KEY_LEGACY);
+      await _storage.write(key: CURRENT_APP_TOKEN_KEY, value: legacyCurrent);
+      await _storageLegacy.delete(key: CURRENT_APP_TOKEN_KEY_LEGACY);
       Logger.info('Migrated legacy current firebase token to new secure storage');
       return legacyCurrent;
     }
@@ -222,17 +228,17 @@ class FirebaseUtils {
   // This is used for checking if the token was updated.
   Future<void> setNewFirebaseToken(String str) {
     Logger.info('Setting new firebase token');
-    return _storage.write(key: _NEW_APP_TOKEN_KEY, value: str);
+    return _storage.write(key: NEW_APP_TOKEN_KEY, value: str);
   }
 
   Future<String?> getNewFirebaseToken() async {
-    final newFbToken = await _storage.read(key: _NEW_APP_TOKEN_KEY);
+    final newFbToken = await _storage.read(key: NEW_APP_TOKEN_KEY);
     if (newFbToken != null) return newFbToken;
-    final legacyNewFbToken = await _storageLegacy.read(key: _NEW_APP_TOKEN_KEY_LEGACY);
+    final legacyNewFbToken = await _storageLegacy.read(key: NEW_APP_TOKEN_KEY_LEGACY);
     if (legacyNewFbToken != null) {
       Logger.info('Loaded legacy new firebase token from secure storage');
-      await _storage.write(key: _NEW_APP_TOKEN_KEY, value: legacyNewFbToken);
-      await _storageLegacy.delete(key: _NEW_APP_TOKEN_KEY_LEGACY);
+      await _storage.write(key: NEW_APP_TOKEN_KEY, value: legacyNewFbToken);
+      await _storageLegacy.delete(key: NEW_APP_TOKEN_KEY_LEGACY);
       Logger.info('Migrated legacy new firebase token to new secure storage');
       return legacyNewFbToken;
     }
@@ -279,4 +285,10 @@ class NoFirebaseUtils implements FirebaseUtils {
 
   @override
   Future<FirebaseApp?> initializeApp() async => null;
+
+  @override
+  final SecureStorage _storage = SecureStorage(storagePrefix: FirebaseUtils.FIREBASE_TOKEN_KEY_PREFIX, storage: SecureStorage.defaultStorage);
+
+  @override
+  final SecureStorage _storageLegacy = SecureStorage(storagePrefix: FirebaseUtils.FIREBASE_TOKEN_KEY_PREFIX_LEGACY, storage: SecureStorage.legacyStorage);
 }
