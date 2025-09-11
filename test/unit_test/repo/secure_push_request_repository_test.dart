@@ -127,28 +127,6 @@ void main() {
     });
   });
 
-  // I/flutter (26225): │ 🐛 [DEBUG] SecureStorageMutexed: write key=containerCredentials.SMPH001807FF valueType=String
-  // I/flutter (26225): │ 🐛 [DEBUG] SecureStorageMutexed: write key=app_v3_51fff717-03b5-424c-a03d-eb7dd5fdf6bd valueType=String
-  // I/flutter (26225): │ 🐛 [DEBUG] SecureStorageMutexed: write key=app_v3_9aca2562-f32d-42ce-9bbe-383b0faecf2c valueType=String
-  // I/flutter (26225): │ 🐛 [DEBUG] SecureStorageMutexed: write key=app_v3_f3da004e-a59a-427f-8bc0-6d64b9e8549b valueType=String
-  // I/flutter (26225): │ 🐛 [DEBUG] SecureStorageMutexed: write key=containerCredentials.SMPH001807FF valueType=String
-  // I/flutter (26225): │ 🐛 [DEBUG] SecureStorageMutexed: write key=app_v3_9aca2562-f32d-42ce-9bbe-383b0faecf2c valueType=String
-  // I/flutter (26225): │ 🐛 [DEBUG] SecureStorageMutexed: write key=app_v3_51fff717-03b5-424c-a03d-eb7dd5fdf6bd valueType=String
-  // I/flutter (26225): │ 🐛 [DEBUG] SecureStorageMutexed: write key=app_v3_9aca2562-f32d-42ce-9bbe-383b0faecf2c valueType=String
-  // I/flutter (26225): │ 🐛 [DEBUG] SecureStorageMutexed: write key=app_v3_f3da004e-a59a-427f-8bc0-6d64b9e8549b valueType=String
-  // I/flutter (26225): │ 🐛 [DEBUG] SecureStorageMutexed: write key=app_v3_51fff717-03b5-424c-a03d-eb7dd5fdf6bd valueType=String
-  // I/flutter (26225): │ 🐛 [DEBUG] SecureStorageMutexed: write key=app_v3_9aca2562-f32d-42ce-9bbe-383b0faecf2c valueType=String
-  // I/flutter (26225): │ 🐛 [DEBUG] SecureStorageMutexed: write key=app_v3_f3da004e-a59a-427f-8bc0-6d64b9e8549b valueType=String
-  // I/flutter (26225): │ 🐛 [DEBUG] SecureStorageMutexed: write key=app_v3_9aca2562-f32d-42ce-9bbe-383b0faecf2c valueType=String
-  // I/flutter (26225): │ 🐛 [DEBUG] SecureStorageMutexed: write key=app_v3_9aca2562-f32d-42ce-9bbe-383b0faecf2c valueType=String
-  // I/flutter (26225): │ 🐛 [DEBUG] SecureStorageMutexed: write key=app_v3_9aca2562-f32d-42ce-9bbe-383b0faecf2c valueType=String
-  // I/flutter (26225): │ 🐛 [DEBUG] SecureStorageMutexed: write key=app_v3_9aca2562-f32d-42ce-9bbe-383b0faecf2c valueType=String
-  // I/flutter (26225): │ 🐛 [DEBUG] SecureStorageMutexed: write key=app_v3_9aca2562-f32d-42ce-9bbe-383b0faecf2c valueType=String
-  // I/flutter (26225): │ 🐛 [DEBUG] SecureStorageMutexed: write key=app_v3_9aca2562-f32d-42ce-9bbe-383b0faecf2c valueType=String
-
-  // THIS:
-  // I/flutter (26225): │ 🐛 [DEBUG] SecureStorageMutexed: write key=app_v3_pr_state valueType=String
-
   group('Legacy migration', () {
     test('loadState migrates legacy state if no default state exists', () async {
       final legacyState = createState([5]);

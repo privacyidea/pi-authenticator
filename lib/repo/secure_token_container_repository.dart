@@ -12,7 +12,7 @@ class SecureTokenContainerRepository extends TokenContainerRepository {
   static const String _TOKEN_CONTAINER_PREFIX_LEGACY = 'containerCredentials';
   static const String _TOKEN_CONTAINER_PREFIX = '${GLOBAL_SECURE_REPO_PREFIX}_token_container';
 
-  static final _storageLegacy = SecureStorage(storagePrefix: _TOKEN_CONTAINER_PREFIX_LEGACY, storage: SecureStorage.legacyStorage);
+  static final _storageLegacy = SecureStorage(storagePrefix: _TOKEN_CONTAINER_PREFIX_LEGACY, storage: SecureStorage.legacyStorage, seperator: '.');
   static final _storage = SecureStorage(storagePrefix: _TOKEN_CONTAINER_PREFIX, storage: SecureStorage.defaultStorage);
 
   /// Takes all containers from the legacy storage and saves them to the new storage.
