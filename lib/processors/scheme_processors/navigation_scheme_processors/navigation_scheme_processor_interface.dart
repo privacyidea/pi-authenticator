@@ -28,9 +28,7 @@ import 'home_widget_navigate_processor.dart';
 abstract class NavigationSchemeProcessor implements SchemeProcessor {
   const NavigationSchemeProcessor();
 
-  static Set<NavigationSchemeProcessor> implementations = {
-    HomeWidgetNavigateProcessor(),
-  };
+  static Set<NavigationSchemeProcessor> implementations = {HomeWidgetNavigateProcessor()};
 
   @override
   Future<List<ProcessorResult<dynamic>>?> processUri(Uri uri, {BuildContext? context, bool fromInit = false});

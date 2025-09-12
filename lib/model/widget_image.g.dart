@@ -7,11 +7,10 @@ part of 'widget_image.dart';
 // **************************************************************************
 
 WidgetImage _$WidgetImageFromJson(Map<String, dynamic> json) => WidgetImage(
-      fileName: json['fileName'] as String,
-      imageFormat: $enumDecode(_$ImageFormatEnumMap, json['imageFormat']),
-      imageData:
-          const Uint8ListConverter().fromJson(json['imageData'] as String),
-    );
+  fileName: json['fileName'] as String,
+  imageFormat: $enumDecode(_$ImageFormatEnumMap, json['imageFormat']),
+  imageData: const Uint8ListConverter().fromJson(json['imageData'] as String),
+);
 
 Map<String, dynamic> _$WidgetImageToJson(WidgetImage instance) =>
     <String, dynamic>{

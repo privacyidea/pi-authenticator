@@ -35,19 +35,14 @@ abstract class TokenImportSchemeProcessor with TokenImportProcessor<Uri, bool> i
   const TokenImportSchemeProcessor();
 
   static Set<String> get allSupportedSchemes => {
-        ...const OtpAuthProcessor().supportedSchemes,
-        ...const GoogleAuthenticatorQrProcessor().supportedSchemes,
-        ...const PiaSchemeProcessor().supportedSchemes,
-      };
-
-  static const Set<TokenImportSchemeProcessor> implementations = {
-    OtpAuthProcessor(),
-    GoogleAuthenticatorQrProcessor(),
-    PiaSchemeProcessor(),
+    ...const OtpAuthProcessor().supportedSchemes,
+    ...const GoogleAuthenticatorQrProcessor().supportedSchemes,
+    ...const PiaSchemeProcessor().supportedSchemes,
   };
 
-  @override
+  static const Set<TokenImportSchemeProcessor> implementations = {OtpAuthProcessor(), GoogleAuthenticatorQrProcessor(), PiaSchemeProcessor()};
 
+  @override
   /// data: [Uri] uri
   /// args: [bool] fromInit
   Future<List<ProcessorResult<Token>>?> processTokenMigrate(Uri data, {bool args = false}) => processUri(data, fromInit: args);

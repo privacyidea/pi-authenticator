@@ -51,20 +51,10 @@ class PiaSchemeProcessor extends TokenImportSchemeProcessor {
     try {
       final token = TokenEncryption.fromExportUri(uri);
       Logger.info('Processing URI ${uri.scheme} succeded');
-      return [
-        ProcessorResult.success(
-          token,
-          resultHandlerType: resultHandlerType,
-        )
-      ];
+      return [ProcessorResult.success(token, resultHandlerType: resultHandlerType)];
     } catch (e) {
       Logger.error('Error while processing URI ${uri.scheme}', error: e);
-      return [
-        ProcessorResult.failed(
-          (l) => l.invalidUrl,
-          resultHandlerType: resultHandlerType,
-        )
-      ];
+      return [ProcessorResult.failed((l) => l.invalidUrl, resultHandlerType: resultHandlerType)];
     }
   }
 

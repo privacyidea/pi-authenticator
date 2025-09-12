@@ -1,6 +1,7 @@
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:privacyidea_authenticator/api/interfaces/container_api.dart';
@@ -10,12 +11,14 @@ import 'package:privacyidea_authenticator/interfaces/repo/settings_repository.da
 import 'package:privacyidea_authenticator/interfaces/repo/token_container_repository.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/token_folder_repository.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/token_repository.dart';
+import 'package:privacyidea_authenticator/repo/secure_storage.dart';
 import 'package:privacyidea_authenticator/utils/allow_screenshot_utils.dart';
 import 'package:privacyidea_authenticator/utils/ecc_utils.dart';
 import 'package:privacyidea_authenticator/utils/firebase_utils.dart';
 import 'package:privacyidea_authenticator/utils/privacyidea_io_client.dart';
 import 'package:privacyidea_authenticator/utils/push_provider.dart';
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 @GenerateNiceMocks([
   MockSpec<TokenRepository>(),
@@ -31,6 +34,8 @@ import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
   MockSpec<FirebaseUtils>(),
   MockSpec<PushProvider>(),
   MockSpec<AllowScreenshotUtils>(),
+  MockSpec<FlutterSecureStorage>(),
+  MockSpec<SecureStorage>(),
 ])
 class TestsAppWrapper extends StatelessWidget {
   final Widget child;

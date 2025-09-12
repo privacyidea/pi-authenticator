@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,637 +9,446 @@ part of 'token_template.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-TokenTemplate _$TokenTemplateFromJson(Map<String, dynamic> json) {
-  switch (json['runtimeType']) {
-    case 'withSerial':
-      return _TokenTemplateWithSerial.fromJson(json);
-    case 'withOtps':
-      return _TokenTemplateWithOtps.fromJson(json);
-
-    default:
-      throw CheckedFromJsonException(json, 'runtimeType', 'TokenTemplate',
-          'Invalid union type "${json['runtimeType']}"!');
-  }
+TokenTemplate _$TokenTemplateFromJson(
+  Map<String, dynamic> json
+) {
+        switch (json['runtimeType']) {
+                  case 'withSerial':
+          return _TokenTemplateWithSerial.fromJson(
+            json
+          );
+                case 'withOtps':
+          return _TokenTemplateWithOtps.fromJson(
+            json
+          );
+        
+          default:
+            throw CheckedFromJsonException(
+  json,
+  'runtimeType',
+  'TokenTemplate',
+  'Invalid union type "${json['runtimeType']}"!'
+);
+        }
+      
 }
 
 /// @nodoc
-mixin _$TokenTemplate {
-  Map<String, dynamic> get otpAuthMap => throw _privateConstructorUsedError;
-  Map<String, dynamic> get additionalData => throw _privateConstructorUsedError;
-  TokenContainer? get container => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(Map<String, dynamic> otpAuthMap, String serial,
-            Map<String, dynamic> additionalData, TokenContainer? container)
-        withSerial,
-    required TResult Function(
-            Map<String, dynamic> otpAuthMap,
-            List<String> otps,
-            Map<String, dynamic> additionalData,
-            TokenContainer? container)
-        withOtps,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(Map<String, dynamic> otpAuthMap, String serial,
-            Map<String, dynamic> additionalData, TokenContainer? container)?
-        withSerial,
-    TResult? Function(Map<String, dynamic> otpAuthMap, List<String> otps,
-            Map<String, dynamic> additionalData, TokenContainer? container)?
-        withOtps,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(Map<String, dynamic> otpAuthMap, String serial,
-            Map<String, dynamic> additionalData, TokenContainer? container)?
-        withSerial,
-    TResult Function(Map<String, dynamic> otpAuthMap, List<String> otps,
-            Map<String, dynamic> additionalData, TokenContainer? container)?
-        withOtps,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_TokenTemplateWithSerial value) withSerial,
-    required TResult Function(_TokenTemplateWithOtps value) withOtps,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_TokenTemplateWithSerial value)? withSerial,
-    TResult? Function(_TokenTemplateWithOtps value)? withOtps,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_TokenTemplateWithSerial value)? withSerial,
-    TResult Function(_TokenTemplateWithOtps value)? withOtps,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+mixin _$TokenTemplate implements DiagnosticableTreeMixin {
+
+ Map<String, dynamic> get otpAuthMap; Map<String, dynamic> get additionalData; TokenContainer? get container;
+/// Create a copy of TokenTemplate
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$TokenTemplateCopyWith<TokenTemplate> get copyWith => _$TokenTemplateCopyWithImpl<TokenTemplate>(this as TokenTemplate, _$identity);
 
   /// Serializes this TokenTemplate to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of TokenTemplate
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $TokenTemplateCopyWith<TokenTemplate> get copyWith =>
-      throw _privateConstructorUsedError;
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'TokenTemplate'))
+    ..add(DiagnosticsProperty('otpAuthMap', otpAuthMap))..add(DiagnosticsProperty('additionalData', additionalData))..add(DiagnosticsProperty('container', container));
+}
+
+
+
+@override
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+  return 'TokenTemplate(otpAuthMap: $otpAuthMap, additionalData: $additionalData, container: $container)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $TokenTemplateCopyWith<$Res> {
-  factory $TokenTemplateCopyWith(
-          TokenTemplate value, $Res Function(TokenTemplate) then) =
-      _$TokenTemplateCopyWithImpl<$Res, TokenTemplate>;
-  @useResult
-  $Res call(
-      {Map<String, dynamic> otpAuthMap,
-      Map<String, dynamic> additionalData,
-      TokenContainer? container});
+abstract mixin class $TokenTemplateCopyWith<$Res>  {
+  factory $TokenTemplateCopyWith(TokenTemplate value, $Res Function(TokenTemplate) _then) = _$TokenTemplateCopyWithImpl;
+@useResult
+$Res call({
+ Map<String, dynamic> otpAuthMap, Map<String, dynamic> additionalData, TokenContainer? container
+});
 
-  $TokenContainerCopyWith<$Res>? get container;
+
+$TokenContainerCopyWith<$Res>? get container;
+
 }
-
 /// @nodoc
-class _$TokenTemplateCopyWithImpl<$Res, $Val extends TokenTemplate>
+class _$TokenTemplateCopyWithImpl<$Res>
     implements $TokenTemplateCopyWith<$Res> {
-  _$TokenTemplateCopyWithImpl(this._value, this._then);
+  _$TokenTemplateCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final TokenTemplate _self;
+  final $Res Function(TokenTemplate) _then;
 
-  /// Create a copy of TokenTemplate
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? otpAuthMap = null,
-    Object? additionalData = null,
-    Object? container = freezed,
-  }) {
-    return _then(_value.copyWith(
-      otpAuthMap: null == otpAuthMap
-          ? _value.otpAuthMap
-          : otpAuthMap // ignore: cast_nullable_to_non_nullable
-              as Map<String, dynamic>,
-      additionalData: null == additionalData
-          ? _value.additionalData
-          : additionalData // ignore: cast_nullable_to_non_nullable
-              as Map<String, dynamic>,
-      container: freezed == container
-          ? _value.container
-          : container // ignore: cast_nullable_to_non_nullable
-              as TokenContainer?,
-    ) as $Val);
+/// Create a copy of TokenTemplate
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? otpAuthMap = null,Object? additionalData = null,Object? container = freezed,}) {
+  return _then(_self.copyWith(
+otpAuthMap: null == otpAuthMap ? _self.otpAuthMap : otpAuthMap // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,additionalData: null == additionalData ? _self.additionalData : additionalData // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,container: freezed == container ? _self.container : container // ignore: cast_nullable_to_non_nullable
+as TokenContainer?,
+  ));
+}
+/// Create a copy of TokenTemplate
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$TokenContainerCopyWith<$Res>? get container {
+    if (_self.container == null) {
+    return null;
   }
 
-  /// Create a copy of TokenTemplate
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $TokenContainerCopyWith<$Res>? get container {
-    if (_value.container == null) {
-      return null;
-    }
-
-    return $TokenContainerCopyWith<$Res>(_value.container!, (value) {
-      return _then(_value.copyWith(container: value) as $Val);
-    });
-  }
+  return $TokenContainerCopyWith<$Res>(_self.container!, (value) {
+    return _then(_self.copyWith(container: value));
+  });
+}
 }
 
-/// @nodoc
-abstract class _$$TokenTemplateWithSerialImplCopyWith<$Res>
-    implements $TokenTemplateCopyWith<$Res> {
-  factory _$$TokenTemplateWithSerialImplCopyWith(
-          _$TokenTemplateWithSerialImpl value,
-          $Res Function(_$TokenTemplateWithSerialImpl) then) =
-      __$$TokenTemplateWithSerialImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {Map<String, dynamic> otpAuthMap,
-      String serial,
-      Map<String, dynamic> additionalData,
-      TokenContainer? container});
 
-  @override
-  $TokenContainerCopyWith<$Res>? get container;
+/// Adds pattern-matching-related methods to [TokenTemplate].
+extension TokenTemplatePatterns on TokenTemplate {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _TokenTemplateWithSerial value)?  withSerial,TResult Function( _TokenTemplateWithOtps value)?  withOtps,required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _TokenTemplateWithSerial() when withSerial != null:
+return withSerial(_that);case _TokenTemplateWithOtps() when withOtps != null:
+return withOtps(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _TokenTemplateWithSerial value)  withSerial,required TResult Function( _TokenTemplateWithOtps value)  withOtps,}){
+final _that = this;
+switch (_that) {
+case _TokenTemplateWithSerial():
+return withSerial(_that);case _TokenTemplateWithOtps():
+return withOtps(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _TokenTemplateWithSerial value)?  withSerial,TResult? Function( _TokenTemplateWithOtps value)?  withOtps,}){
+final _that = this;
+switch (_that) {
+case _TokenTemplateWithSerial() when withSerial != null:
+return withSerial(_that);case _TokenTemplateWithOtps() when withOtps != null:
+return withOtps(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( Map<String, dynamic> otpAuthMap,  String serial,  Map<String, dynamic> additionalData,  TokenContainer? container)?  withSerial,TResult Function( Map<String, dynamic> otpAuthMap,  List<String> otps,  Map<String, dynamic> additionalData,  TokenContainer? container)?  withOtps,required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _TokenTemplateWithSerial() when withSerial != null:
+return withSerial(_that.otpAuthMap,_that.serial,_that.additionalData,_that.container);case _TokenTemplateWithOtps() when withOtps != null:
+return withOtps(_that.otpAuthMap,_that.otps,_that.additionalData,_that.container);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( Map<String, dynamic> otpAuthMap,  String serial,  Map<String, dynamic> additionalData,  TokenContainer? container)  withSerial,required TResult Function( Map<String, dynamic> otpAuthMap,  List<String> otps,  Map<String, dynamic> additionalData,  TokenContainer? container)  withOtps,}) {final _that = this;
+switch (_that) {
+case _TokenTemplateWithSerial():
+return withSerial(_that.otpAuthMap,_that.serial,_that.additionalData,_that.container);case _TokenTemplateWithOtps():
+return withOtps(_that.otpAuthMap,_that.otps,_that.additionalData,_that.container);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( Map<String, dynamic> otpAuthMap,  String serial,  Map<String, dynamic> additionalData,  TokenContainer? container)?  withSerial,TResult? Function( Map<String, dynamic> otpAuthMap,  List<String> otps,  Map<String, dynamic> additionalData,  TokenContainer? container)?  withOtps,}) {final _that = this;
+switch (_that) {
+case _TokenTemplateWithSerial() when withSerial != null:
+return withSerial(_that.otpAuthMap,_that.serial,_that.additionalData,_that.container);case _TokenTemplateWithOtps() when withOtps != null:
+return withOtps(_that.otpAuthMap,_that.otps,_that.additionalData,_that.container);case _:
+  return null;
+
+}
 }
 
-/// @nodoc
-class __$$TokenTemplateWithSerialImplCopyWithImpl<$Res>
-    extends _$TokenTemplateCopyWithImpl<$Res, _$TokenTemplateWithSerialImpl>
-    implements _$$TokenTemplateWithSerialImplCopyWith<$Res> {
-  __$$TokenTemplateWithSerialImplCopyWithImpl(
-      _$TokenTemplateWithSerialImpl _value,
-      $Res Function(_$TokenTemplateWithSerialImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of TokenTemplate
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? otpAuthMap = null,
-    Object? serial = null,
-    Object? additionalData = null,
-    Object? container = freezed,
-  }) {
-    return _then(_$TokenTemplateWithSerialImpl(
-      otpAuthMap: null == otpAuthMap
-          ? _value._otpAuthMap
-          : otpAuthMap // ignore: cast_nullable_to_non_nullable
-              as Map<String, dynamic>,
-      serial: null == serial
-          ? _value.serial
-          : serial // ignore: cast_nullable_to_non_nullable
-              as String,
-      additionalData: null == additionalData
-          ? _value._additionalData
-          : additionalData // ignore: cast_nullable_to_non_nullable
-              as Map<String, dynamic>,
-      container: freezed == container
-          ? _value.container
-          : container // ignore: cast_nullable_to_non_nullable
-              as TokenContainer?,
-    ));
-  }
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$TokenTemplateWithSerialImpl extends _TokenTemplateWithSerial
-    with DiagnosticableTreeMixin {
-  _$TokenTemplateWithSerialImpl(
-      {required final Map<String, dynamic> otpAuthMap,
-      required this.serial,
-      final Map<String, dynamic> additionalData = const {},
-      this.container,
-      final String? $type})
-      : _otpAuthMap = otpAuthMap,
-        _additionalData = additionalData,
-        $type = $type ?? 'withSerial',
-        super._();
 
-  factory _$TokenTemplateWithSerialImpl.fromJson(Map<String, dynamic> json) =>
-      _$$TokenTemplateWithSerialImplFromJson(json);
+class _TokenTemplateWithSerial extends TokenTemplate with DiagnosticableTreeMixin {
+   _TokenTemplateWithSerial({required final  Map<String, dynamic> otpAuthMap, required this.serial, final  Map<String, dynamic> additionalData = const {}, this.container, final  String? $type}): _otpAuthMap = otpAuthMap,_additionalData = additionalData,$type = $type ?? 'withSerial',super._();
+  factory _TokenTemplateWithSerial.fromJson(Map<String, dynamic> json) => _$TokenTemplateWithSerialFromJson(json);
 
-  final Map<String, dynamic> _otpAuthMap;
-  @override
-  Map<String, dynamic> get otpAuthMap {
-    if (_otpAuthMap is EqualUnmodifiableMapView) return _otpAuthMap;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_otpAuthMap);
-  }
-
-  @override
-  final String serial;
-  final Map<String, dynamic> _additionalData;
-  @override
-  @JsonKey()
-  Map<String, dynamic> get additionalData {
-    if (_additionalData is EqualUnmodifiableMapView) return _additionalData;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_additionalData);
-  }
-
-  @override
-  final TokenContainer? container;
-
-  @JsonKey(name: 'runtimeType')
-  final String $type;
-
-  @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'TokenTemplate.withSerial(otpAuthMap: $otpAuthMap, serial: $serial, additionalData: $additionalData, container: $container)';
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('type', 'TokenTemplate.withSerial'))
-      ..add(DiagnosticsProperty('otpAuthMap', otpAuthMap))
-      ..add(DiagnosticsProperty('serial', serial))
-      ..add(DiagnosticsProperty('additionalData', additionalData))
-      ..add(DiagnosticsProperty('container', container));
-  }
-
-  /// Create a copy of TokenTemplate
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$TokenTemplateWithSerialImplCopyWith<_$TokenTemplateWithSerialImpl>
-      get copyWith => __$$TokenTemplateWithSerialImplCopyWithImpl<
-          _$TokenTemplateWithSerialImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(Map<String, dynamic> otpAuthMap, String serial,
-            Map<String, dynamic> additionalData, TokenContainer? container)
-        withSerial,
-    required TResult Function(
-            Map<String, dynamic> otpAuthMap,
-            List<String> otps,
-            Map<String, dynamic> additionalData,
-            TokenContainer? container)
-        withOtps,
-  }) {
-    return withSerial(otpAuthMap, serial, additionalData, container);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(Map<String, dynamic> otpAuthMap, String serial,
-            Map<String, dynamic> additionalData, TokenContainer? container)?
-        withSerial,
-    TResult? Function(Map<String, dynamic> otpAuthMap, List<String> otps,
-            Map<String, dynamic> additionalData, TokenContainer? container)?
-        withOtps,
-  }) {
-    return withSerial?.call(otpAuthMap, serial, additionalData, container);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(Map<String, dynamic> otpAuthMap, String serial,
-            Map<String, dynamic> additionalData, TokenContainer? container)?
-        withSerial,
-    TResult Function(Map<String, dynamic> otpAuthMap, List<String> otps,
-            Map<String, dynamic> additionalData, TokenContainer? container)?
-        withOtps,
-    required TResult orElse(),
-  }) {
-    if (withSerial != null) {
-      return withSerial(otpAuthMap, serial, additionalData, container);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_TokenTemplateWithSerial value) withSerial,
-    required TResult Function(_TokenTemplateWithOtps value) withOtps,
-  }) {
-    return withSerial(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_TokenTemplateWithSerial value)? withSerial,
-    TResult? Function(_TokenTemplateWithOtps value)? withOtps,
-  }) {
-    return withSerial?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_TokenTemplateWithSerial value)? withSerial,
-    TResult Function(_TokenTemplateWithOtps value)? withOtps,
-    required TResult orElse(),
-  }) {
-    if (withSerial != null) {
-      return withSerial(this);
-    }
-    return orElse();
-  }
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$TokenTemplateWithSerialImplToJson(
-      this,
-    );
-  }
+ final  Map<String, dynamic> _otpAuthMap;
+@override Map<String, dynamic> get otpAuthMap {
+  if (_otpAuthMap is EqualUnmodifiableMapView) return _otpAuthMap;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_otpAuthMap);
 }
 
-abstract class _TokenTemplateWithSerial extends TokenTemplate {
-  factory _TokenTemplateWithSerial(
-      {required final Map<String, dynamic> otpAuthMap,
-      required final String serial,
-      final Map<String, dynamic> additionalData,
-      final TokenContainer? container}) = _$TokenTemplateWithSerialImpl;
-  _TokenTemplateWithSerial._() : super._();
+ final  String serial;
+ final  Map<String, dynamic> _additionalData;
+@override@JsonKey() Map<String, dynamic> get additionalData {
+  if (_additionalData is EqualUnmodifiableMapView) return _additionalData;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_additionalData);
+}
 
-  factory _TokenTemplateWithSerial.fromJson(Map<String, dynamic> json) =
-      _$TokenTemplateWithSerialImpl.fromJson;
+@override final  TokenContainer? container;
 
-  @override
-  Map<String, dynamic> get otpAuthMap;
-  String get serial;
-  @override
-  Map<String, dynamic> get additionalData;
-  @override
-  TokenContainer? get container;
+@JsonKey(name: 'runtimeType')
+final String $type;
 
-  /// Create a copy of TokenTemplate
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$TokenTemplateWithSerialImplCopyWith<_$TokenTemplateWithSerialImpl>
-      get copyWith => throw _privateConstructorUsedError;
+
+/// Create a copy of TokenTemplate
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$TokenTemplateWithSerialCopyWith<_TokenTemplateWithSerial> get copyWith => __$TokenTemplateWithSerialCopyWithImpl<_TokenTemplateWithSerial>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$TokenTemplateWithSerialToJson(this, );
+}
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'TokenTemplate.withSerial'))
+    ..add(DiagnosticsProperty('otpAuthMap', otpAuthMap))..add(DiagnosticsProperty('serial', serial))..add(DiagnosticsProperty('additionalData', additionalData))..add(DiagnosticsProperty('container', container));
+}
+
+
+
+@override
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+  return 'TokenTemplate.withSerial(otpAuthMap: $otpAuthMap, serial: $serial, additionalData: $additionalData, container: $container)';
+}
+
+
 }
 
 /// @nodoc
-abstract class _$$TokenTemplateWithOtpsImplCopyWith<$Res>
-    implements $TokenTemplateCopyWith<$Res> {
-  factory _$$TokenTemplateWithOtpsImplCopyWith(
-          _$TokenTemplateWithOtpsImpl value,
-          $Res Function(_$TokenTemplateWithOtpsImpl) then) =
-      __$$TokenTemplateWithOtpsImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {Map<String, dynamic> otpAuthMap,
-      List<String> otps,
-      Map<String, dynamic> additionalData,
-      TokenContainer? container});
+abstract mixin class _$TokenTemplateWithSerialCopyWith<$Res> implements $TokenTemplateCopyWith<$Res> {
+  factory _$TokenTemplateWithSerialCopyWith(_TokenTemplateWithSerial value, $Res Function(_TokenTemplateWithSerial) _then) = __$TokenTemplateWithSerialCopyWithImpl;
+@override @useResult
+$Res call({
+ Map<String, dynamic> otpAuthMap, String serial, Map<String, dynamic> additionalData, TokenContainer? container
+});
 
-  @override
-  $TokenContainerCopyWith<$Res>? get container;
+
+@override $TokenContainerCopyWith<$Res>? get container;
+
+}
+/// @nodoc
+class __$TokenTemplateWithSerialCopyWithImpl<$Res>
+    implements _$TokenTemplateWithSerialCopyWith<$Res> {
+  __$TokenTemplateWithSerialCopyWithImpl(this._self, this._then);
+
+  final _TokenTemplateWithSerial _self;
+  final $Res Function(_TokenTemplateWithSerial) _then;
+
+/// Create a copy of TokenTemplate
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? otpAuthMap = null,Object? serial = null,Object? additionalData = null,Object? container = freezed,}) {
+  return _then(_TokenTemplateWithSerial(
+otpAuthMap: null == otpAuthMap ? _self._otpAuthMap : otpAuthMap // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,serial: null == serial ? _self.serial : serial // ignore: cast_nullable_to_non_nullable
+as String,additionalData: null == additionalData ? _self._additionalData : additionalData // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,container: freezed == container ? _self.container : container // ignore: cast_nullable_to_non_nullable
+as TokenContainer?,
+  ));
 }
 
-/// @nodoc
-class __$$TokenTemplateWithOtpsImplCopyWithImpl<$Res>
-    extends _$TokenTemplateCopyWithImpl<$Res, _$TokenTemplateWithOtpsImpl>
-    implements _$$TokenTemplateWithOtpsImplCopyWith<$Res> {
-  __$$TokenTemplateWithOtpsImplCopyWithImpl(_$TokenTemplateWithOtpsImpl _value,
-      $Res Function(_$TokenTemplateWithOtpsImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of TokenTemplate
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? otpAuthMap = null,
-    Object? otps = null,
-    Object? additionalData = null,
-    Object? container = freezed,
-  }) {
-    return _then(_$TokenTemplateWithOtpsImpl(
-      otpAuthMap: null == otpAuthMap
-          ? _value._otpAuthMap
-          : otpAuthMap // ignore: cast_nullable_to_non_nullable
-              as Map<String, dynamic>,
-      otps: null == otps
-          ? _value._otps
-          : otps // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-      additionalData: null == additionalData
-          ? _value._additionalData
-          : additionalData // ignore: cast_nullable_to_non_nullable
-              as Map<String, dynamic>,
-      container: freezed == container
-          ? _value.container
-          : container // ignore: cast_nullable_to_non_nullable
-              as TokenContainer?,
-    ));
+/// Create a copy of TokenTemplate
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$TokenContainerCopyWith<$Res>? get container {
+    if (_self.container == null) {
+    return null;
   }
+
+  return $TokenContainerCopyWith<$Res>(_self.container!, (value) {
+    return _then(_self.copyWith(container: value));
+  });
+}
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$TokenTemplateWithOtpsImpl extends _TokenTemplateWithOtps
-    with DiagnosticableTreeMixin {
-  _$TokenTemplateWithOtpsImpl(
-      {required final Map<String, dynamic> otpAuthMap,
-      required final List<String> otps,
-      final Map<String, dynamic> additionalData = const {},
-      this.container,
-      final String? $type})
-      : _otpAuthMap = otpAuthMap,
-        _otps = otps,
-        _additionalData = additionalData,
-        $type = $type ?? 'withOtps',
-        super._();
 
-  factory _$TokenTemplateWithOtpsImpl.fromJson(Map<String, dynamic> json) =>
-      _$$TokenTemplateWithOtpsImplFromJson(json);
+class _TokenTemplateWithOtps extends TokenTemplate with DiagnosticableTreeMixin {
+   _TokenTemplateWithOtps({required final  Map<String, dynamic> otpAuthMap, required final  List<String> otps, final  Map<String, dynamic> additionalData = const {}, this.container, final  String? $type}): _otpAuthMap = otpAuthMap,_otps = otps,_additionalData = additionalData,$type = $type ?? 'withOtps',super._();
+  factory _TokenTemplateWithOtps.fromJson(Map<String, dynamic> json) => _$TokenTemplateWithOtpsFromJson(json);
 
-  final Map<String, dynamic> _otpAuthMap;
-  @override
-  Map<String, dynamic> get otpAuthMap {
-    if (_otpAuthMap is EqualUnmodifiableMapView) return _otpAuthMap;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_otpAuthMap);
-  }
-
-  final List<String> _otps;
-  @override
-  List<String> get otps {
-    if (_otps is EqualUnmodifiableListView) return _otps;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_otps);
-  }
-
-  final Map<String, dynamic> _additionalData;
-  @override
-  @JsonKey()
-  Map<String, dynamic> get additionalData {
-    if (_additionalData is EqualUnmodifiableMapView) return _additionalData;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_additionalData);
-  }
-
-  @override
-  final TokenContainer? container;
-
-  @JsonKey(name: 'runtimeType')
-  final String $type;
-
-  @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'TokenTemplate.withOtps(otpAuthMap: $otpAuthMap, otps: $otps, additionalData: $additionalData, container: $container)';
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('type', 'TokenTemplate.withOtps'))
-      ..add(DiagnosticsProperty('otpAuthMap', otpAuthMap))
-      ..add(DiagnosticsProperty('otps', otps))
-      ..add(DiagnosticsProperty('additionalData', additionalData))
-      ..add(DiagnosticsProperty('container', container));
-  }
-
-  /// Create a copy of TokenTemplate
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$TokenTemplateWithOtpsImplCopyWith<_$TokenTemplateWithOtpsImpl>
-      get copyWith => __$$TokenTemplateWithOtpsImplCopyWithImpl<
-          _$TokenTemplateWithOtpsImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(Map<String, dynamic> otpAuthMap, String serial,
-            Map<String, dynamic> additionalData, TokenContainer? container)
-        withSerial,
-    required TResult Function(
-            Map<String, dynamic> otpAuthMap,
-            List<String> otps,
-            Map<String, dynamic> additionalData,
-            TokenContainer? container)
-        withOtps,
-  }) {
-    return withOtps(otpAuthMap, otps, additionalData, container);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(Map<String, dynamic> otpAuthMap, String serial,
-            Map<String, dynamic> additionalData, TokenContainer? container)?
-        withSerial,
-    TResult? Function(Map<String, dynamic> otpAuthMap, List<String> otps,
-            Map<String, dynamic> additionalData, TokenContainer? container)?
-        withOtps,
-  }) {
-    return withOtps?.call(otpAuthMap, otps, additionalData, container);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(Map<String, dynamic> otpAuthMap, String serial,
-            Map<String, dynamic> additionalData, TokenContainer? container)?
-        withSerial,
-    TResult Function(Map<String, dynamic> otpAuthMap, List<String> otps,
-            Map<String, dynamic> additionalData, TokenContainer? container)?
-        withOtps,
-    required TResult orElse(),
-  }) {
-    if (withOtps != null) {
-      return withOtps(otpAuthMap, otps, additionalData, container);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_TokenTemplateWithSerial value) withSerial,
-    required TResult Function(_TokenTemplateWithOtps value) withOtps,
-  }) {
-    return withOtps(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_TokenTemplateWithSerial value)? withSerial,
-    TResult? Function(_TokenTemplateWithOtps value)? withOtps,
-  }) {
-    return withOtps?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_TokenTemplateWithSerial value)? withSerial,
-    TResult Function(_TokenTemplateWithOtps value)? withOtps,
-    required TResult orElse(),
-  }) {
-    if (withOtps != null) {
-      return withOtps(this);
-    }
-    return orElse();
-  }
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$TokenTemplateWithOtpsImplToJson(
-      this,
-    );
-  }
+ final  Map<String, dynamic> _otpAuthMap;
+@override Map<String, dynamic> get otpAuthMap {
+  if (_otpAuthMap is EqualUnmodifiableMapView) return _otpAuthMap;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_otpAuthMap);
 }
 
-abstract class _TokenTemplateWithOtps extends TokenTemplate {
-  factory _TokenTemplateWithOtps(
-      {required final Map<String, dynamic> otpAuthMap,
-      required final List<String> otps,
-      final Map<String, dynamic> additionalData,
-      final TokenContainer? container}) = _$TokenTemplateWithOtpsImpl;
-  _TokenTemplateWithOtps._() : super._();
-
-  factory _TokenTemplateWithOtps.fromJson(Map<String, dynamic> json) =
-      _$TokenTemplateWithOtpsImpl.fromJson;
-
-  @override
-  Map<String, dynamic> get otpAuthMap;
-  List<String> get otps;
-  @override
-  Map<String, dynamic> get additionalData;
-  @override
-  TokenContainer? get container;
-
-  /// Create a copy of TokenTemplate
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$TokenTemplateWithOtpsImplCopyWith<_$TokenTemplateWithOtpsImpl>
-      get copyWith => throw _privateConstructorUsedError;
+ final  List<String> _otps;
+ List<String> get otps {
+  if (_otps is EqualUnmodifiableListView) return _otps;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_otps);
 }
+
+ final  Map<String, dynamic> _additionalData;
+@override@JsonKey() Map<String, dynamic> get additionalData {
+  if (_additionalData is EqualUnmodifiableMapView) return _additionalData;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableMapView(_additionalData);
+}
+
+@override final  TokenContainer? container;
+
+@JsonKey(name: 'runtimeType')
+final String $type;
+
+
+/// Create a copy of TokenTemplate
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$TokenTemplateWithOtpsCopyWith<_TokenTemplateWithOtps> get copyWith => __$TokenTemplateWithOtpsCopyWithImpl<_TokenTemplateWithOtps>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$TokenTemplateWithOtpsToJson(this, );
+}
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'TokenTemplate.withOtps'))
+    ..add(DiagnosticsProperty('otpAuthMap', otpAuthMap))..add(DiagnosticsProperty('otps', otps))..add(DiagnosticsProperty('additionalData', additionalData))..add(DiagnosticsProperty('container', container));
+}
+
+
+
+@override
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+  return 'TokenTemplate.withOtps(otpAuthMap: $otpAuthMap, otps: $otps, additionalData: $additionalData, container: $container)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$TokenTemplateWithOtpsCopyWith<$Res> implements $TokenTemplateCopyWith<$Res> {
+  factory _$TokenTemplateWithOtpsCopyWith(_TokenTemplateWithOtps value, $Res Function(_TokenTemplateWithOtps) _then) = __$TokenTemplateWithOtpsCopyWithImpl;
+@override @useResult
+$Res call({
+ Map<String, dynamic> otpAuthMap, List<String> otps, Map<String, dynamic> additionalData, TokenContainer? container
+});
+
+
+@override $TokenContainerCopyWith<$Res>? get container;
+
+}
+/// @nodoc
+class __$TokenTemplateWithOtpsCopyWithImpl<$Res>
+    implements _$TokenTemplateWithOtpsCopyWith<$Res> {
+  __$TokenTemplateWithOtpsCopyWithImpl(this._self, this._then);
+
+  final _TokenTemplateWithOtps _self;
+  final $Res Function(_TokenTemplateWithOtps) _then;
+
+/// Create a copy of TokenTemplate
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? otpAuthMap = null,Object? otps = null,Object? additionalData = null,Object? container = freezed,}) {
+  return _then(_TokenTemplateWithOtps(
+otpAuthMap: null == otpAuthMap ? _self._otpAuthMap : otpAuthMap // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,otps: null == otps ? _self._otps : otps // ignore: cast_nullable_to_non_nullable
+as List<String>,additionalData: null == additionalData ? _self._additionalData : additionalData // ignore: cast_nullable_to_non_nullable
+as Map<String, dynamic>,container: freezed == container ? _self.container : container // ignore: cast_nullable_to_non_nullable
+as TokenContainer?,
+  ));
+}
+
+/// Create a copy of TokenTemplate
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$TokenContainerCopyWith<$Res>? get container {
+    if (_self.container == null) {
+    return null;
+  }
+
+  return $TokenContainerCopyWith<$Res>(_self.container!, (value) {
+    return _then(_self.copyWith(container: value));
+  });
+}
+}
+
+// dart format on

@@ -17,29 +17,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
 
 import '../../../logger.dart';
 
-final statusMessageProvider = StateProvider<StatusMessage?>(
-  (ref) {
-    Logger.info("New statusMessageProvider created");
-    return null;
-  },
-);
+final statusMessageProvider = StateProvider<StatusMessage?>((ref) {
+  Logger.info("New statusMessageProvider created");
+  return null;
+});
 
 class StatusMessage {
   String Function(AppLocalizations localization) message;
   String Function(AppLocalizations localization)? details;
   bool isError;
 
-  StatusMessage({
-    required this.message,
-    this.details,
-    this.isError = true,
-  });
+  StatusMessage({required this.message, this.details, this.isError = true});
 
   @override
   String toString() {

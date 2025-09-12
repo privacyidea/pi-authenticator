@@ -55,7 +55,7 @@ class _PushTokensViwListState extends ConsumerState<PushTokensViwList> {
 
   @override
   Widget build(BuildContext context) {
-    final pushTokens = ref.watch(tokenProvider).valueOrNull?.pushTokens ?? [];
+    final pushTokens = ref.watch(tokenProvider).value?.pushTokens ?? [];
     final draggingSortable = ref.watch(draggingSortableProvider);
     return Stack(
       children: [
@@ -67,12 +67,7 @@ class _PushTokensViwListState extends ConsumerState<PushTokensViwList> {
                   height: 9999,
                   child: Opacity(
                     opacity: 0,
-                    child: DragTargetDivider(
-                      dependingFolder: null,
-                      previousSortable: pushTokens.lastOrNull,
-                      nextSortable: null,
-                      bottomPadding: 0,
-                    ),
+                    child: DragTargetDivider(dependingFolder: null, previousSortable: pushTokens.lastOrNull, nextSortable: null, bottomPadding: 0),
                   ),
                 ),
               ),
@@ -89,10 +84,7 @@ class _PushTokensViwListState extends ConsumerState<PushTokensViwList> {
               scrollController: scrollController,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                children: PushTokensViwList._buildSortableWidgets(
-                  sortables: pushTokens,
-                  draggingSortable: draggingSortable,
-                ),
+                children: PushTokensViwList._buildSortableWidgets(sortables: pushTokens, draggingSortable: draggingSortable),
               ),
             ),
           ),

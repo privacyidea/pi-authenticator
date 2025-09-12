@@ -26,67 +26,124 @@ import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/gene
 import '../../tests_app_wrapper.mocks.dart';
 
 void main() {
+  TokenContainerState buildUnfinalizedContainerState() => TokenContainerState(
+    containerList: [
+      TokenContainerUnfinalized(
+        issuer: 'issuer',
+        ttl: Duration(minutes: 10),
+        nonce: 'nonce',
+        timestamp: DateTime.now(),
+        serverUrl: Uri.parse('https://example.com'),
+        serial: 'serial',
+        ecKeyAlgorithm: EcKeyAlgorithm.secp521r1,
+        hashAlgorithm: Algorithms.SHA512,
+        sslVerify: true,
+      ),
+    ],
+  );
+
+  TokenContainerState buildFinalizedContainerState() => TokenContainerState(
+    containerList: [
+      TokenContainerFinalized(
+        serverName: 'privacyIDEA',
+        issuer: 'privacyIDEA',
+        nonce: 'dbd2ab5aa9b539484fc3b78cd4bb08375d3eb30e',
+        timestamp: DateTime.parse("2024-11-14 09:30:18.288530Z"),
+        serverUrl: Uri.parse("http://example.com"),
+        serial: "CONTAINER01",
+        ecKeyAlgorithm: EcKeyAlgorithm.secp384r1,
+        hashAlgorithm: Algorithms.SHA256,
+        sslVerify: false,
+        publicClientKey: 'publicClientKey',
+        privateClientKey: 'privateClientKey',
+        finalizationState: FinalizationState.completed,
+        syncState: SyncState.notStarted,
+        passphraseQuestion: null,
+        policies: ContainerPolicies(rolloverAllowed: false, initialTokenAssignment: false, disabledTokenDeletion: true, disabledUnregister: true),
+      ),
+    ],
+  );
+
+  MockTokenContainerRepository setupMockContainerRepo(TokenContainerState Function() stateGetter, void Function(TokenContainerState) stateSetter) {
+    final mockContainerRepo = MockTokenContainerRepository();
+    when(mockContainerRepo.loadContainerState()).thenAnswer((_) => Future.value(stateGetter()));
+    when(mockContainerRepo.loadContainer(any)).thenAnswer((invocation) {
+      final serial = invocation.positionalArguments[0] as String;
+      if (stateGetter().containerList.isEmpty) return Future.value(null);
+      return Future.value(stateGetter().containerList.firstWhereOrNull((element) => element.serial == serial));
+    });
+    when(mockContainerRepo.saveContainer(any)).thenAnswer((invocation) {
+      final container = invocation.positionalArguments[0] as TokenContainer;
+      final i = stateGetter().containerList.indexWhere((element) => element.serial == container.serial);
+      final List<TokenContainer> newList;
+      if (i == -1) {
+        newList = List<TokenContainer>.from(stateGetter().containerList)..add(container);
+      } else {
+        newList = List<TokenContainer>.from(stateGetter().containerList)..[i] = container;
+      }
+      stateSetter(TokenContainerState(containerList: newList));
+      return Future.value(stateGetter());
+    });
+    when(mockContainerRepo.saveContainerState(any)).thenAnswer((invocation) {
+      stateSetter(invocation.positionalArguments[0] as TokenContainerState);
+      return Future.value(stateGetter());
+    });
+    when(mockContainerRepo.saveContainerList(any)).thenAnswer((invocation) {
+      final containers = invocation.positionalArguments[0] as List<TokenContainer>;
+      final newList = List<TokenContainer>.from(stateGetter().containerList);
+      for (final container in containers) {
+        final i = newList.indexWhere((element) => element.serial == container.serial);
+        if (i == -1) {
+          newList.add(container);
+        } else {
+          newList[i] = container;
+        }
+      }
+      stateSetter(TokenContainerState(containerList: newList));
+      return Future.value(stateGetter());
+    });
+    when(mockContainerRepo.deleteContainer(any)).thenAnswer((invocation) {
+      final serial = invocation.positionalArguments[0] as String;
+      final i = stateGetter().containerList.indexWhere((element) => element.serial == serial);
+      if (i == -1) {
+        return Future.value(stateGetter());
+      }
+      final newList = List<TokenContainer>.from(stateGetter().containerList)..removeAt(i);
+      stateSetter(TokenContainerState(containerList: newList));
+      return Future.value(stateGetter());
+    });
+    when(mockContainerRepo.deleteAllContainer()).thenAnswer((_) {
+      stateSetter(TokenContainerState(containerList: []));
+      return Future.value(stateGetter());
+    });
+
+    when(mockContainerRepo.saveContainer(any)).thenAnswer((invocation) {
+      final container = invocation.positionalArguments[0] as TokenContainer;
+      final i = stateGetter().containerList.indexWhere((element) => element.serial == container.serial);
+      final List<TokenContainer> newList;
+      if (i == -1) {
+        newList = List<TokenContainer>.from(stateGetter().containerList)..add(container);
+      } else {
+        newList = List<TokenContainer>.from(stateGetter().containerList)..[i] = container;
+      }
+      stateSetter(TokenContainerState(containerList: newList));
+      return Future.value(stateGetter());
+    });
+    return mockContainerRepo;
+  }
+
   TestWidgetsFlutterBinding.ensureInitialized();
-  _testTokenContainerNotifier();
-}
-
-TokenContainerState _buildUnfinalizedContainerState() => TokenContainerState(
-      containerList: [
-        TokenContainerUnfinalized(
-          issuer: 'issuer',
-          ttl: Duration(minutes: 10),
-          nonce: 'nonce',
-          timestamp: DateTime.now(),
-          serverUrl: Uri.parse('https://example.com'),
-          serial: 'serial',
-          ecKeyAlgorithm: EcKeyAlgorithm.secp521r1,
-          hashAlgorithm: Algorithms.SHA512,
-          sslVerify: true,
-        ),
-      ],
-    );
-
-TokenContainerState _buildFinalizedContainerState() => TokenContainerState(
-      containerList: [
-        TokenContainerFinalized(
-          serverName: 'privacyIDEA',
-          issuer: 'privacyIDEA',
-          nonce: 'dbd2ab5aa9b539484fc3b78cd4bb08375d3eb30e',
-          timestamp: DateTime.parse("2024-11-14 09:30:18.288530Z"),
-          serverUrl: Uri.parse("http://example.com"),
-          serial: "CONTAINER01",
-          ecKeyAlgorithm: EcKeyAlgorithm.secp384r1,
-          hashAlgorithm: Algorithms.SHA256,
-          sslVerify: false,
-          publicClientKey: 'publicClientKey',
-          privateClientKey: 'privateClientKey',
-          finalizationState: FinalizationState.completed,
-          syncState: SyncState.notStarted,
-          passphraseQuestion: null,
-          policies: ContainerPolicies(
-            rolloverAllowed: false,
-            initialTokenAssignment: false,
-            disabledTokenDeletion: true,
-            disabledUnregister: true,
-          ),
-        ),
-      ],
-    );
-
-void _testTokenContainerNotifier() {
+  setUpAll(() {
+    provideDummy<TokenContainerState>(TokenContainerState(containerList: []));
+  });
   final ContainerFinalizationResponse containerFinalizationResponseExample = ContainerFinalizationResponse(
-    policies: ContainerPolicies(
-      rolloverAllowed: false,
-      initialTokenAssignment: false,
-      disabledTokenDeletion: true,
-      disabledUnregister: true,
-    ),
+    policies: ContainerPolicies(rolloverAllowed: false, initialTokenAssignment: false, disabledTokenDeletion: true, disabledUnregister: true),
   );
   group('Token Container Notifier Test', () {
     test('load state from repo on creation', () async {
       final container = ProviderContainer();
-      var containerRepoState = _buildUnfinalizedContainerState();
-      final mockContainerRepo = _setupMockContainerRepo(() => containerRepoState, (state) => containerRepoState = state);
+      var containerRepoState = buildUnfinalizedContainerState();
+      final mockContainerRepo = setupMockContainerRepo(() => containerRepoState, (state) => containerRepoState = state);
       final mockContainerApi = MockTokenContainerApi();
       when(mockContainerApi.finalizeContainer(any, any)).thenAnswer((_) async => containerFinalizationResponseExample);
       when(mockContainerRepo.loadContainerState()).thenAnswer((_) => Future.value(containerRepoState));
@@ -102,11 +159,7 @@ void _testTokenContainerNotifier() {
         containerRepoState = TokenContainerState(containerList: newList);
         return Future.value(containerRepoState);
       });
-      final tokenContainerProvider = tokenContainerNotifierProviderOf(
-        repo: mockContainerRepo,
-        containerApi: mockContainerApi,
-        eccUtils: EccUtils(),
-      );
+      final tokenContainerProvider = tokenContainerNotifierProviderOf(repo: mockContainerRepo, containerApi: mockContainerApi, eccUtils: EccUtils());
       final state = await container.read(tokenContainerProvider.future);
       verify(mockContainerRepo.loadContainerState()).called(1);
       expect(state, containerRepoState);
@@ -115,8 +168,8 @@ void _testTokenContainerNotifier() {
     test('addContainer', () async {
       // prepare
       final container = ProviderContainer();
-      var containerRepoState = _buildUnfinalizedContainerState();
-      final mockContainerRepo = _setupMockContainerRepo(() => containerRepoState, (state) => containerRepoState = state);
+      var containerRepoState = buildUnfinalizedContainerState();
+      final mockContainerRepo = setupMockContainerRepo(() => containerRepoState, (state) => containerRepoState = state);
       final mockContainerApi = MockTokenContainerApi();
       when(mockContainerApi.finalizeContainer(any, any)).thenAnswer((_) async => containerFinalizationResponseExample);
       when(mockContainerRepo.loadContainerState()).thenAnswer((_) => Future.value(containerRepoState));
@@ -132,14 +185,12 @@ void _testTokenContainerNotifier() {
         containerRepoState = TokenContainerState(containerList: newList);
         return Future.value(containerRepoState);
       });
-      final tokenContainerProvider = tokenContainerNotifierProviderOf(
-        repo: mockContainerRepo,
-        containerApi: mockContainerApi,
-        eccUtils: EccUtils(),
-      );
+      final tokenContainerProvider = tokenContainerNotifierProviderOf(repo: mockContainerRepo, containerApi: mockContainerApi, eccUtils: EccUtils());
       // act
       await container.read(tokenContainerProvider.future);
-      await container.read(tokenContainerProvider.notifier).addContainer(
+      await container
+          .read(tokenContainerProvider.notifier)
+          .addContainer(
             TokenContainerUnfinalized(
               issuer: 'issuer2',
               ttl: Duration(minutes: 10),
@@ -165,8 +216,8 @@ void _testTokenContainerNotifier() {
     test('addContainerList', () async {
       // prepare
       final container = ProviderContainer();
-      var containerRepoState = _buildUnfinalizedContainerState();
-      final mockContainerRepo = _setupMockContainerRepo(() => containerRepoState, (state) => containerRepoState = state);
+      var containerRepoState = buildUnfinalizedContainerState();
+      final mockContainerRepo = setupMockContainerRepo(() => containerRepoState, (state) => containerRepoState = state);
       final mockContainerApi = MockTokenContainerApi();
       when(mockContainerApi.finalizeContainer(any, any)).thenAnswer((_) async => containerFinalizationResponseExample);
       when(mockContainerRepo.loadContainerState()).thenAnswer((_) => Future.value(containerRepoState));
@@ -186,11 +237,7 @@ void _testTokenContainerNotifier() {
         containerRepoState = invocation.positionalArguments[0] as TokenContainerState;
         return Future.value(containerRepoState);
       });
-      final tokenContainerProvider = tokenContainerNotifierProviderOf(
-        repo: mockContainerRepo,
-        containerApi: mockContainerApi,
-        eccUtils: EccUtils(),
-      );
+      final tokenContainerProvider = tokenContainerNotifierProviderOf(repo: mockContainerRepo, containerApi: mockContainerApi, eccUtils: EccUtils());
       await container.read(tokenContainerProvider.future);
       // act
       await container.read(tokenContainerProvider.notifier).addContainerList([
@@ -231,8 +278,8 @@ void _testTokenContainerNotifier() {
     test('updateContainer', () async {
       // prepare
       final container = ProviderContainer();
-      var containerRepoState = _buildUnfinalizedContainerState();
-      final mockContainerRepo = _setupMockContainerRepo(() => containerRepoState, (state) => containerRepoState = state);
+      var containerRepoState = buildUnfinalizedContainerState();
+      final mockContainerRepo = setupMockContainerRepo(() => containerRepoState, (state) => containerRepoState = state);
       final mockContainerApi = MockTokenContainerApi();
       when(mockContainerApi.finalizeContainer(any, any)).thenAnswer((_) async => containerFinalizationResponseExample);
       when(mockContainerRepo.loadContainerState()).thenAnswer((_) => Future.value(containerRepoState));
@@ -248,18 +295,13 @@ void _testTokenContainerNotifier() {
         containerRepoState = TokenContainerState(containerList: newList);
         return Future.value(containerRepoState);
       });
-      final tokenContainerProvider = tokenContainerNotifierProviderOf(
-        repo: mockContainerRepo,
-        containerApi: mockContainerApi,
-        eccUtils: EccUtils(),
-      );
+      final tokenContainerProvider = tokenContainerNotifierProviderOf(repo: mockContainerRepo, containerApi: mockContainerApi, eccUtils: EccUtils());
       await container.read(tokenContainerProvider.future);
 
       // act
-      await container.read(tokenContainerProvider.notifier).updateContainer(
-            containerRepoState.containerList.first,
-            (TokenContainer c) => c.copyWith(issuer: 'issuer2'),
-          );
+      await container
+          .read(tokenContainerProvider.notifier)
+          .updateContainer(containerRepoState.containerList.first, (TokenContainer c) => c.copyWith(issuer: 'issuer2'));
 
       // assert
       final state = await container.read(tokenContainerProvider.future);
@@ -272,7 +314,7 @@ void _testTokenContainerNotifier() {
     test('updateContainerList', () async {
       // prepare
       final container = ProviderContainer();
-      var containerRepoState = _buildUnfinalizedContainerState();
+      var containerRepoState = buildUnfinalizedContainerState();
       containerRepoState = containerRepoState.copyWith(
         containerList: [
           containerRepoState.containerList.first,
@@ -289,7 +331,7 @@ void _testTokenContainerNotifier() {
           ),
         ],
       );
-      final mockContainerRepo = _setupMockContainerRepo(() => containerRepoState, (state) => containerRepoState = state);
+      final mockContainerRepo = setupMockContainerRepo(() => containerRepoState, (state) => containerRepoState = state);
       final mockContainerApi = MockTokenContainerApi();
       when(mockContainerApi.finalizeContainer(any, any)).thenAnswer((_) async => containerFinalizationResponseExample);
       when(mockContainerRepo.loadContainerState()).thenAnswer((_) => Future.value(containerRepoState));
@@ -315,17 +357,10 @@ void _testTokenContainerNotifier() {
         containerRepoState = TokenContainerState(containerList: newList);
         return Future.value(containerRepoState);
       });
-      final tokenContainerProvider = tokenContainerNotifierProviderOf(
-        repo: mockContainerRepo,
-        containerApi: mockContainerApi,
-        eccUtils: EccUtils(),
-      );
+      final tokenContainerProvider = tokenContainerNotifierProviderOf(repo: mockContainerRepo, containerApi: mockContainerApi, eccUtils: EccUtils());
       await container.read(tokenContainerProvider.future);
       // act
-      await container.read(tokenContainerProvider.notifier).updateContainerList(
-            containerRepoState.containerList,
-            (c) => c.copyWith(issuer: 'issuer3'),
-          );
+      await container.read(tokenContainerProvider.notifier).updateContainerList(containerRepoState.containerList, (c) => c.copyWith(issuer: 'issuer3'));
 
       // assert
       final state = await container.read(tokenContainerProvider.future);
@@ -340,8 +375,8 @@ void _testTokenContainerNotifier() {
       // prepare
       TestWidgetsFlutterBinding.ensureInitialized();
       final container = ProviderContainer();
-      var containerRepoState = _buildUnfinalizedContainerState();
-      final mockContainerRepo = _setupMockContainerRepo(() => containerRepoState, (state) => containerRepoState = state);
+      var containerRepoState = buildUnfinalizedContainerState();
+      final mockContainerRepo = setupMockContainerRepo(() => containerRepoState, (state) => containerRepoState = state);
       final mockContainerApi = MockTokenContainerApi();
       when(mockContainerApi.finalizeContainer(any, any)).thenAnswer((_) async => containerFinalizationResponseExample);
       when(mockContainerRepo.loadContainerState()).thenAnswer((_) => Future.value(containerRepoState));
@@ -367,11 +402,7 @@ void _testTokenContainerNotifier() {
         containerRepoState = TokenContainerState(containerList: newList);
         return Future.value(containerRepoState);
       });
-      final tokenContainerProvider = tokenContainerNotifierProviderOf(
-        repo: mockContainerRepo,
-        containerApi: mockContainerApi,
-        eccUtils: EccUtils(),
-      );
+      final tokenContainerProvider = tokenContainerNotifierProviderOf(repo: mockContainerRepo, containerApi: mockContainerApi, eccUtils: EccUtils());
       await container.read(tokenContainerProvider.future);
       // act
       await container.read(tokenContainerProvider.notifier).deleteContainer(containerRepoState.containerList.first);
@@ -386,7 +417,7 @@ void _testTokenContainerNotifier() {
       // prepare
       TestWidgetsFlutterBinding.ensureInitialized();
       final container = ProviderContainer();
-      var containerRepoState = _buildUnfinalizedContainerState();
+      var containerRepoState = buildUnfinalizedContainerState();
       containerRepoState = containerRepoState.copyWith(
         containerList: [
           containerRepoState.containerList.first,
@@ -414,7 +445,7 @@ void _testTokenContainerNotifier() {
           ),
         ],
       );
-      final mockContainerRepo = _setupMockContainerRepo(() => containerRepoState, (state) => containerRepoState = state);
+      final mockContainerRepo = setupMockContainerRepo(() => containerRepoState, (state) => containerRepoState = state);
       final mockContainerApi = MockTokenContainerApi();
       when(mockContainerApi.finalizeContainer(any, any)).thenAnswer((_) async => containerFinalizationResponseExample);
       when(mockContainerRepo.loadContainerState()).thenAnswer((_) => Future.value(containerRepoState));
@@ -434,11 +465,7 @@ void _testTokenContainerNotifier() {
         containerRepoState = TokenContainerState(containerList: newList);
         return Future.value(containerRepoState);
       });
-      final tokenContainerProvider = tokenContainerNotifierProviderOf(
-        repo: mockContainerRepo,
-        containerApi: mockContainerApi,
-        eccUtils: EccUtils(),
-      );
+      final tokenContainerProvider = tokenContainerNotifierProviderOf(repo: mockContainerRepo, containerApi: mockContainerApi, eccUtils: EccUtils());
       await container.read(tokenContainerProvider.future);
       // act                                                                                    serial                  serial3
       await container.read(tokenContainerProvider.notifier).deleteContainerList([containerRepoState.containerList[0], containerRepoState.containerList[2]]);
@@ -465,12 +492,10 @@ void _testTokenContainerNotifier() {
         ),
       );
       when(mockContainerRepo.loadContainerState()).thenAnswer((_) => Future.value(containerRepoState));
-      when(mockContainerRepo.saveContainerState(any)).thenAnswer(
-        (invocation) {
-          containerRepoState = invocation.positionalArguments[0] as TokenContainerState;
-          return Future.value(containerRepoState);
-        },
-      );
+      when(mockContainerRepo.saveContainerState(any)).thenAnswer((invocation) {
+        containerRepoState = invocation.positionalArguments[0] as TokenContainerState;
+        return Future.value(containerRepoState);
+      });
       when(mockContainerRepo.saveContainer(any)).thenAnswer((invocation) {
         final container = invocation.positionalArguments[0] as TokenContainer;
         final i = containerRepoState.containerList.indexWhere((element) => element.serial == container.serial);
@@ -510,14 +535,9 @@ void _testTokenContainerNotifier() {
       final mockTokenRepo = MockTokenRepository();
       when(mockTokenRepo.loadTokens()).thenAnswer((_) => Future.value([]));
       when(mockTokenRepo.saveOrReplaceTokens(any)).thenAnswer((_) => Future.value([]));
-      final mockTokenNotifier = TokenNotifier(
-        repoOverride: mockTokenRepo,
-      );
+      final mockTokenNotifier = TokenNotifier(repoOverride: mockTokenRepo);
       final providerContainer = ProviderContainer(
-        overrides: [
-          tokenContainerProvider.overrideWith(() => mockTokenContainerProvider),
-          tokenProvider.overrideWith(() => mockTokenNotifier),
-        ],
+        overrides: [tokenContainerProvider.overrideWith(() => mockTokenContainerProvider), tokenProvider.overrideWith(() => mockTokenNotifier)],
       );
 
       // act
@@ -526,12 +546,17 @@ void _testTokenContainerNotifier() {
       expect(processorResults, isNotNull);
       expect(processorResults!.length, 1);
       final result = processorResults.first;
-      await providerContainer.read(tokenContainerProvider.notifier).handleProcessorResult(result, args: {
-        TokenContainerProcessor.ARG_DO_REPLACE: true,
-        TokenContainerProcessor.ARG_ADD_DEVICE_INFOS: true,
-        TokenContainerProcessor.ARG_INIT_SYNC: false,
-        TokenContainerProcessor.ARG_URL_IS_OK: true,
-      });
+      await providerContainer
+          .read(tokenContainerProvider.notifier)
+          .handleProcessorResult(
+            result,
+            args: {
+              TokenContainerProcessor.ARG_DO_REPLACE: true,
+              TokenContainerProcessor.ARG_ADD_DEVICE_INFOS: true,
+              TokenContainerProcessor.ARG_INIT_SYNC: false,
+              TokenContainerProcessor.ARG_URL_IS_OK: true,
+            },
+          );
 
       // assert
       final state = await providerContainer.read(tokenContainerProvider.future);
@@ -557,7 +582,7 @@ void _testTokenContainerNotifier() {
       // prepare
       TestWidgetsFlutterBinding.ensureInitialized();
       await GmsCheck().checkGmsAvailability();
-      var containerRepoState = _buildUnfinalizedContainerState();
+      var containerRepoState = buildUnfinalizedContainerState();
       final mockContainerRepo = MockTokenContainerRepository();
       final mockContainerApi = MockTokenContainerApi();
       when(mockContainerApi.finalizeContainer(any, any)).thenAnswer(
@@ -591,14 +616,9 @@ void _testTokenContainerNotifier() {
       final mockTokenRepo = MockTokenRepository();
       when(mockTokenRepo.loadTokens()).thenAnswer((_) => Future.value([]));
       when(mockTokenRepo.saveOrReplaceTokens(any)).thenAnswer((_) => Future.value([]));
-      final mockTokenNotifier = TokenNotifier(
-        repoOverride: mockTokenRepo,
-      );
+      final mockTokenNotifier = TokenNotifier(repoOverride: mockTokenRepo);
       final providerContainer = ProviderContainer(
-        overrides: [
-          tokenContainerProvider.overrideWith(() => mockTokenContainerProvider),
-          tokenProvider.overrideWith(() => mockTokenNotifier),
-        ],
+        overrides: [tokenContainerProvider.overrideWith(() => mockTokenContainerProvider), tokenProvider.overrideWith(() => mockTokenNotifier)],
       );
       final container = containerRepoState.containerList.first as TokenContainerUnfinalized;
       // act
@@ -645,23 +665,14 @@ void _testTokenContainerNotifier() {
         // prepare
         TestWidgetsFlutterBinding.ensureInitialized();
         await GmsCheck().checkGmsAvailability();
-        var containerRepoState = _buildFinalizedContainerState();
+        var containerRepoState = buildFinalizedContainerState();
         final containerToSync = containerRepoState.containerList.first as TokenContainerFinalized;
         final mockContainerApi = MockTokenContainerApi();
         // final updatedTokens = <Token>[];
         when(mockContainerApi.sync(any, any, isInitSync: anyNamed('isInitSync'))).thenAnswer(
           (v) async => ContainerSyncUpdates(
             containerSerial: 'CONTAINER01',
-            newTokens: [
-              TOTPToken(
-                id: "ID03",
-                serial: "TOTPTOKEN01",
-                period: 30,
-                algorithm: Algorithms.SHA256,
-                digits: 8,
-                secret: "SECRET03",
-              ),
-            ],
+            newTokens: [TOTPToken(id: "ID03", serial: "TOTPTOKEN01", period: 30, algorithm: Algorithms.SHA256, digits: 8, secret: "SECRET03")],
             updatedTokens: [
               HOTPToken(
                 id: 'ID01',
@@ -685,16 +696,11 @@ void _testTokenContainerNotifier() {
               ),
             ],
             initAssignmentChecked: [],
-            newPolicies: ContainerPolicies(
-              rolloverAllowed: true,
-              initialTokenAssignment: true,
-              disabledTokenDeletion: false,
-              disabledUnregister: false,
-            ),
+            newPolicies: ContainerPolicies(rolloverAllowed: true, initialTokenAssignment: true, disabledTokenDeletion: false, disabledUnregister: false),
           ),
         );
 
-        final mockContainerRepo = _setupMockContainerRepo(() => containerRepoState, (state) => containerRepoState = state);
+        final mockContainerRepo = setupMockContainerRepo(() => containerRepoState, (state) => containerRepoState = state);
 
         final mockTokenContainerProvider = TokenContainerNotifier(
           repoOverride: mockContainerRepo,
@@ -721,14 +727,7 @@ void _testTokenContainerNotifier() {
             secret: "SECRET02",
             counter: 12,
           ),
-          "ID04": TOTPToken(
-            id: "ID04",
-            serial: "TOTPTOKEN02",
-            period: 30,
-            algorithm: Algorithms.SHA512,
-            digits: 6,
-            secret: "SECRET04",
-          ),
+          "ID04": TOTPToken(id: "ID04", serial: "TOTPTOKEN02", period: 30, algorithm: Algorithms.SHA512, digits: 6, secret: "SECRET04"),
         };
         final mockTokenRepo = MockTokenRepository();
         when(mockTokenRepo.loadTokens()).thenAnswer((_) => Future.value(repoTokens.values.toList()));
@@ -740,9 +739,7 @@ void _testTokenContainerNotifier() {
           return Future.value([]);
         });
 
-        final mockTokenNotifier = TokenNotifier(
-          repoOverride: mockTokenRepo,
-        );
+        final mockTokenNotifier = TokenNotifier(repoOverride: mockTokenRepo);
 
         // prepare - settings notifier
         final MockSettingsRepository mockSettingsRepo = MockSettingsRepository();
@@ -764,33 +761,21 @@ void _testTokenContainerNotifier() {
         await providerContainer.read(tokenContainerProvider.notifier).syncContainers(tokenState: tokenState, isManually: false, isInitSync: false);
 
         // assert
-        final expectedStateUnordered = TokenState(tokens: [
-          HOTPToken(
-            id: 'ID01',
-            serial: "HOTPTOKEN01",
-            containerSerial: "CONTAINER01",
-            algorithm: Algorithms.SHA256,
-            digits: 6,
-            secret: "SECRET01",
-            counter: 8,
-          ),
-          TOTPToken(
-            id: "ID03",
-            serial: "TOTPTOKEN01",
-            period: 30,
-            algorithm: Algorithms.SHA256,
-            digits: 8,
-            secret: "SECRET03",
-          ),
-          TOTPToken(
-            id: "ID04",
-            serial: "TOTPTOKEN02",
-            period: 30,
-            algorithm: Algorithms.SHA512,
-            digits: 6,
-            secret: "SECRET04",
-          ),
-        ]);
+        final expectedStateUnordered = TokenState(
+          tokens: [
+            HOTPToken(
+              id: 'ID01',
+              serial: "HOTPTOKEN01",
+              containerSerial: "CONTAINER01",
+              algorithm: Algorithms.SHA256,
+              digits: 6,
+              secret: "SECRET01",
+              counter: 8,
+            ),
+            TOTPToken(id: "ID03", serial: "TOTPTOKEN01", period: 30, algorithm: Algorithms.SHA256, digits: 8, secret: "SECRET03"),
+            TOTPToken(id: "ID04", serial: "TOTPTOKEN02", period: 30, algorithm: Algorithms.SHA512, digits: 6, secret: "SECRET04"),
+          ],
+        );
         final containerState = await providerContainer.read(tokenContainerProvider.future);
         await Future.delayed(const Duration(milliseconds: 1000)); // wait for the sync to finish
         tokenState = await providerContainer.read(tokenProvider.future);
@@ -798,12 +783,7 @@ void _testTokenContainerNotifier() {
         expect(containerState, containerRepoState);
         final stateContainer = containerState.containerList.first as TokenContainerFinalized;
         final expectedContainer = containerToSync.copyWith(
-          policies: ContainerPolicies(
-            rolloverAllowed: true,
-            initialTokenAssignment: true,
-            disabledTokenDeletion: false,
-            disabledUnregister: false,
-          ),
+          policies: ContainerPolicies(rolloverAllowed: true, initialTokenAssignment: true, disabledTokenDeletion: false, disabledUnregister: false),
         );
         verify(mockContainerApi.sync(any, any, isInitSync: anyNamed('isInitSync'))).called(1);
         expect(stateContainer.policies, expectedContainer.policies);
@@ -815,19 +795,14 @@ void _testTokenContainerNotifier() {
     test('getRolloverQrData', () async {
       // prepare
       final providerContainer = ProviderContainer();
-      var containerRepoState = _buildFinalizedContainerState();
+      var containerRepoState = buildFinalizedContainerState();
       final qrDataContainer = containerRepoState.containerList.first as TokenContainerFinalized;
-      final mockContainerRepo = _setupMockContainerRepo(() => containerRepoState, (state) => containerRepoState = state);
+      final mockContainerRepo = setupMockContainerRepo(() => containerRepoState, (state) => containerRepoState = state);
       final mockContainerApi = MockTokenContainerApi();
-      when(mockContainerApi.getRolloverQrData(any)).thenAnswer((_) async => TransferQrData(
-            description: 'Some Random Data to be transferred',
-            value: 'Some Random Data to be transferred',
-          ));
-      final tokenContainerProvider = tokenContainerNotifierProviderOf(
-        repo: mockContainerRepo,
-        containerApi: mockContainerApi,
-        eccUtils: EccUtils(),
-      );
+      when(
+        mockContainerApi.getRolloverQrData(any),
+      ).thenAnswer((_) async => TransferQrData(description: 'Some Random Data to be transferred', value: 'Some Random Data to be transferred'));
+      final tokenContainerProvider = tokenContainerNotifierProviderOf(repo: mockContainerRepo, containerApi: mockContainerApi, eccUtils: EccUtils());
       await providerContainer.read(tokenContainerProvider.future);
 
       // act
@@ -838,75 +813,4 @@ void _testTokenContainerNotifier() {
       expect(qrData, 'Some Random Data to be transferred');
     });
   });
-}
-
-MockTokenContainerRepository _setupMockContainerRepo(
-  TokenContainerState Function() stateGetter,
-  void Function(TokenContainerState) stateSetter,
-) {
-  final mockContainerRepo = MockTokenContainerRepository();
-  when(mockContainerRepo.loadContainerState()).thenAnswer((_) => Future.value(stateGetter()));
-  when(mockContainerRepo.loadContainer(any)).thenAnswer((invocation) {
-    final serial = invocation.positionalArguments[0] as String;
-    if (stateGetter().containerList.isEmpty) return Future.value(null);
-    return Future.value(stateGetter().containerList.firstWhereOrNull((element) => element.serial == serial));
-  });
-  when(mockContainerRepo.saveContainer(any)).thenAnswer((invocation) {
-    final container = invocation.positionalArguments[0] as TokenContainer;
-    final i = stateGetter().containerList.indexWhere((element) => element.serial == container.serial);
-    final List<TokenContainer> newList;
-    if (i == -1) {
-      newList = List<TokenContainer>.from(stateGetter().containerList)..add(container);
-    } else {
-      newList = List<TokenContainer>.from(stateGetter().containerList)..[i] = container;
-    }
-    stateSetter(TokenContainerState(containerList: newList));
-    return Future.value(stateGetter());
-  });
-  when(mockContainerRepo.saveContainerState(any)).thenAnswer((invocation) {
-    stateSetter(invocation.positionalArguments[0] as TokenContainerState);
-    return Future.value(stateGetter());
-  });
-  when(mockContainerRepo.saveContainerList(any)).thenAnswer((invocation) {
-    final containers = invocation.positionalArguments[0] as List<TokenContainer>;
-    final newList = List<TokenContainer>.from(stateGetter().containerList);
-    for (final container in containers) {
-      final i = newList.indexWhere((element) => element.serial == container.serial);
-      if (i == -1) {
-        newList.add(container);
-      } else {
-        newList[i] = container;
-      }
-    }
-    stateSetter(TokenContainerState(containerList: newList));
-    return Future.value(stateGetter());
-  });
-  when(mockContainerRepo.deleteContainer(any)).thenAnswer((invocation) {
-    final serial = invocation.positionalArguments[0] as String;
-    final i = stateGetter().containerList.indexWhere((element) => element.serial == serial);
-    if (i == -1) {
-      return Future.value(stateGetter());
-    }
-    final newList = List<TokenContainer>.from(stateGetter().containerList)..removeAt(i);
-    stateSetter(TokenContainerState(containerList: newList));
-    return Future.value(stateGetter());
-  });
-  when(mockContainerRepo.deleteAllContainer()).thenAnswer((_) {
-    stateSetter(TokenContainerState(containerList: []));
-    return Future.value(stateGetter());
-  });
-
-  when(mockContainerRepo.saveContainer(any)).thenAnswer((invocation) {
-    final container = invocation.positionalArguments[0] as TokenContainer;
-    final i = stateGetter().containerList.indexWhere((element) => element.serial == container.serial);
-    final List<TokenContainer> newList;
-    if (i == -1) {
-      newList = List<TokenContainer>.from(stateGetter().containerList)..add(container);
-    } else {
-      newList = List<TokenContainer>.from(stateGetter().containerList)..[i] = container;
-    }
-    stateSetter(TokenContainerState(containerList: newList));
-    return Future.value(stateGetter());
-  });
-  return mockContainerRepo;
 }

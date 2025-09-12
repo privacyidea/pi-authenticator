@@ -23,20 +23,14 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'progress_state.freezed.dart';
 
 @freezed
-class ProgressState with _$ProgressState {
+abstract class ProgressState with _$ProgressState {
   double get progress => value / max;
 
   const ProgressState._();
 
-  const factory ProgressState.uninitialized({
-    @Default(0) int max,
-    @Default(0) int value,
-  }) = ProgressStateUninitialized;
+  const factory ProgressState.uninitialized({@Default(0) int max, @Default(0) int value}) = ProgressStateUninitialized;
 
   @Assert('max >= 0', 'max must be greater than or equal to 0')
-  @Assert('value >= max', 'value must be less than or equal to max')
-  const factory ProgressState({
-    required int max,
-    required int value,
-  }) = _ProgressState;
+  @Assert('value <= max', 'value must be less than or equal to max')
+  const factory ProgressState({required int max, required int value}) = _ProgressState;
 }

@@ -25,12 +25,7 @@ import '../../../interfaces/riverpod/state_listeners/state_notifier_provider_lis
 import '../../../model/deeplink.dart';
 
 class TokenContainerDeepLinkListener extends DeepLinkListener {
-  const TokenContainerDeepLinkListener({
-    required super.deeplinkProvider,
-  }) : super(
-          onNewState: _onNewState,
-          listenerName: 'TokenContainerDeepLinkListener().processUri',
-        );
+  const TokenContainerDeepLinkListener({required super.provider}) : super(onNewState: _onNewState, listenerName: 'TokenContainerDeepLinkListener().processUri');
 
   static void _onNewState(WidgetRef ref, AsyncValue<DeepLink>? previous, AsyncValue<DeepLink> next) {
     next.whenData((next) async {

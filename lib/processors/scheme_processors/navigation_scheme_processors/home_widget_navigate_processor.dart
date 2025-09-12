@@ -41,28 +41,14 @@ class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
   @override
   Future<List<ProcessorResult<dynamic>>?> processUri(Uri uri, {BuildContext? context, bool fromInit = false}) async {
     if (context == null) {
-      Logger.error(
-        'HomeWidgetNavigateProcessor: Cannot Navigate without context',
-        error: Exception('context is null'),
-        stackTrace: StackTrace.current,
-      );
-      return [
-        ProcessorResult.failed(
-          (l) => l.cannotNavigateWithoutContext,
-          resultHandlerType: resultHandlerType,
-        )
-      ];
+      Logger.error('HomeWidgetNavigateProcessor: Cannot Navigate without context', error: Exception('context is null'), stackTrace: StackTrace.current);
+      return [ProcessorResult.failed((l) => l.cannotNavigateWithoutContext, resultHandlerType: resultHandlerType)];
     }
     Logger.warning('HomeWidgetNavigateProcessor: Processing uri: $uri');
     final processor = _processors[uri.host];
     if (processor == null) {
       Logger.warning('HomeWidgetNavigateProcessor: No processor found for host: ${uri.host}');
-      return [
-        ProcessorResult.failed(
-          (l) => l.noProcessorFoundForHost(uri.host),
-          resultHandlerType: resultHandlerType,
-        )
-      ];
+      return [ProcessorResult.failed((l) => l.noProcessorFoundForHost(uri.host), resultHandlerType: resultHandlerType)];
     }
     return processor.call(uri, context, fromInit: fromInit);
   }
@@ -77,22 +63,13 @@ class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
     }
     if (uri.queryParameters['id'] == null) {
       Logger.warning('HomeWidgetNavigateProcessor: Missing id for link: ${uri.host}');
-      return [
-        ProcessorResult.failed(
-          (l) => l.missingWidgetId,
-          resultHandlerType: resultHandlerType,
-        )
-      ];
+      return [ProcessorResult.failed((l) => l.missingWidgetId, resultHandlerType: resultHandlerType)];
     }
     if (fromInit) {
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => LinkHomeWidgetView(homeWidgetId: uri.queryParameters['id']!)),
-      );
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) => LinkHomeWidgetView(homeWidgetId: uri.queryParameters['id']!)));
     } else {
       Navigator.popUntil(context, (route) => route.isFirst);
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => LinkHomeWidgetView(homeWidgetId: uri.queryParameters['id']!)),
-      );
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) => LinkHomeWidgetView(homeWidgetId: uri.queryParameters['id']!)));
     }
     return null;
   }
@@ -104,12 +81,7 @@ class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
     }
     if (uri.queryParameters['id'] == null) {
       Logger.warning('Invalid query parameters for showlocked: ${uri.queryParameters}');
-      return [
-        ProcessorResult.failed(
-          (_) => 'Missing id for showlocked: ${uri.host}',
-          resultHandlerType: resultHandlerType,
-        )
-      ];
+      return [ProcessorResult.failed((_) => 'Missing id for showlocked: ${uri.host}', resultHandlerType: resultHandlerType)];
     }
     Logger.info('Showing otp of locked Token of homeWidget: ${uri.queryParameters['id']}');
     Navigator.popUntil(context, (route) => route.isFirst);
@@ -117,22 +89,12 @@ class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
     final tokenId = await HomeWidgetUtils().getTokenIdOfWidgetId(uri.queryParameters['id']!);
     if (tokenId == null) {
       Logger.warning('Could not find token for widget id: ${uri.queryParameters['id']}');
-      return [
-        ProcessorResult.failed(
-          (l) => l.couldNotFindTokenForWidgetId(uri.queryParameters['id']!),
-          resultHandlerType: resultHandlerType,
-        )
-      ];
+      return [ProcessorResult.failed((l) => l.couldNotFindTokenForWidgetId(uri.queryParameters['id']!), resultHandlerType: resultHandlerType)];
     }
     await Future.delayed(const Duration(milliseconds: 200));
     if (globalRef == null) {
       Logger.warning('Could not find globalRef');
-      return [
-        ProcessorResult.failed(
-          (l) => l.couldNotFindGlobalRef,
-          resultHandlerType: resultHandlerType,
-        )
-      ];
+      return [ProcessorResult.failed((l) => l.couldNotFindGlobalRef, resultHandlerType: resultHandlerType)];
     }
     final showedToken = await globalRef!.read(tokenProvider.notifier).showTokenById(tokenId);
 
@@ -151,11 +113,7 @@ class NavigationHandler<R> with ResultHandler {
   Future<R?> handleProcessorResult(ProcessorResult result, {Map<String, dynamic> args = const {}}) async {
     if (result is! ProcessorResult<Navigation>) return null;
     if (result.isFailed) return null;
-    validate(
-      value: args['context'],
-      validator: const ObjectValidator<BuildContext>(),
-      name: 'context',
-    );
+    validate(value: args['context'], validator: const ObjectValidator<BuildContext>(), name: 'context');
     final navigation = result.asSuccess!.resultData;
     final BuildContext context = args['context'];
     return await navigation(context);
@@ -167,17 +125,9 @@ class NavigationHandler<R> with ResultHandler {
     if (successResults.isEmpty) return null;
     final BuildContext context;
     try {
-      context = validate(
-        value: args['context'],
-        validator: const ObjectValidator<BuildContext>(),
-        name: 'context',
-      );
+      context = validate(value: args['context'], validator: const ObjectValidator<BuildContext>(), name: 'context');
     } catch (e, s) {
-      Logger.error(
-        'Error while processing navigation results',
-        error: e,
-        stackTrace: s,
-      );
+      Logger.error('Error while processing navigation results', error: e, stackTrace: s);
       return null;
     }
     List<Navigation> navigations = successResults.getData();

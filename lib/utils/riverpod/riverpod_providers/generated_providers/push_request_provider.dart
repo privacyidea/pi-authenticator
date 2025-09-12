@@ -42,7 +42,7 @@ final pushRequestProvider = pushRequestNotifierProviderOf(
   rsaUtils: const RsaUtils(),
   ioClient: const PrivacyideaIOClient(),
   pushProvider: PushProvider(),
-  pushRepo: const SecurePushRequestRepository(),
+  pushRepo: SecurePushRequestRepository(),
 );
 
 @Riverpod(keepAlive: true)

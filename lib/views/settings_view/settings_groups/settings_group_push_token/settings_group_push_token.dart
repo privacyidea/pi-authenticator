@@ -27,13 +27,11 @@ import '../../settings_view_widgets/settings_group.dart';
 import 'dialogs/settings_group_push_token_dialog.dart';
 
 class SettingsGroupPushToken extends ConsumerWidget {
-  const SettingsGroupPushToken({
-    super.key,
-  });
+  const SettingsGroupPushToken({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final tokens = ref.watch(tokenProvider).valueOrNull?.tokens ?? [];
+    final tokens = ref.watch(tokenProvider).value?.tokens ?? [];
     final enrolledPushTokenList = tokens.whereType<PushToken>().where((e) => e.isRolledOut).toList();
     final unsupportedPushTokens = enrolledPushTokenList.where((e) => e.url == null).toList();
     return SettingsGroup(
@@ -42,9 +40,7 @@ class SettingsGroupPushToken extends ConsumerWidget {
       onPressed: () => showDialog(
         useRootNavigator: false,
         context: context,
-        builder: (_) => SettingsGroupPushTokenDialog(
-          unsupportedPushTokens: unsupportedPushTokens,
-        ),
+        builder: (_) => SettingsGroupPushTokenDialog(unsupportedPushTokens: unsupportedPushTokens),
       ),
       trailingIcon: Icons.notifications,
     );

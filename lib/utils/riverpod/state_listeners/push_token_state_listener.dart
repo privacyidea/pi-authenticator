@@ -18,25 +18,18 @@
  * limitations under the License.
  */
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/push_request_provider.dart';
-import 'package:privacyidea_authenticator/views/view_interface.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../interfaces/riverpod/state_listeners/state_notifier_provider_listeners/token_state_listener.dart';
 import '../../../model/riverpod_states/token_state.dart';
 
 class PushProviderTokenStateListener extends TokenStateListener {
-  const PushProviderTokenStateListener({required super.provider})
-      : super(
-          onNewState: _onNewState,
-          listenerName: 'pushRequestProvider: initFirebase',
-        );
+  const PushProviderTokenStateListener({required super.provider}) : super(onNewState: _onNewState, listenerName: 'pushRequestProvider: initFirebase');
 
-  static void _onNewState(AsyncValue<TokenState>? previous, AsyncValue<TokenState> next, WidgetRef ref) {
-    final previousValue = previous?.valueOrNull;
-    final nextValue = next.valueOrNull;
-    if (previousValue?.needsFirebase == nextValue?.needsFirebase) return;
-    if (nextValue?.needsFirebase != true) return;
+  static void _onNewState(AsyncValue<TokenState>? previousValue, AsyncValue<TokenState> nextValue, WidgetRef ref) {
+    if (previousValue?.value?.needsFirebase == nextValue.value?.needsFirebase) return;
+    if (nextValue.value?.needsFirebase != true) return;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(pushRequestProvider.notifier).initFirebase();
     });

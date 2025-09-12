@@ -36,12 +36,7 @@ class HomeWidgetProcessor implements SchemeProcessor {
     if (supportedSchemes.contains(uri.scheme) == false) return [];
     final processor = _processors[uri.host];
     if (processor == null) {
-      return [
-        ProcessorResult.failed(
-          (l) => l.noProcessorFoundForHost(uri.host),
-          resultHandlerType: null,
-        )
-      ];
+      return [ProcessorResult.failed((l) => l.noProcessorFoundForHost(uri.host), resultHandlerType: null)];
     }
     return processor.call(uri);
   }
@@ -52,21 +47,11 @@ class HomeWidgetProcessor implements SchemeProcessor {
   static Future<List<ProcessorResult<dynamic>>?> _showProcessor(Uri uri, {bool fromInit = false}) async {
     Logger.warning('HomeWidgetProcessor: Processing uri show: $uri');
     if (uri.host != 'show') {
-      return [
-        ProcessorResult.failed(
-          (l) => l.invalidHostForScheme(uri.host, uri.scheme),
-          resultHandlerType: null,
-        )
-      ];
+      return [ProcessorResult.failed((l) => l.invalidHostForScheme(uri.host, uri.scheme), resultHandlerType: null)];
     }
     final widgetId = uri.queryParameters['widgetId'];
     if (widgetId == null) {
-      return [
-        ProcessorResult.failed(
-          (l) => l.missingWidgetId,
-          resultHandlerType: null,
-        )
-      ];
+      return [ProcessorResult.failed((l) => l.missingWidgetId, resultHandlerType: null)];
     }
     HomeWidgetUtils().showOtp(widgetId);
     return null;
@@ -75,21 +60,11 @@ class HomeWidgetProcessor implements SchemeProcessor {
   static Future<List<ProcessorResult<dynamic>>?> _copyProcessor(Uri uri, {bool fromInit = false}) async {
     Logger.warning('HomeWidgetProcessor: Processing uri copy: $uri');
     if (uri.host != 'copy') {
-      return [
-        ProcessorResult.failed(
-          (l) => l.invalidHostForScheme(uri.host, uri.scheme),
-          resultHandlerType: null,
-        )
-      ];
+      return [ProcessorResult.failed((l) => l.invalidHostForScheme(uri.host, uri.scheme), resultHandlerType: null)];
     }
     final widgetId = uri.queryParameters['widgetId'];
     if (widgetId == null) {
-      return [
-        ProcessorResult.failed(
-          (l) => l.missingWidgetId,
-          resultHandlerType: null,
-        )
-      ];
+      return [ProcessorResult.failed((l) => l.missingWidgetId, resultHandlerType: null)];
     }
     HomeWidgetUtils().copyOtp(widgetId);
     return null;
@@ -98,21 +73,11 @@ class HomeWidgetProcessor implements SchemeProcessor {
   static Future<List<ProcessorResult<dynamic>>?> _actionProcessor(Uri uri, {bool fromInit = false}) async {
     Logger.warning('HomeWidgetProcessor: Processing uri action: $uri');
     if (uri.host != 'action') {
-      return [
-        ProcessorResult.failed(
-          (l) => l.invalidHostForScheme(uri.host, uri.scheme),
-          resultHandlerType: null,
-        )
-      ];
+      return [ProcessorResult.failed((l) => l.invalidHostForScheme(uri.host, uri.scheme), resultHandlerType: null)];
     }
     final widgetId = uri.queryParameters['widgetId'];
     if (widgetId == null) {
-      return [
-        ProcessorResult.failed(
-          (l) => l.missingWidgetId,
-          resultHandlerType: null,
-        )
-      ];
+      return [ProcessorResult.failed((l) => l.missingWidgetId, resultHandlerType: null)];
     }
     HomeWidgetUtils().performAction(widgetId);
     return null;

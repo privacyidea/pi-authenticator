@@ -26,7 +26,6 @@ import 'dart:math' show min;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart' as printer;
 import 'package:mutex/mutex.dart';
 import 'package:path_provider/path_provider.dart';
@@ -40,8 +39,6 @@ import 'globals.dart';
 import 'riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import 'view_utils.dart';
 
-final provider = Provider<int>((ref) => 0);
-
 class Logger {
   /*----------- STATIC FIELDS & GETTER -----------*/
   static final Mutex _mutexWriteFile = Mutex();
@@ -49,18 +46,11 @@ class Logger {
   static BuildContext? get _context => navigatorKey.currentContext;
   static String get _mailBody => _context != null ? AppLocalizations.of(_context!)!.errorMailBody : 'Error Log File Attached';
   static Set<String> get _mailRecipients => {
-        ...globalRef?.read(settingsProvider).value?.crashReportRecipients ?? {},
-        ...PrivacyIDEAAuthenticator.currentCustomization != null ? {PrivacyIDEAAuthenticator.currentCustomization!.crashRecipient} : {}
-      };
+    ...globalRef?.read(settingsProvider).value?.crashReportRecipients ?? {},
+    ...PrivacyIDEAAuthenticator.currentCustomization != null ? {PrivacyIDEAAuthenticator.currentCustomization!.crashRecipient} : {},
+  };
   static printer.Logger print = printer.Logger(
-    printer: printer.PrettyPrinter(
-      methodCount: 0,
-      levelColors: {
-        printer.Level.debug: const printer.AnsiColor.fg(040),
-      },
-      colors: true,
-      printEmojis: true,
-    ),
+    printer: printer.PrettyPrinter(methodCount: 0, levelColors: {printer.Level.debug: const printer.AnsiColor.fg(040)}, colors: true, printEmojis: true),
   );
 
   static Logger get instance {
@@ -109,10 +99,7 @@ class Logger {
 
   /*----------- CONSTRUCTORS/FACTORIES -----------*/
 
-  Logger._({Function? appRunner, Widget? app, GlobalKey<NavigatorState>? navigatorKey})
-      : _appRunner = appRunner,
-        _app = app,
-        _navigatorKey = navigatorKey {
+  Logger._({Function? appRunner, Widget? app, GlobalKey<NavigatorState>? navigatorKey}) : _appRunner = appRunner, _app = app, _navigatorKey = navigatorKey {
     if (_instance != null) {
       _printWarning('Logger already initialized. Using existing instance');
       return;
@@ -378,9 +365,7 @@ Device Parameters $deviceInfo""";
       globalSnackbarKey.currentState?.showSnackBar(
         SnackBar(
           behavior: SnackBarBehavior.floating,
-          content: Text(
-            _context != null ? AppLocalizations.of(_context!)!.unexpectedError : 'An unexpected error occurred.',
-          ),
+          content: Text(_context != null ? AppLocalizations.of(_context!)!.unexpectedError : 'An unexpected error occurred.'),
           action: _context != null
               ? SnackBarAction(
                   label: AppLocalizations.of(_context!)!.showDetails,
@@ -397,11 +382,7 @@ Device Parameters $deviceInfo""";
   void _showDialog() {
     if (_flutterIsRunning == false) return;
     if (_context == null) return;
-    showDialog(
-      context: _context!,
-      builder: (context) => const SendErrorDialog(),
-      useRootNavigator: false,
-    );
+    showDialog(context: _context!, builder: (context) => const SendErrorDialog(), useRootNavigator: false);
   }
 
   /*----------- HELPER -----------*/
@@ -447,9 +428,4 @@ Device Parameters $deviceInfo""";
 
 final filterParameterKeys = ['fbtoken', 'new_fb_token', 'secret'];
 
-enum LogLevel {
-  INFO,
-  DEBUG,
-  WARNING,
-  ERROR,
-}
+enum LogLevel { INFO, DEBUG, WARNING, ERROR }

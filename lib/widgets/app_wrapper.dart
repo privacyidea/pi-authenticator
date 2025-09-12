@@ -26,7 +26,9 @@ class AppWrapper extends StatelessWidget {
   const AppWrapper({required this.child, super.key});
 
   @override
-  Widget build(BuildContext context) => ProviderScope(child: _AppWrapper(key: key, child: child));
+  Widget build(BuildContext context) => ProviderScope(
+    child: _AppWrapper(key: key, child: child),
+  );
 }
 
 class _AppWrapper extends ConsumerStatefulWidget {
@@ -87,18 +89,16 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
         stateNotifierProviderListeners: const [],
         buildlessProviderListener: [],
         streamNotifierProviderListeners: [
-          NavigationDeepLinkListener(deeplinkProvider: deeplinkNotifierProvider),
-          HomeWidgetDeepLinkListener(deeplinkProvider: deeplinkNotifierProvider),
-          TokenImportDeepLinkListener(deeplinkProvider: deeplinkNotifierProvider),
-          TokenContainerDeepLinkListener(deeplinkProvider: deeplinkNotifierProvider),
+          NavigationDeepLinkListener(provider: deeplinkNotifierProvider),
+          HomeWidgetDeepLinkListener(provider: deeplinkNotifierProvider),
+          TokenImportDeepLinkListener(provider: deeplinkNotifierProvider),
+          TokenContainerDeepLinkListener(provider: deeplinkNotifierProvider),
         ],
         asyncNotifierProviderListeners: [
           PushProviderTokenStateListener(provider: tokenProvider),
           HomeWidgetTokenStateListener(provider: tokenProvider),
         ],
-        child: EasyDynamicThemeWidget(
-          child: widget.child,
-        ),
+        child: EasyDynamicThemeWidget(child: widget.child),
       ),
     );
   }

@@ -48,7 +48,7 @@ class _LinkHomeWidgetViewState extends ConsumerState<LinkHomeWidgetView> {
   @override
   Widget build(BuildContext context) {
     final veilingCharacter = Theme.of(context).extension<ExtendedTextTheme>()?.veilingCharacter ?? '●';
-    final otpTokens = ref.watch(tokenProvider).valueOrNull?.otpTokens;
+    final otpTokens = ref.watch(tokenProvider).value?.otpTokens;
     return Scaffold(
       appBar: AppBar(
         title: Text(

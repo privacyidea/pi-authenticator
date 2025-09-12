@@ -60,7 +60,7 @@ void _isolatedKdf(List args) {
 }
 
 class AegisImportFileProcessor extends TokenImportFileProcessor {
-  static get resultHandlerType => TokenImportFileProcessor.resultHandlerType;
+  static dynamic get resultHandlerType => TokenImportFileProcessor.resultHandlerType;
 
   const AegisImportFileProcessor();
   static const String AEGIS_JSON_HEADER = 'header';
@@ -161,10 +161,10 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
   }
 
   Future<List<ProcessorResult<Token>>> _processPlain(Map<String, dynamic> json) async => switch (json[AEGIS_JSON_DB][AEGIS_DB_VERSION] as int) {
-        2 => _processPlainV2(json),
-        3 => _processPlainV3(json),
-        _ => _processPlainTryLatest(json),
-      };
+    2 => _processPlainV2(json),
+    3 => _processPlainV3(json),
+    _ => _processPlainTryLatest(json),
+  };
 
   Future<List<ProcessorResult<Token>>> _processPlainTryLatest(Map<String, dynamic> json) async {
     try {
@@ -210,28 +210,22 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
           name: 'aegisV2Entry',
         );
 
-        final token = Token.fromOtpAuthMap(otpAuthMap, additionalData: {
-          Token.ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
-            originName: TokenImportOrigins.aegisAuthenticator.appName,
-            isPrivacyIdeaToken: false,
-            data: jsonEncode(entry),
-          ),
-        });
-        results.add(ProcessorResult.success(
-          token.copyWith(id: entry[AEGIS_ENTRY_ID]),
-          resultHandlerType: resultHandlerType,
-        ));
+        final token = Token.fromOtpAuthMap(
+          otpAuthMap,
+          additionalData: {
+            Token.ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
+              originName: TokenImportOrigins.aegisAuthenticator.appName,
+              isPrivacyIdeaToken: false,
+              data: jsonEncode(entry),
+            ),
+          },
+        );
+        results.add(ProcessorResult.success(token.copyWith(id: entry[AEGIS_ENTRY_ID]), resultHandlerType: resultHandlerType));
       } on LocalizedException catch (e) {
-        results.add(ProcessorResult.failed(
-          (localization) => e.localizedMessage(localization),
-          resultHandlerType: resultHandlerType,
-        ));
+        results.add(ProcessorResult.failed((localization) => e.localizedMessage(localization), resultHandlerType: resultHandlerType));
       } catch (e) {
         Logger.error('Failed to parse token.', error: e, stackTrace: StackTrace.current);
-        results.add(ProcessorResult.failed(
-          (_) => e.toString(),
-          resultHandlerType: resultHandlerType,
-        ));
+        results.add(ProcessorResult.failed((_) => e.toString(), resultHandlerType: resultHandlerType));
       }
     }
     return Future.value(results);
@@ -268,30 +262,26 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
           },
           name: 'aegisV3Entry',
         );
-        results.add(ProcessorResult.success(
-          Token.fromOtpAuthMap(
-            otpAuthMap,
-            additionalData: {
-              Token.ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
-                originName: TokenImportOrigins.aegisAuthenticator.appName,
-                isPrivacyIdeaToken: false,
-                data: jsonEncode(entry),
-              ),
-            },
+        results.add(
+          ProcessorResult.success(
+            Token.fromOtpAuthMap(
+              otpAuthMap,
+              additionalData: {
+                Token.ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
+                  originName: TokenImportOrigins.aegisAuthenticator.appName,
+                  isPrivacyIdeaToken: false,
+                  data: jsonEncode(entry),
+                ),
+              },
+            ),
+            resultHandlerType: resultHandlerType,
           ),
-          resultHandlerType: resultHandlerType,
-        ));
+        );
       } on LocalizedException catch (e) {
-        results.add(ProcessorResultFailed(
-          (localization) => e.localizedMessage(localization),
-          resultHandlerType: resultHandlerType,
-        ));
+        results.add(ProcessorResultFailed((localization) => e.localizedMessage(localization), resultHandlerType: resultHandlerType));
       } catch (e) {
         Logger.error('Failed to parse token.', error: e, stackTrace: StackTrace.current);
-        results.add(ProcessorResultFailed(
-          (_) => e.toString(),
-          resultHandlerType: resultHandlerType,
-        ));
+        results.add(ProcessorResultFailed((_) => e.toString(), resultHandlerType: resultHandlerType));
       }
     }
 
@@ -326,11 +316,7 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
 
     try {
       masterKeyBytes = await cipher.decrypt(
-        crypto.SecretBox(
-          decodeHexString(slot[AEGIS_SLOT_KEY]),
-          nonce: slotNonceBytes,
-          mac: crypto.Mac(decodeHexString(keyParams[AEGIS_KEYPARAMS_TAG])),
-        ),
+        crypto.SecretBox(decodeHexString(slot[AEGIS_SLOT_KEY]), nonce: slotNonceBytes, mac: crypto.Mac(decodeHexString(keyParams[AEGIS_KEYPARAMS_TAG]))),
         secretKey: crypto.SecretKey(passwordKeyBytes),
       );
     } catch (e) {

@@ -29,8 +29,8 @@ import 'exception_errors/pi_server_result_error.dart';
 
 part 'pi_server_response.freezed.dart';
 
-@freezed
-class PiServerResponse<T extends PiServerResultValue> with _$PiServerResponse {
+@Freezed(copyWith: false)
+sealed class PiServerResponse<T extends PiServerResultValue> with _$PiServerResponse {
   static const RESULT = 'result';
   static const DETAIL = 'detail';
   static const ID = 'id';
@@ -126,9 +126,11 @@ class PiServerResponse<T extends PiServerResultValue> with _$PiServerResponse {
         signature: map[SIGNATURE],
       );
     }
-    Logger.info('Status: ${result[RESULT_STATUS]}'
-        '\nContains error: ${result.containsKey(RESULT_ERROR)}'
-        '\nContains value: ${result.containsKey(RESULT_VALUE)}');
+    Logger.info(
+      'Status: ${result[RESULT_STATUS]}'
+      '\nContains error: ${result.containsKey(RESULT_ERROR)}'
+      '\nContains value: ${result.containsKey(RESULT_VALUE)}',
+    );
 
     throw UnimplementedError('Unknown PiServerResponse type');
   }

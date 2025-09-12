@@ -15,12 +15,16 @@ DayPasswordToken _$DayPasswordTokenFromJson(Map<String, dynamic> json) =>
       secret: json['secret'] as String,
       serial: json['serial'] as String?,
       containerSerial: json['containerSerial'] as String?,
-      checkedContainer: (json['checkedContainer'] as List<dynamic>?)
+      checkedContainer:
+          (json['checkedContainer'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList() ??
           const [],
-      viewMode: $enumDecodeNullable(
-              _$DayPasswordTokenViewModeEnumMap, json['viewMode']) ??
+      viewMode:
+          $enumDecodeNullable(
+            _$DayPasswordTokenViewModeEnumMap,
+            json['viewMode'],
+          ) ??
           DayPasswordTokenViewMode.VALIDFOR,
       type: json['type'] as String?,
       tokenImage: json['tokenImage'] as String?,
