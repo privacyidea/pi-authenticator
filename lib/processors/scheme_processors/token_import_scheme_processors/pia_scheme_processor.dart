@@ -17,20 +17,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import 'package:privacyidea_authenticator/processors/scheme_processors/token_import_scheme_processors/otp_auth_processor.dart';
 import 'package:privacyidea_authenticator/utils/object_validator.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 
+import '../../../model/enums/token_types.dart';
 import '../../../model/processor_result.dart';
 import '../../../model/tokens/token.dart';
 import '../../../utils/encryption/token_encryption.dart';
 import '../../../utils/logger.dart';
 import 'token_import_scheme_processor_interface.dart';
 
-class PrivacyIDEAAuthenticatorQrProcessor extends TokenImportSchemeProcessor {
+class PiaSchemeProcessor extends TokenImportSchemeProcessor {
   static ObjectValidator<TokenNotifier> get resultHandlerType => TokenImportSchemeProcessor.resultHandlerType;
-  const PrivacyIDEAAuthenticatorQrProcessor();
+  const PiaSchemeProcessor();
   static const scheme = 'pia';
-  static const host = 'qrbackup';
+  static const qrBackupHost = 'qrbackup';
+  static final tokenHosts = TokenTypes.values.map((e) => e.name.toLowerCase()).toList();
 
   @override
   Set<String> get supportedSchemes => {scheme};
@@ -38,7 +41,12 @@ class PrivacyIDEAAuthenticatorQrProcessor extends TokenImportSchemeProcessor {
   @override
   Future<List<ProcessorResult<Token>>?> processUri(Uri uri, {bool fromInit = false}) async {
     if (!supportedSchemes.contains(uri.scheme)) return null;
-    if (uri.host != host) return null;
+    if (uri.host == qrBackupHost) _processQrBackup(uri);
+    if (tokenHosts.contains(uri.host.toLowerCase())) return _processTokenUri(uri);
+    return null;
+  }
+
+  List<ProcessorResult<Token>> _processQrBackup(Uri uri) {
     Logger.info('Processing URI with scheme: ${uri.scheme} and host: ${uri.host}');
     try {
       final token = TokenEncryption.fromExportUri(uri);
@@ -48,5 +56,19 @@ class PrivacyIDEAAuthenticatorQrProcessor extends TokenImportSchemeProcessor {
       Logger.error('Error while processing URI ${uri.scheme}', error: e);
       return [ProcessorResult.failed((l) => l.invalidUrl, resultHandlerType: resultHandlerType)];
     }
+  }
+
+  Future<List<ProcessorResult<Token>>?> _processTokenUri(Uri uri) {
+    uri = Uri(
+      scheme: 'otpauth',
+      userInfo: uri.userInfo,
+      host: uri.host,
+      path: uri.path,
+      pathSegments: uri.pathSegments,
+      query: uri.query,
+      queryParameters: uri.queryParameters,
+      fragment: uri.fragment,
+    );
+    return OtpAuthProcessor().processUri(uri, fromInit: false);
   }
 }

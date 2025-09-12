@@ -40,16 +40,17 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
   static ObjectValidator<TokenNotifier> get resultHandlerType => TokenImportSchemeProcessor.resultHandlerType;
   const OtpAuthProcessor();
   @override
-  Set<String> get supportedSchemes => {'otpauth', 'pia'};
+  Set<String> get supportedSchemes => {'otpauth'};
+  Set<String> get supportedHosts => TokenTypes.values.map((e) => e.name).toSet();
 
   /// This method parses otpauth uris according
   /// to https://github.com/google/google-authenticator/wiki/Key-Uri-Format.
   @override
   Future<List<ProcessorResult<Token>>> processUri(Uri uri, {bool fromInit = false}) async {
-    if (!supportedSchemes.contains(uri.scheme)) {
+    if (!supportedSchemes.contains(uri.scheme) || !supportedHosts.contains(uri.host.toUpperCase())) {
       return [ProcessorResultFailed((l) => l.notSupported('scheme', uri.scheme), resultHandlerType: resultHandlerType)];
     }
-    Logger.info('Try to handle otpAuth:');
+    Logger.info('Try to handle ${uri.scheme} uri with host ${uri.host}');
     // The values from queryParameters are always strings.
     Map<String, String> queryParameters = {...uri.queryParameters};
 
