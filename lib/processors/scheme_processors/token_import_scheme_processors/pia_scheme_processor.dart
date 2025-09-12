@@ -41,7 +41,7 @@ class PiaSchemeProcessor extends TokenImportSchemeProcessor {
   @override
   Future<List<ProcessorResult<Token>>?> processUri(Uri uri, {bool fromInit = false}) async {
     if (!supportedSchemes.contains(uri.scheme)) return null;
-    if (uri.host == qrBackupHost) _processQrBackup(uri);
+    if (uri.host == qrBackupHost) return _processQrBackup(uri);
     if (tokenHosts.contains(uri.host.toLowerCase())) return _processTokenUri(uri);
     return null;
   }

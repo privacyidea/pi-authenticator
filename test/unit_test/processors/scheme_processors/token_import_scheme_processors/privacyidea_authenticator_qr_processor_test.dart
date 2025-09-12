@@ -12,7 +12,7 @@ void main() {
 }
 
 void _testPrivacyideaAuthenticatorQrProcessor() {
-  group('Privacyidea Authenticator Qr Processor test', () {
+  group('Pia Scheme Processor test', () {
     test('processUri', () async {
       final tokensList = [
         HOTPToken(id: 'id1', algorithm: Algorithms.SHA1, digits: 6, secret: 'secret1'),
