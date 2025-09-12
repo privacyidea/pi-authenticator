@@ -42,7 +42,8 @@ class PrivacyideaIOClient {
     if (kIsWeb) return false;
     HttpClient httpClient = HttpClient();
     httpClient.badCertificateCallback = ((X509Certificate cert, String host, int port) => !sslVerify);
-    httpClient.userAgent = 'privacyIDEA-App'
+    httpClient.userAgent =
+        'privacyIDEA-App'
         '/${(await PackageInfo.fromPlatform()).version}'
         ' ${Platform.operatingSystem}'
         '/${Platform.operatingSystemVersion}';
@@ -54,18 +55,12 @@ class PrivacyideaIOClient {
     } on ClientException {
       Logger.warning('ClientException');
       ioClient.close();
-      showErrorStatusMessage(
-        message: (localization) => localization.connectionFailed,
-        details: (localization) => localization.checkYourNetwork,
-      );
+      showErrorStatusMessage(message: (localization) => localization.connectionFailed, details: (localization) => localization.checkYourNetwork);
       return false;
     } on ArgumentError catch (e, _) {
       Logger.warning('ArgumentError: $e');
       ioClient.close();
-      showErrorStatusMessage(
-        message: (localization) => localization.connectionFailed,
-        details: (localization) => localization.invalidUrl,
-      );
+      showErrorStatusMessage(message: (localization) => localization.connectionFailed, details: (localization) => localization.invalidUrl);
       return false;
     } catch (e, _) {
       if (e is! SocketException && e is! TimeoutException) {
@@ -73,19 +68,13 @@ class PrivacyideaIOClient {
       }
       if (isRetry) {
         Logger.warning('SocketException while retrying');
-        showErrorStatusMessage(
-          message: (localization) => localization.connectionFailed,
-          details: (localization) => localization.checkYourNetwork,
-        );
+        showErrorStatusMessage(message: (localization) => localization.connectionFailed, details: (localization) => localization.checkYourNetwork);
 
         ioClient.close();
         return false;
       }
       ioClient.close();
-      return Future.delayed(
-        const Duration(seconds: 10),
-        () => triggerNetworkAccessPermission(url: url, sslVerify: sslVerify, isRetry: true),
-      );
+      return Future.delayed(const Duration(seconds: 10), () => triggerNetworkAccessPermission(url: url, sslVerify: sslVerify, isRetry: true));
     } finally {
       ioClient.close();
     }
@@ -98,18 +87,22 @@ class PrivacyideaIOClient {
     Logger.info('Sending post request (SSLVerify: $sslVerify)');
 
     List<MapEntry> entries = body.entries.where((element) => element.value == null).toList();
+    Logger.debug('POST body: $body');
     if (entries.isNotEmpty) {
       List<String> nullEntries = [];
       for (MapEntry entry in entries) {
         nullEntries.add(entry.key);
       }
-      throw ArgumentError('Can not send request because the argument [body] contains a null values'
-          ' at entries $nullEntries, this is not permitted.');
+      throw ArgumentError(
+        'Can not send request because the argument [body] contains a null values'
+        ' at entries $nullEntries, this is not permitted.',
+      );
     }
 
     HttpClient httpClient = HttpClient();
     httpClient.badCertificateCallback = ((_, __, ___) => !sslVerify);
-    httpClient.userAgent = 'privacyIDEA-App'
+    httpClient.userAgent =
+        'privacyIDEA-App'
         '/${(await PackageInfo.fromPlatform()).version}'
         ' ${Platform.operatingSystem}'
         '/${Platform.operatingSystemVersion}';
@@ -142,7 +135,10 @@ class PrivacyideaIOClient {
     if (HttpStatusChecker.isError(response.statusCode)) {
       Logger.warning(
         'Received unexpected response',
-        error: 'Status code: ${response.statusCode}' '\nPosted body: $body' '\nResponse: ${response.body}\n',
+        error:
+            'Status code: ${response.statusCode}'
+            '\nPosted body: $body'
+            '\nResponse: ${response.body}\n',
         stackTrace: StackTrace.current,
       );
     }
@@ -160,13 +156,16 @@ class PrivacyideaIOClient {
       for (MapEntry entry in entries) {
         nullEntries.add(entry.key);
       }
-      throw ArgumentError("Can not send request because the argument [parameters] contains "
-          "null values at entries $nullEntries, this is not permitted.");
+      throw ArgumentError(
+        "Can not send request because the argument [parameters] contains "
+        "null values at entries $nullEntries, this is not permitted.",
+      );
     }
 
     HttpClient httpClient = HttpClient();
     httpClient.badCertificateCallback = ((X509Certificate cert, String host, int port) => !sslVerify);
-    httpClient.userAgent = 'privacyIDEA-App /'
+    httpClient.userAgent =
+        'privacyIDEA-App /'
         ' ${Platform.operatingSystem}'
         ' ${(await PackageInfo.fromPlatform()).version}';
 

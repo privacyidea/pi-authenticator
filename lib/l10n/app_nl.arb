@@ -401,6 +401,9 @@
   "@errorMissingPrivateKey": {
     "description": "Error message when the private key is missing."
   },
+  "@errorMissingPublicKey": {
+    "description": "Error message when the public key is missing."
+  },
   "@errorRollOutFailed": {
     "description": "Tells the user that the token could not be rolled out, because a network error occurred.",
     "placeholders": {
@@ -1767,6 +1770,7 @@
   "errorLogTitle": "Foutenlogboek",
   "errorMailBody": "Het foutlogbestand is bijgevoegd.\nU kunt deze tekst vervangen door aanvullende informatie over de fout.",
   "errorMissingPrivateKey": "Ontbrekende privésleutel",
+  "errorMissingPublicKey": "Ontbrekende openbare sleutel",
   "errorRollOutFailed": "Uitrollen van token {name} mislukt.",
   "errorRollOutNoConnectionToServer": "Het uitrollen van token {name} is mislukt, de server kan niet worden bereikt.",
   "errorRollOutNotPossibleAnymore": "Het uitrollen van dit token is niet meer mogelijk.",

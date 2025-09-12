@@ -49,7 +49,8 @@ import '../interfaces/container_api.dart';
 
 class PiContainerApi implements TokenContainerApi {
   final PrivacyideaIOClient _ioClient;
-  const PiContainerApi({required PrivacyideaIOClient ioClient}) : _ioClient = ioClient;
+  const PiContainerApi({required PrivacyideaIOClient ioClient})
+    : _ioClient = ioClient;
 
   /* //////////////////////////////
   //////// PUBLIC METHODS /////////
@@ -63,10 +64,16 @@ class PiContainerApi implements TokenContainerApi {
     bool? isInitSync,
     bool? sendAllOTPs,
   }) async {
-    final containerTokenTemplates = tokenState.containerTokens(container.serial).toTemplates();
+    final containerTokenTemplates = tokenState
+        .containerTokens(container.serial)
+        .toTemplates();
 
-    final initialTokenAssignment = container.policies.initialTokenAssignment && (isInitSync ?? !container.initSynced);
-    final notLinkedTokens = tokenState.tokens.maybeContainerTokensOf(container.serial);
+    final initialTokenAssignment =
+        container.policies.initialTokenAssignment &&
+        (isInitSync ?? !container.initSynced);
+    final notLinkedTokens = tokenState.tokens.maybeContainerTokensOf(
+      container.serial,
+    );
     final templatesForAssignment = notLinkedTokens.withSerial.toTemplates();
 
     final tokensWithoutSerial = notLinkedTokens.withoutSerial;
@@ -75,7 +82,10 @@ class PiContainerApi implements TokenContainerApi {
       if (sendAllOTPs == true) {
         templatesForAssignment.addAll(tokensWithoutSerial.toTemplates());
       } else {
-        selectedTokens = (await InitialTokenAssignmentDialog.showDialog(container, tokensWithoutSerial))?.toList();
+        selectedTokens = (await InitialTokenAssignmentDialog.showDialog(
+          container,
+          tokensWithoutSerial,
+        ))?.toList();
 
         if (selectedTokens == null) {
           // User canceled the dialog => cancel sync
@@ -85,7 +95,10 @@ class PiContainerApi implements TokenContainerApi {
       }
     }
 
-    final ContainerChallenge challenge = await _getChallenge(container, container.syncUrl);
+    final ContainerChallenge challenge = await _getChallenge(
+      container,
+      container.syncUrl,
+    );
 
     final encKeyPair = withX25519Key ?? await X25519().newKeyPair();
     final syncResult = await _getContainerSyncResult(
@@ -93,7 +106,11 @@ class PiContainerApi implements TokenContainerApi {
       challenge: challenge,
       encKeyPair: encKeyPair,
       otpAuthMaps: [
-        for (var template in [...containerTokenTemplates, ...templatesForAssignment]) template.otpAuthMapSafeToSend
+        for (var template in [
+          ...containerTokenTemplates,
+          ...templatesForAssignment,
+        ])
+          template.otpAuthMapSafeToSend,
       ],
     );
 
@@ -102,13 +119,25 @@ class PiContainerApi implements TokenContainerApi {
       encKeyPair: encKeyPair,
     );
 
-    final tokens = decryptedContainerDict[TokenContainer.DICT_TOKENS] as Map<String, dynamic>;
-    final newOtpAuthTokens = (tokens[TokenContainer.DICT_TOKENS_ADD] as List).whereType<String>().map(Uri.parse).toList();
-    final newTokens = await _parseNewTokens(otpAuthUris: newOtpAuthTokens, container: container);
+    final tokens =
+        decryptedContainerDict[TokenContainer.DICT_TOKENS]
+            as Map<String, dynamic>;
+    final newOtpAuthTokens = (tokens[TokenContainer.DICT_TOKENS_ADD] as List)
+        .whereType<String>()
+        .map(Uri.parse)
+        .toList();
+    final newTokens = await _parseNewTokens(
+      otpAuthUris: newOtpAuthTokens,
+      container: container,
+    );
 
     // All server tokens should have a serial but if client token has no serial the server token also has otps
-    final serverTokensUpdate = (tokens[TokenContainer.DICT_TOKENS_UPDATE] as List).cast<Map<String, dynamic>>();
-    final serverTokensWithOtps = serverTokensUpdate.where((element) => element[OTPToken.OTP_VALUES] != null).toList();
+    final serverTokensUpdate =
+        (tokens[TokenContainer.DICT_TOKENS_UPDATE] as List)
+            .cast<Map<String, dynamic>>();
+    final serverTokensWithOtps = serverTokensUpdate
+        .where((element) => element[OTPToken.OTP_VALUES] != null)
+        .toList();
     serverTokensWithOtps.forEach(serverTokensUpdate.remove);
 
     // Now we have to find all tokens that are in the server lists but not in the local list
@@ -121,27 +150,42 @@ class PiContainerApi implements TokenContainerApi {
       container: container,
     );
 
-    final serverTokensWithSerial = serverTokensUpdate.where((element) => element[Token.SERIAL] != null).toList();
+    final serverTokensWithSerial = serverTokensUpdate
+        .where((element) => element[Token.SERIAL] != null)
+        .toList();
     serverTokensWithSerial.forEach(serverTokensUpdate.remove);
-    assert(serverTokensUpdate.isEmpty, 'Server token otps map should be empty after removing all tokens with serial and otps');
+    assert(
+      serverTokensUpdate.isEmpty,
+      'Server token otps map should be empty after removing all tokens with serial and otps',
+    );
     // Container tokens can be deleted if they are not in the server list
     final List<TokenTemplate> mergedTemplatesWithSerial;
     final List<TokenTemplate> deleteTemplates;
-    final notLinkedSerialTemplates = templatesForAssignment.where((e) => e.serial != null).toList();
+    final notLinkedSerialTemplates = templatesForAssignment
+        .where((e) => e.serial != null)
+        .toList();
     (mergedTemplatesWithSerial, deleteTemplates) = _handlePiTokens(
-      containerTokenTemplates: [...containerTokenTemplates, ...notLinkedSerialTemplates],
+      containerTokenTemplates: [
+        ...containerTokenTemplates,
+        ...notLinkedSerialTemplates,
+      ],
       serverTokensWithSerial: serverTokensWithSerial,
       container: container,
     );
 
     final updatedTokens = <Token>[];
     // Add updated Tokens
-    for (var mergedTemplate in [...mergedTemplatesWithOtps, ...mergedTemplatesWithSerial]) {
+    for (var mergedTemplate in [
+      ...mergedTemplatesWithOtps,
+      ...mergedTemplatesWithSerial,
+    ]) {
       final token = container.addOriginToToken(token: mergedTemplate.toToken());
       updatedTokens.add(token);
     }
 
-    final deleteTokens = deleteTemplates.map((e) => container.addOriginToToken(token: e.toToken())).toList();
+    final deleteTokens = deleteTemplates
+        .map((e) => container.addOriginToToken(token: e.toToken()))
+        .toList();
 
     return ContainerSyncUpdates(
       newTokens: newTokens,
@@ -154,14 +198,23 @@ class PiContainerApi implements TokenContainerApi {
   }
 
   @override
-  Future<ContainerFinalizationResponse> finalizeContainer(TokenContainerUnfinalized container, [EccUtils eccUtils = const EccUtils()]) async {
+  Future<ContainerFinalizationResponse> finalizeContainer(
+    TokenContainerUnfinalized container, [
+    EccUtils eccUtils = const EccUtils(),
+  ]) async {
     final ecPrivateClientKey = container.ecPrivateClientKey;
     if (ecPrivateClientKey == null) {
-      throw LocalizedException(localizedMessage: (l) => l.errorMissingPrivateKey, unlocalizedMessage: AppLocalizationsEn().errorMissingPrivateKey);
+      throw LocalizedException(
+        localizedMessage: (l) => l.errorMissingPrivateKey,
+        unlocalizedMessage: AppLocalizationsEn().errorMissingPrivateKey,
+      );
     }
 
-    final passphrase = container.passphraseQuestion?.isNotEmpty == true ? await EnterPassphraseDialog.show(container.passphraseQuestion!) : null;
-    final message = '${container.nonce}'
+    final passphrase = container.passphraseQuestion?.isNotEmpty == true
+        ? await EnterPassphraseDialog.show(container.passphraseQuestion!)
+        : null;
+    final message =
+        '${container.nonce}'
         '|${container.timestamp.toIso8601String().replaceFirst('Z', '+00:00')}'
         '|${container.serial}'
         '|${container.registrationUrl}'
@@ -171,14 +224,31 @@ class PiContainerApi implements TokenContainerApi {
 
     final signature = eccUtils.signWithPrivateKey(ecPrivateClientKey, message);
 
-    final body = {
+    final body = <String, String>{
       TokenContainer.CONTAINER_SERIAL: container.serial,
-      TokenContainer.FINALIZE_PUBLIC_CLIENT_KEY: container.publicClientKey,
-      if (container.addDeviceInfos == true) TokenContainer.FINALIZE_DEVICE_BRAND: InfoUtils.deviceBrand,
-      if (container.addDeviceInfos == true) TokenContainer.FINALIZE_DEVICE_MODEL: InfoUtils.deviceModel,
+      if (container.addDeviceInfos == true)
+        TokenContainer.FINALIZE_DEVICE_BRAND: InfoUtils.deviceBrand,
+      if (container.addDeviceInfos == true)
+        TokenContainer.FINALIZE_DEVICE_MODEL: InfoUtils.deviceModel,
       TokenContainer.FINALIZE_SIGNATURE: signature,
     };
-    final Response response = await _ioClient.doPost(url: container.registrationUrl, body: body, sslVerify: container.sslVerify);
+    if (container.publicClientKey != null) {
+      body[TokenContainer.FINALIZE_PUBLIC_CLIENT_KEY] =
+          container.publicClientKey!;
+    } else {
+      throw LocalizedException(
+        localizedMessage: (l) => l.errorMissingPublicKey,
+        unlocalizedMessage: AppLocalizationsEn().errorMissingPublicKey,
+      );
+    }
+    if (container.sendPassphrase == true && passphrase != null) {
+      body[TokenContainer.FINALIZE_PASSPHRASE] = passphrase;
+    }
+    final Response response = await _ioClient.doPost(
+      url: container.registrationUrl,
+      body: body,
+      sslVerify: container.sslVerify,
+    );
 
     PiServerResponse<ContainerFinalizationResponse>? piResponse;
     try {
@@ -205,7 +275,9 @@ class PiContainerApi implements TokenContainerApi {
     }
 
     if (piResponse.isError) {
-      Logger.error('Error while getting container finalization response: ${piResponse.asError!.piServerResultError}');
+      Logger.error(
+        'Error while getting container finalization response: ${piResponse.asError!.piServerResultError}',
+      );
       throw piResponse.asError!.piServerResultError;
     }
 
@@ -213,7 +285,9 @@ class PiContainerApi implements TokenContainerApi {
   }
 
   @override
-  Future<TransferQrData> getRolloverQrData(TokenContainerFinalized container) async {
+  Future<TransferQrData> getRolloverQrData(
+    TokenContainerFinalized container,
+  ) async {
     if (container.policies.rolloverAllowed == false) {
       throw LocalizedException(
         localizedMessage: (l) => l.errorRolloverNotAllowed,
@@ -225,10 +299,14 @@ class PiContainerApi implements TokenContainerApi {
 
     final ecKeyPair = container.ecPrivateClientKey;
     if (ecKeyPair == null) {
-      throw LocalizedException(localizedMessage: (l) => l.errorMissingPrivateKey, unlocalizedMessage: AppLocalizationsEn().errorMissingPrivateKey);
+      throw LocalizedException(
+        localizedMessage: (l) => l.errorMissingPrivateKey,
+        unlocalizedMessage: AppLocalizationsEn().errorMissingPrivateKey,
+      );
     }
 
-    final signMessage = '${challenge.nonce}|${challenge.timeStamp}|${container.serial}|$requestUrl';
+    final signMessage =
+        '${challenge.nonce}|${challenge.timeStamp}|${container.serial}|$requestUrl';
     Logger.debug(signMessage);
 
     final body = {
@@ -237,7 +315,11 @@ class PiContainerApi implements TokenContainerApi {
       ContainerChallenge.SIGNATURE: container.signMessage(signMessage),
     };
 
-    final response = await _ioClient.doPost(url: requestUrl, body: body, sslVerify: container.sslVerify);
+    final response = await _ioClient.doPost(
+      url: requestUrl,
+      body: body,
+      sslVerify: container.sslVerify,
+    );
     if (HttpStatusChecker.isError(response.statusCode)) {
       final errorResponse = response.asPiErrorResponse();
       if (errorResponse != null) throw errorResponse.piServerResultError;
@@ -246,7 +328,9 @@ class PiContainerApi implements TokenContainerApi {
 
     final piResponse = PiServerResponse<TransferQrData>.fromResponse(response);
     if (piResponse.isError) {
-      Logger.error('Error while getting transfer qr data: ${piResponse.asError!.piServerResultError}');
+      Logger.error(
+        'Error while getting transfer qr data: ${piResponse.asError!.piServerResultError}',
+      );
       throw piResponse.asError!.piServerResultError;
     }
 
@@ -254,7 +338,9 @@ class PiContainerApi implements TokenContainerApi {
   }
 
   @override
-  Future<UnregisterContainerResult> unregister(TokenContainerFinalized container) async {
+  Future<UnregisterContainerResult> unregister(
+    TokenContainerFinalized container,
+  ) async {
     final unregisterUrl = container.unregisterUrl;
     final ContainerChallenge challenge;
     try {
@@ -275,17 +361,24 @@ class PiContainerApi implements TokenContainerApi {
     final body = {
       TokenContainer.CONTAINER_SERIAL: container.serial,
       TokenContainer.SCOPE: unregisterUrl.toString(),
-      ContainerChallenge.SIGNATURE: container.signMessage('${challenge.nonce}|${challenge.timeStamp}|${container.serial}|$unregisterUrl'),
+      ContainerChallenge.SIGNATURE: container.signMessage(
+        '${challenge.nonce}|${challenge.timeStamp}|${container.serial}|$unregisterUrl',
+      ),
     };
 
-    final response = await _ioClient.doPost(url: unregisterUrl, body: body, sslVerify: container.sslVerify);
+    final response = await _ioClient.doPost(
+      url: unregisterUrl,
+      body: body,
+      sslVerify: container.sslVerify,
+    );
 
     final piResponse = response.asPiServerResponse<UnregisterContainerResult>();
     final errorResponse = piResponse?.asError;
     if (errorResponse != null) {
       throw errorResponse.piServerResultError;
     }
-    if (HttpStatusChecker.isError(response.statusCode) || piResponse == null) throw ResponseError(response);
+    if (HttpStatusChecker.isError(response.statusCode) || piResponse == null)
+      throw ResponseError(response);
 
     return piResponse.asSuccess!.resultValue;
   }
@@ -294,20 +387,31 @@ class PiContainerApi implements TokenContainerApi {
   /////// PRIVATE FUNCTIONS ///////
   ////////////////////////////// */
 
-  Future<ContainerChallenge> _getChallenge(TokenContainerFinalized container, Uri requestUrl) async {
+  Future<ContainerChallenge> _getChallenge(
+    TokenContainerFinalized container,
+    Uri requestUrl,
+  ) async {
     final body = {
       TokenContainer.CONTAINER_SERIAL: container.serial,
       TokenContainer.SCOPE: requestUrl.toString(),
     };
-    final challengeResponse = await _ioClient.doPost(url: container.challengeUrl, body: body, sslVerify: container.sslVerify);
+    final challengeResponse = await _ioClient.doPost(
+      url: container.challengeUrl,
+      body: body,
+      sslVerify: container.sslVerify,
+    );
     if (HttpStatusChecker.isError(challengeResponse.statusCode)) {
       final errorResponse = challengeResponse.asPiErrorResponse();
       if (errorResponse != null) throw errorResponse.piServerResultError;
       throw ResponseError(challengeResponse);
     }
 
-    Logger.debug('Received container sync challenge: ${challengeResponse.body}');
-    final piResponse = PiServerResponse<ContainerChallenge>.fromResponse(challengeResponse);
+    Logger.debug(
+      'Received container sync challenge: ${challengeResponse.body}',
+    );
+    final piResponse = PiServerResponse<ContainerChallenge>.fromResponse(
+      challengeResponse,
+    );
     if (piResponse.isError) {
       throw piResponse.asError!.piServerResultError;
     }
@@ -327,7 +431,8 @@ class PiContainerApi implements TokenContainerApi {
       TokenContainer.DICT_TYPE: TokenContainer.DICT_TYPE_SMARTPHONE,
       TokenContainer.DICT_TOKENS: otpAuthMaps,
     };
-    final signMessage = '${challenge.nonce}|${challenge.timeStamp}|${container.serial}|${container.syncUrl}|$publicKeyBase64|${jsonEncode(containerDict)}';
+    final signMessage =
+        '${challenge.nonce}|${challenge.timeStamp}|${container.serial}|${container.syncUrl}|$publicKeyBase64|${jsonEncode(containerDict)}';
     Logger.debug(signMessage);
     final signature = container.signMessage(signMessage);
     Logger.debug('Sent container: ${jsonEncode(containerDict)}');
@@ -338,14 +443,19 @@ class PiContainerApi implements TokenContainerApi {
       ContainerChallenge.SIGNATURE: signature,
     };
 
-    final response = await _ioClient.doPost(url: container.syncUrl, body: body, sslVerify: container.sslVerify);
+    final response = await _ioClient.doPost(
+      url: container.syncUrl,
+      body: body,
+      sslVerify: container.sslVerify,
+    );
     if (HttpStatusChecker.isError(response.statusCode)) {
       final piErrorResponse = response.asPiErrorResponse();
       if (piErrorResponse != null) throw piErrorResponse.piServerResultError;
       throw ResponseError(response);
     }
 
-    final containerSyncResponse = PiServerResponse<ContainerSyncResult>.fromResponse(response);
+    final containerSyncResponse =
+        PiServerResponse<ContainerSyncResult>.fromResponse(response);
     if (containerSyncResponse.isError) {
       throw containerSyncResponse.asError!.piServerResultError;
     }
@@ -359,36 +469,52 @@ class PiContainerApi implements TokenContainerApi {
     required KeyPair encKeyPair,
   }) async {
     final algorithm = X25519();
-    final remotePublicKey = SimplePublicKey(syncResult.publicServerKeyBytes, type: KeyPairType.x25519);
-    final sharedKey = await algorithm.sharedSecretKey(keyPair: encKeyPair, remotePublicKey: remotePublicKey);
+    final remotePublicKey = SimplePublicKey(
+      syncResult.publicServerKeyBytes,
+      type: KeyPairType.x25519,
+    );
+    final sharedKey = await algorithm.sharedSecretKey(
+      keyPair: encKeyPair,
+      remotePublicKey: remotePublicKey,
+    );
     Logger.debug('Shared key: ${await sharedKey.extractBytes()}');
 
     final params = syncResult.encryptionParams;
 
-    final secretMsgBytes = base64Url.decoder.convert(syncResult.containerDictEncrypted);
+    final secretMsgBytes = base64Url.decoder.convert(
+      syncResult.containerDictEncrypted,
+    );
     final ivBytes = base64Url.decoder.convert(params.initVector);
     final tagBytes = base64Url.decoder.convert(params.tag);
 
-    final decryptedContainerDict = await AesGcm.with256bits(nonceLength: 16).decrypt(
-      SecretBox(
-        secretMsgBytes,
-        nonce: ivBytes,
-        mac: Mac(tagBytes),
-      ),
-      secretKey: sharedKey,
-    );
+    final decryptedContainerDict = await AesGcm.with256bits(nonceLength: 16)
+        .decrypt(
+          SecretBox(secretMsgBytes, nonce: ivBytes, mac: Mac(tagBytes)),
+          secretKey: sharedKey,
+        );
 
-    Logger.debug('Decrypted container dict: ${utf8.decode(decryptedContainerDict)}');
-    return jsonDecode(utf8.decode(decryptedContainerDict)) as Map<String, dynamic>;
+    Logger.debug(
+      'Decrypted container dict: ${utf8.decode(decryptedContainerDict)}',
+    );
+    return jsonDecode(utf8.decode(decryptedContainerDict))
+        as Map<String, dynamic>;
   }
 
-  Future<List<Token>> _parseNewTokens({required TokenContainerFinalized container, required List<Uri> otpAuthUris}) async {
+  Future<List<Token>> _parseNewTokens({
+    required TokenContainerFinalized container,
+    required List<Uri> otpAuthUris,
+  }) async {
     final newTokens = <Token>[];
     for (var otpAuthUri in otpAuthUris) {
       Logger.debug('Processing token: $otpAuthUri');
-      var newToken = (await const OtpAuthProcessor().processUri(otpAuthUri)).firstOrNull?.asSuccess?.resultData;
+      var newToken = (await const OtpAuthProcessor().processUri(
+        otpAuthUri,
+      )).firstOrNull?.asSuccess?.resultData;
       if (newToken != null) {
-        newToken = container.addOriginToToken(token: newToken, tokenData: otpAuthUri.toString());
+        newToken = container.addOriginToToken(
+          token: newToken,
+          tokenData: otpAuthUri.toString(),
+        );
         newTokens.add(newToken);
       }
     }
@@ -402,12 +528,16 @@ class PiContainerApi implements TokenContainerApi {
   }) {
     final merged = <TokenTemplate>[];
     for (var serverTokenWithOtp in serverTokensWithOtps) {
-      final otps = (serverTokenWithOtp[OTPToken.OTP_VALUES] as List).cast<String>();
+      final otps = (serverTokenWithOtp[OTPToken.OTP_VALUES] as List)
+          .cast<String>();
       var mergedTemplate = maybePiTokensTemplates.firstWhereOrNull(
-        (maybePiToken) => const IterableEquality().equals(otps, maybePiToken.otpValues),
+        (maybePiToken) =>
+            const IterableEquality().equals(otps, maybePiToken.otpValues),
       );
       if (mergedTemplate == null) {
-        Logger.warning('Server token with otps not found in local tokens: ${serverTokenWithOtp[OTPToken.OTP_VALUES]}');
+        Logger.warning(
+          'Server token with otps not found in local tokens: ${serverTokenWithOtp[OTPToken.OTP_VALUES]}',
+        );
         continue;
       }
       mergedTemplate = mergedTemplate.withOtpAuthData(serverTokenWithOtp);
@@ -425,7 +555,9 @@ class PiContainerApi implements TokenContainerApi {
     final deleteSerials = <TokenTemplate>[];
     final mergedTemplatesWithSerial = <TokenTemplate>[];
     for (var containerToken in containerTokenTemplates) {
-      final serverToken = serverTokensWithSerial.firstWhereOrNull((element) => element[Token.SERIAL] == containerToken.serial);
+      final serverToken = serverTokensWithSerial.firstWhereOrNull(
+        (element) => element[Token.SERIAL] == containerToken.serial,
+      );
       serverTokensWithSerial.remove(serverToken);
       if (serverToken == null) {
         if (containerToken.containerSerial == container.serial) {
