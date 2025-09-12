@@ -401,6 +401,9 @@
   "@errorMissingPrivateKey": {
     "description": "Error message when the private key is missing."
   },
+  "@errorMissingPublicKey": {
+    "description": "Error message when the public key is missing."
+  },
   "@errorRollOutFailed": {
     "description": "Tells the user that the token could not be rolled out, because a network error occurred.",
     "placeholders": {
@@ -1767,6 +1770,7 @@
   "errorLogTitle": "Journal d'erreur",
   "errorMailBody": "Le fichier journal des erreurs est joint.\nVous pouvez remplacer ce texte par des informations supplémentaires sur l'erreur.",
   "errorMissingPrivateKey": "Clé privée manquante",
+  "errorMissingPublicKey": "Clé publique manquante",
   "errorRollOutFailed": "Le déploiement du jeton {name} a échoué.",
   "errorRollOutNoConnectionToServer": "El despliegue del token {name} ha fallado, no se ha podido acceder al servidor.",
   "errorRollOutNotPossibleAnymore": "Le déploiement de ce jeton n'est plus possible.",

@@ -32,6 +32,7 @@ TokenContainerUnfinalized _$TokenContainerUnfinalizedFromJson(
   passphraseQuestion: json['passphraseQuestion'] as String?,
   publicClientKey: json['publicClientKey'] as String?,
   privateClientKey: json['privateClientKey'] as String?,
+  sendPassphrase: json['sendPassphrase'] as bool? ?? false,
   $type: json['runtimeType'] as String?,
 );
 
@@ -54,6 +55,7 @@ Map<String, dynamic> _$TokenContainerUnfinalizedToJson(
   'passphraseQuestion': instance.passphraseQuestion,
   'publicClientKey': instance.publicClientKey,
   'privateClientKey': instance.privateClientKey,
+  'sendPassphrase': instance.sendPassphrase,
   'runtimeType': instance.$type,
 };
 

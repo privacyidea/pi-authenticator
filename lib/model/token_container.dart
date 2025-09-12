@@ -37,7 +37,12 @@ import 'token_import/token_origin_data.dart';
 part 'token_container.freezed.dart';
 part 'token_container.g.dart';
 
-@Freezed(toStringOverride: false, addImplicitFinal: true, toJson: true, fromJson: true)
+@Freezed(
+  toStringOverride: false,
+  addImplicitFinal: true,
+  toJson: true,
+  fromJson: true,
+)
 sealed class TokenContainer with _$TokenContainer {
   static const String CONTAINER_SERIAL = 'container_serial';
 
@@ -46,6 +51,7 @@ sealed class TokenContainer with _$TokenContainer {
   static const String FINALIZE_DEVICE_BRAND = 'device_brand';
   static const String FINALIZE_DEVICE_MODEL = 'device_model';
   static const String FINALIZE_SIGNATURE = 'signature';
+  static const String FINALIZE_PASSPHRASE = 'passphrase';
 
   // Container sync:
   static const String SYNC_PUBLIC_CLIENT_KEY = 'public_enc_key_client';
@@ -78,18 +84,23 @@ sealed class TokenContainer with _$TokenContainer {
   static const String SERVER_URL = 'container_sync_url';
   static const String SCOPE = 'scope';
   static const String POLICIES = 'info';
+  static const String SEND_PASSPHRASE = 'send_passphrase';
 
   static const eccUtils = EccUtils();
 
   const TokenContainer._();
 
-  Uri get registrationUrl => serverUrl.replace(path: '/container/register/finalize');
+  Uri get registrationUrl =>
+      serverUrl.replace(path: '/container/register/finalize');
   Uri get challengeUrl => serverUrl.replace(path: '/container/challenge');
   Uri get syncUrl => serverUrl.replace(path: '/container/synchronize');
   Uri get transferUrl => serverUrl.replace(path: '/container/rollover');
-  Uri get unregisterUrl => serverUrl.replace(path: '/container/register/terminate/client');
+  Uri get unregisterUrl =>
+      serverUrl.replace(path: '/container/register/terminate/client');
 
-  DateTime? get expirationDate => this is TokenContainerUnfinalized ? timestamp.add((this as TokenContainerUnfinalized).ttl) : null;
+  DateTime? get expirationDate => this is TokenContainerUnfinalized
+      ? timestamp.add((this as TokenContainerUnfinalized).ttl)
+      : null;
 
   // example: "pia://container/SMPH00067A2F"
   // "?issuer=privacyIDEA"
@@ -102,21 +113,31 @@ sealed class TokenContainer with _$TokenContainer {
   // "&hash_algorithm=SHA256"
   // "&ssl_verify=False"
   // "&passphrase=Enter%20your%20password"
+  // "&send_passphrase=False"
   factory TokenContainer.fromUriMap(Map<String, dynamic> uriMap) {
     uriMap = validateMap(
       map: uriMap,
       validators: {
         ISSUER: const ObjectValidator<String>(),
-        TTL_MINUTES: minutesDurationValidator.withDefault(const Duration(minutes: 10)),
+        TTL_MINUTES: minutesDurationValidator.withDefault(
+          const Duration(minutes: 10),
+        ),
         NONCE: const ObjectValidator<String>(),
-        TIMESTAMP: ObjectValidator<DateTime>(transformer: (v) => DateTime.parse(v)),
+        TIMESTAMP: ObjectValidator<DateTime>(
+          transformer: (v) => DateTime.parse(v),
+        ),
         FINALIZATION_URL: uriValidator,
         SERIAL: const ObjectValidator<String>(),
-        EC_KEY_ALGORITHM: ObjectValidator<EcKeyAlgorithm>(transformer: (v) => EcKeyAlgorithm.values.byCurveName(v)),
+        EC_KEY_ALGORITHM: ObjectValidator<EcKeyAlgorithm>(
+          transformer: (v) => EcKeyAlgorithm.values.byCurveName(v),
+        ),
         HASH_ALGORITHM: stringToAlgorithmsValidator,
         PASSPHRASE_QUESTION: const ObjectValidatorNullable<String>(),
         SSL_VERIFY: boolValidator,
-        POLICIES: ObjectValidatorNullable<ContainerPolicies>(transformer: (value) => ContainerPolicies.fromUriMap(value)),
+        POLICIES: ObjectValidatorNullable<ContainerPolicies>(
+          transformer: (value) => ContainerPolicies.fromUriMap(value),
+        ),
+        SEND_PASSPHRASE: boolValidatorNullable,
       },
       name: 'Container',
     );
@@ -132,6 +153,7 @@ sealed class TokenContainer with _$TokenContainer {
       sslVerify: uriMap[SSL_VERIFY],
       passphraseQuestion: uriMap[PASSPHRASE_QUESTION],
       policies: uriMap[POLICIES] ?? ContainerPolicies.defaultSetting,
+      sendPassphrase: uriMap[SEND_PASSPHRASE] ?? false,
     );
   }
 
@@ -152,6 +174,7 @@ sealed class TokenContainer with _$TokenContainer {
     String? passphraseQuestion,
     String? publicClientKey,
     String? privateClientKey,
+    @Default(false) bool sendPassphrase,
   }) = TokenContainerUnfinalized;
 
   const factory TokenContainer.finalized({
@@ -173,9 +196,12 @@ sealed class TokenContainer with _$TokenContainer {
     required String privateClientKey,
   }) = TokenContainerFinalized;
 
-  TokenContainerFinalized? finalize({AsymmetricKeyPair<ECPublicKey, ECPrivateKey>? clientKeyPair}) {
+  TokenContainerFinalized? finalize({
+    AsymmetricKeyPair<ECPublicKey, ECPrivateKey>? clientKeyPair,
+  }) {
     if (this is TokenContainerFinalized) return this as TokenContainerFinalized;
-    if (clientKeyPair == null && (publicClientKey == null || privateClientKey == null)) {
+    if (clientKeyPair == null &&
+        (publicClientKey == null || privateClientKey == null)) {
       Logger.warning('Unable to finalize without client key pair');
       return null;
     }
@@ -194,24 +220,37 @@ sealed class TokenContainer with _$TokenContainer {
       serverName: serverName,
       policies: policies,
       syncState: SyncState.notStarted,
-      publicClientKey: publicClientKey ?? eccUtils.serializeECPublicKey(clientKeyPair!.publicKey),
-      privateClientKey: privateClientKey ?? eccUtils.serializeECPrivateKey(clientKeyPair!.privateKey),
+      publicClientKey:
+          publicClientKey ??
+          eccUtils.serializeECPublicKey(clientKeyPair!.publicKey),
+      privateClientKey:
+          privateClientKey ??
+          eccUtils.serializeECPrivateKey(clientKeyPair!.privateKey),
     );
   }
 
-  ECPublicKey? get ecPublicClientKey => publicClientKey == null ? null : eccUtils.deserializeECPublicKey(publicClientKey!);
-  ECPrivateKey? get ecPrivateClientKey => privateClientKey == null ? null : eccUtils.deserializeECPrivateKey(privateClientKey!);
+  ECPublicKey? get ecPublicClientKey => publicClientKey == null
+      ? null
+      : eccUtils.deserializeECPublicKey(publicClientKey!);
+  ECPrivateKey? get ecPrivateClientKey => privateClientKey == null
+      ? null
+      : eccUtils.deserializeECPrivateKey(privateClientKey!);
   AsymmetricKeyPair<ECPublicKey, ECPrivateKey>? get clientKeyPair =>
-      ecPublicClientKey == null || ecPrivateClientKey == null ? null : AsymmetricKeyPair(ecPublicClientKey!, ecPrivateClientKey!);
+      ecPublicClientKey == null || ecPrivateClientKey == null
+      ? null
+      : AsymmetricKeyPair(ecPublicClientKey!, ecPrivateClientKey!);
 
   /// Add client key pair and set finalization state to generatingKeyPairCompleted
-  TokenContainer withClientKeyPair(AsymmetricKeyPair<ECPublicKey, ECPrivateKey> keyPair) => copyWith(
+  TokenContainer withClientKeyPair(
+    AsymmetricKeyPair<ECPublicKey, ECPrivateKey> keyPair,
+  ) => copyWith(
     publicClientKey: eccUtils.serializeECPublicKey(keyPair.publicKey),
     privateClientKey: eccUtils.serializeECPrivateKey(keyPair.privateKey),
     finalizationState: FinalizationState.generatingKeyPairCompleted,
   );
 
-  factory TokenContainer.fromJson(Map<String, dynamic> json) => _$TokenContainerFromJson(json);
+  factory TokenContainer.fromJson(Map<String, dynamic> json) =>
+      _$TokenContainerFromJson(json);
   @override
   String toString() =>
       '$runtimeType('
@@ -228,20 +267,31 @@ sealed class TokenContainer with _$TokenContainer {
       'publicClientKey: $publicClientKey)';
 
   String signMessage(String msg) {
-    assert(ecPrivateClientKey != null, 'Unable to sign without private client key');
+    assert(
+      ecPrivateClientKey != null,
+      'Unable to sign without private client key',
+    );
     return eccUtils.signWithPrivateKey(ecPrivateClientKey!, msg);
   }
 
-  String? trySignMessage(String msg) => ecPrivateClientKey == null ? null : eccUtils.signWithPrivateKey(ecPrivateClientKey!, msg);
+  String? trySignMessage(String msg) => ecPrivateClientKey == null
+      ? null
+      : eccUtils.signWithPrivateKey(ecPrivateClientKey!, msg);
 
-  Token addOriginToToken({required Token token, String? tokenData}) => token.copyWith(
-    containerSerial: () => serial,
-    origin: token.origin == null
-        ? TokenOriginData.fromContainer(container: this, tokenData: tokenData ?? '')
-        : token.origin!.copyWith(
-            source: TokenOriginSourceType.container,
-            isPrivacyIdeaToken: () => true,
-            data: token.origin!.data.isEmpty ? tokenData : token.origin!.data,
-          ),
-  );
+  Token addOriginToToken({required Token token, String? tokenData}) =>
+      token.copyWith(
+        containerSerial: () => serial,
+        origin: token.origin == null
+            ? TokenOriginData.fromContainer(
+                container: this,
+                tokenData: tokenData ?? '',
+              )
+            : token.origin!.copyWith(
+                source: TokenOriginSourceType.container,
+                isPrivacyIdeaToken: () => true,
+                data: token.origin!.data.isEmpty
+                    ? tokenData
+                    : token.origin!.data,
+              ),
+      );
 }

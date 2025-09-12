@@ -401,6 +401,9 @@
   "@errorMissingPrivateKey": {
     "description": "Error message when the private key is missing."
   },
+  "@errorMissingPublicKey": {
+    "description": "Error message when the public key is missing."
+  },
   "@errorRollOutFailed": {
     "description": "Tells the user that the token could not be rolled out, because a network error occurred.",
     "placeholders": {
@@ -1767,6 +1770,7 @@
   "errorLogTitle": "Dziennik błędów",
   "errorMailBody": "Plik dziennika błędów jest dołączony.\nTekst ten można zastąpić dodatkowymi informacjami o błędzie.",
   "errorMissingPrivateKey": "Brakujący klucz prywatny",
+  "errorMissingPublicKey": "Brakujący klucz publiczny",
   "errorRollOutFailed": "Wdrażanie tokenu {name} nieudane.",
   "errorRollOutNoConnectionToServer": "Rozwijanie tokena {name} nie powiodło się, nie można było uzyskać dostępu do serwera.",
   "errorRollOutNotPossibleAnymore": "Wstać z łóżka tego tokena nie jest już możliwe.",

@@ -401,6 +401,9 @@
   "@errorMissingPrivateKey": {
     "description": "Error message when the private key is missing."
   },
+  "@errorMissingPublicKey": {
+    "description": "Error message when the public key is missing."
+  },
   "@errorRollOutFailed": {
     "description": "Tells the user that the token could not be rolled out, because a network error occurred.",
     "placeholders": {
@@ -1767,6 +1770,7 @@
   "errorLogTitle": "Log kesalahan",
   "errorMailBody": "File log kesalahan terlampir.\nAnda dapat mengganti teks ini dengan informasi tambahan tentang kesalahan.",
   "errorMissingPrivateKey": "Kunci pribadi hilang",
+  "errorMissingPublicKey": "Kunci publik hilang",
   "errorRollOutFailed": "Peluncuran token {name} gagal.",
   "errorRollOutNoConnectionToServer": "Peluncuran token {name} gagal, server tidak dapat dihubungi.",
   "errorRollOutNotPossibleAnymore": "Peluncuran Token ini sudah tidak memungkinkan lagi.",

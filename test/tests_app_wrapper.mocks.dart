@@ -1681,6 +1681,21 @@ class MockSecureStorage extends _i1.Mock implements _i36.SecureStorage {
           as String);
 
   @override
+  String get seperator =>
+      (super.noSuchMethod(
+            Invocation.getter(#seperator),
+            returnValue: _i19.dummyValue<String>(
+              this,
+              Invocation.getter(#seperator),
+            ),
+            returnValueForMissingStub: _i19.dummyValue<String>(
+              this,
+              Invocation.getter(#seperator),
+            ),
+          )
+          as String);
+
+  @override
   String getFullKey(String? key) =>
       (super.noSuchMethod(
             Invocation.method(#getFullKey, [key]),
