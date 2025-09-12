@@ -22,6 +22,7 @@ import 'dart:convert';
 
 import 'package:cryptography/cryptography.dart';
 import 'package:file_selector/file_selector.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 
 import '../../model/enums/token_origin_source_type.dart';
 import '../../model/exception_errors/localized_exception.dart';
@@ -38,7 +39,7 @@ import '../../utils/token_import_origins.dart';
 import 'token_import_file_processor_interface.dart';
 
 class TwoFasAuthenticatorImportFileProcessor extends TokenImportFileProcessor {
-  static get resultHandlerType => TokenImportFileProcessor.resultHandlerType;
+  static ObjectValidator<TokenNotifier> get resultHandlerType => TokenImportFileProcessor.resultHandlerType;
   const TwoFasAuthenticatorImportFileProcessor();
   static const String TWOFAS_OTP = 'otp';
   static const String TWOFAS_TYPE = 'tokenType';
@@ -140,30 +141,26 @@ class TwoFasAuthenticatorImportFileProcessor extends TokenImportFileProcessor {
     final results = <ProcessorResult<Token>>[];
     for (Map<String, dynamic> twoFasToken in tokensJsonList) {
       try {
-        results.add(ProcessorResult.success(
-          Token.fromOtpAuthMap(
-            _twoFasToOtpAuth(twoFasToken),
-            additionalData: {
-              Token.ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
-                originName: TokenImportOrigins.twoFasAuthenticator.appName,
-                isPrivacyIdeaToken: false,
-                data: jsonEncode(twoFasToken),
-              ),
-            },
+        results.add(
+          ProcessorResult.success(
+            Token.fromOtpAuthMap(
+              _twoFasToOtpAuth(twoFasToken),
+              additionalData: {
+                Token.ORIGIN: TokenOriginSourceType.backupFile.toTokenOrigin(
+                  originName: TokenImportOrigins.twoFasAuthenticator.appName,
+                  isPrivacyIdeaToken: false,
+                  data: jsonEncode(twoFasToken),
+                ),
+              },
+            ),
+            resultHandlerType: resultHandlerType,
           ),
-          resultHandlerType: resultHandlerType,
-        ));
+        );
       } on LocalizedException catch (e) {
-        results.add(ProcessorResult.failed(
-          (localization) => e.localizedMessage(localization),
-          resultHandlerType: resultHandlerType,
-        ));
+        results.add(ProcessorResult.failed((localization) => e.localizedMessage(localization), resultHandlerType: resultHandlerType));
       } catch (e) {
         Logger.error('Failed to parse token.', error: e, stackTrace: StackTrace.current);
-        results.add(ProcessorResultFailed(
-          (_) => e.toString(),
-          resultHandlerType: resultHandlerType,
-        ));
+        results.add(ProcessorResultFailed((_) => e.toString(), resultHandlerType: resultHandlerType));
       }
     }
     Logger.info('successfully imported ${results.length} tokens');

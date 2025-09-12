@@ -18,6 +18,8 @@
  * limitations under the License.
  */
 import 'package:file_selector/file_selector.dart';
+import 'package:privacyidea_authenticator/utils/object_validator.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 
 import '../../model/processor_result.dart';
 import '../../model/tokens/token.dart';
@@ -27,7 +29,7 @@ import 'aegis_import_file_processor.dart';
 import 'two_fas_import_file_processor.dart';
 
 abstract class TokenImportFileProcessor with TokenImportProcessor<XFile, String?> {
-  static get resultHandlerType => TokenImportProcessor.resultHandlerType;
+  static ObjectValidator<TokenNotifier> get resultHandlerType => TokenImportProcessor.resultHandlerType;
   const TokenImportFileProcessor();
 
   @override
@@ -37,10 +39,7 @@ abstract class TokenImportFileProcessor with TokenImportProcessor<XFile, String?
 
   Future<List<ProcessorResult<Token>>> processFile(XFile file, {String? password});
 
-  static final List<TokenImportFileProcessor> implementations = [
-    const AegisImportFileProcessor(),
-    const TwoFasAuthenticatorImportFileProcessor(),
-  ];
+  static final List<TokenImportFileProcessor> implementations = [const AegisImportFileProcessor(), const TwoFasAuthenticatorImportFileProcessor()];
 
   static Future<List<ProcessorResult<Token>>> processFileByAny({required XFile file, String? password}) async {
     final tokens = <ProcessorResult<Token>>[];

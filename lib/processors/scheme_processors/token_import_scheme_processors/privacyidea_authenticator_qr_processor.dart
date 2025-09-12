@@ -17,6 +17,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import 'package:privacyidea_authenticator/utils/object_validator.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
+
 import '../../../model/processor_result.dart';
 import '../../../model/tokens/token.dart';
 import '../../../utils/encryption/token_encryption.dart';
@@ -24,7 +27,7 @@ import '../../../utils/logger.dart';
 import 'token_import_scheme_processor_interface.dart';
 
 class PrivacyIDEAAuthenticatorQrProcessor extends TokenImportSchemeProcessor {
-  static get resultHandlerType => TokenImportSchemeProcessor.resultHandlerType;
+  static ObjectValidator<TokenNotifier> get resultHandlerType => TokenImportSchemeProcessor.resultHandlerType;
   const PrivacyIDEAAuthenticatorQrProcessor();
   static const scheme = 'pia';
   static const host = 'qrbackup';
@@ -40,20 +43,10 @@ class PrivacyIDEAAuthenticatorQrProcessor extends TokenImportSchemeProcessor {
     try {
       final token = TokenEncryption.fromExportUri(uri);
       Logger.info('Processing URI ${uri.scheme} succeded');
-      return [
-        ProcessorResult.success(
-          token,
-          resultHandlerType: resultHandlerType,
-        )
-      ];
+      return [ProcessorResult.success(token, resultHandlerType: resultHandlerType)];
     } catch (e) {
       Logger.error('Error while processing URI ${uri.scheme}', error: e);
-      return [
-        ProcessorResult.failed(
-          (l) => l.invalidUrl,
-          resultHandlerType: resultHandlerType,
-        )
-      ];
+      return [ProcessorResult.failed((l) => l.invalidUrl, resultHandlerType: resultHandlerType)];
     }
   }
 }

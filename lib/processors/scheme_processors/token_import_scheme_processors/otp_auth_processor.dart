@@ -30,13 +30,14 @@ import '../../../model/tokens/otp_token.dart';
 import '../../../model/tokens/token.dart';
 import '../../../utils/logger.dart';
 import '../../../utils/object_validator.dart';
+import '../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../utils/utils.dart';
 import '../../../utils/view_utils.dart';
 import '../../../widgets/dialog_widgets/two_step_dialog.dart';
 import 'token_import_scheme_processor_interface.dart';
 
 class OtpAuthProcessor extends TokenImportSchemeProcessor {
-  static dynamic get resultHandlerType => TokenImportSchemeProcessor.resultHandlerType;
+  static ObjectValidator<TokenNotifier> get resultHandlerType => TokenImportSchemeProcessor.resultHandlerType;
   const OtpAuthProcessor();
   @override
   Set<String> get supportedSchemes => {'otpauth', 'pia'};
@@ -46,12 +47,7 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
   @override
   Future<List<ProcessorResult<Token>>> processUri(Uri uri, {bool fromInit = false}) async {
     if (!supportedSchemes.contains(uri.scheme)) {
-      return [
-        ProcessorResultFailed(
-          (l) => l.notSupported('scheme', uri.scheme),
-          resultHandlerType: resultHandlerType,
-        )
-      ];
+      return [ProcessorResultFailed((l) => l.notSupported('scheme', uri.scheme), resultHandlerType: resultHandlerType)];
     }
     Logger.info('Try to handle otpAuth:');
     // The values from queryParameters are always strings.
@@ -68,12 +64,7 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
     if (twoStepSecretFuture != null) {
       final twoStepSecretString = await twoStepSecretFuture;
       if (twoStepSecretString == null) {
-        return [
-          ProcessorResultFailed(
-            (l) => l.twoStepSecretFailed,
-            resultHandlerType: resultHandlerType,
-          )
-        ];
+        return [ProcessorResultFailed((l) => l.twoStepSecretFailed, resultHandlerType: resultHandlerType)];
       }
       // Update the secret with the two step secret.
       queryParameters[OTPToken.SECRET_BASE32] = twoStepSecretString;
@@ -83,16 +74,10 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
         ProcessorResultSuccess(
           Token.fromOtpAuthMap(queryParameters, additionalData: {Token.ORIGIN: _parseCreatorToOrigin(uri)}),
           resultHandlerType: resultHandlerType,
-        )
+        ),
       ];
     } catch (e) {
-      return [
-        ProcessorResultFailed(
-          (l) => l.unableToCreateToken,
-          error: e,
-          resultHandlerType: resultHandlerType,
-        )
-      ];
+      return [ProcessorResultFailed((l) => l.unableToCreateToken, error: e, resultHandlerType: resultHandlerType)];
     }
   }
 }
@@ -195,7 +180,9 @@ Future<String?>? _parse2StepSecret(Uri uri) {
 
 void _logInfo(Uri uri) {
   // parse.path.substring(1) -> Label
-  var infoLog = '\nKey: [..] | Value: [..]' '\n-----------------------';
+  var infoLog =
+      '\nKey: [..] | Value: [..]'
+      '\n-----------------------';
   final queryParameters = uri.queryParameters;
   queryParameters.forEach((key, value) {
     infoLog += '\n${key.padLeft(9)} | $value';

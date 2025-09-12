@@ -36,15 +36,15 @@ class TokenContainerProcessor extends SchemeProcessor {
   static const String ARG_URL_IS_OK = 'urlIsOk';
 
   static Map<String, bool?> validateArgs(Map<String, dynamic> args) => validateMap(
-        map: args,
-        validators: {
-          TokenContainerProcessor.ARG_DO_REPLACE: boolValidatorNullable,
-          TokenContainerProcessor.ARG_ADD_DEVICE_INFOS: boolValidatorNullable,
-          TokenContainerProcessor.ARG_INIT_SYNC: boolValidatorNullable,
-          TokenContainerProcessor.ARG_URL_IS_OK: boolValidatorNullable,
-        },
-        name: 'TokenContainerProcessor#validateArgs',
-      );
+    map: args,
+    validators: {
+      TokenContainerProcessor.ARG_DO_REPLACE: boolValidatorNullable,
+      TokenContainerProcessor.ARG_ADD_DEVICE_INFOS: boolValidatorNullable,
+      TokenContainerProcessor.ARG_INIT_SYNC: boolValidatorNullable,
+      TokenContainerProcessor.ARG_URL_IS_OK: boolValidatorNullable,
+    },
+    name: 'TokenContainerProcessor#validateArgs',
+  );
 
   @override
   Set<String> get supportedSchemes => {scheme};
@@ -58,20 +58,10 @@ class TokenContainerProcessor extends SchemeProcessor {
     try {
       final container = TokenContainer.fromUriMap(uri.queryParameters);
       Logger.info('Successfully parsed container container');
-      return [
-        ProcessorResult.success(
-          container,
-          resultHandlerType: resultHandlerType,
-        )
-      ];
+      return [ProcessorResult.success(container, resultHandlerType: resultHandlerType)];
     } on LocalizedArgumentError catch (e) {
       Logger.warning('Error while processing URI ${uri.scheme}', error: e.message);
-      return [
-        ProcessorResult.failed(
-          (localization) => e.localizedMessage(localization),
-          resultHandlerType: resultHandlerType,
-        )
-      ];
+      return [ProcessorResult.failed((localization) => e.localizedMessage(localization), resultHandlerType: resultHandlerType)];
     }
   }
 }

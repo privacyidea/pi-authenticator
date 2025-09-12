@@ -23,6 +23,7 @@ import 'dart:convert';
 
 import 'package:cryptography/cryptography.dart';
 import 'package:file_selector/file_selector.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 
 import '../../model/encryption/uint_8_buffer.dart';
 import '../../model/enums/algorithms.dart';
@@ -44,7 +45,7 @@ import '../../utils/token_import_origins.dart';
 import 'token_import_file_processor_interface.dart';
 
 class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
-  static get resultHandlerType => TokenImportFileProcessor.resultHandlerType;
+  static ObjectValidator<TokenNotifier> get resultHandlerType => TokenImportFileProcessor.resultHandlerType;
   static const String header = "AUTHENTICATORPRO";
   static const String headerLegacy = "AuthenticatorPro";
 
@@ -65,11 +66,7 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
     //   5: 'Yandex', // Not supported
   };
 
-  static final algorithmMap = {
-    0: Algorithms.SHA1.name,
-    1: Algorithms.SHA256.name,
-    2: Algorithms.SHA512.name,
-  };
+  static final algorithmMap = {0: Algorithms.SHA1.name, 1: Algorithms.SHA256.name, 2: Algorithms.SHA512.name};
 
   const AuthenticatorProImportFileProcessor();
 
@@ -92,10 +89,7 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
         if (lines.every((line) => line.isEmpty || line.startsWith('otpauth://'))) return true;
       } catch (e) {}
       // Its utf8 encoded, but not a JSON, HTML or URI list, so it's not valid -> return false
-      Logger.warning(
-        'File is not a valid Authenticator Pro backup file',
-        error: 'Invalid content: $contentString',
-      );
+      Logger.warning('File is not a valid Authenticator Pro backup file', error: 'Invalid content: $contentString');
       return false;
     } catch (e) {
       // When utf8 decoding fails, it's may be encrypted
@@ -107,10 +101,7 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
           return true;
         }
       } catch (e) {}
-      Logger.warning(
-        'File is not a valid Authenticator Pro backup file',
-        error: 'Content Bytes: $contentBytes',
-      );
+      Logger.warning('File is not a valid Authenticator Pro backup file', error: 'Content Bytes: $contentBytes');
     }
     // It's not utf8 encoded and not encrypted, so it's not valid -> return false
     return false;
@@ -251,16 +242,10 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
         final newResults = await const OtpAuthProcessor().processUri(uri);
         results.addAll(newResults);
       } on LocalizedException catch (e) {
-        results.add(ProcessorResult.failed(
-          (localization) => e.localizedMessage(localization),
-          resultHandlerType: resultHandlerType,
-        ));
+        results.add(ProcessorResult.failed((localization) => e.localizedMessage(localization), resultHandlerType: resultHandlerType));
       } catch (e) {
         Logger.error('Failed to parse token.', error: e, stackTrace: StackTrace.current);
-        results.add(ProcessorResultFailed(
-          (_) => e.toString(),
-          resultHandlerType: resultHandlerType,
-        ));
+        results.add(ProcessorResultFailed((_) => e.toString(), resultHandlerType: resultHandlerType));
       }
     }
     return results;
@@ -293,16 +278,10 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
         }
       }
     } on LocalizedException catch (e) {
-      results.add(ProcessorResult.failed(
-        (localization) => e.localizedMessage(localization),
-        resultHandlerType: resultHandlerType,
-      ));
+      results.add(ProcessorResult.failed((localization) => e.localizedMessage(localization), resultHandlerType: resultHandlerType));
     } catch (e) {
       Logger.error('Failed to parse token.', error: e, stackTrace: StackTrace.current);
-      results.add(ProcessorResultFailed(
-        (_) => e.toString(),
-        resultHandlerType: resultHandlerType,
-      ));
+      results.add(ProcessorResultFailed((_) => e.toString(), resultHandlerType: resultHandlerType));
     }
     return results;
   }
@@ -353,21 +332,12 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
             ),
           },
         );
-        result.add(ProcessorResultSuccess(
-          token,
-          resultHandlerType: resultHandlerType,
-        ));
+        result.add(ProcessorResultSuccess(token, resultHandlerType: resultHandlerType));
       } on LocalizedException catch (e) {
-        result.add(ProcessorResult.failed(
-          (localization) => e.localizedMessage(localization),
-          resultHandlerType: resultHandlerType,
-        ));
+        result.add(ProcessorResult.failed((localization) => e.localizedMessage(localization), resultHandlerType: resultHandlerType));
       } catch (e) {
         Logger.error('Failed to parse token.', error: e, stackTrace: StackTrace.current);
-        result.add(ProcessorResultFailed(
-          (_) => e.toString(),
-          resultHandlerType: resultHandlerType,
-        ));
+        result.add(ProcessorResultFailed((_) => e.toString(), resultHandlerType: resultHandlerType));
       }
     }
     return result;

@@ -44,12 +44,7 @@ class PreferenceIntroductionRepository implements IntroductionRepository {
       final decodedIntroductions = jsonDecode(encodedIntroductions);
       return IntroductionState.fromJson(decodedIntroductions);
     } catch (e, s) {
-      Logger.warning(
-        'Failed to load completed introductions',
-        error: e,
-        stackTrace: s,
-        verbose: true,
-      );
+      Logger.warning('Failed to load completed introductions', error: e, stackTrace: s, verbose: true);
       return const IntroductionState();
     }
   }
@@ -62,12 +57,7 @@ class PreferenceIntroductionRepository implements IntroductionRepository {
       await (await _prefs).setString(_completedIntroductionsKey, encodedIntroductions);
       return true;
     } catch (e, s) {
-      Logger.warning(
-        'Failed to load completed introductions',
-        error: e,
-        stackTrace: s,
-        verbose: true,
-      );
+      Logger.warning('Failed to load completed introductions', error: e, stackTrace: s, verbose: true);
       return false;
     }
   }

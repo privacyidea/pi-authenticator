@@ -22,6 +22,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:file_selector/file_selector.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 
 import '../../../../../../../model/enums/encodings.dart';
 import '../../../../../../../model/extensions/enums/encodings_extension.dart';
@@ -40,7 +41,7 @@ import '../scheme_processors/token_import_scheme_processors/free_otp_plus_qr_pro
 import 'token_import_file_processor_interface.dart';
 
 class FreeOtpPlusImportFileProcessor extends TokenImportFileProcessor {
-  static get resultHandlerType => TokenImportFileProcessor.resultHandlerType;
+  static ObjectValidator<TokenNotifier> get resultHandlerType => TokenImportFileProcessor.resultHandlerType;
   static const String _FREE_OTP_PLUS_ALGORITHM = 'algo'; // String: "MD5", "SHA1", "SHA256", "SHA512"
   static const String _FREE_OTP_PLUS_COUNTER = 'counter';
   static const String _FREE_OTP_PLUS_DIGITS = 'digits';
@@ -91,10 +92,7 @@ class FreeOtpPlusImportFileProcessor extends TokenImportFileProcessor {
         results.addAll(await const FreeOtpPlusQrProcessor().processUri(uri));
       } catch (e) {
         Logger.error('Failed to process line: $line', error: e, stackTrace: StackTrace.current);
-        results.add(ProcessorResultFailed(
-          (_) => e.toString(),
-          resultHandlerType: resultHandlerType,
-        ));
+        results.add(ProcessorResultFailed((_) => e.toString(), resultHandlerType: resultHandlerType));
       }
     }
     return results.map((t) {
@@ -139,42 +137,36 @@ class FreeOtpPlusImportFileProcessor extends TokenImportFileProcessor {
         resultHandlerType: resultHandlerType,
       );
     } on LocalizedException catch (e) {
-      return ProcessorResult.failed(
-        (localization) => e.localizedMessage(localization),
-        resultHandlerType: resultHandlerType,
-      );
+      return ProcessorResult.failed((localization) => e.localizedMessage(localization), resultHandlerType: resultHandlerType);
     } catch (e, s) {
       Logger.warning('Failed to parse token.', error: e, stackTrace: s);
-      return ProcessorResultFailed(
-        (_) => e.toString(),
-        resultHandlerType: resultHandlerType,
-      );
+      return ProcessorResultFailed((_) => e.toString(), resultHandlerType: resultHandlerType);
     }
   }
 
   Map<String, String> _jsonToOtpAuth(Map<String, dynamic> tokenJson) => validateMap(
-        name: 'FreeOtpPlusToken',
-        map: {
-          /// Steam is a special case, its hardcoded in the original app.
-          Token.TOKENTYPE_OTPAUTH: tokenJson[_FREE_OTP_PLUS_ISSUER] == _steamTokenIssuer ? _steamTokenType : tokenJson[_FREE_OTP_PLUS_TYPE],
-          Token.LABEL: tokenJson[_FREE_OTP_PLUS_LABEL],
-          Token.ISSUER: tokenJson[_FREE_OTP_PLUS_ISSUER],
-          OTPToken.SECRET_BASE32: tokenJson[_FREE_OTP_PLUS_SECRET],
-          OTPToken.ALGORITHM: tokenJson[_FREE_OTP_PLUS_ALGORITHM],
-          OTPToken.DIGITS: tokenJson[_FREE_OTP_PLUS_DIGITS],
-          HOTPToken.COUNTER: tokenJson[_FREE_OTP_PLUS_COUNTER],
-          TOTPToken.PERIOD_SECONDS: tokenJson[_FREE_OTP_PLUS_PERIOD],
-        },
-        validators: {
-          Token.TOKENTYPE_OTPAUTH: const ObjectValidator<String>(),
-          Token.LABEL: const ObjectValidator<String>(),
-          Token.ISSUER: const ObjectValidator<String>(),
-          OTPToken.SECRET_BASE32: ObjectValidator<String>(transformer: (value) => Encodings.base32.encode(Uint8List.fromList((value as List).cast<int>()))),
-          OTPToken.ALGORITHM: const ObjectValidator<String>(),
-          OTPToken.DIGITS: intToStringValidator,
-          // FreeOTP+ saves the counter 1 less than the actual value
-          HOTPToken.COUNTER: ObjectValidatorNullable<String>(transformer: (value) => ((value as int) + 1).toString()),
-          TOTPToken.PERIOD_SECONDS: intToStringValidatorNullable,
-        },
-      );
+    name: 'FreeOtpPlusToken',
+    map: {
+      /// Steam is a special case, its hardcoded in the original app.
+      Token.TOKENTYPE_OTPAUTH: tokenJson[_FREE_OTP_PLUS_ISSUER] == _steamTokenIssuer ? _steamTokenType : tokenJson[_FREE_OTP_PLUS_TYPE],
+      Token.LABEL: tokenJson[_FREE_OTP_PLUS_LABEL],
+      Token.ISSUER: tokenJson[_FREE_OTP_PLUS_ISSUER],
+      OTPToken.SECRET_BASE32: tokenJson[_FREE_OTP_PLUS_SECRET],
+      OTPToken.ALGORITHM: tokenJson[_FREE_OTP_PLUS_ALGORITHM],
+      OTPToken.DIGITS: tokenJson[_FREE_OTP_PLUS_DIGITS],
+      HOTPToken.COUNTER: tokenJson[_FREE_OTP_PLUS_COUNTER],
+      TOTPToken.PERIOD_SECONDS: tokenJson[_FREE_OTP_PLUS_PERIOD],
+    },
+    validators: {
+      Token.TOKENTYPE_OTPAUTH: const ObjectValidator<String>(),
+      Token.LABEL: const ObjectValidator<String>(),
+      Token.ISSUER: const ObjectValidator<String>(),
+      OTPToken.SECRET_BASE32: ObjectValidator<String>(transformer: (value) => Encodings.base32.encode(Uint8List.fromList((value as List).cast<int>()))),
+      OTPToken.ALGORITHM: const ObjectValidator<String>(),
+      OTPToken.DIGITS: intToStringValidator,
+      // FreeOTP+ saves the counter 1 less than the actual value
+      HOTPToken.COUNTER: ObjectValidatorNullable<String>(transformer: (value) => ((value as int) + 1).toString()),
+      TOTPToken.PERIOD_SECONDS: intToStringValidatorNullable,
+    },
+  );
 }
