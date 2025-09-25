@@ -32,8 +32,13 @@ class SettingsState {
   static bool get hideOtpsDefault => false;
   static bool get enablePollingDefault => false;
   static Set<String> get crashReportRecipientsDefault => {};
-  static Locale get localeDefault => AppLocalizations.supportedLocales
-      .firstWhere((locale) => locale.languageCode == (!kIsWeb ? Platform.localeName.substring(0, 2) : 'en'), orElse: () => const Locale('en'));
+  static Locale get localeDefault =>
+      AppLocalizations.supportedLocales.firstWhere(
+        (locale) =>
+            locale.languageCode ==
+            (!kIsWeb ? Platform.localeName.substring(0, 2) : 'en'),
+        orElse: () => const Locale('en'),
+      );
 
   static bool get useSystemLocaleDefault => true;
   static bool get verboseLoggingDefault => false;
@@ -50,8 +55,12 @@ class SettingsState {
   final Set<String> crashReportRecipients;
   final Locale localePreference;
   Locale get currentLocale => useSystemLocale
-      ? AppLocalizations.supportedLocales
-          .firstWhere((locale) => locale.languageCode == (!kIsWeb ? Platform.localeName.substring(0, 2) : 'en'), orElse: () => const Locale('en'))
+      ? AppLocalizations.supportedLocales.firstWhere(
+          (locale) =>
+              locale.languageCode ==
+              (!kIsWeb ? Platform.localeName.substring(0, 2) : 'en'),
+          orElse: () => const Locale('en'),
+        )
       : localePreference;
   final bool useSystemLocale;
   final bool verboseLogging;
@@ -75,19 +84,23 @@ class SettingsState {
     bool? showBackgroundImage,
     bool? allowScreenshots,
     bool? autoCloseAppAfterAcceptingPushRequest,
-  })  : isFirstRun = isFirstRun ?? isFirstRunDefault,
-        showGuideOnStart = showGuideOnStart ?? showGuideOnStartDefault,
-        hideOpts = hideOpts ?? hideOtpsDefault,
-        enablePolling = enablePolling ?? enablePollingDefault,
-        crashReportRecipients = crashReportRecipients ?? crashReportRecipientsDefault,
-        localePreference = localePreference ?? localeDefault,
-        useSystemLocale = useSystemLocale ?? useSystemLocaleDefault,
-        verboseLogging = verboseLogging ?? verboseLoggingDefault,
-        hidePushTokens = hidePushTokens ?? hidePushTokensDefault,
-        latestStartedVersion = latestStartedVersion ?? latestStartedVersionDefault,
-        showBackgroundImage = showBackgroundImage ?? showBackgroundImageDefault,
-        allowScreenshots = allowScreenshots ?? allowScreenshotsDefault,
-        autoCloseAppAfterAcceptingPushRequest = autoCloseAppAfterAcceptingPushRequest ?? autoCloseAppAfterAcceptingPushRequestDefault;
+  }) : isFirstRun = isFirstRun ?? isFirstRunDefault,
+       showGuideOnStart = showGuideOnStart ?? showGuideOnStartDefault,
+       hideOpts = hideOpts ?? hideOtpsDefault,
+       enablePolling = enablePolling ?? enablePollingDefault,
+       crashReportRecipients =
+           crashReportRecipients ?? crashReportRecipientsDefault,
+       localePreference = localePreference ?? localeDefault,
+       useSystemLocale = useSystemLocale ?? useSystemLocaleDefault,
+       verboseLogging = verboseLogging ?? verboseLoggingDefault,
+       hidePushTokens = hidePushTokens ?? hidePushTokensDefault,
+       latestStartedVersion =
+           latestStartedVersion ?? latestStartedVersionDefault,
+       showBackgroundImage = showBackgroundImage ?? showBackgroundImageDefault,
+       allowScreenshots = allowScreenshots ?? allowScreenshotsDefault,
+       autoCloseAppAfterAcceptingPushRequest =
+           autoCloseAppAfterAcceptingPushRequest ??
+           autoCloseAppAfterAcceptingPushRequestDefault;
 
   SettingsState copyWith({
     bool? isFirstRun,
@@ -109,7 +122,8 @@ class SettingsState {
       hideOpts: hideOpts ?? this.hideOpts,
       enablePolling: enablePolling ?? this.enablePolling,
       showGuideOnStart: showGuideOnStart ?? this.showGuideOnStart,
-      crashReportRecipients: crashReportRecipients ?? this.crashReportRecipients,
+      crashReportRecipients:
+          crashReportRecipients ?? this.crashReportRecipients,
       localePreference: localePreference ?? this.localePreference,
       useSystemLocale: useSystemLocale ?? this.useSystemLocale,
       verboseLogging: verboseLogging ?? this.verboseLogging,
@@ -117,12 +131,15 @@ class SettingsState {
       latestStartedVersion: latestStartedVersion ?? this.latestStartedVersion,
       showBackgroundImage: showBackgroundImage ?? this.showBackgroundImage,
       allowScreenshots: allowScreenshots ?? this.allowScreenshots,
-      autoCloseAppAfterAcceptingPushRequest: autoCloseAppAfterAcceptingPushRequest ?? this.autoCloseAppAfterAcceptingPushRequest,
+      autoCloseAppAfterAcceptingPushRequest:
+          autoCloseAppAfterAcceptingPushRequest ??
+          this.autoCloseAppAfterAcceptingPushRequest,
     );
   }
 
   @override
-  String toString() => 'SettingsState(isFirstRun: $isFirstRun, showGuideOnStart: $showGuideOnStart, hideOpts: $hideOpts, enablePolling: $enablePolling, '
+  String toString() =>
+      'SettingsState(isFirstRun: $isFirstRun, showGuideOnStart: $showGuideOnStart, hideOpts: $hideOpts, enablePolling: $enablePolling, '
       'crashReportRecipients: $crashReportRecipients, localePreference: $localePreference, useSystemLocale: $useSystemLocale, verboseLogging: $verboseLogging, '
       'hidePushTokens: $hidePushTokens, latestStartedVersion: $latestStartedVersion, showBackgroundImage: $showBackgroundImage, allowScreenshots: $allowScreenshots, autoCloseAppAfterAcceptingPushRequestDefault: $autoCloseAppAfterAcceptingPushRequest)';
 
@@ -136,14 +153,17 @@ class SettingsState {
         other.showGuideOnStart == showGuideOnStart &&
         other.hideOpts == hideOpts &&
         other.enablePolling == enablePolling &&
-        other.crashReportRecipients.toString() == crashReportRecipients.toString() &&
+        other.crashReportRecipients.toString() ==
+            crashReportRecipients.toString() &&
         other.localePreference.toString() == localePreference.toString() &&
         other.useSystemLocale == useSystemLocale &&
         other.verboseLogging == verboseLogging &&
         other.hidePushTokens == hidePushTokens &&
         other.latestStartedVersion == latestStartedVersion &&
         other.showBackgroundImage == showBackgroundImage &&
-        other.allowScreenshots == allowScreenshots;
+        other.allowScreenshots == allowScreenshots &&
+        other.autoCloseAppAfterAcceptingPushRequest ==
+            autoCloseAppAfterAcceptingPushRequest;
   }
 
   static String encodeLocale(Locale locale) {
