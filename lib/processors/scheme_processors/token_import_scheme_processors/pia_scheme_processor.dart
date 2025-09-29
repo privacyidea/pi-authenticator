@@ -63,9 +63,7 @@ class PiaSchemeProcessor extends TokenImportSchemeProcessor {
       scheme: 'otpauth',
       userInfo: uri.userInfo,
       host: uri.host,
-      path: uri.path,
       pathSegments: uri.pathSegments,
-      query: uri.query,
       queryParameters: uri.queryParameters,
       fragment: uri.fragment,
     );
