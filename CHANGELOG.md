@@ -1,4 +1,9 @@
 # Changelog
+
+## [4.6.0] - 
+ - A few minor bugs have been resolved to improve app stability.
+ - Internal components have been updated to maintain security and ensure compatibility with the latest devices.
+
 ## [4.5.3] - 2025.06.05
  - An issue has been fixed where the label of the push token was hidden when the token was locked.
  - The navigation bar is no longer superimposed over the app content on some devices.
