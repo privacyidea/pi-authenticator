@@ -66,13 +66,22 @@ class TokenFolder with SortableMixin {
   }
 
   @override
-  bool operator ==(Object other) => identical(this, other) || other is TokenFolder && folderId == other.folderId;
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is TokenFolder &&
+          (label == other.label) &&
+          (folderId == other.folderId) &&
+          (isExpanded == other.isExpanded) &&
+          (isLocked == other.isLocked) &&
+          (sortIndex == other.sortIndex);
 
   @override
-  int get hashCode => (folderId.hashCode + runtimeType.hashCode).hashCode;
+  int get hashCode =>
+      Object.hash(label, folderId, isExpanded, isLocked, sortIndex);
 
   @override
-  String toString() => 'TokenFolder{label: $label, folderId: $folderId, isExpanded: $isExpanded, isLocked: $isLocked, sortIndex: $sortIndex}';
+  String toString() =>
+      'TokenFolder{label: $label, folderId: $folderId, isExpanded: $isExpanded, isLocked: $isLocked, sortIndex: $sortIndex}';
 
   factory TokenFolder.fromJson(Map<String, dynamic> json) {
     var tokenFolder = _$TokenFolderFromJson(json);

@@ -38,10 +38,15 @@ class PrivacyideaIOClient {
   /// Dummy network request can be used to trigger the network access permission
   /// on iOS devices. Doing this at an appropriate place in the code can prevent
   /// SocketExceptions.
-  Future<bool> triggerNetworkAccessPermission({required Uri url, bool sslVerify = true, bool isRetry = false}) async {
+  Future<bool> triggerNetworkAccessPermission({
+    required Uri url,
+    bool sslVerify = true,
+    bool isRetry = false,
+  }) async {
     if (kIsWeb) return false;
     HttpClient httpClient = HttpClient();
-    httpClient.badCertificateCallback = ((X509Certificate cert, String host, int port) => !sslVerify);
+    httpClient.badCertificateCallback =
+        ((X509Certificate cert, String host, int port) => !sslVerify);
     httpClient.userAgent =
         'privacyIDEA-App'
         '/${(await PackageInfo.fromPlatform()).version}'
@@ -55,12 +60,18 @@ class PrivacyideaIOClient {
     } on ClientException {
       Logger.warning('ClientException');
       ioClient.close();
-      showErrorStatusMessage(message: (localization) => localization.connectionFailed, details: (localization) => localization.checkYourNetwork);
+      showErrorStatusMessage(
+        message: (localization) => localization.connectionFailed,
+        details: (localization) => localization.checkYourNetwork,
+      );
       return false;
     } on ArgumentError catch (e, _) {
       Logger.warning('ArgumentError: $e');
       ioClient.close();
-      showErrorStatusMessage(message: (localization) => localization.connectionFailed, details: (localization) => localization.invalidUrl);
+      showErrorStatusMessage(
+        message: (localization) => localization.connectionFailed,
+        details: (localization) => localization.invalidUrl,
+      );
       return false;
     } catch (e, _) {
       if (e is! SocketException && e is! TimeoutException) {
@@ -68,13 +79,23 @@ class PrivacyideaIOClient {
       }
       if (isRetry) {
         Logger.warning('SocketException while retrying');
-        showErrorStatusMessage(message: (localization) => localization.connectionFailed, details: (localization) => localization.checkYourNetwork);
+        showErrorStatusMessage(
+          message: (localization) => localization.connectionFailed,
+          details: (localization) => localization.checkYourNetwork,
+        );
 
         ioClient.close();
         return false;
       }
       ioClient.close();
-      return Future.delayed(const Duration(seconds: 10), () => triggerNetworkAccessPermission(url: url, sslVerify: sslVerify, isRetry: true));
+      return Future.delayed(
+        const Duration(seconds: 10),
+        () => triggerNetworkAccessPermission(
+          url: url,
+          sslVerify: sslVerify,
+          isRetry: true,
+        ),
+      );
     } finally {
       ioClient.close();
     }
@@ -82,11 +103,17 @@ class PrivacyideaIOClient {
   }
 
   /// Custom POST request allows to not verify certificates.
-  Future<Response> doPost({required Uri url, required Map<String, String?> body, bool sslVerify = true}) async {
+  Future<Response> doPost({
+    required Uri url,
+    required Map<String, String?> body,
+    bool sslVerify = true,
+  }) async {
     if (kIsWeb) return Response('Platform not supported', 405);
     Logger.info('Sending post request (SSLVerify: $sslVerify)');
 
-    List<MapEntry> entries = body.entries.where((element) => element.value == null).toList();
+    List<MapEntry> entries = body.entries
+        .where((element) => element.value == null)
+        .toList();
     Logger.debug('POST body: $body');
     if (entries.isNotEmpty) {
       List<String> nullEntries = [];
@@ -111,7 +138,9 @@ class PrivacyideaIOClient {
 
     Response response;
     try {
-      response = await ioClient.post(url, body: body).timeout(const Duration(seconds: 15));
+      response = await ioClient
+          .post(url, body: body)
+          .timeout(const Duration(seconds: 15));
     } on HandshakeException catch (e, _) {
       Logger.info('Handshake failed. sslVerify: $sslVerify');
       return ResponseBuilder.fromStatusCode(525);
@@ -147,10 +176,16 @@ class PrivacyideaIOClient {
     return response;
   }
 
-  Future<Response> doGet({required Uri url, required Map<String, String?> parameters, bool sslVerify = true}) async {
+  Future<Response> doGet({
+    required Uri url,
+    required Map<String, String?> parameters,
+    bool sslVerify = true,
+  }) async {
     if (kIsWeb) return Response('', 405);
     Logger.info('Sending get request (SSLVerify: $sslVerify)');
-    List<MapEntry> entries = parameters.entries.where((element) => element.value == null).toList();
+    List<MapEntry> entries = parameters.entries
+        .where((element) => element.value == null)
+        .toList();
     if (entries.isNotEmpty) {
       List<String> nullEntries = [];
       for (MapEntry entry in entries) {
@@ -163,7 +198,8 @@ class PrivacyideaIOClient {
     }
 
     HttpClient httpClient = HttpClient();
-    httpClient.badCertificateCallback = ((X509Certificate cert, String host, int port) => !sslVerify);
+    httpClient.badCertificateCallback =
+        ((X509Certificate cert, String host, int port) => !sslVerify);
     httpClient.userAgent =
         'privacyIDEA-App /'
         ' ${Platform.operatingSystem}'
@@ -175,7 +211,10 @@ class PrivacyideaIOClient {
 
     if (parameters.isNotEmpty) {
       buffer.write('?');
-      buffer.writeAll(parameters.entries.map((e) => '${e.key}=${e.value}'), '&');
+      buffer.writeAll(
+        parameters.entries.map((e) => '${e.key}=${e.value}'),
+        '&',
+      );
     }
 
     Response response;
@@ -211,11 +250,15 @@ class PrivacyideaIOClient {
 }
 
 extension ResponseBuilder on Response {
-  static Response fromMessage(String message) => _getResponseFromMessage(message);
-  static Response fromStatusCode(int statusCode) => _getResponseFromStatusCode(statusCode);
+  static Response fromMessage(String message) =>
+      _getResponseFromMessage(message);
+  static Response fromStatusCode(int statusCode) =>
+      _getResponseFromStatusCode(statusCode);
 
-  static Response _getResponseFromMessage(String message) => Response(message, messageToCode[message] ?? 520);
-  static Response _getResponseFromStatusCode(int statusCode) => Response(codeToMessage[statusCode] ?? 'Unknown Error', statusCode);
+  static Response _getResponseFromMessage(String message) =>
+      Response(message, messageToCode[message] ?? 520);
+  static Response _getResponseFromStatusCode(int statusCode) =>
+      Response(codeToMessage[statusCode] ?? 'Unknown Error', statusCode);
 
   static final messageToCode = {
     'Continue': 100,
@@ -223,7 +266,6 @@ extension ResponseBuilder on Response {
     'Processing': 102,
     'Early Hints': 103,
     'Connection Reset By Peer': 104,
-    'Connection refused': 111,
     'OK': 200,
     'Created': 201,
     'Accepted': 202,
@@ -284,6 +326,7 @@ extension ResponseBuilder on Response {
     'Loop Detected': 508,
     'Not Extended': 510,
     'Network Authentication Required': 511,
+    'Connection refused': 599,
     'Network Connect Timeout Error': 599,
     'Unknown Error': 520,
   };
@@ -294,7 +337,6 @@ extension ResponseBuilder on Response {
     102: 'Processing',
     103: 'Early Hints',
     104: 'Connection Reset By Peer',
-    111: 'Connection refused',
     200: 'OK',
     201: 'Created',
     202: 'Accepted',
@@ -391,6 +433,7 @@ extension PiResponse on Response {
     return piServerResponse!.asError;
   }
 
-  String? get piErrorMessage => asPiErrorResponse()?.piServerResultError.message;
+  String? get piErrorMessage =>
+      asPiErrorResponse()?.piServerResultError.message;
   int? get piErrorCode => asPiErrorResponse()?.piServerResultError.code;
 }

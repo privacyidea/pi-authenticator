@@ -29,7 +29,9 @@ import 'token_notifier.dart';
 
 part 'token_folder_notifier.g.dart';
 
-final tokenFolderProvider = tokenFolderNotifierProviderOf(repo: PreferenceTokenFolderRepository());
+final tokenFolderProvider = tokenFolderNotifierProviderOf(
+  repo: PreferenceTokenFolderRepository(),
+);
 
 @Riverpod(keepAlive: true)
 class TokenFolderNotifier extends _$TokenFolderNotifier {
@@ -43,8 +45,8 @@ class TokenFolderNotifier extends _$TokenFolderNotifier {
   late final TokenFolderRepository _repo;
 
   TokenFolderNotifier({TokenFolderRepository? repoOverride})
-      : _repoOverride = repoOverride,
-        super();
+    : _repoOverride = repoOverride,
+      super();
 
   @override
   TokenFolderState build({required TokenFolderRepository repo}) {
@@ -97,7 +99,9 @@ class TokenFolderNotifier extends _$TokenFolderNotifier {
     final oldState = state;
     final newState = oldState.removeFolder(folder);
     final success = await _saveToRepo(newState);
-    final folderTokens = await ref.read(tokenProvider.selectAsync((v) => v.tokensInFolder(folder)));
+    final folderTokens = await ref.read(
+      tokenProvider.selectAsync((v) => v.tokensInFolder(folder)),
+    );
     ref.read(tokenProvider.notifier).updateTokens(folderTokens, (t) {
       final updated = t.copyWith(folderId: () => null);
       return updated;
@@ -115,7 +119,10 @@ class TokenFolderNotifier extends _$TokenFolderNotifier {
   /// Search for the current version of the given folder and update it with the updater function.
   /// If the folder is not found, nothing will happen.
   /// Returns true if the operation is successful, false otherwise.
-  Future<TokenFolderState> updateFolder(TokenFolder folder, TokenFolder Function(TokenFolder) updater) async {
+  Future<TokenFolderState> updateFolder(
+    TokenFolder folder,
+    TokenFolder Function(TokenFolder) updater,
+  ) async {
     await _stateMutex.acquire();
     final oldState = state;
     final newState = oldState.update(folder, updater);
@@ -133,7 +140,10 @@ class TokenFolderNotifier extends _$TokenFolderNotifier {
   /// Search for the current version of the given folder and update it with the updater function.
   /// If the folder is not found, nothing will happen.
   /// Returns true if the operation is successful, false otherwise.
-  Future<TokenFolderState> updateFolderById(int folderId, TokenFolder Function(TokenFolder) updater) async {
+  Future<TokenFolderState> updateFolderById(
+    int folderId,
+    TokenFolder Function(TokenFolder) updater,
+  ) async {
     await _stateMutex.acquire();
     final oldState = state;
     final folder = oldState.currentOfId(folderId)!;
@@ -149,7 +159,9 @@ class TokenFolderNotifier extends _$TokenFolderNotifier {
     return newState;
   }
 
-  Future<TokenFolderState> addOrReplaceFolders(List<TokenFolder> folders) async {
+  Future<TokenFolderState> addOrReplaceFolders(
+    List<TokenFolder> folders,
+  ) async {
     await _stateMutex.acquire();
     final oldState = state;
     final newState = oldState.addOrReplaceFolders(folders);
@@ -164,17 +176,18 @@ class TokenFolderNotifier extends _$TokenFolderNotifier {
     return newState;
   }
 
-  // Future<TokenFolderState> expandFolder(TokenFolder folder) => updateFolder(folder, (p0) => p0.copyWith(isExpanded: true));
-  // Future<TokenFolderState> collapseFolder(TokenFolder folder) => updateFolder(folder, (p0) => p0.copyWith(isExpanded: false));
-  // Future<TokenFolderState> lockFolder(TokenFolder folder) => updateFolder(folder, (p0) => p0.copyWith(isLocked: true));
-  // Future<TokenFolderState> unlockFolder(TokenFolder folder) => updateFolder(folder, (p0) => p0.copyWith(isLocked: false));
-  Future<TokenFolderState> toggleFolderLock(TokenFolder folder) => updateFolder(folder, (p0) => p0.copyWith(isLocked: !folder.isLocked));
-  Future<TokenFolderState> updateLabel(TokenFolder folder, String label) => updateFolder(folder, (p0) => p0.copyWith(label: label));
-  Future<TokenFolderState> expandFolderById(int folderId) => updateFolderById(folderId, (p0) => p0.copyWith(isExpanded: true));
+  Future<TokenFolderState> toggleFolderLock(TokenFolder folder) =>
+      updateFolder(folder, (p0) => p0.copyWith(isLocked: !folder.isLocked));
+  Future<TokenFolderState> updateLabel(TokenFolder folder, String label) =>
+      updateFolder(folder, (p0) => p0.copyWith(label: label));
+  Future<TokenFolderState> expandFolderById(int folderId) =>
+      updateFolderById(folderId, (p0) => p0.copyWith(isExpanded: true));
 
   Future<TokenFolderState> collapseLockedFolders() async {
     await _stateMutex.acquire();
-    final lockedFolders = (state).folders.where((element) => element.isLocked).toList();
+    final lockedFolders = (state).folders
+        .where((element) => element.isLocked)
+        .toList();
     for (var i = 0; i < lockedFolders.length; i++) {
       lockedFolders[i] = lockedFolders[i].copyWith(isExpanded: false);
     }

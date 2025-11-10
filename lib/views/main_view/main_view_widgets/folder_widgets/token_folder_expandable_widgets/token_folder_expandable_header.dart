@@ -37,29 +37,31 @@ import '../token_folder_actions.dart/lock_token_folder_action.dart';
 import '../token_folder_actions.dart/rename_token_folder_action.dart';
 import 'token_folder_expandable_header_icon.dart';
 
-final tokenFolderPaddingProvider = Provider<EdgeInsetsGeometry>((ref) => const EdgeInsets.all(0));
+final tokenFolderPaddingProvider = Provider<EdgeInsetsGeometry>(
+  (ref) => const EdgeInsets.all(0),
+);
 
 class TokenFolderExpandableHeader extends ConsumerStatefulWidget {
   final TokenFolder folder;
   final List<Token> tokens;
   final ExpandableController expandableController;
-  final bool? expandOverride;
   final AnimationController animationController;
 
   const TokenFolderExpandableHeader({
     required this.tokens,
     required this.expandableController,
-    required this.expandOverride,
     required this.animationController,
     required this.folder,
     super.key,
   });
 
   @override
-  ConsumerState<TokenFolderExpandableHeader> createState() => _TokenFolderExpandableHeaderState();
+  ConsumerState<TokenFolderExpandableHeader> createState() =>
+      _TokenFolderExpandableHeaderState();
 }
 
-class _TokenFolderExpandableHeaderState extends ConsumerState<TokenFolderExpandableHeader> {
+class _TokenFolderExpandableHeaderState
+    extends ConsumerState<TokenFolderExpandableHeader> {
   Timer? _expandTimer;
 
   @override
@@ -68,13 +70,16 @@ class _TokenFolderExpandableHeaderState extends ConsumerState<TokenFolderExpanda
     super.dispose();
   }
 
+  // TODO: FIx expanding after minimizing the app
   @override
   Widget build(BuildContext context) {
     final isExpanded = widget.expandableController.value;
     final draggingSortable = ref.watch(draggingSortableProvider);
     return AnimatedContainer(
       duration: widget.animationController.duration!,
-      padding: isExpanded ? EdgeInsets.fromLTRB(14, 4, 14, 0) : EdgeInsets.only(top: 4),
+      padding: isExpanded
+          ? const EdgeInsets.fromLTRB(14, 4, 14, 0)
+          : const EdgeInsets.only(top: 4),
       child: PiSliable(
         key: ValueKey('tokenFolder-${widget.folder.folderId}'),
         groupTag: TokenWidget.groupTag,
@@ -89,11 +94,14 @@ class _TokenFolderExpandableHeaderState extends ConsumerState<TokenFolderExpanda
           child: DragTarget<Token>(
             onWillAcceptWithDetails: (details) {
               if (details.data.folderId != widget.folder.folderId) {
-                if (widget.folder.isLocked || widget.tokens.isEmpty) return true;
+                if (widget.folder.isLocked || widget.tokens.isEmpty) {
+                  return true;
+                }
                 if (isExpanded) return true;
                 _expandTimer?.cancel();
                 _expandTimer = Timer(const Duration(milliseconds: 500), () {
                   if (!mounted) return;
+
                   widget.expandableController.value = true;
                 });
                 return true;
@@ -114,17 +122,25 @@ class _TokenFolderExpandableHeaderState extends ConsumerState<TokenFolderExpanda
                 child: DefaultInkWell(
                   highlight: willAccept.isNotEmpty,
                   onTap: () async {
-                    if (widget.expandOverride != null) return;
                     if (isExpanded) {
                       widget.expandableController.value = false;
                       return;
                     }
-                    if (widget.tokens.isEmpty || (widget.tokens.length == 1 && widget.tokens.first == draggingSortable)) return;
+                    if (widget.tokens.isEmpty ||
+                        (widget.tokens.length == 1 &&
+                            widget.tokens.first == draggingSortable)) {
+                      return;
+                    }
                     if (widget.folder.isLocked &&
-                        !await lockAuth(reason: (localization) => localization.expandLockedFolder, localization: AppLocalizations.of(context)!)) {
+                        !await lockAuth(
+                          reason: (localization) =>
+                              localization.expandLockedFolder,
+                          localization: AppLocalizations.of(context)!,
+                        )) {
                       return;
                     }
                     if (!mounted) return;
+
                     widget.expandableController.value = true;
                   },
                   child: Row(
@@ -132,13 +148,20 @@ class _TokenFolderExpandableHeaderState extends ConsumerState<TokenFolderExpanda
                     children: [
                       const SizedBox(width: 8),
                       RotationTransition(
-                          turns: Tween(begin: 0.25, end: 0.0).animate(widget.animationController),
-                          child: SizedBox.square(
-                            dimension: 25,
-                            child: (widget.tokens.isEmpty || (widget.tokens.length == 1 && widget.tokens.first == draggingSortable))
-                                ? null
-                                : const Icon(Icons.arrow_forward_ios_sharp),
-                          )),
+                        turns: Tween(
+                          begin: 0.25,
+                          end: 0.0,
+                        ).animate(widget.animationController),
+                        child: SizedBox.square(
+                          dimension: 25,
+                          child:
+                              (widget.tokens.isEmpty ||
+                                  (widget.tokens.length == 1 &&
+                                      widget.tokens.first == draggingSortable))
+                              ? null
+                              : const Icon(Icons.arrow_forward_ios_sharp),
+                        ),
+                      ),
                       const SizedBox(width: 8),
                       Expanded(
                         flex: 2,
@@ -152,7 +175,10 @@ class _TokenFolderExpandableHeaderState extends ConsumerState<TokenFolderExpanda
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 3),
                         child: TokenFolderExpandableHeaderIcon(
-                          showEmptyFolderIcon: (widget.tokens.isEmpty || (widget.tokens.length == 1 && widget.tokens.first == draggingSortable)),
+                          showEmptyFolderIcon:
+                              (widget.tokens.isEmpty ||
+                              (widget.tokens.length == 1 &&
+                                  widget.tokens.first == draggingSortable)),
                           isLocked: widget.folder.isLocked,
                           isExpanded: isExpanded,
                         ),

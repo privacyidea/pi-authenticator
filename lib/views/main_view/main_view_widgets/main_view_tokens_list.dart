@@ -47,14 +47,24 @@ class MainViewTokensList extends ConsumerStatefulWidget {
   @override
   ConsumerState<MainViewTokensList> createState() => _MainViewTokensListState();
 
-  static List<Widget> _buildSortableWidgets({required List<SortableMixin> sortables, required SortableMixin? draggingSortable, required bool hidePushTokens}) {
+  static List<Widget> _buildSortableWidgets({
+    required List<SortableMixin> sortables,
+    required SortableMixin? draggingSortable,
+    required bool hidePushTokens,
+  }) {
     if (sortables.isEmpty) return [];
     sortables = sortables.toList();
     if (hidePushTokens) sortables.removeWhere((t) => t is PushToken);
-    return buildSortableWidgets(sortables: sortables, draggingSortable: draggingSortable);
+    return buildSortableWidgets(
+      sortables: sortables,
+      draggingSortable: draggingSortable,
+    );
   }
 
-  static List<Widget> buildSortableWidgets({required List<SortableMixin> sortables, required SortableMixin? draggingSortable}) {
+  static List<Widget> buildSortableWidgets({
+    required List<SortableMixin> sortables,
+    required SortableMixin? draggingSortable,
+  }) {
     List<Widget> widgets = [];
     sortables = sortables.toList();
     if (sortables.isEmpty) return [];
@@ -63,10 +73,17 @@ class MainViewTokensList extends ConsumerStatefulWidget {
     Map<TokenFolder, List<Token>> folderTokensMap = {};
     for (var sortable in sortables) {
       if (sortable is TokenFolder) {
-        folderTokensMap[sortable] = sortables.where((s) => s is Token && s.folderId == sortable.folderId).cast<Token>().toList();
+        folderTokensMap[sortable] = sortables
+            .where((s) => s is Token && s.folderId == sortable.folderId)
+            .cast<Token>()
+            .toList();
       }
     }
-    sortables.removeWhere((sortable) => sortable is Token && folderTokensMap.keys.any((f) => f.folderId == sortable.folderId));
+    sortables.removeWhere(
+      (sortable) =>
+          sortable is Token &&
+          folderTokensMap.keys.any((f) => f.folderId == sortable.folderId),
+    );
     bool introductionAdded = false;
 
     for (var i = 0; i < sortables.length; i++) {
@@ -74,20 +91,28 @@ class MainViewTokensList extends ConsumerStatefulWidget {
       final previousSortable = i == 0 ? null : sortables.elementAtOrNull(i - 1);
       final isFirst = i == 0;
       final isDraggingTheCurrent = draggingSortable == sortable;
-      final previousWasExpandedFolder = previousSortable is TokenFolder && previousSortable.isExpanded;
-      final currentIsExpandedFolder = sortable is TokenFolder && sortable.isExpanded;
-      final folderTokens = sortable is TokenFolder ? folderTokensMap[sortable] : null;
+      final previousWasExpandedFolder =
+          previousSortable is TokenFolder && previousSortable.isExpanded;
+      final currentIsExpandedFolder =
+          sortable is TokenFolder && sortable.isExpanded;
+      final folderTokens = sortable is TokenFolder
+          ? folderTokensMap[sortable]
+          : null;
 
       // 1. Add a divider if the current sortable is not the one which is dragged
       // 2. Don't add a divider if the current sortable is the first
       // 3. Don't add a divider after an expanded folder
       // 4. Ignore 2. and 3. if there is a sortable that is dragged
       //           1                     2                      3                           4
-      if (!isDraggingTheCurrent && ((!isFirst && !previousWasExpandedFolder) || draggingSortable != null)) {
+      if (!isDraggingTheCurrent &&
+          ((!isFirst && !previousWasExpandedFolder) ||
+              draggingSortable != null)) {
         widgets.add(
           DragTargetDivider(
             // The divider should be invisible if the upcoming folder is expanded
-            opacity: currentIsExpandedFolder && draggingSortable == null ? 0 : 1,
+            opacity: currentIsExpandedFolder && draggingSortable == null
+                ? 0
+                : 1,
             dependingFolder: null,
             previousSortable: previousSortable,
             nextSortable: sortable,
@@ -100,7 +125,9 @@ class MainViewTokensList extends ConsumerStatefulWidget {
           introductionAdded
               ? TokenWidgetBuilder.fromToken(token: sortable)
               : TokenIntroduction(
-                  key: Key('mainview_introduction_${sortable.runtimeType}${sortable.sortIndex}'),
+                  key: Key(
+                    'mainview_introduction_${sortable.runtimeType}${sortable.sortIndex}',
+                  ),
                   child: TokenWidgetBuilder.fromToken(token: sortable),
                 ),
         );
@@ -110,14 +137,26 @@ class MainViewTokensList extends ConsumerStatefulWidget {
 
       if (sortable is TokenFolder) {
         widgets.add(
-          TokenFolderWidget(folder: sortable, folderTokens: folderTokens!, key: Key('mainview_${sortable.runtimeType}${sortable.hashCode}'), filter: null),
+          TokenFolderWidget(
+            folder: sortable,
+            folderTokens: folderTokens!,
+            key: ValueKey(
+              'mainview_${sortable.runtimeType}_${sortable.folderId}',
+            ),
+            filter: null,
+          ),
         );
         continue;
       }
     }
     widgets.add(
       (draggingSortable != null)
-          ? DragTargetDivider(dependingFolder: null, previousSortable: sortables.last, nextSortable: null, bottomPadding: 110)
+          ? DragTargetDivider(
+              dependingFolder: null,
+              previousSortable: sortables.last,
+              nextSortable: null,
+              bottomPadding: 110,
+            )
           : const SizedBox(height: 110),
     );
     return widgets;
@@ -132,10 +171,18 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
   Widget build(BuildContext context) {
     final draggingSortable = ref.watch(draggingSortableProvider);
     final sortables = ref.watch(sortablesProvider).value ?? [];
-    final hidePushTokens = ref.watch(settingsProvider).whenOrNull(data: (data) => data.hidePushTokens) ?? SettingsState.hidePushTokensDefault;
+    final hidePushTokens =
+        ref
+            .watch(settingsProvider)
+            .whenOrNull(data: (data) => data.hidePushTokens) ??
+        SettingsState.hidePushTokensDefault;
 
-    final hasFinalizedContainers = ref.watch(tokenContainerProvider).whenOrNull(data: (data) => data.hasFinalizedContainers);
-    if ((sortables.isEmpty && hasFinalizedContainers != true)) return const NoTokenScreen();
+    final hasFinalizedContainers = ref
+        .watch(tokenContainerProvider)
+        .whenOrNull(data: (data) => data.hasFinalizedContainers);
+    if ((sortables.isEmpty && hasFinalizedContainers != true)) {
+      return const NoTokenScreen();
+    }
 
     return GestureDetector(
       onTap: () {
@@ -166,7 +213,9 @@ class _MainViewTokensListState extends ConsumerState<MainViewTokensList> {
                                     opacity: 0,
                                     child: DragTargetDivider(
                                       dependingFolder: null,
-                                      previousSortable: sortables.isNotEmpty ? sortables.last : null,
+                                      previousSortable: sortables.isNotEmpty
+                                          ? sortables.last
+                                          : null,
                                       nextSortable: null,
                                       bottomPadding: 1,
                                     ),
