@@ -35,9 +35,11 @@ class ShowQrCodeDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final appConstraits = ref.watch(appConstraintsNotifierProvider);
+    final appConstraits = ref.watch(appConstraintsProvider);
     final qrSize = min(appConstraits.maxWidth, appConstraits.maxHeight) * 0.85;
-    final qrImage = generateQrCodeImage(data: TokenEncryption.generateExportUri(token: token).toString());
+    final qrImage = generateQrCodeImage(
+      data: TokenEncryption.generateExportUri(token: token).toString(),
+    );
     return DefaultDialog(
       title: Text(AppLocalizations.of(context)!.asQrCode),
       content: Column(
@@ -47,7 +49,12 @@ class ShowQrCodeDialog extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.only(top: 8.0),
             child: ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: qrSize, maxHeight: qrSize, minHeight: qrSize, minWidth: qrSize),
+              constraints: BoxConstraints(
+                maxWidth: qrSize,
+                maxHeight: qrSize,
+                minHeight: qrSize,
+                minWidth: qrSize,
+              ),
               child: GestureDetector(
                 onTap: () => _showQrMaximized(context, qrImage),
                 child: qrImage,

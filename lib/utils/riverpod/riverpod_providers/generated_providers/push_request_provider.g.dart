@@ -6,8 +6,11 @@ part of 'push_request_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(PushRequestNotifier)
-const pushRequestNotifierProviderOf = PushRequestNotifierFamily._();
+const pushRequestProviderOf = PushRequestNotifierFamily._();
 
 final class PushRequestNotifierProvider
     extends $AsyncNotifierProvider<PushRequestNotifier, PushRequestState> {
@@ -22,7 +25,7 @@ final class PushRequestNotifierProvider
     super.argument,
   }) : super(
          retry: null,
-         name: r'pushRequestNotifierProviderOf',
+         name: r'pushRequestProviderOf',
          isAutoDispose: false,
          dependencies: null,
          $allTransitiveDependencies: null,
@@ -33,7 +36,7 @@ final class PushRequestNotifierProvider
 
   @override
   String toString() {
-    return r'pushRequestNotifierProviderOf'
+    return r'pushRequestProviderOf'
         ''
         '$argument';
   }
@@ -73,7 +76,7 @@ final class PushRequestNotifierFamily extends $Family
   const PushRequestNotifierFamily._()
     : super(
         retry: null,
-        name: r'pushRequestNotifierProviderOf',
+        name: r'pushRequestProviderOf',
         dependencies: null,
         $allTransitiveDependencies: null,
         isAutoDispose: false,
@@ -95,7 +98,7 @@ final class PushRequestNotifierFamily extends $Family
   );
 
   @override
-  String toString() => r'pushRequestNotifierProviderOf';
+  String toString() => r'pushRequestProviderOf';
 }
 
 abstract class _$PushRequestNotifier extends $AsyncNotifier<PushRequestState> {
@@ -140,6 +143,3 @@ abstract class _$PushRequestNotifier extends $AsyncNotifier<PushRequestState> {
     element.handleValue(ref, created);
   }
 }
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

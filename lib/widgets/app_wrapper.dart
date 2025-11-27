@@ -47,7 +47,9 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
     super.initState();
     _listener = AppLifecycleListener(
       onResume: () async {
-        final state = await ref.read(tokenProvider.notifier).loadStateFromRepo();
+        final state = await ref
+            .read(tokenProvider.notifier)
+            .loadStateFromRepo();
         Logger.info('Refreshed tokens on resume');
         final hasPushToken = state?.hasPushTokens == true;
         if (hasPushToken) {
@@ -63,7 +65,11 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
         if (await ref.read(tokenProvider.notifier).onMinimizeApp() == false) {
           Logger.error('Failed to save tokens on Hide');
         }
-        if ((await ref.read(tokenFolderProvider.notifier).collapseLockedFolders()).folders.any((folder) => folder.isLocked && folder.isExpanded)) {
+        if ((await ref
+                .read(tokenFolderProvider.notifier)
+                .collapseLockedFolders())
+            .folders
+            .any((folder) => folder.isLocked && folder.isExpanded)) {
           Logger.error('Failed to collapse locked folders on Hide');
         }
         await FlutterLocalNotificationsPlugin().cancelAll();
@@ -89,10 +95,10 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
         stateNotifierProviderListeners: const [],
         buildlessProviderListener: [],
         streamNotifierProviderListeners: [
-          NavigationDeepLinkListener(provider: deeplinkNotifierProvider),
-          HomeWidgetDeepLinkListener(provider: deeplinkNotifierProvider),
-          TokenImportDeepLinkListener(provider: deeplinkNotifierProvider),
-          TokenContainerDeepLinkListener(provider: deeplinkNotifierProvider),
+          NavigationDeepLinkListener(provider: deeplinkProvider),
+          HomeWidgetDeepLinkListener(provider: deeplinkProvider),
+          TokenImportDeepLinkListener(provider: deeplinkProvider),
+          TokenContainerDeepLinkListener(provider: deeplinkProvider),
         ],
         asyncNotifierProviderListeners: [
           PushProviderTokenStateListener(provider: tokenProvider),

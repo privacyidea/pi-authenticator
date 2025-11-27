@@ -6,8 +6,11 @@ part of 'token_container_notifier.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(TokenContainerNotifier)
-const tokenContainerNotifierProviderOf = TokenContainerNotifierFamily._();
+const tokenContainerProviderOf = TokenContainerNotifierFamily._();
 
 final class TokenContainerNotifierProvider
     extends
@@ -22,7 +25,7 @@ final class TokenContainerNotifierProvider
     super.argument,
   }) : super(
          retry: null,
-         name: r'tokenContainerNotifierProviderOf',
+         name: r'tokenContainerProviderOf',
          isAutoDispose: false,
          dependencies: null,
          $allTransitiveDependencies: null,
@@ -33,7 +36,7 @@ final class TokenContainerNotifierProvider
 
   @override
   String toString() {
-    return r'tokenContainerNotifierProviderOf'
+    return r'tokenContainerProviderOf'
         ''
         '$argument';
   }
@@ -73,7 +76,7 @@ final class TokenContainerNotifierFamily extends $Family
   const TokenContainerNotifierFamily._()
     : super(
         retry: null,
-        name: r'tokenContainerNotifierProviderOf',
+        name: r'tokenContainerProviderOf',
         dependencies: null,
         $allTransitiveDependencies: null,
         isAutoDispose: false,
@@ -89,7 +92,7 @@ final class TokenContainerNotifierFamily extends $Family
   );
 
   @override
-  String toString() => r'tokenContainerNotifierProviderOf';
+  String toString() => r'tokenContainerProviderOf';
 }
 
 abstract class _$TokenContainerNotifier
@@ -131,6 +134,3 @@ abstract class _$TokenContainerNotifier
     element.handleValue(ref, created);
   }
 }
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

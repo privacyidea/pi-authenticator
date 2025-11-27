@@ -39,7 +39,7 @@ class MainViewNavigationBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final introProv = ref.watch(introductionNotifierProvider);
-    final constraints = ref.watch(appConstraintsNotifierProvider);
+    final constraints = ref.watch(appConstraintsProvider);
     final navWidth = constraints.maxWidth;
     final navHeight = constraints.maxHeight * 0.10;
     return SizedBox(
@@ -54,21 +54,30 @@ class MainViewNavigationBar extends ConsumerWidget {
             child: Stack(
               children: [
                 CustomPaint(
-                  size: Size(
-                    navWidth,
-                    navHeight,
-                  ),
+                  size: Size(navWidth, navHeight),
                   painter: CustomPaintNavigationBar(buildContext: context),
                 ),
                 Center(
                   heightFactor: 0.6,
                   child: FocusedItemAsOverlay(
-                      onComplete: () {
-                        ref.read(introductionNotifierProvider.notifier).complete(Introduction.scanQrCode);
-                      },
-                      isFocused: introProv.whenOrNull(data: (data) => data.isConditionFulfilled(ref, Introduction.scanQrCode)) ?? false,
-                      tooltipWhenFocused: AppLocalizations.of(context)!.introScanQrCode,
-                      child: const QrScannerButton()),
+                    onComplete: () {
+                      ref
+                          .read(introductionNotifierProvider.notifier)
+                          .complete(Introduction.scanQrCode);
+                    },
+                    isFocused:
+                        introProv.whenOrNull(
+                          data: (data) => data.isConditionFulfilled(
+                            ref,
+                            Introduction.scanQrCode,
+                          ),
+                        ) ??
+                        false,
+                    tooltipWhenFocused: AppLocalizations.of(
+                      context,
+                    )!.introScanQrCode,
+                    child: const QrScannerButton(),
+                  ),
                 ),
                 Center(
                   child: Row(
@@ -78,7 +87,10 @@ class MainViewNavigationBar extends ConsumerWidget {
                       Expanded(
                         child: Center(
                           child: Padding(
-                            padding: EdgeInsets.only(top: navHeight * 0.2, bottom: navHeight * 0.1),
+                            padding: EdgeInsets.only(
+                              top: navHeight * 0.2,
+                              bottom: navHeight * 0.1,
+                            ),
                             child: const LicensePushViewButton(),
                           ),
                         ),
@@ -86,20 +98,43 @@ class MainViewNavigationBar extends ConsumerWidget {
                       Expanded(
                         child: Center(
                           child: Padding(
-                            padding: EdgeInsets.only(top: navHeight * 0.1, bottom: navHeight * 0.2),
+                            padding: EdgeInsets.only(
+                              top: navHeight * 0.1,
+                              bottom: navHeight * 0.2,
+                            ),
                             child: AppBarItem(
-                              a11y: AppLocalizations.of(context)!.a11yAddTokenManuallyButton,
+                              a11y: AppLocalizations.of(
+                                context,
+                              )!.a11yAddTokenManuallyButton,
                               onPressed: () {
-                                Navigator.pushNamed(context, AddTokenManuallyView.routeName);
+                                Navigator.pushNamed(
+                                  context,
+                                  AddTokenManuallyView.routeName,
+                                );
                               },
                               icon: FocusedItemAsOverlay(
-                                onComplete: () => ref.read(introductionNotifierProvider.notifier).complete(Introduction.addManually),
-                                isFocused: introProv.whenOrNull(data: (data) => data.isConditionFulfilled(ref, Introduction.addManually)) ?? false,
-                                tooltipWhenFocused: AppLocalizations.of(context)!.introAddTokenManually,
+                                onComplete: () => ref
+                                    .read(introductionNotifierProvider.notifier)
+                                    .complete(Introduction.addManually),
+                                isFocused:
+                                    introProv.whenOrNull(
+                                      data: (data) => data.isConditionFulfilled(
+                                        ref,
+                                        Introduction.addManually,
+                                      ),
+                                    ) ??
+                                    false,
+                                tooltipWhenFocused: AppLocalizations.of(
+                                  context,
+                                )!.introAddTokenManually,
                                 child: FittedBox(
                                   child: Icon(
                                     Icons.add_moderator,
-                                    color: Theme.of(context).navigationBarTheme.iconTheme?.resolve({})?.color,
+                                    color: Theme.of(context)
+                                        .navigationBarTheme
+                                        .iconTheme
+                                        ?.resolve({})
+                                        ?.color,
                                   ),
                                 ),
                               ),
@@ -111,24 +146,45 @@ class MainViewNavigationBar extends ConsumerWidget {
                       Expanded(
                         child: Center(
                           child: Padding(
-                            padding: EdgeInsets.only(top: navHeight * 0.1, bottom: navHeight * 0.2),
+                            padding: EdgeInsets.only(
+                              top: navHeight * 0.1,
+                              bottom: navHeight * 0.2,
+                            ),
                             child: FocusedItemAsOverlay(
-                              isFocused: introProv.whenOrNull(data: (data) => data.isConditionFulfilled(ref, Introduction.addFolder)) ?? false,
-                              tooltipWhenFocused: AppLocalizations.of(context)!.introAddFolder,
-                              onComplete: () => ref.read(introductionNotifierProvider.notifier).complete(Introduction.addFolder),
+                              isFocused:
+                                  introProv.whenOrNull(
+                                    data: (data) => data.isConditionFulfilled(
+                                      ref,
+                                      Introduction.addFolder,
+                                    ),
+                                  ) ??
+                                  false,
+                              tooltipWhenFocused: AppLocalizations.of(
+                                context,
+                              )!.introAddFolder,
+                              onComplete: () => ref
+                                  .read(introductionNotifierProvider.notifier)
+                                  .complete(Introduction.addFolder),
                               child: AppBarItem(
-                                a11y: AppLocalizations.of(context)!.a11yAddFolderButton,
+                                a11y: AppLocalizations.of(
+                                  context,
+                                )!.a11yAddFolderButton,
                                 onPressed: () {
                                   showDialog(
                                     context: context,
-                                    builder: (context) => AddTokenFolderDialog(),
+                                    builder: (context) =>
+                                        AddTokenFolderDialog(),
                                     useRootNavigator: false,
                                   );
                                 },
                                 icon: FittedBox(
                                   child: Icon(
                                     Icons.create_new_folder,
-                                    color: Theme.of(context).navigationBarTheme.iconTheme?.resolve({})?.color,
+                                    color: Theme.of(context)
+                                        .navigationBarTheme
+                                        .iconTheme
+                                        ?.resolve({})
+                                        ?.color,
                                   ),
                                 ),
                               ),
@@ -139,11 +195,19 @@ class MainViewNavigationBar extends ConsumerWidget {
                       Expanded(
                         child: Center(
                           child: Padding(
-                            padding: EdgeInsets.only(top: navHeight * 0.2, bottom: navHeight * 0.1),
+                            padding: EdgeInsets.only(
+                              top: navHeight * 0.2,
+                              bottom: navHeight * 0.1,
+                            ),
                             child: AppBarItem(
-                              a11y: AppLocalizations.of(context)!.a11ySettingsButton,
+                              a11y: AppLocalizations.of(
+                                context,
+                              )!.a11ySettingsButton,
                               onPressed: () {
-                                Navigator.pushNamed(context, SettingsView.routeName);
+                                Navigator.pushNamed(
+                                  context,
+                                  SettingsView.routeName,
+                                );
                               },
                               icon: const FittedBox(
                                 child: Icon(Icons.settings),

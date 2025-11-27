@@ -61,7 +61,7 @@ import 'settings_notifier.dart';
 
 part 'token_notifier.g.dart';
 
-final tokenProvider = tokenNotifierProviderOf(
+final tokenProvider = tokenProviderOf(
   firebaseUtils: FirebaseUtils(),
   ioClient: const PrivacyideaIOClient(),
   rsaUtils: const RsaUtils(),
@@ -83,10 +83,10 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     RsaUtils? rsaUtilsOverride,
     PrivacyideaIOClient? ioClientOverride,
     FirebaseUtils? firebaseUtilsOverride,
-  })  : _repoOverride = repoOverride,
-        _rsaUtilsOverride = rsaUtilsOverride,
-        _ioClientOverride = ioClientOverride,
-        _firebaseUtilsOverride = firebaseUtilsOverride;
+  }) : _repoOverride = repoOverride,
+       _rsaUtilsOverride = rsaUtilsOverride,
+       _ioClientOverride = ioClientOverride,
+       _firebaseUtilsOverride = firebaseUtilsOverride;
 
   @override
   TokenRepository get repo => _repoOverride ?? super.repo;
@@ -101,7 +101,8 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   final PrivacyideaIOClient? _ioClientOverride;
 
   @override
-  FirebaseUtils get firebaseUtils => _firebaseUtilsOverride ?? super.firebaseUtils;
+  FirebaseUtils get firebaseUtils =>
+      _firebaseUtilsOverride ?? super.firebaseUtils;
   final FirebaseUtils? _firebaseUtilsOverride;
 
   @override
@@ -174,10 +175,14 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     final failedTokens = await repo.saveOrReplaceTokens(tokens);
     _repoMutex.release();
     if (failedTokens.isNotEmpty) {
-      Logger.warning('Saving tokens failed. Failed Tokens: ${failedTokens.length}');
+      Logger.warning(
+        'Saving tokens failed. Failed Tokens: ${failedTokens.length}',
+      );
     }
     // Every token that is saved should not be in the failedTokens list
-    final savedTokens = tokens.where((element) => !failedTokens.contains(element)).toList();
+    final savedTokens = tokens
+        .where((element) => !failedTokens.contains(element))
+        .toList();
     // Add the saved tokens to the state
     Logger.info('Saved ${savedTokens.length} Tokens to storage.');
     state = AsyncValue.data((await future).addOrReplaceTokens(savedTokens));
@@ -219,14 +224,18 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       _stateMutex.release();
       return failedToReplace;
     }
-    tokens = tokens.where((element) => !failedToReplace.contains(element)).toList();
+    tokens = tokens
+        .where((element) => !failedToReplace.contains(element))
+        .toList();
     await _repoMutex.acquire();
     final failedToSave = await repo.saveOrReplaceTokens<T>(tokens);
     _repoMutex.release();
     if (failedToSave.isNotEmpty) {
       Logger.warning('Failed to save ${failedToSave.length} tokens');
     }
-    tokens = tokens.where((element) => !failedToSave.contains(element)).toList();
+    tokens = tokens
+        .where((element) => !failedToSave.contains(element))
+        .toList();
     state = AsyncValue.data((await future).addOrReplaceTokens(tokens));
     _stateMutex.release();
     return [];
@@ -256,10 +265,14 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     final failedTokens = await repo.deleteTokens(tokens);
     _repoMutex.release();
     if (failedTokens.isNotEmpty) {
-      Logger.warning('Deleting tokens failed. Failed Tokens: ${failedTokens.length}');
+      Logger.warning(
+        'Deleting tokens failed. Failed Tokens: ${failedTokens.length}',
+      );
       return failedTokens;
     }
-    tokens = tokens.where((element) => !failedTokens.contains(element)).toList();
+    tokens = tokens
+        .where((element) => !failedTokens.contains(element))
+        .toList();
     await _stateMutex.acquire();
     state = AsyncValue.data((await future).withoutTokens(tokens));
     _stateMutex.release();
@@ -281,10 +294,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       state = AsyncValue.data(newState);
       _stateMutex.release();
     } catch (e) {
-      Logger.error(
-        'Loading tokens from storage failed.',
-        error: e,
-      );
+      Logger.error('Loading tokens from storage failed.', error: e);
       _stateMutex.release();
       return (await future);
     }
@@ -313,7 +323,10 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   */
 
   /// Updates a token and returns the updated token if successful, the old token if not and null if the token does not exist.
-  Future<T?> _updateToken<T extends Token>(T token, T Function(T) updater) async {
+  Future<T?> _updateToken<T extends Token>(
+    T token,
+    T Function(T) updater,
+  ) async {
     final current = (await future).currentOf<T>(token);
     if (current == null) {
       Logger.warning('Tried to update a token that does not exist.');
@@ -326,7 +339,10 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
 
   /// Updates a list of tokens and returns the updated tokens if successful.
   /// Returns the old tokens if not and an empty list if the tokens does not exist.
-  Future<List<T>> _updateTokens<T extends Token>(List<T> tokens, T Function(T) updater) async {
+  Future<List<T>> _updateTokens<T extends Token>(
+    List<T> tokens,
+    T Function(T) updater,
+  ) async {
     if (tokens.isEmpty) return [];
     List<T> updatedTokens = [];
     for (final token in tokens) {
@@ -337,7 +353,10 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     await _replaceTokens(updatedTokens);
 
     final newState = (await future);
-    return newState.tokens.whereType<T>().where((stateToken) => tokens.contains(stateToken)).toList();
+    return newState.tokens
+        .whereType<T>()
+        .where((stateToken) => tokens.contains(stateToken))
+        .toList();
   }
 
   /*
@@ -366,28 +385,38 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   Future<bool> addOrReplaceToken(Token token) => _addOrReplaceToken(token);
 
   /// Adds or replaces a list of tokens and returns the tokens that could not be added or replaced.
-  Future<List<Token>> addOrReplaceTokens(List<Token> tokens) => _addOrReplaceTokens(tokens)..then((value) => _handlePushTokensIfExist());
+  Future<List<Token>> addOrReplaceTokens(List<Token> tokens) =>
+      _addOrReplaceTokens(tokens)..then((value) => _handlePushTokensIfExist());
 
   /// Updates a token and returns the updated token if successful, the old token if not and null if the token does not exist.
-  Future<T?> updateToken<T extends Token>(T token, T Function(T) updater) => _updateToken(token, updater);
+  Future<T?> updateToken<T extends Token>(T token, T Function(T) updater) =>
+      _updateToken(token, updater);
 
   /// Updates a list of tokens and returns the updated tokens if successful, the old tokens if not and an empty list if the tokens does not exist.
-  Future<List<T>> updateTokens<T extends Token>(List<T> tokens, T Function(T) updater) => _updateTokens(tokens, updater);
+  Future<List<T>> updateTokens<T extends Token>(
+    List<T> tokens,
+    T Function(T) updater,
+  ) => _updateTokens(tokens, updater);
 
   /// Increments the counter of a HOTPToken and returns the updated token if successful, the old token if not and null if the token does not exist.
-  Future<HOTPToken?> incrementCounter(HOTPToken token) => _updateToken(token, (p0) => p0.copyWith(counter: token.counter + 1));
+  Future<HOTPToken?> incrementCounter(HOTPToken token) =>
+      _updateToken(token, (p0) => p0.copyWith(counter: token.counter + 1));
 
   /// Hides a token and returns the updated token ifTok successful, the old token if not and null if the token does not exist.
-  Future<T?> hideToken<T extends Token>(T token) => _updateToken(token, (p0) => p0.copyWith(isHidden: true) as T);
+  Future<T?> hideToken<T extends Token>(T token) =>
+      _updateToken(token, (p0) => p0.copyWith(isHidden: true) as T);
 
   /// Shows a token and returns the updated token if successful, the old token if not and null if the token does not exist or the user is not authenticated.
   Future<T?> showToken<T extends OTPToken>(T token) async {
     final authenticated = await lockAuth(
-      localization: ref.read(localizationNotifierProvider),
+      localization: ref.read(localizationProvider),
       reason: (localization) => localization.authenticateToShowOtp,
     );
     if (!authenticated) return null;
-    final updated = await _updateToken(token, (p0) => p0.copyWith(isHidden: false) as T);
+    final updated = await _updateToken(
+      token,
+      (p0) => p0.copyWith(isHidden: false) as T,
+    );
     if (updated?.isHidden == false) {
       _hidingTimers[token.id]?.cancel();
       _hidingTimers[token.id] = Timer(token.showDuration, () async {
@@ -432,7 +461,11 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
         lockedTokens.add(token);
       }
     }
-    return (await updateTokens(lockedTokens, (p0) => p0.copyWith(isHidden: true))).length == lockedTokens.length;
+    return (await updateTokens(
+          lockedTokens,
+          (p0) => p0.copyWith(isHidden: true),
+        )).length ==
+        lockedTokens.length;
   }
 
   /// Removes a token from the state and the repository.
@@ -456,7 +489,9 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   }
 
   Future<void> removeTokensBySerials(List<String> serials) async {
-    final tokens = (await future).tokens.where((token) => serials.contains(token.serial)).toList();
+    final tokens = (await future).tokens
+        .where((token) => serials.contains(token.serial))
+        .toList();
     await removeTokens(tokens);
   }
 
@@ -469,7 +504,8 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     } on SocketException {
       Logger.warning('Could not delete firebase token.');
       ref.read(statusMessageProvider.notifier).state = StatusMessage(
-        message: (localization) => localization.errorUnlinkingPushToken(token.label),
+        message: (localization) =>
+            localization.errorUnlinkingPushToken(token.label),
         details: (localization) => localization.checkYourNetwork,
       );
       return false;
@@ -483,22 +519,38 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     final fbToken = await firebaseUtils.getFBToken();
 
     if (fbToken == null) {
-      await _updateTokens((await future).pushTokens, (p0) => p0.copyWith(fbToken: null));
-      Logger.warning('Could not update firebase token because no firebase token is available.');
+      await _updateTokens(
+        (await future).pushTokens,
+        (p0) => p0.copyWith(fbToken: null),
+      );
+      Logger.warning(
+        'Could not update firebase token because no firebase token is available.',
+      );
       ref.read(statusMessageProvider.notifier).state = StatusMessage(
-        message: (localization) => localization.errorSynchronizationNoNetworkConnection,
-        details: (localization) => localization.syncFbTokenManuallyWhenNetworkIsAvailable,
+        message: (localization) =>
+            localization.errorSynchronizationNoNetworkConnection,
+        details: (localization) =>
+            localization.syncFbTokenManuallyWhenNetworkIsAvailable,
       );
       return deleted;
     }
 
-    final (notUpdated, _) = (await updateFirebaseTokens(tokens: (await future).pushTokens, firebaseToken: fbToken)) ?? (<PushToken>[], <PushToken>[]);
+    final (notUpdated, _) =
+        (await updateFirebaseTokens(
+          tokens: (await future).pushTokens,
+          firebaseToken: fbToken,
+        )) ??
+        (<PushToken>[], <PushToken>[]);
     await _updateTokens(notUpdated, (p0) => p0.copyWith(fbToken: null));
     if (notUpdated.isNotEmpty) {
-      Logger.warning('Could not update firebase token for ${notUpdated.length} tokens.');
+      Logger.warning(
+        'Could not update firebase token for ${notUpdated.length} tokens.',
+      );
       ref.read(statusMessageProvider.notifier).state = StatusMessage(
-        message: (localization) => localization.errorSynchronizationNoNetworkConnection,
-        details: (localization) => localization.syncFbTokenManuallyWhenNetworkIsAvailable,
+        message: (localization) =>
+            localization.errorSynchronizationNoNetworkConnection,
+        details: (localization) =>
+            localization.syncFbTokenManuallyWhenNetworkIsAvailable,
       );
     }
     return deleted;
@@ -511,22 +563,32 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       return false;
     }
 
-    assert(pushToken.url != null, 'Token url is null. Cannot rollout token without url.');
+    assert(
+      pushToken.url != null,
+      'Token url is null. Cannot rollout token without url.',
+    );
     Logger.info('Rolling out token "${pushToken.id}"');
     if (pushToken.isRolledOut) {
-      Logger.info('Ignoring rollout request: Token "${pushToken.id}" already rolled out.');
+      Logger.info(
+        'Ignoring rollout request: Token "${pushToken.id}" already rolled out.',
+      );
       return true;
     }
     if (pushToken.rolloutState.rollOutInProgress) {
-      Logger.info('Ignoring rollout request: Rollout of token "${pushToken.id}" already started. Tokenstate: ${pushToken.rolloutState} ');
+      Logger.info(
+        'Ignoring rollout request: Rollout of token "${pushToken.id}" already started. Tokenstate: ${pushToken.rolloutState} ',
+      );
       return false;
     }
     if (pushToken.expirationDate?.isBefore(DateTime.now()) == true) {
-      Logger.info('Ignoring rollout request: Token "${pushToken.id}" is expired. ');
+      Logger.info(
+        'Ignoring rollout request: Token "${pushToken.id}" is expired. ',
+      );
 
       ref.read(statusMessageProvider.notifier).state = StatusMessage(
         message: (localization) => localization.errorRollOutNotPossibleAnymore,
-        details: (localization) => localization.errorTokenExpired(pushToken!.label),
+        details: (localization) =>
+            localization.errorTokenExpired(pushToken!.label),
       );
 
       await _removeToken(pushToken);
@@ -534,8 +596,15 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     }
 
     if (pushToken.privateTokenKey == null) {
-      Logger.info('Updating rollout state of token "${pushToken.id}" to generatingRSAKeyPair');
-      pushToken = await _updateToken(pushToken, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.generatingRSAKeyPair));
+      Logger.info(
+        'Updating rollout state of token "${pushToken.id}" to generatingRSAKeyPair',
+      );
+      pushToken = await _updateToken(
+        pushToken,
+        (p0) => p0.copyWith(
+          rolloutState: PushTokenRollOutState.generatingRSAKeyPair,
+        ),
+      );
       if (pushToken == null) {
         Logger.warning('Tried to update a token that does not exist.');
         return false;
@@ -545,7 +614,8 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
         final keyPair = await rsaUtils.generateRSAKeyPair();
         pushToken = pushToken.withPrivateTokenKey(keyPair.privateKey);
         pushToken = pushToken.withPublicTokenKey(keyPair.publicKey);
-        pushToken = await _updateToken(pushToken, (p0) {
+        pushToken =
+            await _updateToken(pushToken, (p0) {
               p0 = p0.withPrivateTokenKey(keyPair.privateKey);
               return p0.withPublicTokenKey(keyPair.publicKey);
             }) ??
@@ -561,13 +631,23 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
           Logger.warning('Tried to update a token that does not exist.');
           return false;
         }
-        pushToken = await _updateToken(pushToken, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.generatingRSAKeyPairFailed));
+        pushToken = await _updateToken(
+          pushToken,
+          (p0) => p0.copyWith(
+            rolloutState: PushTokenRollOutState.generatingRSAKeyPairFailed,
+          ),
+        );
         return false;
       }
     }
     String? fbToken;
     if (pushToken.isPollOnly != true) {
-      pushToken = await _updateToken(pushToken, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.receivingFirebaseToken));
+      pushToken = await _updateToken(
+        pushToken,
+        (p0) => p0.copyWith(
+          rolloutState: PushTokenRollOutState.receivingFirebaseToken,
+        ),
+      );
       if (pushToken == null) {
         Logger.warning('Tried to update a token that does not exist.');
         return false;
@@ -575,29 +655,56 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       try {
         fbToken = await firebaseUtils.getFBToken();
       } catch (e, s) {
-        Logger.warning('Could not get firebase token.', error: e, stackTrace: s);
+        Logger.warning(
+          'Could not get firebase token.',
+          error: e,
+          stackTrace: s,
+        );
         showErrorStatusMessage(
           message: (l) => l.errorRollOutFailed(pushToken!.label),
           details: (l) => l.noFbToken,
         );
-        pushToken = await _updateToken(pushToken, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed));
-        if (pushToken == null) Logger.warning('Tried to update a token that does not exist.');
+        pushToken = await _updateToken(
+          pushToken,
+          (p0) => p0.copyWith(
+            rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed,
+          ),
+        );
+        if (pushToken == null)
+          Logger.warning('Tried to update a token that does not exist.');
         return false;
       }
     }
-    pushToken = await _updateToken(pushToken, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKey));
+    pushToken = await _updateToken(
+      pushToken,
+      (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKey),
+    );
     if (pushToken == null) {
       Logger.warning('Tried to update a token that does not exist.');
       return false;
     }
     if (!kIsWeb && Platform.isIOS) {
-      Logger.warning('Triggering network access permission for token "${pushToken.id}"');
-      if (!await ioClient.triggerNetworkAccessPermission(url: pushToken.url!, sslVerify: pushToken.sslVerify)) {
-        Logger.warning('Network access permission for token "${pushToken.id}" failed.');
-        _updateToken(pushToken, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed));
+      Logger.warning(
+        'Triggering network access permission for token "${pushToken.id}"',
+      );
+      if (!await ioClient.triggerNetworkAccessPermission(
+        url: pushToken.url!,
+        sslVerify: pushToken.sslVerify,
+      )) {
+        Logger.warning(
+          'Network access permission for token "${pushToken.id}" failed.',
+        );
+        _updateToken(
+          pushToken,
+          (p0) => p0.copyWith(
+            rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed,
+          ),
+        );
         return false;
       }
-      Logger.warning('Network access permission for token "${pushToken.id}" successful.');
+      Logger.warning(
+        'Network access permission for token "${pushToken.id}" successful.',
+      );
     }
     Response response;
     try {
@@ -611,17 +718,25 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
           'enrollment_credential': pushToken.enrollmentCredentials,
           'serial': pushToken.serial,
           'fbtoken': fbToken ?? NoFirebaseUtils.NO_FIREBASE_TOKEN,
-          'pubkey': rsaUtils.serializeRSAPublicKeyPKCS8(pushToken.rsaPublicTokenKey!),
+          'pubkey': rsaUtils.serializeRSAPublicKeyPKCS8(
+            pushToken.rsaPublicTokenKey!,
+          ),
         },
       );
     } catch (e, s) {
-      pushToken = await _updateToken(pushToken, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed));
+      pushToken = await _updateToken(
+        pushToken,
+        (p0) => p0.copyWith(
+          rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed,
+        ),
+      );
       if (pushToken == null) {
         Logger.warning('Tried to update a token that does not exist.');
         return false;
       }
       ref.read(statusMessageProvider.notifier).state = StatusMessage(
-        message: (localization) => localization.errorRollOutUnknownError(pushToken!.label),
+        message: (localization) =>
+            localization.errorRollOutUnknownError(pushToken!.label),
       );
       Logger.error('Roll out push token failed.', error: e, stackTrace: s);
       return false;
@@ -630,35 +745,65 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     if (HttpStatusChecker.isError(response.statusCode)) {
       Logger.warning(
         'Post request on roll out failed.',
-        error: 'Token: ${pushToken.serial}\nStatus code: ${response.statusCode},\nURL:${response.request?.url}\nBody: ${response.body}',
+        error:
+            'Token: ${pushToken.serial}\nStatus code: ${response.statusCode},\nURL:${response.request?.url}\nBody: ${response.body}',
       );
       _showPushRolloutStatus(response, pushToken.label);
-      pushToken = await _updateToken(pushToken, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed));
+      pushToken = await _updateToken(
+        pushToken,
+        (p0) => p0.copyWith(
+          rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed,
+        ),
+      );
       return false;
     }
-    pushToken = await _updateToken(pushToken, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.parsingResponse, fbToken: fbToken));
+    pushToken = await _updateToken(
+      pushToken,
+      (p0) => p0.copyWith(
+        rolloutState: PushTokenRollOutState.parsingResponse,
+        fbToken: fbToken,
+      ),
+    );
     if (pushToken == null) {
       Logger.warning('Tried to update a token that does not exist.');
       return false;
     }
     try {
       RSAPublicKey publicServerKey = await _parseRollOutResponse(response);
-      pushToken = await _updateToken(pushToken, (p0) => p0.withPublicServerKey(publicServerKey));
+      pushToken = await _updateToken(
+        pushToken,
+        (p0) => p0.withPublicServerKey(publicServerKey),
+      );
       if (pushToken == null) {
         Logger.warning('Tried to update a token that does not exist.');
         return false;
       }
     } on FormatException catch (e, s) {
-      Logger.error('Error while parsing RSA public key.', error: e, stackTrace: s);
+      Logger.error(
+        'Error while parsing RSA public key.',
+        error: e,
+        stackTrace: s,
+      );
       if (pushToken == null) {
         Logger.warning('Tried to update a token that does not exist.');
         return false;
       }
-      pushToken = await _updateToken(pushToken, (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.parsingResponseFailed));
+      pushToken = await _updateToken(
+        pushToken,
+        (p0) => p0.copyWith(
+          rolloutState: PushTokenRollOutState.parsingResponseFailed,
+        ),
+      );
       return false;
     }
     Logger.info('Roll out successful');
-    pushToken = await _updateToken(pushToken, (p0) => p0.copyWith(isRolledOut: true, rolloutState: PushTokenRollOutState.rolloutComplete));
+    pushToken = await _updateToken(
+      pushToken,
+      (p0) => p0.copyWith(
+        isRolledOut: true,
+        rolloutState: PushTokenRollOutState.rolloutComplete,
+      ),
+    );
     checkNotificationPermission();
 
     return true;
@@ -666,8 +811,13 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
 
   final _updateFbTokenMutex = Mutex();
 
-  Future<(List<PushToken>, List<PushToken>)?> updateAllFirebaseTokens({String? firebaseToken}) async {
-    return updateFirebaseTokens(tokens: (await future).pushTokens, firebaseToken: firebaseToken);
+  Future<(List<PushToken>, List<PushToken>)?> updateAllFirebaseTokens({
+    String? firebaseToken,
+  }) async {
+    return updateFirebaseTokens(
+      tokens: (await future).pushTokens,
+      firebaseToken: firebaseToken,
+    );
   }
 
   /// This method attempts to update the fbToken for all PushTokens that can be
@@ -682,7 +832,10 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   /// This should only be used to attempt to update the fbToken automatically,
   /// as this can not be guaranteed to work. There is a manual option available
   /// through the settings also.
-  Future<(List<PushToken>, List<PushToken>)?> updateFirebaseTokens({required List<PushToken> tokens, String? firebaseToken}) async {
+  Future<(List<PushToken>, List<PushToken>)?> updateFirebaseTokens({
+    required List<PushToken> tokens,
+    String? firebaseToken,
+  }) async {
     if (tokens.isEmpty) {
       Logger.info('No tokens to update.');
       return null;
@@ -693,7 +846,9 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     final List<PushToken> failedTokens = [];
     final List<PushToken> unsuportedTokens = [];
     final pollOnlyTokens = tokens.where((t) => t.isPollOnly == true).toList();
-    final notPollOnlyTokens = tokens.where((t) => t.isPollOnly != true).toList();
+    final notPollOnlyTokens = tokens
+        .where((t) => t.isPollOnly != true)
+        .toList();
 
     try {
       Logger.info('Updating firebase token if needed.');
@@ -742,7 +897,11 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
         await firebaseUtils.setCurrentFirebaseToken(firebaseToken);
       }
     } catch (e, s) {
-      Logger.error('Error while updating firebase token.', error: e, stackTrace: s);
+      Logger.error(
+        'Error while updating firebase token.',
+        error: e,
+        stackTrace: s,
+      );
       _updateFbTokenMutex.release();
       return null;
     }
@@ -750,7 +909,10 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     return (failedTokens, unsuportedTokens);
   }
 
-  Future<bool> updateFirebaseToken(PushToken token, String firebaseToken) async {
+  Future<bool> updateFirebaseToken(
+    PushToken token,
+    String firebaseToken,
+  ) async {
     // POST /ttype/push HTTP/1.1
     //Host: example.com
     //
@@ -763,12 +925,19 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     String message = '$firebaseToken|${token.serial}|$timestamp';
     String? signature = await rsaUtils.trySignWithToken(token, message);
     if (signature == null) {
-      Logger.error('Cannot update firebase token for push token "${token.serial}". No signature available.');
+      Logger.error(
+        'Cannot update firebase token for push token "${token.serial}". No signature available.',
+      );
       return false;
     }
     Response response = await ioClient.doPost(
       url: token.url!,
-      body: {'new_fb_token': firebaseToken, 'serial': token.serial, 'timestamp': timestamp, 'signature': signature},
+      body: {
+        'new_fb_token': firebaseToken,
+        'serial': token.serial,
+        'timestamp': timestamp,
+        'signature': signature,
+      },
       sslVerify: token.sslVerify,
     );
     if (HttpStatusChecker.isError(response.statusCode)) {
@@ -789,13 +958,20 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   Future<bool> handleLink(Uri uri) async {
     final tokenResults = await TokenImportSchemeProcessor.processUriByAny(uri);
     if (tokenResults == null) return false; // Not a valid token link
-    if (tokenResults.isEmpty) return true; // Link was valid but contained no tokens
-    await handleProcessorResults(tokenResults, args: {'TokenOriginSourceType': TokenOriginSourceType.link});
+    if (tokenResults.isEmpty)
+      return true; // Link was valid but contained no tokens
+    await handleProcessorResults(
+      tokenResults,
+      args: {'TokenOriginSourceType': TokenOriginSourceType.link},
+    );
     return true; // Link was valid and contained tokens
   }
 
   @override
-  Future<void> handleProcessorResult(ProcessorResult result, {Map<String, dynamic> args = const {}}) {
+  Future<void> handleProcessorResult(
+    ProcessorResult result, {
+    Map<String, dynamic> args = const {},
+  }) {
     if (result is ProcessorResult<Token>) {
       return handleProcessorResults([result], args: args);
     }
@@ -803,27 +979,49 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   }
 
   @override
-  Future handleProcessorResults(List<ProcessorResult> results, {Map<String, dynamic> args = const {}}) async {
-    final List<ProcessorResult<Token>> tokenResults = results.whereType<ProcessorResult<Token>>().toList();
+  Future handleProcessorResults(
+    List<ProcessorResult> results, {
+    Map<String, dynamic> args = const {},
+  }) async {
+    final List<ProcessorResult<Token>> tokenResults = results
+        .whereType<ProcessorResult<Token>>()
+        .toList();
     if (tokenResults.isEmpty) return;
     final List<Token> resultTokens = tokenResults.getData();
     final stateTokens = (await future).tokens;
-    final tokenOriginSourceType = (args['TokenOriginSourceType'] as TokenOriginSourceType?);
-    var tokenImportType = (args['TokenImportType'] as TokenImportType?) ?? TokenImportType.qrScan;
+    final tokenOriginSourceType =
+        (args['TokenOriginSourceType'] as TokenOriginSourceType?);
+    var tokenImportType =
+        (args['TokenImportType'] as TokenImportType?) ?? TokenImportType.qrScan;
     try {
-      if (resultTokens.isNotEmpty && (resultTokens.length > 1 || stateTokens.any((e) => resultTokens.first.isSameTokenAs(e) == true))) {
-        _showImportTokensPage(tokenResults, tokenOriginSourceType!, tokenImportType);
+      if (resultTokens.isNotEmpty &&
+          (resultTokens.length > 1 ||
+              stateTokens.any(
+                (e) => resultTokens.first.isSameTokenAs(e) == true,
+              ))) {
+        _showImportTokensPage(
+          tokenResults,
+          tokenOriginSourceType!,
+          tokenImportType,
+        );
         return;
       }
     } catch (error, stackTrace) {
-      Logger.error('Error while processing QR code.', error: error, stackTrace: stackTrace);
+      Logger.error(
+        'Error while processing QR code.',
+        error: error,
+        stackTrace: stackTrace,
+      );
       return;
     }
-    final tokensWithSourceType = _addSourceType(resultTokens, tokenOriginSourceType);
+    final tokensWithSourceType = _addSourceType(
+      resultTokens,
+      tokenOriginSourceType,
+    );
     addNewTokens(tokensWithSourceType);
   }
 
-/* /////////////////////////////////////////////////////////////////////////////
+  /* /////////////////////////////////////////////////////////////////////////////
 ///////////////////////////// Helper Methods //////////////////////////////////-
 ///////////////////////////////////////////////////////////////////////////// */
 
@@ -832,25 +1030,38 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     TokenOriginSourceType tokenOriginSourceType,
     TokenImportType tokenImportType,
   ) async {
-    final tokensToKeep = await Navigator.of(globalNavigatorKey.currentContext!).push<List<Token>>(
-      MaterialPageRoute<List<Token>>(
-        builder: (context) => ImportPlainTokensPage(
-          titleName: AppLocalizations.of(context)!.importTokens,
-          processorResults: tokenResults,
-          selectedType: tokenImportType,
-        ),
-      ),
-    );
+    final tokensToKeep = await Navigator.of(globalNavigatorKey.currentContext!)
+        .push<List<Token>>(
+          MaterialPageRoute<List<Token>>(
+            builder: (context) => ImportPlainTokensPage(
+              titleName: AppLocalizations.of(context)!.importTokens,
+              processorResults: tokenResults,
+              selectedType: tokenImportType,
+            ),
+          ),
+        );
     if (tokensToKeep == null) return;
-    final tokensWithSourceType = _addSourceType(tokensToKeep, tokenOriginSourceType);
+    final tokensWithSourceType = _addSourceType(
+      tokensToKeep,
+      tokenOriginSourceType,
+    );
     await addNewTokens(tokensWithSourceType);
   }
 
-  List<Token> _addSourceType(List<Token> tokens, TokenOriginSourceType? tokenOriginSourceType) => tokens
-      .map((e) => e.copyWith(
-            origin: e.origin?.copyWith(source: tokenOriginSourceType) ??
-                TokenOriginSourceType.unknown.toTokenOrigin(data: 'No Origindata available', isPrivacyIdeaToken: null),
-          ))
+  List<Token> _addSourceType(
+    List<Token> tokens,
+    TokenOriginSourceType? tokenOriginSourceType,
+  ) => tokens
+      .map(
+        (e) => e.copyWith(
+          origin:
+              e.origin?.copyWith(source: tokenOriginSourceType) ??
+              TokenOriginSourceType.unknown.toTokenOrigin(
+                data: 'No Origindata available',
+                isPrivacyIdeaToken: null,
+              ),
+        ),
+      )
       .toList();
 
   Future<RSAPublicKey> _parseRollOutResponse(Response response) async {
@@ -863,7 +1074,10 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
 
       return rsaUtils.deserializeRSAPublicKeyPKCS1(key);
     } on FormatException catch (e) {
-      throw FormatException('Response body does not contain RSA public key.', e);
+      throw FormatException(
+        'Response body does not contain RSA public key.',
+        e,
+      );
     }
   }
 
@@ -879,7 +1093,9 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
         _pushTokenHandlerMutex.release();
         return;
       }
-      final rolledOutPushNoFb = (await future).rolledOutPushTokens.where((element) => element.fbToken == null).toList();
+      final rolledOutPushNoFb = (await future).rolledOutPushTokens
+          .where((element) => element.fbToken == null)
+          .toList();
       if (rolledOutPushNoFb.isNotEmpty) {
         // If there is rolled out push tokens without fbToken, we need to update the firebase token for them.
         await updateFirebaseTokens(tokens: rolledOutPushNoFb);
@@ -892,14 +1108,20 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
         await rolloutPushToken(element);
       }
     } catch (e, s) {
-      Logger.error('Unexpected error while handling push tokens.', error: e, stackTrace: s);
+      Logger.error(
+        'Unexpected error while handling push tokens.',
+        error: e,
+        stackTrace: s,
+      );
       _pushTokenHandlerMutex.release();
     } finally {}
     _pushTokenHandlerMutex.release();
   }
 
   Future<T?> getTokenById<T extends Token>(String id) async {
-    return (await future).tokens.whereType<T>().firstWhereOrNull((element) => element.id == id);
+    return (await future).tokens.whereType<T>().firstWhereOrNull(
+      (element) => element.id == id,
+    );
   }
 
   void _cancelTimers() {
@@ -913,12 +1135,12 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     // Show more detailed error messages for specific status codes
     StatusMessage? statusMessage = switch (response.statusCode) {
       408 => StatusMessage(
-          message: (l) => l.errorRollOutNoConnectionToServer(tokenLabel),
-        ),
+        message: (l) => l.errorRollOutNoConnectionToServer(tokenLabel),
+      ),
       525 => StatusMessage(
-          message: (l) => l.errorRollOutSSLHandshakeFailed,
-          details: (l) => l.checkServerCertificate,
-        ),
+        message: (l) => l.errorRollOutSSLHandshakeFailed,
+        details: (l) => l.checkServerCertificate,
+      ),
       _ => null,
     };
 
@@ -926,17 +1148,22 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     // or fallback to a generic error message and the status code as details.
     if (statusMessage == null) {
       try {
-        final String message = response.body.isNotEmpty ? (json.decode(response.body)['result']?['error']?['message']) : '';
+        final String message = response.body.isNotEmpty
+            ? (json.decode(response.body)['result']?['error']?['message'])
+            : '';
         statusMessage = StatusMessage(
-          message: (localization) => localization.errorRollOutFailed(tokenLabel),
+          message: (localization) =>
+              localization.errorRollOutFailed(tokenLabel),
           details: (_) => message.toString(),
         );
       } on FormatException {
         // Format Exception is thrown if the response body is not a valid json. This happens if the server is not reachable.
 
         statusMessage = StatusMessage(
-          message: (localization) => localization.errorRollOutFailed(tokenLabel),
-          details: (localization) => localization.statusCode(response.statusCode),
+          message: (localization) =>
+              localization.errorRollOutFailed(tokenLabel),
+          details: (localization) =>
+              localization.statusCode(response.statusCode),
         );
       }
     }

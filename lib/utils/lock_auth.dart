@@ -36,7 +36,11 @@ bool _authenticationInProgress = false;
 /// Sends a request to the OS to authenticate the user. Returns true if the user was authenticated, false otherwise.
 /// If the device does not support authentication or authentication is not set up, a dialog is shown to the user.
 /// If [autoAuthIfUnsupported] is set to true and the device does not support authentication, the function will return true.
-Future<bool> lockAuth({required String Function(AppLocalizations) reason, required AppLocalizations localization, bool autoAuthIfUnsupported = false}) async {
+Future<bool> lockAuth({
+  required String Function(AppLocalizations) reason,
+  required AppLocalizations localization,
+  bool autoAuthIfUnsupported = false,
+}) async {
   bool didAuthenticate = false;
   LocalAuthentication localAuth = LocalAuthentication();
   final isDeviceSupported = await localAuth.isDeviceSupported();
@@ -56,9 +60,7 @@ Future<bool> lockAuth({required String Function(AppLocalizations) reason, requir
             leading: const Icon(Icons.lock),
             trailing: const Icon(Icons.lock),
           ),
-          content: Text(
-            AppLocalizations.of(context)!.authNotSupportedBody,
-          ),
+          content: Text(AppLocalizations.of(context)!.authNotSupportedBody),
         );
       },
     );
@@ -66,32 +68,21 @@ Future<bool> lockAuth({required String Function(AppLocalizations) reason, requir
   }
 
   AndroidAuthMessages androidAuthStrings = AndroidAuthMessages(
-    biometricRequiredTitle: localization.biometricRequiredTitle,
-    biometricHint: localization.biometricHint,
-    biometricNotRecognized: localization.biometricNotRecognized,
-    biometricSuccess: localization.biometricSuccess,
-    deviceCredentialsRequiredTitle: localization.deviceCredentialsRequiredTitle,
-    deviceCredentialsSetupDescription: localization.deviceCredentialsSetupDescription,
     signInTitle: localization.signInTitle,
-    goToSettingsButton: localization.goToSettingsButton,
-    goToSettingsDescription: localization.goToSettingsDescription,
     cancelButton: localization.cancel,
   );
 
   IOSAuthMessages iOSAuthStrings = IOSAuthMessages(
-    lockOut: localization.lockOut,
-    goToSettingsButton: localization.goToSettingsButton,
-    goToSettingsDescription: localization.goToSettingsDescription,
     cancelButton: localization.cancel,
   );
 
   try {
     if (!_authenticationInProgress) {
       _authenticationInProgress = true;
-      didAuthenticate = await localAuth.authenticate(localizedReason: reason(localization), authMessages: [
-        androidAuthStrings,
-        iOSAuthStrings,
-      ]);
+      didAuthenticate = await localAuth.authenticate(
+        localizedReason: reason(localization),
+        authMessages: [androidAuthStrings, iOSAuthStrings],
+      );
     }
   } on PlatformException catch (e, s) {
     Logger.warning("Authentication failed", error: e, stackTrace: s);

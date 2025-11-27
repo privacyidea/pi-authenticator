@@ -14,7 +14,7 @@ publish_to: none
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 4.6.0+406004 # TODO Set the right version number
+version: 4.6.1+406101 # TODO Set the right version number
 
 # version: major.minor.build          + 2x major|2x minor|3x build
 # version: version number             + build number (optional)
@@ -31,10 +31,10 @@ dependencies:
   basic_utils: ^5.7.0
   camera_android: ^0.10.10
   collection: ^1.18.0
-  connectivity_plus: ^6.1.0
+  connectivity_plus: ^7.0.0
   crypto: ^3.0.6
   cryptography: ^2.7.0
-  device_info_plus: ^11.1.0
+  device_info_plus: ^12.2.0
   easy_dynamic_theme: ^2.3.1
   encrypt: ^5.0.3
   expandable: ^5.0.1
@@ -61,23 +61,23 @@ dependencies:
   home_widget: ^0.8.0
   http: ^1.2.2
   image: ^4.3.0
-  image_cropper: ^9.0.0
+  image_cropper: ^11.0.0
   image_picker: ^1.1.2
   intl: ^0.20.2
   json_annotation: ^4.9.0
-  local_auth: ^2.3.0
-  local_auth_android: ^1.0.46
-  local_auth_darwin: ^1.4.1
+  local_auth: ^3.0.0
+  local_auth_android: ^2.0.3
+  local_auth_darwin: ^2.0.1
   logger: ^2.4.0
   material_design_icons_flutter: ^7.0.7296
   mutex: ^3.1.0
   no_screenshot: ^0.3.1
   otp: ^3.1.4
-  package_info_plus: ^8.1.0
+  package_info_plus: ^9.0.0
   path_provider: ^2.1.4
   permission_handler: ^12.0.1
   pointycastle: ^3.9.1
-  protobuf: ^4.1.1
+  protobuf: ^6.0.0
   riverpod_annotation: ^3.0.0-dev.17
   shared_preferences: ^2.3.2
   simple_icons: ^14.6.1

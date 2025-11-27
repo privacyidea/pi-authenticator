@@ -27,18 +27,22 @@ import '../../../logger.dart';
 
 part 'introduction_provider.g.dart';
 
-final introductionNotifierProvider = introductionNotifierProviderOf(repo: PreferenceIntroductionRepository());
+final introductionNotifierProvider = introductionProviderOf(
+  repo: PreferenceIntroductionRepository(),
+);
 
 @Riverpod(keepAlive: true)
 class IntroductionNotifier extends _$IntroductionNotifier {
   final IntroductionRepository? _repositoryOverride;
   late final IntroductionRepository _repo;
   IntroductionNotifier({IntroductionRepository? repoOverride})
-      : _repositoryOverride = repoOverride,
-        super();
+    : _repositoryOverride = repoOverride,
+      super();
 
   @override
-  Future<IntroductionState> build({required IntroductionRepository repo}) async {
+  Future<IntroductionState> build({
+    required IntroductionRepository repo,
+  }) async {
     Logger.info('New IntroductionNotifier created');
     _repo = _repositoryOverride ?? repo;
     return await _loadFromRepo();

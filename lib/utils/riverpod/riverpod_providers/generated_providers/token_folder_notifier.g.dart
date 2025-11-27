@@ -6,8 +6,11 @@ part of 'token_folder_notifier.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(TokenFolderNotifier)
-const tokenFolderNotifierProviderOf = TokenFolderNotifierFamily._();
+const tokenFolderProviderOf = TokenFolderNotifierFamily._();
 
 final class TokenFolderNotifierProvider
     extends $NotifierProvider<TokenFolderNotifier, TokenFolderState> {
@@ -16,7 +19,7 @@ final class TokenFolderNotifierProvider
     required TokenFolderRepository super.argument,
   }) : super(
          retry: null,
-         name: r'tokenFolderNotifierProviderOf',
+         name: r'tokenFolderProviderOf',
          isAutoDispose: false,
          dependencies: null,
          $allTransitiveDependencies: null,
@@ -27,7 +30,7 @@ final class TokenFolderNotifierProvider
 
   @override
   String toString() {
-    return r'tokenFolderNotifierProviderOf'
+    return r'tokenFolderProviderOf'
         ''
         '($argument)';
   }
@@ -70,7 +73,7 @@ final class TokenFolderNotifierFamily extends $Family
   const TokenFolderNotifierFamily._()
     : super(
         retry: null,
-        name: r'tokenFolderNotifierProviderOf',
+        name: r'tokenFolderProviderOf',
         dependencies: null,
         $allTransitiveDependencies: null,
         isAutoDispose: false,
@@ -80,7 +83,7 @@ final class TokenFolderNotifierFamily extends $Family
       TokenFolderNotifierProvider._(argument: repo, from: this);
 
   @override
-  String toString() => r'tokenFolderNotifierProviderOf';
+  String toString() => r'tokenFolderProviderOf';
 }
 
 abstract class _$TokenFolderNotifier extends $Notifier<TokenFolderState> {
@@ -104,6 +107,3 @@ abstract class _$TokenFolderNotifier extends $Notifier<TokenFolderState> {
     element.handleValue(ref, created);
   }
 }
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

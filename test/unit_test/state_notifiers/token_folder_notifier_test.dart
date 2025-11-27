@@ -19,10 +19,20 @@ void _testTokenFolderNotifier() {
       final mockRepo = MockTokenFolderRepository();
       final container = ProviderContainer();
       const TokenFolderState before = TokenFolderState(folders: []);
-      const TokenFolderState after = TokenFolderState(folders: [TokenFolder(label: 'test', folderId: 1, isExpanded: false, isLocked: false, sortIndex: null)]);
+      const TokenFolderState after = TokenFolderState(
+        folders: [
+          TokenFolder(
+            label: 'test',
+            folderId: 1,
+            isExpanded: false,
+            isLocked: false,
+            sortIndex: null,
+          ),
+        ],
+      );
       when(mockRepo.loadState()).thenAnswer((_) async => before);
       when(mockRepo.saveState(after)).thenAnswer((_) async => true);
-      final testProvider = tokenFolderNotifierProviderOf(repo: mockRepo);
+      final testProvider = tokenFolderProviderOf(repo: mockRepo);
       final notifier = container.read(testProvider.notifier);
       await notifier.initState;
       await notifier.addNewFolder('test');
@@ -38,17 +48,31 @@ void _testTokenFolderNotifier() {
       when(mockTokenRepo.loadTokens()).thenAnswer((_) async => const []);
       final container = ProviderContainer(
         overrides: [
-          tokenProvider.overrideWith(() => TokenNotifier(repoOverride: mockTokenRepo)),
+          tokenProvider.overrideWith(
+            () => TokenNotifier(repoOverride: mockTokenRepo),
+          ),
         ],
       );
-      const before = TokenFolderState(folders: [TokenFolder(label: 'test', folderId: 1, isExpanded: true, isLocked: false, sortIndex: null)]);
+      const before = TokenFolderState(
+        folders: [
+          TokenFolder(
+            label: 'test',
+            folderId: 1,
+            isExpanded: true,
+            isLocked: false,
+            sortIndex: null,
+          ),
+        ],
+      );
       const after = TokenFolderState(folders: []);
       when(mockRepo.loadState()).thenAnswer((_) async => before);
       when(mockRepo.saveState(after)).thenAnswer((_) async => true);
-      final testProvider = tokenFolderNotifierProviderOf(repo: mockRepo);
+      final testProvider = tokenFolderProviderOf(repo: mockRepo);
       final notifier = container.read(testProvider.notifier);
       await notifier.initState;
-      await notifier.removeFolder(const TokenFolder(label: 'test', folderId: 1));
+      await notifier.removeFolder(
+        const TokenFolder(label: 'test', folderId: 1),
+      );
       final state = container.read(testProvider);
       expect(state, after);
       verify(mockRepo.saveState(after)).called(1);
@@ -56,14 +80,37 @@ void _testTokenFolderNotifier() {
     test('updateFolder', () async {
       final mockRepo = MockTokenFolderRepository();
       final container = ProviderContainer();
-      const before = TokenFolderState(folders: [TokenFolder(label: 'test', folderId: 1, isExpanded: true, isLocked: false, sortIndex: null)]);
-      const after = TokenFolderState(folders: [TokenFolder(label: 'testUpdated', folderId: 1, isExpanded: true, isLocked: false, sortIndex: null)]);
+      const before = TokenFolderState(
+        folders: [
+          TokenFolder(
+            label: 'test',
+            folderId: 1,
+            isExpanded: true,
+            isLocked: false,
+            sortIndex: null,
+          ),
+        ],
+      );
+      const after = TokenFolderState(
+        folders: [
+          TokenFolder(
+            label: 'testUpdated',
+            folderId: 1,
+            isExpanded: true,
+            isLocked: false,
+            sortIndex: null,
+          ),
+        ],
+      );
       when(mockRepo.loadState()).thenAnswer((_) async => before);
       when(mockRepo.saveState(after)).thenAnswer((_) async => true);
-      final testProvider = tokenFolderNotifierProviderOf(repo: mockRepo);
+      final testProvider = tokenFolderProviderOf(repo: mockRepo);
       final notifier = container.read(testProvider.notifier);
       await notifier.initState;
-      await notifier.updateFolder(before.folders.first, (p0) => after.folders.first);
+      await notifier.updateFolder(
+        before.folders.first,
+        (p0) => after.folders.first,
+      );
       final state = container.read(testProvider);
       expect(state, after);
       verify(mockRepo.saveState(after)).called(1);
@@ -71,17 +118,45 @@ void _testTokenFolderNotifier() {
     test('updateFolders', () async {
       final mockRepo = MockTokenFolderRepository();
       final container = ProviderContainer();
-      const before = TokenFolderState(folders: [
-        TokenFolder(label: 'test1', folderId: 1, isExpanded: true, isLocked: false, sortIndex: null),
-        TokenFolder(label: 'test2', folderId: 2, isExpanded: true, isLocked: false, sortIndex: null),
-      ]);
-      const after = TokenFolderState(folders: [
-        TokenFolder(label: 'test1Updated', folderId: 1, isExpanded: true, isLocked: false, sortIndex: null),
-        TokenFolder(label: 'test2Updated', folderId: 2, isExpanded: true, isLocked: false, sortIndex: null),
-      ]);
+      const before = TokenFolderState(
+        folders: [
+          TokenFolder(
+            label: 'test1',
+            folderId: 1,
+            isExpanded: true,
+            isLocked: false,
+            sortIndex: null,
+          ),
+          TokenFolder(
+            label: 'test2',
+            folderId: 2,
+            isExpanded: true,
+            isLocked: false,
+            sortIndex: null,
+          ),
+        ],
+      );
+      const after = TokenFolderState(
+        folders: [
+          TokenFolder(
+            label: 'test1Updated',
+            folderId: 1,
+            isExpanded: true,
+            isLocked: false,
+            sortIndex: null,
+          ),
+          TokenFolder(
+            label: 'test2Updated',
+            folderId: 2,
+            isExpanded: true,
+            isLocked: false,
+            sortIndex: null,
+          ),
+        ],
+      );
       when(mockRepo.loadState()).thenAnswer((_) async => before);
       when(mockRepo.saveState(after)).thenAnswer((_) async => true);
-      final testProvider = tokenFolderNotifierProviderOf(repo: mockRepo);
+      final testProvider = tokenFolderProviderOf(repo: mockRepo);
       final notifier = container.read(testProvider.notifier);
       await notifier.initState;
       await notifier.addOrReplaceFolders(after.folders);

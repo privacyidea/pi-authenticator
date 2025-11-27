@@ -44,33 +44,53 @@ import '../widgets/app_wrapper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(AppWrapper(child: CustomizationAuthenticator(initialCustomization: ApplicationCustomization.defaultCustomization)));
+  runApp(
+    AppWrapper(
+      child: CustomizationAuthenticator(
+        initialCustomization: ApplicationCustomization.defaultCustomization,
+      ),
+    ),
+  );
 }
 
 class CustomizationAuthenticator extends ConsumerWidget {
   final ApplicationCustomization initialCustomization;
-  const CustomizationAuthenticator({required this.initialCustomization, super.key});
+  const CustomizationAuthenticator({
+    required this.initialCustomization,
+    super.key,
+  });
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     WidgetsFlutterBinding.ensureInitialized();
-    final applicationCustomizer = ref.watch(appCustomizationNotifierProvider).maybeWhen(
-          data: (data) => data,
-          orElse: () => initialCustomization,
-        );
+    final applicationCustomizer = ref
+        .watch(appCustomizationProvider)
+        .maybeWhen(data: (data) => data, orElse: () => initialCustomization);
     return LayoutBuilder(
       builder: (context, constraints) {
-        WidgetsBinding.instance.addPostFrameCallback((_) async => ref.read(appConstraintsNotifierProvider.notifier).update(constraints));
+        WidgetsBinding.instance.addPostFrameCallback(
+          (_) async =>
+              ref.read(appConstraintsProvider.notifier).update(constraints),
+        );
         return MaterialApp(
           scrollBehavior: ScrollConfiguration.of(context).copyWith(
             physics: const ClampingScrollPhysics(),
             overscroll: false,
-            dragDevices: {PointerDeviceKind.mouse, PointerDeviceKind.touch, PointerDeviceKind.stylus, PointerDeviceKind.unknown},
+            dragDevices: {
+              PointerDeviceKind.mouse,
+              PointerDeviceKind.touch,
+              PointerDeviceKind.stylus,
+              PointerDeviceKind.unknown,
+            },
           ),
           debugShowCheckedModeBanner: true,
           navigatorKey: globalNavigatorKey,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          locale: ref.watch(settingsProvider).whenOrNull(data: (data) => data.currentLocale) ?? SettingsState.localeDefault,
+          locale:
+              ref
+                  .watch(settingsProvider)
+                  .whenOrNull(data: (data) => data.currentLocale) ??
+              SettingsState.localeDefault,
           title: applicationCustomizer.appName,
           theme: applicationCustomizer.generateLightTheme(),
           darkTheme: applicationCustomizer.generateDarkTheme(),
@@ -78,23 +98,28 @@ class CustomizationAuthenticator extends ConsumerWidget {
           themeMode: EasyDynamicTheme.of(context).themeMode,
           initialRoute: SplashScreen.routeName,
           routes: {
-            AddTokenManuallyView.routeName: (context) => const AddTokenManuallyView(),
+            AddTokenManuallyView.routeName: (context) =>
+                const AddTokenManuallyView(),
             FeedbackView.routeName: (context) => const FeedbackView(),
             ImportTokensView.routeName: (context) => const ImportTokensView(),
             LicenseView.routeName: (context) => LicenseView(
-                  appImage: applicationCustomizer.licensesViewImage?.getWidget ?? applicationCustomizer.splashScreenImage.getWidget,
-                  appName: applicationCustomizer.appName,
-                  websiteLink: applicationCustomizer.websiteLink,
-                ),
+              appImage:
+                  applicationCustomizer.licensesViewImage?.getWidget ??
+                  applicationCustomizer.splashScreenImage.getWidget,
+              appName: applicationCustomizer.appName,
+              websiteLink: applicationCustomizer.websiteLink,
+            ),
             MainView.routeName: (context) => MainView(
-                  appbarIcon: applicationCustomizer.appbarIcon.getWidget,
-                  backgroundImage: applicationCustomizer.backgroundImage?.getWidget,
-                  appName: applicationCustomizer.appName,
-                  disablePatchNotes: applicationCustomizer.disabledFeatures.contains(AppFeature.patchNotes),
-                ),
+              appbarIcon: applicationCustomizer.appbarIcon.getWidget,
+              backgroundImage: applicationCustomizer.backgroundImage?.getWidget,
+              appName: applicationCustomizer.appName,
+              disablePatchNotes: applicationCustomizer.disabledFeatures
+                  .contains(AppFeature.patchNotes),
+            ),
             PushTokensView.routeName: (context) => const PushTokensView(),
             SettingsView.routeName: (context) => const SettingsView(),
-            SplashScreen.routeName: (context) => SplashScreen(customization: applicationCustomizer),
+            SplashScreen.routeName: (context) =>
+                SplashScreen(customization: applicationCustomizer),
             QRScannerView.routeName: (context) => const QRScannerView(),
           },
         );

@@ -127,18 +127,6 @@
   "@backgroundImage": {
     "description": "Label for the background image setting."
   },
-  "@biometricHint": {
-    "description": "Hint message advising the user how to authenticate with biometrics. It is used on Android side. Maximum 60 characters."
-  },
-  "@biometricNotRecognized": {
-    "description": "Message to let the user know that authentication was failed. It is used on Android side. Maximum 60 characters."
-  },
-  "@biometricRequiredTitle": {
-    "description": "Message showed as a title in a dialog which indicates the user has not set up biometric authentication on their device. It is used on Android side. Maximum 60 characters."
-  },
-  "@biometricSuccess": {
-    "description": "Message to let the user know that authentication was successful. It is used on Android side. Maximum 60 characters."
-  },
   "@butDiscardIt": {
     "description": "Smaller text for the button to discard the push request."
   },
@@ -591,12 +579,6 @@
   "@gitHubButton": {
     "description": "Buttontext to open the GitHub page."
   },
-  "@goToSettingsButton": {
-    "description": "Message showed on a button that the user can click to go to settings pages from the current dialog. It is used on both Android and iOS side. Maximum 30 characters."
-  },
-  "@goToSettingsDescription": {
-    "description": "Tells the user that they need to set up device credentials in the device's settings."
-  },
   "@grantCameraPermissionDialogButton": {
     "description": "Buttontext to grant the camera permission."
   },
@@ -930,9 +912,6 @@
   },
   "@lock": {
     "description": "Description of button that locks a token."
-  },
-  "@lockOut": {
-    "description": "Message advising the user to re-enable biometrics on their device. It shows in a dialog on iOS side."
   },
   "@logMenu": {
     "description": "Button to open the log menu."
@@ -1689,10 +1668,6 @@
   "autoCloseAppAfterAcceptingPushRequestDescription": "Jika diaktifkan, aplikasi akan secara otomatis menutup setelah menerima permintaan push.",
   "autoCloseAppAfterAcceptingPushRequestTitle": "Tutup aplikasi setelah menerima permintaan",
   "backgroundImage": "Gambar latar belakang",
-  "biometricHint": "Diperlukan autentikasi",
-  "biometricNotRecognized": "Tidak dikenali. Coba lagi.",
-  "biometricRequiredTitle": "Biometrik tidak diatur",
-  "biometricSuccess": "Otentikasi berhasil",
   "butDiscardIt": "tapi buang saja",
   "cancel": "Batal",
   "cannotNavigateWithoutContext": "Tidak dapat menavigasi tanpa konteks.",
@@ -1815,8 +1790,6 @@
   "forceDeleteDialogContent": "Server tidak dapat dijangkau. Apakah Anda yakin ingin menghapus kontainer?",
   "generatingPhonePart": "Menghasilkan bagian telepon",
   "gitHubButton": "Aplikasi ini adalah Open Source\nKunjungi kami di GitHub",
-  "goToSettingsButton": "Buka pengaturan",
-  "goToSettingsDescription": "Autentikasi dengan kredensial atau biometrik tidak diatur pada perangkat Anda. Silakan atur di pengaturan perangkat.",
   "grantCameraPermissionDialogButton": "Berikan izin",
   "grantCameraPermissionDialogContent": "Mohon berikan izin kepada kamera untuk memindai kode QR.",
   "grantCameraPermissionDialogPermanentlyDenied": "Izin kamera ditolak secara permanen. Harap berikan izin kamera di pengaturan Telepon Anda.",
@@ -1887,7 +1860,6 @@
   "linkMustOtpAuth": "Tautan harus dimulai dengan otpauth://",
   "linkedContainer": "Wadah yang terhubung",
   "lock": "Mengunci",
-  "lockOut": "Autentikasi biometrik dinonaktifkan. Silakan kunci dan buka kunci layar Anda untuk mengaktifkannya.",
   "logMenu": "Menu log",
   "malformedData": "Data cacat",
   "markQrCode": "Tandai Kode QR",

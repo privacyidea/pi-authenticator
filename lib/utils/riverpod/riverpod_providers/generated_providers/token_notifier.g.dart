@@ -6,8 +6,11 @@ part of 'token_notifier.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(TokenNotifier)
-const tokenNotifierProviderOf = TokenNotifierFamily._();
+const tokenProviderOf = TokenNotifierFamily._();
 
 final class TokenNotifierProvider
     extends $AsyncNotifierProvider<TokenNotifier, TokenState> {
@@ -22,7 +25,7 @@ final class TokenNotifierProvider
     super.argument,
   }) : super(
          retry: null,
-         name: r'tokenNotifierProviderOf',
+         name: r'tokenProviderOf',
          isAutoDispose: false,
          dependencies: null,
          $allTransitiveDependencies: null,
@@ -33,7 +36,7 @@ final class TokenNotifierProvider
 
   @override
   String toString() {
-    return r'tokenNotifierProviderOf'
+    return r'tokenProviderOf'
         ''
         '$argument';
   }
@@ -72,7 +75,7 @@ final class TokenNotifierFamily extends $Family
   const TokenNotifierFamily._()
     : super(
         retry: null,
-        name: r'tokenNotifierProviderOf',
+        name: r'tokenProviderOf',
         dependencies: null,
         $allTransitiveDependencies: null,
         isAutoDispose: false,
@@ -94,7 +97,7 @@ final class TokenNotifierFamily extends $Family
   );
 
   @override
-  String toString() => r'tokenNotifierProviderOf';
+  String toString() => r'tokenProviderOf';
 }
 
 abstract class _$TokenNotifier extends $AsyncNotifier<TokenState> {
@@ -138,6 +141,3 @@ abstract class _$TokenNotifier extends $AsyncNotifier<TokenState> {
     element.handleValue(ref, created);
   }
 }
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

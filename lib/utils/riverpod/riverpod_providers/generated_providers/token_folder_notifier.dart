@@ -29,7 +29,7 @@ import 'token_notifier.dart';
 
 part 'token_folder_notifier.g.dart';
 
-final tokenFolderProvider = tokenFolderNotifierProviderOf(
+final tokenFolderProvider = tokenFolderProviderOf(
   repo: PreferenceTokenFolderRepository(),
 );
 

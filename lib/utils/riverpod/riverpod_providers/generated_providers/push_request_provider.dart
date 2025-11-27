@@ -38,7 +38,7 @@ import '../state_providers/status_message_provider.dart';
 
 part 'push_request_provider.g.dart';
 
-final pushRequestProvider = pushRequestNotifierProviderOf(
+final pushRequestProvider = pushRequestProviderOf(
   rsaUtils: const RsaUtils(),
   ioClient: const PrivacyideaIOClient(),
   pushProvider: PushProvider(),
@@ -77,10 +77,10 @@ class PushRequestNotifier extends _$PushRequestNotifier {
     PrivacyideaIOClient? ioClientOverride,
     PushProvider? pushProviderOverride,
     PushRequestRepository? pushRepoOverride,
-  })  : _pushProviderOverride = pushProviderOverride,
-        _rsaUtilsOverride = rsaUtilsOverride,
-        _ioClientOverride = ioClientOverride,
-        _pushRepoOverride = pushRepoOverride;
+  }) : _pushProviderOverride = pushProviderOverride,
+       _rsaUtilsOverride = rsaUtilsOverride,
+       _ioClientOverride = ioClientOverride,
+       _pushRepoOverride = pushRepoOverride;
 
   @override
   Future<PushRequestState> build({
@@ -137,10 +137,7 @@ class PushRequestNotifier extends _$PushRequestNotifier {
     try {
       await _pushRepo.saveState(newState);
     } catch (e) {
-      Logger.warning(
-        'Failed to save push request: $pushRequest',
-        error: e,
-      );
+      Logger.warning('Failed to save push request: $pushRequest', error: e);
       loadingRepoMutex.release();
       return false;
     }
@@ -155,19 +152,14 @@ class PushRequestNotifier extends _$PushRequestNotifier {
     final oldState = (await future);
     final (newState, replaced) = oldState.replaceRequest(pushRequest);
     if (!replaced) {
-      Logger.warning(
-        'Tried to replace a push request that does not exist.',
-      );
+      Logger.warning('Tried to replace a push request that does not exist.');
       loadingRepoMutex.release();
       return false;
     }
     try {
       await _pushRepo.saveState(newState);
     } catch (e) {
-      Logger.warning(
-        'Failed to save push request: $pushRequest',
-        error: e,
-      );
+      Logger.warning('Failed to save push request: $pushRequest', error: e);
       loadingRepoMutex.release();
       return false;
     }
@@ -204,7 +196,10 @@ class PushRequestNotifier extends _$PushRequestNotifier {
   */
 
   /// Updates a PushRequest of the current state. The updated PushRequest is saved to the repo and the state. Returns the updated PushRequest if successful, null if not.
-  Future<PushRequest?> _updatePushRequest(PushRequest pushRequest, Future<PushRequest> Function(PushRequest) updater) async {
+  Future<PushRequest?> _updatePushRequest(
+    PushRequest pushRequest,
+    Future<PushRequest> Function(PushRequest) updater,
+  ) async {
     await updatingRequestMutex.acquire();
     final current = (await future).currentOf(pushRequest);
     if (current == null) {
@@ -225,14 +220,19 @@ class PushRequestNotifier extends _$PushRequestNotifier {
   /// There is no need to use mutexes because the updating functions are always using the latest version of the updating tokens.
   */
 
-  Future<void> pollForChallenges({required bool isManually}) => pushProvider.pollForChallenges(isManually: isManually);
+  Future<void> pollForChallenges({required bool isManually}) =>
+      pushProvider.pollForChallenges(isManually: isManually);
 
   Future<PushRequestState> loadStateFromRepo() => _loadFromRepo();
 
   /// Accepts a push request and returns true if successful, false if not.
   /// An accepted push request is removed from the state.
   /// It should be still in the CustomIntBuffer of the state.
-  Future<bool> accept(PushToken pushToken, PushRequest pushRequest, {String? selectedAnswer}) async {
+  Future<bool> accept(
+    PushToken pushToken,
+    PushRequest pushRequest, {
+    String? selectedAnswer,
+  }) async {
     if (pushRequest.accepted != null) {
       Logger.warning('The push request is already accepted or declined.');
 
@@ -240,8 +240,14 @@ class PushRequestNotifier extends _$PushRequestNotifier {
     }
     Logger.info('Accept push request.');
     final updated = await _updatePushRequest(pushRequest, (p0) async {
-      final updated = p0.copyWith(accepted: true, selectedAnswer: () => selectedAnswer);
-      final success = await _handleReaction(pushRequest: updated, token: pushToken);
+      final updated = p0.copyWith(
+        accepted: true,
+        selectedAnswer: () => selectedAnswer,
+      );
+      final success = await _handleReaction(
+        pushRequest: updated,
+        token: pushToken,
+      );
       if (!success) {
         Logger.warning('Failed to handle push request reaction.');
         return p0;
@@ -264,7 +270,10 @@ class PushRequestNotifier extends _$PushRequestNotifier {
     Logger.info('Decline push request.');
     final updated = await _updatePushRequest(pushRequest, (p0) async {
       final updated = p0.copyWith(accepted: false, selectedAnswer: () => null);
-      final success = await _handleReaction(pushRequest: updated, token: pushToken);
+      final success = await _handleReaction(
+        pushRequest: updated,
+        token: pushToken,
+      );
       if (!success) {
         Logger.warning('Failed to handle push request reaction.');
         return p0;
@@ -281,9 +290,7 @@ class PushRequestNotifier extends _$PushRequestNotifier {
 
   Future<bool> add(PushRequest pr) async {
     if ((await future).knowsRequestId(pr.id)) {
-      Logger.info(
-        'The push request already exists.',
-      );
+      Logger.info('The push request already exists.');
       return false;
     }
     // Save the pending request.
@@ -336,7 +343,10 @@ class PushRequestNotifier extends _$PushRequestNotifier {
       _remove(pr);
       return;
     }
-    _expirationTimers[pr.id.toString()] = Timer(Duration(milliseconds: time), () async => _remove(pr));
+    _expirationTimers[pr.id.toString()] = Timer(
+      Duration(milliseconds: time),
+      () async => _remove(pr),
+    );
   }
 
   void _setupAllTimers(List<PushRequest> pushRequests) {
@@ -346,13 +356,21 @@ class PushRequestNotifier extends _$PushRequestNotifier {
       if (time < 1) {
         _remove(pr);
       }
-      _expirationTimers[pr.id.toString()] = Timer(Duration(milliseconds: time), () async => _remove(pr));
+      _expirationTimers[pr.id.toString()] = Timer(
+        Duration(milliseconds: time),
+        () async => _remove(pr),
+      );
     }
   }
 
-  Future<bool> _handleReaction({required PushRequest pushRequest, required PushToken token}) async {
+  Future<bool> _handleReaction({
+    required PushRequest pushRequest,
+    required PushToken token,
+  }) async {
     if (pushRequest.accepted == null) return false;
-    Logger.info('Push auth request accepted=${pushRequest.accepted}, sending response to privacyidea');
+    Logger.info(
+      'Push auth request accepted=${pushRequest.accepted}, sending response to privacyidea',
+    );
     //    POST https://privacyideaserver/validate/check
     //    nonce=<nonce_from_request>
     //    serial=<serial>
@@ -369,7 +387,8 @@ class PushRequestNotifier extends _$PushRequestNotifier {
       body['decline'] = '1';
       msg += '|decline';
     }
-    if (pushRequest.possibleAnswers != null && pushRequest.selectedAnswer != null) {
+    if (pushRequest.possibleAnswers != null &&
+        pushRequest.selectedAnswer != null) {
       body['presence_answer'] = pushRequest.selectedAnswer!;
       msg += '|${pushRequest.selectedAnswer!}';
     }
@@ -385,21 +404,37 @@ class PushRequestNotifier extends _$PushRequestNotifier {
     Response response;
     try {
       Logger.info('Sending push request response.');
-      response = await _ioClient.doPost(sslVerify: pushRequest.sslVerify, url: pushRequest.uri, body: body);
+      response = await _ioClient.doPost(
+        sslVerify: pushRequest.sslVerify,
+        url: pushRequest.uri,
+        body: body,
+      );
     } catch (_) {
       Logger.warning('Sending push request response failed. Retrying.');
       try {
-        response = await _ioClient.doPost(sslVerify: pushRequest.sslVerify, url: pushRequest.uri, body: body);
+        response = await _ioClient.doPost(
+          sslVerify: pushRequest.sslVerify,
+          url: pushRequest.uri,
+          body: body,
+        );
       } catch (e) {
-        Logger.warning('Sending push request response failed consistently.', error: e);
-        ref.read(statusMessageProvider.notifier).state = StatusMessage(message: (l) => l.connectionFailed);
+        Logger.warning(
+          'Sending push request response failed consistently.',
+          error: e,
+        );
+        ref.read(statusMessageProvider.notifier).state = StatusMessage(
+          message: (l) => l.connectionFailed,
+        );
         return false;
       }
     }
     if (HttpStatusChecker.isError(response.statusCode)) {
       ref.read(statusMessageProvider.notifier).state = StatusMessage(
-        message: (l) => '${l.sendPushRequestResponseFailed}\n${l.statusCode(response.statusCode)}',
-        details: (_) => (tryJsonDecode(response.body)?['result']?['error']?['message']) ?? '',
+        message: (l) =>
+            '${l.sendPushRequestResponseFailed}\n${l.statusCode(response.statusCode)}',
+        details: (_) =>
+            (tryJsonDecode(response.body)?['result']?['error']?['message']) ??
+            '',
       );
       Logger.warning('Sending push request response failed.');
       return false;

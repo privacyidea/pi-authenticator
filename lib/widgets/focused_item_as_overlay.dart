@@ -96,7 +96,8 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
               timer.cancel();
               return;
             }
-            final renderBoxOffset = (context.findRenderObject() as RenderBox).localToGlobal(Offset.zero);
+            final renderBoxOffset = (context.findRenderObject() as RenderBox)
+                .localToGlobal(Offset.zero);
             if (lastChildPosition != renderBoxOffset) {
               _updateOverlay();
               lastChildPosition = renderBoxOffset;
@@ -135,19 +136,37 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
       return;
     }
     _disposeOverlay();
-    final screenSize = (globalRef?.read(appConstraintsNotifierProvider) ?? const BoxConstraints()).biggest;
+    final screenSize =
+        (globalRef?.read(appConstraintsProvider) ?? const BoxConstraints())
+            .biggest;
     final textScaler = MediaQuery.of(context).textScaler;
     if (widget.tooltipWhenFocused != null) {
       final textSize = textSizeOf(
         text: widget.tooltipWhenFocused!,
         style: Theme.of(context).textTheme.bodyLarge!,
-        maxWidth: screenSize.width / 3 * 2 - (tooltipPadding.left + tooltipPadding.right + tooltipMargin.left + tooltipMargin.right + tooltipBorderWidth * 2),
+        maxWidth:
+            screenSize.width / 3 * 2 -
+            (tooltipPadding.left +
+                tooltipPadding.right +
+                tooltipMargin.left +
+                tooltipMargin.right +
+                tooltipBorderWidth * 2),
         textScaler: textScaler,
       );
 
       final overlaySize = Size(
-        textSize.width + tooltipPadding.left + tooltipPadding.right + tooltipMargin.left + tooltipMargin.right + tooltipBorderWidth * 2,
-        textSize.height + tooltipPadding.bottom + tooltipPadding.top + tooltipMargin.bottom + tooltipMargin.top + tooltipBorderWidth * 2,
+        textSize.width +
+            tooltipPadding.left +
+            tooltipPadding.right +
+            tooltipMargin.left +
+            tooltipMargin.right +
+            tooltipBorderWidth * 2,
+        textSize.height +
+            tooltipPadding.bottom +
+            tooltipPadding.top +
+            tooltipMargin.bottom +
+            tooltipMargin.top +
+            tooltipBorderWidth * 2,
       );
       final clampedOffset = _getClampedOverlayOffset(
         overlaySize: overlaySize,
@@ -176,11 +195,19 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
     final renderBox = context.findRenderObject() as RenderBox;
     final boxsize = renderBox.size;
     final materialApp = globalContextSync?.findRenderObject();
-    final renderBoxOffset = renderBox.localToGlobal(Offset.zero, ancestor: materialApp);
+    final renderBoxOffset = renderBox.localToGlobal(
+      Offset.zero,
+      ancestor: materialApp,
+    );
 
     const circleThinkness = 2.0;
-    final circlePadding = min(renderBoxOffset.dy - circleThinkness, min(renderBoxOffset.dx, 25.0));
-    final BorderRadius borderRadius = BorderRadius.circular(max(circlePadding * 2, min(boxsize.width, boxsize.height) / 6));
+    final circlePadding = min(
+      renderBoxOffset.dy - circleThinkness,
+      min(renderBoxOffset.dx, 25.0),
+    );
+    final BorderRadius borderRadius = BorderRadius.circular(
+      max(circlePadding * 2, min(boxsize.width, boxsize.height) / 6),
+    );
 
     _overlayEntryChild = OverlayEntry(
       builder: (overlayContext) => Stack(
@@ -210,7 +237,10 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
                   height: boxsize.height + circlePadding,
                   decoration: BoxDecoration(
                     borderRadius: borderRadius,
-                    border: Border.all(color: Theme.of(context).primaryColor, width: circleThinkness),
+                    border: Border.all(
+                      color: Theme.of(context).primaryColor,
+                      width: circleThinkness,
+                    ),
                   ),
                 ),
               ],
@@ -235,16 +265,15 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
       builder: (overlayContext) => ClipRRect(
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
-          child: const Center(
-            child: SizedBox(),
-          ),
+          child: const Center(child: SizedBox()),
         ),
       ),
     );
 
     Overlay.of(context).insert(_overlayEntryBackdrop!);
     Overlay.of(context).insert(_overlayEntryChild!);
-    if (_overlayEntryText != null) Overlay.of(context).insert(_overlayEntryText!);
+    if (_overlayEntryText != null)
+      Overlay.of(context).insert(_overlayEntryText!);
   }
 
   void _disposeOverlay() {
@@ -266,10 +295,15 @@ Offset _getClampedOverlayOffset({
 }) {
   final anchorSize = anchor?.size ?? Size.zero;
   final materialApp = globalContextSync?.findRenderObject();
-  final anchorOffset = anchor?.localToGlobal(Offset.zero, ancestor: materialApp) ?? Offset.zero;
+  final anchorOffset =
+      anchor?.localToGlobal(Offset.zero, ancestor: materialApp) ?? Offset.zero;
   final preferredOffset = Offset(
-    anchorOffset.dx + (anchorSize.width - overlaySize.width) / 2 + alignment.x * ((anchorSize.width + overlaySize.width) / 2 + padding),
-    anchorOffset.dy + (anchorSize.height - overlaySize.height) / 2 + alignment.y * ((anchorSize.height + overlaySize.height) / 2 + padding),
+    anchorOffset.dx +
+        (anchorSize.width - overlaySize.width) / 2 +
+        alignment.x * ((anchorSize.width + overlaySize.width) / 2 + padding),
+    anchorOffset.dy +
+        (anchorSize.height - overlaySize.height) / 2 +
+        alignment.y * ((anchorSize.height + overlaySize.height) / 2 + padding),
   );
 
   const minOffset = Offset(0, 0);

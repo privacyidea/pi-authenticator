@@ -127,18 +127,6 @@
   "@backgroundImage": {
     "description": "Label for the background image setting."
   },
-  "@biometricHint": {
-    "description": "Hint message advising the user how to authenticate with biometrics. It is used on Android side. Maximum 60 characters."
-  },
-  "@biometricNotRecognized": {
-    "description": "Message to let the user know that authentication was failed. It is used on Android side. Maximum 60 characters."
-  },
-  "@biometricRequiredTitle": {
-    "description": "Message showed as a title in a dialog which indicates the user has not set up biometric authentication on their device. It is used on Android side. Maximum 60 characters."
-  },
-  "@biometricSuccess": {
-    "description": "Message to let the user know that authentication was successful. It is used on Android side. Maximum 60 characters."
-  },
   "@butDiscardIt": {
     "description": "Smaller text for the button to discard the push request."
   },
@@ -591,12 +579,6 @@
   "@gitHubButton": {
     "description": "Buttontext to open the GitHub page."
   },
-  "@goToSettingsButton": {
-    "description": "Message showed on a button that the user can click to go to settings pages from the current dialog. It is used on both Android and iOS side. Maximum 30 characters."
-  },
-  "@goToSettingsDescription": {
-    "description": "Tells the user that they need to set up device credentials in the device's settings."
-  },
   "@grantCameraPermissionDialogButton": {
     "description": "Buttontext to grant the camera permission."
   },
@@ -930,9 +912,6 @@
   },
   "@lock": {
     "description": "Description of button that locks a token."
-  },
-  "@lockOut": {
-    "description": "Message advising the user to re-enable biometrics on their device. It shows in a dialog on iOS side."
   },
   "@logMenu": {
     "description": "Button to open the log menu."
@@ -1689,10 +1668,6 @@
   "autoCloseAppAfterAcceptingPushRequestDescription": "Jeśli włączone, aplikacja zostanie automatycznie zamknięta po zaakceptowaniu prośby push.",
   "autoCloseAppAfterAcceptingPushRequestTitle": "Zamknij aplikację po zaakceptowaniu prośby",
   "backgroundImage": "Obraz tła",
-  "biometricHint": "Wymagana autentykacja",
-  "biometricNotRecognized": "Nie rozpoznano. Spróbuj ponownie.",
-  "biometricRequiredTitle": "Uwierzytelnianie biometryczne nie jest skonfigurowane.",
-  "biometricSuccess": "Autentykacja zakończona sukcesem!",
   "butDiscardIt": "ale wyrzucić go",
   "cancel": "Anuluj",
   "cannotNavigateWithoutContext": "Nie można nawigować bez kontekstu.",
@@ -1815,8 +1790,6 @@
   "forceDeleteDialogContent": "Serwer był nieosiągalny. Czy na pewno chcesz usunąć kontener?",
   "generatingPhonePart": "Generowanie sekretu po stronie telefonu...",
   "gitHubButton": "Ta aplikacja jest open source\nOdwiedź nas na GitHub",
-  "goToSettingsButton": "Idź do ustawień",
-  "goToSettingsDescription": "Ustawienia zabezpieczeń, bądź uwierzytelnianie biometryczne nie są skonfigurowane w twoim urządzeniu. Skonfiguruj je w ustawieniach urządzenia.",
   "grantCameraPermissionDialogButton": "Grant permission",
   "grantCameraPermissionDialogContent": "Przyznaj uprawnienia kamery do skanowania kodów QR.",
   "grantCameraPermissionDialogPermanentlyDenied": "Uprawnienia do aparatu zostały trwale zablokowane. Przyznaj uprawnienia aparatu w ustawieniach telefonu.",
@@ -1887,7 +1860,6 @@
   "linkMustOtpAuth": "Link musi zaczynać się od otpauth://",
   "linkedContainer": "Połączony pojemnik",
   "lock": "Zablokuj",
-  "lockOut": "Uwierzytelnianie biometryczne jest wyłączone. Zablokuj i odblokuj ponownie ekran, żeby je włączyć.",
   "logMenu": "Menu dziennika",
   "malformedData": "Nieprawidłowe dane",
   "markQrCode": "Zaznacz kod QR",

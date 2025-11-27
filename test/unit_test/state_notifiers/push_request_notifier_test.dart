@@ -5,8 +5,8 @@ import 'package:mockito/mockito.dart';
 import 'package:privacyidea_authenticator/model/push_request.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/push_request_state.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/push_request_provider.dart';
 import 'package:privacyidea_authenticator/utils/custom_int_buffer.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/push_request_provider.dart';
 
 import '../../tests_app_wrapper.mocks.dart';
 
@@ -22,7 +22,7 @@ void _testPushRequestNotifier() {
       final mockPushProvider = MockPushProvider();
       final mockRsaUtils = MockRsaUtils();
       final mockPushRepo = MockPushRequestRepository();
-      final pushProvider = pushRequestNotifierProviderOf(
+      final pushProvider = pushRequestProviderOf(
         ioClient: mockIoClient,
         rsaUtils: mockRsaUtils,
         pushProvider: mockPushProvider,
@@ -47,37 +47,55 @@ void _testPushRequestNotifier() {
         serial: 'serial',
         accepted: null,
       );
-      final before = PushRequestState(pushRequests: [pr], knownPushRequests: CustomIntBuffer(list: [pr.id]));
-      final after = PushRequestState(pushRequests: [], knownPushRequests: CustomIntBuffer(list: [pr.id]));
+      final before = PushRequestState(
+        pushRequests: [pr],
+        knownPushRequests: CustomIntBuffer(list: [pr.id]),
+      );
+      final after = PushRequestState(
+        pushRequests: [],
+        knownPushRequests: CustomIntBuffer(list: [pr.id]),
+      );
       when(mockPushRepo.loadState()).thenAnswer((_) async => before);
-      when(mockRsaUtils.trySignWithToken(any, any)).thenAnswer((_) async => 'signature');
-      when(mockIoClient.doPost(
-        url: anyNamed('url'),
-        body: anyNamed('body'),
-        sslVerify: anyNamed('sslVerify'),
-      )).thenAnswer((_) async => Response('', 200));
+      when(
+        mockRsaUtils.trySignWithToken(any, any),
+      ).thenAnswer((_) async => 'signature');
+      when(
+        mockIoClient.doPost(
+          url: anyNamed('url'),
+          body: anyNamed('body'),
+          sslVerify: anyNamed('sslVerify'),
+        ),
+      ).thenAnswer((_) async => Response('', 200));
       when(mockPushRepo.saveState(any)).thenAnswer((_) async {});
       when(mockPushRepo.loadState()).thenAnswer((_) async => before);
       final initState = await container.read(pushProvider.future);
       verify(mockPushRepo.loadState()).called(1);
       expect(initState, before);
-      when(mockRsaUtils.trySignWithToken(any, any)).thenAnswer((_) async => 'signature');
-      when(mockIoClient.doPost(
-        url: anyNamed('url'),
-        body: anyNamed('body'),
-        sslVerify: anyNamed('sslVerify'),
-      )).thenAnswer((_) async => Response('', 200));
+      when(
+        mockRsaUtils.trySignWithToken(any, any),
+      ).thenAnswer((_) async => 'signature');
+      when(
+        mockIoClient.doPost(
+          url: anyNamed('url'),
+          body: anyNamed('body'),
+          sslVerify: anyNamed('sslVerify'),
+        ),
+      ).thenAnswer((_) async => Response('', 200));
       when(mockPushRepo.saveState(any)).thenAnswer((_) async {});
 
-      await container.read(pushProvider.notifier).accept(PushToken(serial: 'serial', id: 'id'), pr);
+      await container
+          .read(pushProvider.notifier)
+          .accept(PushToken(serial: 'serial', id: 'id'), pr);
 
       expect(await container.read(pushProvider.future), after);
       verify(mockRsaUtils.trySignWithToken(any, any)).called(1);
-      verify(mockIoClient.doPost(
-        url: anyNamed('url'),
-        body: anyNamed('body'),
-        sslVerify: anyNamed('sslVerify'),
-      )).called(1);
+      verify(
+        mockIoClient.doPost(
+          url: anyNamed('url'),
+          body: anyNamed('body'),
+          sslVerify: anyNamed('sslVerify'),
+        ),
+      ).called(1);
       verify(mockPushRepo.saveState(any)).called(2);
     });
     test('decline', () async {
@@ -86,7 +104,7 @@ void _testPushRequestNotifier() {
       final mockPushProvider = MockPushProvider();
       final mockRsaUtils = MockRsaUtils();
       final mockPushRepo = MockPushRequestRepository();
-      final pushProvider = pushRequestNotifierProviderOf(
+      final pushProvider = pushRequestProviderOf(
         ioClient: mockIoClient,
         rsaUtils: mockRsaUtils,
         pushProvider: mockPushProvider,
@@ -104,35 +122,53 @@ void _testPushRequestNotifier() {
         serial: 'serial',
         accepted: null,
       );
-      final before = PushRequestState(pushRequests: [pr], knownPushRequests: CustomIntBuffer(list: [pr.id]));
-      final after = PushRequestState(pushRequests: [], knownPushRequests: CustomIntBuffer(list: [pr.id]));
+      final before = PushRequestState(
+        pushRequests: [pr],
+        knownPushRequests: CustomIntBuffer(list: [pr.id]),
+      );
+      final after = PushRequestState(
+        pushRequests: [],
+        knownPushRequests: CustomIntBuffer(list: [pr.id]),
+      );
       when(mockPushRepo.loadState()).thenAnswer((_) async => before);
-      when(mockRsaUtils.trySignWithToken(any, any)).thenAnswer((_) async => 'signature');
-      when(mockIoClient.doPost(
-        url: anyNamed('url'),
-        body: anyNamed('body'),
-        sslVerify: anyNamed('sslVerify'),
-      )).thenAnswer((_) async => Response('', 200));
+      when(
+        mockRsaUtils.trySignWithToken(any, any),
+      ).thenAnswer((_) async => 'signature');
+      when(
+        mockIoClient.doPost(
+          url: anyNamed('url'),
+          body: anyNamed('body'),
+          sslVerify: anyNamed('sslVerify'),
+        ),
+      ).thenAnswer((_) async => Response('', 200));
       when(mockPushRepo.saveState(any)).thenAnswer((_) async {});
       when(mockPushRepo.loadState()).thenAnswer((_) async => before);
       final initState = await container.read(pushProvider.future);
       expect(initState, before);
-      when(mockRsaUtils.trySignWithToken(any, any)).thenAnswer((_) async => 'signature');
-      when(mockIoClient.doPost(
-        url: anyNamed('url'),
-        body: anyNamed('body'),
-        sslVerify: anyNamed('sslVerify'),
-      )).thenAnswer((_) async => Response('', 200));
+      when(
+        mockRsaUtils.trySignWithToken(any, any),
+      ).thenAnswer((_) async => 'signature');
+      when(
+        mockIoClient.doPost(
+          url: anyNamed('url'),
+          body: anyNamed('body'),
+          sslVerify: anyNamed('sslVerify'),
+        ),
+      ).thenAnswer((_) async => Response('', 200));
       when(mockPushRepo.saveState(any)).thenAnswer((_) async {});
-      await container.read(pushProvider.notifier).decline(PushToken(serial: 'serial', id: 'id'), pr);
+      await container
+          .read(pushProvider.notifier)
+          .decline(PushToken(serial: 'serial', id: 'id'), pr);
       expect((await container.read(pushProvider.future)), after);
       verify(mockPushRepo.loadState()).called(1);
       verify(mockRsaUtils.trySignWithToken(any, any)).called(1);
-      verify(mockIoClient.doPost(
-        url: anyNamed('url'),
-        body: anyNamed('body'),
-        sslVerify: anyNamed('sslVerify'),
-      )).called(1);
+      verify(
+        mockIoClient.doPost(
+          url: anyNamed('url'),
+          body: anyNamed('body'),
+          sslVerify: anyNamed('sslVerify'),
+        ),
+      ).called(1);
       verify(mockPushRepo.saveState(any)).called(2);
     });
 
@@ -142,7 +178,7 @@ void _testPushRequestNotifier() {
       final mockPushProvider = MockPushProvider();
       final mockRsaUtils = MockRsaUtils();
       final mockPushRepo = MockPushRequestRepository();
-      final pushProvider = pushRequestNotifierProviderOf(
+      final pushProvider = pushRequestProviderOf(
         ioClient: mockIoClient,
         rsaUtils: mockRsaUtils,
         pushProvider: mockPushProvider,
@@ -161,8 +197,14 @@ void _testPushRequestNotifier() {
         accepted: null,
       );
       final pr2 = pr.copyWith(id: 2);
-      final before = PushRequestState(pushRequests: [pr], knownPushRequests: CustomIntBuffer(list: [pr.id]));
-      final after = PushRequestState(pushRequests: [pr, pr2], knownPushRequests: CustomIntBuffer(list: [pr.id, pr2.id]));
+      final before = PushRequestState(
+        pushRequests: [pr],
+        knownPushRequests: CustomIntBuffer(list: [pr.id]),
+      );
+      final after = PushRequestState(
+        pushRequests: [pr, pr2],
+        knownPushRequests: CustomIntBuffer(list: [pr.id, pr2.id]),
+      );
       when(mockPushRepo.loadState()).thenAnswer((_) async => before);
       when(mockPushRepo.saveState(any)).thenAnswer((_) async {});
 
@@ -177,7 +219,7 @@ void _testPushRequestNotifier() {
       final mockPushProvider = MockPushProvider();
       final mockRsaUtils = MockRsaUtils();
       final mockPushRepo = MockPushRequestRepository();
-      final pushProvider = pushRequestNotifierProviderOf(
+      final pushProvider = pushRequestProviderOf(
         ioClient: mockIoClient,
         rsaUtils: mockRsaUtils,
         pushProvider: mockPushProvider,
@@ -196,8 +238,14 @@ void _testPushRequestNotifier() {
         accepted: null,
       );
       final pr2 = pr.copyWith(id: 2);
-      final before = PushRequestState(pushRequests: [pr, pr2], knownPushRequests: CustomIntBuffer(list: [pr.id, pr2.id]));
-      final after = PushRequestState(pushRequests: [pr], knownPushRequests: CustomIntBuffer(list: [pr.id, pr2.id]));
+      final before = PushRequestState(
+        pushRequests: [pr, pr2],
+        knownPushRequests: CustomIntBuffer(list: [pr.id, pr2.id]),
+      );
+      final after = PushRequestState(
+        pushRequests: [pr],
+        knownPushRequests: CustomIntBuffer(list: [pr.id, pr2.id]),
+      );
       when(mockPushRepo.loadState()).thenAnswer((_) async => before);
       when(mockPushRepo.saveState(any)).thenAnswer((_) async {});
 

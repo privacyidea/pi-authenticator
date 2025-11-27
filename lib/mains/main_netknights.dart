@@ -49,74 +49,103 @@ import '../widgets/app_wrapper.dart';
 
 void main() async {
   Logger.init(
-      navigatorKey: globalNavigatorKey,
-      appRunner: () async {
-        WidgetsFlutterBinding.ensureInitialized();
-        await GmsCheck().checkGmsAvailability();
-        await HomeWidgetUtils().registerInteractivityCallback(homeWidgetBackgroundCallback);
-        await HomeWidgetUtils().setAppGroupId(appGroupId);
-        appFirebaseOptions = DefaultFirebaseOptions.currentPlatformOf('netknights');
-        runApp(AppWrapper(child: PrivacyIDEAAuthenticator(ApplicationCustomization.defaultCustomization)));
-      });
+    navigatorKey: globalNavigatorKey,
+    appRunner: () async {
+      WidgetsFlutterBinding.ensureInitialized();
+      await GmsCheck().checkGmsAvailability();
+      await HomeWidgetUtils().registerInteractivityCallback(
+        homeWidgetBackgroundCallback,
+      );
+      await HomeWidgetUtils().setAppGroupId(appGroupId);
+      appFirebaseOptions = DefaultFirebaseOptions.currentPlatformOf(
+        'netknights',
+      );
+      runApp(
+        AppWrapper(
+          child: PrivacyIDEAAuthenticator(
+            ApplicationCustomization.defaultCustomization,
+          ),
+        ),
+      );
+    },
+  );
 }
 
 class PrivacyIDEAAuthenticator extends ConsumerWidget {
   static ApplicationCustomization? currentCustomization;
   final ApplicationCustomization _customization;
 
-  factory PrivacyIDEAAuthenticator(ApplicationCustomization customization, {Key? key}) {
+  factory PrivacyIDEAAuthenticator(
+    ApplicationCustomization customization, {
+    Key? key,
+  }) {
     PrivacyIDEAAuthenticator.currentCustomization = customization;
     return PrivacyIDEAAuthenticator._(customization: customization, key: key);
   }
-  const PrivacyIDEAAuthenticator._({required ApplicationCustomization customization, super.key}) : _customization = customization;
+  const PrivacyIDEAAuthenticator._({
+    required ApplicationCustomization customization,
+    super.key,
+  }) : _customization = customization;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     globalRef = ref;
-    return LayoutBuilder(builder: (context, constraints) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        final localizations = AppLocalizations.of(context);
-        if (localizations != null) ref.read(localizationNotifierProvider.notifier).update(localizations);
-        ref.read(appConstraintsNotifierProvider.notifier).update(constraints);
-      });
-      return MaterialApp(
-        scrollBehavior: ScrollConfiguration.of(context).copyWith(
-          physics: const ClampingScrollPhysics(),
-          overscroll: false,
-        ),
-        debugShowCheckedModeBanner: true,
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        locale: ref.watch(settingsProvider).whenOrNull(data: (data) => data.currentLocale) ?? SettingsState.localeDefault,
-        title: _customization.appName,
-        theme: _customization.generateLightTheme(),
-        darkTheme: _customization.generateDarkTheme(),
-        scaffoldMessengerKey: globalSnackbarKey,
-        navigatorKey: globalNavigatorKey,
-        themeMode: EasyDynamicTheme.of(context).themeMode,
-        initialRoute: SplashScreen.routeName,
-        routes: {
-          AddTokenManuallyView.routeName: (context) => const AddTokenManuallyView(),
-          FeedbackView.routeName: (context) => const FeedbackView(),
-          ImportTokensView.routeName: (context) => const ImportTokensView(),
-          LicenseView.routeName: (context) => LicenseView(
-                appImage: _customization.licensesViewImage?.getWidget ?? _customization.splashScreenImage.getWidget,
-                appName: _customization.appName,
-                websiteLink: _customization.websiteLink,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          final localizations = AppLocalizations.of(context);
+          if (localizations != null)
+            ref.read(localizationProvider.notifier).update(localizations);
+          ref.read(appConstraintsProvider.notifier).update(constraints);
+        });
+        return MaterialApp(
+          scrollBehavior: ScrollConfiguration.of(
+            context,
+          ).copyWith(physics: const ClampingScrollPhysics(), overscroll: false),
+          debugShowCheckedModeBanner: true,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          locale:
+              ref
+                  .watch(settingsProvider)
+                  .whenOrNull(data: (data) => data.currentLocale) ??
+              SettingsState.localeDefault,
+          title: _customization.appName,
+          theme: _customization.generateLightTheme(),
+          darkTheme: _customization.generateDarkTheme(),
+          scaffoldMessengerKey: globalSnackbarKey,
+          navigatorKey: globalNavigatorKey,
+          themeMode: EasyDynamicTheme.of(context).themeMode,
+          initialRoute: SplashScreen.routeName,
+          routes: {
+            AddTokenManuallyView.routeName: (context) =>
+                const AddTokenManuallyView(),
+            FeedbackView.routeName: (context) => const FeedbackView(),
+            ImportTokensView.routeName: (context) => const ImportTokensView(),
+            LicenseView.routeName: (context) => LicenseView(
+              appImage:
+                  _customization.licensesViewImage?.getWidget ??
+                  _customization.splashScreenImage.getWidget,
+              appName: _customization.appName,
+              websiteLink: _customization.websiteLink,
+            ),
+            MainView.routeName: (context) => MainView(
+              appbarIcon: _customization.appbarIcon.getWidget,
+              backgroundImage: _customization.backgroundImage?.getWidget,
+              appName: _customization.appName,
+              disablePatchNotes: _customization.disabledFeatures.contains(
+                AppFeature.patchNotes,
               ),
-          MainView.routeName: (context) => MainView(
-                appbarIcon: _customization.appbarIcon.getWidget,
-                backgroundImage: _customization.backgroundImage?.getWidget,
-                appName: _customization.appName,
-                disablePatchNotes: _customization.disabledFeatures.contains(AppFeature.patchNotes),
-              ),
-          PushTokensView.routeName: (context) => const PushTokensView(),
-          SettingsView.routeName: (context) => const SettingsView(),
-          SplashScreen.routeName: (context) => SplashScreen(customization: _customization),
-          QRScannerView.routeName: (context) => const QRScannerView(),
-          ContainerView.routeName: (context) => const ContainerView(),
-        },
-      );
-    });
+            ),
+            PushTokensView.routeName: (context) => const PushTokensView(),
+            SettingsView.routeName: (context) => const SettingsView(),
+            SplashScreen.routeName: (context) =>
+                SplashScreen(customization: _customization),
+            QRScannerView.routeName: (context) => const QRScannerView(),
+            ContainerView.routeName: (context) => const ContainerView(),
+          },
+        );
+      },
+    );
   }
 }

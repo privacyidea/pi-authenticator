@@ -32,15 +32,20 @@ import '../../../logger.dart';
 
 part 'settings_notifier.g.dart';
 
-final settingsProvider = settingsNotifierProviderOf(repo: PreferenceSettingsRepository());
-final hidePushTokensProvider = settingsProvider.select<bool>((asyncValue) => asyncValue.value?.hidePushTokens ?? false);
+final settingsProvider = settingsProviderOf(
+  repo: PreferenceSettingsRepository(),
+);
+final hidePushTokensProvider = settingsProvider.select<bool>(
+  (asyncValue) => asyncValue.value?.hidePushTokens ?? false,
+);
 
 @Riverpod(keepAlive: true)
 class SettingsNotifier extends _$SettingsNotifier {
   final Mutex _repoMutex = Mutex();
   final Mutex _stateMutex = Mutex();
 
-  SettingsNotifier({SettingsRepository? repoOverride}) : _repoOverride = repoOverride;
+  SettingsNotifier({SettingsRepository? repoOverride})
+    : _repoOverride = repoOverride;
 
   @override
   SettingsRepository get repo => _repo;
@@ -71,7 +76,9 @@ class SettingsNotifier extends _$SettingsNotifier {
     return success;
   }
 
-  Future<SettingsState> updateState(SettingsState Function(SettingsState oldState) updater) async {
+  Future<SettingsState> updateState(
+    SettingsState Function(SettingsState oldState) updater,
+  ) async {
     await _stateMutex.acquire();
     final oldState = await future;
     final newState = updater(oldState);
@@ -114,12 +121,16 @@ class SettingsNotifier extends _$SettingsNotifier {
 
   Future<SettingsState> setShowGuideOnStart(bool value) {
     Logger.info('Show guide on start set to $value');
-    return updateState((oldState) => oldState.copyWith(showGuideOnStart: value));
+    return updateState(
+      (oldState) => oldState.copyWith(showGuideOnStart: value),
+    );
   }
 
   Future<SettingsState> setLocalePreference(Locale locale) {
     Logger.info('Locale set to $locale');
-    return updateState((oldState) => oldState.copyWith(localePreference: locale));
+    return updateState(
+      (oldState) => oldState.copyWith(localePreference: locale),
+    );
   }
 
   Future<SettingsState> setUseSystemLocale(bool value) {
@@ -134,14 +145,18 @@ class SettingsNotifier extends _$SettingsNotifier {
 
   Future<SettingsState> setVerboseLogging(bool value) async {
     Logger.info('Verbose logging set to $value');
-    final updatedState = await updateState((oldState) => oldState.copyWith(verboseLogging: value));
+    final updatedState = await updateState(
+      (oldState) => oldState.copyWith(verboseLogging: value),
+    );
     Logger.setVerboseLogging(updatedState.verboseLogging);
     return updatedState;
   }
 
   Future<SettingsState> toggleVerboseLogging() {
     Logger.info('Toggling verbose logging');
-    return updateState((oldState) => oldState.copyWith(verboseLogging: !oldState.verboseLogging));
+    return updateState(
+      (oldState) => oldState.copyWith(verboseLogging: !oldState.verboseLogging),
+    );
   }
 
   Future<SettingsState> setHidePushTokens(bool value) {
@@ -151,21 +166,31 @@ class SettingsNotifier extends _$SettingsNotifier {
 
   Future<SettingsState> setLatestStartedVersion(Version version) {
     Logger.info('Latest started version set to $version');
-    return updateState((oldState) => oldState.copyWith(latestStartedVersion: version));
+    return updateState(
+      (oldState) => oldState.copyWith(latestStartedVersion: version),
+    );
   }
 
   Future<SettingsState> setShowBackgroundImage(bool value) {
     Logger.info('Show background image set to $value');
-    return updateState((oldState) => oldState.copyWith(showBackgroundImage: value));
+    return updateState(
+      (oldState) => oldState.copyWith(showBackgroundImage: value),
+    );
   }
 
   Future<SettingsState> toggleShowBackgroundImage() {
     Logger.info('Toggling hide background image');
-    return updateState((oldState) => oldState.copyWith(showBackgroundImage: !oldState.showBackgroundImage));
+    return updateState(
+      (oldState) =>
+          oldState.copyWith(showBackgroundImage: !oldState.showBackgroundImage),
+    );
   }
 
   Future<SettingsState> setAutoCloseAppAfterAcceptingPushRequest(bool value) {
     Logger.info('Auto close app after accepting push request set to $value');
-    return updateState((oldState) => oldState.copyWith(autoCloseAppAfterAcceptingPushRequest: value));
+    return updateState(
+      (oldState) =>
+          oldState.copyWith(autoCloseAppAfterAcceptingPushRequest: value),
+    );
   }
 }

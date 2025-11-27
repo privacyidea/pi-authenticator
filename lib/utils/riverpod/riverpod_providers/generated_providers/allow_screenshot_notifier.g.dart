@@ -6,8 +6,11 @@ part of 'allow_screenshot_notifier.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(AllowScreenshotNotifier)
-const allowScreenshotNotifierProviderOf = AllowScreenshotNotifierFamily._();
+const allowScreenshotProviderOf = AllowScreenshotNotifierFamily._();
 
 final class AllowScreenshotNotifierProvider
     extends $AsyncNotifierProvider<AllowScreenshotNotifier, bool> {
@@ -16,7 +19,7 @@ final class AllowScreenshotNotifierProvider
     required AllowScreenshotUtils super.argument,
   }) : super(
          retry: null,
-         name: r'allowScreenshotNotifierProviderOf',
+         name: r'allowScreenshotProviderOf',
          isAutoDispose: false,
          dependencies: null,
          $allTransitiveDependencies: null,
@@ -27,7 +30,7 @@ final class AllowScreenshotNotifierProvider
 
   @override
   String toString() {
-    return r'allowScreenshotNotifierProviderOf'
+    return r'allowScreenshotProviderOf'
         ''
         '($argument)';
   }
@@ -63,7 +66,7 @@ final class AllowScreenshotNotifierFamily extends $Family
   const AllowScreenshotNotifierFamily._()
     : super(
         retry: null,
-        name: r'allowScreenshotNotifierProviderOf',
+        name: r'allowScreenshotProviderOf',
         dependencies: null,
         $allTransitiveDependencies: null,
         isAutoDispose: false,
@@ -75,7 +78,7 @@ final class AllowScreenshotNotifierFamily extends $Family
       AllowScreenshotNotifierProvider._(argument: screenshotUtils, from: this);
 
   @override
-  String toString() => r'allowScreenshotNotifierProviderOf';
+  String toString() => r'allowScreenshotProviderOf';
 }
 
 abstract class _$AllowScreenshotNotifier extends $AsyncNotifier<bool> {
@@ -99,6 +102,3 @@ abstract class _$AllowScreenshotNotifier extends $AsyncNotifier<bool> {
     element.handleValue(ref, created);
   }
 }
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

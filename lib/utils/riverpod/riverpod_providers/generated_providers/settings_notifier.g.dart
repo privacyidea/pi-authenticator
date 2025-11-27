@@ -6,8 +6,11 @@ part of 'settings_notifier.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(SettingsNotifier)
-const settingsNotifierProviderOf = SettingsNotifierFamily._();
+const settingsProviderOf = SettingsNotifierFamily._();
 
 final class SettingsNotifierProvider
     extends $AsyncNotifierProvider<SettingsNotifier, SettingsState> {
@@ -16,7 +19,7 @@ final class SettingsNotifierProvider
     required SettingsRepository super.argument,
   }) : super(
          retry: null,
-         name: r'settingsNotifierProviderOf',
+         name: r'settingsProviderOf',
          isAutoDispose: false,
          dependencies: null,
          $allTransitiveDependencies: null,
@@ -27,7 +30,7 @@ final class SettingsNotifierProvider
 
   @override
   String toString() {
-    return r'settingsNotifierProviderOf'
+    return r'settingsProviderOf'
         ''
         '($argument)';
   }
@@ -61,7 +64,7 @@ final class SettingsNotifierFamily extends $Family
   const SettingsNotifierFamily._()
     : super(
         retry: null,
-        name: r'settingsNotifierProviderOf',
+        name: r'settingsProviderOf',
         dependencies: null,
         $allTransitiveDependencies: null,
         isAutoDispose: false,
@@ -71,7 +74,7 @@ final class SettingsNotifierFamily extends $Family
       SettingsNotifierProvider._(argument: repo, from: this);
 
   @override
-  String toString() => r'settingsNotifierProviderOf';
+  String toString() => r'settingsProviderOf';
 }
 
 abstract class _$SettingsNotifier extends $AsyncNotifier<SettingsState> {
@@ -95,6 +98,3 @@ abstract class _$SettingsNotifier extends $AsyncNotifier<SettingsState> {
     element.handleValue(ref, created);
   }
 }
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
