@@ -87,24 +87,30 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: ImportTokensView.pagePaddingHorizontal),
+            padding: const EdgeInsets.symmetric(
+              horizontal: ImportTokensView.pagePaddingHorizontal,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Icon(
                   widget.selectedSource.type.icon,
-                  color: _errorText != null ? Theme.of(context).colorScheme.error : null,
+                  color: _errorText != null
+                      ? Theme.of(context).colorScheme.error
+                      : null,
                   size: ImportTokensView.iconSize,
                 ),
                 const SizedBox(height: ImportTokensView.itemSpacingHorizontal),
                 _errorText != null
-                    ? Text(
-                        _errorText!,
+                    ? Text(_errorText!, textAlign: TextAlign.center)
+                    : Text(
+                        widget.selectedSource.importHint(localizations),
                         textAlign: TextAlign.center,
-                      )
-                    : Text(widget.selectedSource.importHint(localizations), textAlign: TextAlign.center),
+                      ),
                 if (widget.selectedSource.type == TokenImportType.link) ...[
-                  const SizedBox(height: ImportTokensView.itemSpacingHorizontal),
+                  const SizedBox(
+                    height: ImportTokensView.itemSpacingHorizontal,
+                  ),
                   TextField(
                     controller: _linkController,
                     decoration: InputDecoration(
@@ -118,7 +124,9 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
                         width: double.infinity,
                         child: ElevatedButton(
                           child: Text(
-                            widget.selectedSource.type.buttonText(localizations),
+                            widget.selectedSource.type.buttonText(
+                              localizations,
+                            ),
                             style: Theme.of(context).textTheme.headlineSmall,
                             overflow: TextOverflow.fade,
                             softWrap: false,
@@ -126,12 +134,24 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
                           onPressed: () {
                             setState(() => _errorText = null);
                             setState(() {
-                              future = Future(() => switch (widget.selectedSource.type) {
-                                    const (TokenImportType.backupFile) => _pickBackupFile(widget.selectedSource.processor),
-                                    const (TokenImportType.qrScan) => _scanQrCode(widget.selectedSource.processor),
-                                    const (TokenImportType.qrFile) => _pickQrImage(widget.selectedSource.processor),
-                                    const (TokenImportType.link) => _validateLink(widget.selectedSource.processor),
-                                  });
+                              future = Future(
+                                () => switch (widget.selectedSource.type) {
+                                  const (TokenImportType.backupFile) =>
+                                    _pickBackupFile(
+                                      widget.selectedSource.processor,
+                                    ),
+                                  const (TokenImportType.qrScan) => _scanQrCode(
+                                    widget.selectedSource.processor,
+                                  ),
+                                  const (TokenImportType.qrFile) =>
+                                    _pickQrImage(
+                                      widget.selectedSource.processor,
+                                    ),
+                                  const (TokenImportType.link) => _validateLink(
+                                    widget.selectedSource.processor,
+                                  ),
+                                },
+                              );
                               future!.then((errorText) {
                                 if (!mounted) return;
                                 setState(() {
@@ -163,14 +183,20 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
       return null;
     }
     if (!await fileProcessor.fileIsValid(file)) {
+      Logger.warning("Invalid backup file selected");
       return localizations.invalidBackupFile(widget.appName);
     }
     setState(() => _errorText = null);
     if (await fileProcessor.fileNeedsPassword(file)) {
-      return _routeEncryptedData<XFile, String?>(data: file, processor: fileProcessor);
+      Logger.info("Backup file is encrypted, requesting password");
+      return _routeEncryptedData<XFile, String?>(
+        data: file,
+        processor: fileProcessor,
+      );
     }
     var importResults = await fileProcessor.processFile(file);
     if (importResults.isEmpty) {
+      Logger.warning("No tokens found in backup file");
       return localizations.invalidBackupFile(widget.appName);
     }
     String fileString;
@@ -202,7 +228,9 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
     assert(processor is TokenImportSchemeProcessor);
     final localizations = AppLocalizations.of(context)!;
     final schemeProcessor = processor as TokenImportSchemeProcessor;
-    final result = await Navigator.of(context).pushNamed(QRScannerView.routeName);
+    final result = await Navigator.of(
+      context,
+    ).pushNamed(QRScannerView.routeName);
     if (result is! String) return localizations.invalidQrBackup(widget.appName);
     final Uri uri;
     try {
@@ -260,10 +288,20 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
     if (text == null) {
       if (!mounted) return null;
       if (tryHarder == false) {
-        return _processQrImage(processor: processor, tryHarder: true, tryInverted: tryInverted, file: file);
+        return _processQrImage(
+          processor: processor,
+          tryHarder: true,
+          tryInverted: tryInverted,
+          file: file,
+        );
       }
       if (tryInverted == false) {
-        return _processQrImage(processor: processor, tryHarder: tryHarder, tryInverted: true, file: file);
+        return _processQrImage(
+          processor: processor,
+          tryHarder: tryHarder,
+          tryInverted: true,
+          file: file,
+        );
       }
       return localizations.invalidQrFile(widget.appName);
     }
@@ -279,7 +317,8 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
 
   Future<String?> _validateLink(TokenImportProcessor? processor) async {
     final localizations = AppLocalizations.of(context)!;
-    if (_linkController.text.isEmpty) return localizations.mustNotBeEmpty(localizations.tokenLinkImport);
+    if (_linkController.text.isEmpty)
+      return localizations.mustNotBeEmpty(localizations.tokenLinkImport);
     assert(processor is TokenImportSchemeProcessor);
     final schemeProcessor = processor as TokenImportSchemeProcessor;
     final Uri uri;
@@ -310,16 +349,20 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
     return _routeImportPlainTokensPage(importResults: results);
   }
 
-  Future<String?> _routeImportPlainTokensPage({required List<ProcessorResult<Token>> importResults}) async {
+  Future<String?> _routeImportPlainTokensPage({
+    required List<ProcessorResult<Token>> importResults,
+  }) async {
     if (mounted == false) return null;
     final tokensToImport = await Navigator.of(context).push<List<Token>>(
-      MaterialPageRoute(builder: (context) {
-        return ImportPlainTokensPage(
-          titleName: widget.appName,
-          processorResults: importResults,
-          selectedType: widget.selectedSource.type,
-        );
-      }),
+      MaterialPageRoute(
+        builder: (context) {
+          return ImportPlainTokensPage(
+            titleName: widget.appName,
+            processorResults: importResults,
+            selectedType: widget.selectedSource.type,
+          );
+        },
+      ),
     );
     Logger.info('Imported tokens: ${tokensToImport?.length}');
 
@@ -329,21 +372,38 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
     return null;
   }
 
-  Future<String?> _routeEncryptedData<T, V extends String?>({required T data, required TokenImportProcessor<T, V> processor}) async {
-    if (mounted == false) return null;
+  Future<String?> _routeEncryptedData<T, V extends String?>({
+    required T data,
+    required TokenImportProcessor<T, V> processor,
+  }) async {
+    if (mounted == false) {
+      Logger.warning('Widget not mounted, cannot route to encrypted data page');
+      return null;
+    }
     final tokensToImport = await Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) {
-        return ImportEncryptedDataPage<T, V>(
-          appName: widget.appName,
-          data: data,
-          selectedType: widget.selectedSource.type,
-          processor: processor,
-        );
-      }),
+      MaterialPageRoute(
+        builder: (context) {
+          return ImportEncryptedDataPage<T, V>(
+            appName: widget.appName,
+            data: data,
+            selectedType: widget.selectedSource.type,
+            processor: processor,
+          );
+        },
+      ),
     );
     Logger.info('Imported encrypted tokens: ${tokensToImport?.length}');
-    if (!mounted) return null;
-    if (tokensToImport == null) return null;
+    if (!mounted) {
+      Logger.warning('Widget not mounted, cannot return imported tokens');
+      return null;
+    }
+    if (tokensToImport == null) {
+      Logger.warning('No encrypted tokens imported');
+      return null;
+    }
+    Logger.info(
+      'Returning (${tokensToImport.length}) imported encrypted tokens',
+    );
     Navigator.of(context).pop(tokensToImport);
     return null;
   }
