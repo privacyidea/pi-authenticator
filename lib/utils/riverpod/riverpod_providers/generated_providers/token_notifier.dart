@@ -670,8 +670,9 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
             rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed,
           ),
         );
-        if (pushToken == null)
+        if (pushToken == null) {
           Logger.warning('Tried to update a token that does not exist.');
+        }
         return false;
       }
     }
@@ -958,8 +959,9 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   Future<bool> handleLink(Uri uri) async {
     final tokenResults = await TokenImportSchemeProcessor.processUriByAny(uri);
     if (tokenResults == null) return false; // Not a valid token link
-    if (tokenResults.isEmpty)
+    if (tokenResults.isEmpty) {
       return true; // Link was valid but contained no tokens
+    }
     await handleProcessorResults(
       tokenResults,
       args: {'TokenOriginSourceType': TokenOriginSourceType.link},
@@ -1149,7 +1151,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     if (statusMessage == null) {
       try {
         final String message = response.body.isNotEmpty
-            ? (json.decode(response.body)['result']?['error']?['message'])
+            ? (json.decode(response.body)['result']?['error']?['message'] ?? '')
             : '';
         statusMessage = StatusMessage(
           message: (localization) =>
