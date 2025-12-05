@@ -38,7 +38,7 @@ jobs:
   build_appbundle:
     name: (Android)
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     # Removed the 'strategy' block with 'api-level' and 'target' matrix
     steps:
       - uses: actions/checkout@v4
