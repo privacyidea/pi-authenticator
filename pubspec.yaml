@@ -24,7 +24,7 @@ environment:
   sdk: ">=3.8.0 < 4.0.0"
 
 dependencies:
-  app_links: ^6.3.2
+  app_links: ^7.0.0
   asn1lib: ^1.5.5
   async: ^2.11.0
   base32: ^2.1.3
