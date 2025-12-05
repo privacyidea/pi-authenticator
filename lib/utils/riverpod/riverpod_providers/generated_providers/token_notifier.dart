@@ -1149,18 +1149,21 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     // If no specific status message was set, try to extract the error message from the response body
     // or fallback to a generic error message and the status code as details.
     if (statusMessage == null) {
+      String? message;
       try {
-        final String message = response.body.isNotEmpty
+        message = response.body.isNotEmpty
             ? (json.decode(response.body)['result']?['error']?['message'] ?? '')
             : '';
+      } on FormatException {
+        // Format Exception is thrown if the response body is not a valid json. This happens if the server is not reachable.
+      }
+      if (message == null || message.isEmpty) {
         statusMessage = StatusMessage(
           message: (localization) =>
               localization.errorRollOutFailed(tokenLabel),
           details: (_) => message.toString(),
         );
-      } on FormatException {
-        // Format Exception is thrown if the response body is not a valid json. This happens if the server is not reachable.
-
+      } else {
         statusMessage = StatusMessage(
           message: (localization) =>
               localization.errorRollOutFailed(tokenLabel),
