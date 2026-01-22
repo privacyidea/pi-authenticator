@@ -23,12 +23,21 @@ import 'package:mutex/mutex.dart';
 import '../interfaces/repo/secure_storage.dart';
 
 class SecureStorage implements SecureStorageInterface {
-  static const defaultStorage = FlutterSecureStorage(
-    aOptions: AndroidOptions(encryptedSharedPreferences: true),
-    iOptions: IOSOptions(accessibility: KeychainAccessibility.first_unlock_this_device, synchronizable: false),
+  static final defaultStorage = FlutterSecureStorage(
+    aOptions: AndroidOptions(
+      migrateOnAlgorithmChange: true,
+      resetOnError: false,
+    ),
+    iOptions: IOSOptions(
+      accessibility: KeychainAccessibility.first_unlock_this_device,
+      synchronizable: false,
+    ),
   );
 
-  static const legacyStorage = FlutterSecureStorage(aOptions: AndroidOptions(encryptedSharedPreferences: true));
+  static const legacyStorage = FlutterSecureStorage(
+    // ignore: deprecated_member_use
+    aOptions: AndroidOptions(encryptedSharedPreferences: true),
+  );
 
   static final Mutex _m = Mutex();
   @override
@@ -38,7 +47,11 @@ class SecureStorage implements SecureStorageInterface {
   @override
   final String seperator;
 
-  SecureStorage({required this.storagePrefix, required this.storage, this.seperator = '_'});
+  SecureStorage({
+    required this.storagePrefix,
+    required this.storage,
+    this.seperator = '_',
+  });
 
   @override
   String getFullKey(String key) => "$storagePrefix$seperator$key";
@@ -49,17 +62,21 @@ class SecureStorage implements SecureStorageInterface {
 
   /// Writes the given key-value pair to the secure storage.
   @override
-  Future<void> write({required String key, required String value}) => _protect(() => storage.write(key: getFullKey(key), value: value));
+  Future<void> write({required String key, required String value}) =>
+      _protect(() => storage.write(key: getFullKey(key), value: value));
 
   /// Reads the value for the given key from the secure storage.
   @override
-  Future<String?> read({required String key}) => _protect(() => storage.read(key: getFullKey(key)));
+  Future<String?> read({required String key}) =>
+      _protect(() => storage.read(key: getFullKey(key)));
 
   /// Reads all key-value pairs from the secure storage that start with the storagePrefix.
   @override
   Future<Map<String, String>> readAll() => _protect(() async {
     final allPairs = await storage.readAll();
-    final allKeys = allPairs.keys.where((key) => key.startsWith(storagePrefix)).toList();
+    final allKeys = allPairs.keys
+        .where((key) => key.startsWith(storagePrefix))
+        .toList();
     final result = <String, String>{};
     for (var key in allKeys) {
       final shortKey = key.substring(storagePrefix.length + 1);
@@ -70,13 +87,16 @@ class SecureStorage implements SecureStorageInterface {
 
   /// Deletes the entry with the given key from the secure storage.
   @override
-  Future<void> delete({required String key}) => _protect(() => storage.delete(key: getFullKey(key)));
+  Future<void> delete({required String key}) =>
+      _protect(() => storage.delete(key: getFullKey(key)));
 
   /// Deletes all entries from the secure storage that start with the storagePrefix.
   @override
   Future<void> deleteAll() => _protect(() async {
     final allPairs = await storage.readAll();
-    final allKeys = allPairs.keys.where((key) => key.startsWith(storagePrefix)).toList();
+    final allKeys = allPairs.keys
+        .where((key) => key.startsWith(storagePrefix))
+        .toList();
     for (var key in allKeys) {
       await storage.delete(key: key);
     }

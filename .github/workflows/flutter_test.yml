@@ -23,7 +23,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: "stable"
-          flutter-version: "3.38.3" # Use the latest stable Flutter version as of Dec 05 2025
+          flutter-version: "3.38.4" # Use the latest stable Flutter version as of Dec 05 2025
           cache: true # Enable caching for Flutter SDK itself
           # cache-key and cache-path are automatically handled by subosito/flutter-action when cache: true
 
