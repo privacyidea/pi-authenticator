@@ -10,11 +10,11 @@ part of 'app_constraints_notifier.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(AppConstraintsNotifier)
-const appConstraintsProvider = AppConstraintsNotifierProvider._();
+final appConstraintsProvider = AppConstraintsNotifierProvider._();
 
 final class AppConstraintsNotifierProvider
     extends $NotifierProvider<AppConstraintsNotifier, BoxConstraints> {
-  const AppConstraintsNotifierProvider._()
+  AppConstraintsNotifierProvider._()
     : super(
         from: null,
         argument: null,
@@ -49,7 +49,6 @@ abstract class _$AppConstraintsNotifier extends $Notifier<BoxConstraints> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<BoxConstraints, BoxConstraints>;
     final element =
         ref.element
@@ -59,6 +58,6 @@ abstract class _$AppConstraintsNotifier extends $Notifier<BoxConstraints> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

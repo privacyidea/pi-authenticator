@@ -10,11 +10,11 @@ part of 'token_notifier.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(TokenNotifier)
-const tokenProviderOf = TokenNotifierFamily._();
+final tokenProviderOf = TokenNotifierFamily._();
 
 final class TokenNotifierProvider
     extends $AsyncNotifierProvider<TokenNotifier, TokenState> {
-  const TokenNotifierProvider._({
+  TokenNotifierProvider._({
     required TokenNotifierFamily super.from,
     required ({
       TokenRepository repo,
@@ -56,7 +56,7 @@ final class TokenNotifierProvider
   }
 }
 
-String _$tokenNotifierHash() => r'efd5f84a819f806c68793f59ba403007504edac7';
+String _$tokenNotifierHash() => r'bf09d289682390c386ab3fbd96b72c3eff0f5382';
 
 final class TokenNotifierFamily extends $Family
     with
@@ -72,7 +72,7 @@ final class TokenNotifierFamily extends $Family
             FirebaseUtils firebaseUtils,
           })
         > {
-  const TokenNotifierFamily._()
+  TokenNotifierFamily._()
     : super(
         retry: null,
         name: r'tokenProviderOf',
@@ -123,12 +123,6 @@ abstract class _$TokenNotifier extends $AsyncNotifier<TokenState> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(
-      repo: _$args.repo,
-      rsaUtils: _$args.rsaUtils,
-      ioClient: _$args.ioClient,
-      firebaseUtils: _$args.firebaseUtils,
-    );
     final ref = this.ref as $Ref<AsyncValue<TokenState>, TokenState>;
     final element =
         ref.element
@@ -138,6 +132,14 @@ abstract class _$TokenNotifier extends $AsyncNotifier<TokenState> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(
+      ref,
+      () => build(
+        repo: _$args.repo,
+        rsaUtils: _$args.rsaUtils,
+        ioClient: _$args.ioClient,
+        firebaseUtils: _$args.firebaseUtils,
+      ),
+    );
   }
 }

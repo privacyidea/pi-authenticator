@@ -71,6 +71,7 @@ import 'package:privacyidea_authenticator/utils/rsa_utils.dart' as _i10;
 // ignore_for_file: unnecessary_parenthesis
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
+// ignore_for_file: invalid_use_of_internal_member
 
 class _FakeSettingsState_0 extends _i1.SmartFake implements _i2.SettingsState {
   _FakeSettingsState_0(Object parent, Invocation parentInvocation)
@@ -1097,14 +1098,14 @@ class MockFirebaseUtils extends _i1.Mock implements _i8.FirebaseUtils {
           as bool);
 
   @override
-  set initializedFirebase(bool? _initializedFirebase) => super.noSuchMethod(
-    Invocation.setter(#initializedFirebase, _initializedFirebase),
+  set initializedFirebase(bool? value) => super.noSuchMethod(
+    Invocation.setter(#initializedFirebase, value),
     returnValueForMissingStub: null,
   );
 
   @override
-  set initializedHandler(bool? _initializedHandler) => super.noSuchMethod(
-    Invocation.setter(#initializedHandler, _initializedHandler),
+  set initializedHandler(bool? value) => super.noSuchMethod(
+    Invocation.setter(#initializedHandler, value),
     returnValueForMissingStub: null,
   );
 
@@ -1245,8 +1246,8 @@ class MockPushProvider extends _i1.Mock implements _i33.PushProvider {
           as _i10.RsaUtils);
 
   @override
-  set pollingIsEnabled(bool? _pollingIsEnabled) => super.noSuchMethod(
-    Invocation.setter(#pollingIsEnabled, _pollingIsEnabled),
+  set pollingIsEnabled(bool? value) => super.noSuchMethod(
+    Invocation.setter(#pollingIsEnabled, value),
     returnValueForMissingStub: null,
   );
 

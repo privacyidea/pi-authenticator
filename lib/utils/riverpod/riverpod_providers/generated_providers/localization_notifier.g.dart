@@ -10,11 +10,11 @@ part of 'localization_notifier.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(LocalizationNotifier)
-const localizationProvider = LocalizationNotifierProvider._();
+final localizationProvider = LocalizationNotifierProvider._();
 
 final class LocalizationNotifierProvider
     extends $NotifierProvider<LocalizationNotifier, AppLocalizations> {
-  const LocalizationNotifierProvider._()
+  LocalizationNotifierProvider._()
     : super(
         from: null,
         argument: null,
@@ -49,7 +49,6 @@ abstract class _$LocalizationNotifier extends $Notifier<AppLocalizations> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<AppLocalizations, AppLocalizations>;
     final element =
         ref.element
@@ -59,6 +58,6 @@ abstract class _$LocalizationNotifier extends $Notifier<AppLocalizations> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

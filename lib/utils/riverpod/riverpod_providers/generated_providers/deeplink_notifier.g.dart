@@ -10,11 +10,11 @@ part of 'deeplink_notifier.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(DeeplinkNotifier)
-const deeplinkProvider = DeeplinkNotifierProvider._();
+final deeplinkProvider = DeeplinkNotifierProvider._();
 
 final class DeeplinkNotifierProvider
     extends $StreamNotifierProvider<DeeplinkNotifier, DeepLink> {
-  const DeeplinkNotifierProvider._()
+  DeeplinkNotifierProvider._()
     : super(
         from: null,
         argument: null,
@@ -40,7 +40,6 @@ abstract class _$DeeplinkNotifier extends $StreamNotifier<DeepLink> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref = this.ref as $Ref<AsyncValue<DeepLink>, DeepLink>;
     final element =
         ref.element
@@ -50,6 +49,6 @@ abstract class _$DeeplinkNotifier extends $StreamNotifier<DeepLink> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

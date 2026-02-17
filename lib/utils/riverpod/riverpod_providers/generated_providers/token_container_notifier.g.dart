@@ -10,12 +10,12 @@ part of 'token_container_notifier.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(TokenContainerNotifier)
-const tokenContainerProviderOf = TokenContainerNotifierFamily._();
+final tokenContainerProviderOf = TokenContainerNotifierFamily._();
 
 final class TokenContainerNotifierProvider
     extends
         $AsyncNotifierProvider<TokenContainerNotifier, TokenContainerState> {
-  const TokenContainerNotifierProvider._({
+  TokenContainerNotifierProvider._({
     required TokenContainerNotifierFamily super.from,
     required ({
       TokenContainerRepository repo,
@@ -73,7 +73,7 @@ final class TokenContainerNotifierFamily extends $Family
             EccUtils eccUtils,
           })
         > {
-  const TokenContainerNotifierFamily._()
+  TokenContainerNotifierFamily._()
     : super(
         retry: null,
         name: r'tokenContainerProviderOf',
@@ -116,11 +116,6 @@ abstract class _$TokenContainerNotifier
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(
-      repo: _$args.repo,
-      containerApi: _$args.containerApi,
-      eccUtils: _$args.eccUtils,
-    );
     final ref =
         this.ref as $Ref<AsyncValue<TokenContainerState>, TokenContainerState>;
     final element =
@@ -131,6 +126,13 @@ abstract class _$TokenContainerNotifier
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(
+      ref,
+      () => build(
+        repo: _$args.repo,
+        containerApi: _$args.containerApi,
+        eccUtils: _$args.eccUtils,
+      ),
+    );
   }
 }
