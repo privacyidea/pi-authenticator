@@ -45,7 +45,7 @@ dependencies:
   fluentui_system_icons: ^1.1.260
   flutter:
     sdk: flutter
-  flutter_local_notifications: ^19.4.1
+  flutter_local_notifications: ^20.0.0
   flutter_localizations:
     sdk: flutter
   flutter_mailer: ^3.0.0
@@ -58,7 +58,7 @@ dependencies:
   freezed_annotation: ^3.1.0
   gms_check: ^1.0.3
   hex: ^0.2.0
-  home_widget: ^0.8.0
+  home_widget: ^0.9.0
   http: ^1.2.2
   image: ^4.3.0
   image_cropper: ^11.0.0
@@ -78,7 +78,7 @@ dependencies:
   permission_handler: ^12.0.1
   pointycastle: ^3.9.1
   protobuf: ^6.0.0
-  riverpod_annotation: ^3.0.0-dev.17
+  riverpod_annotation: ^4.0.0
   shared_preferences: ^2.3.2
   simple_icons: ^14.6.1
   url_launcher: ^6.3.1
@@ -97,7 +97,7 @@ dev_dependencies:
     sdk: flutter
   json_serializable: ^6.8.0
   mockito: ^5.4.2
-  riverpod_generator: ^3.0.0-dev.17
+  riverpod_generator: ^4.0.0+1
   riverpod_lint: ^3.0.0-dev.17
   test: ^1.24.1
 

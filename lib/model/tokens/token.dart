@@ -82,13 +82,21 @@ abstract class Token with SortableMixin {
 
   bool? get isPrivacyIdeaToken => origin?.isPrivacyIdeaToken;
   bool get isExportable => origin?.isExportable ?? false;
-  final String tokenVersion = 'v1.0.0'; // The version of this token, this is used for serialization.
-  final List<String> checkedContainer; // The serials of the container this token should not be in.
-  final String label; // the name of the token, it cannot be uses as an identifier
-  final String issuer; // The issuer of this token, currently unused.
-  final String? containerSerial; // The serial of the container this token belongs to.
-  final String id; // this is the identifier of the token
-  final String? serial; // The serial of the token, this is used to identify the token in the privacyIDEA server.
+  // The version of this token, this is used for serialization.
+  final String tokenVersion = 'v1.0.0';
+  // The serials of the container this token should not be in.
+  final List<String> checkedContainer;
+  // the name of the token, it cannot be uses as an identifier
+  final String label;
+  // The issuer of this token, currently unused.
+  final String issuer;
+  final String?
+  // The serial of the container this token belongs to.
+  containerSerial;
+  // this is the identifier of the token
+  final String id;
+  // The serial of the token, this is used to identify the token in the privacyIDEA server.
+  final String? serial;
   final bool pin;
   final bool isLocked;
   final bool isHidden;
@@ -105,44 +113,102 @@ abstract class Token with SortableMixin {
   /// Creates a token from a json map.
   factory Token.fromJson(Map<String, dynamic> json) {
     String? type = json[TOKENTYPE_JSON];
-    if (type == null) throw ArgumentError.value(json, 'Token#fromJson', 'Token type is not defined in the json');
-    if (TokenTypes.HOTP.isName(type, caseSensitive: false)) return HOTPToken.fromJson(json);
-    if (TokenTypes.TOTP.isName(type, caseSensitive: false)) return TOTPToken.fromJson(json);
-    if (TokenTypes.PIPUSH.isName(type, caseSensitive: false) || TokenTypes.PUSH.isName(type, caseSensitive: false)) return PushToken.fromJson(json);
-    if (TokenTypes.DAYPASSWORD.isName(type, caseSensitive: false)) return DayPasswordToken.fromJson(json);
-    if (TokenTypes.STEAM.isName(type, caseSensitive: false)) return SteamToken.fromJson(json);
-    throw ArgumentError.value(json, 'Token#fromJson', 'Token type [$type] is not supported');
+    if (type == null) {
+      throw ArgumentError.value(
+        json,
+        'Token#fromJson',
+        'Token type is not defined in the json',
+      );
+    }
+    if (TokenTypes.HOTP.isName(type, caseSensitive: false)) {
+      return HOTPToken.fromJson(json);
+    }
+    if (TokenTypes.TOTP.isName(type, caseSensitive: false)) {
+      return TOTPToken.fromJson(json);
+    }
+    if (TokenTypes.PIPUSH.isName(type, caseSensitive: false) ||
+        TokenTypes.PUSH.isName(type, caseSensitive: false)) {
+      return PushToken.fromJson(json);
+    }
+    if (TokenTypes.DAYPASSWORD.isName(type, caseSensitive: false)) {
+      return DayPasswordToken.fromJson(json);
+    }
+    if (TokenTypes.STEAM.isName(type, caseSensitive: false)) {
+      return SteamToken.fromJson(json);
+    }
+    throw ArgumentError.value(
+      json,
+      'Token#fromJson',
+      'Token type [$type] is not supported',
+    );
   }
 
   /// Creates a token from a uri map.
-  factory Token.fromOtpAuthMap(Map<String, dynamic> otpAuthMap, {Map<String, dynamic> additionalData = const {}}) {
+  factory Token.fromOtpAuthMap(
+    Map<String, dynamic> otpAuthMap, {
+    Map<String, dynamic> additionalData = const {},
+  }) {
     String? type = otpAuthMap[TOKENTYPE_OTPAUTH];
-    if (type == null) throw ArgumentError.value(otpAuthMap, 'Token#fromUriMap', 'Token type is not defined in the uri map');
-    if (TokenTypes.HOTP.isName(type, caseSensitive: false)) return HOTPToken.fromOtpAuthMap(otpAuthMap, additionalData: additionalData);
-    if (TokenTypes.TOTP.isName(type, caseSensitive: false)) return TOTPToken.fromOtpAuthMap(otpAuthMap, additionalData: additionalData);
-    if (TokenTypes.PIPUSH.isName(type, caseSensitive: false) || TokenTypes.PUSH.isName(type, caseSensitive: false)) {
-      return PushToken.fromOtpAuthMap(otpAuthMap, additionalData: additionalData);
+    if (type == null) {
+      throw ArgumentError.value(
+        otpAuthMap,
+        'Token#fromUriMap',
+        'Token type is not defined in the uri map',
+      );
+    }
+    if (TokenTypes.HOTP.isName(type, caseSensitive: false)) {
+      return HOTPToken.fromOtpAuthMap(
+        otpAuthMap,
+        additionalData: additionalData,
+      );
+    }
+    if (TokenTypes.TOTP.isName(type, caseSensitive: false)) {
+      return TOTPToken.fromOtpAuthMap(
+        otpAuthMap,
+        additionalData: additionalData,
+      );
+    }
+    if (TokenTypes.PIPUSH.isName(type, caseSensitive: false) ||
+        TokenTypes.PUSH.isName(type, caseSensitive: false)) {
+      return PushToken.fromOtpAuthMap(
+        otpAuthMap,
+        additionalData: additionalData,
+      );
     }
     if (TokenTypes.DAYPASSWORD.isName(type, caseSensitive: false)) {
-      return DayPasswordToken.fromOtpAuthMap(otpAuthMap, additionalData: additionalData);
+      return DayPasswordToken.fromOtpAuthMap(
+        otpAuthMap,
+        additionalData: additionalData,
+      );
     }
-    if (TokenTypes.STEAM.isName(type, caseSensitive: false)) return SteamToken.fromOtpAuthMap(otpAuthMap, additionalData: additionalData);
-    throw ArgumentError.value(otpAuthMap, 'Token#fromUriMap', 'Token type [$type] is not supported');
+    if (TokenTypes.STEAM.isName(type, caseSensitive: false)) {
+      return SteamToken.fromOtpAuthMap(
+        otpAuthMap,
+        additionalData: additionalData,
+      );
+    }
+    throw ArgumentError.value(
+      otpAuthMap,
+      'Token#fromUriMap',
+      'Token type [$type] is not supported',
+    );
   }
 
-  static Map<String, dynamic> validateAdditionalData(Map<String, dynamic> additionalData) => validateMap(
-        map: additionalData,
-        validators: {
-          Token.CONTAINER_SERIAL: const ObjectValidatorNullable<String>(),
-          Token.ID: const ObjectValidatorNullable<String>(),
-          Token.ORIGIN: const ObjectValidatorNullable<TokenOriginData>(),
-          Token.HIDDEN: const ObjectValidatorNullable<bool>(),
-          Token.CHECKED_CONTAINERS: const ObjectValidatorNullable<List<String>>(),
-          Token.FOLDER_ID: const ObjectValidatorNullable<int>(),
-          Token.SORT_INDEX: const ObjectValidatorNullable<int>(),
-        },
-        name: 'Token#validateAdditionalData',
-      );
+  static Map<String, dynamic> validateAdditionalData(
+    Map<String, dynamic> additionalData,
+  ) => validateMap(
+    map: additionalData,
+    validators: {
+      Token.CONTAINER_SERIAL: const ObjectValidatorNullable<String>(),
+      Token.ID: const ObjectValidatorNullable<String>(),
+      Token.ORIGIN: const ObjectValidatorNullable<TokenOriginData>(),
+      Token.HIDDEN: const ObjectValidatorNullable<bool>(),
+      Token.CHECKED_CONTAINERS: const ObjectValidatorNullable<List<String>>(),
+      Token.FOLDER_ID: const ObjectValidatorNullable<int>(),
+      Token.SORT_INDEX: const ObjectValidatorNullable<int>(),
+    },
+    name: 'Token#validateAdditionalData',
+  );
 
   const Token({
     this.serial,
@@ -160,14 +226,20 @@ abstract class Token with SortableMixin {
     bool? pin,
     bool? isLocked,
     bool? isHidden,
-  })  : // when pin is true isLocked is also true otherwise it's the value of isLocked if it is null it's false
-        isLocked = pin != null && pin ? true : isLocked ?? false,
-        isHidden = (pin != null && pin ? true : isLocked ?? false) == false ? false : isHidden ?? false,
-        pin = pin ?? false;
+  }) : // when pin is true isLocked is also true otherwise it's the value of isLocked if it is null it's false
+       isLocked = pin != null && pin ? true : isLocked ?? false,
+       isHidden = (pin != null && pin ? true : isLocked ?? false) == false
+           ? false
+           : isHidden ?? false,
+       pin = pin ?? false;
 
   /// This is used to compare the changeable values of the token.
   bool sameValuesAs(Token other) =>
-      other.label == label && other.issuer == issuer && other.pin == pin && other.isLocked == isLocked && other.tokenImage == tokenImage;
+      other.label == label &&
+      other.issuer == issuer &&
+      other.pin == pin &&
+      other.isLocked == isLocked &&
+      other.tokenImage == tokenImage;
 
   /// This is used to identify the same token even if the id is different.
   /// The token should be considered the same if (the id is the same) or (the serial and issuer are the same).
@@ -253,14 +325,14 @@ abstract class Token with SortableMixin {
   Token copyUpdateByTemplate(TokenTemplate template);
 
   Map<String, dynamic> get additionalData => {
-        ID: id,
-        ORIGIN: origin,
-        SORT_INDEX: sortIndex,
-        FOLDER_ID: folderId,
-        HIDDEN: isHidden,
-        CHECKED_CONTAINERS: checkedContainer,
-        CONTAINER_SERIAL: containerSerial,
-      };
+    ID: id,
+    ORIGIN: origin,
+    SORT_INDEX: sortIndex,
+    FOLDER_ID: folderId,
+    HIDDEN: isHidden,
+    CHECKED_CONTAINERS: checkedContainer,
+    CONTAINER_SERIAL: containerSerial,
+  };
 
   TokenTemplate? toTemplate({TokenContainer? container}) => serial != null
       ? TokenTemplate.withSerial(

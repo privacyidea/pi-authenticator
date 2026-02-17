@@ -10,11 +10,11 @@ part of 'introduction_provider.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(IntroductionNotifier)
-const introductionProviderOf = IntroductionNotifierFamily._();
+final introductionProviderOf = IntroductionNotifierFamily._();
 
 final class IntroductionNotifierProvider
     extends $AsyncNotifierProvider<IntroductionNotifier, IntroductionState> {
-  const IntroductionNotifierProvider._({
+  IntroductionNotifierProvider._({
     required IntroductionNotifierFamily super.from,
     required IntroductionRepository super.argument,
   }) : super(
@@ -62,7 +62,7 @@ final class IntroductionNotifierFamily extends $Family
           FutureOr<IntroductionState>,
           IntroductionRepository
         > {
-  const IntroductionNotifierFamily._()
+  IntroductionNotifierFamily._()
     : super(
         retry: null,
         name: r'introductionProviderOf',
@@ -87,7 +87,6 @@ abstract class _$IntroductionNotifier
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(repo: _$args);
     final ref =
         this.ref as $Ref<AsyncValue<IntroductionState>, IntroductionState>;
     final element =
@@ -98,6 +97,6 @@ abstract class _$IntroductionNotifier
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, () => build(repo: _$args));
   }
 }

@@ -10,11 +10,11 @@ part of 'push_request_provider.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(PushRequestNotifier)
-const pushRequestProviderOf = PushRequestNotifierFamily._();
+final pushRequestProviderOf = PushRequestNotifierFamily._();
 
 final class PushRequestNotifierProvider
     extends $AsyncNotifierProvider<PushRequestNotifier, PushRequestState> {
-  const PushRequestNotifierProvider._({
+  PushRequestNotifierProvider._({
     required PushRequestNotifierFamily super.from,
     required ({
       RsaUtils rsaUtils,
@@ -73,7 +73,7 @@ final class PushRequestNotifierFamily extends $Family
             PushRequestRepository pushRepo,
           })
         > {
-  const PushRequestNotifierFamily._()
+  PushRequestNotifierFamily._()
     : super(
         retry: null,
         name: r'pushRequestProviderOf',
@@ -124,12 +124,6 @@ abstract class _$PushRequestNotifier extends $AsyncNotifier<PushRequestState> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(
-      rsaUtils: _$args.rsaUtils,
-      ioClient: _$args.ioClient,
-      pushProvider: _$args.pushProvider,
-      pushRepo: _$args.pushRepo,
-    );
     final ref =
         this.ref as $Ref<AsyncValue<PushRequestState>, PushRequestState>;
     final element =
@@ -140,6 +134,14 @@ abstract class _$PushRequestNotifier extends $AsyncNotifier<PushRequestState> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(
+      ref,
+      () => build(
+        rsaUtils: _$args.rsaUtils,
+        ioClient: _$args.ioClient,
+        pushProvider: _$args.pushProvider,
+        pushRepo: _$args.pushRepo,
+      ),
+    );
   }
 }
