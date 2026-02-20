@@ -30,7 +30,7 @@ import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
 
 import '../../../../../../../repo/secure_push_request_repository.dart';
 import '../../../../../../../utils/pi_notifications.dart';
-import '../model/push_request.dart';
+import '../model/push_request/push_requests.dart';
 import '../model/tokens/push_token.dart';
 import '../repo/secure_token_repository.dart';
 import 'firebase_utils.dart';
@@ -68,9 +68,9 @@ class PushProvider {
     FirebaseUtils? firebaseUtils,
     PrivacyideaIOClient? ioClient,
     RsaUtils? rsaUtils,
-  })  : _firebaseUtils = firebaseUtils ?? FirebaseUtils(),
-        _ioClient = ioClient ?? const PrivacyideaIOClient(),
-        _rsaUtils = rsaUtils ?? const RsaUtils();
+  }) : _firebaseUtils = firebaseUtils ?? FirebaseUtils(),
+       _ioClient = ioClient ?? const PrivacyideaIOClient(),
+       _rsaUtils = rsaUtils ?? const RsaUtils();
 
   Future<void> initFirebase() async {
     Logger.info('PushProvider: Initializing Firebase');
@@ -92,7 +92,11 @@ class PushProvider {
       Logger.info('PushProvider: Firebase initialized.');
     } on IOException catch (e, s) {
       if (e.toString().contains('SERVICE_NOT_AVAILABLE')) {
-        Logger.warning('Could not initialize Firebase.', error: e, stackTrace: s);
+        Logger.warning(
+          'Could not initialize Firebase.',
+          error: e,
+          stackTrace: s,
+        );
       } else {
         rethrow;
       }
@@ -132,29 +136,43 @@ class PushProvider {
     return instance!;
   }
 
-  static Map<String, dynamic> _getAndValidateDataFromRemoteMessage(RemoteMessage remoteMessage) {
+  static Map<String, dynamic> _getAndValidateDataFromRemoteMessage(
+    RemoteMessage remoteMessage,
+  ) {
     final Map<String, dynamic> data;
     try {
       data = remoteMessage.data;
-      PushRequest.verifyData(data);
+      PushRequest.verifyMessageData(data);
     } on ArgumentError catch (e) {
-      Logger.warning('Could not parse push request data.', error: e, verbose: true);
+      Logger.warning(
+        'Could not parse push request data.',
+        error: e,
+        verbose: true,
+      );
       rethrow;
     }
     return data;
   }
 
-  List<Map<String, dynamic>> _getAndValidateDataFromResponse(Response response) {
+  List<Map<String, dynamic>> _getAndValidateDataFromResponse(
+    Response response,
+  ) {
     final List<Map<String, dynamic>> data;
     try {
-      data = jsonDecode(response.body)['result']['value'].cast<Map<String, dynamic>>();
+      data = jsonDecode(
+        response.body,
+      )['result']['value'].cast<Map<String, dynamic>>();
       for (Map<String, dynamic> dataUnit in data) {
         // The signature of this message must not be verified as each push
         // request gets verified independently.
-        PushRequest.verifyData(dataUnit);
+        PushRequest.verifyMessageData(dataUnit);
       }
     } on ArgumentError catch (e) {
-      Logger.warning('Could not parse push request data.', error: e, verbose: true);
+      Logger.warning(
+        'Could not parse push request data.',
+        error: e,
+        verbose: true,
+      );
       rethrow;
     }
     return data;
@@ -168,7 +186,9 @@ class PushProvider {
     try {
       data = _getAndValidateDataFromRemoteMessage(remoteMessage);
     } on ArgumentError catch (_) {
-      Logger.info('Failed to parse push request data. Trying to poll for challenges.');
+      Logger.info(
+        'Failed to parse push request data. Trying to poll for challenges.',
+      );
       await pollForChallenges(isManually: true);
       return;
     }
@@ -225,21 +245,27 @@ class PushProvider {
   // HANDLING
   /// Handles incoming push requests by verifying the challenge and adding it
   /// to the token. This should be guarded by a lock.
-  Future<void> _handleIncomingRequestForeground(Map<String, dynamic> data) async {
+  Future<void> _handleIncomingRequestForeground(
+    Map<String, dynamic> data,
+  ) async {
     Logger.info('Incoming push challenge.');
-    PushRequest pushRequest = PushRequest.fromMessageData(data);
-    Logger.info("PushRequest.possibleAnswers: ${pushRequest.possibleAnswers}");
+    PushRequest pushRequest = PushRequestFactory.fromMessageData(data);
+
     Logger.info('Parsing data of push request succeeded.');
-    final pushToken = (await globalRef?.read(tokenProvider.future))?.getTokenBySerial(pushRequest.serial);
+    final pushToken = (await globalRef?.read(
+      tokenProvider.future,
+    ))?.getTokenBySerial(pushRequest.serial);
     if (pushToken == null) {
       Logger.warning('No token found for serial ${pushRequest.serial}.');
       return;
     }
-    if (!await pushRequest.verifySignature(pushToken, rsaUtils: _rsaUtils)) {
+    if (!pushRequest.verifySignature(pushToken, rsaUtils: _rsaUtils)) {
       Logger.warning('Signature verification failed.');
       return;
     }
-    Logger.info('Signature verification succeeded, notifying ${_subscribers.length} subscribers.');
+    Logger.info(
+      'Signature verification succeeded, notifying ${_subscribers.length} subscribers.',
+    );
     for (var subscriber in _subscribers) {
       subscriber(pushRequest);
     }
@@ -248,15 +274,19 @@ class PushProvider {
   // HANDLING
   /// Handles incoming push requests by verifying the challenge and adding it
   /// to the token. This should be guarded by a lock.
-  static Future<bool> _handleIncomingRequestBackground(Map<String, dynamic> data) async {
+  static Future<bool> _handleIncomingRequestBackground(
+    Map<String, dynamic> data,
+  ) async {
     Logger.info('Incoming push challenge.');
-    PushRequest pushRequest = PushRequest.fromMessageData(data);
-    final pushToken = (await _defaultTokenRepo.loadTokens()).whereType<PushToken>().firstWhereOrNull((t) => t.serial == pushRequest.serial);
+    PushRequest pushRequest = PushRequestFactory.fromMessageData(data);
+    final pushToken = (await _defaultTokenRepo.loadTokens())
+        .whereType<PushToken>()
+        .firstWhereOrNull((t) => t.serial == pushRequest.serial);
     if (pushToken == null) {
       Logger.warning('No token found for serial ${pushRequest.serial}.');
       return false;
     }
-    if (!await pushRequest.verifySignature(pushToken)) {
+    if (!pushRequest.verifySignature(pushToken)) {
       Logger.warning('Signature verification failed.');
       return false;
     }
@@ -274,7 +304,10 @@ class PushProvider {
     // Start polling if enabled and not already polling
     if (pollingEnabled && _pollTimer == null) {
       Logger.info('Polling is enabled.');
-      _pollTimer = Timer.periodic(const Duration(seconds: 3), (_) => pollForChallenges(isManually: false));
+      _pollTimer = Timer.periodic(
+        const Duration(seconds: 3),
+        (_) => pollForChallenges(isManually: false),
+      );
       pollForChallenges(isManually: false);
       return;
     }
@@ -291,11 +324,18 @@ class PushProvider {
 
   Future<void> pollForChallenges({required bool isManually}) async {
     // Get all push tokens
-    final rolledOutPushTokens = await globalRef?.read(tokenProvider.selectAsync((state) => state.rolledOutPushTokens)) ?? [];
+    final rolledOutPushTokens =
+        await globalRef?.read(
+          tokenProvider.selectAsync((state) => state.rolledOutPushTokens),
+        ) ??
+        [];
     // Disable polling if no push tokens exist
     if (rolledOutPushTokens.isEmpty) {
-      if ((await globalRef?.read(settingsProvider.future))?.enablePolling == true) {
-        Logger.info('No push token is available for polling, polling is disabled.');
+      if ((await globalRef?.read(settingsProvider.future))?.enablePolling ==
+          true) {
+        Logger.info(
+          'No push token is available for polling, polling is disabled.',
+        );
         globalRef?.read(settingsProvider.notifier).setPolling(false);
       }
       return;
@@ -323,9 +363,14 @@ class PushProvider {
     return;
   }
 
-  Future<void> pollForChallenge(PushToken token, {bool isManually = true}) async {
+  Future<void> pollForChallenge(
+    PushToken token, {
+    bool isManually = true,
+  }) async {
     if (instance == null) {
-      Logger.warning('Polling push tokens failed. PushProvider is not initialized.');
+      Logger.warning(
+        'Polling push tokens failed. PushProvider is not initialized.',
+      );
       return;
     }
     String timestamp = DateTime.now().toUtc().toIso8601String();
@@ -340,7 +385,9 @@ class PushProvider {
         message: (localization) => localization.pollingFailedFor(token.serial),
         details: (localization) => localization.couldNotSignMessage,
       );
-      Logger.warning('Polling push tokens failed because signing the message failed.');
+      Logger.warning(
+        'Polling push tokens failed because signing the message failed.',
+      );
       return;
     }
     Map<String, String> parameters = {
@@ -353,12 +400,21 @@ class PushProvider {
 
     try {
       response = instance != null
-          ? await instance!._ioClient.doGet(url: token.url!, parameters: parameters, sslVerify: token.sslVerify)
-          : await const PrivacyideaIOClient().doGet(url: token.url!, parameters: parameters, sslVerify: token.sslVerify);
+          ? await instance!._ioClient.doGet(
+              url: token.url!,
+              parameters: parameters,
+              sslVerify: token.sslVerify,
+            )
+          : await const PrivacyideaIOClient().doGet(
+              url: token.url!,
+              parameters: parameters,
+              sslVerify: token.sslVerify,
+            );
     } catch (_) {
       if (isManually) {
         globalRef?.read(statusMessageProvider.notifier).state = StatusMessage(
-          message: (localization) => localization.errorWhenPullingChallenges(token.serial),
+          message: (localization) =>
+              localization.errorWhenPullingChallenges(token.serial),
           details: (localization) => localization.couldNotConnectToServer,
         );
       }
@@ -372,8 +428,11 @@ class PushProvider {
           challengeList = _getAndValidateDataFromResponse(response);
         } catch (_) {
           if (isManually) {
-            globalRef?.read(statusMessageProvider.notifier).state = StatusMessage(
-              message: (localization) => localization.errorWhenPullingChallenges(token.serial),
+            globalRef
+                ?.read(statusMessageProvider.notifier)
+                .state = StatusMessage(
+              message: (localization) =>
+                  localization.errorWhenPullingChallenges(token.serial),
               details: (localization) => localization.pushRequestParseError,
             );
           }
@@ -386,24 +445,37 @@ class PushProvider {
         final error = getErrorMessageFromResponse(response);
         if (isManually) {
           globalRef?.read(statusMessageProvider.notifier).state = StatusMessage(
-            message: (localization) => localization.pollingFailedFor(token.serial),
-            details: error != null ? (_) => error : (localization) => localization.statusCode(response.statusCode),
+            message: (localization) =>
+                localization.pollingFailedFor(token.serial),
+            details: error != null
+                ? (_) => error
+                : (localization) =>
+                      localization.statusCode(response.statusCode),
           );
         }
-        Logger.warning('Polling push token failed with status code ${response.statusCode}', error: getErrorMessageFromResponse(response));
+        Logger.warning(
+          'Polling push token failed with status code ${response.statusCode}',
+          error: getErrorMessageFromResponse(response),
+        );
         return;
 
       default:
         final error = getErrorMessageFromResponse(response);
         if (isManually) {
           globalRef?.read(statusMessageProvider.notifier).state = StatusMessage(
-            message: (localization) => localization.pollingFailedFor(token.serial),
-            details: error != null ? (_) => error : (localization) => localization.statusCode(response.statusCode),
+            message: (localization) =>
+                localization.pollingFailedFor(token.serial),
+            details: error != null
+                ? (_) => error
+                : (localization) =>
+                      localization.statusCode(response.statusCode),
           );
         }
         return;
     }
-    Logger.info('Received ${challengeList.length} challenge(s) for ${token.label}');
+    Logger.info(
+      'Received ${challengeList.length} challenge(s) for ${token.label}',
+    );
 
     for (Map<String, dynamic> challengeData in challengeList) {
       _handleIncomingRequestForeground((challengeData));
@@ -411,11 +483,16 @@ class PushProvider {
     return;
   }
 
-  Future<(List<PushToken>, List<PushToken>)?> updateAllFirebaseTokens({String? firebaseToken}) async =>
-      globalRef?.read(tokenProvider.notifier).updateAllFirebaseTokens(firebaseToken: firebaseToken);
+  Future<(List<PushToken>, List<PushToken>)?> updateAllFirebaseTokens({
+    String? firebaseToken,
+  }) async => globalRef
+      ?.read(tokenProvider.notifier)
+      .updateAllFirebaseTokens(firebaseToken: firebaseToken);
 
-  void unsubscribe(void Function(PushRequest pushRequest) newRequest) => _subscribers.remove(newRequest);
-  void subscribe(void Function(PushRequest pushRequest) newRequest) => _subscribers.add(newRequest);
+  void unsubscribe(void Function(PushRequest pushRequest) newRequest) =>
+      _subscribers.remove(newRequest);
+  void subscribe(void Function(PushRequest pushRequest) newRequest) =>
+      _subscribers.add(newRequest);
 }
 
 /// This class is a placeholder for the [PushProvider] class. It does not do anything.
@@ -440,15 +517,22 @@ class PlaceholderPushProvider implements PushProvider {
   @override
   Future<void> _foregroundHandler(RemoteMessage remoteMessage) async {}
   @override
-  List<Map<String, dynamic>> _getAndValidateDataFromResponse(Response response) => [];
+  List<Map<String, dynamic>> _getAndValidateDataFromResponse(
+    Response response,
+  ) => [];
   @override
-  Future<void> _handleIncomingRequestForeground(Map<String, dynamic> data) async {}
+  Future<void> _handleIncomingRequestForeground(
+    Map<String, dynamic> data,
+  ) async {}
   @override
   void _startOrStopPolling(bool pollingEnabled) {}
   @override
   List<Function(PushRequest p1)> get _subscribers => [];
   @override
-  Future<void> pollForChallenge(PushToken token, {bool isManually = true}) async {}
+  Future<void> pollForChallenge(
+    PushToken token, {
+    bool isManually = true,
+  }) async {}
   @override
   Future<void> pollForChallenges({required bool isManually}) async {}
   @override
@@ -458,7 +542,9 @@ class PlaceholderPushProvider implements PushProvider {
   @override
   void unsubscribe(void Function(PushRequest pushRequest) newRequest) {}
   @override
-  Future<(List<PushToken>, List<PushToken>)?> updateAllFirebaseTokens({String? firebaseToken}) => Future.value(null);
+  Future<(List<PushToken>, List<PushToken>)?> updateAllFirebaseTokens({
+    String? firebaseToken,
+  }) => Future.value(null);
   @override
   Future<void> initFirebase() async {}
 }

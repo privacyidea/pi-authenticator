@@ -357,9 +357,9 @@ class PushToken extends Token {
       ..addAll({
         SSL_VERIFY: sslVerify ? SSL_VERIFY_VALUE_TRUE : SSL_VERIFY_VALUE_FALSE,
         if (isPollOnly != null) IS_POLL_ONLY: isPollOnly! ? IS_POLL_ONLY_VALUE_TRUE : IS_POLL_ONLY_VALUE_FALSE,
-        if (enrollmentCredentials != null) ENROLLMENT_CREDENTIAL: enrollmentCredentials!,
+        ENROLLMENT_CREDENTIAL: ?enrollmentCredentials,
         if (url != null) ROLLOUT_URL: url.toString(),
-        if (tokenImage != null) Token.IMAGE: tokenImage!,
+        Token.IMAGE: ?tokenImage,
         Token.PIN: pin ? Token.PIN_VALUE_TRUE : Token.PIN_VALUE_FALSE,
         VERSION: '1',
       });
@@ -367,12 +367,12 @@ class PushToken extends Token {
 
   @override
   TokenTemplate? toTemplate({TokenContainer? container}) => super.toTemplate(container: container)?.withAditionalData({
-        if (expirationDate != null) EXPIRATION_DATE: expirationDate!,
+        EXPIRATION_DATE: ?expirationDate,
         ROLLOUT_STATE: rolloutState,
         IS_ROLLED_OUT: isRolledOut,
-        if (publicServerKey != null) PUBLIC_SERVER_KEY: publicServerKey!,
-        if (publicTokenKey != null) PUBLIC_TOKEN_KEY: publicTokenKey!,
-        if (privateTokenKey != null) PRIVATE_TOKEN_KEY: privateTokenKey!,
+        PUBLIC_SERVER_KEY: ?publicServerKey,
+        PUBLIC_TOKEN_KEY: ?publicTokenKey,
+        PRIVATE_TOKEN_KEY: ?privateTokenKey,
       });
 
   factory PushToken.fromJson(Map<String, dynamic> json) {
