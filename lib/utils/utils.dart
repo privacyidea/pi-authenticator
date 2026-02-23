@@ -43,7 +43,8 @@ import '../model/processor_result.dart';
 import '../model/token_folder.dart';
 import '../model/tokens/token.dart';
 import '../processors/scheme_processors/scheme_processor_interface.dart';
-import 'customization/application_customization.dart' show ApplicationCustomization;
+import 'customization/application_customization.dart'
+    show ApplicationCustomization;
 import 'object_validator.dart';
 import 'riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
 import 'riverpod/riverpod_providers/generated_providers/token_notifier.dart';
@@ -109,17 +110,28 @@ String? getErrorMessageFromResponse(Response response) {
   return errorMessage;
 }
 
-Size textSizeOf(
-    {required String text, required TextStyle style, required TextScaler? textScaler, int? maxLines, double minWidth = 0, double maxWidth = double.infinity}) {
+Size textSizeOf({
+  required String text,
+  required TextStyle style,
+  required TextScaler? textScaler,
+  int? maxLines,
+  double minWidth = 0,
+  double maxWidth = double.infinity,
+}) {
   final TextPainter textPainter = TextPainter(
-      text: TextSpan(text: text, style: style), maxLines: maxLines, textDirection: TextDirection.ltr, textScaler: textScaler ?? TextScaler.noScaling)
-    ..layout(minWidth: minWidth, maxWidth: maxWidth);
+    text: TextSpan(text: text, style: style),
+    maxLines: maxLines,
+    textDirection: TextDirection.ltr,
+    textScaler: textScaler ?? TextScaler.noScaling,
+  )..layout(minWidth: minWidth, maxWidth: maxWidth);
   return textPainter.size;
 }
 
-Future<String> getPackageName() async => (await PackageInfo.fromPlatform()).packageName.replaceAll('.debug', '');
+Future<String> getPackageName() async =>
+    (await PackageInfo.fromPlatform()).packageName.replaceAll('.debug', '');
 
-String removeIllegalFilenameChars(String filename) => filename.replaceAll(RegExp(r'[<>:"/\\|?*]'), '');
+String removeIllegalFilenameChars(String filename) =>
+    filename.replaceAll(RegExp(r'[<>:"/\\|?*]'), '');
 
 bool doesThrow(Function() f) {
   try {
@@ -130,7 +142,9 @@ bool doesThrow(Function() f) {
   }
 }
 
-String getCurrentAppName() => PrivacyIDEAAuthenticator.currentCustomization?.appName ?? ApplicationCustomization.defaultCustomization.appName;
+String getCurrentAppName() =>
+    PrivacyIDEAAuthenticator.currentCustomization?.appName ??
+    ApplicationCustomization.defaultCustomization.appName;
 
 dynamic tryJsonDecode(String json) {
   try {
@@ -149,13 +163,25 @@ void dragSortableOnAccept({
 }) async {
   var allSortables = await ref.read(sortablesProvider.future);
   if (dragedSortable is TokenFolder) {
-    final tokensInFolder = (await ref.read(tokenProvider.future)).tokens.where((element) => element.folderId == dragedSortable.folderId).toList();
+    final tokensInFolder = (await ref.read(tokenProvider.future)).tokens
+        .where((element) => element.folderId == dragedSortable.folderId)
+        .toList();
     final allMovingItems = [dragedSortable, ...tokensInFolder];
-    allSortables = allSortables.moveAllBetween(moveAfter: previousSortable, movedItems: allMovingItems, moveBefore: nextSortable);
+    allSortables = allSortables.moveAllBetween(
+      moveAfter: previousSortable,
+      movedItems: allMovingItems,
+      moveBefore: nextSortable,
+    );
   } else if (dragedSortable is Token) {
-    allSortables = allSortables.moveBetween(moveAfter: previousSortable, movedItem: dragedSortable, moveBefore: nextSortable);
+    allSortables = allSortables.moveBetween(
+      moveAfter: previousSortable,
+      movedItem: dragedSortable,
+      moveBefore: nextSortable,
+    );
     allSortables = allSortables.map((e) {
-      return e is Token && e.id == dragedSortable.id ? e.copyWith(folderId: () => dependingFolder?.folderId) : e;
+      return e is Token && e.id == dragedSortable.id
+          ? e.copyWith(folderId: () => dependingFolder?.folderId)
+          : e;
     }).toList();
   }
   final modifiedTokens = allSortables.whereType<Token>().toList();
@@ -164,7 +190,9 @@ void dragSortableOnAccept({
     ref.read(tokenProvider.notifier).addOrReplaceTokens(modifiedTokens),
     ref.read(tokenFolderProvider.notifier).addOrReplaceFolders(modifiedFolders),
   ];
-  final draggingSortableProviderNotifier = ref.read(draggingSortableProvider.notifier);
+  final draggingSortableProviderNotifier = ref.read(
+    draggingSortableProvider.notifier,
+  );
   Future.wait(futures).then((_) {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       draggingSortableProviderNotifier.state = null;
@@ -191,11 +219,17 @@ BigInt byteDataToBigInt(ByteData data) {
   return result;
 }
 
-Uint8List bigIntToBytes(BigInt bigInt) => bigIntToByteData(bigInt).buffer.asUint8List();
+Uint8List bigIntToBytes(BigInt bigInt) =>
+    bigIntToByteData(bigInt).buffer.asUint8List();
 
-BigInt bytesToBigInt(Uint8List bytes) => byteDataToBigInt(ByteData.sublistView(bytes));
+BigInt bytesToBigInt(Uint8List bytes) =>
+    byteDataToBigInt(ByteData.sublistView(bytes));
 
-Future<bool> scanQrCode({BuildContext? context, required List<ResultHandler> resultHandlerList, required Object? qrCode}) async {
+Future<bool> scanQrCode({
+  BuildContext? context,
+  required List<ResultHandler> resultHandlerList,
+  required Object? qrCode,
+}) async {
   Uri uri;
   try {
     if (qrCode == null) return false;
@@ -211,7 +245,8 @@ Future<bool> scanQrCode({BuildContext? context, required List<ResultHandler> res
   }
   final processorResults = await SchemeProcessor.processUriByAny(uri);
   if (processorResults == null) return false;
-  final resultHandlerTypeMap = <ObjectValidator<ResultHandler>, List<ProcessorResult>>{};
+  final resultHandlerTypeMap =
+      <ObjectValidator<ResultHandler>, List<ProcessorResult>>{};
 
   for (var result in processorResults) {
     final validator = result.resultHandlerType;
@@ -226,10 +261,18 @@ Future<bool> scanQrCode({BuildContext? context, required List<ResultHandler> res
     bool handled = false;
     for (var resultHandlerType in resultHandlerTypeMap.keys) {
       final results = resultHandlerTypeMap[resultHandlerType]!;
-      final resultHandler = resultHandlerList.firstWhereOrNull((resultHandler) => resultHandlerType.isTypeOf(resultHandler));
+      final resultHandler = resultHandlerList.firstWhereOrNull(
+        (resultHandler) => resultHandlerType.isTypeOf(resultHandler),
+      );
       if (resultHandler != null) {
         handled = true;
-        await resultHandler.handleProcessorResults(results, args: {ResultHandler.argTokenOriginSourceType: TokenOriginSourceType.qrScan});
+        await resultHandler.handleProcessorResults(
+          results,
+          args: {
+            ResultHandler.argTokenOriginSourceType:
+                TokenOriginSourceType.qrScan,
+          },
+        );
       }
     }
     return handled;
@@ -245,20 +288,19 @@ Future<bool> scanQrCode({BuildContext? context, required List<ResultHandler> res
 }
 
 Image generateQrCodeImage({required String data}) {
-  final qrcode = Encoder.encode(
-    data,
-    ErrorCorrectionLevel.l,
-    hints: EncodeHints()..put<CharacterSetECI>(EncodeHintType.characterSet, CharacterSetECI.ASCII),
-  );
+  final qrcode = Encoder.encode(data, ErrorCorrectionLevel.l);
+
   final matrix = qrcode.matrix!;
-  const scale = 4;
-  const padding = 1;
+
+  const int scale = 10;
+  const int padding = 2;
 
   var image = img.Image(
-    width: (matrix.width + padding + padding) * scale,
-    height: (matrix.height + padding + padding) * scale,
+    width: (matrix.width + padding * 2) * scale,
+    height: (matrix.height + padding * 2) * scale,
     numChannels: 4,
   );
+
   img.fill(image, color: img.ColorRgba8(0xFF, 0xFF, 0xFF, 0xFF));
 
   for (var x = 0; x < matrix.width; x++) {
@@ -275,7 +317,9 @@ Image generateQrCodeImage({required String data}) {
       }
     }
   }
-  return Image.memory(img.encodePng(image));
+
+  return Image.memory(img.encodePng(image), filterQuality: FilterQuality.none);
 }
 
-bool get deviceHasFirebaseMessaging => !kIsWeb && (GmsCheck().isGmsAvailable || Platform.isIOS);
+bool get deviceHasFirebaseMessaging =>
+    !kIsWeb && (GmsCheck().isGmsAvailable || Platform.isIOS);

@@ -1086,8 +1086,8 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   final _pushTokenHandlerMutex = Mutex();
   Future<void> _handlePushTokensIfExist() async {
     Logger.info('Handling push tokens if they exist.');
-    await _pushTokenHandlerMutex.acquire();
     try {
+      await _pushTokenHandlerMutex.acquire();
       if ((await future).pushTokens.isEmpty) {
         if ((await ref.read(settingsProvider.future)).hidePushTokens == true) {
           ref.read(settingsProvider.notifier).setHidePushTokens(false);
@@ -1115,9 +1115,9 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
         error: e,
         stackTrace: s,
       );
+    } finally {
       _pushTokenHandlerMutex.release();
-    } finally {}
-    _pushTokenHandlerMutex.release();
+    }
   }
 
   Future<T?> getTokenById<T extends Token>(String id) async {

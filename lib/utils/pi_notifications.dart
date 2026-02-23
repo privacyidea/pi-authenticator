@@ -42,16 +42,13 @@ class PiNotifications {
   Future<void> _initialize() async {
     var initializationSettingsAndroid = const AndroidInitializationSettings(
       '@mipmap/ic_launcher',
-    );
-
+    ); // <- default icon name is @mipmap/ic_launcher
     var initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
     );
-
-    await flutterLocalNotificationsPlugin.initialize(
+    flutterLocalNotificationsPlugin.initialize(
       settings: initializationSettings,
     );
-
     AndroidNotificationDetails androidNotificationDetails =
         const AndroidNotificationDetails(
           'PiNotifications',
@@ -67,13 +64,13 @@ class PiNotifications {
   }
 
   Future<int> _show(String title, String body) async {
-    final currentId = id++;
+    final id = this.id++;
     await flutterLocalNotificationsPlugin.show(
-      id: currentId,
+      id: id,
       title: title,
       body: body,
       notificationDetails: notificationDetails,
     );
-    return currentId;
+    return id;
   }
 }
