@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
 import 'package:mockito/mockito.dart';
-import 'package:privacyidea_authenticator/model/push_request.dart';
+import 'package:privacyidea_authenticator/model/push_request/push_default_request.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/push_request_state.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 import 'package:privacyidea_authenticator/utils/custom_int_buffer.dart';
@@ -28,20 +28,13 @@ void _testPushRequestNotifier() {
         pushProvider: mockPushProvider,
         pushRepo: mockPushRepo,
       );
-      //
-      //StateNotifierProvider<PushRequestNotifier, PushRequestState>((ref) => PushRequestNotifier(
-      //       ioClient: mockIoClient,
-      //       rsaUtils: mockRsaUtils,
-      //       pushProviderOverride: mockPushProvider,
-      //       pushRepoOverride: mockPushRepo,
-      //     ));
-      final pr = PushRequest(
+
+      final pr = PushDefaultRequest(
         title: 'title',
         question: 'question',
         uri: Uri.parse('http://example.com'),
         nonce: 'nonce',
         sslVerify: false,
-        id: 1,
         expirationDate: DateTime.now().add(const Duration(minutes: 5)),
         signature: 'signature',
         serial: 'serial',
@@ -110,13 +103,12 @@ void _testPushRequestNotifier() {
         pushProvider: mockPushProvider,
         pushRepo: mockPushRepo,
       );
-      final pr = PushRequest(
+      final pr = PushDefaultRequest(
         title: 'title',
         question: 'question',
         uri: Uri.parse('http://example.com'),
         nonce: 'nonce',
         sslVerify: false,
-        id: 1,
         expirationDate: DateTime.now().add(const Duration(minutes: 5)),
         signature: 'signature',
         serial: 'serial',
@@ -184,19 +176,18 @@ void _testPushRequestNotifier() {
         pushProvider: mockPushProvider,
         pushRepo: mockPushRepo,
       );
-      final pr = PushRequest(
+      final pr = PushDefaultRequest(
         title: 'title',
         question: 'question',
         uri: Uri.parse('http://example.com'),
         nonce: 'nonce',
         sslVerify: false,
-        id: 1,
         expirationDate: DateTime.now().add(const Duration(minutes: 5)),
         signature: 'signature',
         serial: 'serial',
         accepted: null,
       );
-      final pr2 = pr.copyWith(id: 2);
+      final pr2 = pr.copyWith(serial: 'serial2', nonce: 'nonce2');
       final before = PushRequestState(
         pushRequests: [pr],
         knownPushRequests: CustomIntBuffer(list: [pr.id]),
@@ -225,19 +216,18 @@ void _testPushRequestNotifier() {
         pushProvider: mockPushProvider,
         pushRepo: mockPushRepo,
       );
-      final pr = PushRequest(
+      final pr = PushDefaultRequest(
         title: 'title',
         question: 'question',
         uri: Uri.parse('http://example.com'),
         nonce: 'nonce',
         sslVerify: false,
-        id: 1,
         expirationDate: DateTime.now().add(const Duration(minutes: 5)),
         signature: 'signature',
         serial: 'serial',
         accepted: null,
       );
-      final pr2 = pr.copyWith(id: 2);
+      final pr2 = pr.copyWith(serial: 'serial2');
       final before = PushRequestState(
         pushRequests: [pr, pr2],
         knownPushRequests: CustomIntBuffer(list: [pr.id, pr2.id]),

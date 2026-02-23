@@ -86,6 +86,16 @@ Future<bool> lockAuth({
     }
   } on PlatformException catch (e, s) {
     Logger.warning("Authentication failed", error: e, stackTrace: s);
+  } on LocalAuthException catch (e, s) {
+    if (e.code == LocalAuthExceptionCode.userCanceled) {
+      Logger.info("Authentication canceled by user");
+    } else {
+      Logger.warning(
+        "Authentication failed with local_auth specific exception",
+        error: e,
+        stackTrace: s,
+      );
+    }
   } finally {
     _authenticationInProgress = false;
   }

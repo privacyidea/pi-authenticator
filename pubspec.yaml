@@ -45,7 +45,7 @@ dependencies:
   fluentui_system_icons: ^1.1.260
   flutter:
     sdk: flutter
-  flutter_local_notifications: ^20.0.0
+  flutter_local_notifications: ^20.1.0
   flutter_localizations:
     sdk: flutter
   flutter_mailer: ^3.0.0
@@ -71,7 +71,7 @@ dependencies:
   logger: ^2.4.0
   material_design_icons_flutter: ^7.0.7296
   mutex: ^3.1.0
-  no_screenshot: ^0.3.1
+  no_screenshot: ^0.9.1
   otp: ^3.1.4
   package_info_plus: ^9.0.0
   path_provider: ^2.1.4

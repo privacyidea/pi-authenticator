@@ -4,7 +4,6 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/state_listeners/push_token_state_listener.dart';
 
 import '../utils/home_widget_utils.dart';
 import '../utils/logger.dart';
@@ -15,6 +14,7 @@ import '../utils/riverpod/riverpod_providers/generated_providers/token_notifier.
 import '../utils/riverpod/state_listeners/home_widget_deep_link_listener.dart';
 import '../utils/riverpod/state_listeners/home_widget_token_state_listener.dart';
 import '../utils/riverpod/state_listeners/navigation_deep_link_listener.dart';
+import '../utils/riverpod/state_listeners/push_token_state_listener.dart';
 import '../utils/riverpod/state_listeners/token_container_deep_link_listener.dart';
 import '../utils/riverpod/state_listeners/token_deep_link_listener.dart';
 import 'app_wrappers/single_touch_recognizer.dart';

@@ -43,7 +43,6 @@ class PiNotifications {
     var initializationSettingsAndroid = const AndroidInitializationSettings(
       '@mipmap/ic_launcher',
     ); // <- default icon name is @mipmap/ic_launcher
-    // var initializationSettingsIOS = IOSInitializationSettings(onDidReceiveLocalNotification: onDidReceiveLocalNotification);
     var initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
     );

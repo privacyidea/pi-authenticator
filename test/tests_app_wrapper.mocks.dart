@@ -32,7 +32,8 @@ import 'package:privacyidea_authenticator/model/api_results/pi_server_results/pi
     as _i5;
 import 'package:privacyidea_authenticator/model/enums/ec_key_algorithm.dart'
     as _i30;
-import 'package:privacyidea_authenticator/model/push_request.dart' as _i21;
+import 'package:privacyidea_authenticator/model/push_request/push_request.dart'
+    as _i21;
 import 'package:privacyidea_authenticator/model/riverpod_states/introduction_state.dart'
     as _i18;
 import 'package:privacyidea_authenticator/model/riverpod_states/push_request_state.dart'
