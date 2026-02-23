@@ -10,11 +10,11 @@ part of 'token_folder_notifier.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(TokenFolderNotifier)
-const tokenFolderProviderOf = TokenFolderNotifierFamily._();
+final tokenFolderProviderOf = TokenFolderNotifierFamily._();
 
 final class TokenFolderNotifierProvider
     extends $NotifierProvider<TokenFolderNotifier, TokenFolderState> {
-  const TokenFolderNotifierProvider._({
+  TokenFolderNotifierProvider._({
     required TokenFolderNotifierFamily super.from,
     required TokenFolderRepository super.argument,
   }) : super(
@@ -70,7 +70,7 @@ final class TokenFolderNotifierFamily extends $Family
           TokenFolderState,
           TokenFolderRepository
         > {
-  const TokenFolderNotifierFamily._()
+  TokenFolderNotifierFamily._()
     : super(
         retry: null,
         name: r'tokenFolderProviderOf',
@@ -94,7 +94,6 @@ abstract class _$TokenFolderNotifier extends $Notifier<TokenFolderState> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(repo: _$args);
     final ref = this.ref as $Ref<TokenFolderState, TokenFolderState>;
     final element =
         ref.element
@@ -104,6 +103,6 @@ abstract class _$TokenFolderNotifier extends $Notifier<TokenFolderState> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, () => build(repo: _$args));
   }
 }

@@ -11,7 +11,7 @@ part of 'app_customization_notifier.dart';
 /// Only used for the app customizer
 
 @ProviderFor(AppCustomizationNotifier)
-const appCustomizationProvider = AppCustomizationNotifierProvider._();
+final appCustomizationProvider = AppCustomizationNotifierProvider._();
 
 /// Only used for the app customizer
 final class AppCustomizationNotifierProvider
@@ -21,7 +21,7 @@ final class AppCustomizationNotifierProvider
           ApplicationCustomization
         > {
   /// Only used for the app customizer
-  const AppCustomizationNotifierProvider._()
+  AppCustomizationNotifierProvider._()
     : super(
         from: null,
         argument: null,
@@ -51,7 +51,6 @@ abstract class _$AppCustomizationNotifier
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build();
     final ref =
         this.ref
             as $Ref<
@@ -69,6 +68,6 @@ abstract class _$AppCustomizationNotifier
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, build);
   }
 }

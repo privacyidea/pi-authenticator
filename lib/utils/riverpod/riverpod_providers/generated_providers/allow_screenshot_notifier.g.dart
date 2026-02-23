@@ -10,11 +10,11 @@ part of 'allow_screenshot_notifier.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(AllowScreenshotNotifier)
-const allowScreenshotProviderOf = AllowScreenshotNotifierFamily._();
+final allowScreenshotProviderOf = AllowScreenshotNotifierFamily._();
 
 final class AllowScreenshotNotifierProvider
     extends $AsyncNotifierProvider<AllowScreenshotNotifier, bool> {
-  const AllowScreenshotNotifierProvider._({
+  AllowScreenshotNotifierProvider._({
     required AllowScreenshotNotifierFamily super.from,
     required AllowScreenshotUtils super.argument,
   }) : super(
@@ -63,7 +63,7 @@ final class AllowScreenshotNotifierFamily extends $Family
           FutureOr<bool>,
           AllowScreenshotUtils
         > {
-  const AllowScreenshotNotifierFamily._()
+  AllowScreenshotNotifierFamily._()
     : super(
         retry: null,
         name: r'allowScreenshotProviderOf',
@@ -89,7 +89,6 @@ abstract class _$AllowScreenshotNotifier extends $AsyncNotifier<bool> {
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(screenshotUtils: _$args);
     final ref = this.ref as $Ref<AsyncValue<bool>, bool>;
     final element =
         ref.element
@@ -99,6 +98,6 @@ abstract class _$AllowScreenshotNotifier extends $AsyncNotifier<bool> {
               Object?,
               Object?
             >;
-    element.handleValue(ref, created);
+    element.handleCreate(ref, () => build(screenshotUtils: _$args));
   }
 }

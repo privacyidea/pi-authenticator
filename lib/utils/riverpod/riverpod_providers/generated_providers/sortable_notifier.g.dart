@@ -10,7 +10,7 @@ part of 'sortable_notifier.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(sortables)
-const sortablesProvider = SortablesProvider._();
+final sortablesProvider = SortablesProvider._();
 
 final class SortablesProvider
     extends
@@ -22,7 +22,7 @@ final class SortablesProvider
     with
         $FutureModifier<List<SortableMixin>>,
         $FutureProvider<List<SortableMixin>> {
-  const SortablesProvider._()
+  SortablesProvider._()
     : super(
         from: null,
         argument: null,

@@ -17,8 +17,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import '../../model/push_request.dart' show PushRequest;
-import '../../model/riverpod_states/push_request_state.dart' show PushRequestState;
+import '../../model/push_request/push_request.dart' show PushRequest;
+import '../../model/riverpod_states/push_request_state.dart'
+    show PushRequestState;
 
 abstract class PushRequestRepository {
   /// Load the [PushRequestState] from the repository
@@ -31,8 +32,14 @@ abstract class PushRequestRepository {
   Future<void> clearState();
 
   /// Add a [PushRequest] to the [PushRequestState]
-  Future<PushRequestState> addRequest(PushRequest pushRequest, {PushRequestState? state});
+  Future<PushRequestState> addRequest(
+    PushRequest pushRequest, {
+    PushRequestState? state,
+  });
 
   /// Remove a [PushRequest] from the [PushRequestState]
-  Future<PushRequestState> removeRequest(PushRequest pushRequest, {PushRequestState? state});
+  Future<PushRequestState> removeRequest(
+    PushRequest pushRequest, {
+    PushRequestState? state,
+  });
 }

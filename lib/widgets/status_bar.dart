@@ -2,9 +2,9 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/utils/animations/unscaled_animation_controller.dart';
 
 import '../l10n/app_localizations.dart';
+import '../utils/animations/unscaled_animation_controller.dart';
 import '../utils/customization/theme_extentions/status_colors.dart';
 import '../utils/riverpod/riverpod_providers/state_providers/status_message_provider.dart';
 import '../utils/utils.dart';
@@ -52,7 +52,8 @@ class _StatusBarState extends ConsumerState<StatusBar> {
 
   void _addToQueueIfNotInQueue(StatusMessage? statusMessage) {
     if (statusMessage == null) return;
-    if (!statusbarQueue.contains(statusMessage) && currentStatusMessage != statusMessage) {
+    if (!statusbarQueue.contains(statusMessage) &&
+        currentStatusMessage != statusMessage) {
       statusbarQueue.add(statusMessage);
     }
     _tryPop();
@@ -94,13 +95,20 @@ class StatusBarOverlayEntry extends StatefulWidget {
   final bool isError;
   final Function(DismissDirection) onDismissed;
 
-  const StatusBarOverlayEntry({super.key, required this.statusText, required this.onDismissed, this.statusSubText, required this.isError});
+  const StatusBarOverlayEntry({
+    super.key,
+    required this.statusText,
+    required this.onDismissed,
+    this.statusSubText,
+    required this.isError,
+  });
 
   @override
   State<StatusBarOverlayEntry> createState() => _StatusBarOverlayEntryState();
 }
 
-class _StatusBarOverlayEntryState extends State<StatusBarOverlayEntry> with SingleTickerProviderStateMixin {
+class _StatusBarOverlayEntryState extends State<StatusBarOverlayEntry>
+    with SingleTickerProviderStateMixin {
   bool isFirstFrame = true;
   static const double margin = 10;
   static const double padding = 10;
@@ -112,11 +120,15 @@ class _StatusBarOverlayEntryState extends State<StatusBarOverlayEntry> with Sing
   @override
   void initState() {
     controller = UnscaledAnimationController(duration: showDuration);
-    final curvedAnimation = CurvedAnimation(parent: controller, curve: Curves.easeOut);
-    autoDismissAnimation = Tween<double>(begin: 1, end: 0).animate(curvedAnimation)
-      ..addListener(() {
-        setState(() {});
-      });
+    final curvedAnimation = CurvedAnimation(
+      parent: controller,
+      curve: Curves.easeOut,
+    );
+    autoDismissAnimation =
+        Tween<double>(begin: 1, end: 0).animate(curvedAnimation)
+          ..addListener(() {
+            setState(() {});
+          });
     autoDismissAnimation.addStatusListener((status) {
       if (mounted) {
         setState(() {});
@@ -146,9 +158,14 @@ class _StatusBarOverlayEntryState extends State<StatusBarOverlayEntry> with Sing
       });
     }
 
-    final maxWidth = MediaQuery.of(context).size.width - margin * 2 - padding * 2;
-    final statusTextStyle = Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.white) ?? const TextStyle();
-    final statusSubTextStyle = Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white) ?? const TextStyle();
+    final maxWidth =
+        MediaQuery.of(context).size.width - margin * 2 - padding * 2;
+    final statusTextStyle =
+        Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.white) ??
+        const TextStyle();
+    final statusSubTextStyle =
+        Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.white) ??
+        const TextStyle();
     final statusColors = Theme.of(context).extension<StatusColors>()!;
     final statusTextHeight = textSizeOf(
       text: widget.statusText,
@@ -203,7 +220,9 @@ class _StatusBarOverlayEntryState extends State<StatusBarOverlayEntry> with Sing
                 Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(padding),
-                    color: widget.isError ? statusColors.error : statusColors.success,
+                    color: widget.isError
+                        ? statusColors.error
+                        : statusColors.success,
                   ),
                   padding: const EdgeInsets.all(padding),
                   child: SizedBox(
@@ -230,16 +249,20 @@ class _StatusBarOverlayEntryState extends State<StatusBarOverlayEntry> with Sing
                   child: Align(
                     alignment: AlignmentDirectional.topStart,
                     child: Container(
-                      margin: const EdgeInsets.symmetric(horizontal: padding / 3 * 2),
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: padding / 3 * 2,
+                      ),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(1.5),
                         color: Theme.of(context).colorScheme.primary,
                       ),
                       height: 3,
-                      width: autoDismissAnimation.value * (maxWidth + padding / 3 * 2),
+                      width:
+                          autoDismissAnimation.value *
+                          (maxWidth + padding / 3 * 2),
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ),
