@@ -27,7 +27,7 @@ class PushActionButton extends StatelessWidget {
   final Color backgroundColor;
   final double? height;
   final OutlinedBorder? shape;
-  final bool isDisabled; // Neues Feld
+  final bool isDisabled;
 
   const PushActionButton({
     super.key,
@@ -36,7 +36,7 @@ class PushActionButton extends StatelessWidget {
     required this.backgroundColor,
     this.height,
     this.shape,
-    this.isDisabled = false, // Standardmäßig false
+    this.isDisabled = false,
   });
 
   @override
@@ -46,7 +46,6 @@ class PushActionButton extends StatelessWidget {
     final defaultShape = RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(8),
       side: BorderSide(
-        // Rahmenfarbe wird bei disabled ebenfalls angepasst
         color: isDisabled ? theme.disabledColor : theme.colorScheme.onPrimary,
         width: 2.5,
       ),
@@ -59,14 +58,13 @@ class PushActionButton extends StatelessWidget {
         ),
         shape: WidgetStateProperty.all(shape ?? defaultShape),
       ),
-      // Wenn isDisabled true ist, wird null übergeben, was den Button deaktiviert
+
       onPressed: isDisabled ? null : onPressed,
       child: SizedBox(
         height: height,
         child: Center(
           child: DefaultTextStyle.merge(
             style: theme.textTheme.headlineSmall?.copyWith(
-              // Textfarbe bei disabled optional anpassen
               color: isDisabled
                   ? theme.colorScheme.onSurface.withValues(alpha: 0.38)
                   : null,
