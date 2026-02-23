@@ -56,7 +56,7 @@ final class TokenNotifierProvider
   }
 }
 
-String _$tokenNotifierHash() => r'bf09d289682390c386ab3fbd96b72c3eff0f5382';
+String _$tokenNotifierHash() => r'1311fbabefae4556340b70db3116bad61322ebf7';
 
 final class TokenNotifierFamily extends $Family
     with
