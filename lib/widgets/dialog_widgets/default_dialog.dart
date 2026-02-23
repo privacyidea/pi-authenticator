@@ -60,7 +60,6 @@ class DefaultDialog extends ConsumerWidget {
             backgroundColor: Colors.transparent,
             body: Builder(
               builder: (dialogContext) {
-                // Registriere diesen Messenger-Kontext im Riverpod-Stack
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   ref.read(messengerStackProvider.notifier).push(dialogContext);
                 });

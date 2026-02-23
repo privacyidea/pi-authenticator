@@ -123,7 +123,7 @@ mixin PushDialogMixin {
   }
 
   Future<void> handleDiscard(BuildContext context, WidgetRef ref) async {
-    if (token.isLocked &&
+    if (token.isHidden &&
         !await lockAuth(
           reason: (l10n) => l10n.authToDiscardPushRequest,
           localization: AppLocalizations.of(context)!,
