@@ -44,13 +44,22 @@ class Logger {
   static final Mutex _mutexWriteFile = Mutex();
   static Logger? _instance;
   static BuildContext? get _context => navigatorKey.currentContext;
-  static String get _mailBody => _context != null ? AppLocalizations.of(_context!)!.errorMailBody : 'Error Log File Attached';
+  static String get _mailBody => _context != null
+      ? AppLocalizations.of(_context!)!.errorMailBody
+      : 'Error Log File Attached';
   static Set<String> get _mailRecipients => {
     ...globalRef?.read(settingsProvider).value?.crashReportRecipients ?? {},
-    ...PrivacyIDEAAuthenticator.currentCustomization != null ? {PrivacyIDEAAuthenticator.currentCustomization!.crashRecipient} : {},
+    ...PrivacyIDEAAuthenticator.currentCustomization != null
+        ? {PrivacyIDEAAuthenticator.currentCustomization!.crashRecipient}
+        : {},
   };
   static printer.Logger print = printer.Logger(
-    printer: printer.PrettyPrinter(methodCount: 0, levelColors: {printer.Level.debug: const printer.AnsiColor.fg(040)}, colors: true, printEmojis: true),
+    printer: printer.PrettyPrinter(
+      methodCount: 0,
+      levelColors: {printer.Level.debug: const printer.AnsiColor.fg(040)},
+      colors: true,
+      printEmojis: true,
+    ),
   );
 
   static Logger get instance {
@@ -94,12 +103,19 @@ class Logger {
 
   bool get logfileHasContent {
     if (_fullPath == null) return false;
-    return (File(_fullPath!).existsSync()) && (File(_fullPath!).lengthSync() > 0);
+    return (File(_fullPath!).existsSync()) &&
+        (File(_fullPath!).lengthSync() > 0);
   }
 
   /*----------- CONSTRUCTORS/FACTORIES -----------*/
 
-  Logger._({Function? appRunner, Widget? app, GlobalKey<NavigatorState>? navigatorKey}) : _appRunner = appRunner, _app = app, _navigatorKey = navigatorKey {
+  Logger._({
+    Function? appRunner,
+    Widget? app,
+    GlobalKey<NavigatorState>? navigatorKey,
+  }) : _appRunner = appRunner,
+       _app = app,
+       _navigatorKey = navigatorKey {
     if (_instance != null) {
       _printWarning('Logger already initialized. Using existing instance');
       return;
@@ -109,25 +125,51 @@ class Logger {
 
     _setupLogger().then((_) {
       if (_flutterIsRunning) _enableLoggingToFile = true;
-      _print('Logger initialized${_enableLoggingToFile ? '\nLogging to File is Enabled now.' : ''}');
+      _print(
+        'Logger initialized${_enableLoggingToFile ? '\nLogging to File is Enabled now.' : ''}',
+      );
     });
   }
 
   // To enable logging to file, the app needs to be initialized with an appRunner or an app widget
-  factory Logger.init({Function? appRunner, Widget? app, GlobalKey<NavigatorState>? navigatorKey}) {
+  factory Logger.init({
+    Function? appRunner,
+    Widget? app,
+    GlobalKey<NavigatorState>? navigatorKey,
+  }) {
     if (appRunner == null && app == null) {
-      throw Exception('Logger.init() must be called with either a callback or an app Widget');
+      throw Exception(
+        'Logger.init() must be called with either a callback or an app Widget',
+      );
     }
     return Logger._(appRunner: appRunner, app: app, navigatorKey: navigatorKey);
   }
 
   /*----------- LOGGING METHODS -----------*/
 
-  static void info(String message, {dynamic error, StackTrace? stackTrace, String? name, bool verbose = false}) =>
-      instance._logInfo(message, error: error, stackTrace: stackTrace, name: name, verbose: verbose);
+  static void info(
+    String message, {
+    dynamic error,
+    StackTrace? stackTrace,
+    String? name,
+    bool verbose = false,
+  }) => instance._logInfo(
+    message,
+    error: error,
+    stackTrace: stackTrace,
+    name: name,
+    verbose: verbose,
+  );
 
-  void _logInfo(String message, {dynamic error, dynamic stackTrace, String? name, bool verbose = false}) {
-    if (_verboseLogging == false && kDebugMode == false && verbose == false) return;
+  void _logInfo(
+    String message, {
+    dynamic error,
+    dynamic stackTrace,
+    String? name,
+    bool verbose = false,
+  }) {
+    if (_verboseLogging == false && kDebugMode == false && verbose == false)
+      return;
     String infoString = _convertLogToSingleString(
       message,
       error: error,
@@ -142,11 +184,29 @@ class Logger {
     _print(infoString);
   }
 
-  static void warning(String message, {dynamic error, StackTrace? stackTrace, String? name, bool verbose = false}) =>
-      instance._logWarning(message, error: error, stackTrace: stackTrace, name: name, verbose: verbose);
+  static void warning(
+    String message, {
+    dynamic error,
+    StackTrace? stackTrace,
+    String? name,
+    bool verbose = false,
+  }) => instance._logWarning(
+    message,
+    error: error,
+    stackTrace: stackTrace,
+    name: name,
+    verbose: verbose,
+  );
 
-  void _logWarning(String message, {dynamic error, StackTrace? stackTrace, String? name, bool verbose = false}) {
-    if (_verboseLogging == false && kDebugMode == false && verbose == false) return;
+  void _logWarning(
+    String message, {
+    dynamic error,
+    StackTrace? stackTrace,
+    String? name,
+    bool verbose = false,
+  }) {
+    if (_verboseLogging == false && kDebugMode == false && verbose == false)
+      return;
     String warningString = _convertLogToSingleString(
       message,
       error: error,
@@ -162,19 +222,40 @@ class Logger {
   }
 
   /// Does nothing if in production/release mode
-  static void debug(String message, {dynamic error, StackTrace? stackTrace, String? name, bool verbose = false}) {
+  static void debug(
+    String message, {
+    dynamic error,
+    StackTrace? stackTrace,
+    String? name,
+    bool verbose = false,
+  }) {
     if (!kDebugMode) return;
-    instance._logDebug(message, error: error, stackTrace: stackTrace, name: name, verbose: verbose);
+    instance._logDebug(
+      message,
+      error: error,
+      stackTrace: stackTrace,
+      name: name,
+      verbose: verbose,
+    );
   }
 
-  void _logDebug(String message, {dynamic error, StackTrace? stackTrace, String? name, bool verbose = false}) {
-    if (_verboseLogging == false && kDebugMode == false && verbose == false) return;
+  void _logDebug(
+    String message, {
+    dynamic error,
+    StackTrace? stackTrace,
+    String? name,
+    bool verbose = false,
+  }) {
+    if (_verboseLogging == false && kDebugMode == false && verbose == false)
+      return;
     if (stackTrace != null) {
       log('Stacktrace is not supported in debug mode');
     }
     String debugString = instance._convertLogToSingleString(
       message,
-      stackTrace: stackTrace ?? ((_verboseLogging || verbose) ? StackTrace.current : null),
+      stackTrace:
+          stackTrace ??
+          ((_verboseLogging || verbose) ? StackTrace.current : null),
       name: name ?? _getCallerMethodName(depth: 2),
       logLevel: LogLevel.DEBUG,
     );
@@ -185,10 +266,24 @@ class Logger {
     _printDebug(debugString);
   }
 
-  static void error(String? message, {dynamic error, dynamic stackTrace, String? name}) =>
-      instance._logError(message, error: error, stackTrace: stackTrace, name: name);
+  static void error(
+    String? message, {
+    dynamic error,
+    dynamic stackTrace,
+    String? name,
+  }) => instance._logError(
+    message,
+    error: error,
+    stackTrace: stackTrace,
+    name: name,
+  );
 
-  void _logError(String? message, {dynamic error, dynamic stackTrace, String? name}) {
+  void _logError(
+    String? message, {
+    dynamic error,
+    dynamic stackTrace,
+    String? name,
+  }) {
     String errorString = _convertLogToSingleString(
       message,
       error: error,
@@ -200,7 +295,10 @@ class Logger {
     if (message != null) {
       _lastError = message.substring(0, min(message.length, 100));
     } else if (error != null) {
-      _lastError = error.toString().substring(0, min(error.toString().length, 100));
+      _lastError = error.toString().substring(
+        0,
+        min(error.toString().length, 100),
+      );
     }
     _logToFile(errorString);
     _showErrorSnackbar();
@@ -210,7 +308,12 @@ class Logger {
     } else if (stackTrace is String) {
       stackTraceObject = StackTrace.fromString(stackTrace);
     }
-    _printError(message, error: error, stackTrace: stackTraceObject, name: name);
+    _printError(
+      message,
+      error: error,
+      stackTrace: stackTraceObject,
+      name: name,
+    );
   }
 
   Future<void> _logToFile(String fileMessage) async {
@@ -221,7 +324,10 @@ class Logger {
 
     try {
       fileMessage = _textFilter(fileMessage);
-      await file.writeAsString('\n$fileMessage', mode: FileMode.append);
+      await file.writeAsString(
+        '\n$fileMessage',
+        mode: FileMode.writeOnlyAppend,
+      );
     } catch (e) {
       _printError(e.toString());
     }
@@ -246,7 +352,8 @@ class Logger {
 Device Parameters $deviceInfo""";
     return PiMailer.sendMail(
       mailRecipients: _mailRecipients,
-      subjectPrefix: PrivacyIDEAAuthenticator.currentCustomization?.crashSubjectPrefix,
+      subjectPrefix:
+          PrivacyIDEAAuthenticator.currentCustomization?.crashSubjectPrefix,
       subject: _lastError,
       body: completeMailBody,
       attachments: [_fullPath!],
@@ -261,7 +368,11 @@ Device Parameters $deviceInfo""";
     final directory = await getApplicationDocumentsDirectory();
     final file = File('${directory.path}/$_filename');
     await file.writeAsString('', mode: FileMode.write);
-    showSnackBar(_context != null ? AppLocalizations.of(_context!)!.errorLogCleared : 'Error Log Cleared');
+    showSnackBar(
+      _context != null
+          ? AppLocalizations.of(_context!)!.errorLogCleared
+          : 'Error Log Cleared',
+    );
   }
 
   /*----------- SETUPS -----------*/
@@ -307,7 +418,11 @@ Device Parameters $deviceInfo""";
 
   Future<void> _setupErrorHooks() async {
     FlutterError.onError = (FlutterErrorDetails details) async {
-      error('Uncaught Error: ${details.exception}', error: details.exception, stackTrace: details.stack ?? StackTrace.current);
+      error(
+        'Uncaught Error: ${details.exception}',
+        error: details.exception,
+        stackTrace: details.stack ?? StackTrace.current,
+      );
     };
 
     /// Web doesn't support Isolate.current.addErrorListener
@@ -318,7 +433,12 @@ Device Parameters $deviceInfo""";
           error(
             'Uncaught Error: ${isolateError.first.toString()}',
             error: isolateError.first.toString(),
-            stackTrace: isolateError.length >= 2 && isolateError[1] != null && isolateError[1].toString() != '' ? isolateError[1] : StackTrace.current,
+            stackTrace:
+                isolateError.length >= 2 &&
+                    isolateError[1] != null &&
+                    isolateError[1].toString() != ''
+                ? isolateError[1]
+                : StackTrace.current,
           );
         }).sendPort,
       );
@@ -329,29 +449,48 @@ Device Parameters $deviceInfo""";
   /*----------- PRINTS -----------*/
 
   static void _print(String message) {
-    if (!kDebugMode) return; // add \n every 1000 characters only if the line is longer than 1000 characters
-    message = message.replaceAllMapped(RegExp(r'.{1000}'), (match) => '${match.group(0)}\n');
+    if (!kDebugMode)
+      return; // add \n every 1000 characters only if the line is longer than 1000 characters
+    message = message.replaceAllMapped(
+      RegExp(r'.{1000}'),
+      (match) => '${match.group(0)}\n',
+    );
     print.i(message);
   }
 
   static void _printDebug(String message) {
     if (!kDebugMode) return;
     // add \n every 1000 characters only if the line is longer than 1000 characters
-    message = message.replaceAllMapped(RegExp(r'.{1000}'), (match) => '${match.group(0)}\n');
+    message = message.replaceAllMapped(
+      RegExp(r'.{1000}'),
+      (match) => '${match.group(0)}\n',
+    );
     print.d(message);
   }
 
   static void _printWarning(String message) {
-    if (!kDebugMode) return; // add \n every 1000 characters only if the line is longer than 1000 characters
-    message = message.replaceAllMapped(RegExp(r'.{1000}'), (match) => '${match.group(0)}\n');
+    if (!kDebugMode)
+      return; // add \n every 1000 characters only if the line is longer than 1000 characters
+    message = message.replaceAllMapped(
+      RegExp(r'.{1000}'),
+      (match) => '${match.group(0)}\n',
+    );
     print.w(message);
   }
 
-  static void _printError(String? message, {dynamic error, StackTrace? stackTrace, String? name}) {
+  static void _printError(
+    String? message, {
+    dynamic error,
+    StackTrace? stackTrace,
+    String? name,
+  }) {
     if (!kDebugMode) return;
     var message0 = DateTime.now().toString();
     message0 += name != null ? ' [$name]\n' : '\n';
-    message = message?.replaceAllMapped(RegExp(r'.{1000}'), (match) => '${match.group(0)}\n');
+    message = message?.replaceAllMapped(
+      RegExp(r'.{1000}'),
+      (match) => '${match.group(0)}\n',
+    );
     // add \n every 1000 characters only if the line is longer than 1000 characters
     message0 += message ?? '';
     print.e(message0, error: error, stackTrace: stackTrace);
@@ -365,7 +504,11 @@ Device Parameters $deviceInfo""";
       globalSnackbarKey.currentState?.showSnackBar(
         SnackBar(
           behavior: SnackBarBehavior.floating,
-          content: Text(_context != null ? AppLocalizations.of(_context!)!.unexpectedError : 'An unexpected error occurred.'),
+          content: Text(
+            _context != null
+                ? AppLocalizations.of(_context!)!.unexpectedError
+                : 'An unexpected error occurred.',
+          ),
           action: _context != null
               ? SnackBarAction(
                   label: AppLocalizations.of(_context!)!.showDetails,
@@ -382,7 +525,11 @@ Device Parameters $deviceInfo""";
   void _showDialog() {
     if (_flutterIsRunning == false) return;
     if (_context == null) return;
-    showDialog(context: _context!, builder: (context) => const SendErrorDialog(), useRootNavigator: false);
+    showDialog(
+      context: _context!,
+      builder: (context) => const SendErrorDialog(),
+      useRootNavigator: false,
+    );
   }
 
   /*----------- HELPER -----------*/
@@ -390,13 +537,22 @@ Device Parameters $deviceInfo""";
   static String _textFilter(String text) {
     for (var key in filterParameterKeys) {
       // It searches for the key, ignores following characters until it finds base64 caracters (plus padding and separator) and replaces it with "******"
-      final regex = RegExp(r'(?<=' + key + r'[^A-Z0-9+/=,]*)[A-Z0-9+/=,:_-]+', caseSensitive: false);
+      final regex = RegExp(
+        r'(?<=' + key + r'[^A-Z0-9+/=,]*)[A-Z0-9+/=,:_-]+',
+        caseSensitive: false,
+      );
       text = text.replaceAll(regex, '******');
     }
     return text;
   }
 
-  String _convertLogToSingleString(String? message, {dynamic error, StackTrace? stackTrace, String? name, LogLevel logLevel = LogLevel.INFO}) {
+  String _convertLogToSingleString(
+    String? message, {
+    dynamic error,
+    StackTrace? stackTrace,
+    String? name,
+    LogLevel logLevel = LogLevel.INFO,
+  }) {
     String fileMessage = '${DateTime.now().toString()}';
     fileMessage += name != null ? ' [$name]\n' : '\n';
     fileMessage += message ?? '';
@@ -407,21 +563,27 @@ Device Parameters $deviceInfo""";
     fileMessage = '';
     for (var i = 0; i < lineSeparatedStrings.length; i++) {
       final line = lineSeparatedStrings[i];
-      final nextLine = lineSeparatedStrings.length > i + 1 ? lineSeparatedStrings[i + 1] : null;
-      if (line != 'null' && line != '') fileMessage += '[${logLevel.name}] $line';
-      if (nextLine != null && nextLine != 'null' && nextLine != '') fileMessage += '\n';
+      final nextLine = lineSeparatedStrings.length > i + 1
+          ? lineSeparatedStrings[i + 1]
+          : null;
+      if (line != 'null' && line != '')
+        fileMessage += '[${logLevel.name}] $line';
+      if (nextLine != null && nextLine != 'null' && nextLine != '')
+        fileMessage += '\n';
     }
     return fileMessage;
   }
 
-  static String? _getCallerMethodName({int depth = 1}) => _getCurrentMethodName(deph: depth + 1);
+  static String? _getCallerMethodName({int depth = 1}) =>
+      _getCurrentMethodName(deph: depth + 1);
   static String? _getCurrentMethodName({int deph = 1}) {
     final frames = StackTrace.current.toString().split('\n');
     final frame = frames.elementAtOrNull(deph + 1);
     if (frame == null) return null;
     final entry = frame.split(' ');
     final methodName = entry.elementAtOrNull(entry.length - 2);
-    if (methodName == 'closure>') return RegExp(r'(?<=\s\s)\w+.*(?=\s\()').firstMatch(frame)?.group(0);
+    if (methodName == 'closure>')
+      return RegExp(r'(?<=\s\s)\w+.*(?=\s\()').firstMatch(frame)?.group(0);
     return methodName;
   }
 }

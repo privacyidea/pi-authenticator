@@ -24,7 +24,8 @@ import '../model/enums/encodings.dart';
 import '../model/exception_errors/localized_argument_error.dart';
 import 'logger.dart';
 
-final otpAutjPeriodSecondsValidatorNullable = otpAuthPeriodSecondsValidator.nullable();
+final otpAutjPeriodSecondsValidatorNullable = otpAuthPeriodSecondsValidator
+    .nullable();
 final otpAuthPeriodSecondsValidator = ObjectValidator<int>(
   transformer: (v) {
     if (v is int) return v;
@@ -53,83 +54,108 @@ final otpAuthCounterValidator = ObjectValidator<int>(
 );
 
 final intValidatorNullable = intValidator.nullable();
-final intValidator = ObjectValidator<int>(transformer: (v) {
-  if (v is int) return v;
-  return int.parse(v);
-});
+final intValidator = ObjectValidator<int>(
+  transformer: (v) {
+    if (v is int) return v;
+    return int.parse(v);
+  },
+);
 
-final intToStringValidator = ObjectValidator<String>(transformer: (v) => (v as int).toString());
+final intToStringValidator = ObjectValidator<String>(
+  transformer: (v) => (v as int).toString(),
+);
 final intToStringValidatorNullable = intToStringValidator.nullable();
 
 final secondsDurationValidatorNullable = secondsDurationValidator.nullable();
 final secondsDurationValidator = ObjectValidator<Duration>(
-  transformer: (v) => v is Duration ? v : Duration(seconds: v is int ? v : int.parse(v)),
+  transformer: (v) =>
+      v is Duration ? v : Duration(seconds: v is int ? v : int.parse(v)),
   allowedValues: (v) => v.inSeconds > 0,
 );
 
 final minutesDurationValidatorNullable = minutesDurationValidator.nullable();
 final minutesDurationValidator = ObjectValidator<Duration>(
-  transformer: (v) => v is Duration ? v : Duration(minutes: v is int ? v : int.parse(v)),
+  transformer: (v) =>
+      v is Duration ? v : Duration(minutes: v is int ? v : int.parse(v)),
   allowedValues: (v) => v.inSeconds > 0,
 );
 
 final uriValidatorNullable = uriValidator.nullable();
-final uriValidator = ObjectValidator<Uri>(transformer: (v) => v is Uri ? v : Uri.parse(v));
+final uriValidator = ObjectValidator<Uri>(
+  transformer: (v) => v is Uri ? v : Uri.parse(v),
+);
 
 final boolValidatorNullable = boolValidator.nullable();
-final boolValidator = ObjectValidator<bool>(transformer: (v) {
-  if (v is bool) return v;
-  if (v is int) return v == 1;
-  if (v is String) {
-    return switch (v) {
-      'true' => true,
-      'True' => true,
-      '1' => true,
-      'false' => false,
-      'False' => false,
-      '0' => false,
-      _ => throw ArgumentError('Invalid boolean value: $v'),
-    };
-  }
-  throw ArgumentError('Invalid boolean value: $v');
-});
+final boolValidator = ObjectValidator<bool>(
+  transformer: (v) {
+    if (v is bool) return v;
+    if (v is int) return v == 1;
+    if (v is String) {
+      return switch (v) {
+        'true' => true,
+        'True' => true,
+        '1' => true,
+        'false' => false,
+        'False' => false,
+        '0' => false,
+        _ => throw ArgumentError('Invalid boolean value: $v'),
+      };
+    }
+    throw ArgumentError('Invalid boolean value: $v');
+  },
+);
 
 final stringToAlgorithmsValidator = ObjectValidator<Algorithms>(
   transformer: (v) {
     return Algorithms.values.byName((v as String).toUpperCase());
   },
 );
-final stringToAlgorithmsValidatorNullable = stringToAlgorithmsValidator.nullable();
+final stringToAlgorithmsValidatorNullable = stringToAlgorithmsValidator
+    .nullable();
 
 /// When value is given, it checks if the value is a base32 encoded string.
 final base32SecretValidatorNullable = base32Secretvalidator.nullable();
 
 /// Checks if the value is a base32 encoded string.
-final base32Secretvalidator = ObjectValidator<String>(transformer: (v) {
-  if (v is String) v = Encodings.base32.decode(v);
-  return Encodings.base32.encode(v);
-});
+final base32Secretvalidator = ObjectValidator<String>(
+  transformer: (v) {
+    if (v is String) v = Encodings.base32.decode(v);
+    return Encodings.base32.encode(v);
+  },
+);
 
-T? validateOptional<T extends Object>({required dynamic value, required ObjectValidatorNullable<T> validator, required String name}) {
+T? validateOptional<T extends Object>({
+  required dynamic value,
+  required ObjectValidatorNullable<T> validator,
+  required String name,
+}) {
   if (validator.isTypeOf(value)) {
     return validator.transform(value);
   } else {
     throw LocalizedArgumentError(
-      localizedMessage: (localizations, value, name) => localizations.invalidValue(value.runtimeType.toString(), value, name),
-      unlocalizedMessage: 'The ${value.runtimeType} "$value" is not valid for "$name"',
+      localizedMessage: (localizations, value, name) =>
+          localizations.invalidValue(value.runtimeType.toString(), value, name),
+      unlocalizedMessage:
+          'The ${value.runtimeType} "$value" is not valid for "$name"',
       invalidValue: '$value',
       name: name,
     );
   }
 }
 
-T validate<T extends Object>({required dynamic value, required ObjectValidator<T> validator, required String name}) {
+T validate<T extends Object>({
+  required dynamic value,
+  required ObjectValidator<T> validator,
+  required String name,
+}) {
   if (validator.isTypeOf(value)) {
     return validator.transform(value);
   } else {
     throw LocalizedArgumentError(
-      localizedMessage: (localizations, value, name) => localizations.invalidValue(value.runtimeType.toString(), value, name),
-      unlocalizedMessage: 'The ${value.runtimeType} "$value" is not valid for "$name"',
+      localizedMessage: (localizations, value, name) =>
+          localizations.invalidValue(value.runtimeType.toString(), value, name),
+      unlocalizedMessage:
+          'The ${value.runtimeType} "$value" is not valid for "$name"',
       invalidValue: '$value',
       name: name,
     );
@@ -141,7 +167,11 @@ T validate<T extends Object>({required dynamic value, required ObjectValidator<T
 /// Throws a [LocalizedArgumentError] if the map is invalid.
 /// <br />If the validator provides a transformer function, the value will be transformed before checking the type.
 /// <br />The returned map will contain the transformed values.
-Map<String, RV> validateMap<RV>({required Map<String, dynamic> map, required Map<String, ObjectValidatorNullable<RV>> validators, required String? name}) {
+Map<String, RV> validateMap<RV>({
+  required Map<String, dynamic> map,
+  required Map<String, ObjectValidatorNullable<RV>> validators,
+  required String? name,
+}) {
   Map<String, RV> validatedMap = {};
   for (String key in validators.keys) {
     final validator = validators[key]!;
@@ -154,9 +184,19 @@ Map<String, RV> validateMap<RV>({required Map<String, dynamic> map, required Map
         Logger.debug('All keys: ${map.keys}');
         throw LocalizedArgumentError(
           localizedMessage: name != null
-              ? (localizations, value, key) => localizations.valueNotAllowedIn(name, key, value.runtimeType.toString(), value.toString())
-              : (localizations, value, key) => localizations.valueNotAllowed(key, value.runtimeType.toString(), value.toString()),
-          unlocalizedMessage: 'The ${mapEntry.runtimeType} "$mapEntry" is not an allowed value for "$key"',
+              ? (localizations, value, key) => localizations.valueNotAllowedIn(
+                  name,
+                  key,
+                  value.runtimeType.toString(),
+                  value.toString(),
+                )
+              : (localizations, value, key) => localizations.valueNotAllowed(
+                  key,
+                  value.runtimeType.toString(),
+                  value.toString(),
+                ),
+          unlocalizedMessage:
+              'The ${mapEntry.runtimeType} "$mapEntry" is not an allowed value for "$key"',
           invalidValue: mapEntry.toString(),
           name: key,
         );
@@ -166,8 +206,10 @@ Map<String, RV> validateMap<RV>({required Map<String, dynamic> map, required Map
         Logger.debug('All keys: ${map.keys}');
         throw LocalizedArgumentError(
           localizedMessage: name != null
-              ? (localizations, value, key) => localizations.missingRequiredParameterIn(name, key)
-              : (localizations, value, key) => localizations.missingRequiredParameter(key),
+              ? (localizations, value, key) =>
+                    localizations.missingRequiredParameterIn(name, key)
+              : (localizations, value, key) =>
+                    localizations.missingRequiredParameter(key),
           unlocalizedMessage: 'Map does not contain required key "$key"',
           invalidValue: mapEntry.toString(),
           name: key,
@@ -175,9 +217,19 @@ Map<String, RV> validateMap<RV>({required Map<String, dynamic> map, required Map
       }
       throw LocalizedArgumentError(
         localizedMessage: name != null
-            ? (localizations, value, key) => localizations.invalidValueIn(value.runtimeType.toString(), value.toString(), key, name)
-            : (localizations, value, key) => localizations.invalidValue(value.runtimeType.toString(), value.toString(), key),
-        unlocalizedMessage: 'The ${mapEntry.runtimeType} "$mapEntry" is not valid for "$key"${name != null ? ' in $name' : ''}',
+            ? (localizations, value, key) => localizations.invalidValueIn(
+                value.runtimeType.toString(),
+                value.toString(),
+                key,
+                name,
+              )
+            : (localizations, value, key) => localizations.invalidValue(
+                value.runtimeType.toString(),
+                value.toString(),
+                key,
+              ),
+        unlocalizedMessage:
+            'The ${mapEntry.runtimeType} "$mapEntry" is not valid for "$key"${name != null ? ' in $name' : ''}',
         invalidValue: mapEntry.toString(),
         name: key,
       );
@@ -235,9 +287,17 @@ class ObjectValidatorNullable<T extends Object?> {
     }
   }
 
-  ObjectValidatorNullable<T> nullable() => ObjectValidatorNullable<T>(transformer: transformer, defaultValue: defaultValue, allowedValues: allowedValues);
+  ObjectValidatorNullable<T> nullable() => ObjectValidatorNullable<T>(
+    transformer: transformer,
+    defaultValue: defaultValue,
+    allowedValues: allowedValues,
+  );
   ObjectValidatorNullable<T> withDefault(T? defaultValue) =>
-      ObjectValidatorNullable<T>(transformer: transformer, defaultValue: defaultValue, allowedValues: allowedValues);
+      ObjectValidatorNullable<T>(
+        transformer: transformer,
+        defaultValue: defaultValue,
+        allowedValues: allowedValues,
+      );
 
   String get type => RegExp('(?<=<).+(?=>)').firstMatch(toString())!.group(0)!;
 
@@ -270,8 +330,10 @@ class ObjectValidator<T extends Object> extends ObjectValidatorNullable<T> {
     } catch (e) {
       if (defaultValue != null) return defaultValue!;
       throw LocalizedArgumentError(
-        localizedMessage: (localizations, value, name) => localizations.invalidValue(value.runtimeType.toString(), value, name),
-        unlocalizedMessage: 'The type ${value.runtimeType} for value "$value" is not valid.',
+        localizedMessage: (localizations, value, name) => localizations
+            .invalidValue(value.runtimeType.toString(), value, name),
+        unlocalizedMessage:
+            'The type ${value.runtimeType} for value "$value" is not valid.',
         invalidValue: '$value',
         name: type,
       );
@@ -282,13 +344,13 @@ class ObjectValidator<T extends Object> extends ObjectValidatorNullable<T> {
   /// If the transformer is provided, the value will be transformed before checking the type.
   @override
   bool isTypeOf(dynamic value) {
-    Logger.debug('Checking type (${T.runtimeType}) of value "$value" and default value "$defaultValue" with transformer "$transformer".');
     if (value == null) return defaultValue != null;
     if (transformer == null) return value is T;
     try {
       transformer!(value);
       return true;
     } catch (e) {
+      Logger.warning('Value "$value" is not of type $type: $e');
       return false;
     }
   }

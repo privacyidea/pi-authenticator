@@ -53,8 +53,8 @@ class PushChoiceRequest extends PushDefaultRequest {
     required this.possibleAnswers,
     super.type = PushChoiceRequest.TYPE,
     this.selectedAnswer,
-    bool? accepted,
-  }) : super(accepted: selectedAnswer != null);
+    super.accepted,
+  });
 
   factory PushChoiceRequest.fromJson(Map<String, dynamic> json) =>
       _$PushChoiceRequestFromJson(json);
