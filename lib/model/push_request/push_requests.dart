@@ -61,3 +61,20 @@ abstract class PushRequestFactory {
     throw ArgumentError('Unsupported push request type: $type');
   }
 }
+
+extension PushRequestExtension on PushRequest {
+  T dynamicCopyWith<T extends PushRequest>({
+    bool? Function()? accepted,
+    String? selectedAnswer,
+  }) {
+    final current = this;
+    if (current is PushChoiceRequest) {
+      return current.copyWith(
+            accepted: accepted,
+            selectedAnswer: selectedAnswer,
+          )
+          as T;
+    }
+    return current.copyWith(accepted: accepted) as T;
+  }
+}

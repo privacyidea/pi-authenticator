@@ -24,13 +24,18 @@ import 'package:http/http.dart';
 
 import '../utils/logger.dart';
 import '../utils/object_validator.dart';
+import 'api_results/pi_server_results/pi_server_result_detail.dart';
 import 'api_results/pi_server_results/pi_server_result_value.dart';
 import 'exception_errors/pi_server_result_error.dart';
 
 part 'pi_server_response.freezed.dart';
 
 @Freezed(copyWith: false)
-sealed class PiServerResponse<T extends PiServerResultValue> with _$PiServerResponse {
+sealed class PiServerResponse<
+  T extends PiServerResultValue,
+  D extends PiServerResultDetail
+>
+    with _$PiServerResponse {
   static const RESULT = 'result';
   static const DETAIL = 'detail';
   static const ID = 'id';
@@ -47,7 +52,6 @@ sealed class PiServerResponse<T extends PiServerResultValue> with _$PiServerResp
   const PiServerResponse._();
   factory PiServerResponse.success({
     required int statusCode,
-    required dynamic detail,
     required int id,
     required String jsonrpc,
     required T resultValue,
@@ -55,15 +59,17 @@ sealed class PiServerResponse<T extends PiServerResultValue> with _$PiServerResp
     required String version,
     required String versionNumber,
     required String signature,
+    @Default(null) D? detail,
   }) = PiSuccessResponse;
   bool get isSuccess => this is PiSuccessResponse;
-  PiSuccessResponse<T>? get asSuccess => this is PiSuccessResponse<T> ? this as PiSuccessResponse<T> : null;
+  PiSuccessResponse<T, D>? get asSuccess =>
+      this is PiSuccessResponse<T, D> ? this as PiSuccessResponse<T, D> : null;
 
   factory PiServerResponse.error({
     required int statusCode,
-    required dynamic detail,
     required int id,
     required String jsonrpc,
+    @Default(null) D? detail,
 
     /// This is a throwable error
     required PiServerResultError piServerResultError,
@@ -73,9 +79,13 @@ sealed class PiServerResponse<T extends PiServerResultValue> with _$PiServerResp
     required String signature,
   }) = PiErrorResponse;
   bool get isError => this is PiErrorResponse;
-  PiErrorResponse<T>? get asError => this is PiErrorResponse<T> ? this as PiErrorResponse<T> : null;
+  PiErrorResponse<T, D>? get asError =>
+      this is PiErrorResponse<T, D> ? this as PiErrorResponse<T, D> : null;
 
-  factory PiServerResponse.fromJson(Map<String, dynamic> json, {int statisCode = 200}) {
+  static PiServerResponse<T, D> fromJson<
+    T extends PiServerResultValue,
+    D extends PiServerResultDetail
+  >(Map<String, dynamic> json, {int statisCode = 200}) {
     Logger.debug('Received container sync response: $json');
     final map = validateMap<dynamic>(
       map: json,
@@ -95,7 +105,7 @@ sealed class PiServerResponse<T extends PiServerResultValue> with _$PiServerResp
       map: map[RESULT],
       validators: {
         RESULT_STATUS: const ObjectValidator<bool>(),
-        RESULT_VALUE: const ObjectValidatorNullable<Map<String, dynamic>>(),
+        RESULT_VALUE: PiServerResultValue.getValidatorFor<T>(),
         RESULT_ERROR: const ObjectValidatorNullable<Map<String, dynamic>>(),
       },
       name: 'PiServerResponse#fromJson#result',
@@ -105,11 +115,13 @@ sealed class PiServerResponse<T extends PiServerResultValue> with _$PiServerResp
         statusCode: statisCode,
         id: map[ID],
         jsonrpc: map[JSONRPC],
-        resultValue: PiServerResultValue.uriMapOfType<T>(result[RESULT_VALUE]),
+        resultValue: PiServerResultValue.fromResultValue<T>(
+          result[RESULT_VALUE],
+        ),
         time: map[TIME],
         version: map[VERSION],
         versionNumber: map[VERSION_NUMBER] ?? map[VERSION].split(' ')[1],
-        detail: map[DETAIL],
+        detail: PiServerResultDetail.fromResultDetail<D>(map[DETAIL]),
         signature: map[SIGNATURE],
       );
     }
@@ -119,7 +131,9 @@ sealed class PiServerResponse<T extends PiServerResultValue> with _$PiServerResp
         detail: map[DETAIL],
         id: json[ID],
         jsonrpc: map[JSONRPC],
-        piServerResultError: PiServerResultError.fromResult(result[RESULT_ERROR]),
+        piServerResultError: PiServerResultError.fromResult(
+          result[RESULT_ERROR],
+        ),
         time: map[TIME],
         version: map[VERSION],
         versionNumber: map[VERSION_NUMBER] ?? map[VERSION].split(' ')[1],
@@ -135,7 +149,13 @@ sealed class PiServerResponse<T extends PiServerResultValue> with _$PiServerResp
     throw UnimplementedError('Unknown PiServerResponse type');
   }
 
-  factory PiServerResponse.fromResponse(Response response) {
-    return PiServerResponse<T>.fromJson(jsonDecode(response.body), statisCode: response.statusCode);
+  static PiServerResponse<T, D> fromResponse<
+    T extends PiServerResultValue,
+    D extends PiServerResultDetail
+  >(Response response) {
+    return PiServerResponse.fromJson<T, D>(
+      jsonDecode(response.body),
+      statisCode: response.statusCode,
+    );
   }
 }

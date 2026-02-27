@@ -27,6 +27,7 @@ import 'package:http/io_client.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../../../../../model/pi_server_response.dart';
+import '../model/api_results/pi_server_results/pi_server_result_detail.dart';
 import '../model/api_results/pi_server_results/pi_server_result_value.dart';
 import '../utils/logger.dart';
 import '../utils/view_utils.dart';
@@ -127,7 +128,9 @@ class PrivacyideaIOClient {
     }
 
     HttpClient httpClient = HttpClient();
-    httpClient.badCertificateCallback = ((_, __, ___) => !sslVerify);
+    httpClient.badCertificateCallback = ((_, _, _) {
+      return !sslVerify;
+    });
     httpClient.userAgent =
         'privacyIDEA-App'
         '/${(await PackageInfo.fromPlatform()).version}'
@@ -412,25 +415,34 @@ extension ResponseBuilder on Response {
 }
 
 extension PiResponse on Response {
-  PiServerResponse<T>? asPiServerResponse<T extends PiServerResultValue>() {
+  PiServerResponse<T, D> asPiServerResponse<
+    T extends PiServerResultValue,
+    D extends PiServerResultDetail
+  >() {
     try {
-      return PiServerResponse<T>.fromResponse(this);
+      return PiServerResponse.fromResponse<T, D>(this);
     } catch (e) {
       Logger.info('Response could not be parsed as PiServerResponse', error: e);
-      return null;
+      rethrow;
     }
   }
 
-  PiSuccessResponse<T>? asPiResponseSuccess<T extends PiServerResultValue>() {
-    final piServerResponse = asPiServerResponse<T>();
-    if (piServerResponse?.isSuccess != true) return null;
-    return piServerResponse!.asSuccess;
+  PiSuccessResponse<T, D>? asPiResponseSuccess<
+    T extends PiServerResultValue,
+    D extends PiServerResultDetail
+  >() {
+    final piServerResponse = asPiServerResponse<T, D>();
+    if (piServerResponse.isSuccess != true) return null;
+    return piServerResponse.asSuccess;
   }
 
-  PiErrorResponse<T>? asPiErrorResponse<T extends PiServerResultValue>() {
-    final piServerResponse = asPiServerResponse<T>();
-    if (piServerResponse?.isError != true) return null;
-    return piServerResponse!.asError;
+  PiErrorResponse<T, D>? asPiErrorResponse<
+    T extends PiServerResultValue,
+    D extends PiServerResultDetail
+  >() {
+    final piServerResponse = asPiServerResponse<T, D>();
+    if (piServerResponse.isError != true) return null;
+    return piServerResponse.asError;
   }
 
   String? get piErrorMessage =>

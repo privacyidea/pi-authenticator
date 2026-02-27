@@ -28,8 +28,11 @@ import 'package:privacyidea_authenticator/widgets/dialog_widgets/push_request_di
 
 import '../../../../model/push_request/push_requests.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../model/api_results/pi_server_results/pi_server_result_detail.dart';
+import '../../../model/api_results/pi_server_results/pi_server_result_value.dart';
 import '../../../utils/customization/theme_extentions/push_request_theme.dart';
 import '../../../utils/lock_auth.dart';
+import '../../../utils/logger.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/push_request_provider.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import '../../../utils/utils.dart';
@@ -82,11 +85,10 @@ mixin PushDialogMixin {
   PushToken get token;
   PushRequest get pushRequest;
 
-  Future<void> handleAccept(
-    BuildContext context,
-    WidgetRef ref, {
-    String? answer,
-  }) async {
+  Future<void> handleAccept<
+    T extends PiServerResultValue,
+    D extends PiServerResultDetail
+  >(BuildContext context, WidgetRef ref, {String? answer}) async {
     if (token.isLocked &&
         !await lockAuth(
           reason: (l10n) => l10n.authToAcceptPushRequest,
@@ -95,17 +97,27 @@ mixin PushDialogMixin {
       return;
     }
 
-    final success = await ref
+    final response = await ref
         .read(pushRequestProvider.notifier)
-        .accept(token, pushRequest, selectedAnswer: answer);
+        .accept<BooleanResultValue, CodeToPhoneResultDetail>(
+          token,
+          pushRequest,
+          selectedAnswer: answer,
+        );
 
-    if (success && context.mounted) {
-      final settings = ref.read(settingsProvider).value;
-      if (settings?.autoCloseAppAfterAcceptingPushRequest == true) {
-        SystemNavigator.pop();
-      }
-      _onHandled(context);
+    if (!context.mounted || response == null) {
+      return;
     }
+
+    if (response.detail != null) {
+      _handleCodeToPhoneResultDetail(context, response.detail!);
+    }
+
+    final settings = ref.read(settingsProvider).value;
+    if (settings?.autoCloseAppAfterAcceptingPushRequest == true) {
+      SystemNavigator.pop();
+    }
+    _onHandled(context);
   }
 
   Future<void> handleDecline(BuildContext context, WidgetRef ref) async {
@@ -140,5 +152,12 @@ mixin PushDialogMixin {
     if (Navigator.of(context).canPop()) {
       Navigator.of(context).pop();
     }
+  }
+
+  void _handleCodeToPhoneResultDetail(
+    BuildContext context,
+    CodeToPhoneResultDetail codeToPhoneResultDetail,
+  ) {
+    Logger.debug('Handling CodeToPhoneResultDetail: $codeToPhoneResultDetail');
   }
 }

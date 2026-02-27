@@ -21,20 +21,20 @@ import 'dart:async';
 
 import 'package:http/http.dart';
 import 'package:mutex/mutex.dart';
-import 'package:privacyidea_authenticator/model/push_request/push_choice_request.dart';
+import 'package:privacyidea_authenticator/model/push_request/push_requests.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../../../../interfaces/repo/push_request_repository.dart';
 import '../../../../../../../utils/rsa_utils.dart';
-import '../../../../model/push_request/push_request.dart';
+import '../../../../model/api_results/pi_server_results/pi_server_result_detail.dart';
+import '../../../../model/api_results/pi_server_results/pi_server_result_value.dart';
+import '../../../../model/pi_server_response.dart';
 import '../../../../model/riverpod_states/push_request_state.dart';
 import '../../../../model/tokens/push_token.dart';
 import '../../../../repo/secure_push_request_repository.dart';
-import '../../../http_status_checker.dart';
 import '../../../logger.dart';
 import '../../../privacyidea_io_client.dart';
 import '../../../push_provider.dart';
-import '../../../utils.dart';
 import '../state_providers/status_message_provider.dart';
 
 part 'push_request_provider.g.dart';
@@ -48,7 +48,7 @@ final pushRequestProvider = pushRequestProviderOf(
 
 @Riverpod(keepAlive: true)
 class PushRequestNotifier extends _$PushRequestNotifier {
-  final loadingRepoMutex = Mutex();
+  final _loadingRepoMutex = Mutex();
   final updatingRequestMutex = Mutex();
 
   final Map<String, Timer> _expirationTimers = {};
@@ -121,7 +121,7 @@ class PushRequestNotifier extends _$PushRequestNotifier {
   */
 
   Future<PushRequestState> _loadFromRepo() async {
-    await loadingRepoMutex.acquire();
+    await _loadingRepoMutex.acquire();
     try {
       final loadedState = await _pushRepo.loadState();
       _renewTimers(loadedState.pushRequests);
@@ -131,14 +131,14 @@ class PushRequestNotifier extends _$PushRequestNotifier {
       Logger.error('Failed to load push request state from repo.', error: e);
       return (state.value ?? PushRequestState.empty());
     } finally {
-      loadingRepoMutex.release();
+      _loadingRepoMutex.release();
     }
   }
 
   /// Adds a PushMessageRequest to repo and state. Returns true if successful, false if not.
   /// If the request already exists, it will be replaced.
   Future<bool> _addOrReplacePushRequest(PushRequest pushRequest) async {
-    await loadingRepoMutex.acquire();
+    await _loadingRepoMutex.acquire();
     try {
       final oldState = (await future);
       final newState = oldState.addOrReplace(pushRequest);
@@ -149,35 +149,36 @@ class PushRequestNotifier extends _$PushRequestNotifier {
       Logger.warning('Failed to save push request: $pushRequest', error: e);
       return false;
     } finally {
-      loadingRepoMutex.release();
+      _loadingRepoMutex.release();
     }
   }
 
-  /// Replaces a PushMessageRequest in repo and state. Returns true if successful, false if not.
-  Future<bool> _replacePushRequest(PushRequest pushRequest) async {
-    await loadingRepoMutex.acquire();
-    try {
-      final oldState = (await future);
-      final (newState, replaced) = oldState.replaceRequest(pushRequest);
-      if (!replaced) {
-        Logger.warning('Tried to replace a push request that does not exist.');
-        return false;
-      }
-      await _pushRepo.saveState(newState);
-      state = AsyncValue.data(newState);
-      return true;
-    } catch (e) {
-      Logger.warning('Failed to save push request: $pushRequest', error: e);
-      return false;
-    } finally {
-      loadingRepoMutex.release();
-    }
-  }
+  // TODO: LÖSCHEN VORM COMMITTEN
+  // /// Replaces a PushMessageRequest in repo and state. Returns true if successful, false if not.
+  // Future<bool> _replacePushRequest(PushRequest pushRequest) async {
+  //   await _loadingRepoMutex.acquire();
+  //   try {
+  //     final oldState = (await future);
+  //     final (newState, replaced) = oldState.replaceRequest(pushRequest);
+  //     if (!replaced) {
+  //       Logger.warning('Tried to replace a push request that does not exist.');
+  //       return false;
+  //     }
+  //     await _pushRepo.saveState(newState);
+  //     state = AsyncValue.data(newState);
+  //     return true;
+  //   } catch (e) {
+  //     Logger.warning('Failed to save push request: $pushRequest', error: e);
+  //     return false;
+  //   } finally {
+  //     _loadingRepoMutex.release();
+  //   }
+  // }
 
   /// Removes a PushMessageRequest from repo and state. Returns true if successful, false if not.
   Future<bool> _remove(PushRequest pushRequest) async {
     _cancelTimer(pushRequest);
-    await loadingRepoMutex.acquire();
+    await _loadingRepoMutex.acquire();
     try {
       final newState = (await future).withoutRequest(pushRequest);
       await _pushRepo.saveState(newState);
@@ -191,7 +192,7 @@ class PushRequestNotifier extends _$PushRequestNotifier {
       _setupTimer(pushRequest);
       return false;
     } finally {
-      loadingRepoMutex.release();
+      _loadingRepoMutex.release();
     }
   }
   /*
@@ -202,11 +203,11 @@ class PushRequestNotifier extends _$PushRequestNotifier {
   */
 
   /// Updates a PushMessageRequest of the current state. The updated PushMessageRequest is saved to the repo and the state. Returns the updated PushMessageRequest if successful, null if not.
-  Future<PushRequest?> _updatePushRequest(
-    PushRequest pushRequest,
-    Future<PushRequest> Function(PushRequest) updater,
+  Future<T?> _updatePushRequest<T extends PushRequest>(
+    T pushRequest,
+    Future<T> Function(T) updater,
   ) async {
-    await updatingRequestMutex.acquire();
+    await _loadingRepoMutex.acquire();
     try {
       final current = (await future).currentOf(pushRequest);
       if (current == null) {
@@ -214,13 +215,20 @@ class PushRequestNotifier extends _$PushRequestNotifier {
         return null;
       }
       final updated = await updater(current);
-      final replaced = await _replacePushRequest(updated);
-      return replaced ? updated : current;
+      final (newState, replaced) = (await future).replaceRequest(updated);
+      if (!replaced) {
+        return null;
+      }
+      await _pushRepo.saveState(newState);
+      state = AsyncValue.data(newState);
+      return updated;
+    } catch (e) {
+      Logger.error('Failed to update push request', error: e);
+      return null;
     } finally {
-      updatingRequestMutex.release();
+      _loadingRepoMutex.release();
     }
   }
-
   /*
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////// Public Methods //////////////////////////////////
@@ -235,65 +243,29 @@ class PushRequestNotifier extends _$PushRequestNotifier {
 
   /// Accepts a push request and returns true if successful, false if not.
   /// An accepted push request is removed from the state.
-  /// It should be still in the CustomIntBuffer of the state.
-  Future<bool> accept(
-    PushToken pushToken,
-    PushRequest pushRequest, {
-    String? selectedAnswer,
-  }) async {
-    if (pushRequest.accepted != null) {
-      Logger.warning('The push request is already accepted or declined.');
-      return false;
-    }
-    Logger.info('Accept push request.');
-    final updated = await _updatePushRequest(pushRequest, (p0) async {
-      final updated = _copyWithPushRequest(
-        p0,
+  Future<PiSuccessResponse<T, D>?> accept<
+    T extends PiServerResultValue,
+    D extends PiServerResultDetail
+  >(PushToken token, PushRequest request, {String? selectedAnswer}) async {
+    return _handleReaction<T, D>(
+      pushRequest: request,
+      token: token,
+      updater: (p0) async => p0.dynamicCopyWith(
         accepted: () => true,
         selectedAnswer: selectedAnswer,
-      );
-      final success = await _handleReaction(
-        pushRequest: updated,
-        token: pushToken,
-      );
-      if (!success) {
-        Logger.warning('Failed to handle push request reaction.');
-        return p0;
-      }
-      return updated;
-    });
-    if (updated == null || updated.accepted != true) {
-      Logger.warning('Failed to accept push request.');
-      return false;
-    }
-    await _remove(updated);
-    return true;
+      ),
+    );
   }
 
-  Future<bool> decline(PushToken pushToken, PushRequest pushRequest) async {
-    if (pushRequest.accepted != null) {
-      Logger.warning('The push request is already accepted or declined.');
-      return false;
-    }
-    Logger.info('Decline push request.');
-    final updated = await _updatePushRequest(pushRequest, (p0) async {
-      final updated = _copyWithPushRequest(p0, accepted: () => false);
-      final success = await _handleReaction(
-        pushRequest: updated,
-        token: pushToken,
-      );
-      if (!success) {
-        Logger.warning('Failed to handle push request reaction.');
-        return p0;
-      }
-      return updated;
-    });
-    if (updated == null || updated.accepted != false) {
-      Logger.warning('Failed to decline push request.');
-      return false;
-    }
-    await _remove(updated);
-    return true;
+  Future<PiSuccessResponse<T, D>?> decline<
+    T extends PiServerResultValue,
+    D extends PiServerResultDetail
+  >(PushToken token, PushRequest request) async {
+    return _handleReaction<T, D>(
+      pushRequest: request,
+      token: token,
+      updater: (p0) async => p0.dynamicCopyWith(accepted: () => false),
+    );
   }
 
   Future<bool> add(PushRequest pr) async {
@@ -372,78 +344,99 @@ class PushRequestNotifier extends _$PushRequestNotifier {
     }
   }
 
-  Future<bool> _handleReaction({
+  final _reactionMutex = Mutex();
+
+  /// Handles the reaction to a push request (accept or decline).
+  /// Returns the response body if successful, null if not.
+  /// The reaction is handled by sending a POST request to the push request's URI with the appropriate data and signature.
+  /// If the request fails, it will be retried once. If it fails again, an error message will be shown.
+  /// If the response has an error status code, an error message will be shown.
+  Future<PiSuccessResponse<T, D>?> _handleReaction<
+    T extends PiServerResultValue,
+    D extends PiServerResultDetail
+  >({
     required PushRequest pushRequest,
     required PushToken token,
+    required Future<PushRequest> Function(PushRequest) updater,
   }) async {
-    if (pushRequest.accepted == null) return false;
+    await _reactionMutex.acquire();
 
-    final Map<String, String> body = {
-      'serial': token.serial,
-      'nonce': pushRequest.nonce,
-      if (pushRequest.accepted == false) 'decline': '1',
-      ...pushRequest.getResponseData(token), // Unterklasse steuert Felder bei
-    };
+    // Backup des aktuellen Zustands für ein mögliches Rollback
+    final oldRequest = pushRequest;
 
-    // Signatur bauen: Basis + Suffix aus der Unterklasse
-    String msg = pushRequest.getResponseSignMsg(token);
-
-    String? signature = await _rsaUtils.trySignWithToken(token, msg);
-    if (signature == null) return false;
-    body['signature'] = signature;
-
-    Response response;
     try {
-      Logger.info('Sending push request response.');
-      response = await _ioClient.doPost(
-        sslVerify: pushRequest.sslVerify,
-        url: pushRequest.uri,
-        body: body,
-      );
-    } catch (_) {
-      Logger.warning('Sending push request response failed. Retrying.');
+      final updated = await _updatePushRequest(pushRequest, updater);
+
+      if (updated == null || updated.accepted == null) {
+        return null;
+      }
+
+      final Map<String, String> body = {
+        'serial': token.serial,
+        'nonce': updated.nonce,
+        if (updated.accepted == false) 'decline': '1',
+        ...updated.getResponseData(token),
+      };
+
+      String msg = updated.getResponseSignMsg(token);
+      String? signature = await _rsaUtils.trySignWithToken(token, msg);
+      if (signature == null) {
+        await _addOrReplacePushRequest(oldRequest);
+        return null;
+      }
+      body['signature'] = signature;
+
+      Response response;
       try {
         response = await _ioClient.doPost(
-          sslVerify: pushRequest.sslVerify,
-          url: pushRequest.uri,
+          sslVerify: updated.sslVerify,
+          url: updated.uri,
           body: body,
         );
-      } catch (e) {
-        Logger.warning(
-          'Sending push request response failed consistently.',
-          error: e,
-        );
-        ref.read(statusMessageProvider.notifier).state = StatusMessage(
-          message: (l) => l.connectionFailed,
-        );
-        return false;
+      } catch (_) {
+        try {
+          response = await _ioClient.doPost(
+            sslVerify: updated.sslVerify,
+            url: updated.uri,
+            body: body,
+          );
+        } catch (e) {
+          await _addOrReplacePushRequest(oldRequest);
+          ref.read(statusMessageProvider.notifier).state = StatusMessage(
+            message: (l) => l.connectionFailed,
+          );
+          return null;
+        }
       }
-    }
-    if (HttpStatusChecker.isError(response.statusCode)) {
-      ref.read(statusMessageProvider.notifier).state = StatusMessage(
-        message: (l) =>
-            '${l.sendPushRequestResponseFailed}\n${l.statusCode(response.statusCode)}',
-        details: (_) =>
-            (tryJsonDecode(response.body)?['result']?['error']?['message']) ??
-            '',
-      );
-      Logger.warning('Sending push request response failed.');
-      return false;
-    }
-    return true;
-  }
+      Logger.debug('Response Body: ${response.body}');
+      PiServerResponse<T, D> piResponse;
+      try {
+        piResponse = response.asPiServerResponse<T, D>();
+      } catch (e) {
+        ref.read(statusMessageProvider.notifier).state = StatusMessage(
+          message: (l) =>
+              '${l.sendPushRequestResponseFailed}\n${l.statusCode(response.statusCode)}',
+          details: (_) => 'Failed to parse response: $e',
+        );
+        await _addOrReplacePushRequest(oldRequest);
+        return null;
+      }
+      if (piResponse.isError) {
+        await _addOrReplacePushRequest(oldRequest);
+        final errorResponse = piResponse.asError!;
+        ref.read(statusMessageProvider.notifier).state = StatusMessage(
+          message: (l) =>
+              '${l.sendPushRequestResponseFailed}\n${l.statusCode(errorResponse.statusCode)}',
+          details: (_) =>
+              '${errorResponse.piServerResultError.code}: ${errorResponse.piServerResultError.message}',
+        );
+        return null;
+      }
 
-  PushRequest _copyWithPushRequest(
-    PushRequest pushRequest, {
-    bool? Function()? accepted,
-    String? selectedAnswer,
-  }) {
-    if (pushRequest is PushChoiceRequest) {
-      return pushRequest.copyWith(
-        accepted: accepted,
-        selectedAnswer: selectedAnswer,
-      );
+      await _remove(updated);
+      return piResponse.asSuccess;
+    } finally {
+      _reactionMutex.release();
     }
-    return pushRequest.copyWith(accepted: accepted);
   }
 }

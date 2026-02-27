@@ -12,24 +12,24 @@ part of 'pi_server_response.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$PiServerResponse<T extends PiServerResultValue> {
+mixin _$PiServerResponse<T extends PiServerResultValue,D extends PiServerResultDetail> {
 
- int get statusCode; dynamic get detail; int get id; String get jsonrpc; double get time; String get version; String get versionNumber; String get signature;
+ int get statusCode; int get id; String get jsonrpc; double get time; String get version; String get versionNumber; String get signature; D? get detail;
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PiServerResponse<T>&&(identical(other.statusCode, statusCode) || other.statusCode == statusCode)&&const DeepCollectionEquality().equals(other.detail, detail)&&(identical(other.id, id) || other.id == id)&&(identical(other.jsonrpc, jsonrpc) || other.jsonrpc == jsonrpc)&&(identical(other.time, time) || other.time == time)&&(identical(other.version, version) || other.version == version)&&(identical(other.versionNumber, versionNumber) || other.versionNumber == versionNumber)&&(identical(other.signature, signature) || other.signature == signature));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PiServerResponse<T, D>&&(identical(other.statusCode, statusCode) || other.statusCode == statusCode)&&(identical(other.id, id) || other.id == id)&&(identical(other.jsonrpc, jsonrpc) || other.jsonrpc == jsonrpc)&&(identical(other.time, time) || other.time == time)&&(identical(other.version, version) || other.version == version)&&(identical(other.versionNumber, versionNumber) || other.versionNumber == versionNumber)&&(identical(other.signature, signature) || other.signature == signature)&&const DeepCollectionEquality().equals(other.detail, detail));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,statusCode,const DeepCollectionEquality().hash(detail),id,jsonrpc,time,version,versionNumber,signature);
+int get hashCode => Object.hash(runtimeType,statusCode,id,jsonrpc,time,version,versionNumber,signature,const DeepCollectionEquality().hash(detail));
 
 @override
 String toString() {
-  return 'PiServerResponse<$T>(statusCode: $statusCode, detail: $detail, id: $id, jsonrpc: $jsonrpc, time: $time, version: $version, versionNumber: $versionNumber, signature: $signature)';
+  return 'PiServerResponse<$T, $D>(statusCode: $statusCode, id: $id, jsonrpc: $jsonrpc, time: $time, version: $version, versionNumber: $versionNumber, signature: $signature, detail: $detail)';
 }
 
 
@@ -39,7 +39,7 @@ String toString() {
 
 
 /// Adds pattern-matching-related methods to [PiServerResponse].
-extension PiServerResponsePatterns<T extends PiServerResultValue> on PiServerResponse<T> {
+extension PiServerResponsePatterns<T extends PiServerResultValue,D extends PiServerResultDetail> on PiServerResponse<T, D> {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -52,7 +52,7 @@ extension PiServerResponsePatterns<T extends PiServerResultValue> on PiServerRes
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( PiSuccessResponse<T> value)?  success,TResult Function( PiErrorResponse<T> value)?  error,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( PiSuccessResponse<T, D> value)?  success,TResult Function( PiErrorResponse<T, D> value)?  error,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case PiSuccessResponse() when success != null:
@@ -75,7 +75,7 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( PiSuccessResponse<T> value)  success,required TResult Function( PiErrorResponse<T> value)  error,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( PiSuccessResponse<T, D> value)  success,required TResult Function( PiErrorResponse<T, D> value)  error,}){
 final _that = this;
 switch (_that) {
 case PiSuccessResponse():
@@ -94,7 +94,7 @@ return error(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( PiSuccessResponse<T> value)?  success,TResult? Function( PiErrorResponse<T> value)?  error,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( PiSuccessResponse<T, D> value)?  success,TResult? Function( PiErrorResponse<T, D> value)?  error,}){
 final _that = this;
 switch (_that) {
 case PiSuccessResponse() when success != null:
@@ -116,11 +116,11 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int statusCode,  dynamic detail,  int id,  String jsonrpc,  T resultValue,  double time,  String version,  String versionNumber,  String signature)?  success,TResult Function( int statusCode,  dynamic detail,  int id,  String jsonrpc,  PiServerResultError piServerResultError,  double time,  String version,  String versionNumber,  String signature)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int statusCode,  int id,  String jsonrpc,  T resultValue,  double time,  String version,  String versionNumber,  String signature,  D? detail)?  success,TResult Function( int statusCode,  int id,  String jsonrpc,  D? detail,  PiServerResultError piServerResultError,  double time,  String version,  String versionNumber,  String signature)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case PiSuccessResponse() when success != null:
-return success(_that.statusCode,_that.detail,_that.id,_that.jsonrpc,_that.resultValue,_that.time,_that.version,_that.versionNumber,_that.signature);case PiErrorResponse() when error != null:
-return error(_that.statusCode,_that.detail,_that.id,_that.jsonrpc,_that.piServerResultError,_that.time,_that.version,_that.versionNumber,_that.signature);case _:
+return success(_that.statusCode,_that.id,_that.jsonrpc,_that.resultValue,_that.time,_that.version,_that.versionNumber,_that.signature,_that.detail);case PiErrorResponse() when error != null:
+return error(_that.statusCode,_that.id,_that.jsonrpc,_that.detail,_that.piServerResultError,_that.time,_that.version,_that.versionNumber,_that.signature);case _:
   return orElse();
 
 }
@@ -138,11 +138,11 @@ return error(_that.statusCode,_that.detail,_that.id,_that.jsonrpc,_that.piServer
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int statusCode,  dynamic detail,  int id,  String jsonrpc,  T resultValue,  double time,  String version,  String versionNumber,  String signature)  success,required TResult Function( int statusCode,  dynamic detail,  int id,  String jsonrpc,  PiServerResultError piServerResultError,  double time,  String version,  String versionNumber,  String signature)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int statusCode,  int id,  String jsonrpc,  T resultValue,  double time,  String version,  String versionNumber,  String signature,  D? detail)  success,required TResult Function( int statusCode,  int id,  String jsonrpc,  D? detail,  PiServerResultError piServerResultError,  double time,  String version,  String versionNumber,  String signature)  error,}) {final _that = this;
 switch (_that) {
 case PiSuccessResponse():
-return success(_that.statusCode,_that.detail,_that.id,_that.jsonrpc,_that.resultValue,_that.time,_that.version,_that.versionNumber,_that.signature);case PiErrorResponse():
-return error(_that.statusCode,_that.detail,_that.id,_that.jsonrpc,_that.piServerResultError,_that.time,_that.version,_that.versionNumber,_that.signature);}
+return success(_that.statusCode,_that.id,_that.jsonrpc,_that.resultValue,_that.time,_that.version,_that.versionNumber,_that.signature,_that.detail);case PiErrorResponse():
+return error(_that.statusCode,_that.id,_that.jsonrpc,_that.detail,_that.piServerResultError,_that.time,_that.version,_that.versionNumber,_that.signature);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -156,11 +156,11 @@ return error(_that.statusCode,_that.detail,_that.id,_that.jsonrpc,_that.piServer
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int statusCode,  dynamic detail,  int id,  String jsonrpc,  T resultValue,  double time,  String version,  String versionNumber,  String signature)?  success,TResult? Function( int statusCode,  dynamic detail,  int id,  String jsonrpc,  PiServerResultError piServerResultError,  double time,  String version,  String versionNumber,  String signature)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int statusCode,  int id,  String jsonrpc,  T resultValue,  double time,  String version,  String versionNumber,  String signature,  D? detail)?  success,TResult? Function( int statusCode,  int id,  String jsonrpc,  D? detail,  PiServerResultError piServerResultError,  double time,  String version,  String versionNumber,  String signature)?  error,}) {final _that = this;
 switch (_that) {
 case PiSuccessResponse() when success != null:
-return success(_that.statusCode,_that.detail,_that.id,_that.jsonrpc,_that.resultValue,_that.time,_that.version,_that.versionNumber,_that.signature);case PiErrorResponse() when error != null:
-return error(_that.statusCode,_that.detail,_that.id,_that.jsonrpc,_that.piServerResultError,_that.time,_that.version,_that.versionNumber,_that.signature);case _:
+return success(_that.statusCode,_that.id,_that.jsonrpc,_that.resultValue,_that.time,_that.version,_that.versionNumber,_that.signature,_that.detail);case PiErrorResponse() when error != null:
+return error(_that.statusCode,_that.id,_that.jsonrpc,_that.detail,_that.piServerResultError,_that.time,_that.version,_that.versionNumber,_that.signature);case _:
   return null;
 
 }
@@ -171,12 +171,11 @@ return error(_that.statusCode,_that.detail,_that.id,_that.jsonrpc,_that.piServer
 /// @nodoc
 
 
-class PiSuccessResponse<T extends PiServerResultValue> extends PiServerResponse<T> {
-   PiSuccessResponse({required this.statusCode, required this.detail, required this.id, required this.jsonrpc, required this.resultValue, required this.time, required this.version, required this.versionNumber, required this.signature}): super._();
+class PiSuccessResponse<T extends PiServerResultValue,D extends PiServerResultDetail> extends PiServerResponse<T, D> {
+   PiSuccessResponse({required this.statusCode, required this.id, required this.jsonrpc, required this.resultValue, required this.time, required this.version, required this.versionNumber, required this.signature, this.detail = null}): super._();
   
 
 @override final  int statusCode;
-@override final  dynamic detail;
 @override final  int id;
 @override final  String jsonrpc;
  final  T resultValue;
@@ -184,22 +183,23 @@ class PiSuccessResponse<T extends PiServerResultValue> extends PiServerResponse<
 @override final  String version;
 @override final  String versionNumber;
 @override final  String signature;
+@override@JsonKey() final  D? detail;
 
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PiSuccessResponse<T>&&(identical(other.statusCode, statusCode) || other.statusCode == statusCode)&&const DeepCollectionEquality().equals(other.detail, detail)&&(identical(other.id, id) || other.id == id)&&(identical(other.jsonrpc, jsonrpc) || other.jsonrpc == jsonrpc)&&const DeepCollectionEquality().equals(other.resultValue, resultValue)&&(identical(other.time, time) || other.time == time)&&(identical(other.version, version) || other.version == version)&&(identical(other.versionNumber, versionNumber) || other.versionNumber == versionNumber)&&(identical(other.signature, signature) || other.signature == signature));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PiSuccessResponse<T, D>&&(identical(other.statusCode, statusCode) || other.statusCode == statusCode)&&(identical(other.id, id) || other.id == id)&&(identical(other.jsonrpc, jsonrpc) || other.jsonrpc == jsonrpc)&&const DeepCollectionEquality().equals(other.resultValue, resultValue)&&(identical(other.time, time) || other.time == time)&&(identical(other.version, version) || other.version == version)&&(identical(other.versionNumber, versionNumber) || other.versionNumber == versionNumber)&&(identical(other.signature, signature) || other.signature == signature)&&const DeepCollectionEquality().equals(other.detail, detail));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,statusCode,const DeepCollectionEquality().hash(detail),id,jsonrpc,const DeepCollectionEquality().hash(resultValue),time,version,versionNumber,signature);
+int get hashCode => Object.hash(runtimeType,statusCode,id,jsonrpc,const DeepCollectionEquality().hash(resultValue),time,version,versionNumber,signature,const DeepCollectionEquality().hash(detail));
 
 @override
 String toString() {
-  return 'PiServerResponse<$T>.success(statusCode: $statusCode, detail: $detail, id: $id, jsonrpc: $jsonrpc, resultValue: $resultValue, time: $time, version: $version, versionNumber: $versionNumber, signature: $signature)';
+  return 'PiServerResponse<$T, $D>.success(statusCode: $statusCode, id: $id, jsonrpc: $jsonrpc, resultValue: $resultValue, time: $time, version: $version, versionNumber: $versionNumber, signature: $signature, detail: $detail)';
 }
 
 
@@ -211,14 +211,14 @@ String toString() {
 /// @nodoc
 
 
-class PiErrorResponse<T extends PiServerResultValue> extends PiServerResponse<T> {
-   PiErrorResponse({required this.statusCode, required this.detail, required this.id, required this.jsonrpc, required this.piServerResultError, required this.time, required this.version, required this.versionNumber, required this.signature}): super._();
+class PiErrorResponse<T extends PiServerResultValue,D extends PiServerResultDetail> extends PiServerResponse<T, D> {
+   PiErrorResponse({required this.statusCode, required this.id, required this.jsonrpc, this.detail = null, required this.piServerResultError, required this.time, required this.version, required this.versionNumber, required this.signature}): super._();
   
 
 @override final  int statusCode;
-@override final  dynamic detail;
 @override final  int id;
 @override final  String jsonrpc;
+@override@JsonKey() final  D? detail;
 /// This is a throwable error
  final  PiServerResultError piServerResultError;
 @override final  double time;
@@ -231,16 +231,16 @@ class PiErrorResponse<T extends PiServerResultValue> extends PiServerResponse<T>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PiErrorResponse<T>&&(identical(other.statusCode, statusCode) || other.statusCode == statusCode)&&const DeepCollectionEquality().equals(other.detail, detail)&&(identical(other.id, id) || other.id == id)&&(identical(other.jsonrpc, jsonrpc) || other.jsonrpc == jsonrpc)&&(identical(other.piServerResultError, piServerResultError) || other.piServerResultError == piServerResultError)&&(identical(other.time, time) || other.time == time)&&(identical(other.version, version) || other.version == version)&&(identical(other.versionNumber, versionNumber) || other.versionNumber == versionNumber)&&(identical(other.signature, signature) || other.signature == signature));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PiErrorResponse<T, D>&&(identical(other.statusCode, statusCode) || other.statusCode == statusCode)&&(identical(other.id, id) || other.id == id)&&(identical(other.jsonrpc, jsonrpc) || other.jsonrpc == jsonrpc)&&const DeepCollectionEquality().equals(other.detail, detail)&&(identical(other.piServerResultError, piServerResultError) || other.piServerResultError == piServerResultError)&&(identical(other.time, time) || other.time == time)&&(identical(other.version, version) || other.version == version)&&(identical(other.versionNumber, versionNumber) || other.versionNumber == versionNumber)&&(identical(other.signature, signature) || other.signature == signature));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,statusCode,const DeepCollectionEquality().hash(detail),id,jsonrpc,piServerResultError,time,version,versionNumber,signature);
+int get hashCode => Object.hash(runtimeType,statusCode,id,jsonrpc,const DeepCollectionEquality().hash(detail),piServerResultError,time,version,versionNumber,signature);
 
 @override
 String toString() {
-  return 'PiServerResponse<$T>.error(statusCode: $statusCode, detail: $detail, id: $id, jsonrpc: $jsonrpc, piServerResultError: $piServerResultError, time: $time, version: $version, versionNumber: $versionNumber, signature: $signature)';
+  return 'PiServerResponse<$T, $D>.error(statusCode: $statusCode, id: $id, jsonrpc: $jsonrpc, detail: $detail, piServerResultError: $piServerResultError, time: $time, version: $version, versionNumber: $versionNumber, signature: $signature)';
 }
 
 
