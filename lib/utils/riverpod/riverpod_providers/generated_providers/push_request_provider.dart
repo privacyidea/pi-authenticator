@@ -350,7 +350,7 @@ class PushRequestNotifier extends _$PushRequestNotifier {
   }) async {
     await _reactionMutex.acquire();
 
-    // Backup des aktuellen Zustands für ein mögliches Rollback
+    // Backup the old request in case we need to restore it after a failed reaction
     final oldRequest = pushRequest;
 
     try {

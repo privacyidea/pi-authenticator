@@ -56,7 +56,7 @@ class PiServerResult<V extends PiServerResultValue> {
 
   const PiServerResult({required this.status, this.value, this.error})
     : assert(
-        (value != null && error == null) || (value == null && error != null),
-        'Either value or error must be provided, but not both.',
+        (value == null || error == null),
+        'PiServerResult cannot have both value and error at the same time',
       );
 }
