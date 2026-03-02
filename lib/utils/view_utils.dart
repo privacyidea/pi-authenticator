@@ -18,13 +18,10 @@
  * limitations under the License.
  */
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/views/view_interface.dart'
-    show WidgetRef;
 
 import '../l10n/app_localizations.dart';
 import 'globals.dart';
 import 'logger.dart';
-import 'riverpod/riverpod_providers/generated_providers/messenger_stack.dart';
 import 'riverpod/riverpod_providers/state_providers/status_message_provider.dart';
 
 /// Shows a snackbar message to the user for 3 seconds.
@@ -38,7 +35,7 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? showSnackBarLong(
 ) => _showSnackBar(message, const Duration(seconds: 10));
 
 /// Shows a snackbar message to the user for 1 second per 20 characters of the message.
-void showSnackBar(String message, {WidgetRef? ref}) {
+void showSnackBar(String message, {BuildContext? context}) {
   final duration = Duration(milliseconds: message.length * 1000 ~/ 20 + 500);
   final snackBar = SnackBar(
     behavior: SnackBarBehavior.floating,
@@ -46,15 +43,9 @@ void showSnackBar(String message, {WidgetRef? ref}) {
     duration: duration,
   );
 
-  // Hole den obersten Kontext aus dem generierten Provider
-  final activeContext = ref
-      ?.read(messengerStackProvider.notifier)
-      .getActiveContext();
-
-  if (activeContext != null) {
-    ScaffoldMessenger.of(activeContext).showSnackBar(snackBar);
+  if (context != null && context.mounted) {
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   } else {
-    // Fallback auf das Haupt-Scaffold
     globalSnackbarKey.currentState?.showSnackBar(snackBar);
   }
 }

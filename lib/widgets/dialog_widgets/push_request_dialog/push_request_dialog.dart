@@ -136,15 +136,12 @@ mixin PushDialogMixin {
         )) {
       return;
     }
+    if (!ref.context.mounted) return;
     final response = await ref
         .read(pushRequestProvider.notifier)
         .decline(token, pushRequest);
     if (!context.mounted || response == null) {
       return;
-    }
-
-    if (context.mounted) {
-      _onHandled(context: context, ref: ref, response: response);
     }
   }
 
@@ -156,10 +153,8 @@ mixin PushDialogMixin {
         )) {
       return;
     }
+    if (!ref.context.mounted) return;
     await ref.read(pushRequestProvider.notifier).remove(pushRequest);
-    if (context.mounted) {
-      _onHandled(context: context, ref: ref);
-    }
   }
 
   void
@@ -183,10 +178,6 @@ mixin PushDialogMixin {
     final settings = ref.read(settingsProvider).value;
     if (settings?.autoCloseAppAfterAcceptingPushRequest == true) {
       SystemNavigator.pop();
-    }
-
-    if (context.mounted && Navigator.of(context).canPop()) {
-      Navigator.of(context).pop();
     }
   }
 

@@ -67,24 +67,6 @@ class _PushDeclineConfirmDialogState extends State<PushDeclineConfirmDialog> {
   late Timer expirationTimer;
 
   @override
-  void initState() {
-    super.initState();
-    expirationTimer = Timer(
-      widget.expirationDate!.difference(DateTime.now()),
-      () {
-        if (!mounted) return;
-        Navigator.of(context).pop();
-      },
-    );
-  }
-
-  @override
-  void dispose() {
-    expirationTimer.cancel();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final pushRequestTheme =
         (Theme.of(context).extensions[PushRequestTheme] as PushRequestTheme);
@@ -115,7 +97,9 @@ class _PushDeclineConfirmDialogState extends State<PushDeclineConfirmDialog> {
               backgroundColor: pushRequestTheme.acceptColor,
               onPressed: () async {
                 await widget.onDiscard();
-                if (context.mounted) Navigator.of(context).pop();
+                if (context.mounted && Navigator.of(context).canPop()) {
+                  Navigator.of(context).pop();
+                }
               },
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -141,7 +125,9 @@ class _PushDeclineConfirmDialogState extends State<PushDeclineConfirmDialog> {
               backgroundColor: pushRequestTheme.declineColor,
               onPressed: () async {
                 await widget.onDecline();
-                if (context.mounted) Navigator.of(context).pop();
+                if (context.mounted && Navigator.of(context).canPop()) {
+                  Navigator.of(context).pop();
+                }
               },
               child: Column(
                 mainAxisSize: MainAxisSize.min,

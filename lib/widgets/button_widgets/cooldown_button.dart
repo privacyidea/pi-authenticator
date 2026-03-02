@@ -32,43 +32,43 @@ class _CooldownButtonState extends State<CooldownButton> {
   void press() async {
     if (isPressable) {
       setState(() => isPressable = false);
-      await Future.wait(
-        [
-          widget.onPressed?.call() ?? Future.delayed(Duration.zero),
-          Future.delayed(Duration(milliseconds: widget.minThreshold)),
-        ],
-      );
+      await Future.wait([
+        widget.onPressed?.call() ?? Future.delayed(Duration.zero),
+        Future.delayed(Duration(milliseconds: widget.minThreshold)),
+      ]);
       if (mounted) setState(() => isPressable = true);
     }
   }
 
   @override
   Widget build(BuildContext context) => switch (widget.styleType) {
-        CooldownButtonStyleType.elevatedButton => Padding(
-            padding: widget.padding ?? const EdgeInsets.all(0),
-            child: ElevatedButton(
-              onPressed: isPressable && widget.isPressable ? press : null,
-              style: widget.style ?? Theme.of(context).elevatedButtonTheme.style,
-              child: isPressable && widget.isPressable ? widget.child : widget.childWhenCooldown ?? widget.child,
-            ),
-          ),
-        CooldownButtonStyleType.iconButton => IconButton(
-            padding: widget.padding ?? const EdgeInsets.all(0),
-            splashRadius: 26,
-            onPressed: isPressable && widget.isPressable ? press : null,
-            style: widget.style ?? Theme.of(context).iconButtonTheme.style,
-            icon: isPressable && widget.isPressable ? widget.child : widget.childWhenCooldown ?? widget.child,
-          ),
-        CooldownButtonStyleType.textButton => TextButton(
-            onPressed: isPressable && widget.isPressable ? press : null,
-            style: widget.style ?? Theme.of(context).textButtonTheme.style,
-            child: isPressable && widget.isPressable ? widget.child : widget.childWhenCooldown ?? widget.child,
-          ),
-      };
+    CooldownButtonStyleType.elevatedButton => Padding(
+      padding: widget.padding ?? const EdgeInsets.all(0),
+      child: ElevatedButton(
+        onPressed: isPressable && widget.isPressable ? press : null,
+        style: widget.style ?? Theme.of(context).elevatedButtonTheme.style,
+        child: isPressable && widget.isPressable
+            ? widget.child
+            : widget.childWhenCooldown ?? widget.child,
+      ),
+    ),
+    CooldownButtonStyleType.iconButton => IconButton(
+      padding: widget.padding ?? const EdgeInsets.all(0),
+      splashRadius: 26,
+      onPressed: isPressable && widget.isPressable ? press : null,
+      style: widget.style ?? Theme.of(context).iconButtonTheme.style,
+      icon: isPressable && widget.isPressable
+          ? widget.child
+          : widget.childWhenCooldown ?? widget.child,
+    ),
+    CooldownButtonStyleType.textButton => TextButton(
+      onPressed: isPressable && widget.isPressable ? press : null,
+      style: widget.style ?? Theme.of(context).textButtonTheme.style,
+      child: isPressable && widget.isPressable
+          ? widget.child
+          : widget.childWhenCooldown ?? widget.child,
+    ),
+  };
 }
 
-enum CooldownButtonStyleType {
-  elevatedButton,
-  iconButton,
-  textButton,
-}
+enum CooldownButtonStyleType { elevatedButton, iconButton, textButton }
