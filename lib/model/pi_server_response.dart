@@ -91,10 +91,8 @@ sealed class PiServerResponse<
         JSONRPC: const ObjectValidator<String>(),
         RESULT: const ObjectValidator<Map<String, dynamic>>(),
         TIME: const ObjectValidator<double>(),
-        VERSION: const ObjectValidator<String>(),
-        VERSION_NUMBER: ObjectValidatorNullable<String>(
-          allowedValues: (v) => v.contains(' '),
-        ),
+        VERSION: ObjectValidator<String>(allowedValues: (v) => v.contains(' ')),
+        VERSION_NUMBER: const ObjectValidatorNullable<String>(),
         DETAIL: const ObjectValidatorNullable<dynamic>(),
         SIGNATURE: const ObjectValidator<String>(),
       },
