@@ -24,12 +24,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/state_providers/status_message_provider.dart';
 import 'package:privacyidea_authenticator/widgets/dialog_widgets/push_request_dialog/widgets/push_action_button.dart';
 
 import '../../../../model/push_request/push_requests.dart';
 import '../../../l10n/app_localizations.dart';
+import '../../../model/api_results/pi_server_results/pi_server_result_detail.dart';
+import '../../../model/api_results/pi_server_results/pi_server_result_value.dart';
+import '../../../model/pi_server_response.dart';
 import '../../../utils/customization/theme_extentions/push_request_theme.dart';
 import '../../../utils/lock_auth.dart';
+import '../../../utils/logger.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/push_request_provider.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import '../../../utils/utils.dart';
@@ -82,10 +87,12 @@ mixin PushDialogMixin {
   PushToken get token;
   PushRequest get pushRequest;
 
-  Future<void> handleAccept(
+  Future<void>
+  handleAccept<V extends PiServerResultValue, D extends PiServerResultDetail>(
     BuildContext context,
     WidgetRef ref, {
     String? answer,
+    Future<bool> Function(PiSuccessResponse<V, D>, WidgetRef ref)? onSuccess,
   }) async {
     if (token.isLocked &&
         !await lockAuth(
@@ -95,17 +102,30 @@ mixin PushDialogMixin {
       return;
     }
 
-    final success = await ref
-        .read(pushRequestProvider.notifier)
-        .accept(token, pushRequest, selectedAnswer: answer);
-
-    if (success && context.mounted) {
-      final settings = ref.read(settingsProvider).value;
-      if (settings?.autoCloseAppAfterAcceptingPushRequest == true) {
-        SystemNavigator.pop();
-      }
-      _onHandled(context);
+    final PiSuccessResponse<V, D>? response;
+    try {
+      response = await ref
+          .read(pushRequestProvider.notifier)
+          .accept<V, D>(token, pushRequest, selectedAnswer: answer);
+    } catch (e) {
+      Logger.error('Error accepting push request: $e');
+      ref.read(statusMessageProvider.notifier).state = StatusMessage(
+        message: (l10n) => "Error accepting push request: $e",
+        isError: true,
+      );
+      return;
     }
+
+    if (!context.mounted || response == null) {
+      return;
+    }
+
+    _onHandled(
+      context: context,
+      ref: ref,
+      response: response,
+      onSuccess: onSuccess,
+    );
   }
 
   Future<void> handleDecline(BuildContext context, WidgetRef ref) async {
@@ -116,9 +136,15 @@ mixin PushDialogMixin {
         )) {
       return;
     }
-    await ref.read(pushRequestProvider.notifier).decline(token, pushRequest);
+    final response = await ref
+        .read(pushRequestProvider.notifier)
+        .decline(token, pushRequest);
+    if (!context.mounted || response == null) {
+      return;
+    }
+
     if (context.mounted) {
-      _onHandled(context);
+      _onHandled(context: context, ref: ref, response: response);
     }
   }
 
@@ -132,13 +158,42 @@ mixin PushDialogMixin {
     }
     await ref.read(pushRequestProvider.notifier).remove(pushRequest);
     if (context.mounted) {
-      _onHandled(context);
+      _onHandled(context: context, ref: ref);
     }
   }
 
-  void _onHandled(BuildContext context) {
-    if (Navigator.of(context).canPop()) {
+  void
+  _onHandled<V extends PiServerResultValue, D extends PiServerResultDetail>({
+    required BuildContext context,
+    required WidgetRef ref,
+    PiServerResponse<V, D>? response,
+    Future<bool> Function(PiSuccessResponse<V, D>, WidgetRef ref)? onSuccess,
+  }) async {
+    final onSuccessResult =
+        (onSuccess != null && response != null && response.isSuccess)
+        ? await onSuccess(response.asSuccess!, ref)
+        : true;
+
+    if (context.mounted &&
+        onSuccessResult == true &&
+        response?.detail != null) {
+      _handleCodeToPhoneResultDetail(context, response!.detail!);
+    }
+
+    final settings = ref.read(settingsProvider).value;
+    if (settings?.autoCloseAppAfterAcceptingPushRequest == true) {
+      SystemNavigator.pop();
+    }
+
+    if (context.mounted && Navigator.of(context).canPop()) {
       Navigator.of(context).pop();
     }
+  }
+
+  void _handleCodeToPhoneResultDetail<D extends PiServerResultDetail>(
+    BuildContext context,
+    D codeToPhoneResultDetail,
+  ) {
+    Logger.debug('Handling CodeToPhoneResultDetail: $codeToPhoneResultDetail');
   }
 }

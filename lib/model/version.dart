@@ -37,7 +37,11 @@ class Version implements Comparable<Version> {
     if (parts.length != 3) {
       throw FormatException('Invalid version: $version');
     }
-    return Version(int.parse(parts[0]), int.parse(parts[1]), int.parse(parts[2]));
+    return Version(
+      int.parse(parts[0]),
+      int.parse(parts[1]),
+      int.parse(parts[2]),
+    );
   }
 
   @override
@@ -46,7 +50,7 @@ class Version implements Comparable<Version> {
     return major == other.major && minor == other.minor && patch == other.patch;
   }
 
-  operator <(other) {
+  bool operator <(dynamic other) {
     if (other is! Version) {
       return false;
     }
@@ -65,7 +69,7 @@ class Version implements Comparable<Version> {
     return false;
   }
 
-  operator >(other) {
+  bool operator >(dynamic other) {
     if (other is! Version) return false;
     if (major != other.major) {
       if (major > other.major) return true;
@@ -82,7 +86,7 @@ class Version implements Comparable<Version> {
     return false;
   }
 
-  operator <=(other) {
+  bool operator <=(dynamic other) {
     if (other is! Version) return false;
     if (major > other.major) return false;
     if (minor > other.minor) return false;
@@ -90,7 +94,7 @@ class Version implements Comparable<Version> {
     return true;
   }
 
-  operator >=(other) {
+  bool operator >=(dynamic other) {
     if (other is! Version) return false;
     if (major < other.major) return false;
     if (minor < other.minor) return false;

@@ -80,11 +80,17 @@ class HomeWidgetUtils {
   /// Default duration for showing the OTP
   static const _showDuration = Duration(seconds: 8);
 
-  factory HomeWidgetUtils({TokenRepository? tokenRepository, TokenFolderRepository? tokenFolderRepository}) {
-    if (kIsWeb || Platform.isIOS) return UnsupportedHomeWidgetUtils(); // Not supported on iOS
+  factory HomeWidgetUtils({
+    TokenRepository? tokenRepository,
+    TokenFolderRepository? tokenFolderRepository,
+  }) {
+    if (kIsWeb || Platform.isIOS) {
+      return UnsupportedHomeWidgetUtils(); // Not supported on iOS
+    }
     _instance ??= HomeWidgetUtils._();
     _tokenRepository = tokenRepository ?? SecureTokenRepository();
-    _folderRepository = tokenFolderRepository ?? PreferenceTokenFolderRepository();
+    _folderRepository =
+        tokenFolderRepository ?? PreferenceTokenFolderRepository();
     return _instance!;
   }
 
@@ -121,19 +127,26 @@ class HomeWidgetUtils {
   //////////////////////////////////////
   //// Suffixes for HomeWidgetKeys /////
   //////////////////////////////////////
-  static const keySuffixHidden = '_hidden'; // first _hidden, then _light or _dark
-  static const keySuffixLight = '_light'; // example: _hidden_light (if dark mode is disabled and hidden) or _light (if dark mode is disabled and shown)
-  static const keySuffixDark = '_dark'; // example: _hidden_dark (if dark mode is enabled and hidden) or _dark (if dark mode is enabled and shown)
-  static const keySuffixActive = '_active'; // first _active, then _light or _dark
-  static const keySuffixInactive = '_inactive'; // first _inactive, then _light or _dark
+  static const keySuffixHidden =
+      '_hidden'; // first _hidden, then _light or _dark
+  static const keySuffixLight =
+      '_light'; // example: _hidden_light (if dark mode is disabled and hidden) or _light (if dark mode is disabled and shown)
+  static const keySuffixDark =
+      '_dark'; // example: _hidden_dark (if dark mode is enabled and hidden) or _dark (if dark mode is enabled and shown)
+  static const keySuffixActive =
+      '_active'; // first _active, then _light or _dark
+  static const keySuffixInactive =
+      '_inactive'; // first _inactive, then _light or _dark
 
   ////////////////////////////////////////
   ////// Keys for Shared Variables ///////
   ////////////////////////////////////////
-  static const keyWidgetIds = '_widgetIds'; // recive the all widgetIds of linked tokens, seperated by ','
+  static const keyWidgetIds =
+      '_widgetIds'; // recive the all widgetIds of linked tokens, seperated by ','
   static const keyShowToken =
       '_showWidget'; // recive a bool if the token of the linked widget should be shown. true = show, false = hide. Example: _showWidget32
-  static const keyTokenId = '_tokenId'; //  recive the tokenId of a linked token. Example: _tokenId32
+  static const keyTokenId =
+      '_tokenId'; //  recive the tokenId of a linked token. Example: _tokenId32
   static const keyThemeCustomization = '_themeCustomization';
   static const keyCurrentThemeMode = '_currentThemeMode';
   static const keyTokenType = '_tokenType';
@@ -156,7 +169,8 @@ class HomeWidgetUtils {
   ////////////////////////////////////////
 
   Stream<Uri?> get widgetClicked => HomeWidget.widgetClicked;
-  Future<Uri?> initiallyLaunchedFromHomeWidget() => HomeWidget.initiallyLaunchedFromHomeWidget();
+  Future<Uri?> initiallyLaunchedFromHomeWidget() =>
+      HomeWidget.initiallyLaunchedFromHomeWidget();
 
   static bool? _isHomeWidgetSupported;
   static Future<bool> get isHomeWidgetSupported async {
@@ -169,13 +183,19 @@ class HomeWidgetUtils {
     return _isHomeWidgetSupported!;
   }
 
-  Future<List<String>> get _widgetIds async => (await HomeWidget.getWidgetData<String?>(keyWidgetIds))?.split(',') ?? <String>[];
+  Future<List<String>> get _widgetIds async =>
+      (await HomeWidget.getWidgetData<String?>(keyWidgetIds))?.split(',') ??
+      <String>[];
 
   // _packageId must be the exact id of the package variable in "AndroidManifest.xml" !! NOT the applicationId of the flavor !!
   static const String _packageId = "it.netknights.piauthenticator";
-  static Future<List<OTPToken>> _loadTokensFromRepo() async => (await _tokenRepository?.loadTokens())?.whereType<OTPToken>().toList() ?? [];
-  static Future<OTPToken?> _loadTokenFromRepo(String tokenId) async => (await _tokenRepository?.loadToken(tokenId)) as OTPToken?;
-  static Future<void>? _saveTokensToRepo(List<OTPToken> tokens) => _tokenRepository?.saveOrReplaceTokens(tokens);
+  static Future<List<OTPToken>> _loadTokensFromRepo() async =>
+      (await _tokenRepository?.loadTokens())?.whereType<OTPToken>().toList() ??
+      [];
+  static Future<OTPToken?> _loadTokenFromRepo(String tokenId) async =>
+      (await _tokenRepository?.loadToken(tokenId)) as OTPToken?;
+  static Future<void>? _saveTokensToRepo(List<OTPToken> tokens) =>
+      _tokenRepository?.saveOrReplaceTokens(tokens);
 
   static Future<List<TokenFolder>> _loadFoldersFromRepo() async {
     return (await _folderRepository?.loadState())?.folders ?? [];
@@ -191,8 +211,10 @@ class HomeWidgetUtils {
     return _getTokenOfTokenId(tokenId);
   }
 
-  /// <widgetId, tokenId> a token can be linked to multiple widgets but widgetIs can only be linked to one token
-  Future<Map<String, String>> _getWidgetIdsOfTokens(List<String> tokenIds) async {
+  /// &lt;widgetId, tokenId&gt; a token can be linked to multiple widgets but widgetIs can only be linked to one token
+  Future<Map<String, String>> _getWidgetIdsOfTokens(
+    List<String> tokenIds,
+  ) async {
     final tokenWigetPairs = <String, String>{};
     for (final widgetId in (await _widgetIds)) {
       for (final tokenId in tokenIds) {
@@ -210,26 +232,39 @@ class HomeWidgetUtils {
   Future<ThemeData> _getThemeData({bool dark = false}) async {
     if (dark) {
       return _themeDataDark ??= ThemeCustomization.fromJson(
-        jsonDecode(await HomeWidget.getWidgetData<String>('$keyThemeCustomization$keySuffixDark') ?? '{}'),
+        jsonDecode(
+          await HomeWidget.getWidgetData<String>(
+                '$keyThemeCustomization$keySuffixDark',
+              ) ??
+              '{}',
+        ),
       ).generateTheme();
     } else {
       return _themeDataLight ??= ThemeCustomization.fromJson(
-        jsonDecode(await HomeWidget.getWidgetData<String>('$keyThemeCustomization$keySuffixLight') ?? '{}'),
+        jsonDecode(
+          await HomeWidget.getWidgetData<String>(
+                '$keyThemeCustomization$keySuffixLight',
+              ) ??
+              '{}',
+        ),
       ).generateTheme();
     }
   }
 
-  Future<bool> get _widgetIsRebuilding async => await HomeWidget.getWidgetData<bool>(keyWidgetIsRebuilding) ?? false;
+  Future<bool> get _widgetIsRebuilding async =>
+      await HomeWidget.getWidgetData<bool>(keyWidgetIsRebuilding) ?? false;
 
   ////////////////////////////////////////
   /////////// Public Methods /////////////
   ////////////////////////////////////////
   /// Note: Prefer to call private methods inside of Public Methods to avoid unnecessary rendering ///
 
-  Future<bool?> registerInteractivityCallback(void Function(Uri? uri) homeWidgetBackgroundCallback) =>
-      HomeWidget.registerInteractivityCallback(homeWidgetBackgroundCallback);
+  Future<bool?> registerInteractivityCallback(
+    void Function(Uri? uri) homeWidgetBackgroundCallback,
+  ) => HomeWidget.registerInteractivityCallback(homeWidgetBackgroundCallback);
 
-  Future<bool?> setAppGroupId(String appGroupId) => HomeWidget.setAppGroupId(appGroupId);
+  Future<bool?> setAppGroupId(String appGroupId) =>
+      HomeWidget.setAppGroupId(appGroupId);
 
   /// This method has to be called at least once before any other method is called
   Future<void> homeWidgetInit({TokenRepository? repository}) async {
@@ -272,9 +307,14 @@ class HomeWidgetUtils {
     final linkedWidgetIds = await _getWidgetIdsOfTokens(hotpTokenIds);
     final futures = <Future>[];
     for (String widgetId in linkedWidgetIds.keys) {
-      final hotpToken = hotpTokens.firstWhereOrNull((element) => element.id == linkedWidgetIds[widgetId]);
+      final hotpToken = hotpTokens.firstWhereOrNull(
+        (element) => element.id == linkedWidgetIds[widgetId],
+      );
       if (hotpToken == null) continue;
-      futures.addAll([_updateHomeWidgetHideOtp(hotpToken, widgetId), _updateHomeWidgetShowOtp(hotpToken, widgetId)]);
+      futures.addAll([
+        _updateHomeWidgetHideOtp(hotpToken, widgetId),
+        _updateHomeWidgetShowOtp(hotpToken, widgetId),
+      ]);
     }
     await Future.wait(futures);
     await _notifyUpdate(linkedWidgetIds.keys);
@@ -403,7 +443,9 @@ class HomeWidgetUtils {
       final tokenId = await getTokenIdOfWidgetId(widgetId);
       futures.add(HomeWidget.saveWidgetData('$keyShowToken$widgetId', false));
       futures.add(HomeWidget.saveWidgetData('$keyCopyBlocked$widgetId', false));
-      futures.add(HomeWidget.saveWidgetData('$keyActionBlocked$tokenId', false));
+      futures.add(
+        HomeWidget.saveWidgetData('$keyActionBlocked$tokenId', false),
+      );
     }
     await Future.wait(futures);
   }
@@ -437,7 +479,10 @@ class HomeWidgetUtils {
 
   Future<void> _link(String widgetId, OTPToken token) async {
     await HomeWidget.saveWidgetData('$keyTokenId$widgetId', token.id);
-    await HomeWidget.saveWidgetData('$keyTokenLocked$widgetId', token.isLocked || ((await _folderOf(token))?.isLocked ?? false));
+    await HomeWidget.saveWidgetData(
+      '$keyTokenLocked$widgetId',
+      token.isLocked || ((await _folderOf(token))?.isLocked ?? false),
+    );
     await _updateHomeWidgetHideOtp(token, widgetId);
     await _setTokenType(widgetId, token.type);
     await _notifyUpdate([widgetId]);
@@ -500,8 +545,16 @@ class HomeWidgetUtils {
   ////////////////////////////////////////
   ////////////// Rendering ///////////////
   ////////////////////////////////////////
-  Future<dynamic> renderFlutterWidget(Widget widget, {required String key, required Size logicalSize}) async {
-    return HomeWidget.renderFlutterWidget(widget, key: '$key', logicalSize: logicalSize);
+  Future<dynamic> renderFlutterWidget(
+    Widget widget, {
+    required String key,
+    required Size logicalSize,
+  }) async {
+    return HomeWidget.renderFlutterWidget(
+      widget,
+      key: '$key',
+      logicalSize: logicalSize,
+    );
   }
 
   Future<void> _updateHwackground() async => await HomeWidgetBackgroundBuilder(
@@ -530,16 +583,20 @@ class HomeWidgetUtils {
     utils: this,
   ).renderFlutterWidgets();
 
-  Future<void> _updateDayPasswordActionIcon() async => await HomeWidgetActionBuilder(
-    icon: Icons.calendar_today_outlined,
-    lightTheme: await _getThemeData(),
-    darkTheme: await _getThemeData(dark: true),
-    logicalSize: _widgetActionSize,
-    homeWidgetKey: '$keyTokenAction$keyDayPasswordToken',
-    utils: this,
-  ).renderFlutterWidgets();
+  Future<void> _updateDayPasswordActionIcon() async =>
+      await HomeWidgetActionBuilder(
+        icon: Icons.calendar_today_outlined,
+        lightTheme: await _getThemeData(),
+        darkTheme: await _getThemeData(dark: true),
+        logicalSize: _widgetActionSize,
+        homeWidgetKey: '$keyTokenAction$keyDayPasswordToken',
+        utils: this,
+      ).renderFlutterWidgets();
 
-  Future<void> _updateHomeWidgetShowOtp(OTPToken token, String homeWidgetId) async => await HomeWidgetOtpBuilder(
+  Future<void> _updateHomeWidgetShowOtp(
+    OTPToken token,
+    String homeWidgetId,
+  ) async => await HomeWidgetOtpBuilder(
     otp: token.otpValue,
     label: token.label,
     issuer: token.issuer,
@@ -550,7 +607,10 @@ class HomeWidgetUtils {
     utils: this,
   ).renderFlutterWidgets(); // saved in shared preferences under example: _tokenContainer32_light and _tokenContainer32_dark
 
-  Future<void> _updateHomeWidgetHideOtp(OTPToken token, String homeWidgetId) async => await HomeWidgetHiddenBuilder(
+  Future<void> _updateHomeWidgetHideOtp(
+    OTPToken token,
+    String homeWidgetId,
+  ) async => await HomeWidgetHiddenBuilder(
     otpLength: token.otpValue.length,
     label: token.label,
     issuer: token.issuer,
@@ -569,13 +629,14 @@ class HomeWidgetUtils {
     utils: this,
   ).renderFlutterWidgets();
 
-  Future<void> _updateHomeWidgetUnlinked() async => await HomeWidgetUnlinkedBuilder(
-    lightTheme: await _getThemeData(),
-    darkTheme: await _getThemeData(dark: true),
-    logicalSize: _widgetOtpSize,
-    homeWidgetKey: keyTokenContainerEmpty,
-    utils: this,
-  ).renderFlutterWidgets();
+  Future<void> _updateHomeWidgetUnlinked() async =>
+      await HomeWidgetUnlinkedBuilder(
+        lightTheme: await _getThemeData(),
+        darkTheme: await _getThemeData(dark: true),
+        logicalSize: _widgetOtpSize,
+        homeWidgetKey: keyTokenContainerEmpty,
+        utils: this,
+      ).renderFlutterWidgets();
 
   Future<void> _updateHomeWidgetCopied() async => await HomeWidgetCopiedBuilder(
     lightTheme: await _getThemeData(),
@@ -588,22 +649,34 @@ class HomeWidgetUtils {
   ////////////////////////////////////////
   //////// Saving to SharedPrefs /////////
   ////////////////////////////////////////
-  Future<void> _setCurrentThemeMode(ThemeMode themeMode) async => await HomeWidget.saveWidgetData(keyCurrentThemeMode, themeMode.name);
+  Future<void> _setCurrentThemeMode(ThemeMode themeMode) async =>
+      await HomeWidget.saveWidgetData(keyCurrentThemeMode, themeMode.name);
 
   Future<void> _setTokenType(String widgetId, String tokenType) async =>
-      await HomeWidget.saveWidgetData('$keyTokenType$widgetId', tokenType); // _tokenType$widgetId Example: _tokenType32
+      await HomeWidget.saveWidgetData(
+        '$keyTokenType$widgetId',
+        tokenType,
+      ); // _tokenType$widgetId Example: _tokenType32
 
-  Future<void> _removeTokenType(String widgetId) async => await HomeWidget.saveWidgetData('$keyTokenType$widgetId', null);
+  Future<void> _removeTokenType(String widgetId) async =>
+      await HomeWidget.saveWidgetData('$keyTokenType$widgetId', null);
 
   Future<void> _setThemeCustomization() async {
     final customization = PrivacyIDEAAuthenticator.currentCustomization;
-    await HomeWidget.saveWidgetData('$keyThemeCustomization$keySuffixDark', jsonEncode(customization?.darkTheme));
+    await HomeWidget.saveWidgetData(
+      '$keyThemeCustomization$keySuffixDark',
+      jsonEncode(customization?.darkTheme),
+    );
     _themeDataDark = customization?.darkTheme.generateTheme();
-    await HomeWidget.saveWidgetData('$keyThemeCustomization$keySuffixLight', jsonEncode(customization?.lightTheme));
+    await HomeWidget.saveWidgetData(
+      '$keyThemeCustomization$keySuffixLight',
+      jsonEncode(customization?.lightTheme),
+    );
     _themeDataLight = customization?.lightTheme.generateTheme();
   }
 
-  Future<void> _setCopyText(String copyText) async => await HomeWidget.saveWidgetData('$keyCopyText', copyText);
+  Future<void> _setCopyText(String copyText) async =>
+      await HomeWidget.saveWidgetData('$keyCopyText', copyText);
 
   ////////////////////////////////////////
   /////////// Notifiy Update /////////////
@@ -620,21 +693,36 @@ class HomeWidgetUtils {
   Future<void> _notifyUpdate(Iterable<String> updatedWidgetIds) async {
     if (updatedWidgetIds.isEmpty) return;
     Logger.info('Update requested for: $updatedWidgetIds');
-    if (await _widgetIsRebuilding || _lastUpdate != null && DateTime.now().difference(_lastUpdate!) < _updateDelay) {
+    if (await _widgetIsRebuilding ||
+        _lastUpdate != null &&
+            DateTime.now().difference(_lastUpdate!) < _updateDelay) {
       Logger.info('Update delayed: $updatedWidgetIds');
       _updatedWidgetIds.addAll(updatedWidgetIds);
       _updateTimer?.cancel();
-      final nextDelayInMs = _updateDelay.inMilliseconds - DateTime.now().difference(_lastUpdate!).inMilliseconds;
-      _updateTimer = Timer(nextDelayInMs < 1 ? _updateDelay : Duration(milliseconds: nextDelayInMs), () async {
-        Logger.info('Call Update from Timer');
-        await _notifyUpdate(_updatedWidgetIds.toList());
-      });
+      final nextDelayInMs =
+          _updateDelay.inMilliseconds -
+          DateTime.now().difference(_lastUpdate!).inMilliseconds;
+      _updateTimer = Timer(
+        nextDelayInMs < 1
+            ? _updateDelay
+            : Duration(milliseconds: nextDelayInMs),
+        () async {
+          Logger.info('Call Update from Timer');
+          await _notifyUpdate(_updatedWidgetIds.toList());
+        },
+      );
       return;
     }
     Logger.info('Notify Update: $updatedWidgetIds');
     _lastUpdate = DateTime.now();
-    await HomeWidget.saveWidgetData(keyRebuildingWidgetIds, updatedWidgetIds.join(','));
-    await HomeWidget.updateWidget(qualifiedAndroidName: '$_packageId.AppWidgetProvider', iOSName: 'AppWidgetProvider');
+    await HomeWidget.saveWidgetData(
+      keyRebuildingWidgetIds,
+      updatedWidgetIds.join(','),
+    );
+    await HomeWidget.updateWidget(
+      qualifiedAndroidName: '$_packageId.AppWidgetProvider',
+      iOSName: 'AppWidgetProvider',
+    );
   }
 }
 
@@ -654,9 +742,11 @@ class UnsupportedHomeWidgetUtils implements HomeWidgetUtils {
   @override
   Future<TokenFolder?> _folderOf(Token token) => Future.value(null);
   @override
-  Future<ThemeData> _getThemeData({bool dark = false}) => Future.value(ThemeData.light());
+  Future<ThemeData> _getThemeData({bool dark = false}) =>
+      Future.value(ThemeData.light());
   @override
-  Future<Map<String, String>> _getWidgetIdsOfTokens(List<String> tokenIds) => Future.value({});
+  Future<Map<String, String>> _getWidgetIdsOfTokens(List<String> tokenIds) =>
+      Future.value({});
   @override
   void _hideOtpDelayed(String widgetId, int otpLength) {}
   @override
@@ -688,9 +778,15 @@ class UnsupportedHomeWidgetUtils implements HomeWidgetUtils {
   @override
   Future<void> _updateHomeWidgetCopied() async {}
   @override
-  Future<void> _updateHomeWidgetHideOtp(OTPToken token, String homeWidgetId) async {}
+  Future<void> _updateHomeWidgetHideOtp(
+    OTPToken token,
+    String homeWidgetId,
+  ) async {}
   @override
-  Future<void> _updateHomeWidgetShowOtp(OTPToken token, String homeWidgetId) async {}
+  Future<void> _updateHomeWidgetShowOtp(
+    OTPToken token,
+    String homeWidgetId,
+  ) async {}
   @override
   Future<void> _updateHomeWidgetUnlinked() async {}
   @override
@@ -726,7 +822,11 @@ class UnsupportedHomeWidgetUtils implements HomeWidgetUtils {
   @override
   Future<void> performAction(String widgetId) async {}
   @override
-  Future renderFlutterWidget(Widget widget, {required String key, required Size logicalSize}) async {}
+  Future renderFlutterWidget(
+    Widget widget, {
+    required String key,
+    required Size logicalSize,
+  }) async {}
   @override
   Future<void> setCurrentThemeMode(ThemeMode themeMode) async {}
   @override
@@ -742,7 +842,9 @@ class UnsupportedHomeWidgetUtils implements HomeWidgetUtils {
   @override
   Stream<Uri?> get widgetClicked => const Stream.empty();
   @override
-  Future<bool?> registerInteractivityCallback(void Function(Uri? uri) homeWidgetBackgroundCallback) => Future.value(null);
+  Future<bool?> registerInteractivityCallback(
+    void Function(Uri? uri) homeWidgetBackgroundCallback,
+  ) => Future.value(null);
   @override
   Future<bool?> setAppGroupId(String appGroupId) => Future.value(null);
   @override

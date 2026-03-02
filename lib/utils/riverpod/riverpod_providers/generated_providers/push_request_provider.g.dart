@@ -57,7 +57,7 @@ final class PushRequestNotifierProvider
 }
 
 String _$pushRequestNotifierHash() =>
-    r'510748444491c599d6bed898a1ae5df7abc46dd5';
+    r'9a65db6e183fc8e009cd7c19f8579d21de971bf5';
 
 final class PushRequestNotifierFamily extends $Family
     with

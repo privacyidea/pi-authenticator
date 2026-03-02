@@ -94,8 +94,9 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
       builder: (context, constraints) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           final localizations = AppLocalizations.of(context);
-          if (localizations != null)
+          if (localizations != null) {
             ref.read(localizationProvider.notifier).update(localizations);
+          }
           ref.read(appConstraintsProvider.notifier).update(constraints);
         });
         return MaterialApp(

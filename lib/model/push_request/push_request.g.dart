@@ -18,4 +18,5 @@ Map<String, dynamic> _$PushRequestToJson(PushRequest instance) =>
       'uri': instance.uri.toString(),
       'sslVerify': instance.sslVerify,
       'accepted': instance.accepted,
+      'hashCode': instance.hashCode,
     };

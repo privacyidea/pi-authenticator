@@ -10,6 +10,21 @@ import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/gene
 
 import '../../tests_app_wrapper.mocks.dart';
 
+const mockResponseBody = '''
+{
+  "id": 1,
+  "jsonrpc": "2.0",
+  "result": {
+    "status": true
+  },
+  "time": 0.1,
+  "version": "privacyIDEA 1.0",
+  "version_number": "1.0",
+  "detail": null,
+  "signature": "signature"
+}
+''';
+
 void main() {
   _testPushRequestNotifier();
 }
@@ -40,47 +55,48 @@ void _testPushRequestNotifier() {
         serial: 'serial',
         accepted: null,
       );
+
       final before = PushRequestState(
         pushRequests: [pr],
         knownPushRequests: CustomIntBuffer(list: [pr.id]),
       );
+
       final after = PushRequestState(
         pushRequests: [],
         knownPushRequests: CustomIntBuffer(list: [pr.id]),
       );
-      when(mockPushRepo.loadState()).thenAnswer((_) async => before);
-      when(
-        mockRsaUtils.trySignWithToken(any, any),
-      ).thenAnswer((_) async => 'signature');
-      when(
-        mockIoClient.doPost(
-          url: anyNamed('url'),
-          body: anyNamed('body'),
-          sslVerify: anyNamed('sslVerify'),
-        ),
-      ).thenAnswer((_) async => Response('', 200));
-      when(mockPushRepo.saveState(any)).thenAnswer((_) async {});
-      when(mockPushRepo.loadState()).thenAnswer((_) async => before);
-      final initState = await container.read(pushProvider.future);
-      verify(mockPushRepo.loadState()).called(1);
-      expect(initState, before);
-      when(
-        mockRsaUtils.trySignWithToken(any, any),
-      ).thenAnswer((_) async => 'signature');
-      when(
-        mockIoClient.doPost(
-          url: anyNamed('url'),
-          body: anyNamed('body'),
-          sslVerify: anyNamed('sslVerify'),
-        ),
-      ).thenAnswer((_) async => Response('', 200));
-      when(mockPushRepo.saveState(any)).thenAnswer((_) async {});
 
-      await container
+      // Setup mock behavior for repository and client
+      when(mockPushRepo.loadState()).thenAnswer((_) async => before);
+      when(mockPushRepo.saveState(any)).thenAnswer((_) async {});
+      when(
+        mockRsaUtils.trySignWithToken(any, any),
+      ).thenAnswer((_) async => 'signature');
+      when(
+        mockIoClient.doPost(
+          url: anyNamed('url'),
+          body: anyNamed('body'),
+          sslVerify: anyNamed('sslVerify'),
+        ),
+      ).thenAnswer((_) async => Response(mockResponseBody, 200));
+
+      // Verify initial state loading
+      final initState = await container.read(pushProvider.future);
+      expect(initState, before);
+
+      // Execute the accept action
+      final response = await container
           .read(pushProvider.notifier)
           .accept(PushToken(serial: 'serial', id: 'id'), pr);
 
-      expect(await container.read(pushProvider.future), after);
+      expect(response, isNotNull);
+
+      // Verify state has been updated to 'after' state
+      final finalState = await container.read(pushProvider.future);
+      expect(finalState, after);
+
+      // Verify that necessary calls were triggered
+      verify(mockPushRepo.loadState()).called(1);
       verify(mockRsaUtils.trySignWithToken(any, any)).called(1);
       verify(
         mockIoClient.doPost(
@@ -132,7 +148,7 @@ void _testPushRequestNotifier() {
           body: anyNamed('body'),
           sslVerify: anyNamed('sslVerify'),
         ),
-      ).thenAnswer((_) async => Response('', 200));
+      ).thenAnswer((_) async => Response(mockResponseBody, 200));
       when(mockPushRepo.saveState(any)).thenAnswer((_) async {});
       when(mockPushRepo.loadState()).thenAnswer((_) async => before);
       final initState = await container.read(pushProvider.future);
@@ -146,7 +162,7 @@ void _testPushRequestNotifier() {
           body: anyNamed('body'),
           sslVerify: anyNamed('sslVerify'),
         ),
-      ).thenAnswer((_) async => Response('', 200));
+      ).thenAnswer((_) async => Response(mockResponseBody, 200));
       when(mockPushRepo.saveState(any)).thenAnswer((_) async {});
       await container
           .read(pushProvider.notifier)

@@ -17,6 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -87,8 +88,11 @@ class PushRequestState {
     );
   }
 
-  PushRequest? currentOf(PushRequest pushRequest) =>
-      pushRequests.firstWhere((element) => element.id == pushRequest.id);
+  T? currentOf<T extends PushRequest>(T pushRequest) =>
+      pushRequests.firstWhereOrNull(
+            (element) => element.id == pushRequest.id && element is T,
+          )
+          as T?;
 
   @override
   bool operator ==(Object other) {

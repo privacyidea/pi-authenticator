@@ -17,12 +17,46 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import '../../../utils/object_validator.dart';
 import '../../exception_errors/pi_server_result_error.dart';
 import 'pi_server_result_value.dart';
 
-abstract class PiServerResult {
-  bool get status;
-  PiServerResultError? get asError => this is PiServerResultError ? this as PiServerResultError : null;
-  PiServerResultValue? get asValue => this is PiServerResultValue ? this as PiServerResultValue : null;
-  const PiServerResult();
+class PiServerResult<V extends PiServerResultValue> {
+  static const RESULT_STATUS = 'status';
+  static const RESULT_VALUE = 'value';
+  static const RESULT_ERROR = 'error';
+
+  final bool status;
+  final V? value;
+  bool get hasValue => value != null;
+  final PiServerResultError? error;
+  bool get hasError => error != null;
+
+  factory PiServerResult.fromResultMap(Map<String, dynamic> json) {
+    final map = validateMap(
+      map: json,
+      validators: {
+        RESULT_STATUS: const ObjectValidator<bool>(),
+        RESULT_VALUE: const ObjectValidatorNullable<dynamic>(),
+        RESULT_ERROR: const ObjectValidatorNullable<Map<String, dynamic>>(),
+      },
+      name: 'PiServerResult#fromJson',
+    );
+    return PiServerResult(
+      status: map[RESULT_STATUS],
+      value: map[RESULT_VALUE] != null
+          ? PiServerResultValue.fromResultValue<V>(map[RESULT_VALUE])
+          : null,
+      error: map[RESULT_ERROR] != null
+          ? PiServerResultError.fromResultError(map[RESULT_ERROR])
+          : null,
+    );
+  }
+
+  const PiServerResult({required this.status, this.value, this.error})
+    : assert(
+        (value == null || error == null),
+        'PiServerResult cannot have both value and error at the same time',
+      );
 }

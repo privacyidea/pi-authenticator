@@ -115,7 +115,7 @@ class _PushDeclineConfirmDialogState extends State<PushDeclineConfirmDialog> {
               backgroundColor: pushRequestTheme.acceptColor,
               onPressed: () async {
                 await widget.onDiscard();
-                if (mounted) Navigator.of(context).pop();
+                if (context.mounted) Navigator.of(context).pop();
               },
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -141,7 +141,7 @@ class _PushDeclineConfirmDialogState extends State<PushDeclineConfirmDialog> {
               backgroundColor: pushRequestTheme.declineColor,
               onPressed: () async {
                 await widget.onDecline();
-                if (mounted) Navigator.of(context).pop();
+                if (context.mounted) Navigator.of(context).pop();
               },
               child: Column(
                 mainAxisSize: MainAxisSize.min,

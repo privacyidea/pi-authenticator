@@ -42,11 +42,13 @@ class FirebaseUtils {
   // ###########################################################################
   // FIREBASE CONFIG
   // ###########################################################################
-  static const FIREBASE_TOKEN_KEY_PREFIX_LEGACY = GLOBAL_SECURE_REPO_PREFIX_LEGACY;
+  static const FIREBASE_TOKEN_KEY_PREFIX_LEGACY =
+      GLOBAL_SECURE_REPO_PREFIX_LEGACY;
   static const CURRENT_APP_TOKEN_KEY_LEGACY = 'CURRENT_APP_TOKEN';
   static const NEW_APP_TOKEN_KEY_LEGACY = 'NEW_APP_TOKEN';
 
-  static const FIREBASE_TOKEN_KEY_PREFIX = '${GLOBAL_SECURE_REPO_PREFIX}_firebase';
+  static const FIREBASE_TOKEN_KEY_PREFIX =
+      '${GLOBAL_SECURE_REPO_PREFIX}_firebase';
   static const CURRENT_APP_TOKEN_KEY = 'current';
   static const NEW_APP_TOKEN_KEY = 'new';
 
@@ -54,10 +56,23 @@ class FirebaseUtils {
   final SecureStorage _storage;
 
   FirebaseUtils._({SecureStorage? storage, SecureStorage? legacyStorage})
-      : _storage = storage ?? SecureStorage(storagePrefix: FIREBASE_TOKEN_KEY_PREFIX, storage: SecureStorage.defaultStorage),
-        _storageLegacy = legacyStorage ?? SecureStorage(storagePrefix: FIREBASE_TOKEN_KEY_PREFIX_LEGACY, storage: SecureStorage.legacyStorage);
+    : _storage =
+          storage ??
+          SecureStorage(
+            storagePrefix: FIREBASE_TOKEN_KEY_PREFIX,
+            storage: SecureStorage.defaultStorage,
+          ),
+      _storageLegacy =
+          legacyStorage ??
+          SecureStorage(
+            storagePrefix: FIREBASE_TOKEN_KEY_PREFIX_LEGACY,
+            storage: SecureStorage.legacyStorage,
+          );
 
-  factory FirebaseUtils({SecureStorage? storage, SecureStorage? legacyStorage}) {
+  factory FirebaseUtils({
+    SecureStorage? storage,
+    SecureStorage? legacyStorage,
+  }) {
     if (storage != null || legacyStorage != null) {
       // For testing, return a new instance with mocked storage
       return FirebaseUtils._(storage: storage, legacyStorage: legacyStorage);
@@ -81,17 +96,30 @@ class FirebaseUtils {
         _initFbMutex.release();
         return null;
       }
-      assert(appFirebaseOptions != null, 'Firebase options must be set before initializing Firebase');
+      assert(
+        appFirebaseOptions != null,
+        'Firebase options must be set before initializing Firebase',
+      );
       final FirebaseOptions options = appFirebaseOptions!;
-      final app = await Firebase.initializeApp(name: "fb-${options.projectId}", options: options);
+      final app = await Firebase.initializeApp(
+        name: "fb-${options.projectId}",
+        options: options,
+      );
       await app.setAutomaticDataCollectionEnabled(false);
       initializedFirebase = true;
-      assert(app.isAutomaticDataCollectionEnabled == false, 'Automatic data collection should be disabled');
+      assert(
+        app.isAutomaticDataCollectionEnabled == false,
+        'Automatic data collection should be disabled',
+      );
       _initFbMutex.release();
       return app;
     } catch (e, s) {
       _initFbMutex.release();
-      Logger.error('Error while initializing Firebase', error: e, stackTrace: s);
+      Logger.error(
+        'Error while initializing Firebase',
+        error: e,
+        stackTrace: s,
+      );
       return null;
     }
   }
@@ -123,20 +151,33 @@ class FirebaseUtils {
     try {
       String? firebaseToken = await getFBToken();
 
-      if (firebaseToken != await getCurrentFirebaseToken() && firebaseToken != null) {
+      if (firebaseToken != await getCurrentFirebaseToken() &&
+          firebaseToken != null) {
         updateFirebaseToken(firebaseToken: firebaseToken);
       }
     } catch (error, stackTrace) {
       if (error is PlatformException) {
         if (error.code == FIREBASE_TOKEN_ERROR_CODE) return; // ignore
-        showErrorStatusMessage(message: (l) => l.pushInitializeUnavailable, details: (_) => '${error.code}: ${error.message ?? 'no error message'}');
+        showErrorStatusMessage(
+          message: (l) => l.pushInitializeUnavailable,
+          details: (_) =>
+              '${error.code}: ${error.message ?? 'no error message'}',
+        );
       }
       if (error is FirebaseException) {
         if (error.code == FIREBASE_TOKEN_ERROR_CODE) return; // ignore
-        showErrorStatusMessage(message: (l) => l.pushInitializeUnavailable, details: (_) => '${error.code}: ${error.message ?? 'no error message'}');
+        showErrorStatusMessage(
+          message: (l) => l.pushInitializeUnavailable,
+          details: (_) =>
+              '${error.code}: ${error.message ?? 'no error message'}',
+        );
       }
 
-      Logger.error('Unknown Firebase error', error: error, stackTrace: stackTrace);
+      Logger.error(
+        'Unknown Firebase error',
+        error: error,
+        stackTrace: stackTrace,
+      );
     }
 
     FirebaseMessaging.instance.onTokenRefresh.listen((String newToken) async {
@@ -146,7 +187,11 @@ class FirebaseUtils {
         try {
           updateFirebaseToken(firebaseToken: newToken);
         } catch (error, stackTrace) {
-          Logger.error('Error updating firebase token', error: error, stackTrace: stackTrace);
+          Logger.error(
+            'Error updating firebase token',
+            error: error,
+            stackTrace: stackTrace,
+          );
         }
       }
     });
@@ -164,7 +209,11 @@ class FirebaseUtils {
       firebaseToken = await FirebaseMessaging.instance.getToken();
     } on FirebaseException catch (e, s) {
       String errorMessage = e.message ?? 'no error message';
-      Logger.warning('Unable to retrieve Firebase token! ($errorMessage: ${e.code})', error: e, stackTrace: s);
+      Logger.warning(
+        'Unable to retrieve Firebase token! ($errorMessage: ${e.code})',
+        error: e,
+        stackTrace: s,
+      );
     }
 
     // Fall back to the last known firebase token
@@ -197,7 +246,9 @@ class FirebaseUtils {
       await FirebaseMessaging.instance.deleteToken();
       Logger.warning('Firebase token deleted from Firebase');
     } on FirebaseException catch (e) {
-      if (e.message?.contains('IOException') == true) throw SocketException(e.message!);
+      if (e.message?.contains('IOException') == true) {
+        throw SocketException(e.message!);
+      }
       rethrow;
     }
     await _storage.delete(key: CURRENT_APP_TOKEN_KEY);
@@ -214,12 +265,16 @@ class FirebaseUtils {
   Future<String?> getCurrentFirebaseToken() async {
     final current = await _storage.read(key: CURRENT_APP_TOKEN_KEY);
     if (current != null) return current;
-    final legacyCurrent = await _storageLegacy.read(key: CURRENT_APP_TOKEN_KEY_LEGACY);
+    final legacyCurrent = await _storageLegacy.read(
+      key: CURRENT_APP_TOKEN_KEY_LEGACY,
+    );
     if (legacyCurrent != null) {
       Logger.info('Loaded legacy current firebase token from secure storage');
       await _storage.write(key: CURRENT_APP_TOKEN_KEY, value: legacyCurrent);
       await _storageLegacy.delete(key: CURRENT_APP_TOKEN_KEY_LEGACY);
-      Logger.info('Migrated legacy current firebase token to new secure storage');
+      Logger.info(
+        'Migrated legacy current firebase token to new secure storage',
+      );
       return legacyCurrent;
     }
     return null;
@@ -234,7 +289,9 @@ class FirebaseUtils {
   Future<String?> getNewFirebaseToken() async {
     final newFbToken = await _storage.read(key: NEW_APP_TOKEN_KEY);
     if (newFbToken != null) return newFbToken;
-    final legacyNewFbToken = await _storageLegacy.read(key: NEW_APP_TOKEN_KEY_LEGACY);
+    final legacyNewFbToken = await _storageLegacy.read(
+      key: NEW_APP_TOKEN_KEY_LEGACY,
+    );
     if (legacyNewFbToken != null) {
       Logger.info('Loaded legacy new firebase token from secure storage');
       await _storage.write(key: NEW_APP_TOKEN_KEY, value: legacyNewFbToken);
@@ -287,8 +344,14 @@ class NoFirebaseUtils implements FirebaseUtils {
   Future<FirebaseApp?> initializeApp() async => null;
 
   @override
-  final SecureStorage _storage = SecureStorage(storagePrefix: FirebaseUtils.FIREBASE_TOKEN_KEY_PREFIX, storage: SecureStorage.defaultStorage);
+  final SecureStorage _storage = SecureStorage(
+    storagePrefix: FirebaseUtils.FIREBASE_TOKEN_KEY_PREFIX,
+    storage: SecureStorage.defaultStorage,
+  );
 
   @override
-  final SecureStorage _storageLegacy = SecureStorage(storagePrefix: FirebaseUtils.FIREBASE_TOKEN_KEY_PREFIX_LEGACY, storage: SecureStorage.legacyStorage);
+  final SecureStorage _storageLegacy = SecureStorage(
+    storagePrefix: FirebaseUtils.FIREBASE_TOKEN_KEY_PREFIX_LEGACY,
+    storage: SecureStorage.legacyStorage,
+  );
 }

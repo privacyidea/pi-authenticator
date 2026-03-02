@@ -80,6 +80,7 @@ void main() {
         sslVerify: true,
         possibleAnswers: ['1', '2'],
         selectedAnswer: '2',
+        accepted: true,
       );
 
       final responseMsg = request.getResponseSignMsg(testToken);
