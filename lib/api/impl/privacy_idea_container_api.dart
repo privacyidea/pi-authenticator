@@ -263,17 +263,17 @@ class PiContainerApi implements TokenContainerApi {
       rethrow;
     }
 
-    if (piResponse == null || piResponse.isError) {
+    if (piResponse.isError) {
       Logger.debug('Status code: ${response.statusCode}');
       Logger.debug('Response body: ${response.body}');
-      final error = piResponse?.asError;
+      final error = piResponse.asError;
       if (error != null) throw error;
       throw ResponseError(response);
     }
 
     ContainerFinalizationResponse finalizationResponse;
     try {
-      finalizationResponse = piResponse.asSuccess!.resultValue;
+      finalizationResponse = piResponse.asSuccess!.result.value!;
     } catch (e) {
       Logger.error('Failed to parse response', error: e);
       rethrow;
@@ -342,7 +342,12 @@ class PiContainerApi implements TokenContainerApi {
       throw piResponse.asError!.piServerResultError;
     }
 
-    return piResponse.asSuccess!.resultValue;
+    try {
+      return piResponse.asSuccess!.result.value!;
+    } catch (e) {
+      Logger.error('Failed to parse transfer qr data', error: e);
+      rethrow;
+    }
   }
 
   @override
@@ -382,15 +387,20 @@ class PiContainerApi implements TokenContainerApi {
 
     final piResponse = response
         .asPiServerResponse<UnregisterContainerResult, EmptyResultDetail>();
-    final errorResponse = piResponse?.asError;
+    final errorResponse = piResponse.asError;
     if (errorResponse != null) {
       throw errorResponse.piServerResultError;
     }
-    if (HttpStatusChecker.isError(response.statusCode) || piResponse == null) {
+    if (HttpStatusChecker.isError(response.statusCode)) {
       throw ResponseError(response);
     }
 
-    return piResponse.asSuccess!.resultValue;
+    try {
+      return piResponse.asSuccess!.result.value!;
+    } catch (e) {
+      Logger.error('Failed to parse unregister container response', error: e);
+      rethrow;
+    }
   }
 
   /* //////////////////////////////
@@ -426,7 +436,13 @@ class PiContainerApi implements TokenContainerApi {
     if (piResponse.isError) {
       throw piResponse.asError!.piServerResultError;
     }
-    return piResponse.asSuccess!.resultValue;
+
+    try {
+      return piResponse.asSuccess!.result.value!;
+    } catch (e) {
+      Logger.error('Failed to parse container challenge', error: e);
+      rethrow;
+    }
   }
 
   Future<ContainerSyncResult> _getContainerSyncResult({
@@ -473,8 +489,12 @@ class PiContainerApi implements TokenContainerApi {
       throw containerSyncResponse.asError!.piServerResultError;
     }
 
-    final syncResult = containerSyncResponse.asSuccess!.resultValue;
-    return syncResult;
+    try {
+      return containerSyncResponse.asSuccess!.result.value!;
+    } catch (e) {
+      Logger.error('Failed to parse container sync result', error: e);
+      rethrow;
+    }
   }
 
   Future<Map<String, dynamic>> _getContainerDict({

@@ -272,8 +272,9 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
 
     Overlay.of(context).insert(_overlayEntryBackdrop!);
     Overlay.of(context).insert(_overlayEntryChild!);
-    if (_overlayEntryText != null)
+    if (_overlayEntryText != null) {
       Overlay.of(context).insert(_overlayEntryText!);
+    }
   }
 
   void _disposeOverlay() {

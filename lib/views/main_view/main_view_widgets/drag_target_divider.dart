@@ -29,7 +29,8 @@ import '../../../widgets/drag_item_scroller.dart';
 
 /// DragTargetDivider is used to create a divider that can be used to move a sortable up or down in the list
 /// It will accept a Sortable from the type T
-class DragTargetDivider<T extends SortableMixin> extends ConsumerStatefulWidget {
+class DragTargetDivider<T extends SortableMixin>
+    extends ConsumerStatefulWidget {
   final TokenFolder? dependingFolder;
   final SortableMixin? previousSortable;
   final SortableMixin? nextSortable;
@@ -52,10 +53,13 @@ class DragTargetDivider<T extends SortableMixin> extends ConsumerStatefulWidget 
   });
 
   @override
-  ConsumerState<DragTargetDivider> createState() => _DragTargetDividerState<T>();
+  ConsumerState<DragTargetDivider> createState() =>
+      _DragTargetDividerState<T>();
 }
 
-class _DragTargetDividerState<T extends SortableMixin> extends ConsumerState<DragTargetDivider> with SingleTickerProviderStateMixin {
+class _DragTargetDividerState<T extends SortableMixin>
+    extends ConsumerState<DragTargetDivider>
+    with SingleTickerProviderStateMixin {
   late AnimationController expansionController;
 
   @override
@@ -78,36 +82,46 @@ class _DragTargetDividerState<T extends SortableMixin> extends ConsumerState<Dra
 
   @override
   Widget build(BuildContext context) => DragTarget<T>(
-        onWillAcceptWithDetails: (details) {
-          final willAccept = _onWillAccept(details.data, ref);
-          if (willAccept && widget.isExpandalbe) {
-            expansionController.forward();
-          }
-          return willAccept;
-        },
-        onLeave: (data) {
-          expansionController.reverse();
-        },
-        onAcceptWithDetails: (details) {
-          expansionController.reset();
-          dragSortableOnAccept(
-            previousSortable: widget.previousSortable,
-            dragedSortable: details.data,
-            nextSortable: widget.nextSortable,
-            dependingFolder: widget.dependingFolder,
-            ref: ref,
-          );
-        },
-        builder: (context, _, __) {
-          final dividerHeight = expansionController.value * widget.dividerExpandedHeight + (1 - expansionController.value) * widget.dividerBaseHeight;
-          return DefaultDivider(
-            dividerHeight: dividerHeight,
-            opacity: widget.opacity,
-            padding: EdgeInsets.only(bottom: max(widget.bottomPadding - dividerHeight + widget.dividerBaseHeight, 0.0)),
-            margin: EdgeInsets.symmetric(horizontal: 8 - expansionController.value * 2, vertical: 8),
-          );
-        },
+    onWillAcceptWithDetails: (details) {
+      final willAccept = _onWillAccept(details.data, ref);
+      if (willAccept && widget.isExpandalbe) {
+        expansionController.forward();
+      }
+      return willAccept;
+    },
+    onLeave: (data) {
+      expansionController.reverse();
+    },
+    onAcceptWithDetails: (details) {
+      expansionController.reset();
+      dragSortableOnAccept(
+        previousSortable: widget.previousSortable,
+        dragedSortable: details.data,
+        nextSortable: widget.nextSortable,
+        dependingFolder: widget.dependingFolder,
+        ref: ref,
       );
+    },
+    builder: (context, _, _) {
+      final dividerHeight =
+          expansionController.value * widget.dividerExpandedHeight +
+          (1 - expansionController.value) * widget.dividerBaseHeight;
+      return DefaultDivider(
+        dividerHeight: dividerHeight,
+        opacity: widget.opacity,
+        padding: EdgeInsets.only(
+          bottom: max(
+            widget.bottomPadding - dividerHeight + widget.dividerBaseHeight,
+            0.0,
+          ),
+        ),
+        margin: EdgeInsets.symmetric(
+          horizontal: 8 - expansionController.value * 2,
+          vertical: 8,
+        ),
+      );
+    },
+  );
 }
 
 bool _onWillAccept(SortableMixin? data, WidgetRef ref) {
@@ -131,17 +145,17 @@ class DefaultDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Opacity(
-        opacity: opacity,
-        child: Padding(
-          padding: padding ?? EdgeInsets.zero,
-          child: Container(
-            height: dividerHeight,
-            decoration: BoxDecoration(
-              color: Theme.of(context).dividerColor,
-              borderRadius: BorderRadius.circular(dividerHeight / 4),
-            ),
-            margin: margin,
-          ),
+    opacity: opacity,
+    child: Padding(
+      padding: padding ?? EdgeInsets.zero,
+      child: Container(
+        height: dividerHeight,
+        decoration: BoxDecoration(
+          color: Theme.of(context).dividerColor,
+          borderRadius: BorderRadius.circular(dividerHeight / 4),
         ),
-      );
+        margin: margin,
+      ),
+    ),
+  );
 }

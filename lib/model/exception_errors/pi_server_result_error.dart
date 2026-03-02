@@ -18,14 +18,11 @@
  * limitations under the License.
  */
 import '../../utils/object_validator.dart';
-import '../api_results/pi_server_results/pi_server_result.dart';
 
-class PiServerResultError extends PiServerResult implements Error {
+class PiServerResultError implements Error {
   static const CODE = 'code';
   static const MESSAGE = 'message';
 
-  @override
-  bool get status => false;
   final int code;
   final String message;
   @override
@@ -38,9 +35,13 @@ class PiServerResultError extends PiServerResult implements Error {
   });
 
   factory PiServerResultError({required int code, required String message}) =>
-      PiServerResultError._(code: code, message: message, stackTrace: StackTrace.current);
+      PiServerResultError._(
+        code: code,
+        message: message,
+        stackTrace: StackTrace.current,
+      );
 
-  factory PiServerResultError.fromResult(Map<String, dynamic> json) {
+  factory PiServerResultError.fromResultError(Map<String, dynamic> json) {
     final map = validateMap(
       map: json,
       validators: {
@@ -49,7 +50,10 @@ class PiServerResultError extends PiServerResult implements Error {
       },
       name: 'PiServerResultError#fromJson',
     );
-    return PiServerResultError(code: map[CODE] as int, message: map[MESSAGE] as String);
+    return PiServerResultError(
+      code: map[CODE] as int,
+      message: map[MESSAGE] as String,
+    );
   }
   @override
   String toString() => 'PiError(code: $code, message: $message)';

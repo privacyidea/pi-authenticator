@@ -19,20 +19,16 @@
  */
 import '../../../utils/logger.dart';
 import '../../../utils/object_validator.dart';
-import 'pi_server_result.dart';
 
-sealed class PiServerResultDetail<V> extends PiServerResult {
-  @override
-  bool get status => true;
-
+sealed class PiServerResultDetail {
   static D? fromResultDetail<D extends PiServerResultDetail>(
     dynamic resultDetail,
   ) {
     if (resultDetail == null) return null;
     Logger.debug('PiServerResultValue.uriMapOfType<$D>');
     return switch (D) {
-      const (CodeToPhoneResultDetail) =>
-        CodeToPhoneResultDetail.fromUriMap(resultDetail) as D,
+      const (PushResultDetail) =>
+        PushResultDetail.fromUriMap(resultDetail) as D,
 
       _ => _returnNullForUnimplementedType<D>(),
     };
@@ -45,59 +41,40 @@ sealed class PiServerResultDetail<V> extends PiServerResult {
     return null;
   }
 
-  V toResultDetail();
-
   const PiServerResultDetail();
 }
 
-class BooleanResultDetail extends PiServerResultDetail<bool> {
-  final bool value;
-
-  const BooleanResultDetail(this.value);
-
-  @override
-  bool toResultDetail() {
-    return value;
-  }
-}
-
-class EmptyResultDetail extends PiServerResultDetail<Null> {
+class EmptyResultDetail extends PiServerResultDetail {
   const EmptyResultDetail();
-
   @override
-  Null toResultDetail() => null;
+  String toString() => 'EmptyResultDetail()';
 }
 
-class CodeToPhoneResultDetail
-    extends PiServerResultDetail<Map<String, dynamic>> {
+class PushResultDetail extends PiServerResultDetail {
   static const String DISPLAY_CODE = 'display_code';
   static const String THREAD_ID = 'threadid';
 
-  final String displayCode;
-  final String threadId;
+  final String? displayCode;
+  final int? threadId;
 
-  const CodeToPhoneResultDetail({
-    required this.displayCode,
-    required this.threadId,
-  });
+  const PushResultDetail({required this.displayCode, required this.threadId});
 
-  factory CodeToPhoneResultDetail.fromUriMap(Map<String, dynamic> uriMap) {
+  factory PushResultDetail.fromUriMap(Map<String, dynamic> uriMap) {
     final map = validateMap(
       map: uriMap,
       validators: {
-        DISPLAY_CODE: const ObjectValidator<String>(),
-        THREAD_ID: const ObjectValidator<String>(),
+        DISPLAY_CODE: const ObjectValidatorNullable<String>(),
+        THREAD_ID: const ObjectValidatorNullable<int>(),
       },
       name: 'ContainerChallenge#fromUriMap',
     );
-    return CodeToPhoneResultDetail(
-      displayCode: map[DISPLAY_CODE] as String,
-      threadId: map[THREAD_ID] as String,
+    return PushResultDetail(
+      displayCode: map[DISPLAY_CODE] as String?,
+      threadId: map[THREAD_ID] as int?,
     );
   }
 
   @override
-  Map<String, dynamic> toResultDetail() {
-    return {DISPLAY_CODE: displayCode, THREAD_ID: threadId};
-  }
+  String toString() =>
+      'PushResultDetail(displayCode: $displayCode, threadId: $threadId)';
 }

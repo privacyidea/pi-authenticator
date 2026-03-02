@@ -48,8 +48,7 @@ final pushRequestProvider = pushRequestProviderOf(
 
 @Riverpod(keepAlive: true)
 class PushRequestNotifier extends _$PushRequestNotifier {
-  final _loadingRepoMutex = Mutex();
-  final updatingRequestMutex = Mutex();
+  final _updatingRequestMutex = Mutex();
 
   final Map<String, Timer> _expirationTimers = {};
 
@@ -121,7 +120,7 @@ class PushRequestNotifier extends _$PushRequestNotifier {
   */
 
   Future<PushRequestState> _loadFromRepo() async {
-    await _loadingRepoMutex.acquire();
+    await _updatingRequestMutex.acquire();
     try {
       final loadedState = await _pushRepo.loadState();
       _renewTimers(loadedState.pushRequests);
@@ -131,14 +130,14 @@ class PushRequestNotifier extends _$PushRequestNotifier {
       Logger.error('Failed to load push request state from repo.', error: e);
       return (state.value ?? PushRequestState.empty());
     } finally {
-      _loadingRepoMutex.release();
+      _updatingRequestMutex.release();
     }
   }
 
   /// Adds a PushMessageRequest to repo and state. Returns true if successful, false if not.
   /// If the request already exists, it will be replaced.
   Future<bool> _addOrReplacePushRequest(PushRequest pushRequest) async {
-    await _loadingRepoMutex.acquire();
+    await _updatingRequestMutex.acquire();
     try {
       final oldState = (await future);
       final newState = oldState.addOrReplace(pushRequest);
@@ -149,36 +148,14 @@ class PushRequestNotifier extends _$PushRequestNotifier {
       Logger.warning('Failed to save push request: $pushRequest', error: e);
       return false;
     } finally {
-      _loadingRepoMutex.release();
+      _updatingRequestMutex.release();
     }
   }
-
-  // TODO: LÖSCHEN VORM COMMITTEN
-  // /// Replaces a PushMessageRequest in repo and state. Returns true if successful, false if not.
-  // Future<bool> _replacePushRequest(PushRequest pushRequest) async {
-  //   await _loadingRepoMutex.acquire();
-  //   try {
-  //     final oldState = (await future);
-  //     final (newState, replaced) = oldState.replaceRequest(pushRequest);
-  //     if (!replaced) {
-  //       Logger.warning('Tried to replace a push request that does not exist.');
-  //       return false;
-  //     }
-  //     await _pushRepo.saveState(newState);
-  //     state = AsyncValue.data(newState);
-  //     return true;
-  //   } catch (e) {
-  //     Logger.warning('Failed to save push request: $pushRequest', error: e);
-  //     return false;
-  //   } finally {
-  //     _loadingRepoMutex.release();
-  //   }
-  // }
 
   /// Removes a PushMessageRequest from repo and state. Returns true if successful, false if not.
   Future<bool> _remove(PushRequest pushRequest) async {
     _cancelTimer(pushRequest);
-    await _loadingRepoMutex.acquire();
+    await _updatingRequestMutex.acquire();
     try {
       final newState = (await future).withoutRequest(pushRequest);
       await _pushRepo.saveState(newState);
@@ -192,7 +169,7 @@ class PushRequestNotifier extends _$PushRequestNotifier {
       _setupTimer(pushRequest);
       return false;
     } finally {
-      _loadingRepoMutex.release();
+      _updatingRequestMutex.release();
     }
   }
   /*
@@ -207,7 +184,7 @@ class PushRequestNotifier extends _$PushRequestNotifier {
     T pushRequest,
     Future<T> Function(T) updater,
   ) async {
-    await _loadingRepoMutex.acquire();
+    await _updatingRequestMutex.acquire();
     try {
       final current = (await future).currentOf(pushRequest);
       if (current == null) {
@@ -226,7 +203,7 @@ class PushRequestNotifier extends _$PushRequestNotifier {
       Logger.error('Failed to update push request', error: e);
       return null;
     } finally {
-      _loadingRepoMutex.release();
+      _updatingRequestMutex.release();
     }
   }
   /*
@@ -280,6 +257,18 @@ class PushRequestNotifier extends _$PushRequestNotifier {
     if (success) _setupTimer(pr);
     Logger.info('Added push request ${pr.id} to state');
     return true;
+  }
+
+  Future<bool> addOrReplace(PushRequest pr) async {
+    final success = await _addOrReplacePushRequest(pr);
+    if (success) {
+      _setupTimer(pr);
+      Logger.info('Added/replaced push request ${pr.id} to/in state');
+      return true;
+    } else {
+      Logger.warning('Failed to add/replace push request ${pr.id} to/in state');
+      return false;
+    }
   }
 
   Future<bool> remove(PushRequest pushRequest) => _remove(pushRequest);

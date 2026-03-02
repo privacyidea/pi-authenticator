@@ -53,7 +53,7 @@ class PushDefaultDialog extends ConsumerWidget with PushDialogMixin {
             child: PushActionButton(
               backgroundColor: theme.acceptColor,
               height: 36.0,
-              onPressed: () => handleAccept(context, ref),
+              onPressed: () => _handleAccept(context, ref),
               child: Text(l10n.accept),
             ),
           ),
@@ -76,5 +76,40 @@ class PushDefaultDialog extends ConsumerWidget with PushDialogMixin {
         ],
       ),
     );
+  }
+
+  Future<void> _handleAccept(BuildContext context, WidgetRef ref) async {
+    super.handleAccept<PushResultValue, PushResultDetail>(
+      context,
+      ref,
+      onSuccess: _addCodeToPhonePushRequest,
+    );
+  }
+
+  Future<bool> _addCodeToPhonePushRequest(
+    PiSuccessResponse<PushResultValue, PushResultDetail> response,
+    WidgetRef ref,
+  ) {
+    Logger.debug("Value: ${response.result.value}");
+    Logger.debug("Detail: ${response.detail}");
+    if (response.detail?.displayCode != null) {
+      Logger.debug(
+        "Adding code to phone push request for display code ${response.detail!.displayCode!}",
+      );
+      final pr = PushCodeToPhoneRequest(
+        title: pushRequest.title,
+        question: pushRequest.question,
+        uri: pushRequest.uri,
+        expirationDate: pushRequest.expirationDate,
+        nonce: pushRequest.nonce,
+        serial: pushRequest.serial,
+        signature: pushRequest.signature,
+        sslVerify: pushRequest.sslVerify,
+        displayCode: response.detail!.displayCode!,
+      );
+      ref.read(pushRequestProvider.notifier).addOrReplace(pr);
+    }
+
+    return Future.value(true);
   }
 }

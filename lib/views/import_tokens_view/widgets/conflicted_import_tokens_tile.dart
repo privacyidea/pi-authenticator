@@ -37,19 +37,25 @@ class ConflictedImportTokensTile extends StatefulWidget {
   }) : assert(importTokenEntry.oldToken != null);
 
   @override
-  State<ConflictedImportTokensTile> createState() => _ConflictedImportTokensTileState();
+  State<ConflictedImportTokensTile> createState() =>
+      _ConflictedImportTokensTileState();
 }
 
-class _ConflictedImportTokensTileState extends State<ConflictedImportTokensTile> {
+class _ConflictedImportTokensTileState
+    extends State<ConflictedImportTokensTile> {
   late ScrollController scrollController;
 
   @override
   void initState() {
     super.initState();
-    scrollController = ScrollController(initialScrollOffset: widget.importTokenEntry.oldToken != null ? widget.initialScreenSize.width * 1 / 4 : 0);
+    scrollController = ScrollController(
+      initialScrollOffset: widget.importTokenEntry.oldToken != null
+          ? widget.initialScreenSize.width * 1 / 4
+          : 0,
+    );
   }
 
-  _setScrollPosition() {
+  void _setScrollPosition() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (scrollController.hasClients != true) return;
       const fullScrollDuration = Duration(milliseconds: 300);
@@ -61,19 +67,30 @@ class _ConflictedImportTokensTileState extends State<ConflictedImportTokensTile>
           return;
         }
       }
-      final isLandScape = widget.initialScreenSize.width > widget.initialScreenSize.height;
+      final isLandScape =
+          widget.initialScreenSize.width > widget.initialScreenSize.height;
       if (widget.importTokenEntry.selectedToken == null || isLandScape) {
         // Mid of the Row
-        scrolltarget ??= (scrollController.position.minScrollExtent + scrollController.position.maxScrollExtent) / 2;
-      } else if (widget.importTokenEntry.selectedToken == widget.importTokenEntry.oldToken) {
+        scrolltarget ??=
+            (scrollController.position.minScrollExtent +
+                scrollController.position.maxScrollExtent) /
+            2;
+      } else if (widget.importTokenEntry.selectedToken ==
+          widget.importTokenEntry.oldToken) {
         // Show Right Tile
         scrolltarget ??= scrollController.position.maxScrollExtent;
-      } else if (widget.importTokenEntry.selectedToken == widget.importTokenEntry.newToken) {
+      } else if (widget.importTokenEntry.selectedToken ==
+          widget.importTokenEntry.newToken) {
         // Show Left Tile
         scrolltarget ??= scrollController.position.minScrollExtent;
       }
-      if (scrolltarget == null || scrollController.position.maxScrollExtent == 0.0) return;
-      final scrollDifferencePercent = (scrollController.offset - scrolltarget).abs() / scrollController.position.maxScrollExtent;
+      if (scrolltarget == null ||
+          scrollController.position.maxScrollExtent == 0.0) {
+        return;
+      }
+      final scrollDifferencePercent =
+          (scrollController.offset - scrolltarget).abs() /
+          scrollController.position.maxScrollExtent;
       scrollController.animateTo(
         scrolltarget,
         duration: fullScrollDuration * scrollDifferencePercent,
@@ -82,7 +99,7 @@ class _ConflictedImportTokensTileState extends State<ConflictedImportTokensTile>
     });
   }
 
-  _setSelectedToken(Token tapedToken) {
+  void _setSelectedToken(Token tapedToken) {
     final importTokenEntry = widget.importTokenEntry;
     if (tapedToken == widget.importTokenEntry.selectedToken) {
       importTokenEntry.selectedToken = null;
@@ -96,7 +113,8 @@ class _ConflictedImportTokensTileState extends State<ConflictedImportTokensTile>
   @override
   Widget build(BuildContext context) {
     final quarterScreenWidth = MediaQuery.of(context).size.width / 4;
-    final isLandScape = widget.initialScreenSize.width > widget.initialScreenSize.height;
+    final isLandScape =
+        widget.initialScreenSize.width > widget.initialScreenSize.height;
     Logger.debug('Building ConflictedImportTokensTile ');
 
     _setScrollPosition();
@@ -108,11 +126,13 @@ class _ConflictedImportTokensTileState extends State<ConflictedImportTokensTile>
         onHorizontalDragEnd: (details) {
           if (details.primaryVelocity!.abs() < 100) return;
           if (details.primaryVelocity! < 0) {
-            if (widget.importTokenEntry.selectedToken != widget.importTokenEntry.oldToken) {
+            if (widget.importTokenEntry.selectedToken !=
+                widget.importTokenEntry.oldToken) {
               _setSelectedToken(widget.importTokenEntry.oldToken!);
             }
           } else {
-            if (widget.importTokenEntry.selectedToken != widget.importTokenEntry.newToken) {
+            if (widget.importTokenEntry.selectedToken !=
+                widget.importTokenEntry.newToken) {
               _setSelectedToken(widget.importTokenEntry.newToken);
             }
           }
@@ -121,27 +141,41 @@ class _ConflictedImportTokensTileState extends State<ConflictedImportTokensTile>
           width: quarterScreenWidth * (isLandScape ? 4 : 6),
           child: Row(
             children: [
-              if (widget.importTokenEntry.newToken != widget.importTokenEntry.selectedToken && !isLandScape)
-                SizedBox(
-                  width: quarterScreenWidth,
-                ),
+              if (widget.importTokenEntry.newToken !=
+                      widget.importTokenEntry.selectedToken &&
+                  !isLandScape)
+                SizedBox(width: quarterScreenWidth),
               NoConflictImportTokensTile(
                 width:
-                    widget.importTokenEntry.newToken == widget.importTokenEntry.selectedToken && !isLandScape ? quarterScreenWidth * 3 : quarterScreenWidth * 2,
+                    widget.importTokenEntry.newToken ==
+                            widget.importTokenEntry.selectedToken &&
+                        !isLandScape
+                    ? quarterScreenWidth * 3
+                    : quarterScreenWidth * 2,
                 token: widget.importTokenEntry.newToken,
                 selected: widget.importTokenEntry.selectedToken,
                 alignment: Alignment.centerRight,
-                onTap: widget.importTokenEntry.oldToken != null ? () => _setSelectedToken(widget.importTokenEntry.newToken) : null,
+                onTap: widget.importTokenEntry.oldToken != null
+                    ? () => _setSelectedToken(widget.importTokenEntry.newToken)
+                    : null,
               ),
               NoConflictImportTokensTile(
                 width:
-                    widget.importTokenEntry.oldToken == widget.importTokenEntry.selectedToken && !isLandScape ? quarterScreenWidth * 3 : quarterScreenWidth * 2,
+                    widget.importTokenEntry.oldToken ==
+                            widget.importTokenEntry.selectedToken &&
+                        !isLandScape
+                    ? quarterScreenWidth * 3
+                    : quarterScreenWidth * 2,
                 token: widget.importTokenEntry.oldToken!,
                 selected: widget.importTokenEntry.selectedToken,
                 alignment: Alignment.centerLeft,
-                onTap: () => _setSelectedToken(widget.importTokenEntry.oldToken!),
+                onTap: () =>
+                    _setSelectedToken(widget.importTokenEntry.oldToken!),
               ),
-              if (widget.importTokenEntry.oldToken != null && widget.importTokenEntry.oldToken != widget.importTokenEntry.selectedToken && !isLandScape)
+              if (widget.importTokenEntry.oldToken != null &&
+                  widget.importTokenEntry.oldToken !=
+                      widget.importTokenEntry.selectedToken &&
+                  !isLandScape)
                 SizedBox(width: quarterScreenWidth),
             ],
           ),

@@ -23,7 +23,11 @@ import 'package:privacyidea_authenticator/model/riverpod_states/token_state.dart
 import '../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../base_listeners/buildless_async_notifier_listener.dart';
 
-abstract class TokenStateListener extends BuildlessAsyncNotifierListener<TokenNotifier, TokenState> {
-  // TODO: change dynamic to TokenState
-  const TokenStateListener({required super.provider, required super.onNewState, required super.listenerName});
+abstract class TokenStateListener
+    extends BuildlessAsyncNotifierListener<TokenNotifier, TokenState> {
+  const TokenStateListener({
+    required super.provider,
+    required super.onNewState,
+    required super.listenerName,
+  });
 }
