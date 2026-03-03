@@ -1,6 +1,12 @@
 # Changelog
 
-## [4.6.0] - 
+## [4.6.1] - 
+ - Added support for the new feature 'Push code to phone'.
+ - Fixed an error that occurred when leaving the camera view too fast
+ - Error log is now scrolled from bottom to top to see the newest logs first
+ - Updated several dependencies
+
+## [4.6.0] - 2025.11.13
  - A few minor bugs have been resolved to improve app stability.
  - Internal components have been updated to maintain security and ensure compatibility with the latest devices.
 

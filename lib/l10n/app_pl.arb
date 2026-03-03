@@ -1084,25 +1084,25 @@
   "@patchNotesImprovements": {
     "description": "Title of the section in the patch notes that lists the improvements."
   },
-  "@patchNotesNewFeatures": {
+  "@patchNotesNewFeature": {
     "description": "Title of the section in the patch notes that lists the new features."
   },
-  "@patchNotesV4_3_0NewFeatures1": {
+  "@patchNotesV4_3_0NewFeature1": {
     "description": "Patch notes for a new feature in version 4.3.0."
   },
-  "@patchNotesV4_3_0NewFeatures2": {
+  "@patchNotesV4_3_0NewFeature2": {
     "description": "Patch notes for a new feature in version 4.3.0."
   },
-  "@patchNotesV4_3_0NewFeatures3": {
+  "@patchNotesV4_3_0NewFeature3": {
     "description": "Patch notes for a new feature in version 4.3.0."
   },
-  "@patchNotesV4_3_0NewFeatures4": {
+  "@patchNotesV4_3_0NewFeature4": {
     "description": "Patch notes for a new feature in version 4.3.0."
   },
-  "@patchNotesV4_3_0NewFeatures5": {
+  "@patchNotesV4_3_0NewFeature5": {
     "description": "Patch notes for a new feature in version 4.3.0."
   },
-  "@patchNotesV4_3_0NewFeatures6": {
+  "@patchNotesV4_3_0NewFeature6": {
     "description": "Patch notes for a new feature in version 4.3.0."
   },
   "@patchNotesV4_3_1BugFix1": {
@@ -1117,37 +1117,37 @@
   "@patchNotesV4_4_0Improvement2": {
     "description": "Patch notes for an improvement in version 4.4.0."
   },
-  "@patchNotesV4_4_0NewFeatures1": {
+  "@patchNotesV4_4_0NewFeature1": {
     "description": "Patch notes for a new feature in version 4.4.0."
   },
-  "@patchNotesV4_4_0NewFeatures2": {
+  "@patchNotesV4_4_0NewFeature2": {
     "description": "Patch notes for a new feature in version 4.4.0."
   },
   "@patchNotesV4_4_2Improvement1": {
     "description": "Patch notes for an improvement in version 4.4.2"
   },
-  "@patchNotesV4_4_2NewFeatures1": {
+  "@patchNotesV4_4_2NewFeature1": {
     "description": "Patch notes for a new feature in version 4.4.2"
   },
-  "@patchNotesV4_4_2NewFeatures2": {
+  "@patchNotesV4_4_2NewFeature2": {
     "description": "Patch notes for a new feature in version 4.4.2"
   },
   "@patchNotesV4_5_0BugFix1": {
     "description": "Patch notes for a bug fix in version 4.5.0."
   },
-  "@patchNotesV4_5_0NewFeatures1": {
+  "@patchNotesV4_5_0NewFeature1": {
     "description": "Patch notes for version 4.5.0"
   },
   "@patchNotesV4_5_1BugFix1": {
     "description": "Patch notes for a bug fix in version 4.5.1"
   },
-  "@patchNotesV4_5_1NewFeatures1": {
+  "@patchNotesV4_5_1NewFeature1": {
     "description": "Patch notes for a new feature in version 4.5.1"
   },
-  "@patchNotesV4_5_1NewFeatures2": {
+  "@patchNotesV4_5_1NewFeature2": {
     "description": "Patch notes for a new feature in version 4.5.1"
   },
-  "@patchNotesV4_5_1NewFeatures3": {
+  "@patchNotesV4_5_1NewFeature3": {
     "description": "Patch notes for a new feature in version 4.5.1"
   },
   "@patchNotesV4_5_3BugFix1": {
@@ -1155,6 +1155,24 @@
   },
   "@patchNotesV4_5_3BugFix2": {
     "description": "Patch notes for a bug fix in version 4.5.2"
+  },
+  "@patchNotesV4_6_0BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.6.0"
+  },
+  "@patchNotesV4_6_0Improvement1": {
+    "description": "Patch notes for an improvement in version 4.6.0"
+  },
+  "@patchNotesV4_6_1BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.6.1"
+  },
+  "@patchNotesV4_6_1Improvement1": {
+    "description": "Patch notes for an improvement in version 4.6.1"
+  },
+  "@patchNotesV4_6_1Improvement2": {
+    "description": "Patch notes for an improvement in version 4.6.1"
+  },
+  "@patchNotesV4_6_1NewFeature1": {
+    "description": "Patch notes for a new feature in version 4.6.1"
   },
   "@period": {
     "description": "Title of the dropdown button where the period of the totp token is selected."
@@ -1902,30 +1920,36 @@
   "patchNotesBugFixes": "Poprawki błędów",
   "patchNotesDialogTitle": "Co nowego?",
   "patchNotesImprovements": "Ulepszenia",
-  "patchNotesNewFeatures": "Nowe funkcje",
-  "patchNotesV4_3_0NewFeatures1": "Dodano obsługę importowania tokenów z Google, Aegis i 2FAS Authenticator. Więcej źródeł importu zostanie dodanych w przyszłości",
-  "patchNotesV4_3_0NewFeatures2": "Dodano opcję opinii do ustawień.",
-  "patchNotesV4_3_0NewFeatures3": "Tokeny push można teraz ukryć na liście tokenów",
-  "patchNotesV4_3_0NewFeatures4": "Dodano wprowadzenia, aby ułatwić nowym użytkownikom rozpoczęcie pracy.",
-  "patchNotesV4_3_0NewFeatures5": "Możesz teraz wyszukiwać tokeny, dotykając szkła powiększającego w prawym górnym rogu.",
-  "patchNotesV4_3_0NewFeatures6": "Dodano token HomeWidget dla systemu Android 12 i nowszych.",
+  "patchNotesNewFeature": "Nowe funkcje",
+  "patchNotesV4_3_0NewFeature1": "Dodano obsługę importowania tokenów z Google, Aegis i 2FAS Authenticator. Więcej źródeł importu zostanie dodanych w przyszłości",
+  "patchNotesV4_3_0NewFeature2": "Dodano opcję opinii do ustawień.",
+  "patchNotesV4_3_0NewFeature3": "Tokeny push można teraz ukryć na liście tokenów",
+  "patchNotesV4_3_0NewFeature4": "Dodano wprowadzenia, aby ułatwić nowym użytkownikom rozpoczęcie pracy.",
+  "patchNotesV4_3_0NewFeature5": "Możesz teraz wyszukiwać tokeny, dotykając szkła powiększającego w prawym górnym rogu.",
+  "patchNotesV4_3_0NewFeature6": "Dodano token HomeWidget dla systemu Android 12 i nowszych.",
   "patchNotesV4_3_1BugFix1": "Został naprawiony problem, w którym wartość OTP nie była wyświetlana po uwierzytelnieniu na niektórych urządzeniach.",
   "patchNotesV4_3_1Improvement1": "Został poprawiony skaner kodów QR.",
   "patchNotesV4_4_0Improvement1": "Dodano kolejne źródła importu.",
   "patchNotesV4_4_0Improvement2": "Ulepszono rozpoznawanie kodów QR z plików graficznych.",
-  "patchNotesV4_4_0NewFeatures1": "Możliwe jest teraz eksportowanie tokenów, w przypadku których można upewnić się, że nie są to tokeny privacyIDEA. Obecnie nie można wykluczyć, że tokeny dodane za pomocą skanera kodów QR pochodzą z privacyIDEA. Rozróżnienie to zostanie poprawione w przyszłych wersjach",
-  "patchNotesV4_4_0NewFeatures2": "Dodano obsługę funkcji privacyIDEA “require presence“.",
+  "patchNotesV4_4_0NewFeature1": "Możliwe jest teraz eksportowanie tokenów, w przypadku których można upewnić się, że nie są to tokeny privacyIDEA. Obecnie nie można wykluczyć, że tokeny dodane za pomocą skanera kodów QR pochodzą z privacyIDEA. Rozróżnienie to zostanie poprawione w przyszłych wersjach",
+  "patchNotesV4_4_0NewFeature2": "Dodano obsługę funkcji privacyIDEA “require presence“.",
   "patchNotesV4_4_2Improvement1": "Dodano obsługę latarki dla skanowania kodów QR.",
-  "patchNotesV4_4_2NewFeatures1": "Tokeny można teraz wstawiać za pomocą funkcji kopiuj i wklej.",
-  "patchNotesV4_4_2NewFeatures2": "Dodano obsługę galerii dla skanowania kodów QR.",
+  "patchNotesV4_4_2NewFeature1": "Tokeny można teraz wstawiać za pomocą funkcji kopiuj i wklej.",
+  "patchNotesV4_4_2NewFeature2": "Dodano obsługę galerii dla skanowania kodów QR.",
   "patchNotesV4_5_0BugFix1": "Naprawiono drobne błędy",
-  "patchNotesV4_5_0NewFeatures1": "Obsługa systemu kontenerów privacyIDEA w celu łatwiejszego zarządzania tokenami",
+  "patchNotesV4_5_0NewFeature1": "Obsługa systemu kontenerów privacyIDEA w celu łatwiejszego zarządzania tokenami",
   "patchNotesV4_5_1BugFix1": "Naprawiono kilka drobnych błędów",
-  "patchNotesV4_5_1NewFeatures1": "Dodano ustawienie pokazywania/ukrywania obrazu tła",
-  "patchNotesV4_5_1NewFeatures2": "Dodano ustawienie umożliwiające robienie zrzutów ekranu",
-  "patchNotesV4_5_1NewFeatures3": "Żeton TOTP zmienia teraz kolor w ciągu ostatnich 5 sekund, aby wskazać koniec okresu.",
+  "patchNotesV4_5_1NewFeature1": "Dodano ustawienie pokazywania/ukrywania obrazu tła",
+  "patchNotesV4_5_1NewFeature2": "Dodano ustawienie umożliwiające robienie zrzutów ekranu",
+  "patchNotesV4_5_1NewFeature3": "Żeton TOTP zmienia teraz kolor w ciągu ostatnich 5 sekund, aby wskazać koniec okresu.",
   "patchNotesV4_5_3BugFix1": "Naprawiono problem, w którym etykieta tokena push była ukryta, gdy token był zablokowany.",
   "patchNotesV4_5_3BugFix2": "Pasek nawigacyjny na niektórych urządzeniach nie jest już nakładany na zawartość aplikacji.",
+  "patchNotesV4_6_0BugFix1": "Naprawiono kilka drobnych błędów, aby poprawić stabilność aplikacji.",
+  "patchNotesV4_6_0Improvement1": "Wewnętrzne komponenty zostały zaktualizowane w celu zapewnienia bezpieczeństwa i kompatybilności z najnowszymi urządzeniami.",
+  "patchNotesV4_6_1BugFix1": "Naprawiono błąd, który występował podczas zbyt szybkiego opuszczania widoku kamery.",
+  "patchNotesV4_6_1Improvement1": "Dziennik błędów jest teraz przewijany od dołu do góry, aby najpierw wyświetlać najnowsze wpisy.",
+  "patchNotesV4_6_1Improvement2": "Zaktualizowano kilka zależności.",
+  "patchNotesV4_6_1NewFeature1": "Dodano obsługę nowej funkcji „Wysyłanie kodu do telefonu”. ",
   "period": "Cykl",
   "phonePart": "Sekret po stronie telefonu:",
   "piServerCode": "Kod serwera PI: {code}",
