@@ -1168,10 +1168,16 @@
   "@patchNotesV4_6_1Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
-  "@patchNotesV4_6_1Improvement2": {
+  "@patchNotesV4_6_2BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.6.1"
+  },
+  "@patchNotesV4_6_2Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
-  "@patchNotesV4_6_1NewFeature1": {
+  "@patchNotesV4_6_2Improvement2": {
+    "description": "Patch notes for an improvement in version 4.6.1"
+  },
+  "@patchNotesV4_6_2NewFeature1": {
     "description": "Patch notes for a new feature in version 4.6.1"
   },
   "@period": {
@@ -1946,10 +1952,12 @@
   "patchNotesV4_5_3BugFix2": "La barre de navigation sur certains appareils ne chevauche plus le contenu de l'application.",
   "patchNotesV4_6_0BugFix1": "Quelques bugs mineurs ont été corrigés afin d'améliorer la stabilité de l'application.",
   "patchNotesV4_6_0Improvement1": "Les composants internes ont été mis à jour afin de maintenir la sécurité et d'assurer la compatibilité avec les appareils les plus récents.",
-  "patchNotesV4_6_1BugFix1": "Correction d'une erreur qui se produisait lorsque l'on quittait trop rapidement la vue caméra.",
-  "patchNotesV4_6_1Improvement1": "Le journal des erreurs défile désormais de bas en haut afin d'afficher les journaux les plus récents en premier.",
-  "patchNotesV4_6_1Improvement2": "Mise à jour de plusieurs dépendances.",
-  "patchNotesV4_6_1NewFeature1": "Ajout de la prise en charge de la nouvelle fonctionnalité « Push code to phone » (Envoyer le code vers le téléphone).",
+  "patchNotesV4_6_1BugFix1": "Correction d'une erreur avec le panneau d'extension du TokenFolder",
+  "patchNotesV4_6_1Improvement1": "Mise à jour de plusieurs dépendances.",
+  "patchNotesV4_6_2BugFix1": "Correction d'une erreur qui se produisait lorsque l'on quittait trop rapidement la vue caméra.",
+  "patchNotesV4_6_2Improvement1": "Le journal des erreurs défile désormais de bas en haut afin d'afficher les journaux les plus récents en premier.",
+  "patchNotesV4_6_2Improvement2": "Mise à jour de plusieurs dépendances.",
+  "patchNotesV4_6_2NewFeature1": "Ajout de la prise en charge de la nouvelle fonctionnalité « Push code to phone » (Envoyer le code vers le téléphone).",
   "period": "Période",
   "phonePart": "Part du téléphone:",
   "piServerCode": "Code du serveur PI : {code}",

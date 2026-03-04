@@ -1168,10 +1168,16 @@
   "@patchNotesV4_6_1Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
-  "@patchNotesV4_6_1Improvement2": {
+  "@patchNotesV4_6_2BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.6.1"
+  },
+  "@patchNotesV4_6_2Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
-  "@patchNotesV4_6_1NewFeature1": {
+  "@patchNotesV4_6_2Improvement2": {
+    "description": "Patch notes for an improvement in version 4.6.1"
+  },
+  "@patchNotesV4_6_2NewFeature1": {
     "description": "Patch notes for a new feature in version 4.6.1"
   },
   "@period": {
@@ -1946,10 +1952,12 @@
   "patchNotesV4_5_3BugFix2": "De navigatiebalk wordt op sommige apparaten niet langer over de app-inhoud heen weergegeven.",
   "patchNotesV4_6_0BugFix1": "Er zijn enkele kleine bugs verholpen om de stabiliteit van de app te verbeteren.",
   "patchNotesV4_6_0Improvement1": "Interne componenten zijn bijgewerkt om de veiligheid te waarborgen en compatibiliteit met de nieuwste apparaten te garanderen.",
-  "patchNotesV4_6_1BugFix1": "Een fout is verholpen die optrad wanneer de camerabeeld te snel werd verlaten.",
-  "patchNotesV4_6_1Improvement1": "Het foutenlogboek wordt nu van onder naar boven doorlopen, zodat de nieuwste logboeken als eerste worden weergegeven.",
-  "patchNotesV4_6_1Improvement2": "Verschillende afhankelijkheden bijgewerkt.",
-  "patchNotesV4_6_1NewFeature1": "Ondersteuning toegevoegd voor de nieuwe functie ‘Code naar telefoon pushen’.",
+  "patchNotesV4_6_1BugFix1": "Een fout in het uitbreidingspaneel van de TokenFolder is verholpen.",
+  "patchNotesV4_6_1Improvement1": "Verschillende afhankelijkheden bijgewerkt",
+  "patchNotesV4_6_2BugFix1": "Een fout is verholpen die optrad wanneer de camerabeeld te snel werd verlaten.",
+  "patchNotesV4_6_2Improvement1": "Het foutenlogboek wordt nu van onder naar boven doorlopen, zodat de nieuwste logboeken als eerste worden weergegeven.",
+  "patchNotesV4_6_2Improvement2": "Verschillende afhankelijkheden bijgewerkt.",
+  "patchNotesV4_6_2NewFeature1": "Ondersteuning toegevoegd voor de nieuwe functie ‘Code naar telefoon pushen’.",
   "period": "Duur",
   "phonePart": "Telefoon gedeelte:",
   "piServerCode": "PI-servercode: {code}",

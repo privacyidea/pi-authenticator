@@ -1168,10 +1168,16 @@
   "@patchNotesV4_6_1Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
-  "@patchNotesV4_6_1Improvement2": {
+  "@patchNotesV4_6_2BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.6.1"
+  },
+  "@patchNotesV4_6_2Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
-  "@patchNotesV4_6_1NewFeature1": {
+  "@patchNotesV4_6_2Improvement2": {
+    "description": "Patch notes for an improvement in version 4.6.1"
+  },
+  "@patchNotesV4_6_2NewFeature1": {
     "description": "Patch notes for a new feature in version 4.6.1"
   },
   "@period": {
@@ -1946,10 +1952,12 @@
   "patchNotesV4_5_3BugFix2": "La barra de navegación en algunos dispositivos ya no se superpone al contenido de la aplicación.",
   "patchNotesV4_6_0BugFix1": "Se han solucionado algunos errores menores para mejorar la estabilidad de la aplicación.",
   "patchNotesV4_6_0Improvement1": "Se han actualizado los componentes internos para mantener la seguridad y garantizar la compatibilidad con los dispositivos más recientes.",
-  "patchNotesV4_6_1BugFix1": "Se ha corregido un error que se producía al salir demasiado rápido de la vista de la cámara.",
-  "patchNotesV4_6_1Improvement1": "El registro de errores ahora se desplaza de abajo hacia arriba para ver primero los registros más recientes.",
-  "patchNotesV4_6_1Improvement2": "Se han actualizado varias dependencias.",
-  "patchNotesV4_6_1NewFeature1": "Se ha añadido compatibilidad con la nueva función «Enviar código al teléfono».",
+  "patchNotesV4_6_1BugFix1": "Se ha corregido un error en el panel de expansión de TokenFolder.",
+  "patchNotesV4_6_1Improvement1": "Se han actualizado varias dependencias.",
+  "patchNotesV4_6_2BugFix1": "Se ha corregido un error que se producía al salir demasiado rápido de la vista de la cámara.",
+  "patchNotesV4_6_2Improvement1": "El registro de errores ahora se desplaza de abajo hacia arriba para ver primero los registros más recientes.",
+  "patchNotesV4_6_2Improvement2": "Se han actualizado varias dependencias.",
+  "patchNotesV4_6_2NewFeature1": "Se ha añadido compatibilidad con la nueva función «Enviar código al teléfono».",
   "period": "Periodo",
   "phonePart": "Pieza de teléfono:",
   "piServerCode": "Código del servidor PI: {code}",

@@ -1168,10 +1168,16 @@
   "@patchNotesV4_6_1Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
-  "@patchNotesV4_6_1Improvement2": {
+  "@patchNotesV4_6_2BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.6.1"
+  },
+  "@patchNotesV4_6_2Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
-  "@patchNotesV4_6_1NewFeature1": {
+  "@patchNotesV4_6_2Improvement2": {
+    "description": "Patch notes for an improvement in version 4.6.1"
+  },
+  "@patchNotesV4_6_2NewFeature1": {
     "description": "Patch notes for a new feature in version 4.6.1"
   },
   "@period": {
@@ -1946,10 +1952,12 @@
   "patchNotesV4_5_3BugFix2": "Pasek nawigacyjny na niektórych urządzeniach nie jest już nakładany na zawartość aplikacji.",
   "patchNotesV4_6_0BugFix1": "Naprawiono kilka drobnych błędów, aby poprawić stabilność aplikacji.",
   "patchNotesV4_6_0Improvement1": "Wewnętrzne komponenty zostały zaktualizowane w celu zapewnienia bezpieczeństwa i kompatybilności z najnowszymi urządzeniami.",
-  "patchNotesV4_6_1BugFix1": "Naprawiono błąd, który występował podczas zbyt szybkiego opuszczania widoku kamery.",
-  "patchNotesV4_6_1Improvement1": "Dziennik błędów jest teraz przewijany od dołu do góry, aby najpierw wyświetlać najnowsze wpisy.",
-  "patchNotesV4_6_1Improvement2": "Zaktualizowano kilka zależności.",
-  "patchNotesV4_6_1NewFeature1": "Dodano obsługę nowej funkcji „Wysyłanie kodu do telefonu”. ",
+  "patchNotesV4_6_1BugFix1": "Naprawiono błąd związany z panelem rozszerzeń TokenFolder.",
+  "patchNotesV4_6_1Improvement1": "Zaktualizowano kilka zależności",
+  "patchNotesV4_6_2BugFix1": "Naprawiono błąd, który występował podczas zbyt szybkiego opuszczania widoku kamery.",
+  "patchNotesV4_6_2Improvement1": "Dziennik błędów jest teraz przewijany od dołu do góry, aby najpierw wyświetlać najnowsze wpisy.",
+  "patchNotesV4_6_2Improvement2": "Zaktualizowano kilka zależności.",
+  "patchNotesV4_6_2NewFeature1": "Dodano obsługę nowej funkcji „Wysyłanie kodu do telefonu”. ",
   "period": "Cykl",
   "phonePart": "Sekret po stronie telefonu:",
   "piServerCode": "Kod serwera PI: {code}",

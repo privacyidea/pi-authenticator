@@ -1168,10 +1168,16 @@
   "@patchNotesV4_6_1Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
-  "@patchNotesV4_6_1Improvement2": {
+  "@patchNotesV4_6_2BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.6.1"
+  },
+  "@patchNotesV4_6_2Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
-  "@patchNotesV4_6_1NewFeature1": {
+  "@patchNotesV4_6_2Improvement2": {
+    "description": "Patch notes for an improvement in version 4.6.1"
+  },
+  "@patchNotesV4_6_2NewFeature1": {
     "description": "Patch notes for a new feature in version 4.6.1"
   },
   "@period": {
@@ -1686,10 +1692,6 @@
   "autoCloseAppAfterAcceptingPushRequestDescription": "Pokud je povoleno, aplikace se automaticky zavře po přijetí požadavku na push.",
   "autoCloseAppAfterAcceptingPushRequestTitle": "Zavřít aplikaci po přijetí požadavku",
   "backgroundImage": "Obrázek na pozadí",
-  "biometricHint": "Vyžadováno přihlášení",
-  "biometricNotRecognized": "Ověření se nezdařilo. Zkuste to znovu.",
-  "biometricRequiredTitle": "Biometrické ověření není nastaveno",
-  "biometricSuccess": "Přihlášení bylo úspěšné",
   "butDiscardIt": "ale zahodit jej",
   "cancel": "Zrušit",
   "cannotNavigateWithoutContext": "Nelze navigovat bez kontextu.",
@@ -1950,10 +1952,12 @@
   "patchNotesV4_5_3BugFix2": "Navigační lišta na některých zařízeních již není překryta přes obsah aplikace.",
   "patchNotesV4_6_0BugFix1": "Bylo opraveno několik drobných chyb, aby se zlepšila stabilita aplikace.",
   "patchNotesV4_6_0Improvement1": "Interní komponenty byly aktualizovány, aby byla zachována bezpečnost a zajištěna kompatibilita s nejnovějšími zařízeními.",
-  "patchNotesV4_6_1BugFix1": "Opravena chyba, ke které docházelo při příliš rychlém opuštění zobrazení kamery.",
-  "patchNotesV4_6_1Improvement1": "Chybový protokol se nyní posouvá zdola nahoru, aby byly nejnovější záznamy zobrazeny jako první.",
-  "patchNotesV4_6_1Improvement2": "Aktualizováno několik závislostí.",
-  "patchNotesV4_6_1NewFeature1": "Přidána podpora nové funkce „Odeslat kód do telefonu“.",
+  "patchNotesV4_6_1BugFix1": "Opravena chyba v rozbalovacím panelu TokenFolder.",
+  "patchNotesV4_6_1Improvement1": "Aktualizováno několik závislostí.",
+  "patchNotesV4_6_2BugFix1": "Opravena chyba, ke které docházelo při příliš rychlém opuštění zobrazení kamery.",
+  "patchNotesV4_6_2Improvement1": "Chybový protokol se nyní posouvá zdola nahoru, aby byly nejnovější záznamy zobrazeny jako první.",
+  "patchNotesV4_6_2Improvement2": "Aktualizováno několik závislostí.",
+  "patchNotesV4_6_2NewFeature1": "Přidána podpora nové funkce „Odeslat kód do telefonu“.",
   "period": "Časový interval",
   "phonePart": "Klientská část:",
   "piServerCode": "Kód serveru PI: {code}",

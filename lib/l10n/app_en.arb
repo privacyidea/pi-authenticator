@@ -1168,10 +1168,16 @@
   "@patchNotesV4_6_1Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
-  "@patchNotesV4_6_1Improvement2": {
+  "@patchNotesV4_6_2BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.6.1"
+  },
+  "@patchNotesV4_6_2Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
-  "@patchNotesV4_6_1NewFeature1": {
+  "@patchNotesV4_6_2Improvement2": {
+    "description": "Patch notes for an improvement in version 4.6.1"
+  },
+  "@patchNotesV4_6_2NewFeature1": {
     "description": "Patch notes for a new feature in version 4.6.1"
   },
   "@period": {
@@ -1946,10 +1952,12 @@
   "patchNotesV4_5_3BugFix2": "The navigation bar on some devices is no longer superimposed over the app content.",
   "patchNotesV4_6_0BugFix1": "A few minor bugs have been resolved to improve app stability.",
   "patchNotesV4_6_0Improvement1": "Internal components have been updated to maintain security and ensure compatibility with the latest devices.",
-  "patchNotesV4_6_1BugFix1": "Fixed an error that occurred when leaving the camera view too fast.",
-  "patchNotesV4_6_1Improvement1": "Error log is now scrolled from bottom to top to see the newest logs first.",
-  "patchNotesV4_6_1Improvement2": "Updated several dependencies.",
-  "patchNotesV4_6_1NewFeature1": "Added support for the new feature 'Push code to phone'.",
+  "patchNotesV4_6_1BugFix1": "Fixed an error with the expansion panel of the TokenFolder",
+  "patchNotesV4_6_1Improvement1": "Updated several dependencies",
+  "patchNotesV4_6_2BugFix1": "Fixed an error that occurred when leaving the camera view too fast.",
+  "patchNotesV4_6_2Improvement1": "Error log is now scrolled from bottom to top to see the newest logs first.",
+  "patchNotesV4_6_2Improvement2": "Updated several dependencies.",
+  "patchNotesV4_6_2NewFeature1": "Added support for the new feature 'Push code to phone'.",
   "period": "Period",
   "phonePart": "Phone part:",
   "piServerCode": "PI Server Code: {code}",

@@ -1168,10 +1168,16 @@
   "@patchNotesV4_6_1Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
-  "@patchNotesV4_6_1Improvement2": {
+  "@patchNotesV4_6_2BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.6.1"
+  },
+  "@patchNotesV4_6_2Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
-  "@patchNotesV4_6_1NewFeature1": {
+  "@patchNotesV4_6_2Improvement2": {
+    "description": "Patch notes for an improvement in version 4.6.1"
+  },
+  "@patchNotesV4_6_2NewFeature1": {
     "description": "Patch notes for a new feature in version 4.6.1"
   },
   "@period": {
@@ -1946,10 +1952,12 @@
   "patchNotesV4_5_3BugFix2": "Die Navigationsleiste einiger Geräte wird nun nicht mehr über den App-Inhalt gelegt.",
   "patchNotesV4_6_0BugFix1": "Einige kleinere Fehler wurden behoben, um die Stabilität der App zu verbessern.",
   "patchNotesV4_6_0Improvement1": "Die internen Komponenten wurden aktualisiert, um die Sicherheit zu gewährleisten und die Kompatibilität mit den neuesten Geräten sicherzustellen.",
-  "patchNotesV4_6_1BugFix1": "Ein Fehler wurde behoben, der auftrat, wenn die Kameraansicht zu schnell verlassen wurde.",
-  "patchNotesV4_6_1Improvement1": "Das Fehlerprotokoll wird nun von unten nach oben gescrollt, sodass die neuesten Protokolle zuerst angezeigt werden.",
-  "patchNotesV4_6_1Improvement2": "Mehrere Abhängigkeiten wurden aktualisiert.",
-  "patchNotesV4_6_1NewFeature1": "Unterstützung für die neue Funktion „Code auf Telefon übertragen“ hinzugefügt.",
+  "patchNotesV4_6_1BugFix1": "Fehler im expansion panel des TokenFolder behoben",
+  "patchNotesV4_6_1Improvement1": "Mehrere Abhängigkeiten wurden aktualisiert.",
+  "patchNotesV4_6_2BugFix1": "Ein Fehler wurde behoben, der auftrat, wenn die Kameraansicht zu schnell verlassen wurde.",
+  "patchNotesV4_6_2Improvement1": "Das Fehlerprotokoll wird nun von unten nach oben gescrollt, sodass die neuesten Protokolle zuerst angezeigt werden.",
+  "patchNotesV4_6_2Improvement2": "Mehrere Abhängigkeiten wurden aktualisiert.",
+  "patchNotesV4_6_2NewFeature1": "Unterstützung für die neue Funktion „Code auf Telefon übertragen“ hinzugefügt.",
   "period": "Periode",
   "phonePart": "Telefonanteil:",
   "piServerCode": "PI-Server-Code: {code}",
