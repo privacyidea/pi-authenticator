@@ -106,65 +106,49 @@ class _PushCodeToPhoneDialogState extends ConsumerState<PushCodeToPhoneDialog> {
             token: widget.token,
             pushRequest: widget.pushRequest,
           ),
-          const SizedBox(height: 20),
           Center(
-            child: Stack(
-              alignment: Alignment.centerRight,
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                SizedBox(width: 40), // to balance the copy button on the right
                 GestureDetector(
                   onTap: _isRevealed ? _copyToClipboard : _handleVisibility,
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 12,
+                  child: Text(
+                    insertCharAt(
+                      _isRevealed
+                          ? widget.pushRequest.displayCode
+                          : '•' * widget.pushRequest.displayCode.length,
+                      ' ',
+                      (widget.pushRequest.displayCode.length / 2).ceil(),
                     ),
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.primaryContainer.withValues(
-                        alpha: 0.3,
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      insertCharAt(
-                        _isRevealed
-                            ? widget.pushRequest.displayCode
-                            : '•' * widget.pushRequest.displayCode.length,
-                        ' ',
-                        (widget.pushRequest.displayCode.length / 2).ceil(),
-                      ),
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.displayMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: theme.colorScheme.primary,
-                      ),
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.displayMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: theme.colorScheme.primary,
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 4),
-                  child: _isRevealed
-                      ? IconButton(
-                          icon: Icon(
-                            Icons.copy,
-                            color: _isCopyOnCooldown
-                                ? theme.disabledColor
-                                : theme.colorScheme.primary,
-                          ),
-                          onPressed: _copyToClipboard,
-                        )
-                      : IconButton(
-                          icon: Icon(
-                            Icons.visibility,
-                            color: theme.colorScheme.primary,
-                          ),
-                          onPressed: _handleVisibility,
+                _isRevealed
+                    ? IconButton(
+                        icon: Icon(
+                          Icons.copy,
+                          color: _isCopyOnCooldown
+                              ? theme.disabledColor
+                              : theme.colorScheme.primary,
                         ),
-                ),
+                        onPressed: _copyToClipboard,
+                      )
+                    : IconButton(
+                        icon: Icon(
+                          Icons.visibility,
+                          color: theme.colorScheme.primary,
+                        ),
+                        onPressed: _handleVisibility,
+                      ),
               ],
             ),
           ),
-          const SizedBox(height: 24),
         ],
       ),
       actions: [
