@@ -85,9 +85,12 @@ class DefaultDialog extends ConsumerWidget {
             ],
           ),
           actions: actions,
-          content: DefaultTextStyle(
-            style: Theme.of(context).textTheme.bodyLarge!,
-            child: content ?? const SizedBox(),
+          content: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: DefaultTextStyle(
+              style: Theme.of(context).textTheme.bodyLarge!,
+              child: content ?? const SizedBox(),
+            ),
           ),
         ),
       ],

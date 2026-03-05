@@ -19,19 +19,12 @@
  */
 import 'package:flutter/material.dart';
 
-import '../../../../l10n/app_localizations.dart';
 import '../../../../model/push_request/push_request.dart';
-import '../../../../model/tokens/push_token.dart';
 
 class PushRequestBaseInfo extends StatelessWidget {
-  final PushToken token;
   final PushRequest pushRequest;
 
-  const PushRequestBaseInfo({
-    required this.token,
-    required this.pushRequest,
-    super.key,
-  });
+  const PushRequestBaseInfo({required this.pushRequest, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -40,11 +33,10 @@ class PushRequestBaseInfo extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          AppLocalizations.of(context)!.requestInfo(token.label, token.issuer),
+          pushRequest.question,
           textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.bodyLarge,
         ),
-        const SizedBox(height: 10),
-        Text(pushRequest.question, textAlign: TextAlign.center),
       ],
     );
   }

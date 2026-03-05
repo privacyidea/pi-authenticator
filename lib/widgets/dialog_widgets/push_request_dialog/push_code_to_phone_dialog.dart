@@ -101,11 +101,8 @@ class _PushCodeToPhoneDialogState extends ConsumerState<PushCodeToPhoneDialog> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          PushRequestBaseInfo(pushRequest: widget.pushRequest),
           const SizedBox(height: 12),
-          PushRequestBaseInfo(
-            token: widget.token,
-            pushRequest: widget.pushRequest,
-          ),
           Center(
             child: Row(
               mainAxisSize: MainAxisSize.max,

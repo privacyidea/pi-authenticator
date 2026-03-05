@@ -121,9 +121,6 @@
   "@authenticateToUnLockToken": {
     "description": "Reason to authenticate when trying to lock or unlock a token."
   },
-  "@authentication": {
-    "description": "Title of the authentication dialog."
-  },
   "@backgroundImage": {
     "description": "Label for the background image setting."
   },
@@ -1270,19 +1267,6 @@
   "@replaceButton": {
     "description": "Button to replace something, depending on the context."
   },
-  "@requestInfo": {
-    "description": "Description of the authentication request.",
-    "placeholders": {
-      "account": {
-        "example": "GitHub",
-        "type": "String"
-      },
-      "issuer": {
-        "example": "privacyIDEA",
-        "type": "String"
-      }
-    }
-  },
   "@requestPushChallengesPeriodically": {
     "description": "The description of the polling feature."
   },
@@ -1688,7 +1672,6 @@
   "authToDiscardPushRequest": "Harap lakukan autentikasi untuk membuang permintaan push.",
   "authenticateToShowOtp": "Harap lakukan autentikasi untuk menunjukkan kata sandi sekali pakai.",
   "authenticateToUnLockToken": "Lakukan autentikasi untuk mengubah status kunci token.",
-  "authentication": "Otentikasi",
   "autoCloseAppAfterAcceptingPushRequestDescription": "Jika diaktifkan, aplikasi akan secara otomatis menutup setelah menerima permintaan push.",
   "autoCloseAppAfterAcceptingPushRequestTitle": "Tutup aplikasi setelah menerima permintaan",
   "backgroundImage": "Gambar latar belakang",
@@ -1984,7 +1967,6 @@
   "renewSecretsDialogText": "Anda dapat memperbarui rahasia token. Hal ini berguna jika Anda mencurigai bahwa rahasia tersebut telah dibobol.",
   "renewSecretsDialogTitle": "Memperbarui Rahasia Token",
   "replaceButton": "Ganti",
-  "requestInfo": "Dikirim oleh {issuer} untuk akun Anda: {account}",
   "requestPushChallengesPeriodically": "Meminta tantangan push dari server secara berkala. Aktifkan ini jika tantangan push tidak diterima secara normal.",
   "requestTriggerdByUserQuestion": "Apakah permintaan ini dipicu oleh Anda?",
   "retryRolloutButton": "Mencoba peluncuran ulang",

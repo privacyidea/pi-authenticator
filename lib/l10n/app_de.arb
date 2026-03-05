@@ -121,9 +121,6 @@
   "@authenticateToUnLockToken": {
     "description": "Reason to authenticate when trying to lock or unlock a token."
   },
-  "@authentication": {
-    "description": "Title of the authentication dialog."
-  },
   "@backgroundImage": {
     "description": "Label for the background image setting."
   },
@@ -1270,19 +1267,6 @@
   "@replaceButton": {
     "description": "Button to replace something, depending on the context."
   },
-  "@requestInfo": {
-    "description": "Description of the authentication request.",
-    "placeholders": {
-      "account": {
-        "example": "GitHub",
-        "type": "String"
-      },
-      "issuer": {
-        "example": "privacyIDEA",
-        "type": "String"
-      }
-    }
-  },
   "@requestPushChallengesPeriodically": {
     "description": "The description of the polling feature."
   },
@@ -1688,7 +1672,6 @@
   "authToDiscardPushRequest": "Bitte authentifizieren Sie sich, um die Push-Anfrage zu verwerfen.",
   "authenticateToShowOtp": "Bitte authentifizieren Sie sich, um das Einmalpasswort anzuzeigen.",
   "authenticateToUnLockToken": "Bitte authentifizieren Sie sich, um den Sperrstatus des Tokens zu ändern.",
-  "authentication": "Authentifizierung",
   "autoCloseAppAfterAcceptingPushRequestDescription": "Wenn aktiviert, schließt sich die App automatisch, nachdem eine Push-Anfrage akzeptiert wurde.",
   "autoCloseAppAfterAcceptingPushRequestTitle": "App nach Push-Anfrage schließen",
   "backgroundImage": "Hintergrundbild",
@@ -1984,7 +1967,6 @@
   "renewSecretsDialogText": "Sie können die Geheimnisse der Token erneuern. Dies ist nützlich, wenn Sie vermuten, dass die Geheimnisse kompromittiert wurden.",
   "renewSecretsDialogTitle": "Token Secrets erneuern",
   "replaceButton": "Ersetzen",
-  "requestInfo": "Gesendet von {issuer} für Ihr Konto: “{account}“",
   "requestPushChallengesPeriodically": "Fordert regelmäßig Push-Anfragen vom Server an. Aktivieren Sie diese Funktion, wenn Nachrichten ansonsten nicht erhalten werden.",
   "requestTriggerdByUserQuestion": "Wurde diese Anfrage von Ihnen ausgelöst?",
   "retryRolloutButton": "Erneut ausrollen",

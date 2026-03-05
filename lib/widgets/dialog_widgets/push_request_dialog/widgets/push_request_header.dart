@@ -19,7 +19,6 @@
  */
 import 'package:flutter/material.dart';
 
-import '../../../../l10n/app_localizations.dart';
 import '../../../../model/push_request/push_request.dart';
 
 class PushRequestHeader extends StatelessWidget {
@@ -29,9 +28,8 @@ class PushRequestHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context)!;
     final title = pushRequest.title == 'privacyIDEA'
-        ? localizations.authentication
+        ? pushRequest.serial
         : pushRequest.title;
 
     return Center(

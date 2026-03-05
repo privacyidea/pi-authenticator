@@ -121,9 +121,6 @@
   "@authenticateToUnLockToken": {
     "description": "Reason to authenticate when trying to lock or unlock a token."
   },
-  "@authentication": {
-    "description": "Title of the authentication dialog."
-  },
   "@backgroundImage": {
     "description": "Label for the background image setting."
   },
@@ -1270,19 +1267,6 @@
   "@replaceButton": {
     "description": "Button to replace something, depending on the context."
   },
-  "@requestInfo": {
-    "description": "Description of the authentication request.",
-    "placeholders": {
-      "account": {
-        "example": "GitHub",
-        "type": "String"
-      },
-      "issuer": {
-        "example": "privacyIDEA",
-        "type": "String"
-      }
-    }
-  },
   "@requestPushChallengesPeriodically": {
     "description": "The description of the polling feature."
   },
@@ -1688,7 +1672,6 @@
   "authToDiscardPushRequest": "Uwierzytelnij, aby wyrzucić żądanie.",
   "authenticateToShowOtp": "Zweryfikuj tożsamość, by pokazać hasło jednorazowe.",
   "authenticateToUnLockToken": "Zweryfikuj tożsamość, aby odblokować / zablokować token.",
-  "authentication": "Uwierzytelnianie",
   "autoCloseAppAfterAcceptingPushRequestDescription": "Jeśli włączone, aplikacja zostanie automatycznie zamknięta po zaakceptowaniu prośby push.",
   "autoCloseAppAfterAcceptingPushRequestTitle": "Zamknij aplikację po zaakceptowaniu prośby",
   "backgroundImage": "Obraz tła",
@@ -1984,7 +1967,6 @@
   "renewSecretsDialogText": "Możesz odnowić sekrety tokenów. Jest to przydatne w przypadku podejrzenia, że sekrety zostały naruszone.",
   "renewSecretsDialogTitle": "Odnawianie sekretów tokenów",
   "replaceButton": "Wymienić",
-  "requestInfo": "Wysłane przez {issuer} dla twojego konta: “{account}“",
   "requestPushChallengesPeriodically": "Wysyłaj zapytanie o push challenge cyklicznie. Włącz, jeśli push nie przychodzi normalnie.",
   "requestTriggerdByUserQuestion": "Czy ta prośba została wywołana przez Ciebie?",
   "retryRolloutButton": "Ponowne uruchomienie",

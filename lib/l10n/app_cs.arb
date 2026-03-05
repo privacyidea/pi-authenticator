@@ -121,9 +121,6 @@
   "@authenticateToUnLockToken": {
     "description": "Reason to authenticate when trying to lock or unlock a token."
   },
-  "@authentication": {
-    "description": "Title of the authentication dialog."
-  },
   "@backgroundImage": {
     "description": "Label for the background image setting."
   },
@@ -1270,19 +1267,6 @@
   "@replaceButton": {
     "description": "Button to replace something, depending on the context."
   },
-  "@requestInfo": {
-    "description": "Description of the authentication request.",
-    "placeholders": {
-      "account": {
-        "example": "GitHub",
-        "type": "String"
-      },
-      "issuer": {
-        "example": "privacyIDEA",
-        "type": "String"
-      }
-    }
-  },
   "@requestPushChallengesPeriodically": {
     "description": "The description of the polling feature."
   },
@@ -1688,7 +1672,6 @@
   "authToDiscardPushRequest": "Ověřte, zda chcete požadavek na odeslání odmítnout.",
   "authenticateToShowOtp": "Pro zobrazení jednorázového kódu se přihlaste.",
   "authenticateToUnLockToken": "Pro změnu uzamčení tokenu se přihlaste.",
-  "authentication": "Žádost o ověření",
   "autoCloseAppAfterAcceptingPushRequestDescription": "Pokud je povoleno, aplikace se automaticky zavře po přijetí požadavku na push.",
   "autoCloseAppAfterAcceptingPushRequestTitle": "Zavřít aplikaci po přijetí požadavku",
   "backgroundImage": "Obrázek na pozadí",
@@ -1984,7 +1967,6 @@
   "renewSecretsDialogText": "Můžete obnovit tajemství žetonů. To je užitečné, pokud máte podezření, že tajemství byla ohrožena.",
   "renewSecretsDialogTitle": "Obnovení tajemství žetonů",
   "replaceButton": "Vyměňte",
-  "requestInfo": "Odesláno {issuer} pro váš účet: “{account}“",
   "requestPushChallengesPeriodically": "Periodicky získávat výzvy ze serveru. Povolte pokud nefunguje příjem push notifikací.",
   "requestTriggerdByUserQuestion": "Byl tento požadavek vyvolán vámi?",
   "retryRolloutButton": "Zkusit znovu",

@@ -462,11 +462,11 @@ class ThemeCustomization {
             titleLarge: TextStyle(color: primaryColor, fontFamily: fontFamily, fontSize: 24, fontWeight: FontWeight.w600),
             titleMedium: TextStyle(color: primaryColor, fontFamily: fontFamily, fontSize: 20, fontWeight: FontWeight.w500),
             titleSmall: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 18, fontWeight: FontWeight.w500),
-            bodyLarge: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 16, fontWeight: FontWeight.w400),
-            bodyMedium: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 14, fontWeight: FontWeight.w400),
-            bodySmall: TextStyle(color: subtitleColor, fontFamily: fontFamily, fontSize: 12, fontWeight: FontWeight.w400),
-            labelLarge: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 14, fontWeight: FontWeight.w500),
-            labelSmall: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 12, fontWeight: FontWeight.w400),
+            bodyLarge: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 18, fontWeight: FontWeight.w400),
+            bodyMedium: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 16, fontWeight: FontWeight.w400),
+            bodySmall: TextStyle(color: subtitleColor, fontFamily: fontFamily, fontSize: 14, fontWeight: FontWeight.w400),
+            labelLarge: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 16, fontWeight: FontWeight.w500),
+            labelSmall: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 14, fontWeight: FontWeight.w400),
           ),
           disabledColor: tileIconColor.withValues(alpha: 0.38), // 38% opacity used for disabled icon buttons
 

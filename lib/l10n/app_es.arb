@@ -121,9 +121,6 @@
   "@authenticateToUnLockToken": {
     "description": "Reason to authenticate when trying to lock or unlock a token."
   },
-  "@authentication": {
-    "description": "Title of the authentication dialog."
-  },
   "@backgroundImage": {
     "description": "Label for the background image setting."
   },
@@ -1270,19 +1267,6 @@
   "@replaceButton": {
     "description": "Button to replace something, depending on the context."
   },
-  "@requestInfo": {
-    "description": "Description of the authentication request.",
-    "placeholders": {
-      "account": {
-        "example": "GitHub",
-        "type": "String"
-      },
-      "issuer": {
-        "example": "privacyIDEA",
-        "type": "String"
-      }
-    }
-  },
   "@requestPushChallengesPeriodically": {
     "description": "The description of the polling feature."
   },
@@ -1688,7 +1672,6 @@
   "authToDiscardPushRequest": "Por favor, autentifíquese para descartar la solicitud push.",
   "authenticateToShowOtp": "Por favor, autentifíquese para mostrar la contraseña de una sola vez.",
   "authenticateToUnLockToken": "Por favor, autentifíquese para cambiar el estado de bloqueo del token.",
-  "authentication": "Autenticación",
   "autoCloseAppAfterAcceptingPushRequestDescription": "Si está habilitado, la aplicación se cerrará automáticamente después de aceptar una solicitud push.",
   "autoCloseAppAfterAcceptingPushRequestTitle": "Cerrar app después de aceptar solicitud",
   "backgroundImage": "Imagen de fondo",
@@ -1984,7 +1967,6 @@
   "renewSecretsDialogText": "Puede renovar los secretos de los tokens. Esto es útil si sospecha que los secretos han sido comprometidos. Como los tokens de los contenedores se transmiten cifrados, los secretos se almacenan de forma segura en el dispositivo. El único caso conocido en el que esto podría haber ocurrido sería si el token se hubiera desplegado antes que el contenedor a través de un código QR.",
   "renewSecretsDialogTitle": "Renovar los secretos de las fichas",
   "replaceButton": "Sustituir",
-  "requestInfo": "Enviado por {issuer} para su cuenta: “{account}“",
   "requestPushChallengesPeriodically": "Solicita retos push al servidor periódicamente. Habilite esta opción si los retos push no se reciben normalmente.",
   "requestTriggerdByUserQuestion": "¿Fue usted quien provocó esta petición?",
   "retryRolloutButton": "Reintentar despliegue",

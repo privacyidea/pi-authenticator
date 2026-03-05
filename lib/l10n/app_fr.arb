@@ -121,9 +121,6 @@
   "@authenticateToUnLockToken": {
     "description": "Reason to authenticate when trying to lock or unlock a token."
   },
-  "@authentication": {
-    "description": "Title of the authentication dialog."
-  },
   "@backgroundImage": {
     "description": "Label for the background image setting."
   },
@@ -1270,19 +1267,6 @@
   "@replaceButton": {
     "description": "Button to replace something, depending on the context."
   },
-  "@requestInfo": {
-    "description": "Description of the authentication request.",
-    "placeholders": {
-      "account": {
-        "example": "GitHub",
-        "type": "String"
-      },
-      "issuer": {
-        "example": "privacyIDEA",
-        "type": "String"
-      }
-    }
-  },
   "@requestPushChallengesPeriodically": {
     "description": "The description of the polling feature."
   },
@@ -1688,7 +1672,6 @@
   "authToDiscardPushRequest": "Veuillez vous authentifier pour rejeter la demande de push.",
   "authenticateToShowOtp": "Veuillez vous authentifier pour afficher un mot de passe à usage unique.",
   "authenticateToUnLockToken": "Veuillez vous authentifier pour modifier l'état de verrouillage du jeton.",
-  "authentication": "Authentification",
   "autoCloseAppAfterAcceptingPushRequestDescription": "Si cette option est activée, l'application se fermera automatiquement après avoir accepté une demande push.",
   "autoCloseAppAfterAcceptingPushRequestTitle": "Fermer l'app après acceptation",
   "backgroundImage": "Fond d'écran",
@@ -1984,7 +1967,6 @@
   "renewSecretsDialogText": "Vous pouvez renouveler les secrets des jetons. Cette fonction est utile si vous soupçonnez que les secrets ont été compromis.",
   "renewSecretsDialogTitle": "Renouveler les secrets des jetons",
   "replaceButton": "Remplacer",
-  "requestInfo": "Envoyé par {issuer} pour votre compte : “{account}“",
   "requestPushChallengesPeriodically": "Demander des challenges push depuis le serveur périodiquement. Activer cette fonction si les challenges push ne sont pas reçus normalement.",
   "requestTriggerdByUserQuestion": "Cette demande a-t-elle été déclenchée par vous ?",
   "retryRolloutButton": "Réessayer le déploiement",

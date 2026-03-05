@@ -121,9 +121,6 @@
   "@authenticateToUnLockToken": {
     "description": "Reason to authenticate when trying to lock or unlock a token."
   },
-  "@authentication": {
-    "description": "Title of the authentication dialog."
-  },
   "@backgroundImage": {
     "description": "Label for the background image setting."
   },
@@ -1270,19 +1267,6 @@
   "@replaceButton": {
     "description": "Button to replace something, depending on the context."
   },
-  "@requestInfo": {
-    "description": "Description of the authentication request.",
-    "placeholders": {
-      "account": {
-        "example": "GitHub",
-        "type": "String"
-      },
-      "issuer": {
-        "example": "privacyIDEA",
-        "type": "String"
-      }
-    }
-  },
   "@requestPushChallengesPeriodically": {
     "description": "The description of the polling feature."
   },
@@ -1688,7 +1672,6 @@
   "authToDiscardPushRequest": "Verifieer om het push verzoek te verwerpen.",
   "authenticateToShowOtp": "Authenticeer om het eenmalige wachtwoord te tonen.",
   "authenticateToUnLockToken": "Authenticeer om de vergrendeling van de token te wijzigen.",
-  "authentication": "Verificatieverzoek",
   "autoCloseAppAfterAcceptingPushRequestDescription": "Indien ingeschakeld, wordt de app automatisch gesloten na het accepteren van een push-verzoek.",
   "autoCloseAppAfterAcceptingPushRequestTitle": "App sluiten na push-verzoek",
   "backgroundImage": "Achtergrondafbeelding",
@@ -1984,7 +1967,6 @@
   "renewSecretsDialogText": "Je kunt de geheimen van de tokens vernieuwen. Dit is handig als je vermoedt dat de geheimen gecompromitteerd zijn.",
   "renewSecretsDialogTitle": "Token geheimen vernieuwen",
   "replaceButton": "vervangen",
-  "requestInfo": "Verzonden door {issuer} voor uw account: “{account}“",
   "requestPushChallengesPeriodically": "Activeer het zoeken naar berichten. Gebruik deze optie wanneer de push berichten niet worden ontvangen.",
   "requestTriggerdByUserQuestion": "Is dit verzoek door jou gedaan?",
   "retryRolloutButton": "Opnieuw uitrollen",
