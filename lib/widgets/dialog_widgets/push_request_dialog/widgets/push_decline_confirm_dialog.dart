@@ -26,7 +26,7 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../utils/customization/theme_extentions/push_request_theme.dart';
 import 'push_action_button.dart';
 
-class PushDeclineConfirmDialog extends StatefulWidget {
+class PushDeclineConfirmDialog extends StatelessWidget {
   static Future<void> showDialogWidget({
     required BuildContext context,
     required Future<void> Function() onDecline,
@@ -58,32 +58,6 @@ class PushDeclineConfirmDialog extends StatefulWidget {
   });
 
   @override
-  State<PushDeclineConfirmDialog> createState() =>
-      _PushDeclineConfirmDialogState();
-}
-
-class _PushDeclineConfirmDialogState extends State<PushDeclineConfirmDialog> {
-  late Timer expirationTimer;
-
-  @override
-  void initState() {
-    super.initState();
-    expirationTimer = Timer(
-      widget.expirationDate!.difference(DateTime.now()),
-      () {
-        if (!mounted) return;
-        Navigator.of(context).pop();
-      },
-    );
-  }
-
-  @override
-  void dispose() {
-    expirationTimer.cancel();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final pushRequestTheme =
         (Theme.of(context).extensions[PushRequestTheme] as PushRequestTheme);
@@ -92,7 +66,7 @@ class _PushDeclineConfirmDialogState extends State<PushDeclineConfirmDialog> {
 
     return DefaultDialog(
       title: Text(
-        widget.title,
+        title,
         style: textTheme.titleMedium,
         textAlign: TextAlign.center,
       ),
@@ -111,7 +85,7 @@ class _PushDeclineConfirmDialogState extends State<PushDeclineConfirmDialog> {
           PushActionButton(
             backgroundColor: pushRequestTheme.acceptColor,
             onPressed: () async {
-              await widget.onDiscard();
+              await onDiscard();
               if (context.mounted && Navigator.of(context).canPop()) {
                 Navigator.of(context).pop();
               }
@@ -136,7 +110,7 @@ class _PushDeclineConfirmDialogState extends State<PushDeclineConfirmDialog> {
           PushActionButton(
             backgroundColor: pushRequestTheme.declineColor,
             onPressed: () async {
-              await widget.onDecline();
+              await onDecline();
               if (context.mounted && Navigator.of(context).canPop()) {
                 Navigator.of(context).pop();
               }

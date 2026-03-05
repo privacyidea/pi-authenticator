@@ -155,6 +155,7 @@ mixin PushDialogMixin {
         )) {
       return;
     }
+    if (!ref.context.mounted) return;
     await ref.read(pushRequestProvider.notifier).remove(pushRequest);
     if (context.mounted) {
       _onHandled(context: context, ref: ref);

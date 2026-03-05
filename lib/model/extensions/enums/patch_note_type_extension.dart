@@ -22,8 +22,8 @@ import '../../enums/patch_note_type.dart';
 
 extension PatchNoteTypeX on PatchNoteType {
   String localizedName(AppLocalizations localizations) => switch (this) {
-        PatchNoteType.newFeature => localizations.patchNotesNewFeatures,
-        PatchNoteType.improvement => localizations.patchNotesImprovements,
-        PatchNoteType.bugFix => localizations.patchNotesBugFixes,
-      };
+    PatchNoteType.newFeature => localizations.patchNotesNewFeature,
+    PatchNoteType.improvement => localizations.patchNotesImprovements,
+    PatchNoteType.bugFix => localizations.patchNotesBugFixes,
+  };
 }

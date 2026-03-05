@@ -26,73 +26,81 @@ import '../l10n/app_localizations.dart';
 import '../model/enums/patch_note_type.dart';
 import '../model/version.dart';
 
-Map<Version, Map<PatchNoteType, List<String>>> getLocalizedPatchNotes(AppLocalizations localizations) => {
-      const Version(4, 5, 3): {
-        PatchNoteType.bugFix: [
-          localizations.patchNotesV4_5_3BugFix1,
-          localizations.patchNotesV4_5_3BugFix2,
-        ],
-      },
-      const Version(4, 5, 1): {
-        PatchNoteType.newFeature: [
-          localizations.patchNotesV4_5_1NewFeatures1,
-          localizations.patchNotesV4_5_1NewFeatures2,
-          localizations.patchNotesV4_5_1NewFeatures3,
-        ],
-        PatchNoteType.bugFix: [
-          localizations.patchNotesV4_5_1BugFix1,
-        ],
-      },
-      const Version(4, 5, 0): {
-        PatchNoteType.newFeature: [
-          localizations.patchNotesV4_5_0NewFeatures1,
-        ],
-        PatchNoteType.bugFix: [
-          localizations.patchNotesV4_5_0BugFix1,
-        ],
-      },
-      const Version(4, 4, 2): {
-        PatchNoteType.newFeature: [
-          localizations.patchNotesV4_4_2NewFeatures1,
-          localizations.patchNotesV4_4_2NewFeatures2,
-        ],
-        PatchNoteType.improvement: [
-          localizations.patchNotesV4_4_2Improvement1,
-        ]
-      },
-      const Version(4, 4, 0): {
-        PatchNoteType.newFeature: [
-          localizations.patchNotesV4_4_0NewFeatures1,
-          localizations.patchNotesV4_4_0NewFeatures2,
-        ],
-        PatchNoteType.improvement: [
-          localizations.patchNotesV4_4_0Improvement1,
-          localizations.patchNotesV4_4_0Improvement2,
-        ]
-      },
-      const Version(4, 3, 1): {
-        PatchNoteType.bugFix: [
-          localizations.patchNotesV4_3_1BugFix1,
-        ],
-        PatchNoteType.improvement: [
-          localizations.patchNotesV4_3_1Improvement1,
-        ]
-      },
-      const Version(4, 3, 0): {
-        PatchNoteType.newFeature: [
-          localizations.patchNotesV4_3_0NewFeatures1,
-          localizations.patchNotesV4_3_0NewFeatures2,
-          localizations.patchNotesV4_3_0NewFeatures3,
-          localizations.patchNotesV4_3_0NewFeatures4,
-          localizations.patchNotesV4_3_0NewFeatures5,
-          localizations.patchNotesV4_3_0NewFeatures6,
-        ],
-      },
-    };
+Map<Version, Map<PatchNoteType, List<String>>> getLocalizedPatchNotes(
+  AppLocalizations localizations,
+) => {
+  const Version(4, 6, 2): {
+    PatchNoteType.bugFix: [localizations.patchNotesV4_6_2BugFix1],
+    PatchNoteType.improvement: [
+      localizations.patchNotesV4_6_2Improvement1,
+      localizations.patchNotesV4_6_2Improvement2,
+    ],
+    PatchNoteType.newFeature: [localizations.patchNotesV4_6_2NewFeature1],
+  },
+  const Version(4, 6, 1): {
+    PatchNoteType.bugFix: [localizations.patchNotesV4_6_1BugFix1],
+    PatchNoteType.improvement: [localizations.patchNotesV4_6_1Improvement1],
+  },
+  const Version(4, 6, 0): {
+    PatchNoteType.bugFix: [localizations.patchNotesV4_6_0BugFix1],
+    PatchNoteType.improvement: [localizations.patchNotesV4_6_0Improvement1],
+  },
+  const Version(4, 5, 3): {
+    PatchNoteType.bugFix: [
+      localizations.patchNotesV4_5_3BugFix1,
+      localizations.patchNotesV4_5_3BugFix2,
+    ],
+  },
+  const Version(4, 5, 1): {
+    PatchNoteType.newFeature: [
+      localizations.patchNotesV4_5_1NewFeature1,
+      localizations.patchNotesV4_5_1NewFeature2,
+      localizations.patchNotesV4_5_1NewFeature3,
+    ],
+    PatchNoteType.bugFix: [localizations.patchNotesV4_5_1BugFix1],
+  },
+  const Version(4, 5, 0): {
+    PatchNoteType.newFeature: [localizations.patchNotesV4_5_0NewFeature1],
+    PatchNoteType.bugFix: [localizations.patchNotesV4_5_0BugFix1],
+  },
+  const Version(4, 4, 2): {
+    PatchNoteType.newFeature: [
+      localizations.patchNotesV4_4_2NewFeature1,
+      localizations.patchNotesV4_4_2NewFeature2,
+    ],
+    PatchNoteType.improvement: [localizations.patchNotesV4_4_2Improvement1],
+  },
+  const Version(4, 4, 0): {
+    PatchNoteType.newFeature: [
+      localizations.patchNotesV4_4_0NewFeature1,
+      localizations.patchNotesV4_4_0NewFeature2,
+    ],
+    PatchNoteType.improvement: [
+      localizations.patchNotesV4_4_0Improvement1,
+      localizations.patchNotesV4_4_0Improvement2,
+    ],
+  },
+  const Version(4, 3, 1): {
+    PatchNoteType.bugFix: [localizations.patchNotesV4_3_1BugFix1],
+    PatchNoteType.improvement: [localizations.patchNotesV4_3_1Improvement1],
+  },
+  const Version(4, 3, 0): {
+    PatchNoteType.newFeature: [
+      localizations.patchNotesV4_3_0NewFeature1,
+      localizations.patchNotesV4_3_0NewFeature2,
+      localizations.patchNotesV4_3_0NewFeature3,
+      localizations.patchNotesV4_3_0NewFeature4,
+      localizations.patchNotesV4_3_0NewFeature5,
+      localizations.patchNotesV4_3_0NewFeature6,
+    ],
+  },
+};
 
 final globalSnackbarKey = GlobalKey<ScaffoldMessengerState>();
 final globalNavigatorKey = GlobalKey<NavigatorState>();
-final Future<GlobalKey<NavigatorState>> contextedGlobalNavigatorKey = Future(() async => await _getContextedGlobalNavigatorKey());
+final Future<GlobalKey<NavigatorState>> contextedGlobalNavigatorKey = Future(
+  () async => await _getContextedGlobalNavigatorKey(),
+);
 BuildContext? get globalContextSync {
   try {
     return globalNavigatorKey.currentContext;
@@ -101,17 +109,26 @@ BuildContext? get globalContextSync {
   }
 }
 
-final Future<BuildContext> globalContext = Future(() async => await _getContextedGlobalNavigatorKey()).then((value) => value.currentContext!);
+final Future<BuildContext> globalContext = Future(
+  () async => await _getContextedGlobalNavigatorKey(),
+).then((value) => value.currentContext!);
 Future<GlobalKey<NavigatorState>> _getContextedGlobalNavigatorKey() async {
   if (globalNavigatorKey.currentContext != null) {
     return globalNavigatorKey;
   } else {
-    return await Future.delayed(const Duration(milliseconds: 500), _getContextedGlobalNavigatorKey);
+    return await Future.delayed(
+      const Duration(milliseconds: 500),
+      _getContextedGlobalNavigatorKey,
+    );
   }
 }
 
-final policyStatementUri = Uri.parse("https://netknights.it/en/privacy-statement/");
-final piAuthenticatorGitHubUri = Uri.parse("https://github.com/privacyidea/pi-authenticator");
+final policyStatementUri = Uri.parse(
+  "https://netknights.it/en/privacy-statement/",
+);
+final piAuthenticatorGitHubUri = Uri.parse(
+  "https://github.com/privacyidea/pi-authenticator",
+);
 
 // The highest version of the pipush Tokentype that this client supports.
 const maxPushTokenVersion = 1;

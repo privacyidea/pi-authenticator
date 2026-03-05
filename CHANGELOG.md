@@ -1,12 +1,22 @@
 # Changelog
 
-## [4.6.0] - 
- - A few minor bugs have been resolved to improve app stability.
- - Internal components have been updated to maintain security and ensure compatibility with the latest devices.
+## [4.6.2] - 
+ - Added support for the new feature 'Push code to phone'
+ - Fixed an error that occurred when leaving the camera view too fast
+ - Error log is now scrolled from bottom to top to see the newest logs first
+ - Updated several dependencies
+
+## [4.6.1] - 2025.12.08
+ - Fixed an error with the expansion panel of the TokenFolder
+ - Updated several dependencies
+
+## [4.6.0] - 2025.11.13
+ - A few minor bugs have been resolved to improve app stability
+ - Internal components have been updated to maintain security and ensure compatibility with the latest devices
 
 ## [4.5.3] - 2025.06.05
- - An issue has been fixed where the label of the push token was hidden when the token was locked.
- - The navigation bar is no longer superimposed over the app content on some devices.
+ - An issue has been fixed where the label of the push token was hidden when the token was locked
+ - The navigation bar is no longer superimposed over the app content on some devices
 
 ## [4.5.2] - 2025.04.25
  - Removed Push Token from the type selection of the "Add Token manually" scrren 

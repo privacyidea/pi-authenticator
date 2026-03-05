@@ -1084,25 +1084,25 @@
   "@patchNotesImprovements": {
     "description": "Title of the section in the patch notes that lists the improvements."
   },
-  "@patchNotesNewFeatures": {
+  "@patchNotesNewFeature": {
     "description": "Title of the section in the patch notes that lists the new features."
   },
-  "@patchNotesV4_3_0NewFeatures1": {
+  "@patchNotesV4_3_0NewFeature1": {
     "description": "Patch notes for a new feature in version 4.3.0."
   },
-  "@patchNotesV4_3_0NewFeatures2": {
+  "@patchNotesV4_3_0NewFeature2": {
     "description": "Patch notes for a new feature in version 4.3.0."
   },
-  "@patchNotesV4_3_0NewFeatures3": {
+  "@patchNotesV4_3_0NewFeature3": {
     "description": "Patch notes for a new feature in version 4.3.0."
   },
-  "@patchNotesV4_3_0NewFeatures4": {
+  "@patchNotesV4_3_0NewFeature4": {
     "description": "Patch notes for a new feature in version 4.3.0."
   },
-  "@patchNotesV4_3_0NewFeatures5": {
+  "@patchNotesV4_3_0NewFeature5": {
     "description": "Patch notes for a new feature in version 4.3.0."
   },
-  "@patchNotesV4_3_0NewFeatures6": {
+  "@patchNotesV4_3_0NewFeature6": {
     "description": "Patch notes for a new feature in version 4.3.0."
   },
   "@patchNotesV4_3_1BugFix1": {
@@ -1117,37 +1117,37 @@
   "@patchNotesV4_4_0Improvement2": {
     "description": "Patch notes for an improvement in version 4.4.0."
   },
-  "@patchNotesV4_4_0NewFeatures1": {
+  "@patchNotesV4_4_0NewFeature1": {
     "description": "Patch notes for a new feature in version 4.4.0."
   },
-  "@patchNotesV4_4_0NewFeatures2": {
+  "@patchNotesV4_4_0NewFeature2": {
     "description": "Patch notes for a new feature in version 4.4.0."
   },
   "@patchNotesV4_4_2Improvement1": {
     "description": "Patch notes for an improvement in version 4.4.2"
   },
-  "@patchNotesV4_4_2NewFeatures1": {
+  "@patchNotesV4_4_2NewFeature1": {
     "description": "Patch notes for a new feature in version 4.4.2"
   },
-  "@patchNotesV4_4_2NewFeatures2": {
+  "@patchNotesV4_4_2NewFeature2": {
     "description": "Patch notes for a new feature in version 4.4.2"
   },
   "@patchNotesV4_5_0BugFix1": {
     "description": "Patch notes for a bug fix in version 4.5.0."
   },
-  "@patchNotesV4_5_0NewFeatures1": {
+  "@patchNotesV4_5_0NewFeature1": {
     "description": "Patch notes for version 4.5.0"
   },
   "@patchNotesV4_5_1BugFix1": {
     "description": "Patch notes for a bug fix in version 4.5.1"
   },
-  "@patchNotesV4_5_1NewFeatures1": {
+  "@patchNotesV4_5_1NewFeature1": {
     "description": "Patch notes for a new feature in version 4.5.1"
   },
-  "@patchNotesV4_5_1NewFeatures2": {
+  "@patchNotesV4_5_1NewFeature2": {
     "description": "Patch notes for a new feature in version 4.5.1"
   },
-  "@patchNotesV4_5_1NewFeatures3": {
+  "@patchNotesV4_5_1NewFeature3": {
     "description": "Patch notes for a new feature in version 4.5.1"
   },
   "@patchNotesV4_5_3BugFix1": {
@@ -1155,6 +1155,30 @@
   },
   "@patchNotesV4_5_3BugFix2": {
     "description": "Patch notes for a bug fix in version 4.5.2"
+  },
+  "@patchNotesV4_6_0BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.6.0"
+  },
+  "@patchNotesV4_6_0Improvement1": {
+    "description": "Patch notes for an improvement in version 4.6.0"
+  },
+  "@patchNotesV4_6_1BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.6.1"
+  },
+  "@patchNotesV4_6_1Improvement1": {
+    "description": "Patch notes for an improvement in version 4.6.1"
+  },
+  "@patchNotesV4_6_2BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.6.1"
+  },
+  "@patchNotesV4_6_2Improvement1": {
+    "description": "Patch notes for an improvement in version 4.6.1"
+  },
+  "@patchNotesV4_6_2Improvement2": {
+    "description": "Patch notes for an improvement in version 4.6.1"
+  },
+  "@patchNotesV4_6_2NewFeature1": {
+    "description": "Patch notes for a new feature in version 4.6.1"
   },
   "@period": {
     "description": "Title of the dropdown button where the period of the totp token is selected."
@@ -1902,30 +1926,38 @@
   "patchNotesBugFixes": "Perbaikan bug",
   "patchNotesDialogTitle": "Apa yang baru?",
   "patchNotesImprovements": "Perbaikan",
-  "patchNotesNewFeatures": "Fitur baru",
-  "patchNotesV4_3_0NewFeatures1": "Dukungan untuk mengimpor token dari Google, Aegis dan 2FAS Authenticator telah ditambahkan. Lebih banyak sumber impor akan ditambahkan di masa mendatang.",
-  "patchNotesV4_3_0NewFeatures2": "Menambahkan opsi umpan balik ke pengaturan.",
-  "patchNotesV4_3_0NewFeatures3": "Token push sekarang dapat disembunyikan dari daftar token.",
-  "patchNotesV4_3_0NewFeatures4": "Pengantar telah ditambahkan untuk membantu pengguna baru memulai.",
-  "patchNotesV4_3_0NewFeatures5": "Sekarang Anda dapat mencari token dengan mengetuk kaca pembesar di sudut kanan atas.",
-  "patchNotesV4_3_0NewFeatures6": "Menambahkan token HomeWidget untuk Android 12 dan yang lebih baru.",
+  "patchNotesNewFeature": "Fitur baru",
+  "patchNotesV4_3_0NewFeature1": "Dukungan untuk mengimpor token dari Google, Aegis dan 2FAS Authenticator telah ditambahkan. Lebih banyak sumber impor akan ditambahkan di masa mendatang.",
+  "patchNotesV4_3_0NewFeature2": "Menambahkan opsi umpan balik ke pengaturan.",
+  "patchNotesV4_3_0NewFeature3": "Token push sekarang dapat disembunyikan dari daftar token.",
+  "patchNotesV4_3_0NewFeature4": "Pengantar telah ditambahkan untuk membantu pengguna baru memulai.",
+  "patchNotesV4_3_0NewFeature5": "Sekarang Anda dapat mencari token dengan mengetuk kaca pembesar di sudut kanan atas.",
+  "patchNotesV4_3_0NewFeature6": "Menambahkan token HomeWidget untuk Android 12 dan yang lebih baru.",
   "patchNotesV4_3_1BugFix1": "Memperbaiki masalah di mana nilai otp tidak ditampilkan setelah otentikasi pada beberapa perangkat.",
   "patchNotesV4_3_1Improvement1": "Meningkatkan pemindai kode qr.",
   "patchNotesV4_4_0Improvement1": "Sumber impor lebih lanjut telah ditambahkan.",
   "patchNotesV4_4_0Improvement2": "Peningkatan pengenalan kode QR dari file gambar.",
-  "patchNotesV4_4_0NewFeatures1": "Sekarang dimungkinkan untuk mengekspor token di mana dapat dipastikan bahwa itu bukan token privacyIDEA. Saat ini, tidak dapat dikesampingkan bahwa token yang ditambahkan melalui pemindai kode QR berasal dari privacyIDEA. Diferensiasi akan ditingkatkan di versi mendatang.",
-  "patchNotesV4_4_0NewFeatures2": "Menambahkan dukungan untuk privacyIDEA ",
+  "patchNotesV4_4_0NewFeature1": "Sekarang dimungkinkan untuk mengekspor token di mana dapat dipastikan bahwa itu bukan token privacyIDEA. Saat ini, tidak dapat dikesampingkan bahwa token yang ditambahkan melalui pemindai kode QR berasal dari privacyIDEA. Diferensiasi akan ditingkatkan di versi mendatang.",
+  "patchNotesV4_4_0NewFeature2": "Menambahkan dukungan untuk privacyIDEA ",
   "patchNotesV4_4_2Improvement1": "Menambahkan dukungan senter untuk pemindaian kode QR.",
-  "patchNotesV4_4_2NewFeatures1": "Token sekarang dapat dimasukkan menggunakan salin & tempel.",
-  "patchNotesV4_4_2NewFeatures2": "Menambahkan dukungan galeri untuk pemindaian kode QR.",
+  "patchNotesV4_4_2NewFeature1": "Token sekarang dapat dimasukkan menggunakan salin & tempel.",
+  "patchNotesV4_4_2NewFeature2": "Menambahkan dukungan galeri untuk pemindaian kode QR.",
   "patchNotesV4_5_0BugFix1": "Memperbaiki masalah kecil",
-  "patchNotesV4_5_0NewFeatures1": "Dukungan sistem kontainer privacyIDEA untuk pengelolaan token yang lebih mudah",
+  "patchNotesV4_5_0NewFeature1": "Dukungan sistem kontainer privacyIDEA untuk pengelolaan token yang lebih mudah",
   "patchNotesV4_5_1BugFix1": "Memperbaiki beberapa masalah kecil",
-  "patchNotesV4_5_1NewFeatures1": "Menambahkan pengaturan untuk menampilkan/menyembunyikan gambar latar belakang",
-  "patchNotesV4_5_1NewFeatures2": "Menambahkan pengaturan untuk memungkinkan pengambilan tangkapan layar",
-  "patchNotesV4_5_1NewFeatures3": "Token TOTP sekarang berubah warna dalam 5 detik terakhir untuk menunjukkan akhir periode",
+  "patchNotesV4_5_1NewFeature1": "Menambahkan pengaturan untuk menampilkan/menyembunyikan gambar latar belakang",
+  "patchNotesV4_5_1NewFeature2": "Menambahkan pengaturan untuk memungkinkan pengambilan tangkapan layar",
+  "patchNotesV4_5_1NewFeature3": "Token TOTP sekarang berubah warna dalam 5 detik terakhir untuk menunjukkan akhir periode",
   "patchNotesV4_5_3BugFix1": "Memperbaiki masalah di mana Label Token Push disembunyikan saat token dikunci.",
   "patchNotesV4_5_3BugFix2": "Bilah navigasi di beberapa perangkat tidak lagi menutupi konten aplikasi.",
+  "patchNotesV4_6_0BugFix1": "Beberapa bug kecil telah diperbaiki untuk meningkatkan stabilitas aplikasi.",
+  "patchNotesV4_6_0Improvement1": "Komponen internal telah diperbarui untuk menjaga keamanan dan memastikan kompatibilitas dengan perangkat terbaru.",
+  "patchNotesV4_6_1BugFix1": "Perbaikan kesalahan pada panel ekspansi TokenFolder",
+  "patchNotesV4_6_1Improvement1": "Memperbarui beberapa dependensi.",
+  "patchNotesV4_6_2BugFix1": "Perbaikan kesalahan yang terjadi saat keluar dari tampilan kamera terlalu cepat.",
+  "patchNotesV4_6_2Improvement1": "Catatan kesalahan sekarang digulir dari bawah ke atas agar catatan terbaru ditampilkan terlebih dahulu.",
+  "patchNotesV4_6_2Improvement2": "Memperbarui beberapa dependensi.",
+  "patchNotesV4_6_2NewFeature1": "Ditambahkan dukungan untuk fitur baru ‘Kirim kode ke ponsel’.",
   "period": "Periode",
   "phonePart": "Bagian telepon:",
   "piServerCode": "Kode Server PI: {code}",

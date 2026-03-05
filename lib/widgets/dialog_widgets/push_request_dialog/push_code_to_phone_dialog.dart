@@ -79,7 +79,7 @@ class _PushCodeToPhoneDialogState extends ConsumerState<PushCodeToPhoneDialog> {
       AppLocalizations.of(
         context,
       )!.otpValueCopiedMessage(widget.pushRequest.displayCode),
-      ref: ref,
+      context: context,
     );
 
     Future.delayed(const Duration(seconds: 2), () {

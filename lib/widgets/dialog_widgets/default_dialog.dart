@@ -23,8 +23,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../utils/riverpod/riverpod_providers/generated_providers/messenger_stack.dart';
-
 class DefaultDialog extends ConsumerWidget {
   final bool? scrollable;
   final Widget? title;
@@ -55,66 +53,41 @@ class DefaultDialog extends ConsumerWidget {
             child: Container(color: Colors.transparent),
           ),
         ),
-        ScaffoldMessenger(
-          child: Scaffold(
-            backgroundColor: Colors.transparent,
-            body: Builder(
-              builder: (dialogContext) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  ref.read(messengerStackProvider.notifier).push(dialogContext);
-                });
-
-                return PopScope(
-                  onPopInvokedWithResult: (didPop, result) {
-                    if (didPop) {
-                      ref
-                          .read(messengerStackProvider.notifier)
-                          .pop(dialogContext);
-                    }
-                  },
-                  child: AlertDialog(
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        color: Theme.of(context).dividerColor,
-                        width: 1.5,
-                      ),
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    actionsAlignment: actionsAlignment ?? MainAxisAlignment.end,
-                    scrollable: scrollable ?? false,
-                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                    actionsPadding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-                    buttonPadding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
-                    insetPadding: const EdgeInsets.fromLTRB(12, 24, 12, 8),
-                    titlePadding: const EdgeInsets.all(10),
-                    contentPadding: const EdgeInsets.fromLTRB(14, 0, 14, 8),
-                    elevation: 2,
-                    title: Row(
-                      children: [
-                        Expanded(
-                          child: DefaultTextStyle(
-                            style: Theme.of(context).textTheme.titleLarge!,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            child: title ?? const SizedBox(),
-                          ),
-                        ),
-                        if (hasCloseButton)
-                          IconButton(
-                            icon: Icon(Icons.close, size: closeButtonSize),
-                            onPressed: () => Navigator.of(context).pop(),
-                          ),
-                      ],
-                    ),
-                    actions: actions,
-                    content: DefaultTextStyle(
-                      style: Theme.of(context).textTheme.bodyLarge!,
-                      child: content ?? const SizedBox(),
-                    ),
-                  ),
-                );
-              },
-            ),
+        AlertDialog(
+          shape: RoundedRectangleBorder(
+            side: BorderSide(color: Theme.of(context).dividerColor, width: 1.5),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          actionsAlignment: actionsAlignment ?? MainAxisAlignment.end,
+          scrollable: scrollable ?? false,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          actionsPadding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+          buttonPadding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+          insetPadding: const EdgeInsets.fromLTRB(12, 24, 12, 8),
+          titlePadding: const EdgeInsets.all(10),
+          contentPadding: const EdgeInsets.fromLTRB(14, 0, 14, 8),
+          elevation: 2,
+          title: Row(
+            children: [
+              Expanded(
+                child: DefaultTextStyle(
+                  style: Theme.of(context).textTheme.titleLarge!,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  child: title ?? const SizedBox(),
+                ),
+              ),
+              if (hasCloseButton)
+                IconButton(
+                  icon: Icon(Icons.close, size: closeButtonSize),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+            ],
+          ),
+          actions: actions,
+          content: DefaultTextStyle(
+            style: Theme.of(context).textTheme.bodyLarge!,
+            child: content ?? const SizedBox(),
           ),
         ),
       ],

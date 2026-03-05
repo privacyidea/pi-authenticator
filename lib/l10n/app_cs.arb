@@ -1084,25 +1084,25 @@
   "@patchNotesImprovements": {
     "description": "Title of the section in the patch notes that lists the improvements."
   },
-  "@patchNotesNewFeatures": {
+  "@patchNotesNewFeature": {
     "description": "Title of the section in the patch notes that lists the new features."
   },
-  "@patchNotesV4_3_0NewFeatures1": {
+  "@patchNotesV4_3_0NewFeature1": {
     "description": "Patch notes for a new feature in version 4.3.0."
   },
-  "@patchNotesV4_3_0NewFeatures2": {
+  "@patchNotesV4_3_0NewFeature2": {
     "description": "Patch notes for a new feature in version 4.3.0."
   },
-  "@patchNotesV4_3_0NewFeatures3": {
+  "@patchNotesV4_3_0NewFeature3": {
     "description": "Patch notes for a new feature in version 4.3.0."
   },
-  "@patchNotesV4_3_0NewFeatures4": {
+  "@patchNotesV4_3_0NewFeature4": {
     "description": "Patch notes for a new feature in version 4.3.0."
   },
-  "@patchNotesV4_3_0NewFeatures5": {
+  "@patchNotesV4_3_0NewFeature5": {
     "description": "Patch notes for a new feature in version 4.3.0."
   },
-  "@patchNotesV4_3_0NewFeatures6": {
+  "@patchNotesV4_3_0NewFeature6": {
     "description": "Patch notes for a new feature in version 4.3.0."
   },
   "@patchNotesV4_3_1BugFix1": {
@@ -1117,37 +1117,37 @@
   "@patchNotesV4_4_0Improvement2": {
     "description": "Patch notes for an improvement in version 4.4.0."
   },
-  "@patchNotesV4_4_0NewFeatures1": {
+  "@patchNotesV4_4_0NewFeature1": {
     "description": "Patch notes for a new feature in version 4.4.0."
   },
-  "@patchNotesV4_4_0NewFeatures2": {
+  "@patchNotesV4_4_0NewFeature2": {
     "description": "Patch notes for a new feature in version 4.4.0."
   },
   "@patchNotesV4_4_2Improvement1": {
     "description": "Patch notes for an improvement in version 4.4.2"
   },
-  "@patchNotesV4_4_2NewFeatures1": {
+  "@patchNotesV4_4_2NewFeature1": {
     "description": "Patch notes for a new feature in version 4.4.2"
   },
-  "@patchNotesV4_4_2NewFeatures2": {
+  "@patchNotesV4_4_2NewFeature2": {
     "description": "Patch notes for a new feature in version 4.4.2"
   },
   "@patchNotesV4_5_0BugFix1": {
     "description": "Patch notes for a bug fix in version 4.5.0."
   },
-  "@patchNotesV4_5_0NewFeatures1": {
+  "@patchNotesV4_5_0NewFeature1": {
     "description": "Patch notes for version 4.5.0"
   },
   "@patchNotesV4_5_1BugFix1": {
     "description": "Patch notes for a bug fix in version 4.5.1"
   },
-  "@patchNotesV4_5_1NewFeatures1": {
+  "@patchNotesV4_5_1NewFeature1": {
     "description": "Patch notes for a new feature in version 4.5.1"
   },
-  "@patchNotesV4_5_1NewFeatures2": {
+  "@patchNotesV4_5_1NewFeature2": {
     "description": "Patch notes for a new feature in version 4.5.1"
   },
-  "@patchNotesV4_5_1NewFeatures3": {
+  "@patchNotesV4_5_1NewFeature3": {
     "description": "Patch notes for a new feature in version 4.5.1"
   },
   "@patchNotesV4_5_3BugFix1": {
@@ -1155,6 +1155,30 @@
   },
   "@patchNotesV4_5_3BugFix2": {
     "description": "Patch notes for a bug fix in version 4.5.2"
+  },
+  "@patchNotesV4_6_0BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.6.0"
+  },
+  "@patchNotesV4_6_0Improvement1": {
+    "description": "Patch notes for an improvement in version 4.6.0"
+  },
+  "@patchNotesV4_6_1BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.6.1"
+  },
+  "@patchNotesV4_6_1Improvement1": {
+    "description": "Patch notes for an improvement in version 4.6.1"
+  },
+  "@patchNotesV4_6_2BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.6.1"
+  },
+  "@patchNotesV4_6_2Improvement1": {
+    "description": "Patch notes for an improvement in version 4.6.1"
+  },
+  "@patchNotesV4_6_2Improvement2": {
+    "description": "Patch notes for an improvement in version 4.6.1"
+  },
+  "@patchNotesV4_6_2NewFeature1": {
+    "description": "Patch notes for a new feature in version 4.6.1"
   },
   "@period": {
     "description": "Title of the dropdown button where the period of the totp token is selected."
@@ -1668,10 +1692,6 @@
   "autoCloseAppAfterAcceptingPushRequestDescription": "Pokud je povoleno, aplikace se automaticky zavře po přijetí požadavku na push.",
   "autoCloseAppAfterAcceptingPushRequestTitle": "Zavřít aplikaci po přijetí požadavku",
   "backgroundImage": "Obrázek na pozadí",
-  "biometricHint": "Vyžadováno přihlášení",
-  "biometricNotRecognized": "Ověření se nezdařilo. Zkuste to znovu.",
-  "biometricRequiredTitle": "Biometrické ověření není nastaveno",
-  "biometricSuccess": "Přihlášení bylo úspěšné",
   "butDiscardIt": "ale zahodit jej",
   "cancel": "Zrušit",
   "cannotNavigateWithoutContext": "Nelze navigovat bez kontextu.",
@@ -1906,30 +1926,38 @@
   "patchNotesBugFixes": "Opravy chyb",
   "patchNotesDialogTitle": "Co je nového?",
   "patchNotesImprovements": "Improvements",
-  "patchNotesNewFeatures": "Nové funkce",
-  "patchNotesV4_3_0NewFeatures1": "Přidána podpora pro import tokenů z Google, Aegis a 2FAS Authenticator. Další zdroje importu budou přidány v budoucnu.",
-  "patchNotesV4_3_0NewFeatures2": "Do nastavení byla přidána možnost zpětné vazby.",
-  "patchNotesV4_3_0NewFeatures3": "Tokeny Push lze nyní skrýt ze seznamu tokenů.",
-  "patchNotesV4_3_0NewFeatures4": "Byly přidány úvodní informace, které novým uživatelům usnadní začátky.",
-  "patchNotesV4_3_0NewFeatures5": "Žetony nyní můžete vyhledávat klepnutím na lupu v pravém horním rohu.",
-  "patchNotesV4_3_0NewFeatures6": "Přidán token HomeWidget pro systém Android 12 a novější.",
+  "patchNotesNewFeature": "Nové funkce",
+  "patchNotesV4_3_0NewFeature1": "Přidána podpora pro import tokenů z Google, Aegis a 2FAS Authenticator. Další zdroje importu budou přidány v budoucnu.",
+  "patchNotesV4_3_0NewFeature2": "Do nastavení byla přidána možnost zpětné vazby.",
+  "patchNotesV4_3_0NewFeature3": "Tokeny Push lze nyní skrýt ze seznamu tokenů.",
+  "patchNotesV4_3_0NewFeature4": "Byly přidány úvodní informace, které novým uživatelům usnadní začátky.",
+  "patchNotesV4_3_0NewFeature5": "Žetony nyní můžete vyhledávat klepnutím na lupu v pravém horním rohu.",
+  "patchNotesV4_3_0NewFeature6": "Přidán token HomeWidget pro systém Android 12 a novější.",
   "patchNotesV4_3_1BugFix1": "Opraven problém, kdy nebyla zobrazena hodnota otp po ověření na některých zařízeních.",
   "patchNotesV4_3_1Improvement1": "Skener QR kódů byl vylepšen.",
   "patchNotesV4_4_0Improvement1": "Byly přidány další dovozní zdroje.",
   "patchNotesV4_4_0Improvement2": "Bylo vylepšeno rozpoznávání QR kódů z obrazových souborů.",
-  "patchNotesV4_4_0NewFeatures1": "Nyní je možné exportovat tokeny, u kterých lze zajistit, že se nejedná o tokeny privacyIDEA. V současné době nelze vyloučit, že tokeny přidané prostřednictvím čtečky QR kódů pocházejí z aplikace privacyIDEA. Rozlišování bude v budoucích verzích vylepšeno.",
-  "patchNotesV4_4_0NewFeatures2": "Přidána podpora pro “require presence“ aplikace privacyIDEA.",
+  "patchNotesV4_4_0NewFeature1": "Nyní je možné exportovat tokeny, u kterých lze zajistit, že se nejedná o tokeny privacyIDEA. V současné době nelze vyloučit, že tokeny přidané prostřednictvím čtečky QR kódů pocházejí z aplikace privacyIDEA. Rozlišování bude v budoucích verzích vylepšeno.",
+  "patchNotesV4_4_0NewFeature2": "Přidána podpora pro “require presence“ aplikace privacyIDEA.",
   "patchNotesV4_4_2Improvement1": "Přidána podpora svítilny pro skenování QR kódů.",
-  "patchNotesV4_4_2NewFeatures1": "Žetony lze nyní vkládat pomocí kopírování a vkládání.",
-  "patchNotesV4_4_2NewFeatures2": "Přidána podpora galerie pro skenování QR kódů.",
+  "patchNotesV4_4_2NewFeature1": "Žetony lze nyní vkládat pomocí kopírování a vkládání.",
+  "patchNotesV4_4_2NewFeature2": "Přidána podpora galerie pro skenování QR kódů.",
   "patchNotesV4_5_0BugFix1": "Opravené drobné problémy",
-  "patchNotesV4_5_0NewFeatures1": "Podpora kontejnerového systému privacyIDEA pro snadnější správu tokenů",
+  "patchNotesV4_5_0NewFeature1": "Podpora kontejnerového systému privacyIDEA pro snadnější správu tokenů",
   "patchNotesV4_5_1BugFix1": "Opraveno několik drobných problémů",
-  "patchNotesV4_5_1NewFeatures1": "Přidáno nastavení pro zobrazení/skrytí obrázku na pozadí",
-  "patchNotesV4_5_1NewFeatures2": "Přidáno nastavení umožňující pořizování snímků obrazovky",
-  "patchNotesV4_5_1NewFeatures3": "Žeton TOTP nyní mění barvu v posledních 5 sekundách, aby indikoval konec periody.",
+  "patchNotesV4_5_1NewFeature1": "Přidáno nastavení pro zobrazení/skrytí obrázku na pozadí",
+  "patchNotesV4_5_1NewFeature2": "Přidáno nastavení umožňující pořizování snímků obrazovky",
+  "patchNotesV4_5_1NewFeature3": "Žeton TOTP nyní mění barvu v posledních 5 sekundách, aby indikoval konec periody.",
   "patchNotesV4_5_3BugFix1": "Opraven problém, kdy byl popisek Push tokenu skrytý, když byl token uzamčený.",
   "patchNotesV4_5_3BugFix2": "Navigační lišta na některých zařízeních již není překryta přes obsah aplikace.",
+  "patchNotesV4_6_0BugFix1": "Bylo opraveno několik drobných chyb, aby se zlepšila stabilita aplikace.",
+  "patchNotesV4_6_0Improvement1": "Interní komponenty byly aktualizovány, aby byla zachována bezpečnost a zajištěna kompatibilita s nejnovějšími zařízeními.",
+  "patchNotesV4_6_1BugFix1": "Opravena chyba v rozbalovacím panelu TokenFolder.",
+  "patchNotesV4_6_1Improvement1": "Aktualizováno několik závislostí.",
+  "patchNotesV4_6_2BugFix1": "Opravena chyba, ke které docházelo při příliš rychlém opuštění zobrazení kamery.",
+  "patchNotesV4_6_2Improvement1": "Chybový protokol se nyní posouvá zdola nahoru, aby byly nejnovější záznamy zobrazeny jako první.",
+  "patchNotesV4_6_2Improvement2": "Aktualizováno několik závislostí.",
+  "patchNotesV4_6_2NewFeature1": "Přidána podpora nové funkce „Odeslat kód do telefonu“.",
   "period": "Časový interval",
   "phonePart": "Klientská část:",
   "piServerCode": "Kód serveru PI: {code}",

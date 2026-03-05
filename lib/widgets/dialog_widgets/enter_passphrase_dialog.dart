@@ -28,11 +28,11 @@ class EnterPassphraseDialog extends StatefulWidget {
   final String question;
 
   static Future<String?> show(String question) => showAsyncDialog(
-        builder: (context) => BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-          child: EnterPassphraseDialog(question: question),
-        ),
-      );
+    builder: (context) => BackdropFilter(
+      filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+      child: EnterPassphraseDialog(question: question),
+    ),
+  );
 
   const EnterPassphraseDialog({super.key, required this.question});
 
@@ -67,7 +67,9 @@ class _EnterPassphraseDialogState extends State<EnterPassphraseDialog> {
       ),
       actions: [
         TextButton(
-          onPressed: text.isNotEmpty ? () => Navigator.of(context).pop(text) : null,
+          onPressed: text.isNotEmpty
+              ? () => Navigator.of(context).pop(text)
+              : null,
           child: Text(appLocalizations.ok),
         ),
       ],

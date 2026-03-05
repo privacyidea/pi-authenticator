@@ -30,9 +30,9 @@ class ShowErrorLogButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ErrorlogButton(
-        onPressed: () => _pressShowErrorLog(context),
-        text: AppLocalizations.of(context)!.showErrorLog,
-      );
+    onPressed: () => _pressShowErrorLog(context),
+    text: AppLocalizations.of(context)!.showErrorLog,
+  );
 }
 
 void _pressShowErrorLog(BuildContext context) {
@@ -49,31 +49,39 @@ void _pressShowErrorLog(BuildContext context) {
     builder: (context) {
       final size = MediaQuery.of(context).size;
       return Padding(
-        padding: EdgeInsets.symmetric(horizontal: size.width * 0.04, vertical: size.height * 0.085),
+        padding: EdgeInsets.symmetric(
+          horizontal: size.width * 0.04,
+          vertical: size.height * 0.085,
+        ),
         child: DefaultDialog(
           title: Text(AppLocalizations.of(context)!.errorLogTitle),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
               child: Text(AppLocalizations.of(context)!.dismiss),
-            )
+            ),
           ],
           content: SingleChildScrollView(
+            reverse: true,
             physics: const BouncingScrollPhysics(),
             scrollDirection: Axis.vertical,
             child: FutureBuilder<Object>(
-                future: Logger.getErrorLog(),
-                builder: (context, errorLog) {
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: errorLog.data != null
-                        ? Text(
-                            errorLog.data.toString(),
-                            style: const TextStyle(fontFamily: 'monospace', fontSize: 8),
-                          )
-                        : const CircularProgressIndicator.adaptive(),
-                  );
-                }),
+              future: Logger.getErrorLog(),
+              builder: (context, errorLog) {
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: errorLog.data != null
+                      ? Text(
+                          errorLog.data.toString(),
+                          style: const TextStyle(
+                            fontFamily: 'monospace',
+                            fontSize: 8,
+                          ),
+                        )
+                      : const CircularProgressIndicator.adaptive(),
+                );
+              },
+            ),
           ),
         ),
       );

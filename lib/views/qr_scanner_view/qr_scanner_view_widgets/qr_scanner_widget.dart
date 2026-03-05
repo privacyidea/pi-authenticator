@@ -35,10 +35,17 @@ class _QRScannerWidgetState extends State<QRScannerWidget> {
 
   @override
   Widget build(BuildContext context) => Material(
-        color: Colors.black,
-        child: Semantics(
-          label: isInitialized ? AppLocalizations.of(context)!.a11yScanQrCodeViewActive : AppLocalizations.of(context)!.a11yScanQrCodeViewInactive,
-          child: ReaderWidget(
+    color: Colors.black,
+    child: Semantics(
+      label: isInitialized
+          ? AppLocalizations.of(context)!.a11yScanQrCodeViewActive
+          : AppLocalizations.of(context)!.a11yScanQrCodeViewInactive,
+      child: Builder(
+        builder: (context) {
+          ErrorWidget.builder = (details) {
+            return const SizedBox.shrink();
+          };
+          return ReaderWidget(
             onControllerCreated: (controller, _) {
               if (!mounted) return;
               setState(() => isInitialized = controller != null);
@@ -46,11 +53,15 @@ class _QRScannerWidgetState extends State<QRScannerWidget> {
             actionButtonsAlignment: Alignment.bottomRight,
             showFlashlight: true,
             flashOnIcon: Semantics(
-              label: AppLocalizations.of(context)!.a11yScanQrCodeViewFlashlightOn,
+              label: AppLocalizations.of(
+                context,
+              )!.a11yScanQrCodeViewFlashlightOn,
               child: const Icon(Icons.flash_on),
             ),
             flashOffIcon: Semantics(
-              label: AppLocalizations.of(context)!.a11yScanQrCodeViewFlashlightOff,
+              label: AppLocalizations.of(
+                context,
+              )!.a11yScanQrCodeViewFlashlightOff,
               child: const Icon(Icons.flash_off),
             ),
             showGallery: true,
@@ -69,9 +80,11 @@ class _QRScannerWidgetState extends State<QRScannerWidget> {
               cutOutSize: MediaQuery.of(context).size.width * 0.7,
             ),
             onScan: _onQrCaptured,
-          ),
-        ),
-      );
+          );
+        },
+      ),
+    ),
+  );
 
   void _onQrCaptured(Code qrCode) {
     if (!mounted) return;
