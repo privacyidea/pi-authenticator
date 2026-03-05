@@ -90,7 +90,7 @@ class PushDefaultDialog extends ConsumerWidget with PushDialogMixin {
       );
       final pr = PushCodeToPhoneRequest(
         title: pushRequest.title,
-        question: pushRequest.question,
+        question: response.detail!.message ?? pushRequest.question,
         uri: pushRequest.uri,
         expirationDate: pushRequest.expirationDate,
         nonce: pushRequest.nonce,
