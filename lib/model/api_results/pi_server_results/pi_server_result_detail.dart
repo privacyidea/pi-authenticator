@@ -53,11 +53,17 @@ class EmptyResultDetail extends PiServerResultDetail {
 class PushResultDetail extends PiServerResultDetail {
   static const String DISPLAY_CODE = 'display_code';
   static const String THREAD_ID = 'threadid';
+  static const String MESSAGE = 'message';
 
   final String? displayCode;
   final int? threadId;
+  final String? message;
 
-  const PushResultDetail({required this.displayCode, required this.threadId});
+  const PushResultDetail({
+    required this.displayCode,
+    required this.threadId,
+    this.message,
+  });
 
   factory PushResultDetail.fromUriMap(Map<String, dynamic> uriMap) {
     final map = validateMap(
@@ -65,12 +71,14 @@ class PushResultDetail extends PiServerResultDetail {
       validators: {
         DISPLAY_CODE: const ObjectValidatorNullable<String>(),
         THREAD_ID: const ObjectValidatorNullable<int>(),
+        MESSAGE: const ObjectValidatorNullable<String>(),
       },
       name: 'ContainerChallenge#fromUriMap',
     );
     return PushResultDetail(
       displayCode: map[DISPLAY_CODE] as String?,
       threadId: map[THREAD_ID] as int?,
+      message: map[MESSAGE] as String?,
     );
   }
 

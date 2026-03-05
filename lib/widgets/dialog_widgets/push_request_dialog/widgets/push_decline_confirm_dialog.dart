@@ -24,10 +24,9 @@ import 'package:flutter/material.dart';
 import '../../../../../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../utils/customization/theme_extentions/push_request_theme.dart';
-import '../../../padded_row.dart';
 import 'push_action_button.dart';
 
-class PushDeclineConfirmDialog extends StatefulWidget {
+class PushDeclineConfirmDialog extends StatelessWidget {
   static Future<void> showDialogWidget({
     required BuildContext context,
     required Future<void> Function() onDecline,
@@ -59,14 +58,6 @@ class PushDeclineConfirmDialog extends StatefulWidget {
   });
 
   @override
-  State<PushDeclineConfirmDialog> createState() =>
-      _PushDeclineConfirmDialogState();
-}
-
-class _PushDeclineConfirmDialogState extends State<PushDeclineConfirmDialog> {
-  late Timer expirationTimer;
-
-  @override
   Widget build(BuildContext context) {
     final pushRequestTheme =
         (Theme.of(context).extensions[PushRequestTheme] as PushRequestTheme);
@@ -75,7 +66,7 @@ class _PushDeclineConfirmDialogState extends State<PushDeclineConfirmDialog> {
 
     return DefaultDialog(
       title: Text(
-        widget.title,
+        title,
         style: textTheme.titleMedium,
         textAlign: TextAlign.center,
       ),
@@ -91,56 +82,50 @@ class _PushDeclineConfirmDialogState extends State<PushDeclineConfirmDialog> {
               textAlign: TextAlign.center,
             ),
           ),
-          PaddedRow(
-            peddingPercent: 0.33,
-            child: PushActionButton(
-              backgroundColor: pushRequestTheme.acceptColor,
-              onPressed: () async {
-                await widget.onDiscard();
-                if (context.mounted && Navigator.of(context).canPop()) {
-                  Navigator.of(context).pop();
-                }
-              },
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(localizations.yes, style: textTheme.titleSmall),
-                  FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(
-                      localizations.butDiscardIt,
-                      style: textTheme.bodySmall?.copyWith(
-                        color: textTheme.titleSmall?.color,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 8),
-          PaddedRow(
-            peddingPercent: 0.33,
-            child: PushActionButton(
-              backgroundColor: pushRequestTheme.declineColor,
-              onPressed: () async {
-                await widget.onDecline();
-                if (context.mounted && Navigator.of(context).canPop()) {
-                  Navigator.of(context).pop();
-                }
-              },
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(localizations.no, style: textTheme.titleSmall),
-                  Text(
-                    localizations.declineIt,
+          PushActionButton(
+            backgroundColor: pushRequestTheme.acceptColor,
+            onPressed: () async {
+              await onDiscard();
+              if (context.mounted && Navigator.of(context).canPop()) {
+                Navigator.of(context).pop();
+              }
+            },
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(localizations.yes, style: textTheme.titleSmall),
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    localizations.butDiscardIt,
                     style: textTheme.bodySmall?.copyWith(
                       color: textTheme.titleSmall?.color,
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 8),
+          PushActionButton(
+            backgroundColor: pushRequestTheme.declineColor,
+            onPressed: () async {
+              await onDecline();
+              if (context.mounted && Navigator.of(context).canPop()) {
+                Navigator.of(context).pop();
+              }
+            },
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(localizations.no, style: textTheme.titleSmall),
+                Text(
+                  localizations.declineIt,
+                  style: textTheme.bodySmall?.copyWith(
+                    color: textTheme.titleSmall?.color,
+                  ),
+                ),
+              ],
             ),
           ),
         ],

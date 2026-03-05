@@ -39,7 +39,6 @@ import '../../../utils/riverpod/riverpod_providers/generated_providers/push_requ
 import '../../../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import '../../../utils/utils.dart';
 import '../../../utils/view_utils.dart';
-import '../../padded_row.dart';
 import '../default_dialog.dart';
 import 'widgets/push_decline_confirm_dialog.dart';
 import 'widgets/push_request_base_info.dart';
@@ -136,12 +135,15 @@ mixin PushDialogMixin {
         )) {
       return;
     }
-    if (!ref.context.mounted) return;
     final response = await ref
         .read(pushRequestProvider.notifier)
         .decline(token, pushRequest);
     if (!context.mounted || response == null) {
       return;
+    }
+
+    if (context.mounted) {
+      _onHandled(context: context, ref: ref, response: response);
     }
   }
 
@@ -155,6 +157,9 @@ mixin PushDialogMixin {
     }
     if (!ref.context.mounted) return;
     await ref.read(pushRequestProvider.notifier).remove(pushRequest);
+    if (context.mounted) {
+      _onHandled(context: context, ref: ref);
+    }
   }
 
   void
@@ -178,6 +183,10 @@ mixin PushDialogMixin {
     final settings = ref.read(settingsProvider).value;
     if (settings?.autoCloseAppAfterAcceptingPushRequest == true) {
       SystemNavigator.pop();
+    }
+
+    if (context.mounted && Navigator.of(context).canPop()) {
+      Navigator.of(context).pop();
     }
   }
 
