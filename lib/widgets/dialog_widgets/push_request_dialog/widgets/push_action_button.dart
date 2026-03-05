@@ -20,23 +20,27 @@
 import 'package:flutter/material.dart';
 
 import '../../../button_widgets/cooldown_button.dart';
+import '../../../padded_row.dart';
 
 class PushActionButton extends StatelessWidget {
   final Future<void> Function() onPressed;
   final Widget child;
   final Color backgroundColor;
-  final double? height;
+  final double height;
   final OutlinedBorder? shape;
   final bool isDisabled;
+  final bool noPadding;
 
   const PushActionButton({
     super.key,
     required this.onPressed,
     required this.child,
     required this.backgroundColor,
-    this.height,
+    this.height = 36.0,
+
     this.shape,
     this.isDisabled = false,
+    this.noPadding = false,
   });
 
   @override
@@ -46,12 +50,11 @@ class PushActionButton extends StatelessWidget {
     final defaultShape = RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(8),
       side: BorderSide(
-        color: isDisabled ? theme.disabledColor : theme.colorScheme.onPrimary,
+        color: isDisabled ? theme.disabledColor : theme.dividerColor,
         width: 2.5,
       ),
     );
-
-    return CooldownButton(
+    final button = CooldownButton(
       style: ButtonStyle(
         backgroundColor: WidgetStateProperty.all(
           isDisabled ? theme.disabledColor : backgroundColor,
@@ -74,5 +77,7 @@ class PushActionButton extends StatelessWidget {
         ),
       ),
     );
+    if (noPadding) return button;
+    return PaddedRow(peddingPercent: 0.33, child: button);
   }
 }

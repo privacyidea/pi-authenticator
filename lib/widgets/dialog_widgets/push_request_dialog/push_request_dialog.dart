@@ -39,7 +39,6 @@ import '../../../utils/riverpod/riverpod_providers/generated_providers/push_requ
 import '../../../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import '../../../utils/utils.dart';
 import '../../../utils/view_utils.dart';
-import '../../padded_row.dart';
 import '../default_dialog.dart';
 import 'widgets/push_decline_confirm_dialog.dart';
 import 'widgets/push_request_base_info.dart';

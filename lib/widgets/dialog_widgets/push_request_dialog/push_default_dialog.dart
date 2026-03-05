@@ -48,30 +48,22 @@ class PushDefaultDialog extends ConsumerWidget with PushDialogMixin {
           const SizedBox(height: 12),
           PushRequestBaseInfo(token: token, pushRequest: pushRequest),
           const SizedBox(height: 24),
-          PaddedRow(
-            peddingPercent: 0.33,
-            child: PushActionButton(
-              backgroundColor: theme.acceptColor,
-              height: 36.0,
-              onPressed: () => _handleAccept(context, ref),
-              child: Text(l10n.accept),
-            ),
+          PushActionButton(
+            backgroundColor: theme.acceptColor,
+            onPressed: () => _handleAccept(context, ref),
+            child: Text(l10n.accept),
           ),
           const SizedBox(height: 8),
-          PaddedRow(
-            peddingPercent: 0.33,
-            child: PushActionButton(
-              backgroundColor: theme.declineColor,
-              height: 36.0,
-              onPressed: () => PushDeclineConfirmDialog.showDialogWidget(
-                context: context,
-                onDecline: () => handleDecline(context, ref),
-                onDiscard: () => handleDiscard(context, ref),
-                title: pushRequest.title,
-                expirationDate: pushRequest.expirationDate,
-              ),
-              child: Text(l10n.decline),
+          PushActionButton(
+            backgroundColor: theme.declineColor,
+            onPressed: () => PushDeclineConfirmDialog.showDialogWidget(
+              context: context,
+              onDecline: () => handleDecline(context, ref),
+              onDiscard: () => handleDiscard(context, ref),
+              title: pushRequest.title,
+              expirationDate: pushRequest.expirationDate,
             ),
+            child: Text(l10n.decline),
           ),
         ],
       ),
