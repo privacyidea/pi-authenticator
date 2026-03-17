@@ -20,12 +20,19 @@
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../utils/object_validator.dart';
+import '../utils/object_validator/base_validator.dart';
+import '../utils/object_validator/object_validators.dart';
+import '../utils/object_validator/required_object_validator.dart';
 
 part 'container_policies.freezed.dart';
 part 'container_policies.g.dart';
 
-@Freezed(toStringOverride: false, addImplicitFinal: true, toJson: true, fromJson: true)
+@Freezed(
+  toStringOverride: false,
+  addImplicitFinal: true,
+  toJson: true,
+  fromJson: true,
+)
 sealed class ContainerPolicies with _$ContainerPolicies {
   static const DISABLED_UNREGISTER = 'disable_client_container_unregister';
   static const DISABLED_TOKEN_DELETION = 'disable_client_token_deletion';
@@ -48,10 +55,22 @@ sealed class ContainerPolicies with _$ContainerPolicies {
     disabledUnregister: false,
   );
 
+  static final validator = RequiredObjectValidator<ContainerPolicies>(
+    transformer: (v) {
+      if (v is ContainerPolicies) return v;
+      if (v is Map<String, dynamic>) {
+        return ContainerPolicies.fromUriMap(v);
+      }
+      throw ArgumentError(
+        'Invalid type for ContainerPolicies: ${v.runtimeType}, value: $v',
+      );
+    },
+  );
+
   static ContainerPolicies fromUriMap(Map<String, dynamic> map) {
     final validated = validateMap(
       map: map,
-      validators: {
+      validators: <String, BaseValidator<bool>>{
         ROLLOVER_ALLOWED: boolValidator,
         INITIAL_TOKEN_ASSIGNMENT: boolValidator,
         DISABLED_TOKEN_DELETION: boolValidator,
@@ -74,5 +93,6 @@ sealed class ContainerPolicies with _$ContainerPolicies {
     DISABLED_UNREGISTER: disabledUnregister,
   };
 
-  factory ContainerPolicies.fromJson(Map<String, dynamic> json) => _$ContainerPoliciesFromJson(json);
+  factory ContainerPolicies.fromJson(Map<String, dynamic> json) =>
+      _$ContainerPoliciesFromJson(json);
 }

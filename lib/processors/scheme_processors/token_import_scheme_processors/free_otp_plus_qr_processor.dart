@@ -17,7 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import 'package:privacyidea_authenticator/utils/object_validator.dart';
+import 'package:privacyidea_authenticator/utils/object_validator/required_object_validator.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 
 import '../../../model/enums/token_origin_source_type.dart';
@@ -28,11 +28,15 @@ import '../../../utils/token_import_origins.dart';
 import 'otp_auth_processor.dart';
 
 class FreeOtpPlusQrProcessor extends OtpAuthProcessor {
-  static ObjectValidator<TokenNotifier> get resultHandlerType => OtpAuthProcessor.resultHandlerType;
+  static RequiredObjectValidator<TokenNotifier> get resultHandlerType =>
+      OtpAuthProcessor.resultHandlerType;
   const FreeOtpPlusQrProcessor();
 
   @override
-  Future<List<ProcessorResult<Token>>> processUri(Uri uri, {bool fromInit = false}) => _processOtpAuth(uri);
+  Future<List<ProcessorResult<Token>>> processUri(
+    Uri uri, {
+    bool fromInit = false,
+  }) => _processOtpAuth(uri);
 
   Future<List<ProcessorResult<Token>>> _processOtpAuth(Uri uri) async {
     final results = (await super.processUri(uri)).toList();

@@ -21,12 +21,14 @@ import '../../../../../../../model/exception_errors/localized_argument_error.dar
 import '../../model/processor_result.dart';
 import '../../model/token_container.dart';
 import '../../utils/logger.dart';
-import '../../utils/object_validator.dart';
+import '../../utils/object_validator/object_validators.dart';
+import '../../utils/object_validator/required_object_validator.dart';
 import '../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 import 'scheme_processor_interface.dart';
 
 class TokenContainerProcessor extends SchemeProcessor {
-  static const resultHandlerType = ObjectValidator<TokenContainerNotifier>();
+  static const resultHandlerType =
+      RequiredObjectValidator<TokenContainerNotifier>();
   static const scheme = 'pia';
   static const host = 'container';
 
@@ -35,33 +37,50 @@ class TokenContainerProcessor extends SchemeProcessor {
   static const String ARG_INIT_SYNC = 'initSync';
   static const String ARG_URL_IS_OK = 'urlIsOk';
 
-  static Map<String, bool?> validateArgs(Map<String, dynamic> args) => validateMap(
-    map: args,
-    validators: {
-      TokenContainerProcessor.ARG_DO_REPLACE: boolValidatorNullable,
-      TokenContainerProcessor.ARG_ADD_DEVICE_INFOS: boolValidatorNullable,
-      TokenContainerProcessor.ARG_INIT_SYNC: boolValidatorNullable,
-      TokenContainerProcessor.ARG_URL_IS_OK: boolValidatorNullable,
-    },
-    name: 'TokenContainerProcessor#validateArgs',
-  );
+  static Map<String, bool?> validateArgs(Map<String, dynamic> args) =>
+      validateMap(
+        map: args,
+        validators: {
+          TokenContainerProcessor.ARG_DO_REPLACE: boolValidatorOptional,
+          TokenContainerProcessor.ARG_ADD_DEVICE_INFOS: boolValidatorOptional,
+          TokenContainerProcessor.ARG_INIT_SYNC: boolValidatorOptional,
+          TokenContainerProcessor.ARG_URL_IS_OK: boolValidatorOptional,
+        },
+        name: 'TokenContainerProcessor#validateArgs',
+      );
 
   @override
   Set<String> get supportedSchemes => {scheme};
 
   const TokenContainerProcessor();
   @override
-  Future<List<ProcessorResult<TokenContainer>>?> processUri(Uri uri, {bool fromInit = false}) async {
+  Future<List<ProcessorResult<TokenContainer>>?> processUri(
+    Uri uri, {
+    bool fromInit = false,
+  }) async {
     if (!supportedSchemes.contains(uri.scheme)) return null;
     if (uri.host != host) return null;
 
     try {
       final container = TokenContainer.fromUriMap(uri.queryParameters);
       Logger.info('Successfully parsed container container');
-      return [ProcessorResult.success(container, resultHandlerType: resultHandlerType)];
+      return [
+        ProcessorResult.success(
+          container,
+          resultHandlerType: resultHandlerType,
+        ),
+      ];
     } on LocalizedArgumentError catch (e) {
-      Logger.warning('Error while processing URI ${uri.scheme}', error: e.message);
-      return [ProcessorResult.failed((localization) => e.localizedMessage(localization), resultHandlerType: resultHandlerType)];
+      Logger.warning(
+        'Error while processing URI ${uri.scheme}',
+        error: e.message,
+      );
+      return [
+        ProcessorResult.failed(
+          (localization) => e.localizedMessage(localization),
+          resultHandlerType: resultHandlerType,
+        ),
+      ];
     }
   }
 }

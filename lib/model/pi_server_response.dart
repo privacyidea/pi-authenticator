@@ -23,7 +23,10 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:http/http.dart';
 
 import '../utils/logger.dart';
-import '../utils/object_validator.dart';
+import '../utils/object_validator/base_validator.dart';
+import '../utils/object_validator/object_validators.dart';
+import '../utils/object_validator/optional_object_validator.dart';
+import '../utils/object_validator/required_object_validator.dart';
 import 'api_results/pi_server_results/pi_server_result.dart';
 import 'api_results/pi_server_results/pi_server_result_detail.dart';
 import 'api_results/pi_server_results/pi_server_result_value.dart';
@@ -84,30 +87,36 @@ sealed class PiServerResponse<
     D extends PiServerResultDetail
   >(Map<String, dynamic> json, {int statisCode = 200}) {
     Logger.debug('Received container sync response: $json');
-    final map = validateMap<dynamic>(
+    final map = validateMap(
       map: json,
-      validators: {
-        ID: const ObjectValidator<int>(),
-        JSONRPC: const ObjectValidator<String>(),
-        RESULT: const ObjectValidator<Map<String, dynamic>>(),
-        TIME: const ObjectValidator<double>(),
-        VERSION: ObjectValidator<String>(allowedValues: (v) => v.contains(' ')),
-        VERSION_NUMBER: const ObjectValidatorNullable<String>(),
-        DETAIL: const ObjectValidatorNullable<dynamic>(),
-        SIGNATURE: const ObjectValidator<String>(),
+      validators: <String, BaseValidator>{
+        ID: const RequiredObjectValidator<int>(),
+        JSONRPC: stringValidator,
+        RESULT: const RequiredObjectValidator<Map<String, dynamic>>(),
+        TIME: const RequiredObjectValidator<double>(),
+        VERSION: RequiredObjectValidator<String>(
+          allowedValues: (v) => v.contains(' '),
+        ),
+        VERSION_NUMBER: stringValidatorOptional,
+        DETAIL: const OptionalObjectValidator<Object>(),
+        SIGNATURE: stringValidator,
       },
       name: 'PiServerResponse#fromJson',
     );
     return PiServerResponse<V, D>.success(
       statusCode: statisCode,
-      id: map[ID],
-      jsonrpc: map[JSONRPC],
-      result: PiServerResult<V>.fromResultMap(map[RESULT]),
-      time: map[TIME],
-      version: map[VERSION],
-      versionNumber: map[VERSION_NUMBER] ?? map[VERSION].split(' ')[1],
+      id: map[ID] as int,
+      jsonrpc: map[JSONRPC] as String,
+      result: PiServerResult<V>.fromResultMap(
+        map[RESULT] as Map<String, dynamic>,
+      ),
+      time: map[TIME] as double,
+      version: map[VERSION] as String,
+      versionNumber:
+          map[VERSION_NUMBER] as String? ??
+          (map[VERSION] as String).split(' ')[1],
       detail: PiServerResultDetail.fromResultDetail<D>(map[DETAIL]),
-      signature: map[SIGNATURE],
+      signature: map[SIGNATURE] as String,
     );
   }
 

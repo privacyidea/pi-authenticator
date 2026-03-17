@@ -40,12 +40,14 @@ import '../../processors/scheme_processors/token_import_scheme_processors/otp_au
 import '../../processors/token_import_file_processor/two_fas_import_file_processor.dart';
 import '../../utils/encryption/aes_encrypted.dart';
 import '../../utils/logger.dart';
-import '../../utils/object_validator.dart';
+import '../../utils/object_validator/object_validators.dart';
+import '../../utils/object_validator/required_object_validator.dart';
 import '../../utils/token_import_origins.dart';
 import 'token_import_file_processor_interface.dart';
 
 class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
-  static ObjectValidator<TokenNotifier> get resultHandlerType => TokenImportFileProcessor.resultHandlerType;
+  static RequiredObjectValidator<TokenNotifier> get resultHandlerType =>
+      TokenImportFileProcessor.resultHandlerType;
   static const String header = "AUTHENTICATORPRO";
   static const String headerLegacy = "AuthenticatorPro";
 
@@ -66,7 +68,11 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
     //   5: 'Yandex', // Not supported
   };
 
-  static final algorithmMap = {0: Algorithms.SHA1.name, 1: Algorithms.SHA256.name, 2: Algorithms.SHA512.name};
+  static final algorithmMap = {
+    0: Algorithms.SHA1.name,
+    1: Algorithms.SHA256.name,
+    2: Algorithms.SHA512.name,
+  };
 
   const AuthenticatorProImportFileProcessor();
 
@@ -85,11 +91,19 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
       } catch (e) {}
       try {
         // Check if it's a list of URIs
-        List<String> lines = contentString.split('\n')..removeWhere((element) => element.isEmpty);
-        if (lines.every((line) => line.isEmpty || line.startsWith('otpauth://'))) return true;
+        List<String> lines = contentString.split('\n')
+          ..removeWhere((element) => element.isEmpty);
+        if (lines.every(
+          (line) => line.isEmpty || line.startsWith('otpauth://'),
+        )) {
+          return true;
+        }
       } catch (e) {}
       // Its utf8 encoded, but not a JSON, HTML or URI list, so it's not valid -> return false
-      Logger.warning('File is not a valid Authenticator Pro backup file', error: 'Invalid content: $contentString');
+      Logger.warning(
+        'File is not a valid Authenticator Pro backup file',
+        error: 'Invalid content: $contentString',
+      );
       return false;
     } catch (e) {
       // When utf8 decoding fails, it's may be encrypted
@@ -101,7 +115,10 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
           return true;
         }
       } catch (e) {}
-      Logger.warning('File is not a valid Authenticator Pro backup file', error: 'Content Bytes: $contentBytes');
+      Logger.warning(
+        'File is not a valid Authenticator Pro backup file',
+        error: 'Content Bytes: $contentBytes',
+      );
     }
     // It's not utf8 encoded and not encrypted, so it's not valid -> return false
     return false;
@@ -128,7 +145,10 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
   }
 
   @override
-  Future<List<ProcessorResult<Token>>> processFile(XFile file, {String? password}) async {
+  Future<List<ProcessorResult<Token>>> processFile(
+    XFile file, {
+    String? password,
+  }) async {
     var results = <ProcessorResult<Token>>[];
     final bytes = await file.readAsBytes();
     Uint8Buffer uint8buffer = Uint8Buffer(data: bytes);
@@ -136,8 +156,14 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
     final fileHeader = utf8.decode(uint8buffer.readBytes(headerByteLength));
     Logger.info('File header: $fileHeader');
     final plainText = switch (fileHeader) {
-      header => await _processEncrypted(uint8buffer: uint8buffer, password: password ?? ''),
-      headerLegacy => await _processEncryptedLegacy(uint8buffer: uint8buffer, password: password ?? ''),
+      header => await _processEncrypted(
+        uint8buffer: uint8buffer,
+        password: password ?? '',
+      ),
+      headerLegacy => await _processEncryptedLegacy(
+        uint8buffer: uint8buffer,
+        password: password ?? '',
+      ),
       _ => utf8.decode(bytes),
     };
     results = await _processPlain(fileContent: plainText);
@@ -156,7 +182,10 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
     }).toList();
   }
 
-  Future<String> _processEncrypted({required Uint8Buffer uint8buffer, required String password}) async {
+  Future<String> _processEncrypted({
+    required Uint8Buffer uint8buffer,
+    required String password,
+  }) async {
     // Modern version uses Argon2id
     const int keySize = 32; // 32 bytes = 256 bits
     const int memoryCost = 65536; // 2^16 KiB = 64 MiB
@@ -187,7 +216,10 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
     }
   }
 
-  Future<String> _processEncryptedLegacy({required Uint8Buffer uint8buffer, required String password}) async {
+  Future<String> _processEncryptedLegacy({
+    required Uint8Buffer uint8buffer,
+    required String password,
+  }) async {
     // Legacy uses PBKDF2
     const int iterations = 64000;
     // keySize = 256 bits
@@ -218,13 +250,23 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
     }
   }
 
-  Future<List<ProcessorResult<Token>>> _processPlain({required String fileContent}) async {
+  Future<List<ProcessorResult<Token>>> _processPlain({
+    required String fileContent,
+  }) async {
     try {
-      final tokensMap = (json.decode(fileContent)['Authenticators'].cast<Map<String, dynamic>>()) as List<Map<String, dynamic>>;
+      final tokensMap =
+          (json
+                  .decode(fileContent)['Authenticators']
+                  .cast<Map<String, dynamic>>())
+              as List<Map<String, dynamic>>;
       return _processJson(tokensMap: tokensMap);
     } catch (e) {
       try {
-        final lines = fileContent.split('\n').where((e) => e.isNotEmpty).map((e) => Uri.parse(e)).toList();
+        final lines = fileContent
+            .split('\n')
+            .where((e) => e.isNotEmpty)
+            .map((e) => Uri.parse(e))
+            .toList();
         return _processUriList(lines: lines);
       } catch (e) {
         if (fileContent.startsWith('<!doctype html>')) {
@@ -235,23 +277,41 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
     return [];
   }
 
-  Future<List<ProcessorResult<Token>>> _processUriList({required List<Uri> lines}) async {
+  Future<List<ProcessorResult<Token>>> _processUriList({
+    required List<Uri> lines,
+  }) async {
     final results = <ProcessorResult<Token>>[];
     for (var uri in lines) {
       try {
         final newResults = await const OtpAuthProcessor().processUri(uri);
         results.addAll(newResults);
       } on LocalizedException catch (e) {
-        results.add(ProcessorResult.failed((localization) => e.localizedMessage(localization), resultHandlerType: resultHandlerType));
+        results.add(
+          ProcessorResult.failed(
+            (localization) => e.localizedMessage(localization),
+            resultHandlerType: resultHandlerType,
+          ),
+        );
       } catch (e) {
-        Logger.error('Failed to parse token.', error: e, stackTrace: StackTrace.current);
-        results.add(ProcessorResultFailed((_) => e.toString(), resultHandlerType: resultHandlerType));
+        Logger.error(
+          'Failed to parse token.',
+          error: e,
+          stackTrace: StackTrace.current,
+        );
+        results.add(
+          ProcessorResultFailed(
+            (_) => e.toString(),
+            resultHandlerType: resultHandlerType,
+          ),
+        );
       }
     }
     return results;
   }
 
-  Future<List<ProcessorResult<Token>>> _processHtml({required String fileContent}) async {
+  Future<List<ProcessorResult<Token>>> _processHtml({
+    required String fileContent,
+  }) async {
     RegExp exp = RegExp(r'(?<=(\<code\>)).*(?=(\<\/code\>))');
     final results = <ProcessorResult<Token>>[];
     try {
@@ -278,15 +338,31 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
         }
       }
     } on LocalizedException catch (e) {
-      results.add(ProcessorResult.failed((localization) => e.localizedMessage(localization), resultHandlerType: resultHandlerType));
+      results.add(
+        ProcessorResult.failed(
+          (localization) => e.localizedMessage(localization),
+          resultHandlerType: resultHandlerType,
+        ),
+      );
     } catch (e) {
-      Logger.error('Failed to parse token.', error: e, stackTrace: StackTrace.current);
-      results.add(ProcessorResultFailed((_) => e.toString(), resultHandlerType: resultHandlerType));
+      Logger.error(
+        'Failed to parse token.',
+        error: e,
+        stackTrace: StackTrace.current,
+      );
+      results.add(
+        ProcessorResultFailed(
+          (_) => e.toString(),
+          resultHandlerType: resultHandlerType,
+        ),
+      );
     }
     return results;
   }
 
-  Future<List<ProcessorResult<Token>>> _processJson({required List<Map<String, dynamic>> tokensMap}) async {
+  Future<List<ProcessorResult<Token>>> _processJson({
+    required List<Map<String, dynamic>> tokensMap,
+  }) async {
     Logger.info('Processing plain file');
     final result = <ProcessorResult<Token>>[];
     for (var tokenMap in tokensMap) {
@@ -310,14 +386,16 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
             HOTPToken.COUNTER: tokenMap[_AUTHENTICATOR_PRO_COUNTER],
           },
           validators: {
-            Token.TOKENTYPE_OTPAUTH: const ObjectValidator<String>(),
-            Token.ISSUER: const ObjectValidator<String>(),
-            Token.LABEL: const ObjectValidator<String>(),
-            OTPToken.SECRET_BASE32: const ObjectValidator<String>(),
+            Token.TOKENTYPE_OTPAUTH: stringValidator,
+            Token.ISSUER: stringValidator,
+            Token.LABEL: stringValidator,
+            OTPToken.SECRET_BASE32: stringValidator,
             OTPToken.DIGITS: intToStringValidator,
             TOTPToken.PERIOD_SECONDS: intToStringValidator,
             HOTPToken.COUNTER: intToStringValidator,
-            OTPToken.ALGORITHM: ObjectValidator<String>(transformer: (value) => algorithmMap[value]!),
+            OTPToken.ALGORITHM: RequiredObjectValidator<String>(
+              transformer: (value) => algorithmMap[value]!,
+            ),
           },
           name: 'AuthenticatorProToken',
         );
@@ -332,12 +410,28 @@ class AuthenticatorProImportFileProcessor extends TokenImportFileProcessor {
             ),
           },
         );
-        result.add(ProcessorResultSuccess(token, resultHandlerType: resultHandlerType));
+        result.add(
+          ProcessorResultSuccess(token, resultHandlerType: resultHandlerType),
+        );
       } on LocalizedException catch (e) {
-        result.add(ProcessorResult.failed((localization) => e.localizedMessage(localization), resultHandlerType: resultHandlerType));
+        result.add(
+          ProcessorResult.failed(
+            (localization) => e.localizedMessage(localization),
+            resultHandlerType: resultHandlerType,
+          ),
+        );
       } catch (e) {
-        Logger.error('Failed to parse token.', error: e, stackTrace: StackTrace.current);
-        result.add(ProcessorResultFailed((_) => e.toString(), resultHandlerType: resultHandlerType));
+        Logger.error(
+          'Failed to parse token.',
+          error: e,
+          stackTrace: StackTrace.current,
+        );
+        result.add(
+          ProcessorResultFailed(
+            (_) => e.toString(),
+            resultHandlerType: resultHandlerType,
+          ),
+        );
       }
     }
     return result;

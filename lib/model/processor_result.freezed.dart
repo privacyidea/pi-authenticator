@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ProcessorResult<T> {
 
- ObjectValidator<ResultHandler>? get resultHandlerType;
+ RequiredObjectValidator<ResultHandler>? get resultHandlerType;
 /// Create a copy of ProcessorResult
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -45,7 +45,7 @@ abstract mixin class $ProcessorResultCopyWith<T,$Res>  {
   factory $ProcessorResultCopyWith(ProcessorResult<T> value, $Res Function(ProcessorResult<T>) _then) = _$ProcessorResultCopyWithImpl;
 @useResult
 $Res call({
- ObjectValidator<ResultHandler>? resultHandlerType
+ RequiredObjectValidator<ResultHandler>? resultHandlerType
 });
 
 
@@ -65,7 +65,7 @@ class _$ProcessorResultCopyWithImpl<T,$Res>
 @pragma('vm:prefer-inline') @override $Res call({Object? resultHandlerType = freezed,}) {
   return _then(_self.copyWith(
 resultHandlerType: freezed == resultHandlerType ? _self.resultHandlerType : resultHandlerType // ignore: cast_nullable_to_non_nullable
-as ObjectValidator<ResultHandler>?,
+as RequiredObjectValidator<ResultHandler>?,
   ));
 }
 
@@ -153,7 +153,7 @@ return failed(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( T resultData,  ObjectValidator<ResultHandler>? resultHandlerType)?  success,TResult Function( String Function(AppLocalizations) message,  dynamic error,  ObjectValidator<ResultHandler>? resultHandlerType)?  failed,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( T resultData,  RequiredObjectValidator<ResultHandler>? resultHandlerType)?  success,TResult Function( String Function(AppLocalizations) message,  dynamic error,  RequiredObjectValidator<ResultHandler>? resultHandlerType)?  failed,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case ProcessorResultSuccess() when success != null:
 return success(_that.resultData,_that.resultHandlerType);case ProcessorResultFailed() when failed != null:
@@ -175,7 +175,7 @@ return failed(_that.message,_that.error,_that.resultHandlerType);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( T resultData,  ObjectValidator<ResultHandler>? resultHandlerType)  success,required TResult Function( String Function(AppLocalizations) message,  dynamic error,  ObjectValidator<ResultHandler>? resultHandlerType)  failed,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( T resultData,  RequiredObjectValidator<ResultHandler>? resultHandlerType)  success,required TResult Function( String Function(AppLocalizations) message,  dynamic error,  RequiredObjectValidator<ResultHandler>? resultHandlerType)  failed,}) {final _that = this;
 switch (_that) {
 case ProcessorResultSuccess():
 return success(_that.resultData,_that.resultHandlerType);case ProcessorResultFailed():
@@ -196,7 +196,7 @@ return failed(_that.message,_that.error,_that.resultHandlerType);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( T resultData,  ObjectValidator<ResultHandler>? resultHandlerType)?  success,TResult? Function( String Function(AppLocalizations) message,  dynamic error,  ObjectValidator<ResultHandler>? resultHandlerType)?  failed,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( T resultData,  RequiredObjectValidator<ResultHandler>? resultHandlerType)?  success,TResult? Function( String Function(AppLocalizations) message,  dynamic error,  RequiredObjectValidator<ResultHandler>? resultHandlerType)?  failed,}) {final _that = this;
 switch (_that) {
 case ProcessorResultSuccess() when success != null:
 return success(_that.resultData,_that.resultHandlerType);case ProcessorResultFailed() when failed != null:
@@ -213,10 +213,10 @@ return failed(_that.message,_that.error,_that.resultHandlerType);case _:
 
 class ProcessorResultSuccess<T> extends ProcessorResult<T> {
   const ProcessorResultSuccess(this.resultData, {this.resultHandlerType}): super._();
-  
+
 
  final  T resultData;
-@override final  ObjectValidator<ResultHandler>? resultHandlerType;
+@override final  RequiredObjectValidator<ResultHandler>? resultHandlerType;
 
 /// Create a copy of ProcessorResult
 /// with the given fields replaced by the non-null parameter values.
@@ -248,7 +248,7 @@ abstract mixin class $ProcessorResultSuccessCopyWith<T,$Res> implements $Process
   factory $ProcessorResultSuccessCopyWith(ProcessorResultSuccess<T> value, $Res Function(ProcessorResultSuccess<T>) _then) = _$ProcessorResultSuccessCopyWithImpl;
 @override @useResult
 $Res call({
- T resultData, ObjectValidator<ResultHandler>? resultHandlerType
+ T resultData, RequiredObjectValidator<ResultHandler>? resultHandlerType
 });
 
 
@@ -269,7 +269,7 @@ class _$ProcessorResultSuccessCopyWithImpl<T,$Res>
   return _then(ProcessorResultSuccess<T>(
 freezed == resultData ? _self.resultData : resultData // ignore: cast_nullable_to_non_nullable
 as T,resultHandlerType: freezed == resultHandlerType ? _self.resultHandlerType : resultHandlerType // ignore: cast_nullable_to_non_nullable
-as ObjectValidator<ResultHandler>?,
+as RequiredObjectValidator<ResultHandler>?,
   ));
 }
 
@@ -281,11 +281,11 @@ as ObjectValidator<ResultHandler>?,
 
 class ProcessorResultFailed<T> extends ProcessorResult<T> {
   const ProcessorResultFailed(this.message, {this.error, this.resultHandlerType}): super._();
-  
+
 
  final  String Function(AppLocalizations) message;
  final  dynamic error;
-@override final  ObjectValidator<ResultHandler>? resultHandlerType;
+@override final  RequiredObjectValidator<ResultHandler>? resultHandlerType;
 
 /// Create a copy of ProcessorResult
 /// with the given fields replaced by the non-null parameter values.
@@ -317,7 +317,7 @@ abstract mixin class $ProcessorResultFailedCopyWith<T,$Res> implements $Processo
   factory $ProcessorResultFailedCopyWith(ProcessorResultFailed<T> value, $Res Function(ProcessorResultFailed<T>) _then) = _$ProcessorResultFailedCopyWithImpl;
 @override @useResult
 $Res call({
- String Function(AppLocalizations) message, dynamic error, ObjectValidator<ResultHandler>? resultHandlerType
+ String Function(AppLocalizations) message, dynamic error, RequiredObjectValidator<ResultHandler>? resultHandlerType
 });
 
 
@@ -339,7 +339,7 @@ class _$ProcessorResultFailedCopyWithImpl<T,$Res>
 null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
 as String Function(AppLocalizations),error: freezed == error ? _self.error : error // ignore: cast_nullable_to_non_nullable
 as dynamic,resultHandlerType: freezed == resultHandlerType ? _self.resultHandlerType : resultHandlerType // ignore: cast_nullable_to_non_nullable
-as ObjectValidator<ResultHandler>?,
+as RequiredObjectValidator<ResultHandler>?,
   ));
 }
 

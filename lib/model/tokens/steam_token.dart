@@ -23,7 +23,9 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../../../../model/token_template.dart';
-import '../../utils/object_validator.dart';
+import '../../utils/object_validator/base_validator.dart';
+import '../../utils/object_validator/object_validators.dart';
+import '../../utils/object_validator/required_object_validator.dart';
 import '../enums/algorithms.dart';
 import '../enums/token_types.dart';
 import '../extensions/int_extension.dart';
@@ -62,11 +64,11 @@ class SteamToken extends TOTPToken {
     super.issuer = '',
     super.isOffline,
   }) : super(
-          type: type ?? tokenType,
-          period: 30,
-          digits: 5,
-          algorithm: Algorithms.SHA1,
-        );
+         type: type ?? tokenType,
+         period: 30,
+         digits: 5,
+         algorithm: Algorithms.SHA1,
+       );
 
   @override
   SteamToken copyWith({
@@ -92,7 +94,9 @@ class SteamToken extends TOTPToken {
     return SteamToken(
       label: label ?? this.label,
       issuer: issuer ?? this.issuer,
-      containerSerial: containerSerial != null ? containerSerial() : this.containerSerial,
+      containerSerial: containerSerial != null
+          ? containerSerial()
+          : this.containerSerial,
       checkedContainer: checkedContainer ?? this.checkedContainer,
       id: id ?? this.id,
       secret: secret ?? this.secret,
@@ -112,18 +116,25 @@ class SteamToken extends TOTPToken {
   // bool sameValuesAs(Token other) => super.sameValuesAs(other);
 
   @override
-  bool isSameTokenAs(Token other) => super.isSameTokenAs(other) && other is SteamToken;
+  bool isSameTokenAs(Token other) =>
+      super.isSameTokenAs(other) && other is SteamToken;
 
   @override
   String otpFromTime(DateTime time) {
     // Flooring time/counter is TOTP default, but yes, steam uses the rounded time/counter.
-    final counterBytes = (time.millisecondsSinceEpoch / 1000 / period).round().bytes;
+    final counterBytes = (time.millisecondsSinceEpoch / 1000 / period)
+        .round()
+        .bytes;
     final secretList = base32.decode(secret.toUpperCase());
     final hmac = Hmac(sha1, secretList);
     final digest = hmac.convert(counterBytes).bytes;
     final offset = digest[digest.length - 1] & 0x0f;
 
-    var code = ((digest[offset] & 0x7f) << 24) | ((digest[offset + 1] & 0xff) << 16) | ((digest[offset + 2] & 0xff) << 8) | (digest[offset + 3] & 0xff);
+    var code =
+        ((digest[offset] & 0x7f) << 24) |
+        ((digest[offset + 1] & 0xff) << 16) |
+        ((digest[offset + 2] & 0xff) << 8) |
+        (digest[offset + 3] & 0xff);
 
     final stringBuffer = StringBuffer();
     for (int i = 0; i < digits; i++) {
@@ -145,13 +156,13 @@ class SteamToken extends TOTPToken {
   SteamToken copyUpdateByTemplate(TokenTemplate template) {
     final uriMap = validateMap(
       map: template.otpAuthMap,
-      validators: {
-        Token.LABEL: const ObjectValidatorNullable<String>(),
-        Token.ISSUER: const ObjectValidatorNullable<String>(),
-        Token.SERIAL: const ObjectValidatorNullable<String>(),
-        OTPToken.SECRET_BASE32: base32SecretValidatorNullable,
-        Token.IMAGE: const ObjectValidatorNullable<String>(),
-        Token.PIN: boolValidatorNullable,
+      validators: <String, BaseValidator>{
+        Token.LABEL: stringValidatorOptional,
+        Token.ISSUER: stringValidatorOptional,
+        Token.SERIAL: stringValidatorOptional,
+        OTPToken.SECRET_BASE32: base32StringValidatorOptional,
+        Token.IMAGE: stringValidatorOptional,
+        Token.PIN: boolValidatorOptional,
       },
       name: 'SteamToken',
     );
@@ -166,20 +177,25 @@ class SteamToken extends TOTPToken {
     );
   }
 
-  static SteamToken fromOtpAuthMap(Map<String, dynamic> uriMap, {Map<String, dynamic> additionalData = const {}}) {
+  static SteamToken fromOtpAuthMap(
+    Map<String, dynamic> uriMap, {
+    Map<String, dynamic> additionalData = const {},
+  }) {
     uriMap = validateMap(
       map: uriMap,
-      validators: {
-        Token.LABEL: const ObjectValidator<String>(defaultValue: ''),
-        Token.ISSUER: const ObjectValidator<String>(defaultValue: ''),
-        Token.SERIAL: const ObjectValidatorNullable<String>(),
-        OTPToken.SECRET_BASE32: base32Secretvalidator,
-        Token.IMAGE: const ObjectValidatorNullable<String>(),
-        Token.PIN: boolValidatorNullable,
+      validators: <String, BaseValidator>{
+        Token.LABEL: const RequiredObjectValidator<String>(defaultValue: ''),
+        Token.ISSUER: const RequiredObjectValidator<String>(defaultValue: ''),
+        Token.SERIAL: stringValidatorOptional,
+        OTPToken.SECRET_BASE32: base32Stringvalidator,
+        Token.IMAGE: stringValidatorOptional,
+        Token.PIN: boolValidatorOptional,
       },
       name: 'SteamToken#otpAuthMap',
     );
-    final validatedAdditionalData = Token.validateAdditionalData(additionalData);
+    final validatedAdditionalData = Token.validateAdditionalData(
+      additionalData,
+    );
     return SteamToken(
       label: uriMap[Token.LABEL],
       issuer: uriMap[Token.ISSUER],
@@ -201,7 +217,7 @@ class SteamToken extends TOTPToken {
   /// ```dart
   ///  ------------------------- [Token] -------------------------
   /// | Token.SERIAL: serial, (optional)                          |
-  /// | Token.TOKENTYPE_JSON: type,                                         |
+  /// | Token.TOKENTYPE_JSON: type,                               |
   /// | Token.LABEL: label,                                       |
   /// | Token.ISSUER: issuer,                                     |
   /// | Token.PIN: pin,                                           |
@@ -221,7 +237,8 @@ class SteamToken extends TOTPToken {
   @override
   Map<String, dynamic> toOtpAuthMap() => super.toOtpAuthMap();
 
-  static SteamToken fromJson(Map<String, dynamic> json) => _$SteamTokenFromJson(json);
+  static SteamToken fromJson(Map<String, dynamic> json) =>
+      _$SteamTokenFromJson(json);
   @override
   Map<String, dynamic> toJson() => _$SteamTokenToJson(this);
 }

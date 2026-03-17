@@ -38,7 +38,7 @@ import '../../../processors/mixins/token_import_processor.dart';
 import '../../../processors/scheme_processors/token_import_scheme_processors/token_import_scheme_processor_interface.dart';
 import '../../../processors/token_import_file_processor/token_import_file_processor_interface.dart';
 import '../../../utils/logger.dart';
-import '../../../utils/object_validator.dart';
+import '../../../utils/object_validator/required_object_validator.dart';
 import '../../qr_scanner_view/qr_scanner_view.dart';
 import '../import_tokens_view.dart';
 import 'import_encrypted_data_page.dart';
@@ -216,7 +216,7 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
           isPrivacyIdeaToken: false,
           data: t.resultData.origin?.data ?? fileString,
         ),
-        resultHandlerType: const ObjectValidator<TokenNotifier>(),
+        resultHandlerType: const RequiredObjectValidator<TokenNotifier>(),
       );
     }).toList();
 
@@ -251,7 +251,7 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
           token: t.resultData,
           data: t.resultData.origin?.data ?? uri.toString(),
         ),
-        resultHandlerType: const ObjectValidator<TokenNotifier>(),
+        resultHandlerType: const RequiredObjectValidator<TokenNotifier>(),
       );
     }).toList();
     Logger.info("QR code scanned successfully");
@@ -341,7 +341,7 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
           isPrivacyIdeaToken: false,
           data: _linkController.text,
         ),
-        resultHandlerType: const ObjectValidator<TokenNotifier>(),
+        resultHandlerType: const RequiredObjectValidator<TokenNotifier>(),
       );
     }).toList();
     if (!mounted) return null;

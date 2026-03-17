@@ -20,6 +20,8 @@
 import 'dart:convert';
 
 import '../../utils/logger.dart';
+import '../../utils/object_validator/base_validator.dart';
+import '../../utils/object_validator/object_validators.dart';
 import '../enums/algorithms.dart';
 import '../token_container.dart';
 import '../token_import/token_origin_data.dart';
@@ -42,9 +44,11 @@ abstract class OTPToken extends Token {
   /// The first value is the current otp value, the second value is the next otp value.
   static const String OTP_VALUES = 'otp';
 
-  final Algorithms algorithm; // the hashing algorithm that is used to calculate the otp value
+  final Algorithms
+  algorithm; // the hashing algorithm that is used to calculate the otp value
   final int digits; // the number of digits the otp value will have
-  final String secret; // the secret based on which the otp value is calculated in base32
+  final String
+  secret; // the secret based on which the otp value is calculated in base32
   String get otpValue; // the current otp value
   String get nextValue; // the next otp value
   Duration get showDuration {
@@ -72,6 +76,7 @@ abstract class OTPToken extends Token {
     super.label = '',
     super.issuer = '',
     super.isOffline,
+    super.forceBiometricOption,
   });
 
   // @override
@@ -114,6 +119,23 @@ abstract class OTPToken extends Token {
     return 'OTP${super.toString()}algorithm: $algorithm, digits: $digits, pin: $pin, ';
   }
 
+  static final Map<String, BaseValidator<Object>> otpAuthValidators = {
+    ...Token.otpAuthValidators,
+    ALGORITHM: algorithmsValidator.withDefault(Algorithms.SHA1),
+    DIGITS: otpAuthDigitsValidator.withDefault(6),
+    SECRET_BASE32: base32Stringvalidator,
+  };
+
+  static Map<String, Object> validateOtpAuthMap(
+    Map<String, dynamic> otpAuthMap,
+  ) {
+    return validateMap<Object>(
+      map: otpAuthMap,
+      validators: otpAuthValidators,
+      name: 'OTPToken#otpAuthMap',
+    );
+  }
+
   /// This is used to create a map that typically was created from a uri.
   /// ```dart
   ///  ------------------------- [Token] -------------------------------
@@ -123,7 +145,7 @@ abstract class OTPToken extends Token {
   /// | Token.CONTAINER_SERIAL: containerSerial, (optional)             |
   /// | Token.CHECKED_CONTAINERS: checkedContainer,                     |
   /// | Token.TOKEN_ID: id,                                             |
-  /// | Token.TOKENTYPE_JSON: type,                                               |
+  /// | Token.TOKENTYPE_JSON: type,                                     |
   /// | Token.IMAGE: tokenImage, (optional)                             |
   /// | Token.SORTABLE_INDEX: sortIndex, (optional)                     |
   /// | Token.FOLDER_ID: folderId, (optional)                           |
@@ -141,13 +163,12 @@ abstract class OTPToken extends Token {
   @override
   Map<String, dynamic> toOtpAuthMap() {
     Logger.debug('$OTP_VALUES ${jsonEncode([otpValue, nextValue])}');
-    return super.toOtpAuthMap()
-      ..addAll({
-        ALGORITHM: algorithm.name,
-        DIGITS: digits.toString(),
-        SECRET_BASE32: secret,
-        if (serial == null) OTP_VALUES: [otpValue, nextValue],
-      });
+    return super.toOtpAuthMap()..addAll({
+      ALGORITHM: algorithm.name,
+      DIGITS: digits.toString(),
+      SECRET_BASE32: secret,
+      if (serial == null) OTP_VALUES: [otpValue, nextValue],
+    });
   }
 
   @override

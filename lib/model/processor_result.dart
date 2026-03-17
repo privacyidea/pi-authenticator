@@ -23,7 +23,7 @@ import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 
 import '../utils/globals.dart';
 import '../utils/logger.dart';
-import '../utils/object_validator.dart';
+import '../utils/object_validator/required_object_validator.dart';
 import '../utils/riverpod/riverpod_providers/state_providers/status_message_provider.dart';
 import '../utils/view_utils.dart';
 
@@ -34,23 +34,29 @@ abstract class ProcessorResult<T> with _$ProcessorResult<T> {
   const ProcessorResult._();
   const factory ProcessorResult.success(
     T resultData, {
-    ObjectValidator<ResultHandler>? resultHandlerType,
+    RequiredObjectValidator<ResultHandler>? resultHandlerType,
   }) = ProcessorResultSuccess;
   const factory ProcessorResult.failed(
     String Function(AppLocalizations) message, {
     dynamic error,
-    ObjectValidator<ResultHandler>? resultHandlerType,
+    RequiredObjectValidator<ResultHandler>? resultHandlerType,
   }) = ProcessorResultFailed;
 
   bool get isSuccess => this is ProcessorResultSuccess<T>;
   bool get isFailed => this is ProcessorResultFailed<T>;
-  ProcessorResultSuccess<T>? get asSuccess => this is ProcessorResultSuccess<T> ? this as ProcessorResultSuccess<T> : null;
-  ProcessorResultFailed<T>? get asFailed => this is ProcessorResultFailed<T> ? this as ProcessorResultFailed<T> : null;
+  ProcessorResultSuccess<T>? get asSuccess => this is ProcessorResultSuccess<T>
+      ? this as ProcessorResultSuccess<T>
+      : null;
+  ProcessorResultFailed<T>? get asFailed => this is ProcessorResultFailed<T>
+      ? this as ProcessorResultFailed<T>
+      : null;
 }
 
 extension ListProcessorResult<T> on List<ProcessorResult<T>> {
-  List<ProcessorResultSuccess<T>> get successResults => where((element) => element.isSuccess).map((e) => e.asSuccess!).toList();
-  List<ProcessorResultFailed<T>> get failedResults => where((element) => !element.isSuccess).map((e) => e.asFailed!).toList();
+  List<ProcessorResultSuccess<T>> get successResults =>
+      where((element) => element.isSuccess).map((e) => e.asSuccess!).toList();
+  List<ProcessorResultFailed<T>> get failedResults =>
+      where((element) => !element.isSuccess).map((e) => e.asFailed!).toList();
 
   List<T> getData() {
     final results = toList();
@@ -71,13 +77,22 @@ extension ListProcessorResult<T> on List<ProcessorResult<T>> {
       }
     });
 
-    final successData = results.where((result) => result.isSuccess).map((e) => e.asSuccess!.resultData).toList();
+    final successData = results
+        .where((result) => result.isSuccess)
+        .map((e) => e.asSuccess!.resultData)
+        .toList();
     return successData;
   }
 }
 
 mixin ResultHandler {
   static const argTokenOriginSourceType = "TokenOriginSourceType";
-  Future handleProcessorResult(ProcessorResult result, {Map<String, dynamic> args = const {}});
-  Future handleProcessorResults(List<ProcessorResult> results, {Map<String, dynamic> args = const {}});
+  Future handleProcessorResult(
+    ProcessorResult result, {
+    Map<String, dynamic> args = const {},
+  });
+  Future handleProcessorResults(
+    List<ProcessorResult> results, {
+    Map<String, dynamic> args = const {},
+  });
 }
