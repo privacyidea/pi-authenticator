@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 import '../../../utils/logger.dart';
-import '../../../utils/object_validator.dart';
+import '../../../utils/object_validator/object_validators.dart';
 
 sealed class PiServerResultDetail {
   static D? fromResultDetail<D extends PiServerResultDetail>(
@@ -68,10 +68,10 @@ class PushResultDetail extends PiServerResultDetail {
   factory PushResultDetail.fromUriMap(Map<String, dynamic> uriMap) {
     final map = validateMap(
       map: uriMap,
-      validators: {
-        DISPLAY_CODE: const ObjectValidatorNullable<String>(),
-        THREAD_ID: const ObjectValidatorNullable<int>(),
-        MESSAGE: const ObjectValidatorNullable<String>(),
+      validators: <String, BaseValidator>{
+        DISPLAY_CODE: stringValidatorOptional,
+        THREAD_ID: const OptionalObjectValidator<int>(),
+        MESSAGE: stringValidatorOptional,
       },
       name: 'ContainerChallenge#fromUriMap',
     );

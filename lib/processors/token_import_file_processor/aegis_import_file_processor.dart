@@ -39,7 +39,7 @@ import '../../model/tokens/otp_token.dart';
 import '../../model/tokens/token.dart';
 import '../../model/tokens/totp_token.dart';
 import '../../utils/logger.dart';
-import '../../utils/object_validator.dart';
+import '../../utils/object_validator/object_validators.dart';
 import '../../utils/token_import_origins.dart';
 import 'token_import_file_processor_interface.dart';
 import 'two_fas_import_file_processor.dart';
@@ -60,7 +60,8 @@ void _isolatedKdf(List args) {
 }
 
 class AegisImportFileProcessor extends TokenImportFileProcessor {
-  static dynamic get resultHandlerType => TokenImportFileProcessor.resultHandlerType;
+  static dynamic get resultHandlerType =>
+      TokenImportFileProcessor.resultHandlerType;
 
   const AegisImportFileProcessor();
   static const String AEGIS_JSON_HEADER = 'header';
@@ -143,7 +144,10 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
   }
 
   @override
-  Future<List<ProcessorResult<Token>>> processFile(XFile file, {String? password}) async {
+  Future<List<ProcessorResult<Token>>> processFile(
+    XFile file, {
+    String? password,
+  }) async {
     final String fileContent = await file.readAsString();
     final Map<String, dynamic> json;
     try {
@@ -160,31 +164,39 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
     }
   }
 
-  Future<List<ProcessorResult<Token>>> _processPlain(Map<String, dynamic> json) async => switch (json[AEGIS_JSON_DB][AEGIS_DB_VERSION] as int) {
+  Future<List<ProcessorResult<Token>>> _processPlain(
+    Map<String, dynamic> json,
+  ) async => switch (json[AEGIS_JSON_DB][AEGIS_DB_VERSION] as int) {
     2 => _processPlainV2(json),
     3 => _processPlainV3(json),
     _ => _processPlainTryLatest(json),
   };
 
-  Future<List<ProcessorResult<Token>>> _processPlainTryLatest(Map<String, dynamic> json) async {
+  Future<List<ProcessorResult<Token>>> _processPlainTryLatest(
+    Map<String, dynamic> json,
+  ) async {
     try {
       return await _processPlainV3(json);
     } catch (_) {
       throw LocalizedArgumentError(
-        localizedMessage: (localizations, value, name) => localizations.unsupported(name, value),
-        unlocalizedMessage: 'Unsupported backup version: ${json[AEGIS_JSON_DB][AEGIS_DB_VERSION]}.',
+        localizedMessage: (localizations, value, name) =>
+            localizations.unsupported(name, value),
+        unlocalizedMessage:
+            'Unsupported backup version: ${json[AEGIS_JSON_DB][AEGIS_DB_VERSION]}.',
         invalidValue: json[AEGIS_JSON_DB][AEGIS_DB_VERSION],
         name: 'aegis backup version',
       );
     }
   }
 
-  Future<List<ProcessorResult<Token>>> _processPlainV2(Map<String, dynamic> json) {
+  Future<List<ProcessorResult<Token>>> _processPlainV2(
+    Map<String, dynamic> json,
+  ) {
     final results = <ProcessorResult<Token>>[];
     for (Map<String, dynamic> entry in json[AEGIS_JSON_DB][AEGIS_DB_ENTRIES]) {
       try {
         Map<String, dynamic> info = entry[AEGIS_ENTRY_INFO];
-        final otpAuthMap = validateMap<String>(
+        final otpAuthMap = validateMap<String?>(
           map: {
             Token.TOKENTYPE_OTPAUTH: entry[AEGIS_ENTRY_TYPE],
             Token.LABEL: entry[AEGIS_ENTRY_LABEL],
@@ -197,15 +209,30 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
             HOTPToken.COUNTER: info[AEGIS_INFO_COUNTER],
           },
           validators: {
-            Token.TOKENTYPE_OTPAUTH: const ObjectValidator<String>(),
-            Token.LABEL: const ObjectValidator<String>(defaultValue: ''),
-            Token.ISSUER: const ObjectValidator<String>(defaultValue: ''),
-            Token.PIN: const ObjectValidatorNullable<String>(),
-            OTPToken.SECRET_BASE32: ObjectValidator<String>(transformer: (v) => Encodings.none.encodeStringTo(Encodings.base32, info[AEGIS_INFO_SECRET])),
-            OTPToken.ALGORITHM: const ObjectValidatorNullable<String>(),
-            OTPToken.DIGITS: ObjectValidatorNullable<String>(transformer: (v) => (v as int).toString()),
-            TOTPToken.PERIOD_SECONDS: ObjectValidatorNullable<String>(transformer: (v) => (v as int).toString()),
-            HOTPToken.COUNTER: ObjectValidatorNullable<String>(transformer: (v) => (v as int).toString()),
+            Token.TOKENTYPE_OTPAUTH: stringValidator,
+            Token.LABEL: const RequiredObjectValidator<String>(
+              defaultValue: '',
+            ),
+            Token.ISSUER: const RequiredObjectValidator<String>(
+              defaultValue: '',
+            ),
+            Token.PIN: stringValidatorOptional,
+            OTPToken.SECRET_BASE32: RequiredObjectValidator<String>(
+              transformer: (v) => Encodings.none.encodeStringTo(
+                Encodings.base32,
+                info[AEGIS_INFO_SECRET],
+              ),
+            ),
+            OTPToken.ALGORITHM: stringValidatorOptional,
+            OTPToken.DIGITS: OptionalObjectValidator<String>(
+              transformer: (v) => (v as int).toString(),
+            ),
+            TOTPToken.PERIOD_SECONDS: OptionalObjectValidator<String>(
+              transformer: (v) => (v as int).toString(),
+            ),
+            HOTPToken.COUNTER: OptionalObjectValidator<String>(
+              transformer: (v) => (v as int).toString(),
+            ),
           },
           name: 'aegisV2Entry',
         );
@@ -220,24 +247,45 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
             ),
           },
         );
-        results.add(ProcessorResult.success(token.copyWith(id: entry[AEGIS_ENTRY_ID]), resultHandlerType: resultHandlerType));
+        results.add(
+          ProcessorResult.success(
+            token.copyWith(id: entry[AEGIS_ENTRY_ID]),
+            resultHandlerType: resultHandlerType,
+          ),
+        );
       } on LocalizedException catch (e) {
-        results.add(ProcessorResult.failed((localization) => e.localizedMessage(localization), resultHandlerType: resultHandlerType));
+        results.add(
+          ProcessorResult.failed(
+            (localization) => e.localizedMessage(localization),
+            resultHandlerType: resultHandlerType,
+          ),
+        );
       } catch (e) {
-        Logger.error('Failed to parse token.', error: e, stackTrace: StackTrace.current);
-        results.add(ProcessorResult.failed((_) => e.toString(), resultHandlerType: resultHandlerType));
+        Logger.error(
+          'Failed to parse token.',
+          error: e,
+          stackTrace: StackTrace.current,
+        );
+        results.add(
+          ProcessorResult.failed(
+            (_) => e.toString(),
+            resultHandlerType: resultHandlerType,
+          ),
+        );
       }
     }
     return Future.value(results);
   }
 
-  Future<List<ProcessorResult<Token>>> _processPlainV3(Map<String, dynamic> json) {
+  Future<List<ProcessorResult<Token>>> _processPlainV3(
+    Map<String, dynamic> json,
+  ) {
     final results = <ProcessorResult<Token>>[];
     final entries = json[AEGIS_JSON_DB][AEGIS_DB_ENTRIES] as List;
     for (Map<String, dynamic> entry in entries) {
       try {
         Map<String, dynamic> info = entry[AEGIS_ENTRY_INFO];
-        final otpAuthMap = validateMap<String>(
+        final otpAuthMap = validateMap<String?>(
           map: {
             Token.TOKENTYPE_OTPAUTH: entry[AEGIS_ENTRY_TYPE],
             Token.LABEL: entry[AEGIS_ENTRY_LABEL],
@@ -250,15 +298,15 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
             Token.PIN: info[AEGIS_INFO_PIN],
           },
           validators: {
-            Token.TOKENTYPE_OTPAUTH: const ObjectValidator<String>(),
-            Token.LABEL: const ObjectValidator<String>(defaultValue: ''),
-            Token.ISSUER: const ObjectValidator<String>(defaultValue: ''),
-            OTPToken.SECRET_BASE32: ObjectValidator<String>(transformer: (v) => Encodings.base32.encodeStringTo(Encodings.base32, v)),
-            OTPToken.ALGORITHM: const ObjectValidatorNullable<String>(),
-            OTPToken.DIGITS: intToStringValidatorNullable,
-            TOTPToken.PERIOD_SECONDS: intToStringValidatorNullable,
-            HOTPToken.COUNTER: intToStringValidatorNullable,
-            Token.PIN: const ObjectValidatorNullable<String>(),
+            Token.TOKENTYPE_OTPAUTH: stringValidator,
+            Token.LABEL: stringValidator.withDefault(''),
+            Token.ISSUER: stringValidator.withDefault(''),
+            OTPToken.SECRET_BASE32: base32Stringvalidator,
+            OTPToken.ALGORITHM: stringValidatorOptional,
+            OTPToken.DIGITS: intToStringValidatorOptional,
+            TOTPToken.PERIOD_SECONDS: intToStringValidatorOptional,
+            HOTPToken.COUNTER: intToStringValidatorOptional,
+            Token.PIN: stringValidatorOptional,
           },
           name: 'aegisV3Entry',
         );
@@ -278,20 +326,41 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
           ),
         );
       } on LocalizedException catch (e) {
-        results.add(ProcessorResultFailed((localization) => e.localizedMessage(localization), resultHandlerType: resultHandlerType));
+        results.add(
+          ProcessorResultFailed(
+            (localization) => e.localizedMessage(localization),
+            resultHandlerType: resultHandlerType,
+          ),
+        );
       } catch (e) {
-        Logger.error('Failed to parse token.', error: e, stackTrace: StackTrace.current);
-        results.add(ProcessorResultFailed((_) => e.toString(), resultHandlerType: resultHandlerType));
+        Logger.error(
+          'Failed to parse token.',
+          error: e,
+          stackTrace: StackTrace.current,
+        );
+        results.add(
+          ProcessorResultFailed(
+            (_) => e.toString(),
+            resultHandlerType: resultHandlerType,
+          ),
+        );
       }
     }
 
     return Future.value(results);
   }
 
-  Future<Uint8List> runIsolatedKdf(ScryptParameters scryptParameters, String password) async {
+  Future<Uint8List> runIsolatedKdf(
+    ScryptParameters scryptParameters,
+    String password,
+  ) async {
     final receivePort = ReceivePort();
     try {
-      Isolate.spawn(_isolatedKdf, [receivePort.sendPort, scryptParameters, password]);
+      Isolate.spawn(_isolatedKdf, [
+        receivePort.sendPort,
+        scryptParameters,
+        password,
+      ]);
     } catch (e) {
       receivePort.close();
     }
@@ -299,7 +368,10 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
     return keyBytes;
   }
 
-  Future<List<ProcessorResult<Token>>> _processEncrypted(Map<String, dynamic> json, String? password) async {
+  Future<List<ProcessorResult<Token>>> _processEncrypted(
+    Map<String, dynamic> json,
+    String? password,
+  ) async {
     final String dbEncrypted = json[AEGIS_JSON_DB];
     final Map<String, dynamic> header = json[AEGIS_JSON_HEADER];
     final Map<String, dynamic> headerParams = header[AEGIS_HEADER_HEADERPARAMS];
@@ -307,16 +379,28 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
     final Map<String, dynamic> keyParams = slot[AEGIS_SLOT_KEYPARAMS];
 
     final passwordKeyBytes = await runIsolatedKdf(
-      ScryptParameters(slot[AEGIS_SLOT_N], slot[AEGIS_SLOT_R], slot[AEGIS_SLOT_P], 32, decodeHexString(slot[AEGIS_SLOT_SALT])),
+      ScryptParameters(
+        slot[AEGIS_SLOT_N],
+        slot[AEGIS_SLOT_R],
+        slot[AEGIS_SLOT_P],
+        32,
+        decodeHexString(slot[AEGIS_SLOT_SALT]),
+      ),
       password!,
     );
     final slotNonceBytes = decodeHexString(keyParams[AEGIS_KEYPARAMS_NONCE]);
-    final cipher = crypto.AesGcm.with256bits(nonceLength: slotNonceBytes.length);
+    final cipher = crypto.AesGcm.with256bits(
+      nonceLength: slotNonceBytes.length,
+    );
     final List<int> masterKeyBytes;
 
     try {
       masterKeyBytes = await cipher.decrypt(
-        crypto.SecretBox(decodeHexString(slot[AEGIS_SLOT_KEY]), nonce: slotNonceBytes, mac: crypto.Mac(decodeHexString(keyParams[AEGIS_KEYPARAMS_TAG]))),
+        crypto.SecretBox(
+          decodeHexString(slot[AEGIS_SLOT_KEY]),
+          nonce: slotNonceBytes,
+          mac: crypto.Mac(decodeHexString(keyParams[AEGIS_KEYPARAMS_TAG])),
+        ),
         secretKey: crypto.SecretKey(passwordKeyBytes),
       );
     } catch (e) {

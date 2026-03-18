@@ -35,14 +35,16 @@ import '../../model/tokens/otp_token.dart';
 import '../../model/tokens/token.dart';
 import '../../model/tokens/totp_token.dart';
 import '../../utils/logger.dart';
-import '../../utils/object_validator.dart';
+import '../../utils/object_validator/object_validators.dart';
 import '../../utils/token_import_origins.dart';
 import '../scheme_processors/token_import_scheme_processors/free_otp_plus_qr_processor.dart';
 import 'token_import_file_processor_interface.dart';
 
 class FreeOtpPlusImportFileProcessor extends TokenImportFileProcessor {
-  static ObjectValidator<TokenNotifier> get resultHandlerType => TokenImportFileProcessor.resultHandlerType;
-  static const String _FREE_OTP_PLUS_ALGORITHM = 'algo'; // String: "MD5", "SHA1", "SHA256", "SHA512"
+  static RequiredObjectValidator<TokenNotifier> get resultHandlerType =>
+      TokenImportFileProcessor.resultHandlerType;
+  static const String _FREE_OTP_PLUS_ALGORITHM =
+      'algo'; // String: "MD5", "SHA1", "SHA256", "SHA512"
   static const String _FREE_OTP_PLUS_COUNTER = 'counter';
   static const String _FREE_OTP_PLUS_DIGITS = 'digits';
   static const String _FREE_OTP_PLUS_ISSUER = 'issuerExt';
@@ -68,8 +70,11 @@ class FreeOtpPlusImportFileProcessor extends TokenImportFileProcessor {
       return json['tokens'] != null;
       // ignore: empty_catches
     } catch (e) {}
-    List<String> lines = contentString.split('\n')..removeWhere((element) => element.isEmpty);
-    if (lines.every((line) => line.isEmpty || line.startsWith('otpauth://'))) return true;
+    List<String> lines = contentString.split('\n')
+      ..removeWhere((element) => element.isEmpty);
+    if (lines.every((line) => line.isEmpty || line.startsWith('otpauth://'))) {
+      return true;
+    }
     return false;
   }
 
@@ -77,22 +82,35 @@ class FreeOtpPlusImportFileProcessor extends TokenImportFileProcessor {
   Future<bool> fileNeedsPassword(XFile file) async => false;
 
   @override
-  Future<List<ProcessorResult<Token>>> processFile(XFile file, {String? password}) async {
+  Future<List<ProcessorResult<Token>>> processFile(
+    XFile file, {
+    String? password,
+  }) async {
     String content = await file.readAsString();
     try {
       final json = jsonDecode(content) as Map<String, dynamic>;
       return _processJson(json);
       // ignore: empty_catches
     } catch (e) {}
-    List<String> lines = content.split('\n')..removeWhere((element) => element.isEmpty);
+    List<String> lines = content.split('\n')
+      ..removeWhere((element) => element.isEmpty);
     final results = <ProcessorResult<Token>>[];
     for (final line in lines) {
       try {
         final uri = Uri.parse(line);
         results.addAll(await const FreeOtpPlusQrProcessor().processUri(uri));
       } catch (e) {
-        Logger.error('Failed to process line: $line', error: e, stackTrace: StackTrace.current);
-        results.add(ProcessorResultFailed((_) => e.toString(), resultHandlerType: resultHandlerType));
+        Logger.error(
+          'Failed to process line: $line',
+          error: e,
+          stackTrace: StackTrace.current,
+        );
+        results.add(
+          ProcessorResultFailed(
+            (_) => e.toString(),
+            resultHandlerType: resultHandlerType,
+          ),
+        );
       }
     }
     return results.map((t) {
@@ -109,8 +127,11 @@ class FreeOtpPlusImportFileProcessor extends TokenImportFileProcessor {
     }).toList();
   }
 
-  Future<List<ProcessorResult<Token>>> _processJson(Map<String, dynamic> json) async {
-    final tokensJson = (json['tokens'] as List<dynamic>?)?.cast<Map<String, dynamic>>();
+  Future<List<ProcessorResult<Token>>> _processJson(
+    Map<String, dynamic> json,
+  ) async {
+    final tokensJson = (json['tokens'] as List<dynamic>?)
+        ?.cast<Map<String, dynamic>>();
     final tokens = <ProcessorResult<Token>>[];
     if (tokensJson == null) {
       return [];
@@ -121,7 +142,9 @@ class FreeOtpPlusImportFileProcessor extends TokenImportFileProcessor {
     return tokens;
   }
 
-  Future<ProcessorResult<Token>> _processJsonToken(Map<String, dynamic> tokenJson) async {
+  Future<ProcessorResult<Token>> _processJsonToken(
+    Map<String, dynamic> tokenJson,
+  ) async {
     try {
       return ProcessorResultSuccess(
         Token.fromOtpAuthMap(
@@ -137,36 +160,52 @@ class FreeOtpPlusImportFileProcessor extends TokenImportFileProcessor {
         resultHandlerType: resultHandlerType,
       );
     } on LocalizedException catch (e) {
-      return ProcessorResult.failed((localization) => e.localizedMessage(localization), resultHandlerType: resultHandlerType);
+      return ProcessorResult.failed(
+        (localization) => e.localizedMessage(localization),
+        resultHandlerType: resultHandlerType,
+      );
     } catch (e, s) {
       Logger.warning('Failed to parse token.', error: e, stackTrace: s);
-      return ProcessorResultFailed((_) => e.toString(), resultHandlerType: resultHandlerType);
+      return ProcessorResultFailed(
+        (_) => e.toString(),
+        resultHandlerType: resultHandlerType,
+      );
     }
   }
 
-  Map<String, String> _jsonToOtpAuth(Map<String, dynamic> tokenJson) => validateMap(
-    name: 'FreeOtpPlusToken',
-    map: {
-      /// Steam is a special case, its hardcoded in the original app.
-      Token.TOKENTYPE_OTPAUTH: tokenJson[_FREE_OTP_PLUS_ISSUER] == _steamTokenIssuer ? _steamTokenType : tokenJson[_FREE_OTP_PLUS_TYPE],
-      Token.LABEL: tokenJson[_FREE_OTP_PLUS_LABEL],
-      Token.ISSUER: tokenJson[_FREE_OTP_PLUS_ISSUER],
-      OTPToken.SECRET_BASE32: tokenJson[_FREE_OTP_PLUS_SECRET],
-      OTPToken.ALGORITHM: tokenJson[_FREE_OTP_PLUS_ALGORITHM],
-      OTPToken.DIGITS: tokenJson[_FREE_OTP_PLUS_DIGITS],
-      HOTPToken.COUNTER: tokenJson[_FREE_OTP_PLUS_COUNTER],
-      TOTPToken.PERIOD_SECONDS: tokenJson[_FREE_OTP_PLUS_PERIOD],
-    },
-    validators: {
-      Token.TOKENTYPE_OTPAUTH: const ObjectValidator<String>(),
-      Token.LABEL: const ObjectValidator<String>(),
-      Token.ISSUER: const ObjectValidator<String>(),
-      OTPToken.SECRET_BASE32: ObjectValidator<String>(transformer: (value) => Encodings.base32.encode(Uint8List.fromList((value as List).cast<int>()))),
-      OTPToken.ALGORITHM: const ObjectValidator<String>(),
-      OTPToken.DIGITS: intToStringValidator,
-      // FreeOTP+ saves the counter 1 less than the actual value
-      HOTPToken.COUNTER: ObjectValidatorNullable<String>(transformer: (value) => ((value as int) + 1).toString()),
-      TOTPToken.PERIOD_SECONDS: intToStringValidatorNullable,
-    },
-  );
+  Map<String, String?> _jsonToOtpAuth(Map<String, dynamic> tokenJson) =>
+      validateMap(
+        name: 'FreeOtpPlusToken',
+        map: {
+          /// Steam is a special case, its hardcoded in the original app.
+          Token.TOKENTYPE_OTPAUTH:
+              tokenJson[_FREE_OTP_PLUS_ISSUER] == _steamTokenIssuer
+              ? _steamTokenType
+              : tokenJson[_FREE_OTP_PLUS_TYPE],
+          Token.LABEL: tokenJson[_FREE_OTP_PLUS_LABEL],
+          Token.ISSUER: tokenJson[_FREE_OTP_PLUS_ISSUER],
+          OTPToken.SECRET_BASE32: tokenJson[_FREE_OTP_PLUS_SECRET],
+          OTPToken.ALGORITHM: tokenJson[_FREE_OTP_PLUS_ALGORITHM],
+          OTPToken.DIGITS: tokenJson[_FREE_OTP_PLUS_DIGITS],
+          HOTPToken.COUNTER: tokenJson[_FREE_OTP_PLUS_COUNTER],
+          TOTPToken.PERIOD_SECONDS: tokenJson[_FREE_OTP_PLUS_PERIOD],
+        },
+        validators: {
+          Token.TOKENTYPE_OTPAUTH: stringValidator,
+          Token.LABEL: stringValidator,
+          Token.ISSUER: stringValidator,
+          OTPToken.SECRET_BASE32: RequiredObjectValidator<String>(
+            transformer: (value) => Encodings.base32.encode(
+              Uint8List.fromList((value as List).cast<int>()),
+            ),
+          ),
+          OTPToken.ALGORITHM: stringValidator,
+          OTPToken.DIGITS: intToStringValidator,
+          // FreeOTP+ saves the counter 1 less than the actual value
+          HOTPToken.COUNTER: OptionalObjectValidator<String>(
+            transformer: (value) => ((value as int) + 1).toString(),
+          ),
+          TOTPToken.PERIOD_SECONDS: intToStringValidatorOptional,
+        },
+      );
 }

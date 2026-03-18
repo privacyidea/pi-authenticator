@@ -21,7 +21,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import '../../../utils/logger.dart';
-import '../../../utils/object_validator.dart';
+import '../../../utils/object_validator/object_validators.dart';
 import '../../container_policies.dart';
 import '../../encryption/encryption_params.dart';
 import '../../token_container.dart';
@@ -49,7 +49,7 @@ sealed class PiServerResultValue {
 class PushResultValue extends PiServerResultValue {
   final bool value;
 
-  static const validator = ObjectValidator<Map<String, dynamic>>();
+  static const validator = RequiredObjectValidator<Map<String, dynamic>>();
 
   factory PushResultValue.fromResultValue(bool value) {
     return PushResultValue(value);
@@ -72,7 +72,7 @@ class ContainerChallenge extends PiServerResultValue {
 
   DateTime get timeAsDatetime => DateTime.parse(timeStamp);
 
-  static const validator = ObjectValidator<Map<String, dynamic>>();
+  static const validator = RequiredObjectValidator<Map<String, dynamic>>();
 
   const ContainerChallenge({
     required this.keyAlgorithm,
@@ -83,10 +83,10 @@ class ContainerChallenge extends PiServerResultValue {
   factory ContainerChallenge.fromUriMap(Map<String, dynamic> uriMap) {
     final map = validateMap(
       map: uriMap,
-      validators: {
-        KEY_ALGORITHM: const ObjectValidator<String>(),
-        NONCE: const ObjectValidator<String>(),
-        TIMESTAMP: const ObjectValidator<String>(),
+      validators: <String, BaseValidator>{
+        KEY_ALGORITHM: stringValidator,
+        NONCE: stringValidator,
+        TIMESTAMP: stringValidator,
       },
       name: 'ContainerChallenge#fromUriMap',
     );
@@ -104,17 +104,15 @@ class ContainerChallenge extends PiServerResultValue {
 class ContainerFinalizationResponse extends PiServerResultValue {
   final ContainerPolicies policies;
 
-  static const validator = ObjectValidator<Map<String, dynamic>>();
+  static const validator = RequiredObjectValidator<Map<String, dynamic>>();
 
   const ContainerFinalizationResponse({required this.policies});
 
   static ContainerFinalizationResponse fromUriMap(Map<String, dynamic> uriMap) {
     final map = validateMap(
       map: uriMap,
-      validators: {
-        TokenContainer.SYNC_POLICIES: ObjectValidator<ContainerPolicies>(
-          transformer: (v) => ContainerPolicies.fromUriMap(v),
-        ),
+      validators: <String, BaseValidator>{
+        TokenContainer.SYNC_POLICIES: ContainerPolicies.validator,
       },
       name: 'ContainerFinalizationResponse#fromUriMap',
     );
@@ -134,7 +132,7 @@ class ContainerSyncResult extends PiServerResultValue {
   final ContainerPolicies policies;
   final String publicServerKey;
 
-  static const validator = ObjectValidator<Map<String, dynamic>>();
+  static const validator = RequiredObjectValidator<Map<String, dynamic>>();
 
   Uint8List get publicServerKeyBytes => base64Decode(publicServerKey);
 
@@ -149,16 +147,12 @@ class ContainerSyncResult extends PiServerResultValue {
   static ContainerSyncResult fromUriMap(Map<String, dynamic> uriMap) {
     final map = validateMap(
       map: uriMap,
-      validators: {
-        TokenContainer.SYNC_DICT_SERVER: const ObjectValidator<String>(),
-        TokenContainer.SYNC_ENC_ALGORITHM: const ObjectValidator<String>(),
-        TokenContainer.SYNC_ENC_PARAMS: ObjectValidator<EncryptionParams>(
-          transformer: (v) => EncryptionParams.fromUriMap(v),
-        ),
-        TokenContainer.SYNC_POLICIES: ObjectValidator<ContainerPolicies>(
-          transformer: (v) => ContainerPolicies.fromUriMap(v),
-        ),
-        TokenContainer.SYNC_PUBLIC_SERVER_KEY: const ObjectValidator<String>(),
+      validators: <String, BaseValidator>{
+        TokenContainer.SYNC_DICT_SERVER: stringValidator,
+        TokenContainer.SYNC_ENC_ALGORITHM: stringValidator,
+        TokenContainer.SYNC_ENC_PARAMS: EncryptionParams.validator,
+        TokenContainer.SYNC_POLICIES: ContainerPolicies.validator,
+        TokenContainer.SYNC_PUBLIC_SERVER_KEY: stringValidator,
       },
       name: 'ContainerSyncResult#fromUriMap',
     );
@@ -180,17 +174,14 @@ class TransferQrData extends PiServerResultValue {
   final String description;
   final String value;
 
-  static const validator = ObjectValidator<Map<String, dynamic>>();
+  static const validator = RequiredObjectValidator<Map<String, dynamic>>();
 
   const TransferQrData({required this.description, required this.value});
 
   factory TransferQrData.fromUriMap(Map<String, dynamic> uriMap) {
     final map = validateMap<String>(
       map: uriMap['container_url'] as Map<String, dynamic>,
-      validators: {
-        'description': const ObjectValidator<String>(),
-        'value': const ObjectValidator<String>(),
-      },
+      validators: {'description': stringValidator, 'value': stringValidator},
       name: 'TransferQrData',
     );
     return TransferQrData(
@@ -207,7 +198,7 @@ class TransferQrData extends PiServerResultValue {
 class UnregisterContainerResult extends PiServerResultValue {
   static const String CONTAINER_UNREGISTER_SUCCESS = 'success';
 
-  static const validator = ObjectValidator<Map<String, dynamic>>();
+  static const validator = RequiredObjectValidator<Map<String, dynamic>>();
 
   final bool success;
 
@@ -216,7 +207,9 @@ class UnregisterContainerResult extends PiServerResultValue {
   factory UnregisterContainerResult.fromUriMap(Map<String, dynamic> uriMap) {
     final map = validateMap(
       map: uriMap,
-      validators: {CONTAINER_UNREGISTER_SUCCESS: const ObjectValidator<bool>()},
+      validators: <String, BaseValidator>{
+        CONTAINER_UNREGISTER_SUCCESS: const RequiredObjectValidator<bool>(),
+      },
       name: 'UnregisterContainerResultValue#fromUriMap',
     );
     return UnregisterContainerResult(

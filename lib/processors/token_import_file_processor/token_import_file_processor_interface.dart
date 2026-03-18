@@ -18,37 +18,54 @@
  * limitations under the License.
  */
 import 'package:file_selector/file_selector.dart';
-import 'package:privacyidea_authenticator/utils/object_validator.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 
 import '../../model/processor_result.dart';
 import '../../model/tokens/token.dart';
 import '../../utils/logger.dart';
+import '../../utils/object_validator/object_validators.dart';
 import '../mixins/token_import_processor.dart';
 import 'aegis_import_file_processor.dart';
 import 'two_fas_import_file_processor.dart';
 
-abstract class TokenImportFileProcessor with TokenImportProcessor<XFile, String?> {
-  static ObjectValidator<TokenNotifier> get resultHandlerType => TokenImportProcessor.resultHandlerType;
+abstract class TokenImportFileProcessor
+    with TokenImportProcessor<XFile, String?> {
+  static RequiredObjectValidator<TokenNotifier> get resultHandlerType =>
+      TokenImportProcessor.resultHandlerType;
   const TokenImportFileProcessor();
 
   @override
-  Future<List<ProcessorResult<Token>>> processTokenMigrate(XFile data, {String? args}) async {
+  Future<List<ProcessorResult<Token>>> processTokenMigrate(
+    XFile data, {
+    String? args,
+  }) async {
     return processFile(data, password: args);
   }
 
-  Future<List<ProcessorResult<Token>>> processFile(XFile file, {String? password});
+  Future<List<ProcessorResult<Token>>> processFile(
+    XFile file, {
+    String? password,
+  });
 
-  static final List<TokenImportFileProcessor> implementations = [const AegisImportFileProcessor(), const TwoFasAuthenticatorImportFileProcessor()];
+  static final List<TokenImportFileProcessor> implementations = [
+    const AegisImportFileProcessor(),
+    const TwoFasAuthenticatorImportFileProcessor(),
+  ];
 
-  static Future<List<ProcessorResult<Token>>> processFileByAny({required XFile file, String? password}) async {
+  static Future<List<ProcessorResult<Token>>> processFileByAny({
+    required XFile file,
+    String? password,
+  }) async {
     final tokens = <ProcessorResult<Token>>[];
     for (TokenImportFileProcessor processor in implementations) {
       try {
         tokens.addAll(await processor.processFile(file, password: password));
         return tokens;
       } catch (e) {
-        Logger.warning('Failed to process file with processor ${processor.runtimeType}', error: e);
+        Logger.warning(
+          'Failed to process file with processor ${processor.runtimeType}',
+          error: e,
+        );
       }
     }
     return [];

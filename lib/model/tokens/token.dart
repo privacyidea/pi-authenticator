@@ -20,9 +20,10 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../../../model/token_container.dart';
-import '../../utils/object_validator.dart';
+import '../../utils/object_validator/object_validators.dart';
 import '../enums/token_types.dart';
 import '../extensions/enum_extension.dart';
+import '../extensions/enums/force_biometric_option_extension.dart';
 import '../mixins/sortable_mixin.dart';
 import '../token_import/token_origin_data.dart';
 import '../token_template.dart';
@@ -32,89 +33,144 @@ import 'push_token.dart';
 import 'steam_token.dart';
 import 'totp_token.dart';
 
-enum ForceBiometricOption { any, biometric, pin }
+enum ForceBiometricOption { none, any, biometric, pin }
 
 @immutable
 abstract class Token with SortableMixin {
-  /// [String] (optional) default = 'False'
+  // --- Constants: Default Values ---
   static const String PIN_VALUE_TRUE = 'True';
   static const String PIN_VALUE_FALSE = 'False';
 
-  /// [String] (optional) default = ''
-  static const String IMAGE = 'image';
-
-  // Default data keys
+  // --- Constants: Default Data Keys (OTPAuth / JSON) ---
   static const String TOKENTYPE_OTPAUTH = 'tokentype';
   static const String TOKENTYPE_JSON = 'type';
-
-  /// [String] (optional) default = ''
   static const String LABEL = 'label';
-
-  /// [String] (optional) default = ''
   static const String ISSUER = 'issuer';
-
-  /// [String] 'True' / 'False' (optional) default = 'False'
   static const String PIN = 'pin';
-
-  /// [String] 'any' / 'biometric' / 'pin' / null (optional) default = null
-  static const String FORCE_BIOMETRIC = 'app_force_biometric';
-
-  /// [String] 'True' / 'False' (optional) default = 'False'
+  static const String IMAGE = 'image';
+  static const String FORCE_BIOMETRIC_OPTION = 'app_force_unlock';
   static const String OFFLINE = 'offline';
-
-  /// [String] (optional) default = null
   static const String SERIAL = 'serial';
 
-  // Additional data keys
+  // --- Constants: Additional Data Keys ---
   static const String CONTAINER_SERIAL = 'containerSerial';
   static const String ID = 'id';
   static const String ORIGIN = 'origin';
-  static const String HIDDEN = 'hidden';
+  static const String IS_HIDDEN = 'isHidden';
   static const String CHECKED_CONTAINERS = 'checkedContainer';
   static const String FOLDER_ID = 'folderId';
   static const String SORT_INDEX = SortableMixin.SORT_INDEX;
   static const String CREATOR = 'creator';
 
-  // otp auth 2step
-  /// [String] (required for 2step)
+  // --- Constants: OTP Auth 2Step ---
   static const String TWO_STEP_SALT_LENTH = '2step_salt';
-
-  /// [String] (required for 2step)
   static const String TWO_STEP_OUTPUT_LENTH = '2step_output';
-
-  /// [String] (required for 2step)
   static const String TWO_STEP_ITERATIONS = '2step_difficulty';
 
-  bool? get isPrivacyIdeaToken => origin?.isPrivacyIdeaToken;
-  bool get isExportable => origin?.isExportable ?? false;
-  final String tokenVersion =
-      'v1.0.0'; // The version of this token, this is used for serialization.
-  final List<String>
-  checkedContainer; // The serials of the container this token should not be in.
-  final String
-  label; // the name of the token, it cannot be uses as an identifier
-  final String issuer; // The issuer of this token, currently unused.
-  final String?
-  containerSerial; // The serial of the container this token belongs to.
-  final String id; // this is the identifier of the token
-  final String?
-  serial; // The serial of the token, this is used to identify the token in the privacyIDEA server.
+  // --- Static Validators ---
+  static final Map<String, BaseValidator> otpAuthValidators = {
+    LABEL: stringValidator.withDefault(''),
+    ISSUER: stringValidator.withDefault(''),
+    SERIAL: stringValidatorOptional,
+    IMAGE: stringValidatorOptional,
+    PIN: boolValidatorOptional,
+    OFFLINE: boolValidator.withDefault(false),
+    FORCE_BIOMETRIC_OPTION: ForceBiometricOptionX.validator,
+  };
+
+  static final Map<String, BaseValidator> additionalDataValidators = {
+    CONTAINER_SERIAL: stringValidatorOptional,
+    ID: stringValidatorOptional,
+    ORIGIN: const OptionalObjectValidator<TokenOriginData>(),
+    IS_HIDDEN: boolValidatorOptional,
+    CHECKED_CONTAINERS: const OptionalObjectValidator<List<String>>(
+      defaultValue: [],
+    ),
+    FOLDER_ID: intValidatorOptional,
+    SORT_INDEX: intValidatorOptional,
+  };
+
+  // --- Static Validation Methods ---
+  static Map<String, Object?> validateOtpAuthMap(
+    Map<String, dynamic> otpAuthMap,
+  ) {
+    return validateMap(
+      map: otpAuthMap,
+      validators: otpAuthValidators,
+      name: 'Token#otpAuthMap',
+    );
+  }
+
+  static Map<String, Object?> validateAdditionalData(
+    Map<String, dynamic> additionalData,
+  ) {
+    return validateMap(
+      map: additionalData,
+      validators: additionalDataValidators,
+      name: 'Token#additionalData',
+    );
+  }
+
+  // --- Instance Properties ---
+  final String tokenVersion = 'v1.0.0';
+  final String id;
+  final String type;
+  final String label;
+  final String issuer;
+  final String? serial;
+  final String? containerSerial;
+  final List<String> checkedContainer;
   final bool pin;
-  final bool isLocked;
-  final bool isHidden;
+  final ForceBiometricOption forceBiometricOption;
   final String? tokenImage;
   final int? folderId;
   final bool isOffline;
-  @override
-  final int? sortIndex;
   final TokenOriginData? origin;
 
-  /// Must be string representation of TokenType enum.
-  final String type; // Used to identify the token when deserializing.
+  @override
+  final int? sortIndex;
 
+  final bool? _isLocked;
+  bool get isLocked {
+    if (pin == true || forceBiometricOption != ForceBiometricOption.none) {
+      return true;
+    }
+    return _isLocked ?? false;
+  }
+
+  final bool? _isHidden;
+  bool get isHidden => _isHidden ?? isLocked;
+
+  bool? get isPrivacyIdeaToken => origin?.isPrivacyIdeaToken;
+  bool get isExportable => origin?.isExportable ?? false;
+
+  // --- Constructor ---
+  const Token({
+    this.serial,
+    this.label = '',
+    this.issuer = '',
+    this.containerSerial,
+    this.checkedContainer = const [],
+    required this.id,
+    required this.type,
+    this.tokenImage,
+    this.sortIndex,
+    this.folderId,
+    this.origin,
+    this.isOffline = false,
+    this.forceBiometricOption = ForceBiometricOption.none,
+    bool? pin,
+    bool? isLocked,
+    bool? isHidden,
+  }) : _isLocked = isLocked,
+       _isHidden = isHidden,
+       pin = pin ?? false;
+
+  // --- Factories ---
   /// Creates a token from a json map.
   factory Token.fromJson(Map<String, dynamic> json) {
     String? type = json[TOKENTYPE_JSON];
+
     if (type == null) {
       throw ArgumentError.value(
         json,
@@ -138,6 +194,7 @@ abstract class Token with SortableMixin {
     if (TokenTypes.STEAM.isName(type, caseSensitive: false)) {
       return SteamToken.fromJson(json);
     }
+
     throw ArgumentError.value(
       json,
       'Token#fromJson',
@@ -151,6 +208,7 @@ abstract class Token with SortableMixin {
     Map<String, dynamic> additionalData = const {},
   }) {
     String? type = otpAuthMap[TOKENTYPE_OTPAUTH];
+
     if (type == null) {
       throw ArgumentError.value(
         otpAuthMap,
@@ -196,64 +254,7 @@ abstract class Token with SortableMixin {
     );
   }
 
-  static Map<String, dynamic> validateAdditionalData(
-    Map<String, dynamic> additionalData,
-  ) => validateMap(
-    map: additionalData,
-    validators: {
-      Token.CONTAINER_SERIAL: const ObjectValidatorNullable<String>(),
-      Token.ID: const ObjectValidatorNullable<String>(),
-      Token.ORIGIN: const ObjectValidatorNullable<TokenOriginData>(),
-      Token.HIDDEN: const ObjectValidatorNullable<bool>(),
-      Token.CHECKED_CONTAINERS: const ObjectValidatorNullable<List<String>>(),
-      Token.FOLDER_ID: const ObjectValidatorNullable<int>(),
-      Token.SORT_INDEX: const ObjectValidatorNullable<int>(),
-      Token.FORCE_BIOMETRIC: ObjectValidatorNullable<ForceBiometricOption>(
-        transformer: (value) {
-          if (value is String) {
-            switch (value.toLowerCase()) {
-              case 'any':
-                return ForceBiometricOption.any;
-              case 'biometric':
-                return ForceBiometricOption.biometric;
-              case 'pin':
-                return ForceBiometricOption.pin;
-            }
-          }
-          throw ArgumentError.value(
-            value,
-            'Token#validateAdditionalData',
-            'Invalid value for ${Token.FORCE_BIOMETRIC}: $value',
-          );
-        },
-      ),
-    },
-    name: 'Token#validateAdditionalData',
-  );
-
-  const Token({
-    this.serial,
-    this.label = '',
-    this.issuer = '',
-    this.containerSerial,
-    this.checkedContainer = const [],
-    required this.id,
-    required this.type,
-    this.tokenImage,
-    this.sortIndex,
-    this.folderId,
-    this.origin,
-    this.isOffline = false,
-    bool? pin,
-    bool? isLocked,
-    bool? isHidden,
-  }) : // when pin is true isLocked is also true otherwise it's the value of isLocked if it is null it's false
-       isLocked = pin != null && pin ? true : isLocked ?? false,
-       isHidden = (pin != null && pin ? true : isLocked ?? false) == false
-           ? false
-           : isHidden ?? false,
-       pin = pin ?? false;
-
+  // --- Methods ---
   /// This is used to compare the changeable values of the token.
   bool sameValuesAs(Token other) =>
       other.label == label &&
@@ -264,7 +265,6 @@ abstract class Token with SortableMixin {
 
   /// This is used to identify the same token even if the id is different.
   /// The token should be considered the same if (the id is the same) or (the serial and issuer are the same).
-  /// if the id is different and the serial is not null, it should be depend on other factors like the secret and the algorithm. So the token should be recognized when a the same token without a serial is imported multiple times.
   bool? isSameTokenAs(Token other) {
     if (id == other.id) return true;
     if (serial != null || other.serial != null) {
@@ -272,6 +272,20 @@ abstract class Token with SortableMixin {
     }
     return null;
   }
+
+  @override
+  bool operator ==(Object other) => other is Token && other.id == id;
+
+  @override
+  int get hashCode => (id + type).hashCode;
+
+  @override
+  String toString() {
+    return 'Token{label: $label, issuer: $issuer, id: $id, pin: $pin, isLocked: $isLocked, isHidden: $isHidden, type: $type, isOffline: $isOffline}';
+  }
+
+  // --- Abstract Methods ---
+  Map<String, dynamic> toJson();
 
   @override
   Token copyWith({
@@ -291,46 +305,10 @@ abstract class Token with SortableMixin {
     bool? isOffline,
   });
 
-  @override
-  bool operator ==(Object other) {
-    return other is Token && other.id == id;
-  }
+  Token copyUpdateByTemplate(TokenTemplate template);
 
-  @override
-  int get hashCode => (id + type).hashCode;
-
-  @override
-  String toString() {
-    return 'Token{label: $label, '
-        'issuer: $issuer, '
-        'id: $id, '
-        'pin: $pin, '
-        'isLocked: $isLocked, '
-        'isHidden: $isHidden, '
-        'tokenImage: $tokenImage, '
-        'type: $type, '
-        'sortIndex: $sortIndex, '
-        'folderId: $folderId, '
-        'origin: $origin, '
-        'containerSerial: $containerSerial, '
-        'isOffline: $isOffline';
-  }
-
-  /// This is used to create a map that can be used to serialize the token.
-  Map<String, dynamic> toJson();
-
+  // --- Serialization Helpers ---
   /// This is used to create a map that typically was created from a uri.
-  /// ```dart
-  ///  ------------------------- [Token] -------------------------
-  /// | SERIAL: serial, (optional)                                |
-  /// | TYPE: type,                                               |
-  /// | LABEL: label,                                             |
-  /// | ISSUER: issuer,                                           |
-  /// | PIN: pin,                                                 |
-  /// | IMAGE: tokenImage, (optional)                             |
-  ///  -----------------------------------------------------------
-  ///
-  /// ```
   Map<String, dynamic> toOtpAuthMap() {
     return {
       SERIAL: ?serial,
@@ -343,14 +321,12 @@ abstract class Token with SortableMixin {
     };
   }
 
-  Token copyUpdateByTemplate(TokenTemplate template);
-
   Map<String, dynamic> get additionalData => {
     ID: id,
     ORIGIN: origin,
     SORT_INDEX: sortIndex,
     FOLDER_ID: folderId,
-    HIDDEN: isHidden,
+    IS_HIDDEN: isHidden,
     CHECKED_CONTAINERS: checkedContainer,
     CONTAINER_SERIAL: containerSerial,
   };

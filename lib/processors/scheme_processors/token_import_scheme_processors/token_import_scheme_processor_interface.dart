@@ -19,19 +19,22 @@
  * limitations under the License.
  */
 
-import 'package:privacyidea_authenticator/utils/object_validator.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 
 import '../../../model/processor_result.dart';
 import '../../../model/tokens/token.dart';
+import '../../../utils/object_validator/object_validators.dart';
 import '../../mixins/token_import_processor.dart';
 import '../scheme_processor_interface.dart';
 import 'google_authenticator_qr_processor.dart';
 import 'otp_auth_processor.dart';
 import 'pia_scheme_processor.dart';
 
-abstract class TokenImportSchemeProcessor with TokenImportProcessor<Uri, bool> implements SchemeProcessor {
-  static ObjectValidator<TokenNotifier> get resultHandlerType => TokenImportProcessor.resultHandlerType;
+abstract class TokenImportSchemeProcessor
+    with TokenImportProcessor<Uri, bool>
+    implements SchemeProcessor {
+  static RequiredObjectValidator<TokenNotifier> get resultHandlerType =>
+      TokenImportProcessor.resultHandlerType;
   const TokenImportSchemeProcessor();
 
   static Set<String> get allSupportedSchemes => {
@@ -40,15 +43,25 @@ abstract class TokenImportSchemeProcessor with TokenImportProcessor<Uri, bool> i
     ...const PiaSchemeProcessor().supportedSchemes,
   };
 
-  static const Set<TokenImportSchemeProcessor> implementations = {OtpAuthProcessor(), GoogleAuthenticatorQrProcessor(), PiaSchemeProcessor()};
+  static const Set<TokenImportSchemeProcessor> implementations = {
+    OtpAuthProcessor(),
+    GoogleAuthenticatorQrProcessor(),
+    PiaSchemeProcessor(),
+  };
 
   @override
   /// data: [Uri] uri
   /// args: [bool] fromInit
-  Future<List<ProcessorResult<Token>>?> processTokenMigrate(Uri data, {bool args = false}) => processUri(data, fromInit: args);
+  Future<List<ProcessorResult<Token>>?> processTokenMigrate(
+    Uri data, {
+    bool args = false,
+  }) => processUri(data, fromInit: args);
 
   @override
-  Future<List<ProcessorResult<Token>>?> processUri(Uri uri, {bool fromInit = false});
+  Future<List<ProcessorResult<Token>>?> processUri(
+    Uri uri, {
+    bool fromInit = false,
+  });
 
   /// Tries to find a suitable processor for the given uri and process it.
   /// Returns null if no suitable processor was found.

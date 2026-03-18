@@ -32,6 +32,12 @@ HOTPToken _$HOTPTokenFromJson(Map<String, dynamic> json) => HOTPToken(
   label: json['label'] as String? ?? '',
   issuer: json['issuer'] as String? ?? '',
   isOffline: json['isOffline'] as bool? ?? false,
+  forceBiometricOption:
+      $enumDecodeNullable(
+        _$ForceBiometricOptionEnumMap,
+        json['forceBiometricOption'],
+      ) ??
+      ForceBiometricOption.none,
 );
 
 Map<String, dynamic> _$HOTPTokenToJson(HOTPToken instance) => <String, dynamic>{
@@ -42,6 +48,8 @@ Map<String, dynamic> _$HOTPTokenToJson(HOTPToken instance) => <String, dynamic>{
   'id': instance.id,
   'serial': instance.serial,
   'pin': instance.pin,
+  'forceBiometricOption':
+      _$ForceBiometricOptionEnumMap[instance.forceBiometricOption]!,
   'isLocked': instance.isLocked,
   'isHidden': instance.isHidden,
   'tokenImage': instance.tokenImage,
@@ -60,4 +68,11 @@ const _$AlgorithmsEnumMap = {
   Algorithms.SHA1: 'SHA1',
   Algorithms.SHA256: 'SHA256',
   Algorithms.SHA512: 'SHA512',
+};
+
+const _$ForceBiometricOptionEnumMap = {
+  ForceBiometricOption.none: 'none',
+  ForceBiometricOption.any: 'any',
+  ForceBiometricOption.biometric: 'biometric',
+  ForceBiometricOption.pin: 'pin',
 };

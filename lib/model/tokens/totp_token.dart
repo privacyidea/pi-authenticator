@@ -22,7 +22,7 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../utils/logger.dart';
-import '../../utils/object_validator.dart';
+import '../../utils/object_validator/object_validators.dart';
 import '../enums/algorithms.dart';
 import '../enums/token_types.dart';
 import '../extensions/enums/algorithms_extension.dart';
@@ -35,35 +35,74 @@ part 'totp_token.g.dart';
 
 @JsonSerializable()
 class TOTPToken extends OTPToken {
-  /// [String] (optional) default = '30'
+  // --- Constants ---
   static const String PERIOD_SECONDS = 'period';
 
+  // --- Static Accessors & Validators ---
   static String get tokenType => TokenTypes.TOTP.name;
-  // this value is used to calculate the current 'counter' of this token
-  // based on the UNIX systemtime), the counter is used to calculate the
-  // current otp value
+
+  static final Map<String, BaseValidator> otpAuthValidators = {
+    ...OTPToken.otpAuthValidators,
+    PERIOD_SECONDS: otpAuthPeriodSecondsValidator.withDefault(30),
+  };
+
+  static final Map<String, BaseValidator> additionalDataValidators = {
+    ...OTPToken.additionalDataValidators,
+  };
+
+  // --- Static Validation Methods ---
+  static Map<String, Object?> validateOtpAuthMap(
+    Map<String, dynamic> otpAuthMap,
+  ) {
+    return validateMap(
+      map: otpAuthMap,
+      validators: otpAuthValidators,
+      name: 'TOTPToken#otpAuthMap',
+    );
+  }
+
+  static Map<String, Object?> validateAdditionalData(
+    Map<String, dynamic> additionalData,
+  ) {
+    return validateMap(
+      map: additionalData,
+      validators: additionalDataValidators,
+      name: 'TOTPToken#additionalData',
+    );
+  }
+
+  // --- Instance Properties ---
   final int period;
 
   @override
   Duration get showDuration {
-    final Duration duration = Duration(milliseconds: (period * 1000 + (secondsUntilNextOTP * 1000).toInt()));
+    final Duration duration = Duration(
+      milliseconds: (period * 1000 + (secondsUntilNextOTP * 1000).toInt()),
+    );
     Logger.info('$runtimeType showDuration: ${duration.inSeconds} seconds');
     return duration;
   }
 
-  String otpFromTime(DateTime time) => algorithm.generateTOTPCodeString(
-        secret: secret,
-        time: time,
-        length: digits,
-        interval: Duration(seconds: period),
-        isGoogle: true,
-      );
-
   @override
   String get otpValue => otpFromTime(DateTime.now());
-  @override
-  String get nextValue => otpFromTime(DateTime.now().add(Duration(seconds: period)));
 
+  @override
+  String get nextValue =>
+      otpFromTime(DateTime.now().add(Duration(seconds: period)));
+
+  double get currentProgress {
+    final secondsSinceEpoch =
+        DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000;
+    return (secondsSinceEpoch % (period)) * (1 / period);
+  }
+
+  double get secondsUntilNextOTP {
+    final secondsSinceEpoch =
+        (DateTime.now().toUtc().millisecondsSinceEpoch / 1000);
+    return period - (secondsSinceEpoch % (period));
+  }
+
+  // --- Constructor ---
   TOTPToken({
     required int period,
     required super.id,
@@ -84,19 +123,60 @@ class TOTPToken extends OTPToken {
     super.label = '',
     super.issuer = '',
     super.isOffline,
-  })  : period = period < 1 ? 30 : period, // period must be greater than 0 otherwise IntegerDivisionByZeroException is thrown in OTP.generateTOTPCodeString
-        super(type: type ?? tokenType);
+    super.forceBiometricOption,
+  }) : period = period < 1 ? 30 : period,
+       super(type: type ?? tokenType);
 
-  // @override
-  // No changeable value in TOTPToken
-  // bool sameValuesAs(Token other) => super.sameValuesAs(other);
+  // --- Factories ---
+  factory TOTPToken.fromJson(Map<String, dynamic> json) =>
+      _$TOTPTokenFromJson(json);
+
+  factory TOTPToken.fromOtpAuthMap(
+    Map<String, dynamic> otpAuthMap, {
+    Map<String, dynamic> additionalData = const {},
+  }) {
+    final validatedMap = validateOtpAuthMap(otpAuthMap);
+    final validatedAdditionalData = validateAdditionalData(additionalData);
+
+    return TOTPToken(
+      label: validatedMap[Token.LABEL] as String,
+      issuer: validatedMap[Token.ISSUER] as String,
+      serial: validatedMap[Token.SERIAL] as String?,
+      tokenImage: validatedMap[Token.IMAGE] as String?,
+      pin: validatedMap[Token.PIN] as bool?,
+      isLocked: validatedMap[Token.PIN] as bool?,
+      isOffline: validatedMap[Token.OFFLINE] as bool,
+      algorithm: validatedMap[OTPToken.ALGORITHM] as Algorithms,
+      digits: validatedMap[OTPToken.DIGITS] as int,
+      secret: validatedMap[OTPToken.SECRET_BASE32] as String,
+      period: validatedMap[PERIOD_SECONDS] as int,
+      forceBiometricOption:
+          validatedMap[Token.FORCE_BIOMETRIC_OPTION] as ForceBiometricOption,
+      id: validatedAdditionalData[Token.ID] as String? ?? const Uuid().v4(),
+      containerSerial:
+          validatedAdditionalData[Token.CONTAINER_SERIAL] as String?,
+      checkedContainer:
+          validatedAdditionalData[Token.CHECKED_CONTAINERS] as List<String>,
+      sortIndex: validatedAdditionalData[Token.SORT_INDEX] as int?,
+      folderId: validatedAdditionalData[Token.FOLDER_ID] as int?,
+      origin: validatedAdditionalData[Token.ORIGIN] as TokenOriginData?,
+      isHidden: validatedAdditionalData[Token.IS_HIDDEN] as bool?,
+    );
+  }
+
+  // --- Methods ---
+  String otpFromTime(DateTime time) => algorithm.generateTOTPCodeString(
+    secret: secret,
+    time: time,
+    length: digits,
+    interval: Duration(seconds: period),
+    isGoogle: true,
+  );
 
   @override
   bool isSameTokenAs(Token other) {
     if (super.isSameTokenAs(other) != null) return super.isSameTokenAs(other)!;
-    if (other is! TOTPToken) return false;
-    if (period != other.period) return false;
-    return true;
+    return (other is TOTPToken && period == other.period);
   }
 
   @override
@@ -119,12 +199,15 @@ class TOTPToken extends OTPToken {
     int? Function()? folderId,
     TokenOriginData? origin,
     bool? isOffline,
+    ForceBiometricOption? forceBiometricOption,
   }) {
     return TOTPToken(
       serial: serial ?? this.serial,
       label: label ?? this.label,
       issuer: issuer ?? this.issuer,
-      containerSerial: containerSerial != null ? containerSerial() : this.containerSerial,
+      containerSerial: containerSerial != null
+          ? containerSerial()
+          : this.containerSerial,
       checkedContainer: checkedContainer ?? this.checkedContainer,
       id: id ?? this.id,
       algorithm: algorithm ?? this.algorithm,
@@ -139,26 +222,13 @@ class TOTPToken extends OTPToken {
       folderId: folderId != null ? folderId() : this.folderId,
       origin: origin ?? this.origin,
       isOffline: isOffline ?? this.isOffline,
+      forceBiometricOption: forceBiometricOption ?? this.forceBiometricOption,
     );
   }
 
   @override
   TOTPToken copyUpdateByTemplate(TokenTemplate template) {
-    final uriMap = validateMap(
-      map: template.otpAuthMap,
-      validators: {
-        Token.LABEL: const ObjectValidatorNullable<String>(),
-        Token.ISSUER: const ObjectValidatorNullable<String>(),
-        Token.SERIAL: const ObjectValidatorNullable<String>(),
-        Token.IMAGE: const ObjectValidatorNullable<String>(),
-        Token.PIN: boolValidatorNullable,
-        OTPToken.ALGORITHM: stringToAlgorithmsValidatorNullable,
-        OTPToken.DIGITS: intValidatorNullable,
-        OTPToken.SECRET_BASE32: base32SecretValidatorNullable,
-        PERIOD_SECONDS: intValidatorNullable,
-      },
-      name: 'TOTPToken',
-    );
+    final uriMap = validateOtpAuthMap(template.otpAuthMap);
     return copyWith(
       label: uriMap[Token.LABEL] as String?,
       issuer: uriMap[Token.ISSUER] as String?,
@@ -174,87 +244,13 @@ class TOTPToken extends OTPToken {
   }
 
   @override
-  String toString() {
-    return 'T${super.toString()}period: $period}';
-  }
+  String toString() => 'T${super.toString()}period: $period}';
 
-  factory TOTPToken.fromOtpAuthMap(Map<String, dynamic> otpAuthMap, {Map<String, dynamic> additionalData = const {}}) {
-    final validatedMap = validateMap(
-      map: otpAuthMap,
-      validators: {
-        Token.LABEL: const ObjectValidator<String>(defaultValue: ''),
-        Token.ISSUER: const ObjectValidator<String>(defaultValue: ''),
-        Token.SERIAL: const ObjectValidatorNullable<String>(),
-        Token.IMAGE: const ObjectValidatorNullable<String>(),
-        Token.PIN: boolValidatorNullable,
-        Token.OFFLINE: boolValidatorNullable,
-        OTPToken.ALGORITHM: stringToAlgorithmsValidator.withDefault(Algorithms.SHA1),
-        OTPToken.DIGITS: otpAuthDigitsValidator,
-        OTPToken.SECRET_BASE32: base32Secretvalidator,
-        PERIOD_SECONDS: otpAuthPeriodSecondsValidator,
-      },
-      name: 'TOTPToken#otpAuthMap',
-    );
-    final validatedAdditionalData = Token.validateAdditionalData(additionalData);
-    return TOTPToken(
-      label: validatedMap[Token.LABEL] as String,
-      issuer: validatedMap[Token.ISSUER] as String,
-      serial: validatedMap[Token.SERIAL] as String?,
-      tokenImage: validatedMap[Token.IMAGE] as String?,
-      pin: validatedMap[Token.PIN] as bool?,
-      isLocked: validatedMap[Token.PIN] as bool?,
-      id: validatedAdditionalData[Token.ID] ?? const Uuid().v4(),
-      containerSerial: validatedAdditionalData[Token.CONTAINER_SERIAL],
-      checkedContainer: validatedAdditionalData[Token.CHECKED_CONTAINERS] ?? [],
-      sortIndex: validatedAdditionalData[Token.SORT_INDEX],
-      folderId: validatedAdditionalData[Token.FOLDER_ID],
-      origin: validatedAdditionalData[Token.ORIGIN],
-      isHidden: validatedAdditionalData[Token.HIDDEN],
-      isOffline: validatedMap[Token.OFFLINE] as bool? ?? false,
-      algorithm: validatedMap[OTPToken.ALGORITHM] as Algorithms,
-      digits: validatedMap[OTPToken.DIGITS] as int,
-      secret: validatedMap[OTPToken.SECRET_BASE32] as String,
-      period: validatedMap[PERIOD_SECONDS] as int,
-    );
-  }
-
-  /// This is used to create a map that typically was created from a uri.
-  /// ```dart
-  ///  ------------------------- [Token] -------------------------
-  /// | Token.SERIAL: serial, (optional)                          |
-  /// | Token.TOKENTYPE_JSON: type,                                         |
-  /// | Token.LABEL: label,                                       |
-  /// | Token.ISSUER: issuer,                                     |
-  /// | Token.PIN: pin,                                           |
-  /// | Token.IMAGE: tokenImage, (optional)                       |
-  ///  -----------------------------------------------------------
-  ///  ----------------------- [OTPToken] ------------------------
-  /// | OTPToken.ALGORITHM: algorithm,                            |
-  /// | OTPToken.DIGITS: digits,                                  |
-  ///  -----------------------------------------------------------
-  ///  ----------------------- [HOTPToken] -----------------------
-  /// | PERIOD_SECONDS: period,                                   |
-  ///  -----------------------------------------------------------
-  /// ```
-  @override
-  Map<String, dynamic> toOtpAuthMap() {
-    return super.toOtpAuthMap()
-      ..addAll({
-        PERIOD_SECONDS: period.toString(),
-      });
-  }
-
-  double get currentProgress {
-    final secondsSinceEpoch = DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000;
-    return (secondsSinceEpoch % (period)) * (1 / period);
-  }
-
-  double get secondsUntilNextOTP {
-    final secondsSinceEpoch = (DateTime.now().toUtc().millisecondsSinceEpoch / 1000);
-    return period - (secondsSinceEpoch % (period));
-  }
-
+  // --- Serialization Helpers ---
   @override
   Map<String, dynamic> toJson() => _$TOTPTokenToJson(this);
-  factory TOTPToken.fromJson(Map<String, dynamic> json) => _$TOTPTokenFromJson(json);
+
+  @override
+  Map<String, dynamic> toOtpAuthMap() =>
+      super.toOtpAuthMap()..addAll({PERIOD_SECONDS: period.toString()});
 }

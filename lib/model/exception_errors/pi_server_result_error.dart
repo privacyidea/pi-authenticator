@@ -17,7 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import '../../utils/object_validator.dart';
+import '../../utils/object_validator/object_validators.dart';
 
 class PiServerResultError implements Error {
   static const CODE = 'code';
@@ -44,9 +44,9 @@ class PiServerResultError implements Error {
   factory PiServerResultError.fromResultError(Map<String, dynamic> json) {
     final map = validateMap(
       map: json,
-      validators: {
-        CODE: const ObjectValidator<int>(),
-        MESSAGE: const ObjectValidator<String>(),
+      validators: <String, BaseValidator>{
+        CODE: const RequiredObjectValidator<int>(),
+        MESSAGE: stringValidator,
       },
       name: 'PiServerResultError#fromJson',
     );

@@ -24,7 +24,6 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:base32/base32.dart';
-import 'package:privacyidea_authenticator/utils/object_validator.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 
 import '../../../model/enums/token_origin_source_type.dart';
@@ -33,19 +32,24 @@ import '../../../model/processor_result.dart';
 import '../../../model/tokens/token.dart';
 import '../../../proto/generated/GoogleAuthenticatorImport.pb.dart';
 import '../../../utils/logger.dart';
+import '../../../utils/object_validator/object_validators.dart';
 import '../../../utils/token_import_origins.dart';
 import 'otp_auth_processor.dart';
 import 'token_import_scheme_processor_interface.dart';
 
 class GoogleAuthenticatorQrProcessor extends TokenImportSchemeProcessor {
-  static ObjectValidator<TokenNotifier> get resultHandlerType => OtpAuthProcessor.resultHandlerType;
+  static RequiredObjectValidator<TokenNotifier> get resultHandlerType =>
+      OtpAuthProcessor.resultHandlerType;
   const GoogleAuthenticatorQrProcessor();
   static const OtpAuthProcessor otpAuthProcessor = OtpAuthProcessor();
 
   @override
   Set<String> get supportedSchemes => {'otpauth-migration'};
   @override
-  Future<List<ProcessorResult<Token>>> processUri(Uri uri, {bool fromInit = false}) async {
+  Future<List<ProcessorResult<Token>>> processUri(
+    Uri uri, {
+    bool fromInit = false,
+  }) async {
     if (!supportedSchemes.contains(uri.scheme)) return [];
     final value = uri.toString();
     // check prefix "otpauth-migration://offline?data="
@@ -117,11 +121,22 @@ class GoogleAuthenticatorQrProcessor extends TokenImportSchemeProcessor {
             break;
         }
         Logger.info("Processing $type token ${param.name}");
-        final uri = Uri.parse("otpauth://$type/$name?secret=$base32string&issuer=$issuer$algorithm$digits$period$counter");
+        final uri = Uri.parse(
+          "otpauth://$type/$name?secret=$base32string&issuer=$issuer$algorithm$digits$period$counter",
+        );
         results.addAll(await otpAuthProcessor.processUri(uri));
       } catch (e) {
-        Logger.error("Skipping token ${param.name} due to error: $e", error: e, stackTrace: StackTrace.current);
-        results.add(ProcessorResultFailed((_) => e.toString(), resultHandlerType: resultHandlerType));
+        Logger.error(
+          "Skipping token ${param.name} due to error: $e",
+          error: e,
+          stackTrace: StackTrace.current,
+        );
+        results.add(
+          ProcessorResultFailed(
+            (_) => e.toString(),
+            resultHandlerType: resultHandlerType,
+          ),
+        );
         continue;
       }
     }

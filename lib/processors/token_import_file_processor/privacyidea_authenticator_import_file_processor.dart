@@ -20,25 +20,30 @@
 import 'dart:convert';
 
 import 'package:file_selector/file_selector.dart';
-import 'package:privacyidea_authenticator/utils/object_validator.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 
 import '../../model/processor_result.dart';
 import '../../model/tokens/token.dart';
 import '../../utils/encryption/token_encryption.dart';
 import '../../utils/logger.dart';
+import '../../utils/object_validator/object_validators.dart';
 import 'token_import_file_processor_interface.dart';
 import 'two_fas_import_file_processor.dart';
 
-class PrivacyIDEAAuthenticatorImportFileProcessor extends TokenImportFileProcessor {
-  static ObjectValidator<TokenNotifier> get resultHandlerType => TokenImportFileProcessor.resultHandlerType;
+class PrivacyIDEAAuthenticatorImportFileProcessor
+    extends TokenImportFileProcessor {
+  static RequiredObjectValidator<TokenNotifier> get resultHandlerType =>
+      TokenImportFileProcessor.resultHandlerType;
   const PrivacyIDEAAuthenticatorImportFileProcessor();
   @override
   Future<bool> fileIsValid(XFile file) async {
     try {
       final content = await file.readAsString();
       final json = jsonDecode(content);
-      if (json['data'] != null && json['salt'] != null && json['iv'] != null && json['mac'] != null) {
+      if (json['data'] != null &&
+          json['salt'] != null &&
+          json['iv'] != null &&
+          json['mac'] != null) {
         return true;
       }
       return false;
@@ -51,23 +56,45 @@ class PrivacyIDEAAuthenticatorImportFileProcessor extends TokenImportFileProcess
   Future<bool> fileNeedsPassword(XFile file) => Future.value(true);
 
   @override
-  Future<List<ProcessorResult<Token>>> processFile(XFile file, {String? password}) async {
+  Future<List<ProcessorResult<Token>>> processFile(
+    XFile file, {
+    String? password,
+  }) async {
     assert(password != null);
 
     try {
       final content = await file.readAsString();
       List<Token> tokens;
       try {
-        tokens = await TokenEncryption.decrypt(encryptedTokens: content, password: password!);
+        tokens = await TokenEncryption.decrypt(
+          encryptedTokens: content,
+          password: password!,
+        );
       } catch (e) {
         throw BadDecryptionPasswordException('Invalid password');
       }
-      final results = tokens.map((token) => ProcessorResult.success(token, resultHandlerType: resultHandlerType)).toList();
+      final results = tokens
+          .map(
+            (token) => ProcessorResult.success(
+              token,
+              resultHandlerType: resultHandlerType,
+            ),
+          )
+          .toList();
       return results;
     } catch (e) {
       if (e is BadDecryptionPasswordException) rethrow;
-      Logger.error('Failed to process file', error: e, stackTrace: StackTrace.current);
-      return [ProcessorResult.failed((_) => e.toString(), resultHandlerType: resultHandlerType)];
+      Logger.error(
+        'Failed to process file',
+        error: e,
+        stackTrace: StackTrace.current,
+      );
+      return [
+        ProcessorResult.failed(
+          (_) => e.toString(),
+          resultHandlerType: resultHandlerType,
+        ),
+      ];
     }
   }
 }

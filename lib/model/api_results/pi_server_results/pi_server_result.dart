@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-import '../../../utils/object_validator.dart';
+import '../../../utils/object_validator/object_validators.dart';
 import '../../exception_errors/pi_server_result_error.dart';
 import 'pi_server_result_value.dart';
 
@@ -36,20 +36,22 @@ class PiServerResult<V extends PiServerResultValue> {
   factory PiServerResult.fromResultMap(Map<String, dynamic> json) {
     final map = validateMap(
       map: json,
-      validators: {
-        RESULT_STATUS: const ObjectValidator<bool>(),
-        RESULT_VALUE: const ObjectValidatorNullable<dynamic>(),
-        RESULT_ERROR: const ObjectValidatorNullable<Map<String, dynamic>>(),
+      validators: <String, BaseValidator>{
+        RESULT_STATUS: const RequiredObjectValidator<bool>(),
+        RESULT_VALUE: const OptionalObjectValidator<Object>(),
+        RESULT_ERROR: const OptionalObjectValidator<Map<String, Object>>(),
       },
       name: 'PiServerResult#fromJson',
     );
     return PiServerResult(
-      status: map[RESULT_STATUS],
+      status: map[RESULT_STATUS] as bool,
       value: map[RESULT_VALUE] != null
           ? PiServerResultValue.fromResultValue<V>(map[RESULT_VALUE])
           : null,
       error: map[RESULT_ERROR] != null
-          ? PiServerResultError.fromResultError(map[RESULT_ERROR])
+          ? PiServerResultError.fromResultError(
+              map[RESULT_ERROR] as Map<String, Object>,
+            )
           : null,
     );
   }

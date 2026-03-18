@@ -27,7 +27,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import '../../../../../../../model/enums/token_origin_source_type.dart';
 import '../../../../../../../model/token_container.dart';
 import '../../../../../../../model/tokens/otp_token.dart';
-import '../utils/object_validator.dart';
+import '../utils/object_validator/object_validators.dart';
 import 'token_import/token_origin_data.dart';
 import 'tokens/token.dart';
 
@@ -56,17 +56,30 @@ sealed class TokenTemplate with _$TokenTemplate {
   List<String> get keys => otpAuthMap.keys.toList();
   List<dynamic> get values => otpAuthMap.values.toList();
 
-  String? get serial => validateOptional(value: otpAuthMap[Token.SERIAL], validator: const ObjectValidatorNullable<String>(), name: Token.SERIAL);
+  String? get serial => validate(
+    value: otpAuthMap[Token.SERIAL],
+    validator: stringValidatorOptional,
+    name: Token.SERIAL,
+  );
 
-  String? get type =>
-      validateOptional(value: otpAuthMap[Token.TOKENTYPE_OTPAUTH], validator: const ObjectValidatorNullable<String>(), name: Token.TOKENTYPE_OTPAUTH);
+  String? get type => validate(
+    value: otpAuthMap[Token.TOKENTYPE_OTPAUTH],
+    validator: stringValidatorOptional,
+    name: Token.TOKENTYPE_OTPAUTH,
+  );
 
-  List<String>? get otpValues => this is _TokenTemplateWithOtps ? (this as _TokenTemplateWithOtps).otps : null;
+  List<String>? get otpValues => this is _TokenTemplateWithOtps
+      ? (this as _TokenTemplateWithOtps).otps
+      : null;
 
-  String? get containerSerial =>
-      validateOptional(value: additionalData[Token.CONTAINER_SERIAL], validator: const ObjectValidatorNullable<String>(), name: Token.CONTAINER_SERIAL);
+  String? get containerSerial => validate(
+    value: additionalData[Token.CONTAINER_SERIAL],
+    validator: stringValidatorOptional,
+    name: Token.CONTAINER_SERIAL,
+  );
 
-  Map<String, dynamic> get otpAuthMapSafeToSend => Map<String, dynamic>.from(otpAuthMap)..remove(OTPToken.SECRET_BASE32);
+  Map<String, dynamic> get otpAuthMapSafeToSend =>
+      Map<String, dynamic>.from(otpAuthMap)..remove(OTPToken.SECRET_BASE32);
 
   @override
   operator ==(Object other) {
@@ -80,7 +93,8 @@ sealed class TokenTemplate with _$TokenTemplate {
     return true;
   }
 
-  factory TokenTemplate.fromJson(Map<String, dynamic> json) => _$TokenTemplateFromJson(json);
+  factory TokenTemplate.fromJson(Map<String, dynamic> json) =>
+      _$TokenTemplateFromJson(json);
 
   Token toToken() {
     final additionalData = Map<String, dynamic>.from(this.additionalData);
@@ -113,23 +127,32 @@ sealed class TokenTemplate with _$TokenTemplate {
   /// print(planets); // {1: Mercury, 2: Earth, 5: Jupiter, 6: Saturn}
   /// ```
   TokenTemplate withOtpAuthData(Map<String, dynamic> otpAuthMap) {
-    final newOtpAuthMap = Map<String, dynamic>.from(this.otpAuthMap)..addAll(otpAuthMap);
+    final newOtpAuthMap = Map<String, dynamic>.from(this.otpAuthMap)
+      ..addAll(otpAuthMap);
     return copyWith(otpAuthMap: newOtpAuthMap);
   }
 
   TokenTemplate withAditionalData(Map<String, dynamic> additionalData) {
-    final newAdditionalData = Map<String, dynamic>.from(this.additionalData)..addAll(additionalData);
+    final newAdditionalData = Map<String, dynamic>.from(this.additionalData)
+      ..addAll(additionalData);
     return copyWith(additionalData: newAdditionalData);
   }
 
   @override
-  int get hashCode =>
-      Object.hashAllUnordered([...otpAuthMap.keys.map((key) => '$key:${otpAuthMap[key]}'), ...additionalData.keys.map((key) => '$key:${additionalData[key]}')]);
+  int get hashCode => Object.hashAllUnordered([
+    ...otpAuthMap.keys.map((key) => '$key:${otpAuthMap[key]}'),
+    ...additionalData.keys.map((key) => '$key:${additionalData[key]}'),
+  ]);
 
   bool isSameTokenAs(TokenTemplate? other) {
     if (other == null) return false;
     if (serial != null && serial == other.serial) return true;
-    if (otpValues != null && otpValues!.isNotEmpty && other is OTPToken && otpValues == other.otpValues) return true;
+    if (otpValues != null &&
+        otpValues!.isNotEmpty &&
+        other is OTPToken &&
+        otpValues == other.otpValues) {
+      return true;
+    }
     return false;
   }
 }

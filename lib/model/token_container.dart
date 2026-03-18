@@ -26,12 +26,13 @@ import '../../../../../../../model/extensions/enums/ec_key_algorithm_extension.d
 import '../../../../../../../model/tokens/token.dart';
 import '../utils/ecc_utils.dart';
 import '../utils/logger.dart';
-import '../utils/object_validator.dart';
+import '../utils/object_validator/object_validators.dart';
 import 'container_policies.dart';
 import 'enums/ec_key_algorithm.dart';
 import 'enums/rollout_state.dart';
 import 'enums/sync_state.dart';
 import 'enums/token_origin_source_type.dart';
+import 'extensions/date_time_extension.dart';
 import 'token_import/token_origin_data.dart';
 
 part 'token_container.freezed.dart';
@@ -115,32 +116,31 @@ sealed class TokenContainer with _$TokenContainer {
   // "&passphrase=Enter%20your%20password"
   // "&send_passphrase=False"
   factory TokenContainer.fromUriMap(Map<String, dynamic> uriMap) {
-    uriMap = validateMap(
-      map: uriMap,
-      validators: {
-        ISSUER: const ObjectValidator<String>(),
-        TTL_MINUTES: minutesDurationValidator.withDefault(
-          const Duration(minutes: 10),
-        ),
-        NONCE: const ObjectValidator<String>(),
-        TIMESTAMP: ObjectValidator<DateTime>(
-          transformer: (v) => DateTime.parse(v),
-        ),
-        FINALIZATION_URL: uriValidator,
-        SERIAL: const ObjectValidator<String>(),
-        EC_KEY_ALGORITHM: ObjectValidator<EcKeyAlgorithm>(
-          transformer: (v) => EcKeyAlgorithm.values.byCurveName(v),
-        ),
-        HASH_ALGORITHM: stringToAlgorithmsValidator,
-        PASSPHRASE_QUESTION: const ObjectValidatorNullable<String>(),
-        SSL_VERIFY: boolValidator,
-        POLICIES: ObjectValidatorNullable<ContainerPolicies>(
-          transformer: (value) => ContainerPolicies.fromUriMap(value),
-        ),
-        SEND_PASSPHRASE: boolValidatorNullable,
-      },
-      name: 'Container',
-    );
+    try {
+      uriMap = validateMap(
+        map: uriMap,
+        validators: <String, BaseValidator>{
+          ISSUER: stringValidator,
+          TTL_MINUTES: minutesDurationValidator.withDefault(
+            const Duration(minutes: 10),
+          ),
+          NONCE: stringValidator,
+          TIMESTAMP: DateTimeX.validator,
+          FINALIZATION_URL: uriValidator,
+          SERIAL: stringValidator,
+          EC_KEY_ALGORITHM: EcKeyAlgorithmX.validator,
+          HASH_ALGORITHM: algorithmsValidator,
+          PASSPHRASE_QUESTION: stringValidatorOptional,
+          SSL_VERIFY: boolValidator,
+          POLICIES: ContainerPolicies.validator.optional(),
+          SEND_PASSPHRASE: boolValidatorOptional,
+        },
+        name: 'Container',
+      );
+    } catch (e) {
+      Logger.warning("Error type:  ${e.runtimeType}, message: $e");
+      rethrow;
+    }
     return TokenContainer.unfinalized(
       issuer: uriMap[ISSUER],
       ttl: uriMap[TTL_MINUTES],

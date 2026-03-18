@@ -17,7 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import '../../utils/object_validator.dart';
+import '../../utils/object_validator/object_validators.dart';
 
 class EncryptionParams {
   static const String SYNC_ENC_PARAMS_ALGORITHM = 'algorithm';
@@ -30,6 +30,16 @@ class EncryptionParams {
   final String mode;
   final String tag;
 
+  static final validator = RequiredObjectValidator<EncryptionParams>(
+    transformer: (v) {
+      if (v is Map<String, dynamic>) {
+        return EncryptionParams.fromUriMap(v);
+      }
+      throw ArgumentError(
+        'Invalid type for EncryptionParams: ${v.runtimeType}, value: $v',
+      );
+    },
+  );
   const EncryptionParams({
     required this.algorithm,
     required this.mode,
@@ -40,11 +50,11 @@ class EncryptionParams {
   static EncryptionParams fromUriMap(Map<String, dynamic> responseBody) {
     final map = validateMap(
       map: responseBody,
-      validators: {
-        SYNC_ENC_PARAMS_ALGORITHM: const ObjectValidator<String>(),
-        SYNC_ENC_PARAMS_IV: const ObjectValidator<String>(),
-        SYNC_ENC_PARAMS_MODE: const ObjectValidator<String>(),
-        SYNC_ENC_PARAMS_TAG: const ObjectValidator<String>(),
+      validators: <String, BaseValidator>{
+        SYNC_ENC_PARAMS_ALGORITHM: stringValidator,
+        SYNC_ENC_PARAMS_IV: stringValidator,
+        SYNC_ENC_PARAMS_MODE: stringValidator,
+        SYNC_ENC_PARAMS_TAG: stringValidator,
       },
       name: 'EncryptionParams#fromResponseBody',
     );
@@ -57,9 +67,9 @@ class EncryptionParams {
   }
 
   Map<String, dynamic> toUriMap() => {
-        SYNC_ENC_PARAMS_ALGORITHM: algorithm,
-        SYNC_ENC_PARAMS_IV: initVector,
-        SYNC_ENC_PARAMS_MODE: mode,
-        SYNC_ENC_PARAMS_TAG: tag,
-      };
+    SYNC_ENC_PARAMS_ALGORITHM: algorithm,
+    SYNC_ENC_PARAMS_IV: initVector,
+    SYNC_ENC_PARAMS_MODE: mode,
+    SYNC_ENC_PARAMS_TAG: tag,
+  };
 }
