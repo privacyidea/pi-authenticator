@@ -17,27 +17,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import '../../model/exception_errors/localized_argument_error.dart';
 
-abstract class BaseValidator<T extends Object> {
+part of 'object_validators.dart';
+
+abstract class BaseValidator<T extends Object?> {
   final T Function(Object? value)? transformer;
   final T? defaultValue;
   final bool Function(T)? allowedValues;
 
   const BaseValidator({
+    required this.defaultValue,
     this.transformer,
-    this.defaultValue,
     this.allowedValues,
   });
 
   bool isTypeOf(Object? value);
   bool valueIsAllowed(Object? value);
 
-  T? transform(Object? value);
+  T transform(Object? value);
 
-  BaseValidator<T> withDefault(T? defaultValue);
+  BaseValidator<T> withDefault(T defaultValue);
 
-  T executeTransform(Object? value) {
+  T _executeTransform(Object? value) {
     if (value == null) {
       if (defaultValue != null) return defaultValue!;
       throw _error(value);
@@ -47,7 +48,7 @@ abstract class BaseValidator<T extends Object> {
       return transformer!(value);
     }
 
-    if (value is T) return value;
+    if (value is T) return value as T;
 
     if (defaultValue != null) return defaultValue!;
     throw _error(value);

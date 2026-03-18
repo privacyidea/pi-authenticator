@@ -18,9 +18,7 @@
  * limitations under the License.
  */
 
-import '../logger.dart';
-import 'base_validator.dart';
-import 'optional_object_validator.dart';
+part of 'object_validators.dart';
 
 class RequiredObjectValidator<T extends Object> extends BaseValidator<T> {
   const RequiredObjectValidator({
@@ -30,7 +28,29 @@ class RequiredObjectValidator<T extends Object> extends BaseValidator<T> {
   });
 
   @override
-  T transform(Object? value) => executeTransform(value);
+  T transform(Object? value) {
+    if (value == null) {
+      if (defaultValue != null) {
+        return defaultValue as T;
+      }
+      Logger.warning(
+        'Validation failed for <$T>. Value is required but was null.',
+        name: 'RequiredObjectValidator<$T>',
+      );
+      throw ArgumentError('Value is required but was null.');
+    }
+    try {
+      return _executeTransform(value);
+    } catch (e, stackTrace) {
+      Logger.warning(
+        'Validation failed for <$T>. Value: "$value" (Type: ${value.runtimeType})',
+        error: e,
+        stackTrace: stackTrace,
+        name: 'RequiredObjectValidator<$T>',
+      );
+      rethrow;
+    }
+  }
 
   @override
   RequiredObjectValidator<T> withDefault(T? defaultValue) {
@@ -44,7 +64,11 @@ class RequiredObjectValidator<T extends Object> extends BaseValidator<T> {
   OptionalObjectValidator<T> optional() => OptionalObjectValidator<T>(
     transformer: transformer,
     defaultValue: defaultValue,
-    allowedValues: allowedValues,
+    allowedValues: (v) {
+      if (allowedValues == null) return true;
+      if (v == null) return true;
+      return allowedValues!(v);
+    },
   );
 
   @override
@@ -71,7 +95,12 @@ class RequiredObjectValidator<T extends Object> extends BaseValidator<T> {
 
   @override
   bool valueIsAllowed(Object? value) {
-    if (!isTypeOf(value)) return false;
+    if (!isTypeOf(value)) {
+      if (defaultValue != null) {
+        return allowedValues?.call(defaultValue as T) ?? true;
+      }
+      return false;
+    }
     return allowedValues?.call(transform(value)) ?? true;
   }
 }

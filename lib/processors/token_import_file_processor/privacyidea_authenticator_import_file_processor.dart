@@ -20,13 +20,13 @@
 import 'dart:convert';
 
 import 'package:file_selector/file_selector.dart';
-import 'package:privacyidea_authenticator/utils/object_validator/required_object_validator.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 
 import '../../model/processor_result.dart';
 import '../../model/tokens/token.dart';
 import '../../utils/encryption/token_encryption.dart';
 import '../../utils/logger.dart';
+import '../../utils/object_validator/object_validators.dart';
 import 'token_import_file_processor_interface.dart';
 import 'two_fas_import_file_processor.dart';
 

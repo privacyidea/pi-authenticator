@@ -18,7 +18,6 @@
  * limitations under the License.
  */
 import 'package:privacyidea_authenticator/processors/scheme_processors/token_import_scheme_processors/otp_auth_processor.dart';
-import 'package:privacyidea_authenticator/utils/object_validator/required_object_validator.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 
 import '../../../model/enums/token_types.dart';
@@ -26,6 +25,7 @@ import '../../../model/processor_result.dart';
 import '../../../model/tokens/token.dart';
 import '../../../utils/encryption/token_encryption.dart';
 import '../../../utils/logger.dart';
+import '../../../utils/object_validator/object_validators.dart';
 import 'token_import_scheme_processor_interface.dart';
 
 class PiaSchemeProcessor extends TokenImportSchemeProcessor {
@@ -48,8 +48,9 @@ class PiaSchemeProcessor extends TokenImportSchemeProcessor {
   }) async {
     if (!supportedSchemes.contains(uri.scheme)) return null;
     if (uri.host == qrBackupHost) return _processQrBackup(uri);
-    if (tokenHosts.contains(uri.host.toLowerCase()))
+    if (tokenHosts.contains(uri.host.toLowerCase())) {
       return _processTokenUri(uri);
+    }
     return null;
   }
 

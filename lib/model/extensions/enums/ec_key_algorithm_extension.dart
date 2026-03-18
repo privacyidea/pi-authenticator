@@ -17,7 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import '../../../utils/object_validator/required_object_validator.dart';
+import '../../../utils/object_validator/object_validators.dart';
 import '../../enums/ec_key_algorithm.dart';
 
 extension EcKeyAlgorithmList on List<EcKeyAlgorithm> {

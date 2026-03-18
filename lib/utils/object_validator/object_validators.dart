@@ -25,9 +25,10 @@ import '../../model/enums/algorithms.dart';
 import '../../model/enums/encodings.dart';
 import '../../model/exception_errors/localized_argument_error.dart';
 import '../logger.dart';
-import 'base_validator.dart';
-import 'optional_object_validator.dart';
-import 'required_object_validator.dart';
+
+part 'base_validator.dart';
+part 'optional_object_validator.dart';
+part 'required_object_validator.dart';
 
 final _base32Regex = RegExp(r'^[A-Z2-7]+=*$');
 
@@ -175,102 +176,33 @@ final base32ToBytesValidator = RequiredObjectValidator<Uint8List>(
 );
 final base32ToBytesValidatorOptional = base32ToBytesValidator.optional();
 
-T validate<T extends Object>({
+T validate<T extends Object?>({
   required dynamic value,
-  required RequiredObjectValidator<T> validator,
+  required BaseValidator<T> validator,
   required String name,
 }) {
-  if (validator.isTypeOf(value)) return validator.transform(value);
-  throw LocalizedArgumentError(
-    localizedMessage: (localizations, value, name) =>
-        localizations.invalidValue(value.runtimeType.toString(), value, name),
-    unlocalizedMessage:
-        'The ${value.runtimeType} "$value" is not valid for "$name"',
-    invalidValue: '$value',
-    name: name,
-  );
+  final result = validator.transform(value);
+  if (!validator.valueIsAllowed(value)) {
+    throw validator._error(value);
+  }
+  return result;
 }
 
-T? validateOptional<T extends Object>({
-  required dynamic value,
-  required OptionalObjectValidator<T> validator,
-  required String name,
-}) {
-  if (validator.isTypeOf(value)) return validator.transform(value);
-  throw LocalizedArgumentError(
-    localizedMessage: (localizations, value, name) =>
-        localizations.invalidValue(value.runtimeType.toString(), value, name),
-    unlocalizedMessage:
-        'The ${value.runtimeType} "$value" is not valid for "$name"',
-    invalidValue: '$value',
-    name: name,
-  );
-}
-
-Map<String, T> validateMap<T extends Object>({
+Map<String, T> validateMap<T extends Object?>({
   required Map<String, dynamic> map,
   required Map<String, BaseValidator<T>> validators,
   required String? name,
 }) {
-  Map<String, T> validatedMap = {};
-  for (String key in validators.keys) {
+  final Map<String, T> validatedMap = {};
+  for (final key in validators.keys) {
     final validator = validators[key]!;
     final mapEntry = map[key];
-    if (validator.isTypeOf(mapEntry)) {
-      if (validator.valueIsAllowed(mapEntry)) {
-        try {
-          final newValue = validator.transform(mapEntry);
-          if (newValue != null) validatedMap[key] = newValue;
-        } catch (e) {
-          Logger.warning(
-            'Error transforming key "$key" in map "$name": $e. Expected type: $T',
-          );
-          rethrow;
-        }
-      } else {
-        throw LocalizedArgumentError(
-          localizedMessage: name != null
-              ? (l, v, k) => l.valueNotAllowedIn(
-                  name,
-                  k,
-                  v.runtimeType.toString(),
-                  v.toString(),
-                )
-              : (l, v, k) => l.valueNotAllowed(
-                  k,
-                  v.runtimeType.toString(),
-                  v.toString(),
-                ),
-          unlocalizedMessage: 'Value "$mapEntry" not allowed for "$key"',
-          invalidValue: mapEntry.toString(),
-          name: key,
-        );
-      }
-    } else {
-      if (mapEntry == null) {
-        throw LocalizedArgumentError(
-          localizedMessage: name != null
-              ? (l, v, k) => l.missingRequiredParameterIn(name, k)
-              : (l, v, k) => l.missingRequiredParameter(k),
-          unlocalizedMessage: 'Missing key "$key"',
-          invalidValue: mapEntry.toString(),
-          name: key,
-        );
-      }
-      throw LocalizedArgumentError(
-        localizedMessage: name != null
-            ? (l, v, k) => l.invalidValueIn(
-                v.runtimeType.toString(),
-                v.toString(),
-                k,
-                name,
-              )
-            : (l, v, k) =>
-                  l.invalidValue(v.runtimeType.toString(), v.toString(), k),
-        unlocalizedMessage: 'Value "$mapEntry" not valid for "$key"',
-        invalidValue: mapEntry.toString(),
-        name: key,
-      );
+    final newValue = validator.transform(mapEntry);
+    if (!validator.valueIsAllowed(mapEntry)) {
+      throw validator._error(mapEntry);
+    }
+    if (newValue != null) {
+      validatedMap[key] = newValue;
     }
   }
   return validatedMap;

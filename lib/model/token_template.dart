@@ -56,13 +56,13 @@ sealed class TokenTemplate with _$TokenTemplate {
   List<String> get keys => otpAuthMap.keys.toList();
   List<dynamic> get values => otpAuthMap.values.toList();
 
-  String? get serial => validateOptional(
+  String? get serial => validate(
     value: otpAuthMap[Token.SERIAL],
     validator: stringValidatorOptional,
     name: Token.SERIAL,
   );
 
-  String? get type => validateOptional(
+  String? get type => validate(
     value: otpAuthMap[Token.TOKENTYPE_OTPAUTH],
     validator: stringValidatorOptional,
     name: Token.TOKENTYPE_OTPAUTH,
@@ -72,7 +72,7 @@ sealed class TokenTemplate with _$TokenTemplate {
       ? (this as _TokenTemplateWithOtps).otps
       : null;
 
-  String? get containerSerial => validateOptional(
+  String? get containerSerial => validate(
     value: additionalData[Token.CONTAINER_SERIAL],
     validator: stringValidatorOptional,
     name: Token.CONTAINER_SERIAL,

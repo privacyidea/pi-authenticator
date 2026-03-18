@@ -45,7 +45,7 @@ import '../model/tokens/token.dart';
 import '../processors/scheme_processors/scheme_processor_interface.dart';
 import 'customization/application_customization.dart'
     show ApplicationCustomization;
-import 'object_validator/required_object_validator.dart';
+import 'object_validator/object_validators.dart';
 import 'riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
 import 'riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import 'riverpod/riverpod_providers/state_providers/dragging_sortable_provider.dart';

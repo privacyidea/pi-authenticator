@@ -20,9 +20,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../../../model/token_container.dart';
-import '../../utils/object_validator/base_validator.dart';
 import '../../utils/object_validator/object_validators.dart';
-import '../../utils/object_validator/optional_object_validator.dart';
 import '../enums/token_types.dart';
 import '../extensions/enum_extension.dart';
 import '../extensions/enums/force_biometric_option_extension.dart';
@@ -50,7 +48,7 @@ abstract class Token with SortableMixin {
   static const String ISSUER = 'issuer';
   static const String PIN = 'pin';
   static const String IMAGE = 'image';
-  static const String FORCE_BIOMETRIC_OPTION = 'app_force_biometric';
+  static const String FORCE_BIOMETRIC_OPTION = 'app_force_unlock';
   static const String OFFLINE = 'offline';
   static const String SERIAL = 'serial';
 
@@ -58,7 +56,7 @@ abstract class Token with SortableMixin {
   static const String CONTAINER_SERIAL = 'containerSerial';
   static const String ID = 'id';
   static const String ORIGIN = 'origin';
-  static const String HIDDEN = 'hidden';
+  static const String IS_HIDDEN = 'isHidden';
   static const String CHECKED_CONTAINERS = 'checkedContainer';
   static const String FOLDER_ID = 'folderId';
   static const String SORT_INDEX = SortableMixin.SORT_INDEX;
@@ -70,23 +68,21 @@ abstract class Token with SortableMixin {
   static const String TWO_STEP_ITERATIONS = '2step_difficulty';
 
   // --- Static Validators ---
-  static final Map<String, BaseValidator<Object>> otpAuthValidators = {
+  static final Map<String, BaseValidator> otpAuthValidators = {
     LABEL: stringValidator.withDefault(''),
     ISSUER: stringValidator.withDefault(''),
     SERIAL: stringValidatorOptional,
     IMAGE: stringValidatorOptional,
     PIN: boolValidatorOptional,
     OFFLINE: boolValidator.withDefault(false),
-    FORCE_BIOMETRIC_OPTION: ForceBiometricOptionX.validator.withDefault(
-      ForceBiometricOption.none,
-    ),
+    FORCE_BIOMETRIC_OPTION: ForceBiometricOptionX.validator,
   };
 
-  static final Map<String, BaseValidator<Object>> additionalDataValidators = {
+  static final Map<String, BaseValidator> additionalDataValidators = {
     CONTAINER_SERIAL: stringValidatorOptional,
     ID: stringValidatorOptional,
     ORIGIN: const OptionalObjectValidator<TokenOriginData>(),
-    HIDDEN: boolValidatorOptional,
+    IS_HIDDEN: boolValidatorOptional,
     CHECKED_CONTAINERS: const OptionalObjectValidator<List<String>>(
       defaultValue: [],
     ),
@@ -95,20 +91,20 @@ abstract class Token with SortableMixin {
   };
 
   // --- Static Validation Methods ---
-  static Map<String, Object> validateOtpAuthMap(
+  static Map<String, Object?> validateOtpAuthMap(
     Map<String, dynamic> otpAuthMap,
   ) {
-    return validateMap<Object>(
+    return validateMap(
       map: otpAuthMap,
       validators: otpAuthValidators,
       name: 'Token#otpAuthMap',
     );
   }
 
-  static Map<String, Object> validateAdditionalData(
+  static Map<String, Object?> validateAdditionalData(
     Map<String, dynamic> additionalData,
   ) {
-    return validateMap<Object>(
+    return validateMap(
       map: additionalData,
       validators: additionalDataValidators,
       name: 'Token#additionalData',
@@ -135,9 +131,12 @@ abstract class Token with SortableMixin {
   final int? sortIndex;
 
   final bool? _isLocked;
-  bool get isLocked =>
-      _isLocked ??
-      (pin == true || forceBiometricOption != ForceBiometricOption.none);
+  bool get isLocked {
+    if (pin == true || forceBiometricOption != ForceBiometricOption.none) {
+      return true;
+    }
+    return _isLocked ?? false;
+  }
 
   final bool? _isHidden;
   bool get isHidden => _isHidden ?? isLocked;
@@ -171,6 +170,7 @@ abstract class Token with SortableMixin {
   /// Creates a token from a json map.
   factory Token.fromJson(Map<String, dynamic> json) {
     String? type = json[TOKENTYPE_JSON];
+
     if (type == null) {
       throw ArgumentError.value(
         json,
@@ -178,17 +178,22 @@ abstract class Token with SortableMixin {
         'Token type is not defined in the json',
       );
     }
-    if (TokenTypes.HOTP.isName(type, caseSensitive: false))
+    if (TokenTypes.HOTP.isName(type, caseSensitive: false)) {
       return HOTPToken.fromJson(json);
-    if (TokenTypes.TOTP.isName(type, caseSensitive: false))
+    }
+    if (TokenTypes.TOTP.isName(type, caseSensitive: false)) {
       return TOTPToken.fromJson(json);
+    }
     if (TokenTypes.PIPUSH.isName(type, caseSensitive: false) ||
-        TokenTypes.PUSH.isName(type, caseSensitive: false))
+        TokenTypes.PUSH.isName(type, caseSensitive: false)) {
       return PushToken.fromJson(json);
-    if (TokenTypes.DAYPASSWORD.isName(type, caseSensitive: false))
+    }
+    if (TokenTypes.DAYPASSWORD.isName(type, caseSensitive: false)) {
       return DayPasswordToken.fromJson(json);
-    if (TokenTypes.STEAM.isName(type, caseSensitive: false))
+    }
+    if (TokenTypes.STEAM.isName(type, caseSensitive: false)) {
       return SteamToken.fromJson(json);
+    }
 
     throw ArgumentError.value(
       json,
@@ -203,6 +208,7 @@ abstract class Token with SortableMixin {
     Map<String, dynamic> additionalData = const {},
   }) {
     String? type = otpAuthMap[TOKENTYPE_OTPAUTH];
+
     if (type == null) {
       throw ArgumentError.value(
         otpAuthMap,
@@ -281,6 +287,7 @@ abstract class Token with SortableMixin {
   // --- Abstract Methods ---
   Map<String, dynamic> toJson();
 
+  @override
   Token copyWith({
     String? serial,
     String? label,
@@ -319,7 +326,7 @@ abstract class Token with SortableMixin {
     ORIGIN: origin,
     SORT_INDEX: sortIndex,
     FOLDER_ID: folderId,
-    HIDDEN: isHidden,
+    IS_HIDDEN: isHidden,
     CHECKED_CONTAINERS: checkedContainer,
     CONTAINER_SERIAL: containerSerial,
   };

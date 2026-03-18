@@ -47,7 +47,9 @@ class DefaultLockAction extends ConsumerSlideableAction {
         if (!await lockAuth(reason: (localization) => localization.authenticateToUnLockToken, localization: AppLocalizations.of(context)!)) return;
         Logger.info('Changing lock status of token to isLocked = ${!token.isLocked}');
 
-        globalRef?.read(tokenProvider.notifier).updateToken(token, (p0) => p0.copyWith(isLocked: !token.isLocked, isHidden: !token.isLocked));
+        globalRef?.read(tokenProvider.notifier).updateToken(token, (p0) {
+          return p0.copyWith(isLocked: !token.isLocked, isHidden: !token.isLocked);
+        });
       },
       child: FocusedItemAsOverlay(
         tooltipWhenFocused: AppLocalizations.of(context)!.introLockToken,

@@ -17,9 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import '../../utils/object_validator/base_validator.dart';
 import '../../utils/object_validator/object_validators.dart';
-import '../../utils/object_validator/required_object_validator.dart';
 
 class EncryptionParams {
   static const String SYNC_ENC_PARAMS_ALGORITHM = 'algorithm';

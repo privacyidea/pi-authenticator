@@ -24,7 +24,6 @@ import '../../../utils/globals.dart';
 import '../../../utils/home_widget_utils.dart';
 import '../../../utils/logger.dart';
 import '../../../utils/object_validator/object_validators.dart';
-import '../../../utils/object_validator/required_object_validator.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../views/link_home_widget_view/link_home_widget_view.dart';

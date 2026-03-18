@@ -36,8 +36,6 @@ import '../../model/tokens/token.dart';
 import '../../model/tokens/totp_token.dart';
 import '../../utils/logger.dart';
 import '../../utils/object_validator/object_validators.dart';
-import '../../utils/object_validator/optional_object_validator.dart';
-import '../../utils/object_validator/required_object_validator.dart';
 import '../../utils/token_import_origins.dart';
 import '../scheme_processors/token_import_scheme_processors/free_otp_plus_qr_processor.dart';
 import 'token_import_file_processor_interface.dart';
@@ -175,7 +173,7 @@ class FreeOtpPlusImportFileProcessor extends TokenImportFileProcessor {
     }
   }
 
-  Map<String, String> _jsonToOtpAuth(Map<String, dynamic> tokenJson) =>
+  Map<String, String?> _jsonToOtpAuth(Map<String, dynamic> tokenJson) =>
       validateMap(
         name: 'FreeOtpPlusToken',
         map: {

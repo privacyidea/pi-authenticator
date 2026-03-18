@@ -35,7 +35,6 @@ import '../../model/tokens/totp_token.dart';
 import '../../utils/encryption/aes_encrypted.dart';
 import '../../utils/logger.dart';
 import '../../utils/object_validator/object_validators.dart';
-import '../../utils/object_validator/required_object_validator.dart';
 import '../../utils/token_import_origins.dart';
 import 'token_import_file_processor_interface.dart';
 
@@ -206,7 +205,7 @@ class TwoFasAuthenticatorImportFileProcessor extends TokenImportFileProcessor {
     return results;
   }
 
-  Map<String, String> _twoFasToOtpAuth(Map<String, dynamic> twoFasToken) {
+  Map<String, String?> _twoFasToOtpAuth(Map<String, dynamic> twoFasToken) {
     Map<String, dynamic> twoFasOTP = twoFasToken[TWOFAS_OTP];
     return validateMap(
       map: {

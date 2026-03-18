@@ -20,7 +20,6 @@
 import 'dart:convert';
 
 import '../../utils/logger.dart';
-import '../../utils/object_validator/base_validator.dart';
 import '../../utils/object_validator/object_validators.dart';
 import '../enums/algorithms.dart';
 import '../token_container.dart';
@@ -29,34 +28,60 @@ import '../token_template.dart';
 import 'token.dart';
 
 abstract class OTPToken extends Token {
-  /// [String] (optional) default = 'SHA1'
+  // --- Constants ---
   static const String ALGORITHM = 'algorithm';
-
-  /// [String] (optional) default = '6'
   static const String DIGITS = 'digits';
-
-  /// [String] (required)
   static const String SECRET_BASE32 = 'secret';
-
-  // additional data for the token
-
-  /// If there is no serial, two otp values are stored in the otpAuthMap under this key as [List<String>] to identify the token.
-  /// The first value is the current otp value, the second value is the next otp value.
   static const String OTP_VALUES = 'otp';
 
-  final Algorithms
-  algorithm; // the hashing algorithm that is used to calculate the otp value
-  final int digits; // the number of digits the otp value will have
-  final String
-  secret; // the secret based on which the otp value is calculated in base32
-  String get otpValue; // the current otp value
-  String get nextValue; // the next otp value
+  // --- Static Accessors & Validators ---
+  static final Map<String, BaseValidator> otpAuthValidators = {
+    ...Token.otpAuthValidators,
+    ALGORITHM: algorithmsValidator.withDefault(Algorithms.SHA1),
+    DIGITS: otpAuthDigitsValidator.withDefault(6),
+    SECRET_BASE32: base32Stringvalidator,
+  };
+
+  static final Map<String, BaseValidator> additionalDataValidators = {
+    ...Token.additionalDataValidators,
+  };
+
+  // --- Static Validation Methods ---
+  static Map<String, Object?> validateOtpAuthMap(
+    Map<String, dynamic> otpAuthMap,
+  ) {
+    return validateMap(
+      map: otpAuthMap,
+      validators: otpAuthValidators,
+      name: 'OTPToken#otpAuthMap',
+    );
+  }
+
+  static Map<String, Object?> validateAdditionalData(
+    Map<String, dynamic> additionalData,
+  ) {
+    return validateMap(
+      map: additionalData,
+      validators: additionalDataValidators,
+      name: 'OTPToken#additionalData',
+    );
+  }
+
+  // --- Instance Properties ---
+  final Algorithms algorithm;
+  final int digits;
+  final String secret;
+
+  String get otpValue;
+  String get nextValue;
+
   Duration get showDuration {
     const Duration duration = Duration(seconds: 30);
     Logger.info('$runtimeType showDuration: ${duration.inSeconds} seconds');
     return duration;
-  } // the duration the otp value is shown
+  }
 
+  // --- Constructor ---
   const OTPToken({
     required this.algorithm,
     required this.digits,
@@ -79,10 +104,7 @@ abstract class OTPToken extends Token {
     super.forceBiometricOption,
   });
 
-  // @override
-  // No changeable value in OTPToken
-  // bool sameValuesAs(Token other) => super.sameValuesAs(other);
-
+  // --- Methods ---
   @override
   bool? isSameTokenAs(Token other) {
     if (other is! OTPToken) return false;
@@ -112,6 +134,7 @@ abstract class OTPToken extends Token {
     int? Function()? folderId,
     TokenOriginData? origin,
     bool? isOffline,
+    ForceBiometricOption? forceBiometricOption,
   });
 
   @override
@@ -119,47 +142,7 @@ abstract class OTPToken extends Token {
     return 'OTP${super.toString()}algorithm: $algorithm, digits: $digits, pin: $pin, ';
   }
 
-  static final Map<String, BaseValidator<Object>> otpAuthValidators = {
-    ...Token.otpAuthValidators,
-    ALGORITHM: algorithmsValidator.withDefault(Algorithms.SHA1),
-    DIGITS: otpAuthDigitsValidator.withDefault(6),
-    SECRET_BASE32: base32Stringvalidator,
-  };
-
-  static Map<String, Object> validateOtpAuthMap(
-    Map<String, dynamic> otpAuthMap,
-  ) {
-    return validateMap<Object>(
-      map: otpAuthMap,
-      validators: otpAuthValidators,
-      name: 'OTPToken#otpAuthMap',
-    );
-  }
-
-  /// This is used to create a map that typically was created from a uri.
-  /// ```dart
-  ///  ------------------------- [Token] -------------------------------
-  /// | Token.SERIAL: serial, (optional)                                |
-  /// | Token.LABEL: label,                                             |
-  /// | Token.ISSUER: issuer,                                           |
-  /// | Token.CONTAINER_SERIAL: containerSerial, (optional)             |
-  /// | Token.CHECKED_CONTAINERS: checkedContainer,                     |
-  /// | Token.TOKEN_ID: id,                                             |
-  /// | Token.TOKENTYPE_JSON: type,                                     |
-  /// | Token.IMAGE: tokenImage, (optional)                             |
-  /// | Token.SORTABLE_INDEX: sortIndex, (optional)                     |
-  /// | Token.FOLDER_ID: folderId, (optional)                           |
-  /// | Token.TOKEN_ORIGIN: origin, (optional)                          |
-  /// | Token.PIN: pin,                                                 |
-  /// | Token.TOKEN_HIDDEN: isHidden,                                   |
-  ///  -----------------------------------------------------------------
-  ///  ------------------------- [OTPToken] ----------------------------
-  /// | ALGORITHM: algorithm,                                           |
-  /// | DIGITS: digits,                                                 |
-  /// | SECRET_BASE32: secret,                                          |
-  /// | OTP_VALUES: [otpValue, nextValue], (if serial is null)          |
-  ///  -----------------------------------------------------------------
-  /// ```
+  // --- Serialization Helpers ---
   @override
   Map<String, dynamic> toOtpAuthMap() {
     Logger.debug('$OTP_VALUES ${jsonEncode([otpValue, nextValue])}');

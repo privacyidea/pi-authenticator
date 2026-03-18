@@ -23,7 +23,7 @@ import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 
 import '../utils/globals.dart';
 import '../utils/logger.dart';
-import '../utils/object_validator/required_object_validator.dart';
+import '../utils/object_validator/object_validators.dart';
 import '../utils/riverpod/riverpod_providers/state_providers/status_message_provider.dart';
 import '../utils/view_utils.dart';
 

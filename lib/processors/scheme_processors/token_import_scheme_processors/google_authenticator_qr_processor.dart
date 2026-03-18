@@ -24,7 +24,6 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:base32/base32.dart';
-import 'package:privacyidea_authenticator/utils/object_validator/required_object_validator.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 
 import '../../../model/enums/token_origin_source_type.dart';
@@ -33,6 +32,7 @@ import '../../../model/processor_result.dart';
 import '../../../model/tokens/token.dart';
 import '../../../proto/generated/GoogleAuthenticatorImport.pb.dart';
 import '../../../utils/logger.dart';
+import '../../../utils/object_validator/object_validators.dart';
 import '../../../utils/token_import_origins.dart';
 import 'otp_auth_processor.dart';
 import 'token_import_scheme_processor_interface.dart';

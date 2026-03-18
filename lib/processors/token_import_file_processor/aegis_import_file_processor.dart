@@ -40,8 +40,6 @@ import '../../model/tokens/token.dart';
 import '../../model/tokens/totp_token.dart';
 import '../../utils/logger.dart';
 import '../../utils/object_validator/object_validators.dart';
-import '../../utils/object_validator/optional_object_validator.dart';
-import '../../utils/object_validator/required_object_validator.dart';
 import '../../utils/token_import_origins.dart';
 import 'token_import_file_processor_interface.dart';
 import 'two_fas_import_file_processor.dart';
@@ -198,7 +196,7 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
     for (Map<String, dynamic> entry in json[AEGIS_JSON_DB][AEGIS_DB_ENTRIES]) {
       try {
         Map<String, dynamic> info = entry[AEGIS_ENTRY_INFO];
-        final otpAuthMap = validateMap<String>(
+        final otpAuthMap = validateMap<String?>(
           map: {
             Token.TOKENTYPE_OTPAUTH: entry[AEGIS_ENTRY_TYPE],
             Token.LABEL: entry[AEGIS_ENTRY_LABEL],
@@ -287,7 +285,7 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
     for (Map<String, dynamic> entry in entries) {
       try {
         Map<String, dynamic> info = entry[AEGIS_ENTRY_INFO];
-        final otpAuthMap = validateMap<String>(
+        final otpAuthMap = validateMap<String?>(
           map: {
             Token.TOKENTYPE_OTPAUTH: entry[AEGIS_ENTRY_TYPE],
             Token.LABEL: entry[AEGIS_ENTRY_LABEL],

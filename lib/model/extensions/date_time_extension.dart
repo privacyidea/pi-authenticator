@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 
-import '../../utils/object_validator/required_object_validator.dart';
+import '../../utils/object_validator/object_validators.dart';
 
 extension DateTimeX on DateTime {
   static final validator = RequiredObjectValidator<DateTime>(

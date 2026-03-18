@@ -18,11 +18,12 @@
  * limitations under the License.
  */
 
-import '../../../utils/object_validator/required_object_validator.dart';
+import '../../../utils/object_validator/object_validators.dart';
 import '../../tokens/token.dart';
 
 extension ForceBiometricOptionX on ForceBiometricOption {
   static final validator = RequiredObjectValidator<ForceBiometricOption>(
+    defaultValue: ForceBiometricOption.none,
     transformer: (v) {
       if (v is ForceBiometricOption) return v;
       if (v is String) {

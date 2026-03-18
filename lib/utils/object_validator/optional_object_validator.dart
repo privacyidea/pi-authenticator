@@ -17,10 +17,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import '../logger.dart';
-import 'base_validator.dart';
 
-class OptionalObjectValidator<T extends Object> extends BaseValidator<T> {
+part of 'object_validators.dart';
+
+class OptionalObjectValidator<T extends Object> extends BaseValidator<T?> {
   const OptionalObjectValidator({
     super.transformer,
     super.defaultValue,
@@ -30,7 +30,17 @@ class OptionalObjectValidator<T extends Object> extends BaseValidator<T> {
   @override
   T? transform(Object? value) {
     if (value == null) return defaultValue;
-    return executeTransform(value);
+    try {
+      return _executeTransform(value);
+    } catch (e, stackTrace) {
+      Logger.warning(
+        'Validation failed for <$T?>. Optional Value: "$value" (Type: ${value.runtimeType})',
+        error: e,
+        stackTrace: stackTrace,
+        name: 'OptionalObjectValidator<$T>',
+      );
+      return defaultValue;
+    }
   }
 
   @override

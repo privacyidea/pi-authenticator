@@ -41,7 +41,6 @@ import '../../processors/token_import_file_processor/two_fas_import_file_process
 import '../../utils/encryption/aes_encrypted.dart';
 import '../../utils/logger.dart';
 import '../../utils/object_validator/object_validators.dart';
-import '../../utils/object_validator/required_object_validator.dart';
 import '../../utils/token_import_origins.dart';
 import 'token_import_file_processor_interface.dart';
 
