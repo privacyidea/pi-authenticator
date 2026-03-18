@@ -26,6 +26,7 @@ import 'package:uuid/uuid.dart';
 import '../../utils/object_validator/object_validators.dart';
 import '../enums/algorithms.dart';
 import '../enums/day_password_token_view_mode.dart';
+import '../enums/force_biometric_option.dart';
 import '../enums/token_types.dart';
 import '../extensions/enums/algorithms_extension.dart';
 import '../token_import/token_origin_data.dart';

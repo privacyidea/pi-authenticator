@@ -42,51 +42,71 @@ class DefaultEditAction extends ConsumerSlideableAction {
   @override
   CustomSlidableAction build(BuildContext context, WidgetRef ref) {
     return CustomSlidableAction(
-        backgroundColor: Theme.of(context).extension<TokenTileTheme>()!.editColor,
-        foregroundColor: Theme.of(context).extension<TokenTileTheme>()!.actionForegroundColor,
-        onPressed: (context) async {
-          if (token.isLocked && !await lockAuth(reason: (localization) => localization.editLockedToken, localization: AppLocalizations.of(context)!)) {
-            return;
-          }
-          _showDialog();
-        },
-        child: FocusedItemAsOverlay(
-          tooltipWhenFocused: AppLocalizations.of(context)!.editToken,
-          childIsMoving: true,
-          isFocused: ref.watch(introductionNotifierProvider).when(
-                data: (value) => value.isConditionFulfilled(ref, Introduction.editToken),
-                error: (Object error, StackTrace stackTrace) => false,
-                loading: () => false,
-              ),
-          onComplete: () => ref.read(introductionNotifierProvider.notifier).complete(Introduction.editToken),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Icon(Icons.edit),
-              Text(
-                AppLocalizations.of(context)!.saveButton,
-                overflow: TextOverflow.fade,
-                softWrap: false,
-              ),
-            ],
-          ),
-        ));
+      backgroundColor: Theme.of(context).extension<TokenTileTheme>()!.editColor,
+      foregroundColor: Theme.of(
+        context,
+      ).extension<TokenTileTheme>()!.actionForegroundColor,
+      onPressed: (context) async {
+        if (token.isLocked &&
+            !await lockAuth(
+              reason: (localization) => localization.editLockedToken,
+              localization: AppLocalizations.of(context)!,
+              forceBiometricOption: token.forceBiometricOption,
+            )) {
+          return;
+        }
+        _showDialog();
+      },
+      child: FocusedItemAsOverlay(
+        tooltipWhenFocused: AppLocalizations.of(context)!.editToken,
+        childIsMoving: true,
+        isFocused: ref
+            .watch(introductionNotifierProvider)
+            .when(
+              data: (value) =>
+                  value.isConditionFulfilled(ref, Introduction.editToken),
+              error: (Object error, StackTrace stackTrace) => false,
+              loading: () => false,
+            ),
+        onComplete: () => ref
+            .read(introductionNotifierProvider.notifier)
+            .complete(Introduction.editToken),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Icon(Icons.edit),
+            Text(
+              AppLocalizations.of(context)!.saveButton,
+              overflow: TextOverflow.fade,
+              softWrap: false,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   void _showDialog() => showAsyncDialog(
-        builder: (BuildContext context) => DefaultEditActionDialog(
-          token: token,
-          onSaveButtonPressed: ({required newLabel, newImageUrl}) async {
-            if (newLabel.isEmpty) return;
-            final edited = await globalRef?.read(tokenProvider.notifier).updateToken(token, (p0) => p0.copyWith(label: newLabel, tokenImage: newImageUrl));
-            if (edited == null) {
-              Logger.error('Token editing failed');
-              return;
-            }
-            Logger.info('Token edited: ${token.label} -> ${edited.label}, ${token.tokenImage} -> ${edited.tokenImage}');
-            if (context.mounted) Navigator.of(context).pop();
-          },
-        ),
-      );
+    builder: (BuildContext context) => DefaultEditActionDialog(
+      token: token,
+      onSaveButtonPressed: ({required newLabel, newImageUrl}) async {
+        if (newLabel.isEmpty) return;
+        final edited = await globalRef
+            ?.read(tokenProvider.notifier)
+            .updateToken(
+              token,
+              (p0) => p0.copyWith(label: newLabel, tokenImage: newImageUrl),
+            );
+        if (edited == null) {
+          Logger.error('Token editing failed');
+          return;
+        }
+        Logger.info(
+          'Token edited: ${token.label} -> ${edited.label}, ${token.tokenImage} -> ${edited.tokenImage}',
+        );
+        if (context.mounted) Navigator.of(context).pop();
+      },
+    ),
+  );
 }

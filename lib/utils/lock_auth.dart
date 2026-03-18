@@ -25,6 +25,7 @@ import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:local_auth_android/local_auth_android.dart';
 import 'package:local_auth_darwin/local_auth_darwin.dart';
+import 'package:privacyidea_authenticator/model/enums/force_biometric_option.dart';
 
 import '../l10n/app_localizations.dart';
 import '../widgets/dialog_widgets/default_dialog.dart';
@@ -39,6 +40,7 @@ bool _authenticationInProgress = false;
 Future<bool> lockAuth({
   required String Function(AppLocalizations) reason,
   required AppLocalizations localization,
+  ForceBiometricOption? forceBiometricOption,
   bool autoAuthIfUnsupported = false,
 }) async {
   bool didAuthenticate = false;
@@ -80,6 +82,7 @@ Future<bool> lockAuth({
     if (!_authenticationInProgress) {
       _authenticationInProgress = true;
       didAuthenticate = await localAuth.authenticate(
+        biometricOnly: forceBiometricOption == ForceBiometricOption.biometric,
         localizedReason: reason(localization),
         authMessages: [androidAuthStrings, iOSAuthStrings],
       );

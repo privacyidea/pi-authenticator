@@ -38,113 +38,134 @@ import '../../slideable_action.dart';
 class EditPushTokenAction extends ConsumerSlideableAction {
   final PushToken token;
 
-  const EditPushTokenAction({
-    super.key,
-    required this.token,
-  });
+  const EditPushTokenAction({super.key, required this.token});
 
   @override
   CustomSlidableAction build(BuildContext context, WidgetRef ref) {
     final appLocalizations = AppLocalizations.of(context)!;
     return CustomSlidableAction(
-        backgroundColor: Theme.of(context).extension<TokenTileTheme>()!.editColor,
-        foregroundColor: Theme.of(context).extension<TokenTileTheme>()!.actionForegroundColor,
-        onPressed: (context) async {
-          if (token.isLocked && !await lockAuth(reason: (localization) => localization.editLockedToken, localization: appLocalizations)) {
-            return;
-          }
-          _showDialog();
-        },
-        child: FocusedItemAsOverlay(
-          tooltipWhenFocused: appLocalizations.introEditToken,
-          childIsMoving: true,
-          alignment: Alignment.bottomCenter,
-          isFocused: ref.watch(introductionNotifierProvider).when(
-                data: (value) => value.isConditionFulfilled(ref, Introduction.editToken),
-                error: (Object error, StackTrace stackTrace) => false,
-                loading: () => false,
-              ),
-          onComplete: () => ref.read(introductionNotifierProvider.notifier).complete(Introduction.editToken),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Icon(Icons.edit),
-              Text(
-                appLocalizations.edit,
-                overflow: TextOverflow.fade,
-                softWrap: false,
-              ),
-            ],
-          ),
-        ));
+      backgroundColor: Theme.of(context).extension<TokenTileTheme>()!.editColor,
+      foregroundColor: Theme.of(
+        context,
+      ).extension<TokenTileTheme>()!.actionForegroundColor,
+      onPressed: (context) async {
+        if (token.isLocked &&
+            !await lockAuth(
+              reason: (localization) => localization.editLockedToken,
+              localization: appLocalizations,
+              forceBiometricOption: token.forceBiometricOption,
+            )) {
+          return;
+        }
+        _showDialog();
+      },
+      child: FocusedItemAsOverlay(
+        tooltipWhenFocused: appLocalizations.introEditToken,
+        childIsMoving: true,
+        alignment: Alignment.bottomCenter,
+        isFocused: ref
+            .watch(introductionNotifierProvider)
+            .when(
+              data: (value) =>
+                  value.isConditionFulfilled(ref, Introduction.editToken),
+              error: (Object error, StackTrace stackTrace) => false,
+              loading: () => false,
+            ),
+        onComplete: () => ref
+            .read(introductionNotifierProvider.notifier)
+            .complete(Introduction.editToken),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const Icon(Icons.edit),
+            Text(
+              appLocalizations.edit,
+              overflow: TextOverflow.fade,
+              softWrap: false,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   String? _validatePushEndpointUrl(String? value, BuildContext context) {
-    if (value == null || value.isEmpty) return AppLocalizations.of(context)!.mustNotBeEmpty(AppLocalizations.of(context)!.pushEndpointUrl);
+    if (value == null || value.isEmpty) {
+      return AppLocalizations.of(
+        context,
+      )!.mustNotBeEmpty(AppLocalizations.of(context)!.pushEndpointUrl);
+    }
     final uri = Uri.tryParse(value);
-    if (uri == null || uri.host.isEmpty || uri.scheme.isEmpty || uri.path.isEmpty) {
+    if (uri == null ||
+        uri.host.isEmpty ||
+        uri.scheme.isEmpty ||
+        uri.path.isEmpty) {
       return AppLocalizations.of(context)!.exampleUrl;
     }
     return null;
   }
 
   void _showDialog() => showAsyncDialog(
-        builder: (BuildContext context) {
-          final pushUrl = TextEditingController(text: token.url.toString());
-          final appLocalizations = AppLocalizations.of(context)!;
-          return DefaultEditActionDialog(
-            token: token,
-            onSaveButtonPressed: ({required newLabel, newImageUrl}) async {
-              globalRef?.read(tokenProvider.notifier).updateToken(
-                    token,
-                    (p0) => p0.copyWith(
-                      label: newLabel,
-                      url: Uri.parse(pushUrl.text),
-                      tokenImage: newImageUrl,
-                    ),
-                  );
-              Navigator.of(context).pop();
-            },
-            additionalChildren: [
-              EnableTextEditAfterManyTaps(
-                controller: pushUrl,
-                labelText: appLocalizations.pushEndpointUrl,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                validator: (value) => _validatePushEndpointUrl(value, context),
-              ),
-              const SizedBox(height: 10),
-              ExpansionTile(
-                title: Text(
-                  appLocalizations.publicKey,
-                  style: Theme.of(context).textTheme.titleSmall,
-                  overflow: TextOverflow.fade,
-                  softWrap: false,
+    builder: (BuildContext context) {
+      final pushUrl = TextEditingController(text: token.url.toString());
+      final appLocalizations = AppLocalizations.of(context)!;
+      return DefaultEditActionDialog(
+        token: token,
+        onSaveButtonPressed: ({required newLabel, newImageUrl}) async {
+          globalRef
+              ?.read(tokenProvider.notifier)
+              .updateToken(
+                token,
+                (p0) => p0.copyWith(
+                  label: newLabel,
+                  url: Uri.parse(pushUrl.text),
+                  tokenImage: newImageUrl,
                 ),
-                children: [
-                  SelectableText(
-                    token.publicTokenKey ?? appLocalizations.noPublicKey,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                ],
-              ),
-              const Divider(),
-              ExpansionTile(
-                title: Text(
-                  appLocalizations.firebaseToken,
-                  style: Theme.of(context).textTheme.titleSmall,
-                  overflow: TextOverflow.fade,
-                  softWrap: false,
-                ),
-                children: [
-                  SelectableText(
-                    token.fbToken != null ? token.fbToken.toString() : appLocalizations.noFbToken,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  )
-                ],
+              );
+          Navigator.of(context).pop();
+        },
+        additionalChildren: [
+          EnableTextEditAfterManyTaps(
+            controller: pushUrl,
+            labelText: appLocalizations.pushEndpointUrl,
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            validator: (value) => _validatePushEndpointUrl(value, context),
+          ),
+          const SizedBox(height: 10),
+          ExpansionTile(
+            title: Text(
+              appLocalizations.publicKey,
+              style: Theme.of(context).textTheme.titleSmall,
+              overflow: TextOverflow.fade,
+              softWrap: false,
+            ),
+            children: [
+              SelectableText(
+                token.publicTokenKey ?? appLocalizations.noPublicKey,
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
             ],
-          );
-        },
+          ),
+          const Divider(),
+          ExpansionTile(
+            title: Text(
+              appLocalizations.firebaseToken,
+              style: Theme.of(context).textTheme.titleSmall,
+              overflow: TextOverflow.fade,
+              softWrap: false,
+            ),
+            children: [
+              SelectableText(
+                token.fbToken != null
+                    ? token.fbToken.toString()
+                    : appLocalizations.noFbToken,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ],
+          ),
+        ],
       );
+    },
+  );
 }

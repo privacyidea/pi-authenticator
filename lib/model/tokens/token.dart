@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../../../../model/token_container.dart';
 import '../../utils/object_validator/object_validators.dart';
+import '../enums/force_biometric_option.dart';
 import '../enums/token_types.dart';
 import '../extensions/enum_extension.dart';
 import '../extensions/enums/force_biometric_option_extension.dart';
@@ -32,8 +33,6 @@ import 'hotp_token.dart';
 import 'push_token.dart';
 import 'steam_token.dart';
 import 'totp_token.dart';
-
-enum ForceBiometricOption { none, any, biometric, pin }
 
 @immutable
 abstract class Token with SortableMixin {

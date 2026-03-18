@@ -411,6 +411,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     final authenticated = await lockAuth(
       localization: ref.read(localizationProvider),
       reason: (localization) => localization.authenticateToShowOtp,
+      forceBiometricOption: token.forceBiometricOption,
     );
     if (!authenticated) return null;
     final updated = await _updateToken(

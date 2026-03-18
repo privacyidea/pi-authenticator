@@ -39,14 +39,21 @@ class SelectExportTypeDialog extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           SettingsListTileButton(
-            title: Text(appLocalizations.asFile, style: Theme.of(context).textTheme.bodyMedium),
+            title: Text(
+              appLocalizations.asFile,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
             onPressed: () async => _selectTokensDialog(context),
             icon: const Icon(Icons.file_present, size: 24),
           ),
           SettingsListTileButton(
-              title: Text(appLocalizations.asQrCode, style: Theme.of(context).textTheme.bodyMedium),
-              onPressed: () async => _selectTokenDialog(context),
-              icon: const Icon(Icons.qr_code, size: 24)),
+            title: Text(
+              appLocalizations.asQrCode,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            onPressed: () async => _selectTokenDialog(context),
+            icon: const Icon(Icons.qr_code, size: 24),
+          ),
         ],
       ),
     );
@@ -67,7 +74,9 @@ class SelectExportTypeDialog extends StatelessWidget {
         },
       ),
     );
-    if (isExported == true && context.mounted) Navigator.of(context).pop(isExported);
+    if (isExported == true && context.mounted) {
+      Navigator.of(context).pop(isExported);
+    }
   }
 
   void _selectTokenDialog(BuildContext context) async {
@@ -85,15 +94,15 @@ class SelectExportTypeDialog extends StatelessWidget {
         multiSelect: false,
         dialogBuilder: (tokens) {
           if (tokens.isEmpty) {
-            return DefaultDialog(
-              content: Text(localization.noTokenToExport),
-            );
+            return DefaultDialog(content: Text(localization.noTokenToExport));
           }
 
           return ShowQrCodeDialog(token: tokens.first);
         },
       ),
     );
-    if (isExported == true && context.mounted) Navigator.of(context).pop(isExported);
+    if (isExported == true && context.mounted) {
+      Navigator.of(context).pop(isExported);
+    }
   }
 }

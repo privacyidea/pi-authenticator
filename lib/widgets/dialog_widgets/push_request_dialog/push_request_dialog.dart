@@ -97,6 +97,7 @@ mixin PushDialogMixin {
         !await lockAuth(
           reason: (l10n) => l10n.authToAcceptPushRequest,
           localization: AppLocalizations.of(context)!,
+          forceBiometricOption: token.forceBiometricOption,
         )) {
       return;
     }
@@ -132,6 +133,7 @@ mixin PushDialogMixin {
         !await lockAuth(
           reason: (l10n) => l10n.authToDeclinePushRequest,
           localization: AppLocalizations.of(context)!,
+          forceBiometricOption: token.forceBiometricOption,
         )) {
       return;
     }
@@ -152,6 +154,7 @@ mixin PushDialogMixin {
         !await lockAuth(
           reason: (l10n) => l10n.authToDiscardPushRequest,
           localization: AppLocalizations.of(context)!,
+          forceBiometricOption: token.forceBiometricOption,
         )) {
       return;
     }

@@ -24,6 +24,7 @@ import 'package:uuid/uuid.dart';
 import '../../../../../../../model/token_template.dart';
 import '../../utils/object_validator/object_validators.dart';
 import '../../utils/rsa_utils.dart';
+import '../enums/force_biometric_option.dart';
 import '../enums/push_token_rollout_state.dart';
 import '../enums/token_types.dart';
 import '../exception_errors/localized_argument_error.dart';

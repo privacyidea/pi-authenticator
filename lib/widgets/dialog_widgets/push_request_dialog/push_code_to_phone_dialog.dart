@@ -57,6 +57,7 @@ class _PushCodeToPhoneDialogState extends ConsumerState<PushCodeToPhoneDialog> {
         final authenticated = await lockAuth(
           reason: (l) => l.authenticateToShowOtp,
           localization: AppLocalizations.of(context)!,
+          forceBiometricOption: widget.token.forceBiometricOption,
         );
         if (!authenticated) return;
       }
