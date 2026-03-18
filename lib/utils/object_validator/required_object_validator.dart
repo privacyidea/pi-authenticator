@@ -28,19 +28,16 @@ class RequiredObjectValidator<T extends Object> extends BaseValidator<T> {
   });
 
   @override
-  T transform(Object? value) {
+  T transform(value, name) {
     if (value == null) {
       if (defaultValue != null) {
         return defaultValue as T;
       }
-      Logger.warning(
-        'Validation failed for <$T>. Value is required but was null.',
-        name: 'RequiredObjectValidator<$T>',
-      );
-      throw ArgumentError('Value is required but was null.');
+
+      throw _error(value, name);
     }
     try {
-      return _executeTransform(value);
+      return _executeTransform(value, name);
     } catch (e, stackTrace) {
       Logger.warning(
         'Validation failed for <$T>. Value: "$value" (Type: ${value.runtimeType})',
@@ -53,7 +50,7 @@ class RequiredObjectValidator<T extends Object> extends BaseValidator<T> {
   }
 
   @override
-  RequiredObjectValidator<T> withDefault(T? defaultValue) {
+  RequiredObjectValidator<T> withDefault(defaultValue) {
     return RequiredObjectValidator<T>(
       transformer: transformer,
       defaultValue: defaultValue,
@@ -72,7 +69,7 @@ class RequiredObjectValidator<T extends Object> extends BaseValidator<T> {
   );
 
   @override
-  bool isTypeOf(Object? value) {
+  bool isTypeOf(value) {
     if (value == null) return false;
 
     if (transformer != null) {
@@ -94,13 +91,13 @@ class RequiredObjectValidator<T extends Object> extends BaseValidator<T> {
   }
 
   @override
-  bool valueIsAllowed(Object? value) {
+  bool valueIsAllowed(value, name) {
     if (!isTypeOf(value)) {
       if (defaultValue != null) {
         return allowedValues?.call(defaultValue as T) ?? true;
       }
       return false;
     }
-    return allowedValues?.call(transform(value)) ?? true;
+    return allowedValues?.call(transform(value, name)) ?? true;
   }
 }

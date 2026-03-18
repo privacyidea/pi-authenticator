@@ -13,6 +13,7 @@ import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.d
 import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
+import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/privacyidea_io_client.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
@@ -507,13 +508,14 @@ void _testTokenNotifier() {
           digits: 6,
           secret: 'secret',
         ),
-        HOTPToken(
+        TOTPToken(
           label: 'label2',
           issuer: 'issuer2',
           id: 'id2',
           algorithm: Algorithms.SHA256,
           digits: 6,
           secret: 'secret2',
+          period: 30,
         ),
       ];
       when(mockRepo.loadTokens()).thenAnswer((_) async => before);
@@ -538,7 +540,8 @@ void _testTokenNotifier() {
         const Duration(seconds: 5),
       ); // Wait for the rollout to finish
       final state = await container.read(tokenProvider.future);
-      expect(state, isNotNull);
+
+      expect(state.tokens.length, 2);
       after.last = after.last.copyWith(id: state.tokens.last.id);
       expect(state.tokens, after);
       verify(mockRepo.saveOrReplaceTokens(any)).called(greaterThan(0));

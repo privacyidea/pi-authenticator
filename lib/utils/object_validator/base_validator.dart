@@ -32,16 +32,16 @@ abstract class BaseValidator<T extends Object?> {
   });
 
   bool isTypeOf(Object? value);
-  bool valueIsAllowed(Object? value);
+  bool valueIsAllowed(Object? value, String name);
 
-  T transform(Object? value);
+  T transform(Object? value, String name);
 
   BaseValidator<T> withDefault(T defaultValue);
 
-  T _executeTransform(Object? value) {
+  T _executeTransform(Object? value, String name) {
     if (value == null) {
       if (defaultValue != null) return defaultValue!;
-      throw _error(value);
+      throw _error(value, name);
     }
 
     if (transformer != null) {
@@ -51,20 +51,27 @@ abstract class BaseValidator<T extends Object?> {
     if (value is T) return value as T;
 
     if (defaultValue != null) return defaultValue!;
-    throw _error(value);
+    throw _error(value, name);
   }
 
-  Exception _error(Object? value) {
-    return LocalizedArgumentError(
+  Exception _error(Object? value, String name) {
+    final error = LocalizedArgumentError(
       localizedMessage: (localizations, v, name) => localizations.invalidValue(
         v.runtimeType.toString(),
         v.toString(),
         name,
       ),
       unlocalizedMessage:
-          'The type ${value.runtimeType} for value "$value" is not valid.',
+          'The ${value.runtimeType} “$value“ is not valid for “$name“',
       invalidValue: value.toString(),
-      name: T.toString(),
+      name: name,
     );
+    Logger.warning(
+      'Validation failed for <$T?>. Optional Value: "$value" (Type: ${value.runtimeType})',
+      error: error,
+      stackTrace: StackTrace.current,
+      name: 'OptionalObjectValidator<$T>',
+    );
+    return error;
   }
 }

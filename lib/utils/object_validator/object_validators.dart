@@ -144,18 +144,18 @@ final algorithmsValidator = RequiredObjectValidator<Algorithms>(
     throw ArgumentError('Invalid type: ${v.runtimeType}, value: $v');
   },
 );
-final stringToAlgorithmsValidatorOptional = algorithmsValidator.optional();
+final algorithmsValidatorOptional = algorithmsValidator.optional();
 
 final base32Stringvalidator = RequiredObjectValidator<String>(
   transformer: (v) {
+    if (v is Uint8List) return Encodings.base32.encode(v);
     if (v is String) {
       final normalized = v.replaceAll(' ', '').toUpperCase();
-      if (normalized.length % 8 != 0 || !_base32Regex.hasMatch(normalized)) {
+      if (!_base32Regex.hasMatch(normalized)) {
         throw ArgumentError('Invalid base32 format: $normalized');
       }
       return normalized;
     }
-    if (v is Uint8List) return Encodings.base32.encode(v);
     throw ArgumentError('Invalid type: ${v.runtimeType}, value: $v');
   },
 );
@@ -166,9 +166,6 @@ final base32ToBytesValidator = RequiredObjectValidator<Uint8List>(
     if (v is Uint8List) return v;
     if (v is String) {
       final normalized = v.replaceAll(' ', '').toUpperCase();
-      if (normalized.length % 8 != 0 || !_base32Regex.hasMatch(normalized)) {
-        throw ArgumentError('Invalid base32 format: $normalized');
-      }
       return Encodings.base32.decode(normalized);
     }
     throw ArgumentError('Invalid type: ${v.runtimeType}');
@@ -177,19 +174,19 @@ final base32ToBytesValidator = RequiredObjectValidator<Uint8List>(
 final base32ToBytesValidatorOptional = base32ToBytesValidator.optional();
 
 T validate<T extends Object?>({
-  required dynamic value,
+  required Object? value,
   required BaseValidator<T> validator,
   required String name,
 }) {
-  final result = validator.transform(value);
-  if (!validator.valueIsAllowed(value)) {
-    throw validator._error(value);
+  final result = validator.transform(value, name);
+  if (!validator.valueIsAllowed(value, name)) {
+    throw validator._error(value, name);
   }
   return result;
 }
 
 Map<String, T> validateMap<T extends Object?>({
-  required Map<String, dynamic> map,
+  required Map<String, Object?> map,
   required Map<String, BaseValidator<T>> validators,
   required String? name,
 }) {
@@ -197,10 +194,13 @@ Map<String, T> validateMap<T extends Object?>({
   for (final key in validators.keys) {
     final validator = validators[key]!;
     final mapEntry = map[key];
-    final newValue = validator.transform(mapEntry);
-    if (!validator.valueIsAllowed(mapEntry)) {
-      throw validator._error(mapEntry);
-    }
+
+    final newValue = validate<T>(
+      value: mapEntry,
+      validator: validator,
+      name: key,
+    );
+
     if (newValue != null) {
       validatedMap[key] = newValue;
     }

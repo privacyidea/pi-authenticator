@@ -116,26 +116,31 @@ sealed class TokenContainer with _$TokenContainer {
   // "&passphrase=Enter%20your%20password"
   // "&send_passphrase=False"
   factory TokenContainer.fromUriMap(Map<String, dynamic> uriMap) {
-    uriMap = validateMap(
-      map: uriMap,
-      validators: <String, BaseValidator>{
-        ISSUER: stringValidator,
-        TTL_MINUTES: minutesDurationValidator.withDefault(
-          const Duration(minutes: 10),
-        ),
-        NONCE: stringValidator,
-        TIMESTAMP: DateTimeX.validator,
-        FINALIZATION_URL: uriValidator,
-        SERIAL: stringValidator,
-        EC_KEY_ALGORITHM: EcKeyAlgorithmX.validator,
-        HASH_ALGORITHM: algorithmsValidator,
-        PASSPHRASE_QUESTION: stringValidatorOptional,
-        SSL_VERIFY: boolValidator,
-        POLICIES: ContainerPolicies.validator.optional(),
-        SEND_PASSPHRASE: boolValidatorOptional,
-      },
-      name: 'Container',
-    );
+    try {
+      uriMap = validateMap(
+        map: uriMap,
+        validators: <String, BaseValidator>{
+          ISSUER: stringValidator,
+          TTL_MINUTES: minutesDurationValidator.withDefault(
+            const Duration(minutes: 10),
+          ),
+          NONCE: stringValidator,
+          TIMESTAMP: DateTimeX.validator,
+          FINALIZATION_URL: uriValidator,
+          SERIAL: stringValidator,
+          EC_KEY_ALGORITHM: EcKeyAlgorithmX.validator,
+          HASH_ALGORITHM: algorithmsValidator,
+          PASSPHRASE_QUESTION: stringValidatorOptional,
+          SSL_VERIFY: boolValidator,
+          POLICIES: ContainerPolicies.validator.optional(),
+          SEND_PASSPHRASE: boolValidatorOptional,
+        },
+        name: 'Container',
+      );
+    } catch (e) {
+      Logger.warning("Error type:  ${e.runtimeType}, message: $e");
+      rethrow;
+    }
     return TokenContainer.unfinalized(
       issuer: uriMap[ISSUER],
       ttl: uriMap[TTL_MINUTES],

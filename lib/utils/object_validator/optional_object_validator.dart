@@ -28,10 +28,10 @@ class OptionalObjectValidator<T extends Object> extends BaseValidator<T?> {
   });
 
   @override
-  T? transform(Object? value) {
+  T? transform(value, name) {
     if (value == null) return defaultValue;
     try {
-      return _executeTransform(value);
+      return _executeTransform(value, name);
     } catch (e, stackTrace) {
       Logger.warning(
         'Validation failed for <$T?>. Optional Value: "$value" (Type: ${value.runtimeType})',
@@ -44,7 +44,7 @@ class OptionalObjectValidator<T extends Object> extends BaseValidator<T?> {
   }
 
   @override
-  OptionalObjectValidator<T> withDefault(T? defaultValue) {
+  OptionalObjectValidator<T> withDefault(defaultValue) {
     return OptionalObjectValidator<T>(
       transformer: transformer,
       defaultValue: defaultValue,
@@ -53,7 +53,7 @@ class OptionalObjectValidator<T extends Object> extends BaseValidator<T?> {
   }
 
   @override
-  bool isTypeOf(Object? value) {
+  bool isTypeOf(value) {
     if (value == null) return true;
 
     if (transformer != null) {
@@ -75,9 +75,9 @@ class OptionalObjectValidator<T extends Object> extends BaseValidator<T?> {
   }
 
   @override
-  bool valueIsAllowed(Object? value) {
+  bool valueIsAllowed(value, name) {
     if (value == null) return true;
-    final val = transform(value);
+    final val = transform(value, name);
     return val == null || (allowedValues?.call(val) ?? true);
   }
 }
