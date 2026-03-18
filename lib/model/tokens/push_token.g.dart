@@ -44,25 +44,31 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) => PushToken(
       ? null
       : TokenOriginData.fromJson(json['origin'] as Map<String, dynamic>),
   isOffline: json['isOffline'] as bool? ?? false,
+  forceBiometricOption:
+      $enumDecodeNullable(
+        _$ForceBiometricOptionEnumMap,
+        json['forceBiometricOption'],
+      ) ??
+      ForceBiometricOption.none,
 );
 
 Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
-  'checkedContainer': instance.checkedContainer,
+  'id': instance.id,
+  'type': instance.type,
   'label': instance.label,
   'issuer': instance.issuer,
   'containerSerial': instance.containerSerial,
-  'id': instance.id,
+  'checkedContainer': instance.checkedContainer,
   'pin': instance.pin,
-  'isLocked': instance.isLocked,
+  'forceBiometricOption':
+      _$ForceBiometricOptionEnumMap[instance.forceBiometricOption]!,
   'tokenImage': instance.tokenImage,
   'folderId': instance.folderId,
   'isOffline': instance.isOffline,
-  'sortIndex': instance.sortIndex,
   'origin': instance.origin,
-  'type': instance.type,
+  'sortIndex': instance.sortIndex,
+  'isLocked': instance.isLocked,
   'expirationDate': instance.expirationDate?.toIso8601String(),
-  'serial': instance.serial,
-  'isHidden': instance.isHidden,
   'fbToken': instance.fbToken,
   'sslVerify': instance.sslVerify,
   'isPollOnly': instance.isPollOnly,
@@ -73,6 +79,8 @@ Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
   'publicServerKey': instance.publicServerKey,
   'privateTokenKey': instance.privateTokenKey,
   'publicTokenKey': instance.publicTokenKey,
+  'serial': instance.serial,
+  'isHidden': instance.isHidden,
 };
 
 const _$PushTokenRollOutStateEnumMap = {
@@ -88,4 +96,11 @@ const _$PushTokenRollOutStateEnumMap = {
   PushTokenRollOutState.parsingResponse: 'parsingResponse',
   PushTokenRollOutState.parsingResponseFailed: 'parsingResponseFailed',
   PushTokenRollOutState.rolloutComplete: 'rolloutComplete',
+};
+
+const _$ForceBiometricOptionEnumMap = {
+  ForceBiometricOption.none: 'none',
+  ForceBiometricOption.any: 'any',
+  ForceBiometricOption.biometric: 'biometric',
+  ForceBiometricOption.pin: 'pin',
 };

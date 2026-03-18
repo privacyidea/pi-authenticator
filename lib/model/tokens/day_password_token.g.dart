@@ -39,25 +39,33 @@ DayPasswordToken _$DayPasswordTokenFromJson(Map<String, dynamic> json) =>
       label: json['label'] as String? ?? '',
       issuer: json['issuer'] as String? ?? '',
       isOffline: json['isOffline'] as bool? ?? false,
+      forceBiometricOption:
+          $enumDecodeNullable(
+            _$ForceBiometricOptionEnumMap,
+            json['forceBiometricOption'],
+          ) ??
+          ForceBiometricOption.none,
     );
 
 Map<String, dynamic> _$DayPasswordTokenToJson(DayPasswordToken instance) =>
     <String, dynamic>{
-      'checkedContainer': instance.checkedContainer,
+      'id': instance.id,
+      'type': instance.type,
       'label': instance.label,
       'issuer': instance.issuer,
-      'containerSerial': instance.containerSerial,
-      'id': instance.id,
       'serial': instance.serial,
+      'containerSerial': instance.containerSerial,
+      'checkedContainer': instance.checkedContainer,
       'pin': instance.pin,
-      'isLocked': instance.isLocked,
-      'isHidden': instance.isHidden,
+      'forceBiometricOption':
+          _$ForceBiometricOptionEnumMap[instance.forceBiometricOption]!,
       'tokenImage': instance.tokenImage,
       'folderId': instance.folderId,
       'isOffline': instance.isOffline,
-      'sortIndex': instance.sortIndex,
       'origin': instance.origin,
-      'type': instance.type,
+      'sortIndex': instance.sortIndex,
+      'isLocked': instance.isLocked,
+      'isHidden': instance.isHidden,
       'algorithm': _$AlgorithmsEnumMap[instance.algorithm]!,
       'digits': instance.digits,
       'secret': instance.secret,
@@ -74,4 +82,11 @@ const _$AlgorithmsEnumMap = {
 const _$DayPasswordTokenViewModeEnumMap = {
   DayPasswordTokenViewMode.VALIDFOR: 'VALIDFOR',
   DayPasswordTokenViewMode.VALIDUNTIL: 'VALIDUNTIL',
+};
+
+const _$ForceBiometricOptionEnumMap = {
+  ForceBiometricOption.none: 'none',
+  ForceBiometricOption.any: 'any',
+  ForceBiometricOption.biometric: 'biometric',
+  ForceBiometricOption.pin: 'pin',
 };
