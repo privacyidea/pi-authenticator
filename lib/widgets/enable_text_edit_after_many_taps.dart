@@ -21,10 +21,12 @@ class EnableTextEditAfterManyTaps extends StatefulWidget {
   });
 
   @override
-  State<EnableTextEditAfterManyTaps> createState() => _EnableTextEditAfterManyTapsState();
+  State<EnableTextEditAfterManyTaps> createState() =>
+      _EnableTextEditAfterManyTapsState();
 }
 
-class _EnableTextEditAfterManyTapsState extends State<EnableTextEditAfterManyTaps> {
+class _EnableTextEditAfterManyTapsState
+    extends State<EnableTextEditAfterManyTaps> {
   bool enabled = false;
   int counter = 0;
   Timer? timer;

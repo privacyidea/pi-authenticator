@@ -27,24 +27,28 @@ class ContainerSendDeviceInfosDialog extends StatelessWidget {
   const ContainerSendDeviceInfosDialog({super.key});
 
   static Future<bool?> showDialog() => showAsyncDialog<bool>(
-        builder: (context) => ContainerSendDeviceInfosDialog(),
-        barrierDismissible: false,
-      );
+    builder: (context) => ContainerSendDeviceInfosDialog(),
+    barrierDismissible: false,
+  );
 
   @override
   Widget build(BuildContext context) {
     final AppLocalizations appLocalizations = AppLocalizations.of(context)!;
     return DefaultDialog(
       title: Text(appLocalizations.containerRolloutSendDeviceInfoDialogTitle),
-      content: Text(appLocalizations.containerRolloutSendDeviceInfoDialogContent),
+      content: Text(
+        appLocalizations.containerRolloutSendDeviceInfoDialogContent,
+      ),
       actions: [
-        TextButton(
+        DialogAction(
+          label: appLocalizations.no,
+          intent: DialogActionIntent.confirm,
           onPressed: () => Navigator.of(context).pop(false),
-          child: Text(appLocalizations.no),
         ),
-        TextButton(
+        DialogAction(
+          label: appLocalizations.yes,
+          intent: DialogActionIntent.confirm,
           onPressed: () => Navigator.of(context).pop(true),
-          child: Text(appLocalizations.yes),
         ),
       ],
     );

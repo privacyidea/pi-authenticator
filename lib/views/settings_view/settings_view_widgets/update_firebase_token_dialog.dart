@@ -33,10 +33,12 @@ class UpdateFirebaseTokenDialog extends ConsumerStatefulWidget {
   const UpdateFirebaseTokenDialog(this.appLocalizations, {super.key});
 
   @override
-  ConsumerState<UpdateFirebaseTokenDialog> createState() => _UpdateFirebaseTokenDialogState();
+  ConsumerState<UpdateFirebaseTokenDialog> createState() =>
+      _UpdateFirebaseTokenDialogState();
 }
 
-class _UpdateFirebaseTokenDialogState extends ConsumerState<UpdateFirebaseTokenDialog> {
+class _UpdateFirebaseTokenDialogState
+    extends ConsumerState<UpdateFirebaseTokenDialog> {
   Widget _content = const Row(
     mainAxisAlignment: MainAxisAlignment.center,
     children: [CircularProgressIndicator()],
@@ -55,8 +57,9 @@ class _UpdateFirebaseTokenDialogState extends ConsumerState<UpdateFirebaseTokenD
       title: Text(AppLocalizations.of(context)!.synchronizingTokens),
       content: _content,
       actions: [
-        TextButton(
-          child: Text(AppLocalizations.of(context)!.dismiss),
+        DialogAction(
+          label: AppLocalizations.of(context)!.dismiss,
+          intent: DialogActionIntent.cancel,
           onPressed: () => Navigator.pop(context),
         ),
       ],
@@ -67,9 +70,13 @@ class _UpdateFirebaseTokenDialogState extends ConsumerState<UpdateFirebaseTokenD
     Logger.info('Starting update of firebase token.');
 
     // TODO What to do with poll only tokens if google-services is used?
-    final pushTokensNotPollOnly = (await ref.read(tokenProvider.future)).pushTokensNotPollOnly;
+    final pushTokensNotPollOnly = (await ref.read(
+      tokenProvider.future,
+    )).pushTokensNotPollOnly;
 
-    final tuple = await ref.read(tokenProvider.notifier).updateFirebaseTokens(tokens: pushTokensNotPollOnly);
+    final tuple = await ref
+        .read(tokenProvider.notifier)
+        .updateFirebaseTokens(tokens: pushTokensNotPollOnly);
     if (tuple == null) {
       showErrorStatusMessage(
         message: (l) => l.firebaseToken,
@@ -89,9 +96,7 @@ class _UpdateFirebaseTokenDialogState extends ConsumerState<UpdateFirebaseTokenD
       List<Widget> children = [];
 
       if (tokenWithFailedUpdate.isNotEmpty) {
-        children.add(
-          Text('${localizations.syncFbTokenFailed}\n'),
-        );
+        children.add(Text('${localizations.syncFbTokenFailed}\n'));
         for (PushToken p in tokenWithFailedUpdate) {
           children.add(Text('• ${p.label}'));
         }

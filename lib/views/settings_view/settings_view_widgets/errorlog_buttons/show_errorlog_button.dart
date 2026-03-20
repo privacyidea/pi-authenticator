@@ -56,9 +56,10 @@ void _pressShowErrorLog(BuildContext context) {
         child: DefaultDialog(
           title: Text(AppLocalizations.of(context)!.errorLogTitle),
           actions: [
-            TextButton(
+            DialogAction(
+              label: AppLocalizations.of(context)!.dismiss,
+              intent: DialogActionIntent.cancel,
               onPressed: () => Navigator.of(context).pop(),
-              child: Text(AppLocalizations.of(context)!.dismiss),
             ),
           ],
           content: SingleChildScrollView(

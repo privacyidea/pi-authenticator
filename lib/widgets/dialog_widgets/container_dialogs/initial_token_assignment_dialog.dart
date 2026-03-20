@@ -33,19 +33,34 @@ import 'send_otps_without_ssl_dialog.dart';
 class InitialTokenAssignmentDialog extends ConsumerStatefulWidget {
   final TokenContainer container;
   final List<Token> tokens;
-  const InitialTokenAssignmentDialog({super.key, required this.tokens, required this.container});
+  const InitialTokenAssignmentDialog({
+    super.key,
+    required this.tokens,
+    required this.container,
+  });
 
-  static Future<Iterable<Token>?> showDialog(TokenContainer container, List<Token> tokens) async {
-    final returnValue = await showAsyncDialog(builder: (context) => InitialTokenAssignmentDialog(container: container, tokens: tokens));
-    assert(returnValue is Iterable<Token>?, "The return value of the InitialTokenAssignmentDialog must be an Iterable<Token> or null.");
+  static Future<Iterable<Token>?> showDialog(
+    TokenContainer container,
+    List<Token> tokens,
+  ) async {
+    final returnValue = await showAsyncDialog(
+      builder: (context) =>
+          InitialTokenAssignmentDialog(container: container, tokens: tokens),
+    );
+    assert(
+      returnValue is Iterable<Token>?,
+      "The return value of the InitialTokenAssignmentDialog must be an Iterable<Token> or null.",
+    );
     return returnValue;
   }
 
   @override
-  ConsumerState<InitialTokenAssignmentDialog> createState() => _InitialTokenAssignmentDialogState();
+  ConsumerState<InitialTokenAssignmentDialog> createState() =>
+      _InitialTokenAssignmentDialogState();
 }
 
-class _InitialTokenAssignmentDialogState extends ConsumerState<InitialTokenAssignmentDialog> {
+class _InitialTokenAssignmentDialogState
+    extends ConsumerState<InitialTokenAssignmentDialog> {
   Set<Token> _selectedTokens = {};
   Set<Token> _unselectedTokens = {};
 
@@ -58,7 +73,11 @@ class _InitialTokenAssignmentDialogState extends ConsumerState<InitialTokenAssig
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(localizations.initialTokenAssignmentDialogContent1(widget.container.syncUrl.toString())),
+          Text(
+            localizations.initialTokenAssignmentDialogContent1(
+              widget.container.syncUrl.toString(),
+            ),
+          ),
           SizedBox(height: 8),
           Text(localizations.initialTokenAssignmentDialogContent2),
           Padding(
@@ -76,27 +95,56 @@ class _InitialTokenAssignmentDialogState extends ConsumerState<InitialTokenAssig
         ],
       ),
       actions: [
-        ElevatedButton(
-          child: Text(localizations.cancel),
+        // ElevatedButton(
+        //   child: Text(localizations.cancel),
+        //   onPressed: () => Navigator.of(context).pop(),
+        // ),
+        // ElevatedButton(
+        //   onPressed: _selectedTokens.isEmpty
+        //       ? () => Navigator.of(context).pop(_selectedTokens)
+        //       : () async {
+        //           if (!widget.container.sslVerify) {
+        //             final ok = await SendOTPsWithoutSSLDialog.showDialog();
+        //             if (ok != true || !context.mounted) return;
+        //           }
+        //           ref.read(tokenProvider.notifier).updateTokens(
+        //                 _unselectedTokens.toList(),
+        //                 (t) => t.copyWith(checkedContainer: t.checkedContainer..add(widget.container.serial)),
+        //               );
+        //           Navigator.of(context).pop(_selectedTokens);
+        //         },
+        //   child: _selectedTokens.isEmpty
+        //       ? Text(localizations.initialTokenAssignmentDialogButtonZero)
+        //       : Text(localizations.initialTokenAssignmentDialogButtonSelected),
+        // ),
+        DialogAction(
+          label: localizations.cancel,
+          intent: DialogActionIntent.cancel,
           onPressed: () => Navigator.of(context).pop(),
         ),
-        ElevatedButton(
-          onPressed: _selectedTokens.isEmpty
-              ? () => Navigator.of(context).pop(_selectedTokens)
-              : () async {
-                  if (!widget.container.sslVerify) {
-                    final ok = await SendOTPsWithoutSSLDialog.showDialog();
-                    if (ok != true || !context.mounted) return;
-                  }
-                  ref.read(tokenProvider.notifier).updateTokens(
-                        _unselectedTokens.toList(),
-                        (t) => t.copyWith(checkedContainer: t.checkedContainer..add(widget.container.serial)),
-                      );
-                  Navigator.of(context).pop(_selectedTokens);
-                },
-          child: _selectedTokens.isEmpty
-              ? Text(localizations.initialTokenAssignmentDialogButtonZero)
-              : Text(localizations.initialTokenAssignmentDialogButtonSelected),
+        DialogAction(
+          label: _selectedTokens.isEmpty
+              ? localizations.initialTokenAssignmentDialogButtonZero
+              : localizations.initialTokenAssignmentDialogButtonSelected,
+          intent: _selectedTokens.isEmpty
+              ? DialogActionIntent.cancel
+              : DialogActionIntent.confirm,
+          onPressed: () async {
+            if (_selectedTokens.isNotEmpty && !widget.container.sslVerify) {
+              final ok = await SendOTPsWithoutSSLDialog.showDialog();
+              if (ok != true || !context.mounted) return;
+            }
+            ref
+                .read(tokenProvider.notifier)
+                .updateTokens(
+                  _unselectedTokens.toList(),
+                  (t) => t.copyWith(
+                    checkedContainer: t.checkedContainer
+                      ..add(widget.container.serial),
+                  ),
+                );
+            Navigator.of(context).pop(_selectedTokens);
+          },
         ),
       ],
     );

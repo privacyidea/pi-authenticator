@@ -23,15 +23,24 @@ import 'package:flutter/material.dart';
 
 import '../../../../../../../model/extensions/color_extension.dart';
 import 'theme_extentions/action_theme.dart';
+import 'theme_extentions/app_dimensions.dart';
 import 'theme_extentions/elevated_delete_button_theme.dart';
 import 'theme_extentions/extended_text_theme.dart';
 import 'theme_extentions/push_request_theme.dart';
 import 'theme_extentions/status_colors.dart';
 
+/// [ThemeCustomization] acts as a bridge between raw color/design data and Flutter's [ThemeData].
+/// It supports dynamic injection of [AppDimensions] to decouple color schemes from spatial layouts.
 class ThemeCustomization {
-  static const ThemeCustomization defaultLightTheme = ThemeCustomization.defaultLightWith();
-  static const ThemeCustomization defaultDarkTheme = ThemeCustomization.defaultDarkWith();
+  /// Standard light theme configuration used as a baseline for the application.
+  static const ThemeCustomization defaultLightTheme =
+      ThemeCustomization.defaultLightWith();
 
+  /// Standard dark theme configuration used as a baseline for the application.
+  static const ThemeCustomization defaultDarkTheme =
+      ThemeCustomization.defaultDarkWith();
+
+  /// Comprehensive constructor for full manual customization.
   const ThemeCustomization({
     required this.brightness,
     required this.primaryColor,
@@ -62,16 +71,18 @@ class ThemeCustomization {
     this.tileCriticalOtpColor,
     this.tileWarningCountdownColor,
     this.tileCriticalCountdownColor,
-  })  : _pushAuthRequestAcceptColor = pushAuthRequestAcceptColor,
-        _pushAuthRequestDeclineColor = pushAuthRequestDeclineColor,
-        _actionButtonsForegroundColor = actionButtonsForegroundColor,
-        _tileDefaultOtpColor = tileDefaultOtpColor,
-        _tileDefaultCountdownColor = tileDefaultCountdownColor,
-        _tileSubtitleColor = tileSubtitleColor,
-        _navigationBarIconColor = navigationBarIconColor,
-        _qrButtonBackgroundColor = qrButtonBackgroundColor,
-        _qrButtonIconColor = qrButtonIconColor;
+  }) : _pushAuthRequestAcceptColor = pushAuthRequestAcceptColor,
+       _pushAuthRequestDeclineColor = pushAuthRequestDeclineColor,
+       _actionButtonsForegroundColor = actionButtonsForegroundColor,
+       _tileDefaultOtpColor = tileDefaultOtpColor,
+       _tileDefaultCountdownColor = tileDefaultCountdownColor,
+       _tileSubtitleColor = tileSubtitleColor,
+       _navigationBarIconColor = navigationBarIconColor,
+       _qrButtonBackgroundColor = qrButtonBackgroundColor,
+       _qrButtonIconColor = qrButtonIconColor;
 
+  /// Lightweight constructor for Light Mode.
+  /// Automatically provides fallbacks for missing colors based on the NetKnights corporate identity.
   const ThemeCustomization.defaultLightWith({
     Color? primaryColor,
     Color? onPrimary,
@@ -88,48 +99,47 @@ class ThemeCustomization {
     Color? navigationBarColor,
     Color? warningColor,
     Color? successColor,
-    // From here on the colors have a default value based on another given color so they can be null
-    Color? pushAuthRequestAcceptColor, // Default: primaryColor
-    Color? pushAuthRequestDeclineColor, // Default: deleteColor
-    Color? actionButtonsForegroundColor, // Default: foregroundColor
-    Color? tileDefaultOtpColor, // Default: primaryColor
-    Color? tileDefaultCountdownColor, // Default: primaryColor
-    Color? tileSubtitleColor, // Default: subtitleColor
-    Color? navigationBarIconColor, // Default: foregroundColor
-    Color? qrButtonBackgroundColor, // Default: primaryColor
-    Color? qrButtonIconColor, // Default: onPrimary
-    // From here the colors are optional and can be null
+    Color? pushAuthRequestAcceptColor,
+    Color? pushAuthRequestDeclineColor,
+    Color? actionButtonsForegroundColor,
+    Color? tileDefaultOtpColor,
+    Color? tileDefaultCountdownColor,
+    Color? tileSubtitleColor,
+    Color? navigationBarIconColor,
+    Color? qrButtonBackgroundColor,
+    Color? qrButtonIconColor,
     this.tileWarningOtpColor = const Color(0xFFFFB833),
     this.tileCriticalOtpColor = const Color(0xffb93f1d),
     this.tileWarningCountdownColor = const Color(0xFFFFB833),
     this.tileCriticalCountdownColor = const Color(0xffb93f1d),
-  })  : brightness = Brightness.light,
-        primaryColor = primaryColor ?? const Color(0xff03A9F4),
-        onPrimary = onPrimary ?? const Color(0xff282828),
-        subtitleColor = subtitleColor ?? const Color(0xff9E9E9E),
-        backgroundColor = backgroundColor ?? const Color(0xffEFEFEF),
-        foregroundColor = foregroundColor ?? const Color(0xff282828),
-        shadowColor = shadowColor ?? const Color(0x4C303030),
-        deleteColor = deleteColor ?? const Color(0xffe85e40),
-        renameColor = renameColor ?? const Color(0xff7f9bdd),
-        lockColor = lockColor ?? const Color(0xffffd633),
-        exportColor = exportColor ?? const Color.fromARGB(255, 49, 197, 74),
-        disabledColor = disabledColor ?? const Color(0xffAAAAAA),
-        tileIconColor = tileIconColor ?? const Color(0xff757575),
-        navigationBarColor = navigationBarColor ?? const Color(0xFFFFFFFF),
-        warningColor = warningColor ?? const Color(0xFFFFB833),
-        successColor = successColor ?? const Color(0xFF4CAF50),
-        // From here on the colors have a default value based on another given color so they can be null
-        _pushAuthRequestAcceptColor = pushAuthRequestAcceptColor,
-        _pushAuthRequestDeclineColor = pushAuthRequestDeclineColor,
-        _actionButtonsForegroundColor = actionButtonsForegroundColor,
-        _tileDefaultOtpColor = tileDefaultOtpColor,
-        _tileDefaultCountdownColor = tileDefaultCountdownColor,
-        _tileSubtitleColor = tileSubtitleColor,
-        _navigationBarIconColor = navigationBarIconColor,
-        _qrButtonBackgroundColor = qrButtonBackgroundColor,
-        _qrButtonIconColor = qrButtonIconColor;
+  }) : brightness = Brightness.light,
+       primaryColor = primaryColor ?? const Color(0xff03A9F4),
+       onPrimary = onPrimary ?? const Color(0xff282828),
+       subtitleColor = subtitleColor ?? const Color(0xff9E9E9E),
+       backgroundColor = backgroundColor ?? const Color(0xffEFEFEF),
+       foregroundColor = foregroundColor ?? const Color(0xff282828),
+       shadowColor = shadowColor ?? const Color(0x4C303030),
+       deleteColor = deleteColor ?? const Color(0xffe85e40),
+       renameColor = renameColor ?? const Color(0xff7f9bdd),
+       lockColor = lockColor ?? const Color(0xffffd633),
+       exportColor = exportColor ?? const Color.fromARGB(255, 49, 197, 74),
+       disabledColor = disabledColor ?? const Color(0xffAAAAAA),
+       tileIconColor = tileIconColor ?? const Color(0xff757575),
+       navigationBarColor = navigationBarColor ?? const Color(0xFFFFFFFF),
+       warningColor = warningColor ?? const Color(0xFFFFB833),
+       successColor = successColor ?? const Color(0xFF4CAF50),
+       _pushAuthRequestAcceptColor = pushAuthRequestAcceptColor,
+       _pushAuthRequestDeclineColor = pushAuthRequestDeclineColor,
+       _actionButtonsForegroundColor = actionButtonsForegroundColor,
+       _tileDefaultOtpColor = tileDefaultOtpColor,
+       _tileDefaultCountdownColor = tileDefaultCountdownColor,
+       _tileSubtitleColor = tileSubtitleColor,
+       _navigationBarIconColor = navigationBarIconColor,
+       _qrButtonBackgroundColor = qrButtonBackgroundColor,
+       _qrButtonIconColor = qrButtonIconColor;
 
+  /// Lightweight constructor for Dark Mode.
+  /// Adjusts surfaces and text contrast to ensure readability in low-light environments.
   const ThemeCustomization.defaultDarkWith({
     Color? primaryColor,
     Color? onPrimary,
@@ -146,99 +156,117 @@ class ThemeCustomization {
     Color? navigationBarColor,
     Color? warningColor,
     Color? successColor,
-    // From here on the colors have a default value based on another given color so they can be null
-    Color? pushAuthRequestAcceptColor, // Default: primaryColor
-    Color? pushAuthRequestDeclineColor, // Default: deleteColor
-    Color? actionButtonsForegroundColor, // Default: foregroundColor
-    Color? tileDefaultOtpColor, // Default: primaryColor
-    Color? tileDefaultCountdownColor, // Default: primaryColor
-    Color? tileSubtitleColor, // Default: subtitleColor
-    Color? navigationBarIconColor, // Default: foregroundColor
-    Color? qrButtonBackgroundColor, // Default: primaryColor
-    Color? qrButtonIconColor, // Default: onPrimary
-    // From here the colors are optional and can be null
+    Color? pushAuthRequestAcceptColor,
+    Color? pushAuthRequestDeclineColor,
+    Color? actionButtonsForegroundColor,
+    Color? tileDefaultOtpColor,
+    Color? tileDefaultCountdownColor,
+    Color? tileSubtitleColor,
+    Color? navigationBarIconColor,
+    Color? qrButtonBackgroundColor,
+    Color? qrButtonIconColor,
     this.tileWarningOtpColor = const Color(0xFFFFB833),
     this.tileCriticalOtpColor = const Color(0xffb93f1d),
     this.tileWarningCountdownColor = const Color(0xFFFFB833),
     this.tileCriticalCountdownColor = const Color(0xffb93f1d),
-  })  : brightness = Brightness.dark,
-        primaryColor = primaryColor ?? const Color(0xff03A9F4),
-        onPrimary = onPrimary ?? const Color(0xFF282828),
-        subtitleColor = subtitleColor ?? const Color(0xFF9E9E9E),
-        backgroundColor = backgroundColor ?? const Color(0xFF303030),
-        foregroundColor = foregroundColor ?? const Color(0xffF5F5F5),
-        shadowColor = shadowColor ?? const Color(0x4CEFEFEF),
-        deleteColor = deleteColor ?? const Color(0xffb93f1d),
-        renameColor = renameColor ?? const Color(0xff4a72c6),
-        lockColor = lockColor ?? const Color(0xffe4ba11),
-        exportColor = exportColor ?? const Color.fromARGB(255, 36, 148, 45),
-        disabledColor = disabledColor ?? const Color(0x4C303030),
-        tileIconColor = tileIconColor ?? const Color(0xffF5F5F5),
-        navigationBarColor = navigationBarColor ?? const Color(0xFF282828),
-        warningColor = warningColor ?? const Color(0xFFFFB833),
-        successColor = successColor ?? const Color(0xFF4CAF50),
-        // From here on the colors have a default value based on another given color so they can be null
-        _pushAuthRequestAcceptColor = pushAuthRequestAcceptColor,
-        _pushAuthRequestDeclineColor = pushAuthRequestDeclineColor,
-        _actionButtonsForegroundColor = actionButtonsForegroundColor,
-        _tileDefaultOtpColor = tileDefaultOtpColor,
-        _tileDefaultCountdownColor = tileDefaultCountdownColor,
-        _tileSubtitleColor = tileSubtitleColor,
-        _navigationBarIconColor = navigationBarIconColor,
-        _qrButtonBackgroundColor = qrButtonBackgroundColor,
-        _qrButtonIconColor = qrButtonIconColor;
+  }) : brightness = Brightness.dark,
+       primaryColor = primaryColor ?? const Color(0xff03A9F4),
+       onPrimary = onPrimary ?? const Color(0xFF282828),
+       subtitleColor = subtitleColor ?? const Color(0xFF9E9E9E),
+       backgroundColor = backgroundColor ?? const Color(0xFF303030),
+       foregroundColor = foregroundColor ?? const Color(0xffF5F5F5),
+       shadowColor = shadowColor ?? const Color(0x4CEFEFEF),
+       deleteColor = deleteColor ?? const Color(0xffb93f1d),
+       renameColor = renameColor ?? const Color(0xff4a72c6),
+       lockColor = lockColor ?? const Color(0xffe4ba11),
+       exportColor = exportColor ?? const Color.fromARGB(255, 36, 148, 45),
+       disabledColor = disabledColor ?? const Color(0x4C303030),
+       tileIconColor = tileIconColor ?? const Color(0xffF5F5F5),
+       navigationBarColor = navigationBarColor ?? const Color(0xFF282828),
+       warningColor = warningColor ?? const Color(0xFFFFB833),
+       successColor = successColor ?? const Color(0xFF4CAF50),
+       _pushAuthRequestAcceptColor = pushAuthRequestAcceptColor,
+       _pushAuthRequestDeclineColor = pushAuthRequestDeclineColor,
+       _actionButtonsForegroundColor = actionButtonsForegroundColor,
+       _tileDefaultOtpColor = tileDefaultOtpColor,
+       _tileDefaultCountdownColor = tileDefaultCountdownColor,
+       _tileSubtitleColor = tileSubtitleColor,
+       _navigationBarIconColor = navigationBarIconColor,
+       _qrButtonBackgroundColor = qrButtonBackgroundColor,
+       _qrButtonIconColor = qrButtonIconColor;
 
+  /// Determines if the system should render light or dark variants.
   final Brightness brightness;
 
-  // Basic colors
+  /// Primary brand color, used for main UI elements like headers and active states.
   final Color primaryColor;
+
+  /// Color for elements sitting on top of the primary color (e.g., text on buttons).
   final Color onPrimary;
+
+  /// Secondary text color used for hints and less important information.
   final Color subtitleColor;
+
+  /// Main background color for scaffolds and pages.
   final Color backgroundColor;
+
+  /// Primary text and icon color for high contrast against the background.
   final Color foregroundColor;
+
+  /// Color used for elevations, cards, and soft depth effects.
   final Color shadowColor;
+
+  /// Status color for warnings (e.g., expiring tokens).
   final Color warningColor;
+
+  /// Status color for successful operations (e.g., successful authentication).
   final Color successColor;
 
-  // Push Request colors
+  /// Internal storage for Push Request colors. If null, they inherit from primary/delete.
   final Color? _pushAuthRequestAcceptColor;
-  Color get pushAuthRequestAcceptColor => _pushAuthRequestAcceptColor ?? primaryColor;
+  Color get pushAuthRequestAcceptColor =>
+      _pushAuthRequestAcceptColor ?? primaryColor;
   final Color? _pushAuthRequestDeclineColor;
-  Color get pushAuthRequestDeclineColor => _pushAuthRequestDeclineColor ?? deleteColor;
+  Color get pushAuthRequestDeclineColor =>
+      _pushAuthRequestDeclineColor ?? deleteColor;
 
-  // Slide action
+  /// Colors for interactive list actions (Swiping).
   final Color deleteColor;
   final Color renameColor;
   final Color lockColor;
   final Color exportColor;
   final Color disabledColor;
-  final Color? _actionButtonsForegroundColor; // Default: foregroundColor
-  Color get actionButtonsForegroundColor => _actionButtonsForegroundColor ?? foregroundColor;
+  final Color? _actionButtonsForegroundColor;
+  Color get actionButtonsForegroundColor =>
+      _actionButtonsForegroundColor ?? foregroundColor;
 
-  // List tile
-  final Color? _tileDefaultOtpColor; // Default: primaryColor
+  /// Token Tile specific colors. These control the visual feedback of OTP codes.
+  final Color? _tileDefaultOtpColor;
   Color get tileDefaultOtpColor => _tileDefaultOtpColor ?? primaryColor;
-  final Color? tileWarningOtpColor; // Optional, not default
-  final Color? tileCriticalOtpColor; // Optional, not default
+  final Color? tileWarningOtpColor;
+  final Color? tileCriticalOtpColor;
 
-  final Color? _tileDefaultCountdownColor; // Default: primaryColor
-  Color get tileDefaultCountdownColor => _tileDefaultCountdownColor ?? primaryColor;
-  final Color? tileWarningCountdownColor; // Optional, not default
-  final Color? tileCriticalCountdownColor; // Optional, not default
+  final Color? _tileDefaultCountdownColor;
+  Color get tileDefaultCountdownColor =>
+      _tileDefaultCountdownColor ?? primaryColor;
+  final Color? tileWarningCountdownColor;
+  final Color? tileCriticalCountdownColor;
 
   final Color tileIconColor;
-  final Color? _tileSubtitleColor; // Default: subtitleColor
+  final Color? _tileSubtitleColor;
   Color get tileSubtitleColor => _tileSubtitleColor ?? subtitleColor;
 
-  // Navigation bar
+  /// Interface colors for the Bottom Navigation and Floating Action Buttons.
   final Color navigationBarColor;
-  final Color? _navigationBarIconColor; // Default: foregroundColor
-  Color get navigationBarIconColor => _navigationBarIconColor ?? foregroundColor;
-  final Color? _qrButtonBackgroundColor; // Default: primaryColor
+  final Color? _navigationBarIconColor;
+  Color get navigationBarIconColor =>
+      _navigationBarIconColor ?? foregroundColor;
+  final Color? _qrButtonBackgroundColor;
   Color get qrButtonBackgroundColor => _qrButtonBackgroundColor ?? primaryColor;
-  final Color? _qrButtonIconColor; // Default: onPrimary
+  final Color? _qrButtonIconColor;
   Color get qrButtonIconColor => _qrButtonIconColor ?? onPrimary;
 
+  /// Creates a copy of this [ThemeCustomization] with the given fields replaced by new values.
   ThemeCustomization copyWith({
     Brightness? brightness,
     Color? primaryColor,
@@ -271,384 +299,620 @@ class ThemeCustomization {
     Color? Function()? tileCriticalOtpColor, // Optional, not default
     Color? Function()? tileWarningCountdownColor, // Optional, not default
     Color? Function()? tileCriticalCountdownColor, // Optional, not default
-  }) =>
-      ThemeCustomization(
-        brightness: brightness ?? this.brightness,
-        primaryColor: primaryColor ?? this.primaryColor,
-        onPrimary: onPrimary ?? this.onPrimary,
-        subtitleColor: subtitleColor ?? this.subtitleColor,
-        backgroundColor: backgroundColor ?? this.backgroundColor,
-        foregroundColor: foregroundColor ?? this.foregroundColor,
-        shadowColor: shadowColor ?? this.shadowColor,
-        deleteColor: deleteColor ?? this.deleteColor,
-        renameColor: renameColor ?? this.renameColor,
-        lockColor: lockColor ?? this.lockColor,
-        exportColor: exportColor ?? this.exportColor,
-        disabledColor: disabledColor ?? this.disabledColor,
-        tileIconColor: tileIconColor ?? this.tileIconColor,
-        navigationBarColor: navigationBarColor ?? this.navigationBarColor,
-        warningColor: warningColor ?? this.warningColor,
-        successColor: successColor ?? this.successColor,
-        // From here on the colors have a default value based on another given color so they can be null
-        pushAuthRequestAcceptColor: pushAuthRequestAcceptColor != null ? pushAuthRequestAcceptColor() : _pushAuthRequestAcceptColor,
-        pushAuthRequestDeclineColor: pushAuthRequestDeclineColor != null ? pushAuthRequestDeclineColor() : _pushAuthRequestDeclineColor,
-        actionButtonsForegroundColor: actionButtonsForegroundColor != null ? actionButtonsForegroundColor() : _actionButtonsForegroundColor,
-        tileDefaultOtpColor: tileDefaultOtpColor != null ? tileDefaultOtpColor() : _tileDefaultOtpColor,
-        tileDefaultCountdownColor: tileDefaultCountdownColor != null ? tileDefaultCountdownColor() : _tileDefaultCountdownColor,
-        tileSubtitleColor: tileSubtitleColor != null ? tileSubtitleColor() : _tileSubtitleColor,
-        navigationBarIconColor: navigationBarIconColor != null ? navigationBarIconColor() : _navigationBarIconColor,
-        qrButtonBackgroundColor: qrButtonBackgroundColor != null ? qrButtonBackgroundColor() : _qrButtonBackgroundColor,
-        qrButtonIconColor: qrButtonIconColor != null ? qrButtonIconColor() : _qrButtonIconColor,
-        // From here the colors are optional and can be null
-        tileWarningOtpColor: tileWarningOtpColor != null ? tileWarningOtpColor() : this.tileWarningOtpColor,
-        tileCriticalOtpColor: tileCriticalOtpColor != null ? tileCriticalOtpColor() : this.tileCriticalOtpColor,
-        tileWarningCountdownColor: tileWarningCountdownColor != null ? tileWarningCountdownColor() : this.tileWarningCountdownColor,
-        tileCriticalCountdownColor: tileCriticalCountdownColor != null ? tileCriticalCountdownColor() : this.tileCriticalCountdownColor,
-      );
+  }) => ThemeCustomization(
+    brightness: brightness ?? this.brightness,
+    primaryColor: primaryColor ?? this.primaryColor,
+    onPrimary: onPrimary ?? this.onPrimary,
+    subtitleColor: subtitleColor ?? this.subtitleColor,
+    backgroundColor: backgroundColor ?? this.backgroundColor,
+    foregroundColor: foregroundColor ?? this.foregroundColor,
+    shadowColor: shadowColor ?? this.shadowColor,
+    deleteColor: deleteColor ?? this.deleteColor,
+    renameColor: renameColor ?? this.renameColor,
+    lockColor: lockColor ?? this.lockColor,
+    exportColor: exportColor ?? this.exportColor,
+    disabledColor: disabledColor ?? this.disabledColor,
+    tileIconColor: tileIconColor ?? this.tileIconColor,
+    navigationBarColor: navigationBarColor ?? this.navigationBarColor,
+    warningColor: warningColor ?? this.warningColor,
+    successColor: successColor ?? this.successColor,
+    // From here on the colors have a default value based on another given color so they can be null
+    pushAuthRequestAcceptColor: pushAuthRequestAcceptColor != null
+        ? pushAuthRequestAcceptColor()
+        : _pushAuthRequestAcceptColor,
+    pushAuthRequestDeclineColor: pushAuthRequestDeclineColor != null
+        ? pushAuthRequestDeclineColor()
+        : _pushAuthRequestDeclineColor,
+    actionButtonsForegroundColor: actionButtonsForegroundColor != null
+        ? actionButtonsForegroundColor()
+        : _actionButtonsForegroundColor,
+    tileDefaultOtpColor: tileDefaultOtpColor != null
+        ? tileDefaultOtpColor()
+        : _tileDefaultOtpColor,
+    tileDefaultCountdownColor: tileDefaultCountdownColor != null
+        ? tileDefaultCountdownColor()
+        : _tileDefaultCountdownColor,
+    tileSubtitleColor: tileSubtitleColor != null
+        ? tileSubtitleColor()
+        : _tileSubtitleColor,
+    navigationBarIconColor: navigationBarIconColor != null
+        ? navigationBarIconColor()
+        : _navigationBarIconColor,
+    qrButtonBackgroundColor: qrButtonBackgroundColor != null
+        ? qrButtonBackgroundColor()
+        : _qrButtonBackgroundColor,
+    qrButtonIconColor: qrButtonIconColor != null
+        ? qrButtonIconColor()
+        : _qrButtonIconColor,
+    // From here the colors are optional and can be null
+    tileWarningOtpColor: tileWarningOtpColor != null
+        ? tileWarningOtpColor()
+        : this.tileWarningOtpColor,
+    tileCriticalOtpColor: tileCriticalOtpColor != null
+        ? tileCriticalOtpColor()
+        : this.tileCriticalOtpColor,
+    tileWarningCountdownColor: tileWarningCountdownColor != null
+        ? tileWarningCountdownColor()
+        : this.tileWarningCountdownColor,
+    tileCriticalCountdownColor: tileCriticalCountdownColor != null
+        ? tileCriticalCountdownColor()
+        : this.tileCriticalCountdownColor,
+  );
+
+  /// Compiles the customization data into a Flutter [ThemeData].
+  /// [fontFamily] allows dynamic font injection from the customization JSON.
+  /// [dimensions] provides the sizing logic (spacing, radius, icon size) to maintain layout consistency.
+  ThemeData generateTheme({
+    String? fontFamily,
+    AppDimensions dimensions = const AppDimensions(),
+  }) => ThemeData(
+    useMaterial3: false,
+    brightness: brightness,
+    primaryColor: primaryColor,
+    canvasColor: backgroundColor,
+
+    /// TextTheme mapping. Note that sizes and weights are defined to match Material 2 specifications.
+    textTheme: const TextTheme().copyWith(
+      displayLarge: TextStyle(
+        color: foregroundColor,
+        fontFamily: fontFamily,
+        fontSize: 96,
+        fontWeight: FontWeight.w300,
+      ),
+      displayMedium: TextStyle(
+        color: foregroundColor,
+        fontFamily: fontFamily,
+        fontSize: 60,
+        fontWeight: FontWeight.w300,
+      ),
+      displaySmall: TextStyle(
+        color: foregroundColor,
+        fontFamily: fontFamily,
+        fontSize: 48,
+        fontWeight: FontWeight.w400,
+      ),
+      headlineMedium: TextStyle(
+        color: foregroundColor,
+        fontFamily: fontFamily,
+        fontSize: 34,
+        fontWeight: FontWeight.w400,
+      ),
+      headlineSmall: TextStyle(
+        color: foregroundColor,
+        fontFamily: fontFamily,
+        fontSize: 24,
+        fontWeight: FontWeight.w400,
+      ),
+      titleLarge: TextStyle(
+        color: primaryColor,
+        fontFamily: fontFamily,
+        fontSize: 24,
+        fontWeight: FontWeight.w600,
+      ),
+      titleMedium: TextStyle(
+        color: primaryColor,
+        fontFamily: fontFamily,
+        fontSize: 20,
+        fontWeight: FontWeight.w500,
+      ),
+      titleSmall: TextStyle(
+        color: foregroundColor,
+        fontFamily: fontFamily,
+        fontSize: 18,
+        fontWeight: FontWeight.w500,
+      ),
+      bodyLarge: TextStyle(
+        color: foregroundColor,
+        fontFamily: fontFamily,
+        fontSize: 18,
+        fontWeight: FontWeight.w400,
+      ),
+      bodyMedium: TextStyle(
+        color: foregroundColor,
+        fontFamily: fontFamily,
+        fontSize: 16,
+        fontWeight: FontWeight.w400,
+      ),
+      bodySmall: TextStyle(
+        color: subtitleColor,
+        fontFamily: fontFamily,
+        fontSize: 14,
+        fontWeight: FontWeight.w400,
+      ),
+      labelLarge: TextStyle(
+        color: foregroundColor,
+        fontFamily: fontFamily,
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+      ),
+      labelSmall: TextStyle(
+        color: foregroundColor,
+        fontFamily: fontFamily,
+        fontSize: 14,
+        fontWeight: FontWeight.w400,
+      ),
+    ),
+
+    /// Button styling linked to [AppDimensions] for consistent touch targets and shapes.
+    disabledColor: tileIconColor.withValues(alpha: 0.38),
+    iconButtonTheme: IconButtonThemeData(
+      style: ButtonStyle(
+        foregroundColor: WidgetStateProperty.all(foregroundColor),
+      ),
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        foregroundColor: onPrimary,
+        backgroundColor: primaryColor,
+        disabledBackgroundColor: backgroundColor.mixWith(foregroundColor, 0.12),
+        disabledForegroundColor: backgroundColor.mixWith(foregroundColor, 0.38),
+        padding: EdgeInsets.symmetric(
+          horizontal: dimensions.spacingMedium,
+          vertical: dimensions.spacingSmall,
+        ),
+        minimumSize: Size(0, dimensions.controlHeight),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(dimensions.borderRadius),
+        ),
+        shadowColor: shadowColor,
+        elevation: 1.5,
+      ),
+    ),
+
+    /// Scaffolding and container designs.
+    scaffoldBackgroundColor: backgroundColor,
+    cardTheme: CardThemeData(
+      color: backgroundColor,
+      shadowColor: shadowColor,
+      elevation: 4,
+      margin: EdgeInsets.all(dimensions.spacingSmall / 2),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(dimensions.borderRadius),
+      ),
+    ),
+    cardColor: backgroundColor,
+    shadowColor: shadowColor,
+
+    /// AppBar styling focused on flat design with clear typography.
+    appBarTheme: const AppBarTheme().copyWith(
+      titleTextStyle: TextStyle(
+        color: foregroundColor,
+        fontFamily: fontFamily,
+        fontSize: 20,
+        fontWeight: FontWeight.w500,
+      ),
+      backgroundColor: backgroundColor,
+      shadowColor: shadowColor,
+      foregroundColor: foregroundColor,
+      elevation: 0,
+      titleSpacing: dimensions.spacingSmall,
+    ),
+
+    /// Input fields (Forms) reacting to customization borders and spacing.
+    inputDecorationTheme: InputDecorationTheme(
+      labelStyle: TextStyle(color: foregroundColor),
+      hintStyle: TextStyle(color: primaryColor),
+      errorStyle: TextStyle(color: deleteColor),
+      contentPadding: EdgeInsets.symmetric(vertical: dimensions.spacingSmall),
+      border: UnderlineInputBorder(
+        borderSide: BorderSide(
+          color: shadowColor,
+          width: dimensions.strokeWidth,
+        ),
+      ),
+      enabledBorder: UnderlineInputBorder(
+        borderSide: BorderSide(
+          color: subtitleColor,
+          width: dimensions.strokeWidth,
+        ),
+      ),
+      focusedBorder: UnderlineInputBorder(
+        borderSide: BorderSide(
+          color: primaryColor,
+          width: dimensions.strokeWidth * 2,
+        ),
+      ),
+    ),
+
+    /// Iconography scaling.
+    primaryIconTheme: IconThemeData(
+      color: onPrimary,
+      size: dimensions.iconSizeMedium,
+    ),
+    iconTheme: IconThemeData(
+      color: foregroundColor,
+      size: dimensions.iconSizeMedium,
+    ),
+
+    /// Navigation aesthetics.
+    navigationBarTheme: const NavigationBarThemeData().copyWith(
+      backgroundColor: navigationBarColor,
+      shadowColor: shadowColor,
+      iconTheme: WidgetStatePropertyAll(
+        IconThemeData(
+          color: navigationBarIconColor,
+          size: dimensions.iconSizeMedium,
+        ),
+      ),
+      elevation: 3,
+    ),
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
+      backgroundColor: qrButtonBackgroundColor,
+      foregroundColor: qrButtonIconColor,
+      elevation: 0,
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: ButtonStyle(
+        overlayColor: WidgetStateColor.resolveWith(
+          (states) => foregroundColor.withValues(alpha: 0.1),
+        ),
+      ),
+    ),
+
+    /// Token List styling - defines how individual OTP entries are rendered.
+    listTileTheme: ListTileThemeData(
+      tileColor: Colors.transparent,
+      titleTextStyle: TextStyle(color: tileDefaultOtpColor),
+      subtitleTextStyle: TextStyle(color: tileSubtitleColor, fontSize: 14),
+      iconColor: tileIconColor,
+      contentPadding: EdgeInsets.symmetric(
+        horizontal: dimensions.spacingMedium,
+      ),
+    ),
+
+    /// Mapping semantic colors to the Material [ColorScheme].
+    colorScheme: brightness == Brightness.light
+        ? ColorScheme.light(
+            primary: primaryColor,
+            secondary: primaryColor,
+            onPrimary: onPrimary,
+            onSecondary: onPrimary,
+            error: deleteColor,
+            errorContainer: deleteColor,
+          )
+        : ColorScheme.dark(
+            primary: primaryColor,
+            secondary: primaryColor,
+            onPrimary: onPrimary,
+            onSecondary: onPrimary,
+            error: deleteColor,
+            errorContainer: deleteColor,
+          ),
+
+    /// Custom Form Controls (Checkbox, Radio, Switch).
+    checkboxTheme: CheckboxThemeData(
+      checkColor: WidgetStateProperty.resolveWith<Color?>((_) => onPrimary),
+      fillColor: WidgetStateProperty.resolveWith<Color?>((
+        Set<WidgetState> states,
+      ) {
+        if (states.contains(WidgetState.disabled)) return null;
+        if (states.contains(WidgetState.selected)) return primaryColor;
+        return null;
+      }),
+    ),
+    radioTheme: RadioThemeData(
+      fillColor: WidgetStateProperty.resolveWith<Color?>((
+        Set<WidgetState> states,
+      ) {
+        if (states.contains(WidgetState.disabled)) return null;
+        if (states.contains(WidgetState.selected)) return primaryColor;
+        return null;
+      }),
+    ),
+    switchTheme: SwitchThemeData(
+      thumbColor: WidgetStateProperty.resolveWith<Color?>((
+        Set<WidgetState> states,
+      ) {
+        if (states.contains(WidgetState.disabled)) return null;
+        if (states.contains(WidgetState.selected)) return primaryColor;
+        return null;
+      }),
+      trackColor: WidgetStateProperty.resolveWith<Color?>((
+        Set<WidgetState> states,
+      ) {
+        if (states.contains(WidgetState.disabled)) return null;
+        if (states.contains(WidgetState.selected)) return primaryColor;
+        return null;
+      }),
+    ),
+
+    /// Registration of ThemeExtensions to expose non-standard properties to the widget tree.
+    extensions: [
+      dimensions,
+      ElevatedDeleteButtonTheme(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: deleteColor,
+          foregroundColor: onPrimary,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(dimensions.borderRadius),
+          ),
+        ),
+      ),
+      TokenTileTheme(
+        deleteColor: deleteColor,
+        editColor: renameColor,
+        lockColor: lockColor,
+        transferColor: exportColor,
+        actionDisabledColor: disabledColor,
+        actionForegroundColor: actionButtonsForegroundColor,
+        defaultOtpColor: tileDefaultOtpColor,
+        warningOtpColor: tileWarningOtpColor,
+        criticalOtpColor: tileCriticalOtpColor,
+        defaultCountdownColor: tileDefaultCountdownColor,
+        warningCountdownColor: tileWarningCountdownColor,
+        criticalCountdownColor: tileCriticalCountdownColor,
+        tileSubtitleColor: tileSubtitleColor,
+        tileIconColor: tileIconColor,
+      ),
+      ExtendedTextTheme(
+        tokenTile: TextStyle(color: primaryColor),
+        tokenTileSubtitle: TextStyle(color: tileSubtitleColor),
+      ),
+      PushRequestTheme(
+        acceptColor: pushAuthRequestAcceptColor,
+        declineColor: pushAuthRequestDeclineColor,
+      ),
+      StatusColors(
+        error: deleteColor,
+        warning: warningColor,
+        success: successColor,
+      ),
+    ],
+  );
 
   factory ThemeCustomization.fromJson(Map<String, dynamic> json) {
     bool isLightTheme = json['brightness'] == 'light';
     bool isDarkTheme = json['brightness'] == 'dark';
     if (json['brightness'] == null && json['primaryColor'] != null) {
-      isLightTheme = _isColorBright(ColorExtension.fromJson(json['primaryColor'] as int));
+      isLightTheme = _isColorBright(
+        ColorExtension.fromJson(json['primaryColor'] as int),
+      );
     }
     if (isLightTheme) {
       return ThemeCustomization.defaultLightWith(
-        primaryColor: json['primaryColor'] != null ? ColorExtension.fromJson(json['primaryColor']) : null,
-        onPrimary: json['onPrimary'] != null ? ColorExtension.fromJson(json['onPrimary']) : null,
-        subtitleColor: json['subtitleColor'] != null ? ColorExtension.fromJson(json['subtitleColor']) : null,
-        backgroundColor: json['backgroundColor'] != null ? ColorExtension.fromJson(json['backgroundColor']) : null,
-        foregroundColor: json['foregroundColor'] != null ? ColorExtension.fromJson(json['foregroundColor']) : null,
-        shadowColor: json['shadowColor'] != null ? ColorExtension.fromJson(json['shadowColor']) : null,
-        deleteColor: json['deleteColor'] != null ? ColorExtension.fromJson(json['deleteColor']) : null,
-        renameColor: json['renameColor'] != null ? ColorExtension.fromJson(json['renameColor']) : null,
-        lockColor: json['lockColor'] != null ? ColorExtension.fromJson(json['lockColor']) : null,
-        exportColor: json['exportColor'] != null ? ColorExtension.fromJson(json['exportColor']) : null,
-        disabledColor: json['disabledColor'] != null ? ColorExtension.fromJson(json['disabledColor']) : null,
-        tileIconColor: json['tileIconColor'] != null ? ColorExtension.fromJson(json['tileIconColor']) : null,
-        navigationBarColor: json['navigationBarColor'] != null ? ColorExtension.fromJson(json['navigationBarColor']) : null,
-        warningColor: json['warningColor'] != null ? ColorExtension.fromJson(json['warningColor']) : null,
-        successColor: json['successColor'] != null ? ColorExtension.fromJson(json['successColor']) : null,
-        pushAuthRequestAcceptColor: json['_pushAuthRequestAcceptColor'] != null ? ColorExtension.fromJson(json['_pushAuthRequestAcceptColor']) : null,
-        pushAuthRequestDeclineColor: json['_pushAuthRequestDeclineColor'] != null ? ColorExtension.fromJson(json['_pushAuthRequestDeclineColor']) : null,
-        actionButtonsForegroundColor: json['_actionButtonsForegroundColor'] != null ? ColorExtension.fromJson(json['_actionButtonsForegroundColor']) : null,
+        primaryColor: json['primaryColor'] != null
+            ? ColorExtension.fromJson(json['primaryColor'])
+            : null,
+        onPrimary: json['onPrimary'] != null
+            ? ColorExtension.fromJson(json['onPrimary'])
+            : null,
+        subtitleColor: json['subtitleColor'] != null
+            ? ColorExtension.fromJson(json['subtitleColor'])
+            : null,
+        backgroundColor: json['backgroundColor'] != null
+            ? ColorExtension.fromJson(json['backgroundColor'])
+            : null,
+        foregroundColor: json['foregroundColor'] != null
+            ? ColorExtension.fromJson(json['foregroundColor'])
+            : null,
+        shadowColor: json['shadowColor'] != null
+            ? ColorExtension.fromJson(json['shadowColor'])
+            : null,
+        deleteColor: json['deleteColor'] != null
+            ? ColorExtension.fromJson(json['deleteColor'])
+            : null,
+        renameColor: json['renameColor'] != null
+            ? ColorExtension.fromJson(json['renameColor'])
+            : null,
+        lockColor: json['lockColor'] != null
+            ? ColorExtension.fromJson(json['lockColor'])
+            : null,
+        exportColor: json['exportColor'] != null
+            ? ColorExtension.fromJson(json['exportColor'])
+            : null,
+        disabledColor: json['disabledColor'] != null
+            ? ColorExtension.fromJson(json['disabledColor'])
+            : null,
+        tileIconColor: json['tileIconColor'] != null
+            ? ColorExtension.fromJson(json['tileIconColor'])
+            : null,
+        navigationBarColor: json['navigationBarColor'] != null
+            ? ColorExtension.fromJson(json['navigationBarColor'])
+            : null,
+        warningColor: json['warningColor'] != null
+            ? ColorExtension.fromJson(json['warningColor'])
+            : null,
+        successColor: json['successColor'] != null
+            ? ColorExtension.fromJson(json['successColor'])
+            : null,
+        pushAuthRequestAcceptColor: json['_pushAuthRequestAcceptColor'] != null
+            ? ColorExtension.fromJson(json['_pushAuthRequestAcceptColor'])
+            : null,
+        pushAuthRequestDeclineColor:
+            json['_pushAuthRequestDeclineColor'] != null
+            ? ColorExtension.fromJson(json['_pushAuthRequestDeclineColor'])
+            : null,
+        actionButtonsForegroundColor:
+            json['_actionButtonsForegroundColor'] != null
+            ? ColorExtension.fromJson(json['_actionButtonsForegroundColor'])
+            : null,
         tileDefaultOtpColor: json['_tileDefaultOtpColor'] != null
             ? ColorExtension.fromJson(json['_tileDefaultOtpColor'])
             : json['_tilePrimaryColor'] != null
-                ? ColorExtension.fromJson(json['_tilePrimaryColor'])
-                : null,
+            ? ColorExtension.fromJson(json['_tilePrimaryColor'])
+            : null,
         tileDefaultCountdownColor: json['_tileDefaultCountdownColor'] != null
             ? ColorExtension.fromJson(json['_tileDefaultCountdownColor'])
             : json['_tilePrimaryColor'] != null
-                ? ColorExtension.fromJson(json['_tilePrimaryColor'])
-                : null,
-        tileSubtitleColor: json['_tileSubtitleColor'] != null ? ColorExtension.fromJson(json['_tileSubtitleColor']) : null,
-        navigationBarIconColor: json['_navigationBarIconColor'] != null ? ColorExtension.fromJson(json['_navigationBarIconColor']) : null,
-        qrButtonBackgroundColor: json['_qrButtonBackgroundColor'] != null ? ColorExtension.fromJson(json['_qrButtonBackgroundColor']) : null,
-        qrButtonIconColor: json['_qrButtonIconColor'] != null ? ColorExtension.fromJson(json['_qrButtonIconColor']) : null,
-        tileWarningOtpColor: json['tileWarningOtpColor'] != null ? ColorExtension.fromJson(json['tileWarningOtpColor']) : null,
-        tileCriticalOtpColor: json['tileCriticalOtpColor'] != null ? ColorExtension.fromJson(json['tileCriticalOtpColor']) : null,
-        tileWarningCountdownColor: json['tileWarningCountdownColor'] != null ? ColorExtension.fromJson(json['tileWarningCountdownColor']) : null,
-        tileCriticalCountdownColor: json['tileCriticalCountdownColor'] != null ? ColorExtension.fromJson(json['tileCriticalCountdownColor']) : null,
+            ? ColorExtension.fromJson(json['_tilePrimaryColor'])
+            : null,
+        tileSubtitleColor: json['_tileSubtitleColor'] != null
+            ? ColorExtension.fromJson(json['_tileSubtitleColor'])
+            : null,
+        navigationBarIconColor: json['_navigationBarIconColor'] != null
+            ? ColorExtension.fromJson(json['_navigationBarIconColor'])
+            : null,
+        qrButtonBackgroundColor: json['_qrButtonBackgroundColor'] != null
+            ? ColorExtension.fromJson(json['_qrButtonBackgroundColor'])
+            : null,
+        qrButtonIconColor: json['_qrButtonIconColor'] != null
+            ? ColorExtension.fromJson(json['_qrButtonIconColor'])
+            : null,
+        tileWarningOtpColor: json['tileWarningOtpColor'] != null
+            ? ColorExtension.fromJson(json['tileWarningOtpColor'])
+            : null,
+        tileCriticalOtpColor: json['tileCriticalOtpColor'] != null
+            ? ColorExtension.fromJson(json['tileCriticalOtpColor'])
+            : null,
+        tileWarningCountdownColor: json['tileWarningCountdownColor'] != null
+            ? ColorExtension.fromJson(json['tileWarningCountdownColor'])
+            : null,
+        tileCriticalCountdownColor: json['tileCriticalCountdownColor'] != null
+            ? ColorExtension.fromJson(json['tileCriticalCountdownColor'])
+            : null,
       );
     }
     if (isDarkTheme) {
       return ThemeCustomization.defaultDarkWith(
-        primaryColor: json['primaryColor'] != null ? ColorExtension.fromJson(json['primaryColor']) : null,
-        onPrimary: json['onPrimary'] != null ? ColorExtension.fromJson(json['onPrimary']) : null,
-        subtitleColor: json['subtitleColor'] != null ? ColorExtension.fromJson(json['subtitleColor']) : null,
-        backgroundColor: json['backgroundColor'] != null ? ColorExtension.fromJson(json['backgroundColor']) : null,
-        foregroundColor: json['foregroundColor'] != null ? ColorExtension.fromJson(json['foregroundColor']) : null,
-        shadowColor: json['shadowColor'] != null ? ColorExtension.fromJson(json['shadowColor']) : null,
-        deleteColor: json['deleteColor'] != null ? ColorExtension.fromJson(json['deleteColor']) : null,
-        renameColor: json['renameColor'] != null ? ColorExtension.fromJson(json['renameColor']) : null,
-        lockColor: json['lockColor'] != null ? ColorExtension.fromJson(json['lockColor']) : null,
-        exportColor: json['exportColor'] != null ? ColorExtension.fromJson(json['exportColor']) : null,
-        disabledColor: json['disabledColor'] != null ? ColorExtension.fromJson(json['disabledColor']) : null,
-        tileIconColor: json['tileIconColor'] != null ? ColorExtension.fromJson(json['tileIconColor']) : null,
-        navigationBarColor: json['navigationBarColor'] != null ? ColorExtension.fromJson(json['navigationBarColor']) : null,
-        warningColor: json['warningColor'] != null ? ColorExtension.fromJson(json['warningColor']) : null,
-        successColor: json['successColor'] != null ? ColorExtension.fromJson(json['successColor']) : null,
-        pushAuthRequestAcceptColor: json['_pushAuthRequestAcceptColor'] != null ? ColorExtension.fromJson(json['_pushAuthRequestAcceptColor']) : null,
-        pushAuthRequestDeclineColor: json['_pushAuthRequestDeclineColor'] != null ? ColorExtension.fromJson(json['_pushAuthRequestDeclineColor']) : null,
-        actionButtonsForegroundColor: json['_actionButtonsForegroundColor'] != null ? ColorExtension.fromJson(json['_actionButtonsForegroundColor']) : null,
+        primaryColor: json['primaryColor'] != null
+            ? ColorExtension.fromJson(json['primaryColor'])
+            : null,
+        onPrimary: json['onPrimary'] != null
+            ? ColorExtension.fromJson(json['onPrimary'])
+            : null,
+        subtitleColor: json['subtitleColor'] != null
+            ? ColorExtension.fromJson(json['subtitleColor'])
+            : null,
+        backgroundColor: json['backgroundColor'] != null
+            ? ColorExtension.fromJson(json['backgroundColor'])
+            : null,
+        foregroundColor: json['foregroundColor'] != null
+            ? ColorExtension.fromJson(json['foregroundColor'])
+            : null,
+        shadowColor: json['shadowColor'] != null
+            ? ColorExtension.fromJson(json['shadowColor'])
+            : null,
+        deleteColor: json['deleteColor'] != null
+            ? ColorExtension.fromJson(json['deleteColor'])
+            : null,
+        renameColor: json['renameColor'] != null
+            ? ColorExtension.fromJson(json['renameColor'])
+            : null,
+        lockColor: json['lockColor'] != null
+            ? ColorExtension.fromJson(json['lockColor'])
+            : null,
+        exportColor: json['exportColor'] != null
+            ? ColorExtension.fromJson(json['exportColor'])
+            : null,
+        disabledColor: json['disabledColor'] != null
+            ? ColorExtension.fromJson(json['disabledColor'])
+            : null,
+        tileIconColor: json['tileIconColor'] != null
+            ? ColorExtension.fromJson(json['tileIconColor'])
+            : null,
+        navigationBarColor: json['navigationBarColor'] != null
+            ? ColorExtension.fromJson(json['navigationBarColor'])
+            : null,
+        warningColor: json['warningColor'] != null
+            ? ColorExtension.fromJson(json['warningColor'])
+            : null,
+        successColor: json['successColor'] != null
+            ? ColorExtension.fromJson(json['successColor'])
+            : null,
+        pushAuthRequestAcceptColor: json['_pushAuthRequestAcceptColor'] != null
+            ? ColorExtension.fromJson(json['_pushAuthRequestAcceptColor'])
+            : null,
+        pushAuthRequestDeclineColor:
+            json['_pushAuthRequestDeclineColor'] != null
+            ? ColorExtension.fromJson(json['_pushAuthRequestDeclineColor'])
+            : null,
+        actionButtonsForegroundColor:
+            json['_actionButtonsForegroundColor'] != null
+            ? ColorExtension.fromJson(json['_actionButtonsForegroundColor'])
+            : null,
         tileDefaultOtpColor: json['_tileDefaultOtpColor'] != null
             ? ColorExtension.fromJson(json['_tileDefaultOtpColor'])
             : json['_tilePrimaryColor'] != null
-                ? ColorExtension.fromJson(json['_tilePrimaryColor'])
-                : null,
+            ? ColorExtension.fromJson(json['_tilePrimaryColor'])
+            : null,
         tileDefaultCountdownColor: json['_tileDefaultCountdownColor'] != null
             ? ColorExtension.fromJson(json['_tileDefaultCountdownColor'])
             : json['_tilePrimaryColor'] != null
-                ? ColorExtension.fromJson(json['_tilePrimaryColor'])
-                : null,
-        tileSubtitleColor: json['_tileSubtitleColor'] != null ? ColorExtension.fromJson(json['_tileSubtitleColor']) : null,
-        navigationBarIconColor: json['_navigationBarIconColor'] != null ? ColorExtension.fromJson(json['_navigationBarIconColor']) : null,
-        qrButtonBackgroundColor: json['_qrButtonBackgroundColor'] != null ? ColorExtension.fromJson(json['_qrButtonBackgroundColor']) : null,
-        qrButtonIconColor: json['_qrButtonIconColor'] != null ? ColorExtension.fromJson(json['_qrButtonIconColor']) : null,
-        tileWarningOtpColor: json['tileWarningOtpColor'] != null ? ColorExtension.fromJson(json['tileWarningOtpColor']) : null,
-        tileCriticalOtpColor: json['tileCriticalOtpColor'] != null ? ColorExtension.fromJson(json['tileCriticalOtpColor']) : null,
-        tileWarningCountdownColor: json['tileWarningCountdownColor'] != null ? ColorExtension.fromJson(json['tileWarningCountdownColor']) : null,
-        tileCriticalCountdownColor: json['tileCriticalCountdownColor'] != null ? ColorExtension.fromJson(json['tileCriticalCountdownColor']) : null,
+            ? ColorExtension.fromJson(json['_tilePrimaryColor'])
+            : null,
+        tileSubtitleColor: json['_tileSubtitleColor'] != null
+            ? ColorExtension.fromJson(json['_tileSubtitleColor'])
+            : null,
+        navigationBarIconColor: json['_navigationBarIconColor'] != null
+            ? ColorExtension.fromJson(json['_navigationBarIconColor'])
+            : null,
+        qrButtonBackgroundColor: json['_qrButtonBackgroundColor'] != null
+            ? ColorExtension.fromJson(json['_qrButtonBackgroundColor'])
+            : null,
+        qrButtonIconColor: json['_qrButtonIconColor'] != null
+            ? ColorExtension.fromJson(json['_qrButtonIconColor'])
+            : null,
+        tileWarningOtpColor: json['tileWarningOtpColor'] != null
+            ? ColorExtension.fromJson(json['tileWarningOtpColor'])
+            : null,
+        tileCriticalOtpColor: json['tileCriticalOtpColor'] != null
+            ? ColorExtension.fromJson(json['tileCriticalOtpColor'])
+            : null,
+        tileWarningCountdownColor: json['tileWarningCountdownColor'] != null
+            ? ColorExtension.fromJson(json['tileWarningCountdownColor'])
+            : null,
+        tileCriticalCountdownColor: json['tileCriticalCountdownColor'] != null
+            ? ColorExtension.fromJson(json['tileCriticalCountdownColor'])
+            : null,
       );
     }
     throw Exception('Invalid brightness value: ${json['brightness']}');
   }
 
   Map<String, dynamic> toJson() => <String, dynamic>{
-        'brightness': brightness == Brightness.light ? 'light' : 'dark',
-        'primaryColor': primaryColor.toJson(),
-        'onPrimary': onPrimary.toJson(),
-        'subtitleColor': subtitleColor.toJson(),
-        'backgroundColor': backgroundColor.toJson(),
-        'foregroundColor': foregroundColor.toJson(),
-        'shadowColor': shadowColor.toJson(),
-        'deleteColor': deleteColor.toJson(),
-        'renameColor': renameColor.toJson(),
-        'lockColor': lockColor.toJson(),
-        'exportColor': exportColor.toJson(),
-        'disabledColor': disabledColor.toJson(),
-        'tileIconColor': tileIconColor.toJson(),
-        'navigationBarColor': navigationBarColor.toJson(),
-        'warningColor': warningColor.toJson(),
-        'successColor': successColor.toJson(),
-        '_pushAuthRequestAcceptColor': _pushAuthRequestAcceptColor?.toJson(),
-        '_actionButtonsForegroundColor': _actionButtonsForegroundColor?.toJson(),
-        '_tileDefaultOtpColor': _tileDefaultOtpColor?.toJson(),
-        '_tileDefaultCountdownColor': _tileDefaultCountdownColor?.toJson(),
-        '_tileSubtitleColor': _tileSubtitleColor?.toJson(),
-        '_navigationBarIconColor': _navigationBarIconColor?.toJson(),
-        '_qrButtonBackgroundColor': _qrButtonBackgroundColor?.toJson(),
-        '_qrButtonIconColor': _qrButtonIconColor?.toJson(),
-        'tileWarningOtpColor': tileWarningOtpColor?.toJson(),
-        'tileCriticalOtpColor': tileCriticalOtpColor?.toJson(),
-        'tileWarningCountdownColor': tileWarningCountdownColor?.toJson(),
-        'tileCriticalCountdownColor': tileCriticalCountdownColor?.toJson(),
-      };
-
-  ThemeData generateTheme({String? fontFamily}) => ThemeData(
-          useMaterial3: false,
-          brightness: brightness,
-          primaryColor: primaryColor,
-          canvasColor: backgroundColor,
-          textTheme: const TextTheme().copyWith(
-            /// Original sheet from \flutter\lib\src\material\text_theme.dart
-            ///
-            ///
-            /// | NAME           | SIZE |  WEIGHT |  SPACING |   Color     |
-            /// |----------------|------|---------|----------|-------------|
-            /// | displayLarge   | 96.0 | light   | -1.5     | foreground  |
-            /// | displayMedium  | 60.0 | light   | -0.5     | foreground  |
-            /// | displaySmall   | 48.0 | regular |  0.0     | foreground  |
-            /// | headlineMedium | 34.0 | regular |  0.25    | foreground  |
-            /// | headlineSmall  | 24.0 | regular |  0.0     | foreground  |
-            /// | titleLarge     | 24.0 | medium  |  0.15    | primary     |
-            /// | titleMedium    | 20.0 | medium  |  0.15    | primary     |
-            /// | titleSmall     | 18.0 | medium  |  0.1     | foreground  |
-            /// | bodyLarge      | 16.0 | regular |  0.5     | foreground  |
-            /// | bodyMedium     | 14.0 | regular |  0.25    | foreground  |
-            /// | bodySmall      | 12.0 | regular |  0.4     | subtitle    |
-            /// | labelLarge     | 14.0 | medium  |  1.25    | foreground  |
-            /// | labelSmall     | 12.0 | regular |  1.5     | foreground  |
-            ///
-            /// ...where "light" is `FontWeight.w300`, "regular" is `FontWeight.w400` and
-            /// "medium" is `FontWeight.w500`.
-            ///
-            displayLarge: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 96, fontWeight: FontWeight.w300),
-            displayMedium: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 60, fontWeight: FontWeight.w300),
-            displaySmall: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 48, fontWeight: FontWeight.w400),
-            headlineMedium: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 34, fontWeight: FontWeight.w400),
-            headlineSmall: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 24, fontWeight: FontWeight.w400),
-            titleLarge: TextStyle(color: primaryColor, fontFamily: fontFamily, fontSize: 24, fontWeight: FontWeight.w600),
-            titleMedium: TextStyle(color: primaryColor, fontFamily: fontFamily, fontSize: 20, fontWeight: FontWeight.w500),
-            titleSmall: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 18, fontWeight: FontWeight.w500),
-            bodyLarge: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 18, fontWeight: FontWeight.w400),
-            bodyMedium: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 16, fontWeight: FontWeight.w400),
-            bodySmall: TextStyle(color: subtitleColor, fontFamily: fontFamily, fontSize: 14, fontWeight: FontWeight.w400),
-            labelLarge: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 16, fontWeight: FontWeight.w500),
-            labelSmall: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 14, fontWeight: FontWeight.w400),
-          ),
-          disabledColor: tileIconColor.withValues(alpha: 0.38), // 38% opacity used for disabled icon buttons
-
-          iconButtonTheme: IconButtonThemeData(
-            style: ButtonStyle(
-              foregroundColor: WidgetStateProperty.all(foregroundColor),
-            ),
-          ),
-          elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ElevatedButton.styleFrom(
-              foregroundColor: onPrimary,
-              backgroundColor: primaryColor,
-              disabledBackgroundColor: backgroundColor.mixWith(foregroundColor, 0.12),
-              disabledForegroundColor: backgroundColor.mixWith(foregroundColor, 0.38),
-              padding: const EdgeInsets.all(6),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-              shadowColor: shadowColor,
-              elevation: 1.5,
-            ),
-          ),
-          scaffoldBackgroundColor: backgroundColor,
-          cardTheme: CardThemeData(
-            color: backgroundColor,
-            shadowColor: shadowColor,
-            elevation: 4,
-            margin: const EdgeInsets.all(4),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          ),
-          cardColor: backgroundColor,
-          shadowColor: shadowColor,
-          // shadowColor: Colors.transparent,
-          appBarTheme: const AppBarTheme().copyWith(
-            // Title Medium but with color foregroundColor
-            titleTextStyle: TextStyle(color: foregroundColor, fontFamily: fontFamily, fontSize: 20, fontWeight: FontWeight.w500),
-            backgroundColor: backgroundColor,
-            shadowColor: shadowColor,
-            foregroundColor: foregroundColor,
-            elevation: 0,
-            titleSpacing: 6,
-          ),
-          inputDecorationTheme: InputDecorationTheme(
-            labelStyle: TextStyle(color: foregroundColor),
-            hintStyle: TextStyle(color: primaryColor),
-            errorStyle: TextStyle(color: deleteColor),
-            border: UnderlineInputBorder(
-              borderSide: BorderSide(color: shadowColor),
-            ),
-            enabledBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: subtitleColor),
-            ),
-            focusedBorder: UnderlineInputBorder(
-              borderSide: BorderSide(color: primaryColor),
-            ),
-          ),
-          primaryIconTheme: IconThemeData(color: onPrimary),
-          iconTheme: IconThemeData(color: foregroundColor),
-          navigationBarTheme: const NavigationBarThemeData().copyWith(
-            backgroundColor: navigationBarColor,
-            shadowColor: shadowColor,
-            iconTheme: WidgetStatePropertyAll(IconThemeData(color: navigationBarIconColor)),
-            elevation: 3,
-          ),
-          floatingActionButtonTheme: FloatingActionButtonThemeData(
-            backgroundColor: qrButtonBackgroundColor,
-            foregroundColor: qrButtonIconColor,
-            elevation: 0,
-          ),
-          textButtonTheme: TextButtonThemeData(
-            style: ButtonStyle(
-              overlayColor: WidgetStateColor.resolveWith((states) => foregroundColor.withValues(alpha: 0.1)),
-            ),
-          ),
-          listTileTheme: ListTileThemeData(
-            tileColor: Colors.transparent,
-            titleTextStyle: TextStyle(color: tileDefaultOtpColor),
-            subtitleTextStyle: TextStyle(color: tileSubtitleColor, fontSize: 14), //bodyMedium fontSize
-            iconColor: tileIconColor,
-          ),
-          colorScheme: brightness == Brightness.light
-              ? ColorScheme.light(
-                  primary: primaryColor,
-                  secondary: primaryColor,
-                  onPrimary: onPrimary,
-                  onSecondary: onPrimary,
-                  error: deleteColor,
-                  errorContainer: deleteColor,
-                )
-              : ColorScheme.dark(
-                  primary: primaryColor,
-                  secondary: primaryColor,
-                  onPrimary: onPrimary,
-                  onSecondary: onPrimary,
-                  error: deleteColor,
-                  errorContainer: deleteColor,
-                ),
-          checkboxTheme: CheckboxThemeData(
-            checkColor: WidgetStateProperty.resolveWith<Color?>((_) => onPrimary),
-            fillColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
-              if (states.contains(WidgetState.disabled)) {
-                return null;
-              }
-              if (states.contains(WidgetState.selected)) {
-                return primaryColor;
-              }
-              return null;
-            }),
-          ),
-          radioTheme: RadioThemeData(
-            fillColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
-              if (states.contains(WidgetState.disabled)) {
-                return null;
-              }
-              if (states.contains(WidgetState.selected)) {
-                return primaryColor;
-              }
-              return null;
-            }),
-          ),
-          switchTheme: SwitchThemeData(
-            thumbColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
-              if (states.contains(WidgetState.disabled)) {
-                return null;
-              }
-              if (states.contains(WidgetState.selected)) {
-                return primaryColor;
-              }
-              return null;
-            }),
-            trackColor: WidgetStateProperty.resolveWith<Color?>((Set<WidgetState> states) {
-              if (states.contains(WidgetState.disabled)) {
-                return null;
-              }
-              if (states.contains(WidgetState.selected)) {
-                return primaryColor;
-              }
-              return null;
-            }),
-          ),
-          extensions: [
-            ElevatedDeleteButtonTheme(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: deleteColor,
-                foregroundColor: onPrimary,
-              ),
-            ),
-            TokenTileTheme(
-              deleteColor: deleteColor,
-              editColor: renameColor,
-              lockColor: lockColor,
-              transferColor: exportColor,
-              actionDisabledColor: disabledColor,
-              actionForegroundColor: actionButtonsForegroundColor,
-              defaultOtpColor: tileDefaultOtpColor,
-              warningOtpColor: tileWarningOtpColor,
-              criticalOtpColor: tileCriticalOtpColor,
-              defaultCountdownColor: tileDefaultCountdownColor,
-              warningCountdownColor: tileWarningCountdownColor,
-              criticalCountdownColor: tileCriticalCountdownColor,
-              tileSubtitleColor: tileSubtitleColor,
-              tileIconColor: tileIconColor,
-            ),
-            ExtendedTextTheme(
-              tokenTile: TextStyle(
-                color: primaryColor,
-              ),
-              tokenTileSubtitle: TextStyle(
-                color: tileSubtitleColor,
-              ),
-            ),
-            PushRequestTheme(
-              acceptColor: pushAuthRequestAcceptColor,
-              declineColor: pushAuthRequestDeclineColor,
-            ),
-            StatusColors(
-              error: deleteColor,
-              warning: warningColor,
-              success: successColor,
-            ),
-          ]);
+    'brightness': brightness == Brightness.light ? 'light' : 'dark',
+    'primaryColor': primaryColor.toJson(),
+    'onPrimary': onPrimary.toJson(),
+    'subtitleColor': subtitleColor.toJson(),
+    'backgroundColor': backgroundColor.toJson(),
+    'foregroundColor': foregroundColor.toJson(),
+    'shadowColor': shadowColor.toJson(),
+    'deleteColor': deleteColor.toJson(),
+    'renameColor': renameColor.toJson(),
+    'lockColor': lockColor.toJson(),
+    'exportColor': exportColor.toJson(),
+    'disabledColor': disabledColor.toJson(),
+    'tileIconColor': tileIconColor.toJson(),
+    'navigationBarColor': navigationBarColor.toJson(),
+    'warningColor': warningColor.toJson(),
+    'successColor': successColor.toJson(),
+    '_pushAuthRequestAcceptColor': _pushAuthRequestAcceptColor?.toJson(),
+    '_actionButtonsForegroundColor': _actionButtonsForegroundColor?.toJson(),
+    '_tileDefaultOtpColor': _tileDefaultOtpColor?.toJson(),
+    '_tileDefaultCountdownColor': _tileDefaultCountdownColor?.toJson(),
+    '_tileSubtitleColor': _tileSubtitleColor?.toJson(),
+    '_navigationBarIconColor': _navigationBarIconColor?.toJson(),
+    '_qrButtonBackgroundColor': _qrButtonBackgroundColor?.toJson(),
+    '_qrButtonIconColor': _qrButtonIconColor?.toJson(),
+    'tileWarningOtpColor': tileWarningOtpColor?.toJson(),
+    'tileCriticalOtpColor': tileCriticalOtpColor?.toJson(),
+    'tileWarningCountdownColor': tileWarningCountdownColor?.toJson(),
+    'tileCriticalCountdownColor': tileCriticalCountdownColor?.toJson(),
+  };
 
   @override
-  String toString() => 'ThemeCustomization('
+  String toString() =>
+      'ThemeCustomization('
       'brightness: $brightness, '
       'primaryColor: $primaryColor, '
       'onPrimary: $onPrimary, '
@@ -721,39 +985,45 @@ class ThemeCustomization {
 
   @override
   int get hashCode => Object.hashAll([
-        brightness,
-        primaryColor,
-        onPrimary,
-        subtitleColor,
-        backgroundColor,
-        foregroundColor,
-        shadowColor,
-        deleteColor,
-        renameColor,
-        lockColor,
-        exportColor,
-        disabledColor,
-        tileIconColor,
-        navigationBarColor,
-        warningColor,
-        successColor,
-        actionButtonsForegroundColor,
-        tileDefaultOtpColor,
-        tileWarningOtpColor,
-        tileCriticalOtpColor,
-        tileDefaultCountdownColor,
-        tileWarningCountdownColor,
-        tileCriticalCountdownColor,
-        tileSubtitleColor,
-        navigationBarIconColor,
-        qrButtonBackgroundColor,
-        qrButtonIconColor,
-      ]);
+    brightness,
+    primaryColor,
+    onPrimary,
+    subtitleColor,
+    backgroundColor,
+    foregroundColor,
+    shadowColor,
+    deleteColor,
+    renameColor,
+    lockColor,
+    exportColor,
+    disabledColor,
+    tileIconColor,
+    navigationBarColor,
+    warningColor,
+    successColor,
+    actionButtonsForegroundColor,
+    tileDefaultOtpColor,
+    tileWarningOtpColor,
+    tileCriticalOtpColor,
+    tileDefaultCountdownColor,
+    tileWarningCountdownColor,
+    tileCriticalCountdownColor,
+    tileSubtitleColor,
+    navigationBarIconColor,
+    qrButtonBackgroundColor,
+    qrButtonIconColor,
+  ]);
 }
 
 // /// Calculate HSP and check if the primary color is bright or dark
 // /// brightness  =  sqrt( .299 R^2 + .587 G^2 + .114 B^2 )
 // /// c.f., http://alienryderflex.com/hsp.html
 bool _isColorBright(Color color) {
-  return sqrt(0.299 * pow(color.r, 2) + 0.587 * pow(color.g, 2) + 0.114 * pow(color.b, 2)) * 255 > 150;
+  return sqrt(
+            0.299 * pow(color.r, 2) +
+                0.587 * pow(color.g, 2) +
+                0.114 * pow(color.b, 2),
+          ) *
+          255 >
+      150;
 }

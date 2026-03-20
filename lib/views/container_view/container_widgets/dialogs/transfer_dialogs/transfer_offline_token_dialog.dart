@@ -29,18 +29,23 @@ class TransferOfflineTokenDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => DefaultDialog(
-        title: Text(AppLocalizations.of(context)!.transferOfflineTokenDialogTitle),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(AppLocalizations.of(context)!.transferOfflineTokenDialogContent(offlineTokenCount)),
-          ],
+    title: Text(AppLocalizations.of(context)!.transferOfflineTokenDialogTitle),
+    content: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          AppLocalizations.of(
+            context,
+          )!.transferOfflineTokenDialogContent(offlineTokenCount),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(AppLocalizations.of(context)!.ok),
-          ),
-        ],
-      );
+      ],
+    ),
+    actions: [
+      DialogAction(
+        label: AppLocalizations.of(context)!.ok,
+        intent: DialogActionIntent.confirm,
+        onPressed: () => Navigator.of(context).pop(true),
+      ),
+    ],
+  );
 }

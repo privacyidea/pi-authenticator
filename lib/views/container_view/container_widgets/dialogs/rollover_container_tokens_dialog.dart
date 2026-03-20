@@ -32,40 +32,48 @@ import '../../../../widgets/dialog_widgets/default_dialog.dart';
 class RolloverContainerTokensDialog extends ConsumerStatefulWidget {
   final TokenContainerFinalized container;
 
-  static Future<void> showDialog(BuildContext context, TokenContainerFinalized container) async {
-    await showAsyncDialog(builder: (context) => RolloverContainerTokensDialog(container: container));
+  static Future<void> showDialog(
+    BuildContext context,
+    TokenContainerFinalized container,
+  ) async {
+    await showAsyncDialog(
+      builder: (context) => RolloverContainerTokensDialog(container: container),
+    );
   }
 
   const RolloverContainerTokensDialog({required this.container, super.key});
 
   @override
-  ConsumerState<RolloverContainerTokensDialog> createState() => _RolloverContainerTokensDialogState();
+  ConsumerState<RolloverContainerTokensDialog> createState() =>
+      _RolloverContainerTokensDialogState();
 }
 
-class _RolloverContainerTokensDialogState extends ConsumerState<RolloverContainerTokensDialog> {
+class _RolloverContainerTokensDialogState
+    extends ConsumerState<RolloverContainerTokensDialog> {
   @override
   Widget build(BuildContext context) {
     return DefaultDialog(
       title: Text(AppLocalizations.of(context)!.renewSecretsDialogTitle),
       content: Column(
         mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(AppLocalizations.of(context)!.renewSecretsDialogText),
-        ],
+        children: [Text(AppLocalizations.of(context)!.renewSecretsDialogText)],
       ),
       actions: [
-        TextButton(
+        DialogAction(
+          label: AppLocalizations.of(context)!.cancel,
+          intent: DialogActionIntent.cancel,
           onPressed: () => Navigator.of(context).pop(),
-          child: Text(AppLocalizations.of(context)!.cancel),
         ),
-        ElevatedButton(
+
+        DialogAction(
+          label: AppLocalizations.of(context)!.renewSecretsButtonText,
+          intent: DialogActionIntent.confirm,
           onPressed: () async {
             final tokenState = await ref.read(tokenProvider.future);
             _renewSecrets(tokenState: tokenState);
             if (!context.mounted) return;
             Navigator.of(context).pop();
           },
-          child: Text(AppLocalizations.of(context)!.renewSecretsButtonText),
         ),
       ],
     );
@@ -73,9 +81,14 @@ class _RolloverContainerTokensDialogState extends ConsumerState<RolloverContaine
 
   Future<void> _renewSecrets({required TokenState tokenState}) async {
     try {
-      await ref.read(tokenContainerProvider.notifier).rolloverTokens(tokenState: tokenState, container: widget.container);
+      await ref
+          .read(tokenContainerProvider.notifier)
+          .rolloverTokens(tokenState: tokenState, container: widget.container);
     } catch (e) {
-      showErrorStatusMessage(message: (l) => l.failedToRenewSecrets, details: (_) => e.toString());
+      showErrorStatusMessage(
+        message: (l) => l.failedToRenewSecrets,
+        details: (_) => e.toString(),
+      );
     }
   }
 }

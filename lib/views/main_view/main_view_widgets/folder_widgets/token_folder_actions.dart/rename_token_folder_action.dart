@@ -39,82 +39,85 @@ class RenameTokenFolderAction extends ConsumerSlideableAction {
   @override
   CustomSlidableAction build(BuildContext context, ref) {
     return CustomSlidableAction(
-        backgroundColor: Theme.of(context).extension<TokenTileTheme>()!.editColor,
-        foregroundColor: Theme.of(context).extension<TokenTileTheme>()!.actionForegroundColor,
-        onPressed: (context) async {
-          if (folder.isLocked && !await lockAuth(reason: (localization) => localization.unlock, localization: AppLocalizations.of(context)!)) {
-            return;
-          }
-          _showDialog();
-        },
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Icon(Icons.edit),
-            Text(
-              AppLocalizations.of(context)!.rename,
-              overflow: TextOverflow.fade,
-              softWrap: false,
-            ),
-          ],
-        ));
+      backgroundColor: Theme.of(context).extension<TokenTileTheme>()!.editColor,
+      foregroundColor: Theme.of(
+        context,
+      ).extension<TokenTileTheme>()!.actionForegroundColor,
+      onPressed: (context) async {
+        if (folder.isLocked &&
+            !await lockAuth(
+              reason: (localization) => localization.unlock,
+              localization: AppLocalizations.of(context)!,
+            )) {
+          return;
+        }
+        _showDialog();
+      },
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Icon(Icons.edit),
+          Text(
+            AppLocalizations.of(context)!.rename,
+            overflow: TextOverflow.fade,
+            softWrap: false,
+          ),
+        ],
+      ),
+    );
   }
 
   void _showDialog() {
-    TextEditingController nameInputController = TextEditingController(text: folder.label);
-    showAsyncDialog(builder: (BuildContext context) {
-      return DefaultDialog(
-        scrollable: true,
-        title: Text(
-          AppLocalizations.of(context)!.renameTokenFolder,
-        ),
-        content: PiTextField(
-          autofocus: true,
-          controller: nameInputController,
-          labelText: AppLocalizations.of(context)!.name,
-          validator: (value) {
-            if (value!.isEmpty) {
-              return AppLocalizations.of(context)!.name;
-            }
-            return null;
-          },
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: Text(
-              AppLocalizations.of(context)!.cancel,
-              overflow: TextOverflow.fade,
-              softWrap: false,
-            ),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          TextButton(
-            child: Text(
-              AppLocalizations.of(context)!.rename,
-              overflow: TextOverflow.fade,
-              softWrap: false,
-            ),
-            onPressed: () async {
-              final newLabel = nameInputController.text.trim();
-              if (newLabel.isEmpty) return;
-              final success = await globalRef?.read(tokenFolderProvider.notifier).updateLabel(folder, newLabel);
-              if (success != null) {
-                Logger.info(
-                  'Renamed token:',
-                  error: '\'${folder.label}\' changed to \'$newLabel\'',
-                );
-              } else {
-                Logger.warning(
-                  'Failed to rename token',
-                  error: '\'${folder.label}\' to \'$newLabel\'',
-                );
+    TextEditingController nameInputController = TextEditingController(
+      text: folder.label,
+    );
+    showAsyncDialog(
+      builder: (BuildContext context) {
+        return DefaultDialog(
+          scrollable: true,
+          title: Text(AppLocalizations.of(context)!.renameTokenFolder),
+          content: PiTextField(
+            autofocus: true,
+            controller: nameInputController,
+            labelText: AppLocalizations.of(context)!.name,
+            validator: (value) {
+              if (value!.isEmpty) {
+                return AppLocalizations.of(context)!.name;
               }
-              if (context.mounted) Navigator.of(context).pop();
+              return null;
             },
           ),
-        ],
-      );
-    });
+          actions: [
+            DialogAction(
+              label: AppLocalizations.of(context)!.cancel,
+              intent: DialogActionIntent.cancel,
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            DialogAction(
+              label: AppLocalizations.of(context)!.rename,
+              intent: DialogActionIntent.confirm,
+              onPressed: () async {
+                final newLabel = nameInputController.text.trim();
+                if (newLabel.isEmpty) return;
+                final success = await globalRef
+                    ?.read(tokenFolderProvider.notifier)
+                    .updateLabel(folder, newLabel);
+                if (success != null) {
+                  Logger.info(
+                    'Renamed token folder: \'${folder.label}\' changed to \'$newLabel\'',
+                  );
+                } else {
+                  Logger.warning(
+                    'Failed to rename token folder: \'${folder.label}\' to \'$newLabel\'',
+                  );
+                }
+                if (context.mounted) Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }

@@ -29,7 +29,6 @@ import '../../../../../model/token_container.dart';
 import '../../../../../utils/logger.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
-import '../../../../../widgets/elevated_delete_button.dart';
 import 'delete_container_force_dialog.dart';
 import 'delete_container_token_dialog.dart';
 
@@ -59,8 +58,6 @@ class DeleteContainerDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final containerToken =
-        ref.watch(tokenProvider).value?.containerTokens(container.serial) ?? [];
     return DefaultDialog(
       title: Text(
         titleOverride ??
@@ -73,61 +70,63 @@ class DeleteContainerDialog extends ConsumerWidget {
             AppLocalizations.of(context)!.deleteContainerDialogContent,
       ),
       actions: [
-        TextButton(
+        DialogAction(
+          label: AppLocalizations.of(context)!.cancel,
+          intent: DialogActionIntent.cancel,
           onPressed: () => Navigator.of(context).pop(),
-          child: Text(AppLocalizations.of(context)!.cancel),
         ),
-        ElevatedDeleteButton(
-          onPressed: () async {
-            final deleteContainerTokens = containerToken.isEmpty
-                ? false
-                : await DeleteContainerTokenDialog.showDialog(container);
-            if (deleteContainerTokens == null) return;
-
-            var wasContainerDeleted = await _deleteContainer(ref);
-            if (!wasContainerDeleted) {
-              wasContainerDeleted =
-                  (await ForceDeleteContainerDialog.showDialog(container)) ==
-                  true;
-            }
-            final containerTokens = (await ref.read(
-              tokenProvider.future,
-            )).containerTokens(container.serial);
-            if (!context.mounted) return;
-            if (wasContainerDeleted) {
-              if (deleteContainerTokens) {
-                await ref
-                    .read(tokenProvider.notifier)
-                    .removeTokens(containerTokens.noOffline);
-              } else {
-                Logger.info(
-                  "Container ${container.serial} deleted, but tokens were not removed.",
-                );
-                Logger.info(
-                  "Tokens: ${containerTokens.noOffline.map((token) => token.serial).join(", ")}",
-                );
-                await ref
-                    .read(tokenProvider.notifier)
-                    .updateTokens(
-                      containerTokens.noOffline,
-                      (token) => token.copyWith(
-                        containerSerial: () => null,
-                        checkedContainer: [
-                          ...token.checkedContainer,
-                          container.serial,
-                        ],
-                      ),
-                    );
-              }
-            }
-
-            if (!context.mounted) return;
-            Navigator.of(context).pop();
-          },
-          text: AppLocalizations.of(context)!.delete,
+        DialogAction(
+          label: AppLocalizations.of(context)!.delete,
+          intent: DialogActionIntent.destructive,
+          onPressed: () => _onPressDelete(context, ref),
         ),
       ],
     );
+  }
+
+  Future<void> _onPressDelete(BuildContext context, WidgetRef ref) async {
+    final containerToken =
+        ref.watch(tokenProvider).value?.containerTokens(container.serial) ?? [];
+    final deleteContainerTokens = containerToken.isEmpty
+        ? false
+        : await DeleteContainerTokenDialog.showDialog(container);
+    if (deleteContainerTokens == null) return;
+
+    var wasContainerDeleted = await _deleteContainer(ref);
+    if (!wasContainerDeleted) {
+      wasContainerDeleted =
+          (await ForceDeleteContainerDialog.showDialog(container)) == true;
+    }
+    final containerTokens = (await ref.read(
+      tokenProvider.future,
+    )).containerTokens(container.serial);
+    if (!context.mounted) return;
+    if (wasContainerDeleted) {
+      if (deleteContainerTokens) {
+        await ref
+            .read(tokenProvider.notifier)
+            .removeTokens(containerTokens.noOffline);
+      } else {
+        Logger.info(
+          "Container ${container.serial} deleted, but tokens were not removed.",
+        );
+        Logger.info(
+          "Tokens: ${containerTokens.noOffline.map((token) => token.serial).join(", ")}",
+        );
+        await ref
+            .read(tokenProvider.notifier)
+            .updateTokens(
+              containerTokens.noOffline,
+              (token) => token.copyWith(
+                containerSerial: () => null,
+                checkedContainer: [...token.checkedContainer, container.serial],
+              ),
+            );
+      }
+    }
+
+    if (!context.mounted) return;
+    Navigator.of(context).pop();
   }
 
   Future<bool> _deleteContainer(WidgetRef ref) {

@@ -34,19 +34,27 @@ class DetailsContainerDialog extends ConsumerStatefulWidget {
   final BuildContext context;
   final TokenContainer container;
 
-  const DetailsContainerDialog(this.context, {super.key, required this.container});
+  const DetailsContainerDialog(
+    this.context, {
+    super.key,
+    required this.container,
+  });
 
   @override
-  ConsumerState<DetailsContainerDialog> createState() => _DetailsContainerDialogState();
+  ConsumerState<DetailsContainerDialog> createState() =>
+      _DetailsContainerDialogState();
 }
 
-class _DetailsContainerDialogState extends ConsumerState<DetailsContainerDialog> {
+class _DetailsContainerDialogState
+    extends ConsumerState<DetailsContainerDialog> {
   late final TextEditingController controller;
 
   @override
   void initState() {
     super.initState();
-    controller = TextEditingController(text: widget.container.serverUrl.toString());
+    controller = TextEditingController(
+      text: widget.container.serverUrl.toString(),
+    );
   }
 
   @override
@@ -73,7 +81,8 @@ class _DetailsContainerDialogState extends ConsumerState<DetailsContainerDialog>
           if (widget.container is TokenContainerFinalized)
             ReadOnlyTextFormField(
               labelText: AppLocalizations.of(context)!.syncState,
-              text: (widget.container as TokenContainerFinalized).syncState.localizedName(AppLocalizations.of(context)!),
+              text: (widget.container as TokenContainerFinalized).syncState
+                  .localizedName(AppLocalizations.of(context)!),
             ),
           EnableTextEditAfterManyTaps(
             labelText: AppLocalizations.of(context)!.containerSyncUrl,
@@ -81,25 +90,33 @@ class _DetailsContainerDialogState extends ConsumerState<DetailsContainerDialog>
           ),
           ReadOnlyTextFormField(
             labelText: AppLocalizations.of(context)!.finalizationState,
-            text: widget.container.finalizationState.rolloutMsgLocalized(AppLocalizations.of(context)!),
+            text: widget.container.finalizationState.rolloutMsgLocalized(
+              AppLocalizations.of(context)!,
+            ),
           ),
         ],
       ),
       actions: [
-        TextButton(
+        DialogAction(
+          label: AppLocalizations.of(context)!.cancel,
+          intent: DialogActionIntent.cancel,
           onPressed: () => Navigator.of(context).pop(),
-          child: Text(AppLocalizations.of(context)!.cancel),
         ),
-        TextButton(
+        DialogAction(
+          label: AppLocalizations.of(context)!.saveButton,
+          intent: DialogActionIntent.confirm,
           onPressed: Uri.tryParse(controller.text) != null
               ? () {
                   ref
                       .read(tokenContainerProvider.notifier)
-                      .updateContainer(widget.container, (TokenContainer c) => c.copyWith(serverUrl: Uri.parse(controller.text)));
+                      .updateContainer(
+                        widget.container,
+                        (TokenContainer c) =>
+                            c.copyWith(serverUrl: Uri.parse(controller.text)),
+                      );
                   Navigator.of(context).pop();
                 }
               : null,
-          child: Text(AppLocalizations.of(context)!.saveButton),
         ),
       ],
     );

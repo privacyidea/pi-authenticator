@@ -23,8 +23,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../../../l10n/app_localizations.dart';
-import '../../../../utils/customization/theme_extentions/push_request_theme.dart';
-import 'push_action_button.dart';
+import '../../../button_widgets/push_action_button.dart';
 
 class PushDeclineConfirmDialog extends StatelessWidget {
   static Future<void> showDialogWidget({
@@ -59,9 +58,7 @@ class PushDeclineConfirmDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final pushRequestTheme =
-        (Theme.of(context).extensions[PushRequestTheme] as PushRequestTheme);
-    final localizations = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
 
     return DefaultDialog(
@@ -77,13 +74,13 @@ class PushDeclineConfirmDialog extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 18),
             child: Text(
-              localizations.requestTriggerdByUserQuestion,
+              l10n.requestTriggerdByUserQuestion,
               style: textTheme.bodyLarge,
               textAlign: TextAlign.center,
             ),
           ),
           PushActionButton(
-            backgroundColor: pushRequestTheme.acceptColor,
+            intent: DialogActionIntent.confirm,
             onPressed: () async {
               await onDiscard();
               if (context.mounted && Navigator.of(context).canPop()) {
@@ -93,11 +90,11 @@ class PushDeclineConfirmDialog extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(localizations.yes, style: textTheme.titleSmall),
+                Text(l10n.yes, style: textTheme.titleSmall),
                 FittedBox(
                   fit: BoxFit.scaleDown,
                   child: Text(
-                    localizations.butDiscardIt,
+                    l10n.butDiscardIt,
                     style: textTheme.bodySmall?.copyWith(
                       color: textTheme.titleSmall?.color,
                     ),
@@ -108,7 +105,7 @@ class PushDeclineConfirmDialog extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           PushActionButton(
-            backgroundColor: pushRequestTheme.declineColor,
+            intent: DialogActionIntent.destructive,
             onPressed: () async {
               await onDecline();
               if (context.mounted && Navigator.of(context).canPop()) {
@@ -118,9 +115,9 @@ class PushDeclineConfirmDialog extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(localizations.no, style: textTheme.titleSmall),
+                Text(l10n.no, style: textTheme.titleSmall),
                 Text(
-                  localizations.declineIt,
+                  l10n.declineIt,
                   style: textTheme.bodySmall?.copyWith(
                     color: textTheme.titleSmall?.color,
                   ),

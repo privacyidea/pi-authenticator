@@ -3,7 +3,7 @@
  *
  * Author: Frank Merkel <frank.merkel@netknights.it>
  *
- * Copyright (c) 2025 NetKnights GmbH
+ * Copyright (c) 2026 NetKnights GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,8 @@ import 'package:privacyidea_authenticator/model/extensions/enums/sync_state_exte
 
 import '../../../../model/token_container.dart';
 import '../../../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
-import '../../../../widgets/button_widgets/cooldown_button.dart';
+import '../../../../widgets/button_widgets/intent_button.dart';
+import '../../../../widgets/button_widgets/time_guarded_button.dart';
 import '../dialogs/rollover_container_tokens_dialog.dart';
 
 class RolloverContainerTokensButton extends ConsumerWidget {
@@ -35,23 +36,26 @@ class RolloverContainerTokensButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final container = ref.watch(tokenContainerProvider).asData?.value.currentOf<TokenContainerFinalized>(this.container);
-    return CooldownButton(
-      styleType: CooldownButtonStyleType.iconButton,
-      childWhenCooldown: CircularProgressIndicator.adaptive(),
-      isPressable: container != null && container.syncState.isIdle,
-      onPressed: container != null ? () => RolloverContainerTokensDialog.showDialog(context, this.container) : null,
+    final currentContainer = ref
+        .watch(tokenContainerProvider)
+        .asData
+        ?.value
+        .currentOf<TokenContainerFinalized>(container);
+
+    // The button is only enabled if the container exists and is idle
+    final bool canPress =
+        currentContainer != null && currentContainer.syncState.isIdle;
+
+    return TimeGuardedButton(
+      intent: DialogActionIntent.confirm,
+      onPressed: canPress
+          ? () => RolloverContainerTokensDialog.showDialog(context, container)
+          : null,
       child: Stack(
         alignment: Alignment.center,
         children: [
-          Icon(
-            Icons.sync,
-            size: size * 0.6,
-          ),
-          Icon(
-            Icons.shield_outlined,
-            size: size,
-          ),
+          Icon(Icons.sync, size: size * 0.6),
+          Icon(Icons.shield_outlined, size: size),
         ],
       ),
     );

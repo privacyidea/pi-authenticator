@@ -34,8 +34,6 @@ class PushDefaultDialog extends ConsumerWidget with PushDialogMixin {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme =
-        (Theme.of(context).extensions[PushRequestTheme] as PushRequestTheme);
     final l10n = AppLocalizations.of(context)!;
 
     return DefaultDialog(
@@ -48,13 +46,13 @@ class PushDefaultDialog extends ConsumerWidget with PushDialogMixin {
           PushRequestBaseInfo(pushRequest: pushRequest),
           const SizedBox(height: 24),
           PushActionButton(
-            backgroundColor: theme.acceptColor,
+            intent: DialogActionIntent.confirm,
             onPressed: () => _handleAccept(context, ref),
             child: Text(l10n.accept),
           ),
           const SizedBox(height: 8),
           PushActionButton(
-            backgroundColor: theme.declineColor,
+            intent: DialogActionIntent.destructive,
             onPressed: () => PushDeclineConfirmDialog.showDialogWidget(
               context: context,
               onDecline: () => handleDecline(context, ref),

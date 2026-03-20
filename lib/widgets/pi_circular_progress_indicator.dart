@@ -3,7 +3,7 @@
  *
  * Author: Frank Merkel <frank.merkel@netknights.it>
  *
- * Copyright (c) 2024-2025 NetKnights GmbH
+ * Copyright (c) 2024-2026 NetKnights GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ import 'package:flutter/material.dart';
 import '../../../../../../../model/extensions/color_extension.dart';
 
 class PiCircularProgressIndicator extends StatelessWidget {
-  final double padding;
   final double size;
   final double strokeWidth;
   final double value;
@@ -34,7 +33,6 @@ class PiCircularProgressIndicator extends StatelessWidget {
 
   const PiCircularProgressIndicator(
     this.value, {
-    this.padding = 2.0,
     double? strokeWidth,
     this.size = 30,
     this.swapColors = false,
@@ -43,29 +41,35 @@ class PiCircularProgressIndicator extends StatelessWidget {
     this.semanticsLabel,
     this.semanticsValue,
     super.key,
-  })  : _backgroundColor = backgroundColor,
-        _foregroundColor = foregroundColor,
-        strokeWidth = size / 8;
+  }) : _backgroundColor = backgroundColor,
+       _foregroundColor = foregroundColor,
+       strokeWidth = strokeWidth ?? size / 8;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final backgroundColor = _backgroundColor ?? theme.scaffoldBackgroundColor;
-    final foregroundColor = _foregroundColor ?? theme.colorScheme.primary;
-    return Padding(
-      padding: EdgeInsets.all(strokeWidth / 2 + padding),
-      child: SizedBox(
-        width: size,
-        height: size,
-        child: CircularProgressIndicator(
-          value: value,
-          color: swapColors ? foregroundColor.mixWith(backgroundColor, 0.6).withValues(alpha: 1) : foregroundColor,
-          backgroundColor: swapColors ? foregroundColor : foregroundColor.mixWith(backgroundColor, 0.6).withValues(alpha: 1),
-          strokeCap: StrokeCap.round,
-          strokeWidth: strokeWidth,
-          semanticsLabel: '$semanticsLabel',
-          semanticsValue: semanticsValue,
-        ),
+
+    final baseColor = _foregroundColor ?? theme.colorScheme.primary;
+    final secondaryColor =
+        _backgroundColor ?? theme.colorScheme.surfaceContainerHighest;
+
+    final trackColor = baseColor
+        .mixWith(secondaryColor, 0.4)
+        .withValues(alpha: 1);
+
+    final activeColor = value <= 0 ? Colors.transparent : baseColor;
+
+    return SizedBox(
+      width: size,
+      height: size,
+      child: CircularProgressIndicator(
+        value: value,
+        color: swapColors ? trackColor : activeColor,
+        backgroundColor: swapColors ? activeColor : trackColor,
+        strokeCap: StrokeCap.round,
+        strokeWidth: strokeWidth,
+        semanticsLabel: '$semanticsLabel',
+        semanticsValue: semanticsValue,
       ),
     );
   }

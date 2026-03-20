@@ -102,29 +102,45 @@ class DefaultDeleteAction extends ConsumerSlideableAction {
         ],
       ),
       actions: [
-        TextButton(
+        // TextButton(
+        //   onPressed: () => Navigator.of(context).pop(),
+        //   child: Text(
+        //     AppLocalizations.of(context)!.cancel,
+        //     overflow: TextOverflow.fade,
+        //     softWrap: false,
+        //   ),
+        // ),
+        // TextButton(
+        //   onPressed: () {
+        //     LoadingIndicator.show(
+        //       context: context,
+        //       action: () async =>
+        //           globalRef?.read(tokenProvider.notifier).removeToken(token),
+        //     );
+        //     Navigator.of(context).pop();
+        //   },
+        //   child: Text(
+        //     AppLocalizations.of(context)!.delete,
+        //     style: TextStyle(color: Theme.of(context).colorScheme.error),
+        //     overflow: TextOverflow.fade,
+        //     softWrap: false,
+        //   ),
+        // ),
+        DialogAction(
+          label: AppLocalizations.of(context)!.cancel,
+          intent: DialogActionIntent.cancel,
           onPressed: () => Navigator.of(context).pop(),
-          child: Text(
-            AppLocalizations.of(context)!.cancel,
-            overflow: TextOverflow.fade,
-            softWrap: false,
-          ),
         ),
-        TextButton(
+        DialogAction(
+          label: AppLocalizations.of(context)!.delete,
+          intent: DialogActionIntent.destructive,
           onPressed: () {
             LoadingIndicator.show(
               context: context,
               action: () async =>
                   globalRef?.read(tokenProvider.notifier).removeToken(token),
             );
-            Navigator.of(context).pop();
           },
-          child: Text(
-            AppLocalizations.of(context)!.delete,
-            style: TextStyle(color: Theme.of(context).colorScheme.error),
-            overflow: TextOverflow.fade,
-            softWrap: false,
-          ),
         ),
       ],
     ),

@@ -28,9 +28,8 @@ import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 class AllowScreenshotDialog extends StatelessWidget {
   const AllowScreenshotDialog({super.key});
 
-  static Future<bool?> showDialog() => showAsyncDialog(
-        builder: (context) => AllowScreenshotDialog(),
-      );
+  static Future<bool?> showDialog() =>
+      showAsyncDialog(builder: (context) => AllowScreenshotDialog());
 
   @override
   Widget build(BuildContext context) {
@@ -38,11 +37,14 @@ class AllowScreenshotDialog extends StatelessWidget {
       title: Text(AppLocalizations.of(context)!.allowScreenshotsTitle),
       content: Text(AppLocalizations.of(context)!.allowScreenshotsDescription),
       actions: [
-        TextButton(
+        DialogAction(
+          label: AppLocalizations.of(context)!.cancel,
+          intent: DialogActionIntent.cancel,
           onPressed: () => Navigator.of(context).pop(false),
-          child: Text(AppLocalizations.of(context)!.cancel),
         ),
-        TextButton(
+        DialogAction(
+          label: AppLocalizations.of(context)!.allowButton,
+          intent: DialogActionIntent.confirm,
           onPressed: () async {
             // authenticate with fingerprint or password
             final authenticated = await lockAuth(
@@ -53,7 +55,6 @@ class AllowScreenshotDialog extends StatelessWidget {
             if (!context.mounted || !authenticated) return;
             Navigator.of(context).pop(true);
           },
-          child: Text(AppLocalizations.of(context)!.allowButton),
         ),
       ],
     );

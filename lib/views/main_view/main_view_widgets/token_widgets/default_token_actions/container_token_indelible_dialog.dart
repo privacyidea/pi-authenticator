@@ -25,19 +25,21 @@ import 'package:privacyidea_authenticator/widgets/dialog_widgets/default_dialog.
 import '../../../../../utils/view_utils.dart';
 
 class ContainerTokenIndelibleDialog extends StatelessWidget {
-  static Future<void> showDialog() => showAsyncDialog(builder: (context) => ContainerTokenIndelibleDialog());
+  static Future<void> showDialog() =>
+      showAsyncDialog(builder: (context) => ContainerTokenIndelibleDialog());
 
   const ContainerTokenIndelibleDialog({super.key});
 
   @override
   Widget build(BuildContext context) => DefaultDialog(
-        title: Text(AppLocalizations.of(context)!.indelibleTokenTitle),
-        content: Text(AppLocalizations.of(context)!.indelibleTokenContent),
-        actions: [
-          TextButton(
-            child: const Text('OK'),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-        ],
-      );
+    title: Text(AppLocalizations.of(context)!.indelibleTokenTitle),
+    content: Text(AppLocalizations.of(context)!.indelibleTokenContent),
+    actions: [
+      DialogAction(
+        label: AppLocalizations.of(context)!.ok,
+        intent: DialogActionIntent.neutral,
+        onPressed: () => Navigator.of(context).pop(),
+      ),
+    ],
+  );
 }

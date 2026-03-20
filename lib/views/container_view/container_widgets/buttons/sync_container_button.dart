@@ -3,7 +3,7 @@
  *
  * Author: Frank Merkel <frank.merkel@netknights.it>
  *
- * Copyright (c) 2025 NetKnights GmbH
+ * Copyright (c) 2026 NetKnights GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
@@ -25,28 +25,38 @@ import 'package:privacyidea_authenticator/model/extensions/enums/sync_state_exte
 import '../../../../model/token_container.dart';
 import '../../../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 import '../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
-import '../../../../widgets/button_widgets/cooldown_button.dart';
+import '../../../../widgets/button_widgets/intent_button.dart';
+import '../../../../widgets/button_widgets/time_guarded_button.dart';
 
 class SyncContainerButton extends ConsumerWidget {
   final TokenContainerFinalized container;
   final bool isPreview;
 
-  const SyncContainerButton({required this.isPreview, required this.container, super.key});
+  const SyncContainerButton({
+    required this.isPreview,
+    required this.container,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (isPreview) return const Icon(Icons.sync, size: 40);
-    return CooldownButton(
-      styleType: CooldownButtonStyleType.iconButton,
-      childWhenCooldown: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: CircularProgressIndicator.adaptive(),
-      ),
-      isPressable: container.syncState.isIdle,
-      onPressed: () async {
-        final tokenState = await ref.read(tokenProvider.future);
-        await ref.read(tokenContainerProvider.notifier).syncContainers(tokenState: tokenState, containersToSync: [container], isManually: true);
-      },
+
+    return TimeGuardedButton(
+      intent: DialogActionIntent.confirm,
+      // The button is disabled (null) if the container is already syncing
+      onPressed: container.syncState.isIdle
+          ? () async {
+              final tokenState = await ref.read(tokenProvider.future);
+              await ref
+                  .read(tokenContainerProvider.notifier)
+                  .syncContainers(
+                    tokenState: tokenState,
+                    containersToSync: [container],
+                    isManually: true,
+                  );
+            }
+          : null,
       child: const Icon(Icons.sync, size: 40),
     );
   }

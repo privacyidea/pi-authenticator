@@ -30,7 +30,11 @@ class TransferQrDialog extends ConsumerWidget {
   final String qrData;
   final TokenContainerFinalized container;
 
-  const TransferQrDialog({super.key, required this.qrData, required this.container});
+  const TransferQrDialog({
+    super.key,
+    required this.qrData,
+    required this.container,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -47,19 +51,13 @@ class TransferQrDialog extends ConsumerWidget {
         ],
       ),
       actions: [
-        TextButton(
+        DialogAction(
+          label: appLocalizations.done,
+          intent: DialogActionIntent.confirm,
           onPressed: () {
             Navigator.of(context).pop();
-            showDialog(
-              barrierDismissible: false,
-              useRootNavigator: false,
-              context: context,
-              builder: (_) => TransferDeleteContainerDialog(
-                container: container,
-              ),
-            );
+            TransferDeleteContainerDialog.showDialog(container);
           },
-          child: Text(appLocalizations.done),
         ),
       ],
     );

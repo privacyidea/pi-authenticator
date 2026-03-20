@@ -25,7 +25,6 @@ import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/token_container.dart';
 import '../../../../../utils/view_utils.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
-import '../../../../../widgets/elevated_delete_button.dart';
 
 class DeleteContainerTokenDialog extends ConsumerWidget {
   final TokenContainer container;
@@ -36,7 +35,10 @@ class DeleteContainerTokenDialog extends ConsumerWidget {
     final returnValue = await showAsyncDialog(
       builder: (context) => DeleteContainerTokenDialog(container),
     );
-    assert(returnValue is bool?, "The return value of the DeleteContainerTokenDialog must be a bool or null.");
+    assert(
+      returnValue is bool?,
+      "The return value of the DeleteContainerTokenDialog must be a bool or null.",
+    );
     return returnValue;
   }
 
@@ -44,21 +46,29 @@ class DeleteContainerTokenDialog extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations appLocalizations = AppLocalizations.of(context)!;
     return DefaultDialog(
-      title: Text(AppLocalizations.of(context)!.deleteContainerDialogTitle(container.serial)),
-      content: Text(appLocalizations.containerDeleteCorrespondingTokenDialogContent),
+      title: Text(
+        AppLocalizations.of(
+          context,
+        )!.deleteContainerDialogTitle(container.serial),
+      ),
+      content: Text(
+        appLocalizations.containerDeleteCorrespondingTokenDialogContent,
+      ),
       hasCloseButton: true,
       actions: [
-        ElevatedDeleteButton(
-          text: appLocalizations.deleteOnlyContainerButtonText,
+        DialogAction(
+          label: appLocalizations.deleteOnlyContainerButtonText,
+          intent: DialogActionIntent.destructive,
           onPressed: () async {
             Navigator.of(context).pop(false);
           },
         ),
-        ElevatedDeleteButton(
+        DialogAction(
+          label: appLocalizations.deleteAllButtonText,
+          intent: DialogActionIntent.destructive,
           onPressed: () async {
             Navigator.of(context).pop(true);
           },
-          text: appLocalizations.deleteAllButtonText,
         ),
       ],
     );

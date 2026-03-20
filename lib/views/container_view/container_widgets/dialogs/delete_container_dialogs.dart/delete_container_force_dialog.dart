@@ -25,14 +25,14 @@ import '../../../../../model/token_container.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 import '../../../../../utils/view_utils.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
-import '../../../../../widgets/elevated_delete_button.dart';
 
 class ForceDeleteContainerDialog extends ConsumerWidget {
   final TokenContainer container;
 
   const ForceDeleteContainerDialog(this.container, {super.key});
 
-  static Future<bool?> showDialog(TokenContainer container) => showAsyncDialog<bool>(
+  static Future<bool?> showDialog(TokenContainer container) =>
+      showAsyncDialog<bool>(
         builder: (context) => ForceDeleteContainerDialog(container),
       );
 
@@ -40,22 +40,28 @@ class ForceDeleteContainerDialog extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final AppLocalizations appLocalizations = AppLocalizations.of(context)!;
     return DefaultDialog(
-      title: Text(AppLocalizations.of(context)!.deleteContainerDialogTitle(container.serial)),
+      title: Text(
+        AppLocalizations.of(
+          context,
+        )!.deleteContainerDialogTitle(container.serial),
+      ),
       content: Text(appLocalizations.forceDeleteDialogContent),
       actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop(false);
-          },
-          child: Text(appLocalizations.cancel),
+        DialogAction(
+          label: appLocalizations.cancel,
+          intent: DialogActionIntent.cancel,
+          onPressed: () => Navigator.of(context).pop(false),
         ),
-        ElevatedDeleteButton(
+        DialogAction(
+          label: appLocalizations.delete,
+          intent: DialogActionIntent.destructive,
           onPressed: () async {
-            final success = await ref.read(tokenContainerProvider.notifier).deleteContainer(container);
+            final success = await ref
+                .read(tokenContainerProvider.notifier)
+                .deleteContainer(container);
             if (!context.mounted) return;
             Navigator.of(context).pop(success);
           },
-          text: appLocalizations.delete,
         ),
       ],
     );

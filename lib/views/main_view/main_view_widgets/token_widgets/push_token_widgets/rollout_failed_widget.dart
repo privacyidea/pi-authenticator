@@ -3,7 +3,7 @@
  *
  * Author: Frank Merkel <frank.merkel@netknights.it>
  *
- * Copyright (c) 2025 NetKnights GmbH
+ * Copyright (c) 2026 NetKnights GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import '../../../../../model/extensions/enums/push_token_rollout_state_extension
 import '../../../../../model/tokens/push_token.dart';
 import '../../../../../utils/globals.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
-import '../../../../../widgets/button_widgets/cooldown_button.dart';
+import '../../../../../widgets/button_widgets/time_guarded_button.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 
 class PushTokenStartRolloutWidget extends ConsumerWidget {
@@ -54,30 +54,31 @@ class PushTokenStartRolloutWidget extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Expanded(
-                flex: 12,
-                child: SizedBox(),
-              ),
+              const Expanded(flex: 12, child: SizedBox()),
               Expanded(
                 flex: 35,
-                child: CooldownButton(
-                  onPressed: () => globalRef?.read(tokenProvider.notifier).rolloutPushToken(token) ?? Future.value(),
+                child: TimeGuardedButton(
+                  intent: DialogActionIntent.confirm,
+                  onPressed: () =>
+                      globalRef
+                          ?.read(tokenProvider.notifier)
+                          .rolloutPushToken(token) ??
+                      Future.value(),
                   child: Text(
-                    token.rolloutState.rolloutFailed ? localizations.retryRolloutButton : token.rolloutState.rolloutMsg(localizations),
+                    token.rolloutState.rolloutFailed
+                        ? localizations.retryRolloutButton
+                        : token.rolloutState.rolloutMsg(localizations),
                     style: Theme.of(context).textTheme.bodyMedium,
                     overflow: TextOverflow.fade,
                     softWrap: false,
                   ),
                 ),
               ),
-              const Expanded(
-                flex: 6,
-                child: SizedBox(),
-              ),
+              const Expanded(flex: 6, child: SizedBox()),
               Expanded(
                 flex: 35,
-                child: CooldownButton(
-                  style: ButtonStyle(backgroundColor: WidgetStateProperty.all(Theme.of(context).colorScheme.errorContainer)),
+                child: TimeGuardedButton(
+                  intent: DialogActionIntent.destructive,
                   onPressed: () => _showDialog(),
                   child: Text(
                     localizations.delete,
@@ -87,10 +88,7 @@ class PushTokenStartRolloutWidget extends ConsumerWidget {
                   ),
                 ),
               ),
-              const Expanded(
-                flex: 12,
-                child: SizedBox(),
-              ),
+              const Expanded(flex: 12, child: SizedBox()),
             ],
           ),
         ],
@@ -98,35 +96,29 @@ class PushTokenStartRolloutWidget extends ConsumerWidget {
     );
   }
 
-  Future<void> _showDialog() => showAsyncDialog(builder: (BuildContext context) {
-        final localizations = AppLocalizations.of(context)!;
-        return DefaultDialog(
-          scrollable: true,
-          title: Text(
-            localizations.confirmDeletion,
+  Future<void> _showDialog() => showAsyncDialog(
+    builder: (BuildContext context) {
+      final localizations = AppLocalizations.of(context)!;
+      return DefaultDialog(
+        scrollable: true,
+        title: Text(localizations.confirmDeletion),
+        content: Text(localizations.confirmDeletionOf(token.label)),
+        actions: [
+          DialogAction(
+            label: localizations.cancel,
+            intent: DialogActionIntent.cancel,
+            onPressed: () => Navigator.of(context).pop(),
           ),
-          content: Text(localizations.confirmDeletionOf(token.label)),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(
-                localizations.cancel,
-                overflow: TextOverflow.fade,
-                softWrap: false,
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                globalRef?.read(tokenProvider.notifier).removeToken(token);
-                Navigator.of(context).pop();
-              },
-              child: Text(
-                localizations.delete,
-                overflow: TextOverflow.fade,
-                softWrap: false,
-              ),
-            ),
-          ],
-        );
-      });
+          DialogAction(
+            label: localizations.delete,
+            intent: DialogActionIntent.destructive,
+            onPressed: () {
+              globalRef?.read(tokenProvider.notifier).removeToken(token);
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
 }

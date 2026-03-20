@@ -27,7 +27,11 @@ import 'logger.dart';
 import 'view_utils.dart';
 
 class PiMailer {
-  static String _mailSubject(String subject, String? subjectPrefix, bool subjectAppVersion) {
+  static String _mailSubject(
+    String subject,
+    String? subjectPrefix,
+    bool subjectAppVersion,
+  ) {
     return subjectPrefix != null ? '$subjectPrefix $subject' : subject;
   }
 
@@ -51,14 +55,17 @@ class PiMailer {
       if (e.code == 'UNAVAILABLE') {
         showAsyncDialog(
           builder: (context) {
-            final AppLocalizations appLocalizations = AppLocalizations.of(context)!;
+            final AppLocalizations appLocalizations = AppLocalizations.of(
+              context,
+            )!;
             return DefaultDialog(
               title: Text(appLocalizations.noMailAppTitle),
               content: Text(appLocalizations.noMailAppDescription),
               actions: [
-                TextButton(
+                DialogAction(
+                  label: appLocalizations.ok,
+                  intent: DialogActionIntent.neutral,
                   onPressed: () => Navigator.pop(context),
-                  child: Text(appLocalizations.ok),
                 ),
               ],
             );
@@ -66,10 +73,18 @@ class PiMailer {
         );
         return false;
       }
-      Logger.error('Was not able to send the Email', error: e, stackTrace: stackTrace);
+      Logger.error(
+        'Was not able to send the Email',
+        error: e,
+        stackTrace: stackTrace,
+      );
       return false;
     } catch (e, stackTrace) {
-      Logger.error('Was not able to send the Email', error: e, stackTrace: stackTrace);
+      Logger.error(
+        'Was not able to send the Email',
+        error: e,
+        stackTrace: stackTrace,
+      );
       return false;
     }
     return true;
