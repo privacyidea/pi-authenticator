@@ -64,13 +64,15 @@ class ShowQrCodeDialog extends ConsumerWidget {
         ],
       ),
       actions: [
-        TextButton(
+        DialogAction(
+          label: AppLocalizations.of(context)!.exportOneMore,
+          intent: DialogActionIntent.cancel,
           onPressed: () => Navigator.of(context).pop(),
-          child: Text(AppLocalizations.of(context)!.exportOneMore),
         ),
-        TextButton(
+        DialogAction(
+          label: AppLocalizations.of(context)!.done,
+          intent: DialogActionIntent.confirm,
           onPressed: () => Navigator.of(context).pop(true),
-          child: Text(AppLocalizations.of(context)!.done),
         ),
       ],
     );

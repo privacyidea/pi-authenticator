@@ -121,8 +121,26 @@
   "@authenticateToUnLockToken": {
     "description": "Reason to authenticate when trying to lock or unlock a token."
   },
+  "@autoCloseAppAfterAcceptingPushRequestDescription": {
+    "description": "Description of the setting to automatically close the app after accepting a push request."
+  },
+  "@autoCloseAppAfterAcceptingPushRequestTitle": {
+    "description": "Title of the setting to automatically close the app after accepting a push request."
+  },
   "@backgroundImage": {
     "description": "Label for the background image setting."
+  },
+  "@biometricAuthNotSetupBody": {
+    "description": "Message shown as a dialog body that tells the user that biometric authentication is not available on the device."
+  },
+  "@biometricAuthNotSetupTitle": {
+    "description": "Message shown as a dialog title that tells the user that biometric authentication is not available on the device."
+  },
+  "@biometricAuthNotSupportedBody": {
+    "description": "Message shown as a dialog body that tells the user that biometric authentication is not supported on the device."
+  },
+  "@biometricAuthNotSupportedTitle": {
+    "description": "Message shown as a dialog title that tells the user that biometric authentication is not supported on the device."
   },
   "@butDiscardIt": {
     "description": "Smaller text for the button to discard the push request."
@@ -821,6 +839,9 @@
       }
     }
   },
+  "@invalidQrScan": {
+    "description": "Error message when the scanned QR code did not contain valid data."
+  },
   "@invalidUrl": {
     "description": "Error message when the entered URL is invalid."
   },
@@ -1384,6 +1405,9 @@
   "@serverNotReachable": {
     "description": "Tells the user that the server could not be reached."
   },
+  "@setUpButton": {
+    "description": "Button to set up something, depending on the context."
+  },
   "@settings": {
     "description": "Button to open the settings page."
   },
@@ -1649,7 +1673,7 @@
   "a11yScanQrCodeViewInactive": "Vista de escaneo de código QR. La cámara no está activa",
   "a11ySearchTokensButton": "Buscar tokens",
   "a11ySecondsUntilNextOTP": "{seconds} segundos hasta que se genere la siguiente OTP.",
-  "a11ySettingsButton": "Ajustes",
+  "a11ySettingsButton": "Configuración",
   "accept": "Aceptar",
   "addANewFolder": "Crear nueva carpeta",
   "addSystemInfo": "Añadir información del sistema",
@@ -1675,6 +1699,10 @@
   "autoCloseAppAfterAcceptingPushRequestDescription": "Si está habilitado, la aplicación se cerrará automáticamente después de aceptar una solicitud push.",
   "autoCloseAppAfterAcceptingPushRequestTitle": "Cerrar app después de aceptar solicitud",
   "backgroundImage": "Imagen de fondo",
+  "biometricAuthNotSetupBody": "Configura la autenticación biométrica en los ajustes de tu dispositivo para poder realizar esta acción.",
+  "biometricAuthNotSetupTitle": "La autenticación biométrica no está configurada",
+  "biometricAuthNotSupportedBody": "Tu dispositivo no admite la autenticación biométrica, que es necesaria para realizar esta acción.",
+  "biometricAuthNotSupportedTitle": "La autenticación biométrica no es compatible",
   "butDiscardIt": "pero descártelo",
   "cancel": "Anular",
   "cannotNavigateWithoutContext": "No se puede navegar sin contexto.",
@@ -2004,6 +2032,7 @@
   "sendErrorLogDescription": "Se crea un correo electrónico listo.\nContiene información sobre la app, el error y el dispositivo.\nPuedes editar el correo antes de enviarlo.\nAquí puede ver cómo utilizamos la información:",
   "sendPushRequestResponseFailed": "No se ha podido enviar la respuesta.",
   "serverNotReachable": "No se ha podido acceder al servidor.",
+  "setUpButton": "Configuración",
   "settings": "Configuración",
   "settingsGroupGeneral": "Información general",
   "showContainerUrlDialogContent": "El contenedor se conectará con el servidor bajo la siguiente URL:\n{url}",

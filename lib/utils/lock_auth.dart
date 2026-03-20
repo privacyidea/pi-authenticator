@@ -21,83 +21,167 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:local_auth_android/local_auth_android.dart';
 import 'package:local_auth_darwin/local_auth_darwin.dart';
+import 'package:mutex/mutex.dart';
+import 'package:privacyidea_authenticator/model/enums/force_biometric_option.dart';
 
 import '../l10n/app_localizations.dart';
 import '../widgets/dialog_widgets/default_dialog.dart';
 import 'logger.dart';
 import 'view_utils.dart';
 
-bool _authenticationInProgress = false;
+final LocalAuthentication _localAuth = LocalAuthentication();
+final Mutex _authMutex = Mutex();
 
-/// Sends a request to the OS to authenticate the user. Returns true if the user was authenticated, false otherwise.
-/// If the device does not support authentication or authentication is not set up, a dialog is shown to the user.
-/// If [autoAuthIfUnsupported] is set to true and the device does not support authentication, the function will return true.
+/// Requests OS-level authentication from the user.
+///
+/// Returns `true` if authentication succeeds.
+/// If the device does not support any authentication method or [forceBiometricOption]
+/// is set but the hardware/setup is missing, an appropriate error dialog is shown.
+///
+/// If [autoAuthIfUnsupported] is `true`, the function returns `true` immediately
+/// when the device generally lacks authentication support, bypassing the dialog.
+///
+/// This method is protected by a mutex to prevent concurrent authentication attempts.
 Future<bool> lockAuth({
   required String Function(AppLocalizations) reason,
   required AppLocalizations localization,
+  ForceBiometricOption? forceBiometricOption,
   bool autoAuthIfUnsupported = false,
 }) async {
-  bool didAuthenticate = false;
-  LocalAuthentication localAuth = LocalAuthentication();
-  final isDeviceSupported = await localAuth.isDeviceSupported();
-  if (!isDeviceSupported && autoAuthIfUnsupported) return true;
-  if (kIsWeb || !isDeviceSupported) {
-    await showAsyncDialog(
-      builder: (context) {
-        return DefaultDialog(
-          scrollable: true,
-          title: ListTile(
-            title: Center(
-              child: Text(
-                AppLocalizations.of(context)!.authNotSupportedTitle,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-            ),
-            leading: const Icon(Icons.lock),
-            trailing: const Icon(Icons.lock),
-          ),
-          content: Text(AppLocalizations.of(context)!.authNotSupportedBody),
-        );
-      },
+  if (_authMutex.isLocked) {
+    Logger.info(
+      "Authentication already in progress, skipping concurrent request.",
     );
-    return didAuthenticate;
+    return false;
+  }
+  final isBiometricForced =
+      forceBiometricOption == ForceBiometricOption.biometric;
+  if (!await _checkSupport(isBiometricForced, autoAuthIfUnsupported)) {
+    return autoAuthIfUnsupported;
   }
 
-  AndroidAuthMessages androidAuthStrings = AndroidAuthMessages(
-    signInTitle: localization.signInTitle,
-    cancelButton: localization.cancel,
+  return await _executeAuth(
+    isBiometricForced: isBiometricForced,
+    localizedReason: reason(localization),
+    localization: localization,
   );
+}
 
-  IOSAuthMessages iOSAuthStrings = IOSAuthMessages(
-    cancelButton: localization.cancel,
-  );
-
+Future<bool> _executeAuth({
+  required bool isBiometricForced,
+  required String localizedReason,
+  required AppLocalizations localization,
+}) async {
   try {
-    if (!_authenticationInProgress) {
-      _authenticationInProgress = true;
-      didAuthenticate = await localAuth.authenticate(
-        localizedReason: reason(localization),
-        authMessages: [androidAuthStrings, iOSAuthStrings],
-      );
-    }
-  } on PlatformException catch (e, s) {
-    Logger.warning("Authentication failed", error: e, stackTrace: s);
-  } on LocalAuthException catch (e, s) {
-    if (e.code == LocalAuthExceptionCode.userCanceled) {
+    await _authMutex.acquire();
+    return await _localAuth.authenticate(
+      biometricOnly: isBiometricForced,
+      localizedReason: localizedReason,
+      authMessages: [
+        AndroidAuthMessages(
+          signInTitle: localization.signInTitle,
+          cancelButton: localization.cancel,
+        ),
+        IOSAuthMessages(cancelButton: localization.cancel),
+      ],
+    );
+  } on Exception catch (e, s) {
+    if (e is LocalAuthException &&
+        e.code == LocalAuthExceptionCode.userCanceled) {
       Logger.info("Authentication canceled by user");
     } else {
-      Logger.warning(
-        "Authentication failed with local_auth specific exception",
-        error: e,
-        stackTrace: s,
-      );
+      Logger.warning("Authentication failed", error: e, stackTrace: s);
     }
+    return false;
   } finally {
-    _authenticationInProgress = false;
+    _authMutex.release();
   }
-  return didAuthenticate;
+}
+
+Future<bool> _checkSupport(bool isBiometricForced, bool autoAuth) async {
+  final isDeviceSupported = await _localAuth.isDeviceSupported() && !kIsWeb;
+
+  if (!isDeviceSupported) {
+    if (!autoAuth) await _showUnsupportedDialog();
+    return false;
+  }
+
+  if (isBiometricForced) {
+    final canDoBiometrics = await _localAuth.canCheckBiometrics;
+    final hasBiometricsEnrolled =
+        (await _localAuth.getAvailableBiometrics()).isNotEmpty;
+
+    if (!canDoBiometrics) {
+      await _showBiometricUnsupportedDialog();
+      return false;
+    }
+
+    if (!hasBiometricsEnrolled) {
+      await _showBiometricUnavailableDialog();
+      return false;
+    }
+  }
+
+  return true;
+}
+
+Future<void> _showUnsupportedDialog() async {
+  await showAsyncDialog(
+    builder: (context) => DefaultDialog(
+      scrollable: true,
+      title: ListTile(
+        title: Center(
+          child: Text(
+            AppLocalizations.of(context)!.authNotSupportedTitle,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+        ),
+        leading: const Icon(Icons.lock),
+        trailing: const Icon(Icons.lock),
+      ),
+      content: Text(AppLocalizations.of(context)!.authNotSupportedBody),
+    ),
+  );
+}
+
+Future<void> _showBiometricUnsupportedDialog() async {
+  await showAsyncDialog(
+    builder: (context) => DefaultDialog(
+      title: ListTile(
+        title: Center(
+          child: Text(
+            AppLocalizations.of(context)!.biometricAuthNotSupportedTitle,
+          ),
+        ),
+        leading: const Icon(Icons.fingerprint_off),
+      ),
+      content: Text(
+        AppLocalizations.of(context)!.biometricAuthNotSupportedBody,
+      ),
+    ),
+  );
+}
+
+Future<void> _showBiometricUnavailableDialog() async {
+  await showAsyncDialog(
+    builder: (context) => DefaultDialog(
+      scrollable: true,
+      title: ListTile(
+        title: Center(
+          child: Text(
+            AppLocalizations.of(context)!.biometricAuthNotAvailableTitle,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+        ),
+        leading: const Icon(Icons.fingerprint),
+        trailing: const Icon(Icons.fingerprint),
+      ),
+      content: Text(
+        AppLocalizations.of(context)!.biometricAuthNotAvailableBody,
+      ),
+    ),
+  );
 }

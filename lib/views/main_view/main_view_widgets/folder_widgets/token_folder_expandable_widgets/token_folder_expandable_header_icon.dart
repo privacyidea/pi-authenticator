@@ -52,7 +52,7 @@ class TokenFolderExpandableHeaderIcon extends StatelessWidget {
           child: Stack(
             alignment: Alignment.center,
             children: [
-              Icon(
+              FaIcon(
                 weight: 0.1,
                 isExpanded ? FontAwesomeIcons.folderOpen : FontAwesomeIcons.solidFolderClosed,
                 color: Theme.of(context).listTileTheme.iconColor,

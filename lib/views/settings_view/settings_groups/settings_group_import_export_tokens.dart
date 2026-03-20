@@ -24,7 +24,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../model/enums/introduction.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
-import '../../../widgets/button_widgets/delayed_elevated_button.dart';
 import '../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../import_tokens_view/import_tokens_view.dart';
 import '../settings_view_widgets/settings_group.dart';
@@ -36,10 +35,12 @@ class SettingsGroupImportExportTokens extends ConsumerStatefulWidget {
   const SettingsGroupImportExportTokens({super.key});
 
   @override
-  ConsumerState<SettingsGroupImportExportTokens> createState() => _SettingsGroupImportExportTokensState();
+  ConsumerState<SettingsGroupImportExportTokens> createState() =>
+      _SettingsGroupImportExportTokensState();
 }
 
-class _SettingsGroupImportExportTokensState extends ConsumerState<SettingsGroupImportExportTokens> {
+class _SettingsGroupImportExportTokensState
+    extends ConsumerState<SettingsGroupImportExportTokens> {
   @override
   Widget build(BuildContext context) {
     final appLocalizations = AppLocalizations.of(context)!;
@@ -77,7 +78,12 @@ class _SettingsGroupImportExportTokensState extends ConsumerState<SettingsGroupI
   }
 
   void _exportDialog() async {
-    bool? isAccepted = (await ref.read(introductionNotifierProvider.future)).isCompleted(Introduction.exportTokens) ? true : null;
+    bool? isAccepted =
+        (await ref.read(
+          introductionNotifierProvider.future,
+        )).isCompleted(Introduction.exportTokens)
+        ? true
+        : null;
     if (!mounted) return;
     final appLocalizations = AppLocalizations.of(context)!;
     isAccepted ??= await showDialog<bool>(
@@ -87,19 +93,25 @@ class _SettingsGroupImportExportTokensState extends ConsumerState<SettingsGroupI
         title: Text(appLocalizations.exportTokensHintDialogTitle),
         content: SelectTokensToExportHelpContentWidget(),
         actions: [
-          TextButton(
+          DialogAction(
+            label: appLocalizations.cancel,
+            intent: DialogActionIntent.cancel,
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text(appLocalizations.cancel),
           ),
-          DelayedElevatedButton(
-            onPressed: () => Navigator.of(context).pop(true),
+          DialogAction(
+            label: appLocalizations.ok,
+            intent: DialogActionIntent.confirm,
             delaySeconds: 10,
-            child: Text(appLocalizations.ok),
+            onPressed: () => Navigator.of(context).pop(true),
           ),
         ],
       ),
     );
-    if (isAccepted == true) await ref.read(introductionNotifierProvider.notifier).complete(Introduction.exportTokens);
+    if (isAccepted == true) {
+      await ref
+          .read(introductionNotifierProvider.notifier)
+          .complete(Introduction.exportTokens);
+    }
     if (isAccepted != true || !mounted) return;
     final isExported = await showDialog<bool>(
       useRootNavigator: false,
@@ -109,6 +121,10 @@ class _SettingsGroupImportExportTokensState extends ConsumerState<SettingsGroupI
     if (isExported == true && mounted) Navigator.of(context).pop(isExported);
   }
 
-  void _routeToImport() => Navigator.pushNamed(context, ImportTokensView.routeName)
-      .then((isImported) => (isImported == true && mounted) ? Navigator.of(context).pop(isImported) : null);
+  void _routeToImport() =>
+      Navigator.pushNamed(context, ImportTokensView.routeName).then(
+        (isImported) => (isImported == true && mounted)
+            ? Navigator.of(context).pop(isImported)
+            : null,
+      );
 }

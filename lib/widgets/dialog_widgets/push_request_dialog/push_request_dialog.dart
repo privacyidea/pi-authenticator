@@ -25,7 +25,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/state_providers/status_message_provider.dart';
-import 'package:privacyidea_authenticator/widgets/dialog_widgets/push_request_dialog/widgets/push_action_button.dart';
+import 'package:privacyidea_authenticator/widgets/button_widgets/push_action_button.dart';
 
 import '../../../../model/push_request/push_requests.dart';
 import '../../../l10n/app_localizations.dart';
@@ -97,6 +97,7 @@ mixin PushDialogMixin {
         !await lockAuth(
           reason: (l10n) => l10n.authToAcceptPushRequest,
           localization: AppLocalizations.of(context)!,
+          forceBiometricOption: token.forceBiometricOption,
         )) {
       return;
     }
@@ -132,6 +133,7 @@ mixin PushDialogMixin {
         !await lockAuth(
           reason: (l10n) => l10n.authToDeclinePushRequest,
           localization: AppLocalizations.of(context)!,
+          forceBiometricOption: token.forceBiometricOption,
         )) {
       return;
     }
@@ -152,6 +154,7 @@ mixin PushDialogMixin {
         !await lockAuth(
           reason: (l10n) => l10n.authToDiscardPushRequest,
           localization: AppLocalizations.of(context)!,
+          forceBiometricOption: token.forceBiometricOption,
         )) {
       return;
     }

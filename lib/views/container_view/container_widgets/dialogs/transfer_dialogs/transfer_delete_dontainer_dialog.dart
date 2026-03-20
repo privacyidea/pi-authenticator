@@ -28,21 +28,24 @@ import '../../../../../utils/riverpod/riverpod_providers/generated_providers/tok
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../../../utils/view_utils.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
-import '../../../../../widgets/elevated_delete_button.dart';
 
 class TransferDeleteContainerDialog extends ConsumerStatefulWidget {
   final TokenContainerFinalized container;
 
-  const TransferDeleteContainerDialog({
-    super.key,
-    required this.container,
-  });
+  const TransferDeleteContainerDialog(this.container, {super.key});
+
+  static Future<bool?> showDialog(TokenContainerFinalized container) =>
+      showAsyncDialog(
+        builder: (context) => TransferDeleteContainerDialog(container),
+      );
 
   @override
-  ConsumerState<TransferDeleteContainerDialog> createState() => _TransferDeleteContainerDialogState();
+  ConsumerState<TransferDeleteContainerDialog> createState() =>
+      _TransferDeleteContainerDialogState();
 }
 
-class _TransferDeleteContainerDialogState extends ConsumerState<TransferDeleteContainerDialog> {
+class _TransferDeleteContainerDialogState
+    extends ConsumerState<TransferDeleteContainerDialog> {
   bool? isUnlinked;
 
   @override
@@ -50,7 +53,9 @@ class _TransferDeleteContainerDialogState extends ConsumerState<TransferDeleteCo
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final tokenState = await ref.read(tokenProvider.future);
-      final failedContainers = await ref.read(tokenContainerProvider.notifier).syncContainers(
+      final failedContainers = await ref
+          .read(tokenContainerProvider.notifier)
+          .syncContainers(
             tokenState: tokenState,
             containersToSync: [widget.container],
             isManually: false,
@@ -69,72 +74,85 @@ class _TransferDeleteContainerDialogState extends ConsumerState<TransferDeleteCo
     final AppLocalizations appLocalizations = AppLocalizations.of(context)!;
     return switch (isUnlinked) {
       null => DefaultDialog(
-          title: Text(appLocalizations.transferContainerDialogTitle),
-          content: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(flex: 2, child: SizedBox()),
-              Flexible(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: CircularProgressIndicator(),
-                  ),
+        title: Text(appLocalizations.transferContainerDialogTitle),
+        content: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(flex: 2, child: SizedBox()),
+            Flexible(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: AspectRatio(
+                  aspectRatio: 1,
+                  child: CircularProgressIndicator(),
                 ),
               ),
-              Expanded(flex: 2, child: SizedBox()),
-            ],
-          ),
+            ),
+            Expanded(flex: 2, child: SizedBox()),
+          ],
         ),
+      ),
       true => DefaultDialog(
-          title: Text(appLocalizations.transferContainerDialogTitle),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(appLocalizations.transferContainerSuccessDialogContent1),
-              SizedBox(height: 8),
-              Text(appLocalizations.transferContainerSuccessDialogContent2),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(appLocalizations.cancel),
-            ),
-            ElevatedDeleteButton(
-              text: appLocalizations.containerTransferDeleteTokensButtonText,
-              onPressed: () => confirmDeleteLocaly(context),
-            ),
+        title: Text(appLocalizations.transferContainerDialogTitle),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(appLocalizations.transferContainerSuccessDialogContent1),
+            SizedBox(height: 8),
+            Text(appLocalizations.transferContainerSuccessDialogContent2),
           ],
         ),
+        actions: [
+          DialogAction(
+            label: appLocalizations.cancel,
+            intent: DialogActionIntent.cancel,
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          DialogAction(
+            label: appLocalizations.containerTransferDeleteTokensButtonText,
+            intent: DialogActionIntent.destructive,
+            onPressed: () => confirmDeleteLocaly(context),
+          ),
+        ],
+      ),
       false => DefaultDialog(
-          title: Text(appLocalizations.transferContainerDialogTitle),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(appLocalizations.containerTransferDialogContentAborted),
+        title: Text(appLocalizations.transferContainerDialogTitle),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                appLocalizations.containerTransferDialogContentAborted,
               ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(appLocalizations.ok),
             ),
           ],
         ),
+        actions: [
+          DialogAction(
+            label: appLocalizations.ok,
+            intent: DialogActionIntent.neutral,
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
+      ),
     };
   }
 
   void confirmDeleteLocaly(BuildContext context) async {
-    final containerTokens = (await ref.read(tokenProvider.future)).containerTokens(widget.container.serial);
-    await ref.read(tokenProvider.notifier).removeTokens(containerTokens.noOffline);
-    await ref.read(tokenContainerProvider.notifier).deleteContainer(widget.container);
+    final containerTokens = (await ref.read(
+      tokenProvider.future,
+    )).containerTokens(widget.container.serial);
+    await ref
+        .read(tokenProvider.notifier)
+        .removeTokens(containerTokens.noOffline);
+    await ref
+        .read(tokenContainerProvider.notifier)
+        .deleteContainer(widget.container);
     if (!context.mounted) return;
     Navigator.of(context).popUntil((route) => route.isFirst);
-    showSuccessStatusMessage(message: (l) => l.containerTransferDeleteTokensSuccessMessage);
+    showSuccessStatusMessage(
+      message: (l) => l.containerTransferDeleteTokensSuccessMessage,
+    );
   }
 }

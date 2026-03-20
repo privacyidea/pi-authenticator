@@ -3,7 +3,7 @@
  *
  * Author: Frank Merkel <frank.merkel@netknights.it>
  *
- * Copyright (c) 2024-2025 NetKnights GmbH
+ * Copyright (c) 2026 NetKnights GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
@@ -17,24 +17,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import 'package:flutter/material.dart';
 
-import '../utils/customization/theme_extentions/elevated_delete_button_theme.dart';
+import '../utils/customization/theme_extentions/app_dimensions.dart';
 
-class ElevatedDeleteButton extends StatelessWidget {
-  final void Function() onPressed;
-  final String text;
+class Gap extends StatelessWidget {
+  final double? size;
 
-  const ElevatedDeleteButton({
-    required this.onPressed,
-    required this.text,
-    super.key,
-  });
+  const Gap({this.size, super.key});
 
   @override
-  Widget build(BuildContext context) => ElevatedButton(
-        onPressed: onPressed,
-        style: Theme.of(context).extension<ElevatedDeleteButtonTheme>()?.style,
-        child: Text(text),
-      );
+  Widget build(BuildContext context) {
+    final size =
+        this.size ??
+        Theme.of(context).extension<AppDimensions>()?.spacingSmall ??
+        8.0;
+    return SizedBox(width: size, height: size);
+  }
 }

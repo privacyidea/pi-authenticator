@@ -23,18 +23,15 @@ import 'package:privacyidea_authenticator/model/token_container.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/customization/theme_extentions/status_colors.dart';
 import '../../../utils/view_utils.dart';
-import '../../button_widgets/delayed_elevated_button.dart';
 import '../default_dialog.dart';
 
 class ContainerShowContainerUrlDialog extends StatelessWidget {
   final TokenContainer container;
 
-  const ContainerShowContainerUrlDialog(
-    this.container, {
-    super.key,
-  });
+  const ContainerShowContainerUrlDialog(this.container, {super.key});
 
-  static Future<bool?> showDialog(TokenContainer container) => showAsyncDialog<bool>(
+  static Future<bool?> showDialog(TokenContainer container) =>
+      showAsyncDialog<bool>(
         builder: (context) => ContainerShowContainerUrlDialog(container),
         barrierDismissible: false,
       );
@@ -42,40 +39,52 @@ class ContainerShowContainerUrlDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppLocalizations appLocalizations = AppLocalizations.of(context)!;
-    final Color warningColor = Theme.of(context).extension<StatusColors>()!.warning;
+    final Color warningColor = Theme.of(
+      context,
+    ).extension<StatusColors>()!.warning;
 
     return DefaultDialog(
       title: Row(
-        mainAxisAlignment: (container.sslVerify == false) ? MainAxisAlignment.spaceAround : MainAxisAlignment.start,
+        mainAxisAlignment: (container.sslVerify == false)
+            ? MainAxisAlignment.spaceAround
+            : MainAxisAlignment.start,
         children: [
-          if (container.sslVerify == false) Icon(Icons.warning_amber_rounded, color: warningColor, size: 36),
+          if (container.sslVerify == false)
+            Icon(Icons.warning_amber_rounded, color: warningColor, size: 36),
           Flexible(child: Text(appLocalizations.showContainerUrlDialogTitle)),
-          if (container.sslVerify == false) Icon(Icons.warning_amber_rounded, color: warningColor, size: 36),
+          if (container.sslVerify == false)
+            Icon(Icons.warning_amber_rounded, color: warningColor, size: 36),
         ],
       ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            appLocalizations.showContainerUrlDialogContent(container.serverUrl.toString()),
+            appLocalizations.showContainerUrlDialogContent(
+              container.serverUrl.toString(),
+            ),
             style: Theme.of(context).textTheme.bodyLarge,
           ),
           if (container.sslVerify == false) SizedBox(height: 8),
           if (container.sslVerify == false)
             Text(
               appLocalizations.showContainerUrlDialogSslWarning,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: warningColor),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyLarge?.copyWith(color: warningColor),
             ),
         ],
       ),
       actions: [
-        TextButton(
+        DialogAction(
+          label: appLocalizations.cancel,
+          intent: DialogActionIntent.cancel,
           onPressed: () => Navigator.of(context).pop(false),
-          child: Text(appLocalizations.cancel),
         ),
-        DelayedElevatedButton(
+        DialogAction(
+          label: appLocalizations.ok,
+          intent: DialogActionIntent.confirm,
           onPressed: () => Navigator.of(context).pop(true),
-          child: Text(appLocalizations.ok),
         ),
       ],
     );

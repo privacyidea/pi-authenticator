@@ -121,8 +121,26 @@
   "@authenticateToUnLockToken": {
     "description": "Reason to authenticate when trying to lock or unlock a token."
   },
+  "@autoCloseAppAfterAcceptingPushRequestDescription": {
+    "description": "Description of the setting to automatically close the app after accepting a push request."
+  },
+  "@autoCloseAppAfterAcceptingPushRequestTitle": {
+    "description": "Title of the setting to automatically close the app after accepting a push request."
+  },
   "@backgroundImage": {
     "description": "Label for the background image setting."
+  },
+  "@biometricAuthNotSetupBody": {
+    "description": "Message shown as a dialog body that tells the user that biometric authentication is not available on the device."
+  },
+  "@biometricAuthNotSetupTitle": {
+    "description": "Message shown as a dialog title that tells the user that biometric authentication is not available on the device."
+  },
+  "@biometricAuthNotSupportedBody": {
+    "description": "Message shown as a dialog body that tells the user that biometric authentication is not supported on the device."
+  },
+  "@biometricAuthNotSupportedTitle": {
+    "description": "Message shown as a dialog title that tells the user that biometric authentication is not supported on the device."
   },
   "@butDiscardIt": {
     "description": "Smaller text for the button to discard the push request."
@@ -821,6 +839,9 @@
       }
     }
   },
+  "@invalidQrScan": {
+    "description": "Error message when the scanned QR code did not contain valid data."
+  },
   "@invalidUrl": {
     "description": "Error message when the entered URL is invalid."
   },
@@ -1384,6 +1405,9 @@
   "@serverNotReachable": {
     "description": "Tells the user that the server could not be reached."
   },
+  "@setUpButton": {
+    "description": "Button to set up something, depending on the context."
+  },
   "@settings": {
     "description": "Button to open the settings page."
   },
@@ -1675,6 +1699,10 @@
   "autoCloseAppAfterAcceptingPushRequestDescription": "Wenn aktiviert, schließt sich die App automatisch, nachdem eine Push-Anfrage akzeptiert wurde.",
   "autoCloseAppAfterAcceptingPushRequestTitle": "App nach Push-Anfrage schließen",
   "backgroundImage": "Hintergrundbild",
+  "biometricAuthNotSetupBody": "Bitte richten Sie die biometrische Authentifizierung in den Einstellungen Ihres Geräts ein, um diese Aktion auszuführen.",
+  "biometricAuthNotSetupTitle": "Biometrische Authentifizierung nicht eingerichtet",
+  "biometricAuthNotSupportedBody": "Ihr Gerät unterstützt keine biometrische Authentifizierung, die für diese Aktion erforderlich ist.",
+  "biometricAuthNotSupportedTitle": "Biometrische Authentifizierung wird nicht unterstützt",
   "butDiscardIt": "aber verwerfen",
   "cancel": "Abbrechen",
   "cannotNavigateWithoutContext": "Kann ohne Kontext nicht navigieren.",
@@ -2004,6 +2032,7 @@
   "sendErrorLogDescription": "Es wird eine vorgefertigte E-Mail erstellt.\nSie enthält Informationen über die App, den Fehler und das Gerät.\nSie können die E-Mail vor dem Senden bearbeiten.\nWie wir die Informationen verwenden, sehen Sie hier:",
   "sendPushRequestResponseFailed": "Senden der Antwort fehlgeschlagen.",
   "serverNotReachable": "Der Server konnte nicht erreicht werden.",
+  "setUpButton": "Einrichten",
   "settings": "Einstellungen",
   "settingsGroupGeneral": "Allgemeines",
   "showContainerUrlDialogContent": "Der Container wird sich mit dem Server unter der folgenden URL verbinden:\n{url}",

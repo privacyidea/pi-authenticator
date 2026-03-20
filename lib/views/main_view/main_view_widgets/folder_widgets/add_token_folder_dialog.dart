@@ -27,47 +27,82 @@ import '../../../../utils/riverpod/riverpod_providers/generated_providers/introd
 import '../../../../utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
 import '../../../../widgets/dialog_widgets/default_dialog.dart';
 
-class AddTokenFolderDialog extends ConsumerWidget {
-  final textController = TextEditingController();
-
-  AddTokenFolderDialog({super.key});
+class AddTokenFolderDialog extends ConsumerStatefulWidget {
+  const AddTokenFolderDialog({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<AddTokenFolderDialog> createState() =>
+      _AddTokenFolderDialogState();
+}
+
+class _AddTokenFolderDialogState extends ConsumerState<AddTokenFolderDialog> {
+  final _textController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  bool _isValid = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Listen to text changes to update the button state live
+    _textController.addListener(_validate);
+  }
+
+  void _validate() {
+    final currentlyValid = _textController.text.isNotEmpty;
+    if (currentlyValid != _isValid) {
+      setState(() => _isValid = currentlyValid);
+    }
+  }
+
+  @override
+  void dispose() {
+    _textController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+
     return DefaultDialog(
       scrollable: true,
-      title: Text(AppLocalizations.of(context)!.addANewFolder),
-      content: PiTextField(
-        controller: textController,
-        autofocus: true,
-        onChanged: (value) {},
-        labelText: AppLocalizations.of(context)!.folderName,
-        validator: (value) => value!.isEmpty ? AppLocalizations.of(context)!.folderName : null,
+      title: Text(localizations.addANewFolder),
+      content: Form(
+        key: _formKey,
+        child: PiTextField(
+          controller: _textController,
+          autofocus: true,
+          labelText: localizations.folderName,
+          validator: (value) => (value == null || value.isEmpty)
+              ? localizations.folderName
+              : null,
+        ),
       ),
       actions: [
-        TextButton(
-          child: Text(
-            AppLocalizations.of(context)!.cancel,
-            overflow: TextOverflow.fade,
-            softWrap: false,
-          ),
+        DialogAction(
+          label: localizations.cancel,
+          intent: DialogActionIntent.cancel,
           onPressed: () => Navigator.pop(context),
         ),
-        TextButton(
-            child: Text(
-              AppLocalizations.of(context)!.create,
-              overflow: TextOverflow.fade,
-              softWrap: false,
-            ),
-            onPressed: () async {
-              if (!(await ref.read(introductionNotifierProvider.future)).isCompleted(Introduction.addFolder)) {
-                ref.read(introductionNotifierProvider.notifier).complete(Introduction.addFolder);
-              }
-              ref.read(tokenFolderProvider.notifier).addNewFolder(textController.text);
-              if (!context.mounted) return;
-              Navigator.pop(context);
-            }),
+        DialogAction(
+          label: localizations.create,
+          intent: DialogActionIntent.confirm,
+          onPressed: _isValid ? _handleCreate : null,
+        ),
       ],
     );
+  }
+
+  Future<void> _handleCreate() async {
+    final intro = await ref.read(introductionNotifierProvider.future);
+    if (!intro.isCompleted(Introduction.addFolder)) {
+      await ref
+          .read(introductionNotifierProvider.notifier)
+          .complete(Introduction.addFolder);
+    }
+
+    ref.read(tokenFolderProvider.notifier).addNewFolder(_textController.text);
+
+    if (mounted) Navigator.pop(context);
   }
 }

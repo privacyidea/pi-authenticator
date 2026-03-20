@@ -40,32 +40,24 @@ class AskLogSentDialog extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-            child: Text(
-              AppLocalizations.of(context)!.askLogSentDescription,
-            ),
+            child: Text(AppLocalizations.of(context)!.askLogSentDescription),
           ),
         ],
       ),
       actions: [
-        TextButton(
-          child: Text(
-            AppLocalizations.of(context)!.no,
-            overflow: TextOverflow.fade,
-            softWrap: false,
-          ),
+        DialogAction(
+          label: AppLocalizations.of(context)!.no,
+          intent: DialogActionIntent.cancel,
           onPressed: () => Navigator.pop(context),
         ),
-        TextButton(
+        DialogAction(
+          label: AppLocalizations.of(context)!.yes,
+          intent: DialogActionIntent.confirm,
           onPressed: () {
             Navigator.pop(context, true);
             Logger.clearErrorLog();
           },
-          child: Text(
-            AppLocalizations.of(context)!.yes,
-            overflow: TextOverflow.fade,
-            softWrap: false,
-          ),
-        )
+        ),
       ],
     );
   }

@@ -38,10 +38,18 @@ class DeleteTokenFolderAction extends ConsumerSlideableAction {
   @override
   CustomSlidableAction build(BuildContext context, ref) {
     return CustomSlidableAction(
-      backgroundColor: Theme.of(context).extension<TokenTileTheme>()!.deleteColor,
-      foregroundColor: Theme.of(context).extension<TokenTileTheme>()!.actionForegroundColor,
+      backgroundColor: Theme.of(
+        context,
+      ).extension<TokenTileTheme>()!.deleteColor,
+      foregroundColor: Theme.of(
+        context,
+      ).extension<TokenTileTheme>()!.actionForegroundColor,
       onPressed: (context) async {
-        if (folder.isLocked && !await lockAuth(reason: (localization) => localization.unlock, localization: AppLocalizations.of(context)!)) {
+        if (folder.isLocked &&
+            !await lockAuth(
+              reason: (localization) => localization.unlock,
+              localization: AppLocalizations.of(context)!,
+            )) {
           return;
         }
         _showDialog();
@@ -62,37 +70,38 @@ class DeleteTokenFolderAction extends ConsumerSlideableAction {
   }
 
   void _showDialog() => showAsyncDialog(
-        builder: (BuildContext context) => DefaultDialog(
-          scrollable: true,
-          title: Text(
-            AppLocalizations.of(context)!.confirmDeletion,
-          ),
-          content: Text(AppLocalizations.of(context)!.confirmDeletionOf(folder.label)),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(
-                AppLocalizations.of(context)!.cancel,
-                overflow: TextOverflow.fade,
-                softWrap: false,
-              ),
-            ),
-            TextButton(
-              onPressed: () async {
-                final tokens = (await globalRef?.read(tokenProvider.future))?.tokensInFolder(folder);
-                if (tokens == null) return;
-                globalRef?.read(tokenProvider.notifier).updateTokens(tokens, (p0) => p0.copyWith(folderId: () => null));
-                globalRef?.read(tokenFolderProvider.notifier).removeFolder(folder);
-                if (!context.mounted) return;
-                Navigator.of(context).pop();
-              },
-              child: Text(
-                AppLocalizations.of(context)!.delete,
-                overflow: TextOverflow.fade,
-                softWrap: false,
-              ),
-            ),
-          ],
+    builder: (BuildContext context) => DefaultDialog(
+      scrollable: true,
+      title: Text(AppLocalizations.of(context)!.confirmDeletion),
+      content: Text(
+        AppLocalizations.of(context)!.confirmDeletionOf(folder.label),
+      ),
+      actions: [
+        DialogAction(
+          label: AppLocalizations.of(context)!.cancel,
+          intent: DialogActionIntent.cancel,
+          onPressed: () => Navigator.of(context).pop(),
         ),
-      );
+        DialogAction(
+          label: AppLocalizations.of(context)!.delete,
+          intent: DialogActionIntent.destructive,
+          onPressed: () async {
+            final tokens = (await globalRef?.read(
+              tokenProvider.future,
+            ))?.tokensInFolder(folder);
+            if (tokens == null) return;
+            globalRef
+                ?.read(tokenProvider.notifier)
+                .updateTokens(
+                  tokens,
+                  (p0) => p0.copyWith(folderId: () => null),
+                );
+            globalRef?.read(tokenFolderProvider.notifier).removeFolder(folder);
+            if (!context.mounted) return;
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
+    ),
+  );
 }

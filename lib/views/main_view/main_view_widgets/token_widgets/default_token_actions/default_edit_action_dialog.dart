@@ -36,7 +36,11 @@ class DefaultEditActionDialog extends ConsumerStatefulWidget {
 
   /// Should return false if an input is invalid. Name and image URL are validated regardless of whether the function is set or not.
   final bool additionalSaveValidation;
-  final FutureOr<void> Function({required String newLabel, required String? newImageUrl})? onSaveButtonPressed;
+  final FutureOr<void> Function({
+    required String newLabel,
+    required String? newImageUrl,
+  })?
+  onSaveButtonPressed;
   const DefaultEditActionDialog({
     required this.token,
     this.onSaveButtonPressed,
@@ -46,22 +50,31 @@ class DefaultEditActionDialog extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<DefaultEditActionDialog> createState() => _DefaultEditActionDialogState();
+  ConsumerState<DefaultEditActionDialog> createState() =>
+      _DefaultEditActionDialogState();
 }
 
-class _DefaultEditActionDialogState extends ConsumerState<DefaultEditActionDialog> {
-  late final TextEditingController nameInputController = TextEditingController(text: widget.token.label);
-  late final TextEditingController imageUrlController = TextEditingController(text: widget.token.tokenImage);
+class _DefaultEditActionDialogState
+    extends ConsumerState<DefaultEditActionDialog> {
+  late final TextEditingController nameInputController = TextEditingController(
+    text: widget.token.label,
+  );
+  late final TextEditingController imageUrlController = TextEditingController(
+    text: widget.token.tokenImage,
+  );
   bool _nameIsValid = true;
   bool _imageUrlIsValid = true;
   late final bool _additionalSaveValidation = widget.additionalSaveValidation;
-  bool get _canSave => _nameIsValid && _imageUrlIsValid && _additionalSaveValidation;
+  bool get _canSave =>
+      _nameIsValid && _imageUrlIsValid && _additionalSaveValidation;
 
   late final token = widget.token;
 
   String? _validateName(String? value) {
     if (value == null || value.isNotEmpty) return null;
-    return AppLocalizations.of(context)!.mustNotBeEmpty(AppLocalizations.of(context)!.name);
+    return AppLocalizations.of(
+      context,
+    )!.mustNotBeEmpty(AppLocalizations.of(context)!.name);
   }
 
   String? _validateImageUrl(String? value) {
@@ -100,14 +113,17 @@ class _DefaultEditActionDialogState extends ConsumerState<DefaultEditActionDialo
             PiTextField(
               key: Key('${widget.token.id}_editName'),
               controller: nameInputController,
-              onChanged: (value) => setState(() => _nameIsValid = _validateName(value) == null),
+              onChanged: (value) =>
+                  setState(() => _nameIsValid = _validateName(value) == null),
               labelText: appLocalizations.name,
               validator: _validateName,
             ),
             PiTextField(
               key: Key('${widget.token.id}_editImageUrl'),
               controller: imageUrlController,
-              onChanged: (value) => setState(() => _imageUrlIsValid = _validateImageUrl(value) == null),
+              onChanged: (value) => setState(
+                () => _imageUrlIsValid = _validateImageUrl(value) == null,
+              ),
               labelText: appLocalizations.imageUrl,
               validator: _validateImageUrl,
             ),
@@ -121,7 +137,9 @@ class _DefaultEditActionDialogState extends ConsumerState<DefaultEditActionDialo
                   ),
                 ReadOnlyTextFormField(
                   labelText: appLocalizations.isExpotableQuestion,
-                  text: token.isExportable ? appLocalizations.yes : appLocalizations.no,
+                  text: token.isExportable
+                      ? appLocalizations.yes
+                      : appLocalizations.no,
                 ),
                 if (widget.token.containerSerial != null)
                   ReadOnlyTextFormField(
@@ -149,12 +167,14 @@ class _DefaultEditActionDialogState extends ConsumerState<DefaultEditActionDialo
                     text: origin.createdAt.toString().split('.').first,
                   ),
                   ReadOnlyTextFormField(
-                      labelText: appLocalizations.isPiTokenQuestion, //'Is privacyIDEA Token?',
-                      text: origin.isPrivacyIdeaToken == null
-                          ? appLocalizations.unknown
-                          : origin.isPrivacyIdeaToken!
-                              ? appLocalizations.yes
-                              : appLocalizations.no),
+                    labelText: appLocalizations
+                        .isPiTokenQuestion, //'Is privacyIDEA Token?',
+                    text: origin.isPrivacyIdeaToken == null
+                        ? appLocalizations.unknown
+                        : origin.isPrivacyIdeaToken!
+                        ? appLocalizations.yes
+                        : appLocalizations.no,
+                  ),
                   ReadOnlyTextFormField(
                     text: origin.source.name,
                     labelText: appLocalizations.importedVia, //'Imported via',
@@ -165,45 +185,49 @@ class _DefaultEditActionDialogState extends ConsumerState<DefaultEditActionDialo
         ),
       ),
       actions: [
-        TextButton(
-          child: Text(
-            appLocalizations.cancel,
-            overflow: TextOverflow.fade,
-            softWrap: false,
-          ),
+        DialogAction(
+          label: appLocalizations.cancel,
+          intent: DialogActionIntent.cancel,
           onPressed: () => Navigator.of(context).pop(),
         ),
-        TextButton(
+        DialogAction(
+          label: appLocalizations.saveButton,
+          intent: DialogActionIntent.confirm,
           onPressed: !_canSave
               ? null
               : widget.onSaveButtonPressed != null
-                  ? () {
-                      widget.onSaveButtonPressed!(
-                        newLabel: nameInputController.text,
-                        newImageUrl: imageUrlController.text,
-                      );
-                    }
-                  : () async {
-                      final newLabel = nameInputController.text;
-                      final newImageUrl = imageUrlController.text;
-                      if (newLabel.isEmpty) return;
-                      final edited =
-                          await globalRef?.read(tokenProvider.notifier).updateToken(token, (p0) => p0.copyWith(label: newLabel, tokenImage: newImageUrl));
-                      if (edited == null) {
-                        Logger.error('Token editing failed');
-                        return;
-                      }
-                      Logger.info('Token edited: ${token.label} -> ${edited.label}, ${token.tokenImage} -> ${edited.tokenImage}');
-                      if (context.mounted) Navigator.of(context).pop();
-                    },
-          child: Text(
-            appLocalizations.saveButton,
-            overflow: TextOverflow.fade,
-            softWrap: false,
-          ),
+              ? _saveButtonPressed
+              : _defaultSaveAction,
         ),
       ],
     );
+  }
+
+  void _saveButtonPressed() async {
+    widget.onSaveButtonPressed!(
+      newLabel: nameInputController.text,
+      newImageUrl: imageUrlController.text,
+    );
+  }
+
+  void _defaultSaveAction() async {
+    final newLabel = nameInputController.text;
+    final newImageUrl = imageUrlController.text;
+    if (newLabel.isEmpty) return;
+    final edited = await globalRef
+        ?.read(tokenProvider.notifier)
+        .updateToken(
+          token,
+          (p0) => p0.copyWith(label: newLabel, tokenImage: newImageUrl),
+        );
+    if (edited == null) {
+      Logger.error('Token editing failed');
+      return;
+    }
+    Logger.info(
+      'Token edited: ${token.label} -> ${edited.label}, ${token.tokenImage} -> ${edited.tokenImage}',
+    );
+    if (mounted) Navigator.of(context).pop();
   }
 }
 
@@ -221,23 +245,25 @@ class ReadOnlyTextFormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => TextFormField(
-        initialValue: text,
-        decoration: InputDecoration(
-          labelText: labelText,
-          enabledBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: Theme.of(context).disabledColor),
-          ),
-          focusedBorder: UnderlineInputBorder(
-            borderSide: BorderSide(color: Theme.of(context).disabledColor),
-          ),
-          border: UnderlineInputBorder(
-            borderSide: BorderSide(color: Theme.of(context).disabledColor),
-          ),
-        ),
-        readOnly: true,
-        onTap: onTap,
-        style: Theme.of(context).textTheme.titleSmall?.copyWith(color: Theme.of(context).disabledColor),
-      );
+    initialValue: text,
+    decoration: InputDecoration(
+      labelText: labelText,
+      enabledBorder: UnderlineInputBorder(
+        borderSide: BorderSide(color: Theme.of(context).disabledColor),
+      ),
+      focusedBorder: UnderlineInputBorder(
+        borderSide: BorderSide(color: Theme.of(context).disabledColor),
+      ),
+      border: UnderlineInputBorder(
+        borderSide: BorderSide(color: Theme.of(context).disabledColor),
+      ),
+    ),
+    readOnly: true,
+    onTap: onTap,
+    style: Theme.of(
+      context,
+    ).textTheme.titleSmall?.copyWith(color: Theme.of(context).disabledColor),
+  );
 }
 
 class EditActionExpansionTile extends StatefulWidget {
@@ -251,10 +277,12 @@ class EditActionExpansionTile extends StatefulWidget {
   });
 
   @override
-  State<EditActionExpansionTile> createState() => _EditActionExpansionTileState();
+  State<EditActionExpansionTile> createState() =>
+      _EditActionExpansionTileState();
 }
 
-class _EditActionExpansionTileState extends State<EditActionExpansionTile> with SingleTickerProviderStateMixin {
+class _EditActionExpansionTileState extends State<EditActionExpansionTile>
+    with SingleTickerProviderStateMixin {
   AnimationController? controller;
   Animation<double>? animation;
 
@@ -273,10 +301,15 @@ class _EditActionExpansionTileState extends State<EditActionExpansionTile> with 
   Widget build(BuildContext context) {
     if (animation == null) {
       controller = AnimationController(
-        duration: ExpansionTileTheme.of(context).expansionAnimationStyle?.duration ?? const Duration(milliseconds: 200),
+        duration:
+            ExpansionTileTheme.of(context).expansionAnimationStyle?.duration ??
+            const Duration(milliseconds: 200),
         vsync: this,
       );
-      animation = CurvedAnimation(parent: controller!, curve: Curves.fastOutSlowIn);
+      animation = CurvedAnimation(
+        parent: controller!,
+        curve: Curves.fastOutSlowIn,
+      );
     }
     return AnimatedBuilder(
       animation: animation!,
@@ -308,7 +341,10 @@ class _EditActionExpansionTileState extends State<EditActionExpansionTile> with 
                   ),
                 ),
                 const SizedBox(width: 8.0),
-                Text(widget.title, style: Theme.of(context).textTheme.titleSmall),
+                Text(
+                  widget.title,
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
               ],
             ),
             showTrailingIcon: false,
@@ -322,10 +358,8 @@ class _EditActionExpansionTileState extends State<EditActionExpansionTile> with 
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Column(
-                  children: widget.children,
-                ),
-              )
+                child: Column(children: widget.children),
+              ),
             ],
           ),
         ),

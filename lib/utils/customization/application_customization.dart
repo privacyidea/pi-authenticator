@@ -17,6 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -27,68 +28,84 @@ import '../../../utils/customization/theme_customization.dart';
 import '../../model/enums/app_feature.dart';
 import '../../model/enums/image_format.dart';
 import '../../model/widget_image.dart';
+import 'theme_extentions/app_dimensions.dart';
 
+/// The central hub for application-wide customization.
+/// It orchestrates branding (logos, names), technical metadata (support links, crash reporting),
+/// visual styles (Themes), and layout metrics (Dimensions).
 class ApplicationCustomization {
+  /// Singleton-like access to the default branding configuration.
   static final defaultCustomization = ApplicationCustomization();
+
   static const _defaultAppName = 'privacyIDEA Authenticator';
   static const _defaultWebsiteLink = 'https://netknights.it/';
   static const _defaultCrashRecipient = 'app-crash@netknights.it';
-  static const _defaultCrashSubjectPrefix = '(\$version) privacyIDEA Authenticator >>>';
+  static const _defaultCrashSubjectPrefix =
+      '($prefixVersionVariable) privacyIDEA Authenticator >>>';
   static const _defaultFeedbackRecipient = 'app-crash@netknights.it';
-  static const _defaultFeedbackSubjectPrefix = '(\$version) privacyIDEA Authenticator >>> Feedback';
+  static const _defaultFeedbackSubjectPrefix =
+      '($prefixVersionVariable) privacyIDEA Authenticator >>> Feedback';
+
+  /// Placeholder string used in subject prefixes to be replaced by the actual app version.
   static const prefixVersionVariable = '\$version';
 
   static const String defaultFontName = 'defaultFont';
-  final String fontFamilyName;
-  final Uint8List? customFontBytes;
-  // Edit in android/app/src/main/AndroidManifest.xml file
-  // <application android:label="app name">
 
-  // Edit in ios/Runner/Info.plist file
-  // <key>CFBundleName</key>
-  // <string>app name</string>
-  // <string>app name</string>
+  // --- Branding & Content ---
 
-  // CHANGE PACKAGE NAME
-  // Type in terminal
-  // flutter pub run change_app_package_name:main new.package.name
-
-  // CHANGE LAUNCHER ICONS
-  // Edit in pubspec.yaml file
-  // flutter_icons:
-  // android: true
-  // ios: true
-  // image_path: appIcon as string
-
-  // Terminal
-  // flutter pub run flutter_launcher_icons:main
-
-  // ----- CHANGE GOOGLE-SERVICES -----
-  // Insert the new google-services.json with the package name of the new app
-  // 1. Android: google-services.json is the file name
-  // - /android/app/src/debug (add ".debug" to package_name)
-  // - /android/app/src/release
-  // 2. iOS: in /ios/ add the GoogleService-Info.plist
-
+  /// The visible name of the application.
   final String appName;
-  final String websiteLink;
-  final String crashRecipient;
-  final String rawCrashSubjectPrefix;
-  String get crashSubjectPrefix => rawCrashSubjectPrefix.replaceAll(prefixVersionVariable, InfoUtils.currentVersionAndBuildNumber);
-  final String feedbackRecipient;
-  final String rawFeedbackSubjectPrefix;
-  String get feedbackSubjectPrefix => rawFeedbackSubjectPrefix.replaceAll(prefixVersionVariable, InfoUtils.currentVersionAndBuildNumber);
-  final WidgetImage appbarIcon;
-  static const String appbarIconFileName = 'appbar_icon';
-  final WidgetImage splashScreenImage;
-  static const String splashScreenImageFileName = 'splash_screen_image';
-  final WidgetImage? backgroundImage;
-  static const String backgroundImageFileName = 'background_image';
-  final WidgetImage? licensesViewImage;
-  static const String licensesViewImageFileName = 'licenses_view_image';
 
+  /// The URL used for 'About' sections or help links.
+  final String websiteLink;
+
+  /// Email address receiving automated or manual crash reports.
+  final String crashRecipient;
+
+  /// Template for the crash report email subject.
+  final String rawCrashSubjectPrefix;
+
+  /// Email address for user-driven feedback.
+  final String feedbackRecipient;
+
+  /// Template for the feedback email subject.
+  final String rawFeedbackSubjectPrefix;
+
+  // --- Typography ---
+
+  /// The name of the font family used throughout the app.
+  final String fontFamilyName;
+
+  /// Raw binary data of a custom font file, if provided via JSON/API.
+  final Uint8List? customFontBytes;
+
+  // --- Imagery Assets ---
+
+  /// Icon displayed in the primary AppBar.
+  final WidgetImage appbarIcon;
+
+  /// Image shown during the application's initial loading phase.
+  final WidgetImage splashScreenImage;
+
+  /// Optional background image for the main views.
+  final WidgetImage? backgroundImage;
+
+  /// Optional decorative image for the licenses/legal view.
+  final WidgetImage? licensesViewImage;
+
+  // --- Styling & Layout ---
+
+  /// The light mode color configuration.
   final ThemeCustomization lightTheme;
+
+  /// The dark mode color configuration.
   final ThemeCustomization darkTheme;
+
+  /// Global spatial configuration (spacing, radii, icon sizes).
+  /// This is injected into [ThemeCustomization] during theme generation.
+  final AppDimensions dimensions;
+
+  /// A set of features that are explicitly disabled for this specific build/customer.
   final Set<AppFeature> disabledFeatures;
 
   ApplicationCustomization({
@@ -106,14 +123,52 @@ class ApplicationCustomization {
     this.licensesViewImage,
     this.lightTheme = ThemeCustomization.defaultLightTheme,
     this.darkTheme = ThemeCustomization.defaultDarkTheme,
+    this.dimensions = const AppDimensions(),
     this.disabledFeatures = const {},
-  })  : appbarIcon = appbarIcon ?? WidgetImage(imageFormat: ImageFormat.png, imageData: defaultIconUint8List, fileName: appbarIconFileName),
-        splashScreenImage =
-            splashScreenImage ?? WidgetImage(imageFormat: ImageFormat.png, imageData: defaultImageUint8List, fileName: splashScreenImageFileName),
-        backgroundImage = backgroundImage != null
-            ? backgroundImage()
-            : WidgetImage(imageFormat: ImageFormat.png, imageData: defaultImageUint8List, fileName: splashScreenImageFileName);
+  }) : appbarIcon =
+           appbarIcon ??
+           WidgetImage(
+             imageFormat: ImageFormat.png,
+             imageData: defaultIconUint8List,
+             fileName: 'appbar_icon',
+           ),
+       splashScreenImage =
+           splashScreenImage ??
+           WidgetImage(
+             imageFormat: ImageFormat.png,
+             imageData: defaultImageUint8List,
+             fileName: 'splash_screen_image',
+           ),
+       backgroundImage = backgroundImage != null ? backgroundImage() : null;
 
+  /// Computed property that injects the current version into the crash subject string.
+  String get crashSubjectPrefix => rawCrashSubjectPrefix.replaceAll(
+    prefixVersionVariable,
+    InfoUtils.currentVersionAndBuildNumber,
+  );
+
+  /// Computed property that injects the current version into the feedback subject string.
+  String get feedbackSubjectPrefix => rawFeedbackSubjectPrefix.replaceAll(
+    prefixVersionVariable,
+    InfoUtils.currentVersionAndBuildNumber,
+  );
+
+  /// Generates a [ThemeData] for Light Mode.
+  /// It merges color data, typography, and spatial [dimensions] into a single Flutter-compatible object.
+  ThemeData generateLightTheme() => lightTheme.generateTheme(
+    fontFamily: customFontBytes != null ? fontFamilyName : null,
+    dimensions: dimensions,
+  );
+
+  /// Generates a [ThemeData] for Dark Mode.
+  /// Ensures consistent [dimensions] are used even when colors switch to dark variants.
+  ThemeData generateDarkTheme() => darkTheme.generateTheme(
+    fontFamily: customFontBytes != null ? fontFamilyName : null,
+    dimensions: dimensions,
+  );
+
+  /// Standard 'immutable update' pattern. Creates a new instance with updated values.
+  /// This ensures that [dimensions] can be updated dynamically (e.g., via a 'Compact Mode' setting).
   ApplicationCustomization copyWith({
     String? appName,
     String? websiteLink,
@@ -127,26 +182,30 @@ class ApplicationCustomization {
     WidgetImage? Function()? licensesViewImage,
     ThemeCustomization? lightTheme,
     ThemeCustomization? darkTheme,
+    AppDimensions? dimensions,
     Set<AppFeature>? disabledFeatures,
-  }) =>
-      ApplicationCustomization(
-        appName: appName ?? this.appName,
-        websiteLink: websiteLink ?? this.websiteLink,
-        crashRecipient: crashRecipient ?? this.crashRecipient,
-        rawCrashSubjectPrefix: crashSubjectPrefix ?? rawCrashSubjectPrefix,
-        feedbackRecipient: feedbackRecipient ?? this.feedbackRecipient,
-        rawFeedbackSubjectPrefix: feedbackSubjectPrefix ?? rawFeedbackSubjectPrefix,
-        fontFamilyName: fontFamilyName,
-        customFontBytes: customFontBytes,
-        appbarIcon: appbarIcon ?? this.appbarIcon,
-        splashScreenImage: splashScreenImage ?? this.splashScreenImage,
-        backgroundImage: backgroundImage ?? () => this.backgroundImage,
-        licensesViewImage: licensesViewImage != null ? licensesViewImage() : this.licensesViewImage,
-        lightTheme: lightTheme ?? this.lightTheme,
-        darkTheme: darkTheme ?? this.darkTheme,
-        disabledFeatures: disabledFeatures ?? this.disabledFeatures,
-      );
+  }) => ApplicationCustomization(
+    appName: appName ?? this.appName,
+    websiteLink: websiteLink ?? this.websiteLink,
+    crashRecipient: crashRecipient ?? this.crashRecipient,
+    rawCrashSubjectPrefix: crashSubjectPrefix ?? rawCrashSubjectPrefix,
+    feedbackRecipient: feedbackRecipient ?? this.feedbackRecipient,
+    rawFeedbackSubjectPrefix: feedbackSubjectPrefix ?? rawFeedbackSubjectPrefix,
+    fontFamilyName: fontFamilyName,
+    customFontBytes: customFontBytes,
+    appbarIcon: appbarIcon ?? this.appbarIcon,
+    splashScreenImage: splashScreenImage ?? this.splashScreenImage,
+    backgroundImage: backgroundImage ?? () => this.backgroundImage,
+    licensesViewImage: licensesViewImage != null
+        ? licensesViewImage()
+        : this.licensesViewImage,
+    lightTheme: lightTheme ?? this.lightTheme,
+    darkTheme: darkTheme ?? this.darkTheme,
+    dimensions: dimensions ?? this.dimensions,
+    disabledFeatures: disabledFeatures ?? this.disabledFeatures,
+  );
 
+  /// Equality check to ensure UI updates only trigger when customization data actually changes.
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -165,67 +224,30 @@ class ApplicationCustomization {
           licensesViewImage == other.licensesViewImage &&
           lightTheme == other.lightTheme &&
           darkTheme == other.darkTheme &&
+          dimensions == other.dimensions &&
           disabledFeatures == other.disabledFeatures;
 
   @override
   int get hashCode => Object.hashAll([
-        appName,
-        websiteLink,
-        crashRecipient,
-        rawCrashSubjectPrefix,
-        feedbackRecipient,
-        rawFeedbackSubjectPrefix,
-        fontFamilyName,
-        customFontBytes,
-        appbarIcon,
-        splashScreenImage,
-        backgroundImage,
-        licensesViewImage,
-        lightTheme,
-        darkTheme,
-        disabledFeatures,
-      ]);
+    appName,
+    websiteLink,
+    crashRecipient,
+    rawCrashSubjectPrefix,
+    feedbackRecipient,
+    rawFeedbackSubjectPrefix,
+    fontFamilyName,
+    customFontBytes,
+    appbarIcon,
+    splashScreenImage,
+    backgroundImage,
+    licensesViewImage,
+    lightTheme,
+    darkTheme,
+    dimensions,
+    disabledFeatures,
+  ]);
 
-  Future<ApplicationCustomization> updateFont(Uint8List? fontBytes, String fontName) async {
-    final newState = ApplicationCustomization(
-      appName: appName,
-      websiteLink: websiteLink,
-      crashRecipient: crashRecipient,
-      rawCrashSubjectPrefix: rawCrashSubjectPrefix,
-      feedbackRecipient: feedbackRecipient,
-      rawFeedbackSubjectPrefix: rawFeedbackSubjectPrefix,
-      fontFamilyName: fontName,
-      customFontBytes: fontBytes,
-      appbarIcon: appbarIcon,
-      splashScreenImage: splashScreenImage,
-      backgroundImage: () => backgroundImage,
-      licensesViewImage: licensesViewImage,
-      lightTheme: lightTheme,
-      darkTheme: darkTheme,
-      disabledFeatures: disabledFeatures,
-    );
-    await newState.loadFonts();
-    return newState;
-  }
-
-  ApplicationCustomization resetFont() => ApplicationCustomization(
-        appName: appName,
-        websiteLink: websiteLink,
-        crashRecipient: crashRecipient,
-        rawCrashSubjectPrefix: rawCrashSubjectPrefix,
-        feedbackRecipient: feedbackRecipient,
-        rawFeedbackSubjectPrefix: rawFeedbackSubjectPrefix,
-        fontFamilyName: defaultFontName,
-        customFontBytes: null,
-        appbarIcon: appbarIcon,
-        splashScreenImage: splashScreenImage,
-        backgroundImage: () => backgroundImage,
-        licensesViewImage: licensesViewImage,
-        lightTheme: lightTheme,
-        darkTheme: darkTheme,
-        disabledFeatures: disabledFeatures,
-      );
-
+  /// Handles the dynamic loading of custom fonts into the Flutter engine.
   Future<void> loadFonts() async {
     if (customFontBytes == null) return;
     var fontLoader = FontLoader(fontFamilyName);
@@ -234,57 +256,84 @@ class ApplicationCustomization {
     await fontLoader.load();
   }
 
-  ThemeData generateLightTheme() => lightTheme.generateTheme(fontFamily: customFontBytes != null ? fontFamilyName : null);
-  ThemeData generateDarkTheme() => darkTheme.generateTheme(fontFamily: customFontBytes != null ? fontFamilyName : null);
+  /// Deserialization from JSON.
+  /// Falls back to default NetKnights values if specific keys are missing.
+  factory ApplicationCustomization.fromJson(
+    Map<String, dynamic> json,
+  ) => ApplicationCustomization(
+    appName: json['appName'] as String? ?? _defaultAppName,
+    websiteLink: json['websiteLink'] as String? ?? _defaultWebsiteLink,
+    crashRecipient: json['crashRecipient'] as String? ?? _defaultCrashRecipient,
+    rawCrashSubjectPrefix:
+        json['crashSubjectPrefix'] as String? ?? _defaultCrashSubjectPrefix,
+    feedbackRecipient:
+        json['feedbackRecipient'] as String? ?? _defaultFeedbackRecipient,
+    rawFeedbackSubjectPrefix:
+        json['feedbackSubjectPrefix'] as String? ??
+        _defaultFeedbackSubjectPrefix,
+    customFontBytes: json['customFontBytes'] != null
+        ? base64Decode(json['customFontBytes'] as String)
+        : null,
+    fontFamilyName: json['fontFamilyName'] as String? ?? defaultFontName,
+    appbarIcon: json['appbarIcon'] != null
+        ? WidgetImage.fromJson(json['appbarIcon'] as Map<String, dynamic>)
+        : null,
+    splashScreenImage: json['splashScreenImage'] != null
+        ? WidgetImage.fromJson(
+            json['splashScreenImage'] as Map<String, dynamic>,
+          )
+        : null,
+    backgroundImage: json.containsKey('backgroundImage')
+        ? () => WidgetImage.fromJson(
+            json['backgroundImage'] as Map<String, dynamic>,
+          )
+        : null,
+    licensesViewImage: json['licensesViewImage'] != null
+        ? WidgetImage.fromJson(
+            json['licensesViewImage'] as Map<String, dynamic>,
+          )
+        : null,
+    lightTheme: json['lightTheme'] != null
+        ? ThemeCustomization.fromJson(
+            json['lightTheme'] as Map<String, dynamic>,
+          )
+        : ThemeCustomization.defaultLightTheme,
+    darkTheme: json['darkTheme'] != null
+        ? ThemeCustomization.fromJson(json['darkTheme'] as Map<String, dynamic>)
+        : ThemeCustomization.defaultDarkTheme,
+    dimensions: json['dimensions'] != null
+        ? AppDimensions.fromJson(json['dimensions'] as Map<String, dynamic>)
+        : const AppDimensions(),
+    disabledFeatures: json['disabledFeatures'] != null
+        ? (json['disabledFeatures'] as List<dynamic>)
+              .map((e) => AppFeature.values.byName(e as String))
+              .toSet()
+        : {},
+  );
 
-  factory ApplicationCustomization.fromJson(Map<String, dynamic> json) => ApplicationCustomization(
-        appName: json['appName'] as String? ?? _defaultAppName,
-        websiteLink: json['websiteLink'] as String? ?? _defaultWebsiteLink,
-        crashRecipient: json['crashRecipient'] as String? ?? _defaultCrashRecipient,
-        rawCrashSubjectPrefix: json['crashSubjectPrefix'] as String? ?? _defaultCrashSubjectPrefix,
-        feedbackRecipient: json['feedbackRecipient'] as String? ?? _defaultFeedbackRecipient,
-        rawFeedbackSubjectPrefix: json['feedbackSubjectPrefix'] as String? ?? _defaultFeedbackSubjectPrefix,
-        customFontBytes: json['customFontBytes'] != null ? base64Decode(json['customFontBytes'] as String) : null,
-        fontFamilyName: json['fontFamilyName'] as String? ?? defaultFontName,
-        appbarIcon: json['appbarIcon'] != null
-            ? WidgetImage.fromJson(json['appbarIcon'] as Map<String, dynamic>)
-            : json['appIcon'] != null
-                ? WidgetImage.fromJson(json['appIcon'] as Map<String, dynamic>)
-                : null,
-        splashScreenImage: json['splashScreenImage'] != null
-            ? WidgetImage.fromJson(json['splashScreenImage'] as Map<String, dynamic>)
-            : json['appImage'] != null
-                ? WidgetImage.fromJson(json['appImage'] as Map<String, dynamic>)
-                : null,
-        backgroundImage: json.containsKey('backgroundImage') ? () => WidgetImage.fromJson(json['backgroundImage'] as Map<String, dynamic>) : () => null,
-        licensesViewImage: json['licensesViewImage'] != null
-            ? WidgetImage.fromJson(json['licensesViewImage'] as Map<String, dynamic>)
-            : json['appImage'] != null
-                ? WidgetImage.fromJson(json['appImage'] as Map<String, dynamic>)
-                : null,
-        lightTheme: json['lightTheme'] != null ? ThemeCustomization.fromJson(json['lightTheme'] as Map<String, dynamic>) : ThemeCustomization.defaultLightTheme,
-        darkTheme: json['darkTheme'] != null ? ThemeCustomization.fromJson(json['darkTheme'] as Map<String, dynamic>) : ThemeCustomization.defaultDarkTheme,
-        disabledFeatures:
-            json['disabledFeatures'] != null ? (json['disabledFeatures'] as List<dynamic>).map((e) => AppFeature.values.byName(e as String)).toSet() : {},
-      );
-
+  /// Serialization to JSON.
+  /// Includes the [dimensions] object to ensure layout settings are persisted or transmitted correctly.
   Map<String, dynamic> toJson() => {
-        'appName': appName,
-        'websiteLink': websiteLink,
-        'crashRecipient': crashRecipient,
-        'crashSubjectPrefix': rawCrashSubjectPrefix,
-        'feedbackRecipient': feedbackRecipient,
-        'feedbackSubjectPrefix': rawFeedbackSubjectPrefix,
-        'fontFamilyName': fontFamilyName,
-        'customFontBytes': customFontBytes != null ? base64Encode(customFontBytes!) : null,
-        'appbarIcon': appbarIcon.toJson(),
-        'splashScreenImage': splashScreenImage.toJson(),
-        if (backgroundImage != null) 'backgroundImage': backgroundImage?.toJson(),
-        if (licensesViewImage != null) 'licensesViewImage': licensesViewImage?.toJson(),
-        'lightTheme': lightTheme.toJson(),
-        'darkTheme': darkTheme.toJson(),
-        'disabledFeatures': disabledFeatures.map((e) => e.name).toList(),
-      };
+    'appName': appName,
+    'websiteLink': websiteLink,
+    'crashRecipient': crashRecipient,
+    'crashSubjectPrefix': rawCrashSubjectPrefix,
+    'feedbackRecipient': feedbackRecipient,
+    'feedbackSubjectPrefix': rawFeedbackSubjectPrefix,
+    'fontFamilyName': fontFamilyName,
+    'customFontBytes': customFontBytes != null
+        ? base64Encode(customFontBytes!)
+        : null,
+    'appbarIcon': appbarIcon.toJson(),
+    'splashScreenImage': splashScreenImage.toJson(),
+    if (backgroundImage != null) 'backgroundImage': backgroundImage?.toJson(),
+    if (licensesViewImage != null)
+      'licensesViewImage': licensesViewImage?.toJson(),
+    'lightTheme': lightTheme.toJson(),
+    'darkTheme': darkTheme.toJson(),
+    'dimensions': dimensions.toJson(),
+    'disabledFeatures': disabledFeatures.map((e) => e.name).toList(),
+  };
 }
 
 final Uint8List defaultIconUint8List = base64Decode(

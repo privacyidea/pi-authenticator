@@ -57,7 +57,8 @@ class _FeedbackSendRowState extends State<FeedbackSendRow> {
               Expanded(
                 flex: 4,
                 child: TextButton(
-                  onPressed: () => setState(() => _addDeviceInfo = !_addDeviceInfo),
+                  onPressed: () =>
+                      setState(() => _addDeviceInfo = !_addDeviceInfo),
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -75,13 +76,14 @@ class _FeedbackSendRowState extends State<FeedbackSendRow> {
                         width: 24,
                         height: 24,
                         child: Checkbox(
-                            value: _addDeviceInfo,
-                            onChanged: (value) {
-                              if (value == null) return;
-                              setState(() {
-                                _addDeviceInfo = value;
-                              });
-                            }),
+                          value: _addDeviceInfo,
+                          onChanged: (value) {
+                            if (value == null) return;
+                            setState(() {
+                              _addDeviceInfo = value;
+                            });
+                          },
+                        ),
                       ),
                     ],
                   ),
@@ -105,13 +107,22 @@ class _FeedbackSendRowState extends State<FeedbackSendRow> {
                 if (sended) {
                   showAsyncDialog(
                     builder: (context) => DefaultDialog(
-                      title: Text(AppLocalizations.of(context)!.feedbackSentTitle),
-                      content: Text(AppLocalizations.of(context)!.feedbackSentDescription),
+                      title: Text(
+                        AppLocalizations.of(context)!.feedbackSentTitle,
+                      ),
+                      content: Text(
+                        AppLocalizations.of(context)!.feedbackSentDescription,
+                      ),
                       actionsAlignment: MainAxisAlignment.center,
                       actions: [
-                        ElevatedButton(
-                            onPressed: () => Navigator.of(context).popUntil((route) => route.settings.name == MainView.routeName),
-                            child: Text(AppLocalizations.of(context)!.ok))
+                        DialogAction(
+                          label: AppLocalizations.of(context)!.ok,
+                          intent: DialogActionIntent.confirm,
+                          onPressed: () => Navigator.of(context).popUntil(
+                            (route) =>
+                                route.settings.name == MainView.routeName,
+                          ),
+                        ),
                       ],
                     ),
                     barrierDismissible: false,
@@ -133,15 +144,19 @@ class _FeedbackSendRowState extends State<FeedbackSendRow> {
     );
   }
 
-  String _addDeviceInfoToMail(String feedback) => '$feedback\n\n[${InfoUtils.currentVersionAndBuildNumber}] ${InfoUtils.deviceInfoString}';
+  String _addDeviceInfoToMail(String feedback) =>
+      '$feedback\n\n[${InfoUtils.currentVersionAndBuildNumber}] ${InfoUtils.deviceInfoString}';
   Future<bool> _sendMail(String mailText) => PiMailer.sendMail(
-        mailRecipients: _mailRecipients,
-        subjectPrefix: PrivacyIDEAAuthenticator.currentCustomization?.feedbackSubjectPrefix,
-        subject: '',
-        body: mailText,
-        subjectAppVersion: false,
-      );
+    mailRecipients: _mailRecipients,
+    subjectPrefix:
+        PrivacyIDEAAuthenticator.currentCustomization?.feedbackSubjectPrefix,
+    subject: '',
+    body: mailText,
+    subjectAppVersion: false,
+  );
 
   Set<String> get _mailRecipients =>
-      PrivacyIDEAAuthenticator.currentCustomization != null ? {PrivacyIDEAAuthenticator.currentCustomization!.feedbackRecipient} : {};
+      PrivacyIDEAAuthenticator.currentCustomization != null
+      ? {PrivacyIDEAAuthenticator.currentCustomization!.feedbackRecipient}
+      : {};
 }

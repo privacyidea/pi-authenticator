@@ -37,11 +37,16 @@ class GenerateTwoStepDialog extends StatelessWidget {
   final int _keyLength;
   final Uint8List _password;
 
-  const GenerateTwoStepDialog({super.key, required int saltLength, required int iterations, required int keyLength, required Uint8List password})
-      : _saltLength = saltLength,
-        _iterations = iterations,
-        _keyLength = keyLength,
-        _password = password;
+  const GenerateTwoStepDialog({
+    super.key,
+    required int saltLength,
+    required int iterations,
+    required int keyLength,
+    required Uint8List password,
+  }) : _saltLength = saltLength,
+       _iterations = iterations,
+       _keyLength = keyLength,
+       _password = password;
 
   void _do2Step(BuildContext context) async {
     // 1. Generate salt.
@@ -57,13 +62,18 @@ class GenerateTwoStepDialog extends StatelessWidget {
 
     String phoneChecksum = await generatePhoneChecksum(phonePart: salt);
     if (!context.mounted) {
-      Logger.warning('GenerateTwoStepDialog: context is not mounted anymore. Aborting.');
+      Logger.warning(
+        'GenerateTwoStepDialog: context is not mounted anymore. Aborting.',
+      );
       return;
     }
 
     // 3. Show phone part if this widget is still mounted.
     if (context.mounted) Navigator.of(context).pop(generatedSecret);
-    showAsyncDialog(barrierDismissible: false, builder: (context) => TwoStepDialog(phoneChecksum: phoneChecksum));
+    showAsyncDialog(
+      barrierDismissible: false,
+      builder: (context) => TwoStepDialog(phoneChecksum: phoneChecksum),
+    );
   }
 
   @override
@@ -114,16 +124,13 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
             key: twoStepDialogContent,
           ),
           actions: [
-            TextButton(
+            DialogAction(
+              label: AppLocalizations.of(context)!.dismiss,
+              intent: DialogActionIntent.cancel,
               onPressed: () {
                 if (context.mounted) Navigator.of(context).pop();
               },
-              child: Text(
-                AppLocalizations.of(context)!.dismiss,
-                overflow: TextOverflow.fade,
-                softWrap: false,
-              ),
-            )
+            ),
           ],
         ),
       ),

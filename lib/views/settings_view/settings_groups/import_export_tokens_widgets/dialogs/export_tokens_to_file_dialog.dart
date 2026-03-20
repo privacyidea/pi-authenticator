@@ -27,6 +27,7 @@ import 'package:path_provider/path_provider.dart';
 import '../../../../../../../utils/view_utils.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../mains/main_netknights.dart';
+import '../../../../../model/enums/force_biometric_option.dart';
 import '../../../../../model/tokens/token.dart';
 import '../../../../../utils/encryption/token_encryption.dart';
 import '../../../../../utils/lock_auth.dart';
@@ -39,10 +40,12 @@ class ExportTokensToFileDialog extends ConsumerStatefulWidget {
   const ExportTokensToFileDialog({super.key, required this.tokens});
 
   @override
-  ConsumerState<ExportTokensToFileDialog> createState() => _ExportTokensToFileDialogState();
+  ConsumerState<ExportTokensToFileDialog> createState() =>
+      _ExportTokensToFileDialogState();
 }
 
-class _ExportTokensToFileDialogState extends ConsumerState<ExportTokensToFileDialog> {
+class _ExportTokensToFileDialogState
+    extends ConsumerState<ExportTokensToFileDialog> {
   final _passwordTextController = TextEditingController();
   bool _passwordHidden = true;
   final _confirmTextController = TextEditingController();
@@ -80,12 +83,14 @@ class _ExportTokensToFileDialogState extends ConsumerState<ExportTokensToFileDia
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: GestureDetector(
-                        onTapDown: (_) => setState(() => _passwordHidden = false),
+                        onTapDown: (_) =>
+                            setState(() => _passwordHidden = false),
                         onTapUp: (_) => setState(() => _passwordHidden = true),
-                        onTapCancel: () => setState(() => _passwordHidden = true),
+                        onTapCancel: () =>
+                            setState(() => _passwordHidden = true),
                         child: const Icon(Icons.visibility),
                       ),
-                    )
+                    ),
                   ],
                 ),
                 Row(
@@ -97,7 +102,9 @@ class _ExportTokensToFileDialogState extends ConsumerState<ExportTokensToFileDia
                         obscureText: _confirmHidden,
                         onChanged: (value) => setState(() {}),
                         autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: (value) => Validators(appLocalizations).confirmPassword(_passwordTextController.text, value),
+                        validator: (value) => Validators(
+                          appLocalizations,
+                        ).confirmPassword(_passwordTextController.text, value),
                         decoration: InputDecoration(
                           labelText: appLocalizations.confirmPassword,
                           labelStyle: Theme.of(context).textTheme.titleSmall,
@@ -108,12 +115,14 @@ class _ExportTokensToFileDialogState extends ConsumerState<ExportTokensToFileDia
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       child: GestureDetector(
-                        onTapDown: (_) => setState(() => _confirmHidden = false),
+                        onTapDown: (_) =>
+                            setState(() => _confirmHidden = false),
                         onTapUp: (_) => setState(() => _confirmHidden = true),
-                        onTapCancel: () => setState(() => _confirmHidden = true),
+                        onTapCancel: () =>
+                            setState(() => _confirmHidden = true),
                         child: const Icon(Icons.visibility),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ]
@@ -130,30 +139,54 @@ class _ExportTokensToFileDialogState extends ConsumerState<ExportTokensToFileDia
       ),
       actions: _exportPressed == false
           ? [
-              TextButton(
+              DialogAction(
+                label: appLocalizations.cancel,
+                intent: DialogActionIntent.cancel,
                 onPressed: () => Navigator.of(context).pop(false),
-                child: Text(appLocalizations.cancel),
               ),
-              TextButton(
-                  onPressed: _passwordTextController.text.isNotEmpty && _passwordTextController.text == _confirmTextController.text
-                      ? () async {
-                          if (_passwordTextController.text.isEmpty || _passwordTextController.text != _confirmTextController.text) {
-                            return;
-                          }
-                          final authenticated = await lockAuth(
-                            reason: (localization) => localization.exportLockedTokenReason,
-                            localization: appLocalizations,
-                            autoAuthIfUnsupported: true,
-                          );
-                          if (!authenticated || !mounted) return;
-                          setState(() => _exportPressed = true);
-                          final tokensToEncrypt = widget.tokens.map((e) => e.copyWith(folderId: () => null));
-                          _saveToFile(await TokenEncryption.encrypt(tokens: tokensToEncrypt, password: _passwordTextController.text));
-                        }
-                      : null,
-                  child: Text(appLocalizations.export)),
+              DialogAction(
+                label: appLocalizations.export,
+                intent: DialogActionIntent.confirm,
+                onPressed:
+                    _passwordTextController.text.isNotEmpty &&
+                        _passwordTextController.text ==
+                            _confirmTextController.text
+                    ? _exportTokens
+                    : null,
+              ),
             ]
           : [],
+    );
+  }
+
+  void _exportTokens() async {
+    if (_passwordTextController.text.isEmpty ||
+        _passwordTextController.text != _confirmTextController.text) {
+      return;
+    }
+    final appLocalizations = AppLocalizations.of(context)!;
+    final authenticated = await lockAuth(
+      reason: (localization) => localization.exportLockedTokenReason,
+      localization: appLocalizations,
+      forceBiometricOption:
+          widget.tokens.any(
+            (token) =>
+                token.forceBiometricOption == ForceBiometricOption.biometric,
+          )
+          ? ForceBiometricOption.biometric
+          : null,
+      autoAuthIfUnsupported: true,
+    );
+    if (!authenticated || !mounted) return;
+    setState(() => _exportPressed = true);
+    final tokensToEncrypt = widget.tokens.map(
+      (e) => e.copyWith(folderId: () => null),
+    );
+    _saveToFile(
+      await TokenEncryption.encrypt(
+        tokens: tokensToEncrypt,
+        password: _passwordTextController.text,
+      ),
     );
   }
 
@@ -161,28 +194,45 @@ class _ExportTokensToFileDialogState extends ConsumerState<ExportTokensToFileDia
     if (kIsWeb) return;
 
     bool isExported = false;
-    if (Platform.isAndroid && mounted) isExported = await _saveToFileAndroid(context, encryptedTokens);
-    if (Platform.isIOS && mounted) isExported = await _saveToFileIOS(context, encryptedTokens);
+    if (Platform.isAndroid && mounted) {
+      isExported = await _saveToFileAndroid(context, encryptedTokens);
+    }
+    if (Platform.isIOS && mounted) {
+      isExported = await _saveToFileIOS(context, encryptedTokens);
+    }
 
     if (mounted && isExported) Navigator.of(context).pop(isExported);
   }
 
-  Future<bool> _saveToFileAndroid(BuildContext context, String encryptedTokens) async {
+  Future<bool> _saveToFileAndroid(
+    BuildContext context,
+    String encryptedTokens,
+  ) async {
     final appLocalizations = AppLocalizations.of(context)!;
     try {
-      final path = 'storage/emulated/0/Download/${_getFileName()}'.replaceAll(RegExp(r'\s'), '-');
+      final path = 'storage/emulated/0/Download/${_getFileName()}'.replaceAll(
+        RegExp(r'\s'),
+        '-',
+      );
       final file = File(path);
       await file.writeAsString(encryptedTokens);
       showSnackBar(appLocalizations.fileSavedToDownloadsFolder);
       return true;
     } catch (e) {
-      if (context.mounted) ref.read(statusMessageProvider.notifier).state = StatusMessage(message: (l) => l.errorSavingFile);
+      if (context.mounted) {
+        ref.read(statusMessageProvider.notifier).state = StatusMessage(
+          message: (l) => l.errorSavingFile,
+        );
+      }
       setState(() => _exportPressed = false);
       return false;
     }
   }
 
-  Future<bool> _saveToFileIOS(BuildContext context, String encryptedTokens) async {
+  Future<bool> _saveToFileIOS(
+    BuildContext context,
+    String encryptedTokens,
+  ) async {
     final appLocalizations = AppLocalizations.of(context)!;
     final Directory downloadsDir = await getApplicationDocumentsDirectory();
     final file = File('${downloadsDir.path}/${_getFileName()}');
@@ -191,7 +241,11 @@ class _ExportTokensToFileDialogState extends ConsumerState<ExportTokensToFileDia
       showSnackBar(appLocalizations.fileSavedToDownloadsFolder);
       return true;
     } catch (e) {
-      if (context.mounted) ref.read(statusMessageProvider.notifier).state = StatusMessage(message: (l) => l.errorSavingFile);
+      if (context.mounted) {
+        ref.read(statusMessageProvider.notifier).state = StatusMessage(
+          message: (l) => l.errorSavingFile,
+        );
+      }
       setState(() => _exportPressed = false);
       return false;
     }

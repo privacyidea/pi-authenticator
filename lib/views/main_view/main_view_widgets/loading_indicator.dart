@@ -3,7 +3,7 @@
  *
  * Author: Frank Merkel <frank.merkel@netknights.it>
  *
- * Copyright (c) 2025 NetKnights GmbH
+ * Copyright (c) 2024-2026 NetKnights GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import 'package:flutter/material.dart';
 
 import '../../../utils/logger.dart';
 
-/// This widget is polling for challenges and closes itself when the polling is done.
 class LoadingIndicator extends StatelessWidget {
   static double widgetSize = 40;
   static OverlayEntry? _overlayEntry;
@@ -32,17 +31,23 @@ class LoadingIndicator extends StatelessWidget {
     void Function(T)? onComplete,
   }) async {
     if (_overlayEntry != null) return null;
+
     _overlayEntry = OverlayEntry(
       builder: (context) => const LoadingIndicator._(),
     );
+
     Logger.info('Showing loading indicator');
     Overlay.of(context).insert(_overlayEntry!);
-    final T result = await action();
-    onComplete?.call(result);
-    Logger.info('Hiding loading indicator');
-    _overlayEntry?.remove();
-    _overlayEntry = null;
-    return result;
+
+    try {
+      final T result = await action();
+      onComplete?.call(result);
+      return result;
+    } finally {
+      Logger.info('Hiding loading indicator');
+      _overlayEntry?.remove();
+      _overlayEntry = null;
+    }
   }
 
   const LoadingIndicator._();
@@ -50,26 +55,31 @@ class LoadingIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final theme = Theme.of(context);
 
     return Positioned(
       top: size.height * 0.08,
       left: (size.width - widgetSize) / 2,
       width: widgetSize,
       height: widgetSize,
-      child: Container(
+      child: Material(
+        type: MaterialType.transparency,
+        child: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: Theme.of(context).scaffoldBackgroundColor,
+            color: theme.scaffoldBackgroundColor,
             borderRadius: BorderRadius.circular(99),
             boxShadow: [
               BoxShadow(
-                color: Theme.of(context).shadowColor,
-                blurRadius: 2,
+                color: theme.shadowColor.withValues(alpha: 0.2),
+                blurRadius: 4,
                 offset: const Offset(0, 2),
               ),
             ],
           ),
-          child: const CircularProgressIndicator()),
+          child: const CircularProgressIndicator(strokeWidth: 3),
+        ),
+      ),
     );
   }
 }

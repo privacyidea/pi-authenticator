@@ -22,6 +22,7 @@ import 'dart:convert';
 import '../../utils/logger.dart';
 import '../../utils/object_validator/object_validators.dart';
 import '../enums/algorithms.dart';
+import '../enums/force_biometric_option.dart';
 import '../token_container.dart';
 import '../token_import/token_origin_data.dart';
 import '../token_template.dart';

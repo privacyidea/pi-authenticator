@@ -24,7 +24,6 @@ import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 
 import '../../../../../../../model/token_container.dart';
 import '../../../../../../../utils/view_utils.dart';
-import '../../../../../../../widgets/button_widgets/cooldown_button.dart';
 import '../../../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 import '../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../../widgets/dialog_widgets/default_dialog.dart';
@@ -37,10 +36,12 @@ class TransferContainerDialog extends ConsumerStatefulWidget {
   const TransferContainerDialog({super.key, required this.container});
 
   @override
-  ConsumerState<TransferContainerDialog> createState() => _TransferContainerDialogState();
+  ConsumerState<TransferContainerDialog> createState() =>
+      _TransferContainerDialogState();
 }
 
-class _TransferContainerDialogState extends ConsumerState<TransferContainerDialog> {
+class _TransferContainerDialogState
+    extends ConsumerState<TransferContainerDialog> {
   @override
   Widget build(BuildContext context) {
     final AppLocalizations appLocalizations = AppLocalizations.of(context)!;
@@ -55,13 +56,16 @@ class _TransferContainerDialogState extends ConsumerState<TransferContainerDialo
         ],
       ),
       actions: [
-        TextButton(
+        DialogAction(
+          label: appLocalizations.cancel,
+          intent: DialogActionIntent.cancel,
           onPressed: () => Navigator.of(context).pop(),
-          child: Text(appLocalizations.cancel),
         ),
-        CooldownButton(
+        DialogAction(
+          label: appLocalizations.startTransferButtonText,
+          cooldownMs: 1000,
+          intent: DialogActionIntent.confirm,
           onPressed: () => _startTransfer(widget.container),
-          child: Text(appLocalizations.startTransferButtonText),
         ),
       ],
     );
@@ -69,13 +73,19 @@ class _TransferContainerDialogState extends ConsumerState<TransferContainerDialo
 
   Future<void> _startTransfer(TokenContainerFinalized container) async {
     final String qrData;
-    final hasOfflineToken = (await ref.read(tokenProvider.future)).containerTokens(container.serial).where((token) => token.isOffline);
+    final hasOfflineToken = (await ref.read(
+      tokenProvider.future,
+    )).containerTokens(container.serial).where((token) => token.isOffline);
     if (hasOfflineToken.isNotEmpty) {
-      final continueTransfer = await showAsyncDialog(builder: (_) => TransferOfflineTokenDialog(hasOfflineToken.length));
+      final continueTransfer = await showAsyncDialog(
+        builder: (_) => TransferOfflineTokenDialog(hasOfflineToken.length),
+      );
       if (continueTransfer != true) return;
     }
     try {
-      qrData = await ref.read(tokenContainerProvider.notifier).getRolloverQrData(container);
+      qrData = await ref
+          .read(tokenContainerProvider.notifier)
+          .getRolloverQrData(container);
     } catch (e) {
       if (!mounted) return;
       return showErrorStatusMessage(

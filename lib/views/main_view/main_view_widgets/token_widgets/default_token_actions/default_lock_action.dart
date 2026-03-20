@@ -42,32 +42,52 @@ class DefaultLockAction extends ConsumerSlideableAction {
   CustomSlidableAction build(context, ref) {
     return CustomSlidableAction(
       backgroundColor: Theme.of(context).extension<TokenTileTheme>()!.lockColor,
-      foregroundColor: Theme.of(context).extension<TokenTileTheme>()!.actionForegroundColor,
+      foregroundColor: Theme.of(
+        context,
+      ).extension<TokenTileTheme>()!.actionForegroundColor,
       onPressed: (context) async {
-        if (!await lockAuth(reason: (localization) => localization.authenticateToUnLockToken, localization: AppLocalizations.of(context)!)) return;
-        Logger.info('Changing lock status of token to isLocked = ${!token.isLocked}');
+        if (!await lockAuth(
+          reason: (localization) => localization.authenticateToUnLockToken,
+          localization: AppLocalizations.of(context)!,
+          forceBiometricOption: token.forceBiometricOption,
+        )) {
+          return;
+        }
+        Logger.info(
+          'Changing lock status of token to isLocked = ${!token.isLocked}',
+        );
 
         globalRef?.read(tokenProvider.notifier).updateToken(token, (p0) {
-          return p0.copyWith(isLocked: !token.isLocked, isHidden: !token.isLocked);
+          return p0.copyWith(
+            isLocked: !token.isLocked,
+            isHidden: !token.isLocked,
+          );
         });
       },
       child: FocusedItemAsOverlay(
         tooltipWhenFocused: AppLocalizations.of(context)!.introLockToken,
         childIsMoving: true,
         alignment: Alignment.bottomCenter,
-        isFocused: ref.watch(introductionNotifierProvider).when(
-              data: (value) => value.isConditionFulfilled(ref, Introduction.lockToken),
+        isFocused: ref
+            .watch(introductionNotifierProvider)
+            .when(
+              data: (value) =>
+                  value.isConditionFulfilled(ref, Introduction.lockToken),
               error: (Object error, StackTrace stackTrace) => false,
               loading: () => false,
             ),
-        onComplete: () => ref.read(introductionNotifierProvider.notifier).complete(Introduction.lockToken),
+        onComplete: () => ref
+            .read(introductionNotifierProvider.notifier)
+            .complete(Introduction.lockToken),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const Icon(Icons.lock),
             Text(
-              token.isLocked ? AppLocalizations.of(context)!.unlock : AppLocalizations.of(context)!.lock,
+              token.isLocked
+                  ? AppLocalizations.of(context)!.unlock
+                  : AppLocalizations.of(context)!.lock,
               overflow: TextOverflow.fade,
               softWrap: false,
             ),

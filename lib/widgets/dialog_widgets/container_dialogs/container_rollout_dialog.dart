@@ -31,13 +31,23 @@ class ContainerSyncResultDialog extends StatelessWidget {
   final List<Token> addedTokens;
   final List<Token> removedTokens;
 
-  static void showDialog({required TokenContainerFinalized container, required List<Token> addedTokens, required List<Token> removedTokens}) {
+  static void showDialog({
+    required TokenContainerFinalized container,
+    required List<Token> addedTokens,
+    required List<Token> removedTokens,
+  }) {
     if (addedTokens.isEmpty && removedTokens.isEmpty) {
       // Nothing to show
       Logger.debug('No tokens added or removed during sync.');
       return;
     }
-    showAsyncDialog(builder: (context) => ContainerSyncResultDialog(container: container, addedTokens: addedTokens, removedTokens: removedTokens));
+    showAsyncDialog(
+      builder: (context) => ContainerSyncResultDialog(
+        container: container,
+        addedTokens: addedTokens,
+        removedTokens: removedTokens,
+      ),
+    );
   }
 
   const ContainerSyncResultDialog({
@@ -58,7 +68,11 @@ class ContainerSyncResultDialog extends StatelessWidget {
     }
     return DefaultDialog(
       hasCloseButton: true,
-      title: Text(AppLocalizations.of(context)!.containerSyncDialogTitle(container.serial)),
+      title: Text(
+        AppLocalizations.of(
+          context,
+        )!.containerSyncDialogTitle(container.serial),
+      ),
       content: SizedBox(
         width: double.maxFinite,
         child: SingleChildScrollView(
@@ -82,7 +96,9 @@ class ContainerSyncResultDialog extends StatelessWidget {
                       children: [
                         Icon(
                           Icons.add_circle,
-                          size: Theme.of(context).textTheme.bodyLarge?.fontSize ?? 16,
+                          size:
+                              Theme.of(context).textTheme.bodyLarge?.fontSize ??
+                              16,
                         ),
                         Expanded(
                           child: Text(
@@ -99,7 +115,9 @@ class ContainerSyncResultDialog extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 6),
                   child: Text(
-                    AppLocalizations.of(context)!.containerSyncDialogRemovedTokens,
+                    AppLocalizations.of(
+                      context,
+                    )!.containerSyncDialogRemovedTokens,
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
                 ),
@@ -110,7 +128,9 @@ class ContainerSyncResultDialog extends StatelessWidget {
                       children: [
                         Icon(
                           Icons.remove_circle,
-                          size: Theme.of(context).textTheme.bodyLarge?.fontSize ?? 16,
+                          size:
+                              Theme.of(context).textTheme.bodyLarge?.fontSize ??
+                              16,
                         ),
                         Expanded(
                           child: Text(
@@ -127,9 +147,10 @@ class ContainerSyncResultDialog extends StatelessWidget {
         ),
       ),
       actions: [
-        TextButton(
+        DialogAction(
+          label: AppLocalizations.of(context)!.ok,
+          intent: DialogActionIntent.confirm,
           onPressed: () => Navigator.of(context).pop(),
-          child: Text(AppLocalizations.of(context)!.ok),
         ),
       ],
     );
