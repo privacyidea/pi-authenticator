@@ -18,17 +18,21 @@
  * limitations under the License.
  */
 import 'dart:async';
+import 'dart:io';
 
+import 'package:app_settings/app_settings.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:local_auth_android/local_auth_android.dart';
 import 'package:local_auth_darwin/local_auth_darwin.dart';
+import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:mutex/mutex.dart';
 import 'package:privacyidea_authenticator/model/enums/force_biometric_option.dart';
 
 import '../l10n/app_localizations.dart';
 import '../widgets/dialog_widgets/default_dialog.dart';
+import '../widgets/gap.dart';
 import 'logger.dart';
 import 'view_utils.dart';
 
@@ -156,10 +160,14 @@ Future<void> _showBiometricUnsupportedDialog() async {
             AppLocalizations.of(context)!.biometricAuthNotSupportedTitle,
           ),
         ),
-        leading: const Icon(Icons.fingerprint_off),
+        leading: const Icon(Symbols.fingerprint_off),
       ),
-      content: Text(
-        AppLocalizations.of(context)!.biometricAuthNotSupportedBody,
+      content: Row(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Text(AppLocalizations.of(context)!.biometricAuthNotSupportedBody),
+          const Icon(Symbols.fingerprint_off),
+        ],
       ),
     ),
   );
@@ -168,20 +176,60 @@ Future<void> _showBiometricUnsupportedDialog() async {
 Future<void> _showBiometricUnavailableDialog() async {
   await showAsyncDialog(
     builder: (context) => DefaultDialog(
-      scrollable: true,
       title: ListTile(
         title: Center(
           child: Text(
-            AppLocalizations.of(context)!.biometricAuthNotAvailableTitle,
+            AppLocalizations.of(context)!.biometricAuthNotSetupTitle,
             style: Theme.of(context).textTheme.titleMedium,
           ),
         ),
-        leading: const Icon(Icons.fingerprint),
-        trailing: const Icon(Icons.fingerprint),
       ),
-      content: Text(
-        AppLocalizations.of(context)!.biometricAuthNotAvailableBody,
+      content: Row(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          IconButton(
+            iconSize: 48,
+            icon: const Icon(Symbols.fingerprint, size: 48),
+            onPressed: () {
+              if (Platform.isAndroid) {
+                AppSettings.openAppSettings(
+                  type: AppSettingsType.lockAndPassword,
+                );
+              }
+              if (Platform.isIOS) {
+                AppSettings.openAppSettings(type: AppSettingsType.settings);
+              }
+            },
+          ),
+          Gap(),
+          Flexible(
+            child: Text(
+              AppLocalizations.of(context)!.biometricAuthNotSetupBody,
+            ),
+          ),
+        ],
       ),
+      actions: [
+        DialogAction(
+          label: AppLocalizations.of(context)!.setUpButton,
+          intent: DialogActionIntent.external,
+          onPressed: () async {
+            if (Platform.isAndroid) {
+              await AppSettings.openAppSettings(
+                type: AppSettingsType.lockAndPassword,
+              );
+            }
+            if (Platform.isIOS) {
+              await AppSettings.openAppSettings(type: AppSettingsType.settings);
+            }
+            final hasBiometricsEnrolled =
+                (await _localAuth.getAvailableBiometrics()).isNotEmpty;
+            if (hasBiometricsEnrolled && context.mounted) {
+              Navigator.of(context).pop();
+            }
+          },
+        ),
+      ],
     ),
   );
 }
