@@ -148,6 +148,9 @@
   "@cancel": {
     "description": "Button to cancel an action."
   },
+  "@cannotBeEmpty": {
+    "description": "Error message when a required field is empty."
+  },
   "@cannotNavigateWithoutContext": {
     "description": "Error message when the user tries to navigate to a screen without providing the necessary context."
   },
@@ -1705,6 +1708,7 @@
   "biometricAuthNotSupportedTitle": "L'authentification biométrique n'est pas prise en charge",
   "butDiscardIt": "mais l'écarter",
   "cancel": "Annuler",
+  "cannotBeEmpty": "Ne peut pas être vide",
   "cannotNavigateWithoutContext": "Ne peut pas naviguer sans contexte.",
   "checkServerCertificate": "Veuillez vérifier le certificat du serveur",
   "checkYourNetwork": "Veuillez vérifier votre connexion réseau et réessayer.",

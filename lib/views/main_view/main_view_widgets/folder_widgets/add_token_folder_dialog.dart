@@ -74,7 +74,7 @@ class _AddTokenFolderDialogState extends ConsumerState<AddTokenFolderDialog> {
           autofocus: true,
           labelText: localizations.folderName,
           validator: (value) => (value == null || value.isEmpty)
-              ? localizations.folderName
+              ? localizations.cannotBeEmpty
               : null,
         ),
       ),
