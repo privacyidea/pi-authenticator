@@ -270,12 +270,16 @@ class PushToken extends Token {
 
   @override
   bool isSameTokenAs(Token other) {
-    if (super.isSameTokenAs(other) != null) return super.isSameTokenAs(other)!;
     if (other is! PushToken) return false;
-    return (publicServerKey == other.publicServerKey &&
+
+    final bool samePushCredentials =
+        publicServerKey == other.publicServerKey &&
         publicTokenKey == other.publicTokenKey &&
         privateTokenKey == other.privateTokenKey &&
-        enrollmentCredentials == other.enrollmentCredentials);
+        enrollmentCredentials == other.enrollmentCredentials;
+    if (!samePushCredentials) return false;
+
+    return super.isSameTokenAs(other) ?? true;
   }
 
   @override

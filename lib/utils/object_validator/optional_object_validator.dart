@@ -20,12 +20,15 @@
 
 part of 'object_validators.dart';
 
-class OptionalObjectValidator<T extends Object> extends BaseValidator<T?> {
+class OptionalObjectValidator<T extends Object?> extends BaseValidator<T?> {
   const OptionalObjectValidator({
     super.transformer,
     super.defaultValue,
     super.allowedValues,
   });
+
+  @override
+  OptionalObjectValidator<T> optional() => this;
 
   @override
   T? transform(value, name) {

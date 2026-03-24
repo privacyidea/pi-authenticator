@@ -58,6 +58,7 @@ class RequiredObjectValidator<T extends Object> extends BaseValidator<T> {
     );
   }
 
+  @override
   OptionalObjectValidator<T> optional() => OptionalObjectValidator<T>(
     transformer: transformer,
     defaultValue: defaultValue,

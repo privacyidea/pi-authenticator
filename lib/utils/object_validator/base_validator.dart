@@ -31,6 +31,8 @@ abstract class BaseValidator<T extends Object?> {
     this.allowedValues,
   });
 
+  OptionalObjectValidator<T> optional();
+
   bool isTypeOf(Object? value);
   bool valueIsAllowed(Object? value, String name);
 
