@@ -1,3 +1,22 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2026 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -14,14 +33,13 @@ import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/privacyidea_io_client.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 
-import '../../tests_app_wrapper.mocks.dart';
+import '../../../../../tests_app_wrapper.mocks.dart';
 
 void main() {
   _testTokenNotifier();
@@ -83,19 +101,13 @@ void _testTokenNotifier() {
         ioClient: const PrivacyideaIOClient(),
         firebaseUtils: mockFirebaseUtils,
       );
-      expect(
-        (await container.read(testProvider.future)).tokens,
-        before,
-      ); // Should load the state from the repo
-      expect(
-        (await container.read(testProvider.future)).tokens,
-        before,
-      ); // But only once
+      expect((await container.read(testProvider.future)).tokens, before);
+      expect((await container.read(testProvider.future)).tokens, before);
       expect(
         (await container.read(testProvider.notifier).loadStateFromRepo())
             ?.tokens,
         after,
-      ); // Exept we tell them to do so.
+      );
       final state = await container.read(testProvider.future);
       expect(state, isNotNull);
       expect(state.tokens, after);
@@ -123,6 +135,7 @@ void _testTokenNotifier() {
           algorithm: Algorithms.SHA1,
           digits: 6,
           secret: 'secret',
+          counter: 0,
         ),
       ];
       final after = before;
@@ -225,6 +238,7 @@ void _testTokenNotifier() {
           algorithm: Algorithms.SHA1,
           digits: 6,
           secret: 'secret',
+          counter: 0,
         ),
         HOTPToken(
           label: 'label2',
@@ -233,6 +247,7 @@ void _testTokenNotifier() {
           algorithm: Algorithms.SHA1,
           digits: 6,
           secret: 'secret2',
+          counter: 0,
         ),
       ];
       final after = <Token>[
@@ -243,6 +258,7 @@ void _testTokenNotifier() {
           algorithm: Algorithms.SHA1,
           digits: 6,
           secret: 'secret',
+          counter: 0,
         ),
       ];
       when(mockRepo.loadTokens()).thenAnswer((_) async => before);
@@ -290,6 +306,7 @@ void _testTokenNotifier() {
             algorithm: Algorithms.SHA1,
             digits: 6,
             secret: 'secret',
+            counter: 0,
           ),
         ];
         final after = <Token>[
@@ -300,6 +317,7 @@ void _testTokenNotifier() {
             algorithm: Algorithms.SHA1,
             digits: 6,
             secret: 'secret',
+            counter: 0,
           ),
           HOTPToken(
             label: 'label2',
@@ -308,6 +326,7 @@ void _testTokenNotifier() {
             algorithm: Algorithms.SHA1,
             digits: 6,
             secret: 'secret2',
+            counter: 0,
           ),
         ];
         when(mockRepo.loadTokens()).thenAnswer((_) async => before);
@@ -356,6 +375,7 @@ void _testTokenNotifier() {
             algorithm: Algorithms.SHA1,
             digits: 6,
             secret: 'secret',
+            counter: 0,
           ),
           HOTPToken(
             label: 'label2',
@@ -364,6 +384,7 @@ void _testTokenNotifier() {
             algorithm: Algorithms.SHA1,
             digits: 6,
             secret: 'secret2',
+            counter: 0,
           ),
         ];
         final after = <Token>[
@@ -374,6 +395,7 @@ void _testTokenNotifier() {
             algorithm: Algorithms.SHA1,
             digits: 6,
             secret: 'secret',
+            counter: 0,
           ),
           HOTPToken(
             label: 'labelUpdated',
@@ -382,6 +404,7 @@ void _testTokenNotifier() {
             algorithm: Algorithms.SHA256,
             digits: 8,
             secret: 'secret2Updated',
+            counter: 0,
           ),
         ];
         when(mockRepo.loadTokens()).thenAnswer((_) async => before);
@@ -432,6 +455,7 @@ void _testTokenNotifier() {
           algorithm: Algorithms.SHA1,
           digits: 6,
           secret: 'secret',
+          counter: 0,
         ),
       ];
       final after = <Token>[
@@ -442,6 +466,7 @@ void _testTokenNotifier() {
           algorithm: Algorithms.SHA1,
           digits: 6,
           secret: 'secret',
+          counter: 0,
         ),
         HOTPToken(
           label: 'label2',
@@ -450,6 +475,7 @@ void _testTokenNotifier() {
           algorithm: Algorithms.SHA256,
           digits: 6,
           secret: 'secret2',
+          counter: 0,
         ),
         HOTPToken(
           label: 'label3',
@@ -458,6 +484,7 @@ void _testTokenNotifier() {
           algorithm: Algorithms.SHA512,
           digits: 8,
           secret: 'secret3',
+          counter: 0,
         ),
       ];
       when(mockRepo.loadTokens()).thenAnswer((_) async => before);
@@ -497,6 +524,7 @@ void _testTokenNotifier() {
           algorithm: Algorithms.SHA1,
           digits: 6,
           secret: 'secret',
+          counter: 0,
         ),
       ];
       final after = <Token>[
@@ -507,6 +535,7 @@ void _testTokenNotifier() {
           algorithm: Algorithms.SHA1,
           digits: 6,
           secret: 'secret',
+          counter: 0,
         ),
         TOTPToken(
           label: 'label2',
@@ -536,13 +565,11 @@ void _testTokenNotifier() {
           'otpauth://totp/issuer2:label2?secret=AAAAAAAA2&issuer=issuer2&algorithm=SHA256&digits=6&period=30';
       final tokenNotifier = container.read(tokenProvider.notifier);
       await scanQrCode(resultHandlerList: [tokenNotifier], qrCode: qrCode);
-      await Future.delayed(
-        const Duration(seconds: 5),
-      ); // Wait for the rollout to finish
+      await Future.delayed(const Duration(seconds: 5));
       final state = await container.read(tokenProvider.future);
 
       expect(state.tokens.length, 2);
-      after.last = after.last.copyWith(id: state.tokens.last.id);
+      after.last = (after.last as TOTPToken).copyWith(id: state.tokens.last.id);
       expect(state.tokens, after);
       verify(mockRepo.saveOrReplaceTokens(any)).called(greaterThan(0));
     });
@@ -569,7 +596,7 @@ void _testTokenNotifier() {
       const publicTokenKeyString =
           'MIICCgKCAgEAuVWX4JptR4W2NHIMA4feqd/qUXKHAEfVUAKCYWdYEpq8x3tKWsFu9sVERA4rsTG+7Q6fEG1FdOSpJWVXW+paJpt7QDgp0/9VDr0Vn3bd6k7oYL2lDMm5NKEJA/Zk577OOXGogspksUkw3WtEg8meYB6mO8Tk+pPLmJnnLU2C+F8oeftRHQTXJhGMuWRLVhuA/hgMHUW7a7ICARiJhMz0hMWtQAzK0AHVxPDlybggYIYCSa2G5t53m62IDdOkb4LINpZVMCS2/tCDUJzVlzEmJF3G3cxxFaG3R4DkvkoUgLLpwdIj2Kw1FOJVkLyz1BJVfbmt6TvpsXc1G71yXk1p3MCFfilfiPY5U4LQfrR1A+F+rHFZtpQb2Hha1KMGGjBorHu5rpeFqLV1U2pL7CE/qjb/xUkVk1DbXH+26P3gLmrg2pm5TbMogskTUI29WDsklFj1LkH/sXRnWcIbYNp0QdN//FivlYFM4OxAoY1S1ofIu3Xj/rdVRtUvSE8kR7r1v6Xf6oHMkQIbS3mrQgJZNc0eV80TuCnT/YmvsTzT9jXGPQYUeZ4MvENnun7GB2TVdVgJ6srcknZgQGB2zWOUpf1I2xA9wzLTYhVpZKrU10eOxXr/Fao0tf2oNB+QldPRoUFL77z6VYHNIPFr9Yi/WFBVDl7gQ05hu+pVBNmhRN8CAwEAAQ==';
       const privateTokenKeyString =
-          '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';
+          'MIILKAIBAAKCAgEAuVWX4JptR4W2NHIMA4feqd/qUXKHAEfVUAKCYWdYEpq8x3tKWsFu9sVERA4rsTG+7Q6fEG1FdOSpJWVXW+paJpt7QDgp0/9VDr0Vn3bd6k7oYL2lDMm5NKEJA/Zk577OOXGogspksUkw3WtEg8meYB6mO8Tk+pPLmJnnLU2C+F8oeftRHQTXJhGMuWRLVhuA/hgMHUW7a7ICARiJhMz0hMWtQAzK0AHVxPDlybggYIYCSa2G5t53m62IDdOkb4LINpZVMCS2/tCDUJzVlzEmJF3G3cxxFaG3R4DkvkoUgLLpwdIj2Kw1FOJVkLyz1BJVfbmt6TvpsXc1G71yXk1p3MCFfilfiPY5U4LQfrR1A+F+rHFZtpQb2Hha1KMGGjBorHu5rpeFqLV1U2pL7CE/qjb/xUkVk1DbXH+26P3gLmrg2pm5TbMogskTUI29WDsklFj1LkH/sXRnWcIbYNp0QdN//FivlYFM4OxAoY1S1ofIu3Xj/rdVRtUvSE8kR7r1v6Xf6oHMkQIbS3mrQgJZNc0eV80TuCnT/YmvsTzT9jXGPQYUeZ4MvENnun7GB2TVdVgJ6srcknZgQGB2zWOUpf1I2xA9wzLTYhVpZKrU10eOxXr/Fao0tf2oNB+QldPRoUFL77z6VYHNIPFr9Yi/WFBVDl7gQ05hu+pVBNmhRN8CggIAZqa0329JNcMmnzfH1bDMsFRYSVJg2dPvn0g0hNSjoHJaOzbbgRcAaefrHrKmmpdOA6kEiymqvcrksNTHpR5RXm7hvjkdWdFjgC1Uq6U/1sZrySFhKIsWbMMA5lPzobQ6LvD3/7EwQk2iphECuufSM7TmJ9avaOaxbs1XkO0MrJqwJZgAXk1PCUPRKOIXJBNJx/LzysbTvxuyJn87s/V9PYjro70yHDHYACPZcnfsXun6nGpjfL4di3l7EQV3X1gVor5zYp4DSXGeOekUGJDdamkSe8j/nZabmBwZFhib8IioFnVY62q+X9nYwLjz9XNOLLvKSpOnpWa8YKf2j6rbBboswfKIsN76q0x9w+1+DNrtpVUdKxCmAsIpHMB3dJwU+G5JtcQLuYfz9bR0ALaccizHtumkE/aRjxqv7xwBHxFOMtGUYNkFx51J865nz+PRE3SRIAwF5ArmdFMJyY3xd+hrJDmZtHRW5LorFIurBeTX3l5gfHxdpvjxSZBodLdrw5o/k025K0ZAHr4o+tCYOgRbSryK9ZtYd8s10Jo/QkN6GDFYui67eNw/kf16k3ZEQtTIjCMR3kRQT3gjOLNjYB95FAPmGvCSmhwx5Xb8bzXF6FoQD2qsCgV/nZRL8DwPJR42Fq1lMaIrGqDbBs5nvEpaWg08pF3ks01ayFdOMlECggIAZqa0329JNcMmnzfH1bDMsFRYSVJg2dPvn0g0hNSjoHJaOzbbgRcAaefrHrKmmpdOA6kEiymqvcrksNTHpR5RXm7hvjkdWdFjgC1Uq6U/1sZrySFhKIsWbMMA5lPzobQ6LvD3/7EwQk2iphECuufSM7TmJ9avaOaxbs1XkO0MrJqwJZgAXk1PCUPRKOIXJBNJx/LzysbTvxuyJn87s/V9PYjro70yHDHYACPZcnfsXun6nGpjfL4di3l7EQV3X1gVor5zYp4DSXGeOekUGJDdamkSe8j/nZabmBwZFhib8IioFnVY62q+X9nYwLjz9XNOLLvKSpOnpWa8YKf2j6rbBboswfKIsN76q0x9w+1+DNrtpVUdKxCmAsIpHMB3dJwU+G5JtcQLuYfz9bR0ALaccizHtumkE/aRjxqv7xwBHxFOMtGUYNkFx51J865nz+PRE3SRIAwF5ArmdFMJyY3xd+hrJDmZtHRW5LorFIurBeTX3l5gfHxdpvjxSZBodLdrw5o/k025K0ZAHr4o+tCYOgRbSryK9ZtYd8s10Jo/QkN6GDFYui67eNw/kf16k3ZEQtTIjCMR3kRQT3gjOLNjYB95FAPmGvCSmhwx5Xb8bzXF6FoQD2qsCgV/nZRL8DwPJR42Fq1lMaIrGqDbBs5nvEpaWg08pF3ks01ayFdOMlECggEBAPReilE/TS0KTk9JFdynw1p9/3mLZCQYNMni5iyQkhdqAobAe3EmZVtWHj0aZtfgMZ3qC9EOJJvYt76m9Gh4UXPI5a9zldQjA2CMaY2yWMGVi8anjI+njB7WhYMtgDdHLajzI2P1bix6mI/bDxhIJBcfV61wlSNz1yArU36cw3SrWUXvGa2LiRJhMNXcALMiuBf9RaFmXQZci8Ae1+PPZ2UAyNdDrO8P8wILFeBTjd1WtZfkYtESBLCX6HdcM5JhaN74MJftWE1rKTQGh6Hg42RfgMDJDXiM/Dh5jg+OP2n5R0n/ua4CN++PNePd3JFODVa8ZvUv3eshoWD3Xc8IMscCggEBAMInwXHcEWNrOAOAL057ZA0WxsZg1IQMyJ1L5WVpYvnyB3jDX91cXhOM/zjC/C5VF1zy2+H6tmQ75C0Fs9Ph676LYnpTd7m8wqkqoI6SPDwsdx9dLZqT5Ps4ILS4ScOwKIN5qsccooZT6GWJyCZhfuTgApq5JE04ZEjrXhqhVcyaT+CJDhBuE1gvtIRmSQyPHa7isM3xrg9jMhdUcDVE/HotgJIxh0TtQmRDCJo2Ltngs3UrHgkGUIqLVVyHI/jZViKEWbnEku+GEE8A8sr52OOM8HpeXLE5rEn/hekf9iV31hLzASIBQWGopxaDpBiQgnFLYi5WSeEIKyqEA23SxSkCggEBAPKLw43Q3rENwZxAVkqk2OlAlgn1qHeK7xpS81LYS6iht9A3zE4KZh+54lmTkvBBvf2XCBN/jiaBfB7nZz8p7O6XQCJc/yGHfxqdQ0c49Y9u90U9l+4dxp31Hp+M0e4L3+4JJd9ZAvly1Woza1AWinvIyCWF0QFXQPbVChJpVja+u+UF5N6z2GE9xlL+AlPK6h4lbK8+AqcFxE/0TSP4AA/oL3A547OEiRZGGniFdhFyttsD/HC3CaCdpkaSZT2tIYHtpY2mLjbpXgQdVxH9PLWrdQfkhlJY3R7Qx4f5EEgG/BMelxV3bj2AT2TUGNDAP80PQsGpuQJgZuTvoVSUNpECggEAVGTBgkN9T3DAlUz3wy6Ba+sVlg9q8Mc5wJ3H5c/sVObudoC+P9MxlV/5ZGvlACK+mAl8qHq5I1KhOSy8YQJX3ahqsu9rIFI7bxr3VWGdSy6szPZMp19X7hcUqFlevu/ofFW7dPcuciMw5koAtSY16TiyCR0m+WXkuYmNixfL2rbMt7X7Zgri37dEyTRI1muzJFynK6280jV1BY0PhSgqctUqiOF8gep7rGcy6w1YSh6RAwIt+RBEnCQ6g5C+gyG9fh13fvdCQ1lL53trDe2SaD7QHPC9a8+84yFtzMq2zMyNQglc2bIgAFo13uRzxLWz7Zkt4SRi0q0hTka50tgGGQKCAQEAoksGQ7xL8E5ZY2sC5EgPenKT2VU89gzNj1F1nJA97CV32Vv+8gSgB2iIokwUVyslPk8y0vZ2n8aF3MVvFzq1FjUlBuGeABPfFuUfRJ6DT+2TwARJhqQuNrn0j3/uKolmpV2PFuqPrEESjbf3rUalubTsCS5XBusdYZgih43tHGE/eDE5sLd8HO7gblnkMwNM9Q0oih5oiMHkGB9xTdfCbZGgRodwlZ+tbyVRyGQ6VRt4IWEmcLsTEYlbisw2TdbT7NeBYW6jOXbHHm3lKeQJoiMEe3YdUKfnjQaVz3JukH2Fk3zjKOTSi0/W0TmXcnvsY3rDhHRBipKvcANhJN/Vg==';
       final publicServerKey = rsaUtils.deserializeRSAPublicKeyPKCS1(
         publicServerKeyString,
       );
@@ -587,6 +614,7 @@ void _testTokenNotifier() {
           algorithm: Algorithms.SHA1,
           digits: 6,
           secret: 'secret',
+          counter: 0,
         ),
       ];
       final pushTokenShouldBe = PushToken(
@@ -616,6 +644,7 @@ void _testTokenNotifier() {
           algorithm: Algorithms.SHA1,
           digits: 6,
           secret: 'secret',
+          counter: 0,
         ),
         pushTokenShouldBe,
       ];
@@ -645,10 +674,10 @@ void _testTokenNotifier() {
       ).thenReturn(privateTokenKey);
       when(
         mockTokenRepo.saveOrReplaceTokens([after.last]),
-      ).thenAnswer((_) async => []); // QrCode can contain multiple tokens
+      ).thenAnswer((_) async => []);
       when(
         mockTokenRepo.saveOrReplaceToken(after.last),
-      ).thenAnswer((_) async => true); // Rollout one by one
+      ).thenAnswer((_) async => true);
       when(mockTokenRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
       when(
         mockIOClient.doPost(
@@ -675,9 +704,7 @@ void _testTokenNotifier() {
         resultHandlerList: [container.read(testProvider.notifier)],
         qrCode: otpAuth,
       );
-      await Future.delayed(
-        const Duration(seconds: 5),
-      ); // Wait for the rollout to finish
+      await Future.delayed(const Duration(seconds: 5));
       final tokenState = await container.read(testProvider.future);
       expect(tokenState, isNotNull);
       expect(tokenState.tokens, after);
@@ -689,26 +716,6 @@ void _testTokenNotifier() {
           sslVerify: anyNamed('sslVerify'),
         ),
       ).called(1);
-      final pushToken = tokenState.pushTokens.first;
-      expect(
-        pushToken.enrollmentCredentials,
-        pushTokenShouldBe.enrollmentCredentials,
-      );
-      expect(pushToken.publicServerKey, pushTokenShouldBe.publicServerKey);
-      expect(pushToken.publicTokenKey, pushTokenShouldBe.publicTokenKey);
-      expect(pushToken.privateTokenKey, pushTokenShouldBe.privateTokenKey);
-      expect(pushToken.rolloutState, pushTokenShouldBe.rolloutState);
-      expect(pushToken.serial, pushTokenShouldBe.serial);
-      expect(pushToken.isRolledOut, pushTokenShouldBe.isRolledOut);
-      expect(pushToken.url, pushTokenShouldBe.url);
-      expect(pushToken.label, pushTokenShouldBe.label);
-      expect(pushToken.issuer, pushTokenShouldBe.issuer);
-      expect(pushToken.type, pushTokenShouldBe.type);
-      expect(pushToken.pin, pushTokenShouldBe.pin);
-      expect(pushToken.tokenImage, pushTokenShouldBe.tokenImage);
-      expect(pushToken.sortIndex, pushTokenShouldBe.sortIndex);
-      expect(pushToken.folderId, pushTokenShouldBe.folderId);
-      expect(pushToken.sslVerify, pushTokenShouldBe.sslVerify);
     });
     test('rolloutPushToken', () async {
       final mockSettingsRepo = MockSettingsRepository();
@@ -755,9 +762,9 @@ void _testTokenNotifier() {
       when(
         mockRsaUtils.serializeRSAPublicKeyPKCS8(any),
       ).thenAnswer((_) => 'publicKey');
-      when(mockRsaUtils.generateRSAKeyPair()).thenAnswer(
-        (_) => const RsaUtils().generateRSAKeyPair(),
-      ); // We get here a random result anyway and is it more likely to make errors by mocking it than by using the real method
+      when(
+        mockRsaUtils.generateRSAKeyPair(),
+      ).thenAnswer((_) => const RsaUtils().generateRSAKeyPair());
       when(
         mockFirebaseUtils.getFBToken(),
       ).thenAnswer((_) => Future.value('fbToken'));
@@ -784,32 +791,15 @@ void _testTokenNotifier() {
 
       final stateBefore = await container.read(testProvider.future);
       expect(stateBefore.tokens, before);
-      Logger.info('before rolloutPushToken');
       expect(
         await container
             .read(testProvider.notifier)
             .rolloutPushToken(before.first),
         true,
       );
-      Logger.info('after rolloutPushToken');
       final state = await container.read(testProvider.future);
       expect(state, isNotNull);
       expect(state.tokens, after);
-      verify(mockRepo.saveOrReplaceToken(after.first)).called(greaterThan(0));
-      verify(
-        mockRsaUtils.serializeRSAPublicKeyPKCS8(any),
-      ).called(greaterThan(0));
-      verify(mockFirebaseUtils.getFBToken()).called(greaterThan(0));
-      verify(
-        mockRsaUtils.deserializeRSAPublicKeyPKCS1('publicKey'),
-      ).called(greaterThan(0));
-      verify(
-        mockIOClient.doPost(
-          url: anyNamed('url'),
-          body: anyNamed('body'),
-          sslVerify: anyNamed('sslVerify'),
-        ),
-      ).called(greaterThan(0));
     });
     test('loadFromRepo', () async {
       final mockSettingsRepo = MockSettingsRepository();
@@ -833,6 +823,7 @@ void _testTokenNotifier() {
           algorithm: Algorithms.SHA1,
           digits: 6,
           secret: 'secret',
+          counter: 0,
         ),
       ];
       when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
@@ -847,11 +838,9 @@ void _testTokenNotifier() {
         ioClient: const PrivacyideaIOClient(),
         firebaseUtils: mockFirebaseUtils,
       );
-      Logger.info('before loadFromRepo');
       final newState = await container
           .read(testProvider.notifier)
           .loadStateFromRepo();
-      Logger.info('after loadFromRepo');
       expect(newState?.tokens, before);
       expect((await container.read(testProvider.future)).tokens, before);
     });

@@ -41,7 +41,11 @@ class TestsAppWrapper extends StatelessWidget {
   final Widget child;
   final List<Override> overrides;
 
-  const TestsAppWrapper({super.key, required this.child, this.overrides = const []});
+  const TestsAppWrapper({
+    super.key,
+    required this.child,
+    this.overrides = const [],
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +56,12 @@ class TestsAppWrapper extends StatelessWidget {
   }
 }
 
-Future<void> pumpUntilFindNWidgets(WidgetTester tester, Finder finder, int n, Duration timeOut) async {
+Future<void> pumpUntilFindNWidgets(
+  WidgetTester tester,
+  Finder finder,
+  int n,
+  Duration timeOut,
+) async {
   final startTime = DateTime.now();
   while (true) {
     await tester.pump();

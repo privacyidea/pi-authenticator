@@ -240,7 +240,7 @@ class SecureTokenRepository implements TokenRepository {
   @override
   Future<bool> deleteToken(Token token) async {
     try {
-      _storage.delete(key: token.id);
+      await _storage.delete(key: token.id);
     } catch (e, s) {
       Logger.warning(
         'Could not delete token from secure storage',

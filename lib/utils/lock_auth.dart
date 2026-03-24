@@ -36,7 +36,7 @@ import '../widgets/gap.dart';
 import 'logger.dart';
 import 'view_utils.dart';
 
-final LocalAuthentication _localAuth = LocalAuthentication();
+LocalAuthentication _localAuth = LocalAuthentication();
 final Mutex _authMutex = Mutex();
 
 /// Requests OS-level authentication from the user.
@@ -61,17 +61,22 @@ Future<bool> lockAuth({
     );
     return false;
   }
+
+  await _authMutex.acquire();
   final isBiometricForced =
       forceBiometricOption == ForceBiometricOption.biometric;
   if (!await _checkSupport(isBiometricForced, autoAuthIfUnsupported)) {
     return autoAuthIfUnsupported;
   }
 
-  return await _executeAuth(
+  final isAuthenticated = await _executeAuth(
     isBiometricForced: isBiometricForced,
     localizedReason: reason(localization),
     localization: localization,
   );
+
+  _authMutex.release();
+  return isAuthenticated;
 }
 
 Future<bool> _executeAuth({
@@ -80,7 +85,6 @@ Future<bool> _executeAuth({
   required AppLocalizations localization,
 }) async {
   try {
-    await _authMutex.acquire();
     return await _localAuth.authenticate(
       biometricOnly: isBiometricForced,
       localizedReason: localizedReason,
@@ -92,7 +96,7 @@ Future<bool> _executeAuth({
         IOSAuthMessages(cancelButton: localization.cancel),
       ],
     );
-  } on Exception catch (e, s) {
+  } catch (e, s) {
     if (e is LocalAuthException &&
         e.code == LocalAuthExceptionCode.userCanceled) {
       Logger.info("Authentication canceled by user");
@@ -100,8 +104,6 @@ Future<bool> _executeAuth({
       Logger.warning("Authentication failed", error: e, stackTrace: s);
     }
     return false;
-  } finally {
-    _authMutex.release();
   }
 }
 
@@ -233,3 +235,6 @@ Future<void> _showBiometricUnavailableDialog() async {
     ),
   );
 }
+
+@visibleForTesting
+set localAuthInstance(LocalAuthentication auth) => _localAuth = auth;
