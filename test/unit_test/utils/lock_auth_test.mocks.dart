@@ -31,12 +31,15 @@ import 'package:mockito/mockito.dart' as _i1;
 /// See the documentation for Mockito's code generation for more information.
 class MockLocalAuthentication extends _i1.Mock
     implements _i2.LocalAuthentication {
+  MockLocalAuthentication() {
+    _i1.throwOnMissingStub(this);
+  }
+
   @override
   _i3.Future<bool> get canCheckBiometrics =>
       (super.noSuchMethod(
             Invocation.getter(#canCheckBiometrics),
             returnValue: _i3.Future<bool>.value(false),
-            returnValueForMissingStub: _i3.Future<bool>.value(false),
           )
           as _i3.Future<bool>);
 
@@ -61,7 +64,6 @@ class MockLocalAuthentication extends _i1.Mock
               #persistAcrossBackgrounding: persistAcrossBackgrounding,
             }),
             returnValue: _i3.Future<bool>.value(false),
-            returnValueForMissingStub: _i3.Future<bool>.value(false),
           )
           as _i3.Future<bool>);
 
@@ -70,7 +72,6 @@ class MockLocalAuthentication extends _i1.Mock
       (super.noSuchMethod(
             Invocation.method(#stopAuthentication, []),
             returnValue: _i3.Future<bool>.value(false),
-            returnValueForMissingStub: _i3.Future<bool>.value(false),
           )
           as _i3.Future<bool>);
 
@@ -79,7 +80,6 @@ class MockLocalAuthentication extends _i1.Mock
       (super.noSuchMethod(
             Invocation.method(#isDeviceSupported, []),
             returnValue: _i3.Future<bool>.value(false),
-            returnValueForMissingStub: _i3.Future<bool>.value(false),
           )
           as _i3.Future<bool>);
 
@@ -90,10 +90,6 @@ class MockLocalAuthentication extends _i1.Mock
             returnValue: _i3.Future<List<_i4.BiometricType>>.value(
               <_i4.BiometricType>[],
             ),
-            returnValueForMissingStub:
-                _i3.Future<List<_i4.BiometricType>>.value(
-                  <_i4.BiometricType>[],
-                ),
           )
           as _i3.Future<List<_i4.BiometricType>>);
 }
