@@ -24,11 +24,9 @@ import 'package:privacyidea_authenticator/utils/view_utils.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/token.dart';
 import '../../../../../utils/customization/theme_extentions/action_theme.dart';
-import '../../../../../utils/globals.dart';
 import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
-import '../../loading_indicator.dart';
 import '../slideable_action.dart';
 import 'container_token_indelible_dialog.dart';
 
@@ -53,6 +51,7 @@ class DefaultDeleteAction extends ConsumerSlideableAction {
       ).extension<TokenTileTheme>()!.actionForegroundColor,
       onPressed: isEnabled
           ? (_) async {
+              final notifier = ref.read(tokenProvider.notifier);
               if (token.isLocked &&
                   !await lockAuth(
                     reason: (localization) => localization.deleteLockedToken,
@@ -61,7 +60,9 @@ class DefaultDeleteAction extends ConsumerSlideableAction {
                   )) {
                 return;
               }
-              _showDialog();
+              if (context.mounted) {
+                _showDialog(context, notifier);
+              }
             }
           : (_) => ContainerTokenIndelibleDialog.showDialog(),
       child: Column(
@@ -79,70 +80,50 @@ class DefaultDeleteAction extends ConsumerSlideableAction {
     );
   }
 
-  void _showDialog() => showAsyncDialog(
-    builder: (BuildContext context) => DefaultDialog(
-      scrollable: true,
-      title: Text(
-        AppLocalizations.of(context)!.confirmDeletion,
-        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-          color: Theme.of(context).colorScheme.error,
-        ),
-      ),
-      content: Column(
-        children: [
-          Text(
-            AppLocalizations.of(context)!.confirmDeletionOf(token.label),
-            style: Theme.of(context).textTheme.bodyMedium,
+  void _showDialog(BuildContext context, TokenNotifier notifier) =>
+      showAsyncDialog(
+        builder: (BuildContext context) => DefaultDialog(
+          scrollable: true,
+          title: Text(
+            AppLocalizations.of(context)!.confirmDeletion,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+              color: Theme.of(context).colorScheme.error,
+            ),
           ),
-          const SizedBox(height: 8),
-          Text(
-            AppLocalizations.of(context)!.confirmTokenDeletionHint,
-            style: Theme.of(context).textTheme.bodySmall,
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                AppLocalizations.of(context)!.confirmDeletionOf(token.label),
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                AppLocalizations.of(context)!.confirmTokenDeletionHint,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ],
           ),
-        ],
-      ),
-      actions: [
-        // TextButton(
-        //   onPressed: () => Navigator.of(context).pop(),
-        //   child: Text(
-        //     AppLocalizations.of(context)!.cancel,
-        //     overflow: TextOverflow.fade,
-        //     softWrap: false,
-        //   ),
-        // ),
-        // TextButton(
-        //   onPressed: () {
-        //     LoadingIndicator.show(
-        //       context: context,
-        //       action: () async =>
-        //           globalRef?.read(tokenProvider.notifier).removeToken(token),
-        //     );
-        //     Navigator.of(context).pop();
-        //   },
-        //   child: Text(
-        //     AppLocalizations.of(context)!.delete,
-        //     style: TextStyle(color: Theme.of(context).colorScheme.error),
-        //     overflow: TextOverflow.fade,
-        //     softWrap: false,
-        //   ),
-        // ),
-        DialogAction(
-          label: AppLocalizations.of(context)!.cancel,
-          intent: DialogActionIntent.cancel,
-          onPressed: () => Navigator.of(context).pop(),
+          actions: [
+            DialogAction(
+              label: AppLocalizations.of(context)!.cancel,
+              intent: DialogActionIntent.cancel,
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+            DialogAction(
+              label: AppLocalizations.of(context)!.delete,
+              intent: DialogActionIntent.destructive,
+              onPressed: () async {
+                try {
+                  await notifier.removeToken(token);
+                } finally {
+                  if (context.mounted) {
+                    Navigator.of(context).pop();
+                  }
+                }
+              },
+            ),
+          ],
         ),
-        DialogAction(
-          label: AppLocalizations.of(context)!.delete,
-          intent: DialogActionIntent.destructive,
-          onPressed: () {
-            LoadingIndicator.show(
-              context: context,
-              action: () async =>
-                  globalRef?.read(tokenProvider.notifier).removeToken(token),
-            );
-          },
-        ),
-      ],
-    ),
-  );
+      );
 }
