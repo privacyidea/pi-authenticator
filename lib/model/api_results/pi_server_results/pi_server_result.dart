@@ -37,9 +37,9 @@ class PiServerResult<V extends PiServerResultValue> {
     final map = validateMap(
       map: json,
       validators: <String, BaseValidator>{
-        RESULT_STATUS: const RequiredObjectValidator<bool>(),
-        RESULT_VALUE: const OptionalObjectValidator<Object>(),
-        RESULT_ERROR: const OptionalObjectValidator<Map<String, Object>>(),
+        RESULT_STATUS: RequiredObjectValidator<bool>(),
+        RESULT_VALUE: OptionalObjectValidator<Object>(),
+        RESULT_ERROR: OptionalObjectValidator<Map<String, Object>>(),
       },
       name: 'PiServerResult#fromJson',
     );

@@ -32,17 +32,35 @@ void main() {
   late final MockIntroductionRepository mockIntroductionRepository;
   setUp(() {
     mockSettingsRepository = MockSettingsRepository();
-    when(mockSettingsRepository.loadSettings()).thenAnswer((_) async =>
-        SettingsState(isFirstRun: false, useSystemLocale: false, localePreference: const Locale('en'), latestStartedVersion: Version.parse('999.999.999')));
-    when(mockSettingsRepository.saveSettings(any)).thenAnswer((_) async => true);
+    when(mockSettingsRepository.loadSettings()).thenAnswer(
+      (_) async => SettingsState(
+        isFirstRun: false,
+        useSystemLocale: false,
+        localePreference: const Locale('en'),
+        latestStartedVersion: Version.parse('999.999.999'),
+      ),
+    );
+    when(
+      mockSettingsRepository.saveSettings(any),
+    ).thenAnswer((_) async => true);
     mockTokenRepository = MockTokenRepository();
     var tokens = <Token>[
-      HOTPToken(label: 'test', issuer: 'test', id: 'id', algorithm: Algorithms.SHA256, digits: 6, secret: 'secret', counter: 0),
+      HOTPToken(
+        label: 'test',
+        issuer: 'test',
+        id: 'id',
+        algorithm: Algorithms.SHA256,
+        digits: 6,
+        secret: 'secret',
+        counter: 0,
+      ),
     ];
     when(mockTokenRepository.loadTokens()).thenAnswer((_) async {
       return tokens;
     });
-    when(mockTokenRepository.saveOrReplaceToken(any)).thenAnswer((invocation) async {
+    when(mockTokenRepository.saveOrReplaceToken(any)).thenAnswer((
+      invocation,
+    ) async {
       final arguments = invocation.positionalArguments;
       tokens.removeWhere((element) => element.id == (arguments[0] as Token).id);
       tokens.add(arguments[0] as Token);
@@ -53,22 +71,42 @@ void main() {
       return true;
     });
     mockTokenFolderRepository = MockTokenFolderRepository();
-    when(mockTokenFolderRepository.loadState()).thenAnswer((_) async => const TokenFolderState(folders: []));
-    when(mockTokenFolderRepository.saveState(any)).thenAnswer((_) async => true);
+    when(
+      mockTokenFolderRepository.loadState(),
+    ).thenAnswer((_) async => const TokenFolderState(folders: []));
+    when(
+      mockTokenFolderRepository.saveState(any),
+    ).thenAnswer((_) async => true);
     mockIntroductionRepository = MockIntroductionRepository();
-    when(mockIntroductionRepository.loadCompletedIntroductions())
-        .thenAnswer((_) async => const IntroductionState(completedIntroductions: {...Introduction.values}));
+    when(mockIntroductionRepository.loadCompletedIntroductions()).thenAnswer(
+      (_) async => const IntroductionState(
+        completedIntroductions: {...Introduction.values},
+      ),
+    );
   });
   testWidgets('Rename and Delete Token', (tester) async {
-    await tester.pumpWidget(TestsAppWrapper(
-      overrides: [
-        settingsProvider.overrideWith(() => SettingsNotifier(repoOverride: mockSettingsRepository)),
-        tokenProvider.overrideWith(() => TokenNotifier(repoOverride: mockTokenRepository)),
-        tokenFolderProvider.overrideWith(() => TokenFolderNotifier(repoOverride: mockTokenFolderRepository)),
-        introductionNotifierProvider.overrideWith(() => IntroductionNotifier(repoOverride: mockIntroductionRepository)),
-      ],
-      child: PrivacyIDEAAuthenticator(ApplicationCustomization.defaultCustomization),
-    ));
+    await tester.pumpWidget(
+      TestsAppWrapper(
+        overrides: [
+          settingsProvider.overrideWith(
+            () => SettingsNotifier(repoOverride: mockSettingsRepository),
+          ),
+          tokenProvider.overrideWith(
+            () => TokenNotifier(repoOverride: mockTokenRepository),
+          ),
+          tokenFolderProvider.overrideWith(
+            () => TokenFolderNotifier(repoOverride: mockTokenFolderRepository),
+          ),
+          introductionNotifierProvider.overrideWith(
+            () =>
+                IntroductionNotifier(repoOverride: mockIntroductionRepository),
+          ),
+        ],
+        child: PrivacyIDEAAuthenticator(
+          ApplicationCustomization.defaultCustomization,
+        ),
+      ),
+    );
     await _renameToken(tester, 'Renamed Token');
     await _renameToken(tester, 'Renamed Token Again');
     await _deleteToken(tester);
@@ -78,11 +116,21 @@ void main() {
 Future<void> _renameToken(WidgetTester tester, String newName) async {
   // Rename Token
   await tester.pumpAndSettle();
-  await pumpUntilFindNWidgets(tester, find.byType(HOTPTokenWidget), 1, const Duration(seconds: 10));
+  await pumpUntilFindNWidgets(
+    tester,
+    find.byType(HOTPTokenWidget),
+    1,
+    timeout: const Duration(seconds: 10),
+  );
   expect(find.byType(HOTPTokenWidget), findsOneWidget);
   await tester.drag(find.byType(HOTPTokenWidget), const Offset(-300, 0));
   await tester.pumpAndSettle();
-  await pumpUntilFindNWidgets(tester, find.byType(EditHOTPTokenAction), 1, const Duration(seconds: 2));
+  await pumpUntilFindNWidgets(
+    tester,
+    find.byType(EditHOTPTokenAction),
+    1,
+    timeout: const Duration(seconds: 2),
+  );
   await tester.tap(find.byType(EditHOTPTokenAction));
   await tester.pumpAndSettle();
   expect(find.text(AppLocalizationsEn().editToken), findsOneWidget);
@@ -91,24 +139,49 @@ Future<void> _renameToken(WidgetTester tester, String newName) async {
   await tester.enterText(find.byType(TextFormField).first, '');
   await tester.pumpAndSettle();
   await tester.enterText(find.byType(TextFormField).first, newName);
-  await pumpUntilFindNWidgets(tester, find.widgetWithText(TextFormField, newName), 1, const Duration(seconds: 2));
+  await pumpUntilFindNWidgets(
+    tester,
+    find.widgetWithText(TextFormField, newName),
+    1,
+    timeout: const Duration(seconds: 2),
+  );
   await tester.tap(find.text(AppLocalizationsEn().saveButton));
-  await pumpUntilFindNWidgets(tester, find.text(newName), 1, const Duration(seconds: 2));
+  await pumpUntilFindNWidgets(
+    tester,
+    find.text(newName),
+    1,
+    timeout: const Duration(seconds: 2),
+  );
   expect(find.text(newName), findsOneWidget);
 }
 
 Future<void> _deleteToken(WidgetTester tester) async {
   await tester.pumpAndSettle();
-  await pumpUntilFindNWidgets(tester, find.byType(HOTPTokenWidget), 1, const Duration(seconds: 10));
+  await pumpUntilFindNWidgets(
+    tester,
+    find.byType(HOTPTokenWidget),
+    1,
+    timeout: const Duration(seconds: 10),
+  );
   expect(find.byType(HOTPTokenWidget), findsOneWidget);
   await tester.drag(find.byType(HOTPTokenWidget), const Offset(-300, 0));
   await tester.pumpAndSettle();
-  await pumpUntilFindNWidgets(tester, find.byType(EditHOTPTokenAction), 1, const Duration(seconds: 2));
+  await pumpUntilFindNWidgets(
+    tester,
+    find.byType(EditHOTPTokenAction),
+    1,
+    timeout: const Duration(seconds: 2),
+  );
   await tester.tap(find.byType(DefaultDeleteAction));
   await tester.pumpAndSettle();
   expect(find.text(AppLocalizationsEn().confirmDeletion), findsOneWidget);
   expect(find.text(AppLocalizationsEn().delete), findsOneWidget);
   await tester.tap(find.text(AppLocalizationsEn().delete));
-  await pumpUntilFindNWidgets(tester, find.byType(HOTPTokenWidget), 0, const Duration(seconds: 2));
+  await pumpUntilFindNWidgets(
+    tester,
+    find.byType(HOTPTokenWidget),
+    0,
+    timeout: const Duration(seconds: 2),
+  );
   expect(find.byType(HOTPTokenWidget), findsNothing);
 }

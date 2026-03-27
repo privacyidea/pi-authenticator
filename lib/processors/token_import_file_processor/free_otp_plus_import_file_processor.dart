@@ -191,21 +191,21 @@ class FreeOtpPlusImportFileProcessor extends TokenImportFileProcessor {
           TOTPToken.PERIOD_SECONDS: tokenJson[_FREE_OTP_PLUS_PERIOD],
         },
         validators: {
-          Token.TOKENTYPE_OTPAUTH: stringValidator,
-          Token.LABEL: stringValidator,
-          Token.ISSUER: stringValidator,
+          Token.TOKENTYPE_OTPAUTH: Validators.string,
+          Token.LABEL: Validators.string,
+          Token.ISSUER: Validators.string,
           OTPToken.SECRET_BASE32: RequiredObjectValidator<String>(
             transformer: (value) => Encodings.base32.encode(
               Uint8List.fromList((value as List).cast<int>()),
             ),
           ),
-          OTPToken.ALGORITHM: stringValidator,
-          OTPToken.DIGITS: intToStringValidator,
-          // FreeOTP+ saves the counter 1 less than the actual value
+          OTPToken.ALGORITHM: Validators.string,
+          OTPToken.DIGITS: Validators.intToString,
           HOTPToken.COUNTER: OptionalObjectValidator<String>(
+            // FreeOTP+ saves the counter 1 less than the actual value
             transformer: (value) => ((value as int) + 1).toString(),
           ),
-          TOTPToken.PERIOD_SECONDS: intToStringValidatorOptional,
+          TOTPToken.PERIOD_SECONDS: Validators.intToStringOptional,
         },
       );
 }

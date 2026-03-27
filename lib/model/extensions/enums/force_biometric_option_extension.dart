@@ -22,7 +22,7 @@ import '../../../utils/object_validator/object_validators.dart';
 import '../../enums/force_biometric_option.dart';
 
 extension ForceBiometricOptionX on ForceBiometricOption {
-  static final validator = RequiredObjectValidator<ForceBiometricOption>(
+  static final validator = DefaultObjectValidator<ForceBiometricOption>(
     defaultValue: ForceBiometricOption.none,
     transformer: (v) {
       if (v is ForceBiometricOption) return v;

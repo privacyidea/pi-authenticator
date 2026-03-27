@@ -58,13 +58,13 @@ sealed class TokenTemplate with _$TokenTemplate {
 
   String? get serial => validate(
     value: otpAuthMap[Token.SERIAL],
-    validator: stringValidatorOptional,
+    validator: Validators.stringOptional,
     name: Token.SERIAL,
   );
 
   String? get type => validate(
     value: otpAuthMap[Token.TOKENTYPE_OTPAUTH],
-    validator: stringValidatorOptional,
+    validator: Validators.stringOptional,
     name: Token.TOKENTYPE_OTPAUTH,
   );
 
@@ -74,7 +74,7 @@ sealed class TokenTemplate with _$TokenTemplate {
 
   String? get containerSerial => validate(
     value: additionalData[Token.CONTAINER_SERIAL],
-    validator: stringValidatorOptional,
+    validator: Validators.stringOptional,
     name: Token.CONTAINER_SERIAL,
   );
 

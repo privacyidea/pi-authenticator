@@ -182,7 +182,8 @@ class RsaUtils {
   /// Version ::= INTEGER { two-prime(0), multi(1) }
   /// (CONSTRAINED BY {-- version must be multi if otherPrimeInfos present --})
   RSAPrivateKey deserializeRSAPrivateKeyPKCS1(String keyStr) {
-    ASN1Sequence asn1sequence = ASN1Parser(base64.decode(keyStr)).nextObject() as ASN1Sequence;
+    Uint8List  keyBytes = base64.decode(keyStr);
+    ASN1Sequence asn1sequence = ASN1Parser(keyBytes).nextObject() as ASN1Sequence;
     BigInt modulus = (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger;
     BigInt exponent = (asn1sequence.elements[2] as ASN1Integer).valueAsBigInteger;
     BigInt p = (asn1sequence.elements[4] as ASN1Integer).valueAsBigInteger;

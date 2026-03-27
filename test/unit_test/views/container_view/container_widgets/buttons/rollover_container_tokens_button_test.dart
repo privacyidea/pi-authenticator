@@ -20,7 +20,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:privacyidea_authenticator/api/interfaces/container_api.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/token_container_repository.dart';
@@ -32,9 +31,8 @@ import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/gene
 import 'package:privacyidea_authenticator/views/container_view/container_widgets/buttons/rollover_container_tokens_button.dart';
 import 'package:privacyidea_authenticator/widgets/button_widgets/time_guarded_button.dart';
 
-import 'rollover_container_tokens_button_test.mocks.dart';
+import '../../../../../tests_app_wrapper.mocks.dart';
 
-@GenerateMocks([TokenContainerFinalized])
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   late MockTokenContainerFinalized mockContainer;

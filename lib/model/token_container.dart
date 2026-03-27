@@ -120,20 +120,20 @@ sealed class TokenContainer with _$TokenContainer {
       uriMap = validateMap(
         map: uriMap,
         validators: <String, BaseValidator>{
-          ISSUER: stringValidator,
-          TTL_MINUTES: minutesDurationValidator.withDefault(
+          ISSUER: Validators.string,
+          TTL_MINUTES: Validators.minutesDuration.withDefault(
             const Duration(minutes: 10),
           ),
-          NONCE: stringValidator,
+          NONCE: Validators.string,
           TIMESTAMP: DateTimeX.validator,
-          FINALIZATION_URL: uriValidator,
-          SERIAL: stringValidator,
+          FINALIZATION_URL: Validators.uri,
+          SERIAL: Validators.string,
           EC_KEY_ALGORITHM: EcKeyAlgorithmX.validator,
-          HASH_ALGORITHM: algorithmsValidator,
-          PASSPHRASE_QUESTION: stringValidatorOptional,
-          SSL_VERIFY: boolValidator,
+          HASH_ALGORITHM: Validators.algorithms,
+          PASSPHRASE_QUESTION: Validators.stringOptional,
+          SSL_VERIFY: Validators.boolType,
           POLICIES: ContainerPolicies.validator.optional(),
-          SEND_PASSPHRASE: boolValidatorOptional,
+          SEND_PASSPHRASE: Validators.boolOptional,
         },
         name: 'Container',
       );

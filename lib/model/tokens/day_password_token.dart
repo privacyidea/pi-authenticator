@@ -45,24 +45,25 @@ class DayPasswordToken extends OTPToken {
 
   static final Map<String, BaseValidator> otpAuthValidators = {
     ...OTPToken.otpAuthValidators,
-    TOTPToken.PERIOD_SECONDS: secondsDurationValidator.withDefault(
+    TOTPToken.PERIOD_SECONDS: Validators.secondsDuration.withDefault(
       const Duration(hours: 24),
     ),
   };
 
   static final Map<String, BaseValidator> additionalDataValidators = {
     ...OTPToken.additionalDataValidators,
-    VIEW_MODE: OptionalObjectValidator<DayPasswordTokenViewMode>(
+    VIEW_MODE: DefaultObjectValidator<DayPasswordTokenViewMode>(
       defaultValue: DayPasswordTokenViewMode.VALIDFOR,
       transformer: (value) {
         if (value is DayPasswordTokenViewMode) return value;
         if (value is String) {
           return DayPasswordTokenViewMode.values.firstWhere(
             (e) => e.name.toLowerCase() == value.toLowerCase(),
-            orElse: () => DayPasswordTokenViewMode.VALIDFOR,
           );
         }
-        return null;
+        throw ArgumentError(
+          'Invalid type or value for DayPasswordTokenViewMode: $value',
+        );
       },
     ),
   };
@@ -197,7 +198,7 @@ class DayPasswordToken extends OTPToken {
 
   @override
   DayPasswordToken copyWith({
-    String? serial,
+    String? Function()? serial,
     Duration? period,
     DayPasswordTokenViewMode? viewMode,
     String? label,
@@ -218,7 +219,7 @@ class DayPasswordToken extends OTPToken {
     bool? isOffline,
     ForceBiometricOption? forceBiometricOption,
   }) => DayPasswordToken(
-    serial: serial ?? this.serial,
+    serial: serial != null ? serial() : this.serial,
     period: period ?? this.period,
     viewMode: viewMode ?? this.viewMode,
     label: label ?? this.label,
@@ -260,7 +261,7 @@ class DayPasswordToken extends OTPToken {
     return copyWith(
       label: uriMap[Token.LABEL] as String?,
       issuer: uriMap[Token.ISSUER] as String?,
-      serial: uriMap[Token.SERIAL] as String?,
+      serial: () => uriMap[Token.SERIAL] as String?,
       tokenImage: uriMap[Token.IMAGE] as String?,
       pin: uriMap[Token.PIN] as bool?,
       isLocked: uriMap[Token.PIN] as bool?,

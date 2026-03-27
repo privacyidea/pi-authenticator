@@ -27,6 +27,7 @@ import '../../../../../../../utils/customization/application_customization.dart'
 import '../l10n/app_localizations.dart';
 import '../model/enums/app_feature.dart';
 import '../model/riverpod_states/settings_state.dart';
+import '../utils/firebase_utils.dart';
 import '../utils/globals.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/app_constraints_notifier.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/app_customization_notifier.dart';
@@ -44,6 +45,7 @@ import '../widgets/app_wrapper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await FirebaseUtils.preInitializeStatus();
   runApp(
     AppWrapper(
       child: CustomizationAuthenticator(

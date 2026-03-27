@@ -188,8 +188,8 @@ void main() {
 
   group('isSameTokenAs', () {
     test('same serial | different id', () {
-      final t1 = totpToken.copyWith(serial: 'SN1', id: 'id1');
-      final t2 = totpToken.copyWith(serial: 'SN1', id: 'id2');
+      final t1 = totpToken.copyWith(serial: () => 'SN1', id: 'id1');
+      final t2 = totpToken.copyWith(serial: () => 'SN1', id: 'id2');
       expect(t1.isSameTokenAs(t2), isTrue);
     });
 

@@ -68,25 +68,23 @@ abstract class Token with SortableMixin {
 
   // --- Static Validators ---
   static final Map<String, BaseValidator> otpAuthValidators = {
-    LABEL: stringValidator.withDefault(''),
-    ISSUER: stringValidator.withDefault(''),
-    SERIAL: stringValidatorOptional,
-    IMAGE: stringValidatorOptional,
-    PIN: boolValidatorOptional,
-    OFFLINE: boolValidator.withDefault(false),
+    LABEL: Validators.stringSafe,
+    ISSUER: Validators.stringSafe,
+    SERIAL: Validators.stringOptional,
+    IMAGE: Validators.stringOptional,
+    PIN: Validators.boolOptional,
+    OFFLINE: Validators.boolSafeFalse,
     FORCE_BIOMETRIC_OPTION: ForceBiometricOptionX.validator,
   };
 
   static final Map<String, BaseValidator> additionalDataValidators = {
-    CONTAINER_SERIAL: stringValidatorOptional,
-    ID: stringValidatorOptional,
-    ORIGIN: const OptionalObjectValidator<TokenOriginData>(),
-    IS_HIDDEN: boolValidatorOptional,
-    CHECKED_CONTAINERS: const OptionalObjectValidator<List<String>>(
-      defaultValue: [],
-    ),
-    FOLDER_ID: intValidatorOptional,
-    SORT_INDEX: intValidatorOptional,
+    CONTAINER_SERIAL: Validators.stringOptional,
+    ID: Validators.stringOptional,
+    ORIGIN: OptionalObjectValidator<TokenOriginData>(),
+    IS_HIDDEN: Validators.boolOptional,
+    CHECKED_CONTAINERS: DefaultObjectValidator<List<String>>(defaultValue: []),
+    FOLDER_ID: Validators.intOptional,
+    SORT_INDEX: Validators.intOptional,
   };
 
   // --- Static Validation Methods ---
@@ -288,7 +286,7 @@ abstract class Token with SortableMixin {
 
   @override
   Token copyWith({
-    String? serial,
+    String? Function()? serial,
     String? label,
     String? issuer,
     String? Function()? containerSerial,

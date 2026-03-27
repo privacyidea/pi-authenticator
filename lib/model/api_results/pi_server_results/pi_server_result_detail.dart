@@ -69,9 +69,9 @@ class PushResultDetail extends PiServerResultDetail {
     final map = validateMap(
       map: uriMap,
       validators: <String, BaseValidator>{
-        DISPLAY_CODE: stringValidatorOptional,
-        THREAD_ID: const OptionalObjectValidator<int>(),
-        MESSAGE: stringValidatorOptional,
+        DISPLAY_CODE: Validators.stringOptional,
+        THREAD_ID: OptionalObjectValidator<int>(),
+        MESSAGE: Validators.stringOptional,
       },
       name: 'ContainerChallenge#fromUriMap',
     );

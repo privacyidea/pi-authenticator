@@ -1,14 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
 import 'package:privacyidea_authenticator/model/enums/force_biometric_option.dart';
 import 'package:privacyidea_authenticator/utils/lock_auth.dart';
 
-import 'lock_auth_test.mocks.dart';
+import '../../tests_app_wrapper.mocks.dart';
 
-@GenerateMocks([LocalAuthentication])
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
@@ -17,6 +15,7 @@ void main() {
   setUp(() {
     mockLocalAuth = MockLocalAuthentication();
     localAuthInstance = mockLocalAuth; // override Local instance for testing
+    resetAuthMutex();
   });
 
   group('lockAuth - Basic Flow', () {

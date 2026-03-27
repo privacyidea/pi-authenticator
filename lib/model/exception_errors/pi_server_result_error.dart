@@ -45,8 +45,8 @@ class PiServerResultError implements Error {
     final map = validateMap(
       map: json,
       validators: <String, BaseValidator>{
-        CODE: const RequiredObjectValidator<int>(),
-        MESSAGE: stringValidator,
+        CODE: Validators.intType,
+        MESSAGE: Validators.string,
       },
       name: 'PiServerResultError#fromJson',
     );

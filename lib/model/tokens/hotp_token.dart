@@ -43,7 +43,7 @@ class HOTPToken extends OTPToken {
 
   static final Map<String, BaseValidator> otpAuthValidators = {
     ...OTPToken.otpAuthValidators,
-    COUNTER: otpAuthCounterValidator.withDefault(0),
+    COUNTER: Validators.otpCounterSafe,
   };
 
   // --- Static Validation Methods ---
@@ -159,7 +159,7 @@ class HOTPToken extends OTPToken {
 
   @override
   HOTPToken copyWith({
-    String? serial,
+    String? Function()? serial,
     int? counter,
     String? label,
     String? issuer,
@@ -179,7 +179,7 @@ class HOTPToken extends OTPToken {
     bool? isOffline,
     ForceBiometricOption? forceBiometricOption,
   }) => HOTPToken(
-    serial: serial ?? this.serial,
+    serial: serial != null ? serial() : this.serial,
     counter: counter ?? this.counter,
     label: label ?? this.label,
     issuer: issuer ?? this.issuer,
@@ -212,7 +212,7 @@ class HOTPToken extends OTPToken {
     return copyWith(
       label: uriMap[Token.LABEL] as String?,
       issuer: uriMap[Token.ISSUER] as String?,
-      serial: uriMap[Token.SERIAL] as String?,
+      serial: () => uriMap[Token.SERIAL] as String?,
       tokenImage: uriMap[Token.IMAGE] as String?,
       pin: uriMap[Token.PIN] as bool?,
       isLocked: uriMap[Token.PIN] as bool?,

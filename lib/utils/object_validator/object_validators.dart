@@ -27,151 +27,124 @@ import '../../model/exception_errors/localized_argument_error.dart';
 import '../logger.dart';
 
 part 'base_validator.dart';
+part 'default_object_validator.dart';
 part 'optional_object_validator.dart';
 part 'required_object_validator.dart';
 
 final _base32Regex = RegExp(r'^[A-Z2-7]+=*$');
 
-final stringValidator = RequiredObjectValidator<String>(
-  transformer: (v) {
-    if (v is String) return v;
-    throw ArgumentError('Invalid type: ${v.runtimeType}, value: $v');
-  },
-);
-final stringValidatorOptional = stringValidator.optional();
+abstract class Validators {
+  // --- Core Types ---
+  static final string = RequiredObjectValidator<String>();
+  static final stringOptional = string.optional();
+  static final stringSafe = string.withDefault('');
 
-final otpAuthPeriodSecondsValidator = RequiredObjectValidator<int>(
-  transformer: (v) {
-    if (v is int) return v;
-    if (v is String) return int.parse(v);
-    throw ArgumentError('Invalid type: ${v.runtimeType}, value: $v');
-  },
-  defaultValue: 30,
-  allowedValues: (v) => v > 0,
-);
-final otpAutjPeriodSecondsValidatorOptional = otpAuthPeriodSecondsValidator
-    .optional();
+  static final intType = RequiredObjectValidator<int>(
+    transformer: (v) => v is String ? int.parse(v) : (v as int),
+  );
+  static final intOptional = intType.optional();
 
-final otpAuthDigitsValidator = RequiredObjectValidator<int>(
-  transformer: (v) {
-    if (v is int) return v;
-    if (v is String) return int.parse(v);
-    throw ArgumentError('Invalid type: ${v.runtimeType}, value: $v');
-  },
-  defaultValue: 6,
-  allowedValues: (p0) => p0 > 0,
-);
-final otpAuthDigitsValidatorOptional = otpAuthDigitsValidator.optional();
-
-final otpAuthCounterValidator = RequiredObjectValidator<int>(
-  transformer: (v) {
-    if (v is int) return v;
-    if (v is String) return int.parse(v);
-    throw ArgumentError('Invalid type: ${v.runtimeType}, value: $v');
-  },
-  allowedValues: (v) => v >= 0,
-);
-
-final intValidator = RequiredObjectValidator<int>(
-  transformer: (v) {
-    if (v is int) return v;
-    if (v is String) return int.parse(v);
-    throw ArgumentError('Invalid type: ${v.runtimeType}, value: $v');
-  },
-);
-final intValidatorOptional = intValidator.optional();
-
-final intToStringValidator = RequiredObjectValidator<String>(
-  transformer: (v) {
-    if (v is int) return v.toString();
-    if (v is String) return v;
-    throw ArgumentError('Invalid type: ${v.runtimeType}, value: $v');
-  },
-);
-final intToStringValidatorOptional = intToStringValidator.optional();
-
-final secondsDurationValidator = RequiredObjectValidator<Duration>(
-  transformer: (v) {
-    if (v is Duration) return v;
-    if (v is int) return Duration(seconds: v);
-    if (v is String) return Duration(seconds: int.parse(v));
-    throw ArgumentError('Invalid type: ${v.runtimeType}, value: $v');
-  },
-  allowedValues: (v) => v.inSeconds > 0,
-);
-final secondsDurationValidatorOptional = secondsDurationValidator.optional();
-
-final minutesDurationValidator = RequiredObjectValidator<Duration>(
-  transformer: (v) {
-    if (v is Duration) return v;
-    if (v is int) return Duration(minutes: v);
-    if (v is String) return Duration(minutes: int.parse(v));
-    throw ArgumentError('Invalid type: ${v.runtimeType}, value: $v');
-  },
-  allowedValues: (v) => v.inSeconds > 0,
-);
-final minutesDurationValidatorOptional = minutesDurationValidator.optional();
-
-final uriValidator = RequiredObjectValidator<Uri>(
-  transformer: (v) {
-    if (v is Uri) return v;
-    if (v is String) return Uri.parse(v);
-    throw ArgumentError('Invalid type: ${v.runtimeType}, value: $v');
-  },
-);
-final uriValidatorOptional = uriValidator.optional();
-
-final boolValidator = RequiredObjectValidator<bool>(
-  transformer: (v) {
-    if (v is bool) return v;
-    if (v is int) return v == 1;
-    if (v is String) {
-      return switch (v) {
-        'true' || 'True' || '1' => true,
-        'false' || 'False' || '0' => false,
-        _ => throw ArgumentError('Invalid boolean value: $v'),
-      };
-    }
-    throw ArgumentError('Invalid boolean value: $v');
-  },
-);
-final boolValidatorOptional = boolValidator.optional();
-
-final algorithmsValidator = RequiredObjectValidator<Algorithms>(
-  transformer: (v) {
-    if (v is Algorithms) return v;
-    if (v is String) return Algorithms.values.byName(v.toUpperCase());
-    throw ArgumentError('Invalid type: ${v.runtimeType}, value: $v');
-  },
-);
-final algorithmsValidatorOptional = algorithmsValidator.optional();
-
-final base32Stringvalidator = RequiredObjectValidator<String>(
-  transformer: (v) {
-    if (v is Uint8List) return Encodings.base32.encode(v);
-    if (v is String) {
-      final normalized = v.replaceAll(' ', '').toUpperCase();
-      if (!_base32Regex.hasMatch(normalized)) {
-        throw ArgumentError('Invalid base32 format: $normalized');
+  static final boolType = RequiredObjectValidator<bool>(
+    transformer: (v) {
+      if (v is bool) return v;
+      if (v is int) return v == 1;
+      if (v is String) {
+        return switch (v.toLowerCase()) {
+          'true' || '1' => true,
+          'false' || '0' => false,
+          _ => throw ArgumentError('Invalid boolean: $v'),
+        };
       }
-      return normalized;
-    }
-    throw ArgumentError('Invalid type: ${v.runtimeType}, value: $v');
-  },
-);
-final base32StringValidatorOptional = base32Stringvalidator.optional();
+      throw ArgumentError('Invalid type for bool: ${v.runtimeType}');
+    },
+  );
+  static final boolOptional = boolType.optional();
+  static final boolSafeTrue = boolType.withDefault(true);
+  static final boolSafeFalse = boolType.withDefault(false);
 
-final base32ToBytesValidator = RequiredObjectValidator<Uint8List>(
-  transformer: (v) {
-    if (v is Uint8List) return v;
-    if (v is String) {
-      final normalized = v.replaceAll(' ', '').toUpperCase();
-      return Encodings.base32.decode(normalized);
-    }
-    throw ArgumentError('Invalid type: ${v.runtimeType}');
-  },
-);
-final base32ToBytesValidatorOptional = base32ToBytesValidator.optional();
+  // --- OTP / Token Specific ---
+  static final otpPeriod = RequiredObjectValidator<int>(
+    transformer: (v) => v is String ? int.parse(v) : (v as int),
+    allowedValues: (v) => v > 0,
+  );
+  static final otpPeriodSafe = otpPeriod.withDefault(30);
+
+  static final otpDigits = RequiredObjectValidator<int>(
+    transformer: (v) => v is String ? int.parse(v) : (v as int),
+    allowedValues: (v) => v > 0,
+  );
+  static final otpDigitsSafe = otpDigits.withDefault(6);
+
+  static final otpCounter = RequiredObjectValidator<int>(
+    transformer: (v) => v is String ? int.parse(v) : (v as int),
+    allowedValues: (v) => v >= 0,
+  );
+  static final otpCounterSafe = otpCounter.withDefault(0);
+
+  static final algorithms = RequiredObjectValidator<Algorithms>(
+    transformer: (v) => v is String
+        ? Algorithms.values.byName(v.toUpperCase())
+        : (v as Algorithms),
+  );
+  static final algorithmOptional = algorithms.optional();
+
+  // --- Conversions ---
+  static final intToString = RequiredObjectValidator<String>(
+    transformer: (v) {
+      if (v is int) return v.toString();
+      if (v is String) return int.parse(v).toString();
+      if (v is num) return v.toInt().toString();
+      throw ArgumentError('Invalid type for int to string: ${v.runtimeType}');
+    },
+  );
+  static final intToStringOptional = intToString.optional();
+
+  static final base32String = RequiredObjectValidator<String>(
+    transformer: (v) {
+      if (v is Uint8List) return Encodings.base32.encode(v);
+      final s = (v as String).replaceAll(' ', '').toUpperCase();
+      if (!_base32Regex.hasMatch(s)) throw ArgumentError('Invalid base32');
+      return s;
+    },
+  );
+  static final base32StringOptional = base32String.optional();
+
+  static final base32ToBytes = RequiredObjectValidator<Uint8List>(
+    transformer: (v) {
+      if (v is Uint8List) return v;
+      return Encodings.base32.decode(
+        (v as String).replaceAll(' ', '').toUpperCase(),
+      );
+    },
+  );
+  static final base32ToBytesOptional = base32ToBytes.optional();
+
+  // --- Durations & URI ---
+  static final secondsDuration = RequiredObjectValidator<Duration>(
+    transformer: (v) {
+      if (v is Duration) return v;
+      final sec = v is String ? int.parse(v) : (v as int);
+      return Duration(seconds: sec);
+    },
+    allowedValues: (v) => v.inSeconds > 0,
+  );
+  static final secondsDurationOptional = secondsDuration.optional();
+
+  static final minutesDuration = RequiredObjectValidator<Duration>(
+    transformer: (v) {
+      if (v is Duration) return v;
+      final min = v is String ? int.parse(v) : (v as int);
+      return Duration(minutes: min);
+    },
+    allowedValues: (v) => v.inMinutes > 0,
+  );
+  static final minutesDurationOptional = minutesDuration.optional();
+
+  static final uri = RequiredObjectValidator<Uri>(
+    transformer: (v) => v is String ? Uri.parse(v) : (v as Uri),
+  );
+  static final uriOptional = uri.optional();
+}
 
 T validate<T extends Object?>({
   required Object? value,
@@ -180,7 +153,7 @@ T validate<T extends Object?>({
 }) {
   final result = validator.transform(value, name);
   if (!validator.valueIsAllowed(value, name)) {
-    throw validator._error(value, name);
+    throw (validator as dynamic)._error(value, name);
   }
   return result;
 }
@@ -192,12 +165,9 @@ Map<String, T> validateMap<T extends Object?>({
 }) {
   final Map<String, T> validatedMap = {};
   for (final key in validators.keys) {
-    final validator = validators[key]!;
-    final mapEntry = map[key];
-
     final newValue = validate<T>(
-      value: mapEntry,
-      validator: validator,
+      value: map[key],
+      validator: validators[key]!,
       name: key,
     );
 

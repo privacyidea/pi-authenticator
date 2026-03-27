@@ -55,7 +55,7 @@ sealed class PiServerResponse<
     required double time,
     required String version,
     required String versionNumber,
-    required String signature,
+    @Default(null) String? signature,
     @Default(null) D? detail,
   }) = PiSuccessResponse;
   bool get isSuccess => this is PiSuccessResponse;
@@ -73,7 +73,7 @@ sealed class PiServerResponse<
     required double time,
     required String version,
     required String versionNumber,
-    required String signature,
+    @Default(null) String? signature,
   }) = PiErrorResponse;
   bool get isError => this is PiErrorResponse;
   PiErrorResponse<V, D>? get asError =>
@@ -87,16 +87,16 @@ sealed class PiServerResponse<
     final map = validateMap(
       map: json,
       validators: <String, BaseValidator>{
-        ID: const RequiredObjectValidator<int>(),
-        JSONRPC: stringValidator,
-        RESULT: const RequiredObjectValidator<Map<String, dynamic>>(),
-        TIME: const RequiredObjectValidator<double>(),
+        ID: Validators.intType,
+        JSONRPC: Validators.string,
+        RESULT: RequiredObjectValidator<Map<String, dynamic>>(),
+        TIME: RequiredObjectValidator<double>(),
         VERSION: RequiredObjectValidator<String>(
           allowedValues: (v) => v.contains(' '),
         ),
-        VERSION_NUMBER: stringValidatorOptional,
-        DETAIL: const OptionalObjectValidator<Object>(),
-        SIGNATURE: stringValidator,
+        VERSION_NUMBER: Validators.stringOptional,
+        DETAIL: OptionalObjectValidator<Object>(),
+        SIGNATURE: Validators.stringOptional,
       },
       name: 'PiServerResponse#fromJson',
     );
@@ -113,7 +113,7 @@ sealed class PiServerResponse<
           map[VERSION_NUMBER] as String? ??
           (map[VERSION] as String).split(' ')[1],
       detail: PiServerResultDetail.fromResultDetail<D>(map[DETAIL]),
-      signature: map[SIGNATURE] as String,
+      signature: map[SIGNATURE] as String?,
     );
   }
 

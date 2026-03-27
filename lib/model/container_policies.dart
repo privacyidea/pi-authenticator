@@ -69,10 +69,10 @@ sealed class ContainerPolicies with _$ContainerPolicies {
     final validated = validateMap(
       map: map,
       validators: <String, BaseValidator<bool>>{
-        ROLLOVER_ALLOWED: boolValidator,
-        INITIAL_TOKEN_ASSIGNMENT: boolValidator,
-        DISABLED_TOKEN_DELETION: boolValidator,
-        DISABLED_UNREGISTER: boolValidator,
+        ROLLOVER_ALLOWED: Validators.boolType,
+        INITIAL_TOKEN_ASSIGNMENT: Validators.boolType,
+        DISABLED_TOKEN_DELETION: Validators.boolType,
+        DISABLED_UNREGISTER: Validators.boolType,
       },
       name: 'ContainerPolicies',
     );

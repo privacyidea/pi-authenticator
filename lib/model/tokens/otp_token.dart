@@ -38,9 +38,9 @@ abstract class OTPToken extends Token {
   // --- Static Accessors & Validators ---
   static final Map<String, BaseValidator> otpAuthValidators = {
     ...Token.otpAuthValidators,
-    ALGORITHM: algorithmsValidator.withDefault(Algorithms.SHA1),
-    DIGITS: otpAuthDigitsValidator.withDefault(6),
-    SECRET_BASE32: base32Stringvalidator,
+    ALGORITHM: Validators.algorithms.withDefault(Algorithms.SHA1),
+    DIGITS: Validators.otpDigitsSafe,
+    SECRET_BASE32: Validators.base32String,
   };
 
   static final Map<String, BaseValidator> additionalDataValidators = {
@@ -106,10 +106,16 @@ abstract class OTPToken extends Token {
   });
 
   // --- Methods ---
+
+  /// Checks if this token is the same as another token, based on their properties.
+  /// Returns `true` if they are the same, `false` if they are different, and `null` if it cannot be determined.
+  /// The base implementation checks the common properties of all tokens, and the OTPToken implementation checks the OTP-specific properties.
+  /// Subclasses can override this method to add more specific checks, but should call `super.isSameTokenAs(other)` to maintain the base checks.
   @override
   bool? isSameTokenAs(Token other) {
     if (other is! OTPToken) return false;
-    if (super.isSameTokenAs(other) != null) return super.isSameTokenAs(other)!;
+    final isSame = super.isSameTokenAs(other);
+    if (isSame != null) return isSame;
     if (secret != other.secret) return false;
     if (algorithm != other.algorithm) return false;
     if (digits != other.digits) return false;
@@ -118,7 +124,7 @@ abstract class OTPToken extends Token {
 
   @override
   OTPToken copyWith({
-    String? serial,
+    String? Function()? serial,
     String? label,
     String? issuer,
     String? Function()? containerSerial,

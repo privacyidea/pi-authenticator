@@ -37,7 +37,7 @@ import 'logger.dart';
 import 'view_utils.dart';
 
 LocalAuthentication _localAuth = LocalAuthentication();
-final Mutex _authMutex = Mutex();
+Mutex _authMutex = Mutex();
 
 /// Requests OS-level authentication from the user.
 ///
@@ -63,20 +63,24 @@ Future<bool> lockAuth({
   }
 
   await _authMutex.acquire();
-  final isBiometricForced =
-      forceBiometricOption == ForceBiometricOption.biometric;
-  if (!await _checkSupport(isBiometricForced, autoAuthIfUnsupported)) {
-    return autoAuthIfUnsupported;
+
+  try {
+    final isBiometricForced =
+        forceBiometricOption == ForceBiometricOption.biometric;
+    if (!await _checkSupport(isBiometricForced, autoAuthIfUnsupported)) {
+      return autoAuthIfUnsupported;
+    }
+
+    return await _executeAuth(
+      isBiometricForced: isBiometricForced,
+      localizedReason: reason(localization),
+      localization: localization,
+    );
+  } finally {
+    if (_authMutex.isLocked) {
+      _authMutex.release();
+    }
   }
-
-  final isAuthenticated = await _executeAuth(
-    isBiometricForced: isBiometricForced,
-    localizedReason: reason(localization),
-    localization: localization,
-  );
-
-  _authMutex.release();
-  return isAuthenticated;
 }
 
 Future<bool> _executeAuth({
@@ -238,3 +242,9 @@ Future<void> _showBiometricUnavailableDialog() async {
 
 @visibleForTesting
 set localAuthInstance(LocalAuthentication auth) => _localAuth = auth;
+@visibleForTesting
+void resetAuthMutex() {
+  if (_authMutex.isLocked) {
+    _authMutex.release();
+  }
+}

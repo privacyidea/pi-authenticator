@@ -216,7 +216,7 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
           isPrivacyIdeaToken: false,
           data: t.resultData.origin?.data ?? fileString,
         ),
-        resultHandlerType: const RequiredObjectValidator<TokenNotifier>(),
+        resultHandlerType: RequiredObjectValidator<TokenNotifier>(),
       );
     }).toList();
 
@@ -251,7 +251,7 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
           token: t.resultData,
           data: t.resultData.origin?.data ?? uri.toString(),
         ),
-        resultHandlerType: const RequiredObjectValidator<TokenNotifier>(),
+        resultHandlerType: RequiredObjectValidator<TokenNotifier>(),
       );
     }).toList();
     Logger.info("QR code scanned successfully");
@@ -341,7 +341,7 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
           isPrivacyIdeaToken: false,
           data: _linkController.text,
         ),
-        resultHandlerType: const RequiredObjectValidator<TokenNotifier>(),
+        resultHandlerType: RequiredObjectValidator<TokenNotifier>(),
       );
     }).toList();
     if (!mounted) return null;

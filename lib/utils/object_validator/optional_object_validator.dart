@@ -17,65 +17,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 part of 'object_validators.dart';
 
-class OptionalObjectValidator<T extends Object?> extends BaseValidator<T?> {
-  const OptionalObjectValidator({
-    super.transformer,
-    super.defaultValue,
-    super.allowedValues,
-  });
+class OptionalObjectValidator<T extends Object> extends BaseValidator<T?> {
+  OptionalObjectValidator({super.transformer, super.allowedValues});
+
+  @override
+  T? transform(value, name) {
+    if (value == null) return null;
+    try {
+      return _executeTransform(value, name);
+    } catch (e) {
+      return null;
+    }
+  }
 
   @override
   OptionalObjectValidator<T> optional() => this;
 
   @override
-  T? transform(value, name) {
-    if (value == null) return defaultValue;
-    try {
-      return _executeTransform(value, name);
-    } catch (e, stackTrace) {
-      Logger.warning(
-        'Validation failed for <$T?>. Optional Value: "$value" (Type: ${value.runtimeType})',
-        error: e,
-        stackTrace: stackTrace,
-        name: 'OptionalObjectValidator<$T>',
+  DefaultObjectValidator<T> withDefault(T defaultValue) =>
+      DefaultObjectValidator<T>(
+        defaultValue: defaultValue,
+        transformer: transformer == null
+            ? null
+            : (v) => transformer!(v) ?? defaultValue,
+        allowedValues: allowedValues,
       );
-      return defaultValue;
-    }
-  }
 
   @override
-  OptionalObjectValidator<T> withDefault(defaultValue) {
-    return OptionalObjectValidator<T>(
-      transformer: transformer,
-      defaultValue: defaultValue,
-      allowedValues: allowedValues,
-    );
-  }
-
-  @override
-  bool isTypeOf(value) {
-    if (value == null) return true;
-
-    if (transformer != null) {
-      try {
-        transformer!(value);
-        return true;
-      } catch (e, stackTrace) {
-        Logger.warning(
-          'Validation failed for <$T?>. Optional Value: "$value" (Type: ${value.runtimeType})',
-          error: e,
-          stackTrace: stackTrace,
-          name: 'OptionalObjectValidator<$T>',
-        );
-        return false;
-      }
-    }
-
-    return value is T;
-  }
+  bool isTypeOf(value) => value == null || value is T || transformer != null;
 
   @override
   bool valueIsAllowed(value, name) {

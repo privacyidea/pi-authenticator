@@ -20,22 +20,29 @@
 
 part of 'object_validators.dart';
 
-class RequiredObjectValidator<T extends Object> extends BaseValidator<T> {
-  RequiredObjectValidator({super.transformer, super.allowedValues});
+class DefaultObjectValidator<T extends Object> extends BaseValidator<T> {
+  T defaultValue;
+
+  DefaultObjectValidator({
+    required this.defaultValue,
+    super.transformer,
+    super.allowedValues,
+  });
 
   @override
   T transform(value, name) {
-    if (value == null) throw _error(value, name);
-    return _executeTransform(value, name);
+    if (value == null) return defaultValue;
+    try {
+      return _executeTransform(value, name);
+    } catch (e) {
+      return defaultValue;
+    }
   }
 
   @override
   OptionalObjectValidator<T> optional() => OptionalObjectValidator<T>(
     transformer: transformer,
-    allowedValues: (v) {
-      if (v == null) return true;
-      return allowedValues?.call(v) ?? true;
-    },
+    allowedValues: (v) => v == null ? true : (allowedValues?.call(v) ?? true),
   );
 
   @override
@@ -47,7 +54,7 @@ class RequiredObjectValidator<T extends Object> extends BaseValidator<T> {
       );
 
   @override
-  bool isTypeOf(value) => value is T || (transformer != null && value != null);
+  bool isTypeOf(value) => value == null || value is T || transformer != null;
 
   @override
   bool valueIsAllowed(value, name) =>

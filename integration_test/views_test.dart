@@ -198,7 +198,7 @@ Future<void> _popUntilMainView(WidgetTester tester) async {
     tester,
     find.byIcon(Icons.arrow_back),
     1,
-    const Duration(seconds: 2),
+    timeout: const Duration(seconds: 2),
   );
   while (find.byIcon(Icons.arrow_back).evaluate().isNotEmpty) {
     await tester.tap(find.byIcon(Icons.arrow_back));
@@ -206,7 +206,7 @@ Future<void> _popUntilMainView(WidgetTester tester) async {
       tester,
       find.byIcon(Icons.arrow_back),
       1,
-      const Duration(seconds: 2),
+      timeout: const Duration(seconds: 2),
     );
   }
   return;
@@ -217,7 +217,7 @@ Future<void> _licensesViewTest(WidgetTester tester) async {
     tester,
     find.byIcon(Icons.info_outline),
     1,
-    const Duration(seconds: 20),
+    timeout: const Duration(seconds: 20),
   );
   await tester.tap(find.byIcon(Icons.info_outline));
   await tester.pumpAndSettle();
@@ -238,7 +238,7 @@ Future<void> _settingsViewTest(WidgetTester tester) async {
     tester,
     find.byIcon(Icons.settings),
     1,
-    const Duration(seconds: 10),
+    timeout: const Duration(seconds: 10),
   );
   await tester.tap(find.byIcon(Icons.settings));
   await tester.pumpAndSettle();
@@ -256,7 +256,7 @@ Future<void> _settingsViewTest(WidgetTester tester) async {
     tester,
     find.text(AppLocalizationsEn().pushToken),
     1,
-    const Duration(minutes: 5),
+    timeout: const Duration(minutes: 5),
   );
   expect(find.text(AppLocalizationsEn().pushToken), findsOneWidget);
   expect(find.byType(SettingsGroup), findsNWidgets(6));

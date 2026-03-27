@@ -26,25 +26,31 @@ import 'package:privacyidea_authenticator/model/token_template.dart';
 import 'package:privacyidea_authenticator/model/tokens/otp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 
-class MockOTPToken extends OTPToken {
-  const MockOTPToken({
+class FakeOTPToken extends OTPToken {
+  final String _testOtpValue;
+  final String _testNextValue;
+
+  const FakeOTPToken({
     required super.algorithm,
     required super.digits,
     required super.secret,
     required super.id,
     super.serial,
     super.label,
-    super.type = 'MOCK',
+    super.type = 'FAKE',
     super.pin,
     super.isLocked,
     super.issuer,
-  });
+    String otpValue = '123456',
+    String nextValue = '654321',
+  }) : _testOtpValue = otpValue,
+       _testNextValue = nextValue;
 
   @override
-  String get otpValue => '123456';
+  String get otpValue => _testOtpValue;
 
   @override
-  String get nextValue => '654321';
+  String get nextValue => _testNextValue;
 
   @override
   Map<String, dynamic> toJson() => {
@@ -59,7 +65,7 @@ class MockOTPToken extends OTPToken {
 
   @override
   OTPToken copyWith({
-    String? serial,
+    String? Function()? serial,
     String? label,
     String? issuer,
     String? Function()? containerSerial,
@@ -77,17 +83,23 @@ class MockOTPToken extends OTPToken {
     TokenOriginData? origin,
     bool? isOffline,
     ForceBiometricOption? forceBiometricOption,
+    String? otpValue,
+    String? nextValue,
   }) {
-    return MockOTPToken(
+    final String? newSerial = serial?.call();
+
+    return FakeOTPToken(
       algorithm: algorithm ?? this.algorithm,
       digits: digits ?? this.digits,
       secret: secret ?? this.secret,
       id: id ?? this.id,
-      serial: serial ?? this.serial,
+      serial: serial != null ? newSerial : this.serial,
       label: label ?? this.label,
       pin: pin ?? this.pin,
       isLocked: isLocked ?? this.isLocked,
       issuer: issuer ?? this.issuer,
+      otpValue: otpValue ?? this.otpValue,
+      nextValue: nextValue ?? this.nextValue,
     );
   }
 }
@@ -114,7 +126,7 @@ void main() {
   });
 
   group('OTPToken Serialization & Template Logic', () {
-    const token = MockOTPToken(
+    const token = FakeOTPToken(
       algorithm: Algorithms.SHA256,
       digits: 8,
       secret: 'SECRET123',
@@ -123,25 +135,31 @@ void main() {
       label: 'my_label',
     );
 
-    test('toOtpAuthMap output types', () {
+    test('toOtpAuthMap output types and values', () {
       final map = token.toOtpAuthMap();
-      expect(map[OTPToken.ALGORITHM], isA<String>());
-      expect(map[OTPToken.DIGITS], isA<String>());
       expect(map[OTPToken.ALGORITHM], 'SHA256');
+      expect(map[OTPToken.DIGITS], '8');
+      expect(map[OTPToken.ALGORITHM], isA<String>());
     });
 
-    test('OTP values are included in map only if serial is null', () {
-      final withSerial = token.toOtpAuthMap();
-      expect(withSerial.containsKey(OTPToken.OTP_VALUES), isFalse);
+    test(
+      'toTemplate captures serial and excludes OTP values when serial is present',
+      () {
+        final template = token.toTemplate();
+        expect(template.serial, 'SN_001');
+        expect(template.otpAuthMap.containsKey(OTPToken.OTP_VALUES), isFalse);
+      },
+    );
 
-      final noSerial = token.copyWith(serial: null).toOtpAuthMap();
-      expect(noSerial[OTPToken.OTP_VALUES], ['123456', '654321']);
-    });
-
-    test('toTemplate captures OTP values in otpAuthMap', () {
-      final template = token.toTemplate();
-      expect(template.otpAuthMap[OTPToken.OTP_VALUES], ['123456', '654321']);
-    });
+    test(
+      'toTemplate captures OTP values and has null serial when serial is absent',
+      () {
+        final tokenWithoutSerial = token.copyWith(serial: () => null);
+        final template = tokenWithoutSerial.toTemplate();
+        expect(template.serial, isNull);
+        expect(template.otpAuthMap[OTPToken.OTP_VALUES], ['123456', '654321']);
+      },
+    );
 
     test('toJson contains all required fields', () {
       final json = token.toJson();
@@ -152,41 +170,84 @@ void main() {
   });
 
   group('OTPToken Identity Logic', () {
-    const base = MockOTPToken(
+    const base = FakeOTPToken(
+      id: '1',
       algorithm: Algorithms.SHA1,
       digits: 6,
-      secret: 'S',
-      id: '1',
+      secret: 'secret',
+      issuer: "issuer",
+      label: "label",
+      serial: "serial",
+      isLocked: true,
+      pin: true,
     );
 
-    test('isSameTokenAs matches by parameters if ID/Serial differ', () {
-      const other = MockOTPToken(
-        algorithm: Algorithms.SHA1,
-        digits: 6,
-        secret: 'S',
-        id: 'different',
+    test('isSameTokenAs should match when id is the same', () {
+      const other = FakeOTPToken(
+        id: '1',
+        serial: "different_serial",
+        issuer: "different_issuer",
+        algorithm: Algorithms.SHA256,
+        digits: 8,
+        secret: 'different_secret',
+        label: "different_label",
+        isLocked: false,
+        pin: false,
       );
       expect(base.isSameTokenAs(other), isTrue);
     });
 
-    test('isSameTokenAs fails if secret differs', () {
-      const other = MockOTPToken(
-        algorithm: Algorithms.SHA1,
-        digits: 6,
-        secret: 'OTHER',
-        id: '1',
-      );
-      expect(base.isSameTokenAs(other), isFalse);
-    });
+    group("isSameTokenAs with different id", () {
+      test('isSameTokenAs should match when serial AND issuer is the same', () {
+        final other1 = base.copyWith(
+          id: '2', // same id = same token
+          serial: () => "serial",
+          issuer: "issuer",
+        );
+        final other2 = base.copyWith(id: '2', serial: () => "different_serial");
+        final other3 = base.copyWith(id: '2', issuer: "different_issuer");
+        expect(base.isSameTokenAs(other1), isTrue);
+        expect(base.isSameTokenAs(other2), isFalse);
+        expect(base.isSameTokenAs(other3), isFalse);
+      });
 
-    test('isSameTokenAs fails if algorithm differs', () {
-      const other = MockOTPToken(
-        algorithm: Algorithms.SHA256,
-        digits: 6,
-        secret: 'S',
-        id: '1',
+      test(
+        'isSameTokenAs should not match when secret, algorithm or digits differs',
+        () {
+          final other1 = base.copyWith(
+            id: '2', // same id = same token
+            issuer: "different_issuer", // same serial & issuer = same token
+            secret: 'different_secret',
+          );
+          final other2 = base.copyWith(
+            id: '2',
+            issuer: "different_issuer",
+            algorithm: Algorithms.SHA256,
+          );
+          final other3 = base.copyWith(
+            id: '2',
+            issuer: "different_issuer",
+            digits: 8,
+          );
+
+          expect(base.isSameTokenAs(other1), isFalse);
+          expect(base.isSameTokenAs(other2), isFalse);
+          expect(base.isSameTokenAs(other3), isFalse);
+        },
       );
-      expect(base.isSameTokenAs(other), isFalse);
+
+      test(
+        'isSameTokenAs should not be determined when only other properties differ',
+        () {
+          final other = base.copyWith(
+            id: '2', // same id = same token
+            label: "different_label",
+            isLocked: false,
+            pin: false,
+          );
+          expect(base.isSameTokenAs(other), isNull);
+        },
+      );
     });
   });
 }

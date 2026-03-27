@@ -24,8 +24,8 @@ import 'package:privacyidea_authenticator/model/token_import/token_origin_data.d
 import 'package:privacyidea_authenticator/model/token_template.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 
-class MockToken extends Token {
-  const MockToken({
+class FakeToken extends Token {
+  const FakeToken({
     required super.id,
     required super.type,
     super.serial,
@@ -52,7 +52,7 @@ class MockToken extends Token {
 
   @override
   Token copyWith({
-    String? serial,
+    String? Function()? serial,
     String? label,
     String? issuer,
     String? Function()? containerSerial,
@@ -68,10 +68,10 @@ class MockToken extends Token {
     bool? isOffline,
     ForceBiometricOption? forceBiometricOption,
   }) {
-    return MockToken(
+    return FakeToken(
       id: id ?? this.id,
       type: type,
-      serial: serial ?? this.serial,
+      serial: serial != null ? serial() : this.serial,
       label: label ?? this.label,
       issuer: issuer ?? this.issuer,
       pin: pin ?? this.pin,
@@ -121,13 +121,13 @@ void main() {
     test(
       'isLocked returns true if PIN is required regardless of internal state',
       () {
-        const t = MockToken(id: '1', type: 'T', pin: true, isLocked: false);
+        const t = FakeToken(id: '1', type: 'T', pin: true, isLocked: false);
         expect(t.isLocked, isTrue);
       },
     );
 
     test('isLocked returns true if Biometrics are forced', () {
-      final t = MockToken(
+      final t = FakeToken(
         id: '1',
         type: 'T',
         forceBiometricOption: ForceBiometricOption.biometric,
@@ -139,7 +139,7 @@ void main() {
     test(
       'isLocked returns false only if PIN, Biometrics, and _isLocked are all false',
       () {
-        const t = MockToken(
+        const t = FakeToken(
           id: '1',
           type: 'T',
           pin: false,
@@ -151,8 +151,8 @@ void main() {
     );
 
     test('isHidden defaults to isLocked value when not specified', () {
-      const locked = MockToken(id: '1', type: 'T', isLocked: true);
-      const unlocked = MockToken(id: '2', type: 'T', isLocked: false);
+      const locked = FakeToken(id: '1', type: 'T', isLocked: true);
+      const unlocked = FakeToken(id: '2', type: 'T', isLocked: false);
       expect(locked.isHidden, isTrue);
       expect(unlocked.isHidden, isFalse);
     });
@@ -160,7 +160,7 @@ void main() {
     test(
       'isHidden can be false while isLocked is true (explicit override)',
       () {
-        const t = MockToken(
+        const t = FakeToken(
           id: '1',
           type: 'T',
           isLocked: true,
@@ -172,41 +172,72 @@ void main() {
     );
   });
 
-  group('Token Identity & Equality contracts', () {
+  group('Token Identity Logic', () {
+    const base = FakeToken(
+      id: '1',
+      type: 'FAKE',
+      serial: 'serial',
+      issuer: 'issuer',
+      label: 'label',
+      isLocked: true,
+      pin: true,
+    );
+
+    test('isSameTokenAs matches when id is the same', () {
+      const other = FakeToken(
+        id: '1',
+        type: 'OTHER',
+        serial: 'different_serial',
+        issuer: 'different_issuer',
+      );
+      expect(base.isSameTokenAs(other), isTrue);
+    });
+
+    group('isSameTokenAs with different id', () {
+      test('matches when serial AND issuer are the same', () {
+        final other1 = base.copyWith(
+          id: '2',
+          serial: () => 'serial',
+          issuer: 'issuer',
+        );
+        final other2 = base.copyWith(id: '2', serial: () => 'different_serial');
+        final other3 = base.copyWith(id: '2', issuer: 'different_issuer');
+
+        expect(base.isSameTokenAs(other1), isTrue);
+        expect(base.isSameTokenAs(other2), isFalse);
+        expect(base.isSameTokenAs(other3), isFalse);
+      });
+
+      test('returns null if IDs differ and serials are null', () {
+        final t1 = base.copyWith(id: '1', serial: () => null);
+        final t2 = base.copyWith(id: '2', serial: () => null);
+        expect(t1.isSameTokenAs(t2), isNull);
+      });
+
+      test('should not be determined when only UI properties differ', () {
+        final baseNoSerial = base.copyWith(
+          id: '1',
+          // have to nullify serial to reach the UI properties check
+          serial: () => null,
+        );
+        final other = base.copyWith(
+          id: '2',
+          serial: () => null,
+          label: 'different_label',
+          isLocked: false,
+          pin: false,
+        );
+        expect(baseNoSerial.isSameTokenAs(other), isNull);
+      });
+    });
+
     test('Operator == strictly compares ID', () {
-      const t1 = MockToken(id: 'ID-A', type: 'HOTP');
-      const t2 = MockToken(id: 'ID-A', type: 'TOTP');
-      const t3 = MockToken(id: 'ID-B', type: 'HOTP');
+      const t1 = FakeToken(id: 'ID-A', type: 'HOTP');
+      const t2 = FakeToken(id: 'ID-A', type: 'TOTP');
+      const t3 = FakeToken(id: 'ID-B', type: 'HOTP');
 
       expect(t1 == t2, isTrue);
       expect(t1 == t3, isFalse);
-    });
-
-    test('isSameTokenAs: match by ID', () {
-      const t1 = MockToken(id: 'SAME', type: 'A');
-      const t2 = MockToken(id: 'SAME', type: 'B');
-      expect(t1.isSameTokenAs(t2), isTrue);
-    });
-
-    test('isSameTokenAs: match by Serial and Issuer if IDs differ', () {
-      const t1 = MockToken(id: '1', type: 'T', serial: 'SN', issuer: 'ISS');
-      const t2 = MockToken(id: '2', type: 'T', serial: 'SN', issuer: 'ISS');
-      expect(t1.isSameTokenAs(t2), isTrue);
-    });
-
-    test(
-      'isSameTokenAs: mismatch if issuer differs even if serial matches',
-      () {
-        const t1 = MockToken(id: '1', type: 'T', serial: 'SN', issuer: 'ISS1');
-        const t2 = MockToken(id: '2', type: 'T', serial: 'SN', issuer: 'ISS2');
-        expect(t1.isSameTokenAs(t2), isFalse);
-      },
-    );
-
-    test('isSameTokenAs: return null if IDs differ and serials are null', () {
-      const t1 = MockToken(id: '1', type: 'T', serial: null);
-      const t2 = MockToken(id: '2', type: 'T', serial: null);
-      expect(t1.isSameTokenAs(t2), isNull);
     });
   });
 
@@ -214,15 +245,15 @@ void main() {
     test(
       'toOtpAuthMap transforms PIN bool to proprietary True/False strings',
       () {
-        const tTrue = MockToken(id: '1', type: 'T', pin: true);
-        const tFalse = MockToken(id: '1', type: 'T', pin: false);
+        const tTrue = FakeToken(id: '1', type: 'T', pin: true);
+        const tFalse = FakeToken(id: '1', type: 'T', pin: false);
         expect(tTrue.toOtpAuthMap()[Token.PIN], 'True');
         expect(tFalse.toOtpAuthMap()[Token.PIN], 'False');
       },
     );
 
     test('additionalData exports all internal fields', () {
-      const t = MockToken(
+      const t = FakeToken(
         id: 'uid',
         type: 'T',
         sortIndex: 5,
@@ -239,8 +270,8 @@ void main() {
     });
 
     test('toTemplate captures correct state only when serial is present', () {
-      const tWith = MockToken(id: '1', type: 'T', serial: 'SN-123');
-      const tWithout = MockToken(id: '2', type: 'T', serial: null);
+      const tWith = FakeToken(id: '1', type: 'T', serial: 'SN-123');
+      const tWithout = FakeToken(id: '2', type: 'T', serial: null);
 
       expect(tWith.toTemplate(), isNotNull);
       expect(tWith.toTemplate()?.serial, 'SN-123');

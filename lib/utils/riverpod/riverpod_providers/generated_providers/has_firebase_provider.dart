@@ -17,23 +17,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import 'package:privacyidea_authenticator/utils/firebase_utils.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../utils/object_validator/object_validators.dart';
+part 'has_firebase_provider.g.dart';
 
-extension DateTimeX on DateTime {
-  static final validator = RequiredObjectValidator<DateTime>(
-    transformer: (v) {
-      if (v is DateTime) return v;
-      if (v is String) {
-        return DateTime.parse(v);
-      }
-      if (v is int) {
-        // If the server sends Unix timestamps (ms)
-        return DateTime.fromMillisecondsSinceEpoch(v);
-      }
-      throw ArgumentError(
-        'Invalid type for DateTime: ${v.runtimeType}, value: $v',
-      );
-    },
-  );
+@riverpod
+Future<bool> hasFirebase(Ref ref) async {
+  await FirebaseUtils.preInitializeStatus();
+  return FirebaseUtils.isMessagingAvailable;
 }
