@@ -237,15 +237,17 @@ void main() {
       );
 
       test(
-        'isSameTokenAs should not be determined when only other properties differ',
+        'isSameTokenAs should not be determined when other properties differ',
         () {
-          final other = base.copyWith(
-            id: '2', // same id = same token
+          // Serial must be null to be not determined.
+          final baseNoSerial = base.copyWith(serial: () => null);
+          final other = baseNoSerial.copyWith(
+            id: '2', // Id must be different to not be the same token
             label: "different_label",
             isLocked: false,
             pin: false,
           );
-          expect(base.isSameTokenAs(other), isNull);
+          expect(baseNoSerial.isSameTokenAs(other), isNull);
         },
       );
     });

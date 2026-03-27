@@ -15,8 +15,8 @@ import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/gene
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
 import 'package:privacyidea_authenticator/views/container_view/container_widgets/dialogs/delete_container_dialogs.dart/delete_container_dialog.dart';
 
-import '../../../../../tests_app_wrapper.dart';
-import '../../../../../tests_app_wrapper.mocks.dart';
+import '../../../../../../tests_app_wrapper.dart';
+import '../../../../../../tests_app_wrapper.mocks.dart';
 
 class FakeTokenNotifier extends TokenNotifier {
   final MockTokenNotifier mock;

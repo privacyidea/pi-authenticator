@@ -26,6 +26,8 @@ import '../../../../../utils/riverpod/riverpod_providers/generated_providers/tok
 import '../../../../../utils/view_utils.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 
+/// Delete Local state of the container, without unregistering it from the server.
+/// This is used when the container cannot be unregistered, e.g. when the server is not reachable, or when the container is already deleted on the server.
 class ForceDeleteContainerDialog extends ConsumerWidget {
   final TokenContainer container;
 
