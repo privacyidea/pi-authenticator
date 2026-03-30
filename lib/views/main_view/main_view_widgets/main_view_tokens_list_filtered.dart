@@ -62,10 +62,7 @@ class MainViewTokensListFiltered extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return SingleChildScrollView(
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: [..._mapTokensToWidgets(ref: ref)],
-      ),
+      child: Column(children: [..._mapTokensToWidgets(ref: ref)]),
     );
   }
 

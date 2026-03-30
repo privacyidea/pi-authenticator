@@ -29,57 +29,51 @@ import '../../enums/image_format.dart';
 
 extension ImageFormatX on ImageFormat {
   static ImageFormat fromExtensionString(String ex) => switch (ex) {
-        'svg' => ImageFormat.svg,
-        'svgz' => ImageFormat.svgz,
-        'png' => ImageFormat.png,
-        'jpg' => ImageFormat.jpg,
-        'jpeg' => ImageFormat.jpeg,
-        'gif' => ImageFormat.gif,
-        'bmp' => ImageFormat.bmp,
-        'webp' => ImageFormat.webp,
-        _ => throw Exception('Unknown extension: $ex'),
-      };
+    'svg' => ImageFormat.svg,
+    'svgz' => ImageFormat.svgz,
+    'png' => ImageFormat.png,
+    'jpg' => ImageFormat.jpg,
+    'jpeg' => ImageFormat.jpeg,
+    'gif' => ImageFormat.gif,
+    'bmp' => ImageFormat.bmp,
+    'webp' => ImageFormat.webp,
+    _ => throw Exception('Unknown extension: $ex'),
+  };
 
   Widget buildImageWidget(Uint8List imageData) => switch (this) {
-        ImageFormat.svg => SvgPicture.memory(
-            imageData,
-            colorFilter: ColorFilter.mode(
-              Colors.transparent,
-              BlendMode.srcOver,
-            ),
-          ),
-        ImageFormat.svgz => SvgPicture.memory(
-            imageData,
-            colorFilter: ColorFilter.mode(
-              Colors.transparent,
-              BlendMode.srcOver,
-            ),
-          ),
-        ImageFormat.png => Image.memory(
-            imageData,
-            colorBlendMode: BlendMode.srcOver,
-          ),
-        ImageFormat.jpg => Image.memory(
-            imageData,
-            colorBlendMode: BlendMode.srcOver,
-          ),
-        ImageFormat.jpeg => Image.memory(
-            imageData,
-            colorBlendMode: BlendMode.srcOver,
-          ),
-        ImageFormat.gif => Image.memory(
-            imageData,
-            colorBlendMode: BlendMode.srcOver,
-          ),
-        ImageFormat.bmp => Image.memory(
-            imageData,
-            colorBlendMode: BlendMode.srcOver,
-          ),
-        ImageFormat.webp => Image.memory(
-            imageData,
-            colorBlendMode: BlendMode.srcOver,
-          ),
-      };
+    ImageFormat.svg => SvgPicture.memory(
+      imageData,
+      colorFilter: ColorFilter.mode(Colors.transparent, BlendMode.srcOver),
+    ),
+    ImageFormat.svgz => SvgPicture.memory(
+      imageData,
+      colorFilter: ColorFilter.mode(Colors.transparent, BlendMode.srcOver),
+    ),
+    ImageFormat.png => Image.memory(
+      imageData,
+      colorBlendMode: BlendMode.srcOver,
+    ),
+    ImageFormat.jpg => Image.memory(
+      imageData,
+      colorBlendMode: BlendMode.srcOver,
+    ),
+    ImageFormat.jpeg => Image.memory(
+      imageData,
+      colorBlendMode: BlendMode.srcOver,
+    ),
+    ImageFormat.gif => Image.memory(
+      imageData,
+      colorBlendMode: BlendMode.srcOver,
+    ),
+    ImageFormat.bmp => Image.memory(
+      imageData,
+      colorBlendMode: BlendMode.srcOver,
+    ),
+    ImageFormat.webp => Image.memory(
+      imageData,
+      colorBlendMode: BlendMode.srcOver,
+    ),
+  };
 
   Future<Size?> getImageSize(Uint8List imageData) async {
     double? width;
@@ -113,32 +107,34 @@ extension ImageFormatX on ImageFormat {
   String get extension => toString().split('.').last;
 
   String get name => switch (this) {
-        ImageFormat.svg => 'Scalable Vector Graphic',
-        ImageFormat.svgz => 'Scalable Vector Graphic (compressed)',
-        ImageFormat.png => 'PNG',
-        ImageFormat.jpg => 'JPEG',
-        ImageFormat.jpeg => 'JPEG',
-        ImageFormat.gif => 'GIF',
-        ImageFormat.bmp => 'Bitmap',
-        ImageFormat.webp => 'WebP',
-      };
+    ImageFormat.svg => 'Scalable Vector Graphic',
+    ImageFormat.svgz => 'Scalable Vector Graphic (compressed)',
+    ImageFormat.png => 'PNG',
+    ImageFormat.jpg => 'JPEG',
+    ImageFormat.jpeg => 'JPEG',
+    ImageFormat.gif => 'GIF',
+    ImageFormat.bmp => 'Bitmap',
+    ImageFormat.webp => 'WebP',
+  };
 
   String get mimeType => switch (this) {
-        ImageFormat.svg => 'image/svg+xml',
-        ImageFormat.svgz => 'image/svg+xml',
-        ImageFormat.png => 'image/png',
-        ImageFormat.jpg => 'image/jpeg',
-        ImageFormat.jpeg => 'image/jpeg',
-        ImageFormat.gif => 'image/gif',
-        ImageFormat.bmp => 'image/bmp',
-        ImageFormat.webp => 'image/webp',
-      };
+    ImageFormat.svg => 'image/svg+xml',
+    ImageFormat.svgz => 'image/svg+xml',
+    ImageFormat.png => 'image/png',
+    ImageFormat.jpg => 'image/jpeg',
+    ImageFormat.jpeg => 'image/jpeg',
+    ImageFormat.gif => 'image/gif',
+    ImageFormat.bmp => 'image/bmp',
+    ImageFormat.webp => 'image/webp',
+  };
 
   /// Builds an [XFile] from the given [imageData] and [fileName].
   /// The [fileName] is used as the name of the file.
   /// The file extension is determined by the [ImageFormat].
-  XFile buildXFile(Uint8List imageData, String fileName) => XFile.fromData(imageData, name: "$fileName.$extension");
+  XFile buildXFile(Uint8List imageData, String fileName) =>
+      XFile.fromData(imageData, name: "$fileName.$extension");
 
   /// Compares the given [extension] with the extension of this [ImageFormat] case-insensitive.
-  bool matches(String extension) => extension.toLowerCase() == this.extension.toLowerCase();
+  bool matches(String extension) =>
+      extension.toLowerCase() == this.extension.toLowerCase();
 }

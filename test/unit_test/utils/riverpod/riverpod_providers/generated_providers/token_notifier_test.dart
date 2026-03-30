@@ -135,7 +135,6 @@ void _testTokenNotifier() {
           algorithm: Algorithms.SHA1,
           digits: 6,
           secret: 'secret',
-          counter: 0,
         ),
       ];
       final after = before;
@@ -238,7 +237,6 @@ void _testTokenNotifier() {
           algorithm: Algorithms.SHA1,
           digits: 6,
           secret: 'secret',
-          counter: 0,
         ),
         HOTPToken(
           label: 'label2',
@@ -247,7 +245,6 @@ void _testTokenNotifier() {
           algorithm: Algorithms.SHA1,
           digits: 6,
           secret: 'secret2',
-          counter: 0,
         ),
       ];
       final after = <Token>[
@@ -258,7 +255,6 @@ void _testTokenNotifier() {
           algorithm: Algorithms.SHA1,
           digits: 6,
           secret: 'secret',
-          counter: 0,
         ),
       ];
       when(mockRepo.loadTokens()).thenAnswer((_) async => before);
@@ -306,7 +302,6 @@ void _testTokenNotifier() {
             algorithm: Algorithms.SHA1,
             digits: 6,
             secret: 'secret',
-            counter: 0,
           ),
         ];
         final after = <Token>[
@@ -317,7 +312,6 @@ void _testTokenNotifier() {
             algorithm: Algorithms.SHA1,
             digits: 6,
             secret: 'secret',
-            counter: 0,
           ),
           HOTPToken(
             label: 'label2',
@@ -326,7 +320,6 @@ void _testTokenNotifier() {
             algorithm: Algorithms.SHA1,
             digits: 6,
             secret: 'secret2',
-            counter: 0,
           ),
         ];
         when(mockRepo.loadTokens()).thenAnswer((_) async => before);
@@ -375,7 +368,6 @@ void _testTokenNotifier() {
             algorithm: Algorithms.SHA1,
             digits: 6,
             secret: 'secret',
-            counter: 0,
           ),
           HOTPToken(
             label: 'label2',
@@ -384,7 +376,6 @@ void _testTokenNotifier() {
             algorithm: Algorithms.SHA1,
             digits: 6,
             secret: 'secret2',
-            counter: 0,
           ),
         ];
         final after = <Token>[
@@ -395,7 +386,6 @@ void _testTokenNotifier() {
             algorithm: Algorithms.SHA1,
             digits: 6,
             secret: 'secret',
-            counter: 0,
           ),
           HOTPToken(
             label: 'labelUpdated',
@@ -404,7 +394,6 @@ void _testTokenNotifier() {
             algorithm: Algorithms.SHA256,
             digits: 8,
             secret: 'secret2Updated',
-            counter: 0,
           ),
         ];
         when(mockRepo.loadTokens()).thenAnswer((_) async => before);
@@ -455,7 +444,6 @@ void _testTokenNotifier() {
           algorithm: Algorithms.SHA1,
           digits: 6,
           secret: 'secret',
-          counter: 0,
         ),
       ];
       final after = <Token>[
@@ -466,7 +454,6 @@ void _testTokenNotifier() {
           algorithm: Algorithms.SHA1,
           digits: 6,
           secret: 'secret',
-          counter: 0,
         ),
         HOTPToken(
           label: 'label2',
@@ -475,7 +462,6 @@ void _testTokenNotifier() {
           algorithm: Algorithms.SHA256,
           digits: 6,
           secret: 'secret2',
-          counter: 0,
         ),
         HOTPToken(
           label: 'label3',
@@ -484,7 +470,6 @@ void _testTokenNotifier() {
           algorithm: Algorithms.SHA512,
           digits: 8,
           secret: 'secret3',
-          counter: 0,
         ),
       ];
       when(mockRepo.loadTokens()).thenAnswer((_) async => before);
@@ -524,7 +509,6 @@ void _testTokenNotifier() {
           algorithm: Algorithms.SHA1,
           digits: 6,
           secret: 'secret',
-          counter: 0,
         ),
       ];
       final after = <Token>[
@@ -535,7 +519,6 @@ void _testTokenNotifier() {
           algorithm: Algorithms.SHA1,
           digits: 6,
           secret: 'secret',
-          counter: 0,
         ),
         TOTPToken(
           label: 'label2',
@@ -615,7 +598,6 @@ void _testTokenNotifier() {
           algorithm: Algorithms.SHA1,
           digits: 6,
           secret: 'secret',
-          counter: 0,
         ),
       ];
       final pushTokenShouldBe = PushToken(
@@ -623,9 +605,6 @@ void _testTokenNotifier() {
         issuer: 'privacyIDEA',
         id: '20663f77-a26e-41c3-8946-d0efb8b386d3',
         pin: false,
-        tokenImage: null,
-        sortIndex: null,
-        folderId: null,
         serial: 'PIPU0006BF18',
         sslVerify: false,
         enrollmentCredentials: 'ae60d4744ac5384515574b85f538c6a4e0c7bc82',
@@ -645,7 +624,6 @@ void _testTokenNotifier() {
           algorithm: Algorithms.SHA1,
           digits: 6,
           secret: 'secret',
-          counter: 0,
         ),
         pushTokenShouldBe,
       ];
@@ -828,7 +806,6 @@ void _testTokenNotifier() {
           algorithm: Algorithms.SHA1,
           digits: 6,
           secret: 'secret',
-          counter: 0,
         ),
       ];
       when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);

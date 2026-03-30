@@ -39,7 +39,8 @@ class AddTokenManuallyView extends ConsumerStatefulWidget {
   const AddTokenManuallyView({super.key});
 
   @override
-  ConsumerState<AddTokenManuallyView> createState() => _AddTokenManuallyViewState();
+  ConsumerState<AddTokenManuallyView> createState() =>
+      _AddTokenManuallyViewState();
 }
 
 class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
@@ -98,45 +99,45 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
   Widget build(BuildContext context) {
     final AddTokenManuallyPage page = switch (selectedTypeNotifier.value) {
       const (TokenTypes.HOTP) => AddHotpManually(
-          labelController: labelController,
-          secretController: secretController,
-          autoValidateLabel: autoValidateLabel,
-          autoValidateSecret: autoValidateSecret,
-          encodingNofitier: encodingNofitier,
-          algorithmsNotifier: algorithmsNotifier,
-          digitsNotifier: digitsNotifier,
-          counterNotifier: counterNotifier,
-          typeNotifier: selectedTypeNotifier,
-        ),
+        labelController: labelController,
+        secretController: secretController,
+        autoValidateLabel: autoValidateLabel,
+        autoValidateSecret: autoValidateSecret,
+        encodingNofitier: encodingNofitier,
+        algorithmsNotifier: algorithmsNotifier,
+        digitsNotifier: digitsNotifier,
+        counterNotifier: counterNotifier,
+        typeNotifier: selectedTypeNotifier,
+      ),
       TokenTypes.TOTP => AddTotpManually(
-          labelController: labelController,
-          secretController: secretController,
-          autoValidateLabel: autoValidateLabel,
-          autoValidateSecret: autoValidateSecret,
-          encodingNofitier: encodingNofitier,
-          algorithmsNotifier: algorithmsNotifier,
-          digitsNotifier: digitsNotifier,
-          periodNotifier: periodNotifierTOTP,
-          typeNotifier: selectedTypeNotifier,
-        ),
+        labelController: labelController,
+        secretController: secretController,
+        autoValidateLabel: autoValidateLabel,
+        autoValidateSecret: autoValidateSecret,
+        encodingNofitier: encodingNofitier,
+        algorithmsNotifier: algorithmsNotifier,
+        digitsNotifier: digitsNotifier,
+        periodNotifier: periodNotifierTOTP,
+        typeNotifier: selectedTypeNotifier,
+      ),
       TokenTypes.DAYPASSWORD => AddDayPasswordManually(
-          labelController: labelController,
-          secretController: secretController,
-          autoValidateLabel: autoValidateLabel,
-          autoValidateSecret: autoValidateSecret,
-          encodingNofitier: encodingNofitier,
-          algorithmsNotifier: algorithmsNotifier,
-          digitsNotifier: digitsNotifier,
-          periodNotifier: periodNotifierDayPassword,
-          typeNotifier: selectedTypeNotifier,
-        ),
+        labelController: labelController,
+        secretController: secretController,
+        autoValidateLabel: autoValidateLabel,
+        autoValidateSecret: autoValidateSecret,
+        encodingNofitier: encodingNofitier,
+        algorithmsNotifier: algorithmsNotifier,
+        digitsNotifier: digitsNotifier,
+        periodNotifier: periodNotifierDayPassword,
+        typeNotifier: selectedTypeNotifier,
+      ),
       TokenTypes.STEAM => AddSteamManually(
-          labelController: labelController,
-          secretController: secretController,
-          autoValidateLabel: autoValidateLabel,
-          autoValidateSecret: autoValidateSecret,
-          typeNotifier: selectedTypeNotifier,
-        ),
+        labelController: labelController,
+        secretController: secretController,
+        autoValidateLabel: autoValidateLabel,
+        autoValidateSecret: autoValidateSecret,
+        typeNotifier: selectedTypeNotifier,
+      ),
       TokenTypes.PIPUSH => throw UnimplementedError(),
       TokenTypes.PUSH => throw UnimplementedError(),
     };
@@ -155,10 +156,7 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
           children: [
             PageViewIndicator(
               controller: pageController,
-              icons: [
-                Icon(Icons.edit),
-                Icon(Icons.link),
-              ],
+              icons: [Icon(Icons.edit), Icon(Icons.link)],
             ),
             Expanded(
               child: PageView(
@@ -171,7 +169,7 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
                     child: LinkInputView(),
-                  )
+                  ),
                 ],
               ),
             ),

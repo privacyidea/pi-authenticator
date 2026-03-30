@@ -16,7 +16,7 @@ import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/gene
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
 import 'package:privacyidea_authenticator/views/container_view/container_widgets/buttons/sync_container_button.dart';
-import 'package:privacyidea_authenticator/widgets/button_widgets/time_guarded_button.dart';
+import 'package:privacyidea_authenticator/widgets/button_widgets/intent_button.dart';
 
 import '../../../../../tests_app_wrapper.dart';
 import '../../../../../tests_app_wrapper.mocks.dart';
@@ -102,9 +102,7 @@ void main() {
 
     debugPrint(tester.allWidgets.toString());
 
-    debugPrint(
-      'Looking for TimeGuardedButton: ${find.byType(TimeGuardedButton)}',
-    );
+    debugPrint('Looking for IntentButton: ${find.byType(IntentButton)}');
     // Warte kurz auf das Layout
     await tester.pumpAndSettle();
   }
@@ -117,7 +115,7 @@ void main() {
 
       await tester.pumpAndSettle();
 
-      expect(find.byType(TimeGuardedButton), findsNothing);
+      expect(find.byType(IntentButton), findsNothing);
       expect(find.byIcon(Icons.sync), findsOneWidget);
     });
 
@@ -126,27 +124,21 @@ void main() {
     ) async {
       await pumpButton(tester, state: SyncState.notStarted);
 
-      final button = tester.widget<TimeGuardedButton>(
-        find.byType(TimeGuardedButton),
-      );
+      final button = tester.widget<IntentButton>(find.byType(IntentButton));
       expect(button.onPressed, isNotNull);
     });
 
     testWidgets('should be disabled when SyncState is syncing', (tester) async {
       await pumpButton(tester, state: SyncState.syncing);
 
-      final button = tester.widget<TimeGuardedButton>(
-        find.byType(TimeGuardedButton),
-      );
+      final button = tester.widget<IntentButton>(find.byType(IntentButton));
       expect(button.onPressed, isNull);
     });
 
     testWidgets('should be enabled when SyncState is failed', (tester) async {
       await pumpButton(tester, state: SyncState.failed);
 
-      final button = tester.widget<TimeGuardedButton>(
-        find.byType(TimeGuardedButton),
-      );
+      final button = tester.widget<IntentButton>(find.byType(IntentButton));
       expect(button.onPressed, isNotNull);
     });
 
@@ -162,7 +154,7 @@ void main() {
         ),
       ).thenAnswer((_) async => <int, TokenContainerFinalized>{});
 
-      await tester.tap(find.byType(TimeGuardedButton));
+      await tester.tap(find.byType(IntentButton));
       await tester.pump();
 
       verify(

@@ -102,7 +102,6 @@ class _ExpandableAppBarState extends State<ExpandableAppBar> {
       onVerticalDragEnd: _stopExpansion,
       child: Column(
         verticalDirection: VerticalDirection.up,
-        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Expanded(child: widget.body),
           AnimatedContainer(

@@ -7,6 +7,6 @@ linter:
   rules:
     unnecessary_string_escapes: false
     unnecessary_string_interpolations: false
-    unawaited_futures: true
+    # unawaited_futures: true
     avoid_redundant_argument_values: true
     avoid_void_async: true

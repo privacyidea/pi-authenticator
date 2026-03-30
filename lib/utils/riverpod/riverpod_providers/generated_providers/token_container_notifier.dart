@@ -345,7 +345,6 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
     if (uri == null) throw ArgumentError('Invalid rollover uri');
     final result = (await TokenContainerProcessor().processUri(
       uri,
-      fromInit: false,
     ))?.firstOrNull;
     if (result == null) throw StateError('Failed to process rollover uri');
     final success = await handleProcessorResult(

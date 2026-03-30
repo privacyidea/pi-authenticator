@@ -169,7 +169,6 @@ class DayPasswordToken extends OTPToken {
     time: time,
     length: digits,
     interval: period,
-    isGoogle: true,
   );
 
   @override

@@ -39,7 +39,10 @@ class SettingsGroup extends StatelessWidget {
     this.onPressed,
     this.trailingIcon,
     this.trailingWidget,
-  }) : assert(trailingIcon == null || trailingWidget == null, 'Only one of trailingIcon or trailingWidget can be set.');
+  }) : assert(
+         trailingIcon == null || trailingWidget == null,
+         'Only one of trailingIcon or trailingWidget can be set.',
+       );
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +75,9 @@ class SettingsGroup extends StatelessWidget {
                           isThreeLine: false,
                           title: Text(
                             title,
-                            style: theme.textTheme.titleMedium?.copyWith(color: isActive ? null : Colors.grey),
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              color: isActive ? null : Colors.grey,
+                            ),
                             overflow: TextOverflow.fade,
                             softWrap: false,
                           ),
@@ -83,7 +88,8 @@ class SettingsGroup extends StatelessWidget {
                                 : DefaultIconButton(
                                     semanticsLabel: title,
                                     onPressed: isActive ? onPressed! : null,
-                                    icon: trailingIcon ?? Icons.arrow_forward_ios,
+                                    icon:
+                                        trailingIcon ?? Icons.arrow_forward_ios,
                                   ),
                           ),
                         ),
@@ -93,7 +99,9 @@ class SettingsGroup extends StatelessWidget {
                         isThreeLine: false,
                         title: Text(
                           title,
-                          style: theme.textTheme.titleMedium?.copyWith(color: isActive ? null : Colors.grey),
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            color: isActive ? null : Colors.grey,
+                          ),
                           overflow: TextOverflow.fade,
                           softWrap: false,
                         ),

@@ -41,7 +41,6 @@ class LoggingMenu extends ConsumerWidget {
         style: Theme.of(context).listTileTheme.titleTextStyle,
       ),
       content: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
           ListTile(

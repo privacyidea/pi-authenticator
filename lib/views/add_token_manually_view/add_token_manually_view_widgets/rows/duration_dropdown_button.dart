@@ -38,11 +38,13 @@ class DurationDropdownButton extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) => LabeledDropdownButton<Duration>(
-        label: AppLocalizations.of(context)!.period,
-        enabled: enabled,
-        valueNotifier: periodNotifier,
-        values: values,
-        valueLabels: [for (final value in values) unit.durationToUnitInt(value).toString()],
-        postFix: unit.postfix,
-      );
+    label: AppLocalizations.of(context)!.period,
+    enabled: enabled,
+    valueNotifier: periodNotifier,
+    values: values,
+    valueLabels: [
+      for (final value in values) unit.durationToUnitInt(value).toString(),
+    ],
+    postFix: unit.postfix,
+  );
 }

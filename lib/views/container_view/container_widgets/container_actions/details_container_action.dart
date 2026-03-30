@@ -54,7 +54,6 @@ class DetailsContainerAction extends ConsumerSlideableAction {
         ).extension<TokenTileTheme>()!.actionForegroundColor,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const Icon(Icons.edit),
             Text(

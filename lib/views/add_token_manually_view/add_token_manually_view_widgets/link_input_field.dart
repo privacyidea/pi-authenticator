@@ -38,7 +38,9 @@ class _LinkInputViewState extends ConsumerState<LinkInputView> {
   Future<void> addToken(Uri link) async {
     final linkHandled = await ref.read(tokenProvider.notifier).handleLink(link);
     if (!linkHandled) {
-      ref.read(statusMessageProvider.notifier).state = StatusMessage(message: (localization) => localization.linkMustOtpAuth);
+      ref.read(statusMessageProvider.notifier).state = StatusMessage(
+        message: (localization) => localization.linkMustOtpAuth,
+      );
       return;
     }
     if (!mounted) return;
@@ -47,64 +49,76 @@ class _LinkInputViewState extends ConsumerState<LinkInputView> {
 
   @override
   Widget build(BuildContext context) => Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.max,
+    children: [
+      Row(
         children: [
-          Row(
-            children: [
-              Expanded(
-                child: TextFormField(
-                  controller: textController,
-                  decoration: InputDecoration(labelText: AppLocalizations.of(context)!.tokenLinkImport),
-                  keyboardType: TextInputType.url,
-                  textInputAction: TextInputAction.done,
-                    onFieldSubmitted: (text) {
-                      try {
-                        addToken(Uri.parse(text));
-                      } catch (e) {
-                        ref.read(statusMessageProvider.notifier).state = StatusMessage(message: (localization) => localization.invalidUrl);
-                      }
-                    },
-                  validator: (value) => value != null
-                      ? Uri.tryParse(value) == null
-                          ? AppLocalizations.of(context)!.invalidUrl
-                          : null
-                      : null,
-                ),
+          Expanded(
+            child: TextFormField(
+              controller: textController,
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.tokenLinkImport,
               ),
-              SizedBox(width: 8),
-              IconButton(
-                icon: Icon(Icons.paste),
-                onPressed: () async {
-                  ClipboardData? data = await Clipboard.getData('text/plain');
-                  if (data == null || data.text == null || data.text!.isEmpty) {
-                    if (context.mounted) ref.read(statusMessageProvider.notifier).state = StatusMessage(message: (localization) => localization.clipboardEmpty);
-                    return;
-                  }
-                  setState(() => textController.text = data.text ?? '');
-                },
-              ),
-            ],
-          ),
-          Expanded(child: SizedBox()),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              child: Text(
-                AppLocalizations.of(context)!.addToken,
-                style: Theme.of(context).textTheme.headlineSmall,
-                overflow: TextOverflow.fade,
-                softWrap: false,
-              ),
-                onPressed: () {
-                  try {
-                    addToken(Uri.parse(textController.text));
-                  } catch (e) {
-                    ref.read(statusMessageProvider.notifier).state = StatusMessage(message: (localization) => localization.invalidUrl);
-                  }
-                },
+              keyboardType: TextInputType.url,
+              textInputAction: TextInputAction.done,
+              onFieldSubmitted: (text) {
+                try {
+                  addToken(Uri.parse(text));
+                } catch (e) {
+                  ref
+                      .read(statusMessageProvider.notifier)
+                      .state = StatusMessage(
+                    message: (localization) => localization.invalidUrl,
+                  );
+                }
+              },
+              validator: (value) => value != null
+                  ? Uri.tryParse(value) == null
+                        ? AppLocalizations.of(context)!.invalidUrl
+                        : null
+                  : null,
             ),
           ),
+          SizedBox(width: 8),
+          IconButton(
+            icon: Icon(Icons.paste),
+            onPressed: () async {
+              ClipboardData? data = await Clipboard.getData('text/plain');
+              if (data == null || data.text == null || data.text!.isEmpty) {
+                if (context.mounted) {
+                  ref
+                      .read(statusMessageProvider.notifier)
+                      .state = StatusMessage(
+                    message: (localization) => localization.clipboardEmpty,
+                  );
+                }
+                return;
+              }
+              setState(() => textController.text = data.text ?? '');
+            },
+          ),
         ],
-      );
+      ),
+      Expanded(child: SizedBox()),
+      SizedBox(
+        width: double.infinity,
+        child: ElevatedButton(
+          child: Text(
+            AppLocalizations.of(context)!.addToken,
+            style: Theme.of(context).textTheme.headlineSmall,
+            overflow: TextOverflow.fade,
+            softWrap: false,
+          ),
+          onPressed: () {
+            try {
+              addToken(Uri.parse(textController.text));
+            } catch (e) {
+              ref.read(statusMessageProvider.notifier).state = StatusMessage(
+                message: (localization) => localization.invalidUrl,
+              );
+            }
+          },
+        ),
+      ),
+    ],
+  );
 }

@@ -57,7 +57,7 @@ void _testSortableList() {
           _SortableTestClass(sortIndex: 1, name: '1'),
           _SortableTestClass(sortIndex: 12, name: '12'),
           _SortableTestClass(sortIndex: 5, name: '5'),
-          _SortableTestClass(sortIndex: null, name: 'null'),
+          _SortableTestClass(name: 'null'),
           _SortableTestClass(sortIndex: 2, name: '2'),
           _SortableTestClass(sortIndex: 4, name: '4'),
           _SortableTestClass(sortIndex: 8, name: '8'),
@@ -73,16 +73,16 @@ void _testSortableList() {
           _SortableTestClass(sortIndex: 5, name: '5'),
           _SortableTestClass(sortIndex: 8, name: '8'),
           _SortableTestClass(sortIndex: 12, name: '12'),
-          _SortableTestClass(sortIndex: null, name: 'null'),
+          _SortableTestClass(name: 'null'),
         ]);
       });
       test('1-5 and multible nulls', () {
         final list = <SortableMixin>[
-          _SortableTestClass(sortIndex: null, name: 'null'),
+          _SortableTestClass(name: 'null'),
           _SortableTestClass(sortIndex: 3, name: '3'),
           _SortableTestClass(sortIndex: 1, name: '1'),
           _SortableTestClass(sortIndex: 5, name: '5'),
-          _SortableTestClass(sortIndex: null, name: 'null'),
+          _SortableTestClass(name: 'null'),
           _SortableTestClass(sortIndex: 2, name: '2'),
           _SortableTestClass(sortIndex: 4, name: '4'),
         ];
@@ -95,8 +95,8 @@ void _testSortableList() {
           _SortableTestClass(sortIndex: 3, name: '3'),
           _SortableTestClass(sortIndex: 4, name: '4'),
           _SortableTestClass(sortIndex: 5, name: '5'),
-          _SortableTestClass(sortIndex: null, name: 'null'),
-          _SortableTestClass(sortIndex: null, name: 'null'),
+          _SortableTestClass(name: 'null'),
+          _SortableTestClass(name: 'null'),
         ]);
       });
     });
@@ -106,7 +106,7 @@ void _testSortableList() {
         final result = <SortableMixin>[
           _SortableTestClass(sortIndex: 3, name: '3'),
           _SortableTestClass(sortIndex: 1, name: '1'),
-          _SortableTestClass(sortIndex: null, name: 'null'),
+          _SortableTestClass(name: 'null'),
           _SortableTestClass(sortIndex: 2, name: '2'),
           _SortableTestClass(sortIndex: 4, name: '4'),
         ].fillNullIndices();
@@ -124,7 +124,7 @@ void _testSortableList() {
           _SortableTestClass(sortIndex: 1, name: '1'),
           _SortableTestClass(sortIndex: 12, name: '12'),
           _SortableTestClass(sortIndex: 5, name: '5'),
-          _SortableTestClass(sortIndex: null, name: 'null'),
+          _SortableTestClass(name: 'null'),
           _SortableTestClass(sortIndex: 2, name: '2'),
           _SortableTestClass(sortIndex: 4, name: '4'),
           _SortableTestClass(sortIndex: 8, name: '8'),
@@ -176,7 +176,7 @@ void _testSortableList() {
           _SortableTestClass(sortIndex: 1, name: '1'),
           movedItem,
           moveBefore,
-          _SortableTestClass(sortIndex: null, name: 'null'),
+          _SortableTestClass(name: 'null'),
           _SortableTestClass(sortIndex: 2, name: '2'),
           _SortableTestClass(sortIndex: 4, name: '4'),
           _SortableTestClass(sortIndex: 8, name: '8'),

@@ -207,7 +207,6 @@ void _testHotpToken() {
       final t1 = HOTPToken(
         id: '1',
         secret: 's1',
-        counter: 0,
         serial: 'SER1',
         algorithm: Algorithms.SHA1,
         digits: 6,
@@ -229,20 +228,15 @@ void _testHotpToken() {
       test('OTP for counter == 0', () {
         HOTPToken token0 = HOTPToken(
           id: '',
-          label: '',
-          issuer: '',
           algorithm: Algorithms.SHA1,
           digits: 6,
           secret: Encodings.base32.encode(utf8.encode('secret')),
-          counter: 0,
         );
         expect(token0.otpValue, '814628');
       });
       test('OTP for counter == 1', () {
         HOTPToken token1 = HOTPToken(
           id: '',
-          label: '',
-          issuer: '',
           algorithm: Algorithms.SHA1,
           digits: 6,
           secret: Encodings.base32.encode(utf8.encode('secret')),
@@ -256,12 +250,9 @@ void _testHotpToken() {
       test('OTP for counter == 0', () {
         HOTPToken token0 = HOTPToken(
           id: '',
-          label: '',
-          issuer: '',
           algorithm: Algorithms.SHA1,
           digits: 8,
           secret: Encodings.base32.encode(utf8.encode('secret')),
-          counter: 0,
         );
         expect(token0.otpValue, '31814628');
       });
@@ -271,24 +262,18 @@ void _testHotpToken() {
       test('OTP for sha256', () {
         HOTPToken token1 = HOTPToken(
           id: '',
-          label: '',
-          issuer: '',
           algorithm: Algorithms.SHA256,
           digits: 6,
           secret: Encodings.base32.encode(utf8.encode('Secret')),
-          counter: 0,
         );
         expect(token1.otpValue, '203782');
       });
       test('OTP for sha512', () {
         HOTPToken token2 = HOTPToken(
           id: '',
-          label: '',
-          issuer: '',
           algorithm: Algorithms.SHA512,
           digits: 6,
           secret: Encodings.base32.encode(utf8.encode('Secret')),
-          counter: 0,
         );
         expect(token2.otpValue, '636350');
       });

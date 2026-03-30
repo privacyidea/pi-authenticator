@@ -101,9 +101,10 @@ class _DragItemScrollerState extends State<DragItemScroller> {
       DragItemScroller.minScrollingSpeed,
       DragItemScroller.maxScrollingSpeed * speedInPercent,
     );
-    if (moveUp)
+    if (moveUp) {
       nextScrollingSpeed =
           -nextScrollingSpeed; // if moveUp is true, the speed is negative
+    }
     if (currentSpeed == nextScrollingSpeed) return;
     setState(() {
       currentSpeed = nextScrollingSpeed; // set new speed
@@ -208,7 +209,6 @@ class _DragItemScrollerState extends State<DragItemScroller> {
           Logger.info('scrollSpeedPercent: $scrollSpeedPercent');
           _startScrolling(
             clampDouble(scrollSpeedPercent, 0.0, 1.0),
-            moveUp: false,
           );
           return;
         }

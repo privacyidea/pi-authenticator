@@ -83,12 +83,10 @@ class ContainerWidgetTile extends ConsumerWidget {
       ],
     ),
     trailing: Column(
-      mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Expanded(
           child: FittedBox(
-            fit: BoxFit.contain,
             child: ContainerWidgetTileTrailing(
               container: container,
               isPreview: isPreview,

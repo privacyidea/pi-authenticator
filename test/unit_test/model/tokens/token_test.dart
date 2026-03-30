@@ -139,13 +139,7 @@ void main() {
     test(
       'isLocked returns false only if PIN, Biometrics, and _isLocked are all false',
       () {
-        const t = FakeToken(
-          id: '1',
-          type: 'T',
-          pin: false,
-          forceBiometricOption: ForceBiometricOption.none,
-          isLocked: false,
-        );
+        const t = FakeToken(id: '1', type: 'T', pin: false, isLocked: false);
         expect(t.isLocked, isFalse);
       },
     );
@@ -271,7 +265,7 @@ void main() {
 
     test('toTemplate captures correct state only when serial is present', () {
       const tWith = FakeToken(id: '1', type: 'T', serial: 'SN-123');
-      const tWithout = FakeToken(id: '2', type: 'T', serial: null);
+      const tWithout = FakeToken(id: '2', type: 'T');
 
       expect(tWith.toTemplate(), isNotNull);
       expect(tWith.toTemplate()?.serial, 'SN-123');

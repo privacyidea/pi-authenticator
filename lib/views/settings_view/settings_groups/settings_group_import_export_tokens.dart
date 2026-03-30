@@ -77,7 +77,7 @@ class _SettingsGroupImportExportTokensState
     );
   }
 
-  void _exportDialog() async {
+  Future<void> _exportDialog() async {
     bool? isAccepted =
         (await ref.read(
           introductionNotifierProvider.future,

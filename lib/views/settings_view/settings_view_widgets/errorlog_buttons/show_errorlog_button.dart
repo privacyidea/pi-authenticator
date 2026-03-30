@@ -65,7 +65,6 @@ void _pressShowErrorLog(BuildContext context) {
           content: SingleChildScrollView(
             reverse: true,
             physics: const BouncingScrollPhysics(),
-            scrollDirection: Axis.vertical,
             child: FutureBuilder<Object>(
               future: Logger.getErrorLog(),
               builder: (context, errorLog) {

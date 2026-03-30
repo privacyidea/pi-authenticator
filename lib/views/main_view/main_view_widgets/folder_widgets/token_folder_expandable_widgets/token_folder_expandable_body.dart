@@ -44,7 +44,6 @@ class TokenFolderExpandableBody extends StatelessWidget {
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsets.fromLTRB(14, 0, 14, 4),
     child: Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         for (var i = 0; i < tokens.length; i++) ...[
           if (draggingSortable != tokens[i] &&

@@ -44,10 +44,7 @@ class HomeWidgetProcessor implements SchemeProcessor {
     final processor = _processors[uri.host];
     if (processor == null) {
       return [
-        ProcessorResult.failed(
-          (l) => l.noProcessorFoundForHost(uri.host),
-          resultHandlerType: null,
-        ),
+        ProcessorResult.failed((l) => l.noProcessorFoundForHost(uri.host)),
       ];
     }
     return processor.call(uri);
@@ -65,18 +62,12 @@ class HomeWidgetProcessor implements SchemeProcessor {
       return [
         ProcessorResult.failed(
           (l) => l.invalidHostForScheme(uri.host, uri.scheme),
-          resultHandlerType: null,
         ),
       ];
     }
     final widgetId = uri.queryParameters['widgetId'];
     if (widgetId == null) {
-      return [
-        ProcessorResult.failed(
-          (l) => l.missingWidgetId,
-          resultHandlerType: null,
-        ),
-      ];
+      return [ProcessorResult.failed((l) => l.missingWidgetId)];
     }
     HomeWidgetUtils().showOtp(widgetId);
     return null;
@@ -91,18 +82,12 @@ class HomeWidgetProcessor implements SchemeProcessor {
       return [
         ProcessorResult.failed(
           (l) => l.invalidHostForScheme(uri.host, uri.scheme),
-          resultHandlerType: null,
         ),
       ];
     }
     final widgetId = uri.queryParameters['widgetId'];
     if (widgetId == null) {
-      return [
-        ProcessorResult.failed(
-          (l) => l.missingWidgetId,
-          resultHandlerType: null,
-        ),
-      ];
+      return [ProcessorResult.failed((l) => l.missingWidgetId)];
     }
     HomeWidgetUtils().copyOtp(widgetId);
     return null;
@@ -117,18 +102,12 @@ class HomeWidgetProcessor implements SchemeProcessor {
       return [
         ProcessorResult.failed(
           (l) => l.invalidHostForScheme(uri.host, uri.scheme),
-          resultHandlerType: null,
         ),
       ];
     }
     final widgetId = uri.queryParameters['widgetId'];
     if (widgetId == null) {
-      return [
-        ProcessorResult.failed(
-          (l) => l.missingWidgetId,
-          resultHandlerType: null,
-        ),
-      ];
+      return [ProcessorResult.failed((l) => l.missingWidgetId)];
     }
     HomeWidgetUtils().performAction(widgetId);
     return null;

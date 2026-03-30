@@ -28,24 +28,15 @@ class PaddedRow extends StatelessWidget {
   /// [ 0.125 | child | 0.125 ]
   ///
   /// Assert that [peddingPercent] is higher than 0 and lower than 1.
-  const PaddedRow({super.key, required this.child, this.peddingPercent = 0.25}) : assert(peddingPercent > 0 && peddingPercent < 1);
+  const PaddedRow({super.key, required this.child, this.peddingPercent = 0.25})
+    : assert(peddingPercent > 0 && peddingPercent < 1);
 
   @override
   Widget build(BuildContext context) => Row(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Expanded(
-            flex: (peddingPercent * 50).toInt(),
-            child: const SizedBox(),
-          ),
-          Expanded(
-            flex: 100 - (peddingPercent * 100).toInt(),
-            child: child,
-          ),
-          Expanded(
-            flex: (peddingPercent * 50).toInt(),
-            child: const SizedBox(),
-          ),
-        ],
-      );
+    children: [
+      Expanded(flex: (peddingPercent * 50).toInt(), child: const SizedBox()),
+      Expanded(flex: 100 - (peddingPercent * 100).toInt(), child: child),
+      Expanded(flex: (peddingPercent * 50).toInt(), child: const SizedBox()),
+    ],
+  );
 }

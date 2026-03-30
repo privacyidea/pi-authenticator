@@ -27,7 +27,9 @@ void _testProcessorResult() {
         expect((result as ProcessorResultSuccess).resultData, 'data');
       });
       test('error', () {
-        final ProcessorResult<String> result = ProcessorResult.failed((_) => 'error');
+        final ProcessorResult<String> result = ProcessorResult.failed(
+          (_) => 'error',
+        );
         expect(result, isA<ProcessorResultFailed>());
         expect((result as ProcessorResultFailed).message(l), 'error');
       });
@@ -40,7 +42,9 @@ void _testProcessorResult() {
         expect(result.isFailed, isFalse);
       });
       test('error', () {
-        final ProcessorResult<String> result = ProcessorResultFailed((_) => 'error');
+        final ProcessorResult<String> result = ProcessorResultFailed(
+          (_) => 'error',
+        );
         expect(result.isSuccess, isFalse);
         expect(result.isFailed, isTrue);
       });
@@ -53,7 +57,9 @@ void _testProcessorResult() {
         expect(result.asFailed, isNull);
       });
       test('error', () {
-        final ProcessorResult<String> result = ProcessorResultFailed((_) => 'error');
+        final ProcessorResult<String> result = ProcessorResultFailed(
+          (_) => 'error',
+        );
         expect(result.asFailed?.message(l), 'error');
         expect(result.asSuccess, isNull);
       });

@@ -57,8 +57,6 @@ class Logger {
     printer: printer.PrettyPrinter(
       methodCount: 0,
       levelColors: {printer.Level.debug: const printer.AnsiColor.fg(040)},
-      colors: true,
-      printEmojis: true,
     ),
   );
 
@@ -176,7 +174,6 @@ class Logger {
       error: error,
       stackTrace: stackTrace,
       name: name ?? _getCallerMethodName(depth: 2),
-      logLevel: LogLevel.INFO,
     );
     infoString = _textFilter(infoString);
     if (_verboseLogging || verbose) {
@@ -370,7 +367,7 @@ Device Parameters $deviceInfo""";
   Future<void> _clearLog() async {
     final directory = await getApplicationDocumentsDirectory();
     final file = File('${directory.path}/$_filename');
-    await file.writeAsString('', mode: FileMode.write);
+    await file.writeAsString('');
     showSnackBar(
       _context != null
           ? AppLocalizations.of(_context!)!.errorLogCleared

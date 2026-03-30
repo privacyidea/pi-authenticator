@@ -55,7 +55,6 @@ class TransferContainerAction extends ConsumerSlideableAction {
         ).extension<TokenTileTheme>()!.actionForegroundColor,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Icon(MdiIcons.transfer),
             Text(

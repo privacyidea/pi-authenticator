@@ -204,7 +204,6 @@ class _DayPasswordTokenWidgetTileState
                     ),
                     ConstrainedBox(
                       constraints: BoxConstraints(
-                        maxWidth: double.infinity,
                         maxHeight:
                             Theme.of(context).textTheme.bodyLarge!.fontSize! *
                             3,

@@ -56,7 +56,6 @@ class DeleteTokenFolderAction extends ConsumerSlideableAction {
       },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const Icon(Icons.delete),
           Text(

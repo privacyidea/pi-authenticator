@@ -76,7 +76,6 @@ class EditPushTokenAction extends ConsumerSlideableAction {
             .complete(Introduction.editToken),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const Icon(Icons.edit),
             Text(

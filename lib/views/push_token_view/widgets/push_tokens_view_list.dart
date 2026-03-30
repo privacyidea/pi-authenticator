@@ -42,7 +42,10 @@ class PushTokensViwList extends ConsumerStatefulWidget {
     if (sortables.isEmpty) return [];
     sortables = sortables.toList();
     sortables = sortables.whereType<PushToken>().toList();
-    return MainViewTokensList.buildSortableWidgets(sortables: sortables, draggingSortable: draggingSortable);
+    return MainViewTokensList.buildSortableWidgets(
+      sortables: sortables,
+      draggingSortable: draggingSortable,
+    );
   }
 
   @override
@@ -67,7 +70,11 @@ class _PushTokensViwListState extends ConsumerState<PushTokensViwList> {
                   height: 9999,
                   child: Opacity(
                     opacity: 0,
-                    child: DragTargetDivider(dependingFolder: null, previousSortable: pushTokens.lastOrNull, nextSortable: null, bottomPadding: 0),
+                    child: DragTargetDivider(
+                      dependingFolder: null,
+                      previousSortable: pushTokens.lastOrNull,
+                      nextSortable: null,
+                    ),
                   ),
                 ),
               ),
@@ -84,7 +91,10 @@ class _PushTokensViwListState extends ConsumerState<PushTokensViwList> {
               scrollController: scrollController,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                children: PushTokensViwList._buildSortableWidgets(sortables: pushTokens, draggingSortable: draggingSortable),
+                children: PushTokensViwList._buildSortableWidgets(
+                  sortables: pushTokens,
+                  draggingSortable: draggingSortable,
+                ),
               ),
             ),
           ),

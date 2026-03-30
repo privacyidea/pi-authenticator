@@ -98,7 +98,6 @@ void showErrorStatusMessage({
   ref.read(statusMessageProvider.notifier).state = StatusMessage(
     message: message,
     details: details,
-    isError: true,
   );
 }
 
@@ -125,7 +124,7 @@ Future<T?> showAsyncDialog<T>({
 }) {
   if (globalContextSync == null) {
     Logger.error('globalContextSync is null');
-    return Future.value(null);
+    return Future.value();
   }
   return showDialog<T>(
     context: globalContextSync!,

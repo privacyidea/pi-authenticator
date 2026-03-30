@@ -19,29 +19,25 @@ class TooltipContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        padding: padding,
-        margin: margin,
-        decoration: BoxDecoration(
-          color: Theme.of(context).navigationBarTheme.backgroundColor,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Theme.of(context).primaryColor, width: border),
-          boxShadow: [
-            BoxShadow(
-              color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
-              blurRadius: 8,
-              spreadRadius: 1,
-            ),
-          ],
+    padding: padding,
+    margin: margin,
+    decoration: BoxDecoration(
+      color: Theme.of(context).navigationBarTheme.backgroundColor,
+      borderRadius: BorderRadius.circular(12),
+      border: Border.all(color: Theme.of(context).primaryColor, width: border),
+      boxShadow: [
+        BoxShadow(
+          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.3),
+          blurRadius: 8,
+          spreadRadius: 1,
         ),
-        child: GestureDetector(
-          onTapDown: (details) {
-            onComplete?.call();
-          },
-          child: Text(
-            tooltip,
-            style: textStyle,
-            textAlign: TextAlign.center,
-          ),
-        ),
-      );
+      ],
+    ),
+    child: GestureDetector(
+      onTapDown: (details) {
+        onComplete?.call();
+      },
+      child: Text(tooltip, style: textStyle, textAlign: TextAlign.center),
+    ),
+  );
 }

@@ -38,12 +38,7 @@ import 'token_import/token_origin_data.dart';
 part 'token_container.freezed.dart';
 part 'token_container.g.dart';
 
-@Freezed(
-  toStringOverride: false,
-  addImplicitFinal: true,
-  toJson: true,
-  fromJson: true,
-)
+@Freezed(toStringOverride: false, toJson: true, fromJson: true)
 sealed class TokenContainer with _$TokenContainer {
   static const String CONTAINER_SERIAL = 'container_serial';
 

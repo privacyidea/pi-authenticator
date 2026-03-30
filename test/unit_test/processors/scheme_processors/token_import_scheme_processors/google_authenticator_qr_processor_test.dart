@@ -29,7 +29,8 @@ void _testGooleAuthenticatorQrProcessor() {
       expect(token0.origin, isNotNull);
       final tokenOriginData0Matcher = TokenOriginData(
         source: TokenOriginSourceType.qrScanImport,
-        data: 'ChkKCpklNznImSU3OcgSBVRlc3QxIAEoATACChsKCpklNznamSU3OdoSBVRlc3QyIAEoATABOAAQARgBIAAo8enF1vr/////AQ==',
+        data:
+            'ChkKCpklNznImSU3OcgSBVRlc3QxIAEoATACChsKCpklNznamSU3OdoSBVRlc3QyIAEoATABOAAQARgBIAAo8enF1vr/////AQ==',
         appName: TokenImportOrigins.googleAuthenticator.appName,
         isPrivacyIdeaToken: false,
         createdAt: token0.origin!.createdAt,
@@ -43,7 +44,8 @@ void _testGooleAuthenticatorQrProcessor() {
       expect(token1.origin, isNotNull);
       final tokenOriginData1Matcher = TokenOriginData(
         source: TokenOriginSourceType.qrScanImport,
-        data: 'ChkKCpklNznImSU3OcgSBVRlc3QxIAEoATACChsKCpklNznamSU3OdoSBVRlc3QyIAEoATABOAAQARgBIAAo8enF1vr/////AQ==',
+        data:
+            'ChkKCpklNznImSU3OcgSBVRlc3QxIAEoATACChsKCpklNznamSU3OdoSBVRlc3QyIAEoATABOAAQARgBIAAo8enF1vr/////AQ==',
         appName: TokenImportOrigins.googleAuthenticator.appName,
         isPrivacyIdeaToken: false,
         createdAt: token1.origin!.createdAt,

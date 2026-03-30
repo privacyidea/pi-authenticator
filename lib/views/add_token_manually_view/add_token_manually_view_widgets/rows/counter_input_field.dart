@@ -23,20 +23,21 @@ import '../../../../l10n/app_localizations.dart';
 import '../add_token_manually_row.dart';
 
 class CounterInputField extends StatelessWidget {
-  static final FocusNode counterFieldFocus = FocusNode(debugLabel: 'CounterInputField');
+  static final FocusNode counterFieldFocus = FocusNode(
+    debugLabel: 'CounterInputField',
+  );
   static String? validator(String? value, {AppLocalizations? locale}) {
     if (value == null || value.isEmpty) {
       counterFieldFocus.requestFocus();
       return locale?.mustNotBeEmpty(locale.counter) ?? 'Must not be empty';
     }
-    return int.tryParse(value) == null ? locale?.notAnInteger ?? 'Must be a number' : null;
+    return int.tryParse(value) == null
+        ? locale?.notAnInteger ?? 'Must be a number'
+        : null;
   }
 
   final ValueNotifier<int?> counterNotifier;
-  const CounterInputField({
-    super.key,
-    required this.counterNotifier,
-  });
+  const CounterInputField({super.key, required this.counterNotifier});
   @override
   Widget build(BuildContext context) {
     counterNotifier.value ??= 0;
@@ -53,7 +54,8 @@ class CounterInputField extends StatelessWidget {
           counterNotifier.value = int.tryParse(value);
         },
         autovalidateMode: AutovalidateMode.onUserInteraction,
-        validator: (value) => validator(value, locale: AppLocalizations.of(context)),
+        validator: (value) =>
+            validator(value, locale: AppLocalizations.of(context)),
         focusNode: CounterInputField.counterFieldFocus,
       ),
     );

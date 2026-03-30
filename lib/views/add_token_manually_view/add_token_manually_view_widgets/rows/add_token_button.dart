@@ -38,21 +38,23 @@ class AddTokenButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => SizedBox(
-        width: double.infinity,
-        child: MutexButton(
-          onPressed: () async {
-            if (!context.mounted) return;
-            final token = tokenBuilder();
-            if (token == null) return;
-            Navigator.pop(context);
-            await ref.read(tokenProvider.notifier).addOrReplaceToken(token);
-          },
-          child: Text(
-            AppLocalizations.of(context)!.addToken,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onPrimary),
-            overflow: TextOverflow.fade,
-            softWrap: false,
-          ),
+    width: double.infinity,
+    child: MutexButton(
+      onPressed: () async {
+        if (!context.mounted) return;
+        final token = tokenBuilder();
+        if (token == null) return;
+        Navigator.pop(context);
+        await ref.read(tokenProvider.notifier).addOrReplaceToken(token);
+      },
+      child: Text(
+        AppLocalizations.of(context)!.addToken,
+        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+          color: Theme.of(context).colorScheme.onPrimary,
         ),
-      );
+        overflow: TextOverflow.fade,
+        softWrap: false,
+      ),
+    ),
+  );
 }

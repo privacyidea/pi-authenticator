@@ -61,10 +61,7 @@ class PushTokenWidgetTile extends ConsumerWidget {
               .complete(Introduction.pollForChallenges);
         },
         child: const CustomTrailing(
-          child: FittedBox(
-            fit: BoxFit.contain,
-            child: Icon(size: 100, Icons.notifications),
-          ),
+          child: FittedBox(child: Icon(size: 100, Icons.notifications)),
         ),
       ),
     );

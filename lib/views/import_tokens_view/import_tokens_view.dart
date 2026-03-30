@@ -63,12 +63,15 @@ class _ImportTokensViewState extends ConsumerState<ImportTokensView> {
     } else {
       tokensToImport = await Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => SelectImportTypePage(tokenImportOrigin: tokenImportOrigin),
+          builder: (context) =>
+              SelectImportTypePage(tokenImportOrigin: tokenImportOrigin),
         ),
       );
     }
     if (tokensToImport == null) return;
-    if (tokensToImport.isNotEmpty) ref.read(tokenProvider.notifier).addOrReplaceTokens(tokensToImport);
+    if (tokensToImport.isNotEmpty) {
+      ref.read(tokenProvider.notifier).addOrReplaceTokens(tokensToImport);
+    }
     if (mounted) return Navigator.of(context).pop(tokensToImport.isNotEmpty);
   }
 
@@ -87,8 +90,6 @@ class _ImportTokensViewState extends ConsumerState<ImportTokensView> {
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
           child: Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               for (final item in TokenImportOrigins.appList)
                 ListTile(
@@ -99,12 +100,8 @@ class _ImportTokensViewState extends ConsumerState<ImportTokensView> {
                   ),
                   trailing: Theme(
                     data: ThemeData(
-                      iconTheme: const IconThemeData(
-                        color: Colors.red,
-                      ),
-                      primaryIconTheme: const IconThemeData(
-                        color: Colors.blue,
-                      ),
+                      iconTheme: const IconThemeData(color: Colors.red),
+                      primaryIconTheme: const IconThemeData(color: Colors.blue),
                       iconButtonTheme: const IconButtonThemeData(
                         style: ButtonStyle(
                           foregroundColor: WidgetStatePropertyAll(Colors.green),

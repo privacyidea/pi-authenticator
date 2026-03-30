@@ -28,14 +28,14 @@ class SettingsGroupErrorLog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SettingsGroup(
-        title: AppLocalizations.of(context)!.errorLogTitle,
-        onPressed: () => showDialog(
-          useRootNavigator: false,
-          context: context,
-          builder: (_) => const SettingsGroupErrorLogDialog(),
-        ),
-        trailingIcon: Icons.error_outline,
-      );
+    title: AppLocalizations.of(context)!.errorLogTitle,
+    onPressed: () => showDialog(
+      useRootNavigator: false,
+      context: context,
+      builder: (_) => const SettingsGroupErrorLogDialog(),
+    ),
+    trailingIcon: Icons.error_outline,
+  );
 }
 
 class SettingsGroupErrorLogDialog extends StatelessWidget {

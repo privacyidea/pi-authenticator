@@ -74,8 +74,6 @@ class _FeedbackViewState extends State<FeedbackView> {
       padding: const EdgeInsets.all(14.0),
       child: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 16.0),

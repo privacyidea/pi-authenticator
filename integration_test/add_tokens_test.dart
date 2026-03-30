@@ -126,7 +126,6 @@ void main() {
       tester,
       find.byType(TokenWidgetBase).hitTestable(),
       3,
-      timeout: const Duration(seconds: 5),
     );
     expect(find.byType(TokenWidgetBase).hitTestable(), findsNWidgets(3));
   }, timeout: const Timeout(Duration(minutes: 20)));
@@ -251,12 +250,7 @@ Future<void> _moveDayPasswordTokenWidgetIntoFolder(WidgetTester tester) async {
 }
 
 Future<void> _openFolder(WidgetTester tester) async {
-  await pumpUntilFindNWidgets(
-    tester,
-    find.byType(TokenFolderWidget),
-    1,
-    timeout: const Duration(seconds: 5),
-  );
+  await pumpUntilFindNWidgets(tester, find.byType(TokenFolderWidget), 1);
   await tester.tap(find.byType(TokenFolderWidget));
   await tester.pump();
 }

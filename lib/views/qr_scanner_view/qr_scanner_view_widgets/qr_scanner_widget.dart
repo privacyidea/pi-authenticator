@@ -51,7 +51,6 @@ class _QRScannerWidgetState extends State<QRScannerWidget> {
               setState(() => isInitialized = controller != null);
             },
             actionButtonsAlignment: Alignment.bottomRight,
-            showFlashlight: true,
             flashOnIcon: Semantics(
               label: AppLocalizations.of(
                 context,
@@ -64,7 +63,6 @@ class _QRScannerWidgetState extends State<QRScannerWidget> {
               )!.a11yScanQrCodeViewFlashlightOff,
               child: const Icon(Icons.flash_off),
             ),
-            showGallery: true,
             galleryIcon: Semantics(
               label: AppLocalizations.of(context)!.a11yScanQrCodeViewGallery,
               child: const Icon(Icons.image),
@@ -73,9 +71,7 @@ class _QRScannerWidgetState extends State<QRScannerWidget> {
             codeFormat: Format.qrCode,
             cropPercent: 0.70,
             scannerOverlay: ScannerOverlayBorder(
-              borderColor: Colors.white,
               overlayColor: Colors.black54,
-              borderLength: 32,
               borderWidth: 6,
               cutOutSize: MediaQuery.of(context).size.width * 0.7,
             ),

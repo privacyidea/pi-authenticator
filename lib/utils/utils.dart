@@ -77,7 +77,7 @@ String splitPeriodically(String str, int period) {
 }
 
 /// If permission is already given, this function does nothing
-void checkNotificationPermission() async {
+Future<void> checkNotificationPermission() async {
   if (kIsWeb || !Platform.isAndroid && !Platform.isIOS) return;
   var status = await Permission.notification.status;
   Logger.info('Notification permission status: $status');
@@ -154,7 +154,7 @@ dynamic tryJsonDecode(String json) {
   }
 }
 
-void dragSortableOnAccept({
+Future<void> dragSortableOnAccept({
   required SortableMixin? previousSortable,
   required SortableMixin dragedSortable,
   required SortableMixin? nextSortable,

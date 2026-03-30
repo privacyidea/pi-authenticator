@@ -159,7 +159,7 @@ class _ExportTokensToFileDialogState
     );
   }
 
-  void _exportTokens() async {
+  Future<void> _exportTokens() async {
     if (_passwordTextController.text.isEmpty ||
         _passwordTextController.text != _confirmTextController.text) {
       return;
@@ -190,7 +190,7 @@ class _ExportTokensToFileDialogState
     );
   }
 
-  void _saveToFile(String encryptedTokens) async {
+  Future<void> _saveToFile(String encryptedTokens) async {
     if (kIsWeb) return;
 
     bool isExported = false;

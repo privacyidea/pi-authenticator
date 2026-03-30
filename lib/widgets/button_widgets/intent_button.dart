@@ -100,8 +100,9 @@ class _IntentButtonState extends State<IntentButton>
     if (widget.onPressed == null ||
         _isCooldown ||
         _isLoading ||
-        _currentDelay > 0)
+        _currentDelay > 0) {
       return;
+    }
 
     final result = widget.onPressed!.call();
     final isFuture = result is Future;

@@ -432,7 +432,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     final token = await getTokenById(tokenId);
     if (token is! OTPToken) {
       Logger.warning('Tried to show a token that is not an OTPToken.');
-      return Future.value(null);
+      return Future.value();
     }
     return showToken(token);
   }
@@ -520,10 +520,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     final fbToken = await firebaseUtils.getFBToken();
 
     if (fbToken == null) {
-      await _updateTokens(
-        (await future).pushTokens,
-        (p0) => p0.copyWith(fbToken: null),
-      );
+      await _updateTokens((await future).pushTokens, (p0) => p0.copyWith());
       Logger.warning(
         'Could not update firebase token because no firebase token is available.',
       );
@@ -542,7 +539,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
           firebaseToken: fbToken,
         )) ??
         (<PushToken>[], <PushToken>[]);
-    await _updateTokens(notUpdated, (p0) => p0.copyWith(fbToken: null));
+    await _updateTokens(notUpdated, (p0) => p0.copyWith());
     if (notUpdated.isNotEmpty) {
       Logger.warning(
         'Could not update firebase token for ${notUpdated.length} tokens.',
@@ -988,7 +985,6 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
               e.origin?.copyWith(source: tokenOriginSourceType) ??
               TokenOriginSourceType.unknown.toTokenOrigin(
                 data: 'No Origindata available',
-                isPrivacyIdeaToken: null,
               ),
         ),
       )

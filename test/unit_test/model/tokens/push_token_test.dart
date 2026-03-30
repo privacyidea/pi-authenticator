@@ -208,7 +208,7 @@ void main() {
     });
 
     test('Equality (==) includes viewMode and period', () {
-      final t1 = createDay(viewMode: DayPasswordTokenViewMode.VALIDFOR);
+      final t1 = createDay();
       final t2 = createDay(viewMode: DayPasswordTokenViewMode.VALIDUNTIL);
       final t3 = createDay(period: const Duration(hours: 1));
 

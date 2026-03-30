@@ -68,7 +68,6 @@ class HOTPToken extends OTPToken {
     secret: secret,
     counter: counter,
     length: digits,
-    isGoogle: true,
   );
 
   @override
@@ -76,7 +75,6 @@ class HOTPToken extends OTPToken {
     secret: secret,
     counter: counter + 1,
     length: digits,
-    isGoogle: true,
   );
 
   // --- Constructor ---

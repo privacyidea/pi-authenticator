@@ -56,7 +56,7 @@ const appGroupId = 'group.authenticator_home_widget_group';
 
 /// This function is called on any interaction with the HomeWidget
 @pragma('vm:entry-point')
-void homeWidgetBackgroundCallback(Uri? uri) async {
+Future<void> homeWidgetBackgroundCallback(Uri? uri) async {
   if (uri == null) return;
   const HomeWidgetProcessor().processUri(uri);
 }
@@ -740,7 +740,7 @@ class UnsupportedHomeWidgetUtils implements HomeWidgetUtils {
   @override
   Map<String, Timer?> get _copyTimers => {};
   @override
-  Future<TokenFolder?> _folderOf(Token token) => Future.value(null);
+  Future<TokenFolder?> _folderOf(Token token) => Future.value();
   @override
   Future<ThemeData> _getThemeData({bool dark = false}) =>
       Future.value(ThemeData.light());
@@ -752,9 +752,9 @@ class UnsupportedHomeWidgetUtils implements HomeWidgetUtils {
   @override
   Map<String, Timer> get _hideTimers => {};
   @override
-  Future<void> _hotpTokenAction(String widgetId) => Future.value(null);
+  Future<void> _hotpTokenAction(String widgetId) => Future.value();
   @override
-  Future<void> _link(String widgetId, OTPToken token) => Future.value(null);
+  Future<void> _link(String widgetId, OTPToken token) => Future.value();
   @override
   Map<String, FutureOr<void> Function(String p1)> get _mapTokenAction => {};
   @override
@@ -812,9 +812,9 @@ class UnsupportedHomeWidgetUtils implements HomeWidgetUtils {
   @override
   Future<void> copyOtp(String widgetId) async {}
   @override
-  Future<String?> getTokenIdOfWidgetId(String widgetId) => Future.value(null);
+  Future<String?> getTokenIdOfWidgetId(String widgetId) => Future.value();
   @override
-  Future<OTPToken?> getTokenOfWidgetId(String? widgetId) => Future.value(null);
+  Future<OTPToken?> getTokenOfWidgetId(String? widgetId) => Future.value();
   @override
   Future<void> homeWidgetInit({TokenRepository? repository}) async {}
   @override
@@ -838,15 +838,15 @@ class UnsupportedHomeWidgetUtils implements HomeWidgetUtils {
   @override
   Future<void> updateTokensIfLinked(List<Token> tokens) async {}
   @override
-  Future<Uri?> initiallyLaunchedFromHomeWidget() => Future.value(null);
+  Future<Uri?> initiallyLaunchedFromHomeWidget() => Future.value();
   @override
   Stream<Uri?> get widgetClicked => const Stream.empty();
   @override
   Future<bool?> registerInteractivityCallback(
     void Function(Uri? uri) homeWidgetBackgroundCallback,
-  ) => Future.value(null);
+  ) => Future.value();
   @override
-  Future<bool?> setAppGroupId(String appGroupId) => Future.value(null);
+  Future<bool?> setAppGroupId(String appGroupId) => Future.value();
   @override
   Future<void> _hideOtp(String widgetId, int otpLength) async {}
   @override

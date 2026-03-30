@@ -44,13 +44,13 @@ class LockTokenFolderAction extends ConsumerSlideableAction {
               reason: (localization) => localization.unlock,
               localization: AppLocalizations.of(context)!,
             ) ==
-            false)
+            false) {
           return;
+        }
         globalRef?.read(tokenFolderProvider.notifier).toggleFolderLock(folder);
       },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const Icon(Icons.lock),
           Text(

@@ -544,7 +544,7 @@ class PlaceholderPushProvider implements PushProvider {
   @override
   Future<(List<PushToken>, List<PushToken>)?> updateAllFirebaseTokens({
     String? firebaseToken,
-  }) => Future.value(null);
+  }) => Future.value();
   @override
   Future<void> initFirebase() async {}
 }

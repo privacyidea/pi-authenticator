@@ -35,8 +35,6 @@ class HomeWidgetCopied extends FlutterHomeWidgetBase {
     width: logicalSize.width,
     height: logicalSize.height,
     child: FittedBox(
-      fit: BoxFit.contain,
-      alignment: Alignment.center,
       child: Text(
         'Password copied\nto Clipboard',
         textAlign: TextAlign.center,

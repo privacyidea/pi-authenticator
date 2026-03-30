@@ -84,6 +84,6 @@ class PiaSchemeProcessor extends TokenImportSchemeProcessor {
       queryParameters: uri.queryParameters,
       fragment: uri.fragment,
     );
-    return OtpAuthProcessor().processUri(uri, fromInit: false);
+    return OtpAuthProcessor().processUri(uri);
   }
 }

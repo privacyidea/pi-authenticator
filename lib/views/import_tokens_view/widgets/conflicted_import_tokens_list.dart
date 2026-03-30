@@ -37,7 +37,8 @@ class ConflictedImportTokensList extends StatelessWidget {
   final bool leadingDivider;
 
   final List<TokenImportEntry> importEntries;
-  final void Function(TokenImportEntry oldEntry, TokenImportEntry newEntry) onTap;
+  final void Function(TokenImportEntry oldEntry, TokenImportEntry newEntry)
+  onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -47,27 +48,20 @@ class ConflictedImportTokensList extends StatelessWidget {
       children: [
         if (leadingDivider) ...[
           const SizedBox(height: 16),
-          const Divider(
-            thickness: 2,
-            height: 2,
-            indent: 4,
-            endIndent: 4,
-          ),
+          const Divider(thickness: 2, height: 2, indent: 4, endIndent: 4),
           const SizedBox(height: 16),
         ],
         if (title != null) ...[
           Padding(
             padding: titlePadding,
-            child: Text(
-              title!,
-              textAlign: TextAlign.center,
-            ),
+            child: Text(title!, textAlign: TextAlign.center),
           ),
           const SizedBox(height: 8),
         ],
         for (var i = 0; i < importEntries.length; i++)
           ConflictedImportTokensTile(
-            selectTokenCallback: (newEntry) => onTap(importEntries[i], newEntry),
+            selectTokenCallback: (newEntry) =>
+                onTap(importEntries[i], newEntry),
             importTokenEntry: importEntries[i],
             initialScreenSize: MediaQuery.of(context).size,
             key: Key('ConflictedImportTokensTile_$i'),

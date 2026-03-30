@@ -109,7 +109,7 @@ class _QRScannerViewState extends State<QRScannerView> {
             DialogAction(
               label: AppLocalizations.of(context)!.cancel,
               intent: DialogActionIntent.cancel,
-              onPressed: () => Navigator.pop(context, null),
+              onPressed: () => Navigator.pop(context),
             ),
             DialogAction(
               label: AppLocalizations.of(

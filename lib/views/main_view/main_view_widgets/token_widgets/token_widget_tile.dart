@@ -94,7 +94,6 @@ class TokenWidgetTile extends ConsumerWidget {
               padding: const EdgeInsets.only(left: 4.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.max,
                 children: [
                   if (subtitle1.isNotEmpty)
                     Text(

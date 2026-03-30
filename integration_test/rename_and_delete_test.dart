@@ -52,7 +52,6 @@ void main() {
         algorithm: Algorithms.SHA256,
         digits: 6,
         secret: 'secret',
-        counter: 0,
       ),
     ];
     when(mockTokenRepository.loadTokens()).thenAnswer((_) async {

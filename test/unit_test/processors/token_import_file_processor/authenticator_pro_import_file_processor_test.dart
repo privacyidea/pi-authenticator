@@ -64,8 +64,13 @@ void _testAuthenticatorProImportFileProcessor() {
             '58, 110, 117, 108, 108, 44, 34, 73, 115, 115, 117, 101, 114, 34, 58, 34, 84, 101, 115, 116, 50, 34, 44, 34, 85, 115, 101, 114, 110, 97, 109, 101, 34, 58, 34, 84, 101, 115, 116, 50, 34, 44, 34, 83, 101, 99, 114, 101, 116, 34, 58, 34, 66, 66, 66, 66, 66, 66, 66, 66, 34, 44, 34, 80, 105, 110, 34, 58, 110, 117, 108, 108, 44, 34, 65, 108, 103, 111, 114, 105, 116, 104, 109, 34, 58, 48, 44, 34, 68, 105, 103, 105, 116, 115, 34, 58, 54, 44, 34, 80,'
             '101, 114, 105, 111, 100, 34, 58, 51, 48, 44, 34, 67, 111, 117, 110, 116, 101, 114, 34, 58, 48, 44, 34, 67, 111, 112, 121, 67, 111, 117, 110, 116, 34, 58, 48, 44, 34, 82, 97, 110, 107, 105, 110, 103, 34, 58, 48, 125, 93, 44, 34, 67, 97, 116, 101, 103, 111, 114, 105, 101, 115, 34, 58, 91, 93, 44, 34, 65, 117, 116, 104, 101, 110, 116, 105, 99, 97, 116, 111, 114, 67, 97, 116, 101, 103, 111, 114, 105, 101, 115, 34, 58, 91, 93, 44, 34, 67, 117, 115, 116,'
             '111, 109, 73, 99, 111, 110, 115, 34, 58, 91, 93, 125]';
-        final byteData = Uint8List.fromList((jsonDecode(byteDataString) as List).cast<int>());
-        final XFile file = XFile.fromData(byteData, name: 'auth_pro_plain.json');
+        final byteData = Uint8List.fromList(
+          (jsonDecode(byteDataString) as List).cast<int>(),
+        );
+        final XFile file = XFile.fromData(
+          byteData,
+          name: 'auth_pro_plain.json',
+        );
         group('fileIsValid', () {
           test('isTrue', () async {
             // Act
@@ -75,8 +80,13 @@ void _testAuthenticatorProImportFileProcessor() {
           });
           test('isFalse', () async {
             // Arrange
-            final byteData = Uint8List.fromList((jsonDecode(byteDataString) as List).cast<int>()..removeLast());
-            final XFile file = XFile.fromData(byteData, name: 'auth_pro_plain_invalid.json');
+            final byteData = Uint8List.fromList(
+              (jsonDecode(byteDataString) as List).cast<int>()..removeLast(),
+            );
+            final XFile file = XFile.fromData(
+              byteData,
+              name: 'auth_pro_plain_invalid.json',
+            );
 
             // Act
             final result = await processor.fileIsValid(file);
@@ -129,7 +139,9 @@ void _testAuthenticatorProImportFileProcessor() {
           '88, 122, 101, 48, 104, 108, 83, 55, 104, 77, 71, 104, 110, 66, 76, 112, 52, 111, 82, 82, 53, 49, 74, 57, 83, 54, 104, 122, 52, 53, 65, 47, 71, 107, 71, 121, 103, 88, 105, 51, 106, 83, 122, 107, 72, 83, 75, 98, 73, 78, 52, 65, 67, 55, 76, 65, 113, 72, 77, 77, 76, 108, 65, 99, 115, 82, 73, 111, 122, 105, 57, 97, 89, 109, 69, 76, 87, 47, 71, 73, 97, 116, 47, 106, 57, 105, 43, 100, 83, 98, 57, 97, 98, 107, 114, 53, 74, 105, 115, 57,'
           '89, 55, 80, 53, 103, 89, 120, 53, 80, 119, 52, 119, 102, 75, 47, 76, 98, 86, 65, 80, 65, 84, 84, 66, 56, 102, 121, 103, 116, 108, 114, 103, 47, 121, 56, 47, 115, 109, 102, 73, 70, 57, 110, 49, 118, 57, 117, 48, 80, 48, 100, 72, 119, 65, 65, 65, 65, 66, 74, 82, 85, 53, 69, 114, 107, 74, 103, 103, 103, 61, 61, 34, 62, 60, 47, 116, 100, 62, 10, 60, 47, 116, 114, 62, 10, 32, 32, 32, 32, 32, 32, 32, 32, 60, 47, 116, 97, 98, 108, 101,'
           '62, 10, 32, 32, 32, 32, 10, 32, 32, 32, 32, 60, 47, 98, 111, 100, 121, 62, 10, 60, 47, 104, 116, 109, 108, 62]';
-      final byteData = Uint8List.fromList((jsonDecode(htmlFileByteString) as List).cast<int>().toList());
+      final byteData = Uint8List.fromList(
+        (jsonDecode(htmlFileByteString) as List).cast<int>().toList(),
+      );
 
       final file = XFile.fromData(byteData, name: 'auth_pro_plain.html');
 
@@ -142,9 +154,15 @@ void _testAuthenticatorProImportFileProcessor() {
         });
         test('isFalse', () async {
           // Arrange
-          final byteData = Uint8List.fromList((jsonDecode(htmlFileByteString) as List).cast<int>().toList()..removeAt(0));
+          final byteData = Uint8List.fromList(
+            (jsonDecode(htmlFileByteString) as List).cast<int>().toList()
+              ..removeAt(0),
+          );
 
-          final file = XFile.fromData(byteData, name: 'auth_pro_plain_invalid.html');
+          final file = XFile.fromData(
+            byteData,
+            name: 'auth_pro_plain_invalid.html',
+          );
           // Act
           final fileIsValid = await processor.fileIsValid(file);
           // Assert
@@ -170,7 +188,9 @@ void _testAuthenticatorProImportFileProcessor() {
       const uriListBytes =
           '[111, 116, 112, 97, 117, 116, 104, 58, 47, 47, 116, 111, 116, 112, 47, 84, 101, 115, 116, 49, 37, 51, 65, 84, 101, 115, 116, 49, 63, 115, 101, 99, 114, 101, 116, 61, 65, 65, 65, 65, 65, 65, 65, 65, 38, 105, 115, 115, 117, 101, 114, 61, 84, 101, 115, 116, 49, 10, 111, 116, 112, 97, 117, 116, 104, 58, 47, 47, 104, 111, 116, 112, 47, 84, 101, 115, 116, 50, 37, 51, 65, 84, 101, 115, 116, 50, 63, 115, 101, 99, 114, 101, 116, 61, 66, 66, 66, 66, 66, 66,'
           '66, 66, 38, 105, 115, 115, 117, 101, 114, 61, 84, 101, 115, 116, 50, 38, 99, 111, 117, 110, 116, 101, 114, 61, 48, 10]';
-      final byteData = Uint8List.fromList((jsonDecode(uriListBytes) as List).cast<int>().toList());
+      final byteData = Uint8List.fromList(
+        (jsonDecode(uriListBytes) as List).cast<int>().toList(),
+      );
 
       final file = XFile.fromData(byteData, name: 'auth_pro_plain.txt');
 
@@ -183,9 +203,15 @@ void _testAuthenticatorProImportFileProcessor() {
         });
         test('isFalse', () async {
           // Act
-          final byteData = Uint8List.fromList((jsonDecode(uriListBytes) as List).cast<int>().toList()..removeWhere((uint) => uint == 58)); // 58 is ':'
+          final byteData = Uint8List.fromList(
+            (jsonDecode(uriListBytes) as List).cast<int>().toList()
+              ..removeWhere((uint) => uint == 58),
+          ); // 58 is ':'
 
-          final file = XFile.fromData(byteData, name: 'auth_pro_plain_invalid.txt');
+          final file = XFile.fromData(
+            byteData,
+            name: 'auth_pro_plain_invalid.txt',
+          );
           final fileIsValid = await processor.fileIsValid(file);
           // Assert
           expect(fileIsValid, isFalse);

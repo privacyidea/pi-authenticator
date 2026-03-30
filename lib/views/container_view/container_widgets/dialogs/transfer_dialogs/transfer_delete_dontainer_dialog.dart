@@ -139,7 +139,7 @@ class _TransferDeleteContainerDialogState
     };
   }
 
-  void confirmDeleteLocaly(BuildContext context) async {
+  Future<void> confirmDeleteLocaly(BuildContext context) async {
     final containerTokens = (await ref.read(
       tokenProvider.future,
     )).containerTokens(widget.container.serial);

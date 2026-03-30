@@ -11,7 +11,10 @@ void main() {
 
   setUp(() {
     mockStorage = MockFlutterSecureStorage();
-    secureStorage = SecureStorage(storagePrefix: storagePrefix, storage: mockStorage);
+    secureStorage = SecureStorage(
+      storagePrefix: storagePrefix,
+      storage: mockStorage,
+    );
   });
 
   group('SecureStorage', () {
@@ -20,33 +23,53 @@ void main() {
     });
 
     test('write calls storage.write with correct key and value', () async {
-      when(mockStorage.write(key: anyNamed('key'), value: anyNamed('value'))).thenAnswer((_) async => {});
+      when(
+        mockStorage.write(key: anyNamed('key'), value: anyNamed('value')),
+      ).thenAnswer((_) async => {});
       await secureStorage.write(key: 'foo', value: 'bar');
       verify(mockStorage.write(key: 'testprefix_foo', value: 'bar')).called(1);
     });
 
     test('read calls storage.read with correct key', () async {
-      when(mockStorage.read(key: anyNamed('key'))).thenAnswer((_) async => 'value');
+      when(
+        mockStorage.read(key: anyNamed('key')),
+      ).thenAnswer((_) async => 'value');
       final result = await secureStorage.read(key: 'foo');
       expect(result, 'value');
       verify(mockStorage.read(key: 'testprefix_foo')).called(1);
     });
 
     test('readAll returns only prefixed keys with prefix removed', () async {
-      when(mockStorage.readAll()).thenAnswer((_) async => {'testprefix_key1': 'val1', 'testprefix_key2': 'val2', 'otherprefix_key3': 'val3'});
+      when(mockStorage.readAll()).thenAnswer(
+        (_) async => {
+          'testprefix_key1': 'val1',
+          'testprefix_key2': 'val2',
+          'otherprefix_key3': 'val3',
+        },
+      );
       final result = await secureStorage.readAll();
       expect(result, {'key1': 'val1', 'key2': 'val2'});
     });
 
     test('delete calls storage.delete with correct key', () async {
-      when(mockStorage.delete(key: anyNamed('key'))).thenAnswer((_) async => {});
+      when(
+        mockStorage.delete(key: anyNamed('key')),
+      ).thenAnswer((_) async => {});
       await secureStorage.delete(key: 'foo');
       verify(mockStorage.delete(key: 'testprefix_foo')).called(1);
     });
 
     test('deleteAll deletes only prefixed keys', () async {
-      when(mockStorage.readAll()).thenAnswer((_) async => {'testprefix_key1': 'val1', 'testprefix_key2': 'val2', 'otherprefix_key3': 'val3'});
-      when(mockStorage.delete(key: anyNamed('key'))).thenAnswer((_) async => {});
+      when(mockStorage.readAll()).thenAnswer(
+        (_) async => {
+          'testprefix_key1': 'val1',
+          'testprefix_key2': 'val2',
+          'otherprefix_key3': 'val3',
+        },
+      );
+      when(
+        mockStorage.delete(key: anyNamed('key')),
+      ).thenAnswer((_) async => {});
       await secureStorage.deleteAll();
       verify(mockStorage.delete(key: 'testprefix_key1')).called(1);
       verify(mockStorage.delete(key: 'testprefix_key2')).called(1);

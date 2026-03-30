@@ -92,7 +92,6 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
   Widget build(BuildContext context) {
     return SingleTouchRecognizer(
       child: StateObserver(
-        stateNotifierProviderListeners: const [],
         buildlessProviderListener: [],
         streamNotifierProviderListeners: [
           NavigationDeepLinkListener(provider: deeplinkProvider),

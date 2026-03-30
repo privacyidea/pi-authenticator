@@ -171,7 +171,6 @@ class TOTPToken extends OTPToken {
     time: time,
     length: digits,
     interval: Duration(seconds: period),
-    isGoogle: true,
   );
 
   @override

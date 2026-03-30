@@ -85,7 +85,6 @@ class _InitialTokenAssignmentDialogState
             child: Text(localizations.initialTokenAssignmentDialogQuestion),
           ),
           SelectTokensWidget(
-            multiSelect: true,
             tokens: widget.tokens.toSet(),
             onSelect: (selected, unselected) => setState(() {
               _selectedTokens = selected;

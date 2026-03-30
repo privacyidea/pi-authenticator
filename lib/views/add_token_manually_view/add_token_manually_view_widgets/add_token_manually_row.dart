@@ -32,24 +32,24 @@ class AddTokenManuallyRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Flexible(
-            flex: 5,
-            child: Text(
-              label,
-              style: Theme.of(context).textTheme.bodyMedium,
-              overflow: TextOverflow.fade,
-              softWrap: false,
-            ),
-          ),
-          Flexible(
-            flex: 3,
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(minWidth: 100),
-              child: child,
-            ),
-          ),
-        ],
-      );
+    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    children: [
+      Flexible(
+        flex: 5,
+        child: Text(
+          label,
+          style: Theme.of(context).textTheme.bodyMedium,
+          overflow: TextOverflow.fade,
+          softWrap: false,
+        ),
+      ),
+      Flexible(
+        flex: 3,
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(minWidth: 100),
+          child: child,
+        ),
+      ),
+    ],
+  );
 }

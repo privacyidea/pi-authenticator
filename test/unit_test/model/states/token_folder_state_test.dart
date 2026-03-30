@@ -8,7 +8,9 @@ void main() {
 
 void _testTokenFolderState() {
   group('TokenFolderState', () {
-    const state = TokenFolderState(folders: [TokenFolder(label: 'label', folderId: 1)]);
+    const state = TokenFolderState(
+      folders: [TokenFolder(label: 'label', folderId: 1)],
+    );
     test('constructor', () {
       expect(state.folders.first.label, 'label');
       expect(state.folders.first.folderId, 1);
@@ -24,7 +26,9 @@ void _testTokenFolderState() {
       expect(newState.folders.last.folderId, 2);
     });
     test('withUpdated', () {
-      final newState = state.addOrReplaceFolders([const TokenFolder(label: 'labelUpdated', folderId: 1)]);
+      final newState = state.addOrReplaceFolders([
+        const TokenFolder(label: 'labelUpdated', folderId: 1),
+      ]);
       expect(state.folders.first.label, 'label');
       expect(state.folders.first.folderId, 1);
       expect(newState.folders.length, 1);
@@ -32,7 +36,9 @@ void _testTokenFolderState() {
       expect(newState.folders.first.folderId, 1);
     });
     test('withoutFolder', () {
-      final newState = state.removeFolder(const TokenFolder(label: 'label', folderId: 1));
+      final newState = state.removeFolder(
+        const TokenFolder(label: 'label', folderId: 1),
+      );
       expect(state.folders.first.label, 'label');
       expect(state.folders.first.folderId, 1);
       expect(newState.folders.length, 0);

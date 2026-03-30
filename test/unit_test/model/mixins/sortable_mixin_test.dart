@@ -41,8 +41,8 @@ void _testSortableMixin() {
       });
       test('null', () {
         // Arrange
-        final a = _SortableTestClass(sortIndex: null, name: 'null');
-        final b = _SortableTestClass(sortIndex: null, name: 'null');
+        final a = _SortableTestClass(name: 'null');
+        final b = _SortableTestClass(name: 'null');
         // Act
         final result = a.compareTo(b);
         // Assert
@@ -62,7 +62,7 @@ void _testSortableMixin() {
       test('a = 1, b = null', () {
         // Arrange
         final a = _SortableTestClass(sortIndex: 1, name: '1');
-        final b = _SortableTestClass(sortIndex: null, name: 'null');
+        final b = _SortableTestClass(name: 'null');
         // Act
         final result = a.compareTo(b);
         // Assert
@@ -81,7 +81,7 @@ void _testSortableMixin() {
       });
       test('a = null, b = 1', () {
         // Arrange
-        final a = _SortableTestClass(sortIndex: null, name: 'null');
+        final a = _SortableTestClass(name: 'null');
         final b = _SortableTestClass(sortIndex: 1, name: '1');
         // Act
         final result = a.compareTo(b);

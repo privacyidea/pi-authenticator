@@ -91,7 +91,6 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
               horizontal: ImportTokensView.pagePaddingHorizontal,
             ),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Icon(
                   widget.selectedSource.type.icon,
@@ -279,10 +278,8 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
 
     final DecodeParams params = DecodeParams(
       imageFormat: zxing.ImageFormat.rgb,
-      format: Format.any,
       tryHarder: tryHarder,
       tryInverted: tryInverted,
-      isMultiScan: false,
     );
     final text = (await zx.readBarcodeImagePath(file, params)).text;
     if (text == null) {

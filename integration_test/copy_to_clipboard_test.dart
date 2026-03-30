@@ -49,7 +49,6 @@ void main() {
           algorithm: Algorithms.SHA256,
           digits: 6,
           secret: 'secret',
-          counter: 0,
         ),
       ],
     );

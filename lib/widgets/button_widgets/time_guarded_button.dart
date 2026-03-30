@@ -25,7 +25,7 @@
 // import '../pi_circular_progress_indicator.dart';
 // import 'intent_button.dart';
 
-// class TimeGuardedButton extends StatefulWidget {
+// class IntentButton extends StatefulWidget {
 //   final FutureOr<void> Function()? onPressed;
 //   final Widget child;
 //   final int delaySeconds;
@@ -42,10 +42,10 @@
 //   });
 
 //   @override
-//   State<TimeGuardedButton> createState() => _TimeGuardedButtonState();
+//   State<IntentButton> createState() => _IntentButtonState();
 // }
 
-// class _TimeGuardedButtonState extends State<TimeGuardedButton>
+// class _IntentButtonState extends State<IntentButton>
 //     with SingleTickerProviderStateMixin {
 //   bool _isCooldown = false;
 //   late int _currentDelay;

@@ -35,7 +35,6 @@ class HomeWidgetUnlinked extends FlutterHomeWidgetBase {
     width: logicalSize.width,
     height: logicalSize.height,
     child: FittedBox(
-      fit: BoxFit.contain,
       alignment: Alignment.topRight,
       child: Text(
         'Tap to link\nyour token',

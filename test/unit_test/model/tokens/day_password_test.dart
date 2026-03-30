@@ -187,7 +187,7 @@ void main() {
       });
 
       test('equality check (==) includes viewMode and period', () {
-        final t1 = createTestToken(viewMode: DayPasswordTokenViewMode.VALIDFOR);
+        final t1 = createTestToken();
         final t2 = createTestToken(
           viewMode: DayPasswordTokenViewMode.VALIDUNTIL,
         );

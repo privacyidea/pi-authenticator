@@ -55,7 +55,6 @@ class PatchNotesDialog extends StatelessWidget {
                           (note) => Padding(
                             padding: const EdgeInsets.only(bottom: 8),
                             child: Row(
-                              mainAxisSize: MainAxisSize.max,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Padding(

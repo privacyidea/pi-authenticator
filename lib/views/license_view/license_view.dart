@@ -31,21 +31,28 @@ class LicenseView extends StatelessView {
   final Widget appImage;
   final String websiteLink;
 
-  const LicenseView({required this.appName, required this.websiteLink, required this.appImage, super.key});
+  const LicenseView({
+    required this.appName,
+    required this.websiteLink,
+    required this.appImage,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) => PushRequestListener(
-        child: FutureBuilder(
-          future: PackageInfo.fromPlatform(),
-          builder: (context, platformInfo) => LicensePage(
-            applicationName: appName,
-            applicationIcon: Padding(
-              padding: const EdgeInsets.all(32),
-              child: appImage,
-            ),
-            applicationLegalese: '© $websiteLink',
-            applicationVersion: platformInfo.data == null ? '' : '${platformInfo.data?.version}+${platformInfo.data?.buildNumber}',
-          ),
+    child: FutureBuilder(
+      future: PackageInfo.fromPlatform(),
+      builder: (context, platformInfo) => LicensePage(
+        applicationName: appName,
+        applicationIcon: Padding(
+          padding: const EdgeInsets.all(32),
+          child: appImage,
         ),
-      );
+        applicationLegalese: '© $websiteLink',
+        applicationVersion: platformInfo.data == null
+            ? ''
+            : '${platformInfo.data?.version}+${platformInfo.data?.buildNumber}',
+      ),
+    ),
+  );
 }

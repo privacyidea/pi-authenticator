@@ -228,7 +228,6 @@ class _StatusBarOverlayEntryState extends State<StatusBarOverlayEntry>
                   child: SizedBox(
                     width: maxWidth,
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
                           widget.statusText,

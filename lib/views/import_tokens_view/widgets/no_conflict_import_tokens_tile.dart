@@ -41,22 +41,22 @@ class NoConflictImportTokensTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SizedBox(
-        width: width,
-        child: Card(
-          elevation: 2,
-          color: selected == token ? borderColor : null,
-          child: InkWell(
-            onTap: onTap,
-            child: Padding(
-              padding: const EdgeInsets.all(4),
-              child: Container(
-                color: Theme.of(context).scaffoldBackgroundColor,
-                child: Column(
-                  children: [TokenWidgetBuilder.previewFromToken(token)],
-                ),
-              ),
+    width: width,
+    child: Card(
+      elevation: 2,
+      color: selected == token ? borderColor : null,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(4),
+          child: Container(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            child: Column(
+              children: [TokenWidgetBuilder.previewFromToken(token)],
             ),
           ),
         ),
-      );
+      ),
+    ),
+  );
 }

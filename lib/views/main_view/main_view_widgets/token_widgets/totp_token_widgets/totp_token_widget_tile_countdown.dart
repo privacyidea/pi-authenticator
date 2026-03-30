@@ -39,7 +39,6 @@ class TotpTokenWidgetTileCountdown extends StatelessWidget {
     final value = secondsUntilNextOTP.ceil();
     return FittedBox(
       clipBehavior: Clip.hardEdge,
-      fit: BoxFit.contain,
       child: Stack(
         alignment: Alignment.center,
         children: [

@@ -29,7 +29,7 @@ import 'package:privacyidea_authenticator/model/token_container.dart';
 import 'package:privacyidea_authenticator/utils/ecc_utils.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 import 'package:privacyidea_authenticator/views/container_view/container_widgets/buttons/rollover_container_tokens_button.dart';
-import 'package:privacyidea_authenticator/widgets/button_widgets/time_guarded_button.dart';
+import 'package:privacyidea_authenticator/widgets/button_widgets/intent_button.dart';
 
 import '../../../../../tests_app_wrapper.mocks.dart';
 
@@ -67,30 +67,22 @@ void main() {
   group('RolloverContainerTokensButton - SyncState Corners', () {
     testWidgets('should be enabled when state is notStarted', (tester) async {
       await pumpButton(tester, state: SyncState.notStarted);
-      final button = tester.widget<TimeGuardedButton>(
-        find.byType(TimeGuardedButton),
-      );
+      final button = tester.widget<IntentButton>(find.byType(IntentButton));
       expect(button.onPressed, isNotNull);
     });
     testWidgets('should be disabled when state is syncing', (tester) async {
       await pumpButton(tester, state: SyncState.syncing);
-      final button = tester.widget<TimeGuardedButton>(
-        find.byType(TimeGuardedButton),
-      );
+      final button = tester.widget<IntentButton>(find.byType(IntentButton));
       expect(button.onPressed, isNull);
     });
     testWidgets('should be enabled when state is completed', (tester) async {
       await pumpButton(tester, state: SyncState.completed);
-      final button = tester.widget<TimeGuardedButton>(
-        find.byType(TimeGuardedButton),
-      );
+      final button = tester.widget<IntentButton>(find.byType(IntentButton));
       expect(button.onPressed, isNotNull);
     });
     testWidgets('should be enabled when state is failed', (tester) async {
       await pumpButton(tester, state: SyncState.failed);
-      final button = tester.widget<TimeGuardedButton>(
-        find.byType(TimeGuardedButton),
-      );
+      final button = tester.widget<IntentButton>(find.byType(IntentButton));
       expect(button.onPressed, isNotNull);
     });
     testWidgets(
@@ -101,9 +93,7 @@ void main() {
           state: SyncState.notStarted,
           containerExists: false,
         );
-        final button = tester.widget<TimeGuardedButton>(
-          find.byType(TimeGuardedButton),
-        );
+        final button = tester.widget<IntentButton>(find.byType(IntentButton));
         expect(button.onPressed, isNull);
       },
     );

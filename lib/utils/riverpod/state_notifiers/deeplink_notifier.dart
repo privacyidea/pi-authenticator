@@ -47,7 +47,7 @@ class DeeplinkNotifier extends StateNotifier<DeepLink?> {
 
   /// Handle incoming links - the ones that the app will recieve from the OS
   /// while already started.
-  void _handleIncomingLinks() async {
+  Future<void> _handleIncomingLinks() async {
     if (kIsWeb) return;
 
     for (var source in _sources) {

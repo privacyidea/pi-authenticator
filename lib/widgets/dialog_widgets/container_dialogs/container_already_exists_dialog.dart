@@ -86,10 +86,11 @@ class _ContainerAlreadyExistsDialogState
 
   void _dismiss(TokenContainer container) {
     setState(() => unhandledContainers.remove(container));
-    if (unhandledContainers.isEmpty)
+    if (unhandledContainers.isEmpty) {
       Navigator.of(
         context,
       ).pop<List<TokenContainerUnfinalized>>(replaceContainers);
+    }
   }
 
   Future<void> _replace(
@@ -102,9 +103,10 @@ class _ContainerAlreadyExistsDialogState
       );
       replaceContainers.add(newContainer);
     });
-    if (unhandledContainers.isEmpty)
+    if (unhandledContainers.isEmpty) {
       Navigator.of(
         context,
       ).pop<List<TokenContainerUnfinalized>>(replaceContainers);
+    }
   }
 }

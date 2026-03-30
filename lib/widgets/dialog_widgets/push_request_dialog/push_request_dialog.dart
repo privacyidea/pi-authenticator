@@ -110,7 +110,6 @@ mixin PushDialogMixin {
       Logger.error('Error accepting push request: $e');
       ref.read(statusMessageProvider.notifier).state = StatusMessage(
         message: (l10n) => "Error accepting push request: $e",
-        isError: true,
       );
       return;
     }
@@ -164,7 +163,7 @@ mixin PushDialogMixin {
     }
   }
 
-  void
+  Future<void>
   _onHandled<V extends PiServerResultValue, D extends PiServerResultDetail>({
     required BuildContext context,
     required WidgetRef ref,

@@ -59,7 +59,6 @@ class ContainerView extends ConsumerView {
       body: Center(
         child: SlidableAutoCloseBehavior(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               for (var container in containerList) ...[
                 if (containerList.indexOf(container) != 0)

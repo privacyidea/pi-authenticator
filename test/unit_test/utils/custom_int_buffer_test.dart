@@ -42,7 +42,10 @@ void verifyCustomStringBufferWorks() {
       expect(buffer3_30.contains(3), true);
       expect(buffer3_30.contains(4), false);
 
-      final values = List.generate(buffer3_30.maxSize - buffer3_30.length, (index) => 0 - index); // 27 elements
+      final values = List.generate(
+        buffer3_30.maxSize - buffer3_30.length,
+        (index) => 0 - index,
+      ); // 27 elements
 
       final buffer30_30 = buffer3_30.putList(values); // full buffer 30/30
 
@@ -61,14 +64,14 @@ void verifyCustomStringBufferWorks() {
       final json = buffer.toJson();
       expect(json, {
         'maxSize': 30,
-        'list': [1, 2, 3]
+        'list': [1, 2, 3],
       });
     });
 
     test('fromJson', () {
       final buffer = CustomIntBuffer.fromJson({
         'maxSize': 30,
-        'list': [1, 2, 3]
+        'list': [1, 2, 3],
       });
       expect(buffer.maxSize, 30);
       expect(buffer.length, 3);

@@ -64,7 +64,6 @@ class HomeWidgetOtp extends FlutterHomeWidgetBase {
           Expanded(
             flex: 3,
             child: FittedBox(
-              fit: BoxFit.contain,
               alignment: Alignment.centerLeft,
               child: Text(
                 text,
@@ -74,7 +73,6 @@ class HomeWidgetOtp extends FlutterHomeWidgetBase {
             ),
           ),
           Expanded(
-            flex: 1,
             child: FittedBox(
               fit: BoxFit.fitHeight,
               alignment: Alignment.topLeft,

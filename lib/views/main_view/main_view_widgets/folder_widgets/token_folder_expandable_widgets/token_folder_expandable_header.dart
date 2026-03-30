@@ -144,7 +144,6 @@ class _TokenFolderExpandableHeaderState
                     widget.expandableController.value = true;
                   },
                   child: Row(
-                    mainAxisSize: MainAxisSize.max,
                     children: [
                       const SizedBox(width: 8),
                       RotationTransition(

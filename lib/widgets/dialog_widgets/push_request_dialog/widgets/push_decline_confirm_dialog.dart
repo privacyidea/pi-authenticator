@@ -80,7 +80,6 @@ class PushDeclineConfirmDialog extends StatelessWidget {
             ),
           ),
           PushActionButton(
-            intent: DialogActionIntent.confirm,
             onPressed: () async {
               await onDiscard();
               if (context.mounted && Navigator.of(context).canPop()) {

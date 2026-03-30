@@ -43,7 +43,8 @@ class LabeledDropdownButton<T> extends StatefulWidget {
   });
 
   @override
-  State<LabeledDropdownButton<T>> createState() => _LabeledDropdownButtonState<T>();
+  State<LabeledDropdownButton<T>> createState() =>
+      _LabeledDropdownButtonState<T>();
 }
 
 class _LabeledDropdownButtonState<T> extends State<LabeledDropdownButton<T>> {
@@ -69,7 +70,9 @@ class _LabeledDropdownButtonState<T> extends State<LabeledDropdownButton<T>> {
       child: AddTokenManuallyRow(
         label: widget.label,
         child: DropdownButton<T>(
-          value: widget.valueNotifier?.value != null && widget.values.contains(widget.valueNotifier!.value)
+          value:
+              widget.valueNotifier?.value != null &&
+                  widget.values.contains(widget.valueNotifier!.value)
               ? widget.valueNotifier!.value
               : widget.values.firstOrNull,
           isExpanded: true,

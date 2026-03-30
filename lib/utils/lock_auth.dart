@@ -169,7 +169,6 @@ Future<void> _showBiometricUnsupportedDialog() async {
         leading: const Icon(Symbols.fingerprint_off),
       ),
       content: Row(
-        mainAxisSize: MainAxisSize.max,
         children: [
           Text(AppLocalizations.of(context)!.biometricAuthNotSupportedBody),
           const Icon(Symbols.fingerprint_off),
@@ -191,7 +190,6 @@ Future<void> _showBiometricUnavailableDialog() async {
         ),
       ),
       content: Row(
-        mainAxisSize: MainAxisSize.max,
         children: [
           IconButton(
             iconSize: 48,
@@ -203,7 +201,7 @@ Future<void> _showBiometricUnavailableDialog() async {
                 );
               }
               if (Platform.isIOS) {
-                AppSettings.openAppSettings(type: AppSettingsType.settings);
+                AppSettings.openAppSettings();
               }
             },
           ),
@@ -226,7 +224,7 @@ Future<void> _showBiometricUnavailableDialog() async {
               );
             }
             if (Platform.isIOS) {
-              await AppSettings.openAppSettings(type: AppSettingsType.settings);
+              await AppSettings.openAppSettings();
             }
             final hasBiometricsEnrolled =
                 (await _localAuth.getAvailableBiometrics()).isNotEmpty;

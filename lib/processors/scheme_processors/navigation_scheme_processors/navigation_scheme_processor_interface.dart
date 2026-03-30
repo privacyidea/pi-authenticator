@@ -49,6 +49,7 @@ abstract class NavigationSchemeProcessor implements SchemeProcessor {
       final key = await contextedGlobalNavigatorKey;
       context = key.currentContext;
     }
+    if (context!.mounted == false) return;
     Logger.info('Processing scheme: ${uri.scheme}');
     final futures = <Future<void>>[];
     for (final processor in implementations) {
@@ -59,8 +60,6 @@ abstract class NavigationSchemeProcessor implements SchemeProcessor {
         Logger.info(
           'Processing scheme ${uri.scheme} with ${processor.runtimeType}',
         );
-        // ignoring use_build_context_synchronously is ok because we got the context after the await. The Context cannot be expired.
-        // ignore: use_build_context_synchronously
         futures.add(
           processor.processUri(uri, context: context, fromInit: fromInit),
         );

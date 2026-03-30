@@ -28,13 +28,18 @@ class EncodingsDropdownButton extends StatelessWidget {
   final List<Encodings> values;
   final bool enabled;
 
-  const EncodingsDropdownButton({super.key, this.encodingNotifier, this.values = Encodings.values, this.enabled = true});
+  const EncodingsDropdownButton({
+    super.key,
+    this.encodingNotifier,
+    this.values = Encodings.values,
+    this.enabled = true,
+  });
   @override
   Widget build(BuildContext context) => LabeledDropdownButton<Encodings>(
-        label: AppLocalizations.of(context)!.encoding,
-        enabled: enabled,
-        valueNotifier: encodingNotifier,
-        values: values,
-        valueLabels: [for (final value in values) value.name],
-      );
+    label: AppLocalizations.of(context)!.encoding,
+    enabled: enabled,
+    valueNotifier: encodingNotifier,
+    values: values,
+    valueLabels: [for (final value in values) value.name],
+  );
 }

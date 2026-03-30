@@ -43,19 +43,29 @@ void _testAllowScreenshotNotifier() {
     mockScreenshotUtils = MockAllowScreenshotUtils();
     mockSettingsRepository = MockSettingsRepository();
     settingsState = SettingsState(allowScreenshots: false);
-    container = ProviderContainer(overrides: [
-      allowScreenshotProvider.overrideWith(
-        () => AllowScreenshotNotifier(screenshotUtilsOverride: mockScreenshotUtils),
-      ),
-      settingsProvider.overrideWith(
-        () => SettingsNotifier(repoOverride: mockSettingsRepository),
-      ),
-    ]);
+    container = ProviderContainer(
+      overrides: [
+        allowScreenshotProvider.overrideWith(
+          () => AllowScreenshotNotifier(
+            screenshotUtilsOverride: mockScreenshotUtils,
+          ),
+        ),
+        settingsProvider.overrideWith(
+          () => SettingsNotifier(repoOverride: mockSettingsRepository),
+        ),
+      ],
+    );
     notifier = container.read(allowScreenshotProvider.notifier);
     when(mockScreenshotUtils.allowScreenshots()).thenAnswer((_) async => true);
-    when(mockScreenshotUtils.disallowScreenshots()).thenAnswer((_) async => false);
-    when(mockSettingsRepository.loadSettings()).thenAnswer((_) async => settingsState);
-    when(mockSettingsRepository.saveSettings(any)).thenAnswer((invocation) async {
+    when(
+      mockScreenshotUtils.disallowScreenshots(),
+    ).thenAnswer((_) async => false);
+    when(
+      mockSettingsRepository.loadSettings(),
+    ).thenAnswer((_) async => settingsState);
+    when(mockSettingsRepository.saveSettings(any)).thenAnswer((
+      invocation,
+    ) async {
       final newState = invocation.positionalArguments[0] as SettingsState;
       settingsState = newState;
       return true;
@@ -63,7 +73,9 @@ void _testAllowScreenshotNotifier() {
   });
 
   test('Initial state is fetched correctly', () async {
-    when(mockScreenshotUtils.disallowScreenshots()).thenAnswer((_) async => true);
+    when(
+      mockScreenshotUtils.disallowScreenshots(),
+    ).thenAnswer((_) async => true);
 
     final result = await notifier.build(screenshotUtils: mockScreenshotUtils);
 
@@ -73,7 +85,9 @@ void _testAllowScreenshotNotifier() {
 
   test('allowScreenshots enables screenshots and updates settings', () async {
     when(mockScreenshotUtils.allowScreenshots()).thenAnswer((_) async => true);
-    when(mockScreenshotUtils.disallowScreenshots()).thenAnswer((_) async => true);
+    when(
+      mockScreenshotUtils.disallowScreenshots(),
+    ).thenAnswer((_) async => true);
 
     final result = await notifier.allowScreenshots();
 
@@ -82,13 +96,17 @@ void _testAllowScreenshotNotifier() {
     verify(mockSettingsRepository.saveSettings(any)).called(1);
     final newSettingsState = await container.read(settingsProvider.future);
     expect(newSettingsState.allowScreenshots, true);
-    final newAllowScreenshots = (await container.read(settingsProvider.future)).allowScreenshots;
+    final newAllowScreenshots = (await container.read(
+      settingsProvider.future,
+    )).allowScreenshots;
     expect(newAllowScreenshots, true);
   });
 
   test('allowScreenshots failed to enable screenshots', () async {
     when(mockScreenshotUtils.allowScreenshots()).thenAnswer((_) async => false);
-    when(mockScreenshotUtils.disallowScreenshots()).thenAnswer((_) async => true);
+    when(
+      mockScreenshotUtils.disallowScreenshots(),
+    ).thenAnswer((_) async => true);
 
     final result = await notifier.allowScreenshots();
 
@@ -97,28 +115,43 @@ void _testAllowScreenshotNotifier() {
     verifyNever(mockSettingsRepository.saveSettings(any));
     final newSettingsState = await container.read(settingsProvider.future);
     expect(newSettingsState.allowScreenshots, false);
-    final newAllowScreenshots = (await container.read(settingsProvider.future)).allowScreenshots;
+    final newAllowScreenshots = (await container.read(
+      settingsProvider.future,
+    )).allowScreenshots;
     expect(newAllowScreenshots, false);
   });
 
-  test('disallowScreenshots disables screenshots and updates settings', () async {
-    when(mockScreenshotUtils.allowScreenshots()).thenAnswer((_) async => true); // to set the initial state to true
-    when(mockScreenshotUtils.disallowScreenshots()).thenAnswer((_) async => true);
+  test(
+    'disallowScreenshots disables screenshots and updates settings',
+    () async {
+      when(
+        mockScreenshotUtils.allowScreenshots(),
+      ).thenAnswer((_) async => true); // to set the initial state to true
+      when(
+        mockScreenshotUtils.disallowScreenshots(),
+      ).thenAnswer((_) async => true);
 
-    await notifier.allowScreenshots(); // to set the initial state to true
-    final result = await notifier.disallowScreenshots();
+      await notifier.allowScreenshots(); // to set the initial state to true
+      final result = await notifier.disallowScreenshots();
 
-    expect(result, true);
-    verify(mockScreenshotUtils.disallowScreenshots()).called(2);
-    verify(mockSettingsRepository.saveSettings(any)).called(2);
-    final newSettingsState = await container.read(settingsProvider.future);
-    expect(newSettingsState.allowScreenshots, false);
-    final newAllowScreenshots = (await container.read(settingsProvider.future)).allowScreenshots;
-    expect(newAllowScreenshots, false);
-  });
+      expect(result, true);
+      verify(mockScreenshotUtils.disallowScreenshots()).called(2);
+      verify(mockSettingsRepository.saveSettings(any)).called(2);
+      final newSettingsState = await container.read(settingsProvider.future);
+      expect(newSettingsState.allowScreenshots, false);
+      final newAllowScreenshots = (await container.read(
+        settingsProvider.future,
+      )).allowScreenshots;
+      expect(newAllowScreenshots, false);
+    },
+  );
   test('disallowScreenshots failed to disable screenshots', () async {
-    when(mockScreenshotUtils.allowScreenshots()).thenAnswer((_) async => true); // to set the initial state to true
-    when(mockScreenshotUtils.disallowScreenshots()).thenAnswer((_) async => false);
+    when(
+      mockScreenshotUtils.allowScreenshots(),
+    ).thenAnswer((_) async => true); // to set the initial state to true
+    when(
+      mockScreenshotUtils.disallowScreenshots(),
+    ).thenAnswer((_) async => false);
 
     await notifier.allowScreenshots(); // to set the initial state to true
     final result = await notifier.disallowScreenshots();
@@ -128,36 +161,52 @@ void _testAllowScreenshotNotifier() {
     verify(mockSettingsRepository.saveSettings(any)).called(1);
     final newSettingsState = await container.read(settingsProvider.future);
     expect(newSettingsState.allowScreenshots, true);
-    final newAllowScreenshots = (await container.read(settingsProvider.future)).allowScreenshots;
+    final newAllowScreenshots = (await container.read(
+      settingsProvider.future,
+    )).allowScreenshots;
     expect(newAllowScreenshots, true);
   });
 
-  test('toggleAllowScreenshots toggles the allowness of screenshots and updates settings', () async {
-    when(mockScreenshotUtils.toggleAllowScreenshots(any)).thenAnswer((_) async => true);
+  test(
+    'toggleAllowScreenshots toggles the allowness of screenshots and updates settings',
+    () async {
+      when(
+        mockScreenshotUtils.toggleAllowScreenshots(any),
+      ).thenAnswer((_) async => true);
 
-    final result = await notifier.toggleAllowScreenshots();
+      final result = await notifier.toggleAllowScreenshots();
 
-    expect(result, true);
-    verify(mockScreenshotUtils.disallowScreenshots()).called(1);
-    verify(mockScreenshotUtils.toggleAllowScreenshots(false)).called(1);
-    verify(mockSettingsRepository.saveSettings(any)).called(1);
-    final newSettingsState = await container.read(settingsProvider.future);
-    expect(newSettingsState.allowScreenshots, true);
-    final newAllowScreenshots = (await container.read(settingsProvider.future)).allowScreenshots;
-    expect(newAllowScreenshots, true);
-  });
-  test('toggleAllowScreenshots failed to toggle the allowness of screenshots', () async {
-    when(mockScreenshotUtils.toggleAllowScreenshots(any)).thenAnswer((_) async => false);
+      expect(result, true);
+      verify(mockScreenshotUtils.disallowScreenshots()).called(1);
+      verify(mockScreenshotUtils.toggleAllowScreenshots(false)).called(1);
+      verify(mockSettingsRepository.saveSettings(any)).called(1);
+      final newSettingsState = await container.read(settingsProvider.future);
+      expect(newSettingsState.allowScreenshots, true);
+      final newAllowScreenshots = (await container.read(
+        settingsProvider.future,
+      )).allowScreenshots;
+      expect(newAllowScreenshots, true);
+    },
+  );
+  test(
+    'toggleAllowScreenshots failed to toggle the allowness of screenshots',
+    () async {
+      when(
+        mockScreenshotUtils.toggleAllowScreenshots(any),
+      ).thenAnswer((_) async => false);
 
-    final result = await notifier.toggleAllowScreenshots();
+      final result = await notifier.toggleAllowScreenshots();
 
-    expect(result, false);
-    verify(mockScreenshotUtils.disallowScreenshots()).called(1);
-    verify(mockScreenshotUtils.toggleAllowScreenshots(false)).called(1);
-    verifyNever(mockSettingsRepository.saveSettings(any));
-    final newSettingsState = await container.read(settingsProvider.future);
-    expect(newSettingsState.allowScreenshots, false);
-    final newAllowScreenshots = (await container.read(settingsProvider.future)).allowScreenshots;
-    expect(newAllowScreenshots, false);
-  });
+      expect(result, false);
+      verify(mockScreenshotUtils.disallowScreenshots()).called(1);
+      verify(mockScreenshotUtils.toggleAllowScreenshots(false)).called(1);
+      verifyNever(mockSettingsRepository.saveSettings(any));
+      final newSettingsState = await container.read(settingsProvider.future);
+      expect(newSettingsState.allowScreenshots, false);
+      final newAllowScreenshots = (await container.read(
+        settingsProvider.future,
+      )).allowScreenshots;
+      expect(newAllowScreenshots, false);
+    },
+  );
 }
