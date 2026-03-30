@@ -31,6 +31,7 @@ import '../../../../../model/tokens/token.dart';
 import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/riverpod/riverpod_providers/state_providers/dragging_sortable_provider.dart';
 import '../../../../../utils/utils.dart';
+import '../../../../../widgets/custom_trailing.dart';
 import '../../token_widgets/token_widget.dart';
 import '../token_folder_actions.dart/delete_token_folder_action.dart';
 import '../token_folder_actions.dart/lock_token_folder_action.dart';
@@ -70,7 +71,6 @@ class _TokenFolderExpandableHeaderState
     super.dispose();
   }
 
-  // TODO: FIx expanding after minimizing the app
   @override
   Widget build(BuildContext context) {
     final isExpanded = widget.expandableController.value;
@@ -90,7 +90,7 @@ class _TokenFolderExpandableHeaderState
           LockTokenFolderAction(folder: widget.folder),
         ],
         child: Padding(
-          padding: EdgeInsets.only(left: 8, right: 10),
+          padding: EdgeInsets.only(left: 8),
           child: DragTarget<Token>(
             onWillAcceptWithDetails: (details) {
               if (details.data.folderId != widget.folder.folderId) {
@@ -171,8 +171,7 @@ class _TokenFolderExpandableHeaderState
                           softWrap: false,
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 3),
+                      CustomTrailing(
                         child: TokenFolderExpandableHeaderIcon(
                           showEmptyFolderIcon:
                               (widget.tokens.isEmpty ||

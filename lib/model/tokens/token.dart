@@ -175,20 +175,19 @@ abstract class Token with SortableMixin {
         'Token type is not defined in the json',
       );
     }
-    if (TokenTypes.HOTP.isName(type, caseSensitive: false)) {
+    if (TokenTypes.HOTP.isName(type)) {
       return HOTPToken.fromJson(json);
     }
-    if (TokenTypes.TOTP.isName(type, caseSensitive: false)) {
+    if (TokenTypes.TOTP.isName(type)) {
       return TOTPToken.fromJson(json);
     }
-    if (TokenTypes.PIPUSH.isName(type, caseSensitive: false) ||
-        TokenTypes.PUSH.isName(type, caseSensitive: false)) {
+    if (TokenTypes.PIPUSH.isName(type) || TokenTypes.PUSH.isName(type)) {
       return PushToken.fromJson(json);
     }
-    if (TokenTypes.DAYPASSWORD.isName(type, caseSensitive: false)) {
+    if (TokenTypes.DAYPASSWORD.isName(type)) {
       return DayPasswordToken.fromJson(json);
     }
-    if (TokenTypes.STEAM.isName(type, caseSensitive: false)) {
+    if (TokenTypes.STEAM.isName(type)) {
       return SteamToken.fromJson(json);
     }
 
@@ -213,32 +212,31 @@ abstract class Token with SortableMixin {
         'Token type is not defined in the uri map',
       );
     }
-    if (TokenTypes.HOTP.isName(type, caseSensitive: false)) {
+    if (TokenTypes.HOTP.isName(type)) {
       return HOTPToken.fromOtpAuthMap(
         otpAuthMap,
         additionalData: additionalData,
       );
     }
-    if (TokenTypes.TOTP.isName(type, caseSensitive: false)) {
+    if (TokenTypes.TOTP.isName(type)) {
       return TOTPToken.fromOtpAuthMap(
         otpAuthMap,
         additionalData: additionalData,
       );
     }
-    if (TokenTypes.PIPUSH.isName(type, caseSensitive: false) ||
-        TokenTypes.PUSH.isName(type, caseSensitive: false)) {
+    if (TokenTypes.PIPUSH.isName(type) || TokenTypes.PUSH.isName(type)) {
       return PushToken.fromOtpAuthMap(
         otpAuthMap,
         additionalData: additionalData,
       );
     }
-    if (TokenTypes.DAYPASSWORD.isName(type, caseSensitive: false)) {
+    if (TokenTypes.DAYPASSWORD.isName(type)) {
       return DayPasswordToken.fromOtpAuthMap(
         otpAuthMap,
         additionalData: additionalData,
       );
     }
-    if (TokenTypes.STEAM.isName(type, caseSensitive: false)) {
+    if (TokenTypes.STEAM.isName(type)) {
       return SteamToken.fromOtpAuthMap(
         otpAuthMap,
         additionalData: additionalData,
@@ -315,6 +313,7 @@ abstract class Token with SortableMixin {
       PIN: pin ? PIN_VALUE_TRUE : PIN_VALUE_FALSE,
       OFFLINE: isOffline,
       IMAGE: ?tokenImage,
+      FORCE_BIOMETRIC_OPTION: forceBiometricOption.name,
     };
   }
 
@@ -323,7 +322,7 @@ abstract class Token with SortableMixin {
     ORIGIN: origin,
     SORT_INDEX: sortIndex,
     FOLDER_ID: folderId,
-    IS_HIDDEN: isHidden,
+    // IS_HIDDEN: isHidden, // isHidden is derived from isLocked and pin, so we don't store it directly to avoid confusion
     CHECKED_CONTAINERS: checkedContainer,
     CONTAINER_SERIAL: containerSerial,
   };

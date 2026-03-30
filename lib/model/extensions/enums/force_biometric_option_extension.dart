@@ -18,6 +18,7 @@
  * limitations under the License.
  */
 
+import '../../../utils/logger.dart';
 import '../../../utils/object_validator/object_validators.dart';
 import '../../enums/force_biometric_option.dart';
 
@@ -25,10 +26,14 @@ extension ForceBiometricOptionX on ForceBiometricOption {
   static final validator = DefaultObjectValidator<ForceBiometricOption>(
     defaultValue: ForceBiometricOption.none,
     transformer: (v) {
+      Logger.info('Transforming value to ForceBiometricOption: $v');
       if (v is ForceBiometricOption) return v;
       if (v is String) {
         return ForceBiometricOptionX.fromString(v)!;
       }
+      Logger.warning(
+        'Invalid type for ForceBiometricOption: ${v.runtimeType}, value: $v',
+      );
       throw ArgumentError(
         'Invalid type for ForceBiometricOption: ${v.runtimeType}, value: $v',
       );
@@ -37,10 +42,14 @@ extension ForceBiometricOptionX on ForceBiometricOption {
 
   static ForceBiometricOption? fromString(String? value) {
     if (value == null) return null;
+    // cut "ForceBiometricOption." prefix if present
+    final enumValue = value.contains('.') ? value.split('.').last : value;
     return ForceBiometricOption.values.firstWhere(
-      (e) => e.name.toLowerCase() == value.toLowerCase(),
-      orElse: () =>
-          throw ArgumentError('Invalid ForceBiometricOption value: $value'),
+      (e) => e.name.toLowerCase() == enumValue.toLowerCase(),
+      orElse: () {
+        Logger.warning('Unknown ForceBiometricOption value: $value');
+        throw ArgumentError('Invalid ForceBiometricOption value: $enumValue');
+      },
     );
   }
 }

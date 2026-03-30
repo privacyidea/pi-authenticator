@@ -18,5 +18,7 @@
  * limitations under the License.
  */
 extension EnumExtension on Enum {
-  bool isName(String enumName, {bool caseSensitive = true}) => caseSensitive ? name == enumName : name.toLowerCase() == enumName.toLowerCase();
+  bool isName(String enumName, {bool caseSensitive = false}) => caseSensitive
+      ? name == enumName
+      : name.toLowerCase() == enumName.toLowerCase();
 }

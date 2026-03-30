@@ -48,63 +48,60 @@ class TokenFolderWidget extends ConsumerWidget {
     final TokenFolder? draggingFolder = draggingSortable is TokenFolder
         ? draggingSortable
         : null;
-    return draggingSortable == null
-        ? LongPressDraggable(
-            maxSimultaneousDrags: 1,
-            dragAnchorStrategy: (draggable, context, position) {
-              final textSize = textSizeOf(
-                text: folder.label,
-                style: Theme.of(context).textTheme.titleMedium!,
-                textScaler: MediaQuery.of(context).textScaler,
-                maxLines: 1,
-              );
-              return Offset(
-                max(textSize.width / 2, 30),
-                textSize.height / 2 + 30,
-              );
-            },
-            onDragStarted: () =>
-                ref.read(draggingSortableProvider.notifier).state = folder,
-            onDragCompleted: () {
-              Logger.info('Draggable completed');
-              // Will be handled by the sortableNotifier
-            },
-            onDraggableCanceled: (velocity, offset) {
-              Logger.info('Draggable canceled');
-              ref.read(draggingSortableProvider.notifier).state = null;
-            },
-            data: folder,
-            childWhenDragging: const SizedBox(),
-            feedback: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(Icons.folder, size: 60),
-                Material(
-                  color: Colors.transparent,
-                  child: Text(
-                    folder.label,
-                    style: Theme.of(context).textTheme.titleMedium,
-                    overflow: TextOverflow.fade,
-                    softWrap: false,
-                  ),
-                ),
-              ],
-            ),
-            child: Padding(
-              padding: const EdgeInsets.only(top: 4),
-              child: TokenFolderExpandable(
-                folder: folder,
-                folderTokens: folderTokens,
-                key: Key('TokenFolderExpandable#${folder.folderId}'),
+    return switch (true) {
+      _ when draggingSortable == null => LongPressDraggable(
+        maxSimultaneousDrags: 1,
+        dragAnchorStrategy: (draggable, context, position) {
+          final textSize = textSizeOf(
+            text: folder.label,
+            style: Theme.of(context).textTheme.titleMedium!,
+            textScaler: MediaQuery.of(context).textScaler,
+            maxLines: 1,
+          );
+          return Offset(max(textSize.width / 2, 30), textSize.height / 2 + 30);
+        },
+        onDragStarted: () =>
+            ref.read(draggingSortableProvider.notifier).state = folder,
+        onDragCompleted: () {
+          Logger.info('Draggable completed');
+          // Will be handled by the sortableNotifier
+        },
+        onDraggableCanceled: (velocity, offset) {
+          Logger.info('Draggable canceled');
+          ref.read(draggingSortableProvider.notifier).state = null;
+        },
+        data: folder,
+        childWhenDragging: const SizedBox(),
+        feedback: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.folder, size: 60),
+            Material(
+              color: Colors.transparent,
+              child: Text(
+                folder.label,
+                style: Theme.of(context).textTheme.titleMedium,
+                overflow: TextOverflow.fade,
+                softWrap: false,
               ),
             ),
-          )
-        : (draggingFolder == folder)
-        ? const SizedBox()
-        : TokenFolderExpandable(
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.only(top: 4),
+          child: TokenFolderExpandable(
             folder: folder,
             folderTokens: folderTokens,
-            filter: filter,
-          );
+            key: Key('TokenFolderExpandable#${folder.folderId}'),
+          ),
+        ),
+      ),
+      _ when draggingFolder == folder => const SizedBox(),
+      _ => TokenFolderExpandable(
+        folder: folder,
+        folderTokens: folderTokens,
+        filter: filter,
+      ),
+    };
   }
 }

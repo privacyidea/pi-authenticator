@@ -11,48 +11,48 @@ void _testEnumExtension() {
   group('Enum Extension', () {
     group('isName', () {
       test('caseSensitive', () {
-        expect(_TestEnum.entryOne.isName('entryOne'), true);
-        expect(_TestEnum.entryOne.isName('entryone'), false);
-        expect(_TestEnum.entryOne.isName('entryTwo'), false);
-        expect(_TestEnum.entryTwo.isName('entryTwo'), true);
-        expect(_TestEnum.entryTwo.isName('entrytwo'), false);
-        expect(_TestEnum.entryTwo.isName('entryThree'), false);
-        expect(_TestEnum.entryThree.isName('entryThree'), true);
-        expect(_TestEnum.entryThree.isName('entrythree'), false);
+        expect(
+          _TestEnum.entryOne.isName('entryOne', caseSensitive: true),
+          true,
+        );
+        expect(
+          _TestEnum.entryOne.isName('entryone', caseSensitive: true),
+          false,
+        );
+        expect(
+          _TestEnum.entryOne.isName('entryTwo', caseSensitive: true),
+          false,
+        );
+        expect(
+          _TestEnum.entryTwo.isName('entryTwo', caseSensitive: true),
+          true,
+        );
+        expect(
+          _TestEnum.entryTwo.isName('entrytwo', caseSensitive: true),
+          false,
+        );
+        expect(
+          _TestEnum.entryTwo.isName('entryThree', caseSensitive: true),
+          false,
+        );
+        expect(
+          _TestEnum.entryThree.isName('entryThree', caseSensitive: true),
+          true,
+        );
+        expect(
+          _TestEnum.entryThree.isName('entrythree', caseSensitive: true),
+          false,
+        );
       });
       test('caseInsensitive', () {
-        expect(
-          _TestEnum.entryOne.isName('entryone', caseSensitive: false),
-          true,
-        );
-        expect(
-          _TestEnum.entryOne.isName('ENTRYONE', caseSensitive: false),
-          true,
-        );
-        expect(
-          _TestEnum.entryOne.isName('entryTwo', caseSensitive: false),
-          false,
-        );
-        expect(
-          _TestEnum.entryTwo.isName('entrytwo', caseSensitive: false),
-          true,
-        );
-        expect(
-          _TestEnum.entryTwo.isName('ENTRYTWO', caseSensitive: false),
-          true,
-        );
-        expect(
-          _TestEnum.entryTwo.isName('entryThree', caseSensitive: false),
-          false,
-        );
-        expect(
-          _TestEnum.entryThree.isName('entrythree', caseSensitive: false),
-          true,
-        );
-        expect(
-          _TestEnum.entryThree.isName('ENTRYTHREE', caseSensitive: false),
-          true,
-        );
+        expect(_TestEnum.entryOne.isName('entryone'), true);
+        expect(_TestEnum.entryOne.isName('ENTRYONE'), true);
+        expect(_TestEnum.entryOne.isName('entryTwo'), false);
+        expect(_TestEnum.entryTwo.isName('entrytwo'), true);
+        expect(_TestEnum.entryTwo.isName('ENTRYTWO'), true);
+        expect(_TestEnum.entryTwo.isName('entryThree'), false);
+        expect(_TestEnum.entryThree.isName('entrythree'), true);
+        expect(_TestEnum.entryThree.isName('ENTRYTHREE'), true);
       });
     });
   });
