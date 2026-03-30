@@ -25,18 +25,30 @@ import 'scheme_processor_interface.dart';
 class HomeWidgetProcessor implements SchemeProcessor {
   const HomeWidgetProcessor();
 
-  static final Map<String, Future<List<ProcessorResult<dynamic>>?> Function(Uri)> _processors = {
+  static final Map<
+    String,
+    Future<List<ProcessorResult<dynamic>>?> Function(Uri)
+  >
+  _processors = {
     'show': _showProcessor,
     'copy': _copyProcessor,
     'action': _actionProcessor,
   };
 
   @override
-  Future<List<ProcessorResult<dynamic>>?> processUri(Uri uri, {bool fromInit = false}) async {
+  Future<List<ProcessorResult<dynamic>>?> processUri(
+    Uri uri, {
+    bool fromInit = false,
+  }) async {
     if (supportedSchemes.contains(uri.scheme) == false) return [];
     final processor = _processors[uri.host];
     if (processor == null) {
-      return [ProcessorResult.failed((l) => l.noProcessorFoundForHost(uri.host), resultHandlerType: null)];
+      return [
+        ProcessorResult.failed(
+          (l) => l.noProcessorFoundForHost(uri.host),
+          resultHandlerType: null,
+        ),
+      ];
     }
     return processor.call(uri);
   }
@@ -44,40 +56,79 @@ class HomeWidgetProcessor implements SchemeProcessor {
   @override
   Set<String> get supportedSchemes => {'homewidget'};
 
-  static Future<List<ProcessorResult<dynamic>>?> _showProcessor(Uri uri, {bool fromInit = false}) async {
+  static Future<List<ProcessorResult<dynamic>>?> _showProcessor(
+    Uri uri, {
+    bool fromInit = false,
+  }) async {
     Logger.warning('HomeWidgetProcessor: Processing uri show: $uri');
     if (uri.host != 'show') {
-      return [ProcessorResult.failed((l) => l.invalidHostForScheme(uri.host, uri.scheme), resultHandlerType: null)];
+      return [
+        ProcessorResult.failed(
+          (l) => l.invalidHostForScheme(uri.host, uri.scheme),
+          resultHandlerType: null,
+        ),
+      ];
     }
     final widgetId = uri.queryParameters['widgetId'];
     if (widgetId == null) {
-      return [ProcessorResult.failed((l) => l.missingWidgetId, resultHandlerType: null)];
+      return [
+        ProcessorResult.failed(
+          (l) => l.missingWidgetId,
+          resultHandlerType: null,
+        ),
+      ];
     }
     HomeWidgetUtils().showOtp(widgetId);
     return null;
   }
 
-  static Future<List<ProcessorResult<dynamic>>?> _copyProcessor(Uri uri, {bool fromInit = false}) async {
+  static Future<List<ProcessorResult<dynamic>>?> _copyProcessor(
+    Uri uri, {
+    bool fromInit = false,
+  }) async {
     Logger.warning('HomeWidgetProcessor: Processing uri copy: $uri');
     if (uri.host != 'copy') {
-      return [ProcessorResult.failed((l) => l.invalidHostForScheme(uri.host, uri.scheme), resultHandlerType: null)];
+      return [
+        ProcessorResult.failed(
+          (l) => l.invalidHostForScheme(uri.host, uri.scheme),
+          resultHandlerType: null,
+        ),
+      ];
     }
     final widgetId = uri.queryParameters['widgetId'];
     if (widgetId == null) {
-      return [ProcessorResult.failed((l) => l.missingWidgetId, resultHandlerType: null)];
+      return [
+        ProcessorResult.failed(
+          (l) => l.missingWidgetId,
+          resultHandlerType: null,
+        ),
+      ];
     }
     HomeWidgetUtils().copyOtp(widgetId);
     return null;
   }
 
-  static Future<List<ProcessorResult<dynamic>>?> _actionProcessor(Uri uri, {bool fromInit = false}) async {
+  static Future<List<ProcessorResult<dynamic>>?> _actionProcessor(
+    Uri uri, {
+    bool fromInit = false,
+  }) async {
     Logger.warning('HomeWidgetProcessor: Processing uri action: $uri');
     if (uri.host != 'action') {
-      return [ProcessorResult.failed((l) => l.invalidHostForScheme(uri.host, uri.scheme), resultHandlerType: null)];
+      return [
+        ProcessorResult.failed(
+          (l) => l.invalidHostForScheme(uri.host, uri.scheme),
+          resultHandlerType: null,
+        ),
+      ];
     }
     final widgetId = uri.queryParameters['widgetId'];
     if (widgetId == null) {
-      return [ProcessorResult.failed((l) => l.missingWidgetId, resultHandlerType: null)];
+      return [
+        ProcessorResult.failed(
+          (l) => l.missingWidgetId,
+          resultHandlerType: null,
+        ),
+      ];
     }
     HomeWidgetUtils().performAction(widgetId);
     return null;

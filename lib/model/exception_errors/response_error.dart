@@ -25,20 +25,32 @@ class ResponseError {
   final int _statusCode;
   int get statusCode => _statusCode;
   final String _message;
-  String get message => _message.substring(0, _message.length > 100 ? 100 : _message.length);
+  String get message =>
+      _message.substring(0, _message.length > 100 ? 100 : _message.length);
   String get fullMessage => _message;
 
   const ResponseError._(int statusCode, String message)
-      : _statusCode = statusCode,
-        _message = message;
-//<title>405 Method Not Allowed</title>
-//<title>Method Not Allowed</title>
+    : _statusCode = statusCode,
+      _message = message;
+  //<title>405 Method Not Allowed</title>
+  //<title>Method Not Allowed</title>
   factory ResponseError(Response response) {
-    assert(HttpStatusChecker.isError(response.statusCode), 'Status code of an response error should not be 200');
+    assert(
+      HttpStatusChecker.isError(response.statusCode),
+      'Status code of an response error should not be 200',
+    );
     final regexpCode = RegExp(r'<title>(\d{3})');
-    final regexpMessage = RegExp(r'(?<=(<title>\d* ?))[A-Za-z][A-Za-z\s]*(?=</title>)');
-    final message = regexpMessage.firstMatch(response.body)?.group(0) ?? response.body;
-    final statusCode = int.tryParse(regexpCode.firstMatch(response.body)?.group(1) ?? response.statusCode.toString()) ?? response.statusCode;
+    final regexpMessage = RegExp(
+      r'(?<=(<title>\d* ?))[A-Za-z][A-Za-z\s]*(?=</title>)',
+    );
+    final message =
+        regexpMessage.firstMatch(response.body)?.group(0) ?? response.body;
+    final statusCode =
+        int.tryParse(
+          regexpCode.firstMatch(response.body)?.group(1) ??
+              response.statusCode.toString(),
+        ) ??
+        response.statusCode;
     return ResponseError._(statusCode, message);
   }
 

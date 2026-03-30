@@ -20,16 +20,16 @@ class HomeWidgetOtpBuilder extends FlutterHomeWidgetBuilder<HomeWidgetOtp> {
     required super.homeWidgetKey,
     required super.utils,
   }) : super(
-          formWidget: (key, theme, logicalSize, _) => HomeWidgetOtp(
-            key: key,
-            theme: theme,
-            logicalSize: logicalSize,
-            otp: otp,
-            issuer: issuer ?? '',
-            label: label ?? '',
-            utils: utils,
-          ),
-        );
+         formWidget: (key, theme, logicalSize, _) => HomeWidgetOtp(
+           key: key,
+           theme: theme,
+           logicalSize: logicalSize,
+           otp: otp,
+           issuer: issuer ?? '',
+           label: label ?? '',
+           utils: utils,
+         ),
+       );
 }
 
 class HomeWidgetOtp extends FlutterHomeWidgetBase {
@@ -48,7 +48,11 @@ class HomeWidgetOtp extends FlutterHomeWidgetBase {
 
   @override
   Widget build(BuildContext context) {
-    String text = insertCharAt(otp, otp.length > 10 ? '\n' : ' ', (otp.length / 2).ceil());
+    String text = insertCharAt(
+      otp,
+      otp.length > 10 ? '\n' : ' ',
+      (otp.length / 2).ceil(),
+    );
     return SizedBox(
       width: logicalSize.width,
       height: logicalSize.height,

@@ -41,7 +41,11 @@ class ContainerView extends ConsumerView {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final containerList = ref.watch(tokenContainerProvider).whenOrNull(data: (data) => data.containerList) ?? [];
+    final containerList =
+        ref
+            .watch(tokenContainerProvider)
+            .whenOrNull(data: (data) => data.containerList) ??
+        [];
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -58,7 +62,8 @@ class ContainerView extends ConsumerView {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               for (var container in containerList) ...[
-                if (containerList.indexOf(container) != 0) const DefaultDivider(),
+                if (containerList.indexOf(container) != 0)
+                  const DefaultDivider(),
                 ContainerWidget(container: container),
               ],
             ],

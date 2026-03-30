@@ -54,7 +54,7 @@ class NoTokenScreen extends StatelessWidget {
               style: Theme.of(context).textTheme.bodyMedium,
               overflow: TextOverflow.fade,
               softWrap: false,
-            )
+            ),
           ],
         ),
       ),

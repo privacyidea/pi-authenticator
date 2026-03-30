@@ -14,16 +14,18 @@ class _SortableTestClass with SortableMixin {
 
   @override
   SortableMixin copyWith({int? sortIndex, String? name}) => _SortableTestClass(
-        sortIndex: sortIndex ?? this.sortIndex,
-        name: name ?? this.name,
-      );
+    sortIndex: sortIndex ?? this.sortIndex,
+    name: name ?? this.name,
+  );
   @override
-  operator ==(Object other) => other is _SortableTestClass && other.name == name;
+  operator ==(Object other) =>
+      other is _SortableTestClass && other.name == name;
   @override
   int get hashCode => name.hashCode;
 
   @override
-  String toString() => "_SortableTestClass(sortIndex: $sortIndex, name: '$name')";
+  String toString() =>
+      "_SortableTestClass(sortIndex: $sortIndex, name: '$name')";
 }
 
 void _testSortableList() {
@@ -151,7 +153,11 @@ void _testSortableList() {
           _SortableTestClass(sortIndex: 4, name: '4'),
         ];
         // Act
-        final result = list.moveBetween(moveAfter: null, movedItem: movedItem, moveBefore: list[1]);
+        final result = list.moveBetween(
+          moveAfter: null,
+          movedItem: movedItem,
+          moveBefore: list[1],
+        );
         // Assert
         expect(result, [
           _SortableTestClass(sortIndex: 0, name: '2'),
@@ -176,7 +182,11 @@ void _testSortableList() {
           _SortableTestClass(sortIndex: 8, name: '8'),
         ];
         // Act
-        final result = list.moveBetween(moveAfter: moveAfter, movedItem: movedItem, moveBefore: moveBefore);
+        final result = list.moveBetween(
+          moveAfter: moveAfter,
+          movedItem: movedItem,
+          moveBefore: moveBefore,
+        );
         // Assert
         expect(result, [
           _SortableTestClass(sortIndex: 0, name: '1'),

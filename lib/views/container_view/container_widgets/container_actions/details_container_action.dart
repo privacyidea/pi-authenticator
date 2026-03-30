@@ -31,20 +31,27 @@ import '../dialogs/details_container_action_dialog.dart';
 class DetailsContainerAction extends ConsumerSlideableAction {
   final TokenContainer container;
 
-  const DetailsContainerAction({
-    required this.container,
-    super.key,
-  });
+  const DetailsContainerAction({required this.container, super.key});
 
   void _showDetailsContainerDialog(BuildContext context) {
-    showDialog(useRootNavigator: false, context: context, builder: (_) => DetailsContainerDialog(context, container: container));
+    showDialog(
+      useRootNavigator: false,
+      context: context,
+      builder: (_) => DetailsContainerDialog(context, container: container),
+    );
   }
 
   @override
-  CustomSlidableAction build(BuildContext context, WidgetRef ref) => CustomSlidableAction(
-        onPressed: (BuildContext context) => _showDetailsContainerDialog(context),
-        backgroundColor: Theme.of(context).extension<TokenTileTheme>()!.editColor,
-        foregroundColor: Theme.of(context).extension<TokenTileTheme>()!.actionForegroundColor,
+  CustomSlidableAction build(BuildContext context, WidgetRef ref) =>
+      CustomSlidableAction(
+        onPressed: (BuildContext context) =>
+            _showDetailsContainerDialog(context),
+        backgroundColor: Theme.of(
+          context,
+        ).extension<TokenTileTheme>()!.editColor,
+        foregroundColor: Theme.of(
+          context,
+        ).extension<TokenTileTheme>()!.actionForegroundColor,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,

@@ -93,7 +93,12 @@ class _TokenWidgetBaseState extends ConsumerState<TokenWidgetBase> {
     if (widget.token.containerSerial == null) {
       deletationDisabled = Future.value(false);
     } else {
-      final selector = tokenContainerProvider.selectAsync((state) => state.containerOf(widget.token.containerSerial!)?.policies.disabledTokenDeletion);
+      final selector = tokenContainerProvider.selectAsync(
+        (state) => state
+            .containerOf(widget.token.containerSerial!)
+            ?.policies
+            .disabledTokenDeletion,
+      );
       deletationDisabled = ref.watch(selector);
     }
 
@@ -112,21 +117,26 @@ class _TokenWidgetBaseState extends ConsumerState<TokenWidgetBase> {
             isEnabled: !tokenDeletationDisabled,
             key: Key('${widget.token.id}deleteAction'),
           ),
-      widget.editAction ?? DefaultEditAction(token: widget.token, key: Key('${widget.token.id}editAction')),
+      widget.editAction ??
+          DefaultEditAction(
+            token: widget.token,
+            key: Key('${widget.token.id}editAction'),
+          ),
     ];
     if ((widget.token.pin == false)) {
       actions.add(
-        widget.lockAction ?? DefaultLockAction(token: widget.token, key: Key('${widget.token.id}lockAction')),
+        widget.lockAction ??
+            DefaultLockAction(
+              token: widget.token,
+              key: Key('${widget.token.id}lockAction'),
+            ),
       );
     }
 
     if (draggingSortable == widget.token) return const SizedBox();
     final child = Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: DefaultInkWell(
-        onTap: () {},
-        child: widget.tile,
-      ),
+      child: DefaultInkWell(onTap: () {}, child: widget.tile),
     );
 
     if (draggingSortable != null) {
@@ -146,7 +156,8 @@ class _TokenWidgetBaseState extends ConsumerState<TokenWidgetBase> {
       stack: widget.stack,
       child: LongPressDraggable(
         maxSimultaneousDrags: 1,
-        onDragStarted: () => ref.read(draggingSortableProvider.notifier).state = widget.token,
+        onDragStarted: () =>
+            ref.read(draggingSortableProvider.notifier).state = widget.token,
         onDragCompleted: () {
           Logger.info('Draggable completed');
           // Will be handled by the sortableNotifier
@@ -155,34 +166,36 @@ class _TokenWidgetBaseState extends ConsumerState<TokenWidgetBase> {
           Logger.info('Draggable canceled');
           globalRef?.read(draggingSortableProvider.notifier).state = null;
         },
-        dragAnchorStrategy: (Draggable<Object> d, BuildContext context, Offset point) {
-          final textSize = textSizeOf(
-            text: widget.token.label,
-            style: Theme.of(context).textTheme.titleMedium!,
-            textScaler: MediaQuery.of(context).textScaler,
-            maxLines: 1,
-          );
-          return Offset(max(textSize.width / 2, 30), textSize.height / 2 + 30);
-        },
+        dragAnchorStrategy:
+            (Draggable<Object> d, BuildContext context, Offset point) {
+              final textSize = textSizeOf(
+                text: widget.token.label,
+                style: Theme.of(context).textTheme.titleMedium!,
+                textScaler: MediaQuery.of(context).textScaler,
+                maxLines: 1,
+              );
+              return Offset(
+                max(textSize.width / 2, 30),
+                textSize.height / 2 + 30,
+              );
+            },
         feedback: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(widget.dragIcon, size: 60),
             Material(
-                color: Colors.transparent,
-                child: Text(
-                  widget.token.label,
-                  style: Theme.of(context).textTheme.titleMedium,
-                  overflow: TextOverflow.fade,
-                  softWrap: false,
-                )),
+              color: Colors.transparent,
+              child: Text(
+                widget.token.label,
+                style: Theme.of(context).textTheme.titleMedium,
+                overflow: TextOverflow.fade,
+                softWrap: false,
+              ),
+            ),
           ],
         ),
         data: widget.token,
-        child: Material(
-          color: Colors.transparent,
-          child: child,
-        ),
+        child: Material(color: Colors.transparent, child: child),
       ),
     );
   }

@@ -29,16 +29,12 @@ class HOTPTokenWidget extends TokenWidget {
   final HOTPToken token;
   final bool withDivider;
 
-  const HOTPTokenWidget(
-    this.token, {
-    this.withDivider = true,
-    super.key,
-  });
+  const HOTPTokenWidget(this.token, {this.withDivider = true, super.key});
   @override
   TokenWidgetBase build(BuildContext context) => TokenWidgetBase(
-        token: token,
-        tile: HOTPTokenWidgetTile(token, key: ValueKey(token.id)),
-        dragIcon: Icons.replay,
-        editAction: EditHOTPTokenAction(token: token),
-      );
+    token: token,
+    tile: HOTPTokenWidgetTile(token, key: ValueKey(token.id)),
+    dragIcon: Icons.replay,
+    editAction: EditHOTPTokenAction(token: token),
+  );
 }

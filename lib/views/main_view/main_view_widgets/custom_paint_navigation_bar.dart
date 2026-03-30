@@ -42,9 +42,13 @@ class CustomPaintNavigationBar extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final Color appBarColor =
-        Theme.of(buildContext).navigationBarTheme.backgroundColor ?? Theme.of(buildContext).appBarTheme.backgroundColor ?? Theme.of(buildContext).primaryColor;
+        Theme.of(buildContext).navigationBarTheme.backgroundColor ??
+        Theme.of(buildContext).appBarTheme.backgroundColor ??
+        Theme.of(buildContext).primaryColor;
     final Color shadowColor =
-        Theme.of(buildContext).navigationBarTheme.shadowColor ?? Theme.of(buildContext).appBarTheme.shadowColor ?? Theme.of(buildContext).shadowColor;
+        Theme.of(buildContext).navigationBarTheme.shadowColor ??
+        Theme.of(buildContext).appBarTheme.shadowColor ??
+        Theme.of(buildContext).shadowColor;
     final elevation = Theme.of(buildContext).navigationBarTheme.elevation ?? 3;
     final double radiusPx = min(40, size.height * 0.8);
 
@@ -56,11 +60,35 @@ class CustomPaintNavigationBar extends CustomPainter {
     // Path for the main navigation bar shape (including the bottom)
     Path mainPath = Path()
       ..moveTo(size.width * 0.0, size.height * 0.3) // point 1
-      ..quadraticBezierTo(size.width * 0.20, size.height * 0.0, size.width * 0.5 - radiusPx - 15, size.height * 0.0) // point 2
-      ..quadraticBezierTo(size.width * 0.5 - radiusPx, size.height * 0.0, size.width * 0.5 - radiusPx, size.height * 0.2) // point 3
-      ..arcToPoint(Offset(size.width * 0.5 + radiusPx, size.height * 0.2), radius: Radius.circular(radiusPx), clockwise: false) // point 4
-      ..quadraticBezierTo(size.width * 0.5 + radiusPx, size.height * 0.0, size.width * 0.5 + radiusPx + 15, size.height * 0.0) // point 5
-      ..quadraticBezierTo(size.width * 0.80, 0, size.width, size.height * 0.3) // point 6
+      ..quadraticBezierTo(
+        size.width * 0.20,
+        size.height * 0.0,
+        size.width * 0.5 - radiusPx - 15,
+        size.height * 0.0,
+      ) // point 2
+      ..quadraticBezierTo(
+        size.width * 0.5 - radiusPx,
+        size.height * 0.0,
+        size.width * 0.5 - radiusPx,
+        size.height * 0.2,
+      ) // point 3
+      ..arcToPoint(
+        Offset(size.width * 0.5 + radiusPx, size.height * 0.2),
+        radius: Radius.circular(radiusPx),
+        clockwise: false,
+      ) // point 4
+      ..quadraticBezierTo(
+        size.width * 0.5 + radiusPx,
+        size.height * 0.0,
+        size.width * 0.5 + radiusPx + 15,
+        size.height * 0.0,
+      ) // point 5
+      ..quadraticBezierTo(
+        size.width * 0.80,
+        0,
+        size.width,
+        size.height * 0.3,
+      ) // point 6
       ..lineTo(size.width * 1.0, size.height * 1.0) // point 7
       ..lineTo(size.width * 0.0, size.height * 1.0) // point 8
       ..close(); // point 1
@@ -68,11 +96,35 @@ class CustomPaintNavigationBar extends CustomPainter {
     // Path for the shadow (only the top curved part)
     Path shadowPath = Path()
       ..moveTo(size.width * 0.0, size.height * 0.3) // point 1
-      ..quadraticBezierTo(size.width * 0.20, size.height * 0.0, size.width * 0.5 - radiusPx - 15, size.height * 0.0) // point 2
-      ..quadraticBezierTo(size.width * 0.5 - radiusPx, size.height * 0.0, size.width * 0.5 - radiusPx, size.height * 0.2) // point 3
-      ..arcToPoint(Offset(size.width * 0.5 + radiusPx, size.height * 0.2), radius: Radius.circular(radiusPx), clockwise: false) // point 4
-      ..quadraticBezierTo(size.width * 0.5 + radiusPx, size.height * 0.0, size.width * 0.5 + radiusPx + 15, size.height * 0.0) // point 5
-      ..quadraticBezierTo(size.width * 0.80, 0, size.width, size.height * 0.3) // point 6
+      ..quadraticBezierTo(
+        size.width * 0.20,
+        size.height * 0.0,
+        size.width * 0.5 - radiusPx - 15,
+        size.height * 0.0,
+      ) // point 2
+      ..quadraticBezierTo(
+        size.width * 0.5 - radiusPx,
+        size.height * 0.0,
+        size.width * 0.5 - radiusPx,
+        size.height * 0.2,
+      ) // point 3
+      ..arcToPoint(
+        Offset(size.width * 0.5 + radiusPx, size.height * 0.2),
+        radius: Radius.circular(radiusPx),
+        clockwise: false,
+      ) // point 4
+      ..quadraticBezierTo(
+        size.width * 0.5 + radiusPx,
+        size.height * 0.0,
+        size.width * 0.5 + radiusPx + 15,
+        size.height * 0.0,
+      ) // point 5
+      ..quadraticBezierTo(
+        size.width * 0.80,
+        0,
+        size.width,
+        size.height * 0.3,
+      ) // point 6
       //Skip the bottomline but dont cross the middle curve gap.  // below point 3
       ..lineTo(size.width * 0.5, size.height * 0.9) // point 3
       ..close();

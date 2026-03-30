@@ -45,7 +45,9 @@ class TokenFolderWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final draggingSortable = ref.watch(draggingSortableProvider);
-    final TokenFolder? draggingFolder = draggingSortable is TokenFolder ? draggingSortable : null;
+    final TokenFolder? draggingFolder = draggingSortable is TokenFolder
+        ? draggingSortable
+        : null;
     return draggingSortable == null
         ? LongPressDraggable(
             maxSimultaneousDrags: 1,
@@ -56,9 +58,13 @@ class TokenFolderWidget extends ConsumerWidget {
                 textScaler: MediaQuery.of(context).textScaler,
                 maxLines: 1,
               );
-              return Offset(max(textSize.width / 2, 30), textSize.height / 2 + 30);
+              return Offset(
+                max(textSize.width / 2, 30),
+                textSize.height / 2 + 30,
+              );
             },
-            onDragStarted: () => ref.read(draggingSortableProvider.notifier).state = folder,
+            onDragStarted: () =>
+                ref.read(draggingSortableProvider.notifier).state = folder,
             onDragCompleted: () {
               Logger.info('Draggable completed');
               // Will be handled by the sortableNotifier
@@ -94,11 +100,11 @@ class TokenFolderWidget extends ConsumerWidget {
             ),
           )
         : (draggingFolder == folder)
-            ? const SizedBox()
-            : TokenFolderExpandable(
-                folder: folder,
-                folderTokens: folderTokens,
-                filter: filter,
-              );
+        ? const SizedBox()
+        : TokenFolderExpandable(
+            folder: folder,
+            folderTokens: folderTokens,
+            filter: filter,
+          );
   }
 }

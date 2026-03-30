@@ -76,19 +76,19 @@ class _TokenImageState extends State<TokenImage> {
   }
 
   Image _createImage(Uint8List uint8List) => Image.memory(
-        uint8List,
-        fit: BoxFit.fitHeight,
-        errorBuilder: (context, error, stackTrace) {
-          if (!mounted) return const SizedBox();
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (!mounted) return;
-            setState(() {
-              hasImage = false;
-            });
-          });
-          return const SizedBox();
-        },
-      );
+    uint8List,
+    fit: BoxFit.fitHeight,
+    errorBuilder: (context, error, stackTrace) {
+      if (!mounted) return const SizedBox();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        setState(() {
+          hasImage = false;
+        });
+      });
+      return const SizedBox();
+    },
+  );
 
   @override
   void initState() {
@@ -125,11 +125,13 @@ class _TokenImageState extends State<TokenImage> {
           padding: const EdgeInsets.only(left: 4, top: 2, right: 4),
           child: SizedBox(
             height: 32,
-            child: tokenImage ??
+            child:
+                tokenImage ??
                 const SizedBox(
                   width: 32,
                   child: CircularProgressIndicator.adaptive(),
                 ),
-          ))
+          ),
+        )
       : const SizedBox();
 }

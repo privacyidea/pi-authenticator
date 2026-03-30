@@ -49,10 +49,20 @@ class ContainerWidget extends ConsumerWidget {
             groupTag: groupTag,
             identifier: container.serial,
             actions: [
-              DeleteContainerAction(container: container, key: Key('${container.serial}-DeleteContainerAction')),
-              DetailsContainerAction(container: container, key: Key('${container.serial}-EditContainerAction')),
-              if (container is TokenContainerFinalized && container.policies.rolloverAllowed)
-                TransferContainerAction(container: container as TokenContainerFinalized, key: Key('${container.serial}-TransferContainerAction')),
+              DeleteContainerAction(
+                container: container,
+                key: Key('${container.serial}-DeleteContainerAction'),
+              ),
+              DetailsContainerAction(
+                container: container,
+                key: Key('${container.serial}-EditContainerAction'),
+              ),
+              if (container is TokenContainerFinalized &&
+                  container.policies.rolloverAllowed)
+                TransferContainerAction(
+                  container: container as TokenContainerFinalized,
+                  key: Key('${container.serial}-TransferContainerAction'),
+                ),
             ],
             stack: stack,
             child: Padding(

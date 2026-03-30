@@ -42,30 +42,31 @@ class TokenFolderExpandableBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.fromLTRB(14, 0, 14, 4),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            for (var i = 0; i < tokens.length; i++) ...[
-              if (draggingSortable != tokens[i] && (i != 0 || draggingSortable is Token))
-                isFilterd
-                    ? const DefaultDivider()
-                    : DragTargetDivider<Token>(
-                        dependingFolder: folder,
-                        previousSortable: (i - 1) < 0 ? null : tokens[i - 1],
-                        nextSortable: tokens[i],
-                      ),
-              TokenWidgetBuilder.fromToken(token: tokens[i]),
-            ],
-            if (tokens.isNotEmpty && draggingSortable is Token)
-              isFilterd
-                  ? const DefaultDivider()
-                  : DragTargetDivider<Token>(
-                      dependingFolder: folder,
-                      previousSortable: tokens.last,
-                      nextSortable: null,
-                    ),
-          ],
-        ),
-      );
+    padding: const EdgeInsets.fromLTRB(14, 0, 14, 4),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        for (var i = 0; i < tokens.length; i++) ...[
+          if (draggingSortable != tokens[i] &&
+              (i != 0 || draggingSortable is Token))
+            isFilterd
+                ? const DefaultDivider()
+                : DragTargetDivider<Token>(
+                    dependingFolder: folder,
+                    previousSortable: (i - 1) < 0 ? null : tokens[i - 1],
+                    nextSortable: tokens[i],
+                  ),
+          TokenWidgetBuilder.fromToken(token: tokens[i]),
+        ],
+        if (tokens.isNotEmpty && draggingSortable is Token)
+          isFilterd
+              ? const DefaultDivider()
+              : DragTargetDivider<Token>(
+                  dependingFolder: folder,
+                  previousSortable: tokens.last,
+                  nextSortable: null,
+                ),
+      ],
+    ),
+  );
 }

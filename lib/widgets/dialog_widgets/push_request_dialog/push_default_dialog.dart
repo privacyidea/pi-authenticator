@@ -46,7 +46,6 @@ class PushDefaultDialog extends ConsumerWidget with PushDialogMixin {
           PushRequestBaseInfo(pushRequest: pushRequest),
           const SizedBox(height: 24),
           PushActionButton(
-            intent: DialogActionIntent.confirm,
             onPressed: () => _handleAccept(context, ref),
             child: Text(l10n.accept),
           ),

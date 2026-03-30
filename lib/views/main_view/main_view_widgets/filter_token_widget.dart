@@ -29,7 +29,8 @@ class SearchTokenWidget extends StatelessWidget {
   const SearchTokenWidget({required this.searchActive, super.key});
 
   @override
-  Widget build(BuildContext context) => searchActive ? const SearchInputField() : const SizedBox();
+  Widget build(BuildContext context) =>
+      searchActive ? const SearchInputField() : const SizedBox();
 }
 
 class SearchInputField extends ConsumerStatefulWidget {
@@ -78,16 +79,20 @@ class _SearchInputFieldState extends ConsumerState<SearchInputField> {
 
   @override
   Widget build(BuildContext context) => TextField(
-        controller: _controller,
-        focusNode: _focusNode,
-        style: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface),
-        decoration: InputDecoration(
-          hintText: 'Label / Serial / Issuer / Type',
-          hintStyle: Theme.of(context).textTheme.titleMedium?.copyWith(color: Theme.of(context).colorScheme.onSurface),
-          border: InputBorder.none,
-          focusedBorder: InputBorder.none,
-          enabledBorder: InputBorder.none,
-          prefixIcon: Icon(Icons.search),
-        ),
-      );
+    controller: _controller,
+    focusNode: _focusNode,
+    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+      color: Theme.of(context).colorScheme.onSurface,
+    ),
+    decoration: InputDecoration(
+      hintText: 'Label / Serial / Issuer / Type',
+      hintStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
+        color: Theme.of(context).colorScheme.onSurface,
+      ),
+      border: InputBorder.none,
+      focusedBorder: InputBorder.none,
+      enabledBorder: InputBorder.none,
+      prefixIcon: Icon(Icons.search),
+    ),
+  );
 }

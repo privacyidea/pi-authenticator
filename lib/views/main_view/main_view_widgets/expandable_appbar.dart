@@ -112,13 +112,18 @@ class _ExpandableAppBarState extends State<ExpandableAppBar> {
               color: Theme.of(context).canvasColor,
               boxShadow: [
                 BoxShadow(
-                  color: searchActive && expandTarget != minExpansion ? Theme.of(context).shadowColor : Colors.transparent,
+                  color: searchActive && expandTarget != minExpansion
+                      ? Theme.of(context).shadowColor
+                      : Colors.transparent,
                   blurRadius: 2,
                   offset: const Offset(0, 2),
                 ),
               ],
             ),
-            duration: Duration(milliseconds: 250 * (currentExpansion - expandTarget).abs() ~/ maxExpansion),
+            duration: Duration(
+              milliseconds:
+                  250 * (currentExpansion - expandTarget).abs() ~/ maxExpansion,
+            ),
             height: expandTarget,
             onEnd: () {
               if (!mounted) return;
@@ -141,7 +146,8 @@ class _ExpandableAppBarState extends State<ExpandableAppBar> {
                   child: SingleChildScrollView(
                     physics: const NeverScrollableScrollPhysics(),
                     child: SearchTokenWidget(
-                      searchActive: expandTarget != minExpansion || searchActive,
+                      searchActive:
+                          expandTarget != minExpansion || searchActive,
                     ),
                   ),
                 ),

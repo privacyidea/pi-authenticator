@@ -37,7 +37,6 @@ import '../../../utils/lock_auth.dart';
 import '../../../utils/logger.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/push_request_provider.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
-import '../../../utils/utils.dart';
 import '../../../utils/view_utils.dart';
 import '../default_dialog.dart';
 import 'widgets/push_decline_confirm_dialog.dart';

@@ -62,7 +62,10 @@ class WidgetImage {
   }
 
   @override
-  bool operator ==(Object other) => other is WidgetImage && other.imageFormat == imageFormat && other.imageData == imageData;
+  bool operator ==(Object other) =>
+      other is WidgetImage &&
+      other.imageFormat == imageFormat &&
+      other.imageData == imageData;
   @override
   int get hashCode => Object.hash(runtimeType, imageFormat, imageData);
 
@@ -77,7 +80,10 @@ class WidgetImage {
     try {
       return imageFormat.buildImageWidget(imageData);
     } catch (e) {
-      Logger.error('Image is not an ${imageFormat.name}, or the image data is corrupted.', error: e);
+      Logger.error(
+        'Image is not an ${imageFormat.name}, or the image data is corrupted.',
+        error: e,
+      );
       rethrow;
     }
   }
@@ -93,12 +99,16 @@ class WidgetImage {
     try {
       return await imageFormat.getImageSize(imageData) ?? Size.zero;
     } catch (e) {
-      Logger.error('Image is not an ${imageFormat.name}, or the image data is corrupted.', error: e);
+      Logger.error(
+        'Image is not an ${imageFormat.name}, or the image data is corrupted.',
+        error: e,
+      );
       rethrow;
     }
   }
 
-  factory WidgetImage.fromJson(Map<String, dynamic> json) => _$WidgetImageFromJson(json);
+  factory WidgetImage.fromJson(Map<String, dynamic> json) =>
+      _$WidgetImageFromJson(json);
   Map<String, dynamic> toJson() => _$WidgetImageToJson(this);
 
   XFile? toXFile() {
@@ -109,10 +119,9 @@ class WidgetImage {
     String? fileName,
     ImageFormat? imageFormat,
     Uint8List? imageData,
-  }) =>
-      WidgetImage(
-        fileName: fileName ?? this.fileName,
-        imageFormat: imageFormat ?? this.imageFormat,
-        imageData: imageData ?? this.imageData,
-      );
+  }) => WidgetImage(
+    fileName: fileName ?? this.fileName,
+    imageFormat: imageFormat ?? this.imageFormat,
+    imageData: imageData ?? this.imageData,
+  );
 }

@@ -42,10 +42,12 @@ class TOTPTokenWidgetTile extends ConsumerStatefulWidget {
   const TOTPTokenWidgetTile(this.token, {super.key, this.isPreview = false});
 
   @override
-  ConsumerState<TOTPTokenWidgetTile> createState() => _TOTPTokenWidgetTileState();
+  ConsumerState<TOTPTokenWidgetTile> createState() =>
+      _TOTPTokenWidgetTileState();
 }
 
-class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with SingleTickerProviderStateMixin {
+class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile>
+    with SingleTickerProviderStateMixin {
   late String currentOtpValue = widget.token.otpValue;
   late UnscaledAnimationController _animationController;
   Color? _currentOtpColor;
@@ -57,8 +59,15 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
 
     globalRef?.read(disableCopyOtpProvider.notifier).state = true;
     Clipboard.setData(ClipboardData(text: widget.token.otpValue));
-    showSnackBar(AppLocalizations.of(context)!.otpValueCopiedMessage(widget.token.otpValue));
-    Future.delayed(const Duration(seconds: 5), () => globalRef?.read(disableCopyOtpProvider.notifier).state = false);
+    showSnackBar(
+      AppLocalizations.of(
+        context,
+      )!.otpValueCopiedMessage(widget.token.otpValue),
+    );
+    Future.delayed(
+      const Duration(seconds: 5),
+      () => globalRef?.read(disableCopyOtpProvider.notifier).state = false,
+    );
   }
 
   @override
@@ -92,12 +101,24 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
       totalDuration: Duration(seconds: widget.token.period),
       warningDuration: Duration(seconds: 2),
       criticalDuration: Duration(seconds: 3),
-      defaultOtpColor: Theme.of(context).extension<TokenTileTheme>()!.defaultOtpColor,
-      warningOtpColor: Theme.of(context).extension<TokenTileTheme>()!.warningOtpColor,
-      criticalOtpColor: Theme.of(context).extension<TokenTileTheme>()!.criticalOtpColor,
-      defaultCountdownColor: Theme.of(context).extension<TokenTileTheme>()!.defaultCountdownColor,
-      warningCountdownColor: Theme.of(context).extension<TokenTileTheme>()!.warningCountdownColor,
-      criticalCountdownColor: Theme.of(context).extension<TokenTileTheme>()!.criticalCountdownColor,
+      defaultOtpColor: Theme.of(
+        context,
+      ).extension<TokenTileTheme>()!.defaultOtpColor,
+      warningOtpColor: Theme.of(
+        context,
+      ).extension<TokenTileTheme>()!.warningOtpColor,
+      criticalOtpColor: Theme.of(
+        context,
+      ).extension<TokenTileTheme>()!.criticalOtpColor,
+      defaultCountdownColor: Theme.of(
+        context,
+      ).extension<TokenTileTheme>()!.defaultCountdownColor,
+      warningCountdownColor: Theme.of(
+        context,
+      ).extension<TokenTileTheme>()!.warningCountdownColor,
+      criticalCountdownColor: Theme.of(
+        context,
+      ).extension<TokenTileTheme>()!.criticalCountdownColor,
     ).createAnimation();
   }
 
@@ -105,17 +126,22 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
   Widget build(BuildContext context) {
     return TokenWidgetTile(
       key: Key('${widget.token.hashCode}TokenWidgetTile'),
-      semanticsLabel: widget.token.isHidden ? AppLocalizations.of(context)!.authenticateToShowOtp : AppLocalizations.of(context)!.copyOTPToClipboard,
+      semanticsLabel: widget.token.isHidden
+          ? AppLocalizations.of(context)!.authenticateToShowOtp
+          : AppLocalizations.of(context)!.copyOTPToClipboard,
       titleOnTap: widget.isPreview
           ? null
           : widget.token.isLocked && widget.token.isHidden
-              ? () async => await ref.read(tokenProvider.notifier).showToken(widget.token)
-              : () => _copyOtpValue(context),
+          ? () async =>
+                await ref.read(tokenProvider.notifier).showToken(widget.token)
+          : () => _copyOtpValue(context),
       token: widget.token,
-      title: insertCharAt(widget.token.otpValue, ' ', (widget.token.digits / 2).ceil()),
-      titleStyle: TextStyle(
-        color: _currentOtpColor,
+      title: insertCharAt(
+        widget.token.otpValue,
+        ' ',
+        (widget.token.digits / 2).ceil(),
       ),
+      titleStyle: TextStyle(color: _currentOtpColor),
       additionalSubtitles: widget.isPreview
           ? [
               'Algorithm: ${widget.token.algorithm.name}',
@@ -128,7 +154,11 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile> with 
           isHidden: widget.token.isHidden && !widget.isPreview,
           child: TotpTokenWidgetTileCountdown(
             period: widget.token.period,
-            currentColor: _currentCountdownColor ?? Theme.of(context).extension<TokenTileTheme>()!.defaultCountdownColor,
+            currentColor:
+                _currentCountdownColor ??
+                Theme.of(
+                  context,
+                ).extension<TokenTileTheme>()!.defaultCountdownColor,
             secondsUntilNextOTP: _secondsUntilNextOTP,
           ),
         ),

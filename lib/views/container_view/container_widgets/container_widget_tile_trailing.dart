@@ -27,7 +27,6 @@ import '../../../model/token_container.dart';
 import '../../../utils/logger.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 import '../../../widgets/button_widgets/intent_button.dart';
-import '../../../widgets/button_widgets/time_guarded_button.dart';
 import 'buttons/rollover_container_tokens_button.dart';
 import 'buttons/sync_container_button.dart';
 
@@ -87,7 +86,7 @@ class ContainerWidgetTileTrailing extends ConsumerWidget {
   ) {
     if (container.finalizationState.isFailed ||
         container.finalizationState == FinalizationState.notStarted) {
-      return TimeGuardedButton(
+      return IntentButton(
         intent: DialogActionIntent.confirm,
         onPressed: () async {
           await ref

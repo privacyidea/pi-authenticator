@@ -29,18 +29,22 @@ part 'token_origin_data.g.dart';
 class TokenOriginData {
   final TokenOriginSourceType source;
   final String appName; // Name of the app where the token comes from.
-  final String data; // The data that was used to create the token. Contains the secret!!
-  final DateTime createdAt; // The time when the token was created. If imported from another app, this is the time of the import
-  final bool? isPrivacyIdeaToken; // True if the token was created by a privacyIDEA server. Null if unknown. False if not created by a privacyIDEA server
+  final String
+  data; // The data that was used to create the token. Contains the secret!!
+  final DateTime
+  createdAt; // The time when the token was created. If imported from another app, this is the time of the import
+  final bool?
+  isPrivacyIdeaToken; // True if the token was created by a privacyIDEA server. Null if unknown. False if not created by a privacyIDEA server
   bool get isExportable {
     if (isPrivacyIdeaToken == false) return true;
     if (source == TokenOriginSourceType.manually) return true;
     return false;
   }
 
-  final String? creator; // like issuer, but only for privacyIDEA servers. This is only set if the token was created by a privacyIDEA server
+  final String?
+  creator; // like issuer, but only for privacyIDEA servers. This is only set if the token was created by a privacyIDEA server
   final Version?
-      piServerVersion; // The version of the privacyIDEA server that created the token. This is only set if the token was created by a privacyIDEA server
+  piServerVersion; // The version of the privacyIDEA server that created the token. This is only set if the token was created by a privacyIDEA server
   const TokenOriginData._({
     required this.source,
     required this.appName,
@@ -59,16 +63,15 @@ class TokenOriginData {
     bool? isPrivacyIdeaToken,
     String? creator,
     Version? piServerVersion,
-  }) =>
-      TokenOriginData._(
-        source: source,
-        appName: appName,
-        data: data,
-        createdAt: createdAt ?? DateTime.now(),
-        isPrivacyIdeaToken: isPrivacyIdeaToken,
-        creator: creator,
-        piServerVersion: piServerVersion,
-      );
+  }) => TokenOriginData._(
+    source: source,
+    appName: appName,
+    data: data,
+    createdAt: createdAt ?? DateTime.now(),
+    isPrivacyIdeaToken: isPrivacyIdeaToken,
+    creator: creator,
+    piServerVersion: piServerVersion,
+  );
 
   @override
   bool operator ==(Object other) {
@@ -91,40 +94,55 @@ class TokenOriginData {
     bool? Function()? isPrivacyIdeaToken,
     String? Function()? creator,
     Version? Function()? piServerVersion,
-  }) =>
-      TokenOriginData(
-        source: source ?? this.source,
-        data: data ?? this.data,
-        appName: appName ?? this.appName,
-        createdAt: createdAt ?? this.createdAt,
-        isPrivacyIdeaToken: isPrivacyIdeaToken != null ? isPrivacyIdeaToken() : this.isPrivacyIdeaToken,
-        creator: creator != null ? creator() : this.creator,
-        piServerVersion: piServerVersion != null ? piServerVersion() : this.piServerVersion,
-      );
+  }) => TokenOriginData(
+    source: source ?? this.source,
+    data: data ?? this.data,
+    appName: appName ?? this.appName,
+    createdAt: createdAt ?? this.createdAt,
+    isPrivacyIdeaToken: isPrivacyIdeaToken != null
+        ? isPrivacyIdeaToken()
+        : this.isPrivacyIdeaToken,
+    creator: creator != null ? creator() : this.creator,
+    piServerVersion: piServerVersion != null
+        ? piServerVersion()
+        : this.piServerVersion,
+  );
 
   @override
-  int get hashCode => Object.hashAll([source, data, appName, isPrivacyIdeaToken, creator, createdAt, piServerVersion]);
+  int get hashCode => Object.hashAll([
+    source,
+    data,
+    appName,
+    isPrivacyIdeaToken,
+    creator,
+    createdAt,
+    piServerVersion,
+  ]);
 
   // toString prints not data because it contains the secret
   @override
   String toString() =>
       'TokenOrigin{source: $source, appName: $appName, isPrivacyIdeaToken: $isPrivacyIdeaToken, creator: $creator, createdAt: $createdAt, piServerVersion: $piServerVersion}';
 
-  factory TokenOriginData.fromJson(Map<String, dynamic> json) => _$TokenOriginDataFromJson(json);
+  factory TokenOriginData.fromJson(Map<String, dynamic> json) =>
+      _$TokenOriginDataFromJson(json);
 
   Map<String, dynamic> toJson() => _$TokenOriginDataToJson(this);
-  factory TokenOriginData.fromContainer({required TokenContainer container, required String tokenData}) => TokenOriginData(
-        source: TokenOriginSourceType.container,
-        appName: container.issuer,
-        data: tokenData,
-        createdAt: DateTime.now(),
-        isPrivacyIdeaToken: true,
-      );
+  factory TokenOriginData.fromContainer({
+    required TokenContainer container,
+    required String tokenData,
+  }) => TokenOriginData(
+    source: TokenOriginSourceType.container,
+    appName: container.issuer,
+    data: tokenData,
+    createdAt: DateTime.now(),
+    isPrivacyIdeaToken: true,
+  );
 
   factory TokenOriginData.unknown([dynamic data]) => TokenOriginData(
-        source: TokenOriginSourceType.unknown,
-        appName: 'Unknown',
-        data: data.toString(),
-        createdAt: DateTime.now(),
-      );
+    source: TokenOriginSourceType.unknown,
+    appName: 'Unknown',
+    data: data.toString(),
+    createdAt: DateTime.now(),
+  );
 }

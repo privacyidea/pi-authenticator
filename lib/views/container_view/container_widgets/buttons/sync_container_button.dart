@@ -20,13 +20,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/sync_state_extension.dart';
 
 import '../../../../model/token_container.dart';
 import '../../../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 import '../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../../widgets/button_widgets/intent_button.dart';
-import '../../../../widgets/button_widgets/time_guarded_button.dart';
 
 class SyncContainerButton extends ConsumerWidget {
   final TokenContainerFinalized container;
@@ -42,21 +40,20 @@ class SyncContainerButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     if (isPreview) return const Icon(Icons.sync, size: 40);
 
-    return TimeGuardedButton(
-      intent: DialogActionIntent.confirm,
+    return IntentButton(
+      intent: DialogActionIntent.neutral,
       // The button is disabled (null) if the container is already syncing
-      onPressed: container.syncState.isIdle
-          ? () async {
-              final tokenState = await ref.read(tokenProvider.future);
-              await ref
-                  .read(tokenContainerProvider.notifier)
-                  .syncContainers(
-                    tokenState: tokenState,
-                    containersToSync: [container],
-                    isManually: true,
-                  );
-            }
-          : null,
+      onPressed: () async {
+        final tokenState = await ref.read(tokenProvider.future);
+        await ref
+            .read(tokenContainerProvider.notifier)
+            .syncContainers(
+              tokenState: tokenState,
+              containersToSync: [container],
+              isManually: true,
+            );
+        return;
+      },
       child: const Icon(Icons.sync, size: 40),
     );
   }

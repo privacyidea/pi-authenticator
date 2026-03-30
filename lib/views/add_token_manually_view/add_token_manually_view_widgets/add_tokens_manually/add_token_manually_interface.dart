@@ -29,19 +29,19 @@ abstract class AddTokenManuallyPage extends StatelessWidget {
 class AddTokenManually extends StatelessWidget {
   final List<Widget> fields;
   final Widget button;
-  const AddTokenManually({super.key, required this.fields, required this.button});
+  const AddTokenManually({
+    super.key,
+    required this.fields,
+    required this.button,
+  });
 
   @override
   Widget build(BuildContext context) => Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: fields,
-              ),
-            ),
-          ),
-          button,
-        ],
-      );
+    children: [
+      Expanded(
+        child: SingleChildScrollView(child: Column(children: fields)),
+      ),
+      button,
+    ],
+  );
 }

@@ -60,7 +60,7 @@ class AppDimensions extends ThemeExtension<AppDimensions> {
   /// The thickness of [Divider]s or [Border]s.
   /// Equivalent to CSS [border-width].
   final double strokeWidth;
-  static const defaultStrokeWidth = 1.0;
+  static const defaultStrokeWidth = 2.0;
 
   /// The standard height for interactive elements like [ElevatedButton] or [TextField].
   final double controlHeight;

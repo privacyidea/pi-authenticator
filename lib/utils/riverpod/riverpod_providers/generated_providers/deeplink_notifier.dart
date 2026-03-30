@@ -32,8 +32,16 @@ import '../../state_notifiers/deeplink_notifier.dart';
 part 'deeplink_notifier.g.dart';
 
 final sources = [
-  DeeplinkSource(name: 'uni_links', stream: AppLinks().uriLinkStream, initialUri: AppLinks().getInitialLink()),
-  DeeplinkSource(name: 'home_widget', stream: HomeWidgetUtils().widgetClicked, initialUri: HomeWidgetUtils().initiallyLaunchedFromHomeWidget()),
+  DeeplinkSource(
+    name: 'uni_links',
+    stream: AppLinks().uriLinkStream,
+    initialUri: AppLinks().getInitialLink(),
+  ),
+  DeeplinkSource(
+    name: 'home_widget',
+    stream: HomeWidgetUtils().widgetClicked,
+    initialUri: HomeWidgetUtils().initiallyLaunchedFromHomeWidget(),
+  ),
 ];
 
 @Riverpod(keepAlive: true)
@@ -52,7 +60,9 @@ class DeeplinkNotifier extends _$DeeplinkNotifier {
   /// while already started.
   Stream<DeepLink> _handleIncomingLinks(List<DeeplinkSource> sources) async* {
     if (kIsWeb) return;
-    final groupedStream = StreamGroup.merge(sources.map((source) => source.stream));
+    final groupedStream = StreamGroup.merge(
+      sources.map((source) => source.stream),
+    );
     await for (var uri in groupedStream) {
       Logger.info('DeeplinkNotifier got new uri');
       if (uri == null) return;

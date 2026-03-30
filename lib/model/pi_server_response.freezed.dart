@@ -173,7 +173,7 @@ return error(_that.statusCode,_that.id,_that.jsonrpc,_that.detail,_that.piServer
 
 class PiSuccessResponse<V extends PiServerResultValue,D extends PiServerResultDetail> extends PiServerResponse<V, D> {
    PiSuccessResponse({required this.statusCode, required this.id, required this.jsonrpc, required this.result, required this.time, required this.version, required this.versionNumber, this.signature = null, this.detail = null}): super._();
-  
+
 
 @override final  int statusCode;
 @override final  int id;
@@ -213,7 +213,7 @@ String toString() {
 
 class PiErrorResponse<V extends PiServerResultValue,D extends PiServerResultDetail> extends PiServerResponse<V, D> {
    PiErrorResponse({required this.statusCode, required this.id, required this.jsonrpc, this.detail = null, required this.piServerResultError, required this.time, required this.version, required this.versionNumber, this.signature = null}): super._();
-  
+
 
 @override final  int statusCode;
 @override final  int id;

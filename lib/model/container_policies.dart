@@ -25,12 +25,7 @@ import '../utils/object_validator/object_validators.dart';
 part 'container_policies.freezed.dart';
 part 'container_policies.g.dart';
 
-@Freezed(
-  toStringOverride: false,
-  addImplicitFinal: true,
-  toJson: true,
-  fromJson: true,
-)
+@Freezed(toStringOverride: false, toJson: true, fromJson: true)
 sealed class ContainerPolicies with _$ContainerPolicies {
   static const DISABLED_UNREGISTER = 'disable_client_container_unregister';
   static const DISABLED_TOKEN_DELETION = 'disable_client_token_deletion';

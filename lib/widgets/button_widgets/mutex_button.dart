@@ -24,7 +24,12 @@ class MutexButton extends StatefulWidget {
   final Future<void> Function()? onPressed;
   final Widget child;
   final ButtonStyle? style;
-  const MutexButton({super.key, required this.onPressed, required this.child, this.style});
+  const MutexButton({
+    super.key,
+    required this.onPressed,
+    required this.child,
+    this.style,
+  });
 
   @override
   State<MutexButton> createState() => _MutexButtonState();
@@ -46,18 +51,20 @@ class _MutexButtonState extends State<MutexButton> {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.all(3),
-        child: ElevatedButton(
-          onPressed: isPressable
-              ? () => m.protect(() async {
-                    setState(() => isPressable = false);
-                    await widget.onPressed!();
-                    if (!mounted) return;
-                    setState(() => isPressable = true);
-                  })
-              : null,
-          style: widget.style?.merge(Theme.of(context).elevatedButtonTheme.style) ?? Theme.of(context).elevatedButtonTheme.style,
-          child: widget.child,
-        ),
-      );
+    padding: const EdgeInsets.all(3),
+    child: ElevatedButton(
+      onPressed: isPressable
+          ? () => m.protect(() async {
+              setState(() => isPressable = false);
+              await widget.onPressed!();
+              if (!mounted) return;
+              setState(() => isPressable = true);
+            })
+          : null,
+      style:
+          widget.style?.merge(Theme.of(context).elevatedButtonTheme.style) ??
+          Theme.of(context).elevatedButtonTheme.style,
+      child: widget.child,
+    ),
+  );
 }

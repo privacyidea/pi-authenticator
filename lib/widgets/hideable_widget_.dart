@@ -21,7 +21,8 @@ class HideableWidget extends ConsumerWidget {
     return token.isLocked && isHidden
         ? IconButton(
             tooltip: AppLocalizations.of(context)!.authenticateToShowOtp,
-            onPressed: () async => ref.read(tokenProvider.notifier).showToken(token),
+            onPressed: () async =>
+                ref.read(tokenProvider.notifier).showToken(token),
             icon: const Icon(Icons.remove_red_eye_outlined),
           )
         : child;

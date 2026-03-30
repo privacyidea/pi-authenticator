@@ -20,13 +20,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:privacyidea_authenticator/utils/view_utils.dart';
+import 'package:privacyidea_authenticator/widgets/button_widgets/intent_button.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/extensions/enums/push_token_rollout_state_extension.dart';
 import '../../../../../model/tokens/push_token.dart';
 import '../../../../../utils/globals.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
-import '../../../../../widgets/button_widgets/time_guarded_button.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 
 class PushTokenStartRolloutWidget extends ConsumerWidget {
@@ -57,7 +57,7 @@ class PushTokenStartRolloutWidget extends ConsumerWidget {
               const Expanded(flex: 12, child: SizedBox()),
               Expanded(
                 flex: 35,
-                child: TimeGuardedButton(
+                child: IntentButton(
                   intent: DialogActionIntent.confirm,
                   onPressed: () =>
                       globalRef
@@ -77,7 +77,7 @@ class PushTokenStartRolloutWidget extends ConsumerWidget {
               const Expanded(flex: 6, child: SizedBox()),
               Expanded(
                 flex: 35,
-                child: TimeGuardedButton(
+                child: IntentButton(
                   intent: DialogActionIntent.destructive,
                   onPressed: () => _showDialog(),
                   child: Text(

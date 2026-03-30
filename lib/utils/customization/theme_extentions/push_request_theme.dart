@@ -23,13 +23,13 @@ class PushRequestTheme extends ThemeExtension<PushRequestTheme> {
   Color acceptColor;
   Color declineColor;
 
-  PushRequestTheme({
-    required this.acceptColor,
-    required this.declineColor,
-  });
+  PushRequestTheme({required this.acceptColor, required this.declineColor});
 
   @override
-  ThemeExtension<PushRequestTheme> copyWith({Color? acceptColor, Color? declineColor}) {
+  ThemeExtension<PushRequestTheme> copyWith({
+    Color? acceptColor,
+    Color? declineColor,
+  }) {
     return PushRequestTheme(
       acceptColor: acceptColor ?? this.acceptColor,
       declineColor: declineColor ?? this.declineColor,
@@ -40,7 +40,8 @@ class PushRequestTheme extends ThemeExtension<PushRequestTheme> {
   ThemeExtension<PushRequestTheme> lerp(PushRequestTheme other, double t) {
     return PushRequestTheme(
       acceptColor: Color.lerp(acceptColor, other.acceptColor, t) ?? acceptColor,
-      declineColor: Color.lerp(declineColor, other.declineColor, t) ?? declineColor,
+      declineColor:
+          Color.lerp(declineColor, other.declineColor, t) ?? declineColor,
     );
   }
 }

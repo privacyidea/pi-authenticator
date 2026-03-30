@@ -28,12 +28,22 @@ import 'home_widget_navigate_processor.dart';
 abstract class NavigationSchemeProcessor implements SchemeProcessor {
   const NavigationSchemeProcessor();
 
-  static Set<NavigationSchemeProcessor> implementations = {HomeWidgetNavigateProcessor()};
+  static Set<NavigationSchemeProcessor> implementations = {
+    HomeWidgetNavigateProcessor(),
+  };
 
   @override
-  Future<List<ProcessorResult<dynamic>>?> processUri(Uri uri, {BuildContext? context, bool fromInit = false});
+  Future<List<ProcessorResult<dynamic>>?> processUri(
+    Uri uri, {
+    BuildContext? context,
+    bool fromInit = false,
+  });
 
-  static Future<void> processUriByAny(Uri uri, {BuildContext? context, required bool fromInit}) async {
+  static Future<void> processUriByAny(
+    Uri uri, {
+    BuildContext? context,
+    required bool fromInit,
+  }) async {
     if (context == null) {
       Logger.info('Current context is null, waiting for navigator context');
       final key = await contextedGlobalNavigatorKey;
@@ -42,12 +52,18 @@ abstract class NavigationSchemeProcessor implements SchemeProcessor {
     Logger.info('Processing scheme: ${uri.scheme}');
     final futures = <Future<void>>[];
     for (final processor in implementations) {
-      Logger.info('Supported schemes [${processor.supportedSchemes}] for processor ${processor.runtimeType}');
+      Logger.info(
+        'Supported schemes [${processor.supportedSchemes}] for processor ${processor.runtimeType}',
+      );
       if (processor.supportedSchemes.contains(uri.scheme)) {
-        Logger.info('Processing scheme ${uri.scheme} with ${processor.runtimeType}');
+        Logger.info(
+          'Processing scheme ${uri.scheme} with ${processor.runtimeType}',
+        );
         // ignoring use_build_context_synchronously is ok because we got the context after the await. The Context cannot be expired.
         // ignore: use_build_context_synchronously
-        futures.add(processor.processUri(uri, context: context, fromInit: fromInit));
+        futures.add(
+          processor.processUri(uri, context: context, fromInit: fromInit),
+        );
       }
     }
     await Future.wait(futures);

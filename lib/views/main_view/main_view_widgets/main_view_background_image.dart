@@ -29,7 +29,9 @@ class MainViewBackgroundImage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final showBackgroundImage = ref.watch(settingsProvider.selectAsync((v) => v.showBackgroundImage));
+    final showBackgroundImage = ref.watch(
+      settingsProvider.selectAsync((v) => v.showBackgroundImage),
+    );
     return FutureBuilder(
       future: showBackgroundImage,
       builder: (context, snapshot) {
@@ -37,7 +39,9 @@ class MainViewBackgroundImage extends ConsumerWidget {
           return const SizedBox();
         }
         final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-        final scaffoldBackgroundColor = Theme.of(context).scaffoldBackgroundColor;
+        final scaffoldBackgroundColor = Theme.of(
+          context,
+        ).scaffoldBackgroundColor;
         final base = isDarkMode ? 0.3 : 0.08;
         final blendMode = isDarkMode ? BlendMode.darken : BlendMode.lighten;
         return Center(
@@ -46,9 +50,15 @@ class MainViewBackgroundImage extends ConsumerWidget {
             child: FittedBox(
               child: ClipRect(
                 child: ColorFiltered(
-                  colorFilter: ColorFilter.mode(scaffoldBackgroundColor.withValues(alpha: 1 - base), blendMode),
+                  colorFilter: ColorFilter.mode(
+                    scaffoldBackgroundColor.withValues(alpha: 1 - base),
+                    blendMode,
+                  ),
                   child: ColorFiltered(
-                    colorFilter: ColorFilter.mode(scaffoldBackgroundColor, BlendMode.color),
+                    colorFilter: ColorFilter.mode(
+                      scaffoldBackgroundColor,
+                      BlendMode.color,
+                    ),
                     child: appImage,
                   ),
                 ),

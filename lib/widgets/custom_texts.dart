@@ -55,10 +55,18 @@ class HideableText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Text(
-      isHidden ? text.replaceAll(RegExp(replaceWhitespaces ? r'.' : r'[^\s]'), replaceCharacter) : text,
+      isHidden
+          ? text.replaceAll(
+              RegExp(replaceWhitespaces ? r'.' : r'[^\s]'),
+              replaceCharacter,
+            )
+          : text,
       textScaler: const TextScaler.linear(1.9),
       style: textStyle != null
-          ? textStyle!.copyWith(fontFamily: 'monospace', fontWeight: FontWeight.bold)
+          ? textStyle!.copyWith(
+              fontFamily: 'monospace',
+              fontWeight: FontWeight.bold,
+            )
           : const TextStyle(
               fontFamily: 'monospace',
               fontWeight: FontWeight.bold,

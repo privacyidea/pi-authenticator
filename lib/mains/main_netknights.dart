@@ -4,7 +4,7 @@
   Authors: Timo Sturm <timo.sturm@netknights.it>
            Frank Merkel <frank.merkel@netknights.it>
 
-  Copyright (c) 2017-2025 NetKnights GmbH
+  Copyright (c) 2017-2026 NetKnights GmbH
 
   Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
@@ -103,7 +103,6 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
           scrollBehavior: ScrollConfiguration.of(
             context,
           ).copyWith(physics: const ClampingScrollPhysics(), overscroll: false),
-          debugShowCheckedModeBanner: true,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           locale:

@@ -48,20 +48,22 @@ class AddSteamManually extends AddTokenManuallyPage {
   final ValueNotifier<bool> autoValidateSecret;
   final ValueNotifier<TokenTypes> typeNotifier;
 
-  const AddSteamManually(
-      {required this.labelController,
-      required this.secretController,
-      required this.autoValidateLabel,
-      required this.autoValidateSecret,
-      required this.typeNotifier,
-      super.key});
+  const AddSteamManually({
+    required this.labelController,
+    required this.secretController,
+    required this.autoValidateLabel,
+    required this.autoValidateSecret,
+    required this.typeNotifier,
+    super.key,
+  });
 
   SteamToken? _tokenBuilder() {
     if (LabelInputField.validator(labelController.text) != null) {
       autoValidateLabel.value = true;
       return null;
     }
-    if (SecretInputField.validator(secretController.text, Encodings.base32) != null) {
+    if (SecretInputField.validator(secretController.text, Encodings.base32) !=
+        null) {
       autoValidateSecret.value = true;
       return null;
     }
@@ -80,39 +82,33 @@ class AddSteamManually extends AddTokenManuallyPage {
   // Algorithms? algorithm, // unused steam tokens always have SHA1 algorithm
   @override
   AddTokenManually build(BuildContext context) => AddTokenManually(
-        fields: [
-          LabelInputField(
-            controller: labelController,
-            autoValidate: autoValidateLabel,
-          ),
-          SecretInputField(
-            controller: secretController,
-            autoValidate: autoValidateSecret,
-            encodingNotifier: ValueNotifier(Encodings.base32),
-          ),
-          TokenTypeDropdownButton(typeNotifier: typeNotifier),
-          const EncodingsDropdownButton(
-            enabled: false,
-            values: [Encodings.base32],
-          ),
-          const AlgorithmsDropdownButton(
-            enabled: false,
-            allowedAlgorithms: [Algorithms.SHA1],
-          ),
-          const DigitsDropdownButton(
-            enabled: false,
-            allowedDigits: [5],
-          ),
-          const DurationDropdownButton(
-            enabled: false,
-            unit: DurationUnit.seconds,
-            values: [Duration(seconds: 30)],
-          ),
-        ],
-        button: AddTokenButton(
-          autoValidateLabel: autoValidateLabel,
-          autoValidateSecret: autoValidateSecret,
-          tokenBuilder: _tokenBuilder,
-        ),
-      );
+    fields: [
+      LabelInputField(
+        controller: labelController,
+        autoValidate: autoValidateLabel,
+      ),
+      SecretInputField(
+        controller: secretController,
+        autoValidate: autoValidateSecret,
+        encodingNotifier: ValueNotifier(Encodings.base32),
+      ),
+      TokenTypeDropdownButton(typeNotifier: typeNotifier),
+      const EncodingsDropdownButton(enabled: false, values: [Encodings.base32]),
+      const AlgorithmsDropdownButton(
+        enabled: false,
+        allowedAlgorithms: [Algorithms.SHA1],
+      ),
+      const DigitsDropdownButton(enabled: false, allowedDigits: [5]),
+      const DurationDropdownButton(
+        enabled: false,
+        unit: DurationUnit.seconds,
+        values: [Duration(seconds: 30)],
+      ),
+    ],
+    button: AddTokenButton(
+      autoValidateLabel: autoValidateLabel,
+      autoValidateSecret: autoValidateSecret,
+      tokenBuilder: _tokenBuilder,
+    ),
+  );
 }

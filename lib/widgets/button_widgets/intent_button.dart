@@ -17,19 +17,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*
- * privacyIDEA Authenticator
- *
- * Author: Frank Merkel <frank.merkel@netknights.it>
- *
- * Copyright (c) 2026 NetKnights GmbH
- */
-
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 
 import '../../utils/customization/theme_extentions/app_dimensions.dart';
+import '../pi_circular_progress_indicator.dart';
 
 extension DialogActionIntentX on DialogActionIntent {
   int get priority {
@@ -55,63 +48,119 @@ class IntentButton extends StatefulWidget {
   final DialogActionIntent intent;
   final FutureOr<void> Function()? onPressed;
   final Widget child;
+  final int delaySeconds;
+  final int cooldownMs;
 
   const IntentButton({
     super.key,
     required this.intent,
     required this.onPressed,
     required this.child,
+    this.delaySeconds = 0,
+    this.cooldownMs = 0,
   });
 
   @override
   State<IntentButton> createState() => _IntentButtonState();
 }
 
-class _IntentButtonState extends State<IntentButton> {
+class _IntentButtonState extends State<IntentButton>
+    with SingleTickerProviderStateMixin {
   bool _isLoading = false;
+  bool _isCooldown = false;
+  late int _currentDelay;
+  late AnimationController _animation;
 
   @override
-  Widget build(BuildContext context) {
-    return switch (widget.intent) {
-      DialogActionIntent.confirm ||
-      DialogActionIntent.destructive => _buildElevatedButton(context),
-      DialogActionIntent.info => _buildOutlinedButton(context),
-      DialogActionIntent.neutral ||
-      DialogActionIntent.cancel ||
-      DialogActionIntent.external => _buildTextButton(context),
-    };
+  void initState() {
+    super.initState();
+    _currentDelay = widget.delaySeconds;
+    _animation = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    );
+    if (_currentDelay > 0) _startDelayTimer();
+  }
+
+  Future<void> _startDelayTimer() async {
+    while (_currentDelay > 0 && mounted) {
+      _animation.forward(from: 0);
+      await Future.delayed(const Duration(seconds: 1));
+      if (mounted) setState(() => _currentDelay--);
+    }
   }
 
   @override
   void dispose() {
-    _isLoading = false;
+    _animation.dispose();
     super.dispose();
   }
 
-  FutureOr<void> Function()? get effectiveOnPressed {
-    if (widget.onPressed == null) return null;
+  Future<void> _handlePress() async {
+    if (widget.onPressed == null ||
+        _isCooldown ||
+        _isLoading ||
+        _currentDelay > 0)
+      return;
 
-    return () async {
-      try {
-        final futureOr = widget.onPressed!();
-        if (futureOr is Future) {
-          setState(() => _isLoading = true);
-          await futureOr;
-        }
-      } finally {
-        if (mounted) setState(() => _isLoading = false);
-      }
-    };
+    final result = widget.onPressed!.call();
+    final isFuture = result is Future;
+
+    if (!isFuture && widget.cooldownMs == 0) return;
+
+    if (mounted) {
+      setState(() {
+        if (isFuture) _isLoading = true;
+        if (widget.cooldownMs > 0) _isCooldown = true;
+      });
+    }
+
+    final List<Future<dynamic>> tasks = [];
+    if (isFuture) tasks.add(result);
+    if (widget.cooldownMs > 0) {
+      tasks.add(Future.delayed(Duration(milliseconds: widget.cooldownMs)));
+    }
+
+    if (tasks.isNotEmpty) {
+      await Future.wait(tasks);
+    }
+
+    if (mounted) {
+      setState(() {
+        _isLoading = false;
+        _isCooldown = false;
+      });
+    }
   }
 
-  Widget _buildElevatedButton(BuildContext context) {
+  VoidCallback? get _effectiveOnPressed {
+    if (widget.onPressed == null || _isCooldown || _isLoading) return null;
+    if (_currentDelay > 0) return () {};
+    return _handlePress;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final dimensions =
         theme.extension<AppDimensions>() ?? const AppDimensions();
+
+    return switch (widget.intent) {
+      DialogActionIntent.confirm || DialogActionIntent.destructive =>
+        _buildElevatedButton(context, dimensions),
+      DialogActionIntent.info => _buildOutlinedButton(context, dimensions),
+      DialogActionIntent.neutral ||
+      DialogActionIntent.cancel ||
+      DialogActionIntent.external => _buildTextButton(context, dimensions),
+    };
+  }
+
+  Widget _buildElevatedButton(BuildContext context, AppDimensions dimensions) {
+    final theme = Theme.of(context);
     final isDestructive = widget.intent == DialogActionIntent.destructive;
 
     return ElevatedButton(
-      onPressed: effectiveOnPressed,
+      onPressed: _effectiveOnPressed,
       style: ElevatedButton.styleFrom(
         backgroundColor: isDestructive ? theme.colorScheme.error : null,
         foregroundColor: isDestructive ? theme.colorScheme.onError : null,
@@ -127,17 +176,15 @@ class _IntentButtonState extends State<IntentButton> {
           borderRadius: BorderRadius.circular(dimensions.borderRadius),
         ),
       ),
-      child: _buildChildWithLoading(),
+      child: _buildChildWithStatus(dimensions),
     );
   }
 
-  Widget _buildOutlinedButton(BuildContext context) {
+  Widget _buildOutlinedButton(BuildContext context, AppDimensions dimensions) {
     final theme = Theme.of(context);
-    final dimensions =
-        theme.extension<AppDimensions>() ?? const AppDimensions();
 
     return OutlinedButton(
-      onPressed: effectiveOnPressed,
+      onPressed: _effectiveOnPressed,
       style: OutlinedButton.styleFrom(
         minimumSize: Size(0, dimensions.controlHeight),
         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -145,7 +192,7 @@ class _IntentButtonState extends State<IntentButton> {
           alpha: 0.38,
         ),
         side: BorderSide(
-          color: effectiveOnPressed == null
+          color: _effectiveOnPressed == null
               ? theme.colorScheme.onSurface.withValues(alpha: 0.12)
               : theme.dividerColor,
         ),
@@ -153,17 +200,15 @@ class _IntentButtonState extends State<IntentButton> {
           borderRadius: BorderRadius.circular(dimensions.borderRadius),
         ),
       ),
-      child: _buildChildWithLoading(),
+      child: _buildChildWithStatus(dimensions),
     );
   }
 
-  Widget _buildTextButton(BuildContext context) {
+  Widget _buildTextButton(BuildContext context, AppDimensions dimensions) {
     final theme = Theme.of(context);
-    final dimensions =
-        theme.extension<AppDimensions>() ?? const AppDimensions();
 
     return TextButton(
-      onPressed: effectiveOnPressed,
+      onPressed: _effectiveOnPressed,
       style: TextButton.styleFrom(
         foregroundColor: theme.colorScheme.onSurface,
         minimumSize: Size(0, dimensions.controlHeight),
@@ -179,30 +224,62 @@ class _IntentButtonState extends State<IntentButton> {
           ? Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                _buildChildWithLoading(),
+                _buildChildWithStatus(dimensions),
                 const SizedBox(width: 4),
                 Icon(
                   Icons.open_in_new,
                   size: 16,
-                  // Icon passt sich automatisch der Vordergrundfarbe an,
-                  // außer im disabled State
-                  color: effectiveOnPressed == null
+                  color: _effectiveOnPressed == null
                       ? theme.colorScheme.onSurface.withValues(alpha: 0.38)
                       : theme.colorScheme.onSurface,
                 ),
               ],
             )
-          : _buildChildWithLoading(),
+          : _buildChildWithStatus(dimensions),
     );
   }
 
-  Widget _buildChildWithLoading() {
+  Widget _buildChildWithStatus(AppDimensions dimensions) {
+    if (_currentDelay > 0) return _buildCountdownStack(dimensions);
     if (!_isLoading) return widget.child;
 
-    return const SizedBox(
-      height: 16,
-      width: 16,
-      child: CircularProgressIndicator(strokeWidth: 2),
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Opacity(opacity: 0.0, child: widget.child),
+        SizedBox(
+          width: dimensions.iconSizeMedium,
+          height: dimensions.iconSizeMedium,
+          child: CircularProgressIndicator(strokeWidth: dimensions.strokeWidth),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCountdownStack(AppDimensions dimensions) {
+    return SizedBox(
+      height: dimensions.iconSizeMedium,
+      width: dimensions.iconSizeMedium,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          AnimatedBuilder(
+            animation: _animation,
+            builder: (context, _) => PiCircularProgressIndicator(
+              _animation.value,
+              strokeWidth: 3,
+              swapColors: _currentDelay % 2 == 0,
+            ),
+          ),
+          Text(
+            _currentDelay.toString(),
+            style: TextStyle(
+              fontSize: dimensions.spacingMedium * 0.8,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

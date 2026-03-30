@@ -23,7 +23,7 @@ TokenContainer _$TokenContainerFromJson(
           return TokenContainerFinalized.fromJson(
             json
           );
-        
+
           default:
             throw CheckedFromJsonException(
   json,
@@ -32,7 +32,7 @@ TokenContainer _$TokenContainerFromJson(
   'Invalid union type "${json['runtimeType']}"!'
 );
         }
-      
+
 }
 
 /// @nodoc
@@ -108,7 +108,7 @@ as String,
 @override
 @pragma('vm:prefer-inline')
 $ContainerPoliciesCopyWith<$Res> get policies {
-  
+
   return $ContainerPoliciesCopyWith<$Res>(_self.policies, (value) {
     return _then(_self.copyWith(policies: value));
   });
@@ -349,7 +349,7 @@ as bool,
 @override
 @pragma('vm:prefer-inline')
 $ContainerPoliciesCopyWith<$Res> get policies {
-  
+
   return $ContainerPoliciesCopyWith<$Res>(_self.policies, (value) {
     return _then(_self.copyWith(policies: value));
   });
@@ -457,7 +457,7 @@ as String,
 @override
 @pragma('vm:prefer-inline')
 $ContainerPoliciesCopyWith<$Res> get policies {
-  
+
   return $ContainerPoliciesCopyWith<$Res>(_self.policies, (value) {
     return _then(_self.copyWith(policies: value));
   });

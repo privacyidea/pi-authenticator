@@ -29,7 +29,8 @@ import '../utils/logger.dart';
 
 class PreferenceTokenFolderRepository extends TokenFolderRepository {
   static const String _tokenFoldersKey = 'TOKEN_CATEGORIES';
-  static final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+  static final Future<SharedPreferences> _prefs =
+      SharedPreferences.getInstance();
 
   /// Function [f] is executed, protected by Mutex [_m].
   /// That means, that calls of this method will always be executed serial.
@@ -40,7 +41,9 @@ class PreferenceTokenFolderRepository extends TokenFolderRepository {
   Future<TokenFolderState> loadState() async => _protect(_loadFolders);
   Future<TokenFolderState> _loadFolders() async {
     try {
-      final foldersString = await _prefs.then((prefs) => prefs.getString(_tokenFoldersKey));
+      final foldersString = await _prefs.then(
+        (prefs) => prefs.getString(_tokenFoldersKey),
+      );
       if (foldersString == null) return const TokenFolderState(folders: []);
       final jsons = jsonDecode(foldersString) as List<dynamic>;
       final folders = jsons.map((e) => TokenFolder.fromJson(e)).toList();
@@ -54,7 +57,8 @@ class PreferenceTokenFolderRepository extends TokenFolderRepository {
   }
 
   @override
-  Future<bool> saveState(TokenFolderState state) => _protect(() => _saveReplaceList(state));
+  Future<bool> saveState(TokenFolderState state) =>
+      _protect(() => _saveReplaceList(state));
   Future<bool> _saveReplaceList(TokenFolderState state) async {
     final folders = state.folders;
     Logger.info('Saving ${folders.length} folders to preferences...');

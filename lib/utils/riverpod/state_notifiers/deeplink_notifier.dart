@@ -30,7 +30,9 @@ bool _initialUriIsHandled = false;
 class DeeplinkNotifier extends StateNotifier<DeepLink?> {
   final List<StreamSubscription> _subs = [];
   final List<DeeplinkSource> _sources;
-  DeeplinkNotifier({required List<DeeplinkSource> sources}) : _sources = sources, super(null) {
+  DeeplinkNotifier({required List<DeeplinkSource> sources})
+    : _sources = sources,
+      super(null) {
     _handleInitialUri();
     _handleIncomingLinks();
   }
@@ -59,7 +61,11 @@ class DeeplinkNotifier extends StateNotifier<DeepLink?> {
             state = DeepLink(uri);
           },
           onError: (Object err) {
-            Logger.error('Error getting uri from ${source.name}', error: err, stackTrace: StackTrace.current);
+            Logger.error(
+              'Error getting uri from ${source.name}',
+              error: err,
+              stackTrace: StackTrace.current,
+            );
           },
         ),
       );
@@ -88,5 +94,9 @@ class DeeplinkSource {
   final String name;
   final Stream<Uri?> stream;
   final Future<Uri?> initialUri;
-  DeeplinkSource({required this.name, required this.stream, required this.initialUri});
+  DeeplinkSource({
+    required this.name,
+    required this.stream,
+    required this.initialUri,
+  });
 }

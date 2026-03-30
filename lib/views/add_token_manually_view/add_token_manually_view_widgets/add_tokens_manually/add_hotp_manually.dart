@@ -69,11 +69,16 @@ class AddHotpManually extends AddTokenManuallyPage {
       autoValidateLabel.value = true;
       return null;
     }
-    if (SecretInputField.validator(secretController.text, encodingNofitier.value) != null) {
+    if (SecretInputField.validator(
+          secretController.text,
+          encodingNofitier.value,
+        ) !=
+        null) {
       autoValidateSecret.value = true;
       return null;
     }
-    if (CounterInputField.validator(counterNotifier.value?.toString()) != null) {
+    if (CounterInputField.validator(counterNotifier.value?.toString()) !=
+        null) {
       return null;
     }
     Logger.info('Input is valid, building token');
@@ -82,7 +87,10 @@ class AddHotpManually extends AddTokenManuallyPage {
       type: TokenTypes.HOTP.name,
       label: labelController.text,
       algorithm: algorithmsNotifier.value,
-      secret: encodingNofitier.value.encodeStringTo(Encodings.base32, secretController.text),
+      secret: encodingNofitier.value.encodeStringTo(
+        Encodings.base32,
+        secretController.text,
+      ),
       digits: digitsNotifier.value!,
       counter: counterNotifier.value!,
       origin: TokenOriginSourceType.manually.toTokenOrigin(),
@@ -91,26 +99,26 @@ class AddHotpManually extends AddTokenManuallyPage {
 
   @override
   AddTokenManually build(BuildContext context) => AddTokenManually(
-        fields: [
-          LabelInputField(
-            controller: labelController,
-            autoValidate: autoValidateLabel,
-          ),
-          SecretInputField(
-            controller: secretController,
-            autoValidate: autoValidateSecret,
-            encodingNotifier: encodingNofitier,
-          ),
-          TokenTypeDropdownButton(typeNotifier: typeNotifier),
-          EncodingsDropdownButton(encodingNotifier: encodingNofitier),
-          AlgorithmsDropdownButton(algorithmsNotifier: algorithmsNotifier),
-          DigitsDropdownButton(digitsNotifier: digitsNotifier),
-          CounterInputField(counterNotifier: counterNotifier),
-        ],
-        button: AddTokenButton(
-          autoValidateLabel: autoValidateLabel,
-          autoValidateSecret: autoValidateSecret,
-          tokenBuilder: _tryBuildToken,
-        ),
-      );
+    fields: [
+      LabelInputField(
+        controller: labelController,
+        autoValidate: autoValidateLabel,
+      ),
+      SecretInputField(
+        controller: secretController,
+        autoValidate: autoValidateSecret,
+        encodingNotifier: encodingNofitier,
+      ),
+      TokenTypeDropdownButton(typeNotifier: typeNotifier),
+      EncodingsDropdownButton(encodingNotifier: encodingNofitier),
+      AlgorithmsDropdownButton(algorithmsNotifier: algorithmsNotifier),
+      DigitsDropdownButton(digitsNotifier: digitsNotifier),
+      CounterInputField(counterNotifier: counterNotifier),
+    ],
+    button: AddTokenButton(
+      autoValidateLabel: autoValidateLabel,
+      autoValidateSecret: autoValidateSecret,
+      tokenBuilder: _tryBuildToken,
+    ),
+  );
 }

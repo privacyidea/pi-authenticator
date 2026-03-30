@@ -19,7 +19,8 @@
  */
 import 'dart:async' show Timer;
 
-import 'package:flutter/material.dart' show Animation, AnimationStatus, AnimationStatusListener, VoidCallback;
+import 'package:flutter/material.dart'
+    show Animation, AnimationStatus, AnimationStatusListener, VoidCallback;
 
 class UnscaledAnimationController extends Animation<double> {
   static const double _refreshRate = 30; // FPS
@@ -41,9 +42,12 @@ class UnscaledAnimationController extends Animation<double> {
     required this.duration,
     this.lowerBound = 0,
     this.upperBound = 1,
-  })  : assert(lowerBound < upperBound, 'lowerBound must be less than upperBound'),
-        assert(duration.inMicroseconds > 0, 'duration must be greater than 0'),
-        value = lowerBound;
+  }) : assert(
+         lowerBound < upperBound,
+         'lowerBound must be less than upperBound',
+       ),
+       assert(duration.inMicroseconds > 0, 'duration must be greater than 0'),
+       value = lowerBound;
 
   void _setStatus(AnimationStatus newStatus) {
     if (status == newStatus) return;
@@ -74,32 +78,42 @@ class UnscaledAnimationController extends Animation<double> {
     if (from != null) _setValue(from);
     _setStatus(AnimationStatus.forward);
     _timer?.cancel();
-    _timer = Timer.periodic(Duration(milliseconds: (_refreshInterval * 1000).toInt()), (timer) {
-      final newValue = value + _refreshInterval * (upperBound - lowerBound) / duration.inSeconds;
-      if (value >= upperBound) {
-        _setValue(upperBound);
-        timer.cancel();
-        _setStatus(AnimationStatus.completed);
-      } else {
-        _setValue(newValue);
-      }
-    });
+    _timer = Timer.periodic(
+      Duration(milliseconds: (_refreshInterval * 1000).toInt()),
+      (timer) {
+        final newValue =
+            value +
+            _refreshInterval * (upperBound - lowerBound) / duration.inSeconds;
+        if (value >= upperBound) {
+          _setValue(upperBound);
+          timer.cancel();
+          _setStatus(AnimationStatus.completed);
+        } else {
+          _setValue(newValue);
+        }
+      },
+    );
   }
 
   void reverse({double? from}) {
     if (from != null) _setValue(from);
     _setStatus(AnimationStatus.reverse);
     _timer?.cancel();
-    _timer = Timer.periodic(Duration(milliseconds: (_refreshInterval * 1000).toInt()), (timer) {
-      final newValue = value + _refreshInterval * (upperBound - lowerBound) / duration.inSeconds;
-      if (value <= lowerBound) {
-        _setValue(lowerBound);
-        timer.cancel();
-        _setStatus(AnimationStatus.dismissed);
-      } else {
-        _setValue(newValue);
-      }
-    });
+    _timer = Timer.periodic(
+      Duration(milliseconds: (_refreshInterval * 1000).toInt()),
+      (timer) {
+        final newValue =
+            value +
+            _refreshInterval * (upperBound - lowerBound) / duration.inSeconds;
+        if (value <= lowerBound) {
+          _setValue(lowerBound);
+          timer.cancel();
+          _setStatus(AnimationStatus.dismissed);
+        } else {
+          _setValue(newValue);
+        }
+      },
+    );
   }
 
   void stop() {

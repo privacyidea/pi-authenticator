@@ -43,15 +43,13 @@ class TotpTokenWidgetTileCountdown extends StatelessWidget {
       child: Stack(
         alignment: Alignment.center,
         children: [
-          Text(
-            '$value',
-            overflow: TextOverflow.fade,
-            softWrap: false,
-          ),
+          Text('$value', overflow: TextOverflow.fade, softWrap: false),
           PiCircularProgressIndicator(
             1 - (secondsUntilNextOTP / period),
             foregroundColor: currentColor,
-            semanticsLabel: AppLocalizations.of(context)!.a11ySecondsUntilNextOTP(value),
+            semanticsLabel: AppLocalizations.of(
+              context,
+            )!.a11ySecondsUntilNextOTP(value),
             semanticsValue: '$value',
           ),
         ],

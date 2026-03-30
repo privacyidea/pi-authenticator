@@ -39,13 +39,19 @@ import '../token_widget_tile.dart';
 class DayPasswordTokenWidgetTile extends ConsumerStatefulWidget {
   final DayPasswordToken token;
   final bool isPreview;
-  const DayPasswordTokenWidgetTile(this.token, {this.isPreview = false, super.key});
+  const DayPasswordTokenWidgetTile(
+    this.token, {
+    this.isPreview = false,
+    super.key,
+  });
 
   @override
-  ConsumerState<DayPasswordTokenWidgetTile> createState() => _DayPasswordTokenWidgetTileState();
+  ConsumerState<DayPasswordTokenWidgetTile> createState() =>
+      _DayPasswordTokenWidgetTileState();
 }
 
-class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWidgetTile> {
+class _DayPasswordTokenWidgetTileState
+    extends ConsumerState<DayPasswordTokenWidgetTile> {
   double secondsLeft = 0;
   late DateTime lastCount;
 
@@ -65,10 +71,17 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
     if (secondsLeft - (msSinceLastCount / 1000) > 0) {
       setState(() => secondsLeft -= msSinceLastCount / 1000);
     } else {
-      setState(() => secondsLeft = widget.token.durationUntilNextOTP.inMilliseconds / 1000);
+      setState(
+        () => secondsLeft =
+            widget.token.durationUntilNextOTP.inMilliseconds / 1000,
+      );
     }
-    final msUntilNextSecond = (secondsLeft * 1000).toInt() % 1000 + 1; // +1 to avoid 0
-    Future.delayed(Duration(milliseconds: msUntilNextSecond), () => _startCountDown());
+    final msUntilNextSecond =
+        (secondsLeft * 1000).toInt() % 1000 + 1; // +1 to avoid 0
+    Future.delayed(
+      Duration(milliseconds: msUntilNextSecond),
+      () => _startCountDown(),
+    );
   }
 
   void _copyOtpValue() {
@@ -76,7 +89,11 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
 
     ref.read(disableCopyOtpProvider.notifier).state = true;
     Clipboard.setData(ClipboardData(text: widget.token.otpValue));
-    showSnackBar(AppLocalizations.of(context)!.otpValueCopiedMessage(widget.token.otpValue));
+    showSnackBar(
+      AppLocalizations.of(
+        context,
+      )!.otpValueCopiedMessage(widget.token.otpValue),
+    );
     Future.delayed(const Duration(seconds: 5), () {
       ref.read(disableCopyOtpProvider.notifier).state = false;
     });
@@ -84,7 +101,11 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
 
   @override
   Widget build(BuildContext context) {
-    final currentLocale = ref.watch(settingsProvider).whenOrNull(data: (data) => data.currentLocale) ?? SettingsState.localeDefault;
+    final currentLocale =
+        ref
+            .watch(settingsProvider)
+            .whenOrNull(data: (data) => data.currentLocale) ??
+        SettingsState.localeDefault;
     final dateTimeTokenEnd = widget.token.nextOTPTimeStart;
     final yMdFormat = DateFormat.yMMMd(currentLocale.languageCode);
     final yMdString = yMdFormat.format(dateTimeTokenEnd);
@@ -95,13 +116,20 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
     return TokenWidgetTile(
       key: Key('${widget.token.hashCode}TokenWidgetTile'),
       token: widget.token,
-      semanticsLabel: widget.token.isHidden ? AppLocalizations.of(context)!.authenticateToShowOtp : AppLocalizations.of(context)!.copyOTPToClipboard,
+      semanticsLabel: widget.token.isHidden
+          ? AppLocalizations.of(context)!.authenticateToShowOtp
+          : AppLocalizations.of(context)!.copyOTPToClipboard,
       titleOnTap: widget.isPreview
           ? null
           : widget.token.isLocked && widget.token.isHidden
-              ? () async => await ref.read(tokenProvider.notifier).showToken(widget.token)
-              : _copyOtpValue,
-      title: insertCharAt(widget.token.otpValue, ' ', (widget.token.digits / 2).ceil()),
+          ? () async =>
+                await ref.read(tokenProvider.notifier).showToken(widget.token)
+          : _copyOtpValue,
+      title: insertCharAt(
+        widget.token.otpValue,
+        ' ',
+        (widget.token.digits / 2).ceil(),
+      ),
       additionalSubtitles: widget.isPreview
           ? [
               'Algorithm: ${widget.token.algorithm.name}',
@@ -121,12 +149,28 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
               onTap: widget.isPreview
                   ? null
                   : () {
-                      if (widget.token.viewMode == DayPasswordTokenViewMode.VALIDFOR) {
-                        ref.read(tokenProvider.notifier).updateToken(widget.token, (p0) => p0.copyWith(viewMode: DayPasswordTokenViewMode.VALIDUNTIL));
+                      if (widget.token.viewMode ==
+                          DayPasswordTokenViewMode.VALIDFOR) {
+                        ref
+                            .read(tokenProvider.notifier)
+                            .updateToken(
+                              widget.token,
+                              (p0) => p0.copyWith(
+                                viewMode: DayPasswordTokenViewMode.VALIDUNTIL,
+                              ),
+                            );
                         return;
                       }
-                      if (widget.token.viewMode == DayPasswordTokenViewMode.VALIDUNTIL) {
-                        ref.read(tokenProvider.notifier).updateToken(widget.token, (p0) => p0.copyWith(viewMode: DayPasswordTokenViewMode.VALIDFOR));
+                      if (widget.token.viewMode ==
+                          DayPasswordTokenViewMode.VALIDUNTIL) {
+                        ref
+                            .read(tokenProvider.notifier)
+                            .updateToken(
+                              widget.token,
+                              (p0) => p0.copyWith(
+                                viewMode: DayPasswordTokenViewMode.VALIDFOR,
+                              ),
+                            );
                         return;
                       }
                     },
@@ -136,14 +180,22 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     SizedBox(
-                      height: Theme.of(context).listTileTheme.subtitleTextStyle!.fontSize! * 1.5,
+                      height:
+                          Theme.of(
+                            context,
+                          ).listTileTheme.subtitleTextStyle!.fontSize! *
+                          1.5,
                       child: Center(
                         child: Text(
                           switch (widget.token.viewMode) {
-                            DayPasswordTokenViewMode.VALIDFOR => '${AppLocalizations.of(context)!.dayPasswordValidFor}:',
-                            DayPasswordTokenViewMode.VALIDUNTIL => '${AppLocalizations.of(context)!.dayPasswordValidUntil}:',
+                            DayPasswordTokenViewMode.VALIDFOR =>
+                              '${AppLocalizations.of(context)!.dayPasswordValidFor}:',
+                            DayPasswordTokenViewMode.VALIDUNTIL =>
+                              '${AppLocalizations.of(context)!.dayPasswordValidUntil}:',
                           },
-                          style: Theme.of(context).listTileTheme.subtitleTextStyle,
+                          style: Theme.of(
+                            context,
+                          ).listTileTheme.subtitleTextStyle,
                           textAlign: TextAlign.center,
                           overflow: TextOverflow.fade,
                           softWrap: false,
@@ -153,14 +205,19 @@ class _DayPasswordTokenWidgetTileState extends ConsumerState<DayPasswordTokenWid
                     ConstrainedBox(
                       constraints: BoxConstraints(
                         maxWidth: double.infinity,
-                        maxHeight: Theme.of(context).textTheme.bodyLarge!.fontSize! * 3,
-                        minHeight: Theme.of(context).textTheme.bodyLarge!.fontSize! * 3,
+                        maxHeight:
+                            Theme.of(context).textTheme.bodyLarge!.fontSize! *
+                            3,
+                        minHeight:
+                            Theme.of(context).textTheme.bodyLarge!.fontSize! *
+                            3,
                       ),
                       child: Center(
                         child: Text(
                           switch (widget.token.viewMode) {
                             DayPasswordTokenViewMode.VALIDFOR => durationString,
-                            DayPasswordTokenViewMode.VALIDUNTIL => '$yMdString\n$ejmString',
+                            DayPasswordTokenViewMode.VALIDUNTIL =>
+                              '$yMdString\n$ejmString',
                           },
                           style: Theme.of(context).textTheme.bodyLarge,
                           textAlign: TextAlign.center,

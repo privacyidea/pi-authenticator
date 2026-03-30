@@ -216,10 +216,8 @@ sealed class TokenContainer with _$TokenContainer {
       hashAlgorithm: hashAlgorithm,
       sslVerify: sslVerify,
       passphraseQuestion: passphraseQuestion,
-      finalizationState: FinalizationState.completed,
       serverName: serverName,
       policies: policies,
-      syncState: SyncState.notStarted,
       publicClientKey:
           publicClientKey ??
           eccUtils.serializeECPublicKey(clientKeyPair!.publicKey),

@@ -38,39 +38,8 @@ class PushCodeToPhoneDialog extends ConsumerStatefulWidget
 }
 
 class _PushCodeToPhoneDialogState extends ConsumerState<PushCodeToPhoneDialog> {
-  bool _isRevealed = false;
-  bool _hasBeenSeen = false;
   bool _isCopyOnCooldown = false;
   final _formKey = GlobalKey<FormState>();
-
-  @override
-  void initState() {
-    super.initState();
-    if (!widget.token.isLocked) {
-      _isRevealed = true;
-      _hasBeenSeen = true;
-    }
-  }
-
-  Future<void> _handleVisibility() async {
-    if (!_isRevealed) {
-      if (widget.token.isLocked) {
-        final authenticated = await lockAuth(
-          reason: (l) => l.authenticateToShowOtp,
-          localization: AppLocalizations.of(context)!,
-          forceBiometricOption: widget.token.forceBiometricOption,
-        );
-        if (!authenticated) return;
-      }
-      setState(() {
-        _isRevealed = true;
-        _hasBeenSeen = true;
-      });
-      _formKey.currentState?.validate();
-    } else {
-      setState(() => _isRevealed = false);
-    }
-  }
 
   void _copyToClipboard() {
     if (_isCopyOnCooldown) return;
@@ -108,53 +77,33 @@ class _PushCodeToPhoneDialogState extends ConsumerState<PushCodeToPhoneDialog> {
           children: [
             PushRequestBaseInfo(pushRequest: widget.pushRequest),
             const SizedBox(height: 12),
-            FormField<bool>(
-              initialValue: _hasBeenSeen,
-              validator: (_) => !_hasBeenSeen ? "" : null,
-              builder: (state) => Center(
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const SizedBox(width: 40),
-                    GestureDetector(
-                      onTap: _isRevealed ? _copyToClipboard : _handleVisibility,
-                      child: Text(
-                        insertCharAt(
-                          _isRevealed
-                              ? widget.pushRequest.displayCode
-                              : '•' * widget.pushRequest.displayCode.length,
-                          ' ',
-                          (widget.pushRequest.displayCode.length / 2).ceil(),
-                        ),
-                        textAlign: TextAlign.center,
-                        style: theme.textTheme.displayMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: _hasBeenSeen
-                              ? theme.colorScheme.primary
-                              : theme.colorScheme.error,
-                        ),
+            Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const SizedBox(width: 40),
+                  GestureDetector(
+                    onTap: _copyToClipboard,
+                    child: Text(
+                      widget.pushRequest.displayCode,
+
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.displayMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: theme.colorScheme.primary,
                       ),
                     ),
-                    _isRevealed
-                        ? IconButton(
-                            icon: Icon(
-                              Icons.copy,
-                              color: _isCopyOnCooldown
-                                  ? theme.disabledColor
-                                  : theme.colorScheme.primary,
-                            ),
-                            onPressed: _copyToClipboard,
-                          )
-                        : IconButton(
-                            icon: Icon(
-                              Icons.visibility,
-                              color: theme.colorScheme.primary,
-                            ),
-                            onPressed: _handleVisibility,
-                          ),
-                  ],
-                ),
+                  ),
+                  IconButton(
+                    icon: Icon(
+                      Icons.copy,
+                      color: _isCopyOnCooldown
+                          ? theme.disabledColor
+                          : theme.colorScheme.primary,
+                    ),
+                    onPressed: _copyToClipboard,
+                  ),
+                ],
               ),
             ),
           ],

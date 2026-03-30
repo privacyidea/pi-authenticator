@@ -30,65 +30,72 @@ class ContainerWidgetTile extends ConsumerWidget {
   final TokenContainer container;
   final bool isPreview;
 
-  const ContainerWidgetTile({required this.container, this.isPreview = false, super.key});
+  const ContainerWidgetTile({
+    required this.container,
+    this.isPreview = false,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 2),
-        titleAlignment: ListTileTitleAlignment.center,
-        title: FittedBox(
-          fit: BoxFit.scaleDown,
-          alignment: Alignment.topLeft,
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Tooltip(
-              message: AppLocalizations.of(context)!.containerSerial,
-              triggerMode: TooltipTriggerMode.longPress,
-              child: Text(
-                container.serial,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
+    contentPadding: const EdgeInsets.symmetric(horizontal: 2),
+    titleAlignment: ListTileTitleAlignment.center,
+    title: FittedBox(
+      fit: BoxFit.scaleDown,
+      alignment: Alignment.topLeft,
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Tooltip(
+          message: AppLocalizations.of(context)!.containerSerial,
+          triggerMode: TooltipTriggerMode.longPress,
+          child: Text(
+            container.serial,
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+        ),
+      ),
+    ),
+    subtitle: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 4.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                for (var line in [
+                  AppLocalizations.of(context)!.issuerLabel(container.issuer),
+                  '${container.finalizationState.rolloutMsgLocalized(AppLocalizations.of(context)!)}',
+                ])
+                  Text(
+                    line,
+                    style: Theme.of(context).listTileTheme.subtitleTextStyle,
+                    textAlign: TextAlign.left,
+                    overflow: TextOverflow.fade,
+                    softWrap: false,
+                  ),
+              ],
             ),
           ),
         ),
-        subtitle: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 4.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    for (var line in [
-                      AppLocalizations.of(context)!.issuerLabel(container.issuer),
-                      '${container.finalizationState.rolloutMsgLocalized(AppLocalizations.of(context)!)}',
-                    ])
-                      Text(
-                        line,
-                        style: Theme.of(context).listTileTheme.subtitleTextStyle,
-                        textAlign: TextAlign.left,
-                        overflow: TextOverflow.fade,
-                        softWrap: false,
-                      ),
-                  ],
-                ),
-              ),
+      ],
+    ),
+    trailing: Column(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Expanded(
+          child: FittedBox(
+            fit: BoxFit.contain,
+            child: ContainerWidgetTileTrailing(
+              container: container,
+              isPreview: isPreview,
             ),
-          ],
+          ),
         ),
-        trailing: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: FittedBox(
-                fit: BoxFit.contain,
-                child: ContainerWidgetTileTrailing(container: container, isPreview: isPreview),
-              ),
-            ),
-          ],
-        ),
-      );
+      ],
+    ),
+  );
 }

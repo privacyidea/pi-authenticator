@@ -84,7 +84,6 @@ class CustomizationAuthenticator extends ConsumerWidget {
               PointerDeviceKind.unknown,
             },
           ),
-          debugShowCheckedModeBanner: true,
           navigatorKey: globalNavigatorKey,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,

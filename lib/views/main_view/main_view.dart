@@ -69,7 +69,10 @@ class _MainViewState extends ConsumerState<MainView> {
   @override
   void initState() {
     super.initState();
-    final latestStartedVersion = globalRef?.read(settingsProvider).whenOrNull(data: (data) => data)?.latestStartedVersion;
+    final latestStartedVersion = globalRef
+        ?.read(settingsProvider)
+        .whenOrNull(data: (data) => data)
+        ?.latestStartedVersion;
     Logger.info('Latest started version: $latestStartedVersion');
     if (latestStartedVersion == null || widget.disablePatchNotes) return;
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -91,37 +94,47 @@ class _MainViewState extends ConsumerState<MainView> {
             body: ExpandableAppBar(
               startExpand: hasFilter,
               appBar: AppBar(
-                  title: Text(
-                    widget.appName,
-                    overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
-                    maxLines: 2, // Title can be shown on small screens too.
-                  ),
-                  leading: widget.appbarIcon,
-                  actions: [
-                    hasFilter
-                        ? AppBarItem(
-                            a11y: AppLocalizations.of(context)!.a11yCloseSearchTokensButton,
-                            onPressed: () {
-                              ref.read(tokenFilterProvider.notifier).state = null;
-                            },
-                            icon: const Icon(Icons.close),
-                          )
-                        : AppBarItem(
-                            a11y: AppLocalizations.of(context)!.a11ySearchTokensButton,
-                            onPressed: () {
-                              ref.read(tokenFilterProvider.notifier).state = TokenFilter(
-                                searchQuery: '',
-                              );
-                            },
-                            icon: const Icon(Icons.search),
-                          ),
-                  ]),
+                title: Text(
+                  widget.appName,
+                  overflow: TextOverflow
+                      .ellipsis, // maxLines: 2 only works like this.
+                  maxLines: 2, // Title can be shown on small screens too.
+                ),
+                leading: widget.appbarIcon,
+                actions: [
+                  hasFilter
+                      ? AppBarItem(
+                          a11y: AppLocalizations.of(
+                            context,
+                          )!.a11yCloseSearchTokensButton,
+                          onPressed: () {
+                            ref.read(tokenFilterProvider.notifier).state = null;
+                          },
+                          icon: const Icon(Icons.close),
+                        )
+                      : AppBarItem(
+                          a11y: AppLocalizations.of(
+                            context,
+                          )!.a11ySearchTokensButton,
+                          onPressed: () {
+                            ref.read(tokenFilterProvider.notifier).state =
+                                TokenFilter(searchQuery: '');
+                          },
+                          icon: const Icon(Icons.search),
+                        ),
+                ],
+              ),
               body: ConnectivityListener(
                 child: StatusBar(
                   child: Stack(
                     children: [
-                      if (widget.backgroundImage != null) MainViewBackgroundImage(appImage: widget.backgroundImage!),
-                      hasFilter ? const MainViewTokensListFiltered() : MainViewTokensList(nestedScrollViewKey: globalKey),
+                      if (widget.backgroundImage != null)
+                        MainViewBackgroundImage(
+                          appImage: widget.backgroundImage!,
+                        ),
+                      hasFilter
+                          ? const MainViewTokensListFiltered()
+                          : MainViewTokensList(nestedScrollViewKey: globalKey),
                       if (!hasFilter) MainViewNavigationBar(),
                     ],
                   ),

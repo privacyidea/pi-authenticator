@@ -60,14 +60,11 @@ class DefaultDeleteAction extends ConsumerSlideableAction {
                   )) {
                 return;
               }
-              if (context.mounted) {
-                _showDialog(context, notifier);
-              }
+              _showDialog(notifier);
             }
           : (_) => ContainerTokenIndelibleDialog.showDialog(),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const Icon(Icons.delete),
           Text(
@@ -80,50 +77,49 @@ class DefaultDeleteAction extends ConsumerSlideableAction {
     );
   }
 
-  void _showDialog(BuildContext context, TokenNotifier notifier) =>
-      showAsyncDialog(
-        builder: (BuildContext context) => DefaultDialog(
-          scrollable: true,
-          title: Text(
-            AppLocalizations.of(context)!.confirmDeletion,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              color: Theme.of(context).colorScheme.error,
-            ),
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                AppLocalizations.of(context)!.confirmDeletionOf(token.label),
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                AppLocalizations.of(context)!.confirmTokenDeletionHint,
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-            ],
-          ),
-          actions: [
-            DialogAction(
-              label: AppLocalizations.of(context)!.cancel,
-              intent: DialogActionIntent.cancel,
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            DialogAction(
-              label: AppLocalizations.of(context)!.delete,
-              intent: DialogActionIntent.destructive,
-              onPressed: () async {
-                try {
-                  await notifier.removeToken(token);
-                } finally {
-                  if (context.mounted) {
-                    Navigator.of(context).pop();
-                  }
-                }
-              },
-            ),
-          ],
+  void _showDialog(TokenNotifier notifier) => showAsyncDialog(
+    builder: (BuildContext context) => DefaultDialog(
+      scrollable: true,
+      title: Text(
+        AppLocalizations.of(context)!.confirmDeletion,
+        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+          color: Theme.of(context).colorScheme.error,
         ),
-      );
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            AppLocalizations.of(context)!.confirmDeletionOf(token.label),
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            AppLocalizations.of(context)!.confirmTokenDeletionHint,
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+        ],
+      ),
+      actions: [
+        DialogAction(
+          label: AppLocalizations.of(context)!.cancel,
+          intent: DialogActionIntent.cancel,
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        DialogAction(
+          label: AppLocalizations.of(context)!.delete,
+          intent: DialogActionIntent.destructive,
+          onPressed: () async {
+            try {
+              await notifier.removeToken(token);
+            } finally {
+              if (context.mounted) {
+                Navigator.of(context).pop();
+              }
+            }
+          },
+        ),
+      ],
+    ),
+  );
 }

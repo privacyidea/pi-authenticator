@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'interfaces/flutter_home_widget_base.dart';
 import 'interfaces/flutter_home_widget_builder.dart';
 
-class HomeWidgetBackgroundBuilder extends FlutterHomeWidgetBuilder<FlutterHomeWidgetBase> {
+class HomeWidgetBackgroundBuilder
+    extends FlutterHomeWidgetBuilder<FlutterHomeWidgetBase> {
   final Color? color;
   HomeWidgetBackgroundBuilder({
     super.key,
@@ -14,13 +15,13 @@ class HomeWidgetBackgroundBuilder extends FlutterHomeWidgetBuilder<FlutterHomeWi
     required super.homeWidgetKey,
     required super.utils,
   }) : super(
-          formWidget: (key, theme, logicalSize, _) => HomeWidgetBackground(
-            key: key,
-            theme: theme,
-            logicalSize: logicalSize,
-            utils: utils,
-          ),
-        );
+         formWidget: (key, theme, logicalSize, _) => HomeWidgetBackground(
+           key: key,
+           theme: theme,
+           logicalSize: logicalSize,
+           utils: utils,
+         ),
+       );
 }
 
 class HomeWidgetBackground extends FlutterHomeWidgetBase {
@@ -33,11 +34,11 @@ class HomeWidgetBackground extends FlutterHomeWidgetBase {
 
   @override
   Widget build(BuildContext context) => Container(
-        width: logicalSize.width,
-        height: logicalSize.height,
-        decoration: BoxDecoration(
-          color: theme.scaffoldBackgroundColor,
-          borderRadius: BorderRadius.circular(logicalSize.height / 4),
-        ),
-      );
+    width: logicalSize.width,
+    height: logicalSize.height,
+    decoration: BoxDecoration(
+      color: theme.scaffoldBackgroundColor,
+      borderRadius: BorderRadius.circular(logicalSize.height / 4),
+    ),
+  );
 }

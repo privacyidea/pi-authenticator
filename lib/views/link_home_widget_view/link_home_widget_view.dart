@@ -47,7 +47,9 @@ class _LinkHomeWidgetViewState extends ConsumerState<LinkHomeWidgetView> {
   bool alreadyTapped = false;
   @override
   Widget build(BuildContext context) {
-    final veilingCharacter = Theme.of(context).extension<ExtendedTextTheme>()?.veilingCharacter ?? '●';
+    final veilingCharacter =
+        Theme.of(context).extension<ExtendedTextTheme>()?.veilingCharacter ??
+        '●';
     final otpTokens = ref.watch(tokenProvider).value?.otpTokens;
     return Scaffold(
       appBar: AppBar(
@@ -60,17 +62,29 @@ class _LinkHomeWidgetViewState extends ConsumerState<LinkHomeWidgetView> {
       body: ListView.builder(
         itemBuilder: (context, index) {
           final otpToken = otpTokens![index];
-          final folderIsLocked = ref.watch(tokenFolderProvider).currentOfId(otpToken.folderId)?.isLocked ?? false;
-          final otpString = otpToken.isLocked || folderIsLocked ? veilingCharacter * otpToken.otpValue.length : otpToken.otpValue;
+          final folderIsLocked =
+              ref
+                  .watch(tokenFolderProvider)
+                  .currentOfId(otpToken.folderId)
+                  ?.isLocked ??
+              false;
+          final otpString = otpToken.isLocked || folderIsLocked
+              ? veilingCharacter * otpToken.otpValue.length
+              : otpToken.otpValue;
           return ListTile(
             title: Text(otpToken.label),
-            subtitle: Text(insertCharAt(otpString, ' ', (otpString.length / 2).ceil())),
+            subtitle: Text(
+              insertCharAt(otpString, ' ', (otpString.length / 2).ceil()),
+            ),
             onTap: alreadyTapped
                 ? () {}
                 : () async {
                     if (alreadyTapped) return;
                     setState(() => alreadyTapped = true);
-                    await HomeWidgetUtils().link(widget.homeWidgetId, otpToken.id);
+                    await HomeWidgetUtils().link(
+                      widget.homeWidgetId,
+                      otpToken.id,
+                    );
                     await SystemNavigator.pop();
                     await Future.delayed(const Duration(milliseconds: 500));
                     if (context.mounted) Navigator.pop(context);

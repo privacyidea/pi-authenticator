@@ -24,19 +24,17 @@ class TokenImportEntry {
   final Token? oldToken;
   Token? selectedToken;
 
-  TokenImportEntry._(
-    this.newToken,
-    this.oldToken,
-    this.selectedToken,
-  );
+  TokenImportEntry._(this.newToken, this.oldToken, this.selectedToken);
 
-  TokenImportEntry({
-    required this.newToken,
-    this.oldToken,
-  }) : selectedToken = oldToken == null ? newToken : null;
+  TokenImportEntry({required this.newToken, this.oldToken})
+    : selectedToken = oldToken == null ? newToken : null;
 
   TokenImportEntry copySelect(Token? selectedToken) {
-    assert(selectedToken == null || selectedToken == newToken || selectedToken == oldToken);
+    assert(
+      selectedToken == null ||
+          selectedToken == newToken ||
+          selectedToken == oldToken,
+    );
     return TokenImportEntry._(newToken, oldToken, selectedToken);
   }
 
@@ -53,5 +51,6 @@ class TokenImportEntry {
   int get hashCode => Object.hashAll([newToken, oldToken, selectedToken]);
 
   @override
-  String toString() => 'TokenImportEntry{newToken: $newToken, \noldToken: $oldToken, \nselectedToken: $selectedToken}';
+  String toString() =>
+      'TokenImportEntry{newToken: $newToken, \noldToken: $oldToken, \nselectedToken: $selectedToken}';
 }
