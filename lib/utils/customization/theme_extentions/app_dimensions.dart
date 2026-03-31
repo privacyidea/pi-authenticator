@@ -66,6 +66,10 @@ class AppDimensions extends ThemeExtension<AppDimensions> {
   final double controlHeight;
   static const defaultControlHeight = 48.0;
 
+  /// The minimum width for interactive elements like [ElevatedButton] or [TextField].
+  final double controlMinWidth;
+  static const defaultControlMinWidth = 120.0;
+
   /// The maximum width for content on large screens (tablets/desktop) to maintain readability.
   final double maxContentWidth;
   static const defaultMaxContentWidth = 600.0;
@@ -81,6 +85,7 @@ class AppDimensions extends ThemeExtension<AppDimensions> {
     double? iconSizeLarge,
     double? strokeWidth,
     double? controlHeight,
+    double? controlMinWidth,
     double? maxContentWidth,
   }) : spacingSmall = spacingSmall ?? defaultSpacingSmall,
        spacingMedium = spacingMedium ?? defaultSpacingMedium,
@@ -92,6 +97,7 @@ class AppDimensions extends ThemeExtension<AppDimensions> {
        iconSizeLarge = iconSizeLarge ?? defaultIconSizeLarge,
        strokeWidth = strokeWidth ?? defaultStrokeWidth,
        controlHeight = controlHeight ?? defaultControlHeight,
+       controlMinWidth = controlMinWidth ?? defaultControlMinWidth,
        maxContentWidth = maxContentWidth ?? defaultMaxContentWidth;
 
   @override
@@ -106,6 +112,7 @@ class AppDimensions extends ThemeExtension<AppDimensions> {
       iconSizeMedium: lerpDouble(iconSizeMedium, other.iconSizeMedium, t)!,
       strokeWidth: lerpDouble(strokeWidth, other.strokeWidth, t)!,
       controlHeight: lerpDouble(controlHeight, other.controlHeight, t)!,
+      controlMinWidth: lerpDouble(controlMinWidth, other.controlMinWidth, t)!,
       maxContentWidth: lerpDouble(maxContentWidth, other.maxContentWidth, t)!,
     );
   }
@@ -122,6 +129,7 @@ class AppDimensions extends ThemeExtension<AppDimensions> {
     double? iconSizeLarge,
     double? strokeWidth,
     double? controlHeight,
+    double? controlMinWidth,
     double? maxContentWidth,
   }) {
     return AppDimensions(
@@ -135,6 +143,7 @@ class AppDimensions extends ThemeExtension<AppDimensions> {
       iconSizeLarge: iconSizeLarge ?? this.iconSizeLarge,
       strokeWidth: strokeWidth ?? this.strokeWidth,
       controlHeight: controlHeight ?? this.controlHeight,
+      controlMinWidth: controlMinWidth ?? this.controlMinWidth,
       maxContentWidth: maxContentWidth ?? this.maxContentWidth,
     );
   }
@@ -153,6 +162,7 @@ class AppDimensions extends ThemeExtension<AppDimensions> {
       spacingLarge: (json['spacingLarge'] as num?)?.toDouble(),
       strokeWidth: (json['strokeWidth'] as num?)?.toDouble(),
       screenPadding: (json['screenPadding'] as num?)?.toDouble(),
+      controlMinWidth: (json['controlMinWidth'] as num?)?.toDouble(),
       maxContentWidth: (json['maxContentWidth'] as num?)?.toDouble(),
     );
   }
@@ -169,6 +179,9 @@ class AppDimensions extends ThemeExtension<AppDimensions> {
       'spacingMedium': spacingMedium,
       'spacingLarge': spacingLarge,
       'strokeWidth': strokeWidth,
+      'screenPadding': screenPadding,
+      'controlMinWidth': controlMinWidth,
+      'maxContentWidth': maxContentWidth,
     };
   }
 }

@@ -177,7 +177,7 @@ class _IntentButtonState extends State<IntentButton>
         disabledForegroundColor: theme.colorScheme.onSurface.withValues(
           alpha: 0.38,
         ),
-        minimumSize: Size(0, dimensions.controlHeight),
+        minimumSize: Size(dimensions.controlMinWidth, dimensions.controlHeight),
         padding: const EdgeInsets.symmetric(horizontal: 16),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(dimensions.borderRadius),
@@ -193,7 +193,7 @@ class _IntentButtonState extends State<IntentButton>
     return OutlinedButton(
       onPressed: _effectiveOnPressed,
       style: OutlinedButton.styleFrom(
-        minimumSize: Size(0, dimensions.controlHeight),
+        minimumSize: Size(dimensions.controlMinWidth, dimensions.controlHeight),
         padding: const EdgeInsets.symmetric(horizontal: 16),
         disabledForegroundColor: theme.colorScheme.onSurface.withValues(
           alpha: 0.38,
@@ -218,7 +218,7 @@ class _IntentButtonState extends State<IntentButton>
       onPressed: _effectiveOnPressed,
       style: TextButton.styleFrom(
         foregroundColor: theme.colorScheme.onSurface,
-        minimumSize: Size(0, dimensions.controlHeight),
+        minimumSize: Size(dimensions.controlMinWidth, dimensions.controlHeight),
         padding: const EdgeInsets.symmetric(horizontal: 12),
         disabledForegroundColor: theme.colorScheme.onSurface.withValues(
           alpha: 0.38,
