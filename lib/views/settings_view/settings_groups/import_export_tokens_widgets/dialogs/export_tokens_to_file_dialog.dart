@@ -31,7 +31,6 @@ import '../../../../../model/enums/force_biometric_option.dart';
 import '../../../../../model/tokens/token.dart';
 import '../../../../../utils/encryption/token_encryption.dart';
 import '../../../../../utils/lock_auth.dart';
-import '../../../../../utils/riverpod/riverpod_providers/state_providers/status_message_provider.dart';
 import '../../../../../utils/validators.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 
@@ -220,9 +219,7 @@ class _ExportTokensToFileDialogState
       return true;
     } catch (e) {
       if (context.mounted) {
-        ref.read(statusMessageProvider.notifier).state = StatusMessage(
-          message: (l) => l.errorSavingFile,
-        );
+        showErrorStatusMessage(message: (l) => l.errorSavingFile, ref: ref);
       }
       setState(() => _exportPressed = false);
       return false;
@@ -242,9 +239,7 @@ class _ExportTokensToFileDialogState
       return true;
     } catch (e) {
       if (context.mounted) {
-        ref.read(statusMessageProvider.notifier).state = StatusMessage(
-          message: (l) => l.errorSavingFile,
-        );
+        showErrorStatusMessage(message: (l) => l.errorSavingFile, ref: ref);
       }
       setState(() => _exportPressed = false);
       return false;

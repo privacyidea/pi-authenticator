@@ -259,8 +259,11 @@ class PiContainerApi implements TokenContainerApi {
             EmptyResultDetail
           >();
     } catch (e) {
-      Logger.error('Failed to parse response', error: e);
-      rethrow;
+      Logger.debug(
+        "Failed to parse container finalization response: Respone is not from privacyIDEA server",
+        error: e,
+      );
+      throw ResponseError(response);
     }
 
     if (piResponse.isError) {

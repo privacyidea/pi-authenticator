@@ -82,7 +82,7 @@ sealed class PiServerResponse<
   static PiServerResponse<V, D> fromJson<
     V extends PiServerResultValue,
     D extends PiServerResultDetail
-  >(Map<String, dynamic> json, {int statisCode = 200}) {
+  >(Map<String, dynamic> json, {int statusCode = 200}) {
     Logger.debug('Received container sync response: $json');
     final map = validateMap(
       map: json,
@@ -101,7 +101,7 @@ sealed class PiServerResponse<
       name: 'PiServerResponse#fromJson',
     );
     return PiServerResponse<V, D>.success(
-      statusCode: statisCode,
+      statusCode: statusCode,
       id: map[ID] as int,
       jsonrpc: map[JSONRPC] as String,
       result: PiServerResult<V>.fromResultMap(
@@ -121,9 +121,19 @@ sealed class PiServerResponse<
     V extends PiServerResultValue,
     D extends PiServerResultDetail
   >(Response response) {
+    late final Map<String, dynamic> json;
+    try {
+      json = jsonDecode(response.body);
+    } catch (e) {
+      throw FormatException(
+        'Failed to parse response body as JSON: ${response.body}',
+        e,
+      );
+    }
+
     return PiServerResponse.fromJson<V, D>(
-      jsonDecode(response.body),
-      statisCode: response.statusCode,
+      json,
+      statusCode: response.statusCode,
     );
   }
 }

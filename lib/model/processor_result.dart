@@ -21,10 +21,8 @@ import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 
-import '../utils/globals.dart';
 import '../utils/logger.dart';
 import '../utils/object_validator/object_validators.dart';
-import '../utils/riverpod/riverpod_providers/state_providers/status_message_provider.dart';
 import '../utils/view_utils.dart';
 
 part 'processor_result.freezed.dart';
@@ -70,7 +68,7 @@ extension ListProcessorResult<T> on List<ProcessorResult<T>> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       for (var failedResult in failedResults) {
-        globalRef?.read(statusMessageProvider.notifier).state = StatusMessage(
+        showErrorStatusMessage(
           message: (localization) => localization.malformedData,
           details: failedResult.message,
         );

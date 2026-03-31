@@ -27,6 +27,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
+import 'package:privacyidea_authenticator/utils/view_utils.dart';
 
 import '../../../../../../../repo/secure_push_request_repository.dart';
 import '../../../../../../../utils/pi_notifications.dart';
@@ -39,7 +40,6 @@ import 'logger.dart';
 import 'privacyidea_io_client.dart';
 import 'riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import 'riverpod/riverpod_providers/generated_providers/token_notifier.dart';
-import 'riverpod/riverpod_providers/state_providers/status_message_provider.dart';
 import 'rsa_utils.dart';
 import 'utils.dart';
 
@@ -345,7 +345,7 @@ class PushProvider {
     if (connectivityResult.contains(ConnectivityResult.none)) {
       if (isManually) {
         Logger.info('Tried to poll without any internet connection available.');
-        globalRef?.read(statusMessageProvider.notifier).state = StatusMessage(
+        showErrorStatusMessage(
           message: (localization) => localization.pollingFailed,
           details: (localization) => localization.noNetworkConnection,
         );
@@ -381,7 +381,7 @@ class PushProvider {
     Logger.info(rsaUtils.runtimeType.toString());
     String? signature = await rsaUtils.trySignWithToken(token, message);
     if (signature == null) {
-      globalRef?.read(statusMessageProvider.notifier).state = StatusMessage(
+      showErrorStatusMessage(
         message: (localization) => localization.pollingFailedFor(token.serial),
         details: (localization) => localization.couldNotSignMessage,
       );
@@ -412,7 +412,7 @@ class PushProvider {
             );
     } catch (_) {
       if (isManually) {
-        globalRef?.read(statusMessageProvider.notifier).state = StatusMessage(
+        showErrorStatusMessage(
           message: (localization) =>
               localization.errorWhenPullingChallenges(token.serial),
           details: (localization) => localization.couldNotConnectToServer,
@@ -428,9 +428,7 @@ class PushProvider {
           challengeList = _getAndValidateDataFromResponse(response);
         } catch (_) {
           if (isManually) {
-            globalRef
-                ?.read(statusMessageProvider.notifier)
-                .state = StatusMessage(
+            showErrorStatusMessage(
               message: (localization) =>
                   localization.errorWhenPullingChallenges(token.serial),
               details: (localization) => localization.pushRequestParseError,
@@ -444,7 +442,7 @@ class PushProvider {
       case 403:
         final error = getErrorMessageFromResponse(response);
         if (isManually) {
-          globalRef?.read(statusMessageProvider.notifier).state = StatusMessage(
+          showErrorStatusMessage(
             message: (localization) =>
                 localization.pollingFailedFor(token.serial),
             details: error != null
@@ -462,7 +460,7 @@ class PushProvider {
       default:
         final error = getErrorMessageFromResponse(response);
         if (isManually) {
-          globalRef?.read(statusMessageProvider.notifier).state = StatusMessage(
+          showErrorStatusMessage(
             message: (localization) =>
                 localization.pollingFailedFor(token.serial),
             details: error != null

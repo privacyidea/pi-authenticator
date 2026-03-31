@@ -25,6 +25,7 @@ import '../../l10n/app_localizations.dart';
 import '../../model/enums/algorithms.dart';
 import '../../model/enums/encodings.dart';
 import '../../model/enums/token_types.dart';
+import '../../widgets/status_bar.dart';
 import 'add_token_manually_view_widgets/add_tokens_manually/add_daypassword_manually.dart';
 import 'add_token_manually_view_widgets/add_tokens_manually/add_hotp_manually.dart';
 import 'add_token_manually_view_widgets/add_tokens_manually/add_steam_manually.dart';
@@ -152,28 +153,30 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
         ),
       ),
       body: SafeArea(
-        child: Column(
-          children: [
-            PageViewIndicator(
-              controller: pageController,
-              icons: [Icon(Icons.edit), Icon(Icons.link)],
-            ),
-            Expanded(
-              child: PageView(
+        child: StatusBar(
+          child: Column(
+            children: [
+              PageViewIndicator(
                 controller: pageController,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
-                    child: page,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
-                    child: LinkInputView(),
-                  ),
-                ],
+                icons: [Icon(Icons.edit), Icon(Icons.link)],
               ),
-            ),
-          ],
+              Expanded(
+                child: PageView(
+                  controller: pageController,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+                      child: page,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 16.0),
+                      child: LinkInputView(),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

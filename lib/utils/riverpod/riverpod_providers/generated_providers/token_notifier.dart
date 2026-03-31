@@ -29,7 +29,6 @@ import 'package:mutex/mutex.dart';
 import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/model/extensions/token_list_extension.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/localization_notifier.dart';
-import 'package:privacyidea_authenticator/utils/view_utils.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../../../model/extensions/enums/push_token_rollout_state_extension.dart';
@@ -504,11 +503,12 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       await firebaseUtils.deleteFirebaseToken();
     } on SocketException {
       Logger.warning('Could not delete firebase token.');
-      ref.read(statusMessageProvider.notifier).state = StatusMessage(
-        message: (localization) =>
-            localization.errorUnlinkingPushToken(token.label),
-        details: (localization) => localization.checkYourNetwork,
-      );
+      ref
+          .read(statusProvider.notifier)
+          .show(
+            (localization) => localization.errorUnlinkingPushToken(token.label),
+            details: (localization) => localization.checkYourNetwork,
+          );
       return false;
     }
     final deleted = await _removeToken(token);
@@ -524,12 +524,14 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       Logger.warning(
         'Could not update firebase token because no firebase token is available.',
       );
-      ref.read(statusMessageProvider.notifier).state = StatusMessage(
-        message: (localization) =>
-            localization.errorSynchronizationNoNetworkConnection,
-        details: (localization) =>
-            localization.syncFbTokenManuallyWhenNetworkIsAvailable,
-      );
+      ref
+          .read(statusProvider.notifier)
+          .show(
+            (localization) =>
+                localization.errorSynchronizationNoNetworkConnection,
+            details: (localization) =>
+                localization.syncFbTokenManuallyWhenNetworkIsAvailable,
+          );
       return deleted;
     }
 
@@ -544,12 +546,14 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       Logger.warning(
         'Could not update firebase token for ${notUpdated.length} tokens.',
       );
-      ref.read(statusMessageProvider.notifier).state = StatusMessage(
-        message: (localization) =>
-            localization.errorSynchronizationNoNetworkConnection,
-        details: (localization) =>
-            localization.syncFbTokenManuallyWhenNetworkIsAvailable,
-      );
+      ref
+          .read(statusProvider.notifier)
+          .show(
+            (localization) =>
+                localization.errorSynchronizationNoNetworkConnection,
+            details: (localization) =>
+                localization.syncFbTokenManuallyWhenNetworkIsAvailable,
+          );
     }
     return deleted;
   }
@@ -595,10 +599,12 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
 
     if (token.expirationDate?.isBefore(DateTime.now()) == true) {
       Logger.info('Token "${token.id}" is expired.');
-      ref.read(statusMessageProvider.notifier).state = StatusMessage(
-        message: (loc) => loc.errorRollOutNotPossibleAnymore,
-        details: (loc) => loc.errorTokenExpired(token.label),
-      );
+      ref
+          .read(statusProvider.notifier)
+          .show(
+            (loc) => loc.errorRollOutNotPossibleAnymore,
+            details: (loc) => loc.errorTokenExpired(token.label),
+          );
       await _removeToken(token);
       return false;
     }
@@ -638,10 +644,12 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       return await firebaseUtils.getFBToken();
     } catch (e, s) {
       Logger.warning('Could not get firebase token.', error: e, stackTrace: s);
-      showErrorStatusMessage(
-        message: (l) => l.errorRollOutFailed(token.label),
-        details: (l) => l.noFbToken,
-      );
+      ref
+          .read(statusProvider.notifier)
+          .show(
+            (l) => l.errorRollOutFailed(token.label),
+            details: (l) => l.checkYourNetwork,
+          );
       await _updateStatus(token, PushTokenRollOutState.sendRSAPublicKeyFailed);
       return null;
     }
@@ -713,9 +721,9 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       return true;
     } catch (e, s) {
       Logger.error('Roll out failed.', error: e, stackTrace: s);
-      ref.read(statusMessageProvider.notifier).state = StatusMessage(
-        message: (loc) => loc.errorRollOutUnknownError(token.label),
-      );
+      ref
+          .read(statusProvider.notifier)
+          .show((loc) => loc.errorRollOutUnknownError(token.label));
       await _updateStatus(token, PushTokenRollOutState.sendRSAPublicKeyFailed);
       return false;
     }
@@ -1096,6 +1104,9 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
         );
       }
     }
-    ref.read(statusMessageProvider.notifier).state = statusMessage;
+
+    ref
+        .read(statusProvider.notifier)
+        .show(statusMessage.message, details: statusMessage.details);
   }
 }

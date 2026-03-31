@@ -450,7 +450,7 @@ void _testPrivacyIdeaContainerApi() {
           }
           final publicEncKeyClientB64 = invocationBody['public_enc_key_client'];
           final containerDictClient =
-              '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"tokentype":"HOTP","label":"label1","issuer":"privacyIDEA","pin":"False","offline":false,"algorithm":"SHA1","digits":"6","otp":["435986","964213"],"counter":"5"}]}';
+              '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"tokentype":"HOTP","label":"label1","issuer":"privacyIDEA","pin":"False","offline":false,"app_force_unlock":"none","algorithm":"SHA1","digits":"6","otp":["435986","964213"],"counter":"5"}]}';
 
           final signMessage2 =
               '$containerChallengeNonce|'
@@ -460,51 +460,62 @@ void _testPrivacyIdeaContainerApi() {
               '$publicEncKeyClientB64|'
               '$containerDictClient';
 
-          if (invocationUrl.toString() ==
-                  'http://example.com/container/synchronize' &&
-              invocationBody['container_dict_client'] == containerDictClient &&
-              EccUtils().validateSignature(
-                tokenContainer.ecPublicClientKey!,
-                invocationBody['signature']!,
-                signMessage2,
-              )) {
-            return Response(
-              jsonEncode({
-                'id': 5,
-                'jsonrpc': '2.0',
-                'result': {
-                  'status': true,
-                  'value': {
-                    'container_dict_server':
-                        'oAI8Mq9tdIffSbuX62L8bSN3ZZ7wIGrip_pDCGY59Qz32DziorR4BMZ9vf_Vu5aUeDophX4Hdq_DdK2OJpzlYywSe5mysluVpCepGqr8xsGpTHwU5lPjIAN-OFCNO1_u2QH3dgwbZDVoHyPKfwICkULXqoIHmtb6BOtWzpMtC2Sd8v0ytA5HY7dgpO5MldidXrhI6RBdqfjJoknwnC7girLqZj0otDjZvfQrz3RFtCBdTqa6e4gxsnIEE8c1UTohvEN_LNvkP4sx7xpO3uI048ZXg8YxJMZThdAK5ai36cEGKmRuQVbM01DVeJHQHXwgacHIGKTTNgoUJb-g-7Qf-TJdhsrAH9S6eEiJLv8N_S2eRNfXubPlO9trK9HRsEra6I3f1Epw8-GRHB9CW5Yd6U_e9-ndaNKMGXkbUUaGF_wLDTqPnLSzgiNgDlAZtfaTHJRYqm-pBqDXHUZe7mgvLUqOhTHKIuBrQxW2t8TZ5VWU1psVT70D4J4RR9MInmZvUDcO__AqnAXQsHiaoWF-z2QSmX9I5Em8jpF5fQSgHNJBM3UEzBHJEE_D6dxnoz5M1O314qz3YIy5JphBssRjfBYhxdRPB5nYBp2EpSvBvAYHrbu5Iv431JG05nLbb_4AgOsJDm1RhGjqCcjbvDYKpyN6ewoUP--q0L-eZPxUlRGeITuqMmNpIVXlCiPiJ9u2L1zQNdPv0OEvhkOtd1vFm492sZ7Mr9nyzJ13f5Ca86smHK1sDDYczjqHlxpevqtoDxlpgCQqTv_XzF6DjXRHPtNB6hiAuP-jIzCTL5RYokj5nv28Ih3dCRCVRfU8CVcz8KiRVBSo6WTQ_Q7DzL_ZqcmK2xnlwGdmoWVhTXUp75ed1YjSwGaVQ6D5w50ZgWNP5YYiJIUpN27WS3akEIDrwpm7h0ZctP8Kvlj46VRxd2Urhi_6NafWBnX4M8Jo6AWsp2hoFl6i2WoSa9c2kOi-OvVg8PzHFknNiFSjHTvytm-Q6zxpm--6kia1xbdRdEDoCD4YW901GJXoZOKtfUAA7soODoI5mNJT9D_ZXBuAJcDqjEkKpZWMWyYkfOwrTqlsrSKtYue4tQ4INBnhfwTZk2ppTwlRFp6jOjHTgsSdcfCKOzresp75u8My30dbIhzRIYgFp6jwcRikAlBbwXBVBT7iR_6Nrw==',
-                    'encryption_algorithm': 'AES',
-                    'encryption_params': {
-                      'algorithm': 'AES',
-                      'mode': 'GCM',
-                      'init_vector': 'Q3f4NMAuDFrdI9R3uZ7DHA==',
-                      'tag': 'iThLozfTiK4twnPXnvF0nA==',
-                    },
-                    'policies': {
-                      'disable_client_container_unregister': true,
-                      'disable_client_token_deletion': true,
-                      'container_client_rollover': false,
-                      'initially_add_tokens_to_container': false,
-                    },
-                    'public_server_key':
-                        'AMc1nbpqrEOgQLe1-nR2ExnqE1IM8qMDETYw65IU6wQ=',
-                    'server_url': 'http://example.com/container/synchronize',
-                  },
-                },
-                'time': 1.0,
-                'version': 'privacyIDEA 3.6.2',
-                'versionnumber': '3.6.2',
-                'detail': null,
-                'signature': 'signature',
-              }),
-              200,
+          if (invocationUrl.toString() !=
+              'http://example.com/container/synchronize') {
+            Logger.warning(
+              'invocationUrl.toString() did not match expected value: ${invocationUrl.toString()}',
             );
+            return Response(jsonEncode(exampleError), 400);
           }
-          return Response(jsonEncode(exampleError), 400);
+          if (invocationBody['container_dict_client'] != containerDictClient) {
+            Logger.warning(
+              'invocationBody[\'container_dict_client\'] did not match expected value: ${invocationBody['container_dict_client']}',
+            );
+            return Response(jsonEncode(exampleError), 400);
+          }
+          if (!EccUtils().validateSignature(
+            tokenContainer.ecPublicClientKey!,
+            invocationBody['signature']!,
+            signMessage2,
+          )) {
+            Logger.warning('Signature validation failed');
+            return Response(jsonEncode(exampleError), 400);
+          }
+          return Response(
+            jsonEncode({
+              'id': 5,
+              'jsonrpc': '2.0',
+              'result': {
+                'status': true,
+                'value': {
+                  'container_dict_server':
+                      'oAI8Mq9tdIffSbuX62L8bSN3ZZ7wIGrip_pDCGY59Qz32DziorR4BMZ9vf_Vu5aUeDophX4Hdq_DdK2OJpzlYywSe5mysluVpCepGqr8xsGpTHwU5lPjIAN-OFCNO1_u2QH3dgwbZDVoHyPKfwICkULXqoIHmtb6BOtWzpMtC2Sd8v0ytA5HY7dgpO5MldidXrhI6RBdqfjJoknwnC7girLqZj0otDjZvfQrz3RFtCBdTqa6e4gxsnIEE8c1UTohvEN_LNvkP4sx7xpO3uI048ZXg8YxJMZThdAK5ai36cEGKmRuQVbM01DVeJHQHXwgacHIGKTTNgoUJb-g-7Qf-TJdhsrAH9S6eEiJLv8N_S2eRNfXubPlO9trK9HRsEra6I3f1Epw8-GRHB9CW5Yd6U_e9-ndaNKMGXkbUUaGF_wLDTqPnLSzgiNgDlAZtfaTHJRYqm-pBqDXHUZe7mgvLUqOhTHKIuBrQxW2t8TZ5VWU1psVT70D4J4RR9MInmZvUDcO__AqnAXQsHiaoWF-z2QSmX9I5Em8jpF5fQSgHNJBM3UEzBHJEE_D6dxnoz5M1O314qz3YIy5JphBssRjfBYhxdRPB5nYBp2EpSvBvAYHrbu5Iv431JG05nLbb_4AgOsJDm1RhGjqCcjbvDYKpyN6ewoUP--q0L-eZPxUlRGeITuqMmNpIVXlCiPiJ9u2L1zQNdPv0OEvhkOtd1vFm492sZ7Mr9nyzJ13f5Ca86smHK1sDDYczjqHlxpevqtoDxlpgCQqTv_XzF6DjXRHPtNB6hiAuP-jIzCTL5RYokj5nv28Ih3dCRCVRfU8CVcz8KiRVBSo6WTQ_Q7DzL_ZqcmK2xnlwGdmoWVhTXUp75ed1YjSwGaVQ6D5w50ZgWNP5YYiJIUpN27WS3akEIDrwpm7h0ZctP8Kvlj46VRxd2Urhi_6NafWBnX4M8Jo6AWsp2hoFl6i2WoSa9c2kOi-OvVg8PzHFknNiFSjHTvytm-Q6zxpm--6kia1xbdRdEDoCD4YW901GJXoZOKtfUAA7soODoI5mNJT9D_ZXBuAJcDqjEkKpZWMWyYkfOwrTqlsrSKtYue4tQ4INBnhfwTZk2ppTwlRFp6jOjHTgsSdcfCKOzresp75u8My30dbIhzRIYgFp6jwcRikAlBbwXBVBT7iR_6Nrw==',
+                  'encryption_algorithm': 'AES',
+                  'encryption_params': {
+                    'algorithm': 'AES',
+                    'mode': 'GCM',
+                    'init_vector': 'Q3f4NMAuDFrdI9R3uZ7DHA==',
+                    'tag': 'iThLozfTiK4twnPXnvF0nA==',
+                  },
+                  'policies': {
+                    'disable_client_container_unregister': true,
+                    'disable_client_token_deletion': true,
+                    'container_client_rollover': false,
+                    'initially_add_tokens_to_container': false,
+                  },
+                  'public_server_key':
+                      'AMc1nbpqrEOgQLe1-nR2ExnqE1IM8qMDETYw65IU6wQ=',
+                  'server_url': 'http://example.com/container/synchronize',
+                },
+              },
+              'time': 1.0,
+              'version': 'privacyIDEA 3.6.2',
+              'versionnumber': '3.6.2',
+              'detail': null,
+              'signature': 'signature',
+            }),
+            200,
+          );
         });
 
         final type = X25519().keyPairType;
@@ -592,7 +603,7 @@ void _testPrivacyIdeaContainerApi() {
           }
           final publicEncKeyClientB64 = invocationBody['public_enc_key_client'];
           final containerDictClient =
-              '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"OATH00068B93","tokentype":"HOTP","label":"OATH00068B93","issuer":"privacyIDEA","pin":"False","offline":false,"algorithm":"SHA1","digits":"6","counter":"1"}]}';
+              '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"OATH00068B93","tokentype":"HOTP","label":"OATH00068B93","issuer":"privacyIDEA","pin":"False","offline":false,"app_force_unlock":"none","algorithm":"SHA1","digits":"6","counter":"1"}]}';
 
           final signMessage2 =
               '$containerChallengeNonce|'
@@ -745,7 +756,7 @@ void _testPrivacyIdeaContainerApi() {
           }
           final publicEncKeyClientB64 = invocationBody['public_enc_key_client'];
           final containerDictClient =
-              '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"TOTP00011B1F","tokentype":"TOTP","label":"TOTP00011B1F","issuer":"privacyIDEA","pin":"False","offline":false,"algorithm":"SHA1","digits":"6","period":"30"},{"tokentype":"HOTP","label":"OATH00166051","issuer":"privacyIDEA","pin":"False","offline":false,"algorithm":"SHA1","digits":"6","otp":["079447","501895"],"counter":"1"}]}';
+              '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"TOTP00011B1F","tokentype":"TOTP","label":"TOTP00011B1F","issuer":"privacyIDEA","pin":"False","offline":false,"app_force_unlock":"none","algorithm":"SHA1","digits":"6","period":"30"},{"tokentype":"HOTP","label":"OATH00166051","issuer":"privacyIDEA","pin":"False","offline":false,"app_force_unlock":"none","algorithm":"SHA1","digits":"6","otp":["079447","501895"],"counter":"1"}]}';
 
           final signMessage2 =
               '$containerChallengeNonce|'
@@ -896,7 +907,7 @@ void _testPrivacyIdeaContainerApi() {
           }
           final publicEncKeyClientB64 = invocationBody['public_enc_key_client'];
           final containerDictClient =
-              '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"TOTP00011B1F","tokentype":"TOTP","label":"TOTP00011B1F","issuer":"privacyIDEA","pin":"False","offline":false,"algorithm":"SHA1","digits":"6","period":"30"},{"serial":"OATH00166051","tokentype":"HOTP","label":"OATH00166051","issuer":"privacyIDEA","pin":"False","offline":false,"algorithm":"SHA1","digits":"6","counter":"1"}]}';
+              '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"TOTP00011B1F","tokentype":"TOTP","label":"TOTP00011B1F","issuer":"privacyIDEA","pin":"False","offline":false,"app_force_unlock":"none","algorithm":"SHA1","digits":"6","period":"30"},{"serial":"OATH00166051","tokentype":"HOTP","label":"OATH00166051","issuer":"privacyIDEA","pin":"False","offline":false,"app_force_unlock":"none","algorithm":"SHA1","digits":"6","counter":"1"}]}';
 
           final signMessage2 =
               '$containerChallengeNonce|'
@@ -1041,7 +1052,7 @@ void _testPrivacyIdeaContainerApi() {
           final publicEncKeyClientB64 = invocationBody['public_enc_key_client'];
 
           final containerDictClient =
-              '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"TOTP00011B1F","tokentype":"TOTP","label":"TOTP00011B1F","issuer":"privacyIDEA","pin":"False","offline":false,"algorithm":"SHA1","digits":"6","period":"30"},{"tokentype":"HOTP","label":"OATH00166051","issuer":"privacyIDEA","pin":"False","offline":false,"algorithm":"SHA1","digits":"6","otp":["079447","501895"],"counter":"1"}]}';
+              '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"TOTP00011B1F","tokentype":"TOTP","label":"TOTP00011B1F","issuer":"privacyIDEA","pin":"False","offline":false,"app_force_unlock":"none","algorithm":"SHA1","digits":"6","period":"30"},{"tokentype":"HOTP","label":"OATH00166051","issuer":"privacyIDEA","pin":"False","offline":false,"app_force_unlock":"none","algorithm":"SHA1","digits":"6","otp":["079447","501895"],"counter":"1"}]}';
 
           final signMessage2 =
               '$containerChallengeNonce|'

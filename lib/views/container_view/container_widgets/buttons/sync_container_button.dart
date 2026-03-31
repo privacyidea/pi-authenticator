@@ -17,10 +17,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../model/enums/sync_state.dart';
 import '../../../../model/token_container.dart';
 import '../../../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 import '../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
@@ -40,11 +40,18 @@ class SyncContainerButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     if (isPreview) return const Icon(Icons.sync, size: 40);
 
+    final currentContainer = ref
+        .watch(tokenContainerProvider)
+        .whenOrNull(
+          data: (state) => state.currentOf<TokenContainerFinalized>(container),
+        );
+
     return IntentButton(
       intent: DialogActionIntent.neutral,
-      // The button is disabled (null) if the container is already syncing
+      isLoading: currentContainer?.syncState == SyncState.syncing,
       onPressed: () async {
         final tokenState = await ref.read(tokenProvider.future);
+        if (!context.mounted) return;
         await ref
             .read(tokenContainerProvider.notifier)
             .syncContainers(
@@ -52,7 +59,6 @@ class SyncContainerButton extends ConsumerWidget {
               containersToSync: [container],
               isManually: true,
             );
-        return;
       },
       child: const Icon(Icons.sync, size: 40),
     );

@@ -20,6 +20,7 @@
 import 'package:flutter/material.dart';
 
 import '../l10n/app_localizations.dart';
+import '../views/view_interface.dart';
 import 'globals.dart';
 import 'logger.dart';
 import 'riverpod/riverpod_providers/state_providers/status_message_provider.dart';
@@ -88,34 +89,31 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? _showSnackBar(
 void showErrorStatusMessage({
   required String Function(AppLocalizations) message,
   String Function(AppLocalizations)? details,
+  WidgetRef? ref,
 }) {
-  final ref = globalRef;
+  ref ??= globalRef;
   Logger.warning('$message : $details');
   if (ref == null) {
     Logger.error('Could not show status message: globalRef is null');
     return;
   }
-  ref.read(statusMessageProvider.notifier).state = StatusMessage(
-    message: message,
-    details: details,
-  );
+  ref.read(statusProvider.notifier).show(message, details: details);
 }
 
 void showSuccessStatusMessage({
   required String Function(AppLocalizations) message,
   String Function(AppLocalizations)? details,
+  WidgetRef? ref,
 }) {
-  final ref = globalRef;
+  ref ??= globalRef;
   Logger.warning('$message : $details');
   if (ref == null) {
     Logger.error('Could not show status message: globalRef is null');
     return;
   }
-  ref.read(statusMessageProvider.notifier).state = StatusMessage(
-    message: message,
-    details: details,
-    isError: false,
-  );
+  ref
+      .read(statusProvider.notifier)
+      .show(message, details: details, isError: false);
 }
 
 Future<T?> showAsyncDialog<T>({

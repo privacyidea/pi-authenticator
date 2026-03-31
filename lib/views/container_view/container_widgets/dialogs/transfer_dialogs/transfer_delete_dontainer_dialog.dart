@@ -53,6 +53,7 @@ class _TransferDeleteContainerDialogState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final tokenState = await ref.read(tokenProvider.future);
+      if (!ref.context.mounted) return;
       final failedContainers = await ref
           .read(tokenContainerProvider.notifier)
           .syncContainers(

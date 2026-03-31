@@ -91,6 +91,7 @@ class _TransferContainerDialogState
       return showErrorStatusMessage(
         message: (localization) => localization.transferContainerFailed,
         details: (_) => e.toString(),
+        ref: ref,
       );
     }
     if (!mounted) return;

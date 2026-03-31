@@ -1,12 +1,13 @@
 analyzer:
   errors:
     constant_identifier_names: ignore
+
 include: package:flutter_lints/flutter.yaml
 
 linter:
   rules:
+    use_build_context_synchronously: true
     unnecessary_string_escapes: false
     unnecessary_string_interpolations: false
-    # unawaited_futures: true
     avoid_redundant_argument_values: true
     avoid_void_async: true

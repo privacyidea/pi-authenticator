@@ -24,20 +24,18 @@ import '../../../logger.dart';
 import '../generated_providers/token_notifier.dart';
 import '../state_providers/status_message_provider.dart';
 
-final connectivityProvider = StreamProvider<List<ConnectivityResult>>(
-  (ref) {
-    Logger.info("New connectivityProvider created");
-    ref.read(tokenProvider.future).then(
-      (newState) {
-        Connectivity().checkConnectivity().then((connectivity) {
-          Logger.info("First connectivity check: $connectivity");
-          final hasNoConnection = connectivity.contains(ConnectivityResult.none);
-          if (hasNoConnection && newState.hasPushTokens) {
-            ref.read(statusMessageProvider.notifier).state = StatusMessage(message: (localization) => localization.noNetworkConnection);
-          }
-        });
-      },
-    );
-    return Connectivity().onConnectivityChanged;
-  },
-);
+final connectivityProvider = StreamProvider<List<ConnectivityResult>>((ref) {
+  Logger.info("New connectivityProvider created");
+  ref.read(tokenProvider.future).then((newState) {
+    Connectivity().checkConnectivity().then((connectivity) {
+      Logger.info("First connectivity check: $connectivity");
+      final hasNoConnection = connectivity.contains(ConnectivityResult.none);
+      if (hasNoConnection && newState.hasPushTokens) {
+        ref
+            .read(statusProvider.notifier)
+            .show((localization) => localization.noNetworkConnection);
+      }
+    });
+  });
+  return Connectivity().onConnectivityChanged;
+});

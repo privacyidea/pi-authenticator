@@ -35,7 +35,6 @@ import '../../../../../../../model/processor_result.dart';
 import '../../../../../../../model/tokens/token.dart';
 import '../../../../../../../utils/privacyidea_io_client.dart';
 import '../../../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
-import '../../../../../../../utils/riverpod/riverpod_providers/state_providers/status_message_provider.dart';
 import '../../../../../../../utils/view_utils.dart';
 import '../../../../api/impl/privacy_idea_container_api.dart';
 import '../../../../api/interfaces/container_api.dart';
@@ -694,14 +693,13 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
         await _curentOf(container),
         response,
       );
-      _finalizationMutex.release();
       return finalizedContainer;
     } on StateError catch (e) {
       if (isManually) {
-        ref.read(statusMessageProvider.notifier).state = StatusMessage(
+        showErrorStatusMessage(
           message: (localization) => container.finalizationState.asFailed
               .rolloutMsgLocalized(localization),
-          details: (localization) => e.toString(),
+          details: (_) => e.toString(),
         );
       }
     } on LocalizedArgumentError catch (e) {
@@ -730,13 +728,14 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
         'Failed to finalize container ${container.serial}',
         error: e,
       );
+    } finally {
+      await updateContainer(
+        container,
+        (TokenContainerUnfinalized c) =>
+            c.copyWith(finalizationState: c.finalizationState.asFailed),
+      );
+      _finalizationMutex.release();
     }
-    await updateContainer(
-      container,
-      (TokenContainerUnfinalized c) =>
-          c.copyWith(finalizationState: c.finalizationState.asFailed),
-    );
-    _finalizationMutex.release();
     return null;
   }
 
@@ -811,12 +810,10 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
     if (container == null) throw StateError('Container was removed');
     try {
       response = (await _containerApi.finalizeContainer(container, eccUtils));
-    } catch (_) {
-      container = await updateContainer(
-        container,
-        (TokenContainerUnfinalized c) => c.copyWith(
-          finalizationState: FinalizationState.sendingPublicKeyFailed,
-        ),
+    } on ResponseError catch (e) {
+      Logger.debug(
+        "Failed to parse container finalization response: Respone is not from privacyIDEA server",
+        error: e,
       );
       rethrow;
     }

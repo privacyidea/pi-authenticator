@@ -163,6 +163,7 @@ Future<void> dragSortableOnAccept({
 }) async {
   var allSortables = await ref.read(sortablesProvider.future);
   if (dragedSortable is TokenFolder) {
+    if (!ref.context.mounted) return;
     final tokensInFolder = (await ref.read(tokenProvider.future)).tokens
         .where((element) => element.folderId == dragedSortable.folderId)
         .toList();

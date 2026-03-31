@@ -33,14 +33,15 @@ class FakeTokenNotifier extends TokenNotifier {
 
 class FakeTokenContainerNotifier extends TokenContainerNotifier {
   final MockTokenContainerNotifier mock;
-  FakeTokenContainerNotifier(this.mock);
+  final List<TokenContainer> initialContainers;
+  FakeTokenContainerNotifier(this.mock, {this.initialContainers = const []});
 
   @override
   Future<TokenContainerState> build({
     required TokenContainerApi containerApi,
     required EccUtils eccUtils,
     required TokenContainerRepository repo,
-  }) async => TokenContainerState(containerList: []);
+  }) async => TokenContainerState(containerList: initialContainers);
 
   @override
   Future<Map<int, TokenContainerFinalized>> syncContainers({
@@ -65,6 +66,7 @@ void main() {
   setUp(() {
     mockContainer = MockTokenContainerFinalized();
     mockInternalNotifier = MockTokenContainerNotifier();
+    when(mockContainer.serial).thenReturn('SERIAL_1');
   });
 
   Future<void> pumpButton(
@@ -79,32 +81,24 @@ void main() {
         overrides: [
           tokenProvider.overrideWith(() => FakeTokenNotifier()),
           tokenContainerProvider.overrideWith(
-            () => FakeTokenContainerNotifier(mockInternalNotifier),
+            () => FakeTokenContainerNotifier(
+              mockInternalNotifier,
+              initialContainers: [mockContainer],
+            ),
           ),
           hasFirebaseProvider.overrideWith((ref) => Future.value(true)),
         ],
         child: MaterialApp(
           home: Scaffold(
-            body: SizedBox.expand(
-              child: Center(
-                child: SyncContainerButton(
-                  isPreview: isPreview,
-                  container: mockContainer,
-                ),
-              ),
+            body: SyncContainerButton(
+              isPreview: isPreview,
+              container: mockContainer,
             ),
           ),
         ),
       ),
     );
-
-    debugPrint('Pump complete for state: $state, isPreview: $isPreview');
-
-    debugPrint(tester.allWidgets.toString());
-
-    debugPrint('Looking for IntentButton: ${find.byType(IntentButton)}');
-    // Warte kurz auf das Layout
-    await tester.pumpAndSettle();
+    await tester.pump();
   }
 
   group('SyncContainerButton - Logic and States', () {
@@ -112,34 +106,50 @@ void main() {
       tester,
     ) async {
       await pumpButton(tester, state: SyncState.notStarted, isPreview: true);
-
-      await tester.pumpAndSettle();
-
       expect(find.byType(IntentButton), findsNothing);
       expect(find.byIcon(Icons.sync), findsOneWidget);
     });
 
-    testWidgets('should be enabled when SyncState is notStarted', (
+    testWidgets(
+      'should be enabled and NOT loading when SyncState is completed',
+      (tester) async {
+        await pumpButton(tester, state: SyncState.completed);
+        final button = tester.widget<IntentButton>(find.byType(IntentButton));
+        expect(button.onPressed, isNotNull);
+        expect(button.isLoading, isFalse);
+      },
+    );
+
+    testWidgets('should show loading state when SyncState is syncing', (
       tester,
     ) async {
-      await pumpButton(tester, state: SyncState.notStarted);
-
-      final button = tester.widget<IntentButton>(find.byType(IntentButton));
-      expect(button.onPressed, isNotNull);
-    });
-
-    testWidgets('should be disabled when SyncState is syncing', (tester) async {
       await pumpButton(tester, state: SyncState.syncing);
-
       final button = tester.widget<IntentButton>(find.byType(IntentButton));
-      expect(button.onPressed, isNull);
+      expect(button.isLoading, isTrue);
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
     });
 
-    testWidgets('should be enabled when SyncState is failed', (tester) async {
-      await pumpButton(tester, state: SyncState.failed);
+    testWidgets('should show loading state when pressed', (tester) async {
+      await pumpButton(tester, state: SyncState.completed);
 
-      final button = tester.widget<IntentButton>(find.byType(IntentButton));
-      expect(button.onPressed, isNotNull);
+      when(
+        mockInternalNotifier.syncContainers(
+          tokenState: anyNamed('tokenState'),
+          containersToSync: anyNamed('containersToSync'),
+          isManually: anyNamed('isManually'),
+          isInitSync: anyNamed('isInitSync'),
+        ),
+      ).thenAnswer((_) async {
+        await Future.delayed(const Duration(milliseconds: 100));
+        return <int, TokenContainerFinalized>{};
+      });
+
+      await tester.tap(find.byType(IntentButton));
+      await tester.pump();
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
+      await tester.pump(const Duration(milliseconds: 100));
+      await tester.pump();
     });
 
     testWidgets('should call syncContainers when pressed', (tester) async {

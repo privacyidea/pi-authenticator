@@ -95,6 +95,7 @@ class _AddTokenFolderDialogState extends ConsumerState<AddTokenFolderDialog> {
 
   Future<void> _handleCreate() async {
     final intro = await ref.read(introductionNotifierProvider.future);
+    if (!ref.context.mounted) return;
     if (!intro.isCompleted(Introduction.addFolder)) {
       await ref
           .read(introductionNotifierProvider.notifier)

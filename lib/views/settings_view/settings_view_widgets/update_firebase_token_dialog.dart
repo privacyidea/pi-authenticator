@@ -81,6 +81,7 @@ class _UpdateFirebaseTokenDialogState
       showErrorStatusMessage(
         message: (l) => l.firebaseToken,
         details: (l) => l.errorSynchronizationNoNetworkConnection,
+        ref: ref,
       );
       return;
     }

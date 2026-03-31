@@ -83,6 +83,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
             if (!mounted) return [];
             final tokenState = await ref.read(tokenProvider.future);
+            if (!ref.context.mounted) return [];
             ref
                 .read(tokenContainerProvider.notifier)
                 .syncContainers(tokenState: tokenState, isManually: false);
@@ -92,6 +93,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
           .then((values) async {
             if (!mounted) return;
             final tokenState = await ref.read(tokenProvider.future);
+            if (!ref.context.mounted) return;
             ref
                 .read(tokenContainerProvider.notifier)
                 .syncContainers(tokenState: tokenState, isManually: false);

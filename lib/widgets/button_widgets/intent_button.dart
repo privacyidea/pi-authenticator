@@ -50,6 +50,7 @@ class IntentButton extends StatefulWidget {
   final Widget child;
   final int delaySeconds;
   final int cooldownMs;
+  final bool isLoading;
 
   const IntentButton({
     super.key,
@@ -58,6 +59,7 @@ class IntentButton extends StatefulWidget {
     required this.child,
     this.delaySeconds = 0,
     this.cooldownMs = 0,
+    this.isLoading = false,
   });
 
   @override
@@ -66,10 +68,12 @@ class IntentButton extends StatefulWidget {
 
 class _IntentButtonState extends State<IntentButton>
     with SingleTickerProviderStateMixin {
-  bool _isLoading = false;
+  bool _isInternalLoading = false;
   bool _isCooldown = false;
   late int _currentDelay;
   late AnimationController _animation;
+
+  bool get _effectiveLoading => widget.isLoading || _isInternalLoading;
 
   @override
   void initState() {
@@ -99,7 +103,7 @@ class _IntentButtonState extends State<IntentButton>
   Future<void> _handlePress() async {
     if (widget.onPressed == null ||
         _isCooldown ||
-        _isLoading ||
+        _effectiveLoading ||
         _currentDelay > 0) {
       return;
     }
@@ -111,7 +115,7 @@ class _IntentButtonState extends State<IntentButton>
 
     if (mounted) {
       setState(() {
-        if (isFuture) _isLoading = true;
+        if (isFuture) _isInternalLoading = true;
         if (widget.cooldownMs > 0) _isCooldown = true;
       });
     }
@@ -128,14 +132,16 @@ class _IntentButtonState extends State<IntentButton>
 
     if (mounted) {
       setState(() {
-        _isLoading = false;
+        _isInternalLoading = false;
         _isCooldown = false;
       });
     }
   }
 
   VoidCallback? get _effectiveOnPressed {
-    if (widget.onPressed == null || _isCooldown || _isLoading) return null;
+    if (widget.onPressed == null || _isCooldown || _effectiveLoading) {
+      return null;
+    }
     if (_currentDelay > 0) return () {};
     return _handlePress;
   }
@@ -242,7 +248,7 @@ class _IntentButtonState extends State<IntentButton>
 
   Widget _buildChildWithStatus(AppDimensions dimensions) {
     if (_currentDelay > 0) return _buildCountdownStack(dimensions);
-    if (!_isLoading) return widget.child;
+    if (!_effectiveLoading) return widget.child;
 
     return Stack(
       alignment: Alignment.center,

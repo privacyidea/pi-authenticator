@@ -23,7 +23,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
-import '../../../utils/riverpod/riverpod_providers/state_providers/status_message_provider.dart';
+import '../../../utils/view_utils.dart';
 
 class LinkInputView extends ConsumerStatefulWidget {
   const LinkInputView({super.key});
@@ -37,9 +37,11 @@ class _LinkInputViewState extends ConsumerState<LinkInputView> {
 
   Future<void> addToken(Uri link) async {
     final linkHandled = await ref.read(tokenProvider.notifier).handleLink(link);
+    if (!ref.context.mounted) return;
     if (!linkHandled) {
-      ref.read(statusMessageProvider.notifier).state = StatusMessage(
+      showErrorStatusMessage(
         message: (localization) => localization.linkMustOtpAuth,
+        ref: ref,
       );
       return;
     }
@@ -64,10 +66,9 @@ class _LinkInputViewState extends ConsumerState<LinkInputView> {
                 try {
                   addToken(Uri.parse(text));
                 } catch (e) {
-                  ref
-                      .read(statusMessageProvider.notifier)
-                      .state = StatusMessage(
+                  showErrorStatusMessage(
                     message: (localization) => localization.invalidUrl,
+                    ref: ref,
                   );
                 }
               },
@@ -83,12 +84,12 @@ class _LinkInputViewState extends ConsumerState<LinkInputView> {
             icon: Icon(Icons.paste),
             onPressed: () async {
               ClipboardData? data = await Clipboard.getData('text/plain');
+              if (!ref.context.mounted) return;
               if (data == null || data.text == null || data.text!.isEmpty) {
                 if (context.mounted) {
-                  ref
-                      .read(statusMessageProvider.notifier)
-                      .state = StatusMessage(
+                  showErrorStatusMessage(
                     message: (localization) => localization.clipboardEmpty,
+                    ref: ref,
                   );
                 }
                 return;
@@ -112,8 +113,9 @@ class _LinkInputViewState extends ConsumerState<LinkInputView> {
             try {
               addToken(Uri.parse(textController.text));
             } catch (e) {
-              ref.read(statusMessageProvider.notifier).state = StatusMessage(
+              showErrorStatusMessage(
                 message: (localization) => localization.invalidUrl,
+                ref: ref,
               );
             }
           },

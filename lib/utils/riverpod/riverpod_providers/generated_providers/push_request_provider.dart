@@ -391,9 +391,7 @@ class PushRequestNotifier extends _$PushRequestNotifier {
           );
         } catch (e) {
           await _addOrReplacePushRequest(oldRequest);
-          ref.read(statusMessageProvider.notifier).state = StatusMessage(
-            message: (l) => l.connectionFailed,
-          );
+          ref.read(statusProvider.notifier).show((l) => l.connectionFailed);
           return null;
         }
       }
@@ -402,23 +400,27 @@ class PushRequestNotifier extends _$PushRequestNotifier {
       try {
         piResponse = response.asPiServerResponse<T, D>();
       } catch (e) {
-        ref.read(statusMessageProvider.notifier).state = StatusMessage(
-          message: (l) =>
-              '${l.sendPushRequestResponseFailed}\n${l.statusCode(response.statusCode)}',
-          details: (_) => 'Failed to parse response: $e',
-        );
+        ref
+            .read(statusProvider.notifier)
+            .show(
+              (l) =>
+                  '${l.sendPushRequestResponseFailed}\n${l.statusCode(response.statusCode)}',
+              details: (_) => 'Failed to parse response: $e',
+            );
         await _addOrReplacePushRequest(oldRequest);
         return null;
       }
       if (piResponse.isError) {
         await _addOrReplacePushRequest(oldRequest);
         final errorResponse = piResponse.asError!;
-        ref.read(statusMessageProvider.notifier).state = StatusMessage(
-          message: (l) =>
-              '${l.sendPushRequestResponseFailed}\n${l.statusCode(errorResponse.statusCode)}',
-          details: (_) =>
-              '${errorResponse.piServerResultError.code}: ${errorResponse.piServerResultError.message}',
-        );
+        ref
+            .read(statusProvider.notifier)
+            .show(
+              (l) =>
+                  '${l.sendPushRequestResponseFailed}\n${l.statusCode(errorResponse.statusCode)}',
+              details: (_) =>
+                  '${errorResponse.piServerResultError.code}: ${errorResponse.piServerResultError.message}',
+            );
         return null;
       }
 
