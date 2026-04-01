@@ -21,6 +21,7 @@ import 'dart:collection';
 
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
 
 final statusProvider = StateNotifierProvider<StatusNotifier, StatusState>(
   (ref) => StatusNotifier(),
@@ -32,6 +33,24 @@ class StatusMessage {
   final bool isError;
 
   StatusMessage({required this.message, this.details, this.isError = true});
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is StatusMessage &&
+        other.message(AppLocalizationsEn()) == message(AppLocalizationsEn()) &&
+        other.details?.call(AppLocalizationsEn()) ==
+            details?.call(AppLocalizationsEn()) &&
+        other.isError == isError;
+  }
+
+  @override
+  int get hashCode => Object.hashAll([
+    message(AppLocalizationsEn()),
+    details?.call(AppLocalizationsEn()),
+    isError,
+  ]);
 }
 
 class StatusState {

@@ -28,6 +28,7 @@ class OptionalObjectValidator<T extends Object> extends BaseValidator<T?> {
     try {
       return _executeTransform(value, name);
     } catch (e) {
+      Logger.debug('Failed to transform value "$value" for $name: $e');
       return null;
     }
   }
