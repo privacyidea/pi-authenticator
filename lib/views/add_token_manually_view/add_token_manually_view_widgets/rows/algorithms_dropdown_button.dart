@@ -35,10 +35,10 @@ class AlgorithmsDropdownButton extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) => LabeledDropdownButton<Algorithms>(
-        label: AppLocalizations.of(context)!.algorithm,
-        enabled: enabled,
-        valueNotifier: algorithmsNotifier,
-        values: allowedAlgorithms,
-        valueLabels: [for (final value in allowedAlgorithms) value.name],
-      );
+    label: AppLocalizations.of(context)!.algorithm,
+    enabled: enabled,
+    valueNotifier: algorithmsNotifier,
+    values: allowedAlgorithms,
+    valueLabels: [for (final value in allowedAlgorithms) value.name],
+  );
 }

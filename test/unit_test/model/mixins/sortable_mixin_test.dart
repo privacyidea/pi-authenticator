@@ -13,16 +13,18 @@ class _SortableTestClass with SortableMixin {
 
   @override
   SortableMixin copyWith({int? sortIndex, String? name}) => _SortableTestClass(
-        sortIndex: sortIndex ?? this.sortIndex,
-        name: name ?? this.name,
-      );
+    sortIndex: sortIndex ?? this.sortIndex,
+    name: name ?? this.name,
+  );
   @override
-  operator ==(Object other) => other is _SortableTestClass && other.name == name;
+  operator ==(Object other) =>
+      other is _SortableTestClass && other.name == name;
   @override
   int get hashCode => name.hashCode;
 
   @override
-  String toString() => "_SortableTestClass(sortIndex: $sortIndex, name: '$name')";
+  String toString() =>
+      "_SortableTestClass(sortIndex: $sortIndex, name: '$name')";
 }
 
 void _testSortableMixin() {
@@ -39,8 +41,8 @@ void _testSortableMixin() {
       });
       test('null', () {
         // Arrange
-        final a = _SortableTestClass(sortIndex: null, name: 'null');
-        final b = _SortableTestClass(sortIndex: null, name: 'null');
+        final a = _SortableTestClass(name: 'null');
+        final b = _SortableTestClass(name: 'null');
         // Act
         final result = a.compareTo(b);
         // Assert
@@ -60,7 +62,7 @@ void _testSortableMixin() {
       test('a = 1, b = null', () {
         // Arrange
         final a = _SortableTestClass(sortIndex: 1, name: '1');
-        final b = _SortableTestClass(sortIndex: null, name: 'null');
+        final b = _SortableTestClass(name: 'null');
         // Act
         final result = a.compareTo(b);
         // Assert
@@ -79,7 +81,7 @@ void _testSortableMixin() {
       });
       test('a = null, b = 1', () {
         // Arrange
-        final a = _SortableTestClass(sortIndex: null, name: 'null');
+        final a = _SortableTestClass(name: 'null');
         final b = _SortableTestClass(sortIndex: 1, name: '1');
         // Act
         final result = a.compareTo(b);

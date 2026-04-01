@@ -27,14 +27,21 @@ import '../../../../utils/logger.dart';
 import '../base_listeners/stream_notifier_listener.dart';
 
 //  extends $StreamNotifierProvider<NotifierT, StateT>
-abstract class DeepLinkListener extends BuildlessStreamNotifierListener<DeeplinkNotifier, DeepLink> {
-  const DeepLinkListener({required super.provider, required super.onNewState, required super.listenerName});
+abstract class DeepLinkListener
+    extends BuildlessStreamNotifierListener<DeeplinkNotifier, DeepLink> {
+  const DeepLinkListener({
+    required super.provider,
+    required super.onNewState,
+    required super.listenerName,
+  });
 
   @override
   void buildListen(WidgetRef ref) {
     Logger.debug('("$listenerName") listening to provider ("$provider")');
     ref.listen(provider, (previous, next) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => onNewState(ref, previous, next));
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => onNewState(ref, previous, next),
+      );
     });
   }
 }

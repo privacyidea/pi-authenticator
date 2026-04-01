@@ -17,16 +17,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/sync_state_extension.dart';
 
+import '../../../../model/enums/sync_state.dart';
 import '../../../../model/token_container.dart';
 import '../../../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 import '../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../../widgets/button_widgets/intent_button.dart';
-import '../../../../widgets/button_widgets/time_guarded_button.dart';
 
 class SyncContainerButton extends ConsumerWidget {
   final TokenContainerFinalized container;
@@ -42,21 +40,26 @@ class SyncContainerButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     if (isPreview) return const Icon(Icons.sync, size: 40);
 
-    return TimeGuardedButton(
-      intent: DialogActionIntent.confirm,
-      // The button is disabled (null) if the container is already syncing
-      onPressed: container.syncState.isIdle
-          ? () async {
-              final tokenState = await ref.read(tokenProvider.future);
-              await ref
-                  .read(tokenContainerProvider.notifier)
-                  .syncContainers(
-                    tokenState: tokenState,
-                    containersToSync: [container],
-                    isManually: true,
-                  );
-            }
-          : null,
+    final currentContainer = ref
+        .watch(tokenContainerProvider)
+        .whenOrNull(
+          data: (state) => state.currentOf<TokenContainerFinalized>(container),
+        );
+
+    return IntentButton(
+      intent: DialogActionIntent.neutral,
+      isLoading: currentContainer?.syncState == SyncState.syncing,
+      onPressed: () async {
+        final tokenState = await ref.read(tokenProvider.future);
+        if (!context.mounted) return;
+        await ref
+            .read(tokenContainerProvider.notifier)
+            .syncContainers(
+              tokenState: tokenState,
+              containersToSync: [container],
+              isManually: true,
+            );
+      },
       child: const Icon(Icons.sync, size: 40),
     );
   }

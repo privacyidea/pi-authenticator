@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/token_state.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
-import 'package:mockito/mockito.dart';
 
 // ignore: must_be_immutable
 class _TokenMock extends Mock implements Token {
@@ -33,7 +33,10 @@ void _testTokenState() {
     });
     test('withTokens', () {
       final state = TokenState(tokens: [_TokenMock(id: 'id')]);
-      final newState = state.withTokens([_TokenMock(id: 'newid'), _TokenMock(id: 'newid2')]);
+      final newState = state.withTokens([
+        _TokenMock(id: 'newid'),
+        _TokenMock(id: 'newid2'),
+      ]);
       expect(state.tokens.length, 1);
       expect((state.tokens.first as _TokenMock).id, 'id');
       expect(newState.tokens.length, 3);
@@ -42,7 +45,12 @@ void _testTokenState() {
       expect((newState.tokens[2] as _TokenMock).id, 'newid2');
     });
     test('withoutToken', () {
-      final state = TokenState(tokens: [_TokenMock(id: 'id'), _TokenMock(id: 'id2')]);
+      final state = TokenState(
+        tokens: [
+          _TokenMock(id: 'id'),
+          _TokenMock(id: 'id2'),
+        ],
+      );
       final newState = state.withoutToken(_TokenMock(id: 'id'));
       expect(state.tokens.length, 2);
       expect((state.tokens.first as _TokenMock).id, 'id');
@@ -51,8 +59,17 @@ void _testTokenState() {
       expect((newState.tokens.first as _TokenMock).id, 'id2');
     });
     test('withoutTokens', () {
-      final state = TokenState(tokens: [_TokenMock(id: 'id'), _TokenMock(id: 'id2'), _TokenMock(id: 'id3')]);
-      final newState = state.withoutTokens([_TokenMock(id: 'id'), _TokenMock(id: 'id2')]);
+      final state = TokenState(
+        tokens: [
+          _TokenMock(id: 'id'),
+          _TokenMock(id: 'id2'),
+          _TokenMock(id: 'id3'),
+        ],
+      );
+      final newState = state.withoutTokens([
+        _TokenMock(id: 'id'),
+        _TokenMock(id: 'id2'),
+      ]);
       expect(state.tokens.length, 3);
       expect((state.tokens[0] as _TokenMock).id, 'id');
       expect((state.tokens[1] as _TokenMock).id, 'id2');
@@ -62,8 +79,15 @@ void _testTokenState() {
     });
     group('addOrReplaceToken', () {
       test('existing id', () {
-        final state = TokenState(tokens: [_TokenMock(id: 'id'), _TokenMock(id: 'id2')]);
-        final newState = state.addOrReplaceToken(_TokenMock(id: 'id', label: 'labelUpdated'));
+        final state = TokenState(
+          tokens: [
+            _TokenMock(id: 'id'),
+            _TokenMock(id: 'id2'),
+          ],
+        );
+        final newState = state.addOrReplaceToken(
+          _TokenMock(id: 'id', label: 'labelUpdated'),
+        );
         expect(state.tokens.length, 2);
         expect((state.tokens.first as _TokenMock).id, 'id');
         expect((state.tokens.last as _TokenMock).id, 'id2');
@@ -72,8 +96,15 @@ void _testTokenState() {
         expect((newState.tokens.first as _TokenMock).label, 'labelUpdated');
       });
       test('new id', () {
-        final state = TokenState(tokens: [_TokenMock(id: 'id'), _TokenMock(id: 'id2')]);
-        final newState = state.addOrReplaceToken(_TokenMock(id: 'newId', label: 'labelUpdated'));
+        final state = TokenState(
+          tokens: [
+            _TokenMock(id: 'id'),
+            _TokenMock(id: 'id2'),
+          ],
+        );
+        final newState = state.addOrReplaceToken(
+          _TokenMock(id: 'newId', label: 'labelUpdated'),
+        );
         expect(state.tokens.length, 2);
         expect((state.tokens.first as _TokenMock).id, 'id');
         expect((state.tokens.last as _TokenMock).id, 'id2');
@@ -84,8 +115,16 @@ void _testTokenState() {
     });
 
     test('addOrReplaceTokens', () {
-      final state = TokenState(tokens: [_TokenMock(id: 'id'), _TokenMock(id: 'id2')]);
-      final newState = state.addOrReplaceTokens([_TokenMock(id: 'id', label: 'labelUpdated'), _TokenMock(id: 'id3')]);
+      final state = TokenState(
+        tokens: [
+          _TokenMock(id: 'id'),
+          _TokenMock(id: 'id2'),
+        ],
+      );
+      final newState = state.addOrReplaceTokens([
+        _TokenMock(id: 'id', label: 'labelUpdated'),
+        _TokenMock(id: 'id3'),
+      ]);
       expect(state.tokens.length, 2);
       expect((state.tokens.first as _TokenMock).id, 'id');
       expect((state.tokens.last as _TokenMock).id, 'id2');

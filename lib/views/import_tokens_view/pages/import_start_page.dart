@@ -91,7 +91,6 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
               horizontal: ImportTokensView.pagePaddingHorizontal,
             ),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Icon(
                   widget.selectedSource.type.icon,
@@ -216,7 +215,7 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
           isPrivacyIdeaToken: false,
           data: t.resultData.origin?.data ?? fileString,
         ),
-        resultHandlerType: const RequiredObjectValidator<TokenNotifier>(),
+        resultHandlerType: RequiredObjectValidator<TokenNotifier>(),
       );
     }).toList();
 
@@ -251,7 +250,7 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
           token: t.resultData,
           data: t.resultData.origin?.data ?? uri.toString(),
         ),
-        resultHandlerType: const RequiredObjectValidator<TokenNotifier>(),
+        resultHandlerType: RequiredObjectValidator<TokenNotifier>(),
       );
     }).toList();
     Logger.info("QR code scanned successfully");
@@ -279,10 +278,8 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
 
     final DecodeParams params = DecodeParams(
       imageFormat: zxing.ImageFormat.rgb,
-      format: Format.any,
       tryHarder: tryHarder,
       tryInverted: tryInverted,
-      isMultiScan: false,
     );
     final text = (await zx.readBarcodeImagePath(file, params)).text;
     if (text == null) {
@@ -341,7 +338,7 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
           isPrivacyIdeaToken: false,
           data: _linkController.text,
         ),
-        resultHandlerType: const RequiredObjectValidator<TokenNotifier>(),
+        resultHandlerType: RequiredObjectValidator<TokenNotifier>(),
       );
     }).toList();
     if (!mounted) return null;

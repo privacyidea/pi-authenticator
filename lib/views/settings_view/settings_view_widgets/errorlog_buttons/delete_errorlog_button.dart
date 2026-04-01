@@ -28,9 +28,9 @@ class DeleteErrorlogButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => ErrorlogButton(
-        onPressed: () => _pressClearErrorLog(context),
-        text: AppLocalizations.of(context)!.clearErrorLog,
-      );
+    onPressed: () => _pressClearErrorLog(context),
+    text: AppLocalizations.of(context)!.clearErrorLog,
+  );
 
   void _pressClearErrorLog(BuildContext context) {
     Navigator.pop(context);

@@ -101,7 +101,7 @@ class _SelectTokensDialogState extends ConsumerState<SelectExportTokensDialog> {
     );
   }
 
-  void _showExportDialog(Set<Token> tokens) async {
+  Future<void> _showExportDialog(Set<Token> tokens) async {
     if (tokens.isEmpty) return;
     final isExported = await showDialog<bool>(
       useRootNavigator: false,

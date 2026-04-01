@@ -107,7 +107,6 @@ class _DefaultEditActionDialogState
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
             PiTextField(
@@ -203,14 +202,14 @@ class _DefaultEditActionDialogState
     );
   }
 
-  void _saveButtonPressed() async {
+  Future<void> _saveButtonPressed() async {
     widget.onSaveButtonPressed!(
       newLabel: nameInputController.text,
       newImageUrl: imageUrlController.text,
     );
   }
 
-  void _defaultSaveAction() async {
+  Future<void> _defaultSaveAction() async {
     final newLabel = nameInputController.text;
     final newImageUrl = imageUrlController.text;
     if (newLabel.isEmpty) return;
@@ -315,7 +314,7 @@ class _EditActionExpansionTileState extends State<EditActionExpansionTile>
       animation: animation!,
       builder: (buildContext, _) => Container(
         margin: const EdgeInsets.symmetric(vertical: 8.0),
-        padding: EdgeInsets.only(bottom: animation!.value * 16.0, right: 0),
+        padding: EdgeInsets.only(bottom: animation!.value * 16.0),
         decoration: BoxDecoration(
           color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(12.0),

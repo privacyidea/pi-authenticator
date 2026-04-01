@@ -44,14 +44,11 @@ class _FeedbackSendRowState extends State<FeedbackSendRow> {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Expanded(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const Expanded(child: SizedBox()),
               Expanded(
@@ -60,9 +57,7 @@ class _FeedbackSendRowState extends State<FeedbackSendRow> {
                   onPressed: () =>
                       setState(() => _addDeviceInfo = !_addDeviceInfo),
                   child: Row(
-                    mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Flexible(
                         child: Text(

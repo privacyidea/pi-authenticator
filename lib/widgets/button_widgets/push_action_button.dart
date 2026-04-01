@@ -23,10 +23,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'intent_button.dart';
-import 'time_guarded_button.dart';
 
 /// A specialized button for Push Notification actions with a distinct border and typography.
-/// Uses [TimeGuardedButton] to handle asynchronous execution and a minimum threshold to prevent double-taps.
+/// Uses [IntentButton] to handle asynchronous execution and a minimum threshold to prevent double-taps.
 class PushActionButton extends StatelessWidget {
   final FutureOr<void> Function()? onPressed;
   final Widget child;
@@ -48,7 +47,7 @@ class PushActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return TimeGuardedButton(
+    return IntentButton(
       intent: intent,
       onPressed: onPressed,
       cooldownMs: minThreshold,

@@ -36,15 +36,17 @@ class StatusColors extends ThemeExtension<StatusColors> {
     Color? error,
     Color? warning,
     Color? success,
-  }) =>
-      StatusColors(
-        error: error ?? this.error,
-        warning: warning ?? this.warning,
-        success: success ?? this.success,
-      );
+  }) => StatusColors(
+    error: error ?? this.error,
+    warning: warning ?? this.warning,
+    success: success ?? this.success,
+  );
 
   @override
-  ThemeExtension<StatusColors> lerp(covariant ThemeExtension<ThemeExtension>? other, double t) {
+  ThemeExtension<StatusColors> lerp(
+    covariant ThemeExtension<ThemeExtension>? other,
+    double t,
+  ) {
     if (other is StatusColors) {
       return StatusColors(
         error: Color.lerp(error, other.error, t)!,

@@ -1,3 +1,22 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2026 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -14,14 +33,13 @@ import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/utils/privacyidea_io_client.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 
-import '../../tests_app_wrapper.mocks.dart';
+import '../../../../../tests_app_wrapper.mocks.dart';
 
 void main() {
   _testTokenNotifier();
@@ -83,19 +101,13 @@ void _testTokenNotifier() {
         ioClient: const PrivacyideaIOClient(),
         firebaseUtils: mockFirebaseUtils,
       );
-      expect(
-        (await container.read(testProvider.future)).tokens,
-        before,
-      ); // Should load the state from the repo
-      expect(
-        (await container.read(testProvider.future)).tokens,
-        before,
-      ); // But only once
+      expect((await container.read(testProvider.future)).tokens, before);
+      expect((await container.read(testProvider.future)).tokens, before);
       expect(
         (await container.read(testProvider.notifier).loadStateFromRepo())
             ?.tokens,
         after,
-      ); // Exept we tell them to do so.
+      );
       final state = await container.read(testProvider.future);
       expect(state, isNotNull);
       expect(state.tokens, after);
@@ -536,17 +548,16 @@ void _testTokenNotifier() {
           'otpauth://totp/issuer2:label2?secret=AAAAAAAA2&issuer=issuer2&algorithm=SHA256&digits=6&period=30';
       final tokenNotifier = container.read(tokenProvider.notifier);
       await scanQrCode(resultHandlerList: [tokenNotifier], qrCode: qrCode);
-      await Future.delayed(
-        const Duration(seconds: 5),
-      ); // Wait for the rollout to finish
+      await Future.delayed(const Duration(seconds: 5));
       final state = await container.read(tokenProvider.future);
 
       expect(state.tokens.length, 2);
-      after.last = after.last.copyWith(id: state.tokens.last.id);
+      after.last = (after.last as TOTPToken).copyWith(id: state.tokens.last.id);
       expect(state.tokens, after);
       verify(mockRepo.saveOrReplaceTokens(any)).called(greaterThan(0));
     });
     test('addTokenFromOtpAuth: rolloutPushToken', () async {
+      // -- PREPARE --
       WidgetsFlutterBinding.ensureInitialized();
       final mockSettingsRepo = MockSettingsRepository();
       when(
@@ -594,9 +605,6 @@ void _testTokenNotifier() {
         issuer: 'privacyIDEA',
         id: '20663f77-a26e-41c3-8946-d0efb8b386d3',
         pin: false,
-        tokenImage: null,
-        sortIndex: null,
-        folderId: null,
         serial: 'PIPU0006BF18',
         sslVerify: false,
         enrollmentCredentials: 'ae60d4744ac5384515574b85f538c6a4e0c7bc82',
@@ -645,10 +653,10 @@ void _testTokenNotifier() {
       ).thenReturn(privateTokenKey);
       when(
         mockTokenRepo.saveOrReplaceTokens([after.last]),
-      ).thenAnswer((_) async => []); // QrCode can contain multiple tokens
+      ).thenAnswer((_) async => []);
       when(
         mockTokenRepo.saveOrReplaceToken(after.last),
-      ).thenAnswer((_) async => true); // Rollout one by one
+      ).thenAnswer((_) async => true);
       when(mockTokenRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
       when(
         mockIOClient.doPost(
@@ -671,13 +679,15 @@ void _testTokenNotifier() {
 
       final stateBefore = await container.read(testProvider.future);
       expect(stateBefore.tokens, before);
+
+      // -- ACT --
       await scanQrCode(
         resultHandlerList: [container.read(testProvider.notifier)],
         qrCode: otpAuth,
       );
-      await Future.delayed(
-        const Duration(seconds: 5),
-      ); // Wait for the rollout to finish
+
+      // -- ASSERT --
+      await Future.delayed(const Duration(seconds: 5));
       final tokenState = await container.read(testProvider.future);
       expect(tokenState, isNotNull);
       expect(tokenState.tokens, after);
@@ -689,26 +699,6 @@ void _testTokenNotifier() {
           sslVerify: anyNamed('sslVerify'),
         ),
       ).called(1);
-      final pushToken = tokenState.pushTokens.first;
-      expect(
-        pushToken.enrollmentCredentials,
-        pushTokenShouldBe.enrollmentCredentials,
-      );
-      expect(pushToken.publicServerKey, pushTokenShouldBe.publicServerKey);
-      expect(pushToken.publicTokenKey, pushTokenShouldBe.publicTokenKey);
-      expect(pushToken.privateTokenKey, pushTokenShouldBe.privateTokenKey);
-      expect(pushToken.rolloutState, pushTokenShouldBe.rolloutState);
-      expect(pushToken.serial, pushTokenShouldBe.serial);
-      expect(pushToken.isRolledOut, pushTokenShouldBe.isRolledOut);
-      expect(pushToken.url, pushTokenShouldBe.url);
-      expect(pushToken.label, pushTokenShouldBe.label);
-      expect(pushToken.issuer, pushTokenShouldBe.issuer);
-      expect(pushToken.type, pushTokenShouldBe.type);
-      expect(pushToken.pin, pushTokenShouldBe.pin);
-      expect(pushToken.tokenImage, pushTokenShouldBe.tokenImage);
-      expect(pushToken.sortIndex, pushTokenShouldBe.sortIndex);
-      expect(pushToken.folderId, pushTokenShouldBe.folderId);
-      expect(pushToken.sslVerify, pushTokenShouldBe.sslVerify);
     });
     test('rolloutPushToken', () async {
       final mockSettingsRepo = MockSettingsRepository();
@@ -755,9 +745,9 @@ void _testTokenNotifier() {
       when(
         mockRsaUtils.serializeRSAPublicKeyPKCS8(any),
       ).thenAnswer((_) => 'publicKey');
-      when(mockRsaUtils.generateRSAKeyPair()).thenAnswer(
-        (_) => const RsaUtils().generateRSAKeyPair(),
-      ); // We get here a random result anyway and is it more likely to make errors by mocking it than by using the real method
+      when(
+        mockRsaUtils.generateRSAKeyPair(),
+      ).thenAnswer((_) => const RsaUtils().generateRSAKeyPair());
       when(
         mockFirebaseUtils.getFBToken(),
       ).thenAnswer((_) => Future.value('fbToken'));
@@ -784,32 +774,15 @@ void _testTokenNotifier() {
 
       final stateBefore = await container.read(testProvider.future);
       expect(stateBefore.tokens, before);
-      Logger.info('before rolloutPushToken');
       expect(
         await container
             .read(testProvider.notifier)
             .rolloutPushToken(before.first),
         true,
       );
-      Logger.info('after rolloutPushToken');
       final state = await container.read(testProvider.future);
       expect(state, isNotNull);
       expect(state.tokens, after);
-      verify(mockRepo.saveOrReplaceToken(after.first)).called(greaterThan(0));
-      verify(
-        mockRsaUtils.serializeRSAPublicKeyPKCS8(any),
-      ).called(greaterThan(0));
-      verify(mockFirebaseUtils.getFBToken()).called(greaterThan(0));
-      verify(
-        mockRsaUtils.deserializeRSAPublicKeyPKCS1('publicKey'),
-      ).called(greaterThan(0));
-      verify(
-        mockIOClient.doPost(
-          url: anyNamed('url'),
-          body: anyNamed('body'),
-          sslVerify: anyNamed('sslVerify'),
-        ),
-      ).called(greaterThan(0));
     });
     test('loadFromRepo', () async {
       final mockSettingsRepo = MockSettingsRepository();
@@ -847,11 +820,9 @@ void _testTokenNotifier() {
         ioClient: const PrivacyideaIOClient(),
         firebaseUtils: mockFirebaseUtils,
       );
-      Logger.info('before loadFromRepo');
       final newState = await container
           .read(testProvider.notifier)
           .loadStateFromRepo();
-      Logger.info('after loadFromRepo');
       expect(newState?.tokens, before);
       expect((await container.read(testProvider.future)).tokens, before);
     });

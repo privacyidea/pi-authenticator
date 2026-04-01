@@ -26,7 +26,7 @@ import '../../utils/riverpod/riverpod_providers/generated_providers/token_contai
 import 'scheme_processor_interface.dart';
 
 class TokenContainerProcessor extends SchemeProcessor {
-  static const resultHandlerType =
+  static final resultHandlerType =
       RequiredObjectValidator<TokenContainerNotifier>();
   static const scheme = 'pia';
   static const host = 'container';
@@ -40,10 +40,10 @@ class TokenContainerProcessor extends SchemeProcessor {
       validateMap(
         map: args,
         validators: {
-          TokenContainerProcessor.ARG_DO_REPLACE: boolValidatorOptional,
-          TokenContainerProcessor.ARG_ADD_DEVICE_INFOS: boolValidatorOptional,
-          TokenContainerProcessor.ARG_INIT_SYNC: boolValidatorOptional,
-          TokenContainerProcessor.ARG_URL_IS_OK: boolValidatorOptional,
+          TokenContainerProcessor.ARG_DO_REPLACE: Validators.boolOptional,
+          TokenContainerProcessor.ARG_ADD_DEVICE_INFOS: Validators.boolOptional,
+          TokenContainerProcessor.ARG_INIT_SYNC: Validators.boolOptional,
+          TokenContainerProcessor.ARG_URL_IS_OK: Validators.boolOptional,
         },
         name: 'TokenContainerProcessor#validateArgs',
       );

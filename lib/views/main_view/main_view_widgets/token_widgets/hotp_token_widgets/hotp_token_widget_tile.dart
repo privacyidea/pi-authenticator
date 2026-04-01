@@ -23,7 +23,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../../../utils/view_utils.dart';
 import '../../../../../../../widgets/button_widgets/intent_button.dart';
-import '../../../../../../../widgets/button_widgets/time_guarded_button.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/hotp_token.dart';
 import '../../../../../utils/globals.dart';
@@ -74,23 +73,17 @@ class HOTPTokenWidgetTile extends ConsumerWidget {
         : [],
     trailing: CustomTrailing(
       child: isPreview
-          ? const FittedBox(
-              fit: BoxFit.contain,
-              child: Icon(size: 100, Icons.replay),
-            )
+          ? const FittedBox(child: Icon(size: 100, Icons.replay))
           : HideableWidget(
               token: token,
               isHidden: token.isHidden,
               child: Semantics(
                 label: AppLocalizations.of(context)!.increaseCounter,
-                child: TimeGuardedButton(
+                child: IntentButton(
                   intent: DialogActionIntent.neutral,
                   cooldownMs: 1000,
                   onPressed: () async => _updateOtpValue(),
-                  child: const FittedBox(
-                    fit: BoxFit.contain,
-                    child: Icon(size: 100, Icons.replay),
-                  ),
+                  child: const FittedBox(child: Icon(size: 100, Icons.replay)),
                 ),
               ),
             ),

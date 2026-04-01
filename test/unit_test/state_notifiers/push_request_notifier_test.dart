@@ -53,7 +53,6 @@ void _testPushRequestNotifier() {
         expirationDate: DateTime.now().add(const Duration(minutes: 5)),
         signature: 'signature',
         serial: 'serial',
-        accepted: null,
       );
 
       final before = PushRequestState(
@@ -128,7 +127,6 @@ void _testPushRequestNotifier() {
         expirationDate: DateTime.now().add(const Duration(minutes: 5)),
         signature: 'signature',
         serial: 'serial',
-        accepted: null,
       );
       final before = PushRequestState(
         pushRequests: [pr],
@@ -201,7 +199,6 @@ void _testPushRequestNotifier() {
         expirationDate: DateTime.now().add(const Duration(minutes: 5)),
         signature: 'signature',
         serial: 'serial',
-        accepted: null,
       );
       final pr2 = pr.copyWith(serial: 'serial2', nonce: 'nonce2');
       final before = PushRequestState(
@@ -241,7 +238,6 @@ void _testPushRequestNotifier() {
         expirationDate: DateTime.now().add(const Duration(minutes: 5)),
         signature: 'signature',
         serial: 'serial',
-        accepted: null,
       );
       final pr2 = pr.copyWith(serial: 'serial2');
       final before = PushRequestState(

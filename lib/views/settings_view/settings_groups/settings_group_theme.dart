@@ -35,7 +35,9 @@ class SettingsGroupTheme extends StatelessWidget {
       onPressed: () {
         switch (current) {
           case ThemeMode.light:
-            EasyDynamicTheme.of(context).changeTheme(dynamic: false, dark: true);
+            EasyDynamicTheme.of(
+              context,
+            ).changeTheme(dynamic: false, dark: true);
             HomeWidgetUtils().setCurrentThemeMode(ThemeMode.dark);
             break;
           case ThemeMode.dark:
@@ -43,11 +45,15 @@ class SettingsGroupTheme extends StatelessWidget {
             HomeWidgetUtils().setCurrentThemeMode(ThemeMode.system);
             break;
           case ThemeMode.system:
-            EasyDynamicTheme.of(context).changeTheme(dynamic: false, dark: false);
+            EasyDynamicTheme.of(
+              context,
+            ).changeTheme(dynamic: false, dark: false);
             HomeWidgetUtils().setCurrentThemeMode(ThemeMode.light);
             break;
           case null:
-            EasyDynamicTheme.of(context).changeTheme(dynamic: false, dark: false);
+            EasyDynamicTheme.of(
+              context,
+            ).changeTheme(dynamic: false, dark: false);
             HomeWidgetUtils().setCurrentThemeMode(ThemeMode.light);
             break;
         }

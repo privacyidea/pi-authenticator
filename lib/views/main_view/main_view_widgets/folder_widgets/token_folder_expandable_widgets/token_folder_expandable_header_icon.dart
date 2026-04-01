@@ -30,7 +30,12 @@ class TokenFolderExpandableHeaderIcon extends StatelessWidget {
   final bool isLocked;
   final bool isExpanded;
 
-  const TokenFolderExpandableHeaderIcon({super.key, required this.showEmptyFolderIcon, required this.isLocked, required this.isExpanded});
+  const TokenFolderExpandableHeaderIcon({
+    super.key,
+    required this.showEmptyFolderIcon,
+    required this.isLocked,
+    required this.isExpanded,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -54,7 +59,9 @@ class TokenFolderExpandableHeaderIcon extends StatelessWidget {
             children: [
               FaIcon(
                 weight: 0.1,
-                isExpanded ? FontAwesomeIcons.folderOpen : FontAwesomeIcons.solidFolderClosed,
+                isExpanded
+                    ? FontAwesomeIcons.folderOpen
+                    : FontAwesomeIcons.solidFolderClosed,
                 color: Theme.of(context).listTileTheme.iconColor,
               ),
               if (isLocked)
@@ -62,7 +69,10 @@ class TokenFolderExpandableHeaderIcon extends StatelessWidget {
                   child: LayoutBuilder(
                     builder: (context, constraints) {
                       return Container(
-                        padding: EdgeInsets.only(left: isExpanded ? 2 : 0.0, top: 6),
+                        padding: EdgeInsets.only(
+                          left: isExpanded ? 2 : 0.0,
+                          top: 6,
+                        ),
                         child: Center(
                           child: Transform(
                             transform: isExpanded
@@ -74,15 +84,21 @@ class TokenFolderExpandableHeaderIcon extends StatelessWidget {
                                   ])
                                 : Matrix4.identity(),
                             child: Icon(
-                              isExpanded ? MdiIcons.lockOpenVariant : MdiIcons.lock,
-                              color: Theme.of(context).extension<TokenTileTheme>()?.lockColor,
+                              isExpanded
+                                  ? MdiIcons.lockOpenVariant
+                                  : MdiIcons.lock,
+                              color: Theme.of(
+                                context,
+                              ).extension<TokenTileTheme>()?.lockColor,
                               size: constraints.maxHeight / 2.1,
                               shadows: [
                                 Shadow(
-                                  color: Theme.of(context).scaffoldBackgroundColor.withValues(alpha: 0.3),
+                                  color: Theme.of(context)
+                                      .scaffoldBackgroundColor
+                                      .withValues(alpha: 0.3),
                                   offset: const Offset(0.5, 0.5),
                                   blurRadius: 2,
-                                )
+                                ),
                               ],
                             ),
                           ),

@@ -51,7 +51,6 @@ class _EnableTextEditAfterManyTapsState
   Widget build(BuildContext context) => enabled
       ? TextFormField(
           key: Key('${widget.controller.hashCode}_enableTextEditAfterManyTaps'),
-          style: null,
           controller: widget.controller,
           decoration: InputDecoration(labelText: widget.labelText),
           autovalidateMode: widget.autovalidateMode,

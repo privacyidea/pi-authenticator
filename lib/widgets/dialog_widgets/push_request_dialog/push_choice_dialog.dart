@@ -92,7 +92,6 @@ class PushChoiceDialog extends ConsumerWidget with PushDialogMixin {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 4.0),
                     child: PushActionButton(
-                      intent: DialogActionIntent.confirm,
                       onPressed: () =>
                           handleAccept(context, ref, answer: answer),
                       child: Text(answer),

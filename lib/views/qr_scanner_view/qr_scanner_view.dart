@@ -25,6 +25,7 @@ import '../../l10n/app_localizations.dart';
 import '../../utils/logger.dart';
 import '../../views/view_interface.dart';
 import '../../widgets/dialog_widgets/default_dialog.dart';
+import '../../widgets/status_bar.dart';
 import 'qr_scanner_view_widgets/qr_scanner_widget.dart';
 
 class QRScannerView extends StatefulView {
@@ -96,7 +97,7 @@ class _QRScannerViewState extends State<QRScannerView> {
             elevation: 0,
           ),
           extendBodyBehindAppBar: true,
-          body: const QRScannerWidget(),
+          body: StatusBar(child: const QRScannerWidget()),
         ),
         _ => DefaultDialog(
           title: Text(
@@ -109,7 +110,7 @@ class _QRScannerViewState extends State<QRScannerView> {
             DialogAction(
               label: AppLocalizations.of(context)!.cancel,
               intent: DialogActionIntent.cancel,
-              onPressed: () => Navigator.pop(context, null),
+              onPressed: () => Navigator.pop(context),
             ),
             DialogAction(
               label: AppLocalizations.of(

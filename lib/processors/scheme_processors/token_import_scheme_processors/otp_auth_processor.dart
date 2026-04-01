@@ -153,7 +153,7 @@ TokenOriginData _parseCreatorToOrigin(Uri uri) {
 String _parseIssuer(Uri uri) {
   final param = validate(
     value: uri.queryParameters[Token.ISSUER],
-    validator: const RequiredObjectValidator<String>(defaultValue: ''),
+    validator: Validators.stringSafe,
     name: Token.ISSUER,
   );
   try {
@@ -181,10 +181,10 @@ Future<String?>? _parse2StepSecret(Uri uri) {
   validateMap(
     map: queryParameters,
     validators: <String, BaseValidator>{
-      OTPToken.SECRET_BASE32: base32ToBytesValidator,
-      Token.TWO_STEP_SALT_LENTH: intValidator,
-      Token.TWO_STEP_OUTPUT_LENTH: intValidator,
-      Token.TWO_STEP_ITERATIONS: intValidator,
+      OTPToken.SECRET_BASE32: Validators.base32String,
+      Token.TWO_STEP_SALT_LENTH: Validators.intType,
+      Token.TWO_STEP_OUTPUT_LENTH: Validators.intType,
+      Token.TWO_STEP_ITERATIONS: Validators.intType,
     },
     name: '2StepSecret',
   );
@@ -247,7 +247,7 @@ String _parseTokenType(Uri uri) {
   Logger.debug('Token type value: $value');
   return validate(
     value: uri.queryParameters[Token.TOKENTYPE_OTPAUTH] ?? uri.host,
-    validator: RequiredObjectValidator<String>(defaultValue: uri.host),
+    validator: DefaultObjectValidator<String>(defaultValue: uri.host),
     name: Token.TOKENTYPE_OTPAUTH,
   );
 }

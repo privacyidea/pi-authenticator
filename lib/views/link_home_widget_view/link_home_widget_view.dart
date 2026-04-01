@@ -27,6 +27,7 @@ import '../../utils/home_widget_utils.dart';
 import '../../utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
 import '../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../utils/utils.dart';
+import '../../widgets/status_bar.dart';
 import '../view_interface.dart';
 
 class LinkHomeWidgetView extends ConsumerStatefulView {
@@ -47,7 +48,9 @@ class _LinkHomeWidgetViewState extends ConsumerState<LinkHomeWidgetView> {
   bool alreadyTapped = false;
   @override
   Widget build(BuildContext context) {
-    final veilingCharacter = Theme.of(context).extension<ExtendedTextTheme>()?.veilingCharacter ?? '●';
+    final veilingCharacter =
+        Theme.of(context).extension<ExtendedTextTheme>()?.veilingCharacter ??
+        '●';
     final otpTokens = ref.watch(tokenProvider).value?.otpTokens;
     return Scaffold(
       appBar: AppBar(
@@ -57,27 +60,41 @@ class _LinkHomeWidgetViewState extends ConsumerState<LinkHomeWidgetView> {
           maxLines: 2, // Title can be shown on small screens too.
         ),
       ),
-      body: ListView.builder(
-        itemBuilder: (context, index) {
-          final otpToken = otpTokens![index];
-          final folderIsLocked = ref.watch(tokenFolderProvider).currentOfId(otpToken.folderId)?.isLocked ?? false;
-          final otpString = otpToken.isLocked || folderIsLocked ? veilingCharacter * otpToken.otpValue.length : otpToken.otpValue;
-          return ListTile(
-            title: Text(otpToken.label),
-            subtitle: Text(insertCharAt(otpString, ' ', (otpString.length / 2).ceil())),
-            onTap: alreadyTapped
-                ? () {}
-                : () async {
-                    if (alreadyTapped) return;
-                    setState(() => alreadyTapped = true);
-                    await HomeWidgetUtils().link(widget.homeWidgetId, otpToken.id);
-                    await SystemNavigator.pop();
-                    await Future.delayed(const Duration(milliseconds: 500));
-                    if (context.mounted) Navigator.pop(context);
-                  },
-          );
-        },
-        itemCount: otpTokens?.length ?? 0,
+      body: StatusBar(
+        child: ListView.builder(
+          itemBuilder: (context, index) {
+            final otpToken = otpTokens![index];
+            final folderIsLocked =
+                ref
+                    .watch(tokenFolderProvider)
+                    .currentOfId(otpToken.folderId)
+                    ?.isLocked ??
+                false;
+            final otpString = otpToken.isLocked || folderIsLocked
+                ? veilingCharacter * otpToken.otpValue.length
+                : otpToken.otpValue;
+            return ListTile(
+              title: Text(otpToken.label),
+              subtitle: Text(
+                insertCharAt(otpString, ' ', (otpString.length / 2).ceil()),
+              ),
+              onTap: alreadyTapped
+                  ? () {}
+                  : () async {
+                      if (alreadyTapped) return;
+                      setState(() => alreadyTapped = true);
+                      await HomeWidgetUtils().link(
+                        widget.homeWidgetId,
+                        otpToken.id,
+                      );
+                      await SystemNavigator.pop();
+                      await Future.delayed(const Duration(milliseconds: 500));
+                      if (context.mounted) Navigator.pop(context);
+                    },
+            );
+          },
+          itemCount: otpTokens?.length ?? 0,
+        ),
       ),
     );
   }

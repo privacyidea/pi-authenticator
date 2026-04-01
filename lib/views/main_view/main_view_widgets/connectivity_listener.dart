@@ -34,12 +34,19 @@ class ConnectivityListener extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final connectivity = ref.watch(connectivityProvider).asData?.value;
-    if (connectivity != null && connectivity.contains(ConnectivityResult.none)) {
+    if (connectivity != null &&
+        connectivity.contains(ConnectivityResult.none)) {
       ref.read(tokenProvider.future).then((newState) {
         if (newState.hasPushTokens) {
           Logger.info("Connectivity changed: $connectivity");
           if (!context.mounted) return;
-          ref.read(statusMessageProvider.notifier).state = StatusMessage(message: (localization) => AppLocalizations.of(context)!.noNetworkConnection);
+
+          ref
+              .read(statusProvider.notifier)
+              .show(
+                (localization) =>
+                    AppLocalizations.of(context)!.noNetworkConnection,
+              );
         }
       });
     }

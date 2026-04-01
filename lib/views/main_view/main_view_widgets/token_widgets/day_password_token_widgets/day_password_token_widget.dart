@@ -36,7 +36,10 @@ class DayPasswordTokenWidget extends TokenWidget {
       token: token,
       tile: DayPasswordTokenWidgetTile(token),
       dragIcon: Icons.calendar_month,
-      editAction: EditDayPassowrdTokenAction(token: token, key: Key('${token.id}editAction')),
+      editAction: EditDayPassowrdTokenAction(
+        token: token,
+        key: Key('${token.id}editAction'),
+      ),
     );
   }
 }

@@ -25,9 +25,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/riverpod_states/settings_state.dart';
 import '../../../../../model/tokens/push_token.dart';
+import '../../../../../utils/riverpod/riverpod_providers/generated_providers/has_firebase_provider.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
-import '../../../../../utils/utils.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../../settings_view_widgets/update_firebase_token_dialog.dart';
 
@@ -40,6 +40,8 @@ class SettingsGroupPushTokenDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final deviceHasFirebaseMessaging =
+        ref.watch(hasFirebaseProvider).value ?? false;
     final settingsState = ref
         .watch(settingsProvider)
         .whenOrNull(data: (data) => data);

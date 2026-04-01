@@ -37,15 +37,18 @@ class NoConflictImportTokensList extends StatefulWidget {
   final EdgeInsetsGeometry titlePadding;
   final Color? borderColor;
   final bool leadingDivider;
-  final void Function(TokenImportEntry oldEntry, TokenImportEntry newEntry)? onTap;
+  final void Function(TokenImportEntry oldEntry, TokenImportEntry newEntry)?
+  onTap;
 
   final List<TokenImportEntry> importEntries;
 
   @override
-  State<NoConflictImportTokensList> createState() => _NoConflictImportTokensListState();
+  State<NoConflictImportTokensList> createState() =>
+      _NoConflictImportTokensListState();
 }
 
-class _NoConflictImportTokensListState extends State<NoConflictImportTokensList> {
+class _NoConflictImportTokensListState
+    extends State<NoConflictImportTokensList> {
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -54,21 +57,13 @@ class _NoConflictImportTokensListState extends State<NoConflictImportTokensList>
       children: [
         if (widget.leadingDivider) ...[
           const SizedBox(height: 16),
-          const Divider(
-            thickness: 2,
-            height: 2,
-            indent: 4,
-            endIndent: 4,
-          ),
+          const Divider(thickness: 2, height: 2, indent: 4, endIndent: 4),
           const SizedBox(height: 16),
         ],
         if (widget.title != null) ...[
           Padding(
             padding: widget.titlePadding,
-            child: Text(
-              widget.title!,
-              textAlign: TextAlign.center,
-            ),
+            child: Text(widget.title!, textAlign: TextAlign.center),
           ),
           const SizedBox(height: 8),
         ],
@@ -76,7 +71,11 @@ class _NoConflictImportTokensListState extends State<NoConflictImportTokensList>
           GestureDetector(
             onTap: widget.onTap != null
                 ? () {
-                    final newTokenEntry = tokenEntry.copySelect(tokenEntry.selectedToken == null ? tokenEntry.newToken : null);
+                    final newTokenEntry = tokenEntry.copySelect(
+                      tokenEntry.selectedToken == null
+                          ? tokenEntry.newToken
+                          : null,
+                    );
                     widget.onTap!(tokenEntry, newTokenEntry);
                   }
                 : null,
@@ -85,7 +84,7 @@ class _NoConflictImportTokensListState extends State<NoConflictImportTokensList>
               selected: tokenEntry.selectedToken,
               borderColor: widget.borderColor,
             ),
-          )
+          ),
       ],
     );
   }

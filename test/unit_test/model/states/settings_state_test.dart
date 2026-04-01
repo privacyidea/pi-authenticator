@@ -24,7 +24,10 @@ void _testSettingsState() {
       expect(state.hideOpts, true);
       expect(state.enablePolling, true);
       expect(state.crashReportRecipients, {'test'});
-      expect(state.localePreference.toLanguageTag(), const Locale('en').toLanguageTag());
+      expect(
+        state.localePreference.toLanguageTag(),
+        const Locale('en').toLanguageTag(),
+      );
       expect(state.useSystemLocale, true);
       expect(state.verboseLogging, true);
     });
@@ -44,7 +47,10 @@ void _testSettingsState() {
       expect(state.hideOpts, true);
       expect(state.enablePolling, true);
       expect(state.crashReportRecipients, {'test'});
-      expect(state.localePreference.toLanguageTag(), const Locale('en').toLanguageTag());
+      expect(
+        state.localePreference.toLanguageTag(),
+        const Locale('en').toLanguageTag(),
+      );
       expect(state.useSystemLocale, true);
       expect(state.verboseLogging, true);
       expect(newState.isFirstRun, false);
@@ -52,7 +58,10 @@ void _testSettingsState() {
       expect(newState.hideOpts, false);
       expect(newState.enablePolling, false);
       expect(newState.crashReportRecipients, {'test2'});
-      expect(newState.localePreference.toLanguageTag(), const Locale('de').toLanguageTag());
+      expect(
+        newState.localePreference.toLanguageTag(),
+        const Locale('de').toLanguageTag(),
+      );
       expect(newState.useSystemLocale, false);
       expect(newState.verboseLogging, false);
     });

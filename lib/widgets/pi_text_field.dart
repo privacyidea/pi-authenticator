@@ -45,18 +45,15 @@ class PiTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => TextFormField(
-        decoration: InputDecoration(
-          labelText: labelText,
-          errorMaxLines: 2,
-        ),
-        onChanged: onChanged,
-        controller: controller,
-        initialValue: initialValue,
-        keyboardType: keyboardType,
-        focusNode: focusNode,
-        autofocus: autofocus,
-        style: Theme.of(context).textTheme.titleSmall,
-        autovalidateMode: autovalidateMode,
-        validator: validator,
-      );
+    decoration: InputDecoration(labelText: labelText, errorMaxLines: 2),
+    onChanged: onChanged,
+    controller: controller,
+    initialValue: initialValue,
+    keyboardType: keyboardType,
+    focusNode: focusNode,
+    autofocus: autofocus,
+    style: Theme.of(context).textTheme.titleSmall,
+    autovalidateMode: autovalidateMode,
+    validator: validator,
+  );
 }

@@ -36,18 +36,27 @@ class LockTokenFolderAction extends ConsumerSlideableAction {
   CustomSlidableAction build(BuildContext context, ref) {
     return CustomSlidableAction(
       backgroundColor: Theme.of(context).extension<TokenTileTheme>()!.lockColor,
-      foregroundColor: Theme.of(context).extension<TokenTileTheme>()!.actionForegroundColor,
+      foregroundColor: Theme.of(
+        context,
+      ).extension<TokenTileTheme>()!.actionForegroundColor,
       onPressed: (context) async {
-        if (await lockAuth(reason: (localization) => localization.unlock, localization: AppLocalizations.of(context)!) == false) return;
+        if (await lockAuth(
+              reason: (localization) => localization.unlock,
+              localization: AppLocalizations.of(context)!,
+            ) ==
+            false) {
+          return;
+        }
         globalRef?.read(tokenFolderProvider.notifier).toggleFolderLock(folder);
       },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const Icon(Icons.lock),
           Text(
-            folder.isLocked ? AppLocalizations.of(context)!.unlock : AppLocalizations.of(context)!.lock,
+            folder.isLocked
+                ? AppLocalizations.of(context)!.unlock
+                : AppLocalizations.of(context)!.lock,
             overflow: TextOverflow.fade,
             softWrap: false,
           ),

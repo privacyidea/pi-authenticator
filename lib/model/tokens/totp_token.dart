@@ -44,7 +44,7 @@ class TOTPToken extends OTPToken {
 
   static final Map<String, BaseValidator> otpAuthValidators = {
     ...OTPToken.otpAuthValidators,
-    PERIOD_SECONDS: otpAuthPeriodSecondsValidator.withDefault(30),
+    PERIOD_SECONDS: Validators.otpPeriodSafe,
   };
 
   static final Map<String, BaseValidator> additionalDataValidators = {
@@ -171,7 +171,6 @@ class TOTPToken extends OTPToken {
     time: time,
     length: digits,
     interval: Duration(seconds: period),
-    isGoogle: true,
   );
 
   @override
@@ -182,7 +181,7 @@ class TOTPToken extends OTPToken {
 
   @override
   TOTPToken copyWith({
-    String? serial,
+    String? Function()? serial,
     String? label,
     String? issuer,
     String? Function()? containerSerial,
@@ -203,7 +202,7 @@ class TOTPToken extends OTPToken {
     ForceBiometricOption? forceBiometricOption,
   }) {
     return TOTPToken(
-      serial: serial ?? this.serial,
+      serial: serial != null ? serial() : this.serial,
       label: label ?? this.label,
       issuer: issuer ?? this.issuer,
       containerSerial: containerSerial != null
@@ -233,7 +232,7 @@ class TOTPToken extends OTPToken {
     return copyWith(
       label: uriMap[Token.LABEL] as String?,
       issuer: uriMap[Token.ISSUER] as String?,
-      serial: uriMap[Token.SERIAL] as String?,
+      serial: () => uriMap[Token.SERIAL] as String?,
       tokenImage: uriMap[Token.IMAGE] as String?,
       pin: uriMap[Token.PIN] as bool?,
       isLocked: uriMap[Token.PIN] as bool?,

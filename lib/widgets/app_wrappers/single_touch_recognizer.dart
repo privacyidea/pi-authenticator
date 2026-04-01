@@ -9,10 +9,11 @@ class SingleTouchRecognizer extends StatelessWidget {
   Widget build(BuildContext context) {
     return RawGestureDetector(
       gestures: <Type, GestureRecognizerFactory>{
-        _SingleTouchRecognizer: GestureRecognizerFactoryWithHandlers<_SingleTouchRecognizer>(
-          () => _SingleTouchRecognizer(),
-          (_SingleTouchRecognizer instance) {},
-        ),
+        _SingleTouchRecognizer:
+            GestureRecognizerFactoryWithHandlers<_SingleTouchRecognizer>(
+              () => _SingleTouchRecognizer(),
+              (_SingleTouchRecognizer instance) {},
+            ),
       },
       child: child,
     );

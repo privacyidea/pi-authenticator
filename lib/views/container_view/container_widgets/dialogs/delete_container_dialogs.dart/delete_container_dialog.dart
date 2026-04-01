@@ -97,6 +97,7 @@ class DeleteContainerDialog extends ConsumerWidget {
       wasContainerDeleted =
           (await ForceDeleteContainerDialog.showDialog(container)) == true;
     }
+    if (!ref.context.mounted) return;
     final containerTokens = (await ref.read(
       tokenProvider.future,
     )).containerTokens(container.serial);

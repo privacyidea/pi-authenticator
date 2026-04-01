@@ -29,16 +29,16 @@ class RolloutWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const CircularProgressIndicator.adaptive(),
-          Text(
-            token.rolloutState.rolloutMsg(AppLocalizations.of(context)!),
-            style: Theme.of(context).textTheme.bodyLarge,
-            textAlign: TextAlign.center,
-            overflow: TextOverflow.fade,
-            softWrap: false,
-          ),
-        ],
-      );
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      const CircularProgressIndicator.adaptive(),
+      Text(
+        token.rolloutState.rolloutMsg(AppLocalizations.of(context)!),
+        style: Theme.of(context).textTheme.bodyLarge,
+        textAlign: TextAlign.center,
+        overflow: TextOverflow.fade,
+        softWrap: false,
+      ),
+    ],
+  );
 }

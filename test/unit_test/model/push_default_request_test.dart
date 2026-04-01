@@ -23,7 +23,7 @@ import 'package:privacyidea_authenticator/model/push_request/push_request.dart';
 
 void main() {
   group('PushMessageRequest Tests', () {
-    final testDate = DateTime(2025, 1, 1);
+    final testDate = DateTime(2025);
 
     test('Constructor and basic fields', () {
       final request = PushDefaultRequest(

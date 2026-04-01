@@ -29,8 +29,8 @@ class SettingsGroupFeedback extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SettingsGroup(
-        title: AppLocalizations.of(context)!.feedback,
-        onPressed: () => Navigator.pushNamed(context, FeedbackView.routeName),
-        trailingIcon: Icons.feedback,
-      );
+    title: AppLocalizations.of(context)!.feedback,
+    onPressed: () => Navigator.pushNamed(context, FeedbackView.routeName),
+    trailingIcon: Icons.feedback,
+  );
 }

@@ -55,7 +55,6 @@ class RenameTokenFolderAction extends ConsumerSlideableAction {
       },
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const Icon(Icons.edit),
           Text(

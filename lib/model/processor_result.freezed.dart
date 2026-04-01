@@ -213,7 +213,7 @@ return failed(_that.message,_that.error,_that.resultHandlerType);case _:
 
 class ProcessorResultSuccess<T> extends ProcessorResult<T> {
   const ProcessorResultSuccess(this.resultData, {this.resultHandlerType}): super._();
-  
+
 
  final  T resultData;
 @override final  RequiredObjectValidator<ResultHandler>? resultHandlerType;
@@ -281,7 +281,7 @@ as RequiredObjectValidator<ResultHandler>?,
 
 class ProcessorResultFailed<T> extends ProcessorResult<T> {
   const ProcessorResultFailed(this.message, {this.error, this.resultHandlerType}): super._();
-  
+
 
  final  String Function(AppLocalizations) message;
  final  dynamic error;

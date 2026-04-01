@@ -28,7 +28,8 @@ part 'custom_int_buffer.g.dart';
 class CustomIntBuffer {
   final int maxSize;
   final List<int> list;
-  CustomIntBuffer({this.maxSize = 100, List<int> list = const []}) : list = list.sublist(max(list.length - maxSize, 0), list.length);
+  CustomIntBuffer({this.maxSize = 100, List<int> list = const []})
+    : list = list.sublist(max(list.length - maxSize, 0), list.length);
 
   CustomIntBuffer copyWith({int? maxSize, List<int>? list}) {
     return CustomIntBuffer(
@@ -66,6 +67,7 @@ class CustomIntBuffer {
   @override
   int get hashCode => Object.hashAll([maxSize, ...list]);
 
-  factory CustomIntBuffer.fromJson(Map<String, dynamic> json) => _$CustomIntBufferFromJson(json);
+  factory CustomIntBuffer.fromJson(Map<String, dynamic> json) =>
+      _$CustomIntBufferFromJson(json);
   Map<String, dynamic> toJson() => _$CustomIntBufferToJson(this);
 }

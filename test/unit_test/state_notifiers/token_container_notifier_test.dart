@@ -45,7 +45,6 @@ void main() {
   TokenContainerState buildFinalizedContainerState() => TokenContainerState(
     containerList: [
       TokenContainerFinalized(
-        serverName: 'privacyIDEA',
         issuer: 'privacyIDEA',
         nonce: 'dbd2ab5aa9b539484fc3b78cd4bb08375d3eb30e',
         timestamp: DateTime.parse("2024-11-14 09:30:18.288530Z"),
@@ -56,9 +55,6 @@ void main() {
         sslVerify: false,
         publicClientKey: 'publicClientKey',
         privateClientKey: 'privateClientKey',
-        finalizationState: FinalizationState.completed,
-        syncState: SyncState.notStarted,
-        passphraseQuestion: null,
         policies: ContainerPolicies(
           rolloverAllowed: false,
           initialTokenAssignment: false,
@@ -79,7 +75,7 @@ void main() {
     ).thenAnswer((_) => Future.value(stateGetter()));
     when(mockContainerRepo.loadContainer(any)).thenAnswer((invocation) {
       final serial = invocation.positionalArguments[0] as String;
-      if (stateGetter().containerList.isEmpty) return Future.value(null);
+      if (stateGetter().containerList.isEmpty) return Future.value();
       return Future.value(
         stateGetter().containerList.firstWhereOrNull(
           (element) => element.serial == serial,
@@ -881,9 +877,6 @@ void main() {
         serial: "serial",
         ecKeyAlgorithm: EcKeyAlgorithm.secp521r1,
         hashAlgorithm: Algorithms.SHA512,
-        finalizationState: FinalizationState.completed,
-        syncState: SyncState.notStarted,
-        passphraseQuestion: null,
         sslVerify: true,
         privateClientKey: "random",
         publicClientKey: "random",

@@ -209,21 +209,17 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
             HOTPToken.COUNTER: info[AEGIS_INFO_COUNTER],
           },
           validators: {
-            Token.TOKENTYPE_OTPAUTH: stringValidator,
-            Token.LABEL: const RequiredObjectValidator<String>(
-              defaultValue: '',
-            ),
-            Token.ISSUER: const RequiredObjectValidator<String>(
-              defaultValue: '',
-            ),
-            Token.PIN: stringValidatorOptional,
+            Token.TOKENTYPE_OTPAUTH: Validators.string,
+            Token.LABEL: Validators.stringSafe,
+            Token.ISSUER: Validators.stringSafe,
+            Token.PIN: Validators.stringOptional,
             OTPToken.SECRET_BASE32: RequiredObjectValidator<String>(
               transformer: (v) => Encodings.none.encodeStringTo(
                 Encodings.base32,
                 info[AEGIS_INFO_SECRET],
               ),
             ),
-            OTPToken.ALGORITHM: stringValidatorOptional,
+            OTPToken.ALGORITHM: Validators.stringOptional,
             OTPToken.DIGITS: OptionalObjectValidator<String>(
               transformer: (v) => (v as int).toString(),
             ),
@@ -298,15 +294,15 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
             Token.PIN: info[AEGIS_INFO_PIN],
           },
           validators: {
-            Token.TOKENTYPE_OTPAUTH: stringValidator,
-            Token.LABEL: stringValidator.withDefault(''),
-            Token.ISSUER: stringValidator.withDefault(''),
-            OTPToken.SECRET_BASE32: base32Stringvalidator,
-            OTPToken.ALGORITHM: stringValidatorOptional,
-            OTPToken.DIGITS: intToStringValidatorOptional,
-            TOTPToken.PERIOD_SECONDS: intToStringValidatorOptional,
-            HOTPToken.COUNTER: intToStringValidatorOptional,
-            Token.PIN: stringValidatorOptional,
+            Token.TOKENTYPE_OTPAUTH: Validators.string,
+            Token.LABEL: Validators.stringSafe,
+            Token.ISSUER: Validators.stringSafe,
+            OTPToken.SECRET_BASE32: Validators.base32String,
+            OTPToken.ALGORITHM: Validators.stringOptional,
+            OTPToken.DIGITS: Validators.intToStringOptional,
+            TOTPToken.PERIOD_SECONDS: Validators.intToStringOptional,
+            HOTPToken.COUNTER: Validators.intToStringOptional,
+            Token.PIN: Validators.stringOptional,
           },
           name: 'aegisV3Entry',
         );

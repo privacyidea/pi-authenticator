@@ -45,19 +45,24 @@ class MainViewTokensListFiltered extends ConsumerWidget {
     sortables = sortables.toList();
     if (hidePushTokens) sortables.removeWhere((t) => t is PushToken);
     sortables = filter?.filterSortables(sortables) ?? sortables;
-    final tokenFolderIds = sortables.whereType<Token>().map((e) => e.folderId).toList();
-    sortables.removeWhere((e) => e is TokenFolder && !tokenFolderIds.contains(e.folderId));
+    final tokenFolderIds = sortables
+        .whereType<Token>()
+        .map((e) => e.folderId)
+        .toList();
+    sortables.removeWhere(
+      (e) => e is TokenFolder && !tokenFolderIds.contains(e.folderId),
+    );
 
-    return MainViewTokensList.buildSortableWidgets(sortables: sortables, draggingSortable: draggingSortable);
+    return MainViewTokensList.buildSortableWidgets(
+      sortables: sortables,
+      draggingSortable: draggingSortable,
+    );
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return SingleChildScrollView(
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: [..._mapTokensToWidgets(ref: ref)],
-      ),
+      child: Column(children: [..._mapTokensToWidgets(ref: ref)]),
     );
   }
 
@@ -71,12 +76,13 @@ class MainViewTokensListFiltered extends ConsumerWidget {
     final draggingSortable = ref.watch(draggingSortableProvider);
 
     sortables.sort((a, b) => a.compareTo(b));
-    final List<Widget> widgets = MainViewTokensListFiltered._buildSortableWidgets(
-      sortables: sortables,
-      draggingSortable: draggingSortable,
-      filter: filter,
-      hidePushTokens: ref.watch(hidePushTokensProvider),
-    );
+    final List<Widget> widgets =
+        MainViewTokensListFiltered._buildSortableWidgets(
+          sortables: sortables,
+          draggingSortable: draggingSortable,
+          filter: filter,
+          hidePushTokens: ref.watch(hidePushTokensProvider),
+        );
 
     return widgets;
   }

@@ -28,7 +28,12 @@ class SelectTokensWidget extends StatefulWidget {
   final bool multiSelect;
   final Set<Token> tokens;
   final void Function(Set<Token> selected, Set<Token> unselected) onSelect;
-  const SelectTokensWidget({this.multiSelect = true, required this.onSelect, super.key, required this.tokens});
+  const SelectTokensWidget({
+    this.multiSelect = true,
+    required this.onSelect,
+    super.key,
+    required this.tokens,
+  });
 
   @override
   State<SelectTokensWidget> createState() => _SelectTokensWidgetState();
@@ -57,7 +62,9 @@ class _SelectTokensWidgetState extends State<SelectTokensWidget> {
       } else {
         _selectedTokens.clear();
         _selectedTokens.add(token);
-        _unselectedTokens = widget.tokens.where((element) => element != token).toSet();
+        _unselectedTokens = widget.tokens
+            .where((element) => element != token)
+            .toSet();
       }
     });
     widget.onSelect(_selectedTokens, _unselectedTokens);
@@ -85,10 +92,7 @@ class _SelectTokensWidgetState extends State<SelectTokensWidget> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: (tokens.isEmpty)
-          ? Text(
-              appLocalizations.nothingToSelect,
-              textAlign: TextAlign.center,
-            )
+          ? Text(appLocalizations.nothingToSelect, textAlign: TextAlign.center)
           : Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -104,7 +108,10 @@ class _SelectTokensWidgetState extends State<SelectTokensWidget> {
                         ),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: Checkbox(value: _selectedTokens.length == tokens.length, onChanged: (_) => _selectAll()),
+                          child: Checkbox(
+                            value: _selectedTokens.length == tokens.length,
+                            onChanged: (_) => _selectAll(),
+                          ),
                         ),
                       ],
                     ),
@@ -121,10 +128,18 @@ class _SelectTokensWidgetState extends State<SelectTokensWidget> {
                               padding: const EdgeInsets.symmetric(vertical: 4),
                               child: TextButton(
                                 style: _selectedTokens.contains(token)
-                                    ? ButtonStyle(backgroundColor: WidgetStateProperty.all(theme.colorScheme.secondary.withAlpha(80)))
+                                    ? ButtonStyle(
+                                        backgroundColor:
+                                            WidgetStateProperty.all(
+                                              theme.colorScheme.secondary
+                                                  .withAlpha(80),
+                                            ),
+                                      )
                                     : null,
                                 onPressed: () => _select(token),
-                                child: TokenWidgetBuilder.previewFromToken(token),
+                                child: TokenWidgetBuilder.previewFromToken(
+                                  token,
+                                ),
                               ),
                             ),
                         ],

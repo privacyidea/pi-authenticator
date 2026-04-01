@@ -20,7 +20,8 @@
 
 import 'package:flutter/material.dart';
 
-class ElevatedDeleteButtonTheme extends ThemeExtension<ElevatedDeleteButtonTheme> {
+class ElevatedDeleteButtonTheme
+    extends ThemeExtension<ElevatedDeleteButtonTheme> {
   final ButtonStyle style;
   const ElevatedDeleteButtonTheme({required this.style});
 
@@ -50,37 +51,40 @@ class ElevatedDeleteButtonTheme extends ThemeExtension<ElevatedDeleteButtonTheme
     InteractiveInkFeatureFactory? splashFactory,
     Widget Function(BuildContext, Set<WidgetState>, Widget?)? backgroundBuilder,
     Widget Function(BuildContext, Set<WidgetState>, Widget?)? foregroundBuilder,
-  }) =>
-      ElevatedDeleteButtonTheme(
-        style: style.copyWith(
-          textStyle: textStyle,
-          backgroundColor: backgroundColor,
-          foregroundColor: actionForegroundColor,
-          overlayColor: overlayColor,
-          shadowColor: shadowColor,
-          surfaceTintColor: surfaceTintColor,
-          elevation: elevation,
-          padding: padding,
-          minimumSize: minimumSize,
-          fixedSize: fixedSize,
-          maximumSize: maximumSize,
-          iconColor: iconColor,
-          iconSize: iconSize,
-          side: side,
-          shape: shape,
-          mouseCursor: mouseCursor,
-          visualDensity: visualDensity,
-          tapTargetSize: tapTargetSize,
-          animationDuration: animationDuration,
-          enableFeedback: enableFeedback,
-          alignment: alignment,
-          splashFactory: splashFactory,
-          backgroundBuilder: backgroundBuilder,
-          foregroundBuilder: foregroundBuilder,
-        ),
-      );
+  }) => ElevatedDeleteButtonTheme(
+    style: style.copyWith(
+      textStyle: textStyle,
+      backgroundColor: backgroundColor,
+      foregroundColor: actionForegroundColor,
+      overlayColor: overlayColor,
+      shadowColor: shadowColor,
+      surfaceTintColor: surfaceTintColor,
+      elevation: elevation,
+      padding: padding,
+      minimumSize: minimumSize,
+      fixedSize: fixedSize,
+      maximumSize: maximumSize,
+      iconColor: iconColor,
+      iconSize: iconSize,
+      side: side,
+      shape: shape,
+      mouseCursor: mouseCursor,
+      visualDensity: visualDensity,
+      tapTargetSize: tapTargetSize,
+      animationDuration: animationDuration,
+      enableFeedback: enableFeedback,
+      alignment: alignment,
+      splashFactory: splashFactory,
+      backgroundBuilder: backgroundBuilder,
+      foregroundBuilder: foregroundBuilder,
+    ),
+  );
 
   @override
-  ThemeExtension<ElevatedDeleteButtonTheme> lerp(covariant ElevatedDeleteButtonTheme? other, double t) =>
-      ElevatedDeleteButtonTheme(style: ButtonStyle.lerp(style, other?.style, t) ?? style);
+  ThemeExtension<ElevatedDeleteButtonTheme> lerp(
+    covariant ElevatedDeleteButtonTheme? other,
+    double t,
+  ) => ElevatedDeleteButtonTheme(
+    style: ButtonStyle.lerp(style, other?.style, t) ?? style,
+  );
 }

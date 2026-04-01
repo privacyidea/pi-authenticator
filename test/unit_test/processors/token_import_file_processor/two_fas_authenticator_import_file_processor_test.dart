@@ -29,14 +29,20 @@ void _assertSuccessResults(List<ProcessorResult<Token>> results) {
   expect(token0.type, TokenTypes.TOTP.name);
   expect(token0, isA<TOTPToken>());
   expect(token0.origin, isNotNull);
-  expect(token0.origin!.appName, TokenImportOrigins.twoFasAuthenticator.appName);
+  expect(
+    token0.origin!.appName,
+    TokenImportOrigins.twoFasAuthenticator.appName,
+  );
   expect(token0.origin!.source, TokenOriginSourceType.backupFile);
   final totpToken = token0 as TOTPToken;
   expect(totpToken.secret, equals('AAAAAAAA'));
   expect(totpToken.algorithm, Algorithms.SHA256);
   expect(totpToken.digits, 8);
   expect(totpToken.period, 60);
-  expect(totpToken.otpFromTime(DateTime.fromMillisecondsSinceEpoch(1713519600602)), equals('46107496'));
+  expect(
+    totpToken.otpFromTime(DateTime.fromMillisecondsSinceEpoch(1713519600602)),
+    equals('46107496'),
+  );
   final result1 = results[1];
   expect(result1, isA<ProcessorResultSuccess>());
   final token1 = result1.asSuccess!.resultData;
@@ -45,7 +51,10 @@ void _assertSuccessResults(List<ProcessorResult<Token>> results) {
   expect(token1.type, TokenTypes.HOTP.name);
   expect(token1, isA<HOTPToken>());
   expect(token1.origin, isNotNull);
-  expect(token1.origin!.appName, TokenImportOrigins.twoFasAuthenticator.appName);
+  expect(
+    token1.origin!.appName,
+    TokenImportOrigins.twoFasAuthenticator.appName,
+  );
   expect(token1.origin!.source, TokenOriginSourceType.backupFile);
   final hotpToken = token1 as HOTPToken;
   expect(hotpToken.secret, equals('BBBBBBBB'));
@@ -61,7 +70,10 @@ void _assertSuccessResults(List<ProcessorResult<Token>> results) {
   expect(token2.type, TokenTypes.STEAM.name);
   expect(token2, isA<SteamToken>());
   expect(token2.origin, isNotNull);
-  expect(token2.origin!.appName, TokenImportOrigins.twoFasAuthenticator.appName);
+  expect(
+    token2.origin!.appName,
+    TokenImportOrigins.twoFasAuthenticator.appName,
+  );
   expect(token2.origin!.source, TokenOriginSourceType.backupFile);
   final steamToken = token2 as SteamToken;
   expect(steamToken.secret, equals('CCCCCCCC'));
@@ -85,8 +97,12 @@ void _testTwoFasImportFileProcessor() {
           '114, 34, 58, 123, 34, 112, 111, 115, 105, 116, 105, 111, 110, 34, 58, 50, 125, 44, 34, 105, 99, 111, 110, 34, 58, 123, 34, 115, 101, 108, 101, 99, 116, 101, 100, 34, 58, 34, 76, 97, 98, 101, 108, 34, 44, 34, 108, 97, 98, 101, 108, 34, 58, 123, 34, 116, 101, 120, 116, 34, 58, 34, 83, 84, 34, 44, 34, 98, 97, 99, 107, 103, 114, 111, 117, 110, 100, 67, 111, 108, 111, 114, 34, 58, 34, 76, 105, 103, 104, 116, 66, 108, 117, 101, 34, 125, 44, 34, 105, 99,'
           '111, 110, 67, 111, 108, 108, 101, 99, 116, 105, 111, 110, 34, 58, 123, 34, 105, 100, 34, 58, 34, 97, 53, 98, 51, 102, 98, 54, 53, 45, 52, 101, 99, 53, 45, 52, 51, 101, 54, 45, 56, 101, 99, 49, 45, 52, 57, 101, 50, 52, 99, 97, 57, 101, 55, 97, 100, 34, 125, 125, 125, 93, 44, 34, 103, 114, 111, 117, 112, 115, 34, 58, 91, 93, 44, 34, 117, 112, 100, 97, 116, 101, 100, 65, 116, 34, 58, 49, 55, 49, 51, 53, 50, 56, 56, 49, 57, 54, 54, 48,'
           '44, 34, 115, 99, 104, 101, 109, 97, 86, 101, 114, 115, 105, 111, 110, 34, 58, 52, 44, 34, 97, 112, 112, 86, 101, 114, 115, 105, 111, 110, 67, 111, 100, 101, 34, 58, 53, 48, 48, 48, 48, 49, 57, 44, 34, 97, 112, 112, 86, 101, 114, 115, 105, 111, 110, 78, 97, 109, 101, 34, 58, 34, 53, 46, 52, 46, 48, 34, 44, 34, 97, 112, 112, 79, 114, 105, 103, 105, 110, 34, 58, 34, 97, 110, 100, 114, 111, 105, 100, 34, 125]';
-      final jsonFileBytes = (jsonDecode(jsonFileBytesString) as List).cast<int>();
-      final jsonFile = XFile.fromData(Uint8List.fromList(jsonFileBytes), name: 'Two_Fas_plain.json');
+      final jsonFileBytes = (jsonDecode(jsonFileBytesString) as List)
+          .cast<int>();
+      final jsonFile = XFile.fromData(
+        Uint8List.fromList(jsonFileBytes),
+        name: 'Two_Fas_plain.json',
+      );
       group('plain', () {
         group('fileIsValid', () {
           test('isTrue', () async {
@@ -97,8 +113,13 @@ void _testTwoFasImportFileProcessor() {
           });
           test('isFalse', () async {
             // Arrange
-            final jsonFileBytes = (jsonDecode(jsonFileBytesString) as List).cast<int>()..removeLast();
-            final jsonFileInvalid = XFile.fromData(Uint8List.fromList(jsonFileBytes), name: 'Two_Fas_plain_invalid.json');
+            final jsonFileBytes =
+                (jsonDecode(jsonFileBytesString) as List).cast<int>()
+                  ..removeLast();
+            final jsonFileInvalid = XFile.fromData(
+              Uint8List.fromList(jsonFileBytes),
+              name: 'Two_Fas_plain_invalid.json',
+            );
             // Act
             final fileIsValid = await processor.fileIsValid(jsonFileInvalid);
             // Assert
@@ -147,8 +168,12 @@ void _testTwoFasImportFileProcessor() {
             '102, 108, 105, 66, 81, 109, 119, 97, 115, 98, 76, 51, 77, 86, 65, 84, 79, 65, 88, 109, 57, 97, 84, 98, 111, 89, 119, 102, 86, 86, 105, 50, 71, 87, 98, 74, 119, 105, 120, 54, 47, 99, 116, 70, 48, 52, 101, 43, 102, 120, 90, 87, 119, 77, 80, 115, 82, 109, 53, 82, 51, 56, 102, 67, 122, 68, 54, 56, 82, 78, 67, 54, 86, 68, 51, 101, 122, 114, 54, 43, 52, 56, 85, 68, 120, 116, 112, 66, 72, 117, 69, 71, 47, 78, 78, 101, 77, 66, 70, 51,'
             '43, 122, 69, 86, 89, 74, 98, 112, 114, 116, 79, 79, 75, 113, 102, 101, 43, 101, 50, 84, 66, 85, 100, 106, 77, 84, 74, 72, 108, 52, 57, 70, 70, 83, 89, 83, 50, 73, 102, 68, 48, 105, 90, 73, 117, 77, 102, 105, 68, 53, 87, 76, 54, 67, 99, 69, 114, 76, 113, 54, 75, 98, 86, 73, 49, 65, 43, 74, 115, 98, 115, 80, 87, 108, 86, 109, 111, 79, 84, 112, 53, 43, 57, 116, 98, 67, 101, 83, 99, 56, 112, 52, 87, 110, 72, 49, 57, 70, 55, 81,'
             '56, 105, 84, 103, 72, 89, 77, 88, 52, 89, 83, 108, 111, 121, 47, 68, 90, 70, 108, 119, 52, 88, 79, 70, 100, 110, 102, 77, 98, 53, 70, 70, 57, 69, 79, 49, 115, 54, 48, 87, 77, 116, 76, 56, 65, 72, 109, 98, 107, 121, 53, 56, 57, 116, 97, 105, 43, 108, 78, 72, 88, 52, 77, 102, 55, 112, 80, 57, 107, 121, 89, 119, 61, 61, 58, 71, 103, 119, 105, 68, 99, 73, 79, 86, 84, 117, 68, 76, 80, 75, 75, 34, 125]';
-        final jsonFileBytes = (jsonDecode(jsonFileBytesString) as List).cast<int>();
-        final jsonFile = XFile.fromData(Uint8List.fromList(jsonFileBytes), name: 'Two_Fas_encrypted.json');
+        final jsonFileBytes = (jsonDecode(jsonFileBytesString) as List)
+            .cast<int>();
+        final jsonFile = XFile.fromData(
+          Uint8List.fromList(jsonFileBytes),
+          name: 'Two_Fas_encrypted.json',
+        );
         group('fileIsValid', () {
           test('isTrue', () async {
             // Act
@@ -158,8 +183,13 @@ void _testTwoFasImportFileProcessor() {
           });
           test('isFalse', () async {
             // Arrange
-            final jsonFileBytes = (jsonDecode(jsonFileBytesString) as List).cast<int>()..removeLast();
-            final jsonFileInvalid = XFile.fromData(Uint8List.fromList(jsonFileBytes), name: 'Two_Fas_encrypted_invalid.json');
+            final jsonFileBytes =
+                (jsonDecode(jsonFileBytesString) as List).cast<int>()
+                  ..removeLast();
+            final jsonFileInvalid = XFile.fromData(
+              Uint8List.fromList(jsonFileBytes),
+              name: 'Two_Fas_encrypted_invalid.json',
+            );
             // Act
             final fileIsValid = await processor.fileIsValid(jsonFileInvalid);
             // Assert
@@ -176,7 +206,10 @@ void _testTwoFasImportFileProcessor() {
           // Arrange
           const password = 'test123';
           // Act
-          final results = await processor.processFile(jsonFile, password: password);
+          final results = await processor.processFile(
+            jsonFile,
+            password: password,
+          );
           // Assert
           _assertSuccessResults(results);
         });

@@ -19,6 +19,7 @@
  */
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pointycastle/asymmetric/api.dart';
+import 'package:privacyidea_authenticator/model/extensions/enums/push_token_rollout_state_extension.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../../../../model/token_template.dart';
@@ -28,6 +29,7 @@ import '../enums/force_biometric_option.dart';
 import '../enums/push_token_rollout_state.dart';
 import '../enums/token_types.dart';
 import '../exception_errors/localized_argument_error.dart';
+import '../extensions/date_time_extension.dart';
 import '../token_import/token_origin_data.dart';
 import 'token.dart';
 
@@ -60,27 +62,27 @@ class PushToken extends Token {
 
   static final Map<String, BaseValidator> otpAuthValidators = {
     ...Token.otpAuthValidators,
-    Token.SERIAL: stringValidator,
-    SSL_VERIFY: boolValidator.withDefault(true),
-    IS_POLL_ONLY: boolValidatorOptional,
-    TTL_MINUTES: minutesDurationValidator.withDefault(
+    Token.SERIAL: Validators.string,
+    SSL_VERIFY: Validators.boolSafeTrue,
+    IS_POLL_ONLY: Validators.boolOptional,
+    TTL_MINUTES: Validators.minutesDuration.withDefault(
       const Duration(minutes: 3),
     ),
-    ENROLLMENT_CREDENTIAL: stringValidatorOptional,
-    ROLLOUT_URL: uriValidator,
-    VERSION: stringValidator,
+    ENROLLMENT_CREDENTIAL: Validators.stringOptional,
+    ROLLOUT_URL: Validators.uri,
+    VERSION: Validators.string,
   };
 
   static final Map<String, BaseValidator> additionalDataValidators = {
     ...Token.additionalDataValidators,
-    EXPIRATION_DATE: const OptionalObjectValidator<DateTime>(),
-    ROLLOUT_STATE: const OptionalObjectValidator<PushTokenRollOutState>(
-      defaultValue: PushTokenRollOutState.rolloutNotStarted,
+    EXPIRATION_DATE: DateTimeX.validator.optional(),
+    ROLLOUT_STATE: PushTokenRollOutStateX.optionalValidator.withDefault(
+      PushTokenRollOutState.rolloutNotStarted,
     ),
-    IS_ROLLED_OUT: boolValidator.withDefault(false),
-    PUBLIC_SERVER_KEY: stringValidatorOptional,
-    PUBLIC_TOKEN_KEY: stringValidatorOptional,
-    PRIVATE_TOKEN_KEY: stringValidatorOptional,
+    IS_ROLLED_OUT: Validators.boolSafeFalse,
+    PUBLIC_SERVER_KEY: Validators.stringOptional,
+    PUBLIC_TOKEN_KEY: Validators.stringOptional,
+    PRIVATE_TOKEN_KEY: Validators.stringOptional,
   };
 
   // --- Static Validation Methods ---
@@ -270,18 +272,22 @@ class PushToken extends Token {
 
   @override
   bool isSameTokenAs(Token other) {
-    if (super.isSameTokenAs(other) != null) return super.isSameTokenAs(other)!;
     if (other is! PushToken) return false;
-    return (publicServerKey == other.publicServerKey &&
+
+    final bool samePushCredentials =
+        publicServerKey == other.publicServerKey &&
         publicTokenKey == other.publicTokenKey &&
         privateTokenKey == other.privateTokenKey &&
-        enrollmentCredentials == other.enrollmentCredentials);
+        enrollmentCredentials == other.enrollmentCredentials;
+    if (!samePushCredentials) return false;
+
+    return super.isSameTokenAs(other) ?? true;
   }
 
   @override
   PushToken copyWith({
     String? label,
-    String? serial,
+    String? Function()? serial,
     String? issuer,
     String? Function()? containerSerial,
     List<String>? checkedContainer,
@@ -306,36 +312,40 @@ class PushToken extends Token {
     TokenOriginData? origin,
     bool? isOffline,
     ForceBiometricOption? forceBiometricOption,
-  }) => PushToken(
-    label: label ?? this.label,
-    serial: serial ?? this.serial,
-    issuer: issuer ?? this.issuer,
-    tokenImage: tokenImage ?? this.tokenImage,
-    fbToken: fbToken ?? this.fbToken,
-    containerSerial: containerSerial != null
-        ? containerSerial()
-        : this.containerSerial,
-    checkedContainer: checkedContainer ?? this.checkedContainer,
-    id: id ?? this.id,
-    pin: pin ?? this.pin,
-    isLocked: isLocked ?? this.isLocked,
-    isHidden: isHidden ?? this.isHidden,
-    sslVerify: sslVerify ?? this.sslVerify,
-    isPollOnly: isPollOnly != null ? isPollOnly() : this.isPollOnly,
-    enrollmentCredentials: enrollmentCredentials ?? this.enrollmentCredentials,
-    url: url ?? this.url,
-    publicServerKey: publicServerKey ?? this.publicServerKey,
-    publicTokenKey: publicTokenKey ?? this.publicTokenKey,
-    privateTokenKey: privateTokenKey ?? this.privateTokenKey,
-    expirationDate: expirationDate ?? this.expirationDate,
-    isRolledOut: isRolledOut ?? this.isRolledOut,
-    rolloutState: rolloutState ?? this.rolloutState,
-    sortIndex: sortIndex ?? this.sortIndex,
-    folderId: folderId != null ? folderId() : this.folderId,
-    origin: origin ?? this.origin,
-    isOffline: isOffline ?? this.isOffline,
-    forceBiometricOption: forceBiometricOption ?? this.forceBiometricOption,
-  );
+  }) {
+    final String? newSerial = serial?.call();
+    return PushToken(
+      label: label ?? this.label,
+      serial: newSerial ?? this.serial,
+      issuer: issuer ?? this.issuer,
+      tokenImage: tokenImage ?? this.tokenImage,
+      fbToken: fbToken ?? this.fbToken,
+      containerSerial: containerSerial != null
+          ? containerSerial()
+          : this.containerSerial,
+      checkedContainer: checkedContainer ?? this.checkedContainer,
+      id: id ?? this.id,
+      pin: pin ?? this.pin,
+      isLocked: isLocked ?? this.isLocked,
+      isHidden: isHidden ?? this.isHidden,
+      sslVerify: sslVerify ?? this.sslVerify,
+      isPollOnly: isPollOnly != null ? isPollOnly() : this.isPollOnly,
+      enrollmentCredentials:
+          enrollmentCredentials ?? this.enrollmentCredentials,
+      url: url ?? this.url,
+      publicServerKey: publicServerKey ?? this.publicServerKey,
+      publicTokenKey: publicTokenKey ?? this.publicTokenKey,
+      privateTokenKey: privateTokenKey ?? this.privateTokenKey,
+      expirationDate: expirationDate ?? this.expirationDate,
+      isRolledOut: isRolledOut ?? this.isRolledOut,
+      rolloutState: rolloutState ?? this.rolloutState,
+      sortIndex: sortIndex ?? this.sortIndex,
+      folderId: folderId != null ? folderId() : this.folderId,
+      origin: origin ?? this.origin,
+      isOffline: isOffline ?? this.isOffline,
+      forceBiometricOption: forceBiometricOption ?? this.forceBiometricOption,
+    );
+  }
 
   @override
   Token copyUpdateByTemplate(TokenTemplate template) {
@@ -343,7 +353,7 @@ class PushToken extends Token {
     return copyWith(
       label: uriMap[Token.LABEL] as String?,
       issuer: uriMap[Token.ISSUER] as String?,
-      serial: uriMap[Token.SERIAL] as String?,
+      serial: () => uriMap[Token.SERIAL] as String?,
       sslVerify: uriMap[SSL_VERIFY] as bool?,
       isPollOnly: uriMap[IS_POLL_ONLY] != null
           ? () => (uriMap[IS_POLL_ONLY] as bool)

@@ -32,23 +32,29 @@ import '../dialogs/transfer_container_action_dialog.dart';
 class TransferContainerAction extends ConsumerSlideableAction {
   final TokenContainerFinalized container;
 
-  const TransferContainerAction({
-    required this.container,
-    super.key,
-  });
+  const TransferContainerAction({required this.container, super.key});
 
   void _showExportContainerDialog(BuildContext context) {
-    showDialog(useRootNavigator: false, context: context, builder: (_) => TransferContainerDialog(container: container));
+    showDialog(
+      useRootNavigator: false,
+      context: context,
+      builder: (_) => TransferContainerDialog(container: container),
+    );
   }
 
   @override
-  CustomSlidableAction build(BuildContext context, WidgetRef ref) => CustomSlidableAction(
-        onPressed: (BuildContext context) => _showExportContainerDialog(context),
-        backgroundColor: Theme.of(context).extension<TokenTileTheme>()!.transferColor,
-        foregroundColor: Theme.of(context).extension<TokenTileTheme>()!.actionForegroundColor,
+  CustomSlidableAction build(BuildContext context, WidgetRef ref) =>
+      CustomSlidableAction(
+        onPressed: (BuildContext context) =>
+            _showExportContainerDialog(context),
+        backgroundColor: Theme.of(
+          context,
+        ).extension<TokenTileTheme>()!.transferColor,
+        foregroundColor: Theme.of(
+          context,
+        ).extension<TokenTileTheme>()!.actionForegroundColor,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Icon(MdiIcons.transfer),
             Text(

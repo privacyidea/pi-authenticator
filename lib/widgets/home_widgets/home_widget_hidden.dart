@@ -5,7 +5,8 @@ import 'home_widget_otp.dart';
 import 'interfaces/flutter_home_widget_base.dart';
 import 'interfaces/flutter_home_widget_builder.dart';
 
-class HomeWidgetHiddenBuilder extends FlutterHomeWidgetBuilder<HomeWidgetHidden> {
+class HomeWidgetHiddenBuilder
+    extends FlutterHomeWidgetBuilder<HomeWidgetHidden> {
   final int otpLength;
   final String? issuer;
   final String? label;
@@ -20,16 +21,16 @@ class HomeWidgetHiddenBuilder extends FlutterHomeWidgetBuilder<HomeWidgetHidden>
     required super.homeWidgetKey,
     required super.utils,
   }) : super(
-          formWidget: (key, theme, logicalSize, _) => HomeWidgetHidden(
-            key: key,
-            theme: theme,
-            logicalSize: logicalSize,
-            issuer: issuer ?? '',
-            label: label ?? '',
-            otpLength: otpLength,
-            utils: utils,
-          ),
-        );
+         formWidget: (key, theme, logicalSize, _) => HomeWidgetHidden(
+           key: key,
+           theme: theme,
+           logicalSize: logicalSize,
+           issuer: issuer ?? '',
+           label: label ?? '',
+           otpLength: otpLength,
+           utils: utils,
+         ),
+       );
 }
 
 class HomeWidgetHidden extends FlutterHomeWidgetBase {
@@ -48,7 +49,8 @@ class HomeWidgetHidden extends FlutterHomeWidgetBase {
 
   @override
   Widget build(BuildContext context) {
-    final veilingCharacter = theme.extension<ExtendedTextTheme>()?.veilingCharacter ?? '●';
+    final veilingCharacter =
+        theme.extension<ExtendedTextTheme>()?.veilingCharacter ?? '●';
     return HomeWidgetOtp(
       theme: theme,
       logicalSize: logicalSize,

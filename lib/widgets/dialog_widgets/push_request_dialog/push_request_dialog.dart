@@ -24,7 +24,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/state_providers/status_message_provider.dart';
 import 'package:privacyidea_authenticator/widgets/button_widgets/push_action_button.dart';
 
 import '../../../../model/push_request/push_requests.dart';
@@ -37,7 +36,6 @@ import '../../../utils/lock_auth.dart';
 import '../../../utils/logger.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/push_request_provider.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
-import '../../../utils/utils.dart';
 import '../../../utils/view_utils.dart';
 import '../default_dialog.dart';
 import 'widgets/push_decline_confirm_dialog.dart';
@@ -109,9 +107,9 @@ mixin PushDialogMixin {
           .accept<V, D>(token, pushRequest, selectedAnswer: answer);
     } catch (e) {
       Logger.error('Error accepting push request: $e');
-      ref.read(statusMessageProvider.notifier).state = StatusMessage(
+      showErrorStatusMessage(
         message: (l10n) => "Error accepting push request: $e",
-        isError: true,
+        ref: ref,
       );
       return;
     }
@@ -160,12 +158,13 @@ mixin PushDialogMixin {
     }
     if (!ref.context.mounted) return;
     await ref.read(pushRequestProvider.notifier).remove(pushRequest);
+    if (!ref.context.mounted) return;
     if (context.mounted) {
       _onHandled(context: context, ref: ref);
     }
   }
 
-  void
+  Future<void>
   _onHandled<V extends PiServerResultValue, D extends PiServerResultDetail>({
     required BuildContext context,
     required WidgetRef ref,

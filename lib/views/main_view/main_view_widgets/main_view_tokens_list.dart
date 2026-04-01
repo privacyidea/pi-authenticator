@@ -143,7 +143,6 @@ class MainViewTokensList extends ConsumerStatefulWidget {
             key: ValueKey(
               'mainview_${sortable.runtimeType}_${sortable.folderId}',
             ),
-            filter: null,
           ),
         );
         continue;

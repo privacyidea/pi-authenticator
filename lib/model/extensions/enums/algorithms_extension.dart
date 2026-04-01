@@ -1,9 +1,11 @@
+// ignore_for_file: avoid_redundant_argument_values
+
 /*
  * privacyIDEA Authenticator
  *
  * Author: Frank Merkel <frank.merkel@netknights.it>
  *
- * Copyright (c) 2025 NetKnights GmbH
+ * Copyright (c) 2025-2026 NetKnights GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
@@ -31,15 +33,32 @@ extension AlgorithmsX on Algorithms {
     required int length,
     required Duration interval,
     bool isGoogle = true,
-  }) =>
-      switch (this) {
-        Algorithms.SHA1 => OTP.generateTOTPCodeString(secret, time.millisecondsSinceEpoch,
-            length: length, interval: interval.inSeconds, algorithm: Algorithm.SHA1, isGoogle: isGoogle),
-        Algorithms.SHA256 => OTP.generateTOTPCodeString(secret, time.millisecondsSinceEpoch,
-            length: length, interval: interval.inSeconds, algorithm: Algorithm.SHA256, isGoogle: isGoogle),
-        Algorithms.SHA512 => OTP.generateTOTPCodeString(secret, time.millisecondsSinceEpoch,
-            length: length, interval: interval.inSeconds, algorithm: Algorithm.SHA512, isGoogle: isGoogle),
-      };
+  }) => switch (this) {
+    Algorithms.SHA1 => OTP.generateTOTPCodeString(
+      secret,
+      time.millisecondsSinceEpoch,
+      length: length,
+      interval: interval.inSeconds,
+      algorithm: Algorithm.SHA1,
+      isGoogle: isGoogle,
+    ),
+    Algorithms.SHA256 => OTP.generateTOTPCodeString(
+      secret,
+      time.millisecondsSinceEpoch,
+      length: length,
+      interval: interval.inSeconds,
+      algorithm: Algorithm.SHA256,
+      isGoogle: isGoogle,
+    ),
+    Algorithms.SHA512 => OTP.generateTOTPCodeString(
+      secret,
+      time.millisecondsSinceEpoch,
+      length: length,
+      interval: interval.inSeconds,
+      algorithm: Algorithm.SHA512,
+      isGoogle: isGoogle,
+    ),
+  };
 
   /// Generates a Counter-based one time password code and return as a 0 padded string.
   /// If isGoogle is true, the secret will be decoded as base32, otherwise it will be decoded as utf8.
@@ -48,10 +67,27 @@ extension AlgorithmsX on Algorithms {
     required int counter,
     required int length,
     bool isGoogle = true,
-  }) =>
-      switch (this) {
-        Algorithms.SHA1 => OTP.generateHOTPCodeString(secret, counter, length: length, algorithm: Algorithm.SHA1, isGoogle: isGoogle),
-        Algorithms.SHA256 => OTP.generateHOTPCodeString(secret, counter, length: length, algorithm: Algorithm.SHA256, isGoogle: isGoogle),
-        Algorithms.SHA512 => OTP.generateHOTPCodeString(secret, counter, length: length, algorithm: Algorithm.SHA512, isGoogle: isGoogle),
-      };
+  }) => switch (this) {
+    Algorithms.SHA1 => OTP.generateHOTPCodeString(
+      secret,
+      counter,
+      length: length,
+      algorithm: Algorithm.SHA1,
+      isGoogle: isGoogle,
+    ),
+    Algorithms.SHA256 => OTP.generateHOTPCodeString(
+      secret,
+      counter,
+      length: length,
+      algorithm: Algorithm.SHA256,
+      isGoogle: isGoogle,
+    ),
+    Algorithms.SHA512 => OTP.generateHOTPCodeString(
+      secret,
+      counter,
+      length: length,
+      algorithm: Algorithm.SHA512,
+      isGoogle: isGoogle,
+    ),
+  };
 }

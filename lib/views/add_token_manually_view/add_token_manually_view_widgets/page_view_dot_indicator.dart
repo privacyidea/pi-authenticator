@@ -23,10 +23,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class PageViewDotIndicator extends ConsumerStatefulWidget {
   final PageController controller;
   final List<Widget> icons;
-  const PageViewDotIndicator({super.key, required this.controller, required this.icons});
+  const PageViewDotIndicator({
+    super.key,
+    required this.controller,
+    required this.icons,
+  });
 
   @override
-  ConsumerState<PageViewDotIndicator> createState() => _PageViewDotIndicatorState();
+  ConsumerState<PageViewDotIndicator> createState() =>
+      _PageViewDotIndicatorState();
 }
 
 class _PageViewDotIndicatorState extends ConsumerState<PageViewDotIndicator> {
@@ -53,27 +58,34 @@ class _PageViewDotIndicatorState extends ConsumerState<PageViewDotIndicator> {
           width: constraints.maxWidth,
           height: 50,
           child: Row(
-            mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               for (int i = 0; i < widget.icons.length; i++) ...[
                 GestureDetector(
                   onTap: () {
                     final pageDifference = (i - _currentPage).abs();
-                    widget.controller.animateToPage(i, duration: Duration(milliseconds: 200 * pageDifference + 150), curve: Curves.easeInOut);
+                    widget.controller.animateToPage(
+                      i,
+                      duration: Duration(
+                        milliseconds: 200 * pageDifference + 150,
+                      ),
+                      curve: Curves.easeInOut,
+                    );
                   },
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 150),
                     width: _currentPage == i ? iconWidth * 2 : iconWidth,
                     decoration: BoxDecoration(
-                      color: _currentPage == i ? Theme.of(context).primaryColor : Theme.of(context).disabledColor,
+                      color: _currentPage == i
+                          ? Theme.of(context).primaryColor
+                          : Theme.of(context).disabledColor,
                       borderRadius: BorderRadius.circular(5),
                     ),
                     child: widget.icons[i],
                   ),
                 ),
                 if (i < widget.icons.length - 1) SizedBox(width: space),
-              ]
+              ],
             ],
           ),
         );

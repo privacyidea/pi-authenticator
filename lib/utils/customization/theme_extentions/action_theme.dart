@@ -57,22 +57,45 @@ class TokenTileTheme extends ThemeExtension<TokenTileTheme> {
   });
 
   @override
-  ThemeExtension<TokenTileTheme> lerp(covariant TokenTileTheme? other, double t) => TokenTileTheme(
-        deleteColor: Color.lerp(deleteColor, other?.deleteColor, t) ?? deleteColor,
-        editColor: Color.lerp(editColor, other?.editColor, t) ?? editColor,
-        lockColor: Color.lerp(lockColor, other?.lockColor, t) ?? lockColor,
-        transferColor: Color.lerp(transferColor, other?.transferColor, t) ?? transferColor,
-        actionDisabledColor: Color.lerp(actionDisabledColor, other?.actionDisabledColor, t) ?? actionDisabledColor,
-        actionForegroundColor: Color.lerp(actionForegroundColor, other?.actionForegroundColor, t) ?? actionForegroundColor,
-        defaultOtpColor: Color.lerp(defaultOtpColor, other?.defaultOtpColor, t) ?? defaultOtpColor,
-        warningOtpColor: Color.lerp(warningOtpColor, other?.warningOtpColor, t) ?? warningOtpColor,
-        criticalOtpColor: Color.lerp(criticalOtpColor, other?.criticalOtpColor, t) ?? criticalOtpColor,
-        defaultCountdownColor: Color.lerp(defaultCountdownColor, other?.defaultCountdownColor, t) ?? defaultCountdownColor,
-        warningCountdownColor: Color.lerp(warningCountdownColor, other?.warningCountdownColor, t) ?? warningCountdownColor,
-        criticalCountdownColor: Color.lerp(criticalCountdownColor, other?.criticalCountdownColor, t) ?? criticalCountdownColor,
-        tileSubtitleColor: Color.lerp(tileSubtitleColor, other?.tileSubtitleColor, t) ?? tileSubtitleColor,
-        tileIconColor: Color.lerp(tileIconColor, other?.tileIconColor, t) ?? tileIconColor,
-      );
+  ThemeExtension<TokenTileTheme> lerp(
+    covariant TokenTileTheme? other,
+    double t,
+  ) => TokenTileTheme(
+    deleteColor: Color.lerp(deleteColor, other?.deleteColor, t) ?? deleteColor,
+    editColor: Color.lerp(editColor, other?.editColor, t) ?? editColor,
+    lockColor: Color.lerp(lockColor, other?.lockColor, t) ?? lockColor,
+    transferColor:
+        Color.lerp(transferColor, other?.transferColor, t) ?? transferColor,
+    actionDisabledColor:
+        Color.lerp(actionDisabledColor, other?.actionDisabledColor, t) ??
+        actionDisabledColor,
+    actionForegroundColor:
+        Color.lerp(actionForegroundColor, other?.actionForegroundColor, t) ??
+        actionForegroundColor,
+    defaultOtpColor:
+        Color.lerp(defaultOtpColor, other?.defaultOtpColor, t) ??
+        defaultOtpColor,
+    warningOtpColor:
+        Color.lerp(warningOtpColor, other?.warningOtpColor, t) ??
+        warningOtpColor,
+    criticalOtpColor:
+        Color.lerp(criticalOtpColor, other?.criticalOtpColor, t) ??
+        criticalOtpColor,
+    defaultCountdownColor:
+        Color.lerp(defaultCountdownColor, other?.defaultCountdownColor, t) ??
+        defaultCountdownColor,
+    warningCountdownColor:
+        Color.lerp(warningCountdownColor, other?.warningCountdownColor, t) ??
+        warningCountdownColor,
+    criticalCountdownColor:
+        Color.lerp(criticalCountdownColor, other?.criticalCountdownColor, t) ??
+        criticalCountdownColor,
+    tileSubtitleColor:
+        Color.lerp(tileSubtitleColor, other?.tileSubtitleColor, t) ??
+        tileSubtitleColor,
+    tileIconColor:
+        Color.lerp(tileIconColor, other?.tileIconColor, t) ?? tileIconColor,
+  );
 
   @override
   ThemeExtension<TokenTileTheme> copyWith({
@@ -90,21 +113,28 @@ class TokenTileTheme extends ThemeExtension<TokenTileTheme> {
     Color? Function()? criticalCountdownColor,
     Color? tileSubtitleColor,
     Color? tileIconColor,
-  }) =>
-      TokenTileTheme(
-        deleteColor: deleteColor ?? this.deleteColor,
-        editColor: editColor ?? this.editColor,
-        lockColor: lockColor ?? this.lockColor,
-        transferColor: transferColor ?? this.transferColor,
-        actionDisabledColor: actionDisabledColor ?? this.actionDisabledColor,
-        actionForegroundColor: actionForegroundColor ?? this.actionForegroundColor,
-        defaultOtpColor: defaultOtpColor ?? this.defaultOtpColor,
-        warningOtpColor: warningOtpColor != null ? warningOtpColor() : this.warningOtpColor,
-        criticalOtpColor: criticalOtpColor != null ? criticalOtpColor() : this.criticalOtpColor,
-        defaultCountdownColor: defaultCountdownColor ?? this.defaultCountdownColor,
-        warningCountdownColor: warningCountdownColor != null ? warningCountdownColor() : this.warningCountdownColor,
-        criticalCountdownColor: criticalCountdownColor != null ? criticalCountdownColor() : this.criticalCountdownColor,
-        tileSubtitleColor: tileSubtitleColor ?? this.tileSubtitleColor,
-        tileIconColor: tileIconColor ?? this.tileIconColor,
-      );
+  }) => TokenTileTheme(
+    deleteColor: deleteColor ?? this.deleteColor,
+    editColor: editColor ?? this.editColor,
+    lockColor: lockColor ?? this.lockColor,
+    transferColor: transferColor ?? this.transferColor,
+    actionDisabledColor: actionDisabledColor ?? this.actionDisabledColor,
+    actionForegroundColor: actionForegroundColor ?? this.actionForegroundColor,
+    defaultOtpColor: defaultOtpColor ?? this.defaultOtpColor,
+    warningOtpColor: warningOtpColor != null
+        ? warningOtpColor()
+        : this.warningOtpColor,
+    criticalOtpColor: criticalOtpColor != null
+        ? criticalOtpColor()
+        : this.criticalOtpColor,
+    defaultCountdownColor: defaultCountdownColor ?? this.defaultCountdownColor,
+    warningCountdownColor: warningCountdownColor != null
+        ? warningCountdownColor()
+        : this.warningCountdownColor,
+    criticalCountdownColor: criticalCountdownColor != null
+        ? criticalCountdownColor()
+        : this.criticalCountdownColor,
+    tileSubtitleColor: tileSubtitleColor ?? this.tileSubtitleColor,
+    tileIconColor: tileIconColor ?? this.tileIconColor,
+  );
 }

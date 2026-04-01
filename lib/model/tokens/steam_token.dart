@@ -46,7 +46,7 @@ class SteamToken extends TOTPToken {
 
   static final Map<String, BaseValidator> otpAuthValidators = {
     ...Token.otpAuthValidators,
-    OTPToken.SECRET_BASE32: base32Stringvalidator,
+    OTPToken.SECRET_BASE32: Validators.base32String,
   };
 
   // --- Static Validation Methods ---
@@ -165,7 +165,7 @@ class SteamToken extends TOTPToken {
 
   @override
   SteamToken copyWith({
-    String? serial,
+    String? Function()? serial,
     String? label,
     String? issuer,
     String? Function()? containerSerial,

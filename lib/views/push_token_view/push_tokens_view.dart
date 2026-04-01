@@ -19,6 +19,7 @@
  */
 import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
+import 'package:privacyidea_authenticator/widgets/status_bar.dart';
 
 import '../../widgets/push_request_listener.dart';
 import '../view_interface.dart';
@@ -42,13 +43,19 @@ class PushTokensView extends StatelessView {
         ),
       ),
       body: PushRequestListener(
-        child: Stack(
-          children: [
-            Center(
-              child: Icon(Icons.notifications_none, size: 300, color: Colors.grey.withValues(alpha: 0.2)),
-            ),
-            const PushTokensViwList(),
-          ],
+        child: StatusBar(
+          child: Stack(
+            children: [
+              Center(
+                child: Icon(
+                  Icons.notifications_none,
+                  size: 300,
+                  color: Colors.grey.withValues(alpha: 0.2),
+                ),
+              ),
+              const PushTokensViwList(),
+            ],
+          ),
         ),
       ),
     );

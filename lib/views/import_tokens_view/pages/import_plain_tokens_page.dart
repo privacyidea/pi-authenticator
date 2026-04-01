@@ -45,12 +45,20 @@ class ImportPlainTokensPage extends ConsumerStatefulWidget {
     required String titleName,
     required TokenImportType selectedType,
   }) {
-    final importedTokens = processorResults.whereType<ProcessorResultSuccess<Token>>().map((e) => e.resultData).toList();
-    final failedImports = processorResults.whereType<ProcessorResultFailed>().map((e) => e.message).toList();
+    final importedTokens = processorResults
+        .whereType<ProcessorResultSuccess<Token>>()
+        .map((e) => e.resultData)
+        .toList();
+    final failedImports = processorResults
+        .whereType<ProcessorResultFailed>()
+        .map((e) => e.message)
+        .toList();
     return ImportPlainTokensPage._(
       key: key,
       importedTokens: importedTokens,
-      failedImports: failedImports.map((failedImport) => failedImport(AppLocalizationsEn())).toList(),
+      failedImports: failedImports
+          .map((failedImport) => failedImport(AppLocalizationsEn()))
+          .toList(),
       titleName: titleName,
       selectedType: selectedType,
       // numOfDuplicates: duplicates.length,
@@ -79,10 +87,15 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
   final List<TokenImportEntry> appDuplicates = [];
   final List<TokenImportEntry> importDuplicates = [];
 
-  List<TokenImportEntry> _initBuildLists(List<TokenImportEntry> importTokenEntrys) {
+  List<TokenImportEntry> _initBuildLists(
+    List<TokenImportEntry> importTokenEntrys,
+  ) {
     for (var i = 0; i < importTokenEntrys.length; i++) {
       final importTokenEntry = importTokenEntrys[i];
-      if ([...newImports, ...appDuplicates, ...conflictedImports].any((import) => import.newToken.isSameTokenAs(importTokenEntry.newToken) == true)) {
+      if ([...newImports, ...appDuplicates, ...conflictedImports].any(
+        (import) =>
+            import.newToken.isSameTokenAs(importTokenEntry.newToken) == true,
+      )) {
         importDuplicates.add(importTokenEntry);
         importTokenEntrys.remove(importTokenEntry);
         i--;
@@ -106,11 +119,15 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final map = (await ref.read(tokenProvider.future)).getSameTokens(widget.importedTokens);
+      final map = (await ref.read(
+        tokenProvider.future,
+      )).getSameTokens(widget.importedTokens);
       final importTokenEntrys = <TokenImportEntry>[];
       setState(() {
         map.forEach((key, value) {
-          importTokenEntrys.add(TokenImportEntry(newToken: key, oldToken: value));
+          importTokenEntrys.add(
+            TokenImportEntry(newToken: key, oldToken: value),
+          );
         });
         _initBuildLists(importTokenEntrys);
       });
@@ -126,11 +143,12 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
     super.dispose();
   }
 
-  void _updateIsMaxScrollExtent() async {
+  Future<void> _updateIsMaxScrollExtent() async {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await Future.delayed(const Duration(milliseconds: 100));
       if (!mounted) return;
-      if (scrollController.position.maxScrollExtent <= scrollController.offset) {
+      if (scrollController.position.maxScrollExtent <=
+          scrollController.offset) {
         if (isMaxScrollOffset || !mounted) return;
         setState(() {
           isMaxScrollOffset = true;
@@ -157,9 +175,7 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
         ),
       ),
       body: Column(
-        mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Flexible(
             child: SingleChildScrollView(
@@ -167,50 +183,72 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: ImportTokensView.pagePaddingHorizontal),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: ImportTokensView.pagePaddingHorizontal,
+                    ),
                     child: Icon(
                       widget.selectedType.icon,
                       color: Colors.green,
                       size: ImportTokensView.iconSize,
                     ),
                   ),
-                  const SizedBox(height: ImportTokensView.itemSpacingHorizontal),
+                  const SizedBox(
+                    height: ImportTokensView.itemSpacingHorizontal,
+                  ),
                   Column(
                     children: [
                       if (widget.failedImports.isNotEmpty)
-                        FailedImportsList(
-                          failedImports: widget.failedImports,
-                        ),
+                        FailedImportsList(failedImports: widget.failedImports),
                       if (conflictedImports.isNotEmpty)
                         ConflictedImportTokensList(
-                          title: AppLocalizations.of(context)!.importConflictToken(conflictedImports.length),
-                          titlePadding: const EdgeInsets.symmetric(horizontal: 40),
+                          title: AppLocalizations.of(
+                            context,
+                          )!.importConflictToken(conflictedImports.length),
+                          titlePadding: const EdgeInsets.symmetric(
+                            horizontal: 40,
+                          ),
                           leadingDivider: widget.failedImports.isNotEmpty,
                           importEntries: conflictedImports,
                           onTap: _updateConflicted,
                         ),
                       if (newImports.isNotEmpty)
                         NoConflictImportTokensList(
-                          title: AppLocalizations.of(context)!.importNewToken(newImports.length),
-                          titlePadding: const EdgeInsets.symmetric(horizontal: 40),
+                          title: AppLocalizations.of(
+                            context,
+                          )!.importNewToken(newImports.length),
+                          titlePadding: const EdgeInsets.symmetric(
+                            horizontal: 40,
+                          ),
                           leadingDivider: conflictedImports.isNotEmpty,
                           importEntries: newImports,
                           onTap: _updateNewImports,
                         ),
                       if (appDuplicates.isNotEmpty)
                         NoConflictImportTokensList(
-                          title: AppLocalizations.of(context)!.importExistingToken(appDuplicates.length),
-                          titlePadding: const EdgeInsets.symmetric(horizontal: 40),
-                          leadingDivider: newImports.isNotEmpty || conflictedImports.isNotEmpty,
+                          title: AppLocalizations.of(
+                            context,
+                          )!.importExistingToken(appDuplicates.length),
+                          titlePadding: const EdgeInsets.symmetric(
+                            horizontal: 40,
+                          ),
+                          leadingDivider:
+                              newImports.isNotEmpty ||
+                              conflictedImports.isNotEmpty,
                           importEntries: appDuplicates,
                           // borderColor: null,
                         ),
                       if (importDuplicates.isNotEmpty)
                         NoConflictImportTokensList(
-                          title: 'The contained duplicates (${importDuplicates.length}) will be ignored.',
+                          title:
+                              'The contained duplicates (${importDuplicates.length}) will be ignored.',
                           //  AppLocalizations.of(context)!.importDuplicateToken(importDuplicates.length),''
-                          titlePadding: const EdgeInsets.symmetric(horizontal: 40),
-                          leadingDivider: newImports.isNotEmpty || conflictedImports.isNotEmpty || appDuplicates.isNotEmpty,
+                          titlePadding: const EdgeInsets.symmetric(
+                            horizontal: 40,
+                          ),
+                          leadingDivider:
+                              newImports.isNotEmpty ||
+                              conflictedImports.isNotEmpty ||
+                              appDuplicates.isNotEmpty,
                           importEntries: importDuplicates,
                           borderColor: null,
                         ),
@@ -223,11 +261,7 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
           AnimatedOpacity(
             opacity: isMaxScrollOffset ? 0 : 1,
             duration: const Duration(milliseconds: 250),
-            child: const Divider(
-              thickness: 2,
-              indent: 4,
-              endIndent: 4,
-            ),
+            child: const Divider(thickness: 2, indent: 4, endIndent: 4),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(
@@ -241,9 +275,15 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
               child: ElevatedButton(
                 onPressed: tokensToKeep == null || tokensToKeep!.contains(null)
                     ? null
-                    : () => Navigator.of(context).pop<List<Token>>(tokensToKeep!.whereType<Token>().toList()),
+                    : () => Navigator.of(context).pop<List<Token>>(
+                        tokensToKeep!.whereType<Token>().toList(),
+                      ),
                 child: Text(
-                  tokensToKeep != null ? AppLocalizations.of(context)!.importNTokens(tokensToKeep!.length) : AppLocalizations.of(context)!.ok,
+                  tokensToKeep != null
+                      ? AppLocalizations.of(
+                          context,
+                        )!.importNTokens(tokensToKeep!.length)
+                      : AppLocalizations.of(context)!.ok,
                   style: Theme.of(context).textTheme.headlineSmall,
                   overflow: TextOverflow.fade,
                   softWrap: false,
@@ -276,10 +316,20 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
     tokensToKeep = [];
     for (final importTokenEntry in importTokenEntrys) {
       if (importTokenEntry.oldToken != null) {
-        if (importTokenEntry.newToken.sameValuesAs(importTokenEntry.oldToken!)) continue;
-        tokensToKeep!.add(importTokenEntry.selectedToken?.copyWith(id: importTokenEntry.oldToken?.id));
+        if (importTokenEntry.newToken.sameValuesAs(
+          importTokenEntry.oldToken!,
+        )) {
+          continue;
+        }
+        tokensToKeep!.add(
+          importTokenEntry.selectedToken?.copyWith(
+            id: importTokenEntry.oldToken?.id,
+          ),
+        );
       } else {
-        if (importTokenEntry.selectedToken != null) tokensToKeep!.add(importTokenEntry.selectedToken);
+        if (importTokenEntry.selectedToken != null) {
+          tokensToKeep!.add(importTokenEntry.selectedToken);
+        }
       }
     }
   }

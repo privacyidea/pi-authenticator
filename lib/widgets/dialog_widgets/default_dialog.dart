@@ -25,7 +25,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../utils/customization/theme_extentions/app_dimensions.dart';
 import '../button_widgets/intent_button.dart';
-import '../button_widgets/time_guarded_button.dart';
 
 export '../button_widgets/intent_button.dart' show DialogActionIntent;
 
@@ -45,9 +44,6 @@ class DialogAction {
     this.cooldownMs = 0,
     this.formState,
   });
-
-  // Determines if this action requires the TimeGuardedButton logic
-  bool get isTimed => delaySeconds > 0 || cooldownMs > 0;
 }
 
 class DefaultDialog extends ConsumerWidget {
@@ -140,18 +136,11 @@ class DefaultDialog extends ConsumerWidget {
       ..sort((a, b) => a.intent.priority.compareTo(b.intent.priority));
 
     return sortedActions.map((action) {
-      if (action.isTimed) {
-        return TimeGuardedButton(
-          intent: action.intent,
-          onPressed: action.onPressed,
-          delaySeconds: action.delaySeconds,
-          cooldownMs: action.cooldownMs,
-          child: Text(action.label),
-        );
-      }
       return IntentButton(
         intent: action.intent,
         onPressed: action.onPressed,
+        delaySeconds: action.delaySeconds,
+        cooldownMs: action.cooldownMs,
         child: Text(action.label),
       );
     }).toList();

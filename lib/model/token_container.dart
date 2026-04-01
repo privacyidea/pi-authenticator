@@ -38,12 +38,7 @@ import 'token_import/token_origin_data.dart';
 part 'token_container.freezed.dart';
 part 'token_container.g.dart';
 
-@Freezed(
-  toStringOverride: false,
-  addImplicitFinal: true,
-  toJson: true,
-  fromJson: true,
-)
+@Freezed(toStringOverride: false, toJson: true, fromJson: true)
 sealed class TokenContainer with _$TokenContainer {
   static const String CONTAINER_SERIAL = 'container_serial';
 
@@ -120,20 +115,20 @@ sealed class TokenContainer with _$TokenContainer {
       uriMap = validateMap(
         map: uriMap,
         validators: <String, BaseValidator>{
-          ISSUER: stringValidator,
-          TTL_MINUTES: minutesDurationValidator.withDefault(
+          ISSUER: Validators.string,
+          TTL_MINUTES: Validators.minutesDuration.withDefault(
             const Duration(minutes: 10),
           ),
-          NONCE: stringValidator,
+          NONCE: Validators.string,
           TIMESTAMP: DateTimeX.validator,
-          FINALIZATION_URL: uriValidator,
-          SERIAL: stringValidator,
+          FINALIZATION_URL: Validators.uri,
+          SERIAL: Validators.string,
           EC_KEY_ALGORITHM: EcKeyAlgorithmX.validator,
-          HASH_ALGORITHM: algorithmsValidator,
-          PASSPHRASE_QUESTION: stringValidatorOptional,
-          SSL_VERIFY: boolValidator,
+          HASH_ALGORITHM: Validators.algorithms,
+          PASSPHRASE_QUESTION: Validators.stringOptional,
+          SSL_VERIFY: Validators.boolType,
           POLICIES: ContainerPolicies.validator.optional(),
-          SEND_PASSPHRASE: boolValidatorOptional,
+          SEND_PASSPHRASE: Validators.boolOptional,
         },
         name: 'Container',
       );
@@ -216,10 +211,8 @@ sealed class TokenContainer with _$TokenContainer {
       hashAlgorithm: hashAlgorithm,
       sslVerify: sslVerify,
       passphraseQuestion: passphraseQuestion,
-      finalizationState: FinalizationState.completed,
       serverName: serverName,
       policies: policies,
-      syncState: SyncState.notStarted,
       publicClientKey:
           publicClientKey ??
           eccUtils.serializeECPublicKey(clientKeyPair!.publicKey),

@@ -35,21 +35,36 @@ class LicensePushViewButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) =>
-      (ref.watch(settingsProvider).whenOrNull(data: (data) => data.hidePushTokens) ?? SettingsState.hidePushTokensDefault)
-          ? FocusedItemAsOverlay(
-              isFocused:
-                  ref.watch(introductionNotifierProvider).whenOrNull(data: (data) => data.isConditionFulfilled(ref, Introduction.hidePushTokens)) ?? false,
-              tooltipWhenFocused: AppLocalizations.of(context)!.introHidePushTokens,
-              onComplete: () => ref.read(introductionNotifierProvider.notifier).complete(Introduction.hidePushTokens),
-              child: AppBarItem(
-                a11y: AppLocalizations.of(context)!.a11yPushTokensButton,
-                onPressed: () => Navigator.pushNamed(context, PushTokensView.routeName),
-                icon: const Icon(Icons.notifications),
-              ),
-            )
-          : AppBarItem(
-              a11y: AppLocalizations.of(context)!.a11yLicensesButton,
-              onPressed: () => Navigator.of(context).pushNamed(LicenseView.routeName),
-              icon: const Icon(Icons.info_outline),
-            );
+      (ref
+              .watch(settingsProvider)
+              .whenOrNull(data: (data) => data.hidePushTokens) ??
+          SettingsState.hidePushTokensDefault)
+      ? FocusedItemAsOverlay(
+          isFocused:
+              ref
+                  .watch(introductionNotifierProvider)
+                  .whenOrNull(
+                    data: (data) => data.isConditionFulfilled(
+                      ref,
+                      Introduction.hidePushTokens,
+                    ),
+                  ) ??
+              false,
+          tooltipWhenFocused: AppLocalizations.of(context)!.introHidePushTokens,
+          onComplete: () => ref
+              .read(introductionNotifierProvider.notifier)
+              .complete(Introduction.hidePushTokens),
+          child: AppBarItem(
+            a11y: AppLocalizations.of(context)!.a11yPushTokensButton,
+            onPressed: () =>
+                Navigator.pushNamed(context, PushTokensView.routeName),
+            icon: const Icon(Icons.notifications),
+          ),
+        )
+      : AppBarItem(
+          a11y: AppLocalizations.of(context)!.a11yLicensesButton,
+          onPressed: () =>
+              Navigator.of(context).pushNamed(LicenseView.routeName),
+          icon: const Icon(Icons.info_outline),
+        );
 }

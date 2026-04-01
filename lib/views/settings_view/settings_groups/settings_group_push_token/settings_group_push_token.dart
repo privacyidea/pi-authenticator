@@ -32,15 +32,22 @@ class SettingsGroupPushToken extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tokens = ref.watch(tokenProvider).value?.tokens ?? [];
-    final enrolledPushTokenList = tokens.whereType<PushToken>().where((e) => e.isRolledOut).toList();
-    final unsupportedPushTokens = enrolledPushTokenList.where((e) => e.url == null).toList();
+    final enrolledPushTokenList = tokens
+        .whereType<PushToken>()
+        .where((e) => e.isRolledOut)
+        .toList();
+    final unsupportedPushTokens = enrolledPushTokenList
+        .where((e) => e.url == null)
+        .toList();
     return SettingsGroup(
       title: AppLocalizations.of(context)!.pushToken,
       isActive: enrolledPushTokenList.isNotEmpty,
       onPressed: () => showDialog(
         useRootNavigator: false,
         context: context,
-        builder: (_) => SettingsGroupPushTokenDialog(unsupportedPushTokens: unsupportedPushTokens),
+        builder: (_) => SettingsGroupPushTokenDialog(
+          unsupportedPushTokens: unsupportedPushTokens,
+        ),
       ),
       trailingIcon: Icons.notifications,
     );

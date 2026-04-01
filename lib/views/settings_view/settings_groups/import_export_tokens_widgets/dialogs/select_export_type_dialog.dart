@@ -59,7 +59,7 @@ class SelectExportTypeDialog extends StatelessWidget {
     );
   }
 
-  void _selectTokensDialog(BuildContext context) async {
+  Future<void> _selectTokensDialog(BuildContext context) async {
     final isExported = await showDialog<bool>(
       useRootNavigator: false,
       context: context,
@@ -79,7 +79,7 @@ class SelectExportTypeDialog extends StatelessWidget {
     }
   }
 
-  void _selectTokenDialog(BuildContext context) async {
+  Future<void> _selectTokenDialog(BuildContext context) async {
     final localization = AppLocalizations.of(context)!;
     final authenticated = await lockAuth(
       reason: (l) => l.exportLockedTokenReason,

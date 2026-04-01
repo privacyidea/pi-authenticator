@@ -23,13 +23,14 @@ class Deactivateable extends StatelessWidget {
   final bool deactivated;
   final Widget child;
 
-  const Deactivateable({super.key, required this.deactivated, required this.child});
+  const Deactivateable({
+    super.key,
+    required this.deactivated,
+    required this.child,
+  });
 
   @override
   Widget build(BuildContext context) => deactivated
-      ? Opacity(
-          opacity: 0.3,
-          child: AbsorbPointer(child: child),
-        )
+      ? Opacity(opacity: 0.3, child: AbsorbPointer(child: child))
       : child;
 }

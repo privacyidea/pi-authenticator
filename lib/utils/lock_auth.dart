@@ -36,8 +36,8 @@ import '../widgets/gap.dart';
 import 'logger.dart';
 import 'view_utils.dart';
 
-final LocalAuthentication _localAuth = LocalAuthentication();
-final Mutex _authMutex = Mutex();
+LocalAuthentication _localAuth = LocalAuthentication();
+Mutex _authMutex = Mutex();
 
 /// Requests OS-level authentication from the user.
 ///
@@ -61,17 +61,26 @@ Future<bool> lockAuth({
     );
     return false;
   }
-  final isBiometricForced =
-      forceBiometricOption == ForceBiometricOption.biometric;
-  if (!await _checkSupport(isBiometricForced, autoAuthIfUnsupported)) {
-    return autoAuthIfUnsupported;
-  }
 
-  return await _executeAuth(
-    isBiometricForced: isBiometricForced,
-    localizedReason: reason(localization),
-    localization: localization,
-  );
+  await _authMutex.acquire();
+
+  try {
+    final isBiometricForced =
+        forceBiometricOption == ForceBiometricOption.biometric;
+    if (!await _checkSupport(isBiometricForced, autoAuthIfUnsupported)) {
+      return autoAuthIfUnsupported;
+    }
+
+    return await _executeAuth(
+      isBiometricForced: isBiometricForced,
+      localizedReason: reason(localization),
+      localization: localization,
+    );
+  } finally {
+    if (_authMutex.isLocked) {
+      _authMutex.release();
+    }
+  }
 }
 
 Future<bool> _executeAuth({
@@ -80,7 +89,6 @@ Future<bool> _executeAuth({
   required AppLocalizations localization,
 }) async {
   try {
-    await _authMutex.acquire();
     return await _localAuth.authenticate(
       biometricOnly: isBiometricForced,
       localizedReason: localizedReason,
@@ -92,7 +100,7 @@ Future<bool> _executeAuth({
         IOSAuthMessages(cancelButton: localization.cancel),
       ],
     );
-  } on Exception catch (e, s) {
+  } catch (e, s) {
     if (e is LocalAuthException &&
         e.code == LocalAuthExceptionCode.userCanceled) {
       Logger.info("Authentication canceled by user");
@@ -100,8 +108,6 @@ Future<bool> _executeAuth({
       Logger.warning("Authentication failed", error: e, stackTrace: s);
     }
     return false;
-  } finally {
-    _authMutex.release();
   }
 }
 
@@ -163,7 +169,6 @@ Future<void> _showBiometricUnsupportedDialog() async {
         leading: const Icon(Symbols.fingerprint_off),
       ),
       content: Row(
-        mainAxisSize: MainAxisSize.max,
         children: [
           Text(AppLocalizations.of(context)!.biometricAuthNotSupportedBody),
           const Icon(Symbols.fingerprint_off),
@@ -185,7 +190,6 @@ Future<void> _showBiometricUnavailableDialog() async {
         ),
       ),
       content: Row(
-        mainAxisSize: MainAxisSize.max,
         children: [
           IconButton(
             iconSize: 48,
@@ -197,7 +201,7 @@ Future<void> _showBiometricUnavailableDialog() async {
                 );
               }
               if (Platform.isIOS) {
-                AppSettings.openAppSettings(type: AppSettingsType.settings);
+                AppSettings.openAppSettings();
               }
             },
           ),
@@ -220,7 +224,7 @@ Future<void> _showBiometricUnavailableDialog() async {
               );
             }
             if (Platform.isIOS) {
-              await AppSettings.openAppSettings(type: AppSettingsType.settings);
+              await AppSettings.openAppSettings();
             }
             final hasBiometricsEnrolled =
                 (await _localAuth.getAvailableBiometrics()).isNotEmpty;
@@ -232,4 +236,13 @@ Future<void> _showBiometricUnavailableDialog() async {
       ],
     ),
   );
+}
+
+@visibleForTesting
+set localAuthInstance(LocalAuthentication auth) => _localAuth = auth;
+@visibleForTesting
+void resetAuthMutex() {
+  if (_authMutex.isLocked) {
+    _authMutex.release();
+  }
 }

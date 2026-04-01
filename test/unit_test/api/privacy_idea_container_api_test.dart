@@ -49,10 +49,7 @@ void _testPrivacyIdeaContainerApi() {
     'jsonrpc': '2.0',
     'result': {
       'status': false,
-      'error': {
-        'message': 'Error message',
-        'code': 400,
-      },
+      'error': {'message': 'Error message', 'code': 400},
     },
     'time': 1.0,
     'version': 'privacyIDEA 3.6.2',
@@ -73,7 +70,7 @@ void _testPrivacyIdeaContainerApi() {
           'enc_key_algorithm': 'secp384r1',
           'nonce': 'b33d3a11c8d1b45f19640035e27944ccf0b2383d',
           'time_stamp': '2024-12-06T11:14:26.885409+00:00',
-        }
+        },
       },
       'time': 1.0,
       'version': 'privacyIDEA 3.6.2',
@@ -86,19 +83,22 @@ void _testPrivacyIdeaContainerApi() {
 
   // final privateServerKey =
   //     "35d6e41baa53d43545058e4f89d2644f:dc62c1d9da9fa0a6f2c7229cd12fdf0b0ea863be31d0e7be9433ea57f344b8d2f1f2745cef28120809b7dd24efc4f48ae6040bc11fb5112c5effb9eca4d27a0a6d54bacdadd47056a6f9cd160264002636382e670c4da67bef75a5104ee3b874c1e7af5dec39692c7daddb24fb45e48d8d1c4300c846d0578a5282991010b489e4d7a49ce0fd7d71c313e78740253b80110aa4945c7124e35be094fadace0ba8edf777daae1cde4152a092e0f9310d479a97004443b1fa4950bd5869fbd80bf05969563e6efe05dd41f7f5bf7f6e3792218ff63bd485a6e90a13144ba65f2d63d737fdf146b040b9bdebffbb67433d00dd38df487d7ab815a5249d399aeec37636f13eec6ebd6687eef1180a80c27b2a981821b149fd7cafe4f19b35ec7d8bff5a436802cf68255f84a41db91cc5e09ff1ae58cd4405e30e9ac3c5b5d30320f0";
-  final publicServerKey = "-----BEGIN PUBLIC KEY-----\n"
+  final publicServerKey =
+      "-----BEGIN PUBLIC KEY-----\n"
       "MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAEd7thB7AwR3xgK7etKmFJfn4SrNhCAMB5\n"
       "V1ERqwhYj7QlmBe2pp8k07Ti6vZ1hue0Vf7utqIcTDPAK52qGcZ4fs8mpKkEeNIZ\n"
       "8yUPuPv9weXsVm/h7fBqHYQs82fMnzKz\n"
       "-----END PUBLIC KEY-----";
-  final privateClientKey = "-----BEGIN EC PRIVATE KEY-----\n"
+  final privateClientKey =
+      "-----BEGIN EC PRIVATE KEY-----\n"
       "MIGkAgEBBDCleRofxXJwTtc0HUeE/Af8P4depFM0KY7oT4hMQdt3geK5uDWEOZn4\n"
       "DaCMTGrsSP2gBwYFK4EEACKhZANiAATxezSrY8++QiUpNxCQzEwOe//i0fd0OqCU\n"
       "rjZoc3XWhP7AkOfXVwYnlvm667ajB94+A0POVPCErcG/HbHk0Gb8lbO1Q5pYjb3N\n"
       "3ATXIlK0HJJqETYIgZ8pzVF9wBKnn/g=\n"
       "-----END EC PRIVATE KEY-----";
 
-  final publicClientKey = "-----BEGIN PUBLIC KEY-----\n"
+  final publicClientKey =
+      "-----BEGIN PUBLIC KEY-----\n"
       "MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE8Xs0q2PPvkIlKTcQkMxMDnv/4tH3dDqg\n"
       "lK42aHN11oT+wJDn11cGJ5b5uuu2owfePgNDzlTwhK3Bvx2x5NBm/JWztUOaWI29\n"
       "zdwE1yJStBySahE2CIGfKc1RfcASp5/4\n"
@@ -123,31 +123,31 @@ void _testPrivacyIdeaContainerApi() {
     Duration? withTtl,
     bool? addDeviceInfos,
     FinalizationState? withFinalizationState,
-  }) =>
-      TokenContainerUnfinalized(
-        issuer: withIssuer ?? 'privacyIDEA',
-        nonce: withNonce ?? 'b33d3a11c8d1b45f19640035e27944ccf0b2383d',
-        timestamp: withTimestamp ?? DateTime(2024, 12, 6, 11, 14, 26, 885, 409),
-        serverUrl: withServerUrl ?? Uri.parse('http://example.com'),
-        serial: withSerial ?? 'SMPH00067A2F',
-        ecKeyAlgorithm: withEcKeyAlgorithm ?? EcKeyAlgorithm.secp384r1,
-        hashAlgorithm: withHashAlgorithm ?? Algorithms.SHA256,
-        sslVerify: withSslVerify ?? false,
-        passphraseQuestion: withPassphraseQuestion,
-        publicClientKey: publicClientKey,
-        privateClientKey: privateClientKey,
-        policies: withPolicies ??
-            ContainerPolicies(
-              rolloverAllowed: true,
-              initialTokenAssignment: true,
-              disabledTokenDeletion: false,
-              disabledUnregister: false,
-            ),
-        serverName: withServerName ?? 'privacyIDEA',
-        ttl: withTtl ?? Duration(minutes: 10),
-        addDeviceInfos: addDeviceInfos ?? false,
-        finalizationState: withFinalizationState ?? FinalizationState.notStarted,
-      );
+  }) => TokenContainerUnfinalized(
+    issuer: withIssuer ?? 'privacyIDEA',
+    nonce: withNonce ?? 'b33d3a11c8d1b45f19640035e27944ccf0b2383d',
+    timestamp: withTimestamp ?? DateTime(2024, 12, 6, 11, 14, 26, 885, 409),
+    serverUrl: withServerUrl ?? Uri.parse('http://example.com'),
+    serial: withSerial ?? 'SMPH00067A2F',
+    ecKeyAlgorithm: withEcKeyAlgorithm ?? EcKeyAlgorithm.secp384r1,
+    hashAlgorithm: withHashAlgorithm ?? Algorithms.SHA256,
+    sslVerify: withSslVerify ?? false,
+    passphraseQuestion: withPassphraseQuestion,
+    publicClientKey: publicClientKey,
+    privateClientKey: privateClientKey,
+    policies:
+        withPolicies ??
+        ContainerPolicies(
+          rolloverAllowed: true,
+          initialTokenAssignment: true,
+          disabledTokenDeletion: false,
+          disabledUnregister: false,
+        ),
+    serverName: withServerName ?? 'privacyIDEA',
+    ttl: withTtl ?? Duration(minutes: 10),
+    addDeviceInfos: addDeviceInfos ?? false,
+    finalizationState: withFinalizationState ?? FinalizationState.notStarted,
+  );
 
   TokenContainerFinalized getFinalizedTokenContainer({
     String? withIssuer,
@@ -165,40 +165,44 @@ void _testPrivacyIdeaContainerApi() {
     ContainerPolicies? withPolicies,
     SyncState? withSyncState,
     String? withServerName,
-  }) =>
-      TokenContainerFinalized(
-        issuer: withIssuer ?? 'privacyIDEA',
-        nonce: withNonce ?? 'b33d3a11c8d1b45f19640035e27944ccf0b2383d',
-        timestamp: withTimestamp ?? DateTime(2024, 12, 6, 11, 14, 26, 885, 409),
-        serverUrl: withServerUrl ?? Uri.parse('http://example.com'),
-        serial: withSerial ?? 'SMPH00067A2F',
-        ecKeyAlgorithm: withEcKeyAlgorithm ?? EcKeyAlgorithm.secp384r1,
-        hashAlgorithm: withHashAlgorithm ?? Algorithms.SHA256,
-        sslVerify: withSslVerify ?? false,
-        passphraseQuestion: withPassphraseQuestion,
-        publicClientKey: publicClientKey,
-        privateClientKey: privateClientKey,
-        policies: withPolicies ??
-            ContainerPolicies(
-              rolloverAllowed: true,
-              initialTokenAssignment: true,
-              disabledTokenDeletion: false,
-              disabledUnregister: false,
-            ),
-        syncState: withSyncState ?? SyncState.completed,
-        serverName: withServerName ?? 'privacyIDEA',
-      );
+  }) => TokenContainerFinalized(
+    issuer: withIssuer ?? 'privacyIDEA',
+    nonce: withNonce ?? 'b33d3a11c8d1b45f19640035e27944ccf0b2383d',
+    timestamp: withTimestamp ?? DateTime(2024, 12, 6, 11, 14, 26, 885, 409),
+    serverUrl: withServerUrl ?? Uri.parse('http://example.com'),
+    serial: withSerial ?? 'SMPH00067A2F',
+    ecKeyAlgorithm: withEcKeyAlgorithm ?? EcKeyAlgorithm.secp384r1,
+    hashAlgorithm: withHashAlgorithm ?? Algorithms.SHA256,
+    sslVerify: withSslVerify ?? false,
+    passphraseQuestion: withPassphraseQuestion,
+    publicClientKey: publicClientKey,
+    privateClientKey: privateClientKey,
+    policies:
+        withPolicies ??
+        ContainerPolicies(
+          rolloverAllowed: true,
+          initialTokenAssignment: true,
+          disabledTokenDeletion: false,
+          disabledUnregister: false,
+        ),
+    syncState: withSyncState ?? SyncState.completed,
+    serverName: withServerName ?? 'privacyIDEA',
+  );
   group('PrivacyIdeaContainerApi', () {
     test('finalizeContainer', () async {
       final tokenContainer = getNewTokenContainer();
 
-      final message = '${tokenContainer.nonce}'
+      final message =
+          '${tokenContainer.nonce}'
           '|${tokenContainer.timestamp.toIso8601String().replaceFirst('Z', '+00:00')}'
           '|${tokenContainer.serial}'
           '|${tokenContainer.registrationUrl}';
 
       final EccUtils eccUtils = EccUtils();
-      final signature = eccUtils.signWithPrivateKey(tokenContainer.ecPrivateClientKey!, message);
+      final signature = eccUtils.signWithPrivateKey(
+        tokenContainer.ecPrivateClientKey!,
+        message,
+      );
       final body = {
         'container_serial': tokenContainer.serial,
         'public_client_key': tokenContainer.publicClientKey,
@@ -208,14 +212,25 @@ void _testPrivacyIdeaContainerApi() {
       // Arrange
       final mockIoClient = MockPrivacyideaIOClient();
       final containerApi = PiContainerApi(ioClient: mockIoClient);
-      when(mockIoClient.doPost(url: anyNamed('url'), body: anyNamed('body'), sslVerify: anyNamed('sslVerify'))).thenAnswer((invocation) async {
+      when(
+        mockIoClient.doPost(
+          url: anyNamed('url'),
+          body: anyNamed('body'),
+          sslVerify: anyNamed('sslVerify'),
+        ),
+      ).thenAnswer((invocation) async {
         final invocationUrl = invocation.namedArguments[Symbol('url')];
         final invocationBody = invocation.namedArguments[Symbol('body')];
         Logger.info('Body: $invocationBody');
-        if (invocationUrl.toString() == tokenContainer.registrationUrl.toString() &&
+        if (invocationUrl.toString() ==
+                tokenContainer.registrationUrl.toString() &&
             invocationBody['container_serial'] == body['container_serial'] &&
             invocationBody['public_client_key'] == body['public_client_key'] &&
-            eccUtils.validateSignature(tokenContainer.ecPublicClientKey!, invocationBody['signature'], message)) {
+            eccUtils.validateSignature(
+              tokenContainer.ecPublicClientKey!,
+              invocationBody['signature'],
+              message,
+            )) {
           final exampleSuccess = {
             'id': 5,
             'jsonrpc': '2.0',
@@ -246,10 +261,7 @@ void _testPrivacyIdeaContainerApi() {
           'jsonrpc': '2.0',
           'result': {
             'status': false,
-            'error': {
-              'message': 'Error message',
-              'code': 400,
-            },
+            'error': {'message': 'Error message', 'code': 400},
           },
           'time': 1.0,
           'version': 'privacyIDEA 3.6.2',
@@ -277,19 +289,36 @@ void _testPrivacyIdeaContainerApi() {
       final mockIoClient = MockPrivacyideaIOClient();
       final containerApi = PiContainerApi(ioClient: mockIoClient);
       final tokenContainer = getFinalizedTokenContainer();
-      when(mockIoClient.doPost(url: anyNamed('url'), body: anyNamed('body'), sslVerify: anyNamed('sslVerify'))).thenAnswer((invocation) async {
+      when(
+        mockIoClient.doPost(
+          url: anyNamed('url'),
+          body: anyNamed('body'),
+          sslVerify: anyNamed('sslVerify'),
+        ),
+      ).thenAnswer((invocation) async {
         final Uri invocationUrl = invocation.namedArguments[Symbol('url')];
-        final Map<String, String?> invocationBody = invocation.namedArguments[Symbol('body')];
+        final Map<String, String?> invocationBody =
+            invocation.namedArguments[Symbol('body')];
         Logger.info('Body: $invocationBody');
 
-        if (invocationUrl.toString() == 'http://example.com/container/challenge' && invocationBody['scope'] == 'http://example.com/container/rollover') {
+        if (invocationUrl.toString() ==
+                'http://example.com/container/challenge' &&
+            invocationBody['scope'] ==
+                'http://example.com/container/rollover') {
           return containerChallengeResponse;
         }
 
-        final signMessage = '$containerChallengeNonce|$containerChallengeTimeStamp|${tokenContainer.serial}|$invocationUrl';
-        if (invocationUrl.toString() == 'http://example.com/container/rollover' &&
-            invocationBody['scope'] == 'http://example.com/container/rollover' &&
-            EccUtils().validateSignature(tokenContainer.ecPublicClientKey!, invocationBody['signature']!, signMessage)) {
+        final signMessage =
+            '$containerChallengeNonce|$containerChallengeTimeStamp|${tokenContainer.serial}|$invocationUrl';
+        if (invocationUrl.toString() ==
+                'http://example.com/container/rollover' &&
+            invocationBody['scope'] ==
+                'http://example.com/container/rollover' &&
+            EccUtils().validateSignature(
+              tokenContainer.ecPublicClientKey!,
+              invocationBody['signature']!,
+              signMessage,
+            )) {
           return Response(
             jsonEncode({
               'id': 5,
@@ -300,8 +329,8 @@ void _testPrivacyIdeaContainerApi() {
                   'container_url': {
                     'description': qrCodeDescription,
                     'value': qrCodeDataValue,
-                  }
-                }
+                  },
+                },
               },
               'time': 1.0,
               'version': 'privacyIDEA 3.6.2',
@@ -316,7 +345,9 @@ void _testPrivacyIdeaContainerApi() {
         return Response(jsonEncode(exampleError), 400);
       });
       // // Act
-      final responseTransferQrData = await containerApi.getRolloverQrData(tokenContainer);
+      final responseTransferQrData = await containerApi.getRolloverQrData(
+        tokenContainer,
+      );
       // // Assert
       expect(responseTransferQrData.description, qrCodeDescription);
       expect(responseTransferQrData.value, qrCodeDataValue);
@@ -327,27 +358,41 @@ void _testPrivacyIdeaContainerApi() {
       final containerApi = PiContainerApi(ioClient: mockIoClient);
       final tokenContainer = getFinalizedTokenContainer();
 
-      when(mockIoClient.doPost(url: anyNamed('url'), body: anyNamed('body'), sslVerify: anyNamed('sslVerify'))).thenAnswer((invocation) async {
+      when(
+        mockIoClient.doPost(
+          url: anyNamed('url'),
+          body: anyNamed('body'),
+          sslVerify: anyNamed('sslVerify'),
+        ),
+      ).thenAnswer((invocation) async {
         final Uri invocationUrl = invocation.namedArguments[Symbol('url')];
-        final Map<String, String?> invocationBody = invocation.namedArguments[Symbol('body')];
+        final Map<String, String?> invocationBody =
+            invocation.namedArguments[Symbol('body')];
         Logger.info('Body: $invocationBody');
-        if (invocationUrl.toString() == 'http://example.com/container/challenge' &&
-            invocationBody['scope'] == 'http://example.com/container/register/terminate/client') {
+        if (invocationUrl.toString() ==
+                'http://example.com/container/challenge' &&
+            invocationBody['scope'] ==
+                'http://example.com/container/register/terminate/client') {
           return containerChallengeResponse;
         }
-        final signMessage = '$containerChallengeNonce|$containerChallengeTimeStamp|${tokenContainer.serial}|$invocationUrl';
-        if (invocationUrl.toString() == 'http://example.com/container/register/terminate/client' &&
-            invocationBody['scope'] == 'http://example.com/container/register/terminate/client' &&
-            EccUtils().validateSignature(tokenContainer.ecPublicClientKey!, invocationBody['signature']!, signMessage)) {
+        final signMessage =
+            '$containerChallengeNonce|$containerChallengeTimeStamp|${tokenContainer.serial}|$invocationUrl';
+        if (invocationUrl.toString() ==
+                'http://example.com/container/register/terminate/client' &&
+            invocationBody['scope'] ==
+                'http://example.com/container/register/terminate/client' &&
+            EccUtils().validateSignature(
+              tokenContainer.ecPublicClientKey!,
+              invocationBody['signature']!,
+              signMessage,
+            )) {
           return Response(
             jsonEncode({
               'id': 5,
               'jsonrpc': '2.0',
               'result': {
                 'status': true,
-                'value': {
-                  'success': true,
-                }
+                'value': {'success': true},
               },
               'time': 1.0,
               'version': 'privacyIDEA 3.6.2',
@@ -375,77 +420,122 @@ void _testPrivacyIdeaContainerApi() {
         final tokenState = TokenState(
           tokens: [
             // Token is not in the container
-            HOTPToken(label: "label1", issuer: "privacyIDEA", counter: 5, id: 'id1', algorithm: Algorithms.SHA1, digits: 6, secret: 'AAAAAAAA'),
+            HOTPToken(
+              label: "label1",
+              issuer: "privacyIDEA",
+              counter: 5,
+              id: 'id1',
+              algorithm: Algorithms.SHA1,
+              digits: 6,
+              secret: 'AAAAAAAA',
+            ),
           ],
         );
-        when(mockIoClient.doPost(url: anyNamed('url'), body: anyNamed('body'), sslVerify: anyNamed('sslVerify'))).thenAnswer((invocation) async {
+        when(
+          mockIoClient.doPost(
+            url: anyNamed('url'),
+            body: anyNamed('body'),
+            sslVerify: anyNamed('sslVerify'),
+          ),
+        ).thenAnswer((invocation) async {
           final Uri invocationUrl = invocation.namedArguments[Symbol('url')];
-          final Map<String, String?> invocationBody = invocation.namedArguments[Symbol('body')];
+          final Map<String, String?> invocationBody =
+              invocation.namedArguments[Symbol('body')];
           Logger.info('Body: $invocationBody');
-          if (invocationUrl.toString() == 'http://example.com/container/challenge' && invocationBody['scope'] == 'http://example.com/container/synchronize') {
+          if (invocationUrl.toString() ==
+                  'http://example.com/container/challenge' &&
+              invocationBody['scope'] ==
+                  'http://example.com/container/synchronize') {
             return containerChallengeResponse;
           }
           final publicEncKeyClientB64 = invocationBody['public_enc_key_client'];
           final containerDictClient =
-              '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"tokentype":"HOTP","label":"label1","issuer":"privacyIDEA","pin":"False","offline":false,"algorithm":"SHA1","digits":"6","otp":["435986","964213"],"counter":"5"}]}';
+              '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"tokentype":"HOTP","label":"label1","issuer":"privacyIDEA","pin":"False","offline":false,"app_force_unlock":"none","algorithm":"SHA1","digits":"6","otp":["435986","964213"],"counter":"5"}]}';
 
-          final signMessage2 = '$containerChallengeNonce|'
+          final signMessage2 =
+              '$containerChallengeNonce|'
               '$containerChallengeTimeStamp|'
               '${tokenContainer.serial}|'
               '$invocationUrl|'
               '$publicEncKeyClientB64|'
               '$containerDictClient';
 
-          if (invocationUrl.toString() == 'http://example.com/container/synchronize' &&
-              invocationBody['container_dict_client'] == containerDictClient &&
-              EccUtils().validateSignature(tokenContainer.ecPublicClientKey!, invocationBody['signature']!, signMessage2)) {
-            return Response(
-              jsonEncode({
-                'id': 5,
-                'jsonrpc': '2.0',
-                'result': {
-                  'status': true,
-                  'value': {
-                    'container_dict_server':
-                        'oAI8Mq9tdIffSbuX62L8bSN3ZZ7wIGrip_pDCGY59Qz32DziorR4BMZ9vf_Vu5aUeDophX4Hdq_DdK2OJpzlYywSe5mysluVpCepGqr8xsGpTHwU5lPjIAN-OFCNO1_u2QH3dgwbZDVoHyPKfwICkULXqoIHmtb6BOtWzpMtC2Sd8v0ytA5HY7dgpO5MldidXrhI6RBdqfjJoknwnC7girLqZj0otDjZvfQrz3RFtCBdTqa6e4gxsnIEE8c1UTohvEN_LNvkP4sx7xpO3uI048ZXg8YxJMZThdAK5ai36cEGKmRuQVbM01DVeJHQHXwgacHIGKTTNgoUJb-g-7Qf-TJdhsrAH9S6eEiJLv8N_S2eRNfXubPlO9trK9HRsEra6I3f1Epw8-GRHB9CW5Yd6U_e9-ndaNKMGXkbUUaGF_wLDTqPnLSzgiNgDlAZtfaTHJRYqm-pBqDXHUZe7mgvLUqOhTHKIuBrQxW2t8TZ5VWU1psVT70D4J4RR9MInmZvUDcO__AqnAXQsHiaoWF-z2QSmX9I5Em8jpF5fQSgHNJBM3UEzBHJEE_D6dxnoz5M1O314qz3YIy5JphBssRjfBYhxdRPB5nYBp2EpSvBvAYHrbu5Iv431JG05nLbb_4AgOsJDm1RhGjqCcjbvDYKpyN6ewoUP--q0L-eZPxUlRGeITuqMmNpIVXlCiPiJ9u2L1zQNdPv0OEvhkOtd1vFm492sZ7Mr9nyzJ13f5Ca86smHK1sDDYczjqHlxpevqtoDxlpgCQqTv_XzF6DjXRHPtNB6hiAuP-jIzCTL5RYokj5nv28Ih3dCRCVRfU8CVcz8KiRVBSo6WTQ_Q7DzL_ZqcmK2xnlwGdmoWVhTXUp75ed1YjSwGaVQ6D5w50ZgWNP5YYiJIUpN27WS3akEIDrwpm7h0ZctP8Kvlj46VRxd2Urhi_6NafWBnX4M8Jo6AWsp2hoFl6i2WoSa9c2kOi-OvVg8PzHFknNiFSjHTvytm-Q6zxpm--6kia1xbdRdEDoCD4YW901GJXoZOKtfUAA7soODoI5mNJT9D_ZXBuAJcDqjEkKpZWMWyYkfOwrTqlsrSKtYue4tQ4INBnhfwTZk2ppTwlRFp6jOjHTgsSdcfCKOzresp75u8My30dbIhzRIYgFp6jwcRikAlBbwXBVBT7iR_6Nrw==',
-                    'encryption_algorithm': 'AES',
-                    'encryption_params': {
-                      'algorithm': 'AES',
-                      'mode': 'GCM',
-                      'init_vector': 'Q3f4NMAuDFrdI9R3uZ7DHA==',
-                      'tag': 'iThLozfTiK4twnPXnvF0nA==',
-                    },
-                    'policies': {
-                      'disable_client_container_unregister': true,
-                      'disable_client_token_deletion': true,
-                      'container_client_rollover': false,
-                      'initially_add_tokens_to_container': false,
-                    },
-                    'public_server_key': 'AMc1nbpqrEOgQLe1-nR2ExnqE1IM8qMDETYw65IU6wQ=',
-                    'server_url': 'http://example.com/container/synchronize',
-                  }
-                },
-                'time': 1.0,
-                'version': 'privacyIDEA 3.6.2',
-                'versionnumber': '3.6.2',
-                'detail': null,
-                'signature': 'signature',
-              }),
-              200,
+          if (invocationUrl.toString() !=
+              'http://example.com/container/synchronize') {
+            Logger.warning(
+              'invocationUrl.toString() did not match expected value: ${invocationUrl.toString()}',
             );
+            return Response(jsonEncode(exampleError), 400);
           }
-          return Response(jsonEncode(exampleError), 400);
+          if (invocationBody['container_dict_client'] != containerDictClient) {
+            Logger.warning(
+              'invocationBody[\'container_dict_client\'] did not match expected value: ${invocationBody['container_dict_client']}',
+            );
+            return Response(jsonEncode(exampleError), 400);
+          }
+          if (!EccUtils().validateSignature(
+            tokenContainer.ecPublicClientKey!,
+            invocationBody['signature']!,
+            signMessage2,
+          )) {
+            Logger.warning('Signature validation failed');
+            return Response(jsonEncode(exampleError), 400);
+          }
+          return Response(
+            jsonEncode({
+              'id': 5,
+              'jsonrpc': '2.0',
+              'result': {
+                'status': true,
+                'value': {
+                  'container_dict_server':
+                      'oAI8Mq9tdIffSbuX62L8bSN3ZZ7wIGrip_pDCGY59Qz32DziorR4BMZ9vf_Vu5aUeDophX4Hdq_DdK2OJpzlYywSe5mysluVpCepGqr8xsGpTHwU5lPjIAN-OFCNO1_u2QH3dgwbZDVoHyPKfwICkULXqoIHmtb6BOtWzpMtC2Sd8v0ytA5HY7dgpO5MldidXrhI6RBdqfjJoknwnC7girLqZj0otDjZvfQrz3RFtCBdTqa6e4gxsnIEE8c1UTohvEN_LNvkP4sx7xpO3uI048ZXg8YxJMZThdAK5ai36cEGKmRuQVbM01DVeJHQHXwgacHIGKTTNgoUJb-g-7Qf-TJdhsrAH9S6eEiJLv8N_S2eRNfXubPlO9trK9HRsEra6I3f1Epw8-GRHB9CW5Yd6U_e9-ndaNKMGXkbUUaGF_wLDTqPnLSzgiNgDlAZtfaTHJRYqm-pBqDXHUZe7mgvLUqOhTHKIuBrQxW2t8TZ5VWU1psVT70D4J4RR9MInmZvUDcO__AqnAXQsHiaoWF-z2QSmX9I5Em8jpF5fQSgHNJBM3UEzBHJEE_D6dxnoz5M1O314qz3YIy5JphBssRjfBYhxdRPB5nYBp2EpSvBvAYHrbu5Iv431JG05nLbb_4AgOsJDm1RhGjqCcjbvDYKpyN6ewoUP--q0L-eZPxUlRGeITuqMmNpIVXlCiPiJ9u2L1zQNdPv0OEvhkOtd1vFm492sZ7Mr9nyzJ13f5Ca86smHK1sDDYczjqHlxpevqtoDxlpgCQqTv_XzF6DjXRHPtNB6hiAuP-jIzCTL5RYokj5nv28Ih3dCRCVRfU8CVcz8KiRVBSo6WTQ_Q7DzL_ZqcmK2xnlwGdmoWVhTXUp75ed1YjSwGaVQ6D5w50ZgWNP5YYiJIUpN27WS3akEIDrwpm7h0ZctP8Kvlj46VRxd2Urhi_6NafWBnX4M8Jo6AWsp2hoFl6i2WoSa9c2kOi-OvVg8PzHFknNiFSjHTvytm-Q6zxpm--6kia1xbdRdEDoCD4YW901GJXoZOKtfUAA7soODoI5mNJT9D_ZXBuAJcDqjEkKpZWMWyYkfOwrTqlsrSKtYue4tQ4INBnhfwTZk2ppTwlRFp6jOjHTgsSdcfCKOzresp75u8My30dbIhzRIYgFp6jwcRikAlBbwXBVBT7iR_6Nrw==',
+                  'encryption_algorithm': 'AES',
+                  'encryption_params': {
+                    'algorithm': 'AES',
+                    'mode': 'GCM',
+                    'init_vector': 'Q3f4NMAuDFrdI9R3uZ7DHA==',
+                    'tag': 'iThLozfTiK4twnPXnvF0nA==',
+                  },
+                  'policies': {
+                    'disable_client_container_unregister': true,
+                    'disable_client_token_deletion': true,
+                    'container_client_rollover': false,
+                    'initially_add_tokens_to_container': false,
+                  },
+                  'public_server_key':
+                      'AMc1nbpqrEOgQLe1-nR2ExnqE1IM8qMDETYw65IU6wQ=',
+                  'server_url': 'http://example.com/container/synchronize',
+                },
+              },
+              'time': 1.0,
+              'version': 'privacyIDEA 3.6.2',
+              'versionnumber': '3.6.2',
+              'detail': null,
+              'signature': 'signature',
+            }),
+            200,
+          );
         });
 
         final type = X25519().keyPairType;
         final publicSimpleKeyPair = SimpleKeyPairData(
           base64Decode("mJp57a9lmpXXpT9bTUDLz1/Kcngtzmz/yodWlIw7UXo="),
-          publicKey: SimplePublicKey(base64Decode("sGSaA8sawDbkglDHYRJPwgKoSghTvJz1ejlJe4USrDA="), type: type),
+          publicKey: SimplePublicKey(
+            base64Decode("sGSaA8sawDbkglDHYRJPwgKoSghTvJz1ejlJe4USrDA="),
+            type: type,
+          ),
           type: type,
         );
 
         // Act
-        final result = await containerApi.sync(tokenContainer, tokenState, withX25519Key: publicSimpleKeyPair, isInitSync: true, sendAllOTPs: true);
+        final result = await containerApi.sync(
+          tokenContainer,
+          tokenState,
+          withX25519Key: publicSimpleKeyPair,
+          isInitSync: true,
+          sendAllOTPs: true,
+        );
 
         // Asserta
         expect(result, isNotNull);
@@ -494,27 +584,43 @@ void _testPrivacyIdeaContainerApi() {
             ),
           ],
         );
-        when(mockIoClient.doPost(url: anyNamed('url'), body: anyNamed('body'), sslVerify: anyNamed('sslVerify'))).thenAnswer((invocation) async {
+        when(
+          mockIoClient.doPost(
+            url: anyNamed('url'),
+            body: anyNamed('body'),
+            sslVerify: anyNamed('sslVerify'),
+          ),
+        ).thenAnswer((invocation) async {
           final Uri invocationUrl = invocation.namedArguments[Symbol('url')];
-          final Map<String, String?> invocationBody = invocation.namedArguments[Symbol('body')];
+          final Map<String, String?> invocationBody =
+              invocation.namedArguments[Symbol('body')];
           Logger.info('Body: $invocationBody');
-          if (invocationUrl.toString() == 'http://example.com/container/challenge' && invocationBody['scope'] == 'http://example.com/container/synchronize') {
+          if (invocationUrl.toString() ==
+                  'http://example.com/container/challenge' &&
+              invocationBody['scope'] ==
+                  'http://example.com/container/synchronize') {
             return containerChallengeResponse;
           }
           final publicEncKeyClientB64 = invocationBody['public_enc_key_client'];
           final containerDictClient =
-              '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"OATH00068B93","tokentype":"HOTP","label":"OATH00068B93","issuer":"privacyIDEA","pin":"False","offline":false,"algorithm":"SHA1","digits":"6","counter":"1"}]}';
+              '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"OATH00068B93","tokentype":"HOTP","label":"OATH00068B93","issuer":"privacyIDEA","pin":"False","offline":false,"app_force_unlock":"none","algorithm":"SHA1","digits":"6","counter":"1"}]}';
 
-          final signMessage2 = '$containerChallengeNonce|'
+          final signMessage2 =
+              '$containerChallengeNonce|'
               '$containerChallengeTimeStamp|'
               '${tokenContainer.serial}|'
               '$invocationUrl|'
               '$publicEncKeyClientB64|'
               '$containerDictClient';
 
-          if (invocationUrl.toString() == 'http://example.com/container/synchronize' &&
+          if (invocationUrl.toString() ==
+                  'http://example.com/container/synchronize' &&
               invocationBody['container_dict_client'] == containerDictClient &&
-              EccUtils().validateSignature(tokenContainer.ecPublicClientKey!, invocationBody['signature']!, signMessage2)) {
+              EccUtils().validateSignature(
+                tokenContainer.ecPublicClientKey!,
+                invocationBody['signature']!,
+                signMessage2,
+              )) {
             return Response(
               jsonEncode({
                 'id': 5,
@@ -537,9 +643,10 @@ void _testPrivacyIdeaContainerApi() {
                       'container_client_rollover': false,
                       'initially_add_tokens_to_container': false,
                     },
-                    'public_server_key': '4HUJxDV2j1dguSOUGmupScPqjNJL-sATSvmYujP3STo=',
+                    'public_server_key':
+                        '4HUJxDV2j1dguSOUGmupScPqjNJL-sATSvmYujP3STo=',
                     'server_url': 'http://example.com/container/synchronize',
-                  }
+                  },
                 },
                 'time': 1.0,
                 'version': 'privacyIDEA 3.6.2',
@@ -556,12 +663,21 @@ void _testPrivacyIdeaContainerApi() {
         final type = X25519().keyPairType;
         final publicSimpleKeyPair = SimpleKeyPairData(
           base64Decode("2NEmGL31xJBYWSQ72+oqeMvwn+liM3Nwq6qG4NzRd04="),
-          publicKey: SimplePublicKey(base64Decode("+4KfIuxEB8z6CDlXjbFpirmJ3tNuTIzhCV6L21lxkw8="), type: type),
+          publicKey: SimplePublicKey(
+            base64Decode("+4KfIuxEB8z6CDlXjbFpirmJ3tNuTIzhCV6L21lxkw8="),
+            type: type,
+          ),
           type: type,
         );
 
         // Act
-        final result = await containerApi.sync(tokenContainer, tokenState, withX25519Key: publicSimpleKeyPair, isInitSync: true, sendAllOTPs: true);
+        final result = await containerApi.sync(
+          tokenContainer,
+          tokenState,
+          withX25519Key: publicSimpleKeyPair,
+          isInitSync: true,
+          sendAllOTPs: true,
+        );
 
         // Assert
         expect(result, isNotNull);
@@ -621,27 +737,43 @@ void _testPrivacyIdeaContainerApi() {
             ),
           ],
         );
-        when(mockIoClient.doPost(url: anyNamed('url'), body: anyNamed('body'), sslVerify: anyNamed('sslVerify'))).thenAnswer((invocation) async {
+        when(
+          mockIoClient.doPost(
+            url: anyNamed('url'),
+            body: anyNamed('body'),
+            sslVerify: anyNamed('sslVerify'),
+          ),
+        ).thenAnswer((invocation) async {
           final Uri invocationUrl = invocation.namedArguments[Symbol('url')];
-          final Map<String, String?> invocationBody = invocation.namedArguments[Symbol('body')];
+          final Map<String, String?> invocationBody =
+              invocation.namedArguments[Symbol('body')];
           Logger.info('Body: $invocationBody');
-          if (invocationUrl.toString() == 'http://example.com/container/challenge' && invocationBody['scope'] == 'http://example.com/container/synchronize') {
+          if (invocationUrl.toString() ==
+                  'http://example.com/container/challenge' &&
+              invocationBody['scope'] ==
+                  'http://example.com/container/synchronize') {
             return containerChallengeResponse;
           }
           final publicEncKeyClientB64 = invocationBody['public_enc_key_client'];
           final containerDictClient =
-              '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"TOTP00011B1F","tokentype":"TOTP","label":"TOTP00011B1F","issuer":"privacyIDEA","pin":"False","offline":false,"algorithm":"SHA1","digits":"6","period":"30"},{"tokentype":"HOTP","label":"OATH00166051","issuer":"privacyIDEA","pin":"False","offline":false,"algorithm":"SHA1","digits":"6","otp":["079447","501895"],"counter":"1"}]}';
+              '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"TOTP00011B1F","tokentype":"TOTP","label":"TOTP00011B1F","issuer":"privacyIDEA","pin":"False","offline":false,"app_force_unlock":"none","algorithm":"SHA1","digits":"6","period":"30"},{"tokentype":"HOTP","label":"OATH00166051","issuer":"privacyIDEA","pin":"False","offline":false,"app_force_unlock":"none","algorithm":"SHA1","digits":"6","otp":["079447","501895"],"counter":"1"}]}';
 
-          final signMessage2 = '$containerChallengeNonce|'
+          final signMessage2 =
+              '$containerChallengeNonce|'
               '$containerChallengeTimeStamp|'
               '${tokenContainer.serial}|'
               '$invocationUrl|'
               '$publicEncKeyClientB64|'
               '$containerDictClient';
 
-          if (invocationUrl.toString() == 'http://example.com/container/synchronize' &&
+          if (invocationUrl.toString() ==
+                  'http://example.com/container/synchronize' &&
               invocationBody['container_dict_client'] == containerDictClient &&
-              EccUtils().validateSignature(tokenContainer.ecPublicClientKey!, invocationBody['signature']!, signMessage2)) {
+              EccUtils().validateSignature(
+                tokenContainer.ecPublicClientKey!,
+                invocationBody['signature']!,
+                signMessage2,
+              )) {
             return Response(
               jsonEncode({
                 'id': 5,
@@ -664,9 +796,10 @@ void _testPrivacyIdeaContainerApi() {
                       'container_client_rollover': false,
                       'initially_add_tokens_to_container': false,
                     },
-                    'public_server_key': 'aK_oH0ycoKrXoIMbTlQ7_adxUe7JVAuPCbcoOUBKYBY=',
+                    'public_server_key':
+                        'aK_oH0ycoKrXoIMbTlQ7_adxUe7JVAuPCbcoOUBKYBY=',
                     'server_url': 'http://example.com/container/synchronize',
-                  }
+                  },
                 },
                 'time': 1.0,
                 'version': 'privacyIDEA 3.6.2',
@@ -683,12 +816,21 @@ void _testPrivacyIdeaContainerApi() {
         final type = X25519().keyPairType;
         final publicSimpleKeyPair = SimpleKeyPairData(
           base64Decode("uCyfofJSNWX08K8omYeR43nwoPUE++niUrxDB43noVc="),
-          publicKey: SimplePublicKey(base64Decode("4/d5K2gycwPxeIVHuHQvlq6tb7BDQ7HkQ/g8JBBmVHw="), type: type),
+          publicKey: SimplePublicKey(
+            base64Decode("4/d5K2gycwPxeIVHuHQvlq6tb7BDQ7HkQ/g8JBBmVHw="),
+            type: type,
+          ),
           type: type,
         );
 
         // Act
-        final result = await containerApi.sync(tokenContainer, tokenState, withX25519Key: publicSimpleKeyPair, isInitSync: true, sendAllOTPs: true);
+        final result = await containerApi.sync(
+          tokenContainer,
+          tokenState,
+          withX25519Key: publicSimpleKeyPair,
+          isInitSync: true,
+          sendAllOTPs: true,
+        );
         // Asserta
         expect(result, isNotNull);
         final newPolicies = result!.newPolicies;
@@ -746,27 +888,43 @@ void _testPrivacyIdeaContainerApi() {
             ),
           ],
         );
-        when(mockIoClient.doPost(url: anyNamed('url'), body: anyNamed('body'), sslVerify: anyNamed('sslVerify'))).thenAnswer((invocation) async {
+        when(
+          mockIoClient.doPost(
+            url: anyNamed('url'),
+            body: anyNamed('body'),
+            sslVerify: anyNamed('sslVerify'),
+          ),
+        ).thenAnswer((invocation) async {
           final Uri invocationUrl = invocation.namedArguments[Symbol('url')];
-          final Map<String, String?> invocationBody = invocation.namedArguments[Symbol('body')];
+          final Map<String, String?> invocationBody =
+              invocation.namedArguments[Symbol('body')];
           Logger.info('Body: $invocationBody');
-          if (invocationUrl.toString() == 'http://example.com/container/challenge' && invocationBody['scope'] == 'http://example.com/container/synchronize') {
+          if (invocationUrl.toString() ==
+                  'http://example.com/container/challenge' &&
+              invocationBody['scope'] ==
+                  'http://example.com/container/synchronize') {
             return containerChallengeResponse;
           }
           final publicEncKeyClientB64 = invocationBody['public_enc_key_client'];
           final containerDictClient =
-              '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"TOTP00011B1F","tokentype":"TOTP","label":"TOTP00011B1F","issuer":"privacyIDEA","pin":"False","offline":false,"algorithm":"SHA1","digits":"6","period":"30"},{"serial":"OATH00166051","tokentype":"HOTP","label":"OATH00166051","issuer":"privacyIDEA","pin":"False","offline":false,"algorithm":"SHA1","digits":"6","counter":"1"}]}';
+              '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"TOTP00011B1F","tokentype":"TOTP","label":"TOTP00011B1F","issuer":"privacyIDEA","pin":"False","offline":false,"app_force_unlock":"none","algorithm":"SHA1","digits":"6","period":"30"},{"serial":"OATH00166051","tokentype":"HOTP","label":"OATH00166051","issuer":"privacyIDEA","pin":"False","offline":false,"app_force_unlock":"none","algorithm":"SHA1","digits":"6","counter":"1"}]}';
 
-          final signMessage2 = '$containerChallengeNonce|'
+          final signMessage2 =
+              '$containerChallengeNonce|'
               '$containerChallengeTimeStamp|'
               '${tokenContainer.serial}|'
               '$invocationUrl|'
               '$publicEncKeyClientB64|'
               '$containerDictClient';
 
-          if (invocationUrl.toString() == 'http://example.com/container/synchronize' &&
+          if (invocationUrl.toString() ==
+                  'http://example.com/container/synchronize' &&
               invocationBody['container_dict_client'] == containerDictClient &&
-              EccUtils().validateSignature(tokenContainer.ecPublicClientKey!, invocationBody['signature']!, signMessage2)) {
+              EccUtils().validateSignature(
+                tokenContainer.ecPublicClientKey!,
+                invocationBody['signature']!,
+                signMessage2,
+              )) {
             return Response(
               jsonEncode({
                 'id': 5,
@@ -789,9 +947,10 @@ void _testPrivacyIdeaContainerApi() {
                       'container_client_rollover': false,
                       'initially_add_tokens_to_container': false,
                     },
-                    'public_server_key': 'Od5nNdvC3iVYTK5aA5e-c1-f3FhSe4MH4apaNDRkSQA=',
+                    'public_server_key':
+                        'Od5nNdvC3iVYTK5aA5e-c1-f3FhSe4MH4apaNDRkSQA=',
                     'server_url': 'http://example.com/container/synchronize',
-                  }
+                  },
                 },
                 'time': 1.0,
                 'version': 'privacyIDEA 3.6.2',
@@ -808,12 +967,21 @@ void _testPrivacyIdeaContainerApi() {
         final type = X25519().keyPairType;
         final publicSimpleKeyPair = SimpleKeyPairData(
           base64Decode("YIgUiisLPu5dq3KQUMksNVEq12NG2mIM32E13UkQwWQ="),
-          publicKey: SimplePublicKey(base64Decode("ScZtrNZ3Zay12x+eQDyz4a2wafvZqk7BVzBNTchXc2w="), type: type),
+          publicKey: SimplePublicKey(
+            base64Decode("ScZtrNZ3Zay12x+eQDyz4a2wafvZqk7BVzBNTchXc2w="),
+            type: type,
+          ),
           type: type,
         );
 
         // Act
-        final result = await containerApi.sync(tokenContainer, tokenState, withX25519Key: publicSimpleKeyPair, isInitSync: true, sendAllOTPs: true);
+        final result = await containerApi.sync(
+          tokenContainer,
+          tokenState,
+          withX25519Key: publicSimpleKeyPair,
+          isInitSync: true,
+          sendAllOTPs: true,
+        );
         // Asserta
         expect(result, isNotNull);
         final newPolicies = result!.newPolicies;
@@ -864,28 +1032,44 @@ void _testPrivacyIdeaContainerApi() {
             ),
           ],
         );
-        when(mockIoClient.doPost(url: anyNamed('url'), body: anyNamed('body'), sslVerify: anyNamed('sslVerify'))).thenAnswer((invocation) async {
+        when(
+          mockIoClient.doPost(
+            url: anyNamed('url'),
+            body: anyNamed('body'),
+            sslVerify: anyNamed('sslVerify'),
+          ),
+        ).thenAnswer((invocation) async {
           final Uri invocationUrl = invocation.namedArguments[Symbol('url')];
-          final Map<String, String?> invocationBody = invocation.namedArguments[Symbol('body')];
+          final Map<String, String?> invocationBody =
+              invocation.namedArguments[Symbol('body')];
           Logger.info('Body: $invocationBody');
-          if (invocationUrl.toString() == 'http://example.com/container/challenge' && invocationBody['scope'] == 'http://example.com/container/synchronize') {
+          if (invocationUrl.toString() ==
+                  'http://example.com/container/challenge' &&
+              invocationBody['scope'] ==
+                  'http://example.com/container/synchronize') {
             return containerChallengeResponse;
           }
           final publicEncKeyClientB64 = invocationBody['public_enc_key_client'];
 
           final containerDictClient =
-              '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"TOTP00011B1F","tokentype":"TOTP","label":"TOTP00011B1F","issuer":"privacyIDEA","pin":"False","offline":false,"algorithm":"SHA1","digits":"6","period":"30"},{"tokentype":"HOTP","label":"OATH00166051","issuer":"privacyIDEA","pin":"False","offline":false,"algorithm":"SHA1","digits":"6","otp":["079447","501895"],"counter":"1"}]}';
+              '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"TOTP00011B1F","tokentype":"TOTP","label":"TOTP00011B1F","issuer":"privacyIDEA","pin":"False","offline":false,"app_force_unlock":"none","algorithm":"SHA1","digits":"6","period":"30"},{"tokentype":"HOTP","label":"OATH00166051","issuer":"privacyIDEA","pin":"False","offline":false,"app_force_unlock":"none","algorithm":"SHA1","digits":"6","otp":["079447","501895"],"counter":"1"}]}';
 
-          final signMessage2 = '$containerChallengeNonce|'
+          final signMessage2 =
+              '$containerChallengeNonce|'
               '$containerChallengeTimeStamp|'
               '${tokenContainer.serial}|'
               '$invocationUrl|'
               '$publicEncKeyClientB64|'
               '$containerDictClient';
 
-          if (invocationUrl.toString() == 'http://example.com/container/synchronize' &&
+          if (invocationUrl.toString() ==
+                  'http://example.com/container/synchronize' &&
               invocationBody['container_dict_client'] == containerDictClient &&
-              EccUtils().validateSignature(tokenContainer.ecPublicClientKey!, invocationBody['signature']!, signMessage2)) {
+              EccUtils().validateSignature(
+                tokenContainer.ecPublicClientKey!,
+                invocationBody['signature']!,
+                signMessage2,
+              )) {
             return Response(
               jsonEncode({
                 'id': 5,
@@ -908,9 +1092,10 @@ void _testPrivacyIdeaContainerApi() {
                       'container_client_rollover': false,
                       'initially_add_tokens_to_container': false,
                     },
-                    'public_server_key': 'Od5nNdvC3iVYTK5aA5e-c1-f3FhSe4MH4apaNDRkSQA=',
+                    'public_server_key':
+                        'Od5nNdvC3iVYTK5aA5e-c1-f3FhSe4MH4apaNDRkSQA=',
                     'server_url': 'http://example.com/container/synchronize',
-                  }
+                  },
                 },
                 'time': 1.0,
                 'version': 'privacyIDEA 3.6.2',
@@ -927,12 +1112,21 @@ void _testPrivacyIdeaContainerApi() {
         final type = X25519().keyPairType;
         final publicSimpleKeyPair = SimpleKeyPairData(
           base64Decode("YIgUiisLPu5dq3KQUMksNVEq12NG2mIM32E13UkQwWQ="),
-          publicKey: SimplePublicKey(base64Decode("ScZtrNZ3Zay12x+eQDyz4a2wafvZqk7BVzBNTchXc2w="), type: type),
+          publicKey: SimplePublicKey(
+            base64Decode("ScZtrNZ3Zay12x+eQDyz4a2wafvZqk7BVzBNTchXc2w="),
+            type: type,
+          ),
           type: type,
         );
 
         // Act
-        final result = await containerApi.sync(tokenContainer, tokenState, withX25519Key: publicSimpleKeyPair, isInitSync: true, sendAllOTPs: true);
+        final result = await containerApi.sync(
+          tokenContainer,
+          tokenState,
+          withX25519Key: publicSimpleKeyPair,
+          isInitSync: true,
+          sendAllOTPs: true,
+        );
         // Asserta
         expect(result, isNotNull);
         final newPolicies = result!.newPolicies;
@@ -970,13 +1164,22 @@ void _testPrivacyIdeaContainerApi() {
         ),
       );
       // Act & Assert
-      expect(() => containerApi.getRolloverQrData(tokenContainer), throwsA(isA<Exception>()));
+      expect(
+        () => containerApi.getRolloverQrData(tokenContainer),
+        throwsA(isA<Exception>()),
+      );
     });
 
     test('unregister', () {
       // Arrange
       final mockIoClient = MockPrivacyideaIOClient();
-      when(mockIoClient.doPost(url: anyNamed('url'), body: anyNamed('body'), sslVerify: anyNamed('sslVerify'))).thenAnswer((invocation) async {
+      when(
+        mockIoClient.doPost(
+          url: anyNamed('url'),
+          body: anyNamed('body'),
+          sslVerify: anyNamed('sslVerify'),
+        ),
+      ).thenAnswer((invocation) async {
         return Response(
           '{"id": 1, "jsonrpc": "2.0", "result": {"status": true, "value": {"enc_key_algorithm": "x25519", "nonce": "d77ff7bf0174815aeea29f68aef4ae6cec6616c2", "time_stamp": "2025-02-11T08:56:45.696499+00:00"}}, "time": 1739264205.7145326, "version": "privacyIDEA 3.11.dev2", "versionnumber": "3.11.dev2", "signature": "rsa_sha256_pss:03a857d6e1941488c368286d1f55c6896c018729d17fb68e0fc5b7c1d956ba54cc657c785b9d284ad6fc34ec17370c7fdd0a0f6255a0fd630dfb97e6659b7af6fc9370cb2a7d0b0d055904145fdf21af40d15b15727bacac59bc79a4941df75d24efbb0b74e6e40561984ac73ca8392382100623bc51cb9e043915535a96fe9ac2b417cbd1e55977a04fdd992ae3758db66a9dcf265f956c9e37faeea3fd5614fd8c88030364a9ef4021cb79128a3bdeb0694bdf45e9cedf4507ee5e5715b9b1f68454b67c5642416c4b226302a50b887233c364acbf1cbc07bf7b3bdda884ca052c15f65b0724ef4bfafe411311ffe85683946e5f0c899377d4d95c66db4147"}',
           200,
@@ -993,7 +1196,10 @@ void _testPrivacyIdeaContainerApi() {
         ),
       );
       // Act & Assert
-      expect(() => containerApi.unregister(tokenContainer), throwsA(isA<Exception>()));
+      expect(
+        () => containerApi.unregister(tokenContainer),
+        throwsA(isA<Exception>()),
+      );
     });
   });
 }

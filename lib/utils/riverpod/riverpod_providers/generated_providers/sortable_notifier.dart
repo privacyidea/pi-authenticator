@@ -1,23 +1,3 @@
-/*
- * privacyIDEA Authenticator
- *
- * Author: Frank Merkel <frank.merkel@netknights.it>
- *
- * Copyright (c) 2025 NetKnights GmbH
- *
- * Licensed under the Apache License, Version 2.0 (the 'License');
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an 'AS IS' BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
-*/
-
 import 'package:flutter/widgets.dart';
 import 'package:privacyidea_authenticator/model/extensions/token_list_extension.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -38,29 +18,37 @@ Future<List<SortableMixin>> sortables(Ref ref) async {
     tokenProvider.selectAsync((state) => state.tokens.filterDuplicates()),
   );
 
-  var sortablesWithNulls = List<SortableMixin>.from([
-    ...tokens,
-    ...tokenFolders,
-  ]);
+  final sortablesList = <SortableMixin>[...tokens, ...tokenFolders];
+  final sortedList = sortablesList.sorted.fillNullIndices();
 
-  final sortedSortables = sortablesWithNulls.sorted.fillNullIndices();
-
-  WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-    if (sortablesWithNulls.any((e) => e is Token) &&
-        sortablesWithNulls.any((element) => element.sortIndex == null)) {
-      ref
-          .read(tokenProvider.notifier)
-          .addOrReplaceTokens(sortedSortables.whereType<Token>().toList());
-    }
-    if (sortablesWithNulls.any((e) => e is TokenFolder) &&
-        sortablesWithNulls.any((element) => element.sortIndex == null)) {
-      ref
-          .read(tokenFolderProvider.notifier)
-          .addOrReplaceFolders(
-            sortedSortables.whereType<TokenFolder>().toList(),
-          );
-    }
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    if (!ref.mounted) return;
+    _handleSortIndexUpdates(ref, sortablesList, sortedList);
   });
 
-  return sortedSortables;
+  return sortedList;
+}
+
+void _handleSortIndexUpdates(
+  Ref ref,
+  List<SortableMixin> original,
+  List<SortableMixin> sorted,
+) {
+  final hasUnsortedItems = original.any((e) => e.sortIndex == null);
+  if (!hasUnsortedItems) return;
+
+  final hasTokens = original.any((e) => e is Token);
+  final hasFolders = original.any((e) => e is TokenFolder);
+
+  if (hasTokens) {
+    ref
+        .read(tokenProvider.notifier)
+        .addOrReplaceTokens(sorted.whereType<Token>().toList());
+  }
+
+  if (hasFolders) {
+    ref
+        .read(tokenFolderProvider.notifier)
+        .addOrReplaceFolders(sorted.whereType<TokenFolder>().toList());
+  }
 }

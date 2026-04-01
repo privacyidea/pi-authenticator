@@ -31,9 +31,16 @@ class SettingsGroupContainer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => SettingsGroup(
-        title: AppLocalizations.of(context)!.container,
-        onPressed: () => Navigator.of(context).pushNamed(ContainerView.routeName),
-        isActive: ref.watch(tokenContainerProvider).whenOrNull(data: (data) => data)?.containerList.isNotEmpty ?? false,
-        trailingIcon: Icons.arrow_forward_ios, // TODO: Change to container icon when we have one
-      );
+    title: AppLocalizations.of(context)!.container,
+    onPressed: () => Navigator.of(context).pushNamed(ContainerView.routeName),
+    isActive:
+        ref
+            .watch(tokenContainerProvider)
+            .whenOrNull(data: (data) => data)
+            ?.containerList
+            .isNotEmpty ??
+        false,
+    trailingIcon: Icons
+        .arrow_forward_ios, // TODO: Change to container icon when we have one
+  );
 }

@@ -29,7 +29,10 @@ part 'app_customization_notifier.g.dart';
 @riverpod
 class AppCustomizationNotifier extends _$AppCustomizationNotifier {
   static ApplicationCustomization get initialState =>
-      _initialState ?? ApplicationCustomization.defaultCustomization.copyWith(disabledFeatures: AppFeature.values.toSet());
+      _initialState ??
+      ApplicationCustomization.defaultCustomization.copyWith(
+        disabledFeatures: AppFeature.values.toSet(),
+      );
   static ApplicationCustomization? _initialState;
 
   static void setInitialState(ApplicationCustomization initialState) {
@@ -39,12 +42,17 @@ class AppCustomizationNotifier extends _$AppCustomizationNotifier {
   @override
   Future<ApplicationCustomization> build() async => initialState;
 
-  Future<ApplicationCustomization> setState(ApplicationCustomization newState) async {
+  Future<ApplicationCustomization> setState(
+    ApplicationCustomization newState,
+  ) async {
     state = AsyncValue.data(newState);
     return newState;
   }
 
-  Future<ApplicationCustomization> updateState(FutureOr<ApplicationCustomization> Function(ApplicationCustomization) updater) async {
+  Future<ApplicationCustomization> updateState(
+    FutureOr<ApplicationCustomization> Function(ApplicationCustomization)
+    updater,
+  ) async {
     final oldState = await future;
     final newState = await updater(oldState);
     setState(newState);

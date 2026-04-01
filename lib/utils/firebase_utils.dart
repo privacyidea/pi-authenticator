@@ -23,9 +23,9 @@ import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
+import 'package:gms_check/gms_check.dart';
 import 'package:mutex/mutex.dart';
 import 'package:privacyidea_authenticator/repo/secure_storage.dart';
-import 'package:privacyidea_authenticator/utils/utils.dart';
 
 import '../../../../../../../utils/view_utils.dart';
 import 'globals.dart';
@@ -34,14 +34,13 @@ import 'logger.dart';
 
 class FirebaseUtils {
   static FirebaseUtils? _instance;
+  static bool? _isMessagingAvailable;
+
   final Mutex _initFbMutex = Mutex();
   bool initializedFirebase = false;
   final Mutex _initHandlerMutex = Mutex();
   bool initializedHandler = false;
 
-  // ###########################################################################
-  // FIREBASE CONFIG
-  // ###########################################################################
   static const FIREBASE_TOKEN_KEY_PREFIX_LEGACY =
       GLOBAL_SECURE_REPO_PREFIX_LEGACY;
   static const CURRENT_APP_TOKEN_KEY_LEGACY = 'CURRENT_APP_TOKEN';
@@ -74,11 +73,14 @@ class FirebaseUtils {
     SecureStorage? legacyStorage,
   }) {
     if (storage != null || legacyStorage != null) {
-      // For testing, return a new instance with mocked storage
       return FirebaseUtils._(storage: storage, legacyStorage: legacyStorage);
     }
+
     if (_instance != null) return _instance!;
-    if (deviceHasFirebaseMessaging) {
+
+    final isAvailable = _isMessagingAvailable ?? false;
+
+    if (isAvailable) {
       _instance ??= FirebaseUtils._();
     } else {
       _instance ??= NoFirebaseUtils();
@@ -87,7 +89,30 @@ class FirebaseUtils {
     return _instance!;
   }
 
-  /// Must be used in the main method before runApp() is called.
+  static Future<void> preInitializeStatus() async {
+    if (_isMessagingAvailable != null) return;
+    _isMessagingAvailable = switch (true) {
+      _ when Platform.isAndroid => await _checkGmsAvailability(),
+      _ when Platform.isIOS || Platform.isMacOS => true,
+      _ => false,
+    };
+  }
+
+  static Future<bool> _checkGmsAvailability() async {
+    try {
+      return await GmsCheck().checkGmsAvailability() ?? false;
+    } catch (e, s) {
+      Logger.error(
+        'Error while checking GMS availability',
+        error: e,
+        stackTrace: s,
+      );
+      return false;
+    }
+  }
+
+  static bool get isMessagingAvailable => _isMessagingAvailable ?? false;
+
   Future<FirebaseApp?> initializeApp() async {
     await _initFbMutex.acquire();
     try {
@@ -124,7 +149,6 @@ class FirebaseUtils {
     }
   }
 
-  /// This method sets up the Firebase messaging handler for the app. It must be called after initializeApp().
   Future<void> setupHandler({
     required Future<void> Function(RemoteMessage) foregroundHandler,
     required Future<void> Function(RemoteMessage) backgroundHandler,
@@ -140,6 +164,7 @@ class FirebaseUtils {
     await _initHandlerMutex.acquire();
     if (initializedHandler) {
       Logger.warning('Firebase handler already initialized');
+      _initHandlerMutex.release();
       return;
     }
 
@@ -157,7 +182,10 @@ class FirebaseUtils {
       }
     } catch (error, stackTrace) {
       if (error is PlatformException) {
-        if (error.code == FIREBASE_TOKEN_ERROR_CODE) return; // ignore
+        if (error.code == FIREBASE_TOKEN_ERROR_CODE) {
+          _initHandlerMutex.release();
+          return;
+        }
         showErrorStatusMessage(
           message: (l) => l.pushInitializeUnavailable,
           details: (_) =>
@@ -165,7 +193,10 @@ class FirebaseUtils {
         );
       }
       if (error is FirebaseException) {
-        if (error.code == FIREBASE_TOKEN_ERROR_CODE) return; // ignore
+        if (error.code == FIREBASE_TOKEN_ERROR_CODE) {
+          _initHandlerMutex.release();
+          return;
+        }
         showErrorStatusMessage(
           message: (l) => l.pushInitializeUnavailable,
           details: (_) =>
@@ -183,7 +214,6 @@ class FirebaseUtils {
     FirebaseMessaging.instance.onTokenRefresh.listen((String newToken) async {
       if ((await getCurrentFirebaseToken()) != newToken) {
         await setNewFirebaseToken(newToken);
-        // TODO what if this fails, when should a retry be attempted?
         try {
           updateFirebaseToken(firebaseToken: newToken);
         } catch (error, stackTrace) {
@@ -200,9 +230,6 @@ class FirebaseUtils {
     _initHandlerMutex.release();
   }
 
-  /// Returns the current firebase token of the app / device. Throws a
-  /// PlatformException with a custom error code if retrieving the firebase
-  /// token failed. This may happen if, e.g., no network connection is available.
   Future<String?> getFBToken() async {
     String? firebaseToken;
     try {
@@ -216,7 +243,6 @@ class FirebaseUtils {
       );
     }
 
-    // Fall back to the last known firebase token
     if (firebaseToken == null) {
       firebaseToken = await getCurrentFirebaseToken();
     } else {
@@ -225,8 +251,6 @@ class FirebaseUtils {
     }
 
     if (firebaseToken == null) {
-      // This error should be handled in all cases, the user might be informed
-      // in the form of a pop-up message.
       throw PlatformException(
         message:
             'Firebase token could not be retrieved, the only know cause of this is'
@@ -280,7 +304,6 @@ class FirebaseUtils {
     return null;
   }
 
-  // This is used for checking if the token was updated.
   Future<void> setNewFirebaseToken(String str) {
     Logger.info('Setting new firebase token');
     return _storage.write(key: NEW_APP_TOKEN_KEY, value: str);
@@ -303,7 +326,6 @@ class FirebaseUtils {
   }
 }
 
-/// This class just is used to disable Firebase for web builds.
 class NoFirebaseUtils implements FirebaseUtils {
   @override
   Mutex get _initFbMutex => Mutex();
@@ -322,7 +344,7 @@ class NoFirebaseUtils implements FirebaseUtils {
   Future<void> setupHandler({
     required Future<void> Function(RemoteMessage p1) foregroundHandler,
     required Future<void> Function(RemoteMessage p1) backgroundHandler,
-    required void Function({String? firebaseToken}) updateFirebaseToken,
+    required dynamic Function({String? firebaseToken}) updateFirebaseToken,
   }) async {}
 
   @override

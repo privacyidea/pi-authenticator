@@ -25,7 +25,6 @@ import 'package:privacyidea_authenticator/model/extensions/enums/sync_state_exte
 import '../../../../model/token_container.dart';
 import '../../../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 import '../../../../widgets/button_widgets/intent_button.dart';
-import '../../../../widgets/button_widgets/time_guarded_button.dart';
 import '../dialogs/rollover_container_tokens_dialog.dart';
 
 class RolloverContainerTokensButton extends ConsumerWidget {
@@ -46,7 +45,7 @@ class RolloverContainerTokensButton extends ConsumerWidget {
     final bool canPress =
         currentContainer != null && currentContainer.syncState.isIdle;
 
-    return TimeGuardedButton(
+    return IntentButton(
       intent: DialogActionIntent.confirm,
       onPressed: canPress
           ? () => RolloverContainerTokensDialog.showDialog(context, container)

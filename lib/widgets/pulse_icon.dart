@@ -20,7 +20,8 @@ class PulseIcon extends StatefulWidget {
   State<PulseIcon> createState() => _PulseIconState();
 }
 
-class _PulseIconState extends State<PulseIcon> with SingleTickerProviderStateMixin {
+class _PulseIconState extends State<PulseIcon>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
 
   late Animation<double> _scaleAnimation;
@@ -30,15 +31,16 @@ class _PulseIconState extends State<PulseIcon> with SingleTickerProviderStateMix
   void initState() {
     super.initState();
     if (widget.isPulsing) {
-      _animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 1500))..repeat();
-      _scaleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(CurvedAnimation(
-        parent: _animationController,
-        curve: Curves.easeInOut,
-      ));
-      _opacityAnimation = Tween<double>(begin: 0.8, end: 0.05).animate(CurvedAnimation(
-        parent: _animationController,
-        curve: Curves.easeInOut,
-      ));
+      _animationController = AnimationController(
+        vsync: this,
+        duration: const Duration(milliseconds: 1500),
+      )..repeat();
+      _scaleAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+        CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+      );
+      _opacityAnimation = Tween<double>(begin: 0.8, end: 0.05).animate(
+        CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+      );
     }
   }
 
@@ -50,25 +52,25 @@ class _PulseIconState extends State<PulseIcon> with SingleTickerProviderStateMix
 
   @override
   Widget build(BuildContext context) => Stack(
-        children: [
-          if (widget.isPulsing)
-            Center(
-              child: FadeTransition(
-                opacity: _opacityAnimation,
-                child: ScaleTransition(
-                  scale: _scaleAnimation,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primary,
-                      borderRadius: widget.borderRadius,
-                    ),
-                    width: widget.width,
-                    height: widget.height,
-                  ),
+    children: [
+      if (widget.isPulsing)
+        Center(
+          child: FadeTransition(
+            opacity: _opacityAnimation,
+            child: ScaleTransition(
+              scale: _scaleAnimation,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primary,
+                  borderRadius: widget.borderRadius,
                 ),
+                width: widget.width,
+                height: widget.height,
               ),
             ),
-          Center(child: widget.child),
-        ],
-      );
+          ),
+        ),
+      Center(child: widget.child),
+    ],
+  );
 }

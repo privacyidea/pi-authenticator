@@ -29,7 +29,6 @@ import 'package:mutex/mutex.dart';
 import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/model/extensions/token_list_extension.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/localization_notifier.dart';
-import 'package:privacyidea_authenticator/utils/view_utils.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../../../model/extensions/enums/push_token_rollout_state_extension.dart';
@@ -432,7 +431,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     final token = await getTokenById(tokenId);
     if (token is! OTPToken) {
       Logger.warning('Tried to show a token that is not an OTPToken.');
-      return Future.value(null);
+      return Future.value();
     }
     return showToken(token);
   }
@@ -504,11 +503,12 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       await firebaseUtils.deleteFirebaseToken();
     } on SocketException {
       Logger.warning('Could not delete firebase token.');
-      ref.read(statusMessageProvider.notifier).state = StatusMessage(
-        message: (localization) =>
-            localization.errorUnlinkingPushToken(token.label),
-        details: (localization) => localization.checkYourNetwork,
-      );
+      ref
+          .read(statusProvider.notifier)
+          .show(
+            (localization) => localization.errorUnlinkingPushToken(token.label),
+            details: (localization) => localization.checkYourNetwork,
+          );
       return false;
     }
     final deleted = await _removeToken(token);
@@ -520,19 +520,18 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     final fbToken = await firebaseUtils.getFBToken();
 
     if (fbToken == null) {
-      await _updateTokens(
-        (await future).pushTokens,
-        (p0) => p0.copyWith(fbToken: null),
-      );
+      await _updateTokens((await future).pushTokens, (p0) => p0.copyWith());
       Logger.warning(
         'Could not update firebase token because no firebase token is available.',
       );
-      ref.read(statusMessageProvider.notifier).state = StatusMessage(
-        message: (localization) =>
-            localization.errorSynchronizationNoNetworkConnection,
-        details: (localization) =>
-            localization.syncFbTokenManuallyWhenNetworkIsAvailable,
-      );
+      ref
+          .read(statusProvider.notifier)
+          .show(
+            (localization) =>
+                localization.errorSynchronizationNoNetworkConnection,
+            details: (localization) =>
+                localization.syncFbTokenManuallyWhenNetworkIsAvailable,
+          );
       return deleted;
     }
 
@@ -542,17 +541,19 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
           firebaseToken: fbToken,
         )) ??
         (<PushToken>[], <PushToken>[]);
-    await _updateTokens(notUpdated, (p0) => p0.copyWith(fbToken: null));
+    await _updateTokens(notUpdated, (p0) => p0.copyWith());
     if (notUpdated.isNotEmpty) {
       Logger.warning(
         'Could not update firebase token for ${notUpdated.length} tokens.',
       );
-      ref.read(statusMessageProvider.notifier).state = StatusMessage(
-        message: (localization) =>
-            localization.errorSynchronizationNoNetworkConnection,
-        details: (localization) =>
-            localization.syncFbTokenManuallyWhenNetworkIsAvailable,
-      );
+      ref
+          .read(statusProvider.notifier)
+          .show(
+            (localization) =>
+                localization.errorSynchronizationNoNetworkConnection,
+            details: (localization) =>
+                localization.syncFbTokenManuallyWhenNetworkIsAvailable,
+          );
     }
     return deleted;
   }
@@ -564,251 +565,182 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       return false;
     }
 
-    assert(
-      pushToken.url != null,
-      'Token url is null. Cannot rollout token without url.',
-    );
+    if (!await _isEligibleForRollout(pushToken)) return false;
+    if (pushToken.isRolledOut) return true;
+
     Logger.info('Rolling out token "${pushToken.id}"');
-    if (pushToken.isRolledOut) {
-      Logger.info(
-        'Ignoring rollout request: Token "${pushToken.id}" already rolled out.',
-      );
-      return true;
-    }
-    if (pushToken.rolloutState.rollOutInProgress) {
-      Logger.info(
-        'Ignoring rollout request: Rollout of token "${pushToken.id}" already started. Tokenstate: ${pushToken.rolloutState} ',
-      );
-      return false;
-    }
-    if (pushToken.expirationDate?.isBefore(DateTime.now()) == true) {
-      Logger.info(
-        'Ignoring rollout request: Token "${pushToken.id}" is expired. ',
-      );
-
-      ref.read(statusMessageProvider.notifier).state = StatusMessage(
-        message: (localization) => localization.errorRollOutNotPossibleAnymore,
-        details: (localization) =>
-            localization.errorTokenExpired(pushToken!.label),
-      );
-
-      await _removeToken(pushToken);
-      return false;
-    }
 
     if (pushToken.privateTokenKey == null) {
-      Logger.info(
-        'Updating rollout state of token "${pushToken.id}" to generatingRSAKeyPair',
-      );
-      pushToken = await _updateToken(
-        pushToken,
-        (p0) => p0.copyWith(
-          rolloutState: PushTokenRollOutState.generatingRSAKeyPair,
-        ),
-      );
-      if (pushToken == null) {
-        Logger.warning('Tried to update a token that does not exist.');
-        return false;
-      }
-      Logger.info('Updated token "${pushToken.id}"');
-      try {
-        final keyPair = await rsaUtils.generateRSAKeyPair();
-        pushToken = pushToken.withPrivateTokenKey(keyPair.privateKey);
-        pushToken = pushToken.withPublicTokenKey(keyPair.publicKey);
-        pushToken =
-            await _updateToken(pushToken, (p0) {
-              p0 = p0.withPrivateTokenKey(keyPair.privateKey);
-              return p0.withPublicTokenKey(keyPair.publicKey);
-            }) ??
-            pushToken;
-        Logger.info('Updated token "${pushToken.id}"');
-      } catch (e, s) {
-        Logger.error(
-          'Error while generating RSA key pair.',
-          error: e,
-          stackTrace: s,
-        );
-        if (pushToken == null) {
-          Logger.warning('Tried to update a token that does not exist.');
-          return false;
-        }
-        pushToken = await _updateToken(
-          pushToken,
-          (p0) => p0.copyWith(
-            rolloutState: PushTokenRollOutState.generatingRSAKeyPairFailed,
-          ),
-        );
-        return false;
-      }
+      pushToken = await _handleKeyGeneration(pushToken);
+      if (pushToken == null) return false;
     }
+
     String? fbToken;
     if (pushToken.isPollOnly != true) {
-      pushToken = await _updateToken(
-        pushToken,
-        (p0) => p0.copyWith(
-          rolloutState: PushTokenRollOutState.receivingFirebaseToken,
-        ),
-      );
-      if (pushToken == null) {
-        Logger.warning('Tried to update a token that does not exist.');
-        return false;
-      }
-      try {
-        fbToken = await firebaseUtils.getFBToken();
-      } catch (e, s) {
-        Logger.warning(
-          'Could not get firebase token.',
-          error: e,
-          stackTrace: s,
-        );
-        showErrorStatusMessage(
-          message: (l) => l.errorRollOutFailed(pushToken!.label),
-          details: (l) => l.noFbToken,
-        );
-        pushToken = await _updateToken(
-          pushToken,
-          (p0) => p0.copyWith(
-            rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed,
-          ),
-        );
-        if (pushToken == null) {
-          Logger.warning('Tried to update a token that does not exist.');
-        }
-        return false;
-      }
+      fbToken = await _getFirebaseToken(pushToken);
+      if (fbToken == null) return false;
+      pushToken = await getTokenById(pushToken.id) ?? pushToken;
     }
-    pushToken = await _updateToken(
-      pushToken,
-      (p0) => p0.copyWith(rolloutState: PushTokenRollOutState.sendRSAPublicKey),
-    );
-    if (pushToken == null) {
-      Logger.warning('Tried to update a token that does not exist.');
-      return false;
-    }
+
     if (!kIsWeb && Platform.isIOS) {
-      Logger.warning(
-        'Triggering network access permission for token "${pushToken.id}"',
-      );
-      if (!await ioClient.triggerNetworkAccessPermission(
-        url: pushToken.url!,
-        sslVerify: pushToken.sslVerify,
-      )) {
-        Logger.warning(
-          'Network access permission for token "${pushToken.id}" failed.',
-        );
-        _updateToken(
-          pushToken,
-          (p0) => p0.copyWith(
-            rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed,
-          ),
-        );
-        return false;
-      }
-      Logger.warning(
-        'Network access permission for token "${pushToken.id}" successful.',
-      );
+      if (!await _checkNetworkPermission(pushToken)) return false;
     }
-    Response response;
-    try {
-      // TODO What to do with poll only tokens if google-services is used?
 
-      Logger.info('SSLVerify: ${pushToken.sslVerify}');
-      response = await ioClient.doPost(
-        sslVerify: pushToken.sslVerify,
-        url: pushToken.url!,
-        body: {
-          'enrollment_credential': pushToken.enrollmentCredentials,
-          'serial': pushToken.serial,
-          'fbtoken': fbToken ?? NoFirebaseUtils.NO_FIREBASE_TOKEN,
-          'pubkey': rsaUtils.serializeRSAPublicKeyPKCS8(
-            pushToken.rsaPublicTokenKey!,
-          ),
-        },
-      );
+    return await _executeServerRollout(pushToken, fbToken);
+  }
+
+  Future<bool> _isEligibleForRollout(PushToken token) async {
+    assert(token.url != null, 'Token url is null.');
+
+    if (token.rolloutState.rollOutInProgress) {
+      Logger.info('Rollout already in progress for "${token.id}".');
+      return false;
+    }
+
+    if (token.expirationDate?.isBefore(DateTime.now()) == true) {
+      Logger.info('Token "${token.id}" is expired.');
+      ref
+          .read(statusProvider.notifier)
+          .show(
+            (loc) => loc.errorRollOutNotPossibleAnymore,
+            details: (loc) => loc.errorTokenExpired(token.label),
+          );
+      await _removeToken(token);
+      return false;
+    }
+    return true;
+  }
+
+  Future<PushToken?> _handleKeyGeneration(PushToken token) async {
+    token =
+        await _updateStatus(
+          token,
+          PushTokenRollOutState.generatingRSAKeyPair,
+        ) ??
+        token;
+    try {
+      final keyPair = await rsaUtils.generateRSAKeyPair();
+      return await _updateToken(token, (p) {
+        p = p.withPrivateTokenKey(keyPair.privateKey);
+        return p.withPublicTokenKey(keyPair.publicKey);
+      });
     } catch (e, s) {
-      pushToken = await _updateToken(
-        pushToken,
-        (p0) => p0.copyWith(
-          rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed,
-        ),
-      );
-      if (pushToken == null) {
-        Logger.warning('Tried to update a token that does not exist.');
-        return false;
-      }
-      ref.read(statusMessageProvider.notifier).state = StatusMessage(
-        message: (localization) =>
-            localization.errorRollOutUnknownError(pushToken!.label),
-      );
-      Logger.error('Roll out push token failed.', error: e, stackTrace: s);
-      return false;
-    }
-
-    if (HttpStatusChecker.isError(response.statusCode)) {
-      Logger.warning(
-        'Post request on roll out failed.',
-        error:
-            'Token: ${pushToken.serial}\nStatus code: ${response.statusCode},\nURL:${response.request?.url}\nBody: ${response.body}',
-      );
-      _showPushRolloutStatus(response, pushToken.label);
-      pushToken = await _updateToken(
-        pushToken,
-        (p0) => p0.copyWith(
-          rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed,
-        ),
-      );
-      return false;
-    }
-    pushToken = await _updateToken(
-      pushToken,
-      (p0) => p0.copyWith(
-        rolloutState: PushTokenRollOutState.parsingResponse,
-        fbToken: fbToken,
-      ),
-    );
-    if (pushToken == null) {
-      Logger.warning('Tried to update a token that does not exist.');
-      return false;
-    }
-    try {
-      RSAPublicKey publicServerKey = await _parseRollOutResponse(response);
-      pushToken = await _updateToken(
-        pushToken,
-        (p0) => p0.withPublicServerKey(publicServerKey),
-      );
-      if (pushToken == null) {
-        Logger.warning('Tried to update a token that does not exist.');
-        return false;
-      }
-    } on FormatException catch (e, s) {
       Logger.error(
-        'Error while parsing RSA public key.',
+        'Error while generating RSA key pair.',
         error: e,
         stackTrace: s,
       );
-      if (pushToken == null) {
-        Logger.warning('Tried to update a token that does not exist.');
-        return false;
-      }
-      pushToken = await _updateToken(
-        pushToken,
-        (p0) => p0.copyWith(
-          rolloutState: PushTokenRollOutState.parsingResponseFailed,
-        ),
+      await _updateStatus(
+        token,
+        PushTokenRollOutState.generatingRSAKeyPairFailed,
       );
+      return null;
+    }
+  }
+
+  Future<String?> _getFirebaseToken(PushToken token) async {
+    await _updateStatus(token, PushTokenRollOutState.receivingFirebaseToken);
+    try {
+      return await firebaseUtils.getFBToken();
+    } catch (e, s) {
+      Logger.warning('Could not get firebase token.', error: e, stackTrace: s);
+      ref
+          .read(statusProvider.notifier)
+          .show(
+            (l) => l.errorRollOutFailed(token.label),
+            details: (l) => l.checkYourNetwork,
+          );
+      await _updateStatus(token, PushTokenRollOutState.sendRSAPublicKeyFailed);
+      return null;
+    }
+  }
+
+  Future<bool> _checkNetworkPermission(PushToken token) async {
+    Logger.warning('Triggering network access permission for "${token.id}"');
+    final success = await ioClient.triggerNetworkAccessPermission(
+      url: token.url!,
+      sslVerify: token.sslVerify,
+    );
+    if (!success) {
+      Logger.warning('Network access permission failed.');
+      await _updateStatus(token, PushTokenRollOutState.sendRSAPublicKeyFailed);
       return false;
     }
-    Logger.info('Roll out successful');
-    pushToken = await _updateToken(
-      pushToken,
-      (p0) => p0.copyWith(
-        isRolledOut: true,
-        rolloutState: PushTokenRollOutState.rolloutComplete,
-      ),
-    );
-    checkNotificationPermission();
-
     return true;
+  }
+
+  Future<bool> _executeServerRollout(PushToken token, String? fbToken) async {
+    token =
+        await _updateStatus(token, PushTokenRollOutState.sendRSAPublicKey) ??
+        token;
+    try {
+      final response = await ioClient.doPost(
+        sslVerify: token.sslVerify,
+        url: token.url!,
+        body: {
+          'enrollment_credential': token.enrollmentCredentials,
+          'serial': token.serial,
+          'fbtoken': fbToken ?? NoFirebaseUtils.NO_FIREBASE_TOKEN,
+          'pubkey': rsaUtils.serializeRSAPublicKeyPKCS8(
+            token.rsaPublicTokenKey!,
+          ),
+        },
+      );
+
+      if (HttpStatusChecker.isError(response.statusCode)) {
+        _showPushRolloutStatus(response, token.label);
+        await _updateStatus(
+          token,
+          PushTokenRollOutState.sendRSAPublicKeyFailed,
+        );
+        return false;
+      }
+
+      token =
+          await _updateToken(
+            token,
+            (p) => p.copyWith(
+              rolloutState: PushTokenRollOutState.parsingResponse,
+              fbToken: fbToken,
+            ),
+          ) ??
+          token;
+
+      final publicServerKey = await _parseRollOutResponse(response);
+      await _updateToken(
+        token,
+        (p) => p
+            .withPublicServerKey(publicServerKey)
+            .copyWith(
+              isRolledOut: true,
+              rolloutState: PushTokenRollOutState.rolloutComplete,
+            ),
+      );
+
+      checkNotificationPermission();
+      return true;
+    } catch (e, s) {
+      Logger.error('Roll out failed.', error: e, stackTrace: s);
+      ref
+          .read(statusProvider.notifier)
+          .show((loc) => loc.errorRollOutUnknownError(token.label));
+      await _updateStatus(token, PushTokenRollOutState.sendRSAPublicKeyFailed);
+      return false;
+    }
+  }
+
+  Future<PushToken?> _updateStatus(
+    PushToken token,
+    PushTokenRollOutState state,
+  ) async {
+    final updated = await _updateToken(
+      token,
+      (p) => p.copyWith(rolloutState: state),
+    );
+    if (updated == null) {
+      Logger.warning('Tried to update a token that does not exist.');
+    }
+    return updated;
   }
 
   final _updateFbTokenMutex = Mutex();
@@ -1061,7 +993,6 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
               e.origin?.copyWith(source: tokenOriginSourceType) ??
               TokenOriginSourceType.unknown.toTokenOrigin(
                 data: 'No Origindata available',
-                isPrivacyIdeaToken: null,
               ),
         ),
       )
@@ -1173,6 +1104,9 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
         );
       }
     }
-    ref.read(statusMessageProvider.notifier).state = statusMessage;
+
+    ref
+        .read(statusProvider.notifier)
+        .show(statusMessage.message, details: statusMessage.details);
   }
 }

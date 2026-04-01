@@ -56,39 +56,72 @@ class TotpAnimation {
     required this.defaultCountdownColor,
     Color? warningCountdownColor,
     Color? criticalCountdownColor,
-  })  : warningOtpColor = warningOtpColor ?? defaultOtpColor,
-        criticalOtpColor = criticalOtpColor ?? warningOtpColor ?? defaultOtpColor,
-        warningCountdownColor = warningCountdownColor ?? defaultCountdownColor,
-        criticalCountdownColor = criticalCountdownColor ?? warningCountdownColor ?? defaultCountdownColor;
+  }) : warningOtpColor = warningOtpColor ?? defaultOtpColor,
+       criticalOtpColor =
+           criticalOtpColor ?? warningOtpColor ?? defaultOtpColor,
+       warningCountdownColor = warningCountdownColor ?? defaultCountdownColor,
+       criticalCountdownColor =
+           criticalCountdownColor ??
+           warningCountdownColor ??
+           defaultCountdownColor;
 
   DateTime lastResync = DateTime.now();
 
   /// The initial elapsed time is [initPassedTime].
   UnscaledAnimationController createAnimation() {
     final colorAnimation = UnscaledAnimationController(
-      lowerBound: 0,
       upperBound: totalDuration.inSeconds.toDouble(),
       duration: totalDuration,
     );
     colorAnimation.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         onPeriodEnd();
-        colorAnimation.forward(from: DateTime.now().millisecondsSinceEpoch % (totalDuration.inMilliseconds) / 1000);
+        colorAnimation.forward(
+          from:
+              DateTime.now().millisecondsSinceEpoch %
+              (totalDuration.inMilliseconds) /
+              1000,
+        );
       }
     });
-    colorAnimation.forward(from: DateTime.now().millisecondsSinceEpoch % (totalDuration.inMilliseconds) / 1000);
+    colorAnimation.forward(
+      from:
+          DateTime.now().millisecondsSinceEpoch %
+          (totalDuration.inMilliseconds) /
+          1000,
+    );
     colorAnimation.addListener(() {
-      final passedDuration = Duration(milliseconds: (colorAnimation.value * 1000).toInt());
+      final passedDuration = Duration(
+        milliseconds: (colorAnimation.value * 1000).toInt(),
+      );
       Color otpColor;
       Color countdownColor;
       if (passedDuration > (totalDuration - criticalDuration)) {
-        final factor = (totalDuration - passedDuration).inMilliseconds / criticalDuration.inMilliseconds;
-        otpColor = criticalOtpColor.mixWith(warningDuration.inMilliseconds < 1 ? defaultOtpColor : warningOtpColor, factor);
-        countdownColor = criticalCountdownColor.mixWith(warningDuration.inMilliseconds < 1 ? defaultCountdownColor : warningCountdownColor, factor);
-      } else if (passedDuration > (totalDuration - warningDuration - criticalDuration)) {
-        final factor = (totalDuration - passedDuration - criticalDuration).inMilliseconds / warningDuration.inMilliseconds; // 0-1
+        final factor =
+            (totalDuration - passedDuration).inMilliseconds /
+            criticalDuration.inMilliseconds;
+        otpColor = criticalOtpColor.mixWith(
+          warningDuration.inMilliseconds < 1
+              ? defaultOtpColor
+              : warningOtpColor,
+          factor,
+        );
+        countdownColor = criticalCountdownColor.mixWith(
+          warningDuration.inMilliseconds < 1
+              ? defaultCountdownColor
+              : warningCountdownColor,
+          factor,
+        );
+      } else if (passedDuration >
+          (totalDuration - warningDuration - criticalDuration)) {
+        final factor =
+            (totalDuration - passedDuration - criticalDuration).inMilliseconds /
+            warningDuration.inMilliseconds; // 0-1
         otpColor = warningOtpColor.mixWith(defaultOtpColor, factor);
-        countdownColor = warningCountdownColor.mixWith(defaultCountdownColor, factor);
+        countdownColor = warningCountdownColor.mixWith(
+          defaultCountdownColor,
+          factor,
+        );
       } else {
         otpColor = defaultOtpColor;
         countdownColor = defaultCountdownColor;
@@ -96,14 +129,22 @@ class TotpAnimation {
       final callbackValue = TotpAnimationCallback(
         otpColor: otpColor,
         countdownColor: countdownColor,
-        secondsUntilNextOTP: (totalDuration.inMilliseconds - passedDuration.inMilliseconds) / 1000,
+        secondsUntilNextOTP:
+            (totalDuration.inMilliseconds - passedDuration.inMilliseconds) /
+            1000,
       );
       callback(callbackValue);
 
       // Resync every second but do not skip the AnimationStatus.completed
-      if (DateTime.now().difference(lastResync).inSeconds > 1 && colorAnimation.value > 0.5) {
+      if (DateTime.now().difference(lastResync).inSeconds > 1 &&
+          colorAnimation.value > 0.5) {
         lastResync = DateTime.now();
-        colorAnimation.forward(from: DateTime.now().millisecondsSinceEpoch % (totalDuration.inMilliseconds) / 1000);
+        colorAnimation.forward(
+          from:
+              DateTime.now().millisecondsSinceEpoch %
+              (totalDuration.inMilliseconds) /
+              1000,
+        );
       }
     });
     return colorAnimation;

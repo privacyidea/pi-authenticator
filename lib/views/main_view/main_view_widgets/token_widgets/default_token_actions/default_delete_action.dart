@@ -24,11 +24,9 @@ import 'package:privacyidea_authenticator/utils/view_utils.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/token.dart';
 import '../../../../../utils/customization/theme_extentions/action_theme.dart';
-import '../../../../../utils/globals.dart';
 import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
-import '../../loading_indicator.dart';
 import '../slideable_action.dart';
 import 'container_token_indelible_dialog.dart';
 
@@ -53,6 +51,7 @@ class DefaultDeleteAction extends ConsumerSlideableAction {
       ).extension<TokenTileTheme>()!.actionForegroundColor,
       onPressed: isEnabled
           ? (_) async {
+              final notifier = ref.read(tokenProvider.notifier);
               if (token.isLocked &&
                   !await lockAuth(
                     reason: (localization) => localization.deleteLockedToken,
@@ -61,12 +60,11 @@ class DefaultDeleteAction extends ConsumerSlideableAction {
                   )) {
                 return;
               }
-              _showDialog();
+              _showDialog(notifier);
             }
           : (_) => ContainerTokenIndelibleDialog.showDialog(),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const Icon(Icons.delete),
           Text(
@@ -79,7 +77,7 @@ class DefaultDeleteAction extends ConsumerSlideableAction {
     );
   }
 
-  void _showDialog() => showAsyncDialog(
+  void _showDialog(TokenNotifier notifier) => showAsyncDialog(
     builder: (BuildContext context) => DefaultDialog(
       scrollable: true,
       title: Text(
@@ -89,6 +87,7 @@ class DefaultDeleteAction extends ConsumerSlideableAction {
         ),
       ),
       content: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Text(
             AppLocalizations.of(context)!.confirmDeletionOf(token.label),
@@ -102,30 +101,6 @@ class DefaultDeleteAction extends ConsumerSlideableAction {
         ],
       ),
       actions: [
-        // TextButton(
-        //   onPressed: () => Navigator.of(context).pop(),
-        //   child: Text(
-        //     AppLocalizations.of(context)!.cancel,
-        //     overflow: TextOverflow.fade,
-        //     softWrap: false,
-        //   ),
-        // ),
-        // TextButton(
-        //   onPressed: () {
-        //     LoadingIndicator.show(
-        //       context: context,
-        //       action: () async =>
-        //           globalRef?.read(tokenProvider.notifier).removeToken(token),
-        //     );
-        //     Navigator.of(context).pop();
-        //   },
-        //   child: Text(
-        //     AppLocalizations.of(context)!.delete,
-        //     style: TextStyle(color: Theme.of(context).colorScheme.error),
-        //     overflow: TextOverflow.fade,
-        //     softWrap: false,
-        //   ),
-        // ),
         DialogAction(
           label: AppLocalizations.of(context)!.cancel,
           intent: DialogActionIntent.cancel,
@@ -134,12 +109,14 @@ class DefaultDeleteAction extends ConsumerSlideableAction {
         DialogAction(
           label: AppLocalizations.of(context)!.delete,
           intent: DialogActionIntent.destructive,
-          onPressed: () {
-            LoadingIndicator.show(
-              context: context,
-              action: () async =>
-                  globalRef?.read(tokenProvider.notifier).removeToken(token),
-            );
+          onPressed: () async {
+            try {
+              await notifier.removeToken(token);
+            } finally {
+              if (context.mounted) {
+                Navigator.of(context).pop();
+              }
+            }
           },
         ),
       ],

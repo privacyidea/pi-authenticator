@@ -19,22 +19,26 @@ class HomeWidgetAction extends FlutterHomeWidgetBase {
   });
 
   @override
-  Widget build(BuildContext context) => (aditionalSuffix == HomeWidgetUtils.keySuffixActive)
+  Widget build(BuildContext context) =>
+      (aditionalSuffix == HomeWidgetUtils.keySuffixActive)
       ? Icon(
           icon,
           size: min(logicalSize.width, logicalSize.height),
           color: theme.listTileTheme.iconColor,
         )
       : (aditionalSuffix == HomeWidgetUtils.keySuffixInactive)
-          ? Icon(
-              icon,
-              size: min(logicalSize.width, logicalSize.height),
-              color: theme.listTileTheme.iconColor?.mixWith(theme.scaffoldBackgroundColor),
-            )
-          : const SizedBox();
+      ? Icon(
+          icon,
+          size: min(logicalSize.width, logicalSize.height),
+          color: theme.listTileTheme.iconColor?.mixWith(
+            theme.scaffoldBackgroundColor,
+          ),
+        )
+      : const SizedBox();
 }
 
-class HomeWidgetActionBuilder extends FlutterHomeWidgetBuilder<HomeWidgetAction> {
+class HomeWidgetActionBuilder
+    extends FlutterHomeWidgetBuilder<HomeWidgetAction> {
   final IconData icon;
   HomeWidgetActionBuilder({
     super.key,
@@ -45,19 +49,24 @@ class HomeWidgetActionBuilder extends FlutterHomeWidgetBuilder<HomeWidgetAction>
     required super.homeWidgetKey,
     required super.utils,
   }) : super(
-          formWidget: (key, theme, logicalSize, additionalSuffix) => HomeWidgetAction(
-            icon: icon,
-            key: key,
-            theme: theme,
-            logicalSize: logicalSize,
-            aditionalSuffix: additionalSuffix ?? '',
-            utils: utils,
-          ),
-        );
+         formWidget: (key, theme, logicalSize, additionalSuffix) =>
+             HomeWidgetAction(
+               icon: icon,
+               key: key,
+               theme: theme,
+               logicalSize: logicalSize,
+               aditionalSuffix: additionalSuffix ?? '',
+               utils: utils,
+             ),
+       );
 
   @override
   Future<dynamic> renderFlutterWidgets({String additionalSuffix = ''}) async {
-    await super.renderFlutterWidgets(additionalSuffix: '$additionalSuffix${HomeWidgetUtils.keySuffixActive}');
-    await super.renderFlutterWidgets(additionalSuffix: '$additionalSuffix${HomeWidgetUtils.keySuffixInactive}');
+    await super.renderFlutterWidgets(
+      additionalSuffix: '$additionalSuffix${HomeWidgetUtils.keySuffixActive}',
+    );
+    await super.renderFlutterWidgets(
+      additionalSuffix: '$additionalSuffix${HomeWidgetUtils.keySuffixInactive}',
+    );
   }
 }

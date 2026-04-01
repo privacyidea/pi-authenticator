@@ -81,7 +81,6 @@ class DefaultLockAction extends ConsumerSlideableAction {
             .complete(Introduction.lockToken),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const Icon(Icons.lock),
             Text(

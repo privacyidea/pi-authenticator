@@ -51,10 +51,10 @@ class EncryptionParams {
     final map = validateMap(
       map: responseBody,
       validators: <String, BaseValidator>{
-        SYNC_ENC_PARAMS_ALGORITHM: stringValidator,
-        SYNC_ENC_PARAMS_IV: stringValidator,
-        SYNC_ENC_PARAMS_MODE: stringValidator,
-        SYNC_ENC_PARAMS_TAG: stringValidator,
+        SYNC_ENC_PARAMS_ALGORITHM: Validators.string,
+        SYNC_ENC_PARAMS_IV: Validators.string,
+        SYNC_ENC_PARAMS_MODE: Validators.string,
+        SYNC_ENC_PARAMS_TAG: Validators.string,
       },
       name: 'EncryptionParams#fromResponseBody',
     );

@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -9,83 +7,41 @@ import '../utils/customization/theme_extentions/status_colors.dart';
 import '../utils/riverpod/riverpod_providers/state_providers/status_message_provider.dart';
 import '../utils/utils.dart';
 
-class StatusBar extends ConsumerStatefulWidget {
+class StatusBar extends ConsumerWidget {
   final Widget child;
   const StatusBar({super.key, required this.child});
 
   @override
-  ConsumerState<StatusBar> createState() => _StatusBarState();
-}
-
-class _StatusBarState extends ConsumerState<StatusBar> {
-  StatusMessage? previousStatusMessage;
-  StatusMessage? currentStatusMessage;
-  Queue<StatusMessage> statusbarQueue = Queue();
-
-  late Function(DismissDirection) onDismissed;
-
-  OverlayEntry? statusbarOverlay;
-  ScaffoldFeatureController? snackbarController;
-
-  @override
-  Widget build(BuildContext context) {
-    final newStatusMessage = ref.watch(statusMessageProvider);
-    _addToQueueIfNotInQueue(newStatusMessage);
-    return widget.child;
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.listen(statusProvider, (previous, next) {
+      if (next.current != null && previous?.current != next.current) {
+        _showOverlay(context, ref, next.current!);
+      }
+    });
+    return child;
   }
 
-  @override
-  void initState() {
-    onDismissed = (direction) {
-      if (!mounted) return;
-      setState(() {
-        currentStatusMessage = null;
-        statusbarOverlay!.remove();
-        statusbarOverlay = null;
-        ref.read(statusMessageProvider.notifier).state = null;
-        _tryPop();
-      });
-    };
+  void _showOverlay(
+    BuildContext context,
+    WidgetRef ref,
+    StatusMessage message,
+  ) {
+    final l10n = AppLocalizations.of(context)!;
+    OverlayEntry? entry;
 
-    super.initState();
-  }
-
-  void _addToQueueIfNotInQueue(StatusMessage? statusMessage) {
-    if (statusMessage == null) return;
-    if (!statusbarQueue.contains(statusMessage) &&
-        currentStatusMessage != statusMessage) {
-      statusbarQueue.add(statusMessage);
-    }
-    _tryPop();
-  }
-
-  void _tryPop() {
-    if (currentStatusMessage == null && statusbarQueue.isNotEmpty) {
-      currentStatusMessage = statusbarQueue.removeFirst();
-      _showStatusbarOverlay(currentStatusMessage!);
-    }
-  }
-
-  void _showStatusbarOverlay(StatusMessage statusMessage) {
-    final localizations = AppLocalizations.of(context)!;
-    final statusText = statusMessage.message(localizations);
-    final statusSubText = statusMessage.details?.call(localizations);
-    if (statusbarOverlay != null) {
-      statusbarOverlay?.remove();
-      statusbarOverlay = null;
-    }
-
-    statusbarOverlay = OverlayEntry(
+    entry = OverlayEntry(
       builder: (context) => StatusBarOverlayEntry(
-        onDismissed: onDismissed,
-        statusText: statusText,
-        statusSubText: statusSubText,
-        isError: statusMessage.isError,
+        statusText: message.message(l10n),
+        statusSubText: message.details?.call(l10n),
+        isError: message.isError,
+        onDismissed: (_) {
+          entry?.remove();
+          ref.read(statusProvider.notifier).dismiss();
+        },
       ),
     );
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      Overlay.of(context).insert(statusbarOverlay!);
-    });
+
+    Overlay.of(context).insert(entry);
   }
 }
 
@@ -228,7 +184,6 @@ class _StatusBarOverlayEntryState extends State<StatusBarOverlayEntry>
                   child: SizedBox(
                     width: maxWidth,
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Text(
                           widget.statusText,

@@ -22,35 +22,23 @@ part of 'object_validators.dart';
 
 abstract class BaseValidator<T extends Object?> {
   final T Function(Object? value)? transformer;
-  final T? defaultValue;
   final bool Function(T)? allowedValues;
 
-  const BaseValidator({
-    required this.defaultValue,
-    this.transformer,
-    this.allowedValues,
-  });
+  const BaseValidator({this.transformer, this.allowedValues});
+
+  // Rückgabetyp auf T (bzw. die Non-Nullable Variante) angepasst
+  BaseValidator<Object?> optional();
+  BaseValidator<Object> withDefault(covariant Object defaultValue);
 
   bool isTypeOf(Object? value);
   bool valueIsAllowed(Object? value, String name);
-
   T transform(Object? value, String name);
 
-  BaseValidator<T> withDefault(T defaultValue);
-
   T _executeTransform(Object? value, String name) {
-    if (value == null) {
-      if (defaultValue != null) return defaultValue!;
-      throw _error(value, name);
-    }
-
     if (transformer != null) {
       return transformer!(value);
     }
-
-    if (value is T) return value as T;
-
-    if (defaultValue != null) return defaultValue!;
+    if (value is T) return value;
     throw _error(value, name);
   }
 
@@ -67,10 +55,10 @@ abstract class BaseValidator<T extends Object?> {
       name: name,
     );
     Logger.warning(
-      'Validation failed for <$T?>. Optional Value: "$value" (Type: ${value.runtimeType})',
+      'Validation failed for <$T>. Value: "$value" (Type: ${value.runtimeType})',
       error: error,
       stackTrace: StackTrace.current,
-      name: 'OptionalObjectValidator<$T>',
+      name: runtimeType.toString(),
     );
     return error;
   }

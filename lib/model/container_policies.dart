@@ -25,12 +25,7 @@ import '../utils/object_validator/object_validators.dart';
 part 'container_policies.freezed.dart';
 part 'container_policies.g.dart';
 
-@Freezed(
-  toStringOverride: false,
-  addImplicitFinal: true,
-  toJson: true,
-  fromJson: true,
-)
+@Freezed(toStringOverride: false, toJson: true, fromJson: true)
 sealed class ContainerPolicies with _$ContainerPolicies {
   static const DISABLED_UNREGISTER = 'disable_client_container_unregister';
   static const DISABLED_TOKEN_DELETION = 'disable_client_token_deletion';
@@ -69,10 +64,10 @@ sealed class ContainerPolicies with _$ContainerPolicies {
     final validated = validateMap(
       map: map,
       validators: <String, BaseValidator<bool>>{
-        ROLLOVER_ALLOWED: boolValidator,
-        INITIAL_TOKEN_ASSIGNMENT: boolValidator,
-        DISABLED_TOKEN_DELETION: boolValidator,
-        DISABLED_UNREGISTER: boolValidator,
+        ROLLOVER_ALLOWED: Validators.boolType,
+        INITIAL_TOKEN_ASSIGNMENT: Validators.boolType,
+        DISABLED_TOKEN_DELETION: Validators.boolType,
+        DISABLED_UNREGISTER: Validators.boolType,
       },
       name: 'ContainerPolicies',
     );

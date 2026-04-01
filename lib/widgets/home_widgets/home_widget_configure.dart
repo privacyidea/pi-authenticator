@@ -14,13 +14,13 @@ class HomeWidgetConfigBuilder extends FlutterHomeWidgetBuilder<HomeWidgetIcon> {
     required super.homeWidgetKey,
     required super.utils,
   }) : super(
-          formWidget: (key, theme, logicalSize, _) => HomeWidgetIcon(
-            key: key,
-            theme: theme,
-            logicalSize: logicalSize,
-            utils: utils,
-          ),
-        );
+         formWidget: (key, theme, logicalSize, _) => HomeWidgetIcon(
+           key: key,
+           theme: theme,
+           logicalSize: logicalSize,
+           utils: utils,
+         ),
+       );
 }
 
 class HomeWidgetIcon extends FlutterHomeWidgetBase {
@@ -33,8 +33,8 @@ class HomeWidgetIcon extends FlutterHomeWidgetBase {
 
   @override
   Widget build(BuildContext context) => Icon(
-        Icons.settings,
-        size: min(logicalSize.width, logicalSize.height),
-        color: theme.listTileTheme.iconColor,
-      );
+    Icons.settings,
+    size: min(logicalSize.width, logicalSize.height),
+    color: theme.listTileTheme.iconColor,
+  );
 }

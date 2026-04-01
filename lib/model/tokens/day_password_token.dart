@@ -3,7 +3,7 @@
  *
  * Author: Frank Merkel <frank.merkel@netknights.it>
  *
- * Copyright (c) 2025 NetKnights GmbH
+ * Copyright (c) 2026 NetKnights GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
@@ -39,56 +39,43 @@ part 'day_password_token.g.dart';
 @JsonSerializable()
 @immutable
 class DayPasswordToken extends OTPToken {
-  // --- Constants ---
   static const String VIEW_MODE = 'view_mode';
 
-  // --- Static Accessors & Validators ---
   static String get tokenType => TokenTypes.DAYPASSWORD.name;
 
   static final Map<String, BaseValidator> otpAuthValidators = {
     ...OTPToken.otpAuthValidators,
-    TOTPToken.PERIOD_SECONDS: secondsDurationValidator.withDefault(
+    TOTPToken.PERIOD_SECONDS: Validators.secondsDuration.withDefault(
       const Duration(hours: 24),
     ),
   };
 
   static final Map<String, BaseValidator> additionalDataValidators = {
     ...OTPToken.additionalDataValidators,
-    VIEW_MODE: const OptionalObjectValidator<DayPasswordTokenViewMode>(
+    VIEW_MODE: DefaultObjectValidator<DayPasswordTokenViewMode>(
       defaultValue: DayPasswordTokenViewMode.VALIDFOR,
+      transformer: (value) {
+        if (value is DayPasswordTokenViewMode) return value;
+        if (value is String) {
+          return DayPasswordTokenViewMode.values.firstWhere(
+            (e) => e.name.toLowerCase() == value.toLowerCase(),
+          );
+        }
+        throw ArgumentError(
+          'Invalid type or value for DayPasswordTokenViewMode: $value',
+        );
+      },
     ),
   };
 
-  // --- Static Validation Methods ---
-  static Map<String, Object?> validateOtpAuthMap(
-    Map<String, dynamic> otpAuthMap,
-  ) {
-    return validateMap(
-      map: otpAuthMap,
-      validators: otpAuthValidators,
-      name: 'DayPasswordToken#otpAuthMap',
-    );
-  }
-
-  static Map<String, Object?> validateAdditionalData(
-    Map<String, dynamic> additionalData,
-  ) {
-    return validateMap(
-      map: additionalData,
-      validators: additionalDataValidators,
-      name: 'DayPasswordToken#additionalData',
-    );
-  }
-
-  // --- Instance Properties ---
   final DayPasswordTokenViewMode viewMode;
   final Duration period;
 
   @override
-  String get otpValue => otpFromTime(DateTime.now());
+  String get otpValue => _otpFromTime(DateTime.now());
 
   @override
-  String get nextValue => otpFromTime(DateTime.now().add(period));
+  String get nextValue => _otpFromTime(DateTime.now().add(period));
 
   Duration get durationSinceLastOTP {
     final msPassedThisPeriod =
@@ -107,7 +94,6 @@ class DayPasswordToken extends OTPToken {
     );
   }
 
-  // --- Constructor ---
   DayPasswordToken({
     required Duration period,
     required super.id,
@@ -133,7 +119,6 @@ class DayPasswordToken extends OTPToken {
   }) : period = period.inSeconds > 0 ? period : const Duration(hours: 24),
        super(type: TokenTypes.DAYPASSWORD.name);
 
-  // --- Factories ---
   factory DayPasswordToken.fromJson(Map<String, dynamic> json) =>
       _$DayPasswordTokenFromJson(json);
 
@@ -141,8 +126,16 @@ class DayPasswordToken extends OTPToken {
     Map<String, dynamic> otpAuthMap, {
     Map<String, dynamic> additionalData = const {},
   }) {
-    final validatedMap = validateOtpAuthMap(otpAuthMap);
-    final validatedAdditionalData = validateAdditionalData(additionalData);
+    final validatedMap = validateMap(
+      map: otpAuthMap,
+      validators: otpAuthValidators,
+      name: 'DayPasswordToken#fromOtpAuthMap',
+    );
+    final validatedAdditionalData = validateMap(
+      map: additionalData,
+      validators: additionalDataValidators,
+      name: 'DayPasswordToken#fromOtpAuthMap',
+    );
 
     return DayPasswordToken(
       label: validatedMap[Token.LABEL] as String,
@@ -171,13 +164,11 @@ class DayPasswordToken extends OTPToken {
     );
   }
 
-  // --- Methods ---
-  String otpFromTime(DateTime time) => algorithm.generateTOTPCodeString(
+  String _otpFromTime(DateTime time) => algorithm.generateTOTPCodeString(
     secret: secret,
     time: time,
     length: digits,
     interval: period,
-    isGoogle: true,
   );
 
   @override
@@ -206,7 +197,7 @@ class DayPasswordToken extends OTPToken {
 
   @override
   DayPasswordToken copyWith({
-    String? serial,
+    String? Function()? serial,
     Duration? period,
     DayPasswordTokenViewMode? viewMode,
     String? label,
@@ -227,7 +218,7 @@ class DayPasswordToken extends OTPToken {
     bool? isOffline,
     ForceBiometricOption? forceBiometricOption,
   }) => DayPasswordToken(
-    serial: serial ?? this.serial,
+    serial: serial != null ? serial() : this.serial,
     period: period ?? this.period,
     viewMode: viewMode ?? this.viewMode,
     label: label ?? this.label,
@@ -253,12 +244,23 @@ class DayPasswordToken extends OTPToken {
 
   @override
   DayPasswordToken copyUpdateByTemplate(TokenTemplate template) {
-    final uriMap = validateOtpAuthMap(template.otpAuthMap);
-    final additionalData = validateAdditionalData(template.additionalData);
+    final uriMap = validateMap(
+      map: template.otpAuthMap,
+      validators: otpAuthValidators.map((k, v) => MapEntry(k, v.optional())),
+      name: 'DayPasswordToken#copyUpdateByTemplate',
+    );
+    final additionalMap = validateMap(
+      map: template.additionalData,
+      validators: additionalDataValidators.map(
+        (k, v) => MapEntry(k, v.optional()),
+      ),
+      name: 'DayPasswordToken#copyUpdateByTemplate',
+    );
+
     return copyWith(
       label: uriMap[Token.LABEL] as String?,
       issuer: uriMap[Token.ISSUER] as String?,
-      serial: uriMap[Token.SERIAL] as String?,
+      serial: () => uriMap[Token.SERIAL] as String?,
       tokenImage: uriMap[Token.IMAGE] as String?,
       pin: uriMap[Token.PIN] as bool?,
       isLocked: uriMap[Token.PIN] as bool?,
@@ -266,14 +268,15 @@ class DayPasswordToken extends OTPToken {
       digits: uriMap[OTPToken.DIGITS] as int?,
       secret: uriMap[OTPToken.SECRET_BASE32] as String?,
       period: uriMap[TOTPToken.PERIOD_SECONDS] as Duration?,
-      viewMode: additionalData[VIEW_MODE] as DayPasswordTokenViewMode?,
+      checkedContainer:
+          additionalMap[Token.CHECKED_CONTAINERS] as List<String>?,
+      viewMode: additionalMap[VIEW_MODE] as DayPasswordTokenViewMode?,
     );
   }
 
   @override
   String toString() => 'DayPassword${super.toString()}period: $period';
 
-  // --- Serialization Helpers ---
   @override
   Map<String, dynamic> toJson() => _$DayPasswordTokenToJson(this);
 
@@ -285,5 +288,5 @@ class DayPasswordToken extends OTPToken {
 
   @override
   Map<String, dynamic> get additionalData =>
-      super.additionalData..addAll({VIEW_MODE: viewMode});
+      super.additionalData..addAll({VIEW_MODE: viewMode.name});
 }

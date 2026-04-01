@@ -35,9 +35,9 @@ class TokenTypeDropdownButton extends StatelessWidget {
   const TokenTypeDropdownButton({super.key, required this.typeNotifier});
   @override
   Widget build(BuildContext context) => LabeledDropdownButton<TokenTypes>(
-        label: AppLocalizations.of(context)!.type,
-        valueNotifier: typeNotifier,
-        values: values,
-        valueLabels: [for (final value in values) value.name],
-      );
+    label: AppLocalizations.of(context)!.type,
+    valueNotifier: typeNotifier,
+    values: values,
+    valueLabels: [for (final value in values) value.name],
+  );
 }

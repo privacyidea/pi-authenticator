@@ -30,7 +30,7 @@ import '../../../views/link_home_widget_view/link_home_widget_view.dart';
 import 'navigation_scheme_processor_interface.dart';
 
 class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
-  static const resultHandlerType = RequiredObjectValidator<NavigationHandler>();
+  static final resultHandlerType = RequiredObjectValidator<NavigationHandler>();
   HomeWidgetNavigateProcessor();
 
   static final Map<
@@ -203,7 +203,7 @@ class NavigationHandler<R> with ResultHandler {
     if (result.isFailed) return null;
     validate(
       value: args['context'],
-      validator: const RequiredObjectValidator<BuildContext>(),
+      validator: RequiredObjectValidator<BuildContext>(),
       name: 'context',
     );
     final navigation = result.asSuccess!.resultData;
@@ -225,7 +225,7 @@ class NavigationHandler<R> with ResultHandler {
     try {
       context = validate(
         value: args['context'],
-        validator: const RequiredObjectValidator<BuildContext>(),
+        validator: RequiredObjectValidator<BuildContext>(),
         name: 'context',
       );
     } catch (e, s) {

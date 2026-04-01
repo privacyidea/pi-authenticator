@@ -19,21 +19,30 @@ void _testTokenOriginSourceTypeExtension() {
         isPrivacyIdeaToken: true,
         createdAt: DateTime.fromMicrosecondsSinceEpoch(1622160000000),
       );
-      final TokenOriginData tokenOriginData = TokenOriginSourceType.qrScan.toTokenOrigin(
-        data: 'data',
-        originName: 'appName',
-        isPrivacyIdeaToken: true,
-        createdAt: DateTime.fromMicrosecondsSinceEpoch(1622160000000),
-      );
+      final TokenOriginData tokenOriginData = TokenOriginSourceType.qrScan
+          .toTokenOrigin(
+            data: 'data',
+            originName: 'appName',
+            isPrivacyIdeaToken: true,
+            createdAt: DateTime.fromMicrosecondsSinceEpoch(1622160000000),
+          );
       expect(tokenOriginData.source, tokenOriginDataMatch.source);
       expect(tokenOriginData.data, tokenOriginDataMatch.data);
       expect(tokenOriginData.appName, tokenOriginDataMatch.appName);
-      expect(tokenOriginData.isPrivacyIdeaToken, tokenOriginDataMatch.isPrivacyIdeaToken);
+      expect(
+        tokenOriginData.isPrivacyIdeaToken,
+        tokenOriginDataMatch.isPrivacyIdeaToken,
+      );
       expect(tokenOriginData.createdAt, tokenOriginDataMatch.createdAt);
       expect(tokenOriginData, tokenOriginDataMatch);
     });
     test('addOriginToToken', () {
-      final token = HOTPToken(id: 'id', algorithm: Algorithms.SHA512, digits: 6, secret: 'secret');
+      final token = HOTPToken(
+        id: 'id',
+        algorithm: Algorithms.SHA512,
+        digits: 6,
+        secret: 'secret',
+      );
       final TokenOriginData tokenOriginDataMatch = TokenOriginData(
         source: TokenOriginSourceType.qrScan,
         data: 'data',
@@ -53,7 +62,10 @@ void _testTokenOriginSourceTypeExtension() {
       expect(tokenWithOrigin.origin!.source, tokenOriginDataMatch.source);
       expect(tokenWithOrigin.origin!.data, tokenOriginDataMatch.data);
       expect(tokenWithOrigin.origin!.appName, tokenOriginDataMatch.appName);
-      expect(tokenWithOrigin.origin!.isPrivacyIdeaToken, tokenOriginDataMatch.isPrivacyIdeaToken);
+      expect(
+        tokenWithOrigin.origin!.isPrivacyIdeaToken,
+        tokenOriginDataMatch.isPrivacyIdeaToken,
+      );
       expect(tokenWithOrigin.origin!.createdAt, tokenOriginDataMatch.createdAt);
       expect(tokenWithOrigin, tokenMatch);
     });

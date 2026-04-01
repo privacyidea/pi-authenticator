@@ -48,7 +48,7 @@ class GenerateTwoStepDialog extends StatelessWidget {
        _keyLength = keyLength,
        _password = password;
 
-  void _do2Step(BuildContext context) async {
+  Future<void> _do2Step(BuildContext context) async {
     // 1. Generate salt.
     final Uint8List salt = secureRandom().nextBytes(_saltLength);
 

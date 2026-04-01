@@ -4,7 +4,7 @@
   Authors: Timo Sturm <timo.sturm@netknights.it>
            Frank Merkel <frank.merkel@netknights.it>
 
-  Copyright (c) 2017-2025 NetKnights GmbH
+  Copyright (c) 2017-2026 NetKnights GmbH
 
   Licensed under the Apache License, Version 2.0 (the 'License');
   you may not use this file except in compliance with the License.
@@ -22,8 +22,8 @@
 import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:gms_check/gms_check.dart';
 import 'package:privacyidea_authenticator/firebase_options/default_firebase_options.dart';
+import 'package:privacyidea_authenticator/utils/firebase_utils.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/localization_notifier.dart';
 
 import '../../../../../../../model/riverpod_states/settings_state.dart';
@@ -52,7 +52,7 @@ void main() async {
     navigatorKey: globalNavigatorKey,
     appRunner: () async {
       WidgetsFlutterBinding.ensureInitialized();
-      await GmsCheck().checkGmsAvailability();
+      await FirebaseUtils.preInitializeStatus();
       await HomeWidgetUtils().registerInteractivityCallback(
         homeWidgetBackgroundCallback,
       );
@@ -103,7 +103,6 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
           scrollBehavior: ScrollConfiguration.of(
             context,
           ).copyWith(physics: const ClampingScrollPhysics(), overscroll: false),
-          debugShowCheckedModeBanner: true,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           locale:

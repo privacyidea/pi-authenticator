@@ -20,25 +20,31 @@
 import '../../l10n/app_localizations.dart';
 import 'localized_exception.dart';
 
-class LocalizedArgumentError extends LocalizedException implements ArgumentError {
+class LocalizedArgumentError extends LocalizedException
+    implements ArgumentError {
   final String _invalidValue;
   final String? _name;
   final StackTrace? _stackTrace;
 
   factory LocalizedArgumentError({
-    required String Function(AppLocalizations localizations, String valueString, String name) localizedMessage,
+    required String Function(
+      AppLocalizations localizations,
+      String valueString,
+      String name,
+    )
+    localizedMessage,
     required String unlocalizedMessage,
     required String invalidValue,
     required String name,
     StackTrace? stackTrace,
-  }) =>
-      LocalizedArgumentError._(
-        unlocalizedMessage: unlocalizedMessage,
-        localizedMessage: (localizations) => localizedMessage(localizations, invalidValue, name),
-        invalidValue: invalidValue,
-        name: name,
-        stackTrace: stackTrace,
-      );
+  }) => LocalizedArgumentError._(
+    unlocalizedMessage: unlocalizedMessage,
+    localizedMessage: (localizations) =>
+        localizedMessage(localizations, invalidValue, name),
+    invalidValue: invalidValue,
+    name: name,
+    stackTrace: stackTrace,
+  );
 
   const LocalizedArgumentError._({
     required super.unlocalizedMessage,
@@ -46,9 +52,9 @@ class LocalizedArgumentError extends LocalizedException implements ArgumentError
     required dynamic invalidValue,
     String? name,
     StackTrace? stackTrace,
-  })  : _invalidValue = invalidValue,
-        _name = name,
-        _stackTrace = stackTrace;
+  }) : _invalidValue = invalidValue,
+       _name = name,
+       _stackTrace = stackTrace;
 
   @override
   dynamic get invalidValue => _invalidValue;

@@ -25,8 +25,14 @@ import '../../../../l10n/app_localizations.dart';
 import '../../../../model/enums/encodings.dart';
 
 class SecretInputField extends StatefulWidget {
-  static final FocusNode secretFieldFocus = FocusNode(debugLabel: 'SecretInputField');
-  static String? validator(String? value, Encodings encoding, {AppLocalizations? locale}) {
+  static final FocusNode secretFieldFocus = FocusNode(
+    debugLabel: 'SecretInputField',
+  );
+  static String? validator(
+    String? value,
+    Encodings encoding, {
+    AppLocalizations? locale,
+  }) {
     if (value == null || value.isEmpty) {
       secretFieldFocus.requestFocus();
       return locale?.pleaseEnterASecretForThisToken ?? 'Not Valid';
@@ -73,10 +79,16 @@ class _SecretInputFieldState extends State<SecretInputField> {
 
   @override
   Widget build(BuildContext context) => PiTextField(
-        controller: widget.controller,
-        autovalidateMode: widget.autoValidate.value ? AutovalidateMode.always : AutovalidateMode.disabled,
-        labelText: AppLocalizations.of(context)!.secretKey,
-        validator: (value) => SecretInputField.validator(value, widget.encodingNotifier.value, locale: AppLocalizations.of(context)),
-        focusNode: SecretInputField.secretFieldFocus,
-      );
+    controller: widget.controller,
+    autovalidateMode: widget.autoValidate.value
+        ? AutovalidateMode.always
+        : AutovalidateMode.disabled,
+    labelText: AppLocalizations.of(context)!.secretKey,
+    validator: (value) => SecretInputField.validator(
+      value,
+      widget.encodingNotifier.value,
+      locale: AppLocalizations.of(context),
+    ),
+    focusNode: SecretInputField.secretFieldFocus,
+  );
 }

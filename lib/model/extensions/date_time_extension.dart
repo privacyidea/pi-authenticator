@@ -28,7 +28,7 @@ extension DateTimeX on DateTime {
         return DateTime.parse(v);
       }
       if (v is int) {
-        // Falls der Server mal Unix-Timestamps (ms) schickt
+        // If the server sends Unix timestamps (ms)
         return DateTime.fromMillisecondsSinceEpoch(v);
       }
       throw ArgumentError(

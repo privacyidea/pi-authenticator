@@ -32,10 +32,17 @@ void _testAegisImportFileProcessor() {
               '32, 32, 32, 32, 32, 32, 32, 32, 32, 34, 105, 99, 111, 110, 34, 58, 32, 110, 117, 108, 108, 44, 10, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 34, 105, 110, 102, 111, 34, 58, 32, 123, 10, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 34, 115, 101, 99, 114, 101, 116, 34, 58, 32, 34, 65, 65, 65, 65, 65, 65, 65, 65, 34, 44, 10, 32, 32, 32, 32, 32, 32, 32, 32, 32,'
               '32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 34, 97, 108, 103, 111, 34, 58, 32, 34, 83, 72, 65, 49, 34, 44, 10, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 34, 100, 105, 103, 105, 116, 115, 34, 58, 32, 54, 44, 10, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 34, 99, 111, 117, 110, 116, 101, 114, 34, 58, 32, 48, 10, 32, 32, 32, 32, 32, 32, 32,'
               '32, 32, 32, 32, 32, 32, 32, 32, 32, 125, 44, 10, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 34, 103, 114, 111, 117, 112, 115, 34, 58, 32, 91, 93, 10, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 125, 10, 32, 32, 32, 32, 32, 32, 32, 32, 93, 44, 10, 32, 32, 32, 32, 32, 32, 32, 32, 34, 103, 114, 111, 117, 112, 115, 34, 58, 32, 91, 93, 10, 32, 32, 32, 32, 125, 10, 125]';
-          final byteData = ByteData.view(Uint8List.fromList((jsonDecode(byteDataString) as List).cast()).buffer);
+          final byteData = ByteData.view(
+            Uint8List.fromList(
+              (jsonDecode(byteDataString) as List).cast(),
+            ).buffer,
+          );
 
           const aegisImportFileProcessor = AegisImportFileProcessor();
-          final XFile file = XFile.fromData(byteData.buffer.asUint8List(), name: 'aegis_plain.json');
+          final XFile file = XFile.fromData(
+            byteData.buffer.asUint8List(),
+            name: 'aegis_plain.json',
+          );
           // Act
           final isValid = await aegisImportFileProcessor.fileIsValid(file);
           final results = await aegisImportFileProcessor.processFile(file);
@@ -54,7 +61,12 @@ void _testAegisImportFileProcessor() {
           expect(totpToken.period, equals(30));
           expect(totpToken.secret, equals('AAAAAAAA'));
           expect(totpToken.issuer, equals('Testing'));
-          expect(totpToken.otpFromTime(DateTime.fromMillisecondsSinceEpoch(1713352639317)), equals('220975'));
+          expect(
+            totpToken.otpFromTime(
+              DateTime.fromMillisecondsSinceEpoch(1713352639317),
+            ),
+            equals('220975'),
+          );
           final result1 = results[1];
           expect(result1, isA<ProcessorResultSuccess>());
           final token1 = result1.asSuccess!.resultData;
@@ -96,14 +108,25 @@ void _testAegisImportFileProcessor() {
               '115, 82, 102, 85, 76, 120, 112, 72, 116, 77, 70, 54, 86, 109, 117, 120, 52, 87, 51, 115, 43, 77, 88, 102, 67, 72, 66, 66, 71, 81, 112, 90, 105, 117, 48, 51, 98, 121, 86, 116, 101, 86, 111, 104, 68, 78, 97, 108, 52, 77, 70, 81, 117, 72, 52, 72, 66, 52, 106, 55, 71, 118, 99, 98, 113, 120, 56, 122, 56, 120, 73, 90, 113, 90, 104, 75, 73, 50, 111, 82, 97, 86, 81, 106, 53, 69, 48, 68, 56, 71, 85, 110, 74, 84, 49, 81, 100, 86, 65, 69,'
               '43, 77, 86, 75, 65, 78, 74, 68, 109, 104, 84, 56, 86, 111, 34, 10, 125]';
 
-          final byteData = ByteData.view(Uint8List.fromList((jsonDecode(encryptedBytesString) as List).cast()).buffer);
+          final byteData = ByteData.view(
+            Uint8List.fromList(
+              (jsonDecode(encryptedBytesString) as List).cast(),
+            ).buffer,
+          );
 
           const aegisImportFileProcessor = AegisImportFileProcessor();
-          final XFile file = XFile.fromData(byteData.buffer.asUint8List(), name: 'aegis_encrypted.json');
+          final XFile file = XFile.fromData(
+            byteData.buffer.asUint8List(),
+            name: 'aegis_encrypted.json',
+          );
           // Act
           final isValid = await aegisImportFileProcessor.fileIsValid(file);
-          final fileNeedsPassword = await aegisImportFileProcessor.fileNeedsPassword(file);
-          final results = await aegisImportFileProcessor.processFile(file, password: 'test123');
+          final fileNeedsPassword = await aegisImportFileProcessor
+              .fileNeedsPassword(file);
+          final results = await aegisImportFileProcessor.processFile(
+            file,
+            password: 'test123',
+          );
           // Assert
           expect(isValid, isTrue);
           expect(fileNeedsPassword, isTrue);
@@ -120,7 +143,12 @@ void _testAegisImportFileProcessor() {
           expect(totpToken.period, equals(30));
           expect(totpToken.secret, equals('AAAAAAAA'));
           expect(totpToken.issuer, equals('Testing'));
-          expect(totpToken.otpFromTime(DateTime.fromMillisecondsSinceEpoch(1713352639317)), equals('220975'));
+          expect(
+            totpToken.otpFromTime(
+              DateTime.fromMillisecondsSinceEpoch(1713352639317),
+            ),
+            equals('220975'),
+          );
           final result1 = results[1];
           expect(result1, isA<ProcessorResultSuccess>());
           final token1 = result1.asSuccess!.resultData;
@@ -162,12 +190,25 @@ void _testAegisImportFileProcessor() {
               '115, 82, 102, 85, 76, 120, 112, 72, 116, 77, 70, 54, 86, 109, 117, 120, 52, 87, 51, 115, 43, 77, 88, 102, 67, 72, 66, 66, 71, 81, 112, 90, 105, 117, 48, 51, 98, 121, 86, 116, 101, 86, 111, 104, 68, 78, 97, 108, 52, 77, 70, 81, 117, 72, 52, 72, 66, 52, 106, 55, 71, 118, 99, 98, 113, 120, 56, 122, 56, 120, 73, 90, 113, 90, 104, 75, 73, 50, 111, 82, 97, 86, 81, 106, 53, 69, 48, 68, 56, 71, 85, 110, 74, 84, 49, 81, 100, 86, 65, 69,'
               '43, 77, 86, 75, 65, 78, 74, 68, 109, 104, 84, 56, 86, 111, 34, 10, 125]';
 
-          final byteData = ByteData.view(Uint8List.fromList((jsonDecode(encryptedBytesString) as List).cast()).buffer);
+          final byteData = ByteData.view(
+            Uint8List.fromList(
+              (jsonDecode(encryptedBytesString) as List).cast(),
+            ).buffer,
+          );
 
           const aegisImportFileProcessor = AegisImportFileProcessor();
-          final XFile file = XFile.fromData(byteData.buffer.asUint8List(), name: 'aegis_encrypted.json');
+          final XFile file = XFile.fromData(
+            byteData.buffer.asUint8List(),
+            name: 'aegis_encrypted.json',
+          );
           // Act/Assert
-          expect(() async => await aegisImportFileProcessor.processFile(file, password: 'wrongPassword'), throwsA(isA<BadDecryptionPasswordException>()));
+          expect(
+            () async => await aegisImportFileProcessor.processFile(
+              file,
+              password: 'wrongPassword',
+            ),
+            throwsA(isA<BadDecryptionPasswordException>()),
+          );
         });
       });
       group('import HTML', () {

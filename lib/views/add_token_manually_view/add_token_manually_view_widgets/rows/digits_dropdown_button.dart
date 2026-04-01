@@ -34,9 +34,9 @@ class DigitsDropdownButton extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) => LabeledDropdownButton<int>(
-        label: AppLocalizations.of(context)!.digits,
-        enabled: enabled,
-        valueNotifier: digitsNotifier,
-        values: allowedDigits,
-      );
+    label: AppLocalizations.of(context)!.digits,
+    enabled: enabled,
+    valueNotifier: digitsNotifier,
+    values: allowedDigits,
+  );
 }

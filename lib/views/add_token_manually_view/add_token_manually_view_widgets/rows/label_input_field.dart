@@ -23,7 +23,9 @@ import '../../../../../../../widgets/pi_text_field.dart';
 import '../../../../l10n/app_localizations.dart';
 
 class LabelInputField extends StatefulWidget {
-  static final FocusNode labelFieldFocus = FocusNode(debugLabel: 'LabelInputField');
+  static final FocusNode labelFieldFocus = FocusNode(
+    debugLabel: 'LabelInputField',
+  );
   static String? validator(String? value, {AppLocalizations? locale}) {
     if (value == null || value.isEmpty) {
       labelFieldFocus.requestFocus();
@@ -62,10 +64,13 @@ class _LabelInputFieldState extends State<LabelInputField> {
 
   @override
   Widget build(BuildContext context) => PiTextField(
-        controller: widget.controller,
-        autovalidateMode: widget.autoValidate.value ? AutovalidateMode.always : AutovalidateMode.disabled,
-        labelText: AppLocalizations.of(context)!.name,
-        validator: (value) => LabelInputField.validator(value, locale: AppLocalizations.of(context)),
-        focusNode: LabelInputField.labelFieldFocus,
-      );
+    controller: widget.controller,
+    autovalidateMode: widget.autoValidate.value
+        ? AutovalidateMode.always
+        : AutovalidateMode.disabled,
+    labelText: AppLocalizations.of(context)!.name,
+    validator: (value) =>
+        LabelInputField.validator(value, locale: AppLocalizations.of(context)),
+    focusNode: LabelInputField.labelFieldFocus,
+  );
 }

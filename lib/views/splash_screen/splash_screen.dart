@@ -61,32 +61,44 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       if (mounted) setState(() => _appIconIsVisible = true);
 
       Future.wait(
-        <Future>[
-          Future.delayed(_splashScreenDuration),
-          ref.read(tokenProvider.future),
-          InfoUtils.init(),
-          HomeWidgetUtils().homeWidgetInit(),
-          ref.read(allowScreenshotProvider.future),
-          ref.read(tokenFolderProvider.notifier).initState,
-        ],
-        eagerError: true,
-        cleanUp: (_) {
-          _navigate();
-        },
-      ).catchError((error) async {
-        Logger.error('Error while loading the app.', error: error, stackTrace: StackTrace.current);
+            <Future>[
+              Future.delayed(_splashScreenDuration),
+              ref.read(tokenProvider.future),
+              InfoUtils.init(),
+              HomeWidgetUtils().homeWidgetInit(),
+              ref.read(allowScreenshotProvider.future),
+              ref.read(tokenFolderProvider.notifier).initState,
+            ],
+            eagerError: true,
+            cleanUp: (_) {
+              _navigate();
+            },
+          )
+          .catchError((error) async {
+            Logger.error(
+              'Error while loading the app.',
+              error: error,
+              stackTrace: StackTrace.current,
+            );
 
-        if (!mounted) return [];
-        final tokenState = await ref.read(tokenProvider.future);
-        ref.read(tokenContainerProvider.notifier).syncContainers(tokenState: tokenState, isManually: false);
-        _navigate();
-        return [];
-      }).then((values) async {
-        if (!mounted) return;
-        final tokenState = await ref.read(tokenProvider.future);
-        ref.read(tokenContainerProvider.notifier).syncContainers(tokenState: tokenState, isManually: false);
-        return _navigate();
-      });
+            if (!mounted) return [];
+            final tokenState = await ref.read(tokenProvider.future);
+            if (!ref.context.mounted) return [];
+            ref
+                .read(tokenContainerProvider.notifier)
+                .syncContainers(tokenState: tokenState, isManually: false);
+            _navigate();
+            return [];
+          })
+          .then((values) async {
+            if (!mounted) return;
+            final tokenState = await ref.read(tokenProvider.future);
+            if (!ref.context.mounted) return;
+            ref
+                .read(tokenContainerProvider.notifier)
+                .syncContainers(tokenState: tokenState, isManually: false);
+            return _navigate();
+          });
     });
   }
 
@@ -96,7 +108,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     super.dispose();
   }
 
-  void _navigate() async {
+  Future<void> _navigate() async {
     if (_customization.disabledFeatures.isNotEmpty) {
       Logger.info('Disabled features: ${_customization.disabledFeatures}');
     }
