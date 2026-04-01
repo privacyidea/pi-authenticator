@@ -1189,17 +1189,23 @@
   "@patchNotesV4_6_1Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
-  "@patchNotesV4_6_2BugFix1": {
+  "@patchNotesV4_7_0BugFix1": {
     "description": "Patch notes for a bug fix in version 4.6.1"
   },
-  "@patchNotesV4_6_2Improvement1": {
+  "@patchNotesV4_7_0Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
-  "@patchNotesV4_6_2Improvement2": {
+  "@patchNotesV4_7_0Improvement2": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
-  "@patchNotesV4_6_2NewFeature1": {
+  "@patchNotesV4_7_0Improvement3": {
+    "description": "Patch notes for an improvement in version 4.7.0"
+  },
+  "@patchNotesV4_7_0NewFeature1": {
     "description": "Patch notes for a new feature in version 4.6.1"
+  },
+  "@patchNotesV4_7_0NewFeature2": {
+    "description": "Patch notes for a new feature in version 4.7.0"
   },
   "@period": {
     "description": "Title of the dropdown button where the period of the totp token is selected."
@@ -1969,10 +1975,12 @@
   "patchNotesV4_6_0Improvement1": "Komponen internal telah diperbarui untuk menjaga keamanan dan memastikan kompatibilitas dengan perangkat terbaru.",
   "patchNotesV4_6_1BugFix1": "Perbaikan kesalahan pada panel ekspansi TokenFolder",
   "patchNotesV4_6_1Improvement1": "Memperbarui beberapa dependensi.",
-  "patchNotesV4_6_2BugFix1": "Perbaikan kesalahan yang terjadi saat keluar dari tampilan kamera terlalu cepat.",
-  "patchNotesV4_6_2Improvement1": "Catatan kesalahan sekarang digulir dari bawah ke atas agar catatan terbaru ditampilkan terlebih dahulu.",
-  "patchNotesV4_6_2Improvement2": "Memperbarui beberapa dependensi.",
-  "patchNotesV4_6_2NewFeature1": "Ditambahkan dukungan untuk fitur baru ‘Kirim kode ke ponsel’.",
+  "patchNotesV4_7_0BugFix1": "Perbaikan kesalahan yang terjadi saat keluar dari tampilan kamera terlalu cepat.",
+  "patchNotesV4_7_0Improvement1": "Catatan kesalahan sekarang digulir dari bawah ke atas agar catatan terbaru ditampilkan terlebih dahulu.",
+  "patchNotesV4_7_0Improvement2": "Memperbarui beberapa dependensi.",
+  "patchNotesV4_7_0Improvement3": "Menyatukan semua tombol dengan tata letak yang terstandarisasi dan konsisten",
+  "patchNotesV4_7_0NewFeature1": "Ditambahkan dukungan untuk fitur baru ‘Kirim kode ke ponsel’.",
+  "patchNotesV4_7_0NewFeature2": "Menambahkan dukungan untuk kebijakan ‘app_force_unlock’",
   "period": "Periode",
   "phonePart": "Bagian telepon:",
   "piServerCode": "Kode Server PI: {code}",

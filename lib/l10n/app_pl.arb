@@ -1189,17 +1189,23 @@
   "@patchNotesV4_6_1Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
-  "@patchNotesV4_6_2BugFix1": {
+  "@patchNotesV4_7_0BugFix1": {
     "description": "Patch notes for a bug fix in version 4.6.1"
   },
-  "@patchNotesV4_6_2Improvement1": {
+  "@patchNotesV4_7_0Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
-  "@patchNotesV4_6_2Improvement2": {
+  "@patchNotesV4_7_0Improvement2": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
-  "@patchNotesV4_6_2NewFeature1": {
+  "@patchNotesV4_7_0Improvement3": {
+    "description": "Patch notes for an improvement in version 4.7.0"
+  },
+  "@patchNotesV4_7_0NewFeature1": {
     "description": "Patch notes for a new feature in version 4.6.1"
+  },
+  "@patchNotesV4_7_0NewFeature2": {
+    "description": "Patch notes for a new feature in version 4.7.0"
   },
   "@period": {
     "description": "Title of the dropdown button where the period of the totp token is selected."
@@ -1969,10 +1975,12 @@
   "patchNotesV4_6_0Improvement1": "Wewnętrzne komponenty zostały zaktualizowane w celu zapewnienia bezpieczeństwa i kompatybilności z najnowszymi urządzeniami.",
   "patchNotesV4_6_1BugFix1": "Naprawiono błąd związany z panelem rozszerzeń TokenFolder.",
   "patchNotesV4_6_1Improvement1": "Zaktualizowano kilka zależności",
-  "patchNotesV4_6_2BugFix1": "Naprawiono błąd, który występował podczas zbyt szybkiego opuszczania widoku kamery.",
-  "patchNotesV4_6_2Improvement1": "Dziennik błędów jest teraz przewijany od dołu do góry, aby najpierw wyświetlać najnowsze wpisy.",
-  "patchNotesV4_6_2Improvement2": "Zaktualizowano kilka zależności.",
-  "patchNotesV4_6_2NewFeature1": "Dodano obsługę nowej funkcji „Wysyłanie kodu do telefonu”. ",
+  "patchNotesV4_7_0BugFix1": "Naprawiono błąd, który występował podczas zbyt szybkiego opuszczania widoku kamery.",
+  "patchNotesV4_7_0Improvement1": "Dziennik błędów jest teraz przewijany od dołu do góry, aby najpierw wyświetlać najnowsze wpisy.",
+  "patchNotesV4_7_0Improvement2": "Zaktualizowano kilka zależności.",
+  "patchNotesV4_7_0Improvement3": "Ujednolicono wszystkie przyciski, nadając im standardowy, spójny układ",
+  "patchNotesV4_7_0NewFeature1": "Dodano obsługę nowej funkcji „Wysyłanie kodu do telefonu”. ",
+  "patchNotesV4_7_0NewFeature2": "Dodano obsługę zasad „app_force_unlock”",
   "period": "Cykl",
   "phonePart": "Sekret po stronie telefonu:",
   "piServerCode": "Kod serwera PI: {code}",

@@ -1189,17 +1189,23 @@
   "@patchNotesV4_6_1Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
-  "@patchNotesV4_6_2BugFix1": {
+  "@patchNotesV4_7_0BugFix1": {
     "description": "Patch notes for a bug fix in version 4.6.1"
   },
-  "@patchNotesV4_6_2Improvement1": {
+  "@patchNotesV4_7_0Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
-  "@patchNotesV4_6_2Improvement2": {
+  "@patchNotesV4_7_0Improvement2": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
-  "@patchNotesV4_6_2NewFeature1": {
+  "@patchNotesV4_7_0Improvement3": {
+    "description": "Patch notes for an improvement in version 4.7.0"
+  },
+  "@patchNotesV4_7_0NewFeature1": {
     "description": "Patch notes for a new feature in version 4.6.1"
+  },
+  "@patchNotesV4_7_0NewFeature2": {
+    "description": "Patch notes for a new feature in version 4.7.0"
   },
   "@period": {
     "description": "Title of the dropdown button where the period of the totp token is selected."
@@ -1969,10 +1975,12 @@
   "patchNotesV4_6_0Improvement1": "Interne componenten zijn bijgewerkt om de veiligheid te waarborgen en compatibiliteit met de nieuwste apparaten te garanderen.",
   "patchNotesV4_6_1BugFix1": "Een fout in het uitbreidingspaneel van de TokenFolder is verholpen.",
   "patchNotesV4_6_1Improvement1": "Verschillende afhankelijkheden bijgewerkt",
-  "patchNotesV4_6_2BugFix1": "Een fout is verholpen die optrad wanneer de camerabeeld te snel werd verlaten.",
-  "patchNotesV4_6_2Improvement1": "Het foutenlogboek wordt nu van onder naar boven doorlopen, zodat de nieuwste logboeken als eerste worden weergegeven.",
-  "patchNotesV4_6_2Improvement2": "Verschillende afhankelijkheden bijgewerkt.",
-  "patchNotesV4_6_2NewFeature1": "Ondersteuning toegevoegd voor de nieuwe functie ‘Code naar telefoon pushen’.",
+  "patchNotesV4_7_0BugFix1": "Een fout is verholpen die optrad wanneer de camerabeeld te snel werd verlaten.",
+  "patchNotesV4_7_0Improvement1": "Het foutenlogboek wordt nu van onder naar boven doorlopen, zodat de nieuwste logboeken als eerste worden weergegeven.",
+  "patchNotesV4_7_0Improvement2": "Verschillende afhankelijkheden bijgewerkt.",
+  "patchNotesV4_7_0Improvement3": "Alle knoppen zijn nu voorzien van een gestandaardiseerde, consistente indeling",
+  "patchNotesV4_7_0NewFeature1": "Ondersteuning toegevoegd voor de nieuwe functie ‘Code naar telefoon pushen’.",
+  "patchNotesV4_7_0NewFeature2": "Ondersteuning toegevoegd voor de ‘app_force_unlock’-beleidsregels",
   "period": "Duur",
   "phonePart": "Telefoon gedeelte:",
   "piServerCode": "PI-servercode: {code}",

@@ -1189,17 +1189,23 @@
   "@patchNotesV4_6_1Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
-  "@patchNotesV4_6_2BugFix1": {
+  "@patchNotesV4_7_0BugFix1": {
     "description": "Patch notes for a bug fix in version 4.6.1"
   },
-  "@patchNotesV4_6_2Improvement1": {
+  "@patchNotesV4_7_0Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
-  "@patchNotesV4_6_2Improvement2": {
+  "@patchNotesV4_7_0Improvement2": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
-  "@patchNotesV4_6_2NewFeature1": {
+  "@patchNotesV4_7_0Improvement3": {
+    "description": "Patch notes for an improvement in version 4.7.0"
+  },
+  "@patchNotesV4_7_0NewFeature1": {
     "description": "Patch notes for a new feature in version 4.6.1"
+  },
+  "@patchNotesV4_7_0NewFeature2": {
+    "description": "Patch notes for a new feature in version 4.7.0"
   },
   "@period": {
     "description": "Title of the dropdown button where the period of the totp token is selected."
@@ -1969,10 +1975,12 @@
   "patchNotesV4_6_0Improvement1": "Die internen Komponenten wurden aktualisiert, um die Sicherheit zu gewährleisten und die Kompatibilität mit den neuesten Geräten sicherzustellen.",
   "patchNotesV4_6_1BugFix1": "Fehler im expansion panel des TokenFolder behoben",
   "patchNotesV4_6_1Improvement1": "Mehrere Abhängigkeiten wurden aktualisiert.",
-  "patchNotesV4_6_2BugFix1": "Ein Fehler wurde behoben, der auftrat, wenn die Kameraansicht zu schnell verlassen wurde.",
-  "patchNotesV4_6_2Improvement1": "Das Fehlerprotokoll wird nun von unten nach oben gescrollt, sodass die neuesten Protokolle zuerst angezeigt werden.",
-  "patchNotesV4_6_2Improvement2": "Mehrere Abhängigkeiten wurden aktualisiert.",
-  "patchNotesV4_6_2NewFeature1": "Unterstützung für die neue Funktion „Code auf Telefon übertragen“ hinzugefügt.",
+  "patchNotesV4_7_0BugFix1": "Ein Fehler wurde behoben, der auftrat, wenn die Kameraansicht zu schnell verlassen wurde.",
+  "patchNotesV4_7_0Improvement1": "Das Fehlerprotokoll wird nun von unten nach oben gescrollt, sodass die neuesten Protokolle zuerst angezeigt werden.",
+  "patchNotesV4_7_0Improvement2": "Mehrere Abhängigkeiten wurden aktualisiert.",
+  "patchNotesV4_7_0Improvement3": "Alle Schaltflächen wurden mit einem standardisierten, einheitlichen Layout vereinheitlicht",
+  "patchNotesV4_7_0NewFeature1": "Unterstützung für die neue Funktion „Code auf Telefon übertragen“ hinzugefügt.",
+  "patchNotesV4_7_0NewFeature2": "Unterstützung für die Policies „app_force_unlock“ hinzugefügt",
   "period": "Periode",
   "phonePart": "Telefonanteil:",
   "piServerCode": "PI-Server-Code: {code}",
