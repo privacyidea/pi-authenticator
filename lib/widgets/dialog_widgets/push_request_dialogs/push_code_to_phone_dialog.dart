@@ -112,7 +112,7 @@ class _PushCodeToPhoneDialogState extends ConsumerState<PushCodeToPhoneDialog> {
       actions: [
         DialogAction(
           label: localizations.done,
-          intent: DialogActionIntent.confirm,
+          intent: ActionIntent.confirm,
           formState: _formKey,
           onPressed: () async => widget.handleDiscard(context, ref),
         ),

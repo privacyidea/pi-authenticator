@@ -26,7 +26,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../utils/customization/theme_extentions/app_dimensions.dart';
 import '../button_widgets/intent_button.dart';
 
-export '../button_widgets/intent_button.dart' show DialogActionIntent;
+export '../button_widgets/intent_button.dart' show ActionIntent;
 
 class DialogAction {
   final String label;
@@ -34,7 +34,7 @@ class DialogAction {
   final int delaySeconds;
   final int cooldownMs;
   final GlobalKey<FormState>? formState;
-  final DialogActionIntent intent;
+  final ActionIntent intent;
 
   DialogAction({
     required this.label,

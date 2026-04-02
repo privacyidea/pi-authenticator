@@ -104,7 +104,7 @@ class PushDeclineConfirmDialog extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           PushActionButton(
-            intent: DialogActionIntent.destructive,
+            intent: ActionIntent.destructive,
             onPressed: () async {
               await onDecline();
               if (context.mounted && Navigator.of(context).canPop()) {

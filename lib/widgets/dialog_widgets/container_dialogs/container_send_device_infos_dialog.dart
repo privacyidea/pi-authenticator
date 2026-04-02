@@ -42,12 +42,12 @@ class ContainerSendDeviceInfosDialog extends StatelessWidget {
       actions: [
         DialogAction(
           label: appLocalizations.no,
-          intent: DialogActionIntent.confirm,
+          intent: ActionIntent.confirm,
           onPressed: () => Navigator.of(context).pop(false),
         ),
         DialogAction(
           label: appLocalizations.yes,
-          intent: DialogActionIntent.confirm,
+          intent: ActionIntent.confirm,
           onPressed: () => Navigator.of(context).pop(true),
         ),
       ],

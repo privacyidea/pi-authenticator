@@ -78,12 +78,12 @@ class _SendErrorDialogState extends State<SendErrorDialog> {
     actions: [
       DialogAction(
         label: AppLocalizations.of(context)!.dismiss,
-        intent: DialogActionIntent.cancel,
+        intent: ActionIntent.cancel,
         onPressed: () => _popDialogs(context),
       ),
       DialogAction(
         label: AppLocalizations.of(context)!.send,
-        intent: DialogActionIntent.confirm,
+        intent: ActionIntent.confirm,
         onPressed: () {
           Logger.sendErrorLog(_textController.text);
           showDialog(
@@ -115,7 +115,7 @@ class NoLogDialog extends StatelessWidget {
       actions: [
         DialogAction(
           label: AppLocalizations.of(context)!.ok,
-          intent: DialogActionIntent.confirm,
+          intent: ActionIntent.confirm,
           onPressed: () => Navigator.of(context).maybePop(),
         ),
       ],

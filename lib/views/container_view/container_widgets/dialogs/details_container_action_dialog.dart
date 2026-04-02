@@ -99,12 +99,12 @@ class _DetailsContainerDialogState
       actions: [
         DialogAction(
           label: AppLocalizations.of(context)!.cancel,
-          intent: DialogActionIntent.cancel,
+          intent: ActionIntent.cancel,
           onPressed: () => Navigator.of(context).pop(),
         ),
         DialogAction(
           label: AppLocalizations.of(context)!.saveButton,
-          intent: DialogActionIntent.confirm,
+          intent: ActionIntent.confirm,
           onPressed: Uri.tryParse(controller.text) != null
               ? () {
                   ref

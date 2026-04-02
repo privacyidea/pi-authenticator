@@ -72,12 +72,12 @@ class DeleteContainerDialog extends ConsumerWidget {
       actions: [
         DialogAction(
           label: AppLocalizations.of(context)!.cancel,
-          intent: DialogActionIntent.cancel,
+          intent: ActionIntent.cancel,
           onPressed: () => Navigator.of(context).pop(),
         ),
         DialogAction(
           label: AppLocalizations.of(context)!.delete,
-          intent: DialogActionIntent.destructive,
+          intent: ActionIntent.destructive,
           onPressed: () => _onPressDelete(context, ref),
         ),
       ],

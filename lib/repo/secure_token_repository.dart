@@ -265,7 +265,7 @@ class SecureTokenRepository implements TokenRepository {
       actions: [
         DialogAction(
           label: AppLocalizations.of(context)!.decryptErrorButtonRetry,
-          intent: DialogActionIntent.confirm,
+          intent: ActionIntent.confirm,
           onPressed: () async {
             await LoadingIndicator.show(
               context: context,
@@ -280,7 +280,7 @@ class SecureTokenRepository implements TokenRepository {
         ),
         DialogAction(
           label: AppLocalizations.of(context)!.decryptErrorButtonDelete,
-          intent: DialogActionIntent.destructive,
+          intent: ActionIntent.destructive,
           onPressed: () async {
             final isDataDeleted =
                 await _decryptErrorDeleteTokenConfirmationDialog();
@@ -293,7 +293,7 @@ class SecureTokenRepository implements TokenRepository {
         ),
         DialogAction(
           label: AppLocalizations.of(context)!.decryptErrorButtonSendError,
-          intent: DialogActionIntent.neutral,
+          intent: ActionIntent.neutral,
           onPressed: () async {
             Logger.info('Sending error report');
             await showDialog(
@@ -317,12 +317,12 @@ class SecureTokenRepository implements TokenRepository {
           actions: [
             DialogAction(
               label: AppLocalizations.of(context)!.cancel,
-              intent: DialogActionIntent.cancel,
+              intent: ActionIntent.cancel,
               onPressed: () => Navigator.pop(context, false),
             ),
             DialogAction(
               label: AppLocalizations.of(context)!.decryptErrorButtonDelete,
-              intent: DialogActionIntent.destructive,
+              intent: ActionIntent.destructive,
               onPressed: () async {
                 Logger.info(
                   'Deleting all tokens from secure storage',

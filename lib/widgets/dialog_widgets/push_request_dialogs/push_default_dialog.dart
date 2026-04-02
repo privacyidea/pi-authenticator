@@ -51,7 +51,7 @@ class PushDefaultDialog extends ConsumerWidget with PushDialogMixin {
           ),
           const SizedBox(height: 8),
           PushActionButton(
-            intent: DialogActionIntent.destructive,
+            intent: ActionIntent.destructive,
             onPressed: () => PushDeclineConfirmDialog.showDialogWidget(
               context: context,
               onDecline: () => handleDecline(context, ref),

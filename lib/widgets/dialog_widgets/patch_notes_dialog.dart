@@ -95,7 +95,7 @@ class PatchNotesDialog extends StatelessWidget {
         actions: [
           DialogAction(
             label: localizations.ok,
-            intent: DialogActionIntent.confirm,
+            intent: ActionIntent.confirm,
             onPressed: () {
               globalRef
                   ?.read(settingsProvider.notifier)

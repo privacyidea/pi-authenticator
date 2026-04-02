@@ -78,12 +78,12 @@ class DeleteTokenFolderAction extends ConsumerSlideableAction {
       actions: [
         DialogAction(
           label: AppLocalizations.of(context)!.cancel,
-          intent: DialogActionIntent.cancel,
+          intent: ActionIntent.cancel,
           onPressed: () => Navigator.of(context).pop(),
         ),
         DialogAction(
           label: AppLocalizations.of(context)!.delete,
-          intent: DialogActionIntent.destructive,
+          intent: ActionIntent.destructive,
           onPressed: () async {
             final tokens = (await globalRef?.read(
               tokenProvider.future,

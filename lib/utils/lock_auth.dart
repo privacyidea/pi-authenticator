@@ -216,7 +216,7 @@ Future<void> _showBiometricUnavailableDialog() async {
       actions: [
         DialogAction(
           label: AppLocalizations.of(context)!.setUpButton,
-          intent: DialogActionIntent.external,
+          intent: ActionIntent.external,
           onPressed: () async {
             if (Platform.isAndroid) {
               await AppSettings.openAppSettings(

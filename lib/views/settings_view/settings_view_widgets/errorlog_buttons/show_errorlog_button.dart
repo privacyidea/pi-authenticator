@@ -58,7 +58,7 @@ void _pressShowErrorLog(BuildContext context) {
           actions: [
             DialogAction(
               label: AppLocalizations.of(context)!.dismiss,
-              intent: DialogActionIntent.cancel,
+              intent: ActionIntent.cancel,
               onPressed: () => Navigator.of(context).pop(),
             ),
           ],

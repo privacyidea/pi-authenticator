@@ -89,12 +89,12 @@ class SendOTPsWithoutSSLDialog extends StatelessWidget {
       actions: [
         DialogAction(
           label: localizations.cancel,
-          intent: DialogActionIntent.cancel,
+          intent: ActionIntent.cancel,
           onPressed: () => Navigator.of(context).pop(false),
         ),
         DialogAction(
           label: localizations.send,
-          intent: DialogActionIntent.confirm,
+          intent: ActionIntent.confirm,
           onPressed: () => Navigator.of(context).pop(true),
         ),
       ],

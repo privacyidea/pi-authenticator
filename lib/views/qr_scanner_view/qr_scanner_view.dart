@@ -109,14 +109,14 @@ class _QRScannerViewState extends State<QRScannerView> {
           actions: [
             DialogAction(
               label: AppLocalizations.of(context)!.cancel,
-              intent: DialogActionIntent.cancel,
+              intent: ActionIntent.cancel,
               onPressed: () => Navigator.pop(context),
             ),
             DialogAction(
               label: AppLocalizations.of(
                 context,
               )!.grantCameraPermissionDialogButton,
-              intent: DialogActionIntent.confirm,
+              intent: ActionIntent.confirm,
               onPressed: () async {
                 //Trigger the permission to request it
                 final cameraPermission = await _requestCameraPermission();

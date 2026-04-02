@@ -39,12 +39,12 @@ class AllowScreenshotDialog extends StatelessWidget {
       actions: [
         DialogAction(
           label: AppLocalizations.of(context)!.cancel,
-          intent: DialogActionIntent.cancel,
+          intent: ActionIntent.cancel,
           onPressed: () => Navigator.of(context).pop(false),
         ),
         DialogAction(
           label: AppLocalizations.of(context)!.allowButton,
-          intent: DialogActionIntent.confirm,
+          intent: ActionIntent.confirm,
           onPressed: () async {
             // authenticate with fingerprint or password
             final authenticated = await lockAuth(

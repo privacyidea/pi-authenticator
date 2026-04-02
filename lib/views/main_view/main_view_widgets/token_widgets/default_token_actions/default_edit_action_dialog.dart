@@ -186,12 +186,12 @@ class _DefaultEditActionDialogState
       actions: [
         DialogAction(
           label: appLocalizations.cancel,
-          intent: DialogActionIntent.cancel,
+          intent: ActionIntent.cancel,
           onPressed: () => Navigator.of(context).pop(),
         ),
         DialogAction(
           label: appLocalizations.saveButton,
-          intent: DialogActionIntent.confirm,
+          intent: ActionIntent.confirm,
           onPressed: !_canSave
               ? null
               : widget.onSaveButtonPressed != null

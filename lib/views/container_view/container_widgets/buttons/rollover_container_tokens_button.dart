@@ -46,7 +46,7 @@ class RolloverContainerTokensButton extends ConsumerWidget {
         currentContainer != null && currentContainer.syncState.isIdle;
 
     return IntentButton(
-      intent: DialogActionIntent.confirm,
+      intent: ActionIntent.confirm,
       onPressed: canPress
           ? () => RolloverContainerTokensDialog.showDialog(context, container)
           : null,

@@ -70,7 +70,7 @@ class TestsAppWrapper extends StatelessWidget {
           GlobalCupertinoLocalizations.delegate,
         ],
         supportedLocales: const [Locale('en')],
-        // Scaffold hier sorgt dafür, dass Dialoge und Snachbars funktionieren
+
         home: Scaffold(body: child),
       ),
     );

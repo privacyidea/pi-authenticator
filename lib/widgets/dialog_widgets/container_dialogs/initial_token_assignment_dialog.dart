@@ -118,7 +118,7 @@ class _InitialTokenAssignmentDialogState
         // ),
         DialogAction(
           label: localizations.cancel,
-          intent: DialogActionIntent.cancel,
+          intent: ActionIntent.cancel,
           onPressed: () => Navigator.of(context).pop(),
         ),
         DialogAction(
@@ -126,8 +126,8 @@ class _InitialTokenAssignmentDialogState
               ? localizations.initialTokenAssignmentDialogButtonZero
               : localizations.initialTokenAssignmentDialogButtonSelected,
           intent: _selectedTokens.isEmpty
-              ? DialogActionIntent.cancel
-              : DialogActionIntent.confirm,
+              ? ActionIntent.cancel
+              : ActionIntent.confirm,
           onPressed: () async {
             if (_selectedTokens.isNotEmpty && !widget.container.sslVerify) {
               final ok = await SendOTPsWithoutSSLDialog.showDialog();

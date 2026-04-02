@@ -23,7 +23,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../model/tokens/token.dart';
 import '../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
-import '../../../../widgets/button_widgets/mutex_button.dart';
+import '../../../../widgets/button_widgets/intent_button.dart';
 
 class AddTokenButton extends ConsumerWidget {
   final ValueNotifier<bool> autoValidateLabel;
@@ -39,13 +39,15 @@ class AddTokenButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) => SizedBox(
     width: double.infinity,
-    child: MutexButton(
+    child: IntentButton(
+      intent: ActionIntent.confirm,
       onPressed: () async {
         if (!context.mounted) return;
         final token = tokenBuilder();
         if (token == null) return;
-        Navigator.pop(context);
         await ref.read(tokenProvider.notifier).addOrReplaceToken(token);
+        if (!context.mounted) return;
+        Navigator.pop(context);
       },
       child: Text(
         AppLocalizations.of(context)!.addToken,

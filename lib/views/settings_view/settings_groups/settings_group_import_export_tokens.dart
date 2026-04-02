@@ -95,12 +95,12 @@ class _SettingsGroupImportExportTokensState
         actions: [
           DialogAction(
             label: appLocalizations.cancel,
-            intent: DialogActionIntent.cancel,
+            intent: ActionIntent.cancel,
             onPressed: () => Navigator.of(context).pop(false),
           ),
           DialogAction(
             label: appLocalizations.ok,
-            intent: DialogActionIntent.confirm,
+            intent: ActionIntent.confirm,
             delaySeconds: 10,
             onPressed: () => Navigator.of(context).pop(true),
           ),

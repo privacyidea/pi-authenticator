@@ -112,7 +112,7 @@ class _FeedbackSendRowState extends State<FeedbackSendRow> {
                       actions: [
                         DialogAction(
                           label: AppLocalizations.of(context)!.ok,
-                          intent: DialogActionIntent.confirm,
+                          intent: ActionIntent.confirm,
                           onPressed: () => Navigator.of(context).popUntil(
                             (route) =>
                                 route.settings.name == MainView.routeName,

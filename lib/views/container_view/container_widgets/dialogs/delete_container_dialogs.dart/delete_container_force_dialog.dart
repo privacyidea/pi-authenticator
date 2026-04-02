@@ -51,12 +51,12 @@ class ForceDeleteContainerDialog extends ConsumerWidget {
       actions: [
         DialogAction(
           label: appLocalizations.cancel,
-          intent: DialogActionIntent.cancel,
+          intent: ActionIntent.cancel,
           onPressed: () => Navigator.of(context).pop(false),
         ),
         DialogAction(
           label: appLocalizations.delete,
-          intent: DialogActionIntent.destructive,
+          intent: ActionIntent.destructive,
           onPressed: () async {
             final success = await ref
                 .read(tokenContainerProvider.notifier)

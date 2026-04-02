@@ -53,7 +53,7 @@ class TransferQrDialog extends ConsumerWidget {
       actions: [
         DialogAction(
           label: appLocalizations.done,
-          intent: DialogActionIntent.confirm,
+          intent: ActionIntent.confirm,
           onPressed: () {
             Navigator.of(context).pop();
             TransferDeleteContainerDialog.showDialog(container);

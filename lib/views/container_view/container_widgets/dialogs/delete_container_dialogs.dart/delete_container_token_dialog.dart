@@ -58,14 +58,14 @@ class DeleteContainerTokenDialog extends ConsumerWidget {
       actions: [
         DialogAction(
           label: appLocalizations.deleteOnlyContainerButtonText,
-          intent: DialogActionIntent.destructive,
+          intent: ActionIntent.destructive,
           onPressed: () async {
             Navigator.of(context).pop(false);
           },
         ),
         DialogAction(
           label: appLocalizations.deleteAllButtonText,
-          intent: DialogActionIntent.destructive,
+          intent: ActionIntent.destructive,
           onPressed: () async {
             Navigator.of(context).pop(true);
           },

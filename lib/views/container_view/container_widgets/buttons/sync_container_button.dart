@@ -47,7 +47,7 @@ class SyncContainerButton extends ConsumerWidget {
         );
 
     return IntentButton(
-      intent: DialogActionIntent.neutral,
+      intent: ActionIntent.neutral,
       isLoading: currentContainer?.syncState == SyncState.syncing,
       onPressed: () async {
         final tokenState = await ref.read(tokenProvider.future);

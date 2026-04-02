@@ -64,7 +64,7 @@ class PiMailer {
               actions: [
                 DialogAction(
                   label: appLocalizations.ok,
-                  intent: DialogActionIntent.neutral,
+                  intent: ActionIntent.neutral,
                   onPressed: () => Navigator.pop(context),
                 ),
               ],

@@ -80,12 +80,12 @@ class QrNotFoundDialog extends StatelessWidget {
         // ),
         DialogAction(
           label: appLocalizations.ok,
-          intent: DialogActionIntent.neutral,
+          intent: ActionIntent.neutral,
           onPressed: () => Navigator.of(context).pop(),
         ),
         DialogAction(
           label: appLocalizations.markQrCode,
-          intent: DialogActionIntent.confirm,
+          intent: ActionIntent.confirm,
           onPressed: () async {
             CroppedFile? croppedFile;
             try {

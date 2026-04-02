@@ -78,12 +78,12 @@ class ContainerShowContainerUrlDialog extends StatelessWidget {
       actions: [
         DialogAction(
           label: appLocalizations.cancel,
-          intent: DialogActionIntent.cancel,
+          intent: ActionIntent.cancel,
           onPressed: () => Navigator.of(context).pop(false),
         ),
         DialogAction(
           label: appLocalizations.ok,
-          intent: DialogActionIntent.confirm,
+          intent: ActionIntent.confirm,
           onPressed: () => Navigator.of(context).pop(true),
         ),
       ],

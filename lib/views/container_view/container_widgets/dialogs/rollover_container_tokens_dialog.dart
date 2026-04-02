@@ -61,13 +61,13 @@ class _RolloverContainerTokensDialogState
       actions: [
         DialogAction(
           label: AppLocalizations.of(context)!.cancel,
-          intent: DialogActionIntent.cancel,
+          intent: ActionIntent.cancel,
           onPressed: () => Navigator.of(context).pop(),
         ),
 
         DialogAction(
           label: AppLocalizations.of(context)!.renewSecretsButtonText,
-          intent: DialogActionIntent.confirm,
+          intent: ActionIntent.confirm,
           onPressed: () async {
             final tokenState = await ref.read(tokenProvider.future);
             _renewSecrets(tokenState: tokenState);

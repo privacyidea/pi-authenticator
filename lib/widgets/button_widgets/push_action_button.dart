@@ -30,7 +30,7 @@ class PushActionButton extends StatelessWidget {
   final FutureOr<void> Function()? onPressed;
   final Widget child;
   // final double height;
-  final DialogActionIntent intent;
+  final ActionIntent intent;
 
   /// Minimum time in milliseconds between button presses to prevent double-taps.
   final int minThreshold;
@@ -40,7 +40,7 @@ class PushActionButton extends StatelessWidget {
     required this.onPressed,
     required this.child,
     this.minThreshold = 1000,
-    this.intent = DialogActionIntent.confirm,
+    this.intent = ActionIntent.confirm,
   });
 
   @override

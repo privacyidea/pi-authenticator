@@ -140,12 +140,12 @@ class _ExportTokensToFileDialogState
           ? [
               DialogAction(
                 label: appLocalizations.cancel,
-                intent: DialogActionIntent.cancel,
+                intent: ActionIntent.cancel,
                 onPressed: () => Navigator.of(context).pop(false),
               ),
               DialogAction(
                 label: appLocalizations.export,
-                intent: DialogActionIntent.confirm,
+                intent: ActionIntent.confirm,
                 onPressed:
                     _passwordTextController.text.isNotEmpty &&
                         _passwordTextController.text ==

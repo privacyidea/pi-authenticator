@@ -47,12 +47,12 @@ class AskLogSentDialog extends StatelessWidget {
       actions: [
         DialogAction(
           label: AppLocalizations.of(context)!.no,
-          intent: DialogActionIntent.cancel,
+          intent: ActionIntent.cancel,
           onPressed: () => Navigator.pop(context),
         ),
         DialogAction(
           label: AppLocalizations.of(context)!.yes,
-          intent: DialogActionIntent.confirm,
+          intent: ActionIntent.confirm,
           onPressed: () {
             Navigator.pop(context, true);
             Logger.clearErrorLog();

@@ -106,12 +106,12 @@ class _TransferDeleteContainerDialogState
         actions: [
           DialogAction(
             label: appLocalizations.cancel,
-            intent: DialogActionIntent.cancel,
+            intent: ActionIntent.cancel,
             onPressed: () => Navigator.of(context).pop(),
           ),
           DialogAction(
             label: appLocalizations.containerTransferDeleteTokensButtonText,
-            intent: DialogActionIntent.destructive,
+            intent: ActionIntent.destructive,
             onPressed: () => confirmDeleteLocaly(context),
           ),
         ],
@@ -132,7 +132,7 @@ class _TransferDeleteContainerDialogState
         actions: [
           DialogAction(
             label: appLocalizations.ok,
-            intent: DialogActionIntent.neutral,
+            intent: ActionIntent.neutral,
             onPressed: () => Navigator.of(context).pop(),
           ),
         ],

@@ -49,7 +49,7 @@ class PushChoiceDialog extends ConsumerWidget with PushDialogMixin {
           ..._buildChoiceGrid(context, ref, theme),
           const SizedBox(height: 8),
           PushActionButton(
-            intent: DialogActionIntent.destructive,
+            intent: ActionIntent.destructive,
             onPressed: () => PushDeclineConfirmDialog.showDialogWidget(
               context: context,
               onDecline: () => handleDecline(context, ref),

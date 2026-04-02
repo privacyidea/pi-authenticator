@@ -72,12 +72,12 @@ class _ContainerAlreadyExistsDialogState
       actions: [
         DialogAction(
           label: appLocalizations.dismiss,
-          intent: DialogActionIntent.cancel,
+          intent: ActionIntent.cancel,
           onPressed: () => _dismiss(container),
         ),
         DialogAction(
           label: appLocalizations.replaceButton,
-          intent: DialogActionIntent.destructive,
+          intent: ActionIntent.destructive,
           onPressed: () => _replace(currentContainer, container),
         ),
       ],

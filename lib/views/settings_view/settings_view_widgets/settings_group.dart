@@ -20,7 +20,7 @@
 
 import 'package:flutter/material.dart';
 
-import '../../../widgets/button_widgets/default_icon_button.dart';
+import '../../../widgets/button_widgets/intent_button.dart';
 
 /// Widget that defines the structure and look of groups on the settings screen.
 class SettingsGroup extends StatelessWidget {
@@ -85,12 +85,19 @@ class SettingsGroup extends StatelessWidget {
                             width: 48,
                             child: trailingWidget != null
                                 ? Center(child: trailingWidget)
-                                : DefaultIconButton(
-                                    semanticsLabel: title,
-                                    onPressed: isActive ? onPressed! : null,
+                                : IntentButton.icon(
+                                    intent: ActionIntent.confirm,
+                                    onPressed: onPressed,
                                     icon:
                                         trailingIcon ?? Icons.arrow_forward_ios,
                                   ),
+
+                            // : DefaultIconButton(
+                            //     semanticsLabel: title,
+                            //     onPressed: isActive ? onPressed! : null,
+                            //     icon:
+                            //         trailingIcon ?? Icons.arrow_forward_ios,
+                            //   ),
                           ),
                         ),
                       )

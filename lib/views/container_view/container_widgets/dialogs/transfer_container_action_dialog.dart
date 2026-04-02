@@ -58,13 +58,13 @@ class _TransferContainerDialogState
       actions: [
         DialogAction(
           label: appLocalizations.cancel,
-          intent: DialogActionIntent.cancel,
+          intent: ActionIntent.cancel,
           onPressed: () => Navigator.of(context).pop(),
         ),
         DialogAction(
           label: appLocalizations.startTransferButtonText,
           cooldownMs: 1000,
-          intent: DialogActionIntent.confirm,
+          intent: ActionIntent.confirm,
           onPressed: () => _startTransfer(widget.container),
         ),
       ],

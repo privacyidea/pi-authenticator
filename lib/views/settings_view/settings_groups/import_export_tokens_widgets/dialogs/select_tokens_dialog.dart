@@ -84,13 +84,13 @@ class _SelectTokensDialogState extends ConsumerState<SelectExportTokensDialog> {
       actions: [
         DialogAction(
           label: appLocalizations.cancel,
-          intent: DialogActionIntent.cancel,
+          intent: ActionIntent.cancel,
           onPressed: () => Navigator.of(context).pop(false),
         ),
         if (widget.multiSelect)
           DialogAction(
             label: appLocalizations.export,
-            intent: DialogActionIntent.confirm,
+            intent: ActionIntent.confirm,
             onPressed: _selectedTokens.isNotEmpty
                 ? () {
                     _showExportDialog(_selectedTokens);

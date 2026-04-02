@@ -72,7 +72,7 @@ class LoggingMenu extends ConsumerWidget {
       actions: [
         DialogAction(
           label: AppLocalizations.of(context)!.dismiss,
-          intent: DialogActionIntent.cancel,
+          intent: ActionIntent.cancel,
           onPressed: () => Navigator.pop(context),
         ),
       ],

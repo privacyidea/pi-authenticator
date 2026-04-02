@@ -81,12 +81,12 @@ class _AddTokenFolderDialogState extends ConsumerState<AddTokenFolderDialog> {
       actions: [
         DialogAction(
           label: localizations.cancel,
-          intent: DialogActionIntent.cancel,
+          intent: ActionIntent.cancel,
           onPressed: () => Navigator.pop(context),
         ),
         DialogAction(
           label: localizations.create,
-          intent: DialogActionIntent.confirm,
+          intent: ActionIntent.confirm,
           onPressed: _isValid ? _handleCreate : null,
         ),
       ],

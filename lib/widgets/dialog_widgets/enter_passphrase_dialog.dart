@@ -68,7 +68,7 @@ class _EnterPassphraseDialogState extends State<EnterPassphraseDialog> {
       actions: [
         DialogAction(
           label: appLocalizations.ok,
-          intent: DialogActionIntent.neutral,
+          intent: ActionIntent.neutral,
           onPressed: text.isNotEmpty
               ? () => Navigator.of(context).pop(text)
               : null,

@@ -80,7 +80,7 @@ class HOTPTokenWidgetTile extends ConsumerWidget {
               child: Semantics(
                 label: AppLocalizations.of(context)!.increaseCounter,
                 child: IntentButton(
-                  intent: DialogActionIntent.neutral,
+                  intent: ActionIntent.neutral,
                   cooldownMs: 1000,
                   onPressed: () async => _updateOtpValue(),
                   child: const FittedBox(child: Icon(size: 100, Icons.replay)),

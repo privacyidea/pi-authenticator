@@ -24,33 +24,29 @@ import 'package:flutter/material.dart';
 import '../../utils/customization/theme_extentions/app_dimensions.dart';
 import '../pi_circular_progress_indicator.dart';
 
-extension DialogActionIntentX on DialogActionIntent {
+extension DialogActionIntentX on ActionIntent {
   int get priority {
     return switch (this) {
-      DialogActionIntent.cancel || DialogActionIntent.neutral => 1,
-      DialogActionIntent.external => 2,
-      DialogActionIntent.info => 3,
-      DialogActionIntent.confirm || DialogActionIntent.destructive => 4,
+      ActionIntent.cancel || ActionIntent.neutral => 1,
+      ActionIntent.external => 2,
+      ActionIntent.info => 3,
+      ActionIntent.confirm || ActionIntent.destructive => 4,
     };
   }
 }
 
-enum DialogActionIntent {
-  confirm,
-  destructive,
-  info,
-  neutral,
-  cancel,
-  external,
-}
+enum ActionIntent { confirm, destructive, info, neutral, cancel, external }
 
 class IntentButton extends StatefulWidget {
-  final DialogActionIntent intent;
+  final ActionIntent intent;
   final FutureOr<void> Function()? onPressed;
   final Widget child;
   final int delaySeconds;
   final int cooldownMs;
   final bool isLoading;
+  final bool _isIconOnly;
+  final String? semanticsLabel;
+  final double? iconSize;
 
   const IntentButton({
     super.key,
@@ -60,7 +56,22 @@ class IntentButton extends StatefulWidget {
     this.delaySeconds = 0,
     this.cooldownMs = 0,
     this.isLoading = false,
-  });
+    this.semanticsLabel,
+  }) : _isIconOnly = false,
+       iconSize = null;
+
+  IntentButton.icon({
+    super.key,
+    required this.intent,
+    required this.onPressed,
+    required IconData icon,
+    this.delaySeconds = 0,
+    this.cooldownMs = 0,
+    this.isLoading = false,
+    this.semanticsLabel,
+    this.iconSize,
+  }) : _isIconOnly = true,
+       child = Icon(icon);
 
   @override
   State<IntentButton> createState() => _IntentButtonState();
@@ -72,6 +83,8 @@ class _IntentButtonState extends State<IntentButton>
   bool _isCooldown = false;
   late int _currentDelay;
   late AnimationController _animation;
+  Timer? _cooldownTimer;
+  Timer? _delayTimer;
 
   bool get _effectiveLoading => widget.isLoading || _isInternalLoading;
 
@@ -87,15 +100,35 @@ class _IntentButtonState extends State<IntentButton>
   }
 
   Future<void> _startDelayTimer() async {
-    while (_currentDelay > 0 && mounted) {
+    _delayTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (!mounted) {
+        timer.cancel();
+        return;
+      }
+
+      if (_currentDelay > 0) {
+        setState(() {
+          _currentDelay--;
+        });
+        if (_currentDelay > 0) {
+          _animation.forward(from: 0);
+        }
+      }
+
+      if (_currentDelay <= 0) {
+        timer.cancel();
+      }
+    });
+
+    if (_currentDelay > 0 && mounted) {
       _animation.forward(from: 0);
-      await Future.delayed(const Duration(seconds: 1));
-      if (mounted) setState(() => _currentDelay--);
     }
   }
 
   @override
   void dispose() {
+    _delayTimer?.cancel();
+    _cooldownTimer?.cancel();
     _animation.dispose();
     super.dispose();
   }
@@ -120,21 +153,27 @@ class _IntentButtonState extends State<IntentButton>
       });
     }
 
-    final List<Future<dynamic>> tasks = [];
-    if (isFuture) tasks.add(result);
+    if (isFuture) {
+      try {
+        await result;
+      } finally {
+        if (mounted) {
+          setState(() => _isInternalLoading = false);
+        }
+      }
+    }
+
     if (widget.cooldownMs > 0) {
-      tasks.add(Future.delayed(Duration(milliseconds: widget.cooldownMs)));
-    }
-
-    if (tasks.isNotEmpty) {
-      await Future.wait(tasks);
-    }
-
-    if (mounted) {
-      setState(() {
-        _isInternalLoading = false;
-        _isCooldown = false;
+      _cooldownTimer?.cancel();
+      _cooldownTimer = Timer(Duration(milliseconds: widget.cooldownMs), () {
+        if (mounted) {
+          setState(() => _isCooldown = false);
+        }
       });
+    } else {
+      if (mounted) {
+        setState(() => _isCooldown = false);
+      }
     }
   }
 
@@ -152,19 +191,52 @@ class _IntentButtonState extends State<IntentButton>
     final dimensions =
         theme.extension<AppDimensions>() ?? const AppDimensions();
 
+    Widget button = widget._isIconOnly
+        ? _buildIconButton(context, dimensions)
+        : _buildStandardButton(context, dimensions);
+
+    if (widget.semanticsLabel != null) {
+      return Semantics(label: widget.semanticsLabel, child: button);
+    }
+    return button;
+  }
+
+  Widget _buildStandardButton(BuildContext context, AppDimensions dimensions) {
     return switch (widget.intent) {
-      DialogActionIntent.confirm || DialogActionIntent.destructive =>
-        _buildElevatedButton(context, dimensions),
-      DialogActionIntent.info => _buildOutlinedButton(context, dimensions),
-      DialogActionIntent.neutral ||
-      DialogActionIntent.cancel ||
-      DialogActionIntent.external => _buildTextButton(context, dimensions),
+      ActionIntent.confirm ||
+      ActionIntent.destructive => _buildElevatedButton(context, dimensions),
+      ActionIntent.info => _buildOutlinedButton(context, dimensions),
+      ActionIntent.neutral ||
+      ActionIntent.cancel ||
+      ActionIntent.external => _buildTextButton(context, dimensions),
     };
+  }
+
+  Widget _buildIconButton(BuildContext context, AppDimensions dimensions) {
+    final theme = Theme.of(context);
+    final size = widget.iconSize ?? dimensions.iconSizeMedium;
+
+    final Color iconColor = switch (widget.intent) {
+      ActionIntent.destructive => theme.colorScheme.error,
+      ActionIntent.confirm => theme.colorScheme.primary,
+      ActionIntent.info => theme.colorScheme.secondary,
+      ActionIntent.external => theme.colorScheme.tertiary,
+      ActionIntent.neutral ||
+      ActionIntent.cancel => theme.colorScheme.onSurfaceVariant,
+    };
+
+    return IconButton(
+      onPressed: _effectiveOnPressed,
+      iconSize: size,
+      color: iconColor,
+      disabledColor: theme.colorScheme.onSurface.withValues(alpha: 0.38),
+      icon: _buildChildWithStatus(dimensions),
+    );
   }
 
   Widget _buildElevatedButton(BuildContext context, AppDimensions dimensions) {
     final theme = Theme.of(context);
-    final isDestructive = widget.intent == DialogActionIntent.destructive;
+    final isDestructive = widget.intent == ActionIntent.destructive;
 
     return ElevatedButton(
       onPressed: _effectiveOnPressed,
@@ -227,7 +299,7 @@ class _IntentButtonState extends State<IntentButton>
           borderRadius: BorderRadius.circular(dimensions.borderRadius),
         ),
       ),
-      child: widget.intent == DialogActionIntent.external
+      child: widget.intent == ActionIntent.external
           ? Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -255,8 +327,8 @@ class _IntentButtonState extends State<IntentButton>
       children: [
         Opacity(opacity: 0.0, child: widget.child),
         SizedBox(
-          width: dimensions.iconSizeMedium,
-          height: dimensions.iconSizeMedium,
+          width: widget.iconSize ?? dimensions.iconSizeMedium,
+          height: widget.iconSize ?? dimensions.iconSizeMedium,
           child: CircularProgressIndicator(strokeWidth: dimensions.strokeWidth),
         ),
       ],
@@ -264,9 +336,10 @@ class _IntentButtonState extends State<IntentButton>
   }
 
   Widget _buildCountdownStack(AppDimensions dimensions) {
+    final size = widget.iconSize ?? dimensions.iconSizeMedium;
     return SizedBox(
-      height: dimensions.iconSizeMedium,
-      width: dimensions.iconSizeMedium,
+      height: size,
+      width: size,
       child: Stack(
         alignment: Alignment.center,
         children: [
@@ -280,10 +353,7 @@ class _IntentButtonState extends State<IntentButton>
           ),
           Text(
             _currentDelay.toString(),
-            style: TextStyle(
-              fontSize: dimensions.spacingMedium * 0.8,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: size * 0.6, fontWeight: FontWeight.bold),
           ),
         ],
       ),

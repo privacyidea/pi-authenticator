@@ -58,7 +58,7 @@ class PushTokenStartRolloutWidget extends ConsumerWidget {
               Expanded(
                 flex: 35,
                 child: IntentButton(
-                  intent: DialogActionIntent.confirm,
+                  intent: ActionIntent.confirm,
                   onPressed: () =>
                       globalRef
                           ?.read(tokenProvider.notifier)
@@ -78,7 +78,7 @@ class PushTokenStartRolloutWidget extends ConsumerWidget {
               Expanded(
                 flex: 35,
                 child: IntentButton(
-                  intent: DialogActionIntent.destructive,
+                  intent: ActionIntent.destructive,
                   onPressed: () => _showDialog(),
                   child: Text(
                     localizations.delete,
@@ -106,12 +106,12 @@ class PushTokenStartRolloutWidget extends ConsumerWidget {
         actions: [
           DialogAction(
             label: localizations.cancel,
-            intent: DialogActionIntent.cancel,
+            intent: ActionIntent.cancel,
             onPressed: () => Navigator.of(context).pop(),
           ),
           DialogAction(
             label: localizations.delete,
-            intent: DialogActionIntent.destructive,
+            intent: ActionIntent.destructive,
             onPressed: () {
               globalRef?.read(tokenProvider.notifier).removeToken(token);
               Navigator.of(context).pop();

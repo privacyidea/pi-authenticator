@@ -37,7 +37,7 @@ class ContainerTokenIndelibleDialog extends StatelessWidget {
     actions: [
       DialogAction(
         label: AppLocalizations.of(context)!.ok,
-        intent: DialogActionIntent.neutral,
+        intent: ActionIntent.neutral,
         onPressed: () => Navigator.of(context).pop(),
       ),
     ],

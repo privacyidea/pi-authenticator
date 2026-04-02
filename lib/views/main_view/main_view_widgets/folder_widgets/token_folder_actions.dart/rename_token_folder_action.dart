@@ -90,12 +90,12 @@ class RenameTokenFolderAction extends ConsumerSlideableAction {
           actions: [
             DialogAction(
               label: AppLocalizations.of(context)!.cancel,
-              intent: DialogActionIntent.cancel,
+              intent: ActionIntent.cancel,
               onPressed: () => Navigator.of(context).pop(),
             ),
             DialogAction(
               label: AppLocalizations.of(context)!.rename,
-              intent: DialogActionIntent.confirm,
+              intent: ActionIntent.confirm,
               onPressed: () async {
                 final newLabel = nameInputController.text.trim();
                 if (newLabel.isEmpty) return;

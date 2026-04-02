@@ -24,7 +24,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../utils/push_provider.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/push_request_provider.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
-import 'dialog_widgets/push_request_dialog/push_request_dialog.dart';
+import 'dialog_widgets/push_request_dialogs/push_request_dialog.dart';
 
 class PushRequestListener extends ConsumerStatefulWidget {
   final Widget child;

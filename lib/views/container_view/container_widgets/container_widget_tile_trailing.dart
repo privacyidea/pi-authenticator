@@ -87,7 +87,7 @@ class ContainerWidgetTileTrailing extends ConsumerWidget {
     if (container.finalizationState.isFailed ||
         container.finalizationState == FinalizationState.notStarted) {
       return IntentButton(
-        intent: DialogActionIntent.confirm,
+        intent: ActionIntent.confirm,
         onPressed: () async {
           await ref
               .read(tokenContainerProvider.notifier)

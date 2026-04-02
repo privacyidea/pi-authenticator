@@ -43,7 +43,7 @@ class TransferOfflineTokenDialog extends StatelessWidget {
     actions: [
       DialogAction(
         label: AppLocalizations.of(context)!.ok,
-        intent: DialogActionIntent.confirm,
+        intent: ActionIntent.confirm,
         onPressed: () => Navigator.of(context).pop(true),
       ),
     ],

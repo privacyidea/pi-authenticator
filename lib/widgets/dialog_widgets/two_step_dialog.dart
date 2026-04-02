@@ -126,7 +126,7 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
           actions: [
             DialogAction(
               label: AppLocalizations.of(context)!.dismiss,
-              intent: DialogActionIntent.cancel,
+              intent: ActionIntent.cancel,
               onPressed: () {
                 if (context.mounted) Navigator.of(context).pop();
               },
