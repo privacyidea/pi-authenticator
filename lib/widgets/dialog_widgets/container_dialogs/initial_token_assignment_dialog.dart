@@ -94,28 +94,6 @@ class _InitialTokenAssignmentDialogState
         ],
       ),
       actions: [
-        // ElevatedButton(
-        //   child: Text(localizations.cancel),
-        //   onPressed: () => Navigator.of(context).pop(),
-        // ),
-        // ElevatedButton(
-        //   onPressed: _selectedTokens.isEmpty
-        //       ? () => Navigator.of(context).pop(_selectedTokens)
-        //       : () async {
-        //           if (!widget.container.sslVerify) {
-        //             final ok = await SendOTPsWithoutSSLDialog.showDialog();
-        //             if (ok != true || !context.mounted) return;
-        //           }
-        //           ref.read(tokenProvider.notifier).updateTokens(
-        //                 _unselectedTokens.toList(),
-        //                 (t) => t.copyWith(checkedContainer: t.checkedContainer..add(widget.container.serial)),
-        //               );
-        //           Navigator.of(context).pop(_selectedTokens);
-        //         },
-        //   child: _selectedTokens.isEmpty
-        //       ? Text(localizations.initialTokenAssignmentDialogButtonZero)
-        //       : Text(localizations.initialTokenAssignmentDialogButtonSelected),
-        // ),
         DialogAction(
           label: localizations.cancel,
           intent: ActionIntent.cancel,

@@ -39,9 +39,8 @@ class ContainerShowContainerUrlDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppLocalizations appLocalizations = AppLocalizations.of(context)!;
-    final Color warningColor = Theme.of(
-      context,
-    ).extension<StatusColors>()!.warning;
+    final Color warningColor =
+        Theme.of(context).extension<StatusColors>()?.warning ?? Colors.orange;
 
     return DefaultDialog(
       title: Row(

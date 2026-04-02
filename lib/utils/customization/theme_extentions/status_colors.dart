@@ -21,25 +21,26 @@
 import 'package:flutter/material.dart';
 
 class StatusColors extends ThemeExtension<StatusColors> {
-  final Color error;
-  final Color warning;
   final Color success;
+  final Color warning;
+  final Color error;
 
   const StatusColors({
-    required this.error,
-    required this.warning,
     required this.success,
+    required this.warning,
+    required this.error,
   });
 
   @override
   ThemeExtension<StatusColors> copyWith({
-    Color? error,
-    Color? warning,
     Color? success,
+    Color? info,
+    Color? warning,
+    Color? error,
   }) => StatusColors(
-    error: error ?? this.error,
-    warning: warning ?? this.warning,
     success: success ?? this.success,
+    warning: warning ?? this.warning,
+    error: error ?? this.error,
   );
 
   @override
@@ -49,9 +50,9 @@ class StatusColors extends ThemeExtension<StatusColors> {
   ) {
     if (other is StatusColors) {
       return StatusColors(
-        error: Color.lerp(error, other.error, t)!,
-        warning: Color.lerp(warning, other.warning, t)!,
         success: Color.lerp(success, other.success, t)!,
+        warning: Color.lerp(warning, other.warning, t)!,
+        error: Color.lerp(error, other.error, t)!,
       );
     }
     return this;

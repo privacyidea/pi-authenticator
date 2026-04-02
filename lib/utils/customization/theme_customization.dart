@@ -216,11 +216,11 @@ class ThemeCustomization {
   /// Color used for elevations, cards, and soft depth effects.
   final Color shadowColor;
 
-  /// Status color for warnings (e.g., expiring tokens).
-  final Color warningColor;
-
   /// Status color for successful operations (e.g., successful authentication).
   final Color successColor;
+
+  /// Status color for warnings (e.g., expiring tokens).
+  final Color warningColor;
 
   /// Internal storage for Push Request colors. If null, they inherit from primary/delete.
   final Color? _pushAuthRequestAcceptColor;
@@ -673,9 +673,9 @@ class ThemeCustomization {
         declineColor: pushAuthRequestDeclineColor,
       ),
       StatusColors(
-        error: deleteColor,
-        warning: warningColor,
         success: successColor,
+        warning: warningColor,
+        error: deleteColor,
       ),
     ],
   );

@@ -16,6 +16,9 @@ import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/model/token_container.dart';
 import 'package:privacyidea_authenticator/repo/secure_storage.dart';
 import 'package:privacyidea_authenticator/utils/allow_screenshot_utils.dart';
+import 'package:privacyidea_authenticator/utils/customization/theme_extentions/action_theme.dart';
+import 'package:privacyidea_authenticator/utils/customization/theme_extentions/push_request_theme.dart';
+import 'package:privacyidea_authenticator/utils/customization/theme_extentions/status_colors.dart';
 import 'package:privacyidea_authenticator/utils/ecc_utils.dart';
 import 'package:privacyidea_authenticator/utils/firebase_utils.dart';
 import 'package:privacyidea_authenticator/utils/globals.dart';
@@ -63,6 +66,35 @@ class TestsAppWrapper extends StatelessWidget {
       overrides: overrides,
       child: MaterialApp(
         navigatorKey: globalNavigatorKey,
+        theme: ThemeData(
+          extensions: [
+            StatusColors(
+              success: const Color(0xFF4CAF50),
+              warning: const Color(0xFFFF9800),
+              error: const Color(0xFFF44336),
+            ),
+            TokenTileTheme(
+              deleteColor: Colors.red,
+              editColor: Colors.blue,
+              lockColor: Colors.grey,
+              transferColor: Colors.green,
+              actionDisabledColor: Colors.blueGrey,
+              actionForegroundColor: Colors.white,
+              defaultOtpColor: Colors.black,
+              warningOtpColor: const Color(0xFFFF9800),
+              criticalOtpColor: const Color(0xFFF44336),
+              defaultCountdownColor: Colors.grey,
+              warningCountdownColor: const Color(0xFFFF9800),
+              criticalCountdownColor: const Color(0xFFF44336),
+              tileSubtitleColor: Colors.black54,
+              tileIconColor: Colors.black87,
+            ),
+            PushRequestTheme(
+              acceptColor: const Color(0xFF4CAF50),
+              declineColor: const Color(0xFFF44336),
+            ),
+          ],
+        ),
         localizationsDelegates: const [
           AppLocalizations.delegate,
           GlobalMaterialLocalizations.delegate,
@@ -70,7 +102,6 @@ class TestsAppWrapper extends StatelessWidget {
           GlobalCupertinoLocalizations.delegate,
         ],
         supportedLocales: const [Locale('en')],
-
         home: Scaffold(body: child),
       ),
     );

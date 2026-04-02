@@ -33,8 +33,7 @@ class PushChoiceDialog extends ConsumerWidget with PushDialogMixin {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme =
-        (Theme.of(context).extensions[PushRequestTheme] as PushRequestTheme);
+    final theme = Theme.of(context).extension<PushRequestTheme>()!;
     final l10n = AppLocalizations.of(context)!;
 
     return DefaultDialog(
