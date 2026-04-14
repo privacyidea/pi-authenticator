@@ -24,6 +24,7 @@ import 'package:privacyidea_authenticator/utils/firebase_utils.dart';
 import 'package:privacyidea_authenticator/utils/globals.dart';
 import 'package:privacyidea_authenticator/utils/privacyidea_io_client.dart';
 import 'package:privacyidea_authenticator/utils/push_provider.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/push_request_provider.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
@@ -49,6 +50,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
   MockSpec<TokenContainerFinalized>(),
   MockSpec<TokenNotifier>(),
   MockSpec<LocalAuthentication>(),
+  MockSpec<PushRequestNotifier>(),
 ])
 class TestsAppWrapper extends StatelessWidget {
   final Widget child;

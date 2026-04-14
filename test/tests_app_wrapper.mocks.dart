@@ -3,11 +3,11 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i19;
-import 'dart:typed_data' as _i28;
+import 'dart:async' as _i21;
+import 'dart:typed_data' as _i29;
 
-import 'package:firebase_core/firebase_core.dart' as _i31;
-import 'package:firebase_messaging/firebase_messaging.dart' as _i32;
+import 'package:firebase_core/firebase_core.dart' as _i32;
+import 'package:firebase_messaging/firebase_messaging.dart' as _i33;
 import 'package:flutter/foundation.dart' as _i35;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i11;
 import 'package:http/http.dart' as _i6;
@@ -16,43 +16,47 @@ import 'package:local_auth_android/local_auth_android.dart' as _i49;
 import 'package:local_auth_darwin/local_auth_darwin.dart' as _i50;
 import 'package:local_auth_windows/local_auth_windows.dart' as _i51;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:mockito/src/dummies.dart' as _i24;
+import 'package:mockito/src/dummies.dart' as _i26;
 import 'package:pointycastle/export.dart' as _i7;
 import 'package:privacyidea_authenticator/api/interfaces/container_api.dart'
     as _i13;
 import 'package:privacyidea_authenticator/interfaces/repo/introduction_repository.dart'
-    as _i22;
+    as _i24;
 import 'package:privacyidea_authenticator/interfaces/repo/push_request_repository.dart'
-    as _i25;
-import 'package:privacyidea_authenticator/interfaces/repo/settings_repository.dart'
     as _i20;
+import 'package:privacyidea_authenticator/interfaces/repo/settings_repository.dart'
+    as _i22;
 import 'package:privacyidea_authenticator/interfaces/repo/token_container_repository.dart'
     as _i12;
 import 'package:privacyidea_authenticator/interfaces/repo/token_folder_repository.dart'
-    as _i21;
+    as _i23;
 import 'package:privacyidea_authenticator/interfaces/repo/token_repository.dart'
     as _i17;
+import 'package:privacyidea_authenticator/model/api_results/pi_server_results/pi_server_result_detail.dart'
+    as _i54;
 import 'package:privacyidea_authenticator/model/api_results/pi_server_results/pi_server_result_value.dart'
     as _i5;
 import 'package:privacyidea_authenticator/model/container_policies.dart'
     as _i44;
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart' as _i41;
 import 'package:privacyidea_authenticator/model/enums/ec_key_algorithm.dart'
-    as _i30;
+    as _i31;
 import 'package:privacyidea_authenticator/model/enums/rollout_state.dart'
     as _i42;
 import 'package:privacyidea_authenticator/model/enums/sync_state.dart' as _i43;
+import 'package:privacyidea_authenticator/model/pi_server_response.dart'
+    as _i53;
 import 'package:privacyidea_authenticator/model/processor_result.dart' as _i39;
 import 'package:privacyidea_authenticator/model/push_request/push_request.dart'
-    as _i26;
+    as _i27;
 import 'package:privacyidea_authenticator/model/riverpod_states/introduction_state.dart'
-    as _i23;
+    as _i25;
 import 'package:privacyidea_authenticator/model/riverpod_states/push_request_state.dart'
     as _i4;
 import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.dart'
     as _i2;
 import 'package:privacyidea_authenticator/model/riverpod_states/token_container_state.dart'
-    as _i27;
+    as _i28;
 import 'package:privacyidea_authenticator/model/riverpod_states/token_folder_state.dart'
     as _i3;
 import 'package:privacyidea_authenticator/model/riverpod_states/token_state.dart'
@@ -60,7 +64,7 @@ import 'package:privacyidea_authenticator/model/riverpod_states/token_state.dart
 import 'package:privacyidea_authenticator/model/token_container.dart' as _i15;
 import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart' as _i46;
 import 'package:privacyidea_authenticator/model/tokens/otp_token.dart' as _i47;
-import 'package:privacyidea_authenticator/model/tokens/push_token.dart' as _i29;
+import 'package:privacyidea_authenticator/model/tokens/push_token.dart' as _i30;
 import 'package:privacyidea_authenticator/model/tokens/token.dart' as _i16;
 import 'package:privacyidea_authenticator/repo/secure_storage.dart' as _i36;
 import 'package:privacyidea_authenticator/utils/allow_screenshot_utils.dart'
@@ -69,7 +73,9 @@ import 'package:privacyidea_authenticator/utils/ecc_utils.dart' as _i14;
 import 'package:privacyidea_authenticator/utils/firebase_utils.dart' as _i8;
 import 'package:privacyidea_authenticator/utils/privacyidea_io_client.dart'
     as _i9;
-import 'package:privacyidea_authenticator/utils/push_provider.dart' as _i33;
+import 'package:privacyidea_authenticator/utils/push_provider.dart' as _i19;
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/push_request_provider.dart'
+    as _i52;
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart'
     as _i37;
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart'
@@ -270,228 +276,239 @@ class _FakeTokenState_30 extends _i1.SmartFake implements _i18.TokenState {
     : super(parent, parentInvocation);
 }
 
+class _FakePushProvider_31 extends _i1.SmartFake implements _i19.PushProvider {
+  _FakePushProvider_31(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
+class _FakePushRequestRepository_32 extends _i1.SmartFake
+    implements _i20.PushRequestRepository {
+  _FakePushRequestRepository_32(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
 /// A class which mocks [TokenRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockTokenRepository extends _i1.Mock implements _i17.TokenRepository {
   @override
-  _i19.Future<_i16.Token?> loadToken(String? id) =>
+  _i21.Future<_i16.Token?> loadToken(String? id) =>
       (super.noSuchMethod(
             Invocation.method(#loadToken, [id]),
-            returnValue: _i19.Future<_i16.Token?>.value(),
-            returnValueForMissingStub: _i19.Future<_i16.Token?>.value(),
+            returnValue: _i21.Future<_i16.Token?>.value(),
+            returnValueForMissingStub: _i21.Future<_i16.Token?>.value(),
           )
-          as _i19.Future<_i16.Token?>);
+          as _i21.Future<_i16.Token?>);
 
   @override
-  _i19.Future<List<_i16.Token>> loadTokens() =>
+  _i21.Future<List<_i16.Token>> loadTokens() =>
       (super.noSuchMethod(
             Invocation.method(#loadTokens, []),
-            returnValue: _i19.Future<List<_i16.Token>>.value(<_i16.Token>[]),
-            returnValueForMissingStub: _i19.Future<List<_i16.Token>>.value(
+            returnValue: _i21.Future<List<_i16.Token>>.value(<_i16.Token>[]),
+            returnValueForMissingStub: _i21.Future<List<_i16.Token>>.value(
               <_i16.Token>[],
             ),
           )
-          as _i19.Future<List<_i16.Token>>);
+          as _i21.Future<List<_i16.Token>>);
 
   @override
-  _i19.Future<bool> saveOrReplaceToken(_i16.Token? token) =>
+  _i21.Future<bool> saveOrReplaceToken(_i16.Token? token) =>
       (super.noSuchMethod(
             Invocation.method(#saveOrReplaceToken, [token]),
-            returnValue: _i19.Future<bool>.value(false),
-            returnValueForMissingStub: _i19.Future<bool>.value(false),
+            returnValue: _i21.Future<bool>.value(false),
+            returnValueForMissingStub: _i21.Future<bool>.value(false),
           )
-          as _i19.Future<bool>);
+          as _i21.Future<bool>);
 
   @override
-  _i19.Future<List<T>> saveOrReplaceTokens<T extends _i16.Token>(
+  _i21.Future<List<T>> saveOrReplaceTokens<T extends _i16.Token>(
     List<T>? tokens,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#saveOrReplaceTokens, [tokens]),
-            returnValue: _i19.Future<List<T>>.value(<T>[]),
-            returnValueForMissingStub: _i19.Future<List<T>>.value(<T>[]),
+            returnValue: _i21.Future<List<T>>.value(<T>[]),
+            returnValueForMissingStub: _i21.Future<List<T>>.value(<T>[]),
           )
-          as _i19.Future<List<T>>);
+          as _i21.Future<List<T>>);
 
   @override
-  _i19.Future<bool> deleteToken(_i16.Token? token) =>
+  _i21.Future<bool> deleteToken(_i16.Token? token) =>
       (super.noSuchMethod(
             Invocation.method(#deleteToken, [token]),
-            returnValue: _i19.Future<bool>.value(false),
-            returnValueForMissingStub: _i19.Future<bool>.value(false),
+            returnValue: _i21.Future<bool>.value(false),
+            returnValueForMissingStub: _i21.Future<bool>.value(false),
           )
-          as _i19.Future<bool>);
+          as _i21.Future<bool>);
 
   @override
-  _i19.Future<List<T>> deleteTokens<T extends _i16.Token>(List<T>? tokens) =>
+  _i21.Future<List<T>> deleteTokens<T extends _i16.Token>(List<T>? tokens) =>
       (super.noSuchMethod(
             Invocation.method(#deleteTokens, [tokens]),
-            returnValue: _i19.Future<List<T>>.value(<T>[]),
-            returnValueForMissingStub: _i19.Future<List<T>>.value(<T>[]),
+            returnValue: _i21.Future<List<T>>.value(<T>[]),
+            returnValueForMissingStub: _i21.Future<List<T>>.value(<T>[]),
           )
-          as _i19.Future<List<T>>);
+          as _i21.Future<List<T>>);
 }
 
 /// A class which mocks [SettingsRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockSettingsRepository extends _i1.Mock
-    implements _i20.SettingsRepository {
+    implements _i22.SettingsRepository {
   @override
-  _i19.Future<bool> saveSettings(_i2.SettingsState? settings) =>
+  _i21.Future<bool> saveSettings(_i2.SettingsState? settings) =>
       (super.noSuchMethod(
             Invocation.method(#saveSettings, [settings]),
-            returnValue: _i19.Future<bool>.value(false),
-            returnValueForMissingStub: _i19.Future<bool>.value(false),
+            returnValue: _i21.Future<bool>.value(false),
+            returnValueForMissingStub: _i21.Future<bool>.value(false),
           )
-          as _i19.Future<bool>);
+          as _i21.Future<bool>);
 
   @override
-  _i19.Future<_i2.SettingsState> loadSettings() =>
+  _i21.Future<_i2.SettingsState> loadSettings() =>
       (super.noSuchMethod(
             Invocation.method(#loadSettings, []),
-            returnValue: _i19.Future<_i2.SettingsState>.value(
+            returnValue: _i21.Future<_i2.SettingsState>.value(
               _FakeSettingsState_0(this, Invocation.method(#loadSettings, [])),
             ),
-            returnValueForMissingStub: _i19.Future<_i2.SettingsState>.value(
+            returnValueForMissingStub: _i21.Future<_i2.SettingsState>.value(
               _FakeSettingsState_0(this, Invocation.method(#loadSettings, [])),
             ),
           )
-          as _i19.Future<_i2.SettingsState>);
+          as _i21.Future<_i2.SettingsState>);
 }
 
 /// A class which mocks [TokenFolderRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockTokenFolderRepository extends _i1.Mock
-    implements _i21.TokenFolderRepository {
+    implements _i23.TokenFolderRepository {
   @override
-  _i19.Future<bool> saveState(_i3.TokenFolderState? state) =>
+  _i21.Future<bool> saveState(_i3.TokenFolderState? state) =>
       (super.noSuchMethod(
             Invocation.method(#saveState, [state]),
-            returnValue: _i19.Future<bool>.value(false),
-            returnValueForMissingStub: _i19.Future<bool>.value(false),
+            returnValue: _i21.Future<bool>.value(false),
+            returnValueForMissingStub: _i21.Future<bool>.value(false),
           )
-          as _i19.Future<bool>);
+          as _i21.Future<bool>);
 
   @override
-  _i19.Future<_i3.TokenFolderState> loadState() =>
+  _i21.Future<_i3.TokenFolderState> loadState() =>
       (super.noSuchMethod(
             Invocation.method(#loadState, []),
-            returnValue: _i19.Future<_i3.TokenFolderState>.value(
+            returnValue: _i21.Future<_i3.TokenFolderState>.value(
               _FakeTokenFolderState_1(this, Invocation.method(#loadState, [])),
             ),
-            returnValueForMissingStub: _i19.Future<_i3.TokenFolderState>.value(
+            returnValueForMissingStub: _i21.Future<_i3.TokenFolderState>.value(
               _FakeTokenFolderState_1(this, Invocation.method(#loadState, [])),
             ),
           )
-          as _i19.Future<_i3.TokenFolderState>);
+          as _i21.Future<_i3.TokenFolderState>);
 }
 
 /// A class which mocks [IntroductionRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockIntroductionRepository extends _i1.Mock
-    implements _i22.IntroductionRepository {
+    implements _i24.IntroductionRepository {
   @override
-  _i19.Future<bool> saveCompletedIntroductions(
-    _i23.IntroductionState? introductions,
+  _i21.Future<bool> saveCompletedIntroductions(
+    _i25.IntroductionState? introductions,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#saveCompletedIntroductions, [introductions]),
-            returnValue: _i19.Future<bool>.value(false),
-            returnValueForMissingStub: _i19.Future<bool>.value(false),
+            returnValue: _i21.Future<bool>.value(false),
+            returnValueForMissingStub: _i21.Future<bool>.value(false),
           )
-          as _i19.Future<bool>);
+          as _i21.Future<bool>);
 
   @override
-  _i19.Future<_i23.IntroductionState> loadCompletedIntroductions() =>
+  _i21.Future<_i25.IntroductionState> loadCompletedIntroductions() =>
       (super.noSuchMethod(
             Invocation.method(#loadCompletedIntroductions, []),
-            returnValue: _i19.Future<_i23.IntroductionState>.value(
-              _i24.dummyValue<_i23.IntroductionState>(
+            returnValue: _i21.Future<_i25.IntroductionState>.value(
+              _i26.dummyValue<_i25.IntroductionState>(
                 this,
                 Invocation.method(#loadCompletedIntroductions, []),
               ),
             ),
             returnValueForMissingStub:
-                _i19.Future<_i23.IntroductionState>.value(
-                  _i24.dummyValue<_i23.IntroductionState>(
+                _i21.Future<_i25.IntroductionState>.value(
+                  _i26.dummyValue<_i25.IntroductionState>(
                     this,
                     Invocation.method(#loadCompletedIntroductions, []),
                   ),
                 ),
           )
-          as _i19.Future<_i23.IntroductionState>);
+          as _i21.Future<_i25.IntroductionState>);
 }
 
 /// A class which mocks [PushRequestRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
 class MockPushRequestRepository extends _i1.Mock
-    implements _i25.PushRequestRepository {
+    implements _i20.PushRequestRepository {
   @override
-  _i19.Future<_i4.PushRequestState> loadState() =>
+  _i21.Future<_i4.PushRequestState> loadState() =>
       (super.noSuchMethod(
             Invocation.method(#loadState, []),
-            returnValue: _i19.Future<_i4.PushRequestState>.value(
+            returnValue: _i21.Future<_i4.PushRequestState>.value(
               _FakePushRequestState_2(this, Invocation.method(#loadState, [])),
             ),
-            returnValueForMissingStub: _i19.Future<_i4.PushRequestState>.value(
+            returnValueForMissingStub: _i21.Future<_i4.PushRequestState>.value(
               _FakePushRequestState_2(this, Invocation.method(#loadState, [])),
             ),
           )
-          as _i19.Future<_i4.PushRequestState>);
+          as _i21.Future<_i4.PushRequestState>);
 
   @override
-  _i19.Future<void> saveState(_i4.PushRequestState? pushRequestState) =>
+  _i21.Future<void> saveState(_i4.PushRequestState? pushRequestState) =>
       (super.noSuchMethod(
             Invocation.method(#saveState, [pushRequestState]),
-            returnValue: _i19.Future<void>.value(),
-            returnValueForMissingStub: _i19.Future<void>.value(),
+            returnValue: _i21.Future<void>.value(),
+            returnValueForMissingStub: _i21.Future<void>.value(),
           )
-          as _i19.Future<void>);
+          as _i21.Future<void>);
 
   @override
-  _i19.Future<void> clearState() =>
+  _i21.Future<void> clearState() =>
       (super.noSuchMethod(
             Invocation.method(#clearState, []),
-            returnValue: _i19.Future<void>.value(),
-            returnValueForMissingStub: _i19.Future<void>.value(),
+            returnValue: _i21.Future<void>.value(),
+            returnValueForMissingStub: _i21.Future<void>.value(),
           )
-          as _i19.Future<void>);
+          as _i21.Future<void>);
 
   @override
-  _i19.Future<_i4.PushRequestState> addRequest(
-    _i26.PushRequest? pushRequest, {
+  _i21.Future<_i4.PushRequestState> addRequest(
+    _i27.PushRequest? pushRequest, {
     _i4.PushRequestState? state,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#addRequest, [pushRequest], {#state: state}),
-            returnValue: _i19.Future<_i4.PushRequestState>.value(
+            returnValue: _i21.Future<_i4.PushRequestState>.value(
               _FakePushRequestState_2(
                 this,
                 Invocation.method(#addRequest, [pushRequest], {#state: state}),
               ),
             ),
-            returnValueForMissingStub: _i19.Future<_i4.PushRequestState>.value(
+            returnValueForMissingStub: _i21.Future<_i4.PushRequestState>.value(
               _FakePushRequestState_2(
                 this,
                 Invocation.method(#addRequest, [pushRequest], {#state: state}),
               ),
             ),
           )
-          as _i19.Future<_i4.PushRequestState>);
+          as _i21.Future<_i4.PushRequestState>);
 
   @override
-  _i19.Future<_i4.PushRequestState> removeRequest(
-    _i26.PushRequest? pushRequest, {
+  _i21.Future<_i4.PushRequestState> removeRequest(
+    _i27.PushRequest? pushRequest, {
     _i4.PushRequestState? state,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#removeRequest, [pushRequest], {#state: state}),
-            returnValue: _i19.Future<_i4.PushRequestState>.value(
+            returnValue: _i21.Future<_i4.PushRequestState>.value(
               _FakePushRequestState_2(
                 this,
                 Invocation.method(
@@ -501,7 +518,7 @@ class MockPushRequestRepository extends _i1.Mock
                 ),
               ),
             ),
-            returnValueForMissingStub: _i19.Future<_i4.PushRequestState>.value(
+            returnValueForMissingStub: _i21.Future<_i4.PushRequestState>.value(
               _FakePushRequestState_2(
                 this,
                 Invocation.method(
@@ -512,7 +529,7 @@ class MockPushRequestRepository extends _i1.Mock
               ),
             ),
           )
-          as _i19.Future<_i4.PushRequestState>);
+          as _i21.Future<_i4.PushRequestState>);
 }
 
 /// A class which mocks [TokenContainerRepository].
@@ -521,140 +538,140 @@ class MockPushRequestRepository extends _i1.Mock
 class MockTokenContainerRepository extends _i1.Mock
     implements _i12.TokenContainerRepository {
   @override
-  _i19.Future<_i27.TokenContainerState> loadContainerState() =>
+  _i21.Future<_i28.TokenContainerState> loadContainerState() =>
       (super.noSuchMethod(
             Invocation.method(#loadContainerState, []),
-            returnValue: _i19.Future<_i27.TokenContainerState>.value(
-              _i24.dummyValue<_i27.TokenContainerState>(
+            returnValue: _i21.Future<_i28.TokenContainerState>.value(
+              _i26.dummyValue<_i28.TokenContainerState>(
                 this,
                 Invocation.method(#loadContainerState, []),
               ),
             ),
             returnValueForMissingStub:
-                _i19.Future<_i27.TokenContainerState>.value(
-                  _i24.dummyValue<_i27.TokenContainerState>(
+                _i21.Future<_i28.TokenContainerState>.value(
+                  _i26.dummyValue<_i28.TokenContainerState>(
                     this,
                     Invocation.method(#loadContainerState, []),
                   ),
                 ),
           )
-          as _i19.Future<_i27.TokenContainerState>);
+          as _i21.Future<_i28.TokenContainerState>);
 
   @override
-  _i19.Future<_i27.TokenContainerState> saveContainerState(
-    _i27.TokenContainerState? containerState,
+  _i21.Future<_i28.TokenContainerState> saveContainerState(
+    _i28.TokenContainerState? containerState,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#saveContainerState, [containerState]),
-            returnValue: _i19.Future<_i27.TokenContainerState>.value(
-              _i24.dummyValue<_i27.TokenContainerState>(
+            returnValue: _i21.Future<_i28.TokenContainerState>.value(
+              _i26.dummyValue<_i28.TokenContainerState>(
                 this,
                 Invocation.method(#saveContainerState, [containerState]),
               ),
             ),
             returnValueForMissingStub:
-                _i19.Future<_i27.TokenContainerState>.value(
-                  _i24.dummyValue<_i27.TokenContainerState>(
+                _i21.Future<_i28.TokenContainerState>.value(
+                  _i26.dummyValue<_i28.TokenContainerState>(
                     this,
                     Invocation.method(#saveContainerState, [containerState]),
                   ),
                 ),
           )
-          as _i19.Future<_i27.TokenContainerState>);
+          as _i21.Future<_i28.TokenContainerState>);
 
   @override
-  _i19.Future<_i27.TokenContainerState> saveContainerList(
+  _i21.Future<_i28.TokenContainerState> saveContainerList(
     List<_i15.TokenContainer>? containerList,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#saveContainerList, [containerList]),
-            returnValue: _i19.Future<_i27.TokenContainerState>.value(
-              _i24.dummyValue<_i27.TokenContainerState>(
+            returnValue: _i21.Future<_i28.TokenContainerState>.value(
+              _i26.dummyValue<_i28.TokenContainerState>(
                 this,
                 Invocation.method(#saveContainerList, [containerList]),
               ),
             ),
             returnValueForMissingStub:
-                _i19.Future<_i27.TokenContainerState>.value(
-                  _i24.dummyValue<_i27.TokenContainerState>(
+                _i21.Future<_i28.TokenContainerState>.value(
+                  _i26.dummyValue<_i28.TokenContainerState>(
                     this,
                     Invocation.method(#saveContainerList, [containerList]),
                   ),
                 ),
           )
-          as _i19.Future<_i27.TokenContainerState>);
+          as _i21.Future<_i28.TokenContainerState>);
 
   @override
-  _i19.Future<_i27.TokenContainerState> deleteContainer(String? serial) =>
+  _i21.Future<_i28.TokenContainerState> deleteContainer(String? serial) =>
       (super.noSuchMethod(
             Invocation.method(#deleteContainer, [serial]),
-            returnValue: _i19.Future<_i27.TokenContainerState>.value(
-              _i24.dummyValue<_i27.TokenContainerState>(
+            returnValue: _i21.Future<_i28.TokenContainerState>.value(
+              _i26.dummyValue<_i28.TokenContainerState>(
                 this,
                 Invocation.method(#deleteContainer, [serial]),
               ),
             ),
             returnValueForMissingStub:
-                _i19.Future<_i27.TokenContainerState>.value(
-                  _i24.dummyValue<_i27.TokenContainerState>(
+                _i21.Future<_i28.TokenContainerState>.value(
+                  _i26.dummyValue<_i28.TokenContainerState>(
                     this,
                     Invocation.method(#deleteContainer, [serial]),
                   ),
                 ),
           )
-          as _i19.Future<_i27.TokenContainerState>);
+          as _i21.Future<_i28.TokenContainerState>);
 
   @override
-  _i19.Future<_i27.TokenContainerState> deleteAllContainer() =>
+  _i21.Future<_i28.TokenContainerState> deleteAllContainer() =>
       (super.noSuchMethod(
             Invocation.method(#deleteAllContainer, []),
-            returnValue: _i19.Future<_i27.TokenContainerState>.value(
-              _i24.dummyValue<_i27.TokenContainerState>(
+            returnValue: _i21.Future<_i28.TokenContainerState>.value(
+              _i26.dummyValue<_i28.TokenContainerState>(
                 this,
                 Invocation.method(#deleteAllContainer, []),
               ),
             ),
             returnValueForMissingStub:
-                _i19.Future<_i27.TokenContainerState>.value(
-                  _i24.dummyValue<_i27.TokenContainerState>(
+                _i21.Future<_i28.TokenContainerState>.value(
+                  _i26.dummyValue<_i28.TokenContainerState>(
                     this,
                     Invocation.method(#deleteAllContainer, []),
                   ),
                 ),
           )
-          as _i19.Future<_i27.TokenContainerState>);
+          as _i21.Future<_i28.TokenContainerState>);
 
   @override
-  _i19.Future<_i15.TokenContainer?> loadContainer(String? serial) =>
+  _i21.Future<_i15.TokenContainer?> loadContainer(String? serial) =>
       (super.noSuchMethod(
             Invocation.method(#loadContainer, [serial]),
-            returnValue: _i19.Future<_i15.TokenContainer?>.value(),
+            returnValue: _i21.Future<_i15.TokenContainer?>.value(),
             returnValueForMissingStub:
-                _i19.Future<_i15.TokenContainer?>.value(),
+                _i21.Future<_i15.TokenContainer?>.value(),
           )
-          as _i19.Future<_i15.TokenContainer?>);
+          as _i21.Future<_i15.TokenContainer?>);
 
   @override
-  _i19.Future<_i27.TokenContainerState> saveContainer(
+  _i21.Future<_i28.TokenContainerState> saveContainer(
     _i15.TokenContainer? container,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#saveContainer, [container]),
-            returnValue: _i19.Future<_i27.TokenContainerState>.value(
-              _i24.dummyValue<_i27.TokenContainerState>(
+            returnValue: _i21.Future<_i28.TokenContainerState>.value(
+              _i26.dummyValue<_i28.TokenContainerState>(
                 this,
                 Invocation.method(#saveContainer, [container]),
               ),
             ),
             returnValueForMissingStub:
-                _i19.Future<_i27.TokenContainerState>.value(
-                  _i24.dummyValue<_i27.TokenContainerState>(
+                _i21.Future<_i28.TokenContainerState>.value(
+                  _i26.dummyValue<_i28.TokenContainerState>(
                     this,
                     Invocation.method(#saveContainer, [container]),
                   ),
                 ),
           )
-          as _i19.Future<_i27.TokenContainerState>);
+          as _i21.Future<_i28.TokenContainerState>);
 }
 
 /// A class which mocks [TokenContainerApi].
@@ -662,20 +679,20 @@ class MockTokenContainerRepository extends _i1.Mock
 /// See the documentation for Mockito's code generation for more information.
 class MockTokenContainerApi extends _i1.Mock implements _i13.TokenContainerApi {
   @override
-  _i19.Future<_i5.ContainerFinalizationResponse> finalizeContainer(
+  _i21.Future<_i5.ContainerFinalizationResponse> finalizeContainer(
     _i15.TokenContainerUnfinalized? container,
     _i14.EccUtils? eccUtils,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#finalizeContainer, [container, eccUtils]),
-            returnValue: _i19.Future<_i5.ContainerFinalizationResponse>.value(
+            returnValue: _i21.Future<_i5.ContainerFinalizationResponse>.value(
               _FakeContainerFinalizationResponse_3(
                 this,
                 Invocation.method(#finalizeContainer, [container, eccUtils]),
               ),
             ),
             returnValueForMissingStub:
-                _i19.Future<_i5.ContainerFinalizationResponse>.value(
+                _i21.Future<_i5.ContainerFinalizationResponse>.value(
                   _FakeContainerFinalizationResponse_3(
                     this,
                     Invocation.method(#finalizeContainer, [
@@ -685,31 +702,31 @@ class MockTokenContainerApi extends _i1.Mock implements _i13.TokenContainerApi {
                   ),
                 ),
           )
-          as _i19.Future<_i5.ContainerFinalizationResponse>);
+          as _i21.Future<_i5.ContainerFinalizationResponse>);
 
   @override
-  _i19.Future<_i5.TransferQrData> getRolloverQrData(
+  _i21.Future<_i5.TransferQrData> getRolloverQrData(
     _i15.TokenContainerFinalized? container,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#getRolloverQrData, [container]),
-            returnValue: _i19.Future<_i5.TransferQrData>.value(
+            returnValue: _i21.Future<_i5.TransferQrData>.value(
               _FakeTransferQrData_4(
                 this,
                 Invocation.method(#getRolloverQrData, [container]),
               ),
             ),
-            returnValueForMissingStub: _i19.Future<_i5.TransferQrData>.value(
+            returnValueForMissingStub: _i21.Future<_i5.TransferQrData>.value(
               _FakeTransferQrData_4(
                 this,
                 Invocation.method(#getRolloverQrData, [container]),
               ),
             ),
           )
-          as _i19.Future<_i5.TransferQrData>);
+          as _i21.Future<_i5.TransferQrData>);
 
   @override
-  _i19.Future<_i13.ContainerSyncUpdates?> sync(
+  _i21.Future<_i13.ContainerSyncUpdates?> sync(
     _i15.TokenContainerFinalized? container,
     _i18.TokenState? tokenState, {
     bool? isInitSync,
@@ -720,33 +737,33 @@ class MockTokenContainerApi extends _i1.Mock implements _i13.TokenContainerApi {
               [container, tokenState],
               {#isInitSync: isInitSync},
             ),
-            returnValue: _i19.Future<_i13.ContainerSyncUpdates?>.value(),
+            returnValue: _i21.Future<_i13.ContainerSyncUpdates?>.value(),
             returnValueForMissingStub:
-                _i19.Future<_i13.ContainerSyncUpdates?>.value(),
+                _i21.Future<_i13.ContainerSyncUpdates?>.value(),
           )
-          as _i19.Future<_i13.ContainerSyncUpdates?>);
+          as _i21.Future<_i13.ContainerSyncUpdates?>);
 
   @override
-  _i19.Future<_i5.UnregisterContainerResult> unregister(
+  _i21.Future<_i5.UnregisterContainerResult> unregister(
     _i15.TokenContainerFinalized? container,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#unregister, [container]),
-            returnValue: _i19.Future<_i5.UnregisterContainerResult>.value(
+            returnValue: _i21.Future<_i5.UnregisterContainerResult>.value(
               _FakeUnregisterContainerResult_5(
                 this,
                 Invocation.method(#unregister, [container]),
               ),
             ),
             returnValueForMissingStub:
-                _i19.Future<_i5.UnregisterContainerResult>.value(
+                _i21.Future<_i5.UnregisterContainerResult>.value(
                   _FakeUnregisterContainerResult_5(
                     this,
                     Invocation.method(#unregister, [container]),
                   ),
                 ),
           )
-          as _i19.Future<_i5.UnregisterContainerResult>);
+          as _i21.Future<_i5.UnregisterContainerResult>);
 }
 
 /// A class which mocks [PrivacyideaIOClient].
@@ -755,7 +772,7 @@ class MockTokenContainerApi extends _i1.Mock implements _i13.TokenContainerApi {
 class MockPrivacyideaIOClient extends _i1.Mock
     implements _i9.PrivacyideaIOClient {
   @override
-  _i19.Future<bool> triggerNetworkAccessPermission({
+  _i21.Future<bool> triggerNetworkAccessPermission({
     required Uri? url,
     bool? sslVerify = true,
     bool? isRetry = false,
@@ -766,13 +783,13 @@ class MockPrivacyideaIOClient extends _i1.Mock
               #sslVerify: sslVerify,
               #isRetry: isRetry,
             }),
-            returnValue: _i19.Future<bool>.value(false),
-            returnValueForMissingStub: _i19.Future<bool>.value(false),
+            returnValue: _i21.Future<bool>.value(false),
+            returnValueForMissingStub: _i21.Future<bool>.value(false),
           )
-          as _i19.Future<bool>);
+          as _i21.Future<bool>);
 
   @override
-  _i19.Future<_i6.Response> doPost({
+  _i21.Future<_i6.Response> doPost({
     required Uri? url,
     required Map<String, String?>? body,
     bool? sslVerify = true,
@@ -783,7 +800,7 @@ class MockPrivacyideaIOClient extends _i1.Mock
               #body: body,
               #sslVerify: sslVerify,
             }),
-            returnValue: _i19.Future<_i6.Response>.value(
+            returnValue: _i21.Future<_i6.Response>.value(
               _FakeResponse_6(
                 this,
                 Invocation.method(#doPost, [], {
@@ -793,7 +810,7 @@ class MockPrivacyideaIOClient extends _i1.Mock
                 }),
               ),
             ),
-            returnValueForMissingStub: _i19.Future<_i6.Response>.value(
+            returnValueForMissingStub: _i21.Future<_i6.Response>.value(
               _FakeResponse_6(
                 this,
                 Invocation.method(#doPost, [], {
@@ -804,10 +821,10 @@ class MockPrivacyideaIOClient extends _i1.Mock
               ),
             ),
           )
-          as _i19.Future<_i6.Response>);
+          as _i21.Future<_i6.Response>);
 
   @override
-  _i19.Future<_i6.Response> doGet({
+  _i21.Future<_i6.Response> doGet({
     required Uri? url,
     required Map<String, String?>? parameters,
     bool? sslVerify = true,
@@ -818,7 +835,7 @@ class MockPrivacyideaIOClient extends _i1.Mock
               #parameters: parameters,
               #sslVerify: sslVerify,
             }),
-            returnValue: _i19.Future<_i6.Response>.value(
+            returnValue: _i21.Future<_i6.Response>.value(
               _FakeResponse_6(
                 this,
                 Invocation.method(#doGet, [], {
@@ -828,7 +845,7 @@ class MockPrivacyideaIOClient extends _i1.Mock
                 }),
               ),
             ),
-            returnValueForMissingStub: _i19.Future<_i6.Response>.value(
+            returnValueForMissingStub: _i21.Future<_i6.Response>.value(
               _FakeResponse_6(
                 this,
                 Invocation.method(#doGet, [], {
@@ -839,7 +856,7 @@ class MockPrivacyideaIOClient extends _i1.Mock
               ),
             ),
           )
-          as _i19.Future<_i6.Response>);
+          as _i21.Future<_i6.Response>);
 }
 
 /// A class which mocks [RsaUtils].
@@ -865,11 +882,11 @@ class MockRsaUtils extends _i1.Mock implements _i10.RsaUtils {
   String serializeRSAPublicKeyPKCS1(_i7.RSAPublicKey? publicKey) =>
       (super.noSuchMethod(
             Invocation.method(#serializeRSAPublicKeyPKCS1, [publicKey]),
-            returnValue: _i24.dummyValue<String>(
+            returnValue: _i26.dummyValue<String>(
               this,
               Invocation.method(#serializeRSAPublicKeyPKCS1, [publicKey]),
             ),
-            returnValueForMissingStub: _i24.dummyValue<String>(
+            returnValueForMissingStub: _i26.dummyValue<String>(
               this,
               Invocation.method(#serializeRSAPublicKeyPKCS1, [publicKey]),
             ),
@@ -895,11 +912,11 @@ class MockRsaUtils extends _i1.Mock implements _i10.RsaUtils {
   String serializeRSAPublicKeyPKCS8(_i7.RSAPublicKey? key) =>
       (super.noSuchMethod(
             Invocation.method(#serializeRSAPublicKeyPKCS8, [key]),
-            returnValue: _i24.dummyValue<String>(
+            returnValue: _i26.dummyValue<String>(
               this,
               Invocation.method(#serializeRSAPublicKeyPKCS8, [key]),
             ),
-            returnValueForMissingStub: _i24.dummyValue<String>(
+            returnValueForMissingStub: _i26.dummyValue<String>(
               this,
               Invocation.method(#serializeRSAPublicKeyPKCS8, [key]),
             ),
@@ -910,11 +927,11 @@ class MockRsaUtils extends _i1.Mock implements _i10.RsaUtils {
   String serializeRSAPrivateKeyPKCS1(_i7.RSAPrivateKey? key) =>
       (super.noSuchMethod(
             Invocation.method(#serializeRSAPrivateKeyPKCS1, [key]),
-            returnValue: _i24.dummyValue<String>(
+            returnValue: _i26.dummyValue<String>(
               this,
               Invocation.method(#serializeRSAPrivateKeyPKCS1, [key]),
             ),
-            returnValueForMissingStub: _i24.dummyValue<String>(
+            returnValueForMissingStub: _i26.dummyValue<String>(
               this,
               Invocation.method(#serializeRSAPrivateKeyPKCS1, [key]),
             ),
@@ -939,8 +956,8 @@ class MockRsaUtils extends _i1.Mock implements _i10.RsaUtils {
   @override
   bool verifyRSASignature(
     _i7.RSAPublicKey? publicKey,
-    _i28.Uint8List? signedMessage,
-    _i28.Uint8List? signature,
+    _i29.Uint8List? signedMessage,
+    _i29.Uint8List? signature,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#verifyRSASignature, [
@@ -954,24 +971,24 @@ class MockRsaUtils extends _i1.Mock implements _i10.RsaUtils {
           as bool);
 
   @override
-  _i19.Future<String?> trySignWithToken(
-    _i29.PushToken? token,
+  _i21.Future<String?> trySignWithToken(
+    _i30.PushToken? token,
     String? message,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#trySignWithToken, [token, message]),
-            returnValue: _i19.Future<String?>.value(),
-            returnValueForMissingStub: _i19.Future<String?>.value(),
+            returnValue: _i21.Future<String?>.value(),
+            returnValueForMissingStub: _i21.Future<String?>.value(),
           )
-          as _i19.Future<String?>);
+          as _i21.Future<String?>);
 
   @override
-  _i19.Future<_i7.AsymmetricKeyPair<_i7.RSAPublicKey, _i7.RSAPrivateKey>>
+  _i21.Future<_i7.AsymmetricKeyPair<_i7.RSAPublicKey, _i7.RSAPrivateKey>>
   generateRSAKeyPair() =>
       (super.noSuchMethod(
             Invocation.method(#generateRSAKeyPair, []),
             returnValue:
-                _i19.Future<
+                _i21.Future<
                   _i7.AsymmetricKeyPair<_i7.RSAPublicKey, _i7.RSAPrivateKey>
                 >.value(
                   _FakeAsymmetricKeyPair_9<_i7.RSAPublicKey, _i7.RSAPrivateKey>(
@@ -980,7 +997,7 @@ class MockRsaUtils extends _i1.Mock implements _i10.RsaUtils {
                   ),
                 ),
             returnValueForMissingStub:
-                _i19.Future<
+                _i21.Future<
                   _i7.AsymmetricKeyPair<_i7.RSAPublicKey, _i7.RSAPrivateKey>
                 >.value(
                   _FakeAsymmetricKeyPair_9<_i7.RSAPublicKey, _i7.RSAPrivateKey>(
@@ -989,25 +1006,25 @@ class MockRsaUtils extends _i1.Mock implements _i10.RsaUtils {
                   ),
                 ),
           )
-          as _i19.Future<
+          as _i21.Future<
             _i7.AsymmetricKeyPair<_i7.RSAPublicKey, _i7.RSAPrivateKey>
           >);
 
   @override
   String createBase32Signature(
     _i7.RSAPrivateKey? privateKey,
-    _i28.Uint8List? dataToSign,
+    _i29.Uint8List? dataToSign,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#createBase32Signature, [privateKey, dataToSign]),
-            returnValue: _i24.dummyValue<String>(
+            returnValue: _i26.dummyValue<String>(
               this,
               Invocation.method(#createBase32Signature, [
                 privateKey,
                 dataToSign,
               ]),
             ),
-            returnValueForMissingStub: _i24.dummyValue<String>(
+            returnValueForMissingStub: _i26.dummyValue<String>(
               this,
               Invocation.method(#createBase32Signature, [
                 privateKey,
@@ -1018,16 +1035,16 @@ class MockRsaUtils extends _i1.Mock implements _i10.RsaUtils {
           as String);
 
   @override
-  _i28.Uint8List createRSASignature(
+  _i29.Uint8List createRSASignature(
     _i7.RSAPrivateKey? privateKey,
-    _i28.Uint8List? dataToSign,
+    _i29.Uint8List? dataToSign,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#createRSASignature, [privateKey, dataToSign]),
-            returnValue: _i28.Uint8List(0),
-            returnValueForMissingStub: _i28.Uint8List(0),
+            returnValue: _i29.Uint8List(0),
+            returnValueForMissingStub: _i29.Uint8List(0),
           )
-          as _i28.Uint8List);
+          as _i29.Uint8List);
 }
 
 /// A class which mocks [EccUtils].
@@ -1038,11 +1055,11 @@ class MockEccUtils extends _i1.Mock implements _i14.EccUtils {
   String serializeECPublicKey(_i7.ECPublicKey? publicKey) =>
       (super.noSuchMethod(
             Invocation.method(#serializeECPublicKey, [publicKey]),
-            returnValue: _i24.dummyValue<String>(
+            returnValue: _i26.dummyValue<String>(
               this,
               Invocation.method(#serializeECPublicKey, [publicKey]),
             ),
-            returnValueForMissingStub: _i24.dummyValue<String>(
+            returnValueForMissingStub: _i26.dummyValue<String>(
               this,
               Invocation.method(#serializeECPublicKey, [publicKey]),
             ),
@@ -1068,11 +1085,11 @@ class MockEccUtils extends _i1.Mock implements _i14.EccUtils {
   String serializeECPrivateKey(_i7.ECPrivateKey? ecPrivateKey) =>
       (super.noSuchMethod(
             Invocation.method(#serializeECPrivateKey, [ecPrivateKey]),
-            returnValue: _i24.dummyValue<String>(
+            returnValue: _i26.dummyValue<String>(
               this,
               Invocation.method(#serializeECPrivateKey, [ecPrivateKey]),
             ),
-            returnValueForMissingStub: _i24.dummyValue<String>(
+            returnValueForMissingStub: _i26.dummyValue<String>(
               this,
               Invocation.method(#serializeECPrivateKey, [ecPrivateKey]),
             ),
@@ -1098,11 +1115,11 @@ class MockEccUtils extends _i1.Mock implements _i14.EccUtils {
   String signWithPrivateKey(_i7.ECPrivateKey? privateKey, String? message) =>
       (super.noSuchMethod(
             Invocation.method(#signWithPrivateKey, [privateKey, message]),
-            returnValue: _i24.dummyValue<String>(
+            returnValue: _i26.dummyValue<String>(
               this,
               Invocation.method(#signWithPrivateKey, [privateKey, message]),
             ),
-            returnValueForMissingStub: _i24.dummyValue<String>(
+            returnValueForMissingStub: _i26.dummyValue<String>(
               this,
               Invocation.method(#signWithPrivateKey, [privateKey, message]),
             ),
@@ -1111,7 +1128,7 @@ class MockEccUtils extends _i1.Mock implements _i14.EccUtils {
 
   @override
   _i7.AsymmetricKeyPair<_i7.ECPublicKey, _i7.ECPrivateKey> generateKeyPair(
-    _i30.EcKeyAlgorithm? keyAlgorithm,
+    _i31.EcKeyAlgorithm? keyAlgorithm,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#generateKeyPair, [keyAlgorithm]),
@@ -1181,18 +1198,18 @@ class MockFirebaseUtils extends _i1.Mock implements _i8.FirebaseUtils {
   );
 
   @override
-  _i19.Future<_i31.FirebaseApp?> initializeApp() =>
+  _i21.Future<_i32.FirebaseApp?> initializeApp() =>
       (super.noSuchMethod(
             Invocation.method(#initializeApp, []),
-            returnValue: _i19.Future<_i31.FirebaseApp?>.value(),
-            returnValueForMissingStub: _i19.Future<_i31.FirebaseApp?>.value(),
+            returnValue: _i21.Future<_i32.FirebaseApp?>.value(),
+            returnValueForMissingStub: _i21.Future<_i32.FirebaseApp?>.value(),
           )
-          as _i19.Future<_i31.FirebaseApp?>);
+          as _i21.Future<_i32.FirebaseApp?>);
 
   @override
-  _i19.Future<void> setupHandler({
-    required _i19.Future<void> Function(_i32.RemoteMessage)? foregroundHandler,
-    required _i19.Future<void> Function(_i32.RemoteMessage)? backgroundHandler,
+  _i21.Future<void> setupHandler({
+    required _i21.Future<void> Function(_i33.RemoteMessage)? foregroundHandler,
+    required _i21.Future<void> Function(_i33.RemoteMessage)? backgroundHandler,
     required dynamic Function({String? firebaseToken})? updateFirebaseToken,
   }) =>
       (super.noSuchMethod(
@@ -1201,70 +1218,70 @@ class MockFirebaseUtils extends _i1.Mock implements _i8.FirebaseUtils {
               #backgroundHandler: backgroundHandler,
               #updateFirebaseToken: updateFirebaseToken,
             }),
-            returnValue: _i19.Future<void>.value(),
-            returnValueForMissingStub: _i19.Future<void>.value(),
+            returnValue: _i21.Future<void>.value(),
+            returnValueForMissingStub: _i21.Future<void>.value(),
           )
-          as _i19.Future<void>);
+          as _i21.Future<void>);
 
   @override
-  _i19.Future<String?> getFBToken() =>
+  _i21.Future<String?> getFBToken() =>
       (super.noSuchMethod(
             Invocation.method(#getFBToken, []),
-            returnValue: _i19.Future<String?>.value(),
-            returnValueForMissingStub: _i19.Future<String?>.value(),
+            returnValue: _i21.Future<String?>.value(),
+            returnValueForMissingStub: _i21.Future<String?>.value(),
           )
-          as _i19.Future<String?>);
+          as _i21.Future<String?>);
 
   @override
-  _i19.Future<bool> deleteFirebaseToken() =>
+  _i21.Future<bool> deleteFirebaseToken() =>
       (super.noSuchMethod(
             Invocation.method(#deleteFirebaseToken, []),
-            returnValue: _i19.Future<bool>.value(false),
-            returnValueForMissingStub: _i19.Future<bool>.value(false),
+            returnValue: _i21.Future<bool>.value(false),
+            returnValueForMissingStub: _i21.Future<bool>.value(false),
           )
-          as _i19.Future<bool>);
+          as _i21.Future<bool>);
 
   @override
-  _i19.Future<void> setCurrentFirebaseToken(String? str) =>
+  _i21.Future<void> setCurrentFirebaseToken(String? str) =>
       (super.noSuchMethod(
             Invocation.method(#setCurrentFirebaseToken, [str]),
-            returnValue: _i19.Future<void>.value(),
-            returnValueForMissingStub: _i19.Future<void>.value(),
+            returnValue: _i21.Future<void>.value(),
+            returnValueForMissingStub: _i21.Future<void>.value(),
           )
-          as _i19.Future<void>);
+          as _i21.Future<void>);
 
   @override
-  _i19.Future<String?> getCurrentFirebaseToken() =>
+  _i21.Future<String?> getCurrentFirebaseToken() =>
       (super.noSuchMethod(
             Invocation.method(#getCurrentFirebaseToken, []),
-            returnValue: _i19.Future<String?>.value(),
-            returnValueForMissingStub: _i19.Future<String?>.value(),
+            returnValue: _i21.Future<String?>.value(),
+            returnValueForMissingStub: _i21.Future<String?>.value(),
           )
-          as _i19.Future<String?>);
+          as _i21.Future<String?>);
 
   @override
-  _i19.Future<void> setNewFirebaseToken(String? str) =>
+  _i21.Future<void> setNewFirebaseToken(String? str) =>
       (super.noSuchMethod(
             Invocation.method(#setNewFirebaseToken, [str]),
-            returnValue: _i19.Future<void>.value(),
-            returnValueForMissingStub: _i19.Future<void>.value(),
+            returnValue: _i21.Future<void>.value(),
+            returnValueForMissingStub: _i21.Future<void>.value(),
           )
-          as _i19.Future<void>);
+          as _i21.Future<void>);
 
   @override
-  _i19.Future<String?> getNewFirebaseToken() =>
+  _i21.Future<String?> getNewFirebaseToken() =>
       (super.noSuchMethod(
             Invocation.method(#getNewFirebaseToken, []),
-            returnValue: _i19.Future<String?>.value(),
-            returnValueForMissingStub: _i19.Future<String?>.value(),
+            returnValue: _i21.Future<String?>.value(),
+            returnValueForMissingStub: _i21.Future<String?>.value(),
           )
-          as _i19.Future<String?>);
+          as _i21.Future<String?>);
 }
 
 /// A class which mocks [PushProvider].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockPushProvider extends _i1.Mock implements _i33.PushProvider {
+class MockPushProvider extends _i1.Mock implements _i19.PushProvider {
   @override
   bool get pollingIsEnabled =>
       (super.noSuchMethod(
@@ -1323,13 +1340,13 @@ class MockPushProvider extends _i1.Mock implements _i33.PushProvider {
   );
 
   @override
-  _i19.Future<void> initFirebase() =>
+  _i21.Future<void> initFirebase() =>
       (super.noSuchMethod(
             Invocation.method(#initFirebase, []),
-            returnValue: _i19.Future<void>.value(),
-            returnValueForMissingStub: _i19.Future<void>.value(),
+            returnValue: _i21.Future<void>.value(),
+            returnValueForMissingStub: _i21.Future<void>.value(),
           )
-          as _i19.Future<void>);
+          as _i21.Future<void>);
 
   @override
   void setPollingEnabled(bool? enablePolling) => super.noSuchMethod(
@@ -1338,19 +1355,19 @@ class MockPushProvider extends _i1.Mock implements _i33.PushProvider {
   );
 
   @override
-  _i19.Future<void> pollForChallenges({required bool? isManually}) =>
+  _i21.Future<void> pollForChallenges({required bool? isManually}) =>
       (super.noSuchMethod(
             Invocation.method(#pollForChallenges, [], {
               #isManually: isManually,
             }),
-            returnValue: _i19.Future<void>.value(),
-            returnValueForMissingStub: _i19.Future<void>.value(),
+            returnValue: _i21.Future<void>.value(),
+            returnValueForMissingStub: _i21.Future<void>.value(),
           )
-          as _i19.Future<void>);
+          as _i21.Future<void>);
 
   @override
-  _i19.Future<void> pollForChallenge(
-    _i29.PushToken? token, {
+  _i21.Future<void> pollForChallenge(
+    _i30.PushToken? token, {
     bool? isManually = true,
   }) =>
       (super.noSuchMethod(
@@ -1359,38 +1376,38 @@ class MockPushProvider extends _i1.Mock implements _i33.PushProvider {
               [token],
               {#isManually: isManually},
             ),
-            returnValue: _i19.Future<void>.value(),
-            returnValueForMissingStub: _i19.Future<void>.value(),
+            returnValue: _i21.Future<void>.value(),
+            returnValueForMissingStub: _i21.Future<void>.value(),
           )
-          as _i19.Future<void>);
+          as _i21.Future<void>);
 
   @override
-  _i19.Future<(List<_i29.PushToken>, List<_i29.PushToken>)?>
+  _i21.Future<(List<_i30.PushToken>, List<_i30.PushToken>)?>
   updateAllFirebaseTokens({String? firebaseToken}) =>
       (super.noSuchMethod(
             Invocation.method(#updateAllFirebaseTokens, [], {
               #firebaseToken: firebaseToken,
             }),
             returnValue:
-                _i19.Future<
-                  (List<_i29.PushToken>, List<_i29.PushToken>)?
+                _i21.Future<
+                  (List<_i30.PushToken>, List<_i30.PushToken>)?
                 >.value(),
             returnValueForMissingStub:
-                _i19.Future<
-                  (List<_i29.PushToken>, List<_i29.PushToken>)?
+                _i21.Future<
+                  (List<_i30.PushToken>, List<_i30.PushToken>)?
                 >.value(),
           )
-          as _i19.Future<(List<_i29.PushToken>, List<_i29.PushToken>)?>);
+          as _i21.Future<(List<_i30.PushToken>, List<_i30.PushToken>)?>);
 
   @override
-  void unsubscribe(void Function(_i26.PushRequest)? newRequest) =>
+  void unsubscribe(void Function(_i27.PushRequest)? newRequest) =>
       super.noSuchMethod(
         Invocation.method(#unsubscribe, [newRequest]),
         returnValueForMissingStub: null,
       );
 
   @override
-  void subscribe(void Function(_i26.PushRequest)? newRequest) =>
+  void subscribe(void Function(_i27.PushRequest)? newRequest) =>
       super.noSuchMethod(
         Invocation.method(#subscribe, [newRequest]),
         returnValueForMissingStub: null,
@@ -1403,31 +1420,31 @@ class MockPushProvider extends _i1.Mock implements _i33.PushProvider {
 class MockAllowScreenshotUtils extends _i1.Mock
     implements _i34.AllowScreenshotUtils {
   @override
-  _i19.Future<bool> allowScreenshots() =>
+  _i21.Future<bool> allowScreenshots() =>
       (super.noSuchMethod(
             Invocation.method(#allowScreenshots, []),
-            returnValue: _i19.Future<bool>.value(false),
-            returnValueForMissingStub: _i19.Future<bool>.value(false),
+            returnValue: _i21.Future<bool>.value(false),
+            returnValueForMissingStub: _i21.Future<bool>.value(false),
           )
-          as _i19.Future<bool>);
+          as _i21.Future<bool>);
 
   @override
-  _i19.Future<bool> disallowScreenshots() =>
+  _i21.Future<bool> disallowScreenshots() =>
       (super.noSuchMethod(
             Invocation.method(#disallowScreenshots, []),
-            returnValue: _i19.Future<bool>.value(false),
-            returnValueForMissingStub: _i19.Future<bool>.value(false),
+            returnValue: _i21.Future<bool>.value(false),
+            returnValueForMissingStub: _i21.Future<bool>.value(false),
           )
-          as _i19.Future<bool>);
+          as _i21.Future<bool>);
 
   @override
-  _i19.Future<bool> toggleAllowScreenshots(bool? oldState) =>
+  _i21.Future<bool> toggleAllowScreenshots(bool? oldState) =>
       (super.noSuchMethod(
             Invocation.method(#toggleAllowScreenshots, [oldState]),
-            returnValue: _i19.Future<bool>.value(false),
-            returnValueForMissingStub: _i19.Future<bool>.value(false),
+            returnValue: _i21.Future<bool>.value(false),
+            returnValueForMissingStub: _i21.Future<bool>.value(false),
           )
-          as _i19.Future<bool>);
+          as _i21.Future<bool>);
 }
 
 /// A class which mocks [FlutterSecureStorage].
@@ -1567,7 +1584,7 @@ class MockFlutterSecureStorage extends _i1.Mock
   );
 
   @override
-  _i19.Future<void> write({
+  _i21.Future<void> write({
     required String? key,
     required String? value,
     _i11.AppleOptions? iOptions,
@@ -1588,13 +1605,13 @@ class MockFlutterSecureStorage extends _i1.Mock
               #mOptions: mOptions,
               #wOptions: wOptions,
             }),
-            returnValue: _i19.Future<void>.value(),
-            returnValueForMissingStub: _i19.Future<void>.value(),
+            returnValue: _i21.Future<void>.value(),
+            returnValueForMissingStub: _i21.Future<void>.value(),
           )
-          as _i19.Future<void>);
+          as _i21.Future<void>);
 
   @override
-  _i19.Future<String?> read({
+  _i21.Future<String?> read({
     required String? key,
     _i11.AppleOptions? iOptions,
     _i11.AndroidOptions? aOptions,
@@ -1613,13 +1630,13 @@ class MockFlutterSecureStorage extends _i1.Mock
               #mOptions: mOptions,
               #wOptions: wOptions,
             }),
-            returnValue: _i19.Future<String?>.value(),
-            returnValueForMissingStub: _i19.Future<String?>.value(),
+            returnValue: _i21.Future<String?>.value(),
+            returnValueForMissingStub: _i21.Future<String?>.value(),
           )
-          as _i19.Future<String?>);
+          as _i21.Future<String?>);
 
   @override
-  _i19.Future<bool> containsKey({
+  _i21.Future<bool> containsKey({
     required String? key,
     _i11.AppleOptions? iOptions,
     _i11.AndroidOptions? aOptions,
@@ -1638,13 +1655,13 @@ class MockFlutterSecureStorage extends _i1.Mock
               #mOptions: mOptions,
               #wOptions: wOptions,
             }),
-            returnValue: _i19.Future<bool>.value(false),
-            returnValueForMissingStub: _i19.Future<bool>.value(false),
+            returnValue: _i21.Future<bool>.value(false),
+            returnValueForMissingStub: _i21.Future<bool>.value(false),
           )
-          as _i19.Future<bool>);
+          as _i21.Future<bool>);
 
   @override
-  _i19.Future<void> delete({
+  _i21.Future<void> delete({
     required String? key,
     _i11.AppleOptions? iOptions,
     _i11.AndroidOptions? aOptions,
@@ -1663,13 +1680,13 @@ class MockFlutterSecureStorage extends _i1.Mock
               #mOptions: mOptions,
               #wOptions: wOptions,
             }),
-            returnValue: _i19.Future<void>.value(),
-            returnValueForMissingStub: _i19.Future<void>.value(),
+            returnValue: _i21.Future<void>.value(),
+            returnValueForMissingStub: _i21.Future<void>.value(),
           )
-          as _i19.Future<void>);
+          as _i21.Future<void>);
 
   @override
-  _i19.Future<Map<String, String>> readAll({
+  _i21.Future<Map<String, String>> readAll({
     _i11.AppleOptions? iOptions,
     _i11.AndroidOptions? aOptions,
     _i11.LinuxOptions? lOptions,
@@ -1686,17 +1703,17 @@ class MockFlutterSecureStorage extends _i1.Mock
               #mOptions: mOptions,
               #wOptions: wOptions,
             }),
-            returnValue: _i19.Future<Map<String, String>>.value(
+            returnValue: _i21.Future<Map<String, String>>.value(
               <String, String>{},
             ),
-            returnValueForMissingStub: _i19.Future<Map<String, String>>.value(
+            returnValueForMissingStub: _i21.Future<Map<String, String>>.value(
               <String, String>{},
             ),
           )
-          as _i19.Future<Map<String, String>>);
+          as _i21.Future<Map<String, String>>);
 
   @override
-  _i19.Future<void> deleteAll({
+  _i21.Future<void> deleteAll({
     _i11.AppleOptions? iOptions,
     _i11.AndroidOptions? aOptions,
     _i11.LinuxOptions? lOptions,
@@ -1713,19 +1730,19 @@ class MockFlutterSecureStorage extends _i1.Mock
               #mOptions: mOptions,
               #wOptions: wOptions,
             }),
-            returnValue: _i19.Future<void>.value(),
-            returnValueForMissingStub: _i19.Future<void>.value(),
+            returnValue: _i21.Future<void>.value(),
+            returnValueForMissingStub: _i21.Future<void>.value(),
           )
-          as _i19.Future<void>);
+          as _i21.Future<void>);
 
   @override
-  _i19.Future<bool?> isCupertinoProtectedDataAvailable() =>
+  _i21.Future<bool?> isCupertinoProtectedDataAvailable() =>
       (super.noSuchMethod(
             Invocation.method(#isCupertinoProtectedDataAvailable, []),
-            returnValue: _i19.Future<bool?>.value(),
-            returnValueForMissingStub: _i19.Future<bool?>.value(),
+            returnValue: _i21.Future<bool?>.value(),
+            returnValueForMissingStub: _i21.Future<bool?>.value(),
           )
-          as _i19.Future<bool?>);
+          as _i21.Future<bool?>);
 }
 
 /// A class which mocks [SecureStorage].
@@ -1751,11 +1768,11 @@ class MockSecureStorage extends _i1.Mock implements _i36.SecureStorage {
   String get storagePrefix =>
       (super.noSuchMethod(
             Invocation.getter(#storagePrefix),
-            returnValue: _i24.dummyValue<String>(
+            returnValue: _i26.dummyValue<String>(
               this,
               Invocation.getter(#storagePrefix),
             ),
-            returnValueForMissingStub: _i24.dummyValue<String>(
+            returnValueForMissingStub: _i26.dummyValue<String>(
               this,
               Invocation.getter(#storagePrefix),
             ),
@@ -1766,11 +1783,11 @@ class MockSecureStorage extends _i1.Mock implements _i36.SecureStorage {
   String get seperator =>
       (super.noSuchMethod(
             Invocation.getter(#seperator),
-            returnValue: _i24.dummyValue<String>(
+            returnValue: _i26.dummyValue<String>(
               this,
               Invocation.getter(#seperator),
             ),
-            returnValueForMissingStub: _i24.dummyValue<String>(
+            returnValueForMissingStub: _i26.dummyValue<String>(
               this,
               Invocation.getter(#seperator),
             ),
@@ -1781,11 +1798,11 @@ class MockSecureStorage extends _i1.Mock implements _i36.SecureStorage {
   String getFullKey(String? key) =>
       (super.noSuchMethod(
             Invocation.method(#getFullKey, [key]),
-            returnValue: _i24.dummyValue<String>(
+            returnValue: _i26.dummyValue<String>(
               this,
               Invocation.method(#getFullKey, [key]),
             ),
-            returnValueForMissingStub: _i24.dummyValue<String>(
+            returnValueForMissingStub: _i26.dummyValue<String>(
               this,
               Invocation.method(#getFullKey, [key]),
             ),
@@ -1793,53 +1810,53 @@ class MockSecureStorage extends _i1.Mock implements _i36.SecureStorage {
           as String);
 
   @override
-  _i19.Future<void> write({required String? key, required String? value}) =>
+  _i21.Future<void> write({required String? key, required String? value}) =>
       (super.noSuchMethod(
             Invocation.method(#write, [], {#key: key, #value: value}),
-            returnValue: _i19.Future<void>.value(),
-            returnValueForMissingStub: _i19.Future<void>.value(),
+            returnValue: _i21.Future<void>.value(),
+            returnValueForMissingStub: _i21.Future<void>.value(),
           )
-          as _i19.Future<void>);
+          as _i21.Future<void>);
 
   @override
-  _i19.Future<String?> read({required String? key}) =>
+  _i21.Future<String?> read({required String? key}) =>
       (super.noSuchMethod(
             Invocation.method(#read, [], {#key: key}),
-            returnValue: _i19.Future<String?>.value(),
-            returnValueForMissingStub: _i19.Future<String?>.value(),
+            returnValue: _i21.Future<String?>.value(),
+            returnValueForMissingStub: _i21.Future<String?>.value(),
           )
-          as _i19.Future<String?>);
+          as _i21.Future<String?>);
 
   @override
-  _i19.Future<Map<String, String>> readAll() =>
+  _i21.Future<Map<String, String>> readAll() =>
       (super.noSuchMethod(
             Invocation.method(#readAll, []),
-            returnValue: _i19.Future<Map<String, String>>.value(
+            returnValue: _i21.Future<Map<String, String>>.value(
               <String, String>{},
             ),
-            returnValueForMissingStub: _i19.Future<Map<String, String>>.value(
+            returnValueForMissingStub: _i21.Future<Map<String, String>>.value(
               <String, String>{},
             ),
           )
-          as _i19.Future<Map<String, String>>);
+          as _i21.Future<Map<String, String>>);
 
   @override
-  _i19.Future<void> delete({required String? key}) =>
+  _i21.Future<void> delete({required String? key}) =>
       (super.noSuchMethod(
             Invocation.method(#delete, [], {#key: key}),
-            returnValue: _i19.Future<void>.value(),
-            returnValueForMissingStub: _i19.Future<void>.value(),
+            returnValue: _i21.Future<void>.value(),
+            returnValueForMissingStub: _i21.Future<void>.value(),
           )
-          as _i19.Future<void>);
+          as _i21.Future<void>);
 
   @override
-  _i19.Future<void> deleteAll() =>
+  _i21.Future<void> deleteAll() =>
       (super.noSuchMethod(
             Invocation.method(#deleteAll, []),
-            returnValue: _i19.Future<void>.value(),
-            returnValueForMissingStub: _i19.Future<void>.value(),
+            returnValue: _i21.Future<void>.value(),
+            returnValueForMissingStub: _i21.Future<void>.value(),
           )
-          as _i19.Future<void>);
+          as _i21.Future<void>);
 }
 
 /// A class which mocks [TokenContainerNotifier].
@@ -1893,11 +1910,11 @@ class MockTokenContainerNotifier extends _i1.Mock
   _i38.Ref get ref =>
       (super.noSuchMethod(
             Invocation.getter(#ref),
-            returnValue: _i24.dummyValue<_i38.Ref>(
+            returnValue: _i26.dummyValue<_i38.Ref>(
               this,
               Invocation.getter(#ref),
             ),
-            returnValueForMissingStub: _i24.dummyValue<_i38.Ref>(
+            returnValueForMissingStub: _i26.dummyValue<_i38.Ref>(
               this,
               Invocation.getter(#ref),
             ),
@@ -1905,51 +1922,51 @@ class MockTokenContainerNotifier extends _i1.Mock
           as _i38.Ref);
 
   @override
-  _i38.AsyncValue<_i27.TokenContainerState> get state =>
+  _i38.AsyncValue<_i28.TokenContainerState> get state =>
       (super.noSuchMethod(
             Invocation.getter(#state),
-            returnValue: _i24
-                .dummyValue<_i38.AsyncValue<_i27.TokenContainerState>>(
+            returnValue: _i26
+                .dummyValue<_i38.AsyncValue<_i28.TokenContainerState>>(
                   this,
                   Invocation.getter(#state),
                 ),
-            returnValueForMissingStub: _i24
-                .dummyValue<_i38.AsyncValue<_i27.TokenContainerState>>(
+            returnValueForMissingStub: _i26
+                .dummyValue<_i38.AsyncValue<_i28.TokenContainerState>>(
                   this,
                   Invocation.getter(#state),
                 ),
           )
-          as _i38.AsyncValue<_i27.TokenContainerState>);
+          as _i38.AsyncValue<_i28.TokenContainerState>);
 
   @override
-  set state(_i38.AsyncValue<_i27.TokenContainerState>? newState) =>
+  set state(_i38.AsyncValue<_i28.TokenContainerState>? newState) =>
       super.noSuchMethod(
         Invocation.setter(#state, newState),
         returnValueForMissingStub: null,
       );
 
   @override
-  _i19.Future<_i27.TokenContainerState> get future =>
+  _i21.Future<_i28.TokenContainerState> get future =>
       (super.noSuchMethod(
             Invocation.getter(#future),
-            returnValue: _i19.Future<_i27.TokenContainerState>.value(
-              _i24.dummyValue<_i27.TokenContainerState>(
+            returnValue: _i21.Future<_i28.TokenContainerState>.value(
+              _i26.dummyValue<_i28.TokenContainerState>(
                 this,
                 Invocation.getter(#future),
               ),
             ),
             returnValueForMissingStub:
-                _i19.Future<_i27.TokenContainerState>.value(
-                  _i24.dummyValue<_i27.TokenContainerState>(
+                _i21.Future<_i28.TokenContainerState>.value(
+                  _i26.dummyValue<_i28.TokenContainerState>(
                     this,
                     Invocation.getter(#future),
                   ),
                 ),
           )
-          as _i19.Future<_i27.TokenContainerState>);
+          as _i21.Future<_i28.TokenContainerState>);
 
   @override
-  _i19.Future<_i27.TokenContainerState> build({
+  _i21.Future<_i28.TokenContainerState> build({
     required _i12.TokenContainerRepository? repo,
     required _i13.TokenContainerApi? containerApi,
     required _i14.EccUtils? eccUtils,
@@ -1960,8 +1977,8 @@ class MockTokenContainerNotifier extends _i1.Mock
               #containerApi: containerApi,
               #eccUtils: eccUtils,
             }),
-            returnValue: _i19.Future<_i27.TokenContainerState>.value(
-              _i24.dummyValue<_i27.TokenContainerState>(
+            returnValue: _i21.Future<_i28.TokenContainerState>.value(
+              _i26.dummyValue<_i28.TokenContainerState>(
                 this,
                 Invocation.method(#build, [], {
                   #repo: repo,
@@ -1971,8 +1988,8 @@ class MockTokenContainerNotifier extends _i1.Mock
               ),
             ),
             returnValueForMissingStub:
-                _i19.Future<_i27.TokenContainerState>.value(
-                  _i24.dummyValue<_i27.TokenContainerState>(
+                _i21.Future<_i28.TokenContainerState>.value(
+                  _i26.dummyValue<_i28.TokenContainerState>(
                     this,
                     Invocation.method(#build, [], {
                       #repo: repo,
@@ -1982,10 +1999,10 @@ class MockTokenContainerNotifier extends _i1.Mock
                   ),
                 ),
           )
-          as _i19.Future<_i27.TokenContainerState>);
+          as _i21.Future<_i28.TokenContainerState>);
 
   @override
-  _i19.Future<Map<int, _i15.TokenContainerFinalized>> syncContainers({
+  _i21.Future<Map<int, _i15.TokenContainerFinalized>> syncContainers({
     required _i18.TokenState? tokenState,
     required bool? isManually,
     List<_i15.TokenContainerFinalized>? containersToSync,
@@ -1999,18 +2016,18 @@ class MockTokenContainerNotifier extends _i1.Mock
               #isInitSync: isInitSync,
             }),
             returnValue:
-                _i19.Future<Map<int, _i15.TokenContainerFinalized>>.value(
+                _i21.Future<Map<int, _i15.TokenContainerFinalized>>.value(
                   <int, _i15.TokenContainerFinalized>{},
                 ),
             returnValueForMissingStub:
-                _i19.Future<Map<int, _i15.TokenContainerFinalized>>.value(
+                _i21.Future<Map<int, _i15.TokenContainerFinalized>>.value(
                   <int, _i15.TokenContainerFinalized>{},
                 ),
           )
-          as _i19.Future<Map<int, _i15.TokenContainerFinalized>>);
+          as _i21.Future<Map<int, _i15.TokenContainerFinalized>>);
 
   @override
-  _i19.Future<bool> rolloverTokens({
+  _i21.Future<bool> rolloverTokens({
     required _i18.TokenState? tokenState,
     required _i15.TokenContainerFinalized? container,
   }) =>
@@ -2019,180 +2036,180 @@ class MockTokenContainerNotifier extends _i1.Mock
               #tokenState: tokenState,
               #container: container,
             }),
-            returnValue: _i19.Future<bool>.value(false),
-            returnValueForMissingStub: _i19.Future<bool>.value(false),
+            returnValue: _i21.Future<bool>.value(false),
+            returnValueForMissingStub: _i21.Future<bool>.value(false),
           )
-          as _i19.Future<bool>);
+          as _i21.Future<bool>);
 
   @override
-  _i19.Future<String> getRolloverQrData(
+  _i21.Future<String> getRolloverQrData(
     _i15.TokenContainerFinalized? container,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#getRolloverQrData, [container]),
-            returnValue: _i19.Future<String>.value(
-              _i24.dummyValue<String>(
+            returnValue: _i21.Future<String>.value(
+              _i26.dummyValue<String>(
                 this,
                 Invocation.method(#getRolloverQrData, [container]),
               ),
             ),
-            returnValueForMissingStub: _i19.Future<String>.value(
-              _i24.dummyValue<String>(
+            returnValueForMissingStub: _i21.Future<String>.value(
+              _i26.dummyValue<String>(
                 this,
                 Invocation.method(#getRolloverQrData, [container]),
               ),
             ),
           )
-          as _i19.Future<String>);
+          as _i21.Future<String>);
 
   @override
-  _i19.Future<_i27.TokenContainerState> addContainer(
+  _i21.Future<_i28.TokenContainerState> addContainer(
     _i15.TokenContainer? container,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#addContainer, [container]),
-            returnValue: _i19.Future<_i27.TokenContainerState>.value(
-              _i24.dummyValue<_i27.TokenContainerState>(
+            returnValue: _i21.Future<_i28.TokenContainerState>.value(
+              _i26.dummyValue<_i28.TokenContainerState>(
                 this,
                 Invocation.method(#addContainer, [container]),
               ),
             ),
             returnValueForMissingStub:
-                _i19.Future<_i27.TokenContainerState>.value(
-                  _i24.dummyValue<_i27.TokenContainerState>(
+                _i21.Future<_i28.TokenContainerState>.value(
+                  _i26.dummyValue<_i28.TokenContainerState>(
                     this,
                     Invocation.method(#addContainer, [container]),
                   ),
                 ),
           )
-          as _i19.Future<_i27.TokenContainerState>);
+          as _i21.Future<_i28.TokenContainerState>);
 
   @override
-  _i19.Future<_i27.TokenContainerState> addContainerList(
+  _i21.Future<_i28.TokenContainerState> addContainerList(
     List<_i15.TokenContainer>? container,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#addContainerList, [container]),
-            returnValue: _i19.Future<_i27.TokenContainerState>.value(
-              _i24.dummyValue<_i27.TokenContainerState>(
+            returnValue: _i21.Future<_i28.TokenContainerState>.value(
+              _i26.dummyValue<_i28.TokenContainerState>(
                 this,
                 Invocation.method(#addContainerList, [container]),
               ),
             ),
             returnValueForMissingStub:
-                _i19.Future<_i27.TokenContainerState>.value(
-                  _i24.dummyValue<_i27.TokenContainerState>(
+                _i21.Future<_i28.TokenContainerState>.value(
+                  _i26.dummyValue<_i28.TokenContainerState>(
                     this,
                     Invocation.method(#addContainerList, [container]),
                   ),
                 ),
           )
-          as _i19.Future<_i27.TokenContainerState>);
+          as _i21.Future<_i28.TokenContainerState>);
 
   @override
-  _i19.Future<_i27.TokenContainerState> update(
-    _i19.FutureOr<_i27.TokenContainerState> Function(_i27.TokenContainerState)?
+  _i21.Future<_i28.TokenContainerState> update(
+    _i21.FutureOr<_i28.TokenContainerState> Function(_i28.TokenContainerState)?
     cb, {
-    _i19.FutureOr<_i27.TokenContainerState> Function(Object, StackTrace)?
+    _i21.FutureOr<_i28.TokenContainerState> Function(Object, StackTrace)?
     onError,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#update, [cb], {#onError: onError}),
-            returnValue: _i19.Future<_i27.TokenContainerState>.value(
-              _i24.dummyValue<_i27.TokenContainerState>(
+            returnValue: _i21.Future<_i28.TokenContainerState>.value(
+              _i26.dummyValue<_i28.TokenContainerState>(
                 this,
                 Invocation.method(#update, [cb], {#onError: onError}),
               ),
             ),
             returnValueForMissingStub:
-                _i19.Future<_i27.TokenContainerState>.value(
-                  _i24.dummyValue<_i27.TokenContainerState>(
+                _i21.Future<_i28.TokenContainerState>.value(
+                  _i26.dummyValue<_i28.TokenContainerState>(
                     this,
                     Invocation.method(#update, [cb], {#onError: onError}),
                   ),
                 ),
           )
-          as _i19.Future<_i27.TokenContainerState>);
+          as _i21.Future<_i28.TokenContainerState>);
 
   @override
-  _i19.Future<R?>
+  _i21.Future<R?>
   updateContainer<R extends _i15.TokenContainer, T extends _i15.TokenContainer>(
     _i15.TokenContainer? container,
     R Function(T)? updater,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#updateContainer, [container, updater]),
-            returnValue: _i19.Future<R?>.value(),
-            returnValueForMissingStub: _i19.Future<R?>.value(),
+            returnValue: _i21.Future<R?>.value(),
+            returnValueForMissingStub: _i21.Future<R?>.value(),
           )
-          as _i19.Future<R?>);
+          as _i21.Future<R?>);
 
   @override
-  _i19.Future<List<T>> updateContainerList<T extends _i15.TokenContainer>(
+  _i21.Future<List<T>> updateContainerList<T extends _i15.TokenContainer>(
     List<T>? container,
     T Function(T)? updater,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#updateContainerList, [container, updater]),
-            returnValue: _i19.Future<List<T>>.value(<T>[]),
-            returnValueForMissingStub: _i19.Future<List<T>>.value(<T>[]),
+            returnValue: _i21.Future<List<T>>.value(<T>[]),
+            returnValueForMissingStub: _i21.Future<List<T>>.value(<T>[]),
           )
-          as _i19.Future<List<T>>);
+          as _i21.Future<List<T>>);
 
   @override
-  _i19.Future<bool> unregisterDelete(_i15.TokenContainerFinalized? container) =>
+  _i21.Future<bool> unregisterDelete(_i15.TokenContainerFinalized? container) =>
       (super.noSuchMethod(
             Invocation.method(#unregisterDelete, [container]),
-            returnValue: _i19.Future<bool>.value(false),
-            returnValueForMissingStub: _i19.Future<bool>.value(false),
+            returnValue: _i21.Future<bool>.value(false),
+            returnValueForMissingStub: _i21.Future<bool>.value(false),
           )
-          as _i19.Future<bool>);
+          as _i21.Future<bool>);
 
   @override
-  _i19.Future<bool> deleteContainer(_i15.TokenContainer? container) =>
+  _i21.Future<bool> deleteContainer(_i15.TokenContainer? container) =>
       (super.noSuchMethod(
             Invocation.method(#deleteContainer, [container]),
-            returnValue: _i19.Future<bool>.value(false),
-            returnValueForMissingStub: _i19.Future<bool>.value(false),
+            returnValue: _i21.Future<bool>.value(false),
+            returnValueForMissingStub: _i21.Future<bool>.value(false),
           )
-          as _i19.Future<bool>);
+          as _i21.Future<bool>);
 
   @override
-  _i19.Future<_i27.TokenContainerState> deleteContainerList(
+  _i21.Future<_i28.TokenContainerState> deleteContainerList(
     List<_i15.TokenContainer>? container,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#deleteContainerList, [container]),
-            returnValue: _i19.Future<_i27.TokenContainerState>.value(
-              _i24.dummyValue<_i27.TokenContainerState>(
+            returnValue: _i21.Future<_i28.TokenContainerState>.value(
+              _i26.dummyValue<_i28.TokenContainerState>(
                 this,
                 Invocation.method(#deleteContainerList, [container]),
               ),
             ),
             returnValueForMissingStub:
-                _i19.Future<_i27.TokenContainerState>.value(
-                  _i24.dummyValue<_i27.TokenContainerState>(
+                _i21.Future<_i28.TokenContainerState>.value(
+                  _i26.dummyValue<_i28.TokenContainerState>(
                     this,
                     Invocation.method(#deleteContainerList, [container]),
                   ),
                 ),
           )
-          as _i19.Future<_i27.TokenContainerState>);
+          as _i21.Future<_i28.TokenContainerState>);
 
   @override
-  _i19.Future<bool> handleProcessorResult(
+  _i21.Future<bool> handleProcessorResult(
     _i39.ProcessorResult<dynamic>? result, {
     Map<String, dynamic>? args = const {},
   }) =>
       (super.noSuchMethod(
             Invocation.method(#handleProcessorResult, [result], {#args: args}),
-            returnValue: _i19.Future<bool>.value(false),
-            returnValueForMissingStub: _i19.Future<bool>.value(false),
+            returnValue: _i21.Future<bool>.value(false),
+            returnValueForMissingStub: _i21.Future<bool>.value(false),
           )
-          as _i19.Future<bool>);
+          as _i21.Future<bool>);
 
   @override
-  _i19.Future<List<_i15.TokenContainerUnfinalized>?> handleProcessorResults(
+  _i21.Future<List<_i15.TokenContainerUnfinalized>?> handleProcessorResults(
     List<_i39.ProcessorResult<dynamic>>? results, {
     Map<String, dynamic>? args = const {},
   }) =>
@@ -2203,14 +2220,14 @@ class MockTokenContainerNotifier extends _i1.Mock
               {#args: args},
             ),
             returnValue:
-                _i19.Future<List<_i15.TokenContainerUnfinalized>?>.value(),
+                _i21.Future<List<_i15.TokenContainerUnfinalized>?>.value(),
             returnValueForMissingStub:
-                _i19.Future<List<_i15.TokenContainerUnfinalized>?>.value(),
+                _i21.Future<List<_i15.TokenContainerUnfinalized>?>.value(),
           )
-          as _i19.Future<List<_i15.TokenContainerUnfinalized>?>);
+          as _i21.Future<List<_i15.TokenContainerUnfinalized>?>);
 
   @override
-  _i19.Future<_i15.TokenContainerFinalized?> finalize(
+  _i21.Future<_i15.TokenContainerFinalized?> finalize(
     _i15.TokenContainer? container, {
     required bool? isManually,
     bool? addDeviceInfos,
@@ -2226,11 +2243,11 @@ class MockTokenContainerNotifier extends _i1.Mock
                 #urlIsOk: urlIsOk,
               },
             ),
-            returnValue: _i19.Future<_i15.TokenContainerFinalized?>.value(),
+            returnValue: _i21.Future<_i15.TokenContainerFinalized?>.value(),
             returnValueForMissingStub:
-                _i19.Future<_i15.TokenContainerFinalized?>.value(),
+                _i21.Future<_i15.TokenContainerFinalized?>.value(),
           )
-          as _i19.Future<_i15.TokenContainerFinalized?>);
+          as _i21.Future<_i15.TokenContainerFinalized?>);
 
   @override
   void runBuild() => super.noSuchMethod(
@@ -2241,8 +2258,8 @@ class MockTokenContainerNotifier extends _i1.Mock
   @override
   _i40.RemoveListener listenSelf(
     void Function(
-      _i38.AsyncValue<_i27.TokenContainerState>?,
-      _i38.AsyncValue<_i27.TokenContainerState>,
+      _i38.AsyncValue<_i28.TokenContainerState>?,
+      _i38.AsyncValue<_i28.TokenContainerState>,
     )?
     listener, {
     void Function(Object, StackTrace)? onError,
@@ -2256,8 +2273,8 @@ class MockTokenContainerNotifier extends _i1.Mock
 
   @override
   bool updateShouldNotify(
-    _i38.AsyncValue<_i27.TokenContainerState>? previous,
-    _i38.AsyncValue<_i27.TokenContainerState>? next,
+    _i38.AsyncValue<_i28.TokenContainerState>? previous,
+    _i38.AsyncValue<_i28.TokenContainerState>? next,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#updateShouldNotify, [previous, next]),
@@ -2276,11 +2293,11 @@ class MockTokenContainerFinalized extends _i1.Mock
   String get issuer =>
       (super.noSuchMethod(
             Invocation.getter(#issuer),
-            returnValue: _i24.dummyValue<String>(
+            returnValue: _i26.dummyValue<String>(
               this,
               Invocation.getter(#issuer),
             ),
-            returnValueForMissingStub: _i24.dummyValue<String>(
+            returnValueForMissingStub: _i26.dummyValue<String>(
               this,
               Invocation.getter(#issuer),
             ),
@@ -2291,11 +2308,11 @@ class MockTokenContainerFinalized extends _i1.Mock
   String get nonce =>
       (super.noSuchMethod(
             Invocation.getter(#nonce),
-            returnValue: _i24.dummyValue<String>(
+            returnValue: _i26.dummyValue<String>(
               this,
               Invocation.getter(#nonce),
             ),
-            returnValueForMissingStub: _i24.dummyValue<String>(
+            returnValueForMissingStub: _i26.dummyValue<String>(
               this,
               Invocation.getter(#nonce),
             ),
@@ -2330,11 +2347,11 @@ class MockTokenContainerFinalized extends _i1.Mock
   String get serial =>
       (super.noSuchMethod(
             Invocation.getter(#serial),
-            returnValue: _i24.dummyValue<String>(
+            returnValue: _i26.dummyValue<String>(
               this,
               Invocation.getter(#serial),
             ),
-            returnValueForMissingStub: _i24.dummyValue<String>(
+            returnValueForMissingStub: _i26.dummyValue<String>(
               this,
               Invocation.getter(#serial),
             ),
@@ -2342,13 +2359,13 @@ class MockTokenContainerFinalized extends _i1.Mock
           as String);
 
   @override
-  _i30.EcKeyAlgorithm get ecKeyAlgorithm =>
+  _i31.EcKeyAlgorithm get ecKeyAlgorithm =>
       (super.noSuchMethod(
             Invocation.getter(#ecKeyAlgorithm),
-            returnValue: _i30.EcKeyAlgorithm.brainpoolp160r1,
-            returnValueForMissingStub: _i30.EcKeyAlgorithm.brainpoolp160r1,
+            returnValue: _i31.EcKeyAlgorithm.brainpoolp160r1,
+            returnValueForMissingStub: _i31.EcKeyAlgorithm.brainpoolp160r1,
           )
-          as _i30.EcKeyAlgorithm);
+          as _i31.EcKeyAlgorithm);
 
   @override
   _i41.Algorithms get hashAlgorithm =>
@@ -2372,11 +2389,11 @@ class MockTokenContainerFinalized extends _i1.Mock
   String get serverName =>
       (super.noSuchMethod(
             Invocation.getter(#serverName),
-            returnValue: _i24.dummyValue<String>(
+            returnValue: _i26.dummyValue<String>(
               this,
               Invocation.getter(#serverName),
             ),
-            returnValueForMissingStub: _i24.dummyValue<String>(
+            returnValueForMissingStub: _i26.dummyValue<String>(
               this,
               Invocation.getter(#serverName),
             ),
@@ -2405,11 +2422,11 @@ class MockTokenContainerFinalized extends _i1.Mock
   _i44.ContainerPolicies get policies =>
       (super.noSuchMethod(
             Invocation.getter(#policies),
-            returnValue: _i24.dummyValue<_i44.ContainerPolicies>(
+            returnValue: _i26.dummyValue<_i44.ContainerPolicies>(
               this,
               Invocation.getter(#policies),
             ),
-            returnValueForMissingStub: _i24.dummyValue<_i44.ContainerPolicies>(
+            returnValueForMissingStub: _i26.dummyValue<_i44.ContainerPolicies>(
               this,
               Invocation.getter(#policies),
             ),
@@ -2429,11 +2446,11 @@ class MockTokenContainerFinalized extends _i1.Mock
   String get publicClientKey =>
       (super.noSuchMethod(
             Invocation.getter(#publicClientKey),
-            returnValue: _i24.dummyValue<String>(
+            returnValue: _i26.dummyValue<String>(
               this,
               Invocation.getter(#publicClientKey),
             ),
-            returnValueForMissingStub: _i24.dummyValue<String>(
+            returnValueForMissingStub: _i26.dummyValue<String>(
               this,
               Invocation.getter(#publicClientKey),
             ),
@@ -2444,11 +2461,11 @@ class MockTokenContainerFinalized extends _i1.Mock
   String get privateClientKey =>
       (super.noSuchMethod(
             Invocation.getter(#privateClientKey),
-            returnValue: _i24.dummyValue<String>(
+            returnValue: _i26.dummyValue<String>(
               this,
               Invocation.getter(#privateClientKey),
             ),
-            returnValueForMissingStub: _i24.dummyValue<String>(
+            returnValueForMissingStub: _i26.dummyValue<String>(
               this,
               Invocation.getter(#privateClientKey),
             ),
@@ -2459,11 +2476,11 @@ class MockTokenContainerFinalized extends _i1.Mock
   String get $type =>
       (super.noSuchMethod(
             Invocation.getter(#$type),
-            returnValue: _i24.dummyValue<String>(
+            returnValue: _i26.dummyValue<String>(
               this,
               Invocation.getter(#$type),
             ),
-            returnValueForMissingStub: _i24.dummyValue<String>(
+            returnValueForMissingStub: _i26.dummyValue<String>(
               this,
               Invocation.getter(#$type),
             ),
@@ -2563,11 +2580,11 @@ class MockTokenContainerFinalized extends _i1.Mock
   ) =>
       (super.noSuchMethod(
             Invocation.method(#withClientKeyPair, [keyPair]),
-            returnValue: _i24.dummyValue<_i15.TokenContainer>(
+            returnValue: _i26.dummyValue<_i15.TokenContainer>(
               this,
               Invocation.method(#withClientKeyPair, [keyPair]),
             ),
-            returnValueForMissingStub: _i24.dummyValue<_i15.TokenContainer>(
+            returnValueForMissingStub: _i26.dummyValue<_i15.TokenContainer>(
               this,
               Invocation.method(#withClientKeyPair, [keyPair]),
             ),
@@ -2578,11 +2595,11 @@ class MockTokenContainerFinalized extends _i1.Mock
   String signMessage(String? msg) =>
       (super.noSuchMethod(
             Invocation.method(#signMessage, [msg]),
-            returnValue: _i24.dummyValue<String>(
+            returnValue: _i26.dummyValue<String>(
               this,
               Invocation.method(#signMessage, [msg]),
             ),
-            returnValueForMissingStub: _i24.dummyValue<String>(
+            returnValueForMissingStub: _i26.dummyValue<String>(
               this,
               Invocation.method(#signMessage, [msg]),
             ),
@@ -2690,11 +2707,11 @@ class MockTokenNotifier extends _i1.Mock implements _i45.TokenNotifier {
   _i38.Ref get ref =>
       (super.noSuchMethod(
             Invocation.getter(#ref),
-            returnValue: _i24.dummyValue<_i38.Ref>(
+            returnValue: _i26.dummyValue<_i38.Ref>(
               this,
               Invocation.getter(#ref),
             ),
-            returnValueForMissingStub: _i24.dummyValue<_i38.Ref>(
+            returnValueForMissingStub: _i26.dummyValue<_i38.Ref>(
               this,
               Invocation.getter(#ref),
             ),
@@ -2705,11 +2722,11 @@ class MockTokenNotifier extends _i1.Mock implements _i45.TokenNotifier {
   _i38.AsyncValue<_i18.TokenState> get state =>
       (super.noSuchMethod(
             Invocation.getter(#state),
-            returnValue: _i24.dummyValue<_i38.AsyncValue<_i18.TokenState>>(
+            returnValue: _i26.dummyValue<_i38.AsyncValue<_i18.TokenState>>(
               this,
               Invocation.getter(#state),
             ),
-            returnValueForMissingStub: _i24
+            returnValueForMissingStub: _i26
                 .dummyValue<_i38.AsyncValue<_i18.TokenState>>(
                   this,
                   Invocation.getter(#state),
@@ -2724,20 +2741,20 @@ class MockTokenNotifier extends _i1.Mock implements _i45.TokenNotifier {
   );
 
   @override
-  _i19.Future<_i18.TokenState> get future =>
+  _i21.Future<_i18.TokenState> get future =>
       (super.noSuchMethod(
             Invocation.getter(#future),
-            returnValue: _i19.Future<_i18.TokenState>.value(
+            returnValue: _i21.Future<_i18.TokenState>.value(
               _FakeTokenState_30(this, Invocation.getter(#future)),
             ),
-            returnValueForMissingStub: _i19.Future<_i18.TokenState>.value(
+            returnValueForMissingStub: _i21.Future<_i18.TokenState>.value(
               _FakeTokenState_30(this, Invocation.getter(#future)),
             ),
           )
-          as _i19.Future<_i18.TokenState>);
+          as _i21.Future<_i18.TokenState>);
 
   @override
-  _i19.Future<_i18.TokenState> build({
+  _i21.Future<_i18.TokenState> build({
     required _i17.TokenRepository? repo,
     required _i10.RsaUtils? rsaUtils,
     required _i9.PrivacyideaIOClient? ioClient,
@@ -2750,7 +2767,7 @@ class MockTokenNotifier extends _i1.Mock implements _i45.TokenNotifier {
               #ioClient: ioClient,
               #firebaseUtils: firebaseUtils,
             }),
-            returnValue: _i19.Future<_i18.TokenState>.value(
+            returnValue: _i21.Future<_i18.TokenState>.value(
               _FakeTokenState_30(
                 this,
                 Invocation.method(#build, [], {
@@ -2761,7 +2778,7 @@ class MockTokenNotifier extends _i1.Mock implements _i45.TokenNotifier {
                 }),
               ),
             ),
-            returnValueForMissingStub: _i19.Future<_i18.TokenState>.value(
+            returnValueForMissingStub: _i21.Future<_i18.TokenState>.value(
               _FakeTokenState_30(
                 this,
                 Invocation.method(#build, [], {
@@ -2773,202 +2790,202 @@ class MockTokenNotifier extends _i1.Mock implements _i45.TokenNotifier {
               ),
             ),
           )
-          as _i19.Future<_i18.TokenState>);
+          as _i21.Future<_i18.TokenState>);
 
   @override
-  _i19.Future<bool> addNewToken(_i16.Token? token) =>
+  _i21.Future<bool> addNewToken(_i16.Token? token) =>
       (super.noSuchMethod(
             Invocation.method(#addNewToken, [token]),
-            returnValue: _i19.Future<bool>.value(false),
-            returnValueForMissingStub: _i19.Future<bool>.value(false),
+            returnValue: _i21.Future<bool>.value(false),
+            returnValueForMissingStub: _i21.Future<bool>.value(false),
           )
-          as _i19.Future<bool>);
+          as _i21.Future<bool>);
 
   @override
-  _i19.Future<List<_i16.Token>> addNewTokens(List<_i16.Token>? tokens) =>
+  _i21.Future<List<_i16.Token>> addNewTokens(List<_i16.Token>? tokens) =>
       (super.noSuchMethod(
             Invocation.method(#addNewTokens, [tokens]),
-            returnValue: _i19.Future<List<_i16.Token>>.value(<_i16.Token>[]),
-            returnValueForMissingStub: _i19.Future<List<_i16.Token>>.value(
+            returnValue: _i21.Future<List<_i16.Token>>.value(<_i16.Token>[]),
+            returnValueForMissingStub: _i21.Future<List<_i16.Token>>.value(
               <_i16.Token>[],
             ),
           )
-          as _i19.Future<List<_i16.Token>>);
+          as _i21.Future<List<_i16.Token>>);
 
   @override
-  _i19.Future<bool> addOrReplaceToken(_i16.Token? token) =>
+  _i21.Future<bool> addOrReplaceToken(_i16.Token? token) =>
       (super.noSuchMethod(
             Invocation.method(#addOrReplaceToken, [token]),
-            returnValue: _i19.Future<bool>.value(false),
-            returnValueForMissingStub: _i19.Future<bool>.value(false),
+            returnValue: _i21.Future<bool>.value(false),
+            returnValueForMissingStub: _i21.Future<bool>.value(false),
           )
-          as _i19.Future<bool>);
+          as _i21.Future<bool>);
 
   @override
-  _i19.Future<List<_i16.Token>> addOrReplaceTokens(List<_i16.Token>? tokens) =>
+  _i21.Future<List<_i16.Token>> addOrReplaceTokens(List<_i16.Token>? tokens) =>
       (super.noSuchMethod(
             Invocation.method(#addOrReplaceTokens, [tokens]),
-            returnValue: _i19.Future<List<_i16.Token>>.value(<_i16.Token>[]),
-            returnValueForMissingStub: _i19.Future<List<_i16.Token>>.value(
+            returnValue: _i21.Future<List<_i16.Token>>.value(<_i16.Token>[]),
+            returnValueForMissingStub: _i21.Future<List<_i16.Token>>.value(
               <_i16.Token>[],
             ),
           )
-          as _i19.Future<List<_i16.Token>>);
+          as _i21.Future<List<_i16.Token>>);
 
   @override
-  _i19.Future<T?> updateToken<T extends _i16.Token>(
+  _i21.Future<T?> updateToken<T extends _i16.Token>(
     T? token,
     T Function(T)? updater,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#updateToken, [token, updater]),
-            returnValue: _i19.Future<T?>.value(),
-            returnValueForMissingStub: _i19.Future<T?>.value(),
+            returnValue: _i21.Future<T?>.value(),
+            returnValueForMissingStub: _i21.Future<T?>.value(),
           )
-          as _i19.Future<T?>);
+          as _i21.Future<T?>);
 
   @override
-  _i19.Future<List<T>> updateTokens<T extends _i16.Token>(
+  _i21.Future<List<T>> updateTokens<T extends _i16.Token>(
     List<T>? tokens,
     T Function(T)? updater,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#updateTokens, [tokens, updater]),
-            returnValue: _i19.Future<List<T>>.value(<T>[]),
-            returnValueForMissingStub: _i19.Future<List<T>>.value(<T>[]),
+            returnValue: _i21.Future<List<T>>.value(<T>[]),
+            returnValueForMissingStub: _i21.Future<List<T>>.value(<T>[]),
           )
-          as _i19.Future<List<T>>);
+          as _i21.Future<List<T>>);
 
   @override
-  _i19.Future<_i46.HOTPToken?> incrementCounter(_i46.HOTPToken? token) =>
+  _i21.Future<_i46.HOTPToken?> incrementCounter(_i46.HOTPToken? token) =>
       (super.noSuchMethod(
             Invocation.method(#incrementCounter, [token]),
-            returnValue: _i19.Future<_i46.HOTPToken?>.value(),
-            returnValueForMissingStub: _i19.Future<_i46.HOTPToken?>.value(),
+            returnValue: _i21.Future<_i46.HOTPToken?>.value(),
+            returnValueForMissingStub: _i21.Future<_i46.HOTPToken?>.value(),
           )
-          as _i19.Future<_i46.HOTPToken?>);
+          as _i21.Future<_i46.HOTPToken?>);
 
   @override
-  _i19.Future<T?> hideToken<T extends _i16.Token>(T? token) =>
+  _i21.Future<T?> hideToken<T extends _i16.Token>(T? token) =>
       (super.noSuchMethod(
             Invocation.method(#hideToken, [token]),
-            returnValue: _i19.Future<T?>.value(),
-            returnValueForMissingStub: _i19.Future<T?>.value(),
+            returnValue: _i21.Future<T?>.value(),
+            returnValueForMissingStub: _i21.Future<T?>.value(),
           )
-          as _i19.Future<T?>);
+          as _i21.Future<T?>);
 
   @override
-  _i19.Future<T?> showToken<T extends _i47.OTPToken>(T? token) =>
+  _i21.Future<T?> showToken<T extends _i47.OTPToken>(T? token) =>
       (super.noSuchMethod(
             Invocation.method(#showToken, [token]),
-            returnValue: _i19.Future<T?>.value(),
-            returnValueForMissingStub: _i19.Future<T?>.value(),
+            returnValue: _i21.Future<T?>.value(),
+            returnValueForMissingStub: _i21.Future<T?>.value(),
           )
-          as _i19.Future<T?>);
+          as _i21.Future<T?>);
 
   @override
-  _i19.Future<_i47.OTPToken?> showTokenById(String? tokenId) =>
+  _i21.Future<_i47.OTPToken?> showTokenById(String? tokenId) =>
       (super.noSuchMethod(
             Invocation.method(#showTokenById, [tokenId]),
-            returnValue: _i19.Future<_i47.OTPToken?>.value(),
-            returnValueForMissingStub: _i19.Future<_i47.OTPToken?>.value(),
+            returnValue: _i21.Future<_i47.OTPToken?>.value(),
+            returnValueForMissingStub: _i21.Future<_i47.OTPToken?>.value(),
           )
-          as _i19.Future<_i47.OTPToken?>);
+          as _i21.Future<_i47.OTPToken?>);
 
   @override
-  _i19.Future<_i18.TokenState?> loadStateFromRepo() =>
+  _i21.Future<_i18.TokenState?> loadStateFromRepo() =>
       (super.noSuchMethod(
             Invocation.method(#loadStateFromRepo, []),
-            returnValue: _i19.Future<_i18.TokenState?>.value(),
-            returnValueForMissingStub: _i19.Future<_i18.TokenState?>.value(),
+            returnValue: _i21.Future<_i18.TokenState?>.value(),
+            returnValueForMissingStub: _i21.Future<_i18.TokenState?>.value(),
           )
-          as _i19.Future<_i18.TokenState?>);
+          as _i21.Future<_i18.TokenState?>);
 
   @override
-  _i19.Future<bool> saveStateToRepo() =>
+  _i21.Future<bool> saveStateToRepo() =>
       (super.noSuchMethod(
             Invocation.method(#saveStateToRepo, []),
-            returnValue: _i19.Future<bool>.value(false),
-            returnValueForMissingStub: _i19.Future<bool>.value(false),
+            returnValue: _i21.Future<bool>.value(false),
+            returnValueForMissingStub: _i21.Future<bool>.value(false),
           )
-          as _i19.Future<bool>);
+          as _i21.Future<bool>);
 
   @override
-  _i19.Future<bool> onMinimizeApp() =>
+  _i21.Future<bool> onMinimizeApp() =>
       (super.noSuchMethod(
             Invocation.method(#onMinimizeApp, []),
-            returnValue: _i19.Future<bool>.value(false),
-            returnValueForMissingStub: _i19.Future<bool>.value(false),
+            returnValue: _i21.Future<bool>.value(false),
+            returnValueForMissingStub: _i21.Future<bool>.value(false),
           )
-          as _i19.Future<bool>);
+          as _i21.Future<bool>);
 
   @override
-  _i19.Future<bool> hideLockedTokens() =>
+  _i21.Future<bool> hideLockedTokens() =>
       (super.noSuchMethod(
             Invocation.method(#hideLockedTokens, []),
-            returnValue: _i19.Future<bool>.value(false),
-            returnValueForMissingStub: _i19.Future<bool>.value(false),
+            returnValue: _i21.Future<bool>.value(false),
+            returnValueForMissingStub: _i21.Future<bool>.value(false),
           )
-          as _i19.Future<bool>);
+          as _i21.Future<bool>);
 
   @override
-  _i19.Future<void> removeToken(_i16.Token? token) =>
+  _i21.Future<void> removeToken(_i16.Token? token) =>
       (super.noSuchMethod(
             Invocation.method(#removeToken, [token]),
-            returnValue: _i19.Future<void>.value(),
-            returnValueForMissingStub: _i19.Future<void>.value(),
+            returnValue: _i21.Future<void>.value(),
+            returnValueForMissingStub: _i21.Future<void>.value(),
           )
-          as _i19.Future<void>);
+          as _i21.Future<void>);
 
   @override
-  _i19.Future<void> removeTokens(List<_i16.Token>? tokens) =>
+  _i21.Future<void> removeTokens(List<_i16.Token>? tokens) =>
       (super.noSuchMethod(
             Invocation.method(#removeTokens, [tokens]),
-            returnValue: _i19.Future<void>.value(),
-            returnValueForMissingStub: _i19.Future<void>.value(),
+            returnValue: _i21.Future<void>.value(),
+            returnValueForMissingStub: _i21.Future<void>.value(),
           )
-          as _i19.Future<void>);
+          as _i21.Future<void>);
 
   @override
-  _i19.Future<void> removeTokensBySerials(List<String>? serials) =>
+  _i21.Future<void> removeTokensBySerials(List<String>? serials) =>
       (super.noSuchMethod(
             Invocation.method(#removeTokensBySerials, [serials]),
-            returnValue: _i19.Future<void>.value(),
-            returnValueForMissingStub: _i19.Future<void>.value(),
+            returnValue: _i21.Future<void>.value(),
+            returnValueForMissingStub: _i21.Future<void>.value(),
           )
-          as _i19.Future<void>);
+          as _i21.Future<void>);
 
   @override
-  _i19.Future<bool> rolloutPushToken(_i29.PushToken? token) =>
+  _i21.Future<bool> rolloutPushToken(_i30.PushToken? token) =>
       (super.noSuchMethod(
             Invocation.method(#rolloutPushToken, [token]),
-            returnValue: _i19.Future<bool>.value(false),
-            returnValueForMissingStub: _i19.Future<bool>.value(false),
+            returnValue: _i21.Future<bool>.value(false),
+            returnValueForMissingStub: _i21.Future<bool>.value(false),
           )
-          as _i19.Future<bool>);
+          as _i21.Future<bool>);
 
   @override
-  _i19.Future<(List<_i29.PushToken>, List<_i29.PushToken>)?>
+  _i21.Future<(List<_i30.PushToken>, List<_i30.PushToken>)?>
   updateAllFirebaseTokens({String? firebaseToken}) =>
       (super.noSuchMethod(
             Invocation.method(#updateAllFirebaseTokens, [], {
               #firebaseToken: firebaseToken,
             }),
             returnValue:
-                _i19.Future<
-                  (List<_i29.PushToken>, List<_i29.PushToken>)?
+                _i21.Future<
+                  (List<_i30.PushToken>, List<_i30.PushToken>)?
                 >.value(),
             returnValueForMissingStub:
-                _i19.Future<
-                  (List<_i29.PushToken>, List<_i29.PushToken>)?
+                _i21.Future<
+                  (List<_i30.PushToken>, List<_i30.PushToken>)?
                 >.value(),
           )
-          as _i19.Future<(List<_i29.PushToken>, List<_i29.PushToken>)?>);
+          as _i21.Future<(List<_i30.PushToken>, List<_i30.PushToken>)?>);
 
   @override
-  _i19.Future<(List<_i29.PushToken>, List<_i29.PushToken>)?>
+  _i21.Future<(List<_i30.PushToken>, List<_i30.PushToken>)?>
   updateFirebaseTokens({
-    required List<_i29.PushToken>? tokens,
+    required List<_i30.PushToken>? tokens,
     String? firebaseToken,
   }) =>
       (super.noSuchMethod(
@@ -2977,51 +2994,51 @@ class MockTokenNotifier extends _i1.Mock implements _i45.TokenNotifier {
               #firebaseToken: firebaseToken,
             }),
             returnValue:
-                _i19.Future<
-                  (List<_i29.PushToken>, List<_i29.PushToken>)?
+                _i21.Future<
+                  (List<_i30.PushToken>, List<_i30.PushToken>)?
                 >.value(),
             returnValueForMissingStub:
-                _i19.Future<
-                  (List<_i29.PushToken>, List<_i29.PushToken>)?
+                _i21.Future<
+                  (List<_i30.PushToken>, List<_i30.PushToken>)?
                 >.value(),
           )
-          as _i19.Future<(List<_i29.PushToken>, List<_i29.PushToken>)?>);
+          as _i21.Future<(List<_i30.PushToken>, List<_i30.PushToken>)?>);
 
   @override
-  _i19.Future<bool> updateFirebaseToken(
-    _i29.PushToken? token,
+  _i21.Future<bool> updateFirebaseToken(
+    _i30.PushToken? token,
     String? firebaseToken,
   ) =>
       (super.noSuchMethod(
             Invocation.method(#updateFirebaseToken, [token, firebaseToken]),
-            returnValue: _i19.Future<bool>.value(false),
-            returnValueForMissingStub: _i19.Future<bool>.value(false),
+            returnValue: _i21.Future<bool>.value(false),
+            returnValueForMissingStub: _i21.Future<bool>.value(false),
           )
-          as _i19.Future<bool>);
+          as _i21.Future<bool>);
 
   @override
-  _i19.Future<bool> handleLink(Uri? uri) =>
+  _i21.Future<bool> handleLink(Uri? uri) =>
       (super.noSuchMethod(
             Invocation.method(#handleLink, [uri]),
-            returnValue: _i19.Future<bool>.value(false),
-            returnValueForMissingStub: _i19.Future<bool>.value(false),
+            returnValue: _i21.Future<bool>.value(false),
+            returnValueForMissingStub: _i21.Future<bool>.value(false),
           )
-          as _i19.Future<bool>);
+          as _i21.Future<bool>);
 
   @override
-  _i19.Future<void> handleProcessorResult(
+  _i21.Future<void> handleProcessorResult(
     _i39.ProcessorResult<dynamic>? result, {
     Map<String, dynamic>? args = const {},
   }) =>
       (super.noSuchMethod(
             Invocation.method(#handleProcessorResult, [result], {#args: args}),
-            returnValue: _i19.Future<void>.value(),
-            returnValueForMissingStub: _i19.Future<void>.value(),
+            returnValue: _i21.Future<void>.value(),
+            returnValueForMissingStub: _i21.Future<void>.value(),
           )
-          as _i19.Future<void>);
+          as _i21.Future<void>);
 
   @override
-  _i19.Future<dynamic> handleProcessorResults(
+  _i21.Future<dynamic> handleProcessorResults(
     List<_i39.ProcessorResult<dynamic>>? results, {
     Map<String, dynamic>? args = const {},
   }) =>
@@ -3031,19 +3048,19 @@ class MockTokenNotifier extends _i1.Mock implements _i45.TokenNotifier {
               [results],
               {#args: args},
             ),
-            returnValue: _i19.Future<dynamic>.value(),
-            returnValueForMissingStub: _i19.Future<dynamic>.value(),
+            returnValue: _i21.Future<dynamic>.value(),
+            returnValueForMissingStub: _i21.Future<dynamic>.value(),
           )
-          as _i19.Future<dynamic>);
+          as _i21.Future<dynamic>);
 
   @override
-  _i19.Future<T?> getTokenById<T extends _i16.Token>(String? id) =>
+  _i21.Future<T?> getTokenById<T extends _i16.Token>(String? id) =>
       (super.noSuchMethod(
             Invocation.method(#getTokenById, [id]),
-            returnValue: _i19.Future<T?>.value(),
-            returnValueForMissingStub: _i19.Future<T?>.value(),
+            returnValue: _i21.Future<T?>.value(),
+            returnValueForMissingStub: _i21.Future<T?>.value(),
           )
-          as _i19.Future<T?>);
+          as _i21.Future<T?>);
 
   @override
   void runBuild() => super.noSuchMethod(
@@ -3080,26 +3097,26 @@ class MockTokenNotifier extends _i1.Mock implements _i45.TokenNotifier {
           as bool);
 
   @override
-  _i19.Future<_i18.TokenState> update(
-    _i19.FutureOr<_i18.TokenState> Function(_i18.TokenState)? cb, {
-    _i19.FutureOr<_i18.TokenState> Function(Object, StackTrace)? onError,
+  _i21.Future<_i18.TokenState> update(
+    _i21.FutureOr<_i18.TokenState> Function(_i18.TokenState)? cb, {
+    _i21.FutureOr<_i18.TokenState> Function(Object, StackTrace)? onError,
   }) =>
       (super.noSuchMethod(
             Invocation.method(#update, [cb], {#onError: onError}),
-            returnValue: _i19.Future<_i18.TokenState>.value(
+            returnValue: _i21.Future<_i18.TokenState>.value(
               _FakeTokenState_30(
                 this,
                 Invocation.method(#update, [cb], {#onError: onError}),
               ),
             ),
-            returnValueForMissingStub: _i19.Future<_i18.TokenState>.value(
+            returnValueForMissingStub: _i21.Future<_i18.TokenState>.value(
               _FakeTokenState_30(
                 this,
                 Invocation.method(#update, [cb], {#onError: onError}),
               ),
             ),
           )
-          as _i19.Future<_i18.TokenState>);
+          as _i21.Future<_i18.TokenState>);
 }
 
 /// A class which mocks [LocalAuthentication].
@@ -3108,16 +3125,16 @@ class MockTokenNotifier extends _i1.Mock implements _i45.TokenNotifier {
 class MockLocalAuthentication extends _i1.Mock
     implements _i48.LocalAuthentication {
   @override
-  _i19.Future<bool> get canCheckBiometrics =>
+  _i21.Future<bool> get canCheckBiometrics =>
       (super.noSuchMethod(
             Invocation.getter(#canCheckBiometrics),
-            returnValue: _i19.Future<bool>.value(false),
-            returnValueForMissingStub: _i19.Future<bool>.value(false),
+            returnValue: _i21.Future<bool>.value(false),
+            returnValueForMissingStub: _i21.Future<bool>.value(false),
           )
-          as _i19.Future<bool>);
+          as _i21.Future<bool>);
 
   @override
-  _i19.Future<bool> authenticate({
+  _i21.Future<bool> authenticate({
     required String? localizedReason,
     Iterable<_i49.AuthMessages>? authMessages = const [
       _i50.IOSAuthMessages(),
@@ -3136,40 +3153,355 @@ class MockLocalAuthentication extends _i1.Mock
               #sensitiveTransaction: sensitiveTransaction,
               #persistAcrossBackgrounding: persistAcrossBackgrounding,
             }),
-            returnValue: _i19.Future<bool>.value(false),
-            returnValueForMissingStub: _i19.Future<bool>.value(false),
+            returnValue: _i21.Future<bool>.value(false),
+            returnValueForMissingStub: _i21.Future<bool>.value(false),
           )
-          as _i19.Future<bool>);
+          as _i21.Future<bool>);
 
   @override
-  _i19.Future<bool> stopAuthentication() =>
+  _i21.Future<bool> stopAuthentication() =>
       (super.noSuchMethod(
             Invocation.method(#stopAuthentication, []),
-            returnValue: _i19.Future<bool>.value(false),
-            returnValueForMissingStub: _i19.Future<bool>.value(false),
+            returnValue: _i21.Future<bool>.value(false),
+            returnValueForMissingStub: _i21.Future<bool>.value(false),
           )
-          as _i19.Future<bool>);
+          as _i21.Future<bool>);
 
   @override
-  _i19.Future<bool> isDeviceSupported() =>
+  _i21.Future<bool> isDeviceSupported() =>
       (super.noSuchMethod(
             Invocation.method(#isDeviceSupported, []),
-            returnValue: _i19.Future<bool>.value(false),
-            returnValueForMissingStub: _i19.Future<bool>.value(false),
+            returnValue: _i21.Future<bool>.value(false),
+            returnValueForMissingStub: _i21.Future<bool>.value(false),
           )
-          as _i19.Future<bool>);
+          as _i21.Future<bool>);
 
   @override
-  _i19.Future<List<_i49.BiometricType>> getAvailableBiometrics() =>
+  _i21.Future<List<_i49.BiometricType>> getAvailableBiometrics() =>
       (super.noSuchMethod(
             Invocation.method(#getAvailableBiometrics, []),
-            returnValue: _i19.Future<List<_i49.BiometricType>>.value(
+            returnValue: _i21.Future<List<_i49.BiometricType>>.value(
               <_i49.BiometricType>[],
             ),
             returnValueForMissingStub:
-                _i19.Future<List<_i49.BiometricType>>.value(
+                _i21.Future<List<_i49.BiometricType>>.value(
                   <_i49.BiometricType>[],
                 ),
           )
-          as _i19.Future<List<_i49.BiometricType>>);
+          as _i21.Future<List<_i49.BiometricType>>);
+}
+
+/// A class which mocks [PushRequestNotifier].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockPushRequestNotifier extends _i1.Mock
+    implements _i52.PushRequestNotifier {
+  @override
+  _i10.RsaUtils get rsaUtils =>
+      (super.noSuchMethod(
+            Invocation.getter(#rsaUtils),
+            returnValue: _FakeRsaUtils_14(this, Invocation.getter(#rsaUtils)),
+            returnValueForMissingStub: _FakeRsaUtils_14(
+              this,
+              Invocation.getter(#rsaUtils),
+            ),
+          )
+          as _i10.RsaUtils);
+
+  @override
+  _i9.PrivacyideaIOClient get ioClient =>
+      (super.noSuchMethod(
+            Invocation.getter(#ioClient),
+            returnValue: _FakePrivacyideaIOClient_13(
+              this,
+              Invocation.getter(#ioClient),
+            ),
+            returnValueForMissingStub: _FakePrivacyideaIOClient_13(
+              this,
+              Invocation.getter(#ioClient),
+            ),
+          )
+          as _i9.PrivacyideaIOClient);
+
+  @override
+  _i19.PushProvider get pushProvider =>
+      (super.noSuchMethod(
+            Invocation.getter(#pushProvider),
+            returnValue: _FakePushProvider_31(
+              this,
+              Invocation.getter(#pushProvider),
+            ),
+            returnValueForMissingStub: _FakePushProvider_31(
+              this,
+              Invocation.getter(#pushProvider),
+            ),
+          )
+          as _i19.PushProvider);
+
+  @override
+  _i20.PushRequestRepository get pushRepo =>
+      (super.noSuchMethod(
+            Invocation.getter(#pushRepo),
+            returnValue: _FakePushRequestRepository_32(
+              this,
+              Invocation.getter(#pushRepo),
+            ),
+            returnValueForMissingStub: _FakePushRequestRepository_32(
+              this,
+              Invocation.getter(#pushRepo),
+            ),
+          )
+          as _i20.PushRequestRepository);
+
+  @override
+  _i38.Ref get ref =>
+      (super.noSuchMethod(
+            Invocation.getter(#ref),
+            returnValue: _i26.dummyValue<_i38.Ref>(
+              this,
+              Invocation.getter(#ref),
+            ),
+            returnValueForMissingStub: _i26.dummyValue<_i38.Ref>(
+              this,
+              Invocation.getter(#ref),
+            ),
+          )
+          as _i38.Ref);
+
+  @override
+  _i38.AsyncValue<_i4.PushRequestState> get state =>
+      (super.noSuchMethod(
+            Invocation.getter(#state),
+            returnValue: _i26.dummyValue<_i38.AsyncValue<_i4.PushRequestState>>(
+              this,
+              Invocation.getter(#state),
+            ),
+            returnValueForMissingStub: _i26
+                .dummyValue<_i38.AsyncValue<_i4.PushRequestState>>(
+                  this,
+                  Invocation.getter(#state),
+                ),
+          )
+          as _i38.AsyncValue<_i4.PushRequestState>);
+
+  @override
+  set state(_i38.AsyncValue<_i4.PushRequestState>? newState) =>
+      super.noSuchMethod(
+        Invocation.setter(#state, newState),
+        returnValueForMissingStub: null,
+      );
+
+  @override
+  _i21.Future<_i4.PushRequestState> get future =>
+      (super.noSuchMethod(
+            Invocation.getter(#future),
+            returnValue: _i21.Future<_i4.PushRequestState>.value(
+              _FakePushRequestState_2(this, Invocation.getter(#future)),
+            ),
+            returnValueForMissingStub: _i21.Future<_i4.PushRequestState>.value(
+              _FakePushRequestState_2(this, Invocation.getter(#future)),
+            ),
+          )
+          as _i21.Future<_i4.PushRequestState>);
+
+  @override
+  _i21.Future<_i4.PushRequestState> build({
+    required _i10.RsaUtils? rsaUtils,
+    required _i9.PrivacyideaIOClient? ioClient,
+    required _i19.PushProvider? pushProvider,
+    required _i20.PushRequestRepository? pushRepo,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#build, [], {
+              #rsaUtils: rsaUtils,
+              #ioClient: ioClient,
+              #pushProvider: pushProvider,
+              #pushRepo: pushRepo,
+            }),
+            returnValue: _i21.Future<_i4.PushRequestState>.value(
+              _FakePushRequestState_2(
+                this,
+                Invocation.method(#build, [], {
+                  #rsaUtils: rsaUtils,
+                  #ioClient: ioClient,
+                  #pushProvider: pushProvider,
+                  #pushRepo: pushRepo,
+                }),
+              ),
+            ),
+            returnValueForMissingStub: _i21.Future<_i4.PushRequestState>.value(
+              _FakePushRequestState_2(
+                this,
+                Invocation.method(#build, [], {
+                  #rsaUtils: rsaUtils,
+                  #ioClient: ioClient,
+                  #pushProvider: pushProvider,
+                  #pushRepo: pushRepo,
+                }),
+              ),
+            ),
+          )
+          as _i21.Future<_i4.PushRequestState>);
+
+  @override
+  void swapPushProvider(_i19.PushProvider? newProvider) => super.noSuchMethod(
+    Invocation.method(#swapPushProvider, [newProvider]),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  _i21.Future<void> pollForChallenges({required bool? isManually}) =>
+      (super.noSuchMethod(
+            Invocation.method(#pollForChallenges, [], {
+              #isManually: isManually,
+            }),
+            returnValue: _i21.Future<void>.value(),
+            returnValueForMissingStub: _i21.Future<void>.value(),
+          )
+          as _i21.Future<void>);
+
+  @override
+  _i21.Future<_i4.PushRequestState> loadStateFromRepo() =>
+      (super.noSuchMethod(
+            Invocation.method(#loadStateFromRepo, []),
+            returnValue: _i21.Future<_i4.PushRequestState>.value(
+              _FakePushRequestState_2(
+                this,
+                Invocation.method(#loadStateFromRepo, []),
+              ),
+            ),
+            returnValueForMissingStub: _i21.Future<_i4.PushRequestState>.value(
+              _FakePushRequestState_2(
+                this,
+                Invocation.method(#loadStateFromRepo, []),
+              ),
+            ),
+          )
+          as _i21.Future<_i4.PushRequestState>);
+
+  @override
+  _i21.Future<_i53.PiSuccessResponse<T, D>?> accept<
+    T extends _i5.PiServerResultValue,
+    D extends _i54.PiServerResultDetail
+  >(
+    _i30.PushToken? token,
+    _i27.PushRequest? request, {
+    String? selectedAnswer,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(
+              #accept,
+              [token, request],
+              {#selectedAnswer: selectedAnswer},
+            ),
+            returnValue: _i21.Future<_i53.PiSuccessResponse<T, D>?>.value(),
+            returnValueForMissingStub:
+                _i21.Future<_i53.PiSuccessResponse<T, D>?>.value(),
+          )
+          as _i21.Future<_i53.PiSuccessResponse<T, D>?>);
+
+  @override
+  _i21.Future<_i53.PiSuccessResponse<T, D>?> decline<
+    T extends _i5.PiServerResultValue,
+    D extends _i54.PiServerResultDetail
+  >(_i30.PushToken? token, _i27.PushRequest? request) =>
+      (super.noSuchMethod(
+            Invocation.method(#decline, [token, request]),
+            returnValue: _i21.Future<_i53.PiSuccessResponse<T, D>?>.value(),
+            returnValueForMissingStub:
+                _i21.Future<_i53.PiSuccessResponse<T, D>?>.value(),
+          )
+          as _i21.Future<_i53.PiSuccessResponse<T, D>?>);
+
+  @override
+  _i21.Future<bool> add(_i27.PushRequest? pr) =>
+      (super.noSuchMethod(
+            Invocation.method(#add, [pr]),
+            returnValue: _i21.Future<bool>.value(false),
+            returnValueForMissingStub: _i21.Future<bool>.value(false),
+          )
+          as _i21.Future<bool>);
+
+  @override
+  _i21.Future<bool> addOrReplace(_i27.PushRequest? pr) =>
+      (super.noSuchMethod(
+            Invocation.method(#addOrReplace, [pr]),
+            returnValue: _i21.Future<bool>.value(false),
+            returnValueForMissingStub: _i21.Future<bool>.value(false),
+          )
+          as _i21.Future<bool>);
+
+  @override
+  _i21.Future<bool> remove(_i27.PushRequest? pushRequest) =>
+      (super.noSuchMethod(
+            Invocation.method(#remove, [pushRequest]),
+            returnValue: _i21.Future<bool>.value(false),
+            returnValueForMissingStub: _i21.Future<bool>.value(false),
+          )
+          as _i21.Future<bool>);
+
+  @override
+  _i21.Future<void> initFirebase() =>
+      (super.noSuchMethod(
+            Invocation.method(#initFirebase, []),
+            returnValue: _i21.Future<void>.value(),
+            returnValueForMissingStub: _i21.Future<void>.value(),
+          )
+          as _i21.Future<void>);
+
+  @override
+  void runBuild() => super.noSuchMethod(
+    Invocation.method(#runBuild, []),
+    returnValueForMissingStub: null,
+  );
+
+  @override
+  _i40.RemoveListener listenSelf(
+    void Function(
+      _i38.AsyncValue<_i4.PushRequestState>?,
+      _i38.AsyncValue<_i4.PushRequestState>,
+    )?
+    listener, {
+    void Function(Object, StackTrace)? onError,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#listenSelf, [listener], {#onError: onError}),
+            returnValue: () {},
+            returnValueForMissingStub: () {},
+          )
+          as _i40.RemoveListener);
+
+  @override
+  bool updateShouldNotify(
+    _i38.AsyncValue<_i4.PushRequestState>? previous,
+    _i38.AsyncValue<_i4.PushRequestState>? next,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateShouldNotify, [previous, next]),
+            returnValue: false,
+            returnValueForMissingStub: false,
+          )
+          as bool);
+
+  @override
+  _i21.Future<_i4.PushRequestState> update(
+    _i21.FutureOr<_i4.PushRequestState> Function(_i4.PushRequestState)? cb, {
+    _i21.FutureOr<_i4.PushRequestState> Function(Object, StackTrace)? onError,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#update, [cb], {#onError: onError}),
+            returnValue: _i21.Future<_i4.PushRequestState>.value(
+              _FakePushRequestState_2(
+                this,
+                Invocation.method(#update, [cb], {#onError: onError}),
+              ),
+            ),
+            returnValueForMissingStub: _i21.Future<_i4.PushRequestState>.value(
+              _FakePushRequestState_2(
+                this,
+                Invocation.method(#update, [cb], {#onError: onError}),
+              ),
+            ),
+          )
+          as _i21.Future<_i4.PushRequestState>);
 }

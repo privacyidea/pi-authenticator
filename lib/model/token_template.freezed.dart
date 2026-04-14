@@ -23,7 +23,7 @@ TokenTemplate _$TokenTemplateFromJson(
           return _TokenTemplateWithOtps.fromJson(
             json
           );
-
+        
           default:
             throw CheckedFromJsonException(
   json,
@@ -32,7 +32,7 @@ TokenTemplate _$TokenTemplateFromJson(
   'Invalid union type "${json['runtimeType']}"!'
 );
         }
-
+      
 }
 
 /// @nodoc

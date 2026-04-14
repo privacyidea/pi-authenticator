@@ -214,7 +214,7 @@ return $default(_that.max,_that.value);case _:
 
 class ProgressStateUninitialized extends ProgressState {
   const ProgressStateUninitialized({this.max = 0, this.value = 0}): super._();
-
+  
 
 @override@JsonKey() final  int max;
 @override@JsonKey() final  int value;
@@ -282,7 +282,7 @@ as int,
 
 class _ProgressState extends ProgressState {
   const _ProgressState({required this.max, required this.value}): assert(max >= 0, 'max must be greater than or equal to 0'),assert(value <= max, 'value must be less than or equal to max'),super._();
-
+  
 
 @override final  int max;
 @override final  int value;
