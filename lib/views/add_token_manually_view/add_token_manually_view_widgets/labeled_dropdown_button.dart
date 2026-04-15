@@ -3,7 +3,7 @@
  *
  * Author: Frank Merkel <frank.merkel@netknights.it>
  *
- * Copyright (c) 2025 NetKnights GmbH
+ * Copyright (c) 2026 NetKnights GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
@@ -20,14 +20,12 @@
 import 'package:flutter/material.dart';
 
 import '../../../utils/logger.dart';
-import '../../../widgets/deactivateable.dart';
 import 'add_token_manually_row.dart';
 
 class LabeledDropdownButton<T> extends StatefulWidget {
   final String label;
   final List<T> values;
   final bool enabled;
-  // If valueLabel is not avaible, the value toString are used as label
   final List<String>? valueLabels;
   final ValueNotifier<T?>? valueNotifier;
   final String postFix;
@@ -65,36 +63,42 @@ class _LabeledDropdownButtonState<T> extends State<LabeledDropdownButton<T>> {
 
   @override
   Widget build(BuildContext context) {
-    return Deactivateable(
-      deactivated: !widget.enabled,
-      child: AddTokenManuallyRow(
-        label: widget.label,
-        child: DropdownButton<T>(
-          value:
-              widget.valueNotifier?.value != null &&
-                  widget.values.contains(widget.valueNotifier!.value)
-              ? widget.valueNotifier!.value
-              : widget.values.firstOrNull,
-          isExpanded: true,
-          items: [
-            for (var i = 0; i < widget.values.length; i++)
-              DropdownMenuItem<T>(
-                value: widget.values[i],
-                child: Text(
-                  '${widget.valueLabels != null && i < widget.valueLabels!.length ? widget.valueLabels![i] : widget.values[i].toString()}${widget.postFix.isNotEmpty ? ' ${widget.postFix}' : ''}',
-                  style: Theme.of(context).textTheme.bodyMedium,
-                  overflow: TextOverflow.fade,
-                  softWrap: false,
-                ),
+    final dropdown = AddTokenManuallyRow(
+      label: widget.label,
+      child: DropdownButton<T>(
+        value:
+            widget.valueNotifier?.value != null &&
+                widget.values.contains(widget.valueNotifier!.value)
+            ? widget.valueNotifier!.value
+            : widget.values.firstOrNull,
+        isExpanded: true,
+        items: [
+          for (var i = 0; i < widget.values.length; i++)
+            DropdownMenuItem<T>(
+              value: widget.values[i],
+              child: Text(
+                '${widget.valueLabels != null && i < widget.valueLabels!.length ? widget.valueLabels![i] : widget.values[i].toString()}${widget.postFix.isNotEmpty ? ' ${widget.postFix}' : ''}',
+                style: Theme.of(context).textTheme.bodyMedium,
+                overflow: TextOverflow.fade,
+                softWrap: false,
               ),
-          ],
-          onChanged: (T? newValue) {
-            if (newValue == null) return;
-            Logger.info('DropdownButton onChanged: $newValue');
-            widget.valueNotifier?.value = newValue;
-          },
-        ),
+            ),
+        ],
+        onChanged: widget.enabled
+            ? (T? newValue) {
+                if (newValue == null) return;
+                Logger.info('DropdownButton onChanged: $newValue');
+                widget.valueNotifier?.value = newValue;
+              }
+            : null, // Disabling the callback also helps with visual state
       ),
     );
+
+    if (widget.enabled) {
+      return dropdown;
+    }
+
+    // Inline Deactivateable logic: Apply opacity and absorb pointers
+    return Opacity(opacity: 0.3, child: AbsorbPointer(child: dropdown));
   }
 }

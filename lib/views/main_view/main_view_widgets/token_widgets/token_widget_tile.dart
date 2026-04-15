@@ -23,7 +23,7 @@ import 'package:flutter_riverpod/legacy.dart';
 
 import '../../../../../../../views/main_view/main_view_widgets/token_widgets/container_token_sync_icon.dart';
 import '../../../../model/tokens/token.dart';
-import '../../../../widgets/custom_texts.dart';
+import '../../../../widgets/hideable_text.dart';
 import 'token_image.dart';
 
 final disableCopyOtpProvider = StateProvider<bool>((ref) => false);

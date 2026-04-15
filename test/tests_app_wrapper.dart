@@ -14,6 +14,7 @@ import 'package:privacyidea_authenticator/interfaces/repo/token_folder_repositor
 import 'package:privacyidea_authenticator/interfaces/repo/token_repository.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/model/token_container.dart';
+import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/repo/secure_storage.dart';
 import 'package:privacyidea_authenticator/utils/allow_screenshot_utils.dart';
 import 'package:privacyidea_authenticator/utils/customization/theme_extentions/action_theme.dart';
@@ -22,10 +23,14 @@ import 'package:privacyidea_authenticator/utils/customization/theme_extentions/s
 import 'package:privacyidea_authenticator/utils/ecc_utils.dart';
 import 'package:privacyidea_authenticator/utils/firebase_utils.dart';
 import 'package:privacyidea_authenticator/utils/globals.dart';
+import 'package:privacyidea_authenticator/utils/home_widget_utils.dart';
 import 'package:privacyidea_authenticator/utils/privacyidea_io_client.dart';
 import 'package:privacyidea_authenticator/utils/push_provider.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/deeplink_notifier.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/push_request_provider.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -51,6 +56,11 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
   MockSpec<TokenNotifier>(),
   MockSpec<LocalAuthentication>(),
   MockSpec<PushRequestNotifier>(),
+  MockSpec<HomeWidgetUtils>(),
+  MockSpec<IntroductionNotifier>(),
+  MockSpec<Token>(),
+  MockSpec<DeeplinkNotifier>(),
+  MockSpec<TokenFolderNotifier>(),
 ])
 class TestsAppWrapper extends StatelessWidget {
   final Widget child;
