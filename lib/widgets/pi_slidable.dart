@@ -27,14 +27,14 @@ import '../views/main_view/main_view_widgets/token_widgets/slideable_action.dart
 
 final piSlidablesRef = StateProvider<List<SlidableController>>((ref) => []);
 
-class PiSliable extends ConsumerStatefulWidget {
+class PiSlidable extends ConsumerStatefulWidget {
   final String groupTag;
   final String identifier;
   final List<ConsumerSlideableAction> actions;
   final List<Widget> stack;
   final Widget child;
 
-  const PiSliable({
+  const PiSlidable({
     required this.groupTag,
     required this.identifier,
     required this.actions,
@@ -44,10 +44,10 @@ class PiSliable extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<PiSliable> createState() => _PiSliableState();
+  ConsumerState<PiSlidable> createState() => _PiSlidableState();
 }
 
-class _PiSliableState extends ConsumerState<PiSliable>
+class _PiSlidableState extends ConsumerState<PiSlidable>
     with TickerProviderStateMixin {
   late SlidableController controller;
 
@@ -55,21 +55,21 @@ class _PiSliableState extends ConsumerState<PiSliable>
   void initState() {
     super.initState();
     controller = SlidableController(this);
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      if (mounted == false) return;
-      final list = ref.read(piSlidablesRef);
-      list.add(controller);
-      ref.read(piSlidablesRef.notifier).state = list;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      ref
+          .read(piSlidablesRef.notifier)
+          .update((state) => [...state, controller]);
     });
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      final list = globalRef?.read(piSlidablesRef);
-      if (list == null) return;
-      list.remove(controller);
-      globalRef?.read(piSlidablesRef.notifier).state = list;
+    final localController = controller;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      globalRef
+          ?.read(piSlidablesRef.notifier)
+          .update((state) => state.where((c) => c != localController).toList());
     });
     controller.dispose();
     super.dispose();
@@ -77,23 +77,22 @@ class _PiSliableState extends ConsumerState<PiSliable>
 
   @override
   Widget build(BuildContext context) {
-    final childStack = Stack(
-      children: [widget.child, for (var item in widget.stack) item],
+    final childStack = Stack(children: [widget.child, ...widget.stack]);
+
+    if (widget.actions.isEmpty) return childStack;
+
+    return ClipRRect(
+      child: Slidable(
+        controller: controller,
+        key: ValueKey('${widget.groupTag}-${widget.identifier}'),
+        groupTag: widget.groupTag,
+        endActionPane: ActionPane(
+          motion: const DrawerMotion(),
+          extentRatio: 1,
+          children: widget.actions,
+        ),
+        child: childStack,
+      ),
     );
-    return widget.actions.isNotEmpty
-        ? ClipRRect(
-            child: Slidable(
-              controller: controller,
-              key: ValueKey('${widget.groupTag}-${widget.identifier}'),
-              groupTag: widget.groupTag,
-              endActionPane: ActionPane(
-                motion: const DrawerMotion(),
-                extentRatio: 1,
-                children: widget.actions,
-              ),
-              child: childStack,
-            ),
-          )
-        : childStack;
   }
 }

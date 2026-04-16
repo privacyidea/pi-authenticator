@@ -140,7 +140,7 @@ class _FeedbackSendRowState extends State<FeedbackSendRow> {
   }
 
   String _addDeviceInfoToMail(String feedback) =>
-      '$feedback\n\n[${InfoUtils.currentVersionAndBuildNumber}] ${InfoUtils.deviceInfoString}';
+      '$feedback\n\n[${AppInfoUtils.currentVersionAndBuildNumber}] ${AppInfoUtils.deviceInfoString}';
   Future<bool> _sendMail(String mailText) => PiMailer.sendMail(
     mailRecipients: _mailRecipients,
     subjectPrefix:

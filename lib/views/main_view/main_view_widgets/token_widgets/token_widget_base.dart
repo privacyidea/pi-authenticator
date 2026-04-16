@@ -140,7 +140,7 @@ class _TokenWidgetBaseState extends ConsumerState<TokenWidgetBase> {
     );
 
     if (draggingSortable != null) {
-      return PiSliable(
+      return PiSlidable(
         groupTag: TokenWidget.groupTag,
         identifier: widget.token.id,
         actions: actions,
@@ -149,7 +149,7 @@ class _TokenWidgetBaseState extends ConsumerState<TokenWidgetBase> {
       );
     }
 
-    return PiSliable(
+    return PiSlidable(
       groupTag: TokenWidget.groupTag,
       identifier: widget.token.id,
       actions: actions,

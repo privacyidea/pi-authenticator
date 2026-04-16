@@ -45,7 +45,7 @@ class ContainerWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) => isPreview
       ? ContainerWidgetTile(container: container, isPreview: isPreview)
       : ClipRRect(
-          child: PiSliable(
+          child: PiSlidable(
             groupTag: groupTag,
             identifier: container.serial,
             actions: [

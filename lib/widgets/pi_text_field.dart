@@ -23,24 +23,32 @@ class PiTextField extends StatelessWidget {
   final String? labelText;
   final Function(String)? onChanged;
   final TextEditingController? controller;
-  final String? initialValue;
   final TextInputType? keyboardType;
   final FocusNode? focusNode;
   final bool autofocus;
+  final bool obscureText;
+  final bool autocorrect;
+  final bool enableSuggestions;
   final AutovalidateMode autovalidateMode;
   final String? Function(String?)? validator;
+  final TextInputAction? textInputAction;
+  final Function(String)? onFieldSubmitted;
 
   const PiTextField({
     super.key,
     this.labelText,
     this.onChanged,
     this.controller,
-    this.initialValue,
     this.keyboardType,
     this.focusNode,
     this.autofocus = false,
+    this.obscureText = false,
+    this.autocorrect = false,
+    this.enableSuggestions = false,
     this.autovalidateMode = AutovalidateMode.onUserInteraction,
     this.validator,
+    this.textInputAction,
+    this.onFieldSubmitted,
   });
 
   @override
@@ -48,10 +56,14 @@ class PiTextField extends StatelessWidget {
     decoration: InputDecoration(labelText: labelText, errorMaxLines: 2),
     onChanged: onChanged,
     controller: controller,
-    initialValue: initialValue,
     keyboardType: keyboardType,
     focusNode: focusNode,
     autofocus: autofocus,
+    obscureText: obscureText,
+    autocorrect: autocorrect,
+    enableSuggestions: enableSuggestions,
+    textInputAction: textInputAction,
+    onFieldSubmitted: onFieldSubmitted,
     style: Theme.of(context).textTheme.titleSmall,
     autovalidateMode: autovalidateMode,
     validator: validator,

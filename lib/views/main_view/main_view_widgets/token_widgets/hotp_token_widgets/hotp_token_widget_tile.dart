@@ -29,7 +29,7 @@ import '../../../../../utils/globals.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../../../utils/utils.dart';
 import '../../../../../widgets/custom_trailing.dart';
-import '../../../../../widgets/hideable_widget_.dart';
+import '../../../../../widgets/token_visibility_shield.dart';
 import '../token_widget_tile.dart';
 
 class HOTPTokenWidgetTile extends ConsumerWidget {
@@ -74,7 +74,7 @@ class HOTPTokenWidgetTile extends ConsumerWidget {
     trailing: CustomTrailing(
       child: isPreview
           ? const FittedBox(child: Icon(size: 100, Icons.replay))
-          : HideableWidget(
+          : TokenVisibilityShield(
               token: token,
               isHidden: token.isHidden,
               child: Semantics(

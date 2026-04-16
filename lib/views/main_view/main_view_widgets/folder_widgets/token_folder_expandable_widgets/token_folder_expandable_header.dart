@@ -80,7 +80,7 @@ class _TokenFolderExpandableHeaderState
       padding: isExpanded
           ? const EdgeInsets.fromLTRB(14, 4, 14, 0)
           : const EdgeInsets.only(top: 4),
-      child: PiSliable(
+      child: PiSlidable(
         key: ValueKey('tokenFolder-${widget.folder.folderId}'),
         groupTag: TokenWidget.groupTag,
         identifier: widget.folder.folderId.toString(),

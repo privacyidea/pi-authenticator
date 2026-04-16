@@ -31,7 +31,7 @@ import '../../../../../utils/riverpod/riverpod_providers/generated_providers/tok
 import '../../../../../utils/utils.dart';
 import '../../../../../utils/view_utils.dart';
 import '../../../../../widgets/custom_trailing.dart';
-import '../../../../../widgets/hideable_widget_.dart';
+import '../../../../../widgets/token_visibility_shield.dart';
 import '../token_widget_tile.dart';
 import 'totp_token_widget_tile_countdown.dart';
 
@@ -149,7 +149,7 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile>
             ]
           : [],
       trailing: CustomTrailing(
-        child: HideableWidget(
+        child: TokenVisibilityShield(
           token: widget.token,
           isHidden: widget.token.isHidden && !widget.isPreview,
           child: TotpTokenWidgetTileCountdown(

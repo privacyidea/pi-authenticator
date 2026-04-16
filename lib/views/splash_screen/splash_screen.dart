@@ -64,7 +64,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
             <Future>[
               Future.delayed(_splashScreenDuration),
               ref.read(tokenProvider.future),
-              InfoUtils.init(),
+              AppInfoUtils.init(),
               HomeWidgetUtils().homeWidgetInit(),
               ref.read(allowScreenshotProvider.future),
               ref.read(tokenFolderProvider.notifier).initState,

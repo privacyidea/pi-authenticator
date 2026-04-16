@@ -17,6 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:privacyidea_authenticator/widgets/focused_item_as_overlay.dart';
@@ -39,17 +40,13 @@ void main() {
           ),
         ),
       );
-
       expect(find.text('Normal Child'), findsOneWidget);
-      // BackdropFilter is part of the overlay, should not be there
       expect(find.byType(BackdropFilter), findsNothing);
     });
-
     testWidgets('shows overlay components when isFocused is true', (
       tester,
     ) async {
       bool completed = false;
-
       await tester.pumpWidget(
         TestsAppWrapper(
           child: FocusedItemAsOverlay(
@@ -60,51 +57,35 @@ void main() {
           ),
         ),
       );
-
-      // We need to pump once to trigger addPostFrameCallback where overlay is inserted
       await tester.pump();
-
-      // Check for backdrop blur
       expect(find.byType(BackdropFilter), findsOneWidget);
-
-      // Check for tooltip text
       expect(find.text('Focus Tooltip'), findsOneWidget);
       expect(find.byType(TooltipContainer), findsOneWidget);
-
-      // Simulate tap on the full-screen detector to complete
       await tester.tap(find.byType(GestureDetector).last);
       expect(completed, true);
     });
-
-    testWidgets('updates overlay when childIsMoving is true', (tester) async {
-      // This test checks if the periodic timer for moving elements is active
+    testWidgets('timer stops after stability even with infinite animations', (
+      tester,
+    ) async {
       await tester.pumpWidget(
         TestsAppWrapper(
           child: FocusedItemAsOverlay(
             isFocused: true,
             childIsMoving: true,
-            tooltipWhenFocused: 'Moving Tooltip',
+            tooltipWhenFocused: 'Stable Tooltip',
             onComplete: () {},
             child: const SizedBox(width: 50, height: 50),
           ),
         ),
       );
-
       await tester.pump();
-
-      // Verify initial state
+      for (int i = 0; i < 70; i++) {
+        await tester.pump(const Duration(milliseconds: 16));
+      }
       expect(find.byType(TooltipContainer), findsOneWidget);
-
-      // Advance time to trigger the periodic timer (16ms)
-      await tester.pump(const Duration(milliseconds: 20));
-
-      // The test passes if no exceptions occur during the overlay update cycle
-      expect(find.byType(TooltipContainer), findsOneWidget);
-
-      // Clean up timer
+      await tester.pumpWidget(const TestsAppWrapper(child: SizedBox()));
       await tester.pumpAndSettle();
     });
-
     testWidgets('disposes overlay when widget is removed', (tester) async {
       await tester.pumpWidget(
         TestsAppWrapper(
@@ -116,16 +97,10 @@ void main() {
           ),
         ),
       );
-
       await tester.pump();
       expect(find.byType(BackdropFilter), findsOneWidget);
-
-      // Replace widget with something else
       await tester.pumpWidget(const TestsAppWrapper(child: SizedBox()));
-
-      // Overlay disposal happens in addPostFrameCallback
       await tester.pump();
-
       expect(find.byType(BackdropFilter), findsNothing);
     });
   });

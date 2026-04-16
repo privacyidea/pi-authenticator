@@ -20,7 +20,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../../l10n/app_localizations.dart';
-import '../../../../../widgets/pi_circular_progress_indicator.dart';
+import '../../../../../widgets/pi_progress_circle.dart';
 
 class TotpTokenWidgetTileCountdown extends StatelessWidget {
   final int period;
@@ -43,7 +43,7 @@ class TotpTokenWidgetTileCountdown extends StatelessWidget {
         alignment: Alignment.center,
         children: [
           Text('$value', overflow: TextOverflow.fade, softWrap: false),
-          PiCircularProgressIndicator(
+          PiProgressCircle(
             1 - (secondsUntilNextOTP / period),
             foregroundColor: currentColor,
             semanticsLabel: AppLocalizations.of(

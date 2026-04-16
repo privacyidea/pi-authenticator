@@ -22,7 +22,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../utils/customization/theme_extentions/app_dimensions.dart';
-import '../pi_circular_progress_indicator.dart';
+import '../pi_progress_circle.dart';
 
 extension DialogActionIntentX on ActionIntent {
   int get priority {
@@ -345,7 +345,7 @@ class _IntentButtonState extends State<IntentButton>
         children: [
           AnimatedBuilder(
             animation: _animation,
-            builder: (context, _) => PiCircularProgressIndicator(
+            builder: (context, _) => PiProgressCircle(
               _animation.value,
               strokeWidth: 3,
               swapColors: _currentDelay % 2 == 0,

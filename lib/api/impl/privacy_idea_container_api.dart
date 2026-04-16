@@ -219,8 +219,8 @@ class PiContainerApi implements TokenContainerApi {
         '|${container.timestamp.toIso8601String().replaceFirst('Z', '+00:00')}'
         '|${container.serial}'
         '|${container.registrationUrl}'
-        '${(container.addDeviceInfos == true) ? '|${InfoUtils.deviceBrand}' : ''}'
-        '${(container.addDeviceInfos == true) ? '|${InfoUtils.deviceModel}' : ''}'
+        '${(container.addDeviceInfos == true) ? '|${AppInfoUtils.deviceBrand}' : ''}'
+        '${(container.addDeviceInfos == true) ? '|${AppInfoUtils.deviceModel}' : ''}'
         '${passphrase != null ? '|$passphrase' : ''}';
 
     final signature = eccUtils.signWithPrivateKey(ecPrivateClientKey, message);
@@ -228,9 +228,9 @@ class PiContainerApi implements TokenContainerApi {
     final body = <String, String>{
       TokenContainer.CONTAINER_SERIAL: container.serial,
       if (container.addDeviceInfos == true)
-        TokenContainer.FINALIZE_DEVICE_BRAND: InfoUtils.deviceBrand,
+        TokenContainer.FINALIZE_DEVICE_BRAND: AppInfoUtils.deviceBrand,
       if (container.addDeviceInfos == true)
-        TokenContainer.FINALIZE_DEVICE_MODEL: InfoUtils.deviceModel,
+        TokenContainer.FINALIZE_DEVICE_MODEL: AppInfoUtils.deviceModel,
       TokenContainer.FINALIZE_SIGNATURE: signature,
     };
     if (container.publicClientKey != null) {

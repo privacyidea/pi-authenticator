@@ -99,7 +99,7 @@ class PatchNotesDialog extends StatelessWidget {
             onPressed: () {
               globalRef
                   ?.read(settingsProvider.notifier)
-                  .setLatestStartedVersion(InfoUtils.currentVersion);
+                  .setLatestStartedVersion(AppInfoUtils.currentVersion);
               Navigator.of(context).pop();
             },
           ),

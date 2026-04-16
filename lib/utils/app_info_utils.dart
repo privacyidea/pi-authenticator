@@ -25,7 +25,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 import '../model/version.dart';
 
-class InfoUtils {
+class AppInfoUtils {
   static bool initCalled = false;
   static bool isInitialized = false;
   static final DeviceInfoPlugin _deviceInfo = DeviceInfoPlugin();
@@ -61,32 +61,49 @@ class InfoUtils {
     _packageName = packageInfo.packageName;
     _appVersion = Version.parse(packageInfo.version);
     _appBuildNumber = packageInfo.buildNumber;
-    _androidInfo = !kIsWeb && Platform.isAndroid ? await _deviceInfo.androidInfo : null;
+    _androidInfo = !kIsWeb && Platform.isAndroid
+        ? await _deviceInfo.androidInfo
+        : null;
     _iosInfo = !kIsWeb && Platform.isIOS ? await _deviceInfo.iosInfo : null;
     _deviceBrand = getDeviceBrand();
     _deviceModel = getDeviceModel();
     isInitialized = true;
   }
 
-  static String get appName => initCalled ? _appName : throw Exception('AppInfoUtils not initialized');
+  static String get appName =>
+      initCalled ? _appName : throw Exception('AppInfoUtils not initialized');
   static late final String _appName;
 
-  static String get packageName => initCalled ? _packageName : throw Exception('AppInfoUtils not initialized');
+  static String get packageName => initCalled
+      ? _packageName
+      : throw Exception('AppInfoUtils not initialized');
   static late final String _packageName;
 
-  static String get currentVersionAndBuildNumber => initCalled ? 'v$currentVersion+$currentBuildNumber' : throw Exception('AppInfoUtils not initialized');
+  static String get currentVersionAndBuildNumber => initCalled
+      ? 'v$currentVersion+$currentBuildNumber'
+      : throw Exception('AppInfoUtils not initialized');
 
-  static Version get currentVersion => initCalled ? _appVersion : throw Exception('AppInfoUtils not initialized');
-  static String get currentVersionString => initCalled ? _appVersion.toString() : throw Exception('AppInfoUtils not initialized');
+  static Version get currentVersion => initCalled
+      ? _appVersion
+      : throw Exception('AppInfoUtils not initialized');
+  static String get currentVersionString => initCalled
+      ? _appVersion.toString()
+      : throw Exception('AppInfoUtils not initialized');
   static late final Version _appVersion;
 
-  static String get currentBuildNumber => initCalled ? _appBuildNumber : throw Exception('AppInfoUtils not initialized');
+  static String get currentBuildNumber => initCalled
+      ? _appBuildNumber
+      : throw Exception('AppInfoUtils not initialized');
   static late final String _appBuildNumber;
 
-  static String get deviceBrand => initCalled ? _deviceBrand : throw Exception('AppInfoUtils not initialized');
+  static String get deviceBrand => initCalled
+      ? _deviceBrand
+      : throw Exception('AppInfoUtils not initialized');
   static late final String _deviceBrand;
 
-  static String get deviceModel => initCalled ? _deviceModel : throw Exception('AppInfoUtils not initialized');
+  static String get deviceModel => initCalled
+      ? _deviceModel
+      : throw Exception('AppInfoUtils not initialized');
   static late final String _deviceModel;
 
   static String get dartVersion => Platform.version;
@@ -103,58 +120,61 @@ class InfoUtils {
     }
   }
 
-  static AndroidDeviceInfo? get androidInfo => initCalled ? _androidInfo : throw Exception('AppInfoUtils not initialized');
+  static AndroidDeviceInfo? get androidInfo => initCalled
+      ? _androidInfo
+      : throw Exception('AppInfoUtils not initialized');
   static late final AndroidDeviceInfo? _androidInfo;
 
   static String get androidDeviceInfoString => _androidDeviceInfoString;
   static final String _androidDeviceInfoString = androidInfo == null
       ? 'It\'s not an Android device.'
       : 'Appversion: $currentVersionAndBuildNumber'
-          '\n'
-          '\nversion.securityPatch: ${androidInfo!.version.securityPatch}'
-          '\nversion.sdkInt: ${androidInfo!.version.sdkInt}'
-          '\nversion.release: ${_androidInfo!.version.release}'
-          '\nversion.previewSdkInt: ${androidInfo!.version.previewSdkInt}'
-          '\nversion.incremental: ${androidInfo!.version.incremental}'
-          '\nversion.codename: ${androidInfo!.version.codename}'
-          '\nversion.baseOS: ${androidInfo!.version.baseOS}'
-          '\nboard: ${androidInfo!.board}'
-          '\nbootloader: ${androidInfo!.bootloader}'
-          '\nbrand: ${androidInfo!.brand}'
-          '\ndevice: ${androidInfo!.device}'
-          '\ndisplay: ${androidInfo!.display}'
-          '\nfingerprint: ${androidInfo!.fingerprint}'
-          '\nhardware: ${androidInfo!.hardware}'
-          '\nhost: ${androidInfo!.host}'
-          '\nid: ${androidInfo!.id}'
-          '\nmanufacturer: ${androidInfo!.manufacturer}'
-          '\nmodel: ${androidInfo!.model}'
-          '\nproduct: ${androidInfo!.product}'
-          '\nsupported32BitAbis: ${androidInfo!.supported32BitAbis}'
-          '\nsupported64BitAbis: ${androidInfo!.supported64BitAbis}'
-          '\nsupportedAbis: ${androidInfo!.supportedAbis}'
-          '\ntags: ${androidInfo!.tags}'
-          '\ntype: ${androidInfo!.type}'
-          '\nisPhysicalDevice: ${androidInfo!.isPhysicalDevice}';
+            '\n'
+            '\nversion.securityPatch: ${androidInfo!.version.securityPatch}'
+            '\nversion.sdkInt: ${androidInfo!.version.sdkInt}'
+            '\nversion.release: ${_androidInfo!.version.release}'
+            '\nversion.previewSdkInt: ${androidInfo!.version.previewSdkInt}'
+            '\nversion.incremental: ${androidInfo!.version.incremental}'
+            '\nversion.codename: ${androidInfo!.version.codename}'
+            '\nversion.baseOS: ${androidInfo!.version.baseOS}'
+            '\nboard: ${androidInfo!.board}'
+            '\nbootloader: ${androidInfo!.bootloader}'
+            '\nbrand: ${androidInfo!.brand}'
+            '\ndevice: ${androidInfo!.device}'
+            '\ndisplay: ${androidInfo!.display}'
+            '\nfingerprint: ${androidInfo!.fingerprint}'
+            '\nhardware: ${androidInfo!.hardware}'
+            '\nhost: ${androidInfo!.host}'
+            '\nid: ${androidInfo!.id}'
+            '\nmanufacturer: ${androidInfo!.manufacturer}'
+            '\nmodel: ${androidInfo!.model}'
+            '\nproduct: ${androidInfo!.product}'
+            '\nsupported32BitAbis: ${androidInfo!.supported32BitAbis}'
+            '\nsupported64BitAbis: ${androidInfo!.supported64BitAbis}'
+            '\nsupportedAbis: ${androidInfo!.supportedAbis}'
+            '\ntags: ${androidInfo!.tags}'
+            '\ntype: ${androidInfo!.type}'
+            '\nisPhysicalDevice: ${androidInfo!.isPhysicalDevice}';
 
-  static IosDeviceInfo? get iosInfo => initCalled ? _iosInfo : throw Exception('AppInfoUtils not initialized');
+  static IosDeviceInfo? get iosInfo =>
+      initCalled ? _iosInfo : throw Exception('AppInfoUtils not initialized');
   static late final IosDeviceInfo? _iosInfo;
 
   String get iosDeviceInfoString => _iosDeviceInfoString;
   static final String _iosDeviceInfoString = iosInfo == null
       ? 'It\'s not an iOS device.'
       : 'Appversion: $currentVersionAndBuildNumber'
-          '\n'
-          '\nname: ${iosInfo!.name}'
-          '\nsystemName: ${iosInfo!.systemName}'
-          '\nsystemVersion: ${iosInfo!.systemVersion}'
-          '\nmodel: ${iosInfo!.model}'
-          '\nlocalizedModel: ${iosInfo!.localizedModel}'
-          '\nidentifierForVendor: ${iosInfo!.identifierForVendor}'
-          '\nisPhysicalDevice: ${iosInfo!.isPhysicalDevice}'
-          '\nutsname.sysname: ${iosInfo!.utsname.sysname}'
-          '\nutsname.nodename: ${iosInfo!.utsname.nodename}'
-          '\nutsname.release: ${iosInfo!.utsname.release}'
-          '\nutsname.version: ${iosInfo!.utsname.version}'
-          '\nutsname.machine: ${iosInfo!.utsname.machine}';
+            '\n'
+            '\nname: ${iosInfo!.name}'
+            '\nsystemName: ${iosInfo!.systemName}'
+            '\nsystemVersion: ${iosInfo!.systemVersion}'
+            '\nmodel: ${iosInfo!.model}'
+            '\nlocalizedModel: ${iosInfo!.localizedModel}'
+            '\nidentifierForVendor: ${iosInfo!.identifierForVendor}'
+            '\nisPhysicalDevice: ${iosInfo!.isPhysicalDevice}'
+            '\nutsname.sysname: ${iosInfo!.utsname.sysname}'
+            '\nutsname.nodename: ${iosInfo!.utsname.nodename}'
+            '\nutsname.release: ${iosInfo!.utsname.release}'
+            '\nutsname.version: ${iosInfo!.utsname.version}'
+            '\nutsname.machine: ${iosInfo!.utsname.machine}';
 }

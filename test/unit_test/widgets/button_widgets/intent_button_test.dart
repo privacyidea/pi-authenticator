@@ -23,7 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:privacyidea_authenticator/utils/customization/theme_extentions/app_dimensions.dart';
 import 'package:privacyidea_authenticator/widgets/button_widgets/intent_button.dart';
-import 'package:privacyidea_authenticator/widgets/pi_circular_progress_indicator.dart';
+import 'package:privacyidea_authenticator/widgets/pi_progress_circle.dart';
 
 void main() {
   const double mockControlHeight = 50.0;
@@ -495,16 +495,12 @@ void main() {
             ),
           ),
         );
-        Finder getIndicator() => find.byType(PiCircularProgressIndicator);
-        final indicator1 = tester.widget<PiCircularProgressIndicator>(
-          getIndicator(),
-        );
+        Finder getIndicator() => find.byType(PiProgressCircle);
+        final indicator1 = tester.widget<PiProgressCircle>(getIndicator());
         expect(indicator1.swapColors, isTrue);
         await tester.pump(const Duration(seconds: 1));
         await tester.pump();
-        final indicator2 = tester.widget<PiCircularProgressIndicator>(
-          getIndicator(),
-        );
+        final indicator2 = tester.widget<PiProgressCircle>(getIndicator());
         expect(indicator2.swapColors, isFalse);
         await tester.pump(const Duration(seconds: 1));
         await tester.pumpAndSettle();

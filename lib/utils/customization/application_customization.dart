@@ -144,13 +144,13 @@ class ApplicationCustomization {
   /// Computed property that injects the current version into the crash subject string.
   String get crashSubjectPrefix => rawCrashSubjectPrefix.replaceAll(
     prefixVersionVariable,
-    InfoUtils.currentVersionAndBuildNumber,
+    AppInfoUtils.currentVersionAndBuildNumber,
   );
 
   /// Computed property that injects the current version into the feedback subject string.
   String get feedbackSubjectPrefix => rawFeedbackSubjectPrefix.replaceAll(
     prefixVersionVariable,
-    InfoUtils.currentVersionAndBuildNumber,
+    AppInfoUtils.currentVersionAndBuildNumber,
   );
 
   /// Generates a [ThemeData] for Light Mode.

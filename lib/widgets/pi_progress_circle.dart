@@ -21,7 +21,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../../../../model/extensions/color_extension.dart';
 
-class PiCircularProgressIndicator extends StatelessWidget {
+class PiProgressCircle extends StatelessWidget {
   final double size;
   final double strokeWidth;
   final double value;
@@ -31,7 +31,7 @@ class PiCircularProgressIndicator extends StatelessWidget {
   final Color? _foregroundColor;
   final bool swapColors;
 
-  const PiCircularProgressIndicator(
+  const PiProgressCircle(
     this.value, {
     double? strokeWidth,
     this.size = 30,

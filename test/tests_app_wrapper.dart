@@ -5,6 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:mockito/annotations.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:privacyidea_authenticator/api/interfaces/container_api.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/introduction_repository.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/push_request_repository.dart';
@@ -17,6 +18,7 @@ import 'package:privacyidea_authenticator/model/token_container.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/repo/secure_storage.dart';
 import 'package:privacyidea_authenticator/utils/allow_screenshot_utils.dart';
+import 'package:privacyidea_authenticator/utils/app_info_utils.dart';
 import 'package:privacyidea_authenticator/utils/customization/theme_extentions/action_theme.dart';
 import 'package:privacyidea_authenticator/utils/customization/theme_extentions/push_request_theme.dart';
 import 'package:privacyidea_authenticator/utils/customization/theme_extentions/status_colors.dart';
@@ -76,48 +78,64 @@ class TestsAppWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     return ProviderScope(
       overrides: overrides,
-      child: MaterialApp(
-        navigatorKey: globalNavigatorKey,
-        theme: ThemeData(
-          extensions: [
-            StatusColors(
-              success: const Color(0xFF4CAF50),
-              warning: const Color(0xFFFF9800),
-              error: const Color(0xFFF44336),
+      child: Consumer(
+        builder: (context, ref, _) {
+          globalRef = ref;
+          return MaterialApp(
+            navigatorKey: globalNavigatorKey,
+            theme: ThemeData(
+              extensions: [
+                StatusColors(
+                  success: const Color(0xFF4CAF50),
+                  warning: const Color(0xFFFF9800),
+                  error: const Color(0xFFF44336),
+                ),
+                TokenTileTheme(
+                  deleteColor: Colors.red,
+                  editColor: Colors.blue,
+                  lockColor: Colors.grey,
+                  transferColor: Colors.green,
+                  actionDisabledColor: Colors.blueGrey,
+                  actionForegroundColor: Colors.white,
+                  defaultOtpColor: Colors.black,
+                  warningOtpColor: const Color(0xFFFF9800),
+                  criticalOtpColor: const Color(0xFFF44336),
+                  defaultCountdownColor: Colors.grey,
+                  warningCountdownColor: const Color(0xFFFF9800),
+                  criticalCountdownColor: const Color(0xFFF44336),
+                  tileSubtitleColor: Colors.black54,
+                  tileIconColor: Colors.black87,
+                ),
+                PushRequestTheme(
+                  acceptColor: const Color(0xFF4CAF50),
+                  declineColor: const Color(0xFFF44336),
+                ),
+              ],
             ),
-            TokenTileTheme(
-              deleteColor: Colors.red,
-              editColor: Colors.blue,
-              lockColor: Colors.grey,
-              transferColor: Colors.green,
-              actionDisabledColor: Colors.blueGrey,
-              actionForegroundColor: Colors.white,
-              defaultOtpColor: Colors.black,
-              warningOtpColor: const Color(0xFFFF9800),
-              criticalOtpColor: const Color(0xFFF44336),
-              defaultCountdownColor: Colors.grey,
-              warningCountdownColor: const Color(0xFFFF9800),
-              criticalCountdownColor: const Color(0xFFF44336),
-              tileSubtitleColor: Colors.black54,
-              tileIconColor: Colors.black87,
-            ),
-            PushRequestTheme(
-              acceptColor: const Color(0xFF4CAF50),
-              declineColor: const Color(0xFFF44336),
-            ),
-          ],
-        ),
-        localizationsDelegates: const [
-          AppLocalizations.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: const [Locale('en')],
-        home: Scaffold(body: child),
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: const [Locale('en')],
+            home: Scaffold(body: child),
+          );
+        },
       ),
     );
   }
+}
+
+Future<void> setupMocks() async {
+  PackageInfo.setMockInitialValues(
+    appName: 'privacyIDEA',
+    packageName: 'it.netknights.pi',
+    version: '1.0.0',
+    buildNumber: '1',
+    buildSignature: '',
+  );
+  await AppInfoUtils.init();
 }
 
 Future<void> pumpUntilFindNWidgets(

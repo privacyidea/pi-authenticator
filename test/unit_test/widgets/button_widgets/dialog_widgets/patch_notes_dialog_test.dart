@@ -66,6 +66,7 @@ void main() {
     });
 
     testWidgets('OK button interaction and pop', (tester) async {
+      await setupMocks();
       await tester.pumpWidget(
         TestsAppWrapper(
           child: Builder(
@@ -80,13 +81,18 @@ void main() {
         ),
       );
 
+      // Open the dialog
       await tester.tap(find.text('Open'));
       await tester.pumpAndSettle();
 
+      // Find and tap the OK button (IntentButton)
       final okButton = find.byType(IntentButton);
       await tester.tap(okButton);
+
+      // Settle the pop animation
       await tester.pumpAndSettle();
 
+      // Verification
       expect(find.byType(PatchNotesDialog), findsNothing);
     });
 

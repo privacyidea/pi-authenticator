@@ -28,28 +28,50 @@ import 'globals.dart';
 import 'logger.dart';
 
 class PatchNotesUtils {
-  static Map<Version, Map<PatchNoteType, List<String>>> _getNewPatchNotes({required BuildContext context, required Version latestStartedVersion}) {
+  static Map<Version, Map<PatchNoteType, List<String>>> _getNewPatchNotes({
+    required BuildContext context,
+    required Version latestStartedVersion,
+  }) {
     final Map<Version, Map<PatchNoteType, List<String>>> newNotes = {};
     final allNotes = getLocalizedPatchNotes(AppLocalizations.of(context)!);
     for (Version noteVersion in allNotes.keys) {
-      if (noteVersion > latestStartedVersion) newNotes[noteVersion] = allNotes[noteVersion]!;
+      if (noteVersion > latestStartedVersion)
+        newNotes[noteVersion] = allNotes[noteVersion]!;
     }
     while (newNotes.length > 2) {
-      newNotes.remove(newNotes.keys.fold(null, (oldest, e) => e > oldest ? oldest : e));
+      newNotes.remove(
+        newNotes.keys.fold(null, (oldest, e) => e > oldest ? oldest : e),
+      );
     }
     return newNotes;
   }
 
-  static void showPatchNotesIfNeeded(BuildContext context, Version latestStartedVersion) {
-    if (latestStartedVersion < InfoUtils.currentVersion) {
-      Logger.info('Showing patch notes between $latestStartedVersion and ${InfoUtils.currentVersion}');
-      return _showPatchNotes(context: context, latestStartedVersion: latestStartedVersion);
+  static void showPatchNotesIfNeeded(
+    BuildContext context,
+    Version latestStartedVersion,
+  ) {
+    if (latestStartedVersion < AppInfoUtils.currentVersion) {
+      Logger.info(
+        'Showing patch notes between $latestStartedVersion and ${AppInfoUtils.currentVersion}',
+      );
+      return _showPatchNotes(
+        context: context,
+        latestStartedVersion: latestStartedVersion,
+      );
     }
-    Logger.info('No patch notes to show. Latest version: $latestStartedVersion. Current version: ${InfoUtils.currentVersion}');
+    Logger.info(
+      'No patch notes to show. Latest version: $latestStartedVersion. Current version: ${AppInfoUtils.currentVersion}',
+    );
   }
 
-  static void _showPatchNotes({required BuildContext context, required Version latestStartedVersion}) {
-    final newNotes = _getNewPatchNotes(context: context, latestStartedVersion: latestStartedVersion);
+  static void _showPatchNotes({
+    required BuildContext context,
+    required Version latestStartedVersion,
+  }) {
+    final newNotes = _getNewPatchNotes(
+      context: context,
+      latestStartedVersion: latestStartedVersion,
+    );
     if (newNotes.isEmpty) return;
     showDialog(
       context: context,

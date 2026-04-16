@@ -5,11 +5,11 @@ import '../l10n/app_localizations.dart';
 import '../model/tokens/otp_token.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 
-class HideableWidget extends ConsumerWidget {
+class TokenVisibilityShield extends ConsumerWidget {
   final OTPToken token;
   final bool isHidden;
   final Widget child;
-  const HideableWidget({
+  const TokenVisibilityShield({
     required this.child,
     required this.token,
     required this.isHidden,

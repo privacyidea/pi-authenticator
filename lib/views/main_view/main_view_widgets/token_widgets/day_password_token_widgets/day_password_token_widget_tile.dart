@@ -31,7 +31,7 @@ import '../../../../../model/tokens/day_password_token.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../../../utils/utils.dart';
 import '../../../../../widgets/custom_trailing.dart';
-import '../../../../../widgets/hideable_widget_.dart';
+import '../../../../../widgets/token_visibility_shield.dart';
 import '../token_widget_tile.dart';
 
 class DayPasswordTokenWidgetTile extends ConsumerStatefulWidget {
@@ -178,7 +178,7 @@ class _DayPasswordTokenWidgetTileState
       height: double.maxFinite,
       child: CustomTrailing(
         fit: BoxFit.none,
-        child: HideableWidget(
+        child: TokenVisibilityShield(
           isHidden: widget.token.isHidden && !widget.isPreview,
           token: widget.token,
           child: GestureDetector(

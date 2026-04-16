@@ -344,7 +344,7 @@ class Logger {
     if (!file.existsSync() || file.lengthSync() == 0) {
       return Future.value(false);
     }
-    String deviceInfo = InfoUtils.deviceInfoString;
+    String deviceInfo = AppInfoUtils.deviceInfoString;
 
     final completeMailBody = """${message ?? _mailBody}
 ---------------------------------------------------------

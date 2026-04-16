@@ -110,17 +110,38 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
       _updateOverlay();
 
       if (widget.childIsMoving) {
+        int stablePositionCount = 0;
+        const int maxStableCount = 60; // Stop after ~1 second of stability
+
         Timer.periodic(const Duration(milliseconds: 16), (timer) {
+          if (mounted == false) {
+            timer.cancel();
+            return;
+          }
+
           WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
             if (mounted == false) {
               timer.cancel();
               return;
             }
-            final renderBoxOffset = (context.findRenderObject() as RenderBox)
-                .localToGlobal(Offset.zero);
+
+            final renderBox = context.findRenderObject() as RenderBox?;
+            if (renderBox == null || !renderBox.hasSize) return;
+
+            final renderBoxOffset = renderBox.localToGlobal(Offset.zero);
+
             if (lastChildPosition != renderBoxOffset) {
               _updateOverlay();
               lastChildPosition = renderBoxOffset;
+              stablePositionCount = 0; // Reset counter on movement
+            } else {
+              stablePositionCount++;
+              if (stablePositionCount >= maxStableCount) {
+                Logger.info(
+                  "FocusedItemOverlay: Movement stopped, cancelling timer.",
+                );
+                timer.cancel();
+              }
             }
           });
         });
