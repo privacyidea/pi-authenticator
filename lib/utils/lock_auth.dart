@@ -112,52 +112,77 @@ Future<bool> _executeAuth({
 }
 
 Future<bool> _checkSupport(bool isBiometricForced, bool autoAuth) async {
+  if (autoAuth) return true;
   final isDeviceSupported = await _localAuth.isDeviceSupported() && !kIsWeb;
 
-  if (!isDeviceSupported) {
-    if (!autoAuth) await _showUnsupportedDialog();
-    return false;
+  if (isBiometricForced) {
+    if (!(await _localAuth.canCheckBiometrics)) {
+      await _showNoBiometricHwDialog();
+      return false;
+    }
+
+    if ((await _localAuth.getAvailableBiometrics()).isEmpty) {
+      await _showNoBiometricDialog();
+      return false;
+    }
   }
 
-  if (isBiometricForced) {
-    final canDoBiometrics = await _localAuth.canCheckBiometrics;
-    final hasBiometricsEnrolled =
-        (await _localAuth.getAvailableBiometrics()).isNotEmpty;
-
-    if (!canDoBiometrics) {
-      await _showBiometricUnsupportedDialog();
-      return false;
-    }
-
-    if (!hasBiometricsEnrolled) {
-      await _showBiometricUnavailableDialog();
-      return false;
-    }
+  if (!isDeviceSupported) {
+    await _showNoScreenLockDialog();
+    return false;
   }
 
   return true;
 }
 
-Future<void> _showUnsupportedDialog() async {
+Future<void> _showNoScreenLockDialog() async {
   await showAsyncDialog(
     builder: (context) => DefaultDialog(
-      scrollable: true,
-      title: ListTile(
-        title: Center(
-          child: Text(
-            AppLocalizations.of(context)!.authNotSupportedTitle,
-            style: Theme.of(context).textTheme.titleMedium,
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(Icons.lock_outline),
+          Flexible(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
+                AppLocalizations.of(context)!.deviceCredentialsRequiredTitle,
+                style: Theme.of(context).textTheme.titleMedium,
+                textAlign: TextAlign.center,
+              ),
+            ),
           ),
-        ),
-        leading: const Icon(Icons.lock),
-        trailing: const Icon(Icons.lock),
+          const Icon(Icons.lock_outline),
+        ],
       ),
-      content: Text(AppLocalizations.of(context)!.authNotSupportedBody),
+      content: Text(
+        AppLocalizations.of(context)!.deviceCredentialsSetupDescription,
+      ),
+      actions: [
+        DialogAction(
+          label: AppLocalizations.of(context)!.setUpButton,
+          intent: ActionIntent.external,
+          onPressed: () async {
+            if (Platform.isAndroid) {
+              await AppSettings.openAppSettings(
+                type: AppSettingsType.lockAndPassword,
+              );
+            }
+            if (Platform.isIOS) {
+              await AppSettings.openAppSettings();
+            }
+            final isNowSupported = await _localAuth.isDeviceSupported();
+            if (isNowSupported && context.mounted) {
+              Navigator.of(context).pop();
+            }
+          },
+        ),
+      ],
     ),
   );
 }
 
-Future<void> _showBiometricUnsupportedDialog() async {
+Future<void> _showNoBiometricHwDialog() async {
   await showAsyncDialog(
     builder: (context) => DefaultDialog(
       title: ListTile(
@@ -178,7 +203,7 @@ Future<void> _showBiometricUnsupportedDialog() async {
   );
 }
 
-Future<void> _showBiometricUnavailableDialog() async {
+Future<void> _showNoBiometricDialog() async {
   await showAsyncDialog(
     builder: (context) => DefaultDialog(
       title: ListTile(

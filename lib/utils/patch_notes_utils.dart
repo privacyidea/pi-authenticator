@@ -35,8 +35,9 @@ class PatchNotesUtils {
     final Map<Version, Map<PatchNoteType, List<String>>> newNotes = {};
     final allNotes = getLocalizedPatchNotes(AppLocalizations.of(context)!);
     for (Version noteVersion in allNotes.keys) {
-      if (noteVersion > latestStartedVersion)
+      if (noteVersion > latestStartedVersion) {
         newNotes[noteVersion] = allNotes[noteVersion]!;
+      }
     }
     while (newNotes.length > 2) {
       newNotes.remove(

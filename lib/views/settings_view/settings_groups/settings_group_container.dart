@@ -40,7 +40,6 @@ class SettingsGroupContainer extends ConsumerWidget {
             ?.containerList
             .isNotEmpty ??
         false,
-    trailingIcon: Icons
-        .arrow_forward_ios, // TODO: Change to container icon when we have one
+    trailingIcon: Icons.arrow_forward_ios,
   );
 }

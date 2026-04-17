@@ -28,6 +28,7 @@ import '../../../model/processor_result.dart';
 import '../../../model/token_import/token_origin_data.dart';
 import '../../../model/tokens/otp_token.dart';
 import '../../../model/tokens/token.dart';
+import '../../../utils/crypto_utils.dart';
 import '../../../utils/logger.dart';
 import '../../../utils/object_validator/object_validators.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
@@ -172,7 +173,7 @@ bool _is2StepURI(Uri uri) {
 
 /// This method parses the 2 step secret from the uri.
 /// If its not a 2 step uri, it returns no Future (only null).
-/// If the two step secret could not be generated, or was canceled, it returns a Future with null.
+/// If the two step secret could not be generated, it returns a Future with null.
 /// If the two step secret was generated, it returns a Future with the secret.
 Future<String?>? _parse2StepSecret(Uri uri) {
   final queryParameters = uri.queryParameters;
@@ -191,26 +192,48 @@ Future<String?>? _parse2StepSecret(Uri uri) {
   final secret = Encodings.base32.decode(
     queryParameters[OTPToken.SECRET_BASE32]!,
   );
-  // Calculate the whole secret.
+  final iterations = int.parse(queryParameters[Token.TWO_STEP_ITERATIONS]!);
+  final keyLength = int.parse(queryParameters[Token.TWO_STEP_OUTPUT_LENTH]!);
+  final saltLength = int.parse(queryParameters[Token.TWO_STEP_SALT_LENTH]!);
 
-  final twoStepSecret = showAsyncDialog<Uint8List>(
-    barrierDismissible: false,
-    builder: (context) => GenerateTwoStepDialog(
-      iterations: int.parse(queryParameters[Token.TWO_STEP_ITERATIONS]!),
-      keyLength: int.parse(queryParameters[Token.TWO_STEP_OUTPUT_LENTH]!),
-      saltLength: int.parse(queryParameters[Token.TWO_STEP_SALT_LENTH]!),
-      password: secret,
-    ),
+  return _generate2StepSecret(
+    password: secret,
+    iterations: iterations,
+    keyLength: keyLength,
+    saltLength: saltLength,
   );
-  final twoStepSecretString = twoStepSecret.then((value) {
-    if (value == null) return null;
-    try {
-      return Encodings.base32.encode(value);
-    } catch (_) {
-      return null;
-    }
-  });
-  return twoStepSecretString;
+}
+
+Future<String?> _generate2StepSecret({
+  required Uint8List password,
+  required int iterations,
+  required int keyLength,
+  required int saltLength,
+}) async {
+  try {
+    // 1. Generate salt.
+    final Uint8List salt = secureRandom().nextBytes(saltLength);
+
+    // 2. Generate secret via PBKDF2.
+    final Uint8List generatedSecret = await pbkdf2(
+      salt: salt,
+      iterations: iterations,
+      keyLength: keyLength,
+      password: password,
+    );
+
+    // 3. Generate phone checksum and show it to the user.
+    final String phoneChecksum = await generatePhoneChecksum(phonePart: salt);
+    showAsyncDialog(
+      barrierDismissible: false,
+      builder: (context) => TwoStepDialog(phoneChecksum: phoneChecksum),
+    );
+
+    return Encodings.base32.encode(generatedSecret);
+  } catch (e, s) {
+    Logger.warning('Failed to generate 2step secret.', error: e, stackTrace: s);
+    return null;
+  }
 }
 
 void _logInfo(Uri uri) {

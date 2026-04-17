@@ -1,5 +1,8 @@
 {
   "chat.tools.terminal.autoApprove": {
-    "flutter": true
+    "flutter": true,
+    "dart": true,
+    "Tee-Object": true,
+    "ForEach-Object": true
   }
 }

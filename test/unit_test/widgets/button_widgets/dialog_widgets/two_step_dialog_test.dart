@@ -18,8 +18,6 @@
  * limitations under the License.
  */
 
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:privacyidea_authenticator/widgets/button_widgets/intent_button.dart';
@@ -30,27 +28,7 @@ import 'package:privacyidea_authenticator/widgets/widget_keys.dart';
 import '../../../../tests_app_wrapper.dart';
 
 void main() {
-  group('GenerateTwoStepDialog & TwoStepDialog Tests', () {
-    final Uint8List testPassword = Uint8List.fromList([1, 2, 3]);
-
-    testWidgets('GenerateTwoStepDialog shows progress indicator', (
-      tester,
-    ) async {
-      await tester.pumpWidget(
-        TestsAppWrapper(
-          child: GenerateTwoStepDialog(
-            saltLength: 32,
-            iterations: 100,
-            keyLength: 32,
-            password: testPassword,
-          ),
-        ),
-      );
-
-      expect(find.byType(CircularProgressIndicator), findsOneWidget);
-      expect(find.byType(BackdropFilter), findsOneWidget);
-    });
-
+  group('TwoStepDialog Tests', () {
     testWidgets('TwoStepDialog displays formatted checksum and blocks pop', (
       tester,
     ) async {

@@ -18,9 +18,7 @@
  * limitations under the License.
  */
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/token_state.dart';
 import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
@@ -28,7 +26,6 @@ import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/gene
 import 'package:privacyidea_authenticator/widgets/token_visibility_shield.dart';
 
 import '../../tests_app_wrapper.dart';
-import '../../tests_app_wrapper.mocks.dart';
 
 class FakeTokenNotifierForShield extends TokenNotifier {
   final TokenState _state;

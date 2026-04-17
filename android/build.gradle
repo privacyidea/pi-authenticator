@@ -13,6 +13,20 @@ subprojects {
     project.evaluationDependsOn(':app')
 }
 
+// Force Kotlin language version 1.9 for plugins incompatible with Kotlin 2.x
+def kotlin19Projects = ['no_screenshot', 'home_widget']
+gradle.projectsEvaluated {
+    subprojects { subproject ->
+        if (kotlin19Projects.contains(subproject.name)) {
+            subproject.tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+                kotlinOptions {
+                    languageVersion = '1.9'
+                }
+            }
+        }
+    }
+}
+
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }

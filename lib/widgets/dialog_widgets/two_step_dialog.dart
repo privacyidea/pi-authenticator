@@ -18,84 +18,14 @@
   limitations under the License.
 */
 
-import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
 import '../../l10n/app_localizations.dart';
-import '../../utils/crypto_utils.dart';
-import '../../utils/logger.dart';
 import '../../utils/utils.dart';
-import '../../utils/view_utils.dart';
 import '../../widgets/dialog_widgets/default_dialog.dart';
 import '../widget_keys.dart';
-
-class GenerateTwoStepDialog extends StatelessWidget {
-  final int _saltLength;
-  final int _iterations;
-  final int _keyLength;
-  final Uint8List _password;
-
-  const GenerateTwoStepDialog({
-    super.key,
-    required int saltLength,
-    required int iterations,
-    required int keyLength,
-    required Uint8List password,
-  }) : _saltLength = saltLength,
-       _iterations = iterations,
-       _keyLength = keyLength,
-       _password = password;
-
-  Future<void> _do2Step(BuildContext context) async {
-    // 1. Generate salt.
-    final Uint8List salt = secureRandom().nextBytes(_saltLength);
-
-    // 2. Generate secret.
-    final Uint8List generatedSecret = await pbkdf2(
-      salt: salt,
-      iterations: _iterations,
-      keyLength: _keyLength,
-      password: _password,
-    );
-
-    String phoneChecksum = await generatePhoneChecksum(phonePart: salt);
-    if (!context.mounted) {
-      Logger.warning(
-        'GenerateTwoStepDialog: context is not mounted anymore. Aborting.',
-      );
-      return;
-    }
-
-    // 3. Show phone part if this widget is still mounted.
-    if (context.mounted) Navigator.of(context).pop(generatedSecret);
-    showAsyncDialog(
-      barrierDismissible: false,
-      builder: (context) => TwoStepDialog(phoneChecksum: phoneChecksum),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    _do2Step(context);
-    return BackdropFilter(
-      filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-      child: DefaultDialog(
-        scrollable: true,
-        title: Text(
-          AppLocalizations.of(context)!.generatingPhonePart,
-          overflow: TextOverflow.fade,
-          softWrap: false,
-        ),
-        content: const Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [CircularProgressIndicator()],
-        ),
-      ),
-    );
-  }
-}
 
 class TwoStepDialog extends StatefulWidget {
   final String phoneChecksum;
