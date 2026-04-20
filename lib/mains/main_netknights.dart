@@ -26,7 +26,7 @@ import 'package:privacyidea_authenticator/firebase_options/default_firebase_opti
 import 'package:privacyidea_authenticator/utils/firebase_utils.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/localization_notifier.dart';
 
-import '../../../../../../../model/riverpod_states/settings_state.dart';
+import '../../../../model/riverpod_states/settings_state.dart';
 import '../l10n/app_localizations.dart';
 import '../model/enums/app_feature.dart';
 import '../utils/customization/application_customization.dart';

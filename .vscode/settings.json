@@ -3,6 +3,8 @@
     "flutter": true,
     "dart": true,
     "Tee-Object": true,
-    "ForEach-Object": true
+    "ForEach-Object": true,
+    "Out-Null": true,
+    "Set-Content": true
   }
 }

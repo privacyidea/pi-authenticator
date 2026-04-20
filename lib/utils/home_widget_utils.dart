@@ -84,8 +84,8 @@ class HomeWidgetUtils {
     TokenRepository? tokenRepository,
     TokenFolderRepository? tokenFolderRepository,
   }) {
-    if (kIsWeb || Platform.isIOS) {
-      return UnsupportedHomeWidgetUtils(); // Not supported on iOS
+    if (kIsWeb || !Platform.isAndroid) {
+      return UnsupportedHomeWidgetUtils(); // Only supported on Android
     }
     _instance ??= HomeWidgetUtils._();
     _tokenRepository = tokenRepository ?? SecureTokenRepository();
@@ -175,7 +175,7 @@ class HomeWidgetUtils {
   static bool? _isHomeWidgetSupported;
   static Future<bool> get isHomeWidgetSupported async {
     if (_isHomeWidgetSupported != null) return _isHomeWidgetSupported!;
-    if (kIsWeb || Platform.isIOS) {
+    if (kIsWeb || !Platform.isAndroid) {
       _isHomeWidgetSupported = false;
       return _isHomeWidgetSupported!;
     }

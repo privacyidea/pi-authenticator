@@ -66,10 +66,17 @@ class _PiSlidableState extends ConsumerState<PiSlidable>
   @override
   void dispose() {
     final localController = controller;
+    final localRef = globalRef;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      globalRef
-          ?.read(piSlidablesRef.notifier)
-          .update((state) => state.where((c) => c != localController).toList());
+      try {
+        localRef
+            ?.read(piSlidablesRef.notifier)
+            .update(
+              (state) => state.where((c) => c != localController).toList(),
+            );
+      } catch (_) {
+        // globalRef may already be invalid if the app is shutting down
+      }
     });
     controller.dispose();
     super.dispose();

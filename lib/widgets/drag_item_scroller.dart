@@ -18,6 +18,7 @@
  * limitations under the License.
  */
 
+import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
 
@@ -66,17 +67,37 @@ class DragItemScroller extends StatefulWidget {
 
 class _DragItemScrollerState extends State<DragItemScroller> {
   double currentSpeed = 0; // px per second
+  Timer? _scrollTimer;
 
   @override
   void initState() {
     super.initState();
-    Future.doWhile(() async {
-      _scrollJump();
-      await Future.delayed(
-        const Duration(milliseconds: 1000 ~/ DragItemScroller.refreshRate),
-      ); // wait for next frame
-      return mounted;
-    });
+  }
+
+  void _ensureTimerRunning() {
+    if (_scrollTimer != null) return;
+    _scheduleNextFrame();
+  }
+
+  void _scheduleNextFrame() {
+    _scrollTimer = Timer(
+      const Duration(milliseconds: 1000 ~/ DragItemScroller.refreshRate),
+      () {
+        if (!mounted) return;
+        _scrollJump();
+        if (currentSpeed != 0) {
+          _scheduleNextFrame();
+        } else {
+          _scrollTimer = null;
+        }
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _scrollTimer?.cancel();
+    super.dispose();
   }
 
   bool canScroll(ScrollController? controller) =>
@@ -129,6 +150,7 @@ class _DragItemScrollerState extends State<DragItemScroller> {
     setState(() {
       currentSpeed = nextScrollingSpeed; // set new speed
     });
+    _ensureTimerRunning();
 
     if (globalRef?.read(dragItemScrollerStateProvider.notifier).state != true &&
         currentSpeed != 0) {

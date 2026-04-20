@@ -53,6 +53,7 @@ class _DayPasswordTokenWidgetTileState
     extends ConsumerState<DayPasswordTokenWidgetTile> {
   double _secondsLeft = 0;
   late DateTime _lastCount;
+  Timer? _countDownTimer;
 
   @override
   void initState() {
@@ -60,6 +61,12 @@ class _DayPasswordTokenWidgetTileState
     _secondsLeft = widget.token.durationUntilNextOTP.inMilliseconds / 1000;
     _lastCount = DateTime.now();
     _startCountDown();
+  }
+
+  @override
+  void dispose() {
+    _countDownTimer?.cancel();
+    super.dispose();
   }
 
   // --- Logic ---
@@ -80,7 +87,11 @@ class _DayPasswordTokenWidgetTileState
 
     // +1 ms to avoid 0
     final msUntilNextSecond = (_secondsLeft * 1000).toInt() % 1000 + 1;
-    Future.delayed(Duration(milliseconds: msUntilNextSecond), _startCountDown);
+    _countDownTimer?.cancel();
+    _countDownTimer = Timer(
+      Duration(milliseconds: msUntilNextSecond),
+      _startCountDown,
+    );
   }
 
   void _copyOtpValue() {

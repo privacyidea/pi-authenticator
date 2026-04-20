@@ -30,7 +30,8 @@ class SettingsGroupBackroundImage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    if (PrivacyIDEAAuthenticator.currentCustomization?.backgroundImage == null) {
+    if (PrivacyIDEAAuthenticator.currentCustomization?.backgroundImage ==
+        null) {
       return const SizedBox();
     }
     return SettingsGroup(

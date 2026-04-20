@@ -61,9 +61,16 @@ void main() {
 
   group('lockAuth - Hardware & Support', () {
     test(
-      'should return autoAuthIfUnsupported value if hardware is missing',
+      'should skip support checks and attempt auth when autoAuthIfUnsupported is true',
       () async {
         when(mockLocalAuth.isDeviceSupported()).thenAnswer((_) async => false);
+        when(
+          mockLocalAuth.authenticate(
+            localizedReason: anyNamed('localizedReason'),
+            biometricOnly: anyNamed('biometricOnly'),
+            authMessages: anyNamed('authMessages'),
+          ),
+        ).thenAnswer((_) async => true);
 
         final result = await lockAuth(
           reason: (loc) => 'reason',
@@ -72,12 +79,13 @@ void main() {
         );
 
         expect(result, isTrue);
-        verifyNever(
+        verify(
           mockLocalAuth.authenticate(
             localizedReason: anyNamed('localizedReason'),
             biometricOnly: anyNamed('biometricOnly'),
+            authMessages: anyNamed('authMessages'),
           ),
-        );
+        ).called(1);
       },
     );
 
@@ -115,6 +123,84 @@ void main() {
         expect(result, isFalse);
       },
     );
+
+    test(
+      'should succeed when biometric is forced and biometrics are enrolled',
+      () async {
+        when(mockLocalAuth.isDeviceSupported()).thenAnswer((_) async => true);
+        when(mockLocalAuth.canCheckBiometrics).thenAnswer((_) async => true);
+        when(
+          mockLocalAuth.getAvailableBiometrics(),
+        ).thenAnswer((_) async => [BiometricType.fingerprint]);
+        when(
+          mockLocalAuth.authenticate(
+            localizedReason: anyNamed('localizedReason'),
+            biometricOnly: anyNamed('biometricOnly'),
+            authMessages: anyNamed('authMessages'),
+          ),
+        ).thenAnswer((_) async => true);
+
+        final result = await lockAuth(
+          reason: (loc) => 'reason',
+          localization: AppLocalizationsEn(),
+          forceBiometricOption: ForceBiometricOption.biometric,
+        );
+
+        expect(result, isTrue);
+        verify(
+          mockLocalAuth.authenticate(
+            localizedReason: anyNamed('localizedReason'),
+            biometricOnly: true,
+            authMessages: anyNamed('authMessages'),
+          ),
+        ).called(1);
+      },
+    );
+
+    test(
+      'should skip support checks when autoAuth is true, even if device unsupported',
+      () async {
+        when(mockLocalAuth.isDeviceSupported()).thenAnswer((_) async => false);
+        when(
+          mockLocalAuth.authenticate(
+            localizedReason: anyNamed('localizedReason'),
+            biometricOnly: anyNamed('biometricOnly'),
+            authMessages: anyNamed('authMessages'),
+          ),
+        ).thenAnswer((_) async => false);
+
+        final result = await lockAuth(
+          reason: (loc) => 'reason',
+          localization: AppLocalizationsEn(),
+          autoAuthIfUnsupported: true,
+        );
+
+        // autoAuth=true skips _checkSupport, so authenticate is called
+        // but authenticate returns false, so result is false
+        expect(result, isFalse);
+        verify(
+          mockLocalAuth.authenticate(
+            localizedReason: anyNamed('localizedReason'),
+            biometricOnly: anyNamed('biometricOnly'),
+            authMessages: anyNamed('authMessages'),
+          ),
+        ).called(1);
+      },
+    );
+
+    test(
+      'should return false when device unsupported and autoAuth is false',
+      () async {
+        when(mockLocalAuth.isDeviceSupported()).thenAnswer((_) async => false);
+
+        final result = await lockAuth(
+          reason: (loc) => 'reason',
+          localization: AppLocalizationsEn(),
+        );
+
+        expect(result, isFalse);
+      },
+    );
   });
 
   group('lockAuth - Concurrency & Exceptions', () {
@@ -132,6 +218,24 @@ void main() {
           description: 'User canceled authentication',
         ),
       );
+
+      final result = await lockAuth(
+        reason: (loc) => 'reason',
+        localization: AppLocalizationsEn(),
+      );
+
+      expect(result, isFalse);
+    });
+
+    test('should handle non-userCanceled exceptions gracefully', () async {
+      when(mockLocalAuth.isDeviceSupported()).thenAnswer((_) async => true);
+      when(
+        mockLocalAuth.authenticate(
+          localizedReason: anyNamed('localizedReason'),
+          biometricOnly: anyNamed('biometricOnly'),
+          authMessages: anyNamed('authMessages'),
+        ),
+      ).thenThrow(Exception('Unknown auth error'));
 
       final result = await lockAuth(
         reason: (loc) => 'reason',
