@@ -36,7 +36,9 @@ class StatusBar extends ConsumerWidget {
         isError: message.isError,
         onDismissed: (_) {
           entry?.remove();
-          ref.read(statusProvider.notifier).dismiss();
+          if (ref.context.mounted) {
+            ref.read(statusProvider.notifier).dismiss();
+          }
         },
       ),
     );

@@ -14,7 +14,7 @@ publish_to: none
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 4.7.0+407003 # TODO Set the right version number
+version: 4.7.1+407101 # TODO Set the right version number
 
 # version: major.minor.build          + 2x major|2x minor|3x build
 # version: version number             + build number (optional)
@@ -54,7 +54,10 @@ dependencies:
   flutter_secure_storage: ^10.0.0
   flutter_slidable: ^4.0.0
   flutter_svg: ^2.0.16
-  flutter_zxing: ^2.1.0
+  flutter_zxing:
+    git:
+      url: https://github.com/frankmer/flutter_zxing.git
+      ref: feat/flatten-zxing
   font_awesome_flutter: ^11.0.0
   freezed_annotation: ^3.1.0
   gms_check: ^1.0.3
