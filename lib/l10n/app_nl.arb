@@ -1189,7 +1189,7 @@
   "@patchNotesV4_6_1Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
-  "@patchNotesV4_7_0BugFix1": {
+  "@patchNotesV4_7_1BugFix1": {
     "description": "Patch notes for a bug fix in version 4.6.1"
   },
   "@patchNotesV4_7_0Improvement1": {
@@ -1975,7 +1975,7 @@
   "patchNotesV4_6_0Improvement1": "Interne componenten zijn bijgewerkt om de veiligheid te waarborgen en compatibiliteit met de nieuwste apparaten te garanderen.",
   "patchNotesV4_6_1BugFix1": "Een fout in het uitbreidingspaneel van de TokenFolder is verholpen.",
   "patchNotesV4_6_1Improvement1": "Verschillende afhankelijkheden bijgewerkt",
-  "patchNotesV4_7_0BugFix1": "Een fout is verholpen die optrad wanneer de camerabeeld te snel werd verlaten.",
+  "patchNotesV4_7_1BugFix1": "Een fout is verholpen die optrad wanneer de camerabeeld te snel werd verlaten.",
   "patchNotesV4_7_0Improvement1": "Het foutenlogboek wordt nu van onder naar boven doorlopen, zodat de nieuwste logboeken als eerste worden weergegeven.",
   "patchNotesV4_7_0Improvement2": "Verschillende afhankelijkheden bijgewerkt.",
   "patchNotesV4_7_0Improvement3": "Alle knoppen zijn nu voorzien van een gestandaardiseerde, consistente indeling",

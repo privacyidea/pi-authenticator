@@ -1,9 +1,11 @@
 # Changelog
 
-## [4.7.0] - 
+## [4.7.1] - 2026.04.20
+ - Fixed an error that occurred when leaving the camera view too fast
+
+## [4.7.0] - 2026.04.16
  - Added support for the new feature 'Push code to phone'
  - Added support for the 'app_force_unlock' policies
- - Fixed an error that occurred when leaving the camera view too fast
  - Error log is now scrolled from bottom to top to see the newest logs first
  - Unified all buttons with a standardized, consistent layout 
  - Updated several dependencies

@@ -1189,7 +1189,7 @@
   "@patchNotesV4_6_1Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
-  "@patchNotesV4_7_0BugFix1": {
+  "@patchNotesV4_7_1BugFix1": {
     "description": "Patch notes for a bug fix in version 4.7.0"
   },
   "@patchNotesV4_7_0Improvement1": {
@@ -1975,7 +1975,7 @@
   "patchNotesV4_6_0Improvement1": "Internal components have been updated to maintain security and ensure compatibility with the latest devices.",
   "patchNotesV4_6_1BugFix1": "Fixed an error with the expansion panel of the TokenFolder",
   "patchNotesV4_6_1Improvement1": "Updated several dependencies",
-  "patchNotesV4_7_0BugFix1": "Fixed an error that occurred when leaving the camera view too fast.",
+  "patchNotesV4_7_1BugFix1": "Fixed an error that occurred when leaving the camera view too fast.",
   "patchNotesV4_7_0Improvement1": "Error log is now scrolled from bottom to top to see the newest logs first.",
   "patchNotesV4_7_0Improvement2": "Updated several dependencies.",
   "patchNotesV4_7_0Improvement3": "Unified all buttons with a standardized, consistent layout",

@@ -1189,7 +1189,7 @@
   "@patchNotesV4_6_1Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
-  "@patchNotesV4_7_0BugFix1": {
+  "@patchNotesV4_7_1BugFix1": {
     "description": "Patch notes for a bug fix in version 4.6.1"
   },
   "@patchNotesV4_7_0Improvement1": {
@@ -1975,7 +1975,7 @@
   "patchNotesV4_6_0Improvement1": "Die internen Komponenten wurden aktualisiert, um die Sicherheit zu gewährleisten und die Kompatibilität mit den neuesten Geräten sicherzustellen.",
   "patchNotesV4_6_1BugFix1": "Fehler im expansion panel des TokenFolder behoben",
   "patchNotesV4_6_1Improvement1": "Mehrere Abhängigkeiten wurden aktualisiert.",
-  "patchNotesV4_7_0BugFix1": "Ein Fehler wurde behoben, der auftrat, wenn die Kameraansicht zu schnell verlassen wurde.",
+  "patchNotesV4_7_1BugFix1": "Ein Fehler wurde behoben, der auftrat, wenn die Kameraansicht zu schnell verlassen wurde.",
   "patchNotesV4_7_0Improvement1": "Das Fehlerprotokoll wird nun von unten nach oben gescrollt, sodass die neuesten Protokolle zuerst angezeigt werden.",
   "patchNotesV4_7_0Improvement2": "Mehrere Abhängigkeiten wurden aktualisiert.",
   "patchNotesV4_7_0Improvement3": "Alle Schaltflächen wurden mit einem standardisierten, einheitlichen Layout vereinheitlicht",
