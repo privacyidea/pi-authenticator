@@ -54,10 +54,7 @@ dependencies:
   flutter_secure_storage: ^10.0.0
   flutter_slidable: ^4.0.0
   flutter_svg: ^2.0.16
-  flutter_zxing:
-    git:
-      url: https://github.com/frankmer/flutter_zxing.git
-      ref: feat/flatten-zxing
+  flutter_zxing: ^2.3.0
   font_awesome_flutter: ^11.0.0
   freezed_annotation: ^3.1.0
   gms_check: ^1.0.3

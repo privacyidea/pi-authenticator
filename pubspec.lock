@@ -749,12 +749,11 @@ packages:
   flutter_zxing:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "feat/flatten-zxing"
-      resolved-ref: "465429a18c3c3622eb8a5c73dc9ebc656d6e1af3"
-      url: "https://github.com/frankmer/flutter_zxing.git"
-    source: git
-    version: "2.2.1"
+      name: flutter_zxing
+      sha256: "6bf0cb0fde122455e73ae78214457c106fbde3c633af4624ce29567ac590ef21"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.0"
   font_awesome_flutter:
     dependency: "direct main"
     description:
@@ -1939,5 +1938,5 @@ packages:
     source: hosted
     version: "0.2.4"
 sdks:
-  dart: ">=3.10.3 <4.0.0"
-  flutter: ">=3.38.4"
+  dart: ">=3.11.0 <4.0.0"
+  flutter: ">=3.41.0"
