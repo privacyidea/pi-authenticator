@@ -70,7 +70,7 @@ class SecureStorage implements SecureStorageInterface {
   Future<Map<String, String>> readAll() => _protect(() async {
     final allPairs = await storage.readAll();
     final allKeys = allPairs.keys
-        .where((key) => key.startsWith(storagePrefix))
+        .where((key) => key.startsWith(storagePrefix + seperator))
         .toList();
     final result = <String, String>{};
     for (var key in allKeys) {

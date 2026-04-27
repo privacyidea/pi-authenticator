@@ -57,6 +57,7 @@ class SettingsNotifier extends _$SettingsNotifier {
     Logger.info('New settings notifier created');
     _repo = _repoOverride ?? repo;
     final newState = await _loadFromRepo();
+    _applyStaticSettings(newState);
     return newState;
   }
 
@@ -192,5 +193,10 @@ class SettingsNotifier extends _$SettingsNotifier {
       (oldState) =>
           oldState.copyWith(autoCloseAppAfterAcceptingPushRequest: value),
     );
+  }
+
+  void _applyStaticSettings(SettingsState settings) {
+    Logger.info('Applying settings: $settings');
+    Logger.setVerboseLogging(settings.verboseLogging);
   }
 }
