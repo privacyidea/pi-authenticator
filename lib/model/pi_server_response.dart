@@ -53,8 +53,8 @@ sealed class PiServerResponse<
     required String jsonrpc,
     required PiServerResult<V> result,
     required double time,
-    required String version,
-    required String versionNumber,
+    required String? version,
+    required String? versionNumber,
     @Default(null) String? signature,
     @Default(null) D? detail,
   }) = PiSuccessResponse;
@@ -71,8 +71,8 @@ sealed class PiServerResponse<
     /// This is a throwable error
     required PiServerResultError piServerResultError,
     required double time,
-    required String version,
-    required String versionNumber,
+    required String? version,
+    required String? versionNumber,
     @Default(null) String? signature,
   }) = PiErrorResponse;
   bool get isError => this is PiErrorResponse;
@@ -91,8 +91,11 @@ sealed class PiServerResponse<
         JSONRPC: Validators.string,
         RESULT: RequiredObjectValidator<Map<String, dynamic>>(),
         TIME: RequiredObjectValidator<double>(),
-        VERSION: RequiredObjectValidator<String>(
-          allowedValues: (v) => v.contains(' '),
+        VERSION: OptionalObjectValidator<String>(
+          transformer: (v) {
+            final s = v as String;
+            return s.contains(' ') ? s : null;
+          },
         ),
         VERSION_NUMBER: Validators.stringOptional,
         DETAIL: OptionalObjectValidator<Object>(),
@@ -108,10 +111,10 @@ sealed class PiServerResponse<
         map[RESULT] as Map<String, dynamic>,
       ),
       time: map[TIME] as double,
-      version: map[VERSION] as String,
+      version: map[VERSION] as String?,
       versionNumber:
           map[VERSION_NUMBER] as String? ??
-          (map[VERSION] as String).split(' ')[1],
+          (map[VERSION] as String?)?.split(' ')[1],
       detail: PiServerResultDetail.fromResultDetail<D>(map[DETAIL]),
       signature: map[SIGNATURE] as String?,
     );

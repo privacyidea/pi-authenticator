@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PiServerResponse<V extends PiServerResultValue,D extends PiServerResultDetail> {
 
- int get statusCode; int get id; String get jsonrpc; double get time; String get version; String get versionNumber; String? get signature; D? get detail;
+ int get statusCode; int get id; String get jsonrpc; double get time; String? get version; String? get versionNumber; String? get signature; D? get detail;
 
 
 
@@ -116,7 +116,7 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int statusCode,  int id,  String jsonrpc,  PiServerResult<V> result,  double time,  String version,  String versionNumber,  String? signature,  D? detail)?  success,TResult Function( int statusCode,  int id,  String jsonrpc,  D? detail,  PiServerResultError piServerResultError,  double time,  String version,  String versionNumber,  String? signature)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int statusCode,  int id,  String jsonrpc,  PiServerResult<V> result,  double time,  String? version,  String? versionNumber,  String? signature,  D? detail)?  success,TResult Function( int statusCode,  int id,  String jsonrpc,  D? detail,  PiServerResultError piServerResultError,  double time,  String? version,  String? versionNumber,  String? signature)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case PiSuccessResponse() when success != null:
 return success(_that.statusCode,_that.id,_that.jsonrpc,_that.result,_that.time,_that.version,_that.versionNumber,_that.signature,_that.detail);case PiErrorResponse() when error != null:
@@ -138,7 +138,7 @@ return error(_that.statusCode,_that.id,_that.jsonrpc,_that.detail,_that.piServer
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int statusCode,  int id,  String jsonrpc,  PiServerResult<V> result,  double time,  String version,  String versionNumber,  String? signature,  D? detail)  success,required TResult Function( int statusCode,  int id,  String jsonrpc,  D? detail,  PiServerResultError piServerResultError,  double time,  String version,  String versionNumber,  String? signature)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int statusCode,  int id,  String jsonrpc,  PiServerResult<V> result,  double time,  String? version,  String? versionNumber,  String? signature,  D? detail)  success,required TResult Function( int statusCode,  int id,  String jsonrpc,  D? detail,  PiServerResultError piServerResultError,  double time,  String? version,  String? versionNumber,  String? signature)  error,}) {final _that = this;
 switch (_that) {
 case PiSuccessResponse():
 return success(_that.statusCode,_that.id,_that.jsonrpc,_that.result,_that.time,_that.version,_that.versionNumber,_that.signature,_that.detail);case PiErrorResponse():
@@ -156,7 +156,7 @@ return error(_that.statusCode,_that.id,_that.jsonrpc,_that.detail,_that.piServer
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int statusCode,  int id,  String jsonrpc,  PiServerResult<V> result,  double time,  String version,  String versionNumber,  String? signature,  D? detail)?  success,TResult? Function( int statusCode,  int id,  String jsonrpc,  D? detail,  PiServerResultError piServerResultError,  double time,  String version,  String versionNumber,  String? signature)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int statusCode,  int id,  String jsonrpc,  PiServerResult<V> result,  double time,  String? version,  String? versionNumber,  String? signature,  D? detail)?  success,TResult? Function( int statusCode,  int id,  String jsonrpc,  D? detail,  PiServerResultError piServerResultError,  double time,  String? version,  String? versionNumber,  String? signature)?  error,}) {final _that = this;
 switch (_that) {
 case PiSuccessResponse() when success != null:
 return success(_that.statusCode,_that.id,_that.jsonrpc,_that.result,_that.time,_that.version,_that.versionNumber,_that.signature,_that.detail);case PiErrorResponse() when error != null:
@@ -180,8 +180,8 @@ class PiSuccessResponse<V extends PiServerResultValue,D extends PiServerResultDe
 @override final  String jsonrpc;
  final  PiServerResult<V> result;
 @override final  double time;
-@override final  String version;
-@override final  String versionNumber;
+@override final  String? version;
+@override final  String? versionNumber;
 @override@JsonKey() final  String? signature;
 @override@JsonKey() final  D? detail;
 
@@ -222,8 +222,8 @@ class PiErrorResponse<V extends PiServerResultValue,D extends PiServerResultDeta
 /// This is a throwable error
  final  PiServerResultError piServerResultError;
 @override final  double time;
-@override final  String version;
-@override final  String versionNumber;
+@override final  String? version;
+@override final  String? versionNumber;
 @override@JsonKey() final  String? signature;
 
 
