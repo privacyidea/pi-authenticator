@@ -49,12 +49,12 @@ sealed class PiServerResponse<
   const PiServerResponse._();
   factory PiServerResponse.success({
     required int statusCode,
-    required int id,
-    required String jsonrpc,
+    @Default(null) int? id,
+    @Default(null) String? jsonrpc,
     required PiServerResult<V> result,
-    required double time,
-    required String? version,
-    required String? versionNumber,
+    @Default(null) double? time,
+    @Default(null) String? version,
+    @Default(null) String? versionNumber,
     @Default(null) String? signature,
     @Default(null) D? detail,
   }) = PiSuccessResponse;
@@ -64,15 +64,15 @@ sealed class PiServerResponse<
 
   factory PiServerResponse.error({
     required int statusCode,
-    required int id,
-    required String jsonrpc,
+    @Default(null) int? id,
+    @Default(null) String? jsonrpc,
     @Default(null) D? detail,
 
     /// This is a throwable error
     required PiServerResultError piServerResultError,
-    required double time,
-    required String? version,
-    required String? versionNumber,
+    @Default(null) double? time,
+    @Default(null) String? version,
+    @Default(null) String? versionNumber,
     @Default(null) String? signature,
   }) = PiErrorResponse;
   bool get isError => this is PiErrorResponse;
@@ -87,10 +87,10 @@ sealed class PiServerResponse<
     final map = validateMap(
       map: json,
       validators: <String, BaseValidator>{
-        ID: Validators.intType,
-        JSONRPC: Validators.string,
+        ID: Validators.intOptional,
+        JSONRPC: Validators.stringOptional,
         RESULT: RequiredObjectValidator<Map<String, dynamic>>(),
-        TIME: RequiredObjectValidator<double>(),
+        TIME: OptionalObjectValidator<double>(),
         VERSION: OptionalObjectValidator<String>(
           transformer: (v) {
             final s = v as String;
@@ -105,12 +105,12 @@ sealed class PiServerResponse<
     );
     return PiServerResponse<V, D>.success(
       statusCode: statusCode,
-      id: map[ID] as int,
-      jsonrpc: map[JSONRPC] as String,
+      id: map[ID] as int?,
+      jsonrpc: map[JSONRPC] as String?,
       result: PiServerResult<V>.fromResultMap(
         map[RESULT] as Map<String, dynamic>,
       ),
-      time: map[TIME] as double,
+      time: map[TIME] as double?,
       version: map[VERSION] as String?,
       versionNumber:
           map[VERSION_NUMBER] as String? ??
