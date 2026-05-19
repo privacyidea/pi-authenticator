@@ -32,7 +32,7 @@ dependencies:
   basic_utils: ^5.7.0
   camera_android: ^0.10.10
   collection: ^1.18.0
-  connectivity_plus: ^7.0.0
+  connectivity_plus: ">=7.0.0 <7.1.0"
   crypto: ^3.0.6
   cryptography: ^2.7.0
   device_info_plus: ^12.2.0
