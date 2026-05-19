@@ -20,7 +20,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../../../../../utils/customization/theme_extentions/action_theme.dart';
 import '../../../../../widgets/custom_trailing.dart';
@@ -85,8 +84,8 @@ class TokenFolderExpandableHeaderIcon extends StatelessWidget {
                                 : Matrix4.identity(),
                             child: Icon(
                               isExpanded
-                                  ? MdiIcons.lockOpenVariant
-                                  : MdiIcons.lock,
+                                  ? Icons.lock_open
+                                  : Icons.lock,
                               color: Theme.of(
                                 context,
                               ).extension<TokenTileTheme>()?.lockColor,

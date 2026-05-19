@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 import 'package:flutter/material.dart';
-import 'package:simple_icons/simple_icons.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../l10n/app_localizations.dart';
@@ -67,7 +67,7 @@ class SettingsGroupGeneral extends StatelessWidget {
             style: Theme.of(context).textTheme.bodyMedium,
             maxLines: 2,
           ),
-          icon: const Icon(SimpleIcons.github),
+          icon: const FaIcon(FontAwesomeIcons.github),
         ),
       ],
     );

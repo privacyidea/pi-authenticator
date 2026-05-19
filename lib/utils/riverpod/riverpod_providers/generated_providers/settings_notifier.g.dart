@@ -50,7 +50,7 @@ final class SettingsNotifierProvider
   }
 }
 
-String _$settingsNotifierHash() => r'153f57fa9a5b365e5af6159082baaf95e9af5d76';
+String _$settingsNotifierHash() => r'2cb678680513b175f42900cebb9d12bacd88853b';
 
 final class SettingsNotifierFamily extends $Family
     with

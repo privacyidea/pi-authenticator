@@ -18,104 +18,55 @@
  * limitations under the License.
  */
 import 'package:flutter/material.dart';
-import 'package:privacyidea_authenticator/utils/logger.dart';
-import 'package:privacyidea_authenticator/views/add_token_manually_view/add_token_manually_view_widgets/add_token_manually_row.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:privacyidea_authenticator/model/riverpod_states/token_container_state.dart';
+import 'package:privacyidea_authenticator/model/riverpod_states/token_state.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
+import 'package:privacyidea_authenticator/widgets/default_refresh_indicator.dart';
 
-class LabeledDropdownButton<T> extends StatefulWidget {
-  final String label;
-  final List<T> values;
-  final bool enabled;
-  final List<String>? valueLabels;
-  final ValueNotifier<T?>? valueNotifier;
-  final String postFix;
+import '../../tests_app_wrapper.dart';
 
-  const LabeledDropdownButton({
-    required this.label,
-    required this.values,
-    required this.valueNotifier,
-    this.enabled = true,
-    this.valueLabels,
-    this.postFix = '',
-    super.key,
-  });
-
+class _FakeTokenNotifier extends TokenNotifier {
   @override
-  State<LabeledDropdownButton<T>> createState() =>
-      _LabeledDropdownButtonState<T>();
+  Future<TokenState> build({
+    required firebaseUtils,
+    required ioClient,
+    required repo,
+    required rsaUtils,
+  }) async =>
+      const TokenState(tokens: []);
 }
 
-class _LabeledDropdownButtonState<T> extends State<LabeledDropdownButton<T>> {
+class _FakeContainerNotifier extends TokenContainerNotifier {
   @override
-  void initState() {
-    super.initState();
-    // Ensure an initial value is set
-    widget.valueNotifier?.value ??= widget.values.firstOrNull;
-    widget.valueNotifier?.addListener(_rebuild);
-  }
+  Future<TokenContainerState> build({
+    required repo,
+    required containerApi,
+    required eccUtils,
+  }) async =>
+      const TokenContainerState(containerList: []);
+}
 
-  @override
-  void dispose() {
-    widget.valueNotifier?.removeListener(_rebuild);
-    super.dispose();
-  }
-
-  void _rebuild() => setState(() {});
-
-  @override
-  Widget build(BuildContext context) {
-    // Determine the current value, fallback to first item if current is invalid/null
-    final T? currentValue =
-        (widget.valueNotifier?.value != null &&
-            widget.values.contains(widget.valueNotifier!.value))
-        ? widget.valueNotifier!.value
-        : widget.values.firstOrNull;
-
-    final Widget dropdown = AddTokenManuallyRow(
-      label: widget.label,
-      child: DropdownButton<T>(
-        value: currentValue,
-        isExpanded: true,
-        onChanged: widget.enabled ? _handleChanged : null,
-        items: _buildMenuItems(context),
-      ),
-    );
-
-    if (widget.enabled) return dropdown;
-
-    // Apply deactivation style inline
-    return Opacity(opacity: 0.3, child: AbsorbPointer(child: dropdown));
-  }
-
-  List<DropdownMenuItem<T>> _buildMenuItems(BuildContext context) {
-    return widget.values.asMap().entries.map((entry) {
-      final index = entry.key;
-      final value = entry.value;
-
-      // Determine label: Custom label -> toString() -> Postfix
-      String itemLabel =
-          (widget.valueLabels != null && index < widget.valueLabels!.length)
-          ? widget.valueLabels![index]
-          : value.toString();
-
-      if (widget.postFix.isNotEmpty) {
-        itemLabel = '$itemLabel ${widget.postFix}';
-      }
-
-      return DropdownMenuItem<T>(
-        value: value,
-        child: Text(
-          itemLabel,
-          style: Theme.of(context).textTheme.bodyMedium,
-          overflow: TextOverflow.fade,
-          softWrap: false,
+void main() {
+  group('DefaultRefreshIndicator Tests', () {
+    testWidgets('renders child widget when no push tokens or containers exist', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        TestsAppWrapper(
+          overrides: [
+            tokenProvider.overrideWith(() => _FakeTokenNotifier()),
+            tokenContainerProvider.overrideWith(() => _FakeContainerNotifier()),
+          ],
+          child: const DefaultRefreshIndicator(
+            child: Text('Content'),
+          ),
         ),
       );
-    }).toList();
-  }
+      await tester.pump();
 
-  void _handleChanged(T? newValue) {
-    if (newValue == null) return;
-    Logger.info('DropdownButton onChanged: $newValue');
-    widget.valueNotifier?.value = newValue;
-  }
+      expect(find.text('Content'), findsOneWidget);
+    });
+  });
 }

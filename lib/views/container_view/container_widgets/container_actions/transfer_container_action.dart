@@ -20,7 +20,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../../../model/token_container.dart';
@@ -56,7 +55,7 @@ class TransferContainerAction extends ConsumerSlideableAction {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(MdiIcons.transfer),
+            Icon(Icons.compare_arrows),
             Text(
               AppLocalizations.of(context)!.transferButton,
               overflow: TextOverflow.fade,

@@ -22,14 +22,18 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:privacyidea_authenticator/utils/customization/theme_extentions/app_dimensions.dart';
 import 'package:privacyidea_authenticator/widgets/gap.dart';
 
-import '../../tests_app_wrapper.dart';
-
 void main() {
   group('Gap Widget Tests', () {
     testWidgets('uses explicit size when provided', (tester) async {
       const double customSize = 24.0;
       await tester.pumpWidget(
-        const TestsAppWrapper(child: Gap(size: customSize)),
+        Theme(
+          data: ThemeData.light(),
+          child: const Directionality(
+            textDirection: TextDirection.ltr,
+            child: Gap(size: customSize),
+          ),
+        ),
       );
       final SizedBox sizedBox = tester.widget(find.byType(SizedBox));
       expect(sizedBox.width, customSize);
@@ -40,23 +44,17 @@ void main() {
       tester,
     ) async {
       const double themeSpacing = 12.0;
-
       await tester.pumpWidget(
-        TestsAppWrapper(
-          overrides: [],
-          child: Builder(
-            builder: (context) {
-              return Theme(
-                data: ThemeData.light().copyWith(
-                  extensions: [AppDimensions(spacingSmall: themeSpacing)],
-                ),
-                child: const Gap(),
-              );
-            },
+        Theme(
+          data: ThemeData.light().copyWith(
+            extensions: [AppDimensions(spacingSmall: themeSpacing)],
+          ),
+          child: const Directionality(
+            textDirection: TextDirection.ltr,
+            child: Gap(),
           ),
         ),
       );
-
       final SizedBox sizedBox = tester.widget(find.byType(SizedBox));
       expect(sizedBox.width, themeSpacing);
       expect(sizedBox.height, themeSpacing);
