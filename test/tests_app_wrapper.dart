@@ -137,7 +137,7 @@ class TestsAppWrapper extends StatelessWidget {
               GlobalCupertinoLocalizations.delegate,
             ],
             supportedLocales: const [Locale('en')],
-            home: Scaffold(body: EasyDynamicThemeWidget(child: child)),
+            home: Scaffold(body: child),
           );
         },
       ),
