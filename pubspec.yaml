@@ -35,7 +35,7 @@ dependencies:
   connectivity_plus: ">=7.0.0 <7.1.0"
   crypto: ^3.0.6
   cryptography: ^2.7.0
-  device_info_plus: ^12.2.0
+  device_info_plus: ">=12.2.0 <12.4.0"
   easy_dynamic_theme: ^2.3.1
   encrypt: ^5.0.3
   expandable: ^5.0.1
