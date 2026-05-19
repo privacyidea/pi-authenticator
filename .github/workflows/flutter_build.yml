@@ -26,7 +26,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           channel: "stable"
-          flutter-version: "3.38.3" # Latest stable Flutter version as of Dec 05 2025
+          flutter-version: "3.44.0" # Latest stable Flutter version as of May 19, 2026
 
       - run: flutter clean
       - run: flutter --version
@@ -53,7 +53,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: "stable"
-          flutter-version: "3.38.3" # Latest stable Flutter version as of Dec 05 2025
+          flutter-version: "3.44.0" # Latest stable Flutter version as of May 19, 2026
 
       - name: Clean Flutter project
         run: flutter clean
