@@ -17,22 +17,19 @@ jobs:
         uses: actions/setup-java@v4
         with:
           distribution: "zulu"
-          java-version: "17" # Using JDK 17 for broader compatibility
+          java-version: "21"
 
       - name: Set up Flutter SDK
         uses: subosito/flutter-action@v2
         with:
           channel: "stable"
-          flutter-version: "3.44.0" # Use the latest stable Flutter version as of May 19, 2026
-          cache: true # Enable caching for Flutter SDK itself
-          # cache-key and cache-path are automatically handled by subosito/flutter-action when cache: true
+          flutter-version: "3.44.0"
+          cache: true
 
       - name: Cache Flutter Pub dependencies
         uses: actions/cache@v4
         with:
-          path: |
-            ${{ runner.tool_cache }}/flutter_plugin_cache # This is often included in ~/.pub-cache, but good to be explicit
-            ~/.pub-cache
+          path: ~/.pub-cache
           key: ${{ runner.os }}-flutter-${{ hashFiles('**/pubspec.lock') }}
           restore-keys: |
             ${{ runner.os }}-flutter-
@@ -53,4 +50,4 @@ jobs:
         run: flutter gen-l10n
 
       - name: Run Flutter tests
-        run: flutter test --no-pub # Use --no-pub since pub get was already run/cached
+        run: flutter test --no-pub
