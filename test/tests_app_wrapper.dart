@@ -27,6 +27,7 @@ import 'package:privacyidea_authenticator/utils/allow_screenshot_utils.dart';
 import 'package:privacyidea_authenticator/utils/app_info_utils.dart';
 import 'package:privacyidea_authenticator/utils/custom_int_buffer.dart';
 import 'package:privacyidea_authenticator/utils/customization/theme_extentions/action_theme.dart';
+import 'package:privacyidea_authenticator/utils/customization/theme_extentions/app_dimensions.dart';
 import 'package:privacyidea_authenticator/utils/customization/theme_extentions/push_request_theme.dart';
 import 'package:privacyidea_authenticator/utils/customization/theme_extentions/status_colors.dart';
 import 'package:privacyidea_authenticator/utils/ecc_utils.dart';
@@ -101,6 +102,7 @@ class TestsAppWrapper extends StatelessWidget {
             navigatorKey: globalNavigatorKey,
             theme: ThemeData(
               extensions: [
+                const AppDimensions(),
                 StatusColors(
                   success: const Color(0xFF4CAF50),
                   warning: const Color(0xFFFF9800),
