@@ -21,15 +21,19 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../l10n/app_localizations.dart';
+import '../utils/riverpod/riverpod_providers/state_providers/status_message_provider.dart';
 import '../views/main_view/main_view_widgets/token_widgets/default_token_actions/default_edit_action_dialog.dart';
 
-class EnableTextEditAfterManyTaps extends StatefulWidget {
+class EnableTextEditAfterManyTaps extends ConsumerStatefulWidget {
   final TextEditingController controller;
   final String labelText;
   final AutovalidateMode? autovalidateMode;
   final String? Function(String?)? validator;
   final int maxTaps;
+  final String Function(AppLocalizations l)? lockedHint;
 
   const EnableTextEditAfterManyTaps({
     required this.controller,
@@ -37,16 +41,17 @@ class EnableTextEditAfterManyTaps extends StatefulWidget {
     this.maxTaps = 6,
     this.autovalidateMode,
     this.validator,
+    this.lockedHint,
     super.key,
   });
 
   @override
-  State<EnableTextEditAfterManyTaps> createState() =>
+  ConsumerState<EnableTextEditAfterManyTaps> createState() =>
       _EnableTextEditAfterManyTapsState();
 }
 
 class _EnableTextEditAfterManyTapsState
-    extends State<EnableTextEditAfterManyTaps> {
+    extends ConsumerState<EnableTextEditAfterManyTaps> {
   bool enabled = false;
   int counter = 0;
   Timer? timer;
@@ -62,22 +67,29 @@ class _EnableTextEditAfterManyTapsState
 
     timer?.cancel();
     timer = Timer(const Duration(milliseconds: 1000), () {
-      if (mounted) {
-        setState(() {
-          counter = 0;
-        });
-      }
+      if (mounted) setState(() => counter = 0);
       timer = null;
     });
 
-    setState(() {
-      counter += taps;
-      if (counter >= widget.maxTaps) {
-        enabled = true;
-        timer?.cancel();
-        timer = null;
+    final newCounter = counter + taps;
+    if (newCounter >= widget.maxTaps) {
+      timer?.cancel();
+      timer = null;
+      if (widget.lockedHint != null) {
+        setState(() => counter = 0);
+        ref.read(statusProvider.notifier).show(
+          widget.lockedHint!,
+          type: StatusMessageType.neutral,
+        );
+      } else {
+        setState(() {
+          counter = newCounter;
+          enabled = true;
+        });
       }
-    });
+    } else {
+      setState(() => counter = newCounter);
+    }
   }
 
   @override

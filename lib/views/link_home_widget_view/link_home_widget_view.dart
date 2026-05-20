@@ -27,7 +27,6 @@ import '../../utils/home_widget_utils.dart';
 import '../../utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
 import '../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../utils/utils.dart';
-import '../../widgets/status_bar.dart';
 import '../view_interface.dart';
 
 class LinkHomeWidgetView extends ConsumerStatefulView {
@@ -60,8 +59,7 @@ class _LinkHomeWidgetViewState extends ConsumerState<LinkHomeWidgetView> {
           maxLines: 2, // Title can be shown on small screens too.
         ),
       ),
-      body: StatusBar(
-        child: ListView.builder(
+      body: ListView.builder(
           itemBuilder: (context, index) {
             final otpToken = otpTokens![index];
             final folderIsLocked =
@@ -95,7 +93,6 @@ class _LinkHomeWidgetViewState extends ConsumerState<LinkHomeWidgetView> {
           },
           itemCount: otpTokens?.length ?? 0,
         ),
-      ),
     );
   }
 }

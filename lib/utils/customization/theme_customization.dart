@@ -676,6 +676,7 @@ class ThemeCustomization {
         success: successColor,
         warning: warningColor,
         error: deleteColor,
+        neutral: primaryColor,
       ),
     ],
   );
