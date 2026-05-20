@@ -546,6 +546,21 @@
   "@feedback": {
     "description": "Text for the feedback button and view title of the feedback screen."
   },
+  "@feedbackCategoryBugReport": {
+    "description": "Label for the bug report category option in the feedback category dropdown."
+  },
+  "@feedbackCategoryImprovement": {
+    "description": "Label for the improvement suggestion category option in the feedback category dropdown."
+  },
+  "@feedbackCategoryLabel": {
+    "description": "Label for the category dropdown in the feedback screen."
+  },
+  "@feedbackCategoryLoginTokenHelp": {
+    "description": "Label for the login/token help category option in the feedback category dropdown."
+  },
+  "@feedbackCategoryLoginTokenHelpInfo": {
+    "description": "Info text shown when the user selects the login/token help category, explaining they should contact their admin instead."
+  },
   "@feedbackDescription": {
     "description": "Description for the feedback screen."
   },
@@ -1818,6 +1833,11 @@
   "failedToRenewSecrets": "Vernieuwing van de geheimen mislukt",
   "failedToSyncContainer": "Synchronisatie van container {serial} mislukt",
   "feedback": "Feedback",
+  "feedbackCategoryBugReport": "Bug Report",
+  "feedbackCategoryImprovement": "Improvement Suggestion",
+  "feedbackCategoryLabel": "What type of feedback do you have?",
+  "feedbackCategoryLoginTokenHelp": "Login / Token Help",
+  "feedbackCategoryLoginTokenHelpInfo": "Voor aanmeldingsproblemen of problemen met uw tokens kunt u contact opnemen met uw systeembeheerder of de ondersteuning van het platform waarop u wilt inloggen.",
   "feedbackDescription": "Als je vragen, suggesties of problemen hebt, laat het ons dan weten.",
   "feedbackHint": "Er wordt een kant-en-klare e-mail geopend die je naar ons kunt sturen. Indien gewenst wordt informatie over je apparaat en de versie van de applicatie toegevoegd. U kunt de e-mail controleren en bewerken voordat u deze verzendt.",
   "feedbackPrivacyPolicy1": "Door feedback te sturen ga je akkoord met ons ",

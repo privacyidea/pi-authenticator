@@ -546,6 +546,21 @@
   "@feedback": {
     "description": "Text for the feedback button and view title of the feedback screen."
   },
+  "@feedbackCategoryBugReport": {
+    "description": "Label for the bug report category option in the feedback category dropdown."
+  },
+  "@feedbackCategoryImprovement": {
+    "description": "Label for the improvement suggestion category option in the feedback category dropdown."
+  },
+  "@feedbackCategoryLabel": {
+    "description": "Label for the category dropdown in the feedback screen."
+  },
+  "@feedbackCategoryLoginTokenHelp": {
+    "description": "Label for the login/token help category option in the feedback category dropdown."
+  },
+  "@feedbackCategoryLoginTokenHelpInfo": {
+    "description": "Info text shown when the user selects the login/token help category, explaining they should contact their admin instead."
+  },
   "@feedbackDescription": {
     "description": "Description for the feedback screen."
   },
@@ -1818,6 +1833,11 @@
   "failedToRenewSecrets": "Gagal memperbarui rahasia",
   "failedToSyncContainer": "Gagal menyinkronkan wadah {serial}",
   "feedback": "Umpan balik",
+  "feedbackCategoryBugReport": "Bug Report",
+  "feedbackCategoryImprovement": "Improvement Suggestion",
+  "feedbackCategoryLabel": "What type of feedback do you have?",
+  "feedbackCategoryLoginTokenHelp": "Login / Token Help",
+  "feedbackCategoryLoginTokenHelpInfo": "Untuk masalah login atau dengan token Anda, silakan hubungi administrator sistem Anda atau dukungan platform tempat Anda ingin login.",
   "feedbackDescription": "Jika Anda memiliki pertanyaan, saran, atau masalah, silakan beritahu kami.",
   "feedbackHint": "Email siap pakai akan terbuka, yang dapat Anda kirimkan kepada kami. Jika diinginkan, informasi tentang perangkat Anda dan versi aplikasi akan ditambahkan. Anda dapat memeriksa dan mengedit email sebelum mengirimnya.",
   "feedbackPrivacyPolicy1": "Dengan mengirimkan umpan balik, Anda menyetujui ketentuan kami ",

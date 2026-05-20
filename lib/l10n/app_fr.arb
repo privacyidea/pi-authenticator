@@ -546,6 +546,21 @@
   "@feedback": {
     "description": "Text for the feedback button and view title of the feedback screen."
   },
+  "@feedbackCategoryBugReport": {
+    "description": "Label for the bug report category option in the feedback category dropdown."
+  },
+  "@feedbackCategoryImprovement": {
+    "description": "Label for the improvement suggestion category option in the feedback category dropdown."
+  },
+  "@feedbackCategoryLabel": {
+    "description": "Label for the category dropdown in the feedback screen."
+  },
+  "@feedbackCategoryLoginTokenHelp": {
+    "description": "Label for the login/token help category option in the feedback category dropdown."
+  },
+  "@feedbackCategoryLoginTokenHelpInfo": {
+    "description": "Info text shown when the user selects the login/token help category, explaining they should contact their admin instead."
+  },
   "@feedbackDescription": {
     "description": "Description for the feedback screen."
   },
@@ -1818,6 +1833,11 @@
   "failedToRenewSecrets": "Échec du renouvellement des secrets",
   "failedToSyncContainer": "Échec de la synchronisation du conteneur {serial}",
   "feedback": "Retour d'information",
+  "feedbackCategoryBugReport": "Bug Report",
+  "feedbackCategoryImprovement": "Improvement Suggestion",
+  "feedbackCategoryLabel": "What type of feedback do you have?",
+  "feedbackCategoryLoginTokenHelp": "Login / Token Help",
+  "feedbackCategoryLoginTokenHelpInfo": "Pour les problèmes de connexion ou avec vos jetons, veuillez contacter votre administrateur système ou le support de la plateforme sur laquelle vous souhaitez vous connecter.",
   "feedbackDescription": "Si vous avez des questions, des suggestions ou des problèmes, n'hésitez pas à nous en faire part",
   "feedbackHint": "Un e-mail prêt à l'emploi s'ouvre, que vous pouvez nous envoyer. Si vous le souhaitez, des informations sur votre appareil et la version de l'application seront ajoutées. Vous pouvez vérifier et modifier l'e-mail avant de l'envoyer.",
   "feedbackPrivacyPolicy1": "En envoyant le retour d'information, vous acceptez notre ",

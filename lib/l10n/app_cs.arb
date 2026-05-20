@@ -546,6 +546,21 @@
   "@feedback": {
     "description": "Text for the feedback button and view title of the feedback screen."
   },
+  "@feedbackCategoryBugReport": {
+    "description": "Label for the bug report category option in the feedback category dropdown."
+  },
+  "@feedbackCategoryImprovement": {
+    "description": "Label for the improvement suggestion category option in the feedback category dropdown."
+  },
+  "@feedbackCategoryLabel": {
+    "description": "Label for the category dropdown in the feedback screen."
+  },
+  "@feedbackCategoryLoginTokenHelp": {
+    "description": "Label for the login/token help category option in the feedback category dropdown."
+  },
+  "@feedbackCategoryLoginTokenHelpInfo": {
+    "description": "Info text shown when the user selects the login/token help category, explaining they should contact their admin instead."
+  },
   "@feedbackDescription": {
     "description": "Description for the feedback screen."
   },
@@ -1818,6 +1833,11 @@
   "failedToRenewSecrets": "Nepodařilo se obnovit tajemství",
   "failedToSyncContainer": "Nepodařilo se synchronizovat kontejner {serial}",
   "feedback": "Zpětná vazba",
+  "feedbackCategoryBugReport": "Bug Report",
+  "feedbackCategoryImprovement": "Improvement Suggestion",
+  "feedbackCategoryLabel": "What type of feedback do you have?",
+  "feedbackCategoryLoginTokenHelp": "Login / Token Help",
+  "feedbackCategoryLoginTokenHelpInfo": "V případě problémů s přihlášením nebo s tokeny kontaktujte prosím svého správce systému nebo podporu platformy, na které se chcete přihlásit.",
   "feedbackDescription": "Pokud máte nějaké dotazy, návrhy nebo problémy, dejte nám prosím vědět.",
   "feedbackHint": "Otevře se připravený e-mail, který nám můžete zaslat. V případě potřeby budou doplněny informace o vašem zařízení a verzi aplikace. Před odesláním můžete e-mail zkontrolovat a upravit.",
   "feedbackPrivacyPolicy1": "Odesláním zpětné vazby souhlasíte s našimi ",

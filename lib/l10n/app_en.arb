@@ -546,6 +546,21 @@
   "@feedback": {
     "description": "Text for the feedback button and view title of the feedback screen."
   },
+  "@feedbackCategoryBugReport": {
+    "description": "Label for the bug report category option in the feedback category dropdown."
+  },
+  "@feedbackCategoryImprovement": {
+    "description": "Label for the improvement suggestion category option in the feedback category dropdown."
+  },
+  "@feedbackCategoryLabel": {
+    "description": "Label for the category dropdown in the feedback screen."
+  },
+  "@feedbackCategoryLoginTokenHelp": {
+    "description": "Label for the login/token help category option in the feedback category dropdown."
+  },
+  "@feedbackCategoryLoginTokenHelpInfo": {
+    "description": "Info text shown when the user selects the login/token help category, explaining they should contact their admin or the support of the platform they want to log in to."
+  },
   "@feedbackDescription": {
     "description": "Description for the feedback screen."
   },
@@ -1818,6 +1833,11 @@
   "failedToRenewSecrets": "Failed to renew secrets",
   "failedToSyncContainer": "Failed to sync container {serial}",
   "feedback": "Feedback",
+  "feedbackCategoryBugReport": "Bug Report",
+  "feedbackCategoryImprovement": "Improvement Suggestion",
+  "feedbackCategoryLabel": "What type of feedback do you have?",
+  "feedbackCategoryLoginTokenHelp": "Login / Token Help",
+  "feedbackCategoryLoginTokenHelpInfo": "For login problems or issues with your tokens, please contact your system administrator or the support of the platform you are trying to log in to.",
   "feedbackDescription": "If you have any questions, suggestions or problems, please let us know.",
   "feedbackHint": "A ready-made e-mail will open, which you can send to us. If desired, information about your device and the version of the application will be added. You can check and edit the email before sending it.",
   "feedbackPrivacyPolicy1": "By sending feedback, you agree to our ",

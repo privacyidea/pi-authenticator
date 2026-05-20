@@ -546,6 +546,21 @@
   "@feedback": {
     "description": "Text for the feedback button and view title of the feedback screen."
   },
+  "@feedbackCategoryBugReport": {
+    "description": "Label for the bug report category option in the feedback category dropdown."
+  },
+  "@feedbackCategoryImprovement": {
+    "description": "Label for the improvement suggestion category option in the feedback category dropdown."
+  },
+  "@feedbackCategoryLabel": {
+    "description": "Label for the category dropdown in the feedback screen."
+  },
+  "@feedbackCategoryLoginTokenHelp": {
+    "description": "Label for the login/token help category option in the feedback category dropdown."
+  },
+  "@feedbackCategoryLoginTokenHelpInfo": {
+    "description": "Info text shown when the user selects the login/token help category, explaining they should contact their admin instead."
+  },
   "@feedbackDescription": {
     "description": "Description for the feedback screen."
   },
@@ -1818,6 +1833,11 @@
   "failedToRenewSecrets": "Erneuerung der Secrets fehlgeschlagen",
   "failedToSyncContainer": "Container {serial} konnte nicht synchronisiert werden",
   "feedback": "Feedback",
+  "feedbackCategoryBugReport": "Fehlerbericht",
+  "feedbackCategoryImprovement": "Verbesserungsvorschlag",
+  "feedbackCategoryLabel": "Was für ein Feedback haben Sie?",
+  "feedbackCategoryLoginTokenHelp": "Login / Token-Hilfe",
+  "feedbackCategoryLoginTokenHelpInfo": "Bei Problemen mit dem Login oder Ihren Token wenden Sie sich bitte an Ihren Systemadministrator oder den Support der Plattform, bei der Sie sich einloggen möchten.",
   "feedbackDescription": "Wenn Sie Fragen, Anregungen oder Probleme haben, lassen Sie es uns wissen.",
   "feedbackHint": "Es öffnet sich eine vorgefertigte E-Mail, die Sie an uns senden können. Falls gewünscht, werden Informationen über Ihr Gerät und die Version der Anwendung hinzugefügt. Vor dem Versenden können Sie die E-Mail überprüfen und bearbeiten.",
   "feedbackPrivacyPolicy1": "Mit dem Senden des Feedbacks stimmen Sie unserer ",
