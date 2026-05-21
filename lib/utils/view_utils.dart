@@ -94,7 +94,10 @@ void showErrorStatusMessage({
 }) {
   ref ??= globalRef;
   final l = AppLocalizationsEn();
-  Logger.warning(details != null ? '${message(l)}: ${details(l)}' : message(l));
+  Logger.warning(
+    details != null ? '${message(l)}: ${details(l)}' : message(l),
+    verbose: true,
+  );
   if (ref == null) {
     Logger.error('Could not show status message: globalRef is null');
     return;
