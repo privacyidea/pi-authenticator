@@ -125,6 +125,78 @@ void _testTokenContainerProcessor() {
         expect(result!.length, 1);
         expect(result.first, isA<ProcessorResultFailed>());
       });
+
+      test('missing url returns failed result', () async {
+        final uriString =
+            "pia://container/SMPH00067A2F"
+            "?issuer=privacyIDEA"
+            "&ttl=10"
+            "&nonce=abc123"
+            "&time=2024-12-06T11%3A14%3A26.885409%2B00%3A00"
+            "&serial=SMPH00067A2F"
+            "&key_algorithm=secp384r1"
+            "&hash_algorithm=SHA256"
+            "&ssl_verify=True"
+            "&passphrase=";
+        final result = await processor.processUri(Uri.parse(uriString));
+        expect(result, isNotNull);
+        expect(result!.first, isA<ProcessorResultFailed>());
+      });
+
+      test('missing serial returns failed result', () async {
+        final uriString =
+            "pia://container/SMPH00067A2F"
+            "?issuer=privacyIDEA"
+            "&ttl=10"
+            "&nonce=abc123"
+            "&time=2024-12-06T11%3A14%3A26.885409%2B00%3A00"
+            "&url=http://192.168.0.230:5000/"
+            "&key_algorithm=secp384r1"
+            "&hash_algorithm=SHA256"
+            "&ssl_verify=True"
+            "&passphrase=";
+        final result = await processor.processUri(Uri.parse(uriString));
+        expect(result, isNotNull);
+        expect(result!.first, isA<ProcessorResultFailed>());
+      });
+
+      test('wrong scheme returns null', () async {
+        final uri = Uri.parse(
+          "otpauth://container/SMPH00067A2F?issuer=x&ttl=10&nonce=n&time=2024-12-06T11%3A14%3A26Z&url=http://x&serial=S&key_algorithm=secp384r1&hash_algorithm=SHA256&ssl_verify=True&passphrase=",
+        );
+        final result = await processor.processUri(uri);
+        expect(result, isNull);
+      });
+
+      test('wrong host returns null', () async {
+        final uri = Uri.parse(
+          "pia://token/SMPH00067A2F?issuer=x&ttl=10&nonce=n&time=2024-12-06T11%3A14%3A26Z&url=http://x&serial=S&key_algorithm=secp384r1&hash_algorithm=SHA256&ssl_verify=True&passphrase=",
+        );
+        final result = await processor.processUri(uri);
+        expect(result, isNull);
+      });
+
+      test('expiration date in the past when timestamp + ttl < now', () async {
+        // timestamp 20 minutes ago + ttl 10 minutes = expired 10 minutes ago
+        final timestamp = DateTime.now().subtract(const Duration(minutes: 20));
+        final uriString =
+            "pia://container/SMPH00067A2F"
+            "?issuer=privacyIDEA"
+            "&ttl=10"
+            "&nonce=b33d3a11c8d1b45f19640035e27944ccf0b2383d"
+            "&time=${Uri.encodeComponent(timestamp.toIso8601String())}"
+            "&url=http://192.168.0.230:5000/"
+            "&serial=SMPH00067A2F"
+            "&key_algorithm=secp384r1"
+            "&hash_algorithm=SHA256"
+            "&ssl_verify=False"
+            "&passphrase=";
+        final result = await processor.processUri(Uri.parse(uriString));
+        expect(result, isNotNull);
+        expect(result!.first.isSuccess, isTrue);
+        final container = result.first.asSuccess!.resultData as TokenContainerUnfinalized;
+        expect(container.expirationDate!.isBefore(DateTime.now()), isTrue);
+      });
     });
   });
 }

@@ -128,11 +128,12 @@ sealed class PiServerResponse<
     try {
       json = jsonDecode(response.body);
     } catch (_) {
+      Logger.warning('Failed to parse server response', error: response.body);
       return PiServerResponse.error(
         statusCode: response.statusCode,
         piServerResultError: PiServerResultError(
           code: response.statusCode,
-          message: response.body,
+          message: 'Invalid server response (HTTP ${response.statusCode})',
         ),
       );
     }

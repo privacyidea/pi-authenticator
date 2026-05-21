@@ -139,23 +139,6 @@ void main() {
       stateSetter(TokenContainerState(containerList: []));
       return Future.value(stateGetter());
     });
-
-    when(mockContainerRepo.saveContainer(any)).thenAnswer((invocation) {
-      final container = invocation.positionalArguments[0] as TokenContainer;
-      final i = stateGetter().containerList.indexWhere(
-        (element) => element.serial == container.serial,
-      );
-      final List<TokenContainer> newList;
-      if (i == -1) {
-        newList = List<TokenContainer>.from(stateGetter().containerList)
-          ..add(container);
-      } else {
-        newList = List<TokenContainer>.from(stateGetter().containerList)
-          ..[i] = container;
-      }
-      stateSetter(TokenContainerState(containerList: newList));
-      return Future.value(stateGetter());
-    });
     return mockContainerRepo;
   }
 

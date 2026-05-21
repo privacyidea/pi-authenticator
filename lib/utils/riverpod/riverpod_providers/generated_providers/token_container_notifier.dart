@@ -618,21 +618,16 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
     Logger.info('Handling processor results: adding Container');
     final replaceContainers = <TokenContainerUnfinalized>[];
     if (existingContainers.isNotEmpty) {
-      List<TokenContainerUnfinalized> replaceableExisting;
-      if (doReplace == true) {
-        replaceableExisting = existingContainers;
-      } else {
-        replaceableExisting = [];
-        for (final newContainer in existingContainers) {
-          final stateContainer = stateContainers.firstWhereOrNull(
-            (c) => c.serial == newContainer.serial,
-          );
-          if (stateContainer is TokenContainerFinalized &&
-              stateContainer.policies.disabledUnregister) {
-            showErrorStatusMessage(message: (l) => l.errorReplaceNotAllowed);
-          } else {
-            replaceableExisting.add(newContainer);
-          }
+      final replaceableExisting = <TokenContainerUnfinalized>[];
+      for (final newContainer in existingContainers) {
+        final stateContainer = stateContainers.firstWhereOrNull(
+          (c) => c.serial == newContainer.serial,
+        );
+        if (stateContainer is TokenContainerFinalized &&
+            stateContainer.policies.disabledUnregister) {
+          showErrorStatusMessage(message: (l) => l.errorReplaceNotAllowed);
+        } else {
+          replaceableExisting.add(newContainer);
         }
       }
       if (replaceableExisting.isNotEmpty) {
