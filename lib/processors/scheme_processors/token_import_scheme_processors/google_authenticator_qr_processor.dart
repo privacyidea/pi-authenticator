@@ -3,7 +3,7 @@
  *
  * Author: Frank Merkel <frank.merkel@netknights.it>
  *
- * Copyright (c) 2025 NetKnights GmbH
+ * Copyright (c) 2026 NetKnights GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
@@ -65,7 +65,7 @@ class GoogleAuthenticatorQrProcessor extends TokenImportSchemeProcessor {
     var decoded = base64.decode(encoded);
 
     final gai = GoogleAuthenticatorImport.fromBuffer(decoded);
-    Logger.warning("${gai.otpParameters.length} tokens found");
+    Logger.info("${gai.otpParameters.length} tokens found");
     for (var param in gai.otpParameters) {
       try {
         var base32string = base32.encode(Uint8List.fromList(param.secret));

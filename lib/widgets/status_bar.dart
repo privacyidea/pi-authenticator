@@ -179,10 +179,10 @@ class _StatusBarOverlayEntryState extends State<StatusBarOverlayEntry>
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(padding),
                     color: switch (widget.type) {
-                        StatusMessageType.error => statusColors.error,
-                        StatusMessageType.success => statusColors.success,
-                        StatusMessageType.neutral => statusColors.neutral,
-                      },
+                      StatusMessageType.error => statusColors.error,
+                      StatusMessageType.success => statusColors.success,
+                      StatusMessageType.neutral => statusColors.neutral,
+                    },
                   ),
                   padding: const EdgeInsets.all(padding),
                   child: SizedBox(
@@ -199,6 +199,8 @@ class _StatusBarOverlayEntryState extends State<StatusBarOverlayEntry>
                             widget.statusSubText!,
                             style: statusSubTextStyle,
                             textAlign: TextAlign.center,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                       ],
                     ),

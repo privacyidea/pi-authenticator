@@ -3,7 +3,7 @@
  *
  * Author: Frank Merkel <frank.merkel@netknights.it>
  *
- * Copyright (c) 2025 NetKnights GmbH
+ * Copyright (c) 2026 NetKnights GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
@@ -21,11 +21,16 @@
 import 'dart:convert';
 
 import 'package:privacyidea_authenticator/model/api_results/pi_server_results/pi_server_result.dart';
+import 'package:privacyidea_authenticator/model/api_results/pi_server_results/pi_server_result_detail.dart';
 import 'package:privacyidea_authenticator/model/api_results/pi_server_results/pi_server_result_value.dart';
+import 'package:privacyidea_authenticator/model/container_policies.dart';
+import 'package:privacyidea_authenticator/model/token_container.dart';
 import 'package:test/test.dart';
 
 void main() {
   _testPiServerResult();
+  _testPiServerResultValues();
+  _testPiServerResultDetail();
 }
 
 void _testPiServerResult() {
@@ -82,6 +87,163 @@ void _testPiServerResult() {
       expect(result.status, false);
       expect(result.error, isNotNull);
       expect(result.error!.code, 3001);
+    });
+  });
+}
+
+void _testPiServerResultValues() {
+  group('ContainerChallenge.fromUriMap', () {
+    test('parses valid map', () {
+      final map = {
+        ContainerChallenge.KEY_ALGORITHM: 'secp384r1',
+        ContainerChallenge.NONCE: 'abc123',
+        ContainerChallenge.TIMESTAMP: '2024-12-06T11:14:26.885409+00:00',
+      };
+      final result = ContainerChallenge.fromUriMap(map);
+      expect(result.keyAlgorithm, 'secp384r1');
+      expect(result.nonce, 'abc123');
+      expect(result.timeStamp, '2024-12-06T11:14:26.885409+00:00');
+      expect(result.timeAsDatetime, DateTime.parse('2024-12-06T11:14:26.885409+00:00'));
+    });
+
+    test('throws on missing required field', () {
+      final map = {
+        ContainerChallenge.KEY_ALGORITHM: 'secp384r1',
+        // NONCE missing
+        ContainerChallenge.TIMESTAMP: '2024-12-06T11:14:26.885409+00:00',
+      };
+      expect(() => ContainerChallenge.fromUriMap(map), throwsA(anything));
+    });
+  });
+
+  group('ContainerFinalizationResponse.fromUriMap', () {
+    test('parses valid map with policies', () {
+      final map = {
+        TokenContainer.SYNC_POLICIES: {
+          ContainerPolicies.ROLLOVER_ALLOWED: true,
+          ContainerPolicies.INITIAL_TOKEN_ASSIGNMENT: false,
+          ContainerPolicies.DISABLED_TOKEN_DELETION: true,
+          ContainerPolicies.DISABLED_UNREGISTER: false,
+        },
+      };
+      final result = ContainerFinalizationResponse.fromUriMap(map);
+      expect(result.policies.rolloverAllowed, isTrue);
+      expect(result.policies.initialTokenAssignment, isFalse);
+      expect(result.policies.disabledTokenDeletion, isTrue);
+      expect(result.policies.disabledUnregister, isFalse);
+    });
+  });
+
+  group('UnregisterContainerResult.fromUriMap', () {
+    test('parses success: true', () {
+      final map = {UnregisterContainerResult.KEY_SUCCESS: true};
+      final result = UnregisterContainerResult.fromUriMap(map);
+      expect(result.success, isTrue);
+    });
+
+    test('parses success: false', () {
+      final map = {UnregisterContainerResult.KEY_SUCCESS: false};
+      final result = UnregisterContainerResult.fromUriMap(map);
+      expect(result.success, isFalse);
+    });
+
+    test('throws on missing success field', () {
+      expect(() => UnregisterContainerResult.fromUriMap({}), throwsA(anything));
+    });
+  });
+
+  group('TransferQrData.fromUriMap', () {
+    test('parses valid map', () {
+      final map = {
+        TransferQrData.KEY_CONTAINER_URL: {
+          TransferQrData.KEY_DESCRIPTION: 'Test description',
+          TransferQrData.KEY_VALUE: 'pia://container/...',
+        },
+      };
+      final result = TransferQrData.fromUriMap(map);
+      expect(result.description, 'Test description');
+      expect(result.value, 'pia://container/...');
+    });
+  });
+
+  group('PushResultValue', () {
+    test('fromResultValue wraps bool correctly', () {
+      expect(PushResultValue.fromResultValue(true).value, isTrue);
+      expect(PushResultValue.fromResultValue(false).value, isFalse);
+    });
+  });
+
+  group('PiServerResultValue.fromResultValue dispatch', () {
+    test('dispatches to UnregisterContainerResult', () {
+      final map = {UnregisterContainerResult.KEY_SUCCESS: true};
+      final result = PiServerResultValue.fromResultValue<UnregisterContainerResult>(map);
+      expect(result, isA<UnregisterContainerResult>());
+      expect(result!.success, isTrue);
+    });
+
+    test('dispatches to ContainerChallenge', () {
+      final map = {
+        ContainerChallenge.KEY_ALGORITHM: 'secp384r1',
+        ContainerChallenge.NONCE: 'nonce',
+        ContainerChallenge.TIMESTAMP: '2024-12-06T11:14:26Z',
+      };
+      final result = PiServerResultValue.fromResultValue<ContainerChallenge>(map);
+      expect(result, isA<ContainerChallenge>());
+    });
+
+    test('returns null for base PiServerResultValue type', () {
+      final result = PiServerResultValue.fromResultValue<PiServerResultValue>({});
+      expect(result, isNull);
+    });
+  });
+}
+
+void _testPiServerResultDetail() {
+  group('PushResultDetail.fromUriMap', () {
+    test('parses full map with all fields', () {
+      final map = {
+        PushResultDetail.DISPLAY_CODE: '1234',
+        PushResultDetail.THREAD_ID: 42,
+        PushResultDetail.MESSAGE: 'Login request',
+      };
+      final result = PushResultDetail.fromUriMap(map);
+      expect(result.displayCode, '1234');
+      expect(result.threadId, 42);
+      expect(result.message, 'Login request');
+    });
+
+    test('parses map with only optional fields missing', () {
+      final map = <String, dynamic>{
+        PushResultDetail.DISPLAY_CODE: null,
+        PushResultDetail.THREAD_ID: null,
+      };
+      final result = PushResultDetail.fromUriMap(map);
+      expect(result.displayCode, isNull);
+      expect(result.threadId, isNull);
+      expect(result.message, isNull);
+    });
+  });
+
+  group('PiServerResultDetail.fromResultDetail dispatch', () {
+    test('returns PushResultDetail for PushResultDetail type', () {
+      final map = {
+        PushResultDetail.DISPLAY_CODE: '5678',
+        PushResultDetail.THREAD_ID: 1,
+        PushResultDetail.MESSAGE: 'msg',
+      };
+      final result = PiServerResultDetail.fromResultDetail<PushResultDetail>(map);
+      expect(result, isA<PushResultDetail>());
+      expect(result!.displayCode, '5678');
+    });
+
+    test('returns null for null input', () {
+      final result = PiServerResultDetail.fromResultDetail<PushResultDetail>(null);
+      expect(result, isNull);
+    });
+
+    test('returns null for unimplemented type', () {
+      final result = PiServerResultDetail.fromResultDetail<EmptyResultDetail>({});
+      expect(result, isNull);
     });
   });
 }

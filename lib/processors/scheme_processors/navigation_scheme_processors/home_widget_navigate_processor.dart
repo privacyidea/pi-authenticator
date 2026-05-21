@@ -3,7 +3,7 @@
  *
  * Author: Frank Merkel <frank.merkel@netknights.it>
  *
- * Copyright (c) 2025 NetKnights GmbH
+ * Copyright (c) 2026 NetKnights GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
@@ -65,7 +65,7 @@ class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
         ),
       ];
     }
-    Logger.warning('HomeWidgetNavigateProcessor: Processing uri: $uri');
+    Logger.info('HomeWidgetNavigateProcessor: Processing uri: $uri');
     final processor = _processors[uri.host];
     if (processor == null) {
       Logger.warning(

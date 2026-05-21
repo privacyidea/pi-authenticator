@@ -3,7 +3,7 @@
  *
  * Author: Frank Merkel <frank.merkel@netknights.it>
  *
- * Copyright (c) 2025 NetKnights GmbH
+ * Copyright (c) 2026 NetKnights GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import 'package:privacyidea_authenticator/views/container_view/container_widgets
 import 'package:privacyidea_authenticator/widgets/dialog_widgets/container_dialogs/container_rollout_dialog.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../../../../model/exception_errors/error_codes.dart';
 import '../../../../../../../model/exception_errors/pi_server_result_error.dart';
 import '../../../../../../../model/processor_result.dart';
 import '../../../../../../../model/tokens/token.dart';
@@ -45,6 +46,7 @@ import '../../../../model/enums/rollout_state.dart';
 import '../../../../model/enums/sync_state.dart';
 import '../../../../model/exception_errors/localized_argument_error.dart';
 import '../../../../model/exception_errors/response_error.dart';
+import '../../../../model/extensions/app_localizations_extension.dart';
 import '../../../../model/riverpod_states/token_container_state.dart';
 import '../../../../model/riverpod_states/token_state.dart';
 import '../../../../model/token_container.dart';
@@ -102,23 +104,26 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
     _repo = _repoOverride ?? repo;
     _containerApi = _containerApiOverride ?? containerApi;
     _eccUtils = _eccUtilsOverride ?? eccUtils;
-    Logger.warning('Building containerProvider');
+    Logger.info('Building containerProvider');
+    late TokenContainerState initState;
+    try {
+      var loadedState = await _repo.loadContainerState();
+      final containerList = loadedState.containerList.map((c) {
+        if (c is! TokenContainerFinalized) return c;
 
-    var initState = await _repo.loadContainerState();
-    final containerList = initState.containerList.map((c) {
-      if (c is! TokenContainerFinalized) return c;
-
-      final fixedSyncState = c.syncState == SyncState.syncing
-          ? SyncState.failed
-          : c.syncState;
-      return c.copyWith(syncState: fixedSyncState);
-    }).toList();
-    initState = initState.copyWith(containerList: containerList);
+        final fixedSyncState = c.syncState == SyncState.syncing
+            ? SyncState.failed
+            : c.syncState;
+        return c.copyWith(syncState: fixedSyncState);
+      }).toList();
+      initState = loadedState.copyWith(containerList: containerList);
+    } finally {
+      _stateMutex.release();
+    }
     for (var container
         in initState.containerList.whereType<TokenContainerUnfinalized>()) {
-      finalize(container, isManually: false);
+      unawaited(finalize(container, isManually: false));
     }
-    _stateMutex.release();
     return initState;
   }
 
@@ -177,7 +182,9 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
     } else {
       final current = <TokenContainer>[];
       for (final container in containersToSync) {
-        current.add((await future).currentOf(container)!);
+        final c = (await future).currentOf(container);
+        if (c == null) continue;
+        current.add(c);
       }
       containersToSync = current
           .whereType<TokenContainerFinalized>()
@@ -210,13 +217,15 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
           isInitSync,
           isManually,
         ).onError((error, stackTrace) async {
-          // Only PiServerResultError is rethrown from the _syncContainer method
-          assert(
-            error is PiServerResultError,
-            'Only PiServerResultError is rethrown from the _syncContainer method',
-          );
-          failedContainers[(error as PiServerResultError).code] =
-              finalizedContainer;
+          if (error is! PiServerResultError) {
+            Logger.error(
+              'Unexpected error type in _syncContainer',
+              error: error,
+              stackTrace: stackTrace,
+            );
+            return null;
+          }
+          failedContainers[error.code] = finalizedContainer;
           await _handlePiServerResultError(
             error,
             finalizedContainer,
@@ -241,8 +250,10 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
                 .updateTokens(
                   syncUpdate.initAssignmentChecked,
                   (t) => t.copyWith(
-                    checkedContainer: t.checkedContainer
-                      ..add(syncUpdate.containerSerial),
+                    checkedContainer: [
+                      ...t.checkedContainer,
+                      syncUpdate.containerSerial,
+                    ],
                   ),
                 );
             newPoliciesMap[syncUpdate.containerSerial] = syncUpdate.newPolicies;
@@ -356,7 +367,11 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
     final currentContainer = (await future).currentOf<TokenContainerFinalized>(
       container,
     );
-    if (currentContainer == null) throw StateError('Container was removed');
+    if (currentContainer == null) {
+      throw StateError(
+        '[${InAppErrorCodes.containerWasRemoved}] Container was removed',
+      );
+    }
     final qrCodeData = await _containerApi.getRolloverQrData(currentContainer);
     return qrCodeData.value;
   }
@@ -365,42 +380,48 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
 
   Future<TokenContainerState> addContainer(TokenContainer container) async {
     await _stateMutex.acquire();
-    await future;
-    final newState = await _saveContainerToRepo(container);
-    await update((_) => newState);
-    _stateMutex.release();
-    return newState;
+    try {
+      await future;
+      final newState = await _saveContainerToRepo(container);
+      await update((_) => newState);
+      return newState;
+    } finally {
+      _stateMutex.release();
+    }
   }
 
   Future<TokenContainerState> addContainerList(
     List<TokenContainer> container,
   ) async {
     await _stateMutex.acquire();
-    final newContainers = container.toList();
-    final oldContainers = (await future).containerList;
-    Logger.debug('Loaded container: $oldContainers');
-    final combinedContainers = <TokenContainer>[];
-    for (var oldContainer in oldContainers) {
-      final newContainer = newContainers.firstWhereOrNull(
-        (newContainer) => newContainer.serial == oldContainer.serial,
-      );
-      if (newContainer == null) {
-        combinedContainers.add(oldContainer);
-      } else {
-        combinedContainers.add(newContainer);
-        newContainers.remove(newContainer);
+    try {
+      final newContainers = container.toList();
+      final oldContainers = (await future).containerList;
+      Logger.debug('Loaded container: $oldContainers');
+      final combinedContainers = <TokenContainer>[];
+      for (var oldContainer in oldContainers) {
+        final newContainer = newContainers.firstWhereOrNull(
+          (newContainer) => newContainer.serial == oldContainer.serial,
+        );
+        if (newContainer == null) {
+          combinedContainers.add(oldContainer);
+        } else {
+          combinedContainers.add(newContainer);
+          newContainers.remove(newContainer);
+        }
       }
+      combinedContainers.addAll(newContainers);
+      Logger.debug('Combined container: $combinedContainers');
+      final newState = await _saveContainersStateToRepo(
+        TokenContainerState(containerList: combinedContainers),
+      );
+      Logger.debug('Saved container: $newState');
+      await update((_) => newState);
+      Logger.debug('Updated container: $newState');
+      return newState;
+    } finally {
+      _stateMutex.release();
     }
-    combinedContainers.addAll(newContainers);
-    Logger.debug('Combined container: $combinedContainers');
-    final newState = await _saveContainersStateToRepo(
-      TokenContainerState(containerList: combinedContainers),
-    );
-    Logger.debug('Saved container: $newState');
-    await update((_) => newState);
-    Logger.debug('Updated container: $newState');
-    _stateMutex.release();
-    return newState;
   }
 
   // UPDATE CONTAINER
@@ -410,7 +431,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
     FutureOr<TokenContainerState> Function(TokenContainerState state) cb, {
     FutureOr<TokenContainerState> Function(Object, StackTrace)? onError,
   }) async {
-    Logger.warning('Updating containerProvider');
+    Logger.info('Updating containerProvider');
     return super.update(cb, onError: onError);
   }
 
@@ -419,22 +440,24 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
     T extends TokenContainer
   >(TokenContainer container, R Function(T) updater) async {
     await _stateMutex.acquire();
-    final oldState = await future;
-    Logger.debug('Updating container ${container.serial} updater: $updater');
-    final currentContainer = oldState.currentOf<T>(container);
-    if (currentContainer == null) {
-      Logger.info(
-        'Failed to update container. It was probably removed in the meantime.',
-      );
+    try {
+      final oldState = await future;
+      Logger.debug('Updating container ${container.serial} updater: $updater');
+      final currentContainer = oldState.currentOf<T>(container);
+      if (currentContainer == null) {
+        Logger.info(
+          'Failed to update container. It was probably removed in the meantime.',
+        );
+        return null;
+      }
+      Logger.info('Updating container ${currentContainer.serial}');
+      final updated = updater(currentContainer);
+      final newState = await _saveContainerToRepo(updated);
+      await update((_) => newState);
+      return updated;
+    } finally {
       _stateMutex.release();
-      return null;
     }
-    Logger.info('Updating container ${currentContainer.serial}');
-    final updated = updater(currentContainer);
-    final newState = await _saveContainerToRepo(updated);
-    await update((_) => newState);
-    _stateMutex.release();
-    return updated;
   }
 
   Future<List<T>> updateContainerList<T extends TokenContainer>(
@@ -443,35 +466,37 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
   ) async {
     if (container.isEmpty) return [];
     await _stateMutex.acquire();
-    final oldState = await future;
-    final currentContainers = <T>[];
-    Logger.info('Updating ${container.length} containers');
-    for (var c in container) {
-      final current = oldState.currentOf<T>(c);
-      if (current == null) {
-        Logger.warning(
-          'Failed to update container. It was probably removed in the meantime.',
-        );
-        continue;
+    try {
+      final oldState = await future;
+      final currentContainers = <T>[];
+      Logger.info('Updating ${container.length} containers');
+      for (var c in container) {
+        final current = oldState.currentOf<T>(c);
+        if (current == null) {
+          Logger.warning(
+            'Failed to update container. It was probably removed in the meantime.',
+          );
+          continue;
+        }
+        currentContainers.add(current);
       }
-      currentContainers.add(current);
-    }
-    if (currentContainers.isEmpty) {
-      Logger.warning(
-        'Failed to update containers. They were probably removed in the meantime.',
-      );
-      _stateMutex.release();
-      return [];
-    }
-    final updated = <T>[];
+      if (currentContainers.isEmpty) {
+        Logger.warning(
+          'Failed to update containers. They were probably removed in the meantime.',
+        );
+        return [];
+      }
+      final updated = <T>[];
 
-    for (var c in currentContainers) {
-      updated.add(updater(c));
+      for (var c in currentContainers) {
+        updated.add(updater(c));
+      }
+      final newState = await _saveContainerListToRepo(updated);
+      await update((_) => newState);
+      return updated;
+    } finally {
+      _stateMutex.release();
     }
-    final newState = await _saveContainerListToRepo(updated);
-    await update((_) => newState);
-    _stateMutex.release();
-    return updated;
   }
 
   // DELETE CONTAINER
@@ -480,10 +505,10 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
     try {
       if (!(await _containerApi.unregister(container)).success) return false;
     } on PiServerResultError catch (e) {
-      if (e.code == PiServerResultErrorCodes.containerNotFound ||
+      if (e.code == PiServerResultErrorCodes.resourceNotFound ||
           e.code == PiServerResultErrorCodes.containerNotRegistered) {
         // Server confirmed the container doesn't exist — proceed with local deletion.
-      } else if (e.code != PiServerResultErrorCodes.couldNotVerifySignature) {
+      } else if (e.code != PiServerResultErrorCodes.containerInvalidChallenge) {
         showErrorStatusMessage(
           message: (localization) =>
               localization.piServerCode(e.code.toString()),
@@ -492,56 +517,65 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
         return false;
       }
     } on ResponseError catch (e) {
-      if (e.statusCode == 520 && e.message != "Unknown Error") {
+      if (e.statusCode == HttpStatusCodes.webServerReturnedUnknownError &&
+          e.message != "Unknown Error") {
         showErrorStatusMessage(message: (localization) => e.toString());
         return false;
       } else {
         showErrorStatusMessage(
-          message: (localization) =>
-              localization.httpStatus(e.statusCode.toString()),
+          message: (localization) => localization.httpStatusFor(e.statusCode),
         );
       }
       return false;
     }
 
     await _stateMutex.acquire();
-    final newState = await _deleteContainerFromRepo(container);
-    await update((_) => newState);
-    _stateMutex.release();
-    return true;
+    try {
+      final newState = await _deleteContainerFromRepo(container);
+      await update((_) => newState);
+      return true;
+    } finally {
+      _stateMutex.release();
+    }
   }
 
   Future<bool> deleteContainer(TokenContainer container) async {
     await _stateMutex.acquire();
-    final newState = await _deleteContainerFromRepo(container);
-    await update((_) => newState);
-    _stateMutex.release();
-    return true;
+    try {
+      final newState = await _deleteContainerFromRepo(container);
+      await update((_) => newState);
+      return true;
+    } finally {
+      _stateMutex.release();
+    }
   }
 
   Future<TokenContainerState> deleteContainerList(
     List<TokenContainer> container,
   ) async {
     await _stateMutex.acquire();
-    final newContainers = container.toList();
-    final oldContainers = (await future).containerList;
-    final combinedContainers = <TokenContainer>[];
-    for (var oldContainer in oldContainers) {
-      final newContainer = newContainers.firstWhereOrNull(
-        (newContainer) => newContainer.serial == oldContainer.serial,
-      );
-      if (newContainer == null) {
-        combinedContainers.add(oldContainer);
-      } else {
-        newContainers.remove(newContainer);
+    try {
+      final newContainers = container.toList();
+      final oldContainers = (await future).containerList;
+      final combinedContainers = <TokenContainer>[];
+      for (var oldContainer in oldContainers) {
+        final newContainer = newContainers.firstWhereOrNull(
+          (newContainer) => newContainer.serial == oldContainer.serial,
+        );
+        if (newContainer == null) {
+          combinedContainers.add(oldContainer);
+        } else {
+          newContainers.remove(newContainer);
+        }
       }
+      final newState = await _saveContainersStateToRepo(
+        TokenContainerState(containerList: combinedContainers),
+      );
+      await update((_) => newState);
+      return newState;
+    } finally {
+      _stateMutex.release();
     }
-    final newState = await _saveContainersStateToRepo(
-      TokenContainerState(containerList: combinedContainers),
-    );
-    await update((_) => newState);
-    _stateMutex.release();
-    return newState;
   }
 
   /* /////////////////////////////////////////////////////////////////////////
@@ -590,13 +624,35 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
     Logger.info('Handling processor results: adding Container');
     final replaceContainers = <TokenContainerUnfinalized>[];
     if (existingContainers.isNotEmpty) {
-      replaceContainers.addAll(switch (doReplace) {
-        true => existingContainers,
-        false => [],
-        null =>
-          await ContainerAlreadyExistsDialog.showDialog(existingContainers) ??
-              [],
-      });
+      final replaceableExisting = <TokenContainerUnfinalized>[];
+      final blockedContainers = <TokenContainerUnfinalized>[];
+      for (final newContainer in existingContainers) {
+        final stateContainer = stateContainers.firstWhereOrNull(
+          (c) => c.serial == newContainer.serial,
+        );
+        // Finalized containers can't be re-finalized on the server, so replacing
+        // a locally finalized container always fails. Block it regardless of
+        // the disabledUnregister policy.
+        if (stateContainer is TokenContainerFinalized) {
+          blockedContainers.add(newContainer);
+        } else {
+          replaceableExisting.add(newContainer);
+        }
+      }
+      if (blockedContainers.isNotEmpty) {
+        showErrorStatusMessage(message: (l) => l.containerAlreadyExists);
+      }
+      if (replaceableExisting.isNotEmpty) {
+        replaceContainers.addAll(switch (doReplace) {
+          true => replaceableExisting,
+          false => [],
+          null =>
+            await ContainerAlreadyExistsDialog.showDialog(
+                  replaceableExisting,
+                ) ??
+                [],
+        });
+      }
     }
 
     if (replaceContainers.isNotEmpty) {
@@ -652,10 +708,14 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
     if (container is! TokenContainerUnfinalized) {
       _finalizationMutex.release();
       if (container is TokenContainerFinalized) {
-        Logger.info('Container is already finalized, skipping rollout: ${container.serial}');
+        Logger.info(
+          'Container is already finalized, skipping rollout: ${container.serial}',
+        );
         return container;
       }
-      Logger.error('Unexpected container type for rollout: ${container.runtimeType}');
+      Logger.error(
+        'Unexpected container type for rollout: ${container.runtimeType}',
+      );
       return null;
     }
     if (container.expirationDate != null &&
@@ -691,17 +751,19 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
     }
     container = updatedContainer;
 
+    bool finalizationSucceeded = false;
     try {
       container = await _generateKeyPair(container);
-      container = await _curentOf<TokenContainerUnfinalized>(container);
+      container = await _currentOf<TokenContainerUnfinalized>(container);
       final ContainerFinalizationResponse response = await _sendPublicKey(
         container,
       );
-      container = await _curentOf<TokenContainerUnfinalized>(container);
+      container = await _currentOf<TokenContainerUnfinalized>(container);
       final finalizedContainer = await _applyFinalizationResponse(
-        await _curentOf(container),
+        await _currentOf(container),
         response,
       );
+      finalizationSucceeded = true;
       return finalizedContainer;
     } on StateError catch (e) {
       if (isManually) {
@@ -738,11 +800,13 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
         error: e,
       );
     } finally {
-      await updateContainer(
-        container,
-        (TokenContainerUnfinalized c) =>
-            c.copyWith(finalizationState: c.finalizationState.asFailed),
-      );
+      if (!finalizationSucceeded) {
+        await updateContainer(
+          container,
+          (TokenContainerUnfinalized c) =>
+              c.copyWith(finalizationState: c.finalizationState.asFailed),
+        );
+      }
       _finalizationMutex.release();
     }
     return null;
@@ -752,11 +816,15 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
 ////////////////// PRIVATE HELPER METHODS FINALIZATION /////////////////////
 ///////////////////////////////////////////////////////////////////////// */
 
-  Future<T> _curentOf<T extends TokenContainer>(
+  Future<T> _currentOf<T extends TokenContainer>(
     TokenContainer container,
   ) async {
     final current = (await future).currentOf(container);
-    if (current == null) throw StateError('Container was removed');
+    if (current == null) {
+      throw StateError(
+        '[${InAppErrorCodes.containerWasRemoved}] Container was removed',
+      );
+    }
     if (current is! T) throw StateError('Container is not of type $T');
     return current;
   }
@@ -765,7 +833,9 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
   Future<TokenContainerUnfinalized> _generateKeyPair(
     TokenContainerUnfinalized tokenContainer,
   ) async {
-    if (tokenContainer.clientKeyPair != null) {
+    if (tokenContainer.clientKeyPair != null ||
+        (tokenContainer.publicClientKey != null &&
+            tokenContainer.privateClientKey != null)) {
       return tokenContainer;
     }
     // generatingKeyPair,
@@ -782,7 +852,11 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
             finalizationState: FinalizationState.generatingKeyPair,
           ),
         );
-    if (container == null) throw StateError('Container was removed');
+    if (container == null) {
+      throw StateError(
+        '[${InAppErrorCodes.containerWasRemoved}] Container was removed',
+      );
+    }
     if (container.clientKeyPair != null) return container;
     final keyPair = eccUtils.generateKeyPair(container.ecKeyAlgorithm);
     container =
@@ -793,7 +867,11 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
           container,
           (c) => c.withClientKeyPair(keyPair) as TokenContainerUnfinalized,
         );
-    if (container == null) throw StateError('Container was removed');
+    if (container == null) {
+      throw StateError(
+        '[${InAppErrorCodes.containerWasRemoved}] Container was removed',
+      );
+    }
     return container;
   }
 
@@ -820,12 +898,16 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
       (TokenContainerUnfinalized c) =>
           c.copyWith(finalizationState: FinalizationState.sendingPublicKey),
     );
-    if (container == null) throw StateError('Container was removed');
+    if (container == null) {
+      throw StateError(
+        '[${InAppErrorCodes.containerWasRemoved}] Container was removed',
+      );
+    }
     try {
       response = (await _containerApi.finalizeContainer(container, eccUtils));
     } on ResponseError catch (e) {
       Logger.debug(
-        "Failed to parse container finalization response: Respone is not from privacyIDEA server",
+        "Failed to parse container finalization response: Response is not from privacyIDEA server",
         error: e,
       );
       rethrow;
@@ -837,6 +919,11 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
         finalizationState: FinalizationState.sendingPublicKeyCompleted,
       ),
     );
+    if (container == null) {
+      throw StateError(
+        '[${InAppErrorCodes.containerWasRemoved}] Container was removed',
+      );
+    }
     return response;
   }
 
@@ -856,14 +943,22 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
         finalizationState: FinalizationState.sendingPublicKeyCompleted,
       ),
     );
-    if (container == null) throw StateError('Container was removed');
+    if (container == null) {
+      throw StateError(
+        '[${InAppErrorCodes.containerWasRemoved}] Container was removed',
+      );
+    }
 
     container = await updateContainer(
       container,
       (TokenContainerUnfinalized c) =>
           c.copyWith(finalizationState: FinalizationState.parsingResponse),
     );
-    if (container == null) throw StateError('Container was removed');
+    if (container == null) {
+      throw StateError(
+        '[${InAppErrorCodes.containerWasRemoved}] Container was removed',
+      );
+    }
 
     // final signature = finalizationResponse.signature;
     final finalizedContainer = await updateContainer(
@@ -871,7 +966,11 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
       (TokenContainerUnfinalized c) =>
           c.copyWith(policies: response.policies).finalize()!,
     );
-    if (finalizedContainer == null) throw StateError('Container was removed');
+    if (finalizedContainer == null) {
+      throw StateError(
+        '[${InAppErrorCodes.containerWasRemoved}] Container was removed',
+      );
+    }
     return finalizedContainer;
   }
 
@@ -880,7 +979,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
     TokenContainerFinalized container,
     bool isManually,
   ) async {
-    if (error.code == PiServerResultErrorCodes.containerNotFound ||
+    if (error.code == PiServerResultErrorCodes.resourceNotFound ||
         error.code == PiServerResultErrorCodes.containerNotRegistered) {
       // Server no longer has this container — clear disabledUnregister so the
       // delete button is enabled even if the server policy previously blocked it.
@@ -908,14 +1007,4 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
       );
     }
   }
-}
-
-class PiServerResultErrorCodes {
-  // Unable to find container with serial {serial}.
-  static const containerNotFound = 601;
-
-  // Container is not registered.
-  static const containerNotRegistered = 3001;
-
-  static const couldNotVerifySignature = 3002;
 }

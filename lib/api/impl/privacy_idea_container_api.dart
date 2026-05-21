@@ -5,7 +5,7 @@
  *
  * Author: Frank Merkel <frank.merkel@netknights.it>
  *
- * Copyright (c) 2025 NetKnights GmbH
+ * Copyright (c) 2026 NetKnights GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@ import '../../../../../../../../utils/ecc_utils.dart';
 import '../../../../../../../../utils/privacyidea_io_client.dart';
 import '../../model/api_results/pi_server_results/pi_server_result_detail.dart';
 import '../../model/api_results/pi_server_results/pi_server_result_value.dart';
+import '../../model/exception_errors/error_codes.dart';
 import '../../model/exception_errors/localized_exception.dart';
 import '../../model/exception_errors/pi_server_result_error.dart';
 import '../../model/exception_errors/response_error.dart';
@@ -353,7 +354,8 @@ class PiContainerApi implements TokenContainerApi {
     try {
       challenge = await _getChallenge(container, unregisterUrl);
     } on PiServerResultError catch (e) {
-      if (e.code == 3001 || e.code == 601) {
+      if (e.code == PiServerResultErrorCodes.containerNotRegistered ||
+          e.code == PiServerResultErrorCodes.resourceNotFound) {
         return UnregisterContainerResult(success: true);
       }
       rethrow;
@@ -424,8 +426,11 @@ class PiContainerApi implements TokenContainerApi {
       }
       if (piError != null) throw piError;
       // HTTP 404 means the container no longer exists on the server
-      if (challengeResponse.statusCode == 404) {
-        throw PiServerResultError(code: 601, message: 'Container not found on server (HTTP 404)');
+      if (challengeResponse.statusCode == HttpStatusCodes.notFound) {
+        throw PiServerResultError(
+          code: PiServerResultErrorCodes.resourceNotFound,
+          message: 'Container not found on server (HTTP 404)',
+        );
       }
       throw ResponseError(challengeResponse);
     }
