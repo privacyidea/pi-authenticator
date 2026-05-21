@@ -33,7 +33,7 @@ class StatusBar extends ConsumerWidget {
       builder: (context) => StatusBarOverlayEntry(
         statusText: message.message(l10n),
         statusSubText: message.details?.call(l10n),
-        isError: message.isError,
+        type: message.type,
         onDismissed: (_) {
           entry?.remove();
           if (ref.context.mounted) {
@@ -50,7 +50,7 @@ class StatusBar extends ConsumerWidget {
 class StatusBarOverlayEntry extends StatefulWidget {
   final String statusText;
   final String? statusSubText;
-  final bool isError;
+  final StatusMessageType type;
   final Function(DismissDirection) onDismissed;
 
   const StatusBarOverlayEntry({
@@ -58,7 +58,7 @@ class StatusBarOverlayEntry extends StatefulWidget {
     required this.statusText,
     required this.onDismissed,
     this.statusSubText,
-    required this.isError,
+    required this.type,
   });
 
   @override
@@ -178,9 +178,11 @@ class _StatusBarOverlayEntryState extends State<StatusBarOverlayEntry>
                 Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(padding),
-                    color: widget.isError
-                        ? statusColors.error
-                        : statusColors.success,
+                    color: switch (widget.type) {
+                        StatusMessageType.error => statusColors.error,
+                        StatusMessageType.success => statusColors.success,
+                        StatusMessageType.neutral => statusColors.neutral,
+                      },
                   ),
                   padding: const EdgeInsets.all(padding),
                   child: SizedBox(

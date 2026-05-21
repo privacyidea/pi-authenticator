@@ -242,6 +242,9 @@
   "@containerSyncUrl": {
     "description": "Title of the container sync URL field."
   },
+  "@containerSyncUrlNotEditable": {
+    "description": "Hint shown when the user tries to edit the container sync URL while the container is not yet finalized."
+  },
   "@containerTransferDeleteTokensButtonText": {
     "description": "Button text to delete corresponding tokens after container transfer."
   },
@@ -567,14 +570,11 @@
   "@feedbackHint": {
     "description": "Descripes waht happens when the user clicks on the send button."
   },
-  "@feedbackPrivacyPolicy1": {
-    "description": "First part of the text that tells the user that he agrees to the privacy policy by sending feedback."
+  "@feedbackPrivacyPolicyFull": {
+    "description": "Full sentence for the privacy policy agreement. Use {privacyPolicy} as placeholder for the clickable link text."
   },
-  "@feedbackPrivacyPolicy2": {
-    "description": "Taping on this should open the privacy policy."
-  },
-  "@feedbackPrivacyPolicy3": {
-    "description": "Last part of the text that tells the user that he agrees to the privacy policy by sending feedback."
+  "@feedbackPrivacyPolicyLinkText": {
+    "description": "Clickable link text in the privacy policy agreement. Tapping this opens the privacy policy."
   },
   "@feedbackSentDescription": {
     "description": "The content of the dialog that appears after the feedback was sent."
@@ -1754,6 +1754,7 @@
   "containerSyncDialogRemovedTokens": "Jetons supprimés par la synchronisation des conteneurs :",
   "containerSyncDialogTitle": "Synchroniser les conteneurs {serial}",
   "containerSyncUrl": "Url de synchronisation du conteneur",
+  "containerSyncUrlNotEditable": "L'URL ne peut pas être modifiée tant que le conteneur n'est pas finalisé.",
   "containerTransferDeleteTokensButtonText": "Retirer de cet appareil",
   "containerTransferDeleteTokensSuccessMessage": "Le conteneur et les jetons associés ont été retirés avec succès de cet appareil.",
   "containerTransferDialogContentAborted": "Le transfert du conteneur a été interrompu.",
@@ -1840,9 +1841,8 @@
   "feedbackCategoryLoginTokenHelpInfo": "Pour les problèmes de connexion ou avec vos jetons, veuillez contacter votre administrateur système ou le support de la plateforme sur laquelle vous souhaitez vous connecter.",
   "feedbackDescription": "Si vous avez des questions, des suggestions ou des problèmes, n'hésitez pas à nous en faire part",
   "feedbackHint": "Un e-mail prêt à l'emploi s'ouvre, que vous pouvez nous envoyer. Si vous le souhaitez, des informations sur votre appareil et la version de l'application seront ajoutées. Vous pouvez vérifier et modifier l'e-mail avant de l'envoyer.",
-  "feedbackPrivacyPolicy1": "En envoyant le retour d'information, vous acceptez notre ",
-  "feedbackPrivacyPolicy2": "politique de confidentialité",
-  "feedbackPrivacyPolicy3": ".",
+  "feedbackPrivacyPolicyFull": "En envoyant le retour d'information, vous acceptez notre {privacyPolicy}.",
+  "feedbackPrivacyPolicyLinkText": "politique de confidentialité",
   "feedbackSentDescription": "Merci beaucoup pour votre aide dans l'amélioration de cette application !",
   "feedbackSentTitle": "Retour d'information envoyé",
   "feedbackTitle": "Vos commentaires sont toujours les bienvenus !",

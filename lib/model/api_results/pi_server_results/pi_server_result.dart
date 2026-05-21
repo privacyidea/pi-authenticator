@@ -39,7 +39,7 @@ class PiServerResult<V extends PiServerResultValue> {
       validators: <String, BaseValidator>{
         RESULT_STATUS: RequiredObjectValidator<bool>(),
         RESULT_VALUE: OptionalObjectValidator<Object>(),
-        RESULT_ERROR: OptionalObjectValidator<Map<String, Object>>(),
+        RESULT_ERROR: OptionalObjectValidator<Map<String, dynamic>>(),
       },
       name: 'PiServerResult#fromJson',
     );
@@ -50,7 +50,7 @@ class PiServerResult<V extends PiServerResultValue> {
           : null,
       error: map[RESULT_ERROR] != null
           ? PiServerResultError.fromResultError(
-              map[RESULT_ERROR] as Map<String, Object>,
+              map[RESULT_ERROR] as Map<String, dynamic>,
             )
           : null,
     );

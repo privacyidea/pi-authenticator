@@ -21,7 +21,6 @@ import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../widgets/push_request_listener.dart';
-import '../../widgets/status_bar.dart';
 import '../view_interface.dart';
 
 class LicenseView extends StatelessView {
@@ -41,8 +40,7 @@ class LicenseView extends StatelessView {
 
   @override
   Widget build(BuildContext context) => PushRequestListener(
-    child: StatusBar(
-      child: FutureBuilder(
+    child: FutureBuilder(
         future: PackageInfo.fromPlatform(),
         builder: (context, platformInfo) => LicensePage(
           applicationName: appName,
@@ -56,6 +54,5 @@ class LicenseView extends StatelessView {
               : '${platformInfo.data?.version}+${platformInfo.data?.buildNumber}',
         ),
       ),
-    ),
   );
 }

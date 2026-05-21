@@ -21,7 +21,6 @@ import 'package:flutter/material.dart';
 
 import '../../l10n/app_localizations.dart';
 import '../../widgets/push_request_listener.dart';
-import '../../widgets/status_bar.dart';
 import '../view_interface.dart';
 import 'settings_groups/settings_group_allow_screenshot/settings_group_allow_screenshot.dart';
 import 'settings_groups/settings_group_background_image.dart';
@@ -51,8 +50,7 @@ class SettingsView extends ConsumerView {
           maxLines: 2, // Title can be shown on small screens too.
         ),
       ),
-      body: StatusBar(
-        child: SafeArea(
+      body: SafeArea(
           child: const SingleChildScrollView(
             padding: EdgeInsets.symmetric(vertical: 20, horizontal: 10),
             child: Column(
@@ -72,7 +70,6 @@ class SettingsView extends ConsumerView {
             ),
           ),
         ),
-      ),
     ),
   );
 }

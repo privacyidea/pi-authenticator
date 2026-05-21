@@ -45,7 +45,6 @@ import '../../../../model/enums/rollout_state.dart';
 import '../../../../model/enums/sync_state.dart';
 import '../../../../model/exception_errors/localized_argument_error.dart';
 import '../../../../model/exception_errors/response_error.dart';
-import '../../../../model/pi_server_response.dart';
 import '../../../../model/riverpod_states/token_container_state.dart';
 import '../../../../model/riverpod_states/token_state.dart';
 import '../../../../model/token_container.dart';
@@ -481,7 +480,10 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
     try {
       if (!(await _containerApi.unregister(container)).success) return false;
     } on PiServerResultError catch (e) {
-      if (e.code != PiServerResultErrorCodes.couldNotVerifySignature) {
+      if (e.code == PiServerResultErrorCodes.containerNotFound ||
+          e.code == PiServerResultErrorCodes.containerNotRegistered) {
+        // Server confirmed the container doesn't exist — proceed with local deletion.
+      } else if (e.code != PiServerResultErrorCodes.couldNotVerifySignature) {
         showErrorStatusMessage(
           message: (localization) =>
               localization.piServerCode(e.code.toString()),
@@ -656,6 +658,17 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
       Logger.error('Unexpected container type for rollout: ${container.runtimeType}');
       return null;
     }
+    if (container.expirationDate != null &&
+        container.expirationDate!.isBefore(DateTime.now())) {
+      if (isManually) {
+        showErrorStatusMessage(
+          message: (l) => l.containerRolloutExpired(container.serial),
+        );
+      }
+      await deleteContainer(container);
+      _finalizationMutex.release();
+      return null;
+    }
     urlIsOk ??=
         ((await ContainerShowContainerUrlDialog.showDialog(container)) == true);
     if (!urlIsOk) {
@@ -677,15 +690,6 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
       return null;
     }
     container = updatedContainer;
-    if (container.expirationDate != null &&
-        container.expirationDate!.isBefore(DateTime.now())) {
-      showErrorStatusMessage(
-        message: (l) => l.containerRolloutExpired(container.serial),
-      );
-      await deleteContainer(container);
-      _finalizationMutex.release();
-      return null;
-    }
 
     try {
       container = await _generateKeyPair(container);
@@ -714,11 +718,11 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
           details: e.localizedMessage,
         );
       }
-    } on PiErrorResponse catch (e) {
+    } on PiServerResultError catch (e) {
       if (isManually) {
         showErrorStatusMessage(
           message: container.finalizationState.asFailed.rolloutMsgLocalized,
-          details: (_) => e.piServerResultError.message,
+          details: (_) => e.message,
         );
       }
     } on ResponseError catch (e) {
@@ -761,6 +765,9 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
   Future<TokenContainerUnfinalized> _generateKeyPair(
     TokenContainerUnfinalized tokenContainer,
   ) async {
+    if (tokenContainer.clientKeyPair != null) {
+      return tokenContainer;
+    }
     // generatingKeyPair,
     // generatingKeyPairFailed,
     // generatingKeyPairCompleted,
@@ -776,6 +783,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
           ),
         );
     if (container == null) throw StateError('Container was removed');
+    if (container.clientKeyPair != null) return container;
     final keyPair = eccUtils.generateKeyPair(container.ecKeyAlgorithm);
     container =
         await updateContainer<
@@ -872,9 +880,17 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
     TokenContainerFinalized container,
     bool isManually,
   ) async {
-    final context = (await contextedGlobalNavigatorKey).currentContext;
     if (error.code == PiServerResultErrorCodes.containerNotFound ||
         error.code == PiServerResultErrorCodes.containerNotRegistered) {
+      // Server no longer has this container — clear disabledUnregister so the
+      // delete button is enabled even if the server policy previously blocked it.
+      await updateContainer(
+        container,
+        (TokenContainerFinalized c) => c.copyWith(
+          policies: c.policies.copyWith(disabledUnregister: false),
+        ),
+      );
+      final context = (await contextedGlobalNavigatorKey).currentContext;
       if (context == null || !context.mounted || !isManually) return;
       DeleteContainerDialog.showDialog(
         container,
@@ -884,6 +900,11 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
         contentOverride: AppLocalizations.of(
           context,
         )!.syncContainerNotFoundDialogContent,
+      );
+    } else if (isManually) {
+      showErrorStatusMessage(
+        message: (l) => l.failedToSyncContainer(container.serial),
+        details: (_) => error.message,
       );
     }
   }

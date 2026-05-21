@@ -27,12 +27,14 @@ final statusProvider = StateNotifierProvider<StatusNotifier, StatusState>(
   (ref) => StatusNotifier(),
 );
 
+enum StatusMessageType { error, success, neutral }
+
 class StatusMessage {
   final String Function(AppLocalizations localization) message;
   final String Function(AppLocalizations localization)? details;
-  final bool isError;
+  final StatusMessageType type;
 
-  StatusMessage({required this.message, this.details, this.isError = true});
+  StatusMessage({required this.message, this.details, this.type = StatusMessageType.error});
 
   @override
   bool operator ==(Object other) {
@@ -42,14 +44,14 @@ class StatusMessage {
         other.message(AppLocalizationsEn()) == message(AppLocalizationsEn()) &&
         other.details?.call(AppLocalizationsEn()) ==
             details?.call(AppLocalizationsEn()) &&
-        other.isError == isError;
+        other.type == type;
   }
 
   @override
   int get hashCode => Object.hashAll([
     message(AppLocalizationsEn()),
     details?.call(AppLocalizationsEn()),
-    isError,
+    type,
   ]);
 }
 
@@ -65,12 +67,12 @@ class StatusNotifier extends StateNotifier<StatusState> {
   void show(
     String Function(AppLocalizations l) message, {
     String Function(AppLocalizations l)? details,
-    bool isError = true,
+    StatusMessageType type = StatusMessageType.error,
   }) {
     final statusMessage = StatusMessage(
       message: message,
       details: details,
-      isError: isError,
+      type: type,
     );
 
     if (state.current == statusMessage || state.queue.contains(statusMessage)) {

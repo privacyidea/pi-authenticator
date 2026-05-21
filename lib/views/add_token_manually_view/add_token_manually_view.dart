@@ -25,7 +25,6 @@ import '../../l10n/app_localizations.dart';
 import '../../model/enums/algorithms.dart';
 import '../../model/enums/encodings.dart';
 import '../../model/enums/token_types.dart';
-import '../../widgets/status_bar.dart';
 import 'add_token_manually_view_widgets/add_tokens_manually/add_daypassword_manually.dart';
 import 'add_token_manually_view_widgets/add_tokens_manually/add_hotp_manually.dart';
 import 'add_token_manually_view_widgets/add_tokens_manually/add_steam_manually.dart';
@@ -153,8 +152,7 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
         ),
       ),
       body: SafeArea(
-        child: StatusBar(
-          child: Column(
+        child: Column(
             children: [
               PageViewIndicator(
                 controller: pageController,
@@ -177,7 +175,6 @@ class _AddTokenManuallyViewState extends ConsumerState<AddTokenManuallyView> {
               ),
             ],
           ),
-        ),
       ),
     );
   }

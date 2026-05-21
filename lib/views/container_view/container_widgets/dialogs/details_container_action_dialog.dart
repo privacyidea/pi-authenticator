@@ -48,20 +48,27 @@ class DetailsContainerDialog extends ConsumerStatefulWidget {
 class _DetailsContainerDialogState
     extends ConsumerState<DetailsContainerDialog> {
   late final TextEditingController controller;
+  late final String _initialUrl;
 
   @override
   void initState() {
     super.initState();
-    controller = TextEditingController(
-      text: widget.container.serverUrl.toString(),
-    );
+    _initialUrl = widget.container.serverUrl.toString();
+    controller = TextEditingController(text: _initialUrl);
+    controller.addListener(_onUrlChanged);
   }
+
+  void _onUrlChanged() => setState(() {});
 
   @override
   void dispose() {
+    controller.removeListener(_onUrlChanged);
     controller.dispose();
     super.dispose();
   }
+
+  bool get _urlChanged => controller.text != _initialUrl;
+  bool get _urlValid => Uri.tryParse(controller.text) != null;
 
   @override
   Widget build(BuildContext context) {
@@ -87,6 +94,9 @@ class _DetailsContainerDialogState
           EnableTextEditAfterManyTaps(
             labelText: AppLocalizations.of(context)!.containerSyncUrl,
             controller: controller,
+            lockedHint: widget.container is TokenContainerUnfinalized
+                ? (l) => l.containerSyncUrlNotEditable
+                : null,
           ),
           ReadOnlyTextFormField(
             labelText: AppLocalizations.of(context)!.finalizationState,
@@ -105,7 +115,7 @@ class _DetailsContainerDialogState
         DialogAction(
           label: AppLocalizations.of(context)!.saveButton,
           intent: ActionIntent.confirm,
-          onPressed: Uri.tryParse(controller.text) != null
+          onPressed: _urlChanged && _urlValid
               ? () {
                   ref
                       .read(tokenContainerProvider.notifier)

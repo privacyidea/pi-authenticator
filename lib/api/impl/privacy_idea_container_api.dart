@@ -266,27 +266,18 @@ class PiContainerApi implements TokenContainerApi {
       throw ResponseError(response);
     }
 
-    if (piResponse.isError) {
-      Logger.debug('Status code: ${response.statusCode}');
-      Logger.debug('Response body: ${response.body}');
-      final error = piResponse.asError;
-      if (error != null) throw error;
+    final result = piResponse.asSuccess!.result;
+    if (!result.status) {
+      if (result.error != null) throw result.error!;
       throw ResponseError(response);
     }
 
     ContainerFinalizationResponse finalizationResponse;
     try {
-      finalizationResponse = piResponse.asSuccess!.result.value!;
+      finalizationResponse = result.value!;
     } catch (e) {
       Logger.error('Failed to parse response', error: e);
       rethrow;
-    }
-
-    if (piResponse.isError) {
-      Logger.error(
-        'Error while getting container finalization response: ${piResponse.asError!.piServerResultError}',
-      );
-      throw piResponse.asError!.piServerResultError;
     }
 
     return finalizationResponse;
@@ -424,8 +415,18 @@ class PiContainerApi implements TokenContainerApi {
       sslVerify: container.sslVerify,
     );
     if (HttpStatusChecker.isError(challengeResponse.statusCode)) {
-      final errorResponse = challengeResponse.asPiErrorResponse();
-      if (errorResponse != null) throw errorResponse.piServerResultError;
+      PiServerResultError? piError;
+      try {
+        final piResponse = PiServerResponse.fromResponse<ContainerChallenge, EmptyResultDetail>(challengeResponse);
+        piError = piResponse.asSuccess?.result.error;
+      } catch (_) {
+        // Response body is not valid privacyIDEA JSON
+      }
+      if (piError != null) throw piError;
+      // HTTP 404 means the container no longer exists on the server
+      if (challengeResponse.statusCode == 404) {
+        throw PiServerResultError(code: 601, message: 'Container not found on server (HTTP 404)');
+      }
       throw ResponseError(challengeResponse);
     }
 

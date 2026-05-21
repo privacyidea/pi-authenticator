@@ -9,6 +9,7 @@ import 'package:privacyidea_authenticator/model/container_policies.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/enums/ec_key_algorithm.dart';
 import 'package:privacyidea_authenticator/model/enums/rollout_state.dart';
+import 'package:privacyidea_authenticator/model/exception_errors/pi_server_result_error.dart';
 import 'package:privacyidea_authenticator/model/enums/sync_state.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/token_container_state.dart';
@@ -1139,6 +1140,109 @@ void main() {
       // assert
       verify(mockContainerApi.getRolloverQrData(any)).called(1);
       expect(qrData, 'Some Random Data to be transferred');
+    });
+
+    group('finalize', () {
+      const publicClientKey =
+          "-----BEGIN PUBLIC KEY-----\n"
+          "MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE8Xs0q2PPvkIlKTcQkMxMDnv/4tH3dDqg\n"
+          "lK42aHN11oT+wJDn11cGJ5b5uuu2owfePgNDzlTwhK3Bvx2x5NBm/JWztUOaWI29\n"
+          "zdwE1yJStBySahE2CIGfKc1RfcASp5/4\n"
+          "-----END PUBLIC KEY-----";
+      const privateClientKey =
+          "-----BEGIN EC PRIVATE KEY-----\n"
+          "MIGkAgEBBDCleRofxXJwTtc0HUeE/Af8P4depFM0KY7oT4hMQdt3geK5uDWEOZn4\n"
+          "DaCMTGrsSP2gBwYFK4EEACKhZANiAATxezSrY8++QiUpNxCQzEwOe//i0fd0OqCU\n"
+          "rjZoc3XWhP7AkOfXVwYnlvm667ajB94+A0POVPCErcG/HbHk0Gb8lbO1Q5pYjb3N\n"
+          "3ATXIlK0HJJqETYIgZ8pzVF9wBKnn/g=\n"
+          "-----END EC PRIVATE KEY-----";
+
+      TokenContainerUnfinalized buildContainerWithKeyPair({
+        FinalizationState finalizationState =
+            FinalizationState.sendingPublicKeyFailed,
+      }) => TokenContainerUnfinalized(
+        issuer: 'privacyIDEA',
+        ttl: Duration(minutes: 10),
+        nonce: 'b33d3a11c8d1b45f19640035e27944ccf0b2383d',
+        timestamp: DateTime.now(),
+        serverUrl: Uri.parse('http://example.com'),
+        serial: 'SMPH00067A2F',
+        ecKeyAlgorithm: EcKeyAlgorithm.secp384r1,
+        hashAlgorithm: Algorithms.SHA256,
+        sslVerify: false,
+        publicClientKey: publicClientKey,
+        privateClientKey: privateClientKey,
+        finalizationState: finalizationState,
+      );
+
+      test('reuses existing key pair instead of generating a new one', () async {
+        final providerContainer = ProviderContainer();
+        var repoState = TokenContainerState(
+          containerList: [buildContainerWithKeyPair()],
+        );
+        final mockRepo = setupMockContainerRepo(
+          () => repoState,
+          (s) => repoState = s,
+        );
+        final mockApi = MockTokenContainerApi();
+
+        String? capturedPublicKey;
+        when(mockApi.finalizeContainer(any, any)).thenAnswer((inv) async {
+          final c = inv.positionalArguments[0] as TokenContainerUnfinalized;
+          capturedPublicKey = c.publicClientKey;
+          return containerFinalizationResponseExample;
+        });
+
+        final provider = tokenContainerProviderOf(
+          repo: mockRepo,
+          containerApi: mockApi,
+          eccUtils: EccUtils(),
+        );
+        final state = await providerContainer.read(provider.future);
+        final container = state.containerList.first as TokenContainerUnfinalized;
+
+        await providerContainer
+            .read(provider.notifier)
+            .finalize(container, isManually: true, urlIsOk: true, addDeviceInfos: false);
+
+        expect(capturedPublicKey, equals(publicClientKey));
+      });
+
+      test('returns null and sets state to failed when PiServerResultError is thrown', () async {
+        final providerContainer = ProviderContainer();
+        var repoState = TokenContainerState(
+          containerList: [buildContainerWithKeyPair()],
+        );
+        final mockRepo = setupMockContainerRepo(
+          () => repoState,
+          (s) => repoState = s,
+        );
+        final mockApi = MockTokenContainerApi();
+        when(mockApi.finalizeContainer(any, any)).thenThrow(
+          PiServerResultError(code: 3002, message: 'ERR3002: Could not verify signature!'),
+        );
+
+        final provider = tokenContainerProviderOf(
+          repo: mockRepo,
+          containerApi: mockApi,
+          eccUtils: EccUtils(),
+        );
+        final state = await providerContainer.read(provider.future);
+        final container = state.containerList.first as TokenContainerUnfinalized;
+
+        final result = await providerContainer
+            .read(provider.notifier)
+            .finalize(container, isManually: false, urlIsOk: true, addDeviceInfos: false);
+
+        expect(result, isNull);
+        final finalState = await providerContainer.read(provider.future);
+        final finalContainer =
+            finalState.containerList.first as TokenContainerUnfinalized;
+        expect(
+          finalContainer.finalizationState,
+          equals(FinalizationState.sendingPublicKeyFailed),
+        );
+      });
     });
   });
 }
