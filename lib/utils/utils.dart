@@ -241,7 +241,7 @@ Future<bool> scanQrCode({
     };
   } catch (e) {
     showErrorStatusMessage(message: (l) => l.invalidUrl);
-    Logger.warning('Scanned Data: $qrCode');
+    Logger.info('Scanned Data: $qrCode');
     return false;
   }
   final processorResults = await SchemeProcessor.processUriByAny(uri);

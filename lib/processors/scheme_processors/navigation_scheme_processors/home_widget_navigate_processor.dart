@@ -65,7 +65,7 @@ class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
         ),
       ];
     }
-    Logger.warning('HomeWidgetNavigateProcessor: Processing uri: $uri');
+    Logger.info('HomeWidgetNavigateProcessor: Processing uri: $uri');
     final processor = _processors[uri.host];
     if (processor == null) {
       Logger.warning(

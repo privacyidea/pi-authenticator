@@ -57,7 +57,7 @@ class HomeWidgetProcessor implements SchemeProcessor {
     Uri uri, {
     bool fromInit = false,
   }) async {
-    Logger.warning('HomeWidgetProcessor: Processing uri show: $uri');
+    Logger.info('HomeWidgetProcessor: Processing uri show: $uri');
     if (uri.host != 'show') {
       return [
         ProcessorResult.failed(
@@ -77,7 +77,7 @@ class HomeWidgetProcessor implements SchemeProcessor {
     Uri uri, {
     bool fromInit = false,
   }) async {
-    Logger.warning('HomeWidgetProcessor: Processing uri copy: $uri');
+    Logger.info('HomeWidgetProcessor: Processing uri copy: $uri');
     if (uri.host != 'copy') {
       return [
         ProcessorResult.failed(
@@ -97,7 +97,7 @@ class HomeWidgetProcessor implements SchemeProcessor {
     Uri uri, {
     bool fromInit = false,
   }) async {
-    Logger.warning('HomeWidgetProcessor: Processing uri action: $uri');
+    Logger.info('HomeWidgetProcessor: Processing uri action: $uri');
     if (uri.host != 'action') {
       return [
         ProcessorResult.failed(

@@ -196,7 +196,9 @@ class _StatusBarOverlayEntryState extends State<StatusBarOverlayEntry>
                         ),
                         if (widget.statusSubText != null)
                           Text(
-                            widget.statusSubText!,
+                            widget.statusSubText!.length > 200
+                                ? '${widget.statusSubText!.substring(0, 200)}...'
+                                : widget.statusSubText!,
                             style: statusSubTextStyle,
                             textAlign: TextAlign.center,
                           ),
