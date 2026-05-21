@@ -649,7 +649,12 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
     await _finalizationMutex.acquire();
     if (container is! TokenContainerUnfinalized) {
       _finalizationMutex.release();
-      throw ArgumentError('Container must not be finalized');
+      if (container is TokenContainerFinalized) {
+        Logger.info('Container is already finalized, skipping rollout: ${container.serial}');
+        return container;
+      }
+      Logger.error('Unexpected container type for rollout: ${container.runtimeType}');
+      return null;
     }
     urlIsOk ??=
         ((await ContainerShowContainerUrlDialog.showDialog(container)) == true);
