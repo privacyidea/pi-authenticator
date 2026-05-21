@@ -410,6 +410,9 @@
   "@errorMissingPublicKey": {
     "description": "Error message when the public key is missing."
   },
+  "@errorReplaceNotAllowed": {
+    "description": "Error message when replacing a container is not allowed."
+  },
   "@errorRollOutFailed": {
     "description": "Tells the user that the token could not be rolled out, because a network error occurred.",
     "placeholders": {
@@ -1806,6 +1809,7 @@
   "errorMailBody": "The error log file is attached.\nYou can replace this text with additional information about the error.",
   "errorMissingPrivateKey": "Private key is missing",
   "errorMissingPublicKey": "Public key is missing",
+  "errorReplaceNotAllowed": "Replacing this container is not allowed.",
   "errorRollOutFailed": "Rolling out token {name} failed.",
   "errorRollOutNoConnectionToServer": "Rolling out token {name} failed, the server could not be reached.",
   "errorRollOutNotPossibleAnymore": "Rolling out this Token is not possible anymore.",

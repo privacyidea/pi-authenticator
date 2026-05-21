@@ -588,13 +588,34 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
     Logger.info('Handling processor results: adding Container');
     final replaceContainers = <TokenContainerUnfinalized>[];
     if (existingContainers.isNotEmpty) {
-      replaceContainers.addAll(switch (doReplace) {
-        true => existingContainers,
-        false => [],
-        null =>
-          await ContainerAlreadyExistsDialog.showDialog(existingContainers) ??
-              [],
-      });
+      List<TokenContainerUnfinalized> replaceableExisting;
+      if (doReplace == true) {
+        replaceableExisting = existingContainers;
+      } else {
+        replaceableExisting = [];
+        for (final newContainer in existingContainers) {
+          final stateContainer = stateContainers.firstWhereOrNull(
+            (c) => c.serial == newContainer.serial,
+          );
+          if (stateContainer is TokenContainerFinalized &&
+              stateContainer.policies.disabledUnregister) {
+            showErrorStatusMessage(message: (l) => l.errorReplaceNotAllowed);
+          } else {
+            replaceableExisting.add(newContainer);
+          }
+        }
+      }
+      if (replaceableExisting.isNotEmpty) {
+        replaceContainers.addAll(switch (doReplace) {
+          true => replaceableExisting,
+          false => [],
+          null =>
+            await ContainerAlreadyExistsDialog.showDialog(
+                  replaceableExisting,
+                ) ??
+                [],
+        });
+      }
     }
 
     if (replaceContainers.isNotEmpty) {
@@ -650,10 +671,14 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
     if (container is! TokenContainerUnfinalized) {
       _finalizationMutex.release();
       if (container is TokenContainerFinalized) {
-        Logger.info('Container is already finalized, skipping rollout: ${container.serial}');
+        Logger.info(
+          'Container is already finalized, skipping rollout: ${container.serial}',
+        );
         return container;
       }
-      Logger.error('Unexpected container type for rollout: ${container.runtimeType}');
+      Logger.error(
+        'Unexpected container type for rollout: ${container.runtimeType}',
+      );
       return null;
     }
     urlIsOk ??=
@@ -884,6 +909,13 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
         contentOverride: AppLocalizations.of(
           context,
         )!.syncContainerNotFoundDialogContent,
+      );
+    } else {
+      if (!isManually) return;
+      showErrorStatusMessage(
+        message: (localization) =>
+            localization.failedToSyncContainer(container.serial),
+        details: (_) => error.message,
       );
     }
   }

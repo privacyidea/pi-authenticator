@@ -127,10 +127,13 @@ sealed class PiServerResponse<
     late final Map<String, dynamic> json;
     try {
       json = jsonDecode(response.body);
-    } catch (e) {
-      throw FormatException(
-        'Failed to parse response body as JSON: ${response.body}',
-        e,
+    } catch (_) {
+      return PiServerResponse.error(
+        statusCode: response.statusCode,
+        piServerResultError: PiServerResultError(
+          code: response.statusCode,
+          message: response.body,
+        ),
       );
     }
 
