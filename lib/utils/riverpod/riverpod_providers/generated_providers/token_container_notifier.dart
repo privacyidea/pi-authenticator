@@ -30,6 +30,7 @@ import 'package:privacyidea_authenticator/views/container_view/container_widgets
 import 'package:privacyidea_authenticator/widgets/dialog_widgets/container_dialogs/container_rollout_dialog.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../../../../../model/exception_errors/error_codes.dart';
 import '../../../../../../../model/exception_errors/pi_server_result_error.dart';
 import '../../../../../../../model/processor_result.dart';
 import '../../../../../../../model/tokens/token.dart';
@@ -40,6 +41,7 @@ import '../../../../api/impl/privacy_idea_container_api.dart';
 import '../../../../api/interfaces/container_api.dart';
 import '../../../../interfaces/repo/token_container_repository.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../model/extensions/app_localizations_extension.dart';
 import '../../../../model/api_results/pi_server_results/pi_server_result_value.dart';
 import '../../../../model/enums/rollout_state.dart';
 import '../../../../model/enums/sync_state.dart';
@@ -365,7 +367,10 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
     final currentContainer = (await future).currentOf<TokenContainerFinalized>(
       container,
     );
-    if (currentContainer == null) throw StateError('Container was removed');
+    if (currentContainer == null)
+      throw StateError(
+        '[${InAppErrorCodes.containerWasRemoved}] Container was removed',
+      );
     final qrCodeData = await _containerApi.getRolloverQrData(currentContainer);
     return qrCodeData.value;
   }
@@ -499,10 +504,10 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
     try {
       if (!(await _containerApi.unregister(container)).success) return false;
     } on PiServerResultError catch (e) {
-      if (e.code == PiServerResultErrorCodes.containerNotFound ||
+      if (e.code == PiServerResultErrorCodes.resourceNotFound ||
           e.code == PiServerResultErrorCodes.containerNotRegistered) {
         // Server confirmed the container doesn't exist — proceed with local deletion.
-      } else if (e.code != PiServerResultErrorCodes.couldNotVerifySignature) {
+      } else if (e.code != PiServerResultErrorCodes.containerInvalidChallenge) {
         showErrorStatusMessage(
           message: (localization) =>
               localization.piServerCode(e.code.toString()),
@@ -511,13 +516,13 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
         return false;
       }
     } on ResponseError catch (e) {
-      if (e.statusCode == 520 && e.message != "Unknown Error") {
+      if (e.statusCode == HttpStatusCodes.webServerReturnedUnknownError &&
+          e.message != "Unknown Error") {
         showErrorStatusMessage(message: (localization) => e.toString());
         return false;
       } else {
         showErrorStatusMessage(
-          message: (localization) =>
-              localization.httpStatus(e.statusCode.toString()),
+          message: (localization) => localization.httpStatusFor(e.statusCode),
         );
       }
       return false;
@@ -812,7 +817,10 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
     TokenContainer container,
   ) async {
     final current = (await future).currentOf(container);
-    if (current == null) throw StateError('Container was removed');
+    if (current == null)
+      throw StateError(
+        '[${InAppErrorCodes.containerWasRemoved}] Container was removed',
+      );
     if (current is! T) throw StateError('Container is not of type $T');
     return current;
   }
@@ -840,7 +848,10 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
             finalizationState: FinalizationState.generatingKeyPair,
           ),
         );
-    if (container == null) throw StateError('Container was removed');
+    if (container == null)
+      throw StateError(
+        '[${InAppErrorCodes.containerWasRemoved}] Container was removed',
+      );
     if (container.clientKeyPair != null) return container;
     final keyPair = eccUtils.generateKeyPair(container.ecKeyAlgorithm);
     container =
@@ -851,7 +862,10 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
           container,
           (c) => c.withClientKeyPair(keyPair) as TokenContainerUnfinalized,
         );
-    if (container == null) throw StateError('Container was removed');
+    if (container == null)
+      throw StateError(
+        '[${InAppErrorCodes.containerWasRemoved}] Container was removed',
+      );
     return container;
   }
 
@@ -878,7 +892,10 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
       (TokenContainerUnfinalized c) =>
           c.copyWith(finalizationState: FinalizationState.sendingPublicKey),
     );
-    if (container == null) throw StateError('Container was removed');
+    if (container == null)
+      throw StateError(
+        '[${InAppErrorCodes.containerWasRemoved}] Container was removed',
+      );
     try {
       response = (await _containerApi.finalizeContainer(container, eccUtils));
     } on ResponseError catch (e) {
@@ -895,6 +912,10 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
         finalizationState: FinalizationState.sendingPublicKeyCompleted,
       ),
     );
+    if (container == null)
+      throw StateError(
+        '[${InAppErrorCodes.containerWasRemoved}] Container was removed',
+      );
     return response;
   }
 
@@ -914,14 +935,20 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
         finalizationState: FinalizationState.sendingPublicKeyCompleted,
       ),
     );
-    if (container == null) throw StateError('Container was removed');
+    if (container == null)
+      throw StateError(
+        '[${InAppErrorCodes.containerWasRemoved}] Container was removed',
+      );
 
     container = await updateContainer(
       container,
       (TokenContainerUnfinalized c) =>
           c.copyWith(finalizationState: FinalizationState.parsingResponse),
     );
-    if (container == null) throw StateError('Container was removed');
+    if (container == null)
+      throw StateError(
+        '[${InAppErrorCodes.containerWasRemoved}] Container was removed',
+      );
 
     // final signature = finalizationResponse.signature;
     final finalizedContainer = await updateContainer(
@@ -929,7 +956,10 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
       (TokenContainerUnfinalized c) =>
           c.copyWith(policies: response.policies).finalize()!,
     );
-    if (finalizedContainer == null) throw StateError('Container was removed');
+    if (finalizedContainer == null)
+      throw StateError(
+        '[${InAppErrorCodes.containerWasRemoved}] Container was removed',
+      );
     return finalizedContainer;
   }
 
@@ -938,7 +968,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
     TokenContainerFinalized container,
     bool isManually,
   ) async {
-    if (error.code == PiServerResultErrorCodes.containerNotFound ||
+    if (error.code == PiServerResultErrorCodes.resourceNotFound ||
         error.code == PiServerResultErrorCodes.containerNotRegistered) {
       // Server no longer has this container — clear disabledUnregister so the
       // delete button is enabled even if the server policy previously blocked it.
@@ -966,14 +996,4 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
       );
     }
   }
-}
-
-class PiServerResultErrorCodes {
-  // Unable to find container with serial {serial}.
-  static const containerNotFound = 601;
-
-  // Container is not registered.
-  static const containerNotRegistered = 3001;
-
-  static const couldNotVerifySignature = 3002;
 }

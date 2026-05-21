@@ -10,9 +10,10 @@ import 'package:privacyidea_authenticator/model/container_policies.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/enums/ec_key_algorithm.dart';
 import 'package:privacyidea_authenticator/model/enums/rollout_state.dart';
+import 'package:privacyidea_authenticator/model/enums/sync_state.dart';
+import 'package:privacyidea_authenticator/model/exception_errors/error_codes.dart';
 import 'package:privacyidea_authenticator/model/exception_errors/pi_server_result_error.dart';
 import 'package:privacyidea_authenticator/model/exception_errors/response_error.dart';
-import 'package:privacyidea_authenticator/model/enums/sync_state.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/token_container_state.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/token_state.dart';
@@ -35,7 +36,7 @@ void main() {
         issuer: 'issuer',
         ttl: Duration(minutes: 10),
         nonce: 'nonce',
-        timestamp: DateTime.now(),
+        timestamp: DateTime.parse('2024-11-14 09:30:18.288530Z'),
         serverUrl: Uri.parse('https://example.com'),
         serial: 'serial',
         ecKeyAlgorithm: EcKeyAlgorithm.secp521r1,
@@ -1133,7 +1134,10 @@ void main() {
         required void Function(TokenContainerState) stateSetter,
         required MockTokenContainerApi mockContainerApi,
       }) async {
-        final mockContainerRepo = setupMockContainerRepo(stateGetter, stateSetter);
+        final mockContainerRepo = setupMockContainerRepo(
+          stateGetter,
+          stateSetter,
+        );
         final mockTokenContainerProvider = TokenContainerNotifier(
           repoOverride: mockContainerRepo,
           containerApiOverride: mockContainerApi,
@@ -1141,11 +1145,15 @@ void main() {
         );
         final mockTokenRepo = MockTokenRepository();
         when(mockTokenRepo.loadTokens()).thenAnswer((_) => Future.value([]));
-        when(mockTokenRepo.saveOrReplaceTokens(any)).thenAnswer((_) => Future.value([]));
+        when(
+          mockTokenRepo.saveOrReplaceTokens(any),
+        ).thenAnswer((_) => Future.value([]));
         final mockTokenNotifier = TokenNotifier(repoOverride: mockTokenRepo);
         final providerContainer = ProviderContainer(
           overrides: [
-            tokenContainerProvider.overrideWith(() => mockTokenContainerProvider),
+            tokenContainerProvider.overrideWith(
+              () => mockTokenContainerProvider,
+            ),
             tokenProvider.overrideWith(() => mockTokenNotifier),
           ],
         );
@@ -1153,157 +1161,194 @@ void main() {
         return providerContainer;
       }
 
-      test('returns true and deletes container when unregister succeeds', () async {
-        TestWidgetsFlutterBinding.ensureInitialized();
-        var repoState = buildFinalizedContainerState();
-        final container = repoState.containerList.first as TokenContainerFinalized;
-        final mockApi = MockTokenContainerApi();
-        when(mockApi.unregister(any)).thenAnswer(
-          (_) async => UnregisterContainerResult(success: true),
-        );
-        final providerContainer = await setupContainer(
-          stateGetter: () => repoState,
-          stateSetter: (s) => repoState = s,
-          mockContainerApi: mockApi,
-        );
+      test(
+        'returns true and deletes container when unregister succeeds',
+        () async {
+          TestWidgetsFlutterBinding.ensureInitialized();
+          var repoState = buildFinalizedContainerState();
+          final container =
+              repoState.containerList.first as TokenContainerFinalized;
+          final mockApi = MockTokenContainerApi();
+          when(
+            mockApi.unregister(any),
+          ).thenAnswer((_) async => UnregisterContainerResult(success: true));
+          final providerContainer = await setupContainer(
+            stateGetter: () => repoState,
+            stateSetter: (s) => repoState = s,
+            mockContainerApi: mockApi,
+          );
 
-        final result = await providerContainer
-            .read(tokenContainerProvider.notifier)
-            .unregisterDelete(container);
+          final result = await providerContainer
+              .read(tokenContainerProvider.notifier)
+              .unregisterDelete(container);
 
-        expect(result, isTrue);
-        final state = await providerContainer.read(tokenContainerProvider.future);
-        expect(state.containerList, isEmpty);
-      });
+          expect(result, isTrue);
+          final state = await providerContainer.read(
+            tokenContainerProvider.future,
+          );
+          expect(state.containerList, isEmpty);
+        },
+      );
 
-      test('returns false and keeps container when unregister returns success: false', () async {
-        TestWidgetsFlutterBinding.ensureInitialized();
-        var repoState = buildFinalizedContainerState();
-        final container = repoState.containerList.first as TokenContainerFinalized;
-        final mockApi = MockTokenContainerApi();
-        when(mockApi.unregister(any)).thenAnswer(
-          (_) async => UnregisterContainerResult(success: false),
-        );
-        final providerContainer = await setupContainer(
-          stateGetter: () => repoState,
-          stateSetter: (s) => repoState = s,
-          mockContainerApi: mockApi,
-        );
+      test(
+        'returns false and keeps container when unregister returns success: false',
+        () async {
+          TestWidgetsFlutterBinding.ensureInitialized();
+          var repoState = buildFinalizedContainerState();
+          final container =
+              repoState.containerList.first as TokenContainerFinalized;
+          final mockApi = MockTokenContainerApi();
+          when(
+            mockApi.unregister(any),
+          ).thenAnswer((_) async => UnregisterContainerResult(success: false));
+          final providerContainer = await setupContainer(
+            stateGetter: () => repoState,
+            stateSetter: (s) => repoState = s,
+            mockContainerApi: mockApi,
+          );
 
-        final result = await providerContainer
-            .read(tokenContainerProvider.notifier)
-            .unregisterDelete(container);
+          final result = await providerContainer
+              .read(tokenContainerProvider.notifier)
+              .unregisterDelete(container);
 
-        expect(result, isFalse);
-        final state = await providerContainer.read(tokenContainerProvider.future);
-        expect(state.containerList.length, equals(1));
-      });
+          expect(result, isFalse);
+          final state = await providerContainer.read(
+            tokenContainerProvider.future,
+          );
+          expect(state.containerList.length, equals(1));
+        },
+      );
 
-      test('returns true and deletes locally when server returns containerNotFound (601)', () async {
-        TestWidgetsFlutterBinding.ensureInitialized();
-        var repoState = buildFinalizedContainerState();
-        final container = repoState.containerList.first as TokenContainerFinalized;
-        final mockApi = MockTokenContainerApi();
-        when(mockApi.unregister(any)).thenThrow(
-          PiServerResultError(
-            code: PiServerResultErrorCodes.containerNotFound,
-            message: 'Not found',
-          ),
-        );
-        final providerContainer = await setupContainer(
-          stateGetter: () => repoState,
-          stateSetter: (s) => repoState = s,
-          mockContainerApi: mockApi,
-        );
+      test(
+        'returns true and deletes locally when server returns containerNotFound (601)',
+        () async {
+          TestWidgetsFlutterBinding.ensureInitialized();
+          var repoState = buildFinalizedContainerState();
+          final container =
+              repoState.containerList.first as TokenContainerFinalized;
+          final mockApi = MockTokenContainerApi();
+          when(mockApi.unregister(any)).thenThrow(
+            PiServerResultError(
+              code: PiServerResultErrorCodes.resourceNotFound,
+              message: 'Not found',
+            ),
+          );
+          final providerContainer = await setupContainer(
+            stateGetter: () => repoState,
+            stateSetter: (s) => repoState = s,
+            mockContainerApi: mockApi,
+          );
 
-        final result = await providerContainer
-            .read(tokenContainerProvider.notifier)
-            .unregisterDelete(container);
+          final result = await providerContainer
+              .read(tokenContainerProvider.notifier)
+              .unregisterDelete(container);
 
-        expect(result, isTrue);
-        final state = await providerContainer.read(tokenContainerProvider.future);
-        expect(state.containerList, isEmpty);
-      });
+          expect(result, isTrue);
+          final state = await providerContainer.read(
+            tokenContainerProvider.future,
+          );
+          expect(state.containerList, isEmpty);
+        },
+      );
 
-      test('returns true and deletes locally when server returns containerNotRegistered (3001)', () async {
-        TestWidgetsFlutterBinding.ensureInitialized();
-        var repoState = buildFinalizedContainerState();
-        final container = repoState.containerList.first as TokenContainerFinalized;
-        final mockApi = MockTokenContainerApi();
-        when(mockApi.unregister(any)).thenThrow(
-          PiServerResultError(
-            code: PiServerResultErrorCodes.containerNotRegistered,
-            message: 'Not registered',
-          ),
-        );
-        final providerContainer = await setupContainer(
-          stateGetter: () => repoState,
-          stateSetter: (s) => repoState = s,
-          mockContainerApi: mockApi,
-        );
+      test(
+        'returns true and deletes locally when server returns containerNotRegistered (3001)',
+        () async {
+          TestWidgetsFlutterBinding.ensureInitialized();
+          var repoState = buildFinalizedContainerState();
+          final container =
+              repoState.containerList.first as TokenContainerFinalized;
+          final mockApi = MockTokenContainerApi();
+          when(mockApi.unregister(any)).thenThrow(
+            PiServerResultError(
+              code: PiServerResultErrorCodes.containerNotRegistered,
+              message: 'Not registered',
+            ),
+          );
+          final providerContainer = await setupContainer(
+            stateGetter: () => repoState,
+            stateSetter: (s) => repoState = s,
+            mockContainerApi: mockApi,
+          );
 
-        final result = await providerContainer
-            .read(tokenContainerProvider.notifier)
-            .unregisterDelete(container);
+          final result = await providerContainer
+              .read(tokenContainerProvider.notifier)
+              .unregisterDelete(container);
 
-        expect(result, isTrue);
-        final state = await providerContainer.read(tokenContainerProvider.future);
-        expect(state.containerList, isEmpty);
-      });
+          expect(result, isTrue);
+          final state = await providerContainer.read(
+            tokenContainerProvider.future,
+          );
+          expect(state.containerList, isEmpty);
+        },
+      );
 
-      test('returns true and deletes locally when server returns couldNotVerifySignature (3002)', () async {
-        TestWidgetsFlutterBinding.ensureInitialized();
-        var repoState = buildFinalizedContainerState();
-        final container = repoState.containerList.first as TokenContainerFinalized;
-        final mockApi = MockTokenContainerApi();
-        when(mockApi.unregister(any)).thenThrow(
-          PiServerResultError(
-            code: PiServerResultErrorCodes.couldNotVerifySignature,
-            message: 'Signature error',
-          ),
-        );
-        final providerContainer = await setupContainer(
-          stateGetter: () => repoState,
-          stateSetter: (s) => repoState = s,
-          mockContainerApi: mockApi,
-        );
+      test(
+        'returns true and deletes locally when server returns containerInvalidChallenge (3002)',
+        () async {
+          TestWidgetsFlutterBinding.ensureInitialized();
+          var repoState = buildFinalizedContainerState();
+          final container =
+              repoState.containerList.first as TokenContainerFinalized;
+          final mockApi = MockTokenContainerApi();
+          when(mockApi.unregister(any)).thenThrow(
+            PiServerResultError(
+              code: PiServerResultErrorCodes.containerInvalidChallenge,
+              message: 'Signature error',
+            ),
+          );
+          final providerContainer = await setupContainer(
+            stateGetter: () => repoState,
+            stateSetter: (s) => repoState = s,
+            mockContainerApi: mockApi,
+          );
 
-        final result = await providerContainer
-            .read(tokenContainerProvider.notifier)
-            .unregisterDelete(container);
+          final result = await providerContainer
+              .read(tokenContainerProvider.notifier)
+              .unregisterDelete(container);
 
-        expect(result, isTrue);
-        final state = await providerContainer.read(tokenContainerProvider.future);
-        expect(state.containerList, isEmpty);
-      });
+          expect(result, isTrue);
+          final state = await providerContainer.read(
+            tokenContainerProvider.future,
+          );
+          expect(state.containerList, isEmpty);
+        },
+      );
 
-      test('returns false when server returns unhandled PiServerResultError code', () async {
-        TestWidgetsFlutterBinding.ensureInitialized();
-        var repoState = buildFinalizedContainerState();
-        final container = repoState.containerList.first as TokenContainerFinalized;
-        final mockApi = MockTokenContainerApi();
-        when(mockApi.unregister(any)).thenThrow(
-          PiServerResultError(code: 999, message: 'Some other server error'),
-        );
-        final providerContainer = await setupContainer(
-          stateGetter: () => repoState,
-          stateSetter: (s) => repoState = s,
-          mockContainerApi: mockApi,
-        );
+      test(
+        'returns false when server returns unhandled PiServerResultError code',
+        () async {
+          TestWidgetsFlutterBinding.ensureInitialized();
+          var repoState = buildFinalizedContainerState();
+          final container =
+              repoState.containerList.first as TokenContainerFinalized;
+          final mockApi = MockTokenContainerApi();
+          when(mockApi.unregister(any)).thenThrow(
+            PiServerResultError(code: 999, message: 'Some other server error'),
+          );
+          final providerContainer = await setupContainer(
+            stateGetter: () => repoState,
+            stateSetter: (s) => repoState = s,
+            mockContainerApi: mockApi,
+          );
 
-        final result = await providerContainer
-            .read(tokenContainerProvider.notifier)
-            .unregisterDelete(container);
+          final result = await providerContainer
+              .read(tokenContainerProvider.notifier)
+              .unregisterDelete(container);
 
-        expect(result, isFalse);
-        final state = await providerContainer.read(tokenContainerProvider.future);
-        expect(state.containerList.length, equals(1));
-      });
+          expect(result, isFalse);
+          final state = await providerContainer.read(
+            tokenContainerProvider.future,
+          );
+          expect(state.containerList.length, equals(1));
+        },
+      );
 
       test('returns false when server throws ResponseError', () async {
         TestWidgetsFlutterBinding.ensureInitialized();
         var repoState = buildFinalizedContainerState();
-        final container = repoState.containerList.first as TokenContainerFinalized;
+        final container =
+            repoState.containerList.first as TokenContainerFinalized;
         final mockApi = MockTokenContainerApi();
         when(mockApi.unregister(any)).thenThrow(
           ResponseError(http.Response('<title>404 Not Found</title>', 404)),
@@ -1319,115 +1364,132 @@ void main() {
             .unregisterDelete(container);
 
         expect(result, isFalse);
-        final state = await providerContainer.read(tokenContainerProvider.future);
+        final state = await providerContainer.read(
+          tokenContainerProvider.future,
+        );
         expect(state.containerList.length, equals(1));
       });
     });
 
-    test('build resets syncing containers to failed state on startup', () async {
-      TestWidgetsFlutterBinding.ensureInitialized();
-      final syncingContainer = TokenContainerFinalized(
-        issuer: 'privacyIDEA',
-        nonce: 'nonce',
-        timestamp: DateTime.now(),
-        serverUrl: Uri.parse('https://example.com'),
-        serial: 'SYNC01',
-        ecKeyAlgorithm: EcKeyAlgorithm.secp384r1,
-        hashAlgorithm: Algorithms.SHA256,
-        sslVerify: false,
-        publicClientKey: 'publicClientKey',
-        privateClientKey: 'privateClientKey',
-        syncState: SyncState.syncing,
-        policies: ContainerPolicies(
-          rolloverAllowed: false,
-          initialTokenAssignment: false,
-          disabledTokenDeletion: false,
-          disabledUnregister: false,
-        ),
-      );
-      var repoState = TokenContainerState(containerList: [syncingContainer]);
-      final mockContainerRepo = setupMockContainerRepo(
-        () => repoState,
-        (s) => repoState = s,
-      );
-      final mockContainerApi = MockTokenContainerApi();
-      final provider = tokenContainerProviderOf(
-        repo: mockContainerRepo,
-        containerApi: mockContainerApi,
-        eccUtils: EccUtils(),
-      );
-      final providerContainer = ProviderContainer();
-      final state = await providerContainer.read(provider.future);
+    test(
+      'build resets syncing containers to failed state on startup',
+      () async {
+        TestWidgetsFlutterBinding.ensureInitialized();
+        final syncingContainer = TokenContainerFinalized(
+          issuer: 'privacyIDEA',
+          nonce: 'nonce',
+          timestamp: DateTime.now(),
+          serverUrl: Uri.parse('https://example.com'),
+          serial: 'SYNC01',
+          ecKeyAlgorithm: EcKeyAlgorithm.secp384r1,
+          hashAlgorithm: Algorithms.SHA256,
+          sslVerify: false,
+          publicClientKey: 'publicClientKey',
+          privateClientKey: 'privateClientKey',
+          syncState: SyncState.syncing,
+          policies: ContainerPolicies(
+            rolloverAllowed: false,
+            initialTokenAssignment: false,
+            disabledTokenDeletion: false,
+            disabledUnregister: false,
+          ),
+        );
+        var repoState = TokenContainerState(containerList: [syncingContainer]);
+        final mockContainerRepo = setupMockContainerRepo(
+          () => repoState,
+          (s) => repoState = s,
+        );
+        final mockContainerApi = MockTokenContainerApi();
+        final provider = tokenContainerProviderOf(
+          repo: mockContainerRepo,
+          containerApi: mockContainerApi,
+          eccUtils: EccUtils(),
+        );
+        final providerContainer = ProviderContainer();
+        final state = await providerContainer.read(provider.future);
 
-      expect(state.containerList.first, isA<TokenContainerFinalized>());
-      expect(
-        (state.containerList.first as TokenContainerFinalized).syncState,
-        equals(SyncState.failed),
-      );
-    });
+        expect(state.containerList.first, isA<TokenContainerFinalized>());
+        expect(
+          (state.containerList.first as TokenContainerFinalized).syncState,
+          equals(SyncState.failed),
+        );
+      },
+    );
 
-    test('handleProcessorResults does not replace container when disabledUnregister is true', () async {
-      TestWidgetsFlutterBinding.ensureInitialized();
-      await GmsCheck().checkGmsAvailability();
-      // buildFinalizedContainerState() returns a container with serial "CONTAINER01" and disabledUnregister: true
-      var repoState = buildFinalizedContainerState();
-      final originalNonce = (repoState.containerList.first as TokenContainerFinalized).nonce;
-      final mockContainerRepo = setupMockContainerRepo(
-        () => repoState,
-        (s) => repoState = s,
-      );
-      final mockContainerApi = MockTokenContainerApi();
-      final mockTokenContainerProvider = TokenContainerNotifier(
-        repoOverride: mockContainerRepo,
-        containerApiOverride: mockContainerApi,
-        eccUtilsOverride: EccUtils(),
-      );
-      final mockTokenRepo = MockTokenRepository();
-      when(mockTokenRepo.loadTokens()).thenAnswer((_) => Future.value([]));
-      when(mockTokenRepo.saveOrReplaceTokens(any)).thenAnswer((_) => Future.value([]));
-      final mockTokenNotifier = TokenNotifier(repoOverride: mockTokenRepo);
-      final providerContainer = ProviderContainer(
-        overrides: [
-          tokenContainerProvider.overrideWith(() => mockTokenContainerProvider),
-          tokenProvider.overrideWith(() => mockTokenNotifier),
-        ],
-      );
-      await providerContainer.read(tokenContainerProvider.future);
+    test(
+      'handleProcessorResults does not replace container when disabledUnregister is true',
+      () async {
+        TestWidgetsFlutterBinding.ensureInitialized();
+        await GmsCheck().checkGmsAvailability();
+        // buildFinalizedContainerState() returns a container with serial "CONTAINER01" and disabledUnregister: true
+        var repoState = buildFinalizedContainerState();
+        final originalNonce =
+            (repoState.containerList.first as TokenContainerFinalized).nonce;
+        final mockContainerRepo = setupMockContainerRepo(
+          () => repoState,
+          (s) => repoState = s,
+        );
+        final mockContainerApi = MockTokenContainerApi();
+        final mockTokenContainerProvider = TokenContainerNotifier(
+          repoOverride: mockContainerRepo,
+          containerApiOverride: mockContainerApi,
+          eccUtilsOverride: EccUtils(),
+        );
+        final mockTokenRepo = MockTokenRepository();
+        when(mockTokenRepo.loadTokens()).thenAnswer((_) => Future.value([]));
+        when(
+          mockTokenRepo.saveOrReplaceTokens(any),
+        ).thenAnswer((_) => Future.value([]));
+        final mockTokenNotifier = TokenNotifier(repoOverride: mockTokenRepo);
+        final providerContainer = ProviderContainer(
+          overrides: [
+            tokenContainerProvider.overrideWith(
+              () => mockTokenContainerProvider,
+            ),
+            tokenProvider.overrideWith(() => mockTokenNotifier),
+          ],
+        );
+        await providerContainer.read(tokenContainerProvider.future);
 
-      final timeStamp = DateTime.now();
-      final Uri uri = Uri.parse(
-        'pia://container/CONTAINER01?'
-        'issuer=privacyIDEA&'
-        'ttl=10&'
-        'nonce=newNonce123&'
-        'time=$timeStamp&'
-        'url=http://example.com/&'
-        'serial=CONTAINER01&'
-        'key_algorithm=secp384r1&'
-        'hash_algorithm=SHA256&'
-        'ssl_verify=True&'
-        'passphrase=',
-      );
-      final processorResults = await TokenContainerProcessor().processUri(uri);
-      expect(processorResults, isNotNull);
+        final timeStamp = DateTime.now();
+        final Uri uri = Uri.parse(
+          'pia://container/CONTAINER01?'
+          'issuer=privacyIDEA&'
+          'ttl=10&'
+          'nonce=newNonce123&'
+          'time=$timeStamp&'
+          'url=http://example.com/&'
+          'serial=CONTAINER01&'
+          'key_algorithm=secp384r1&'
+          'hash_algorithm=SHA256&'
+          'ssl_verify=True&'
+          'passphrase=',
+        );
+        final processorResults = await TokenContainerProcessor().processUri(
+          uri,
+        );
+        expect(processorResults, isNotNull);
 
-      await providerContainer
-          .read(tokenContainerProvider.notifier)
-          .handleProcessorResult(
-            processorResults!.first,
-            args: {
-              // doReplace not set (null) → would show dialog, but disabledUnregister
-              // prevents container from being in replaceableExisting, so dialog is never shown
-              TokenContainerProcessor.ARG_INIT_SYNC: false,
-              TokenContainerProcessor.ARG_URL_IS_OK: true,
-            },
-          );
+        await providerContainer
+            .read(tokenContainerProvider.notifier)
+            .handleProcessorResult(
+              processorResults!.first,
+              args: {
+                // doReplace not set (null) → would show dialog, but disabledUnregister
+                // prevents container from being in replaceableExisting, so dialog is never shown
+                TokenContainerProcessor.ARG_INIT_SYNC: false,
+                TokenContainerProcessor.ARG_URL_IS_OK: true,
+              },
+            );
 
-      final state = await providerContainer.read(tokenContainerProvider.future);
-      expect(state.containerList.length, equals(1));
-      final existing = state.containerList.first as TokenContainerFinalized;
-      expect(existing.nonce, equals(originalNonce));
-    });
+        final state = await providerContainer.read(
+          tokenContainerProvider.future,
+        );
+        expect(state.containerList.length, equals(1));
+        final existing = state.containerList.first as TokenContainerFinalized;
+        expect(existing.nonce, equals(originalNonce));
+      },
+    );
 
     group('finalize', () {
       const publicClientKey =
@@ -1462,74 +1524,95 @@ void main() {
         finalizationState: finalizationState,
       );
 
-      test('reuses existing key pair instead of generating a new one', () async {
-        final providerContainer = ProviderContainer();
-        var repoState = TokenContainerState(
-          containerList: [buildContainerWithKeyPair()],
-        );
-        final mockRepo = setupMockContainerRepo(
-          () => repoState,
-          (s) => repoState = s,
-        );
-        final mockApi = MockTokenContainerApi();
+      test(
+        'reuses existing key pair instead of generating a new one',
+        () async {
+          final providerContainer = ProviderContainer();
+          var repoState = TokenContainerState(
+            containerList: [buildContainerWithKeyPair()],
+          );
+          final mockRepo = setupMockContainerRepo(
+            () => repoState,
+            (s) => repoState = s,
+          );
+          final mockApi = MockTokenContainerApi();
 
-        String? capturedPublicKey;
-        when(mockApi.finalizeContainer(any, any)).thenAnswer((inv) async {
-          final c = inv.positionalArguments[0] as TokenContainerUnfinalized;
-          capturedPublicKey = c.publicClientKey;
-          return containerFinalizationResponseExample;
-        });
+          String? capturedPublicKey;
+          when(mockApi.finalizeContainer(any, any)).thenAnswer((inv) async {
+            final c = inv.positionalArguments[0] as TokenContainerUnfinalized;
+            capturedPublicKey = c.publicClientKey;
+            return containerFinalizationResponseExample;
+          });
 
-        final provider = tokenContainerProviderOf(
-          repo: mockRepo,
-          containerApi: mockApi,
-          eccUtils: EccUtils(),
-        );
-        final state = await providerContainer.read(provider.future);
-        final container = state.containerList.first as TokenContainerUnfinalized;
+          final provider = tokenContainerProviderOf(
+            repo: mockRepo,
+            containerApi: mockApi,
+            eccUtils: EccUtils(),
+          );
+          final state = await providerContainer.read(provider.future);
+          final container =
+              state.containerList.first as TokenContainerUnfinalized;
 
-        await providerContainer
-            .read(provider.notifier)
-            .finalize(container, isManually: true, urlIsOk: true, addDeviceInfos: false);
+          await providerContainer
+              .read(provider.notifier)
+              .finalize(
+                container,
+                isManually: true,
+                urlIsOk: true,
+                addDeviceInfos: false,
+              );
 
-        expect(capturedPublicKey, equals(publicClientKey));
-      });
+          expect(capturedPublicKey, equals(publicClientKey));
+        },
+      );
 
-      test('returns null and sets state to failed when PiServerResultError is thrown', () async {
-        final providerContainer = ProviderContainer();
-        var repoState = TokenContainerState(
-          containerList: [buildContainerWithKeyPair()],
-        );
-        final mockRepo = setupMockContainerRepo(
-          () => repoState,
-          (s) => repoState = s,
-        );
-        final mockApi = MockTokenContainerApi();
-        when(mockApi.finalizeContainer(any, any)).thenThrow(
-          PiServerResultError(code: 3002, message: 'ERR3002: Could not verify signature!'),
-        );
+      test(
+        'returns null and sets state to failed when PiServerResultError is thrown',
+        () async {
+          final providerContainer = ProviderContainer();
+          var repoState = TokenContainerState(
+            containerList: [buildContainerWithKeyPair()],
+          );
+          final mockRepo = setupMockContainerRepo(
+            () => repoState,
+            (s) => repoState = s,
+          );
+          final mockApi = MockTokenContainerApi();
+          when(mockApi.finalizeContainer(any, any)).thenThrow(
+            PiServerResultError(
+              code: 3002,
+              message: 'ERR3002: Could not verify signature!',
+            ),
+          );
 
-        final provider = tokenContainerProviderOf(
-          repo: mockRepo,
-          containerApi: mockApi,
-          eccUtils: EccUtils(),
-        );
-        final state = await providerContainer.read(provider.future);
-        final container = state.containerList.first as TokenContainerUnfinalized;
+          final provider = tokenContainerProviderOf(
+            repo: mockRepo,
+            containerApi: mockApi,
+            eccUtils: EccUtils(),
+          );
+          final state = await providerContainer.read(provider.future);
+          final container =
+              state.containerList.first as TokenContainerUnfinalized;
 
-        final result = await providerContainer
-            .read(provider.notifier)
-            .finalize(container, isManually: false, urlIsOk: true, addDeviceInfos: false);
+          final result = await providerContainer
+              .read(provider.notifier)
+              .finalize(
+                container,
+                isManually: false,
+                urlIsOk: true,
+                addDeviceInfos: false,
+              );
 
-        expect(result, isNull);
-        final finalState = await providerContainer.read(provider.future);
-        final finalContainer =
-            finalState.containerList.first as TokenContainerUnfinalized;
-        expect(
-          finalContainer.finalizationState,
-          equals(FinalizationState.sendingPublicKeyFailed),
-        );
-      });
+          expect(result, isNull);
+          final finalState = await providerContainer.read(provider.future);
+          final finalContainer =
+              finalState.containerList.first as TokenContainerUnfinalized;
+          expect(
+            finalContainer.finalizationState,
+            equals(FinalizationState.sendingPublicKeyFailed),
+          );
+        },
+      );
     });
   });
 }

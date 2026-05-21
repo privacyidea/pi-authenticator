@@ -27,6 +27,7 @@ import '../utils/object_validator/object_validators.dart';
 import 'api_results/pi_server_results/pi_server_result.dart';
 import 'api_results/pi_server_results/pi_server_result_detail.dart';
 import 'api_results/pi_server_results/pi_server_result_value.dart';
+import 'exception_errors/error_codes.dart';
 import 'exception_errors/pi_server_result_error.dart';
 
 part 'pi_server_response.freezed.dart';
@@ -127,13 +128,13 @@ sealed class PiServerResponse<
     late final Map<String, dynamic> json;
     try {
       json = jsonDecode(response.body);
-    } catch (_) {
+    } catch (e) {
       Logger.warning('Failed to parse server response', error: response.body);
       return PiServerResponse.error(
         statusCode: response.statusCode,
         piServerResultError: PiServerResultError(
-          code: 0,
-          message: 'Invalid server response (HTTP ${response.statusCode})',
+          code: InAppErrorCodes.jsonParseError,
+          message: 'Failed to parse JSON response (HTTP ${response.statusCode}): non-JSON response body',
         ),
       );
     }

@@ -21,6 +21,7 @@ import 'dart:convert';
 
 import 'package:zxing2/qrcode.dart';
 
+import '../../model/exception_errors/error_codes.dart';
 import '../../model/tokens/token.dart';
 import '../../processors/scheme_processors/token_import_scheme_processors/pia_scheme_processor.dart';
 import '../../utils/encryption/aes_encrypted.dart';
@@ -36,7 +37,7 @@ class TokenEncryption {
       final encrypted = (await AesEncrypted.encrypt(data: encoded, password: password)).toJson();
       jsonString = jsonEncode(encrypted);
     } catch (e, s) {
-      Logger.error('Failed to encrypt tokens', error: e, stackTrace: s);
+      Logger.error('[${InAppErrorCodes.failedToEncryptTokens}] Failed to encrypt tokens', error: e, stackTrace: s);
       rethrow;
     }
     Logger.info('Encrypted ${tokens.length} tokens');
@@ -53,7 +54,7 @@ class TokenEncryption {
       tokens = tokenJsonsList.map<Token>((e) => Token.fromJson(e).copyWith(folderId: () => null)).toList();
     } catch (e, s) {
       // Does not has to be an error, if the password is wrong.
-      Logger.warning('Failed to decrypt tokens', error: e, stackTrace: s);
+      Logger.warning('[${InAppErrorCodes.failedToDecryptTokens}] Failed to decrypt tokens', error: e, stackTrace: s);
       rethrow;
     }
     Logger.info('Decrypted ${tokens.length} tokens');
@@ -70,7 +71,7 @@ class TokenEncryption {
       final base64 = base64Url.encode(bytes);
       uri = Uri.parse('${PiaSchemeProcessor.scheme}://${PiaSchemeProcessor.qrBackupHost}?data=$base64');
     } catch (e, s) {
-      Logger.error('Failed to generate export URI', error: e, stackTrace: s);
+      Logger.error('[${InAppErrorCodes.failedToGenerateExportUri}] Failed to generate export URI', error: e, stackTrace: s);
       rethrow;
     }
     Logger.info('Generated export URI for token ${token.label}');
@@ -87,7 +88,7 @@ class TokenEncryption {
         hints: EncodeHints()..put<CharacterSetECI>(EncodeHintType.characterSet, CharacterSetECI.ASCII),
       );
     } catch (e, s) {
-      Logger.error('Failed to generate QR code', error: e, stackTrace: s);
+      Logger.error('[${InAppErrorCodes.failedToGenerateQrCode}] Failed to generate QR code', error: e, stackTrace: s);
       rethrow;
     }
     Logger.info('Generated QR code for token ${token.label}');
@@ -104,7 +105,7 @@ class TokenEncryption {
       final tokenJson = json.decode(jsonString) as Map<String, dynamic>;
       token = Token.fromJson(tokenJson);
     } catch (e, s) {
-      Logger.error('Failed to parse token from URI', error: e, stackTrace: s);
+      Logger.error('[${InAppErrorCodes.failedToParseTokenFromUri}] Failed to parse token from URI', error: e, stackTrace: s);
       rethrow;
     }
     Logger.info('Parsed token ${token.label}');

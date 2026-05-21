@@ -38,10 +38,11 @@ void _testIntroductionNotifier() {
   });
 
   group('IntroductionNotifier', () {
-    MockIntroductionRepository setupMock(IntroductionState Function() getter) {
+    MockIntroductionRepository setupMock(IntroductionState Function() getter, void Function(IntroductionState) setter) {
       final mock = MockIntroductionRepository();
       when(mock.loadCompletedIntroductions()).thenAnswer((_) async => getter());
       when(mock.saveCompletedIntroductions(any)).thenAnswer((inv) async {
+        setter(inv.positionalArguments[0] as IntroductionState);
         return true;
       });
       return mock;
@@ -51,7 +52,7 @@ void _testIntroductionNotifier() {
       final initial = IntroductionState(
         completedIntroductions: {Introduction.scanQrCode},
       );
-      final mock = setupMock(() => initial);
+      final mock = setupMock(() => initial, (_) {});
       final provider = introductionProviderOf(repo: mock);
       final container = ProviderContainer();
 
