@@ -100,6 +100,24 @@
   "@askLogSentDescription": {
     "description": "The content of the dialog that asks the user if he sent the error log."
   },
+  "@authMethodAny": {
+    "description": "Label for the auth method option that accepts any device credential (biometric or PIN/passcode)."
+  },
+  "@authMethodBiometric": {
+    "description": "Label for the auth method option that requires biometric authentication."
+  },
+  "@authMethodChangeReason": {
+    "description": "Reason shown when re-authenticating to change the app's auth method setting."
+  },
+  "@authMethodDescription": {
+    "description": "Helper text describing how the app-wide auth method setting interacts with token-level requirements."
+  },
+  "@authMethodPin": {
+    "description": "Label for the auth method option that requires a PIN/passcode."
+  },
+  "@authMethodTitle": {
+    "description": "Title of the setting that controls which authentication method the app requires."
+  },
   "@authNotSupportedBody": {
     "description": "Message shown as a dialog body that tells the user that device credentials or biometrics must be setup for this action."
   },
@@ -1713,6 +1731,12 @@
   "asFile": "As file",
   "asQrCode": "As QR code",
   "askLogSentDescription": "Did you sent the log, and do you want to clear it now?",
+  "authMethodAny": "Any",
+  "authMethodBiometric": "Biometric only",
+  "authMethodChangeReason": "Please authenticate to change the auth method.",
+  "authMethodDescription": "Choose how the app authenticates locked actions. Tokens that require biometrics will always require biometrics — this setting can only tighten the requirement, never loosen it.",
+  "authMethodPin": "PIN only",
+  "authMethodTitle": "Authentication method",
   "authNotSupportedBody": "Your device does not support credentials or biometric authentication. This is required to perform this action.",
   "authNotSupportedTitle": "Authentication not supported",
   "authToAcceptPushRequest": "Please authenticate to accept the push request.",

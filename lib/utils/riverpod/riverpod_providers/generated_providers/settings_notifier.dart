@@ -26,6 +26,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../../../../repo/preference_settings_repository.dart';
 import '../../../../interfaces/repo/settings_repository.dart';
+import '../../../../model/enums/force_biometric_option.dart';
 import '../../../../model/riverpod_states/settings_state.dart';
 import '../../../../model/version.dart';
 import '../../../logger.dart';
@@ -37,6 +38,10 @@ final settingsProvider = settingsProviderOf(
 );
 final hidePushTokensProvider = settingsProvider.select<bool>(
   (asyncValue) => asyncValue.value?.hidePushTokens ?? false,
+);
+final appAuthMethodProvider = settingsProvider.select<ForceBiometricOption>(
+  (asyncValue) =>
+      asyncValue.value?.appAuthMethod ?? SettingsState.appAuthMethodDefault,
 );
 
 @Riverpod(keepAlive: true)
@@ -185,6 +190,11 @@ class SettingsNotifier extends _$SettingsNotifier {
       (oldState) =>
           oldState.copyWith(showBackgroundImage: !oldState.showBackgroundImage),
     );
+  }
+
+  Future<SettingsState> setAppAuthMethod(ForceBiometricOption value) {
+    Logger.info('App auth method set to $value');
+    return updateState((oldState) => oldState.copyWith(appAuthMethod: value));
   }
 
   Future<SettingsState> setAutoCloseAppAfterAcceptingPushRequest(bool value) {

@@ -53,7 +53,8 @@ class DefaultDeleteAction extends ConsumerSlideableAction {
           ? (_) async {
               final notifier = ref.read(tokenProvider.notifier);
               if (token.isLocked &&
-                  !await lockAuth(
+                  !await lockAuthWithSettings(
+                    ref: ref,
                     reason: (localization) => localization.deleteLockedToken,
                     localization: AppLocalizations.of(context)!,
                     forceBiometricOption: token.forceBiometricOption,

@@ -40,7 +40,8 @@ class LockTokenFolderAction extends ConsumerSlideableAction {
         context,
       ).extension<TokenTileTheme>()!.actionForegroundColor,
       onPressed: (context) async {
-        if (await lockAuth(
+        if (await lockAuthWithSettings(
+              ref: ref,
               reason: (localization) => localization.unlock,
               localization: AppLocalizations.of(context)!,
             ) ==

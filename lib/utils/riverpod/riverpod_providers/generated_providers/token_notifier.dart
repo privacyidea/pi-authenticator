@@ -407,7 +407,8 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
 
   /// Shows a token and returns the updated token if successful, the old token if not and null if the token does not exist or the user is not authenticated.
   Future<T?> showToken<T extends OTPToken>(T token) async {
-    final authenticated = await lockAuth(
+    final authenticated = await lockAuthWithSettingsRef(
+      ref: ref,
       localization: ref.read(localizationProvider),
       reason: (localization) => localization.authenticateToShowOtp,
       forceBiometricOption: token.forceBiometricOption,

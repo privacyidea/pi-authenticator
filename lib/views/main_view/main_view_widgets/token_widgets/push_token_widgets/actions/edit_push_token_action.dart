@@ -50,7 +50,8 @@ class EditPushTokenAction extends ConsumerSlideableAction {
       ).extension<TokenTileTheme>()!.actionForegroundColor,
       onPressed: (context) async {
         if (token.isLocked &&
-            !await lockAuth(
+            !await lockAuthWithSettings(
+              ref: ref,
               reason: (localization) => localization.editLockedToken,
               localization: appLocalizations,
               forceBiometricOption: token.forceBiometricOption,

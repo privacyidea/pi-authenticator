@@ -100,6 +100,24 @@
   "@askLogSentDescription": {
     "description": "The content of the dialog that asks the user if he sent the error log."
   },
+  "@authMethodAny": {
+    "description": "Label for the auth method option that accepts any device credential (biometric or PIN/passcode)."
+  },
+  "@authMethodBiometric": {
+    "description": "Label for the auth method option that requires biometric authentication."
+  },
+  "@authMethodChangeReason": {
+    "description": "Reason shown when re-authenticating to change the app's auth method setting."
+  },
+  "@authMethodDescription": {
+    "description": "Helper text describing how the app-wide auth method setting interacts with token-level requirements."
+  },
+  "@authMethodPin": {
+    "description": "Label for the auth method option that requires a PIN/passcode."
+  },
+  "@authMethodTitle": {
+    "description": "Title of the setting that controls which authentication method the app requires."
+  },
   "@authNotSupportedBody": {
     "description": "Message shown as a dialog body that tells the user that device credentials or biometrics must be setup for this action."
   },
@@ -1713,6 +1731,12 @@
   "asFile": "Als Datei",
   "asQrCode": "Als QR-Code",
   "askLogSentDescription": "Haben Sie das Protokoll gesendet, und möchten Sie es jetzt löschen?",
+  "authMethodAny": "Beliebig",
+  "authMethodBiometric": "Nur Biometrie",
+  "authMethodChangeReason": "Bitte authentifizieren, um die Authentifizierungsmethode zu ändern.",
+  "authMethodDescription": "Wählen Sie, wie die App gesperrte Aktionen authentifiziert. Tokens, die Biometrie verlangen, erfordern immer Biometrie – diese Einstellung kann die Anforderung nur verschärfen, nicht abschwächen.",
+  "authMethodPin": "Nur PIN",
+  "authMethodTitle": "Authentifizierungsmethode",
   "authNotSupportedBody": "Ihr Gerät unterstützt weder Passwort- noch biometrische Authentifizierung. Dies ist erforderlich, um diese Aktion auszuführen.",
   "authNotSupportedTitle": "Authentifizierung nicht unterstützt",
   "authToAcceptPushRequest": "Bitte authentifizieren Sie sich, um die Anfrage anzunehmen.",

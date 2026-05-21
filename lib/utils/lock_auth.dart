@@ -26,14 +26,17 @@ import 'package:flutter/material.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:local_auth_android/local_auth_android.dart';
 import 'package:local_auth_darwin/local_auth_darwin.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
 import 'package:mutex/mutex.dart';
 import 'package:privacyidea_authenticator/model/enums/force_biometric_option.dart';
 
 import '../l10n/app_localizations.dart';
+import '../model/extensions/enums/force_biometric_option_extension.dart';
 import '../widgets/dialog_widgets/default_dialog.dart';
 import '../widgets/gap.dart';
 import 'logger.dart';
+import 'riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import 'view_utils.dart';
 
 LocalAuthentication _localAuth = LocalAuthentication();
@@ -260,6 +263,50 @@ Future<void> _showNoBiometricDialog() async {
         ),
       ],
     ),
+  );
+}
+
+/// Wrapper around [lockAuth] that merges the token-level [forceBiometricOption]
+/// with the user's app-wide auth method setting before authenticating.
+///
+/// The stricter requirement always wins (see
+/// [ForceBiometricOptionX.mergedWith]). If the merge cannot be resolved
+/// (currently unreachable: would need a `pin`-only app setting combined with
+/// a `biometric`-only token), the merge logic logs a warning and falls back
+/// to `biometric`.
+Future<bool> lockAuthWithSettings({
+  required WidgetRef ref,
+  required String Function(AppLocalizations) reason,
+  required AppLocalizations localization,
+  ForceBiometricOption? forceBiometricOption,
+  bool autoAuthIfUnsupported = false,
+}) {
+  final appOption = ref.read(appAuthMethodProvider);
+  final tokenOption = forceBiometricOption ?? ForceBiometricOption.none;
+  return lockAuth(
+    reason: reason,
+    localization: localization,
+    forceBiometricOption: tokenOption.mergedWith(appOption),
+    autoAuthIfUnsupported: autoAuthIfUnsupported,
+  );
+}
+
+/// Variant of [lockAuthWithSettings] for class-based Riverpod notifiers which
+/// expose a `Ref` rather than a `WidgetRef`.
+Future<bool> lockAuthWithSettingsRef({
+  required Ref ref,
+  required String Function(AppLocalizations) reason,
+  required AppLocalizations localization,
+  ForceBiometricOption? forceBiometricOption,
+  bool autoAuthIfUnsupported = false,
+}) {
+  final appOption = ref.read(appAuthMethodProvider);
+  final tokenOption = forceBiometricOption ?? ForceBiometricOption.none;
+  return lockAuth(
+    reason: reason,
+    localization: localization,
+    forceBiometricOption: tokenOption.mergedWith(appOption),
+    autoAuthIfUnsupported: autoAuthIfUnsupported,
   );
 }
 
