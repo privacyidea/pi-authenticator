@@ -151,8 +151,10 @@ void main() {
     test('Duration consistency (Sum of durations)', () {
       final token = createDay();
       final total = token.durationSinceLastOTP + token.durationUntilNextOTP;
-      // The sum should exactly match the period
-      expect(total.inSeconds, token.period.inSeconds);
+      // The two getters each read DateTime.now() independently, so the sum can
+      // drift by a few milliseconds (and cross a second boundary under .inSeconds).
+      final errorMargin = (total - token.period).abs();
+      expect(errorMargin.inMilliseconds, lessThan(100));
     });
 
     test('Time window sequence with microsecond margin', () {

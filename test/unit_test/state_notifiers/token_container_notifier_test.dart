@@ -36,7 +36,9 @@ void main() {
         issuer: 'issuer',
         ttl: Duration(minutes: 10),
         nonce: 'nonce',
-        timestamp: DateTime.parse('2024-11-14 09:30:18.288530Z'),
+        // Keep this in the future so `build()`'s unawaited finalize doesn't
+        // delete the container as expired before the test's assertions run.
+        timestamp: DateTime.now(),
         serverUrl: Uri.parse('https://example.com'),
         serial: 'serial',
         ecKeyAlgorithm: EcKeyAlgorithm.secp521r1,
