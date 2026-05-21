@@ -199,7 +199,7 @@ class _StatusBarOverlayEntryState extends State<StatusBarOverlayEntry>
                             widget.statusSubText!,
                             style: statusSubTextStyle,
                             textAlign: TextAlign.center,
-                            maxLines: 3,
+                            maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                       ],

@@ -619,16 +619,20 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
     final replaceContainers = <TokenContainerUnfinalized>[];
     if (existingContainers.isNotEmpty) {
       final replaceableExisting = <TokenContainerUnfinalized>[];
+      final blockedContainers = <TokenContainerUnfinalized>[];
       for (final newContainer in existingContainers) {
         final stateContainer = stateContainers.firstWhereOrNull(
           (c) => c.serial == newContainer.serial,
         );
         if (stateContainer is TokenContainerFinalized &&
             stateContainer.policies.disabledUnregister) {
-          showErrorStatusMessage(message: (l) => l.errorReplaceNotAllowed);
+          blockedContainers.add(newContainer);
         } else {
           replaceableExisting.add(newContainer);
         }
+      }
+      if (blockedContainers.isNotEmpty) {
+        showErrorStatusMessage(message: (l) => l.errorReplaceNotAllowed);
       }
       if (replaceableExisting.isNotEmpty) {
         replaceContainers.addAll(switch (doReplace) {
@@ -817,7 +821,9 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
   Future<TokenContainerUnfinalized> _generateKeyPair(
     TokenContainerUnfinalized tokenContainer,
   ) async {
-    if (tokenContainer.clientKeyPair != null) {
+    if (tokenContainer.clientKeyPair != null ||
+        (tokenContainer.publicClientKey != null &&
+            tokenContainer.privateClientKey != null)) {
       return tokenContainer;
     }
     // generatingKeyPair,

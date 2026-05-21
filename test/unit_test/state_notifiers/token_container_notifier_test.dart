@@ -635,7 +635,7 @@ void main() {
         eccUtils: EccUtils(),
       );
       await container.read(tokenContainerProvider.future);
-      // act                                                                                    serial                  serial3
+      // act
       await container.read(tokenContainerProvider.notifier).deleteContainerList(
         [
           containerRepoState.containerList[0],

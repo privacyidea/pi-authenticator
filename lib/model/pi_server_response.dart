@@ -132,7 +132,7 @@ sealed class PiServerResponse<
       return PiServerResponse.error(
         statusCode: response.statusCode,
         piServerResultError: PiServerResultError(
-          code: response.statusCode,
+          code: 0,
           message: 'Invalid server response (HTTP ${response.statusCode})',
         ),
       );
