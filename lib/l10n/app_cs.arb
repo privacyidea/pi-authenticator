@@ -242,6 +242,9 @@
   "@containerSyncUrl": {
     "description": "Title of the container sync URL field."
   },
+  "@containerSyncUrlNotEditable": {
+    "description": "Hint shown when the user tries to edit the container sync URL while the container is not yet finalized."
+  },
   "@containerTransferDeleteTokensButtonText": {
     "description": "Button text to delete corresponding tokens after container transfer."
   },
@@ -570,14 +573,11 @@
   "@feedbackHint": {
     "description": "Descripes waht happens when the user clicks on the send button."
   },
-  "@feedbackPrivacyPolicy1": {
-    "description": "First part of the text that tells the user that he agrees to the privacy policy by sending feedback."
+  "@feedbackPrivacyPolicyFull": {
+    "description": "Full sentence for the privacy policy agreement. Use {privacyPolicy} as placeholder for the clickable link text."
   },
-  "@feedbackPrivacyPolicy2": {
-    "description": "Taping on this should open the privacy policy."
-  },
-  "@feedbackPrivacyPolicy3": {
-    "description": "Last part of the text that tells the user that he agrees to the privacy policy by sending feedback."
+  "@feedbackPrivacyPolicyLinkText": {
+    "description": "Clickable link text in the privacy policy agreement. Tapping this opens the privacy policy."
   },
   "@feedbackSentDescription": {
     "description": "The content of the dialog that appears after the feedback was sent."
@@ -1757,6 +1757,7 @@
   "containerSyncDialogRemovedTokens": "Tokeny odstraněny synchronizací kontejneru:",
   "containerSyncDialogTitle": "Synchronizovat kontejner {serial}",
   "containerSyncUrl": "Url pro synchronizaci kontejnerů",
+  "containerSyncUrlNotEditable": "URL nelze změnit, dokud kontejner není finalizován.",
   "containerTransferDeleteTokensButtonText": "Odebrat z tohoto zařízení",
   "containerTransferDeleteTokensSuccessMessage": "Kontejner a související tokeny byly úspěšně odstraněny z tohoto zařízení.",
   "containerTransferDialogContentAborted": "Přenos kontejneru byl přerušen.",
@@ -1844,9 +1845,8 @@
   "feedbackCategoryLoginTokenHelpInfo": "V případě problémů s přihlášením nebo s tokeny kontaktujte prosím svého správce systému nebo podporu platformy, na které se chcete přihlásit.",
   "feedbackDescription": "Pokud máte nějaké dotazy, návrhy nebo problémy, dejte nám prosím vědět.",
   "feedbackHint": "Otevře se připravený e-mail, který nám můžete zaslat. V případě potřeby budou doplněny informace o vašem zařízení a verzi aplikace. Před odesláním můžete e-mail zkontrolovat a upravit.",
-  "feedbackPrivacyPolicy1": "Odesláním zpětné vazby souhlasíte s našimi ",
-  "feedbackPrivacyPolicy2": "zásadami ochrany osobních údajů",
-  "feedbackPrivacyPolicy3": ".",
+  "feedbackPrivacyPolicyFull": "Odesláním zpětné vazby souhlasíte s našimi {privacyPolicy}.",
+  "feedbackPrivacyPolicyLinkText": "zásadami ochrany osobních údajů",
   "feedbackSentDescription": "Děkujeme vám za pomoc při vylepšování této aplikace!",
   "feedbackSentTitle": "Zpětná vazba odeslána",
   "feedbackTitle": "Vaše zpětná vazba je vždy vítána!",

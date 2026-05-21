@@ -20,6 +20,7 @@
 import 'package:flutter/material.dart';
 
 import '../l10n/app_localizations.dart';
+import '../l10n/app_localizations_en.dart';
 import '../views/view_interface.dart';
 import 'globals.dart';
 import 'logger.dart';
@@ -92,7 +93,11 @@ void showErrorStatusMessage({
   WidgetRef? ref,
 }) {
   ref ??= globalRef;
-  Logger.warning('$message : $details');
+  final l = AppLocalizationsEn();
+  Logger.warning(
+    details != null ? '${message(l)}: ${details(l)}' : message(l),
+    verbose: true,
+  );
   if (ref == null) {
     Logger.error('Could not show status message: globalRef is null');
     return;
@@ -106,14 +111,32 @@ void showSuccessStatusMessage({
   WidgetRef? ref,
 }) {
   ref ??= globalRef;
-  Logger.warning('$message : $details');
+  final l = AppLocalizationsEn();
+  Logger.info(details != null ? '${message(l)}: ${details(l)}' : message(l));
   if (ref == null) {
     Logger.error('Could not show status message: globalRef is null');
     return;
   }
   ref
       .read(statusProvider.notifier)
-      .show(message, details: details, isError: false);
+      .show(message, details: details, type: StatusMessageType.success);
+}
+
+void showNeutralStatusMessage({
+  required String Function(AppLocalizations) message,
+  String Function(AppLocalizations)? details,
+  WidgetRef? ref,
+}) {
+  ref ??= globalRef;
+  final l = AppLocalizationsEn();
+  Logger.info(details != null ? '${message(l)}: ${details(l)}' : message(l));
+  if (ref == null) {
+    Logger.error('Could not show status message: globalRef is null');
+    return;
+  }
+  ref
+      .read(statusProvider.notifier)
+      .show(message, details: details, type: StatusMessageType.neutral);
 }
 
 Future<T?> showAsyncDialog<T>({

@@ -26,7 +26,6 @@ import '../../../../../../../views/main_view/main_view_widgets/drag_target_divid
 import '../../../../../../../views/main_view/main_view_widgets/main_view_navigation_buttons/qr_scanner_button.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
-import '../../widgets/status_bar.dart';
 import '../view_interface.dart';
 import 'container_widgets/container_widget.dart';
 
@@ -57,8 +56,7 @@ class ContainerView extends ConsumerView {
       ),
       floatingActionButton: const QrScannerButton(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      body: StatusBar(
-        child: Center(
+      body: Center(
           child: SlidableAutoCloseBehavior(
             child: Column(
               children: [
@@ -71,7 +69,6 @@ class ContainerView extends ConsumerView {
             ),
           ),
         ),
-      ),
     );
   }
 }

@@ -25,7 +25,6 @@ import '../../model/token_import/token_import_origin.dart';
 import '../../model/tokens/token.dart';
 import '../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../utils/token_import_origins.dart';
-import '../../widgets/status_bar.dart';
 import '../view_interface.dart';
 import 'pages/import_start_page.dart';
 import 'pages/select_import_type_page.dart';
@@ -86,8 +85,7 @@ class _ImportTokensViewState extends ConsumerState<ImportTokensView> {
           maxLines: 2, // Title can be shown on small screens too.
         ),
       ),
-      body: StatusBar(
-        child: Padding(
+      body: Padding(
           padding: const EdgeInsets.all(8.0),
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
@@ -129,7 +127,6 @@ class _ImportTokensViewState extends ConsumerState<ImportTokensView> {
             ),
           ),
         ),
-      ),
     );
   }
 }

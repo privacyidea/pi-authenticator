@@ -242,6 +242,9 @@
   "@containerSyncUrl": {
     "description": "Title of the container sync URL field."
   },
+  "@containerSyncUrlNotEditable": {
+    "description": "Hint shown when the user tries to edit the container sync URL while the container is not yet finalized."
+  },
   "@containerTransferDeleteTokensButtonText": {
     "description": "Button text to delete corresponding tokens after container transfer."
   },
@@ -570,14 +573,11 @@
   "@feedbackHint": {
     "description": "Descripes waht happens when the user clicks on the send button."
   },
-  "@feedbackPrivacyPolicy1": {
-    "description": "First part of the text that tells the user that he agrees to the privacy policy by sending feedback."
+  "@feedbackPrivacyPolicyFull": {
+    "description": "Full sentence for the privacy policy agreement. Use {privacyPolicy} as placeholder for the clickable link text."
   },
-  "@feedbackPrivacyPolicy2": {
-    "description": "Taping on this should open the privacy policy."
-  },
-  "@feedbackPrivacyPolicy3": {
-    "description": "Last part of the text that tells the user that he agrees to the privacy policy by sending feedback."
+  "@feedbackPrivacyPolicyLinkText": {
+    "description": "Clickable link text in the privacy policy agreement. Tapping this opens the privacy policy."
   },
   "@feedbackSentDescription": {
     "description": "The content of the dialog that appears after the feedback was sent."
@@ -1757,6 +1757,7 @@
   "containerSyncDialogRemovedTokens": "Tokens removed by container synchronization:",
   "containerSyncDialogTitle": "Synchronise container {serial}",
   "containerSyncUrl": "Container Sync URL",
+  "containerSyncUrlNotEditable": "The URL cannot be changed while the container is not yet finalized.",
   "containerTransferDeleteTokensButtonText": "Remove from this device",
   "containerTransferDeleteTokensSuccessMessage": "Container and corresponding tokens successfully removed from this device.",
   "containerTransferDialogContentAborted": "Container transfer aborted.",
@@ -1844,9 +1845,8 @@
   "feedbackCategoryLoginTokenHelpInfo": "For login problems or issues with your tokens, please contact your system administrator or the support of the platform you are trying to log in to.",
   "feedbackDescription": "If you have any questions, suggestions or problems, please let us know.",
   "feedbackHint": "A ready-made e-mail will open, which you can send to us. If desired, information about your device and the version of the application will be added. You can check and edit the email before sending it.",
-  "feedbackPrivacyPolicy1": "By sending feedback, you agree to our ",
-  "feedbackPrivacyPolicy2": "privacy policy",
-  "feedbackPrivacyPolicy3": ".",
+  "feedbackPrivacyPolicyFull": "By sending feedback, you agree to our {privacyPolicy}.",
+  "feedbackPrivacyPolicyLinkText": "privacy policy",
   "feedbackSentDescription": "Thank you very much for your help in making this application better!",
   "feedbackSentTitle": "Feedback sent",
   "feedbackTitle": "Your feedback is always welcome!",

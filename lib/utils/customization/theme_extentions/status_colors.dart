@@ -24,23 +24,26 @@ class StatusColors extends ThemeExtension<StatusColors> {
   final Color success;
   final Color warning;
   final Color error;
+  final Color neutral;
 
   const StatusColors({
     required this.success,
     required this.warning,
     required this.error,
+    required this.neutral,
   });
 
   @override
   ThemeExtension<StatusColors> copyWith({
     Color? success,
-    Color? info,
     Color? warning,
     Color? error,
+    Color? neutral,
   }) => StatusColors(
     success: success ?? this.success,
     warning: warning ?? this.warning,
     error: error ?? this.error,
+    neutral: neutral ?? this.neutral,
   );
 
   @override
@@ -53,6 +56,7 @@ class StatusColors extends ThemeExtension<StatusColors> {
         success: Color.lerp(success, other.success, t)!,
         warning: Color.lerp(warning, other.warning, t)!,
         error: Color.lerp(error, other.error, t)!,
+        neutral: Color.lerp(neutral, other.neutral, t)!,
       );
     }
     return this;
