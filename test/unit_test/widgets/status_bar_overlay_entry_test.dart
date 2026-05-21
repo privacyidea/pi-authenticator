@@ -19,6 +19,7 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/state_providers/status_message_provider.dart';
 import 'package:privacyidea_authenticator/widgets/status_bar.dart';
 
 import '../../tests_app_wrapper.dart';
@@ -34,7 +35,7 @@ void main() {
         wrapInStack(
           StatusBarOverlayEntry(
             statusText: 'Success!',
-            isError: false,
+            type: StatusMessageType.success,
             onDismissed: (_) {},
           ),
         ),
@@ -50,7 +51,7 @@ void main() {
           StatusBarOverlayEntry(
             statusText: 'Main',
             statusSubText: 'Details here',
-            isError: false,
+            type: StatusMessageType.success,
             onDismissed: (_) {},
           ),
         ),
@@ -66,7 +67,7 @@ void main() {
         wrapInStack(
           StatusBarOverlayEntry(
             statusText: 'Only Main',
-            isError: false,
+            type: StatusMessageType.success,
             onDismissed: (_) {},
           ),
         ),
@@ -81,7 +82,7 @@ void main() {
         wrapInStack(
           StatusBarOverlayEntry(
             statusText: 'Dismissible test',
-            isError: false,
+            type: StatusMessageType.success,
             onDismissed: (_) {},
           ),
         ),
@@ -98,7 +99,7 @@ void main() {
         wrapInStack(
           StatusBarOverlayEntry(
             statusText: 'Animated',
-            isError: true,
+            type: StatusMessageType.error,
             onDismissed: (_) {},
           ),
         ),

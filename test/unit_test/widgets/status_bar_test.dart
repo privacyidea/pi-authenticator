@@ -51,7 +51,7 @@ void main() {
         ),
       );
 
-      notifier.show((l10n) => 'Success message', isError: false);
+      notifier.show((l10n) => 'Success message', type: StatusMessageType.success);
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 300));
 
@@ -118,8 +118,8 @@ void main() {
         ),
       );
 
-      notifier.show((l10n) => 'First message', isError: false);
-      notifier.show((l10n) => 'Second message', isError: false);
+      notifier.show((l10n) => 'First message', type: StatusMessageType.success);
+      notifier.show((l10n) => 'Second message', type: StatusMessageType.success);
       await tester.pump();
       await tester.pump(const Duration(milliseconds: 300));
 
