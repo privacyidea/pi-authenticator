@@ -413,9 +413,6 @@
   "@errorMissingPublicKey": {
     "description": "Error message when the public key is missing."
   },
-  "@errorReplaceNotAllowed": {
-    "description": "Error message when replacing a container is not allowed."
-  },
   "@errorRollOutFailed": {
     "description": "Tells the user that the token could not be rolled out, because a network error occurred.",
     "placeholders": {
@@ -1810,7 +1807,6 @@
   "errorMailBody": "Přiložen je soubor protokolu o chybách.\nTento text můžete nahradit dalšími informacemi o chybě.",
   "errorMissingPrivateKey": "Chybějící soukromý klíč",
   "errorMissingPublicKey": "Chybějící veřejný klíč",
-  "errorReplaceNotAllowed": "Nahrazení tohoto kontejneru není povoleno.",
   "errorRollOutFailed": "Registrace tokenu {name} selhala.",
   "errorRollOutNoConnectionToServer": "Registrace tokenu {name} selhala. Server není dostupný.",
   "errorRollOutNotPossibleAnymore": "Roll-out tohoto tokenu již není možný.",

@@ -413,9 +413,6 @@
   "@errorMissingPublicKey": {
     "description": "Error message when the public key is missing."
   },
-  "@errorReplaceNotAllowed": {
-    "description": "Error message when replacing a container is not allowed."
-  },
   "@errorRollOutFailed": {
     "description": "Tells the user that the token could not be rolled out, because a network error occurred.",
     "placeholders": {
@@ -1810,7 +1807,6 @@
   "errorMailBody": "Le fichier journal des erreurs est joint.\nVous pouvez remplacer ce texte par des informations supplémentaires sur l'erreur.",
   "errorMissingPrivateKey": "Clé privée manquante",
   "errorMissingPublicKey": "Clé publique manquante",
-  "errorReplaceNotAllowed": "Le remplacement de ce conteneur n'est pas autorisé.",
   "errorRollOutFailed": "Le déploiement du jeton {name} a échoué.",
   "errorRollOutNoConnectionToServer": "El despliegue del token {name} ha fallado, no se ha podido acceder al servidor.",
   "errorRollOutNotPossibleAnymore": "Le déploiement de ce jeton n'est plus possible.",
