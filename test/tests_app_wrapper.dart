@@ -107,6 +107,7 @@ class TestsAppWrapper extends StatelessWidget {
                   success: const Color(0xFF4CAF50),
                   warning: const Color(0xFFFF9800),
                   error: const Color(0xFFF44336),
+                  neutral: const Color(0xFF9E9E9E),
                 ),
                 TokenTileTheme(
                   deleteColor: Colors.red,
