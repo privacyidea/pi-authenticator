@@ -21,6 +21,7 @@ import 'package:mutex/mutex.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../interfaces/repo/settings_repository.dart';
+import '../model/extensions/enums/force_biometric_option_extension.dart';
 import '../model/riverpod_states/settings_state.dart';
 import '../model/version.dart';
 
@@ -38,6 +39,7 @@ class PreferenceSettingsRepository extends SettingsRepository {
   static const String _latestVersionKey = 'KEY_LATEST_VERSION';
   static const String _showBackgroundImageKey = 'KEY_HIDE_BACKGROUND_IMAGE';
   static const String _allowScreenshotKey = 'KEY_ALLOW_SCREENSHOTS';
+  static const String _appAuthMethodKey = 'KEY_APP_AUTH_METHOD';
 
   static final Future<SharedPreferences> _preferences =
       SharedPreferences.getInstance();
@@ -70,6 +72,9 @@ class PreferenceSettingsRepository extends SettingsRepository {
           : null,
       showBackgroundImage: prefs.getBool(_showBackgroundImageKey),
       allowScreenshots: prefs.getBool(_allowScreenshotKey),
+      appAuthMethod: ForceBiometricOptionX.fromString(
+        prefs.getString(_appAuthMethodKey),
+      ),
     );
     _lastState = newState;
     return newState;
@@ -114,6 +119,8 @@ class PreferenceSettingsRepository extends SettingsRepository {
         prefs.setBool(_showBackgroundImageKey, settings.showBackgroundImage),
       if (_lastState?.allowScreenshots != settings.allowScreenshots)
         prefs.setBool(_allowScreenshotKey, settings.allowScreenshots),
+      if (_lastState?.appAuthMethod != settings.appAuthMethod)
+        prefs.setString(_appAuthMethodKey, settings.appAuthMethod.name),
     ];
     await Future.wait(futures);
     _lastState = settings;

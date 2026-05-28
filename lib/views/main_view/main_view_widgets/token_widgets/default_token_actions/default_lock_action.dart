@@ -46,7 +46,8 @@ class DefaultLockAction extends ConsumerSlideableAction {
         context,
       ).extension<TokenTileTheme>()!.actionForegroundColor,
       onPressed: (context) async {
-        if (!await lockAuth(
+        if (!await lockAuthWithSettings(
+          ref: ref,
           reason: (localization) => localization.authenticateToUnLockToken,
           localization: AppLocalizations.of(context)!,
           forceBiometricOption: token.forceBiometricOption,

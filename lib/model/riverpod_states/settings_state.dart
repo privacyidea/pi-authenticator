@@ -23,6 +23,7 @@ import 'dart:ui';
 import 'package:flutter/foundation.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../enums/force_biometric_option.dart';
 import '../version.dart';
 
 /// This class contains all device specific settings. E.g., the language used, whether to show the guide on start, etc.
@@ -47,6 +48,8 @@ class SettingsState {
   static bool get showBackgroundImageDefault => true;
   static bool get allowScreenshotsDefault => false;
   static bool get autoCloseAppAfterAcceptingPushRequestDefault => false;
+  static ForceBiometricOption get appAuthMethodDefault =>
+      ForceBiometricOption.any;
 
   final bool isFirstRun;
   final bool showGuideOnStart;
@@ -69,6 +72,7 @@ class SettingsState {
   final bool showBackgroundImage;
   final bool allowScreenshots;
   final bool autoCloseAppAfterAcceptingPushRequest;
+  final ForceBiometricOption appAuthMethod;
 
   SettingsState({
     bool? isFirstRun,
@@ -84,6 +88,7 @@ class SettingsState {
     bool? showBackgroundImage,
     bool? allowScreenshots,
     bool? autoCloseAppAfterAcceptingPushRequest,
+    ForceBiometricOption? appAuthMethod,
   }) : isFirstRun = isFirstRun ?? isFirstRunDefault,
        showGuideOnStart = showGuideOnStart ?? showGuideOnStartDefault,
        hideOpts = hideOpts ?? hideOtpsDefault,
@@ -100,7 +105,8 @@ class SettingsState {
        allowScreenshots = allowScreenshots ?? allowScreenshotsDefault,
        autoCloseAppAfterAcceptingPushRequest =
            autoCloseAppAfterAcceptingPushRequest ??
-           autoCloseAppAfterAcceptingPushRequestDefault;
+           autoCloseAppAfterAcceptingPushRequestDefault,
+       appAuthMethod = appAuthMethod ?? appAuthMethodDefault;
 
   SettingsState copyWith({
     bool? isFirstRun,
@@ -116,6 +122,7 @@ class SettingsState {
     bool? showBackgroundImage,
     bool? allowScreenshots,
     bool? autoCloseAppAfterAcceptingPushRequest,
+    ForceBiometricOption? appAuthMethod,
   }) {
     return SettingsState(
       isFirstRun: isFirstRun ?? this.isFirstRun,
@@ -134,6 +141,7 @@ class SettingsState {
       autoCloseAppAfterAcceptingPushRequest:
           autoCloseAppAfterAcceptingPushRequest ??
           this.autoCloseAppAfterAcceptingPushRequest,
+      appAuthMethod: appAuthMethod ?? this.appAuthMethod,
     );
   }
 
@@ -141,7 +149,7 @@ class SettingsState {
   String toString() =>
       'SettingsState(isFirstRun: $isFirstRun, showGuideOnStart: $showGuideOnStart, hideOpts: $hideOpts, enablePolling: $enablePolling, '
       'crashReportRecipients: $crashReportRecipients, localePreference: $localePreference, useSystemLocale: $useSystemLocale, verboseLogging: $verboseLogging, '
-      'hidePushTokens: $hidePushTokens, latestStartedVersion: $latestStartedVersion, showBackgroundImage: $showBackgroundImage, allowScreenshots: $allowScreenshots, autoCloseAppAfterAcceptingPushRequestDefault: $autoCloseAppAfterAcceptingPushRequest)';
+      'hidePushTokens: $hidePushTokens, latestStartedVersion: $latestStartedVersion, showBackgroundImage: $showBackgroundImage, allowScreenshots: $allowScreenshots, autoCloseAppAfterAcceptingPushRequestDefault: $autoCloseAppAfterAcceptingPushRequest, appAuthMethod: $appAuthMethod)';
 
   @override
   // ignore: hash_and_equals
@@ -163,7 +171,8 @@ class SettingsState {
         other.showBackgroundImage == showBackgroundImage &&
         other.allowScreenshots == allowScreenshots &&
         other.autoCloseAppAfterAcceptingPushRequest ==
-            autoCloseAppAfterAcceptingPushRequest;
+            autoCloseAppAfterAcceptingPushRequest &&
+        other.appAuthMethod == appAuthMethod;
   }
 
   static String encodeLocale(Locale locale) {

@@ -164,7 +164,8 @@ class _ExportTokensToFileDialogState
       return;
     }
     final appLocalizations = AppLocalizations.of(context)!;
-    final authenticated = await lockAuth(
+    final authenticated = await lockAuthWithSettings(
+      ref: ref,
       reason: (localization) => localization.exportLockedTokenReason,
       localization: appLocalizations,
       forceBiometricOption:

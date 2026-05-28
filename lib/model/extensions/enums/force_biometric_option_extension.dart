@@ -7,7 +7,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License atHG$%
+ * You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -44,12 +44,33 @@ extension ForceBiometricOptionX on ForceBiometricOption {
     if (value == null) return null;
     // cut "ForceBiometricOption." prefix if present
     final enumValue = value.contains('.') ? value.split('.').last : value;
-    return ForceBiometricOption.values.firstWhere(
-      (e) => e.name.toLowerCase() == enumValue.toLowerCase(),
-      orElse: () {
-        Logger.warning('Unknown ForceBiometricOption value: $value');
-        throw ArgumentError('Invalid ForceBiometricOption value: $enumValue');
-      },
+    final match = ForceBiometricOption.values
+        .where((e) => e.name.toLowerCase() == enumValue.toLowerCase())
+        .firstOrNull;
+    if (match == null) {
+      Logger.warning('Unknown ForceBiometricOption value: $value');
+    }
+    return match;
+  }
+
+  /// Combines a token-level and an app-level [ForceBiometricOption] into the
+  /// effective requirement.
+  ///
+  /// `none` is treated as `any` for the purpose of merging. The stricter
+  /// option wins: `biometric` beats `any`, `pin` beats `any`. `biometric`
+  /// combined with `pin` is contradictory; biometric wins and a warning is
+  /// logged because there is no way to satisfy both simultaneously.
+  ForceBiometricOption mergedWith(ForceBiometricOption other) {
+    final a = this == ForceBiometricOption.none ? ForceBiometricOption.any : this;
+    final b = other == ForceBiometricOption.none ? ForceBiometricOption.any : other;
+
+    if (a == b) return a;
+    if (a == ForceBiometricOption.any) return b;
+    if (b == ForceBiometricOption.any) return a;
+
+    Logger.warning(
+      'Conflicting ForceBiometricOption values merged: $a vs $b — falling back to biometric',
     );
+    return ForceBiometricOption.biometric;
   }
 }

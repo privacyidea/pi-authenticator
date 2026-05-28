@@ -132,7 +132,8 @@ class _TokenFolderExpandableHeaderState
                       return;
                     }
                     if (widget.folder.isLocked &&
-                        !await lockAuth(
+                        !await lockAuthWithSettings(
+                          ref: ref,
                           reason: (localization) =>
                               localization.expandLockedFolder,
                           localization: AppLocalizations.of(context)!,

@@ -92,7 +92,8 @@ mixin PushDialogMixin {
     Future<bool> Function(PiSuccessResponse<V, D>, WidgetRef ref)? onSuccess,
   }) async {
     if (token.isLocked &&
-        !await lockAuth(
+        !await lockAuthWithSettings(
+          ref: ref,
           reason: (l10n) => l10n.authToAcceptPushRequest,
           localization: AppLocalizations.of(context)!,
           forceBiometricOption: token.forceBiometricOption,
@@ -128,7 +129,8 @@ mixin PushDialogMixin {
 
   Future<void> handleDecline(BuildContext context, WidgetRef ref) async {
     if (token.isLocked &&
-        !await lockAuth(
+        !await lockAuthWithSettings(
+          ref: ref,
           reason: (l10n) => l10n.authToDeclinePushRequest,
           localization: AppLocalizations.of(context)!,
           forceBiometricOption: token.forceBiometricOption,
@@ -149,7 +151,8 @@ mixin PushDialogMixin {
 
   Future<void> handleDiscard(BuildContext context, WidgetRef ref) async {
     if (token.isHidden &&
-        !await lockAuth(
+        !await lockAuthWithSettings(
+          ref: ref,
           reason: (l10n) => l10n.authToDiscardPushRequest,
           localization: AppLocalizations.of(context)!,
           forceBiometricOption: token.forceBiometricOption,

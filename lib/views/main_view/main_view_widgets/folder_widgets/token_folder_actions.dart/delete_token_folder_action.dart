@@ -46,7 +46,8 @@ class DeleteTokenFolderAction extends ConsumerSlideableAction {
       ).extension<TokenTileTheme>()!.actionForegroundColor,
       onPressed: (context) async {
         if (folder.isLocked &&
-            !await lockAuth(
+            !await lockAuthWithSettings(
+              ref: ref,
               reason: (localization) => localization.unlock,
               localization: AppLocalizations.of(context)!,
             )) {

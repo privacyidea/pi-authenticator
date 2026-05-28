@@ -19,20 +19,21 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/view_utils.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 
-class AllowScreenshotDialog extends StatelessWidget {
+class AllowScreenshotDialog extends ConsumerWidget {
   const AllowScreenshotDialog({super.key});
 
   static Future<bool?> showDialog() =>
       showAsyncDialog(builder: (context) => AllowScreenshotDialog());
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return DefaultDialog(
       title: Text(AppLocalizations.of(context)!.allowScreenshotsTitle),
       content: Text(AppLocalizations.of(context)!.allowScreenshotsDescription),
@@ -47,7 +48,8 @@ class AllowScreenshotDialog extends StatelessWidget {
           intent: ActionIntent.confirm,
           onPressed: () async {
             // authenticate with fingerprint or password
-            final authenticated = await lockAuth(
+            final authenticated = await lockAuthWithSettings(
+              ref: ref,
               reason: (l) => l.allowScreenshotsReason,
               localization: AppLocalizations.of(context)!,
               autoAuthIfUnsupported: true,

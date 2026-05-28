@@ -18,6 +18,7 @@
  * limitations under the License.
  */
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../utils/lock_auth.dart';
@@ -27,11 +28,11 @@ import 'export_tokens_to_file_dialog.dart';
 import 'select_tokens_dialog.dart';
 import 'show_qr_code_dialog.dart';
 
-class SelectExportTypeDialog extends StatelessWidget {
+class SelectExportTypeDialog extends ConsumerWidget {
   const SelectExportTypeDialog({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final appLocalizations = AppLocalizations.of(context)!;
     return DefaultDialog(
       title: Text(appLocalizations.exportTokens),
@@ -51,7 +52,7 @@ class SelectExportTypeDialog extends StatelessWidget {
               appLocalizations.asQrCode,
               style: Theme.of(context).textTheme.bodyMedium,
             ),
-            onPressed: () async => _selectTokenDialog(context),
+            onPressed: () async => _selectTokenDialog(context, ref),
             icon: const Icon(Icons.qr_code, size: 24),
           ),
         ],
@@ -79,9 +80,10 @@ class SelectExportTypeDialog extends StatelessWidget {
     }
   }
 
-  Future<void> _selectTokenDialog(BuildContext context) async {
+  Future<void> _selectTokenDialog(BuildContext context, WidgetRef ref) async {
     final localization = AppLocalizations.of(context)!;
-    final authenticated = await lockAuth(
+    final authenticated = await lockAuthWithSettings(
+      ref: ref,
       reason: (l) => l.exportLockedTokenReason,
       localization: localization,
       autoAuthIfUnsupported: true,

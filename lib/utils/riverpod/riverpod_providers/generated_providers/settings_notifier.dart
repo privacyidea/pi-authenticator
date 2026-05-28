@@ -26,6 +26,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../../../../../repo/preference_settings_repository.dart';
 import '../../../../interfaces/repo/settings_repository.dart';
+import '../../../../model/enums/force_biometric_option.dart';
 import '../../../../model/riverpod_states/settings_state.dart';
 import '../../../../model/version.dart';
 import '../../../logger.dart';
@@ -38,6 +39,18 @@ final settingsProvider = settingsProviderOf(
 final hidePushTokensProvider = settingsProvider.select<bool>(
   (asyncValue) => asyncValue.value?.hidePushTokens ?? false,
 );
+/// App-level auth method is exposed as either `any` or `biometric`. Stored
+/// `none`/`pin` values (legacy or token-level enum members) are normalized to
+/// `any` so callers and the settings UI only have to reason about two states.
+final appAuthMethodProvider = settingsProvider.select<ForceBiometricOption>((
+  asyncValue,
+) {
+  final stored =
+      asyncValue.value?.appAuthMethod ?? SettingsState.appAuthMethodDefault;
+  return stored == ForceBiometricOption.biometric
+      ? ForceBiometricOption.biometric
+      : ForceBiometricOption.any;
+});
 
 @Riverpod(keepAlive: true)
 class SettingsNotifier extends _$SettingsNotifier {
@@ -185,6 +198,11 @@ class SettingsNotifier extends _$SettingsNotifier {
       (oldState) =>
           oldState.copyWith(showBackgroundImage: !oldState.showBackgroundImage),
     );
+  }
+
+  Future<SettingsState> setAppAuthMethod(ForceBiometricOption value) {
+    Logger.info('App auth method set to $value');
+    return updateState((oldState) => oldState.copyWith(appAuthMethod: value));
   }
 
   Future<SettingsState> setAutoCloseAppAfterAcceptingPushRequest(bool value) {

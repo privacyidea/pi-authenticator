@@ -1,9 +1,12 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:mockito/mockito.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
 import 'package:privacyidea_authenticator/model/enums/force_biometric_option.dart';
+import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.dart';
 import 'package:privacyidea_authenticator/utils/lock_auth.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 
 import '../../tests_app_wrapper.mocks.dart';
 
@@ -245,6 +248,105 @@ void main() {
       expect(result, isFalse);
     });
 
+    test(
+      'lockAuthWithSettingsRef merges app setting and forces biometricOnly when app setting is biometric',
+      () async {
+        final ref = await _refWithAppAuthMethod(ForceBiometricOption.biometric);
+        when(mockLocalAuth.isDeviceSupported()).thenAnswer((_) async => true);
+        when(mockLocalAuth.canCheckBiometrics).thenAnswer((_) async => true);
+        when(
+          mockLocalAuth.getAvailableBiometrics(),
+        ).thenAnswer((_) async => [BiometricType.fingerprint]);
+        when(
+          mockLocalAuth.authenticate(
+            localizedReason: anyNamed('localizedReason'),
+            biometricOnly: anyNamed('biometricOnly'),
+            authMessages: anyNamed('authMessages'),
+          ),
+        ).thenAnswer((_) async => true);
+
+        final result = await lockAuthWithSettingsRef(
+          ref: ref,
+          reason: (loc) => 'reason',
+          localization: AppLocalizationsEn(),
+          // Token says "any"; app setting (biometric) should win.
+        );
+
+        expect(result, isTrue);
+        verify(
+          mockLocalAuth.authenticate(
+            localizedReason: anyNamed('localizedReason'),
+            biometricOnly: true,
+            authMessages: anyNamed('authMessages'),
+          ),
+        ).called(1);
+      },
+    );
+
+    test(
+      'lockAuthWithSettingsRef does not force biometric when app setting is any and token is none',
+      () async {
+        final ref = await _refWithAppAuthMethod(ForceBiometricOption.any);
+        when(mockLocalAuth.isDeviceSupported()).thenAnswer((_) async => true);
+        when(
+          mockLocalAuth.authenticate(
+            localizedReason: anyNamed('localizedReason'),
+            biometricOnly: anyNamed('biometricOnly'),
+            authMessages: anyNamed('authMessages'),
+          ),
+        ).thenAnswer((_) async => true);
+
+        final result = await lockAuthWithSettingsRef(
+          ref: ref,
+          reason: (loc) => 'reason',
+          localization: AppLocalizationsEn(),
+        );
+
+        expect(result, isTrue);
+        verify(
+          mockLocalAuth.authenticate(
+            localizedReason: anyNamed('localizedReason'),
+            authMessages: anyNamed('authMessages'),
+          ),
+        ).called(1);
+      },
+    );
+
+    test(
+      'lockAuthWithSettingsRef uses token-level biometric even when app setting is any',
+      () async {
+        final ref = await _refWithAppAuthMethod(ForceBiometricOption.any);
+        when(mockLocalAuth.isDeviceSupported()).thenAnswer((_) async => true);
+        when(mockLocalAuth.canCheckBiometrics).thenAnswer((_) async => true);
+        when(
+          mockLocalAuth.getAvailableBiometrics(),
+        ).thenAnswer((_) async => [BiometricType.fingerprint]);
+        when(
+          mockLocalAuth.authenticate(
+            localizedReason: anyNamed('localizedReason'),
+            biometricOnly: anyNamed('biometricOnly'),
+            authMessages: anyNamed('authMessages'),
+          ),
+        ).thenAnswer((_) async => true);
+
+        final result = await lockAuthWithSettingsRef(
+          ref: ref,
+          reason: (loc) => 'reason',
+          localization: AppLocalizationsEn(),
+          forceBiometricOption: ForceBiometricOption.biometric,
+        );
+
+        expect(result, isTrue);
+        verify(
+          mockLocalAuth.authenticate(
+            localizedReason: anyNamed('localizedReason'),
+            biometricOnly: true,
+            authMessages: anyNamed('authMessages'),
+          ),
+        ).called(1);
+      },
+    );
+
     test('should prevent concurrent calls using the mutex', () async {
       when(mockLocalAuth.isDeviceSupported()).thenAnswer((_) async => true);
       when(
@@ -280,4 +382,35 @@ void main() {
       ).called(1);
     });
   });
+}
+
+/// Builds a Riverpod container with [settingsProvider] overridden so that
+/// [appAuthMethodProvider] resolves to [appAuthMethod], and returns a real
+/// `Ref` captured from a probe provider so [lockAuthWithSettingsRef] can be
+/// exercised end-to-end.
+Future<Ref> _refWithAppAuthMethod(ForceBiometricOption appAuthMethod) async {
+  final mockRepo = MockSettingsRepository();
+  when(
+    mockRepo.loadSettings(),
+  ).thenAnswer((_) async => SettingsState(appAuthMethod: appAuthMethod));
+  when(mockRepo.saveSettings(any)).thenAnswer((_) async => true);
+
+  late Ref captured;
+  final probe = Provider<int>((ref) {
+    captured = ref;
+    return 0;
+  });
+
+  final container = ProviderContainer(
+    overrides: [
+      settingsProvider.overrideWith(
+        () => SettingsNotifier(repoOverride: mockRepo),
+      ),
+    ],
+  );
+  container.read(probe);
+  // Ensure settingsProvider is materialized so the .select read returns the
+  // overridden value rather than the default.
+  await container.read(settingsProvider.future);
+  return captured;
 }
