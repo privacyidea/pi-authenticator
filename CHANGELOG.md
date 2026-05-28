@@ -1,5 +1,15 @@
 # Changelog
 
+## [4.7.3] - 2026.05.28
+ - Added an app-wide authentication method setting (PIN, biometrics, or either)
+ - Added categories to the feedback form for more targeted feedback
+ - Containers can now be deleted even if they are no longer registered or found on the server
+ - Fixed an error when re-enrolling a container that was already finalized
+ - Improved and localized error messages for server-side issues
+
+## [4.7.2] - 2026.04.24
+ - Updated the QR code scanning library
+
 ## [4.7.1] - 2026.04.20
  - Fixed an error that occurred when leaving the camera view too fast
 

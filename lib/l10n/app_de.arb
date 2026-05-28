@@ -1225,6 +1225,24 @@
   "@patchNotesV4_6_1Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
+  "@patchNotesV4_7_3BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.7.3"
+  },
+  "@patchNotesV4_7_3BugFix2": {
+    "description": "Patch notes for a bug fix in version 4.7.3"
+  },
+  "@patchNotesV4_7_3Improvement1": {
+    "description": "Patch notes for an improvement in version 4.7.3"
+  },
+  "@patchNotesV4_7_3NewFeature1": {
+    "description": "Patch notes for a new feature in version 4.7.3"
+  },
+  "@patchNotesV4_7_3NewFeature2": {
+    "description": "Patch notes for a new feature in version 4.7.3"
+  },
+  "@patchNotesV4_7_2Improvement1": {
+    "description": "Patch notes for an improvement in version 4.7.2"
+  },
   "@patchNotesV4_7_1BugFix1": {
     "description": "Patch notes for a bug fix in version 4.6.1"
   },
@@ -2023,6 +2041,12 @@
   "patchNotesV4_6_0Improvement1": "Die internen Komponenten wurden aktualisiert, um die Sicherheit zu gewährleisten und die Kompatibilität mit den neuesten Geräten sicherzustellen.",
   "patchNotesV4_6_1BugFix1": "Fehler im expansion panel des TokenFolder behoben",
   "patchNotesV4_6_1Improvement1": "Mehrere Abhängigkeiten wurden aktualisiert.",
+  "patchNotesV4_7_3BugFix1": "Container können jetzt auch gelöscht werden, wenn sie auf dem Server nicht mehr registriert oder vorhanden sind.",
+  "patchNotesV4_7_3BugFix2": "Ein Fehler wurde behoben, der beim erneuten Ausrollen eines bereits abgeschlossenen Containers auftrat.",
+  "patchNotesV4_7_3Improvement1": "Verbesserte und lokalisierte Fehlermeldungen bei serverseitigen Problemen.",
+  "patchNotesV4_7_3NewFeature1": "App-weite Authentifizierungsmethode hinzugefügt (PIN, Biometrie oder beides).",
+  "patchNotesV4_7_3NewFeature2": "Kategorien zum Feedback-Formular hinzugefügt, um gezielter Rückmeldung geben zu können.",
+  "patchNotesV4_7_2Improvement1": "QR-Code-Scanner-Bibliothek aktualisiert.",
   "patchNotesV4_7_1BugFix1": "Ein Fehler wurde behoben, der auftrat, wenn die Kameraansicht zu schnell verlassen wurde.",
   "patchNotesV4_7_0Improvement1": "Das Fehlerprotokoll wird nun von unten nach oben gescrollt, sodass die neuesten Protokolle zuerst angezeigt werden.",
   "patchNotesV4_7_0Improvement2": "Mehrere Abhängigkeiten wurden aktualisiert.",

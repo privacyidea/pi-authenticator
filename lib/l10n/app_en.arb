@@ -1225,6 +1225,24 @@
   "@patchNotesV4_6_1Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
+  "@patchNotesV4_7_3BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.7.3"
+  },
+  "@patchNotesV4_7_3BugFix2": {
+    "description": "Patch notes for a bug fix in version 4.7.3"
+  },
+  "@patchNotesV4_7_3Improvement1": {
+    "description": "Patch notes for an improvement in version 4.7.3"
+  },
+  "@patchNotesV4_7_3NewFeature1": {
+    "description": "Patch notes for a new feature in version 4.7.3"
+  },
+  "@patchNotesV4_7_3NewFeature2": {
+    "description": "Patch notes for a new feature in version 4.7.3"
+  },
+  "@patchNotesV4_7_2Improvement1": {
+    "description": "Patch notes for an improvement in version 4.7.2"
+  },
   "@patchNotesV4_7_1BugFix1": {
     "description": "Patch notes for a bug fix in version 4.7.0"
   },
@@ -2023,6 +2041,12 @@
   "patchNotesV4_6_0Improvement1": "Internal components have been updated to maintain security and ensure compatibility with the latest devices.",
   "patchNotesV4_6_1BugFix1": "Fixed an error with the expansion panel of the TokenFolder",
   "patchNotesV4_6_1Improvement1": "Updated several dependencies",
+  "patchNotesV4_7_3BugFix1": "Containers can now be deleted even if they are no longer registered or found on the server.",
+  "patchNotesV4_7_3BugFix2": "Fixed an error when re-enrolling a container that was already finalized.",
+  "patchNotesV4_7_3Improvement1": "Improved and localized error messages for server-side issues.",
+  "patchNotesV4_7_3NewFeature1": "Added an app-wide authentication method setting (PIN, biometrics, or either).",
+  "patchNotesV4_7_3NewFeature2": "Added categories to the feedback form for more targeted feedback.",
+  "patchNotesV4_7_2Improvement1": "Updated the QR code scanning library.",
   "patchNotesV4_7_1BugFix1": "Fixed an error that occurred when leaving the camera view too fast.",
   "patchNotesV4_7_0Improvement1": "Error log is now scrolled from bottom to top to see the newest logs first.",
   "patchNotesV4_7_0Improvement2": "Updated several dependencies.",

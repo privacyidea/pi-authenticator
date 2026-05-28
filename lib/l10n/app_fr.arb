@@ -1204,6 +1204,24 @@
   "@patchNotesV4_6_1Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
+  "@patchNotesV4_7_3BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.7.3"
+  },
+  "@patchNotesV4_7_3BugFix2": {
+    "description": "Patch notes for a bug fix in version 4.7.3"
+  },
+  "@patchNotesV4_7_3Improvement1": {
+    "description": "Patch notes for an improvement in version 4.7.3"
+  },
+  "@patchNotesV4_7_3NewFeature1": {
+    "description": "Patch notes for a new feature in version 4.7.3"
+  },
+  "@patchNotesV4_7_3NewFeature2": {
+    "description": "Patch notes for a new feature in version 4.7.3"
+  },
+  "@patchNotesV4_7_2Improvement1": {
+    "description": "Patch notes for an improvement in version 4.7.2"
+  },
   "@patchNotesV4_7_1BugFix1": {
     "description": "Patch notes for a bug fix in version 4.6.1"
   },
@@ -2002,6 +2020,12 @@
   "patchNotesV4_6_0Improvement1": "Les composants internes ont été mis à jour afin de maintenir la sécurité et d'assurer la compatibilité avec les appareils les plus récents.",
   "patchNotesV4_6_1BugFix1": "Correction d'une erreur avec le panneau d'extension du TokenFolder",
   "patchNotesV4_6_1Improvement1": "Mise à jour de plusieurs dépendances.",
+  "patchNotesV4_7_3BugFix1": "Les conteneurs peuvent désormais être supprimés même s'ils ne sont plus enregistrés ou introuvables sur le serveur.",
+  "patchNotesV4_7_3BugFix2": "Correction d'une erreur lors du ré-enrôlement d'un conteneur déjà finalisé.",
+  "patchNotesV4_7_3Improvement1": "Messages d'erreur améliorés et localisés pour les problèmes côté serveur.",
+  "patchNotesV4_7_3NewFeature1": "Ajout d'un paramètre de méthode d'authentification pour toute l'application (PIN, biométrie ou les deux).",
+  "patchNotesV4_7_3NewFeature2": "Ajout de catégories au formulaire de commentaires pour des retours plus ciblés.",
+  "patchNotesV4_7_2Improvement1": "Mise à jour de la bibliothèque de scan de codes QR.",
   "patchNotesV4_7_1BugFix1": "Correction d'une erreur qui se produisait lorsque l'on quittait trop rapidement la vue caméra.",
   "patchNotesV4_7_0Improvement1": "Le journal des erreurs défile désormais de bas en haut afin d'afficher les journaux les plus récents en premier.",
   "patchNotesV4_7_0Improvement2": "Mise à jour de plusieurs dépendances.",

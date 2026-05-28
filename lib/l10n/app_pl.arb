@@ -1204,6 +1204,24 @@
   "@patchNotesV4_6_1Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
+  "@patchNotesV4_7_3BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.7.3"
+  },
+  "@patchNotesV4_7_3BugFix2": {
+    "description": "Patch notes for a bug fix in version 4.7.3"
+  },
+  "@patchNotesV4_7_3Improvement1": {
+    "description": "Patch notes for an improvement in version 4.7.3"
+  },
+  "@patchNotesV4_7_3NewFeature1": {
+    "description": "Patch notes for a new feature in version 4.7.3"
+  },
+  "@patchNotesV4_7_3NewFeature2": {
+    "description": "Patch notes for a new feature in version 4.7.3"
+  },
+  "@patchNotesV4_7_2Improvement1": {
+    "description": "Patch notes for an improvement in version 4.7.2"
+  },
   "@patchNotesV4_7_1BugFix1": {
     "description": "Patch notes for a bug fix in version 4.6.1"
   },
@@ -2002,6 +2020,12 @@
   "patchNotesV4_6_0Improvement1": "Wewnętrzne komponenty zostały zaktualizowane w celu zapewnienia bezpieczeństwa i kompatybilności z najnowszymi urządzeniami.",
   "patchNotesV4_6_1BugFix1": "Naprawiono błąd związany z panelem rozszerzeń TokenFolder.",
   "patchNotesV4_6_1Improvement1": "Zaktualizowano kilka zależności",
+  "patchNotesV4_7_3BugFix1": "Kontenery można teraz usuwać, nawet jeśli nie są już zarejestrowane lub nie zostały znalezione na serwerze.",
+  "patchNotesV4_7_3BugFix2": "Naprawiono błąd występujący podczas ponownego wdrażania już sfinalizowanego kontenera.",
+  "patchNotesV4_7_3Improvement1": "Ulepszono i zlokalizowano komunikaty o błędach po stronie serwera.",
+  "patchNotesV4_7_3NewFeature1": "Dodano ogólnoaplikacyjne ustawienie metody uwierzytelniania (PIN, biometria lub oba).",
+  "patchNotesV4_7_3NewFeature2": "Dodano kategorie do formularza opinii, aby przekazywać bardziej ukierunkowane informacje zwrotne.",
+  "patchNotesV4_7_2Improvement1": "Zaktualizowano bibliotekę skanowania kodów QR.",
   "patchNotesV4_7_1BugFix1": "Naprawiono błąd, który występował podczas zbyt szybkiego opuszczania widoku kamery.",
   "patchNotesV4_7_0Improvement1": "Dziennik błędów jest teraz przewijany od dołu do góry, aby najpierw wyświetlać najnowsze wpisy.",
   "patchNotesV4_7_0Improvement2": "Zaktualizowano kilka zależności.",

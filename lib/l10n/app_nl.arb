@@ -1204,6 +1204,24 @@
   "@patchNotesV4_6_1Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
+  "@patchNotesV4_7_3BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.7.3"
+  },
+  "@patchNotesV4_7_3BugFix2": {
+    "description": "Patch notes for a bug fix in version 4.7.3"
+  },
+  "@patchNotesV4_7_3Improvement1": {
+    "description": "Patch notes for an improvement in version 4.7.3"
+  },
+  "@patchNotesV4_7_3NewFeature1": {
+    "description": "Patch notes for a new feature in version 4.7.3"
+  },
+  "@patchNotesV4_7_3NewFeature2": {
+    "description": "Patch notes for a new feature in version 4.7.3"
+  },
+  "@patchNotesV4_7_2Improvement1": {
+    "description": "Patch notes for an improvement in version 4.7.2"
+  },
   "@patchNotesV4_7_1BugFix1": {
     "description": "Patch notes for a bug fix in version 4.6.1"
   },
@@ -2002,6 +2020,12 @@
   "patchNotesV4_6_0Improvement1": "Interne componenten zijn bijgewerkt om de veiligheid te waarborgen en compatibiliteit met de nieuwste apparaten te garanderen.",
   "patchNotesV4_6_1BugFix1": "Een fout in het uitbreidingspaneel van de TokenFolder is verholpen.",
   "patchNotesV4_6_1Improvement1": "Verschillende afhankelijkheden bijgewerkt",
+  "patchNotesV4_7_3BugFix1": "Containers kunnen nu ook worden verwijderd als ze niet meer geregistreerd of niet gevonden zijn op de server.",
+  "patchNotesV4_7_3BugFix2": "Een fout is verholpen bij het opnieuw uitrollen van een reeds afgeronde container.",
+  "patchNotesV4_7_3Improvement1": "Verbeterde en gelokaliseerde foutmeldingen bij serverproblemen.",
+  "patchNotesV4_7_3NewFeature1": "App-brede instelling voor authenticatiemethode toegevoegd (PIN, biometrie of beide).",
+  "patchNotesV4_7_3NewFeature2": "Categorieën toegevoegd aan het feedbackformulier voor gerichtere feedback.",
+  "patchNotesV4_7_2Improvement1": "QR-codescannerbibliotheek bijgewerkt.",
   "patchNotesV4_7_1BugFix1": "Een fout is verholpen die optrad wanneer de camerabeeld te snel werd verlaten.",
   "patchNotesV4_7_0Improvement1": "Het foutenlogboek wordt nu van onder naar boven doorlopen, zodat de nieuwste logboeken als eerste worden weergegeven.",
   "patchNotesV4_7_0Improvement2": "Verschillende afhankelijkheden bijgewerkt.",

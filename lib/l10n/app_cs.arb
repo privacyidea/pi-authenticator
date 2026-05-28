@@ -1204,6 +1204,24 @@
   "@patchNotesV4_6_1Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
+  "@patchNotesV4_7_3BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.7.3"
+  },
+  "@patchNotesV4_7_3BugFix2": {
+    "description": "Patch notes for a bug fix in version 4.7.3"
+  },
+  "@patchNotesV4_7_3Improvement1": {
+    "description": "Patch notes for an improvement in version 4.7.3"
+  },
+  "@patchNotesV4_7_3NewFeature1": {
+    "description": "Patch notes for a new feature in version 4.7.3"
+  },
+  "@patchNotesV4_7_3NewFeature2": {
+    "description": "Patch notes for a new feature in version 4.7.3"
+  },
+  "@patchNotesV4_7_2Improvement1": {
+    "description": "Patch notes for an improvement in version 4.7.2"
+  },
   "@patchNotesV4_7_1BugFix1": {
     "description": "Patch notes for a bug fix in version 4.6.1"
   },
@@ -2002,6 +2020,12 @@
   "patchNotesV4_6_0Improvement1": "Interní komponenty byly aktualizovány, aby byla zachována bezpečnost a zajištěna kompatibilita s nejnovějšími zařízeními.",
   "patchNotesV4_6_1BugFix1": "Opravena chyba v rozbalovacím panelu TokenFolder.",
   "patchNotesV4_6_1Improvement1": "Aktualizováno několik závislostí.",
+  "patchNotesV4_7_3BugFix1": "Kontejnery lze nyní smazat, i když již nejsou registrovány nebo nebyly nalezeny na serveru.",
+  "patchNotesV4_7_3BugFix2": "Opravena chyba při opětovném zavádění kontejneru, který již byl dokončen.",
+  "patchNotesV4_7_3Improvement1": "Vylepšené a lokalizované chybové zprávy pro problémy na straně serveru.",
+  "patchNotesV4_7_3NewFeature1": "Přidáno nastavení metody ověřování pro celou aplikaci (PIN, biometrie nebo obojí).",
+  "patchNotesV4_7_3NewFeature2": "Do formuláře zpětné vazby byly přidány kategorie pro cílenější zpětnou vazbu.",
+  "patchNotesV4_7_2Improvement1": "Aktualizována knihovna pro skenování QR kódů.",
   "patchNotesV4_7_1BugFix1": "Opravena chyba, ke které docházelo při příliš rychlém opuštění zobrazení kamery.",
   "patchNotesV4_7_0Improvement1": "Chybový protokol se nyní posouvá zdola nahoru, aby byly nejnovější záznamy zobrazeny jako první.",
   "patchNotesV4_7_0Improvement2": "Aktualizováno několik závislostí.",
