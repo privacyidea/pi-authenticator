@@ -110,7 +110,10 @@
     "description": "Reason shown when re-authenticating to change the app's auth method setting."
   },
   "@authMethodDescription": {
-    "description": "Helper text describing how the app-wide auth method setting interacts with token-level requirements."
+    "description": "Helper text describing the app-wide auth method setting."
+  },
+  "@authMethodDescriptionNote": {
+    "description": "Helper note describing how the app-wide auth method setting interacts with token-level requirements."
   },
   "@authMethodPin": {
     "description": "Label for the auth method option that requires a PIN/passcode."
@@ -1734,7 +1737,8 @@
   "authMethodAny": "Any",
   "authMethodBiometric": "Biometric only",
   "authMethodChangeReason": "Please authenticate to change the auth method.",
-  "authMethodDescription": "Choose how the app authenticates locked actions. Tokens that require biometrics will always require biometrics — this setting can only tighten the requirement, never loosen it.",
+  "authMethodDescription": "Choose how the app authenticates locked actions.",
+  "authMethodDescriptionNote": "This setting can only tighten the requirement, never loosen it.",
   "authMethodPin": "PIN only",
   "authMethodTitle": "Authentication method",
   "authNotSupportedBody": "Your device does not support credentials or biometric authentication. This is required to perform this action.",

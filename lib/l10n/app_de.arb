@@ -110,7 +110,10 @@
     "description": "Reason shown when re-authenticating to change the app's auth method setting."
   },
   "@authMethodDescription": {
-    "description": "Helper text describing how the app-wide auth method setting interacts with token-level requirements."
+    "description": "Helper text describing the app-wide auth method setting."
+  },
+  "@authMethodDescriptionNote": {
+    "description": "Helper note describing how the app-wide auth method setting interacts with token-level requirements."
   },
   "@authMethodPin": {
     "description": "Label for the auth method option that requires a PIN/passcode."
@@ -1734,7 +1737,8 @@
   "authMethodAny": "Beliebig",
   "authMethodBiometric": "Nur Biometrie",
   "authMethodChangeReason": "Bitte authentifizieren, um die Authentifizierungsmethode zu ändern.",
-  "authMethodDescription": "Wählen Sie, wie die App gesperrte Aktionen authentifiziert. Tokens, die Biometrie verlangen, erfordern immer Biometrie – diese Einstellung kann die Anforderung nur verschärfen, nicht abschwächen.",
+  "authMethodDescription": "Wählen Sie, wie die App gesperrte Aktionen authentifiziert.",
+  "authMethodDescriptionNote": "Diese Einstellung kann die Anforderung nur verschärfen, nicht abschwächen.",
   "authMethodPin": "Nur PIN",
   "authMethodTitle": "Authentifizierungsmethode",
   "authNotSupportedBody": "Ihr Gerät unterstützt weder Passwort- noch biometrische Authentifizierung. Dies ist erforderlich, um diese Aktion auszuführen.",

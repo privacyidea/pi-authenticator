@@ -55,6 +55,13 @@ class AuthMethodDialog extends ConsumerWidget {
                 style: Theme.of(context).textTheme.bodySmall,
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              child: Text(
+                localization.authMethodDescriptionNote,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ),
             for (final option in _options)
               RadioListTile<ForceBiometricOption>(
                 value: option,
