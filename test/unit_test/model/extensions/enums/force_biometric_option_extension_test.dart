@@ -79,5 +79,91 @@ void main() {
         ForceBiometricOption.none,
       );
     });
+
+    group('mergedWith', () {
+      test('normalizes none to any: none + none -> any', () {
+        expect(
+          ForceBiometricOption.none.mergedWith(ForceBiometricOption.none),
+          ForceBiometricOption.any,
+        );
+      });
+
+      test('normalizes none to any: none + any -> any', () {
+        expect(
+          ForceBiometricOption.none.mergedWith(ForceBiometricOption.any),
+          ForceBiometricOption.any,
+        );
+        expect(
+          ForceBiometricOption.any.mergedWith(ForceBiometricOption.none),
+          ForceBiometricOption.any,
+        );
+      });
+
+      test('any yields to the stricter side', () {
+        expect(
+          ForceBiometricOption.any.mergedWith(ForceBiometricOption.biometric),
+          ForceBiometricOption.biometric,
+        );
+        expect(
+          ForceBiometricOption.biometric.mergedWith(ForceBiometricOption.any),
+          ForceBiometricOption.biometric,
+        );
+        expect(
+          ForceBiometricOption.any.mergedWith(ForceBiometricOption.pin),
+          ForceBiometricOption.pin,
+        );
+        expect(
+          ForceBiometricOption.pin.mergedWith(ForceBiometricOption.any),
+          ForceBiometricOption.pin,
+        );
+      });
+
+      test('none yields to the stricter side (normalized via any)', () {
+        expect(
+          ForceBiometricOption.none.mergedWith(ForceBiometricOption.biometric),
+          ForceBiometricOption.biometric,
+        );
+        expect(
+          ForceBiometricOption.biometric.mergedWith(ForceBiometricOption.none),
+          ForceBiometricOption.biometric,
+        );
+        expect(
+          ForceBiometricOption.none.mergedWith(ForceBiometricOption.pin),
+          ForceBiometricOption.pin,
+        );
+        expect(
+          ForceBiometricOption.pin.mergedWith(ForceBiometricOption.none),
+          ForceBiometricOption.pin,
+        );
+      });
+
+      test('equal non-none values return themselves', () {
+        expect(
+          ForceBiometricOption.any.mergedWith(ForceBiometricOption.any),
+          ForceBiometricOption.any,
+        );
+        expect(
+          ForceBiometricOption.biometric.mergedWith(
+            ForceBiometricOption.biometric,
+          ),
+          ForceBiometricOption.biometric,
+        );
+        expect(
+          ForceBiometricOption.pin.mergedWith(ForceBiometricOption.pin),
+          ForceBiometricOption.pin,
+        );
+      });
+
+      test('biometric vs pin conflict falls back to biometric', () {
+        expect(
+          ForceBiometricOption.biometric.mergedWith(ForceBiometricOption.pin),
+          ForceBiometricOption.biometric,
+        );
+        expect(
+          ForceBiometricOption.pin.mergedWith(ForceBiometricOption.biometric),
+          ForceBiometricOption.biometric,
+        );
+      });
+    });
   });
 }

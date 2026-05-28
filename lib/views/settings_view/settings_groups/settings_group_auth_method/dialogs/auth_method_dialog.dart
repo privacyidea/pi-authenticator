@@ -80,16 +80,9 @@ class AuthMethodDialog extends ConsumerWidget {
     );
   }
 
-  String _labelFor(AppLocalizations l, ForceBiometricOption option) {
-    switch (option) {
-      case ForceBiometricOption.any:
-        return l.authMethodAny;
-      case ForceBiometricOption.biometric:
-        return l.authMethodBiometric;
-      case ForceBiometricOption.pin:
-        return l.authMethodPin;
-      case ForceBiometricOption.none:
-        return l.authMethodAny;
-    }
-  }
+  String _labelFor(AppLocalizations l, ForceBiometricOption option) =>
+      switch (option) {
+        ForceBiometricOption.biometric => l.authMethodBiometric,
+        _ => l.authMethodAny,
+      };
 }

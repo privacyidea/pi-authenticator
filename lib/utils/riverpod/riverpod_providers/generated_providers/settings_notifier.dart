@@ -39,10 +39,18 @@ final settingsProvider = settingsProviderOf(
 final hidePushTokensProvider = settingsProvider.select<bool>(
   (asyncValue) => asyncValue.value?.hidePushTokens ?? false,
 );
-final appAuthMethodProvider = settingsProvider.select<ForceBiometricOption>(
-  (asyncValue) =>
-      asyncValue.value?.appAuthMethod ?? SettingsState.appAuthMethodDefault,
-);
+/// App-level auth method is exposed as either `any` or `biometric`. Stored
+/// `none`/`pin` values (legacy or token-level enum members) are normalized to
+/// `any` so callers and the settings UI only have to reason about two states.
+final appAuthMethodProvider = settingsProvider.select<ForceBiometricOption>((
+  asyncValue,
+) {
+  final stored =
+      asyncValue.value?.appAuthMethod ?? SettingsState.appAuthMethodDefault;
+  return stored == ForceBiometricOption.biometric
+      ? ForceBiometricOption.biometric
+      : ForceBiometricOption.any;
+});
 
 @Riverpod(keepAlive: true)
 class SettingsNotifier extends _$SettingsNotifier {

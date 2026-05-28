@@ -44,13 +44,13 @@ extension ForceBiometricOptionX on ForceBiometricOption {
     if (value == null) return null;
     // cut "ForceBiometricOption." prefix if present
     final enumValue = value.contains('.') ? value.split('.').last : value;
-    return ForceBiometricOption.values.firstWhere(
-      (e) => e.name.toLowerCase() == enumValue.toLowerCase(),
-      orElse: () {
-        Logger.warning('Unknown ForceBiometricOption value: $value');
-        throw ArgumentError('Invalid ForceBiometricOption value: $enumValue');
-      },
-    );
+    final match = ForceBiometricOption.values
+        .where((e) => e.name.toLowerCase() == enumValue.toLowerCase())
+        .firstOrNull;
+    if (match == null) {
+      Logger.warning('Unknown ForceBiometricOption value: $value');
+    }
+    return match;
   }
 
   /// Combines a token-level and an app-level [ForceBiometricOption] into the
