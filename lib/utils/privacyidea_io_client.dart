@@ -58,45 +58,60 @@ class PrivacyideaIOClient {
 
     try {
       await ioClient.post(url, body: '').timeout(const Duration(seconds: 15));
-    } on ClientException {
-      Logger.warning('ClientException');
-      ioClient.close();
+    } on HandshakeException catch (e, _) {
+      Logger.warning(
+        'Network permission trigger handshake failed (sslVerify: $sslVerify)',
+        error: '${e.type}: ${e.message}'
+            '${e.osError != null ? ', osError: ${e.osError}' : ''}',
+      );
+      showErrorStatusMessage(
+        message: (localization) => localization.connectionFailed,
+        details: (localization) => localization.checkYourNetwork,
+      );
+      return false;
+    } on ClientException catch (e, _) {
+      Logger.warning('Network permission trigger failed', error: e.message);
       showErrorStatusMessage(
         message: (localization) => localization.connectionFailed,
         details: (localization) => localization.checkYourNetwork,
       );
       return false;
     } on ArgumentError catch (e, _) {
-      Logger.warning('ArgumentError: $e');
-      ioClient.close();
+      Logger.warning('Network permission trigger invalid URL', error: e.message);
       showErrorStatusMessage(
         message: (localization) => localization.connectionFailed,
         details: (localization) => localization.invalidUrl,
       );
       return false;
-    } catch (e, _) {
-      if (e is! SocketException && e is! TimeoutException) {
-        rethrow;
-      }
+    } on SocketException catch (e, _) {
       if (isRetry) {
-        Logger.warning('SocketException while retrying');
+        Logger.warning('Network permission trigger failed after retry', error: e.message);
         showErrorStatusMessage(
           message: (localization) => localization.connectionFailed,
           details: (localization) => localization.checkYourNetwork,
         );
-
-        ioClient.close();
         return false;
       }
-      ioClient.close();
       return Future.delayed(
         const Duration(seconds: 10),
-        () => triggerNetworkAccessPermission(
-          url: url,
-          sslVerify: sslVerify,
-          isRetry: true,
-        ),
+        () => triggerNetworkAccessPermission(url: url, sslVerify: sslVerify, isRetry: true),
       );
+    } on TimeoutException {
+      if (isRetry) {
+        Logger.warning('Network permission trigger timed out after retry');
+        showErrorStatusMessage(
+          message: (localization) => localization.connectionFailed,
+          details: (localization) => localization.checkYourNetwork,
+        );
+        return false;
+      }
+      return Future.delayed(
+        const Duration(seconds: 10),
+        () => triggerNetworkAccessPermission(url: url, sslVerify: sslVerify, isRetry: true),
+      );
+    } catch (e, stack) {
+      Logger.error('Network permission trigger failed unexpectedly', error: e, stackTrace: stack);
+      return false;
     } finally {
       ioClient.close();
     }
@@ -145,23 +160,31 @@ class PrivacyideaIOClient {
           .post(url, body: body)
           .timeout(const Duration(seconds: 15));
     } on HandshakeException catch (e, _) {
-      Logger.info('Handshake failed. sslVerify: $sslVerify');
+      Logger.warning(
+        'POST handshake failed (sslVerify: $sslVerify)',
+        error:
+            '${e.type}: ${e.message}'
+            '${e.osError != null ? ', osError: ${e.osError}' : ''}',
+      );
       return ResponseBuilder.fromStatusCode(525);
-    } on TimeoutException catch (e, _) {
-      Logger.info('Post request timed out');
+    } on TimeoutException {
+      Logger.warning('POST request timed out');
       return ResponseBuilder.fromStatusCode(408);
     } on SocketException catch (e, _) {
-      Logger.info('Post request failed ($e)');
+      Logger.warning('POST request failed', error: e.message);
       return ResponseBuilder.fromMessage(e.message);
     } on ClientException catch (e, _) {
-      Logger.info('Post request failed ($e)');
+      Logger.warning('POST request failed', error: e.message);
       return ResponseBuilder.fromMessage(e.message);
-    } catch (e, _) {
-      Logger.warning('Something unexpected happened');
+    } catch (e, stack) {
+      Logger.error(
+        'POST request failed unexpectedly',
+        error: e,
+        stackTrace: stack,
+      );
       return ResponseBuilder.fromStatusCode(520);
     } finally {
       ioClient.close();
-      Logger.info('Post request finished');
     }
 
     if (HttpStatusChecker.isError(response.statusCode)) {
@@ -225,23 +248,31 @@ class PrivacyideaIOClient {
     try {
       response = await ioClient.get(uri).timeout(const Duration(seconds: 15));
     } on HandshakeException catch (e, _) {
-      Logger.info('Handshake failed. sslVerify: $sslVerify');
+      Logger.warning(
+        'GET handshake failed (sslVerify: $sslVerify)',
+        error:
+            '${e.type}: ${e.message}'
+            '${e.osError != null ? ', osError: ${e.osError}' : ''}',
+      );
       return ResponseBuilder.fromStatusCode(525);
-    } on TimeoutException catch (e, _) {
-      Logger.info('Post request timed out');
+    } on TimeoutException {
+      Logger.warning('GET request timed out');
       return ResponseBuilder.fromStatusCode(408);
     } on SocketException catch (e, _) {
-      Logger.info('Post request failed ($e)');
+      Logger.warning('GET request failed', error: e.message);
       return ResponseBuilder.fromMessage(e.message);
     } on ClientException catch (e, _) {
-      Logger.info('Post request failed ($e)');
+      Logger.warning('GET request failed', error: e.message);
       return ResponseBuilder.fromMessage(e.message);
-    } catch (e, _) {
-      Logger.warning('Something unexpected happened');
+    } catch (e, stack) {
+      Logger.error(
+        'GET request failed unexpectedly',
+        error: e,
+        stackTrace: stack,
+      );
       return ResponseBuilder.fromStatusCode(520);
     } finally {
       ioClient.close();
-      Logger.info('Post request finished');
     }
 
     if (HttpStatusChecker.isError(response.statusCode)) {
