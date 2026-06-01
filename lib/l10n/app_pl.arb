@@ -1213,6 +1213,9 @@
   "@patchNotesV4_7_3Improvement1": {
     "description": "Patch notes for an improvement in version 4.7.3"
   },
+  "@patchNotesV4_7_3Improvement2": {
+    "description": "Patch notes for an improvement in version 4.7.3"
+  },
   "@patchNotesV4_7_3NewFeature1": {
     "description": "Patch notes for a new feature in version 4.7.3"
   },
@@ -2023,6 +2026,7 @@
   "patchNotesV4_7_3BugFix1": "Kontenery można teraz usuwać, nawet jeśli nie są już zarejestrowane lub nie zostały znalezione na serwerze.",
   "patchNotesV4_7_3BugFix2": "Naprawiono błąd występujący podczas ponownego wdrażania już sfinalizowanego kontenera.",
   "patchNotesV4_7_3Improvement1": "Ulepszono i zlokalizowano komunikaty o błędach po stronie serwera.",
+  "patchNotesV4_7_3Improvement2": "Ulepszone logowanie błędów sieciowych z bardziej szczegółowymi informacjami i właściwymi poziomami logowania.",
   "patchNotesV4_7_3NewFeature1": "Dodano ogólnoaplikacyjne ustawienie metody uwierzytelniania (PIN, biometria lub oba).",
   "patchNotesV4_7_3NewFeature2": "Dodano kategorie do formularza opinii, aby przekazywać bardziej ukierunkowane informacje zwrotne.",
   "patchNotesV4_7_2Improvement1": "Zaktualizowano bibliotekę skanowania kodów QR.",

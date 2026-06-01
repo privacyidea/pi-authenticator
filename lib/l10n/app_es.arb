@@ -1213,6 +1213,9 @@
   "@patchNotesV4_7_3Improvement1": {
     "description": "Patch notes for an improvement in version 4.7.3"
   },
+  "@patchNotesV4_7_3Improvement2": {
+    "description": "Patch notes for an improvement in version 4.7.3"
+  },
   "@patchNotesV4_7_3NewFeature1": {
     "description": "Patch notes for a new feature in version 4.7.3"
   },
@@ -2023,6 +2026,7 @@
   "patchNotesV4_7_3BugFix1": "Los contenedores ahora se pueden eliminar incluso si ya no están registrados o no se encuentran en el servidor.",
   "patchNotesV4_7_3BugFix2": "Se ha corregido un error al volver a registrar un contenedor que ya estaba finalizado.",
   "patchNotesV4_7_3Improvement1": "Mensajes de error mejorados y localizados para problemas del lado del servidor.",
+  "patchNotesV4_7_3Improvement2": "Se ha mejorado el registro de errores de red con información más detallada y niveles de registro correctos.",
   "patchNotesV4_7_3NewFeature1": "Se ha añadido un ajuste de método de autenticación para toda la aplicación (PIN, biometría o ambos).",
   "patchNotesV4_7_3NewFeature2": "Se han añadido categorías al formulario de comentarios para enviar comentarios más específicos.",
   "patchNotesV4_7_2Improvement1": "Se ha actualizado la biblioteca de escaneo de códigos QR.",

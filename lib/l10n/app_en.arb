@@ -1234,6 +1234,9 @@
   "@patchNotesV4_7_3Improvement1": {
     "description": "Patch notes for an improvement in version 4.7.3"
   },
+  "@patchNotesV4_7_3Improvement2": {
+    "description": "Patch notes for an improvement in version 4.7.3"
+  },
   "@patchNotesV4_7_3NewFeature1": {
     "description": "Patch notes for a new feature in version 4.7.3"
   },
@@ -2044,6 +2047,7 @@
   "patchNotesV4_7_3BugFix1": "Containers can now be deleted even if they are no longer registered or found on the server.",
   "patchNotesV4_7_3BugFix2": "Fixed an error when re-enrolling a container that was already finalized.",
   "patchNotesV4_7_3Improvement1": "Improved and localized error messages for server-side issues.",
+  "patchNotesV4_7_3Improvement2": "Improved network error logging with more detailed information and correct log levels.",
   "patchNotesV4_7_3NewFeature1": "Added an app-wide authentication method setting (PIN, biometrics, or either).",
   "patchNotesV4_7_3NewFeature2": "Added categories to the feedback form for more targeted feedback.",
   "patchNotesV4_7_2Improvement1": "Updated the QR code scanning library.",

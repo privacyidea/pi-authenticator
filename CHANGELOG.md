@@ -6,6 +6,7 @@
  - Containers can now be deleted even if they are no longer registered or found on the server
  - Fixed an error when re-enrolling a container that was already finalized
  - Improved and localized error messages for server-side issues
+ - Improved network error logging with more detailed information and correct log levels
 
 ## [4.7.2] - 2026.04.24
  - Updated the QR code scanning library

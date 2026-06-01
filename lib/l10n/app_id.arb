@@ -1213,6 +1213,9 @@
   "@patchNotesV4_7_3Improvement1": {
     "description": "Patch notes for an improvement in version 4.7.3"
   },
+  "@patchNotesV4_7_3Improvement2": {
+    "description": "Patch notes for an improvement in version 4.7.3"
+  },
   "@patchNotesV4_7_3NewFeature1": {
     "description": "Patch notes for a new feature in version 4.7.3"
   },
@@ -2023,6 +2026,7 @@
   "patchNotesV4_7_3BugFix1": "Kontainer kini dapat dihapus meskipun sudah tidak terdaftar atau tidak ditemukan di server.",
   "patchNotesV4_7_3BugFix2": "Perbaikan kesalahan saat melakukan rollout ulang kontainer yang sudah difinalisasi.",
   "patchNotesV4_7_3Improvement1": "Pesan kesalahan untuk masalah sisi server kini lebih baik dan dilokalisasi.",
+  "patchNotesV4_7_3Improvement2": "Peningkatan pencatatan kesalahan jaringan dengan informasi lebih rinci dan tingkat log yang tepat.",
   "patchNotesV4_7_3NewFeature1": "Ditambahkan pengaturan metode autentikasi untuk seluruh aplikasi (PIN, biometrik, atau keduanya).",
   "patchNotesV4_7_3NewFeature2": "Ditambahkan kategori pada formulir umpan balik untuk masukan yang lebih terarah.",
   "patchNotesV4_7_2Improvement1": "Memperbarui pustaka pemindaian kode QR.",

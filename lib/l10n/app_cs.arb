@@ -1213,6 +1213,9 @@
   "@patchNotesV4_7_3Improvement1": {
     "description": "Patch notes for an improvement in version 4.7.3"
   },
+  "@patchNotesV4_7_3Improvement2": {
+    "description": "Patch notes for an improvement in version 4.7.3"
+  },
   "@patchNotesV4_7_3NewFeature1": {
     "description": "Patch notes for a new feature in version 4.7.3"
   },
@@ -2023,6 +2026,7 @@
   "patchNotesV4_7_3BugFix1": "Kontejnery lze nyní smazat, i když již nejsou registrovány nebo nebyly nalezeny na serveru.",
   "patchNotesV4_7_3BugFix2": "Opravena chyba při opětovném zavádění kontejneru, který již byl dokončen.",
   "patchNotesV4_7_3Improvement1": "Vylepšené a lokalizované chybové zprávy pro problémy na straně serveru.",
+  "patchNotesV4_7_3Improvement2": "Vylepšené protokolování síťových chyb s podrobnějšími informacemi a správnými úrovněmi protokolování.",
   "patchNotesV4_7_3NewFeature1": "Přidáno nastavení metody ověřování pro celou aplikaci (PIN, biometrie nebo obojí).",
   "patchNotesV4_7_3NewFeature2": "Do formuláře zpětné vazby byly přidány kategorie pro cílenější zpětnou vazbu.",
   "patchNotesV4_7_2Improvement1": "Aktualizována knihovna pro skenování QR kódů.",

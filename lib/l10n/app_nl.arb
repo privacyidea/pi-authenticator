@@ -1213,6 +1213,9 @@
   "@patchNotesV4_7_3Improvement1": {
     "description": "Patch notes for an improvement in version 4.7.3"
   },
+  "@patchNotesV4_7_3Improvement2": {
+    "description": "Patch notes for an improvement in version 4.7.3"
+  },
   "@patchNotesV4_7_3NewFeature1": {
     "description": "Patch notes for a new feature in version 4.7.3"
   },
@@ -2023,6 +2026,7 @@
   "patchNotesV4_7_3BugFix1": "Containers kunnen nu ook worden verwijderd als ze niet meer geregistreerd of niet gevonden zijn op de server.",
   "patchNotesV4_7_3BugFix2": "Een fout is verholpen bij het opnieuw uitrollen van een reeds afgeronde container.",
   "patchNotesV4_7_3Improvement1": "Verbeterde en gelokaliseerde foutmeldingen bij serverproblemen.",
+  "patchNotesV4_7_3Improvement2": "Verbeterde logging van netwerkfouten met meer gedetailleerde informatie en juiste logniveaus.",
   "patchNotesV4_7_3NewFeature1": "App-brede instelling voor authenticatiemethode toegevoegd (PIN, biometrie of beide).",
   "patchNotesV4_7_3NewFeature2": "Categorieën toegevoegd aan het feedbackformulier voor gerichtere feedback.",
   "patchNotesV4_7_2Improvement1": "QR-codescannerbibliotheek bijgewerkt.",
