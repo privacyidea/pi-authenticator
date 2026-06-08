@@ -46,7 +46,7 @@ class _SelectTokensDialogState extends ConsumerState<SelectExportTokensDialog> {
   @override
   Widget build(BuildContext context) {
     final allTokens =
-        ref.read(tokenProvider).value?.tokens ?? [];
+        ref.watch(tokenProvider).value?.tokens ?? [];
     final exportableTokens = allTokens.exportableTokens.toSet();
     final hiddenCount = allTokens.length - exportableTokens.length;
     final theme = Theme.of(context);

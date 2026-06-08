@@ -87,7 +87,7 @@ class SelectExportTypeDialog extends ConsumerWidget {
       context: context,
       builder: (context) => SelectExportTokensDialog(
         multiSelect: false,
-        dialogBuilder: (tokens) => ShowQrCodeDialog(token: tokens.first),
+        dialogBuilder: (tokens) => tokens.isEmpty ? const SizedBox.shrink() : ShowQrCodeDialog(token: tokens.first),
       ),
     );
     if (isExported == true && context.mounted) {

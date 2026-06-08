@@ -23,6 +23,7 @@ class SettingsListTileButton extends StatelessWidget {
   final void Function()? onPressed;
   final Widget title;
   final Widget? icon;
+  final String? tooltip;
   static const double tileHeight = 40;
 
   const SettingsListTileButton({
@@ -30,6 +31,7 @@ class SettingsListTileButton extends StatelessWidget {
     required this.title,
     this.icon,
     this.onPressed,
+    this.tooltip,
   });
 
   @override
@@ -54,6 +56,7 @@ class SettingsListTileButton extends StatelessWidget {
                   ),
                   onPressed: onPressed,
                   splashRadius: 26,
+                  tooltip: tooltip ?? (title is Text ? (title as Text).data : null),
                   icon: icon!,
                 ),
             ],
