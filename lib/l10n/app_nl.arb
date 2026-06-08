@@ -571,7 +571,12 @@
     "description": "Descripes waht happens when the user clicks on the send button."
   },
   "@feedbackPrivacyPolicyFull": {
-    "description": "Full sentence for the privacy policy agreement. Use {privacyPolicy} as placeholder for the clickable link text."
+    "description": "Full sentence for the privacy policy agreement. Use {privacyPolicy} as placeholder for the clickable link text.",
+    "placeholders": {
+      "privacyPolicy": {
+        "type": "String"
+      }
+    }
   },
   "@feedbackPrivacyPolicyLinkText": {
     "description": "Clickable link text in the privacy policy agreement. Tapping this opens the privacy policy."
@@ -1034,9 +1039,6 @@
   "@noResultTitle": {
     "description": "No tokens installed yet."
   },
-  "@noTokenToExport": {
-    "description": "Tells the user that there are no tokens to export."
-  },
   "@noTokenToImport": {
     "description": "Tells the user that there are no tokens to import."
   },
@@ -1424,12 +1426,6 @@
     "description": "Tells the user why some tokens are not exportable."
   },
   "@selectTokensToExportHelpContent2": {
-    "description": "Tells the user why some tokens are not exportable."
-  },
-  "@selectTokensToExportHelpContent3": {
-    "description": "Tells the user why some tokens are not exportable."
-  },
-  "@selectTokensToExportHelpContent4": {
     "description": "Tells the user why some tokens are not exportable."
   },
   "@selectTokensToExportHelpTitle": {
@@ -1972,7 +1968,16 @@
   "noResultText1": "Tik op ",
   "noResultText2": "de knop om te beginnen!",
   "noResultTitle": "Nog geen token opgeslagen.",
-  "noTokenToExport": "Geen token beschikbaar voor export",
+  "hiddenTokensAmountHint": "{count, plural, one{{count} token wordt niet weergegeven omdat het mogelijk een privacyIDEA-token is en niet geëxporteerd kan worden.} other{{count} tokens worden niet weergegeven omdat ze mogelijk privacyIDEA-tokens zijn en niet geëxporteerd kunnen worden.}}",
+  "@hiddenTokensAmountHint": {
+    "description": "Informs the user how many tokens are hidden because they are privacyIDEA tokens.",
+    "placeholders": {
+      "count": {
+        "type": "num",
+        "format": "compact"
+      }
+    }
+  },
   "noTokenToImport": "Geen token gevonden om te importeren",
   "notAnInteger": "De waarde is geen geheel getal.",
   "notAnNumber": "De waarde is geen getal.",
@@ -2089,10 +2094,8 @@
   "selectImportSource": "Selecteer importbron",
   "selectImportType": "Hoe wilt u de tokens importeren?",
   "selectTokensToExport": "{count, plural, one{Selecteer token om te exporteren} other{Selecteer tokens om te exporteren}}",
-  "selectTokensToExportHelpContent1": "Als een token niet in de lijst staat, is het niet gegarandeerd dat het geen privacyIDEA token is.",
-  "selectTokensToExportHelpContent2": "Momenteel kunnen alleen handmatig toegevoegde en geïmporteerde tokens worden geëxporteerd.",
-  "selectTokensToExportHelpContent3": "We werken aan een oplossing om onderscheid te maken tussen privacyIDEA tokens en privé tokens.",
-  "selectTokensToExportHelpContent4": "Je kunt een nieuwe QR code krijgen van de dienst waarvan je het token hebt ontvangen.",
+  "selectTokensToExportHelpContent1": "Alleen handmatig toegevoegde of geïmporteerde tokens kunnen worden geëxporteerd. Tokens die mogelijk privacyIDEA-tokens zijn, kunnen niet worden geëxporteerd.",
+  "selectTokensToExportHelpContent2": "Om uw token naar een nieuw apparaat over te zetten, neem contact op met de ondersteuning van de service of uw beheerder voor een nieuwe QR-code.",
   "selectTokensToExportHelpTitle": "Staat jouw token er niet bij?",
   "send": "verzenden",
   "sendErrorDialogBody": "Een onverwachte fout heeft plaatsgevonden in de applicatie. De onderstaande informatie kan worden verstuurd naar de ontwikkelaars via e-mail om het probleem in de toekomst te voorkomen.",

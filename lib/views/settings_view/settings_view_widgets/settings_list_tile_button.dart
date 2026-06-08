@@ -20,17 +20,21 @@
 import 'package:flutter/material.dart';
 
 class SettingsListTileButton extends StatelessWidget {
-  final void Function() onPressed;
+  final void Function()? onPressed;
   final Widget title;
   final Widget? icon;
+  final String? tooltip;
   static const double tileHeight = 40;
 
   const SettingsListTileButton({
     super.key,
     required this.title,
     this.icon,
-    required this.onPressed,
+    this.onPressed,
+    this.tooltip,
   });
+
+  String? get _resolvedTooltip => tooltip ?? (title is Text ? (title as Text).data : null);
 
   @override
   Widget build(BuildContext context) => TextButton(
@@ -54,6 +58,7 @@ class SettingsListTileButton extends StatelessWidget {
                   ),
                   onPressed: onPressed,
                   splashRadius: 26,
+                  tooltip: _resolvedTooltip,
                   icon: icon!,
                 ),
             ],

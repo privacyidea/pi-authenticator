@@ -592,7 +592,12 @@
     "description": "Descripes waht happens when the user clicks on the send button."
   },
   "@feedbackPrivacyPolicyFull": {
-    "description": "Full sentence for the privacy policy agreement. Use {privacyPolicy} as placeholder for the clickable link text."
+    "description": "Full sentence for the privacy policy agreement. Use {privacyPolicy} as placeholder for the clickable link text.",
+    "placeholders": {
+      "privacyPolicy": {
+        "type": "String"
+      }
+    }
   },
   "@feedbackPrivacyPolicyLinkText": {
     "description": "Clickable link text in the privacy policy agreement. Tapping this opens the privacy policy."
@@ -1055,9 +1060,6 @@
   "@noResultTitle": {
     "description": "No tokens installed yet."
   },
-  "@noTokenToExport": {
-    "description": "Tells the user that there are no tokens to export."
-  },
   "@noTokenToImport": {
     "description": "Tells the user that there are no tokens to import."
   },
@@ -1445,12 +1447,6 @@
     "description": "Tells the user why some tokens are not exportable."
   },
   "@selectTokensToExportHelpContent2": {
-    "description": "Tells the user why some tokens are not exportable."
-  },
-  "@selectTokensToExportHelpContent3": {
-    "description": "Tells the user why some tokens are not exportable."
-  },
-  "@selectTokensToExportHelpContent4": {
     "description": "Tells the user why some tokens are not exportable."
   },
   "@selectTokensToExportHelpTitle": {
@@ -1993,7 +1989,16 @@
   "noResultText1": "Tippe auf das ",
   "noResultText2": "Icon um loszulegen!",
   "noResultTitle": "Keine Token vorhanden.",
-  "noTokenToExport": "Kein Token zum Exportieren verfügbar",
+  "hiddenTokensAmountHint": "{count, plural, one{{count} Token wird nicht angezeigt, da es möglicherweise ein privacyIDEA-Token ist und nicht exportiert werden kann.} other{{count} Token werden nicht angezeigt, da sie möglicherweise privacyIDEA-Token sind und nicht exportiert werden können.}}",
+  "@hiddenTokensAmountHint": {
+    "description": "Informs the user how many tokens are hidden because they are privacyIDEA tokens.",
+    "placeholders": {
+      "count": {
+        "type": "num",
+        "format": "compact"
+      }
+    }
+  },
   "noTokenToImport": "Kein Token zum Importieren gefunden",
   "notAnInteger": "Der Wert ist keine Ganzzahl.",
   "notAnNumber": "Der Wert ist keine Zahl.",
@@ -2110,10 +2115,8 @@
   "selectImportSource": "Importquelle auswählen",
   "selectImportType": "Wie wollen Sie die Token importieren?",
   "selectTokensToExport": "{count, plural, one{Wählen Sie den zu exportierenden Token aus} other{Wählen Sie die zu exportierenden Tokens aus}}",
-  "selectTokensToExportHelpContent1": "Wenn ein Token nicht aufgelistet ist, ist nicht garantiert, dass es sich nicht um ein privacyIDEA-Token handelt.",
-  "selectTokensToExportHelpContent2": "Zurzeit können nur manuell hinzugefügte und importierte Token exportiert werden.",
-  "selectTokensToExportHelpContent3": "Wir arbeiten an einer Lösung, um zwischen privacyIDEA-Tokens und privaten Tokens zu unterscheiden.",
-  "selectTokensToExportHelpContent4": "Einen neuen QR-Code erhalten Sie bei dem Dienst, von dem Sie den Token erhalten haben.",
+  "selectTokensToExportHelpContent1": "Nur manuell hinzugefügte oder importierte Token können exportiert werden. Token, die möglicherweise privacyIDEA-Token sind, können nicht exportiert werden.",
+  "selectTokensToExportHelpContent2": "Um Ihr Token auf ein neues Gerät zu übertragen, wenden Sie sich an den Support des Dienstes oder Ihren Administrator, um einen neuen QR-Code zu erhalten.",
   "selectTokensToExportHelpTitle": "Ist Ihr Token nicht aufgelistet?",
   "send": "Senden",
   "sendErrorDialogBody": "Ein unbekannter Fehler ist aufgetreten. Die unten gezeigten Informationen können den Entwicklern per E-Mail zugesendet werden, um zu helfen, diesen Fehler in Zukunft zu vermeiden.",

@@ -530,7 +530,7 @@
     "description": "Error message when something could not be loaded.",
     "placeholders": {
       "name": {
-        "example": "token data",
+        "example": "jeton data",
         "type": "String"
       }
     }
@@ -571,7 +571,12 @@
     "description": "Descripes waht happens when the user clicks on the send button."
   },
   "@feedbackPrivacyPolicyFull": {
-    "description": "Full sentence for the privacy policy agreement. Use {privacyPolicy} as placeholder for the clickable link text."
+    "description": "Full sentence for the privacy policy agreement. Use {privacyPolicy} as placeholder for the clickable link text.",
+    "placeholders": {
+      "privacyPolicy": {
+        "type": "String"
+      }
+    }
   },
   "@feedbackPrivacyPolicyLinkText": {
     "description": "Clickable link text in the privacy policy agreement. Tapping this opens the privacy policy."
@@ -1034,9 +1039,6 @@
   "@noResultTitle": {
     "description": "No tokens stored yet."
   },
-  "@noTokenToExport": {
-    "description": "Tells the user that there are no tokens to export."
-  },
   "@noTokenToImport": {
     "description": "Tells the user that there are no tokens to import."
   },
@@ -1426,12 +1428,6 @@
   "@selectTokensToExportHelpContent2": {
     "description": "Tells the user why some tokens are not exportable."
   },
-  "@selectTokensToExportHelpContent3": {
-    "description": "Tells the user why some tokens are not exportable."
-  },
-  "@selectTokensToExportHelpContent4": {
-    "description": "Tells the user why some tokens are not exportable."
-  },
   "@selectTokensToExportHelpTitle": {
     "description": "Title of the help dialog that explains why some tokens are not exportable."
   },
@@ -1765,9 +1761,9 @@
   "clipboardEmpty": "Le presse-papiers est vide",
   "confirmDeletion": "Confirmer suppression",
   "confirmDeletionOf": "Confirmer la suppression de {name}?",
-  "confirmFolderDeletionHint": "La suppression d'un dossier n'a aucun effet sur les tokens qui s'y trouvent.\nLes tokens sont déplacés dans la liste principale.",
+  "confirmFolderDeletionHint": "La suppression d'un dossier n'a aucun effet sur les jetons qui s'y trouvent.\nLes jetons sont déplacés dans la liste principale.",
   "confirmPassword": "Confirmer le mot de passe",
-  "confirmTokenDeletionHint": "Il se peut que vous ne puissiez plus vous connecter si vous supprimez ce token.\nVeuillez vous assurer que vous pouvez vous connecter au compte associé sans ce token.",
+  "confirmTokenDeletionHint": "Il se peut que vous ne puissiez plus vous connecter si vous supprimez ce jeton.\nVeuillez vous assurer que vous pouvez vous connecter au compte associé sans ce jeton.",
   "confirmation": "Confirmation",
   "connectionFailed": "La connexion a échoué.",
   "container": "Conteneur",
@@ -1790,7 +1786,7 @@
   "copyOTPToClipboard": "Copier l'OTP dans le presse-papiers",
   "couldNotConnectToServer": "Impossible de se connecter au serveur.",
   "couldNotFindGlobalRef": "Impossible de trouver globalRef",
-  "couldNotFindTokenForWidgetId": "Token pour l'ID du widget : {id} n'a pas pu être trouvé.",
+  "couldNotFindTokenForWidgetId": "jeton pour l'ID du widget : {id} n'a pas pu être trouvé.",
   "couldNotSignMessage": "Impossible de signer le message.",
   "counter": "Compteur",
   "create": "créer",
@@ -1809,7 +1805,7 @@
   "decryptErrorTitle": "Erreur de décryptage",
   "delete": "Supprimer",
   "deleteAllButtonText": "Supprimer tout",
-  "deleteContainerDialogContent": "Si vous supprimez ce conteneur, le smartphone sera déconnecté du serveur privacyIDEA et les tokens de ce conteneur deviendront inutilisables. Avant de le supprimer, assurez-vous que les tokens correspondants ne sont plus nécessaires !",
+  "deleteContainerDialogContent": "Si vous supprimez ce conteneur, le smartphone sera déconnecté du serveur privacyIDEA et les jetons de ce conteneur deviendront inutilisables. Avant de le supprimer, assurez-vous que les jetons correspondants ne sont plus nécessaires !",
   "deleteContainerDialogTitle": "Suppression du conteneur {serial}",
   "deleteLockedToken": "Veuillez vous authentifier pour supprimer le jeton verrouillé.",
   "deleteOnlyContainerButtonText": "Seulement le conteneur",
@@ -1836,7 +1832,7 @@
   "errorMissingPrivateKey": "Clé privée manquante",
   "errorMissingPublicKey": "Clé publique manquante",
   "errorRollOutFailed": "Le déploiement du jeton {name} a échoué.",
-  "errorRollOutNoConnectionToServer": "El despliegue del token {name} ha fallado, no se ha podido acceder al servidor.",
+  "errorRollOutNoConnectionToServer": "El despliegue del jeton {name} ha fallado, no se ha podido acceder al servidor.",
   "errorRollOutNotPossibleAnymore": "Le déploiement de ce jeton n'est plus possible.",
   "errorRollOutSSLHandshakeFailed": "Échec de la prise de contact SSL. Le déploiement n'est pas possible.",
   "errorRollOutUnknownError": "Le déploiement a échoué suite à une erreur inconnue: {e}",
@@ -1844,7 +1840,7 @@
   "errorSavingFile": "Erreur lors de l'enregistrement du fichier",
   "errorSynchronizationNoNetworkConnection": "La synchronization a échoué car le serveur est injoignable.",
   "errorTokenExpired": "Le jeton {name} a expiré.",
-  "errorUnlinkingPushToken": "Echec du découplage du push token {label}",
+  "errorUnlinkingPushToken": "Echec du découplage du push jeton {label}",
   "errorUnregisterNotAllowed": "La déconnexion n'est pas autorisée pour ce conteneur.",
   "errorWhenPullingChallenges": "Une erreur s'est produite lors de l'interrogation des défis de {name}",
   "exampleUrl": "Veuillez saisir une URL valide comme : “https://example.com/“",
@@ -1865,7 +1861,7 @@
   "feedbackCategoryBugReport": "Bug Report",
   "feedbackCategoryImprovement": "Improvement Suggestion",
   "feedbackCategoryLabel": "What type of feedback do you have?",
-  "feedbackCategoryLoginTokenHelp": "Login / Token Help",
+  "feedbackCategoryLoginTokenHelp": "Login / jeton Help",
   "feedbackCategoryLoginTokenHelpInfo": "Pour les problèmes de connexion ou avec vos jetons, veuillez contacter votre administrateur système ou le support de la plateforme sur laquelle vous souhaitez vous connecter.",
   "feedbackDescription": "Si vous avez des questions, des suggestions ou des problèmes, n'hésitez pas à nous en faire part",
   "feedbackHint": "Un e-mail prêt à l'emploi s'ouvre, que vous pouvez nous envoyer. Si vous le souhaitez, des informations sur votre appareil et la version de l'application seront ajoutées. Vous pouvez vérifier et modifier l'e-mail avant de l'envoyer.",
@@ -1888,11 +1884,11 @@
   "grantCameraPermissionDialogPermanentlyDenied": "L'autorisation de l'appareil photo est refusée de manière permanente. Veuillez accorder l'autorisation à l'appareil photo dans les paramètres de votre téléphone.",
   "grantCameraPermissionDialogTitle": "L'autorisation de la caméra n'est pas accordée",
   "handshakeFailed": "Échec du handshake",
-  "hidePushTokens": "Hide push tokens",
+  "hidePushTokens": "Hide push jetons",
   "hidePushTokensDescription": "Masquer les jetons de poussée de la liste des jetons. Cela ne supprimera pas les jetons et ils seront toujours visibles sur un écran séparé",
   "httpStatus": "{httpCode, select, 100{{httpCode} : Continuer} 101{{httpCode} : Protocoles de commutation} 102{{httpCode} : Traitement} 103{{httpCode} : Premiers Conseils} 104{{httpCode} : Réinitialisation de la connexion par l'homologue} 200{{httpCode} : OK} 201{{httpCode} : Créé} 202{{httpCode} : Accepté} 203{{httpCode} : Information non autorisée} 204{{httpCode} : Pas de contenu} 205{{httpCode} : Réinitialisation du contenu} 206{{httpCode} : Contenu partiel} 207{{httpCode} : Multi-état} 208{{httpCode} : Déjà signalé} 300{{httpCode} : Choix multiples} 301{{httpCode} : Déplacé en permanence} 302{{httpCode} : Trouvé} 303{{httpCode} : Voir autre} 304{{httpCode} : Non modifié} 305{{httpCode} : Utiliser un proxy} 307{{httpCode} : Redirection temporaire} 308{{httpCode} : Redirection permanente} 400{{httpCode} : Mauvaise requête} 401{{httpCode} : Non autorisé} 402{{httpCode} : Paiement requis} 403{{httpCode} : Interdit} 404{{httpCode} : Introuvable} 405{{httpCode} : Méthode non autorisée} 406{{httpCode} : Inacceptable} 407{{httpCode} : Authentification Proxy requise} 408{{httpCode} : Délai d'attente de la requête} 409{{httpCode} : Conflit} 410{{httpCode} : Disparu} 411{{httpCode} : Longueur requise} 412{{httpCode} : Condition préalable échouée} 413{{httpCode} : Charge utile trop importante} 414{{httpCode} : Request-URI trop long} 415{{httpCode} : Type de média non supporté} 416{{httpCode} : Plage Demandée Non Satisfaisable} 417{{httpCode} : Attente échouée} 418{{httpCode} : Je suis une théière} 420{{httpCode} : Améliorez votre calme} 421{{httpCode} : Demande mal orientée} 422{{httpCode} : Entité non traitable} 423{{httpCode} : Verrouillé} 424{{httpCode} : Dépendance échouée} 426{{httpCode} : Mise à niveau requise} 428{{httpCode} : Condition préalable requise} 429{{httpCode} : Trop de requêtes} 431{{httpCode} : Champs d'en-tête de requête trop grands} 444{{httpCode} : Connexion fermée sans réponse} 451{{httpCode} : Indisponible pour des raisons légales} 499{{httpCode} : Requête fermée par le client} 500{{httpCode} : Erreur interne du serveur} 501{{httpCode} : Non implémenté} 502{{httpCode} : Mauvaise passerelle} 503{{httpCode} : Service indisponible} 504{{httpCode} : Délai d'attente de la passerelle} 505{{httpCode} : Version HTTP non supportée} 506{{httpCode} : La variante négocie également} 507{{httpCode} : Stockage insuffisant} 508{{httpCode} : Boucle détectée} 510{{httpCode} : Non Etendu} 511{{httpCode} : Authentification réseau requise} 520{{httpCode} : Erreur inconnue} 521{{httpCode} : Le serveur Web est en panne} 522{{httpCode} : Connexion interrompue} 523{{httpCode} : L'origine est inaccessible} 524{{httpCode} : Un dépassement de délai s'est produit} 525{{httpCode} : Échec de la prise de contact} 526{{httpCode} : Le certificat SSL n'est pas valide} 527{{httpCode} : Erreur Railgun} 528{{httpCode} : Erreur de transport} 529{{httpCode} : Le service est surchargé} 530{{httpCode} : Le site est gelé} 599{{httpCode} : Erreur de délai de connexion au réseau} other{{httpCode} : Erreur inconnue}}",
   "imageUrl": "URL de l'image",
-  "importConflictToken": "{count, plural, zero{Il n'y a pas de conflit avec des tokens déjà existants.} one{Il y a un conflit avec des tokens déjà existants.\nVeuillez choisir celui que vous voulez garder.} other{Il y a un conflit avec des tokens déjà existants.\nVeuillez choisir celui que vous voulez garder.}}",
+  "importConflictToken": "{count, plural, zero{Il n'y a pas de conflit avec des jetons déjà existants.} one{Il y a un conflit avec des jetons déjà existants.\nVeuillez choisir celui que vous voulez garder.} other{Il y a un conflit avec des jetons déjà existants.\nVeuillez choisir celui que vous voulez garder.}}",
   "importExistingToken": "{count, plural, zero{Aucun jeton déjà présent dans l'application n'a été trouvé.} one{Un jeton qui existe déjà dans l'application a été trouvé.} other{Des jetons {count} déjà présents dans l'application ont été trouvés.}}",
   "importExportTokens": "Importer/Exporter les jetons",
   "importFailedToken": "{count, plural, zero{Pas de jeton Échec de l'importation.} one{Échec de l'importation d'un jeton.} other{Échec de l'importation des jetons {count}.}}",
@@ -1900,15 +1896,15 @@
   "importHintAegisBackupFile": "Choisissez votre exportation Aegis (.JSON).\nSi vous n'avez pas d'exportation, veuillez en créer une via le menu Paramètres dans l'application Aegis. Il est recommandé d'utiliser un mot de passe",
   "importHintAegisLink": "Saisissez le lien que vous recevez lorsque vous transférez des entrées depuis Aegis",
   "importHintAegisQrScan": "Scannez le code QR que vous recevez lorsque vous transférez des entrées depuis Aegis",
-  "importHintAuthenticatorProFile": "Pour créer une sauvegarde de l'application Authenticator Pro, accédez aux paramètres et appuyez sur “Sauvegarde automatique“. Sélectionnez un emplacement de stockage et définissez un mot de passe. Puis appuyez sur “Sauvegarder maintenant“ pour exporter les tokens.",
+  "importHintAuthenticatorProFile": "Pour créer une sauvegarde de l'application Authenticator Pro, accédez aux paramètres et appuyez sur “Sauvegarde automatique“. Sélectionnez un emplacement de stockage et définissez un mot de passe. Puis appuyez sur “Sauvegarder maintenant“ pour exporter les jetons.",
   "importHintFreeOtpPlusFile": "Pour créer une sauvegarde de l'application FreeOTP+, appuyez sur les trois points dans le coin supérieur droit et sélectionnez “Exporter“. Vous pouvez choisir entre les formats JSON et URI. Nous recommandons de supprimer la sauvegarde après l'avoir importée, car elle n'est pas cryptée.",
   "importHintFreeOtpPlusQrScan": "Scannez le code QR que vous recevez lorsque vous appuyez sur les trois points dans la tuile du jeton et sélectionnez “Partager le code QR“.",
   "importHintGoogleQrFile": "Sélectionnez un fichier image avec le code QR que vous obtenez lorsque vous exportez vos comptes depuis Google Authenticator.\n!! Notez qu'il n'est pas sûr d'enregistrer le code QR sur votre appareil, car les jetons ne sont pas cryptés !!",
   "importHintGoogleQrScan": "Scannez le code QR que vous recevez lorsque vous exportez vos comptes depuis Google Authenticator",
   "importHintPrivacyIdeaFile": "Pour créer une sauvegarde, allez dans les paramètres et tapez sur “Exporter“. Choisissez “En tant que fichier“, sélectionnez les jetons que vous souhaitez exporter. Ensuite, appuyez sur “Exporter“ et définissez un mot de passe. L'emplacement de stockage est le dossier de téléchargement sur votre appareil.",
   "importHintPrivacyIdeaQrScan": "Pour créer des codes QR des jetons, accédez aux paramètres et appuyez sur “Exporter“. Sélectionnez ensuite “En tant que code QR“ et tapez sur le jeton à exporter. Cette variante ne convient que pour un transfert direct vers un autre appareil, car le code QR n'est pas crypté.",
-  "importNTokens": "{count, plural, zero{N'importer aucun jeton} one{Importer un jeton} other{Importer {count} tokens}}",
-  "importNewToken": "{count, plural, zero{Aucun nouveau jeton n'a été trouvé.} one{Un nouveau token a été trouvé et peut être importé.} other{{count} nouveaux tokens ont été trouvés et peuvent être importés.}}",
+  "importNTokens": "{count, plural, zero{N'importer aucun jeton} one{Importer un jeton} other{Importer {count} jetons}}",
+  "importNewToken": "{count, plural, zero{Aucun nouveau jeton n'a été trouvé.} one{Un nouveau jeton a été trouvé et peut être importé.} other{{count} nouveaux jetons ont été trouvés et peuvent être importés.}}",
   "importTokens": "Importer un jeton",
   "importedVia": "Importé via",
   "increaseCounter": "Augmenter le compteur",
@@ -1917,7 +1913,7 @@
   "initialTokenAssignmentDialogButtonSelected": "Envoyer les OTP sélectionnés",
   "initialTokenAssignmentDialogButtonZero": "N'envoyer aucun OTP",
   "initialTokenAssignmentDialogContent1": "Deux mots de passe à usage unique des jetons sélectionnés sont envoyés à:\n{url}",
-  "initialTokenAssignmentDialogContent2": "Votre token privacyIDEA sera ainsi automatiquement attribué à ce conteneur.",
+  "initialTokenAssignmentDialogContent2": "Votre jeton privacyIDEA sera ainsi automatiquement attribué à ce conteneur.",
   "initialTokenAssignmentDialogQuestion": "Vous souhaitez continuer ?",
   "initialTokenAssignmentDialogSSLWarning1": "La vérification SSL est désactivée !",
   "initialTokenAssignmentDialogSSLWarning2": "L'envoi d'OTP à un serveur non vérifié représente un risque de sécurité élevé !",
@@ -1926,12 +1922,12 @@
   "introAddFolder": "Vous pouvez créer des dossiers pour organiser vos jetons",
   "introAddTokenManually": "Si vous ne souhaitez pas scanner un code QR, vous pouvez également ajouter des jetons manuellement.",
   "introDragToken": "Réorganisez vos jetons en appuyant dessus pendant quelques secondes, puis en les faisant glisser jusqu'à la position souhaitée",
-  "introEditToken": "Ici, vous pouvez modifier le nom du token et voir quelques détails",
+  "introEditToken": "Ici, vous pouvez modifier le nom du jeton et voir quelques détails",
   "introHidePushTokens": "Vos jetons sont maintenant cachés, mais vous pouvez toujours les voir sur l'écran des jetons",
-  "introLockToken": "Pour améliorer encore la sécurité, vous pouvez verrouiller les tokens. Le token ne peut alors être utilisé qu'après l'authentification.",
+  "introLockToken": "Pour améliorer encore la sécurité, vous pouvez verrouiller les jetons. Le jeton ne peut alors être utilisé qu'après l'authentification.",
   "introPollForChallenges": "Vous pouvez vérifier la présence de nouveaux défis en faisant glisser la liste des jetons vers le bas",
-  "introScanQrCode": "You can scan QR codes to add tokens.\nWe support every common Two-Factor-Authentication token and also the privacyIDEA tokens.",
-  "introTokenSwipe": "Balayez les tokens vers la gauche pour voir les actions disponibles",
+  "introScanQrCode": "You can scan QR codes to add jetons.\nWe support every common Two-Factor-Authentication jeton and also the privacyIDEA tokens.",
+  "introTokenSwipe": "Balayez les jetons vers la gauche pour voir les actions disponibles",
   "invalidBackupFile": "Le fichier sélectionné n'est pas une sauvegarde valide de {appName}",
   "invalidHostForScheme": "Hôte non valide : {host} pour le schéma : {scheme}",
   "invalidLink": "Le lien saisi n'est pas un jeton valide de {appName}, ou il n'est pas pris en charge",
@@ -1946,7 +1942,7 @@
   "issuer": "Émetteur",
   "issuerLabel": "Émetteur : {name}",
   "language": "Langue",
-  "legacySigningErrorMessage": "Le token a été créé dans une version obsolète de l'application, ce qui peut entraîner des problèmes d'utilisation.\nIl est recommandé de créer un nouveau token push si le problème persiste !",
+  "legacySigningErrorMessage": "Le jeton a été créé dans une version obsolète de l'application, ce qui peut entraîner des problèmes d'utilisation.\nIl est recommandé de créer un nouveau jeton push si le problème persiste !",
   "legacySigningErrorTitle": "Une erreur s'est produite lors de l'utilisation du jeton obsolète : {tokenLabel}",
   "licensesAndVersion": "Licences et version",
   "linkHomeWidgetViewTitle": "Lier le widget d'accueil",
@@ -1972,7 +1968,16 @@
   "noResultText1": "Appuyez sur le \n",
   "noResultText2": "bouton pour commencer!",
   "noResultTitle": "Aucun jeton n'est encore stocké.",
-  "noTokenToExport": "Pas de jeton disponible pour l'exportation",
+  "hiddenTokensAmountHint": "{count, plural, one{{count} jeton n'est pas répertorié car il peut être un jeton privacyIDEA et ne peut pas être exporté.} other{{count} jetons ne sont pas répertoriés car ils peuvent être des jetons privacyIDEA et ne peuvent pas être exportés.}}",
+  "@hiddenTokensAmountHint": {
+    "description": "Informs the user how many tokens are hidden because they are privacyIDEA tokens.",
+    "placeholders": {
+      "count": {
+        "type": "num",
+        "format": "compact"
+      }
+    }
+  },
   "noTokenToImport": "Aucun jeton n'a été trouvé pour l'importation",
   "notAnInteger": "La valeur n'est pas un nombre entier.",
   "notAnNumber": "La valeur n'est pas un nombre.",
@@ -2006,7 +2011,7 @@
   "patchNotesV4_3_1Improvement1": "Le scanner de codes QR a été amélioré.",
   "patchNotesV4_4_0Improvement1": "D'autres sources d'importation ont été ajoutées.",
   "patchNotesV4_4_0Improvement2": "La reconnaissance des codes QR à partir des fichiers image a été améliorée.",
-  "patchNotesV4_4_0NewFeature1": "Il est désormais possible d'exporter des jetons dont on peut s'assurer qu'il ne s'agit pas de jetons privacyIDEA. Actuellement, il n'est pas possible d'exclure que des jetons ajoutés via le lecteur de code QR proviennent de privacyIDEA. La différenciation sera améliorée dans les versions futures.",
+  "patchNotesV4_4_0NewFeature1": "Il est désormais possible d'exporter des jetons dont on peut s'assurer qu'il ne s'agit pas de tokens privacyIDEA. Actuellement, il n'est pas possible d'exclure que des jetons ajoutés via le lecteur de code QR proviennent de privacyIDEA. La différenciation sera améliorée dans les versions futures.",
   "patchNotesV4_4_0NewFeature2": "Ajout du support pour privacyIDEA's “require presence“.",
   "patchNotesV4_4_2Improvement1": "Ajout de la prise en charge de la lampe de poche pour la lecture des codes QR.",
   "patchNotesV4_4_2NewFeature1": "Les jetons peuvent désormais être insérés par copier-coller.",
@@ -2089,10 +2094,8 @@
   "selectImportSource": "Sélectionner la source d'importation",
   "selectImportType": "Comment voulez-vous importer les jetons ?",
   "selectTokensToExport": "{count, plural, one{Sélectionner le jeton à exporter} other{Sélectionner les jetons à exporter}}",
-  "selectTokensToExportHelpContent1": "Si un jeton n'est pas répertorié, il n'est pas garanti qu'il ne s'agisse pas d'un jeton privacyIDEA.",
-  "selectTokensToExportHelpContent2": "Actuellement, seuls les jetons ajoutés manuellement et importés sont exportables.",
-  "selectTokensToExportHelpContent3": "Nous travaillons sur une solution permettant de différencier les jetons privacyIDEA des jetons privés.",
-  "selectTokensToExportHelpContent4": "Vous pouvez obtenir un nouveau code QR auprès du service qui vous a fourni le jeton.",
+  "selectTokensToExportHelpContent1": "Seuls les jetons ajoutés manuellement ou importés peuvent être exportés. Les jetons qui peuvent être des jetons privacyIDEA ne peuvent pas être exportés.",
+  "selectTokensToExportHelpContent2": "Pour transférer votre jeton vers un nouvel appareil, contactez le support du service ou votre administrateur pour obtenir un nouveau code QR.",
   "selectTokensToExportHelpTitle": "Votre jeton ne figure pas dans la liste ?",
   "send": "Envoyer",
   "sendErrorDialogBody": "Une erreur inattendue est survenue dans l'application. L'information suivante peut être transmise aux développeurs par email afin d'aider à corriger cette erreur dans le futur.",
@@ -2131,11 +2134,11 @@
   "timeOut": "Dépassement de temps",
   "tokenDataParseError": "Les données du jeton n'ont pas pu être analysées",
   "tokenDetails": "Détails du jeton",
-  "tokenLinkImport": "Lien vers le token",
-  "tokenSerial": "Token serial",
+  "tokenLinkImport": "Lien vers le jeton",
+  "tokenSerial": "jeton serial",
   "tokensAreEncrypted": "Les jetons sont cryptés. Veuillez saisir le mot de passe pour les décrypter",
   "tokensDoNotSupportSynchronization": "Ces jetons ne supportent pas la synchronisation et doivent être de nouveau générés:",
-  "tokensSuccessfullyDecrypted": "Les tokens ont été décryptés avec succès, ils peuvent maintenant être importés.",
+  "tokensSuccessfullyDecrypted": "Les jetons ont été décryptés avec succès, ils peuvent maintenant être importés.",
   "transferButton": "Transmettre",
   "transferContainerDialogContent1": "Vous pouvez transférer le conteneur vers un autre appareil. Le conteneur est transféré via un code QR.",
   "transferContainerDialogContent2": "Une connexion internet active est nécessaire pour ce processus.",
@@ -2148,7 +2151,7 @@
   "transferOfflineTokenDialogTitle": "Jeton hors ligne",
   "twoStepSecretFailed": "Le secret à deux niveaux n'a pas pu être généré ou a été annulé.",
   "type": "Type",
-  "unableToCreateToken": "Le token n'a pas pu être généré.",
+  "unableToCreateToken": "Le jeton n'a pas pu être généré.",
   "unexpectedError": "Une erreur inattendue s'est produite.",
   "unknown": "Inconnu",
   "unlock": "Ouvrir",
