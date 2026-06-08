@@ -23,7 +23,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../model/enums/introduction.dart';
+import '../../../model/extensions/token_list_extension.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
+import '../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../import_tokens_view/import_tokens_view.dart';
 import '../settings_view_widgets/settings_group.dart';
@@ -44,6 +46,8 @@ class _SettingsGroupImportExportTokensState
   @override
   Widget build(BuildContext context) {
     final appLocalizations = AppLocalizations.of(context)!;
+    final hasTokens =
+        ref.watch(tokenProvider).value?.tokens.isNotEmpty ?? false;
     return SettingsGroup(
       title: appLocalizations.importExportTokens,
       children: [
@@ -71,13 +75,35 @@ class _SettingsGroupImportExportTokensState
             quarterTurns: 3,
             child: Icon(FluentIcons.arrow_exit_20_filled),
           ),
-          onPressed: _exportDialog,
+          onPressed: hasTokens ? _exportDialog : null,
         ),
       ],
     );
   }
 
   Future<void> _exportDialog() async {
+    final exportableTokens =
+        ref.read(tokenProvider).value?.tokens.exportableTokens ?? [];
+    if (!mounted) return;
+    final appLocalizations = AppLocalizations.of(context)!;
+    if (exportableTokens.isEmpty) {
+      await showDialog<void>(
+        useRootNavigator: false,
+        context: context,
+        builder: (context) => DefaultDialog(
+          title: Text(appLocalizations.exportTokens),
+          content: SelectTokensToExportHelpContentWidget(),
+          actions: [
+            DialogAction(
+              label: appLocalizations.ok,
+              intent: ActionIntent.confirm,
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
     bool? isAccepted =
         (await ref.read(
           introductionNotifierProvider.future,
@@ -85,7 +111,6 @@ class _SettingsGroupImportExportTokensState
         ? true
         : null;
     if (!mounted) return;
-    final appLocalizations = AppLocalizations.of(context)!;
     isAccepted ??= await showDialog<bool>(
       useRootNavigator: false,
       context: context,
@@ -101,7 +126,7 @@ class _SettingsGroupImportExportTokensState
           DialogAction(
             label: appLocalizations.ok,
             intent: ActionIntent.confirm,
-            delaySeconds: 10,
+            delaySeconds: 5,
             onPressed: () => Navigator.of(context).pop(true),
           ),
         ],

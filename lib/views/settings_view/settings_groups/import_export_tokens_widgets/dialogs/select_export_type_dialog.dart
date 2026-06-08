@@ -65,14 +65,7 @@ class SelectExportTypeDialog extends ConsumerWidget {
       useRootNavigator: false,
       context: context,
       builder: (context) => SelectExportTokensDialog(
-        dialogBuilder: (tokens) {
-          if (tokens.isEmpty) {
-            return DefaultDialog(
-              content: Text(AppLocalizations.of(context)!.noTokenToExport),
-            );
-          }
-          return ExportTokensToFileDialog(tokens: tokens);
-        },
+        dialogBuilder: (tokens) => ExportTokensToFileDialog(tokens: tokens),
       ),
     );
     if (isExported == true && context.mounted) {
@@ -94,13 +87,7 @@ class SelectExportTypeDialog extends ConsumerWidget {
       context: context,
       builder: (context) => SelectExportTokensDialog(
         multiSelect: false,
-        dialogBuilder: (tokens) {
-          if (tokens.isEmpty) {
-            return DefaultDialog(content: Text(localization.noTokenToExport));
-          }
-
-          return ShowQrCodeDialog(token: tokens.first);
-        },
+        dialogBuilder: (tokens) => ShowQrCodeDialog(token: tokens.first),
       ),
     );
     if (isExported == true && context.mounted) {

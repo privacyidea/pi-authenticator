@@ -571,7 +571,12 @@
     "description": "Descripes waht happens when the user clicks on the send button."
   },
   "@feedbackPrivacyPolicyFull": {
-    "description": "Full sentence for the privacy policy agreement. Use {privacyPolicy} as placeholder for the clickable link text."
+    "description": "Full sentence for the privacy policy agreement. Use {privacyPolicy} as placeholder for the clickable link text.",
+    "placeholders": {
+      "privacyPolicy": {
+        "type": "String"
+      }
+    }
   },
   "@feedbackPrivacyPolicyLinkText": {
     "description": "Clickable link text in the privacy policy agreement. Tapping this opens the privacy policy."
@@ -1034,9 +1039,6 @@
   "@noResultTitle": {
     "description": "No tokens stored yet."
   },
-  "@noTokenToExport": {
-    "description": "Tells the user that there are no tokens to export."
-  },
   "@noTokenToImport": {
     "description": "Tells the user that there are no tokens to import."
   },
@@ -1424,12 +1426,6 @@
     "description": "Tells the user why some tokens are not exportable."
   },
   "@selectTokensToExportHelpContent2": {
-    "description": "Tells the user why some tokens are not exportable."
-  },
-  "@selectTokensToExportHelpContent3": {
-    "description": "Tells the user why some tokens are not exportable."
-  },
-  "@selectTokensToExportHelpContent4": {
     "description": "Tells the user why some tokens are not exportable."
   },
   "@selectTokensToExportHelpTitle": {
@@ -1972,7 +1968,16 @@
   "noResultText1": "Ketuk tombol ",
   "noResultText2": "untuk memulai!",
   "noResultTitle": "Belum ada token yang disimpan.",
-  "noTokenToExport": "Tidak ada token yang tersedia untuk ekspor",
+  "hiddenTokensAmountHint": "{count, plural, one{{count} token is not listed because it may be a privacyIDEA token and cannot be exported.} other{{count} tokens are not listed because they may be privacyIDEA tokens and cannot be exported.}}",
+  "@hiddenTokensAmountHint": {
+    "description": "Informs the user how many tokens are hidden because they are privacyIDEA tokens.",
+    "placeholders": {
+      "count": {
+        "type": "num",
+        "format": "compact"
+      }
+    }
+  },
   "noTokenToImport": "Tidak ada token yang ditemukan untuk diimpor",
   "notAnInteger": "Nilainya bukan bilangan bulat.",
   "notAnNumber": "Nilainya bukan berupa angka.",
@@ -2089,10 +2094,8 @@
   "selectImportSource": "Pilih sumber impor",
   "selectImportType": "Bagaimana cara mengimpor token?",
   "selectTokensToExport": "{count, plural, one{pilih token yang akan diekspor} other{pilih token yang akan diekspor}}",
-  "selectTokensToExportHelpContent1": "Jika sebuah token tidak terdaftar, tidak dijamin bahwa token tersebut bukan token privacyIDEA.",
-  "selectTokensToExportHelpContent2": "Saat ini hanya token yang ditambahkan dan diimpor secara manual yang dapat diekspor.",
-  "selectTokensToExportHelpContent3": "Kami sedang mengerjakan solusi untuk membedakan antara token privacyIDEA dan token pribadi.",
-  "selectTokensToExportHelpContent4": "Anda bisa mendapatkan kode QR baru dari layanan tempat Anda menerima token.",
+  "selectTokensToExportHelpContent1": "Only manually added or imported tokens can be exported. Tokens that may be privacyIDEA tokens cannot be exported.",
+  "selectTokensToExportHelpContent2": "To export your token to a new device, contact the support of the service or your administrator to get a new QR code.",
   "selectTokensToExportHelpTitle": "Apakah token Anda tidak terdaftar?",
   "send": "Kirim",
   "sendErrorDialogBody": "Terjadi kesalahan yang tidak terduga dalam aplikasi. Informasi di bawah ini dapat dikirimkan ke pengembang melalui email untuk membantu mencegah kesalahan ini di masa mendatang.",

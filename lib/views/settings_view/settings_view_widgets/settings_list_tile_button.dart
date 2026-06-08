@@ -20,7 +20,7 @@
 import 'package:flutter/material.dart';
 
 class SettingsListTileButton extends StatelessWidget {
-  final void Function() onPressed;
+  final void Function()? onPressed;
   final Widget title;
   final Widget? icon;
   static const double tileHeight = 40;

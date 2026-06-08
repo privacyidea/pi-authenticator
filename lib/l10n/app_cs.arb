@@ -571,7 +571,12 @@
     "description": "Descripes waht happens when the user clicks on the send button."
   },
   "@feedbackPrivacyPolicyFull": {
-    "description": "Full sentence for the privacy policy agreement. Use {privacyPolicy} as placeholder for the clickable link text."
+    "description": "Full sentence for the privacy policy agreement. Use {privacyPolicy} as placeholder for the clickable link text.",
+    "placeholders": {
+      "privacyPolicy": {
+        "type": "String"
+      }
+    }
   },
   "@feedbackPrivacyPolicyLinkText": {
     "description": "Clickable link text in the privacy policy agreement. Tapping this opens the privacy policy."
@@ -1034,9 +1039,6 @@
   "@noResultTitle": {
     "description": "No tokens installed yet."
   },
-  "@noTokenToExport": {
-    "description": "Tells the user that there are no tokens to export."
-  },
   "@noTokenToImport": {
     "description": "Tells the user that there are no tokens to import."
   },
@@ -1424,12 +1426,6 @@
     "description": "Tells the user why some tokens are not exportable."
   },
   "@selectTokensToExportHelpContent2": {
-    "description": "Tells the user why some tokens are not exportable."
-  },
-  "@selectTokensToExportHelpContent3": {
-    "description": "Tells the user why some tokens are not exportable."
-  },
-  "@selectTokensToExportHelpContent4": {
     "description": "Tells the user why some tokens are not exportable."
   },
   "@selectTokensToExportHelpTitle": {
@@ -1972,7 +1968,16 @@
   "noResultText1": "stiskněte tlačítko ",
   "noResultText2": "a začněte s používáním.",
   "noResultTitle": "Nejsou nainstalovány žádné tokeny.",
-  "noTokenToExport": "Pro export není k dispozici žádný token",
+  "hiddenTokensAmountHint": "{count, plural, one{{count} token is not listed because it may be a privacyIDEA token and cannot be exported.} other{{count} tokens are not listed because they may be privacyIDEA tokens and cannot be exported.}}",
+  "@hiddenTokensAmountHint": {
+    "description": "Informs the user how many tokens are hidden because they are privacyIDEA tokens.",
+    "placeholders": {
+      "count": {
+        "type": "num",
+        "format": "compact"
+      }
+    }
+  },
   "noTokenToImport": "Nebyl nalezen žádný token pro import",
   "notAnInteger": "Hodnota není celé číslo.",
   "notAnNumber": "Hodnota není číslo.",
@@ -2089,10 +2094,8 @@
   "selectImportSource": "Vyberte zdroj importu",
   "selectImportType": "Jak chcete importovat žetony?",
   "selectTokensToExport": "{count, plural, zero{} one{výběr tokenu, který má být exportován} other{výběr tokenů, které mají být exportovány}}",
-  "selectTokensToExportHelpContent1": "Pokud token není uveden v seznamu, není zaručeno, že se nejedná o token privacyIDEA.",
-  "selectTokensToExportHelpContent2": "V současné době lze exportovat pouze ručně přidané a importované tokeny.",
-  "selectTokensToExportHelpContent3": "Pracujeme na řešení, které by umožnilo rozlišovat mezi tokeny privacyIDEA a soukromými tokeny.",
-  "selectTokensToExportHelpContent4": "Nový QR kód můžete získat od služby, od které jste token obdrželi.",
+  "selectTokensToExportHelpContent1": "Only manually added or imported tokens can be exported. Tokens that may be privacyIDEA tokens cannot be exported.",
+  "selectTokensToExportHelpContent2": "To export your token to a new device, contact the support of the service or your administrator to get a new QR code.",
   "selectTokensToExportHelpTitle": "Není váš token uveden?",
   "send": "Odeslat",
   "sendErrorDialogBody": "V aplikaci se vyskytla neznámá chyba. Informace uvedené níže mohou být odeslány vývojářům e-mailem pro vyřešení chyby v budoucnu.",

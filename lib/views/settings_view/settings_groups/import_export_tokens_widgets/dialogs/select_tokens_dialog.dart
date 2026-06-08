@@ -45,8 +45,10 @@ class _SelectTokensDialogState extends ConsumerState<SelectExportTokensDialog> {
   final Set<Token> _selectedTokens = {};
   @override
   Widget build(BuildContext context) {
-    final exportableTokens =
-        ref.read(tokenProvider).value?.tokens.exportableTokens.toSet() ?? {};
+    final allTokens =
+        ref.read(tokenProvider).value?.tokens ?? [];
+    final exportableTokens = allTokens.exportableTokens.toSet();
+    final hiddenCount = allTokens.length - exportableTokens.length;
     final theme = Theme.of(context);
     final appLocalizations = AppLocalizations.of(context)!;
     return DefaultDialog(
@@ -67,19 +69,51 @@ class _SelectTokensDialogState extends ConsumerState<SelectExportTokensDialog> {
           ),
         ],
       ),
-      content: SelectTokensWidget(
-        multiSelect: widget.multiSelect,
-        tokens: exportableTokens,
-        onSelect: widget.multiSelect
-            ? (selected, _) {
-                setState(() {
-                  _selectedTokens.clear();
-                  _selectedTokens.addAll(selected);
-                });
-              }
-            : (selected, _) {
-                _showExportDialog(selected);
-              },
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (hiddenCount > 0)
+            Container(
+              margin: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.secondaryContainer,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.info_outline,
+                    size: 16,
+                    color: theme.colorScheme.onSecondaryContainer,
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      appLocalizations.hiddenTokensAmountHint(hiddenCount),
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: theme.colorScheme.onSecondaryContainer,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          SelectTokensWidget(
+            multiSelect: widget.multiSelect,
+            tokens: exportableTokens,
+            onSelect: widget.multiSelect
+                ? (selected, _) {
+                    setState(() {
+                      _selectedTokens.clear();
+                      _selectedTokens.addAll(selected);
+                    });
+                  }
+                : (selected, _) {
+                    _showExportDialog(selected);
+                  },
+          ),
+        ],
       ),
       actions: [
         DialogAction(
@@ -129,13 +163,9 @@ class SelectTokensToExportHelpContentWidget extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
-          '${appLocalizations.selectTokensToExportHelpContent1} ${appLocalizations.selectTokensToExportHelpContent2}',
-        ),
+        Text(appLocalizations.selectTokensToExportHelpContent1),
         SizedBox(height: 8),
-        Text(appLocalizations.selectTokensToExportHelpContent3),
-        SizedBox(height: 8),
-        Text(appLocalizations.selectTokensToExportHelpContent4),
+        Text(appLocalizations.selectTokensToExportHelpContent2),
       ],
     );
   }
