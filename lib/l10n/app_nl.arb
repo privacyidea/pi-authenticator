@@ -1968,7 +1968,7 @@
   "noResultText1": "Tik op ",
   "noResultText2": "de knop om te beginnen!",
   "noResultTitle": "Nog geen token opgeslagen.",
-  "hiddenTokensAmountHint": "{count, plural, one{{count} token is not listed because it may be a privacyIDEA token and cannot be exported.} other{{count} tokens are not listed because they may be privacyIDEA tokens and cannot be exported.}}",
+  "hiddenTokensAmountHint": "{count, plural, one{{count} token wordt niet weergegeven omdat het mogelijk een privacyIDEA-token is en niet geëxporteerd kan worden.} other{{count} tokens worden niet weergegeven omdat ze mogelijk privacyIDEA-tokens zijn en niet geëxporteerd kunnen worden.}}",
   "@hiddenTokensAmountHint": {
     "description": "Informs the user how many tokens are hidden because they are privacyIDEA tokens.",
     "placeholders": {
@@ -2094,8 +2094,8 @@
   "selectImportSource": "Selecteer importbron",
   "selectImportType": "Hoe wilt u de tokens importeren?",
   "selectTokensToExport": "{count, plural, one{Selecteer token om te exporteren} other{Selecteer tokens om te exporteren}}",
-  "selectTokensToExportHelpContent1": "Only manually added or imported tokens can be exported. Tokens that may be privacyIDEA tokens cannot be exported.",
-  "selectTokensToExportHelpContent2": "To export your token to a new device, contact the support of the service or your administrator to get a new QR code.",
+  "selectTokensToExportHelpContent1": "Alleen handmatig toegevoegde of geïmporteerde tokens kunnen worden geëxporteerd. Tokens die mogelijk privacyIDEA-tokens zijn, kunnen niet worden geëxporteerd.",
+  "selectTokensToExportHelpContent2": "Om uw token naar een nieuw apparaat over te zetten, neem contact op met de ondersteuning van de service of uw beheerder voor een nieuwe QR-code.",
   "selectTokensToExportHelpTitle": "Staat jouw token er niet bij?",
   "send": "verzenden",
   "sendErrorDialogBody": "Een onverwachte fout heeft plaatsgevonden in de applicatie. De onderstaande informatie kan worden verstuurd naar de ontwikkelaars via e-mail om het probleem in de toekomst te voorkomen.",

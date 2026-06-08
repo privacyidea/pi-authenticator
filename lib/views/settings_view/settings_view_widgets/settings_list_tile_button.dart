@@ -29,7 +29,7 @@ class SettingsListTileButton extends StatelessWidget {
     super.key,
     required this.title,
     this.icon,
-    required this.onPressed,
+    this.onPressed,
   });
 
   @override

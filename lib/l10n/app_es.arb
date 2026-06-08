@@ -1968,7 +1968,7 @@
   "noResultText1": "Indique el  ",
   "noResultText2": "para empezar.",
   "noResultTitle": "Aún no hay tokens almacenadas.",
-  "hiddenTokensAmountHint": "{count, plural, one{{count} token is not listed because it may be a privacyIDEA token and cannot be exported.} other{{count} tokens are not listed because they may be privacyIDEA tokens and cannot be exported.}}",
+  "hiddenTokensAmountHint": "{count, plural, one{{count} token no aparece porque puede ser un token de privacyIDEA y no se puede exportar.} other{{count} tokens no aparecen porque pueden ser tokens de privacyIDEA y no se pueden exportar.}}",
   "@hiddenTokensAmountHint": {
     "description": "Informs the user how many tokens are hidden because they are privacyIDEA tokens.",
     "placeholders": {
@@ -2094,8 +2094,8 @@
   "selectImportSource": "Seleccionar fuente de importación",
   "selectImportType": "Jak chcete importovat žetony?",
   "selectTokensToExport": "{count, plural, one{Seleccionar token para exportar} other{Seleccionar tokens para exportar}}",
-  "selectTokensToExportHelpContent1": "Only manually added or imported tokens can be exported. Tokens that may be privacyIDEA tokens cannot be exported.",
-  "selectTokensToExportHelpContent2": "To export your token to a new device, contact the support of the service or your administrator to get a new QR code.",
+  "selectTokensToExportHelpContent1": "Solo se pueden exportar los tokens añadidos manualmente o importados. Los tokens que pueden ser tokens de privacyIDEA no se pueden exportar.",
+  "selectTokensToExportHelpContent2": "Para transferir su token a un nuevo dispositivo, contacte con el soporte del servicio o su administrador para obtener un nuevo código QR.",
   "selectTokensToExportHelpTitle": "¿Su ficha no figura en la lista?",
   "send": "Enviar",
   "sendErrorDialogBody": "Se ha producido un error inesperado en la aplicación. La siguiente información puede ser enviada a los desarrolladores por correo electrónico para ayudar a prevenir este error en el futuro.",

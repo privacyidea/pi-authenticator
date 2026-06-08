@@ -1968,7 +1968,7 @@
   "noResultText1": "stiskněte tlačítko ",
   "noResultText2": "a začněte s používáním.",
   "noResultTitle": "Nejsou nainstalovány žádné tokeny.",
-  "hiddenTokensAmountHint": "{count, plural, one{{count} token is not listed because it may be a privacyIDEA token and cannot be exported.} other{{count} tokens are not listed because they may be privacyIDEA tokens and cannot be exported.}}",
+  "hiddenTokensAmountHint": "{count, plural, one{{count} token není uveden, protože může být tokenem privacyIDEA a nelze ho exportovat.} other{{count} tokenů není uvedeno, protože mohou být tokeny privacyIDEA a nelze je exportovat.}}",
   "@hiddenTokensAmountHint": {
     "description": "Informs the user how many tokens are hidden because they are privacyIDEA tokens.",
     "placeholders": {
@@ -2094,8 +2094,8 @@
   "selectImportSource": "Vyberte zdroj importu",
   "selectImportType": "Jak chcete importovat žetony?",
   "selectTokensToExport": "{count, plural, zero{} one{výběr tokenu, který má být exportován} other{výběr tokenů, které mají být exportovány}}",
-  "selectTokensToExportHelpContent1": "Only manually added or imported tokens can be exported. Tokens that may be privacyIDEA tokens cannot be exported.",
-  "selectTokensToExportHelpContent2": "To export your token to a new device, contact the support of the service or your administrator to get a new QR code.",
+  "selectTokensToExportHelpContent1": "Exportovat lze pouze ručně přidané nebo importované tokeny. Tokeny, které mohou být tokeny privacyIDEA, nelze exportovat.",
+  "selectTokensToExportHelpContent2": "Chcete-li přenést svůj token na nové zařízení, kontaktujte podporu služby nebo svého správce a požádejte o nový QR kód.",
   "selectTokensToExportHelpTitle": "Není váš token uveden?",
   "send": "Odeslat",
   "sendErrorDialogBody": "V aplikaci se vyskytla neznámá chyba. Informace uvedené níže mohou být odeslány vývojářům e-mailem pro vyřešení chyby v budoucnu.",

@@ -1968,7 +1968,7 @@
   "noResultText1": "Appuyez sur le \n",
   "noResultText2": "bouton pour commencer!",
   "noResultTitle": "Aucun jeton n'est encore stocké.",
-  "hiddenTokensAmountHint": "{count, plural, one{{count} token is not listed because it may be a privacyIDEA token and cannot be exported.} other{{count} tokens are not listed because they may be privacyIDEA tokens and cannot be exported.}}",
+  "hiddenTokensAmountHint": "{count, plural, one{{count} jeton n'est pas répertorié car il peut être un jeton privacyIDEA et ne peut pas être exporté.} other{{count} jetons ne sont pas répertoriés car ils peuvent être des jetons privacyIDEA et ne peuvent pas être exportés.}}",
   "@hiddenTokensAmountHint": {
     "description": "Informs the user how many tokens are hidden because they are privacyIDEA tokens.",
     "placeholders": {
@@ -2094,8 +2094,8 @@
   "selectImportSource": "Sélectionner la source d'importation",
   "selectImportType": "Comment voulez-vous importer les jetons ?",
   "selectTokensToExport": "{count, plural, one{Sélectionner le jeton à exporter} other{Sélectionner les jetons à exporter}}",
-  "selectTokensToExportHelpContent1": "Only manually added or imported tokens can be exported. Tokens that may be privacyIDEA tokens cannot be exported.",
-  "selectTokensToExportHelpContent2": "To export your token to a new device, contact the support of the service or your administrator to get a new QR code.",
+  "selectTokensToExportHelpContent1": "Seuls les jetons ajoutés manuellement ou importés peuvent être exportés. Les jetons qui peuvent être des jetons privacyIDEA ne peuvent pas être exportés.",
+  "selectTokensToExportHelpContent2": "Pour transférer votre jeton vers un nouvel appareil, contactez le support du service ou votre administrateur pour obtenir un nouveau code QR.",
   "selectTokensToExportHelpTitle": "Votre jeton ne figure pas dans la liste ?",
   "send": "Envoyer",
   "sendErrorDialogBody": "Une erreur inattendue est survenue dans l'application. L'information suivante peut être transmise aux développeurs par email afin d'aider à corriger cette erreur dans le futur.",

@@ -1968,7 +1968,7 @@
   "noResultText1": "Dotknij ",
   "noResultText2": "przycisku, żeby zacząć!",
   "noResultTitle": "Nie zainstalowano jeszcze żadnego tokenu.",
-  "hiddenTokensAmountHint": "{count, plural, one{{count} token is not listed because it may be a privacyIDEA token and cannot be exported.} other{{count} tokens are not listed because they may be privacyIDEA tokens and cannot be exported.}}",
+  "hiddenTokensAmountHint": "{count, plural, one{{count} token nie jest wyświetlany, ponieważ może być tokenem privacyIDEA i nie można go wyeksportować.} other{{count} tokeny nie są wyświetlane, ponieważ mogą być tokenami privacyIDEA i nie można ich wyeksportować.}}",
   "@hiddenTokensAmountHint": {
     "description": "Informs the user how many tokens are hidden because they are privacyIDEA tokens.",
     "placeholders": {
@@ -2094,8 +2094,8 @@
   "selectImportSource": "Wybierz źródło importu",
   "selectImportType": "Jak chcesz zaimportować tokeny?",
   "selectTokensToExport": "{count, plural, one{Wybierz token do wyeksportowania} other{Wybierz tokeny do wyeksportowania}}",
-  "selectTokensToExportHelpContent1": "Only manually added or imported tokens can be exported. Tokens that may be privacyIDEA tokens cannot be exported.",
-  "selectTokensToExportHelpContent2": "To export your token to a new device, contact the support of the service or your administrator to get a new QR code.",
+  "selectTokensToExportHelpContent1": "Eksportować można tylko tokeny dodane ręcznie lub zaimportowane. Tokeny, które mogą być tokenami privacyIDEA, nie mogą być eksportowane.",
+  "selectTokensToExportHelpContent2": "Aby przenieść token na nowe urządzenie, skontaktuj się z pomocą techniczną usługi lub administratorem, aby uzyskać nowy kod QR.",
   "selectTokensToExportHelpTitle": "Czy twój token nie znajduje się na liście?",
   "send": "Wyślij",
   "sendErrorDialogBody": "Napotkano nieoczekiwany błąd w aplikacji. Poniższa wiadomość może zostać wysłana do deweloperów poprzez email, żeby pomóc uniknąć tego problemu w przyszłości.",

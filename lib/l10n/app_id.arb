@@ -1968,7 +1968,7 @@
   "noResultText1": "Ketuk tombol ",
   "noResultText2": "untuk memulai!",
   "noResultTitle": "Belum ada token yang disimpan.",
-  "hiddenTokensAmountHint": "{count, plural, one{{count} token is not listed because it may be a privacyIDEA token and cannot be exported.} other{{count} tokens are not listed because they may be privacyIDEA tokens and cannot be exported.}}",
+  "hiddenTokensAmountHint": "{count, plural, one{{count} token tidak ditampilkan karena mungkin merupakan token privacyIDEA dan tidak dapat diekspor.} other{{count} token tidak ditampilkan karena mungkin merupakan token privacyIDEA dan tidak dapat diekspor.}}",
   "@hiddenTokensAmountHint": {
     "description": "Informs the user how many tokens are hidden because they are privacyIDEA tokens.",
     "placeholders": {
@@ -2094,8 +2094,8 @@
   "selectImportSource": "Pilih sumber impor",
   "selectImportType": "Bagaimana cara mengimpor token?",
   "selectTokensToExport": "{count, plural, one{pilih token yang akan diekspor} other{pilih token yang akan diekspor}}",
-  "selectTokensToExportHelpContent1": "Only manually added or imported tokens can be exported. Tokens that may be privacyIDEA tokens cannot be exported.",
-  "selectTokensToExportHelpContent2": "To export your token to a new device, contact the support of the service or your administrator to get a new QR code.",
+  "selectTokensToExportHelpContent1": "Hanya token yang ditambahkan secara manual atau diimpor yang dapat diekspor. Token yang mungkin merupakan token privacyIDEA tidak dapat diekspor.",
+  "selectTokensToExportHelpContent2": "Untuk memindahkan token Anda ke perangkat baru, hubungi dukungan layanan atau administrator Anda untuk mendapatkan kode QR baru.",
   "selectTokensToExportHelpTitle": "Apakah token Anda tidak terdaftar?",
   "send": "Kirim",
   "sendErrorDialogBody": "Terjadi kesalahan yang tidak terduga dalam aplikasi. Informasi di bawah ini dapat dikirimkan ke pengembang melalui email untuk membantu mencegah kesalahan ini di masa mendatang.",

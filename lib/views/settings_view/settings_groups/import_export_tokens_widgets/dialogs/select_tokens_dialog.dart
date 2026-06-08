@@ -60,12 +60,14 @@ class _SelectTokensDialogState extends ConsumerState<SelectExportTokensDialog> {
               appLocalizations.selectTokensToExport(widget.multiSelect ? 2 : 1),
             ),
           ),
-          GestureDetector(
-            onTap: _showHelpDialog,
-            child: Icon(
+          IconButton(
+            onPressed: _showHelpDialog,
+            icon: Icon(
               Icons.help_outline_rounded,
               color: theme.textTheme.bodyMedium?.color,
             ),
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(),
           ),
         ],
       ),
