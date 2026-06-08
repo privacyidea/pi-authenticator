@@ -34,6 +34,8 @@ class SettingsListTileButton extends StatelessWidget {
     this.tooltip,
   });
 
+  String? get _resolvedTooltip => tooltip ?? (title is Text ? (title as Text).data : null);
+
   @override
   Widget build(BuildContext context) => TextButton(
     onPressed: onPressed,
@@ -56,7 +58,7 @@ class SettingsListTileButton extends StatelessWidget {
                   ),
                   onPressed: onPressed,
                   splashRadius: 26,
-                  tooltip: tooltip ?? (title is Text ? (title as Text).data : null),
+                  tooltip: _resolvedTooltip,
                   icon: icon!,
                 ),
             ],
