@@ -40,11 +40,8 @@ void main() {
       expect(ForceBiometricOptionX.fromString(null), isNull);
     });
 
-    test('fromString throws ArgumentError for invalid string', () {
-      expect(
-        () => ForceBiometricOptionX.fromString('invalid'),
-        throwsArgumentError,
-      );
+    test('fromString returns null for invalid string', () {
+      expect(ForceBiometricOptionX.fromString('invalid'), isNull);
     });
 
     test('validator transformer handles ForceBiometricOption type', () {
