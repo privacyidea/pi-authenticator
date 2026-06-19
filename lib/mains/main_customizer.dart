@@ -22,12 +22,12 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:privacyidea_authenticator/mains/app_init.dart';
 
 import '../../../../../../../utils/customization/application_customization.dart';
 import '../l10n/app_localizations.dart';
 import '../model/enums/app_feature.dart';
 import '../model/riverpod_states/settings_state.dart';
-import '../utils/firebase_utils.dart';
 import '../utils/globals.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/app_constraints_notifier.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/app_customization_notifier.dart';
@@ -44,8 +44,7 @@ import '../views/splash_screen/splash_screen.dart';
 import '../widgets/app_wrapper.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await FirebaseUtils.preInitializeStatus();
+  await initializeApp();
   runApp(
     AppWrapper(
       child: CustomizationAuthenticator(
@@ -123,6 +122,9 @@ class CustomizationAuthenticator extends ConsumerWidget {
                 SplashScreen(customization: applicationCustomizer),
             QRScannerView.routeName: (context) => const QRScannerView(),
           },
+          onUnknownRoute: (settings) => MaterialPageRoute(
+            builder: (context) => SplashScreen(customization: applicationCustomizer),
+          ),
         );
       },
     );

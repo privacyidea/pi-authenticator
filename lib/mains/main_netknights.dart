@@ -23,7 +23,7 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:privacyidea_authenticator/firebase_options/default_firebase_options.dart';
-import 'package:privacyidea_authenticator/utils/firebase_utils.dart';
+import 'package:privacyidea_authenticator/mains/app_init.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/localization_notifier.dart';
 
 import '../../../../model/riverpod_states/settings_state.dart';
@@ -31,7 +31,6 @@ import '../l10n/app_localizations.dart';
 import '../model/enums/app_feature.dart';
 import '../utils/customization/application_customization.dart';
 import '../utils/globals.dart';
-import '../utils/home_widget_utils.dart';
 import '../utils/logger.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/app_constraints_notifier.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
@@ -51,12 +50,7 @@ void main() async {
   Logger.init(
     navigatorKey: globalNavigatorKey,
     appRunner: () async {
-      WidgetsFlutterBinding.ensureInitialized();
-      await FirebaseUtils.preInitializeStatus();
-      await HomeWidgetUtils().registerInteractivityCallback(
-        homeWidgetBackgroundCallback,
-      );
-      await HomeWidgetUtils().setAppGroupId(appGroupId);
+      await initializeApp();
       appFirebaseOptions = DefaultFirebaseOptions.currentPlatformOf(
         'netknights',
       );
@@ -144,6 +138,9 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
             QRScannerView.routeName: (context) => const QRScannerView(),
             ContainerView.routeName: (context) => const ContainerView(),
           },
+          onUnknownRoute: (settings) => MaterialPageRoute(
+            builder: (context) => SplashScreen(customization: _customization),
+          ),
         );
       },
     );
