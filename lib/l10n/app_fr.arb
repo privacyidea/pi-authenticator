@@ -1989,6 +1989,8 @@
   "originDetails": "Informations sur l'origine",
   "otpValueCopiedMessage": "Le mot de passe “{otpValue}“ a été copié dans le presse-papier.",
   "password": "Mot de passe",
+  "showPassword": "Afficher le mot de passe",
+  "hidePassword": "Masquer le mot de passe",
   "passwordCannotBeEmpty": "Le mot de passe ne peut pas être vide",
   "passwordCannotContainWhitespace": "Le mot de passe ne peut pas contenir d'espaces",
   "passwordMustBeAtLeast8Characters": "Le mot de passe doit contenir au moins 8 caractères",

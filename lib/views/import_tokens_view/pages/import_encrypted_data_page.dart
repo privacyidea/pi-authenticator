@@ -56,6 +56,13 @@ class _ImportEncryptedDataPageState extends State<ImportEncryptedDataPage> {
   bool wrongPassword = false;
 
   @override
+  void dispose() {
+    _passwordController.dispose();
+    _passwordFocusNode.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) => Scaffold(
     appBar: AppBar(
       title: Text(

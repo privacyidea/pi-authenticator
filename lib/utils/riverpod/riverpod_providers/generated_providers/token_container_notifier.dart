@@ -963,8 +963,15 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
     // final signature = finalizationResponse.signature;
     final finalizedContainer = await updateContainer(
       container,
-      (TokenContainerUnfinalized c) =>
-          c.copyWith(policies: response.policies).finalize()!,
+      (TokenContainerUnfinalized c) {
+        final finalized = c.copyWith(policies: response.policies).finalize();
+        if (finalized == null) {
+          throw StateError(
+            'Unable to finalize container ${c.serial}: missing client key pair',
+          );
+        }
+        return finalized;
+      },
     );
     if (finalizedContainer == null) {
       throw StateError(

@@ -2010,6 +2010,8 @@
   "originDetails": "Origin details",
   "otpValueCopiedMessage": "Password “{otpValue}“ copied to clipboard.",
   "password": "Password",
+  "showPassword": "Show password",
+  "hidePassword": "Hide password",
   "passwordCannotBeEmpty": "Password cannot be empty",
   "passwordCannotContainWhitespace": "Password cannot contain whitespace",
   "passwordMustBeAtLeast8Characters": "Password must be at least 8 characters",

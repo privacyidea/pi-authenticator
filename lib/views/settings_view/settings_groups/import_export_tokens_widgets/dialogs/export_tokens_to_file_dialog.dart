@@ -52,6 +52,13 @@ class _ExportTokensToFileDialogState
   bool _exportPressed = false;
 
   @override
+  void dispose() {
+    _passwordTextController.dispose();
+    _confirmTextController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final appLocalizations = AppLocalizations.of(context)!;
     return DefaultDialog(

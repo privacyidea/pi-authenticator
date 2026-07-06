@@ -19,6 +19,8 @@
  */
 import 'package:flutter/material.dart';
 
+import '../l10n/app_localizations.dart';
+
 class PiTextField extends StatefulWidget {
   final String? labelText;
   final void Function(String)? onChanged;
@@ -32,7 +34,7 @@ class PiTextField extends StatefulWidget {
   final AutovalidateMode autovalidateMode;
   final String? Function(String?)? validator;
   final TextInputAction? textInputAction;
-  final Function(String)? onFieldSubmitted;
+  final void Function(String)? onFieldSubmitted;
   final bool enabled;
   final String? errorText;
 
@@ -73,6 +75,9 @@ class _PiTextFieldState extends State<PiTextField> {
               icon: Icon(
                 _obscureText ? Icons.visibility : Icons.visibility_off,
               ),
+              tooltip: _obscureText
+                  ? AppLocalizations.of(context)!.showPassword
+                  : AppLocalizations.of(context)!.hidePassword,
               onPressed: () => setState(() => _obscureText = !_obscureText),
             )
           : null,
