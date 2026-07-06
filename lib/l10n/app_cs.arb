@@ -1989,6 +1989,8 @@
   "originDetails": "Podrobnosti o původu",
   "otpValueCopiedMessage": "Heslo “{otpValue}“ bylo zkopírováno do schránky.",
   "password": "Heslo",
+  "showPassword": "Zobrazit heslo",
+  "hidePassword": "Skrýt heslo",
   "passwordCannotBeEmpty": "Heslo nesmí být prázdné",
   "passwordCannotContainWhitespace": "Heslo nesmí obsahovat mezery",
   "passwordMustBeAtLeast8Characters": "Heslo musí obsahovat alespoň 8 znaků",

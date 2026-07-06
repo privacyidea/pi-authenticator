@@ -1989,6 +1989,8 @@
   "originDetails": "Szczegóły dotyczące pochodzenia",
   "otpValueCopiedMessage": "Jednorazowe hasło “{otpValue}“ skopiowane do schowka.",
   "password": "Hasło",
+  "showPassword": "Pokaż hasło",
+  "hidePassword": "Skryj hasło",
   "passwordCannotBeEmpty": "Hasło nie może być puste",
   "passwordCannotContainWhitespace": "Hasło nie może zawierać spacji",
   "passwordMustBeAtLeast8Characters": "Hasło musi mieć co najmniej 8 znaków",

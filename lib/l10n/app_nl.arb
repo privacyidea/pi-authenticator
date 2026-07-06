@@ -1989,6 +1989,8 @@
   "originDetails": "Details over de oorsprong",
   "otpValueCopiedMessage": "Wachtwoord “{otpValue}“ gekopieerd naar het klembord.",
   "password": "Wachtwoord",
+  "showPassword": "Wachtwoord weergeven",
+  "hidePassword": "Wachtwoord verbergen",
   "passwordCannotBeEmpty": "Wachtwoord mag niet leeg zijn",
   "passwordCannotContainWhitespace": "Wachtwoord mag geen spaties bevatten",
   "passwordMustBeAtLeast8Characters": "Wachtwoord moet minimaal 8 tekens lang zijn",

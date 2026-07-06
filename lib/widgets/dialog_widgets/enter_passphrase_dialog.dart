@@ -23,6 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/utils/view_utils.dart';
 import 'package:privacyidea_authenticator/widgets/dialog_widgets/default_dialog.dart';
+import 'package:privacyidea_authenticator/widgets/pi_text_field.dart';
 
 class EnterPassphraseDialog extends StatefulWidget {
   final String question;
@@ -53,12 +54,9 @@ class _EnterPassphraseDialogState extends State<EnterPassphraseDialog> {
         children: [
           Text(widget.question, style: Theme.of(context).textTheme.bodyLarge),
           SizedBox(height: 8),
-          TextField(
-            style: Theme.of(context).textTheme.bodyMedium,
-            decoration: InputDecoration(
-              labelText: appLocalizations.enterPassphraseDialogHint,
-              labelStyle: Theme.of(context).textTheme.bodyMedium,
-            ),
+          PiTextField(
+            obscureText: true,
+            labelText: appLocalizations.enterPassphraseDialogHint,
             onChanged: (value) => setState(() {
               text = value;
             }),

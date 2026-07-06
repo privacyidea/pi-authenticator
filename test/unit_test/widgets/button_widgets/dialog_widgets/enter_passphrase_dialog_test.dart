@@ -137,5 +137,30 @@ void main() {
       expect(textField.decoration?.labelText, isNotNull);
       expect(textField.style?.fontSize, isNotNull);
     });
+
+    testWidgets(
+      'passphrase is obscured by default and can be toggled visible',
+      (tester) async {
+        await tester.pumpWidget(
+          const TestsAppWrapper(child: EnterPassphraseDialog(question: 'Q')),
+        );
+
+        final textFieldFinder = find.byType(TextField);
+        expect(
+          tester.widget<TextField>(textFieldFinder).obscureText,
+          isTrue,
+        );
+        expect(find.byIcon(Icons.visibility), findsOneWidget);
+
+        await tester.tap(find.byIcon(Icons.visibility));
+        await tester.pump();
+
+        expect(
+          tester.widget<TextField>(textFieldFinder).obscureText,
+          isFalse,
+        );
+        expect(find.byIcon(Icons.visibility_off), findsOneWidget);
+      },
+    );
   });
 }

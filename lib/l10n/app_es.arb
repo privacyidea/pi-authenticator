@@ -1989,6 +1989,8 @@
   "originDetails": "Datos de origen",
   "otpValueCopiedMessage": "Contraseña “{otpValue}“ copiada en el portapapeles.",
   "password": "Contraseña",
+  "showPassword": "Mostrar contraseña",
+  "hidePassword": "Ocultar contraseña",
   "passwordCannotBeEmpty": "La contraseña no puede estar vacía",
   "passwordCannotContainWhitespace": "La contraseña no puede contener espacios en blanco",
   "passwordMustBeAtLeast8Characters": "La contraseña debe tener al menos 8 caracteres",
