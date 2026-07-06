@@ -25,6 +25,7 @@ import '../../../model/processor_result.dart';
 import '../../../model/tokens/token.dart';
 import '../../../processors/mixins/token_import_processor.dart';
 import '../../../processors/token_import_file_processor/two_fas_import_file_processor.dart';
+import '../../../widgets/pi_text_field.dart';
 import '../import_tokens_view.dart';
 import 'import_plain_tokens_page.dart';
 
@@ -52,7 +53,6 @@ class _ImportEncryptedDataPageState extends State<ImportEncryptedDataPage> {
   final _passwordController = TextEditingController();
   final _passwordFocusNode = FocusNode();
   Future? processingFuture;
-  bool isPasswordVisible = false;
   bool wrongPassword = false;
 
   @override
@@ -79,52 +79,18 @@ class _ImportEncryptedDataPageState extends State<ImportEncryptedDataPage> {
                 AppLocalizations.of(context)!.tokensAreEncrypted,
                 textAlign: TextAlign.center,
               ),
-              SizedBox(
-                height: ImportTokensView.itemSpacingHorizontal * 4,
-                child: Row(
-                  children: [
-                    Flexible(
-                      flex: 9,
-                      child: TextField(
-                        controller: _passwordController,
-                        focusNode: _passwordFocusNode,
-                        enabled: processingFuture == null,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                        decoration: InputDecoration(
-                          labelText: AppLocalizations.of(context)!.password,
-                          labelStyle: Theme.of(context).textTheme.titleSmall,
-                          errorText: wrongPassword
-                              ? AppLocalizations.of(context)!.wrongPassword
-                              : null,
-                        ),
-                        onChanged: (value) => setState(() {
-                          wrongPassword = false;
-                        }),
-                        obscureText: !isPasswordVisible,
-                      ),
-                    ),
-                    const SizedBox(width: ImportTokensView.itemSpacingVertical),
-                    Flexible(
-                      child: GestureDetector(
-                        child: const SizedBox(
-                          height: 200,
-                          width: 200,
-                          child: Center(
-                            child: Icon(Icons.visibility, size: 36),
-                          ),
-                        ),
-                        onPanDown: (_) =>
-                            setState(() => isPasswordVisible = true),
-                        onPanStart: (_) =>
-                            setState(() => isPasswordVisible = true),
-                        onPanCancel: () =>
-                            setState(() => isPasswordVisible = false),
-                        onPanEnd: (_) =>
-                            setState(() => isPasswordVisible = false),
-                      ),
-                    ),
-                  ],
-                ),
+              PiTextField(
+                controller: _passwordController,
+                focusNode: _passwordFocusNode,
+                enabled: processingFuture == null,
+                obscureText: true,
+                labelText: AppLocalizations.of(context)!.password,
+                errorText: wrongPassword
+                    ? AppLocalizations.of(context)!.wrongPassword
+                    : null,
+                onChanged: (value) => setState(() {
+                  wrongPassword = false;
+                }),
               ),
               const SizedBox(height: ImportTokensView.itemSpacingHorizontal),
               processingFuture != null

@@ -33,6 +33,7 @@ import '../../../../../utils/encryption/token_encryption.dart';
 import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/validators.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
+import '../../../../../widgets/pi_text_field.dart';
 
 class ExportTokensToFileDialog extends ConsumerStatefulWidget {
   final Iterable<Token> tokens;
@@ -46,9 +47,7 @@ class ExportTokensToFileDialog extends ConsumerStatefulWidget {
 class _ExportTokensToFileDialogState
     extends ConsumerState<ExportTokensToFileDialog> {
   final _passwordTextController = TextEditingController();
-  bool _passwordHidden = true;
   final _confirmTextController = TextEditingController();
-  bool _confirmHidden = true;
 
   bool _exportPressed = false;
 
@@ -62,67 +61,21 @@ class _ExportTokensToFileDialogState
         children: (!_exportPressed)
             ? [
                 Text(appLocalizations.enterPasswordToEncrypt),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextFormField(
-                        controller: _passwordTextController,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                        obscureText: _passwordHidden,
-                        onChanged: (value) => setState(() {}),
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: Validators(appLocalizations).password,
-                        decoration: InputDecoration(
-                          labelText: appLocalizations.password,
-                          labelStyle: Theme.of(context).textTheme.titleSmall,
-                          errorMaxLines: 2,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: GestureDetector(
-                        onTapDown: (_) =>
-                            setState(() => _passwordHidden = false),
-                        onTapUp: (_) => setState(() => _passwordHidden = true),
-                        onTapCancel: () =>
-                            setState(() => _passwordHidden = true),
-                        child: const Icon(Icons.visibility),
-                      ),
-                    ),
-                  ],
+                PiTextField(
+                  controller: _passwordTextController,
+                  obscureText: true,
+                  onChanged: (value) => setState(() {}),
+                  validator: Validators(appLocalizations).password,
+                  labelText: appLocalizations.password,
                 ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextFormField(
-                        controller: _confirmTextController,
-                        style: Theme.of(context).textTheme.bodyMedium,
-                        obscureText: _confirmHidden,
-                        onChanged: (value) => setState(() {}),
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
-                        validator: (value) => Validators(
-                          appLocalizations,
-                        ).confirmPassword(_passwordTextController.text, value),
-                        decoration: InputDecoration(
-                          labelText: appLocalizations.confirmPassword,
-                          labelStyle: Theme.of(context).textTheme.titleSmall,
-                          errorMaxLines: 2,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: GestureDetector(
-                        onTapDown: (_) =>
-                            setState(() => _confirmHidden = false),
-                        onTapUp: (_) => setState(() => _confirmHidden = true),
-                        onTapCancel: () =>
-                            setState(() => _confirmHidden = true),
-                        child: const Icon(Icons.visibility),
-                      ),
-                    ),
-                  ],
+                PiTextField(
+                  controller: _confirmTextController,
+                  obscureText: true,
+                  onChanged: (value) => setState(() {}),
+                  validator: (value) => Validators(
+                    appLocalizations,
+                  ).confirmPassword(_passwordTextController.text, value),
+                  labelText: appLocalizations.confirmPassword,
                 ),
               ]
             : [

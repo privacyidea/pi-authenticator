@@ -19,9 +19,9 @@
  */
 import 'package:flutter/material.dart';
 
-class PiTextField extends StatelessWidget {
+class PiTextField extends StatefulWidget {
   final String? labelText;
-  final Function(String)? onChanged;
+  final void Function(String)? onChanged;
   final TextEditingController? controller;
   final TextInputType? keyboardType;
   final FocusNode? focusNode;
@@ -33,6 +33,8 @@ class PiTextField extends StatelessWidget {
   final String? Function(String?)? validator;
   final TextInputAction? textInputAction;
   final Function(String)? onFieldSubmitted;
+  final bool enabled;
+  final String? errorText;
 
   const PiTextField({
     super.key,
@@ -49,23 +51,45 @@ class PiTextField extends StatelessWidget {
     this.validator,
     this.textInputAction,
     this.onFieldSubmitted,
+    this.enabled = true,
+    this.errorText,
   });
 
   @override
+  State<PiTextField> createState() => _PiTextFieldState();
+}
+
+class _PiTextFieldState extends State<PiTextField> {
+  late bool _obscureText = widget.obscureText;
+
+  @override
   Widget build(BuildContext context) => TextFormField(
-    decoration: InputDecoration(labelText: labelText, errorMaxLines: 2),
-    onChanged: onChanged,
-    controller: controller,
-    keyboardType: keyboardType,
-    focusNode: focusNode,
-    autofocus: autofocus,
-    obscureText: obscureText,
-    autocorrect: autocorrect,
-    enableSuggestions: enableSuggestions,
-    textInputAction: textInputAction,
-    onFieldSubmitted: onFieldSubmitted,
+    decoration: InputDecoration(
+      labelText: widget.labelText,
+      errorText: widget.errorText,
+      errorMaxLines: 2,
+      suffixIcon: widget.obscureText
+          ? IconButton(
+              icon: Icon(
+                _obscureText ? Icons.visibility : Icons.visibility_off,
+              ),
+              onPressed: () => setState(() => _obscureText = !_obscureText),
+            )
+          : null,
+    ),
+    onChanged: widget.onChanged,
+    controller: widget.controller,
+    keyboardType: widget.keyboardType,
+    focusNode: widget.focusNode,
+    autofocus: widget.autofocus,
+    enabled: widget.enabled,
+    obscureText: _obscureText,
+    autocorrect: widget.autocorrect,
+    enableSuggestions: widget.enableSuggestions,
+    textInputAction: widget.textInputAction,
+    onFieldSubmitted: widget.onFieldSubmitted,
     style: Theme.of(context).textTheme.titleSmall,
-    autovalidateMode: autovalidateMode,
-    validator: validator,
+    autovalidateMode: widget.autovalidateMode,
+    validator: widget.validator,
   );
 }
