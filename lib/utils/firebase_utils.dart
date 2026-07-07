@@ -23,7 +23,7 @@ import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
-import 'package:gms_check/gms_check.dart';
+import 'package:google_api_availability/google_api_availability.dart';
 import 'package:mutex/mutex.dart';
 import 'package:privacyidea_authenticator/repo/secure_storage.dart';
 
@@ -100,7 +100,9 @@ class FirebaseUtils {
 
   static Future<bool> _checkGmsAvailability() async {
     try {
-      return await GmsCheck().checkGmsAvailability() ?? false;
+      final availability = await GoogleApiAvailability.instance
+          .checkGooglePlayServicesAvailability();
+      return availability == GooglePlayServicesAvailability.success;
     } catch (e, s) {
       Logger.error(
         'Error while checking GMS availability',
@@ -114,39 +116,37 @@ class FirebaseUtils {
   static bool get isMessagingAvailable => _isMessagingAvailable ?? false;
 
   Future<FirebaseApp?> initializeApp() async {
-    await _initFbMutex.acquire();
-    try {
-      if (initializedFirebase) {
-        Logger.warning('Firebase already initialized');
-        _initFbMutex.release();
+    return _initFbMutex.protect(() async {
+      try {
+        if (initializedFirebase) {
+          Logger.warning('Firebase already initialized');
+          return null;
+        }
+        assert(
+          appFirebaseOptions != null,
+          'Firebase options must be set before initializing Firebase',
+        );
+        final FirebaseOptions options = appFirebaseOptions!;
+        final app = await Firebase.initializeApp(
+          name: "fb-${options.projectId}",
+          options: options,
+        );
+        await app.setAutomaticDataCollectionEnabled(false);
+        initializedFirebase = true;
+        assert(
+          app.isAutomaticDataCollectionEnabled == false,
+          'Automatic data collection should be disabled',
+        );
+        return app;
+      } catch (e, s) {
+        Logger.error(
+          'Error while initializing Firebase',
+          error: e,
+          stackTrace: s,
+        );
         return null;
       }
-      assert(
-        appFirebaseOptions != null,
-        'Firebase options must be set before initializing Firebase',
-      );
-      final FirebaseOptions options = appFirebaseOptions!;
-      final app = await Firebase.initializeApp(
-        name: "fb-${options.projectId}",
-        options: options,
-      );
-      await app.setAutomaticDataCollectionEnabled(false);
-      initializedFirebase = true;
-      assert(
-        app.isAutomaticDataCollectionEnabled == false,
-        'Automatic data collection should be disabled',
-      );
-      _initFbMutex.release();
-      return app;
-    } catch (e, s) {
-      _initFbMutex.release();
-      Logger.error(
-        'Error while initializing Firebase',
-        error: e,
-        stackTrace: s,
-      );
-      return null;
-    }
+    });
   }
 
   Future<void> setupHandler({
@@ -154,80 +154,81 @@ class FirebaseUtils {
     required Future<void> Function(RemoteMessage) backgroundHandler,
     required dynamic Function({String? firebaseToken}) updateFirebaseToken,
   }) async {
-    await _initFbMutex.acquire();
-    if (!initializedFirebase) {
-      Logger.error('Initialize Firebase before setting up the handler');
-      _initFbMutex.release();
-      return;
-    }
-    _initFbMutex.release();
-    await _initHandlerMutex.acquire();
-    if (initializedHandler) {
-      Logger.warning('Firebase handler already initialized');
-      _initHandlerMutex.release();
-      return;
-    }
-
-    Logger.info('FirebaseUtils: Initializing Firebase');
-
-    FirebaseMessaging.onMessage.listen(foregroundHandler);
-    FirebaseMessaging.onBackgroundMessage(backgroundHandler);
-
-    try {
-      String? firebaseToken = await getFBToken();
-
-      if (firebaseToken != await getCurrentFirebaseToken() &&
-          firebaseToken != null) {
-        updateFirebaseToken(firebaseToken: firebaseToken);
+    final canSetup = await _initFbMutex.protect(() async {
+      if (!initializedFirebase) {
+        Logger.error('Initialize Firebase before setting up the handler');
+        return false;
       }
-    } catch (error, stackTrace) {
-      if (error is PlatformException) {
-        if (error.code == FIREBASE_TOKEN_ERROR_CODE) {
-          _initHandlerMutex.release();
-          return;
+      return true;
+    });
+    if (!canSetup) return;
+
+    await _initHandlerMutex.protect(() async {
+      if (initializedHandler) {
+        Logger.warning('Firebase handler already initialized');
+        return;
+      }
+
+      Logger.info('FirebaseUtils: Initializing Firebase');
+
+      FirebaseMessaging.onMessage.listen(foregroundHandler);
+      FirebaseMessaging.onBackgroundMessage(backgroundHandler);
+
+      try {
+        String? firebaseToken = await getFBToken();
+
+        if (firebaseToken != await getCurrentFirebaseToken() &&
+            firebaseToken != null) {
+          updateFirebaseToken(firebaseToken: firebaseToken);
         }
-        showErrorStatusMessage(
-          message: (l) => l.pushInitializeUnavailable,
-          details: (_) =>
-              '${error.code}: ${error.message ?? 'no error message'}',
-        );
-      }
-      if (error is FirebaseException) {
-        if (error.code == FIREBASE_TOKEN_ERROR_CODE) {
-          _initHandlerMutex.release();
-          return;
-        }
-        showErrorStatusMessage(
-          message: (l) => l.pushInitializeUnavailable,
-          details: (_) =>
-              '${error.code}: ${error.message ?? 'no error message'}',
-        );
-      }
-
-      Logger.error(
-        'Unknown Firebase error',
-        error: error,
-        stackTrace: stackTrace,
-      );
-    }
-
-    FirebaseMessaging.instance.onTokenRefresh.listen((String newToken) async {
-      if ((await getCurrentFirebaseToken()) != newToken) {
-        await setNewFirebaseToken(newToken);
-        try {
-          updateFirebaseToken(firebaseToken: newToken);
-        } catch (error, stackTrace) {
-          Logger.error(
-            'Error updating firebase token',
-            error: error,
-            stackTrace: stackTrace,
+      } catch (error, stackTrace) {
+        if (error is PlatformException) {
+          if (error.code == FIREBASE_TOKEN_ERROR_CODE) {
+            return;
+          }
+          showErrorStatusMessage(
+            message: (l) => l.pushInitializeUnavailable,
+            details: (_) =>
+                '${error.code}: ${error.message ?? 'no error message'}',
           );
         }
-      }
-    });
+        if (error is FirebaseException) {
+          if (error.code == FIREBASE_TOKEN_ERROR_CODE) {
+            return;
+          }
+          showErrorStatusMessage(
+            message: (l) => l.pushInitializeUnavailable,
+            details: (_) =>
+                '${error.code}: ${error.message ?? 'no error message'}',
+          );
+        }
 
-    initializedHandler = true;
-    _initHandlerMutex.release();
+        Logger.error(
+          'Unknown Firebase error',
+          error: error,
+          stackTrace: stackTrace,
+        );
+      }
+
+      FirebaseMessaging.instance.onTokenRefresh.listen((
+        String newToken,
+      ) async {
+        if ((await getCurrentFirebaseToken()) != newToken) {
+          await setNewFirebaseToken(newToken);
+          try {
+            updateFirebaseToken(firebaseToken: newToken);
+          } catch (error, stackTrace) {
+            Logger.error(
+              'Error updating firebase token',
+              error: error,
+              stackTrace: stackTrace,
+            );
+          }
+        }
+      });
+
+      initializedHandler = true;
+    });
   }
 
   Future<String?> getFBToken() async {
@@ -253,7 +254,7 @@ class FirebaseUtils {
     if (firebaseToken == null) {
       throw PlatformException(
         message:
-            'Firebase token could not be retrieved, the only know cause of this is'
+            'Firebase token could not be retrieved, the only known cause of this is'
             ' that the firebase servers could not be reached.',
         code: FIREBASE_TOKEN_ERROR_CODE,
       );
