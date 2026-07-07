@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gms_check/gms_check.dart';
+import 'package:google_api_availability/google_api_availability.dart';
 import 'package:mockito/mockito.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/token_folder_state.dart';
 import 'package:privacyidea_authenticator/model/token_folder.dart';
@@ -34,7 +34,7 @@ void _testTokenFolderNotifier() {
     });
 
     test('removeFolder', () async {
-      await GmsCheck().checkGmsAvailability();
+      await GoogleApiAvailability.instance.checkGooglePlayServicesAvailability();
       final mockRepo = MockTokenFolderRepository();
       final mockTokenRepo = MockTokenRepository();
       when(mockTokenRepo.loadTokens()).thenAnswer((_) async => const []);

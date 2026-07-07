@@ -23,7 +23,7 @@ import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
-import 'package:gms_check/gms_check.dart';
+import 'package:google_api_availability/google_api_availability.dart';
 import 'package:mutex/mutex.dart';
 import 'package:privacyidea_authenticator/repo/secure_storage.dart';
 
@@ -100,7 +100,9 @@ class FirebaseUtils {
 
   static Future<bool> _checkGmsAvailability() async {
     try {
-      return await GmsCheck().checkGmsAvailability() ?? false;
+      final availability = await GoogleApiAvailability.instance
+          .checkGooglePlayServicesAvailability();
+      return availability == GooglePlayServicesAvailability.success;
     } catch (e, s) {
       Logger.error(
         'Error while checking GMS availability',
