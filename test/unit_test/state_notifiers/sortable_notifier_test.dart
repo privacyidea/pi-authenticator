@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:google_api_availability/google_api_availability.dart';
 import 'package:mockito/mockito.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.dart';
@@ -26,7 +25,6 @@ void _testSortableNotifier() {
   group('SortableNotifier test', () {
     test('handleNewList', () async {
       final mockSettingsRepo = MockSettingsRepository();
-      await GoogleApiAvailability.instance.checkGooglePlayServicesAvailability();
       when(
         mockSettingsRepo.loadSettings(),
       ).thenAnswer((_) async => SettingsState());

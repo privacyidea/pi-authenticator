@@ -20,7 +20,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:google_api_availability/google_api_availability.dart';
 import 'package:http/http.dart';
 import 'package:mockito/mockito.dart';
 import 'package:pointycastle/export.dart';
@@ -423,7 +422,6 @@ void _testTokenNotifier() {
     });
     test('addOrReplaceTokens', () async {
       final mockSettingsRepo = MockSettingsRepository();
-      await GoogleApiAvailability.instance.checkGooglePlayServicesAvailability();
       when(
         mockSettingsRepo.loadSettings(),
       ).thenAnswer((_) async => SettingsState());
@@ -494,7 +492,6 @@ void _testTokenNotifier() {
     });
     test('addTokenFromOtpAuth', () async {
       WidgetsFlutterBinding.ensureInitialized();
-      await GoogleApiAvailability.instance.checkGooglePlayServicesAvailability();
       final mockSettingsRepo = MockSettingsRepository();
       when(
         mockSettingsRepo.loadSettings(),
