@@ -18,9 +18,7 @@
  * limitations under the License.
  */
 import 'dart:async';
-import 'dart:io';
 
-import 'package:app_settings/app_settings.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -35,6 +33,7 @@ import '../l10n/app_localizations.dart';
 import '../model/extensions/enums/force_biometric_option_extension.dart';
 import '../widgets/dialog_widgets/default_dialog.dart';
 import '../widgets/gap.dart';
+import 'app_settings_utils.dart';
 import 'logger.dart';
 import 'riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import 'view_utils.dart';
@@ -166,14 +165,7 @@ Future<void> _showNoScreenLockDialog() async {
           label: AppLocalizations.of(context)!.setUpButton,
           intent: ActionIntent.external,
           onPressed: () async {
-            if (Platform.isAndroid) {
-              await AppSettings.openAppSettings(
-                type: AppSettingsType.lockAndPassword,
-              );
-            }
-            if (Platform.isIOS) {
-              await AppSettings.openAppSettings();
-            }
+            await openLockAndPasswordSettings();
             final isNowSupported = await _localAuth.isDeviceSupported();
             if (isNowSupported && context.mounted) {
               Navigator.of(context).pop();
@@ -223,14 +215,7 @@ Future<void> _showNoBiometricDialog() async {
             iconSize: 48,
             icon: const Icon(Symbols.fingerprint, size: 48),
             onPressed: () {
-              if (Platform.isAndroid) {
-                AppSettings.openAppSettings(
-                  type: AppSettingsType.lockAndPassword,
-                );
-              }
-              if (Platform.isIOS) {
-                AppSettings.openAppSettings();
-              }
+              openLockAndPasswordSettings();
             },
           ),
           Gap(),
@@ -246,14 +231,7 @@ Future<void> _showNoBiometricDialog() async {
           label: AppLocalizations.of(context)!.setUpButton,
           intent: ActionIntent.external,
           onPressed: () async {
-            if (Platform.isAndroid) {
-              await AppSettings.openAppSettings(
-                type: AppSettingsType.lockAndPassword,
-              );
-            }
-            if (Platform.isIOS) {
-              await AppSettings.openAppSettings();
-            }
+            await openLockAndPasswordSettings();
             final hasBiometricsEnrolled =
                 (await _localAuth.getAvailableBiometrics()).isNotEmpty;
             if (hasBiometricsEnrolled && context.mounted) {
