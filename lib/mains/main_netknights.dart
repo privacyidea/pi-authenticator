@@ -111,32 +111,38 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
           navigatorKey: globalNavigatorKey,
           themeMode: EasyDynamicTheme.of(context).themeMode,
           initialRoute: SplashScreen.routeName,
-          routes: {
-            AddTokenManuallyView.routeName: (context) =>
-                const AddTokenManuallyView(),
-            FeedbackView.routeName: (context) => const FeedbackView(),
-            ImportTokensView.routeName: (context) => const ImportTokensView(),
-            LicenseView.routeName: (context) => LicenseView(
-              appImage:
-                  _customization.licensesViewImage?.getWidget ??
-                  _customization.splashScreenImage.getWidget,
-              appName: _customization.appName,
-              websiteLink: _customization.websiteLink,
-            ),
-            MainView.routeName: (context) => MainView(
-              appbarIcon: _customization.appbarIcon.getWidget,
-              backgroundImage: _customization.backgroundImage?.getWidget,
-              appName: _customization.appName,
-              disablePatchNotes: _customization.disabledFeatures.contains(
-                AppFeature.patchNotes,
+          onGenerateRoute: (settings) {
+            final builders = <String, WidgetBuilder>{
+              AddTokenManuallyView.routeName: (context) =>
+                  const AddTokenManuallyView(),
+              FeedbackView.routeName: (context) => const FeedbackView(),
+              ImportTokensView.routeName: (context) =>
+                  const ImportTokensView(),
+              LicenseView.routeName: (context) => LicenseView(
+                appImage:
+                    _customization.licensesViewImage?.getWidget ??
+                    _customization.splashScreenImage.getWidget,
+                appName: _customization.appName,
+                websiteLink: _customization.websiteLink,
               ),
-            ),
-            PushTokensView.routeName: (context) => const PushTokensView(),
-            SettingsView.routeName: (context) => const SettingsView(),
-            SplashScreen.routeName: (context) =>
-                SplashScreen(customization: _customization),
-            QRScannerView.routeName: (context) => const QRScannerView(),
-            ContainerView.routeName: (context) => const ContainerView(),
+              MainView.routeName: (context) => MainView(
+                appbarIcon: _customization.appbarIcon.getWidget,
+                backgroundImage: _customization.backgroundImage?.getWidget,
+                appName: _customization.appName,
+                disablePatchNotes: _customization.disabledFeatures.contains(
+                  AppFeature.patchNotes,
+                ),
+              ),
+              PushTokensView.routeName: (context) => const PushTokensView(),
+              SettingsView.routeName: (context) => const SettingsView(),
+              SplashScreen.routeName: (context) =>
+                  SplashScreen(customization: _customization),
+              QRScannerView.routeName: (context) => const QRScannerView(),
+              ContainerView.routeName: (context) => const ContainerView(),
+            };
+            final builder = builders[settings.name];
+            if (builder == null) return null;
+            return MaterialPageRoute(builder: builder, settings: settings);
           },
           onUnknownRoute: (settings) => MaterialPageRoute(
             builder: (context) => SplashScreen(customization: _customization),

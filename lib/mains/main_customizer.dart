@@ -97,33 +97,41 @@ class CustomizationAuthenticator extends ConsumerWidget {
           scaffoldMessengerKey: globalSnackbarKey,
           themeMode: EasyDynamicTheme.of(context).themeMode,
           initialRoute: SplashScreen.routeName,
-          routes: {
-            AddTokenManuallyView.routeName: (context) =>
-                const AddTokenManuallyView(),
-            FeedbackView.routeName: (context) => const FeedbackView(),
-            ImportTokensView.routeName: (context) => const ImportTokensView(),
-            LicenseView.routeName: (context) => LicenseView(
-              appImage:
-                  applicationCustomizer.licensesViewImage?.getWidget ??
-                  applicationCustomizer.splashScreenImage.getWidget,
-              appName: applicationCustomizer.appName,
-              websiteLink: applicationCustomizer.websiteLink,
-            ),
-            MainView.routeName: (context) => MainView(
-              appbarIcon: applicationCustomizer.appbarIcon.getWidget,
-              backgroundImage: applicationCustomizer.backgroundImage?.getWidget,
-              appName: applicationCustomizer.appName,
-              disablePatchNotes: applicationCustomizer.disabledFeatures
-                  .contains(AppFeature.patchNotes),
-            ),
-            PushTokensView.routeName: (context) => const PushTokensView(),
-            SettingsView.routeName: (context) => const SettingsView(),
-            SplashScreen.routeName: (context) =>
-                SplashScreen(customization: applicationCustomizer),
-            QRScannerView.routeName: (context) => const QRScannerView(),
+          onGenerateRoute: (settings) {
+            final builders = <String, WidgetBuilder>{
+              AddTokenManuallyView.routeName: (context) =>
+                  const AddTokenManuallyView(),
+              FeedbackView.routeName: (context) => const FeedbackView(),
+              ImportTokensView.routeName: (context) =>
+                  const ImportTokensView(),
+              LicenseView.routeName: (context) => LicenseView(
+                appImage:
+                    applicationCustomizer.licensesViewImage?.getWidget ??
+                    applicationCustomizer.splashScreenImage.getWidget,
+                appName: applicationCustomizer.appName,
+                websiteLink: applicationCustomizer.websiteLink,
+              ),
+              MainView.routeName: (context) => MainView(
+                appbarIcon: applicationCustomizer.appbarIcon.getWidget,
+                backgroundImage:
+                    applicationCustomizer.backgroundImage?.getWidget,
+                appName: applicationCustomizer.appName,
+                disablePatchNotes: applicationCustomizer.disabledFeatures
+                    .contains(AppFeature.patchNotes),
+              ),
+              PushTokensView.routeName: (context) => const PushTokensView(),
+              SettingsView.routeName: (context) => const SettingsView(),
+              SplashScreen.routeName: (context) =>
+                  SplashScreen(customization: applicationCustomizer),
+              QRScannerView.routeName: (context) => const QRScannerView(),
+            };
+            final builder = builders[settings.name];
+            if (builder == null) return null;
+            return MaterialPageRoute(builder: builder, settings: settings);
           },
           onUnknownRoute: (settings) => MaterialPageRoute(
-            builder: (context) => SplashScreen(customization: applicationCustomizer),
+            builder: (context) =>
+                SplashScreen(customization: applicationCustomizer),
           ),
         );
       },
