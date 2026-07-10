@@ -37,13 +37,13 @@ abstract class BaseMainActivity : FlutterFragmentActivity() {
                                 result.success(entries)
                             }
                             else -> {
-                                result.error("UNAVAILABLE", "Something went wrong", null)
+                                result.error("UNAVAILABLE", "Unsupported method: ${call.method}", null)
                             }
                         }
                     }
-                } ?: result.error("UNAVAILABLE", "Something went wrong", null)
+                } ?: result.error("UNAVAILABLE", "Could not open input stream for the given path", null)
             } catch (e: Exception) {
-                result.error("UNAVAILABLE", "Something went wrong", null)
+                result.error("UNAVAILABLE", "Failed to read value from file: ${e.message}", null)
             }
         }
 

@@ -50,7 +50,10 @@ Future<void> openLockAndPasswordSettings() async {
       }
       return;
     case TargetPlatform.iOS:
-      await _launchUrl(Uri.parse('app-settings:'));
+      final success = await _launchUrl(Uri.parse('app-settings:'));
+      if (!success) {
+        Logger.warning('Failed to open security settings');
+      }
       return;
     default:
       return;
