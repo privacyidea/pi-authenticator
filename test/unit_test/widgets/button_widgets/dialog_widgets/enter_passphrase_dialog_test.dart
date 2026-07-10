@@ -38,7 +38,7 @@ void main() {
         );
         await tester.pumpAndSettle();
 
-        final okButtonFinder = find.byType(IntentButton);
+        final okButtonFinder = find.widgetWithText(IntentButton, 'Ok');
 
         expect(okButtonFinder, findsOneWidget);
         expect(tester.widget<IntentButton>(okButtonFinder).onPressed, isNull);
@@ -137,9 +137,12 @@ void main() {
 
       expect(textField.labelText, isNotNull);
 
-      final editableText = tester.widget<EditableText>(
-        find.byType(EditableText),
+      final editableTextFinder = find.descendant(
+        of: textFieldFinder,
+        matching: find.byType(EditableText),
       );
+      expect(editableTextFinder, findsOneWidget);
+      final editableText = tester.widget<EditableText>(editableTextFinder);
       expect(editableText.style.fontSize, isNotNull);
     });
 
@@ -161,6 +164,15 @@ void main() {
         await tester.pump();
 
         expect(find.byIcon(Icons.visibility_off), findsOneWidget);
+
+        final editableTextFinder = find.descendant(
+          of: textFieldFinder,
+          matching: find.byType(EditableText),
+        );
+        expect(
+          tester.widget<EditableText>(editableTextFinder).obscureText,
+          isFalse,
+        );
       },
     );
   });

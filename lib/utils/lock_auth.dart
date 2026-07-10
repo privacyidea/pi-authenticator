@@ -214,8 +214,8 @@ Future<void> _showNoBiometricDialog() async {
           IconButton(
             iconSize: 48,
             icon: const Icon(Symbols.fingerprint, size: 48),
-            onPressed: () {
-              openLockAndPasswordSettings();
+            onPressed: () async {
+              await openLockAndPasswordSettings();
             },
           ),
           Gap(),
