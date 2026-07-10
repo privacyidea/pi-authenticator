@@ -54,9 +54,9 @@ class AllowScreenshotUtils {
   /// Returns true if the operation was successful
   Future<bool> toggleAllowScreenshots(bool oldState) {
     if (oldState) {
-      return allowScreenshots();
-    } else {
       return disallowScreenshots();
+    } else {
+      return allowScreenshots();
     }
   }
 }
