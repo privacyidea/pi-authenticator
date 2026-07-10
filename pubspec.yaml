@@ -72,7 +72,6 @@ dependencies:
   logger: ^2.4.0
   material_symbols_icons: ^4.2906.0
   mutex: ^3.1.0
-  no_screenshot: ^1.0.0
   otp: ^3.1.4
   package_info_plus: ^9.0.0
   path_provider: ^2.1.4
@@ -80,6 +79,7 @@ dependencies:
   pointycastle: ^3.9.1
   protobuf: ^6.0.0
   riverpod_annotation: ^4.0.0
+  screen_security: ^1.1.0
   shared_preferences: ^2.3.2
   url_launcher: ^6.3.1
   uuid: ^4.5.1

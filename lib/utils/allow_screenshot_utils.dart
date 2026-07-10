@@ -17,23 +17,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import 'package:no_screenshot/no_screenshot.dart';
+import 'package:screen_security/screen_security.dart';
 
 import 'logger.dart';
 
 class AllowScreenshotUtils {
+  final _screenSecurity = ScreenSecurity();
+
   /// Enables the ability to take screenshots
   /// Returns true if the operation was successful
-  Future<bool> allowScreenshots() {
-    Logger.info("Screenshots allowed");
-    return NoScreenshot.instance.screenshotOn();
+  Future<bool> allowScreenshots() async {
+    try {
+      await _screenSecurity.disable();
+      Logger.info("Screenshots allowed");
+      return true;
+    } catch (e, s) {
+      Logger.warning("Failed to allow screenshots", error: e, stackTrace: s);
+      return false;
+    }
   }
 
   /// Disables the ability to take screenshots
   /// Returns true if the operation was successful
-  Future<bool> disallowScreenshots() {
-    Logger.info("Screenshots not allowed");
-    return NoScreenshot.instance.screenshotOff();
+  Future<bool> disallowScreenshots() async {
+    try {
+      await _screenSecurity.enable();
+      Logger.info("Screenshots not allowed");
+      return true;
+    } catch (e, s) {
+      Logger.warning("Failed to disallow screenshots", error: e, stackTrace: s);
+      return false;
+    }
   }
 
   /// Toggles the ability to take screenshots
