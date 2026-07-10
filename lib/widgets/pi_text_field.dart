@@ -78,7 +78,9 @@ class _PiTextFieldState extends State<PiTextField> {
               tooltip: _obscureText
                   ? AppLocalizations.of(context)!.showPassword
                   : AppLocalizations.of(context)!.hidePassword,
-              onPressed: () => setState(() => _obscureText = !_obscureText),
+              onPressed: widget.enabled
+                  ? () => setState(() => _obscureText = !_obscureText)
+                  : null,
             )
           : null,
     ),

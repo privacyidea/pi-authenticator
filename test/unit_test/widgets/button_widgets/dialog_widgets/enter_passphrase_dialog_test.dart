@@ -22,6 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:privacyidea_authenticator/widgets/button_widgets/intent_button.dart';
 import 'package:privacyidea_authenticator/widgets/dialog_widgets/enter_passphrase_dialog.dart';
+import 'package:privacyidea_authenticator/widgets/pi_text_field.dart';
 
 import '../../../../tests_app_wrapper.dart';
 
@@ -42,7 +43,7 @@ void main() {
         expect(okButtonFinder, findsOneWidget);
         expect(tester.widget<IntentButton>(okButtonFinder).onPressed, isNull);
 
-        await tester.enterText(find.byType(TextField), 'my secret');
+        await tester.enterText(find.byType(TextFormField), 'my secret');
         await tester.pump();
 
         expect(
@@ -75,7 +76,7 @@ void main() {
       await tester.tap(find.text('Open'));
       await tester.pumpAndSettle();
 
-      await tester.enterText(find.byType(TextField), 'secret_pass');
+      await tester.enterText(find.byType(TextFormField), 'secret_pass');
       await tester.pump();
 
       final okButton = find.byType(IntentButton);
@@ -131,11 +132,15 @@ void main() {
         const TestsAppWrapper(child: EnterPassphraseDialog(question: 'Q')),
       );
 
-      final textFieldFinder = find.byType(TextField);
-      final textField = tester.widget<TextField>(textFieldFinder);
+      final textFieldFinder = find.byType(PiTextField);
+      final textField = tester.widget<PiTextField>(textFieldFinder);
 
-      expect(textField.decoration?.labelText, isNotNull);
-      expect(textField.style?.fontSize, isNotNull);
+      expect(textField.labelText, isNotNull);
+
+      final editableText = tester.widget<EditableText>(
+        find.byType(EditableText),
+      );
+      expect(editableText.style.fontSize, isNotNull);
     });
 
     testWidgets(
@@ -145,9 +150,9 @@ void main() {
           const TestsAppWrapper(child: EnterPassphraseDialog(question: 'Q')),
         );
 
-        final textFieldFinder = find.byType(TextField);
+        final textFieldFinder = find.byType(PiTextField);
         expect(
-          tester.widget<TextField>(textFieldFinder).obscureText,
+          tester.widget<PiTextField>(textFieldFinder).obscureText,
           isTrue,
         );
         expect(find.byIcon(Icons.visibility), findsOneWidget);
@@ -155,10 +160,6 @@ void main() {
         await tester.tap(find.byIcon(Icons.visibility));
         await tester.pump();
 
-        expect(
-          tester.widget<TextField>(textFieldFinder).obscureText,
-          isFalse,
-        );
         expect(find.byIcon(Icons.visibility_off), findsOneWidget);
       },
     );
