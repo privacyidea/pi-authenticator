@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:gms_check/gms_check.dart';
 import 'package:http/http.dart' as http;
 import 'package:mockito/mockito.dart';
 import 'package:privacyidea_authenticator/api/interfaces/container_api.dart';
@@ -667,7 +666,6 @@ void main() {
     test('handleProcessorResult', () async {
       // prepare
       TestWidgetsFlutterBinding.ensureInitialized();
-      await GmsCheck().checkGmsAvailability();
       var containerRepoState = TokenContainerState(containerList: []);
       final mockContainerRepo = MockTokenContainerRepository();
       final mockContainerApi = MockTokenContainerApi();
@@ -784,7 +782,6 @@ void main() {
     test('finalizeContainer', () async {
       // prepare
       TestWidgetsFlutterBinding.ensureInitialized();
-      await GmsCheck().checkGmsAvailability();
       var containerRepoState = buildUnfinalizedContainerState();
       final mockContainerRepo = MockTokenContainerRepository();
       final mockContainerApi = MockTokenContainerApi();
@@ -895,7 +892,6 @@ void main() {
       test('sync', () async {
         // prepare
         TestWidgetsFlutterBinding.ensureInitialized();
-        await GmsCheck().checkGmsAvailability();
         var containerRepoState = buildFinalizedContainerState();
         final containerToSync =
             containerRepoState.containerList.first as TokenContainerFinalized;
@@ -1422,7 +1418,6 @@ void main() {
       'handleProcessorResults does not replace container when disabledUnregister is true',
       () async {
         TestWidgetsFlutterBinding.ensureInitialized();
-        await GmsCheck().checkGmsAvailability();
         // buildFinalizedContainerState() returns a container with serial "CONTAINER01" and disabledUnregister: true
         var repoState = buildFinalizedContainerState();
         final originalNonce =

@@ -22,6 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:privacyidea_authenticator/widgets/button_widgets/intent_button.dart';
 import 'package:privacyidea_authenticator/widgets/dialog_widgets/enter_passphrase_dialog.dart';
+import 'package:privacyidea_authenticator/widgets/pi_text_field.dart';
 
 import '../../../../tests_app_wrapper.dart';
 
@@ -37,12 +38,12 @@ void main() {
         );
         await tester.pumpAndSettle();
 
-        final okButtonFinder = find.byType(IntentButton);
+        final okButtonFinder = find.widgetWithText(IntentButton, 'Ok');
 
         expect(okButtonFinder, findsOneWidget);
         expect(tester.widget<IntentButton>(okButtonFinder).onPressed, isNull);
 
-        await tester.enterText(find.byType(TextField), 'my secret');
+        await tester.enterText(find.byType(TextFormField), 'my secret');
         await tester.pump();
 
         expect(
@@ -75,7 +76,7 @@ void main() {
       await tester.tap(find.text('Open'));
       await tester.pumpAndSettle();
 
-      await tester.enterText(find.byType(TextField), 'secret_pass');
+      await tester.enterText(find.byType(TextFormField), 'secret_pass');
       await tester.pump();
 
       final okButton = find.byType(IntentButton);
@@ -131,11 +132,48 @@ void main() {
         const TestsAppWrapper(child: EnterPassphraseDialog(question: 'Q')),
       );
 
-      final textFieldFinder = find.byType(TextField);
-      final textField = tester.widget<TextField>(textFieldFinder);
+      final textFieldFinder = find.byType(PiTextField);
+      final textField = tester.widget<PiTextField>(textFieldFinder);
 
-      expect(textField.decoration?.labelText, isNotNull);
-      expect(textField.style?.fontSize, isNotNull);
+      expect(textField.labelText, isNotNull);
+
+      final editableTextFinder = find.descendant(
+        of: textFieldFinder,
+        matching: find.byType(EditableText),
+      );
+      expect(editableTextFinder, findsOneWidget);
+      final editableText = tester.widget<EditableText>(editableTextFinder);
+      expect(editableText.style.fontSize, isNotNull);
     });
+
+    testWidgets(
+      'passphrase is obscured by default and can be toggled visible',
+      (tester) async {
+        await tester.pumpWidget(
+          const TestsAppWrapper(child: EnterPassphraseDialog(question: 'Q')),
+        );
+
+        final textFieldFinder = find.byType(PiTextField);
+        expect(
+          tester.widget<PiTextField>(textFieldFinder).obscureText,
+          isTrue,
+        );
+        expect(find.byIcon(Icons.visibility), findsOneWidget);
+
+        await tester.tap(find.byIcon(Icons.visibility));
+        await tester.pump();
+
+        expect(find.byIcon(Icons.visibility_off), findsOneWidget);
+
+        final editableTextFinder = find.descendant(
+          of: textFieldFinder,
+          matching: find.byType(EditableText),
+        );
+        expect(
+          tester.widget<EditableText>(editableTextFinder).obscureText,
+          isFalse,
+        );
+      },
+    );
   });
 }

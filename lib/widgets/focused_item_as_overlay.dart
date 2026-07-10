@@ -260,8 +260,8 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
               children: [
                 Positioned.fill(
                   child: PulseIcon(
-                    width: boxsize.width + circlePadding,
-                    height: boxsize.height + circlePadding,
+                    width: max(boxsize.width + circlePadding, 0.0),
+                    height: max(boxsize.height + circlePadding, 0.0),
                     borderRadius: borderRadius,
                     child: Material(
                       color: Colors.transparent,
@@ -274,8 +274,8 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
                   ),
                 ),
                 Container(
-                  width: boxsize.width + circlePadding,
-                  height: boxsize.height + circlePadding,
+                  width: max(boxsize.width + circlePadding, 0.0),
+                  height: max(boxsize.height + circlePadding, 0.0),
                   decoration: BoxDecoration(
                     borderRadius: borderRadius,
                     border: Border.all(
