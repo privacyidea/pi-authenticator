@@ -52,8 +52,8 @@ class AllowScreenshotUtils {
 
   /// Toggles the ability to take screenshots
   /// Returns true if the operation was successful
-  Future<bool> toggleAllowScreenshots(bool oldState) {
-    if (oldState) {
+  Future<bool> toggleAllowScreenshots(bool screenshotsCurrentlyAllowed) {
+    if (screenshotsCurrentlyAllowed) {
       return disallowScreenshots();
     } else {
       return allowScreenshots();

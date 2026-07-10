@@ -172,7 +172,10 @@ void main() {
       test('durations sum up to period', () {
         final token = createTestToken();
         final sum = token.durationSinceLastOTP + token.durationUntilNextOTP;
-        expect(sum.inSeconds, testPeriod.inSeconds);
+        // The two getters each read DateTime.now() independently, so the sum can
+        // drift by a few milliseconds (and cross a second boundary under .inSeconds).
+        final errorMargin = (sum - testPeriod).abs();
+        expect(errorMargin.inMilliseconds, lessThan(100));
       });
     });
 

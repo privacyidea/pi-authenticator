@@ -77,20 +77,28 @@ class DayPasswordToken extends OTPToken {
   @override
   String get nextValue => _otpFromTime(DateTime.now().add(period));
 
-  Duration get durationSinceLastOTP {
+  Duration _durationSinceLastOTPAt(DateTime now) {
     final msPassedThisPeriod =
-        (DateTime.now().millisecondsSinceEpoch) % period.inMilliseconds;
+        now.millisecondsSinceEpoch % period.inMilliseconds;
     return Duration(milliseconds: msPassedThisPeriod);
   }
 
-  Duration get durationUntilNextOTP => period - durationSinceLastOTP;
+  Duration get durationSinceLastOTP => _durationSinceLastOTPAt(DateTime.now());
 
-  DateTime get thisOTPTimeStart =>
-      DateTime.now().subtract(durationSinceLastOTP);
+  Duration get durationUntilNextOTP {
+    final now = DateTime.now();
+    return period - _durationSinceLastOTPAt(now);
+  }
+
+  DateTime get thisOTPTimeStart {
+    final now = DateTime.now();
+    return now.subtract(_durationSinceLastOTPAt(now));
+  }
 
   DateTime get nextOTPTimeStart {
-    return DateTime.now().add(
-      durationUntilNextOTP + const Duration(milliseconds: 1),
+    final now = DateTime.now();
+    return now.add(
+      period - _durationSinceLastOTPAt(now) + const Duration(milliseconds: 1),
     );
   }
 
