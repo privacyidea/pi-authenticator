@@ -72,12 +72,10 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
   final _repoMutex = Mutex();
 
   TokenContainerNotifier({
-    TokenContainerRepository? repoOverride,
-    TokenContainerApi? containerApiOverride,
-    EccUtils? eccUtilsOverride,
-  }) : _repoOverride = repoOverride,
-       _containerApiOverride = containerApiOverride,
-       _eccUtilsOverride = eccUtilsOverride;
+    this._repoOverride,
+    this._containerApiOverride,
+    this._eccUtilsOverride,
+  });
 
   @override
   TokenContainerRepository get repo => _repo;
@@ -961,18 +959,17 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
     }
 
     // final signature = finalizationResponse.signature;
-    final finalizedContainer = await updateContainer(
-      container,
-      (TokenContainerUnfinalized c) {
-        final finalized = c.copyWith(policies: response.policies).finalize();
-        if (finalized == null) {
-          throw StateError(
-            'Unable to finalize container ${c.serial}: missing client key pair',
-          );
-        }
-        return finalized;
-      },
-    );
+    final finalizedContainer = await updateContainer(container, (
+      TokenContainerUnfinalized c,
+    ) {
+      final finalized = c.copyWith(policies: response.policies).finalize();
+      if (finalized == null) {
+        throw StateError(
+          'Unable to finalize container ${c.serial}: missing client key pair',
+        );
+      }
+      return finalized;
+    });
     if (finalizedContainer == null) {
       throw StateError(
         '[${InAppErrorCodes.containerWasRemoved}] Container was removed',

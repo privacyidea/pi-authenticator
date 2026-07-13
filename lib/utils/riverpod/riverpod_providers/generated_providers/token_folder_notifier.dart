@@ -44,9 +44,7 @@ class TokenFolderNotifier extends _$TokenFolderNotifier {
   final TokenFolderRepository? _repoOverride;
   late final TokenFolderRepository _repo;
 
-  TokenFolderNotifier({TokenFolderRepository? repoOverride})
-    : _repoOverride = repoOverride,
-      super();
+  TokenFolderNotifier({this._repoOverride}) : super();
 
   @override
   TokenFolderState build({required TokenFolderRepository repo}) {

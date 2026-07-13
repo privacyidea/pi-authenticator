@@ -76,10 +76,7 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
     PrivacyIDEAAuthenticator.currentCustomization = customization;
     return PrivacyIDEAAuthenticator._(customization: customization, key: key);
   }
-  const PrivacyIDEAAuthenticator._({
-    required ApplicationCustomization customization,
-    super.key,
-  }) : _customization = customization;
+  const PrivacyIDEAAuthenticator._({required this._customization, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

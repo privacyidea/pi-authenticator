@@ -1110,6 +1110,12 @@
   "@password": {
     "description": "Labeltext for the password input field."
   },
+  "@showPassword": {
+    "description": "Button to reveal the password input as plain text."
+  },
+  "@hidePassword": {
+    "description": "Button to hide the password input as plain text."
+  },
   "@passwordCannotBeEmpty": {
     "description": "Hint telling the user that the password cannot be empty."
   },

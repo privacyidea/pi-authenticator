@@ -107,13 +107,7 @@ class Logger {
 
   /*----------- CONSTRUCTORS/FACTORIES -----------*/
 
-  Logger._({
-    Function? appRunner,
-    Widget? app,
-    GlobalKey<NavigatorState>? navigatorKey,
-  }) : _appRunner = appRunner,
-       _app = app,
-       _navigatorKey = navigatorKey {
+  Logger._({this._appRunner, this._app, this._navigatorKey}) {
     if (_instance != null) {
       _printWarning('Logger already initialized. Using existing instance');
       return;
