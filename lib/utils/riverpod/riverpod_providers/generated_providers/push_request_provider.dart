@@ -21,6 +21,7 @@ import 'dart:async';
 
 import 'package:http/http.dart';
 import 'package:mutex/mutex.dart';
+import 'package:privacyidea_authenticator/model/push_request/decline_reason.dart';
 import 'package:privacyidea_authenticator/model/push_request/push_requests.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -73,14 +74,11 @@ class PushRequestNotifier extends _$PushRequestNotifier {
   late final PushRequestRepository _pushRepo;
 
   PushRequestNotifier({
-    RsaUtils? rsaUtilsOverride,
-    PrivacyideaIOClient? ioClientOverride,
-    PushProvider? pushProviderOverride,
-    PushRequestRepository? pushRepoOverride,
-  }) : _pushProviderOverride = pushProviderOverride,
-       _rsaUtilsOverride = rsaUtilsOverride,
-       _ioClientOverride = ioClientOverride,
-       _pushRepoOverride = pushRepoOverride;
+    this._rsaUtilsOverride,
+    this._ioClientOverride,
+    this._pushProviderOverride,
+    this._pushRepoOverride,
+  });
 
   @override
   Future<PushRequestState> build({
@@ -100,7 +98,7 @@ class PushRequestNotifier extends _$PushRequestNotifier {
     // Ensure timers and subscription are cleaned up if the provider is disposed
     ref.onDispose(() {
       _pushProvider.unsubscribe(add);
-      _cancalAllTimers();
+      _cancelAllTimers();
     });
 
     return _loadFromRepo();
@@ -241,7 +239,24 @@ class PushRequestNotifier extends _$PushRequestNotifier {
     return _handleReaction<T, D>(
       pushRequest: request,
       token: token,
-      updater: (p0) async => p0.dynamicCopyWith(accepted: () => false),
+      updater: (p0) async => p0.dynamicCopyWith(
+        accepted: () => false,
+        declineReason: () => DeclineReason.unknownTrigger,
+      ),
+    );
+  }
+
+  Future<PiSuccessResponse<T, D>?> cancel<
+    T extends PiServerResultValue,
+    D extends PiServerResultDetail
+  >(PushToken token, PushRequest request) async {
+    return _handleReaction<T, D>(
+      pushRequest: request,
+      token: token,
+      updater: (p0) async => p0.dynamicCopyWith(
+        accepted: () => false,
+        declineReason: () => DeclineReason.cancelled,
+      ),
     );
   }
 
@@ -271,16 +286,17 @@ class PushRequestNotifier extends _$PushRequestNotifier {
     }
   }
 
-  Future<bool> remove(PushRequest pushRequest) => _remove(pushRequest);
-
   Future<void> initFirebase() => pushProvider.initFirebase();
+
+  /// Removes a push request from the state without notifying the server.
+  Future<bool> remove(PushRequest pushRequest) => _remove(pushRequest);
 
   //////////////////////////////////////////////////////////////////////////////
   ///////////////////////// Helper Methods /////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
 
   void _renewTimers(List<PushRequest> pushRequests) {
-    _cancalAllTimers();
+    _cancelAllTimers();
     _setupAllTimers(pushRequests);
   }
 
@@ -292,7 +308,7 @@ class PushRequestNotifier extends _$PushRequestNotifier {
     }
   }
 
-  void _cancalAllTimers() {
+  void _cancelAllTimers() {
     if (_expirationTimers.keys.isNotEmpty) {
       Logger.info('Canceling all timers: [${_expirationTimers.keys}]');
     }
@@ -319,7 +335,7 @@ class PushRequestNotifier extends _$PushRequestNotifier {
   }
 
   void _setupAllTimers(List<PushRequest> pushRequests) {
-    _cancalAllTimers();
+    _cancelAllTimers();
     for (var pr in pushRequests) {
       int time = pr.expirationDate.difference(DateTime.now()).inMilliseconds;
       if (time < 1) {
@@ -360,12 +376,9 @@ class PushRequestNotifier extends _$PushRequestNotifier {
         return null;
       }
 
-      final Map<String, String> body = {
-        'serial': token.serial,
-        'nonce': updated.nonce,
-        if (updated.accepted == false) 'decline': '1',
-        ...updated.getResponseData(token),
-      };
+      final Map<String, String> body = updated.getResponseData(token).map(
+        (key, value) => MapEntry(key, value.toString()),
+      );
 
       String msg = updated.getResponseSignMsg(token);
       String? signature = await _rsaUtils.trySignWithToken(token, msg);

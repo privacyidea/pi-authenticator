@@ -1475,9 +1475,11 @@ class MockAllowScreenshotUtils extends _i1.Mock
           as _i24.Future<bool>);
 
   @override
-  _i24.Future<bool> toggleAllowScreenshots(bool? oldState) =>
+  _i24.Future<bool> toggleAllowScreenshots(bool? screenshotsCurrentlyAllowed) =>
       (super.noSuchMethod(
-            Invocation.method(#toggleAllowScreenshots, [oldState]),
+            Invocation.method(#toggleAllowScreenshots, [
+              screenshotsCurrentlyAllowed,
+            ]),
             returnValue: _i24.Future<bool>.value(false),
             returnValueForMissingStub: _i24.Future<bool>.value(false),
           )
@@ -3451,6 +3453,19 @@ class MockPushRequestNotifier extends _i1.Mock
           as _i24.Future<_i54.PiSuccessResponse<T, D>?>);
 
   @override
+  _i24.Future<_i54.PiSuccessResponse<T, D>?> cancel<
+    T extends _i5.PiServerResultValue,
+    D extends _i55.PiServerResultDetail
+  >(_i31.PushToken? token, _i28.PushRequest? request) =>
+      (super.noSuchMethod(
+            Invocation.method(#cancel, [token, request]),
+            returnValue: _i24.Future<_i54.PiSuccessResponse<T, D>?>.value(),
+            returnValueForMissingStub:
+                _i24.Future<_i54.PiSuccessResponse<T, D>?>.value(),
+          )
+          as _i24.Future<_i54.PiSuccessResponse<T, D>?>);
+
+  @override
   _i24.Future<bool> add(_i28.PushRequest? pr) =>
       (super.noSuchMethod(
             Invocation.method(#add, [pr]),
@@ -3463,15 +3478,6 @@ class MockPushRequestNotifier extends _i1.Mock
   _i24.Future<bool> addOrReplace(_i28.PushRequest? pr) =>
       (super.noSuchMethod(
             Invocation.method(#addOrReplace, [pr]),
-            returnValue: _i24.Future<bool>.value(false),
-            returnValueForMissingStub: _i24.Future<bool>.value(false),
-          )
-          as _i24.Future<bool>);
-
-  @override
-  _i24.Future<bool> remove(_i28.PushRequest? pushRequest) =>
-      (super.noSuchMethod(
-            Invocation.method(#remove, [pushRequest]),
             returnValue: _i24.Future<bool>.value(false),
             returnValueForMissingStub: _i24.Future<bool>.value(false),
           )
