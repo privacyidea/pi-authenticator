@@ -106,17 +106,14 @@ class _PushCodeToPhoneDialogState extends ConsumerState<PushCodeToPhoneDialog> {
                 ],
               ),
             ),
+            const SizedBox(height: 24),
+            PushActionButton(
+              onPressed: () async => widget.handleDiscard(context, ref),
+              child: Text(localizations.done),
+            ),
           ],
         ),
       ),
-      actions: [
-        DialogAction(
-          label: localizations.done,
-          intent: ActionIntent.confirm,
-          formState: _formKey,
-          onPressed: () async => widget.handleDiscard(context, ref),
-        ),
-      ],
     );
   }
 }
