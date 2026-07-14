@@ -1094,14 +1094,14 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
         statusMessage = StatusMessage(
           message: (localization) =>
               localization.errorRollOutFailed(tokenLabel),
-          details: (_) => message.toString(),
+          details: (localization) =>
+              localization.statusCode(response.statusCode),
         );
       } else {
         statusMessage = StatusMessage(
           message: (localization) =>
               localization.errorRollOutFailed(tokenLabel),
-          details: (localization) =>
-              localization.statusCode(response.statusCode),
+          details: (_) => message!,
         );
       }
     }

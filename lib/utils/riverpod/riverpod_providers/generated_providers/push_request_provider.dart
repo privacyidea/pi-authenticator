@@ -18,6 +18,7 @@
  * limitations under the License.
  */
 import 'dart:async';
+import 'dart:io';
 
 import 'package:http/http.dart';
 import 'package:mutex/mutex.dart';
@@ -32,6 +33,7 @@ import '../../../../model/pi_server_response.dart';
 import '../../../../model/riverpod_states/push_request_state.dart';
 import '../../../../model/tokens/push_token.dart';
 import '../../../../repo/secure_push_request_repository.dart';
+import '../../../http_status_checker.dart';
 import '../../../logger.dart';
 import '../../../privacyidea_io_client.dart';
 import '../../../push_provider.dart';
@@ -382,6 +384,13 @@ class PushRequestNotifier extends _$PushRequestNotifier {
           url: updated.uri,
           body: body,
         );
+        // doPost() catches network-level exceptions itself and returns an
+        // error Response instead of throwing, so a failed connection has to
+        // be detected here (not via catch) in order for the retry below to
+        // actually run.
+        if (HttpStatusChecker.isError(response.statusCode)) {
+          throw HttpException(response.body);
+        }
       } catch (_) {
         try {
           response = await _ioClient.doPost(
@@ -390,6 +399,7 @@ class PushRequestNotifier extends _$PushRequestNotifier {
             body: body,
           );
         } catch (e) {
+          Logger.warning('Push reaction request failed after retry', error: e);
           await _addOrReplacePushRequest(oldRequest);
           ref.read(statusProvider.notifier).show((l) => l.connectionFailed);
           return null;
@@ -400,6 +410,7 @@ class PushRequestNotifier extends _$PushRequestNotifier {
       try {
         piResponse = response.asPiServerResponse<T, D>();
       } catch (e) {
+        Logger.warning('Failed to parse push reaction response', error: e);
         ref
             .read(statusProvider.notifier)
             .show(
@@ -413,6 +424,11 @@ class PushRequestNotifier extends _$PushRequestNotifier {
       if (piResponse.isError) {
         await _addOrReplacePushRequest(oldRequest);
         final errorResponse = piResponse.asError!;
+        Logger.warning(
+          'Push reaction rejected by server',
+          error:
+              '${errorResponse.piServerResultError.code}: ${errorResponse.piServerResultError.message}',
+        );
         ref
             .read(statusProvider.notifier)
             .show(
@@ -426,6 +442,15 @@ class PushRequestNotifier extends _$PushRequestNotifier {
 
       await _remove(updated);
       return piResponse.asSuccess;
+    } catch (e, s) {
+      Logger.error(
+        'Unexpected error while handling push reaction',
+        error: e,
+        stackTrace: s,
+      );
+      await _addOrReplacePushRequest(oldRequest);
+      ref.read(statusProvider.notifier).show((l) => l.connectionFailed);
+      return null;
     } finally {
       _reactionMutex.release();
     }
