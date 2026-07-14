@@ -129,12 +129,30 @@ sealed class PiServerResponse<
     try {
       json = jsonDecode(response.body);
     } catch (e) {
+      // Log the full, untruncated body for diagnostics only - it must never
+      // reach the user-facing message below, which could otherwise leak
+      // server internals (HTML error pages, stack traces, endpoint paths).
       Logger.warning('Failed to parse server response', error: response.body);
+      final rawBody = response.body.trim();
+      const maxMessageLength = 200;
+      final looksLikeMarkupOrCode = RegExp(
+        r'<[a-zA-Z!/]|^\s*\{',
+      ).hasMatch(rawBody);
+      final String message;
+      if (rawBody.isEmpty) {
+        message = 'Empty response body (HTTP ${response.statusCode})';
+      } else if (looksLikeMarkupOrCode || rawBody.length > maxMessageLength) {
+        message = 'Invalid server response (HTTP ${response.statusCode})';
+      } else {
+        // Short, plain-text bodies (e.g. OS-level socket error strings like
+        // "No route to host") are safe and helpful to show verbatim.
+        message = rawBody;
+      }
       return PiServerResponse.error(
         statusCode: response.statusCode,
         piServerResultError: PiServerResultError(
           code: InAppErrorCodes.jsonParseError,
-          message: 'Failed to parse JSON response (HTTP ${response.statusCode}): non-JSON response body',
+          message: message,
         ),
       );
     }
