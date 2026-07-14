@@ -37,6 +37,7 @@ class DefaultInkWell extends StatelessWidget {
     // Material to draw on for the InkWell
     color: highlight ? Theme.of(context).dividerColor : Colors.transparent,
     borderRadius: const BorderRadius.all(Radius.circular(4)),
+    clipBehavior: Clip.antiAlias,
     child: InkWell(
       customBorder: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(4)),

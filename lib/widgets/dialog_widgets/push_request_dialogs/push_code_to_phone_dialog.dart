@@ -85,6 +85,7 @@ class _PushCodeToPhoneDialogState extends ConsumerState<PushCodeToPhoneDialog> {
                     onTap: _isCopyOnCooldown ? null : _copyToClipboard,
                     child: Semantics(
                       button: true,
+                      enabled: !_isCopyOnCooldown,
                       label: localizations.copyOTPToClipboard,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(

@@ -772,7 +772,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     Logger.info('Updating firebase token for ${tokens.length} push tokens.');
     return _updateFbTokenMutex.protect(() async {
       final List<PushToken> failedTokens = [];
-      final List<PushToken> unsuportedTokens = [];
+      final List<PushToken> unsupportedTokens = [];
       final pollOnlyTokens = tokens.where((t) => t.isPollOnly == true).toList();
       final notPollOnlyTokens = tokens
           .where((t) => t.isPollOnly != true)
@@ -795,7 +795,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
                 continue;
               }
               if (token.url == null) {
-                unsuportedTokens.add(token);
+                unsupportedTokens.add(token);
                 continue;
               }
               final success = await updateFirebaseToken(token, firebaseToken!);
@@ -810,7 +810,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
           final noFbToken = await NoFirebaseUtils().getFBToken();
           for (final token in pollOnlyTokens) {
             if (token.url == null) {
-              unsuportedTokens.add(token);
+              unsupportedTokens.add(token);
               continue;
             }
             final success = await updateFirebaseToken(token, noFbToken);
@@ -820,7 +820,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
           }
         }
 
-        final allUpdated = failedTokens.isEmpty && unsuportedTokens.isEmpty;
+        final allUpdated = failedTokens.isEmpty && unsupportedTokens.isEmpty;
         if (allUpdated && firebaseToken != null) {
           await firebaseUtils.setCurrentFirebaseToken(firebaseToken!);
         }
@@ -832,7 +832,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
         );
         return null;
       }
-      return (failedTokens, unsuportedTokens);
+      return (failedTokens, unsupportedTokens);
     });
   }
 
@@ -872,7 +872,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       return false;
     }
     Logger.info('Updating firebase token for push token succeeded!');
-    _updateToken(token, (p0) => p0.copyWith(fbToken: firebaseToken));
+    await _updateToken(token, (p0) => p0.copyWith(fbToken: firebaseToken));
     return true;
   }
 
