@@ -44,15 +44,31 @@ class ConflictedImportTokensTile extends StatefulWidget {
 class _ConflictedImportTokensTileState
     extends State<ConflictedImportTokensTile> {
   late ScrollController scrollController;
+  // importTokenEntry is mutated in place rather than replaced, so comparing
+  // oldWidget.importTokenEntry to widget.importTokenEntry in didUpdateWidget
+  // would always see the same (already-mutated) object. Track our own
+  // snapshot of the value that matters instead.
+  Token? _lastSelectedToken;
 
   @override
   void initState() {
     super.initState();
+    _lastSelectedToken = widget.importTokenEntry.selectedToken;
     scrollController = ScrollController(
       initialScrollOffset: widget.importTokenEntry.oldToken != null
           ? widget.initialScreenSize.width * 1 / 4
           : 0,
     );
+    _setScrollPosition();
+  }
+
+  @override
+  void didUpdateWidget(covariant ConflictedImportTokensTile oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (_lastSelectedToken != widget.importTokenEntry.selectedToken) {
+      _lastSelectedToken = widget.importTokenEntry.selectedToken;
+      _setScrollPosition();
+    }
   }
 
   @override
@@ -65,10 +81,10 @@ class _ConflictedImportTokensTileState
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (scrollController.hasClients != true) return;
       const fullScrollDuration = Duration(milliseconds: 300);
-      double? scrolltarget;
+      double? scrollTarget;
       if (widget.importTokenEntry.oldToken == null) {
         if (scrollController.offset != 0.0) {
-          scrolltarget = 0.0;
+          scrollTarget = 0.0;
         } else {
           return;
         }
@@ -77,28 +93,28 @@ class _ConflictedImportTokensTileState
           widget.initialScreenSize.width > widget.initialScreenSize.height;
       if (widget.importTokenEntry.selectedToken == null || isLandScape) {
         // Mid of the Row
-        scrolltarget ??=
+        scrollTarget ??=
             (scrollController.position.minScrollExtent +
                 scrollController.position.maxScrollExtent) /
             2;
       } else if (widget.importTokenEntry.selectedToken ==
           widget.importTokenEntry.oldToken) {
         // Show Right Tile
-        scrolltarget ??= scrollController.position.maxScrollExtent;
+        scrollTarget ??= scrollController.position.maxScrollExtent;
       } else if (widget.importTokenEntry.selectedToken ==
           widget.importTokenEntry.newToken) {
         // Show Left Tile
-        scrolltarget ??= scrollController.position.minScrollExtent;
+        scrollTarget ??= scrollController.position.minScrollExtent;
       }
-      if (scrolltarget == null ||
+      if (scrollTarget == null ||
           scrollController.position.maxScrollExtent == 0.0) {
         return;
       }
       final scrollDifferencePercent =
-          (scrollController.offset - scrolltarget).abs() /
+          (scrollController.offset - scrollTarget).abs() /
           scrollController.position.maxScrollExtent;
       scrollController.animateTo(
-        scrolltarget,
+        scrollTarget,
         duration: fullScrollDuration * scrollDifferencePercent,
         curve: Curves.easeIn,
       );
@@ -123,7 +139,6 @@ class _ConflictedImportTokensTileState
         widget.initialScreenSize.width > widget.initialScreenSize.height;
     Logger.debug('Building ConflictedImportTokensTile ');
 
-    _setScrollPosition();
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       controller: scrollController,
