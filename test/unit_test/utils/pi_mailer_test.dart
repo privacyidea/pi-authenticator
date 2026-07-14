@@ -63,6 +63,8 @@ void main() {
       final Map<dynamic, dynamic> args = sendCall.arguments;
       expect(args['subject'], 'Prefix TestSubject');
       expect(args['recipients'], ['test@test.com']);
+      expect(args['body'], 'TestBody');
+      expect(args['attachment_paths'], ['path/to/file']);
     });
 
     test('should return false on not_available PlatformException', () async {

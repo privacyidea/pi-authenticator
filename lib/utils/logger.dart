@@ -319,7 +319,7 @@ class Logger {
   Future<void> _logToFile(String fileMessage) async {
     if (_enableLoggingToFile == false) return;
     await _mutexWriteFile.acquire();
-    final directory = await getApplicationDocumentsDirectory();
+    final directory = await getApplicationSupportDirectory();
     final file = File('${directory.path}/$_filename');
 
     try {
@@ -365,7 +365,7 @@ Device Parameters $deviceInfo""";
   }
 
   Future<void> _clearLog() async {
-    final directory = await getApplicationDocumentsDirectory();
+    final directory = await getApplicationSupportDirectory();
     final file = File('${directory.path}/$_filename');
     await file.writeAsString('');
     showSnackBar(
@@ -412,7 +412,7 @@ Device Parameters $deviceInfo""";
 
   Future<void> _setupLogPath() async {
     if (_flutterIsRunning == false) return;
-    final directory = await getApplicationDocumentsDirectory();
+    final directory = await getApplicationSupportDirectory();
     _logPath = directory.path;
   }
 

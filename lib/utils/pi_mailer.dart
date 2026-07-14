@@ -26,11 +26,7 @@ import 'logger.dart';
 import 'view_utils.dart';
 
 class PiMailer {
-  static String _mailSubject(
-    String subject,
-    String? subjectPrefix,
-    bool subjectAppVersion,
-  ) {
+  static String _mailSubject(String subject, String? subjectPrefix) {
     return subjectPrefix != null ? '$subjectPrefix $subject' : subject;
   }
 
@@ -38,14 +34,13 @@ class PiMailer {
     required Set<String> mailRecipients,
     required String subject,
     String? subjectPrefix,
-    bool subjectAppVersion = true,
     required String body,
     List<String> attachments = const [],
   }) async {
     try {
       final Email email = Email(
         body: body,
-        subject: _mailSubject(subject, subjectPrefix, subjectAppVersion),
+        subject: _mailSubject(subject, subjectPrefix),
         recipients: [...mailRecipients],
         attachmentPaths: attachments,
       );
@@ -69,8 +64,8 @@ class PiMailer {
           );
         },
       );
-      Logger.error(
-        'Was not able to send the Email',
+      Logger.warning(
+        'No mail app available to send the Email',
         error: e,
         stackTrace: stackTrace,
       );
