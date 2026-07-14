@@ -316,7 +316,6 @@ class _EditActionExpansionTileState extends State<EditActionExpansionTile>
         margin: const EdgeInsets.symmetric(vertical: 8.0),
         padding: EdgeInsets.only(bottom: animation!.value * 16.0),
         decoration: BoxDecoration(
-          color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(12.0),
           boxShadow: [
             BoxShadow(
@@ -326,40 +325,45 @@ class _EditActionExpansionTileState extends State<EditActionExpansionTile>
             ),
           ],
         ),
-        child: Theme(
-          data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-          child: ExpansionTile(
-            tilePadding: const EdgeInsets.only(left: 8.0, right: 16.0),
-            title: Row(
-              children: [
-                RotationTransition(
-                  turns: Tween(begin: 0.0, end: 0.25).animate(animation!),
-                  child: Icon(
-                    Icons.arrow_forward_ios,
-                    color: Theme.of(context).iconTheme.color,
+        child: Material(
+          color: Theme.of(context).cardColor,
+          borderRadius: BorderRadius.circular(12.0),
+          clipBehavior: Clip.antiAlias,
+          child: Theme(
+            data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+            child: ExpansionTile(
+              tilePadding: const EdgeInsets.only(left: 8.0, right: 16.0),
+              title: Row(
+                children: [
+                  RotationTransition(
+                    turns: Tween(begin: 0.0, end: 0.25).animate(animation!),
+                    child: Icon(
+                      Icons.arrow_forward_ios,
+                      color: Theme.of(context).iconTheme.color,
+                    ),
                   ),
-                ),
-                const SizedBox(width: 8.0),
-                Text(
-                  widget.title,
-                  style: Theme.of(context).textTheme.titleSmall,
+                  const SizedBox(width: 8.0),
+                  Text(
+                    widget.title,
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                ],
+              ),
+              showTrailingIcon: false,
+              onExpansionChanged: (isExpanded) {
+                if (isExpanded) {
+                  controller!.forward();
+                } else {
+                  controller!.reverse();
+                }
+              },
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Column(children: widget.children),
                 ),
               ],
             ),
-            showTrailingIcon: false,
-            onExpansionChanged: (isExpanded) {
-              if (isExpanded) {
-                controller!.forward();
-              } else {
-                controller!.reverse();
-              }
-            },
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Column(children: widget.children),
-              ),
-            ],
           ),
         ),
       ),

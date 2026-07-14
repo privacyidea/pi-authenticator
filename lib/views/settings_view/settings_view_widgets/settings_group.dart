@@ -51,7 +51,6 @@ class SettingsGroup extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
       child: Container(
         decoration: BoxDecoration(
-          color: theme.cardColor,
           borderRadius: BorderRadius.circular(8.0),
           boxShadow: [
             BoxShadow(
@@ -61,16 +60,52 @@ class SettingsGroup extends StatelessWidget {
             ),
           ],
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                onPressed != null
-                    ? GestureDetector(
-                        onTap: isActive ? onPressed : null,
-                        child: ListTile(
+        child: Material(
+          color: theme.cardColor,
+          borderRadius: BorderRadius.circular(8.0),
+          clipBehavior: Clip.antiAlias,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  onPressed != null
+                      ? GestureDetector(
+                          onTap: isActive ? onPressed : null,
+                          child: ListTile(
+                            dense: true,
+                            isThreeLine: false,
+                            title: Text(
+                              title,
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                color: isActive ? null : Colors.grey,
+                              ),
+                              overflow: TextOverflow.fade,
+                              softWrap: false,
+                            ),
+                            trailing: SizedBox(
+                              width: 48,
+                              child: trailingWidget != null
+                                  ? Center(child: trailingWidget)
+                                  : IntentButton.icon(
+                                      intent: ActionIntent.confirm,
+                                      onPressed: onPressed,
+                                      icon:
+                                          trailingIcon ??
+                                          Icons.arrow_forward_ios,
+                                    ),
+
+                              // : DefaultIconButton(
+                              //     semanticsLabel: title,
+                              //     onPressed: isActive ? onPressed! : null,
+                              //     icon:
+                              //         trailingIcon ?? Icons.arrow_forward_ios,
+                              //   ),
+                            ),
+                          ),
+                        )
+                      : ListTile(
                           dense: true,
                           isThreeLine: false,
                           title: Text(
@@ -81,45 +116,15 @@ class SettingsGroup extends StatelessWidget {
                             overflow: TextOverflow.fade,
                             softWrap: false,
                           ),
-                          trailing: SizedBox(
-                            width: 48,
-                            child: trailingWidget != null
-                                ? Center(child: trailingWidget)
-                                : IntentButton.icon(
-                                    intent: ActionIntent.confirm,
-                                    onPressed: onPressed,
-                                    icon:
-                                        trailingIcon ?? Icons.arrow_forward_ios,
-                                  ),
-
-                            // : DefaultIconButton(
-                            //     semanticsLabel: title,
-                            //     onPressed: isActive ? onPressed! : null,
-                            //     icon:
-                            //         trailingIcon ?? Icons.arrow_forward_ios,
-                            //   ),
-                          ),
                         ),
-                      )
-                    : ListTile(
-                        dense: true,
-                        isThreeLine: false,
-                        title: Text(
-                          title,
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            color: isActive ? null : Colors.grey,
-                          ),
-                          overflow: TextOverflow.fade,
-                          softWrap: false,
-                        ),
-                      ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(4, 0, 4, 4),
-                  child: Column(children: children),
-                ),
-              ],
-            ),
-          ],
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(4, 0, 4, 4),
+                    child: Column(children: children),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

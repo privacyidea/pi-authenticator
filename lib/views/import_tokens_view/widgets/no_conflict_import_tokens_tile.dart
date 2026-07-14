@@ -49,7 +49,7 @@ class NoConflictImportTokensTile extends StatelessWidget {
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.all(4),
-          child: Container(
+          child: Material(
             color: Theme.of(context).scaffoldBackgroundColor,
             child: Column(
               children: [TokenWidgetBuilder.previewFromToken(token)],
