@@ -156,7 +156,7 @@ class PrivacyideaIOClient {
         nullEntries.add(entry.key);
       }
       throw ArgumentError(
-        'Can not send request because the argument [body] contains a null values'
+        'Cannot send request because the argument [body] contains null values'
         ' at entries $nullEntries, this is not permitted.',
       );
     }

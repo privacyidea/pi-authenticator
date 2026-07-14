@@ -42,17 +42,14 @@ import 'package:privacyidea_authenticator/utils/utils.dart';
 
 import '../../../../../tests_app_wrapper.mocks.dart';
 
-/// Polls [check] until it returns true or [timeout] elapses, instead of
-/// blindly sleeping for a fixed duration - this reaches the expected state as
-/// soon as it's ready (fast) and fails with a clear timeout instead of a
-/// flaky race (robust) if it never arrives.
+/// Waits for [check] to become true, throwing if [timeout] elapses first.
 Future<void> _waitUntil(
   Future<bool> Function() check, {
   Duration timeout = const Duration(seconds: 5),
   Duration interval = const Duration(milliseconds: 20),
 }) async {
-  final deadline = DateTime.now().add(timeout);
-  while (DateTime.now().isBefore(deadline)) {
+  final stopwatch = Stopwatch()..start();
+  while (stopwatch.elapsed < timeout) {
     if (await check()) return;
     await Future.delayed(interval);
   }

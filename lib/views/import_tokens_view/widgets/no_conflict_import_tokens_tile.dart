@@ -43,6 +43,7 @@ class NoConflictImportTokensTile extends StatelessWidget {
     child: Card(
       elevation: 2,
       color: selected == token ? borderColor : null,
+      clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,
         child: Padding(
