@@ -130,11 +130,14 @@ sealed class PiServerResponse<
       json = jsonDecode(response.body);
     } catch (e) {
       Logger.warning('Failed to parse server response', error: response.body);
+      final rawBody = response.body.trim();
       return PiServerResponse.error(
         statusCode: response.statusCode,
         piServerResultError: PiServerResultError(
           code: InAppErrorCodes.jsonParseError,
-          message: 'Failed to parse JSON response (HTTP ${response.statusCode}): non-JSON response body',
+          message: rawBody.isNotEmpty
+              ? rawBody
+              : 'Empty response body (HTTP ${response.statusCode})',
         ),
       );
     }

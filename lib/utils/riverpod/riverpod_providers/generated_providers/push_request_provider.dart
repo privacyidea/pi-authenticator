@@ -29,6 +29,7 @@ import '../../../../../../../interfaces/repo/push_request_repository.dart';
 import '../../../../../../../utils/rsa_utils.dart';
 import '../../../../model/api_results/pi_server_results/pi_server_result_detail.dart';
 import '../../../../model/api_results/pi_server_results/pi_server_result_value.dart';
+import '../../../../model/exception_errors/error_codes.dart';
 import '../../../../model/pi_server_response.dart';
 import '../../../../model/riverpod_states/push_request_state.dart';
 import '../../../../model/tokens/push_token.dart';
@@ -435,7 +436,10 @@ class PushRequestNotifier extends _$PushRequestNotifier {
               (l) =>
                   '${l.sendPushRequestResponseFailed}\n${l.statusCode(errorResponse.statusCode)}',
               details: (_) =>
-                  '${errorResponse.piServerResultError.code}: ${errorResponse.piServerResultError.message}',
+                  errorResponse.piServerResultError.code ==
+                      InAppErrorCodes.jsonParseError
+                  ? errorResponse.piServerResultError.message
+                  : '${errorResponse.piServerResultError.code}: ${errorResponse.piServerResultError.message}',
             );
         return null;
       }
