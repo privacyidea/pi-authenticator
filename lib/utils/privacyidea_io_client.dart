@@ -308,7 +308,7 @@ extension ResponseBuilder on Response {
   /// tell the two apart instead of guessing from the status code, since a
   /// synthetic failure can carry the same status code as a legitimate one
   /// returned by the server (e.g. 408, 503).
-  static const connectionFailureHeader = 'x-app-connection-failure';
+  static const connectionFailureHeader = 'x-privacyidea-connection-failure';
 
   bool get isConnectionFailure => headers[connectionFailureHeader] == 'true';
 

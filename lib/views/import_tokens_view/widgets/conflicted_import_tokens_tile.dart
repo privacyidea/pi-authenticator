@@ -89,9 +89,9 @@ class _ConflictedImportTokensTileState
           return;
         }
       }
-      final isLandScape =
+      final isLandscape =
           widget.initialScreenSize.width > widget.initialScreenSize.height;
-      if (widget.importTokenEntry.selectedToken == null || isLandScape) {
+      if (widget.importTokenEntry.selectedToken == null || isLandscape) {
         // Mid of the Row
         scrollTarget ??=
             (scrollController.position.minScrollExtent +
@@ -135,7 +135,7 @@ class _ConflictedImportTokensTileState
   @override
   Widget build(BuildContext context) {
     final quarterScreenWidth = MediaQuery.of(context).size.width / 4;
-    final isLandScape =
+    final isLandscape =
         widget.initialScreenSize.width > widget.initialScreenSize.height;
     Logger.debug('Building ConflictedImportTokensTile ');
 
@@ -160,18 +160,18 @@ class _ConflictedImportTokensTileState
           }
         },
         child: SizedBox(
-          width: quarterScreenWidth * (isLandScape ? 4 : 6),
+          width: quarterScreenWidth * (isLandscape ? 4 : 6),
           child: Row(
             children: [
               if (widget.importTokenEntry.newToken !=
                       widget.importTokenEntry.selectedToken &&
-                  !isLandScape)
+                  !isLandscape)
                 SizedBox(width: quarterScreenWidth),
               NoConflictImportTokensTile(
                 width:
                     widget.importTokenEntry.newToken ==
                             widget.importTokenEntry.selectedToken &&
-                        !isLandScape
+                        !isLandscape
                     ? quarterScreenWidth * 3
                     : quarterScreenWidth * 2,
                 token: widget.importTokenEntry.newToken,
@@ -184,7 +184,7 @@ class _ConflictedImportTokensTileState
                 width:
                     widget.importTokenEntry.oldToken ==
                             widget.importTokenEntry.selectedToken &&
-                        !isLandScape
+                        !isLandscape
                     ? quarterScreenWidth * 3
                     : quarterScreenWidth * 2,
                 token: widget.importTokenEntry.oldToken!,
@@ -195,7 +195,7 @@ class _ConflictedImportTokensTileState
               if (widget.importTokenEntry.oldToken != null &&
                   widget.importTokenEntry.oldToken !=
                       widget.importTokenEntry.selectedToken &&
-                  !isLandScape)
+                  !isLandscape)
                 SizedBox(width: quarterScreenWidth),
             ],
           ),

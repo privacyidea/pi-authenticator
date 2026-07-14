@@ -295,9 +295,14 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   }
 
   Future<bool> _saveStateToRepo() async {
+    // Read the tokens before acquiring _repoMutex: `future` resolves once
+    // build() completes, and build() acquires _stateMutex then _repoMutex
+    // internally. Awaiting `future` while already holding _repoMutex here
+    // would risk a lock-order-inversion deadlock against a concurrent build().
+    final tokens = (await future).tokens;
     return _repoMutex.protect(() async {
       try {
-        await repo.saveOrReplaceTokens((await future).tokens);
+        await repo.saveOrReplaceTokens(tokens);
         return true;
       } catch (e) {
         Logger.error('Saving tokens to storage failed.', error: e);

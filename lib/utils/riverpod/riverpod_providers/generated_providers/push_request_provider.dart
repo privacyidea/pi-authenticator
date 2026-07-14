@@ -449,6 +449,23 @@ class PushRequestNotifier extends _$PushRequestNotifier {
 
       await _remove(updated);
       return piResponse.asSuccess;
+    } on ArgumentError catch (e, s) {
+      // Not a network failure - e.g. doPost() rejects a request body that
+      // contains null values. Showing "connection failed" here would mislead
+      // the user and hide a real programming/data bug.
+      Logger.error(
+        'Push reaction failed due to invalid request data',
+        error: e,
+        stackTrace: s,
+      );
+      await _addOrReplacePushRequest(oldRequest);
+      ref
+          .read(statusProvider.notifier)
+          .show(
+            (l) => l.sendPushRequestResponseFailed,
+            details: (_) => e.message?.toString() ?? e.toString(),
+          );
+      return null;
     } catch (e, s) {
       Logger.error(
         'Unexpected error while handling push reaction',
