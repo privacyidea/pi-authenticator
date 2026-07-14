@@ -19,13 +19,16 @@
  */
 
 import 'package:flutter/services.dart';
+import 'package:flutter_email_sender_method_channel/flutter_email_sender_method_channel.dart';
+import 'package:flutter_email_sender_platform_interface/flutter_email_sender_platform_interface.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:privacyidea_authenticator/utils/pi_mailer.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+  FlutterEmailSenderPlatform.instance = MethodChannelFlutterEmailSender();
 
-  const String channelName = 'flutter_mailer';
+  const String channelName = 'flutter_email_sender';
   final List<MethodCall> methodCalls = <MethodCall>[];
 
   setUp(() {
@@ -35,9 +38,6 @@ void main() {
           MethodCall methodCall,
         ) async {
           methodCalls.add(methodCall);
-          if (methodCall.method == 'send') {
-            return 'sent';
-          }
           return null;
         });
   });
@@ -58,19 +58,19 @@ void main() {
       );
 
       expect(result, isTrue);
-      expect(methodCalls.length, 1);
+      final sendCall = methodCalls.singleWhere((c) => c.method == 'send');
 
-      final Map<dynamic, dynamic> args = methodCalls.first.arguments;
+      final Map<dynamic, dynamic> args = sendCall.arguments;
       expect(args['subject'], 'Prefix TestSubject');
       expect(args['recipients'], ['test@test.com']);
     });
 
-    test('should return false on UNAVAILABLE PlatformException', () async {
+    test('should return false on not_available PlatformException', () async {
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
           .setMockMethodCallHandler(const MethodChannel(channelName), (
             MethodCall methodCall,
           ) async {
-            throw PlatformException(code: 'UNAVAILABLE');
+            throw PlatformException(code: 'not_available');
           });
 
       final result = await PiMailer.sendMail(
@@ -107,7 +107,8 @@ void main() {
         body: 'Body',
       );
 
-      final Map<dynamic, dynamic> args = methodCalls.first.arguments;
+      final sendCall = methodCalls.singleWhere((c) => c.method == 'send');
+      final Map<dynamic, dynamic> args = sendCall.arguments;
       expect(args['subject'], 'News: Subject');
     });
 

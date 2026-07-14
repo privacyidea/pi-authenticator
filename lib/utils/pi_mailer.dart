@@ -18,8 +18,7 @@
  * limitations under the License.
  */
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_mailer/flutter_mailer.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 
 import '../l10n/app_localizations.dart';
 import '../widgets/dialog_widgets/default_dialog.dart';
@@ -44,35 +43,32 @@ class PiMailer {
     List<String> attachments = const [],
   }) async {
     try {
-      final MailOptions mailOptions = MailOptions(
+      final Email email = Email(
         body: body,
         subject: _mailSubject(subject, subjectPrefix, subjectAppVersion),
         recipients: [...mailRecipients],
-        attachments: attachments,
+        attachmentPaths: attachments,
       );
-      await FlutterMailer.send(mailOptions);
-    } on PlatformException catch (e, stackTrace) {
-      if (e.code == 'UNAVAILABLE') {
-        showAsyncDialog(
-          builder: (context) {
-            final AppLocalizations appLocalizations = AppLocalizations.of(
-              context,
-            )!;
-            return DefaultDialog(
-              title: Text(appLocalizations.noMailAppTitle),
-              content: Text(appLocalizations.noMailAppDescription),
-              actions: [
-                DialogAction(
-                  label: appLocalizations.ok,
-                  intent: ActionIntent.neutral,
-                  onPressed: () => Navigator.pop(context),
-                ),
-              ],
-            );
-          },
-        );
-        return false;
-      }
+      await FlutterEmailSender.send(email);
+    } on FlutterEmailSenderNotAvailableException catch (e, stackTrace) {
+      showAsyncDialog(
+        builder: (context) {
+          final AppLocalizations appLocalizations = AppLocalizations.of(
+            context,
+          )!;
+          return DefaultDialog(
+            title: Text(appLocalizations.noMailAppTitle),
+            content: Text(appLocalizations.noMailAppDescription),
+            actions: [
+              DialogAction(
+                label: appLocalizations.ok,
+                intent: ActionIntent.neutral,
+                onPressed: () => Navigator.pop(context),
+              ),
+            ],
+          );
+        },
+      );
       Logger.error(
         'Was not able to send the Email',
         error: e,
