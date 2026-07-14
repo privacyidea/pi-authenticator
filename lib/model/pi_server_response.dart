@@ -131,12 +131,16 @@ sealed class PiServerResponse<
     } catch (e) {
       Logger.warning('Failed to parse server response', error: response.body);
       final rawBody = response.body.trim();
+      const maxMessageLength = 200;
+      final truncatedBody = rawBody.length > maxMessageLength
+          ? '${rawBody.substring(0, maxMessageLength)}...'
+          : rawBody;
       return PiServerResponse.error(
         statusCode: response.statusCode,
         piServerResultError: PiServerResultError(
           code: InAppErrorCodes.jsonParseError,
-          message: rawBody.isNotEmpty
-              ? rawBody
+          message: truncatedBody.isNotEmpty
+              ? truncatedBody
               : 'Empty response body (HTTP ${response.statusCode})',
         ),
       );

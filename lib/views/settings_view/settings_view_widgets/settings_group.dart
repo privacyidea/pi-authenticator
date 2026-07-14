@@ -90,18 +90,11 @@ class SettingsGroup extends StatelessWidget {
                                   ? Center(child: trailingWidget)
                                   : IntentButton.icon(
                                       intent: ActionIntent.confirm,
-                                      onPressed: onPressed,
+                                      onPressed: isActive ? onPressed : null,
                                       icon:
                                           trailingIcon ??
                                           Icons.arrow_forward_ios,
                                     ),
-
-                              // : DefaultIconButton(
-                              //     semanticsLabel: title,
-                              //     onPressed: isActive ? onPressed! : null,
-                              //     icon:
-                              //         trailingIcon ?? Icons.arrow_forward_ios,
-                              //   ),
                             ),
                           ),
                         )

@@ -154,7 +154,6 @@ class _ConflictedImportTokensTileState
                     : quarterScreenWidth * 2,
                 token: widget.importTokenEntry.newToken,
                 selected: widget.importTokenEntry.selectedToken,
-                alignment: Alignment.centerRight,
                 onTap: widget.importTokenEntry.oldToken != null
                     ? () => _setSelectedToken(widget.importTokenEntry.newToken)
                     : null,
@@ -168,7 +167,6 @@ class _ConflictedImportTokensTileState
                     : quarterScreenWidth * 2,
                 token: widget.importTokenEntry.oldToken!,
                 selected: widget.importTokenEntry.selectedToken,
-                alignment: Alignment.centerLeft,
                 onTap: () =>
                     _setSelectedToken(widget.importTokenEntry.oldToken!),
               ),

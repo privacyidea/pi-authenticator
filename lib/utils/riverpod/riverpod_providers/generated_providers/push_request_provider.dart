@@ -18,7 +18,6 @@
  * limitations under the License.
  */
 import 'dart:async';
-import 'dart:io';
 
 import 'package:http/http.dart';
 import 'package:mutex/mutex.dart';
@@ -34,7 +33,6 @@ import '../../../../model/pi_server_response.dart';
 import '../../../../model/riverpod_states/push_request_state.dart';
 import '../../../../model/tokens/push_token.dart';
 import '../../../../repo/secure_push_request_repository.dart';
-import '../../../http_status_checker.dart';
 import '../../../logger.dart';
 import '../../../privacyidea_io_client.dart';
 import '../../../push_provider.dart';
@@ -103,7 +101,7 @@ class PushRequestNotifier extends _$PushRequestNotifier {
     // Ensure timers and subscription are cleaned up if the provider is disposed
     ref.onDispose(() {
       _pushProvider.unsubscribe(add);
-      _cancalAllTimers();
+      _cancelAllTimers();
     });
 
     return _loadFromRepo();
@@ -283,7 +281,7 @@ class PushRequestNotifier extends _$PushRequestNotifier {
   //////////////////////////////////////////////////////////////////////////////
 
   void _renewTimers(List<PushRequest> pushRequests) {
-    _cancalAllTimers();
+    _cancelAllTimers();
     _setupAllTimers(pushRequests);
   }
 
@@ -295,7 +293,7 @@ class PushRequestNotifier extends _$PushRequestNotifier {
     }
   }
 
-  void _cancalAllTimers() {
+  void _cancelAllTimers() {
     if (_expirationTimers.keys.isNotEmpty) {
       Logger.info('Canceling all timers: [${_expirationTimers.keys}]');
     }
@@ -322,7 +320,7 @@ class PushRequestNotifier extends _$PushRequestNotifier {
   }
 
   void _setupAllTimers(List<PushRequest> pushRequests) {
-    _cancalAllTimers();
+    _cancelAllTimers();
     for (var pr in pushRequests) {
       int time = pr.expirationDate.difference(DateTime.now()).inMilliseconds;
       if (time < 1) {
@@ -378,21 +376,17 @@ class PushRequestNotifier extends _$PushRequestNotifier {
       }
       body['signature'] = signature;
 
-      Response response;
-      try {
-        response = await _ioClient.doPost(
-          sslVerify: updated.sslVerify,
-          url: updated.uri,
-          body: body,
-        );
-        // doPost() catches network-level exceptions itself and returns an
-        // error Response instead of throwing, so a failed connection has to
-        // be detected here (not via catch) in order for the retry below to
-        // actually run.
-        if (HttpStatusChecker.isError(response.statusCode)) {
-          throw HttpException(response.body);
-        }
-      } catch (_) {
+      Response response = await _ioClient.doPost(
+        sslVerify: updated.sslVerify,
+        url: updated.uri,
+        body: body,
+      );
+      // doPost() catches network-level exceptions itself and returns a
+      // synthetic error Response instead of throwing, so a failed connection
+      // has to be detected via isConnectionFailure (not a thrown exception,
+      // and not by guessing from the status code, since a synthetic failure
+      // can share a status code with a legitimate server response, e.g. 408).
+      if (response.isConnectionFailure) {
         try {
           response = await _ioClient.doPost(
             sslVerify: updated.sslVerify,
@@ -401,6 +395,15 @@ class PushRequestNotifier extends _$PushRequestNotifier {
           );
         } catch (e) {
           Logger.warning('Push reaction request failed after retry', error: e);
+          await _addOrReplacePushRequest(oldRequest);
+          ref.read(statusProvider.notifier).show((l) => l.connectionFailed);
+          return null;
+        }
+        if (response.isConnectionFailure) {
+          Logger.warning(
+            'Push reaction request failed after retry',
+            error: response.body,
+          );
           await _addOrReplacePushRequest(oldRequest);
           ref.read(statusProvider.notifier).show((l) => l.connectionFailed);
           return null;

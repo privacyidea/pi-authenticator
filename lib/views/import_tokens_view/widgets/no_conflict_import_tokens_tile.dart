@@ -26,14 +26,12 @@ class NoConflictImportTokensTile extends StatelessWidget {
   final Token token;
   final Token? selected;
   final void Function()? onTap;
-  final Alignment? alignment;
   final double? width;
   final Color? borderColor;
   const NoConflictImportTokensTile({
     required this.token,
     required this.selected,
     this.onTap,
-    this.alignment,
     this.width,
     this.borderColor = Colors.green,
     super.key,

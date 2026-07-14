@@ -1025,7 +1025,6 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
         if ((await ref.read(settingsProvider.future)).hidePushTokens == true) {
           ref.read(settingsProvider.notifier).setHidePushTokens(false);
         }
-        _pushTokenHandlerMutex.release();
         return;
       }
       final rolledOutPushNoFb = (await future).rolledOutPushTokens
@@ -1048,9 +1047,9 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
         error: e,
         stackTrace: s,
       );
+    } finally {
       _pushTokenHandlerMutex.release();
-    } finally {}
-    _pushTokenHandlerMutex.release();
+    }
   }
 
   Future<T?> getTokenById<T extends Token>(String id) async {
