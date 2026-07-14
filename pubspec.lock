@@ -596,7 +596,7 @@ packages:
     source: hosted
     version: "10.0.1"
   flutter_email_sender_method_channel:
-    dependency: "direct dev"
+    dependency: transitive
     description:
       name: flutter_email_sender_method_channel
       sha256: f40d2893b6f3e16d771b65fd9ffaeada44b65e95a02bcf532ed55775a0a96a60

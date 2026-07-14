@@ -18,33 +18,49 @@
  * limitations under the License.
  */
 
-import 'package:flutter/services.dart';
-import 'package:flutter_email_sender_method_channel/flutter_email_sender_method_channel.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:flutter_email_sender_platform_interface/flutter_email_sender_platform_interface.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:privacyidea_authenticator/utils/pi_mailer.dart';
 
+class FakeFlutterEmailSenderPlatform extends FlutterEmailSenderPlatform {
+  FakeFlutterEmailSenderPlatform({this.sendError});
+
+  final Object? sendError;
+  Email? lastSentEmail;
+
+  @override
+  Future<void> send(Email email) async {
+    if (sendError != null) throw sendError!;
+    lastSentEmail = email;
+  }
+
+  @override
+  Future<EmailCapabilities> getCapabilities() async =>
+      const EmailCapabilities(
+        canSend: true,
+        supportsCc: true,
+        supportsBcc: true,
+        supportsSubject: true,
+        supportsPlainTextBody: true,
+        supportsHtmlBody: true,
+        supportsAttachments: true,
+      );
+}
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
-  FlutterEmailSenderPlatform.instance = MethodChannelFlutterEmailSender();
 
-  const String channelName = 'flutter_email_sender';
-  final List<MethodCall> methodCalls = <MethodCall>[];
+  final originalPlatform = FlutterEmailSenderPlatform.instance;
+  late FakeFlutterEmailSenderPlatform fakePlatform;
 
   setUp(() {
-    methodCalls.clear();
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(const MethodChannel(channelName), (
-          MethodCall methodCall,
-        ) async {
-          methodCalls.add(methodCall);
-          return null;
-        });
+    fakePlatform = FakeFlutterEmailSenderPlatform();
+    FlutterEmailSenderPlatform.instance = fakePlatform;
   });
 
   tearDown(() {
-    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(const MethodChannel(channelName), null);
+    FlutterEmailSenderPlatform.instance = originalPlatform;
   });
 
   group('PiMailer - sendMail', () {
@@ -54,26 +70,22 @@ void main() {
         subject: 'TestSubject',
         subjectPrefix: 'Prefix',
         body: 'TestBody',
-        attachments: ['path/to/file'],
+        attachmentPaths: ['path/to/file'],
       );
 
       expect(result, isTrue);
-      final sendCall = methodCalls.singleWhere((c) => c.method == 'send');
-
-      final Map<dynamic, dynamic> args = sendCall.arguments;
-      expect(args['subject'], 'Prefix TestSubject');
-      expect(args['recipients'], ['test@test.com']);
-      expect(args['body'], 'TestBody');
-      expect(args['attachment_paths'], ['path/to/file']);
+      final sentEmail = fakePlatform.lastSentEmail!;
+      expect(sentEmail.subject, 'Prefix TestSubject');
+      expect(sentEmail.recipients, ['test@test.com']);
+      expect(sentEmail.body, 'TestBody');
+      expect(sentEmail.attachmentPaths, ['path/to/file']);
     });
 
     test('should return false on not_available PlatformException', () async {
-      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-          .setMockMethodCallHandler(const MethodChannel(channelName), (
-            MethodCall methodCall,
-          ) async {
-            throw PlatformException(code: 'not_available');
-          });
+      fakePlatform = FakeFlutterEmailSenderPlatform(
+        sendError: const FlutterEmailSenderNotAvailableException(),
+      );
+      FlutterEmailSenderPlatform.instance = fakePlatform;
 
       final result = await PiMailer.sendMail(
         mailRecipients: {'test@test.com'},
@@ -84,13 +96,14 @@ void main() {
       expect(result, isFalse);
     });
 
-    test('should return false on any other PlatformException', () async {
-      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-          .setMockMethodCallHandler(const MethodChannel(channelName), (
-            MethodCall methodCall,
-          ) async {
-            throw PlatformException(code: 'ERROR_500');
-          });
+    test('should return false on any other platform exception', () async {
+      fakePlatform = FakeFlutterEmailSenderPlatform(
+        sendError: const FlutterEmailSenderPlatformException(
+          code: 'ERROR_500',
+          message: 'boom',
+        ),
+      );
+      FlutterEmailSenderPlatform.instance = fakePlatform;
 
       final result = await PiMailer.sendMail(
         mailRecipients: {'test@test.com'},
@@ -109,18 +122,28 @@ void main() {
         body: 'Body',
       );
 
-      final sendCall = methodCalls.singleWhere((c) => c.method == 'send');
-      final Map<dynamic, dynamic> args = sendCall.arguments;
-      expect(args['subject'], 'News: Subject');
+      expect(fakePlatform.lastSentEmail!.subject, 'News: Subject');
     });
 
+    test(
+      'should not add a trailing space when subject is empty but a prefix is given',
+      () async {
+        await PiMailer.sendMail(
+          mailRecipients: {'test@test.com'},
+          subject: '',
+          subjectPrefix: 'Feedback:',
+          body: 'Body',
+        );
+
+        expect(fakePlatform.lastSentEmail!.subject, 'Feedback:');
+      },
+    );
+
     test('should catch non-platform exceptions', () async {
-      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-          .setMockMethodCallHandler(const MethodChannel(channelName), (
-            MethodCall methodCall,
-          ) async {
-            throw StateError('Unexpected state');
-          });
+      fakePlatform = FakeFlutterEmailSenderPlatform(
+        sendError: StateError('Unexpected state'),
+      );
+      FlutterEmailSenderPlatform.instance = fakePlatform;
 
       final result = await PiMailer.sendMail(
         mailRecipients: {'test@test.com'},

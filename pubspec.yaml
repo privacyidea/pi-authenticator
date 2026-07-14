@@ -87,7 +87,6 @@ dependencies:
 dev_dependencies:
   build_runner: ^2.4.11
   dependency_validator: ^5.0.2
-  flutter_email_sender_method_channel: ^1.0.1
   flutter_email_sender_platform_interface: ^1.0.0
   flutter_launcher_icons: ^0.14.1
   flutter_lints: ^6.0.0

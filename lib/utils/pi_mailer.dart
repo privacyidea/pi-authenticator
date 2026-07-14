@@ -27,7 +27,8 @@ import 'view_utils.dart';
 
 class PiMailer {
   static String _mailSubject(String subject, String? subjectPrefix) {
-    return subjectPrefix != null ? '$subjectPrefix $subject' : subject;
+    if (subjectPrefix == null) return subject;
+    return subject.isEmpty ? subjectPrefix : '$subjectPrefix $subject';
   }
 
   static Future<bool> sendMail({
@@ -35,14 +36,14 @@ class PiMailer {
     required String subject,
     String? subjectPrefix,
     required String body,
-    List<String> attachments = const [],
+    List<String> attachmentPaths = const [],
   }) async {
     try {
       final Email email = Email(
         body: body,
         subject: _mailSubject(subject, subjectPrefix),
         recipients: [...mailRecipients],
-        attachmentPaths: attachments,
+        attachmentPaths: attachmentPaths,
       );
       await FlutterEmailSender.send(email);
     } on FlutterEmailSenderNotAvailableException catch (e, stackTrace) {

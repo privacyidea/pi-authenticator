@@ -356,7 +356,7 @@ Device Parameters $deviceInfo""";
           PrivacyIDEAAuthenticator.currentCustomization?.crashSubjectPrefix,
       subject: _lastError,
       body: completeMailBody,
-      attachments: [_fullPath!],
+      attachmentPaths: [_fullPath!],
     );
   }
 
