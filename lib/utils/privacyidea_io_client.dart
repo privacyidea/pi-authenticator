@@ -216,7 +216,6 @@ class PrivacyideaIOClient {
         stackTrace: StackTrace.current,
       );
     }
-    ioClient.close();
 
     return response;
   }

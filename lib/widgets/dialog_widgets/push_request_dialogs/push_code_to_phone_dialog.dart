@@ -85,9 +85,7 @@ class _PushCodeToPhoneDialogState extends ConsumerState<PushCodeToPhoneDialog> {
                     onTap: _isCopyOnCooldown ? null : _copyToClipboard,
                     child: Semantics(
                       button: true,
-                      label: localizations.otpValueCopiedMessage(
-                        widget.pushRequest.displayCode,
-                      ),
+                      label: localizations.copyOTPToClipboard,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 4,
@@ -112,6 +110,7 @@ class _PushCodeToPhoneDialogState extends ConsumerState<PushCodeToPhoneDialog> {
                         ? theme.disabledColor
                         : theme.colorScheme.primary,
                   ),
+                  tooltip: localizations.copyOTPToClipboard,
                   onPressed: _isCopyOnCooldown ? null : _copyToClipboard,
                 ),
               ],

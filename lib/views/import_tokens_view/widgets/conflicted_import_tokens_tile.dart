@@ -55,6 +55,12 @@ class _ConflictedImportTokensTileState
     );
   }
 
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
   void _setScrollPosition() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (scrollController.hasClients != true) return;
@@ -99,12 +105,12 @@ class _ConflictedImportTokensTileState
     });
   }
 
-  void _setSelectedToken(Token tapedToken) {
+  void _setSelectedToken(Token tappedToken) {
     final importTokenEntry = widget.importTokenEntry;
-    if (tapedToken == widget.importTokenEntry.selectedToken) {
+    if (tappedToken == widget.importTokenEntry.selectedToken) {
       importTokenEntry.selectedToken = null;
     } else {
-      importTokenEntry.selectedToken = tapedToken;
+      importTokenEntry.selectedToken = tappedToken;
     }
 
     widget.selectTokenCallback(importTokenEntry);
@@ -124,8 +130,9 @@ class _ConflictedImportTokensTileState
       physics: const NeverScrollableScrollPhysics(),
       child: GestureDetector(
         onHorizontalDragEnd: (details) {
-          if (details.primaryVelocity!.abs() < 100) return;
-          if (details.primaryVelocity! < 0) {
+          final primaryVelocity = details.primaryVelocity ?? 0.0;
+          if (primaryVelocity.abs() < 100) return;
+          if (primaryVelocity < 0) {
             if (widget.importTokenEntry.selectedToken !=
                 widget.importTokenEntry.oldToken) {
               _setSelectedToken(widget.importTokenEntry.oldToken!);

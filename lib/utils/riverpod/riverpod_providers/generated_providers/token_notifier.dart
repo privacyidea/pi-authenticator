@@ -126,10 +126,12 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   /// Loads the tokens from the repository and returns them as a [TokenState].
   Future<TokenState> _loadStateFromRepo() async {
     await _repoMutex.acquire();
-    final tokens = await repo.loadTokens();
-    final newState = TokenState(tokens: tokens, lastlyUpdatedTokens: tokens);
-    _repoMutex.release();
-    return newState;
+    try {
+      final tokens = await repo.loadTokens();
+      return TokenState(tokens: tokens, lastlyUpdatedTokens: tokens);
+    } finally {
+      _repoMutex.release();
+    }
   }
 
   /// Adds a token and returns true if successful, false if not.
@@ -187,7 +189,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     state = AsyncValue.data((await future).addOrReplaceTokens(savedTokens));
     Logger.debug('New State: ${(await future).tokens.length} Tokens');
     _stateMutex.release();
-    return [];
+    return failedTokens;
   }
 
   /// Replaces a token if it exists and returns true if successful, false if not.
@@ -237,7 +239,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
         .toList();
     state = AsyncValue.data((await future).addOrReplaceTokens(tokens));
     _stateMutex.release();
-    return [];
+    return failedToSave;
   }
 
   /// Removes a token and returns true if successful, false if not.
@@ -482,7 +484,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   Future<void> removeTokens(List<Token> tokens) async {
     Logger.info('Removing ${tokens.length} tokens.');
     final pushTokens = tokens.whereType<PushToken>().toList();
-    final otherTokens = tokens.whereType<Token>().toList();
+    final otherTokens = tokens.where((token) => token is! PushToken).toList();
     await _removeTokens(otherTokens);
     for (var token in pushTokens) {
       await _removePushToken(token);

@@ -71,31 +71,28 @@ class SettingsGroup extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   onPressed != null
-                      ? GestureDetector(
+                      ? ListTile(
+                          dense: true,
+                          isThreeLine: false,
                           onTap: isActive ? onPressed : null,
-                          child: ListTile(
-                            dense: true,
-                            isThreeLine: false,
-                            title: Text(
-                              title,
-                              style: theme.textTheme.titleMedium?.copyWith(
-                                color: isActive ? null : Colors.grey,
-                              ),
-                              overflow: TextOverflow.fade,
-                              softWrap: false,
+                          title: Text(
+                            title,
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              color: isActive ? null : Colors.grey,
                             ),
-                            trailing: SizedBox(
-                              width: 48,
-                              child: trailingWidget != null
-                                  ? Center(child: trailingWidget)
-                                  : IntentButton.icon(
-                                      intent: ActionIntent.confirm,
-                                      onPressed: isActive ? onPressed : null,
-                                      icon:
-                                          trailingIcon ??
-                                          Icons.arrow_forward_ios,
-                                    ),
-                            ),
+                            overflow: TextOverflow.fade,
+                            softWrap: false,
+                          ),
+                          trailing: SizedBox(
+                            width: 48,
+                            child: trailingWidget != null
+                                ? Center(child: trailingWidget)
+                                : IntentButton.icon(
+                                    intent: ActionIntent.confirm,
+                                    onPressed: isActive ? onPressed : null,
+                                    icon:
+                                        trailingIcon ?? Icons.arrow_forward_ios,
+                                  ),
                           ),
                         )
                       : ListTile(
