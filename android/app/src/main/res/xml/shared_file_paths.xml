@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Overrides flutter_email_sender_method_channel's own res/xml/shared_file_paths.xml
+  (same resource name -> app resources win the manifest merge). The plugin's default
+  paths only cover getFilesDir()/getCacheDir()/external storage, not the
+  path_provider "app_flutter" documents directory (a sibling of getFilesDir()) that
+  Logger stores logfile.txt in, so a root-path is added to cover it too.
+-->
+<paths>
+  <external-path name="external_files" path="." />
+  <cache-path name="cache_files" path="." />
+  <files-path name="internal_files" path="." />
+  <root-path name="app_root" path="." />
+</paths>
