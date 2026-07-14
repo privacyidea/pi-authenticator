@@ -17,6 +17,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -40,6 +42,23 @@ import 'package:privacyidea_authenticator/utils/utils.dart';
 
 import '../../../../../tests_app_wrapper.mocks.dart';
 
+/// Polls [check] until it returns true or [timeout] elapses, instead of
+/// blindly sleeping for a fixed duration - this reaches the expected state as
+/// soon as it's ready (fast) and fails with a clear timeout instead of a
+/// flaky race (robust) if it never arrives.
+Future<void> _waitUntil(
+  Future<bool> Function() check, {
+  Duration timeout = const Duration(seconds: 5),
+  Duration interval = const Duration(milliseconds: 20),
+}) async {
+  final deadline = DateTime.now().add(timeout);
+  while (DateTime.now().isBefore(deadline)) {
+    if (await check()) return;
+    await Future.delayed(interval);
+  }
+  throw TimeoutException('Condition not met within $timeout');
+}
+
 void main() {
   _testTokenNotifier();
 }
@@ -58,6 +77,7 @@ void _testTokenNotifier() {
           ),
         ],
       );
+      addTearDown(container.dispose);
       final mockRepo = MockTokenRepository();
       final mockFirebaseUtils = MockFirebaseUtils();
       final before = [
@@ -124,6 +144,7 @@ void _testTokenNotifier() {
           ),
         ],
       );
+      addTearDown(container.dispose);
       final mockRepo = MockTokenRepository();
       final mockFirebaseUtils = MockFirebaseUtils();
       final before = [
@@ -167,6 +188,7 @@ void _testTokenNotifier() {
           ),
         ],
       );
+      addTearDown(container.dispose);
       final mockRepo = MockTokenRepository();
       final mockFirebaseUtils = MockFirebaseUtils();
       final before = [
@@ -226,6 +248,7 @@ void _testTokenNotifier() {
           ),
         ],
       );
+      addTearDown(container.dispose);
       final mockRepo = MockTokenRepository();
       final mockFirebaseUtils = MockFirebaseUtils();
       final before = <Token>[
@@ -291,6 +314,7 @@ void _testTokenNotifier() {
             ),
           ],
         );
+        addTearDown(container.dispose);
         final mockRepo = MockTokenRepository();
         final mockFirebaseUtils = MockFirebaseUtils();
         final before = <Token>[
@@ -357,6 +381,7 @@ void _testTokenNotifier() {
             ),
           ],
         );
+        addTearDown(container.dispose);
         final mockRepo = MockTokenRepository();
         final mockFirebaseUtils = MockFirebaseUtils();
         final before = <Token>[
@@ -432,6 +457,7 @@ void _testTokenNotifier() {
           ),
         ],
       );
+      addTearDown(container.dispose);
       final mockRepo = MockTokenRepository();
       final mockFirebaseUtils = MockFirebaseUtils();
       final before = <Token>[
@@ -540,12 +566,16 @@ void _testTokenNotifier() {
           ),
         ],
       );
+      addTearDown(container.dispose);
 
       const qrCode =
           'otpauth://totp/issuer2:label2?secret=AAAAAAAA2&issuer=issuer2&algorithm=SHA256&digits=6&period=30';
       final tokenNotifier = container.read(tokenProvider.notifier);
       await scanQrCode(resultHandlerList: [tokenNotifier], qrCode: qrCode);
-      await Future.delayed(const Duration(seconds: 5));
+      await _waitUntil(
+        () async =>
+            (await container.read(tokenProvider.future)).tokens.length == 2,
+      );
       final state = await container.read(tokenProvider.future);
 
       expect(state.tokens.length, 2);
@@ -567,6 +597,7 @@ void _testTokenNotifier() {
           ),
         ],
       );
+      addTearDown(container.dispose);
       final mockTokenRepo = MockTokenRepository();
       final mockRsaUtils = MockRsaUtils();
       final mockIOClient = MockPrivacyideaIOClient();
@@ -684,7 +715,10 @@ void _testTokenNotifier() {
       );
 
       // -- ASSERT --
-      await Future.delayed(const Duration(seconds: 5));
+      await _waitUntil(
+        () async =>
+            (await container.read(testProvider.future)).tokens.length == 2,
+      );
       final tokenState = await container.read(testProvider.future);
       expect(tokenState, isNotNull);
       expect(tokenState.tokens, after);
@@ -709,6 +743,7 @@ void _testTokenNotifier() {
           ),
         ],
       );
+      addTearDown(container.dispose);
       final mockRepo = MockTokenRepository();
       final mockIOClient = MockPrivacyideaIOClient();
       final mockFirebaseUtils = MockFirebaseUtils();
@@ -800,6 +835,7 @@ void _testTokenNotifier() {
             ),
           ],
         );
+        addTearDown(container.dispose);
         final mockRepo = MockTokenRepository();
         final mockFirebaseUtils = MockFirebaseUtils();
         final regularToken = HOTPToken(
@@ -866,6 +902,7 @@ void _testTokenNotifier() {
             ),
           ],
         );
+        addTearDown(container.dispose);
         final mockRepo = MockTokenRepository();
         final mockFirebaseUtils = MockFirebaseUtils();
         final existing = HOTPToken(
@@ -920,6 +957,7 @@ void _testTokenNotifier() {
           ),
         ],
       );
+      addTearDown(container.dispose);
       final mockRepo = MockTokenRepository();
       final mockFirebaseUtils = MockFirebaseUtils();
       final before = <Token>[

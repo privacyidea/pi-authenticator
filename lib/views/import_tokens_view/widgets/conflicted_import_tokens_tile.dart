@@ -65,7 +65,14 @@ class _ConflictedImportTokensTileState
   @override
   void didUpdateWidget(covariant ConflictedImportTokensTile oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (_lastSelectedToken != widget.importTokenEntry.selectedToken) {
+    final selectionChanged =
+        _lastSelectedToken != widget.importTokenEntry.selectedToken;
+    // initialScreenSize is a plain immutable field on the widget itself (not
+    // on the mutable importTokenEntry), so comparing oldWidget to widget here
+    // is safe and reflects a real orientation/layout change.
+    final screenSizeChanged =
+        oldWidget.initialScreenSize != widget.initialScreenSize;
+    if (selectionChanged || screenSizeChanged) {
       _lastSelectedToken = widget.importTokenEntry.selectedToken;
       _setScrollPosition();
     }

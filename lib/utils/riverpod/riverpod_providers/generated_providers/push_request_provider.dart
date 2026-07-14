@@ -393,6 +393,11 @@ class PushRequestNotifier extends _$PushRequestNotifier {
             url: updated.uri,
             body: body,
           );
+        } on ArgumentError {
+          // Not a connection failure - let this bubble up to the outer
+          // `on ArgumentError` handler instead of being misreported as
+          // connectionFailed.
+          rethrow;
         } catch (e) {
           Logger.warning('Push reaction request failed after retry', error: e);
           await _addOrReplacePushRequest(oldRequest);
