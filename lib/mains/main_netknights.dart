@@ -112,16 +112,6 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
             return MaterialPageRoute(builder: builder, settings: settings);
           },
           onUnknownRoute: (settings) {
-            // Flutter's engine automatically pushes a named route for any Activity
-            // Intent that carries a data URI (e.g. the home_widget plugin's launch
-            // PendingIntents), regardless of whether the app uses that mechanism.
-            // Since all of our deep links are handled explicitly via the
-            // app_links/home_widget streams (see DeeplinkNotifier), these
-            // auto-pushed routes are always spurious here. Previously falling back
-            // to a brand-new SplashScreen for them caused a visible flash and could
-            // race with the real navigation already in progress.
-            // Navigator.pushNamed force-unwraps this return value, so it must not
-            // be null; return an invisible route that immediately removes itself.
             Logger.warning('MaterialApp.onUnknownRoute ignored spurious route: ${settings.name}');
             return PageRouteBuilder<void>(
               settings: settings,

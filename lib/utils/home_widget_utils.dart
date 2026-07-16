@@ -64,12 +64,6 @@ Future<void> homeWidgetBackgroundCallback(Uri? uri) async {
     verbose: true,
   );
   if (uri == null) return;
-  // The home_widget plugin's background dispatch can redeliver the exact
-  // same click broadcast twice in quick succession, sometimes handled by two
-  // separate engine/isolate instances (the same issue we saw and fixed for
-  // the navigation deep links). A plain Dart static wouldn't be shared
-  // between separate isolates, so use persistent (SharedPreferences-backed)
-  // storage instead, which both instances read/write the same way.
   final now = DateTime.now().microsecondsSinceEpoch;
   final last = await HomeWidget.getWidgetData<String>(
     _keyLastBackgroundCallback,
@@ -152,9 +146,6 @@ class HomeWidgetUtils {
   /////// Keys for HomeWidgets /////////
   //////////////////////////////////////
   static const keyTokenOtp = '_tokenOtp';
-  // Plain-text OTP value, persisted alongside the rendered `keyTokenOtp`
-  // image so native code (WidgetTapReceiver.kt) can read it directly (e.g.
-  // for clipboard copy) without a Dart/Flutter engine round-trip.
   static const keyTokenOtpText = '_tokenOtpText';
   static const keyTokenBackground = '_tokenBackground';
   static const keyTokenContainerEmpty = '_tokenContainerEmpty';
@@ -666,9 +657,6 @@ class HomeWidgetUtils {
     OTPToken token,
     String homeWidgetId,
   ) async {
-    // Persisted alongside the rendered image so the native side (widget tap
-    // fast-path, see WidgetTapReceiver.kt) can copy the OTP to the clipboard
-    // directly, without waiting for the Dart/Flutter engine round-trip.
     await HomeWidget.saveWidgetData(
       '$keyTokenOtpText$homeWidgetId',
       token.otpValue,
@@ -813,8 +801,6 @@ class HomeWidgetUtils {
             : Duration(milliseconds: nextDelayInMs),
         () async {
           final idsToUpdate = _updatedWidgetIds.toList();
-          // Clear before notifying: any ids that arrive while the update below
-          // is in flight will be re-added and get their own (delayed) update.
           _updatedWidgetIds.clear();
           Logger.info('Call Update from Timer', verbose: true);
           Logger.info(

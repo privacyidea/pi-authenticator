@@ -68,10 +68,6 @@ class DeeplinkNotifier extends _$DeeplinkNotifier {
     await for (var uri in groupedStream) {
       if (uri == null) return;
       final now = DateTime.now();
-      // Some platform event channels (e.g. the home_widget plugin) can redeliver
-      // the same click event twice in quick succession, e.g. on app resume.
-      // Drop exact duplicates that arrive within a short window to avoid
-      // processing the same navigation twice.
       if (uri == lastUri &&
           lastUriTime != null &&
           now.difference(lastUriTime) < const Duration(seconds: 2)) {

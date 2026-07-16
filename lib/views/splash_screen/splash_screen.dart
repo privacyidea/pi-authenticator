@@ -127,8 +127,6 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       Navigator.of(context).popUntil((route) => route.isFirst);
       Navigator.pushReplacementNamed(context, MainView.routeName);
     } else {
-      // A route was already pushed on top of the splash screen (e.g. by a deep link).
-      // Just remove the splash screen from the stack instead of overriding that route.
       Navigator.of(context).removeRoute(splashRoute);
     }
   }

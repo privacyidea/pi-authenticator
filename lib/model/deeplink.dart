@@ -23,12 +23,6 @@ class DeepLink {
   final bool fromInit;
   const DeepLink(this.uri, {this.fromInit = false});
 
-  // Intentionally no == / hashCode override: each DeepLink represents a
-  // distinct incoming event (e.g. a widget tap), not a piece of state.
-  // Riverpod's ref.listen skips notifying listeners when the new state
-  // equals the previous one, which would silently drop repeated identical
-  // deep links (e.g. tapping the same home widget link twice in a row).
-
   @override
   String toString() => 'DeepLink(uri: $uri, fromInit: $fromInit)';
 }

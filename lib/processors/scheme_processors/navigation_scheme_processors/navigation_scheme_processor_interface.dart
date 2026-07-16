@@ -49,8 +49,6 @@ abstract class NavigationSchemeProcessor implements SchemeProcessor {
       final key = await contextedGlobalNavigatorKey;
       context = key.currentContext;
     }
-    // context can still be null here if the navigator was never attached;
-    // guard explicitly instead of force-unwrapping, which would crash.
     if (context == null || context.mounted == false) return;
     Logger.info('Processing scheme: ${uri.scheme}');
     final futures = <Future<void>>[];

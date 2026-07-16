@@ -46,10 +46,6 @@ class PiMailer {
   }) async {
     try {
       if (defaultTargetPlatform == TargetPlatform.android) {
-        // Uses ACTION_SEND with type "message/rfc822" natively instead of
-        // flutter_email_sender's ACTION_SENDTO selector, which excludes
-        // apps (e.g. Gmail) that only expose an ACTION_SEND intent-filter
-        // for attachments.
         await _androidMailerChannel.invokeMethod('send', {
           'recipients': [...mailRecipients],
           'subject': _mailSubject(subject, subjectPrefix),
