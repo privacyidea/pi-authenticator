@@ -63,9 +63,24 @@ class DeeplinkNotifier extends _$DeeplinkNotifier {
     final groupedStream = StreamGroup.merge(
       sources.map((source) => source.stream),
     );
+    Uri? lastUri;
+    DateTime? lastUriTime;
     await for (var uri in groupedStream) {
-      Logger.info('DeeplinkNotifier got new uri');
       if (uri == null) return;
+      final now = DateTime.now();
+      // Some platform event channels (e.g. the home_widget plugin) can redeliver
+      // the same click event twice in quick succession, e.g. on app resume.
+      // Drop exact duplicates that arrive within a short window to avoid
+      // processing the same navigation twice.
+      if (uri == lastUri &&
+          lastUriTime != null &&
+          now.difference(lastUriTime) < const Duration(seconds: 2)) {
+        Logger.info('DeeplinkNotifier dropped duplicate incoming uri: $uri');
+        continue;
+      }
+      lastUri = uri;
+      lastUriTime = now;
+      Logger.info('DeeplinkNotifier got new incoming uri: $uri');
       yield DeepLink(uri);
     }
   }
@@ -77,7 +92,7 @@ class DeeplinkNotifier extends _$DeeplinkNotifier {
       final initialUri = await source.initialUri;
       if (initialUri != null) {
         final initial = DeepLink(initialUri, fromInit: true);
-        Logger.info('Got initial uri from ${source.name}');
+        Logger.info('Got initial uri from ${source.name}: $initialUri');
         return initial; // There should be only one initial uri
       }
     }

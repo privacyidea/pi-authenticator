@@ -130,6 +130,12 @@
   "@backgroundImage": {
     "description": "Label for the background image setting."
   },
+  "@batteryOptimizationDialogBody": {
+    "description": "Message shown as a dialog body that explains why the app should be exempted from battery optimizations for the home screen widget to keep updating."
+  },
+  "@batteryOptimizationDialogTitle": {
+    "description": "Message shown as a dialog title when asking the user to exempt the app from battery optimizations."
+  },
   "@biometricAuthNotSetupBody": {
     "description": "Message shown as a dialog body that tells the user that biometric authentication is not available on the device."
   },
@@ -1747,6 +1753,8 @@
   "autoCloseAppAfterAcceptingPushRequestDescription": "Jeśli włączone, aplikacja zostanie automatycznie zamknięta po zaakceptowaniu prośby push.",
   "autoCloseAppAfterAcceptingPushRequestTitle": "Zamknij aplikację po zaakceptowaniu prośby",
   "backgroundImage": "Obraz tła",
+  "batteryOptimizationDialogBody": "If the home screen widget stops updating (for example while your device is in power-saving mode), allowing this app to ignore battery optimizations can help. This is optional and only needed if you run into problems.",
+  "batteryOptimizationDialogTitle": "Widget not updating?",
   "biometricAuthNotSetupBody": "Aby wykonać tę czynność, skonfiguruj uwierzytelnianie biometryczne w ustawieniach urządzenia.",
   "biometricAuthNotSetupTitle": "Uwierzytelnianie biometryczne nie zostało skonfigurowane",
   "biometricAuthNotSupportedBody": "Twoje urządzenie nie obsługuje uwierzytelniania biometrycznego, które jest wymagane do wykonania tej czynności.",

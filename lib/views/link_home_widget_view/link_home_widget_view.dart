@@ -22,11 +22,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 
+import '../../utils/app_settings_utils.dart';
 import '../../utils/customization/theme_extentions/extended_text_theme.dart';
 import '../../utils/home_widget_utils.dart';
 import '../../utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
 import '../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../utils/utils.dart';
+import '../../utils/view_utils.dart';
+import '../../widgets/dialog_widgets/default_dialog.dart';
 import '../view_interface.dart';
 
 class LinkHomeWidgetView extends ConsumerStatefulView {
@@ -85,6 +88,9 @@ class _LinkHomeWidgetViewState extends ConsumerState<LinkHomeWidgetView> {
                         widget.homeWidgetId,
                         otpToken.id,
                       );
+                      if (!await isIgnoringBatteryOptimizations()) {
+                        await _showBatteryOptimizationDialog();
+                      }
                       await SystemNavigator.pop();
                       await Future.delayed(const Duration(milliseconds: 500));
                       if (context.mounted) Navigator.pop(context);
@@ -93,6 +99,32 @@ class _LinkHomeWidgetViewState extends ConsumerState<LinkHomeWidgetView> {
           },
           itemCount: otpTokens?.length ?? 0,
         ),
+    );
+  }
+
+  Future<void> _showBatteryOptimizationDialog() {
+    return showAsyncDialog(
+      builder: (context) => DefaultDialog(
+        title: Text(AppLocalizations.of(context)!.batteryOptimizationDialogTitle),
+        content: Text(
+          AppLocalizations.of(context)!.batteryOptimizationDialogBody,
+        ),
+        actions: [
+          DialogAction(
+            label: AppLocalizations.of(context)!.cancel,
+            intent: ActionIntent.cancel,
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          DialogAction(
+            label: AppLocalizations.of(context)!.allowButton,
+            intent: ActionIntent.external,
+            onPressed: () async {
+              await requestIgnoreBatteryOptimizations();
+              if (context.mounted) Navigator.of(context).pop();
+            },
+          ),
+        ],
+      ),
     );
   }
 }

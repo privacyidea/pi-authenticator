@@ -54,10 +54,46 @@ import 'riverpod/riverpod_providers/state_providers/home_widget_provider.dart';
 
 const appGroupId = 'group.authenticator_home_widget_group';
 
+const _keyLastBackgroundCallback = '_lastBackgroundCallback';
+
 /// This function is called on any interaction with the HomeWidget
 @pragma('vm:entry-point')
 Future<void> homeWidgetBackgroundCallback(Uri? uri) async {
+  Logger.info(
+    'homeWidgetBackgroundCallback called with uri: $uri',
+    verbose: true,
+  );
   if (uri == null) return;
+  // The home_widget plugin's background dispatch can redeliver the exact
+  // same click broadcast twice in quick succession, sometimes handled by two
+  // separate engine/isolate instances (the same issue we saw and fixed for
+  // the navigation deep links). A plain Dart static wouldn't be shared
+  // between separate isolates, so use persistent (SharedPreferences-backed)
+  // storage instead, which both instances read/write the same way.
+  final now = DateTime.now().microsecondsSinceEpoch;
+  final last = await HomeWidget.getWidgetData<String>(
+    _keyLastBackgroundCallback,
+  );
+  final lastParts = last?.split('|');
+  final lastUri = lastParts != null && lastParts.length == 2
+      ? lastParts[0]
+      : null;
+  final lastTime = lastParts != null && lastParts.length == 2
+      ? int.tryParse(lastParts[1])
+      : null;
+  if (lastUri == uri.toString() &&
+      lastTime != null &&
+      Duration(microseconds: now - lastTime) < const Duration(seconds: 2)) {
+    Logger.info(
+      'homeWidgetBackgroundCallback dropped duplicate uri: $uri',
+      verbose: true,
+    );
+    return;
+  }
+  await HomeWidget.saveWidgetData(
+    _keyLastBackgroundCallback,
+    '${uri.toString()}|$now',
+  );
   const HomeWidgetProcessor().processUri(uri);
 }
 
@@ -96,8 +132,6 @@ class HomeWidgetUtils {
 
   final _mapTokenAction = <String, FutureOr<void> Function(String)>{
     HOTPToken.tokenType: (widgetId) => _instance?._hotpTokenAction(widgetId),
-    // TOTPToken.tokenType: (_) {},
-    // DayPasswordToken.tokenType: (_) {},
   };
 
   /////////////////////////////////////
@@ -118,6 +152,10 @@ class HomeWidgetUtils {
   /////// Keys for HomeWidgets /////////
   //////////////////////////////////////
   static const keyTokenOtp = '_tokenOtp';
+  // Plain-text OTP value, persisted alongside the rendered `keyTokenOtp`
+  // image so native code (WidgetTapReceiver.kt) can read it directly (e.g.
+  // for clipboard copy) without a Dart/Flutter engine round-trip.
+  static const keyTokenOtpText = '_tokenOtpText';
   static const keyTokenBackground = '_tokenBackground';
   static const keyTokenContainerEmpty = '_tokenContainerEmpty';
   static const keySettingsIcon = '_settingsIcon';
@@ -251,8 +289,12 @@ class HomeWidgetUtils {
     }
   }
 
-  Future<bool> get _widgetIsRebuilding async =>
-      await HomeWidget.getWidgetData<bool>(keyWidgetIsRebuilding) ?? false;
+  Future<bool> get _widgetIsRebuilding async {
+    final value =
+        await HomeWidget.getWidgetData<bool>(keyWidgetIsRebuilding) ?? false;
+    Logger.info('[TRACE] _widgetIsRebuilding read: $value', verbose: true);
+    return value;
+  }
 
   ////////////////////////////////////////
   /////////// Public Methods /////////////
@@ -336,42 +378,50 @@ class HomeWidgetUtils {
   }
 
   Future<void> showOtp(String widgetId) async {
+    Logger.info('showOtp called for widgetId: $widgetId', verbose: true);
     OTPToken? otpToken = await getTokenOfWidgetId(widgetId);
 
     if (otpToken == null) {
+      Logger.info(
+        '[TRACE] showOtp($widgetId) otpToken null -> unlink',
+        verbose: true,
+      );
       await unlink(widgetId);
       return;
     }
-    if (otpToken.isLocked) return;
+    if (otpToken.isLocked) {
+      Logger.info(
+        '[TRACE] showOtp($widgetId) token is locked -> abort',
+        verbose: true,
+      );
+      return;
+    }
 
+    final renderStart = DateTime.now();
     await _updateHomeWidgetShowOtp(otpToken, widgetId);
+    Logger.info(
+      '[TRACE] showOtp($widgetId) _updateHomeWidgetShowOtp took ${DateTime.now().difference(renderStart).inMilliseconds}ms',
+      verbose: true,
+    );
     await HomeWidget.saveWidgetData('$keyShowToken$widgetId', true);
 
+    Logger.info(
+      '[TRACE] showOtp($widgetId) calling _notifyUpdate([$widgetId])',
+      verbose: true,
+    );
     await _notifyUpdate([widgetId]);
+    Logger.info(
+      '[TRACE] showOtp($widgetId) calling _hideOtpDelayed',
+      verbose: true,
+    );
     _hideOtpDelayed(widgetId, otpToken.otpValue.length);
   }
-
-  // Future<void> handleChangedTokenState() async {
-  //   final idTokenPairs = await _getTokensOfWidgetIds(await _widgetIds);
-  //   final homeWidgetChanges = <Future>[];
-  //   for (String widgetId in idTokenPairs.keys) {
-  //     final token = idTokenPairs[widgetId];
-  //     if (token == null) {
-  //       homeWidgetChanges.add(_unlink(widgetId));
-  //       continue;
-  //     }
-  //     homeWidgetChanges.add(HomeWidget.saveWidgetData('$keyTokenLocked$widgetId', token.isLocked || ((await _folderOf(token))?.isLocked ?? false)));
-  //     homeWidgetChanges.add(HomeWidget.saveWidgetData('$keyShowToken$widgetId', false));
-  //     homeWidgetChanges.add(_updateHomeWidgetHideOtp(token, widgetId));
-  //   }
-  //   await Future.wait(homeWidgetChanges);
-  //   await _notifyUpdate(idTokenPairs.keys);
-  // }
 
   /// widgetId,Timer
   final Map<String, Timer?> _copyTimers = {};
   static const _copyDelay = Duration(seconds: 2);
   Future<void> copyOtp(String widgetId) async {
+    Logger.info('copyOtp called for widgetId: $widgetId', verbose: true);
     final copyTimer = _copyTimers[widgetId];
     if (copyTimer != null && copyTimer.isActive) {
       Logger.info('Copy blocked');
@@ -399,6 +449,7 @@ class HomeWidgetUtils {
   /// tokenId,Timer
   final Map<String, Timer?> _actionTimers = {};
   Future<void> performAction(String widgetId) async {
+    Logger.info('performAction called for widgetId: $widgetId', verbose: true);
     final token = await getTokenOfWidgetId(widgetId);
     final tokenId = token?.id;
     if (tokenId == null) {
@@ -409,19 +460,22 @@ class HomeWidgetUtils {
     if (tokenAction == null) return;
     final actionTimer = _actionTimers[tokenId];
     if (actionTimer != null && actionTimer.isActive) {
-      Logger.info('Action blocked');
+      Logger.info('Action blocked', verbose: true);
       return;
     }
     HomeWidget.saveWidgetData('$keyActionBlocked$tokenId', true);
     final widgetIds = (await _getWidgetIdsOfTokens([token.id])).keys.toList();
     _actionTimers[tokenId] = Timer(const Duration(seconds: 1), () async {
-      Logger.info('Unblocked action');
+      Logger.info(
+        'Unblocked action -> notifying update again for: $widgetIds',
+        verbose: true,
+      );
       await HomeWidget.saveWidgetData('$keyActionBlocked$tokenId', false);
       await _notifyUpdate(widgetIds);
     });
 
     await _mapTokenAction[token.type]?.call(widgetId);
-    Logger.info('Performing action');
+    Logger.info('Performing action', verbose: true);
     await _notifyUpdate(widgetIds);
   }
 
@@ -456,13 +510,24 @@ class HomeWidgetUtils {
     await _updateDayPasswordActionIcon();
   }
 
-  //   Map<widgetId, timer> _hideTimers
   final Map<String, Timer> _hideTimers = {};
   void _hideOtpDelayed(String widgetId, int otpLength) {
+    Logger.info(
+      '[TRACE] _hideOtpDelayed($widgetId) scheduling hide in ${_showDuration.inSeconds}s, canceling existing timer=${_hideTimers[widgetId]}',
+      verbose: true,
+    );
     _hideTimers[widgetId]?.cancel();
     _hideTimers[widgetId] = Timer(_showDuration, () async {
+      Logger.info(
+        '[TRACE] _hideOtpDelayed($widgetId) timer fired -> _hideOtp',
+        verbose: true,
+      );
       await _hideOtp(widgetId, otpLength);
       if (_hideTimers.length == 1 && _hideTimers.containsKey(widgetId)) {
+        Logger.info(
+          '[TRACE] _hideOtpDelayed($widgetId) closing app',
+          verbose: true,
+        );
         _closeApp();
       }
     });
@@ -473,6 +538,7 @@ class HomeWidgetUtils {
   }
 
   Future<void> _hideOtp(String widgetId, int otpLength) async {
+    Logger.info('[TRACE] _hideOtp($widgetId) called', verbose: true);
     await HomeWidget.saveWidgetData('$keyShowToken$widgetId', false);
     await _notifyUpdate([widgetId]);
   }
@@ -506,6 +572,10 @@ class HomeWidgetUtils {
   }
 
   Future<void> _hotpTokenAction(String widgetId) async {
+    Logger.info(
+      '_hotpTokenAction called for widgetId: $widgetId',
+      verbose: true,
+    );
     var token = await getTokenOfWidgetId(widgetId);
     if (token == null) {
       await unlink(widgetId);
@@ -520,7 +590,6 @@ class HomeWidgetUtils {
     await _saveTokensToRepo(allTokens);
     _repoMutex.release();
     await _updateTokenIfLinked(token);
-    // await showOtp(widgetId);
   }
 
   // Call AFTER saving to the repository
@@ -596,16 +665,25 @@ class HomeWidgetUtils {
   Future<void> _updateHomeWidgetShowOtp(
     OTPToken token,
     String homeWidgetId,
-  ) async => await HomeWidgetOtpBuilder(
-    otp: token.otpValue,
-    label: token.label,
-    issuer: token.issuer,
-    lightTheme: await _getThemeData(),
-    darkTheme: await _getThemeData(dark: true),
-    logicalSize: _widgetOtpSize,
-    homeWidgetKey: '$keyTokenOtp$homeWidgetId',
-    utils: this,
-  ).renderFlutterWidgets(); // saved in shared preferences under example: _tokenContainer32_light and _tokenContainer32_dark
+  ) async {
+    // Persisted alongside the rendered image so the native side (widget tap
+    // fast-path, see WidgetTapReceiver.kt) can copy the OTP to the clipboard
+    // directly, without waiting for the Dart/Flutter engine round-trip.
+    await HomeWidget.saveWidgetData(
+      '$keyTokenOtpText$homeWidgetId',
+      token.otpValue,
+    );
+    await HomeWidgetOtpBuilder(
+      otp: token.otpValue,
+      label: token.label,
+      issuer: token.issuer,
+      lightTheme: await _getThemeData(),
+      darkTheme: await _getThemeData(dark: true),
+      logicalSize: _widgetOtpSize,
+      homeWidgetKey: '$keyTokenOtp$homeWidgetId',
+      utils: this,
+    ).renderFlutterWidgets(); // saved in shared preferences under example: _tokenContainer32_light and _tokenContainer32_dark
+  }
 
   Future<void> _updateHomeWidgetHideOtp(
     OTPToken token,
@@ -691,37 +769,81 @@ class HomeWidgetUtils {
 
   /// This method has to be called after change to the HomeWidget to notify the HomeWidget to update
   Future<void> _notifyUpdate(Iterable<String> updatedWidgetIds) async {
-    if (updatedWidgetIds.isEmpty) return;
-    Logger.info('Update requested for: $updatedWidgetIds');
-    if (await _widgetIsRebuilding ||
+    final callId =
+        identityHashCode(updatedWidgetIds).toString() +
+        DateTime.now().microsecondsSinceEpoch.toString();
+    Logger.info(
+      '[TRACE] _notifyUpdate($callId) called with: $updatedWidgetIds | _lastUpdate=$_lastUpdate now=${DateTime.now()} | _updatedWidgetIds(before)=$_updatedWidgetIds',
+      verbose: true,
+    );
+    if (updatedWidgetIds.isEmpty) {
+      Logger.info(
+        '[TRACE] _notifyUpdate($callId) EMPTY -> returning',
+        verbose: true,
+      );
+      return;
+    }
+    Logger.info('Update requested for: $updatedWidgetIds', verbose: true);
+    final isRebuilding = await _widgetIsRebuilding;
+    final tooSoon =
         _lastUpdate != null &&
-            DateTime.now().difference(_lastUpdate!) < _updateDelay) {
-      Logger.info('Update delayed: $updatedWidgetIds');
+        DateTime.now().difference(_lastUpdate!) < _updateDelay;
+    Logger.info(
+      '[TRACE] _notifyUpdate($callId) isRebuilding=$isRebuilding tooSoon=$tooSoon',
+      verbose: true,
+    );
+    if (isRebuilding || tooSoon) {
+      Logger.info('Update delayed: $updatedWidgetIds', verbose: true);
       _updatedWidgetIds.addAll(updatedWidgetIds);
+      Logger.info(
+        '[TRACE] _notifyUpdate($callId) DELAYED branch, _updatedWidgetIds(after addAll)=$_updatedWidgetIds, existing timer=$_updateTimer',
+        verbose: true,
+      );
       _updateTimer?.cancel();
       final nextDelayInMs =
           _updateDelay.inMilliseconds -
           DateTime.now().difference(_lastUpdate!).inMilliseconds;
+      Logger.info(
+        '[TRACE] _notifyUpdate($callId) scheduling timer in ${nextDelayInMs < 1 ? _updateDelay.inMilliseconds : nextDelayInMs}ms',
+        verbose: true,
+      );
       _updateTimer = Timer(
         nextDelayInMs < 1
             ? _updateDelay
             : Duration(milliseconds: nextDelayInMs),
         () async {
-          Logger.info('Call Update from Timer');
-          await _notifyUpdate(_updatedWidgetIds.toList());
+          final idsToUpdate = _updatedWidgetIds.toList();
+          // Clear before notifying: any ids that arrive while the update below
+          // is in flight will be re-added and get their own (delayed) update.
+          _updatedWidgetIds.clear();
+          Logger.info('Call Update from Timer', verbose: true);
+          Logger.info(
+            '[TRACE] _notifyUpdate($callId) TIMER FIRED, idsToUpdate=$idsToUpdate (cleared _updatedWidgetIds)',
+            verbose: true,
+          );
+          await _notifyUpdate(idsToUpdate);
         },
       );
       return;
     }
-    Logger.info('Notify Update: $updatedWidgetIds');
+    Logger.info('Notify Update: $updatedWidgetIds', verbose: true);
+    Logger.info(
+      '[TRACE] _notifyUpdate($callId) DIRECT branch -> saveWidgetData($keyRebuildingWidgetIds, ${updatedWidgetIds.join(',')}) then HomeWidget.updateWidget()',
+      verbose: true,
+    );
     _lastUpdate = DateTime.now();
     await HomeWidget.saveWidgetData(
       keyRebuildingWidgetIds,
       updatedWidgetIds.join(','),
     );
+    final updateStart = DateTime.now();
     await HomeWidget.updateWidget(
       qualifiedAndroidName: '$_packageId.AppWidgetProvider',
       iOSName: 'AppWidgetProvider',
+    );
+    Logger.info(
+      '[TRACE] _notifyUpdate($callId) HomeWidget.updateWidget() returned after ${DateTime.now().difference(updateStart).inMilliseconds}ms',
+      verbose: true,
     );
   }
 }

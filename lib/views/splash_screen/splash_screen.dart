@@ -58,7 +58,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
     Logger.info('Starting app.');
     Future.delayed(_splashScreenDelay, () {
-      if (mounted) setState(() => _appIconIsVisible = true);
+      if (!mounted) return;
+      setState(() => _appIconIsVisible = true);
 
       Future.wait(
             <Future>[
@@ -83,7 +84,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
             if (!mounted) return [];
             final tokenState = await ref.read(tokenProvider.future);
-            if (!ref.context.mounted) return [];
+            if (!mounted) return [];
             ref
                 .read(tokenContainerProvider.notifier)
                 .syncContainers(tokenState: tokenState, isManually: false);
@@ -93,7 +94,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
           .then((values) async {
             if (!mounted) return;
             final tokenState = await ref.read(tokenProvider.future);
-            if (!ref.context.mounted) return;
+            if (!mounted) return;
             ref
                 .read(tokenContainerProvider.notifier)
                 .syncContainers(tokenState: tokenState, isManually: false);
@@ -112,6 +113,8 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     if (_customization.disabledFeatures.isNotEmpty) {
       Logger.info('Disabled features: ${_customization.disabledFeatures}');
     }
+    if (!mounted) return;
+    final splashRoute = ModalRoute.of(context);
     // Idle until the splash screen is the top route.
     // By default it is the top route, but it can be overridden by pushing a new route before initializing the app, e.g. by a deep link.
     await Future.doWhile(() async {
@@ -120,8 +123,14 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
       return (ModalRoute.of(context)?.isCurrent == false);
     });
     if (!mounted) return;
-    Navigator.of(context).popUntil((route) => route.isFirst);
-    Navigator.pushReplacementNamed(context, MainView.routeName);
+    if (splashRoute == null || splashRoute.isCurrent) {
+      Navigator.of(context).popUntil((route) => route.isFirst);
+      Navigator.pushReplacementNamed(context, MainView.routeName);
+    } else {
+      // A route was already pushed on top of the splash screen (e.g. by a deep link).
+      // Just remove the splash screen from the stack instead of overriding that route.
+      Navigator.of(context).removeRoute(splashRoute);
+    }
   }
 
   @override
