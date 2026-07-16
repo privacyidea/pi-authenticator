@@ -381,11 +381,6 @@ class PushRequestNotifier extends _$PushRequestNotifier {
         url: updated.uri,
         body: body,
       );
-      // doPost() catches network-level exceptions itself and returns a
-      // synthetic error Response instead of throwing, so a failed connection
-      // has to be detected via isConnectionFailure (not a thrown exception,
-      // and not by guessing from the status code, since a synthetic failure
-      // can share a status code with a legitimate server response, e.g. 408).
       if (response.isConnectionFailure) {
         try {
           response = await _ioClient.doPost(
@@ -394,9 +389,6 @@ class PushRequestNotifier extends _$PushRequestNotifier {
             body: body,
           );
         } on ArgumentError {
-          // Not a connection failure - let this bubble up to the outer
-          // `on ArgumentError` handler instead of being misreported as
-          // connectionFailed.
           rethrow;
         } catch (e) {
           Logger.warning('Push reaction request failed after retry', error: e);
@@ -455,9 +447,6 @@ class PushRequestNotifier extends _$PushRequestNotifier {
       await _remove(updated);
       return piResponse.asSuccess;
     } on ArgumentError catch (e, s) {
-      // Not a network failure - e.g. doPost() rejects a request body that
-      // contains null values. Showing "connection failed" here would mislead
-      // the user and hide a real programming/data bug.
       Logger.error(
         'Push reaction failed due to invalid request data',
         error: e,

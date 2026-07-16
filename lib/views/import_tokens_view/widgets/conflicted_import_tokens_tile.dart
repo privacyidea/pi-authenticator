@@ -44,10 +44,6 @@ class ConflictedImportTokensTile extends StatefulWidget {
 class _ConflictedImportTokensTileState
     extends State<ConflictedImportTokensTile> {
   late ScrollController scrollController;
-  // importTokenEntry is mutated in place rather than replaced, so comparing
-  // oldWidget.importTokenEntry to widget.importTokenEntry in didUpdateWidget
-  // would always see the same (already-mutated) object. Track our own
-  // snapshot of the value that matters instead.
   Token? _lastSelectedToken;
 
   @override
@@ -67,9 +63,6 @@ class _ConflictedImportTokensTileState
     super.didUpdateWidget(oldWidget);
     final selectionChanged =
         _lastSelectedToken != widget.importTokenEntry.selectedToken;
-    // initialScreenSize is a plain immutable field on the widget itself (not
-    // on the mutable importTokenEntry), so comparing oldWidget to widget here
-    // is safe and reflects a real orientation/layout change.
     final screenSizeChanged =
         oldWidget.initialScreenSize != widget.initialScreenSize;
     if (selectionChanged || screenSizeChanged) {

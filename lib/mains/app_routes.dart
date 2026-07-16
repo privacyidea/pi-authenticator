@@ -32,10 +32,6 @@ import '../views/qr_scanner_view/qr_scanner_view.dart';
 import '../views/settings_view/settings_view.dart';
 import '../views/splash_screen/splash_screen.dart';
 
-/// Shared route table used by both app entry points (main_netknights.dart,
-/// main_customizer.dart) so the two stay in sync. [includeContainerView]
-/// controls whether the container-token route is registered, since only
-/// one of the two entry points ships that feature.
 Map<String, WidgetBuilder> buildAppRoutes(
   ApplicationCustomization customization, {
   bool includeContainerView = false,
