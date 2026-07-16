@@ -21,6 +21,7 @@
 
 
     <application
+        android:name=".PiApplication"
         android:label="@string/app_name"
         android:allowBackup="false"
         android:fullBackupContent="false"
