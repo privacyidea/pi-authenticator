@@ -1,0 +1,70 @@
+name: Release Build
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  build_release_apk:
+    name: Build & publish release APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Java Development Kit
+        uses: actions/setup-java@v4
+        with:
+          distribution: "zulu"
+          java-version: "21"
+
+      - name: Set up Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+          flutter-version: "3.44.0"
+
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Decode Android signing keystore
+        run: |
+          mkdir -p android/app/src/netknights
+          echo "${{ secrets.NETKNIGHTS_KEYSTORE_BASE64 }}" | base64 -d > android/app/src/netknights/netknights.jks
+          cat > android/app/src/netknights/key.properties <<EOF
+          storePassword=${{ secrets.NETKNIGHTS_KEYSTORE_PASSWORD }}
+          keyPassword=${{ secrets.NETKNIGHTS_KEY_PASSWORD }}
+          keyAlias=${{ secrets.NETKNIGHTS_KEY_ALIAS }}
+          storeFile=src/netknights/netknights.jks
+          EOF
+
+      - name: Clean Flutter project
+        run: flutter clean
+
+      - name: Get Flutter dependencies
+        run: flutter pub get
+
+      - name: Generate localization files
+        run: flutter gen-l10n
+
+      - name: Build Android APK (Release)
+        run: flutter build apk -t "lib/mains/main_netknights.dart" --release --flavor netknights
+
+      - name: Rename APK
+        run: cp build/app/outputs/flutter-apk/app-netknights-release.apk app-netknights-release.apk
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: app-netknights-release.apk
+          generate_release_notes: true

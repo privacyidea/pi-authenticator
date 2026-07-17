@@ -157,11 +157,9 @@ abstract class Token with SortableMixin {
     this.isOffline = false,
     this.forceBiometricOption = ForceBiometricOption.none,
     bool? pin,
-    bool? isLocked,
-    bool? isHidden,
-  }) : _isLocked = isLocked,
-       _isHidden = isHidden,
-       pin = pin ?? false;
+    this._isLocked,
+    this._isHidden,
+  }) : pin = pin ?? false;
 
   // --- Factories ---
   /// Creates a token from a json map.

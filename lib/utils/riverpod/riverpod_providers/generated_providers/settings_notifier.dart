@@ -39,6 +39,7 @@ final settingsProvider = settingsProviderOf(
 final hidePushTokensProvider = settingsProvider.select<bool>(
   (asyncValue) => asyncValue.value?.hidePushTokens ?? false,
 );
+
 /// App-level auth method is exposed as either `any` or `biometric`. Stored
 /// `none`/`pin` values (legacy or token-level enum members) are normalized to
 /// `any` so callers and the settings UI only have to reason about two states.
@@ -57,8 +58,7 @@ class SettingsNotifier extends _$SettingsNotifier {
   final Mutex _repoMutex = Mutex();
   final Mutex _stateMutex = Mutex();
 
-  SettingsNotifier({SettingsRepository? repoOverride})
-    : _repoOverride = repoOverride;
+  SettingsNotifier({this._repoOverride});
 
   @override
   SettingsRepository get repo => _repo;

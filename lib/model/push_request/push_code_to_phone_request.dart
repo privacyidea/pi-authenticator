@@ -1,3 +1,23 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2025 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import 'dart:convert';
 
 import 'package:base32/base32.dart';
@@ -6,6 +26,7 @@ import 'package:json_annotation/json_annotation.dart';
 import '../../utils/logger.dart';
 import '../../utils/rsa_utils.dart';
 import '../tokens/push_token.dart';
+import 'decline_reason.dart';
 import 'push_request.dart';
 
 part 'push_code_to_phone_request.g.dart';
@@ -29,6 +50,7 @@ class PushCodeToPhoneRequest extends PushRequest {
     required super.sslVerify,
     super.type = PushCodeToPhoneRequest.TYPE,
     super.accepted,
+    super.declineReason,
   });
 
   factory PushCodeToPhoneRequest.fromJson(Map<String, dynamic> json) =>
@@ -60,7 +82,7 @@ class PushCodeToPhoneRequest extends PushRequest {
     );
   }
 
-  // Verify that the data is valid.
+  /// Verify that the data is valid.
   static void verifyMessageData(Map<String, dynamic> data) {
     PushRequest.verifyMessageData(data);
     if (data[DISPLAY_CODE] is! String) {
@@ -109,7 +131,26 @@ class PushCodeToPhoneRequest extends PushRequest {
   }
 
   @override
-  PushRequest copyWith({
+  String toString() {
+    return 'PushCodeToPhoneRequest{title: $title, question: $question, '
+        'id: $id, uri: $uri, nonce: $nonce, sslVerify: $sslVerify, '
+        'expirationDate: $expirationDate, serial: $serial, '
+        'signature: $signature, accepted: $accepted, '
+        'declineReason: $declineReason, displayCode: $displayCode}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is PushCodeToPhoneRequest &&
+        runtimeType == other.runtimeType &&
+        id == other.id;
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, id);
+
+  @override
+  PushCodeToPhoneRequest copyWith({
     String? title,
     String? question,
     String? nonce,
@@ -119,6 +160,7 @@ class PushCodeToPhoneRequest extends PushRequest {
     Uri? uri,
     bool? sslVerify,
     bool? Function()? accepted,
+    DeclineReason? Function()? declineReason,
     String? displayCode,
   }) {
     return PushCodeToPhoneRequest(
@@ -131,7 +173,19 @@ class PushCodeToPhoneRequest extends PushRequest {
       uri: uri ?? this.uri,
       sslVerify: sslVerify ?? this.sslVerify,
       accepted: accepted != null ? accepted() : this.accepted,
+      declineReason: declineReason != null
+          ? declineReason()
+          : this.declineReason,
       displayCode: displayCode ?? this.displayCode,
     );
+  }
+
+  @override
+  PushCodeToPhoneRequest dynamicCopyWith({
+    bool? Function()? accepted,
+    DeclineReason? Function()? declineReason,
+    String? selectedAnswer,
+  }) {
+    return copyWith(accepted: accepted, declineReason: declineReason);
   }
 }

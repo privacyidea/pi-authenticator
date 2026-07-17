@@ -69,7 +69,6 @@ class _UpdateFirebaseTokenDialogState
   Future<void> _updateFbTokens(AppLocalizations localizations) async {
     Logger.info('Starting update of firebase token.');
 
-    // TODO What to do with poll only tokens if google-services is used?
     final pushTokensNotPollOnly = (await ref.read(
       tokenProvider.future,
     )).pushTokensNotPollOnly;
