@@ -76,25 +76,37 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
   //////////////////////////////////////////////////////////////////////////////
 
   Future<void> _clearNotifications() async {
-    await FlutterLocalNotificationsPlugin().cancelAll();
-    Logger.info('Cleared all notifications on resume');
+    try {
+      await FlutterLocalNotificationsPlugin().cancelAll();
+      Logger.info('Cleared all notifications on resume');
+    } catch (e) {
+      Logger.error('Failed to clear notifications', error: e);
+    }
   }
 
   Future<void> _refreshTokens() async {
-    final state = await ref.read(tokenProvider.notifier).loadStateFromRepo();
-    Logger.info('Refreshed tokens on resume');
-    final hasPushToken = state?.hasPushTokens == true;
-    if (hasPushToken) {
-      final prProvider = ref.read(pushRequestProvider.notifier);
-      await prProvider.loadStateFromRepo();
-      await prProvider.pollForChallenges(isManually: false);
-      Logger.info('Polled for challenges on resume');
+    try {
+      final state = await ref.read(tokenProvider.notifier).loadStateFromRepo();
+      Logger.info('Refreshed tokens on resume');
+      final hasPushToken = state?.hasPushTokens == true;
+      if (hasPushToken) {
+        final prProvider = ref.read(pushRequestProvider.notifier);
+        await prProvider.loadStateFromRepo();
+        await prProvider.pollForChallenges(isManually: false);
+        Logger.info('Polled for challenges on resume');
+      }
+    } catch (e) {
+      Logger.error('Failed to refresh tokens on resume', error: e);
     }
   }
 
   Future<void> _hideHomeWidgetOtps() async {
-    final hidden = await HomeWidgetUtils().hideAllOtps();
-    if (hidden) Logger.info('Hid all HomeWidget OTPs on resume');
+    try {
+      final hidden = await HomeWidgetUtils().hideAllOtps();
+      if (hidden) Logger.info('Hid all HomeWidget OTPs on resume');
+    } catch (e) {
+      Logger.error('Failed to hide HomeWidget OTPs', error: e);
+    }
   }
 
   /// Shows the battery optimization hint at most once, if the user has linked
@@ -123,18 +135,30 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
   //////////////////////////////////////////////////////////////////////////////
 
   Future<void> _saveTokensOnHide() async {
-    if (await ref.read(tokenProvider.notifier).onMinimizeApp() == false) {
-      Logger.error('Failed to save tokens on Hide');
+    try {
+      if (await ref.read(tokenProvider.notifier).onMinimizeApp() == false) {
+        Logger.error('Failed to save tokens on Hide');
+      }
+    } catch (e) {
+      Logger.error('Failed to save tokens on Hide', error: e);
     }
   }
 
   Future<void> _collapseLockedFoldersOnHide() async {
-    if ((await ref.read(tokenFolderProvider.notifier).collapseLockedFolders())
-        .folders
-        .any((folder) => folder.isLocked && folder.isExpanded)) {
-      Logger.error('Failed to collapse locked folders on Hide');
+    try {
+      final folders = await ref
+          .read(tokenFolderProvider.notifier)
+          .collapseLockedFolders();
+      if (folders.folders.any(
+        (folder) => folder.isLocked && folder.isExpanded,
+      )) {
+        Logger.error('Failed to collapse locked folders on Hide');
+      } else {
+        Logger.info('Collapsed locked folders on Hide');
+      }
+    } catch (e) {
+      Logger.error('Failed to collapse locked folders on Hide', error: e);
     }
-    Logger.info('Collapsed locked folders on Hide');
   }
 
   @override
