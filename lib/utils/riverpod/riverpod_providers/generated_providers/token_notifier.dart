@@ -78,14 +78,11 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   final _stateMutex = Mutex();
 
   TokenNotifier({
-    TokenRepository? repoOverride,
-    RsaUtils? rsaUtilsOverride,
-    PrivacyideaIOClient? ioClientOverride,
-    FirebaseUtils? firebaseUtilsOverride,
-  }) : _repoOverride = repoOverride,
-       _rsaUtilsOverride = rsaUtilsOverride,
-       _ioClientOverride = ioClientOverride,
-       _firebaseUtilsOverride = firebaseUtilsOverride;
+    this._repoOverride,
+    this._rsaUtilsOverride,
+    this._ioClientOverride,
+    this._firebaseUtilsOverride,
+  });
 
   @override
   TokenRepository get repo => _repoOverride ?? super.repo;

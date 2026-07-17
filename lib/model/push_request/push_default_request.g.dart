@@ -18,6 +18,10 @@ PushDefaultRequest _$PushDefaultRequestFromJson(Map<String, dynamic> json) =>
       sslVerify: json['sslVerify'] as bool,
       type: json['type'] as String? ?? PushDefaultRequest.TYPE,
       accepted: json['accepted'] as bool?,
+      declineReason: $enumDecodeNullable(
+        _$DeclineReasonEnumMap,
+        json['declineReason'],
+      ),
     );
 
 Map<String, dynamic> _$PushDefaultRequestToJson(PushDefaultRequest instance) =>
@@ -32,4 +36,10 @@ Map<String, dynamic> _$PushDefaultRequestToJson(PushDefaultRequest instance) =>
       'uri': instance.uri.toString(),
       'sslVerify': instance.sslVerify,
       'accepted': instance.accepted,
+      'declineReason': _$DeclineReasonEnumMap[instance.declineReason],
     };
+
+const _$DeclineReasonEnumMap = {
+  DeclineReason.unknownTrigger: 'unknownTrigger',
+  DeclineReason.cancelled: 'cancelled',
+};

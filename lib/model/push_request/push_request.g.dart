@@ -18,5 +18,11 @@ Map<String, dynamic> _$PushRequestToJson(PushRequest instance) =>
       'uri': instance.uri.toString(),
       'sslVerify': instance.sslVerify,
       'accepted': instance.accepted,
+      'declineReason': _$DeclineReasonEnumMap[instance.declineReason],
       'hashCode': instance.hashCode,
     };
+
+const _$DeclineReasonEnumMap = {
+  DeclineReason.unknownTrigger: 'unknownTrigger',
+  DeclineReason.cancelled: 'cancelled',
+};
