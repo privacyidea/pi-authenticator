@@ -29,7 +29,7 @@ import 'view_utils.dart';
 
 class PiMailer {
   static const MethodChannel _androidMailerChannel = MethodChannel(
-    'it.netknights.piauthenticator/mailer',
+    'pi_authenticator/mailer',
   );
 
   static String _mailSubject(String subject, String? subjectPrefix) {
@@ -50,7 +50,9 @@ class PiMailer {
           'recipients': [...mailRecipients],
           'subject': _mailSubject(subject, subjectPrefix),
           'body': body,
-          'attachmentPath': attachmentPaths.isEmpty ? null : attachmentPaths.first,
+          'attachmentPath': attachmentPaths.isEmpty
+              ? null
+              : attachmentPaths.first,
         });
       } else {
         final Email email = Email(

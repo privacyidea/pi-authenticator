@@ -24,7 +24,7 @@ import 'package:url_launcher/url_launcher.dart' as url_launcher;
 import 'logger.dart';
 
 const MethodChannel _settingsChannel = MethodChannel(
-  'it.netknights.piauthenticator/settings',
+  'pi_authenticator/settings',
 );
 
 Future<bool> Function(Uri url) _launchUrl = (url) =>
@@ -61,11 +61,11 @@ Future<void> openLockAndPasswordSettings() async {
 }
 
 /// Returns whether the app is exempt from battery optimizations.
-Future<bool> isIgnoringBatteryOptimizations() async {
+Future<bool> batteryOptimizationsIsDisabled() async {
   if (defaultTargetPlatform != TargetPlatform.android) return true;
   try {
     return await _settingsChannel.invokeMethod(
-      'isIgnoringBatteryOptimizations',
+      'batteryOptimizationsIsDisabled',
     );
   } catch (e, s) {
     Logger.warning(
@@ -85,6 +85,20 @@ Future<void> requestIgnoreBatteryOptimizations() async {
   } catch (e, s) {
     Logger.warning(
       'Failed to request battery optimization exemption',
+      error: e,
+      stackTrace: s,
+    );
+  }
+}
+
+/// Opens the system battery optimization settings list.
+Future<void> openBatteryOptimizationSettings() async {
+  if (defaultTargetPlatform != TargetPlatform.android) return;
+  try {
+    await _settingsChannel.invokeMethod('openBatteryOptimizationSettings');
+  } catch (e, s) {
+    Logger.warning(
+      'Failed to open battery optimization settings',
       error: e,
       stackTrace: s,
     );

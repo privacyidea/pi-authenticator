@@ -151,11 +151,17 @@
   "@backgroundImage": {
     "description": "Label for the background image setting."
   },
-  "@batteryOptimizationDialogBody": {
-    "description": "Message shown as a dialog body that explains why the app should be exempted from battery optimizations for the home screen widget to keep updating."
+  "@batteryOptimizationTitle": {
+    "description": "Tooltip for the button that opens the battery optimization dialog again."
   },
-  "@batteryOptimizationDialogTitle": {
-    "description": "Message shown as a dialog title when asking the user to exempt the app from battery optimizations."
+  "@batteryOptimizationDialogBody": {
+    "description": "Message shown as a dialog body hinting that, if the widget has problems, disabling battery optimization for the app can help."
+  },
+  "@batteryOptimizationAlreadyDisabledBody": {
+    "description": "Message shown when battery optimization is already disabled for the app."
+  },
+  "@batteryOptimizationSettingsButton": {
+    "description": "Button label to open battery optimization settings."
   },
   "@biometricAuthNotSetupBody": {
     "description": "Message shown as a dialog body that tells the user that biometric authentication is not available on the device."
@@ -1780,8 +1786,10 @@
   "autoCloseAppAfterAcceptingPushRequestDescription": "Wenn aktiviert, schließt sich die App automatisch, nachdem eine Push-Anfrage akzeptiert wurde.",
   "autoCloseAppAfterAcceptingPushRequestTitle": "App nach Push-Anfrage schließen",
   "backgroundImage": "Hintergrundbild",
-  "batteryOptimizationDialogBody": "Falls das Homescreen-Widget nicht mehr aktualisiert wird (zum Beispiel im Energiesparmodus), kann es helfen, die App von den Akku-Optimierungen auszunehmen. Das ist optional und nur bei Problemen nötig.",
-  "batteryOptimizationDialogTitle": "Widget aktualisiert nicht?",
+  "batteryOptimizationTitle": "Akkuoptimierung",
+  "batteryOptimizationDialogBody": "Falls es probleme mit dem widget gibt, kann es helfen die Akkuoptimierung für die App zu deaktivieren.",
+  "batteryOptimizationAlreadyDisabledBody": "Die Akkuoptimierung ist für diese App deaktiviert. Möchten Sie sie wieder aktivieren, um die Akkulaufzeit zu verbessern?",
+  "batteryOptimizationSettingsButton": "Akku-Einstellungen öffnen",
   "biometricAuthNotSetupBody": "Bitte richten Sie die biometrische Authentifizierung in den Einstellungen Ihres Geräts ein, um diese Aktion auszuführen.",
   "biometricAuthNotSetupTitle": "Biometrische Authentifizierung nicht eingerichtet",
   "biometricAuthNotSupportedBody": "Ihr Gerät unterstützt keine biometrische Authentifizierung, die für diese Aktion erforderlich ist.",

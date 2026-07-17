@@ -130,11 +130,17 @@
   "@backgroundImage": {
     "description": "Label for the background image setting."
   },
-  "@batteryOptimizationDialogBody": {
-    "description": "Message shown as a dialog body that explains why the app should be exempted from battery optimizations for the home screen widget to keep updating."
+  "@batteryOptimizationTitle": {
+    "description": "Tooltip for the button that opens the battery optimization dialog again."
   },
-  "@batteryOptimizationDialogTitle": {
-    "description": "Message shown as a dialog title when asking the user to exempt the app from battery optimizations."
+  "@batteryOptimizationDialogBody": {
+    "description": "Message shown as a dialog body hinting that, if the widget has problems, disabling battery optimization for the app can help."
+  },
+  "@batteryOptimizationAlreadyDisabledBody": {
+    "description": "Message shown when battery optimization is already disabled for the app."
+  },
+  "@batteryOptimizationSettingsButton": {
+    "description": "Button label to open battery optimization settings."
   },
   "@biometricAuthNotSetupBody": {
     "description": "Message shown as a dialog body that tells the user that biometric authentication is not available on the device."
@@ -1759,8 +1765,10 @@
   "autoCloseAppAfterAcceptingPushRequestDescription": "Indien ingeschakeld, wordt de app automatisch gesloten na het accepteren van een push-verzoek.",
   "autoCloseAppAfterAcceptingPushRequestTitle": "App sluiten na push-verzoek",
   "backgroundImage": "Achtergrondafbeelding",
-  "batteryOptimizationDialogBody": "If the home screen widget stops updating (for example while your device is in power-saving mode), allowing this app to ignore battery optimizations can help. This is optional and only needed if you run into problems.",
-  "batteryOptimizationDialogTitle": "Widget not updating?",
+  "batteryOptimizationTitle": "Batterijoptimalisatie",
+  "batteryOptimizationDialogBody": "Als je problemen met de widget hebt, kan het helpen om de batterijoptimalisatie voor de app uit te schakelen.",
+  "batteryOptimizationAlreadyDisabledBody": "Batterijoptimalisatie is uitgeschakeld voor deze app. Wilt u het opnieuw inschakelen om de batterijduur te verbeteren?",
+  "batteryOptimizationSettingsButton": "Batterij-instellingen openen",
   "biometricAuthNotSetupBody": "Stel biometrische authenticatie in via de instellingen van uw apparaat om deze handeling uit te voeren.",
   "biometricAuthNotSetupTitle": "Biometrische authenticatie is niet ingesteld",
   "biometricAuthNotSupportedBody": "Uw apparaat ondersteunt geen biometrische authenticatie, wat vereist is om deze handeling uit te voeren.",

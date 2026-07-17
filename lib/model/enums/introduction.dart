@@ -30,4 +30,6 @@ enum Introduction {
   pollForChallenges, // 1st push token && lockToken
   hidePushTokens, // hiding is enabled
   exportTokens, // has to be accepted to export tokens
+  homeWidgetSetUp, // a home widget was linked
+  homeWidgetBatteryOptimization, // after linking a home widget
 }

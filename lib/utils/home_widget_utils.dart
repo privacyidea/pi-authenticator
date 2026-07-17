@@ -192,6 +192,8 @@ class HomeWidgetUtils {
       '_copyBlocked'; // recive a bool if the copy of the linked widget is blocked. true = blocked, false = not blocked. _copyBlocked${widgetId} Example: _copyBlocked32
   static const keyRebuildingWidgetIds =
       '_rebuildingWidgetIds'; // recive the widgetIds that should be updated after the HomeWidget is ready. each widgetId is seperated by ',' Example value: "32,33,35"
+  static const keyPendingBatteryOptimizationHint =
+      '_pendingBatteryOptimizationHint'; // recive a bool if the battery optimization hint should be shown the next time the app is resumed. true = show, false = don't show
 
   ////////////////////////////////////////
   /////// Getter & Getterfunctions ///////
@@ -238,6 +240,18 @@ class HomeWidgetUtils {
     final tokenId = await getTokenIdOfWidgetId(widgetId);
     if (tokenId == null) return null;
     return _getTokenOfTokenId(tokenId);
+  }
+
+  /// Returns whether the battery optimization hint should be shown the next time the app is resumed.
+  Future<bool> getPendingBatteryOptimizationHint() async =>
+      await HomeWidget.getWidgetData<bool>(
+        keyPendingBatteryOptimizationHint,
+      ) ??
+      false;
+
+  /// Sets whether the battery optimization hint should be shown the next time the app is resumed.
+  Future<void> setPendingBatteryOptimizationHint(bool value) async {
+    await HomeWidget.saveWidgetData(keyPendingBatteryOptimizationHint, value);
   }
 
   /// &lt;widgetId, tokenId&gt; a token can be linked to multiple widgets but widgetIs can only be linked to one token
@@ -923,6 +937,10 @@ class UnsupportedHomeWidgetUtils implements HomeWidgetUtils {
   Future<String?> getTokenIdOfWidgetId(String widgetId) => Future.value();
   @override
   Future<OTPToken?> getTokenOfWidgetId(String? widgetId) => Future.value();
+  @override
+  Future<bool> getPendingBatteryOptimizationHint() async => false;
+  @override
+  Future<void> setPendingBatteryOptimizationHint(bool value) async {}
   @override
   Future<void> homeWidgetInit({TokenRepository? repository}) async {}
   @override
