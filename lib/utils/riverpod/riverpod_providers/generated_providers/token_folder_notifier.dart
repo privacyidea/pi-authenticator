@@ -49,12 +49,8 @@ class TokenFolderNotifier extends _$TokenFolderNotifier {
   @override
   TokenFolderState build({required TokenFolderRepository repo}) {
     _repo = _repoOverride ?? repo;
-    _stateMutex.acquire();
     Logger.info('Initializing token folder state');
-    initState = _loadFromRepo().then((newState) {
-      _stateMutex.release();
-      return state = newState;
-    });
+    initState = _stateMutex.protect(() async => state = await _loadFromRepo());
     return const TokenFolderState(folders: []);
   }
 

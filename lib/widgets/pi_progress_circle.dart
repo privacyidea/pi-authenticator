@@ -66,7 +66,7 @@ class PiProgressCircle extends StatelessWidget {
         backgroundColor: swapColors ? activeColor : trackColor,
         strokeCap: StrokeCap.round,
         strokeWidth: strokeWidth,
-        semanticsLabel: '$semanticsLabel',
+        semanticsLabel: semanticsLabel,
         semanticsValue: semanticsValue,
       ),
     );

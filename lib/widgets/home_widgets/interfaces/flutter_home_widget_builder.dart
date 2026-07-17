@@ -13,7 +13,7 @@ abstract class FlutterHomeWidgetBuilder<T extends FlutterHomeWidgetBase> {
     Key? key,
     ThemeData theme,
     Size logicalSize,
-    String? aditionalSuffix,
+    String? additionalSuffix,
   )
   _formWidget;
   final HomeWidgetUtils utils;
@@ -27,22 +27,22 @@ abstract class FlutterHomeWidgetBuilder<T extends FlutterHomeWidgetBase> {
     required this.utils,
   });
 
-  T getWidget({bool isDark = false, String? aditionalSuffix}) => _formWidget(
+  T getWidget({bool isDark = false, String? additionalSuffix}) => _formWidget(
     key,
     isDark ? darkTheme : lightTheme,
     logicalSize,
-    aditionalSuffix,
+    additionalSuffix,
   );
 
-  /// Additonal suffix comes always after the key and before the light/dark suffix
+  /// Additional suffix comes always after the key and before the light/dark suffix
   Future<dynamic> renderFlutterWidgets({String additionalSuffix = ''}) async {
     await utils.renderFlutterWidget(
-      getWidget(isDark: true, aditionalSuffix: additionalSuffix),
+      getWidget(isDark: true, additionalSuffix: additionalSuffix),
       key: '$homeWidgetKey$additionalSuffix${HomeWidgetUtils.keySuffixDark}',
       logicalSize: logicalSize,
     );
     await utils.renderFlutterWidget(
-      getWidget(isDark: false, aditionalSuffix: additionalSuffix),
+      getWidget(isDark: false, additionalSuffix: additionalSuffix),
       key: '$homeWidgetKey$additionalSuffix${HomeWidgetUtils.keySuffixLight}',
       logicalSize: logicalSize,
     );
