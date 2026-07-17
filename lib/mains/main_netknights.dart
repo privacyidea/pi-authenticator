@@ -108,9 +108,22 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
             if (builder == null) return null;
             return MaterialPageRoute(builder: builder, settings: settings);
           },
-          onUnknownRoute: (settings) => MaterialPageRoute(
-            builder: (context) => SplashScreen(customization: _customization),
-          ),
+          onUnknownRoute: (settings) {
+            Logger.warning('MaterialApp.onUnknownRoute ignored spurious route: ${settings.name}');
+            return PageRouteBuilder<void>(
+              settings: settings,
+              opaque: false,
+              transitionDuration: Duration.zero,
+              reverseTransitionDuration: Duration.zero,
+              pageBuilder: (context, _, _) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  final navigator = Navigator.maybeOf(context);
+                  if (navigator?.canPop() == true) navigator!.pop();
+                });
+                return const SizedBox.shrink();
+              },
+            );
+          },
         );
       },
     );

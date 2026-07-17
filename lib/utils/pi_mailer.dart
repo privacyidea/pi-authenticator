@@ -17,7 +17,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 
 import '../l10n/app_localizations.dart';
@@ -26,6 +28,10 @@ import 'logger.dart';
 import 'view_utils.dart';
 
 class PiMailer {
+  static const MethodChannel _androidMailerChannel = MethodChannel(
+    'pi_authenticator/mailer',
+  );
+
   static String _mailSubject(String subject, String? subjectPrefix) {
     if (subjectPrefix == null) return subject;
     return subject.isEmpty ? subjectPrefix : '$subjectPrefix $subject';
@@ -39,22 +45,44 @@ class PiMailer {
     List<String> attachmentPaths = const [],
   }) async {
     try {
-      final Email email = Email(
-        body: body,
-        subject: _mailSubject(subject, subjectPrefix),
-        recipients: [...mailRecipients],
-        attachmentPaths: attachmentPaths,
-      );
-      await FlutterEmailSender.send(email);
-    } on FlutterEmailSenderNotAvailableException catch (e, stackTrace) {
+      if (defaultTargetPlatform == TargetPlatform.android) {
+        await _androidMailerChannel.invokeMethod('send', {
+          'recipients': [...mailRecipients],
+          'subject': _mailSubject(subject, subjectPrefix),
+          'body': body,
+          'attachmentPath': attachmentPaths.isEmpty
+              ? null
+              : attachmentPaths.first,
+        });
+      } else {
+        final Email email = Email(
+          body: body,
+          subject: _mailSubject(subject, subjectPrefix),
+          recipients: [...mailRecipients],
+          attachmentPaths: attachmentPaths,
+        );
+        await FlutterEmailSender.send(email);
+      }
+    } catch (e, stackTrace) {
+      final noMailAppAvailable =
+          e is FlutterEmailSenderNotAvailableException ||
+          (e is PlatformException && e.code == 'not_available');
       showAsyncDialog(
         builder: (context) {
           final AppLocalizations appLocalizations = AppLocalizations.of(
             context,
           )!;
           return DefaultDialog(
-            title: Text(appLocalizations.noMailAppTitle),
-            content: Text(appLocalizations.noMailAppDescription),
+            title: Text(
+              noMailAppAvailable
+                  ? appLocalizations.noMailAppTitle
+                  : appLocalizations.errorSendingEmailTitle,
+            ),
+            content: Text(
+              noMailAppAvailable
+                  ? appLocalizations.noMailAppDescription
+                  : appLocalizations.errorSendingEmailDescription,
+            ),
             actions: [
               DialogAction(
                 label: appLocalizations.ok,
@@ -65,18 +93,19 @@ class PiMailer {
           );
         },
       );
-      Logger.warning(
-        'No mail app available to send the Email',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      return false;
-    } catch (e, stackTrace) {
-      Logger.error(
-        'Was not able to send the Email',
-        error: e,
-        stackTrace: stackTrace,
-      );
+      if (noMailAppAvailable) {
+        Logger.warning(
+          'No mail app available to send the Email',
+          error: e,
+          stackTrace: stackTrace,
+        );
+      } else {
+        Logger.error(
+          'Was not able to send the Email',
+          error: e,
+          stackTrace: stackTrace,
+        );
+      }
       return false;
     }
     return true;

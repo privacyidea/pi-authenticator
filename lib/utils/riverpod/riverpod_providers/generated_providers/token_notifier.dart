@@ -126,8 +126,6 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   /// Adds a token and returns true if successful, false if not.
   /// Updates repo and state.
   Future<bool> _addOrReplaceToken(Token token) {
-    // Locks are always acquired in the order _stateMutex -> _repoMutex
-    // throughout this class to avoid lock-order-inversion deadlocks.
     return _stateMutex.protect(() async {
       final success = await _repoMutex.protect(
         () => repo.saveOrReplaceToken(token),
@@ -292,10 +290,6 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   }
 
   Future<bool> _saveStateToRepo() async {
-    // Read the tokens before acquiring _repoMutex: `future` resolves once
-    // build() completes, and build() acquires _stateMutex then _repoMutex
-    // internally. Awaiting `future` while already holding _repoMutex here
-    // would risk a lock-order-inversion deadlock against a concurrent build().
     final tokens = (await future).tokens;
     return _repoMutex.protect(() async {
       try {

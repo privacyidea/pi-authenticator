@@ -58,7 +58,10 @@ dependencies:
   freezed_annotation: ^3.1.0
   google_api_availability: ^5.0.1
   hex: ^0.2.0
-  home_widget: ^0.9.0
+  # Bundles its own androidx.work version. When bumping this, sync the explicit
+  # androidx.work:work-runtime-ktx pin in android/app/build.gradle (needed for the
+  # widget-flicker fix in PiApplication).
+  home_widget: 0.9.3
   http: ^1.2.2
   image: ^4.3.0
   image_cropper: ^11.0.0

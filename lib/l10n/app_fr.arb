@@ -130,6 +130,18 @@
   "@backgroundImage": {
     "description": "Label for the background image setting."
   },
+  "@batteryOptimizationTitle": {
+    "description": "Tooltip for the button that opens the battery optimization dialog again."
+  },
+  "@batteryOptimizationDialogBody": {
+    "description": "Message shown as a dialog body hinting that, if the widget has problems, disabling battery optimization for the app can help."
+  },
+  "@batteryOptimizationAlreadyDisabledBody": {
+    "description": "Message shown when battery optimization is already disabled for the app."
+  },
+  "@batteryOptimizationSettingsButton": {
+    "description": "Button label to open battery optimization settings."
+  },
   "@biometricAuthNotSetupBody": {
     "description": "Message shown as a dialog body that tells the user that biometric authentication is not available on the device."
   },
@@ -1753,6 +1765,10 @@
   "autoCloseAppAfterAcceptingPushRequestDescription": "Si cette option est activée, l'application se fermera automatiquement après avoir accepté une demande push.",
   "autoCloseAppAfterAcceptingPushRequestTitle": "Fermer l'app après acceptation",
   "backgroundImage": "Fond d'écran",
+  "batteryOptimizationTitle": "Widget d'écran d'accueil",
+  "batteryOptimizationDialogBody": "En cas de problèmes avec le widget d'écran d'accueil, désactiver l'optimisation de la batterie pour l'application peut aider.",
+  "batteryOptimizationAlreadyDisabledBody": "L'optimisation de la batterie est désactivée pour cette application. Souhaitez-vous la réactiver pour améliorer l'autonomie de la batterie ?",
+  "batteryOptimizationSettingsButton": "Ouvrir les paramètres de batterie",
   "biometricAuthNotSetupBody": "Veuillez configurer l'authentification biométrique dans les paramètres de votre appareil pour effectuer cette action.",
   "biometricAuthNotSetupTitle": "L'authentification biométrique n'est pas configurée",
   "biometricAuthNotSupportedBody": "Votre appareil ne prend pas en charge l'authentification biométrique, qui est requise pour effectuer cette action.",
@@ -1819,6 +1835,7 @@
   "deviceCredentialsRequiredTitle": "Les informations d'identification de l'appareil ne sont pas configurées",
   "deviceCredentialsSetupDescription": "Configurer les informations d'identification de l'appareil dans les paramètres de l'appareil",
   "digits": "Chiffres",
+  "disableButton": "Désactiver",
   "dismiss": "Fermer",
   "done": "Terminé",
   "edit": "Modifier",

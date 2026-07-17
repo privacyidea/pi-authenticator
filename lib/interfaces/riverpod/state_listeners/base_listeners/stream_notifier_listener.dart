@@ -32,7 +32,18 @@ abstract class BuildlessStreamNotifierListener<NotifierT extends $StreamNotifier
   void buildListen(WidgetRef ref) {
     Logger.debug('("$listenerName") listening to provider ("$provider")');
     ref.listen(provider, (previous, next) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => onNewState(ref, previous, next));
+      Logger.debug('("$listenerName") received new state: $next (previous: $previous)');
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        try {
+          onNewState(ref, previous, next);
+        } catch (e, s) {
+          Logger.error(
+            '("$listenerName") threw while handling state $next',
+            error: e,
+            stackTrace: s,
+          );
+        }
+      });
     });
   }
 }

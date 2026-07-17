@@ -3,7 +3,7 @@
  *
  * Author: Frank Merkel <frank.merkel@netknights.it>
  *
- * Copyright (c) 2025 NetKnights GmbH
+ * Copyright (c) 2026 NetKnights GmbH
  *
  * Licensed under the Apache License, Version 2.0 (the 'License');
  * you may not use this file except in compliance with the License.
@@ -17,14 +17,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class DeepLink {
-  final Uri uri;
-  final bool fromInit;
-  const DeepLink(this.uri, {this.fromInit = false});
+import '../../../app_settings_utils.dart';
 
-  /// Identity-based equality is intentional – each instance represents a new event.
-
-  @override
-  String toString() => 'DeepLink(uri: $uri, fromInit: $fromInit)';
-}
+final batteryOptimizationsIsDisabledProvider = FutureProvider<bool>((
+  ref,
+) async {
+  return await batteryOptimizationsIsDisabled();
+});

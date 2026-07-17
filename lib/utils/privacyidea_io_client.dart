@@ -302,12 +302,6 @@ class PrivacyideaIOClient {
 }
 
 extension ResponseBuilder on Response {
-  /// Marks a [Response] as synthesized locally after a network-level failure
-  /// (handshake, timeout, socket error, ...) rather than an actual response
-  /// received from the server. Callers can check [isConnectionFailure] to
-  /// tell the two apart instead of guessing from the status code, since a
-  /// synthetic failure can carry the same status code as a legitimate one
-  /// returned by the server (e.g. 408, 503).
   static const connectionFailureHeader = 'x-privacyidea-connection-failure';
 
   bool get isConnectionFailure => headers[connectionFailureHeader] == 'true';
