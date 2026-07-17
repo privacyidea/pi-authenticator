@@ -65,7 +65,7 @@ extension IntroductionX on Introduction {
     Introduction.homeWidgetBatteryOptimization =>
       state.isCompleted(Introduction.homeWidgetSetUp) &&
           state.isUncompleted(Introduction.homeWidgetBatteryOptimization) &&
-          ref.watch(batteryOptimizationsIsDisabledProvider).value != true,
+          ref.watch(batteryOptimizationsIsDisabledProvider).value == false,
   };
 
   String hintText(AppLocalizations localizations) => switch (this) {

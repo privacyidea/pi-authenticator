@@ -105,12 +105,13 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
     if (!introductions.isCompleted(Introduction.homeWidgetSetUp) ||
         !introductions.isUncompleted(
           Introduction.homeWidgetBatteryOptimization,
-        ))
+        )) {
       return;
+    }
+    await BatteryOptimizationDialog.showDialog();
     await ref
         .read(introductionNotifierProvider.notifier)
         .complete(Introduction.homeWidgetBatteryOptimization);
-    await BatteryOptimizationDialog.showDialog();
   }
 
   @override

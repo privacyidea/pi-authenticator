@@ -23,6 +23,8 @@ class DeepLink {
   final bool fromInit;
   const DeepLink(this.uri, {this.fromInit = false});
 
+  /// Identity-based equality is intentional – each instance represents a new event.
+
   @override
   String toString() => 'DeepLink(uri: $uri, fromInit: $fromInit)';
 }
