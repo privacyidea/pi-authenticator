@@ -392,6 +392,9 @@
   "@digits": {
     "description": "Title of the dropdown button where the number of digits for the opt value is selected."
   },
+  "@disableButton": {
+    "description": "Buttontext to disable something, e.g. battery optimization."
+  },
   "@dismiss": {
     "description": "Text of a button that closes a dialog."
   },
@@ -1047,6 +1050,12 @@
   },
   "@noMailAppTitle": {
     "description": "Title of the dialog that tells the user that there is no mail app available."
+  },
+  "@errorSendingEmailTitle": {
+    "description": "Title of the dialog that tells the user that sending the email failed."
+  },
+  "@errorSendingEmailDescription": {
+    "description": "Description of the dialog that tells the user that sending the email failed."
   },
   "@noNetworkConnection": {
     "description": "Tells the user that there is no network connection."
@@ -1786,8 +1795,8 @@
   "autoCloseAppAfterAcceptingPushRequestDescription": "If enabled, the app will close automatically after accepting a push request.",
   "autoCloseAppAfterAcceptingPushRequestTitle": "Close app after accepting push request",
   "backgroundImage": "Background image",
-  "batteryOptimizationTitle": "Battery optimization",
-  "batteryOptimizationDialogBody": "If you experience problems with the widget, disabling battery optimization for the app can help.",
+  "batteryOptimizationTitle": "Homescreen Widget",
+  "batteryOptimizationDialogBody": "If you experience problems with the homescreen widget, disabling battery optimization for the app can help.",
   "batteryOptimizationAlreadyDisabledBody": "Battery optimization is disabled for this app. Would you like to re-enable it to improve battery life?",
   "batteryOptimizationSettingsButton": "Open battery settings",
   "biometricAuthNotSetupBody": "Please set up biometric authentication in your device's settings to perform this action.",
@@ -1856,6 +1865,7 @@
   "deviceCredentialsRequiredTitle": "Device credentials not set up",
   "deviceCredentialsSetupDescription": "Set up device credentials in your device's settings",
   "digits": "Digits",
+  "disableButton": "Disable",
   "dismiss": "Dismiss",
   "done": "Done",
   "edit": "Edit",
@@ -2005,6 +2015,8 @@
   "noFbToken": "No Firebase token available",
   "noMailAppDescription": "There is no e-mail app installed or initialised on this device, please try again when you are able to send an email message.",
   "noMailAppTitle": "No mail app found",
+  "errorSendingEmailTitle": "Failed to send email",
+  "errorSendingEmailDescription": "An unexpected error occurred while trying to send the email. Please try again later.",
   "noNetworkConnection": "No network connection.",
   "noProcessorFoundForHost": "No processor found for host: {host}",
   "noPublicKey": "No public key available",

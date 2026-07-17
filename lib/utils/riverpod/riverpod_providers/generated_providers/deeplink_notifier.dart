@@ -56,7 +56,7 @@ class DeeplinkNotifier extends _$DeeplinkNotifier {
     }
   }
 
-  /// Handle incoming links - the ones that the app will recieve from the OS
+  /// Handle incoming links - the ones that the app will receive from the OS
   /// while already started.
   Stream<DeepLink> _handleIncomingLinks(List<DeeplinkSource> sources) async* {
     if (kIsWeb) return;
@@ -66,7 +66,7 @@ class DeeplinkNotifier extends _$DeeplinkNotifier {
     Uri? lastUri;
     DateTime? lastUriTime;
     await for (var uri in groupedStream) {
-      if (uri == null) return;
+      if (uri == null) continue;
       final now = DateTime.now();
       if (uri == lastUri &&
           lastUriTime != null &&

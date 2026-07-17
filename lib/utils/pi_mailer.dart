@@ -73,8 +73,16 @@ class PiMailer {
             context,
           )!;
           return DefaultDialog(
-            title: Text(appLocalizations.noMailAppTitle),
-            content: Text(appLocalizations.noMailAppDescription),
+            title: Text(
+              noMailAppAvailable
+                  ? appLocalizations.noMailAppTitle
+                  : appLocalizations.errorSendingEmailTitle,
+            ),
+            content: Text(
+              noMailAppAvailable
+                  ? appLocalizations.noMailAppDescription
+                  : appLocalizations.errorSendingEmailDescription,
+            ),
             actions: [
               DialogAction(
                 label: appLocalizations.ok,

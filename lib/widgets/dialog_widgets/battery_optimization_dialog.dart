@@ -46,7 +46,7 @@ class BatteryOptimizationDialog extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(),
         ),
         DialogAction(
-          label: AppLocalizations.of(context)!.allowButton,
+          label: AppLocalizations.of(context)!.disableButton,
           intent: ActionIntent.external,
           onPressed: () async {
             await requestIgnoreBatteryOptimizations();

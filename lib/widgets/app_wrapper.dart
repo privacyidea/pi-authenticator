@@ -4,7 +4,6 @@ import 'package:easy_dynamic_theme/easy_dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/model/extensions/enums/introduction_extension.dart';
 
 import '../model/enums/introduction.dart';
 import '../utils/home_widget_utils.dart';
@@ -98,12 +97,15 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
   /// Shows the battery optimization hint at most once, if the user has linked
   /// a home widget and has not yet been prompted about battery optimization.
   Future<void> _showBatteryOptimizationHintIfPending() async {
-    await ref.read(batteryOptimizationsIsDisabledProvider.future);
+    final isDisabled = await ref.read(
+      batteryOptimizationsIsDisabledProvider.future,
+    );
+    if (isDisabled) return;
     final introductions = await ref.read(introductionNotifierProvider.future);
-    if (!Introduction.homeWidgetBatteryOptimization.isConditionFulfilled(
-      ref,
-      introductions,
-    ))
+    if (!introductions.isCompleted(Introduction.homeWidgetSetUp) ||
+        !introductions.isUncompleted(
+          Introduction.homeWidgetBatteryOptimization,
+        ))
       return;
     await ref
         .read(introductionNotifierProvider.notifier)

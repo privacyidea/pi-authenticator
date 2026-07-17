@@ -65,6 +65,7 @@ class _LinkHomeWidgetViewState extends ConsumerState<LinkHomeWidgetView> {
         actions: [
           IconButton(
             icon: const Icon(Icons.help_outline),
+            tooltip: AppLocalizations.of(context)!.batteryOptimizationTitle,
             onPressed: () async {
               final isIgnoring =
                   ref.read(batteryOptimizationsIsDisabledProvider).value ??

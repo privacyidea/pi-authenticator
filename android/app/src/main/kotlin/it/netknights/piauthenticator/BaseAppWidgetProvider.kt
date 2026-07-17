@@ -16,25 +16,30 @@ import android.os.Bundle
 import android.content.ClipboardManager
 import android.content.ClipData
 import android.content.Intent
+import android.util.Log
 
 import android.app.PendingIntent
 import java.io.File
 
 abstract class BaseAppWidgetProvider : HomeWidgetProvider() {
 
+    companion object {
+        private const val TAG = "BaseAppWidgetProvider"
+    }
+
     abstract val mainActivityClass: Class<out Activity>
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray, widgetData: SharedPreferences) {
         val nightModeSuffix: String
         val currentThemeMode = widgetData.getString("_currentThemeMode", "system")
-        println("currentThemeMode: $currentThemeMode")
+        Log.d(TAG, "currentThemeMode: $currentThemeMode")
         if(currentThemeMode == "system") {
             val isNightMode = context.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
             nightModeSuffix = if(isNightMode) "_dark" else "_light"
         } else {
             nightModeSuffix = if(currentThemeMode == "dark") "_dark" else "_light"
         }
-        println("nightModeSuffix: $nightModeSuffix")
+        Log.d(TAG, "nightModeSuffix: $nightModeSuffix")
 
         var editor = widgetData.edit()
         editor.putString("_widgetIds", appWidgetIds.joinToString(","))
@@ -53,7 +58,7 @@ abstract class BaseAppWidgetProvider : HomeWidgetProvider() {
         } else {
             rebuildingWidgetIds = rebuildingIds?.split(",")?.map { it.toInt() }?.toIntArray() ?: intArrayOf()
         }
-        println("rebuildingWidgetIds: ${rebuildingWidgetIds.joinToString(",")}")
+        Log.d(TAG, "rebuildingWidgetIds: ${rebuildingWidgetIds.joinToString(",")}")
         editor.apply()
         rebuildingWidgetIds.forEach { widgetId ->
             val views = RemoteViews(context.packageName, R.layout.widget_layout).apply {
@@ -67,7 +72,7 @@ abstract class BaseAppWidgetProvider : HomeWidgetProvider() {
                     val tokenLocked = widgetData.getBoolean("_tokenLocked$widgetId", false)
                     val actionBlocked = widgetData.getBoolean("_actionBlocked$tokenId", false)
                     val tokenCopied = widgetData.getBoolean("_copyBlocked$widgetId", false)
-                    println("showToken: $showToken")
+                    Log.d(TAG, "showToken: $showToken")
                     _setSettingsIcon(context, widgetData, widgetId, nightModeSuffix, this)
                     if(tokenCopied) {
                         _setActionIcon(context, widgetData, widgetId, nightModeSuffix, this, false)
@@ -103,7 +108,7 @@ abstract class BaseAppWidgetProvider : HomeWidgetProvider() {
         remoteViews.setOnClickPendingIntent(R.id.widget_settings, pendingIntent)
     }
     fun _setActionIcon(context: Context, widgetData: SharedPreferences, widgetId: Int, nightModeSuffix: String, remoteViews: RemoteViews, showToken: Boolean) {
-        println("getString: _tokenType$widgetId")
+        Log.d(TAG, "getString: _tokenType$widgetId")
         val tokenType = widgetData.getString("_tokenType$widgetId", null)
         if(tokenType == null) {
             remoteViews.setImageViewBitmap(R.id.widget_action, null)
@@ -122,7 +127,7 @@ abstract class BaseAppWidgetProvider : HomeWidgetProvider() {
 
     fun _setHiddenOtp(context: Context, widgetData: SharedPreferences, widgetId: Int, nightModeSuffix: String, remoteViews: RemoteViews, tokenLocked: Boolean) {
         _loadImageFromWidgetDataString(widgetData, "_tokenOtp${widgetId}_hidden$nightModeSuffix", R.id.widget_otp, remoteViews)
-        println("tokenLocked: $tokenLocked")
+        Log.d(TAG, "tokenLocked: $tokenLocked")
         if(tokenLocked) {
             val pendingIntent = HomeWidgetLaunchIntent.getActivity(
                 context,
@@ -172,27 +177,32 @@ abstract class BaseAppWidgetProvider : HomeWidgetProvider() {
 
     fun _loadImageFromWidgetDataString(widgetData: SharedPreferences, key: String, xmlElement: Int, view: RemoteViews): Boolean {
 
-        println("Try to load image from key: $key")
+        Log.d(TAG, "Try to load image from key: $key")
         val imagePath = widgetData.getString("$key", null)
         if(imagePath == null) {
-            println("imagePath is null")
+            Log.d(TAG, "imagePath is null")
             view.setImageViewBitmap(xmlElement, null)
             return false
         }
 
         val imageFile = File(imagePath)
-        val imageExists = imageFile.exists()
-        if (imageExists && imageFile.absolutePath == null) {
-            println("image not found!, looked @: $imagePath")
+        if (!imageFile.exists()) {
+            Log.d(TAG, "image not found!, looked @: $imagePath")
+            view.setImageViewBitmap(xmlElement, null)
             return false
         }
 
-        println("imagePath is $imagePath")
+        Log.d(TAG, "imagePath is $imagePath")
         try {
-            val myBitmap: Bitmap = BitmapFactory.decodeFile(imageFile.absolutePath)
+            val myBitmap: Bitmap? = BitmapFactory.decodeFile(imageFile.absolutePath)
+            if (myBitmap == null) {
+                Log.d(TAG, "Failed to decode image: $imagePath")
+                view.setImageViewBitmap(xmlElement, null)
+                return false
+            }
             view.setImageViewBitmap(xmlElement, myBitmap)
         } catch (e: Exception) {
-            println("Exception: $e")
+            Log.e(TAG, "Exception: $e")
             return false
         }
         return true
