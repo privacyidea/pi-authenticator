@@ -20,7 +20,7 @@
 import 'dart:async';
 
 import 'package:collection/collection.dart';
-import 'package:mutex/mutex.dart';
+import 'package:privacyidea_authenticator/utils/helpers/mutex.dart';
 import 'package:privacyidea_authenticator/model/container_policies.dart';
 import 'package:privacyidea_authenticator/model/extensions/enums/rollout_state_extension.dart';
 import 'package:privacyidea_authenticator/model/extensions/token_list_extension.dart';

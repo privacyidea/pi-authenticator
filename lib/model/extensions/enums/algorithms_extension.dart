@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_redundant_argument_values
-
 /*
  * privacyIDEA Authenticator
  *
@@ -19,11 +17,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import 'package:otp/otp.dart';
+import 'package:privacyidea_authenticator/utils/helpers/otp_helper.dart' as otp;
 
 import '../../enums/algorithms.dart';
 
 extension AlgorithmsX on Algorithms {
+  otp.OtpHashAlgorithm get _otpHashAlgorithm => switch (this) {
+    Algorithms.SHA1 => otp.OtpHashAlgorithm.sha1,
+    Algorithms.SHA256 => otp.OtpHashAlgorithm.sha256,
+    Algorithms.SHA512 => otp.OtpHashAlgorithm.sha512,
+  };
+
   /// Generates a Time-based one time password code and return as a 0 padded string.
   /// DateTime should be the current time.
   /// Ig isGoogle is true, the secret will be decoded as base32, otherwise it will be decoded as utf8.
@@ -33,32 +37,14 @@ extension AlgorithmsX on Algorithms {
     required int length,
     required Duration interval,
     bool isGoogle = true,
-  }) => switch (this) {
-    Algorithms.SHA1 => OTP.generateTOTPCodeString(
-      secret,
-      time.millisecondsSinceEpoch,
-      length: length,
-      interval: interval.inSeconds,
-      algorithm: Algorithm.SHA1,
-      isGoogle: isGoogle,
-    ),
-    Algorithms.SHA256 => OTP.generateTOTPCodeString(
-      secret,
-      time.millisecondsSinceEpoch,
-      length: length,
-      interval: interval.inSeconds,
-      algorithm: Algorithm.SHA256,
-      isGoogle: isGoogle,
-    ),
-    Algorithms.SHA512 => OTP.generateTOTPCodeString(
-      secret,
-      time.millisecondsSinceEpoch,
-      length: length,
-      interval: interval.inSeconds,
-      algorithm: Algorithm.SHA512,
-      isGoogle: isGoogle,
-    ),
-  };
+  }) => otp.generateTOTPCodeString(
+    secret: secret,
+    time: time.millisecondsSinceEpoch,
+    length: length,
+    interval: interval.inSeconds,
+    algorithm: _otpHashAlgorithm,
+    isGoogle: isGoogle,
+  );
 
   /// Generates a Counter-based one time password code and return as a 0 padded string.
   /// If isGoogle is true, the secret will be decoded as base32, otherwise it will be decoded as utf8.
@@ -67,27 +53,11 @@ extension AlgorithmsX on Algorithms {
     required int counter,
     required int length,
     bool isGoogle = true,
-  }) => switch (this) {
-    Algorithms.SHA1 => OTP.generateHOTPCodeString(
-      secret,
-      counter,
-      length: length,
-      algorithm: Algorithm.SHA1,
-      isGoogle: isGoogle,
-    ),
-    Algorithms.SHA256 => OTP.generateHOTPCodeString(
-      secret,
-      counter,
-      length: length,
-      algorithm: Algorithm.SHA256,
-      isGoogle: isGoogle,
-    ),
-    Algorithms.SHA512 => OTP.generateHOTPCodeString(
-      secret,
-      counter,
-      length: length,
-      algorithm: Algorithm.SHA512,
-      isGoogle: isGoogle,
-    ),
-  };
+  }) => otp.generateHOTPCodeString(
+    secret: secret,
+    counter: counter,
+    length: length,
+    algorithm: _otpHashAlgorithm,
+    isGoogle: isGoogle,
+  );
 }

@@ -22,7 +22,7 @@ import 'dart:convert';
 import 'dart:core';
 import 'dart:math' as math;
 
-import 'package:base32/base32.dart';
+import 'package:privacyidea_authenticator/utils/helpers/base32_helper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pointycastle/export.dart';
 
@@ -71,7 +71,7 @@ Future<String> generatePhoneChecksum({required Uint8List phonePart}) async {
     ..addAll(phonePart);
 
   // 3. Return checksum + salt as BASE32 String without '='.
-  return base32.encode(Uint8List.fromList(toEncode)).replaceAll('=', '');
+  return base32Encode(Uint8List.fromList(toEncode)).replaceAll('=', '');
 }
 
 /// Decodes a hexadecimal string into its raw bytes.

@@ -18,7 +18,7 @@
  * limitations under the License.
 */
 
-import 'package:mutex/mutex.dart';
+import 'package:privacyidea_authenticator/utils/helpers/mutex.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../allow_screenshot_utils.dart';

@@ -34,9 +34,7 @@ import 'tooltip_container.dart';
 
 class FocusedItemAsOverlay extends StatelessWidget {
   final bool isFocused;
-  final bool childIsMoving;
   final Widget child;
-  final Widget? overlayChild;
   final String tooltipWhenFocused;
   final Alignment alignment;
 
@@ -48,8 +46,6 @@ class FocusedItemAsOverlay extends StatelessWidget {
     required this.child,
     required this.tooltipWhenFocused,
     required this.onComplete,
-    this.childIsMoving = false,
-    this.overlayChild,
     this.alignment = Alignment.topCenter,
   });
   @override
@@ -58,8 +54,6 @@ class FocusedItemAsOverlay extends StatelessWidget {
         ? _FocusedItemOverlay(
             onComplete: onComplete,
             tooltipWhenFocused: tooltipWhenFocused,
-            childIsMoving: childIsMoving,
-            overlayChild: overlayChild,
             alignment: alignment,
             child: child,
           )
@@ -68,9 +62,7 @@ class FocusedItemAsOverlay extends StatelessWidget {
 }
 
 class _FocusedItemOverlay extends StatefulWidget {
-  final bool childIsMoving;
   final Widget child;
-  final Widget? overlayChild;
   final String? tooltipWhenFocused;
   final Alignment alignment;
   final void Function()? onComplete;
@@ -78,8 +70,6 @@ class _FocusedItemOverlay extends StatefulWidget {
     required this.child,
     this.tooltipWhenFocused,
     this.onComplete,
-    required this.childIsMoving,
-    this.overlayChild,
     required this.alignment,
   });
 
@@ -92,66 +82,102 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
   static const tooltipMargin = EdgeInsets.all(4);
   static const tooltipBorderWidth = 2.0;
 
+  // Stop tracking the anchor after ~1 second without any position change.
+  // Route transitions and relayouts have settled by then and the backdrop
+  // blocks scrolling, so the anchor can no longer move.
+  static const int _maxStableFrames = 60;
+
   Timer? _delayTimer;
+  Timer? _movementTimer;
 
   Offset lastChildPosition = Offset.zero;
+
+  double _circlePadding = 0;
+  BorderRadius _pulseRadius = BorderRadius.zero;
 
   OverlayEntry? _overlayEntryText;
   OverlayEntry? _overlayEntryChild;
   OverlayEntry? _overlayEntryBackdrop;
 
   @override
-  Widget build(BuildContext context) => widget.child;
+  Widget build(BuildContext context) {
+    final pad = _circlePadding / 2;
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        // The pulse is rendered behind the real widget (not in the overlay) so
+        // the glow sits under the icon/text and stays pixel-aligned with it.
+        Positioned(
+          left: -pad,
+          top: -pad,
+          right: -pad,
+          bottom: -pad,
+          child: IgnorePointer(
+            child: LayoutBuilder(
+              builder: (context, constraints) => PulseIcon(
+                width: constraints.maxWidth,
+                height: constraints.maxHeight,
+                borderRadius: _pulseRadius,
+                child: const SizedBox.shrink(),
+              ),
+            ),
+          ),
+        ),
+        widget.child,
+      ],
+    );
+  }
 
   @override
   void initState() {
     Logger.info("FocusedItemOverlay: initState");
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _updateOverlay();
-
-      if (widget.childIsMoving) {
-        int stablePositionCount = 0;
-        const int maxStableCount = 60; // Stop after ~1 second of stability
-
-        Timer.periodic(const Duration(milliseconds: 16), (timer) {
-          if (mounted == false) {
-            timer.cancel();
-            return;
-          }
-
-          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-            if (mounted == false) {
-              timer.cancel();
-              return;
-            }
-
-            final renderBox = context.findRenderObject() as RenderBox?;
-            if (renderBox == null || !renderBox.hasSize) return;
-
-            final renderBoxOffset = renderBox.localToGlobal(Offset.zero);
-
-            if (lastChildPosition != renderBoxOffset) {
-              _updateOverlay();
-              lastChildPosition = renderBoxOffset;
-              stablePositionCount = 0; // Reset counter on movement
-            } else {
-              stablePositionCount++;
-              if (stablePositionCount >= maxStableCount) {
-                Logger.info(
-                  "FocusedItemOverlay: Movement stopped, cancelling timer.",
-                );
-                timer.cancel();
-              }
-            }
-          });
-        });
-      }
+      _startTrackingPosition();
     });
     super.initState();
   }
 
+  void _startTrackingPosition() {
+    int stablePositionCount = 0;
+    _movementTimer = Timer.periodic(const Duration(milliseconds: 16), (timer) {
+      if (mounted == false) {
+        timer.cancel();
+        return;
+      }
+
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+        if (mounted == false) {
+          timer.cancel();
+          return;
+        }
+
+        final renderBox = context.findRenderObject() as RenderBox?;
+        if (renderBox == null || !renderBox.hasSize) return;
+
+        final renderBoxOffset = renderBox.localToGlobal(Offset.zero);
+
+        if (lastChildPosition != renderBoxOffset) {
+          _updateOverlay();
+          lastChildPosition = renderBoxOffset;
+          stablePositionCount = 0; // Reset counter on movement
+        } else {
+          stablePositionCount++;
+          if (stablePositionCount >= _maxStableFrames) {
+            Logger.info(
+              "FocusedItemOverlay: Movement stopped, cancelling timer.",
+            );
+            timer.cancel();
+          }
+        }
+      });
+    });
+  }
+
   @override
   void dispose() {
+    _movementTimer?.cancel();
+    _delayTimer?.cancel();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _disposeOverlay();
     });
@@ -250,41 +276,34 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
       max(circlePadding * 2, min(boxsize.width, boxsize.height) / 6),
     );
 
+    // Update state so the in-tree pulse matches the overlay hole size.
+    _circlePadding = circlePadding;
+    _pulseRadius = borderRadius;
+    if (mounted) setState(() {});
+
+    final holeRect = Rect.fromLTWH(
+      renderBoxOffset.dx - circlePadding / 2,
+      renderBoxOffset.dy - circlePadding / 2,
+      max(boxsize.width + circlePadding, 0.0),
+      max(boxsize.height + circlePadding, 0.0),
+    );
+
     _overlayEntryChild = OverlayEntry(
       builder: (overlayContext) => Stack(
         children: [
           Positioned(
-            left: renderBoxOffset.dx - circlePadding / 2,
-            top: renderBoxOffset.dy - circlePadding / 2,
-            child: Stack(
-              children: [
-                Positioned.fill(
-                  child: PulseIcon(
-                    width: max(boxsize.width + circlePadding, 0.0),
-                    height: max(boxsize.height + circlePadding, 0.0),
-                    borderRadius: borderRadius,
-                    child: Material(
-                      color: Colors.transparent,
-                      child: SizedBox(
-                        width: renderBox.size.width,
-                        height: renderBox.size.height,
-                        child: widget.overlayChild ?? widget.child,
-                      ),
-                    ),
-                  ),
+            left: holeRect.left,
+            top: holeRect.top,
+            child: Container(
+              width: holeRect.width,
+              height: holeRect.height,
+              decoration: BoxDecoration(
+                borderRadius: borderRadius,
+                border: Border.all(
+                  color: Theme.of(context).primaryColor,
+                  width: circleThinkness,
                 ),
-                Container(
-                  width: max(boxsize.width + circlePadding, 0.0),
-                  height: max(boxsize.height + circlePadding, 0.0),
-                  decoration: BoxDecoration(
-                    borderRadius: borderRadius,
-                    border: Border.all(
-                      color: Theme.of(context).primaryColor,
-                      width: circleThinkness,
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
           Positioned.fill(
@@ -302,11 +321,14 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
       ),
     );
 
+    // Blur everything except a rounded hole over the anchor, so the real
+    // widget shows through unaltered instead of being copied into the overlay.
     _overlayEntryBackdrop = OverlayEntry(
-      builder: (overlayContext) => ClipRRect(
+      builder: (overlayContext) => ClipPath(
+        clipper: _HoleClipper(hole: borderRadius.toRRect(holeRect)),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
-          child: const Center(child: SizedBox()),
+          child: const SizedBox.expand(),
         ),
       ),
     );
@@ -326,6 +348,23 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
     _overlayEntryText?.remove();
     _overlayEntryText = null;
   }
+}
+
+/// Clips its child to the whole area minus a rounded [hole].
+class _HoleClipper extends CustomClipper<Path> {
+  final RRect hole;
+
+  const _HoleClipper({required this.hole});
+
+  @override
+  Path getClip(Size size) => Path.combine(
+    PathOperation.difference,
+    Path()..addRect(Offset.zero & size),
+    Path()..addRRect(hole),
+  );
+
+  @override
+  bool shouldReclip(_HoleClipper oldClipper) => oldClipper.hole != hole;
 }
 
 Offset _getClampedOverlayOffset({

@@ -21,10 +21,11 @@
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hex/hex.dart';
 import 'package:privacyidea_authenticator/model/enums/encodings.dart';
 import 'package:privacyidea_authenticator/model/extensions/enums/encodings_extension.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
+import 'package:privacyidea_authenticator/utils/helpers/hex_helper.dart'
+    show hexEncode;
 
 void main() {
   _testGeneratePhoneChecksum();
@@ -1064,8 +1065,8 @@ void _testDecodeHexString() {
       });
     });
 
-    group('cross check against the hex package', () {
-      test('decode(HEX.encode(bytes)) round trips', () {
+    group('round trip with hexEncode', () {
+      test('decode(hexEncode(bytes)) round trips', () {
         final samples = <List<int>>[
           [],
           [0],
@@ -1076,27 +1077,39 @@ void _testDecodeHexString() {
         ];
         for (final bytes in samples) {
           expect(
-            decodeHexString(HEX.encode(bytes)),
+            decodeHexString(hexEncode(bytes)),
             equals(bytes),
             reason: 'bytes $bytes',
           );
         }
       });
 
-      test('matches HEX.decode for arbitrary hex strings', () {
-        const inputs = [
-          'deadbeef',
-          'cafebabe0000ffff',
-          '0123456789abcdef',
-          'b8d26a05c93186c974b716c3',
-        ];
-        for (final input in inputs) {
-          expect(
-            decodeHexString(input),
-            equals(HEX.decode(input)),
-            reason: input,
-          );
-        }
+      test('matches expected byte values for multi-byte hex strings', () {
+        expect(
+          decodeHexString('cafebabe0000ffff'),
+          equals([0xca, 0xfe, 0xba, 0xbe, 0x00, 0x00, 0xff, 0xff]),
+        );
+        expect(
+          decodeHexString('0123456789abcdef'),
+          equals([0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef]),
+        );
+        expect(
+          decodeHexString('b8d26a05c93186c974b716c3'),
+          equals([
+            0xb8,
+            0xd2,
+            0x6a,
+            0x05,
+            0xc9,
+            0x31,
+            0x86,
+            0xc9,
+            0x74,
+            0xb7,
+            0x16,
+            0xc3,
+          ]),
+        );
       });
     });
 
@@ -1121,21 +1134,83 @@ void _testDecodeHexString() {
         expect(decodeHexString(headerTag).length, equals(16));
       });
 
-      test('agree with the hex package on every field', () {
-        for (final field in [
-          slotNonce,
-          slotTag,
-          slotSalt,
-          slotKey,
-          headerNonce,
-          headerTag,
-        ]) {
-          expect(
-            decodeHexString(field),
-            equals(HEX.decode(field)),
-            reason: field,
-          );
-        }
+      test('decode to the expected golden byte values', () {
+        expect(
+          decodeHexString(slotNonce),
+          equals([
+            0xb8,
+            0xd2,
+            0x6a,
+            0x05,
+            0xc9,
+            0x31,
+            0x86,
+            0xc9,
+            0x74,
+            0xb7,
+            0x16,
+            0xc3,
+          ]),
+        );
+        expect(
+          decodeHexString(slotTag),
+          equals([
+            0x38,
+            0xc1,
+            0xf0,
+            0x2d,
+            0x90,
+            0x83,
+            0x12,
+            0x78,
+            0xc5,
+            0x78,
+            0x0d,
+            0x65,
+            0x6a,
+            0x8c,
+            0x52,
+            0x0a,
+          ]),
+        );
+        expect(
+          decodeHexString(headerNonce),
+          equals([
+            0x09,
+            0xf0,
+            0x56,
+            0x41,
+            0x02,
+            0x71,
+            0xf2,
+            0xc2,
+            0x4a,
+            0x33,
+            0xd4,
+            0xc6,
+          ]),
+        );
+        expect(
+          decodeHexString(headerTag),
+          equals([
+            0x30,
+            0x65,
+            0x6d,
+            0xf2,
+            0xf6,
+            0xa1,
+            0xad,
+            0xc0,
+            0xc8,
+            0x3b,
+            0xca,
+            0x79,
+            0xce,
+            0xea,
+            0x9c,
+            0xd6,
+          ]),
+        );
       });
 
       test('first and last bytes of a field are placed correctly', () {
@@ -1156,7 +1231,7 @@ void _testDecodeHexString() {
             seed = _lcg(seed);
             bytes.add(seed & 0xff);
           }
-          final encoded = HEX.encode(bytes);
+          final encoded = hexEncode(bytes);
           expect(
             decodeHexString(encoded),
             equals(bytes),

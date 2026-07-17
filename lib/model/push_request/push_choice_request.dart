@@ -19,7 +19,7 @@
  */
 import 'dart:convert';
 
-import 'package:base32/base32.dart';
+import 'package:privacyidea_authenticator/utils/helpers/base32_helper.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../utils/globals.dart';
@@ -118,7 +118,7 @@ class PushChoiceRequest extends PushDefaultRequest {
     final verified = rsaUtils.verifyRSASignature(
       token.rsaPublicServerKey!,
       utf8.encode(signedData),
-      base32.decode(signature),
+      base32Decode(signature),
     );
     if (!verified) {
       Logger.warning(

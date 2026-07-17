@@ -20,7 +20,7 @@
 import 'dart:async';
 
 import 'package:http/http.dart';
-import 'package:mutex/mutex.dart';
+import 'package:privacyidea_authenticator/utils/helpers/mutex.dart';
 import 'package:privacyidea_authenticator/model/push_request/decline_reason.dart';
 import 'package:privacyidea_authenticator/model/push_request/push_requests.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

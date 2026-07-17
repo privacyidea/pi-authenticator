@@ -71,7 +71,6 @@ void main() {
         TestsAppWrapper(
           child: FocusedItemAsOverlay(
             isFocused: true,
-            childIsMoving: true,
             tooltipWhenFocused: 'Stable Tooltip',
             onComplete: () {},
             child: const SizedBox(width: 50, height: 50),

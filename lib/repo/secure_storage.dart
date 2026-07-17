@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:mutex/mutex.dart';
+import 'package:privacyidea_authenticator/utils/helpers/mutex.dart';
 
 import '../interfaces/repo/secure_storage.dart';
 

@@ -27,7 +27,6 @@ dependencies:
   app_links: ^7.0.0
   asn1lib: ^1.5.5
   async: ^2.11.0
-  base32: ^2.1.3
   basic_utils: ^5.8.0
   camera_android: ^0.10.10
   collection: ^1.18.0
@@ -45,7 +44,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_email_sender: ^10.0.1
-  flutter_local_notifications: ^20.1.0
+  flutter_local_notifications: ^22.0.1
   flutter_localizations:
     sdk: flutter
   flutter_riverpod: ^3.3.2
@@ -56,7 +55,6 @@ dependencies:
   font_awesome_flutter: ^11.0.0
   freezed_annotation: ^3.1.0
   google_api_availability: ^5.0.1
-  hex: ^0.2.0
   # Bundles its own androidx.work version. When bumping this, sync the explicit
   # androidx.work:work-runtime-ktx pin in android/app/build.gradle (needed for the
   # widget-flicker fix in PiApplication).
@@ -72,8 +70,6 @@ dependencies:
   local_auth_darwin: ^2.0.1
   logger: ^2.4.0
   material_symbols_icons: ^4.2906.0
-  mutex: ^3.1.0
-  otp: ^3.1.4
   package_info_plus: ^10.2.1
   path_provider: ^2.1.4
   permission_handler: ^12.0.1
@@ -83,7 +79,6 @@ dependencies:
   screen_security: ^1.1.0
   shared_preferences: ^2.3.2
   url_launcher: ^6.3.1
-  uuid: ^4.5.1
   zxing2: ^0.2.3
 
 dev_dependencies:

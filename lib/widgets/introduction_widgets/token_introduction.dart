@@ -23,7 +23,6 @@ class TokenIntroduction extends ConsumerWidget {
               onComplete: () => ref
                   .read(introductionNotifierProvider.notifier)
                   .complete(Introduction.tokenSwipe),
-              overlayChild: child,
               child: child,
             );
           }
@@ -36,7 +35,6 @@ class TokenIntroduction extends ConsumerWidget {
               onComplete: () => ref
                   .read(introductionNotifierProvider.notifier)
                   .complete(Introduction.dragToken),
-              overlayChild: child,
               child: child,
             );
           }
