@@ -57,7 +57,7 @@ final class PushRequestNotifierProvider
 }
 
 String _$pushRequestNotifierHash() =>
-    r'1adad886648d1dd52954b82c9d834a7eb1d7fcfd';
+    r'869cfaf505b251b85b56af5ea89e7e57a05a774a';
 
 final class PushRequestNotifierFamily extends $Family
     with
@@ -123,7 +123,7 @@ abstract class _$PushRequestNotifier extends $AsyncNotifier<PushRequestState> {
   });
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref =
         this.ref as $Ref<AsyncValue<PushRequestState>, PushRequestState>;
     final element =
@@ -134,7 +134,7 @@ abstract class _$PushRequestNotifier extends $AsyncNotifier<PushRequestState> {
               Object?,
               Object?
             >;
-    element.handleCreate(
+    return element.handleCreate(
       ref,
       () => build(
         rsaUtils: _$args.rsaUtils,

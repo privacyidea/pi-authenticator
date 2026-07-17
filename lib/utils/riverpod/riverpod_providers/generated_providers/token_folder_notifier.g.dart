@@ -59,7 +59,7 @@ final class TokenFolderNotifierProvider
 }
 
 String _$tokenFolderNotifierHash() =>
-    r'68ed2236cd7c4405693cd095b32ec34978e47c7d';
+    r'4d08baf96d795315f0dc4a0dbfb88174e0008507';
 
 final class TokenFolderNotifierFamily extends $Family
     with
@@ -93,7 +93,7 @@ abstract class _$TokenFolderNotifier extends $Notifier<TokenFolderState> {
   TokenFolderState build({required TokenFolderRepository repo});
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<TokenFolderState, TokenFolderState>;
     final element =
         ref.element
@@ -103,6 +103,6 @@ abstract class _$TokenFolderNotifier extends $Notifier<TokenFolderState> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, () => build(repo: _$args));
+    return element.handleCreate(ref, () => build(repo: _$args));
   }
 }

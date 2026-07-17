@@ -20,6 +20,10 @@ PushCodeToPhoneRequest _$PushCodeToPhoneRequestFromJson(
   sslVerify: json['sslVerify'] as bool,
   type: json['type'] as String? ?? PushCodeToPhoneRequest.TYPE,
   accepted: json['accepted'] as bool?,
+  declineReason: $enumDecodeNullable(
+    _$DeclineReasonEnumMap,
+    json['declineReason'],
+  ),
 );
 
 Map<String, dynamic> _$PushCodeToPhoneRequestToJson(
@@ -35,5 +39,11 @@ Map<String, dynamic> _$PushCodeToPhoneRequestToJson(
   'uri': instance.uri.toString(),
   'sslVerify': instance.sslVerify,
   'accepted': instance.accepted,
+  'declineReason': _$DeclineReasonEnumMap[instance.declineReason],
   'displayCode': instance.displayCode,
+};
+
+const _$DeclineReasonEnumMap = {
+  DeclineReason.unknownTrigger: 'unknownTrigger',
+  DeclineReason.cancelled: 'cancelled',
 };

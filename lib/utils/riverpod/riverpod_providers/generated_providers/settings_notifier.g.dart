@@ -50,7 +50,7 @@ final class SettingsNotifierProvider
   }
 }
 
-String _$settingsNotifierHash() => r'42863a7ebf17bea4f8214cf9bcd1a332fa81de02';
+String _$settingsNotifierHash() => r'1652cdaa99b337902694a7edd136e61cdb75fc89';
 
 final class SettingsNotifierFamily extends $Family
     with
@@ -84,7 +84,7 @@ abstract class _$SettingsNotifier extends $AsyncNotifier<SettingsState> {
   FutureOr<SettingsState> build({required SettingsRepository repo});
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AsyncValue<SettingsState>, SettingsState>;
     final element =
         ref.element
@@ -94,6 +94,6 @@ abstract class _$SettingsNotifier extends $AsyncNotifier<SettingsState> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, () => build(repo: _$args));
+    return element.handleCreate(ref, () => build(repo: _$args));
   }
 }

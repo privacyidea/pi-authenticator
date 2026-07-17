@@ -74,6 +74,17 @@ Future<String> generatePhoneChecksum({required Uint8List phonePart}) async {
   return base32.encode(Uint8List.fromList(toEncode)).replaceAll('=', '');
 }
 
+/// Decodes a hexadecimal string into its raw bytes.
+Uint8List decodeHexString(String input) {
+  assert(input.length % 2 == 0, 'Input needs to be an even length.');
+  return Uint8List.fromList(
+    List.generate(
+      input.length ~/ 2,
+      (i) => int.parse(input.substring(i * 2, (i * 2) + 2), radix: 16),
+    ),
+  );
+}
+
 /// Provides a secure random number generator.
 SecureRandom secureRandom() {
   final secureRandom = FortunaRandom();
