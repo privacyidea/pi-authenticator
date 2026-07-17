@@ -44,67 +44,96 @@ class ConflictedImportTokensTile extends StatefulWidget {
 class _ConflictedImportTokensTileState
     extends State<ConflictedImportTokensTile> {
   late ScrollController scrollController;
+  // importTokenEntry is mutated in place rather than replaced, so comparing
+  // oldWidget.importTokenEntry to widget.importTokenEntry in didUpdateWidget
+  // would always see the same (already-mutated) object. Track our own
+  // snapshot of the value that matters instead.
+  Token? _lastSelectedToken;
 
   @override
   void initState() {
     super.initState();
+    _lastSelectedToken = widget.importTokenEntry.selectedToken;
     scrollController = ScrollController(
       initialScrollOffset: widget.importTokenEntry.oldToken != null
           ? widget.initialScreenSize.width * 1 / 4
           : 0,
     );
+    _setScrollPosition();
+  }
+
+  @override
+  void didUpdateWidget(covariant ConflictedImportTokensTile oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final selectionChanged =
+        _lastSelectedToken != widget.importTokenEntry.selectedToken;
+    // initialScreenSize is a plain immutable field on the widget itself (not
+    // on the mutable importTokenEntry), so comparing oldWidget to widget here
+    // is safe and reflects a real orientation/layout change.
+    final screenSizeChanged =
+        oldWidget.initialScreenSize != widget.initialScreenSize;
+    if (selectionChanged || screenSizeChanged) {
+      _lastSelectedToken = widget.importTokenEntry.selectedToken;
+      _setScrollPosition();
+    }
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
   }
 
   void _setScrollPosition() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (scrollController.hasClients != true) return;
       const fullScrollDuration = Duration(milliseconds: 300);
-      double? scrolltarget;
+      double? scrollTarget;
       if (widget.importTokenEntry.oldToken == null) {
         if (scrollController.offset != 0.0) {
-          scrolltarget = 0.0;
+          scrollTarget = 0.0;
         } else {
           return;
         }
       }
-      final isLandScape =
+      final isLandscape =
           widget.initialScreenSize.width > widget.initialScreenSize.height;
-      if (widget.importTokenEntry.selectedToken == null || isLandScape) {
+      if (widget.importTokenEntry.selectedToken == null || isLandscape) {
         // Mid of the Row
-        scrolltarget ??=
+        scrollTarget ??=
             (scrollController.position.minScrollExtent +
                 scrollController.position.maxScrollExtent) /
             2;
       } else if (widget.importTokenEntry.selectedToken ==
           widget.importTokenEntry.oldToken) {
         // Show Right Tile
-        scrolltarget ??= scrollController.position.maxScrollExtent;
+        scrollTarget ??= scrollController.position.maxScrollExtent;
       } else if (widget.importTokenEntry.selectedToken ==
           widget.importTokenEntry.newToken) {
         // Show Left Tile
-        scrolltarget ??= scrollController.position.minScrollExtent;
+        scrollTarget ??= scrollController.position.minScrollExtent;
       }
-      if (scrolltarget == null ||
+      if (scrollTarget == null ||
           scrollController.position.maxScrollExtent == 0.0) {
         return;
       }
       final scrollDifferencePercent =
-          (scrollController.offset - scrolltarget).abs() /
+          (scrollController.offset - scrollTarget).abs() /
           scrollController.position.maxScrollExtent;
       scrollController.animateTo(
-        scrolltarget,
+        scrollTarget,
         duration: fullScrollDuration * scrollDifferencePercent,
         curve: Curves.easeIn,
       );
     });
   }
 
-  void _setSelectedToken(Token tapedToken) {
+  void _setSelectedToken(Token tappedToken) {
     final importTokenEntry = widget.importTokenEntry;
-    if (tapedToken == widget.importTokenEntry.selectedToken) {
+    if (tappedToken == widget.importTokenEntry.selectedToken) {
       importTokenEntry.selectedToken = null;
     } else {
-      importTokenEntry.selectedToken = tapedToken;
+      importTokenEntry.selectedToken = tappedToken;
     }
 
     widget.selectTokenCallback(importTokenEntry);
@@ -113,19 +142,19 @@ class _ConflictedImportTokensTileState
   @override
   Widget build(BuildContext context) {
     final quarterScreenWidth = MediaQuery.of(context).size.width / 4;
-    final isLandScape =
+    final isLandscape =
         widget.initialScreenSize.width > widget.initialScreenSize.height;
     Logger.debug('Building ConflictedImportTokensTile ');
 
-    _setScrollPosition();
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       controller: scrollController,
       physics: const NeverScrollableScrollPhysics(),
       child: GestureDetector(
         onHorizontalDragEnd: (details) {
-          if (details.primaryVelocity!.abs() < 100) return;
-          if (details.primaryVelocity! < 0) {
+          final primaryVelocity = details.primaryVelocity ?? 0.0;
+          if (primaryVelocity.abs() < 100) return;
+          if (primaryVelocity < 0) {
             if (widget.importTokenEntry.selectedToken !=
                 widget.importTokenEntry.oldToken) {
               _setSelectedToken(widget.importTokenEntry.oldToken!);
@@ -138,23 +167,22 @@ class _ConflictedImportTokensTileState
           }
         },
         child: SizedBox(
-          width: quarterScreenWidth * (isLandScape ? 4 : 6),
+          width: quarterScreenWidth * (isLandscape ? 4 : 6),
           child: Row(
             children: [
               if (widget.importTokenEntry.newToken !=
                       widget.importTokenEntry.selectedToken &&
-                  !isLandScape)
+                  !isLandscape)
                 SizedBox(width: quarterScreenWidth),
               NoConflictImportTokensTile(
                 width:
                     widget.importTokenEntry.newToken ==
                             widget.importTokenEntry.selectedToken &&
-                        !isLandScape
+                        !isLandscape
                     ? quarterScreenWidth * 3
                     : quarterScreenWidth * 2,
                 token: widget.importTokenEntry.newToken,
                 selected: widget.importTokenEntry.selectedToken,
-                alignment: Alignment.centerRight,
                 onTap: widget.importTokenEntry.oldToken != null
                     ? () => _setSelectedToken(widget.importTokenEntry.newToken)
                     : null,
@@ -163,19 +191,18 @@ class _ConflictedImportTokensTileState
                 width:
                     widget.importTokenEntry.oldToken ==
                             widget.importTokenEntry.selectedToken &&
-                        !isLandScape
+                        !isLandscape
                     ? quarterScreenWidth * 3
                     : quarterScreenWidth * 2,
                 token: widget.importTokenEntry.oldToken!,
                 selected: widget.importTokenEntry.selectedToken,
-                alignment: Alignment.centerLeft,
                 onTap: () =>
                     _setSelectedToken(widget.importTokenEntry.oldToken!),
               ),
               if (widget.importTokenEntry.oldToken != null &&
                   widget.importTokenEntry.oldToken !=
                       widget.importTokenEntry.selectedToken &&
-                  !isLandScape)
+                  !isLandscape)
                 SizedBox(width: quarterScreenWidth),
             ],
           ),

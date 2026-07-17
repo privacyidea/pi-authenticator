@@ -29,6 +29,7 @@ import '../../../../../../../interfaces/repo/push_request_repository.dart';
 import '../../../../../../../utils/rsa_utils.dart';
 import '../../../../model/api_results/pi_server_results/pi_server_result_detail.dart';
 import '../../../../model/api_results/pi_server_results/pi_server_result_value.dart';
+import '../../../../model/exception_errors/error_codes.dart';
 import '../../../../model/pi_server_response.dart';
 import '../../../../model/riverpod_states/push_request_state.dart';
 import '../../../../model/tokens/push_token.dart';
@@ -388,21 +389,39 @@ class PushRequestNotifier extends _$PushRequestNotifier {
       }
       body['signature'] = signature;
 
-      Response response;
-      try {
-        response = await _ioClient.doPost(
-          sslVerify: updated.sslVerify,
-          url: updated.uri,
-          body: body,
-        );
-      } catch (_) {
+      Response response = await _ioClient.doPost(
+        sslVerify: updated.sslVerify,
+        url: updated.uri,
+        body: body,
+      );
+      // doPost() catches network-level exceptions itself and returns a
+      // synthetic error Response instead of throwing, so a failed connection
+      // has to be detected via isConnectionFailure (not a thrown exception,
+      // and not by guessing from the status code, since a synthetic failure
+      // can share a status code with a legitimate server response, e.g. 408).
+      if (response.isConnectionFailure) {
         try {
           response = await _ioClient.doPost(
             sslVerify: updated.sslVerify,
             url: updated.uri,
             body: body,
           );
+        } on ArgumentError {
+          // Not a connection failure - let this bubble up to the outer
+          // `on ArgumentError` handler instead of being misreported as
+          // connectionFailed.
+          rethrow;
         } catch (e) {
+          Logger.warning('Push reaction request failed after retry', error: e);
+          await _addOrReplacePushRequest(oldRequest);
+          ref.read(statusProvider.notifier).show((l) => l.connectionFailed);
+          return null;
+        }
+        if (response.isConnectionFailure) {
+          Logger.warning(
+            'Push reaction request failed after retry',
+            error: response.body,
+          );
           await _addOrReplacePushRequest(oldRequest);
           ref.read(statusProvider.notifier).show((l) => l.connectionFailed);
           return null;
@@ -413,6 +432,7 @@ class PushRequestNotifier extends _$PushRequestNotifier {
       try {
         piResponse = response.asPiServerResponse<T, D>();
       } catch (e) {
+        Logger.warning('Failed to parse push reaction response', error: e);
         ref
             .read(statusProvider.notifier)
             .show(
@@ -426,19 +446,53 @@ class PushRequestNotifier extends _$PushRequestNotifier {
       if (piResponse.isError) {
         await _addOrReplacePushRequest(oldRequest);
         final errorResponse = piResponse.asError!;
+        Logger.warning(
+          'Push reaction rejected by server',
+          error:
+              '${errorResponse.piServerResultError.code}: ${errorResponse.piServerResultError.message}',
+        );
         ref
             .read(statusProvider.notifier)
             .show(
               (l) =>
                   '${l.sendPushRequestResponseFailed}\n${l.statusCode(errorResponse.statusCode)}',
               details: (_) =>
-                  '${errorResponse.piServerResultError.code}: ${errorResponse.piServerResultError.message}',
+                  errorResponse.piServerResultError.code ==
+                      InAppErrorCodes.jsonParseError
+                  ? errorResponse.piServerResultError.message
+                  : '${errorResponse.piServerResultError.code}: ${errorResponse.piServerResultError.message}',
             );
         return null;
       }
 
       await _remove(updated);
       return piResponse.asSuccess;
+    } on ArgumentError catch (e, s) {
+      // Not a network failure - e.g. doPost() rejects a request body that
+      // contains null values. Showing "connection failed" here would mislead
+      // the user and hide a real programming/data bug.
+      Logger.error(
+        'Push reaction failed due to invalid request data',
+        error: e,
+        stackTrace: s,
+      );
+      await _addOrReplacePushRequest(oldRequest);
+      ref
+          .read(statusProvider.notifier)
+          .show(
+            (l) => l.sendPushRequestResponseFailed,
+            details: (_) => e.message?.toString() ?? e.toString(),
+          );
+      return null;
+    } catch (e, s) {
+      Logger.error(
+        'Unexpected error while handling push reaction',
+        error: e,
+        stackTrace: s,
+      );
+      await _addOrReplacePushRequest(oldRequest);
+      ref.read(statusProvider.notifier).show((l) => l.connectionFailed);
+      return null;
     } finally {
       _reactionMutex.release();
     }
