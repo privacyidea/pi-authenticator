@@ -18,6 +18,7 @@
  * limitations under the License.
  */
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:flutter_email_sender_platform_interface/flutter_email_sender_platform_interface.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -36,16 +37,15 @@ class FakeFlutterEmailSenderPlatform extends FlutterEmailSenderPlatform {
   }
 
   @override
-  Future<EmailCapabilities> getCapabilities() async =>
-      const EmailCapabilities(
-        canSend: true,
-        supportsCc: true,
-        supportsBcc: true,
-        supportsSubject: true,
-        supportsPlainTextBody: true,
-        supportsHtmlBody: true,
-        supportsAttachments: true,
-      );
+  Future<EmailCapabilities> getCapabilities() async => const EmailCapabilities(
+    canSend: true,
+    supportsCc: true,
+    supportsBcc: true,
+    supportsSubject: true,
+    supportsPlainTextBody: true,
+    supportsHtmlBody: true,
+    supportsAttachments: true,
+  );
 }
 
 void main() {
@@ -55,11 +55,13 @@ void main() {
   late FakeFlutterEmailSenderPlatform fakePlatform;
 
   setUp(() {
+    debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
     fakePlatform = FakeFlutterEmailSenderPlatform();
     FlutterEmailSenderPlatform.instance = fakePlatform;
   });
 
   tearDown(() {
+    debugDefaultTargetPlatformOverride = null;
     FlutterEmailSenderPlatform.instance = originalPlatform;
   });
 

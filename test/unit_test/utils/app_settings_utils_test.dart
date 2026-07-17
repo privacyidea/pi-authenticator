@@ -6,7 +6,7 @@ import 'package:privacyidea_authenticator/utils/app_settings_utils.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  const channel = MethodChannel('it.netknights.piauthenticator/settings');
+  const channel = MethodChannel('pi_authenticator/settings');
   final channelLog = <MethodCall>[];
 
   setUp(() {
