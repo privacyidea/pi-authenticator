@@ -39,6 +39,7 @@ import '../../../../model/enums/push_token_rollout_state.dart';
 import '../../../../model/enums/token_import_type.dart';
 import '../../../../model/enums/token_origin_source_type.dart';
 import '../../../../model/processor_result.dart';
+import '../../../../model/push_request/push_capabilities.dart';
 import '../../../../model/riverpod_states/token_state.dart';
 import '../../../../model/tokens/hotp_token.dart';
 import '../../../../model/tokens/otp_token.dart';
@@ -48,6 +49,7 @@ import '../../../../processors/scheme_processors/token_import_scheme_processors/
 import '../../../../repo/secure_token_repository.dart';
 import '../../../../views/import_tokens_view/pages/import_plain_tokens_page.dart';
 import '../../../firebase_utils.dart';
+import '../../../helpers/json_canonicalizer.dart';
 import '../../../globals.dart';
 import '../../../http_status_checker.dart';
 import '../../../lock_auth.dart';
@@ -674,6 +676,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
           'pubkey': rsaUtils.serializeRSAPublicKeyPKCS8(
             token.rsaPublicTokenKey!,
           ),
+          'capabilities': canonicalizeJson(appPushCapabilities.names),
         },
       );
 
@@ -860,6 +863,8 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
         'serial': token.serial,
         'timestamp': timestamp,
         'signature': signature,
+        // Not part of the signed message, see pollForChallenge.
+        'capabilities': canonicalizeJson(appPushCapabilities.names),
       },
       sslVerify: token.sslVerify,
     );

@@ -18,14 +18,10 @@
  * limitations under the License.
  */
 
-import 'dart:convert';
-
-import 'package:privacyidea_authenticator/utils/helpers/base32_helper.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../utils/logger.dart';
-import '../../utils/rsa_utils.dart';
-import '../tokens/push_token.dart';
+import '../capabilities/capabilities.dart';
 import 'decline_reason.dart';
 import 'push_request.dart';
 
@@ -48,6 +44,7 @@ class PushCodeToPhoneRequest extends PushRequest {
     required this.displayCode,
     required super.uri,
     required super.sslVerify,
+    super.signedCapabilities,
     super.type = PushCodeToPhoneRequest.TYPE,
     super.accepted,
     super.declineReason,
@@ -78,6 +75,7 @@ class PushCodeToPhoneRequest extends PushRequest {
       serial: data[PushRequest.SERIAL],
       expirationDate: DateTime.now().add(const Duration(minutes: 2)),
       signature: data[PushRequest.SIGNATURE],
+      signedCapabilities: SignedCapabilities.fromMessageData(data),
       displayCode: data[DISPLAY_CODE],
     );
   }
@@ -103,40 +101,13 @@ class PushCodeToPhoneRequest extends PushRequest {
   }
 
   @override
-  bool verifySignature(
-    PushToken token, {
-    RsaUtils rsaUtils = const RsaUtils(),
-  }) {
-    if (token.rsaPublicServerKey == null) {
-      Logger.warning(
-        'Validating incoming message failed.',
-        error: 'Push token does not contain a public server key.',
-      );
-      return false;
-    }
-    final isVerified = rsaUtils.verifyRSASignature(
-      token.rsaPublicServerKey!,
-      utf8.encode(signedData),
-      base32Decode(signature),
-    );
-    if (!isVerified) {
-      Logger.warning(
-        'Validating incoming message failed.',
-        error: 'Signature does not match signed data.',
-      );
-      return false;
-    }
-    Logger.info('Validating incoming message was successful.');
-    return true;
-  }
-
-  @override
   String toString() {
     return 'PushCodeToPhoneRequest{title: $title, question: $question, '
         'id: $id, uri: $uri, nonce: $nonce, sslVerify: $sslVerify, '
         'expirationDate: $expirationDate, serial: $serial, '
-        'signature: $signature, accepted: $accepted, '
-        'declineReason: $declineReason, displayCode: $displayCode}';
+        'signature: $signature, signedCapabilities: $signedCapabilities, '
+        'accepted: $accepted, declineReason: $declineReason, '
+        'displayCode: $displayCode}';
   }
 
   @override
@@ -159,6 +130,7 @@ class PushCodeToPhoneRequest extends PushRequest {
     DateTime? expirationDate,
     Uri? uri,
     bool? sslVerify,
+    SignedCapabilities? signedCapabilities,
     bool? Function()? accepted,
     DeclineReason? Function()? declineReason,
     String? displayCode,
@@ -172,6 +144,7 @@ class PushCodeToPhoneRequest extends PushRequest {
       expirationDate: expirationDate ?? this.expirationDate,
       uri: uri ?? this.uri,
       sslVerify: sslVerify ?? this.sslVerify,
+      signedCapabilities: signedCapabilities ?? this.signedCapabilities,
       accepted: accepted != null ? accepted() : this.accepted,
       declineReason: declineReason != null
           ? declineReason()
