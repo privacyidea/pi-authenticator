@@ -29,6 +29,7 @@ import '../interfaces/repo/token_repository.dart';
 import '../l10n/app_localizations.dart';
 import '../model/tokens/token.dart';
 import '../utils/globals.dart';
+import '../utils/helpers/log_redaction_helper.dart';
 import '../utils/identifiers.dart';
 import '../utils/logger.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
@@ -38,9 +39,6 @@ import '../widgets/dialog_widgets/default_dialog.dart';
 import 'secure_storage.dart';
 
 class SecureTokenRepository implements TokenRepository {
-  static const String TOKEN_PREFIX_LEGACY = GLOBAL_SECURE_REPO_PREFIX_LEGACY;
-  static const String TOKEN_PREFIX = '${GLOBAL_SECURE_REPO_PREFIX}_token';
-
   final SecureStorage _storageLegacy;
   final SecureStorage _storage;
 
@@ -48,13 +46,16 @@ class SecureTokenRepository implements TokenRepository {
     : _storage =
           storage ??
           SecureStorage(
-            storagePrefix: TOKEN_PREFIX,
+            storagePrefix: SECURE_REPO_PREFIX_TOKEN,
             storage: SecureStorage.defaultStorage,
+            // The token prefix is a prefix of the container one, so without
+            // this every container entry would count as a token entry.
+            excludedPrefixes: const [SECURE_REPO_PREFIX_TOKEN_CONTAINER],
           ),
       _storageLegacy =
           legacyStorage ??
           SecureStorage(
-            storagePrefix: TOKEN_PREFIX_LEGACY,
+            storagePrefix: GLOBAL_SECURE_REPO_PREFIX_LEGACY,
             storage: SecureStorage.legacyStorage,
           );
 
@@ -158,12 +159,25 @@ class SecureTokenRepository implements TokenRepository {
 
     List<Token> tokenList = [];
     for (var entry in keyValueMap.entries) {
+      final Object? decoded;
       try {
-        final token = Token.fromJson(jsonDecode(entry.value));
-        tokenList.add(token);
+        decoded = jsonDecode(entry.value);
       } catch (e, s) {
         Logger.warning(
-          'Could not load token from secure storage',
+          'Entry ${entry.key} of the token storage is not valid json. '
+          'It holds ${entry.value.length} characters.',
+          error: e,
+          stackTrace: s,
+          verbose: true,
+        );
+        continue;
+      }
+      try {
+        tokenList.add(Token.fromJson(decoded as Map<String, dynamic>));
+      } catch (e, s) {
+        Logger.warning(
+          'Could not load token ${entry.key} from secure storage. '
+          'Its stored entries are ${redactedShape(decoded)}',
           error: e,
           stackTrace: s,
           verbose: true,
@@ -171,8 +185,16 @@ class SecureTokenRepository implements TokenRepository {
       }
     }
 
-    Logger.info(
+    if (tokenList.length == keyValueMap.length) {
+      Logger.info(
+        'Loaded ${tokenList.length}/${keyValueMap.length} tokens from secure storage',
+      );
+      return tokenList;
+    }
+
+    Logger.warning(
       'Loaded ${tokenList.length}/${keyValueMap.length} tokens from secure storage',
+      verbose: true,
     );
     return tokenList;
   }

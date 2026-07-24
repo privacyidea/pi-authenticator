@@ -30,11 +30,7 @@ import '../utils/logger.dart';
 import 'secure_storage.dart';
 
 class SecurePushRequestRepository implements PushRequestRepository {
-  static const String PUSH_REQUEST_PREFIX_LEGACY =
-      GLOBAL_SECURE_REPO_PREFIX_LEGACY;
   static const String KEY_LEGACY = 'pr_state';
-  static const String PUSH_REQUEST_PREFIX =
-      '${GLOBAL_SECURE_REPO_PREFIX}_push_request';
   static const String KEY = 'state';
 
   final SecureStorage _storageLegacy;
@@ -46,13 +42,13 @@ class SecurePushRequestRepository implements PushRequestRepository {
   }) : _storage =
            secureStorage ??
            SecureStorage(
-             storagePrefix: PUSH_REQUEST_PREFIX,
+             storagePrefix: SECURE_REPO_PREFIX_PUSH_REQUEST,
              storage: SecureStorage.defaultStorage,
            ),
        _storageLegacy =
            legacySecureStorage ??
            SecureStorage(
-             storagePrefix: PUSH_REQUEST_PREFIX_LEGACY,
+             storagePrefix: GLOBAL_SECURE_REPO_PREFIX_LEGACY,
              storage: SecureStorage.legacyStorage,
            );
 

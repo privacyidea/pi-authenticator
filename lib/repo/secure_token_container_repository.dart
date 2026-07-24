@@ -8,10 +8,6 @@ import '../utils/logger.dart';
 import 'secure_storage.dart';
 
 class SecureTokenContainerRepository extends TokenContainerRepository {
-  static const String TOKEN_CONTAINER_PREFIX_LEGACY = 'containerCredentials';
-  static const String TOKEN_CONTAINER_PREFIX =
-      '${GLOBAL_SECURE_REPO_PREFIX}_token_container';
-
   final SecureStorage _storageLegacy;
   final SecureStorage _storage;
 
@@ -21,13 +17,13 @@ class SecureTokenContainerRepository extends TokenContainerRepository {
   }) : _storage =
            storage ??
            SecureStorage(
-             storagePrefix: TOKEN_CONTAINER_PREFIX,
+             storagePrefix: SECURE_REPO_PREFIX_TOKEN_CONTAINER,
              storage: SecureStorage.defaultStorage,
            ),
        _storageLegacy =
            legacyStorage ??
            SecureStorage(
-             storagePrefix: TOKEN_CONTAINER_PREFIX_LEGACY,
+             storagePrefix: SECURE_REPO_PREFIX_LEGACY_TOKEN_CONTAINER,
              storage: SecureStorage.legacyStorage,
              seperator: '.',
            );

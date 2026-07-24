@@ -76,4 +76,65 @@ void main() {
       verifyNever(mockStorage.delete(key: 'otherprefix_key3'));
     });
   });
+
+  group('SecureStorage with an overlapping prefix', () {
+    // The real prefixes: the token one is a prefix of the container one, so
+    // 'app_v4_token_container_1' starts with 'app_v4_token_' as well.
+    const tokenPrefix = 'app_v4_token';
+    const containerPrefix = 'app_v4_token_container';
+
+    late MockFlutterSecureStorage mockStorage;
+    late SecureStorage tokenStorage;
+
+    const storedPairs = {
+      'app_v4_token_id1': 'token1',
+      'app_v4_token_id2': 'token2',
+      'app_v4_token_container_c1': 'container1',
+      'app_v4_token_container_c2': 'container2',
+    };
+
+    setUp(() {
+      mockStorage = MockFlutterSecureStorage();
+      tokenStorage = SecureStorage(
+        storagePrefix: tokenPrefix,
+        storage: mockStorage,
+        excludedPrefixes: const [containerPrefix],
+      );
+      when(mockStorage.readAll()).thenAnswer((_) async => storedPairs);
+      when(
+        mockStorage.delete(key: anyNamed('key')),
+      ).thenAnswer((_) async => {});
+    });
+
+    test('readAll does not return entries of the container storage', () async {
+      final result = await tokenStorage.readAll();
+      expect(result, {'id1': 'token1', 'id2': 'token2'});
+    });
+
+    test('deleteAll does not delete entries of the container storage', () async {
+      await tokenStorage.deleteAll();
+      verify(mockStorage.delete(key: 'app_v4_token_id1')).called(1);
+      verify(mockStorage.delete(key: 'app_v4_token_id2')).called(1);
+      verifyNever(mockStorage.delete(key: 'app_v4_token_container_c1'));
+      verifyNever(mockStorage.delete(key: 'app_v4_token_container_c2'));
+    });
+
+    test('the container storage still reaches its own entries', () async {
+      final containerStorage = SecureStorage(
+        storagePrefix: containerPrefix,
+        storage: mockStorage,
+      );
+      final result = await containerStorage.readAll();
+      expect(result, {'c1': 'container1', 'c2': 'container2'});
+    });
+
+    test('without the exclusion the entries would collide', () async {
+      final unguarded = SecureStorage(
+        storagePrefix: tokenPrefix,
+        storage: mockStorage,
+      );
+      final result = await unguarded.readAll();
+      expect(result.keys, contains('container_c1'));
+    });
+  });
 }

@@ -26,6 +26,10 @@ abstract class SecureStorageInterface {
   /// Separator between storagePrefix and key in the full key.
   String get seperator => '_';
 
+  /// Prefixes of other storages that start with this storage's prefix.
+  /// Their keys are not part of this storage and are left untouched.
+  List<String> get excludedPrefixes => const [];
+
   /// Returns the full key used to store the given key in the underlying storage.
   String getFullKey(String key);
 }

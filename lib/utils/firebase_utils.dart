@@ -41,13 +41,9 @@ class FirebaseUtils {
   final Mutex _initHandlerMutex = Mutex();
   bool initializedHandler = false;
 
-  static const FIREBASE_TOKEN_KEY_PREFIX_LEGACY =
-      GLOBAL_SECURE_REPO_PREFIX_LEGACY;
   static const CURRENT_APP_TOKEN_KEY_LEGACY = 'CURRENT_APP_TOKEN';
   static const NEW_APP_TOKEN_KEY_LEGACY = 'NEW_APP_TOKEN';
 
-  static const FIREBASE_TOKEN_KEY_PREFIX =
-      '${GLOBAL_SECURE_REPO_PREFIX}_firebase';
   static const CURRENT_APP_TOKEN_KEY = 'current';
   static const NEW_APP_TOKEN_KEY = 'new';
 
@@ -58,13 +54,13 @@ class FirebaseUtils {
     : _storage =
           storage ??
           SecureStorage(
-            storagePrefix: FIREBASE_TOKEN_KEY_PREFIX,
+            storagePrefix: SECURE_REPO_PREFIX_FIREBASE,
             storage: SecureStorage.defaultStorage,
           ),
       _storageLegacy =
           legacyStorage ??
           SecureStorage(
-            storagePrefix: FIREBASE_TOKEN_KEY_PREFIX_LEGACY,
+            storagePrefix: GLOBAL_SECURE_REPO_PREFIX_LEGACY,
             storage: SecureStorage.legacyStorage,
           );
 
@@ -368,13 +364,13 @@ class NoFirebaseUtils implements FirebaseUtils {
 
   @override
   final SecureStorage _storage = SecureStorage(
-    storagePrefix: FirebaseUtils.FIREBASE_TOKEN_KEY_PREFIX,
+    storagePrefix: SECURE_REPO_PREFIX_FIREBASE,
     storage: SecureStorage.defaultStorage,
   );
 
   @override
   final SecureStorage _storageLegacy = SecureStorage(
-    storagePrefix: FirebaseUtils.FIREBASE_TOKEN_KEY_PREFIX_LEGACY,
+    storagePrefix: GLOBAL_SECURE_REPO_PREFIX_LEGACY,
     storage: SecureStorage.legacyStorage,
   );
 }

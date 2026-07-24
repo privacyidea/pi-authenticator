@@ -36,6 +36,7 @@ import '../utils/app_info_utils.dart';
 import '../utils/pi_mailer.dart';
 import '../views/settings_view/settings_view_widgets/send_error_dialog.dart';
 import 'globals.dart';
+import 'helpers/log_redaction_helper.dart';
 import 'riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import 'view_utils.dart';
 
@@ -530,17 +531,7 @@ Device Parameters $deviceInfo""";
 
   /*----------- HELPER -----------*/
 
-  static String _textFilter(String text) {
-    for (var key in filterParameterKeys) {
-      // It searches for the key, ignores following characters until it finds base64 caracters (plus padding and separator) and replaces it with "******"
-      final regex = RegExp(
-        r'(?<=' + key + r'[^A-Z0-9+/=,]*)[A-Z0-9+/=,:_-]+',
-        caseSensitive: false,
-      );
-      text = text.replaceAll(regex, '******');
-    }
-    return text;
-  }
+  static String _textFilter(String text) => filterSensitiveValues(text);
 
   String _convertLogToSingleString(
     String? message, {
@@ -586,7 +577,5 @@ Device Parameters $deviceInfo""";
     return methodName;
   }
 }
-
-final filterParameterKeys = ['fbtoken', 'new_fb_token', 'secret'];
 
 enum LogLevel { INFO, DEBUG, WARNING, ERROR }
