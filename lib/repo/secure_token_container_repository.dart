@@ -46,7 +46,7 @@ class SecureTokenContainerRepository extends TokenContainerRepository {
            SecureStorage(
              storagePrefix: SECURE_REPO_PREFIX_LEGACY_TOKEN_CONTAINER,
              storage: SecureStorage.legacyStorage,
-             seperator: '.',
+             separator: '.',
            );
 
   /// Takes all containers from the legacy storage and saves them to the new storage.

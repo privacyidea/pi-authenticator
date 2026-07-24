@@ -31,11 +31,11 @@ abstract class SecureStorageInterface {
   FlutterSecureStorage get storage;
 
   /// Prefix for all keys stored in this storage.
-  /// It is required to destinguish different data types in the same underlying storage to easily simulate multiple different storages.
+  /// It is required to distinguish different data types in the same underlying storage to easily simulate multiple different storages.
   String get storagePrefix;
 
   /// Separator between storagePrefix and key in the full key.
-  String get seperator => '_';
+  String get separator => '_';
 
   /// Prefixes of other storages that start with this storage's prefix.
   /// Their keys are not part of this storage and are left untouched.

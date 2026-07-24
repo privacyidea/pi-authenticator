@@ -38,8 +38,8 @@ void main() {
   late SecureStorage legacyStorage;
   late SecureTokenRepository repository;
 
-  const legacyPrefix = 'app_v3';
-  const newPrefix = 'app_v4_token';
+  const legacyPrefix = GLOBAL_SECURE_REPO_PREFIX_LEGACY;
+  const newPrefix = SECURE_REPO_PREFIX_TOKEN;
 
   setUp(() {
     mockStorage = MockFlutterSecureStorage();

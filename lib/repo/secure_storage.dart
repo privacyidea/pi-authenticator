@@ -43,25 +43,25 @@ class SecureStorage implements SecureStorageInterface {
   @override
   final String storagePrefix;
   @override
-  final String seperator;
+  final String separator;
   @override
   final List<String> excludedPrefixes;
 
   SecureStorage({
     required this.storagePrefix,
     required this.storage,
-    this.seperator = '_',
+    this.separator = '_',
     this.excludedPrefixes = const [],
   });
 
   @override
-  String getFullKey(String key) => "$storagePrefix$seperator$key";
+  String getFullKey(String key) => "$storagePrefix$separator$key";
 
   /// Whether [fullKey] is stored by this storage rather than by one of the
   /// storages in [excludedPrefixes].
   bool _isOwnKey(String fullKey) =>
-      fullKey.startsWith(storagePrefix + seperator) &&
-      !excludedPrefixes.any((prefix) => fullKey.startsWith(prefix + seperator));
+      fullKey.startsWith(storagePrefix + separator) &&
+      !excludedPrefixes.any((prefix) => fullKey.startsWith(prefix + separator));
 
   /// Function [f] is executed, protected by Mutex [_m].
   /// That means, that calls of this method will always be executed serial.
@@ -84,7 +84,7 @@ class SecureStorage implements SecureStorageInterface {
     final allKeys = allPairs.keys.where(_isOwnKey).toList();
     final result = <String, String>{};
     for (var key in allKeys) {
-      final shortKey = key.substring(storagePrefix.length + seperator.length);
+      final shortKey = key.substring(storagePrefix.length + separator.length);
       result[shortKey] = allPairs[key]!;
     }
     return result;

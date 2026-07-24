@@ -38,8 +38,8 @@ void main() {
   late SecureTokenContainerRepository repository;
 
   // Prefixes are derived from the repository implementation.
-  const legacyPrefix = 'containerCredentials';
-  const newPrefix = 'app_v4_token_container';
+  const legacyPrefix = SECURE_REPO_PREFIX_LEGACY_TOKEN_CONTAINER;
+  const newPrefix = SECURE_REPO_PREFIX_TOKEN_CONTAINER;
 
   setUp(() {
     mockStorage = MockFlutterSecureStorage();
@@ -52,7 +52,7 @@ void main() {
     legacyStorage = SecureStorage(
       storagePrefix: SECURE_REPO_PREFIX_LEGACY_TOKEN_CONTAINER,
       storage: mockLegacyStorage,
-      seperator: '.',
+      separator: '.',
     );
     repository = SecureTokenContainerRepository(
       storage: storage,

@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:privacyidea_authenticator/repo/secure_storage.dart';
+import 'package:privacyidea_authenticator/utils/identifiers.dart';
 
 import '../../tests_app_wrapper.mocks.dart';
 
@@ -80,17 +81,17 @@ void main() {
   group('SecureStorage with an overlapping prefix', () {
     // The real prefixes: the token one is a prefix of the container one, so
     // 'app_v4_token_container_1' starts with 'app_v4_token_' as well.
-    const tokenPrefix = 'app_v4_token';
-    const containerPrefix = 'app_v4_token_container';
+    const tokenPrefix = SECURE_REPO_PREFIX_TOKEN;
+    const containerPrefix = SECURE_REPO_PREFIX_TOKEN_CONTAINER;
 
     late MockFlutterSecureStorage mockStorage;
     late SecureStorage tokenStorage;
 
     const storedPairs = {
-      'app_v4_token_id1': 'token1',
-      'app_v4_token_id2': 'token2',
-      'app_v4_token_container_c1': 'container1',
-      'app_v4_token_container_c2': 'container2',
+      '${tokenPrefix}_id1': 'token1',
+      '${tokenPrefix}_id2': 'token2',
+      '${containerPrefix}_c1': 'container1',
+      '${containerPrefix}_c2': 'container2',
     };
 
     setUp(() {
@@ -113,10 +114,10 @@ void main() {
 
     test('deleteAll does not delete entries of the container storage', () async {
       await tokenStorage.deleteAll();
-      verify(mockStorage.delete(key: 'app_v4_token_id1')).called(1);
-      verify(mockStorage.delete(key: 'app_v4_token_id2')).called(1);
-      verifyNever(mockStorage.delete(key: 'app_v4_token_container_c1'));
-      verifyNever(mockStorage.delete(key: 'app_v4_token_container_c2'));
+      verify(mockStorage.delete(key: '${tokenPrefix}_id1')).called(1);
+      verify(mockStorage.delete(key: '${tokenPrefix}_id2')).called(1);
+      verifyNever(mockStorage.delete(key: '${containerPrefix}_c1'));
+      verifyNever(mockStorage.delete(key: '${containerPrefix}_c2'));
     });
 
     test('the container storage still reaches its own entries', () async {

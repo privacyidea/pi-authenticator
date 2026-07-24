@@ -353,25 +353,24 @@ class Logger {
 
   Future<void> _logToFile(String fileMessage) async {
     if (_enableLoggingToFile == false) return;
-    await _mutexWriteFile.acquire();
-    final directory = await getApplicationSupportDirectory();
-    final file = File('${directory.path}/$_filename');
-
-    try {
-      fileMessage = _textFilter(fileMessage);
-      await file.writeAsString(
-        '\n$fileMessage',
-        mode: FileMode.writeOnlyAppend,
-      );
-      _bytesSinceSizeCheck += fileMessage.length + 1;
-      if (_bytesSinceSizeCheck >= _sizeCheckInterval) {
-        _bytesSinceSizeCheck = 0;
-        await _trimLogFile(file);
+    await _mutexWriteFile.protect(() async {
+      final directory = await getApplicationSupportDirectory();
+      final file = File('${directory.path}/$_filename');
+      try {
+        fileMessage = _textFilter(fileMessage);
+        await file.writeAsString(
+          '\n$fileMessage',
+          mode: FileMode.writeOnlyAppend,
+        );
+        _bytesSinceSizeCheck += fileMessage.length + 1;
+        if (_bytesSinceSizeCheck >= _sizeCheckInterval) {
+          _bytesSinceSizeCheck = 0;
+          await _trimLogFile(file);
+        }
+      } catch (e) {
+        _printError(e.toString());
       }
-    } catch (e) {
-      _printError(e.toString());
-    }
-    _mutexWriteFile.release();
+    });
   }
 
   /// Drops the oldest entries of the log file if it grew past
