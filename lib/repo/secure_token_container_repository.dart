@@ -182,7 +182,10 @@ class SecureTokenContainerRepository extends TokenContainerRepository {
   Future<TokenContainer?> loadContainer(String serial) async {
     final containerJsonString = await _storage.read(key: serial);
     if (containerJsonString == null) {
-      Logger.warning('Container $serial not found in secure storage');
+      Logger.warning(
+        'Container $serial not found in secure storage',
+        verbose: true,
+      );
       return null;
     }
     return _parseContainer(serial, containerJsonString);

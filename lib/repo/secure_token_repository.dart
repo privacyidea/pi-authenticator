@@ -117,27 +117,32 @@ class SecureTokenRepository implements TokenRepository {
       'Migrating ${keyValueMap.length} tokens from legacy secure storage',
     );
 
-    for (var i = 0; i < keyValueMap.length; i++) {
-      final value = keyValueMap.values.elementAt(i);
-      final key = keyValueMap.keys.elementAt(i);
+    for (final entry in keyValueMap.entries) {
       Map<String, dynamic>? valueJson;
-
       try {
-        valueJson = jsonDecode(value);
+        valueJson = jsonDecode(entry.value);
       } on FormatException catch (_) {
-        // Value should be a json. Skip everything that is not a json.
-        Logger.debug('Value is not a json');
+        // A legacy entry that is not json cannot be a token. Skip it.
+        Logger.info(
+          'Skipping legacy entry ${entry.key}: '
+          'value is not json (${entry.value.length} characters)',
+        );
         continue;
       }
 
       if (valueJson == null) {
-        // If valueJson is null or does not contain a type, it can't be a token. Skip it.
-        Logger.debug('Value Json is null');
+        // A null value cannot be a token. Skip it.
+        Logger.info('Skipping legacy entry ${entry.key}: json value is null');
         continue;
       }
       if (!valueJson.containsKey('type')) {
-        // If valueJson is null or does not contain a type, it can't be a token. Skip it.
-        Logger.debug('Value Json does not contain a type');
+        // Without a type it is not a token. The legacy storage is shared and
+        // may hold any kind of data, so its shape is redacted by blocklist
+        // only: we do not know which names would be safe to keep.
+        Logger.info(
+          'Skipping legacy entry ${entry.key}: json has no type. '
+          'It holds ${redactedShape(valueJson)}',
+        );
         continue;
       }
 
@@ -145,10 +150,10 @@ class SecureTokenRepository implements TokenRepository {
       Logger.info('Loading token from secure storage: ${valueJson['id']}');
       try {
         Logger.info(
-          'Legacy entry that meets token criteria: $key will be migrated to new secure storage',
+          'Legacy entry that meets token criteria: ${entry.key} will be migrated to new secure storage',
         );
-        await _storage.write(key: key, value: value);
-        await _storageLegacy.delete(key: key);
+        await _storage.write(key: entry.key, value: entry.value);
+        await _storageLegacy.delete(key: entry.key);
         Logger.info('Migrated token ${valueJson['id']} to new secure storage');
       } catch (e, s) {
         Logger.error(

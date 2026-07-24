@@ -94,8 +94,13 @@ class Logger {
       if (maxBytes == null || length <= maxBytes) return file.readAsString();
       final randomAccessFile = await file.open();
       try {
-        await randomAccessFile.setPosition(length - maxBytes);
-        final bytes = await randomAccessFile.read(maxBytes);
+        // Start one byte early so that a chunk which begins right at a line
+        // keeps that line: the leading newline makes _startOfNextLine stop at
+        // the boundary instead of dropping the line as if it were a half line.
+        final position = length - maxBytes;
+        final readFrom = position > 0 ? position - 1 : 0;
+        await randomAccessFile.setPosition(readFrom);
+        final bytes = await randomAccessFile.read(length - readFrom);
         return utf8.decode(
           bytes.sublist(_startOfNextLine(bytes, 0)),
           allowMalformed: true,
