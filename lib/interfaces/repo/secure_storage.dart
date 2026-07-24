@@ -1,5 +1,16 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+/// Key-value storage backed by the platform's secure storage.
+///
+/// Every key is stored as its own entry, never as one combined blob.
+///
+/// iOS: One keychain item per key, the value is stored as is and encrypted by
+/// the system. Keychain items survive an uninstall of the app.
+///
+/// Android: One entry per key in a SharedPreferences file, each value
+/// encrypted with AES-GCM. The AES key is stored next to it, wrapped by an
+/// RSA key that never leaves the Android KeyStore. Uninstalling deletes both
+/// the entries and the KeyStore key.
 abstract class SecureStorageInterface {
   /// Forwarded methods to the underlying storage.
   Future<void> delete({required String key});

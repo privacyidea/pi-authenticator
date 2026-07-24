@@ -65,13 +65,47 @@ class SecureTokenRepository implements TokenRepository {
 
   @override
   Future<Token?> loadToken(String id) async {
-    final token = await _storage.read(key: id);
-    Logger.info('Loading token from secure storage: $id');
-    if (token == null) {
-      Logger.warning('Token not found in secure storage');
+    Logger.info('Loading token $id from secure storage');
+    final tokenJsonString = await _storage.read(key: id);
+    if (tokenJsonString == null) {
+      Logger.warning('Token $id not found in secure storage', verbose: true);
       return null;
     }
-    return Token.fromJson(jsonDecode(token));
+    return _parseToken(id, tokenJsonString);
+  }
+
+  /// The token stored under [key], or null if [jsonString] does not hold a
+  /// token that can be read back.
+  ///
+  /// A single unreadable entry is skipped instead of failing the whole load, so
+  /// the remaining tokens stay usable.
+  Token? _parseToken(String key, String jsonString) {
+    final Object? decoded;
+    try {
+      decoded = jsonDecode(jsonString);
+    } catch (e, s) {
+      Logger.warning(
+        'Entry $key of the token storage is not valid json. '
+        'It holds ${jsonString.length} characters.',
+        error: e,
+        stackTrace: s,
+        verbose: true,
+      );
+      return null;
+    }
+    try {
+      return Token.fromJson(decoded as Map<String, dynamic>);
+    } catch (e, s) {
+      Logger.warning(
+        'Could not load token $key from secure storage. '
+        'Its stored entries are '
+        '${redactedShape(decoded, allowedEntryNames: Token.loggableEntryNames)}',
+        error: e,
+        stackTrace: s,
+        verbose: true,
+      );
+      return null;
+    }
   }
 
   /// Takes all tokens from the legacy storage and saves them to the new storage.
@@ -157,32 +191,10 @@ class SecureTokenRepository implements TokenRepository {
       return [];
     }
 
-    List<Token> tokenList = [];
+    final tokenList = <Token>[];
     for (var entry in keyValueMap.entries) {
-      final Object? decoded;
-      try {
-        decoded = jsonDecode(entry.value);
-      } catch (e, s) {
-        Logger.warning(
-          'Entry ${entry.key} of the token storage is not valid json. '
-          'It holds ${entry.value.length} characters.',
-          error: e,
-          stackTrace: s,
-          verbose: true,
-        );
-        continue;
-      }
-      try {
-        tokenList.add(Token.fromJson(decoded as Map<String, dynamic>));
-      } catch (e, s) {
-        Logger.warning(
-          'Could not load token ${entry.key} from secure storage. '
-          'Its stored entries are ${redactedShape(decoded)}',
-          error: e,
-          stackTrace: s,
-          verbose: true,
-        );
-      }
+      final token = _parseToken(entry.key, entry.value);
+      if (token != null) tokenList.add(token);
     }
 
     if (tokenList.length == keyValueMap.length) {

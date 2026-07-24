@@ -30,6 +30,14 @@ part 'push_request_state.g.dart';
 class PushRequestState {
   final List<PushRequest> pushRequests;
   final CustomIntBuffer knownPushRequests;
+
+  /// The stored entry names whose value may be written to the log.
+  ///
+  /// Passed to [redactedShape] when the state cannot be deserialized. Only the
+  /// buffer size of [knownPushRequests] describes the state without saying
+  /// anything about the requests themselves, which are reported by their count.
+  static const Set<String> loggableEntryNames = {'maxSize'};
+
   const PushRequestState({
     required this.pushRequests,
     required this.knownPushRequests,

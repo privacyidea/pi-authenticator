@@ -84,7 +84,7 @@ class SecureStorage implements SecureStorageInterface {
     final allKeys = allPairs.keys.where(_isOwnKey).toList();
     final result = <String, String>{};
     for (var key in allKeys) {
-      final shortKey = key.substring(storagePrefix.length + 1);
+      final shortKey = key.substring(storagePrefix.length + seperator.length);
       result[shortKey] = allPairs[key]!;
     }
     return result;

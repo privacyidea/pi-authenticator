@@ -66,7 +66,7 @@ void _pressShowErrorLog(BuildContext context) {
             reverse: true,
             physics: const BouncingScrollPhysics(),
             child: FutureBuilder<Object>(
-              future: Logger.getErrorLog(),
+              future: Logger.getErrorLogTail(),
               builder: (context, errorLog) {
                 return Padding(
                   padding: const EdgeInsets.all(8.0),

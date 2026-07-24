@@ -19,6 +19,7 @@
  */
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'dart:isolate';
@@ -77,12 +78,32 @@ class Logger {
     return instance._navigatorKey!;
   }
 
-  static Future<String> getErrorLog() => instance._getErrorLog();
+  /// The whole log file.
+  static Future<String> getErrorLog() => instance._readLogFile();
 
-  Future<String> _getErrorLog() async {
+  /// The newest [_logTailSize] bytes of the log file.
+  static Future<String> getErrorLogTail() =>
+      instance._readLogFile(maxBytes: _logTailSize);
+
+  Future<String> _readLogFile({int? maxBytes}) async {
     if (_fullPath == null) return '';
     final file = File(_fullPath!);
-    return file.readAsString();
+    if (!await file.exists()) return '';
+    return _mutexWriteFile.protect(() async {
+      final length = await file.length();
+      if (maxBytes == null || length <= maxBytes) return file.readAsString();
+      final randomAccessFile = await file.open();
+      try {
+        await randomAccessFile.setPosition(length - maxBytes);
+        final bytes = await randomAccessFile.read(maxBytes);
+        return utf8.decode(
+          bytes.sublist(_startOfNextLine(bytes, 0)),
+          allowMalformed: true,
+        );
+      } finally {
+        await randomAccessFile.close();
+      }
+    });
   }
 
   /*----------- INSTANCE MEMBER & GETTER/SETTER -----------*/
@@ -97,6 +118,25 @@ class Logger {
   String get _filename => 'logfile.txt';
   String? get _fullPath => _logPath != null ? '$_logPath/$_filename' : null;
   static bool _verboseLogging = false;
+
+  /// Size the log file may reach before its oldest entries are dropped.
+  ///
+  /// The limit is what still passes as a mail attachment: base64 grows the file
+  /// by about a third, which keeps the error report below the 10 MB that many
+  /// mail servers accept.
+  static const int _maxLogFileSize = 5 * 1024 * 1024;
+
+  /// Size the log file is cut down to once it grew past [_maxLogFileSize].
+  static const int _trimmedLogFileSize = 3 * 1024 * 1024;
+
+  /// Amount written before the size of the log file is looked at again.
+  static const int _sizeCheckInterval = 64 * 1024;
+
+  /// Amount of the log file that [getErrorLogTail] returns at most.
+  static const int _logTailSize = 100 * 1024;
+
+  /// Counts towards the next [_sizeCheckInterval].
+  int _bytesSinceSizeCheck = 0;
 
   static void setVerboseLogging(bool value) => _verboseLogging = value;
 
@@ -323,10 +363,27 @@ class Logger {
         '\n$fileMessage',
         mode: FileMode.writeOnlyAppend,
       );
+      _bytesSinceSizeCheck += fileMessage.length + 1;
+      if (_bytesSinceSizeCheck >= _sizeCheckInterval) {
+        _bytesSinceSizeCheck = 0;
+        await _trimLogFile(file);
+      }
     } catch (e) {
       _printError(e.toString());
     }
     _mutexWriteFile.release();
+  }
+
+  /// Drops the oldest entries of the log file if it grew past
+  /// [_maxLogFileSize], down to [_trimmedLogFileSize].
+  ///
+  /// The caller has to hold [_mutexWriteFile].
+  Future<void> _trimLogFile(File file) async {
+    final length = await file.length();
+    if (length <= _maxLogFileSize) return;
+    final bytes = await file.readAsBytes();
+    final start = _startOfNextLine(bytes, bytes.length - _trimmedLogFileSize);
+    await file.writeAsBytes(bytes.sublist(start), flush: true);
   }
 
   static void sendErrorLog([String? message]) {
@@ -362,7 +419,10 @@ Device Parameters $deviceInfo""";
   Future<void> _clearLog() async {
     final directory = await getApplicationSupportDirectory();
     final file = File('${directory.path}/$_filename');
-    await file.writeAsString('');
+    await _mutexWriteFile.protect(() async {
+      _bytesSinceSizeCheck = 0;
+      await file.writeAsString('');
+    });
     showSnackBar(
       _context != null
           ? AppLocalizations.of(_context!)!.errorLogCleared
@@ -532,6 +592,25 @@ Device Parameters $deviceInfo""";
   /*----------- HELPER -----------*/
 
   static String _textFilter(String text) => filterSensitiveValues(text);
+
+  /// The index of the first line that begins at or after [index].
+  ///
+  /// Cutting the log file there keeps it free of half lines and always leaves
+  /// whole characters behind. The line found this way can still be one that
+  /// continues an entry, such as a line of a stacktrace.
+  static int _startOfNextLine(Uint8List bytes, int index) {
+    const newline = 0x0A;
+    const continuationByte = 0x80;
+    final start = index < 0 ? 0 : index;
+    final newlineIndex = bytes.indexOf(newline, start);
+    if (newlineIndex != -1) return newlineIndex + 1;
+    var wholeCharacter = start;
+    while (wholeCharacter < bytes.length &&
+        (bytes[wholeCharacter] & 0xC0) == continuationByte) {
+      wholeCharacter++;
+    }
+    return wholeCharacter;
+  }
 
   String _convertLogToSingleString(
     String? message, {
