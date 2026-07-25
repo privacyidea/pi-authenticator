@@ -17,6 +17,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:privacyidea_authenticator/model/container_policies.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
@@ -33,6 +35,16 @@ void main() {
   _testTokenContainerFinalize();
   _testTokenContainerCopyWith();
 }
+
+const registrationTimestampVariants = [
+  '2026-07-25T07:21:14+00:00',
+  '2026-07-25T07:21:14.000+00:00',
+  '2026-07-25T07:21:14.123+00:00',
+  '2026-07-25T07:21:14.123000+00:00',
+  '2026-07-25T07:21:14.123456+00:00',
+  '2026-07-25T07:21:14Z',
+  '2026-07-25T07:21:14.123456Z',
+];
 
 TokenContainerUnfinalized buildUnfinalized({
   String serial = 'SMPH001',
@@ -114,8 +126,84 @@ void _testTokenContainerFromUriMap() {
         TokenContainer.HASH_ALGORITHM: Algorithms.SHA256,
         TokenContainer.SSL_VERIFY: false,
       };
-      final result = TokenContainer.fromUriMap(map) as TokenContainerUnfinalized;
+      final result =
+          TokenContainer.fromUriMap(map) as TokenContainerUnfinalized;
       expect(result.policies, equals(ContainerPolicies.defaultSetting));
+    });
+
+    for (final timestampRaw in registrationTimestampVariants) {
+      test(
+        'preserves the exact QR timestamp "$timestampRaw" separately from DateTime',
+        () {
+          final uri = Uri(
+            scheme: 'pia',
+            host: 'container',
+            path: 'SMPH001',
+            queryParameters: {
+              TokenContainer.ISSUER: 'privacyIDEA',
+              TokenContainer.TTL_MINUTES: '10',
+              TokenContainer.NONCE: 'abc123',
+              TokenContainer.TIMESTAMP: timestampRaw,
+              TokenContainer.FINALIZATION_URL: 'https://example.com',
+              TokenContainer.SERIAL: 'SMPH001',
+              TokenContainer.EC_KEY_ALGORITHM: 'secp384r1',
+              TokenContainer.HASH_ALGORITHM: 'SHA256',
+              TokenContainer.SSL_VERIFY: 'True',
+            },
+          );
+
+          final container =
+              TokenContainer.fromUriMap(uri.queryParameters)
+                  as TokenContainerUnfinalized;
+
+          expect(container.timestampRaw, timestampRaw);
+          expect(container.registrationTimestamp, timestampRaw);
+          expect(container.timestamp, DateTime.parse(timestampRaw));
+          expect(
+            container.expirationDate,
+            DateTime.parse(timestampRaw).add(const Duration(minutes: 10)),
+          );
+          expect(
+            container
+                .copyWith(
+                  finalizationState:
+                      FinalizationState.generatingKeyPairCompleted,
+                )
+                .timestampRaw,
+            timestampRaw,
+          );
+
+          final restored =
+              TokenContainer.fromJson(
+                    jsonDecode(jsonEncode(container.toJson())),
+                  )
+                  as TokenContainerUnfinalized;
+          expect(restored.timestampRaw, timestampRaw);
+          expect(restored.registrationTimestamp, timestampRaw);
+          expect(restored.timestamp, container.timestamp);
+        },
+      );
+    }
+
+    test('loads legacy JSON without timestampRaw', () {
+      final json =
+          jsonDecode(
+                  jsonEncode(
+                    buildUnfinalized()
+                        .copyWith(
+                          timestamp: DateTime.parse('2026-07-25T07:21:14Z'),
+                        )
+                        .toJson(),
+                  ),
+                )
+                as Map<String, dynamic>
+            ..remove('timestampRaw');
+
+      final restored =
+          TokenContainer.fromJson(json) as TokenContainerUnfinalized;
+
+      expect(restored.timestampRaw, isNull);
+      expect(restored.registrationTimestamp, '2026-07-25T07:21:14.000+00:00');
     });
 
     test('throws on missing required field (nonce)', () {
@@ -168,10 +256,10 @@ void _testTokenContainerUrls() {
 void _testTokenContainerExpirationDate() {
   group('TokenContainer.expirationDate', () {
     test('is timestamp + ttl for unfinalized container', () {
-      final ts = DateTime(2024, 1, 1, 12, 0);
-      final c = buildUnfinalized(ttl: const Duration(minutes: 30)).copyWith(
-        timestamp: ts,
-      );
+      final ts = DateTime(2024, 1, 1, 12);
+      final c = buildUnfinalized(
+        ttl: const Duration(minutes: 30),
+      ).copyWith(timestamp: ts);
       expect(c.expirationDate, equals(ts.add(const Duration(minutes: 30))));
     });
 
@@ -202,19 +290,22 @@ void _testTokenContainerFinalize() {
       expect(c.finalize(), isNull);
     });
 
-    test('returns TokenContainerFinalized when serialized keys are present', () {
-      final c = buildUnfinalized(
-        publicClientKey: pubKey,
-        privateClientKey: privKey,
-      );
-      final result = c.finalize();
-      expect(result, isA<TokenContainerFinalized>());
-      expect(result!.serial, c.serial);
-      expect(result.issuer, c.issuer);
-      expect(result.publicClientKey, pubKey);
-      expect(result.privateClientKey, privKey);
-      expect(result.finalizationState, FinalizationState.completed);
-    });
+    test(
+      'returns TokenContainerFinalized when serialized keys are present',
+      () {
+        final c = buildUnfinalized(
+          publicClientKey: pubKey,
+          privateClientKey: privKey,
+        );
+        final result = c.finalize();
+        expect(result, isA<TokenContainerFinalized>());
+        expect(result!.serial, c.serial);
+        expect(result.issuer, c.issuer);
+        expect(result.publicClientKey, pubKey);
+        expect(result.privateClientKey, privKey);
+        expect(result.finalizationState, FinalizationState.completed);
+      },
+    );
 
     test('returns self when already finalized', () {
       final c = buildFinalized();

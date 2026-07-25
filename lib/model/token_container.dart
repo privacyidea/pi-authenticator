@@ -98,6 +98,14 @@ sealed class TokenContainer with _$TokenContainer {
       ? timestamp.add((this as TokenContainerUnfinalized).ttl)
       : null;
 
+  /// Exact decoded `time` value from the registration QR. Older persisted
+  /// containers fall back to the previous DateTime serialization.
+  String get registrationTimestamp =>
+      this is TokenContainerUnfinalized &&
+          (this as TokenContainerUnfinalized).timestampRaw != null
+      ? (this as TokenContainerUnfinalized).timestampRaw!
+      : timestamp.toIso8601String().replaceFirst('Z', '+00:00');
+
   // example: "pia://container/SMPH00067A2F"
   // "?issuer=privacyIDEA"
   // "&ttl=10"
@@ -111,6 +119,9 @@ sealed class TokenContainer with _$TokenContainer {
   // "&passphrase=Enter%20your%20password"
   // "&send_passphrase=False"
   factory TokenContainer.fromUriMap(Map<String, dynamic> uriMap) {
+    final timestampRaw = uriMap[TIMESTAMP] is String
+        ? uriMap[TIMESTAMP] as String
+        : null;
     try {
       uriMap = validateMap(
         map: uriMap,
@@ -141,6 +152,7 @@ sealed class TokenContainer with _$TokenContainer {
       ttl: uriMap[TTL_MINUTES],
       nonce: uriMap[NONCE],
       timestamp: uriMap[TIMESTAMP],
+      timestampRaw: timestampRaw,
       serverUrl: uriMap[FINALIZATION_URL],
       serial: uriMap[SERIAL],
       ecKeyAlgorithm: uriMap[EC_KEY_ALGORITHM],
@@ -157,6 +169,9 @@ sealed class TokenContainer with _$TokenContainer {
     required Duration ttl,
     required String nonce,
     required DateTime timestamp,
+
+    /// Exact decoded `time` parameter kept separately from [timestamp].
+    String? timestampRaw,
     required Uri serverUrl,
     required String serial,
     required EcKeyAlgorithm ecKeyAlgorithm,

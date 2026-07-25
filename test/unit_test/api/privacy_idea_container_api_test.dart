@@ -62,6 +62,15 @@ void _testPrivacyIdeaContainerApi() {
 
   final containerChallengeNonce = 'b33d3a11c8d1b45f19640035e27944ccf0b2383d';
   final containerChallengeTimeStamp = '2024-12-06T11:14:26.885409+00:00';
+  const registrationTimestampVariants = [
+    '2026-07-25T07:21:14+00:00',
+    '2026-07-25T07:21:14.000+00:00',
+    '2026-07-25T07:21:14.123+00:00',
+    '2026-07-25T07:21:14.123000+00:00',
+    '2026-07-25T07:21:14.123456+00:00',
+    '2026-07-25T07:21:14Z',
+    '2026-07-25T07:21:14.123456Z',
+  ];
   final containerChallengeResponse = Response(
     jsonEncode({
       'id': 5,
@@ -110,6 +119,7 @@ void _testPrivacyIdeaContainerApi() {
     String? withIssuer,
     String? withNonce,
     DateTime? withTimestamp,
+    String? withTimestampRaw,
     Uri? withServerUrl,
     String? withSerial,
     EcKeyAlgorithm? withEcKeyAlgorithm,
@@ -129,6 +139,7 @@ void _testPrivacyIdeaContainerApi() {
     issuer: withIssuer ?? 'privacyIDEA',
     nonce: withNonce ?? 'b33d3a11c8d1b45f19640035e27944ccf0b2383d',
     timestamp: withTimestamp ?? DateTime(2024, 12, 6, 11, 14, 26, 885, 409),
+    timestampRaw: withTimestampRaw,
     serverUrl: withServerUrl ?? Uri.parse('http://example.com'),
     serial: withSerial ?? 'SMPH00067A2F',
     ecKeyAlgorithm: withEcKeyAlgorithm ?? EcKeyAlgorithm.secp384r1,
@@ -284,83 +295,180 @@ void _testPrivacyIdeaContainerApi() {
       expect(policies.disabledTokenDeletion, true);
       expect(policies.disabledUnregister, true);
     });
-    test('finalizeContainer throws PiServerResultError on status false with error', () async {
-      final tokenContainer = getNewTokenContainer();
-      final mockIoClient = MockPrivacyideaIOClient();
-      final containerApi = PiContainerApi(ioClient: mockIoClient);
+    for (final timestampRaw in registrationTimestampVariants) {
+      test(
+        'finalizeContainer signs the exact QR timestamp "$timestampRaw"',
+        () async {
+          final tokenContainer = getNewTokenContainer(
+            withTimestamp: DateTime.parse(timestampRaw),
+            withTimestampRaw: timestampRaw,
+          );
+          final mockIoClient = MockPrivacyideaIOClient();
+          final containerApi = PiContainerApi(ioClient: mockIoClient);
+          const eccUtils = EccUtils();
 
-      when(
-        mockIoClient.doPost(
-          url: anyNamed('url'),
-          body: anyNamed('body'),
-          sslVerify: anyNamed('sslVerify'),
-        ),
-      ).thenAnswer(
-        (_) async => Response(
-          jsonEncode({
-            'id': 1,
-            'jsonrpc': '2.0',
-            'result': {
-              'status': false,
-              'error': {
-                'code': 3002,
-                'message': 'ERR3002: Could not verify signature!',
-              },
-            },
-            'time': 1.0,
-            'version': 'privacyIDEA 3.6.2',
-            'detail': null,
-            'signature': 'signature',
-          }),
-          400,
-        ),
-      );
-
-      await expectLater(
-        () => containerApi.finalizeContainer(tokenContainer),
-        throwsA(
-          isA<PiServerResultError>()
-              .having((e) => e.code, 'code', 3002)
-              .having(
-                (e) => e.message,
-                'message',
-                contains('Could not verify signature'),
+          when(
+            mockIoClient.doPost(
+              url: anyNamed('url'),
+              body: anyNamed('body'),
+              sslVerify: anyNamed('sslVerify'),
+            ),
+          ).thenAnswer((invocation) async {
+            final body =
+                invocation.namedArguments[const Symbol('body')]
+                    as Map<String, String>;
+            final exactMessage =
+                '${tokenContainer.nonce}'
+                '|$timestampRaw'
+                '|${tokenContainer.serial}'
+                '|${tokenContainer.registrationUrl}';
+            expect(
+              eccUtils.validateSignature(
+                tokenContainer.ecPublicClientKey!,
+                body[TokenContainer.FINALIZE_SIGNATURE]!,
+                exactMessage,
               ),
-        ),
-      );
-    });
+              isTrue,
+            );
 
-    test('finalizeContainer throws ResponseError on status false without error field', () async {
-      final tokenContainer = getNewTokenContainer();
-      final mockIoClient = MockPrivacyideaIOClient();
-      final containerApi = PiContainerApi(ioClient: mockIoClient);
+            final reserializedTimestamp = DateTime.parse(
+              timestampRaw,
+            ).toIso8601String().replaceFirst('Z', '+00:00');
+            if (reserializedTimestamp != timestampRaw) {
+              final reserializedMessage =
+                  '${tokenContainer.nonce}'
+                  '|$reserializedTimestamp'
+                  '|${tokenContainer.serial}'
+                  '|${tokenContainer.registrationUrl}';
+              expect(
+                eccUtils.validateSignature(
+                  tokenContainer.ecPublicClientKey!,
+                  body[TokenContainer.FINALIZE_SIGNATURE]!,
+                  reserializedMessage,
+                ),
+                isFalse,
+              );
+            }
 
-      when(
-        mockIoClient.doPost(
-          url: anyNamed('url'),
-          body: anyNamed('body'),
-          sslVerify: anyNamed('sslVerify'),
-        ),
-      ).thenAnswer(
-        (_) async => Response(
-          jsonEncode({
-            'id': 1,
-            'jsonrpc': '2.0',
-            'result': {'status': false},
-            'time': 1.0,
-            'version': 'privacyIDEA 3.6.2',
-            'detail': null,
-            'signature': 'signature',
-          }),
-          400,
-        ),
-      );
+            return Response(
+              jsonEncode({
+                'id': 5,
+                'jsonrpc': '2.0',
+                'result': {
+                  'status': true,
+                  'value': {
+                    'policies': {
+                      'disable_client_container_unregister': false,
+                      'disable_client_token_deletion': false,
+                      'container_client_rollover': true,
+                      'initially_add_tokens_to_container': false,
+                    },
+                  },
+                },
+                'time': 1.0,
+                'version': 'privacyIDEA 3.13.3',
+                'versionnumber': '3.13.3',
+                'detail': null,
+                'signature': 'signature',
+              }),
+              200,
+            );
+          });
 
-      await expectLater(
-        () => containerApi.finalizeContainer(tokenContainer),
-        throwsA(isA<ResponseError>()),
+          await containerApi.finalizeContainer(tokenContainer);
+          verify(
+            mockIoClient.doPost(
+              url: tokenContainer.registrationUrl,
+              body: anyNamed('body'),
+              sslVerify: tokenContainer.sslVerify,
+            ),
+          ).called(1);
+        },
       );
-    });
+    }
+    test(
+      'finalizeContainer throws PiServerResultError on status false with error',
+      () async {
+        final tokenContainer = getNewTokenContainer();
+        final mockIoClient = MockPrivacyideaIOClient();
+        final containerApi = PiContainerApi(ioClient: mockIoClient);
+
+        when(
+          mockIoClient.doPost(
+            url: anyNamed('url'),
+            body: anyNamed('body'),
+            sslVerify: anyNamed('sslVerify'),
+          ),
+        ).thenAnswer(
+          (_) async => Response(
+            jsonEncode({
+              'id': 1,
+              'jsonrpc': '2.0',
+              'result': {
+                'status': false,
+                'error': {
+                  'code': 3002,
+                  'message': 'ERR3002: Could not verify signature!',
+                },
+              },
+              'time': 1.0,
+              'version': 'privacyIDEA 3.6.2',
+              'detail': null,
+              'signature': 'signature',
+            }),
+            400,
+          ),
+        );
+
+        await expectLater(
+          () => containerApi.finalizeContainer(tokenContainer),
+          throwsA(
+            isA<PiServerResultError>()
+                .having((e) => e.code, 'code', 3002)
+                .having(
+                  (e) => e.message,
+                  'message',
+                  contains('Could not verify signature'),
+                ),
+          ),
+        );
+      },
+    );
+
+    test(
+      'finalizeContainer throws ResponseError on status false without error field',
+      () async {
+        final tokenContainer = getNewTokenContainer();
+        final mockIoClient = MockPrivacyideaIOClient();
+        final containerApi = PiContainerApi(ioClient: mockIoClient);
+
+        when(
+          mockIoClient.doPost(
+            url: anyNamed('url'),
+            body: anyNamed('body'),
+            sslVerify: anyNamed('sslVerify'),
+          ),
+        ).thenAnswer(
+          (_) async => Response(
+            jsonEncode({
+              'id': 1,
+              'jsonrpc': '2.0',
+              'result': {'status': false},
+              'time': 1.0,
+              'version': 'privacyIDEA 3.6.2',
+              'detail': null,
+              'signature': 'signature',
+            }),
+            400,
+          ),
+        );
+
+        await expectLater(
+          () => containerApi.finalizeContainer(tokenContainer),
+          throwsA(isA<ResponseError>()),
+        );
+      },
+    );
 
     test('getRolloverQrData', () async {
       // Arrange

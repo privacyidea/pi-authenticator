@@ -194,10 +194,10 @@ return finalized(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String issuer,  Duration ttl,  String nonce,  DateTime timestamp,  Uri serverUrl,  String serial,  EcKeyAlgorithm ecKeyAlgorithm,  Algorithms hashAlgorithm,  bool sslVerify,  String serverName,  FinalizationState finalizationState,  ContainerPolicies policies,  bool? addDeviceInfos,  String? passphraseQuestion,  String? publicClientKey,  String? privateClientKey,  bool sendPassphrase)?  unfinalized,TResult Function( String issuer,  String nonce,  DateTime timestamp,  Uri serverUrl,  String serial,  EcKeyAlgorithm ecKeyAlgorithm,  Algorithms hashAlgorithm,  bool sslVerify,  String serverName,  FinalizationState finalizationState,  SyncState syncState,  ContainerPolicies policies,  bool initSynced,  String? passphraseQuestion,  String publicClientKey,  String privateClientKey)?  finalized,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String issuer,  Duration ttl,  String nonce,  DateTime timestamp,  String? timestampRaw,  Uri serverUrl,  String serial,  EcKeyAlgorithm ecKeyAlgorithm,  Algorithms hashAlgorithm,  bool sslVerify,  String serverName,  FinalizationState finalizationState,  ContainerPolicies policies,  bool? addDeviceInfos,  String? passphraseQuestion,  String? publicClientKey,  String? privateClientKey,  bool sendPassphrase)?  unfinalized,TResult Function( String issuer,  String nonce,  DateTime timestamp,  Uri serverUrl,  String serial,  EcKeyAlgorithm ecKeyAlgorithm,  Algorithms hashAlgorithm,  bool sslVerify,  String serverName,  FinalizationState finalizationState,  SyncState syncState,  ContainerPolicies policies,  bool initSynced,  String? passphraseQuestion,  String publicClientKey,  String privateClientKey)?  finalized,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case TokenContainerUnfinalized() when unfinalized != null:
-return unfinalized(_that.issuer,_that.ttl,_that.nonce,_that.timestamp,_that.serverUrl,_that.serial,_that.ecKeyAlgorithm,_that.hashAlgorithm,_that.sslVerify,_that.serverName,_that.finalizationState,_that.policies,_that.addDeviceInfos,_that.passphraseQuestion,_that.publicClientKey,_that.privateClientKey,_that.sendPassphrase);case TokenContainerFinalized() when finalized != null:
+return unfinalized(_that.issuer,_that.ttl,_that.nonce,_that.timestamp,_that.timestampRaw,_that.serverUrl,_that.serial,_that.ecKeyAlgorithm,_that.hashAlgorithm,_that.sslVerify,_that.serverName,_that.finalizationState,_that.policies,_that.addDeviceInfos,_that.passphraseQuestion,_that.publicClientKey,_that.privateClientKey,_that.sendPassphrase);case TokenContainerFinalized() when finalized != null:
 return finalized(_that.issuer,_that.nonce,_that.timestamp,_that.serverUrl,_that.serial,_that.ecKeyAlgorithm,_that.hashAlgorithm,_that.sslVerify,_that.serverName,_that.finalizationState,_that.syncState,_that.policies,_that.initSynced,_that.passphraseQuestion,_that.publicClientKey,_that.privateClientKey);case _:
   return orElse();
 
@@ -216,10 +216,10 @@ return finalized(_that.issuer,_that.nonce,_that.timestamp,_that.serverUrl,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String issuer,  Duration ttl,  String nonce,  DateTime timestamp,  Uri serverUrl,  String serial,  EcKeyAlgorithm ecKeyAlgorithm,  Algorithms hashAlgorithm,  bool sslVerify,  String serverName,  FinalizationState finalizationState,  ContainerPolicies policies,  bool? addDeviceInfos,  String? passphraseQuestion,  String? publicClientKey,  String? privateClientKey,  bool sendPassphrase)  unfinalized,required TResult Function( String issuer,  String nonce,  DateTime timestamp,  Uri serverUrl,  String serial,  EcKeyAlgorithm ecKeyAlgorithm,  Algorithms hashAlgorithm,  bool sslVerify,  String serverName,  FinalizationState finalizationState,  SyncState syncState,  ContainerPolicies policies,  bool initSynced,  String? passphraseQuestion,  String publicClientKey,  String privateClientKey)  finalized,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String issuer,  Duration ttl,  String nonce,  DateTime timestamp,  String? timestampRaw,  Uri serverUrl,  String serial,  EcKeyAlgorithm ecKeyAlgorithm,  Algorithms hashAlgorithm,  bool sslVerify,  String serverName,  FinalizationState finalizationState,  ContainerPolicies policies,  bool? addDeviceInfos,  String? passphraseQuestion,  String? publicClientKey,  String? privateClientKey,  bool sendPassphrase)  unfinalized,required TResult Function( String issuer,  String nonce,  DateTime timestamp,  Uri serverUrl,  String serial,  EcKeyAlgorithm ecKeyAlgorithm,  Algorithms hashAlgorithm,  bool sslVerify,  String serverName,  FinalizationState finalizationState,  SyncState syncState,  ContainerPolicies policies,  bool initSynced,  String? passphraseQuestion,  String publicClientKey,  String privateClientKey)  finalized,}) {final _that = this;
 switch (_that) {
 case TokenContainerUnfinalized():
-return unfinalized(_that.issuer,_that.ttl,_that.nonce,_that.timestamp,_that.serverUrl,_that.serial,_that.ecKeyAlgorithm,_that.hashAlgorithm,_that.sslVerify,_that.serverName,_that.finalizationState,_that.policies,_that.addDeviceInfos,_that.passphraseQuestion,_that.publicClientKey,_that.privateClientKey,_that.sendPassphrase);case TokenContainerFinalized():
+return unfinalized(_that.issuer,_that.ttl,_that.nonce,_that.timestamp,_that.timestampRaw,_that.serverUrl,_that.serial,_that.ecKeyAlgorithm,_that.hashAlgorithm,_that.sslVerify,_that.serverName,_that.finalizationState,_that.policies,_that.addDeviceInfos,_that.passphraseQuestion,_that.publicClientKey,_that.privateClientKey,_that.sendPassphrase);case TokenContainerFinalized():
 return finalized(_that.issuer,_that.nonce,_that.timestamp,_that.serverUrl,_that.serial,_that.ecKeyAlgorithm,_that.hashAlgorithm,_that.sslVerify,_that.serverName,_that.finalizationState,_that.syncState,_that.policies,_that.initSynced,_that.passphraseQuestion,_that.publicClientKey,_that.privateClientKey);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -234,10 +234,10 @@ return finalized(_that.issuer,_that.nonce,_that.timestamp,_that.serverUrl,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String issuer,  Duration ttl,  String nonce,  DateTime timestamp,  Uri serverUrl,  String serial,  EcKeyAlgorithm ecKeyAlgorithm,  Algorithms hashAlgorithm,  bool sslVerify,  String serverName,  FinalizationState finalizationState,  ContainerPolicies policies,  bool? addDeviceInfos,  String? passphraseQuestion,  String? publicClientKey,  String? privateClientKey,  bool sendPassphrase)?  unfinalized,TResult? Function( String issuer,  String nonce,  DateTime timestamp,  Uri serverUrl,  String serial,  EcKeyAlgorithm ecKeyAlgorithm,  Algorithms hashAlgorithm,  bool sslVerify,  String serverName,  FinalizationState finalizationState,  SyncState syncState,  ContainerPolicies policies,  bool initSynced,  String? passphraseQuestion,  String publicClientKey,  String privateClientKey)?  finalized,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String issuer,  Duration ttl,  String nonce,  DateTime timestamp,  String? timestampRaw,  Uri serverUrl,  String serial,  EcKeyAlgorithm ecKeyAlgorithm,  Algorithms hashAlgorithm,  bool sslVerify,  String serverName,  FinalizationState finalizationState,  ContainerPolicies policies,  bool? addDeviceInfos,  String? passphraseQuestion,  String? publicClientKey,  String? privateClientKey,  bool sendPassphrase)?  unfinalized,TResult? Function( String issuer,  String nonce,  DateTime timestamp,  Uri serverUrl,  String serial,  EcKeyAlgorithm ecKeyAlgorithm,  Algorithms hashAlgorithm,  bool sslVerify,  String serverName,  FinalizationState finalizationState,  SyncState syncState,  ContainerPolicies policies,  bool initSynced,  String? passphraseQuestion,  String publicClientKey,  String privateClientKey)?  finalized,}) {final _that = this;
 switch (_that) {
 case TokenContainerUnfinalized() when unfinalized != null:
-return unfinalized(_that.issuer,_that.ttl,_that.nonce,_that.timestamp,_that.serverUrl,_that.serial,_that.ecKeyAlgorithm,_that.hashAlgorithm,_that.sslVerify,_that.serverName,_that.finalizationState,_that.policies,_that.addDeviceInfos,_that.passphraseQuestion,_that.publicClientKey,_that.privateClientKey,_that.sendPassphrase);case TokenContainerFinalized() when finalized != null:
+return unfinalized(_that.issuer,_that.ttl,_that.nonce,_that.timestamp,_that.timestampRaw,_that.serverUrl,_that.serial,_that.ecKeyAlgorithm,_that.hashAlgorithm,_that.sslVerify,_that.serverName,_that.finalizationState,_that.policies,_that.addDeviceInfos,_that.passphraseQuestion,_that.publicClientKey,_that.privateClientKey,_that.sendPassphrase);case TokenContainerFinalized() when finalized != null:
 return finalized(_that.issuer,_that.nonce,_that.timestamp,_that.serverUrl,_that.serial,_that.ecKeyAlgorithm,_that.hashAlgorithm,_that.sslVerify,_that.serverName,_that.finalizationState,_that.syncState,_that.policies,_that.initSynced,_that.passphraseQuestion,_that.publicClientKey,_that.privateClientKey);case _:
   return null;
 
@@ -250,13 +250,14 @@ return finalized(_that.issuer,_that.nonce,_that.timestamp,_that.serverUrl,_that.
 @JsonSerializable()
 
 class TokenContainerUnfinalized extends TokenContainer {
-  const TokenContainerUnfinalized({required this.issuer, required this.ttl, required this.nonce, required this.timestamp, required this.serverUrl, required this.serial, required this.ecKeyAlgorithm, required this.hashAlgorithm, required this.sslVerify, this.serverName = 'privacyIDEA', this.finalizationState = FinalizationState.notStarted, this.policies = ContainerPolicies.defaultSetting, this.addDeviceInfos, this.passphraseQuestion, this.publicClientKey, this.privateClientKey, this.sendPassphrase = false, final  String? $type}): $type = $type ?? 'unfinalized',super._();
+  const TokenContainerUnfinalized({required this.issuer, required this.ttl, required this.nonce, required this.timestamp, this.timestampRaw, required this.serverUrl, required this.serial, required this.ecKeyAlgorithm, required this.hashAlgorithm, required this.sslVerify, this.serverName = 'privacyIDEA', this.finalizationState = FinalizationState.notStarted, this.policies = ContainerPolicies.defaultSetting, this.addDeviceInfos, this.passphraseQuestion, this.publicClientKey, this.privateClientKey, this.sendPassphrase = false, final  String? $type}): $type = $type ?? 'unfinalized',super._();
   factory TokenContainerUnfinalized.fromJson(Map<String, dynamic> json) => _$TokenContainerUnfinalizedFromJson(json);
 
 @override final  String issuer;
  final  Duration ttl;
 @override final  String nonce;
 @override final  DateTime timestamp;
+ final  String? timestampRaw;
 @override final  Uri serverUrl;
 @override final  String serial;
 @override final  EcKeyAlgorithm ecKeyAlgorithm;
@@ -288,12 +289,12 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is TokenContainerUnfinalized&&(identical(other.issuer, issuer) || other.issuer == issuer)&&(identical(other.ttl, ttl) || other.ttl == ttl)&&(identical(other.nonce, nonce) || other.nonce == nonce)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.serverUrl, serverUrl) || other.serverUrl == serverUrl)&&(identical(other.serial, serial) || other.serial == serial)&&(identical(other.ecKeyAlgorithm, ecKeyAlgorithm) || other.ecKeyAlgorithm == ecKeyAlgorithm)&&(identical(other.hashAlgorithm, hashAlgorithm) || other.hashAlgorithm == hashAlgorithm)&&(identical(other.sslVerify, sslVerify) || other.sslVerify == sslVerify)&&(identical(other.serverName, serverName) || other.serverName == serverName)&&(identical(other.finalizationState, finalizationState) || other.finalizationState == finalizationState)&&(identical(other.policies, policies) || other.policies == policies)&&(identical(other.addDeviceInfos, addDeviceInfos) || other.addDeviceInfos == addDeviceInfos)&&(identical(other.passphraseQuestion, passphraseQuestion) || other.passphraseQuestion == passphraseQuestion)&&(identical(other.publicClientKey, publicClientKey) || other.publicClientKey == publicClientKey)&&(identical(other.privateClientKey, privateClientKey) || other.privateClientKey == privateClientKey)&&(identical(other.sendPassphrase, sendPassphrase) || other.sendPassphrase == sendPassphrase));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TokenContainerUnfinalized&&(identical(other.issuer, issuer) || other.issuer == issuer)&&(identical(other.ttl, ttl) || other.ttl == ttl)&&(identical(other.nonce, nonce) || other.nonce == nonce)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.timestampRaw, timestampRaw) || other.timestampRaw == timestampRaw)&&(identical(other.serverUrl, serverUrl) || other.serverUrl == serverUrl)&&(identical(other.serial, serial) || other.serial == serial)&&(identical(other.ecKeyAlgorithm, ecKeyAlgorithm) || other.ecKeyAlgorithm == ecKeyAlgorithm)&&(identical(other.hashAlgorithm, hashAlgorithm) || other.hashAlgorithm == hashAlgorithm)&&(identical(other.sslVerify, sslVerify) || other.sslVerify == sslVerify)&&(identical(other.serverName, serverName) || other.serverName == serverName)&&(identical(other.finalizationState, finalizationState) || other.finalizationState == finalizationState)&&(identical(other.policies, policies) || other.policies == policies)&&(identical(other.addDeviceInfos, addDeviceInfos) || other.addDeviceInfos == addDeviceInfos)&&(identical(other.passphraseQuestion, passphraseQuestion) || other.passphraseQuestion == passphraseQuestion)&&(identical(other.publicClientKey, publicClientKey) || other.publicClientKey == publicClientKey)&&(identical(other.privateClientKey, privateClientKey) || other.privateClientKey == privateClientKey)&&(identical(other.sendPassphrase, sendPassphrase) || other.sendPassphrase == sendPassphrase));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,issuer,ttl,nonce,timestamp,serverUrl,serial,ecKeyAlgorithm,hashAlgorithm,sslVerify,serverName,finalizationState,policies,addDeviceInfos,passphraseQuestion,publicClientKey,privateClientKey,sendPassphrase);
+int get hashCode => Object.hash(runtimeType,issuer,ttl,nonce,timestamp,timestampRaw,serverUrl,serial,ecKeyAlgorithm,hashAlgorithm,sslVerify,serverName,finalizationState,policies,addDeviceInfos,passphraseQuestion,publicClientKey,privateClientKey,sendPassphrase);
 
 
 
@@ -304,7 +305,7 @@ abstract mixin class $TokenContainerUnfinalizedCopyWith<$Res> implements $TokenC
   factory $TokenContainerUnfinalizedCopyWith(TokenContainerUnfinalized value, $Res Function(TokenContainerUnfinalized) _then) = _$TokenContainerUnfinalizedCopyWithImpl;
 @override @useResult
 $Res call({
- String issuer, Duration ttl, String nonce, DateTime timestamp, Uri serverUrl, String serial, EcKeyAlgorithm ecKeyAlgorithm, Algorithms hashAlgorithm, bool sslVerify, String serverName, FinalizationState finalizationState, ContainerPolicies policies, bool? addDeviceInfos, String? passphraseQuestion, String? publicClientKey, String? privateClientKey, bool sendPassphrase
+ String issuer, Duration ttl, String nonce, DateTime timestamp, String? timestampRaw, Uri serverUrl, String serial, EcKeyAlgorithm ecKeyAlgorithm, Algorithms hashAlgorithm, bool sslVerify, String serverName, FinalizationState finalizationState, ContainerPolicies policies, bool? addDeviceInfos, String? passphraseQuestion, String? publicClientKey, String? privateClientKey, bool sendPassphrase
 });
 
 
@@ -321,13 +322,14 @@ class _$TokenContainerUnfinalizedCopyWithImpl<$Res>
 
 /// Create a copy of TokenContainer
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? issuer = null,Object? ttl = null,Object? nonce = null,Object? timestamp = null,Object? serverUrl = null,Object? serial = null,Object? ecKeyAlgorithm = null,Object? hashAlgorithm = null,Object? sslVerify = null,Object? serverName = null,Object? finalizationState = null,Object? policies = null,Object? addDeviceInfos = freezed,Object? passphraseQuestion = freezed,Object? publicClientKey = freezed,Object? privateClientKey = freezed,Object? sendPassphrase = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? issuer = null,Object? ttl = null,Object? nonce = null,Object? timestamp = null,Object? timestampRaw = freezed,Object? serverUrl = null,Object? serial = null,Object? ecKeyAlgorithm = null,Object? hashAlgorithm = null,Object? sslVerify = null,Object? serverName = null,Object? finalizationState = null,Object? policies = null,Object? addDeviceInfos = freezed,Object? passphraseQuestion = freezed,Object? publicClientKey = freezed,Object? privateClientKey = freezed,Object? sendPassphrase = null,}) {
   return _then(TokenContainerUnfinalized(
 issuer: null == issuer ? _self.issuer : issuer // ignore: cast_nullable_to_non_nullable
 as String,ttl: null == ttl ? _self.ttl : ttl // ignore: cast_nullable_to_non_nullable
 as Duration,nonce: null == nonce ? _self.nonce : nonce // ignore: cast_nullable_to_non_nullable
 as String,timestamp: null == timestamp ? _self.timestamp : timestamp // ignore: cast_nullable_to_non_nullable
-as DateTime,serverUrl: null == serverUrl ? _self.serverUrl : serverUrl // ignore: cast_nullable_to_non_nullable
+as DateTime,timestampRaw: freezed == timestampRaw ? _self.timestampRaw : timestampRaw // ignore: cast_nullable_to_non_nullable
+as String?,serverUrl: null == serverUrl ? _self.serverUrl : serverUrl // ignore: cast_nullable_to_non_nullable
 as Uri,serial: null == serial ? _self.serial : serial // ignore: cast_nullable_to_non_nullable
 as String,ecKeyAlgorithm: null == ecKeyAlgorithm ? _self.ecKeyAlgorithm : ecKeyAlgorithm // ignore: cast_nullable_to_non_nullable
 as EcKeyAlgorithm,hashAlgorithm: null == hashAlgorithm ? _self.hashAlgorithm : hashAlgorithm // ignore: cast_nullable_to_non_nullable

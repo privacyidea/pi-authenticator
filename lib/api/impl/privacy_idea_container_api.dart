@@ -217,7 +217,7 @@ class PiContainerApi implements TokenContainerApi {
         : null;
     final message =
         '${container.nonce}'
-        '|${container.timestamp.toIso8601String().replaceFirst('Z', '+00:00')}'
+        '|${container.registrationTimestamp}'
         '|${container.serial}'
         '|${container.registrationUrl}'
         '${(container.addDeviceInfos == true) ? '|${AppInfoUtils.deviceBrand}' : ''}'
