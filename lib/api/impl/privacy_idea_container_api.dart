@@ -76,7 +76,9 @@ class PiContainerApi implements TokenContainerApi {
     final notLinkedTokens = tokenState.tokens.maybeContainerTokensOf(
       container.serial,
     );
-    final templatesForAssignment = notLinkedTokens.withSerial.toTemplates();
+    final templatesForAssignment = initialTokenAssignment
+        ? notLinkedTokens.withSerial.toTemplates()
+        : <TokenTemplate>[];
 
     final tokensWithoutSerial = notLinkedTokens.withoutSerial;
     List<Token>? selectedTokens;

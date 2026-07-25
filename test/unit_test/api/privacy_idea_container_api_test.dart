@@ -492,6 +492,85 @@ void _testPrivacyIdeaContainerApi() {
       expect(result.success, true);
     });
     group("sync", () {
+      final nonAssignmentCases = [
+        (
+          name: 'when the policy is disabled',
+          policyEnabled: false,
+          isInitSync: true,
+        ),
+        (
+          name: 'after the initial synchronization',
+          policyEnabled: true,
+          isInitSync: false,
+        ),
+      ];
+      for (final testCase in nonAssignmentCases) {
+        test(
+          'does not send unlinked tokens with serial ${testCase.name}',
+          () async {
+            final mockIoClient = MockPrivacyideaIOClient();
+            final containerApi = PiContainerApi(ioClient: mockIoClient);
+            final tokenContainer = getFinalizedTokenContainer(
+              withPolicies: ContainerPolicies(
+                rolloverAllowed: true,
+                initialTokenAssignment: testCase.policyEnabled,
+                disabledTokenDeletion: false,
+                disabledUnregister: false,
+              ),
+            );
+            final tokenState = TokenState(
+              tokens: [
+                HOTPToken(
+                  label: 'unlinked token',
+                  serial: 'OATH00068B93',
+                  issuer: 'privacyIDEA',
+                  counter: 1,
+                  id: 'id1',
+                  algorithm: Algorithms.SHA1,
+                  digits: 6,
+                  secret: 'CDLDLKLUMPDR2IJJZJHF5XKFKBABU4XR',
+                ),
+              ],
+            );
+            Map<String, dynamic>? containerDictClient;
+
+            when(
+              mockIoClient.doPost(
+                url: anyNamed('url'),
+                body: anyNamed('body'),
+                sslVerify: anyNamed('sslVerify'),
+              ),
+            ).thenAnswer((invocation) async {
+              final Uri invocationUrl =
+                  invocation.namedArguments[Symbol('url')];
+              final Map<String, String?> invocationBody =
+                  invocation.namedArguments[Symbol('body')];
+              if (invocationUrl.toString() ==
+                      'http://example.com/container/challenge' &&
+                  invocationBody['scope'] ==
+                      'http://example.com/container/synchronize') {
+                return containerChallengeResponse;
+              }
+              containerDictClient =
+                  jsonDecode(invocationBody[TokenContainer.SYNC_DICT_CLIENT]!)
+                      as Map<String, dynamic>;
+              return Response(jsonEncode(exampleError), 400);
+            });
+
+            await expectLater(
+              () => containerApi.sync(
+                tokenContainer,
+                tokenState,
+                isInitSync: testCase.isInitSync,
+              ),
+              throwsA(isA<ResponseError>()),
+            );
+
+            expect(containerDictClient?[TokenContainer.DICT_TOKENS], isEmpty);
+          },
+        );
+      }
+
       test('add', () async {
         // Arrange
         final mockIoClient = MockPrivacyideaIOClient();
