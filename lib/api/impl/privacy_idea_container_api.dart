@@ -76,27 +76,27 @@ class PiContainerApi implements TokenContainerApi {
     final notLinkedTokens = tokenState.tokens.maybeContainerTokensOf(
       container.serial,
     );
-    final templatesForAssignment = initialTokenAssignment
-        ? notLinkedTokens.withSerial.toTemplates()
-        : <TokenTemplate>[];
-
-    final tokensWithoutSerial = notLinkedTokens.withoutSerial;
-    List<Token>? selectedTokens;
-    if (initialTokenAssignment && tokensWithoutSerial.isNotEmpty) {
+    final assignmentCandidates = initialTokenAssignment
+        ? notLinkedTokens
+        : <Token>[];
+    final templatesForAssignment = <TokenTemplate>[];
+    if (assignmentCandidates.isNotEmpty) {
+      final List<Token> selectedTokens;
       if (sendAllOTPs == true) {
-        templatesForAssignment.addAll(tokensWithoutSerial.toTemplates());
+        selectedTokens = assignmentCandidates;
       } else {
-        selectedTokens = (await InitialTokenAssignmentDialog.showDialog(
+        final dialogSelection = await InitialTokenAssignmentDialog.showDialog(
           container,
-          tokensWithoutSerial,
-        ))?.toList();
+          assignmentCandidates,
+        );
 
-        if (selectedTokens == null) {
+        if (dialogSelection == null) {
           // User canceled the dialog => cancel sync
           return null;
         }
-        templatesForAssignment.addAll(selectedTokens.toTemplates());
+        selectedTokens = dialogSelection.toList();
       }
+      templatesForAssignment.addAll(selectedTokens.toTemplates());
     }
 
     final ContainerChallenge challenge = await _getChallenge(
@@ -195,7 +195,7 @@ class PiContainerApi implements TokenContainerApi {
       newTokens: newTokens,
       updatedTokens: updatedTokens,
       deletedTokens: deleteTokens,
-      initAssignmentChecked: tokensWithoutSerial,
+      initAssignmentChecked: assignmentCandidates,
       newPolicies: syncResult.policies,
       containerSerial: container.serial,
     );

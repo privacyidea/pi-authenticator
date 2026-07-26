@@ -312,7 +312,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
       await updateContainer(
         finalizedContainer,
         (TokenContainerFinalized c) =>
-            c.copyWith(syncState: SyncState.completed),
+            c.copyWith(syncState: SyncState.completed, initSynced: true),
       );
       ContainerSyncResultDialog.showDialog(
         container: finalizedContainer,

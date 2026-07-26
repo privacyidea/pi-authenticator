@@ -841,6 +841,7 @@ void _testPrivacyIdeaContainerApi() {
         // Assert
         expect(result, isNotNull);
         final newPolicies = result!.newPolicies;
+        expect(result.initAssignmentChecked, tokenState.tokens);
         expect(newPolicies.initialTokenAssignment, false);
         expect(newPolicies.rolloverAllowed, false);
         expect(newPolicies.disabledTokenDeletion, true);
