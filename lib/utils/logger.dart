@@ -593,6 +593,11 @@ Device Parameters $deviceInfo""";
   }
 }
 
-final filterParameterKeys = ['fbtoken', 'new_fb_token', 'secret'];
+final filterParameterKeys = [
+  'fbtoken',
+  'new_fb_token',
+  'secret',
+  'privateClientKey',
+];
 
 enum LogLevel { INFO, DEBUG, WARNING, ERROR }
