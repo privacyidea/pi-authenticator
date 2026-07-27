@@ -28,7 +28,7 @@ import 'package:privacyidea_authenticator/model/tokens/otp_token.dart';
 import 'package:privacyidea_authenticator/utils/app_info_utils.dart';
 
 import '../../../../../../../../l10n/app_localizations_en.dart';
-import '../../../../../../../../processors/scheme_processors/token_import_scheme_processors/otp_auth_processor.dart';
+import '../../../../../../../../processors/scheme_processors/token_import_scheme_processors/token_import_scheme_processor_interface.dart';
 import '../../../../../../../../utils/ecc_utils.dart';
 import '../../../../../../../../utils/privacyidea_io_client.dart';
 import '../../model/api_results/pi_server_results/pi_server_result_detail.dart';
@@ -124,12 +124,12 @@ class PiContainerApi implements TokenContainerApi {
     final tokens =
         decryptedContainerDict[TokenContainer.DICT_TOKENS]
             as Map<String, dynamic>;
-    final newOtpAuthTokens = (tokens[TokenContainer.DICT_TOKENS_ADD] as List)
+    final newTokenUris = (tokens[TokenContainer.DICT_TOKENS_ADD] as List)
         .whereType<String>()
         .map(Uri.parse)
         .toList();
     final newTokens = await _parseNewTokens(
-      otpAuthUris: newOtpAuthTokens,
+      tokenUris: newTokenUris,
       container: container,
     );
 
@@ -549,18 +549,18 @@ class PiContainerApi implements TokenContainerApi {
 
   Future<List<Token>> _parseNewTokens({
     required TokenContainerFinalized container,
-    required List<Uri> otpAuthUris,
+    required List<Uri> tokenUris,
   }) async {
     final newTokens = <Token>[];
-    for (var otpAuthUri in otpAuthUris) {
-      Logger.debug('Processing token: $otpAuthUri');
-      var newToken = (await const OtpAuthProcessor().processUri(
-        otpAuthUri,
-      )).firstOrNull?.asSuccess?.resultData;
+    for (var tokenUri in tokenUris) {
+      Logger.debug('Processing token: $tokenUri');
+      var newToken = (await TokenImportSchemeProcessor.processUriByAny(
+        tokenUri,
+      ))?.firstOrNull?.asSuccess?.resultData;
       if (newToken != null) {
         newToken = container.addOriginToToken(
           token: newToken,
-          tokenData: otpAuthUri.toString(),
+          tokenData: tokenUri.toString(),
         );
         newTokens.add(newToken);
       }
