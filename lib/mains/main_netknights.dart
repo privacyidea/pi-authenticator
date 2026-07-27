@@ -45,6 +45,7 @@ import '../views/qr_scanner_view/qr_scanner_view.dart';
 import '../views/settings_view/settings_view.dart';
 import '../views/splash_screen/splash_screen.dart';
 import '../widgets/app_wrapper.dart';
+import '../widgets/app_wrappers/immediate_update_gate.dart';
 
 void main() async {
   Logger.init(
@@ -56,8 +57,10 @@ void main() async {
       );
       runApp(
         AppWrapper(
-          child: PrivacyIDEAAuthenticator(
-            ApplicationCustomization.defaultCustomization,
+          child: ImmediateUpdateGate(
+            child: PrivacyIDEAAuthenticator(
+              ApplicationCustomization.defaultCustomization,
+            ),
           ),
         ),
       );

@@ -2160,6 +2160,8 @@
   "unsupported": "Příkaz {name} [{value}] není touto verzí aplikace podporován.",
   "useDeviceLocaleDescription": "Použít jazyk zařízení, pokud je podporován, případně angličtinu.",
   "useDeviceLocaleTitle": "Použít jazyk zařízení",
+  "updateNow": "Aktualizovat",
+  "updateRequired": "Vyžadována aktualizace",
   "valueNotAllowed": "Typ {type} „{value}“ není povolenou hodnotou pro „{parameter}“",
   "valueNotAllowedIn": "Typ {type} „{value}“ není povolenou hodnotou pro „{parameter}“ v „{map}“",
   "verboseLogging": "Zevrubné protokolování",

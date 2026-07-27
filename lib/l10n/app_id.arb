@@ -2160,6 +2160,8 @@
   "unsupported": "Nama {name} [{value}] tidak didukung oleh versi aplikasi ini.",
   "useDeviceLocaleDescription": "Gunakan bahasa perangkat jika didukung, jika tidak, default ke bahasa Inggris.",
   "useDeviceLocaleTitle": "Gunakan bahasa perangkat",
+  "updateNow": "Perbarui",
+  "updateRequired": "Pembaruan diperlukan",
   "valueNotAllowed": "Ketik {type} “{value}” bukan nilai yang diizinkan untuk ”{parameter}”",
   "valueNotAllowedIn": "Ketik {type} “{value}” bukan merupakan nilai yang valid untuk “{parameter}“ di ”{map}”",
   "verboseLogging": "Penebangan kata demi kata",

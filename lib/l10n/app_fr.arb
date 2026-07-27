@@ -2160,6 +2160,8 @@
   "unsupported": "Le {name} [{value}] n'est pas pris en charge par cette version de l'application.",
   "useDeviceLocaleDescription": "Utilisez la langue de l'appareil si elle est prise en charge, sinon l'anglais par défaut.",
   "useDeviceLocaleTitle": "Utiliser la langue de l'appareil",
+  "updateNow": "Mettre à jour",
+  "updateRequired": "Mise à jour requise",
   "valueNotAllowed": "Type {type} « {value} » n'est pas une valeur autorisée pour »{parameter} »",
   "valueNotAllowedIn": "Type {type} « {value} » n'est pas une valeur valide pour “{parameter}” dans »{map} »",
   "verboseLogging": "Journalisation verbeuse",

@@ -2181,6 +2181,8 @@
   "unsupported": "Der {name} [{value}] wird von dieser Version der App nicht unterstützt.",
   "useDeviceLocaleDescription": "Nutze Systemsprache, falls diese unterstützt wird. Anderenfalls nutze Englisch. ",
   "useDeviceLocaleTitle": "Nutze Systemsprache",
+  "updateNow": "Aktualisieren",
+  "updateRequired": "Aktualisierung erforderlich",
   "valueNotAllowed": "Typ {type} „{value}“ ist kein zulässiger Wert für „{parameter}“",
   "valueNotAllowedIn": "Typ {type} „{value}“ ist kein zulässiger Wert für „{parameter}“ in „{map}“",
   "verboseLogging": "Ausführliche Protokollierung",

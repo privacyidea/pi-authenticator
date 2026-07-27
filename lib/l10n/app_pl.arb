@@ -2160,6 +2160,8 @@
   "unsupported": "Opcja {name} [{value}] nie jest obsługiwana przez tę wersję aplikacji.",
   "useDeviceLocaleDescription": "Użyj języka urządzenia, jeśli jest wspierany. W innym wypadku zostanie ustawiony domyślny język angielski.",
   "useDeviceLocaleTitle": "Użyj języka urządzenia.",
+  "updateNow": "Aktualizuj",
+  "updateRequired": "Wymagana aktualizacja",
   "valueNotAllowed": "Typ {type} „{value}” nie jest dozwoloną wartością dla »{parameter}«.",
   "valueNotAllowedIn": "Typ {type} „{value}” nie jest prawidłową wartością dla »{parameter}« w »{map}«.",
   "verboseLogging": "Wyczerpujące rejestrowanie",

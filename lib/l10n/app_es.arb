@@ -2160,6 +2160,8 @@
   "unsupported": "{name} [{value}] no es compatible con esta versión de la aplicación.",
   "useDeviceLocaleDescription": "Utilizar el idioma del dispositivo si está soportado, en caso contrario por defecto inglés.",
   "useDeviceLocaleTitle": "Utiliza el idioma del teléfono",
+  "updateNow": "Actualizar",
+  "updateRequired": "Actualización requerida",
   "valueNotAllowed": "Tipo {type} «{value}» no es un valor permitido para »{parameter}»",
   "valueNotAllowedIn": "Tipo {type} «{value}» no es un valor válido para “{parameter}” en »{map}»d",
   "verboseLogging": "Registro detallado",

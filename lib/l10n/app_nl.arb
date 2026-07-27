@@ -2160,6 +2160,8 @@
   "unsupported": "De {name} [{value}] wordt niet ondersteund door deze versie van de app.",
   "useDeviceLocaleDescription": "Gebruik de taal van het apparaat wanneer het wordt ondersteund, val anders terug op Engels.",
   "useDeviceLocaleTitle": "Gebruik de taal van het apparaat",
+  "updateNow": "Bijwerken",
+  "updateRequired": "Update vereist",
   "valueNotAllowed": "Type {type} “{value}” is geen toegestane waarde voor “{parameter}“",
   "valueNotAllowedIn": "Type {type} “{value}” is geen geldige waarde voor “{parameter}“ in ”{map}”",
   "verboseLogging": "Verbose loggen",
