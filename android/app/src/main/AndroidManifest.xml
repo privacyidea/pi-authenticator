@@ -34,6 +34,9 @@
             android:launchMode="singleInstance"
             android:theme="@style/LaunchTheme"
             android:windowSoftInputMode="adjustResize">
+            <meta-data
+                android:name="flutter_deeplinking_enabled"
+                android:value="false" />
             <!-- Deep Links -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
