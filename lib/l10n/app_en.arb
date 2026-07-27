@@ -221,9 +221,6 @@
   "@containerAlreadyExists": {
     "description": "Title of the dialog that tells the user that the container already exists."
   },
-  "@containerDeleteCorrespondingTokenDialogContent": {
-    "description": "Content of the dialog that asks the user if they want to delete the corresponding tokens."
-  },
   "@containerDetails": {
     "description": "Title of the container details dialog."
   },
@@ -347,9 +344,6 @@
   "@delete": {
     "description": "Label that describes deleting the token."
   },
-  "@deleteAllButtonText": {
-    "description": "Button text to delete corresponding tokens after container deletion."
-  },
   "@deleteContainerDialogContent": {
     "description": "Content of the dialog that ensures the user wants to delete a container."
   },
@@ -364,9 +358,6 @@
   },
   "@deleteLockedToken": {
     "description": "Text for the authentication dialog when the user wants to delete a locked token."
-  },
-  "@deleteOnlyContainerButtonText": {
-    "description": "Button text to delete only the container not the corresponding tokens."
   },
   "@details": {
     "description": "Title of the details action Button."
@@ -1526,18 +1517,6 @@
   "@syncContainerFailed": {
     "description": "Error message when synchronizing a container failed."
   },
-  "@syncContainerNotFoundDialogContent": {
-    "description": "Content for the dialog that appears when a container could not be found on the server."
-  },
-  "@syncContainerNotFoundDialogTitle": {
-    "description": "Title for the dialog that appears when a container could not be found on the server.",
-    "placeholders": {
-      "serial": {
-        "example": "123456",
-        "type": "String"
-      }
-    }
-  },
   "@syncFbTokenFailed": {
     "description": "Headline for the list of tokens where the synchronization failed."
   },
@@ -1789,7 +1768,6 @@
   "connectionFailed": "Connection failed.",
   "container": "Container",
   "containerAlreadyExists": "Container already exists",
-  "containerDeleteCorrespondingTokenDialogContent": "Do you want to delete the corresponding tokens as well?",
   "containerDetails": "Container details",
   "containerRolloutExpired": "Container {serial} has expired and can not be rolled out anymore",
   "containerRolloutSendDeviceInfoDialogContent": "Would you like to tell the publisher of the container which device you are using? This may be useful later if you have problems with your second factor.",
@@ -1825,11 +1803,9 @@
   "decryptErrorDeleteConfirmationContent": "Are you sure you want to delete the app data?",
   "decryptErrorTitle": "Decryption error",
   "delete": "Delete",
-  "deleteAllButtonText": "Delete all",
-  "deleteContainerDialogContent": "If you delete this container, the smartphone is disconnected from the privacyIDEA server and the tokens of this container become unusable. Before deleting, make sure that the corresponding tokens are no longer required!",
+  "deleteContainerDialogContent": "If you delete this container, the smartphone is disconnected from the privacyIDEA server and all tokens belonging to this container are removed from the app. Before deleting, make sure that the corresponding tokens are no longer required!",
   "deleteContainerDialogTitle": "Deleting Container {serial}",
   "deleteLockedToken": "Please authenticate to delete the locked token.",
-  "deleteOnlyContainerButtonText": "Only container",
   "details": "Details",
   "deviceCredentialsRequiredTitle": "Device credentials not set up",
   "deviceCredentialsSetupDescription": "Set up device credentials in your device's settings",
@@ -2140,8 +2116,6 @@
   "statusCode": "Status code: {statusCode}",
   "sync": "Sync",
   "syncContainerFailed": "Container synchronization failed",
-  "syncContainerNotFoundDialogContent": "The container could not be found on the server. Do you want to delete it from the app?",
-  "syncContainerNotFoundDialogTitle": "Container {serial} not found",
   "syncFbTokenFailed": "Synchronization failed for the following tokens, please try again.",
   "syncFbTokenManuallyWhenNetworkIsAvailable": "Please synchronize the push tokens manually via the settings when a network connection is available.",
   "syncState": "Sync State",

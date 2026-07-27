@@ -200,9 +200,6 @@
   "@containerAlreadyExists": {
     "description": "Title of the dialog that tells the user that the container already exists."
   },
-  "@containerDeleteCorrespondingTokenDialogContent": {
-    "description": "Content of the dialog that asks the user if they want to delete the corresponding tokens."
-  },
   "@containerDetails": {
     "description": "Title of the container details dialog."
   },
@@ -326,9 +323,6 @@
   "@delete": {
     "description": "Label that describes deleting the token."
   },
-  "@deleteAllButtonText": {
-    "description": "Button text to delete corresponding tokens after container deletion."
-  },
   "@deleteContainerDialogContent": {
     "description": "Content of the dialog that ensures the user wants to delete a container."
   },
@@ -343,9 +337,6 @@
   },
   "@deleteLockedToken": {
     "description": "Text for the authentication dialog when the user wants to delete a locked token."
-  },
-  "@deleteOnlyContainerButtonText": {
-    "description": "Button text to delete only the container not the corresponding tokens."
   },
   "@details": {
     "description": "Title of the details action Button."
@@ -1505,18 +1496,6 @@
   "@syncContainerFailed": {
     "description": "Error message when synchronizing a container failed."
   },
-  "@syncContainerNotFoundDialogContent": {
-    "description": "Content for the dialog that appears when a container could not be found on the server."
-  },
-  "@syncContainerNotFoundDialogTitle": {
-    "description": "Title for the dialog that appears when a container could not be found on the server.",
-    "placeholders": {
-      "serial": {
-        "example": "123456",
-        "type": "String"
-      }
-    }
-  },
   "@syncFbTokenFailed": {
     "description": "Headline for the list of tokens where the synchronization failed."
   },
@@ -1768,7 +1747,6 @@
   "connectionFailed": "Conexión fallida.",
   "container": "Contenedor",
   "containerAlreadyExists": "El contenedor ya existe",
-  "containerDeleteCorrespondingTokenDialogContent": "¿Desea eliminar también los tokens correspondientes?",
   "containerDetails": "Detalles del contenedor",
   "containerRolloutExpired": "El contenedor {serial} ha caducado y ya no puede ser retirado.",
   "containerRolloutSendDeviceInfoDialogContent": "¿Desea indicar al editor del contenedor el dispositivo que está utilizando? Esto puede ser útil más adelante si tienes problemas con tu segundo factor.",
@@ -1804,11 +1782,9 @@
   "decryptErrorDeleteConfirmationContent": "¿Estás seguro de que quieres borrar los datos de la aplicación?",
   "decryptErrorTitle": "Error de descifrado",
   "delete": "Borrar",
-  "deleteAllButtonText": "Eliminar todo",
-  "deleteContainerDialogContent": "Si elimina este contenedor, el smartphone se desconectará del servidor privacyIDEA y los tokens de este contenedor quedarán inutilizables. Antes de eliminarlo, asegúrate de que los tokens correspondientes ya no son necesarios.",
+  "deleteContainerDialogContent": "Si elimina este contenedor, el smartphone se desconectará del servidor privacyIDEA y todos los tokens pertenecientes a este contenedor se eliminarán de la aplicación. Antes de eliminarlo, asegúrese de que los tokens correspondientes ya no sean necesarios.",
   "deleteContainerDialogTitle": "Borrar contenedor {serial}",
   "deleteLockedToken": "Por favor, autentíquese para eliminar el token bloqueado.",
-  "deleteOnlyContainerButtonText": "Sólo contenedor",
   "details": "Detalles",
   "deviceCredentialsRequiredTitle": "No se han configurado las credenciales del dispositivo.",
   "deviceCredentialsSetupDescription": "Configurar las credenciales del dispositivo en los ajustes del dispositivo",
@@ -2119,8 +2095,6 @@
   "statusCode": "Código de estado: {statusCode}",
   "sync": "Sinchronizar",
   "syncContainerFailed": "Error en la sincronización de contenedores",
-  "syncContainerNotFoundDialogContent": "No se ha encontrado el contenedor en el servidor. ¿Desea eliminarlo de la aplicación?",
-  "syncContainerNotFoundDialogTitle": "Contenedor {serial} no encontrado",
   "syncFbTokenFailed": "La sincronización ha fallado para los siguientes tokens, por favor inténtelo de nuevo:",
   "syncFbTokenManuallyWhenNetworkIsAvailable": "Por favor, sincronice los tokens push manualmente a través de los ajustes cuando haya una conexión de red disponible.",
   "syncState": "Estado de la sincronización",

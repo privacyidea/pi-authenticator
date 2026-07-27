@@ -20,55 +20,31 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:privacyidea_authenticator/model/extensions/token_list_extension.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import 'package:privacyidea_authenticator/utils/view_utils.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/token_container.dart';
-import '../../../../../utils/logger.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 import 'delete_container_force_dialog.dart';
-import 'delete_container_token_dialog.dart';
 
 class DeleteContainerDialog extends ConsumerWidget {
   final TokenContainer container;
-  final String? titleOverride;
-  final String? contentOverride;
 
-  static void showDialog(
-    TokenContainer container, {
-    String? titleOverride,
-    String? contentOverride,
-  }) => showAsyncDialog(
-    builder: (context) => DeleteContainerDialog(
-      container,
-      titleOverride: titleOverride,
-      contentOverride: contentOverride,
-    ),
-  );
+  static void showDialog(TokenContainer container) =>
+      showAsyncDialog(builder: (context) => DeleteContainerDialog(container));
 
-  const DeleteContainerDialog(
-    this.container, {
-    this.titleOverride,
-    this.contentOverride,
-    super.key,
-  });
+  const DeleteContainerDialog(this.container, {super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return DefaultDialog(
       title: Text(
-        titleOverride ??
-            AppLocalizations.of(
-              context,
-            )!.deleteContainerDialogTitle(container.serial),
+        AppLocalizations.of(
+          context,
+        )!.deleteContainerDialogTitle(container.serial),
       ),
-      content: Text(
-        contentOverride ??
-            AppLocalizations.of(context)!.deleteContainerDialogContent,
-      ),
+      content: Text(AppLocalizations.of(context)!.deleteContainerDialogContent),
       actions: [
         DialogAction(
           label: AppLocalizations.of(context)!.cancel,
@@ -85,48 +61,12 @@ class DeleteContainerDialog extends ConsumerWidget {
   }
 
   Future<void> _onPressDelete(BuildContext context, WidgetRef ref) async {
-    final containerToken =
-        ref.watch(tokenProvider).value?.containerTokens(container.serial) ?? [];
-    final deleteContainerTokens = containerToken.isEmpty
-        ? false
-        : await DeleteContainerTokenDialog.showDialog(container);
-    if (deleteContainerTokens == null) return;
-
     var wasContainerDeleted = await _deleteContainer(ref);
     if (!wasContainerDeleted) {
       wasContainerDeleted =
           (await ForceDeleteContainerDialog.showDialog(container)) == true;
     }
-    if (!ref.context.mounted) return;
-    final containerTokens = (await ref.read(
-      tokenProvider.future,
-    )).containerTokens(container.serial);
-    if (!context.mounted) return;
-    if (wasContainerDeleted) {
-      if (deleteContainerTokens) {
-        await ref
-            .read(tokenProvider.notifier)
-            .removeTokens(containerTokens.noOffline);
-      } else {
-        Logger.info(
-          "Container ${container.serial} deleted, but tokens were not removed.",
-        );
-        Logger.info(
-          "Tokens: ${containerTokens.noOffline.map((token) => token.serial).join(", ")}",
-        );
-        await ref
-            .read(tokenProvider.notifier)
-            .updateTokens(
-              containerTokens.noOffline,
-              (token) => token.copyWith(
-                containerSerial: () => null,
-                checkedContainer: [...token.checkedContainer, container.serial],
-              ),
-            );
-      }
-    }
-
-    if (!context.mounted) return;
+    if (!context.mounted || !wasContainerDeleted) return;
     Navigator.of(context).pop();
   }
 

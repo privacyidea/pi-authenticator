@@ -200,9 +200,6 @@
   "@containerAlreadyExists": {
     "description": "Title of the dialog that tells the user that the container already exists."
   },
-  "@containerDeleteCorrespondingTokenDialogContent": {
-    "description": "Content of the dialog that asks the user if they want to delete the corresponding tokens."
-  },
   "@containerDetails": {
     "description": "Title of the container details dialog."
   },
@@ -326,9 +323,6 @@
   "@delete": {
     "description": "Label that describes deleting the token."
   },
-  "@deleteAllButtonText": {
-    "description": "Button text to delete corresponding tokens after container deletion."
-  },
   "@deleteContainerDialogContent": {
     "description": "Content of the dialog that ensures the user wants to delete a container."
   },
@@ -343,9 +337,6 @@
   },
   "@deleteLockedToken": {
     "description": "Text for the authentication dialog when the user wants to delete a locked token."
-  },
-  "@deleteOnlyContainerButtonText": {
-    "description": "Button text to delete only the container not the corresponding tokens."
   },
   "@details": {
     "description": "Title of the details action Button."
@@ -1505,18 +1496,6 @@
   "@syncContainerFailed": {
     "description": "Error message when synchronizing a container failed."
   },
-  "@syncContainerNotFoundDialogContent": {
-    "description": "Content for the dialog that appears when a container could not be found on the server."
-  },
-  "@syncContainerNotFoundDialogTitle": {
-    "description": "Title for the dialog that appears when a container could not be found on the server.",
-    "placeholders": {
-      "serial": {
-        "example": "123456",
-        "type": "String"
-      }
-    }
-  },
   "@syncFbTokenFailed": {
     "description": "Headline for the list of tokens where the synchronization failed."
   },
@@ -1768,7 +1747,6 @@
   "connectionFailed": "Połączenie nie powiodło się.",
   "container": "Pojemnik",
   "containerAlreadyExists": "Kontener już istnieje",
-  "containerDeleteCorrespondingTokenDialogContent": "Czy chcesz usunąć również odpowiednie tokeny?",
   "containerDetails": "Szczegóły kontenera",
   "containerRolloutExpired": "Kontener {serial} wygasł i nie można go już rozwinąć",
   "containerRolloutSendDeviceInfoDialogContent": "Czy chcesz poinformować wydawcę kontenera, z jakiego urządzenia korzystasz? Może to być przydatne później, jeśli wystąpią problemy z drugim czynnikiem.",
@@ -1804,11 +1782,9 @@
   "decryptErrorDeleteConfirmationContent": "Czy na pewno chcesz usunąć dane aplikacji?",
   "decryptErrorTitle": "Decryption error",
   "delete": "Usuń",
-  "deleteAllButtonText": "Usuń wszystko",
-  "deleteContainerDialogContent": "Jeśli usuniesz ten kontener, smartfon zostanie odłączony od serwera privacyIDEA, a tokeny w tym kontenerze staną się bezużyteczne. Przed usunięciem upewnij się, że odpowiednie tokeny nie są już potrzebne!",
+  "deleteContainerDialogContent": "Jeśli usuniesz ten kontener, smartfon zostanie odłączony od serwera privacyIDEA, a wszystkie tokeny należące do tego kontenera zostaną usunięte z aplikacji. Przed usunięciem upewnij się, że odpowiednie tokeny nie są już potrzebne!",
   "deleteContainerDialogTitle": "Usuwanie kontenera {serial}",
   "deleteLockedToken": "Uwierzytelnij, aby usunąć zablokowany token.",
-  "deleteOnlyContainerButtonText": "Tylko kontener",
   "details": "Szczegóły",
   "deviceCredentialsRequiredTitle": "Ustawienia zabezpieczeń urządzenia nie zostały skonfigurowane.",
   "deviceCredentialsSetupDescription": "Skonfiguruj ustawienia zabezpieczeń w ustawieniach urządzenia.",
@@ -2119,8 +2095,6 @@
   "statusCode": "Kod statusu: {statusCode}",
   "sync": "Synchronizuj",
   "syncContainerFailed": "Synchronizacja kontenera nie powiodła się",
-  "syncContainerNotFoundDialogContent": "Nie można znaleźć kontenera na serwerze. Czy chcesz go usunąć z aplikacji?",
-  "syncContainerNotFoundDialogTitle": "Nie znaleziono kontenera {serial}",
   "syncFbTokenFailed": "Synchronizacja dla poniższych tokenów się nie udała, spróbuj ponownie:",
   "syncFbTokenManuallyWhenNetworkIsAvailable": "Zsynchronizuj tokeny push ręcznie za pomocą ustawień, gdy dostępne jest połączenie sieciowe",
   "syncState": "Stan synchronizacji",

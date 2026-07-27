@@ -200,9 +200,6 @@
   "@containerAlreadyExists": {
     "description": "Title of the dialog that tells the user that the container already exists."
   },
-  "@containerDeleteCorrespondingTokenDialogContent": {
-    "description": "Content of the dialog that asks the user if they want to delete the corresponding tokens."
-  },
   "@containerDetails": {
     "description": "Title of the container details dialog."
   },
@@ -326,9 +323,6 @@
   "@delete": {
     "description": "Label that describes deleting the token."
   },
-  "@deleteAllButtonText": {
-    "description": "Button text to delete corresponding tokens after container deletion."
-  },
   "@deleteContainerDialogContent": {
     "description": "Content of the dialog that ensures the user wants to delete a container."
   },
@@ -343,9 +337,6 @@
   },
   "@deleteLockedToken": {
     "description": "Text for the authentication dialog when the user wants to delete a locked token."
-  },
-  "@deleteOnlyContainerButtonText": {
-    "description": "Button text to delete only the container not the corresponding tokens."
   },
   "@details": {
     "description": "Title of the details action Button."
@@ -1505,18 +1496,6 @@
   "@syncContainerFailed": {
     "description": "Error message when synchronizing a container failed."
   },
-  "@syncContainerNotFoundDialogContent": {
-    "description": "Content for the dialog that appears when a container could not be found on the server."
-  },
-  "@syncContainerNotFoundDialogTitle": {
-    "description": "Title for the dialog that appears when a container could not be found on the server.",
-    "placeholders": {
-      "serial": {
-        "example": "123456",
-        "type": "String"
-      }
-    }
-  },
   "@syncFbTokenFailed": {
     "description": "Headline for the list of tokens where the synchronization failed."
   },
@@ -1768,7 +1747,6 @@
   "connectionFailed": "Koneksi gagal.",
   "container": "Kontainer",
   "containerAlreadyExists": "Wadah sudah ada",
-  "containerDeleteCorrespondingTokenDialogContent": "Apakah Anda juga ingin menghapus token yang terkait?",
   "containerDetails": "Detail kontainer",
   "containerRolloutExpired": "Kontainer {serial} telah kedaluwarsa dan tidak dapat diluncurkan lagi",
   "containerRolloutSendDeviceInfoDialogContent": "Apakah Anda ingin memberi tahu penerbit kontainer perangkat mana yang Anda gunakan? Ini mungkin berguna nantinya jika Anda mengalami masalah dengan faktor kedua Anda.",
@@ -1804,11 +1782,9 @@
   "decryptErrorDeleteConfirmationContent": "Apakah Anda yakin ingin menghapus data aplikasi?",
   "decryptErrorTitle": "Kesalahan dekripsi",
   "delete": "Menghapus",
-  "deleteAllButtonText": "Hapus semua",
-  "deleteContainerDialogContent": "Jika Anda menghapus kontainer ini, smartphone akan terputus dari server privacyIDEA dan token dari kontainer ini menjadi tidak dapat digunakan. Sebelum menghapus, pastikan bahwa token yang bersangkutan tidak lagi diperlukan!",
+  "deleteContainerDialogContent": "Jika Anda menghapus kontainer ini, smartphone akan terputus dari server privacyIDEA dan semua token yang termasuk dalam kontainer ini akan dihapus dari aplikasi. Sebelum menghapus, pastikan bahwa token yang bersangkutan tidak lagi diperlukan!",
   "deleteContainerDialogTitle": "Menghapus Kontainer {serial}",
   "deleteLockedToken": "Lakukan autentikasi untuk menghapus token yang terkunci.",
-  "deleteOnlyContainerButtonText": "Hanya kontainer",
   "details": "Detail",
   "deviceCredentialsRequiredTitle": "Kredensial perangkat tidak diatur",
   "deviceCredentialsSetupDescription": "Mengatur kredensial perangkat di pengaturan perangkat",
@@ -2119,8 +2095,6 @@
   "statusCode": "Kode status: {statusCode}",
   "sync": "Sinkronisasi",
   "syncContainerFailed": "Sinkronisasi kontainer gagal",
-  "syncContainerNotFoundDialogContent": "Kontainer tidak dapat ditemukan di server. Apakah Anda ingin menghapusnya dari aplikasi?",
-  "syncContainerNotFoundDialogTitle": "Kontainer {serial} tidak ditemukan",
   "syncFbTokenFailed": "Sinkronisasi gagal untuk token berikut ini, silakan coba lagi:",
   "syncFbTokenManuallyWhenNetworkIsAvailable": "Harap sinkronkan token push secara manual melalui pengaturan ketika koneksi jaringan tersedia.",
   "syncState": "Status Sinkronisasi",

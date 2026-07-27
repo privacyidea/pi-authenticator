@@ -200,9 +200,6 @@
   "@containerAlreadyExists": {
     "description": "Title of the dialog that tells the user that the container already exists."
   },
-  "@containerDeleteCorrespondingTokenDialogContent": {
-    "description": "Content of the dialog that asks the user if they want to delete the corresponding tokens."
-  },
   "@containerDetails": {
     "description": "Title of the container details dialog."
   },
@@ -326,9 +323,6 @@
   "@delete": {
     "description": "Label that describes deleting the token."
   },
-  "@deleteAllButtonText": {
-    "description": "Button text to delete corresponding tokens after container deletion."
-  },
   "@deleteContainerDialogContent": {
     "description": "Content of the dialog that ensures the user wants to delete a container."
   },
@@ -343,9 +337,6 @@
   },
   "@deleteLockedToken": {
     "description": "Text for the authentication dialog when the user wants to delete a locked token."
-  },
-  "@deleteOnlyContainerButtonText": {
-    "description": "Button text to delete only the container not the corresponding tokens."
   },
   "@details": {
     "description": "Title of the details action Button."
@@ -1505,18 +1496,6 @@
   "@syncContainerFailed": {
     "description": "Error message when synchronizing a container failed."
   },
-  "@syncContainerNotFoundDialogContent": {
-    "description": "Content for the dialog that appears when a container could not be found on the server."
-  },
-  "@syncContainerNotFoundDialogTitle": {
-    "description": "Title for the dialog that appears when a container could not be found on the server.",
-    "placeholders": {
-      "serial": {
-        "example": "123456",
-        "type": "String"
-      }
-    }
-  },
   "@syncFbTokenFailed": {
     "description": "Headline for the list of tokens where the synchronization failed."
   },
@@ -1768,7 +1747,6 @@
   "connectionFailed": "Verbinding mislukt.",
   "container": "Container",
   "containerAlreadyExists": "Container bestaat al",
-  "containerDeleteCorrespondingTokenDialogContent": "Wilt u de bijbehorende tokens ook verwijderen?",
   "containerDetails": "Containergegevens",
   "containerRolloutExpired": "Container {serial} is verlopen en kan niet langer worden uitgerold.",
   "containerRolloutSendDeviceInfoDialogContent": "Wil je de uitgever van de container vertellen welk apparaat je gebruikt? Dit kan later handig zijn als je problemen hebt met je tweede factor.",
@@ -1804,11 +1782,9 @@
   "decryptErrorDeleteConfirmationContent": "Weet je zeker dat je de app-gegevens wilt verwijderen?",
   "decryptErrorTitle": "Fout bij decoderen",
   "delete": "Verwijderen",
-  "deleteAllButtonText": "Alles verwijderen",
-  "deleteContainerDialogContent": "Als u deze container verwijdert, wordt de smartphone losgekoppeld van de privacyIDEA server en worden de tokens in deze container onbruikbaar. Controleer voor het verwijderen of de bijbehorende tokens niet meer nodig zijn!",
+  "deleteContainerDialogContent": "Als u deze container verwijdert, wordt de smartphone losgekoppeld van de privacyIDEA server en worden alle tokens die bij deze container horen uit de app verwijderd. Controleer voor het verwijderen of de bijbehorende tokens niet meer nodig zijn!",
   "deleteContainerDialogTitle": "Container verwijderen {serial}",
   "deleteLockedToken": "Verifieer om het vergrendelde token te verwijderen.",
-  "deleteOnlyContainerButtonText": "Alleen container",
   "details": "Details",
   "deviceCredentialsRequiredTitle": "Inloggevens van het apparaat zijn niet ingesteld",
   "deviceCredentialsSetupDescription": "Stel de inloggegevens in, bij de instellingen van het apparaat",
@@ -2119,8 +2095,6 @@
   "statusCode": "Statuscode: {statusCode}",
   "sync": "Synchroniseer",
   "syncContainerFailed": "Container synchronisatie mislukt",
-  "syncContainerNotFoundDialogContent": "De container kon niet worden gevonden op de server. Wilt u deze verwijderen uit de app?",
-  "syncContainerNotFoundDialogTitle": "Container {serial} niet gevonden",
   "syncFbTokenFailed": "Synchroniseren mislukt voor de volgende tokens, probeer het opnieuw:",
   "syncFbTokenManuallyWhenNetworkIsAvailable": "Synchroniseer de push tokens handmatig via de instellingen als er een netwerkverbinding beschikbaar is.",
   "syncState": "Sync-status",

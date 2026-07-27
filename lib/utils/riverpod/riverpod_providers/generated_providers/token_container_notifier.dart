@@ -25,8 +25,6 @@ import 'package:privacyidea_authenticator/model/container_policies.dart';
 import 'package:privacyidea_authenticator/model/extensions/enums/rollout_state_extension.dart';
 import 'package:privacyidea_authenticator/model/extensions/token_list_extension.dart';
 import 'package:privacyidea_authenticator/processors/scheme_processors/token_container_processor.dart';
-import 'package:privacyidea_authenticator/utils/globals.dart';
-import 'package:privacyidea_authenticator/views/container_view/container_widgets/dialogs/delete_container_dialogs.dart/delete_container_dialog.dart';
 import 'package:privacyidea_authenticator/widgets/dialog_widgets/container_dialogs/container_rollout_dialog.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -40,7 +38,6 @@ import '../../../../../../../utils/view_utils.dart';
 import '../../../../api/impl/privacy_idea_container_api.dart';
 import '../../../../api/interfaces/container_api.dart';
 import '../../../../interfaces/repo/token_container_repository.dart';
-import '../../../../l10n/app_localizations.dart';
 import '../../../../model/api_results/pi_server_results/pi_server_result_value.dart';
 import '../../../../model/enums/rollout_state.dart';
 import '../../../../model/enums/sync_state.dart';
@@ -501,6 +498,35 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
 
   // DELETE CONTAINER
 
+  Future<bool> _deleteLocalContainerAndTokens(TokenContainer container) async {
+    final tokenNotifier = ref.read(tokenProvider.notifier);
+    final containerTokens = (await ref.read(
+      tokenProvider.future,
+    )).containerTokens(container.serial);
+
+    await tokenNotifier.removeTokens(containerTokens);
+
+    final remainingContainerTokens = (await ref.read(
+      tokenProvider.future,
+    )).containerTokens(container.serial);
+    if (remainingContainerTokens.isNotEmpty) {
+      Logger.warning(
+        'Keeping container ${container.serial} because '
+        '${remainingContainerTokens.length} managed tokens could not be removed.',
+      );
+      return false;
+    }
+
+    await _stateMutex.acquire();
+    try {
+      final newState = await _deleteContainerFromRepo(container);
+      await update((_) => newState);
+      return true;
+    } finally {
+      _stateMutex.release();
+    }
+  }
+
   Future<bool> unregisterDelete(TokenContainerFinalized container) async {
     try {
       if (!(await _containerApi.unregister(container)).success) return false;
@@ -529,26 +555,11 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
       return false;
     }
 
-    await _stateMutex.acquire();
-    try {
-      final newState = await _deleteContainerFromRepo(container);
-      await update((_) => newState);
-      return true;
-    } finally {
-      _stateMutex.release();
-    }
+    return _deleteLocalContainerAndTokens(container);
   }
 
-  Future<bool> deleteContainer(TokenContainer container) async {
-    await _stateMutex.acquire();
-    try {
-      final newState = await _deleteContainerFromRepo(container);
-      await update((_) => newState);
-      return true;
-    } finally {
-      _stateMutex.release();
-    }
-  }
+  Future<bool> deleteContainer(TokenContainer container) =>
+      _deleteLocalContainerAndTokens(container);
 
   Future<TokenContainerState> deleteContainerList(
     List<TokenContainer> container,
@@ -988,25 +999,11 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
   ) async {
     if (error.code == PiServerResultErrorCodes.resourceNotFound ||
         error.code == PiServerResultErrorCodes.containerNotRegistered) {
-      // Server no longer has this container — clear disabledUnregister so the
-      // delete button is enabled even if the server policy previously blocked it.
-      await updateContainer(
-        container,
-        (TokenContainerFinalized c) => c.copyWith(
-          policies: c.policies.copyWith(disabledUnregister: false),
-        ),
+      Logger.info(
+        'Container ${container.serial} no longer exists on the server. '
+        'Removing the local container and its managed tokens.',
       );
-      final context = (await contextedGlobalNavigatorKey).currentContext;
-      if (context == null || !context.mounted || !isManually) return;
-      DeleteContainerDialog.showDialog(
-        container,
-        titleOverride: AppLocalizations.of(
-          context,
-        )!.syncContainerNotFoundDialogTitle(container.serial),
-        contentOverride: AppLocalizations.of(
-          context,
-        )!.syncContainerNotFoundDialogContent,
-      );
+      await deleteContainer(container);
     } else if (isManually) {
       showErrorStatusMessage(
         message: (l) => l.failedToSyncContainer(container.serial),

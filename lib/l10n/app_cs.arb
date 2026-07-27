@@ -200,9 +200,6 @@
   "@containerAlreadyExists": {
     "description": "Title of the dialog that tells the user that the container already exists."
   },
-  "@containerDeleteCorrespondingTokenDialogContent": {
-    "description": "Content of the dialog that asks the user if they want to delete the corresponding tokens."
-  },
   "@containerDetails": {
     "description": "Title of the container details dialog."
   },
@@ -326,9 +323,6 @@
   "@delete": {
     "description": "Label that describes deleting the token."
   },
-  "@deleteAllButtonText": {
-    "description": "Button text to delete corresponding tokens after container deletion."
-  },
   "@deleteContainerDialogContent": {
     "description": "Content of the dialog that ensures the user wants to delete a container."
   },
@@ -343,9 +337,6 @@
   },
   "@deleteLockedToken": {
     "description": "Text for the authentication dialog when the user wants to delete a locked token."
-  },
-  "@deleteOnlyContainerButtonText": {
-    "description": "Button text to delete only the container not the corresponding tokens."
   },
   "@details": {
     "description": "Title of the details action Button."
@@ -1505,18 +1496,6 @@
   "@syncContainerFailed": {
     "description": "Error message when synchronizing a container failed."
   },
-  "@syncContainerNotFoundDialogContent": {
-    "description": "Content for the dialog that appears when a container could not be found on the server."
-  },
-  "@syncContainerNotFoundDialogTitle": {
-    "description": "Title for the dialog that appears when a container could not be found on the server.",
-    "placeholders": {
-      "serial": {
-        "example": "123456",
-        "type": "String"
-      }
-    }
-  },
   "@syncFbTokenFailed": {
     "description": "Headline for the list of tokens where the synchronization failed."
   },
@@ -1768,7 +1747,6 @@
   "connectionFailed": "Připojení se nezdařilo.",
   "container": "Kontejner",
   "containerAlreadyExists": "Kontejner již existuje",
-  "containerDeleteCorrespondingTokenDialogContent": "Chcete odstranit i odpovídající tokeny?",
   "containerDetails": "Podrobnosti o kontejneru",
   "containerRolloutExpired": "Platnost kontejneru {serial} vypršela a nelze jej již rozvinout.",
   "containerRolloutSendDeviceInfoDialogContent": "Chcete vydavateli kontejneru sdělit, jaké zařízení používáte? To může být později užitečné, pokud budete mít problémy s druhým faktorem.",
@@ -1804,11 +1782,9 @@
   "decryptErrorDeleteConfirmationContent": "Jste si jisti, že chcete data aplikace odstranit?",
   "decryptErrorTitle": "Chyba dešifrování",
   "delete": "Smazat",
-  "deleteAllButtonText": "Odstranit vše",
-  "deleteContainerDialogContent": "Pokud tento kontejner odstraníte, smartphone se odpojí od serveru privacyIDEA a tokeny v tomto kontejneru nebudou použitelné. Před odstraněním se ujistěte, že příslušné tokeny již nejsou potřeba!",
+  "deleteContainerDialogContent": "Pokud tento kontejner odstraníte, smartphone se odpojí od serveru privacyIDEA a všechny tokeny patřící do tohoto kontejneru budou z aplikace odstraněny. Před odstraněním se ujistěte, že příslušné tokeny již nejsou potřeba!",
   "deleteContainerDialogTitle": "Odstranění kontejneru {serial}",
   "deleteLockedToken": "Prosím, autentifikujte se pro smazání uzamčeného tokenu.",
-  "deleteOnlyContainerButtonText": "Pouze kontejner",
   "details": "Podrobnosti na",
   "deviceCredentialsRequiredTitle": "Není nastaven zámek zařízení",
   "deviceCredentialsSetupDescription": "Nastave zámek zařízení v nastavení zařízení",
@@ -2119,8 +2095,6 @@
   "statusCode": "Stavový kód: {statusCode}",
   "sync": "Synchronizovat",
   "syncContainerFailed": "Synchronizace kontejneru se nezdařila",
-  "syncContainerNotFoundDialogContent": "Kontejner nebyl na serveru nalezen. Chcete jej z aplikace odstranit?",
-  "syncContainerNotFoundDialogTitle": "Kontejner {serial} nebyl nalezen",
   "syncFbTokenFailed": "Synchronizace následujících tokenů selhala, zkuste to znovu:",
   "syncFbTokenManuallyWhenNetworkIsAvailable": "Synchronizujte prosím push tokeny ručně prostřednictvím nastavení, když je k dispozici síťové připojení.",
   "syncState": "Stav synchronizace",

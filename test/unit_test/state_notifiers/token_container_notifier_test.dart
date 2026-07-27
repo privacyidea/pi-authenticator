@@ -17,6 +17,7 @@ import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.d
 import 'package:privacyidea_authenticator/model/riverpod_states/token_container_state.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/token_state.dart';
 import 'package:privacyidea_authenticator/model/token_container.dart';
+import 'package:privacyidea_authenticator/model/token_import/token_origin_data.dart';
 import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
@@ -507,7 +508,6 @@ void main() {
     test('deleteContainer', () async {
       // prepare
       TestWidgetsFlutterBinding.ensureInitialized();
-      final container = ProviderContainer();
       var containerRepoState = buildUnfinalizedContainerState();
       final mockContainerRepo = setupMockContainerRepo(
         () => containerRepoState,
@@ -554,6 +554,23 @@ void main() {
         repo: mockContainerRepo,
         containerApi: mockContainerApi,
         eccUtils: EccUtils(),
+      );
+      final mockTokenRepo = MockTokenRepository();
+      when(mockTokenRepo.loadTokens()).thenAnswer((_) async => []);
+      when(mockTokenRepo.deleteTokens(any)).thenAnswer((_) async => []);
+      final mockSettingsRepo = MockSettingsRepository();
+      when(
+        mockSettingsRepo.loadSettings(),
+      ).thenAnswer((_) async => SettingsState());
+      final container = ProviderContainer(
+        overrides: [
+          tokenProvider.overrideWith(
+            () => TokenNotifier(repoOverride: mockTokenRepo),
+          ),
+          settingsProvider.overrideWith(
+            () => SettingsNotifier(repoOverride: mockSettingsRepo),
+          ),
+        ],
       );
       await container.read(tokenContainerProvider.future);
       // act
@@ -1131,6 +1148,8 @@ void main() {
         required TokenContainerState Function() stateGetter,
         required void Function(TokenContainerState) stateSetter,
         required MockTokenContainerApi mockContainerApi,
+        List<Token> initialTokens = const [],
+        bool failTokenDeletion = false,
       }) async {
         final mockContainerRepo = setupMockContainerRepo(
           stateGetter,
@@ -1142,17 +1161,37 @@ void main() {
           eccUtilsOverride: EccUtils(),
         );
         final mockTokenRepo = MockTokenRepository();
-        when(mockTokenRepo.loadTokens()).thenAnswer((_) => Future.value([]));
+        var tokenRepoState = List<Token>.from(initialTokens);
+        when(
+          mockTokenRepo.loadTokens(),
+        ).thenAnswer((_) => Future.value(tokenRepoState));
         when(
           mockTokenRepo.saveOrReplaceTokens(any),
         ).thenAnswer((_) => Future.value([]));
+        when(mockTokenRepo.deleteTokens(any)).thenAnswer((invocation) async {
+          final tokens = invocation.positionalArguments[0] as List<Token>;
+          if (failTokenDeletion) return tokens;
+          tokenRepoState = tokenRepoState
+              .where((token) => !tokens.contains(token))
+              .toList();
+          return [];
+        });
         final mockTokenNotifier = TokenNotifier(repoOverride: mockTokenRepo);
+        final mockSettingsRepo = MockSettingsRepository();
+        when(
+          mockSettingsRepo.loadSettings(),
+        ).thenAnswer((_) async => SettingsState());
+        when(mockSettingsRepo.saveSettings(any)).thenAnswer((_) async => true);
+        final settingsNotifier = SettingsNotifier(
+          repoOverride: mockSettingsRepo,
+        );
         final providerContainer = ProviderContainer(
           overrides: [
             tokenContainerProvider.overrideWith(
               () => mockTokenContainerProvider,
             ),
             tokenProvider.overrideWith(() => mockTokenNotifier),
+            settingsProvider.overrideWith(() => settingsNotifier),
           ],
         );
         await providerContainer.read(tokenContainerProvider.future);
@@ -1185,6 +1224,178 @@ void main() {
             tokenContainerProvider.future,
           );
           expect(state.containerList, isEmpty);
+        },
+      );
+
+      test(
+        'deletes every managed token before deleting the container',
+        () async {
+          var repoState = buildFinalizedContainerState();
+          final container =
+              repoState.containerList.first as TokenContainerFinalized;
+          final managedOrigin = TokenOriginData.fromContainer(
+            container: container,
+            tokenData: 'managed',
+          );
+          final managedToken = TOTPToken(
+            id: 'managed',
+            serial: 'MANAGED01',
+            containerSerial: container.serial,
+            period: 30,
+            algorithm: Algorithms.SHA256,
+            digits: 6,
+            secret: 'SECRET01',
+            origin: managedOrigin,
+          );
+          final managedOfflineToken = TOTPToken(
+            id: 'managed-offline',
+            serial: 'MANAGED02',
+            containerSerial: container.serial,
+            period: 30,
+            algorithm: Algorithms.SHA256,
+            digits: 6,
+            secret: 'SECRET02',
+            origin: managedOrigin,
+            isOffline: true,
+          );
+          final unrelatedToken = TOTPToken(
+            id: 'unrelated',
+            serial: 'UNRELATED01',
+            period: 30,
+            algorithm: Algorithms.SHA256,
+            digits: 6,
+            secret: 'SECRET03',
+          );
+          final mockApi = MockTokenContainerApi();
+          when(
+            mockApi.unregister(any),
+          ).thenAnswer((_) async => UnregisterContainerResult(success: true));
+          final providerContainer = await setupContainer(
+            stateGetter: () => repoState,
+            stateSetter: (s) => repoState = s,
+            mockContainerApi: mockApi,
+            initialTokens: [managedToken, managedOfflineToken, unrelatedToken],
+          );
+
+          final result = await providerContainer
+              .read(tokenContainerProvider.notifier)
+              .unregisterDelete(container);
+
+          expect(result, isTrue);
+          expect(
+            (await providerContainer.read(
+              tokenContainerProvider.future,
+            )).containerList,
+            isEmpty,
+          );
+          expect((await providerContainer.read(tokenProvider.future)).tokens, [
+            unrelatedToken,
+          ]);
+        },
+      );
+
+      test(
+        'keeps the container when its managed tokens cannot be deleted',
+        () async {
+          var repoState = buildFinalizedContainerState();
+          final container =
+              repoState.containerList.first as TokenContainerFinalized;
+          final managedToken = TOTPToken(
+            id: 'managed',
+            serial: 'MANAGED01',
+            containerSerial: container.serial,
+            period: 30,
+            algorithm: Algorithms.SHA256,
+            digits: 6,
+            secret: 'SECRET01',
+            origin: TokenOriginData.fromContainer(
+              container: container,
+              tokenData: 'managed',
+            ),
+          );
+          final mockApi = MockTokenContainerApi();
+          when(
+            mockApi.unregister(any),
+          ).thenAnswer((_) async => UnregisterContainerResult(success: true));
+          final providerContainer = await setupContainer(
+            stateGetter: () => repoState,
+            stateSetter: (s) => repoState = s,
+            mockContainerApi: mockApi,
+            initialTokens: [managedToken],
+            failTokenDeletion: true,
+          );
+
+          final result = await providerContainer
+              .read(tokenContainerProvider.notifier)
+              .unregisterDelete(container);
+
+          expect(result, isFalse);
+          expect(
+            (await providerContainer.read(
+              tokenContainerProvider.future,
+            )).containerList,
+            [container],
+          );
+          expect((await providerContainer.read(tokenProvider.future)).tokens, [
+            managedToken,
+          ]);
+        },
+      );
+
+      test(
+        'silently removes the local container and managed tokens when manual sync reports it missing',
+        () async {
+          var repoState = buildFinalizedContainerState();
+          final container =
+              repoState.containerList.first as TokenContainerFinalized;
+          final managedToken = TOTPToken(
+            id: 'managed',
+            serial: 'MANAGED01',
+            containerSerial: container.serial,
+            period: 30,
+            algorithm: Algorithms.SHA256,
+            digits: 6,
+            secret: 'SECRET01',
+            origin: TokenOriginData.fromContainer(
+              container: container,
+              tokenData: 'managed',
+            ),
+          );
+          final mockApi = MockTokenContainerApi();
+          when(
+            mockApi.sync(any, any, isInitSync: anyNamed('isInitSync')),
+          ).thenThrow(
+            PiServerResultError(
+              code: PiServerResultErrorCodes.resourceNotFound,
+              message: 'Not found',
+            ),
+          );
+          final providerContainer = await setupContainer(
+            stateGetter: () => repoState,
+            stateSetter: (s) => repoState = s,
+            mockContainerApi: mockApi,
+            initialTokens: [managedToken],
+          );
+          final tokenState = await providerContainer.read(tokenProvider.future);
+
+          await providerContainer
+              .read(tokenContainerProvider.notifier)
+              .syncContainers(
+                tokenState: tokenState,
+                isManually: true,
+                isInitSync: false,
+              );
+
+          expect(
+            (await providerContainer.read(
+              tokenContainerProvider.future,
+            )).containerList,
+            isEmpty,
+          );
+          expect(
+            (await providerContainer.read(tokenProvider.future)).tokens,
+            isEmpty,
+          );
         },
       );
 

@@ -200,9 +200,6 @@
   "@containerAlreadyExists": {
     "description": "Title of the dialog that tells the user that the container already exists."
   },
-  "@containerDeleteCorrespondingTokenDialogContent": {
-    "description": "Content of the dialog that asks the user if they want to delete the corresponding tokens."
-  },
   "@containerDetails": {
     "description": "Title of the container details dialog."
   },
@@ -326,9 +323,6 @@
   "@delete": {
     "description": "Label that describes deleting the token."
   },
-  "@deleteAllButtonText": {
-    "description": "Button text to delete corresponding tokens after container deletion."
-  },
   "@deleteContainerDialogContent": {
     "description": "Content of the dialog that ensures the user wants to delete a container."
   },
@@ -343,9 +337,6 @@
   },
   "@deleteLockedToken": {
     "description": "Text for the authentication dialog when the user wants to delete a locked token."
-  },
-  "@deleteOnlyContainerButtonText": {
-    "description": "Button text to delete only the container not the corresponding tokens."
   },
   "@details": {
     "description": "Title of the details action Button."
@@ -1505,18 +1496,6 @@
   "@syncContainerFailed": {
     "description": "Error message when synchronizing a container failed."
   },
-  "@syncContainerNotFoundDialogContent": {
-    "description": "Content for the dialog that appears when a container could not be found on the server."
-  },
-  "@syncContainerNotFoundDialogTitle": {
-    "description": "Title for the dialog that appears when a container could not be found on the server.",
-    "placeholders": {
-      "serial": {
-        "example": "123456",
-        "type": "String"
-      }
-    }
-  },
   "@syncFbTokenFailed": {
     "description": "Headline for the list of tokens where the synchronization failed."
   },
@@ -1768,7 +1747,6 @@
   "connectionFailed": "La connexion a échoué.",
   "container": "Conteneur",
   "containerAlreadyExists": "Le conteneur existe déjà",
-  "containerDeleteCorrespondingTokenDialogContent": "Souhaitez-vous également supprimer les jetons correspondants ?",
   "containerDetails": "Détails du conteneur",
   "containerRolloutExpired": "Le conteneur {serial} a expiré et ne peut plus être déployé.",
   "containerRolloutSendDeviceInfoDialogContent": "Souhaitez-vous indiquer à l'éditeur du conteneur quel appareil vous utilisez ? Cela peut être utile plus tard si vous avez des problèmes avec votre deuxième facteur.",
@@ -1804,11 +1782,9 @@
   "decryptErrorDeleteConfirmationContent": "Êtes-vous sûr de vouloir supprimer les données de l'application ?",
   "decryptErrorTitle": "Erreur de décryptage",
   "delete": "Supprimer",
-  "deleteAllButtonText": "Supprimer tout",
-  "deleteContainerDialogContent": "Si vous supprimez ce conteneur, le smartphone sera déconnecté du serveur privacyIDEA et les jetons de ce conteneur deviendront inutilisables. Avant de le supprimer, assurez-vous que les jetons correspondants ne sont plus nécessaires !",
+  "deleteContainerDialogContent": "Si vous supprimez ce conteneur, le smartphone sera déconnecté du serveur privacyIDEA et tous les jetons appartenant à ce conteneur seront supprimés de l’application. Avant de le supprimer, assurez-vous que les jetons correspondants ne sont plus nécessaires !",
   "deleteContainerDialogTitle": "Suppression du conteneur {serial}",
   "deleteLockedToken": "Veuillez vous authentifier pour supprimer le jeton verrouillé.",
-  "deleteOnlyContainerButtonText": "Seulement le conteneur",
   "details": "Détails",
   "deviceCredentialsRequiredTitle": "Les informations d'identification de l'appareil ne sont pas configurées",
   "deviceCredentialsSetupDescription": "Configurer les informations d'identification de l'appareil dans les paramètres de l'appareil",
@@ -2119,8 +2095,6 @@
   "statusCode": "Code d'état : {statusCode}",
   "sync": "Synchroniser",
   "syncContainerFailed": "Échec de la synchronisation des conteneurs",
-  "syncContainerNotFoundDialogContent": "Le conteneur n'a pas pu être trouvé sur le serveur. Voulez-vous le supprimer de l'application ?",
-  "syncContainerNotFoundDialogTitle": "Conteneur {serial} introuvable",
   "syncFbTokenFailed": "La synchronisation a échoué pour ces jetons, veuillez reéssayer:",
   "syncFbTokenManuallyWhenNetworkIsAvailable": "Veuillez synchroniser manuellement les jetons Push via les paramètres lorsqu'une connexion réseau est disponible",
   "syncState": "État de la synchronisation",
