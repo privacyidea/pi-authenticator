@@ -9,6 +9,7 @@ import '../utils/home_widget_utils.dart';
 import '../utils/logger.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/deeplink_notifier.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/push_request_provider.dart';
+import '../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../utils/riverpod/state_listeners/home_widget_deep_link_listener.dart';
@@ -47,10 +48,15 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
     super.initState();
     _listener = AppLifecycleListener(
       onResume: () async {
-        final state = await ref
-            .read(tokenProvider.notifier)
-            .loadStateFromRepo();
+        var state = await ref.read(tokenProvider.notifier).loadStateFromRepo();
         Logger.info('Refreshed tokens on resume');
+        if (state != null) {
+          await ref
+              .read(tokenContainerProvider.notifier)
+              .syncContainers(tokenState: state, isManually: false);
+          state = await ref.read(tokenProvider.future);
+          Logger.info('Synchronized containers on resume');
+        }
         final hasPushToken = state?.hasPushTokens == true;
         if (hasPushToken) {
           final prProvider = ref.read(pushRequestProvider.notifier);
