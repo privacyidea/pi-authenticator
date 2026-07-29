@@ -163,17 +163,15 @@ class _IntentButtonState extends State<IntentButton>
       }
     }
 
-    if (widget.cooldownMs > 0) {
+    if (widget.cooldownMs > 0 && mounted) {
       _cooldownTimer?.cancel();
       _cooldownTimer = Timer(Duration(milliseconds: widget.cooldownMs), () {
         if (mounted) {
           setState(() => _isCooldown = false);
         }
       });
-    } else {
-      if (mounted) {
-        setState(() => _isCooldown = false);
-      }
+    } else if (mounted) {
+      setState(() => _isCooldown = false);
     }
   }
 
