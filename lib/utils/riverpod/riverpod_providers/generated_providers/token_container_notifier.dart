@@ -321,11 +321,17 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
       );
       return syncUpdate;
     } catch (error, stackTrace) {
-      Logger.warning(
-        'Failed to sync container ${finalizedContainer.serial}',
-        error: error,
-        stackTrace: stackTrace,
-      );
+      final isMissingOnServer =
+          error is PiServerResultError &&
+          (error.code == PiServerResultErrorCodes.resourceNotFound ||
+              error.code == PiServerResultErrorCodes.containerNotRegistered);
+      if (!isMissingOnServer) {
+        Logger.warning(
+          'Failed to sync container ${finalizedContainer.serial}',
+          error: error,
+          stackTrace: stackTrace,
+        );
+      }
       await updateContainer(
         finalizedContainer,
         (TokenContainerFinalized c) => c.copyWith(syncState: SyncState.failed),
@@ -988,6 +994,10 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
   ) async {
     if (error.code == PiServerResultErrorCodes.resourceNotFound ||
         error.code == PiServerResultErrorCodes.containerNotRegistered) {
+      Logger.info(
+        'Container ${container.serial} no longer exists on the server. '
+        'Updating its local state.',
+      );
       // Server no longer has this container — clear disabledUnregister so the
       // delete button is enabled even if the server policy previously blocked it.
       await updateContainer(

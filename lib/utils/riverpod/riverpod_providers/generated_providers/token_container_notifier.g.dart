@@ -58,7 +58,7 @@ final class TokenContainerNotifierProvider
 }
 
 String _$tokenContainerNotifierHash() =>
-    r'5d2a0a603bb16b6fa09515bb052d4b0e05313308';
+    r'090cb8d59c0732adc41a34f050c3028f85e166c4';
 
 final class TokenContainerNotifierFamily extends $Family
     with
