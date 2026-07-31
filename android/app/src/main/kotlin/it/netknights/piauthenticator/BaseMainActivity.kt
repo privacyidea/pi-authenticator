@@ -2,8 +2,10 @@ package it.netknights.piauthenticator
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import android.provider.Settings
 import android.view.WindowManager
+import androidx.activity.enableEdgeToEdge
 import androidx.annotation.NonNull
 import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
@@ -19,6 +21,11 @@ abstract class BaseMainActivity : FlutterFragmentActivity() {
 
     private val channelName = "readValueFromFile"
     private val settingsChannelName = "it.netknights.piauthenticator/settings"
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
+    }
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         GeneratedPluginRegistrant.registerWith(flutterEngine)

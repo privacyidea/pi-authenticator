@@ -9,7 +9,6 @@ import es.antonborri.home_widget.HomeWidgetBackgroundIntent
 import es.antonborri.home_widget.HomeWidgetLaunchIntent
 import es.antonborri.home_widget.HomeWidgetProvider
 import android.graphics.BitmapFactory
-import android.graphics.Bitmap
 import android.content.res.Configuration
 import android.os.Bundle
 import android.content.ClipboardManager
@@ -186,7 +185,12 @@ class AppWidgetProvider : HomeWidgetProvider() {
 
         println("imagePath is $imagePath")
         try {
-            val myBitmap: Bitmap = BitmapFactory.decodeFile(imageFile.absolutePath)
+            // Flutter renders widget images at twice their logical size for
+            // quality. Decode them at the actual RemoteViews display size to
+            // avoid retaining four times as much bitmap memory.
+            val options = BitmapFactory.Options().apply { inSampleSize = 2 }
+            val myBitmap = BitmapFactory.decodeFile(imageFile.absolutePath, options)
+                ?: return false
             view.setImageViewBitmap(xmlElement, myBitmap)
         } catch (e: Exception) {
             println("Exception: $e")
