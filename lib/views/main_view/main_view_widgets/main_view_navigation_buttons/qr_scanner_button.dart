@@ -65,6 +65,10 @@ class QrScannerButton extends ConsumerWidget {
           ref.read(tokenContainerProvider.notifier),
         ];
         if (qrCode == null || !context.mounted) return;
+        if (isPasskeyQrCode(qrCode)) {
+          showErrorStatusMessage(message: (l) => l.passkeyQrCodeNotSupported);
+          return;
+        }
         final handled = await scanQrCode(
           context: context,
           resultHandlerList: resultHandlers,

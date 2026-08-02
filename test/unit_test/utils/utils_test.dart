@@ -21,6 +21,24 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 
 void main() {
+  group('isPasskeyQrCode', () {
+    test('recognizes a FIDO hybrid QR code', () {
+      expect(isPasskeyQrCode('FIDO:/1234567890'), isTrue);
+    });
+
+    test('does not classify OTP provisioning as a passkey QR code', () {
+      expect(
+        isPasskeyQrCode('otpauth://totp/example?secret=JBSWY3DPEHPK3PXP'),
+        isFalse,
+      );
+    });
+
+    test('does not classify unsupported input types as passkey QR codes', () {
+      expect(isPasskeyQrCode(null), isFalse);
+      expect(isPasskeyQrCode(1234567890), isFalse);
+    });
+  });
+
   group('insertCharAt', () {
     test('inserts character at position', () {
       expect(insertCharAt('ABCD', ' ', 2), 'AB CD');

@@ -226,6 +226,15 @@ Uint8List bigIntToBytes(BigInt bigInt) =>
 BigInt bytesToBigInt(Uint8List bytes) =>
     byteDataToBigInt(ByteData.sublistView(bytes));
 
+bool isPasskeyQrCode(Object? qrCode) {
+  final uri = switch (qrCode) {
+    String value => Uri.tryParse(value),
+    Uri value => value,
+    _ => null,
+  };
+  return uri?.scheme.toLowerCase() == 'fido';
+}
+
 Future<bool> scanQrCode({
   BuildContext? context,
   required List<ResultHandler> resultHandlerList,

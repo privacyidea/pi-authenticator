@@ -1107,6 +1107,9 @@
     },
     "type": "text"
   },
+  "@passkeyQrCodeNotSupported": {
+    "description": "Guidance shown when a scanned QR code starts a FIDO passkey flow."
+  },
   "@password": {
     "description": "Labeltext for the password input field."
   },
@@ -2009,6 +2012,7 @@
   "originApp": "Ursprungs-App",
   "originDetails": "Angaben zur Herkunft",
   "otpValueCopiedMessage": "Passwort “{otpValue}“ wurde in Zwischenablage kopiert.",
+  "passkeyQrCodeNotSupported": "Dies ist ein Passkey-QR-Code. Diese App unterstützt ihn nicht. Verwenden Sie die Kamera oder den System-QR-Scanner.",
   "password": "Passwort",
   "showPassword": "Passwort anzeigen",
   "hidePassword": "Passwort verbergen",

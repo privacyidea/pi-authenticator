@@ -1086,6 +1086,9 @@
     },
     "type": "text"
   },
+  "@passkeyQrCodeNotSupported": {
+    "description": "Guidance shown when a scanned QR code starts a FIDO passkey flow."
+  },
   "@password": {
     "description": "Labeltext for the password input field."
   },
@@ -1988,6 +1991,7 @@
   "originApp": "Aplikacja Origin",
   "originDetails": "Szczegóły dotyczące pochodzenia",
   "otpValueCopiedMessage": "Jednorazowe hasło “{otpValue}“ skopiowane do schowka.",
+  "passkeyQrCodeNotSupported": "To kod QR klucza dostępu (passkey). Ta aplikacja go nie obsługuje. Użyj aparatu lub systemowego skanera QR telefonu.",
   "password": "Hasło",
   "showPassword": "Pokaż hasło",
   "hidePassword": "Skryj hasło",
