@@ -1085,6 +1085,7 @@ void main() {
         ).called(1);
         expect(stateContainer.policies, expectedContainer.policies);
         expect(stateContainer.syncState, SyncState.completed);
+        expect(stateContainer.initSynced, isTrue);
         expect(tokenState.tokens.length, 3);
         expect(
           tokenState.tokens,

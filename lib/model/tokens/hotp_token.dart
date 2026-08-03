@@ -19,7 +19,7 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
-import 'package:uuid/uuid.dart';
+import 'package:privacyidea_authenticator/utils/helpers/uuid_helper.dart';
 
 import '../../utils/object_validator/object_validators.dart';
 import '../enums/algorithms.dart';
@@ -130,7 +130,7 @@ class HOTPToken extends OTPToken {
           validatedMap[Token.FORCE_BIOMETRIC_OPTION] as ForceBiometricOption,
       containerSerial:
           validatedAdditionalData[Token.CONTAINER_SERIAL] as String?,
-      id: validatedAdditionalData[Token.ID] as String? ?? const Uuid().v4(),
+      id: validatedAdditionalData[Token.ID] as String? ?? uuidV4(),
       origin: validatedAdditionalData[Token.ORIGIN] as TokenOriginData?,
       isHidden: validatedAdditionalData[Token.IS_HIDDEN] as bool?,
       checkedContainer:

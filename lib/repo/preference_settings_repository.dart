@@ -17,7 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import 'package:mutex/mutex.dart';
+import 'package:privacyidea_authenticator/utils/helpers/mutex.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../interfaces/repo/settings_repository.dart';
@@ -30,8 +30,7 @@ class PreferenceSettingsRepository extends SettingsRepository {
   static const String _showGuideOnStartKey = 'KEY_SHOW_GUIDE_ON_START';
   static const String _prefHideOtps = 'KEY_HIDE_OTPS';
   static const String _prefEnablePoll = 'KEY_ENABLE_POLLING';
-  static const String _crashReportRecipientsKey =
-      'KEY_CRASH_REPORT_RECIPIENTS'; // TODO Use this if the server supports it
+  static const String _crashReportRecipientsKey = 'KEY_CRASH_REPORT_RECIPIENTS';
   static const String _localePreferenceKey = 'KEY_LOCALE_PREFERENCE';
   static const String _useSystemLocaleKey = 'KEY_USE_SYSTEM_LOCALE';
   static const String _enableLoggingKey = 'KEY_VERBOSE_LOGGING';

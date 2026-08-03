@@ -23,7 +23,6 @@ import 'dart:isolate';
 import 'dart:typed_data';
 
 import 'package:cryptography/cryptography.dart' as crypto;
-import 'package:encrypt/encrypt.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:pointycastle/export.dart';
 
@@ -38,6 +37,7 @@ import '../../model/tokens/hotp_token.dart';
 import '../../model/tokens/otp_token.dart';
 import '../../model/tokens/token.dart';
 import '../../model/tokens/totp_token.dart';
+import '../../utils/crypto_utils.dart';
 import '../../utils/logger.dart';
 import '../../utils/object_validator/object_validators.dart';
 import '../../utils/token_import_origins.dart';

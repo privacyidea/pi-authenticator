@@ -33,7 +33,7 @@ class _FakeHomeWidget extends FlutterHomeWidgetBase {
     required super.logicalSize,
     required super.theme,
     required super.utils,
-    super.aditionalSuffix,
+    super.additionalSuffix,
   });
 
   @override
@@ -53,7 +53,7 @@ class _TestBuilder extends FlutterHomeWidgetBuilder<_FakeHomeWidget> {
            logicalSize: size,
            theme: theme,
            utils: utils,
-           aditionalSuffix: suffix ?? '',
+           additionalSuffix: suffix ?? '',
          ),
        );
 }
@@ -89,14 +89,14 @@ void main() {
     test('getWidget returns correct theme and suffix', () {
       final darkWidget = builder.getWidget(
         isDark: true,
-        aditionalSuffix: '_ext',
+        additionalSuffix: '_ext',
       );
       expect(darkWidget.theme, darkTheme);
-      expect(darkWidget.aditionalSuffix, '_ext');
+      expect(darkWidget.additionalSuffix, '_ext');
 
       final lightWidget = builder.getWidget(isDark: false);
       expect(lightWidget.theme, lightTheme);
-      expect(lightWidget.aditionalSuffix, '');
+      expect(lightWidget.additionalSuffix, '');
     });
 
     test('renderFlutterWidgets calls utils twice with correct keys', () async {

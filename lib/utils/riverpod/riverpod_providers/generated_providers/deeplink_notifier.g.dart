@@ -33,13 +33,13 @@ final class DeeplinkNotifierProvider
   DeeplinkNotifier create() => DeeplinkNotifier();
 }
 
-String _$deeplinkNotifierHash() => r'4d2679c2d7edd3efe7b05aa4b64aa1be4b8cdbb4';
+String _$deeplinkNotifierHash() => r'9d97c7f0b0f581a674308344b44a73c68205fa57';
 
 abstract class _$DeeplinkNotifier extends $StreamNotifier<DeepLink> {
   Stream<DeepLink> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AsyncValue<DeepLink>, DeepLink>;
     final element =
         ref.element
@@ -49,6 +49,6 @@ abstract class _$DeeplinkNotifier extends $StreamNotifier<DeepLink> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

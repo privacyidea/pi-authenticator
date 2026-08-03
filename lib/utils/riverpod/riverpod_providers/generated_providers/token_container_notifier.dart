@@ -20,7 +20,7 @@
 import 'dart:async';
 
 import 'package:collection/collection.dart';
-import 'package:mutex/mutex.dart';
+import 'package:privacyidea_authenticator/utils/helpers/mutex.dart';
 import 'package:privacyidea_authenticator/model/container_policies.dart';
 import 'package:privacyidea_authenticator/model/extensions/enums/rollout_state_extension.dart';
 import 'package:privacyidea_authenticator/model/extensions/token_list_extension.dart';
@@ -72,12 +72,10 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
   final _repoMutex = Mutex();
 
   TokenContainerNotifier({
-    TokenContainerRepository? repoOverride,
-    TokenContainerApi? containerApiOverride,
-    EccUtils? eccUtilsOverride,
-  }) : _repoOverride = repoOverride,
-       _containerApiOverride = containerApiOverride,
-       _eccUtilsOverride = eccUtilsOverride;
+    this._repoOverride,
+    this._containerApiOverride,
+    this._eccUtilsOverride,
+  });
 
   @override
   TokenContainerRepository get repo => _repo;
@@ -312,7 +310,7 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
       await updateContainer(
         finalizedContainer,
         (TokenContainerFinalized c) =>
-            c.copyWith(syncState: SyncState.completed),
+            c.copyWith(syncState: SyncState.completed, initSynced: true),
       );
       ContainerSyncResultDialog.showDialog(
         container: finalizedContainer,
@@ -967,18 +965,17 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
     }
 
     // final signature = finalizationResponse.signature;
-    final finalizedContainer = await updateContainer(
-      container,
-      (TokenContainerUnfinalized c) {
-        final finalized = c.copyWith(policies: response.policies).finalize();
-        if (finalized == null) {
-          throw StateError(
-            'Unable to finalize container ${c.serial}: missing client key pair',
-          );
-        }
-        return finalized;
-      },
-    );
+    final finalizedContainer = await updateContainer(container, (
+      TokenContainerUnfinalized c,
+    ) {
+      final finalized = c.copyWith(policies: response.policies).finalize();
+      if (finalized == null) {
+        throw StateError(
+          'Unable to finalize container ${c.serial}: missing client key pair',
+        );
+      }
+      return finalized;
+    });
     if (finalizedContainer == null) {
       throw StateError(
         '[${InAppErrorCodes.containerWasRemoved}] Container was removed',

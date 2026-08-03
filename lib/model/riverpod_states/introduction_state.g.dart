@@ -34,4 +34,6 @@ const _$IntroductionEnumMap = {
   Introduction.pollForChallenges: 'pollForChallenges',
   Introduction.hidePushTokens: 'hidePushTokens',
   Introduction.exportTokens: 'exportTokens',
+  Introduction.homeWidgetSetUp: 'homeWidgetSetUp',
+  Introduction.homeWidgetBatteryOptimization: 'homeWidgetBatteryOptimization',
 };

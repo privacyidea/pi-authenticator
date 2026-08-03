@@ -23,7 +23,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:base32/base32.dart';
+import 'package:privacyidea_authenticator/utils/helpers/base32_helper.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 
 import '../../../model/enums/token_origin_source_type.dart';
@@ -68,7 +68,7 @@ class GoogleAuthenticatorQrProcessor extends TokenImportSchemeProcessor {
     Logger.info("${gai.otpParameters.length} tokens found");
     for (var param in gai.otpParameters) {
       try {
-        var base32string = base32.encode(Uint8List.fromList(param.secret));
+        var base32string = base32Encode(Uint8List.fromList(param.secret));
         final name = Uri.encodeFull(param.name);
         final issuer = Uri.encodeComponent(param.issuer);
         String algorithm = "";

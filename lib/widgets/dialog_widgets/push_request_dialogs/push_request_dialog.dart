@@ -164,10 +164,12 @@ mixin PushDialogMixin {
       return;
     }
     if (!ref.context.mounted) return;
-    await ref.read(pushRequestProvider.notifier).remove(pushRequest);
+    final response = await ref
+        .read(pushRequestProvider.notifier)
+        .cancel(token, pushRequest);
     if (!ref.context.mounted) return;
     if (context.mounted) {
-      await _onHandled(context: context, ref: ref);
+      await _onHandled(context: context, ref: ref, response: response);
     }
   }
 

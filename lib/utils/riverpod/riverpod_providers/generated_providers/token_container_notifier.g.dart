@@ -58,7 +58,7 @@ final class TokenContainerNotifierProvider
 }
 
 String _$tokenContainerNotifierHash() =>
-    r'090cb8d59c0732adc41a34f050c3028f85e166c4';
+    r'd415bdff7782390ce1f99b6a638a4eb1b1056e1d';
 
 final class TokenContainerNotifierFamily extends $Family
     with
@@ -115,7 +115,7 @@ abstract class _$TokenContainerNotifier
   });
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref =
         this.ref as $Ref<AsyncValue<TokenContainerState>, TokenContainerState>;
     final element =
@@ -126,7 +126,7 @@ abstract class _$TokenContainerNotifier
               Object?,
               Object?
             >;
-    element.handleCreate(
+    return element.handleCreate(
       ref,
       () => build(
         repo: _$args.repo,

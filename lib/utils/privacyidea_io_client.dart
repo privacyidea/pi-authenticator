@@ -61,7 +61,8 @@ class PrivacyideaIOClient {
     } on HandshakeException catch (e, _) {
       Logger.warning(
         'Network permission trigger handshake failed (sslVerify: $sslVerify)',
-        error: '${e.type}: ${e.message}'
+        error:
+            '${e.type}: ${e.message}'
             '${e.osError != null ? ', osError: ${e.osError}' : ''}',
       );
       showErrorStatusMessage(
@@ -77,7 +78,10 @@ class PrivacyideaIOClient {
       );
       return false;
     } on ArgumentError catch (e, _) {
-      Logger.warning('Network permission trigger invalid URL', error: e.message);
+      Logger.warning(
+        'Network permission trigger invalid URL',
+        error: e.message,
+      );
       showErrorStatusMessage(
         message: (localization) => localization.connectionFailed,
         details: (localization) => localization.invalidUrl,
@@ -85,7 +89,10 @@ class PrivacyideaIOClient {
       return false;
     } on SocketException catch (e, _) {
       if (isRetry) {
-        Logger.warning('Network permission trigger failed after retry', error: e.message);
+        Logger.warning(
+          'Network permission trigger failed after retry',
+          error: e.message,
+        );
         showErrorStatusMessage(
           message: (localization) => localization.connectionFailed,
           details: (localization) => localization.checkYourNetwork,
@@ -94,7 +101,11 @@ class PrivacyideaIOClient {
       }
       return Future.delayed(
         const Duration(seconds: 10),
-        () => triggerNetworkAccessPermission(url: url, sslVerify: sslVerify, isRetry: true),
+        () => triggerNetworkAccessPermission(
+          url: url,
+          sslVerify: sslVerify,
+          isRetry: true,
+        ),
       );
     } on TimeoutException {
       if (isRetry) {
@@ -107,10 +118,18 @@ class PrivacyideaIOClient {
       }
       return Future.delayed(
         const Duration(seconds: 10),
-        () => triggerNetworkAccessPermission(url: url, sslVerify: sslVerify, isRetry: true),
+        () => triggerNetworkAccessPermission(
+          url: url,
+          sslVerify: sslVerify,
+          isRetry: true,
+        ),
       );
     } catch (e, stack) {
-      Logger.error('Network permission trigger failed unexpectedly', error: e, stackTrace: stack);
+      Logger.error(
+        'Network permission trigger failed unexpectedly',
+        error: e,
+        stackTrace: stack,
+      );
       return false;
     } finally {
       ioClient.close();
@@ -138,7 +157,7 @@ class PrivacyideaIOClient {
         nullEntries.add(entry.key);
       }
       throw ArgumentError(
-        'Can not send request because the argument [body] contains a null values'
+        'Cannot send request because the argument [body] contains null values'
         ' at entries $nullEntries, this is not permitted.',
       );
     }
@@ -202,7 +221,6 @@ class PrivacyideaIOClient {
         );
       }
     }
-    ioClient.close();
 
     return response;
   }
@@ -289,15 +307,25 @@ class PrivacyideaIOClient {
 }
 
 extension ResponseBuilder on Response {
+  static const connectionFailureHeader = 'x-privacyidea-connection-failure';
+
+  bool get isConnectionFailure => headers[connectionFailureHeader] == 'true';
+
   static Response fromMessage(String message) =>
       _getResponseFromMessage(message);
   static Response fromStatusCode(int statusCode) =>
       _getResponseFromStatusCode(statusCode);
 
-  static Response _getResponseFromMessage(String message) =>
-      Response(message, messageToCode[message] ?? 520);
-  static Response _getResponseFromStatusCode(int statusCode) =>
-      Response(codeToMessage[statusCode] ?? 'Unknown Error', statusCode);
+  static Response _getResponseFromMessage(String message) => Response(
+    message,
+    messageToCode[message] ?? 520,
+    headers: {connectionFailureHeader: 'true'},
+  );
+  static Response _getResponseFromStatusCode(int statusCode) => Response(
+    codeToMessage[statusCode] ?? 'Unknown Error',
+    statusCode,
+    headers: {connectionFailureHeader: 'true'},
+  );
 
   static final messageToCode = {
     'Continue': 100,

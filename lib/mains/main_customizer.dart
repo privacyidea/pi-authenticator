@@ -26,22 +26,14 @@ import 'package:privacyidea_authenticator/mains/app_init.dart';
 
 import '../../../../../../../utils/customization/application_customization.dart';
 import '../l10n/app_localizations.dart';
-import '../model/enums/app_feature.dart';
 import '../model/riverpod_states/settings_state.dart';
 import '../utils/globals.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/app_constraints_notifier.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/app_customization_notifier.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
-import '../views/add_token_manually_view/add_token_manually_view.dart';
-import '../views/feedback_view/feedback_view.dart';
-import '../views/import_tokens_view/import_tokens_view.dart';
-import '../views/license_view/license_view.dart';
-import '../views/main_view/main_view.dart';
-import '../views/push_token_view/push_tokens_view.dart';
-import '../views/qr_scanner_view/qr_scanner_view.dart';
-import '../views/settings_view/settings_view.dart';
 import '../views/splash_screen/splash_screen.dart';
 import '../widgets/app_wrapper.dart';
+import 'app_routes.dart';
 
 void main() async {
   await initializeApp();
@@ -62,10 +54,10 @@ class CustomizationAuthenticator extends ConsumerWidget {
   });
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    WidgetsFlutterBinding.ensureInitialized();
     final applicationCustomizer = ref
         .watch(appCustomizationProvider)
         .maybeWhen(data: (data) => data, orElse: () => initialCustomization);
+    final routeBuilders = buildAppRoutes(applicationCustomizer);
     return LayoutBuilder(
       builder: (context, constraints) {
         WidgetsBinding.instance.addPostFrameCallback(
@@ -97,33 +89,14 @@ class CustomizationAuthenticator extends ConsumerWidget {
           scaffoldMessengerKey: globalSnackbarKey,
           themeMode: EasyDynamicTheme.of(context).themeMode,
           initialRoute: SplashScreen.routeName,
-          routes: {
-            AddTokenManuallyView.routeName: (context) =>
-                const AddTokenManuallyView(),
-            FeedbackView.routeName: (context) => const FeedbackView(),
-            ImportTokensView.routeName: (context) => const ImportTokensView(),
-            LicenseView.routeName: (context) => LicenseView(
-              appImage:
-                  applicationCustomizer.licensesViewImage?.getWidget ??
-                  applicationCustomizer.splashScreenImage.getWidget,
-              appName: applicationCustomizer.appName,
-              websiteLink: applicationCustomizer.websiteLink,
-            ),
-            MainView.routeName: (context) => MainView(
-              appbarIcon: applicationCustomizer.appbarIcon.getWidget,
-              backgroundImage: applicationCustomizer.backgroundImage?.getWidget,
-              appName: applicationCustomizer.appName,
-              disablePatchNotes: applicationCustomizer.disabledFeatures
-                  .contains(AppFeature.patchNotes),
-            ),
-            PushTokensView.routeName: (context) => const PushTokensView(),
-            SettingsView.routeName: (context) => const SettingsView(),
-            SplashScreen.routeName: (context) =>
-                SplashScreen(customization: applicationCustomizer),
-            QRScannerView.routeName: (context) => const QRScannerView(),
+          onGenerateRoute: (settings) {
+            final builder = routeBuilders[settings.name];
+            if (builder == null) return null;
+            return MaterialPageRoute(builder: builder, settings: settings);
           },
           onUnknownRoute: (settings) => MaterialPageRoute(
-            builder: (context) => SplashScreen(customization: applicationCustomizer),
+            builder: (context) =>
+                SplashScreen(customization: applicationCustomizer),
           ),
         );
       },
