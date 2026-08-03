@@ -194,7 +194,11 @@ abstract class BaseAppWidgetProvider : HomeWidgetProvider() {
 
         Log.d(TAG, "imagePath is $imagePath")
         try {
-            val myBitmap: Bitmap? = BitmapFactory.decodeFile(imageFile.absolutePath)
+            // Flutter renders widget images at twice their logical size for
+            // quality. Decode them at the actual RemoteViews display size to
+            // avoid retaining four times as much bitmap memory.
+            val options = BitmapFactory.Options().apply { inSampleSize = 2 }
+            val myBitmap: Bitmap? = BitmapFactory.decodeFile(imageFile.absolutePath, options)
             if (myBitmap == null) {
                 Log.d(TAG, "Failed to decode image: $imagePath")
                 view.setImageViewBitmap(xmlElement, null)
