@@ -78,8 +78,30 @@ sealed class TokenTemplate with _$TokenTemplate {
     name: Token.CONTAINER_SERIAL,
   );
 
-  Map<String, dynamic> get otpAuthMapSafeToSend =>
+  /// The complete token data without the secret.
+  /// Should only be sent for tokens that are already linked to the container.
+  Map<String, dynamic> get tokenDataSafeToSend =>
       Map<String, dynamic>.from(otpAuthMap)..remove(OTPToken.SECRET_BASE32);
+
+  /// Contains only the values the server needs to identify the token.
+  /// A token with a serial is identified by the serial, a token without a serial
+  /// by its type and two consecutive otp values.
+  Map<String, dynamic> get tokenIdentification => {
+    for (final key in serial != null ? _serialIdentifier : _otpIdentifier)
+      if (otpAuthMap[key] != null) key: otpAuthMap[key],
+  };
+
+  static const List<String> _serialIdentifier = [
+    Token.SERIAL,
+    Token.TOKENTYPE_OTPAUTH,
+  ];
+
+  /// 'counter' is HOTPToken.COUNTER, which can not be imported here without creating an import cycle.
+  static const List<String> _otpIdentifier = [
+    Token.TOKENTYPE_OTPAUTH,
+    OTPToken.OTP_VALUES,
+    'counter',
+  ];
 
   @override
   operator ==(Object other) {

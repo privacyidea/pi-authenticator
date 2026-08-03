@@ -63,7 +63,6 @@ class PiContainerApi implements TokenContainerApi {
     TokenState tokenState, {
     SimpleKeyPair? withX25519Key,
     bool? isInitSync,
-    bool? sendAllOTPs,
   }) async {
     final containerTokenTemplates = tokenState
         .containerTokens(container.serial)
@@ -75,25 +74,24 @@ class PiContainerApi implements TokenContainerApi {
     final notLinkedTokens = tokenState.tokens.maybeContainerTokensOf(
       container.serial,
     );
-    final templatesForAssignment = notLinkedTokens.withSerial.toTemplates();
-
-    final tokensWithoutSerial = notLinkedTokens.withoutSerial;
-    List<Token>? selectedTokens;
-    if (initialTokenAssignment && tokensWithoutSerial.isNotEmpty) {
-      if (sendAllOTPs == true) {
-        templatesForAssignment.addAll(tokensWithoutSerial.toTemplates());
-      } else {
-        selectedTokens = (await InitialTokenAssignmentDialog.showDialog(
-          container,
-          tokensWithoutSerial,
-        ))?.toList();
-
-        if (selectedTokens == null) {
-          // User canceled the dialog => cancel sync
-          return null;
-        }
-        templatesForAssignment.addAll(selectedTokens.toTemplates());
+    final assignmentCandidates = initialTokenAssignment
+        ? notLinkedTokens
+        : <Token>[];
+    // Tokens with a serial are identified by their serial, so no otp values are needed.
+    final templatesForAssignment = assignmentCandidates.withSerial
+        .toTemplates();
+    // Tokens without a serial are identified by otp values, which needs the users consent.
+    final tokensWithoutSerial = assignmentCandidates.withoutSerial;
+    if (tokensWithoutSerial.isNotEmpty) {
+      final selectedTokens = await InitialTokenAssignmentDialog.showDialog(
+        container,
+        tokensWithoutSerial,
+      );
+      if (selectedTokens == null) {
+        // User canceled the dialog => cancel sync
+        return null;
       }
+      templatesForAssignment.addAll(selectedTokens.toList().toTemplates());
     }
 
     final ContainerChallenge challenge = await _getChallenge(
@@ -107,11 +105,10 @@ class PiContainerApi implements TokenContainerApi {
       challenge: challenge,
       encKeyPair: encKeyPair,
       otpAuthMaps: [
-        for (var template in [
-          ...containerTokenTemplates,
-          ...templatesForAssignment,
-        ])
-          template.otpAuthMapSafeToSend,
+        for (var template in containerTokenTemplates)
+          template.tokenDataSafeToSend,
+        for (var template in templatesForAssignment)
+          template.tokenIdentification,
       ],
     );
 
@@ -192,7 +189,7 @@ class PiContainerApi implements TokenContainerApi {
       newTokens: newTokens,
       updatedTokens: updatedTokens,
       deletedTokens: deleteTokens,
-      initAssignmentChecked: tokensWithoutSerial,
+      initAssignmentChecked: assignmentCandidates,
       newPolicies: syncResult.policies,
       containerSerial: container.serial,
     );
