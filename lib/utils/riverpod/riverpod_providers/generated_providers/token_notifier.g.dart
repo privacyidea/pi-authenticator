@@ -56,7 +56,7 @@ final class TokenNotifierProvider
   }
 }
 
-String _$tokenNotifierHash() => r'74110196bde79cc6cacc21daf8d00bb76776f659';
+String _$tokenNotifierHash() => r'6f1e9925ea0854c50f585684713775bdc7234f93';
 
 final class TokenNotifierFamily extends $Family
     with
@@ -122,7 +122,7 @@ abstract class _$TokenNotifier extends $AsyncNotifier<TokenState> {
   });
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AsyncValue<TokenState>, TokenState>;
     final element =
         ref.element
@@ -132,7 +132,7 @@ abstract class _$TokenNotifier extends $AsyncNotifier<TokenState> {
               Object?,
               Object?
             >;
-    element.handleCreate(
+    return element.handleCreate(
       ref,
       () => build(
         repo: _$args.repo,

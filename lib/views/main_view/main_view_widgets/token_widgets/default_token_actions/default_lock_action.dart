@@ -67,7 +67,6 @@ class DefaultLockAction extends ConsumerSlideableAction {
       },
       child: FocusedItemAsOverlay(
         tooltipWhenFocused: AppLocalizations.of(context)!.introLockToken,
-        childIsMoving: true,
         alignment: Alignment.bottomCenter,
         isFocused: ref
             .watch(introductionNotifierProvider)

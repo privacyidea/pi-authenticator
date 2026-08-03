@@ -19,7 +19,7 @@
  */
 import 'dart:convert';
 
-import 'package:base32/base32.dart';
+import 'package:privacyidea_authenticator/utils/helpers/base32_helper.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../utils/globals.dart';
@@ -27,6 +27,7 @@ import '../../utils/logger.dart';
 import '../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../utils/rsa_utils.dart';
 import '../tokens/push_token.dart';
+import 'decline_reason.dart';
 import 'push_default_request.dart';
 import 'push_request.dart';
 
@@ -54,6 +55,7 @@ class PushChoiceRequest extends PushDefaultRequest {
     super.type = PushChoiceRequest.TYPE,
     this.selectedAnswer,
     super.accepted,
+    super.declineReason,
   });
 
   factory PushChoiceRequest.fromJson(Map<String, dynamic> json) =>
@@ -64,7 +66,8 @@ class PushChoiceRequest extends PushDefaultRequest {
 
   @override
   String get signedData =>
-      '$nonce|$uri|$serial|$question|$title|${sslVerify ? '1' : '0'}${'|${possibleAnswers.join(",")}'}';
+      '$nonce|$uri|$serial|$question|$title|${sslVerify ? '1' : '0'}'
+      '|${possibleAnswers.join(",")}';
 
   factory PushChoiceRequest.fromMessageData(Map<String, dynamic> data) {
     try {
@@ -115,7 +118,7 @@ class PushChoiceRequest extends PushDefaultRequest {
     final verified = rsaUtils.verifyRSASignature(
       token.rsaPublicServerKey!,
       utf8.encode(signedData),
-      base32.decode(signature),
+      base32Decode(signature),
     );
     if (!verified) {
       Logger.warning(
@@ -128,7 +131,7 @@ class PushChoiceRequest extends PushDefaultRequest {
     return true;
   }
 
-  // Verify that the data is valid.
+  /// Verify that the data is valid.
   static void verifyMessageData(Map<String, dynamic> data) {
     PushDefaultRequest.verifyMessageData(data);
     if (data[ANSWERS] is! String) {
@@ -162,9 +165,10 @@ class PushChoiceRequest extends PushDefaultRequest {
   @override
   String toString() {
     return 'PushChoiceRequest{title: $title, question: $question, '
-        'id: $id, uri: $uri, _nonce: $nonce, sslVerify: $sslVerify, '
+        'id: $id, uri: $uri, nonce: $nonce, sslVerify: $sslVerify, '
         'expirationDate: $expirationDate, serial: $serial, '
         'signature: $signature, accepted: $accepted, '
+        'declineReason: $declineReason, '
         'possibleAnswers: $possibleAnswers, selectedAnswer: $selectedAnswer}';
   }
 
@@ -181,6 +185,7 @@ class PushChoiceRequest extends PushDefaultRequest {
     List<String>? possibleAnswers,
     String? selectedAnswer,
     bool? Function()? accepted,
+    DeclineReason? Function()? declineReason,
   }) {
     return PushChoiceRequest(
       title: title ?? this.title,
@@ -194,6 +199,22 @@ class PushChoiceRequest extends PushDefaultRequest {
       possibleAnswers: possibleAnswers ?? this.possibleAnswers,
       selectedAnswer: selectedAnswer ?? this.selectedAnswer,
       accepted: accepted != null ? accepted() : this.accepted,
+      declineReason: declineReason != null
+          ? declineReason()
+          : this.declineReason,
+    );
+  }
+
+  @override
+  PushChoiceRequest dynamicCopyWith({
+    bool? Function()? accepted,
+    DeclineReason? Function()? declineReason,
+    String? selectedAnswer,
+  }) {
+    return copyWith(
+      accepted: accepted,
+      declineReason: declineReason,
+      selectedAnswer: selectedAnswer,
     );
   }
 }

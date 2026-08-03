@@ -22,11 +22,15 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 
+import '../../model/enums/introduction.dart';
 import '../../utils/customization/theme_extentions/extended_text_theme.dart';
 import '../../utils/home_widget_utils.dart';
+import '../../utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
 import '../../utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
 import '../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
+import '../../utils/riverpod/riverpod_providers/state_providers/battery_optimization_provider.dart';
 import '../../utils/utils.dart';
+import '../../widgets/dialog_widgets/battery_optimization_dialog.dart';
 import '../view_interface.dart';
 
 class LinkHomeWidgetView extends ConsumerStatefulView {
@@ -58,41 +62,60 @@ class _LinkHomeWidgetViewState extends ConsumerState<LinkHomeWidgetView> {
           overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
           maxLines: 2, // Title can be shown on small screens too.
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.help_outline),
+            tooltip: AppLocalizations.of(context)!.batteryOptimizationTitle,
+            onPressed: () async {
+              final isIgnoring = await ref.read(
+                batteryOptimizationsIsDisabledProvider.future,
+              );
+              if (isIgnoring) {
+                BatteryOptimizationAlreadyDisabledDialog.showDialog();
+              } else {
+                BatteryOptimizationDialog.showDialog();
+              }
+            },
+          ),
+        ],
       ),
       body: ListView.builder(
-          itemBuilder: (context, index) {
-            final otpToken = otpTokens![index];
-            final folderIsLocked =
-                ref
-                    .watch(tokenFolderProvider)
-                    .currentOfId(otpToken.folderId)
-                    ?.isLocked ??
-                false;
-            final otpString = otpToken.isLocked || folderIsLocked
-                ? veilingCharacter * otpToken.otpValue.length
-                : otpToken.otpValue;
-            return ListTile(
-              title: Text(otpToken.label),
-              subtitle: Text(
-                insertCharAt(otpString, ' ', (otpString.length / 2).ceil()),
-              ),
-              onTap: alreadyTapped
-                  ? () {}
-                  : () async {
-                      if (alreadyTapped) return;
-                      setState(() => alreadyTapped = true);
-                      await HomeWidgetUtils().link(
-                        widget.homeWidgetId,
-                        otpToken.id,
-                      );
-                      await SystemNavigator.pop();
-                      await Future.delayed(const Duration(milliseconds: 500));
-                      if (context.mounted) Navigator.pop(context);
-                    },
-            );
-          },
-          itemCount: otpTokens?.length ?? 0,
-        ),
+        itemBuilder: (context, index) {
+          final otpToken = otpTokens![index];
+          final folderIsLocked =
+              ref
+                  .watch(tokenFolderProvider)
+                  .currentOfId(otpToken.folderId)
+                  ?.isLocked ??
+              false;
+          final otpString = otpToken.isLocked || folderIsLocked
+              ? veilingCharacter * otpToken.otpValue.length
+              : otpToken.otpValue;
+          return ListTile(
+            title: Text(otpToken.label),
+            subtitle: Text(
+              insertCharAt(otpString, ' ', (otpString.length / 2).ceil()),
+            ),
+            onTap: alreadyTapped
+                ? () {}
+                : () async {
+                    if (alreadyTapped) return;
+                    setState(() => alreadyTapped = true);
+                    await HomeWidgetUtils().link(
+                      widget.homeWidgetId,
+                      otpToken.id,
+                    );
+                    await ref
+                        .read(introductionNotifierProvider.notifier)
+                        .complete(Introduction.homeWidgetSetUp);
+                    await SystemNavigator.pop();
+                    await Future.delayed(const Duration(milliseconds: 500));
+                    if (context.mounted) Navigator.pop(context);
+                  },
+          );
+        },
+        itemCount: otpTokens?.length ?? 0,
+      ),
     );
   }
 }

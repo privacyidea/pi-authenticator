@@ -35,18 +35,18 @@ class HomeWidgetAction extends FlutterHomeWidgetBase {
     required super.theme,
     required super.logicalSize,
     required super.utils,
-    required super.aditionalSuffix,
+    required super.additionalSuffix,
   });
 
   @override
   Widget build(BuildContext context) =>
-      (aditionalSuffix == HomeWidgetUtils.keySuffixActive)
+      (additionalSuffix == HomeWidgetUtils.keySuffixActive)
       ? Icon(
           icon,
           size: min(logicalSize.width, logicalSize.height),
           color: theme.listTileTheme.iconColor,
         )
-      : (aditionalSuffix == HomeWidgetUtils.keySuffixInactive)
+      : (additionalSuffix == HomeWidgetUtils.keySuffixInactive)
       ? Icon(
           icon,
           size: min(logicalSize.width, logicalSize.height),
@@ -75,7 +75,7 @@ class HomeWidgetActionBuilder
                key: key,
                theme: theme,
                logicalSize: logicalSize,
-               aditionalSuffix: additionalSuffix ?? '',
+               additionalSuffix: additionalSuffix ?? '',
                utils: utils,
              ),
        );

@@ -28,23 +28,14 @@ import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/gene
 
 import '../../../../model/riverpod_states/settings_state.dart';
 import '../l10n/app_localizations.dart';
-import '../model/enums/app_feature.dart';
 import '../utils/customization/application_customization.dart';
 import '../utils/globals.dart';
 import '../utils/logger.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/app_constraints_notifier.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
-import '../views/add_token_manually_view/add_token_manually_view.dart';
-import '../views/container_view/container_view.dart';
-import '../views/feedback_view/feedback_view.dart';
-import '../views/import_tokens_view/import_tokens_view.dart';
-import '../views/license_view/license_view.dart';
-import '../views/main_view/main_view.dart';
-import '../views/push_token_view/push_tokens_view.dart';
-import '../views/qr_scanner_view/qr_scanner_view.dart';
-import '../views/settings_view/settings_view.dart';
 import '../views/splash_screen/splash_screen.dart';
 import '../widgets/app_wrapper.dart';
+import 'app_routes.dart';
 
 void main() async {
   Logger.init(
@@ -76,14 +67,15 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
     PrivacyIDEAAuthenticator.currentCustomization = customization;
     return PrivacyIDEAAuthenticator._(customization: customization, key: key);
   }
-  const PrivacyIDEAAuthenticator._({
-    required ApplicationCustomization customization,
-    super.key,
-  }) : _customization = customization;
+  const PrivacyIDEAAuthenticator._({required this._customization, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     globalRef = ref;
+    final routeBuilders = buildAppRoutes(
+      _customization,
+      includeContainerView: true,
+    );
     return LayoutBuilder(
       builder: (context, constraints) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -111,36 +103,27 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
           navigatorKey: globalNavigatorKey,
           themeMode: EasyDynamicTheme.of(context).themeMode,
           initialRoute: SplashScreen.routeName,
-          routes: {
-            AddTokenManuallyView.routeName: (context) =>
-                const AddTokenManuallyView(),
-            FeedbackView.routeName: (context) => const FeedbackView(),
-            ImportTokensView.routeName: (context) => const ImportTokensView(),
-            LicenseView.routeName: (context) => LicenseView(
-              appImage:
-                  _customization.licensesViewImage?.getWidget ??
-                  _customization.splashScreenImage.getWidget,
-              appName: _customization.appName,
-              websiteLink: _customization.websiteLink,
-            ),
-            MainView.routeName: (context) => MainView(
-              appbarIcon: _customization.appbarIcon.getWidget,
-              backgroundImage: _customization.backgroundImage?.getWidget,
-              appName: _customization.appName,
-              disablePatchNotes: _customization.disabledFeatures.contains(
-                AppFeature.patchNotes,
-              ),
-            ),
-            PushTokensView.routeName: (context) => const PushTokensView(),
-            SettingsView.routeName: (context) => const SettingsView(),
-            SplashScreen.routeName: (context) =>
-                SplashScreen(customization: _customization),
-            QRScannerView.routeName: (context) => const QRScannerView(),
-            ContainerView.routeName: (context) => const ContainerView(),
+          onGenerateRoute: (settings) {
+            final builder = routeBuilders[settings.name];
+            if (builder == null) return null;
+            return MaterialPageRoute(builder: builder, settings: settings);
           },
-          onUnknownRoute: (settings) => MaterialPageRoute(
-            builder: (context) => SplashScreen(customization: _customization),
-          ),
+          onUnknownRoute: (settings) {
+            Logger.warning('MaterialApp.onUnknownRoute ignored spurious route: ${settings.name}');
+            return PageRouteBuilder<void>(
+              settings: settings,
+              opaque: false,
+              transitionDuration: Duration.zero,
+              reverseTransitionDuration: Duration.zero,
+              pageBuilder: (context, _, _) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  final navigator = Navigator.maybeOf(context);
+                  if (navigator?.canPop() == true) navigator!.pop();
+                });
+                return const SizedBox.shrink();
+              },
+            );
+          },
         );
       },
     );

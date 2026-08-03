@@ -18,7 +18,7 @@
  * limitations under the License.
  */
 import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart';
+import 'package:privacyidea_authenticator/utils/helpers/uuid_helper.dart';
 
 import '../../../../../../../model/extensions/enums/encodings_extension.dart';
 import '../../../../../../../model/extensions/enums/token_origin_source_type.dart';
@@ -81,7 +81,7 @@ class AddTotpManually extends AddTokenManuallyPage {
     }
     Logger.info('Input is valid, building token');
     return TOTPToken(
-      id: const Uuid().v4(),
+      id: uuidV4(),
       algorithm: algorithmsNotifier.value,
       digits: digitsNotifier.value!,
       secret: encodingNofitier.value.encodeStringTo(Encodings.base32, secretController.text),

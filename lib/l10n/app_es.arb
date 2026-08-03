@@ -130,6 +130,18 @@
   "@backgroundImage": {
     "description": "Label for the background image setting."
   },
+  "@batteryOptimizationTitle": {
+    "description": "Tooltip for the button that opens the battery optimization dialog again."
+  },
+  "@batteryOptimizationDialogBody": {
+    "description": "Message shown as a dialog body hinting that, if the widget has problems, disabling battery optimization for the app can help."
+  },
+  "@batteryOptimizationAlreadyDisabledBody": {
+    "description": "Message shown when battery optimization is already disabled for the app."
+  },
+  "@batteryOptimizationSettingsButton": {
+    "description": "Button label to open battery optimization settings."
+  },
   "@biometricAuthNotSetupBody": {
     "description": "Message shown as a dialog body that tells the user that biometric authentication is not available on the device."
   },
@@ -1089,6 +1101,12 @@
   "@password": {
     "description": "Labeltext for the password input field."
   },
+  "@showPassword": {
+    "description": "Button to reveal the password input as plain text."
+  },
+  "@hidePassword": {
+    "description": "Button to hide the password input as plain text."
+  },
   "@passwordCannotBeEmpty": {
     "description": "Hint telling the user that the password cannot be empty."
   },
@@ -1747,6 +1765,10 @@
   "autoCloseAppAfterAcceptingPushRequestDescription": "Si está habilitado, la aplicación se cerrará automáticamente después de aceptar una solicitud push.",
   "autoCloseAppAfterAcceptingPushRequestTitle": "Cerrar app después de aceptar solicitud",
   "backgroundImage": "Imagen de fondo",
+  "batteryOptimizationTitle": "Widget de pantalla de inicio",
+  "batteryOptimizationDialogBody": "Si tienes problemas con el widget de la pantalla de inicio, desactivar la optimización de batería para la aplicación puede ayudar.",
+  "batteryOptimizationAlreadyDisabledBody": "La optimización de batería está desactivada para esta aplicación. ¿Desea volver a activarla para mejorar la duración de la batería?",
+  "batteryOptimizationSettingsButton": "Abrir ajustes de batería",
   "biometricAuthNotSetupBody": "Configura la autenticación biométrica en los ajustes de tu dispositivo para poder realizar esta acción.",
   "biometricAuthNotSetupTitle": "La autenticación biométrica no está configurada",
   "biometricAuthNotSupportedBody": "Tu dispositivo no admite la autenticación biométrica, que es necesaria para realizar esta acción.",
@@ -1813,6 +1835,7 @@
   "deviceCredentialsRequiredTitle": "No se han configurado las credenciales del dispositivo.",
   "deviceCredentialsSetupDescription": "Configurar las credenciales del dispositivo en los ajustes del dispositivo",
   "digits": "Dígitos",
+  "disableButton": "Desactivar",
   "dismiss": "Desestimar",
   "done": "Hecho",
   "edit": "Editar",

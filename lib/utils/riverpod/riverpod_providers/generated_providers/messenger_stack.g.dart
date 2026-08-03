@@ -47,7 +47,7 @@ abstract class _$MessengerStack extends $Notifier<List<BuildContext>> {
   List<BuildContext> build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<List<BuildContext>, List<BuildContext>>;
     final element =
         ref.element
@@ -57,6 +57,6 @@ abstract class _$MessengerStack extends $Notifier<List<BuildContext>> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

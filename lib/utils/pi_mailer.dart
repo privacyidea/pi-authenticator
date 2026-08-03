@@ -17,9 +17,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_mailer/flutter_mailer.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 
 import '../l10n/app_localizations.dart';
 import '../widgets/dialog_widgets/default_dialog.dart';
@@ -27,64 +28,84 @@ import 'logger.dart';
 import 'view_utils.dart';
 
 class PiMailer {
-  static String _mailSubject(
-    String subject,
-    String? subjectPrefix,
-    bool subjectAppVersion,
-  ) {
-    return subjectPrefix != null ? '$subjectPrefix $subject' : subject;
+  static const MethodChannel _androidMailerChannel = MethodChannel(
+    'pi_authenticator/mailer',
+  );
+
+  static String _mailSubject(String subject, String? subjectPrefix) {
+    if (subjectPrefix == null) return subject;
+    return subject.isEmpty ? subjectPrefix : '$subjectPrefix $subject';
   }
 
   static Future<bool> sendMail({
     required Set<String> mailRecipients,
     required String subject,
     String? subjectPrefix,
-    bool subjectAppVersion = true,
     required String body,
-    List<String> attachments = const [],
+    List<String> attachmentPaths = const [],
   }) async {
     try {
-      final MailOptions mailOptions = MailOptions(
-        body: body,
-        subject: _mailSubject(subject, subjectPrefix, subjectAppVersion),
-        recipients: [...mailRecipients],
-        attachments: attachments,
-      );
-      await FlutterMailer.send(mailOptions);
-    } on PlatformException catch (e, stackTrace) {
-      if (e.code == 'UNAVAILABLE') {
-        showAsyncDialog(
-          builder: (context) {
-            final AppLocalizations appLocalizations = AppLocalizations.of(
-              context,
-            )!;
-            return DefaultDialog(
-              title: Text(appLocalizations.noMailAppTitle),
-              content: Text(appLocalizations.noMailAppDescription),
-              actions: [
-                DialogAction(
-                  label: appLocalizations.ok,
-                  intent: ActionIntent.neutral,
-                  onPressed: () => Navigator.pop(context),
-                ),
-              ],
-            );
-          },
+      if (defaultTargetPlatform == TargetPlatform.android) {
+        await _androidMailerChannel.invokeMethod('send', {
+          'recipients': [...mailRecipients],
+          'subject': _mailSubject(subject, subjectPrefix),
+          'body': body,
+          'attachmentPath': attachmentPaths.isEmpty
+              ? null
+              : attachmentPaths.first,
+        });
+      } else {
+        final Email email = Email(
+          body: body,
+          subject: _mailSubject(subject, subjectPrefix),
+          recipients: [...mailRecipients],
+          attachmentPaths: attachmentPaths,
         );
-        return false;
+        await FlutterEmailSender.send(email);
       }
-      Logger.error(
-        'Was not able to send the Email',
-        error: e,
-        stackTrace: stackTrace,
-      );
-      return false;
     } catch (e, stackTrace) {
-      Logger.error(
-        'Was not able to send the Email',
-        error: e,
-        stackTrace: stackTrace,
+      final noMailAppAvailable =
+          e is FlutterEmailSenderNotAvailableException ||
+          (e is PlatformException && e.code == 'not_available');
+      showAsyncDialog(
+        builder: (context) {
+          final AppLocalizations appLocalizations = AppLocalizations.of(
+            context,
+          )!;
+          return DefaultDialog(
+            title: Text(
+              noMailAppAvailable
+                  ? appLocalizations.noMailAppTitle
+                  : appLocalizations.errorSendingEmailTitle,
+            ),
+            content: Text(
+              noMailAppAvailable
+                  ? appLocalizations.noMailAppDescription
+                  : appLocalizations.errorSendingEmailDescription,
+            ),
+            actions: [
+              DialogAction(
+                label: appLocalizations.ok,
+                intent: ActionIntent.neutral,
+                onPressed: () => Navigator.pop(context),
+              ),
+            ],
+          );
+        },
       );
+      if (noMailAppAvailable) {
+        Logger.warning(
+          'No mail app available to send the Email',
+          error: e,
+          stackTrace: stackTrace,
+        );
+      } else {
+        Logger.error(
+          'Was not able to send the Email',
+          error: e,
+          stackTrace: stackTrace,
+        );
+      }
       return false;
     }
     return true;
