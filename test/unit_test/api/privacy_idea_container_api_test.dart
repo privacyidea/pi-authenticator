@@ -940,7 +940,6 @@ void _testPrivacyIdeaContainerApi() {
           const TokenState(tokens: []),
           withX25519Key: clientKeyPair,
           isInitSync: true,
-          sendAllOTPs: true,
         );
 
         // Assert
@@ -959,643 +958,655 @@ void _testPrivacyIdeaContainerApi() {
         expect(token.enrollmentCredentials, 'test-credential');
       });
       test('update unlinked token (with serial)', () async {
-        
-      testWidgets('update unlinked token (with serial)', (tester) async {
-        // Arrange
-        final mockIoClient = MockPrivacyideaIOClient();
-        final containerApi = PiContainerApi(ioClient: mockIoClient);
-        final tokenContainer = getFinalizedTokenContainer();
-        final tokenState = TokenState(
-          tokens: [
-            HOTPToken(
-              label: "OATH00068B93",
-              serial: "OATH00068B93",
-              issuer: "privacyIDEA",
-              counter: 1,
-              id: 'id1',
-              algorithm: Algorithms.SHA1,
-              digits: 6,
-              secret: 'CDLDLKLUMPDR2IJJZJHF5XKFKBABU4XR',
+        testWidgets('update unlinked token (with serial)', (tester) async {
+          // Arrange
+          final mockIoClient = MockPrivacyideaIOClient();
+          final containerApi = PiContainerApi(ioClient: mockIoClient);
+          final tokenContainer = getFinalizedTokenContainer();
+          final tokenState = TokenState(
+            tokens: [
+              HOTPToken(
+                label: "OATH00068B93",
+                serial: "OATH00068B93",
+                issuer: "privacyIDEA",
+                counter: 1,
+                id: 'id1',
+                algorithm: Algorithms.SHA1,
+                digits: 6,
+                secret: 'CDLDLKLUMPDR2IJJZJHF5XKFKBABU4XR',
+              ),
+            ],
+          );
+          when(
+            mockIoClient.doPost(
+              url: anyNamed('url'),
+              body: anyNamed('body'),
+              sslVerify: anyNamed('sslVerify'),
             ),
-          ],
-        );
-        when(
-          mockIoClient.doPost(
-            url: anyNamed('url'),
-            body: anyNamed('body'),
-            sslVerify: anyNamed('sslVerify'),
-          ),
-        ).thenAnswer((invocation) async {
-          final Uri invocationUrl = invocation.namedArguments[Symbol('url')];
-          final Map<String, String?> invocationBody =
-              invocation.namedArguments[Symbol('body')];
-          Logger.info('Body: $invocationBody');
-          if (invocationUrl.toString() ==
-                  'http://example.com/container/challenge' &&
-              invocationBody['scope'] ==
-                  'http://example.com/container/synchronize') {
-            return containerChallengeResponse;
-          }
-          final publicEncKeyClientB64 = invocationBody['public_enc_key_client'];
-          final containerDictClient =
-              '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"OATH00068B93","tokentype":"HOTP"}]}';
+          ).thenAnswer((invocation) async {
+            final Uri invocationUrl = invocation.namedArguments[Symbol('url')];
+            final Map<String, String?> invocationBody =
+                invocation.namedArguments[Symbol('body')];
+            Logger.info('Body: $invocationBody');
+            if (invocationUrl.toString() ==
+                    'http://example.com/container/challenge' &&
+                invocationBody['scope'] ==
+                    'http://example.com/container/synchronize') {
+              return containerChallengeResponse;
+            }
+            final publicEncKeyClientB64 =
+                invocationBody['public_enc_key_client'];
+            final containerDictClient =
+                '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"OATH00068B93","tokentype":"HOTP"}]}';
 
-          final signMessage2 =
-              '$containerChallengeNonce|'
-              '$containerChallengeTimeStamp|'
-              '${tokenContainer.serial}|'
-              '$invocationUrl|'
-              '$publicEncKeyClientB64|'
-              '$containerDictClient';
+            final signMessage2 =
+                '$containerChallengeNonce|'
+                '$containerChallengeTimeStamp|'
+                '${tokenContainer.serial}|'
+                '$invocationUrl|'
+                '$publicEncKeyClientB64|'
+                '$containerDictClient';
 
-          if (invocationUrl.toString() ==
-                  'http://example.com/container/synchronize' &&
-              invocationBody['container_dict_client'] == containerDictClient &&
-              EccUtils().validateSignature(
-                tokenContainer.ecPublicClientKey!,
-                invocationBody['signature']!,
-                signMessage2,
-              )) {
-            return Response(
-              jsonEncode({
-                'id': 5,
-                'jsonrpc': '2.0',
-                'result': {
-                  'status': true,
-                  'value': {
-                    'container_dict_server':
-                        'uo6_1Uu0vn6ejoDwGZu3-SOAKmE5YpcVPm97VFlu1HGcRRembvvSaZAqxyMX00p-CBZhiNTwsfkiUjDdXH9zNA3WyyitkRSxvpbeR_7VwEe5vzo5okddX_G6VaGLO8oDRZu5jDzz_ngwDCiqW5_MDRxbncFFPY4EK265_hcNb1kYreEZcfLiEWmGczXIV2vULxWPBgtx8yCcvgb053NJvkndtRkbqo2NEdXNQfCuFZjV_P97izYWqBsc8iADQtg4oyndnRVELW_U47kh7VXN1pWOnUnPK13i3K4F3dwuBcT5li4fZIDiE6pZAhdjkICQFfRekh8Oe6j1jkMm7psly9SjgoAIsuF64Ew20X4tlmIUSFm9HKwVWFxVyA2EEpmzNYJQbEn8CF2Fr0BD_FnPvin1v3SlnNBRwiAIxE7691kq3pTMsQoMYuDZMsLCcWBnHtVhuIS0Sr0B8jEVJHNWRvCdVqGWXO-WtJHij4Mc9fzz9WDjp1jHOzryV5gO7Vv0x6VJ53AW29DNkfV0uERq2sySGdLQu3SA1qPTR2XqYUXmMc5jRDPn0RaMeYXlDO5iqLdiq2wDZ3RHFzz9TI0BOKWZ92OP-xlp1xNX7NYQ1hTW471l2o2lFP3C_P9lwbDuOTOwpSsnup9XBEImIgrhE5F7JUWuAYTzpKaUsFAWleRtvOLFmJe8GKdvbHYlWlM1ulYiRiByhIcvb9zSxKofgT1E5BwVIP_QF1nsOPRTVS7DQsiVb6iwlbjCvPoePwpK_FLsvZbsai265jMDJfLYba6h6wKLrB9SLHx-or4OcFPrevQ8VjM8T1jKKt1--yc-GmHjqY6HKjs9ekgk0wuBYRsE_FX4ChVoDe9YNzRnQSI-nRNoiIRSigrF0YMKYsPMo3IPzGL8ChiTxx8-oeJ2LmG4sW5r0VJl9bWKGNjwEAB2PDRsgbEyCeRvTOBztfP2GrW-bw-tlouO8sUIFlQ5q10-fgeg8rCOzPcobrILzfWmfTD_KC_hcAmGVL1O9O627BnnhHIViaXFhFJw9GNgmOnRWmJ4tWpkhQzaU7RYXQ0eWXTuoFkFyvQSSBMuJJY6Vq0053AqrjJ9J-Q5sFB8P-X2rbiQKXc92XmYEFyiqwbXRBA5aGhtpKmb3M7wvaCIRzNSEHED6Go6QiBdLKEgM2uYLVKpRPOyktb6LercICxdqaiUy9iwV3c6AF67-gapZ5d3hfNAPGRpbuhd-I-i5_20Tg2sxwbxsO2xizPxY_ppPDaLNqSF2R4aIGXyDTgBSFSqPpefxcryjceTu8W6hUvK7bqicxr0smrg5RR53a4mtpPFKqaYergGHrvPV9k6UzR9f2cKGVTSpovZmJnl4ssjmJZGpH4UfdG_sjXuWDF1AHpHmz8Qmjd0q46J7UCDffDDv6sIkt1DZI0MfYbqpJ6Z3Bg7OyFmRVrOHl6QFX4ZWjbNqDzlgSZicpPr',
-                    'encryption_algorithm': 'AES',
-                    'encryption_params': {
-                      'algorithm': 'AES',
-                      'mode': 'GCM',
-                      'init_vector': 'oVOCbmI9mdvIDJQ7m5Kvyg==',
-                      'tag': 'bGIenivUR2QS5T1H37rJQg==',
+            if (invocationUrl.toString() ==
+                    'http://example.com/container/synchronize' &&
+                invocationBody['container_dict_client'] ==
+                    containerDictClient &&
+                EccUtils().validateSignature(
+                  tokenContainer.ecPublicClientKey!,
+                  invocationBody['signature']!,
+                  signMessage2,
+                )) {
+              return Response(
+                jsonEncode({
+                  'id': 5,
+                  'jsonrpc': '2.0',
+                  'result': {
+                    'status': true,
+                    'value': {
+                      'container_dict_server':
+                          'uo6_1Uu0vn6ejoDwGZu3-SOAKmE5YpcVPm97VFlu1HGcRRembvvSaZAqxyMX00p-CBZhiNTwsfkiUjDdXH9zNA3WyyitkRSxvpbeR_7VwEe5vzo5okddX_G6VaGLO8oDRZu5jDzz_ngwDCiqW5_MDRxbncFFPY4EK265_hcNb1kYreEZcfLiEWmGczXIV2vULxWPBgtx8yCcvgb053NJvkndtRkbqo2NEdXNQfCuFZjV_P97izYWqBsc8iADQtg4oyndnRVELW_U47kh7VXN1pWOnUnPK13i3K4F3dwuBcT5li4fZIDiE6pZAhdjkICQFfRekh8Oe6j1jkMm7psly9SjgoAIsuF64Ew20X4tlmIUSFm9HKwVWFxVyA2EEpmzNYJQbEn8CF2Fr0BD_FnPvin1v3SlnNBRwiAIxE7691kq3pTMsQoMYuDZMsLCcWBnHtVhuIS0Sr0B8jEVJHNWRvCdVqGWXO-WtJHij4Mc9fzz9WDjp1jHOzryV5gO7Vv0x6VJ53AW29DNkfV0uERq2sySGdLQu3SA1qPTR2XqYUXmMc5jRDPn0RaMeYXlDO5iqLdiq2wDZ3RHFzz9TI0BOKWZ92OP-xlp1xNX7NYQ1hTW471l2o2lFP3C_P9lwbDuOTOwpSsnup9XBEImIgrhE5F7JUWuAYTzpKaUsFAWleRtvOLFmJe8GKdvbHYlWlM1ulYiRiByhIcvb9zSxKofgT1E5BwVIP_QF1nsOPRTVS7DQsiVb6iwlbjCvPoePwpK_FLsvZbsai265jMDJfLYba6h6wKLrB9SLHx-or4OcFPrevQ8VjM8T1jKKt1--yc-GmHjqY6HKjs9ekgk0wuBYRsE_FX4ChVoDe9YNzRnQSI-nRNoiIRSigrF0YMKYsPMo3IPzGL8ChiTxx8-oeJ2LmG4sW5r0VJl9bWKGNjwEAB2PDRsgbEyCeRvTOBztfP2GrW-bw-tlouO8sUIFlQ5q10-fgeg8rCOzPcobrILzfWmfTD_KC_hcAmGVL1O9O627BnnhHIViaXFhFJw9GNgmOnRWmJ4tWpkhQzaU7RYXQ0eWXTuoFkFyvQSSBMuJJY6Vq0053AqrjJ9J-Q5sFB8P-X2rbiQKXc92XmYEFyiqwbXRBA5aGhtpKmb3M7wvaCIRzNSEHED6Go6QiBdLKEgM2uYLVKpRPOyktb6LercICxdqaiUy9iwV3c6AF67-gapZ5d3hfNAPGRpbuhd-I-i5_20Tg2sxwbxsO2xizPxY_ppPDaLNqSF2R4aIGXyDTgBSFSqPpefxcryjceTu8W6hUvK7bqicxr0smrg5RR53a4mtpPFKqaYergGHrvPV9k6UzR9f2cKGVTSpovZmJnl4ssjmJZGpH4UfdG_sjXuWDF1AHpHmz8Qmjd0q46J7UCDffDDv6sIkt1DZI0MfYbqpJ6Z3Bg7OyFmRVrOHl6QFX4ZWjbNqDzlgSZicpPr',
+                      'encryption_algorithm': 'AES',
+                      'encryption_params': {
+                        'algorithm': 'AES',
+                        'mode': 'GCM',
+                        'init_vector': 'oVOCbmI9mdvIDJQ7m5Kvyg==',
+                        'tag': 'bGIenivUR2QS5T1H37rJQg==',
+                      },
+                      'policies': {
+                        'disable_client_container_unregister': true,
+                        'disable_client_token_deletion': true,
+                        'container_client_rollover': false,
+                        'initially_add_tokens_to_container': false,
+                      },
+                      'public_server_key':
+                          '4HUJxDV2j1dguSOUGmupScPqjNJL-sATSvmYujP3STo=',
+                      'server_url': 'http://example.com/container/synchronize',
                     },
-                    'policies': {
-                      'disable_client_container_unregister': true,
-                      'disable_client_token_deletion': true,
-                      'container_client_rollover': false,
-                      'initially_add_tokens_to_container': false,
-                    },
-                    'public_server_key':
-                        '4HUJxDV2j1dguSOUGmupScPqjNJL-sATSvmYujP3STo=',
-                    'server_url': 'http://example.com/container/synchronize',
                   },
-                },
-                'time': 1.0,
-                'version': 'privacyIDEA 3.6.2',
-                'versionnumber': '3.6.2',
-                'detail': null,
-                'signature': 'signature',
-              }),
-              200,
-            );
-          }
-          return Response(jsonEncode(exampleError), 400);
-        });
+                  'time': 1.0,
+                  'version': 'privacyIDEA 3.6.2',
+                  'versionnumber': '3.6.2',
+                  'detail': null,
+                  'signature': 'signature',
+                }),
+                200,
+              );
+            }
+            return Response(jsonEncode(exampleError), 400);
+          });
 
-        final type = X25519().keyPairType;
-        final publicSimpleKeyPair = SimpleKeyPairData(
-          base64Decode("2NEmGL31xJBYWSQ72+oqeMvwn+liM3Nwq6qG4NzRd04="),
-          publicKey: SimplePublicKey(
-            base64Decode("+4KfIuxEB8z6CDlXjbFpirmJ3tNuTIzhCV6L21lxkw8="),
+          final type = X25519().keyPairType;
+          final publicSimpleKeyPair = SimpleKeyPairData(
+            base64Decode("2NEmGL31xJBYWSQ72+oqeMvwn+liM3Nwq6qG4NzRd04="),
+            publicKey: SimplePublicKey(
+              base64Decode("+4KfIuxEB8z6CDlXjbFpirmJ3tNuTIzhCV6L21lxkw8="),
+              type: type,
+            ),
             type: type,
-          ),
-          type: type,
-        );
+          );
 
-        // Act
-        final result = await _syncWithAssignment(
-          tester,
-          containerApi: containerApi,
-          container: tokenContainer,
-          tokenState: tokenState,
-          withX25519Key: publicSimpleKeyPair,
-        );
+          // Act
+          final result = await _syncWithAssignment(
+            tester,
+            containerApi: containerApi,
+            container: tokenContainer,
+            tokenState: tokenState,
+            withX25519Key: publicSimpleKeyPair,
+          );
 
-        // Assert
-        expect(result, isNotNull);
-        final newPolicies = result!.newPolicies;
-        expect(result.initAssignmentChecked, tokenState.tokens);
-        expect(newPolicies.initialTokenAssignment, false);
-        expect(newPolicies.rolloverAllowed, false);
-        expect(newPolicies.disabledTokenDeletion, true);
-        expect(newPolicies.disabledUnregister, true);
-        final newTokens = result.newTokens;
-        final updatedTokens = result.updatedTokens;
-        final deleteTokens = result.deletedTokens;
-        expect(newTokens.length, 1);
-        expect(deleteTokens.length, 0);
-        expect(updatedTokens.length, 1);
-        final token0 = updatedTokens[0];
-        expect(token0, isA<HOTPToken>());
-        expect((token0 as HOTPToken).label, 'OATH00068B93');
-        expect(token0.issuer, 'privacyIDEA');
-        expect(token0.counter, 0);
-        expect(token0.algorithm, Algorithms.SHA1);
-        expect(token0.digits, 6);
-        expect(token0.secret, 'CDLDLKLUMPDR2IJJZJHF5XKFKBABU4XR');
-        final token1 = newTokens[0];
-        expect(token1, isA<TOTPToken>());
-        expect((token1 as TOTPToken).label, 'TOTP00011B1F');
-        expect(token1.issuer, 'privacyIDEA');
-        expect(token1.period, 30);
-        expect(token1.algorithm, Algorithms.SHA1);
-        expect(token1.digits, 6);
-        expect(token1.secret, '3LTZKAYTNIK5DUE4SLIGTKOC6ZK36E2G');
-      });
-      testWidgets('update unlinked token (without serial)', (tester) async {
-        // Arrange
-        final mockIoClient = MockPrivacyideaIOClient();
-        final containerApi = PiContainerApi(ioClient: mockIoClient);
-        final tokenContainer = getFinalizedTokenContainer();
-        final tokenState = TokenState(
-          tokens: [
-            TOTPToken(
-              label: 'TOTP00011B1F',
-              serial: 'TOTP00011B1F',
-              issuer: 'privacyIDEA',
-              period: 30,
-              id: 'id0',
-              algorithm: Algorithms.SHA1,
-              digits: 6,
-              secret: 'CDLDLKLUMPDR2IJJZJHF5XKFKBABU4XR',
+          // Assert
+          expect(result, isNotNull);
+          final newPolicies = result!.newPolicies;
+          expect(result.initAssignmentChecked, tokenState.tokens);
+          expect(newPolicies.initialTokenAssignment, false);
+          expect(newPolicies.rolloverAllowed, false);
+          expect(newPolicies.disabledTokenDeletion, true);
+          expect(newPolicies.disabledUnregister, true);
+          final newTokens = result.newTokens;
+          final updatedTokens = result.updatedTokens;
+          final deleteTokens = result.deletedTokens;
+          expect(newTokens.length, 1);
+          expect(deleteTokens.length, 0);
+          expect(updatedTokens.length, 1);
+          final token0 = updatedTokens[0];
+          expect(token0, isA<HOTPToken>());
+          expect((token0 as HOTPToken).label, 'OATH00068B93');
+          expect(token0.issuer, 'privacyIDEA');
+          expect(token0.counter, 0);
+          expect(token0.algorithm, Algorithms.SHA1);
+          expect(token0.digits, 6);
+          expect(token0.secret, 'CDLDLKLUMPDR2IJJZJHF5XKFKBABU4XR');
+          final token1 = newTokens[0];
+          expect(token1, isA<TOTPToken>());
+          expect((token1 as TOTPToken).label, 'TOTP00011B1F');
+          expect(token1.issuer, 'privacyIDEA');
+          expect(token1.period, 30);
+          expect(token1.algorithm, Algorithms.SHA1);
+          expect(token1.digits, 6);
+          expect(token1.secret, '3LTZKAYTNIK5DUE4SLIGTKOC6ZK36E2G');
+        });
+        testWidgets('update unlinked token (without serial)', (tester) async {
+          // Arrange
+          final mockIoClient = MockPrivacyideaIOClient();
+          final containerApi = PiContainerApi(ioClient: mockIoClient);
+          final tokenContainer = getFinalizedTokenContainer();
+          final tokenState = TokenState(
+            tokens: [
+              TOTPToken(
+                label: 'TOTP00011B1F',
+                serial: 'TOTP00011B1F',
+                issuer: 'privacyIDEA',
+                period: 30,
+                id: 'id0',
+                algorithm: Algorithms.SHA1,
+                digits: 6,
+                secret: 'CDLDLKLUMPDR2IJJZJHF5XKFKBABU4XR',
+              ),
+              HOTPToken(
+                label: "OATH00166051",
+                issuer: "privacyIDEA",
+                counter: 1,
+                id: 'id1',
+                algorithm: Algorithms.SHA1,
+                digits: 6,
+                secret: 'KWS3LTJ2L7NW4KGHL5W5OABWR4PLJIDL',
+              ),
+            ],
+          );
+          when(
+            mockIoClient.doPost(
+              url: anyNamed('url'),
+              body: anyNamed('body'),
+              sslVerify: anyNamed('sslVerify'),
             ),
-            HOTPToken(
-              label: "OATH00166051",
-              issuer: "privacyIDEA",
-              counter: 1,
-              id: 'id1',
-              algorithm: Algorithms.SHA1,
-              digits: 6,
-              secret: 'KWS3LTJ2L7NW4KGHL5W5OABWR4PLJIDL',
-            ),
-          ],
-        );
-        when(
-          mockIoClient.doPost(
-            url: anyNamed('url'),
-            body: anyNamed('body'),
-            sslVerify: anyNamed('sslVerify'),
-          ),
-        ).thenAnswer((invocation) async {
-          final Uri invocationUrl = invocation.namedArguments[Symbol('url')];
-          final Map<String, String?> invocationBody =
-              invocation.namedArguments[Symbol('body')];
-          Logger.info('Body: $invocationBody');
-          if (invocationUrl.toString() ==
-                  'http://example.com/container/challenge' &&
-              invocationBody['scope'] ==
-                  'http://example.com/container/synchronize') {
-            return containerChallengeResponse;
-          }
-          final publicEncKeyClientB64 = invocationBody['public_enc_key_client'];
-          final containerDictClient =
-              '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"TOTP00011B1F","tokentype":"TOTP"},{"tokentype":"HOTP","otp":["079447","501895"],"counter":"1"}]}';
+          ).thenAnswer((invocation) async {
+            final Uri invocationUrl = invocation.namedArguments[Symbol('url')];
+            final Map<String, String?> invocationBody =
+                invocation.namedArguments[Symbol('body')];
+            Logger.info('Body: $invocationBody');
+            if (invocationUrl.toString() ==
+                    'http://example.com/container/challenge' &&
+                invocationBody['scope'] ==
+                    'http://example.com/container/synchronize') {
+              return containerChallengeResponse;
+            }
+            final publicEncKeyClientB64 =
+                invocationBody['public_enc_key_client'];
+            final containerDictClient =
+                '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"TOTP00011B1F","tokentype":"TOTP"},{"tokentype":"HOTP","otp":["079447","501895"],"counter":"1"}]}';
 
-          final signMessage2 =
-              '$containerChallengeNonce|'
-              '$containerChallengeTimeStamp|'
-              '${tokenContainer.serial}|'
-              '$invocationUrl|'
-              '$publicEncKeyClientB64|'
-              '$containerDictClient';
+            final signMessage2 =
+                '$containerChallengeNonce|'
+                '$containerChallengeTimeStamp|'
+                '${tokenContainer.serial}|'
+                '$invocationUrl|'
+                '$publicEncKeyClientB64|'
+                '$containerDictClient';
 
-          if (invocationUrl.toString() ==
-                  'http://example.com/container/synchronize' &&
-              invocationBody['container_dict_client'] == containerDictClient &&
-              EccUtils().validateSignature(
-                tokenContainer.ecPublicClientKey!,
-                invocationBody['signature']!,
-                signMessage2,
-              )) {
-            return Response(
-              jsonEncode({
-                'id': 5,
-                'jsonrpc': '2.0',
-                'result': {
-                  'status': true,
-                  'value': {
-                    'container_dict_server':
-                        'jeOQQ05zabAlDb3inp4DFplsZ_K9BW1MjhLIrM7CTD48D9bcxjA6C0FZm7rUGMqP8ZjwAIVaVkv6tTW5-Ycfez3o8RW-TtWq68xgPHCYEGp9IPWAymY58eF8Cpvy5r7ykDlGeekqnap6TwjS8KqlW54RZNwKSe7pcFd0Z0SX2TByx6CkmPguNOIjx_3eQSx87P9GuGn3-9wKpZykWJbNJgUyzMH2d4Qz55fwQ1IXI6nfbUk6sd67YmGWK1hc4tW43LHFaIIjKwzL4BkJnyPKi4gGeDRw0UxUfquc4KYqyqFmeCZj_Jc5OL9igUqBbIS4yhgsk39K6ldAYM79gY78ihcOHIJPafcFu8C4ie-yOeEPcxnN1m4vyebHAC_nQNEEXxI7k1A4MwAFak8daUdO5axNEwpJWOVfEaPDjcaeuudsrc90nOkhiZ1GAxrlb9j549sVCbx9zLUEAu90OCiu3tyuUYIAR9-YvYbyY3g6Kp8qtSmZDXnN5mPbX1ikxgg8kaez87fLkP9-wcWaaALGxx07Jlt4l2os7HOqP1w7HZbEcZze3ndoGygw18wEqYOl2BXyOfAVfIDzA1jawuFeZ2UctnprzMdI1FYNEw5po-Tz209dJYMvtihuF9PCGyluqBOTn1lT5kIQXatSb1G7D0esfMc4xhhbHTQY04B9o7I2epNWCkFqZhklNm-pW7HQPJEY0ob3z2f9uzVU5e1YZd5JQrw60--vuECTcdU1en5fkPoV1sC0dFmjVIUu8xJuyytnRY6HxiUSabBIWpIcuZrPkBc4gE4fGk9fpxVJXsf6P8Ki9hb1IWZslCaiPnt_bkhsFygaEhxG3Kp1kp8BkiofAZB3rB_hx06lXptuWjmG6Kcm1WUBL5HAL5bwBXgsRw6EBSGARs5vBRq7KBwpEkDjqFhgbpTZlVvTk11rG2tMMVX1vdF4_yjSkFu2WE4bmPSR6dYsN7KjNswtIUA26y9KWYIFcoK8oYbT_pUVAa1Pb81Y3obJDtX95iSdKvrht0xRhCoEegoYLwq57IUc1y3jL0OoPKJUD-MSO4YXvwxP4ZErIBz8HCNp2NqtMsyYHcZfaqJtvHScZI_Z28HndMrlPQMBxDsX4U8mD1Ev5QZAadAF2qQQVka9QUJP86nOi53l2WQsW9gMDqMjaG235veAM1mh4a_vrsJYAngAdCC1Jlw6dgplIg4P_iJmMpvrlKeeFw5-Dh_fGVnM_mK9vaF9Nuhk6yU07weS78GV5oD9XQ-YviZXCg-FWq_lXCVUC4TEsrnNyBJxA8Otpymj7NHv-1Xt3LzOYihvzD1XgGc6wELQGhhTp826BOm1u8OidC1gNR0uAcoP5ChZvOrYYgTsS--0hZKG4XZ75mNZgb1JkVdyjkp8g1w7YEZ-HABk55_aBbK_2nt5UKvDx459KyGNyJbi-sbs5Ap1BaI7PDu6dKeNVPPMk892zmw8GjT8zqjfnt6qHJp3lxUId8gwz5SCRMCgF1CeZJZSlXbxb6BxpiCHQeSOhFms3sWewwLYnzW-H-GokiHtkLXwOSkgECHs4lxKFQ14IOIBDCpMRfLlGA4QbOTIkcFnT9QMcUzs27c39cKZhjBXGKtIg3cWwoxyCJZpoc5_rg6_PHRTkkfSzUuBFA-0i5RTbieZqqZlRjfzkK-sz9vJ0zmEWSQQlAOuHCSg68dBUwjHn-FLaVunGWUbRvGPSdp9pIoIdDQ8XSpTmjtYiArbDcVzZEJmEdRtwmYL-Ygv-15D3OLylm-mx2fX5GUIK4czrJJlE34GYykGuWnG_AL-res8zF0vbGzyIhsW_MxNIGViQjDy5nmiJ55XPVVufCFGOgVioGdwcd3OFjopLL5cVx2Qiw==',
-                    'encryption_algorithm': 'AES',
-                    'encryption_params': {
-                      'algorithm': 'AES',
-                      'mode': 'GCM',
-                      'init_vector': 'AZbBMH7imo5q-uFrPbVhTw==',
-                      'tag': 'HIWDZ6mXNdWA9zYLJa9-WA==',
+            if (invocationUrl.toString() ==
+                    'http://example.com/container/synchronize' &&
+                invocationBody['container_dict_client'] ==
+                    containerDictClient &&
+                EccUtils().validateSignature(
+                  tokenContainer.ecPublicClientKey!,
+                  invocationBody['signature']!,
+                  signMessage2,
+                )) {
+              return Response(
+                jsonEncode({
+                  'id': 5,
+                  'jsonrpc': '2.0',
+                  'result': {
+                    'status': true,
+                    'value': {
+                      'container_dict_server':
+                          'jeOQQ05zabAlDb3inp4DFplsZ_K9BW1MjhLIrM7CTD48D9bcxjA6C0FZm7rUGMqP8ZjwAIVaVkv6tTW5-Ycfez3o8RW-TtWq68xgPHCYEGp9IPWAymY58eF8Cpvy5r7ykDlGeekqnap6TwjS8KqlW54RZNwKSe7pcFd0Z0SX2TByx6CkmPguNOIjx_3eQSx87P9GuGn3-9wKpZykWJbNJgUyzMH2d4Qz55fwQ1IXI6nfbUk6sd67YmGWK1hc4tW43LHFaIIjKwzL4BkJnyPKi4gGeDRw0UxUfquc4KYqyqFmeCZj_Jc5OL9igUqBbIS4yhgsk39K6ldAYM79gY78ihcOHIJPafcFu8C4ie-yOeEPcxnN1m4vyebHAC_nQNEEXxI7k1A4MwAFak8daUdO5axNEwpJWOVfEaPDjcaeuudsrc90nOkhiZ1GAxrlb9j549sVCbx9zLUEAu90OCiu3tyuUYIAR9-YvYbyY3g6Kp8qtSmZDXnN5mPbX1ikxgg8kaez87fLkP9-wcWaaALGxx07Jlt4l2os7HOqP1w7HZbEcZze3ndoGygw18wEqYOl2BXyOfAVfIDzA1jawuFeZ2UctnprzMdI1FYNEw5po-Tz209dJYMvtihuF9PCGyluqBOTn1lT5kIQXatSb1G7D0esfMc4xhhbHTQY04B9o7I2epNWCkFqZhklNm-pW7HQPJEY0ob3z2f9uzVU5e1YZd5JQrw60--vuECTcdU1en5fkPoV1sC0dFmjVIUu8xJuyytnRY6HxiUSabBIWpIcuZrPkBc4gE4fGk9fpxVJXsf6P8Ki9hb1IWZslCaiPnt_bkhsFygaEhxG3Kp1kp8BkiofAZB3rB_hx06lXptuWjmG6Kcm1WUBL5HAL5bwBXgsRw6EBSGARs5vBRq7KBwpEkDjqFhgbpTZlVvTk11rG2tMMVX1vdF4_yjSkFu2WE4bmPSR6dYsN7KjNswtIUA26y9KWYIFcoK8oYbT_pUVAa1Pb81Y3obJDtX95iSdKvrht0xRhCoEegoYLwq57IUc1y3jL0OoPKJUD-MSO4YXvwxP4ZErIBz8HCNp2NqtMsyYHcZfaqJtvHScZI_Z28HndMrlPQMBxDsX4U8mD1Ev5QZAadAF2qQQVka9QUJP86nOi53l2WQsW9gMDqMjaG235veAM1mh4a_vrsJYAngAdCC1Jlw6dgplIg4P_iJmMpvrlKeeFw5-Dh_fGVnM_mK9vaF9Nuhk6yU07weS78GV5oD9XQ-YviZXCg-FWq_lXCVUC4TEsrnNyBJxA8Otpymj7NHv-1Xt3LzOYihvzD1XgGc6wELQGhhTp826BOm1u8OidC1gNR0uAcoP5ChZvOrYYgTsS--0hZKG4XZ75mNZgb1JkVdyjkp8g1w7YEZ-HABk55_aBbK_2nt5UKvDx459KyGNyJbi-sbs5Ap1BaI7PDu6dKeNVPPMk892zmw8GjT8zqjfnt6qHJp3lxUId8gwz5SCRMCgF1CeZJZSlXbxb6BxpiCHQeSOhFms3sWewwLYnzW-H-GokiHtkLXwOSkgECHs4lxKFQ14IOIBDCpMRfLlGA4QbOTIkcFnT9QMcUzs27c39cKZhjBXGKtIg3cWwoxyCJZpoc5_rg6_PHRTkkfSzUuBFA-0i5RTbieZqqZlRjfzkK-sz9vJ0zmEWSQQlAOuHCSg68dBUwjHn-FLaVunGWUbRvGPSdp9pIoIdDQ8XSpTmjtYiArbDcVzZEJmEdRtwmYL-Ygv-15D3OLylm-mx2fX5GUIK4czrJJlE34GYykGuWnG_AL-res8zF0vbGzyIhsW_MxNIGViQjDy5nmiJ55XPVVufCFGOgVioGdwcd3OFjopLL5cVx2Qiw==',
+                      'encryption_algorithm': 'AES',
+                      'encryption_params': {
+                        'algorithm': 'AES',
+                        'mode': 'GCM',
+                        'init_vector': 'AZbBMH7imo5q-uFrPbVhTw==',
+                        'tag': 'HIWDZ6mXNdWA9zYLJa9-WA==',
+                      },
+                      'policies': {
+                        'disable_client_container_unregister': true,
+                        'disable_client_token_deletion': true,
+                        'container_client_rollover': false,
+                        'initially_add_tokens_to_container': false,
+                      },
+                      'public_server_key':
+                          'aK_oH0ycoKrXoIMbTlQ7_adxUe7JVAuPCbcoOUBKYBY=',
+                      'server_url': 'http://example.com/container/synchronize',
                     },
-                    'policies': {
-                      'disable_client_container_unregister': true,
-                      'disable_client_token_deletion': true,
-                      'container_client_rollover': false,
-                      'initially_add_tokens_to_container': false,
-                    },
-                    'public_server_key':
-                        'aK_oH0ycoKrXoIMbTlQ7_adxUe7JVAuPCbcoOUBKYBY=',
-                    'server_url': 'http://example.com/container/synchronize',
                   },
-                },
-                'time': 1.0,
-                'version': 'privacyIDEA 3.6.2',
-                'versionnumber': '3.6.2',
-                'detail': null,
-                'signature': 'signature',
-              }),
-              200,
-            );
-          }
-          return Response(jsonEncode(exampleError), 400);
-        });
+                  'time': 1.0,
+                  'version': 'privacyIDEA 3.6.2',
+                  'versionnumber': '3.6.2',
+                  'detail': null,
+                  'signature': 'signature',
+                }),
+                200,
+              );
+            }
+            return Response(jsonEncode(exampleError), 400);
+          });
 
-        final type = X25519().keyPairType;
-        final publicSimpleKeyPair = SimpleKeyPairData(
-          base64Decode("uCyfofJSNWX08K8omYeR43nwoPUE++niUrxDB43noVc="),
-          publicKey: SimplePublicKey(
-            base64Decode("4/d5K2gycwPxeIVHuHQvlq6tb7BDQ7HkQ/g8JBBmVHw="),
+          final type = X25519().keyPairType;
+          final publicSimpleKeyPair = SimpleKeyPairData(
+            base64Decode("uCyfofJSNWX08K8omYeR43nwoPUE++niUrxDB43noVc="),
+            publicKey: SimplePublicKey(
+              base64Decode("4/d5K2gycwPxeIVHuHQvlq6tb7BDQ7HkQ/g8JBBmVHw="),
+              type: type,
+            ),
             type: type,
-          ),
-          type: type,
-        );
+          );
 
-        // Act
-        final result = await _syncWithAssignment(
-          tester,
-          containerApi: containerApi,
-          container: tokenContainer,
-          tokenState: tokenState,
-          withX25519Key: publicSimpleKeyPair,
-        );
-        // Asserta
-        expect(result, isNotNull);
-        final newPolicies = result!.newPolicies;
-        expect(newPolicies.initialTokenAssignment, false);
-        expect(newPolicies.rolloverAllowed, false);
-        expect(newPolicies.disabledTokenDeletion, true);
-        expect(newPolicies.disabledUnregister, true);
-        final updatedTokens = result.updatedTokens;
-        final deleteTokens = result.deletedTokens;
-        expect(deleteTokens.length, 0);
-        expect(updatedTokens.length, 2);
-        final token0 = updatedTokens[0];
-        final token1 = updatedTokens[1];
-        expect(token0, isA<HOTPToken>());
-        expect((token0 as HOTPToken).label, 'OATH00166051');
-        expect(token0.issuer, 'privacyIDEA');
-        expect(token0.counter, 0);
-        expect(token0.algorithm, Algorithms.SHA1);
-        expect(token0.digits, 6);
-        expect(token0.secret, 'KWS3LTJ2L7NW4KGHL5W5OABWR4PLJIDL');
-        expect(token1, isA<TOTPToken>());
-        expect((token1 as TOTPToken).label, 'TOTP00011B1F');
-        expect(token1.issuer, 'privacyIDEA');
-        expect(token1.period, 30);
-        expect(token1.algorithm, Algorithms.SHA1);
-        expect(token1.digits, 6);
-        expect(token1.secret, 'CDLDLKLUMPDR2IJJZJHF5XKFKBABU4XR');
-      });
-      testWidgets('sync with unknown tokens (with serial)', (tester) async {
-        // Arrange
-        final mockIoClient = MockPrivacyideaIOClient();
-        final containerApi = PiContainerApi(ioClient: mockIoClient);
-        final tokenContainer = getFinalizedTokenContainer();
-        final tokenState = TokenState(
-          tokens: [
-            TOTPToken(
-              label: 'TOTP00011B1F',
-              serial: 'TOTP00011B1F',
-              issuer: 'privacyIDEA',
-              period: 30,
-              id: 'id0',
-              algorithm: Algorithms.SHA1,
-              digits: 6,
-              secret: 'CDLDLKLUMPDR2IJJZJHF5XKFKBABU4XR',
+          // Act
+          final result = await _syncWithAssignment(
+            tester,
+            containerApi: containerApi,
+            container: tokenContainer,
+            tokenState: tokenState,
+            withX25519Key: publicSimpleKeyPair,
+          );
+          // Asserta
+          expect(result, isNotNull);
+          final newPolicies = result!.newPolicies;
+          expect(newPolicies.initialTokenAssignment, false);
+          expect(newPolicies.rolloverAllowed, false);
+          expect(newPolicies.disabledTokenDeletion, true);
+          expect(newPolicies.disabledUnregister, true);
+          final updatedTokens = result.updatedTokens;
+          final deleteTokens = result.deletedTokens;
+          expect(deleteTokens.length, 0);
+          expect(updatedTokens.length, 2);
+          final token0 = updatedTokens[0];
+          final token1 = updatedTokens[1];
+          expect(token0, isA<HOTPToken>());
+          expect((token0 as HOTPToken).label, 'OATH00166051');
+          expect(token0.issuer, 'privacyIDEA');
+          expect(token0.counter, 0);
+          expect(token0.algorithm, Algorithms.SHA1);
+          expect(token0.digits, 6);
+          expect(token0.secret, 'KWS3LTJ2L7NW4KGHL5W5OABWR4PLJIDL');
+          expect(token1, isA<TOTPToken>());
+          expect((token1 as TOTPToken).label, 'TOTP00011B1F');
+          expect(token1.issuer, 'privacyIDEA');
+          expect(token1.period, 30);
+          expect(token1.algorithm, Algorithms.SHA1);
+          expect(token1.digits, 6);
+          expect(token1.secret, 'CDLDLKLUMPDR2IJJZJHF5XKFKBABU4XR');
+        });
+        testWidgets('sync with unknown tokens (with serial)', (tester) async {
+          // Arrange
+          final mockIoClient = MockPrivacyideaIOClient();
+          final containerApi = PiContainerApi(ioClient: mockIoClient);
+          final tokenContainer = getFinalizedTokenContainer();
+          final tokenState = TokenState(
+            tokens: [
+              TOTPToken(
+                label: 'TOTP00011B1F',
+                serial: 'TOTP00011B1F',
+                issuer: 'privacyIDEA',
+                period: 30,
+                id: 'id0',
+                algorithm: Algorithms.SHA1,
+                digits: 6,
+                secret: 'CDLDLKLUMPDR2IJJZJHF5XKFKBABU4XR',
+              ),
+              HOTPToken(
+                label: "OATH00166051",
+                serial: "OATH00166051",
+                issuer: "privacyIDEA",
+                counter: 1,
+                id: 'id1',
+                algorithm: Algorithms.SHA1,
+                digits: 6,
+                secret: 'KWS3LTJ2L7NW4KGHL5W5OABWR4PLJIDL',
+              ),
+            ],
+          );
+          when(
+            mockIoClient.doPost(
+              url: anyNamed('url'),
+              body: anyNamed('body'),
+              sslVerify: anyNamed('sslVerify'),
             ),
-            HOTPToken(
-              label: "OATH00166051",
-              serial: "OATH00166051",
-              issuer: "privacyIDEA",
-              counter: 1,
-              id: 'id1',
-              algorithm: Algorithms.SHA1,
-              digits: 6,
-              secret: 'KWS3LTJ2L7NW4KGHL5W5OABWR4PLJIDL',
-            ),
-          ],
-        );
-        when(
-          mockIoClient.doPost(
-            url: anyNamed('url'),
-            body: anyNamed('body'),
-            sslVerify: anyNamed('sslVerify'),
-          ),
-        ).thenAnswer((invocation) async {
-          final Uri invocationUrl = invocation.namedArguments[Symbol('url')];
-          final Map<String, String?> invocationBody =
-              invocation.namedArguments[Symbol('body')];
-          Logger.info('Body: $invocationBody');
-          if (invocationUrl.toString() ==
-                  'http://example.com/container/challenge' &&
-              invocationBody['scope'] ==
-                  'http://example.com/container/synchronize') {
-            return containerChallengeResponse;
-          }
-          final publicEncKeyClientB64 = invocationBody['public_enc_key_client'];
-          final containerDictClient =
-              '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"TOTP00011B1F","tokentype":"TOTP"},{"serial":"OATH00166051","tokentype":"HOTP"}]}';
+          ).thenAnswer((invocation) async {
+            final Uri invocationUrl = invocation.namedArguments[Symbol('url')];
+            final Map<String, String?> invocationBody =
+                invocation.namedArguments[Symbol('body')];
+            Logger.info('Body: $invocationBody');
+            if (invocationUrl.toString() ==
+                    'http://example.com/container/challenge' &&
+                invocationBody['scope'] ==
+                    'http://example.com/container/synchronize') {
+              return containerChallengeResponse;
+            }
+            final publicEncKeyClientB64 =
+                invocationBody['public_enc_key_client'];
+            final containerDictClient =
+                '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"TOTP00011B1F","tokentype":"TOTP"},{"serial":"OATH00166051","tokentype":"HOTP"}]}';
 
-          final signMessage2 =
-              '$containerChallengeNonce|'
-              '$containerChallengeTimeStamp|'
-              '${tokenContainer.serial}|'
-              '$invocationUrl|'
-              '$publicEncKeyClientB64|'
-              '$containerDictClient';
+            final signMessage2 =
+                '$containerChallengeNonce|'
+                '$containerChallengeTimeStamp|'
+                '${tokenContainer.serial}|'
+                '$invocationUrl|'
+                '$publicEncKeyClientB64|'
+                '$containerDictClient';
 
-          if (invocationUrl.toString() ==
-                  'http://example.com/container/synchronize' &&
-              invocationBody['container_dict_client'] == containerDictClient &&
-              EccUtils().validateSignature(
-                tokenContainer.ecPublicClientKey!,
-                invocationBody['signature']!,
-                signMessage2,
-              )) {
-            return Response(
-              jsonEncode({
-                'id': 5,
-                'jsonrpc': '2.0',
-                'result': {
-                  'status': true,
-                  'value': {
-                    'container_dict_server':
-                        'GKgkhASAEDYmXRJo2f-ixn6RsnWTuOjzK3mvBmJu9alQhbkcXIRf135wMI9YsErJI_soNDiP2ySR3lHdumEYxmcjW1r1ZbxM-KfMqUPaM56b7oet2MQh5TdlIBKib-UhSyxZ5SpKK26tHIYMjxw3IJMKADMzI5NVrj-F0KCburg_54v4GkJh_gWb5_F6pDw45O_AoEm1d6ANk-QHjg4_10-WFSEdKU6_LsixqIGjQPuRY9YBO5lxav_hWPzJw76UC80D8LpVi5IgJASU0uyo65PN3enczq6OOGmsc2IWP8Wl544qEpQaPGXnw0MvJxs139NIMMZLEyU-tRATIlWNYlLeN2SYW3xFyMB19pSpqIO3GFOChIhfsa_E6w-AMUR2I3s0e9vlbUPYsIpJ_wG7pS-PdWCkaJpvV1i7G_z73R-27tfmeKPaMVA2elGl-XIP8gnqMh0Igx2EtmkR2rQhGWf5XaU7fSGGbuNA81mR8dEJhiMHooIEqrPRzlRy0lwMapfe8lBiGBRFf6bpFEaT18--gh4qMWOLS1DK_q16b1tuNNnFmgafGkBsLDuvU6T23nOM14FqPD-GJGHJ0ju5ItWODUn2gCGPYmnolWorRqpeTDYylKJdNEl5r76WSVz1W9KpTjnq6-e6OkZC6w1VpzfFG_tOWmVKZ5wb8QDGDaF37d-LTAcykSRRa-0EfHS_uDWr94oiv7YjUnyD7C9zuiZe9qkgoeQdSYK-Kyw9lkkZc85ANcK3fQHOc08E3dt-OTVEjFlU750zCxs7xt06TTBS_dXdzyTdu2rHvosOvvCSwGM3h_942B9IAdcm2MkRtTpi2OlGgl7j8IGNxojCEO0Y03-H4GSoiaNfa7DGbka4QOTP6Gv9S1r4qzSN1oSnHwtN3_x7obh229rYoGjz3NfjnWLDjM_HLAqSWVabredReNpoX-uBzP5LzkAMusPJ34HCufm8Ka4mhpW-BRZXXWwwtStpdNKlrgr_QDEatJBe9ZdU9SL5JTHe3ICyJIjOmyN-qwC2IwhkxGx6rq1RcUNDwgeCMXO2peicQ8uWJiqmot-a-40y7Hwr49grjmRNFM-iIoMr1PaAvAhLkeaTGiZvoRN2a3jNx0YTGTQ_xIPuiizPKVJBBghVjfFJoMvrl0bLDjHnSqMbR-FQ1etu5lVqRt1t7RXpROvBj41WqaJQG3yDyOk8JKE4yhZ-FFFr6usgQudNhglKe1IJl05X5wAHIRMacMz9cuWS-FDoNSdsOx9QjqVsVYPg2NXaTj_75I8Obuxh6kLRlAZMPVQRHhb_NkF5rOrnuhOZWbCCDqEiSI7FW3Ixsx1vQ0swipATYoU=',
-                    'encryption_algorithm': 'AES',
-                    'encryption_params': {
-                      'algorithm': 'AES',
-                      'mode': 'GCM',
-                      'init_vector': '7gDUfdpZm15ew5jJqzISTA==',
-                      'tag': 'lnAF6Md0EkSq8bKt5eetpg==',
+            if (invocationUrl.toString() ==
+                    'http://example.com/container/synchronize' &&
+                invocationBody['container_dict_client'] ==
+                    containerDictClient &&
+                EccUtils().validateSignature(
+                  tokenContainer.ecPublicClientKey!,
+                  invocationBody['signature']!,
+                  signMessage2,
+                )) {
+              return Response(
+                jsonEncode({
+                  'id': 5,
+                  'jsonrpc': '2.0',
+                  'result': {
+                    'status': true,
+                    'value': {
+                      'container_dict_server':
+                          'GKgkhASAEDYmXRJo2f-ixn6RsnWTuOjzK3mvBmJu9alQhbkcXIRf135wMI9YsErJI_soNDiP2ySR3lHdumEYxmcjW1r1ZbxM-KfMqUPaM56b7oet2MQh5TdlIBKib-UhSyxZ5SpKK26tHIYMjxw3IJMKADMzI5NVrj-F0KCburg_54v4GkJh_gWb5_F6pDw45O_AoEm1d6ANk-QHjg4_10-WFSEdKU6_LsixqIGjQPuRY9YBO5lxav_hWPzJw76UC80D8LpVi5IgJASU0uyo65PN3enczq6OOGmsc2IWP8Wl544qEpQaPGXnw0MvJxs139NIMMZLEyU-tRATIlWNYlLeN2SYW3xFyMB19pSpqIO3GFOChIhfsa_E6w-AMUR2I3s0e9vlbUPYsIpJ_wG7pS-PdWCkaJpvV1i7G_z73R-27tfmeKPaMVA2elGl-XIP8gnqMh0Igx2EtmkR2rQhGWf5XaU7fSGGbuNA81mR8dEJhiMHooIEqrPRzlRy0lwMapfe8lBiGBRFf6bpFEaT18--gh4qMWOLS1DK_q16b1tuNNnFmgafGkBsLDuvU6T23nOM14FqPD-GJGHJ0ju5ItWODUn2gCGPYmnolWorRqpeTDYylKJdNEl5r76WSVz1W9KpTjnq6-e6OkZC6w1VpzfFG_tOWmVKZ5wb8QDGDaF37d-LTAcykSRRa-0EfHS_uDWr94oiv7YjUnyD7C9zuiZe9qkgoeQdSYK-Kyw9lkkZc85ANcK3fQHOc08E3dt-OTVEjFlU750zCxs7xt06TTBS_dXdzyTdu2rHvosOvvCSwGM3h_942B9IAdcm2MkRtTpi2OlGgl7j8IGNxojCEO0Y03-H4GSoiaNfa7DGbka4QOTP6Gv9S1r4qzSN1oSnHwtN3_x7obh229rYoGjz3NfjnWLDjM_HLAqSWVabredReNpoX-uBzP5LzkAMusPJ34HCufm8Ka4mhpW-BRZXXWwwtStpdNKlrgr_QDEatJBe9ZdU9SL5JTHe3ICyJIjOmyN-qwC2IwhkxGx6rq1RcUNDwgeCMXO2peicQ8uWJiqmot-a-40y7Hwr49grjmRNFM-iIoMr1PaAvAhLkeaTGiZvoRN2a3jNx0YTGTQ_xIPuiizPKVJBBghVjfFJoMvrl0bLDjHnSqMbR-FQ1etu5lVqRt1t7RXpROvBj41WqaJQG3yDyOk8JKE4yhZ-FFFr6usgQudNhglKe1IJl05X5wAHIRMacMz9cuWS-FDoNSdsOx9QjqVsVYPg2NXaTj_75I8Obuxh6kLRlAZMPVQRHhb_NkF5rOrnuhOZWbCCDqEiSI7FW3Ixsx1vQ0swipATYoU=',
+                      'encryption_algorithm': 'AES',
+                      'encryption_params': {
+                        'algorithm': 'AES',
+                        'mode': 'GCM',
+                        'init_vector': '7gDUfdpZm15ew5jJqzISTA==',
+                        'tag': 'lnAF6Md0EkSq8bKt5eetpg==',
+                      },
+                      'policies': {
+                        'disable_client_container_unregister': true,
+                        'disable_client_token_deletion': true,
+                        'container_client_rollover': false,
+                        'initially_add_tokens_to_container': false,
+                      },
+                      'public_server_key':
+                          'Od5nNdvC3iVYTK5aA5e-c1-f3FhSe4MH4apaNDRkSQA=',
+                      'server_url': 'http://example.com/container/synchronize',
                     },
-                    'policies': {
-                      'disable_client_container_unregister': true,
-                      'disable_client_token_deletion': true,
-                      'container_client_rollover': false,
-                      'initially_add_tokens_to_container': false,
-                    },
-                    'public_server_key':
-                        'Od5nNdvC3iVYTK5aA5e-c1-f3FhSe4MH4apaNDRkSQA=',
-                    'server_url': 'http://example.com/container/synchronize',
                   },
-                },
-                'time': 1.0,
-                'version': 'privacyIDEA 3.6.2',
-                'versionnumber': '3.6.2',
-                'detail': null,
-                'signature': 'signature',
-              }),
-              200,
-            );
-          }
-          return Response(jsonEncode(exampleError), 400);
-        });
+                  'time': 1.0,
+                  'version': 'privacyIDEA 3.6.2',
+                  'versionnumber': '3.6.2',
+                  'detail': null,
+                  'signature': 'signature',
+                }),
+                200,
+              );
+            }
+            return Response(jsonEncode(exampleError), 400);
+          });
 
-        final type = X25519().keyPairType;
-        final publicSimpleKeyPair = SimpleKeyPairData(
-          base64Decode("YIgUiisLPu5dq3KQUMksNVEq12NG2mIM32E13UkQwWQ="),
-          publicKey: SimplePublicKey(
-            base64Decode("ScZtrNZ3Zay12x+eQDyz4a2wafvZqk7BVzBNTchXc2w="),
+          final type = X25519().keyPairType;
+          final publicSimpleKeyPair = SimpleKeyPairData(
+            base64Decode("YIgUiisLPu5dq3KQUMksNVEq12NG2mIM32E13UkQwWQ="),
+            publicKey: SimplePublicKey(
+              base64Decode("ScZtrNZ3Zay12x+eQDyz4a2wafvZqk7BVzBNTchXc2w="),
+              type: type,
+            ),
             type: type,
-          ),
-          type: type,
-        );
+          );
 
-        // Act
-        final result = await _syncWithAssignment(
+          // Act
+          final result = await _syncWithAssignment(
+            tester,
+            containerApi: containerApi,
+            container: tokenContainer,
+            tokenState: tokenState,
+            withX25519Key: publicSimpleKeyPair,
+          );
+          // Asserta
+          expect(result, isNotNull);
+          final newPolicies = result!.newPolicies;
+          expect(newPolicies.initialTokenAssignment, false);
+          expect(newPolicies.rolloverAllowed, false);
+          expect(newPolicies.disabledTokenDeletion, true);
+          expect(newPolicies.disabledUnregister, true);
+          final updatedTokens = result.updatedTokens;
+          final deleteTokens = result.deletedTokens;
+          expect(deleteTokens.length, 0);
+          expect(updatedTokens.length, 1);
+          final token0 = updatedTokens[0];
+          expect(token0, isA<TOTPToken>());
+          expect((token0 as TOTPToken).label, 'TOTP00011B1F');
+          expect(token0.issuer, 'privacyIDEA');
+          expect(token0.period, 30);
+          expect(token0.id, 'id0');
+          expect(token0.algorithm, Algorithms.SHA1);
+          expect(token0.digits, 6);
+          expect(token0.secret, 'CDLDLKLUMPDR2IJJZJHF5XKFKBABU4XR');
+          expect(token0.serial, 'TOTP00011B1F');
+        });
+        testWidgets('sync with unknown tokens (without serial)', (
           tester,
-          containerApi: containerApi,
-          container: tokenContainer,
-          tokenState: tokenState,
-          withX25519Key: publicSimpleKeyPair,
-        );
-        // Asserta
-        expect(result, isNotNull);
-        final newPolicies = result!.newPolicies;
-        expect(newPolicies.initialTokenAssignment, false);
-        expect(newPolicies.rolloverAllowed, false);
-        expect(newPolicies.disabledTokenDeletion, true);
-        expect(newPolicies.disabledUnregister, true);
-        final updatedTokens = result.updatedTokens;
-        final deleteTokens = result.deletedTokens;
-        expect(deleteTokens.length, 0);
-        expect(updatedTokens.length, 1);
-        final token0 = updatedTokens[0];
-        expect(token0, isA<TOTPToken>());
-        expect((token0 as TOTPToken).label, 'TOTP00011B1F');
-        expect(token0.issuer, 'privacyIDEA');
-        expect(token0.period, 30);
-        expect(token0.id, 'id0');
-        expect(token0.algorithm, Algorithms.SHA1);
-        expect(token0.digits, 6);
-        expect(token0.secret, 'CDLDLKLUMPDR2IJJZJHF5XKFKBABU4XR');
-        expect(token0.serial, 'TOTP00011B1F');
-      });
-      testWidgets('sync with unknown tokens (without serial)', (tester) async {
-        // Arrange
-        final mockIoClient = MockPrivacyideaIOClient();
-        final containerApi = PiContainerApi(ioClient: mockIoClient);
-        final tokenContainer = getFinalizedTokenContainer();
-        final tokenState = TokenState(
-          tokens: [
-            TOTPToken(
-              label: 'TOTP00011B1F',
-              serial: 'TOTP00011B1F',
-              issuer: 'privacyIDEA',
-              period: 30,
-              id: 'id0',
-              algorithm: Algorithms.SHA1,
-              digits: 6,
-              secret: 'CDLDLKLUMPDR2IJJZJHF5XKFKBABU4XR',
+        ) async {
+          // Arrange
+          final mockIoClient = MockPrivacyideaIOClient();
+          final containerApi = PiContainerApi(ioClient: mockIoClient);
+          final tokenContainer = getFinalizedTokenContainer();
+          final tokenState = TokenState(
+            tokens: [
+              TOTPToken(
+                label: 'TOTP00011B1F',
+                serial: 'TOTP00011B1F',
+                issuer: 'privacyIDEA',
+                period: 30,
+                id: 'id0',
+                algorithm: Algorithms.SHA1,
+                digits: 6,
+                secret: 'CDLDLKLUMPDR2IJJZJHF5XKFKBABU4XR',
+              ),
+              HOTPToken(
+                label: "OATH00166051",
+                issuer: "privacyIDEA",
+                counter: 1,
+                id: 'id1',
+                algorithm: Algorithms.SHA1,
+                digits: 6,
+                secret: 'KWS3LTJ2L7NW4KGHL5W5OABWR4PLJIDL',
+              ),
+            ],
+          );
+          when(
+            mockIoClient.doPost(
+              url: anyNamed('url'),
+              body: anyNamed('body'),
+              sslVerify: anyNamed('sslVerify'),
             ),
-            HOTPToken(
-              label: "OATH00166051",
-              issuer: "privacyIDEA",
-              counter: 1,
-              id: 'id1',
-              algorithm: Algorithms.SHA1,
-              digits: 6,
-              secret: 'KWS3LTJ2L7NW4KGHL5W5OABWR4PLJIDL',
-            ),
-          ],
-        );
-        when(
-          mockIoClient.doPost(
-            url: anyNamed('url'),
-            body: anyNamed('body'),
-            sslVerify: anyNamed('sslVerify'),
-          ),
-        ).thenAnswer((invocation) async {
-          final Uri invocationUrl = invocation.namedArguments[Symbol('url')];
-          final Map<String, String?> invocationBody =
-              invocation.namedArguments[Symbol('body')];
-          Logger.info('Body: $invocationBody');
-          if (invocationUrl.toString() ==
-                  'http://example.com/container/challenge' &&
-              invocationBody['scope'] ==
-                  'http://example.com/container/synchronize') {
-            return containerChallengeResponse;
-          }
-          final publicEncKeyClientB64 = invocationBody['public_enc_key_client'];
+          ).thenAnswer((invocation) async {
+            final Uri invocationUrl = invocation.namedArguments[Symbol('url')];
+            final Map<String, String?> invocationBody =
+                invocation.namedArguments[Symbol('body')];
+            Logger.info('Body: $invocationBody');
+            if (invocationUrl.toString() ==
+                    'http://example.com/container/challenge' &&
+                invocationBody['scope'] ==
+                    'http://example.com/container/synchronize') {
+              return containerChallengeResponse;
+            }
+            final publicEncKeyClientB64 =
+                invocationBody['public_enc_key_client'];
 
-          final containerDictClient =
-              '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"TOTP00011B1F","tokentype":"TOTP"},{"tokentype":"HOTP","otp":["079447","501895"],"counter":"1"}]}';
+            final containerDictClient =
+                '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"TOTP00011B1F","tokentype":"TOTP"},{"tokentype":"HOTP","otp":["079447","501895"],"counter":"1"}]}';
 
-          final signMessage2 =
-              '$containerChallengeNonce|'
-              '$containerChallengeTimeStamp|'
-              '${tokenContainer.serial}|'
-              '$invocationUrl|'
-              '$publicEncKeyClientB64|'
-              '$containerDictClient';
+            final signMessage2 =
+                '$containerChallengeNonce|'
+                '$containerChallengeTimeStamp|'
+                '${tokenContainer.serial}|'
+                '$invocationUrl|'
+                '$publicEncKeyClientB64|'
+                '$containerDictClient';
 
-          if (invocationUrl.toString() ==
-                  'http://example.com/container/synchronize' &&
-              invocationBody['container_dict_client'] == containerDictClient &&
-              EccUtils().validateSignature(
-                tokenContainer.ecPublicClientKey!,
-                invocationBody['signature']!,
-                signMessage2,
-              )) {
-            return Response(
-              jsonEncode({
-                'id': 5,
-                'jsonrpc': '2.0',
-                'result': {
-                  'status': true,
-                  'value': {
-                    'container_dict_server':
-                        'GKgkhASAEDYmXRJo2f-ixn6RsnWTuOjzK3mvBmJu9alQhbkcXIRf135wMI9YsErJI_soNDiP2ySR3lHdumEYxmcjW1r1ZbxM-KfMqUPaM56b7oet2MQh5TdlIBKib-UhSyxZ5SpKK26tHIYMjxw3IJMKADMzI5NVrj-F0KCburg_54v4GkJh_gWb5_F6pDw45O_AoEm1d6ANk-QHjg4_10-WFSEdKU6_LsixqIGjQPuRY9YBO5lxav_hWPzJw76UC80D8LpVi5IgJASU0uyo65PN3enczq6OOGmsc2IWP8Wl544qEpQaPGXnw0MvJxs139NIMMZLEyU-tRATIlWNYlLeN2SYW3xFyMB19pSpqIO3GFOChIhfsa_E6w-AMUR2I3s0e9vlbUPYsIpJ_wG7pS-PdWCkaJpvV1i7G_z73R-27tfmeKPaMVA2elGl-XIP8gnqMh0Igx2EtmkR2rQhGWf5XaU7fSGGbuNA81mR8dEJhiMHooIEqrPRzlRy0lwMapfe8lBiGBRFf6bpFEaT18--gh4qMWOLS1DK_q16b1tuNNnFmgafGkBsLDuvU6T23nOM14FqPD-GJGHJ0ju5ItWODUn2gCGPYmnolWorRqpeTDYylKJdNEl5r76WSVz1W9KpTjnq6-e6OkZC6w1VpzfFG_tOWmVKZ5wb8QDGDaF37d-LTAcykSRRa-0EfHS_uDWr94oiv7YjUnyD7C9zuiZe9qkgoeQdSYK-Kyw9lkkZc85ANcK3fQHOc08E3dt-OTVEjFlU750zCxs7xt06TTBS_dXdzyTdu2rHvosOvvCSwGM3h_942B9IAdcm2MkRtTpi2OlGgl7j8IGNxojCEO0Y03-H4GSoiaNfa7DGbka4QOTP6Gv9S1r4qzSN1oSnHwtN3_x7obh229rYoGjz3NfjnWLDjM_HLAqSWVabredReNpoX-uBzP5LzkAMusPJ34HCufm8Ka4mhpW-BRZXXWwwtStpdNKlrgr_QDEatJBe9ZdU9SL5JTHe3ICyJIjOmyN-qwC2IwhkxGx6rq1RcUNDwgeCMXO2peicQ8uWJiqmot-a-40y7Hwr49grjmRNFM-iIoMr1PaAvAhLkeaTGiZvoRN2a3jNx0YTGTQ_xIPuiizPKVJBBghVjfFJoMvrl0bLDjHnSqMbR-FQ1etu5lVqRt1t7RXpROvBj41WqaJQG3yDyOk8JKE4yhZ-FFFr6usgQudNhglKe1IJl05X5wAHIRMacMz9cuWS-FDoNSdsOx9QjqVsVYPg2NXaTj_75I8Obuxh6kLRlAZMPVQRHhb_NkF5rOrnuhOZWbCCDqEiSI7FW3Ixsx1vQ0swipATYoU=',
-                    'encryption_algorithm': 'AES',
-                    'encryption_params': {
-                      'algorithm': 'AES',
-                      'mode': 'GCM',
-                      'init_vector': '7gDUfdpZm15ew5jJqzISTA==',
-                      'tag': 'lnAF6Md0EkSq8bKt5eetpg==',
+            if (invocationUrl.toString() ==
+                    'http://example.com/container/synchronize' &&
+                invocationBody['container_dict_client'] ==
+                    containerDictClient &&
+                EccUtils().validateSignature(
+                  tokenContainer.ecPublicClientKey!,
+                  invocationBody['signature']!,
+                  signMessage2,
+                )) {
+              return Response(
+                jsonEncode({
+                  'id': 5,
+                  'jsonrpc': '2.0',
+                  'result': {
+                    'status': true,
+                    'value': {
+                      'container_dict_server':
+                          'GKgkhASAEDYmXRJo2f-ixn6RsnWTuOjzK3mvBmJu9alQhbkcXIRf135wMI9YsErJI_soNDiP2ySR3lHdumEYxmcjW1r1ZbxM-KfMqUPaM56b7oet2MQh5TdlIBKib-UhSyxZ5SpKK26tHIYMjxw3IJMKADMzI5NVrj-F0KCburg_54v4GkJh_gWb5_F6pDw45O_AoEm1d6ANk-QHjg4_10-WFSEdKU6_LsixqIGjQPuRY9YBO5lxav_hWPzJw76UC80D8LpVi5IgJASU0uyo65PN3enczq6OOGmsc2IWP8Wl544qEpQaPGXnw0MvJxs139NIMMZLEyU-tRATIlWNYlLeN2SYW3xFyMB19pSpqIO3GFOChIhfsa_E6w-AMUR2I3s0e9vlbUPYsIpJ_wG7pS-PdWCkaJpvV1i7G_z73R-27tfmeKPaMVA2elGl-XIP8gnqMh0Igx2EtmkR2rQhGWf5XaU7fSGGbuNA81mR8dEJhiMHooIEqrPRzlRy0lwMapfe8lBiGBRFf6bpFEaT18--gh4qMWOLS1DK_q16b1tuNNnFmgafGkBsLDuvU6T23nOM14FqPD-GJGHJ0ju5ItWODUn2gCGPYmnolWorRqpeTDYylKJdNEl5r76WSVz1W9KpTjnq6-e6OkZC6w1VpzfFG_tOWmVKZ5wb8QDGDaF37d-LTAcykSRRa-0EfHS_uDWr94oiv7YjUnyD7C9zuiZe9qkgoeQdSYK-Kyw9lkkZc85ANcK3fQHOc08E3dt-OTVEjFlU750zCxs7xt06TTBS_dXdzyTdu2rHvosOvvCSwGM3h_942B9IAdcm2MkRtTpi2OlGgl7j8IGNxojCEO0Y03-H4GSoiaNfa7DGbka4QOTP6Gv9S1r4qzSN1oSnHwtN3_x7obh229rYoGjz3NfjnWLDjM_HLAqSWVabredReNpoX-uBzP5LzkAMusPJ34HCufm8Ka4mhpW-BRZXXWwwtStpdNKlrgr_QDEatJBe9ZdU9SL5JTHe3ICyJIjOmyN-qwC2IwhkxGx6rq1RcUNDwgeCMXO2peicQ8uWJiqmot-a-40y7Hwr49grjmRNFM-iIoMr1PaAvAhLkeaTGiZvoRN2a3jNx0YTGTQ_xIPuiizPKVJBBghVjfFJoMvrl0bLDjHnSqMbR-FQ1etu5lVqRt1t7RXpROvBj41WqaJQG3yDyOk8JKE4yhZ-FFFr6usgQudNhglKe1IJl05X5wAHIRMacMz9cuWS-FDoNSdsOx9QjqVsVYPg2NXaTj_75I8Obuxh6kLRlAZMPVQRHhb_NkF5rOrnuhOZWbCCDqEiSI7FW3Ixsx1vQ0swipATYoU=',
+                      'encryption_algorithm': 'AES',
+                      'encryption_params': {
+                        'algorithm': 'AES',
+                        'mode': 'GCM',
+                        'init_vector': '7gDUfdpZm15ew5jJqzISTA==',
+                        'tag': 'lnAF6Md0EkSq8bKt5eetpg==',
+                      },
+                      'policies': {
+                        'disable_client_container_unregister': true,
+                        'disable_client_token_deletion': true,
+                        'container_client_rollover': false,
+                        'initially_add_tokens_to_container': false,
+                      },
+                      'public_server_key':
+                          'Od5nNdvC3iVYTK5aA5e-c1-f3FhSe4MH4apaNDRkSQA=',
+                      'server_url': 'http://example.com/container/synchronize',
                     },
-                    'policies': {
-                      'disable_client_container_unregister': true,
-                      'disable_client_token_deletion': true,
-                      'container_client_rollover': false,
-                      'initially_add_tokens_to_container': false,
-                    },
-                    'public_server_key':
-                        'Od5nNdvC3iVYTK5aA5e-c1-f3FhSe4MH4apaNDRkSQA=',
-                    'server_url': 'http://example.com/container/synchronize',
                   },
-                },
-                'time': 1.0,
-                'version': 'privacyIDEA 3.6.2',
-                'versionnumber': '3.6.2',
-                'detail': null,
-                'signature': 'signature',
-              }),
-              200,
-            );
-          }
-          return Response(jsonEncode(exampleError), 400);
-        });
+                  'time': 1.0,
+                  'version': 'privacyIDEA 3.6.2',
+                  'versionnumber': '3.6.2',
+                  'detail': null,
+                  'signature': 'signature',
+                }),
+                200,
+              );
+            }
+            return Response(jsonEncode(exampleError), 400);
+          });
 
-        final type = X25519().keyPairType;
-        final publicSimpleKeyPair = SimpleKeyPairData(
-          base64Decode("YIgUiisLPu5dq3KQUMksNVEq12NG2mIM32E13UkQwWQ="),
-          publicKey: SimplePublicKey(
-            base64Decode("ScZtrNZ3Zay12x+eQDyz4a2wafvZqk7BVzBNTchXc2w="),
+          final type = X25519().keyPairType;
+          final publicSimpleKeyPair = SimpleKeyPairData(
+            base64Decode("YIgUiisLPu5dq3KQUMksNVEq12NG2mIM32E13UkQwWQ="),
+            publicKey: SimplePublicKey(
+              base64Decode("ScZtrNZ3Zay12x+eQDyz4a2wafvZqk7BVzBNTchXc2w="),
+              type: type,
+            ),
             type: type,
-          ),
-          type: type,
-        );
+          );
 
-        // Act
-        final result = await _syncWithAssignment(
-          tester,
-          containerApi: containerApi,
-          container: tokenContainer,
-          tokenState: tokenState,
-          withX25519Key: publicSimpleKeyPair,
-        );
-        // Asserta
-        expect(result, isNotNull);
-        final newPolicies = result!.newPolicies;
-        expect(newPolicies.initialTokenAssignment, false);
-        expect(newPolicies.rolloverAllowed, false);
-        expect(newPolicies.disabledTokenDeletion, true);
-        expect(newPolicies.disabledUnregister, true);
-        final updatedTokens = result.updatedTokens;
-        final deleteTokens = result.deletedTokens;
-        expect(deleteTokens.length, 0);
-        expect(updatedTokens.length, 1);
-        final token0 = updatedTokens[0];
-        expect(token0, isA<TOTPToken>());
-        expect((token0 as TOTPToken).label, 'TOTP00011B1F');
-        expect(token0.issuer, 'privacyIDEA');
-        expect(token0.period, 30);
-        expect(token0.id, 'id0');
-        expect(token0.algorithm, Algorithms.SHA1);
-        expect(token0.digits, 6);
-        expect(token0.secret, 'CDLDLKLUMPDR2IJJZJHF5XKFKBABU4XR');
-        expect(token0.serial, 'TOTP00011B1F');
+          // Act
+          final result = await _syncWithAssignment(
+            tester,
+            containerApi: containerApi,
+            container: tokenContainer,
+            tokenState: tokenState,
+            withX25519Key: publicSimpleKeyPair,
+          );
+          // Asserta
+          expect(result, isNotNull);
+          final newPolicies = result!.newPolicies;
+          expect(newPolicies.initialTokenAssignment, false);
+          expect(newPolicies.rolloverAllowed, false);
+          expect(newPolicies.disabledTokenDeletion, true);
+          expect(newPolicies.disabledUnregister, true);
+          final updatedTokens = result.updatedTokens;
+          final deleteTokens = result.deletedTokens;
+          expect(deleteTokens.length, 0);
+          expect(updatedTokens.length, 1);
+          final token0 = updatedTokens[0];
+          expect(token0, isA<TOTPToken>());
+          expect((token0 as TOTPToken).label, 'TOTP00011B1F');
+          expect(token0.issuer, 'privacyIDEA');
+          expect(token0.period, 30);
+          expect(token0.id, 'id0');
+          expect(token0.algorithm, Algorithms.SHA1);
+          expect(token0.digits, 6);
+          expect(token0.secret, 'CDLDLKLUMPDR2IJJZJHF5XKFKBABU4XR');
+          expect(token0.serial, 'TOTP00011B1F');
+        });
       });
     });
-  });
-  group('Unallowed', () {
-    test('rollover', () {
-      // Arrange
-      final containerApi = PiContainerApi(ioClient: MockPrivacyideaIOClient());
-      final tokenContainer = getFinalizedTokenContainer(
-        withPolicies: ContainerPolicies(
-          rolloverAllowed: false,
-          initialTokenAssignment: true,
-          disabledTokenDeletion: false,
-          disabledUnregister: false,
-        ),
-      );
-      // Act & Assert
-      expect(
-        () => containerApi.getRolloverQrData(tokenContainer),
-        throwsA(isA<Exception>()),
-      );
-    });
-
-    test('unregister', () {
-      // Arrange
-      final mockIoClient = MockPrivacyideaIOClient();
-      when(
-        mockIoClient.doPost(
-          url: anyNamed('url'),
-          body: anyNamed('body'),
-          sslVerify: anyNamed('sslVerify'),
-        ),
-      ).thenAnswer((invocation) async {
-        return Response(
-          '{"id": 1, "jsonrpc": "2.0", "result": {"status": true, "value": {"enc_key_algorithm": "x25519", "nonce": "d77ff7bf0174815aeea29f68aef4ae6cec6616c2", "time_stamp": "2025-02-11T08:56:45.696499+00:00"}}, "time": 1739264205.7145326, "version": "privacyIDEA 3.11.dev2", "versionnumber": "3.11.dev2", "signature": "rsa_sha256_pss:03a857d6e1941488c368286d1f55c6896c018729d17fb68e0fc5b7c1d956ba54cc657c785b9d284ad6fc34ec17370c7fdd0a0f6255a0fd630dfb97e6659b7af6fc9370cb2a7d0b0d055904145fdf21af40d15b15727bacac59bc79a4941df75d24efbb0b74e6e40561984ac73ca8392382100623bc51cb9e043915535a96fe9ac2b417cbd1e55977a04fdd992ae3758db66a9dcf265f956c9e37faeea3fd5614fd8c88030364a9ef4021cb79128a3bdeb0694bdf45e9cedf4507ee5e5715b9b1f68454b67c5642416c4b226302a50b887233c364acbf1cbc07bf7b3bdda884ca052c15f65b0724ef4bfafe411311ffe85683946e5f0c899377d4d95c66db4147"}',
-          200,
+    group('Unallowed', () {
+      test('rollover', () {
+        // Arrange
+        final containerApi = PiContainerApi(
+          ioClient: MockPrivacyideaIOClient(),
+        );
+        final tokenContainer = getFinalizedTokenContainer(
+          withPolicies: ContainerPolicies(
+            rolloverAllowed: false,
+            initialTokenAssignment: true,
+            disabledTokenDeletion: false,
+            disabledUnregister: false,
+          ),
+        );
+        // Act & Assert
+        expect(
+          () => containerApi.getRolloverQrData(tokenContainer),
+          throwsA(isA<Exception>()),
         );
       });
 
-      final containerApi = PiContainerApi(ioClient: mockIoClient);
-      final tokenContainer = getFinalizedTokenContainer(
-        withPolicies: ContainerPolicies(
-          rolloverAllowed: true,
-          initialTokenAssignment: true,
-          disabledTokenDeletion: false,
-          disabledUnregister: true,
-        ),
-      );
-      // Act & Assert
-      expect(
-        () => containerApi.unregister(tokenContainer),
-        throwsA(isA<Exception>()),
-      );
+      test('unregister', () {
+        // Arrange
+        final mockIoClient = MockPrivacyideaIOClient();
+        when(
+          mockIoClient.doPost(
+            url: anyNamed('url'),
+            body: anyNamed('body'),
+            sslVerify: anyNamed('sslVerify'),
+          ),
+        ).thenAnswer((invocation) async {
+          return Response(
+            '{"id": 1, "jsonrpc": "2.0", "result": {"status": true, "value": {"enc_key_algorithm": "x25519", "nonce": "d77ff7bf0174815aeea29f68aef4ae6cec6616c2", "time_stamp": "2025-02-11T08:56:45.696499+00:00"}}, "time": 1739264205.7145326, "version": "privacyIDEA 3.11.dev2", "versionnumber": "3.11.dev2", "signature": "rsa_sha256_pss:03a857d6e1941488c368286d1f55c6896c018729d17fb68e0fc5b7c1d956ba54cc657c785b9d284ad6fc34ec17370c7fdd0a0f6255a0fd630dfb97e6659b7af6fc9370cb2a7d0b0d055904145fdf21af40d15b15727bacac59bc79a4941df75d24efbb0b74e6e40561984ac73ca8392382100623bc51cb9e043915535a96fe9ac2b417cbd1e55977a04fdd992ae3758db66a9dcf265f956c9e37faeea3fd5614fd8c88030364a9ef4021cb79128a3bdeb0694bdf45e9cedf4507ee5e5715b9b1f68454b67c5642416c4b226302a50b887233c364acbf1cbc07bf7b3bdda884ca052c15f65b0724ef4bfafe411311ffe85683946e5f0c899377d4d95c66db4147"}',
+            200,
+          );
+        });
+
+        final containerApi = PiContainerApi(ioClient: mockIoClient);
+        final tokenContainer = getFinalizedTokenContainer(
+          withPolicies: ContainerPolicies(
+            rolloverAllowed: true,
+            initialTokenAssignment: true,
+            disabledTokenDeletion: false,
+            disabledUnregister: true,
+          ),
+        );
+        // Act & Assert
+        expect(
+          () => containerApi.unregister(tokenContainer),
+          throwsA(isA<Exception>()),
+        );
+      });
     });
   });
 }
