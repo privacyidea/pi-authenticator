@@ -52,7 +52,7 @@ final class AllowScreenshotNotifierProvider
 }
 
 String _$allowScreenshotNotifierHash() =>
-    r'8b1c26b634d675771c6467e1c3bbd2144da430d0';
+    r'30cc1e995b03274ce5af5699cab019f642b59a19';
 
 final class AllowScreenshotNotifierFamily extends $Family
     with
@@ -88,7 +88,7 @@ abstract class _$AllowScreenshotNotifier extends $AsyncNotifier<bool> {
   FutureOr<bool> build({required AllowScreenshotUtils screenshotUtils});
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AsyncValue<bool>, bool>;
     final element =
         ref.element
@@ -98,6 +98,6 @@ abstract class _$AllowScreenshotNotifier extends $AsyncNotifier<bool> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, () => build(screenshotUtils: _$args));
+    return element.handleCreate(ref, () => build(screenshotUtils: _$args));
   }
 }

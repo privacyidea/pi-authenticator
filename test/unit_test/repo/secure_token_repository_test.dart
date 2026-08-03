@@ -27,6 +27,7 @@ import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
 import 'package:privacyidea_authenticator/repo/secure_storage.dart';
 import 'package:privacyidea_authenticator/repo/secure_token_repository.dart';
+import 'package:privacyidea_authenticator/utils/identifiers.dart';
 
 import '../../tests_app_wrapper.mocks.dart';
 
@@ -37,18 +38,19 @@ void main() {
   late SecureStorage legacyStorage;
   late SecureTokenRepository repository;
 
-  const legacyPrefix = 'app_v3';
-  const newPrefix = 'app_v4_token';
+  const legacyPrefix = GLOBAL_SECURE_REPO_PREFIX_LEGACY;
+  const newPrefix = SECURE_REPO_PREFIX_TOKEN;
 
   setUp(() {
     mockStorage = MockFlutterSecureStorage();
     mockLegacyStorage = MockFlutterSecureStorage();
     storage = SecureStorage(
-      storagePrefix: SecureTokenRepository.TOKEN_PREFIX,
+      storagePrefix: SECURE_REPO_PREFIX_TOKEN,
       storage: mockStorage,
+      excludedPrefixes: const [SECURE_REPO_PREFIX_TOKEN_CONTAINER],
     );
     legacyStorage = SecureStorage(
-      storagePrefix: SecureTokenRepository.TOKEN_PREFIX_LEGACY,
+      storagePrefix: GLOBAL_SECURE_REPO_PREFIX_LEGACY,
       storage: mockLegacyStorage,
     );
     repository = SecureTokenRepository(

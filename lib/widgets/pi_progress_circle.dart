@@ -36,14 +36,12 @@ class PiProgressCircle extends StatelessWidget {
     double? strokeWidth,
     this.size = 30,
     this.swapColors = false,
-    Color? backgroundColor,
-    Color? foregroundColor,
+    this._backgroundColor,
+    this._foregroundColor,
     this.semanticsLabel,
     this.semanticsValue,
     super.key,
-  }) : _backgroundColor = backgroundColor,
-       _foregroundColor = foregroundColor,
-       strokeWidth = strokeWidth ?? size / 8;
+  }) : strokeWidth = strokeWidth ?? size / 8;
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +66,7 @@ class PiProgressCircle extends StatelessWidget {
         backgroundColor: swapColors ? activeColor : trackColor,
         strokeCap: StrokeCap.round,
         strokeWidth: strokeWidth,
-        semanticsLabel: '$semanticsLabel',
+        semanticsLabel: semanticsLabel,
         semanticsValue: semanticsValue,
       ),
     );

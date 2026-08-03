@@ -21,7 +21,7 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
-import 'package:uuid/uuid.dart';
+import 'package:privacyidea_authenticator/utils/helpers/uuid_helper.dart';
 
 import '../../utils/object_validator/object_validators.dart';
 import '../enums/algorithms.dart';
@@ -160,7 +160,7 @@ class DayPasswordToken extends OTPToken {
       viewMode: validatedAdditionalData[VIEW_MODE] as DayPasswordTokenViewMode,
       forceBiometricOption:
           validatedMap[Token.FORCE_BIOMETRIC_OPTION] as ForceBiometricOption,
-      id: validatedAdditionalData[Token.ID] as String? ?? const Uuid().v4(),
+      id: validatedAdditionalData[Token.ID] as String? ?? uuidV4(),
       containerSerial:
           validatedAdditionalData[Token.CONTAINER_SERIAL] as String?,
       checkedContainer:

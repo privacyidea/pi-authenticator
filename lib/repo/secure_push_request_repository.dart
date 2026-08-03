@@ -25,16 +25,12 @@ import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import '../interfaces/repo/push_request_repository.dart';
 import '../model/push_request/push_request.dart';
 import '../model/riverpod_states/push_request_state.dart';
-import '../utils/custom_int_buffer.dart';
+import '../utils/helpers/log_redaction_helper.dart';
 import '../utils/logger.dart';
 import 'secure_storage.dart';
 
 class SecurePushRequestRepository implements PushRequestRepository {
-  static const String PUSH_REQUEST_PREFIX_LEGACY =
-      GLOBAL_SECURE_REPO_PREFIX_LEGACY;
   static const String KEY_LEGACY = 'pr_state';
-  static const String PUSH_REQUEST_PREFIX =
-      '${GLOBAL_SECURE_REPO_PREFIX}_push_request';
   static const String KEY = 'state';
 
   final SecureStorage _storageLegacy;
@@ -46,13 +42,13 @@ class SecurePushRequestRepository implements PushRequestRepository {
   }) : _storage =
            secureStorage ??
            SecureStorage(
-             storagePrefix: PUSH_REQUEST_PREFIX,
+             storagePrefix: SECURE_REPO_PREFIX_PUSH_REQUEST,
              storage: SecureStorage.defaultStorage,
            ),
        _storageLegacy =
            legacySecureStorage ??
            SecureStorage(
-             storagePrefix: PUSH_REQUEST_PREFIX_LEGACY,
+             storagePrefix: GLOBAL_SECURE_REPO_PREFIX_LEGACY,
              storage: SecureStorage.legacyStorage,
            );
 
@@ -83,19 +79,64 @@ class SecurePushRequestRepository implements PushRequestRepository {
     String? stateJson = await _storage.read(key: KEY);
     if (stateJson == null) {
       // Try to load legacy state if no state is found.
-      stateJson = await _migrate();
+      try {
+        stateJson = await _migrate();
+      } catch (e, s) {
+        Logger.warning(
+          'Could not migrate the legacy push request state',
+          error: e,
+          stackTrace: s,
+          verbose: true,
+        );
+      }
       if (stateJson == null) {
         Logger.info(
           'No push request state found in secure storage, returning empty state',
         );
-        return PushRequestState(
-          pushRequests: [],
-          knownPushRequests: CustomIntBuffer(list: []),
-        );
+        return PushRequestState.empty();
       }
       Logger.info('Loaded migrated push request state from secure storage');
     }
-    return PushRequestState.fromJson(jsonDecode(stateJson));
+    final state = _parseState(stateJson);
+    if (state == null) return PushRequestState.empty();
+    Logger.info(
+      'Loaded ${state.pushRequests.length} push requests from secure storage',
+    );
+    return state;
+  }
+
+  /// The state held by [stateJson], or null if it cannot be read back.
+  ///
+  /// A state that cannot be read is dropped rather than failing the load: push
+  /// requests expire on their own, so an empty state is a valid starting point,
+  /// while a throwing load would break every push request that follows.
+  PushRequestState? _parseState(String stateJson) {
+    final Object? decoded;
+    try {
+      decoded = jsonDecode(stateJson);
+    } catch (e, s) {
+      Logger.warning(
+        'The stored push request state is not valid json. '
+        'It holds ${stateJson.length} characters.',
+        error: e,
+        stackTrace: s,
+        verbose: true,
+      );
+      return null;
+    }
+    try {
+      return PushRequestState.fromJson(decoded as Map<String, dynamic>);
+    } catch (e, s) {
+      Logger.warning(
+        'Could not load the push request state from secure storage. '
+        'Its stored entries are '
+        '${redactedShape(decoded, allowedEntryNames: PushRequestState.loggableEntryNames)}',
+        error: e,
+        stackTrace: s,
+        verbose: true,
+      );
+      return null;
+    }
   }
 
   /// Adds a push request in the given state if it is not already known.

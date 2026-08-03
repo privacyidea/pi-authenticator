@@ -19,25 +19,25 @@
  */
 import 'dart:convert';
 
-import 'package:base32/base32.dart';
+import 'package:privacyidea_authenticator/utils/helpers/base32_helper.dart';
 import 'package:flutter/foundation.dart';
-import 'package:hex/hex.dart';
+import 'package:privacyidea_authenticator/utils/helpers/hex_helper.dart';
 
 import '../../enums/encodings.dart';
 
 extension EncodingsX on Encodings {
   String encode(Uint8List data) => switch (this) {
         Encodings.none => utf8.decode(data),
-        Encodings.base32 => base32.encode(data),
-        Encodings.hex => HEX.encode(data),
+        Encodings.base32 => base32Encode(data),
+        Encodings.hex => hexEncode(data),
       };
 
   String encodeStringTo(Encodings encoding, String data) => encoding.encode(decode(data));
 
   Uint8List decode(String string) => switch (this) {
         Encodings.none => utf8.encode(string),
-        Encodings.base32 => Uint8List.fromList(base32.decode(string.toUpperCase())),
-        Encodings.hex => Uint8List.fromList(HEX.decode(string.toUpperCase())),
+        Encodings.base32 => Uint8List.fromList(base32Decode(string.toUpperCase())),
+        Encodings.hex => Uint8List.fromList(hexDecode(string.toUpperCase())),
       };
 
   bool isValidEncoding(String string) {

@@ -6,7 +6,7 @@ abstract class FlutterHomeWidgetBase extends StatelessWidget {
   final HomeWidgetUtils utils;
   final Size logicalSize;
   final ThemeData theme;
-  final String aditionalSuffix;
+  final String additionalSuffix;
 
-  const FlutterHomeWidgetBase({super.key, required this.logicalSize, required this.theme, this.aditionalSuffix = '', required this.utils});
+  const FlutterHomeWidgetBase({super.key, required this.logicalSize, required this.theme, this.additionalSuffix = '', required this.utils});
 }

@@ -17,10 +17,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import 'package:base32/base32.dart';
+import 'package:privacyidea_authenticator/utils/helpers/base32_helper.dart';
 import 'package:crypto/crypto.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:uuid/uuid.dart';
+import 'package:privacyidea_authenticator/utils/helpers/uuid_helper.dart';
 
 import '../../../../../../../model/token_template.dart';
 import '../../utils/object_validator/object_validators.dart';
@@ -120,7 +120,7 @@ class SteamToken extends TOTPToken {
           (validatedMap[Token.FORCE_BIOMETRIC_OPTION]
               as ForceBiometricOption?) ??
           ForceBiometricOption.none,
-      id: validatedAdditionalData[Token.ID] as String? ?? const Uuid().v4(),
+      id: validatedAdditionalData[Token.ID] as String? ?? uuidV4(),
       containerSerial:
           validatedAdditionalData[Token.CONTAINER_SERIAL] as String?,
       checkedContainer:
@@ -140,7 +140,7 @@ class SteamToken extends TOTPToken {
     final counterBytes = (time.millisecondsSinceEpoch / 1000 / period)
         .round()
         .bytes;
-    final secretList = base32.decode(secret.toUpperCase());
+    final secretList = base32Decode(secret.toUpperCase());
     final hmac = Hmac(sha1, secretList);
     final digest = hmac.convert(counterBytes).bytes;
     final offset = digest[digest.length - 1] & 0x0f;

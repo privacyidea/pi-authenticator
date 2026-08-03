@@ -30,9 +30,7 @@ bool _initialUriIsHandled = false;
 class DeeplinkNotifier extends StateNotifier<DeepLink?> {
   final List<StreamSubscription> _subs = [];
   final List<DeeplinkSource> _sources;
-  DeeplinkNotifier({required List<DeeplinkSource> sources})
-    : _sources = sources,
-      super(null) {
+  DeeplinkNotifier({required this._sources}) : super(null) {
     _handleInitialUri();
     _handleIncomingLinks();
   }

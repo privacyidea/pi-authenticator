@@ -57,7 +57,6 @@ class EditDayPassowrdTokenAction extends ConsumerSlideableAction {
     },
     child: FocusedItemAsOverlay(
       tooltipWhenFocused: AppLocalizations.of(context)!.introEditToken,
-      childIsMoving: true,
       alignment: Alignment.bottomCenter,
       isFocused: ref
           .watch(introductionNotifierProvider)
