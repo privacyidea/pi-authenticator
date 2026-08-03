@@ -56,16 +56,27 @@ class DeeplinkNotifier extends _$DeeplinkNotifier {
     }
   }
 
-  /// Handle incoming links - the ones that the app will recieve from the OS
+  /// Handle incoming links - the ones that the app will receive from the OS
   /// while already started.
   Stream<DeepLink> _handleIncomingLinks(List<DeeplinkSource> sources) async* {
     if (kIsWeb) return;
     final groupedStream = StreamGroup.merge(
       sources.map((source) => source.stream),
     );
+    Uri? lastUri;
+    DateTime? lastUriTime;
     await for (var uri in groupedStream) {
-      Logger.info('DeeplinkNotifier got new uri');
-      if (uri == null) return;
+      if (uri == null) continue;
+      final now = DateTime.now();
+      if (uri == lastUri &&
+          lastUriTime != null &&
+          now.difference(lastUriTime) < const Duration(seconds: 2)) {
+        Logger.info('DeeplinkNotifier dropped duplicate incoming uri: $uri');
+        continue;
+      }
+      lastUri = uri;
+      lastUriTime = now;
+      Logger.info('DeeplinkNotifier got new incoming uri: $uri');
       yield DeepLink(uri);
     }
   }
@@ -77,7 +88,7 @@ class DeeplinkNotifier extends _$DeeplinkNotifier {
       final initialUri = await source.initialUri;
       if (initialUri != null) {
         final initial = DeepLink(initialUri, fromInit: true);
-        Logger.info('Got initial uri from ${source.name}');
+        Logger.info('Got initial uri from ${source.name}: $initialUri');
         return initial; // There should be only one initial uri
       }
     }

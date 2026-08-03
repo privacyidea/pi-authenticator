@@ -35,25 +35,18 @@ void main() {
       expect(link.fromInit, true);
     });
 
-    test('equality works for same values', () {
+    test('identity-based equality - same values are not equal', () {
       final uri = Uri.parse('https://example.com');
       final a = DeepLink(uri, fromInit: true);
       final b = DeepLink(uri, fromInit: true);
-      expect(a, equals(b));
-      expect(a.hashCode, equals(b.hashCode));
-    });
-
-    test('not equal with different uri', () {
-      final a = DeepLink(Uri.parse('https://a.com'));
-      final b = DeepLink(Uri.parse('https://b.com'));
+      // Each DeepLink instance represents a unique event
       expect(a, isNot(equals(b)));
     });
 
-    test('not equal with different fromInit', () {
+    test('same instance is equal to itself', () {
       final uri = Uri.parse('https://example.com');
       final a = DeepLink(uri, fromInit: true);
-      final b = DeepLink(uri);
-      expect(a, isNot(equals(b)));
+      expect(a, equals(a));
     });
 
     test('toString returns readable representation', () {

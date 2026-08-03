@@ -147,7 +147,6 @@ class _FeedbackSendRowState extends State<FeedbackSendRow> {
         PrivacyIDEAAuthenticator.currentCustomization?.feedbackSubjectPrefix,
     subject: '',
     body: mailText,
-    subjectAppVersion: false,
   );
 
   Set<String> get _mailRecipients =>

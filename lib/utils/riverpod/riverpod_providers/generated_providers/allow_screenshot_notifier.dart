@@ -18,7 +18,7 @@
  * limitations under the License.
 */
 
-import 'package:mutex/mutex.dart';
+import 'package:privacyidea_authenticator/utils/helpers/mutex.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../allow_screenshot_utils.dart';
@@ -40,8 +40,7 @@ class AllowScreenshotNotifier extends _$AllowScreenshotNotifier {
       _screenshotUtilsOverride ?? super.screenshotUtils;
   final AllowScreenshotUtils? _screenshotUtilsOverride;
 
-  AllowScreenshotNotifier({AllowScreenshotUtils? screenshotUtilsOverride})
-    : _screenshotUtilsOverride = screenshotUtilsOverride;
+  AllowScreenshotNotifier({this._screenshotUtilsOverride});
 
   @override
   Future<bool> build({required AllowScreenshotUtils screenshotUtils}) async {

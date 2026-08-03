@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:privacyidea_authenticator/repo/secure_storage.dart';
 import 'package:privacyidea_authenticator/utils/firebase_utils.dart';
+import 'package:privacyidea_authenticator/utils/identifiers.dart';
 
 import '../../tests_app_wrapper.mocks.dart';
 
@@ -11,13 +12,13 @@ void main() {
   late FirebaseUtils firebaseUtils;
 
   // Constants for keys, derived from FirebaseUtils implementation
-  const legacyPrefix = FirebaseUtils.FIREBASE_TOKEN_KEY_PREFIX_LEGACY;
+  const legacyPrefix = GLOBAL_SECURE_REPO_PREFIX_LEGACY;
   const currentLegacyKey = FirebaseUtils.CURRENT_APP_TOKEN_KEY_LEGACY;
   const newLegacyKey = FirebaseUtils.NEW_APP_TOKEN_KEY_LEGACY;
   const fullCurrentLegacyKey = '${legacyPrefix}_$currentLegacyKey';
   const fullNewLegacyKey = '${legacyPrefix}_$newLegacyKey';
 
-  const newPrefix = FirebaseUtils.FIREBASE_TOKEN_KEY_PREFIX;
+  const newPrefix = SECURE_REPO_PREFIX_FIREBASE;
   const currentNewKey = FirebaseUtils.CURRENT_APP_TOKEN_KEY;
   const newNewKey = FirebaseUtils.NEW_APP_TOKEN_KEY;
   const fullCurrentNewKey = '${newPrefix}_$currentNewKey';
@@ -27,11 +28,11 @@ void main() {
     mockStorage = MockFlutterSecureStorage();
     mockLegacyStorage = MockFlutterSecureStorage();
     final storage = SecureStorage(
-      storagePrefix: FirebaseUtils.FIREBASE_TOKEN_KEY_PREFIX,
+      storagePrefix: SECURE_REPO_PREFIX_FIREBASE,
       storage: mockStorage,
     );
     final legacyStorage = SecureStorage(
-      storagePrefix: FirebaseUtils.FIREBASE_TOKEN_KEY_PREFIX_LEGACY,
+      storagePrefix: GLOBAL_SECURE_REPO_PREFIX_LEGACY,
       storage: mockLegacyStorage,
     );
     firebaseUtils = FirebaseUtils(

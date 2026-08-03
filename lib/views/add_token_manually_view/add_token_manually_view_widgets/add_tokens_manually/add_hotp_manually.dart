@@ -19,7 +19,7 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart';
+import 'package:privacyidea_authenticator/utils/helpers/uuid_helper.dart';
 
 import '../../../../../../../model/extensions/enums/encodings_extension.dart';
 import '../../../../../../../model/extensions/enums/token_origin_source_type.dart';
@@ -83,7 +83,7 @@ class AddHotpManually extends AddTokenManuallyPage {
     }
     Logger.info('Input is valid, building token');
     return HOTPToken(
-      id: const Uuid().v4(),
+      id: uuidV4(),
       type: TokenTypes.HOTP.name,
       label: labelController.text,
       algorithm: algorithmsNotifier.value,

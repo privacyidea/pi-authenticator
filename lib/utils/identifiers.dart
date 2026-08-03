@@ -26,3 +26,19 @@ const String FIREBASE_TOKEN_ERROR_CODE = 'FIREBASE_TOKEN_ERROR_CODE';
 
 const String GLOBAL_SECURE_REPO_PREFIX_LEGACY = 'app_v3';
 const String GLOBAL_SECURE_REPO_PREFIX = 'app_v4';
+
+// Prefixes that tell the repositories sharing one secure storage apart.
+// They live here so a repository can tell which of the others nest below its
+// own prefix, which decides whose entries it must leave alone.
+const String SECURE_REPO_PREFIX_TOKEN = '${GLOBAL_SECURE_REPO_PREFIX}_token';
+const String SECURE_REPO_PREFIX_TOKEN_CONTAINER =
+    '${GLOBAL_SECURE_REPO_PREFIX}_token_container';
+const String SECURE_REPO_PREFIX_PUSH_REQUEST =
+    '${GLOBAL_SECURE_REPO_PREFIX}_push_request';
+const String SECURE_REPO_PREFIX_FIREBASE =
+    '${GLOBAL_SECURE_REPO_PREFIX}_firebase';
+
+// The legacy storage keeps tokens, push requests and firebase tokens under the
+// one GLOBAL_SECURE_REPO_PREFIX_LEGACY and tells them apart by their content.
+// Containers are the exception, they carry their own prefix.
+const String SECURE_REPO_PREFIX_LEGACY_TOKEN_CONTAINER = 'containerCredentials';

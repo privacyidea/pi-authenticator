@@ -22,13 +22,25 @@ import 'package:privacyidea_authenticator/model/deeplink.dart';
 
 import '../../../interfaces/riverpod/state_listeners/state_notifier_provider_listeners/deep_link_listener.dart';
 import '../../../processors/scheme_processors/home_widget_processor.dart';
+import '../../logger.dart';
 
 class HomeWidgetDeepLinkListener extends DeepLinkListener {
   const HomeWidgetDeepLinkListener({required super.provider}) : super(onNewState: _onNewState, listenerName: 'HomeWidgetProcessor().processUri');
 
   static void _onNewState(WidgetRef ref, AsyncValue<DeepLink>? previous, AsyncValue<DeepLink> next) {
-    next.whenData((next) {
-      const HomeWidgetProcessor().processUri(next.uri, fromInit: next.fromInit);
+    next.whenData((next) async {
+      Logger.debug(
+        '[HomeWidgetDeepLinkListener] Processing uri: ${next.uri} (fromInit: ${next.fromInit})',
+      );
+      try {
+        await const HomeWidgetProcessor().processUri(next.uri, fromInit: next.fromInit);
+      } catch (e, s) {
+        Logger.error(
+          '[HomeWidgetDeepLinkListener] Failed to process uri: ${next.uri} (fromInit: ${next.fromInit})',
+          error: e,
+          stackTrace: s,
+        );
+      }
     });
   }
 }
