@@ -38,6 +38,7 @@ import 'package:privacyidea_authenticator/model/exception_errors/response_error.
 import 'package:privacyidea_authenticator/model/riverpod_states/token_state.dart';
 import 'package:privacyidea_authenticator/model/token_container.dart';
 import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
+import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
 import 'package:privacyidea_authenticator/utils/ecc_utils.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
@@ -844,6 +845,117 @@ void _testPrivacyIdeaContainerApi() {
         expect(token1.algorithm, Algorithms.SHA1);
         expect(token1.digits, 6);
         expect(token1.secret, 'XH5COUO6JSL5PE6VKOC3XNVENJHXCHIP');
+      });
+
+      test('add push token with pia scheme', () async {
+        // Arrange
+        final x25519 = X25519();
+        final clientKeyPair = await x25519.newKeyPair();
+        final serverKeyPair = await x25519.newKeyPair();
+        final serverPublicKey = await serverKeyPair.extractPublicKey();
+        final sharedKey = await x25519.sharedSecretKey(
+          keyPair: serverKeyPair,
+          remotePublicKey: await clientKeyPair.extractPublicKey(),
+        );
+        final containerDict = {
+          'container': {'serial': 'SMPH00067A2F', 'type': 'smartphone'},
+          'tokens': {
+            'add': [
+              'pia://pipush/test-user?'
+                  'url=https%3A%2F%2Fexample.com%2Fttype%2Fpush'
+                  '&ttl=2'
+                  '&issuer=privacyIDEA'
+                  '&enrollment_credential=test-credential'
+                  '&v=1'
+                  '&serial=PIPU00000001'
+                  '&sslverify=1'
+                  '&poll_only=False',
+            ],
+            'update': [],
+          },
+        };
+        final secretBox = await AesGcm.with256bits(
+          nonceLength: 16,
+        ).encrypt(utf8.encode(jsonEncode(containerDict)), secretKey: sharedKey);
+
+        final mockIoClient = MockPrivacyideaIOClient();
+        final containerApi = PiContainerApi(ioClient: mockIoClient);
+        final tokenContainer = getFinalizedTokenContainer();
+        when(
+          mockIoClient.doPost(
+            url: anyNamed('url'),
+            body: anyNamed('body'),
+            sslVerify: anyNamed('sslVerify'),
+          ),
+        ).thenAnswer((invocation) async {
+          final Uri invocationUrl = invocation.namedArguments[Symbol('url')];
+          if (invocationUrl.toString() ==
+              'http://example.com/container/challenge') {
+            return containerChallengeResponse;
+          }
+          if (invocationUrl.toString() ==
+              'http://example.com/container/synchronize') {
+            return Response(
+              jsonEncode({
+                'id': 5,
+                'jsonrpc': '2.0',
+                'result': {
+                  'status': true,
+                  'value': {
+                    'container_dict_server': base64UrlEncode(
+                      secretBox.cipherText,
+                    ),
+                    'encryption_algorithm': 'AES',
+                    'encryption_params': {
+                      'algorithm': 'AES',
+                      'mode': 'GCM',
+                      'init_vector': base64UrlEncode(secretBox.nonce),
+                      'tag': base64UrlEncode(secretBox.mac.bytes),
+                    },
+                    'policies': {
+                      'disable_client_container_unregister': true,
+                      'disable_client_token_deletion': true,
+                      'container_client_rollover': false,
+                      'initially_add_tokens_to_container': false,
+                    },
+                    'public_server_key': base64UrlEncode(serverPublicKey.bytes),
+                    'server_url': 'http://example.com/container/synchronize',
+                  },
+                },
+                'time': 1.0,
+                'version': 'privacyIDEA 3.6.2',
+                'versionnumber': '3.6.2',
+                'detail': null,
+                'signature': 'signature',
+              }),
+              200,
+            );
+          }
+          return Response(jsonEncode(exampleError), 400);
+        });
+
+        // Act
+        final result = await containerApi.sync(
+          tokenContainer,
+          const TokenState(tokens: []),
+          withX25519Key: clientKeyPair,
+          isInitSync: true,
+        );
+
+        // Assert
+        expect(result, isNotNull);
+        expect(result!.newTokens, hasLength(1));
+        final token = result.newTokens.single;
+        expect(token, isA<PushToken>());
+        expect(token.label, 'test-user');
+        expect(token.issuer, 'privacyIDEA');
+        expect(token.serial, 'PIPU00000001');
+        expect(token.containerSerial, tokenContainer.serial);
+        expect(
+          (token as PushToken).url,
+          Uri.parse('https://example.com/ttype/push'),
+        );
+        expect(token.enrollmentCredentials, 'test-credential');
       });
       testWidgets('update unlinked token (with serial)', (tester) async {
         // Arrange
