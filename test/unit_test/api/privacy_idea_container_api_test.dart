@@ -271,6 +271,7 @@ void _testPrivacyIdeaContainerApi() {
           url: anyNamed('url'),
           body: anyNamed('body'),
           sslVerify: anyNamed('sslVerify'),
+          expectedErrorStatusCodes: anyNamed('expectedErrorStatusCodes'),
         ),
       ).thenAnswer((invocation) async {
         final invocationUrl = invocation.namedArguments[Symbol('url')];
@@ -348,6 +349,7 @@ void _testPrivacyIdeaContainerApi() {
             url: anyNamed('url'),
             body: anyNamed('body'),
             sslVerify: anyNamed('sslVerify'),
+            expectedErrorStatusCodes: anyNamed('expectedErrorStatusCodes'),
           ),
         ).thenAnswer(
           (_) async => Response(
@@ -397,6 +399,7 @@ void _testPrivacyIdeaContainerApi() {
             url: anyNamed('url'),
             body: anyNamed('body'),
             sslVerify: anyNamed('sslVerify'),
+            expectedErrorStatusCodes: anyNamed('expectedErrorStatusCodes'),
           ),
         ).thenAnswer(
           (_) async => Response(
@@ -432,6 +435,7 @@ void _testPrivacyIdeaContainerApi() {
           url: anyNamed('url'),
           body: anyNamed('body'),
           sslVerify: anyNamed('sslVerify'),
+          expectedErrorStatusCodes: anyNamed('expectedErrorStatusCodes'),
         ),
       ).thenAnswer((invocation) async {
         final Uri invocationUrl = invocation.namedArguments[Symbol('url')];
@@ -501,6 +505,7 @@ void _testPrivacyIdeaContainerApi() {
           url: anyNamed('url'),
           body: anyNamed('body'),
           sslVerify: anyNamed('sslVerify'),
+          expectedErrorStatusCodes: anyNamed('expectedErrorStatusCodes'),
         ),
       ).thenAnswer((invocation) async {
         final Uri invocationUrl = invocation.namedArguments[Symbol('url')];
@@ -549,6 +554,34 @@ void _testPrivacyIdeaContainerApi() {
       // Assert
       expect(result.success, true);
     });
+    test(
+      'unregister treats an HTTP 404 challenge as an absent container',
+      () async {
+        final mockIoClient = MockPrivacyideaIOClient();
+        final containerApi = PiContainerApi(ioClient: mockIoClient);
+        final tokenContainer = getFinalizedTokenContainer();
+        when(
+          mockIoClient.doPost(
+            url: anyNamed('url'),
+            body: anyNamed('body'),
+            sslVerify: anyNamed('sslVerify'),
+            expectedErrorStatusCodes: anyNamed('expectedErrorStatusCodes'),
+          ),
+        ).thenAnswer((invocation) async {
+          final expectedStatusCodes =
+              invocation.namedArguments[const Symbol(
+                    'expectedErrorStatusCodes',
+                  )]
+                  as Set<int>;
+          expect(expectedStatusCodes, contains(404));
+          return Response('', 404);
+        });
+
+        final result = await containerApi.unregister(tokenContainer);
+
+        expect(result.success, isTrue);
+      },
+    );
     group("sync", () {
       final nonAssignmentCases = [
         (
@@ -597,6 +630,7 @@ void _testPrivacyIdeaContainerApi() {
                 url: anyNamed('url'),
                 body: anyNamed('body'),
                 sslVerify: anyNamed('sslVerify'),
+                expectedErrorStatusCodes: anyNamed('expectedErrorStatusCodes'),
               ),
             ).thenAnswer((invocation) async {
               final Uri invocationUrl =
@@ -663,6 +697,7 @@ void _testPrivacyIdeaContainerApi() {
               url: anyNamed('url'),
               body: anyNamed('body'),
               sslVerify: anyNamed('sslVerify'),
+              expectedErrorStatusCodes: anyNamed('expectedErrorStatusCodes'),
             ),
           ).thenAnswer((invocation) async {
             final Uri invocationUrl = invocation.namedArguments[Symbol('url')];
@@ -717,6 +752,7 @@ void _testPrivacyIdeaContainerApi() {
             url: anyNamed('url'),
             body: anyNamed('body'),
             sslVerify: anyNamed('sslVerify'),
+            expectedErrorStatusCodes: anyNamed('expectedErrorStatusCodes'),
           ),
         ).thenAnswer((invocation) async {
           final Uri invocationUrl = invocation.namedArguments[Symbol('url')];
@@ -886,6 +922,7 @@ void _testPrivacyIdeaContainerApi() {
             url: anyNamed('url'),
             body: anyNamed('body'),
             sslVerify: anyNamed('sslVerify'),
+            expectedErrorStatusCodes: anyNamed('expectedErrorStatusCodes'),
           ),
         ).thenAnswer((invocation) async {
           final Uri invocationUrl = invocation.namedArguments[Symbol('url')];
@@ -981,6 +1018,7 @@ void _testPrivacyIdeaContainerApi() {
             url: anyNamed('url'),
             body: anyNamed('body'),
             sslVerify: anyNamed('sslVerify'),
+            expectedErrorStatusCodes: anyNamed('expectedErrorStatusCodes'),
           ),
         ).thenAnswer((invocation) async {
           final Uri invocationUrl = invocation.namedArguments[Symbol('url')];
@@ -1135,6 +1173,7 @@ void _testPrivacyIdeaContainerApi() {
             url: anyNamed('url'),
             body: anyNamed('body'),
             sslVerify: anyNamed('sslVerify'),
+            expectedErrorStatusCodes: anyNamed('expectedErrorStatusCodes'),
           ),
         ).thenAnswer((invocation) async {
           final Uri invocationUrl = invocation.namedArguments[Symbol('url')];
@@ -1286,6 +1325,7 @@ void _testPrivacyIdeaContainerApi() {
             url: anyNamed('url'),
             body: anyNamed('body'),
             sslVerify: anyNamed('sslVerify'),
+            expectedErrorStatusCodes: anyNamed('expectedErrorStatusCodes'),
           ),
         ).thenAnswer((invocation) async {
           final Uri invocationUrl = invocation.namedArguments[Symbol('url')];
@@ -1430,6 +1470,7 @@ void _testPrivacyIdeaContainerApi() {
             url: anyNamed('url'),
             body: anyNamed('body'),
             sslVerify: anyNamed('sslVerify'),
+            expectedErrorStatusCodes: anyNamed('expectedErrorStatusCodes'),
           ),
         ).thenAnswer((invocation) async {
           final Uri invocationUrl = invocation.namedArguments[Symbol('url')];
@@ -1571,6 +1612,7 @@ void _testPrivacyIdeaContainerApi() {
           url: anyNamed('url'),
           body: anyNamed('body'),
           sslVerify: anyNamed('sslVerify'),
+          expectedErrorStatusCodes: anyNamed('expectedErrorStatusCodes'),
         ),
       ).thenAnswer((invocation) async {
         return Response(

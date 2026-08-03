@@ -416,6 +416,7 @@ class PiContainerApi implements TokenContainerApi {
       url: container.challengeUrl,
       body: body,
       sslVerify: container.sslVerify,
+      expectedErrorStatusCodes: const {HttpStatusCodes.notFound},
     );
     if (HttpStatusChecker.isError(challengeResponse.statusCode)) {
       PiServerResultError? piError;

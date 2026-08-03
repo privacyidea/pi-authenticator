@@ -193,6 +193,26 @@ void main() {
       final button = tester.widget<ElevatedButton>(find.byType(ElevatedButton));
       expect(button.onPressed, isNull);
     });
+    testWidgets('does not start cooldown after disposal', (tester) async {
+      final completer = Completer<void>();
+      await tester.pumpWidget(
+        wrap(
+          IntentButton(
+            intent: ActionIntent.confirm,
+            cooldownMs: 1000,
+            onPressed: () => completer.future,
+            child: const Text('Submit'),
+          ),
+        ),
+      );
+
+      await tester.tap(find.byType(IntentButton));
+      await tester.pumpWidget(const SizedBox.shrink());
+      completer.complete();
+      await tester.pump();
+
+      expect(tester.takeException(), isNull);
+    });
   });
   group('IntentButton - Cooldown Logic', () {
     testWidgets('prevents second tap during cooldownMs', (tester) async {

@@ -142,6 +142,7 @@ class PrivacyideaIOClient {
     required Uri url,
     required Map<String, String?> body,
     bool sslVerify = true,
+    Set<int> expectedErrorStatusCodes = const {},
   }) async {
     if (kIsWeb) return Response('Platform not supported', 405);
     Logger.info('Sending post request (SSLVerify: $sslVerify)');
@@ -207,14 +208,18 @@ class PrivacyideaIOClient {
     }
 
     if (HttpStatusChecker.isError(response.statusCode)) {
-      Logger.warning(
-        'Received unexpected response',
-        error:
-            'Status code: ${response.statusCode}'
-            '\nPosted body: $body'
-            '\nResponse: ${response.body}\n',
-        stackTrace: StackTrace.current,
-      );
+      if (expectedErrorStatusCodes.contains(response.statusCode)) {
+        Logger.info('Received expected HTTP ${response.statusCode} response');
+      } else {
+        Logger.warning(
+          'Received unexpected response',
+          error:
+              'Status code: ${response.statusCode}'
+              '\nPosted body: $body'
+              '\nResponse: ${response.body}\n',
+          stackTrace: StackTrace.current,
+        );
+      }
     }
 
     return response;

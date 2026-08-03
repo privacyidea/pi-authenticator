@@ -67,7 +67,7 @@ class PushDefaultDialog extends ConsumerWidget with PushDialogMixin {
   }
 
   Future<void> _handleAccept(BuildContext context, WidgetRef ref) async {
-    super.handleAccept<PushResultValue, PushResultDetail>(
+    await super.handleAccept<PushResultValue, PushResultDetail>(
       context,
       ref,
       onSuccess: _addCodeToPhonePushRequest,

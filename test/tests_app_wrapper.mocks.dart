@@ -830,12 +830,14 @@ class MockPrivacyideaIOClient extends _i1.Mock
     required Uri? url,
     required Map<String, String?>? body,
     bool? sslVerify = true,
+    Set<int>? expectedErrorStatusCodes = const {},
   }) =>
       (super.noSuchMethod(
             Invocation.method(#doPost, [], {
               #url: url,
               #body: body,
               #sslVerify: sslVerify,
+              #expectedErrorStatusCodes: expectedErrorStatusCodes,
             }),
             returnValue: _i24.Future<_i6.Response>.value(
               _FakeResponse_6(
@@ -844,6 +846,7 @@ class MockPrivacyideaIOClient extends _i1.Mock
                   #url: url,
                   #body: body,
                   #sslVerify: sslVerify,
+                  #expectedErrorStatusCodes: expectedErrorStatusCodes,
                 }),
               ),
             ),
@@ -854,6 +857,7 @@ class MockPrivacyideaIOClient extends _i1.Mock
                   #url: url,
                   #body: body,
                   #sslVerify: sslVerify,
+                  #expectedErrorStatusCodes: expectedErrorStatusCodes,
                 }),
               ),
             ),

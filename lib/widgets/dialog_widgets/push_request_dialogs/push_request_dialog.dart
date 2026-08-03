@@ -91,14 +91,16 @@ mixin PushDialogMixin {
     String? answer,
     Future<bool> Function(PiSuccessResponse<V, D>, WidgetRef ref)? onSuccess,
   }) async {
-    if (token.isLocked &&
-        !await lockAuthWithSettings(
-          ref: ref,
-          reason: (l10n) => l10n.authToAcceptPushRequest,
-          localization: AppLocalizations.of(context)!,
-          forceBiometricOption: token.forceBiometricOption,
-        )) {
-      return;
+    if (token.isLocked) {
+      final authenticated = await lockAuthWithSettings(
+        ref: ref,
+        reason: (l10n) => l10n.authToAcceptPushRequest,
+        localization: AppLocalizations.of(context)!,
+        forceBiometricOption: token.forceBiometricOption,
+      );
+      if (!context.mounted || !authenticated) {
+        return;
+      }
     }
 
     final PiSuccessResponse<V, D>? response;
@@ -108,10 +110,12 @@ mixin PushDialogMixin {
           .accept<V, D>(token, pushRequest, selectedAnswer: answer);
     } catch (e) {
       Logger.error('Error accepting push request: $e');
-      showErrorStatusMessage(
-        message: (l10n) => "Error accepting push request: $e",
-        ref: ref,
-      );
+      if (context.mounted) {
+        showErrorStatusMessage(
+          message: (l10n) => "Error accepting push request: $e",
+          ref: ref,
+        );
+      }
       return;
     }
 
@@ -119,7 +123,7 @@ mixin PushDialogMixin {
       return;
     }
 
-    _onHandled(
+    await _onHandled(
       context: context,
       ref: ref,
       response: response,
@@ -128,14 +132,16 @@ mixin PushDialogMixin {
   }
 
   Future<void> handleDecline(BuildContext context, WidgetRef ref) async {
-    if (token.isLocked &&
-        !await lockAuthWithSettings(
-          ref: ref,
-          reason: (l10n) => l10n.authToDeclinePushRequest,
-          localization: AppLocalizations.of(context)!,
-          forceBiometricOption: token.forceBiometricOption,
-        )) {
-      return;
+    if (token.isLocked) {
+      final authenticated = await lockAuthWithSettings(
+        ref: ref,
+        reason: (l10n) => l10n.authToDeclinePushRequest,
+        localization: AppLocalizations.of(context)!,
+        forceBiometricOption: token.forceBiometricOption,
+      );
+      if (!context.mounted || !authenticated) {
+        return;
+      }
     }
     final response = await ref
         .read(pushRequestProvider.notifier)
@@ -144,9 +150,7 @@ mixin PushDialogMixin {
       return;
     }
 
-    if (context.mounted) {
-      _onHandled(context: context, ref: ref, response: response);
-    }
+    await _onHandled(context: context, ref: ref, response: response);
   }
 
   Future<void> handleDiscard(BuildContext context, WidgetRef ref) async {
@@ -165,7 +169,7 @@ mixin PushDialogMixin {
         .cancel(token, pushRequest);
     if (!ref.context.mounted) return;
     if (context.mounted) {
-      _onHandled(context: context, ref: ref, response: response);
+      await _onHandled(context: context, ref: ref, response: response);
     }
   }
 
@@ -181,9 +185,11 @@ mixin PushDialogMixin {
         ? await onSuccess(response.asSuccess!, ref)
         : true;
 
-    if (context.mounted &&
-        onSuccessResult == true &&
-        response?.detail != null) {
+    if (!context.mounted) {
+      return;
+    }
+
+    if (onSuccessResult == true && response?.detail != null) {
       _handleCodeToPhoneResultDetail(context, response!.detail!);
     }
 
@@ -192,7 +198,7 @@ mixin PushDialogMixin {
       SystemNavigator.pop();
     }
 
-    if (context.mounted && Navigator.of(context).canPop()) {
+    if (Navigator.of(context).canPop()) {
       Navigator.of(context).pop();
     }
   }
