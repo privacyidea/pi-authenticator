@@ -66,6 +66,33 @@ abstract class Token with SortableMixin {
   static const String TWO_STEP_OUTPUT_LENTH = '2step_output';
   static const String TWO_STEP_ITERATIONS = '2step_difficulty';
 
+  /// The stored entry names whose value may be written to the log.
+  ///
+  /// Passed to [redactedShape] when a token cannot be deserialized. These names
+  /// describe how a token is configured, which is what such a failure usually
+  /// turns on, and they cover every subtype because the storage holds them all.
+  /// Secrets, key material and everything naming the account stay out.
+  static const Set<String> loggableEntryNames = {
+    'type',
+    'tokenVersion',
+    'algorithm',
+    'digits',
+    'period',
+    'counter',
+    'rolloutState',
+    'isRolledOut',
+    'isPollOnly',
+    'sslVerify',
+    'pin', // Whether the token is PIN protected, not a PIN itself.
+    'isLocked',
+    'isHidden',
+    'isOffline',
+    'forceBiometricOption',
+    'viewMode',
+    'sortIndex',
+    'folderId',
+  };
+
   // --- Static Validators ---
   static final Map<String, BaseValidator> otpAuthValidators = {
     LABEL: Validators.stringSafe,

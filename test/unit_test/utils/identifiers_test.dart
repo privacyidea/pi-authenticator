@@ -19,4 +19,37 @@ void main() {
       expect(GLOBAL_SECURE_REPO_PREFIX, 'app_v4');
     });
   });
+
+  group('Secure repository prefixes', () {
+    // These decide where entries live on disk. Changing one orphans everything
+    // already stored under the old value, so they are pinned to their literals.
+    test('are unchanged', () {
+      expect(SECURE_REPO_PREFIX_TOKEN, 'app_v4_token');
+      expect(SECURE_REPO_PREFIX_TOKEN_CONTAINER, 'app_v4_token_container');
+      expect(SECURE_REPO_PREFIX_PUSH_REQUEST, 'app_v4_push_request');
+      expect(SECURE_REPO_PREFIX_FIREBASE, 'app_v4_firebase');
+      expect(SECURE_REPO_PREFIX_LEGACY_TOKEN_CONTAINER, 'containerCredentials');
+    });
+
+    test('the container one nests below the token one', () {
+      // The reason SecureTokenRepository has to exclude it: every container key
+      // also starts with the token prefix.
+      expect(
+        SECURE_REPO_PREFIX_TOKEN_CONTAINER.startsWith(
+          '${SECURE_REPO_PREFIX_TOKEN}_',
+        ),
+        isTrue,
+      );
+    });
+
+    test('no other pair nests', () {
+      const others = [
+        SECURE_REPO_PREFIX_PUSH_REQUEST,
+        SECURE_REPO_PREFIX_FIREBASE,
+      ];
+      for (final prefix in others) {
+        expect(prefix.startsWith('${SECURE_REPO_PREFIX_TOKEN}_'), isFalse);
+      }
+    });
+  });
 }

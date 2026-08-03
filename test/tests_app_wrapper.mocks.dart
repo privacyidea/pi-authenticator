@@ -1819,19 +1819,28 @@ class MockSecureStorage extends _i1.Mock implements _i37.SecureStorage {
           as String);
 
   @override
-  String get seperator =>
+  String get separator =>
       (super.noSuchMethod(
-            Invocation.getter(#seperator),
+            Invocation.getter(#separator),
             returnValue: _i27.dummyValue<String>(
               this,
-              Invocation.getter(#seperator),
+              Invocation.getter(#separator),
             ),
             returnValueForMissingStub: _i27.dummyValue<String>(
               this,
-              Invocation.getter(#seperator),
+              Invocation.getter(#separator),
             ),
           )
           as String);
+
+  @override
+  List<String> get excludedPrefixes =>
+      (super.noSuchMethod(
+            Invocation.getter(#excludedPrefixes),
+            returnValue: <String>[],
+            returnValueForMissingStub: <String>[],
+          )
+          as List<String>);
 
   @override
   String getFullKey(String? key) =>
