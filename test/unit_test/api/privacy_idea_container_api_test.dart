@@ -21,28 +21,79 @@
 import 'dart:convert';
 
 import 'package:cryptography/cryptography.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
 import 'package:mockito/mockito.dart';
 import 'package:privacyidea_authenticator/api/impl/privacy_idea_container_api.dart';
+import 'package:privacyidea_authenticator/api/interfaces/container_api.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/model/container_policies.dart';
-import 'package:privacyidea_authenticator/model/exception_errors/pi_server_result_error.dart';
-import 'package:privacyidea_authenticator/model/exception_errors/response_error.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/enums/ec_key_algorithm.dart';
 import 'package:privacyidea_authenticator/model/enums/rollout_state.dart';
 import 'package:privacyidea_authenticator/model/enums/sync_state.dart';
+import 'package:privacyidea_authenticator/model/exception_errors/pi_server_result_error.dart';
+import 'package:privacyidea_authenticator/model/exception_errors/response_error.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/token_state.dart';
 import 'package:privacyidea_authenticator/model/token_container.dart';
 import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
 import 'package:privacyidea_authenticator/utils/ecc_utils.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
-import 'package:test/test.dart';
+import 'package:privacyidea_authenticator/widgets/dialog_widgets/container_dialogs/initial_token_assignment_dialog.dart';
+import 'package:privacyidea_authenticator/widgets/select_tokens_widget.dart';
 
+import '../../tests_app_wrapper.dart';
 import '../../tests_app_wrapper.mocks.dart';
 
 void main() {
   _testPrivacyIdeaContainerApi();
+}
+
+/// Synchronizes the container and selects all tokens if the assignment dialog is shown.
+Future<ContainerSyncUpdates?> _syncWithAssignment(
+  WidgetTester tester, {
+  required PiContainerApi containerApi,
+  required TokenContainerFinalized container,
+  required TokenState tokenState,
+  required SimpleKeyPair withX25519Key,
+}) async {
+  tester.view.physicalSize = const Size(600, 1000);
+  tester.view.devicePixelRatio = 1.0;
+  addTearDown(tester.view.resetPhysicalSize);
+  await tester.pumpWidget(const TestsAppWrapper(child: SizedBox()));
+  final syncResult = containerApi.sync(
+    container,
+    tokenState,
+    withX25519Key: withX25519Key,
+    isInitSync: true,
+  );
+  // The token tiles animate, so the dialogs are advanced by a fixed duration instead of settling.
+  await tester.pump();
+  await tester.pump(const Duration(milliseconds: 500));
+  if (find.byType(InitialTokenAssignmentDialog).evaluate().isEmpty) {
+    return syncResult;
+  }
+  final selectTokens = tester.widget<SelectTokensWidget>(
+    find.byType(SelectTokensWidget),
+  );
+  selectTokens.onSelect(selectTokens.tokens, {});
+  await tester.pump();
+  final localizations = AppLocalizations.of(
+    tester.element(find.byType(InitialTokenAssignmentDialog)),
+  )!;
+  await tester.tap(
+    find.text(localizations.initialTokenAssignmentDialogButtonSelected),
+  );
+  await tester.pump();
+  await tester.pump(const Duration(milliseconds: 500));
+  if (!container.sslVerify) {
+    await tester.tap(find.text(localizations.send));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
+  }
+  return syncResult;
 }
 
 void _testPrivacyIdeaContainerApi() {
@@ -284,83 +335,89 @@ void _testPrivacyIdeaContainerApi() {
       expect(policies.disabledTokenDeletion, true);
       expect(policies.disabledUnregister, true);
     });
-    test('finalizeContainer throws PiServerResultError on status false with error', () async {
-      final tokenContainer = getNewTokenContainer();
-      final mockIoClient = MockPrivacyideaIOClient();
-      final containerApi = PiContainerApi(ioClient: mockIoClient);
+    test(
+      'finalizeContainer throws PiServerResultError on status false with error',
+      () async {
+        final tokenContainer = getNewTokenContainer();
+        final mockIoClient = MockPrivacyideaIOClient();
+        final containerApi = PiContainerApi(ioClient: mockIoClient);
 
-      when(
-        mockIoClient.doPost(
-          url: anyNamed('url'),
-          body: anyNamed('body'),
-          sslVerify: anyNamed('sslVerify'),
-        ),
-      ).thenAnswer(
-        (_) async => Response(
-          jsonEncode({
-            'id': 1,
-            'jsonrpc': '2.0',
-            'result': {
-              'status': false,
-              'error': {
-                'code': 3002,
-                'message': 'ERR3002: Could not verify signature!',
+        when(
+          mockIoClient.doPost(
+            url: anyNamed('url'),
+            body: anyNamed('body'),
+            sslVerify: anyNamed('sslVerify'),
+          ),
+        ).thenAnswer(
+          (_) async => Response(
+            jsonEncode({
+              'id': 1,
+              'jsonrpc': '2.0',
+              'result': {
+                'status': false,
+                'error': {
+                  'code': 3002,
+                  'message': 'ERR3002: Could not verify signature!',
+                },
               },
-            },
-            'time': 1.0,
-            'version': 'privacyIDEA 3.6.2',
-            'detail': null,
-            'signature': 'signature',
-          }),
-          400,
-        ),
-      );
+              'time': 1.0,
+              'version': 'privacyIDEA 3.6.2',
+              'detail': null,
+              'signature': 'signature',
+            }),
+            400,
+          ),
+        );
 
-      await expectLater(
-        () => containerApi.finalizeContainer(tokenContainer),
-        throwsA(
-          isA<PiServerResultError>()
-              .having((e) => e.code, 'code', 3002)
-              .having(
-                (e) => e.message,
-                'message',
-                contains('Could not verify signature'),
-              ),
-        ),
-      );
-    });
+        await expectLater(
+          () => containerApi.finalizeContainer(tokenContainer),
+          throwsA(
+            isA<PiServerResultError>()
+                .having((e) => e.code, 'code', 3002)
+                .having(
+                  (e) => e.message,
+                  'message',
+                  contains('Could not verify signature'),
+                ),
+          ),
+        );
+      },
+    );
 
-    test('finalizeContainer throws ResponseError on status false without error field', () async {
-      final tokenContainer = getNewTokenContainer();
-      final mockIoClient = MockPrivacyideaIOClient();
-      final containerApi = PiContainerApi(ioClient: mockIoClient);
+    test(
+      'finalizeContainer throws ResponseError on status false without error field',
+      () async {
+        final tokenContainer = getNewTokenContainer();
+        final mockIoClient = MockPrivacyideaIOClient();
+        final containerApi = PiContainerApi(ioClient: mockIoClient);
 
-      when(
-        mockIoClient.doPost(
-          url: anyNamed('url'),
-          body: anyNamed('body'),
-          sslVerify: anyNamed('sslVerify'),
-        ),
-      ).thenAnswer(
-        (_) async => Response(
-          jsonEncode({
-            'id': 1,
-            'jsonrpc': '2.0',
-            'result': {'status': false},
-            'time': 1.0,
-            'version': 'privacyIDEA 3.6.2',
-            'detail': null,
-            'signature': 'signature',
-          }),
-          400,
-        ),
-      );
+        when(
+          mockIoClient.doPost(
+            url: anyNamed('url'),
+            body: anyNamed('body'),
+            sslVerify: anyNamed('sslVerify'),
+          ),
+        ).thenAnswer(
+          (_) async => Response(
+            jsonEncode({
+              'id': 1,
+              'jsonrpc': '2.0',
+              'result': {'status': false},
+              'time': 1.0,
+              'version': 'privacyIDEA 3.6.2',
+              'detail': null,
+              'signature': 'signature',
+            }),
+            400,
+          ),
+        );
 
-      await expectLater(
-        () => containerApi.finalizeContainer(tokenContainer),
-        throwsA(isA<ResponseError>()),
-      );
-    });
+        await expectLater(
+          () => containerApi.finalizeContainer(tokenContainer),
+          throwsA(isA<ResponseError>()),
+        );
+      },
+    );
 
     test('getRolloverQrData', () async {
       // Arrange
@@ -571,7 +628,71 @@ void _testPrivacyIdeaContainerApi() {
         );
       }
 
-      test('add', () async {
+      test(
+        'sends the identification of unlinked tokens with serial without asking the user',
+        () async {
+          final mockIoClient = MockPrivacyideaIOClient();
+          final containerApi = PiContainerApi(ioClient: mockIoClient);
+          final tokenContainer = getFinalizedTokenContainer(
+            withPolicies: ContainerPolicies(
+              rolloverAllowed: true,
+              initialTokenAssignment: true,
+              disabledTokenDeletion: false,
+              disabledUnregister: false,
+            ),
+          );
+          final tokenState = TokenState(
+            tokens: [
+              HOTPToken(
+                label: 'unlinked token',
+                serial: 'OATH00068B93',
+                issuer: 'privacyIDEA',
+                counter: 1,
+                id: 'id1',
+                algorithm: Algorithms.SHA1,
+                digits: 6,
+                secret: 'CDLDLKLUMPDR2IJJZJHF5XKFKBABU4XR',
+              ),
+            ],
+          );
+          Map<String, dynamic>? containerDictClient;
+
+          when(
+            mockIoClient.doPost(
+              url: anyNamed('url'),
+              body: anyNamed('body'),
+              sslVerify: anyNamed('sslVerify'),
+            ),
+          ).thenAnswer((invocation) async {
+            final Uri invocationUrl = invocation.namedArguments[Symbol('url')];
+            final Map<String, String?> invocationBody =
+                invocation.namedArguments[Symbol('body')];
+            if (invocationUrl.toString() ==
+                    'http://example.com/container/challenge' &&
+                invocationBody['scope'] ==
+                    'http://example.com/container/synchronize') {
+              return containerChallengeResponse;
+            }
+            containerDictClient =
+                jsonDecode(invocationBody[TokenContainer.SYNC_DICT_CLIENT]!)
+                    as Map<String, dynamic>;
+            return Response(jsonEncode(exampleError), 400);
+          });
+
+          // There is no dialog in this test, so the sync would be canceled if it was shown
+          await expectLater(
+            () =>
+                containerApi.sync(tokenContainer, tokenState, isInitSync: true),
+            throwsA(isA<ResponseError>()),
+          );
+
+          expect(containerDictClient?[TokenContainer.DICT_TOKENS], [
+            {'serial': 'OATH00068B93', 'tokentype': 'HOTP'},
+          ]);
+        },
+      );
+
+      testWidgets('add', (tester) async {
         // Arrange
         final mockIoClient = MockPrivacyideaIOClient();
         final containerApi = PiContainerApi(ioClient: mockIoClient);
@@ -688,12 +809,12 @@ void _testPrivacyIdeaContainerApi() {
         );
 
         // Act
-        final result = await containerApi.sync(
-          tokenContainer,
-          tokenState,
+        final result = await _syncWithAssignment(
+          tester,
+          containerApi: containerApi,
+          container: tokenContainer,
+          tokenState: tokenState,
           withX25519Key: publicSimpleKeyPair,
-          isInitSync: true,
-          sendAllOTPs: true,
         );
 
         // Asserta
@@ -724,7 +845,7 @@ void _testPrivacyIdeaContainerApi() {
         expect(token1.digits, 6);
         expect(token1.secret, 'XH5COUO6JSL5PE6VKOC3XNVENJHXCHIP');
       });
-      test('update unlinked token (with serial)', () async {
+      testWidgets('update unlinked token (with serial)', (tester) async {
         // Arrange
         final mockIoClient = MockPrivacyideaIOClient();
         final containerApi = PiContainerApi(ioClient: mockIoClient);
@@ -830,12 +951,12 @@ void _testPrivacyIdeaContainerApi() {
         );
 
         // Act
-        final result = await containerApi.sync(
-          tokenContainer,
-          tokenState,
+        final result = await _syncWithAssignment(
+          tester,
+          containerApi: containerApi,
+          container: tokenContainer,
+          tokenState: tokenState,
           withX25519Key: publicSimpleKeyPair,
-          isInitSync: true,
-          sendAllOTPs: true,
         );
 
         // Assert
@@ -869,7 +990,7 @@ void _testPrivacyIdeaContainerApi() {
         expect(token1.digits, 6);
         expect(token1.secret, '3LTZKAYTNIK5DUE4SLIGTKOC6ZK36E2G');
       });
-      test('update unlinked token (without serial)', () async {
+      testWidgets('update unlinked token (without serial)', (tester) async {
         // Arrange
         final mockIoClient = MockPrivacyideaIOClient();
         final containerApi = PiContainerApi(ioClient: mockIoClient);
@@ -984,12 +1105,12 @@ void _testPrivacyIdeaContainerApi() {
         );
 
         // Act
-        final result = await containerApi.sync(
-          tokenContainer,
-          tokenState,
+        final result = await _syncWithAssignment(
+          tester,
+          containerApi: containerApi,
+          container: tokenContainer,
+          tokenState: tokenState,
           withX25519Key: publicSimpleKeyPair,
-          isInitSync: true,
-          sendAllOTPs: true,
         );
         // Asserta
         expect(result, isNotNull);
@@ -1019,7 +1140,7 @@ void _testPrivacyIdeaContainerApi() {
         expect(token1.digits, 6);
         expect(token1.secret, 'CDLDLKLUMPDR2IJJZJHF5XKFKBABU4XR');
       });
-      test('sync with unknown tokens (with serial)', () async {
+      testWidgets('sync with unknown tokens (with serial)', (tester) async {
         // Arrange
         final mockIoClient = MockPrivacyideaIOClient();
         final containerApi = PiContainerApi(ioClient: mockIoClient);
@@ -1135,12 +1256,12 @@ void _testPrivacyIdeaContainerApi() {
         );
 
         // Act
-        final result = await containerApi.sync(
-          tokenContainer,
-          tokenState,
+        final result = await _syncWithAssignment(
+          tester,
+          containerApi: containerApi,
+          container: tokenContainer,
+          tokenState: tokenState,
           withX25519Key: publicSimpleKeyPair,
-          isInitSync: true,
-          sendAllOTPs: true,
         );
         // Asserta
         expect(result, isNotNull);
@@ -1164,7 +1285,7 @@ void _testPrivacyIdeaContainerApi() {
         expect(token0.secret, 'CDLDLKLUMPDR2IJJZJHF5XKFKBABU4XR');
         expect(token0.serial, 'TOTP00011B1F');
       });
-      test('sync with unknown tokens (without serial)', () async {
+      testWidgets('sync with unknown tokens (without serial)', (tester) async {
         // Arrange
         final mockIoClient = MockPrivacyideaIOClient();
         final containerApi = PiContainerApi(ioClient: mockIoClient);
@@ -1280,12 +1401,12 @@ void _testPrivacyIdeaContainerApi() {
         );
 
         // Act
-        final result = await containerApi.sync(
-          tokenContainer,
-          tokenState,
+        final result = await _syncWithAssignment(
+          tester,
+          containerApi: containerApi,
+          container: tokenContainer,
+          tokenState: tokenState,
           withX25519Key: publicSimpleKeyPair,
-          isInitSync: true,
-          sendAllOTPs: true,
         );
         // Asserta
         expect(result, isNotNull);

@@ -51,8 +51,7 @@ import '../interfaces/container_api.dart';
 
 class PiContainerApi implements TokenContainerApi {
   final PrivacyideaIOClient _ioClient;
-  const PiContainerApi({required PrivacyideaIOClient ioClient})
-    : _ioClient = ioClient;
+  const PiContainerApi({required this._ioClient});
 
   /* //////////////////////////////
   //////// PUBLIC METHODS /////////
@@ -64,7 +63,6 @@ class PiContainerApi implements TokenContainerApi {
     TokenState tokenState, {
     SimpleKeyPair? withX25519Key,
     bool? isInitSync,
-    bool? sendAllOTPs,
   }) async {
     final containerTokenTemplates = tokenState
         .containerTokens(container.serial)
@@ -79,24 +77,21 @@ class PiContainerApi implements TokenContainerApi {
     final assignmentCandidates = initialTokenAssignment
         ? notLinkedTokens
         : <Token>[];
-    final templatesForAssignment = <TokenTemplate>[];
-    if (assignmentCandidates.isNotEmpty) {
-      final List<Token> selectedTokens;
-      if (sendAllOTPs == true) {
-        selectedTokens = assignmentCandidates;
-      } else {
-        final dialogSelection = await InitialTokenAssignmentDialog.showDialog(
-          container,
-          assignmentCandidates,
-        );
-
-        if (dialogSelection == null) {
-          // User canceled the dialog => cancel sync
-          return null;
-        }
-        selectedTokens = dialogSelection.toList();
+    // Tokens with a serial are identified by their serial, so no otp values are needed.
+    final templatesForAssignment = assignmentCandidates.withSerial
+        .toTemplates();
+    // Tokens without a serial are identified by otp values, which needs the users consent.
+    final tokensWithoutSerial = assignmentCandidates.withoutSerial;
+    if (tokensWithoutSerial.isNotEmpty) {
+      final selectedTokens = await InitialTokenAssignmentDialog.showDialog(
+        container,
+        tokensWithoutSerial,
+      );
+      if (selectedTokens == null) {
+        // User canceled the dialog => cancel sync
+        return null;
       }
-      templatesForAssignment.addAll(selectedTokens.toTemplates());
+      templatesForAssignment.addAll(selectedTokens.toList().toTemplates());
     }
 
     final ContainerChallenge challenge = await _getChallenge(
