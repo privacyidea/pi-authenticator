@@ -110,11 +110,10 @@ class PiContainerApi implements TokenContainerApi {
       challenge: challenge,
       encKeyPair: encKeyPair,
       otpAuthMaps: [
-        for (var template in [
-          ...containerTokenTemplates,
-          ...templatesForAssignment,
-        ])
-          template.otpAuthMapSafeToSend,
+        for (var template in containerTokenTemplates)
+          template.tokenDataSafeToSend,
+        for (var template in templatesForAssignment)
+          template.tokenIdentification,
       ],
     );
 
@@ -426,7 +425,11 @@ class PiContainerApi implements TokenContainerApi {
     if (HttpStatusChecker.isError(challengeResponse.statusCode)) {
       PiServerResultError? piError;
       try {
-        final piResponse = PiServerResponse.fromResponse<ContainerChallenge, EmptyResultDetail>(challengeResponse);
+        final piResponse =
+            PiServerResponse.fromResponse<
+              ContainerChallenge,
+              EmptyResultDetail
+            >(challengeResponse);
         piError = piResponse.asSuccess?.result.error;
       } catch (_) {
         // Response body is not valid privacyIDEA JSON

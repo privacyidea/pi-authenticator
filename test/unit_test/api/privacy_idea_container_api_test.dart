@@ -609,7 +609,7 @@ void _testPrivacyIdeaContainerApi() {
           }
           final publicEncKeyClientB64 = invocationBody['public_enc_key_client'];
           final containerDictClient =
-              '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"tokentype":"HOTP","label":"label1","issuer":"privacyIDEA","pin":"False","offline":false,"app_force_unlock":"none","algorithm":"SHA1","digits":"6","otp":["435986","964213"],"counter":"5"}]}';
+              '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"tokentype":"HOTP","otp":["435986","964213"],"counter":"5"}]}';
 
           final signMessage2 =
               '$containerChallengeNonce|'
@@ -762,7 +762,7 @@ void _testPrivacyIdeaContainerApi() {
           }
           final publicEncKeyClientB64 = invocationBody['public_enc_key_client'];
           final containerDictClient =
-              '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"OATH00068B93","tokentype":"HOTP","label":"OATH00068B93","issuer":"privacyIDEA","pin":"False","offline":false,"app_force_unlock":"none","algorithm":"SHA1","digits":"6","counter":"1"}]}';
+              '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"OATH00068B93","tokentype":"HOTP"}]}';
 
           final signMessage2 =
               '$containerChallengeNonce|'
@@ -916,7 +916,7 @@ void _testPrivacyIdeaContainerApi() {
           }
           final publicEncKeyClientB64 = invocationBody['public_enc_key_client'];
           final containerDictClient =
-              '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"TOTP00011B1F","tokentype":"TOTP","label":"TOTP00011B1F","issuer":"privacyIDEA","pin":"False","offline":false,"app_force_unlock":"none","algorithm":"SHA1","digits":"6","period":"30"},{"tokentype":"HOTP","label":"OATH00166051","issuer":"privacyIDEA","pin":"False","offline":false,"app_force_unlock":"none","algorithm":"SHA1","digits":"6","otp":["079447","501895"],"counter":"1"}]}';
+              '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"TOTP00011B1F","tokentype":"TOTP"},{"tokentype":"HOTP","otp":["079447","501895"],"counter":"1"}]}';
 
           final signMessage2 =
               '$containerChallengeNonce|'
@@ -1067,7 +1067,7 @@ void _testPrivacyIdeaContainerApi() {
           }
           final publicEncKeyClientB64 = invocationBody['public_enc_key_client'];
           final containerDictClient =
-              '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"TOTP00011B1F","tokentype":"TOTP","label":"TOTP00011B1F","issuer":"privacyIDEA","pin":"False","offline":false,"app_force_unlock":"none","algorithm":"SHA1","digits":"6","period":"30"},{"serial":"OATH00166051","tokentype":"HOTP","label":"OATH00166051","issuer":"privacyIDEA","pin":"False","offline":false,"app_force_unlock":"none","algorithm":"SHA1","digits":"6","counter":"1"}]}';
+              '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"TOTP00011B1F","tokentype":"TOTP"},{"serial":"OATH00166051","tokentype":"HOTP"}]}';
 
           final signMessage2 =
               '$containerChallengeNonce|'
@@ -1212,7 +1212,7 @@ void _testPrivacyIdeaContainerApi() {
           final publicEncKeyClientB64 = invocationBody['public_enc_key_client'];
 
           final containerDictClient =
-              '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"TOTP00011B1F","tokentype":"TOTP","label":"TOTP00011B1F","issuer":"privacyIDEA","pin":"False","offline":false,"app_force_unlock":"none","algorithm":"SHA1","digits":"6","period":"30"},{"tokentype":"HOTP","label":"OATH00166051","issuer":"privacyIDEA","pin":"False","offline":false,"app_force_unlock":"none","algorithm":"SHA1","digits":"6","otp":["079447","501895"],"counter":"1"}]}';
+              '{"container_serial":"SMPH00067A2F","type":"smartphone","tokens":[{"serial":"TOTP00011B1F","tokentype":"TOTP"},{"tokentype":"HOTP","otp":["079447","501895"],"counter":"1"}]}';
 
           final signMessage2 =
               '$containerChallengeNonce|'
