@@ -1,26 +1,26 @@
-// /*
-//  * privacyIDEA Authenticator
-//  *
-//  * Author: Frank Merkel <frank.merkel@netknights.it>
-//  *
-//  * Copyright (c) 2025 NetKnights GmbH
-//  *
-//  * Licensed under the Apache License, emailemailemailVersion 2.0 (the 'License');
-//  * you may not use this file except in compliance with the License.
-//  * You may obtain a copy of the License at
-//  *
-//  * http://www.apache.org/licenses/LICENSE-2.0
-//  *
-//  * Unless required by applicable law or agreed to in writing, software
-//  * distributed under the License is distributed on an 'AS IS' BASIS,
-//  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//  * See the License for the specific language governing permissions and
-//  * limitations under the License.
-//  */
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2025 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 import 'dart:convert';
 
-import 'package:base32/base32.dart';
+import 'package:privacyidea_authenticator/utils/helpers/base32_helper.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../utils/globals.dart';
@@ -28,6 +28,7 @@ import '../../utils/logger.dart';
 import '../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../utils/rsa_utils.dart';
 import '../tokens/push_token.dart';
+import 'decline_reason.dart';
 import 'push_request.dart';
 
 part 'push_default_request.g.dart';
@@ -47,6 +48,7 @@ class PushDefaultRequest extends PushRequest {
     required super.sslVerify,
     super.type = PushDefaultRequest.TYPE,
     super.accepted,
+    super.declineReason,
   });
 
   factory PushDefaultRequest.fromJson(Map<String, dynamic> json) =>
@@ -95,7 +97,7 @@ class PushDefaultRequest extends PushRequest {
     final verified = rsaUtils.verifyRSASignature(
       token.rsaPublicServerKey!,
       utf8.encode(signedData),
-      base32.decode(signature),
+      base32Decode(signature),
     );
     if (!verified) {
       Logger.warning(
@@ -128,7 +130,8 @@ class PushDefaultRequest extends PushRequest {
     return 'PushDefaultRequest{title: $title, question: $question, '
         'id: $id, uri: $uri, nonce: $nonce, sslVerify: $sslVerify, '
         'expirationDate: $expirationDate, serial: $serial, '
-        'signature: $signature, accepted: $accepted}';
+        'signature: $signature, accepted: $accepted, '
+        'declineReason: $declineReason}';
   }
 
   @override
@@ -140,6 +143,7 @@ class PushDefaultRequest extends PushRequest {
 
   @override
   int get hashCode => Object.hash(runtimeType, id);
+
   @override
   PushDefaultRequest copyWith({
     String? title,
@@ -151,6 +155,7 @@ class PushDefaultRequest extends PushRequest {
     String? serial,
     String? signature,
     bool? Function()? accepted,
+    DeclineReason? Function()? declineReason,
   }) {
     return PushDefaultRequest(
       title: title ?? this.title,
@@ -162,6 +167,18 @@ class PushDefaultRequest extends PushRequest {
       serial: serial ?? this.serial,
       signature: signature ?? this.signature,
       accepted: accepted != null ? accepted() : this.accepted,
+      declineReason: declineReason != null
+          ? declineReason()
+          : this.declineReason,
     );
+  }
+
+  @override
+  PushDefaultRequest dynamicCopyWith({
+    bool? Function()? accepted,
+    DeclineReason? Function()? declineReason,
+    String? selectedAnswer,
+  }) {
+    return copyWith(accepted: accepted, declineReason: declineReason);
   }
 }

@@ -62,7 +62,6 @@ class EditPushTokenAction extends ConsumerSlideableAction {
       },
       child: FocusedItemAsOverlay(
         tooltipWhenFocused: appLocalizations.introEditToken,
-        childIsMoving: true,
         alignment: Alignment.bottomCenter,
         isFocused: ref
             .watch(introductionNotifierProvider)

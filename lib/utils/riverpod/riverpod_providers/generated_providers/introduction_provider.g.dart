@@ -86,7 +86,7 @@ abstract class _$IntroductionNotifier
   FutureOr<IntroductionState> build({required IntroductionRepository repo});
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref =
         this.ref as $Ref<AsyncValue<IntroductionState>, IntroductionState>;
     final element =
@@ -97,6 +97,6 @@ abstract class _$IntroductionNotifier
               Object?,
               Object?
             >;
-    element.handleCreate(ref, () => build(repo: _$args));
+    return element.handleCreate(ref, () => build(repo: _$args));
   }
 }

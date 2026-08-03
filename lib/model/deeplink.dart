@@ -23,12 +23,7 @@ class DeepLink {
   final bool fromInit;
   const DeepLink(this.uri, {this.fromInit = false});
 
-  @override
-  bool operator ==(Object other) =>
-      other is DeepLink && other.uri == uri && other.fromInit == fromInit;
-
-  @override
-  int get hashCode => Object.hash(uri, fromInit);
+  /// Identity-based equality is intentional – each instance represents a new event.
 
   @override
   String toString() => 'DeepLink(uri: $uri, fromInit: $fromInit)';

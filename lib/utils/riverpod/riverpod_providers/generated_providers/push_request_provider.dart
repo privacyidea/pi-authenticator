@@ -20,7 +20,8 @@
 import 'dart:async';
 
 import 'package:http/http.dart';
-import 'package:mutex/mutex.dart';
+import 'package:privacyidea_authenticator/utils/helpers/mutex.dart';
+import 'package:privacyidea_authenticator/model/push_request/decline_reason.dart';
 import 'package:privacyidea_authenticator/model/push_request/push_requests.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -28,6 +29,7 @@ import '../../../../../../../interfaces/repo/push_request_repository.dart';
 import '../../../../../../../utils/rsa_utils.dart';
 import '../../../../model/api_results/pi_server_results/pi_server_result_detail.dart';
 import '../../../../model/api_results/pi_server_results/pi_server_result_value.dart';
+import '../../../../model/exception_errors/error_codes.dart';
 import '../../../../model/pi_server_response.dart';
 import '../../../../model/riverpod_states/push_request_state.dart';
 import '../../../../model/tokens/push_token.dart';
@@ -73,14 +75,11 @@ class PushRequestNotifier extends _$PushRequestNotifier {
   late final PushRequestRepository _pushRepo;
 
   PushRequestNotifier({
-    RsaUtils? rsaUtilsOverride,
-    PrivacyideaIOClient? ioClientOverride,
-    PushProvider? pushProviderOverride,
-    PushRequestRepository? pushRepoOverride,
-  }) : _pushProviderOverride = pushProviderOverride,
-       _rsaUtilsOverride = rsaUtilsOverride,
-       _ioClientOverride = ioClientOverride,
-       _pushRepoOverride = pushRepoOverride;
+    this._rsaUtilsOverride,
+    this._ioClientOverride,
+    this._pushProviderOverride,
+    this._pushRepoOverride,
+  });
 
   @override
   Future<PushRequestState> build({
@@ -100,7 +99,7 @@ class PushRequestNotifier extends _$PushRequestNotifier {
     // Ensure timers and subscription are cleaned up if the provider is disposed
     ref.onDispose(() {
       _pushProvider.unsubscribe(add);
-      _cancalAllTimers();
+      _cancelAllTimers();
     });
 
     return _loadFromRepo();
@@ -241,7 +240,24 @@ class PushRequestNotifier extends _$PushRequestNotifier {
     return _handleReaction<T, D>(
       pushRequest: request,
       token: token,
-      updater: (p0) async => p0.dynamicCopyWith(accepted: () => false),
+      updater: (p0) async => p0.dynamicCopyWith(
+        accepted: () => false,
+        declineReason: () => DeclineReason.unknownTrigger,
+      ),
+    );
+  }
+
+  Future<PiSuccessResponse<T, D>?> cancel<
+    T extends PiServerResultValue,
+    D extends PiServerResultDetail
+  >(PushToken token, PushRequest request) async {
+    return _handleReaction<T, D>(
+      pushRequest: request,
+      token: token,
+      updater: (p0) async => p0.dynamicCopyWith(
+        accepted: () => false,
+        declineReason: () => DeclineReason.cancelled,
+      ),
     );
   }
 
@@ -271,16 +287,17 @@ class PushRequestNotifier extends _$PushRequestNotifier {
     }
   }
 
-  Future<bool> remove(PushRequest pushRequest) => _remove(pushRequest);
-
   Future<void> initFirebase() => pushProvider.initFirebase();
+
+  /// Removes a push request from the state without notifying the server.
+  Future<bool> remove(PushRequest pushRequest) => _remove(pushRequest);
 
   //////////////////////////////////////////////////////////////////////////////
   ///////////////////////// Helper Methods /////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
 
   void _renewTimers(List<PushRequest> pushRequests) {
-    _cancalAllTimers();
+    _cancelAllTimers();
     _setupAllTimers(pushRequests);
   }
 
@@ -292,7 +309,7 @@ class PushRequestNotifier extends _$PushRequestNotifier {
     }
   }
 
-  void _cancalAllTimers() {
+  void _cancelAllTimers() {
     if (_expirationTimers.keys.isNotEmpty) {
       Logger.info('Canceling all timers: [${_expirationTimers.keys}]');
     }
@@ -319,7 +336,7 @@ class PushRequestNotifier extends _$PushRequestNotifier {
   }
 
   void _setupAllTimers(List<PushRequest> pushRequests) {
-    _cancalAllTimers();
+    _cancelAllTimers();
     for (var pr in pushRequests) {
       int time = pr.expirationDate.difference(DateTime.now()).inMilliseconds;
       if (time < 1) {
@@ -360,12 +377,9 @@ class PushRequestNotifier extends _$PushRequestNotifier {
         return null;
       }
 
-      final Map<String, String> body = {
-        'serial': token.serial,
-        'nonce': updated.nonce,
-        if (updated.accepted == false) 'decline': '1',
-        ...updated.getResponseData(token),
-      };
+      final Map<String, String> body = updated.getResponseData(token).map(
+        (key, value) => MapEntry(key, value.toString()),
+      );
 
       String msg = updated.getResponseSignMsg(token);
       String? signature = await _rsaUtils.trySignWithToken(token, msg);
@@ -375,21 +389,31 @@ class PushRequestNotifier extends _$PushRequestNotifier {
       }
       body['signature'] = signature;
 
-      Response response;
-      try {
-        response = await _ioClient.doPost(
-          sslVerify: updated.sslVerify,
-          url: updated.uri,
-          body: body,
-        );
-      } catch (_) {
+      Response response = await _ioClient.doPost(
+        sslVerify: updated.sslVerify,
+        url: updated.uri,
+        body: body,
+      );
+      if (response.isConnectionFailure) {
         try {
           response = await _ioClient.doPost(
             sslVerify: updated.sslVerify,
             url: updated.uri,
             body: body,
           );
+        } on ArgumentError {
+          rethrow;
         } catch (e) {
+          Logger.warning('Push reaction request failed after retry', error: e);
+          await _addOrReplacePushRequest(oldRequest);
+          ref.read(statusProvider.notifier).show((l) => l.connectionFailed);
+          return null;
+        }
+        if (response.isConnectionFailure) {
+          Logger.warning(
+            'Push reaction request failed after retry',
+            error: response.body,
+          );
           await _addOrReplacePushRequest(oldRequest);
           ref.read(statusProvider.notifier).show((l) => l.connectionFailed);
           return null;
@@ -400,6 +424,7 @@ class PushRequestNotifier extends _$PushRequestNotifier {
       try {
         piResponse = response.asPiServerResponse<T, D>();
       } catch (e) {
+        Logger.warning('Failed to parse push reaction response', error: e);
         ref
             .read(statusProvider.notifier)
             .show(
@@ -413,19 +438,50 @@ class PushRequestNotifier extends _$PushRequestNotifier {
       if (piResponse.isError) {
         await _addOrReplacePushRequest(oldRequest);
         final errorResponse = piResponse.asError!;
+        Logger.warning(
+          'Push reaction rejected by server',
+          error:
+              '${errorResponse.piServerResultError.code}: ${errorResponse.piServerResultError.message}',
+        );
         ref
             .read(statusProvider.notifier)
             .show(
               (l) =>
                   '${l.sendPushRequestResponseFailed}\n${l.statusCode(errorResponse.statusCode)}',
               details: (_) =>
-                  '${errorResponse.piServerResultError.code}: ${errorResponse.piServerResultError.message}',
+                  errorResponse.piServerResultError.code ==
+                      InAppErrorCodes.jsonParseError
+                  ? errorResponse.piServerResultError.message
+                  : '${errorResponse.piServerResultError.code}: ${errorResponse.piServerResultError.message}',
             );
         return null;
       }
 
       await _remove(updated);
       return piResponse.asSuccess;
+    } on ArgumentError catch (e, s) {
+      Logger.error(
+        'Push reaction failed due to invalid request data',
+        error: e,
+        stackTrace: s,
+      );
+      await _addOrReplacePushRequest(oldRequest);
+      ref
+          .read(statusProvider.notifier)
+          .show(
+            (l) => l.sendPushRequestResponseFailed,
+            details: (_) => e.message?.toString() ?? e.toString(),
+          );
+      return null;
+    } catch (e, s) {
+      Logger.error(
+        'Unexpected error while handling push reaction',
+        error: e,
+        stackTrace: s,
+      );
+      await _addOrReplacePushRequest(oldRequest);
+      ref.read(statusProvider.notifier).show((l) => l.connectionFailed);
+      return null;
     } finally {
       _reactionMutex.release();
     }

@@ -21,14 +21,26 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../interfaces/riverpod/state_listeners/state_notifier_provider_listeners/deep_link_listener.dart';
 import '../../../model/deeplink.dart';
+import '../../logger.dart';
 import '../riverpod_providers/generated_providers/token_notifier.dart';
 
 class TokenImportDeepLinkListener extends DeepLinkListener {
   const TokenImportDeepLinkListener({required super.provider}) : super(onNewState: _onNewState, listenerName: 'TokenImportDeepLinkListener().processUri');
 
   static void _onNewState(WidgetRef ref, AsyncValue<DeepLink>? previous, AsyncValue<DeepLink> next) {
-    next.whenData((next) {
-      ref.read(tokenProvider.notifier).handleLink(next.uri);
+    next.whenData((next) async {
+      Logger.debug(
+        '[TokenImportDeepLinkListener] Processing uri: ${next.uri} (fromInit: ${next.fromInit})',
+      );
+      try {
+        await ref.read(tokenProvider.notifier).handleLink(next.uri);
+      } catch (e, s) {
+        Logger.error(
+          '[TokenImportDeepLinkListener] Failed to process uri: ${next.uri} (fromInit: ${next.fromInit})',
+          error: e,
+          stackTrace: s,
+        );
+      }
     });
   }
 }

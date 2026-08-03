@@ -39,7 +39,6 @@ class PushCodeToPhoneDialog extends ConsumerStatefulWidget
 
 class _PushCodeToPhoneDialogState extends ConsumerState<PushCodeToPhoneDialog> {
   bool _isCopyOnCooldown = false;
-  final _formKey = GlobalKey<FormState>();
 
   void _copyToClipboard() {
     if (_isCopyOnCooldown) return;
@@ -69,54 +68,62 @@ class _PushCodeToPhoneDialogState extends ConsumerState<PushCodeToPhoneDialog> {
     return DefaultDialog(
       scrollable: false,
       title: PushRequestHeader(pushRequest: widget.pushRequest),
-      content: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            PushRequestBaseInfo(pushRequest: widget.pushRequest),
-            const SizedBox(height: 12),
-            Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const SizedBox(width: 40),
-                  GestureDetector(
-                    onTap: _copyToClipboard,
-                    child: Text(
-                      widget.pushRequest.displayCode,
-
-                      textAlign: TextAlign.center,
-                      style: theme.textTheme.displayMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: theme.colorScheme.primary,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          PushRequestBaseInfo(pushRequest: widget.pushRequest),
+          const SizedBox(height: 12),
+          Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const SizedBox(width: 40),
+                Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: _isCopyOnCooldown ? null : _copyToClipboard,
+                    child: Semantics(
+                      button: true,
+                      enabled: !_isCopyOnCooldown,
+                      label: localizations.copyOTPToClipboard,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 4,
+                          vertical: 2,
+                        ),
+                        child: Text(
+                          widget.pushRequest.displayCode,
+                          textAlign: TextAlign.center,
+                          style: theme.textTheme.displayMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: theme.colorScheme.primary,
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                  IconButton(
-                    icon: Icon(
-                      Icons.copy,
-                      color: _isCopyOnCooldown
-                          ? theme.disabledColor
-                          : theme.colorScheme.primary,
-                    ),
-                    onPressed: _copyToClipboard,
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.copy,
+                    color: _isCopyOnCooldown
+                        ? theme.disabledColor
+                        : theme.colorScheme.primary,
                   ),
-                ],
-              ),
+                  tooltip: localizations.copyOTPToClipboard,
+                  onPressed: _isCopyOnCooldown ? null : _copyToClipboard,
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 24),
+          PushActionButton(
+            onPressed: () async => widget.handleDiscard(context, ref),
+            child: Text(localizations.done),
+          ),
+        ],
       ),
-      actions: [
-        DialogAction(
-          label: localizations.done,
-          intent: ActionIntent.confirm,
-          formState: _formKey,
-          onPressed: () async => widget.handleDiscard(context, ref),
-        ),
-      ],
     );
   }
 }
