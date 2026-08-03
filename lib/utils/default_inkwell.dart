@@ -35,19 +35,15 @@ class DefaultInkWell extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Material(
     // Material to draw on for the InkWell
-    color: Colors.transparent,
-    child: Container(
-      decoration: BoxDecoration(
-        color: highlight ? Theme.of(context).dividerColor : null,
-        borderRadius: const BorderRadius.all(Radius.circular(4)),
+    color: highlight ? Theme.of(context).dividerColor : Colors.transparent,
+    borderRadius: const BorderRadius.all(Radius.circular(4)),
+    clipBehavior: Clip.antiAlias,
+    child: InkWell(
+      customBorder: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(4)),
       ),
-      child: InkWell(
-        customBorder: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(4)),
-        ),
-        onTap: onTap,
-        child: child,
-      ),
+      onTap: onTap,
+      child: child,
     ),
   );
 }

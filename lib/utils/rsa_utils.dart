@@ -21,7 +21,7 @@
 import 'dart:convert';
 
 import 'package:asn1lib/asn1lib.dart';
-import 'package:base32/base32.dart';
+import 'package:privacyidea_authenticator/utils/helpers/base32_helper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pointycastle/export.dart';
 
@@ -238,7 +238,7 @@ class RsaUtils {
   }
 
   String createBase32Signature(RSAPrivateKey privateKey, Uint8List dataToSign) {
-    return base32.encode(createRSASignature(privateKey, dataToSign));
+    return base32Encode(createRSASignature(privateKey, dataToSign));
   }
 
   Uint8List createRSASignature(RSAPrivateKey privateKey, Uint8List dataToSign) {

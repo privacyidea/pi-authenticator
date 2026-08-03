@@ -48,7 +48,7 @@ abstract class _$LocalizationNotifier extends $Notifier<AppLocalizations> {
   AppLocalizations build();
   @$mustCallSuper
   @override
-  void runBuild() {
+  WhenComplete runBuild() {
     final ref = this.ref as $Ref<AppLocalizations, AppLocalizations>;
     final element =
         ref.element
@@ -58,6 +58,6 @@ abstract class _$LocalizationNotifier extends $Notifier<AppLocalizations> {
               Object?,
               Object?
             >;
-    element.handleCreate(ref, build);
+    return element.handleCreate(ref, build);
   }
 }

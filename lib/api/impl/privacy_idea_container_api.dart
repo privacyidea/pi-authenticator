@@ -51,8 +51,7 @@ import '../interfaces/container_api.dart';
 
 class PiContainerApi implements TokenContainerApi {
   final PrivacyideaIOClient _ioClient;
-  const PiContainerApi({required PrivacyideaIOClient ioClient})
-    : _ioClient = ioClient;
+  const PiContainerApi({required this._ioClient});
 
   /* //////////////////////////////
   //////// PUBLIC METHODS /////////
@@ -424,7 +423,11 @@ class PiContainerApi implements TokenContainerApi {
     if (HttpStatusChecker.isError(challengeResponse.statusCode)) {
       PiServerResultError? piError;
       try {
-        final piResponse = PiServerResponse.fromResponse<ContainerChallenge, EmptyResultDetail>(challengeResponse);
+        final piResponse =
+            PiServerResponse.fromResponse<
+              ContainerChallenge,
+              EmptyResultDetail
+            >(challengeResponse);
         piError = piResponse.asSuccess?.result.error;
       } catch (_) {
         // Response body is not valid privacyIDEA JSON

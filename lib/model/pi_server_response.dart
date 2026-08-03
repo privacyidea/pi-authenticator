@@ -130,11 +130,24 @@ sealed class PiServerResponse<
       json = jsonDecode(response.body);
     } catch (e) {
       Logger.warning('Failed to parse server response', error: response.body);
+      final rawBody = response.body.trim();
+      const maxMessageLength = 200;
+      final looksLikeMarkupOrCode = RegExp(
+        r'<[a-zA-Z!/]|^\s*\{',
+      ).hasMatch(rawBody);
+      final String message;
+      if (rawBody.isEmpty) {
+        message = 'Empty response body (HTTP ${response.statusCode})';
+      } else if (looksLikeMarkupOrCode || rawBody.length > maxMessageLength) {
+        message = 'Invalid server response (HTTP ${response.statusCode})';
+      } else {
+        message = rawBody;
+      }
       return PiServerResponse.error(
         statusCode: response.statusCode,
         piServerResultError: PiServerResultError(
           code: InAppErrorCodes.jsonParseError,
-          message: 'Failed to parse JSON response (HTTP ${response.statusCode}): non-JSON response body',
+          message: message,
         ),
       );
     }

@@ -50,11 +50,9 @@ class LocalizedArgumentError extends LocalizedException
     required super.unlocalizedMessage,
     required super.localizedMessage,
     required dynamic invalidValue,
-    String? name,
-    StackTrace? stackTrace,
-  }) : _invalidValue = invalidValue,
-       _name = name,
-       _stackTrace = stackTrace;
+    this._name,
+    this._stackTrace,
+  }) : _invalidValue = invalidValue;
 
   @override
   dynamic get invalidValue => _invalidValue;

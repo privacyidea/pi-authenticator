@@ -20,7 +20,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/model/extensions/enums/push_token_rollout_state_extension.dart';
-import 'package:uuid/uuid.dart';
+import 'package:privacyidea_authenticator/utils/helpers/uuid_helper.dart';
 
 import '../../../../../../../model/token_template.dart';
 import '../../utils/object_validator/object_validators.dart';
@@ -240,7 +240,7 @@ class PushToken extends Token {
       isOffline: validatedMap[Token.OFFLINE] as bool,
       forceBiometricOption:
           validatedMap[Token.FORCE_BIOMETRIC_OPTION] as ForceBiometricOption,
-      id: validatedAdditionalData[Token.ID] as String? ?? const Uuid().v4(),
+      id: validatedAdditionalData[Token.ID] as String? ?? uuidV4(),
       containerSerial:
           validatedAdditionalData[Token.CONTAINER_SERIAL] as String?,
       checkedContainer:

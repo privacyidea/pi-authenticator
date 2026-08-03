@@ -49,7 +49,7 @@ abstract class NavigationSchemeProcessor implements SchemeProcessor {
       final key = await contextedGlobalNavigatorKey;
       context = key.currentContext;
     }
-    if (context!.mounted == false) return;
+    if (context == null || context.mounted == false) return;
     Logger.info('Processing scheme: ${uri.scheme}');
     final futures = <Future<void>>[];
     for (final processor in implementations) {

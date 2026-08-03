@@ -7,6 +7,7 @@ import 'package:privacyidea_authenticator/model/riverpod_states/push_request_sta
 import 'package:privacyidea_authenticator/repo/secure_push_request_repository.dart';
 import 'package:privacyidea_authenticator/repo/secure_storage.dart';
 import 'package:privacyidea_authenticator/utils/custom_int_buffer.dart';
+import 'package:privacyidea_authenticator/utils/identifiers.dart';
 
 import '../../tests_app_wrapper.mocks.dart';
 
@@ -15,11 +16,11 @@ void main() {
   late MockFlutterSecureStorage mockLegacyFlutterStorage;
   late SecurePushRequestRepository repository;
 
-  const newPrefix = SecurePushRequestRepository.PUSH_REQUEST_PREFIX;
+  const newPrefix = SECURE_REPO_PREFIX_PUSH_REQUEST;
   const newKeyName = SecurePushRequestRepository.KEY;
   const fullNewKey = '${newPrefix}_$newKeyName';
 
-  const legacyPrefix = SecurePushRequestRepository.PUSH_REQUEST_PREFIX_LEGACY;
+  const legacyPrefix = GLOBAL_SECURE_REPO_PREFIX_LEGACY;
   const legacyKeyName = SecurePushRequestRepository.KEY_LEGACY;
   const fullLegacyKey = '${legacyPrefix}_$legacyKeyName';
 
@@ -27,11 +28,11 @@ void main() {
     mockFlutterStorage = MockFlutterSecureStorage();
     mockLegacyFlutterStorage = MockFlutterSecureStorage();
     final storage = SecureStorage(
-      storagePrefix: SecurePushRequestRepository.PUSH_REQUEST_PREFIX,
+      storagePrefix: SECURE_REPO_PREFIX_PUSH_REQUEST,
       storage: mockFlutterStorage,
     );
     final legacyStorage = SecureStorage(
-      storagePrefix: SecurePushRequestRepository.PUSH_REQUEST_PREFIX_LEGACY,
+      storagePrefix: GLOBAL_SECURE_REPO_PREFIX_LEGACY,
       storage: mockLegacyFlutterStorage,
     );
     repository = SecurePushRequestRepository(
