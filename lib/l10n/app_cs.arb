@@ -1098,6 +1098,9 @@
     },
     "type": "text"
   },
+  "@passkeyQrCodeNotSupported": {
+    "description": "Guidance shown when a scanned QR code starts a FIDO passkey flow."
+  },
   "@password": {
     "description": "Labeltext for the password input field."
   },
@@ -2011,6 +2014,7 @@
   "originApp": "Aplikace Origin",
   "originDetails": "Podrobnosti o původu",
   "otpValueCopiedMessage": "Heslo “{otpValue}“ bylo zkopírováno do schránky.",
+  "passkeyQrCodeNotSupported": "Tato aplikace zatím nepodporuje přístupové klíče (passkey). Použijte prosím fotoaparát nebo systémový skener QR kódů.",
   "password": "Heslo",
   "showPassword": "Zobrazit heslo",
   "hidePassword": "Skrýt heslo",

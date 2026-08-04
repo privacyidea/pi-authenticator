@@ -1098,6 +1098,9 @@
     },
     "type": "text"
   },
+  "@passkeyQrCodeNotSupported": {
+    "description": "Guidance shown when a scanned QR code starts a FIDO passkey flow."
+  },
   "@password": {
     "description": "Labeltext for the password input field."
   },
@@ -2011,6 +2014,7 @@
   "originApp": "Oorsprong app",
   "originDetails": "Details over de oorsprong",
   "otpValueCopiedMessage": "Wachtwoord “{otpValue}“ gekopieerd naar het klembord.",
+  "passkeyQrCodeNotSupported": "Deze app ondersteunt passkeys nog niet. Gebruik de camera of de QR-scanner van het systeem.",
   "password": "Wachtwoord",
   "showPassword": "Wachtwoord weergeven",
   "hidePassword": "Wachtwoord verbergen",

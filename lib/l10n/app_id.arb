@@ -1098,6 +1098,9 @@
     },
     "type": "text"
   },
+  "@passkeyQrCodeNotSupported": {
+    "description": "Guidance shown when a scanned QR code starts a FIDO passkey flow."
+  },
   "@password": {
     "description": "Labeltext for the password input field."
   },
@@ -2011,6 +2014,7 @@
   "originApp": "Aplikasi asal",
   "originDetails": "Rincian asal",
   "otpValueCopiedMessage": "Kata sandi “{otpValue}“ disalin ke papan klip.",
+  "passkeyQrCodeNotSupported": "Aplikasi ini belum mendukung passkey. Silakan gunakan kamera atau pemindai QR sistem.",
   "password": "Kata sandi",
   "showPassword": "Tampilkan kata sandi",
   "hidePassword": "Sembunyikan kata sandi",
