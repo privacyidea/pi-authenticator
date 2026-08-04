@@ -2014,7 +2014,7 @@
   "originApp": "Application d'origine",
   "originDetails": "Informations sur l'origine",
   "otpValueCopiedMessage": "Le mot de passe “{otpValue}“ a été copié dans le presse-papier.",
-  "passkeyQrCodeNotSupported": "Il s’agit d’un QR code de passkey. Cette application ne le prend pas en charge. Utilisez l’appareil photo ou le scanner QR du système.",
+  "passkeyQrCodeNotSupported": "Cette application ne prend pas encore en charge les passkeys. Veuillez utiliser l’appareil photo ou le scanner QR du système.",
   "password": "Mot de passe",
   "showPassword": "Afficher le mot de passe",
   "hidePassword": "Masquer le mot de passe",

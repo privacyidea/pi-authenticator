@@ -2046,7 +2046,7 @@
   "originApp": "Origin app",
   "originDetails": "Origin details",
   "otpValueCopiedMessage": "Password “{otpValue}“ copied to clipboard.",
-  "passkeyQrCodeNotSupported": "This is a passkey QR code. This app does not support it. Use your phone's camera or system QR scanner.",
+  "passkeyQrCodeNotSupported": "This app does not support passkeys yet. Please use the camera or the system QR scanner.",
   "password": "Password",
   "showPassword": "Show password",
   "hidePassword": "Hide password",

@@ -2043,7 +2043,7 @@
   "originApp": "Ursprungs-App",
   "originDetails": "Angaben zur Herkunft",
   "otpValueCopiedMessage": "Passwort “{otpValue}“ wurde in Zwischenablage kopiert.",
-  "passkeyQrCodeNotSupported": "Dies ist ein Passkey-QR-Code. Diese App unterstützt ihn nicht. Verwenden Sie die Kamera oder den System-QR-Scanner.",
+  "passkeyQrCodeNotSupported": "Diese App unterstützt noch kein Passkey. Bitte verwenden Sie die Kamera oder den System-QR-Scanner.",
   "password": "Passwort",
   "showPassword": "Passwort anzeigen",
   "hidePassword": "Passwort verbergen",

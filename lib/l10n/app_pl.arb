@@ -2014,7 +2014,7 @@
   "originApp": "Aplikacja Origin",
   "originDetails": "Szczegóły dotyczące pochodzenia",
   "otpValueCopiedMessage": "Jednorazowe hasło “{otpValue}“ skopiowane do schowka.",
-  "passkeyQrCodeNotSupported": "To kod QR klucza dostępu (passkey). Ta aplikacja go nie obsługuje. Użyj aparatu lub systemowego skanera QR telefonu.",
+  "passkeyQrCodeNotSupported": "Ta aplikacja nie obsługuje jeszcze kluczy dostępu (passkey). Użyj aparatu lub systemowego skanera kodów QR.",
   "password": "Hasło",
   "showPassword": "Pokaż hasło",
   "hidePassword": "Skryj hasło",

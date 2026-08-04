@@ -2014,7 +2014,7 @@
   "originApp": "Oorsprong app",
   "originDetails": "Details over de oorsprong",
   "otpValueCopiedMessage": "Wachtwoord “{otpValue}“ gekopieerd naar het klembord.",
-  "passkeyQrCodeNotSupported": "Dit is een QR-code voor een passkey. Deze app ondersteunt deze niet. Gebruik de camera of de QR-scanner van het systeem.",
+  "passkeyQrCodeNotSupported": "Deze app ondersteunt passkeys nog niet. Gebruik de camera of de QR-scanner van het systeem.",
   "password": "Wachtwoord",
   "showPassword": "Wachtwoord weergeven",
   "hidePassword": "Wachtwoord verbergen",

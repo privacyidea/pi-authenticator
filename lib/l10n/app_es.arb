@@ -2014,7 +2014,7 @@
   "originApp": "Aplicación Origen",
   "originDetails": "Datos de origen",
   "otpValueCopiedMessage": "Contraseña “{otpValue}“ copiada en el portapapeles.",
-  "passkeyQrCodeNotSupported": "Este es un código QR de clave de acceso. Esta aplicación no lo admite. Use la cámara o el escáner QR del sistema.",
+  "passkeyQrCodeNotSupported": "Esta aplicación aún no admite claves de acceso. Utilice la cámara o el escáner de QR del sistema.",
   "password": "Contraseña",
   "showPassword": "Mostrar contraseña",
   "hidePassword": "Ocultar contraseña",

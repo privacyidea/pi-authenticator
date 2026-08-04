@@ -2014,7 +2014,7 @@
   "originApp": "Aplikace Origin",
   "originDetails": "Podrobnosti o původu",
   "otpValueCopiedMessage": "Heslo “{otpValue}“ bylo zkopírováno do schránky.",
-  "passkeyQrCodeNotSupported": "Toto je QR kód přístupového klíče. Tato aplikace ho nepodporuje. Použijte fotoaparát nebo systémový skener QR.",
+  "passkeyQrCodeNotSupported": "Tato aplikace zatím nepodporuje přístupové klíče (passkey). Použijte prosím fotoaparát nebo systémový skener QR kódů.",
   "password": "Heslo",
   "showPassword": "Zobrazit heslo",
   "hidePassword": "Skrýt heslo",
