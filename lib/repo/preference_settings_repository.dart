@@ -40,6 +40,8 @@ class PreferenceSettingsRepository extends SettingsRepository {
   static const String _showBackgroundImageKey = 'KEY_HIDE_BACKGROUND_IMAGE';
   static const String _allowScreenshotKey = 'KEY_ALLOW_SCREENSHOTS';
   static const String _appAuthMethodKey = 'KEY_APP_AUTH_METHOD';
+  static const String _autoCloseAppAfterAcceptingPushRequestKey =
+      'KEY_AUTO_CLOSE_APP_AFTER_ACCEPTING_PUSH_REQUEST';
 
   static final Future<SharedPreferences> _preferences =
       SharedPreferences.getInstance();
@@ -72,6 +74,9 @@ class PreferenceSettingsRepository extends SettingsRepository {
           : null,
       showBackgroundImage: prefs.getBool(_showBackgroundImageKey),
       allowScreenshots: prefs.getBool(_allowScreenshotKey),
+      autoCloseAppAfterAcceptingPushRequest: prefs.getBool(
+        _autoCloseAppAfterAcceptingPushRequestKey,
+      ),
       appAuthMethod: ForceBiometricOptionX.fromString(
         prefs.getString(_appAuthMethodKey),
       ),
@@ -119,6 +124,12 @@ class PreferenceSettingsRepository extends SettingsRepository {
         prefs.setBool(_showBackgroundImageKey, settings.showBackgroundImage),
       if (_lastState?.allowScreenshots != settings.allowScreenshots)
         prefs.setBool(_allowScreenshotKey, settings.allowScreenshots),
+      if (_lastState?.autoCloseAppAfterAcceptingPushRequest !=
+          settings.autoCloseAppAfterAcceptingPushRequest)
+        prefs.setBool(
+          _autoCloseAppAfterAcceptingPushRequestKey,
+          settings.autoCloseAppAfterAcceptingPushRequest,
+        ),
       if (_lastState?.appAuthMethod != settings.appAuthMethod)
         prefs.setString(_appAuthMethodKey, settings.appAuthMethod.name),
     ];
