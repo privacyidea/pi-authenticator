@@ -49,9 +49,11 @@ class AllowScreenshotNotifier extends _$AllowScreenshotNotifier {
     final allowScreenshot = await ref.watch(
       settingsProvider.selectAsync((settings) => settings.allowScreenshots),
     );
-    allowScreenshot
-        ? this.screenshotUtils.allowScreenshots()
-        : this.screenshotUtils.disallowScreenshots();
+    if (allowScreenshot) {
+      await this.screenshotUtils.allowScreenshots();
+    } else {
+      await this.screenshotUtils.disallowScreenshots();
+    }
     return allowScreenshot;
   }
 

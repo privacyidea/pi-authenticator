@@ -18,6 +18,8 @@
  * limitations under the License.
  */
 
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -81,6 +83,46 @@ void _testAllowScreenshotNotifier() {
 
     verify(mockSettingsRepository.loadSettings()).called(1);
     expect(result, false);
+  });
+
+  test('Initial state waits until screen security is applied', () async {
+    final initialScreenshotUtils = MockAllowScreenshotUtils();
+    final initialSettingsRepository = MockSettingsRepository();
+    final platformOperation = Completer<bool>();
+    when(
+      initialScreenshotUtils.allowScreenshots(),
+    ).thenAnswer((_) => platformOperation.future);
+    when(
+      initialSettingsRepository.loadSettings(),
+    ).thenAnswer((_) async => SettingsState(allowScreenshots: true));
+    final initialContainer = ProviderContainer(
+      overrides: [
+        allowScreenshotProvider.overrideWith(
+          () => AllowScreenshotNotifier(
+            screenshotUtilsOverride: initialScreenshotUtils,
+          ),
+        ),
+        settingsProvider.overrideWith(
+          () => SettingsNotifier(repoOverride: initialSettingsRepository),
+        ),
+      ],
+    );
+    addTearDown(initialContainer.dispose);
+
+    var buildCompleted = false;
+    final buildFuture = initialContainer
+        .read(allowScreenshotProvider.future)
+        .then((value) {
+          buildCompleted = true;
+          return value;
+        });
+
+    await Future<void>.delayed(Duration.zero);
+    expect(buildCompleted, isFalse);
+
+    platformOperation.complete(true);
+    expect(await buildFuture, isTrue);
+    verify(initialScreenshotUtils.allowScreenshots()).called(1);
   });
 
   test('allowScreenshots enables screenshots and updates settings', () async {
