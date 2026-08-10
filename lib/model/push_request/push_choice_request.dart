@@ -17,15 +17,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import 'dart:convert';
-
-import 'package:privacyidea_authenticator/utils/helpers/base32_helper.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import '../../utils/globals.dart';
 import '../../utils/logger.dart';
-import '../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
-import '../../utils/rsa_utils.dart';
 import '../tokens/push_token.dart';
 import 'decline_reason.dart';
 import 'push_default_request.dart';
@@ -98,37 +92,6 @@ class PushChoiceRequest extends PushDefaultRequest {
   String getResponseSignMsg(PushToken token) {
     final baseMsg = super.getResponseSignMsg(token);
     return selectedAnswer != null ? '$baseMsg|$selectedAnswer' : baseMsg;
-  }
-
-  @override
-  bool verifySignature(
-    PushToken token, {
-    RsaUtils rsaUtils = const RsaUtils(),
-  }) {
-    // Re-add url and sslverify to android legacy tokens:
-    if (token.url == null) {
-      globalRef
-          ?.read(tokenProvider.notifier)
-          .updateToken(
-            token,
-            (p0) => p0.copyWith(url: uri, sslVerify: sslVerify),
-          );
-    }
-
-    final verified = rsaUtils.verifyRSASignature(
-      token.rsaPublicServerKey!,
-      utf8.encode(signedData),
-      base32Decode(signature),
-    );
-    if (!verified) {
-      Logger.warning(
-        'Validating incoming message failed.',
-        error: 'Signature does not match signed data.',
-      );
-      return false;
-    }
-    Logger.info('Validating incoming message was successful.');
-    return true;
   }
 
   /// Verify that the data is valid.
