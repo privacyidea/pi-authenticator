@@ -18,9 +18,6 @@
  * limitations under the License.
  */
 
-import 'dart:convert';
-
-import 'package:privacyidea_authenticator/utils/helpers/base32_helper.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../utils/globals.dart';
@@ -94,20 +91,7 @@ class PushDefaultRequest extends PushRequest {
           );
     }
 
-    final verified = rsaUtils.verifyRSASignature(
-      token.rsaPublicServerKey!,
-      utf8.encode(signedData),
-      base32Decode(signature),
-    );
-    if (!verified) {
-      Logger.warning(
-        'Validating incoming message failed.',
-        error: 'Signature does not match signed data.',
-      );
-      return false;
-    }
-    Logger.info('Validating incoming message was successful.');
-    return true;
+    return super.verifySignature(token, rsaUtils: rsaUtils);
   }
 
   /// Verify that the data is valid.

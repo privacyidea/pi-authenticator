@@ -259,6 +259,13 @@ class PushProvider {
       Logger.warning('No token found for serial ${pushRequest.serial}.');
       return;
     }
+    if (!pushToken.isRolledOut) {
+      Logger.warning(
+        'Rejected push request for token ${pushRequest.serial} because the '
+        'token is not rolled out.',
+      );
+      return;
+    }
     if (!pushRequest.verifySignature(pushToken, rsaUtils: _rsaUtils)) {
       Logger.warning('Signature verification failed.');
       return;
@@ -284,6 +291,13 @@ class PushProvider {
         .firstWhereOrNull((t) => t.serial == pushRequest.serial);
     if (pushToken == null) {
       Logger.warning('No token found for serial ${pushRequest.serial}.');
+      return false;
+    }
+    if (!pushToken.isRolledOut) {
+      Logger.warning(
+        'Rejected push request for token ${pushRequest.serial} because the '
+        'token is not rolled out.',
+      );
       return false;
     }
     if (!pushRequest.verifySignature(pushToken)) {

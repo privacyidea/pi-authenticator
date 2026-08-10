@@ -18,10 +18,13 @@
  * limitations under the License.
  */
 
+import 'dart:convert';
+
 import 'package:json_annotation/json_annotation.dart';
 import 'package:privacyidea_authenticator/model/push_request/push_requests.dart'
     show PushRequestFactory;
 
+import '../../utils/helpers/base32_helper.dart';
 import '../../utils/logger.dart';
 import '../../utils/rsa_utils.dart';
 import '../tokens/push_token.dart';
@@ -101,7 +104,37 @@ abstract class PushRequest {
   @JsonKey(includeFromJson: false, includeToJson: false)
   String get signedData;
 
-  bool verifySignature(PushToken token, {RsaUtils rsaUtils = const RsaUtils()});
+  /// Checks that [signature] is a valid signature of [signedData], created by
+  /// the server [token] was rolled out to.
+  /// Returns false if [token] has no public server key, e.g. because it is not
+  /// rolled out.
+  bool verifySignature(
+    PushToken token, {
+    RsaUtils rsaUtils = const RsaUtils(),
+  }) {
+    final rsaPublicServerKey = token.rsaPublicServerKey;
+    if (rsaPublicServerKey == null) {
+      Logger.warning(
+        'Validating incoming message failed.',
+        error: 'Push token does not contain a public server key.',
+      );
+      return false;
+    }
+    final verified = rsaUtils.verifyRSASignature(
+      rsaPublicServerKey,
+      utf8.encode(signedData),
+      base32Decode(signature),
+    );
+    if (!verified) {
+      Logger.warning(
+        'Validating incoming message failed.',
+        error: 'Signature does not match signed data.',
+      );
+      return false;
+    }
+    Logger.info('Validating incoming message was successful.');
+    return true;
+  }
 
   /// The form data sent back to the server as the response to this push
   /// request.

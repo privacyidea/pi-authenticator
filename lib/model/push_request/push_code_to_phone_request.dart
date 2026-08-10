@@ -18,14 +18,9 @@
  * limitations under the License.
  */
 
-import 'dart:convert';
-
-import 'package:privacyidea_authenticator/utils/helpers/base32_helper.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../utils/logger.dart';
-import '../../utils/rsa_utils.dart';
-import '../tokens/push_token.dart';
 import 'decline_reason.dart';
 import 'push_request.dart';
 
@@ -100,34 +95,6 @@ class PushCodeToPhoneRequest extends PushRequest {
       Logger.info('Cannot handle push request data.', error: e, stackTrace: s);
       return false;
     }
-  }
-
-  @override
-  bool verifySignature(
-    PushToken token, {
-    RsaUtils rsaUtils = const RsaUtils(),
-  }) {
-    if (token.rsaPublicServerKey == null) {
-      Logger.warning(
-        'Validating incoming message failed.',
-        error: 'Push token does not contain a public server key.',
-      );
-      return false;
-    }
-    final isVerified = rsaUtils.verifyRSASignature(
-      token.rsaPublicServerKey!,
-      utf8.encode(signedData),
-      base32Decode(signature),
-    );
-    if (!isVerified) {
-      Logger.warning(
-        'Validating incoming message failed.',
-        error: 'Signature does not match signed data.',
-      );
-      return false;
-    }
-    Logger.info('Validating incoming message was successful.');
-    return true;
   }
 
   @override
