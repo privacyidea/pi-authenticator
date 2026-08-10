@@ -52,7 +52,7 @@ class _PushRequestListenerState extends ConsumerState<PushRequestListener> {
 
     final pushRequest = ref
         .watch(pushRequestProvider)
-        .whenOrNull(data: (data) => data.pushRequests.firstOrNull);
+        .whenOrNull(data: (data) => data.pushRequests.lastOrNull);
 
     if (pushRequest == null) return widget.child;
 

@@ -20,9 +20,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:privacyidea_authenticator/model/push_request/push_default_request.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/push_request_state.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/token_state.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
+import 'package:privacyidea_authenticator/utils/custom_int_buffer.dart';
 import 'package:privacyidea_authenticator/utils/push_provider.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/push_request_provider.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
@@ -112,6 +114,63 @@ void main() {
       await tester.pumpAndSettle();
 
       expect(find.text('Main Content'), findsOneWidget);
+    });
+
+    testWidgets('shows the newest request when multiple requests are pending', (
+      tester,
+    ) async {
+      final pushToken = PushToken(
+        serial: 'PUSH001',
+        id: 'push-id-1',
+        label: 'Push Token',
+        issuer: 'Test Issuer',
+        isRolledOut: true,
+      );
+      final now = DateTime.now();
+      final olderRequest = PushDefaultRequest(
+        title: 'Older request',
+        question: 'OLDER_PUSH',
+        uri: Uri.parse('https://example.com/older'),
+        nonce: 'older-nonce',
+        sslVerify: true,
+        expirationDate: now.add(const Duration(minutes: 1)),
+        signature: 'older-signature',
+        serial: pushToken.serial,
+      );
+      final newestRequest = PushDefaultRequest(
+        title: 'Newest request',
+        question: 'NEWEST_PUSH',
+        uri: Uri.parse('https://example.com/newest'),
+        nonce: 'newest-nonce',
+        sslVerify: true,
+        expirationDate: now.add(const Duration(minutes: 2)),
+        signature: 'newest-signature',
+        serial: pushToken.serial,
+      );
+      final restoredState = PushRequestState(
+        pushRequests: [olderRequest, newestRequest],
+        knownPushRequests: CustomIntBuffer(
+          list: [olderRequest.id, newestRequest.id],
+        ),
+      );
+
+      await tester.pumpWidget(
+        TestsAppWrapper(
+          overrides: [
+            tokenProvider.overrideWith(
+              () => FakeTokenNotifierForPush(TokenState(tokens: [pushToken])),
+            ),
+            pushRequestProvider.overrideWith(
+              () => FakePushRequestNotifier(restoredState),
+            ),
+          ],
+          child: const PushRequestListener(child: Text('Main Content')),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('NEWEST_PUSH'), findsOneWidget);
+      expect(find.text('OLDER_PUSH'), findsNothing);
     });
   });
 }
