@@ -86,7 +86,7 @@ class DeleteContainerDialog extends ConsumerWidget {
 
   Future<void> _onPressDelete(BuildContext context, WidgetRef ref) async {
     final containerToken =
-        ref.watch(tokenProvider).value?.containerTokens(container.serial) ?? [];
+        ref.read(tokenProvider).value?.containerTokens(container.serial) ?? [];
     final deleteContainerTokens = containerToken.isEmpty
         ? false
         : await DeleteContainerTokenDialog.showDialog(container);

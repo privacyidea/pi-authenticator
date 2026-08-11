@@ -141,7 +141,7 @@ class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
       );
       return [
         ProcessorResult.failed(
-          (_) => 'Missing id for showlocked: ${uri.host}',
+          (l) => l.missingWidgetId,
           resultHandlerType: resultHandlerType,
         ),
       ];
@@ -235,11 +235,11 @@ class NavigationHandler<R> with ResultHandler {
       return null;
     }
     List<Navigation> navigations = successResults.getData();
-    final retunValues = <R>[];
+    final returnValues = <R>[];
     for (final navigation in navigations) {
-      retunValues.add(await navigation(context));
+      returnValues.add(await navigation(context));
     }
-    return retunValues;
+    return returnValues;
   }
 }
 
