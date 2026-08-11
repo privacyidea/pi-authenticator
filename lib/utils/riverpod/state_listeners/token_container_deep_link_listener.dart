@@ -36,6 +36,7 @@ class TokenContainerDeepLinkListener extends DeepLinkListener {
       try {
         final processorResults = await TokenContainerProcessor().processUri(next.uri);
         if (processorResults == null || processorResults.isEmpty) return;
+        if (!ref.context.mounted) return;
         ref.read(tokenContainerProvider.notifier).handleProcessorResults(processorResults);
       } catch (e, s) {
         Logger.error(

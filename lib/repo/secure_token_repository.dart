@@ -306,11 +306,11 @@ class SecureTokenRepository implements TokenRepository {
           label: AppLocalizations.of(context)!.decryptErrorButtonRetry,
           intent: ActionIntent.confirm,
           onPressed: () async {
+            final tokenNotifier = globalRef?.read(tokenProvider.notifier);
             await LoadingIndicator.show(
               context: context,
               action: () => Future.wait([
-                if (globalRef != null)
-                  globalRef!.read(tokenProvider.notifier).loadStateFromRepo(),
+                if (tokenNotifier != null) tokenNotifier.loadStateFromRepo(),
                 Future.delayed(const Duration(milliseconds: 500)),
               ]),
             );

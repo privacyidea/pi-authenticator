@@ -90,7 +90,7 @@ class DeleteContainerDialog extends ConsumerWidget {
     final deleteContainerTokens = containerToken.isEmpty
         ? false
         : await DeleteContainerTokenDialog.showDialog(container);
-    if (deleteContainerTokens == null) return;
+    if (deleteContainerTokens == null || !ref.context.mounted) return;
 
     var wasContainerDeleted = await _deleteContainer(ref);
     if (!wasContainerDeleted) {
@@ -101,7 +101,7 @@ class DeleteContainerDialog extends ConsumerWidget {
     final containerTokens = (await ref.read(
       tokenProvider.future,
     )).containerTokens(container.serial);
-    if (!context.mounted) return;
+    if (!context.mounted || !ref.context.mounted) return;
     if (wasContainerDeleted) {
       if (deleteContainerTokens) {
         await ref

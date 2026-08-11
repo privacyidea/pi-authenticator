@@ -98,7 +98,7 @@ mixin PushDialogMixin {
         localization: AppLocalizations.of(context)!,
         forceBiometricOption: token.forceBiometricOption,
       );
-      if (!context.mounted || !authenticated) {
+      if (!context.mounted || !ref.context.mounted || !authenticated) {
         return;
       }
     }
@@ -139,7 +139,7 @@ mixin PushDialogMixin {
         localization: AppLocalizations.of(context)!,
         forceBiometricOption: token.forceBiometricOption,
       );
-      if (!context.mounted || !authenticated) {
+      if (!context.mounted || !ref.context.mounted || !authenticated) {
         return;
       }
     }
@@ -193,7 +193,9 @@ mixin PushDialogMixin {
       _handleCodeToPhoneResultDetail(context, response!.detail!);
     }
 
-    final settings = ref.read(settingsProvider).value;
+    final settings = ref.context.mounted
+        ? ref.read(settingsProvider).value
+        : null;
     if (settings?.autoCloseAppAfterAcceptingPushRequest == true) {
       SystemNavigator.pop();
     }
