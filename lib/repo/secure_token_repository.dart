@@ -306,14 +306,25 @@ class SecureTokenRepository implements TokenRepository {
           label: AppLocalizations.of(context)!.decryptErrorButtonRetry,
           intent: ActionIntent.confirm,
           onPressed: () async {
-            await LoadingIndicator.show(
-              context: context,
-              action: () => Future.wait([
-                if (globalRef != null)
-                  globalRef!.read(tokenProvider.notifier).loadStateFromRepo(),
-                Future.delayed(const Duration(milliseconds: 500)),
-              ]),
-            );
+            try {
+              await LoadingIndicator.show(
+                context: context,
+                action: () async {
+                  final tokenNotifier = globalRef?.read(tokenProvider.notifier);
+                  await Future.wait([
+                    if (tokenNotifier != null)
+                      tokenNotifier.loadStateFromRepo(),
+                    Future.delayed(const Duration(milliseconds: 500)),
+                  ]);
+                },
+              );
+            } catch (e, s) {
+              Logger.error(
+                'Could not reload the tokens from the repository.',
+                error: e,
+                stackTrace: s,
+              );
+            }
             if (context.mounted) Navigator.pop(context);
           },
         ),

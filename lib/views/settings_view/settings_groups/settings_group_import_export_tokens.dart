@@ -132,7 +132,7 @@ class _SettingsGroupImportExportTokensState
         ],
       ),
     );
-    if (isAccepted == true) {
+    if (isAccepted == true && mounted) {
       await ref
           .read(introductionNotifierProvider.notifier)
           .complete(Introduction.exportTokens);

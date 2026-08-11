@@ -43,7 +43,7 @@ class SettingsGroupAllowScreenshot extends ConsumerWidget {
           onPressed: () async {
             if (!isAllowed) {
               final allowed = await AllowScreenshotDialog.showDialog();
-              if (allowed != true) return;
+              if (allowed != true || !ref.context.mounted) return;
             }
             ref.read(allowScreenshotProvider.notifier).toggleAllowScreenshots();
           },
@@ -52,7 +52,7 @@ class SettingsGroupAllowScreenshot extends ConsumerWidget {
             onChanged: (value) async {
               if (value) {
                 final allowed = await AllowScreenshotDialog.showDialog();
-                if (allowed != true) return;
+                if (allowed != true || !ref.context.mounted) return;
                 ref.read(allowScreenshotProvider.notifier).allowScreenshots();
               } else {
                 ref

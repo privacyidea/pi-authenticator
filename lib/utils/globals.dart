@@ -153,7 +153,23 @@ final piAuthenticatorGitHubUri = Uri.parse(
 // The highest version of the pipush Tokentype that this client supports.
 const maxPushTokenVersion = 1;
 
-WidgetRef? globalRef;
+WidgetRef? _globalRef;
+
+/// The [WidgetRef] of the app's root widget, or `null` if there is currently no
+/// mounted widget to read providers with.
+///
+/// Returns `null` before the root widget is built for the first time and again
+/// after it has been unmounted, e.g. while the app is shutting down. Reading a
+/// provider with the [WidgetRef] of an unmounted widget throws a [StateError],
+/// so callers outside of the widget tree must always go through this getter
+/// instead of holding on to a [WidgetRef].
+WidgetRef? get globalRef {
+  final ref = _globalRef;
+  if (ref == null || !ref.context.mounted) return null;
+  return ref;
+}
+
+set globalRef(WidgetRef? ref) => _globalRef = ref;
 
 // Must be set before runApp() is called.
 FirebaseOptions? appFirebaseOptions;

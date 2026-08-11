@@ -17,12 +17,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/allow_screenshot_notifier.dart';
 
 import '../../../../../../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 import '../../model/enums/app_feature.dart';
+import '../../model/riverpod_states/token_state.dart';
 import '../../utils/app_info_utils.dart';
 import '../../utils/customization/application_customization.dart';
 import '../../utils/home_widget_utils.dart';
@@ -51,56 +54,70 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     super.initState();
     _customization = widget.customization;
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
       if (_customization.disabledFeatures.contains(AppFeature.introductions)) {
         ref.read(introductionNotifierProvider.notifier).completeAll();
       }
     });
 
     Logger.info('Starting app.');
-    Future.delayed(_splashScreenDelay, () {
-      if (!mounted) return;
-      setState(() => _appIconIsVisible = true);
+    unawaited(_startApp());
+  }
 
-      Future.wait(
-            <Future>[
-              Future.delayed(_splashScreenDuration),
-              ref.read(tokenProvider.future),
-              AppInfoUtils.init(),
-              HomeWidgetUtils().homeWidgetInit(),
-              ref.read(allowScreenshotProvider.future),
-              ref.read(tokenFolderProvider.notifier).initState,
-            ],
-            eagerError: true,
-            cleanUp: (_) {
-              _navigate();
-            },
-          )
-          .catchError((error) async {
-            Logger.error(
-              'Error while loading the app.',
-              error: error,
-              stackTrace: StackTrace.current,
-            );
+  /// Shows the app icon, loads everything the app needs and navigates to the
+  /// main view afterwards. Navigation happens exactly once, also when loading
+  /// or syncing failed.
+  Future<void> _startApp() async {
+    await Future.delayed(_splashScreenDelay);
+    if (!mounted) return;
+    setState(() => _appIconIsVisible = true);
 
-            if (!mounted) return [];
-            final tokenState = await ref.read(tokenProvider.future);
-            if (!mounted) return [];
-            ref
-                .read(tokenContainerProvider.notifier)
-                .syncContainers(tokenState: tokenState, isManually: false);
-            _navigate();
-            return [];
-          })
-          .then((values) async {
-            if (!mounted) return;
-            final tokenState = await ref.read(tokenProvider.future);
-            if (!mounted) return;
-            ref
-                .read(tokenContainerProvider.notifier)
-                .syncContainers(tokenState: tokenState, isManually: false);
-            return _navigate();
-          });
-    });
+    try {
+      await Future.wait(<Future>[
+        Future.delayed(_splashScreenDuration),
+        ref.read(tokenProvider.future),
+        AppInfoUtils.init(),
+        HomeWidgetUtils().homeWidgetInit(),
+        ref.read(allowScreenshotProvider.future),
+        ref.read(tokenFolderProvider.notifier).initState,
+      ], eagerError: true);
+    } catch (e, s) {
+      Logger.error('Error while loading the app.', error: e, stackTrace: s);
+    }
+    if (!mounted) return;
+
+    try {
+      final tokenState = await ref.read(tokenProvider.future);
+      if (mounted) unawaited(_syncContainers(tokenState));
+    } catch (e, s) {
+      Logger.error(
+        'Error while loading the token state.',
+        error: e,
+        stackTrace: s,
+      );
+    }
+
+    try {
+      await _navigate();
+    } catch (e, s) {
+      Logger.error(
+        'Error while navigating to the main view.',
+        error: e,
+        stackTrace: s,
+      );
+    }
+  }
+
+  /// Syncs the token containers. Runs in the background so that starting the
+  /// app is not delayed by it.
+  Future<void> _syncContainers(TokenState tokenState) async {
+    try {
+      await ref
+          .read(tokenContainerProvider.notifier)
+          .syncContainers(tokenState: tokenState, isManually: false);
+    } catch (e, s) {
+      Logger.error('Error while syncing containers.', error: e, stackTrace: s);
+    }
   }
 
   @override

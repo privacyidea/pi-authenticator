@@ -90,6 +90,7 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
       Logger.info('Refreshed tokens on resume');
       final hasPushToken = state?.hasPushTokens == true;
       if (hasPushToken) {
+        if (!mounted) return;
         final prProvider = ref.read(pushRequestProvider.notifier);
         await prProvider.loadStateFromRepo();
         await prProvider.pollForChallenges(isManually: false);
@@ -112,11 +113,12 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
   /// Shows the battery optimization hint at most once, if the user has linked
   /// a home widget and has not yet been prompted about battery optimization.
   Future<void> _showBatteryOptimizationHintIfPending() async {
+    if (!mounted) return;
     ref.invalidate(batteryOptimizationsIsDisabledProvider);
     final isDisabled = await ref.read(
       batteryOptimizationsIsDisabledProvider.future,
     );
-    if (isDisabled) return;
+    if (isDisabled || !mounted) return;
     final introductions = await ref.read(introductionNotifierProvider.future);
     if (!introductions.isCompleted(Introduction.homeWidgetSetUp) ||
         !introductions.isUncompleted(
@@ -125,6 +127,7 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
       return;
     }
     await BatteryOptimizationDialog.showDialog();
+    if (!mounted) return;
     await ref
         .read(introductionNotifierProvider.notifier)
         .complete(Introduction.homeWidgetBatteryOptimization);

@@ -60,10 +60,10 @@ class CustomizationAuthenticator extends ConsumerWidget {
     final routeBuilders = buildAppRoutes(applicationCustomizer);
     return LayoutBuilder(
       builder: (context, constraints) {
-        WidgetsBinding.instance.addPostFrameCallback(
-          (_) async =>
-              ref.read(appConstraintsProvider.notifier).update(constraints),
-        );
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!ref.context.mounted) return;
+          ref.read(appConstraintsProvider.notifier).update(constraints);
+        });
         return MaterialApp(
           scrollBehavior: ScrollConfiguration.of(context).copyWith(
             physics: const ClampingScrollPhysics(),
