@@ -65,8 +65,7 @@ class StatusBarOverlayEntry extends StatefulWidget {
   State<StatusBarOverlayEntry> createState() => _StatusBarOverlayEntryState();
 }
 
-class _StatusBarOverlayEntryState extends State<StatusBarOverlayEntry>
-    with SingleTickerProviderStateMixin {
+class _StatusBarOverlayEntryState extends State<StatusBarOverlayEntry> {
   bool isFirstFrame = true;
   bool isPaused = false;
   static const double margin = 10;
@@ -107,6 +106,12 @@ class _StatusBarOverlayEntryState extends State<StatusBarOverlayEntry>
     };
 
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   @override
