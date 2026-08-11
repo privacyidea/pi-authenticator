@@ -141,7 +141,7 @@ sealed class TokenContainer with _$TokenContainer {
           ),
           NONCE: Validators.string,
           TIMESTAMP: DateTimeX.validator,
-          FINALIZATION_URL: Validators.uri,
+          FINALIZATION_URL: Validators.httpUri,
           SERIAL: Validators.string,
           EC_KEY_ALGORITHM: EcKeyAlgorithmX.validator,
           HASH_ALGORITHM: Validators.algorithms,

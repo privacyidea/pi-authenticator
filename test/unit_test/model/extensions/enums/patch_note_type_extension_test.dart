@@ -6,16 +6,20 @@ import 'package:privacyidea_authenticator/model/extensions/enums/patch_note_type
 void main() {
   group('PatchNoteType extension', () {
     test('localizedName returns non-empty string for all types', () {
-      final loc = AppLocalizationsEn();
+      final localization = AppLocalizationsEn();
       for (final type in PatchNoteType.values) {
-        expect(type.localizedName(loc).isNotEmpty, isTrue, reason: '$type');
+        expect(
+          type.localizedName(localization).isNotEmpty,
+          isTrue,
+          reason: '$type',
+        );
       }
     });
 
     test('all types produce distinct localized names', () {
-      final loc = AppLocalizationsEn();
+      final localization = AppLocalizationsEn();
       final names = PatchNoteType.values
-          .map((t) => t.localizedName(loc))
+          .map((t) => t.localizedName(localization))
           .toSet();
       expect(names.length, PatchNoteType.values.length);
     });

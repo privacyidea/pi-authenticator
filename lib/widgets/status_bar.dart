@@ -68,12 +68,17 @@ class StatusBarOverlayEntry extends StatefulWidget {
 class _StatusBarOverlayEntryState extends State<StatusBarOverlayEntry>
     with SingleTickerProviderStateMixin {
   bool isFirstFrame = true;
+  bool isPaused = false;
   static const double margin = 10;
   static const double padding = 10;
+  static const int collapsedSubTextMaxLines = 2;
   static const Duration showDuration = Duration(seconds: 5);
   late UnscaledAnimationController controller;
   late Animation autoDismissAnimation;
   late Function(DismissDirection) onDismissed;
+
+  /// Line limit of the sub text: unlimited while the auto dismiss is paused.
+  int? get subTextMaxLines => isPaused ? null : collapsedSubTextMaxLines;
 
   @override
   void initState() {
@@ -130,7 +135,6 @@ class _StatusBarOverlayEntryState extends State<StatusBarOverlayEntry>
       style: statusTextStyle,
       maxWidth: maxWidth,
       textScaler: MediaQuery.of(context).textScaler,
-      maxLines: 1,
     ).height;
     final statusSubTextHeight = widget.statusSubText != null
         ? textSizeOf(
@@ -138,7 +142,7 @@ class _StatusBarOverlayEntryState extends State<StatusBarOverlayEntry>
             style: statusSubTextStyle,
             maxWidth: maxWidth,
             textScaler: MediaQuery.of(context).textScaler,
-            maxLines: 1,
+            maxLines: subTextMaxLines,
           ).height
         : 0;
     return AnimatedPositioned(
@@ -159,11 +163,15 @@ class _StatusBarOverlayEntryState extends State<StatusBarOverlayEntry>
         child: GestureDetector(
           onTap: () {
             if (mounted) {
-              if (controller.isAnimating) {
-                controller.stop();
-              } else {
-                controller.forward();
-              }
+              setState(() {
+                if (controller.isAnimating) {
+                  controller.stop();
+                  isPaused = true;
+                } else {
+                  controller.forward();
+                  isPaused = false;
+                }
+              });
             }
           },
           child: Dismissible(
@@ -199,7 +207,7 @@ class _StatusBarOverlayEntryState extends State<StatusBarOverlayEntry>
                             widget.statusSubText!,
                             style: statusSubTextStyle,
                             textAlign: TextAlign.center,
-                            maxLines: 1,
+                            maxLines: subTextMaxLines,
                             overflow: TextOverflow.ellipsis,
                           ),
                       ],

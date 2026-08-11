@@ -847,6 +847,9 @@
       }
     }
   },
+  "@invalidHttpUrl": {
+    "description": "Error message when a url can not be requested via http or https."
+  },
   "@invalidLink": {
     "description": "Error message when the link is invalid.",
     "placeholders": {
@@ -1956,6 +1959,7 @@
   "introTokenSwipe": "Veeg tokens naar links om beschikbare acties te zien.",
   "invalidBackupFile": "Het geselecteerde bestand is geen geldige backup van {appName}.",
   "invalidHostForScheme": "Ongeldige host: {host} voor schema: {scheme}",
+  "invalidHttpUrl": "URL niet geldig voor http/https.",
   "invalidLink": "De ingevoerde link is geen geldig token van {appName}, of wordt niet ondersteund.",
   "invalidQrBackup": "De gescande QR code is geen geldige backup van {appName}.",
   "invalidQrFile": "Het geselecteerde bestand bevat geen geldige QR code van {appName}.",

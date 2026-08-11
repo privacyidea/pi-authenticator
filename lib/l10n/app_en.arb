@@ -871,6 +871,9 @@
       }
     }
   },
+  "@invalidHttpUrl": {
+    "description": "Error message when a url can not be requested via http or https."
+  },
   "@invalidLink": {
     "description": "Error message when the link is invalid.",
     "placeholders": {
@@ -1991,6 +1994,7 @@
   "invalidQrFile": "The selected file does not contain a valid QR code from {appName}.",
   "invalidQrScan": "The QR code that was scanned did not contain valid data",
   "invalidUrl": "Invalid URL",
+  "invalidHttpUrl": "URL not valid for http/https.",
   "invalidValue": "The {type} “{value}“ is not valid for “{parameter}“",
   "invalidValueIn": "The {type} “{value}“ is not valid for “{parameter}“ in “{map}“",
   "isExpotableQuestion": "Is exportable?",
