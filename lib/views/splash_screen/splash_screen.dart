@@ -25,6 +25,7 @@ import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/gene
 
 import '../../../../../../../utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 import '../../model/enums/app_feature.dart';
+import '../../model/riverpod_states/token_state.dart';
 import '../../utils/app_info_utils.dart';
 import '../../utils/customization/application_customization.dart';
 import '../../utils/home_widget_utils.dart';
@@ -87,12 +88,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
 
     try {
       final tokenState = await ref.read(tokenProvider.future);
-      if (!mounted) return;
-      ref
-          .read(tokenContainerProvider.notifier)
-          .syncContainers(tokenState: tokenState, isManually: false);
+      if (mounted) unawaited(_syncContainers(tokenState));
     } catch (e, s) {
-      Logger.error('Error while syncing containers.', error: e, stackTrace: s);
+      Logger.error(
+        'Error while loading the token state.',
+        error: e,
+        stackTrace: s,
+      );
     }
 
     try {
@@ -103,6 +105,18 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
         error: e,
         stackTrace: s,
       );
+    }
+  }
+
+  /// Syncs the token containers. Runs in the background so that starting the
+  /// app is not delayed by it.
+  Future<void> _syncContainers(TokenState tokenState) async {
+    try {
+      await ref
+          .read(tokenContainerProvider.notifier)
+          .syncContainers(tokenState: tokenState, isManually: false);
+    } catch (e, s) {
+      Logger.error('Error while syncing containers.', error: e, stackTrace: s);
     }
   }
 
