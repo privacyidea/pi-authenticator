@@ -144,10 +144,17 @@ abstract class Validators {
 
   static final httpUri = RequiredObjectValidator<Uri>(
     transformer: (v) {
-      if (v is Uri) return v;
-      final parsed = Uri.tryParse(v as String);
+      final parsed = v is Uri ? v : Uri.tryParse(v as String);
       if (parsed == null) throw ArgumentError('Invalid url: $v');
-      return parsed;
+      if (parsed.hasScheme) return parsed;
+      // The privacyIDEA server's push_ssl_verify default is true.
+      // So a missing scheme has to mean https.
+      final withScheme = parsed.hasAuthority
+          ? parsed.replace(scheme: 'https')
+          : Uri.tryParse('https://$parsed');
+      if (withScheme == null) return parsed;
+      Logger.info('Added the missing scheme to the url "$parsed".');
+      return withScheme;
     },
     allowedValues: (v) => v.isValidEndpoint,
     unallowedMessage: (localizations, _, _) => localizations.invalidHttpUrl,

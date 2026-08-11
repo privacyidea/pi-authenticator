@@ -317,14 +317,38 @@ void main() {
       );
     });
 
-    test('throws on url without scheme', () {
+    // The privacyIDEA server's push_ssl_verify default is true.
+    // So a missing scheme has to mean https.
+    test('adds https to url without scheme', () {
       expect(
-        () => validate(
-          value: 'example.com/ttype/push',
+        validate(
+          value: '192.168.178.139/ttype/push',
           validator: ov.Validators.httpUri,
           name: 'url',
         ),
-        throwsA(anything),
+        Uri.parse('https://192.168.178.139/ttype/push'),
+      );
+    });
+
+    test('adds https to url without scheme but with authority', () {
+      expect(
+        validate(
+          value: '//example.com/ttype/push',
+          validator: ov.Validators.httpUri,
+          name: 'url',
+        ),
+        Uri.parse('https://example.com/ttype/push'),
+      );
+    });
+
+    test('adds https to a bare host', () {
+      expect(
+        validate(
+          value: 'some.relay.tunnel',
+          validator: ov.Validators.httpUri,
+          name: 'url',
+        ),
+        Uri.parse('https://some.relay.tunnel'),
       );
     });
 
@@ -403,7 +427,7 @@ void main() {
 
     test('unallowed value uses the message of the validator if it has one', () {
       final error = _errorOf(
-        value: '192.168.178.139/ttype/push',
+        value: 'ftp://example.com/ttype/push',
         validator: ov.Validators.httpUri,
       );
       expect(
@@ -412,7 +436,7 @@ void main() {
       );
       expect(
         error.unlocalizedMessage,
-        'The String “192.168.178.139/ttype/push“ is not valid for “url“',
+        'The String “ftp://example.com/ttype/push“ is not valid for “url“',
       );
     });
 
