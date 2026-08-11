@@ -69,7 +69,7 @@ class PushToken extends Token {
       const Duration(minutes: 3),
     ),
     ENROLLMENT_CREDENTIAL: Validators.stringOptional,
-    ROLLOUT_URL: Validators.uri,
+    ROLLOUT_URL: Validators.httpUri,
     VERSION: Validators.string,
   };
 

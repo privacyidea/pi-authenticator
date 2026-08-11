@@ -97,9 +97,9 @@ class DefaultDialog extends ConsumerWidget {
       ),
       titlePadding: EdgeInsets.all(dimensions.spacingMedium),
       contentPadding: EdgeInsets.fromLTRB(
-        dimensions.spacingMedium,
+        dimensions.spacingSmall,
         0,
-        dimensions.spacingMedium,
+        dimensions.spacingSmall,
         dimensions.spacingSmall,
       ),
       elevation: 2,

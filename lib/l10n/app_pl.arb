@@ -847,6 +847,9 @@
       }
     }
   },
+  "@invalidHttpUrl": {
+    "description": "Error message when a url can not be requested via http or https."
+  },
   "@invalidLink": {
     "description": "Error message when the link is invalid.",
     "placeholders": {
@@ -1956,6 +1959,7 @@
   "introTokenSwipe": "Przesuń tokeny w lewo, aby zobaczyć dostępne akcje.",
   "invalidBackupFile": "Wybrany plik nie jest prawidłową kopią zapasową {appName}.",
   "invalidHostForScheme": "Nieprawidłowy host: {host} dla schematu: {scheme}",
+  "invalidHttpUrl": "Adres URL nieprawidłowy dla http/https.",
   "invalidLink": "Wprowadzony link nie jest prawidłowym tokenem {appName} lub nie jest obsługiwany.",
   "invalidQrBackup": "Zeskanowany kod QR nie jest prawidłową kopią zapasową {appName}.",
   "invalidQrFile": "Wybrany plik nie zawiera prawidłowego kodu QR z {appName}.",

@@ -256,18 +256,16 @@ class PrivacyideaIOClient {
 
     IOClient ioClient = IOClient(httpClient);
 
-    StringBuffer buffer = StringBuffer(url);
-
-    if (parameters.isNotEmpty) {
-      buffer.write('?');
-      buffer.writeAll(
-        parameters.entries.map((e) => '${e.key}=${e.value}'),
-        '&',
-      );
-    }
+    final uri = parameters.isEmpty
+        ? url
+        : url.replace(
+            queryParameters: {
+              ...url.queryParametersAll,
+              for (final entry in parameters.entries) entry.key: entry.value!,
+            },
+          );
 
     Response response;
-    Uri uri = Uri.parse(buffer.toString());
     try {
       response = await ioClient.get(uri).timeout(const Duration(seconds: 15));
     } on HandshakeException catch (e, _) {

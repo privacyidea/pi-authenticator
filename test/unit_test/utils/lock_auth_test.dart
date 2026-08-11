@@ -33,7 +33,7 @@ void main() {
       ).thenAnswer((_) async => true);
 
       final result = await lockAuth(
-        reason: (loc) => 'reason',
+        reason: (localization) => 'reason',
         localization: AppLocalizationsEn(),
       );
 
@@ -53,7 +53,7 @@ void main() {
         ).thenAnswer((_) async => false);
 
         final result = await lockAuth(
-          reason: (loc) => 'reason',
+          reason: (localization) => 'reason',
           localization: AppLocalizationsEn(),
         );
 
@@ -76,7 +76,7 @@ void main() {
         ).thenAnswer((_) async => true);
 
         final result = await lockAuth(
-          reason: (loc) => 'reason',
+          reason: (localization) => 'reason',
           localization: AppLocalizationsEn(),
           autoAuthIfUnsupported: true,
         );
@@ -99,7 +99,7 @@ void main() {
         when(mockLocalAuth.canCheckBiometrics).thenAnswer((_) async => false);
 
         final result = await lockAuth(
-          reason: (loc) => 'reason',
+          reason: (localization) => 'reason',
           localization: AppLocalizationsEn(),
           forceBiometricOption: ForceBiometricOption.biometric,
         );
@@ -118,7 +118,7 @@ void main() {
         ).thenAnswer((_) async => []);
 
         final result = await lockAuth(
-          reason: (loc) => 'reason',
+          reason: (localization) => 'reason',
           localization: AppLocalizationsEn(),
           forceBiometricOption: ForceBiometricOption.biometric,
         );
@@ -144,7 +144,7 @@ void main() {
         ).thenAnswer((_) async => true);
 
         final result = await lockAuth(
-          reason: (loc) => 'reason',
+          reason: (localization) => 'reason',
           localization: AppLocalizationsEn(),
           forceBiometricOption: ForceBiometricOption.biometric,
         );
@@ -173,7 +173,7 @@ void main() {
         ).thenAnswer((_) async => false);
 
         final result = await lockAuth(
-          reason: (loc) => 'reason',
+          reason: (localization) => 'reason',
           localization: AppLocalizationsEn(),
           autoAuthIfUnsupported: true,
         );
@@ -197,7 +197,7 @@ void main() {
         when(mockLocalAuth.isDeviceSupported()).thenAnswer((_) async => false);
 
         final result = await lockAuth(
-          reason: (loc) => 'reason',
+          reason: (localization) => 'reason',
           localization: AppLocalizationsEn(),
         );
 
@@ -223,7 +223,7 @@ void main() {
       );
 
       final result = await lockAuth(
-        reason: (loc) => 'reason',
+        reason: (localization) => 'reason',
         localization: AppLocalizationsEn(),
       );
 
@@ -241,7 +241,7 @@ void main() {
       ).thenThrow(Exception('Unknown auth error'));
 
       final result = await lockAuth(
-        reason: (loc) => 'reason',
+        reason: (localization) => 'reason',
         localization: AppLocalizationsEn(),
       );
 
@@ -267,7 +267,7 @@ void main() {
 
         final result = await lockAuthWithSettingsRef(
           ref: ref,
-          reason: (loc) => 'reason',
+          reason: (localization) => 'reason',
           localization: AppLocalizationsEn(),
           // Token says "any"; app setting (biometric) should win.
         );
@@ -298,7 +298,7 @@ void main() {
 
         final result = await lockAuthWithSettingsRef(
           ref: ref,
-          reason: (loc) => 'reason',
+          reason: (localization) => 'reason',
           localization: AppLocalizationsEn(),
         );
 
@@ -331,7 +331,7 @@ void main() {
 
         final result = await lockAuthWithSettingsRef(
           ref: ref,
-          reason: (loc) => 'reason',
+          reason: (localization) => 'reason',
           localization: AppLocalizationsEn(),
           forceBiometricOption: ForceBiometricOption.biometric,
         );
@@ -361,11 +361,11 @@ void main() {
       });
 
       final firstCall = lockAuth(
-        reason: (loc) => 'first',
+        reason: (localization) => 'first',
         localization: AppLocalizationsEn(),
       );
       final secondCall = lockAuth(
-        reason: (loc) => 'second',
+        reason: (localization) => 'second',
         localization: AppLocalizationsEn(),
       );
 

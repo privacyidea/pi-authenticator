@@ -21,9 +21,11 @@
 import 'dart:typed_data' show Uint8List;
 
 import '../../../../../model/extensions/enums/encodings_extension.dart';
+import '../../l10n/app_localizations.dart';
 import '../../model/enums/algorithms.dart';
 import '../../model/enums/encodings.dart';
 import '../../model/exception_errors/localized_argument_error.dart';
+import '../../model/extensions/uri_extension.dart';
 import '../logger.dart';
 
 part 'base_validator.dart';
@@ -140,10 +142,16 @@ abstract class Validators {
   );
   static final minutesDurationOptional = minutesDuration.optional();
 
-  static final uri = RequiredObjectValidator<Uri>(
-    transformer: (v) => v is String ? Uri.parse(v) : (v as Uri),
+  static final httpUri = RequiredObjectValidator<Uri>(
+    transformer: (v) {
+      if (v is Uri) return v;
+      final parsed = Uri.tryParse(v as String);
+      if (parsed == null) throw ArgumentError('Invalid url: $v');
+      return parsed;
+    },
+    allowedValues: (v) => v.isValidEndpoint,
+    unallowedMessage: (localizations, _, _) => localizations.invalidHttpUrl,
   );
-  static final uriOptional = uri.optional();
 }
 
 T validate<T extends Object?>({
@@ -153,7 +161,7 @@ T validate<T extends Object?>({
 }) {
   final result = validator.transform(value, name);
   if (!validator.valueIsAllowed(value, name)) {
-    throw (validator as dynamic)._error(value, name);
+    throw validator._unallowedError(value, name);
   }
   return result;
 }

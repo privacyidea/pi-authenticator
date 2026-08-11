@@ -20,11 +20,32 @@
 
 part of 'object_validators.dart';
 
+/// Builds a message for the user from the invalid [value] of the field [name].
+typedef ValidatorMessage =
+    String Function(
+      AppLocalizations localizations,
+      String value,
+      String name,
+    );
+
 abstract class BaseValidator<T extends Object?> {
   final T Function(Object? value)? transformer;
   final bool Function(T)? allowedValues;
 
-  const BaseValidator({this.transformer, this.allowedValues});
+  /// Shown to the user when the value could not be transformed,
+  /// instead of the generic “invalid value“ text.
+  final ValidatorMessage? invalidMessage;
+
+  /// Shown to the user when [allowedValues] rejected the transformed value,
+  /// instead of the generic “invalid value“ text.
+  final ValidatorMessage? unallowedMessage;
+
+  const BaseValidator({
+    this.transformer,
+    this.allowedValues,
+    this.invalidMessage,
+    this.unallowedMessage,
+  });
 
   // Rückgabetyp auf T (bzw. die Non-Nullable Variante) angepasst
   BaseValidator<Object?> optional();
@@ -39,16 +60,21 @@ abstract class BaseValidator<T extends Object?> {
       return transformer!(value);
     }
     if (value is T) return value;
-    throw _error(value, name);
+    throw _invalidError(value, name);
   }
 
-  Exception _error(Object? value, String name) {
+  Exception _invalidError(Object? value, String name) =>
+      _error(value, name, invalidMessage);
+
+  Exception _unallowedError(Object? value, String name) =>
+      _error(value, name, unallowedMessage);
+
+  Exception _error(Object? value, String name, ValidatorMessage? message) {
     final error = LocalizedArgumentError(
-      localizedMessage: (localizations, v, name) => localizations.invalidValue(
-        v.runtimeType.toString(),
-        v.toString(),
-        name,
-      ),
+      localizedMessage:
+          message ??
+          (localizations, v, name) =>
+              localizations.invalidValue(name, value.runtimeType.toString(), v),
       unlocalizedMessage:
           'The ${value.runtimeType} “$value“ is not valid for “$name“',
       invalidValue: value.toString(),

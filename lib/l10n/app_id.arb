@@ -847,6 +847,9 @@
       }
     }
   },
+  "@invalidHttpUrl": {
+    "description": "Error message when a url can not be requested via http or https."
+  },
   "@invalidLink": {
     "description": "Error message when the link is invalid.Error message when the link is invalid.",
     "placeholders": {
@@ -1956,6 +1959,7 @@
   "introTokenSwipe": "Geser token ke kiri untuk melihat tindakan yang tersedia.",
   "invalidBackupFile": "File yang dipilih bukan merupakan cadangan yang valid dari {appName}.",
   "invalidHostForScheme": "Host tidak valid: {host} untuk skema: {scheme}",
+  "invalidHttpUrl": "URL tidak valid untuk http/https.",
   "invalidLink": "Tautan yang dimasukkan bukan merupakan token yang valid dari {appName}, atau tidak didukung.",
   "invalidQrBackup": "Kode QR yang dipindai bukan merupakan cadangan yang valid dari {appName}.",
   "invalidQrFile": "File yang dipilih tidak berisi kode QR yang valid dari {appName}.",

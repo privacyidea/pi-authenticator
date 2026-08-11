@@ -25,9 +25,9 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:privacyidea_authenticator/utils/helpers/mutex.dart';
 import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/model/extensions/token_list_extension.dart';
+import 'package:privacyidea_authenticator/utils/helpers/mutex.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/localization_notifier.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -592,8 +592,9 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       ref
           .read(statusProvider.notifier)
           .show(
-            (loc) => loc.errorRollOutNotPossibleAnymore,
-            details: (loc) => loc.errorTokenExpired(token.label),
+            (localization) => localization.errorRollOutNotPossibleAnymore,
+            details: (localization) =>
+                localization.errorTokenExpired(token.label),
           );
       await _removeToken(token);
       return false;
@@ -713,7 +714,10 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       Logger.error('Roll out failed.', error: e, stackTrace: s);
       ref
           .read(statusProvider.notifier)
-          .show((loc) => loc.errorRollOutUnknownError(token.label));
+          .show(
+            (localization) =>
+                localization.errorRollOutUnknownError(token.label),
+          );
       await _updateStatus(token, PushTokenRollOutState.sendRSAPublicKeyFailed);
       return false;
     }
