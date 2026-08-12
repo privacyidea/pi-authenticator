@@ -18,6 +18,7 @@
  * limitations under the License.
  */
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../l10n/app_localizations.dart';
@@ -50,7 +51,15 @@ class _SelectTokensWidgetState extends State<SelectTokensWidget> {
   @override
   void initState() {
     super.initState();
-    _unselectedTokens = widget.tokens;
+    _unselectedTokens = {...widget.tokens};
+  }
+
+  @override
+  void didUpdateWidget(covariant SelectTokensWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (setEquals(oldWidget.tokens, widget.tokens)) return;
+    _selectedTokens.retainWhere(widget.tokens.contains);
+    _unselectedTokens = {...widget.tokens}..removeAll(_selectedTokens);
   }
 
   void _select(Token token) {
@@ -78,7 +87,7 @@ class _SelectTokensWidgetState extends State<SelectTokensWidget> {
     setState(() {
       if (_selectedTokens.length == widget.tokens.length) {
         _selectedTokens.clear();
-        _unselectedTokens = widget.tokens;
+        _unselectedTokens = {...widget.tokens};
       } else {
         _selectedTokens.addAll(widget.tokens);
         _unselectedTokens.clear();

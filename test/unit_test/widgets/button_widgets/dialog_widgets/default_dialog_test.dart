@@ -95,11 +95,18 @@ void main() {
 
       positionedIntents.sort((a, b) => a.$2.compareTo(b.$2));
 
-      final sortedIntents = positionedIntents.map((e) => e.$1).toList();
+      final priorities = positionedIntents
+          .map((e) => e.$1.priority)
+          .toList(growable: false);
 
-      expect(sortedIntents.contains(ActionIntent.destructive), isTrue);
-      expect(sortedIntents.contains(ActionIntent.confirm), isTrue);
-      expect(sortedIntents.contains(ActionIntent.neutral), isTrue);
+      // destructive and confirm share a priority, so only the order between
+      // different priorities is guaranteed.
+      expect(
+        priorities,
+        orderedEquals([...priorities]..sort()),
+        reason: 'buttons must be ordered by ascending intent priority',
+      );
+      expect(positionedIntents.first.$1, ActionIntent.neutral);
     });
 
     testWidgets('uses AppDimensions from theme extension', (tester) async {
