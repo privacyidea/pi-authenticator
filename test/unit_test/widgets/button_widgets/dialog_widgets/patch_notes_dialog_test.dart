@@ -96,13 +96,31 @@ void main() {
       expect(find.byType(PatchNotesDialog), findsNothing);
     });
 
-    testWidgets('calculates and applies dynamic height', (tester) async {
-      await tester.pumpWidget(
-        const TestsAppWrapper(child: PatchNotesDialog(newNotes: {})),
-      );
+    testWidgets('leaves the dialog at most 80% of the screen height', (
+      tester,
+    ) async {
+      addTearDown(tester.view.reset);
+      tester.view.devicePixelRatio = 1.0;
 
-      final sizedBox = tester.widget<SizedBox>(find.byType(SizedBox).first);
-      expect(sizedBox.height, isNotNull);
+      for (final screenHeight in [600.0, 1000.0]) {
+        tester.view.physicalSize = Size(800, screenHeight);
+        await tester.pumpWidget(
+          TestsAppWrapper(child: PatchNotesDialog(newNotes: testNotes)),
+        );
+
+        final padding = tester.widget<Padding>(
+          find
+              .descendant(
+                of: find.byType(PatchNotesDialog),
+                matching: find.byType(Padding),
+              )
+              .first,
+        );
+        expect(
+          padding.padding,
+          EdgeInsets.symmetric(vertical: screenHeight * 0.1),
+        );
+      }
     });
 
     testWidgets('structure contains SingleChildScrollView and Column', (
