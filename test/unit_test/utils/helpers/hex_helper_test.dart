@@ -27,12 +27,12 @@ void main() {
   group('encode golden vectors', () {
     test('all single bytes 0..255', () {
       for (var b = 0; b <= 255; b++) {
-        final expected = b.toRadixString(16).padLeft(2, '0');        expect(hexEncode([b]), expected, reason: 'byte $b');
+        final expected = b.toRadixString(16).padLeft(2, '0');
+        expect(hexEncode([b]), expected, reason: 'byte $b');
       }
     });
 
     test('known multi-byte golden vectors', () {
-      const vectors = <List<int>, String>{};
       final cases = <(List<int>, String)>[
         ([], ''),
         ([0xde, 0xad, 0xbe, 0xef], 'deadbeef'),
@@ -126,32 +126,34 @@ void main() {
           'eacfa34876003fc0e5b243c9deb8c92c8a',
         ),
       ];
-      for (final (bytes, expected) in cases) {        expect(hexEncode(bytes), expected, reason: '$bytes');
+      for (final (bytes, expected) in cases) {
+        expect(hexEncode(bytes), expected, reason: '$bytes');
       }
     });
 
     test('non-byte integers throw FormatException ', () {
-      for (final bad in [256, -1, 999, 0x100, -255, 100000]) {        expect(
-          () => hexEncode([bad]),
-          throwsFormatException,
-          reason: '$bad',
-        );
+      for (final bad in [256, -1, 999, 0x100, -255, 100000]) {
+        expect(() => hexEncode([bad]), throwsFormatException, reason: '$bad');
       }
     });
   });
 
   group('decode golden vectors', () {
-    test('empty string', () {      expect(hexDecode(''), <int>[]);
+    test('empty string', () {
+      expect(hexDecode(''), <int>[]);
     });
 
     test('all 256 single-byte hex values', () {
       for (var b = 0; b <= 255; b++) {
-        final hex = b.toRadixString(16).padLeft(2, '0');        expect(hexDecode(hex), [b], reason: '$hex');
+        final hex = b.toRadixString(16).padLeft(2, '0');
+        expect(hexDecode(hex), [b], reason: '$hex');
       }
     });
 
     test('case insensitivity', () {
-      const expected = [0xde, 0xad, 0xbe, 0xef];      expect(hexDecode('DeAdBeEf'), expected);      expect(hexDecode('DEADBEEF'), expected);
+      const expected = [0xde, 0xad, 0xbe, 0xef];
+      expect(hexDecode('DeAdBeEf'), expected);
+      expect(hexDecode('DEADBEEF'), expected);
     });
 
     test('frozen golden decode vectors', () {
@@ -200,7 +202,8 @@ void main() {
           [170, 174, 75, 151, 79, 218, 192, 157, 230, 143],
         ),
       ];
-      for (final (input, expected) in cases) {        expect(hexDecode(input), expected, reason: '"$input"');
+      for (final (input, expected) in cases) {
+        expect(hexDecode(input), expected, reason: '"$input"');
       }
     });
 
@@ -209,7 +212,8 @@ void main() {
         ('f', [15]),
         ('abc', [10, 188]),
         ('deadb', [13, 234, 219]),
-      ]) {        expect(hexDecode(input), expected, reason: '"$input"');
+      ]) {
+        expect(hexDecode(input), expected, reason: '"$input"');
       }
     });
 
@@ -218,16 +222,14 @@ void main() {
         ('de ad be ef', [0xde, 0xad, 0xbe, 0xef]),
         ('  0f  ', [15]),
         ('   ', <int>[]),
-      ]) {        expect(hexDecode(input), expected, reason: '"$input"');
+      ]) {
+        expect(hexDecode(input), expected, reason: '"$input"');
       }
     });
 
     test('invalid characters throw FormatException ', () {
-      for (final s in ['zz', 'gg', '0g', 'x1', '!!', '00zz', 'deadg0']) {        expect(
-          () => hexDecode(s),
-          throwsFormatException,
-          reason: '"$s"',
-        );
+      for (final s in ['zz', 'gg', '0g', 'x1', '!!', '00zz', 'deadg0']) {
+        expect(() => hexDecode(s), throwsFormatException, reason: '"$s"');
       }
     });
   });
