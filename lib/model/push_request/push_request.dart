@@ -110,8 +110,11 @@ abstract class PushRequest {
   @JsonKey(includeFromJson: false, includeToJson: false)
   String get signedData;
 
-  /// Verifies that this request was sent by the server the [token] is enrolled
-  /// to, including the capabilities that were advertised alongside it.
+  /// Checks that [signature] is a valid signature of [signedData], created by
+  /// the server [token] was rolled out to, including the capabilities that were
+  /// advertised alongside it.
+  /// Returns false if [token] has no public server key, e.g. because it is not
+  /// rolled out.
   bool verifySignature(
     PushToken token, {
     RsaUtils rsaUtils = const RsaUtils(),

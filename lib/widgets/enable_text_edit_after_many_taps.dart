@@ -77,10 +77,9 @@ class _EnableTextEditAfterManyTapsState
       timer = null;
       if (widget.lockedHint != null) {
         setState(() => counter = 0);
-        ref.read(statusProvider.notifier).show(
-          widget.lockedHint!,
-          type: StatusMessageType.neutral,
-        );
+        ref
+            .read(statusProvider.notifier)
+            .show(widget.lockedHint!, type: StatusMessageType.neutral);
       } else {
         setState(() {
           counter = newCounter;
@@ -98,7 +97,10 @@ class _EnableTextEditAfterManyTapsState
       return TextFormField(
         key: Key('enabled_${widget.controller.hashCode}'),
         controller: widget.controller,
-        decoration: InputDecoration(labelText: widget.labelText),
+        decoration: InputDecoration(
+          labelText: widget.labelText,
+          errorMaxLines: 2,
+        ),
         autovalidateMode: widget.autovalidateMode,
         validator: widget.validator,
       );

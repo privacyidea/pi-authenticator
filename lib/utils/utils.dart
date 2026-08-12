@@ -162,8 +162,8 @@ Future<void> dragSortableOnAccept({
   required WidgetRef ref,
 }) async {
   var allSortables = await ref.read(sortablesProvider.future);
+  if (!ref.context.mounted) return;
   if (dragedSortable is TokenFolder) {
-    if (!ref.context.mounted) return;
     final tokensInFolder = (await ref.read(tokenProvider.future)).tokens
         .where((element) => element.folderId == dragedSortable.folderId)
         .toList();
@@ -187,6 +187,7 @@ Future<void> dragSortableOnAccept({
   }
   final modifiedTokens = allSortables.whereType<Token>().toList();
   final modifiedFolders = allSortables.whereType<TokenFolder>().toList();
+  if (!ref.context.mounted) return;
   final futures = [
     ref.read(tokenProvider.notifier).addOrReplaceTokens(modifiedTokens),
     ref.read(tokenFolderProvider.notifier).addOrReplaceFolders(modifiedFolders),
@@ -225,6 +226,15 @@ Uint8List bigIntToBytes(BigInt bigInt) =>
 
 BigInt bytesToBigInt(Uint8List bytes) =>
     byteDataToBigInt(ByteData.sublistView(bytes));
+
+bool isPasskeyQrCode(Object? qrCode) {
+  final uri = switch (qrCode) {
+    String value => Uri.tryParse(value),
+    Uri value => value,
+    _ => null,
+  };
+  return uri?.scheme.toLowerCase() == 'fido';
+}
 
 Future<bool> scanQrCode({
   BuildContext? context,

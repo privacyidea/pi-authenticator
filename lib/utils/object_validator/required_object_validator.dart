@@ -21,11 +21,16 @@
 part of 'object_validators.dart';
 
 class RequiredObjectValidator<T extends Object> extends BaseValidator<T> {
-  RequiredObjectValidator({super.transformer, super.allowedValues});
+  RequiredObjectValidator({
+    super.transformer,
+    super.allowedValues,
+    super.invalidMessage,
+    super.unallowedMessage,
+  });
 
   @override
   T transform(value, name) {
-    if (value == null) throw _error(value, name);
+    if (value == null) throw _invalidError(value, name);
     return _executeTransform(value, name);
   }
 
@@ -36,6 +41,8 @@ class RequiredObjectValidator<T extends Object> extends BaseValidator<T> {
       if (v == null) return true;
       return allowedValues?.call(v) ?? true;
     },
+    invalidMessage: invalidMessage,
+    unallowedMessage: unallowedMessage,
   );
 
   @override
@@ -44,6 +51,8 @@ class RequiredObjectValidator<T extends Object> extends BaseValidator<T> {
         defaultValue: defaultValue,
         transformer: transformer,
         allowedValues: allowedValues,
+        invalidMessage: invalidMessage,
+        unallowedMessage: unallowedMessage,
       );
 
   @override

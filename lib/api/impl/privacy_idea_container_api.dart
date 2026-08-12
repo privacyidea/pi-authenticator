@@ -28,7 +28,7 @@ import 'package:privacyidea_authenticator/model/tokens/otp_token.dart';
 import 'package:privacyidea_authenticator/utils/app_info_utils.dart';
 
 import '../../../../../../../../l10n/app_localizations_en.dart';
-import '../../../../../../../../processors/scheme_processors/token_import_scheme_processors/otp_auth_processor.dart';
+import '../../../../../../../../processors/scheme_processors/token_import_scheme_processors/token_import_scheme_processor_interface.dart';
 import '../../../../../../../../utils/ecc_utils.dart';
 import '../../../../../../../../utils/privacyidea_io_client.dart';
 import '../../model/api_results/pi_server_results/pi_server_result_detail.dart';
@@ -63,7 +63,6 @@ class PiContainerApi implements TokenContainerApi {
     TokenState tokenState, {
     SimpleKeyPair? withX25519Key,
     bool? isInitSync,
-    bool? sendAllOTPs,
   }) async {
     final containerTokenTemplates = tokenState
         .containerTokens(container.serial)
@@ -75,25 +74,24 @@ class PiContainerApi implements TokenContainerApi {
     final notLinkedTokens = tokenState.tokens.maybeContainerTokensOf(
       container.serial,
     );
-    final templatesForAssignment = notLinkedTokens.withSerial.toTemplates();
-
-    final tokensWithoutSerial = notLinkedTokens.withoutSerial;
-    List<Token>? selectedTokens;
-    if (initialTokenAssignment && tokensWithoutSerial.isNotEmpty) {
-      if (sendAllOTPs == true) {
-        templatesForAssignment.addAll(tokensWithoutSerial.toTemplates());
-      } else {
-        selectedTokens = (await InitialTokenAssignmentDialog.showDialog(
-          container,
-          tokensWithoutSerial,
-        ))?.toList();
-
-        if (selectedTokens == null) {
-          // User canceled the dialog => cancel sync
-          return null;
-        }
-        templatesForAssignment.addAll(selectedTokens.toTemplates());
+    final assignmentCandidates = initialTokenAssignment
+        ? notLinkedTokens
+        : <Token>[];
+    // Tokens with a serial are identified by their serial, so no otp values are needed.
+    final templatesForAssignment = assignmentCandidates.withSerial
+        .toTemplates();
+    // Tokens without a serial are identified by otp values, which needs the users consent.
+    final tokensWithoutSerial = assignmentCandidates.withoutSerial;
+    if (tokensWithoutSerial.isNotEmpty) {
+      final selectedTokens = await InitialTokenAssignmentDialog.showDialog(
+        container,
+        tokensWithoutSerial,
+      );
+      if (selectedTokens == null) {
+        // User canceled the dialog => cancel sync
+        return null;
       }
+      templatesForAssignment.addAll(selectedTokens.toList().toTemplates());
     }
 
     final ContainerChallenge challenge = await _getChallenge(
@@ -107,11 +105,10 @@ class PiContainerApi implements TokenContainerApi {
       challenge: challenge,
       encKeyPair: encKeyPair,
       otpAuthMaps: [
-        for (var template in [
-          ...containerTokenTemplates,
-          ...templatesForAssignment,
-        ])
-          template.otpAuthMapSafeToSend,
+        for (var template in containerTokenTemplates)
+          template.tokenDataSafeToSend,
+        for (var template in templatesForAssignment)
+          template.tokenIdentification,
       ],
     );
 
@@ -123,12 +120,12 @@ class PiContainerApi implements TokenContainerApi {
     final tokens =
         decryptedContainerDict[TokenContainer.DICT_TOKENS]
             as Map<String, dynamic>;
-    final newOtpAuthTokens = (tokens[TokenContainer.DICT_TOKENS_ADD] as List)
+    final newTokenUris = (tokens[TokenContainer.DICT_TOKENS_ADD] as List)
         .whereType<String>()
         .map(Uri.parse)
         .toList();
     final newTokens = await _parseNewTokens(
-      otpAuthUris: newOtpAuthTokens,
+      tokenUris: newTokenUris,
       container: container,
     );
 
@@ -192,7 +189,7 @@ class PiContainerApi implements TokenContainerApi {
       newTokens: newTokens,
       updatedTokens: updatedTokens,
       deletedTokens: deleteTokens,
-      initAssignmentChecked: tokensWithoutSerial,
+      initAssignmentChecked: assignmentCandidates,
       newPolicies: syncResult.policies,
       containerSerial: container.serial,
     );
@@ -419,6 +416,7 @@ class PiContainerApi implements TokenContainerApi {
       url: container.challengeUrl,
       body: body,
       sslVerify: container.sslVerify,
+      expectedErrorStatusCodes: const {HttpStatusCodes.notFound},
     );
     if (HttpStatusChecker.isError(challengeResponse.statusCode)) {
       PiServerResultError? piError;
@@ -552,18 +550,18 @@ class PiContainerApi implements TokenContainerApi {
 
   Future<List<Token>> _parseNewTokens({
     required TokenContainerFinalized container,
-    required List<Uri> otpAuthUris,
+    required List<Uri> tokenUris,
   }) async {
     final newTokens = <Token>[];
-    for (var otpAuthUri in otpAuthUris) {
-      Logger.debug('Processing token: $otpAuthUri');
-      var newToken = (await const OtpAuthProcessor().processUri(
-        otpAuthUri,
-      )).firstOrNull?.asSuccess?.resultData;
+    for (var tokenUri in tokenUris) {
+      Logger.debug('Processing token: $tokenUri');
+      var newToken = (await TokenImportSchemeProcessor.processUriByAny(
+        tokenUri,
+      ))?.firstOrNull?.asSuccess?.resultData;
       if (newToken != null) {
         newToken = container.addOriginToToken(
           token: newToken,
-          tokenData: otpAuthUri.toString(),
+          tokenData: tokenUri.toString(),
         );
         newTokens.add(newToken);
       }

@@ -29,6 +29,7 @@ import '../interfaces/repo/token_repository.dart';
 import '../l10n/app_localizations.dart';
 import '../model/tokens/token.dart';
 import '../utils/globals.dart';
+import '../utils/helpers/log_redaction_helper.dart';
 import '../utils/identifiers.dart';
 import '../utils/logger.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
@@ -38,9 +39,6 @@ import '../widgets/dialog_widgets/default_dialog.dart';
 import 'secure_storage.dart';
 
 class SecureTokenRepository implements TokenRepository {
-  static const String TOKEN_PREFIX_LEGACY = GLOBAL_SECURE_REPO_PREFIX_LEGACY;
-  static const String TOKEN_PREFIX = '${GLOBAL_SECURE_REPO_PREFIX}_token';
-
   final SecureStorage _storageLegacy;
   final SecureStorage _storage;
 
@@ -48,13 +46,16 @@ class SecureTokenRepository implements TokenRepository {
     : _storage =
           storage ??
           SecureStorage(
-            storagePrefix: TOKEN_PREFIX,
+            storagePrefix: SECURE_REPO_PREFIX_TOKEN,
             storage: SecureStorage.defaultStorage,
+            // The token prefix is a prefix of the container one, so without
+            // this every container entry would count as a token entry.
+            excludedPrefixes: const [SECURE_REPO_PREFIX_TOKEN_CONTAINER],
           ),
       _storageLegacy =
           legacyStorage ??
           SecureStorage(
-            storagePrefix: TOKEN_PREFIX_LEGACY,
+            storagePrefix: GLOBAL_SECURE_REPO_PREFIX_LEGACY,
             storage: SecureStorage.legacyStorage,
           );
 
@@ -64,13 +65,47 @@ class SecureTokenRepository implements TokenRepository {
 
   @override
   Future<Token?> loadToken(String id) async {
-    final token = await _storage.read(key: id);
-    Logger.info('Loading token from secure storage: $id');
-    if (token == null) {
-      Logger.warning('Token not found in secure storage');
+    Logger.info('Loading token $id from secure storage');
+    final tokenJsonString = await _storage.read(key: id);
+    if (tokenJsonString == null) {
+      Logger.warning('Token $id not found in secure storage', verbose: true);
       return null;
     }
-    return Token.fromJson(jsonDecode(token));
+    return _parseToken(id, tokenJsonString);
+  }
+
+  /// The token stored under [key], or null if [jsonString] does not hold a
+  /// token that can be read back.
+  ///
+  /// A single unreadable entry is skipped instead of failing the whole load, so
+  /// the remaining tokens stay usable.
+  Token? _parseToken(String key, String jsonString) {
+    final Object? decoded;
+    try {
+      decoded = jsonDecode(jsonString);
+    } catch (e, s) {
+      Logger.warning(
+        'Entry $key of the token storage is not valid json. '
+        'It holds ${jsonString.length} characters.',
+        error: e,
+        stackTrace: s,
+        verbose: true,
+      );
+      return null;
+    }
+    try {
+      return Token.fromJson(decoded as Map<String, dynamic>);
+    } catch (e, s) {
+      Logger.warning(
+        'Could not load token $key from secure storage. '
+        'Its stored entries are '
+        '${redactedShape(decoded, allowedEntryNames: Token.loggableEntryNames)}',
+        error: e,
+        stackTrace: s,
+        verbose: true,
+      );
+      return null;
+    }
   }
 
   /// Takes all tokens from the legacy storage and saves them to the new storage.
@@ -82,27 +117,32 @@ class SecureTokenRepository implements TokenRepository {
       'Migrating ${keyValueMap.length} tokens from legacy secure storage',
     );
 
-    for (var i = 0; i < keyValueMap.length; i++) {
-      final value = keyValueMap.values.elementAt(i);
-      final key = keyValueMap.keys.elementAt(i);
+    for (final entry in keyValueMap.entries) {
       Map<String, dynamic>? valueJson;
-
       try {
-        valueJson = jsonDecode(value);
+        valueJson = jsonDecode(entry.value);
       } on FormatException catch (_) {
-        // Value should be a json. Skip everything that is not a json.
-        Logger.debug('Value is not a json');
+        // A legacy entry that is not json cannot be a token. Skip it.
+        Logger.info(
+          'Skipping legacy entry ${entry.key}: '
+          'value is not json (${entry.value.length} characters)',
+        );
         continue;
       }
 
       if (valueJson == null) {
-        // If valueJson is null or does not contain a type, it can't be a token. Skip it.
-        Logger.debug('Value Json is null');
+        // A null value cannot be a token. Skip it.
+        Logger.info('Skipping legacy entry ${entry.key}: json value is null');
         continue;
       }
       if (!valueJson.containsKey('type')) {
-        // If valueJson is null or does not contain a type, it can't be a token. Skip it.
-        Logger.debug('Value Json does not contain a type');
+        // Without a type it is not a token. The legacy storage is shared and
+        // may hold any kind of data, so its shape is redacted by blocklist
+        // only: we do not know which names would be safe to keep.
+        Logger.info(
+          'Skipping legacy entry ${entry.key}: json has no type. '
+          'It holds ${redactedShape(valueJson)}',
+        );
         continue;
       }
 
@@ -110,10 +150,10 @@ class SecureTokenRepository implements TokenRepository {
       Logger.info('Loading token from secure storage: ${valueJson['id']}');
       try {
         Logger.info(
-          'Legacy entry that meets token criteria: $key will be migrated to new secure storage',
+          'Legacy entry that meets token criteria: ${entry.key} will be migrated to new secure storage',
         );
-        await _storage.write(key: key, value: value);
-        await _storageLegacy.delete(key: key);
+        await _storage.write(key: entry.key, value: entry.value);
+        await _storageLegacy.delete(key: entry.key);
         Logger.info('Migrated token ${valueJson['id']} to new secure storage');
       } catch (e, s) {
         Logger.error(
@@ -156,23 +196,22 @@ class SecureTokenRepository implements TokenRepository {
       return [];
     }
 
-    List<Token> tokenList = [];
+    final tokenList = <Token>[];
     for (var entry in keyValueMap.entries) {
-      try {
-        final token = Token.fromJson(jsonDecode(entry.value));
-        tokenList.add(token);
-      } catch (e, s) {
-        Logger.warning(
-          'Could not load token from secure storage',
-          error: e,
-          stackTrace: s,
-          verbose: true,
-        );
-      }
+      final token = _parseToken(entry.key, entry.value);
+      if (token != null) tokenList.add(token);
     }
 
-    Logger.info(
+    if (tokenList.length == keyValueMap.length) {
+      Logger.info(
+        'Loaded ${tokenList.length}/${keyValueMap.length} tokens from secure storage',
+      );
+      return tokenList;
+    }
+
+    Logger.warning(
       'Loaded ${tokenList.length}/${keyValueMap.length} tokens from secure storage',
+      verbose: true,
     );
     return tokenList;
   }
@@ -267,14 +306,25 @@ class SecureTokenRepository implements TokenRepository {
           label: AppLocalizations.of(context)!.decryptErrorButtonRetry,
           intent: ActionIntent.confirm,
           onPressed: () async {
-            await LoadingIndicator.show(
-              context: context,
-              action: () => Future.wait([
-                if (globalRef != null)
-                  globalRef!.read(tokenProvider.notifier).loadStateFromRepo(),
-                Future.delayed(const Duration(milliseconds: 500)),
-              ]),
-            );
+            try {
+              await LoadingIndicator.show(
+                context: context,
+                action: () async {
+                  final tokenNotifier = globalRef?.read(tokenProvider.notifier);
+                  await Future.wait([
+                    if (tokenNotifier != null)
+                      tokenNotifier.loadStateFromRepo(),
+                    Future.delayed(const Duration(milliseconds: 500)),
+                  ]);
+                },
+              );
+            } catch (e, s) {
+              Logger.error(
+                'Could not reload the tokens from the repository.',
+                error: e,
+                stackTrace: s,
+              );
+            }
             if (context.mounted) Navigator.pop(context);
           },
         ),

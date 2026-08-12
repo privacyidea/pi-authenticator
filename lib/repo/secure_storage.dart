@@ -23,16 +23,19 @@ import 'package:privacyidea_authenticator/utils/helpers/mutex.dart';
 import '../interfaces/repo/secure_storage.dart';
 
 class SecureStorage implements SecureStorageInterface {
+  static const _androidOptions = AndroidOptions(
+    encryptedSharedPreferences: true,
+    resetOnError: false,
+  );
+
   static const defaultStorage = FlutterSecureStorage(
-    aOptions: AndroidOptions(encryptedSharedPreferences: true),
+    aOptions: _androidOptions,
     iOptions: IOSOptions(
       accessibility: KeychainAccessibility.first_unlock_this_device,
     ),
   );
 
-  static const legacyStorage = FlutterSecureStorage(
-    aOptions: AndroidOptions(encryptedSharedPreferences: true),
-  );
+  static const legacyStorage = FlutterSecureStorage(aOptions: _androidOptions);
 
   static final Mutex _m = Mutex();
   @override
@@ -40,16 +43,25 @@ class SecureStorage implements SecureStorageInterface {
   @override
   final String storagePrefix;
   @override
-  final String seperator;
+  final String separator;
+  @override
+  final List<String> excludedPrefixes;
 
   SecureStorage({
     required this.storagePrefix,
     required this.storage,
-    this.seperator = '_',
+    this.separator = '_',
+    this.excludedPrefixes = const [],
   });
 
   @override
-  String getFullKey(String key) => "$storagePrefix$seperator$key";
+  String getFullKey(String key) => "$storagePrefix$separator$key";
+
+  /// Whether [fullKey] is stored by this storage rather than by one of the
+  /// storages in [excludedPrefixes].
+  bool _isOwnKey(String fullKey) =>
+      fullKey.startsWith(storagePrefix + separator) &&
+      !excludedPrefixes.any((prefix) => fullKey.startsWith(prefix + separator));
 
   /// Function [f] is executed, protected by Mutex [_m].
   /// That means, that calls of this method will always be executed serial.
@@ -69,12 +81,10 @@ class SecureStorage implements SecureStorageInterface {
   @override
   Future<Map<String, String>> readAll() => _protect(() async {
     final allPairs = await storage.readAll();
-    final allKeys = allPairs.keys
-        .where((key) => key.startsWith(storagePrefix + seperator))
-        .toList();
+    final allKeys = allPairs.keys.where(_isOwnKey).toList();
     final result = <String, String>{};
     for (var key in allKeys) {
-      final shortKey = key.substring(storagePrefix.length + 1);
+      final shortKey = key.substring(storagePrefix.length + separator.length);
       result[shortKey] = allPairs[key]!;
     }
     return result;
@@ -89,9 +99,7 @@ class SecureStorage implements SecureStorageInterface {
   @override
   Future<void> deleteAll() => _protect(() async {
     final allPairs = await storage.readAll();
-    final allKeys = allPairs.keys
-        .where((key) => key.startsWith(storagePrefix))
-        .toList();
+    final allKeys = allPairs.keys.where(_isOwnKey).toList();
     for (var key in allKeys) {
       await storage.delete(key: key);
     }

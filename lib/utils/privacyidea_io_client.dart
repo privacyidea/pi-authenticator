@@ -142,6 +142,7 @@ class PrivacyideaIOClient {
     required Uri url,
     required Map<String, String?> body,
     bool sslVerify = true,
+    Set<int> expectedErrorStatusCodes = const {},
   }) async {
     if (kIsWeb) return Response('Platform not supported', 405);
     Logger.info('Sending post request (SSLVerify: $sslVerify)');
@@ -207,14 +208,18 @@ class PrivacyideaIOClient {
     }
 
     if (HttpStatusChecker.isError(response.statusCode)) {
-      Logger.warning(
-        'Received unexpected response',
-        error:
-            'Status code: ${response.statusCode}'
-            '\nPosted body: $body'
-            '\nResponse: ${response.body}\n',
-        stackTrace: StackTrace.current,
-      );
+      if (expectedErrorStatusCodes.contains(response.statusCode)) {
+        Logger.info('Received expected HTTP ${response.statusCode} response');
+      } else {
+        Logger.warning(
+          'Received unexpected response',
+          error:
+              'Status code: ${response.statusCode}'
+              '\nPosted body: $body'
+              '\nResponse: ${response.body}\n',
+          stackTrace: StackTrace.current,
+        );
+      }
     }
 
     return response;
@@ -251,18 +256,16 @@ class PrivacyideaIOClient {
 
     IOClient ioClient = IOClient(httpClient);
 
-    StringBuffer buffer = StringBuffer(url);
-
-    if (parameters.isNotEmpty) {
-      buffer.write('?');
-      buffer.writeAll(
-        parameters.entries.map((e) => '${e.key}=${e.value}'),
-        '&',
-      );
-    }
+    final uri = parameters.isEmpty
+        ? url
+        : url.replace(
+            queryParameters: {
+              ...url.queryParametersAll,
+              for (final entry in parameters.entries) entry.key: entry.value!,
+            },
+          );
 
     Response response;
-    Uri uri = Uri.parse(buffer.toString());
     try {
       response = await ioClient.get(uri).timeout(const Duration(seconds: 15));
     } on HandshakeException catch (e, _) {

@@ -13,9 +13,13 @@ void main() {
     });
 
     test('localizedName returns non-empty string for all states', () {
-      final loc = AppLocalizationsEn();
+      final localization = AppLocalizationsEn();
       for (final state in SyncState.values) {
-        expect(state.localizedName(loc).isNotEmpty, isTrue, reason: '$state');
+        expect(
+          state.localizedName(localization).isNotEmpty,
+          isTrue,
+          reason: '$state',
+        );
       }
     });
   });

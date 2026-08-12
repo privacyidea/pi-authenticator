@@ -847,6 +847,9 @@
       }
     }
   },
+  "@invalidHttpUrl": {
+    "description": "Error message when a url can not be requested via http or https."
+  },
   "@invalidLink": {
     "description": "Error message when the link is invalid.",
     "placeholders": {
@@ -1097,6 +1100,9 @@
       }
     },
     "type": "text"
+  },
+  "@passkeyQrCodeNotSupported": {
+    "description": "Guidance shown when a scanned QR code starts a FIDO passkey flow."
   },
   "@password": {
     "description": "Labeltext for the password input field."
@@ -1953,6 +1959,7 @@
   "introTokenSwipe": "Přejetím po tokenech doleva zobrazíte dostupné akce.",
   "invalidBackupFile": "Vybraný soubor není platnou zálohou {appName}.",
   "invalidHostForScheme": "Neplatný hostitel: {host} pro schéma: {scheme}",
+  "invalidHttpUrl": "Adresa URL není platná pro http/https.",
   "invalidLink": "Zadaný odkaz není platným tokenem {appName} nebo není podporován.",
   "invalidQrBackup": "Naskenovaný QR kód není platnou zálohou {appName}.",
   "invalidQrFile": "Vybraný soubor neobsahuje platný QR kód z {appName}.",
@@ -2011,6 +2018,7 @@
   "originApp": "Aplikace Origin",
   "originDetails": "Podrobnosti o původu",
   "otpValueCopiedMessage": "Heslo “{otpValue}“ bylo zkopírováno do schránky.",
+  "passkeyQrCodeNotSupported": "Tato aplikace zatím nepodporuje přístupové klíče (passkey). Použijte prosím fotoaparát nebo systémový skener QR kódů.",
   "password": "Heslo",
   "showPassword": "Zobrazit heslo",
   "hidePassword": "Skrýt heslo",

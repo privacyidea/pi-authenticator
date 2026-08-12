@@ -100,6 +100,7 @@ class _AddTokenFolderDialogState extends ConsumerState<AddTokenFolderDialog> {
       await ref
           .read(introductionNotifierProvider.notifier)
           .complete(Introduction.addFolder);
+      if (!ref.context.mounted) return;
     }
 
     ref.read(tokenFolderProvider.notifier).addNewFolder(_textController.text);

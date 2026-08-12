@@ -830,12 +830,14 @@ class MockPrivacyideaIOClient extends _i1.Mock
     required Uri? url,
     required Map<String, String?>? body,
     bool? sslVerify = true,
+    Set<int>? expectedErrorStatusCodes = const {},
   }) =>
       (super.noSuchMethod(
             Invocation.method(#doPost, [], {
               #url: url,
               #body: body,
               #sslVerify: sslVerify,
+              #expectedErrorStatusCodes: expectedErrorStatusCodes,
             }),
             returnValue: _i24.Future<_i6.Response>.value(
               _FakeResponse_6(
@@ -844,6 +846,7 @@ class MockPrivacyideaIOClient extends _i1.Mock
                   #url: url,
                   #body: body,
                   #sslVerify: sslVerify,
+                  #expectedErrorStatusCodes: expectedErrorStatusCodes,
                 }),
               ),
             ),
@@ -854,6 +857,7 @@ class MockPrivacyideaIOClient extends _i1.Mock
                   #url: url,
                   #body: body,
                   #sslVerify: sslVerify,
+                  #expectedErrorStatusCodes: expectedErrorStatusCodes,
                 }),
               ),
             ),
@@ -1819,19 +1823,28 @@ class MockSecureStorage extends _i1.Mock implements _i37.SecureStorage {
           as String);
 
   @override
-  String get seperator =>
+  String get separator =>
       (super.noSuchMethod(
-            Invocation.getter(#seperator),
+            Invocation.getter(#separator),
             returnValue: _i27.dummyValue<String>(
               this,
-              Invocation.getter(#seperator),
+              Invocation.getter(#separator),
             ),
             returnValueForMissingStub: _i27.dummyValue<String>(
               this,
-              Invocation.getter(#seperator),
+              Invocation.getter(#separator),
             ),
           )
           as String);
+
+  @override
+  List<String> get excludedPrefixes =>
+      (super.noSuchMethod(
+            Invocation.getter(#excludedPrefixes),
+            returnValue: <String>[],
+            returnValueForMissingStub: <String>[],
+          )
+          as List<String>);
 
   @override
   String getFullKey(String? key) =>

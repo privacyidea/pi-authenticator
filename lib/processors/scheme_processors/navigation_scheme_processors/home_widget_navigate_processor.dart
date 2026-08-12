@@ -141,7 +141,7 @@ class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
       );
       return [
         ProcessorResult.failed(
-          (_) => 'Missing id for showlocked: ${uri.host}',
+          (l) => l.missingWidgetId,
           resultHandlerType: resultHandlerType,
         ),
       ];
@@ -166,7 +166,8 @@ class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
       ];
     }
     await Future.delayed(const Duration(milliseconds: 200));
-    if (globalRef == null) {
+    final tokenNotifier = globalRef?.read(tokenProvider.notifier);
+    if (tokenNotifier == null) {
       Logger.warning('Could not find globalRef');
       return [
         ProcessorResult.failed(
@@ -175,17 +176,14 @@ class HomeWidgetNavigateProcessor implements NavigationSchemeProcessor {
         ),
       ];
     }
-    final showedToken = await globalRef!
-        .read(tokenProvider.notifier)
-        .showTokenById(tokenId);
+    final showedToken = await tokenNotifier.showTokenById(tokenId);
 
     if (showedToken?.isHidden == false) {
-      final folderId = (await globalRef!.read(
-        tokenProvider.future,
-      )).currentOfId(tokenId)?.folderId;
+      final tokenState = await globalRef?.read(tokenProvider.future);
+      final folderId = tokenState?.currentOfId(tokenId)?.folderId;
       if (folderId != null) {
-        globalRef!
-            .read(tokenFolderProvider.notifier)
+        globalRef
+            ?.read(tokenFolderProvider.notifier)
             .expandFolderById(folderId);
       }
     }
@@ -237,11 +235,11 @@ class NavigationHandler<R> with ResultHandler {
       return null;
     }
     List<Navigation> navigations = successResults.getData();
-    final retunValues = <R>[];
+    final returnValues = <R>[];
     for (final navigation in navigations) {
-      retunValues.add(await navigation(context));
+      returnValues.add(await navigation(context));
     }
-    return retunValues;
+    return returnValues;
   }
 }
 
