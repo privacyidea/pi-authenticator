@@ -23,10 +23,7 @@ import 'package:privacyidea_authenticator/utils/helpers/mutex.dart';
 import '../interfaces/repo/secure_storage.dart';
 
 class SecureStorage implements SecureStorageInterface {
-  static const _androidOptions = AndroidOptions(
-    encryptedSharedPreferences: true,
-    resetOnError: false,
-  );
+  static const _androidOptions = AndroidOptions(resetOnError: false);
 
   static const defaultStorage = FlutterSecureStorage(
     aOptions: _androidOptions,
