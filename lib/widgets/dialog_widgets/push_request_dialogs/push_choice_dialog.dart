@@ -37,15 +37,26 @@ class PushChoiceDialog extends ConsumerWidget with PushDialogMixin {
     final l10n = AppLocalizations.of(context)!;
 
     return DefaultDialog(
-      scrollable: false,
+      // Decline stays in place, question and answers scroll.
+      scrollableContent: false,
       title: PushRequestHeader(pushRequest: pushRequest),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          PushRequestBaseInfo(pushRequest: pushRequest),
-          const SizedBox(height: 24),
-          ..._buildChoiceGrid(context, ref, theme),
+          Flexible(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  PushRequestBaseInfo(pushRequest: pushRequest),
+                  const SizedBox(height: 24),
+                  ..._buildChoiceGrid(context, ref, theme),
+                ],
+              ),
+            ),
+          ),
           const SizedBox(height: 8),
           PushActionButton(
             intent: ActionIntent.destructive,

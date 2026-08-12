@@ -80,7 +80,6 @@ class DefaultDeleteAction extends ConsumerSlideableAction {
 
   void _showDialog(TokenNotifier notifier) => showAsyncDialog(
     builder: (BuildContext context) => DefaultDialog(
-      scrollable: true,
       title: Text(
         AppLocalizations.of(context)!.confirmDeletion,
         style: Theme.of(context).textTheme.titleMedium?.copyWith(

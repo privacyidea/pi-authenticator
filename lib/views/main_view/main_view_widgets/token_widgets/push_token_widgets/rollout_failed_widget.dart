@@ -100,7 +100,6 @@ class PushTokenStartRolloutWidget extends ConsumerWidget {
     builder: (BuildContext context) {
       final localizations = AppLocalizations.of(context)!;
       return DefaultDialog(
-        scrollable: true,
         title: Text(localizations.confirmDeletion),
         content: Text(localizations.confirmDeletionOf(token.label)),
         actions: [

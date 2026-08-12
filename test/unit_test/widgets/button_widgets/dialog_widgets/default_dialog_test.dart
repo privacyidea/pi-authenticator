@@ -123,13 +123,49 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('scrollable property is passed to AlertDialog', (tester) async {
+    testWidgets('content scrolls while the title stays in place', (
+      tester,
+    ) async {
       await tester.pumpWidget(
-        const TestsAppWrapper(child: DefaultDialog(scrollable: true)),
+        const TestsAppWrapper(
+          child: DefaultDialog(
+            title: Text('Title'),
+            content: SizedBox(height: 5000),
+          ),
+        ),
       );
 
       final alertDialog = tester.widget<AlertDialog>(find.byType(AlertDialog));
-      expect(alertDialog.scrollable, isTrue);
+      expect(alertDialog.scrollable, isFalse);
+      expect(
+        find.descendant(
+          of: find.byType(AlertDialog),
+          matching: find.byType(SingleChildScrollView),
+        ),
+        findsOneWidget,
+      );
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('scrollableContent false leaves the content untouched', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        const TestsAppWrapper(
+          child: DefaultDialog(
+            scrollableContent: false,
+            content: Text('Content'),
+          ),
+        ),
+      );
+
+      expect(
+        find.descendant(
+          of: find.byType(AlertDialog),
+          matching: find.byType(SingleChildScrollView),
+        ),
+        findsNothing,
+      );
     });
   });
 }

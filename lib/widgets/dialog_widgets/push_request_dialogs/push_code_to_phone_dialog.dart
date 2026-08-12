@@ -66,13 +66,18 @@ class _PushCodeToPhoneDialogState extends ConsumerState<PushCodeToPhoneDialog> {
     final localizations = AppLocalizations.of(context)!;
 
     return DefaultDialog(
-      scrollable: false,
+      // The code and the button stay in place, only the question scrolls.
+      scrollableContent: false,
       title: PushRequestHeader(pushRequest: widget.pushRequest),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          PushRequestBaseInfo(pushRequest: widget.pushRequest),
+          Flexible(
+            child: SingleChildScrollView(
+              child: PushRequestBaseInfo(pushRequest: widget.pushRequest),
+            ),
+          ),
           const SizedBox(height: 12),
           Center(
             child: Row(

@@ -47,7 +47,11 @@ class DialogAction {
 }
 
 class DefaultDialog extends ConsumerWidget {
-  final bool? scrollable;
+  /// Lets the content scroll when it does not fit, while title and actions stay in place.
+  ///
+  /// Set to false if the content brings its own scroll view or contains a
+  /// [Flexible] or [Expanded] child, both of which need a bounded height.
+  final bool scrollableContent;
   final Widget? title;
   final List<DialogAction> actions;
   final MainAxisAlignment? actionsAlignment;
@@ -56,7 +60,7 @@ class DefaultDialog extends ConsumerWidget {
   final double closeButtonSize;
 
   const DefaultDialog({
-    this.scrollable,
+    this.scrollableContent = true,
     this.title,
     this.actions = const [],
     this.actionsAlignment,
@@ -80,7 +84,6 @@ class DefaultDialog extends ConsumerWidget {
         borderRadius: BorderRadius.circular(dimensions.borderRadius),
       ),
       actionsAlignment: actionsAlignment ?? MainAxisAlignment.end,
-      scrollable: scrollable ?? false,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       actionsPadding: EdgeInsets.fromLTRB(
         dimensions.spacingSmall,
@@ -125,7 +128,9 @@ class DefaultDialog extends ConsumerWidget {
         padding: EdgeInsets.symmetric(vertical: dimensions.spacingSmall),
         child: DefaultTextStyle(
           style: Theme.of(context).textTheme.bodyLarge!,
-          child: content ?? const SizedBox(),
+          child: scrollableContent
+              ? SingleChildScrollView(child: content ?? const SizedBox())
+              : content ?? const SizedBox(),
         ),
       ),
     );

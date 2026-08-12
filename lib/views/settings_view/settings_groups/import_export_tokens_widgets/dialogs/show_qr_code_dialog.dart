@@ -17,15 +17,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/token.dart';
 import '../../../../../utils/encryption/token_encryption.dart';
-import '../../../../../utils/riverpod/riverpod_providers/generated_providers/app_constraints_notifier.dart';
 import '../../../../../utils/utils.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 
@@ -35,29 +32,26 @@ class ShowQrCodeDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final appConstraits = ref.watch(appConstraintsProvider);
-    final qrSize = min(appConstraits.maxWidth, appConstraits.maxHeight) * 0.85;
     final qrImage = generateQrCodeImage(
       data: TokenEncryption.generateExportUri(token: token).toString(),
     );
     return DefaultDialog(
+      // The qr code shrinks to the available space instead of scrolling.
+      scrollableContent: false,
       title: Text(AppLocalizations.of(context)!.asQrCode),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(AppLocalizations.of(context)!.scanThisQrWithNewDevice),
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                maxWidth: qrSize,
-                maxHeight: qrSize,
-                minHeight: qrSize,
-                minWidth: qrSize,
-              ),
-              child: GestureDetector(
-                onTap: () => _showQrMaximized(context, qrImage),
-                child: qrImage,
+          Flexible(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: AspectRatio(
+                aspectRatio: 1,
+                child: GestureDetector(
+                  onTap: () => _showQrMaximized(context, qrImage),
+                  child: qrImage,
+                ),
               ),
             ),
           ),
@@ -84,7 +78,12 @@ class ShowQrCodeDialog extends ConsumerWidget {
       context: context,
       builder: (context) => GestureDetector(
         onTap: () => Navigator.of(context).pop(),
-        child: Center(child: qrImage),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: AspectRatio(aspectRatio: 1, child: qrImage),
+          ),
+        ),
       ),
     );
   }

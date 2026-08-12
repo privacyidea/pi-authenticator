@@ -54,6 +54,8 @@ void _pressShowErrorLog(BuildContext context) {
           vertical: size.height * 0.085,
         ),
         child: DefaultDialog(
+          // The log brings its own reversed scroll view.
+          scrollableContent: false,
           title: Text(AppLocalizations.of(context)!.errorLogTitle),
           actions: [
             DialogAction(

@@ -53,7 +53,8 @@ class _UpdateFirebaseTokenDialogState
   @override
   Widget build(BuildContext context) {
     return DefaultDialog(
-      scrollable: true,
+      // _content brings its own Scrollbar and SingleChildScrollView.
+      scrollableContent: false,
       title: Text(AppLocalizations.of(context)!.synchronizingTokens),
       content: _content,
       actions: [

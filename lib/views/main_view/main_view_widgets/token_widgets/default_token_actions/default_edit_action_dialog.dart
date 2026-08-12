@@ -97,7 +97,6 @@ class _DefaultEditActionDialogState
     final appLocalizations = AppLocalizations.of(context)!;
     final origin = token.origin;
     return DefaultDialog(
-      scrollable: true,
       title: Text(
         appLocalizations.renameToken,
         overflow: TextOverflow.fade,

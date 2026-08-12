@@ -62,6 +62,8 @@ class PushDeclineConfirmDialog extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
 
     return DefaultDialog(
+      // Both answer buttons stay in place, only the question scrolls.
+      scrollableContent: false,
       title: Text(
         title,
         style: textTheme.titleMedium,
@@ -71,12 +73,16 @@ class PushDeclineConfirmDialog extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 18),
-            child: Text(
-              l10n.requestTriggerdByUserQuestion,
-              style: textTheme.bodyLarge,
-              textAlign: TextAlign.center,
+          Flexible(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 18),
+                child: Text(
+                  l10n.requestTriggerdByUserQuestion,
+                  style: textTheme.bodyLarge,
+                  textAlign: TextAlign.center,
+                ),
+              ),
             ),
           ),
           PushActionButton(

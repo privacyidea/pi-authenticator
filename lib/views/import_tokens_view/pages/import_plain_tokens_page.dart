@@ -174,124 +174,129 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
           maxLines: 2, // Title can be shown on small screens too.
         ),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Flexible(
-            child: SingleChildScrollView(
-              controller: scrollController,
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: ImportTokensView.pagePaddingHorizontal,
-                    ),
-                    child: Icon(
-                      widget.selectedType.icon,
-                      color: Colors.green,
-                      size: ImportTokensView.iconSize,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: ImportTokensView.itemSpacingHorizontal,
-                  ),
-                  Column(
-                    children: [
-                      if (widget.failedImports.isNotEmpty)
-                        FailedImportsList(failedImports: widget.failedImports),
-                      if (conflictedImports.isNotEmpty)
-                        ConflictedImportTokensList(
-                          title: AppLocalizations.of(
-                            context,
-                          )!.importConflictToken(conflictedImports.length),
-                          titlePadding: const EdgeInsets.symmetric(
-                            horizontal: 40,
-                          ),
-                          leadingDivider: widget.failedImports.isNotEmpty,
-                          importEntries: conflictedImports,
-                          onTap: _updateConflicted,
-                        ),
-                      if (newImports.isNotEmpty)
-                        NoConflictImportTokensList(
-                          title: AppLocalizations.of(
-                            context,
-                          )!.importNewToken(newImports.length),
-                          titlePadding: const EdgeInsets.symmetric(
-                            horizontal: 40,
-                          ),
-                          leadingDivider: conflictedImports.isNotEmpty,
-                          importEntries: newImports,
-                          onTap: _updateNewImports,
-                        ),
-                      if (appDuplicates.isNotEmpty)
-                        NoConflictImportTokensList(
-                          title: AppLocalizations.of(
-                            context,
-                          )!.importExistingToken(appDuplicates.length),
-                          titlePadding: const EdgeInsets.symmetric(
-                            horizontal: 40,
-                          ),
-                          leadingDivider:
-                              newImports.isNotEmpty ||
-                              conflictedImports.isNotEmpty,
-                          importEntries: appDuplicates,
-                          // borderColor: null,
-                        ),
-                      if (importDuplicates.isNotEmpty)
-                        NoConflictImportTokensList(
-                          title:
-                              'The contained duplicates (${importDuplicates.length}) will be ignored.',
-                          //  AppLocalizations.of(context)!.importDuplicateToken(importDuplicates.length),''
-                          titlePadding: const EdgeInsets.symmetric(
-                            horizontal: 40,
-                          ),
-                          leadingDivider:
-                              newImports.isNotEmpty ||
-                              conflictedImports.isNotEmpty ||
-                              appDuplicates.isNotEmpty,
-                          importEntries: importDuplicates,
-                          borderColor: null,
-                        ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-          AnimatedOpacity(
-            opacity: isMaxScrollOffset ? 0 : 1,
-            duration: const Duration(milliseconds: 250),
-            child: const Divider(thickness: 2, indent: 4, endIndent: 4),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(
-              ImportTokensView.pagePaddingHorizontal,
-              0,
-              ImportTokensView.pagePaddingHorizontal,
-              8,
-            ),
-            child: SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: tokensToKeep == null || tokensToKeep!.contains(null)
-                    ? null
-                    : () => Navigator.of(context).pop<List<Token>>(
-                        tokensToKeep!.whereType<Token>().toList(),
+      body: SafeArea(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Flexible(
+              child: SingleChildScrollView(
+                controller: scrollController,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: ImportTokensView.pagePaddingHorizontal,
                       ),
-                child: Text(
-                  tokensToKeep != null
-                      ? AppLocalizations.of(
-                          context,
-                        )!.importNTokens(tokensToKeep!.length)
-                      : AppLocalizations.of(context)!.ok,
-                  style: Theme.of(context).textTheme.headlineSmall,
-                  overflow: TextOverflow.fade,
-                  softWrap: false,
+                      child: Icon(
+                        widget.selectedType.icon,
+                        color: Colors.green,
+                        size: ImportTokensView.iconSize,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: ImportTokensView.itemSpacingHorizontal,
+                    ),
+                    Column(
+                      children: [
+                        if (widget.failedImports.isNotEmpty)
+                          FailedImportsList(
+                            failedImports: widget.failedImports,
+                          ),
+                        if (conflictedImports.isNotEmpty)
+                          ConflictedImportTokensList(
+                            title: AppLocalizations.of(
+                              context,
+                            )!.importConflictToken(conflictedImports.length),
+                            titlePadding: const EdgeInsets.symmetric(
+                              horizontal: 40,
+                            ),
+                            leadingDivider: widget.failedImports.isNotEmpty,
+                            importEntries: conflictedImports,
+                            onTap: _updateConflicted,
+                          ),
+                        if (newImports.isNotEmpty)
+                          NoConflictImportTokensList(
+                            title: AppLocalizations.of(
+                              context,
+                            )!.importNewToken(newImports.length),
+                            titlePadding: const EdgeInsets.symmetric(
+                              horizontal: 40,
+                            ),
+                            leadingDivider: conflictedImports.isNotEmpty,
+                            importEntries: newImports,
+                            onTap: _updateNewImports,
+                          ),
+                        if (appDuplicates.isNotEmpty)
+                          NoConflictImportTokensList(
+                            title: AppLocalizations.of(
+                              context,
+                            )!.importExistingToken(appDuplicates.length),
+                            titlePadding: const EdgeInsets.symmetric(
+                              horizontal: 40,
+                            ),
+                            leadingDivider:
+                                newImports.isNotEmpty ||
+                                conflictedImports.isNotEmpty,
+                            importEntries: appDuplicates,
+                            // borderColor: null,
+                          ),
+                        if (importDuplicates.isNotEmpty)
+                          NoConflictImportTokensList(
+                            title:
+                                'The contained duplicates (${importDuplicates.length}) will be ignored.',
+                            //  AppLocalizations.of(context)!.importDuplicateToken(importDuplicates.length),''
+                            titlePadding: const EdgeInsets.symmetric(
+                              horizontal: 40,
+                            ),
+                            leadingDivider:
+                                newImports.isNotEmpty ||
+                                conflictedImports.isNotEmpty ||
+                                appDuplicates.isNotEmpty,
+                            importEntries: importDuplicates,
+                            borderColor: null,
+                          ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ),
-          ),
-        ],
+            AnimatedOpacity(
+              opacity: isMaxScrollOffset ? 0 : 1,
+              duration: const Duration(milliseconds: 250),
+              child: const Divider(thickness: 2, indent: 4, endIndent: 4),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                ImportTokensView.pagePaddingHorizontal,
+                0,
+                ImportTokensView.pagePaddingHorizontal,
+                8,
+              ),
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed:
+                      tokensToKeep == null || tokensToKeep!.contains(null)
+                      ? null
+                      : () => Navigator.of(context).pop<List<Token>>(
+                          tokensToKeep!.whereType<Token>().toList(),
+                        ),
+                  child: Text(
+                    tokensToKeep != null
+                        ? AppLocalizations.of(
+                            context,
+                          )!.importNTokens(tokensToKeep!.length)
+                        : AppLocalizations.of(context)!.ok,
+                    style: Theme.of(context).textTheme.headlineSmall,
+                    overflow: TextOverflow.fade,
+                    softWrap: false,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

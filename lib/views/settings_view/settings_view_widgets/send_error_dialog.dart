@@ -110,7 +110,6 @@ class NoLogDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultDialog(
-      scrollable: true,
       title: Text(AppLocalizations.of(context)!.errorLogEmpty),
       actions: [
         DialogAction(
