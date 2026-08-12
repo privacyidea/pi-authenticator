@@ -24,6 +24,7 @@ import '../../utils/globals.dart';
 import '../../utils/logger.dart';
 import '../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../utils/rsa_utils.dart';
+import '../capabilities/capabilities.dart';
 import '../tokens/push_token.dart';
 import 'decline_reason.dart';
 import 'push_request.dart';
@@ -43,6 +44,7 @@ class PushDefaultRequest extends PushRequest {
     required super.expirationDate,
     required super.uri,
     required super.sslVerify,
+    super.signedCapabilities,
     super.type = PushDefaultRequest.TYPE,
     super.accepted,
     super.declineReason,
@@ -73,6 +75,7 @@ class PushDefaultRequest extends PushRequest {
       serial: data[PushRequest.SERIAL],
       expirationDate: DateTime.now().add(const Duration(minutes: 2)),
       signature: data[PushRequest.SIGNATURE],
+      signedCapabilities: SignedCapabilities.fromMessageData(data),
     );
   }
 
@@ -90,7 +93,6 @@ class PushDefaultRequest extends PushRequest {
             (p0) => p0.copyWith(url: uri, sslVerify: sslVerify),
           );
     }
-
     return super.verifySignature(token, rsaUtils: rsaUtils);
   }
 
@@ -114,8 +116,8 @@ class PushDefaultRequest extends PushRequest {
     return 'PushDefaultRequest{title: $title, question: $question, '
         'id: $id, uri: $uri, nonce: $nonce, sslVerify: $sslVerify, '
         'expirationDate: $expirationDate, serial: $serial, '
-        'signature: $signature, accepted: $accepted, '
-        'declineReason: $declineReason}';
+        'signature: $signature, signedCapabilities: $signedCapabilities, '
+        'accepted: $accepted, declineReason: $declineReason}';
   }
 
   @override
@@ -138,6 +140,7 @@ class PushDefaultRequest extends PushRequest {
     DateTime? expirationDate,
     String? serial,
     String? signature,
+    SignedCapabilities? signedCapabilities,
     bool? Function()? accepted,
     DeclineReason? Function()? declineReason,
   }) {
@@ -150,6 +153,7 @@ class PushDefaultRequest extends PushRequest {
       expirationDate: expirationDate ?? this.expirationDate,
       serial: serial ?? this.serial,
       signature: signature ?? this.signature,
+      signedCapabilities: signedCapabilities ?? this.signedCapabilities,
       accepted: accepted != null ? accepted() : this.accepted,
       declineReason: declineReason != null
           ? declineReason()

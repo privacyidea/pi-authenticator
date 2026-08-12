@@ -57,8 +57,7 @@ class _HotpVector {
     required this.length,
     required this.algo,
     required this.code,
-    this.isGoogle = true,
-  });
+  }) : isGoogle = true;
 }
 
 void main() {
@@ -79,7 +78,8 @@ void main() {
         '020989',
       ];
       for (var step = 0; step < expected.length; step++) {
-        final timeMs = step * 30 * 1000;        expect(
+        final timeMs = step * 30 * 1000;
+        expect(
           generateTOTPCodeString(
             secret: totpSecret,
             time: timeMs,
@@ -104,7 +104,8 @@ void main() {
         '995884',
       ];
       for (var step = 0; step < expected.length; step++) {
-        final timeMs = step * 30 * 1000;        expect(
+        final timeMs = step * 30 * 1000;
+        expect(
           generateTOTPCodeString(
             secret: totpSecret,
             time: timeMs,
@@ -129,7 +130,8 @@ void main() {
         '328729',
       ];
       for (var step = 0; step < expected.length; step++) {
-        final timeMs = step * 30 * 1000;        expect(
+        final timeMs = step * 30 * 1000;
+        expect(
           generateTOTPCodeString(
             secret: totpSecret,
             time: timeMs,
@@ -194,7 +196,8 @@ void main() {
           code: '408571',
         ),
       ];
-      for (final c in cases) {        expect(
+      for (final c in cases) {
+        expect(
           generateTOTPCodeString(
             secret: c.secret,
             time: c.time,
@@ -223,7 +226,8 @@ void main() {
         '084066',
         '724219',
       ];
-      for (var c = 0; c < expected.length; c++) {        expect(
+      for (var c = 0; c < expected.length; c++) {
+        expect(
           generateHOTPCodeString(
             secret: hotpSecret,
             counter: c,
@@ -249,7 +253,8 @@ void main() {
         '194815',
         '892671',
       ];
-      for (var c = 0; c < expected.length; c++) {        expect(
+      for (var c = 0; c < expected.length; c++) {
+        expect(
           generateHOTPCodeString(
             secret: hotpSecret,
             counter: c,
@@ -275,7 +280,8 @@ void main() {
         '369695',
         '370169',
       ];
-      for (var c = 0; c < expected.length; c++) {        expect(
+      for (var c = 0; c < expected.length; c++) {
+        expect(
           generateHOTPCodeString(
             secret: hotpSecret,
             counter: c,
@@ -377,7 +383,8 @@ void main() {
           code: '8235850',
         ),
       ];
-      for (final c in cases) {        expect(
+      for (final c in cases) {
+        expect(
           generateHOTPCodeString(
             secret: c.secret,
             counter: c.counter,
@@ -409,7 +416,8 @@ void main() {
           '399871',
           '520489',
         ];
-        for (var c = 0; c < expected.length; c++) {          expect(
+        for (var c = 0; c < expected.length; c++) {
+          expect(
             generateHOTPCodeString(
               secret: secret,
               counter: c,
@@ -503,7 +511,8 @@ void main() {
           isGoogle: false,
         ),
       ];
-      for (final c in cases) {        expect(
+      for (final c in cases) {
+        expect(
           generateTOTPCodeString(
             secret: c.secret,
             time: c.time,

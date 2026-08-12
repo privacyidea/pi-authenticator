@@ -16,6 +16,11 @@ PushDefaultRequest _$PushDefaultRequestFromJson(Map<String, dynamic> json) =>
       expirationDate: DateTime.parse(json['expirationDate'] as String),
       uri: Uri.parse(json['uri'] as String),
       sslVerify: json['sslVerify'] as bool,
+      signedCapabilities: json['signedCapabilities'] == null
+          ? null
+          : SignedCapabilities.fromJson(
+              json['signedCapabilities'] as Map<String, dynamic>,
+            ),
       type: json['type'] as String? ?? PushDefaultRequest.TYPE,
       accepted: json['accepted'] as bool?,
       declineReason: $enumDecodeNullable(
@@ -35,6 +40,7 @@ Map<String, dynamic> _$PushDefaultRequestToJson(PushDefaultRequest instance) =>
       'expirationDate': instance.expirationDate.toIso8601String(),
       'uri': instance.uri.toString(),
       'sslVerify': instance.sslVerify,
+      'signedCapabilities': instance.signedCapabilities?.toJson(),
       'accepted': instance.accepted,
       'declineReason': _$DeclineReasonEnumMap[instance.declineReason],
     };

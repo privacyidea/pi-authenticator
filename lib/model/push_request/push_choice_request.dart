@@ -20,6 +20,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../utils/logger.dart';
+import '../capabilities/capabilities.dart';
 import '../tokens/push_token.dart';
 import 'decline_reason.dart';
 import 'push_default_request.dart';
@@ -46,6 +47,7 @@ class PushChoiceRequest extends PushDefaultRequest {
     required super.uri,
     required super.sslVerify,
     required this.possibleAnswers,
+    super.signedCapabilities,
     super.type = PushChoiceRequest.TYPE,
     this.selectedAnswer,
     super.accepted,
@@ -78,6 +80,7 @@ class PushChoiceRequest extends PushDefaultRequest {
       serial: data[PushRequest.SERIAL],
       expirationDate: DateTime.now().add(const Duration(minutes: 2)),
       signature: data[PushRequest.SIGNATURE],
+      signedCapabilities: SignedCapabilities.fromMessageData(data),
       possibleAnswers: (data[ANSWERS] as String).split(','),
     );
   }
@@ -130,8 +133,8 @@ class PushChoiceRequest extends PushDefaultRequest {
     return 'PushChoiceRequest{title: $title, question: $question, '
         'id: $id, uri: $uri, nonce: $nonce, sslVerify: $sslVerify, '
         'expirationDate: $expirationDate, serial: $serial, '
-        'signature: $signature, accepted: $accepted, '
-        'declineReason: $declineReason, '
+        'signature: $signature, signedCapabilities: $signedCapabilities, '
+        'accepted: $accepted, declineReason: $declineReason, '
         'possibleAnswers: $possibleAnswers, selectedAnswer: $selectedAnswer}';
   }
 
@@ -145,6 +148,7 @@ class PushChoiceRequest extends PushDefaultRequest {
     DateTime? expirationDate,
     String? serial,
     String? signature,
+    SignedCapabilities? signedCapabilities,
     List<String>? possibleAnswers,
     String? selectedAnswer,
     bool? Function()? accepted,
@@ -159,6 +163,7 @@ class PushChoiceRequest extends PushDefaultRequest {
       expirationDate: expirationDate ?? this.expirationDate,
       serial: serial ?? this.serial,
       signature: signature ?? this.signature,
+      signedCapabilities: signedCapabilities ?? this.signedCapabilities,
       possibleAnswers: possibleAnswers ?? this.possibleAnswers,
       selectedAnswer: selectedAnswer ?? this.selectedAnswer,
       accepted: accepted != null ? accepted() : this.accepted,

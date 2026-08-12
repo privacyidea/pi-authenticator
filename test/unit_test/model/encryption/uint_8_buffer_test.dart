@@ -76,6 +76,7 @@ void _testUint8Buffer() {
     });
   });
 }
+
 /*
   factory Uint8Buffer.fromList(List<int> list) {
     return Uint8Buffer(data: Uint8List.fromList(list));

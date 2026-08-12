@@ -18,6 +18,7 @@
  * limitations under the License.
  */
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,6 +27,7 @@ import 'package:http/http.dart';
 import 'package:mockito/mockito.dart';
 import 'package:pointycastle/export.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
+import 'package:privacyidea_authenticator/model/push_request/push_capabilities.dart';
 import 'package:privacyidea_authenticator/model/enums/push_token_rollout_state.dart';
 import 'package:privacyidea_authenticator/model/enums/token_origin_source_type.dart';
 import 'package:privacyidea_authenticator/model/extensions/enums/token_origin_source_type.dart';
@@ -812,6 +814,95 @@ void _testTokenNotifier() {
       final state = await container.read(testProvider.future);
       expect(state, isNotNull);
       expect(state.tokens, after);
+
+      // privacyidea#5618 phase 1: "App includes a capabilities JSON array
+      // (e.g. ["decline_reason"]) in the enrollment finalize request
+      // (serial + fbtoken + pubkey)."
+      final body =
+          verify(
+                mockIOClient.doPost(
+                  url: anyNamed('url'),
+                  body: captureAnyNamed('body'),
+                  sslVerify: anyNamed('sslVerify'),
+                ),
+              ).captured.last
+              as Map<String, String?>;
+      expect(body.keys, containsAll(['serial', 'fbtoken', 'pubkey']));
+      expect(body['capabilities'], '["decline_reason"]');
+      expect(
+        jsonDecode(body['capabilities']!),
+        appPushCapabilities.names,
+        reason: 'the announced names are the shared PushCapability vocabulary',
+      );
+    });
+    test('updateFirebaseToken reports the app capabilities', () async {
+      final mockSettingsRepo = MockSettingsRepository();
+      when(
+        mockSettingsRepo.loadSettings(),
+      ).thenAnswer((_) async => SettingsState());
+      final container = ProviderContainer(
+        overrides: [
+          settingsProvider.overrideWith(
+            () => SettingsNotifier(repoOverride: mockSettingsRepo),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+      final mockRepo = MockTokenRepository();
+      final mockIOClient = MockPrivacyideaIOClient();
+      final mockRsaUtils = MockRsaUtils();
+      final token = PushToken(
+        id: 'id',
+        serial: 'serial',
+        isRolledOut: true,
+        url: Uri.parse('https://example.com'),
+      );
+      when(mockRepo.loadTokens()).thenAnswer((_) async => [token]);
+      when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
+      when(mockRepo.saveOrReplaceToken(any)).thenAnswer((_) async => true);
+      when(
+        mockRsaUtils.trySignWithToken(any, any),
+      ).thenAnswer((_) async => 'signature');
+      when(
+        mockIOClient.doPost(
+          url: anyNamed('url'),
+          body: anyNamed('body'),
+          sslVerify: anyNamed('sslVerify'),
+        ),
+      ).thenAnswer((_) async => Response('{"result": {"status": true}}', 200));
+
+      final testProvider = tokenProviderOf(
+        repo: mockRepo,
+        ioClient: mockIOClient,
+        rsaUtils: mockRsaUtils,
+        firebaseUtils: MockFirebaseUtils(),
+      );
+      await container.read(testProvider.future);
+      expect(
+        await container
+            .read(testProvider.notifier)
+            .updateFirebaseToken(token, 'newFbToken'),
+        isTrue,
+      );
+
+      // privacyidea#5618 phase 2: "Refresh the stored set from the
+      // already-signed poll / fbtoken-update channel".
+      final body =
+          verify(
+                mockIOClient.doPost(
+                  url: anyNamed('url'),
+                  body: captureAnyNamed('body'),
+                  sslVerify: anyNamed('sslVerify'),
+                ),
+              ).captured.last
+              as Map<String, String?>;
+      expect(body['capabilities'], '["decline_reason"]');
+
+      final signed =
+          verify(mockRsaUtils.trySignWithToken(any, captureAny)).captured.last
+              as String;
+      expect(signed, 'newFbToken|serial|${body['timestamp']}');
+      expect(signed, isNot(contains('decline_reason')));
     });
     test(
       'removeTokens does not run push tokens through the generic bulk-delete path',

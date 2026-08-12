@@ -21,6 +21,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../utils/logger.dart';
+import '../capabilities/capabilities.dart';
 import 'decline_reason.dart';
 import 'push_request.dart';
 
@@ -43,6 +44,7 @@ class PushCodeToPhoneRequest extends PushRequest {
     required this.displayCode,
     required super.uri,
     required super.sslVerify,
+    super.signedCapabilities,
     super.type = PushCodeToPhoneRequest.TYPE,
     super.accepted,
     super.declineReason,
@@ -73,6 +75,7 @@ class PushCodeToPhoneRequest extends PushRequest {
       serial: data[PushRequest.SERIAL],
       expirationDate: DateTime.now().add(const Duration(minutes: 2)),
       signature: data[PushRequest.SIGNATURE],
+      signedCapabilities: SignedCapabilities.fromMessageData(data),
       displayCode: data[DISPLAY_CODE],
     );
   }
@@ -102,8 +105,9 @@ class PushCodeToPhoneRequest extends PushRequest {
     return 'PushCodeToPhoneRequest{title: $title, question: $question, '
         'id: $id, uri: $uri, nonce: $nonce, sslVerify: $sslVerify, '
         'expirationDate: $expirationDate, serial: $serial, '
-        'signature: $signature, accepted: $accepted, '
-        'declineReason: $declineReason, displayCode: $displayCode}';
+        'signature: $signature, signedCapabilities: $signedCapabilities, '
+        'accepted: $accepted, declineReason: $declineReason, '
+        'displayCode: $displayCode}';
   }
 
   @override
@@ -126,6 +130,7 @@ class PushCodeToPhoneRequest extends PushRequest {
     DateTime? expirationDate,
     Uri? uri,
     bool? sslVerify,
+    SignedCapabilities? signedCapabilities,
     bool? Function()? accepted,
     DeclineReason? Function()? declineReason,
     String? displayCode,
@@ -139,6 +144,7 @@ class PushCodeToPhoneRequest extends PushRequest {
       expirationDate: expirationDate ?? this.expirationDate,
       uri: uri ?? this.uri,
       sslVerify: sslVerify ?? this.sslVerify,
+      signedCapabilities: signedCapabilities ?? this.signedCapabilities,
       accepted: accepted != null ? accepted() : this.accepted,
       declineReason: declineReason != null
           ? declineReason()

@@ -19,6 +19,7 @@
  */
 
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:json_annotation/json_annotation.dart';
 import 'package:privacyidea_authenticator/model/push_request/push_requests.dart'
@@ -27,8 +28,10 @@ import 'package:privacyidea_authenticator/model/push_request/push_requests.dart'
 import '../../utils/helpers/base32_helper.dart';
 import '../../utils/logger.dart';
 import '../../utils/rsa_utils.dart';
+import '../capabilities/capabilities.dart';
 import '../tokens/push_token.dart';
 import 'decline_reason.dart';
+import 'push_capabilities.dart';
 
 part 'push_request.g.dart';
 
@@ -52,6 +55,7 @@ abstract class PushRequest {
   final DateTime expirationDate;
   final Uri uri;
   final bool sslVerify;
+  final SignedCapabilities? signedCapabilities;
   final bool? accepted;
   final DeclineReason? declineReason;
 
@@ -65,6 +69,7 @@ abstract class PushRequest {
     required this.expirationDate,
     required this.uri,
     required this.sslVerify,
+    this.signedCapabilities,
     this.accepted,
     this.declineReason,
   });
@@ -81,6 +86,7 @@ abstract class PushRequest {
     DateTime? expirationDate,
     Uri? uri,
     bool? sslVerify,
+    SignedCapabilities? signedCapabilities,
     bool? Function()? accepted,
     DeclineReason? Function()? declineReason,
   });
@@ -105,61 +111,119 @@ abstract class PushRequest {
   String get signedData;
 
   /// Checks that [signature] is a valid signature of [signedData], created by
-  /// the server [token] was rolled out to.
+  /// the server [token] was rolled out to, including the capabilities that were
+  /// advertised alongside it.
   /// Returns false if [token] has no public server key, e.g. because it is not
   /// rolled out.
   bool verifySignature(
     PushToken token, {
     RsaUtils rsaUtils = const RsaUtils(),
   }) {
-    final rsaPublicServerKey = token.rsaPublicServerKey;
-    if (rsaPublicServerKey == null) {
+    final publicServerKey = token.rsaPublicServerKey;
+    if (publicServerKey == null) {
       Logger.warning(
         'Validating incoming message failed.',
         error: 'Push token does not contain a public server key.',
       );
       return false;
     }
-    final verified = rsaUtils.verifyRSASignature(
-      rsaPublicServerKey,
+
+    final Uint8List signatureBytes;
+    try {
+      signatureBytes = base32Decode(signature);
+    } on FormatException catch (e, s) {
+      Logger.warning(
+        'Validating incoming message failed.',
+        error: e,
+        stackTrace: s,
+      );
+      return false;
+    }
+
+    if (!rsaUtils.verifyRSASignature(
+      publicServerKey,
       utf8.encode(signedData),
-      base32Decode(signature),
-    );
-    if (!verified) {
+      signatureBytes,
+    )) {
       Logger.warning(
         'Validating incoming message failed.',
         error: 'Signature does not match signed data.',
       );
       return false;
     }
+
+    if (signedCapabilities != null &&
+        signedCapabilities!.verify(
+              publicKey: publicServerKey,
+              nonce: nonce,
+              rsaUtils: rsaUtils,
+            ) ==
+            null) {
+      return false;
+    }
+
     Logger.info('Validating incoming message was successful.');
     return true;
   }
 
+  /// The capabilities the server advertised for this request, empty if it
+  /// advertised none or if its signature over them does not verify.
+  Capabilities capabilitiesOf(
+    PushToken token, {
+    RsaUtils rsaUtils = const RsaUtils(),
+  }) {
+    final publicServerKey = token.rsaPublicServerKey;
+    if (signedCapabilities == null || publicServerKey == null) {
+      return Capabilities.none;
+    }
+    return signedCapabilities!.verify(
+          publicKey: publicServerKey,
+          nonce: nonce,
+          rsaUtils: rsaUtils,
+        ) ??
+        Capabilities.none;
+  }
+
+  /// The decline reason that may be sent to the server of [token]. Null unless
+  /// this request was declined and the server advertised that it understands
+  /// [PushCapability.declineReason] with this value.
+  DeclineReason? negotiatedDeclineReason(PushToken token) {
+    if (accepted != false || declineReason == null) return null;
+    final usable = capabilitiesOf(token).negotiate(appPushCapabilities);
+    if (!usable.supports(PushCapability.declineReason)) return null;
+    final allowed = usable.allowedValues(PushCapability.declineReason);
+    if (allowed != null && !allowed.contains(declineReason!.value)) return null;
+    return declineReason;
+  }
+
   /// The form data sent back to the server as the response to this push
   /// request.
-  Map<String, dynamic> getResponseData(PushToken token) => {
-    'serial': token.serial,
-    'nonce': nonce,
-    if (accepted == false) 'decline': '1',
-    if (accepted == false && declineReason != null)
-      'decline_reason': declineReason!.value,
-  };
+  Map<String, dynamic> getResponseData(PushToken token) {
+    final declineReason = negotiatedDeclineReason(token);
+    return {
+      'serial': token.serial,
+      'nonce': nonce,
+      if (accepted == false) 'decline': '1',
+      if (declineReason != null) 'decline_reason': declineReason.value,
+    };
+  }
 
   /// The message that must be signed with the token's private key and sent
   /// alongside [getResponseData] to authenticate the response.
-  String getResponseSignMsg(PushToken token) =>
-      '$nonce|${token.serial}'
-      '${accepted == false ? '|decline' : ''}'
-      '${accepted == false && declineReason != null ? '|${declineReason!.value}' : ''}';
+  String getResponseSignMsg(PushToken token) {
+    final declineReason = negotiatedDeclineReason(token);
+    return '$nonce|${token.serial}'
+        '${accepted == false ? '|decline' : ''}'
+        '${declineReason != null ? '|${declineReason.value}' : ''}';
+  }
 
   @override
   String toString() =>
       'PushRequest{type: $type, title: $title, question: $question, '
       'id: $id, uri: $uri, nonce: $nonce, sslVerify: $sslVerify, '
       'expirationDate: $expirationDate, serial: $serial, '
-      'signature: $signature, accepted: $accepted, '
-      'declineReason: $declineReason}';
+      'signature: $signature, signedCapabilities: $signedCapabilities, '
+      'accepted: $accepted, declineReason: $declineReason}';
 
   @override
   bool operator ==(Object other) =>
@@ -193,7 +257,6 @@ abstract class PushRequest {
     if (Uri.tryParse(data[URL] as String) == null) {
       throw ArgumentError('Push request url is a String but not a valid Uri.');
     }
-
     Logger.debug('Push request data ($data) is valid.');
   }
 }
