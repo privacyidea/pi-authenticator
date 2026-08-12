@@ -1230,6 +1230,30 @@
   "@patchNotesV4_6_1Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
+  "@patchNotesV4_8_0BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.8.0"
+  },
+  "@patchNotesV4_8_0BugFix2": {
+    "description": "Patch notes for a bug fix in version 4.8.0"
+  },
+  "@patchNotesV4_8_0BugFix3": {
+    "description": "Patch notes for a bug fix in version 4.8.0"
+  },
+  "@patchNotesV4_8_0Improvement1": {
+    "description": "Patch notes for an improvement in version 4.8.0"
+  },
+  "@patchNotesV4_8_0Improvement2": {
+    "description": "Patch notes for an improvement in version 4.8.0"
+  },
+  "@patchNotesV4_8_0NewFeature1": {
+    "description": "Patch notes for a new feature in version 4.8.0"
+  },
+  "@patchNotesV4_8_0NewFeature2": {
+    "description": "Patch notes for a new feature in version 4.8.0"
+  },
+  "@patchNotesV4_8_0NewFeature3": {
+    "description": "Patch notes for a new feature in version 4.8.0"
+  },
   "@patchNotesV4_7_3BugFix1": {
     "description": "Patch notes for a bug fix in version 4.7.3"
   },
@@ -2061,7 +2085,15 @@
   "patchNotesV4_6_0Improvement1": "Les composants internes ont été mis à jour afin de maintenir la sécurité et d'assurer la compatibilité avec les appareils les plus récents.",
   "patchNotesV4_6_1BugFix1": "Correction d'une erreur avec le panneau d'extension du TokenFolder",
   "patchNotesV4_6_1Improvement1": "Mise à jour de plusieurs dépendances.",
-  "patchNotesV4_7_3BugFix1": "Les conteneurs peuvent désormais être supprimés même s'ils ne sont plus enregistrés ou introuvables sur le serveur.",
+  "patchNotesV4_8_0BugFix1": "Correction du scintillement du widget de l'écran d'accueil sous Android.",
+  "patchNotesV4_8_0BugFix2": "Correction du paramètre de fermeture automatique des demandes push qui n'était pas enregistré.",
+  "patchNotesV4_8_0BugFix3": "Correction de l'enrôlement de jetons via la synchronisation des conteneurs lors de l'utilisation d'une URL d'enrôlement 'pia'.",
+  "patchNotesV4_8_0Improvement1": "Messages d'erreur améliorés pour les codes QR de passkey non pris en charge et les URL non valides.",
+  "patchNotesV4_8_0Improvement2": "La compilation Android a été mise à jour vers le SDK 36 et plusieurs dépendances ont été mises à jour.",
+  "patchNotesV4_8_0NewFeature1": "Ajout d'un bouton d'affichage du mot de passe dans les champs de mot de passe.",
+  "patchNotesV4_8_0NewFeature2": "Ajout d'un conseil pour exclure l'application de l'optimisation de la batterie afin que le widget de l'écran d'accueil reste à jour.",
+  "patchNotesV4_8_0NewFeature3": "Un motif est désormais envoyé au serveur lors du refus d'une demande push.",
+  "patchNotesV4_7_3BugFix1":"Les conteneurs peuvent désormais être supprimés même s'ils ne sont plus enregistrés ou introuvables sur le serveur.",
   "patchNotesV4_7_3BugFix2": "Correction d'une erreur lors du ré-enrôlement d'un conteneur déjà finalisé.",
   "patchNotesV4_7_3Improvement1": "Messages d'erreur améliorés et localisés pour les problèmes côté serveur.",
   "patchNotesV4_7_3Improvement2": "Amélioration de la journalisation des erreurs réseau avec des informations plus détaillées et des niveaux de journalisation corrects.",

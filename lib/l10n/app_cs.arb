@@ -1230,6 +1230,30 @@
   "@patchNotesV4_6_1Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
+  "@patchNotesV4_8_0BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.8.0"
+  },
+  "@patchNotesV4_8_0BugFix2": {
+    "description": "Patch notes for a bug fix in version 4.8.0"
+  },
+  "@patchNotesV4_8_0BugFix3": {
+    "description": "Patch notes for a bug fix in version 4.8.0"
+  },
+  "@patchNotesV4_8_0Improvement1": {
+    "description": "Patch notes for an improvement in version 4.8.0"
+  },
+  "@patchNotesV4_8_0Improvement2": {
+    "description": "Patch notes for an improvement in version 4.8.0"
+  },
+  "@patchNotesV4_8_0NewFeature1": {
+    "description": "Patch notes for a new feature in version 4.8.0"
+  },
+  "@patchNotesV4_8_0NewFeature2": {
+    "description": "Patch notes for a new feature in version 4.8.0"
+  },
+  "@patchNotesV4_8_0NewFeature3": {
+    "description": "Patch notes for a new feature in version 4.8.0"
+  },
   "@patchNotesV4_7_3BugFix1": {
     "description": "Patch notes for a bug fix in version 4.7.3"
   },
@@ -2061,7 +2085,15 @@
   "patchNotesV4_6_0Improvement1": "Interní komponenty byly aktualizovány, aby byla zachována bezpečnost a zajištěna kompatibilita s nejnovějšími zařízeními.",
   "patchNotesV4_6_1BugFix1": "Opravena chyba v rozbalovacím panelu TokenFolder.",
   "patchNotesV4_6_1Improvement1": "Aktualizováno několik závislostí.",
-  "patchNotesV4_7_3BugFix1": "Kontejnery lze nyní smazat, i když již nejsou registrovány nebo nebyly nalezeny na serveru.",
+  "patchNotesV4_8_0BugFix1": "Opraveno blikání widgetu na domovské obrazovce v systému Android.",
+  "patchNotesV4_8_0BugFix2": "Opraveno neukládání nastavení pro automatické zavírání push požadavků.",
+  "patchNotesV4_8_0BugFix3": "Opraveno zavádění tokenů přes synchronizaci kontejnerů při použití adresy URL pro zavedení 'pia'.",
+  "patchNotesV4_8_0Improvement1": "Vylepšené chybové zprávy pro nepodporované QR kódy passkey a neplatné adresy URL.",
+  "patchNotesV4_8_0Improvement2": "Sestavení pro Android bylo aktualizováno na SDK 36 a bylo aktualizováno několik závislostí.",
+  "patchNotesV4_8_0NewFeature1": "Do polí pro heslo bylo přidáno tlačítko pro zobrazení hesla.",
+  "patchNotesV4_8_0NewFeature2": "Přidáno upozornění na vyloučení aplikace z optimalizace baterie, aby zůstal widget na domovské obrazovce aktuální.",
+  "patchNotesV4_8_0NewFeature3": "Při odmítnutí push požadavku se nyní na server odesílá důvod.",
+  "patchNotesV4_7_3BugFix1":"Kontejnery lze nyní smazat, i když již nejsou registrovány nebo nebyly nalezeny na serveru.",
   "patchNotesV4_7_3BugFix2": "Opravena chyba při opětovném zavádění kontejneru, který již byl dokončen.",
   "patchNotesV4_7_3Improvement1": "Vylepšené a lokalizované chybové zprávy pro problémy na straně serveru.",
   "patchNotesV4_7_3Improvement2": "Vylepšené protokolování síťových chyb s podrobnějšími informacemi a správnými úrovněmi protokolování.",

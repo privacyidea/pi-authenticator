@@ -1,5 +1,15 @@
 # Changelog
 
+## [4.8.0] - 2026.08.12
+ - Added a visibility toggle to password fields
+ - Added a hint to exclude the app from battery optimization to keep the home screen widget up to date
+ - Added a reason to declined push requests, which is sent to the server
+ - Fixed flickering of the home screen widget on Android
+ - Fixed the setting to close push requests automatically not being saved
+ - Fixed enrolling tokens via container synchronization when a 'pia' enrollment URL is used
+ - Improved error messages for unsupported passkey QR codes and invalid URLs
+ - Updated the Android build to target SDK 36 and updated several dependencies
+
 ## [4.7.3] - 2026.05.28
  - Added an app-wide authentication method setting (PIN, biometrics, or either)
  - Added categories to the feedback form for more targeted feedback

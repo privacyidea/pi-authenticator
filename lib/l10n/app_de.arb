@@ -1257,6 +1257,30 @@
   "@patchNotesV4_6_1Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
+  "@patchNotesV4_8_0BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.8.0"
+  },
+  "@patchNotesV4_8_0BugFix2": {
+    "description": "Patch notes for a bug fix in version 4.8.0"
+  },
+  "@patchNotesV4_8_0BugFix3": {
+    "description": "Patch notes for a bug fix in version 4.8.0"
+  },
+  "@patchNotesV4_8_0Improvement1": {
+    "description": "Patch notes for an improvement in version 4.8.0"
+  },
+  "@patchNotesV4_8_0Improvement2": {
+    "description": "Patch notes for an improvement in version 4.8.0"
+  },
+  "@patchNotesV4_8_0NewFeature1": {
+    "description": "Patch notes for a new feature in version 4.8.0"
+  },
+  "@patchNotesV4_8_0NewFeature2": {
+    "description": "Patch notes for a new feature in version 4.8.0"
+  },
+  "@patchNotesV4_8_0NewFeature3": {
+    "description": "Patch notes for a new feature in version 4.8.0"
+  },
   "@patchNotesV4_7_3BugFix1": {
     "description": "Patch notes for a bug fix in version 4.7.3"
   },
@@ -2090,7 +2114,15 @@
   "patchNotesV4_6_0Improvement1": "Die internen Komponenten wurden aktualisiert, um die Sicherheit zu gewährleisten und die Kompatibilität mit den neuesten Geräten sicherzustellen.",
   "patchNotesV4_6_1BugFix1": "Fehler im expansion panel des TokenFolder behoben",
   "patchNotesV4_6_1Improvement1": "Mehrere Abhängigkeiten wurden aktualisiert.",
-  "patchNotesV4_7_3BugFix1": "Container können jetzt auch gelöscht werden, wenn sie auf dem Server nicht mehr registriert oder vorhanden sind.",
+  "patchNotesV4_8_0BugFix1": "Das Flackern des Homescreen-Widgets unter Android wurde behoben.",
+  "patchNotesV4_8_0BugFix2": "Ein Fehler wurde behoben, durch den die Einstellung zum automatischen Schließen von Push-Anfragen nicht gespeichert wurde.",
+  "patchNotesV4_8_0BugFix3": "Ein Fehler beim Ausrollen von Token über die Container-Synchronisierung mit einer 'pia'-Rollout-URL wurde behoben.",
+  "patchNotesV4_8_0Improvement1": "Verbesserte Fehlermeldungen für nicht unterstützte Passkey-QR-Codes und ungültige URLs.",
+  "patchNotesV4_8_0Improvement2": "Der Android-Build wurde auf SDK 36 aktualisiert und mehrere Abhängigkeiten wurden aktualisiert.",
+  "patchNotesV4_8_0NewFeature1": "Schaltfläche zum Anzeigen des Passworts in Passwortfeldern hinzugefügt.",
+  "patchNotesV4_8_0NewFeature2": "Hinweis hinzugefügt, die App von der Akkuoptimierung auszunehmen, damit das Homescreen-Widget aktuell bleibt.",
+  "patchNotesV4_8_0NewFeature3": "Beim Ablehnen einer Push-Anfrage wird jetzt ein Grund an den Server gesendet.",
+  "patchNotesV4_7_3BugFix1":"Container können jetzt auch gelöscht werden, wenn sie auf dem Server nicht mehr registriert oder vorhanden sind.",
   "patchNotesV4_7_3BugFix2": "Ein Fehler wurde behoben, der beim erneuten Ausrollen eines bereits abgeschlossenen Containers auftrat.",
   "patchNotesV4_7_3Improvement1": "Verbesserte und lokalisierte Fehlermeldungen bei serverseitigen Problemen.",
   "patchNotesV4_7_3Improvement2": "Verbesserte Protokollierung von Netzwerkfehlern mit detaillierteren Informationen und korrekten Log-Ebenen.",

@@ -1260,6 +1260,30 @@
   "@patchNotesV4_6_1Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
+  "@patchNotesV4_8_0BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.8.0"
+  },
+  "@patchNotesV4_8_0BugFix2": {
+    "description": "Patch notes for a bug fix in version 4.8.0"
+  },
+  "@patchNotesV4_8_0BugFix3": {
+    "description": "Patch notes for a bug fix in version 4.8.0"
+  },
+  "@patchNotesV4_8_0Improvement1": {
+    "description": "Patch notes for an improvement in version 4.8.0"
+  },
+  "@patchNotesV4_8_0Improvement2": {
+    "description": "Patch notes for an improvement in version 4.8.0"
+  },
+  "@patchNotesV4_8_0NewFeature1": {
+    "description": "Patch notes for a new feature in version 4.8.0"
+  },
+  "@patchNotesV4_8_0NewFeature2": {
+    "description": "Patch notes for a new feature in version 4.8.0"
+  },
+  "@patchNotesV4_8_0NewFeature3": {
+    "description": "Patch notes for a new feature in version 4.8.0"
+  },
   "@patchNotesV4_7_3BugFix1": {
     "description": "Patch notes for a bug fix in version 4.7.3"
   },
@@ -2093,7 +2117,15 @@
   "patchNotesV4_6_0Improvement1": "Internal components have been updated to maintain security and ensure compatibility with the latest devices.",
   "patchNotesV4_6_1BugFix1": "Fixed an error with the expansion panel of the TokenFolder",
   "patchNotesV4_6_1Improvement1": "Updated several dependencies",
-  "patchNotesV4_7_3BugFix1": "Containers can now be deleted even if they are no longer registered or found on the server.",
+  "patchNotesV4_8_0BugFix1": "Fixed flickering of the home screen widget on Android.",
+  "patchNotesV4_8_0BugFix2": "Fixed the setting to close push requests automatically not being saved.",
+  "patchNotesV4_8_0BugFix3": "Fixed enrolling tokens via container synchronization when a 'pia' enrollment URL is used.",
+  "patchNotesV4_8_0Improvement1": "Improved error messages for unsupported passkey QR codes and invalid URLs.",
+  "patchNotesV4_8_0Improvement2": "Updated the Android build to target SDK 36 and updated several dependencies.",
+  "patchNotesV4_8_0NewFeature1": "Added a visibility toggle to password fields.",
+  "patchNotesV4_8_0NewFeature2": "Added a hint to exclude the app from battery optimization to keep the home screen widget up to date.",
+  "patchNotesV4_8_0NewFeature3": "Added a reason to declined push requests, which is sent to the server.",
+  "patchNotesV4_7_3BugFix1":"Containers can now be deleted even if they are no longer registered or found on the server.",
   "patchNotesV4_7_3BugFix2": "Fixed an error when re-enrolling a container that was already finalized.",
   "patchNotesV4_7_3Improvement1": "Improved and localized error messages for server-side issues.",
   "patchNotesV4_7_3Improvement2": "Improved network error logging with more detailed information and correct log levels.",

@@ -1230,6 +1230,30 @@
   "@patchNotesV4_6_1Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
+  "@patchNotesV4_8_0BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.8.0"
+  },
+  "@patchNotesV4_8_0BugFix2": {
+    "description": "Patch notes for a bug fix in version 4.8.0"
+  },
+  "@patchNotesV4_8_0BugFix3": {
+    "description": "Patch notes for a bug fix in version 4.8.0"
+  },
+  "@patchNotesV4_8_0Improvement1": {
+    "description": "Patch notes for an improvement in version 4.8.0"
+  },
+  "@patchNotesV4_8_0Improvement2": {
+    "description": "Patch notes for an improvement in version 4.8.0"
+  },
+  "@patchNotesV4_8_0NewFeature1": {
+    "description": "Patch notes for a new feature in version 4.8.0"
+  },
+  "@patchNotesV4_8_0NewFeature2": {
+    "description": "Patch notes for a new feature in version 4.8.0"
+  },
+  "@patchNotesV4_8_0NewFeature3": {
+    "description": "Patch notes for a new feature in version 4.8.0"
+  },
   "@patchNotesV4_7_3BugFix1": {
     "description": "Patch notes for a bug fix in version 4.7.3"
   },
@@ -2061,7 +2085,15 @@
   "patchNotesV4_6_0Improvement1": "Interne componenten zijn bijgewerkt om de veiligheid te waarborgen en compatibiliteit met de nieuwste apparaten te garanderen.",
   "patchNotesV4_6_1BugFix1": "Een fout in het uitbreidingspaneel van de TokenFolder is verholpen.",
   "patchNotesV4_6_1Improvement1": "Verschillende afhankelijkheden bijgewerkt",
-  "patchNotesV4_7_3BugFix1": "Containers kunnen nu ook worden verwijderd als ze niet meer geregistreerd of niet gevonden zijn op de server.",
+  "patchNotesV4_8_0BugFix1": "Het flikkeren van de widget op het startscherm in Android is verholpen.",
+  "patchNotesV4_8_0BugFix2": "Een fout is verholpen waardoor de instelling voor het automatisch sluiten van pushverzoeken niet werd opgeslagen.",
+  "patchNotesV4_8_0BugFix3": "Een fout bij het uitrollen van tokens via containersynchronisatie met een 'pia'-uitrol-URL is verholpen.",
+  "patchNotesV4_8_0Improvement1": "Verbeterde foutmeldingen voor niet-ondersteunde passkey-QR-codes en ongeldige URL's.",
+  "patchNotesV4_8_0Improvement2": "De Android-build is bijgewerkt naar SDK 36 en meerdere afhankelijkheden zijn bijgewerkt.",
+  "patchNotesV4_8_0NewFeature1": "Knop om het wachtwoord weer te geven toegevoegd aan wachtwoordvelden.",
+  "patchNotesV4_8_0NewFeature2": "Tip toegevoegd om de app uit te sluiten van batterijoptimalisatie, zodat de widget op het startscherm actueel blijft.",
+  "patchNotesV4_8_0NewFeature3": "Bij het weigeren van een pushverzoek wordt nu een reden naar de server gestuurd.",
+  "patchNotesV4_7_3BugFix1":"Containers kunnen nu ook worden verwijderd als ze niet meer geregistreerd of niet gevonden zijn op de server.",
   "patchNotesV4_7_3BugFix2": "Een fout is verholpen bij het opnieuw uitrollen van een reeds afgeronde container.",
   "patchNotesV4_7_3Improvement1": "Verbeterde en gelokaliseerde foutmeldingen bij serverproblemen.",
   "patchNotesV4_7_3Improvement2": "Verbeterde logging van netwerkfouten met meer gedetailleerde informatie en juiste logniveaus.",

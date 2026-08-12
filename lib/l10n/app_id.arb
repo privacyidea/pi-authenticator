@@ -1230,6 +1230,30 @@
   "@patchNotesV4_6_1Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
+  "@patchNotesV4_8_0BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.8.0"
+  },
+  "@patchNotesV4_8_0BugFix2": {
+    "description": "Patch notes for a bug fix in version 4.8.0"
+  },
+  "@patchNotesV4_8_0BugFix3": {
+    "description": "Patch notes for a bug fix in version 4.8.0"
+  },
+  "@patchNotesV4_8_0Improvement1": {
+    "description": "Patch notes for an improvement in version 4.8.0"
+  },
+  "@patchNotesV4_8_0Improvement2": {
+    "description": "Patch notes for an improvement in version 4.8.0"
+  },
+  "@patchNotesV4_8_0NewFeature1": {
+    "description": "Patch notes for a new feature in version 4.8.0"
+  },
+  "@patchNotesV4_8_0NewFeature2": {
+    "description": "Patch notes for a new feature in version 4.8.0"
+  },
+  "@patchNotesV4_8_0NewFeature3": {
+    "description": "Patch notes for a new feature in version 4.8.0"
+  },
   "@patchNotesV4_7_3BugFix1": {
     "description": "Patch notes for a bug fix in version 4.7.3"
   },
@@ -2061,7 +2085,15 @@
   "patchNotesV4_6_0Improvement1": "Komponen internal telah diperbarui untuk menjaga keamanan dan memastikan kompatibilitas dengan perangkat terbaru.",
   "patchNotesV4_6_1BugFix1": "Perbaikan kesalahan pada panel ekspansi TokenFolder",
   "patchNotesV4_6_1Improvement1": "Memperbarui beberapa dependensi.",
-  "patchNotesV4_7_3BugFix1": "Kontainer kini dapat dihapus meskipun sudah tidak terdaftar atau tidak ditemukan di server.",
+  "patchNotesV4_8_0BugFix1": "Perbaikan kedipan widget layar beranda di Android.",
+  "patchNotesV4_8_0BugFix2": "Perbaikan pengaturan penutupan otomatis permintaan push yang tidak tersimpan.",
+  "patchNotesV4_8_0BugFix3": "Perbaikan rollout token melalui sinkronisasi kontainer saat menggunakan URL rollout 'pia'.",
+  "patchNotesV4_8_0Improvement1": "Pesan kesalahan yang lebih baik untuk kode QR passkey yang tidak didukung dan URL yang tidak valid.",
+  "patchNotesV4_8_0Improvement2": "Build Android diperbarui ke SDK 36 dan beberapa dependensi diperbarui.",
+  "patchNotesV4_8_0NewFeature1": "Ditambahkan tombol untuk menampilkan kata sandi pada kolom kata sandi.",
+  "patchNotesV4_8_0NewFeature2": "Ditambahkan petunjuk untuk mengecualikan aplikasi dari optimalisasi baterai agar widget layar beranda tetap terbarui.",
+  "patchNotesV4_8_0NewFeature3": "Alasan kini dikirim ke server saat menolak permintaan push.",
+  "patchNotesV4_7_3BugFix1":"Kontainer kini dapat dihapus meskipun sudah tidak terdaftar atau tidak ditemukan di server.",
   "patchNotesV4_7_3BugFix2": "Perbaikan kesalahan saat melakukan rollout ulang kontainer yang sudah difinalisasi.",
   "patchNotesV4_7_3Improvement1": "Pesan kesalahan untuk masalah sisi server kini lebih baik dan dilokalisasi.",
   "patchNotesV4_7_3Improvement2": "Peningkatan pencatatan kesalahan jaringan dengan informasi lebih rinci dan tingkat log yang tepat.",
