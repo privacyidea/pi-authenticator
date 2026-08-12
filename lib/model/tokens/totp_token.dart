@@ -19,7 +19,7 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
-import 'package:uuid/uuid.dart';
+import 'package:privacyidea_authenticator/utils/helpers/uuid_helper.dart';
 
 import '../../utils/logger.dart';
 import '../../utils/object_validator/object_validators.dart';
@@ -153,7 +153,7 @@ class TOTPToken extends OTPToken {
       period: validatedMap[PERIOD_SECONDS] as int,
       forceBiometricOption:
           validatedMap[Token.FORCE_BIOMETRIC_OPTION] as ForceBiometricOption,
-      id: validatedAdditionalData[Token.ID] as String? ?? const Uuid().v4(),
+      id: validatedAdditionalData[Token.ID] as String? ?? uuidV4(),
       containerSerial:
           validatedAdditionalData[Token.CONTAINER_SERIAL] as String?,
       checkedContainer:

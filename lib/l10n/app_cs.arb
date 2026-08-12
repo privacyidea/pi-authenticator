@@ -130,6 +130,18 @@
   "@backgroundImage": {
     "description": "Label for the background image setting."
   },
+  "@batteryOptimizationTitle": {
+    "description": "Tooltip for the button that opens the battery optimization dialog again."
+  },
+  "@batteryOptimizationDialogBody": {
+    "description": "Message shown as a dialog body hinting that, if the widget has problems, disabling battery optimization for the app can help."
+  },
+  "@batteryOptimizationAlreadyDisabledBody": {
+    "description": "Message shown when battery optimization is already disabled for the app."
+  },
+  "@batteryOptimizationSettingsButton": {
+    "description": "Button label to open battery optimization settings."
+  },
   "@biometricAuthNotSetupBody": {
     "description": "Message shown as a dialog body that tells the user that biometric authentication is not available on the device."
   },
@@ -835,6 +847,9 @@
       }
     }
   },
+  "@invalidHttpUrl": {
+    "description": "Error message when a url can not be requested via http or https."
+  },
   "@invalidLink": {
     "description": "Error message when the link is invalid.",
     "placeholders": {
@@ -1086,8 +1101,17 @@
     },
     "type": "text"
   },
+  "@passkeyQrCodeNotSupported": {
+    "description": "Guidance shown when a scanned QR code starts a FIDO passkey flow."
+  },
   "@password": {
     "description": "Labeltext for the password input field."
+  },
+  "@showPassword": {
+    "description": "Button to reveal the password input as plain text."
+  },
+  "@hidePassword": {
+    "description": "Button to hide the password input as plain text."
   },
   "@passwordCannotBeEmpty": {
     "description": "Hint telling the user that the password cannot be empty."
@@ -1747,6 +1771,10 @@
   "autoCloseAppAfterAcceptingPushRequestDescription": "Pokud je povoleno, aplikace se automaticky zavře po přijetí požadavku na push.",
   "autoCloseAppAfterAcceptingPushRequestTitle": "Zavřít aplikaci po přijetí požadavku",
   "backgroundImage": "Obrázek na pozadí",
+  "batteryOptimizationTitle": "Widget na domovské obrazovce",
+  "batteryOptimizationDialogBody": "Pokud máte problémy s widgetem na domovské obrazovce, může pomoci vypnout optimalizaci baterie pro aplikaci.",
+  "batteryOptimizationAlreadyDisabledBody": "Optimalizace baterie je pro tuto aplikaci deaktivována. Chcete ji znovu aktivovat pro zlepšení výdrže baterie?",
+  "batteryOptimizationSettingsButton": "Otevřít nastavení baterie",
   "biometricAuthNotSetupBody": "Chcete-li tuto akci provést, nastavte prosím biometrické ověření v nastavení svého zařízení.",
   "biometricAuthNotSetupTitle": "Biometrické ověření není nastaveno",
   "biometricAuthNotSupportedBody": "Vaše zařízení nepodporuje biometrické ověření, které je pro provedení této akce nutné.",
@@ -1813,6 +1841,7 @@
   "deviceCredentialsRequiredTitle": "Není nastaven zámek zařízení",
   "deviceCredentialsSetupDescription": "Nastave zámek zařízení v nastavení zařízení",
   "digits": "Počet číslic",
+  "disableButton": "Deaktivovat",
   "dismiss": "Zavřít",
   "done": "Hotovo",
   "edit": "Upravit",
@@ -1930,6 +1959,7 @@
   "introTokenSwipe": "Přejetím po tokenech doleva zobrazíte dostupné akce.",
   "invalidBackupFile": "Vybraný soubor není platnou zálohou {appName}.",
   "invalidHostForScheme": "Neplatný hostitel: {host} pro schéma: {scheme}",
+  "invalidHttpUrl": "Adresa URL není platná pro http/https.",
   "invalidLink": "Zadaný odkaz není platným tokenem {appName} nebo není podporován.",
   "invalidQrBackup": "Naskenovaný QR kód není platnou zálohou {appName}.",
   "invalidQrFile": "Vybraný soubor neobsahuje platný QR kód z {appName}.",
@@ -1988,6 +2018,7 @@
   "originApp": "Aplikace Origin",
   "originDetails": "Podrobnosti o původu",
   "otpValueCopiedMessage": "Heslo “{otpValue}“ bylo zkopírováno do schránky.",
+  "passkeyQrCodeNotSupported": "Tato aplikace zatím nepodporuje přístupové klíče (passkey). Použijte prosím fotoaparát nebo systémový skener QR kódů.",
   "password": "Heslo",
   "showPassword": "Zobrazit heslo",
   "hidePassword": "Skrýt heslo",

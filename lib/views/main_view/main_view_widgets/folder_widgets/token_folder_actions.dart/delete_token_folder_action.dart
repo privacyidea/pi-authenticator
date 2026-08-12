@@ -71,7 +71,6 @@ class DeleteTokenFolderAction extends ConsumerSlideableAction {
 
   void _showDialog() => showAsyncDialog(
     builder: (BuildContext context) => DefaultDialog(
-      scrollable: true,
       title: Text(AppLocalizations.of(context)!.confirmDeletion),
       content: Text(
         AppLocalizations.of(context)!.confirmDeletionOf(folder.label),

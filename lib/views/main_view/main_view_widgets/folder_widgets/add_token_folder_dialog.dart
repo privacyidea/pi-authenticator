@@ -65,7 +65,6 @@ class _AddTokenFolderDialogState extends ConsumerState<AddTokenFolderDialog> {
     final localizations = AppLocalizations.of(context)!;
 
     return DefaultDialog(
-      scrollable: true,
       title: Text(localizations.addANewFolder),
       content: Form(
         key: _formKey,
@@ -100,6 +99,7 @@ class _AddTokenFolderDialogState extends ConsumerState<AddTokenFolderDialog> {
       await ref
           .read(introductionNotifierProvider.notifier)
           .complete(Introduction.addFolder);
+      if (!ref.context.mounted) return;
     }
 
     ref.read(tokenFolderProvider.notifier).addNewFolder(_textController.text);

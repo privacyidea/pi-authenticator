@@ -18,16 +18,22 @@
  * limitations under the License.
  */
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:local_auth/local_auth.dart';
+import 'package:mockito/mockito.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/model/push_request/push_default_request.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
+import 'package:privacyidea_authenticator/utils/lock_auth.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/push_request_provider.dart';
 import 'package:privacyidea_authenticator/widgets/button_widgets/push_action_button.dart';
 import 'package:privacyidea_authenticator/widgets/dialog_widgets/default_dialog.dart';
 import 'package:privacyidea_authenticator/widgets/dialog_widgets/push_request_dialogs/push_request_dialog.dart';
+import 'package:privacyidea_authenticator/widgets/dialog_widgets/push_request_dialogs/widgets/push_request_base_info.dart';
 
 import '../../../../../tests_app_wrapper.mocks.dart';
 
@@ -92,12 +98,76 @@ void main() {
       expect(declineButton.intent, ActionIntent.destructive);
     });
 
-    testWidgets('dialog is not scrollable by default', (tester) async {
+    testWidgets('question scrolls while the buttons stay in place', (
+      tester,
+    ) async {
       await tester.pumpWidget(createWidgetUnderTest());
       await tester.pump();
 
       final dialog = tester.widget<DefaultDialog>(find.byType(DefaultDialog));
-      expect(dialog.scrollable, isFalse);
+      expect(dialog.scrollableContent, isFalse);
+      expect(
+        find.ancestor(
+          of: find.byType(PushRequestBaseInfo),
+          matching: find.byType(SingleChildScrollView),
+        ),
+        findsOneWidget,
+      );
     });
+
+    testWidgets(
+      'accept stays disabled and ignores completed auth after disposal',
+      (tester) async {
+        final authCompleter = Completer<bool>();
+        final mockLocalAuth = MockLocalAuthentication();
+        when(mockLocalAuth.isDeviceSupported()).thenAnswer((_) async => true);
+        when(
+          mockLocalAuth.authenticate(
+            localizedReason: anyNamed('localizedReason'),
+            biometricOnly: anyNamed('biometricOnly'),
+            authMessages: anyNamed('authMessages'),
+          ),
+        ).thenAnswer((_) => authCompleter.future);
+        localAuthInstance = mockLocalAuth;
+        resetAuthMutex();
+        addTearDown(() {
+          localAuthInstance = LocalAuthentication();
+          resetAuthMutex();
+        });
+
+        await tester.pumpWidget(
+          ProviderScope(
+            child: MaterialApp(
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              home: PushDefaultDialog(
+                pushRequest: mockRequest,
+                token: PushToken(serial: 's', id: 'id', isLocked: true),
+              ),
+            ),
+          ),
+        );
+        await tester.pump();
+
+        final acceptAction = find.widgetWithText(PushActionButton, 'Accept');
+        await tester.tap(acceptAction);
+        await tester.pump(const Duration(milliseconds: 1100));
+
+        final acceptButton = tester.widget<ElevatedButton>(
+          find.descendant(
+            of: acceptAction,
+            matching: find.byType(ElevatedButton),
+          ),
+        );
+        final acceptStayedDisabled = acceptButton.onPressed == null;
+
+        await tester.pumpWidget(const SizedBox.shrink());
+        authCompleter.complete(true);
+        await tester.pump();
+
+        expect(acceptStayedDisabled, isTrue);
+        expect(tester.takeException(), isNull);
+      },
+    );
   });
 }

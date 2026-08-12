@@ -1,3 +1,22 @@
+/*
+ * privacyIDEA Authenticator
+ *
+ * Author: Frank Merkel <frank.merkel@netknights.it>
+ *
+ * Copyright (c) 2026 NetKnights GmbH
+ *
+ * Licensed under the Apache License, Version 2.0 (the 'License');
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an 'AS IS' BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -7,6 +26,7 @@ import 'package:privacyidea_authenticator/model/enums/ec_key_algorithm.dart';
 import 'package:privacyidea_authenticator/model/token_container.dart';
 import 'package:privacyidea_authenticator/repo/secure_storage.dart';
 import 'package:privacyidea_authenticator/repo/secure_token_container_repository.dart';
+import 'package:privacyidea_authenticator/utils/identifiers.dart';
 
 import '../../tests_app_wrapper.mocks.dart';
 
@@ -18,22 +38,21 @@ void main() {
   late SecureTokenContainerRepository repository;
 
   // Prefixes are derived from the repository implementation.
-  const legacyPrefix = 'containerCredentials';
-  const newPrefix = 'app_v4_token_container';
+  const legacyPrefix = SECURE_REPO_PREFIX_LEGACY_TOKEN_CONTAINER;
+  const newPrefix = SECURE_REPO_PREFIX_TOKEN_CONTAINER;
 
   setUp(() {
     mockStorage = MockFlutterSecureStorage();
     mockLegacyStorage = MockFlutterSecureStorage();
     // The repository uses these prefixes internally to create SecureStorage instances.
     storage = SecureStorage(
-      storagePrefix: SecureTokenContainerRepository.TOKEN_CONTAINER_PREFIX,
+      storagePrefix: SECURE_REPO_PREFIX_TOKEN_CONTAINER,
       storage: mockStorage,
     );
     legacyStorage = SecureStorage(
-      storagePrefix:
-          SecureTokenContainerRepository.TOKEN_CONTAINER_PREFIX_LEGACY,
+      storagePrefix: SECURE_REPO_PREFIX_LEGACY_TOKEN_CONTAINER,
       storage: mockLegacyStorage,
-      seperator: '.',
+      separator: '.',
     );
     repository = SecureTokenContainerRepository(
       storage: storage,

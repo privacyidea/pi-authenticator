@@ -19,7 +19,7 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart';
+import 'package:privacyidea_authenticator/utils/helpers/uuid_helper.dart';
 
 import '../../../../../../../model/extensions/enums/token_origin_source_type.dart';
 import '../../../../model/enums/algorithms.dart';
@@ -69,7 +69,7 @@ class AddSteamManually extends AddTokenManuallyPage {
     }
     Logger.info('Input is valid, building Steam token');
     return SteamToken(
-      id: const Uuid().v4(),
+      id: uuidV4(),
       type: TokenTypes.STEAM.name,
       origin: TokenOriginSourceType.manually.toTokenOrigin(),
       label: labelController.text,

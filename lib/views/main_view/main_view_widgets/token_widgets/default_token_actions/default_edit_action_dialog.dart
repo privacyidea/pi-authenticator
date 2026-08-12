@@ -97,7 +97,6 @@ class _DefaultEditActionDialogState
     final appLocalizations = AppLocalizations.of(context)!;
     final origin = token.origin;
     return DefaultDialog(
-      scrollable: true,
       title: Text(
         appLocalizations.renameToken,
         overflow: TextOverflow.fade,
@@ -203,9 +202,11 @@ class _DefaultEditActionDialogState
   }
 
   Future<void> _saveButtonPressed() async {
-    widget.onSaveButtonPressed!(
+    await widget.onSaveButtonPressed!(
       newLabel: nameInputController.text,
-      newImageUrl: imageUrlController.text,
+      newImageUrl: imageUrlController.text.isEmpty
+          ? null
+          : imageUrlController.text,
     );
   }
 
@@ -310,22 +311,22 @@ class _EditActionExpansionTileState extends State<EditActionExpansionTile>
         curve: Curves.fastOutSlowIn,
       );
     }
-    return AnimatedBuilder(
-      animation: animation!,
-      builder: (buildContext, _) => Container(
-        margin: const EdgeInsets.symmetric(vertical: 8.0),
-        padding: EdgeInsets.only(bottom: animation!.value * 16.0),
-        decoration: BoxDecoration(
-          color: Theme.of(context).cardColor,
-          borderRadius: BorderRadius.circular(12.0),
-          boxShadow: [
-            BoxShadow(
-              color: Theme.of(context).shadowColor,
-              blurRadius: 5.0,
-              offset: const Offset(0, 3.0),
-            ),
-          ],
-        ),
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12.0),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).shadowColor,
+            blurRadius: 5.0,
+            offset: const Offset(0, 3.0),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(12.0),
+        clipBehavior: Clip.antiAlias,
         child: Theme(
           data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
           child: ExpansionTile(
@@ -354,12 +355,13 @@ class _EditActionExpansionTileState extends State<EditActionExpansionTile>
                 controller!.reverse();
               }
             },
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Column(children: widget.children),
-              ),
-            ],
+            // Sits inside the card so the shadow does not grow with it.
+            childrenPadding: const EdgeInsets.only(
+              left: 16.0,
+              right: 16.0,
+              bottom: 16.0,
+            ),
+            children: [Column(children: widget.children)],
           ),
         ),
       ),

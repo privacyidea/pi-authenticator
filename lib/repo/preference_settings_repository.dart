@@ -17,7 +17,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import 'package:mutex/mutex.dart';
+import 'package:privacyidea_authenticator/utils/helpers/mutex.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../interfaces/repo/settings_repository.dart';
@@ -30,8 +30,7 @@ class PreferenceSettingsRepository extends SettingsRepository {
   static const String _showGuideOnStartKey = 'KEY_SHOW_GUIDE_ON_START';
   static const String _prefHideOtps = 'KEY_HIDE_OTPS';
   static const String _prefEnablePoll = 'KEY_ENABLE_POLLING';
-  static const String _crashReportRecipientsKey =
-      'KEY_CRASH_REPORT_RECIPIENTS'; // TODO Use this if the server supports it
+  static const String _crashReportRecipientsKey = 'KEY_CRASH_REPORT_RECIPIENTS';
   static const String _localePreferenceKey = 'KEY_LOCALE_PREFERENCE';
   static const String _useSystemLocaleKey = 'KEY_USE_SYSTEM_LOCALE';
   static const String _enableLoggingKey = 'KEY_VERBOSE_LOGGING';
@@ -40,6 +39,8 @@ class PreferenceSettingsRepository extends SettingsRepository {
   static const String _showBackgroundImageKey = 'KEY_HIDE_BACKGROUND_IMAGE';
   static const String _allowScreenshotKey = 'KEY_ALLOW_SCREENSHOTS';
   static const String _appAuthMethodKey = 'KEY_APP_AUTH_METHOD';
+  static const String _autoCloseAppAfterAcceptingPushRequestKey =
+      'KEY_AUTO_CLOSE_APP_AFTER_ACCEPTING_PUSH_REQUEST';
 
   static final Future<SharedPreferences> _preferences =
       SharedPreferences.getInstance();
@@ -72,6 +73,9 @@ class PreferenceSettingsRepository extends SettingsRepository {
           : null,
       showBackgroundImage: prefs.getBool(_showBackgroundImageKey),
       allowScreenshots: prefs.getBool(_allowScreenshotKey),
+      autoCloseAppAfterAcceptingPushRequest: prefs.getBool(
+        _autoCloseAppAfterAcceptingPushRequestKey,
+      ),
       appAuthMethod: ForceBiometricOptionX.fromString(
         prefs.getString(_appAuthMethodKey),
       ),
@@ -119,6 +123,12 @@ class PreferenceSettingsRepository extends SettingsRepository {
         prefs.setBool(_showBackgroundImageKey, settings.showBackgroundImage),
       if (_lastState?.allowScreenshots != settings.allowScreenshots)
         prefs.setBool(_allowScreenshotKey, settings.allowScreenshots),
+      if (_lastState?.autoCloseAppAfterAcceptingPushRequest !=
+          settings.autoCloseAppAfterAcceptingPushRequest)
+        prefs.setBool(
+          _autoCloseAppAfterAcceptingPushRequestKey,
+          settings.autoCloseAppAfterAcceptingPushRequest,
+        ),
       if (_lastState?.appAuthMethod != settings.appAuthMethod)
         prefs.setString(_appAuthMethodKey, settings.appAuthMethod.name),
     ];

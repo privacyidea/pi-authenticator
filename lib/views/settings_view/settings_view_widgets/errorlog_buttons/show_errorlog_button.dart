@@ -54,6 +54,8 @@ void _pressShowErrorLog(BuildContext context) {
           vertical: size.height * 0.085,
         ),
         child: DefaultDialog(
+          // The log brings its own reversed scroll view.
+          scrollableContent: false,
           title: Text(AppLocalizations.of(context)!.errorLogTitle),
           actions: [
             DialogAction(
@@ -65,20 +67,26 @@ void _pressShowErrorLog(BuildContext context) {
           content: SingleChildScrollView(
             reverse: true,
             physics: const BouncingScrollPhysics(),
-            child: FutureBuilder<Object>(
-              future: Logger.getErrorLog(),
+            child: FutureBuilder<String>(
+              future: Logger.getErrorLogTail(),
               builder: (context, errorLog) {
+                if (errorLog.connectionState != ConnectionState.done) {
+                  return const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: CircularProgressIndicator.adaptive(),
+                  );
+                }
                 return Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: errorLog.data != null
-                      ? Text(
-                          errorLog.data.toString(),
-                          style: const TextStyle(
-                            fontFamily: 'monospace',
-                            fontSize: 8,
-                          ),
-                        )
-                      : const CircularProgressIndicator.adaptive(),
+                  child: Text(
+                    errorLog.hasError
+                        ? errorLog.error.toString()
+                        : (errorLog.data ?? ''),
+                    style: const TextStyle(
+                      fontFamily: 'monospace',
+                      fontSize: 8,
+                    ),
+                  ),
                 );
               },
             ),

@@ -47,7 +47,7 @@ class SettingsGroupAuthMethod extends ConsumerWidget {
       context: context,
       builder: (_) => const AuthMethodDialog(),
     );
-    if (selected == null) return;
+    if (selected == null || !ref.context.mounted) return;
     final current = ref.read(appAuthMethodProvider);
     if (selected == current) return;
     if (!context.mounted) return;
@@ -57,7 +57,7 @@ class SettingsGroupAuthMethod extends ConsumerWidget {
       from: current,
       to: selected,
     );
-    if (!ok) return;
+    if (!ok || !ref.context.mounted) return;
     Logger.info('App auth method changing: $current -> $selected');
     await ref.read(settingsProvider.notifier).setAppAuthMethod(selected);
   }

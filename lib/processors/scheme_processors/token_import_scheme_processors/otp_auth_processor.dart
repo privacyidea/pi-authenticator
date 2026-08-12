@@ -22,6 +22,7 @@ import 'dart:typed_data';
 import '../../../model/enums/encodings.dart';
 import '../../../model/enums/token_origin_source_type.dart';
 import '../../../model/enums/token_types.dart';
+import '../../../model/exception_errors/localized_exception.dart';
 import '../../../model/extensions/enums/encodings_extension.dart';
 import '../../../model/extensions/enums/token_origin_source_type.dart';
 import '../../../model/processor_result.dart';
@@ -105,7 +106,9 @@ class OtpAuthProcessor extends TokenImportSchemeProcessor {
       );
       return [
         ProcessorResultFailed(
-          (l) => l.unableToCreateToken,
+          e is LocalizedException
+              ? e.localizedMessage
+              : (l) => l.unableToCreateToken,
           error: e,
           resultHandlerType: resultHandlerType,
         ),

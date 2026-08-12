@@ -21,9 +21,9 @@
 import 'dart:convert';
 
 import 'package:asn1lib/asn1lib.dart';
-import 'package:base32/base32.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pointycastle/export.dart';
+import 'package:privacyidea_authenticator/utils/helpers/base32_helper.dart';
 
 import '../model/tokens/push_token.dart';
 import '../utils/crypto_utils.dart';
@@ -41,9 +41,12 @@ class RsaUtils {
   ///     publicExponent    INTEGER   -- e
   /// }
   RSAPublicKey deserializeRSAPublicKeyPKCS1(String keyStr) {
-    ASN1Sequence asn1sequence = ASN1Parser(base64.decode(keyStr)).nextObject() as ASN1Sequence;
-    BigInt modulus = (asn1sequence.elements[0] as ASN1Integer).valueAsBigInteger;
-    BigInt exponent = (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger;
+    ASN1Sequence asn1sequence =
+        ASN1Parser(base64.decode(keyStr)).nextObject() as ASN1Sequence;
+    BigInt modulus =
+        (asn1sequence.elements[0] as ASN1Integer).valueAsBigInteger;
+    BigInt exponent =
+        (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger;
 
     return RSAPublicKey(modulus, exponent);
   }
@@ -76,26 +79,33 @@ class RsaUtils {
   ///     parameters      ANY DEFINED BY algorithm OPTIONAL
   /// }
   RSAPublicKey deserializeRSAPublicKeyPKCS8(String keyStr) {
-    var baseSequence = ASN1Parser(base64.decode(keyStr)).nextObject() as ASN1Sequence;
+    var baseSequence =
+        ASN1Parser(base64.decode(keyStr)).nextObject() as ASN1Sequence;
 
     var encodedAlgorithm = baseSequence.elements[0];
 
-    var algorithm = ASN1Parser(encodedAlgorithm.contentBytes()).nextObject() as ASN1ObjectIdentifier;
+    var algorithm =
+        ASN1Parser(encodedAlgorithm.contentBytes()).nextObject()
+            as ASN1ObjectIdentifier;
 
     if (algorithm.identifier != '1.2.840.113549.1.1.1') {
       throw ArgumentError.value(
-          algorithm.identifier,
-          'algorithm.identifier',
-          'Identifier of algorgorithm does not math identifier of RSA '
-              '(1.2.840.113549.1.1.1).');
+        algorithm.identifier,
+        'algorithm.identifier',
+        'Identifier of algorgorithm does not math identifier of RSA '
+            '(1.2.840.113549.1.1.1).',
+      );
     }
 
     var encodedKey = baseSequence.elements[1];
 
-    var asn1sequence = ASN1Parser(encodedKey.contentBytes()).nextObject() as ASN1Sequence;
+    var asn1sequence =
+        ASN1Parser(encodedKey.contentBytes()).nextObject() as ASN1Sequence;
 
-    BigInt modulus = (asn1sequence.elements[0] as ASN1Integer).valueAsBigInteger;
-    BigInt exponent = (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger;
+    BigInt modulus =
+        (asn1sequence.elements[0] as ASN1Integer).valueAsBigInteger;
+    BigInt exponent =
+        (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger;
 
     return RSAPublicKey(modulus, exponent);
   }
@@ -156,8 +166,12 @@ class RsaUtils {
       ..add(ASN1Integer(key.privateExponent!)) // d
       ..add(ASN1Integer(key.p!)) // p
       ..add(ASN1Integer(key.q!)) // q
-      ..add(ASN1Integer(key.privateExponent! % (key.p! - BigInt.one))) // d mod (p-1)
-      ..add(ASN1Integer(key.privateExponent! % (key.q! - BigInt.one))) // d mod (q-1)
+      ..add(
+        ASN1Integer(key.privateExponent! % (key.p! - BigInt.one)),
+      ) // d mod (p-1)
+      ..add(
+        ASN1Integer(key.privateExponent! % (key.q! - BigInt.one)),
+      ) // d mod (q-1)
       ..add(ASN1Integer(key.q!.modInverse(key.p!))); // q^(-1) mod p
 
     return base64.encode(s.encodedBytes);
@@ -182,10 +196,13 @@ class RsaUtils {
   /// Version ::= INTEGER { two-prime(0), multi(1) }
   /// (CONSTRAINED BY {-- version must be multi if otherPrimeInfos present --})
   RSAPrivateKey deserializeRSAPrivateKeyPKCS1(String keyStr) {
-    Uint8List  keyBytes = base64.decode(keyStr);
-    ASN1Sequence asn1sequence = ASN1Parser(keyBytes).nextObject() as ASN1Sequence;
-    BigInt modulus = (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger;
-    BigInt exponent = (asn1sequence.elements[2] as ASN1Integer).valueAsBigInteger;
+    Uint8List keyBytes = base64.decode(keyStr);
+    ASN1Sequence asn1sequence =
+        ASN1Parser(keyBytes).nextObject() as ASN1Sequence;
+    BigInt modulus =
+        (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger;
+    BigInt exponent =
+        (asn1sequence.elements[2] as ASN1Integer).valueAsBigInteger;
     BigInt p = (asn1sequence.elements[4] as ASN1Integer).valueAsBigInteger;
     BigInt q = (asn1sequence.elements[5] as ASN1Integer).valueAsBigInteger;
 
@@ -193,15 +210,31 @@ class RsaUtils {
   }
 
   /// signedMessage is what was allegedly signed, signature gets validated
-  bool verifyRSASignature(RSAPublicKey publicKey, Uint8List signedMessage, Uint8List signature) {
-    RSASigner signer = Signer(DEFAULT_SIGNING_ALGORITHM) as RSASigner; // Get algorithm from registry
-    signer.init(false, PublicKeyParameter<RSAPublicKey>(publicKey)); // false to validate
+  bool verifyRSASignature(
+    RSAPublicKey publicKey,
+    Uint8List signedMessage,
+    Uint8List signature,
+  ) {
+    RSASigner signer =
+        Signer(DEFAULT_SIGNING_ALGORITHM)
+            as RSASigner; // Get algorithm from registry
+    signer.init(
+      false,
+      PublicKeyParameter<RSAPublicKey>(publicKey),
+    ); // false to validate
 
     bool isVerified = false;
     try {
-      isVerified = signer.verifySignature(signedMessage, RSASignature(signature));
+      isVerified = signer.verifySignature(
+        signedMessage,
+        RSASignature(signature),
+      );
     } on ArgumentError catch (e, s) {
-      Logger.warning('Verifying signature failed due to ${e.name}', error: e, stackTrace: s);
+      Logger.warning(
+        'Verifying signature failed due to ${e.name}',
+        error: e,
+        stackTrace: s,
+      );
     }
 
     return isVerified;
@@ -215,35 +248,60 @@ class RsaUtils {
   /// Returns the signature on success and null on failure.
   Future<String?> trySignWithToken(PushToken token, String message) async {
     if (token.privateTokenKey != null) {
-      return createBase32Signature(token.rsaPrivateTokenKey!, utf8.encode(message));
+      return createBase32Signature(
+        token.rsaPrivateTokenKey!,
+        utf8.encode(message),
+      );
     }
-    Logger.warning('Token ${token.serial} does not have a private key. Cannot sign message.');
+    Logger.warning(
+      'Token ${token.serial} does not have a private key. Cannot sign message.',
+    );
     return null;
   }
 
-  Future<AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey>> generateRSAKeyPair() async {
+  Future<AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey>>
+  generateRSAKeyPair() async {
     Logger.info('Start generating RSA key pair');
-    AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey> keyPair = await compute(_generateRSAKeyPairIsolate, 4096);
+    AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey> keyPair = await compute(
+      _generateRSAKeyPairIsolate,
+      4096,
+    );
     Logger.info('Finished generating RSA key pair');
     return keyPair;
   }
 
   /// Computationally costly method to be run in an isolate.
-  AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey> _generateRSAKeyPairIsolate(int bitLength) {
-    final keyGen = RSAKeyGenerator()..init(ParametersWithRandom(RSAKeyGeneratorParameters(BigInt.parse('65537'), bitLength, 64), secureRandom()));
+  AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey> _generateRSAKeyPairIsolate(
+    int bitLength,
+  ) {
+    final keyGen = RSAKeyGenerator()
+      ..init(
+        ParametersWithRandom(
+          RSAKeyGeneratorParameters(BigInt.parse('65537'), bitLength, 64),
+          secureRandom(),
+        ),
+      );
 
     final pair = keyGen.generateKeyPair();
 
-    return AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey>(pair.publicKey as RSAPublicKey, pair.privateKey as RSAPrivateKey);
+    return AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey>(
+      pair.publicKey,
+      pair.privateKey,
+    );
   }
 
   String createBase32Signature(RSAPrivateKey privateKey, Uint8List dataToSign) {
-    return base32.encode(createRSASignature(privateKey, dataToSign));
+    return base32Encode(createRSASignature(privateKey, dataToSign));
   }
 
   Uint8List createRSASignature(RSAPrivateKey privateKey, Uint8List dataToSign) {
-    RSASigner signer = Signer(DEFAULT_SIGNING_ALGORITHM) as RSASigner; // Get algorithm from registry
-    signer.init(true, PrivateKeyParameter<RSAPrivateKey>(privateKey)); // true to sign
+    RSASigner signer =
+        Signer(DEFAULT_SIGNING_ALGORITHM)
+            as RSASigner; // Get algorithm from registry
+    signer.init(
+      true,
+      PrivateKeyParameter<RSAPrivateKey>(privateKey),
+    ); // true to sign
 
     return signer.generateSignature(dataToSign).bytes;
   }

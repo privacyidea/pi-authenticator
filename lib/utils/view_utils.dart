@@ -87,12 +87,18 @@ ScaffoldFeatureController<SnackBar, SnackBarClosedReason>? _showSnackBar(
   return globalSnackbarKey.currentState!.showSnackBar(snackBar);
 }
 
+/// Returns [ref] if it still belongs to a mounted widget, otherwise falls back
+/// to [globalRef]. Reading a provider with the [WidgetRef] of an unmounted
+/// widget throws, so status messages must never use a stale ref.
+WidgetRef? _mountedRefOrGlobal(WidgetRef? ref) =>
+    ref != null && ref.context.mounted ? ref : globalRef;
+
 void showErrorStatusMessage({
   required String Function(AppLocalizations) message,
   String Function(AppLocalizations)? details,
   WidgetRef? ref,
 }) {
-  ref ??= globalRef;
+  ref = _mountedRefOrGlobal(ref);
   final l = AppLocalizationsEn();
   Logger.warning(
     details != null ? '${message(l)}: ${details(l)}' : message(l),
@@ -110,7 +116,7 @@ void showSuccessStatusMessage({
   String Function(AppLocalizations)? details,
   WidgetRef? ref,
 }) {
-  ref ??= globalRef;
+  ref = _mountedRefOrGlobal(ref);
   final l = AppLocalizationsEn();
   Logger.info(details != null ? '${message(l)}: ${details(l)}' : message(l));
   if (ref == null) {
@@ -127,7 +133,7 @@ void showNeutralStatusMessage({
   String Function(AppLocalizations)? details,
   WidgetRef? ref,
 }) {
-  ref ??= globalRef;
+  ref = _mountedRefOrGlobal(ref);
   final l = AppLocalizationsEn();
   Logger.info(details != null ? '${message(l)}: ${details(l)}' : message(l));
   if (ref == null) {

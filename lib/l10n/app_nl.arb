@@ -130,6 +130,18 @@
   "@backgroundImage": {
     "description": "Label for the background image setting."
   },
+  "@batteryOptimizationTitle": {
+    "description": "Tooltip for the button that opens the battery optimization dialog again."
+  },
+  "@batteryOptimizationDialogBody": {
+    "description": "Message shown as a dialog body hinting that, if the widget has problems, disabling battery optimization for the app can help."
+  },
+  "@batteryOptimizationAlreadyDisabledBody": {
+    "description": "Message shown when battery optimization is already disabled for the app."
+  },
+  "@batteryOptimizationSettingsButton": {
+    "description": "Button label to open battery optimization settings."
+  },
   "@biometricAuthNotSetupBody": {
     "description": "Message shown as a dialog body that tells the user that biometric authentication is not available on the device."
   },
@@ -835,6 +847,9 @@
       }
     }
   },
+  "@invalidHttpUrl": {
+    "description": "Error message when a url can not be requested via http or https."
+  },
   "@invalidLink": {
     "description": "Error message when the link is invalid.",
     "placeholders": {
@@ -1086,8 +1101,17 @@
     },
     "type": "text"
   },
+  "@passkeyQrCodeNotSupported": {
+    "description": "Guidance shown when a scanned QR code starts a FIDO passkey flow."
+  },
   "@password": {
     "description": "Labeltext for the password input field."
+  },
+  "@showPassword": {
+    "description": "Button to reveal the password input as plain text."
+  },
+  "@hidePassword": {
+    "description": "Button to hide the password input as plain text."
   },
   "@passwordCannotBeEmpty": {
     "description": "Hint telling the user that the password cannot be empty."
@@ -1747,6 +1771,10 @@
   "autoCloseAppAfterAcceptingPushRequestDescription": "Indien ingeschakeld, wordt de app automatisch gesloten na het accepteren van een push-verzoek.",
   "autoCloseAppAfterAcceptingPushRequestTitle": "App sluiten na push-verzoek",
   "backgroundImage": "Achtergrondafbeelding",
+  "batteryOptimizationTitle": "Startscherm-widget",
+  "batteryOptimizationDialogBody": "Als je problemen met de startscherm-widget hebt, kan het helpen om de batterijoptimalisatie voor de app uit te schakelen.",
+  "batteryOptimizationAlreadyDisabledBody": "Batterijoptimalisatie is uitgeschakeld voor deze app. Wilt u het opnieuw inschakelen om de batterijduur te verbeteren?",
+  "batteryOptimizationSettingsButton": "Batterij-instellingen openen",
   "biometricAuthNotSetupBody": "Stel biometrische authenticatie in via de instellingen van uw apparaat om deze handeling uit te voeren.",
   "biometricAuthNotSetupTitle": "Biometrische authenticatie is niet ingesteld",
   "biometricAuthNotSupportedBody": "Uw apparaat ondersteunt geen biometrische authenticatie, wat vereist is om deze handeling uit te voeren.",
@@ -1813,6 +1841,7 @@
   "deviceCredentialsRequiredTitle": "Inloggevens van het apparaat zijn niet ingesteld",
   "deviceCredentialsSetupDescription": "Stel de inloggegevens in, bij de instellingen van het apparaat",
   "digits": "Cijfers",
+  "disableButton": "Uitschakelen",
   "dismiss": "Sluiten",
   "done": "Klaar",
   "edit": "Bewerken",
@@ -1930,6 +1959,7 @@
   "introTokenSwipe": "Veeg tokens naar links om beschikbare acties te zien.",
   "invalidBackupFile": "Het geselecteerde bestand is geen geldige backup van {appName}.",
   "invalidHostForScheme": "Ongeldige host: {host} voor schema: {scheme}",
+  "invalidHttpUrl": "URL niet geldig voor http/https.",
   "invalidLink": "De ingevoerde link is geen geldig token van {appName}, of wordt niet ondersteund.",
   "invalidQrBackup": "De gescande QR code is geen geldige backup van {appName}.",
   "invalidQrFile": "Het geselecteerde bestand bevat geen geldige QR code van {appName}.",
@@ -1988,6 +2018,7 @@
   "originApp": "Oorsprong app",
   "originDetails": "Details over de oorsprong",
   "otpValueCopiedMessage": "Wachtwoord “{otpValue}“ gekopieerd naar het klembord.",
+  "passkeyQrCodeNotSupported": "Deze app ondersteunt passkeys nog niet. Gebruik de camera of de QR-scanner van het systeem.",
   "password": "Wachtwoord",
   "showPassword": "Wachtwoord weergeven",
   "hidePassword": "Wachtwoord verbergen",

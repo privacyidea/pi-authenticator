@@ -11,6 +11,10 @@ plugins {
 dependencies {
     // Add this [coreLibraryDesugaring] inside [dependencies]
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'
+    // Keep this version in sync with the WorkManager version bundled by the home_widget
+    // plugin. Gradle otherwise silently resolves to the higher version; matching it
+    // explicitly keeps the RescheduleReceiver keep-alive (see PiApplication) predictable.
+    implementation "androidx.work:work-runtime-ktx:2.11.2"
 }
 
 def localProperties = new Properties()
@@ -64,7 +68,7 @@ android {
     defaultConfig {
         applicationId "it.netknights.piauthenticator"
         minSdkVersion flutter.minSdkVersion
-        targetSdkVersion 35
+        targetSdkVersion 36
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }

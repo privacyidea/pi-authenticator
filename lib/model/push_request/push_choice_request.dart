@@ -17,16 +17,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import 'dart:convert';
-
-import 'package:base32/base32.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-import '../../utils/globals.dart';
 import '../../utils/logger.dart';
-import '../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
-import '../../utils/rsa_utils.dart';
+import '../capabilities/capabilities.dart';
 import '../tokens/push_token.dart';
+import 'decline_reason.dart';
 import 'push_default_request.dart';
 import 'push_request.dart';
 
@@ -51,9 +47,11 @@ class PushChoiceRequest extends PushDefaultRequest {
     required super.uri,
     required super.sslVerify,
     required this.possibleAnswers,
+    super.signedCapabilities,
     super.type = PushChoiceRequest.TYPE,
     this.selectedAnswer,
     super.accepted,
+    super.declineReason,
   });
 
   factory PushChoiceRequest.fromJson(Map<String, dynamic> json) =>
@@ -64,7 +62,8 @@ class PushChoiceRequest extends PushDefaultRequest {
 
   @override
   String get signedData =>
-      '$nonce|$uri|$serial|$question|$title|${sslVerify ? '1' : '0'}${'|${possibleAnswers.join(",")}'}';
+      '$nonce|$uri|$serial|$question|$title|${sslVerify ? '1' : '0'}'
+      '|${possibleAnswers.join(",")}';
 
   factory PushChoiceRequest.fromMessageData(Map<String, dynamic> data) {
     try {
@@ -81,6 +80,7 @@ class PushChoiceRequest extends PushDefaultRequest {
       serial: data[PushRequest.SERIAL],
       expirationDate: DateTime.now().add(const Duration(minutes: 2)),
       signature: data[PushRequest.SIGNATURE],
+      signedCapabilities: SignedCapabilities.fromMessageData(data),
       possibleAnswers: (data[ANSWERS] as String).split(','),
     );
   }
@@ -97,38 +97,7 @@ class PushChoiceRequest extends PushDefaultRequest {
     return selectedAnswer != null ? '$baseMsg|$selectedAnswer' : baseMsg;
   }
 
-  @override
-  bool verifySignature(
-    PushToken token, {
-    RsaUtils rsaUtils = const RsaUtils(),
-  }) {
-    // Re-add url and sslverify to android legacy tokens:
-    if (token.url == null) {
-      globalRef
-          ?.read(tokenProvider.notifier)
-          .updateToken(
-            token,
-            (p0) => p0.copyWith(url: uri, sslVerify: sslVerify),
-          );
-    }
-
-    final verified = rsaUtils.verifyRSASignature(
-      token.rsaPublicServerKey!,
-      utf8.encode(signedData),
-      base32.decode(signature),
-    );
-    if (!verified) {
-      Logger.warning(
-        'Validating incoming message failed.',
-        error: 'Signature does not match signed data.',
-      );
-      return false;
-    }
-    Logger.info('Validating incoming message was successful.');
-    return true;
-  }
-
-  // Verify that the data is valid.
+  /// Verify that the data is valid.
   static void verifyMessageData(Map<String, dynamic> data) {
     PushDefaultRequest.verifyMessageData(data);
     if (data[ANSWERS] is! String) {
@@ -162,9 +131,10 @@ class PushChoiceRequest extends PushDefaultRequest {
   @override
   String toString() {
     return 'PushChoiceRequest{title: $title, question: $question, '
-        'id: $id, uri: $uri, _nonce: $nonce, sslVerify: $sslVerify, '
+        'id: $id, uri: $uri, nonce: $nonce, sslVerify: $sslVerify, '
         'expirationDate: $expirationDate, serial: $serial, '
-        'signature: $signature, accepted: $accepted, '
+        'signature: $signature, signedCapabilities: $signedCapabilities, '
+        'accepted: $accepted, declineReason: $declineReason, '
         'possibleAnswers: $possibleAnswers, selectedAnswer: $selectedAnswer}';
   }
 
@@ -178,9 +148,11 @@ class PushChoiceRequest extends PushDefaultRequest {
     DateTime? expirationDate,
     String? serial,
     String? signature,
+    SignedCapabilities? signedCapabilities,
     List<String>? possibleAnswers,
     String? selectedAnswer,
     bool? Function()? accepted,
+    DeclineReason? Function()? declineReason,
   }) {
     return PushChoiceRequest(
       title: title ?? this.title,
@@ -191,9 +163,26 @@ class PushChoiceRequest extends PushDefaultRequest {
       expirationDate: expirationDate ?? this.expirationDate,
       serial: serial ?? this.serial,
       signature: signature ?? this.signature,
+      signedCapabilities: signedCapabilities ?? this.signedCapabilities,
       possibleAnswers: possibleAnswers ?? this.possibleAnswers,
       selectedAnswer: selectedAnswer ?? this.selectedAnswer,
       accepted: accepted != null ? accepted() : this.accepted,
+      declineReason: declineReason != null
+          ? declineReason()
+          : this.declineReason,
+    );
+  }
+
+  @override
+  PushChoiceRequest dynamicCopyWith({
+    bool? Function()? accepted,
+    DeclineReason? Function()? declineReason,
+    String? selectedAnswer,
+  }) {
+    return copyWith(
+      accepted: accepted,
+      declineReason: declineReason,
+      selectedAnswer: selectedAnswer,
     );
   }
 }

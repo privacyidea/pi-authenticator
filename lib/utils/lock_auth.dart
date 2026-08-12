@@ -26,8 +26,8 @@ import 'package:local_auth/local_auth.dart';
 import 'package:local_auth_android/local_auth_android.dart';
 import 'package:local_auth_darwin/local_auth_darwin.dart';
 import 'package:material_symbols_icons/material_symbols_icons.dart';
-import 'package:mutex/mutex.dart';
 import 'package:privacyidea_authenticator/model/enums/force_biometric_option.dart';
+import 'package:privacyidea_authenticator/utils/helpers/mutex.dart';
 
 import '../l10n/app_localizations.dart';
 import '../model/extensions/enums/force_biometric_option_extension.dart';

@@ -61,7 +61,8 @@ class PrivacyideaIOClient {
     } on HandshakeException catch (e, _) {
       Logger.warning(
         'Network permission trigger handshake failed (sslVerify: $sslVerify)',
-        error: '${e.type}: ${e.message}'
+        error:
+            '${e.type}: ${e.message}'
             '${e.osError != null ? ', osError: ${e.osError}' : ''}',
       );
       showErrorStatusMessage(
@@ -77,7 +78,10 @@ class PrivacyideaIOClient {
       );
       return false;
     } on ArgumentError catch (e, _) {
-      Logger.warning('Network permission trigger invalid URL', error: e.message);
+      Logger.warning(
+        'Network permission trigger invalid URL',
+        error: e.message,
+      );
       showErrorStatusMessage(
         message: (localization) => localization.connectionFailed,
         details: (localization) => localization.invalidUrl,
@@ -85,7 +89,10 @@ class PrivacyideaIOClient {
       return false;
     } on SocketException catch (e, _) {
       if (isRetry) {
-        Logger.warning('Network permission trigger failed after retry', error: e.message);
+        Logger.warning(
+          'Network permission trigger failed after retry',
+          error: e.message,
+        );
         showErrorStatusMessage(
           message: (localization) => localization.connectionFailed,
           details: (localization) => localization.checkYourNetwork,
@@ -94,7 +101,11 @@ class PrivacyideaIOClient {
       }
       return Future.delayed(
         const Duration(seconds: 10),
-        () => triggerNetworkAccessPermission(url: url, sslVerify: sslVerify, isRetry: true),
+        () => triggerNetworkAccessPermission(
+          url: url,
+          sslVerify: sslVerify,
+          isRetry: true,
+        ),
       );
     } on TimeoutException {
       if (isRetry) {
@@ -107,10 +118,18 @@ class PrivacyideaIOClient {
       }
       return Future.delayed(
         const Duration(seconds: 10),
-        () => triggerNetworkAccessPermission(url: url, sslVerify: sslVerify, isRetry: true),
+        () => triggerNetworkAccessPermission(
+          url: url,
+          sslVerify: sslVerify,
+          isRetry: true,
+        ),
       );
     } catch (e, stack) {
-      Logger.error('Network permission trigger failed unexpectedly', error: e, stackTrace: stack);
+      Logger.error(
+        'Network permission trigger failed unexpectedly',
+        error: e,
+        stackTrace: stack,
+      );
       return false;
     } finally {
       ioClient.close();
@@ -123,6 +142,7 @@ class PrivacyideaIOClient {
     required Uri url,
     required Map<String, String?> body,
     bool sslVerify = true,
+    Set<int> expectedErrorStatusCodes = const {},
   }) async {
     if (kIsWeb) return Response('Platform not supported', 405);
     Logger.info('Sending post request (SSLVerify: $sslVerify)');
@@ -137,7 +157,7 @@ class PrivacyideaIOClient {
         nullEntries.add(entry.key);
       }
       throw ArgumentError(
-        'Can not send request because the argument [body] contains a null values'
+        'Cannot send request because the argument [body] contains null values'
         ' at entries $nullEntries, this is not permitted.',
       );
     }
@@ -188,16 +208,19 @@ class PrivacyideaIOClient {
     }
 
     if (HttpStatusChecker.isError(response.statusCode)) {
-      Logger.warning(
-        'Received unexpected response',
-        error:
-            'Status code: ${response.statusCode}'
-            '\nPosted body: $body'
-            '\nResponse: ${response.body}\n',
-        stackTrace: StackTrace.current,
-      );
+      if (expectedErrorStatusCodes.contains(response.statusCode)) {
+        Logger.info('Received expected HTTP ${response.statusCode} response');
+      } else {
+        Logger.warning(
+          'Received unexpected response',
+          error:
+              'Status code: ${response.statusCode}'
+              '\nPosted body: $body'
+              '\nResponse: ${response.body}\n',
+          stackTrace: StackTrace.current,
+        );
+      }
     }
-    ioClient.close();
 
     return response;
   }
@@ -233,18 +256,16 @@ class PrivacyideaIOClient {
 
     IOClient ioClient = IOClient(httpClient);
 
-    StringBuffer buffer = StringBuffer(url);
-
-    if (parameters.isNotEmpty) {
-      buffer.write('?');
-      buffer.writeAll(
-        parameters.entries.map((e) => '${e.key}=${e.value}'),
-        '&',
-      );
-    }
+    final uri = parameters.isEmpty
+        ? url
+        : url.replace(
+            queryParameters: {
+              ...url.queryParametersAll,
+              for (final entry in parameters.entries) entry.key: entry.value!,
+            },
+          );
 
     Response response;
-    Uri uri = Uri.parse(buffer.toString());
     try {
       response = await ioClient.get(uri).timeout(const Duration(seconds: 15));
     } on HandshakeException catch (e, _) {
@@ -284,15 +305,25 @@ class PrivacyideaIOClient {
 }
 
 extension ResponseBuilder on Response {
+  static const connectionFailureHeader = 'x-privacyidea-connection-failure';
+
+  bool get isConnectionFailure => headers[connectionFailureHeader] == 'true';
+
   static Response fromMessage(String message) =>
       _getResponseFromMessage(message);
   static Response fromStatusCode(int statusCode) =>
       _getResponseFromStatusCode(statusCode);
 
-  static Response _getResponseFromMessage(String message) =>
-      Response(message, messageToCode[message] ?? 520);
-  static Response _getResponseFromStatusCode(int statusCode) =>
-      Response(codeToMessage[statusCode] ?? 'Unknown Error', statusCode);
+  static Response _getResponseFromMessage(String message) => Response(
+    message,
+    messageToCode[message] ?? 520,
+    headers: {connectionFailureHeader: 'true'},
+  );
+  static Response _getResponseFromStatusCode(int statusCode) => Response(
+    codeToMessage[statusCode] ?? 'Unknown Error',
+    statusCode,
+    headers: {connectionFailureHeader: 'true'},
+  );
 
   static final messageToCode = {
     'Continue': 100,

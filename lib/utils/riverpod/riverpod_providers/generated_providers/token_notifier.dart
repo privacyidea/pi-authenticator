@@ -25,9 +25,9 @@ import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:mutex/mutex.dart';
 import 'package:pointycastle/asymmetric/api.dart';
 import 'package:privacyidea_authenticator/model/extensions/token_list_extension.dart';
+import 'package:privacyidea_authenticator/utils/helpers/mutex.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/localization_notifier.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -39,6 +39,7 @@ import '../../../../model/enums/push_token_rollout_state.dart';
 import '../../../../model/enums/token_import_type.dart';
 import '../../../../model/enums/token_origin_source_type.dart';
 import '../../../../model/processor_result.dart';
+import '../../../../model/push_request/push_capabilities.dart';
 import '../../../../model/riverpod_states/token_state.dart';
 import '../../../../model/tokens/hotp_token.dart';
 import '../../../../model/tokens/otp_token.dart';
@@ -48,6 +49,7 @@ import '../../../../processors/scheme_processors/token_import_scheme_processors/
 import '../../../../repo/secure_token_repository.dart';
 import '../../../../views/import_tokens_view/pages/import_plain_tokens_page.dart';
 import '../../../firebase_utils.dart';
+import '../../../helpers/json_canonicalizer.dart';
 import '../../../globals.dart';
 import '../../../http_status_checker.dart';
 import '../../../lock_auth.dart';
@@ -78,14 +80,11 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   final _stateMutex = Mutex();
 
   TokenNotifier({
-    TokenRepository? repoOverride,
-    RsaUtils? rsaUtilsOverride,
-    PrivacyideaIOClient? ioClientOverride,
-    FirebaseUtils? firebaseUtilsOverride,
-  }) : _repoOverride = repoOverride,
-       _rsaUtilsOverride = rsaUtilsOverride,
-       _ioClientOverride = ioClientOverride,
-       _firebaseUtilsOverride = firebaseUtilsOverride;
+    this._repoOverride,
+    this._rsaUtilsOverride,
+    this._ioClientOverride,
+    this._firebaseUtilsOverride,
+  });
 
   @override
   TokenRepository get repo => _repoOverride ?? super.repo;
@@ -111,10 +110,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     required PrivacyideaIOClient ioClient,
     required FirebaseUtils firebaseUtils,
   }) async {
-    await _stateMutex.acquire();
-    final newState = await _loadStateFromRepo();
-    _stateMutex.release();
-    return newState;
+    return _stateMutex.protect(() => _loadStateFromRepo());
   }
   //   /*
   //   /////////////////////////////////////////////////////////////////////////////
@@ -124,134 +120,126 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   //   */
 
   /// Loads the tokens from the repository and returns them as a [TokenState].
-  Future<TokenState> _loadStateFromRepo() async {
-    await _repoMutex.acquire();
+  Future<TokenState> _loadStateFromRepo() => _repoMutex.protect(() async {
     final tokens = await repo.loadTokens();
-    final newState = TokenState(tokens: tokens, lastlyUpdatedTokens: tokens);
-    _repoMutex.release();
-    return newState;
-  }
+    return TokenState(tokens: tokens, lastlyUpdatedTokens: tokens);
+  });
 
   /// Adds a token and returns true if successful, false if not.
   /// Updates repo and state.
-  Future<bool> _addOrReplaceToken(Token token) async {
-    await _repoMutex.acquire();
-    final success = await repo.saveOrReplaceToken(token);
-    _repoMutex.release();
-    await _stateMutex.acquire();
-    final currentId = (await future).currentOf(token)?.id;
-    if (currentId != null) {
-      token = token.copyWith(id: currentId);
-    }
-    if (!success) {
-      Logger.warning('Saving token failed. Token: ${token.id}');
-      _stateMutex.release();
-      return false;
-    }
-    state = AsyncValue.data((await future).addOrReplaceToken(token));
-    _stateMutex.release();
-    return true;
+  Future<bool> _addOrReplaceToken(Token token) {
+    return _stateMutex.protect(() async {
+      final success = await _repoMutex.protect(
+        () => repo.saveOrReplaceToken(token),
+      );
+      final currentId = (await future).currentOf(token)?.id;
+      if (currentId != null) {
+        token = token.copyWith(id: currentId);
+      }
+      if (!success) {
+        Logger.warning('Saving token failed. Token: ${token.id}');
+        return false;
+      }
+      state = AsyncValue.data((await future).addOrReplaceToken(token));
+      return true;
+    });
   }
 
   /// Adds a list of tokens and returns the tokens that could not be added or replaced.
   /// Updates repo and state.
-  Future<List<Token>> _addOrReplaceTokens(List<Token> tokens) async {
-    await _stateMutex.acquire();
-    tokens = [...tokens, ...(await future).tokens].filterDuplicates();
-    if (tokens.isEmpty) {
-      _stateMutex.release();
-      return [];
-    }
-    Logger.debug('Adding ${tokens.length} tokens.', verbose: true);
-    // We set currentState because the map function cant be async
-    final currentState = await future;
-    tokens = tokens.map((token) {
-      final currentId = currentState.currentOf(token)?.id;
-      if (currentId != null) return token.copyWith(id: currentId);
-      return token;
-    }).toList();
-    await _repoMutex.acquire();
-    final failedTokens = await repo.saveOrReplaceTokens(tokens);
-    _repoMutex.release();
-    if (failedTokens.isNotEmpty) {
-      Logger.warning(
-        'Saving tokens failed. Failed Tokens: ${failedTokens.length}',
+  Future<List<Token>> _addOrReplaceTokens(List<Token> tokens) {
+    return _stateMutex.protect(() async {
+      tokens = [...tokens, ...(await future).tokens].filterDuplicates();
+      if (tokens.isEmpty) {
+        return [];
+      }
+      Logger.debug('Adding ${tokens.length} tokens.', verbose: true);
+      // We set currentState because the map function cant be async
+      final currentState = await future;
+      tokens = tokens.map((token) {
+        final currentId = currentState.currentOf(token)?.id;
+        if (currentId != null) return token.copyWith(id: currentId);
+        return token;
+      }).toList();
+      final failedTokens = await _repoMutex.protect(
+        () => repo.saveOrReplaceTokens(tokens),
       );
-    }
-    // Every token that is saved should not be in the failedTokens list
-    final savedTokens = tokens
-        .where((element) => !failedTokens.contains(element))
-        .toList();
-    // Add the saved tokens to the state
-    Logger.info('Saved ${savedTokens.length} Tokens to storage.');
-    state = AsyncValue.data((await future).addOrReplaceTokens(savedTokens));
-    Logger.debug('New State: ${(await future).tokens.length} Tokens');
-    _stateMutex.release();
-    return [];
+      if (failedTokens.isNotEmpty) {
+        Logger.warning(
+          'Saving tokens failed. Failed Tokens: ${failedTokens.length}',
+        );
+      }
+      // Every token that is saved should not be in the failedTokens list
+      final savedTokens = tokens
+          .where((element) => !failedTokens.contains(element))
+          .toList();
+      // Add the saved tokens to the state
+      Logger.info('Saved ${savedTokens.length} Tokens to storage.');
+      state = AsyncValue.data((await future).addOrReplaceTokens(savedTokens));
+      Logger.debug('New State: ${(await future).tokens.length} Tokens');
+      return failedTokens;
+    });
   }
 
   /// Replaces a token if it exists and returns true if successful, false if not.
   /// Updates repo and state.
-  Future<bool> _replaceToken(Token token) async {
-    await _stateMutex.acquire();
-    final (newState, replaced) = (await future).replaceToken(token);
-    if (!replaced) {
-      Logger.warning('Tried to replace a token that does not exist.');
-      _stateMutex.release();
-      return false;
-    }
-    await _repoMutex.acquire();
-    final saved = await repo.saveOrReplaceToken(token);
-    _repoMutex.release();
-    if (!saved) {
-      Logger.warning('Saving token failed. Token: ${token.id}');
-      _stateMutex.release();
-      return false;
-    }
-    state = AsyncValue.data(newState);
-    _stateMutex.release();
-    return true;
+  Future<bool> _replaceToken(Token token) {
+    return _stateMutex.protect(() async {
+      final (newState, replaced) = (await future).replaceToken(token);
+      if (!replaced) {
+        Logger.warning('Tried to replace a token that does not exist.');
+        return false;
+      }
+      final saved = await _repoMutex.protect(
+        () => repo.saveOrReplaceToken(token),
+      );
+      if (!saved) {
+        Logger.warning('Saving token failed. Token: ${token.id}');
+        return false;
+      }
+      state = AsyncValue.data(newState);
+      return true;
+    });
   }
 
   /// Returns a list of tokens that could not be replaced
   /// Updates repo and state.
-  Future<List<T>> _replaceTokens<T extends Token>(List<T> tokens) async {
-    await _stateMutex.acquire();
-    final failedToReplace = (await future).replaceTokens(tokens);
-    if (failedToReplace.isNotEmpty) {
-      Logger.warning('Failed to replace ${failedToReplace.length} tokens');
-      _stateMutex.release();
-      return failedToReplace;
-    }
-    tokens = tokens
-        .where((element) => !failedToReplace.contains(element))
-        .toList();
-    await _repoMutex.acquire();
-    final failedToSave = await repo.saveOrReplaceTokens<T>(tokens);
-    _repoMutex.release();
-    if (failedToSave.isNotEmpty) {
-      Logger.warning('Failed to save ${failedToSave.length} tokens');
-    }
-    tokens = tokens
-        .where((element) => !failedToSave.contains(element))
-        .toList();
-    state = AsyncValue.data((await future).addOrReplaceTokens(tokens));
-    _stateMutex.release();
-    return [];
+  Future<List<T>> _replaceTokens<T extends Token>(List<T> tokens) {
+    return _stateMutex.protect(() async {
+      final failedToReplace = (await future).replaceTokens(tokens);
+      if (failedToReplace.isNotEmpty) {
+        Logger.warning('Failed to replace ${failedToReplace.length} tokens');
+        return failedToReplace;
+      }
+      tokens = tokens
+          .where((element) => !failedToReplace.contains(element))
+          .toList();
+      final failedToSave = await _repoMutex.protect(
+        () => repo.saveOrReplaceTokens<T>(tokens),
+      );
+      if (failedToSave.isNotEmpty) {
+        Logger.warning('Failed to save ${failedToSave.length} tokens');
+      }
+      tokens = tokens
+          .where((element) => !failedToSave.contains(element))
+          .toList();
+      state = AsyncValue.data((await future).addOrReplaceTokens(tokens));
+      return failedToSave;
+    });
   }
 
   /// Removes a token and returns true if successful, false if not.
   Future<bool> _removeToken(Token token) async {
-    await _repoMutex.acquire();
-    final success = await repo.deleteToken(token);
-    _repoMutex.release();
-    if (!success) {
-      Logger.warning('Deleting token failed. Token: ${token.id}');
-      return false;
-    }
-    await _stateMutex.acquire();
-    state = AsyncValue.data((await future).withoutToken(token));
-    _stateMutex.release();
+    final success = await _stateMutex.protect(() async {
+      final deleted = await _repoMutex.protect(() => repo.deleteToken(token));
+      if (!deleted) {
+        Logger.warning('Deleting token failed. Token: ${token.id}');
+        return false;
+      }
+      state = AsyncValue.data((await future).withoutToken(token));
+      return true;
+    });
+    if (!success) return false;
     await _handlePushTokensIfExist();
     return true;
   }
@@ -260,57 +248,60 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   Future<List<Token>> _removeTokens(List<Token> tokens) async {
     if (tokens.isEmpty) return [];
     Logger.info('Removing ${tokens.length} tokens.');
-    await _repoMutex.acquire();
-    final failedTokens = await repo.deleteTokens(tokens);
-    _repoMutex.release();
-    if (failedTokens.isNotEmpty) {
-      Logger.warning(
-        'Deleting tokens failed. Failed Tokens: ${failedTokens.length}',
+    final failedTokens = await _stateMutex.protect(() async {
+      final failedTokens = await _repoMutex.protect(
+        () => repo.deleteTokens(tokens),
       );
-      return failedTokens;
-    }
-    tokens = tokens
-        .where((element) => !failedTokens.contains(element))
-        .toList();
-    await _stateMutex.acquire();
-    state = AsyncValue.data((await future).withoutTokens(tokens));
-    _stateMutex.release();
+      if (failedTokens.isNotEmpty) {
+        Logger.warning(
+          'Deleting tokens failed. Failed Tokens: ${failedTokens.length}',
+        );
+        return failedTokens;
+      }
+      final remainingTokens = tokens
+          .where((element) => !failedTokens.contains(element))
+          .toList();
+      state = AsyncValue.data((await future).withoutTokens(remainingTokens));
+      return <Token>[];
+    });
+    if (failedTokens.isNotEmpty) return failedTokens;
     await _handlePushTokensIfExist();
     return [];
   }
 
   /// Loads the tokens from the repository sets it as the new state and returns the new(await future).
   Future<TokenState> _updateStateFromRepo() async {
-    TokenState newState;
-
-    try {
-      await _stateMutex.acquire();
-      List<Token> tokens;
-      await _repoMutex.acquire();
-      tokens = await repo.loadTokens();
-      _repoMutex.release();
-      newState = TokenState(tokens: tokens, lastlyUpdatedTokens: tokens);
-      state = AsyncValue.data(newState);
-      _stateMutex.release();
-    } catch (e) {
-      Logger.error('Loading tokens from storage failed.', error: e);
-      _stateMutex.release();
-      return (await future);
-    }
+    TokenState? newState;
+    newState = await _stateMutex.protect(() async {
+      try {
+        final tokens = await _repoMutex.protect(() => repo.loadTokens());
+        final loadedState = TokenState(
+          tokens: tokens,
+          lastlyUpdatedTokens: tokens,
+        );
+        state = AsyncValue.data(loadedState);
+        return loadedState;
+      } catch (e) {
+        Logger.error('Loading tokens from storage failed.', error: e);
+        return null;
+      }
+    });
+    if (newState == null) return (await future);
     await _handlePushTokensIfExist();
     return newState;
   }
 
   Future<bool> _saveStateToRepo() async {
-    try {
-      await _repoMutex.acquire();
-      await repo.saveOrReplaceTokens((await future).tokens);
-      _repoMutex.release();
-    } catch (e) {
-      Logger.error('Saving tokens to storage failed.', error: e);
-      return false;
-    }
-    return true;
+    final tokens = (await future).tokens;
+    return _repoMutex.protect(() async {
+      try {
+        await repo.saveOrReplaceTokens(tokens);
+        return true;
+      } catch (e) {
+        Logger.error('Saving tokens to storage failed.', error: e);
+        return false;
+      }
+    });
   }
 
   /*
@@ -482,7 +473,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   Future<void> removeTokens(List<Token> tokens) async {
     Logger.info('Removing ${tokens.length} tokens.');
     final pushTokens = tokens.whereType<PushToken>().toList();
-    final otherTokens = tokens.whereType<Token>().toList();
+    final otherTokens = tokens.where((token) => token is! PushToken).toList();
     await _removeTokens(otherTokens);
     for (var token in pushTokens) {
       await _removePushToken(token);
@@ -603,8 +594,9 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       ref
           .read(statusProvider.notifier)
           .show(
-            (loc) => loc.errorRollOutNotPossibleAnymore,
-            details: (loc) => loc.errorTokenExpired(token.label),
+            (localization) => localization.errorRollOutNotPossibleAnymore,
+            details: (localization) =>
+                localization.errorTokenExpired(token.label),
           );
       await _removeToken(token);
       return false;
@@ -685,6 +677,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
           'pubkey': rsaUtils.serializeRSAPublicKeyPKCS8(
             token.rsaPublicTokenKey!,
           ),
+          'capabilities': canonicalizeJson(appPushCapabilities.names),
         },
       );
 
@@ -724,7 +717,10 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       Logger.error('Roll out failed.', error: e, stackTrace: s);
       ref
           .read(statusProvider.notifier)
-          .show((loc) => loc.errorRollOutUnknownError(token.label));
+          .show(
+            (localization) =>
+                localization.errorRollOutUnknownError(token.label),
+          );
       await _updateStatus(token, PushTokenRollOutState.sendRSAPublicKeyFailed);
       return false;
     }
@@ -777,71 +773,70 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     }
 
     Logger.info('Updating firebase token for ${tokens.length} push tokens.');
-    await _updateFbTokenMutex.acquire();
-    final List<PushToken> failedTokens = [];
-    final List<PushToken> unsuportedTokens = [];
-    final pollOnlyTokens = tokens.where((t) => t.isPollOnly == true).toList();
-    final notPollOnlyTokens = tokens
-        .where((t) => t.isPollOnly != true)
-        .toList();
+    return _updateFbTokenMutex.protect(() async {
+      final List<PushToken> failedTokens = [];
+      final List<PushToken> unsupportedTokens = [];
+      final pollOnlyTokens = tokens.where((t) => t.isPollOnly == true).toList();
+      final notPollOnlyTokens = tokens
+          .where((t) => t.isPollOnly != true)
+          .toList();
 
-    try {
-      Logger.info('Updating firebase token if needed.');
+      try {
+        Logger.info('Updating firebase token if needed.');
 
-      if (notPollOnlyTokens.isNotEmpty) {
-        if (firebaseUtils.initializedFirebase == false) {
-          await firebaseUtils.initializeApp();
+        if (notPollOnlyTokens.isNotEmpty) {
+          if (firebaseUtils.initializedFirebase == false) {
+            await firebaseUtils.initializeApp();
+          }
+          firebaseToken ??= await firebaseUtils.getFBToken();
+          if (firebaseToken == null) {
+            failedTokens.addAll(notPollOnlyTokens);
+          } else {
+            for (final token in notPollOnlyTokens) {
+              if (!token.isRolledOut || token.fbToken == firebaseToken) {
+                // Skip if the token is not rolled out or the fbToken is already up to date
+                continue;
+              }
+              if (token.url == null) {
+                unsupportedTokens.add(token);
+                continue;
+              }
+              final success = await updateFirebaseToken(token, firebaseToken!);
+              if (!success) {
+                failedTokens.add(token);
+              }
+            }
+          }
         }
-        firebaseToken ??= await firebaseUtils.getFBToken();
-        if (firebaseToken == null) {
-          failedTokens.addAll(notPollOnlyTokens);
-        } else {
-          for (final token in notPollOnlyTokens) {
-            if (!token.isRolledOut || token.fbToken == firebaseToken) {
-              // Skip if the token is not rolled out or the fbToken is already up to date
-              continue;
-            }
+
+        if (pollOnlyTokens.isNotEmpty) {
+          final noFbToken = await NoFirebaseUtils().getFBToken();
+          for (final token in pollOnlyTokens) {
             if (token.url == null) {
-              unsuportedTokens.add(token);
+              unsupportedTokens.add(token);
               continue;
             }
-            final success = await updateFirebaseToken(token, firebaseToken);
+            final success = await updateFirebaseToken(token, noFbToken);
             if (!success) {
               failedTokens.add(token);
             }
           }
         }
-      }
 
-      if (pollOnlyTokens.isNotEmpty) {
-        final noFbToken = await NoFirebaseUtils().getFBToken();
-        for (final token in pollOnlyTokens) {
-          if (token.url == null) {
-            unsuportedTokens.add(token);
-            continue;
-          }
-          final success = await updateFirebaseToken(token, noFbToken);
-          if (!success) {
-            failedTokens.add(token);
-          }
+        final allUpdated = failedTokens.isEmpty && unsupportedTokens.isEmpty;
+        if (allUpdated && firebaseToken != null) {
+          await firebaseUtils.setCurrentFirebaseToken(firebaseToken!);
         }
+      } catch (e, s) {
+        Logger.error(
+          'Error while updating firebase token.',
+          error: e,
+          stackTrace: s,
+        );
+        return null;
       }
-
-      final allUpdated = failedTokens.isEmpty && unsuportedTokens.isEmpty;
-      if (allUpdated && firebaseToken != null) {
-        await firebaseUtils.setCurrentFirebaseToken(firebaseToken);
-      }
-    } catch (e, s) {
-      Logger.error(
-        'Error while updating firebase token.',
-        error: e,
-        stackTrace: s,
-      );
-      _updateFbTokenMutex.release();
-      return null;
-    }
-    _updateFbTokenMutex.release();
-    return (failedTokens, unsuportedTokens);
+      return (failedTokens, unsupportedTokens);
+    });
   }
 
   Future<bool> updateFirebaseToken(
@@ -872,6 +867,8 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
         'serial': token.serial,
         'timestamp': timestamp,
         'signature': signature,
+        // Not part of the signed message, see pollForChallenge.
+        'capabilities': canonicalizeJson(appPushCapabilities.names),
       },
       sslVerify: token.sslVerify,
     );
@@ -880,7 +877,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       return false;
     }
     Logger.info('Updating firebase token for push token succeeded!');
-    _updateToken(token, (p0) => p0.copyWith(fbToken: firebaseToken));
+    await _updateToken(token, (p0) => p0.copyWith(fbToken: firebaseToken));
     return true;
   }
 
@@ -1019,38 +1016,37 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   final _pushTokenHandlerMutex = Mutex();
   Future<void> _handlePushTokensIfExist() async {
     Logger.info('Handling push tokens if they exist.');
-    await _pushTokenHandlerMutex.acquire();
-    try {
-      if ((await future).pushTokens.isEmpty) {
-        if ((await ref.read(settingsProvider.future)).hidePushTokens == true) {
-          ref.read(settingsProvider.notifier).setHidePushTokens(false);
+    await _pushTokenHandlerMutex.protect(() async {
+      try {
+        if ((await future).pushTokens.isEmpty) {
+          if ((await ref.read(settingsProvider.future)).hidePushTokens ==
+              true) {
+            ref.read(settingsProvider.notifier).setHidePushTokens(false);
+          }
+          return;
         }
-        _pushTokenHandlerMutex.release();
-        return;
+        final rolledOutPushNoFb = (await future).rolledOutPushTokens
+            .where((element) => element.fbToken == null)
+            .toList();
+        if (rolledOutPushNoFb.isNotEmpty) {
+          // If there is rolled out push tokens without fbToken, we need to update the firebase token for them.
+          await updateFirebaseTokens(tokens: rolledOutPushNoFb);
+        }
+        if ((await future).hasRolledOutPushTokens) {
+          checkNotificationPermission();
+        }
+        for (final element in (await future).pushTokensToRollOut) {
+          Logger.info('Handling push token "${element.id}"');
+          await rolloutPushToken(element);
+        }
+      } catch (e, s) {
+        Logger.error(
+          'Unexpected error while handling push tokens.',
+          error: e,
+          stackTrace: s,
+        );
       }
-      final rolledOutPushNoFb = (await future).rolledOutPushTokens
-          .where((element) => element.fbToken == null)
-          .toList();
-      if (rolledOutPushNoFb.isNotEmpty) {
-        // If there is rolled out push tokens without fbToken, we need to update the firebase token for them.
-        await updateFirebaseTokens(tokens: rolledOutPushNoFb);
-      }
-      if ((await future).hasRolledOutPushTokens) {
-        checkNotificationPermission();
-      }
-      for (final element in (await future).pushTokensToRollOut) {
-        Logger.info('Handling push token "${element.id}"');
-        await rolloutPushToken(element);
-      }
-    } catch (e, s) {
-      Logger.error(
-        'Unexpected error while handling push tokens.',
-        error: e,
-        stackTrace: s,
-      );
-      _pushTokenHandlerMutex.release();
-    } finally {}
-    _pushTokenHandlerMutex.release();
+    });
   }
 
   Future<T?> getTokenById<T extends Token>(String id) async {
@@ -1094,14 +1090,15 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
         statusMessage = StatusMessage(
           message: (localization) =>
               localization.errorRollOutFailed(tokenLabel),
-          details: (_) => message.toString(),
+          details: (localization) =>
+              localization.statusCode(response.statusCode),
         );
       } else {
+        final nonNullMessage = message;
         statusMessage = StatusMessage(
           message: (localization) =>
               localization.errorRollOutFailed(tokenLabel),
-          details: (localization) =>
-              localization.statusCode(response.statusCode),
+          details: (_) => nonNullMessage,
         );
       }
     }

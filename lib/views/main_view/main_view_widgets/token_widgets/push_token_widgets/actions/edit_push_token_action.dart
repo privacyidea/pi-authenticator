@@ -24,6 +24,7 @@ import 'package:privacyidea_authenticator/utils/view_utils.dart';
 
 import '../../../../../../l10n/app_localizations.dart';
 import '../../../../../../model/enums/introduction.dart';
+import '../../../../../../model/extensions/uri_extension.dart';
 import '../../../../../../model/tokens/push_token.dart';
 import '../../../../../../utils/customization/theme_extentions/action_theme.dart';
 import '../../../../../../utils/globals.dart';
@@ -62,7 +63,6 @@ class EditPushTokenAction extends ConsumerSlideableAction {
       },
       child: FocusedItemAsOverlay(
         tooltipWhenFocused: appLocalizations.introEditToken,
-        childIsMoving: true,
         alignment: Alignment.bottomCenter,
         isFocused: ref
             .watch(introductionNotifierProvider)
@@ -97,10 +97,7 @@ class EditPushTokenAction extends ConsumerSlideableAction {
       )!.mustNotBeEmpty(AppLocalizations.of(context)!.pushEndpointUrl);
     }
     final uri = Uri.tryParse(value);
-    if (uri == null ||
-        uri.host.isEmpty ||
-        uri.scheme.isEmpty ||
-        uri.path.isEmpty) {
+    if (uri == null || !uri.isValidEndpoint) {
       return AppLocalizations.of(context)!.exampleUrl;
     }
     return null;
@@ -113,13 +110,21 @@ class EditPushTokenAction extends ConsumerSlideableAction {
       return DefaultEditActionDialog(
         token: token,
         onSaveButtonPressed: ({required newLabel, newImageUrl}) async {
+          final newUrl = Uri.tryParse(pushUrl.text);
+          if (newUrl == null || !newUrl.isValidEndpoint) {
+            showErrorStatusMessage(
+              message: (localization) => localization.invalidUrl,
+              details: (localization) => localization.exampleUrl,
+            );
+            return;
+          }
           globalRef
               ?.read(tokenProvider.notifier)
               .updateToken(
                 token,
                 (p0) => p0.copyWith(
                   label: newLabel,
-                  url: Uri.parse(pushUrl.text),
+                  url: newUrl,
                   tokenImage: newImageUrl,
                 ),
               );

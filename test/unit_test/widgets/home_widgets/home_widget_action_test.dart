@@ -58,7 +58,7 @@ void main() {
             theme: lightTheme,
             logicalSize: size,
             utils: mockUtils,
-            aditionalSuffix: HomeWidgetUtils.keySuffixActive,
+            additionalSuffix: HomeWidgetUtils.keySuffixActive,
           ),
         ),
       );
@@ -73,7 +73,7 @@ void main() {
             theme: lightTheme,
             logicalSize: size,
             utils: mockUtils,
-            aditionalSuffix: HomeWidgetUtils.keySuffixInactive,
+            additionalSuffix: HomeWidgetUtils.keySuffixInactive,
           ),
         ),
       );
@@ -93,7 +93,7 @@ void main() {
             theme: lightTheme,
             logicalSize: size,
             utils: mockUtils,
-            aditionalSuffix: 'unknown',
+            additionalSuffix: 'unknown',
           ),
         ),
       );
@@ -164,7 +164,7 @@ void main() {
             theme: lightTheme,
             logicalSize: smallSize,
             utils: mockUtils,
-            aditionalSuffix: HomeWidgetUtils.keySuffixActive,
+            additionalSuffix: HomeWidgetUtils.keySuffixActive,
           ),
         ),
       );

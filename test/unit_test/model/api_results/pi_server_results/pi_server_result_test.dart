@@ -38,9 +38,11 @@ void _testPiServerResult() {
     // jsonDecode returns _Map<String, dynamic> at runtime, which must be
     // accepted by the error field validator (was broken with Map<String, Object>).
     test('parses error from JSON-decoded map (_Map<String, dynamic>)', () {
-      final json = jsonDecode(
-        '{"status": false, "error": {"code": 3002, "message": "ERR3002: Could not verify signature!"}}',
-      ) as Map<String, dynamic>;
+      final json =
+          jsonDecode(
+                '{"status": false, "error": {"code": 3002, "message": "ERR3002: Could not verify signature!"}}',
+              )
+              as Map<String, dynamic>;
 
       final result =
           PiServerResult<ContainerFinalizationResponse>.fromResultMap(json);
@@ -64,9 +66,11 @@ void _testPiServerResult() {
     });
 
     test('parses containerNotFound error code 601', () {
-      final json = jsonDecode(
-        '{"status": false, "error": {"code": 601, "message": "Unable to find container with serial SMPH001."}}',
-      ) as Map<String, dynamic>;
+      final json =
+          jsonDecode(
+                '{"status": false, "error": {"code": 601, "message": "Unable to find container with serial SMPH001."}}',
+              )
+              as Map<String, dynamic>;
 
       final result =
           PiServerResult<ContainerFinalizationResponse>.fromResultMap(json);
@@ -77,9 +81,11 @@ void _testPiServerResult() {
     });
 
     test('parses containerNotRegistered error code 3001', () {
-      final json = jsonDecode(
-        '{"status": false, "error": {"code": 3001, "message": "Container is not registered."}}',
-      ) as Map<String, dynamic>;
+      final json =
+          jsonDecode(
+                '{"status": false, "error": {"code": 3001, "message": "Container is not registered."}}',
+              )
+              as Map<String, dynamic>;
 
       final result =
           PiServerResult<ContainerFinalizationResponse>.fromResultMap(json);
@@ -103,7 +109,10 @@ void _testPiServerResultValues() {
       expect(result.keyAlgorithm, 'secp384r1');
       expect(result.nonce, 'abc123');
       expect(result.timeStamp, '2024-12-06T11:14:26.885409+00:00');
-      expect(result.timeAsDatetime, DateTime.parse('2024-12-06T11:14:26.885409+00:00'));
+      expect(
+        result.timeAsDatetime,
+        DateTime.parse('2024-12-06T11:14:26.885409+00:00'),
+      );
     });
 
     test('throws on missing required field', () {
@@ -176,7 +185,8 @@ void _testPiServerResultValues() {
   group('PiServerResultValue.fromResultValue dispatch', () {
     test('dispatches to UnregisterContainerResult', () {
       final map = {UnregisterContainerResult.KEY_SUCCESS: true};
-      final result = PiServerResultValue.fromResultValue<UnregisterContainerResult>(map);
+      final result =
+          PiServerResultValue.fromResultValue<UnregisterContainerResult>(map);
       expect(result, isA<UnregisterContainerResult>());
       expect(result!.success, isTrue);
     });
@@ -187,12 +197,16 @@ void _testPiServerResultValues() {
         ContainerChallenge.NONCE: 'nonce',
         ContainerChallenge.TIMESTAMP: '2024-12-06T11:14:26Z',
       };
-      final result = PiServerResultValue.fromResultValue<ContainerChallenge>(map);
+      final result = PiServerResultValue.fromResultValue<ContainerChallenge>(
+        map,
+      );
       expect(result, isA<ContainerChallenge>());
     });
 
     test('returns null for base PiServerResultValue type', () {
-      final result = PiServerResultValue.fromResultValue<PiServerResultValue>({});
+      final result = PiServerResultValue.fromResultValue<PiServerResultValue>(
+        {},
+      );
       expect(result, isNull);
     });
   });
@@ -231,18 +245,24 @@ void _testPiServerResultDetail() {
         PushResultDetail.THREAD_ID: 1,
         PushResultDetail.MESSAGE: 'msg',
       };
-      final result = PiServerResultDetail.fromResultDetail<PushResultDetail>(map);
+      final result = PiServerResultDetail.fromResultDetail<PushResultDetail>(
+        map,
+      );
       expect(result, isA<PushResultDetail>());
       expect(result!.displayCode, '5678');
     });
 
     test('returns null for null input', () {
-      final result = PiServerResultDetail.fromResultDetail<PushResultDetail>(null);
+      final result = PiServerResultDetail.fromResultDetail<PushResultDetail>(
+        null,
+      );
       expect(result, isNull);
     });
 
     test('returns null for unimplemented type', () {
-      final result = PiServerResultDetail.fromResultDetail<EmptyResultDetail>({});
+      final result = PiServerResultDetail.fromResultDetail<EmptyResultDetail>(
+        {},
+      );
       expect(result, isNull);
     });
   });

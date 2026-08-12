@@ -31,11 +31,13 @@ import 'package:privacyidea_authenticator/utils/view_utils.dart';
 
 import '../../../../../../../repo/secure_push_request_repository.dart';
 import '../../../../../../../utils/pi_notifications.dart';
+import '../model/push_request/push_capabilities.dart';
 import '../model/push_request/push_requests.dart';
 import '../model/tokens/push_token.dart';
 import '../repo/secure_token_repository.dart';
 import 'firebase_utils.dart';
 import 'globals.dart';
+import 'helpers/json_canonicalizer.dart';
 import 'logger.dart';
 import 'privacyidea_io_client.dart';
 import 'riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
@@ -259,6 +261,13 @@ class PushProvider {
       Logger.warning('No token found for serial ${pushRequest.serial}.');
       return;
     }
+    if (!pushToken.isRolledOut) {
+      Logger.warning(
+        'Rejected push request for token ${pushRequest.serial} because the '
+        'token is not rolled out.',
+      );
+      return;
+    }
     if (!pushRequest.verifySignature(pushToken, rsaUtils: _rsaUtils)) {
       Logger.warning('Signature verification failed.');
       return;
@@ -284,6 +293,13 @@ class PushProvider {
         .firstWhereOrNull((t) => t.serial == pushRequest.serial);
     if (pushToken == null) {
       Logger.warning('No token found for serial ${pushRequest.serial}.');
+      return false;
+    }
+    if (!pushToken.isRolledOut) {
+      Logger.warning(
+        'Rejected push request for token ${pushRequest.serial} because the '
+        'token is not rolled out.',
+      );
       return false;
     }
     if (!pushRequest.verifySignature(pushToken)) {
@@ -394,6 +410,10 @@ class PushProvider {
       'serial': token.serial,
       'timestamp': timestamp,
       'signature': signature,
+      // Keeps the set the server stored at enrollment current after an app
+      // update. Not part of the signed message, because a server that does not
+      // know it rebuilds '{serial}|{timestamp}' and would reject the request.
+      'capabilities': canonicalizeJson(appPushCapabilities.names),
     };
 
     final Response response;

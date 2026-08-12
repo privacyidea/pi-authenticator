@@ -58,6 +58,26 @@ sealed class TokenContainer with _$TokenContainer {
   static const String SYNC_POLICIES = 'policies';
   static const String SYNC_PUBLIC_SERVER_KEY = 'public_server_key';
 
+  /// The stored entry names whose value may be written to the log.
+  ///
+  /// Passed to [redactedShape] when a container cannot be deserialized. These
+  /// names describe how the container is set up and how far its rollout got.
+  /// Key material, the passphrase, the server url and everything naming the
+  /// account stay out.
+  static const Set<String> loggableEntryNames = {
+    // The freezed union key, which tells unfinalized and finalized apart.
+    'runtimeType',
+    'ecKeyAlgorithm',
+    'hashAlgorithm',
+    'sslVerify',
+    'finalizationState',
+    'syncState',
+    'initSynced',
+    'addDeviceInfos',
+    'ttl',
+    'timestamp',
+  };
+
   // Container Mapping:
   static const String DICT_CONTAINER = 'container';
   static const String DICT_TYPE = 'type';
@@ -121,7 +141,7 @@ sealed class TokenContainer with _$TokenContainer {
           ),
           NONCE: Validators.string,
           TIMESTAMP: DateTimeX.validator,
-          FINALIZATION_URL: Validators.uri,
+          FINALIZATION_URL: Validators.httpUri,
           SERIAL: Validators.string,
           EC_KEY_ALGORITHM: EcKeyAlgorithmX.validator,
           HASH_ALGORITHM: Validators.algorithms,

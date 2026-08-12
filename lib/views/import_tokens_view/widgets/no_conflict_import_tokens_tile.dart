@@ -26,14 +26,12 @@ class NoConflictImportTokensTile extends StatelessWidget {
   final Token token;
   final Token? selected;
   final void Function()? onTap;
-  final Alignment? alignment;
   final double? width;
   final Color? borderColor;
   const NoConflictImportTokensTile({
     required this.token,
     required this.selected,
     this.onTap,
-    this.alignment,
     this.width,
     this.borderColor = Colors.green,
     super.key,
@@ -45,11 +43,12 @@ class NoConflictImportTokensTile extends StatelessWidget {
     child: Card(
       elevation: 2,
       color: selected == token ? borderColor : null,
+      clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,
         child: Padding(
           padding: const EdgeInsets.all(4),
-          child: Container(
+          child: Material(
             color: Theme.of(context).scaffoldBackgroundColor,
             child: Column(
               children: [TokenWidgetBuilder.previewFromToken(token)],

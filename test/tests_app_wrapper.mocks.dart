@@ -830,12 +830,14 @@ class MockPrivacyideaIOClient extends _i1.Mock
     required Uri? url,
     required Map<String, String?>? body,
     bool? sslVerify = true,
+    Set<int>? expectedErrorStatusCodes = const {},
   }) =>
       (super.noSuchMethod(
             Invocation.method(#doPost, [], {
               #url: url,
               #body: body,
               #sslVerify: sslVerify,
+              #expectedErrorStatusCodes: expectedErrorStatusCodes,
             }),
             returnValue: _i24.Future<_i6.Response>.value(
               _FakeResponse_6(
@@ -844,6 +846,7 @@ class MockPrivacyideaIOClient extends _i1.Mock
                   #url: url,
                   #body: body,
                   #sslVerify: sslVerify,
+                  #expectedErrorStatusCodes: expectedErrorStatusCodes,
                 }),
               ),
             ),
@@ -854,6 +857,7 @@ class MockPrivacyideaIOClient extends _i1.Mock
                   #url: url,
                   #body: body,
                   #sslVerify: sslVerify,
+                  #expectedErrorStatusCodes: expectedErrorStatusCodes,
                 }),
               ),
             ),
@@ -1475,9 +1479,11 @@ class MockAllowScreenshotUtils extends _i1.Mock
           as _i24.Future<bool>);
 
   @override
-  _i24.Future<bool> toggleAllowScreenshots(bool? oldState) =>
+  _i24.Future<bool> toggleAllowScreenshots(bool? screenshotsCurrentlyAllowed) =>
       (super.noSuchMethod(
-            Invocation.method(#toggleAllowScreenshots, [oldState]),
+            Invocation.method(#toggleAllowScreenshots, [
+              screenshotsCurrentlyAllowed,
+            ]),
             returnValue: _i24.Future<bool>.value(false),
             returnValueForMissingStub: _i24.Future<bool>.value(false),
           )
@@ -1817,19 +1823,28 @@ class MockSecureStorage extends _i1.Mock implements _i37.SecureStorage {
           as String);
 
   @override
-  String get seperator =>
+  String get separator =>
       (super.noSuchMethod(
-            Invocation.getter(#seperator),
+            Invocation.getter(#separator),
             returnValue: _i27.dummyValue<String>(
               this,
-              Invocation.getter(#seperator),
+              Invocation.getter(#separator),
             ),
             returnValueForMissingStub: _i27.dummyValue<String>(
               this,
-              Invocation.getter(#seperator),
+              Invocation.getter(#separator),
             ),
           )
           as String);
+
+  @override
+  List<String> get excludedPrefixes =>
+      (super.noSuchMethod(
+            Invocation.getter(#excludedPrefixes),
+            returnValue: <String>[],
+            returnValueForMissingStub: <String>[],
+          )
+          as List<String>);
 
   @override
   String getFullKey(String? key) =>
@@ -2285,12 +2300,6 @@ class MockTokenContainerNotifier extends _i1.Mock
                 _i24.Future<_i15.TokenContainerFinalized?>.value(),
           )
           as _i24.Future<_i15.TokenContainerFinalized?>);
-
-  @override
-  void runBuild() => super.noSuchMethod(
-    Invocation.method(#runBuild, []),
-    returnValueForMissingStub: null,
-  );
 
   @override
   _i41.RemoveListener listenSelf(
@@ -3100,12 +3109,6 @@ class MockTokenNotifier extends _i1.Mock implements _i46.TokenNotifier {
           as _i24.Future<T?>);
 
   @override
-  void runBuild() => super.noSuchMethod(
-    Invocation.method(#runBuild, []),
-    returnValueForMissingStub: null,
-  );
-
-  @override
   _i41.RemoveListener listenSelf(
     void Function(
       _i39.AsyncValue<_i18.TokenState>?,
@@ -3451,6 +3454,19 @@ class MockPushRequestNotifier extends _i1.Mock
           as _i24.Future<_i54.PiSuccessResponse<T, D>?>);
 
   @override
+  _i24.Future<_i54.PiSuccessResponse<T, D>?> cancel<
+    T extends _i5.PiServerResultValue,
+    D extends _i55.PiServerResultDetail
+  >(_i31.PushToken? token, _i28.PushRequest? request) =>
+      (super.noSuchMethod(
+            Invocation.method(#cancel, [token, request]),
+            returnValue: _i24.Future<_i54.PiSuccessResponse<T, D>?>.value(),
+            returnValueForMissingStub:
+                _i24.Future<_i54.PiSuccessResponse<T, D>?>.value(),
+          )
+          as _i24.Future<_i54.PiSuccessResponse<T, D>?>);
+
+  @override
   _i24.Future<bool> add(_i28.PushRequest? pr) =>
       (super.noSuchMethod(
             Invocation.method(#add, [pr]),
@@ -3469,15 +3485,6 @@ class MockPushRequestNotifier extends _i1.Mock
           as _i24.Future<bool>);
 
   @override
-  _i24.Future<bool> remove(_i28.PushRequest? pushRequest) =>
-      (super.noSuchMethod(
-            Invocation.method(#remove, [pushRequest]),
-            returnValue: _i24.Future<bool>.value(false),
-            returnValueForMissingStub: _i24.Future<bool>.value(false),
-          )
-          as _i24.Future<bool>);
-
-  @override
   _i24.Future<void> initFirebase() =>
       (super.noSuchMethod(
             Invocation.method(#initFirebase, []),
@@ -3487,10 +3494,13 @@ class MockPushRequestNotifier extends _i1.Mock
           as _i24.Future<void>);
 
   @override
-  void runBuild() => super.noSuchMethod(
-    Invocation.method(#runBuild, []),
-    returnValueForMissingStub: null,
-  );
+  _i24.Future<bool> remove(_i28.PushRequest? pushRequest) =>
+      (super.noSuchMethod(
+            Invocation.method(#remove, [pushRequest]),
+            returnValue: _i24.Future<bool>.value(false),
+            returnValueForMissingStub: _i24.Future<bool>.value(false),
+          )
+          as _i24.Future<bool>);
 
   @override
   _i41.RemoveListener listenSelf(
@@ -3582,6 +3592,24 @@ class MockHomeWidgetUtils extends _i1.Mock implements _i56.HomeWidgetUtils {
             returnValueForMissingStub: _i24.Future<_i48.OTPToken?>.value(),
           )
           as _i24.Future<_i48.OTPToken?>);
+
+  @override
+  _i24.Future<bool> getPendingBatteryOptimizationHint() =>
+      (super.noSuchMethod(
+            Invocation.method(#getPendingBatteryOptimizationHint, []),
+            returnValue: _i24.Future<bool>.value(false),
+            returnValueForMissingStub: _i24.Future<bool>.value(false),
+          )
+          as _i24.Future<bool>);
+
+  @override
+  _i24.Future<void> setPendingBatteryOptimizationHint(bool? value) =>
+      (super.noSuchMethod(
+            Invocation.method(#setPendingBatteryOptimizationHint, [value]),
+            returnValue: _i24.Future<void>.value(),
+            returnValueForMissingStub: _i24.Future<void>.value(),
+          )
+          as _i24.Future<void>);
 
   @override
   _i24.Future<bool?> registerInteractivityCallback(
@@ -3858,12 +3886,6 @@ class MockIntroductionNotifier extends _i1.Mock
             returnValueForMissingStub: _i24.Future<void>.value(),
           )
           as _i24.Future<void>);
-
-  @override
-  void runBuild() => super.noSuchMethod(
-    Invocation.method(#runBuild, []),
-    returnValueForMissingStub: null,
-  );
 
   @override
   _i41.RemoveListener listenSelf(
@@ -4266,12 +4288,6 @@ class MockDeeplinkNotifier extends _i1.Mock implements _i65.DeeplinkNotifier {
           as _i24.Stream<_i22.DeepLink>);
 
   @override
-  void runBuild() => super.noSuchMethod(
-    Invocation.method(#runBuild, []),
-    returnValueForMissingStub: null,
-  );
-
-  @override
   _i41.RemoveListener listenSelf(
     void Function(
       _i39.AsyncValue<_i22.DeepLink>?,
@@ -4595,12 +4611,6 @@ class MockTokenFolderNotifier extends _i1.Mock
             ),
           )
           as _i24.Future<_i3.TokenFolderState>);
-
-  @override
-  void runBuild() => super.noSuchMethod(
-    Invocation.method(#runBuild, []),
-    returnValueForMissingStub: null,
-  );
 
   @override
   _i41.RemoveListener listenSelf(

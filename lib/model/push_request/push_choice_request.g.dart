@@ -19,9 +19,18 @@ PushChoiceRequest _$PushChoiceRequestFromJson(Map<String, dynamic> json) =>
       possibleAnswers: (json['possibleAnswers'] as List<dynamic>)
           .map((e) => e as String)
           .toList(),
+      signedCapabilities: json['signedCapabilities'] == null
+          ? null
+          : SignedCapabilities.fromJson(
+              json['signedCapabilities'] as Map<String, dynamic>,
+            ),
       type: json['type'] as String? ?? PushChoiceRequest.TYPE,
       selectedAnswer: json['selectedAnswer'] as String?,
       accepted: json['accepted'] as bool?,
+      declineReason: $enumDecodeNullable(
+        _$DeclineReasonEnumMap,
+        json['declineReason'],
+      ),
     );
 
 Map<String, dynamic> _$PushChoiceRequestToJson(PushChoiceRequest instance) =>
@@ -35,7 +44,14 @@ Map<String, dynamic> _$PushChoiceRequestToJson(PushChoiceRequest instance) =>
       'expirationDate': instance.expirationDate.toIso8601String(),
       'uri': instance.uri.toString(),
       'sslVerify': instance.sslVerify,
+      'signedCapabilities': instance.signedCapabilities?.toJson(),
       'accepted': instance.accepted,
+      'declineReason': _$DeclineReasonEnumMap[instance.declineReason],
       'selectedAnswer': instance.selectedAnswer,
       'possibleAnswers': instance.possibleAnswers,
     };
+
+const _$DeclineReasonEnumMap = {
+  DeclineReason.unknownTrigger: 'unknownTrigger',
+  DeclineReason.cancelled: 'cancelled',
+};

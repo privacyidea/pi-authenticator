@@ -40,13 +40,20 @@ class TransferQrDialog extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final appLocalizations = AppLocalizations.of(context)!;
     return DefaultDialog(
+      // The qr code shrinks to the available space instead of scrolling.
+      scrollableContent: false,
       title: Text(appLocalizations.transferContainerDialogTitle),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(appLocalizations.transferContainerScanQrCode),
           SizedBox(height: 8),
-          generateQrCodeImage(data: qrData),
+          Flexible(
+            child: AspectRatio(
+              aspectRatio: 1,
+              child: generateQrCodeImage(data: qrData),
+            ),
+          ),
           SizedBox(height: 8),
         ],
       ),

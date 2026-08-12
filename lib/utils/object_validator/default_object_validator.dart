@@ -27,6 +27,8 @@ class DefaultObjectValidator<T extends Object> extends BaseValidator<T> {
     required this.defaultValue,
     super.transformer,
     super.allowedValues,
+    super.invalidMessage,
+    super.unallowedMessage,
   });
 
   @override
@@ -43,6 +45,8 @@ class DefaultObjectValidator<T extends Object> extends BaseValidator<T> {
   OptionalObjectValidator<T> optional() => OptionalObjectValidator<T>(
     transformer: transformer,
     allowedValues: (v) => v == null ? true : (allowedValues?.call(v) ?? true),
+    invalidMessage: invalidMessage,
+    unallowedMessage: unallowedMessage,
   );
 
   @override
@@ -51,6 +55,8 @@ class DefaultObjectValidator<T extends Object> extends BaseValidator<T> {
         defaultValue: defaultValue,
         transformer: transformer,
         allowedValues: allowedValues,
+        invalidMessage: invalidMessage,
+        unallowedMessage: unallowedMessage,
       );
 
   @override

@@ -53,7 +53,8 @@ class _UpdateFirebaseTokenDialogState
   @override
   Widget build(BuildContext context) {
     return DefaultDialog(
-      scrollable: true,
+      // _content brings its own Scrollbar and SingleChildScrollView.
+      scrollableContent: false,
       title: Text(AppLocalizations.of(context)!.synchronizingTokens),
       content: _content,
       actions: [
@@ -69,7 +70,6 @@ class _UpdateFirebaseTokenDialogState
   Future<void> _updateFbTokens(AppLocalizations localizations) async {
     Logger.info('Starting update of firebase token.');
 
-    // TODO What to do with poll only tokens if google-services is used?
     final pushTokensNotPollOnly = (await ref.read(
       tokenProvider.future,
     )).pushTokensNotPollOnly;

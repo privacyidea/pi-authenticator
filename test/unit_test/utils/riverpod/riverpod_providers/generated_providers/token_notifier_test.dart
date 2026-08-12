@@ -17,6 +17,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -24,6 +27,7 @@ import 'package:http/http.dart';
 import 'package:mockito/mockito.dart';
 import 'package:pointycastle/export.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
+import 'package:privacyidea_authenticator/model/push_request/push_capabilities.dart';
 import 'package:privacyidea_authenticator/model/enums/push_token_rollout_state.dart';
 import 'package:privacyidea_authenticator/model/enums/token_origin_source_type.dart';
 import 'package:privacyidea_authenticator/model/extensions/enums/token_origin_source_type.dart';
@@ -39,6 +43,20 @@ import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 
 import '../../../../../tests_app_wrapper.mocks.dart';
+
+/// Waits for [check] to become true, throwing if [timeout] elapses first.
+Future<void> _waitUntil(
+  Future<bool> Function() check, {
+  Duration timeout = const Duration(seconds: 5),
+  Duration interval = const Duration(milliseconds: 20),
+}) async {
+  final stopwatch = Stopwatch()..start();
+  while (stopwatch.elapsed < timeout) {
+    if (await check()) return;
+    await Future.delayed(interval);
+  }
+  throw TimeoutException('Condition not met within $timeout');
+}
 
 void main() {
   _testTokenNotifier();
@@ -58,6 +76,7 @@ void _testTokenNotifier() {
           ),
         ],
       );
+      addTearDown(container.dispose);
       final mockRepo = MockTokenRepository();
       final mockFirebaseUtils = MockFirebaseUtils();
       final before = [
@@ -124,6 +143,7 @@ void _testTokenNotifier() {
           ),
         ],
       );
+      addTearDown(container.dispose);
       final mockRepo = MockTokenRepository();
       final mockFirebaseUtils = MockFirebaseUtils();
       final before = [
@@ -167,6 +187,7 @@ void _testTokenNotifier() {
           ),
         ],
       );
+      addTearDown(container.dispose);
       final mockRepo = MockTokenRepository();
       final mockFirebaseUtils = MockFirebaseUtils();
       final before = [
@@ -226,6 +247,7 @@ void _testTokenNotifier() {
           ),
         ],
       );
+      addTearDown(container.dispose);
       final mockRepo = MockTokenRepository();
       final mockFirebaseUtils = MockFirebaseUtils();
       final before = <Token>[
@@ -291,6 +313,7 @@ void _testTokenNotifier() {
             ),
           ],
         );
+        addTearDown(container.dispose);
         final mockRepo = MockTokenRepository();
         final mockFirebaseUtils = MockFirebaseUtils();
         final before = <Token>[
@@ -357,6 +380,7 @@ void _testTokenNotifier() {
             ),
           ],
         );
+        addTearDown(container.dispose);
         final mockRepo = MockTokenRepository();
         final mockFirebaseUtils = MockFirebaseUtils();
         final before = <Token>[
@@ -432,6 +456,7 @@ void _testTokenNotifier() {
           ),
         ],
       );
+      addTearDown(container.dispose);
       final mockRepo = MockTokenRepository();
       final mockFirebaseUtils = MockFirebaseUtils();
       final before = <Token>[
@@ -540,12 +565,16 @@ void _testTokenNotifier() {
           ),
         ],
       );
+      addTearDown(container.dispose);
 
       const qrCode =
           'otpauth://totp/issuer2:label2?secret=AAAAAAAA2&issuer=issuer2&algorithm=SHA256&digits=6&period=30';
       final tokenNotifier = container.read(tokenProvider.notifier);
       await scanQrCode(resultHandlerList: [tokenNotifier], qrCode: qrCode);
-      await Future.delayed(const Duration(seconds: 5));
+      await _waitUntil(
+        () async =>
+            (await container.read(tokenProvider.future)).tokens.length == 2,
+      );
       final state = await container.read(tokenProvider.future);
 
       expect(state.tokens.length, 2);
@@ -567,6 +596,7 @@ void _testTokenNotifier() {
           ),
         ],
       );
+      addTearDown(container.dispose);
       final mockTokenRepo = MockTokenRepository();
       final mockRsaUtils = MockRsaUtils();
       final mockIOClient = MockPrivacyideaIOClient();
@@ -684,7 +714,10 @@ void _testTokenNotifier() {
       );
 
       // -- ASSERT --
-      await Future.delayed(const Duration(seconds: 5));
+      await _waitUntil(
+        () async =>
+            (await container.read(testProvider.future)).tokens.length == 2,
+      );
       final tokenState = await container.read(testProvider.future);
       expect(tokenState, isNotNull);
       expect(tokenState.tokens, after);
@@ -709,6 +742,7 @@ void _testTokenNotifier() {
           ),
         ],
       );
+      addTearDown(container.dispose);
       final mockRepo = MockTokenRepository();
       final mockIOClient = MockPrivacyideaIOClient();
       final mockFirebaseUtils = MockFirebaseUtils();
@@ -780,7 +814,225 @@ void _testTokenNotifier() {
       final state = await container.read(testProvider.future);
       expect(state, isNotNull);
       expect(state.tokens, after);
+
+      // privacyidea#5618 phase 1: "App includes a capabilities JSON array
+      // (e.g. ["decline_reason"]) in the enrollment finalize request
+      // (serial + fbtoken + pubkey)."
+      final body =
+          verify(
+                mockIOClient.doPost(
+                  url: anyNamed('url'),
+                  body: captureAnyNamed('body'),
+                  sslVerify: anyNamed('sslVerify'),
+                ),
+              ).captured.last
+              as Map<String, String?>;
+      expect(body.keys, containsAll(['serial', 'fbtoken', 'pubkey']));
+      expect(body['capabilities'], '["decline_reason"]');
+      expect(
+        jsonDecode(body['capabilities']!),
+        appPushCapabilities.names,
+        reason: 'the announced names are the shared PushCapability vocabulary',
+      );
     });
+    test('updateFirebaseToken reports the app capabilities', () async {
+      final mockSettingsRepo = MockSettingsRepository();
+      when(
+        mockSettingsRepo.loadSettings(),
+      ).thenAnswer((_) async => SettingsState());
+      final container = ProviderContainer(
+        overrides: [
+          settingsProvider.overrideWith(
+            () => SettingsNotifier(repoOverride: mockSettingsRepo),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+      final mockRepo = MockTokenRepository();
+      final mockIOClient = MockPrivacyideaIOClient();
+      final mockRsaUtils = MockRsaUtils();
+      final token = PushToken(
+        id: 'id',
+        serial: 'serial',
+        isRolledOut: true,
+        url: Uri.parse('https://example.com'),
+      );
+      when(mockRepo.loadTokens()).thenAnswer((_) async => [token]);
+      when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
+      when(mockRepo.saveOrReplaceToken(any)).thenAnswer((_) async => true);
+      when(
+        mockRsaUtils.trySignWithToken(any, any),
+      ).thenAnswer((_) async => 'signature');
+      when(
+        mockIOClient.doPost(
+          url: anyNamed('url'),
+          body: anyNamed('body'),
+          sslVerify: anyNamed('sslVerify'),
+        ),
+      ).thenAnswer((_) async => Response('{"result": {"status": true}}', 200));
+
+      final testProvider = tokenProviderOf(
+        repo: mockRepo,
+        ioClient: mockIOClient,
+        rsaUtils: mockRsaUtils,
+        firebaseUtils: MockFirebaseUtils(),
+      );
+      await container.read(testProvider.future);
+      expect(
+        await container
+            .read(testProvider.notifier)
+            .updateFirebaseToken(token, 'newFbToken'),
+        isTrue,
+      );
+
+      // privacyidea#5618 phase 2: "Refresh the stored set from the
+      // already-signed poll / fbtoken-update channel".
+      final body =
+          verify(
+                mockIOClient.doPost(
+                  url: anyNamed('url'),
+                  body: captureAnyNamed('body'),
+                  sslVerify: anyNamed('sslVerify'),
+                ),
+              ).captured.last
+              as Map<String, String?>;
+      expect(body['capabilities'], '["decline_reason"]');
+
+      final signed =
+          verify(mockRsaUtils.trySignWithToken(any, captureAny)).captured.last
+              as String;
+      expect(signed, 'newFbToken|serial|${body['timestamp']}');
+      expect(signed, isNot(contains('decline_reason')));
+    });
+    test(
+      'removeTokens does not run push tokens through the generic bulk-delete path',
+      () async {
+        // Regression test: `otherTokens` used to be computed via
+        // `tokens.whereType<Token>()`, which matches PushToken too (since
+        // PushToken is a Token), causing push tokens to be deleted twice:
+        // once via the generic bulk `deleteTokens` call and again via
+        // `_removePushToken`'s dedicated cleanup path.
+        final mockSettingsRepo = MockSettingsRepository();
+        when(
+          mockSettingsRepo.loadSettings(),
+        ).thenAnswer((_) async => SettingsState());
+        final container = ProviderContainer(
+          overrides: [
+            settingsProvider.overrideWith(
+              () => SettingsNotifier(repoOverride: mockSettingsRepo),
+            ),
+          ],
+        );
+        addTearDown(container.dispose);
+        final mockRepo = MockTokenRepository();
+        final mockFirebaseUtils = MockFirebaseUtils();
+        final regularToken = HOTPToken(
+          label: 'label',
+          issuer: 'issuer',
+          id: 'id',
+          algorithm: Algorithms.SHA1,
+          digits: 6,
+          secret: 'secret',
+        );
+        final pushToken = PushToken(
+          label: 'pushLabel',
+          issuer: 'issuer',
+          id: 'pushId',
+          serial: 'serial',
+          isRolledOut: true,
+        );
+        final before = <Token>[regularToken, pushToken];
+
+        when(mockRepo.loadTokens()).thenAnswer((_) async => before);
+        when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
+        when(
+          mockRepo.deleteTokens(any),
+        ).thenAnswer((invocation) async => <Token>[]);
+        when(mockRepo.deleteToken(pushToken)).thenAnswer((_) async => true);
+        // Taking the "no firebase token available" branch inside
+        // _removePushToken avoids needing to mock the network sync path.
+        when(mockFirebaseUtils.getFBToken()).thenAnswer((_) async => null);
+        final testProvider = tokenProviderOf(
+          repo: mockRepo,
+          rsaUtils: const RsaUtils(),
+          ioClient: const PrivacyideaIOClient(),
+          firebaseUtils: mockFirebaseUtils,
+        );
+        final notifier = container.read(testProvider.notifier);
+
+        final stateBefore = await container.read(testProvider.future);
+        expect(stateBefore.tokens, before);
+
+        await notifier.removeTokens([regularToken, pushToken]);
+
+        // The bulk delete must only ever be called with the non-push token.
+        final captured =
+            verify(mockRepo.deleteTokens(captureAny)).captured.single
+                as List<Token>;
+        expect(captured, [regularToken]);
+        expect(captured.contains(pushToken), isFalse);
+
+        // The push token is removed exactly once, via its own dedicated path.
+        verify(mockRepo.deleteToken(pushToken)).called(1);
+      },
+    );
+    test(
+      'addNewTokens returns the tokens that failed to save instead of always []',
+      () async {
+        final mockSettingsRepo = MockSettingsRepository();
+        when(
+          mockSettingsRepo.loadSettings(),
+        ).thenAnswer((_) async => SettingsState());
+        final container = ProviderContainer(
+          overrides: [
+            settingsProvider.overrideWith(
+              () => SettingsNotifier(repoOverride: mockSettingsRepo),
+            ),
+          ],
+        );
+        addTearDown(container.dispose);
+        final mockRepo = MockTokenRepository();
+        final mockFirebaseUtils = MockFirebaseUtils();
+        final existing = HOTPToken(
+          label: 'label',
+          issuer: 'issuer',
+          id: 'id',
+          algorithm: Algorithms.SHA1,
+          digits: 6,
+          secret: 'secret',
+        );
+        final newToken = HOTPToken(
+          label: 'label2',
+          issuer: 'issuer2',
+          id: 'id2',
+          algorithm: Algorithms.SHA1,
+          digits: 6,
+          secret: 'secret2',
+        );
+        when(mockRepo.loadTokens()).thenAnswer((_) async => [existing]);
+        // Simulate the repository failing to persist the new token.
+        when(
+          mockRepo.saveOrReplaceTokens(any),
+        ).thenAnswer((_) async => [newToken]);
+        when(
+          mockFirebaseUtils.getFBToken(),
+        ).thenAnswer((_) async => 'mockFbToken');
+        final testProvider = tokenProviderOf(
+          repo: mockRepo,
+          rsaUtils: const RsaUtils(),
+          ioClient: const PrivacyideaIOClient(),
+          firebaseUtils: mockFirebaseUtils,
+        );
+        final notifier = container.read(testProvider.notifier);
+
+        final failedTokens = await notifier.addNewTokens([newToken]);
+
+        expect(failedTokens, [newToken]);
+        // The failed token must not have been added to the state either.
+        final state = await container.read(testProvider.future);
+        expect(state.tokens, [existing]);
+      },
+    );
     test('loadFromRepo', () async {
       final mockSettingsRepo = MockSettingsRepository();
       when(
@@ -793,6 +1045,7 @@ void _testTokenNotifier() {
           ),
         ],
       );
+      addTearDown(container.dispose);
       final mockRepo = MockTokenRepository();
       final mockFirebaseUtils = MockFirebaseUtils();
       final before = <Token>[

@@ -114,7 +114,8 @@ void _testTokenContainerFromUriMap() {
         TokenContainer.HASH_ALGORITHM: Algorithms.SHA256,
         TokenContainer.SSL_VERIFY: false,
       };
-      final result = TokenContainer.fromUriMap(map) as TokenContainerUnfinalized;
+      final result =
+          TokenContainer.fromUriMap(map) as TokenContainerUnfinalized;
       expect(result.policies, equals(ContainerPolicies.defaultSetting));
     });
 
@@ -168,10 +169,10 @@ void _testTokenContainerUrls() {
 void _testTokenContainerExpirationDate() {
   group('TokenContainer.expirationDate', () {
     test('is timestamp + ttl for unfinalized container', () {
-      final ts = DateTime(2024, 1, 1, 12, 0);
-      final c = buildUnfinalized(ttl: const Duration(minutes: 30)).copyWith(
-        timestamp: ts,
-      );
+      final ts = DateTime(2024, 1, 1, 12);
+      final c = buildUnfinalized(
+        ttl: const Duration(minutes: 30),
+      ).copyWith(timestamp: ts);
       expect(c.expirationDate, equals(ts.add(const Duration(minutes: 30))));
     });
 
@@ -202,19 +203,22 @@ void _testTokenContainerFinalize() {
       expect(c.finalize(), isNull);
     });
 
-    test('returns TokenContainerFinalized when serialized keys are present', () {
-      final c = buildUnfinalized(
-        publicClientKey: pubKey,
-        privateClientKey: privKey,
-      );
-      final result = c.finalize();
-      expect(result, isA<TokenContainerFinalized>());
-      expect(result!.serial, c.serial);
-      expect(result.issuer, c.issuer);
-      expect(result.publicClientKey, pubKey);
-      expect(result.privateClientKey, privKey);
-      expect(result.finalizationState, FinalizationState.completed);
-    });
+    test(
+      'returns TokenContainerFinalized when serialized keys are present',
+      () {
+        final c = buildUnfinalized(
+          publicClientKey: pubKey,
+          privateClientKey: privKey,
+        );
+        final result = c.finalize();
+        expect(result, isA<TokenContainerFinalized>());
+        expect(result!.serial, c.serial);
+        expect(result.issuer, c.issuer);
+        expect(result.publicClientKey, pubKey);
+        expect(result.privateClientKey, privKey);
+        expect(result.finalizationState, FinalizationState.completed);
+      },
+    );
 
     test('returns self when already finalized', () {
       final c = buildFinalized();

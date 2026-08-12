@@ -60,7 +60,6 @@ class DefaultEditAction extends ConsumerSlideableAction {
       },
       child: FocusedItemAsOverlay(
         tooltipWhenFocused: AppLocalizations.of(context)!.editToken,
-        childIsMoving: true,
         isFocused: ref
             .watch(introductionNotifierProvider)
             .when(

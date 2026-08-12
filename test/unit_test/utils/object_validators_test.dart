@@ -20,7 +20,9 @@
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
+import 'package:privacyidea_authenticator/model/exception_errors/localized_argument_error.dart';
 import 'package:privacyidea_authenticator/utils/object_validator/object_validators.dart'
     as ov;
 import 'package:privacyidea_authenticator/utils/object_validator/object_validators.dart';
@@ -295,22 +297,92 @@ void main() {
     });
   });
 
-  group('uri validator', () {
-    test('transforms string to Uri', () {
-      final result = ov.Validators.uri.transform(
-        'https://example.com',
-        'field',
+  group('httpUri validator', () {
+    test('transforms absolute url', () {
+      expect(
+        validate(
+          value: 'https://example.com/ttype/push',
+          validator: ov.Validators.httpUri,
+          name: 'url',
+        ),
+        Uri.parse('https://example.com/ttype/push'),
       );
-      expect(result, Uri.parse('https://example.com'));
     });
 
     test('passes through Uri', () {
-      final input = Uri.parse('https://example.com');
-      expect(ov.Validators.uri.transform(input, 'field'), input);
+      final input = Uri.parse('https://example.com/ttype/push');
+      expect(
+        validate(value: input, validator: ov.Validators.httpUri, name: 'url'),
+        input,
+      );
     });
 
-    test('uriOptional returns null for null', () {
-      expect(ov.Validators.uriOptional.transform(null, 'field'), isNull);
+    // The privacyIDEA server's push_ssl_verify default is true.
+    // So a missing scheme has to mean https.
+    test('adds https to url without scheme', () {
+      expect(
+        validate(
+          value: '192.168.178.139/ttype/push',
+          validator: ov.Validators.httpUri,
+          name: 'url',
+        ),
+        Uri.parse('https://192.168.178.139/ttype/push'),
+      );
+    });
+
+    test('adds https to url without scheme but with authority', () {
+      expect(
+        validate(
+          value: '//example.com/ttype/push',
+          validator: ov.Validators.httpUri,
+          name: 'url',
+        ),
+        Uri.parse('https://example.com/ttype/push'),
+      );
+    });
+
+    test('adds https to a bare host', () {
+      expect(
+        validate(
+          value: 'some.relay.tunnel',
+          validator: ov.Validators.httpUri,
+          name: 'url',
+        ),
+        Uri.parse('https://some.relay.tunnel'),
+      );
+    });
+
+    test('throws on url without host', () {
+      expect(
+        () => validate(
+          value: '/ttype/push',
+          validator: ov.Validators.httpUri,
+          name: 'url',
+        ),
+        throwsA(anything),
+      );
+    });
+
+    test('throws on non http scheme', () {
+      expect(
+        () => validate(
+          value: 'ftp://example.com/ttype/push',
+          validator: ov.Validators.httpUri,
+          name: 'url',
+        ),
+        throwsA(anything),
+      );
+    });
+
+    test('throws on null', () {
+      expect(
+        () => validate(
+          value: null,
+          validator: ov.Validators.httpUri,
+          name: 'url',
+        ),
+        throwsA(anything),
+      );
     });
   });
 
@@ -343,6 +415,53 @@ void main() {
       );
       expect(result, '');
     });
+
+    test('error names the invalid value and the parameter', () {
+      final error = _errorOf(value: 42, validator: ov.Validators.string);
+      expect(
+        error.localizedMessage(AppLocalizationsEn()),
+        'The int “42“ is not valid for “url“',
+      );
+      expect(error.unlocalizedMessage, 'The int “42“ is not valid for “url“');
+    });
+
+    test('unallowed value uses the message of the validator if it has one', () {
+      final error = _errorOf(
+        value: 'ftp://example.com/ttype/push',
+        validator: ov.Validators.httpUri,
+      );
+      expect(
+        error.localizedMessage(AppLocalizationsEn()),
+        'URL not valid for http/https.',
+      );
+      expect(
+        error.unlocalizedMessage,
+        'The String “ftp://example.com/ttype/push“ is not valid for “url“',
+      );
+    });
+
+    test('invalid value falls back to the generic message', () {
+      final error = _errorOf(value: null, validator: ov.Validators.httpUri);
+      expect(
+        error.localizedMessage(AppLocalizationsEn()),
+        'The Null “null“ is not valid for “url“',
+      );
+    });
+
+    test('the messages of the validator survive optional and withDefault', () {
+      final optional = ov.Validators.httpUri.optional();
+      expect(optional.invalidMessage, ov.Validators.httpUri.invalidMessage);
+      expect(optional.unallowedMessage, ov.Validators.httpUri.unallowedMessage);
+
+      final withDefault = ov.Validators.httpUri.withDefault(
+        Uri.parse('https://example.com'),
+      );
+      expect(withDefault.invalidMessage, ov.Validators.httpUri.invalidMessage);
+      expect(
+        withDefault.unallowedMessage,
+        ov.Validators.httpUri.unallowedMessage,
+      );
+    });
   });
 
   group('validateMap function', () {
@@ -372,4 +491,17 @@ void main() {
       expect(result.containsKey('email'), isFalse);
     });
   });
+}
+
+/// Validates [value] and returns the error it throws.
+LocalizedArgumentError _errorOf({
+  required Object? value,
+  required BaseValidator validator,
+}) {
+  try {
+    validate(value: value, validator: validator, name: 'url');
+  } on LocalizedArgumentError catch (e) {
+    return e;
+  }
+  fail('Expected a LocalizedArgumentError for "$value"');
 }

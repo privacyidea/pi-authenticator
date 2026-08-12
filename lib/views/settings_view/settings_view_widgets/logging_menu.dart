@@ -35,7 +35,6 @@ class LoggingMenu extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) => Padding(
     padding: const EdgeInsets.symmetric(horizontal: 24),
     child: DefaultDialog(
-      scrollable: true,
       title: Text(
         AppLocalizations.of(context)!.logMenu,
         style: Theme.of(context).listTileTheme.titleTextStyle,
