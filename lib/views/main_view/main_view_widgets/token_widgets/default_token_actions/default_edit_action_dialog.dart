@@ -311,60 +311,57 @@ class _EditActionExpansionTileState extends State<EditActionExpansionTile>
         curve: Curves.fastOutSlowIn,
       );
     }
-    return AnimatedBuilder(
-      animation: animation!,
-      builder: (buildContext, _) => Container(
-        margin: const EdgeInsets.symmetric(vertical: 8.0),
-        padding: EdgeInsets.only(bottom: animation!.value * 16.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(12.0),
-          boxShadow: [
-            BoxShadow(
-              color: Theme.of(context).shadowColor,
-              blurRadius: 5.0,
-              offset: const Offset(0, 3.0),
-            ),
-          ],
-        ),
-        child: Material(
-          color: Theme.of(context).cardColor,
-          borderRadius: BorderRadius.circular(12.0),
-          clipBehavior: Clip.antiAlias,
-          child: Theme(
-            data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-            child: ExpansionTile(
-              tilePadding: const EdgeInsets.only(left: 8.0, right: 16.0),
-              title: Row(
-                children: [
-                  RotationTransition(
-                    turns: Tween(begin: 0.0, end: 0.25).animate(animation!),
-                    child: Icon(
-                      Icons.arrow_forward_ios,
-                      color: Theme.of(context).iconTheme.color,
-                    ),
-                  ),
-                  const SizedBox(width: 8.0),
-                  Text(
-                    widget.title,
-                    style: Theme.of(context).textTheme.titleSmall,
-                  ),
-                ],
-              ),
-              showTrailingIcon: false,
-              onExpansionChanged: (isExpanded) {
-                if (isExpanded) {
-                  controller!.forward();
-                } else {
-                  controller!.reverse();
-                }
-              },
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12.0),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).shadowColor,
+            blurRadius: 5.0,
+            offset: const Offset(0, 3.0),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(12.0),
+        clipBehavior: Clip.antiAlias,
+        child: Theme(
+          data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+          child: ExpansionTile(
+            tilePadding: const EdgeInsets.only(left: 8.0, right: 16.0),
+            title: Row(
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Column(children: widget.children),
+                RotationTransition(
+                  turns: Tween(begin: 0.0, end: 0.25).animate(animation!),
+                  child: Icon(
+                    Icons.arrow_forward_ios,
+                    color: Theme.of(context).iconTheme.color,
+                  ),
+                ),
+                const SizedBox(width: 8.0),
+                Text(
+                  widget.title,
+                  style: Theme.of(context).textTheme.titleSmall,
                 ),
               ],
             ),
+            showTrailingIcon: false,
+            onExpansionChanged: (isExpanded) {
+              if (isExpanded) {
+                controller!.forward();
+              } else {
+                controller!.reverse();
+              }
+            },
+            // Sits inside the card so the shadow does not grow with it.
+            childrenPadding: const EdgeInsets.only(
+              left: 16.0,
+              right: 16.0,
+              bottom: 16.0,
+            ),
+            children: [Column(children: widget.children)],
           ),
         ),
       ),
