@@ -176,12 +176,17 @@ class SettingsGroupPushTokenDialog extends ConsumerWidget {
       showDialog(
         useRootNavigator: false,
         context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(
-              '${AppLocalizations.of(context)!.someTokensDoNotSupportPolling}:',
-            ),
-            content: Scrollbar(
+        builder: (BuildContext context) => DefaultDialog(
+          // The token list brings its own scroll view.
+          scrollableContent: false,
+          title: Text(
+            '${AppLocalizations.of(context)!.someTokensDoNotSupportPolling}:',
+          ),
+          // The width must be tight, otherwise the dialog asks the list view
+          // for an intrinsic width, which a viewport cannot provide.
+          content: SizedBox(
+            width: double.maxFinite,
+            child: Scrollbar(
               child: ListView.separated(
                 shrinkWrap: true,
                 itemCount: unsupported.length,
@@ -190,16 +195,14 @@ class SettingsGroupPushTokenDialog extends ConsumerWidget {
                 separatorBuilder: (context, index) => const Divider(),
               ),
             ),
-            actions: <Widget>[
-              TextButton(
-                child: Text(
-                  AppLocalizations.of(context)!.dismiss,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-            ],
-          );
-        },
+          ),
+          actions: [
+            DialogAction(
+              label: AppLocalizations.of(context)!.dismiss,
+              intent: ActionIntent.cancel,
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        ),
       );
 }

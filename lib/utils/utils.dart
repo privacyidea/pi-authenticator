@@ -333,5 +333,10 @@ Image generateQrCodeImage({required String data}) {
       }
     }
   }
-  return Image.memory(img.encodePng(image));
+  return Image.memory(
+    img.encodePng(image),
+    fit: BoxFit.contain,
+    // Nearest neighbor keeps the modules sharp when the code is scaled up.
+    filterQuality: FilterQuality.none,
+  );
 }

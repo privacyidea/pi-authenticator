@@ -65,7 +65,6 @@ class _AddTokenFolderDialogState extends ConsumerState<AddTokenFolderDialog> {
     final localizations = AppLocalizations.of(context)!;
 
     return DefaultDialog(
-      scrollable: true,
       title: Text(localizations.addANewFolder),
       content: Form(
         key: _formKey,

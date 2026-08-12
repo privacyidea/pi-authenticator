@@ -18,12 +18,17 @@
  * limitations under the License.
  */
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../l10n/app_localizations.dart';
 import '../model/tokens/token.dart';
 import '../views/main_view/main_view_widgets/token_widgets/token_widget_builder.dart';
 
+/// Lets the user pick one or more tokens from a list.
+///
+/// Grows with the number of tokens and does not scroll on its own,
+/// the surrounding widget has to provide the scrolling.
 class SelectTokensWidget extends StatefulWidget {
   final bool multiSelect;
   final Set<Token> tokens;
@@ -46,7 +51,15 @@ class _SelectTokensWidgetState extends State<SelectTokensWidget> {
   @override
   void initState() {
     super.initState();
-    _unselectedTokens = widget.tokens;
+    _unselectedTokens = {...widget.tokens};
+  }
+
+  @override
+  void didUpdateWidget(covariant SelectTokensWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (setEquals(oldWidget.tokens, widget.tokens)) return;
+    _selectedTokens.retainWhere(widget.tokens.contains);
+    _unselectedTokens = {...widget.tokens}..removeAll(_selectedTokens);
   }
 
   void _select(Token token) {
@@ -74,7 +87,7 @@ class _SelectTokensWidgetState extends State<SelectTokensWidget> {
     setState(() {
       if (_selectedTokens.length == widget.tokens.length) {
         _selectedTokens.clear();
-        _unselectedTokens = widget.tokens;
+        _unselectedTokens = {...widget.tokens};
       } else {
         _selectedTokens.addAll(widget.tokens);
         _unselectedTokens.clear();
@@ -116,35 +129,29 @@ class _SelectTokensWidgetState extends State<SelectTokensWidget> {
                       ],
                     ),
                   ),
-                Flexible(
-                  child: SizedBox(
-                    width: 9999,
-                    child: SingleChildScrollView(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          for (final token in tokens)
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 4),
-                              child: TextButton(
-                                style: _selectedTokens.contains(token)
-                                    ? ButtonStyle(
-                                        backgroundColor:
-                                            WidgetStateProperty.all(
-                                              theme.colorScheme.secondary
-                                                  .withAlpha(80),
-                                            ),
-                                      )
-                                    : null,
-                                onPressed: () => _select(token),
-                                child: TokenWidgetBuilder.previewFromToken(
-                                  token,
-                                ),
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
+                // The width must be tight so the dialog does not derive its
+                // width from the token previews.
+                SizedBox(
+                  width: double.maxFinite,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      for (final token in tokens)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 4),
+                          child: TextButton(
+                            style: _selectedTokens.contains(token)
+                                ? ButtonStyle(
+                                    backgroundColor: WidgetStateProperty.all(
+                                      theme.colorScheme.secondary.withAlpha(80),
+                                    ),
+                                  )
+                                : null,
+                            onPressed: () => _select(token),
+                            child: TokenWidgetBuilder.previewFromToken(token),
+                          ),
+                        ),
+                    ],
                   ),
                 ),
               ],

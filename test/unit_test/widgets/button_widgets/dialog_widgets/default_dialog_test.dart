@@ -95,11 +95,18 @@ void main() {
 
       positionedIntents.sort((a, b) => a.$2.compareTo(b.$2));
 
-      final sortedIntents = positionedIntents.map((e) => e.$1).toList();
+      final priorities = positionedIntents
+          .map((e) => e.$1.priority)
+          .toList(growable: false);
 
-      expect(sortedIntents.contains(ActionIntent.destructive), isTrue);
-      expect(sortedIntents.contains(ActionIntent.confirm), isTrue);
-      expect(sortedIntents.contains(ActionIntent.neutral), isTrue);
+      // destructive and confirm share a priority, so only the order between
+      // different priorities is guaranteed.
+      expect(
+        priorities,
+        orderedEquals([...priorities]..sort()),
+        reason: 'buttons must be ordered by ascending intent priority',
+      );
+      expect(positionedIntents.first.$1, ActionIntent.neutral);
     });
 
     testWidgets('uses AppDimensions from theme extension', (tester) async {
@@ -123,13 +130,49 @@ void main() {
       expect(tester.takeException(), isNull);
     });
 
-    testWidgets('scrollable property is passed to AlertDialog', (tester) async {
+    testWidgets('content scrolls while the title stays in place', (
+      tester,
+    ) async {
       await tester.pumpWidget(
-        const TestsAppWrapper(child: DefaultDialog(scrollable: true)),
+        const TestsAppWrapper(
+          child: DefaultDialog(
+            title: Text('Title'),
+            content: SizedBox(height: 5000),
+          ),
+        ),
       );
 
       final alertDialog = tester.widget<AlertDialog>(find.byType(AlertDialog));
-      expect(alertDialog.scrollable, isTrue);
+      expect(alertDialog.scrollable, isFalse);
+      expect(
+        find.descendant(
+          of: find.byType(AlertDialog),
+          matching: find.byType(SingleChildScrollView),
+        ),
+        findsOneWidget,
+      );
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('scrollableContent false leaves the content untouched', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        const TestsAppWrapper(
+          child: DefaultDialog(
+            scrollableContent: false,
+            content: Text('Content'),
+          ),
+        ),
+      );
+
+      expect(
+        find.descendant(
+          of: find.byType(AlertDialog),
+          matching: find.byType(SingleChildScrollView),
+        ),
+        findsNothing,
+      );
     });
   });
 }

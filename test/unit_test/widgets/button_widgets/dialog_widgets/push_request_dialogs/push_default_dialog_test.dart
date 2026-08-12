@@ -33,6 +33,7 @@ import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/gene
 import 'package:privacyidea_authenticator/widgets/button_widgets/push_action_button.dart';
 import 'package:privacyidea_authenticator/widgets/dialog_widgets/default_dialog.dart';
 import 'package:privacyidea_authenticator/widgets/dialog_widgets/push_request_dialogs/push_request_dialog.dart';
+import 'package:privacyidea_authenticator/widgets/dialog_widgets/push_request_dialogs/widgets/push_request_base_info.dart';
 
 import '../../../../../tests_app_wrapper.mocks.dart';
 
@@ -97,12 +98,21 @@ void main() {
       expect(declineButton.intent, ActionIntent.destructive);
     });
 
-    testWidgets('dialog is not scrollable by default', (tester) async {
+    testWidgets('question scrolls while the buttons stay in place', (
+      tester,
+    ) async {
       await tester.pumpWidget(createWidgetUnderTest());
       await tester.pump();
 
       final dialog = tester.widget<DefaultDialog>(find.byType(DefaultDialog));
-      expect(dialog.scrollable, isFalse);
+      expect(dialog.scrollableContent, isFalse);
+      expect(
+        find.ancestor(
+          of: find.byType(PushRequestBaseInfo),
+          matching: find.byType(SingleChildScrollView),
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets(

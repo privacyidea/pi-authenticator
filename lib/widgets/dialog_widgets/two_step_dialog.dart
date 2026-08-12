@@ -43,7 +43,6 @@ class _TwoStepDialogState extends State<TwoStepDialog> {
         canPop: false,
         // Prevents closing the dialog without returning a secret.
         child: DefaultDialog(
-          scrollable: true,
           title: Text(
             AppLocalizations.of(context)!.phonePart,
             overflow: TextOverflow.fade,

@@ -75,75 +75,73 @@ class ContainerSyncResultDialog extends StatelessWidget {
       ),
       content: SizedBox(
         width: double.maxFinite,
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (addedTokens.isNotEmpty) ...[
-                Divider(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (addedTokens.isNotEmpty) ...[
+              Divider(),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                child: Text(
+                  AppLocalizations.of(context)!.containerSyncDialogNewTokens,
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+              ),
+              for (var tokenType in tokenTypes.keys)
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 6),
-                  child: Text(
-                    AppLocalizations.of(context)!.containerSyncDialogNewTokens,
-                    style: Theme.of(context).textTheme.bodyLarge,
+                  padding: const EdgeInsets.only(left: 4),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.add_circle,
+                        size:
+                            Theme.of(context).textTheme.bodyLarge?.fontSize ??
+                            16,
+                      ),
+                      Expanded(
+                        child: Text(
+                          ' ${tokenTypes[tokenType]}x $tokenType',
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                for (var tokenType in tokenTypes.keys)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 4),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.add_circle,
-                          size:
-                              Theme.of(context).textTheme.bodyLarge?.fontSize ??
-                              16,
-                        ),
-                        Expanded(
-                          child: Text(
-                            ' ${tokenTypes[tokenType]}x $tokenType',
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-              ],
-              if (removedTokens.isNotEmpty) ...[
-                Divider(),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 6),
-                  child: Text(
-                    AppLocalizations.of(
-                      context,
-                    )!.containerSyncDialogRemovedTokens,
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                ),
-                for (var token in removedTokens)
-                  Padding(
-                    padding: const EdgeInsets.only(left: 4),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.remove_circle,
-                          size:
-                              Theme.of(context).textTheme.bodyLarge?.fontSize ??
-                              16,
-                        ),
-                        Expanded(
-                          child: Text(
-                            ' ${token.label}',
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-              ],
             ],
-          ),
+            if (removedTokens.isNotEmpty) ...[
+              Divider(),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 6),
+                child: Text(
+                  AppLocalizations.of(
+                    context,
+                  )!.containerSyncDialogRemovedTokens,
+                  style: Theme.of(context).textTheme.bodyLarge,
+                ),
+              ),
+              for (var token in removedTokens)
+                Padding(
+                  padding: const EdgeInsets.only(left: 4),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.remove_circle,
+                        size:
+                            Theme.of(context).textTheme.bodyLarge?.fontSize ??
+                            16,
+                      ),
+                      Expanded(
+                        child: Text(
+                          ' ${token.label}',
+                          style: Theme.of(context).textTheme.bodyLarge,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ],
         ),
       ),
       actions: [

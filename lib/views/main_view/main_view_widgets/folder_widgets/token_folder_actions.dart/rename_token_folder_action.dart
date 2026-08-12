@@ -75,7 +75,6 @@ class RenameTokenFolderAction extends ConsumerSlideableAction {
     showAsyncDialog(
       builder: (BuildContext context) {
         return DefaultDialog(
-          scrollable: true,
           title: Text(AppLocalizations.of(context)!.renameTokenFolder),
           content: PiTextField(
             autofocus: true,
