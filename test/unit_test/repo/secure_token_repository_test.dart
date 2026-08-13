@@ -24,6 +24,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
+import 'package:privacyidea_authenticator/model/enums/biometric_push_key_status.dart';
+import 'package:privacyidea_authenticator/model/enums/force_biometric_option.dart';
+import 'package:privacyidea_authenticator/model/enums/push_app_biometric_level.dart';
+import 'package:privacyidea_authenticator/model/enums/push_token_rollout_state.dart';
+import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
 import 'package:privacyidea_authenticator/repo/secure_storage.dart';
 import 'package:privacyidea_authenticator/repo/secure_token_repository.dart';
@@ -137,6 +142,12 @@ void main() {
       };
 
       when(mockLegacyStorage.readAll()).thenAnswer((_) async => legacyMap);
+      when(
+        mockStorage.read(key: '${newPrefix}_id1'),
+      ).thenAnswer((_) async => null);
+      when(
+        mockStorage.read(key: '${newPrefix}_id2'),
+      ).thenAnswer((_) async => null);
 
       when(
         mockStorage.write(key: '${newPrefix}_id1', value: anyNamed('value')),
@@ -156,6 +167,182 @@ void main() {
       verify(mockLegacyStorage.delete(key: '${legacyPrefix}_id2')).called(1);
       verifyNever(mockLegacyStorage.delete(key: '${legacyPrefix}_id1'));
     });
+
+    test('Migration never overwrites a token already in new storage', () async {
+      final legacy = createToken('id1');
+      final current = createToken('id1').copyWith(label: 'current');
+      final legacyMap = {'${legacyPrefix}_id1': jsonEncode(legacy.toJson())};
+      final currentJson = jsonEncode(current.toJson());
+
+      when(mockLegacyStorage.readAll()).thenAnswer((_) async => legacyMap);
+      when(
+        mockStorage.read(key: '${newPrefix}_id1'),
+      ).thenAnswer((_) async => currentJson);
+      when(
+        mockLegacyStorage.delete(key: '${legacyPrefix}_id1'),
+      ).thenAnswer((_) async {});
+      when(
+        mockStorage.readAll(),
+      ).thenAnswer((_) async => {'${newPrefix}_id1': currentJson});
+
+      final tokens = await repository.loadTokens();
+
+      expect(tokens.single.label, 'current');
+      verifyNever(
+        mockStorage.write(key: anyNamed('key'), value: anyNamed('value')),
+      );
+      verify(mockLegacyStorage.delete(key: '${legacyPrefix}_id1')).called(1);
+    });
+
+    test(
+      'Migration invalidates a rolled-out biometric Push token before writing legacy plaintext',
+      () async {
+        final legacy = PushToken(
+          id: 'push-id',
+          serial: 'PIPU0001',
+          label: 'Push',
+          issuer: 'privacyIDEA',
+          forceBiometricOption: ForceBiometricOption.biometric,
+          privateTokenKey: 'legacy-private-key',
+          publicTokenKey: 'public-key',
+          isRolledOut: true,
+          rolloutState: PushTokenRollOutState.rolloutComplete,
+        );
+        final legacyMap = {
+          '${legacyPrefix}_${legacy.id}': jsonEncode(legacy.toJson()),
+        };
+        String? migratedValue;
+
+        when(mockLegacyStorage.readAll()).thenAnswer((_) async => legacyMap);
+        when(
+          mockStorage.read(key: '${newPrefix}_${legacy.id}'),
+        ).thenAnswer((_) async => null);
+        when(
+          mockStorage.write(
+            key: '${newPrefix}_${legacy.id}',
+            value: anyNamed('value'),
+          ),
+        ).thenAnswer((invocation) async {
+          migratedValue = invocation.namedArguments[#value] as String;
+        });
+        when(
+          mockLegacyStorage.delete(key: '${legacyPrefix}_${legacy.id}'),
+        ).thenAnswer((_) async {});
+        when(mockStorage.readAll()).thenAnswer(
+          (_) async => migratedValue == null
+              ? <String, String>{}
+              : {'${newPrefix}_${legacy.id}': migratedValue!},
+        );
+
+        final tokens = await repository.loadTokens();
+
+        final migrated = tokens.single as PushToken;
+        expect(migrated.biometricKeyStatus, BiometricPushKeyStatus.invalidated);
+        expect(migrated.privateTokenKey, isNull);
+        expect(migrated.isRolledOut, isTrue);
+        final writtenJson = jsonDecode(migratedValue!) as Map<String, dynamic>;
+        expect(writtenJson['biometricKeyStatus'], 'invalidated');
+        expect(writtenJson['privateTokenKey'], isNull);
+        verify(
+          mockLegacyStorage.delete(key: '${legacyPrefix}_${legacy.id}'),
+        ).called(1);
+      },
+    );
+
+    test(
+      'Migration keeps an existing protected Push token instead of unsafe legacy plaintext',
+      () async {
+        final legacy = PushToken(
+          id: 'push-id',
+          serial: 'PIPU0001',
+          label: 'Legacy Push',
+          issuer: 'privacyIDEA',
+          forceBiometricOption: ForceBiometricOption.biometric,
+          privateTokenKey: 'legacy-private-key',
+          publicTokenKey: 'public-key',
+          isRolledOut: true,
+          rolloutState: PushTokenRollOutState.rolloutComplete,
+        );
+        final current = legacy.copyWith(
+          label: 'Current Push',
+          privateTokenKey: () => null,
+          biometricKeyStatus: BiometricPushKeyStatus.protected,
+        );
+        final legacyMap = {
+          '${legacyPrefix}_${legacy.id}': jsonEncode(legacy.toJson()),
+        };
+        final currentJson = jsonEncode(current.toJson());
+
+        when(mockLegacyStorage.readAll()).thenAnswer((_) async => legacyMap);
+        when(
+          mockStorage.read(key: '${newPrefix}_${legacy.id}'),
+        ).thenAnswer((_) async => currentJson);
+        when(
+          mockLegacyStorage.delete(key: '${legacyPrefix}_${legacy.id}'),
+        ).thenAnswer((_) async {});
+        when(
+          mockStorage.readAll(),
+        ).thenAnswer((_) async => {'${newPrefix}_${legacy.id}': currentJson});
+
+        final tokens = await repository.loadTokens();
+
+        final loaded = tokens.single as PushToken;
+        expect(loaded.label, 'Current Push');
+        expect(loaded.biometricKeyStatus, BiometricPushKeyStatus.protected);
+        expect(loaded.privateTokenKey, isNull);
+        verifyNever(
+          mockStorage.write(key: anyNamed('key'), value: anyNamed('value')),
+        );
+      },
+    );
+
+    test(
+      'Migration preserves an explicit weak-compatible biometric Push token',
+      () async {
+        final legacy = PushToken(
+          id: 'push-any-id',
+          serial: 'PIPU0002',
+          label: 'Push any',
+          issuer: 'privacyIDEA',
+          forceBiometricOption: ForceBiometricOption.biometric,
+          biometricLevel: PushAppBiometricLevel.any,
+          invalidateOnBiometricChange: false,
+          privateTokenKey: 'legacy-private-key',
+          publicTokenKey: 'public-key',
+          isRolledOut: true,
+          rolloutState: PushTokenRollOutState.rolloutComplete,
+        );
+        final legacyMap = {
+          '${legacyPrefix}_${legacy.id}': jsonEncode(legacy.toJson()),
+        };
+        String? migratedValue;
+
+        when(mockLegacyStorage.readAll()).thenAnswer((_) async => legacyMap);
+        when(
+          mockStorage.read(key: '${newPrefix}_${legacy.id}'),
+        ).thenAnswer((_) async => null);
+        when(
+          mockStorage.write(
+            key: '${newPrefix}_${legacy.id}',
+            value: anyNamed('value'),
+          ),
+        ).thenAnswer((invocation) async {
+          migratedValue = invocation.namedArguments[#value] as String;
+        });
+        when(
+          mockLegacyStorage.delete(key: '${legacyPrefix}_${legacy.id}'),
+        ).thenAnswer((_) async {});
+        when(mockStorage.readAll()).thenAnswer(
+          (_) async => {'${newPrefix}_${legacy.id}': migratedValue!},
+        );
+
+        final migrated = (await repository.loadTokens()).single as PushToken;
+
+        expect(migrated.requiresBiometricKeyProtection, isFalse);
+        expect(migrated.biometricKeyStatus, BiometricPushKeyStatus.unprotected);
+        expect(migrated.privateTokenKey, 'legacy-private-key');
+      },
+    );
 
     test('Migration skips entries without type field', () async {
       final invalidLegacyData = {

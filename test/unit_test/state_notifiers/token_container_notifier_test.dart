@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -17,6 +18,7 @@ import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.d
 import 'package:privacyidea_authenticator/model/riverpod_states/token_container_state.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/token_state.dart';
 import 'package:privacyidea_authenticator/model/token_container.dart';
+import 'package:privacyidea_authenticator/model/token_import/token_origin_data.dart';
 import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
@@ -507,7 +509,6 @@ void main() {
     test('deleteContainer', () async {
       // prepare
       TestWidgetsFlutterBinding.ensureInitialized();
-      final container = ProviderContainer();
       var containerRepoState = buildUnfinalizedContainerState();
       final mockContainerRepo = setupMockContainerRepo(
         () => containerRepoState,
@@ -555,6 +556,17 @@ void main() {
         containerApi: mockContainerApi,
         eccUtils: EccUtils(),
       );
+      final mockTokenRepo = MockTokenRepository();
+      when(mockTokenRepo.loadTokens()).thenAnswer((_) async => []);
+      when(mockTokenRepo.deleteTokens(any)).thenAnswer((_) async => []);
+      final container = ProviderContainer(
+        overrides: [
+          tokenProvider.overrideWith(
+            () => TokenNotifier(repoOverride: mockTokenRepo),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
       await container.read(tokenContainerProvider.future);
       // act
       await container
@@ -919,7 +931,7 @@ void main() {
                 containerSerial: "CONTAINER01",
                 algorithm: Algorithms.SHA256,
                 digits: 6,
-                secret: "SECRET01",
+                secret: "JBSWY3DPEHPK3PXP",
                 counter: 8,
               ),
             ],
@@ -962,7 +974,7 @@ void main() {
             containerSerial: "CONTAINER01",
             algorithm: Algorithms.SHA256,
             digits: 8,
-            secret: "SECRET01",
+            secret: "JBSWY3DPEHPK3PXP",
             counter: 10,
           ),
           "ID02": HOTPToken(
@@ -993,6 +1005,13 @@ void main() {
             repoTokens[token.id] = token;
           }
           return Future.value([]);
+        });
+        when(mockTokenRepo.deleteTokens(any)).thenAnswer((invocation) async {
+          final tokens = invocation.positionalArguments[0] as List<Token>;
+          for (final token in tokens) {
+            repoTokens.remove(token.id);
+          }
+          return <Token>[];
         });
 
         final mockTokenNotifier = TokenNotifier(repoOverride: mockTokenRepo);
@@ -1040,7 +1059,7 @@ void main() {
               containerSerial: "CONTAINER01",
               algorithm: Algorithms.SHA256,
               digits: 6,
-              secret: "SECRET01",
+              secret: "JBSWY3DPEHPK3PXP",
               counter: 8,
             ),
             TOTPToken(
@@ -1092,6 +1111,897 @@ void main() {
           unorderedEquals(expectedStateUnordered.tokens),
         );
       });
+
+      test(
+        'ignores an in-flight sync response after local container deletion',
+        () async {
+          var containerRepoState = buildFinalizedContainerState();
+          final containerToDelete =
+              containerRepoState.containerList.single
+                  as TokenContainerFinalized;
+          final syncStarted = Completer<void>();
+          final syncResponse = Completer<ContainerSyncUpdates?>();
+          final mockContainerApi = MockTokenContainerApi();
+          when(
+            mockContainerApi.sync(any, any, isInitSync: anyNamed('isInitSync')),
+          ).thenAnswer((_) {
+            syncStarted.complete();
+            return syncResponse.future;
+          });
+          final mockContainerRepo = setupMockContainerRepo(
+            () => containerRepoState,
+            (state) => containerRepoState = state,
+          );
+          final mockTokenRepo = MockTokenRepository();
+          when(mockTokenRepo.loadTokens()).thenAnswer((_) async => []);
+          when(mockTokenRepo.deleteTokens(any)).thenAnswer((_) async => []);
+          when(
+            mockTokenRepo.saveOrReplaceTokens(any),
+          ).thenAnswer((_) async => []);
+          final mockSettingsRepo = MockSettingsRepository();
+          when(
+            mockSettingsRepo.loadSettings(),
+          ).thenAnswer((_) async => SettingsState());
+          final providerContainer = ProviderContainer(
+            overrides: [
+              tokenContainerProvider.overrideWith(
+                () => TokenContainerNotifier(
+                  repoOverride: mockContainerRepo,
+                  containerApiOverride: mockContainerApi,
+                  eccUtilsOverride: EccUtils(),
+                ),
+              ),
+              tokenProvider.overrideWith(
+                () => TokenNotifier(repoOverride: mockTokenRepo),
+              ),
+              settingsProvider.overrideWith(
+                () => SettingsNotifier(repoOverride: mockSettingsRepo),
+              ),
+            ],
+          );
+          addTearDown(providerContainer.dispose);
+          final tokenState = await providerContainer.read(tokenProvider.future);
+          await providerContainer.read(tokenContainerProvider.future);
+
+          final syncFuture = providerContainer
+              .read(tokenContainerProvider.notifier)
+              .syncContainers(
+                tokenState: tokenState,
+                isManually: false,
+                isInitSync: false,
+              );
+          await syncStarted.future;
+          final deleted = await providerContainer
+              .read(tokenContainerProvider.notifier)
+              .deleteContainer(containerToDelete);
+          syncResponse.complete(
+            ContainerSyncUpdates(
+              containerSerial: containerToDelete.serial,
+              newTokens: [
+                TOTPToken(
+                  id: 'orphan-id',
+                  serial: 'TOTP-ORPHAN',
+                  containerSerial: containerToDelete.serial,
+                  algorithm: Algorithms.SHA256,
+                  digits: 6,
+                  period: 30,
+                  secret: 'JBSWY3DPEHPK3PXP',
+                ),
+              ],
+              updatedTokens: const [],
+              deletedTokens: const [],
+              initAssignmentChecked: const [],
+              newPolicies: ContainerPolicies(
+                rolloverAllowed: false,
+                initialTokenAssignment: false,
+                disabledTokenDeletion: false,
+                disabledUnregister: false,
+              ),
+            ),
+          );
+          await syncFuture;
+
+          expect(deleted, isTrue);
+          expect(
+            (await providerContainer.read(
+              tokenContainerProvider.future,
+            )).containerList,
+            isEmpty,
+          );
+          expect(
+            (await providerContainer.read(tokenProvider.future)).tokens,
+            isEmpty,
+          );
+          verifyNever(mockTokenRepo.saveOrReplaceTokens(any));
+        },
+      );
+
+      test(
+        'marks sync failed and preserves policies when token updates cannot be saved',
+        () async {
+          TestWidgetsFlutterBinding.ensureInitialized();
+          var containerRepoState = buildFinalizedContainerState();
+          final originalContainer =
+              containerRepoState.containerList.single
+                  as TokenContainerFinalized;
+          final mockContainerApi = MockTokenContainerApi();
+          final currentToken = HOTPToken(
+            id: 'ID01',
+            serial: 'HOTPTOKEN01',
+            containerSerial: originalContainer.serial,
+            algorithm: Algorithms.SHA256,
+            digits: 6,
+            secret: 'JBSWY3DPEHPK3PXP',
+            counter: 10,
+          );
+          when(
+            mockContainerApi.sync(any, any, isInitSync: anyNamed('isInitSync')),
+          ).thenAnswer(
+            (_) async => ContainerSyncUpdates(
+              containerSerial: originalContainer.serial,
+              newTokens: const [],
+              updatedTokens: [currentToken.copyWith(counter: 11)],
+              deletedTokens: const [],
+              initAssignmentChecked: const [],
+              newPolicies: ContainerPolicies(
+                rolloverAllowed: true,
+                initialTokenAssignment: true,
+                disabledTokenDeletion: false,
+                disabledUnregister: false,
+              ),
+            ),
+          );
+          final mockContainerRepo = setupMockContainerRepo(
+            () => containerRepoState,
+            (state) => containerRepoState = state,
+          );
+          final mockTokenRepo = MockTokenRepository();
+          when(
+            mockTokenRepo.loadTokens(),
+          ).thenAnswer((_) async => [currentToken]);
+          when(mockTokenRepo.saveOrReplaceTokens(any)).thenAnswer((
+            invocation,
+          ) async {
+            return List<Token>.from(
+              invocation.positionalArguments.single as List<Token>,
+            );
+          });
+          final mockSettingsRepo = MockSettingsRepository();
+          when(
+            mockSettingsRepo.loadSettings(),
+          ).thenAnswer((_) async => SettingsState());
+          final providerContainer = ProviderContainer(
+            overrides: [
+              tokenContainerProvider.overrideWith(
+                () => TokenContainerNotifier(
+                  repoOverride: mockContainerRepo,
+                  containerApiOverride: mockContainerApi,
+                  eccUtilsOverride: EccUtils(),
+                ),
+              ),
+              tokenProvider.overrideWith(
+                () => TokenNotifier(repoOverride: mockTokenRepo),
+              ),
+              settingsProvider.overrideWith(
+                () => SettingsNotifier(repoOverride: mockSettingsRepo),
+              ),
+            ],
+          );
+          addTearDown(providerContainer.dispose);
+          final tokenState = await providerContainer.read(tokenProvider.future);
+
+          await providerContainer
+              .read(tokenContainerProvider.notifier)
+              .syncContainers(
+                tokenState: tokenState,
+                isManually: false,
+                isInitSync: false,
+              );
+
+          final state = await providerContainer.read(
+            tokenContainerProvider.future,
+          );
+          final failedContainer =
+              state.containerList.single as TokenContainerFinalized;
+          final unchangedToken =
+              (await providerContainer.read(tokenProvider.future)).tokens.single
+                  as HOTPToken;
+          expect(failedContainer.syncState, SyncState.failed);
+          expect(failedContainer.initSynced, isFalse);
+          expect(failedContainer.policies, originalContainer.policies);
+          expect(unchangedToken.counter, currentToken.counter);
+        },
+      );
+
+      test(
+        'marks sync failed and preserves policies when token deletion fails',
+        () async {
+          TestWidgetsFlutterBinding.ensureInitialized();
+          var containerRepoState = buildFinalizedContainerState();
+          final originalContainer =
+              containerRepoState.containerList.single
+                  as TokenContainerFinalized;
+          final mockContainerApi = MockTokenContainerApi();
+          final currentToken = HOTPToken(
+            id: 'ID01',
+            serial: 'HOTPTOKEN01',
+            containerSerial: originalContainer.serial,
+            algorithm: Algorithms.SHA256,
+            digits: 6,
+            secret: 'JBSWY3DPEHPK3PXP',
+            counter: 10,
+          );
+          when(
+            mockContainerApi.sync(any, any, isInitSync: anyNamed('isInitSync')),
+          ).thenAnswer(
+            (_) async => ContainerSyncUpdates(
+              containerSerial: originalContainer.serial,
+              newTokens: const [],
+              updatedTokens: const [],
+              deletedTokens: [currentToken],
+              initAssignmentChecked: const [],
+              newPolicies: ContainerPolicies(
+                rolloverAllowed: true,
+                initialTokenAssignment: true,
+                disabledTokenDeletion: false,
+                disabledUnregister: false,
+              ),
+            ),
+          );
+          final mockContainerRepo = setupMockContainerRepo(
+            () => containerRepoState,
+            (state) => containerRepoState = state,
+          );
+          final mockTokenRepo = MockTokenRepository();
+          when(
+            mockTokenRepo.loadTokens(),
+          ).thenAnswer((_) async => [currentToken]);
+          when(mockTokenRepo.deleteTokens(any)).thenAnswer((invocation) async {
+            return List<Token>.from(
+              invocation.positionalArguments.single as List<Token>,
+            );
+          });
+          final mockSettingsRepo = MockSettingsRepository();
+          when(
+            mockSettingsRepo.loadSettings(),
+          ).thenAnswer((_) async => SettingsState());
+          final providerContainer = ProviderContainer(
+            overrides: [
+              tokenContainerProvider.overrideWith(
+                () => TokenContainerNotifier(
+                  repoOverride: mockContainerRepo,
+                  containerApiOverride: mockContainerApi,
+                  eccUtilsOverride: EccUtils(),
+                ),
+              ),
+              tokenProvider.overrideWith(
+                () => TokenNotifier(repoOverride: mockTokenRepo),
+              ),
+              settingsProvider.overrideWith(
+                () => SettingsNotifier(repoOverride: mockSettingsRepo),
+              ),
+            ],
+          );
+          addTearDown(providerContainer.dispose);
+          final tokenState = await providerContainer.read(tokenProvider.future);
+
+          await providerContainer
+              .read(tokenContainerProvider.notifier)
+              .syncContainers(
+                tokenState: tokenState,
+                isManually: false,
+                isInitSync: false,
+              );
+
+          final state = await providerContainer.read(
+            tokenContainerProvider.future,
+          );
+          final failedContainer =
+              state.containerList.single as TokenContainerFinalized;
+          final tokens = (await providerContainer.read(
+            tokenProvider.future,
+          )).tokens;
+          expect(failedContainer.syncState, SyncState.failed);
+          expect(failedContainer.initSynced, isFalse);
+          expect(failedContainer.policies, originalContainer.policies);
+          expect(tokens.single.id, currentToken.id);
+        },
+      );
+
+      test(
+        'ignores a response when the container is deleted during the network request',
+        () async {
+          TestWidgetsFlutterBinding.ensureInitialized();
+          var containerRepoState = buildFinalizedContainerState();
+          final originalContainer =
+              containerRepoState.containerList.single
+                  as TokenContainerFinalized;
+          final syncStarted = Completer<void>();
+          final syncResponse = Completer<ContainerSyncUpdates?>();
+          final mockContainerApi = MockTokenContainerApi();
+          when(
+            mockContainerApi.sync(any, any, isInitSync: anyNamed('isInitSync')),
+          ).thenAnswer((_) {
+            if (!syncStarted.isCompleted) syncStarted.complete();
+            return syncResponse.future;
+          });
+          final mockContainerRepo = setupMockContainerRepo(
+            () => containerRepoState,
+            (state) => containerRepoState = state,
+          );
+          final mockTokenRepo = MockTokenRepository();
+          when(mockTokenRepo.loadTokens()).thenAnswer((_) async => <Token>[]);
+          final mockSettingsRepo = MockSettingsRepository();
+          when(
+            mockSettingsRepo.loadSettings(),
+          ).thenAnswer((_) async => SettingsState());
+          final providerContainer = ProviderContainer(
+            overrides: [
+              tokenContainerProvider.overrideWith(
+                () => TokenContainerNotifier(
+                  repoOverride: mockContainerRepo,
+                  containerApiOverride: mockContainerApi,
+                  eccUtilsOverride: EccUtils(),
+                ),
+              ),
+              tokenProvider.overrideWith(
+                () => TokenNotifier(repoOverride: mockTokenRepo),
+              ),
+              settingsProvider.overrideWith(
+                () => SettingsNotifier(repoOverride: mockSettingsRepo),
+              ),
+            ],
+          );
+          addTearDown(providerContainer.dispose);
+          final tokenState = await providerContainer.read(tokenProvider.future);
+          final notifier = providerContainer.read(
+            tokenContainerProvider.notifier,
+          );
+
+          final syncFuture = notifier.syncContainers(
+            tokenState: tokenState,
+            isManually: false,
+            isInitSync: false,
+          );
+          await syncStarted.future;
+
+          expect(await notifier.deleteContainer(originalContainer), isTrue);
+          expect(
+            (await providerContainer.read(
+              tokenContainerProvider.future,
+            )).containerList,
+            isEmpty,
+          );
+
+          syncResponse.complete(
+            ContainerSyncUpdates(
+              containerSerial: originalContainer.serial,
+              newTokens: [
+                TOTPToken(
+                  id: 'orphan-id',
+                  serial: 'ORPHAN01',
+                  period: 30,
+                  algorithm: Algorithms.SHA256,
+                  digits: 6,
+                  secret: 'SECRET',
+                ),
+              ],
+              updatedTokens: const [],
+              deletedTokens: const [],
+              initAssignmentChecked: const [],
+              newPolicies: ContainerPolicies.defaultSetting,
+            ),
+          );
+          await syncFuture;
+
+          expect(
+            (await providerContainer.read(tokenProvider.future)).tokens,
+            isEmpty,
+          );
+          expect(
+            (await providerContainer.read(
+              tokenContainerProvider.future,
+            )).containerList,
+            isEmpty,
+          );
+          verifyNever(mockTokenRepo.saveOrReplaceTokens(any));
+        },
+      );
+
+      test(
+        'discards an in-flight sync response after unregister fails',
+        () async {
+          TestWidgetsFlutterBinding.ensureInitialized();
+          var containerRepoState = buildFinalizedContainerState();
+          final originalContainer =
+              containerRepoState.containerList.single
+                  as TokenContainerFinalized;
+          final firstSyncStarted = Completer<void>();
+          final firstSyncResponse = Completer<ContainerSyncUpdates?>();
+          final unregisterStarted = Completer<void>();
+          final unregisterResponse = Completer<UnregisterContainerResult>();
+          final mockContainerApi = MockTokenContainerApi();
+          var syncCalls = 0;
+          ContainerSyncUpdates successfulResponse() => ContainerSyncUpdates(
+            containerSerial: originalContainer.serial,
+            newTokens: const [],
+            updatedTokens: const [],
+            deletedTokens: const [],
+            initAssignmentChecked: const [],
+            newPolicies: originalContainer.policies,
+          );
+          when(
+            mockContainerApi.sync(any, any, isInitSync: anyNamed('isInitSync')),
+          ).thenAnswer((_) {
+            syncCalls++;
+            if (syncCalls == 1) {
+              firstSyncStarted.complete();
+              return firstSyncResponse.future;
+            }
+            return Future.value(successfulResponse());
+          });
+          when(mockContainerApi.unregister(any)).thenAnswer((_) {
+            unregisterStarted.complete();
+            return unregisterResponse.future;
+          });
+          final mockContainerRepo = setupMockContainerRepo(
+            () => containerRepoState,
+            (state) => containerRepoState = state,
+          );
+          final mockTokenRepo = MockTokenRepository();
+          when(mockTokenRepo.loadTokens()).thenAnswer((_) async => <Token>[]);
+          when(
+            mockTokenRepo.saveOrReplaceTokens(any),
+          ).thenAnswer((_) async => <Token>[]);
+          final mockSettingsRepo = MockSettingsRepository();
+          when(
+            mockSettingsRepo.loadSettings(),
+          ).thenAnswer((_) async => SettingsState());
+          final providerContainer = ProviderContainer(
+            overrides: [
+              tokenContainerProvider.overrideWith(
+                () => TokenContainerNotifier(
+                  repoOverride: mockContainerRepo,
+                  containerApiOverride: mockContainerApi,
+                  eccUtilsOverride: EccUtils(),
+                ),
+              ),
+              tokenProvider.overrideWith(
+                () => TokenNotifier(repoOverride: mockTokenRepo),
+              ),
+              settingsProvider.overrideWith(
+                () => SettingsNotifier(repoOverride: mockSettingsRepo),
+              ),
+            ],
+          );
+          addTearDown(providerContainer.dispose);
+          final tokenState = await providerContainer.read(tokenProvider.future);
+          final notifier = providerContainer.read(
+            tokenContainerProvider.notifier,
+          );
+
+          final syncFuture = notifier.syncContainers(
+            tokenState: tokenState,
+            isManually: false,
+            isInitSync: false,
+          );
+          await firstSyncStarted.future;
+          final unregisterFuture = notifier.unregisterDelete(originalContainer);
+          await unregisterStarted.future;
+
+          unregisterResponse.complete(
+            UnregisterContainerResult(success: false),
+          );
+          expect(await unregisterFuture, isFalse);
+          firstSyncResponse.complete(
+            ContainerSyncUpdates(
+              containerSerial: originalContainer.serial,
+              newTokens: [
+                TOTPToken(
+                  id: 'stale-id',
+                  serial: 'STALE01',
+                  containerSerial: originalContainer.serial,
+                  period: 30,
+                  algorithm: Algorithms.SHA256,
+                  digits: 6,
+                  secret: 'JBSWY3DPEHPK3PXP',
+                ),
+              ],
+              updatedTokens: const [],
+              deletedTokens: const [],
+              initAssignmentChecked: const [],
+              newPolicies: ContainerPolicies(
+                rolloverAllowed: !originalContainer.policies.rolloverAllowed,
+                initialTokenAssignment:
+                    !originalContainer.policies.initialTokenAssignment,
+                disabledTokenDeletion:
+                    !originalContainer.policies.disabledTokenDeletion,
+                disabledUnregister:
+                    !originalContainer.policies.disabledUnregister,
+              ),
+            ),
+          );
+          await syncFuture;
+          final skippedContainer =
+              (await providerContainer.read(
+                    tokenContainerProvider.future,
+                  )).containerList.single
+                  as TokenContainerFinalized;
+          expect(skippedContainer.syncState, SyncState.failed);
+          expect(skippedContainer.initSynced, isFalse);
+          expect(skippedContainer.policies, originalContainer.policies);
+          expect(
+            (await providerContainer.read(tokenProvider.future)).tokens,
+            isEmpty,
+          );
+          verifyNever(mockTokenRepo.saveOrReplaceTokens(any));
+
+          await notifier.syncContainers(
+            tokenState: tokenState,
+            isManually: false,
+            isInitSync: false,
+          );
+          final retriedContainer =
+              (await providerContainer.read(
+                    tokenContainerProvider.future,
+                  )).containerList.single
+                  as TokenContainerFinalized;
+          expect(syncCalls, 2);
+          expect(retriedContainer.syncState, SyncState.completed);
+        },
+      );
+
+      test(
+        'discards sync response after local deletion fails during unregister',
+        () async {
+          TestWidgetsFlutterBinding.ensureInitialized();
+          var containerRepoState = buildFinalizedContainerState();
+          final originalContainer =
+              containerRepoState.containerList.single
+                  as TokenContainerFinalized;
+          final managedToken = TOTPToken(
+            id: 'managed-id',
+            serial: 'MANAGED01',
+            containerSerial: originalContainer.serial,
+            period: 30,
+            algorithm: Algorithms.SHA256,
+            digits: 6,
+            secret: 'JBSWY3DPEHPK3PXP',
+            origin: TokenOriginData.fromContainer(
+              container: originalContainer,
+              tokenData: 'managed',
+            ),
+          );
+          final syncStarted = Completer<void>();
+          final syncResponse = Completer<ContainerSyncUpdates?>();
+          final mockContainerApi = MockTokenContainerApi();
+          when(
+            mockContainerApi.sync(any, any, isInitSync: anyNamed('isInitSync')),
+          ).thenAnswer((_) {
+            syncStarted.complete();
+            return syncResponse.future;
+          });
+          when(
+            mockContainerApi.unregister(any),
+          ).thenAnswer((_) async => UnregisterContainerResult(success: true));
+          final mockContainerRepo = setupMockContainerRepo(
+            () => containerRepoState,
+            (state) => containerRepoState = state,
+          );
+          final mockTokenRepo = MockTokenRepository();
+          when(
+            mockTokenRepo.loadTokens(),
+          ).thenAnswer((_) async => [managedToken]);
+          when(mockTokenRepo.deleteTokens(any)).thenAnswer((invocation) async {
+            return List<Token>.from(
+              invocation.positionalArguments.single as List<Token>,
+            );
+          });
+          final mockSettingsRepo = MockSettingsRepository();
+          when(
+            mockSettingsRepo.loadSettings(),
+          ).thenAnswer((_) async => SettingsState());
+          final providerContainer = ProviderContainer(
+            overrides: [
+              tokenContainerProvider.overrideWith(
+                () => TokenContainerNotifier(
+                  repoOverride: mockContainerRepo,
+                  containerApiOverride: mockContainerApi,
+                  eccUtilsOverride: EccUtils(),
+                ),
+              ),
+              tokenProvider.overrideWith(
+                () => TokenNotifier(repoOverride: mockTokenRepo),
+              ),
+              settingsProvider.overrideWith(
+                () => SettingsNotifier(repoOverride: mockSettingsRepo),
+              ),
+            ],
+          );
+          addTearDown(providerContainer.dispose);
+          final tokenState = await providerContainer.read(tokenProvider.future);
+          final notifier = providerContainer.read(
+            tokenContainerProvider.notifier,
+          );
+
+          final syncFuture = notifier.syncContainers(
+            tokenState: tokenState,
+            isManually: false,
+            isInitSync: false,
+          );
+          await syncStarted.future;
+          expect(await notifier.unregisterDelete(originalContainer), isFalse);
+
+          syncResponse.complete(
+            ContainerSyncUpdates(
+              containerSerial: originalContainer.serial,
+              newTokens: const [],
+              updatedTokens: const [],
+              deletedTokens: const [],
+              initAssignmentChecked: const [],
+              newPolicies: ContainerPolicies(
+                rolloverAllowed: !originalContainer.policies.rolloverAllowed,
+                initialTokenAssignment:
+                    !originalContainer.policies.initialTokenAssignment,
+                disabledTokenDeletion:
+                    !originalContainer.policies.disabledTokenDeletion,
+                disabledUnregister:
+                    !originalContainer.policies.disabledUnregister,
+              ),
+            ),
+          );
+          await syncFuture;
+
+          final retainedContainer =
+              (await providerContainer.read(
+                    tokenContainerProvider.future,
+                  )).containerList.single
+                  as TokenContainerFinalized;
+          expect(retainedContainer.syncState, SyncState.failed);
+          expect(retainedContainer.initSynced, isFalse);
+          expect(retainedContainer.policies, originalContainer.policies);
+          expect((await providerContainer.read(tokenProvider.future)).tokens, [
+            managedToken,
+          ]);
+        },
+      );
+
+      test(
+        'discards a sync response sent before the container URL changed',
+        () async {
+          TestWidgetsFlutterBinding.ensureInitialized();
+          var containerRepoState = buildFinalizedContainerState();
+          final originalContainer =
+              containerRepoState.containerList.single
+                  as TokenContainerFinalized;
+          final syncStarted = Completer<void>();
+          final syncResponse = Completer<ContainerSyncUpdates?>();
+          final mockContainerApi = MockTokenContainerApi();
+          when(
+            mockContainerApi.sync(any, any, isInitSync: anyNamed('isInitSync')),
+          ).thenAnswer((_) {
+            syncStarted.complete();
+            return syncResponse.future;
+          });
+          final mockContainerRepo = setupMockContainerRepo(
+            () => containerRepoState,
+            (state) => containerRepoState = state,
+          );
+          final mockTokenRepo = MockTokenRepository();
+          when(mockTokenRepo.loadTokens()).thenAnswer((_) async => <Token>[]);
+          when(
+            mockTokenRepo.saveOrReplaceTokens(any),
+          ).thenAnswer((_) async => <Token>[]);
+          final mockSettingsRepo = MockSettingsRepository();
+          when(
+            mockSettingsRepo.loadSettings(),
+          ).thenAnswer((_) async => SettingsState());
+          final providerContainer = ProviderContainer(
+            overrides: [
+              tokenContainerProvider.overrideWith(
+                () => TokenContainerNotifier(
+                  repoOverride: mockContainerRepo,
+                  containerApiOverride: mockContainerApi,
+                  eccUtilsOverride: EccUtils(),
+                ),
+              ),
+              tokenProvider.overrideWith(
+                () => TokenNotifier(repoOverride: mockTokenRepo),
+              ),
+              settingsProvider.overrideWith(
+                () => SettingsNotifier(repoOverride: mockSettingsRepo),
+              ),
+            ],
+          );
+          addTearDown(providerContainer.dispose);
+          final tokenState = await providerContainer.read(tokenProvider.future);
+          final notifier = providerContainer.read(
+            tokenContainerProvider.notifier,
+          );
+
+          final syncFuture = notifier.syncContainers(
+            tokenState: tokenState,
+            isManually: false,
+            isInitSync: false,
+          );
+          await syncStarted.future;
+          final newServerUrl = Uri.parse('https://new.example.com');
+          expect(
+            await notifier.updateContainer(
+              originalContainer,
+              (TokenContainerFinalized current) =>
+                  current.copyWith(serverUrl: newServerUrl),
+            ),
+            isNotNull,
+          );
+
+          syncResponse.complete(
+            ContainerSyncUpdates(
+              containerSerial: originalContainer.serial,
+              newTokens: [
+                TOTPToken(
+                  id: 'old-server-id',
+                  serial: 'OLD-SERVER01',
+                  containerSerial: originalContainer.serial,
+                  period: 30,
+                  algorithm: Algorithms.SHA256,
+                  digits: 6,
+                  secret: 'JBSWY3DPEHPK3PXP',
+                ),
+              ],
+              updatedTokens: const [],
+              deletedTokens: const [],
+              initAssignmentChecked: const [],
+              newPolicies: ContainerPolicies(
+                rolloverAllowed: !originalContainer.policies.rolloverAllowed,
+                initialTokenAssignment:
+                    !originalContainer.policies.initialTokenAssignment,
+                disabledTokenDeletion:
+                    !originalContainer.policies.disabledTokenDeletion,
+                disabledUnregister:
+                    !originalContainer.policies.disabledUnregister,
+              ),
+            ),
+          );
+          await syncFuture;
+
+          final currentContainer =
+              (await providerContainer.read(
+                    tokenContainerProvider.future,
+                  )).containerList.single
+                  as TokenContainerFinalized;
+          expect(currentContainer.serverUrl, newServerUrl);
+          expect(currentContainer.syncState, SyncState.failed);
+          expect(currentContainer.initSynced, isFalse);
+          expect(currentContainer.policies, originalContainer.policies);
+          expect(
+            (await providerContainer.read(tokenProvider.future)).tokens,
+            isEmpty,
+          );
+          verifyNever(mockTokenRepo.saveOrReplaceTokens(any));
+        },
+      );
+
+      test(
+        'serializes overlapping sync requests and refreshes their token state',
+        () async {
+          var containerRepoState = buildFinalizedContainerState();
+          final containerToSync =
+              containerRepoState.containerList.single
+                  as TokenContainerFinalized;
+          final firstStarted = Completer<void>();
+          final firstResponse = Completer<ContainerSyncUpdates?>();
+          final mockContainerApi = MockTokenContainerApi();
+          var apiCalls = 0;
+          var inFlight = 0;
+          var maxInFlight = 0;
+          final requestTokenStates = <TokenState>[];
+          final added = TOTPToken(
+            id: 'new-id',
+            serial: 'TOTP-NEW',
+            containerSerial: containerToSync.serial,
+            algorithm: Algorithms.SHA256,
+            digits: 6,
+            period: 30,
+            secret: 'NEW-SECRET',
+          );
+          when(
+            mockContainerApi.sync(any, any, isInitSync: anyNamed('isInitSync')),
+          ).thenAnswer((invocation) {
+            apiCalls++;
+            inFlight++;
+            if (inFlight > maxInFlight) maxInFlight = inFlight;
+            requestTokenStates.add(
+              invocation.positionalArguments[1] as TokenState,
+            );
+            if (apiCalls == 1) {
+              firstStarted.complete();
+              return firstResponse.future.whenComplete(() => inFlight--);
+            }
+            return Future<ContainerSyncUpdates?>.value(
+              ContainerSyncUpdates(
+                containerSerial: containerToSync.serial,
+                newTokens: const [],
+                updatedTokens: const [],
+                deletedTokens: const [],
+                initAssignmentChecked: const [],
+                newPolicies: ContainerPolicies.defaultSetting,
+              ),
+            ).whenComplete(() => inFlight--);
+          });
+          final mockContainerRepo = setupMockContainerRepo(
+            () => containerRepoState,
+            (state) => containerRepoState = state,
+          );
+          final mockTokenRepo = MockTokenRepository();
+          when(mockTokenRepo.loadTokens()).thenAnswer((_) async => <Token>[]);
+          when(
+            mockTokenRepo.saveOrReplaceTokens(any),
+          ).thenAnswer((_) async => <Token>[]);
+          final mockSettingsRepo = MockSettingsRepository();
+          when(
+            mockSettingsRepo.loadSettings(),
+          ).thenAnswer((_) async => SettingsState());
+          final providerContainer = ProviderContainer(
+            overrides: [
+              tokenContainerProvider.overrideWith(
+                () => TokenContainerNotifier(
+                  repoOverride: mockContainerRepo,
+                  containerApiOverride: mockContainerApi,
+                  eccUtilsOverride: EccUtils(),
+                ),
+              ),
+              tokenProvider.overrideWith(
+                () => TokenNotifier(repoOverride: mockTokenRepo),
+              ),
+              settingsProvider.overrideWith(
+                () => SettingsNotifier(repoOverride: mockSettingsRepo),
+              ),
+            ],
+          );
+          addTearDown(providerContainer.dispose);
+          final initialTokenState = await providerContainer.read(
+            tokenProvider.future,
+          );
+          final notifier = providerContainer.read(
+            tokenContainerProvider.notifier,
+          );
+
+          final first = notifier.syncContainers(
+            tokenState: initialTokenState,
+            isManually: false,
+            isInitSync: false,
+          );
+          final second = notifier.syncContainers(
+            tokenState: initialTokenState,
+            isManually: false,
+            isInitSync: false,
+          );
+          await firstStarted.future;
+          await Future<void>.delayed(Duration.zero);
+          await Future<void>.delayed(Duration.zero);
+
+          expect(apiCalls, 1);
+          expect(maxInFlight, 1);
+          firstResponse.complete(
+            ContainerSyncUpdates(
+              containerSerial: containerToSync.serial,
+              newTokens: [added],
+              updatedTokens: const [],
+              deletedTokens: const [],
+              initAssignmentChecked: const [],
+              newPolicies: ContainerPolicies.defaultSetting,
+            ),
+          );
+          await Future.wait([first, second]);
+
+          expect(apiCalls, 2);
+          expect(maxInFlight, 1);
+          expect(requestTokenStates, hasLength(2));
+          expect(requestTokenStates.first.tokens, isEmpty);
+          expect(requestTokenStates.last.currentOfId(added.id), isNotNull);
+        },
+      );
     });
     test('getRolloverQrData', () async {
       // prepare

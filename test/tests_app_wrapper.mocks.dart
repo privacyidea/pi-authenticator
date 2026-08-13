@@ -905,6 +905,43 @@ class MockPrivacyideaIOClient extends _i1.Mock
 /// See the documentation for Mockito's code generation for more information.
 class MockRsaUtils extends _i1.Mock implements _i10.RsaUtils {
   @override
+  bool get supportsBiometricPushKeyProtection =>
+      (super.noSuchMethod(
+            Invocation.getter(#supportsBiometricPushKeyProtection),
+            returnValue: false,
+            returnValueForMissingStub: false,
+          )
+          as bool);
+
+  @override
+  _i24.Future<String> biometricPushKeyStatus(String? tokenId) =>
+      (super.noSuchMethod(
+            Invocation.method(#biometricPushKeyStatus, [tokenId]),
+            returnValue: _i24.Future<String>.value(
+              _i27.dummyValue<String>(
+                this,
+                Invocation.method(#biometricPushKeyStatus, [tokenId]),
+              ),
+            ),
+            returnValueForMissingStub: _i24.Future<String>.value(
+              _i27.dummyValue<String>(
+                this,
+                Invocation.method(#biometricPushKeyStatus, [tokenId]),
+              ),
+            ),
+          )
+          as _i24.Future<String>);
+
+  @override
+  _i24.Future<void> deleteBiometricPushKey(String? tokenId) =>
+      (super.noSuchMethod(
+            Invocation.method(#deleteBiometricPushKey, [tokenId]),
+            returnValue: _i24.Future<void>.value(),
+            returnValueForMissingStub: _i24.Future<void>.value(),
+          )
+          as _i24.Future<void>);
+
+  @override
   _i7.RSAPublicKey deserializeRSAPublicKeyPKCS1(String? keyStr) =>
       (super.noSuchMethod(
             Invocation.method(#deserializeRSAPublicKeyPKCS1, [keyStr]),
@@ -1014,14 +1051,28 @@ class MockRsaUtils extends _i1.Mock implements _i10.RsaUtils {
   @override
   _i24.Future<String?> trySignWithToken(
     _i31.PushToken? token,
-    String? message,
-  ) =>
+    String? message, {
+    _i24.Future<bool> Function(_i31.PushToken)? onTokenChanged,
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#trySignWithToken, [token, message]),
+            Invocation.method(
+              #trySignWithToken,
+              [token, message],
+              {#onTokenChanged: onTokenChanged},
+            ),
             returnValue: _i24.Future<String?>.value(),
             returnValueForMissingStub: _i24.Future<String?>.value(),
           )
           as _i24.Future<String?>);
+
+  @override
+  _i24.Future<void> protectBiometricPushKey(_i31.PushToken? token) =>
+      (super.noSuchMethod(
+            Invocation.method(#protectBiometricPushKey, [token]),
+            returnValue: _i24.Future<void>.value(),
+            returnValueForMissingStub: _i24.Future<void>.value(),
+          )
+          as _i24.Future<void>);
 
   @override
   _i24.Future<_i7.AsymmetricKeyPair<_i7.RSAPublicKey, _i7.RSAPrivateKey>>
@@ -2839,6 +2890,57 @@ class MockTokenNotifier extends _i1.Mock implements _i46.TokenNotifier {
           as _i24.Future<_i18.TokenState>);
 
   @override
+  _i24.Future<List<_i16.Token>> applyContainerSync({
+    required List<_i16.Token>? updatedTokens,
+    required List<_i16.Token>? newTokens,
+    List<_i16.Token>? deletedTokens = const [],
+    required Map<String, List<String>>? checkedContainersByTokenId,
+  }) =>
+      (super.noSuchMethod(
+            Invocation.method(#applyContainerSync, [], {
+              #updatedTokens: updatedTokens,
+              #newTokens: newTokens,
+              #deletedTokens: deletedTokens,
+              #checkedContainersByTokenId: checkedContainersByTokenId,
+            }),
+            returnValue: _i24.Future<List<_i16.Token>>.value(<_i16.Token>[]),
+            returnValueForMissingStub: _i24.Future<List<_i16.Token>>.value(
+              <_i16.Token>[],
+            ),
+          )
+          as _i24.Future<List<_i16.Token>>);
+
+  @override
+  _i24.Future<List<_i16.Token>> updateTokenPlacements(
+    List<_i16.Token>? placements,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#updateTokenPlacements, [placements]),
+            returnValue: _i24.Future<List<_i16.Token>>.value(<_i16.Token>[]),
+            returnValueForMissingStub: _i24.Future<List<_i16.Token>>.value(
+              <_i16.Token>[],
+            ),
+          )
+          as _i24.Future<List<_i16.Token>>);
+
+  @override
+  _i24.Future<R?> withCurrentPushTokenLease<R>(
+    String? tokenId,
+    _i24.Future<R?> Function(
+      _i31.PushToken,
+      _i24.Future<_i31.PushToken?> Function(_i31.PushToken),
+      _i31.PushToken Function(),
+    )?
+    operation,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#withCurrentPushTokenLease, [tokenId, operation]),
+            returnValue: _i24.Future<R?>.value(),
+            returnValueForMissingStub: _i24.Future<R?>.value(),
+          )
+          as _i24.Future<R?>);
+
+  @override
   _i24.Future<bool> addNewToken(_i16.Token? token) =>
       (super.noSuchMethod(
             Invocation.method(#addNewToken, [token]),
@@ -3420,10 +3522,10 @@ class MockPushRequestNotifier extends _i1.Mock
           as _i24.Future<_i4.PushRequestState>);
 
   @override
-  _i24.Future<_i54.PiSuccessResponse<T, D>?> accept<
-    T extends _i5.PiServerResultValue,
-    D extends _i55.PiServerResultDetail
-  >(
+  _i24.Future<
+    _i54.PiSuccessResponse<_i5.PushResultValue, _i55.PushResultDetail>?
+  >
+  accept(
     _i31.PushToken? token,
     _i28.PushRequest? request, {
     String? selectedAnswer,
@@ -3434,37 +3536,76 @@ class MockPushRequestNotifier extends _i1.Mock
               [token, request],
               {#selectedAnswer: selectedAnswer},
             ),
-            returnValue: _i24.Future<_i54.PiSuccessResponse<T, D>?>.value(),
+            returnValue:
+                _i24.Future<
+                  _i54.PiSuccessResponse<
+                    _i5.PushResultValue,
+                    _i55.PushResultDetail
+                  >?
+                >.value(),
             returnValueForMissingStub:
-                _i24.Future<_i54.PiSuccessResponse<T, D>?>.value(),
+                _i24.Future<
+                  _i54.PiSuccessResponse<
+                    _i5.PushResultValue,
+                    _i55.PushResultDetail
+                  >?
+                >.value(),
           )
-          as _i24.Future<_i54.PiSuccessResponse<T, D>?>);
+          as _i24.Future<
+            _i54.PiSuccessResponse<_i5.PushResultValue, _i55.PushResultDetail>?
+          >);
 
   @override
-  _i24.Future<_i54.PiSuccessResponse<T, D>?> decline<
-    T extends _i5.PiServerResultValue,
-    D extends _i55.PiServerResultDetail
-  >(_i31.PushToken? token, _i28.PushRequest? request) =>
+  _i24.Future<
+    _i54.PiSuccessResponse<_i5.PushResultValue, _i55.PushResultDetail>?
+  >
+  decline(_i31.PushToken? token, _i28.PushRequest? request) =>
       (super.noSuchMethod(
             Invocation.method(#decline, [token, request]),
-            returnValue: _i24.Future<_i54.PiSuccessResponse<T, D>?>.value(),
+            returnValue:
+                _i24.Future<
+                  _i54.PiSuccessResponse<
+                    _i5.PushResultValue,
+                    _i55.PushResultDetail
+                  >?
+                >.value(),
             returnValueForMissingStub:
-                _i24.Future<_i54.PiSuccessResponse<T, D>?>.value(),
+                _i24.Future<
+                  _i54.PiSuccessResponse<
+                    _i5.PushResultValue,
+                    _i55.PushResultDetail
+                  >?
+                >.value(),
           )
-          as _i24.Future<_i54.PiSuccessResponse<T, D>?>);
+          as _i24.Future<
+            _i54.PiSuccessResponse<_i5.PushResultValue, _i55.PushResultDetail>?
+          >);
 
   @override
-  _i24.Future<_i54.PiSuccessResponse<T, D>?> cancel<
-    T extends _i5.PiServerResultValue,
-    D extends _i55.PiServerResultDetail
-  >(_i31.PushToken? token, _i28.PushRequest? request) =>
+  _i24.Future<
+    _i54.PiSuccessResponse<_i5.PushResultValue, _i55.PushResultDetail>?
+  >
+  cancel(_i31.PushToken? token, _i28.PushRequest? request) =>
       (super.noSuchMethod(
             Invocation.method(#cancel, [token, request]),
-            returnValue: _i24.Future<_i54.PiSuccessResponse<T, D>?>.value(),
+            returnValue:
+                _i24.Future<
+                  _i54.PiSuccessResponse<
+                    _i5.PushResultValue,
+                    _i55.PushResultDetail
+                  >?
+                >.value(),
             returnValueForMissingStub:
-                _i24.Future<_i54.PiSuccessResponse<T, D>?>.value(),
+                _i24.Future<
+                  _i54.PiSuccessResponse<
+                    _i5.PushResultValue,
+                    _i55.PushResultDetail
+                  >?
+                >.value(),
           )
-          as _i24.Future<_i54.PiSuccessResponse<T, D>?>);
+          as _i24.Future<
+            _i54.PiSuccessResponse<_i5.PushResultValue, _i55.PushResultDetail>?
+          >);
 
   @override
   _i24.Future<bool> add(_i28.PushRequest? pr) =>

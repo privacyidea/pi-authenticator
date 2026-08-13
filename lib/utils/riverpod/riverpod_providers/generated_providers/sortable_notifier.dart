@@ -43,7 +43,7 @@ void _handleSortIndexUpdates(
   if (hasTokens) {
     ref
         .read(tokenProvider.notifier)
-        .addOrReplaceTokens(sorted.whereType<Token>().toList());
+        .updateTokenPlacements(sorted.whereType<Token>().toList());
   }
 
   if (hasFolders) {

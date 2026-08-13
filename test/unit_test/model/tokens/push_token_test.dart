@@ -21,6 +21,9 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/enums/day_password_token_view_mode.dart';
 import 'package:privacyidea_authenticator/model/enums/push_token_rollout_state.dart';
+import 'package:privacyidea_authenticator/model/enums/biometric_push_key_status.dart';
+import 'package:privacyidea_authenticator/model/enums/force_biometric_option.dart';
+import 'package:privacyidea_authenticator/model/enums/push_app_biometric_level.dart';
 import 'package:privacyidea_authenticator/model/exception_errors/localized_argument_error.dart';
 import 'package:privacyidea_authenticator/model/token_template.dart';
 import 'package:privacyidea_authenticator/model/tokens/day_password_token.dart';
@@ -120,6 +123,233 @@ void main() {
     test('isHidden is constant false for PushToken', () {
       final token = createPush().copyWith(isHidden: true);
       expect(token.isHidden, isFalse);
+    });
+
+    test('biometric key status survives JSON persistence', () {
+      final protected = createPush().copyWith(
+        privateTokenKey: () => null,
+        biometricKeyStatus: BiometricPushKeyStatus.protected,
+      );
+
+      final restored = PushToken.fromJson(protected.toJson());
+
+      expect(restored.privateTokenKey, isNull);
+      expect(restored.biometricKeyStatus, BiometricPushKeyStatus.protected);
+    });
+
+    test('old JSON defaults biometric key status to unprotected', () {
+      final restored = PushToken.fromJson({
+        'id': testId,
+        'type': 'PIPUSH',
+        'serial': testSerial,
+      });
+
+      expect(restored.biometricKeyStatus, BiometricPushKeyStatus.unprotected);
+    });
+
+    test('missing biometric policy fields fail closed for biometric Push', () {
+      final restored = PushToken.fromJson({
+        'id': testId,
+        'type': 'PIPUSH',
+        'serial': testSerial,
+        'forceBiometricOption': 'biometric',
+      });
+
+      expect(restored.biometricLevel, PushAppBiometricLevel.strong);
+      expect(restored.invalidateOnBiometricChange, isTrue);
+      expect(restored.requiresBiometricKeyProtection, isTrue);
+    });
+
+    test('accepts future server policy aliases from a Push enrollment URL', () {
+      final enrollmentMap =
+          createPush()
+              .copyWith(forceBiometricOption: ForceBiometricOption.biometric)
+              .toOtpAuthMap()
+            ..remove(PushToken.APP_BIOMETRIC_LEVEL)
+            ..remove(PushToken.APP_INVALIDATE_ON_BIOMETRIC_CHANGE)
+            ..[PushToken.PUSH_APP_BIOMETRIC_LEVEL] = 'any'
+            ..[PushToken.PUSH_APP_INVALIDATE_ON_BIOMETRIC_CHANGE] = 'false';
+
+      final restored = PushToken.fromOtpAuthMap(enrollmentMap);
+
+      expect(restored.biometricLevel, PushAppBiometricLevel.any);
+      expect(restored.invalidateOnBiometricChange, isFalse);
+      expect(restored.requiresBiometricKeyProtection, isFalse);
+    });
+
+    test('server policy aliases override stale app policy aliases', () {
+      final enrollmentMap =
+          createPush()
+              .copyWith(forceBiometricOption: ForceBiometricOption.biometric)
+              .toOtpAuthMap()
+            ..[PushToken.APP_BIOMETRIC_LEVEL] = 'any'
+            ..[PushToken.APP_INVALIDATE_ON_BIOMETRIC_CHANGE] = 'false'
+            ..[PushToken.PUSH_APP_BIOMETRIC_LEVEL] = 'strong'
+            ..[PushToken.PUSH_APP_INVALIDATE_ON_BIOMETRIC_CHANGE] = 'true';
+
+      final restored = PushToken.fromOtpAuthMap(enrollmentMap);
+
+      expect(restored.biometricLevel, PushAppBiometricLevel.strong);
+      expect(restored.invalidateOnBiometricChange, isTrue);
+    });
+
+    test('invalidation binding upgrades Android any to strong', () {
+      final token = PushToken(
+        serial: testSerial,
+        id: testId,
+        forceBiometricOption: ForceBiometricOption.biometric,
+        biometricLevel: PushAppBiometricLevel.any,
+        invalidateOnBiometricChange: true,
+      );
+
+      expect(token.requiresStrongBiometric, isTrue);
+      expect(token.requiresBiometricKeyProtection, isTrue);
+    });
+
+    test('a protected key remains native after policy relaxation', () {
+      final protected = createPush().copyWith(
+        forceBiometricOption: ForceBiometricOption.biometric,
+        biometricLevel: PushAppBiometricLevel.strong,
+        invalidateOnBiometricChange: false,
+        biometricKeyStatus: BiometricPushKeyStatus.protected,
+      );
+      final policy = protected.toOtpAuthMap()
+        ..[PushToken.APP_BIOMETRIC_LEVEL] = 'any'
+        ..[PushToken.APP_INVALIDATE_ON_BIOMETRIC_CHANGE] = 'false';
+
+      final updated =
+          protected.copyUpdateByTemplate(
+                TokenTemplate.withSerial(
+                  otpAuthMap: policy,
+                  serial: testSerial,
+                ),
+              )
+              as PushToken;
+
+      expect(updated.biometricLevel, PushAppBiometricLevel.any);
+      expect(updated.invalidateOnBiometricChange, isFalse);
+      expect(updated.biometricKeyStatus, BiometricPushKeyStatus.protected);
+      expect(updated.requiresStrongBiometric, isFalse);
+      expect(updated.requiresBiometricKeyProtection, isTrue);
+    });
+
+    test(
+      'tightening enrollment binding invalidates an existing native key',
+      () {
+        final protectedWithoutBinding = createPush().copyWith(
+          forceBiometricOption: ForceBiometricOption.biometric,
+          biometricLevel: PushAppBiometricLevel.strong,
+          invalidateOnBiometricChange: false,
+          biometricKeyStatus: BiometricPushKeyStatus.protected,
+        );
+        final policy = protectedWithoutBinding.toOtpAuthMap()
+          ..[PushToken.APP_INVALIDATE_ON_BIOMETRIC_CHANGE] = 'true';
+
+        final updated =
+            protectedWithoutBinding.copyUpdateByTemplate(
+                  TokenTemplate.withSerial(
+                    otpAuthMap: policy,
+                    serial: testSerial,
+                  ),
+                )
+                as PushToken;
+
+        expect(updated.invalidateOnBiometricChange, isTrue);
+        expect(updated.biometricKeyStatus, BiometricPushKeyStatus.invalidated);
+        expect(updated.privateTokenKey, isNull);
+      },
+    );
+
+    test('tightening protection keeps an enrollment key before rollout', () {
+      final before = createPush().copyWith(
+        forceBiometricOption: ForceBiometricOption.biometric,
+        biometricLevel: PushAppBiometricLevel.any,
+        invalidateOnBiometricChange: false,
+        privateTokenKey: () => 'legacy-private-key',
+      );
+      final policy = before.toOtpAuthMap()
+        ..[PushToken.PUSH_APP_BIOMETRIC_LEVEL] = 'strong'
+        ..[PushToken.PUSH_APP_INVALIDATE_ON_BIOMETRIC_CHANGE] = 'true';
+
+      final updated =
+          before.copyUpdateByTemplate(
+                TokenTemplate.withSerial(
+                  otpAuthMap: policy,
+                  serial: testSerial,
+                ),
+              )
+              as PushToken;
+
+      expect(updated.invalidateOnBiometricChange, isTrue);
+      expect(updated.biometricKeyStatus, BiometricPushKeyStatus.unprotected);
+      expect(updated.privateTokenKey, 'legacy-private-key');
+      expect(updated.requiresBiometricKeyProtection, isTrue);
+    });
+
+    test('tightening protection invalidates a deployed plaintext key', () {
+      final before = createPush().copyWith(
+        forceBiometricOption: ForceBiometricOption.biometric,
+        biometricLevel: PushAppBiometricLevel.any,
+        invalidateOnBiometricChange: false,
+        privateTokenKey: () => 'legacy-private-key',
+        isRolledOut: true,
+        rolloutState: PushTokenRollOutState.rolloutComplete,
+      );
+      final policy = before.toOtpAuthMap()
+        ..[PushToken.PUSH_APP_BIOMETRIC_LEVEL] = 'strong'
+        ..[PushToken.PUSH_APP_INVALIDATE_ON_BIOMETRIC_CHANGE] = 'false';
+
+      final updated =
+          before.copyUpdateByTemplate(
+                TokenTemplate.withSerial(
+                  otpAuthMap: policy,
+                  serial: testSerial,
+                ),
+              )
+              as PushToken;
+
+      expect(updated.requiresBiometricKeyProtection, isTrue);
+      expect(updated.biometricKeyStatus, BiometricPushKeyStatus.invalidated);
+      expect(updated.privateTokenKey, isNull);
+    });
+
+    test('a new deployed strong plaintext record fails closed', () {
+      final imported = createPush().copyWith(
+        forceBiometricOption: ForceBiometricOption.biometric,
+        biometricLevel: PushAppBiometricLevel.strong,
+        invalidateOnBiometricChange: true,
+        privateTokenKey: () => 'private-key',
+        isRolledOut: true,
+        rolloutState: PushTokenRollOutState.rolloutComplete,
+      );
+
+      final stored = imported.withFailClosedBiometricLifecycle();
+
+      expect(stored.biometricKeyStatus, BiometricPushKeyStatus.invalidated);
+      expect(stored.privateTokenKey, isNull);
+    });
+
+    test('stale writes preserve a protected native key pair', () {
+      final current = createPush().copyWith(
+        forceBiometricOption: ForceBiometricOption.biometric,
+        invalidateOnBiometricChange: true,
+        publicTokenKey: 'public-a',
+        privateTokenKey: () => null,
+        biometricKeyStatus: BiometricPushKeyStatus.protected,
+        isRolledOut: true,
+        rolloutState: PushTokenRollOutState.rolloutComplete,
+        fbToken: 'firebase-current',
+      );
+      final stale = createPush().copyWith(
+        forceBiometricOption: ForceBiometricOption.biometric,
+        invalidateOnBiometricChange: true,
+      );
+
+      final merged = stale.withMonotonicBiometricStateFrom(current);
+
+      expect(merged.biometricKeyStatus, BiometricPushKeyStatus.protected);
+      expect(merged.privateTokenKey, isNull);
+      expect(merged.publicTokenKey, 'public-a');
     });
   });
 

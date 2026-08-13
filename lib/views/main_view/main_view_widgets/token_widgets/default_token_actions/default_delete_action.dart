@@ -22,6 +22,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:privacyidea_authenticator/utils/view_utils.dart';
 
 import '../../../../../l10n/app_localizations.dart';
+import '../../../../../model/tokens/push_token.dart';
 import '../../../../../model/tokens/token.dart';
 import '../../../../../utils/customization/theme_extentions/action_theme.dart';
 import '../../../../../utils/lock_auth.dart';
@@ -53,6 +54,8 @@ class DefaultDeleteAction extends ConsumerSlideableAction {
           ? (_) async {
               final notifier = ref.read(tokenProvider.notifier);
               if (token.isLocked &&
+                  !(token is PushToken &&
+                      (token as PushToken).isBiometricKeyInvalidated) &&
                   !await lockAuthWithSettings(
                     ref: ref,
                     reason: (localization) => localization.deleteLockedToken,

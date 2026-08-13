@@ -34,10 +34,15 @@ import '../../../../model/pi_server_response.dart';
 import '../../../../model/riverpod_states/push_request_state.dart';
 import '../../../../model/tokens/push_token.dart';
 import '../../../../repo/secure_push_request_repository.dart';
+import '../../../http_status_checker.dart';
+import '../../../lock_auth.dart';
 import '../../../logger.dart';
+import '../../../biometric_push_key_manager.dart';
 import '../../../privacyidea_io_client.dart';
 import '../../../push_provider.dart';
+import 'localization_notifier.dart';
 import '../state_providers/status_message_provider.dart';
+import 'token_notifier.dart';
 
 part 'push_request_provider.g.dart';
 
@@ -219,11 +224,12 @@ class PushRequestNotifier extends _$PushRequestNotifier {
 
   /// Accepts a push request and returns true if successful, false if not.
   /// An accepted push request is removed from the state.
-  Future<PiSuccessResponse<T, D>?> accept<
-    T extends PiServerResultValue,
-    D extends PiServerResultDetail
-  >(PushToken token, PushRequest request, {String? selectedAnswer}) async {
-    return _handleReaction<T, D>(
+  Future<PiSuccessResponse<PushResultValue, PushResultDetail>?> accept(
+    PushToken token,
+    PushRequest request, {
+    String? selectedAnswer,
+  }) async {
+    return _handleReaction(
       pushRequest: request,
       token: token,
       updater: (p0) async => p0.dynamicCopyWith(
@@ -233,11 +239,11 @@ class PushRequestNotifier extends _$PushRequestNotifier {
     );
   }
 
-  Future<PiSuccessResponse<T, D>?> decline<
-    T extends PiServerResultValue,
-    D extends PiServerResultDetail
-  >(PushToken token, PushRequest request) async {
-    return _handleReaction<T, D>(
+  Future<PiSuccessResponse<PushResultValue, PushResultDetail>?> decline(
+    PushToken token,
+    PushRequest request,
+  ) async {
+    return _handleReaction(
       pushRequest: request,
       token: token,
       updater: (p0) async => p0.dynamicCopyWith(
@@ -247,11 +253,11 @@ class PushRequestNotifier extends _$PushRequestNotifier {
     );
   }
 
-  Future<PiSuccessResponse<T, D>?> cancel<
-    T extends PiServerResultValue,
-    D extends PiServerResultDetail
-  >(PushToken token, PushRequest request) async {
-    return _handleReaction<T, D>(
+  Future<PiSuccessResponse<PushResultValue, PushResultDetail>?> cancel(
+    PushToken token,
+    PushRequest request,
+  ) async {
+    return _handleReaction(
       pushRequest: request,
       token: token,
       updater: (p0) async => p0.dynamicCopyWith(
@@ -357,10 +363,8 @@ class PushRequestNotifier extends _$PushRequestNotifier {
   /// The reaction is handled by sending a POST request to the push request's URI with the appropriate data and signature.
   /// If the request fails, it will be retried once. If it fails again, an error message will be shown.
   /// If the response has an error status code, an error message will be shown.
-  Future<PiSuccessResponse<T, D>?> _handleReaction<
-    T extends PiServerResultValue,
-    D extends PiServerResultDetail
-  >({
+  Future<PiSuccessResponse<PushResultValue, PushResultDetail>?>
+  _handleReaction({
     required PushRequest pushRequest,
     required PushToken token,
     required Future<PushRequest> Function(PushRequest) updater,
@@ -376,89 +380,221 @@ class PushRequestNotifier extends _$PushRequestNotifier {
       if (updated == null || updated.accepted == null) {
         return null;
       }
+      final response = await ref
+          .read(tokenProvider.notifier)
+          .withCurrentPushTokenLease<
+            PiSuccessResponse<PushResultValue, PushResultDetail>
+          >(token.id, (leasedToken, persist, current) async {
+            if (leasedToken.serial != pushRequest.serial ||
+                leasedToken.isBiometricKeyInvalidated) {
+              if (leasedToken.isBiometricKeyInvalidated) {
+                ref
+                    .read(statusProvider.notifier)
+                    .show(
+                      (l) => l.biometricPushTokenInvalidTitle,
+                      details: (l) => l.biometricPushTokenInvalidBody,
+                    );
+              }
+              return null;
+            }
 
-      final Map<String, String> body = updated.getResponseData(token).map(
-        (key, value) => MapEntry(key, value.toString()),
-      );
+            // The dialog may have authenticated a weaker, older snapshot.
+            // If its authorization policy or key identity changed, let the
+            // rebuilt dialog start a fresh operation with the current token.
+            if (!_samePushAuthorizationState(token, leasedToken)) {
+              Logger.warning(
+                'Push authorization state changed while the dialog was open.',
+              );
+              return null;
+            }
 
-      String msg = updated.getResponseSignMsg(token);
-      String? signature = await _rsaUtils.trySignWithToken(token, msg);
-      if (signature == null) {
-        await _addOrReplacePushRequest(oldRequest);
-        return null;
-      }
-      body['signature'] = signature;
+            // Weak-biometric compatibility keeps the private key in Dart, so
+            // the signing operation itself must own the biometric-only gate.
+            // Keeping this in the notifier also covers callers other than the
+            // standard dialog and prevents a UI-to-signing race.
+            if (leasedToken.requiresBiometricPromptBeforeDartKeyUse) {
+              final authenticated = await lockAuthWithSettingsRef(
+                ref: ref,
+                localization: ref.read(localizationProvider),
+                reason: (l) => l.biometricPushKeyAuthReason,
+                forceBiometricOption: leasedToken.forceBiometricOption,
+              );
+              if (!authenticated) return null;
+            }
 
-      Response response = await _ioClient.doPost(
-        sslVerify: updated.sslVerify,
-        url: updated.uri,
-        body: body,
-      );
-      if (response.isConnectionFailure) {
-        try {
-          response = await _ioClient.doPost(
-            sslVerify: updated.sslVerify,
-            url: updated.uri,
-            body: body,
-          );
-        } on ArgumentError {
-          rethrow;
-        } catch (e) {
-          Logger.warning('Push reaction request failed after retry', error: e);
-          await _addOrReplacePushRequest(oldRequest);
-          ref.read(statusProvider.notifier).show((l) => l.connectionFailed);
-          return null;
-        }
-        if (response.isConnectionFailure) {
-          Logger.warning(
-            'Push reaction request failed after retry',
-            error: response.body,
-          );
-          await _addOrReplacePushRequest(oldRequest);
-          ref.read(statusProvider.notifier).show((l) => l.connectionFailed);
-          return null;
-        }
-      }
-      Logger.debug('Response Body: ${response.body}');
-      PiServerResponse<T, D> piResponse;
-      try {
-        piResponse = response.asPiServerResponse<T, D>();
-      } catch (e) {
-        Logger.warning('Failed to parse push reaction response', error: e);
-        ref
-            .read(statusProvider.notifier)
-            .show(
-              (l) =>
-                  '${l.sendPushRequestResponseFailed}\n${l.statusCode(response.statusCode)}',
-              details: (_) => 'Failed to parse response: $e',
+            final body = updated
+                .getResponseData(leasedToken)
+                .map((key, value) => MapEntry(key, value.toString()));
+            final msg = updated.getResponseSignMsg(leasedToken);
+            String? signature;
+            try {
+              signature = await _rsaUtils.trySignWithToken(
+                leasedToken,
+                msg,
+                onTokenChanged: (updatedToken) async {
+                  final persisted = await persist(
+                    current().copyWith(
+                      privateTokenKey: () => updatedToken.privateTokenKey,
+                      biometricKeyStatus: updatedToken.biometricKeyStatus,
+                    ),
+                  );
+                  return persisted != null &&
+                      persisted.privateTokenKey ==
+                          updatedToken.privateTokenKey &&
+                      persisted.biometricKeyStatus ==
+                          updatedToken.biometricKeyStatus;
+                },
+              );
+            } on BiometricPushKeyException catch (error) {
+              if (error.isInvalidated) {
+                ref
+                    .read(statusProvider.notifier)
+                    .show(
+                      (l) => l.biometricPushTokenInvalidTitle,
+                      details: (l) => l.biometricPushTokenInvalidBody,
+                    );
+              } else if (error.isStateNotPersisted) {
+                ref
+                    .read(statusProvider.notifier)
+                    .show(
+                      (l) => l.biometricPushKeyPersistenceFailedTitle,
+                      details: (l) => l.biometricPushKeyPersistenceFailed,
+                    );
+              }
+              return null;
+            }
+            if (signature == null || current().isBiometricKeyInvalidated) {
+              return null;
+            }
+            body['signature'] = signature;
+
+            Response response = await _ioClient.doPost(
+              sslVerify: updated.sslVerify,
+              url: updated.uri,
+              body: body,
             );
-        await _addOrReplacePushRequest(oldRequest);
-        return null;
-      }
-      if (piResponse.isError) {
-        await _addOrReplacePushRequest(oldRequest);
-        final errorResponse = piResponse.asError!;
-        Logger.warning(
-          'Push reaction rejected by server',
-          error:
-              '${errorResponse.piServerResultError.code}: ${errorResponse.piServerResultError.message}',
-        );
-        ref
-            .read(statusProvider.notifier)
-            .show(
-              (l) =>
-                  '${l.sendPushRequestResponseFailed}\n${l.statusCode(errorResponse.statusCode)}',
-              details: (_) =>
-                  errorResponse.piServerResultError.code ==
-                      InAppErrorCodes.jsonParseError
-                  ? errorResponse.piServerResultError.message
-                  : '${errorResponse.piServerResultError.code}: ${errorResponse.piServerResultError.message}',
+            if (response.isConnectionFailure) {
+              try {
+                response = await _ioClient.doPost(
+                  sslVerify: updated.sslVerify,
+                  url: updated.uri,
+                  body: body,
+                );
+              } on ArgumentError {
+                rethrow;
+              } catch (e) {
+                Logger.warning(
+                  'Push reaction request failed after retry',
+                  error: e,
+                );
+                ref
+                    .read(statusProvider.notifier)
+                    .show((l) => l.connectionFailed);
+                return null;
+              }
+              if (response.isConnectionFailure) {
+                Logger.warning(
+                  'Push reaction request failed after retry',
+                  error: response.body,
+                );
+                ref
+                    .read(statusProvider.notifier)
+                    .show((l) => l.connectionFailed);
+                return null;
+              }
+            }
+            Logger.debug('Response Body: ${response.body}');
+            PiServerResponse<PushResultValue, PushResultDetail> piResponse;
+            try {
+              piResponse = response
+                  .asPiServerResponse<PushResultValue, PushResultDetail>();
+            } catch (e) {
+              Logger.warning(
+                'Failed to parse push reaction response',
+                error: e,
+              );
+              ref
+                  .read(statusProvider.notifier)
+                  .show(
+                    (l) =>
+                        '${l.sendPushRequestResponseFailed}\n${l.statusCode(response.statusCode)}',
+                    details: (_) => 'Failed to parse response: $e',
+                  );
+              return null;
+            }
+            if (piResponse.isError) {
+              final errorResponse = piResponse.asError!;
+              Logger.warning(
+                'Push reaction rejected by server',
+                error:
+                    '${errorResponse.piServerResultError.code}: ${errorResponse.piServerResultError.message}',
+              );
+              ref
+                  .read(statusProvider.notifier)
+                  .show(
+                    (l) =>
+                        '${l.sendPushRequestResponseFailed}\n${l.statusCode(errorResponse.statusCode)}',
+                    details: (_) =>
+                        errorResponse.piServerResultError.code ==
+                            InAppErrorCodes.jsonParseError
+                        ? errorResponse.piServerResultError.message
+                        : '${errorResponse.piServerResultError.code}: ${errorResponse.piServerResultError.message}',
+                  );
+              return null;
+            }
+            final successResponse = piResponse.asSuccess;
+            final result = successResponse?.result;
+            final resultValue = result?.value;
+            final httpAccepted = HttpStatusChecker.isSuccessful(
+              response.statusCode,
             );
+            final serverAccepted =
+                successResponse != null &&
+                result?.status == true &&
+                result?.hasError == false &&
+                resultValue is PushResultValue &&
+                resultValue.value;
+            if (!httpAccepted || !serverAccepted) {
+              final resultError = result?.error;
+              Logger.warning(
+                'Push reaction was not accepted by the server',
+                error:
+                    'HTTP ${response.statusCode}, '
+                    'result.status=${result?.status}, '
+                    'result.value=${resultValue is PushResultValue ? resultValue.value : null}, '
+                    'result.error=${resultError?.code}',
+              );
+              if (resultError != null) {
+                ref
+                    .read(statusProvider.notifier)
+                    .show(
+                      (l) => l.pushRequestResponseRejected,
+                      details: (_) =>
+                          '${resultError.code}: ${resultError.message}',
+                    );
+              } else if (!httpAccepted) {
+                ref
+                    .read(statusProvider.notifier)
+                    .show(
+                      (l) => l.pushRequestResponseRejected,
+                      details: (l) => l.statusCode(response.statusCode),
+                    );
+              } else {
+                ref
+                    .read(statusProvider.notifier)
+                    .show((l) => l.pushRequestResponseRejected);
+              }
+              return null;
+            }
+            return successResponse;
+          });
+
+      if (response == null) {
+        await _addOrReplacePushRequest(oldRequest);
         return null;
       }
-
       await _remove(updated);
-      return piResponse.asSuccess;
+      return response;
     } on ArgumentError catch (e, s) {
       Logger.error(
         'Push reaction failed due to invalid request data',
@@ -486,4 +622,15 @@ class PushRequestNotifier extends _$PushRequestNotifier {
       _reactionMutex.release();
     }
   }
+
+  bool _samePushAuthorizationState(PushToken expected, PushToken current) =>
+      expected.id == current.id &&
+      expected.serial == current.serial &&
+      expected.publicTokenKey == current.publicTokenKey &&
+      expected.privateTokenKey == current.privateTokenKey &&
+      expected.biometricKeyStatus == current.biometricKeyStatus &&
+      expected.forceBiometricOption == current.forceBiometricOption &&
+      expected.biometricLevel == current.biometricLevel &&
+      expected.invalidateOnBiometricChange ==
+          current.invalidateOnBiometricChange;
 }

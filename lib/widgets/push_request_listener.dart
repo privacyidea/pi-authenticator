@@ -21,6 +21,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../model/push_request/push_request.dart';
+import '../model/tokens/push_token.dart';
 import '../utils/push_provider.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/push_request_provider.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
@@ -50,17 +52,17 @@ class _PushRequestListenerState extends ConsumerState<PushRequestListener> {
 
     if (pushTokens.isEmpty) return widget.child;
 
-    final pushRequest = ref
+    final candidate = ref
         .watch(pushRequestProvider)
-        .whenOrNull(data: (data) => data.pushRequests.lastOrNull);
+        .whenOrNull(
+          data: (data) => _latestActionableRequest(
+            pushRequests: data.pushRequests,
+            pushTokens: pushTokens,
+          ),
+        );
 
-    if (pushRequest == null) return widget.child;
-
-    final matchingToken = pushTokens.firstWhereOrNull(
-      (t) => t.serial == pushRequest.serial,
-    );
-
-    if (matchingToken == null) return widget.child;
+    if (candidate == null) return widget.child;
+    final (pushRequest, matchingToken) = candidate;
 
     return Stack(
       children: [
@@ -72,5 +74,20 @@ class _PushRequestListenerState extends ConsumerState<PushRequestListener> {
         ),
       ],
     );
+  }
+
+  (PushRequest, PushToken)? _latestActionableRequest({
+    required List<PushRequest> pushRequests,
+    required List<PushToken> pushTokens,
+  }) {
+    for (final pushRequest in pushRequests.reversed) {
+      final matchingToken = pushTokens.firstWhereOrNull(
+        (token) =>
+            token.serial == pushRequest.serial &&
+            !token.isBiometricKeyInvalidated,
+      );
+      if (matchingToken != null) return (pushRequest, matchingToken);
+    }
+    return null;
   }
 }

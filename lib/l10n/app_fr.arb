@@ -1491,6 +1491,9 @@
   "@sendPushRequestResponseFailed": {
     "description": "Error message when the response to a push request could not be sent."
   },
+  "@pushRequestResponseRejected": {
+    "description": "Error shown when privacyIDEA did not positively accept a Push response."
+  },
   "@serverNotReachable": {
     "description": "Tells the user that the server could not be reached."
   },
@@ -2166,6 +2169,7 @@
   "sendErrorDialogBody": "Une erreur inattendue est survenue dans l'application. L'information suivante peut être transmise aux développeurs par email afin d'aider à corriger cette erreur dans le futur.",
   "sendErrorLogDescription": "Un e-mail pré-rempli est créé.\nIl contient des informations sur l'application, l'erreur et le périphérique.\nVous pouvez modifier l'e-mail avant de l'envoyer.\nVous pouvez voir ici comment nous utilisons les informations:",
   "sendPushRequestResponseFailed": "Échec de l'envoi de la réponse.",
+  "pushRequestResponseRejected": "L’application n’a pas pu confirmer que le serveur a accepté la réponse Push. La demande a peut-être expiré ou le jeton est peut-être invalide.",
   "serverNotReachable": "Le serveur n'a pas pu être atteint.",
   "setUpButton": "Configuration",
   "settings": "Paramètres",
@@ -2228,5 +2232,13 @@
   "verboseLogging": "Journalisation verbeuse",
   "versionTitle": "Version",
   "wrongPassword": "Mot de passe incorrect",
-  "yes": "Oui"
+  "yes": "Oui",
+  "biometricPushKeyAuthReason": "Authentifiez-vous pour utiliser ce jeton Push",
+  "biometricPushKeyProtectReason": "Protéger ce jeton Push avec une biométrie forte",
+  "biometricPushTokenInvalid": "Jeton Push non valide — l’enrôlement biométrique a changé",
+  "biometricPushTokenInvalidTitle": "Le jeton Push n’est plus valide",
+  "biometricPushTokenInvalidBody": "La clé biométrique de ce jeton Push n’est plus valide. Cela peut se produire après une modification de l’enrôlement biométrique ou de la politique de sécurité. Pour des raisons de sécurité, le jeton ne peut plus signer de demandes. Supprimez-le et enrôlez un nouveau jeton Push.",
+  "biometricStrongRequired": "Ce jeton Push exige une biométrie forte. Le code PIN, le schéma, le mot de passe de l’appareil et la biométrie faible ne peuvent pas être utilisés.",
+  "biometricPushKeyPersistenceFailedTitle": "La protection de la clé Push n’a pas été enregistrée",
+  "biometricPushKeyPersistenceFailed": "L’état de la clé Push protégée n’a pas pu être enregistré de manière sécurisée. Aucune donnée n’a été envoyée au serveur. Réessayez."
 }

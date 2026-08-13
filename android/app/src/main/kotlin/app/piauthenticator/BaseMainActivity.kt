@@ -9,6 +9,7 @@ import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugins.GeneratedPluginRegistrant
 import app.piauthenticator.channels.MailerChannel
 import app.piauthenticator.channels.SettingsChannel
+import app.piauthenticator.channels.BiometricPushKeyChannel
 
 /**
  * Shared behavior for all product flavors. Flavor-specific `MainActivity`
@@ -27,5 +28,6 @@ abstract class BaseMainActivity : FlutterFragmentActivity() {
 
         SettingsChannel.register(this, flutterEngine)
         MailerChannel.register(this, flutterEngine)
+        BiometricPushKeyChannel.register(this, flutterEngine)
     }
 }

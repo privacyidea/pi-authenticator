@@ -70,6 +70,17 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
     with ResultHandler {
   final _stateMutex = Mutex();
   final _repoMutex = Mutex();
+  // A sync call owns its request and commit as one ordered operation. This
+  // prevents an older response from being applied after a newer invocation.
+  final _syncMutex = Mutex();
+  // Serializes the local commit phase of a container sync with local container
+  // deletion. Network requests intentionally run outside this lock.
+  final _containerLifecycleMutex = Mutex();
+  final Set<String> _containersPendingDeletion = {};
+  // A temporal pending flag is not enough: a delete attempt can finish before
+  // an older sync response arrives. Keep a monotonic in-process generation so
+  // that every response is committed only to the lifecycle it was sent for.
+  final Map<String, int> _containerLifecycleRevision = {};
 
   TokenContainerNotifier({
     this._repoOverride,
@@ -170,10 +181,28 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
     required bool isManually,
     List<TokenContainerFinalized>? containersToSync,
     bool? isInitSync,
+  }) => _syncMutex.protect(
+    () => _syncContainers(
+      tokenState: tokenState,
+      isManually: isManually,
+      containersToSync: containersToSync,
+      isInitSync: isInitSync,
+    ),
+  );
+
+  Future<Map<int, TokenContainerFinalized>> _syncContainers({
+    required TokenState tokenState,
+    required bool isManually,
+    List<TokenContainerFinalized>? containersToSync,
+    bool? isInitSync,
   }) async {
+    // A queued invocation may carry a snapshot from before the preceding sync
+    // committed. Always send the latest local token state.
+    tokenState = await ref.read(tokenProvider.future);
+    List<TokenContainerFinalized> resolvedContainers;
     if (containersToSync == null) {
       final containerList = (await future).containerList;
-      containersToSync = containerList
+      resolvedContainers = containerList
           .whereType<TokenContainerFinalized>()
           .where((e) => e.syncState != SyncState.syncing)
           .toList();
@@ -184,30 +213,40 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
         if (c == null) continue;
         current.add(c);
       }
-      containersToSync = current
+      resolvedContainers = current
           .whereType<TokenContainerFinalized>()
           .where((e) => e.syncState != SyncState.syncing)
           .toList();
     }
-    if (containersToSync.isEmpty) {
+    late final Map<String, int> lifecycleRevisionAtRequest;
+    var requestContainers = await _containerLifecycleMutex.protect(() async {
+      final selected = resolvedContainers
+          .where(
+            (container) =>
+                !_containersPendingDeletion.contains(container.serial),
+          )
+          .toList();
+      lifecycleRevisionAtRequest = {
+        for (final container in selected)
+          container.serial: _containerLifecycleRevision[container.serial] ?? 0,
+      };
+      return selected;
+    });
+    if (requestContainers.isEmpty) {
       return {};
     }
-    Logger.info('Syncing ${containersToSync.length} tokens');
+    Logger.info('Syncing ${requestContainers.length} tokens');
     final syncFutures = <Future<ContainerSyncUpdates?>>[];
 
-    List<Token> newTokens = [];
-    List<Token> syncedTokens = [];
-    List<Token> deletedTokensNoOffline = [];
-
     Logger.debug('Change to sync state to syncing');
-    containersToSync = await updateContainerList(
-      containersToSync,
+    requestContainers = await updateContainerList(
+      requestContainers,
       (c) => c.copyWith(syncState: SyncState.syncing),
     );
 
     final failedContainers = <int, TokenContainerFinalized>{};
 
-    for (var finalizedContainer in containersToSync) {
+    for (var finalizedContainer in requestContainers) {
       syncFutures.add(
         _syncContainer(
           finalizedContainer,
@@ -234,27 +273,15 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
       );
     }
 
-    Map<String, ContainerPolicies> newPoliciesMap = {};
+    final newPoliciesMap = <String, ContainerPolicies>{};
+    final syncUpdatesBySerial = <String, ContainerSyncUpdates>{};
 
     await Future.wait(syncFutures)
         .then((syncUpdates) {
           for (var syncUpdate in syncUpdates) {
             if (syncUpdate == null) continue;
-            newTokens.addAll(syncUpdate.newTokens);
-            syncedTokens.addAll(syncUpdate.updatedTokens);
-            deletedTokensNoOffline.addAll(syncUpdate.deletedTokens.noOffline);
-            ref
-                .read(tokenProvider.notifier)
-                .updateTokens(
-                  syncUpdate.initAssignmentChecked,
-                  (t) => t.copyWith(
-                    checkedContainer: [
-                      ...t.checkedContainer,
-                      syncUpdate.containerSerial,
-                    ],
-                  ),
-                );
             newPoliciesMap[syncUpdate.containerSerial] = syncUpdate.newPolicies;
+            syncUpdatesBySerial[syncUpdate.containerSerial] = syncUpdate;
           }
         })
         .onError((error, stackTrace) {
@@ -265,25 +292,134 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
           );
         });
 
-    // Do not remove tokens that are synced in any other container
-    deletedTokensNoOffline.removeWhere(
-      (deletedToken) => syncedTokens.any(
-        (syncedToken) => deletedToken.serial == syncedToken.serial,
-      ),
-    );
+    return _containerLifecycleMutex.protect(() async {
+      // A container can be deleted while its network request is in flight.
+      // Re-resolve it at the local commit boundary and completely ignore a
+      // response whose owner no longer exists. The same lifecycle lock is held
+      // by deletion through token removal and container-state removal.
+      var currentContainerState = await future;
+      bool responseOwnerBecameStale(TokenContainerFinalized container) =>
+          _containersPendingDeletion.contains(container.serial) ||
+          lifecycleRevisionAtRequest[container.serial] !=
+              (_containerLifecycleRevision[container.serial] ?? 0);
+      final staleResponseOwners = requestContainers
+          .where(
+            (container) =>
+                syncUpdatesBySerial.containsKey(container.serial) &&
+                responseOwnerBecameStale(container) &&
+                currentContainerState.containerOf(container.serial)
+                    is TokenContainerFinalized,
+          )
+          .map(
+            (container) =>
+                currentContainerState.containerOf(container.serial)!
+                    as TokenContainerFinalized,
+          )
+          .toList();
+      if (staleResponseOwners.isNotEmpty) {
+        // The response cannot be committed after a delete lifecycle started.
+        // Keep a surviving container retryable; a successful deletion removes
+        // this temporary state immediately afterwards.
+        await updateContainerList(
+          staleResponseOwners,
+          (container) => container.copyWith(syncState: SyncState.failed),
+        );
+        currentContainerState = await future;
+      }
+      final successfullySyncedContainers = requestContainers
+          .where(
+            (container) =>
+                syncUpdatesBySerial.containsKey(container.serial) &&
+                !responseOwnerBecameStale(container) &&
+                currentContainerState.containerOf(container.serial)
+                    is TokenContainerFinalized,
+          )
+          .map(
+            (container) =>
+                currentContainerState.containerOf(container.serial)!
+                    as TokenContainerFinalized,
+          )
+          .toList();
+      if (successfullySyncedContainers.isEmpty) return failedContainers;
 
-    await ref.read(tokenProvider.notifier).removeTokens(deletedTokensNoOffline);
-    await ref.read(tokenProvider.notifier).addOrReplaceTokens([
-      ...syncedTokens,
-      ...newTokens,
-    ]);
-    await updateContainerList(
-      (await future).containerList,
-      (c) => newPoliciesMap[c.serial] == null
-          ? c
-          : c.copyWith(policies: newPoliciesMap[c.serial]!),
-    );
-    return failedContainers;
+      final activeSerials = successfullySyncedContainers
+          .map((container) => container.serial)
+          .toSet();
+      final activeUpdates = syncUpdatesBySerial.values
+          .where((update) => activeSerials.contains(update.containerSerial))
+          .toList();
+      final newTokens = <Token>[];
+      final syncedTokens = <Token>[];
+      final deletedTokensNoOffline = <Token>[];
+      final checkedContainersByTokenId = <String, List<String>>{};
+      for (final syncUpdate in activeUpdates) {
+        newTokens.addAll(syncUpdate.newTokens);
+        syncedTokens.addAll(syncUpdate.updatedTokens);
+        deletedTokensNoOffline.addAll(syncUpdate.deletedTokens.noOffline);
+        for (final token in syncUpdate.initAssignmentChecked) {
+          checkedContainersByTokenId
+              .putIfAbsent(token.id, () => [])
+              .add(syncUpdate.containerSerial);
+        }
+      }
+
+      // Do not remove tokens that are synced in any other active container.
+      deletedTokensNoOffline.removeWhere(
+        (deletedToken) => syncedTokens.any(
+          (syncedToken) => deletedToken.serial == syncedToken.serial,
+        ),
+      );
+
+      var localUpdateSucceeded = true;
+      try {
+        final tokenNotifier = ref.read(tokenProvider.notifier);
+        final failedUpdates = await tokenNotifier.applyContainerSync(
+          updatedTokens: syncedTokens,
+          newTokens: newTokens,
+          deletedTokens: deletedTokensNoOffline,
+          checkedContainersByTokenId: checkedContainersByTokenId,
+        );
+        if (failedUpdates.isNotEmpty) {
+          localUpdateSucceeded = false;
+          Logger.warning(
+            'Container sync could not persist ${failedUpdates.length} token updates.',
+          );
+        }
+      } catch (error, stackTrace) {
+        localUpdateSucceeded = false;
+        Logger.error(
+          'Failed to persist container sync locally.',
+          error: error,
+          stackTrace: stackTrace,
+        );
+      }
+
+      if (!localUpdateSucceeded) {
+        await updateContainerList(
+          successfullySyncedContainers,
+          (container) => container.copyWith(syncState: SyncState.failed),
+        );
+        return failedContainers;
+      }
+
+      final completedContainers = await updateContainerList(
+        successfullySyncedContainers,
+        (container) => container.copyWith(
+          syncState: SyncState.completed,
+          initSynced: true,
+          policies: newPoliciesMap[container.serial]!,
+        ),
+      );
+      for (final container in completedContainers) {
+        final syncUpdate = syncUpdatesBySerial[container.serial]!;
+        ContainerSyncResultDialog.showDialog(
+          container: container,
+          addedTokens: syncUpdate.newTokens,
+          removedTokens: syncUpdate.deletedTokens.noOffline,
+        );
+      }
+      return failedContainers;
+    });
   }
 
   Future<ContainerSyncUpdates?> _syncContainer(
@@ -307,16 +443,6 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
         );
         return null;
       }
-      await updateContainer(
-        finalizedContainer,
-        (TokenContainerFinalized c) =>
-            c.copyWith(syncState: SyncState.completed, initSynced: true),
-      );
-      ContainerSyncResultDialog.showDialog(
-        container: finalizedContainer,
-        addedTokens: syncUpdate.newTokens,
-        removedTokens: syncUpdate.deletedTokens.noOffline,
-      );
       return syncUpdate;
     } catch (error, stackTrace) {
       final isMissingOnServer =
@@ -383,49 +509,57 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
   // ADD CONTAINER
 
   Future<TokenContainerState> addContainer(TokenContainer container) async {
-    await _stateMutex.acquire();
-    try {
-      await future;
-      final newState = await _saveContainerToRepo(container);
-      await update((_) => newState);
-      return newState;
-    } finally {
-      _stateMutex.release();
-    }
+    return _containerLifecycleMutex.protect(() async {
+      _advanceContainerLifecycle(container.serial);
+      await _stateMutex.acquire();
+      try {
+        await future;
+        final newState = await _saveContainerToRepo(container);
+        await update((_) => newState);
+        return newState;
+      } finally {
+        _stateMutex.release();
+      }
+    });
   }
 
   Future<TokenContainerState> addContainerList(
     List<TokenContainer> container,
   ) async {
-    await _stateMutex.acquire();
-    try {
-      final newContainers = container.toList();
-      final oldContainers = (await future).containerList;
-      Logger.debug('Loaded container: $oldContainers');
-      final combinedContainers = <TokenContainer>[];
-      for (var oldContainer in oldContainers) {
-        final newContainer = newContainers.firstWhereOrNull(
-          (newContainer) => newContainer.serial == oldContainer.serial,
-        );
-        if (newContainer == null) {
-          combinedContainers.add(oldContainer);
-        } else {
-          combinedContainers.add(newContainer);
-          newContainers.remove(newContainer);
-        }
+    return _containerLifecycleMutex.protect(() async {
+      for (final addedContainer in container) {
+        _advanceContainerLifecycle(addedContainer.serial);
       }
-      combinedContainers.addAll(newContainers);
-      Logger.debug('Combined container: $combinedContainers');
-      final newState = await _saveContainersStateToRepo(
-        TokenContainerState(containerList: combinedContainers),
-      );
-      Logger.debug('Saved container: $newState');
-      await update((_) => newState);
-      Logger.debug('Updated container: $newState');
-      return newState;
-    } finally {
-      _stateMutex.release();
-    }
+      await _stateMutex.acquire();
+      try {
+        final newContainers = container.toList();
+        final oldContainers = (await future).containerList;
+        Logger.debug('Loaded container: $oldContainers');
+        final combinedContainers = <TokenContainer>[];
+        for (var oldContainer in oldContainers) {
+          final newContainer = newContainers.firstWhereOrNull(
+            (newContainer) => newContainer.serial == oldContainer.serial,
+          );
+          if (newContainer == null) {
+            combinedContainers.add(oldContainer);
+          } else {
+            combinedContainers.add(newContainer);
+            newContainers.remove(newContainer);
+          }
+        }
+        combinedContainers.addAll(newContainers);
+        Logger.debug('Combined container: $combinedContainers');
+        final newState = await _saveContainersStateToRepo(
+          TokenContainerState(containerList: combinedContainers),
+        );
+        Logger.debug('Saved container: $newState');
+        await update((_) => newState);
+        Logger.debug('Updated container: $newState');
+        return newState;
+      } finally {
+        _stateMutex.release();
+      }
+    });
   }
 
   // UPDATE CONTAINER
@@ -443,25 +577,30 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
     R extends TokenContainer,
     T extends TokenContainer
   >(TokenContainer container, R Function(T) updater) async {
-    await _stateMutex.acquire();
-    try {
-      final oldState = await future;
-      Logger.debug('Updating container ${container.serial} updater: $updater');
-      final currentContainer = oldState.currentOf<T>(container);
-      if (currentContainer == null) {
-        Logger.info(
-          'Failed to update container. It was probably removed in the meantime.',
+    return _containerLifecycleMutex.protect(() async {
+      _advanceContainerLifecycle(container.serial);
+      await _stateMutex.acquire();
+      try {
+        final oldState = await future;
+        Logger.debug(
+          'Updating container ${container.serial} updater: $updater',
         );
-        return null;
+        final currentContainer = oldState.currentOf<T>(container);
+        if (currentContainer == null) {
+          Logger.info(
+            'Failed to update container. It was probably removed in the meantime.',
+          );
+          return null;
+        }
+        Logger.info('Updating container ${currentContainer.serial}');
+        final updated = updater(currentContainer);
+        final newState = await _saveContainerToRepo(updated);
+        await update((_) => newState);
+        return updated;
+      } finally {
+        _stateMutex.release();
       }
-      Logger.info('Updating container ${currentContainer.serial}');
-      final updated = updater(currentContainer);
-      final newState = await _saveContainerToRepo(updated);
-      await update((_) => newState);
-      return updated;
-    } finally {
-      _stateMutex.release();
-    }
+    });
   }
 
   Future<List<T>> updateContainerList<T extends TokenContainer>(
@@ -505,81 +644,130 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
 
   // DELETE CONTAINER
 
-  Future<bool> unregisterDelete(TokenContainerFinalized container) async {
-    try {
-      if (!(await _containerApi.unregister(container)).success) return false;
-    } on PiServerResultError catch (e) {
-      if (e.code == PiServerResultErrorCodes.resourceNotFound ||
-          e.code == PiServerResultErrorCodes.containerNotRegistered) {
-        // Server confirmed the container doesn't exist — proceed with local deletion.
-      } else if (e.code != PiServerResultErrorCodes.containerInvalidChallenge) {
-        showErrorStatusMessage(
-          message: (localization) =>
-              localization.piServerCode(e.code.toString()),
-          details: (localization) => e.message,
-        );
-        return false;
-      }
-    } on ResponseError catch (e) {
-      if (e.statusCode == HttpStatusCodes.webServerReturnedUnknownError &&
-          e.message != "Unknown Error") {
-        showErrorStatusMessage(message: (localization) => e.toString());
-        return false;
-      } else {
-        showErrorStatusMessage(
-          message: (localization) => localization.httpStatusFor(e.statusCode),
-        );
-      }
-      return false;
-    }
+  void _advanceContainerLifecycle(String serial) {
+    _containerLifecycleRevision[serial] =
+        (_containerLifecycleRevision[serial] ?? 0) + 1;
+  }
 
-    await _stateMutex.acquire();
+  Future<bool> _beginContainerDeletion(String serial) =>
+      _containerLifecycleMutex.protect(() async {
+        if (!_containersPendingDeletion.add(serial)) return false;
+        _advanceContainerLifecycle(serial);
+        return true;
+      });
+
+  Future<void> _endContainerDeletion(String serial) =>
+      _containerLifecycleMutex.protect(() async {
+        _containersPendingDeletion.remove(serial);
+      });
+
+  Future<bool> _deleteLocalContainerAndTokens(TokenContainer container) async {
+    return _containerLifecycleMutex.protect(() async {
+      final tokenNotifier = ref.read(tokenProvider.notifier);
+      final containerTokens = (await ref.read(
+        tokenProvider.future,
+      )).containerTokens(container.serial);
+
+      await tokenNotifier.removeTokens(containerTokens);
+
+      final remainingContainerTokens = (await ref.read(
+        tokenProvider.future,
+      )).containerTokens(container.serial);
+      if (remainingContainerTokens.isNotEmpty) {
+        Logger.warning(
+          'Keeping container ${container.serial} because '
+          '${remainingContainerTokens.length} managed tokens could not be removed.',
+        );
+        return false;
+      }
+
+      await _stateMutex.acquire();
+      try {
+        final newState = await _deleteContainerFromRepo(container);
+        await update((_) => newState);
+        return true;
+      } finally {
+        _stateMutex.release();
+      }
+    });
+  }
+
+  Future<bool> unregisterDelete(TokenContainerFinalized container) async {
+    if (!await _beginContainerDeletion(container.serial)) return false;
     try {
-      final newState = await _deleteContainerFromRepo(container);
-      await update((_) => newState);
-      return true;
+      try {
+        if (!(await _containerApi.unregister(container)).success) return false;
+      } on PiServerResultError catch (e) {
+        if (e.code == PiServerResultErrorCodes.resourceNotFound ||
+            e.code == PiServerResultErrorCodes.containerNotRegistered) {
+          // Server confirmed the container doesn't exist — proceed with local deletion.
+        } else if (e.code !=
+            PiServerResultErrorCodes.containerInvalidChallenge) {
+          showErrorStatusMessage(
+            message: (localization) =>
+                localization.piServerCode(e.code.toString()),
+            details: (localization) => e.message,
+          );
+          return false;
+        }
+      } on ResponseError catch (e) {
+        if (e.statusCode == HttpStatusCodes.webServerReturnedUnknownError &&
+            e.message != "Unknown Error") {
+          showErrorStatusMessage(message: (localization) => e.toString());
+          return false;
+        } else {
+          showErrorStatusMessage(
+            message: (localization) => localization.httpStatusFor(e.statusCode),
+          );
+        }
+        return false;
+      }
+      return await _deleteLocalContainerAndTokens(container);
     } finally {
-      _stateMutex.release();
+      await _endContainerDeletion(container.serial);
     }
   }
 
   Future<bool> deleteContainer(TokenContainer container) async {
-    await _stateMutex.acquire();
+    if (!await _beginContainerDeletion(container.serial)) return false;
     try {
-      final newState = await _deleteContainerFromRepo(container);
-      await update((_) => newState);
-      return true;
+      return await _deleteLocalContainerAndTokens(container);
     } finally {
-      _stateMutex.release();
+      await _endContainerDeletion(container.serial);
     }
   }
 
   Future<TokenContainerState> deleteContainerList(
     List<TokenContainer> container,
   ) async {
-    await _stateMutex.acquire();
-    try {
-      final newContainers = container.toList();
-      final oldContainers = (await future).containerList;
-      final combinedContainers = <TokenContainer>[];
-      for (var oldContainer in oldContainers) {
-        final newContainer = newContainers.firstWhereOrNull(
-          (newContainer) => newContainer.serial == oldContainer.serial,
-        );
-        if (newContainer == null) {
-          combinedContainers.add(oldContainer);
-        } else {
-          newContainers.remove(newContainer);
-        }
+    return _containerLifecycleMutex.protect(() async {
+      for (final deletedContainer in container) {
+        _advanceContainerLifecycle(deletedContainer.serial);
       }
-      final newState = await _saveContainersStateToRepo(
-        TokenContainerState(containerList: combinedContainers),
-      );
-      await update((_) => newState);
-      return newState;
-    } finally {
-      _stateMutex.release();
-    }
+      await _stateMutex.acquire();
+      try {
+        final newContainers = container.toList();
+        final oldContainers = (await future).containerList;
+        final combinedContainers = <TokenContainer>[];
+        for (var oldContainer in oldContainers) {
+          final newContainer = newContainers.firstWhereOrNull(
+            (newContainer) => newContainer.serial == oldContainer.serial,
+          );
+          if (newContainer == null) {
+            combinedContainers.add(oldContainer);
+          } else {
+            newContainers.remove(newContainer);
+          }
+        }
+        final newState = await _saveContainersStateToRepo(
+          TokenContainerState(containerList: combinedContainers),
+        );
+        await update((_) => newState);
+        return newState;
+      } finally {
+        _stateMutex.release();
+      }
+    });
   }
 
   /* /////////////////////////////////////////////////////////////////////////

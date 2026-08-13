@@ -26,6 +26,8 @@ import '../../../../../../../model/token_template.dart';
 import '../../utils/object_validator/object_validators.dart';
 import '../../utils/rsa_utils.dart';
 import '../enums/force_biometric_option.dart';
+import '../enums/biometric_push_key_status.dart';
+import '../enums/push_app_biometric_level.dart';
 import '../enums/push_token_rollout_state.dart';
 import '../enums/token_types.dart';
 import '../exception_errors/localized_argument_error.dart';
@@ -56,6 +58,13 @@ class PushToken extends Token {
   static const String PUBLIC_SERVER_KEY = 'publicServerKey';
   static const String PRIVATE_TOKEN_KEY = 'privateTokenKey';
   static const String PUBLIC_TOKEN_KEY = 'publicTokenKey';
+  static const String BIOMETRIC_KEY_STATUS = 'biometricKeyStatus';
+  static const String APP_BIOMETRIC_LEVEL = 'app_biometric_level';
+  static const String PUSH_APP_BIOMETRIC_LEVEL = 'push_app_biometric_level';
+  static const String APP_INVALIDATE_ON_BIOMETRIC_CHANGE =
+      'app_invalidate_on_biometric_change';
+  static const String PUSH_APP_INVALIDATE_ON_BIOMETRIC_CHANGE =
+      'push_app_invalidate_on_biometric_change';
 
   // --- Static Accessors & Validators ---
   static String get tokenType => TokenTypes.PIPUSH.name;
@@ -71,6 +80,10 @@ class PushToken extends Token {
     ENROLLMENT_CREDENTIAL: Validators.stringOptional,
     ROLLOUT_URL: Validators.httpUri,
     VERSION: Validators.string,
+    APP_BIOMETRIC_LEVEL: PushAppBiometricLevelX.validator.optional(),
+    PUSH_APP_BIOMETRIC_LEVEL: PushAppBiometricLevelX.validator.optional(),
+    APP_INVALIDATE_ON_BIOMETRIC_CHANGE: Validators.boolOptional,
+    PUSH_APP_INVALIDATE_ON_BIOMETRIC_CHANGE: Validators.boolOptional,
   };
 
   static final Map<String, BaseValidator> additionalDataValidators = {
@@ -83,6 +96,12 @@ class PushToken extends Token {
     PUBLIC_SERVER_KEY: Validators.stringOptional,
     PUBLIC_TOKEN_KEY: Validators.stringOptional,
     PRIVATE_TOKEN_KEY: Validators.stringOptional,
+    BIOMETRIC_KEY_STATUS: DefaultObjectValidator<BiometricPushKeyStatus>(
+      defaultValue: BiometricPushKeyStatus.unprotected,
+      transformer: (value) => value is BiometricPushKeyStatus
+          ? value
+          : BiometricPushKeyStatus.values.byName(value.toString()),
+    ),
   };
 
   // --- Static Validation Methods ---
@@ -118,6 +137,25 @@ class PushToken extends Token {
   final String? publicServerKey;
   final String? privateTokenKey;
   final String? publicTokenKey;
+  final BiometricPushKeyStatus biometricKeyStatus;
+  final PushAppBiometricLevel biometricLevel;
+  final bool invalidateOnBiometricChange;
+
+  bool get requiresStrongBiometric =>
+      forceBiometricOption == ForceBiometricOption.biometric &&
+      (biometricLevel == PushAppBiometricLevel.strong ||
+          invalidateOnBiometricChange);
+  // Once a key has moved to native biometric storage, keep using it even if a
+  // later server policy is relaxed. There is no safe way to export it back to
+  // Dart without weakening the original protection.
+  bool get requiresBiometricKeyProtection =>
+      requiresStrongBiometric ||
+      biometricKeyStatus != BiometricPushKeyStatus.unprotected;
+  bool get requiresBiometricPromptBeforeDartKeyUse =>
+      forceBiometricOption == ForceBiometricOption.biometric &&
+      !requiresBiometricKeyProtection;
+  bool get isBiometricKeyInvalidated =>
+      biometricKeyStatus == BiometricPushKeyStatus.invalidated;
 
   @override
   String get serial => super.serial!;
@@ -141,8 +179,9 @@ class PushToken extends Token {
       copyWith(publicServerKey: rsaParser.serializeRSAPublicKeyPKCS1(key));
   PushToken withPublicTokenKey(RSAPublicKey key) =>
       copyWith(publicTokenKey: rsaParser.serializeRSAPublicKeyPKCS1(key));
-  PushToken withPrivateTokenKey(RSAPrivateKey key) =>
-      copyWith(privateTokenKey: rsaParser.serializeRSAPrivateKeyPKCS1(key));
+  PushToken withPrivateTokenKey(RSAPrivateKey key) => copyWith(
+    privateTokenKey: () => rsaParser.serializeRSAPrivateKeyPKCS1(key),
+  );
 
   // --- Constructor ---
   PushToken({
@@ -159,6 +198,9 @@ class PushToken extends Token {
     this.publicServerKey,
     this.publicTokenKey,
     this.privateTokenKey,
+    this.biometricKeyStatus = BiometricPushKeyStatus.unprotected,
+    PushAppBiometricLevel? biometricLevel,
+    bool? invalidateOnBiometricChange,
     this.isPollOnly,
     bool? isRolledOut,
     bool? sslVerify,
@@ -173,7 +215,15 @@ class PushToken extends Token {
     super.origin,
     super.isOffline,
     super.forceBiometricOption,
-  }) : isRolledOut = isRolledOut ?? false,
+  }) : biometricLevel =
+           biometricLevel ??
+           (forceBiometricOption == ForceBiometricOption.biometric
+               ? PushAppBiometricLevel.strong
+               : PushAppBiometricLevel.any),
+       invalidateOnBiometricChange =
+           invalidateOnBiometricChange ??
+           forceBiometricOption == ForceBiometricOption.biometric,
+       isRolledOut = isRolledOut ?? false,
        sslVerify = sslVerify ?? false,
        rolloutState = rolloutState ?? PushTokenRollOutState.rolloutNotStarted,
        super(type: type ?? TokenTypes.PIPUSH.name, serial: serial);
@@ -240,6 +290,14 @@ class PushToken extends Token {
       isOffline: validatedMap[Token.OFFLINE] as bool,
       forceBiometricOption:
           validatedMap[Token.FORCE_BIOMETRIC_OPTION] as ForceBiometricOption,
+      biometricLevel:
+          (validatedMap[PUSH_APP_BIOMETRIC_LEVEL] ??
+                  validatedMap[APP_BIOMETRIC_LEVEL])
+              as PushAppBiometricLevel?,
+      invalidateOnBiometricChange:
+          (validatedMap[PUSH_APP_INVALIDATE_ON_BIOMETRIC_CHANGE] ??
+                  validatedMap[APP_INVALIDATE_ON_BIOMETRIC_CHANGE])
+              as bool?,
       id: validatedAdditionalData[Token.ID] as String? ?? uuidV4(),
       containerSerial:
           validatedAdditionalData[Token.CONTAINER_SERIAL] as String?,
@@ -251,6 +309,9 @@ class PushToken extends Token {
       publicServerKey: validatedAdditionalData[PUBLIC_SERVER_KEY] as String?,
       publicTokenKey: validatedAdditionalData[PUBLIC_TOKEN_KEY] as String?,
       privateTokenKey: validatedAdditionalData[PRIVATE_TOKEN_KEY] as String?,
+      biometricKeyStatus:
+          validatedAdditionalData[BIOMETRIC_KEY_STATUS]
+              as BiometricPushKeyStatus,
     );
   }
 
@@ -268,7 +329,10 @@ class PushToken extends Token {
       other.rolloutState == rolloutState &&
       other.publicServerKey == publicServerKey &&
       other.publicTokenKey == publicTokenKey &&
-      other.privateTokenKey == privateTokenKey;
+      other.privateTokenKey == privateTokenKey &&
+      other.biometricKeyStatus == biometricKeyStatus &&
+      other.biometricLevel == biometricLevel &&
+      other.invalidateOnBiometricChange == invalidateOnBiometricChange;
 
   @override
   bool isSameTokenAs(Token other) {
@@ -303,7 +367,10 @@ class PushToken extends Token {
     Uri? url,
     String? publicServerKey,
     String? publicTokenKey,
-    String? privateTokenKey,
+    String? Function()? privateTokenKey,
+    BiometricPushKeyStatus? biometricKeyStatus,
+    PushAppBiometricLevel? biometricLevel,
+    bool? invalidateOnBiometricChange,
     DateTime? expirationDate,
     bool? isRolledOut,
     PushTokenRollOutState? rolloutState,
@@ -314,6 +381,9 @@ class PushToken extends Token {
     ForceBiometricOption? forceBiometricOption,
   }) {
     final String? newSerial = serial?.call();
+    final enablesBiometricProtection =
+        forceBiometricOption == ForceBiometricOption.biometric &&
+        this.forceBiometricOption != ForceBiometricOption.biometric;
     return PushToken(
       label: label ?? this.label,
       serial: newSerial ?? this.serial,
@@ -335,7 +405,20 @@ class PushToken extends Token {
       url: url ?? this.url,
       publicServerKey: publicServerKey ?? this.publicServerKey,
       publicTokenKey: publicTokenKey ?? this.publicTokenKey,
-      privateTokenKey: privateTokenKey ?? this.privateTokenKey,
+      privateTokenKey: privateTokenKey != null
+          ? privateTokenKey()
+          : this.privateTokenKey,
+      biometricKeyStatus: biometricKeyStatus ?? this.biometricKeyStatus,
+      biometricLevel:
+          biometricLevel ??
+          (enablesBiometricProtection
+              ? PushAppBiometricLevel.strong
+              : this.biometricLevel),
+      invalidateOnBiometricChange:
+          invalidateOnBiometricChange ??
+          (enablesBiometricProtection
+              ? true
+              : this.invalidateOnBiometricChange),
       expirationDate: expirationDate ?? this.expirationDate,
       isRolledOut: isRolledOut ?? this.isRolledOut,
       rolloutState: rolloutState ?? this.rolloutState,
@@ -347,10 +430,112 @@ class PushToken extends Token {
     );
   }
 
+  /// Applies new token data without allowing a stale writer to weaken native
+  /// biometric key protection already recorded for [current].
+  ///
+  /// This is intentionally monotonic: `invalidated` is terminal, `protected`
+  /// never returns to plaintext storage, and tightening enrollment binding for
+  /// an existing unbound native key invalidates that key.
+  PushToken withMonotonicBiometricStateFrom(PushToken current) {
+    final tightenedEnrollmentBindingForNativeKey =
+        current.biometricKeyStatus == BiometricPushKeyStatus.protected &&
+        !current.invalidateOnBiometricChange &&
+        invalidateOnBiometricChange;
+    final newlyRequiresNativeProtection =
+        !current.requiresBiometricKeyProtection &&
+        requiresBiometricKeyProtection;
+    final deployedPlaintextCannotBeRetrofitted =
+        current.isRolledOut &&
+        current.biometricKeyStatus == BiometricPushKeyStatus.unprotected &&
+        newlyRequiresNativeProtection;
+    var mergedStatus = switch ((
+      current.biometricKeyStatus,
+      biometricKeyStatus,
+    )) {
+      (BiometricPushKeyStatus.invalidated, _) ||
+      (
+        _,
+        BiometricPushKeyStatus.invalidated,
+      ) => BiometricPushKeyStatus.invalidated,
+      _
+          when tightenedEnrollmentBindingForNativeKey ||
+              deployedPlaintextCannotBeRetrofitted =>
+        BiometricPushKeyStatus.invalidated,
+      (BiometricPushKeyStatus.protected, _) ||
+      (_, BiometricPushKeyStatus.protected) => BiometricPushKeyStatus.protected,
+      _ => BiometricPushKeyStatus.unprotected,
+    };
+    final currentNativePublicKey =
+        current.biometricKeyStatus == BiometricPushKeyStatus.protected
+        ? current.publicTokenKey
+        : null;
+    final incomingNativePublicKey =
+        biometricKeyStatus == BiometricPushKeyStatus.protected
+        ? publicTokenKey
+        : null;
+    final nativePublicKeyConflict =
+        currentNativePublicKey != null &&
+        incomingNativePublicKey != null &&
+        currentNativePublicKey != incomingNativePublicKey;
+    if (nativePublicKeyConflict) {
+      mergedStatus = BiometricPushKeyStatus.invalidated;
+    }
+    final mergedPublicTokenKey = switch (mergedStatus) {
+      BiometricPushKeyStatus.protected =>
+        currentNativePublicKey ?? incomingNativePublicKey,
+      _ => publicTokenKey,
+    };
+    return copyWith(
+      publicTokenKey: mergedPublicTokenKey,
+      biometricKeyStatus: mergedStatus,
+      privateTokenKey: () => mergedStatus == BiometricPushKeyStatus.unprotected
+          ? privateTokenKey ?? current.privateTokenKey
+          : null,
+    ).withFailClosedBiometricLifecycle();
+  }
+
+  /// Enforces the storage invariant for a deployed Push token even when there
+  /// is no earlier local record to merge (for example, a container import).
+  PushToken withFailClosedBiometricLifecycle() {
+    if (isBiometricKeyInvalidated) {
+      return privateTokenKey == null
+          ? this
+          : copyWith(privateTokenKey: () => null);
+    }
+    if (isRolledOut &&
+        requiresBiometricKeyProtection &&
+        biometricKeyStatus == BiometricPushKeyStatus.unprotected) {
+      return copyWith(
+        privateTokenKey: () => null,
+        biometricKeyStatus: BiometricPushKeyStatus.invalidated,
+      );
+    }
+    return this;
+  }
+
   @override
   Token copyUpdateByTemplate(TokenTemplate template) {
     final uriMap = validateOtpAuthMap(template.otpAuthMap);
-    return copyWith(
+    final forceUnlock =
+        uriMap[Token.FORCE_BIOMETRIC_OPTION] as ForceBiometricOption;
+    final policyLevel =
+        (uriMap[PUSH_APP_BIOMETRIC_LEVEL] ?? uriMap[APP_BIOMETRIC_LEVEL])
+            as PushAppBiometricLevel?;
+    final policyInvalidation =
+        (uriMap[PUSH_APP_INVALIDATE_ON_BIOMETRIC_CHANGE] ??
+                uriMap[APP_INVALIDATE_ON_BIOMETRIC_CHANGE])
+            as bool?;
+    final nextBiometricLevel =
+        policyLevel ??
+        (forceUnlock == ForceBiometricOption.biometric
+            ? PushAppBiometricLevel.strong
+            : biometricLevel);
+    final nextInvalidation =
+        policyInvalidation ??
+        (forceUnlock == ForceBiometricOption.biometric
+            ? true
+            : invalidateOnBiometricChange);
+    final updated = copyWith(
       label: uriMap[Token.LABEL] as String?,
       issuer: uriMap[Token.ISSUER] as String?,
       serial: () => uriMap[Token.SERIAL] as String?,
@@ -363,7 +548,15 @@ class PushToken extends Token {
       tokenImage: uriMap[Token.IMAGE] as String?,
       pin: uriMap[Token.PIN] as bool?,
       isLocked: uriMap[Token.PIN] as bool?,
+      forceBiometricOption: forceUnlock,
+      biometricLevel: nextBiometricLevel,
+      invalidateOnBiometricChange: nextInvalidation,
+      biometricKeyStatus: biometricKeyStatus,
+      privateTokenKey: biometricKeyStatus == BiometricPushKeyStatus.invalidated
+          ? () => null
+          : null,
     );
+    return updated.withMonotonicBiometricStateFrom(this);
   }
 
   @override
@@ -376,6 +569,10 @@ class PushToken extends Token {
             : IS_POLL_ONLY_VALUE_FALSE,
       ENROLLMENT_CREDENTIAL: enrollmentCredentials,
       if (url != null) ROLLOUT_URL: url.toString(),
+      if (forceBiometricOption == ForceBiometricOption.biometric)
+        APP_BIOMETRIC_LEVEL: biometricLevel.name,
+      if (forceBiometricOption == ForceBiometricOption.biometric)
+        APP_INVALIDATE_ON_BIOMETRIC_CHANGE: invalidateOnBiometricChange,
       VERSION: '1',
     });
 
@@ -388,6 +585,7 @@ class PushToken extends Token {
       PUBLIC_SERVER_KEY: publicServerKey,
       PUBLIC_TOKEN_KEY: publicTokenKey,
       PRIVATE_TOKEN_KEY: privateTokenKey,
+      BIOMETRIC_KEY_STATUS: biometricKeyStatus,
     });
 
   @override

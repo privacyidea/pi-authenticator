@@ -26,7 +26,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:pointycastle/asymmetric/api.dart';
-import 'package:privacyidea_authenticator/model/extensions/token_list_extension.dart';
 import 'package:privacyidea_authenticator/utils/helpers/mutex.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/localization_notifier.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -35,6 +34,9 @@ import '../../../../../../model/extensions/enums/push_token_rollout_state_extens
 import '../../../../../../model/extensions/enums/token_origin_source_type.dart';
 import '../../../../interfaces/repo/token_repository.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../model/enums/biometric_push_key_status.dart';
+import '../../../../model/enums/force_biometric_option.dart';
+import '../../../../model/enums/push_app_biometric_level.dart';
 import '../../../../model/enums/push_token_rollout_state.dart';
 import '../../../../model/enums/token_import_type.dart';
 import '../../../../model/enums/token_origin_source_type.dart';
@@ -56,6 +58,7 @@ import '../../../lock_auth.dart';
 import '../../../logger.dart';
 import '../../../privacyidea_io_client.dart';
 import '../../../rsa_utils.dart';
+import '../../../biometric_push_key_manager.dart';
 import '../../../utils.dart';
 import '../state_providers/status_message_provider.dart';
 import 'settings_notifier.dart';
@@ -120,27 +123,96 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   //   */
 
   /// Loads the tokens from the repository and returns them as a [TokenState].
-  Future<TokenState> _loadStateFromRepo() => _repoMutex.protect(() async {
-    final tokens = await repo.loadTokens();
+  Future<TokenState> _loadStateFromRepo() async {
+    final loadedTokens = await _repoMutex.protect(() => repo.loadTokens());
+    final tokens = await _reconcileBiometricPushKeys(loadedTokens);
     return TokenState(tokens: tokens, lastlyUpdatedTokens: tokens);
-  });
+  }
+
+  Token? _currentTokenForWrite(TokenState currentState, Token incoming) =>
+      currentState.currentOfId(incoming.id) ?? currentState.currentOf(incoming);
+
+  Token _prepareTokenForWrite(Token incoming, Token? current) {
+    if (incoming is PushToken && current is PushToken) {
+      return incoming.withMonotonicBiometricStateFrom(current);
+    }
+    if (incoming is PushToken) {
+      return incoming.withFailClosedBiometricLifecycle();
+    }
+    return incoming;
+  }
+
+  Future<void> _deleteNewlyInvalidatedNativeKey(
+    Token? previous,
+    Token written,
+  ) async {
+    if (written is! PushToken || !written.isBiometricKeyInvalidated) return;
+    if (previous is PushToken && previous.isBiometricKeyInvalidated) return;
+    try {
+      await rsaUtils.deleteBiometricPushKey(written.id);
+    } catch (error, stackTrace) {
+      Logger.warning(
+        'Could not remove a newly invalidated native Push key.',
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+  }
+
+  Future<void> _deleteNativePushKey(Token token) async {
+    if (token is! PushToken) return;
+    try {
+      await rsaUtils.deleteBiometricPushKey(token.id);
+    } catch (error, stackTrace) {
+      Logger.warning(
+        'Could not remove native biometric Push key state.',
+        error: error,
+        stackTrace: stackTrace,
+      );
+    }
+  }
+
+  bool _hasSameContainerIdentityIgnoringId(Token first, Token second) {
+    if (first.runtimeType != second.runtimeType) return false;
+    final comparison = second.copyWith(
+      id: '__container_identity__${second.id}',
+    );
+    return first.isSameTokenAs(comparison) == true;
+  }
+
+  bool _tightensPushAuthentication(Token? previous, Token candidate) {
+    if (previous is! PushToken || candidate is! PushToken) return false;
+    if (candidate.forceBiometricOption != ForceBiometricOption.biometric) {
+      return false;
+    }
+    return previous.forceBiometricOption != ForceBiometricOption.biometric ||
+        (previous.biometricLevel != PushAppBiometricLevel.strong &&
+            candidate.biometricLevel == PushAppBiometricLevel.strong) ||
+        (!previous.invalidateOnBiometricChange &&
+            candidate.invalidateOnBiometricChange) ||
+        (!previous.requiresBiometricKeyProtection &&
+            candidate.requiresBiometricKeyProtection);
+  }
 
   /// Adds a token and returns true if successful, false if not.
   /// Updates repo and state.
   Future<bool> _addOrReplaceToken(Token token) {
     return _stateMutex.protect(() async {
+      final currentState = await future;
+      final current = _currentTokenForWrite(currentState, token);
+      if (current != null && current.id != token.id) {
+        token = token.copyWith(id: current.id);
+      }
+      token = _prepareTokenForWrite(token, current);
       final success = await _repoMutex.protect(
         () => repo.saveOrReplaceToken(token),
       );
-      final currentId = (await future).currentOf(token)?.id;
-      if (currentId != null) {
-        token = token.copyWith(id: currentId);
-      }
       if (!success) {
         Logger.warning('Saving token failed. Token: ${token.id}');
         return false;
       }
-      state = AsyncValue.data((await future).addOrReplaceToken(token));
+      state = AsyncValue.data(currentState.addOrReplaceToken(token));
+      await _deleteNewlyInvalidatedNativeKey(current, token);
       return true;
     });
   }
@@ -149,18 +221,31 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   /// Updates repo and state.
   Future<List<Token>> _addOrReplaceTokens(List<Token> tokens) {
     return _stateMutex.protect(() async {
-      tokens = [...tokens, ...(await future).tokens].filterDuplicates();
+      final currentState = await future;
+      final workingTokens = List<Token>.from(currentState.tokens);
+      final previousById = <String, Token>{};
+      for (var incoming in tokens) {
+        final workingState = TokenState(tokens: workingTokens);
+        final current = _currentTokenForWrite(workingState, incoming);
+        if (current != null && current.id != incoming.id) {
+          incoming = incoming.copyWith(id: current.id);
+        }
+        final prepared = _prepareTokenForWrite(incoming, current);
+        if (current != null) {
+          previousById.putIfAbsent(prepared.id, () => current);
+        }
+        final index = workingTokens.indexWhere((t) => t.id == prepared.id);
+        if (index == -1) {
+          workingTokens.add(prepared);
+        } else {
+          workingTokens[index] = prepared;
+        }
+      }
+      tokens = workingTokens;
       if (tokens.isEmpty) {
         return [];
       }
       Logger.debug('Adding ${tokens.length} tokens.', verbose: true);
-      // We set currentState because the map function cant be async
-      final currentState = await future;
-      tokens = tokens.map((token) {
-        final currentId = currentState.currentOf(token)?.id;
-        if (currentId != null) return token.copyWith(id: currentId);
-        return token;
-      }).toList();
       final failedTokens = await _repoMutex.protect(
         () => repo.saveOrReplaceTokens(tokens),
       );
@@ -175,68 +260,320 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
           .toList();
       // Add the saved tokens to the state
       Logger.info('Saved ${savedTokens.length} Tokens to storage.');
-      state = AsyncValue.data((await future).addOrReplaceTokens(savedTokens));
+      state = AsyncValue.data(currentState.addOrReplaceTokens(savedTokens));
+      for (final savedToken in savedTokens) {
+        await _deleteNewlyInvalidatedNativeKey(
+          previousById[savedToken.id],
+          savedToken,
+        );
+      }
       Logger.debug('New State: ${(await future).tokens.length} Tokens');
       return failedTokens;
     });
   }
 
-  /// Replaces a token if it exists and returns true if successful, false if not.
-  /// Updates repo and state.
-  Future<bool> _replaceToken(Token token) {
-    return _stateMutex.protect(() async {
-      final (newState, replaced) = (await future).replaceToken(token);
-      if (!replaced) {
-        Logger.warning('Tried to replace a token that does not exist.');
-        return false;
-      }
-      final saved = await _repoMutex.protect(
-        () => repo.saveOrReplaceToken(token),
-      );
-      if (!saved) {
-        Logger.warning('Saving token failed. Token: ${token.id}');
-        return false;
-      }
-      state = AsyncValue.data(newState);
-      return true;
-    });
-  }
+  /// Applies container responses to the latest local tokens without reviving
+  /// records deleted while the network request was in flight. Existing tokens
+  /// are rebased from server-authoritative template fields; local lifecycle,
+  /// key material, UI placement, and Push state remain owned by the latest
+  /// local record. Only [newTokens] may create a record.
+  Future<List<Token>> applyContainerSync({
+    required List<Token> updatedTokens,
+    required List<Token> newTokens,
+    List<Token> deletedTokens = const [],
+    required Map<String, List<String>> checkedContainersByTokenId,
+  }) async {
+    var removedLastPushToken = false;
+    final failed = await _stateMutex.protect(() async {
+      final currentState = await future;
+      final candidatesById = <String, Token>{};
+      final previousById = <String, Token>{};
+      final failedBeforeSaveById = <String, Token>{};
+      final incomingIdAliases = <String, String>{};
 
-  /// Returns a list of tokens that could not be replaced
-  /// Updates repo and state.
-  Future<List<T>> _replaceTokens<T extends Token>(List<T> tokens) {
-    return _stateMutex.protect(() async {
-      final failedToReplace = (await future).replaceTokens(tokens);
-      if (failedToReplace.isNotEmpty) {
-        Logger.warning('Failed to replace ${failedToReplace.length} tokens');
-        return failedToReplace;
+      void mergeExisting(Token incoming, Token current) {
+        final targetId = current.id;
+        incomingIdAliases[incoming.id] = targetId;
+        if (current.runtimeType != incoming.runtimeType) {
+          Logger.warning(
+            'Rejecting incompatible container token update ${incoming.id}.',
+          );
+          failedBeforeSaveById[targetId] = incoming;
+          return;
+        }
+        final template = incoming.toTemplate();
+        if (template == null) {
+          Logger.warning(
+            'Rejecting container token update without a stable template ${incoming.id}.',
+          );
+          failedBeforeSaveById[targetId] = incoming;
+          return;
+        }
+        try {
+          var merged = current.copyUpdateByTemplate(
+            template.copyWith(additionalData: current.additionalData),
+          );
+          merged = merged.copyWith(
+            id: targetId,
+            containerSerial: () => incoming.containerSerial,
+            origin: incoming.origin,
+          );
+          if (current is PushToken &&
+              incoming is PushToken &&
+              merged is PushToken) {
+            merged = merged.copyWith(
+              forceBiometricOption:
+                  current.forceBiometricOption == ForceBiometricOption.biometric
+                  ? current.forceBiometricOption
+                  : incoming.forceBiometricOption ==
+                        ForceBiometricOption.biometric
+                  ? incoming.forceBiometricOption
+                  : merged.forceBiometricOption,
+              biometricLevel:
+                  current.biometricLevel == PushAppBiometricLevel.strong
+                  ? current.biometricLevel
+                  : incoming.biometricLevel == PushAppBiometricLevel.strong
+                  ? incoming.biometricLevel
+                  : merged.biometricLevel,
+              invalidateOnBiometricChange:
+                  current.invalidateOnBiometricChange ||
+                  incoming.invalidateOnBiometricChange ||
+                  merged.invalidateOnBiometricChange,
+            );
+          }
+          merged = _prepareTokenForWrite(merged, current);
+          final original = currentState.currentOfId(targetId);
+          if (original != null) {
+            previousById.putIfAbsent(targetId, () => original);
+          }
+          candidatesById[targetId] = merged;
+        } catch (error, stackTrace) {
+          Logger.warning(
+            'Rejecting invalid container token update ${incoming.id}.',
+            error: error,
+            stackTrace: stackTrace,
+          );
+          failedBeforeSaveById[targetId] = incoming;
+        }
       }
-      tokens = tokens
-          .where((element) => !failedToReplace.contains(element))
+
+      for (final incoming in updatedTokens) {
+        // An update response may predate a local delete and re-enrollment.
+        // Never target a different UUID merely because its serial matches.
+        final current =
+            candidatesById[incoming.id] ??
+            currentState.currentOfId(incoming.id);
+        if (current == null) {
+          Logger.warning(
+            'Skipping stale container token update ${incoming.id}.',
+          );
+          continue;
+        }
+        mergeExisting(incoming, current);
+      }
+
+      for (final incoming in newTokens) {
+        final idCollision =
+            candidatesById[incoming.id] ??
+            currentState.currentOfId(incoming.id);
+        if (idCollision != null &&
+            !_hasSameContainerIdentityIgnoringId(idCollision, incoming)) {
+          Logger.warning(
+            'Rejecting new container token with colliding id ${incoming.id}.',
+          );
+          failedBeforeSaveById[incoming.id] = incoming;
+          continue;
+        }
+        final current =
+            idCollision ??
+            candidatesById.values.firstWhereOrNull(
+              (token) => token.isSameTokenAs(incoming) == true,
+            ) ??
+            currentState.tokens.firstWhereOrNull(
+              (token) => token.isSameTokenAs(incoming) == true,
+            );
+        if (current != null) {
+          Logger.warning(
+            'Treating colliding new container token ${incoming.id} as an update.',
+          );
+          mergeExisting(incoming, current);
+          continue;
+        }
+        final prepared = _prepareTokenForWrite(incoming, null);
+        incomingIdAliases[incoming.id] = prepared.id;
+        candidatesById[prepared.id] = prepared;
+      }
+
+      for (final entry in checkedContainersByTokenId.entries) {
+        final targetId = incomingIdAliases[entry.key] ?? entry.key;
+        final current = currentState.currentOfId(targetId);
+        final candidate = candidatesById[targetId] ?? current;
+        if (candidate == null) continue;
+        if (current != null) {
+          previousById.putIfAbsent(current.id, () => current);
+        }
+        candidatesById[targetId] = candidate.copyWith(
+          checkedContainer: {
+            ...candidate.checkedContainer,
+            ...entry.value,
+          }.toList(),
+        );
+      }
+
+      final candidates = candidatesById.values
+          .where((token) => !failedBeforeSaveById.containsKey(token.id))
           .toList();
-      final failedToSave = await _repoMutex.protect(
-        () => repo.saveOrReplaceTokens<T>(tokens),
+      final failedTokens = candidates.isEmpty
+          ? <Token>[]
+          : await _repoMutex.protect(
+              () => repo.saveOrReplaceTokens(candidates),
+            );
+      final failedIds = failedTokens.map((token) => token.id).toSet();
+      final failedCandidates = candidates
+          .where((token) => failedIds.contains(token.id))
+          .toList();
+      final savedById = {
+        for (final token in candidates)
+          if (!failedIds.contains(token.id)) token.id: token,
+      };
+
+      // If persistence of a stricter Push policy fails, do not leave the old,
+      // weaker token usable in this process. Persist a terminal state in a
+      // second, narrow write when possible; if even that fails, remove the old
+      // record from storage. A final in-memory invalidation is the last-resort
+      // fail-closed state for a completely unavailable secure store.
+      final removedAfterFailedTighteningIds = <String>{};
+      final inMemoryTerminalById = <String, PushToken>{};
+      final terminalCleanupById = <String, PushToken>{};
+      for (final candidate in failedCandidates.whereType<PushToken>()) {
+        final previous = previousById[candidate.id];
+        final becameInvalidated =
+            previous is PushToken &&
+            !previous.isBiometricKeyInvalidated &&
+            candidate.isBiometricKeyInvalidated;
+        if (!_tightensPushAuthentication(previous, candidate) &&
+            !becameInvalidated) {
+          continue;
+        }
+        final terminal = candidate.copyWith(
+          privateTokenKey: () => null,
+          biometricKeyStatus: BiometricPushKeyStatus.invalidated,
+        );
+        terminalCleanupById[terminal.id] = terminal;
+        final terminalSaved = await _repoMutex.protect(
+          () => repo.saveOrReplaceToken(terminal),
+        );
+        if (terminalSaved) {
+          savedById[terminal.id] = terminal;
+        } else if (previous != null &&
+            await _repoMutex.protect(() => repo.deleteToken(previous))) {
+          removedAfterFailedTighteningIds.add(previous.id);
+        } else if (previous != null) {
+          inMemoryTerminalById[terminal.id] = terminal;
+        }
+      }
+
+      var nextState = currentState.addOrReplaceTokens(
+        savedById.values.toList(),
       );
-      if (failedToSave.isNotEmpty) {
-        Logger.warning('Failed to save ${failedToSave.length} tokens');
+      if (removedAfterFailedTighteningIds.isNotEmpty) {
+        nextState = nextState.withoutTokens(
+          currentState.tokens
+              .where(
+                (token) => removedAfterFailedTighteningIds.contains(token.id),
+              )
+              .toList(),
+        );
       }
-      tokens = tokens
-          .where((element) => !failedToSave.contains(element))
+      if (inMemoryTerminalById.isNotEmpty) {
+        nextState = nextState.addOrReplaceTokens(
+          inMemoryTerminalById.values.toList(),
+        );
+      }
+
+      final updateFailures = <Token>[
+        ...failedBeforeSaveById.values,
+        ...failedCandidates,
+      ];
+      final deleteCandidatesById = <String, Token>{};
+      if (updateFailures.isEmpty) {
+        for (final incoming in deletedTokens) {
+          final currentById = currentState.currentOfId(incoming.id);
+          if (currentById != null &&
+              !_hasSameContainerIdentityIgnoringId(currentById, incoming)) {
+            Logger.warning(
+              'Skipping stale container token deletion ${incoming.id}.',
+            );
+            continue;
+          }
+          final current = currentById;
+          if (current == null || candidatesById.containsKey(current.id)) {
+            continue;
+          }
+          deleteCandidatesById[current.id] = current;
+        }
+      }
+      final deleteCandidates = deleteCandidatesById.values.toList();
+      final failedDeletions = deleteCandidates.isEmpty
+          ? <Token>[]
+          : await _repoMutex.protect(() => repo.deleteTokens(deleteCandidates));
+      final failedDeletionIds = failedDeletions
+          .map((token) => token.id)
+          .toSet();
+      final deleted = deleteCandidates
+          .where((token) => !failedDeletionIds.contains(token.id))
           .toList();
-      state = AsyncValue.data((await future).addOrReplaceTokens(tokens));
-      return failedToSave;
+      if (deleted.isNotEmpty) {
+        nextState = nextState.withoutTokens(deleted);
+      }
+      removedLastPushToken =
+          deleted.any((token) => token is PushToken) &&
+          nextState.pushTokens.isEmpty;
+
+      state = AsyncValue.data(nextState);
+      for (final token in deleted) {
+        await _deleteNativePushKey(token);
+      }
+      for (final token in savedById.values) {
+        await _deleteNewlyInvalidatedNativeKey(previousById[token.id], token);
+      }
+      for (final entry in terminalCleanupById.entries) {
+        if (!savedById.containsKey(entry.key)) {
+          await _deleteNativePushKey(entry.value);
+        }
+      }
+      return <Token>[...updateFailures, ...failedDeletions];
     });
+    // Firebase registration is shared by all Push tokens. Keep it while any
+    // Push token remains; remove it best-effort only after the last one is gone.
+    if (removedLastPushToken) {
+      try {
+        await firebaseUtils.deleteFirebaseToken();
+      } catch (error, stackTrace) {
+        Logger.warning(
+          'Could not remove the unused Firebase token after container sync.',
+          error: error,
+          stackTrace: stackTrace,
+        );
+      }
+    }
+    await _handlePushTokensIfExist();
+    return failed;
   }
 
   /// Removes a token and returns true if successful, false if not.
   Future<bool> _removeToken(Token token) async {
     final success = await _stateMutex.protect(() async {
-      final deleted = await _repoMutex.protect(() => repo.deleteToken(token));
+      final currentState = await future;
+      final current = currentState.currentOfId(token.id);
+      if (current == null) return false;
+      final deleted = await _repoMutex.protect(() => repo.deleteToken(current));
       if (!deleted) {
         Logger.warning('Deleting token failed. Token: ${token.id}');
         return false;
       }
-      state = AsyncValue.data((await future).withoutToken(token));
+      await _deleteNativePushKey(current);
+      state = AsyncValue.data(currentState.withoutToken(current));
       return true;
     });
     if (!success) return false;
@@ -249,24 +586,31 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     if (tokens.isEmpty) return [];
     Logger.info('Removing ${tokens.length} tokens.');
     final failedTokens = await _stateMutex.protect(() async {
+      final currentState = await future;
+      final currentTokens = tokens
+          .map((token) => currentState.currentOfId(token.id))
+          .nonNulls
+          .toList();
       final failedTokens = await _repoMutex.protect(
-        () => repo.deleteTokens(tokens),
+        () => repo.deleteTokens(currentTokens),
       );
       if (failedTokens.isNotEmpty) {
         Logger.warning(
           'Deleting tokens failed. Failed Tokens: ${failedTokens.length}',
         );
-        return failedTokens;
       }
-      final remainingTokens = tokens
-          .where((element) => !failedTokens.contains(element))
+      final failedIds = failedTokens.map((token) => token.id).toSet();
+      final deletedTokens = currentTokens
+          .where((element) => !failedIds.contains(element.id))
           .toList();
-      state = AsyncValue.data((await future).withoutTokens(remainingTokens));
-      return <Token>[];
+      for (final token in deletedTokens) {
+        await _deleteNativePushKey(token);
+      }
+      state = AsyncValue.data(currentState.withoutTokens(deletedTokens));
+      return failedTokens;
     });
-    if (failedTokens.isNotEmpty) return failedTokens;
     await _handlePushTokensIfExist();
-    return [];
+    return failedTokens;
   }
 
   /// Loads the tokens from the repository sets it as the new state and returns the new(await future).
@@ -274,7 +618,8 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     TokenState? newState;
     newState = await _stateMutex.protect(() async {
       try {
-        final tokens = await _repoMutex.protect(() => repo.loadTokens());
+        final loadedTokens = await _repoMutex.protect(() => repo.loadTokens());
+        final tokens = await _reconcileBiometricPushKeys(loadedTokens);
         final loadedState = TokenState(
           tokens: tokens,
           lastlyUpdatedTokens: tokens,
@@ -291,18 +636,114 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     return newState;
   }
 
-  Future<bool> _saveStateToRepo() async {
-    final tokens = (await future).tokens;
-    return _repoMutex.protect(() async {
-      try {
-        await repo.saveOrReplaceTokens(tokens);
-        return true;
-      } catch (e) {
-        Logger.error('Saving tokens to storage failed.', error: e);
-        return false;
+  Future<List<Token>> _reconcileBiometricPushKeys(List<Token> tokens) async {
+    if (!rsaUtils.supportsBiometricPushKeyProtection) return tokens;
+    final reconciled = <Token>[];
+    for (final token in tokens) {
+      if (token is! PushToken || !token.requiresBiometricKeyProtection) {
+        reconciled.add(token);
+        continue;
       }
-    });
+      try {
+        // Local invalidation is terminal. In particular, a native key that was
+        // created before the server tightened enrollment binding must never
+        // revive the token merely because the platform still reports it as
+        // protected. Remove any remaining native material defensively.
+        if (token.isBiometricKeyInvalidated) {
+          final terminalToken = token.copyWith(
+            privateTokenKey: () => null,
+            biometricKeyStatus: BiometricPushKeyStatus.invalidated,
+          );
+          var reconciledToken = token;
+          if (!terminalToken.sameValuesAs(token)) {
+            final saved = await _repoMutex.protect(
+              () => repo.saveOrReplaceToken(terminalToken),
+            );
+            if (saved) {
+              reconciledToken = terminalToken;
+            } else {
+              Logger.warning(
+                'Could not persist terminal biometric Push key state.',
+              );
+            }
+          }
+          try {
+            await rsaUtils.deleteBiometricPushKey(token.id);
+          } catch (error, stackTrace) {
+            Logger.warning(
+              'Could not remove a terminally invalidated native Push key.',
+              error: error,
+              stackTrace: stackTrace,
+            );
+          }
+          reconciled.add(reconciledToken);
+          continue;
+        }
+        final nativeStatus = await rsaUtils.biometricPushKeyStatus(token.id);
+        final PushToken updated;
+        if (nativeStatus == RsaUtils.biometricKeyStatusInvalidated ||
+            (token.biometricKeyStatus == BiometricPushKeyStatus.protected &&
+                nativeStatus == RsaUtils.biometricKeyStatusUnprotected)) {
+          updated = token.copyWith(
+            privateTokenKey: () => null,
+            biometricKeyStatus: BiometricPushKeyStatus.invalidated,
+          );
+        } else if (token.isRolledOut &&
+            token.biometricKeyStatus == BiometricPushKeyStatus.unprotected &&
+            nativeStatus == RsaUtils.biometricKeyStatusUnprotected) {
+          // A deployed legacy token has no trustworthy enrollment baseline.
+          // Binding it on first use would silently trust biometrics added after
+          // the original token enrollment, so require a fresh enrollment.
+          updated = token.copyWith(
+            privateTokenKey: () => null,
+            biometricKeyStatus: BiometricPushKeyStatus.invalidated,
+          );
+        } else if (nativeStatus == RsaUtils.biometricKeyStatusProtected) {
+          updated = token.copyWith(
+            privateTokenKey: () => null,
+            biometricKeyStatus: BiometricPushKeyStatus.protected,
+          );
+        } else {
+          updated = token;
+        }
+        if (!identical(updated, token) && !updated.sameValuesAs(token)) {
+          final saved = await _repoMutex.protect(
+            () => repo.saveOrReplaceToken(updated),
+          );
+          if (!saved) {
+            Logger.warning(
+              'Could not persist reconciled biometric Push key state.',
+            );
+            reconciled.add(token);
+            continue;
+          }
+          await _deleteNewlyInvalidatedNativeKey(token, updated);
+        }
+        reconciled.add(updated);
+      } catch (error, stackTrace) {
+        Logger.warning(
+          'Could not reconcile native biometric Push key state.',
+          error: error,
+          stackTrace: stackTrace,
+        );
+        reconciled.add(token);
+      }
+    }
+    return reconciled;
   }
+
+  Future<bool> _saveStateToRepo() => _stateMutex.protect(() async {
+    final tokens = (await future).tokens;
+    try {
+      final failed = await _repoMutex.protect(
+        () => repo.saveOrReplaceTokens(tokens),
+      );
+      return failed.isEmpty;
+    } catch (e) {
+      Logger.error('Saving tokens to storage failed.', error: e);
+      return false;
+    }
+  });
 
   /*
   //////////////////////////////////////////////////////////////////////////////
@@ -317,14 +758,26 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     T token,
     T Function(T) updater,
   ) async {
-    final current = (await future).currentOf<T>(token);
-    if (current == null) {
-      Logger.warning('Tried to update a token that does not exist.');
-      return null;
-    }
-    final updated = updater(current);
-    final replaced = await _replaceToken(updated);
-    return replaced ? updated : current;
+    return _stateMutex.protect(() async {
+      final currentState = await future;
+      final current = currentState.currentOfId<T>(token.id);
+      if (current == null) {
+        Logger.warning('Tried to update a token that does not exist.');
+        return null;
+      }
+      var updated = updater(current);
+      updated = _prepareTokenForWrite(updated, current) as T;
+      final saved = await _repoMutex.protect(
+        () => repo.saveOrReplaceToken(updated),
+      );
+      if (!saved) {
+        Logger.warning('Saving token failed. Token: ${updated.id}');
+        return current;
+      }
+      state = AsyncValue.data(currentState.addOrReplaceToken(updated));
+      await _deleteNewlyInvalidatedNativeKey(current, updated);
+      return updated;
+    });
   }
 
   /// Updates a list of tokens and returns the updated tokens if successful.
@@ -334,19 +787,125 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     T Function(T) updater,
   ) async {
     if (tokens.isEmpty) return [];
-    List<T> updatedTokens = [];
-    for (final token in tokens) {
-      final current = (await future).currentOf<T>(token) ?? token;
-      updatedTokens.add(updater(current));
-    }
+    return _stateMutex.protect(() async {
+      final currentState = await future;
+      final previousById = <String, T>{};
+      final updatedTokens = <T>[];
+      for (final token in tokens) {
+        final current = currentState.currentOfId<T>(token.id);
+        if (current == null) continue;
+        previousById[token.id] = current;
+        updatedTokens.add(
+          _prepareTokenForWrite(updater(current), current) as T,
+        );
+      }
+      final failedToSave = await _repoMutex.protect(
+        () => repo.saveOrReplaceTokens<T>(updatedTokens),
+      );
+      final savedTokens = updatedTokens
+          .where((element) => !failedToSave.contains(element))
+          .toList();
+      state = AsyncValue.data(currentState.addOrReplaceTokens(savedTokens));
+      for (final savedToken in savedTokens) {
+        await _deleteNewlyInvalidatedNativeKey(
+          previousById[savedToken.id],
+          savedToken,
+        );
+      }
+      final newState = await future;
+      return newState.tokens
+          .whereType<T>()
+          .where((stateToken) => tokens.any((t) => t.id == stateToken.id))
+          .toList();
+    });
+  }
 
-    await _replaceTokens(updatedTokens);
+  /// Applies only sortable placement fields to records that still exist.
+  /// Delayed drag/post-frame snapshots must not recreate a deleted token or
+  /// overwrite newer Push rollout, policy, Firebase, or key state.
+  Future<List<Token>> updateTokenPlacements(List<Token> placements) {
+    return _stateMutex.protect(() async {
+      final currentState = await future;
+      final updates = <Token>[];
+      for (final placement in placements) {
+        final current = currentState.currentOfId(placement.id);
+        if (current == null || current.runtimeType != placement.runtimeType) {
+          continue;
+        }
+        updates.add(
+          current.copyWith(
+            sortIndex: placement.sortIndex,
+            folderId: () => placement.folderId,
+          ),
+        );
+      }
+      if (updates.isEmpty) return <Token>[];
+      final failed = await _repoMutex.protect(
+        () => repo.saveOrReplaceTokens(updates),
+      );
+      final failedIds = failed.map((token) => token.id).toSet();
+      final saved = updates
+          .where((token) => !failedIds.contains(token.id))
+          .toList();
+      state = AsyncValue.data(currentState.addOrReplaceTokens(saved));
+      return failed;
+    });
+  }
 
-    final newState = (await future);
-    return newState.tokens
-        .whereType<T>()
-        .where((stateToken) => tokens.contains(stateToken))
-        .toList();
+  /// Runs a security-sensitive Push operation against the latest local token
+  /// while holding the same state lock used by deletion, policy updates, and
+  /// biometric invalidation.
+  ///
+  /// Keeping the lock through signing and the authenticated HTTP request makes
+  /// those operations linearizable: a deletion or terminal invalidation either
+  /// completes before this callback starts (and the token is not returned), or
+  /// waits until the already-started request has finished. [persist] lets a
+  /// native key migration update storage without trying to acquire this lock a
+  /// second time.
+  Future<R?> withCurrentPushTokenLease<R>(
+    String tokenId,
+    Future<R?> Function(
+      PushToken token,
+      Future<PushToken?> Function(PushToken proposed) persist,
+      PushToken Function() current,
+    )
+    operation,
+  ) {
+    return _stateMutex.protect(() async {
+      var currentState = await future;
+      var currentToken = currentState.currentOfId<PushToken>(tokenId);
+      if (currentToken == null) {
+        Logger.warning(
+          'Refusing a Push operation for a token that no longer exists.',
+        );
+        return null;
+      }
+
+      Future<PushToken?> persist(PushToken proposed) async {
+        if (proposed.id != currentToken!.id) {
+          Logger.warning('Refusing to change token identity inside a lease.');
+          return null;
+        }
+        final previous = currentToken!;
+        final prepared = _prepareTokenForWrite(proposed, previous) as PushToken;
+        final saved = await _repoMutex.protect(
+          () => repo.saveOrReplaceToken(prepared),
+        );
+        if (!saved) {
+          Logger.warning(
+            'Could not persist Push token state inside an operation lease.',
+          );
+          return null;
+        }
+        currentState = currentState.addOrReplaceToken(prepared);
+        currentToken = prepared;
+        state = AsyncValue.data(currentState);
+        await _deleteNewlyInvalidatedNativeKey(previous, prepared);
+        return prepared;
+      }
+
+      return operation(currentToken!, persist, () => currentToken!);
+    });
   }
 
   /*
@@ -430,6 +989,10 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
 
   Future<TokenState?> loadStateFromRepo() async {
     try {
+      // Do not race the provider's initial build for the same state mutex.
+      // The biometric reconciliation step is asynchronous, so callers may
+      // otherwise enter _updateStateFromRepo while build() still owns it.
+      await future;
       return await _updateStateFromRepo();
     } catch (_) {
       Logger.warning('Loading tokens from storage failed.');
@@ -562,16 +1125,94 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
 
     Logger.info('Rolling out token "${pushToken.id}"');
 
-    if (pushToken.privateTokenKey == null) {
+    final hasProtectedPrivateKey =
+        pushToken.biometricKeyStatus == BiometricPushKeyStatus.protected;
+    final needsKeyPair =
+        pushToken.publicTokenKey == null ||
+        (!hasProtectedPrivateKey && pushToken.privateTokenKey == null);
+    if (needsKeyPair) {
+      if (hasProtectedPrivateKey) {
+        Logger.error(
+          'Protected Push token is missing its matching public key.',
+        );
+        await _updateToken(
+          pushToken,
+          (current) => current.copyWith(
+            privateTokenKey: () => null,
+            biometricKeyStatus: BiometricPushKeyStatus.invalidated,
+          ),
+        );
+        ref
+            .read(statusProvider.notifier)
+            .show(
+              (l) => l.biometricPushTokenInvalidTitle,
+              details: (l) => l.biometricPushTokenInvalidBody,
+            );
+        return false;
+      }
       pushToken = await _handleKeyGeneration(pushToken);
       if (pushToken == null) return false;
+    }
+
+    if (pushToken.requiresBiometricKeyProtection &&
+        pushToken.biometricKeyStatus != BiometricPushKeyStatus.protected) {
+      try {
+        await rsaUtils.protectBiometricPushKey(pushToken);
+        final protectedToken = pushToken.copyWith(
+          privateTokenKey: () => null,
+          biometricKeyStatus: BiometricPushKeyStatus.protected,
+        );
+        final persistedToken = await _updateToken(
+          pushToken,
+          (current) => current.copyWith(
+            privateTokenKey: () => protectedToken.privateTokenKey,
+            biometricKeyStatus: protectedToken.biometricKeyStatus,
+          ),
+        );
+        if (persistedToken == null ||
+            persistedToken.privateTokenKey != null ||
+            persistedToken.biometricKeyStatus !=
+                BiometricPushKeyStatus.protected) {
+          Logger.error(
+            'Protected Push key state could not be persisted; rollout stopped.',
+          );
+          ref
+              .read(statusProvider.notifier)
+              .show(
+                (l) => l.errorRollOutFailed(pushToken!.label),
+                details: (l) => l.biometricPushKeyPersistenceFailed,
+              );
+          return false;
+        }
+        pushToken = persistedToken;
+      } on BiometricPushKeyException catch (error, stackTrace) {
+        Logger.warning(
+          'Could not protect Push key with strong biometrics.',
+          error: error,
+          stackTrace: stackTrace,
+        );
+        ref
+            .read(statusProvider.notifier)
+            .show(
+              (l) => l.errorRollOutFailed(pushToken!.label),
+              details: (l) => l.biometricStrongRequired,
+            );
+        return false;
+      }
     }
 
     String? fbToken;
     if (pushToken.isPollOnly != true) {
       fbToken = await _getFirebaseToken(pushToken);
       if (fbToken == null) return false;
-      pushToken = await getTokenById(pushToken.id) ?? pushToken;
+      final refreshed = await getTokenById<PushToken>(pushToken.id);
+      if (refreshed == null || refreshed.isBiometricKeyInvalidated) {
+        Logger.warning(
+          'Push token disappeared or was invalidated during rollout.',
+        );
+        return false;
+      }
+      pushToken = refreshed;
     }
 
     if (!kIsWeb && Platform.isIOS) {
@@ -583,6 +1224,16 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
 
   Future<bool> _isEligibleForRollout(PushToken token) async {
     assert(token.url != null, 'Token url is null.');
+
+    if (token.isBiometricKeyInvalidated) {
+      ref
+          .read(statusProvider.notifier)
+          .show(
+            (l) => l.biometricPushTokenInvalidTitle,
+            details: (l) => l.biometricPushTokenInvalidBody,
+          );
+      return false;
+    }
 
     if (token.rolloutState.rollOutInProgress) {
       Logger.info('Rollout already in progress for "${token.id}".');
@@ -663,67 +1314,96 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   }
 
   Future<bool> _executeServerRollout(PushToken token, String? fbToken) async {
-    token =
-        await _updateStatus(token, PushTokenRollOutState.sendRSAPublicKey) ??
-        token;
-    try {
-      final response = await ioClient.doPost(
-        sslVerify: token.sslVerify,
-        url: token.url!,
-        body: {
-          'enrollment_credential': token.enrollmentCredentials,
-          'serial': token.serial,
-          'fbtoken': fbToken ?? NoFirebaseUtils.NO_FIREBASE_TOKEN,
-          'pubkey': rsaUtils.serializeRSAPublicKeyPKCS8(
-            token.rsaPublicTokenKey!,
-          ),
-          'capabilities': canonicalizeJson(appPushCapabilities.names),
-        },
-      );
+    return await withCurrentPushTokenLease<bool>(token.id, (
+          leasedToken,
+          persist,
+          current,
+        ) async {
+          if (leasedToken.isBiometricKeyInvalidated ||
+              leasedToken.url == null ||
+              leasedToken.publicTokenKey == null) {
+            return false;
+          }
+          if (leasedToken.requiresBiometricKeyProtection &&
+              leasedToken.biometricKeyStatus !=
+                  BiometricPushKeyStatus.protected) {
+            return false;
+          }
+          if (leasedToken.requiresBiometricPromptBeforeDartKeyUse) {
+            final authenticated = await lockAuthWithSettingsRef(
+              ref: ref,
+              localization: ref.read(localizationProvider),
+              reason: (l) => l.biometricPushKeyAuthReason,
+              forceBiometricOption: leasedToken.forceBiometricOption,
+            );
+            if (!authenticated) return false;
+          }
 
-      if (HttpStatusChecker.isError(response.statusCode)) {
-        _showPushRolloutStatus(response, token.label);
-        await _updateStatus(
-          token,
-          PushTokenRollOutState.sendRSAPublicKeyFailed,
-        );
-        return false;
-      }
-
-      token =
-          await _updateToken(
-            token,
-            (p) => p.copyWith(
-              rolloutState: PushTokenRollOutState.parsingResponse,
-              fbToken: fbToken,
+          final sending = await persist(
+            leasedToken.copyWith(
+              rolloutState: PushTokenRollOutState.sendRSAPublicKey,
             ),
-          ) ??
-          token;
-
-      final publicServerKey = await _parseRollOutResponse(response);
-      await _updateToken(
-        token,
-        (p) => p
-            .withPublicServerKey(publicServerKey)
-            .copyWith(
-              isRolledOut: true,
-              rolloutState: PushTokenRollOutState.rolloutComplete,
-            ),
-      );
-
-      checkNotificationPermission();
-      return true;
-    } catch (e, s) {
-      Logger.error('Roll out failed.', error: e, stackTrace: s);
-      ref
-          .read(statusProvider.notifier)
-          .show(
-            (localization) =>
-                localization.errorRollOutUnknownError(token.label),
           );
-      await _updateStatus(token, PushTokenRollOutState.sendRSAPublicKeyFailed);
-      return false;
-    }
+          if (sending == null) return false;
+          try {
+            final response = await ioClient.doPost(
+              sslVerify: current().sslVerify,
+              url: current().url!,
+              body: {
+                'enrollment_credential': current().enrollmentCredentials,
+                'serial': current().serial,
+                'fbtoken': fbToken ?? NoFirebaseUtils.NO_FIREBASE_TOKEN,
+                'pubkey': rsaUtils.serializeRSAPublicKeyPKCS8(
+                  current().rsaPublicTokenKey!,
+                ),
+                'capabilities': canonicalizeJson(appPushCapabilities.names),
+              },
+            );
+
+            if (HttpStatusChecker.isError(response.statusCode)) {
+              _showPushRolloutStatus(response, current().label);
+              await persist(
+                current().copyWith(
+                  rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed,
+                ),
+              );
+              return false;
+            }
+
+            final parsing = await persist(
+              current().copyWith(
+                rolloutState: PushTokenRollOutState.parsingResponse,
+                fbToken: fbToken,
+              ),
+            );
+            if (parsing == null) return false;
+
+            final publicServerKey = await _parseRollOutResponse(response);
+            final completed = await persist(
+              current()
+                  .withPublicServerKey(publicServerKey)
+                  .copyWith(
+                    isRolledOut: true,
+                    rolloutState: PushTokenRollOutState.rolloutComplete,
+                  ),
+            );
+            if (completed == null || !completed.isRolledOut) return false;
+            checkNotificationPermission();
+            return true;
+          } catch (e, s) {
+            Logger.error('Roll out failed.', error: e, stackTrace: s);
+            ref
+                .read(statusProvider.notifier)
+                .show((loc) => loc.errorRollOutUnknownError(current().label));
+            await persist(
+              current().copyWith(
+                rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed,
+              ),
+            );
+            return false;
+          }
+        }) ??
+        false;
   }
 
   Future<PushToken?> _updateStatus(
@@ -851,34 +1531,92 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     //timestamp=<timestamp>
     //signature=SIGNATURE(<new firebase token>|<tokenserial>|<timestamp>)
     Logger.info('Updating firebase token for push token "${token.serial}"');
-    String timestamp = DateTime.now().toUtc().toIso8601String();
-    String message = '$firebaseToken|${token.serial}|$timestamp';
-    String? signature = await rsaUtils.trySignWithToken(token, message);
-    if (signature == null) {
-      Logger.error(
-        'Cannot update firebase token for push token "${token.serial}". No signature available.',
-      );
-      return false;
-    }
-    Response response = await ioClient.doPost(
-      url: token.url!,
-      body: {
-        'new_fb_token': firebaseToken,
-        'serial': token.serial,
-        'timestamp': timestamp,
-        'signature': signature,
-        // Not part of the signed message, see pollForChallenge.
-        'capabilities': canonicalizeJson(appPushCapabilities.names),
-      },
-      sslVerify: token.sslVerify,
-    );
-    if (HttpStatusChecker.isError(response.statusCode)) {
-      Logger.warning('Updating firebase token for push token failed!');
-      return false;
-    }
-    Logger.info('Updating firebase token for push token succeeded!');
-    await _updateToken(token, (p0) => p0.copyWith(fbToken: firebaseToken));
-    return true;
+    return await withCurrentPushTokenLease<bool>(token.id, (
+          leasedToken,
+          persist,
+          current,
+        ) async {
+          if (!leasedToken.isRolledOut ||
+              leasedToken.url == null ||
+              leasedToken.isBiometricKeyInvalidated) {
+            return false;
+          }
+          if (leasedToken.requiresBiometricPromptBeforeDartKeyUse) {
+            final authenticated = await lockAuthWithSettingsRef(
+              ref: ref,
+              localization: ref.read(localizationProvider),
+              reason: (l) => l.biometricPushKeyAuthReason,
+              forceBiometricOption: leasedToken.forceBiometricOption,
+            );
+            if (!authenticated) return false;
+          }
+          final timestamp = DateTime.now().toUtc().toIso8601String();
+          final message = '$firebaseToken|${leasedToken.serial}|$timestamp';
+          String? signature;
+          try {
+            signature = await rsaUtils.trySignWithToken(
+              leasedToken,
+              message,
+              onTokenChanged: (updated) async {
+                final persisted = await persist(
+                  current().copyWith(
+                    privateTokenKey: () => updated.privateTokenKey,
+                    biometricKeyStatus: updated.biometricKeyStatus,
+                  ),
+                );
+                return persisted != null &&
+                    persisted.privateTokenKey == updated.privateTokenKey &&
+                    persisted.biometricKeyStatus == updated.biometricKeyStatus;
+              },
+            );
+          } on BiometricPushKeyException catch (error) {
+            if (error.isInvalidated) {
+              ref
+                  .read(statusProvider.notifier)
+                  .show(
+                    (l) => l.biometricPushTokenInvalidTitle,
+                    details: (l) => l.biometricPushTokenInvalidBody,
+                  );
+            } else if (error.isStateNotPersisted) {
+              ref
+                  .read(statusProvider.notifier)
+                  .show(
+                    (l) => l.biometricPushKeyPersistenceFailedTitle,
+                    details: (l) => l.biometricPushKeyPersistenceFailed,
+                  );
+            }
+            return false;
+          }
+          if (signature == null || current().isBiometricKeyInvalidated) {
+            Logger.error(
+              'Cannot update firebase token for push token "${leasedToken.serial}". No valid signature is available.',
+            );
+            return false;
+          }
+          final response = await ioClient.doPost(
+            url: current().url!,
+            body: {
+              'new_fb_token': firebaseToken,
+              'serial': current().serial,
+              'timestamp': timestamp,
+              'signature': signature,
+              // Not part of the signed message; older servers ignore it.
+              'capabilities': canonicalizeJson(appPushCapabilities.names),
+            },
+            sslVerify: current().sslVerify,
+          );
+          if (HttpStatusChecker.isError(response.statusCode)) {
+            Logger.warning('Updating firebase token for push token failed!');
+            return false;
+          }
+          final persisted = await persist(
+            current().copyWith(fbToken: firebaseToken),
+          );
+          if (persisted?.fbToken != firebaseToken) return false;
+          Logger.info('Updating firebase token for push token succeeded!');
+          return true;
+        }) ??
+        false;
   }
 
   /* ////////////////////////////////////////////////////////////////////////////

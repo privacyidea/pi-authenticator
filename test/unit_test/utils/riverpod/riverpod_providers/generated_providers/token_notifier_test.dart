@@ -28,6 +28,9 @@ import 'package:mockito/mockito.dart';
 import 'package:pointycastle/export.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/push_request/push_capabilities.dart';
+import 'package:privacyidea_authenticator/model/enums/biometric_push_key_status.dart';
+import 'package:privacyidea_authenticator/model/enums/force_biometric_option.dart';
+import 'package:privacyidea_authenticator/model/enums/push_app_biometric_level.dart';
 import 'package:privacyidea_authenticator/model/enums/push_token_rollout_state.dart';
 import 'package:privacyidea_authenticator/model/enums/token_origin_source_type.dart';
 import 'package:privacyidea_authenticator/model/extensions/enums/token_origin_source_type.dart';
@@ -130,6 +133,817 @@ void _testTokenNotifier() {
       expect(state, isNotNull);
       expect(state.tokens, after);
       verify(mockRepo.loadTokens()).called(2);
+    });
+    test('cold start persists native biometric invalidation', () async {
+      final mockSettingsRepo = MockSettingsRepository();
+      when(
+        mockSettingsRepo.loadSettings(),
+      ).thenAnswer((_) async => SettingsState());
+      final container = ProviderContainer(
+        overrides: [
+          settingsProvider.overrideWith(
+            () => SettingsNotifier(repoOverride: mockSettingsRepo),
+          ),
+        ],
+      );
+      addTearDown(container.dispose);
+      final mockRepo = MockTokenRepository();
+      final mockRsaUtils = MockRsaUtils();
+      final before = PushToken(
+        label: 'Push',
+        issuer: 'issuer',
+        id: 'push-id',
+        serial: 'serial',
+        isRolledOut: true,
+        forceBiometricOption: ForceBiometricOption.biometric,
+        biometricKeyStatus: BiometricPushKeyStatus.protected,
+      );
+      final invalidated = before.copyWith(
+        privateTokenKey: () => null,
+        biometricKeyStatus: BiometricPushKeyStatus.invalidated,
+      );
+      when(mockRepo.loadTokens()).thenAnswer((_) async => [before]);
+      when(
+        mockRepo.saveOrReplaceToken(invalidated),
+      ).thenAnswer((_) async => true);
+      when(mockRsaUtils.supportsBiometricPushKeyProtection).thenReturn(true);
+      when(
+        mockRsaUtils.biometricPushKeyStatus(before.id),
+      ).thenAnswer((_) async => RsaUtils.biometricKeyStatusInvalidated);
+      final testProvider = tokenProviderOf(
+        repo: mockRepo,
+        rsaUtils: mockRsaUtils,
+        ioClient: const PrivacyideaIOClient(),
+        firebaseUtils: MockFirebaseUtils(),
+      );
+
+      final state = await container.read(testProvider.future);
+
+      expect(state.tokens.single, invalidated);
+      verify(mockRepo.saveOrReplaceToken(invalidated)).called(1);
+    });
+    test(
+      'cold start never revives a locally invalidated biometric key',
+      () async {
+        final mockSettingsRepo = MockSettingsRepository();
+        when(
+          mockSettingsRepo.loadSettings(),
+        ).thenAnswer((_) async => SettingsState());
+        final container = ProviderContainer(
+          overrides: [
+            settingsProvider.overrideWith(
+              () => SettingsNotifier(repoOverride: mockSettingsRepo),
+            ),
+          ],
+        );
+        addTearDown(container.dispose);
+        final mockRepo = MockTokenRepository();
+        final mockRsaUtils = MockRsaUtils();
+        final invalidated = PushToken(
+          label: 'Push',
+          issuer: 'issuer',
+          id: 'push-id',
+          serial: 'serial',
+          isRolledOut: true,
+          forceBiometricOption: ForceBiometricOption.biometric,
+          biometricKeyStatus: BiometricPushKeyStatus.invalidated,
+        );
+        when(mockRepo.loadTokens()).thenAnswer((_) async => [invalidated]);
+        when(mockRsaUtils.supportsBiometricPushKeyProtection).thenReturn(true);
+        when(
+          mockRsaUtils.biometricPushKeyStatus(invalidated.id),
+        ).thenAnswer((_) async => RsaUtils.biometricKeyStatusProtected);
+        when(
+          mockRsaUtils.deleteBiometricPushKey(invalidated.id),
+        ).thenAnswer((_) async {});
+        final testProvider = tokenProviderOf(
+          repo: mockRepo,
+          rsaUtils: mockRsaUtils,
+          ioClient: const PrivacyideaIOClient(),
+          firebaseUtils: MockFirebaseUtils(),
+        );
+
+        final state = await container.read(testProvider.future);
+
+        expect(state.tokens.single, invalidated);
+        verify(mockRsaUtils.deleteBiometricPushKey(invalidated.id)).called(1);
+        verifyNever(mockRsaUtils.biometricPushKeyStatus(invalidated.id));
+        verifyNever(mockRepo.saveOrReplaceToken(any));
+      },
+    );
+    group('applyContainerSync', () {
+      test(
+        'does not recreate a token deleted during synchronization',
+        () async {
+          final mockSettingsRepo = MockSettingsRepository();
+          when(
+            mockSettingsRepo.loadSettings(),
+          ).thenAnswer((_) async => SettingsState());
+          final container = ProviderContainer(
+            overrides: [
+              settingsProvider.overrideWith(
+                () => SettingsNotifier(repoOverride: mockSettingsRepo),
+              ),
+            ],
+          );
+          addTearDown(container.dispose);
+          final mockRepo = MockTokenRepository();
+          when(mockRepo.loadTokens()).thenAnswer((_) async => <Token>[]);
+          final staleUpdate = PushToken(
+            id: 'deleted-push-id',
+            serial: 'deleted-push-serial',
+            label: 'server label',
+            issuer: 'server issuer',
+            url: Uri.parse('https://privacyidea.example/ttype/push'),
+            isRolledOut: true,
+            fbToken: 'stale-firebase-token',
+          );
+          final testProvider = tokenProviderOf(
+            repo: mockRepo,
+            rsaUtils: const RsaUtils(),
+            ioClient: const PrivacyideaIOClient(),
+            firebaseUtils: MockFirebaseUtils(),
+          );
+          await container.read(testProvider.future);
+
+          final failed = await container
+              .read(testProvider.notifier)
+              .applyContainerSync(
+                updatedTokens: [staleUpdate],
+                newTokens: const [],
+                checkedContainersByTokenId: const {},
+              );
+
+          expect(failed, isEmpty);
+          expect((await container.read(testProvider.future)).tokens, isEmpty);
+          verifyNever(mockRepo.saveOrReplaceTokens(any));
+        },
+      );
+
+      test(
+        'rebases server fields onto the latest local Push lifecycle state',
+        () async {
+          final mockSettingsRepo = MockSettingsRepository();
+          when(
+            mockSettingsRepo.loadSettings(),
+          ).thenAnswer((_) async => SettingsState());
+          final container = ProviderContainer(
+            overrides: [
+              settingsProvider.overrideWith(
+                () => SettingsNotifier(repoOverride: mockSettingsRepo),
+              ),
+            ],
+          );
+          addTearDown(container.dispose);
+          final mockRepo = MockTokenRepository();
+          final localOrigin = TokenOriginSourceType.manually.toTokenOrigin(
+            data: 'local-origin-data',
+            originName: 'Local enrollment',
+            createdAt: DateTime.utc(2026),
+          );
+          final serverOrigin = TokenOriginSourceType.container.toTokenOrigin(
+            data: 'server-origin-data',
+            originName: 'Server container',
+            isPrivacyIdeaToken: true,
+            createdAt: DateTime.utc(2026, 1, 2),
+          );
+          final current = PushToken(
+            id: 'push-id',
+            serial: 'push-serial',
+            label: 'local label',
+            issuer: 'local issuer',
+            containerSerial: 'old-container',
+            checkedContainer: const ['already-checked'],
+            folderId: 42,
+            sortIndex: 7,
+            origin: localOrigin,
+            url: Uri.parse('https://local.example/ttype/push'),
+            forceBiometricOption: ForceBiometricOption.biometric,
+            invalidateOnBiometricChange: true,
+            biometricKeyStatus: BiometricPushKeyStatus.protected,
+            publicTokenKey: 'current-token-public-key',
+            publicServerKey: 'current-server-public-key',
+            isRolledOut: true,
+            rolloutState: PushTokenRollOutState.rolloutComplete,
+            fbToken: 'current-firebase-token',
+          );
+          final incoming = PushToken(
+            id: current.id,
+            serial: current.serial,
+            label: 'server label',
+            issuer: 'server issuer',
+            containerSerial: 'new-container',
+            checkedContainer: const ['stale-server-check'],
+            folderId: 999,
+            sortIndex: 999,
+            origin: serverOrigin,
+            url: Uri.parse('https://server.example/ttype/push'),
+            forceBiometricOption: ForceBiometricOption.biometric,
+            invalidateOnBiometricChange: true,
+            publicTokenKey: 'stale-token-public-key',
+            publicServerKey: 'stale-server-public-key',
+            privateTokenKey: 'stale-private-key',
+            isRolledOut: false,
+            rolloutState: PushTokenRollOutState.rolloutNotStarted,
+            fbToken: 'stale-firebase-token',
+          );
+          when(mockRepo.loadTokens()).thenAnswer((_) async => [current]);
+          List<Token>? persisted;
+          when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((
+            invocation,
+          ) async {
+            persisted = List<Token>.from(
+              invocation.positionalArguments.single as List<Token>,
+            );
+            return <Token>[];
+          });
+          final testProvider = tokenProviderOf(
+            repo: mockRepo,
+            rsaUtils: const RsaUtils(),
+            ioClient: const PrivacyideaIOClient(),
+            firebaseUtils: MockFirebaseUtils(),
+          );
+          await container.read(testProvider.future);
+
+          final failed = await container
+              .read(testProvider.notifier)
+              .applyContainerSync(
+                updatedTokens: [incoming],
+                newTokens: const [],
+                checkedContainersByTokenId: const {
+                  'push-id': ['new-container'],
+                },
+              );
+
+          final updated =
+              (await container.read(testProvider.future)).tokens.single
+                  as PushToken;
+          expect(failed, isEmpty);
+          expect(updated.label, 'server label');
+          expect(updated.issuer, 'server issuer');
+          expect(updated.url, Uri.parse('https://server.example/ttype/push'));
+          expect(updated.containerSerial, 'new-container');
+          expect(updated.origin, serverOrigin);
+          expect(updated.checkedContainer, [
+            'already-checked',
+            'new-container',
+          ]);
+          expect(updated.folderId, 42);
+          expect(updated.sortIndex, 7);
+          expect(updated.fbToken, 'current-firebase-token');
+          expect(updated.isRolledOut, isTrue);
+          expect(updated.rolloutState, PushTokenRollOutState.rolloutComplete);
+          expect(updated.publicServerKey, 'current-server-public-key');
+          expect(updated.publicTokenKey, 'current-token-public-key');
+          expect(updated.privateTokenKey, isNull);
+          expect(updated.biometricKeyStatus, BiometricPushKeyStatus.protected);
+          expect(persisted, hasLength(1));
+          expect(persisted!.single, same(updated));
+          verify(mockRepo.saveOrReplaceTokens(any)).called(1);
+        },
+      );
+
+      test(
+        'invalidates and removes the native key when binding is tightened',
+        () async {
+          final mockSettingsRepo = MockSettingsRepository();
+          when(
+            mockSettingsRepo.loadSettings(),
+          ).thenAnswer((_) async => SettingsState());
+          final container = ProviderContainer(
+            overrides: [
+              settingsProvider.overrideWith(
+                () => SettingsNotifier(repoOverride: mockSettingsRepo),
+              ),
+            ],
+          );
+          addTearDown(container.dispose);
+          final mockRepo = MockTokenRepository();
+          final mockRsaUtils = MockRsaUtils();
+          final current = PushToken(
+            id: 'push-id',
+            serial: 'push-serial',
+            label: 'local label',
+            issuer: 'issuer',
+            url: Uri.parse('https://privacyidea.example/ttype/push'),
+            forceBiometricOption: ForceBiometricOption.biometric,
+            invalidateOnBiometricChange: false,
+            privateTokenKey: 'legacy-private-key',
+            publicTokenKey: 'token-public-key',
+            isRolledOut: true,
+            rolloutState: PushTokenRollOutState.rolloutComplete,
+            fbToken: 'firebase-token',
+          );
+          final incoming = current.copyWith(
+            label: 'server label',
+            invalidateOnBiometricChange: true,
+          );
+          when(mockRepo.loadTokens()).thenAnswer((_) async => [current]);
+          when(
+            mockRepo.saveOrReplaceTokens(any),
+          ).thenAnswer((_) async => <Token>[]);
+          when(
+            mockRsaUtils.supportsBiometricPushKeyProtection,
+          ).thenReturn(false);
+          when(
+            mockRsaUtils.deleteBiometricPushKey(current.id),
+          ).thenAnswer((_) async {});
+          final testProvider = tokenProviderOf(
+            repo: mockRepo,
+            rsaUtils: mockRsaUtils,
+            ioClient: const PrivacyideaIOClient(),
+            firebaseUtils: MockFirebaseUtils(),
+          );
+          await container.read(testProvider.future);
+
+          final failed = await container
+              .read(testProvider.notifier)
+              .applyContainerSync(
+                updatedTokens: [incoming],
+                newTokens: const [],
+                checkedContainersByTokenId: const {},
+              );
+
+          final updated =
+              (await container.read(testProvider.future)).tokens.single
+                  as PushToken;
+          expect(failed, isEmpty);
+          expect(updated.invalidateOnBiometricChange, isTrue);
+          expect(
+            updated.biometricKeyStatus,
+            BiometricPushKeyStatus.invalidated,
+          );
+          expect(updated.privateTokenKey, isNull);
+          final persisted =
+              verify(mockRepo.saveOrReplaceTokens(captureAny)).captured.single
+                  as List<Token>;
+          final persistedPush = persisted.single as PushToken;
+          expect(
+            persistedPush.biometricKeyStatus,
+            BiometricPushKeyStatus.invalidated,
+          );
+          expect(persistedPush.privateTokenKey, isNull);
+          verify(mockRsaUtils.deleteBiometricPushKey(current.id)).called(1);
+        },
+      );
+
+      test(
+        'deduplicates repeated Push updates and keeps the strongest policies',
+        () async {
+          final mockSettingsRepo = MockSettingsRepository();
+          when(
+            mockSettingsRepo.loadSettings(),
+          ).thenAnswer((_) async => SettingsState());
+          final container = ProviderContainer(
+            overrides: [
+              settingsProvider.overrideWith(
+                () => SettingsNotifier(repoOverride: mockSettingsRepo),
+              ),
+            ],
+          );
+          addTearDown(container.dispose);
+          final mockRepo = MockTokenRepository();
+          final mockRsaUtils = MockRsaUtils();
+          final current = PushToken(
+            id: 'push-id',
+            serial: 'push-serial',
+            label: 'local label',
+            issuer: 'issuer',
+            url: Uri.parse('https://privacyidea.example/ttype/push'),
+            biometricLevel: PushAppBiometricLevel.any,
+            invalidateOnBiometricChange: false,
+            privateTokenKey: 'legacy-private-key',
+            publicTokenKey: 'token-public-key',
+            isRolledOut: true,
+            rolloutState: PushTokenRollOutState.rolloutComplete,
+            fbToken: 'firebase-token',
+          );
+          final strict = current.copyWith(
+            label: 'strict update',
+            forceBiometricOption: ForceBiometricOption.biometric,
+            biometricLevel: PushAppBiometricLevel.strong,
+            invalidateOnBiometricChange: true,
+          );
+          final weakBiometric = current.copyWith(
+            label: 'weak biometric update',
+            forceBiometricOption: ForceBiometricOption.biometric,
+            biometricLevel: PushAppBiometricLevel.any,
+            invalidateOnBiometricChange: false,
+          );
+          final noBiometric = current.copyWith(
+            label: 'no biometric update',
+            forceBiometricOption: ForceBiometricOption.none,
+            biometricLevel: PushAppBiometricLevel.any,
+            invalidateOnBiometricChange: false,
+          );
+          when(mockRepo.loadTokens()).thenAnswer((_) async => [current]);
+          when(
+            mockRepo.saveOrReplaceTokens(any),
+          ).thenAnswer((_) async => <Token>[]);
+          when(
+            mockRsaUtils.supportsBiometricPushKeyProtection,
+          ).thenReturn(false);
+          when(
+            mockRsaUtils.deleteBiometricPushKey(current.id),
+          ).thenAnswer((_) async {});
+          final testProvider = tokenProviderOf(
+            repo: mockRepo,
+            rsaUtils: mockRsaUtils,
+            ioClient: const PrivacyideaIOClient(),
+            firebaseUtils: MockFirebaseUtils(),
+          );
+          await container.read(testProvider.future);
+
+          final failed = await container
+              .read(testProvider.notifier)
+              .applyContainerSync(
+                updatedTokens: [strict, weakBiometric, noBiometric],
+                newTokens: const [],
+                checkedContainersByTokenId: const {},
+              );
+
+          final updated =
+              (await container.read(testProvider.future)).tokens.single
+                  as PushToken;
+          expect(failed, isEmpty);
+          expect(updated.label, 'no biometric update');
+          expect(updated.forceBiometricOption, ForceBiometricOption.biometric);
+          expect(updated.biometricLevel, PushAppBiometricLevel.strong);
+          expect(updated.invalidateOnBiometricChange, isTrue);
+          expect(
+            updated.biometricKeyStatus,
+            BiometricPushKeyStatus.invalidated,
+          );
+          expect(updated.privateTokenKey, isNull);
+          final persisted =
+              verify(mockRepo.saveOrReplaceTokens(captureAny)).captured.single
+                  as List<Token>;
+          expect(persisted, hasLength(1));
+          expect((persisted.single as PushToken).id, current.id);
+          verify(mockRsaUtils.deleteBiometricPushKey(current.id)).called(1);
+        },
+      );
+
+      test('matches bulk persistence failures by token id', () async {
+        final mockSettingsRepo = MockSettingsRepository();
+        when(
+          mockSettingsRepo.loadSettings(),
+        ).thenAnswer((_) async => SettingsState());
+        final container = ProviderContainer(
+          overrides: [
+            settingsProvider.overrideWith(
+              () => SettingsNotifier(repoOverride: mockSettingsRepo),
+            ),
+          ],
+        );
+        addTearDown(container.dispose);
+        final mockRepo = MockTokenRepository();
+        final mockRsaUtils = MockRsaUtils();
+        PushToken token(String id, String label) => PushToken(
+          id: id,
+          serial: 'shared-serial',
+          label: label,
+          issuer: 'issuer',
+          url: Uri.parse('https://privacyidea.example/ttype/push'),
+          isRolledOut: true,
+          rolloutState: PushTokenRollOutState.rolloutComplete,
+          fbToken: 'firebase-token',
+        );
+
+        final first = token('first-id', 'first local');
+        final second = token('second-id', 'second local');
+        when(mockRepo.loadTokens()).thenAnswer((_) async => [first, second]);
+        when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((invocation) async {
+          final candidates =
+              invocation.positionalArguments.single as List<Token>;
+          return [candidates.singleWhere((token) => token.id == first.id)];
+        });
+        when(mockRsaUtils.supportsBiometricPushKeyProtection).thenReturn(false);
+        final testProvider = tokenProviderOf(
+          repo: mockRepo,
+          rsaUtils: mockRsaUtils,
+          ioClient: const PrivacyideaIOClient(),
+          firebaseUtils: MockFirebaseUtils(),
+        );
+        await container.read(testProvider.future);
+
+        final failed = await container
+            .read(testProvider.notifier)
+            .applyContainerSync(
+              updatedTokens: [
+                first.copyWith(label: 'first server'),
+                second.copyWith(label: 'second server'),
+              ],
+              newTokens: const [],
+              checkedContainersByTokenId: const {},
+            );
+
+        final state = await container.read(testProvider.future);
+        expect(failed.map((token) => token.id), [first.id]);
+        expect(state.currentOfId<PushToken>(first.id)!.label, 'first local');
+        expect(state.currentOfId<PushToken>(second.id)!.label, 'second server');
+      });
+
+      test(
+        'rebases a colliding new Push token by identity instead of duplicating it',
+        () async {
+          final mockSettingsRepo = MockSettingsRepository();
+          when(
+            mockSettingsRepo.loadSettings(),
+          ).thenAnswer((_) async => SettingsState());
+          final container = ProviderContainer(
+            overrides: [
+              settingsProvider.overrideWith(
+                () => SettingsNotifier(repoOverride: mockSettingsRepo),
+              ),
+            ],
+          );
+          addTearDown(container.dispose);
+          final mockRepo = MockTokenRepository();
+          final mockRsaUtils = MockRsaUtils();
+          final current = PushToken(
+            id: 'local-id',
+            serial: 'PIPU01',
+            label: 'local label',
+            issuer: 'privacyIDEA',
+            url: Uri.parse('https://privacyidea.example/ttype/push'),
+            publicServerKey: 'server-key',
+            publicTokenKey: 'public-key',
+            privateTokenKey: 'private-key',
+            enrollmentCredentials: 'credential',
+            isRolledOut: true,
+            rolloutState: PushTokenRollOutState.rolloutComplete,
+            fbToken: 'firebase-token',
+          );
+          final incoming = current.copyWith(
+            id: 'server-id',
+            label: 'server label',
+            containerSerial: () => 'CONTAINER01',
+          );
+          when(mockRepo.loadTokens()).thenAnswer((_) async => [current]);
+          List<Token>? persisted;
+          when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((
+            invocation,
+          ) async {
+            persisted = List<Token>.from(
+              invocation.positionalArguments.single as List<Token>,
+            );
+            return <Token>[];
+          });
+          when(
+            mockRsaUtils.supportsBiometricPushKeyProtection,
+          ).thenReturn(false);
+          final testProvider = tokenProviderOf(
+            repo: mockRepo,
+            rsaUtils: mockRsaUtils,
+            ioClient: const PrivacyideaIOClient(),
+            firebaseUtils: MockFirebaseUtils(),
+          );
+          await container.read(testProvider.future);
+
+          final failed = await container
+              .read(testProvider.notifier)
+              .applyContainerSync(
+                updatedTokens: const [],
+                newTokens: [incoming],
+                checkedContainersByTokenId: const {
+                  'server-id': ['CONTAINER01'],
+                },
+              );
+
+          final tokenState = await container.read(testProvider.future);
+          expect(failed, isEmpty);
+          expect(tokenState.tokens, hasLength(1));
+          expect(tokenState.tokens.single.id, current.id);
+          expect(tokenState.tokens.single.label, 'server label');
+          expect(
+            tokenState.tokens.single.checkedContainer,
+            contains('CONTAINER01'),
+          );
+          expect(persisted, hasLength(1));
+          expect(persisted!.single.id, current.id);
+          expect(persisted!.any((token) => token.id == incoming.id), isFalse);
+        },
+      );
+
+      test(
+        'fail-closes a new rolled-out strong Push token before saving',
+        () async {
+          final mockSettingsRepo = MockSettingsRepository();
+          when(
+            mockSettingsRepo.loadSettings(),
+          ).thenAnswer((_) async => SettingsState());
+          final container = ProviderContainer(
+            overrides: [
+              settingsProvider.overrideWith(
+                () => SettingsNotifier(repoOverride: mockSettingsRepo),
+              ),
+            ],
+          );
+          addTearDown(container.dispose);
+          final mockRepo = MockTokenRepository();
+          final mockRsaUtils = MockRsaUtils();
+          final incoming = PushToken(
+            id: 'server-id',
+            serial: 'PIPU02',
+            issuer: 'privacyIDEA',
+            forceBiometricOption: ForceBiometricOption.biometric,
+            biometricLevel: PushAppBiometricLevel.strong,
+            invalidateOnBiometricChange: true,
+            privateTokenKey: 'legacy-private-key',
+            publicTokenKey: 'public-key',
+            publicServerKey: 'server-key',
+            isRolledOut: true,
+            rolloutState: PushTokenRollOutState.rolloutComplete,
+            fbToken: 'firebase-token',
+          );
+          when(mockRepo.loadTokens()).thenAnswer((_) async => <Token>[]);
+          List<Token>? persisted;
+          when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((
+            invocation,
+          ) async {
+            persisted = List<Token>.from(
+              invocation.positionalArguments.single as List<Token>,
+            );
+            return <Token>[];
+          });
+          when(
+            mockRsaUtils.supportsBiometricPushKeyProtection,
+          ).thenReturn(false);
+          when(
+            mockRsaUtils.deleteBiometricPushKey(incoming.id),
+          ).thenAnswer((_) async {});
+          final testProvider = tokenProviderOf(
+            repo: mockRepo,
+            rsaUtils: mockRsaUtils,
+            ioClient: const PrivacyideaIOClient(),
+            firebaseUtils: MockFirebaseUtils(),
+          );
+          await container.read(testProvider.future);
+
+          final failed = await container
+              .read(testProvider.notifier)
+              .applyContainerSync(
+                updatedTokens: const [],
+                newTokens: [incoming],
+                checkedContainersByTokenId: const {},
+              );
+
+          final saved = persisted!.single as PushToken;
+          final current =
+              (await container.read(testProvider.future)).tokens.single
+                  as PushToken;
+          expect(failed, isEmpty);
+          expect(saved.biometricKeyStatus, BiometricPushKeyStatus.invalidated);
+          expect(saved.privateTokenKey, isNull);
+          expect(
+            current.biometricKeyStatus,
+            BiometricPushKeyStatus.invalidated,
+          );
+          expect(current.privateTokenKey, isNull);
+          verify(mockRsaUtils.deleteBiometricPushKey(incoming.id)).called(1);
+        },
+      );
+
+      test(
+        'does not delete tokens when another container update cannot be saved',
+        () async {
+          final mockSettingsRepo = MockSettingsRepository();
+          when(
+            mockSettingsRepo.loadSettings(),
+          ).thenAnswer((_) async => SettingsState());
+          final container = ProviderContainer(
+            overrides: [
+              settingsProvider.overrideWith(
+                () => SettingsNotifier(repoOverride: mockSettingsRepo),
+              ),
+            ],
+          );
+          addTearDown(container.dispose);
+          final mockRepo = MockTokenRepository();
+          final toUpdate = HOTPToken(
+            id: 'update-id',
+            serial: 'HOTP-UPDATE',
+            issuer: 'privacyIDEA',
+            algorithm: Algorithms.SHA1,
+            digits: 6,
+            secret: 'JBSWY3DPEHPK3PXP',
+            counter: 1,
+          );
+          final toDelete = HOTPToken(
+            id: 'delete-id',
+            serial: 'HOTP-DELETE',
+            issuer: 'privacyIDEA',
+            algorithm: Algorithms.SHA1,
+            digits: 6,
+            secret: 'JBSWY3DPEHPK3PXP',
+            counter: 2,
+          );
+          when(
+            mockRepo.loadTokens(),
+          ).thenAnswer((_) async => [toUpdate, toDelete]);
+          when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((
+            invocation,
+          ) async {
+            return List<Token>.from(
+              invocation.positionalArguments.single as List<Token>,
+            );
+          });
+          final testProvider = tokenProviderOf(
+            repo: mockRepo,
+            rsaUtils: const RsaUtils(),
+            ioClient: const PrivacyideaIOClient(),
+            firebaseUtils: MockFirebaseUtils(),
+          );
+          await container.read(testProvider.future);
+
+          final failed = await container
+              .read(testProvider.notifier)
+              .applyContainerSync(
+                updatedTokens: [toUpdate.copyWith(counter: 3)],
+                newTokens: const [],
+                deletedTokens: [toDelete],
+                checkedContainersByTokenId: const {},
+              );
+
+          final tokenState = await container.read(testProvider.future);
+          expect(failed.map((token) => token.id), [toUpdate.id]);
+          expect(tokenState.currentOfId<HOTPToken>(toUpdate.id)!.counter, 1);
+          expect(tokenState.currentOfId<HOTPToken>(toDelete.id), isNotNull);
+          verifyNever(mockRepo.deleteTokens(any));
+        },
+      );
+
+      test('keeps a failed biometric tightening terminally blocked', () async {
+        final mockSettingsRepo = MockSettingsRepository();
+        when(
+          mockSettingsRepo.loadSettings(),
+        ).thenAnswer((_) async => SettingsState());
+        final container = ProviderContainer(
+          overrides: [
+            settingsProvider.overrideWith(
+              () => SettingsNotifier(repoOverride: mockSettingsRepo),
+            ),
+          ],
+        );
+        addTearDown(container.dispose);
+        final mockRepo = MockTokenRepository();
+        final mockRsaUtils = MockRsaUtils();
+        final current = PushToken(
+          id: 'push-id',
+          serial: 'PIPU03',
+          issuer: 'privacyIDEA',
+          url: Uri.parse('https://privacyidea.example/ttype/push'),
+          biometricLevel: PushAppBiometricLevel.any,
+          invalidateOnBiometricChange: false,
+          privateTokenKey: 'legacy-private-key',
+          publicTokenKey: 'public-key',
+          publicServerKey: 'server-key',
+          isRolledOut: true,
+          rolloutState: PushTokenRollOutState.rolloutComplete,
+          fbToken: 'firebase-token',
+        );
+        final incoming = current.copyWith(
+          forceBiometricOption: ForceBiometricOption.biometric,
+          biometricLevel: PushAppBiometricLevel.strong,
+          invalidateOnBiometricChange: true,
+        );
+        when(mockRepo.loadTokens()).thenAnswer((_) async => [current]);
+        when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((invocation) async {
+          return List<Token>.from(
+            invocation.positionalArguments.single as List<Token>,
+          );
+        });
+        when(mockRepo.saveOrReplaceToken(any)).thenAnswer((_) async => true);
+        when(mockRsaUtils.supportsBiometricPushKeyProtection).thenReturn(false);
+        when(
+          mockRsaUtils.deleteBiometricPushKey(current.id),
+        ).thenAnswer((_) async {});
+        final testProvider = tokenProviderOf(
+          repo: mockRepo,
+          rsaUtils: mockRsaUtils,
+          ioClient: const PrivacyideaIOClient(),
+          firebaseUtils: MockFirebaseUtils(),
+        );
+        await container.read(testProvider.future);
+
+        final failed = await container
+            .read(testProvider.notifier)
+            .applyContainerSync(
+              updatedTokens: [incoming],
+              newTokens: const [],
+              checkedContainersByTokenId: const {},
+            );
+
+        final blocked =
+            (await container.read(testProvider.future)).tokens.single
+                as PushToken;
+        expect(failed.map((token) => token.id), [current.id]);
+        expect(blocked.biometricKeyStatus, BiometricPushKeyStatus.invalidated);
+        expect(blocked.privateTokenKey, isNull);
+        verify(mockRepo.saveOrReplaceToken(any)).called(1);
+        verify(mockRsaUtils.deleteBiometricPushKey(current.id)).called(1);
+      });
     });
     test('getTokenFromId', () async {
       final mockSettingsRepo = MockSettingsRepository();
@@ -861,7 +1675,11 @@ void _testTokenNotifier() {
       when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
       when(mockRepo.saveOrReplaceToken(any)).thenAnswer((_) async => true);
       when(
-        mockRsaUtils.trySignWithToken(any, any),
+        mockRsaUtils.trySignWithToken(
+          any,
+          any,
+          onTokenChanged: anyNamed('onTokenChanged'),
+        ),
       ).thenAnswer((_) async => 'signature');
       when(
         mockIOClient.doPost(
@@ -899,11 +1717,157 @@ void _testTokenNotifier() {
       expect(body['capabilities'], '["decline_reason"]');
 
       final signed =
-          verify(mockRsaUtils.trySignWithToken(any, captureAny)).captured.last
+          verify(
+                mockRsaUtils.trySignWithToken(
+                  any,
+                  captureAny,
+                  onTokenChanged: anyNamed('onTokenChanged'),
+                ),
+              ).captured.last
               as String;
       expect(signed, 'newFbToken|serial|${body['timestamp']}');
       expect(signed, isNot(contains('decline_reason')));
     });
+    test(
+      'biometric rollout stops when protected state cannot be persisted',
+      () async {
+        final mockSettingsRepo = MockSettingsRepository();
+        when(
+          mockSettingsRepo.loadSettings(),
+        ).thenAnswer((_) async => SettingsState());
+        final container = ProviderContainer(
+          overrides: [
+            settingsProvider.overrideWith(
+              () => SettingsNotifier(repoOverride: mockSettingsRepo),
+            ),
+          ],
+        );
+        addTearDown(container.dispose);
+        final mockRepo = MockTokenRepository();
+        final mockIOClient = MockPrivacyideaIOClient();
+        final mockFirebaseUtils = MockFirebaseUtils();
+        final mockRsaUtils = MockRsaUtils();
+        final before = PushToken(
+          label: 'label',
+          issuer: 'issuer',
+          id: 'id',
+          serial: 'serial',
+          isRolledOut: false,
+          isPollOnly: true,
+          url: Uri.parse('https://example.com'),
+          publicTokenKey: 'public-key',
+          privateTokenKey: 'private-key',
+          forceBiometricOption: ForceBiometricOption.biometric,
+        );
+        final protected = before.copyWith(
+          privateTokenKey: () => null,
+          biometricKeyStatus: BiometricPushKeyStatus.protected,
+        );
+        when(mockRepo.loadTokens()).thenAnswer((_) async => [before]);
+        when(
+          mockRepo.saveOrReplaceToken(protected),
+        ).thenAnswer((_) async => false);
+        when(
+          mockRsaUtils.protectBiometricPushKey(any),
+        ).thenAnswer((_) async {});
+        final testProvider = tokenProviderOf(
+          repo: mockRepo,
+          ioClient: mockIOClient,
+          rsaUtils: mockRsaUtils,
+          firebaseUtils: mockFirebaseUtils,
+        );
+        await container.read(testProvider.future);
+
+        final result = await container
+            .read(testProvider.notifier)
+            .rolloutPushToken(before);
+
+        expect(result, isFalse);
+        verifyNever(
+          mockIOClient.doPost(
+            url: anyNamed('url'),
+            body: anyNamed('body'),
+            sslVerify: anyNamed('sslVerify'),
+          ),
+        );
+      },
+    );
+    test(
+      'retry keeps the public key paired with a protected private key',
+      () async {
+        final mockSettingsRepo = MockSettingsRepository();
+        when(
+          mockSettingsRepo.loadSettings(),
+        ).thenAnswer((_) async => SettingsState());
+        final container = ProviderContainer(
+          overrides: [
+            settingsProvider.overrideWith(
+              () => SettingsNotifier(repoOverride: mockSettingsRepo),
+            ),
+          ],
+        );
+        addTearDown(container.dispose);
+        final mockRepo = MockTokenRepository();
+        final mockIOClient = MockPrivacyideaIOClient();
+        final mockRsaUtils = MockRsaUtils();
+        final keyPair = await const RsaUtils().generateRSAKeyPair();
+        final publicKey = const RsaUtils().serializeRSAPublicKeyPKCS1(
+          keyPair.publicKey,
+        );
+        final before = PushToken(
+          label: 'label',
+          issuer: 'issuer',
+          id: 'id',
+          serial: 'serial',
+          isRolledOut: false,
+          isPollOnly: true,
+          url: Uri.parse('https://example.com'),
+          publicTokenKey: publicKey,
+          biometricKeyStatus: BiometricPushKeyStatus.protected,
+          forceBiometricOption: ForceBiometricOption.biometric,
+        );
+        when(mockRepo.loadTokens()).thenAnswer((_) async => [before]);
+        when(mockRepo.saveOrReplaceToken(any)).thenAnswer((_) async => true);
+        when(
+          mockRsaUtils.serializeRSAPublicKeyPKCS8(any),
+        ).thenReturn('public-key-for-server');
+        when(
+          mockRsaUtils.deserializeRSAPublicKeyPKCS1('server-public-key'),
+        ).thenReturn(RSAPublicKey(BigInt.one, BigInt.one));
+        when(
+          mockIOClient.doPost(
+            url: anyNamed('url'),
+            body: anyNamed('body'),
+            sslVerify: anyNamed('sslVerify'),
+          ),
+        ).thenAnswer(
+          (_) async =>
+              Response('{"detail": {"public_key": "server-public-key"}}', 200),
+        );
+        final testProvider = tokenProviderOf(
+          repo: mockRepo,
+          ioClient: mockIOClient,
+          rsaUtils: mockRsaUtils,
+          firebaseUtils: MockFirebaseUtils(),
+        );
+        await container.read(testProvider.future);
+
+        final result = await container
+            .read(testProvider.notifier)
+            .rolloutPushToken(before);
+
+        expect(result, isTrue);
+        verifyNever(mockRsaUtils.generateRSAKeyPair());
+        verifyNever(mockRsaUtils.protectBiometricPushKey(any));
+        verify(
+          mockIOClient.doPost(
+            url: anyNamed('url'),
+            body: anyNamed('body'),
+            sslVerify: anyNamed('sslVerify'),
+          ),
+        ).called(1);
+      },
+    );
     test(
       'removeTokens does not run push tokens through the generic bulk-delete path',
       () async {
@@ -974,6 +1938,129 @@ void _testTokenNotifier() {
 
         // The push token is removed exactly once, via its own dedicated path.
         verify(mockRepo.deleteToken(pushToken)).called(1);
+      },
+    );
+    test(
+      'removeTokens reflects partial bulk deletion success in memory',
+      () async {
+        final mockSettingsRepo = MockSettingsRepository();
+        when(
+          mockSettingsRepo.loadSettings(),
+        ).thenAnswer((_) async => SettingsState());
+        final container = ProviderContainer(
+          overrides: [
+            settingsProvider.overrideWith(
+              () => SettingsNotifier(repoOverride: mockSettingsRepo),
+            ),
+          ],
+        );
+        addTearDown(container.dispose);
+        final mockRepo = MockTokenRepository();
+        final deleted = HOTPToken(
+          id: 'deleted-id',
+          serial: 'HOTP-DELETED',
+          algorithm: Algorithms.SHA1,
+          digits: 6,
+          secret: 'deleted-secret',
+        );
+        final failed = HOTPToken(
+          id: 'failed-id',
+          serial: 'HOTP-FAILED',
+          algorithm: Algorithms.SHA1,
+          digits: 6,
+          secret: 'failed-secret',
+        );
+        when(mockRepo.loadTokens()).thenAnswer((_) async => [deleted, failed]);
+        when(
+          mockRepo.deleteTokens(any),
+        ).thenAnswer((_) async => <Token>[failed]);
+        final testProvider = tokenProviderOf(
+          repo: mockRepo,
+          rsaUtils: const RsaUtils(),
+          ioClient: const PrivacyideaIOClient(),
+          firebaseUtils: MockFirebaseUtils(),
+        );
+        final notifier = container.read(testProvider.notifier);
+        await container.read(testProvider.future);
+
+        await notifier.removeTokens([deleted, failed]);
+
+        final tokenState = await container.read(testProvider.future);
+        expect(tokenState.currentOfId(deleted.id), isNull);
+        expect(tokenState.currentOfId(failed.id), isNotNull);
+        expect(tokenState.tokens.map((token) => token.id), [failed.id]);
+      },
+    );
+    test(
+      'waits for native key cleanup before re-adding the same Push id',
+      () async {
+        final mockSettingsRepo = MockSettingsRepository();
+        when(
+          mockSettingsRepo.loadSettings(),
+        ).thenAnswer((_) async => SettingsState());
+        final container = ProviderContainer(
+          overrides: [
+            settingsProvider.overrideWith(
+              () => SettingsNotifier(repoOverride: mockSettingsRepo),
+            ),
+          ],
+        );
+        addTearDown(container.dispose);
+        final mockRepo = MockTokenRepository();
+        final mockRsaUtils = MockRsaUtils();
+        final mockFirebaseUtils = MockFirebaseUtils();
+        final current = PushToken(
+          id: 'push-id',
+          serial: 'PIPU-RACE',
+          label: 'old',
+          issuer: 'privacyIDEA',
+          isRolledOut: true,
+        );
+        final replacement = PushToken(
+          id: current.id,
+          serial: 'PIPU-NEW',
+          label: 'new',
+          issuer: 'privacyIDEA',
+          isRolledOut: true,
+          fbToken: 'firebase-token',
+        );
+        final cleanupStarted = Completer<void>();
+        final allowCleanup = Completer<void>();
+        var saveStarted = false;
+        when(mockRepo.loadTokens()).thenAnswer((_) async => [current]);
+        when(mockRepo.deleteToken(current)).thenAnswer((_) async => true);
+        when(mockRsaUtils.deleteBiometricPushKey(current.id)).thenAnswer((_) {
+          cleanupStarted.complete();
+          return allowCleanup.future;
+        });
+        when(mockRepo.saveOrReplaceToken(any)).thenAnswer((_) async {
+          saveStarted = true;
+          return true;
+        });
+        when(mockRsaUtils.supportsBiometricPushKeyProtection).thenReturn(false);
+        final testProvider = tokenProviderOf(
+          repo: mockRepo,
+          rsaUtils: mockRsaUtils,
+          ioClient: const PrivacyideaIOClient(),
+          firebaseUtils: mockFirebaseUtils,
+        );
+        final notifier = container.read(testProvider.notifier);
+        await container.read(testProvider.future);
+
+        final removeFuture = notifier.removeToken(current);
+        await cleanupStarted.future;
+        final addFuture = notifier.addOrReplaceToken(replacement);
+        await Future<void>.delayed(Duration.zero);
+
+        expect(saveStarted, isFalse);
+        allowCleanup.complete();
+        await removeFuture;
+        expect(await addFuture, isTrue);
+        expect(saveStarted, isTrue);
+        final tokenState = await container.read(testProvider.future);
+        expect(tokenState.tokens, hasLength(1));
+        expect(tokenState.tokens.single.id, replacement.id);
+        expect(tokenState.tokens.single.label, replacement.label);
       },
     );
     test(

@@ -20,6 +20,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:privacyidea_authenticator/model/enums/biometric_push_key_status.dart';
 import 'package:privacyidea_authenticator/model/push_request/push_default_request.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/push_request_state.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/token_state.dart';
@@ -28,6 +29,7 @@ import 'package:privacyidea_authenticator/utils/custom_int_buffer.dart';
 import 'package:privacyidea_authenticator/utils/push_provider.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/push_request_provider.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
+import 'package:privacyidea_authenticator/widgets/dialog_widgets/push_request_dialogs/push_request_dialog.dart';
 import 'package:privacyidea_authenticator/widgets/push_request_listener.dart';
 
 import '../../tests_app_wrapper.dart';
@@ -172,5 +174,190 @@ void main() {
       expect(find.text('NEWEST_PUSH'), findsOneWidget);
       expect(find.text('OLDER_PUSH'), findsNothing);
     });
+
+    testWidgets(
+      'skips a newer invalidated-token request and shows the latest actionable request',
+      (tester) async {
+        final validToken = PushToken(
+          serial: 'PUSH-VALID',
+          id: 'valid-id',
+          isRolledOut: true,
+        );
+        final invalidatedToken = PushToken(
+          serial: 'PUSH-INVALID',
+          id: 'invalid-id',
+          isRolledOut: true,
+          biometricKeyStatus: BiometricPushKeyStatus.invalidated,
+        );
+        final now = DateTime.now();
+        final validRequest = PushDefaultRequest(
+          title: 'Valid request',
+          question: 'VALID_PUSH',
+          uri: Uri.parse('https://example.com/valid'),
+          nonce: 'valid-nonce',
+          sslVerify: true,
+          expirationDate: now.add(const Duration(minutes: 1)),
+          signature: 'valid-signature',
+          serial: validToken.serial,
+        );
+        final invalidatedRequest = PushDefaultRequest(
+          title: 'Invalidated request',
+          question: 'INVALIDATED_PUSH',
+          uri: Uri.parse('https://example.com/invalidated'),
+          nonce: 'invalidated-nonce',
+          sslVerify: true,
+          expirationDate: now.add(const Duration(minutes: 2)),
+          signature: 'invalidated-signature',
+          serial: invalidatedToken.serial,
+        );
+
+        await tester.pumpWidget(
+          TestsAppWrapper(
+            overrides: [
+              tokenProvider.overrideWith(
+                () => FakeTokenNotifierForPush(
+                  TokenState(tokens: [validToken, invalidatedToken]),
+                ),
+              ),
+              pushRequestProvider.overrideWith(
+                () => FakePushRequestNotifier(
+                  PushRequestState(
+                    pushRequests: [validRequest, invalidatedRequest],
+                    knownPushRequests: CustomIntBuffer(
+                      list: [validRequest.id, invalidatedRequest.id],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+            child: const PushRequestListener(child: Text('Main Content')),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.text('VALID_PUSH'), findsOneWidget);
+        expect(find.text('INVALIDATED_PUSH'), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'skips a newer orphan request and shows the latest request with a token',
+      (tester) async {
+        final validToken = PushToken(
+          serial: 'PUSH-VALID',
+          id: 'valid-id',
+          isRolledOut: true,
+        );
+        final now = DateTime.now();
+        final validRequest = PushDefaultRequest(
+          title: 'Valid request',
+          question: 'VALID_PUSH',
+          uri: Uri.parse('https://example.com/valid'),
+          nonce: 'valid-nonce',
+          sslVerify: true,
+          expirationDate: now.add(const Duration(minutes: 1)),
+          signature: 'valid-signature',
+          serial: validToken.serial,
+        );
+        final orphanRequest = PushDefaultRequest(
+          title: 'Orphan request',
+          question: 'ORPHAN_PUSH',
+          uri: Uri.parse('https://example.com/orphan'),
+          nonce: 'orphan-nonce',
+          sslVerify: true,
+          expirationDate: now.add(const Duration(minutes: 2)),
+          signature: 'orphan-signature',
+          serial: 'PUSH-MISSING',
+        );
+
+        await tester.pumpWidget(
+          TestsAppWrapper(
+            overrides: [
+              tokenProvider.overrideWith(
+                () =>
+                    FakeTokenNotifierForPush(TokenState(tokens: [validToken])),
+              ),
+              pushRequestProvider.overrideWith(
+                () => FakePushRequestNotifier(
+                  PushRequestState(
+                    pushRequests: [validRequest, orphanRequest],
+                    knownPushRequests: CustomIntBuffer(
+                      list: [validRequest.id, orphanRequest.id],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+            child: const PushRequestListener(child: Text('Main Content')),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.text('VALID_PUSH'), findsOneWidget);
+        expect(find.text('ORPHAN_PUSH'), findsNothing);
+      },
+    );
+
+    testWidgets(
+      'does not render a request dialog when every request is invalidated or orphaned',
+      (tester) async {
+        final invalidatedToken = PushToken(
+          serial: 'PUSH-INVALID',
+          id: 'invalid-id',
+          isRolledOut: true,
+          biometricKeyStatus: BiometricPushKeyStatus.invalidated,
+        );
+        final now = DateTime.now();
+        final invalidatedRequest = PushDefaultRequest(
+          title: 'Invalidated request',
+          question: 'INVALIDATED_PUSH',
+          uri: Uri.parse('https://example.com/invalidated'),
+          nonce: 'invalidated-nonce',
+          sslVerify: true,
+          expirationDate: now.add(const Duration(minutes: 1)),
+          signature: 'invalidated-signature',
+          serial: invalidatedToken.serial,
+        );
+        final orphanRequest = PushDefaultRequest(
+          title: 'Orphan request',
+          question: 'ORPHAN_PUSH',
+          uri: Uri.parse('https://example.com/orphan'),
+          nonce: 'orphan-nonce',
+          sslVerify: true,
+          expirationDate: now.add(const Duration(minutes: 2)),
+          signature: 'orphan-signature',
+          serial: 'PUSH-MISSING',
+        );
+
+        await tester.pumpWidget(
+          TestsAppWrapper(
+            overrides: [
+              tokenProvider.overrideWith(
+                () => FakeTokenNotifierForPush(
+                  TokenState(tokens: [invalidatedToken]),
+                ),
+              ),
+              pushRequestProvider.overrideWith(
+                () => FakePushRequestNotifier(
+                  PushRequestState(
+                    pushRequests: [invalidatedRequest, orphanRequest],
+                    knownPushRequests: CustomIntBuffer(
+                      list: [invalidatedRequest.id, orphanRequest.id],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+            child: const PushRequestListener(child: Text('Main Content')),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        expect(find.text('Main Content'), findsOneWidget);
+        expect(find.byType(PushRequestDialog), findsNothing);
+        expect(find.text('INVALIDATED_PUSH'), findsNothing);
+        expect(find.text('ORPHAN_PUSH'), findsNothing);
+      },
+    );
   });
 }

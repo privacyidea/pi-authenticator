@@ -177,7 +177,13 @@ class PiContainerApi implements TokenContainerApi {
       ...mergedTemplatesWithOtps,
       ...mergedTemplatesWithSerial,
     ]) {
-      final token = container.addOriginToToken(token: mergedTemplate.toToken());
+      final snapshotToken = tokenState.tokens.firstWhereOrNull(
+        (token) => token.id == mergedTemplate.additionalData[Token.ID],
+      );
+      final synchronizedToken = snapshotToken == null
+          ? mergedTemplate.toToken()
+          : snapshotToken.copyUpdateByTemplate(mergedTemplate);
+      final token = container.addOriginToToken(token: synchronizedToken);
       updatedTokens.add(token);
     }
 

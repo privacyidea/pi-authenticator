@@ -189,7 +189,7 @@ Future<void> dragSortableOnAccept({
   final modifiedFolders = allSortables.whereType<TokenFolder>().toList();
   if (!ref.context.mounted) return;
   final futures = [
-    ref.read(tokenProvider.notifier).addOrReplaceTokens(modifiedTokens),
+    ref.read(tokenProvider.notifier).updateTokenPlacements(modifiedTokens),
     ref.read(tokenFolderProvider.notifier).addOrReplaceFolders(modifiedFolders),
   ];
   final draggingSortableProviderNotifier = ref.read(

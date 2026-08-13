@@ -1491,6 +1491,9 @@
   "@sendPushRequestResponseFailed": {
     "description": "Error message when the response to a push request could not be sent."
   },
+  "@pushRequestResponseRejected": {
+    "description": "Error shown when privacyIDEA did not positively accept a Push response."
+  },
   "@serverNotReachable": {
     "description": "Tells the user that the server could not be reached."
   },
@@ -2166,6 +2169,7 @@
   "sendErrorDialogBody": "Napotkano nieoczekiwany błąd w aplikacji. Poniższa wiadomość może zostać wysłana do deweloperów poprzez email, żeby pomóc uniknąć tego problemu w przyszłości.",
   "sendErrorLogDescription": "Tworzona jest gotowa wiadomość e-mail zawierająca informacje o aplikacji, błędzie i urządzeniu.\nMożesz edytować wiadomość e-mail przed jej wysłaniem.\nTutaj można zobaczyć, w jaki sposób wykorzystujemy te informacje:",
   "sendPushRequestResponseFailed": "Nie udało się wysłać odpowiedzi.",
+  "pushRequestResponseRejected": "Aplikacja nie mogła potwierdzić, że serwer zaakceptował odpowiedź Push. Żądanie mogło wygasnąć albo token może być nieważny.",
   "serverNotReachable": "Nie można uzyskać połączenia z serwerem.",
   "setUpButton": "Konfiguracja",
   "settings": "Ustawienia",
@@ -2228,5 +2232,13 @@
   "verboseLogging": "Wyczerpujące rejestrowanie",
   "versionTitle": "Wersja",
   "wrongPassword": "Nieprawidłowe hasło",
-  "yes": "Tak"
+  "yes": "Tak",
+  "biometricPushKeyAuthReason": "Uwierzytelnij się, aby użyć tego tokenu Push",
+  "biometricPushKeyProtectReason": "Zabezpiecz ten token Push silną biometrią",
+  "biometricPushTokenInvalid": "Token Push nieważny — zmieniono biometrię",
+  "biometricPushTokenInvalidTitle": "Token Push nie jest już ważny",
+  "biometricPushTokenInvalidBody": "Klucz biometryczny tego tokenu Push nie jest już ważny. Może się tak zdarzyć po zmianie zestawu biometrii lub polityki bezpieczeństwa. Ze względów bezpieczeństwa token nie może już podpisywać żądań. Usuń go i zarejestruj nowy token Push.",
+  "biometricStrongRequired": "Ten token Push wymaga silnej biometrii. Nie można użyć kodu PIN, wzoru, hasła urządzenia ani słabej biometrii.",
+  "biometricPushKeyPersistenceFailedTitle": "Nie zapisano ochrony klucza Push",
+  "biometricPushKeyPersistenceFailed": "Nie udało się bezpiecznie zapisać stanu chronionego klucza Push. Żadne dane nie zostały wysłane do serwera. Spróbuj ponownie."
 }

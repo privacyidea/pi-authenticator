@@ -30,12 +30,14 @@ import '../../../../model/push_request/push_requests.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../model/api_results/pi_server_results/pi_server_result_detail.dart';
 import '../../../model/api_results/pi_server_results/pi_server_result_value.dart';
+import '../../../model/enums/force_biometric_option.dart';
 import '../../../model/pi_server_response.dart';
 import '../../../utils/customization/theme_extentions/push_request_theme.dart';
 import '../../../utils/lock_auth.dart';
 import '../../../utils/logger.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/push_request_provider.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
+import '../../../utils/riverpod/riverpod_providers/state_providers/status_message_provider.dart';
 import '../../../utils/view_utils.dart';
 import '../default_dialog.dart';
 import 'widgets/push_decline_confirm_dialog.dart';
@@ -84,30 +86,37 @@ mixin PushDialogMixin {
   PushToken get token;
   PushRequest get pushRequest;
 
-  Future<void>
-  handleAccept<V extends PiServerResultValue, D extends PiServerResultDetail>(
+  Future<void> handleAccept(
     BuildContext context,
     WidgetRef ref, {
     String? answer,
-    Future<bool> Function(PiSuccessResponse<V, D>, WidgetRef ref)? onSuccess,
+    Future<bool> Function(
+      PiSuccessResponse<PushResultValue, PushResultDetail>,
+      WidgetRef ref,
+    )?
+    onSuccess,
   }) async {
+    if (!_ensureTokenIsValid(context, ref)) return;
     if (token.isLocked) {
-      final authenticated = await lockAuthWithSettings(
-        ref: ref,
-        reason: (l10n) => l10n.authToAcceptPushRequest,
-        localization: AppLocalizations.of(context)!,
-        forceBiometricOption: token.forceBiometricOption,
-      );
-      if (!context.mounted || !ref.context.mounted || !authenticated) {
+      final authenticated =
+          token.forceBiometricOption == ForceBiometricOption.biometric
+          ? true
+          : await lockAuthWithSettings(
+              ref: ref,
+              reason: (l10n) => l10n.authToAcceptPushRequest,
+              localization: AppLocalizations.of(context)!,
+              forceBiometricOption: token.forceBiometricOption,
+            );
+      if (!context.mounted || !authenticated) {
         return;
       }
     }
 
-    final PiSuccessResponse<V, D>? response;
+    final PiSuccessResponse<PushResultValue, PushResultDetail>? response;
     try {
       response = await ref
           .read(pushRequestProvider.notifier)
-          .accept<V, D>(token, pushRequest, selectedAnswer: answer);
+          .accept(token, pushRequest, selectedAnswer: answer);
     } catch (e) {
       Logger.error('Error accepting push request: $e');
       if (context.mounted) {
@@ -132,14 +141,18 @@ mixin PushDialogMixin {
   }
 
   Future<void> handleDecline(BuildContext context, WidgetRef ref) async {
+    if (!_ensureTokenIsValid(context, ref)) return;
     if (token.isLocked) {
-      final authenticated = await lockAuthWithSettings(
-        ref: ref,
-        reason: (l10n) => l10n.authToDeclinePushRequest,
-        localization: AppLocalizations.of(context)!,
-        forceBiometricOption: token.forceBiometricOption,
-      );
-      if (!context.mounted || !ref.context.mounted || !authenticated) {
+      final authenticated =
+          token.forceBiometricOption == ForceBiometricOption.biometric
+          ? true
+          : await lockAuthWithSettings(
+              ref: ref,
+              reason: (l10n) => l10n.authToDeclinePushRequest,
+              localization: AppLocalizations.of(context)!,
+              forceBiometricOption: token.forceBiometricOption,
+            );
+      if (!context.mounted || !authenticated) {
         return;
       }
     }
@@ -154,7 +167,9 @@ mixin PushDialogMixin {
   }
 
   Future<void> handleDiscard(BuildContext context, WidgetRef ref) async {
-    if (token.isHidden &&
+    if (!_ensureTokenIsValid(context, ref)) return;
+    if (token.isLocked &&
+        token.forceBiometricOption != ForceBiometricOption.biometric &&
         !await lockAuthWithSettings(
           ref: ref,
           reason: (l10n) => l10n.authToDiscardPushRequest,
@@ -163,22 +178,43 @@ mixin PushDialogMixin {
         )) {
       return;
     }
-    if (!ref.context.mounted) return;
     final response = await ref
         .read(pushRequestProvider.notifier)
         .cancel(token, pushRequest);
-    if (!ref.context.mounted) return;
+    if (!ref.context.mounted || response == null) return;
     if (context.mounted) {
       await _onHandled(context: context, ref: ref, response: response);
     }
   }
 
-  Future<void>
-  _onHandled<V extends PiServerResultValue, D extends PiServerResultDetail>({
+  Future<void> handleLocalDismiss(BuildContext context, WidgetRef ref) async {
+    final removed = await ref
+        .read(pushRequestProvider.notifier)
+        .remove(pushRequest);
+    if (!removed || !context.mounted || !ref.context.mounted) return;
+    await _onHandled(context: context, ref: ref);
+  }
+
+  bool _ensureTokenIsValid(BuildContext context, WidgetRef ref) {
+    if (!token.isBiometricKeyInvalidated) return true;
+    ref
+        .read(statusProvider.notifier)
+        .show(
+          (l) => l.biometricPushTokenInvalidTitle,
+          details: (l) => l.biometricPushTokenInvalidBody,
+        );
+    return false;
+  }
+
+  Future<void> _onHandled({
     required BuildContext context,
     required WidgetRef ref,
-    PiServerResponse<V, D>? response,
-    Future<bool> Function(PiSuccessResponse<V, D>, WidgetRef ref)? onSuccess,
+    PiServerResponse<PushResultValue, PushResultDetail>? response,
+    Future<bool> Function(
+      PiSuccessResponse<PushResultValue, PushResultDetail>,
+      WidgetRef ref,
+    )?
+    onSuccess,
   }) async {
     final onSuccessResult =
         (onSuccess != null && response != null && response.isSuccess)

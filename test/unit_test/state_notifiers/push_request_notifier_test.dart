@@ -1,13 +1,23 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:mockito/mockito.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
+import 'package:privacyidea_authenticator/model/enums/biometric_push_key_status.dart';
+import 'package:privacyidea_authenticator/model/enums/force_biometric_option.dart';
+import 'package:privacyidea_authenticator/model/enums/push_app_biometric_level.dart';
 import 'package:privacyidea_authenticator/model/push_request/push_default_request.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/push_request_state.dart';
+import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 import 'package:privacyidea_authenticator/utils/custom_int_buffer.dart';
+import 'package:privacyidea_authenticator/utils/biometric_push_key_manager.dart';
+import 'package:privacyidea_authenticator/utils/lock_auth.dart';
 import 'package:privacyidea_authenticator/utils/privacyidea_io_client.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/push_request_provider.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/state_providers/status_message_provider.dart';
 
 import '../../tests_app_wrapper.mocks.dart';
@@ -17,7 +27,8 @@ const mockResponseBody = '''
   "id": 1,
   "jsonrpc": "2.0",
   "result": {
-    "status": true
+    "status": true,
+    "value": true
   },
   "time": 0.1,
   "version": "privacyIDEA 1.0",
@@ -31,10 +42,32 @@ void main() {
   _testPushRequestNotifier();
 }
 
+ProviderContainer _containerWithCurrentPushToken({PushToken? token}) {
+  final tokenRepo = MockTokenRepository();
+  final settingsRepo = MockSettingsRepository();
+  when(
+    tokenRepo.loadTokens(),
+  ).thenAnswer((_) async => [token ?? PushToken(serial: 'serial', id: 'id')]);
+  when(tokenRepo.saveOrReplaceToken(any)).thenAnswer((_) async => true);
+  when(tokenRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
+  when(settingsRepo.loadSettings()).thenAnswer(
+    (_) async => SettingsState(appAuthMethod: ForceBiometricOption.any),
+  );
+  when(settingsRepo.saveSettings(any)).thenAnswer((_) async => true);
+  return ProviderContainer(
+    overrides: [
+      settingsProvider.overrideWith(
+        () => SettingsNotifier(repoOverride: settingsRepo),
+      ),
+      tokenProvider.overrideWith(() => TokenNotifier(repoOverride: tokenRepo)),
+    ],
+  );
+}
+
 void _testPushRequestNotifier() {
   group('PushRequestNotifier', () {
     test('accept', () async {
-      final container = ProviderContainer();
+      final container = _containerWithCurrentPushToken();
       addTearDown(container.dispose);
       final mockIoClient = MockPrivacyideaIOClient();
       final mockPushProvider = MockPushProvider();
@@ -72,7 +105,11 @@ void _testPushRequestNotifier() {
       when(mockPushRepo.loadState()).thenAnswer((_) async => before);
       when(mockPushRepo.saveState(any)).thenAnswer((_) async {});
       when(
-        mockRsaUtils.trySignWithToken(any, any),
+        mockRsaUtils.trySignWithToken(
+          any,
+          any,
+          onTokenChanged: anyNamed('onTokenChanged'),
+        ),
       ).thenAnswer((_) async => 'signature');
       when(
         mockIoClient.doPost(
@@ -99,7 +136,13 @@ void _testPushRequestNotifier() {
 
       // Verify that necessary calls were triggered
       verify(mockPushRepo.loadState()).called(1);
-      verify(mockRsaUtils.trySignWithToken(any, any)).called(1);
+      verify(
+        mockRsaUtils.trySignWithToken(
+          any,
+          any,
+          onTokenChanged: anyNamed('onTokenChanged'),
+        ),
+      ).called(1);
       verify(
         mockIoClient.doPost(
           url: anyNamed('url'),
@@ -110,7 +153,7 @@ void _testPushRequestNotifier() {
       verify(mockPushRepo.saveState(any)).called(2);
     });
     test('decline', () async {
-      final container = ProviderContainer();
+      final container = _containerWithCurrentPushToken();
       addTearDown(container.dispose);
       final mockIoClient = MockPrivacyideaIOClient();
       final mockPushProvider = MockPushProvider();
@@ -143,7 +186,11 @@ void _testPushRequestNotifier() {
       when(mockPushRepo.loadState()).thenAnswer((_) async => before);
       when(mockPushRepo.saveState(any)).thenAnswer((_) async {});
       when(
-        mockRsaUtils.trySignWithToken(any, any),
+        mockRsaUtils.trySignWithToken(
+          any,
+          any,
+          onTokenChanged: anyNamed('onTokenChanged'),
+        ),
       ).thenAnswer((_) async => 'signature');
       when(
         mockIoClient.doPost(
@@ -161,7 +208,13 @@ void _testPushRequestNotifier() {
           .decline(PushToken(serial: 'serial', id: 'id'), pr);
       expect((await container.read(pushProvider.future)), after);
       verify(mockPushRepo.loadState()).called(1);
-      verify(mockRsaUtils.trySignWithToken(any, any)).called(1);
+      verify(
+        mockRsaUtils.trySignWithToken(
+          any,
+          any,
+          onTokenChanged: anyNamed('onTokenChanged'),
+        ),
+      ).called(1);
       verify(
         mockIoClient.doPost(
           url: anyNamed('url'),
@@ -172,8 +225,185 @@ void _testPushRequestNotifier() {
       verify(mockPushRepo.saveState(any)).called(2);
     });
 
+    test(
+      'weak biometric Push reaction authenticates inside the notifier before signing',
+      () async {
+        final weakToken = PushToken(
+          serial: 'serial',
+          id: 'id',
+          forceBiometricOption: ForceBiometricOption.biometric,
+          biometricLevel: PushAppBiometricLevel.any,
+          invalidateOnBiometricChange: false,
+          privateTokenKey: 'private-key',
+          isRolledOut: true,
+        );
+        final container = _containerWithCurrentPushToken(token: weakToken);
+        addTearDown(container.dispose);
+        final mockLocalAuth = MockLocalAuthentication();
+        when(mockLocalAuth.isDeviceSupported()).thenAnswer((_) async => true);
+        when(mockLocalAuth.canCheckBiometrics).thenAnswer((_) async => true);
+        when(
+          mockLocalAuth.getAvailableBiometrics(),
+        ).thenAnswer((_) async => [BiometricType.weak]);
+        when(
+          mockLocalAuth.authenticate(
+            localizedReason: anyNamed('localizedReason'),
+            biometricOnly: anyNamed('biometricOnly'),
+            authMessages: anyNamed('authMessages'),
+          ),
+        ).thenAnswer((_) async => false);
+        localAuthInstance = mockLocalAuth;
+        resetAuthMutex();
+        addTearDown(() {
+          localAuthInstance = LocalAuthentication();
+          resetAuthMutex();
+        });
+
+        final request = PushDefaultRequest(
+          title: 'title',
+          question: 'question',
+          uri: Uri.parse('http://example.com'),
+          nonce: 'nonce',
+          sslVerify: false,
+          expirationDate: DateTime.now().add(const Duration(minutes: 5)),
+          signature: 'signature',
+          serial: 'serial',
+        );
+        final before = PushRequestState(
+          pushRequests: [request],
+          knownPushRequests: CustomIntBuffer(list: [request.id]),
+        );
+        final mockIoClient = MockPrivacyideaIOClient();
+        final mockPushProvider = MockPushProvider();
+        final mockRsaUtils = MockRsaUtils();
+        final mockPushRepo = MockPushRequestRepository();
+        when(mockPushRepo.loadState()).thenAnswer((_) async => before);
+        when(mockPushRepo.saveState(any)).thenAnswer((_) async {});
+        final provider = pushRequestProviderOf(
+          ioClient: mockIoClient,
+          rsaUtils: mockRsaUtils,
+          pushProvider: mockPushProvider,
+          pushRepo: mockPushRepo,
+        );
+
+        await container.read(provider.future);
+        final response = await container
+            .read(provider.notifier)
+            .accept(weakToken, request);
+
+        expect(response, isNull);
+        expect((await container.read(provider.future)).pushRequests, [request]);
+        verify(
+          mockLocalAuth.authenticate(
+            localizedReason: anyNamed('localizedReason'),
+            biometricOnly: true,
+            authMessages: anyNamed('authMessages'),
+          ),
+        ).called(1);
+        verifyNever(
+          mockRsaUtils.trySignWithToken(
+            any,
+            any,
+            onTokenChanged: anyNamed('onTokenChanged'),
+          ),
+        );
+        verifyNever(
+          mockIoClient.doPost(
+            url: anyNamed('url'),
+            body: anyNamed('body'),
+            sslVerify: anyNamed('sslVerify'),
+          ),
+        );
+      },
+    );
+
+    test(
+      'native biometric Push reaction does not add a local_auth prompt',
+      () async {
+        final nativeToken = PushToken(
+          serial: 'serial',
+          id: 'id',
+          forceBiometricOption: ForceBiometricOption.biometric,
+          biometricKeyStatus: BiometricPushKeyStatus.protected,
+          publicTokenKey: 'public-key',
+          isRolledOut: true,
+        );
+        final container = _containerWithCurrentPushToken(token: nativeToken);
+        addTearDown(container.dispose);
+        final mockLocalAuth = MockLocalAuthentication();
+        localAuthInstance = mockLocalAuth;
+        resetAuthMutex();
+        addTearDown(() {
+          localAuthInstance = LocalAuthentication();
+          resetAuthMutex();
+        });
+
+        final request = PushDefaultRequest(
+          title: 'title',
+          question: 'question',
+          uri: Uri.parse('http://example.com'),
+          nonce: 'nonce',
+          sslVerify: false,
+          expirationDate: DateTime.now().add(const Duration(minutes: 5)),
+          signature: 'signature',
+          serial: 'serial',
+        );
+        final before = PushRequestState(
+          pushRequests: [request],
+          knownPushRequests: CustomIntBuffer(list: [request.id]),
+        );
+        final mockIoClient = MockPrivacyideaIOClient();
+        final mockPushProvider = MockPushProvider();
+        final mockRsaUtils = MockRsaUtils();
+        final mockPushRepo = MockPushRequestRepository();
+        when(mockPushRepo.loadState()).thenAnswer((_) async => before);
+        when(mockPushRepo.saveState(any)).thenAnswer((_) async {});
+        when(
+          mockRsaUtils.trySignWithToken(
+            any,
+            any,
+            onTokenChanged: anyNamed('onTokenChanged'),
+          ),
+        ).thenAnswer((_) async => 'signature');
+        when(
+          mockIoClient.doPost(
+            url: anyNamed('url'),
+            body: anyNamed('body'),
+            sslVerify: anyNamed('sslVerify'),
+          ),
+        ).thenAnswer((_) async => Response(mockResponseBody, 200));
+        final provider = pushRequestProviderOf(
+          ioClient: mockIoClient,
+          rsaUtils: mockRsaUtils,
+          pushProvider: mockPushProvider,
+          pushRepo: mockPushRepo,
+        );
+
+        await container.read(provider.future);
+        final response = await container
+            .read(provider.notifier)
+            .accept(nativeToken, request);
+
+        expect(response, isNotNull);
+        verifyNever(
+          mockLocalAuth.authenticate(
+            localizedReason: anyNamed('localizedReason'),
+            biometricOnly: anyNamed('biometricOnly'),
+            authMessages: anyNamed('authMessages'),
+          ),
+        );
+        verify(
+          mockRsaUtils.trySignWithToken(
+            any,
+            any,
+            onTokenChanged: anyNamed('onTokenChanged'),
+          ),
+        ).called(1);
+      },
+    );
+
     test('add', () async {
-      final container = ProviderContainer();
+      final container = _containerWithCurrentPushToken();
       addTearDown(container.dispose);
       final mockIoClient = MockPrivacyideaIOClient();
       final mockPushProvider = MockPushProvider();
@@ -213,7 +443,7 @@ void _testPushRequestNotifier() {
       expect((await container.read(pushProvider.future)), after);
     });
     test('remove', () async {
-      final container = ProviderContainer();
+      final container = _containerWithCurrentPushToken();
       addTearDown(container.dispose);
       final mockIoClient = MockPrivacyideaIOClient();
       final mockPushProvider = MockPushProvider();
@@ -255,9 +485,138 @@ void _testPushRequestNotifier() {
     });
 
     test(
+      'invalidated biometric key keeps the request pending and blocks the server response',
+      () async {
+        final container = _containerWithCurrentPushToken();
+        addTearDown(container.dispose);
+        final mockIoClient = MockPrivacyideaIOClient();
+        final mockPushProvider = MockPushProvider();
+        final mockRsaUtils = MockRsaUtils();
+        final mockPushRepo = MockPushRequestRepository();
+        final pushProvider = pushRequestProviderOf(
+          ioClient: mockIoClient,
+          rsaUtils: mockRsaUtils,
+          pushProvider: mockPushProvider,
+          pushRepo: mockPushRepo,
+        );
+        final request = PushDefaultRequest(
+          title: 'title',
+          question: 'question',
+          uri: Uri.parse('http://example.com'),
+          nonce: 'nonce',
+          sslVerify: false,
+          expirationDate: DateTime.now().add(const Duration(minutes: 5)),
+          signature: 'signature',
+          serial: 'serial',
+        );
+        final before = PushRequestState(
+          pushRequests: [request],
+          knownPushRequests: CustomIntBuffer(list: [request.id]),
+        );
+        when(mockPushRepo.loadState()).thenAnswer((_) async => before);
+        when(mockPushRepo.saveState(any)).thenAnswer((_) async {});
+        when(
+          mockRsaUtils.trySignWithToken(
+            any,
+            any,
+            onTokenChanged: anyNamed('onTokenChanged'),
+          ),
+        ).thenThrow(
+          const BiometricPushKeyException(
+            BiometricPushKeyManager.invalidatedCode,
+          ),
+        );
+
+        await container.read(pushProvider.future);
+        final response = await container
+            .read(pushProvider.notifier)
+            .accept(PushToken(serial: 'serial', id: 'id'), request);
+
+        expect(response, isNull);
+        expect((await container.read(pushProvider.future)).pushRequests, [
+          request,
+        ]);
+        expect(container.read(statusProvider).current, isNotNull);
+        verifyNever(
+          mockIoClient.doPost(
+            url: anyNamed('url'),
+            body: anyNamed('body'),
+            sslVerify: anyNamed('sslVerify'),
+          ),
+        );
+      },
+    );
+
+    test(
+      'accept keeps the request pending when the server returns value false',
+      () async {
+        final container = _containerWithCurrentPushToken();
+        addTearDown(container.dispose);
+        final mockIoClient = MockPrivacyideaIOClient();
+        final mockPushProvider = MockPushProvider();
+        final mockRsaUtils = MockRsaUtils();
+        final mockPushRepo = MockPushRequestRepository();
+        final provider = pushRequestProviderOf(
+          ioClient: mockIoClient,
+          rsaUtils: mockRsaUtils,
+          pushProvider: mockPushProvider,
+          pushRepo: mockPushRepo,
+        );
+        final request = PushDefaultRequest(
+          title: 'title',
+          question: 'question',
+          uri: Uri.parse('http://example.com'),
+          nonce: 'nonce',
+          sslVerify: false,
+          expirationDate: DateTime.now().add(const Duration(minutes: 5)),
+          signature: 'signature',
+          serial: 'serial',
+        );
+        final before = PushRequestState(
+          pushRequests: [request],
+          knownPushRequests: CustomIntBuffer(list: [request.id]),
+        );
+        when(mockPushRepo.loadState()).thenAnswer((_) async => before);
+        when(mockPushRepo.saveState(any)).thenAnswer((_) async {});
+        when(
+          mockRsaUtils.trySignWithToken(
+            any,
+            any,
+            onTokenChanged: anyNamed('onTokenChanged'),
+          ),
+        ).thenAnswer((_) async => 'signature');
+        when(
+          mockIoClient.doPost(
+            url: anyNamed('url'),
+            body: anyNamed('body'),
+            sslVerify: anyNamed('sslVerify'),
+          ),
+        ).thenAnswer(
+          (_) async => Response(
+            '{"result":{"status":true,"value":false},'
+            '"version":"privacyIDEA 1.0"}',
+            200,
+          ),
+        );
+
+        await container.read(provider.future);
+        final response = await container
+            .read(provider.notifier)
+            .accept(PushToken(serial: 'serial', id: 'id'), request);
+
+        expect(response, isNull);
+        expect((await container.read(provider.future)).pushRequests, [request]);
+        expect(
+          container.read(statusProvider).current!.message(AppLocalizationsEn()),
+          AppLocalizationsEn().pushRequestResponseRejected,
+        );
+      },
+    );
+
+    test(
       'accept does not retry when the server returns a real (non-connection-failure) response',
       () async {
-        final container = ProviderContainer();
+        final container = _containerWithCurrentPushToken();
         addTearDown(container.dispose);
         final mockIoClient = MockPrivacyideaIOClient();
         final mockPushProvider = MockPushProvider();
@@ -289,7 +648,11 @@ void _testPushRequestNotifier() {
         when(mockPushRepo.loadState()).thenAnswer((_) async => before);
         when(mockPushRepo.saveState(any)).thenAnswer((_) async {});
         when(
-          mockRsaUtils.trySignWithToken(any, any),
+          mockRsaUtils.trySignWithToken(
+            any,
+            any,
+            onTokenChanged: anyNamed('onTokenChanged'),
+          ),
         ).thenAnswer((_) async => 'signature');
         // A real server response with a non-2xx status but a body that isn't
         // marked as a connection failure must NOT trigger a retry, even
@@ -320,7 +683,7 @@ void _testPushRequestNotifier() {
     test(
       'accept retries exactly once after a connection failure and succeeds if the retry works',
       () async {
-        final container = ProviderContainer();
+        final container = _containerWithCurrentPushToken();
         addTearDown(container.dispose);
         final mockIoClient = MockPrivacyideaIOClient();
         final mockPushProvider = MockPushProvider();
@@ -356,7 +719,11 @@ void _testPushRequestNotifier() {
         when(mockPushRepo.loadState()).thenAnswer((_) async => before);
         when(mockPushRepo.saveState(any)).thenAnswer((_) async {});
         when(
-          mockRsaUtils.trySignWithToken(any, any),
+          mockRsaUtils.trySignWithToken(
+            any,
+            any,
+            onTokenChanged: anyNamed('onTokenChanged'),
+          ),
         ).thenAnswer((_) async => 'signature');
 
         var callCount = 0;
@@ -397,7 +764,7 @@ void _testPushRequestNotifier() {
     test(
       'accept gives up after the retry also fails, restores the pending request and shows a status message',
       () async {
-        final container = ProviderContainer();
+        final container = _containerWithCurrentPushToken();
         addTearDown(container.dispose);
         final mockIoClient = MockPrivacyideaIOClient();
         final mockPushProvider = MockPushProvider();
@@ -429,7 +796,11 @@ void _testPushRequestNotifier() {
         when(mockPushRepo.loadState()).thenAnswer((_) async => before);
         when(mockPushRepo.saveState(any)).thenAnswer((_) async {});
         when(
-          mockRsaUtils.trySignWithToken(any, any),
+          mockRsaUtils.trySignWithToken(
+            any,
+            any,
+            onTokenChanged: anyNamed('onTokenChanged'),
+          ),
         ).thenAnswer((_) async => 'signature');
         // Both the first attempt and the retry fail to connect.
         when(

@@ -39,6 +39,12 @@ class PushTokenWidgetTile extends ConsumerWidget {
       key: Key('${token.hashCode}TokenWidgetTile'),
       token: token,
       title: token.label,
+      titleStyle: token.isBiometricKeyInvalidated
+          ? TextStyle(color: Theme.of(context).colorScheme.error)
+          : null,
+      additionalSubtitles: token.isBiometricKeyInvalidated
+          ? [AppLocalizations.of(context)!.biometricPushTokenInvalid]
+          : const [],
       semanticsLabel: AppLocalizations.of(context)!.containerSerial,
       trailing: FocusedItemAsOverlay(
         tooltipWhenFocused: AppLocalizations.of(
@@ -60,8 +66,18 @@ class PushTokenWidgetTile extends ConsumerWidget {
               .read(introductionNotifierProvider.notifier)
               .complete(Introduction.pollForChallenges);
         },
-        child: const CustomTrailing(
-          child: FittedBox(child: Icon(size: 100, Icons.notifications)),
+        child: CustomTrailing(
+          child: FittedBox(
+            child: Icon(
+              size: 100,
+              token.isBiometricKeyInvalidated
+                  ? Icons.gpp_bad
+                  : Icons.notifications,
+              color: token.isBiometricKeyInvalidated
+                  ? Theme.of(context).colorScheme.error
+                  : null,
+            ),
+          ),
         ),
       ),
     );

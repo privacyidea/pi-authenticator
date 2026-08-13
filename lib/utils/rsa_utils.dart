@@ -26,12 +26,39 @@ import 'package:pointycastle/export.dart';
 import 'package:privacyidea_authenticator/utils/helpers/base32_helper.dart';
 
 import '../model/tokens/push_token.dart';
+import '../model/enums/biometric_push_key_status.dart';
+import '../l10n/app_localizations.dart';
+import 'biometric_push_key_manager.dart';
+import 'globals.dart';
 import '../utils/crypto_utils.dart';
 import '../utils/identifiers.dart';
 import '../utils/logger.dart';
 
 class RsaUtils {
-  const RsaUtils();
+  static const biometricKeyStatusUnprotected = 'unprotected';
+  static const biometricKeyStatusProtected = 'protected';
+  static const biometricKeyStatusInvalidated = 'invalidated';
+  static const biometricKeyStatusUnsupported = 'unsupported';
+
+  final BiometricPushKeyManager _biometricPushKeyManager;
+
+  // Keep the public injection parameter readable while the dependency itself
+  // remains private (and therefore outside generated Mockito interfaces).
+  const RsaUtils({
+    BiometricPushKeyManager biometricPushKeyManager =
+        const BiometricPushKeyManager(),
+  }) : this._withBiometricPushKeyManager(biometricPushKeyManager);
+
+  const RsaUtils._withBiometricPushKeyManager(this._biometricPushKeyManager);
+
+  bool get supportsBiometricPushKeyProtection =>
+      _biometricPushKeyManager.isSupportedPlatform;
+
+  Future<String> biometricPushKeyStatus(String tokenId) async =>
+      (await _biometricPushKeyManager.status(tokenId)).name;
+
+  Future<void> deleteBiometricPushKey(String tokenId) =>
+      _biometricPushKeyManager.delete(tokenId);
 
   /// Extract RSA-Public-Keys from DER structure that is a BASE64 encoded Strings.
   /// According to the PKCS#1 format:
@@ -162,7 +189,7 @@ class RsaUtils {
     ASN1Sequence s = ASN1Sequence()
       ..add(ASN1Integer.fromInt(0)) // version
       ..add(ASN1Integer(key.modulus!)) // modulus
-      ..add(ASN1Integer(key.exponent!)) // e
+      ..add(ASN1Integer(key.publicExponent!)) // e
       ..add(ASN1Integer(key.privateExponent!)) // d
       ..add(ASN1Integer(key.p!)) // p
       ..add(ASN1Integer(key.q!)) // q
@@ -199,14 +226,42 @@ class RsaUtils {
     Uint8List keyBytes = base64.decode(keyStr);
     ASN1Sequence asn1sequence =
         ASN1Parser(keyBytes).nextObject() as ASN1Sequence;
+    if (asn1sequence.elements.length != 9 ||
+        (asn1sequence.elements[0] as ASN1Integer).valueAsBigInteger !=
+            BigInt.zero) {
+      throw const FormatException('Unsupported RSA private key format.');
+    }
     BigInt modulus =
         (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger;
-    BigInt exponent =
+    BigInt publicExponent =
         (asn1sequence.elements[2] as ASN1Integer).valueAsBigInteger;
+    BigInt privateExponent =
+        (asn1sequence.elements[3] as ASN1Integer).valueAsBigInteger;
     BigInt p = (asn1sequence.elements[4] as ASN1Integer).valueAsBigInteger;
     BigInt q = (asn1sequence.elements[5] as ASN1Integer).valueAsBigInteger;
+    final exponent1 =
+        (asn1sequence.elements[6] as ASN1Integer).valueAsBigInteger;
+    final exponent2 =
+        (asn1sequence.elements[7] as ASN1Integer).valueAsBigInteger;
+    final coefficient =
+        (asn1sequence.elements[8] as ASN1Integer).valueAsBigInteger;
 
-    return RSAPrivateKey(modulus, exponent, p, q);
+    if (modulus != p * q ||
+        exponent1 != privateExponent % (p - BigInt.one) ||
+        exponent2 != privateExponent % (q - BigInt.one) ||
+        coefficient != q.modInverse(p)) {
+      throw const FormatException('Inconsistent RSA private key parameters.');
+    }
+
+    final privateKey = RSAPrivateKey(modulus, privateExponent, p, q);
+    if (publicExponent == privateExponent) {
+      if (privateKey.publicExponent != BigInt.from(65537)) {
+        throw const FormatException('Unexpected legacy RSA public exponent.');
+      }
+    } else if (privateKey.publicExponent != publicExponent) {
+      throw const FormatException('Inconsistent RSA public exponent.');
+    }
+    return privateKey;
   }
 
   /// signedMessage is what was allegedly signed, signature gets validated
@@ -246,7 +301,108 @@ class RsaUtils {
   /// if a [context] is provided, telling the users that it might be better to enroll a new
   /// push token so that the app can directly access the private key.
   /// Returns the signature on success and null on failure.
-  Future<String?> trySignWithToken(PushToken token, String message) async {
+  Future<String?> trySignWithToken(
+    PushToken token,
+    String message, {
+    Future<bool> Function(PushToken token)? onTokenChanged,
+  }) async {
+    if (token.requiresBiometricKeyProtection) {
+      if (!supportsBiometricPushKeyProtection) {
+        throw const BiometricPushKeyException(
+          BiometricPushKeyManager.unsupportedCode,
+        );
+      }
+      if (token.isBiometricKeyInvalidated) {
+        throw const BiometricPushKeyException(
+          BiometricPushKeyManager.invalidatedCode,
+        );
+      }
+      if (token.isRolledOut &&
+          token.biometricKeyStatus == BiometricPushKeyStatus.unprotected) {
+        if (onTokenChanged != null) {
+          try {
+            await onTokenChanged(
+              token.copyWith(
+                privateTokenKey: () => null,
+                biometricKeyStatus: BiometricPushKeyStatus.invalidated,
+              ),
+            );
+          } catch (persistError, stackTrace) {
+            Logger.warning(
+              'Could not persist invalidated legacy biometric Push state.',
+              error: persistError,
+              stackTrace: stackTrace,
+            );
+          }
+        }
+        throw const BiometricPushKeyException(
+          BiometricPushKeyManager.invalidatedCode,
+        );
+      }
+      try {
+        final localization = globalContextSync == null
+            ? null
+            : AppLocalizations.of(globalContextSync!);
+        final result = await _biometricPushKeyManager.sign(
+          tokenId: token.id,
+          message: message,
+          reason:
+              localization?.biometricPushKeyAuthReason ??
+              'Authenticate to use this Push token',
+          cancelLabel: localization?.cancel ?? 'Cancel',
+          invalidateOnBiometricChange: token.invalidateOnBiometricChange,
+          privateKey:
+              token.biometricKeyStatus == BiometricPushKeyStatus.unprotected
+              ? token.privateTokenKey
+              : null,
+        );
+        final migrationMustBePersisted =
+            result.protectedNow ||
+            token.privateTokenKey != null ||
+            token.biometricKeyStatus != BiometricPushKeyStatus.protected;
+        if (migrationMustBePersisted) {
+          final updatedToken = token.copyWith(
+            privateTokenKey: () => null,
+            biometricKeyStatus: BiometricPushKeyStatus.protected,
+          );
+          var persisted = false;
+          try {
+            persisted =
+                onTokenChanged != null && await onTokenChanged(updatedToken);
+          } catch (persistError, stackTrace) {
+            Logger.warning(
+              'Could not persist protected biometric Push key state.',
+              error: persistError,
+              stackTrace: stackTrace,
+            );
+          }
+          if (!persisted) {
+            throw const BiometricPushKeyException(
+              BiometricPushKeyManager.stateNotPersistedCode,
+            );
+          }
+        }
+        return base32Encode(base64.decode(result.signature));
+      } on BiometricPushKeyException catch (error) {
+        if (error.isInvalidated && onTokenChanged != null) {
+          try {
+            await onTokenChanged(
+              token.copyWith(
+                privateTokenKey: () => null,
+                biometricKeyStatus: BiometricPushKeyStatus.invalidated,
+              ),
+            );
+          } catch (persistError, stackTrace) {
+            Logger.warning(
+              'Could not persist invalidated biometric Push key state.',
+              error: persistError,
+              stackTrace: stackTrace,
+            );
+          }
+        }
+        rethrow;
+      }
+    }
     if (token.privateTokenKey != null) {
       return createBase32Signature(
         token.rsaPrivateTokenKey!,
@@ -257,6 +413,38 @@ class RsaUtils {
       'Token ${token.serial} does not have a private key. Cannot sign message.',
     );
     return null;
+  }
+
+  /// Moves a biometric-required Push private key behind Android Keystore or
+  /// iOS Keychain before its public key is sent to privacyIDEA.
+  Future<void> protectBiometricPushKey(PushToken token) async {
+    if (!token.requiresBiometricKeyProtection ||
+        token.biometricKeyStatus == BiometricPushKeyStatus.protected) {
+      return;
+    }
+    if (!supportsBiometricPushKeyProtection) {
+      throw const BiometricPushKeyException(
+        BiometricPushKeyManager.unsupportedCode,
+      );
+    }
+    final privateKey = token.privateTokenKey;
+    if (privateKey == null) {
+      throw const BiometricPushKeyException(
+        BiometricPushKeyManager.keyMissingCode,
+      );
+    }
+    final localization = globalContextSync == null
+        ? null
+        : AppLocalizations.of(globalContextSync!);
+    await _biometricPushKeyManager.protect(
+      tokenId: token.id,
+      privateKey: privateKey,
+      reason:
+          localization?.biometricPushKeyProtectReason ??
+          'Protect this Push token with strong biometrics',
+      cancelLabel: localization?.cancel ?? 'Cancel',
+      invalidateOnBiometricChange: token.invalidateOnBiometricChange,
+    );
   }
 
   Future<AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey>>

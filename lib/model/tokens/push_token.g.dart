@@ -26,6 +26,17 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) => PushToken(
   publicServerKey: json['publicServerKey'] as String?,
   publicTokenKey: json['publicTokenKey'] as String?,
   privateTokenKey: json['privateTokenKey'] as String?,
+  biometricKeyStatus:
+      $enumDecodeNullable(
+        _$BiometricPushKeyStatusEnumMap,
+        json['biometricKeyStatus'],
+      ) ??
+      BiometricPushKeyStatus.unprotected,
+  biometricLevel: $enumDecodeNullable(
+    _$PushAppBiometricLevelEnumMap,
+    json['biometricLevel'],
+  ),
+  invalidateOnBiometricChange: json['invalidateOnBiometricChange'] as bool?,
   isPollOnly: json['isPollOnly'] as bool?,
   isRolledOut: json['isRolledOut'] as bool?,
   sslVerify: json['sslVerify'] as bool?,
@@ -79,8 +90,23 @@ Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
   'publicServerKey': instance.publicServerKey,
   'privateTokenKey': instance.privateTokenKey,
   'publicTokenKey': instance.publicTokenKey,
+  'biometricKeyStatus':
+      _$BiometricPushKeyStatusEnumMap[instance.biometricKeyStatus]!,
+  'biometricLevel': _$PushAppBiometricLevelEnumMap[instance.biometricLevel]!,
+  'invalidateOnBiometricChange': instance.invalidateOnBiometricChange,
   'serial': instance.serial,
   'isHidden': instance.isHidden,
+};
+
+const _$BiometricPushKeyStatusEnumMap = {
+  BiometricPushKeyStatus.unprotected: 'unprotected',
+  BiometricPushKeyStatus.protected: 'protected',
+  BiometricPushKeyStatus.invalidated: 'invalidated',
+};
+
+const _$PushAppBiometricLevelEnumMap = {
+  PushAppBiometricLevel.any: 'any',
+  PushAppBiometricLevel.strong: 'strong',
 };
 
 const _$PushTokenRollOutStateEnumMap = {

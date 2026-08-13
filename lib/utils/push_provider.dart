@@ -25,8 +25,10 @@ import 'dart:io';
 import 'package:collection/collection.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
+import 'package:privacyidea_authenticator/model/enums/force_biometric_option.dart';
 import 'package:privacyidea_authenticator/utils/view_utils.dart';
 
 import '../../../../../../../repo/secure_push_request_repository.dart';
@@ -38,12 +40,47 @@ import '../repo/secure_token_repository.dart';
 import 'firebase_utils.dart';
 import 'globals.dart';
 import 'helpers/json_canonicalizer.dart';
+import 'lock_auth.dart';
 import 'logger.dart';
 import 'privacyidea_io_client.dart';
+import 'riverpod/riverpod_providers/generated_providers/localization_notifier.dart';
 import 'riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import 'riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import 'rsa_utils.dart';
+import 'biometric_push_key_manager.dart';
 import 'utils.dart';
+
+@visibleForTesting
+Future<void> runPushPollingRequests<T>(
+  Iterable<T> targets, {
+  required bool sequential,
+  required Future<void> Function(T target) request,
+}) async {
+  if (sequential) {
+    for (final target in targets) {
+      await request(target);
+    }
+    return;
+  }
+  await Future.wait(targets.map(request));
+}
+
+/// Authorizes access to a weak-biometric Push private key kept in Dart.
+///
+/// Automatic polling must never use such a key because it cannot safely open
+/// an interactive biometric prompt. Manual polling must authenticate for each
+/// use. Native protected keys are authorized by their crypto-bound prompt and
+/// therefore bypass this compatibility gate.
+@visibleForTesting
+Future<bool> authorizePushDartKeyUseForPolling(
+  PushToken token, {
+  required bool isManually,
+  required Future<bool> Function() authenticate,
+}) async {
+  if (!token.requiresBiometricPromptBeforeDartKeyUse) return true;
+  if (!isManually) return false;
+  return authenticate();
+}
 
 /// This class bundles all logic that is needed to handle incomig PushRequests, e.g.,
 /// firebase, polling, notifications.
@@ -56,6 +93,7 @@ class PushProvider {
 
   bool pollingIsEnabled = false;
   Timer? _pollTimer;
+  bool _pollInProgress = false;
   final List<Function(PushRequest)> _subscribers = [];
 
   FirebaseUtils _firebaseUtils;
@@ -339,6 +377,19 @@ class PushProvider {
   }
 
   Future<void> pollForChallenges({required bool isManually}) async {
+    if (_pollInProgress) {
+      Logger.info('Skipping overlapping Push polling request.');
+      return;
+    }
+    _pollInProgress = true;
+    try {
+      await _pollForChallenges(isManually: isManually);
+    } finally {
+      _pollInProgress = false;
+    }
+  }
+
+  Future<void> _pollForChallenges({required bool isManually}) async {
     // Get all push tokens
     final rolledOutPushTokens =
         await globalRef?.read(
@@ -357,6 +408,25 @@ class PushProvider {
       return;
     }
 
+    // An auth-per-use key would otherwise open a biometric prompt every three
+    // seconds. Such tokens can still be polled explicitly; FCM delivery remains
+    // available without using the private key.
+    final tokensToPoll = isManually
+        ? rolledOutPushTokens
+        : rolledOutPushTokens
+              .where(
+                (token) =>
+                    token.forceBiometricOption !=
+                    ForceBiometricOption.biometric,
+              )
+              .toList();
+    if (tokensToPoll.isEmpty) {
+      Logger.info(
+        'Automatic polling skipped because all Push keys require per-use biometrics.',
+      );
+      return;
+    }
+
     final connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult.contains(ConnectivityResult.none)) {
       if (isManually) {
@@ -370,13 +440,16 @@ class PushProvider {
     }
 
     // Start request for each token
-    Logger.info('Polling for challenges: ${rolledOutPushTokens.length} Tokens');
-    final List<Future<void>> futures = [];
-    for (PushToken p in rolledOutPushTokens) {
-      futures.add(pollForChallenge(p, isManually: isManually));
-    }
-    await Future.wait(futures);
-    return;
+    Logger.info('Polling for challenges: ${tokensToPoll.length} Tokens');
+    // Manual polling can include several auth-per-use keys. Run those requests
+    // one after another so Android/iOS never receive competing biometric
+    // prompts. Automatic polling contains only non-protected keys and can stay
+    // parallel.
+    await runPushPollingRequests(
+      tokensToPoll,
+      sequential: isManually,
+      request: (token) => pollForChallenge(token, isManually: isManually),
+    );
   }
 
   Future<void> pollForChallenge(
@@ -389,108 +462,175 @@ class PushProvider {
       );
       return;
     }
-    String timestamp = DateTime.now().toUtc().toIso8601String();
-
-    String message = '${token.serial}|$timestamp';
-
-    RsaUtils rsaUtils = instance!._rsaUtils;
-    Logger.info(rsaUtils.runtimeType.toString());
-    String? signature = await rsaUtils.trySignWithToken(token, message);
-    if (signature == null) {
-      showErrorStatusMessage(
-        message: (localization) => localization.pollingFailedFor(token.serial),
-        details: (localization) => localization.couldNotSignMessage,
-      );
-      Logger.warning(
-        'Polling push tokens failed because signing the message failed.',
-      );
+    final ref = globalRef;
+    if (ref == null) {
+      Logger.warning('Polling requires the current token state.');
       return;
     }
-    Map<String, String> parameters = {
-      'serial': token.serial,
-      'timestamp': timestamp,
-      'signature': signature,
-      // Keeps the set the server stored at enrollment current after an app
-      // update. Not part of the signed message, because a server that does not
-      // know it rebuilds '{serial}|{timestamp}' and would reject the request.
-      'capabilities': canonicalizeJson(appPushCapabilities.names),
-    };
-
-    final Response response;
-
-    try {
-      response = instance != null
-          ? await instance!._ioClient.doGet(
-              url: token.url!,
-              parameters: parameters,
-              sslVerify: token.sslVerify,
-            )
-          : await const PrivacyideaIOClient().doGet(
-              url: token.url!,
-              parameters: parameters,
-              sslVerify: token.sslVerify,
-            );
-    } catch (_) {
-      if (isManually) {
-        showErrorStatusMessage(
-          message: (localization) =>
-              localization.errorWhenPullingChallenges(token.serial),
-          details: (localization) => localization.couldNotConnectToServer,
-        );
-      }
-      return;
-    }
-    final List<Map<String, dynamic>> challengeList;
-
-    switch (response.statusCode) {
-      case 200:
-        try {
-          challengeList = _getAndValidateDataFromResponse(response);
-        } catch (_) {
-          if (isManually) {
-            showErrorStatusMessage(
-              message: (localization) =>
-                  localization.errorWhenPullingChallenges(token.serial),
-              details: (localization) => localization.pushRequestParseError,
-            );
+    final challengeList = await ref
+        .read(tokenProvider.notifier)
+        .withCurrentPushTokenLease<List<Map<String, dynamic>>>(token.id, (
+          leasedToken,
+          persist,
+          current,
+        ) async {
+          if (leasedToken.isBiometricKeyInvalidated ||
+              leasedToken.url == null) {
+            if (leasedToken.isBiometricKeyInvalidated) {
+              showErrorStatusMessage(
+                message: (localization) =>
+                    localization.biometricPushTokenInvalidTitle,
+                details: (localization) =>
+                    localization.biometricPushTokenInvalidBody,
+              );
+            }
+            return null;
           }
-          return;
-        }
-        // Everything is fine, we can just continue
-        break;
 
-      case 403:
-        final error = getErrorMessageFromResponse(response);
-        if (isManually) {
-          showErrorStatusMessage(
-            message: (localization) =>
-                localization.pollingFailedFor(token.serial),
-            details: error != null
-                ? (_) => error
-                : (localization) =>
-                      localization.statusCode(response.statusCode),
+          // Weak-biometric compatibility mode cannot bind a cryptographic key
+          // on Android. Automatic callers fail closed; an explicit manual poll
+          // receives one biometric-only prompt before each Dart-key signature.
+          final authorized = await authorizePushDartKeyUseForPolling(
+            leasedToken,
+            isManually: isManually,
+            authenticate: () => lockAuthWithSettings(
+              ref: ref,
+              localization: ref.read(localizationProvider),
+              reason: (l) => l.biometricPushKeyAuthReason,
+              forceBiometricOption: ForceBiometricOption.biometric,
+            ),
           );
-        }
-        Logger.warning(
-          'Polling push token failed with status code ${response.statusCode}',
-          error: getErrorMessageFromResponse(response),
-        );
-        return;
+          if (!authorized) return null;
 
-      default:
-        final error = getErrorMessageFromResponse(response);
-        if (isManually) {
-          showErrorStatusMessage(
-            message: (localization) =>
-                localization.pollingFailedFor(token.serial),
-            details: error != null
-                ? (_) => error
-                : (localization) =>
-                      localization.statusCode(response.statusCode),
-          );
-        }
-        return;
-    }
+          final timestamp = DateTime.now().toUtc().toIso8601String();
+          final message = '${leasedToken.serial}|$timestamp';
+          final rsaUtils = instance!._rsaUtils;
+          String? signature;
+          try {
+            signature = await rsaUtils.trySignWithToken(
+              leasedToken,
+              message,
+              onTokenChanged: (updatedToken) async {
+                final persisted = await persist(
+                  current().copyWith(
+                    privateTokenKey: () => updatedToken.privateTokenKey,
+                    biometricKeyStatus: updatedToken.biometricKeyStatus,
+                  ),
+                );
+                return persisted != null &&
+                    persisted.privateTokenKey == updatedToken.privateTokenKey &&
+                    persisted.biometricKeyStatus ==
+                        updatedToken.biometricKeyStatus;
+              },
+            );
+          } on BiometricPushKeyException catch (error) {
+            if (error.isInvalidated) {
+              showErrorStatusMessage(
+                message: (localization) =>
+                    localization.biometricPushTokenInvalidTitle,
+                details: (localization) =>
+                    localization.biometricPushTokenInvalidBody,
+              );
+            } else if (error.isStateNotPersisted) {
+              showErrorStatusMessage(
+                message: (localization) =>
+                    localization.biometricPushKeyPersistenceFailedTitle,
+                details: (localization) =>
+                    localization.biometricPushKeyPersistenceFailed,
+              );
+            } else if (isManually) {
+              showErrorStatusMessage(
+                message: (localization) =>
+                    localization.pollingFailedFor(leasedToken.serial),
+                details: (localization) => localization.couldNotSignMessage,
+              );
+            }
+            return null;
+          }
+          if (signature == null || current().isBiometricKeyInvalidated) {
+            if (isManually) {
+              showErrorStatusMessage(
+                message: (localization) =>
+                    localization.pollingFailedFor(leasedToken.serial),
+                details: (localization) => localization.couldNotSignMessage,
+              );
+            }
+            return null;
+          }
+
+          final Response response;
+          try {
+            response = await instance!._ioClient.doGet(
+              url: current().url!,
+              parameters: {
+                'serial': current().serial,
+                'timestamp': timestamp,
+                'signature': signature,
+                // Not part of the signed message. Older servers ignore it,
+                // while capable servers update the token's feature set.
+                'capabilities': canonicalizeJson(appPushCapabilities.names),
+              },
+              sslVerify: current().sslVerify,
+            );
+          } catch (_) {
+            if (isManually) {
+              showErrorStatusMessage(
+                message: (localization) =>
+                    localization.errorWhenPullingChallenges(current().serial),
+                details: (localization) => localization.couldNotConnectToServer,
+              );
+            }
+            return null;
+          }
+
+          switch (response.statusCode) {
+            case 200:
+              try {
+                return _getAndValidateDataFromResponse(response);
+              } catch (_) {
+                if (isManually) {
+                  showErrorStatusMessage(
+                    message: (localization) => localization
+                        .errorWhenPullingChallenges(current().serial),
+                    details: (localization) =>
+                        localization.pushRequestParseError,
+                  );
+                }
+                return null;
+              }
+            case 403:
+              final error = getErrorMessageFromResponse(response);
+              if (isManually) {
+                showErrorStatusMessage(
+                  message: (localization) =>
+                      localization.pollingFailedFor(current().serial),
+                  details: error != null
+                      ? (_) => error
+                      : (localization) =>
+                            localization.statusCode(response.statusCode),
+                );
+              }
+              Logger.warning(
+                'Polling push token failed with status code ${response.statusCode}',
+                error: error,
+              );
+              return null;
+            default:
+              final error = getErrorMessageFromResponse(response);
+              if (isManually) {
+                showErrorStatusMessage(
+                  message: (localization) =>
+                      localization.pollingFailedFor(current().serial),
+                  details: error != null
+                      ? (_) => error
+                      : (localization) =>
+                            localization.statusCode(response.statusCode),
+                );
+              }
+              return null;
+          }
+        });
+    if (challengeList == null) return;
     Logger.info(
       'Received ${challengeList.length} challenge(s) for ${token.label}',
     );
@@ -531,6 +671,8 @@ class PlaceholderPushProvider implements PushProvider {
   @override
   Timer? _pollTimer;
   @override
+  bool _pollInProgress = false;
+  @override
   bool pollingIsEnabled = false;
   @override
   Future<void> _foregroundHandler(RemoteMessage remoteMessage) async {}
@@ -553,6 +695,8 @@ class PlaceholderPushProvider implements PushProvider {
   }) async {}
   @override
   Future<void> pollForChallenges({required bool isManually}) async {}
+  @override
+  Future<void> _pollForChallenges({required bool isManually}) async {}
   @override
   void setPollingEnabled(bool? enablePolling) {}
   @override

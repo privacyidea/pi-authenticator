@@ -15,6 +15,10 @@ dependencies {
     // plugin. Gradle otherwise silently resolves to the higher version; matching it
     // explicitly keeps the RescheduleReceiver keep-alive (see PiApplication) predictable.
     implementation "androidx.work:work-runtime-ktx:2.11.2"
+    // The Push private-key channel uses crypto-bound BiometricPrompt directly.
+    // Keep this aligned with local_auth_android until that plugin moves.
+    implementation "androidx.biometric:biometric:1.1.0"
+    testImplementation "junit:junit:4.13.2"
 }
 
 def localProperties = new Properties()

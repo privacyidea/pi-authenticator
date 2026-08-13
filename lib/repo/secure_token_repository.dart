@@ -27,6 +27,8 @@ import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/load
 
 import '../interfaces/repo/token_repository.dart';
 import '../l10n/app_localizations.dart';
+import '../model/enums/biometric_push_key_status.dart';
+import '../model/tokens/push_token.dart';
 import '../model/tokens/token.dart';
 import '../utils/globals.dart';
 import '../utils/helpers/log_redaction_helper.dart';
@@ -152,7 +154,17 @@ class SecureTokenRepository implements TokenRepository {
         Logger.info(
           'Legacy entry that meets token criteria: ${entry.key} will be migrated to new secure storage',
         );
-        await _storage.write(key: entry.key, value: entry.value);
+        final currentValue = await _storage.read(key: entry.key);
+        if (currentValue == null) {
+          await _storage.write(
+            key: entry.key,
+            value: _sanitizeLegacyTokenBeforeMigration(valueJson, entry.value),
+          );
+        } else {
+          Logger.info(
+            'Keeping the existing token ${valueJson['id']} in new secure storage',
+          );
+        }
         await _storageLegacy.delete(key: entry.key);
         Logger.info('Migrated token ${valueJson['id']} to new secure storage');
       } catch (e, s) {
@@ -164,6 +176,38 @@ class SecureTokenRepository implements TokenRepository {
       }
     }
     Logger.info('Migration of legacy tokens to new secure storage completed');
+  }
+
+  String _sanitizeLegacyTokenBeforeMigration(
+    Map<String, dynamic> valueJson,
+    String originalValue,
+  ) {
+    try {
+      final token = Token.fromJson(valueJson);
+      final isUnsafeRolledOutBiometricPush =
+          token is PushToken &&
+          token.isRolledOut &&
+          token.requiresBiometricKeyProtection &&
+          (token.privateTokenKey != null ||
+              token.biometricKeyStatus == BiometricPushKeyStatus.unprotected);
+      if (!isUnsafeRolledOutBiometricPush) return originalValue;
+
+      Logger.warning(
+        'Invalidating an unsafe legacy biometric Push key during migration.',
+      );
+      return jsonEncode(
+        token
+            .copyWith(
+              privateTokenKey: () => null,
+              biometricKeyStatus: BiometricPushKeyStatus.invalidated,
+            )
+            .toJson(),
+      );
+    } catch (_) {
+      // Preserve the previous migration behavior for entries that only meet
+      // the legacy shape check but cannot be parsed as a current Token.
+      return originalValue;
+    }
   }
 
   /// Returns a list of all tokens that are saved in the secure storage of

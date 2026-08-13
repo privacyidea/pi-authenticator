@@ -1491,6 +1491,9 @@
   "@sendPushRequestResponseFailed": {
     "description": "Error message when the response to a push request could not be sent."
   },
+  "@pushRequestResponseRejected": {
+    "description": "Error shown when privacyIDEA did not positively accept a Push response."
+  },
   "@serverNotReachable": {
     "description": "Tells the user that the server could not be reached."
   },
@@ -2166,6 +2169,7 @@
   "sendErrorDialogBody": "Terjadi kesalahan yang tidak terduga dalam aplikasi. Informasi di bawah ini dapat dikirimkan ke pengembang melalui email untuk membantu mencegah kesalahan ini di masa mendatang.",
   "sendErrorLogDescription": "Email yang telah ditentukan sebelumnya akan dibuat.\nEmail ini berisi informasi tentang aplikasi, kesalahan, dan perangkat.\nAnda dapat mengedit email sebelum mengirimnya.\nAnda dapat melihat di sini bagaimana kami menggunakan informasi tersebut:",
   "sendPushRequestResponseFailed": "Gagal mengirim tanggapan.",
+  "pushRequestResponseRejected": "Aplikasi tidak dapat memastikan bahwa server menerima respons Push. Permintaan mungkin telah kedaluwarsa atau token mungkin tidak valid.",
   "serverNotReachable": "Server tidak dapat dihubungi.",
   "setUpButton": "Pengaturan",
   "settings": "Pengaturan",

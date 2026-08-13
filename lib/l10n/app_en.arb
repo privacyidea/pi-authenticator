@@ -1521,6 +1521,9 @@
   "@sendPushRequestResponseFailed": {
     "description": "Error message when the response to a push request could not be sent."
   },
+  "@pushRequestResponseRejected": {
+    "description": "Error shown when privacyIDEA did not positively accept a Push response."
+  },
   "@serverNotReachable": {
     "description": "Tells the user that the server could not be reached."
   },
@@ -2198,6 +2201,7 @@
   "sendErrorDialogBody": "An unexpected error occurred in the application. The information below can be sent to the developers by email to help prevent this error in the future.",
   "sendErrorLogDescription": "A predefined email is created.\nIt contains information about the app, the error and the device.\nYou can edit the email before sending it.\nYou can see here how we use the information:",
   "sendPushRequestResponseFailed": "Failed to send the response.",
+  "pushRequestResponseRejected": "The app could not confirm that the server accepted the Push response. The request may have expired or the token may be invalid.",
   "serverNotReachable": "The server could not be reached.",
   "setUpButton": "Set up",
   "settings": "Settings",
@@ -2260,5 +2264,13 @@
   "verboseLogging": "Verbose logging",
   "versionTitle": "Version",
   "wrongPassword": "Incorrect password",
-  "yes": "Yes"
+  "yes": "Yes",
+  "biometricPushKeyAuthReason": "Authenticate to use this Push token",
+  "biometricPushKeyProtectReason": "Protect this Push token with strong biometrics",
+  "biometricPushTokenInvalid": "Push token invalid — biometric enrollment changed",
+  "biometricPushTokenInvalidTitle": "Push token is no longer valid",
+  "biometricPushTokenInvalidBody": "The biometric key for this Push token is no longer valid. This can happen after biometric enrollment or security policy changes. For security, the token can no longer sign requests. Remove it and enroll a new Push token.",
+  "biometricStrongRequired": "This Push token requires strong biometrics. Device PIN, pattern, password, and weak biometrics cannot be used.",
+  "biometricPushKeyPersistenceFailedTitle": "Push key protection was not saved",
+  "biometricPushKeyPersistenceFailed": "The protected Push key state could not be saved securely. No data was sent to the server. Try again."
 }

@@ -88,6 +88,7 @@ abstract class Token with SortableMixin {
     'isHidden',
     'isOffline',
     'forceBiometricOption',
+    'biometricKeyStatus',
     'viewMode',
     'sortIndex',
     'folderId',

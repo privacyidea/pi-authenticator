@@ -1518,6 +1518,9 @@
   "@sendPushRequestResponseFailed": {
     "description": "Error message when the response to a push request could not be sent."
   },
+  "@pushRequestResponseRejected": {
+    "description": "Error shown when privacyIDEA did not positively accept a Push response."
+  },
   "@serverNotReachable": {
     "description": "Tells the user that the server could not be reached."
   },
@@ -2195,6 +2198,7 @@
   "sendErrorDialogBody": "Ein unbekannter Fehler ist aufgetreten. Die unten gezeigten Informationen können den Entwicklern per E-Mail zugesendet werden, um zu helfen, diesen Fehler in Zukunft zu vermeiden.",
   "sendErrorLogDescription": "Es wird eine vorgefertigte E-Mail erstellt.\nSie enthält Informationen über die App, den Fehler und das Gerät.\nSie können die E-Mail vor dem Senden bearbeiten.\nWie wir die Informationen verwenden, sehen Sie hier:",
   "sendPushRequestResponseFailed": "Senden der Antwort fehlgeschlagen.",
+  "pushRequestResponseRejected": "Die App konnte nicht bestätigen, dass der Server die Push-Antwort akzeptiert hat. Die Anfrage ist möglicherweise abgelaufen oder das Token ist ungültig.",
   "serverNotReachable": "Der Server konnte nicht erreicht werden.",
   "setUpButton": "Einrichten",
   "settings": "Einstellungen",
@@ -2257,5 +2261,13 @@
   "verboseLogging": "Ausführliche Protokollierung",
   "versionTitle": "Version",
   "wrongPassword": "Falsches Passwort",
-  "yes": "Ja"
+  "yes": "Ja",
+  "biometricPushKeyAuthReason": "Authentifizieren Sie sich, um dieses Push-Token zu verwenden",
+  "biometricPushKeyProtectReason": "Dieses Push-Token mit starker Biometrie schützen",
+  "biometricPushTokenInvalid": "Push-Token ungültig — biometrische Registrierung wurde geändert",
+  "biometricPushTokenInvalidTitle": "Push-Token ist nicht mehr gültig",
+  "biometricPushTokenInvalidBody": "Der biometrische Schlüssel dieses Push-Tokens ist nicht mehr gültig. Dies kann nach Änderungen der biometrischen Registrierung oder der Sicherheitsrichtlinie auftreten. Aus Sicherheitsgründen kann das Token keine Anfragen mehr signieren. Entfernen Sie es und registrieren Sie ein neues Push-Token.",
+  "biometricStrongRequired": "Dieses Push-Token erfordert starke Biometrie. Geräte-PIN, Muster, Passwort und schwache Biometrie können nicht verwendet werden.",
+  "biometricPushKeyPersistenceFailedTitle": "Push-Schlüsselschutz wurde nicht gespeichert",
+  "biometricPushKeyPersistenceFailed": "Der Status des geschützten Push-Schlüssels konnte nicht sicher gespeichert werden. Es wurden keine Daten an den Server gesendet. Versuchen Sie es erneut."
 }

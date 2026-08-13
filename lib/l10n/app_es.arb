@@ -1491,6 +1491,9 @@
   "@sendPushRequestResponseFailed": {
     "description": "Error message when the response to a push request could not be sent."
   },
+  "@pushRequestResponseRejected": {
+    "description": "Error shown when privacyIDEA did not positively accept a Push response."
+  },
   "@serverNotReachable": {
     "description": "Tells the user that the server could not be reached."
   },
@@ -2166,6 +2169,7 @@
   "sendErrorDialogBody": "Se ha producido un error inesperado en la aplicación. La siguiente información puede ser enviada a los desarrolladores por correo electrónico para ayudar a prevenir este error en el futuro.",
   "sendErrorLogDescription": "Se crea un correo electrónico listo.\nContiene información sobre la app, el error y el dispositivo.\nPuedes editar el correo antes de enviarlo.\nAquí puede ver cómo utilizamos la información:",
   "sendPushRequestResponseFailed": "No se ha podido enviar la respuesta.",
+  "pushRequestResponseRejected": "La aplicación no pudo confirmar que el servidor aceptara la respuesta Push. Es posible que la solicitud haya caducado o que el token no sea válido.",
   "serverNotReachable": "No se ha podido acceder al servidor.",
   "setUpButton": "Configuración",
   "settings": "Configuración",
