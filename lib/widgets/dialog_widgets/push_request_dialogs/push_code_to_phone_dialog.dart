@@ -75,7 +75,10 @@ class _PushCodeToPhoneDialogState extends ConsumerState<PushCodeToPhoneDialog> {
         children: [
           Flexible(
             child: SingleChildScrollView(
-              child: PushRequestBaseInfo(pushRequest: widget.pushRequest),
+              child: PushRequestBaseInfo(
+                token: widget.token,
+                pushRequest: widget.pushRequest,
+              ),
             ),
           ),
           const SizedBox(height: 12),

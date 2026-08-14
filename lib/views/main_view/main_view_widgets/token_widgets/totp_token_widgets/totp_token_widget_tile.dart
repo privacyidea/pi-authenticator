@@ -27,6 +27,7 @@ import '../../../../../model/tokens/totp_token.dart';
 import '../../../../../utils/animations/totp_animation.dart';
 import '../../../../../utils/animations/unscaled_animation_controller.dart';
 import '../../../../../utils/globals.dart';
+import '../../../../../utils/logger.dart';
 import '../../../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../../../../utils/utils.dart';
 import '../../../../../utils/view_utils.dart';
@@ -49,7 +50,9 @@ class TOTPTokenWidgetTile extends ConsumerStatefulWidget {
 class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile>
     with SingleTickerProviderStateMixin {
   late String currentOtpValue = widget.token.otpValue;
-  late UnscaledAnimationController _animationController;
+  TotpAnimation? _animation;
+  UnscaledAnimationController? _animationController;
+  TokenTileTheme? _tokenTileTheme;
   Color? _currentOtpColor;
   Color? _currentCountdownColor;
   double _secondsUntilNextOTP = 0;
@@ -71,19 +74,37 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile>
   }
 
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _initAnimation());
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final tokenTileTheme = Theme.of(context).extension<TokenTileTheme>();
+    if (tokenTileTheme == null) {
+      Logger.error("TokenTileTheme is not set");
+      return;
+    }
+    _tokenTileTheme = tokenTileTheme;
+    final animation = _animation;
+    if (animation == null) {
+      _initAnimation(tokenTileTheme);
+      return;
+    }
+    animation.updateColors(
+      defaultOtpColor: tokenTileTheme.defaultOtpColor,
+      warningOtpColor: tokenTileTheme.warningOtpColor,
+      criticalOtpColor: tokenTileTheme.criticalOtpColor,
+      defaultCountdownColor: tokenTileTheme.defaultCountdownColor,
+      warningCountdownColor: tokenTileTheme.warningCountdownColor,
+      criticalCountdownColor: tokenTileTheme.criticalCountdownColor,
+    );
   }
 
   @override
   void dispose() {
-    _animationController.dispose();
+    _animationController?.dispose();
     super.dispose();
   }
 
-  void _initAnimation() {
-    _animationController = TotpAnimation(
+  void _initAnimation(TokenTileTheme tokenTileTheme) {
+    final animation = TotpAnimation(
       context: context,
       vsync: this,
       onPeriodEnd: () {
@@ -101,25 +122,15 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile>
       totalDuration: Duration(seconds: widget.token.period),
       warningDuration: Duration(seconds: 2),
       criticalDuration: Duration(seconds: 3),
-      defaultOtpColor: Theme.of(
-        context,
-      ).extension<TokenTileTheme>()!.defaultOtpColor,
-      warningOtpColor: Theme.of(
-        context,
-      ).extension<TokenTileTheme>()!.warningOtpColor,
-      criticalOtpColor: Theme.of(
-        context,
-      ).extension<TokenTileTheme>()!.criticalOtpColor,
-      defaultCountdownColor: Theme.of(
-        context,
-      ).extension<TokenTileTheme>()!.defaultCountdownColor,
-      warningCountdownColor: Theme.of(
-        context,
-      ).extension<TokenTileTheme>()!.warningCountdownColor,
-      criticalCountdownColor: Theme.of(
-        context,
-      ).extension<TokenTileTheme>()!.criticalCountdownColor,
-    ).createAnimation();
+      defaultOtpColor: tokenTileTheme.defaultOtpColor,
+      warningOtpColor: tokenTileTheme.warningOtpColor,
+      criticalOtpColor: tokenTileTheme.criticalOtpColor,
+      defaultCountdownColor: tokenTileTheme.defaultCountdownColor,
+      warningCountdownColor: tokenTileTheme.warningCountdownColor,
+      criticalCountdownColor: tokenTileTheme.criticalCountdownColor,
+    );
+    _animation = animation;
+    _animationController = animation.createAnimation();
   }
 
   @override
@@ -156,9 +167,8 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile>
             period: widget.token.period,
             currentColor:
                 _currentCountdownColor ??
-                Theme.of(
-                  context,
-                ).extension<TokenTileTheme>()!.defaultCountdownColor,
+                _tokenTileTheme?.defaultCountdownColor ??
+                Theme.of(context).colorScheme.primary,
             secondsUntilNextOTP: _secondsUntilNextOTP,
           ),
         ),

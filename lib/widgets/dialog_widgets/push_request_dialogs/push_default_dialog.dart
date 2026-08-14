@@ -46,7 +46,7 @@ class PushDefaultDialog extends ConsumerWidget with PushDialogMixin {
         children: [
           Flexible(
             child: SingleChildScrollView(
-              child: PushRequestBaseInfo(pushRequest: pushRequest),
+              child: PushRequestBaseInfo(token: token, pushRequest: pushRequest),
             ),
           ),
           const SizedBox(height: 24),

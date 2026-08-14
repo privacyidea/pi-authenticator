@@ -50,7 +50,7 @@ class PushChoiceDialog extends ConsumerWidget with PushDialogMixin {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  PushRequestBaseInfo(pushRequest: pushRequest),
+                  PushRequestBaseInfo(token: token, pushRequest: pushRequest),
                   const SizedBox(height: 24),
                   ..._buildChoiceGrid(context, ref, theme),
                 ],

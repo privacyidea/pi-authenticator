@@ -1383,6 +1383,19 @@
   "@replaceButton": {
     "description": "Button to replace something, depending on the context."
   },
+  "@requestInfo": {
+    "description": "Description of the authentication request.",
+    "placeholders": {
+      "account": {
+        "example": "GitHub",
+        "type": "String"
+      },
+      "issuer": {
+        "example": "privacyIDEA",
+        "type": "String"
+      }
+    }
+  },
   "@requestPushChallengesPeriodically": {
     "description": "The description of the polling feature."
   },
@@ -2132,6 +2145,7 @@
   "renewSecretsDialogText": "Můžete obnovit tajemství žetonů. To je užitečné, pokud máte podezření, že tajemství byla ohrožena.",
   "renewSecretsDialogTitle": "Obnovení tajemství žetonů",
   "replaceButton": "Vyměňte",
+  "requestInfo": "Odesláno {issuer} pro váš účet: “{account}“",
   "requestPushChallengesPeriodically": "Periodicky získávat výzvy ze serveru. Povolte pokud nefunguje příjem push notifikací.",
   "requestTriggerdByUserQuestion": "Byl tento požadavek vyvolán vámi?",
   "retryRolloutButton": "Zkusit znovu",

@@ -21,12 +21,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:privacyidea_authenticator/model/push_request/push_default_request.dart';
+import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 import 'package:privacyidea_authenticator/widgets/dialog_widgets/push_request_dialogs/widgets/push_request_base_info.dart';
 
 import '../../../../../../tests_app_wrapper.dart';
 
 void main() {
   group('PushRequestBaseInfo Comprehensive Tests', () {
+    final token = PushToken(
+      serial: 's',
+      id: 'id',
+      label: 'MyAccount',
+      issuer: 'MyIssuer',
+    );
+
     PushDefaultRequest createRequest(String question) => PushDefaultRequest(
       title: 'T',
       question: question,
@@ -44,6 +52,7 @@ void main() {
       await tester.pumpWidget(
         TestsAppWrapper(
           child: PushRequestBaseInfo(
+            token: token,
             pushRequest: createRequest('Styled Question'),
           ),
         ),
@@ -55,16 +64,37 @@ void main() {
       expect(textWidget.style?.fontSize, isNotNull);
     });
 
-    testWidgets('handles empty question string without crashing', (
+    testWidgets('falls back to the token data if the question is empty', (
       tester,
     ) async {
       await tester.pumpWidget(
         TestsAppWrapper(
-          child: PushRequestBaseInfo(pushRequest: createRequest('')),
+          child: PushRequestBaseInfo(
+            token: token,
+            pushRequest: createRequest(''),
+          ),
         ),
       );
 
       expect(find.byType(Text), findsOneWidget);
+      expect(find.textContaining('MyIssuer'), findsOneWidget);
+      expect(find.textContaining('MyAccount'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('falls back to the token data if the question is blank', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        TestsAppWrapper(
+          child: PushRequestBaseInfo(
+            token: token,
+            pushRequest: createRequest('   '),
+          ),
+        ),
+      );
+
+      expect(find.textContaining('MyIssuer'), findsOneWidget);
       expect(tester.takeException(), isNull);
     });
 
@@ -76,6 +106,7 @@ void main() {
         TestsAppWrapper(
           child: SingleChildScrollView(
             child: PushRequestBaseInfo(
+              token: token,
               pushRequest: createRequest(longQuestion),
             ),
           ),
@@ -93,6 +124,7 @@ void main() {
       await tester.pumpWidget(
         TestsAppWrapper(
           child: PushRequestBaseInfo(
+            token: token,
             pushRequest: createRequest('Structure Check'),
           ),
         ),
