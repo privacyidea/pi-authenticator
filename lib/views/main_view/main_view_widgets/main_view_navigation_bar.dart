@@ -55,7 +55,7 @@ class MainViewNavigationBar extends ConsumerWidget {
               children: [
                 CustomPaint(
                   size: Size(navWidth, navHeight),
-                  painter: CustomPaintNavigationBar(buildContext: context),
+                  painter: CustomPaintNavigationBar.of(context),
                 ),
                 Center(
                   heightFactor: 0.6,

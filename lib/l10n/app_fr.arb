@@ -1335,6 +1335,19 @@
   "@replaceButton": {
     "description": "Button to replace something, depending on the context."
   },
+  "@requestInfo": {
+    "description": "Description of the authentication request.",
+    "placeholders": {
+      "account": {
+        "example": "GitHub",
+        "type": "String"
+      },
+      "issuer": {
+        "example": "privacyIDEA",
+        "type": "String"
+      }
+    }
+  },
   "@requestPushChallengesPeriodically": {
     "description": "The description of the polling feature."
   },
@@ -2067,6 +2080,7 @@
   "renewSecretsDialogText": "Vous pouvez renouveler les secrets des jetons. Cette fonction est utile si vous soupçonnez que les secrets ont été compromis.",
   "renewSecretsDialogTitle": "Renouveler les secrets des jetons",
   "replaceButton": "Remplacer",
+  "requestInfo": "Envoyé par {issuer} pour votre compte : “{account}“",
   "requestPushChallengesPeriodically": "Demander des challenges push depuis le serveur périodiquement. Activer cette fonction si les challenges push ne sont pas reçus normalement.",
   "requestTriggerdByUserQuestion": "Cette demande a-t-elle été déclenchée par vous ?",
   "retryRolloutButton": "Réessayer le déploiement",

@@ -19,20 +19,35 @@
  */
 import 'package:flutter/material.dart';
 
+import '../../../../l10n/app_localizations.dart';
 import '../../../../model/push_request/push_request.dart';
+import '../../../../model/tokens/push_token.dart';
 
 class PushRequestBaseInfo extends StatelessWidget {
+  final PushToken token;
   final PushRequest pushRequest;
 
-  const PushRequestBaseInfo({required this.pushRequest, super.key});
+  const PushRequestBaseInfo({
+    required this.token,
+    required this.pushRequest,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
+    /// The question is provided by the server and can be empty if no
+    /// corresponding policy is set. In that case the request is described
+    /// with the data of the token instead.
+    final question = pushRequest.question;
+    final text = question.trim().isNotEmpty
+        ? question
+        : AppLocalizations.of(context)!.requestInfo(token.label, token.issuer);
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          pushRequest.question,
+          text,
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.bodyLarge,
         ),
