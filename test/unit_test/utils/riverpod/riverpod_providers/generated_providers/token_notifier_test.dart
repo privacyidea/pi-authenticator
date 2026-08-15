@@ -175,7 +175,7 @@ void _testTokenNotifier() {
       expect(state, isNotNull);
       expect(state.tokens, after);
     });
-    test('incrementCounter', () async {
+    test('incrementCounter uses the latest counter for queued calls', () async {
       final mockSettingsRepo = MockSettingsRepository();
       when(
         mockSettingsRepo.loadSettings(),
@@ -209,13 +209,11 @@ void _testTokenNotifier() {
           algorithm: Algorithms.SHA1,
           digits: 6,
           secret: 'secret',
-          counter: 523,
+          counter: 524,
         ),
       ];
       when(mockRepo.loadTokens()).thenAnswer((_) async => before);
-      when(
-        mockRepo.saveOrReplaceToken(after.first),
-      ).thenAnswer((_) async => true);
+      when(mockRepo.saveOrReplaceToken(any)).thenAnswer((_) async => true);
       when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
       when(
         mockFirebaseUtils.getFBToken(),
@@ -229,11 +227,17 @@ void _testTokenNotifier() {
       final notifier = container.read(testProvider.notifier);
       final stateBefore = await container.read(testProvider.future);
       expect(stateBefore.tokens, before);
-      await notifier.incrementCounter(before.first);
+      await Future.wait([
+        notifier.incrementCounter(before.first),
+        notifier.incrementCounter(before.first),
+      ]);
       final state = await container.read(testProvider.future);
       expect(state, isNotNull);
       expect(state.tokens, after);
-      verify(mockRepo.saveOrReplaceToken(after.first)).called(1);
+      final savedTokens = verify(
+        mockRepo.saveOrReplaceToken(captureAny),
+      ).captured.cast<HOTPToken>();
+      expect(savedTokens.map((token) => token.counter), [523, 524]);
     });
     test('removeToken', () async {
       final mockSettingsRepo = MockSettingsRepository();
