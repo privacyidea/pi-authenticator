@@ -137,9 +137,7 @@ class SteamToken extends TOTPToken {
   // --- Methods ---
   @override
   String otpFromTime(DateTime time) {
-    final counterBytes = (time.millisecondsSinceEpoch / 1000 / period)
-        .round()
-        .bytes;
+    final counterBytes = (time.millisecondsSinceEpoch ~/ 1000 ~/ period).bytes;
     final secretList = base32Decode(secret.toUpperCase());
     final hmac = Hmac(sha1, secretList);
     final digest = hmac.convert(counterBytes).bytes;
