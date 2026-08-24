@@ -33,7 +33,6 @@ class PushChoiceDialog extends ConsumerWidget with PushDialogMixin {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context).extension<PushRequestTheme>()!;
     final l10n = AppLocalizations.of(context)!;
 
     return DefaultDialog(
@@ -52,11 +51,12 @@ class PushChoiceDialog extends ConsumerWidget with PushDialogMixin {
                 children: [
                   PushRequestBaseInfo(token: token, pushRequest: pushRequest),
                   const SizedBox(height: 24),
-                  ..._buildChoiceGrid(context, ref, theme),
+                  ..._buildChoiceGrid(context, ref),
                 ],
               ),
             ),
           ),
+
           const SizedBox(height: 8),
           PushActionButton(
             intent: ActionIntent.destructive,
@@ -74,11 +74,7 @@ class PushChoiceDialog extends ConsumerWidget with PushDialogMixin {
     );
   }
 
-  List<Widget> _buildChoiceGrid(
-    BuildContext context,
-    WidgetRef ref,
-    PushRequestTheme theme,
-  ) {
+  List<Widget> _buildChoiceGrid(BuildContext context, WidgetRef ref) {
     final widgets = <Widget>[];
     final answers = pushRequest.possibleAnswers.toList();
     const numPerRow = 3;

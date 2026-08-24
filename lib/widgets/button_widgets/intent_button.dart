@@ -48,6 +48,16 @@ class IntentButton extends StatefulWidget {
   final String? semanticsLabel;
   final double? iconSize;
 
+  /// Overrides the intent based background color of the filled variants
+  /// ([ActionIntent.confirm] and [ActionIntent.destructive]).
+  /// If null, the color is taken from the theme.
+  final Color? backgroundColor;
+
+  /// Overrides the intent based foreground color of the filled variants
+  /// ([ActionIntent.confirm] and [ActionIntent.destructive]).
+  /// If null, the color is taken from the theme.
+  final Color? foregroundColor;
+
   const IntentButton({
     super.key,
     required this.intent,
@@ -57,6 +67,8 @@ class IntentButton extends StatefulWidget {
     this.cooldownMs = 0,
     this.isLoading = false,
     this.semanticsLabel,
+    this.backgroundColor,
+    this.foregroundColor,
   }) : _isIconOnly = false,
        iconSize = null;
 
@@ -71,7 +83,9 @@ class IntentButton extends StatefulWidget {
     this.semanticsLabel,
     this.iconSize,
   }) : _isIconOnly = true,
-       child = Icon(icon);
+       child = Icon(icon),
+       backgroundColor = null,
+       foregroundColor = null;
 
   @override
   State<IntentButton> createState() => _IntentButtonState();
@@ -239,8 +253,12 @@ class _IntentButtonState extends State<IntentButton>
     return ElevatedButton(
       onPressed: _effectiveOnPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: isDestructive ? theme.colorScheme.error : null,
-        foregroundColor: isDestructive ? theme.colorScheme.onError : null,
+        backgroundColor:
+            widget.backgroundColor ??
+            (isDestructive ? theme.colorScheme.error : null),
+        foregroundColor:
+            widget.foregroundColor ??
+            (isDestructive ? theme.colorScheme.onError : null),
         disabledBackgroundColor: theme.colorScheme.onSurface.withValues(
           alpha: 0.12,
         ),
