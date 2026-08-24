@@ -22,10 +22,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../../utils/customization/theme_extentions/push_request_theme.dart';
 import 'intent_button.dart';
 
 /// A specialized button for Push Notification actions with a distinct border and typography.
 /// Uses [IntentButton] to handle asynchronous execution and a minimum threshold to prevent double-taps.
+/// The colors of the filled variants are taken from [PushRequestTheme], so a customization can
+/// define its own accept/decline colors independently of the primary and delete colors.
 class PushActionButton extends StatelessWidget {
   final FutureOr<void> Function()? onPressed;
   final Widget child;
@@ -46,11 +49,21 @@ class PushActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final pushRequestTheme = theme.extension<PushRequestTheme>();
+    final backgroundColor = switch (intent) {
+      ActionIntent.confirm => pushRequestTheme?.acceptColor,
+      ActionIntent.destructive => pushRequestTheme?.declineColor,
+      _ => null,
+    };
 
     return IntentButton(
       intent: intent,
       onPressed: onPressed,
       cooldownMs: minThreshold,
+      backgroundColor: backgroundColor,
+      foregroundColor: backgroundColor != null
+          ? theme.colorScheme.onPrimary
+          : null,
       child: Center(
         child: DefaultTextStyle.merge(
           style: theme.textTheme.headlineSmall?.copyWith(

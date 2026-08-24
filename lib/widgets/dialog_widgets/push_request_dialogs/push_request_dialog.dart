@@ -31,7 +31,6 @@ import '../../../l10n/app_localizations.dart';
 import '../../../model/api_results/pi_server_results/pi_server_result_detail.dart';
 import '../../../model/api_results/pi_server_results/pi_server_result_value.dart';
 import '../../../model/pi_server_response.dart';
-import '../../../utils/customization/theme_extentions/push_request_theme.dart';
 import '../../../utils/lock_auth.dart';
 import '../../../utils/logger.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/push_request_provider.dart';

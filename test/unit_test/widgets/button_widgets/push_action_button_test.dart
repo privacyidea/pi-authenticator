@@ -22,6 +22,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:privacyidea_authenticator/utils/customization/theme_extentions/app_dimensions.dart';
+import 'package:privacyidea_authenticator/utils/customization/theme_extentions/push_request_theme.dart';
 import 'package:privacyidea_authenticator/widgets/button_widgets/intent_button.dart';
 import 'package:privacyidea_authenticator/widgets/button_widgets/push_action_button.dart';
 
@@ -164,6 +165,104 @@ void main() {
       );
     });
   });
+  group('PushActionButton - PushRequestTheme Colors', () {
+    const acceptColor = Color(0xFF137E97);
+    const declineColor = Color(0xFFE40428);
+
+    Widget wrapWithPushTheme(Widget child) => MaterialApp(
+      theme: ThemeData(
+        extensions: [
+          const AppDimensions(
+            controlHeight: mockControlHeight,
+            controlMinWidth: mockMinWidth,
+          ),
+          PushRequestTheme(
+            acceptColor: acceptColor,
+            declineColor: declineColor,
+          ),
+        ],
+      ),
+      home: Scaffold(body: child),
+    );
+
+    ElevatedButton findElevatedButton(WidgetTester tester) =>
+        tester.widget<ElevatedButton>(find.byType(ElevatedButton));
+
+    testWidgets('accept button uses acceptColor of PushRequestTheme', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        wrapWithPushTheme(
+          PushActionButton(onPressed: () {}, child: const Text('Accept')),
+        ),
+      );
+      expect(
+        findElevatedButton(tester).style!.backgroundColor?.resolve({}),
+        acceptColor,
+      );
+    });
+    testWidgets('decline button uses declineColor of PushRequestTheme', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        wrapWithPushTheme(
+          PushActionButton(
+            intent: ActionIntent.destructive,
+            onPressed: () {},
+            child: const Text('Decline'),
+          ),
+        ),
+      );
+      expect(
+        findElevatedButton(tester).style!.backgroundColor?.resolve({}),
+        declineColor,
+      );
+    });
+    testWidgets(
+      'accept and decline differ even if primaryColor equals deleteColor',
+      (tester) async {
+        Widget button(ActionIntent intent) => PushActionButton(
+          intent: intent,
+          onPressed: () {},
+          child: Text('$intent'),
+        );
+        await tester.pumpWidget(
+          wrapWithPushTheme(
+            Column(
+              children: [
+                button(ActionIntent.confirm),
+                button(ActionIntent.destructive),
+              ],
+            ),
+          ),
+        );
+        final backgrounds = tester
+            .widgetList<ElevatedButton>(find.byType(ElevatedButton))
+            .map((button) => button.style!.backgroundColor?.resolve({}))
+            .toList();
+        expect(backgrounds, [acceptColor, declineColor]);
+      },
+    );
+    testWidgets('falls back to the intent colors without PushRequestTheme', (
+      tester,
+    ) async {
+      await tester.pumpWidget(
+        wrap(
+          PushActionButton(
+            intent: ActionIntent.destructive,
+            onPressed: () {},
+            child: const Text('Decline'),
+          ),
+        ),
+      );
+      final theme = Theme.of(tester.element(find.text('Decline')));
+      expect(
+        findElevatedButton(tester).style!.backgroundColor?.resolve({}),
+        theme.colorScheme.error,
+      );
+    });
+  });
+
   group('PushActionButton - Interaction & Lifecycle Tests', () {
     testWidgets('triggers onPressed callback when tapped', (tester) async {
       bool called = false;
