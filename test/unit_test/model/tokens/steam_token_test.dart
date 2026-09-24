@@ -126,13 +126,27 @@ void main() {
     });
 
     group('4. Logic & Edge Cases', () {
-      test('otpFromTime calculation with Steam alphabet', () {
-        final time = DateTime.fromMillisecondsSinceEpoch(1712666212056);
+      test('otpFromTime uses the current counter until the period ends', () {
         final token = createTestToken(secret: 'SECRETA=');
 
-        final otp = token.otpFromTime(time);
-        expect(otp, 'JGPCJ');
-        expect(otp.length, 5);
+        expect(
+          token.otpFromTime(
+            DateTime.fromMillisecondsSinceEpoch(1712666212056, isUtc: true),
+          ),
+          'QJTQN',
+        );
+        expect(
+          token.otpFromTime(
+            DateTime.fromMillisecondsSinceEpoch(1712666219999, isUtc: true),
+          ),
+          'QJTQN',
+        );
+        expect(
+          token.otpFromTime(
+            DateTime.fromMillisecondsSinceEpoch(1712666220000, isUtc: true),
+          ),
+          'JGPCJ',
+        );
       });
 
       test('isSameTokenAs logic (ID vs Parameters)', () {
