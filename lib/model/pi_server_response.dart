@@ -80,6 +80,16 @@ sealed class PiServerResponse<
   PiErrorResponse<V, D>? get asError =>
       this is PiErrorResponse<V, D> ? this as PiErrorResponse<V, D> : null;
 
+  /// Returns the result of a success response.
+  /// Throws the [PiServerResultError] of an error response, or the error
+  /// the server reported inside the result.
+  PiServerResult<V> get resultOrThrow => switch (this) {
+    PiErrorResponse(:final piServerResultError) => throw piServerResultError,
+    PiSuccessResponse(:final result) when result.error != null =>
+      throw result.error!,
+    PiSuccessResponse(:final result) => result,
+  };
+
   static PiServerResponse<V, D> fromJson<
     V extends PiServerResultValue,
     D extends PiServerResultDetail
@@ -129,8 +139,16 @@ sealed class PiServerResponse<
     try {
       json = jsonDecode(response.body);
     } catch (e) {
-      Logger.warning('Failed to parse server response', error: response.body);
       final rawBody = response.body.trim();
+      const maxLoggedBodyLength = 500;
+      Logger.warning(
+        'Failed to parse server response '
+        '(HTTP ${response.statusCode} from ${response.request?.url})',
+        error: rawBody.length > maxLoggedBodyLength
+            ? '${rawBody.substring(0, maxLoggedBodyLength)}... '
+                  '(${rawBody.length} chars)'
+            : rawBody,
+      );
       const maxMessageLength = 200;
       final looksLikeMarkupOrCode = RegExp(
         r'<[a-zA-Z!/]|^\s*\{',

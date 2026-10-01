@@ -769,7 +769,12 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
       );
       finalizationSucceeded = true;
       return finalizedContainer;
-    } on StateError catch (e) {
+    } on StateError catch (e, s) {
+      Logger.warning(
+        'Failed to finalize container ${container.serial}',
+        error: e,
+        stackTrace: s,
+      );
       if (isManually) {
         showErrorStatusMessage(
           message: (localization) => container.finalizationState.asFailed
@@ -777,32 +782,54 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
           details: (_) => e.toString(),
         );
       }
-    } on LocalizedArgumentError catch (e) {
+    } on LocalizedArgumentError catch (e, s) {
+      Logger.warning(
+        'Failed to finalize container ${container.serial}',
+        error: e,
+        stackTrace: s,
+      );
       if (isManually) {
         showErrorStatusMessage(
           message: container.finalizationState.asFailed.rolloutMsgLocalized,
           details: e.localizedMessage,
         );
       }
-    } on PiServerResultError catch (e) {
+    } on PiServerResultError catch (e, s) {
+      Logger.warning(
+        'Failed to finalize container ${container.serial}',
+        error: e,
+        stackTrace: s,
+      );
       if (isManually) {
         showErrorStatusMessage(
           message: container.finalizationState.asFailed.rolloutMsgLocalized,
           details: (_) => e.message,
         );
       }
-    } on ResponseError catch (e) {
+    } on ResponseError catch (e, s) {
+      Logger.warning(
+        'Failed to finalize container ${container.serial}',
+        error: e,
+        stackTrace: s,
+      );
       if (isManually) {
         showErrorStatusMessage(
           message: container.finalizationState.asFailed.rolloutMsgLocalized,
           details: (_) => e.toString(),
         );
       }
-    } catch (e) {
+    } catch (e, s) {
       Logger.error(
         'Failed to finalize container ${container.serial}',
         error: e,
+        stackTrace: s,
       );
+      if (isManually) {
+        showErrorStatusMessage(
+          message: container.finalizationState.asFailed.rolloutMsgLocalized,
+          details: (_) => e.toString(),
+        );
+      }
     } finally {
       if (!finalizationSucceeded) {
         await updateContainer(
