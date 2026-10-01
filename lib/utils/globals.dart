@@ -29,6 +29,15 @@ import '../model/version.dart';
 Map<Version, Map<PatchNoteType, List<String>>> getLocalizedPatchNotes(
   AppLocalizations localizations,
 ) => {
+  const Version(4, 8, 1): {
+    PatchNoteType.bugFix: [
+      localizations.patchNotesV4_8_1BugFix1,
+      localizations.patchNotesV4_8_1BugFix2,
+      localizations.patchNotesV4_8_1BugFix3,
+    ],
+    PatchNoteType.improvement: [localizations.patchNotesV4_8_1Improvement1],
+    PatchNoteType.newFeature: [localizations.patchNotesV4_8_1NewFeature1],
+  },
   const Version(4, 8, 0): {
     PatchNoteType.bugFix: [
       localizations.patchNotesV4_8_0BugFix1,

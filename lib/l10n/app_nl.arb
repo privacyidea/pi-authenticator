@@ -1230,6 +1230,21 @@
   "@patchNotesV4_6_1Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
+  "@patchNotesV4_8_1BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.8.1"
+  },
+  "@patchNotesV4_8_1BugFix2": {
+    "description": "Patch notes for a bug fix in version 4.8.1"
+  },
+  "@patchNotesV4_8_1BugFix3": {
+    "description": "Patch notes for a bug fix in version 4.8.1"
+  },
+  "@patchNotesV4_8_1Improvement1": {
+    "description": "Patch notes for an improvement in version 4.8.1"
+  },
+  "@patchNotesV4_8_1NewFeature1": {
+    "description": "Patch notes for a new feature in version 4.8.1"
+  },
   "@patchNotesV4_8_0BugFix1": {
     "description": "Patch notes for a bug fix in version 4.8.0"
   },
@@ -2098,6 +2113,11 @@
   "patchNotesV4_6_0Improvement1": "Interne componenten zijn bijgewerkt om de veiligheid te waarborgen en compatibiliteit met de nieuwste apparaten te garanderen.",
   "patchNotesV4_6_1BugFix1": "Een fout in het uitbreidingspaneel van de TokenFolder is verholpen.",
   "patchNotesV4_6_1Improvement1": "Verschillende afhankelijkheden bijgewerkt",
+  "patchNotesV4_8_1BugFix1": "Probleem opgelost waarbij verhogingen van de HOTP-teller verloren gingen als codes snel na elkaar werden gegenereerd.",
+  "patchNotesV4_8_1BugFix2": "Probleem opgelost waarbij Steam-tokens niet de huidige tijdstap voor hun codes gebruikten.",
+  "patchNotesV4_8_1BugFix3": "Probleem opgelost waarbij de kleur van de TOTP-aftelling niet werd bijgewerkt bij het wijzigen van het thema.",
+  "patchNotesV4_8_1Improvement1": "Serverfouten bij containerbewerkingen worden nu als foutmelding weergegeven in plaats van een crash te veroorzaken.",
+  "patchNotesV4_8_1NewFeature1": "Pushverzoeken zonder vraag van de server tonen nu de uitgever en het account van de token.",
   "patchNotesV4_8_0BugFix1": "Het flikkeren van de widget op het startscherm in Android is verholpen.",
   "patchNotesV4_8_0BugFix2": "Een fout is verholpen waardoor de instelling voor het automatisch sluiten van pushverzoeken niet werd opgeslagen.",
   "patchNotesV4_8_0BugFix3": "Een fout bij het uitrollen van tokens via containersynchronisatie met een 'pia'-uitrol-URL is verholpen.",

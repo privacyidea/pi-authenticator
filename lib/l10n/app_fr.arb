@@ -1230,6 +1230,21 @@
   "@patchNotesV4_6_1Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
+  "@patchNotesV4_8_1BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.8.1"
+  },
+  "@patchNotesV4_8_1BugFix2": {
+    "description": "Patch notes for a bug fix in version 4.8.1"
+  },
+  "@patchNotesV4_8_1BugFix3": {
+    "description": "Patch notes for a bug fix in version 4.8.1"
+  },
+  "@patchNotesV4_8_1Improvement1": {
+    "description": "Patch notes for an improvement in version 4.8.1"
+  },
+  "@patchNotesV4_8_1NewFeature1": {
+    "description": "Patch notes for a new feature in version 4.8.1"
+  },
   "@patchNotesV4_8_0BugFix1": {
     "description": "Patch notes for a bug fix in version 4.8.0"
   },
@@ -2098,6 +2113,11 @@
   "patchNotesV4_6_0Improvement1": "Les composants internes ont été mis à jour afin de maintenir la sécurité et d'assurer la compatibilité avec les appareils les plus récents.",
   "patchNotesV4_6_1BugFix1": "Correction d'une erreur avec le panneau d'extension du TokenFolder",
   "patchNotesV4_6_1Improvement1": "Mise à jour de plusieurs dépendances.",
+  "patchNotesV4_8_1BugFix1": "Correction de la perte d'incréments du compteur HOTP lorsque des codes sont générés en succession rapide.",
+  "patchNotesV4_8_1BugFix2": "Correction des jetons Steam qui n'utilisaient pas l'intervalle de temps actuel pour leurs codes.",
+  "patchNotesV4_8_1BugFix3": "Correction de la couleur du compte à rebours TOTP qui ne se mettait pas à jour lors du changement de thème.",
+  "patchNotesV4_8_1Improvement1": "Les erreurs du serveur lors des opérations sur les conteneurs sont désormais affichées comme messages d'erreur au lieu de provoquer un plantage.",
+  "patchNotesV4_8_1NewFeature1": "Les demandes push sans question du serveur affichent désormais l'émetteur et le compte du jeton.",
   "patchNotesV4_8_0BugFix1": "Correction du scintillement du widget de l'écran d'accueil sous Android.",
   "patchNotesV4_8_0BugFix2": "Correction du paramètre de fermeture automatique des demandes push qui n'était pas enregistré.",
   "patchNotesV4_8_0BugFix3": "Correction de l'enrôlement de jetons via la synchronisation des conteneurs lors de l'utilisation d'une URL d'enrôlement 'pia'.",

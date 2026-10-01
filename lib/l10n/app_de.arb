@@ -1257,6 +1257,21 @@
   "@patchNotesV4_6_1Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
+  "@patchNotesV4_8_1BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.8.1"
+  },
+  "@patchNotesV4_8_1BugFix2": {
+    "description": "Patch notes for a bug fix in version 4.8.1"
+  },
+  "@patchNotesV4_8_1BugFix3": {
+    "description": "Patch notes for a bug fix in version 4.8.1"
+  },
+  "@patchNotesV4_8_1Improvement1": {
+    "description": "Patch notes for an improvement in version 4.8.1"
+  },
+  "@patchNotesV4_8_1NewFeature1": {
+    "description": "Patch notes for a new feature in version 4.8.1"
+  },
   "@patchNotesV4_8_0BugFix1": {
     "description": "Patch notes for a bug fix in version 4.8.0"
   },
@@ -2127,6 +2142,11 @@
   "patchNotesV4_6_0Improvement1": "Die internen Komponenten wurden aktualisiert, um die Sicherheit zu gewährleisten und die Kompatibilität mit den neuesten Geräten sicherzustellen.",
   "patchNotesV4_6_1BugFix1": "Fehler im expansion panel des TokenFolder behoben",
   "patchNotesV4_6_1Improvement1": "Mehrere Abhängigkeiten wurden aktualisiert.",
+  "patchNotesV4_8_1BugFix1": "Ein Fehler wurde behoben, durch den HOTP-Zählerstände verloren gehen konnten, wenn Codes schnell hintereinander erzeugt wurden.",
+  "patchNotesV4_8_1BugFix2": "Ein Fehler wurde behoben, durch den Steam-Token nicht den aktuellen Zeitschritt für ihre Codes verwendet haben.",
+  "patchNotesV4_8_1BugFix3": "Ein Fehler wurde behoben, durch den sich die Farbe des TOTP-Countdowns beim Wechsel des Designs nicht angepasst hat.",
+  "patchNotesV4_8_1Improvement1": "Serverfehler bei Container-Aktionen werden jetzt als Fehlermeldung angezeigt, statt einen Absturz zu verursachen.",
+  "patchNotesV4_8_1NewFeature1": "Push-Anfragen ohne Frage vom Server zeigen jetzt den Aussteller und das Konto des Tokens an.",
   "patchNotesV4_8_0BugFix1": "Das Flackern des Homescreen-Widgets unter Android wurde behoben.",
   "patchNotesV4_8_0BugFix2": "Ein Fehler wurde behoben, durch den die Einstellung zum automatischen Schließen von Push-Anfragen nicht gespeichert wurde.",
   "patchNotesV4_8_0BugFix3": "Ein Fehler beim Ausrollen von Token über die Container-Synchronisierung mit einer 'pia'-Rollout-URL wurde behoben.",

@@ -1230,6 +1230,21 @@
   "@patchNotesV4_6_1Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
+  "@patchNotesV4_8_1BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.8.1"
+  },
+  "@patchNotesV4_8_1BugFix2": {
+    "description": "Patch notes for a bug fix in version 4.8.1"
+  },
+  "@patchNotesV4_8_1BugFix3": {
+    "description": "Patch notes for a bug fix in version 4.8.1"
+  },
+  "@patchNotesV4_8_1Improvement1": {
+    "description": "Patch notes for an improvement in version 4.8.1"
+  },
+  "@patchNotesV4_8_1NewFeature1": {
+    "description": "Patch notes for a new feature in version 4.8.1"
+  },
   "@patchNotesV4_8_0BugFix1": {
     "description": "Patch notes for a bug fix in version 4.8.0"
   },
@@ -2098,6 +2113,11 @@
   "patchNotesV4_6_0Improvement1": "Se han actualizado los componentes internos para mantener la seguridad y garantizar la compatibilidad con los dispositivos más recientes.",
   "patchNotesV4_6_1BugFix1": "Se ha corregido un error en el panel de expansión de TokenFolder.",
   "patchNotesV4_6_1Improvement1": "Se han actualizado varias dependencias.",
+  "patchNotesV4_8_1BugFix1": "Se ha corregido la pérdida de incrementos del contador HOTP al generar códigos en rápida sucesión.",
+  "patchNotesV4_8_1BugFix2": "Se ha corregido que los tokens de Steam no usaran el intervalo de tiempo actual para sus códigos.",
+  "patchNotesV4_8_1BugFix3": "Se ha corregido que el color de la cuenta atrás TOTP no se actualizara al cambiar el tema.",
+  "patchNotesV4_8_1Improvement1": "Los errores del servidor durante las operaciones con contenedores ahora se muestran como mensajes de error en lugar de provocar un fallo.",
+  "patchNotesV4_8_1NewFeature1": "Las solicitudes push sin pregunta del servidor ahora muestran el emisor y la cuenta del token.",
   "patchNotesV4_8_0BugFix1": "Se ha corregido el parpadeo del widget de la pantalla de inicio en Android.",
   "patchNotesV4_8_0BugFix2": "Se ha corregido que no se guardara la opción para cerrar automáticamente las solicitudes push.",
   "patchNotesV4_8_0BugFix3": "Se ha corregido el despliegue de tokens mediante la sincronización de contenedores al usar una URL de despliegue 'pia'.",

@@ -1230,6 +1230,21 @@
   "@patchNotesV4_6_1Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
+  "@patchNotesV4_8_1BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.8.1"
+  },
+  "@patchNotesV4_8_1BugFix2": {
+    "description": "Patch notes for a bug fix in version 4.8.1"
+  },
+  "@patchNotesV4_8_1BugFix3": {
+    "description": "Patch notes for a bug fix in version 4.8.1"
+  },
+  "@patchNotesV4_8_1Improvement1": {
+    "description": "Patch notes for an improvement in version 4.8.1"
+  },
+  "@patchNotesV4_8_1NewFeature1": {
+    "description": "Patch notes for a new feature in version 4.8.1"
+  },
   "@patchNotesV4_8_0BugFix1": {
     "description": "Patch notes for a bug fix in version 4.8.0"
   },
@@ -2098,6 +2113,11 @@
   "patchNotesV4_6_0Improvement1": "Wewnętrzne komponenty zostały zaktualizowane w celu zapewnienia bezpieczeństwa i kompatybilności z najnowszymi urządzeniami.",
   "patchNotesV4_6_1BugFix1": "Naprawiono błąd związany z panelem rozszerzeń TokenFolder.",
   "patchNotesV4_6_1Improvement1": "Zaktualizowano kilka zależności",
+  "patchNotesV4_8_1BugFix1": "Naprawiono utratę zwiększeń licznika HOTP podczas szybkiego generowania kodów jeden po drugim.",
+  "patchNotesV4_8_1BugFix2": "Naprawiono tokeny Steam, które nie używały bieżącego kroku czasowego do generowania kodów.",
+  "patchNotesV4_8_1BugFix3": "Naprawiono brak aktualizacji koloru odliczania TOTP po zmianie motywu.",
+  "patchNotesV4_8_1Improvement1": "Błędy serwera podczas operacji na kontenerach są teraz wyświetlane jako komunikaty o błędach zamiast powodować awarię.",
+  "patchNotesV4_8_1NewFeature1": "Żądania push bez pytania z serwera wyświetlają teraz wystawcę i konto tokenu.",
   "patchNotesV4_8_0BugFix1": "Naprawiono miganie widżetu na ekranie głównym w systemie Android.",
   "patchNotesV4_8_0BugFix2": "Naprawiono niezapisywanie ustawienia automatycznego zamykania żądań push.",
   "patchNotesV4_8_0BugFix3": "Naprawiono wdrażanie tokenów przez synchronizację kontenerów przy użyciu adresu URL wdrożenia 'pia'.",

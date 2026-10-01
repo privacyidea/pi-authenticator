@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.8.1] - 2026.10.01
+ - Push requests without a question from the server now show the issuer and account of the token
+ - Fixed HOTP counter increments getting lost when codes are generated in quick succession
+ - Fixed Steam tokens not using the current time step for their codes
+ - Fixed the color of the TOTP countdown not updating when the theme is changed
+ - Server errors during container operations are now shown as error messages instead of causing a crash
+
 ## [4.8.0] - 2026.08.12
  - Added a visibility toggle to password fields
  - Added a hint to exclude the app from battery optimization to keep the home screen widget up to date
@@ -28,7 +35,7 @@
  - Added support for the new feature 'Push code to phone'
  - Added support for the 'app_force_unlock' policies
  - Error log is now scrolled from bottom to top to see the newest logs first
- - Unified all buttons with a standardized, consistent layout 
+ - Unified all buttons with a standardized, consistent layout
  - Updated several dependencies
 
 ## [4.6.1] - 2025.12.08
@@ -44,7 +51,7 @@
  - The navigation bar is no longer superimposed over the app content on some devices
 
 ## [4.5.2] - 2025.04.25
- - Removed Push Token from the type selection of the "Add Token manually" scrren 
+ - Removed Push Token from the type selection of the "Add Token manually" scrren
 
 ## [4.5.1] - 2025.04.07
  - Added setting to show/hide background image

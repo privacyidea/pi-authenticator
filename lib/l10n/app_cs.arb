@@ -1230,6 +1230,21 @@
   "@patchNotesV4_6_1Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
+  "@patchNotesV4_8_1BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.8.1"
+  },
+  "@patchNotesV4_8_1BugFix2": {
+    "description": "Patch notes for a bug fix in version 4.8.1"
+  },
+  "@patchNotesV4_8_1BugFix3": {
+    "description": "Patch notes for a bug fix in version 4.8.1"
+  },
+  "@patchNotesV4_8_1Improvement1": {
+    "description": "Patch notes for an improvement in version 4.8.1"
+  },
+  "@patchNotesV4_8_1NewFeature1": {
+    "description": "Patch notes for a new feature in version 4.8.1"
+  },
   "@patchNotesV4_8_0BugFix1": {
     "description": "Patch notes for a bug fix in version 4.8.0"
   },
@@ -2098,6 +2113,11 @@
   "patchNotesV4_6_0Improvement1": "Interní komponenty byly aktualizovány, aby byla zachována bezpečnost a zajištěna kompatibilita s nejnovějšími zařízeními.",
   "patchNotesV4_6_1BugFix1": "Opravena chyba v rozbalovacím panelu TokenFolder.",
   "patchNotesV4_6_1Improvement1": "Aktualizováno několik závislostí.",
+  "patchNotesV4_8_1BugFix1": "Opravena chyba, kdy se při rychlém generování kódů za sebou mohlo ztratit navýšení čítače HOTP.",
+  "patchNotesV4_8_1BugFix2": "Opravena chyba, kdy tokeny Steam nepoužívaly pro své kódy aktuální časový krok.",
+  "patchNotesV4_8_1BugFix3": "Opravena chyba, kdy se barva odpočtu TOTP po změně motivu neaktualizovala.",
+  "patchNotesV4_8_1Improvement1": "Chyby serveru při operacích s kontejnery se nyní zobrazují jako chybové zprávy místo pádu aplikace.",
+  "patchNotesV4_8_1NewFeature1": "Push požadavky bez otázky ze serveru nyní zobrazují vydavatele a účet tokenu.",
   "patchNotesV4_8_0BugFix1": "Opraveno blikání widgetu na domovské obrazovce v systému Android.",
   "patchNotesV4_8_0BugFix2": "Opraveno neukládání nastavení pro automatické zavírání push požadavků.",
   "patchNotesV4_8_0BugFix3": "Opraveno zavádění tokenů přes synchronizaci kontejnerů při použití adresy URL pro zavedení 'pia'.",
