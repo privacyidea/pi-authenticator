@@ -14,7 +14,7 @@ publish_to: none
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 4.8.0+408002 # TODO Set the right version number
+version: 4.8.1+408101 # TODO Set the right version number
 
 # version: major.minor.build          + 2x major|2x minor|3x build
 # version: version number             + build number (optional)
@@ -48,7 +48,9 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   flutter_riverpod: ^3.3.2
-  flutter_secure_storage: ^11.0.0
+  # Stays on v10: v11 no longer reads EncryptedSharedPreferences data, so users
+  # who skip the v10 migration (app versions before 4.6.2) would lose their tokens.
+  flutter_secure_storage: ^10.3.1
   flutter_slidable: ^4.0.0
   flutter_svg: ^2.0.16
   flutter_zxing: ^2.3.0

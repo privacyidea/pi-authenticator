@@ -462,5 +462,72 @@ void _testPushRequestNotifier() {
         expect(container.read(statusProvider).current, isNotNull);
       },
     );
+
+    test(
+      'accept does not retry after a timeout because the request may have reached the server',
+      () async {
+        final container = ProviderContainer();
+        addTearDown(container.dispose);
+        final mockIoClient = MockPrivacyideaIOClient();
+        final mockPushProvider = MockPushProvider();
+        final mockRsaUtils = MockRsaUtils();
+        final mockPushRepo = MockPushRequestRepository();
+        final pushProvider = pushRequestProviderOf(
+          ioClient: mockIoClient,
+          rsaUtils: mockRsaUtils,
+          pushProvider: mockPushProvider,
+          pushRepo: mockPushRepo,
+        );
+
+        final pr = PushDefaultRequest(
+          title: 'title',
+          question: 'question',
+          uri: Uri.parse('http://example.com'),
+          nonce: 'nonce',
+          sslVerify: false,
+          expirationDate: DateTime.now().add(const Duration(minutes: 5)),
+          signature: 'signature',
+          serial: 'serial',
+        );
+
+        final before = PushRequestState(
+          pushRequests: [pr],
+          knownPushRequests: CustomIntBuffer(list: [pr.id]),
+        );
+
+        when(mockPushRepo.loadState()).thenAnswer((_) async => before);
+        when(mockPushRepo.saveState(any)).thenAnswer((_) async {});
+        when(
+          mockRsaUtils.trySignWithToken(any, any),
+        ).thenAnswer((_) async => 'signature');
+        when(
+          mockIoClient.doPost(
+            url: anyNamed('url'),
+            body: anyNamed('body'),
+            sslVerify: anyNamed('sslVerify'),
+          ),
+        ).thenAnswer(
+          (_) async =>
+              ResponseBuilder.fromStatusCode(408, mayHaveBeenDelivered: true),
+        );
+
+        await container.read(pushProvider.future);
+        final response = await container
+            .read(pushProvider.notifier)
+            .accept(PushToken(serial: 'serial', id: 'id'), pr);
+
+        expect(response, isNull);
+        final finalState = await container.read(pushProvider.future);
+        expect(finalState.pushRequests, [pr]);
+        verify(
+          mockIoClient.doPost(
+            url: anyNamed('url'),
+            body: anyNamed('body'),
+            sslVerify: anyNamed('sslVerify'),
+          ),
+        ).called(1);
+        expect(container.read(statusProvider).current, isNotNull);
+      },
+    );
   });
 }
