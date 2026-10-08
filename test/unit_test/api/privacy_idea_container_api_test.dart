@@ -17,7 +17,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 import 'dart:convert';
 
 import 'package:cryptography/cryptography.dart';
@@ -33,15 +32,20 @@ import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/enums/ec_key_algorithm.dart';
 import 'package:privacyidea_authenticator/model/enums/rollout_state.dart';
 import 'package:privacyidea_authenticator/model/enums/sync_state.dart';
+import 'package:privacyidea_authenticator/model/enums/token_origin_source_type.dart';
+import 'package:privacyidea_authenticator/model/exception_errors/error_codes.dart';
 import 'package:privacyidea_authenticator/model/exception_errors/pi_server_result_error.dart';
 import 'package:privacyidea_authenticator/model/exception_errors/response_error.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/token_state.dart';
 import 'package:privacyidea_authenticator/model/token_container.dart';
+import 'package:privacyidea_authenticator/model/token_import/token_origin_data.dart';
 import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
+import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
 import 'package:privacyidea_authenticator/utils/ecc_utils.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import 'package:privacyidea_authenticator/widgets/dialog_widgets/container_dialogs/initial_token_assignment_dialog.dart';
 import 'package:privacyidea_authenticator/widgets/select_tokens_widget.dart';
 
@@ -49,7 +53,10 @@ import '../../tests_app_wrapper.dart';
 import '../../tests_app_wrapper.mocks.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   _testPrivacyIdeaContainerApi();
+  _testContainerApiServerErrors();
+  _testContainerApiSyncMerge();
 }
 
 /// Synchronizes the container and selects all tokens if the assignment dialog is shown.
@@ -1635,6 +1642,1627 @@ void _testPrivacyIdeaContainerApi() {
         () => containerApi.unregister(tokenContainer),
         throwsA(isA<Exception>()),
       );
+    });
+  });
+}
+
+// ---------------------------------------------------------------------------
+// PiContainerApi reports server errors as PiServerResultError
+// ---------------------------------------------------------------------------
+
+const _privateClientKey =
+    "-----BEGIN EC PRIVATE KEY-----\n"
+    "MIGkAgEBBDCleRofxXJwTtc0HUeE/Af8P4depFM0KY7oT4hMQdt3geK5uDWEOZn4\n"
+    "DaCMTGrsSP2gBwYFK4EEACKhZANiAATxezSrY8++QiUpNxCQzEwOe//i0fd0OqCU\n"
+    "rjZoc3XWhP7AkOfXVwYnlvm667ajB94+A0POVPCErcG/HbHk0Gb8lbO1Q5pYjb3N\n"
+    "3ATXIlK0HJJqETYIgZ8pzVF9wBKnn/g=\n"
+    "-----END EC PRIVATE KEY-----";
+const _publicClientKey =
+    "-----BEGIN PUBLIC KEY-----\n"
+    "MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE8Xs0q2PPvkIlKTcQkMxMDnv/4tH3dDqg\n"
+    "lK42aHN11oT+wJDn11cGJ5b5uuu2owfePgNDzlTwhK3Bvx2x5NBm/JWztUOaWI29\n"
+    "zdwE1yJStBySahE2CIGfKc1RfcASp5/4\n"
+    "-----END PUBLIC KEY-----";
+
+TokenContainerFinalized _serverErrorContainer() => TokenContainerFinalized(
+  issuer: 'privacyIDEA',
+  nonce: 'b33d3a11c8d1b45f19640035e27944ccf0b2383d',
+  timestamp: DateTime(2024, 12, 6, 11, 14, 26, 885, 409),
+  serverUrl: Uri.parse('http://example.com'),
+  serial: 'SMPH00067A2F',
+  ecKeyAlgorithm: EcKeyAlgorithm.secp384r1,
+  hashAlgorithm: Algorithms.SHA256,
+  sslVerify: false,
+  publicClientKey: _publicClientKey,
+  privateClientKey: _privateClientKey,
+  policies: ContainerPolicies(
+    rolloverAllowed: true,
+    initialTokenAssignment: true,
+    disabledTokenDeletion: false,
+    disabledUnregister: false,
+  ),
+  syncState: SyncState.completed,
+);
+
+String _secp384r1ChallengeJson() => jsonEncode({
+  'id': 5,
+  'jsonrpc': '2.0',
+  'result': {
+    'status': true,
+    'value': {
+      'enc_key_algorithm': 'secp384r1',
+      'nonce': 'b33d3a11c8d1b45f19640035e27944ccf0b2383d',
+      'time_stamp': '2024-12-06T11:14:26.885409+00:00',
+    },
+  },
+  'time': 1.0,
+  'version': 'privacyIDEA 3.6.2',
+  'versionnumber': '3.6.2',
+  'detail': null,
+  'signature': 'signature',
+});
+
+/// Answers the challenge request with a valid challenge (unless
+/// [challengeResponse] is given) and every other request with [actionResponse].
+MockPrivacyideaIOClient _clientWith(
+  Response actionResponse, {
+  Response? challengeResponse,
+}) {
+  final mockIoClient = MockPrivacyideaIOClient();
+  when(
+    mockIoClient.doPost(
+      url: anyNamed('url'),
+      body: anyNamed('body'),
+      sslVerify: anyNamed('sslVerify'),
+      expectedErrorStatusCodes: anyNamed('expectedErrorStatusCodes'),
+    ),
+  ).thenAnswer((invocation) async {
+    final url = invocation.namedArguments[const Symbol('url')] as Uri;
+    if (url.path == '/container/challenge') {
+      return challengeResponse ?? Response(_secp384r1ChallengeJson(), 200);
+    }
+    return actionResponse;
+  });
+  return mockIoClient;
+}
+
+void _testContainerApiServerErrors() {
+  group('PiContainerApi reports server errors as PiServerResultError', () {
+    test(
+      'getRolloverQrData: non-JSON 200 body throws PiServerResultError (jsonParseError)',
+      () async {
+        final api = PiContainerApi(
+          ioClient: _clientWith(Response('Bad Gateway', 200)),
+        );
+        await expectLater(
+          api.getRolloverQrData(_serverErrorContainer()),
+          throwsA(
+            isA<PiServerResultError>()
+                .having((e) => e.code, 'code', InAppErrorCodes.jsonParseError)
+                .having((e) => e.message, 'message', 'Bad Gateway'),
+          ),
+        );
+      },
+    );
+
+    test(
+      'getRolloverQrData: empty 502 body throws PiServerResultError, not a null check error',
+      () async {
+        final api = PiContainerApi(ioClient: _clientWith(Response('', 502)));
+        await expectLater(
+          api.getRolloverQrData(_serverErrorContainer()),
+          throwsA(
+            isA<PiServerResultError>().having(
+              (e) => e.message,
+              'message',
+              'Empty response body (HTTP 502)',
+            ),
+          ),
+        );
+      },
+    );
+
+    test(
+      'getRolloverQrData: privacyIDEA error JSON throws the server error code',
+      () async {
+        final api = PiContainerApi(
+          ioClient: _clientWith(
+            Response(_errorJson(3000, 'Rollover denied'), 200),
+          ),
+        );
+        await expectLater(
+          api.getRolloverQrData(_serverErrorContainer()),
+          throwsA(
+            isA<PiServerResultError>()
+                .having((e) => e.code, 'code', 3000)
+                .having((e) => e.message, 'message', 'Rollover denied'),
+          ),
+        );
+      },
+    );
+
+    test(
+      'unregister: non-JSON body after challenge throws PiServerResultError',
+      () async {
+        final api = PiContainerApi(
+          ioClient: _clientWith(Response('<html>oops</html>', 200)),
+        );
+        await expectLater(
+          api.unregister(_serverErrorContainer()),
+          throwsA(
+            isA<PiServerResultError>()
+                .having((e) => e.code, 'code', InAppErrorCodes.jsonParseError)
+                .having(
+                  (e) => e.message,
+                  'message',
+                  'Invalid server response (HTTP 200)',
+                ),
+          ),
+        );
+      },
+    );
+
+    test(
+      'unregister: server error JSON with HTTP 200 throws the server error',
+      () async {
+        final api = PiContainerApi(
+          ioClient: _clientWith(Response(_errorJson(3001, 'Nope'), 200)),
+        );
+        await expectLater(
+          api.unregister(_serverErrorContainer()),
+          throwsA(
+            isA<PiServerResultError>().having((e) => e.code, 'code', 3001),
+          ),
+        );
+      },
+    );
+  });
+
+  group('PiContainerApi challenge request', () {
+    test('passes notFound as expected error status code', () async {
+      final mockIoClient = _clientWith(
+        Response('', 200),
+        challengeResponse: Response(_errorJson(3002, 'Gone'), 404),
+      );
+      final api = PiContainerApi(ioClient: mockIoClient);
+      await expectLater(
+        api.getRolloverQrData(_serverErrorContainer()),
+        throwsA(isA<PiServerResultError>()),
+      );
+      final captured = verify(
+        mockIoClient.doPost(
+          url: anyNamed('url'),
+          body: anyNamed('body'),
+          sslVerify: anyNamed('sslVerify'),
+          expectedErrorStatusCodes: captureAnyNamed('expectedErrorStatusCodes'),
+        ),
+      ).captured;
+      expect(captured.first as Set<int>, contains(404));
+    });
+
+    test(
+      '404 with privacyIDEA error JSON yields the server error code',
+      () async {
+        final api = PiContainerApi(
+          ioClient: _clientWith(
+            Response('', 200),
+            challengeResponse: Response(_errorJson(3002, 'Gone'), 404),
+          ),
+        );
+        await expectLater(
+          api.getRolloverQrData(_serverErrorContainer()),
+          throwsA(
+            isA<PiServerResultError>()
+                .having((e) => e.code, 'code', 3002)
+                .having((e) => e.message, 'message', 'Gone'),
+          ),
+        );
+      },
+    );
+
+    test('404 with non-JSON body yields resourceNotFound', () async {
+      final api = PiContainerApi(
+        ioClient: _clientWith(
+          Response('', 200),
+          challengeResponse: Response('Not Found', 404),
+        ),
+      );
+      await expectLater(
+        api.getRolloverQrData(_serverErrorContainer()),
+        throwsA(
+          isA<PiServerResultError>().having(
+            (e) => e.code,
+            'code',
+            PiServerResultErrorCodes.resourceNotFound,
+          ),
+        ),
+      );
+    });
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Tests for the merge logic of PiContainerApi.sync(): which local tokens are
+// deleted, updated or left alone, how server tokens are matched by serial or by
+// otp values, what is sent to the server and how broken answers are reported.
+//
+// The server answers are built here: a fresh X25519 key pair plays the server and
+// the container dict is encrypted with AES-GCM for the (fixed) client key, exactly
+// like PiContainerApi._getContainerDict expects it.
+// ---------------------------------------------------------------------------
+
+const _containerSerial = 'SMPH00067A2F';
+const _challengeNonce = 'b33d3a11c8d1b45f19640035e27944ccf0b2383d';
+const _challengeTimeStamp = '2024-12-06T11:14:26.885409+00:00';
+
+// Distinct valid base32 secrets, so every token has distinct otp values.
+const _secret1 = 'JBSWY3DPEHPK3PXP';
+const _secret2 = 'GEZDGNBVGY3TQOJQ';
+const _secret3 = 'MFRGGZDFMZTWQ2LK';
+const _secret4 = 'KWS3LTJ2L7NW4KGHL5W5OABWR4PLJIDL';
+
+TokenContainerFinalized _container({
+  bool sslVerify = true,
+  bool initialTokenAssignment = true,
+}) => TokenContainerFinalized(
+  issuer: 'privacyIDEA',
+  nonce: _challengeNonce,
+  timestamp: DateTime(2024, 12, 6, 11, 14, 26, 885, 409),
+  serverUrl: Uri.parse('http://example.com'),
+  serial: _containerSerial,
+  ecKeyAlgorithm: EcKeyAlgorithm.secp384r1,
+  hashAlgorithm: Algorithms.SHA256,
+  sslVerify: sslVerify,
+  publicClientKey: _publicClientKey,
+  privateClientKey: _privateClientKey,
+  policies: ContainerPolicies(
+    rolloverAllowed: true,
+    initialTokenAssignment: initialTokenAssignment,
+    disabledTokenDeletion: false,
+    disabledUnregister: false,
+  ),
+  syncState: SyncState.completed,
+);
+
+/// A HOTP token. With [containerSerial] it is a token that is linked to the container.
+HOTPToken _hotp(
+  String id, {
+  String? serial,
+  String? containerSerial,
+  String secret = _secret1,
+  int counter = 1,
+  List<String>? checkedContainer,
+}) => HOTPToken(
+  id: id,
+  label: 'label-$id',
+  issuer: 'privacyIDEA',
+  serial: serial,
+  counter: counter,
+  algorithm: Algorithms.SHA1,
+  digits: 6,
+  secret: secret,
+  containerSerial: containerSerial,
+  // A growable list per token, the dialog adds the container serial to it.
+  checkedContainer: checkedContainer ?? <String>[],
+  origin: containerSerial == null
+      ? null
+      : TokenOriginData(
+          source: TokenOriginSourceType.container,
+          appName: 'privacyIDEA',
+          data: '',
+          isPrivacyIdeaToken: true,
+        ),
+);
+
+HOTPToken _linked(String id, String serial, {String secret = _secret1}) =>
+    _hotp(id, serial: serial, containerSerial: _containerSerial, secret: secret);
+
+List<String> _otpsOf(HOTPToken token) => [token.otpValue, token.nextValue];
+
+/// What a privacyIDEA server returns for a token in tokens.update.
+Map<String, dynamic> _serverToken(
+  String serial, {
+  int counter = 0,
+  List<String>? otp,
+}) => {
+  'serial': serial,
+  'tokentype': 'hotp',
+  'counter': counter,
+  'otplen': 6,
+  'active': true,
+  'otp': ?otp,
+};
+
+Map<String, dynamic> _dict({
+  Object? add = const <Object?>[],
+  Object? update = const <Object?>[],
+}) => {
+  'container': {'serial': _containerSerial, 'type': 'smartphone'},
+  'tokens': {'add': add, 'update': update},
+};
+
+String _otpauthHotp(String label, {String secret = _secret2}) =>
+    'otpauth://hotp/privacyIDEA:$label?secret=$secret&counter=1&digits=6'
+    '&algorithm=SHA1&issuer=privacyIDEA';
+
+String _piJson({required bool status, Object? value, Map<String, dynamic>? error}) =>
+    jsonEncode({
+      'id': 5,
+      'jsonrpc': '2.0',
+      'result': {'status': status, 'value': ?value, 'error': ?error},
+      'time': 1.0,
+      'version': 'privacyIDEA 3.6.2',
+      'versionnumber': '3.6.2',
+      'detail': null,
+      'signature': 'signature',
+    });
+
+String _challengeJson() => _piJson(
+  status: true,
+  value: {
+    'enc_key_algorithm': 'x25519',
+    'nonce': _challengeNonce,
+    'time_stamp': _challengeTimeStamp,
+  },
+);
+
+String _errorJson(int code, String message) =>
+    _piJson(status: false, error: {'code': code, 'message': message});
+
+/// Encrypts [payload] (or [rawPlaintext]) for the given client key like the server does.
+Future<Response> _encryptedSyncResponse(
+  SimpleKeyPair clientKey, {
+  Object? payload,
+  String? rawPlaintext,
+  bool tamperTag = false,
+  bool tamperCipherText = false,
+  bool wrongServerKey = false,
+}) async {
+  final x25519 = X25519();
+  final serverKey = await x25519.newKeyPair();
+  final sharedKey = await x25519.sharedSecretKey(
+    keyPair: serverKey,
+    remotePublicKey: await clientKey.extractPublicKey(),
+  );
+  final box = await AesGcm.with256bits(nonceLength: 16).encrypt(
+    utf8.encode(rawPlaintext ?? jsonEncode(payload)),
+    secretKey: sharedKey,
+  );
+  final tag = List<int>.from(box.mac.bytes);
+  if (tamperTag) tag[0] ^= 0xFF;
+  final cipherText = List<int>.from(box.cipherText);
+  if (tamperCipherText) cipherText[0] ^= 0xFF;
+  final announcedKey = wrongServerKey
+      ? await (await x25519.newKeyPair()).extractPublicKey()
+      : await serverKey.extractPublicKey();
+  return Response(
+    _piJson(
+      status: true,
+      value: {
+        'container_dict_server': base64UrlEncode(cipherText),
+        'encryption_algorithm': 'AES',
+        'encryption_params': {
+          'algorithm': 'AES',
+          'mode': 'GCM',
+          'init_vector': base64UrlEncode(box.nonce),
+          'tag': base64UrlEncode(tag),
+        },
+        'policies': {
+          'disable_client_container_unregister': true,
+          'disable_client_token_deletion': false,
+          'container_client_rollover': false,
+          'initially_add_tokens_to_container': false,
+        },
+        'public_server_key': base64UrlEncode(announcedKey.bytes),
+        'server_url': 'http://example.com/container/synchronize',
+      },
+    ),
+    200,
+  );
+}
+
+/// A fake privacyIDEA server behind the mocked io client. Records every request.
+class _Server {
+  _Server({Response? challenge, this.sync})
+    : challenge = challenge ?? Response(_challengeJson(), 200) {
+    when(
+      client.doPost(
+        url: anyNamed('url'),
+        body: anyNamed('body'),
+        sslVerify: anyNamed('sslVerify'),
+        expectedErrorStatusCodes: anyNamed('expectedErrorStatusCodes'),
+      ),
+    ).thenAnswer((invocation) async {
+      final url = invocation.namedArguments[const Symbol('url')] as Uri;
+      final body = Map<String, String?>.from(
+        invocation.namedArguments[const Symbol('body')] as Map,
+      );
+      if (url.path == '/container/challenge') {
+        challengeBodies.add(body);
+        return this.challenge;
+      }
+      if (url.path == '/container/synchronize') {
+        syncBodies.add(body);
+        return sync ?? Response('no sync answer configured', 500);
+      }
+      fail('Unexpected request to $url');
+    });
+  }
+
+  final MockPrivacyideaIOClient client = MockPrivacyideaIOClient();
+  final Response challenge;
+  final Response? sync;
+  final List<Map<String, String?>> challengeBodies = [];
+  final List<Map<String, String?>> syncBodies = [];
+
+  /// The tokens that the client sent in its (only) sync request.
+  List<Map<String, dynamic>> get sentTokens {
+    expect(syncBodies, hasLength(1), reason: 'exactly one sync request');
+    final dict =
+        jsonDecode(syncBodies.single[TokenContainer.SYNC_DICT_CLIENT]!)
+            as Map<String, dynamic>;
+    return (dict['tokens'] as List).cast<Map<String, dynamic>>();
+  }
+}
+
+/// A server answer that is encrypted for [key], plus the client side of one sync.
+class _Run {
+  _Run(this.key, this.server);
+
+  final SimpleKeyPair key;
+  final _Server server;
+
+  Future<ContainerSyncUpdates?> sync(
+    List<Token> tokens, {
+    TokenContainerFinalized? container,
+    bool? isInitSync = false,
+  }) => PiContainerApi(ioClient: server.client).sync(
+    container ?? _container(),
+    TokenState(tokens: tokens),
+    withX25519Key: key,
+    isInitSync: isInitSync,
+  );
+}
+
+/// Prepares a sync where the server answers with [payload] (encrypted).
+Future<_Run> _runWith(
+  Object? payload, {
+  String? rawPlaintext,
+  bool tamperTag = false,
+  bool tamperCipherText = false,
+  bool wrongServerKey = false,
+  Response? challenge,
+}) async {
+  final key = await X25519().newKeyPair();
+  final answer = await _encryptedSyncResponse(
+    key,
+    payload: payload,
+    rawPlaintext: rawPlaintext,
+    tamperTag: tamperTag,
+    tamperCipherText: tamperCipherText,
+    wrongServerKey: wrongServerKey,
+  );
+  return _Run(key, _Server(challenge: challenge, sync: answer));
+}
+
+/// Prepares a sync where the server answers with an arbitrary http response.
+Future<_Run> _runWithResponse(Response sync, {Response? challenge}) async =>
+    _Run(await X25519().newKeyPair(), _Server(challenge: challenge, sync: sync));
+
+Future<Object?> _errorOf(Future<Object?> future) async {
+  try {
+    await future;
+    return null;
+  } catch (e) {
+    return e;
+  }
+}
+
+/// Errors that show that the code did not understand the data, instead of reporting it.
+final Matcher _isCrash = anyOf(
+  isA<TypeError>(),
+  isA<NoSuchMethodError>(),
+  isA<RangeError>(),
+  isA<AssertionError>(),
+);
+
+/// The sync must either report the problem with a clean error or finish without deleting
+/// anything. It must never fail with a cast / null check / range error.
+Future<void> _expectNoCrash(Future<ContainerSyncUpdates?> Function() run) async {
+  ContainerSyncUpdates? result;
+  Object? error;
+  try {
+    result = await run();
+  } catch (e) {
+    error = e;
+  }
+  expect(error, isNot(_isCrash), reason: 'crashed with $error');
+  if (error == null) {
+    expect(
+      result?.deletedTokens,
+      anyOf(isNull, isEmpty),
+      reason: 'a malformed answer must not delete tokens',
+    );
+  }
+}
+
+MockTokenRepository _tokenRepo(List<Token> tokens) {
+  final repo = MockTokenRepository();
+  when(repo.loadTokens()).thenAnswer((_) async => tokens);
+  when(repo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
+  return repo;
+}
+
+enum _Pick { all, some, none, cancel, barrier }
+
+class _DialogOutcome {
+  _DialogOutcome(this.result, this.error);
+  final ContainerSyncUpdates? result;
+  final Object? error;
+}
+
+/// Runs a sync that shows the InitialTokenAssignmentDialog and answers it.
+///
+/// [select] are the ids of the tokens that are selected for [_Pick.some].
+Future<_DialogOutcome> _syncWithDialog(
+  WidgetTester tester, {
+  required _Run run,
+  required List<Token> tokens,
+  required _Pick pick,
+  Set<String> select = const {},
+  TokenContainerFinalized? container,
+  MockTokenRepository? tokenRepo,
+}) async {
+  tester.view.physicalSize = const Size(800, 2600);
+  tester.view.devicePixelRatio = 1.0;
+  addTearDown(tester.view.resetPhysicalSize);
+  addTearDown(tester.view.resetDevicePixelRatio);
+  final repo = tokenRepo ?? _tokenRepo(tokens);
+  await tester.pumpWidget(
+    TestsAppWrapper(
+      overrides: [
+        tokenProvider.overrideWith(() => TokenNotifier(repoOverride: repo)),
+      ],
+      child: const SizedBox(),
+    ),
+  );
+
+  ContainerSyncUpdates? result;
+  Object? error;
+  final done = run
+      .sync(tokens, container: container ?? _container(), isInitSync: true)
+      .then((v) => result = v, onError: (Object e) => error = e);
+  await tester.pump();
+  await tester.pump(const Duration(milliseconds: 500));
+  expect(find.byType(InitialTokenAssignmentDialog), findsOneWidget);
+  final localizations = AppLocalizations.of(
+    tester.element(find.byType(InitialTokenAssignmentDialog)),
+  )!;
+
+  switch (pick) {
+    case _Pick.cancel:
+      await tester.tap(find.text(localizations.cancel));
+    case _Pick.barrier:
+      await tester.tapAt(const Offset(4, 4));
+    case _Pick.all || _Pick.some || _Pick.none:
+      final selectTokens = tester.widget<SelectTokensWidget>(
+        find.byType(SelectTokensWidget),
+      );
+      final selected = selectTokens.tokens
+          .where(
+            (t) =>
+                pick == _Pick.all ||
+                (pick == _Pick.some && select.contains(t.id)),
+          )
+          .toSet();
+      final unselected = selectTokens.tokens.toSet()..removeAll(selected);
+      selectTokens.onSelect(selected, unselected);
+      await tester.pump();
+      await tester.tap(
+        find.text(
+          selected.isEmpty
+              ? localizations.initialTokenAssignmentDialogButtonZero
+              : localizations.initialTokenAssignmentDialogButtonSelected,
+        ),
+      );
+  }
+  await tester.pump();
+  await tester.pump(const Duration(milliseconds: 500));
+  await done;
+  return _DialogOutcome(result, error);
+}
+
+void _testContainerApiSyncMerge() {
+  group('sync: tokens that are deleted (_handlePiTokens)', () {
+    test(
+      'a token of this container that is missing on the server is deleted, the others are merged',
+      () async {
+        final tokenA = _linked('idA', 'OATH0000000A');
+        final tokenB = _linked('idB', 'OATH0000000B', secret: _secret2);
+        final run = await _runWith(
+          _dict(update: [_serverToken('OATH0000000B', counter: 4)]),
+        );
+
+        final result = await run.sync([tokenA, tokenB]);
+
+        expect(result, isNotNull);
+        expect(result!.deletedTokens.map((t) => t.id), ['idA']);
+        expect(result.deletedTokens.single.serial, 'OATH0000000A');
+        expect(result.deletedTokens.single.containerSerial, _containerSerial);
+        expect(result.updatedTokens.map((t) => t.id), ['idB']);
+        final updated = result.updatedTokens.single as HOTPToken;
+        expect(updated.serial, 'OATH0000000B');
+        expect(updated.counter, 4, reason: 'counter of the server wins');
+        expect(updated.secret, _secret2, reason: 'secret is kept locally');
+        expect(updated.containerSerial, _containerSerial);
+        expect(result.newTokens, isEmpty);
+      },
+    );
+
+    test('an empty update list deletes every token of the container', () async {
+      final run = await _runWith(_dict());
+
+      final result = await run.sync([
+        _linked('idA', 'OATH0000000A'),
+        _linked('idB', 'OATH0000000B', secret: _secret2),
+      ]);
+
+      expect(result!.deletedTokens.map((t) => t.id), unorderedEquals(['idA', 'idB']));
+      expect(result.updatedTokens, isEmpty);
+    });
+
+    test(
+      'a token of another container is not sent, not deleted and not updated',
+      () async {
+        final mine = _linked('idMine', 'OATH0000000A');
+        final foreign = _hotp(
+          'idForeign',
+          serial: 'OATH0000000F',
+          containerSerial: 'SMPH0000OTHER',
+          secret: _secret3,
+        );
+        final run = await _runWith(_dict());
+
+        final result = await run.sync([mine, foreign]);
+
+        expect(result!.deletedTokens.map((t) => t.id), ['idMine']);
+        expect(result.updatedTokens, isEmpty);
+        expect(
+          run.server.sentTokens.map((t) => t['serial']),
+          ['OATH0000000A'],
+          reason: 'the foreign token must not be announced to this container',
+        );
+      },
+    );
+
+    test(
+      'an unlinked token with serial that the server does not know is not deleted',
+      () async {
+        final candidate = _hotp('idU', serial: 'OATH000000UU');
+        final run = await _runWith(_dict());
+
+        final result = await run.sync([candidate], isInitSync: true);
+
+        expect(result, isNotNull);
+        expect(result!.deletedTokens, isEmpty);
+        expect(result.updatedTokens, isEmpty);
+        expect(result.initAssignmentChecked.map((t) => t.id), ['idU']);
+        expect(run.server.sentTokens, [
+          {'serial': 'OATH000000UU', 'tokentype': 'HOTP'},
+        ]);
+      },
+    );
+
+    test('an unlinked token with serial that the server knows is linked to the container', () async {
+      final candidate = _hotp('idU', serial: 'OATH000000UU', secret: _secret3);
+      final run = await _runWith(
+        _dict(update: [_serverToken('OATH000000UU', counter: 2)]),
+      );
+
+      final result = await run.sync([candidate], isInitSync: true);
+
+      expect(result!.deletedTokens, isEmpty);
+      final updated = result.updatedTokens.single as HOTPToken;
+      expect(updated.id, 'idU');
+      expect(updated.containerSerial, _containerSerial);
+      expect(updated.origin?.source, TokenOriginSourceType.container);
+      expect(updated.origin?.isPrivacyIdeaToken, isTrue);
+      expect(updated.secret, _secret3);
+      expect(updated.counter, 2);
+    });
+
+    test(
+      'duplicate server entries with the same serial update the token once and delete nothing',
+      () async {
+        final run = await _runWith(
+          _dict(
+            update: [
+              _serverToken('OATH0000000A', counter: 7),
+              _serverToken('OATH0000000A', counter: 9),
+            ],
+          ),
+        );
+
+        final result = await run.sync([_linked('idA', 'OATH0000000A')]);
+
+        expect(result!.deletedTokens, isEmpty);
+        expect(result.updatedTokens, hasLength(1));
+        expect(result.updatedTokens.single.id, 'idA');
+        expect(
+          (result.updatedTokens.single as HOTPToken).counter,
+          anyOf(7, 9),
+        );
+      },
+    );
+
+    test('a server token that no local token has is ignored', () async {
+      final run = await _runWith(
+        _dict(update: [_serverToken('OATH0000000A'), _serverToken('OATH00UNKNOWN')]),
+      );
+
+      final result = await run.sync([_linked('idA', 'OATH0000000A')]);
+
+      expect(result!.updatedTokens.map((t) => t.id), ['idA']);
+      expect(result.newTokens, isEmpty);
+      expect(result.deletedTokens, isEmpty);
+    });
+
+    test(
+      'a linked token is updated, not deleted, when the server also lists otp values for it',
+      skip:
+          'BUG: privacy_idea_container_api.dart:136 routes every server entry with an otp key to the otp matcher, so a linked token whose server entry also carries otp is not found by serial and is deleted locally (only if the server sends otp for serial tokens)',
+      () async {
+        final linked = _linked('idA', 'OATH0000000A');
+        final run = await _runWith(
+          _dict(
+            update: [
+              _serverToken('OATH0000000A', counter: 3, otp: _otpsOf(linked)),
+            ],
+          ),
+        );
+
+        final result = await run.sync([linked]);
+
+        expect(result!.deletedTokens, isEmpty);
+        expect(result.updatedTokens.map((t) => t.id), ['idA']);
+      },
+    );
+  });
+
+  group('sync: unlinked tokens without serial (_handleMaybePiTokens)', () {
+    // Fresh tokens per test: the dialog adds the container serial to the checkedContainer list in place.
+    late HOTPToken candidate1;
+    late HOTPToken candidate2;
+    setUp(() {
+      candidate1 = _hotp('idC1');
+      candidate2 = _hotp('idC2', secret: _secret2);
+    });
+
+    testWidgets('a server token whose otp list matches no local token is skipped', (
+      tester,
+    ) async {
+      final run = await _runWith(
+        _dict(
+          update: [
+            _serverToken('OATH000000XX', otp: ['000000', '111111']),
+          ],
+        ),
+      );
+
+      final outcome = await _syncWithDialog(
+        tester,
+        run: run,
+        tokens: [candidate1, candidate2],
+        pick: _Pick.all,
+      );
+
+      expect(outcome.error, isNull);
+      expect(outcome.result!.updatedTokens, isEmpty);
+      expect(outcome.result!.newTokens, isEmpty);
+      expect(outcome.result!.deletedTokens, isEmpty);
+      expect(outcome.result!.initAssignmentChecked.map((t) => t.id), unorderedEquals(['idC1', 'idC2']));
+    });
+
+    testWidgets('only the local token with the same otp values is merged and gets the container', (
+      tester,
+    ) async {
+      final run = await _runWith(
+        _dict(
+          update: [
+            _serverToken('OATH00000001', counter: 5, otp: _otpsOf(candidate1)),
+            _serverToken('OATH000000XX', otp: ['000000', '111111']),
+          ],
+        ),
+      );
+
+      final outcome = await _syncWithDialog(
+        tester,
+        run: run,
+        tokens: [candidate1, candidate2],
+        pick: _Pick.all,
+      );
+
+      expect(outcome.error, isNull);
+      final updated = outcome.result!.updatedTokens.single as HOTPToken;
+      expect(updated.id, 'idC1');
+      expect(updated.serial, 'OATH00000001');
+      expect(updated.containerSerial, _containerSerial);
+      expect(updated.origin?.source, TokenOriginSourceType.container);
+      expect(updated.origin?.isPrivacyIdeaToken, isTrue);
+      expect(updated.secret, _secret1, reason: 'the secret never comes from the server');
+      expect(updated.label, 'label-idC1');
+      expect(outcome.result!.deletedTokens, isEmpty);
+    });
+
+    for (final variant in <(String, List<String> Function(HOTPToken))>[
+      ('reordered', (t) => [t.nextValue, t.otpValue]),
+      ('partial (only the first value)', (t) => [t.otpValue]),
+      ('extended by a third value', (t) => [t.otpValue, t.nextValue, '123456']),
+    ]) {
+      testWidgets('an otp list that is ${variant.$1} does not match', (tester) async {
+        final run = await _runWith(
+          _dict(update: [_serverToken('OATH00000001', otp: variant.$2(candidate1))]),
+        );
+
+        final outcome = await _syncWithDialog(
+          tester,
+          run: run,
+          tokens: [candidate1],
+          pick: _Pick.all,
+        );
+
+        expect(outcome.error, isNull);
+        expect(outcome.result!.updatedTokens, isEmpty);
+        expect(outcome.result!.deletedTokens, isEmpty);
+      });
+    }
+
+    testWidgets('two local tokens with identical otp values: one server entry merges exactly one', (
+      tester,
+    ) async {
+      final twin1 = _hotp('idT1', secret: _secret3);
+      final twin2 = _hotp('idT2', secret: _secret3);
+      final run = await _runWith(
+        _dict(update: [_serverToken('OATH000000T1', otp: _otpsOf(twin1))]),
+      );
+
+      final outcome = await _syncWithDialog(
+        tester,
+        run: run,
+        tokens: [twin1, twin2],
+        pick: _Pick.all,
+      );
+
+      expect(outcome.error, isNull);
+      expect(outcome.result!.updatedTokens, hasLength(1));
+      expect(outcome.result!.updatedTokens.single.serial, 'OATH000000T1');
+      expect(outcome.result!.updatedTokens.single.id, anyOf('idT1', 'idT2'));
+      expect(outcome.result!.deletedTokens, isEmpty);
+    });
+
+    testWidgets(
+      'two local tokens with identical otp values and two server entries: each server token gets its own local token',
+      // BUG: privacy_idea_container_api.dart:562 matches every server entry against the first local token with equal otp values, so both entries merge into the same local token (same id, two serials) and the twin is never linked
+      skip: true,
+      (tester) async {
+        final twin1 = _hotp('idT1', secret: _secret3);
+        final twin2 = _hotp('idT2', secret: _secret3);
+        final run = await _runWith(
+          _dict(
+            update: [
+              _serverToken('OATH000000S1', otp: _otpsOf(twin1)),
+              _serverToken('OATH000000S2', otp: _otpsOf(twin1)),
+            ],
+          ),
+        );
+
+        final outcome = await _syncWithDialog(
+          tester,
+          run: run,
+          tokens: [twin1, twin2],
+          pick: _Pick.all,
+        );
+
+        expect(outcome.error, isNull);
+        final updated = outcome.result!.updatedTokens;
+        expect(updated.map((t) => t.id), unorderedEquals(['idT1', 'idT2']));
+        expect(updated.map((t) => t.serial), unorderedEquals(['OATH000000S1', 'OATH000000S2']));
+      },
+    );
+  });
+
+  group('sync: InitialTokenAssignmentDialog', () {
+    // Fresh tokens per test: the dialog adds the container serial to the checkedContainer list in place.
+    late HOTPToken cand1;
+    late HOTPToken cand2;
+    late HOTPToken cand3;
+    setUp(() {
+      cand1 = _hotp('idC1');
+      cand2 = _hotp('idC2', secret: _secret2);
+      cand3 = _hotp('idC3', secret: _secret3);
+    });
+
+    for (final pick in [_Pick.cancel, _Pick.barrier]) {
+      testWidgets('${pick.name}: sync returns null and nothing is sent', (tester) async {
+        final run = await _runWith(_dict());
+
+        final outcome = await _syncWithDialog(
+          tester,
+          run: run,
+          tokens: [cand1, _linked('idL', 'OATH0000000L', secret: _secret4)],
+          pick: pick,
+        );
+
+        expect(outcome.error, isNull);
+        expect(outcome.result, isNull);
+        expect(run.server.challengeBodies, isEmpty, reason: 'no challenge was requested');
+        expect(run.server.syncBodies, isEmpty, reason: 'no otp may be sent after cancel');
+        verifyNever(
+          run.server.client.doPost(
+            url: anyNamed('url'),
+            body: anyNamed('body'),
+            sslVerify: anyNamed('sslVerify'),
+            expectedErrorStatusCodes: anyNamed('expectedErrorStatusCodes'),
+          ),
+        );
+      });
+    }
+
+    testWidgets('partial selection sends only the selected tokens, without any secret', (
+      tester,
+    ) async {
+      final withSerial = _hotp('idS', serial: 'OATH000000SS', secret: _secret4);
+      final linked = _linked('idL', 'OATH0000000L', secret: _secret4);
+      final tokens = [cand1, cand2, cand3, withSerial, linked];
+      final repo = _tokenRepo(tokens);
+      final run = await _runWith(
+        _dict(update: [_serverToken('OATH0000000L')]),
+      );
+      final container = _container();
+
+      final outcome = await _syncWithDialog(
+        tester,
+        run: run,
+        tokens: tokens,
+        pick: _Pick.some,
+        select: {'idC1', 'idC3'},
+        container: container,
+        tokenRepo: repo,
+      );
+
+      expect(outcome.error, isNull);
+      expect(outcome.result, isNotNull);
+      final sent = run.server.sentTokens;
+      expect(sent, hasLength(4));
+      // The linked token is announced by serial, then the unlinked token with serial,
+      // then the selected tokens without serial, identified by their otp values only.
+      expect(sent[0]['serial'], 'OATH0000000L');
+      expect(sent[1], {'serial': 'OATH000000SS', 'tokentype': 'HOTP'});
+      expect(sent[2], {
+        'tokentype': 'HOTP',
+        'otp': _otpsOf(cand1),
+        'counter': '1',
+      });
+      expect(sent[3], {
+        'tokentype': 'HOTP',
+        'otp': _otpsOf(cand3),
+        'counter': '1',
+      });
+      final rawDict = run.server.syncBodies.single[TokenContainer.SYNC_DICT_CLIENT]!;
+      for (final secret in [_secret1, _secret2, _secret3, _secret4]) {
+        expect(rawDict, isNot(contains(secret)), reason: 'secret leaked into the request');
+      }
+      for (final map in sent) {
+        expect(map.containsKey('secret'), isFalse);
+      }
+      expect(
+        rawDict,
+        isNot(contains(_otpsOf(cand2).first)),
+        reason: 'the unselected token must not be sent',
+      );
+
+      // The signature covers exactly what was sent.
+      final body = run.server.syncBodies.single;
+      final signMessage =
+          '$_challengeNonce|$_challengeTimeStamp|$_containerSerial|${container.syncUrl}|'
+          '${body[TokenContainer.SYNC_PUBLIC_CLIENT_KEY]}|$rawDict';
+      expect(
+        EccUtils().validateSignature(
+          container.ecPublicClientKey!,
+          body['signature']!,
+          signMessage,
+        ),
+        isTrue,
+      );
+
+      // Every candidate counts as checked, only the unselected one is saved by the dialog.
+      expect(
+        outcome.result!.initAssignmentChecked.map((t) => t.id),
+        unorderedEquals(['idC1', 'idC2', 'idC3', 'idS']),
+      );
+      final saved = verify(repo.saveOrReplaceTokens(captureAny)).captured.single as List;
+      expect(saved.map((t) => (t as Token).id), ['idC2']);
+      expect((saved.single as Token).checkedContainer, contains(_containerSerial));
+    });
+
+    testWidgets('confirming with nothing selected sends no otp values and still syncs', (
+      tester,
+    ) async {
+      final run = await _runWith(_dict());
+
+      final outcome = await _syncWithDialog(
+        tester,
+        run: run,
+        tokens: [cand1, cand2],
+        pick: _Pick.none,
+      );
+
+      expect(outcome.error, isNull);
+      expect(outcome.result, isNotNull);
+      expect(run.server.sentTokens, isEmpty);
+      expect(
+        outcome.result!.initAssignmentChecked.map((t) => t.id),
+        unorderedEquals(['idC1', 'idC2']),
+      );
+    });
+
+    testWidgets(
+      'without ssl verification the selected otp values are only sent after the warning is confirmed',
+      (tester) async {
+        final run = await _runWith(_dict());
+        final tokens = [cand1];
+        await tester.pumpWidget(
+          TestsAppWrapper(
+            overrides: [
+              tokenProvider.overrideWith(
+                () => TokenNotifier(repoOverride: _tokenRepo(tokens)),
+              ),
+            ],
+            child: const SizedBox(),
+          ),
+        );
+        tester.view.physicalSize = const Size(800, 2600);
+        tester.view.devicePixelRatio = 1.0;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+
+        ContainerSyncUpdates? result;
+        Object? error;
+        final done = run
+            .sync(tokens, container: _container(sslVerify: false), isInitSync: true)
+            .then((v) => result = v, onError: (Object e) => error = e);
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 500));
+        final localizations = AppLocalizations.of(
+          tester.element(find.byType(InitialTokenAssignmentDialog)),
+        )!;
+        final selectTokens = tester.widget<SelectTokensWidget>(
+          find.byType(SelectTokensWidget),
+        );
+        selectTokens.onSelect(selectTokens.tokens, {});
+        await tester.pump();
+        await tester.tap(
+          find.text(localizations.initialTokenAssignmentDialogButtonSelected),
+        );
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 500));
+
+        // Warning shown, the assignment dialog is still open and nothing was sent.
+        expect(find.text(localizations.send), findsOneWidget);
+        expect(run.server.syncBodies, isEmpty);
+        expect(run.server.challengeBodies, isEmpty);
+
+        await tester.tap(find.text(localizations.send));
+        await tester.pump();
+        await tester.pump(const Duration(milliseconds: 500));
+        await done;
+
+        expect(error, isNull);
+        expect(result, isNotNull);
+        expect(run.server.sentTokens.single['otp'], _otpsOf(cand1));
+      },
+    );
+
+    testWidgets(
+      'a token with the default checkedContainer list can be left unselected',
+      // BUG: initial_token_assignment_dialog.dart:118-121 mutates t.checkedContainer with ..add(), which is the const [] default of Token and throws "Cannot add to an unmodifiable list" in the confirm handler
+      skip: true,
+      (tester) async {
+        // Same as a token loaded from storage that has no checkedContainer entry.
+        final unselected = HOTPToken(
+          id: 'idDefault',
+          algorithm: Algorithms.SHA1,
+          digits: 6,
+          secret: _secret2,
+        );
+        final selected = _hotp('idPick');
+        final tokens = [selected, unselected];
+        final run = await _runWith(_dict());
+
+        final outcome = await _syncWithDialog(
+          tester,
+          run: run,
+          tokens: tokens,
+          pick: _Pick.some,
+          select: {'idPick'},
+        );
+
+        expect(outcome.error, isNull);
+        expect(outcome.result, isNotNull);
+      },
+    );
+
+    test(
+      'tokens created from an otpauth map do not share one checkedContainer list',
+      skip:
+          'BUG: token.dart:112 DefaultObjectValidator<List<String>>(defaultValue: []) hands the same mutable list to every token, so the dialog that adds the container serial marks all those tokens as checked',
+      () {
+        Token create() => Token.fromOtpAuthMap({
+          'tokentype': 'HOTP',
+          'label': 'a',
+          'issuer': 'b',
+          'secret': _secret1,
+          'counter': '1',
+        });
+        final first = create();
+        final second = create();
+
+        first.checkedContainer.add(_containerSerial);
+
+        expect(second.checkedContainer, isEmpty);
+      },
+    );
+  });
+
+  group('sync: errors', () {
+    group('challenge request', () {
+      Future<Object?> syncWithChallenge(Response challenge) async {
+        final run = await _runWith(_dict(), challenge: challenge);
+        final error = await _errorOf(run.sync(const []));
+        expect(run.server.syncBodies, isEmpty, reason: 'no sync request after a failed challenge');
+        return error;
+      }
+
+      test('http error with privacyIDEA error json throws that error', () async {
+        final error = await syncWithChallenge(
+          Response(_errorJson(3002, 'Could not verify signature'), 400),
+        );
+
+        expect(
+          error,
+          isA<PiServerResultError>()
+              .having((e) => e.code, 'code', 3002)
+              .having((e) => e.message, 'message', 'Could not verify signature'),
+        );
+      });
+
+      test('http 500 with plain text throws ResponseError', () async {
+        final error = await syncWithChallenge(
+          Response('Internal Server Error', 500),
+        );
+
+        expect(
+          error,
+          isA<ResponseError>()
+              .having((e) => e.statusCode, 'statusCode', 500)
+              .having((e) => e.message, 'message', 'Internal Server Error'),
+        );
+      });
+
+      test('http 502 with an html error page throws ResponseError with title and code', () async {
+        final error = await syncWithChallenge(
+          Response('<html><head><title>502 Bad Gateway</title></head></html>', 502),
+        );
+
+        expect(
+          error,
+          isA<ResponseError>()
+              .having((e) => e.statusCode, 'statusCode', 502)
+              .having((e) => e.message, 'message', 'Bad Gateway'),
+        );
+      });
+
+      test('http 404 without body means the container is gone (resourceNotFound)', () async {
+        final error = await syncWithChallenge(Response('', 404));
+
+        expect(
+          error,
+          isA<PiServerResultError>().having(
+            (e) => e.code,
+            'code',
+            PiServerResultErrorCodes.resourceNotFound,
+          ),
+        );
+      });
+
+      test('http 404 with privacyIDEA error json throws the server error code', () async {
+        final error = await syncWithChallenge(
+          Response(_errorJson(3001, 'Container is not registered'), 404),
+        );
+
+        expect(
+          error,
+          isA<PiServerResultError>()
+              .having((e) => e.code, 'code', PiServerResultErrorCodes.containerNotRegistered)
+              .having((e) => e.message, 'message', 'Container is not registered'),
+        );
+      });
+
+      test('http 200 with status false and error throws the server error', () async {
+        final error = await syncWithChallenge(
+          Response(_errorJson(3003, 'Challenge failed'), 200),
+        );
+
+        expect(
+          error,
+          isA<PiServerResultError>().having((e) => e.code, 'code', 3003),
+        );
+      });
+
+      test('http 200 with a non json body throws PiServerResultError(jsonParseError)', () async {
+        final error = await syncWithChallenge(Response('<html>oops</html>', 200));
+
+        expect(
+          error,
+          isA<PiServerResultError>().having(
+            (e) => e.code,
+            'code',
+            InAppErrorCodes.jsonParseError,
+          ),
+        );
+      });
+
+      test(
+        'a successful challenge without value is reported cleanly',
+        skip:
+            'BUG: privacy_idea_container_api.dart:439 result.value! throws a null check TypeError when the server answers status true without a value',
+        () async {
+          final error = await syncWithChallenge(
+            Response(_piJson(status: true), 200),
+          );
+
+          expect(error, isNotNull);
+          expect(error, isNot(_isCrash));
+        },
+      );
+    });
+
+    group('sync request', () {
+      Future<Object?> syncWithAnswer(Response answer) async {
+        final run = await _runWithResponse(answer);
+        return _errorOf(run.sync(const []));
+      }
+
+      test(
+        'http 400 with privacyIDEA error json throws the server error with its code',
+        skip:
+            'BUG: privacy_idea_container_api.dart:477 asPiErrorResponse() is only non null for unparsable bodies, so a valid privacyIDEA error json with an http error status is thrown as ResponseError and the error code is lost (privacy_idea_container_api_test.dart:658 expects ResponseError for it)',
+        () async {
+          final error = await syncWithAnswer(
+            Response(_errorJson(3002, 'Could not verify signature'), 400),
+          );
+
+          expect(
+            error,
+            isA<PiServerResultError>().having((e) => e.code, 'code', 3002),
+          );
+        },
+      );
+
+      test('http 400 with privacyIDEA error json is reported as an error carrying the message', () async {
+        final error = await syncWithAnswer(
+          Response(_errorJson(3002, 'Could not verify signature'), 400),
+        );
+
+        expect(error, anyOf(isA<ResponseError>(), isA<PiServerResultError>()));
+        final text = error is ResponseError
+            ? error.fullMessage
+            : (error as PiServerResultError).message;
+        expect(text, contains('Could not verify signature'));
+      });
+
+      test('http 502 with plain text is reported as an error', () async {
+        final error = await syncWithAnswer(Response('Bad Gateway', 502));
+
+        expect(error, anyOf(isA<ResponseError>(), isA<PiServerResultError>()));
+        expect(error, isNot(_isCrash));
+        expect(error.toString(), contains('Bad Gateway'));
+      });
+
+      test('http 200 with status false and error throws the server error', () async {
+        final error = await syncWithAnswer(
+          Response(_errorJson(3002, 'Could not verify signature'), 200),
+        );
+
+        expect(
+          error,
+          isA<PiServerResultError>()
+              .having((e) => e.code, 'code', 3002)
+              .having((e) => e.message, 'message', 'Could not verify signature'),
+        );
+      });
+
+      test(
+        'http 200 with status false and no error is reported cleanly',
+        skip:
+            'BUG: privacy_idea_container_api.dart:489 result.value! throws a null check TypeError when the sync answer has status false without error or value (finalizeContainer throws ResponseError in this case)',
+        () async {
+          final error = await syncWithAnswer(
+            Response(_piJson(status: false), 200),
+          );
+
+          expect(error, anyOf(isA<ResponseError>(), isA<PiServerResultError>()));
+        },
+      );
+
+      test(
+        'http 200 with status true and no value is reported cleanly',
+        skip:
+            'BUG: privacy_idea_container_api.dart:489 result.value! throws a null check TypeError when the sync answer has status true without a value',
+        () async {
+          final error = await syncWithAnswer(Response(_piJson(status: true), 200));
+
+          expect(error, isNotNull);
+          expect(error, isNot(_isCrash));
+        },
+      );
+
+      test('http 200 with a non json body throws PiServerResultError(jsonParseError)', () async {
+        final error = await syncWithAnswer(Response('<html>oops</html>', 200));
+
+        expect(
+          error,
+          isA<PiServerResultError>().having(
+            (e) => e.code,
+            'code',
+            InAppErrorCodes.jsonParseError,
+          ),
+        );
+      });
+    });
+
+    group('encryption', () {
+      test('a tampered tag is rejected as authentication error', () async {
+        final run = await _runWith(_dict(), tamperTag: true);
+
+        final error = await _errorOf(run.sync([_linked('idA', 'OATH0000000A')]));
+
+        expect(error, isA<SecretBoxAuthenticationError>());
+      });
+
+      test('a tampered cipher text is rejected as authentication error', () async {
+        final run = await _runWith(_dict(), tamperCipherText: true);
+
+        final error = await _errorOf(run.sync([_linked('idA', 'OATH0000000A')]));
+
+        expect(error, isA<SecretBoxAuthenticationError>());
+      });
+
+      test('an answer from another server key is rejected as authentication error', () async {
+        final run = await _runWith(_dict(), wrongServerKey: true);
+
+        final error = await _errorOf(run.sync([_linked('idA', 'OATH0000000A')]));
+
+        expect(error, isA<SecretBoxAuthenticationError>());
+      });
+
+      test('a failed decryption deletes and updates nothing (no result at all)', () async {
+        final run = await _runWith(_dict(), tamperTag: true);
+        ContainerSyncUpdates? result;
+
+        await _errorOf(run.sync([_linked('idA', 'OATH0000000A')]).then((v) => result = v));
+
+        expect(result, isNull);
+      });
+
+      test('a decrypted text that is not json throws FormatException', () async {
+        final run = await _runWith(null, rawPlaintext: 'this is not json');
+
+        final error = await _errorOf(run.sync(const []));
+
+        expect(error, isA<FormatException>());
+      });
+
+      test(
+        'a decrypted json that is not an object is reported cleanly',
+        skip:
+            'BUG: privacy_idea_container_api.dart:528 jsonDecode(...) as Map<String, dynamic> throws a TypeError for a json list',
+        () async {
+          final run = await _runWith(<Object?>[]);
+
+          final error = await _errorOf(run.sync(const []));
+
+          expect(error, isNotNull);
+          expect(error, isNot(_isCrash));
+        },
+      );
+    });
+
+    group('malformed container dict', () {
+      final linked = _linked('idA', 'OATH0000000A');
+
+      test('missing tokens key', skip: 'BUG: privacy_idea_container_api.dart:120 tokens as Map<String, dynamic> throws a TypeError when the dict has no tokens', () async {
+        final run = await _runWith({'container': {'serial': _containerSerial}});
+
+        await _expectNoCrash(() => run.sync([linked]));
+      });
+
+      test('tokens is a list', skip: 'BUG: privacy_idea_container_api.dart:120 tokens as Map<String, dynamic> throws a TypeError when tokens is a list', () async {
+        final run = await _runWith({'tokens': <Object?>[]});
+
+        await _expectNoCrash(() => run.sync([linked]));
+      });
+
+      test('missing update key', skip: 'BUG: privacy_idea_container_api.dart:134 tokens[update] as List throws a TypeError when update is missing', () async {
+        final run = await _runWith({
+          'tokens': {'add': <Object?>[]},
+        });
+
+        await _expectNoCrash(() => run.sync([linked]));
+      });
+
+      test('missing add key', skip: 'BUG: privacy_idea_container_api.dart:123 tokens[add] as List throws a TypeError when add is missing', () async {
+        final run = await _runWith({
+          'tokens': {
+            'update': [_serverToken('OATH0000000A')],
+          },
+        });
+
+        await _expectNoCrash(() => run.sync([linked]));
+      });
+
+      test('update is an object instead of a list', skip: 'BUG: privacy_idea_container_api.dart:134 tokens[update] as List throws a TypeError for a json object', () async {
+        final run = await _runWith(_dict(update: {'serial': 'OATH0000000A'}));
+
+        await _expectNoCrash(() => run.sync([linked]));
+      });
+
+      test('update contains an entry that is not an object', skip: 'BUG: privacy_idea_container_api.dart:135 cast<Map<String, dynamic>>() throws a TypeError for a string entry', () async {
+        final run = await _runWith(_dict(update: ['OATH0000000A']));
+
+        await _expectNoCrash(() => run.sync([linked]));
+      });
+
+      test('add is a string instead of a list', skip: 'BUG: privacy_idea_container_api.dart:123 tokens[add] as List throws a TypeError for a string', () async {
+        final run = await _runWith(_dict(add: _otpauthHotp('x')));
+
+        await _expectNoCrash(() => run.sync(const []));
+      });
+
+      test('add entries that are not strings are ignored, the string is still added', () async {
+        final run = await _runWith(
+          _dict(add: [5, null, {'a': 1}, _otpauthHotp('good')]),
+        );
+
+        final result = await run.sync(const []);
+
+        expect(result!.newTokens.map((t) => t.label), ['good']);
+      });
+    });
+  });
+
+  group('sync: new tokens (_parseNewTokens)', () {
+    test('a token with an unknown scheme or unsupported content is skipped, the good one is added', () async {
+      final run = await _runWith(
+        _dict(
+          add: [
+            'foo://bar/baz',
+            'not a uri at all',
+            'pia://unknownhost/label?secret=$_secret1',
+            'otpauth://notatokentype/label?secret=$_secret1',
+            'otpauth://hotp/missingsecret',
+            _otpauthHotp('good'),
+          ],
+        ),
+      );
+
+      final result = await run.sync(const []);
+
+      expect(result, isNotNull);
+      expect(result!.newTokens, hasLength(1));
+      final token = result.newTokens.single as HOTPToken;
+      expect(token.label, 'good');
+      expect(token.secret, _secret2);
+      expect(token.containerSerial, _containerSerial);
+    });
+
+    test('new tokens keep the container as origin with the uri as data', () async {
+      final uri1 = _otpauthHotp('one', secret: _secret1);
+      final uri2 = _otpauthHotp('two', secret: _secret3);
+      final run = await _runWith(_dict(add: [uri1, uri2]));
+
+      final result = await run.sync(const []);
+
+      expect(result!.newTokens.map((t) => t.label), ['one', 'two']);
+      expect(result.containerSerial, _containerSerial);
+      for (final (token, uri) in [
+        (result.newTokens[0], uri1),
+        (result.newTokens[1], uri2),
+      ]) {
+        expect(token.containerSerial, _containerSerial);
+        expect(token.origin, isNotNull);
+        expect(token.origin!.source, TokenOriginSourceType.container);
+        expect(token.origin!.isPrivacyIdeaToken, isTrue);
+        expect(token.origin!.data, Uri.parse(uri).toString());
+        expect(token.isPrivacyIdeaToken, isTrue);
+      }
+      expect(result.newPolicies.disabledTokenDeletion, isFalse);
+      expect(result.newPolicies.disabledUnregister, isTrue);
+    });
+
+    test(
+      'a syntactically invalid uri does not abort the sync, the good token is still added',
+      skip:
+          'BUG: privacy_idea_container_api.dart:123-125 .map(Uri.parse).toList() throws a FormatException for one invalid uri and aborts the whole sync, including updates and deletions',
+      () async {
+        final run = await _runWith(
+          _dict(add: ['http://[::1', _otpauthHotp('good')]),
+        );
+
+        final result = await run.sync(const []);
+
+        expect(result, isNotNull);
+        expect(result!.newTokens.map((t) => t.label), ['good']);
+      },
+    );
+
+    test(
+      'an otpauth uri without path does not abort the sync, the good token is still added',
+      skip:
+          'BUG: otp_auth_processor.dart:138 uri.path.substring(1) throws a RangeError outside the try block for an otpauth uri without path, _parseNewTokens (privacy_idea_container_api.dart:539) does not catch it',
+      () async {
+        final run = await _runWith(
+          _dict(add: ['otpauth://hotp?secret=$_secret1', _otpauthHotp('good')]),
+        );
+
+        final result = await run.sync(const []);
+
+        expect(result, isNotNull);
+        expect(result!.newTokens.map((t) => t.label), ['good']);
+      },
+    );
+
+    test(
+      'a bad uri in add does not stop the update and deletion of the other tokens',
+      skip:
+          'BUG: privacy_idea_container_api.dart:123-125 one invalid uri in add aborts the whole sync, so updates and deletions of the same answer are lost',
+      () async {
+        final kept = _linked('idKeep', 'OATH0000000K');
+        final gone = _linked('idGone', 'OATH0000000G', secret: _secret2);
+        final run = await _runWith(
+          _dict(
+            add: ['http://[::1', _otpauthHotp('good')],
+            update: [_serverToken('OATH0000000K', counter: 8)],
+          ),
+        );
+
+        final result = await run.sync([kept, gone]);
+
+        expect(result, isNotNull);
+        expect(result!.newTokens.map((t) => t.label), ['good']);
+        expect(result.updatedTokens.map((t) => t.id), ['idKeep']);
+        expect(result.deletedTokens.map((t) => t.id), ['idGone']);
+      },
+    );
+
+    test('new tokens, updates and deletions of one answer are all reported', () async {
+      final kept = _linked('idKeep', 'OATH0000000K');
+      final gone = _linked('idGone', 'OATH0000000G', secret: _secret2);
+      final run = await _runWith(
+        _dict(
+          add: [_otpauthHotp('fresh')],
+          update: [_serverToken('OATH0000000K', counter: 8)],
+        ),
+      );
+
+      final result = await run.sync([kept, gone]);
+
+      expect(result!.newTokens.map((t) => t.label), ['fresh']);
+      expect(result.updatedTokens.map((t) => t.id), ['idKeep']);
+      expect(result.deletedTokens.map((t) => t.id), ['idGone']);
+      // The new policies of the answer are passed on.
+      expect(result.newPolicies.disabledUnregister, isTrue);
+      expect(result.newPolicies.disabledTokenDeletion, isFalse);
     });
   });
 }

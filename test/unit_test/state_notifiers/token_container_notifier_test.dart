@@ -1,9 +1,20 @@
+import 'dart:io';
+
 import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/http.dart' show Response;
+import 'package:logger/logger.dart' as printer;
 import 'package:mockito/mockito.dart';
+import 'package:privacyidea_authenticator/api/impl/privacy_idea_container_api.dart';
 import 'package:privacyidea_authenticator/api/interfaces/container_api.dart';
+import 'package:privacyidea_authenticator/interfaces/repo/settings_repository.dart';
+import 'package:privacyidea_authenticator/interfaces/repo/token_container_repository.dart';
+import 'package:privacyidea_authenticator/interfaces/repo/token_repository.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
 import 'package:privacyidea_authenticator/model/api_results/pi_server_results/pi_server_result_value.dart';
 import 'package:privacyidea_authenticator/model/container_policies.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
@@ -13,6 +24,7 @@ import 'package:privacyidea_authenticator/model/enums/sync_state.dart';
 import 'package:privacyidea_authenticator/model/exception_errors/error_codes.dart';
 import 'package:privacyidea_authenticator/model/exception_errors/pi_server_result_error.dart';
 import 'package:privacyidea_authenticator/model/exception_errors/response_error.dart';
+import 'package:privacyidea_authenticator/model/extensions/enums/rollout_state_extension.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/token_container_state.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/token_state.dart';
@@ -22,10 +34,15 @@ import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
 import 'package:privacyidea_authenticator/processors/scheme_processors/token_container_processor.dart';
 import 'package:privacyidea_authenticator/utils/ecc_utils.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
+import 'package:privacyidea_authenticator/utils/privacyidea_io_client.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_container_notifier.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/state_providers/status_message_provider.dart';
+import 'package:privacyidea_authenticator/views/container_view/container_widgets/dialogs/delete_container_dialogs.dart/delete_container_dialog.dart';
 
+import '../../tests_app_wrapper.dart';
 import '../../tests_app_wrapper.mocks.dart';
 
 void main() {
@@ -1612,5 +1629,1083 @@ void main() {
         },
       );
     });
+  });
+
+  _testTokenContainerNotifierErrors();
+}
+
+// Error handling of the TokenContainerNotifier: sync failures, offline
+// behaviour, finalization failures, initSynced and tokens that move between
+// containers.
+//
+// All collaborators are hand-written fakes (no generated mocks), so the real
+// TokenContainerNotifier, TokenNotifier and SettingsNotifier run unchanged.
+//
+// Tests that need the app navigator, the global ref (status messages) or the
+// delete dialog run as widget tests inside [TestsAppWrapper] and drive the
+// notifier through `tester.runAsync`. All other tests are plain unit tests.
+//
+// Run the tests that document a lib bug with
+// `flutter test --dart-define=RUN_BUG_TESTS=true <file>`.
+
+const _runBugTests = bool.fromEnvironment('RUN_BUG_TESTS');
+
+/// Skip reason of a test that documents a confirmed lib bug. The test is only
+/// executed with `--dart-define=RUN_BUG_TESTS=true`.
+Object? _skipBug(String reason) => _runBugTests ? null : 'BUG: $reason';
+
+const _originalPolicies = ContainerPolicies(
+  rolloverAllowed: false,
+  initialTokenAssignment: false,
+  disabledTokenDeletion: true,
+  disabledUnregister: true,
+);
+
+const _syncedPolicies = ContainerPolicies(
+  rolloverAllowed: true,
+  initialTokenAssignment: true,
+  disabledTokenDeletion: false,
+  disabledUnregister: false,
+);
+
+const _finalizationResponse = ContainerFinalizationResponse(
+  policies: _syncedPolicies,
+);
+
+/////////////////////////////////// DATA ///////////////////////////////////
+
+TokenContainerFinalized _container(
+  String serial, {
+  SyncState syncState = SyncState.notStarted,
+  bool initSynced = false,
+  ContainerPolicies policies = _originalPolicies,
+}) => TokenContainerFinalized(
+  issuer: 'privacyIDEA',
+  nonce: 'nonce-$serial',
+  timestamp: DateTime.utc(2024, 11, 14, 9, 30),
+  serverUrl: Uri.parse('https://pi.example.com'),
+  serial: serial,
+  ecKeyAlgorithm: EcKeyAlgorithm.secp384r1,
+  hashAlgorithm: Algorithms.SHA256,
+  sslVerify: true,
+  publicClientKey: 'publicClientKey',
+  privateClientKey: 'privateClientKey',
+  syncState: syncState,
+  initSynced: initSynced,
+  policies: policies,
+);
+
+TokenContainerUnfinalized _unfinalized(String serial) =>
+    TokenContainerUnfinalized(
+      issuer: 'privacyIDEA',
+      ttl: const Duration(minutes: 10),
+      nonce: 'nonce-$serial',
+      timestamp: DateTime.now(),
+      serverUrl: Uri.parse('https://pi.example.com'),
+      serial: serial,
+      ecKeyAlgorithm: EcKeyAlgorithm.secp256r1,
+      hashAlgorithm: Algorithms.SHA256,
+      sslVerify: true,
+    );
+
+HOTPToken _hotp(
+  String id,
+  String serial, {
+  String? containerSerial,
+  int counter = 0,
+  int? folderId,
+}) => HOTPToken(
+  id: id,
+  serial: serial,
+  containerSerial: containerSerial,
+  algorithm: Algorithms.SHA256,
+  digits: 6,
+  secret: 'JBSWY3DPEHPK3PXP',
+  counter: counter,
+  folderId: folderId,
+);
+
+ContainerSyncUpdates _updates(
+  String containerSerial, {
+  List<Token> newTokens = const [],
+  List<Token> updatedTokens = const [],
+  List<Token> deletedTokens = const [],
+  ContainerPolicies policies = _syncedPolicies,
+}) => ContainerSyncUpdates(
+  containerSerial: containerSerial,
+  newTokens: newTokens,
+  updatedTokens: updatedTokens,
+  deletedTokens: deletedTokens,
+  initAssignmentChecked: const [],
+  newPolicies: policies,
+);
+
+PiServerResultError _piError(int code, [String message = 'server says no']) =>
+    PiServerResultError(code: code, message: message);
+
+/// Serials of the containers in the failed containers result of
+/// `syncContainers`, independent of whether the result is keyed by error code
+/// or serial.
+List<String> _failedSerials(dynamic failed) {
+  final Iterable values = failed is Map ? failed.values : failed as Iterable;
+  return [
+    for (final value in values)
+      if (value is Iterable)
+        for (final c in value) (c as TokenContainer).serial
+      else
+        (value as TokenContainer).serial,
+  ];
+}
+
+/////////////////////////////////// FAKES //////////////////////////////////
+
+class _FakeContainerRepo implements TokenContainerRepository {
+  _FakeContainerRepo(List<TokenContainer> initial)
+    : state = TokenContainerState(containerList: List.of(initial));
+
+  TokenContainerState state;
+
+  TokenContainerState _upsert(List<TokenContainer> containers) {
+    final list = List<TokenContainer>.of(state.containerList);
+    for (final container in containers) {
+      final i = list.indexWhere((e) => e.serial == container.serial);
+      if (i == -1) {
+        list.add(container);
+      } else {
+        list[i] = container;
+      }
+    }
+    return state = TokenContainerState(containerList: list);
+  }
+
+  @override
+  Future<TokenContainerState> loadContainerState() async => state;
+
+  @override
+  Future<TokenContainerState> saveContainerState(
+    TokenContainerState containerState,
+  ) async => state = containerState;
+
+  @override
+  Future<TokenContainerState> saveContainerList(
+    List<TokenContainer> containerList,
+  ) async => _upsert(containerList);
+
+  @override
+  Future<TokenContainerState> saveContainer(TokenContainer container) async =>
+      _upsert([container]);
+
+  @override
+  Future<TokenContainerState> deleteContainer(String serial) async =>
+      state = TokenContainerState(
+        containerList: state.containerList
+            .where((e) => e.serial != serial)
+            .toList(),
+      );
+
+  @override
+  Future<TokenContainerState> deleteAllContainer() async =>
+      state = const TokenContainerState(containerList: []);
+
+  @override
+  Future<TokenContainer?> loadContainer(String serial) async =>
+      state.containerOf(serial);
+}
+
+class _FakeTokenRepo implements TokenRepository {
+  _FakeTokenRepo(List<Token> initial)
+    : tokens = {for (final t in initial) t.id: t};
+
+  final Map<String, Token> tokens;
+  final List<String> deletedIds = [];
+
+  @override
+  Future<Token?> loadToken(String id) async => tokens[id];
+
+  @override
+  Future<List<Token>> loadTokens() async => tokens.values.toList();
+
+  @override
+  Future<bool> saveOrReplaceToken(Token token) async {
+    tokens[token.id] = token;
+    return true;
+  }
+
+  @override
+  Future<List<T>> saveOrReplaceTokens<T extends Token>(List<T> tokens) async {
+    for (final token in tokens) {
+      this.tokens[token.id] = token;
+    }
+    return <T>[];
+  }
+
+  @override
+  Future<bool> deleteToken(Token token) async {
+    deletedIds.add(token.id);
+    tokens.remove(token.id);
+    return true;
+  }
+
+  @override
+  Future<List<T>> deleteTokens<T extends Token>(List<T> tokens) async {
+    for (final token in tokens) {
+      deletedIds.add(token.id);
+      this.tokens.remove(token.id);
+    }
+    return <T>[];
+  }
+}
+
+class _FakeSettingsRepo implements SettingsRepository {
+  @override
+  Future<SettingsState> loadSettings() async => SettingsState();
+
+  @override
+  Future<bool> saveSettings(SettingsState settings) async => true;
+}
+
+typedef _SyncHandler =
+    Future<ContainerSyncUpdates?> Function(
+      TokenContainerFinalized container,
+      TokenState tokenState,
+      bool? isInitSync,
+    );
+
+class _FakeContainerApi implements TokenContainerApi {
+  /// Sync behaviour per container serial.
+  final Map<String, _SyncHandler> onSync = {};
+  final List<({String serial, bool? isInitSync})> syncCalls = [];
+
+  Future<ContainerFinalizationResponse> Function(
+    TokenContainerUnfinalized container,
+  )?
+  onFinalize;
+  int finalizeCalls = 0;
+
+  @override
+  Future<ContainerSyncUpdates?> sync(
+    TokenContainerFinalized container,
+    TokenState tokenState, {
+    bool? isInitSync,
+  }) async {
+    syncCalls.add((serial: container.serial, isInitSync: isInitSync));
+    final handler = onSync[container.serial];
+    if (handler == null) {
+      throw StateError('No sync handler for ${container.serial}');
+    }
+    return handler(container, tokenState, isInitSync);
+  }
+
+  @override
+  Future<ContainerFinalizationResponse> finalizeContainer(
+    TokenContainerUnfinalized container,
+    EccUtils eccUtils,
+  ) async {
+    finalizeCalls++;
+    final handler = onFinalize;
+    if (handler == null) return _finalizationResponse;
+    return handler(container);
+  }
+
+  @override
+  Future<TransferQrData> getRolloverQrData(TokenContainerFinalized container) =>
+      throw UnimplementedError();
+
+  @override
+  Future<UnregisterContainerResult> unregister(
+    TokenContainerFinalized container,
+  ) => throw UnimplementedError();
+}
+
+/// Answers every post with the given response and remembers the requested urls.
+class _FakeIoClient extends Fake implements PrivacyideaIOClient {
+  _FakeIoClient(this.response);
+
+  final Response response;
+  final List<Uri> posts = [];
+
+  @override
+  Future<Response> doPost({
+    required Uri url,
+    required Map<String, String?> body,
+    bool sslVerify = true,
+    Set<int> expectedErrorStatusCodes = const {},
+  }) async {
+    posts.add(url);
+    return response;
+  }
+}
+
+/////////////////////////////// LOG CAPTURE ////////////////////////////////
+
+class _AllowAllFilter extends printer.LogFilter {
+  @override
+  bool shouldLog(printer.LogEvent event) => true;
+}
+
+class _MessagePrinter extends printer.LogPrinter {
+  @override
+  List<String> log(printer.LogEvent event) => [event.message.toString()];
+}
+
+class _WarningCapture extends printer.LogOutput {
+  final List<String> warnings = [];
+
+  @override
+  void output(printer.OutputEvent event) {
+    if (event.level == printer.Level.warning) warnings.addAll(event.lines);
+  }
+}
+
+/// Redirects the warnings of the app [Logger] into the returned capture until
+/// the end of the test.
+_WarningCapture _captureWarnings() {
+  final original = Logger.print;
+  final capture = _WarningCapture();
+  Logger.print = printer.Logger(
+    filter: _AllowAllFilter(),
+    printer: _MessagePrinter(),
+    output: capture,
+  );
+  addTearDown(() => Logger.print = original);
+  return capture;
+}
+
+/////////////////////////////// TEST HARNESS ///////////////////////////////
+
+class _Fixture {
+  _Fixture({
+    List<TokenContainer> containers = const [],
+    List<Token> tokens = const [],
+    TokenContainerApi? api,
+  }) : containerRepo = _FakeContainerRepo(containers),
+       tokenRepo = _FakeTokenRepo(tokens),
+       api = api ?? _FakeContainerApi();
+
+  final _FakeContainerRepo containerRepo;
+  final _FakeTokenRepo tokenRepo;
+  final _FakeSettingsRepo settingsRepo = _FakeSettingsRepo();
+  final TokenContainerApi api;
+
+  _FakeContainerApi get fake => api as _FakeContainerApi;
+
+  List<Override> get overrides => [
+    tokenContainerProvider.overrideWith(
+      () => TokenContainerNotifier(
+        repoOverride: containerRepo,
+        containerApiOverride: api,
+        eccUtilsOverride: const EccUtils(),
+      ),
+    ),
+    tokenProvider.overrideWith(() => TokenNotifier(repoOverride: tokenRepo)),
+    settingsProvider.overrideWith(
+      () => SettingsNotifier(repoOverride: settingsRepo),
+    ),
+  ];
+}
+
+class _Env {
+  _Env(this.container, this.fixture, {this.tester});
+
+  final ProviderContainer container;
+  final _Fixture fixture;
+
+  /// Set for widget tests: all async work then runs through `runAsync`.
+  final WidgetTester? tester;
+
+  Future<T> run<T>(Future<T> Function() body) async {
+    final t = tester;
+    if (t == null) return body();
+    return (await t.runAsync(body)) as T;
+  }
+
+  TokenContainerNotifier get notifier =>
+      container.read(tokenContainerProvider.notifier);
+
+  Future<TokenContainerState> containers() =>
+      run(() => container.read(tokenContainerProvider.future));
+
+  Future<TokenState> tokens() =>
+      run(() => container.read(tokenProvider.future));
+
+  Future<TokenContainerFinalized> finalized(String serial) async =>
+      (await containers()).containerOf(serial) as TokenContainerFinalized;
+
+  Future<Map<int, TokenContainerFinalized>> sync({
+    bool isManually = false,
+    bool? isInitSync,
+    List<TokenContainerFinalized>? only,
+  }) => run(() async {
+    final tokenState = await container.read(tokenProvider.future);
+    return notifier.syncContainers(
+      tokenState: tokenState,
+      isManually: isManually,
+      isInitSync: isInitSync,
+      containersToSync: only,
+    );
+  });
+
+  Future<TokenContainerFinalized?> finalize(
+    TokenContainer c, {
+    required bool isManually,
+  }) => run(
+    () => notifier.finalize(
+      c,
+      isManually: isManually,
+      urlIsOk: true,
+      addDeviceInfos: false,
+    ),
+  );
+
+  StatusMessage? get status => container.read(statusProvider).current;
+}
+
+Future<_Env> _plainEnv(_Fixture fixture) async {
+  final container = ProviderContainer(overrides: fixture.overrides);
+  addTearDown(container.dispose);
+  final env = _Env(container, fixture);
+  await env.containers();
+  return env;
+}
+
+Future<_Env> _widgetEnv(WidgetTester tester, _Fixture fixture) async {
+  await tester.pumpWidget(
+    TestsAppWrapper(overrides: fixture.overrides, child: const SizedBox()),
+  );
+  await tester.pump();
+  final container = ProviderScope.containerOf(
+    tester.element(find.byType(Scaffold)),
+  );
+  final env = _Env(container, fixture, tester: tester);
+  await env.containers();
+  return env;
+}
+
+/// Lets a dialog that was opened by the notifier appear.
+Future<void> _pumpDialogs(WidgetTester tester) async {
+  await tester.pump();
+  await tester.pump(const Duration(milliseconds: 500));
+}
+
+void _testTokenContainerNotifierErrors() {
+  group('syncContainers: failedContainers', () {
+    test(
+      'reports both containers when two containers fail with the same error code',
+      () async {
+        final fx = _Fixture(containers: [_container('A'), _container('B')]);
+        for (final serial in ['A', 'B']) {
+          fx.fake.onSync[serial] = (_, _, _) async => throw _piError(
+            PiServerResultErrorCodes.containerInvalidChallenge,
+          );
+        }
+        final env = await _plainEnv(fx);
+
+        final failed = await env.sync();
+
+        expect(_failedSerials(failed), unorderedEquals(['A', 'B']));
+      },
+      skip: _skipBug(
+        'syncContainers collects failedContainers in a Map keyed by error code, so the second container with the same code overwrites the first (token_container_notifier.dart:226)',
+      ),
+    );
+
+    test(
+      'reports both containers when they fail with different error codes',
+      () async {
+        final fx = _Fixture(containers: [_container('A'), _container('B')]);
+        fx.fake.onSync['A'] = (_, _, _) async =>
+            throw _piError(PiServerResultErrorCodes.containerInvalidChallenge);
+        fx.fake.onSync['B'] = (_, _, _) async =>
+            throw _piError(PiServerResultErrorCodes.server);
+        final env = await _plainEnv(fx);
+
+        final failed = await env.sync();
+
+        expect(_failedSerials(failed), unorderedEquals(['A', 'B']));
+        expect(
+          failed.keys,
+          unorderedEquals([
+            PiServerResultErrorCodes.containerInvalidChallenge,
+            PiServerResultErrorCodes.server,
+          ]),
+        );
+      },
+    );
+
+    test(
+      'a single failing container does not mark the other as failed',
+      () async {
+        final fx = _Fixture(containers: [_container('A'), _container('B')]);
+        fx.fake.onSync['A'] = (_, _, _) async =>
+            throw _piError(PiServerResultErrorCodes.containerInvalidChallenge);
+        fx.fake.onSync['B'] = (_, _, _) async => _updates('B');
+        final env = await _plainEnv(fx);
+
+        final failed = await env.sync();
+
+        expect(_failedSerials(failed), ['A']);
+        expect((await env.finalized('A')).syncState, SyncState.failed);
+        expect((await env.finalized('B')).syncState, SyncState.completed);
+      },
+    );
+  });
+
+  group('syncContainers: server reports the container as missing', () {
+    for (final code in [
+      PiServerResultErrorCodes.resourceNotFound,
+      PiServerResultErrorCodes.containerNotRegistered,
+    ]) {
+      group('error code $code', () {
+        testWidgets(
+          'isManually false: clears disabledUnregister, marks sync as failed, '
+          'logs no warning and shows neither dialog nor status message',
+          (tester) async {
+            final capture = _captureWarnings();
+            final fx = _Fixture(containers: [_container('A')]);
+            fx.fake.onSync['A'] = (_, _, _) async => throw _piError(code);
+            final env = await _widgetEnv(tester, fx);
+            capture.warnings.clear();
+
+            final failed = await env.sync();
+            await _pumpDialogs(tester);
+
+            final a = await env.finalized('A');
+            expect(a.policies.disabledUnregister, isFalse);
+            // Only disabledUnregister is touched, the other policies stay.
+            expect(
+              a.policies,
+              _originalPolicies.copyWith(disabledUnregister: false),
+            );
+            expect(a.syncState, SyncState.failed);
+            expect(a.initSynced, isFalse);
+            expect(
+              capture.warnings,
+              isEmpty,
+              reason: 'A container that is gone on the server is no warning',
+            );
+            expect(find.byType(DeleteContainerDialog), findsNothing);
+            expect(env.status, isNull);
+            expect(_failedSerials(failed), ['A']);
+            expect(failed.keys, [code]);
+          },
+        );
+
+        testWidgets(
+          'isManually true: clears disabledUnregister and offers to delete '
+          'the container instead of showing an error message',
+          (tester) async {
+            final fx = _Fixture(containers: [_container('A')]);
+            fx.fake.onSync['A'] = (_, _, _) async => throw _piError(code);
+            final env = await _widgetEnv(tester, fx);
+
+            final failed = await env.sync(isManually: true);
+            await _pumpDialogs(tester);
+
+            final a = await env.finalized('A');
+            expect(a.policies.disabledUnregister, isFalse);
+            expect(a.syncState, SyncState.failed);
+            expect(find.byType(DeleteContainerDialog), findsOneWidget);
+            expect(find.text('Container A not found'), findsOneWidget);
+            expect(env.status, isNull);
+            expect(_failedSerials(failed), ['A']);
+          },
+        );
+      });
+    }
+
+    testWidgets('does not touch other containers that sync successfully', (
+      tester,
+    ) async {
+      final fx = _Fixture(containers: [_container('A'), _container('B')]);
+      fx.fake.onSync['A'] = (_, _, _) async =>
+          throw _piError(PiServerResultErrorCodes.resourceNotFound);
+      fx.fake.onSync['B'] = (_, _, _) async => _updates('B');
+      final env = await _widgetEnv(tester, fx);
+
+      await env.sync();
+
+      final a = await env.finalized('A');
+      final b = await env.finalized('B');
+      expect(a.syncState, SyncState.failed);
+      expect(a.policies.disabledUnregister, isFalse);
+      expect(b.syncState, SyncState.completed);
+      expect(b.initSynced, isTrue);
+      expect(b.policies, _syncedPolicies);
+    });
+
+    testWidgets(
+      'the real api maps HTTP 404 on the challenge to resourceNotFound',
+      (tester) async {
+        final io = _FakeIoClient(Response('', 404));
+        final fx = _Fixture(
+          containers: [_container('A')],
+          api: PiContainerApi(ioClient: io),
+        );
+        final env = await _widgetEnv(tester, fx);
+
+        final failed = await env.sync();
+        await _pumpDialogs(tester);
+
+        final a = await env.finalized('A');
+        expect(io.posts.map((u) => u.path), ['/container/challenge']);
+        expect(failed.keys, [PiServerResultErrorCodes.resourceNotFound]);
+        expect(a.syncState, SyncState.failed);
+        expect(a.policies.disabledUnregister, isFalse);
+        expect(find.byType(DeleteContainerDialog), findsNothing);
+      },
+    );
+  });
+
+  group('syncContainers: other errors', () {
+    testWidgets(
+      'isManually false: marks sync as failed, keeps policies, logs a warning, '
+      'shows neither dialog nor status message',
+      (tester) async {
+        final capture = _captureWarnings();
+        final fx = _Fixture(containers: [_container('A')]);
+        fx.fake.onSync['A'] = (_, _, _) async =>
+            throw _piError(PiServerResultErrorCodes.server, 'boom');
+        final env = await _widgetEnv(tester, fx);
+        capture.warnings.clear();
+
+        final failed = await env.sync();
+        await _pumpDialogs(tester);
+
+        final a = await env.finalized('A');
+        expect(a.syncState, SyncState.failed);
+        expect(a.policies, _originalPolicies);
+        expect(find.byType(DeleteContainerDialog), findsNothing);
+        expect(env.status, isNull);
+        expect(failed.keys, [PiServerResultErrorCodes.server]);
+        expect(
+          capture.warnings.where(
+            (w) => w.contains('Failed to sync container A'),
+          ),
+          isNotEmpty,
+        );
+      },
+    );
+
+    testWidgets(
+      'isManually true: shows the failure as status message, no delete dialog',
+      (tester) async {
+        final fx = _Fixture(containers: [_container('A')]);
+        fx.fake.onSync['A'] = (_, _, _) async =>
+            throw _piError(PiServerResultErrorCodes.server, 'boom');
+        final env = await _widgetEnv(tester, fx);
+
+        await env.sync(isManually: true);
+        await _pumpDialogs(tester);
+
+        final a = await env.finalized('A');
+        expect(a.syncState, SyncState.failed);
+        expect(a.policies, _originalPolicies);
+        expect(find.byType(DeleteContainerDialog), findsNothing);
+        final status = env.status;
+        expect(status, isNotNull);
+        expect(status!.type, StatusMessageType.error);
+        expect(
+          status.message(AppLocalizationsEn()),
+          'Failed to sync container A',
+        );
+        expect(status.details!(AppLocalizationsEn()), 'boom');
+      },
+    );
+  });
+
+  group('syncContainers: offline', () {
+    test(
+      'a SocketException fails only that container, tokens and policies stay, '
+      'other containers are still synced',
+      () async {
+        final tokenA = _hotp('idA', 'SERIAL-A', containerSerial: 'A');
+        final fx = _Fixture(
+          containers: [_container('A'), _container('B')],
+          tokens: [tokenA],
+        );
+        fx.fake.onSync['A'] = (_, _, _) async =>
+            throw const SocketException('Connection refused');
+        fx.fake.onSync['B'] = (_, _, _) async => _updates(
+          'B',
+          newTokens: [_hotp('idNew', 'SERIAL-NEW', containerSerial: 'B')],
+        );
+        final env = await _plainEnv(fx);
+
+        await env.sync();
+
+        final a = await env.finalized('A');
+        final b = await env.finalized('B');
+        expect(a.syncState, SyncState.failed);
+        expect(a.initSynced, isFalse);
+        expect(a.policies, _originalPolicies);
+        expect(b.syncState, SyncState.completed);
+        expect(b.initSynced, isTrue);
+        expect(b.policies, _syncedPolicies);
+
+        final tokens = (await env.tokens()).tokens;
+        expect(
+          tokens.map((t) => t.serial),
+          unorderedEquals(['SERIAL-A', 'SERIAL-NEW']),
+        );
+        expect(
+          tokens.firstWhere((t) => t.serial == 'SERIAL-A').containerSerial,
+          'A',
+        );
+        expect(fx.tokenRepo.deletedIds, isEmpty);
+      },
+    );
+
+    test('the real api answers a connection failure with ResponseError: '
+        'sync fails, tokens and policies stay', () async {
+      final io = _FakeIoClient(
+        ResponseBuilder.fromMessage('Connection refused'),
+      );
+      final tokenA = _hotp('idA', 'SERIAL-A', containerSerial: 'A', counter: 7);
+      final fx = _Fixture(
+        containers: [_container('A')],
+        tokens: [tokenA],
+        api: PiContainerApi(ioClient: io),
+      );
+      final env = await _plainEnv(fx);
+
+      final failed = await env.sync();
+
+      final a = await env.finalized('A');
+      expect(io.posts.map((u) => u.path), ['/container/challenge']);
+      expect(a.syncState, SyncState.failed);
+      expect(a.initSynced, isFalse);
+      expect(a.policies, _originalPolicies);
+      // A connection failure has no server error code, so nothing is keyed.
+      expect(failed, isEmpty);
+      final tokens = (await env.tokens()).tokens;
+      expect(tokens, hasLength(1));
+      expect((tokens.single as HOTPToken).counter, 7);
+      expect(fx.tokenRepo.deletedIds, isEmpty);
+    });
+
+    testWidgets('isManually false: an offline failure is silent', (
+      tester,
+    ) async {
+      final fx = _Fixture(containers: [_container('A')]);
+      fx.fake.onSync['A'] = (_, _, _) async =>
+          throw const SocketException('Network is unreachable');
+      final env = await _widgetEnv(tester, fx);
+
+      await env.sync();
+      await _pumpDialogs(tester);
+
+      expect((await env.finalized('A')).syncState, SyncState.failed);
+      expect(env.status, isNull);
+      expect(find.byType(DeleteContainerDialog), findsNothing);
+    });
+
+    testWidgets(
+      'isManually true: an offline failure is shown as status message',
+      (tester) async {
+        final fx = _Fixture(containers: [_container('A')]);
+        fx.fake.onSync['A'] = (_, _, _) async =>
+            throw const SocketException('Network is unreachable');
+        final env = await _widgetEnv(tester, fx);
+
+        await env.sync(isManually: true);
+
+        final a = await env.finalized('A');
+        expect(a.syncState, SyncState.failed);
+        expect(a.policies, _originalPolicies);
+        final status = env.status;
+        expect(status, isNotNull);
+        expect(
+          status!.message(AppLocalizationsEn()),
+          'Failed to sync container A',
+        );
+        expect(
+          status.details!(AppLocalizationsEn()),
+          contains('Network is unreachable'),
+        );
+      },
+    );
+  });
+
+  group('finalize: container without client key pair', () {
+    // The keys vanish while the finalization request is in flight, so that
+    // _applyFinalizationResponse gets a container it can not finalize.
+    Future<_Env> setup(WidgetTester? tester, _Fixture fx) async {
+      late _Env env;
+      fx.fake.onFinalize = (c) async {
+        await env.notifier.updateContainer(
+          c,
+          (TokenContainerUnfinalized u) =>
+              u.copyWith(publicClientKey: null, privateClientKey: null),
+        );
+        return _finalizationResponse;
+      };
+      env = tester == null ? await _plainEnv(fx) : await _widgetEnv(tester, fx);
+      await env.run(() => env.notifier.addContainer(_unfinalized('NEW')));
+      return env;
+    }
+
+    testWidgets(
+      'isManually false: returns null, marks the finalization as failed, '
+      'stays unfinalized and shows no status message',
+      (tester) async {
+        final fx = _Fixture();
+        final env = await setup(tester, fx);
+        final unfinalized = (await env.containers()).containerOf('NEW')!;
+
+        final result = await env.finalize(unfinalized, isManually: false);
+
+        expect(result, isNull);
+        expect(fx.fake.finalizeCalls, 1);
+        final state = await env.containers();
+        expect(
+          state.containerList.whereType<TokenContainerFinalized>(),
+          isEmpty,
+        );
+        final stored = state.containerOf('NEW')! as TokenContainerUnfinalized;
+        expect(stored.finalizationState.isFailed, isTrue);
+        expect(
+          stored.finalizationState,
+          FinalizationState.parsingResponseFailed,
+        );
+        expect(stored.publicClientKey, isNull);
+        expect(env.status, isNull);
+      },
+    );
+
+    testWidgets(
+      'isManually true: additionally shows the failure as status message',
+      (tester) async {
+        final fx = _Fixture();
+        final env = await setup(tester, fx);
+        final unfinalized = (await env.containers()).containerOf('NEW')!;
+
+        final result = await env.finalize(unfinalized, isManually: true);
+
+        expect(result, isNull);
+        final stored =
+            (await env.containers()).containerOf('NEW')!
+                as TokenContainerUnfinalized;
+        expect(stored.finalizationState.isFailed, isTrue);
+        final status = env.status;
+        expect(status, isNotNull);
+        expect(status!.type, StatusMessageType.error);
+        expect(
+          status.details!(AppLocalizationsEn()),
+          contains('missing client key pair'),
+        );
+      },
+    );
+
+    test('a retry after the failure finalizes the container', () async {
+      final fx = _Fixture();
+      final env = await setup(null, fx);
+      final unfinalized = (await env.containers()).containerOf('NEW')!;
+      expect(await env.finalize(unfinalized, isManually: false), isNull);
+
+      // The keys no longer vanish.
+      fx.fake.onFinalize = null;
+      final failedState =
+          (await env.containers()).containerOf('NEW')!
+              as TokenContainerUnfinalized;
+      final result = await env.finalize(failedState, isManually: false);
+
+      expect(result, isNotNull);
+      expect(result!.policies, _syncedPolicies);
+      final stored = (await env.containers()).containerOf('NEW');
+      expect(stored, isA<TokenContainerFinalized>());
+      expect(
+        (stored! as TokenContainerFinalized).finalizationState,
+        FinalizationState.completed,
+      );
+    });
+  });
+
+  group('initSynced', () {
+    test('user cancels the initial token assignment (sync returns null): '
+        'sync failed, initSynced stays false', () async {
+      final fx = _Fixture(containers: [_container('A')]);
+      fx.fake.onSync['A'] = (_, _, _) async => null;
+      final env = await _plainEnv(fx);
+
+      final failed = await env.sync(isInitSync: true);
+
+      final a = await env.finalized('A');
+      expect(fx.fake.syncCalls, [(serial: 'A', isInitSync: true)]);
+      expect(a.syncState, SyncState.failed);
+      expect(a.initSynced, isFalse);
+      expect(a.policies, _originalPolicies);
+      expect(failed, isEmpty);
+    });
+
+    test('a server error keeps initSynced false', () async {
+      final fx = _Fixture(containers: [_container('A')]);
+      fx.fake.onSync['A'] = (_, _, _) async =>
+          throw _piError(PiServerResultErrorCodes.server);
+      final env = await _plainEnv(fx);
+
+      await env.sync(isInitSync: true);
+
+      final a = await env.finalized('A');
+      expect(a.syncState, SyncState.failed);
+      expect(a.initSynced, isFalse);
+    });
+
+    test('an unexpected error keeps initSynced false', () async {
+      final fx = _Fixture(containers: [_container('A')]);
+      fx.fake.onSync['A'] = (_, _, _) async => throw StateError('unexpected');
+      final env = await _plainEnv(fx);
+
+      await env.sync(isInitSync: true);
+
+      final a = await env.finalized('A');
+      expect(a.syncState, SyncState.failed);
+      expect(a.initSynced, isFalse);
+    });
+
+    test('a successful sync sets initSynced', () async {
+      final fx = _Fixture(containers: [_container('A')]);
+      fx.fake.onSync['A'] = (_, _, _) async => _updates('A');
+      final env = await _plainEnv(fx);
+
+      await env.sync(isInitSync: true);
+
+      final a = await env.finalized('A');
+      expect(a.syncState, SyncState.completed);
+      expect(a.initSynced, isTrue);
+    });
+
+    test('a failing sync does not reset an already set initSynced', () async {
+      final fx = _Fixture(containers: [_container('A', initSynced: true)]);
+      fx.fake.onSync['A'] = (_, _, _) async =>
+          throw const SocketException('offline');
+      final env = await _plainEnv(fx);
+
+      await env.sync();
+
+      final a = await env.finalized('A');
+      expect(a.syncState, SyncState.failed);
+      expect(a.initSynced, isTrue);
+    });
+
+    test(
+      'after a cancelled initial sync the next sync can complete it',
+      () async {
+        final fx = _Fixture(containers: [_container('A')]);
+        var cancel = true;
+        fx.fake.onSync['A'] = (_, _, _) async => cancel ? null : _updates('A');
+        final env = await _plainEnv(fx);
+
+        await env.sync(isInitSync: true);
+        expect((await env.finalized('A')).initSynced, isFalse);
+
+        cancel = false;
+        await env.sync(isInitSync: true);
+
+        final a = await env.finalized('A');
+        expect(fx.fake.syncCalls, hasLength(2));
+        expect(a.syncState, SyncState.completed);
+        expect(a.initSynced, isTrue);
+      },
+    );
+  });
+
+  group('tokens that move between containers', () {
+    for (final order in [
+      ['A', 'B'],
+      ['B', 'A'],
+    ]) {
+      test(
+        'is not deleted when container A deletes it and container B updates it '
+        '(containers in order ${order.join(', ')})',
+        () async {
+          final tokenX = _hotp('idX', 'SERIAL-X', containerSerial: 'A');
+          final fx = _Fixture(
+            containers: [for (final s in order) _container(s)],
+            tokens: [tokenX],
+          );
+          fx.fake.onSync['A'] = (_, _, _) async =>
+              _updates('A', deletedTokens: [tokenX]);
+          fx.fake.onSync['B'] = (_, _, _) async => _updates(
+            'B',
+            updatedTokens: [
+              _hotp('idX', 'SERIAL-X', containerSerial: 'B', counter: 3),
+            ],
+          );
+          final env = await _plainEnv(fx);
+
+          await env.sync();
+
+          final tokens = (await env.tokens()).tokens;
+          expect(tokens, hasLength(1));
+          final x = tokens.single as HOTPToken;
+          expect(x.serial, 'SERIAL-X');
+          expect(x.containerSerial, 'B');
+          expect(x.counter, 3);
+          expect(fx.tokenRepo.deletedIds, isEmpty);
+          expect(fx.tokenRepo.tokens.keys, ['idX']);
+        },
+      );
+    }
+
+    test(
+      'still exists exactly once when container B reports it as new token',
+      () async {
+        final tokenX = _hotp('idX', 'SERIAL-X', containerSerial: 'A');
+        final fx = _Fixture(
+          containers: [_container('A'), _container('B')],
+          tokens: [tokenX],
+        );
+        fx.fake.onSync['A'] = (_, _, _) async =>
+            _updates('A', deletedTokens: [tokenX]);
+        fx.fake.onSync['B'] = (_, _, _) async => _updates(
+          'B',
+          newTokens: [_hotp('idXNew', 'SERIAL-X', containerSerial: 'B')],
+        );
+        final env = await _plainEnv(fx);
+
+        await env.sync();
+
+        final tokens = (await env.tokens()).tokens;
+        expect(tokens.map((t) => t.serial), ['SERIAL-X']);
+        expect(tokens.single.containerSerial, 'B');
+        expect(fx.tokenRepo.tokens.values.map((t) => t.serial), ['SERIAL-X']);
+      },
+    );
+
+    test('is deleted when only container A reports it as deleted', () async {
+      final tokenX = _hotp('idX', 'SERIAL-X', containerSerial: 'A');
+      final tokenY = _hotp('idY', 'SERIAL-Y', containerSerial: 'B');
+      final fx = _Fixture(
+        containers: [_container('A'), _container('B')],
+        tokens: [tokenX, tokenY],
+      );
+      fx.fake.onSync['A'] = (_, _, _) async =>
+          _updates('A', deletedTokens: [tokenX]);
+      fx.fake.onSync['B'] = (_, _, _) async =>
+          _updates('B', updatedTokens: [tokenY]);
+      final env = await _plainEnv(fx);
+
+      await env.sync();
+
+      final tokens = (await env.tokens()).tokens;
+      expect(tokens.map((t) => t.serial), ['SERIAL-Y']);
+      expect(fx.tokenRepo.deletedIds, ['idX']);
+    });
+
+    test(
+      'is not deleted when the container that deletes it fails to sync',
+      () async {
+        final tokenX = _hotp('idX', 'SERIAL-X', containerSerial: 'A');
+        final fx = _Fixture(containers: [_container('A')], tokens: [tokenX]);
+        fx.fake.onSync['A'] = (_, _, _) async =>
+            throw const SocketException('offline');
+        final env = await _plainEnv(fx);
+
+        await env.sync();
+
+        expect((await env.tokens()).tokens.map((t) => t.serial), ['SERIAL-X']);
+        expect(fx.tokenRepo.deletedIds, isEmpty);
+      },
+    );
   });
 }

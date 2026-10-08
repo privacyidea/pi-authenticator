@@ -1,8 +1,11 @@
 import 'dart:convert';
+import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:cryptography/cryptography.dart' as crypto;
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/enums/token_origin_source_type.dart';
 import 'package:privacyidea_authenticator/model/enums/token_types.dart';
@@ -16,6 +19,7 @@ import 'package:privacyidea_authenticator/utils/token_import_origins.dart';
 
 void main() {
   _testTwoFasImportFileProcessor();
+  _testTwoFasImportFileProcessorEdgeCases();
 }
 
 void _assertSuccessResults(List<ProcessorResult<Token>> results) {
@@ -214,6 +218,619 @@ void _testTwoFasImportFileProcessor() {
           _assertSuccessResults(results);
         });
       });
+    });
+  });
+}
+
+const _password = '2fas test password';
+const _secretA = 'JBSWY3DPEHPK3PXP';
+const _secretB = 'GEZDGNBVGY3TQOJQ';
+
+// ---------------------------------------------------------------------------
+// Fixture helpers
+// ---------------------------------------------------------------------------
+
+XFile _xFile(Object content, {String name = 'twofas.json'}) => XFile.fromData(
+  Uint8List.fromList(
+    utf8.encode(content is String ? content : jsonEncode(content)),
+  ),
+  name: name,
+);
+
+Uint8List _randomBytes(int length) {
+  final random = Random.secure();
+  return Uint8List.fromList(List.generate(length, (_) => random.nextInt(256)));
+}
+
+Map<String, dynamic> _service({
+  String name = 'Example',
+  String secret = _secretA,
+  String tokenType = 'TOTP',
+  String label = 'alice@example.com',
+  String algorithm = 'SHA1',
+  int digits = 6,
+  int period = 30,
+  int counter = 0,
+}) => {
+  'name': name,
+  'secret': secret,
+  'updatedAt': 1713519600602,
+  'otp': {
+    'label': label,
+    'account': label,
+    'digits': digits,
+    'period': period,
+    'algorithm': algorithm,
+    'counter': counter,
+    'tokenType': tokenType,
+    'source': 'Manual',
+  },
+  'order': {'position': 0},
+};
+
+Map<String, dynamic> _plainFile(List<Object?> services) => {
+  'services': services,
+  'groups': <Object>[],
+  'updatedAt': 1713519600602,
+  'schemaVersion': 4,
+  'appVersionCode': 5000019,
+  'appVersionName': '5.4.0',
+  'appOrigin': 'android',
+};
+
+/// Builds the `servicesEncrypted` value like 2FAS does it:
+/// `base64(ciphertext + tag):base64(salt):base64(iv)` with PBKDF2-HMAC-SHA256 (10000 iterations)
+/// and AES-256-GCM. 2FAS uses a 256 byte salt, the processor derives the key length from the salt length.
+Future<String> _servicesEncrypted(
+  String plain, {
+  String password = _password,
+}) async {
+  final salt = _randomBytes(256);
+  final iv = _randomBytes(12);
+  final key = await crypto.Pbkdf2(
+    macAlgorithm: crypto.Hmac.sha256(),
+    iterations: 10000,
+    bits: 256,
+  ).deriveKeyFromPassword(password: password, nonce: salt);
+  final box = await crypto.AesGcm.with256bits().encrypt(
+    utf8.encode(plain),
+    secretKey: key,
+    nonce: iv,
+  );
+  return '${base64Encode(box.concatenation(nonce: false))}:${base64Encode(salt)}:${base64Encode(iv)}';
+}
+
+Future<Map<String, dynamic>> _encryptedFile(
+  Object services, {
+  String password = _password,
+}) async => {
+  'services': <Object>[],
+  'groups': <Object>[],
+  'updatedAt': 1713519600602,
+  'servicesEncrypted': await _servicesEncrypted(
+    services is String ? services : jsonEncode(services),
+    password: password,
+  ),
+  'schemaVersion': 4,
+  'appVersionCode': 5000019,
+  'appVersionName': '5.4.0',
+  'appOrigin': 'android',
+};
+
+Future<Object?> _outcomeOf(Future<List<ProcessorResult<Token>>> future) async {
+  try {
+    return await future;
+  } catch (e) {
+    return e;
+  }
+}
+
+String _failureMessage(ProcessorResult<Token> result) =>
+    result.asFailed!.message(AppLocalizationsEn());
+
+// ---------------------------------------------------------------------------
+// Tests
+// ---------------------------------------------------------------------------
+
+void _testTwoFasImportFileProcessorEdgeCases() {
+  group('Two Fas Import File Processor edge cases', () {
+    const processor = TwoFasAuthenticatorImportFileProcessor();
+
+    group('file validation', () {
+      test('plain export is valid and needs no password', () async {
+        final file = _xFile(_plainFile([_service()]));
+        expect(await processor.fileIsValid(file), isTrue);
+        expect(await processor.fileNeedsPassword(file), isFalse);
+      });
+
+      test('encrypted export is valid and needs a password', () async {
+        final file = _xFile(await _encryptedFile([_service()]));
+        expect(await processor.fileIsValid(file), isTrue);
+        expect(await processor.fileNeedsPassword(file), isTrue);
+      });
+
+      test('non json content is neither valid nor needs a password', () async {
+        final file = _xFile('<html>not json</html>');
+        expect(await processor.fileIsValid(file), isFalse);
+        expect(await processor.fileNeedsPassword(file), isFalse);
+      });
+
+      test('a json list is neither valid nor needs a password', () async {
+        final file = _xFile('[{"services": []}]');
+        expect(await processor.fileIsValid(file), isFalse);
+        expect(await processor.fileNeedsPassword(file), isFalse);
+      });
+
+      test(
+        'a json object with neither services nor servicesEncrypted is not valid',
+        () async {
+          final file = _xFile({'groups': <Object>[], 'schemaVersion': 4});
+          expect(await processor.fileIsValid(file), isFalse);
+          expect(await processor.fileNeedsPassword(file), isFalse);
+        },
+      );
+
+      test('an empty file is not valid', () async {
+        expect(await processor.fileIsValid(_xFile('')), isFalse);
+      });
+    });
+
+    group('invalid input', () {
+      test('non json content throws InvalidFileContentException', () async {
+        await expectLater(
+          processor.processFile(_xFile('no json')),
+          throwsA(isA<InvalidFileContentException>()),
+        );
+        await expectLater(
+          processor.processFile(_xFile('no json'), password: _password),
+          throwsA(isA<InvalidFileContentException>()),
+        );
+      });
+
+      test('a json list throws InvalidFileContentException', () async {
+        await expectLater(
+          processor.processFile(_xFile('[]')),
+          throwsA(isA<InvalidFileContentException>()),
+        );
+      });
+
+      test(
+        'a json object without services and servicesEncrypted throws InvalidFileContentException',
+        () async {
+          final file = _xFile({'schemaVersion': 4});
+          await expectLater(
+            processor.processFile(file),
+            throwsA(isA<InvalidFileContentException>()),
+          );
+          await expectLater(
+            processor.processFile(file, password: _password),
+            throwsA(isA<InvalidFileContentException>()),
+          );
+        },
+      );
+
+      test(
+        'a file that fileIsValid accepts can be processed without throwing (UI contract)',
+        () async {
+          // import_start_page.dart calls fileIsValid() and then processFile() without a try/catch,
+          // an exception leaves the import page in its loading state.
+          final file = _xFile(_plainFile([]));
+          expect(await processor.fileIsValid(file), isTrue);
+
+          final outcome = await _outcomeOf(processor.processFile(file));
+
+          expect(outcome, isA<List<ProcessorResult<Token>>>());
+        },
+        skip:
+            'BUG: two_fas_import_file_processor.dart:152 an export with an empty services list passes fileIsValid (line 80) but processFile throws InvalidFileContentException, which the import page does not catch',
+      );
+    });
+
+    group('plain export', () {
+      test('imports totp, hotp and steam with all attributes', () async {
+        final file = _xFile(
+          _plainFile([
+            _service(
+              name: 'Issuer A',
+              algorithm: 'SHA256',
+              digits: 8,
+              period: 60,
+              label: 'bob',
+            ),
+            _service(
+              name: 'Issuer B',
+              secret: _secretB,
+              tokenType: 'HOTP',
+              algorithm: 'SHA512',
+              digits: 7,
+              counter: 12,
+              label: 'carol',
+            ),
+            _service(
+              name: 'Steam',
+              secret: _secretB,
+              tokenType: 'STEAM',
+              digits: 5,
+            ),
+          ]),
+        );
+
+        final results = await processor.processFile(file);
+
+        expect(results.length, 3);
+        expect(
+          results.every((r) => r.isSuccess),
+          isTrue,
+          reason: results
+              .where((r) => r.isFailed)
+              .map(_failureMessage)
+              .join(' | '),
+        );
+        final totp = results[0].asSuccess!.resultData as TOTPToken;
+        expect(totp.issuer, 'Issuer A');
+        expect(totp.label, 'bob');
+        expect(totp.secret, _secretA);
+        expect(totp.algorithm, Algorithms.SHA256);
+        expect(totp.digits, 8);
+        expect(totp.period, 60);
+        final hotp = results[1].asSuccess!.resultData as HOTPToken;
+        expect(hotp.issuer, 'Issuer B');
+        expect(hotp.label, 'carol');
+        expect(hotp.secret, _secretB);
+        expect(hotp.algorithm, Algorithms.SHA512);
+        expect(hotp.digits, 7);
+        expect(hotp.counter, 12);
+        final steam = results[2].asSuccess!.resultData;
+        expect(steam, isA<SteamToken>());
+        expect((steam as SteamToken).secret, _secretB);
+      });
+
+      test('a plain export is imported even if a password is passed', () async {
+        final file = _xFile(
+          _plainFile([_service(name: 'plain with password')]),
+        );
+
+        final results = await processor.processFile(file, password: _password);
+
+        expect(results.length, 1);
+        expect(
+          results.single.asSuccess!.resultData.issuer,
+          'plain with password',
+        );
+      });
+
+      test(
+        'an unknown tokenType becomes a failed result and the others are imported',
+        () async {
+          final file = _xFile(
+            _plainFile([
+              _service(name: 'first'),
+              _service(name: 'weird', tokenType: 'MOTP'),
+              _service(name: 'last', tokenType: 'HOTP'),
+            ]),
+          );
+
+          final results = await processor.processFile(file);
+
+          expect(results.map((r) => r.isSuccess), [true, false, true]);
+          expect(results[0].asSuccess!.resultData.issuer, 'first');
+          expect(results[2].asSuccess!.resultData.issuer, 'last');
+        },
+      );
+
+      test('a missing tokenType becomes a failed result', () async {
+        final service = _service();
+        (service['otp'] as Map).remove('tokenType');
+        final file = _xFile(_plainFile([service, _service(name: 'ok')]));
+
+        final results = await processor.processFile(file);
+
+        expect(results.map((r) => r.isSuccess), [false, true]);
+      });
+
+      test(
+        'a missing otp object becomes a failed result and the others are imported',
+        () async {
+          final service = _service(name: 'no otp')..remove('otp');
+          final file = _xFile(
+            _plainFile([
+              _service(name: 'first'),
+              service,
+              _service(name: 'last'),
+            ]),
+          );
+
+          final results = await processor.processFile(file);
+
+          expect(results.map((r) => r.isSuccess), [true, false, true]);
+          expect(results[2].asSuccess!.resultData.issuer, 'last');
+        },
+      );
+
+      test('a missing secret becomes a failed result', () async {
+        final service = _service()..remove('secret');
+        final file = _xFile(_plainFile([service, _service(name: 'ok')]));
+
+        final results = await processor.processFile(file);
+
+        expect(results.map((r) => r.isSuccess), [false, true]);
+      });
+
+      test('a secret that is not base32 becomes a failed result', () async {
+        final file = _xFile(
+          _plainFile([
+            _service(secret: 'not base32 !!!'),
+            _service(name: 'ok'),
+          ]),
+        );
+
+        final results = await processor.processFile(file);
+
+        expect(results.map((r) => r.isSuccess), [false, true]);
+      });
+
+      test(
+        'a service that is not an object becomes a failed result and the others are imported',
+        () async {
+          final file = _xFile(
+            _plainFile([
+              _service(name: 'first'),
+              'garbage',
+              _service(name: 'last'),
+            ]),
+          );
+
+          final results = await processor.processFile(file);
+
+          expect(results.map((r) => r.isSuccess), [true, false, true]);
+        },
+        skip:
+            'BUG: two_fas_import_file_processor.dart:166 the lazy cast<Map> is evaluated in the for-in header outside the try block, a non-object service aborts the whole import with a raw TypeError',
+      );
+
+      test('the original service json is kept as token origin data', () async {
+        final service = _service(name: 'origin');
+        final file = _xFile(_plainFile([service]));
+
+        final results = await processor.processFile(file);
+
+        final origin = results.single.asSuccess!.resultData.origin;
+        expect(origin, isNotNull);
+        expect(jsonDecode(origin!.data), service);
+      });
+    });
+
+    group('encrypted export', () {
+      test('round trip with the correct password', () async {
+        final file = _xFile(
+          await _encryptedFile([
+            _service(name: 'enc totp', digits: 8),
+            _service(
+              name: 'enc hotp',
+              secret: _secretB,
+              tokenType: 'HOTP',
+              counter: 4,
+            ),
+          ]),
+        );
+
+        final results = await processor.processFile(file, password: _password);
+
+        expect(results.length, 2);
+        expect(results.every((r) => r.isSuccess), isTrue);
+        final totp = results[0].asSuccess!.resultData as TOTPToken;
+        expect(totp.issuer, 'enc totp');
+        expect(totp.secret, _secretA);
+        expect(totp.digits, 8);
+        final hotp = results[1].asSuccess!.resultData as HOTPToken;
+        expect(hotp.secret, _secretB);
+        expect(hotp.counter, 4);
+      });
+
+      test('processEncryptedFile accepts the raw json string', () async {
+        final json = await _encryptedFile([_service(name: 'from string')]);
+
+        final results = await processor.processEncryptedFile(
+          jsonString: jsonEncode(json),
+          password: _password,
+        );
+
+        expect(results.single.asSuccess!.resultData.issuer, 'from string');
+      });
+
+      test('a wrong password throws BadDecryptionPasswordException', () async {
+        final file = _xFile(await _encryptedFile([_service()]));
+
+        await expectLater(
+          processor.processFile(file, password: 'wrong password'),
+          throwsA(isA<BadDecryptionPasswordException>()),
+        );
+      });
+
+      test('an empty password throws BadDecryptionPasswordException', () async {
+        final file = _xFile(await _encryptedFile([_service()]));
+
+        await expectLater(
+          processor.processFile(file, password: ''),
+          throwsA(isA<BadDecryptionPasswordException>()),
+        );
+      });
+
+      test(
+        'an encrypted file processed without a password throws BadDecryptionPasswordException',
+        () async {
+          final file = _xFile(await _encryptedFile([_service()]));
+
+          await expectLater(
+            processor.processFile(file),
+            throwsA(isA<BadDecryptionPasswordException>()),
+          );
+        },
+      );
+
+      test(
+        'a manipulated ciphertext throws BadDecryptionPasswordException',
+        () async {
+          // AES-GCM cannot tell a wrong key from manipulated data
+          final json = await _encryptedFile([_service()]);
+          final parts = (json['servicesEncrypted'] as String).split(':');
+          final data = base64Decode(parts[0]);
+          data[0] ^= 0xFF;
+          json['servicesEncrypted'] = [
+            base64Encode(data),
+            parts[1],
+            parts[2],
+          ].join(':');
+
+          await expectLater(
+            processor.processFile(_xFile(json), password: _password),
+            throwsA(isA<BadDecryptionPasswordException>()),
+          );
+        },
+      );
+
+      test(
+        'an encrypted export of zero services yields an empty result list',
+        () async {
+          final file = _xFile(await _encryptedFile(<Object>[]));
+
+          final results = await processor.processFile(
+            file,
+            password: _password,
+          );
+
+          expect(results, isEmpty);
+        },
+      );
+
+      test(
+        'correct password but the payload is not json throws InvalidFileContentException',
+        () async {
+          final file = _xFile(await _encryptedFile('this is not json'));
+
+          await expectLater(
+            processor.processFile(file, password: _password),
+            throwsA(isA<InvalidFileContentException>()),
+          );
+        },
+      );
+
+      test(
+        'correct password but the payload is a json object instead of a list throws InvalidFileContentException',
+        () async {
+          final file = _xFile(await _encryptedFile('{"not": "a list"}'));
+
+          await expectLater(
+            processor.processFile(file, password: _password),
+            throwsA(isA<InvalidFileContentException>()),
+          );
+        },
+      );
+
+      test(
+        'an unknown tokenType inside the encrypted payload becomes a failed result',
+        () async {
+          final file = _xFile(
+            await _encryptedFile([
+              _service(name: 'ok'),
+              _service(name: 'weird', tokenType: 'NOPE'),
+            ]),
+          );
+
+          final results = await processor.processFile(
+            file,
+            password: _password,
+          );
+
+          expect(results.map((r) => r.isSuccess), [true, false]);
+        },
+      );
+
+      test(
+        'a missing otp object inside the encrypted payload becomes a failed result',
+        () async {
+          final service = _service(name: 'no otp')..remove('otp');
+          final file = _xFile(
+            await _encryptedFile([service, _service(name: 'ok')]),
+          );
+
+          final results = await processor.processFile(
+            file,
+            password: _password,
+          );
+
+          expect(results.map((r) => r.isSuccess), [false, true]);
+        },
+      );
+    });
+
+    group('malformed servicesEncrypted is not reported as a wrong password', () {
+      void expectNotAPasswordProblem(Object? outcome) {
+        expect(
+          outcome,
+          isNot(isA<BadDecryptionPasswordException>()),
+          reason:
+              'A corrupt file must not tell the user that the password is wrong',
+        );
+        expect(outcome, isA<InvalidFileContentException>());
+      }
+
+      Future<Object?> processMalformed(Object? servicesEncrypted) {
+        final file = _xFile({
+          'services': <Object>[],
+          'servicesEncrypted': servicesEncrypted,
+        });
+        return _outcomeOf(processor.processFile(file, password: _password));
+      }
+
+      test(
+        'without any separator',
+        () async {
+          expectNotAPasswordProblem(await processMalformed('abcdefgh'));
+        },
+        skip:
+            'BUG: two_fas_import_file_processor.dart:132 catch (e) turns every failure while parsing/decrypting servicesEncrypted (RangeError, FormatException, TypeError) into BadDecryptionPasswordException',
+      );
+
+      test(
+        'with only two segments',
+        () async {
+          expectNotAPasswordProblem(
+            await processMalformed(
+              '${base64Encode([1, 2, 3])}:${base64Encode([4, 5])}',
+            ),
+          );
+        },
+        skip:
+            'BUG: two_fas_import_file_processor.dart:132 catch (e) turns every failure while parsing/decrypting servicesEncrypted into BadDecryptionPasswordException',
+      );
+
+      test(
+        'with segments that are not base64',
+        () async {
+          expectNotAPasswordProblem(await processMalformed('%%%:%%%:%%%'));
+        },
+        skip:
+            'BUG: two_fas_import_file_processor.dart:132 catch (e) turns every failure while parsing/decrypting servicesEncrypted into BadDecryptionPasswordException',
+      );
+
+      test(
+        'that is not a string',
+        () async {
+          expectNotAPasswordProblem(await processMalformed(12345));
+        },
+        skip:
+            'BUG: two_fas_import_file_processor.dart:132 catch (e) turns every failure while parsing/decrypting servicesEncrypted into BadDecryptionPasswordException',
+      );
+
+      test(
+        'that is an empty string',
+        () async {
+          expectNotAPasswordProblem(await processMalformed(''));
+        },
+        skip:
+            'BUG: two_fas_import_file_processor.dart:132 catch (e) turns every failure while parsing/decrypting servicesEncrypted into BadDecryptionPasswordException',
+      );
     });
   });
 }

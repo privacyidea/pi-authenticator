@@ -1,16 +1,27 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
+import 'dart:typed_data';
 
+import 'package:cryptography/cryptography.dart' as crypto;
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:pointycastle/export.dart' show Scrypt, ScryptParameters;
+import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
+import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
+import 'package:privacyidea_authenticator/model/exception_errors/localized_argument_error.dart';
 import 'package:privacyidea_authenticator/model/processor_result.dart';
 import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
+import 'package:privacyidea_authenticator/model/tokens/steam_token.dart';
+import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
 import 'package:privacyidea_authenticator/processors/token_import_file_processor/aegis_import_file_processor.dart';
 import 'package:privacyidea_authenticator/processors/token_import_file_processor/two_fas_import_file_processor.dart';
 
 void main() {
   _testAegisImportFileProcessor();
+  _testAegisImportFileProcessorEdgeCases();
 }
 
 void _testAegisImportFileProcessor() {
@@ -217,6 +228,916 @@ void _testAegisImportFileProcessor() {
 
       group('import TXT', () {
         // Unimplemented
+      });
+    });
+  });
+}
+
+const _password = 'aegis test password';
+const _secretA = 'JBSWY3DPEHPK3PXP';
+const _secretB = 'GEZDGNBVGY3TQOJQ';
+
+// ---------------------------------------------------------------------------
+// Fixture helpers
+// ---------------------------------------------------------------------------
+
+XFile _xFile(Object content, {String name = 'aegis.json'}) => XFile.fromData(
+  Uint8List.fromList(
+    utf8.encode(content is String ? content : jsonEncode(content)),
+  ),
+  name: name,
+);
+
+String _hex(List<int> bytes) =>
+    bytes.map((b) => b.toRadixString(16).padLeft(2, '0')).join();
+
+Uint8List _randomBytes(int length) {
+  final random = Random.secure();
+  return Uint8List.fromList(List.generate(length, (_) => random.nextInt(256)));
+}
+
+Map<String, dynamic> _entry({
+  String type = 'totp',
+  String name = 'alice@example.com',
+  String issuer = 'Example',
+  String secret = _secretA,
+  String algo = 'SHA1',
+  int digits = 6,
+  int period = 30,
+  int? counter,
+  String uuid = '11111111-2222-3333-4444-555555555555',
+}) => {
+  'type': type,
+  'uuid': uuid,
+  'name': name,
+  'issuer': issuer,
+  'note': '',
+  'favorite': false,
+  'icon': null,
+  'info': {
+    'secret': secret,
+    'algo': algo,
+    'digits': digits,
+    if (type == 'hotp') 'counter': counter ?? 0 else 'period': period,
+  },
+  'groups': <String>[],
+};
+
+Map<String, dynamic> _db({Object? version = 3, List<Object?>? entries}) => {
+  'version': ?version,
+  'entries': entries ?? [_entry()],
+  'groups': <Object>[],
+};
+
+/// An unencrypted Aegis export.
+Map<String, dynamic> _plainFile(Map<String, dynamic> db) => {
+  'version': 1,
+  'header': {'slots': null, 'params': null},
+  'db': db,
+};
+
+/// Builds an encrypted Aegis export the way Aegis itself does it:
+/// password -> scrypt -> slot key -> AES-GCM(master key) and master key -> AES-GCM(db).
+/// A small scrypt cost keeps the tests fast, the processor takes the cost from the slot.
+Future<Map<String, dynamic>> _encryptedFile({
+  required Object db,
+  String password = _password,
+  int n = 1024,
+  bool dbIsRawText = false,
+}) async {
+  final salt = _randomBytes(32);
+  final kdf = Scrypt()..init(ScryptParameters(n, 8, 1, 32, salt));
+  final passwordKey = Uint8List(32);
+  kdf.deriveKey(Uint8List.fromList(utf8.encode(password)), 0, passwordKey, 0);
+
+  final masterKey = _randomBytes(32);
+  final cipher = crypto.AesGcm.with256bits();
+
+  final slotNonce = _randomBytes(12);
+  final slotBox = await cipher.encrypt(
+    masterKey,
+    secretKey: crypto.SecretKey(passwordKey),
+    nonce: slotNonce,
+  );
+
+  final dbNonce = _randomBytes(12);
+  final dbPlain = dbIsRawText ? db as String : jsonEncode(db);
+  final dbBox = await cipher.encrypt(
+    utf8.encode(dbPlain),
+    secretKey: crypto.SecretKey(masterKey),
+    nonce: dbNonce,
+  );
+
+  return {
+    'version': 1,
+    'header': {
+      'slots': [
+        {
+          'type': 1,
+          'uuid': 'ce52ebc8-5856-44d4-ac11-ff6019950ebf',
+          'key': _hex(slotBox.cipherText),
+          'key_params': {
+            'nonce': _hex(slotNonce),
+            'tag': _hex(slotBox.mac.bytes),
+          },
+          'n': n,
+          'r': 8,
+          'p': 1,
+          'salt': _hex(salt),
+          'repaired': true,
+          'is_backup': false,
+        },
+      ],
+      'params': {'nonce': _hex(dbNonce), 'tag': _hex(dbBox.mac.bytes)},
+    },
+    'db': base64Encode(dbBox.cipherText),
+  };
+}
+
+Future<Object?> _outcomeOf(Future<List<ProcessorResult<Token>>> future) async {
+  try {
+    return await future;
+  } catch (e) {
+    return e;
+  }
+}
+
+String _failureMessage(ProcessorResult<Token> result) =>
+    result.asFailed!.message(AppLocalizationsEn());
+
+void _expectDomainException(Object? outcome) {
+  expect(
+    outcome,
+    anyOf(
+      isA<InvalidFileContentException>(),
+      isA<BadDecryptionPasswordException>(),
+    ),
+    reason:
+        'A broken file has to surface as a processor exception, not as a raw crypto/type/format error',
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Tests
+// ---------------------------------------------------------------------------
+
+void _testAegisImportFileProcessorEdgeCases() {
+  group('Aegis Import File Processor edge cases', () {
+    const processor = AegisImportFileProcessor();
+
+    group('file validation', () {
+      test('plain vault is valid and needs no password', () async {
+        final file = _xFile(_plainFile(_db()));
+        expect(await processor.fileIsValid(file), isTrue);
+        expect(await processor.fileNeedsPassword(file), isFalse);
+      });
+
+      test('encrypted vault is valid and needs a password', () async {
+        final file = _xFile(await _encryptedFile(db: _db()));
+        expect(await processor.fileIsValid(file), isTrue);
+        expect(await processor.fileNeedsPassword(file), isTrue);
+      });
+
+      test('non json content is neither valid nor needs a password', () async {
+        final file = _xFile('this is not json');
+        expect(await processor.fileIsValid(file), isFalse);
+        expect(await processor.fileNeedsPassword(file), isFalse);
+      });
+
+      test('a json list is neither valid nor needs a password', () async {
+        final file = _xFile('[1, 2, 3]');
+        expect(await processor.fileIsValid(file), isFalse);
+        expect(await processor.fileNeedsPassword(file), isFalse);
+      });
+
+      test('plain vault without entries is not valid', () async {
+        final file = _xFile(_plainFile(_db(entries: [])));
+        expect(await processor.fileIsValid(file), isFalse);
+        expect(await processor.fileNeedsPassword(file), isFalse);
+      });
+
+      test('db that is neither an object nor a string is not valid', () async {
+        final file = _xFile({
+          'version': 1,
+          'header': {'slots': null, 'params': null},
+          'db': 42,
+        });
+        expect(await processor.fileIsValid(file), isFalse);
+      });
+
+      test('encrypted vault without any slot is not valid', () async {
+        final json = await _encryptedFile(db: _db());
+        (json['header'] as Map)['slots'] = [];
+        final file = _xFile(json);
+        expect(await processor.fileIsValid(file), isFalse);
+        expect(await processor.fileNeedsPassword(file), isFalse);
+      });
+    });
+
+    group('invalid input', () {
+      test('non json content throws InvalidFileContentException', () async {
+        await expectLater(
+          processor.processFile(_xFile('no json at all')),
+          throwsA(isA<InvalidFileContentException>()),
+        );
+      });
+
+      test('a json list throws InvalidFileContentException', () async {
+        await expectLater(
+          processor.processFile(_xFile('[]')),
+          throwsA(isA<InvalidFileContentException>()),
+        );
+      });
+
+      test('a json object without db throws "Invalid file format"', () async {
+        await expectLater(
+          processor.processFile(_xFile({'version': 1})),
+          throwsA(
+            predicate((e) => e.toString().contains('Invalid file format')),
+          ),
+        );
+      });
+
+      test(
+        'a plain vault with an empty entries list throws "Invalid file format"',
+        () async {
+          await expectLater(
+            processor.processFile(_xFile(_plainFile(_db(entries: [])))),
+            throwsA(
+              predicate((e) => e.toString().contains('Invalid file format')),
+            ),
+          );
+        },
+      );
+
+      test(
+        'a file that fileIsValid accepts can be processed without throwing (UI contract)',
+        () async {
+          // import_start_page.dart calls fileIsValid() and then processFile() without a try/catch
+          for (final file in [
+            _xFile(_plainFile(_db())),
+            _xFile(_plainFile(_db(entries: []))),
+          ]) {
+            if (await processor.fileIsValid(file)) {
+              expect(await processor.processFile(file), isNotEmpty);
+            }
+          }
+        },
+      );
+    });
+
+    group('plain vault, version 3', () {
+      test('imports totp and hotp with all attributes', () async {
+        final file = _xFile(
+          _plainFile(
+            _db(
+              entries: [
+                _entry(
+                  name: 'bob',
+                  issuer: 'Issuer A',
+                  algo: 'SHA256',
+                  digits: 8,
+                  period: 60,
+                ),
+                _entry(
+                  type: 'hotp',
+                  name: 'carol',
+                  issuer: 'Issuer B',
+                  secret: _secretB,
+                  algo: 'SHA512',
+                  digits: 7,
+                  counter: 7,
+                ),
+              ],
+            ),
+          ),
+        );
+
+        final results = await processor.processFile(file);
+
+        expect(results.length, 2);
+        expect(results.every((r) => r.isSuccess), isTrue);
+        final totp = results[0].asSuccess!.resultData as TOTPToken;
+        expect(totp.label, 'bob');
+        expect(totp.issuer, 'Issuer A');
+        expect(totp.secret, _secretA);
+        expect(totp.algorithm, Algorithms.SHA256);
+        expect(totp.digits, 8);
+        expect(totp.period, 60);
+        final hotp = results[1].asSuccess!.resultData as HOTPToken;
+        expect(hotp.label, 'carol');
+        expect(hotp.issuer, 'Issuer B');
+        expect(hotp.secret, _secretB);
+        expect(hotp.algorithm, Algorithms.SHA512);
+        expect(hotp.digits, 7);
+        expect(hotp.counter, 7);
+      });
+
+      test('imports a steam entry', () async {
+        final file = _xFile(
+          _plainFile(
+            _db(
+              entries: [
+                _entry(
+                  type: 'steam',
+                  issuer: 'Steam',
+                  digits: 5,
+                  secret: _secretB,
+                ),
+              ],
+            ),
+          ),
+        );
+
+        final results = await processor.processFile(file);
+
+        expect(results.length, 1);
+        expect(results.single.isSuccess, isTrue);
+        final token = results.single.asSuccess!.resultData;
+        expect(token, isA<SteamToken>());
+        expect((token as SteamToken).secret, _secretB);
+      });
+
+      test(
+        'unsupported entry types (motp, yandex) become failed results and do not stop the import',
+        () async {
+          final file = _xFile(
+            _plainFile(
+              _db(
+                entries: [
+                  _entry(name: 'first'),
+                  _entry(type: 'motp', name: 'old-motp'),
+                  _entry(type: 'yandex', name: 'ya'),
+                  _entry(type: 'hotp', name: 'last', counter: 3),
+                ],
+              ),
+            ),
+          );
+
+          final results = await processor.processFile(file);
+
+          expect(results.length, 4);
+          expect(results[0].isSuccess, isTrue);
+          expect(results[1].isFailed, isTrue);
+          expect(_failureMessage(results[1]), contains('motp'));
+          expect(results[2].isFailed, isTrue);
+          expect(_failureMessage(results[2]), contains('yandex'));
+          expect(results[3].isSuccess, isTrue);
+          expect((results[3].asSuccess!.resultData as HOTPToken).counter, 3);
+        },
+      );
+
+      test(
+        'an entry without info becomes a failed result, the others are imported',
+        () async {
+          final broken = _entry(name: 'broken')..remove('info');
+          final file = _xFile(
+            _plainFile(
+              _db(
+                entries: [
+                  _entry(name: 'good'),
+                  broken,
+                  _entry(name: 'also good'),
+                ],
+              ),
+            ),
+          );
+
+          final results = await processor.processFile(file);
+
+          expect(results.map((r) => r.isSuccess), [true, false, true]);
+          expect(results[0].asSuccess!.resultData.label, 'good');
+          expect(results[2].asSuccess!.resultData.label, 'also good');
+        },
+      );
+
+      test('a secret that is not base32 becomes a failed result', () async {
+        final file = _xFile(
+          _plainFile(
+            _db(
+              entries: [
+                _entry(secret: 'not base32 !!!'),
+                _entry(name: 'ok'),
+              ],
+            ),
+          ),
+        );
+
+        final results = await processor.processFile(file);
+
+        expect(results.map((r) => r.isSuccess), [false, true]);
+      });
+
+      test(
+        'an unknown algorithm silently falls back to SHA1 (withDefault validator)',
+        () async {
+          final file = _xFile(
+            _plainFile(
+              _db(
+                entries: [
+                  _entry(algo: 'MD5'),
+                  _entry(name: 'ok'),
+                ],
+              ),
+            ),
+          );
+
+          final results = await processor.processFile(file);
+
+          expect(results.map((r) => r.isSuccess), [true, true]);
+          expect(
+            (results[0].asSuccess!.resultData as TOTPToken).algorithm,
+            Algorithms.SHA1,
+          );
+        },
+      );
+
+      test('the algorithm name is matched case insensitive', () async {
+        final file = _xFile(_plainFile(_db(entries: [_entry(algo: 'sha512')])));
+
+        final results = await processor.processFile(file);
+
+        expect(
+          (results.single.asSuccess!.resultData as TOTPToken).algorithm,
+          Algorithms.SHA512,
+        );
+      });
+
+      test('a missing name and issuer are imported as empty strings', () async {
+        final entry = _entry()
+          ..remove('name')
+          ..remove('issuer');
+        final file = _xFile(_plainFile(_db(entries: [entry])));
+
+        final results = await processor.processFile(file);
+
+        expect(results.single.isSuccess, isTrue);
+        expect(results.single.asSuccess!.resultData.label, '');
+        expect(results.single.asSuccess!.resultData.issuer, '');
+      });
+
+      test(
+        'an entry that is not an object becomes a failed result, the others are imported',
+        () async {
+          final file = _xFile(
+            _plainFile(
+              _db(
+                entries: [
+                  _entry(name: 'good'),
+                  'garbage',
+                  _entry(name: 'also good'),
+                ],
+              ),
+            ),
+          );
+
+          final results = await processor.processFile(file);
+
+          expect(results.map((r) => r.isSuccess), [true, false, true]);
+        },
+        skip:
+            'BUG: aegis_import_file_processor.dart:281 the element cast in the for-in header is outside the try block, a non-object entry aborts the whole import with a raw TypeError',
+      );
+    });
+
+    group('plain vault, version 2', () {
+      Map<String, dynamic> v2Entry({
+        String type = 'totp',
+        String secret = _secretA,
+        String name = 'alice@example.com',
+        String issuer = 'Example',
+        int? counter,
+      }) =>
+          _entry(
+              type: type,
+              secret: secret,
+              name: name,
+              issuer: issuer,
+              counter: counter,
+              digits: 8,
+              algo: 'SHA256',
+              period: 45,
+            )
+            ..['group'] = null
+            ..remove('groups');
+
+      test(
+        'imports the secret from info.secret',
+        () async {
+          final file = _xFile(
+            _plainFile({
+              'version': 2,
+              'entries': [
+                v2Entry(),
+                v2Entry(
+                  type: 'hotp',
+                  secret: _secretB,
+                  name: 'bob',
+                  issuer: 'Other',
+                  counter: 9,
+                ),
+              ],
+            }),
+          );
+
+          final results = await processor.processFile(file);
+
+          expect(results.length, 2);
+          expect(
+            results.every((r) => r.isSuccess),
+            isTrue,
+            reason: results
+                .where((r) => r.isFailed)
+                .map(_failureMessage)
+                .join(' | '),
+          );
+          final totp = results[0].asSuccess!.resultData as TOTPToken;
+          expect(totp.secret, _secretA);
+          expect(totp.label, 'alice@example.com');
+          expect(totp.issuer, 'Example');
+          expect(totp.algorithm, Algorithms.SHA256);
+          expect(totp.digits, 8);
+          expect(totp.period, 45);
+          final hotp = results[1].asSuccess!.resultData as HOTPToken;
+          expect(hotp.secret, _secretB);
+          expect(hotp.counter, 9);
+        },
+        skip:
+            'BUG: aegis_import_file_processor.dart:205 V2 reads the secret from entry[secret] (null) instead of entry[info][secret], every V2 entry fails; line 217 would additionally re-encode the already base32 secret',
+      );
+
+      test(
+        'encrypted version 2 vault imports the secret as well',
+        () async {
+          final file = _xFile(
+            await _encryptedFile(
+              db: {
+                'version': 2,
+                'entries': [v2Entry()],
+              },
+            ),
+          );
+
+          final results = await processor.processFile(
+            file,
+            password: _password,
+          );
+
+          expect(results.length, 1);
+          expect(
+            results.single.isSuccess,
+            isTrue,
+            reason: results
+                .where((r) => r.isFailed)
+                .map(_failureMessage)
+                .join(' | '),
+          );
+          expect(
+            (results.single.asSuccess!.resultData as TOTPToken).secret,
+            _secretA,
+          );
+        },
+        skip:
+            'BUG: aegis_import_file_processor.dart:205 V2 reads the secret from entry[secret] (null) instead of entry[info][secret]',
+      );
+
+      test(
+        'entries keep their uuid as token id',
+        () async {
+          final file = _xFile(
+            _plainFile({
+              'version': 2,
+              'entries': [v2Entry()],
+            }),
+          );
+
+          final results = await processor.processFile(file);
+
+          expect(results.single.isSuccess, isTrue);
+          expect(
+            results.single.asSuccess!.resultData.id,
+            '11111111-2222-3333-4444-555555555555',
+          );
+        },
+        skip:
+            'BUG: aegis_import_file_processor.dart:205 V2 reads the secret from entry[secret] (null) instead of entry[info][secret], so no V2 token is created at all',
+      );
+    });
+
+    group('db.version', () {
+      test(
+        'unknown version 4 with version 3 shaped entries is imported by trying the latest format',
+        () async {
+          final file = _xFile(
+            _plainFile(_db(version: 4, entries: [_entry(name: 'future')])),
+          );
+
+          final results = await processor.processFile(file);
+
+          expect(results.length, 1);
+          expect(results.single.isSuccess, isTrue);
+          expect(results.single.asSuccess!.resultData.label, 'future');
+        },
+      );
+
+      test('version 1 is imported by trying the latest format', () async {
+        final file = _xFile(
+          _plainFile(_db(version: 1, entries: [_entry(name: 'legacy')])),
+        );
+
+        final results = await processor.processFile(file);
+
+        expect(results.single.isSuccess, isTrue);
+        expect(results.single.asSuccess!.resultData.label, 'legacy');
+      });
+
+      test(
+        'unknown version with entries that cannot be read throws a LocalizedArgumentError',
+        () async {
+          final file = _xFile(_plainFile(_db(version: 4, entries: [1, 2, 3])));
+
+          await expectLater(
+            processor.processFile(file),
+            throwsA(isA<LocalizedArgumentError>()),
+          );
+        },
+        skip:
+            'BUG: aegis_import_file_processor.dart:186 invalidValue: db[version] passes an int to the String parameter of LocalizedArgumentError, so the "unsupported version" error itself dies with a TypeError',
+      );
+
+      test(
+        'the unsupported version error names the version',
+        () async {
+          final file = _xFile(_plainFile(_db(version: 99, entries: [1])));
+
+          final outcome = await _outcomeOf(processor.processFile(file));
+
+          expect(outcome, isA<LocalizedArgumentError>());
+          expect((outcome as LocalizedArgumentError).invalidValue, '99');
+          expect(outcome.message, contains('99'));
+        },
+        skip:
+            'BUG: aegis_import_file_processor.dart:186 invalidValue: db[version] passes an int to the String parameter of LocalizedArgumentError, so the "unsupported version" error itself dies with a TypeError',
+      );
+
+      test(
+        'a missing version falls back to the latest format instead of crashing',
+        () async {
+          final file = _xFile(
+            _plainFile(
+              _db(version: null, entries: [_entry(name: 'no version')]),
+            ),
+          );
+
+          final outcome = await _outcomeOf(processor.processFile(file));
+
+          expect(
+            outcome,
+            isNot(isA<TypeError>()),
+            reason: 'a missing version must not end in a raw cast error',
+          );
+          expect(outcome, isA<List<ProcessorResult<Token>>>());
+          expect(
+            (outcome as List<ProcessorResult<Token>>).single.isSuccess,
+            isTrue,
+          );
+        },
+        skip:
+            'BUG: aegis_import_file_processor.dart:169 json[db][version] as int throws a raw TypeError for a missing version instead of reaching _processPlainTryLatest',
+      );
+
+      test(
+        'a non integer version falls back to the latest format instead of crashing',
+        () async {
+          final file = _xFile(
+            _plainFile(
+              _db(
+                version: '3',
+                entries: [_entry(name: 'string version')],
+              ),
+            ),
+          );
+
+          final outcome = await _outcomeOf(processor.processFile(file));
+
+          expect(
+            outcome,
+            isNot(isA<TypeError>()),
+            reason: 'a non integer version must not end in a raw cast error',
+          );
+          expect(outcome, isA<List<ProcessorResult<Token>>>());
+          expect(
+            (outcome as List<ProcessorResult<Token>>).single.isSuccess,
+            isTrue,
+          );
+        },
+        skip:
+            'BUG: aegis_import_file_processor.dart:169 json[db][version] as int throws a raw TypeError for a non integer version instead of reaching _processPlainTryLatest',
+      );
+    });
+
+    group('encrypted vault', () {
+      test('round trip with the correct password', () async {
+        final file = _xFile(
+          await _encryptedFile(
+            db: _db(
+              entries: [
+                _entry(name: 'enc totp', digits: 8),
+                _entry(
+                  type: 'hotp',
+                  name: 'enc hotp',
+                  secret: _secretB,
+                  counter: 11,
+                ),
+              ],
+            ),
+          ),
+        );
+
+        final results = await processor.processFile(file, password: _password);
+
+        expect(results.length, 2);
+        expect(results.every((r) => r.isSuccess), isTrue);
+        final totp = results[0].asSuccess!.resultData as TOTPToken;
+        expect(totp.label, 'enc totp');
+        expect(totp.secret, _secretA);
+        expect(totp.digits, 8);
+        final hotp = results[1].asSuccess!.resultData as HOTPToken;
+        expect(hotp.secret, _secretB);
+        expect(hotp.counter, 11);
+      });
+
+      test('a wrong password throws BadDecryptionPasswordException', () async {
+        final file = _xFile(await _encryptedFile(db: _db()));
+
+        await expectLater(
+          processor.processFile(file, password: 'not the password'),
+          throwsA(isA<BadDecryptionPasswordException>()),
+        );
+      });
+
+      test('an empty password throws BadDecryptionPasswordException', () async {
+        final file = _xFile(await _encryptedFile(db: _db()));
+
+        await expectLater(
+          processor.processFile(file, password: ''),
+          throwsA(isA<BadDecryptionPasswordException>()),
+        );
+      });
+
+      test(
+        'a manipulated slot key throws BadDecryptionPasswordException',
+        () async {
+          final json = await _encryptedFile(db: _db());
+          final slot = ((json['header'] as Map)['slots'] as List).first as Map;
+          final key = (slot['key'] as String).split('');
+          key[0] = key[0] == '0' ? '1' : '0';
+          slot['key'] = key.join();
+
+          await expectLater(
+            processor.processFile(_xFile(json), password: _password),
+            throwsA(isA<BadDecryptionPasswordException>()),
+          );
+        },
+      );
+
+      test(
+        'an encrypted vault with no password throws BadDecryptionPasswordException',
+        () async {
+          final file = _xFile(await _encryptedFile(db: _db()));
+
+          await expectLater(
+            processor.processFile(file),
+            throwsA(isA<BadDecryptionPasswordException>()),
+          );
+        },
+        skip:
+            'BUG: aegis_import_file_processor.dart:385 password! throws a raw null check TypeError instead of BadDecryptionPasswordException',
+      );
+
+      test(
+        'a manipulated db ciphertext with the correct password is reported as a processor exception',
+        () async {
+          final json = await _encryptedFile(db: _db());
+          final dbBytes = base64Decode(json['db'] as String);
+          dbBytes[dbBytes.length ~/ 2] ^= 0xFF;
+          json['db'] = base64Encode(dbBytes);
+
+          final outcome = await _outcomeOf(
+            processor.processFile(_xFile(json), password: _password),
+          );
+
+          _expectDomainException(outcome);
+        },
+        skip:
+            'BUG: aegis_import_file_processor.dart:405 the second cipher.decrypt is outside the try block, a tampered db surfaces as a raw SecretBoxAuthenticationError',
+      );
+
+      test(
+        'a manipulated db tag with the correct password is reported as a processor exception',
+        () async {
+          final json = await _encryptedFile(db: _db());
+          final params = (json['header'] as Map)['params'] as Map;
+          final tag = (params['tag'] as String).split('');
+          tag[0] = tag[0] == '0' ? '1' : '0';
+          params['tag'] = tag.join();
+
+          final outcome = await _outcomeOf(
+            processor.processFile(_xFile(json), password: _password),
+          );
+
+          _expectDomainException(outcome);
+        },
+        skip:
+            'BUG: aegis_import_file_processor.dart:405 the second cipher.decrypt is outside the try block, a wrong db tag surfaces as a raw SecretBoxAuthenticationError',
+      );
+
+      test(
+        'a db that decrypts to text which is not json is reported as a processor exception',
+        () async {
+          final file = _xFile(
+            await _encryptedFile(db: 'this is not json', dbIsRawText: true),
+          );
+
+          final outcome = await _outcomeOf(
+            processor.processFile(file, password: _password),
+          );
+
+          _expectDomainException(outcome);
+        },
+        skip:
+            'BUG: aegis_import_file_processor.dart:414 jsonDecode of the decrypted db is not guarded, a FormatException escapes',
+      );
+
+      test(
+        'a slot without key_params is reported as a processor exception',
+        () async {
+          final json = await _encryptedFile(db: _db());
+          (((json['header'] as Map)['slots'] as List).first as Map).remove(
+            'key_params',
+          );
+
+          final outcome = await _outcomeOf(
+            processor.processFile(_xFile(json), password: _password),
+          );
+
+          _expectDomainException(outcome);
+        },
+        skip:
+            'BUG: aegis_import_file_processor.dart:375 fileIsValid accepts the file but _processEncrypted casts the missing key_params and throws a raw TypeError',
+      );
+
+      test(
+        'invalid scrypt cost parameters fail instead of hanging forever',
+        () async {
+          final json = await _encryptedFile(db: _db());
+          // scrypt needs N to be a power of two, n = 3 makes the kdf isolate crash
+          (((json['header'] as Map)['slots'] as List).first as Map)['n'] = 3;
+
+          final outcome = await _outcomeOf(
+            processor
+                .processFile(_xFile(json), password: _password)
+                .timeout(const Duration(seconds: 10)),
+          );
+
+          expect(
+            outcome,
+            isNot(isA<TimeoutException>()),
+            reason: 'the future never completes when the kdf isolate dies',
+          );
+          _expectDomainException(outcome);
+        },
+        skip:
+            'BUG: aegis_import_file_processor.dart:363 runIsolatedKdf waits on receivePort.first without an error/exit listener, a crashing isolate hangs the import (spinner forever)',
+      );
+
+      test(
+        'an encrypted vault without entries yields an empty result list',
+        () async {
+          final file = _xFile(await _encryptedFile(db: _db(entries: [])));
+
+          final results = await processor.processFile(
+            file,
+            password: _password,
+          );
+
+          expect(results, isEmpty);
+        },
+      );
+
+      test('processTokenMigrate forwards the password', () async {
+        final file = _xFile(
+          await _encryptedFile(
+            db: _db(entries: [_entry(name: 'migrated')]),
+          ),
+        );
+
+        final results = await processor.processTokenMigrate(
+          file,
+          args: _password,
+        );
+
+        expect(results.single.asSuccess!.resultData.label, 'migrated');
       });
     });
   });

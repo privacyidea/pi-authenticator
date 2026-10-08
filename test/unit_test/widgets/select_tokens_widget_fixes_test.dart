@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
 import 'package:privacyidea_authenticator/widgets/select_tokens_widget.dart';
 
 import '../../tests_app_wrapper.dart';
@@ -17,6 +18,10 @@ HOTPToken _token(String id) => HOTPToken(
 );
 
 void main() {
+  // The first log call sets up the Logger, which replaces FlutterError.onError.
+  // Inside a test that makes a failing expect hang until the 10 minute timeout.
+  setUpAll(() => Logger.instance);
+
   late Token a, b, c;
   setUp(() {
     a = _token('a');
@@ -24,15 +29,17 @@ void main() {
     c = _token('c');
   });
 
-  Widget build(Set<Token> tokens, void Function(Set<Token>, Set<Token>) onSelect, {bool multi = true}) => TestsAppWrapper(
+  Widget build(Set<Token> tokens, void Function(Set<Token>, Set<Token>) onSelect) => TestsAppWrapper(
     child: Scaffold(
       body: SingleChildScrollView(
-        child: SelectTokensWidget(tokens: tokens, onSelect: onSelect, multiSelect: multi),
+        child: SelectTokensWidget(tokens: tokens, onSelect: onSelect),
       ),
     ),
   );
 
   group('SelectTokensWidget fixes', () {
+    // Multi select: only this path removes from the unselected set in place,
+    // single select always builds a new set and never touched the input.
     testWidgets('selecting a token does not mutate the input set', (tester) async {
       final input = <Token>{a, b, c};
       Set<Token>? selected, unselected;
@@ -40,7 +47,7 @@ void main() {
         build(input, (s, u) {
           selected = {...s};
           unselected = {...u};
-        }, multi: false),
+        }),
       );
       await tester.pump();
 

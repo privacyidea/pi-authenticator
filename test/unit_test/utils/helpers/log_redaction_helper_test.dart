@@ -1,10 +1,23 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:flutter_test/flutter_test.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/push_request_state.dart';
 import 'package:privacyidea_authenticator/model/token_container.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/utils/helpers/log_redaction_helper.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
+
+import '../../../log_file.dart';
 
 void main() {
+  // Declared first so that it runs first: Logger keeps one instance per isolate
+  // and only the first set up of it takes effect, but the allowlist tests below
+  // already make redactedShape log, which creates that instance without a file.
+  _testLogRedactionFormats();
+
   // A stored token carries these next to its configuration. They are on the
   // blocklist, so no allowlist and no caller can put them into the log.
   const blockedValues = {
@@ -338,6 +351,470 @@ void main() {
           );
         }
       }
+    });
+  });
+}
+
+/// The formats a secret reaches the log in, other than the quoted json and the
+/// `name: value` entries that the groups above cover.
+///
+/// A test that is skipped with a BUG reason states the behaviour the filter
+/// should have. It fails today, because the filter looks for a sensitive name
+/// and takes what follows it up to the next separator as the value.
+void _testLogRedactionFormats() {
+  group('log redaction formats', () {
+    const secret = 'JBSWY3DPEHPK3PXP';
+
+    late LogFile logFile;
+    late File file;
+
+    /// Empties the log file and returns once that happened.
+    ///
+    /// The clear of the harness returns before it took the lock, so a warning
+    /// that is logged right after it can be wiped by it on a busy machine. A
+    /// marker that the clear has to remove tells when it is through.
+    Future<void> resetLog() async {
+      await file.writeAsString('marker', flush: true);
+      Logger.clearErrorLog();
+      while (await file.length() != 0) {
+        await Future<void>.delayed(const Duration(milliseconds: 1));
+      }
+      await Logger.getErrorLog();
+    }
+
+    setUpAll(() async {
+      logFile = await LogFile.setUp();
+      final directory = await getApplicationSupportDirectory();
+      file = File('${directory.path}/logfile.txt');
+      // The clear of the set up is still on its way to the file.
+      while (!file.existsSync()) {
+        await Future<void>.delayed(const Duration(milliseconds: 1));
+      }
+      await Logger.getErrorLog();
+    });
+
+    tearDownAll(() => logFile.tearDown());
+
+    group('the query of an otpauth uri', () {
+      test('loses the secret when it is the first parameter', () {
+        final result = filterSensitiveValues(
+          'otpauth://totp/Example:alice?secret=$secret&issuer=Example&digits=6',
+        );
+
+        expect(result, isNot(contains(secret)));
+        expect(result, contains('otpauth://totp/Example:alice?secret='));
+      });
+
+      test('loses the secret when it is the last parameter', () {
+        final result = filterSensitiveValues(
+          'otpauth://totp/Example:alice?issuer=Example&secret=$secret',
+        );
+
+        expect(result, isNot(contains(secret)));
+        expect(result, contains('issuer=Example'));
+      });
+
+      test('loses the secret when it is in the middle', () {
+        final result = filterSensitiveValues(
+          'otpauth://totp/x?algorithm=SHA1&secret=$secret&period=30',
+        );
+
+        expect(result, isNot(contains(secret)));
+        expect(result, contains('algorithm=SHA1'));
+      });
+
+      test('keeps the parameters in front of the secret', () {
+        expect(
+          filterSensitiveValues('otpauth://totp/x?issuer=I&secret=ABC'),
+          'otpauth://totp/x?issuer=I&secret=******',
+        );
+      });
+
+      test('loses a secret that is a parameter of another url', () {
+        // The deeplink of a login page can carry the whole token uri along.
+        const encoded =
+            'https://example.com/redirect?target=otpauth%3A%2F%2Ftotp%2Fx'
+            '%3Fsecret%3D$secret%26issuer%3DI';
+
+        expect(filterSensitiveValues(encoded), isNot(contains(secret)));
+      });
+
+      test('loses the secret of a Uri that is interpolated into a message', () {
+        final uri = Uri.parse('otpauth://totp/x?secret=$secret&issuer=I');
+
+        final result = filterSensitiveValues('Got token uri: $uri');
+
+        expect(result, isNot(contains(secret)));
+        expect(result, startsWith('Got token uri: otpauth://totp/x'));
+      });
+
+      // The value of a bare entry ends at a space, a comma, a semicolon or a
+      // bracket but not at '&'. Everything behind the secret of a query is
+      // therefore taken as part of it, which is safe but costs the log the
+      // issuer, the digits and the period of the token.
+      test('the secret is gone although the parameters behind it are not safe '
+          'to keep', () {
+        final result = filterSensitiveValues(
+          'otpauth://totp/x?secret=ABC&issuer=I&digits=6',
+        );
+
+        expect(result, isNot(contains('ABC')));
+        expect(result, contains('secret=******'));
+      });
+
+      test(
+        'keeps the parameters behind the secret',
+        () {
+          final result = filterSensitiveValues(
+            'otpauth://totp/x?secret=$secret&issuer=Example&digits=6',
+          );
+
+          expect(result, isNot(contains(secret)));
+          expect(result, contains('issuer=Example'));
+          expect(result, contains('digits=6'));
+        },
+        skip:
+            "BUG: '&' does not end a bare value in log_redaction_helper.dart "
+            '(_bareValueEnders), so issuer and digits behind the secret are '
+            'swallowed (usability only, the secret is removed)',
+      );
+    });
+
+    group('a value that is not quoted and contains a space', () {
+      // Map.toString does not quote its strings, so this is how a map that holds
+      // a passphrase or a secret with a space in it reaches the log.
+      test('is what Map.toString writes', () {
+        expect({'secret': 'AB CD'}.toString(), '{secret: AB CD}');
+      });
+
+      test(
+        'is scrubbed as a whole in a map',
+        () {
+          final result = filterSensitiveValues({'secret': 'AB CD'}.toString());
+
+          expect(result, isNot(contains('AB')));
+          expect(result, isNot(contains('CD')));
+        },
+        skip:
+            'BUG: log_redaction_helper.dart _valueRange ends a bare value at the '
+            "first space, so '{secret: AB CD}' becomes '{secret: ****** CD}' "
+            'and the rest of the secret stays in the log',
+      );
+
+      test(
+        'is scrubbed as a whole in a map with other entries',
+        () {
+          final result = filterSensitiveValues(
+            {
+              'serial': 'PIPU0001',
+              'passphrase': 'correct horse battery staple',
+              'digits': 6,
+            }.toString(),
+          );
+
+          for (final word in ['correct', 'horse', 'battery', 'staple']) {
+            expect(result, isNot(contains(word)), reason: '$word leaked');
+          }
+          expect(result, contains('PIPU0001'));
+        },
+        skip:
+            'BUG: log_redaction_helper.dart _valueRange ends a bare value at the '
+            'first space, so only the first word of a passphrase is scrubbed',
+      );
+
+      test(
+        'is scrubbed as a whole in a plain line',
+        () {
+          final result = filterSensitiveValues('passphrase: my pass phrase');
+
+          expect(result, isNot(contains('my')));
+          expect(result, isNot(contains('pass phrase')));
+        },
+        skip:
+            'BUG: log_redaction_helper.dart _valueRange ends a bare value at the '
+            "first space, so 'passphrase: my pass phrase' keeps 'pass phrase'",
+      );
+
+      test('a word before the first space is scrubbed at least', () {
+        final result = filterSensitiveValues('{secret: ABCD EFGH}');
+
+        expect(result, startsWith('{secret: ******'));
+        expect(result, isNot(contains('ABCD')));
+      });
+    });
+
+    group('the uri of a Google Authenticator export', () {
+      // What the QR code of "Export accounts" holds: every secret of the account
+      // in one base64 encoded protobuf, behind a query that has no sensitive name.
+      const payload =
+          'CjEKCkhlbGxvId6tvu8SFEV4YW1wbGU6YWxpY2VAZ21haWwuY29tGgdFeGFtcGxlIAEoATACEAEYASAA';
+      const uri = 'otpauth-migration://offline?data=$payload';
+
+      // Both ends are checked so that a half scrubbed payload is noticed.
+      void expectPayloadGone(String result) {
+        expect(result, isNot(contains(payload)));
+        expect(result, isNot(contains(payload.substring(0, 12))));
+        expect(result, isNot(contains(payload.substring(payload.length - 12))));
+      }
+
+      test(
+        'is scrubbed',
+        () => expectPayloadGone(filterSensitiveValues(uri)),
+        skip:
+            'BUG: log_redaction_helper.dart has no rule for the data parameter of '
+            'otpauth-migration://, so every secret of an export reaches the log',
+      );
+
+      test(
+        'is scrubbed in the line the deeplink notifier writes for a new uri',
+        () => expectPayloadGone(
+          filterSensitiveValues(
+            'DeeplinkNotifier got new incoming uri: ${Uri.parse(uri)}',
+          ),
+        ),
+        skip:
+            'BUG: log_redaction_helper.dart has no rule for the data parameter of '
+            'otpauth-migration://, deeplink_notifier.dart logs the whole uri',
+      );
+
+      test(
+        'is scrubbed in the line the deeplink notifier writes for the initial uri',
+        () => expectPayloadGone(
+          filterSensitiveValues('Got initial uri from intent: ${Uri.parse(uri)}'),
+        ),
+        skip:
+            'BUG: log_redaction_helper.dart has no rule for the data parameter of '
+            'otpauth-migration://, deeplink_notifier.dart logs the whole uri',
+      );
+
+      test(
+        'is scrubbed when the base64 characters are percent encoded',
+        () {
+          final encoded = Uri(
+            scheme: 'otpauth-migration',
+            host: 'offline',
+            queryParameters: {'data': '$payload+/=='},
+          ).toString();
+          expect(encoded, contains('%2B'), reason: 'the uri is percent encoded');
+
+          expectPayloadGone(filterSensitiveValues('incoming uri: $encoded'));
+        },
+        skip:
+            'BUG: log_redaction_helper.dart has no rule for the data parameter of '
+            'otpauth-migration://, so every secret of an export reaches the log',
+      );
+
+      test('the scheme of the uri is not mistaken for a secret', () {
+        // Guards the tests above against passing for the wrong reason: a filter
+        // that dropped the whole line would remove the payload as well.
+        expect(
+          filterSensitiveValues('opened otpauth-migration://offline'),
+          'opened otpauth-migration://offline',
+        );
+      });
+    });
+
+    group('raw key bytes', () {
+      test(
+        'in the shared key line of the container api are scrubbed',
+        () {
+          // privacy_idea_container_api.dart logs the bytes of the key it derived,
+          // as the list that Uint8List.toString makes of them.
+          final bytes = Uint8List.fromList([12, 200, 33, 4, 255, 17, 99, 7]);
+
+          final result = filterSensitiveValues('Shared key: $bytes');
+
+          expect(result, isNot(contains('200, 33')));
+          expect(result, isNot(contains('255, 17')));
+        },
+        skip:
+            'BUG: log_redaction_helper.dart knows no name for the shared key, so '
+            "privacy_idea_container_api.dart:509 'Shared key: [...]' puts the key "
+            'bytes into the log file when verbose logging is on (debug builds)',
+      );
+    });
+
+    group('json that is escaped inside a json string', () {
+      test(
+        'is scrubbed',
+        () {
+          // An error that quotes the body of a request holds the token as a
+          // string of json, so the quotes around its names are escaped.
+          final line = jsonEncode({
+            'body': jsonEncode({'secret': secret, 'digits': 6}),
+          });
+          expect(line, contains(r'\"secret\"'), reason: 'the quotes are escaped');
+
+          expect(filterSensitiveValues(line), isNot(contains(secret)));
+        },
+        skip:
+            'BUG: log_redaction_helper.dart _valueRange does not see through the '
+            r'backslash of \"secret\":\"..\", the name is followed by a backslash '
+            'that is taken as the whole value and the real value stays readable',
+      );
+    });
+
+    group('a name that holds only part of a sensitive one', () {
+      test('has its value scrubbed and keeps its whole name', () {
+        expect(
+          filterSensitiveValues('hasSecretFlag: true'),
+          'hasSecretFlag: ******',
+        );
+      });
+
+      test('is not taken for the value when the name ends in a flag', () {
+        // 'Flag' is the rest of the name behind 'Secret', not the value.
+        expect(
+          filterSensitiveValues('{"hasSecretFlag":true,"digits":6}'),
+          '{"hasSecretFlag":******,"digits":6}',
+        );
+        expect(
+          filterSensitiveValues('{hasSecretFlag: true, digits: 6}'),
+          '{hasSecretFlag: ******, digits: 6}',
+        );
+      });
+    });
+
+    group('a line with several sensitive names', () {
+      test('has the value of every one of them scrubbed', () {
+        expect(
+          filterSensitiveValues(
+            'secret: AAA, serial: S1, secret: BBB, privateTokenKey: CCC',
+          ),
+          'secret: ******, serial: S1, secret: ******, privateTokenKey: ******',
+        );
+      });
+
+      test('mixes names and part names', () {
+        expect(
+          filterSensitiveValues(
+            'hasSecretFlag: true, secret: $secret, hasSecretFlag: false',
+          ),
+          'hasSecretFlag: ******, secret: ******, hasSecretFlag: ******',
+        );
+      });
+
+      test('scrubs a name inside a scrubbed value only once', () {
+        // The inner name is part of the value that was already replaced, so it
+        // costs no second replacement and nothing of it is left behind.
+        expect(
+          filterSensitiveValues('{"secret":{"secret":"X"},"digits":6}'),
+          '{"secret":******,"digits":6}',
+        );
+      });
+
+      test('keeps what is between the names', () {
+        final result = filterSensitiveValues(
+          'before secret: AAA middle passphrase=hunter2; after',
+        );
+
+        expect(result, contains('before'));
+        expect(result, contains('middle'));
+        expect(result, contains('after'));
+        expect(result, isNot(contains('AAA')));
+        expect(result, isNot(contains('hunter2')));
+      });
+
+      test('leaves a sensitive name at the end of a line alone', () {
+        // Nothing follows it, so there is no value to scrub.
+        expect(filterSensitiveValues('there is no secret'), 'there is no secret');
+      });
+    });
+
+    group('the conflict warning of redactedShape', () {
+      const warning =
+          'An allowed entry name is blocked as well and stays '
+          'redacted: ';
+
+      setUp(() async => await resetLog());
+
+      test('keeps the value redacted', () {
+        final result = redactedShape(
+          {'conflictRedactedSecretKey': secret},
+          allowedEntryNames: {'conflictRedactedSecretKey'},
+        );
+
+        expect(result, '{conflictRedactedSecretKey: <String>}');
+      });
+
+      test('is logged once however often the name shows up', () async {
+        const name = 'conflictOnceSecretKey';
+
+        for (var i = 0; i < 3; i++) {
+          redactedShape({name: 'value$i'}, allowedEntryNames: {name});
+        }
+        // A storage full of tokens hands over the same name token after token,
+        // here nested and next to another allowlist.
+        redactedShape(
+          {
+            'a': {name: 1},
+            'b': {name: 2},
+          },
+          allowedEntryNames: {'a', 'b', name},
+        );
+
+        final warnings = await logFile.entriesContaining('$warning$name');
+        expect(warnings, hasLength(1));
+        expect(warnings.single, startsWith('[WARNING]'));
+      });
+
+      test('is logged without verbose logging being on', () async {
+        redactedShape(
+          {'conflictVerboseSecretKey': 1},
+          allowedEntryNames: {'conflictVerboseSecretKey'},
+        );
+
+        expect(
+          await logFile.entriesContaining('${warning}conflictVerboseSecretKey'),
+          hasLength(1),
+        );
+      });
+
+      test('is logged once for every name on its own', () async {
+        const names = ['conflictFirstSecretKey', 'conflictSecondSecretKey'];
+
+        for (var i = 0; i < 2; i++) {
+          for (final name in names) {
+            redactedShape({name: 1}, allowedEntryNames: {name});
+          }
+        }
+
+        final warnings = await logFile.entriesContaining(warning);
+        expect(warnings, hasLength(2));
+        for (final name in names) {
+          expect(
+            warnings.where((entry) => entry.contains(name)),
+            hasLength(1),
+            reason: '$name is reported once',
+          );
+        }
+      });
+
+      test('does not repeat in a later test of the same run', () async {
+        // The names already warned about are kept for as long as the app runs.
+        const name = 'conflictLaterSecretKey';
+        redactedShape({name: 1}, allowedEntryNames: {name});
+        expect(await logFile.entriesContaining('$warning$name'), hasLength(1));
+
+        await resetLog();
+        redactedShape({name: 1}, allowedEntryNames: {name});
+
+        expect(await logFile.entriesContaining('$warning$name'), isEmpty);
+      });
+
+      test('is not logged when there is no conflict', () async {
+        // Not allowed, so the blocklist is not what keeps it out.
+        redactedShape({'noConflictSecretKey': 1}, allowedEntryNames: {'other'});
+        // No allowlist, the blocklist is all there is.
+        redactedShape({'noConflictSecretKey': 1});
+        // Allowed and harmless.
+        redactedShape(
+          {'noConflictSerial': 1},
+          allowedEntryNames: {'noConflictSerial'},
+        );
+
+        expect(await logFile.read(), isEmpty);
+      });
     });
   });
 }

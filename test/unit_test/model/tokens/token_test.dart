@@ -18,11 +18,22 @@
  * limitations under the License.
  */
 
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
+import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
+import 'package:privacyidea_authenticator/model/enums/ec_key_algorithm.dart';
 import 'package:privacyidea_authenticator/model/enums/force_biometric_option.dart';
+import 'package:privacyidea_authenticator/model/enums/token_origin_source_type.dart';
+import 'package:privacyidea_authenticator/model/token_container.dart';
 import 'package:privacyidea_authenticator/model/token_import/token_origin_data.dart';
 import 'package:privacyidea_authenticator/model/token_template.dart';
+import 'package:privacyidea_authenticator/model/tokens/day_password_token.dart';
+import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
+import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
+import 'package:privacyidea_authenticator/model/tokens/steam_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
+import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
 
 class FakeToken extends Token {
   const FakeToken({
@@ -90,6 +101,149 @@ class FakeToken extends Token {
     );
   }
 }
+
+const _secret = 'GEZDGNBVGY3TQOJQ';
+
+TokenOriginData _origin(
+  TokenOriginSourceType source, {
+  bool? isPi,
+  String data = 'data',
+}) => TokenOriginData(
+  source: source,
+  appName: 'app',
+  data: data,
+  isPrivacyIdeaToken: isPi,
+);
+
+HOTPToken _hotp({
+  String? serial,
+  TokenOriginData? origin,
+  String id = 'hotp-id',
+}) => HOTPToken(
+  id: id,
+  serial: serial,
+  algorithm: Algorithms.SHA1,
+  digits: 6,
+  secret: _secret,
+  origin: origin,
+);
+
+TOTPToken _totp({TokenOriginData? origin}) => TOTPToken(
+  id: 'totp-id',
+  period: 30,
+  algorithm: Algorithms.SHA1,
+  digits: 6,
+  secret: _secret,
+  origin: origin,
+);
+
+DayPasswordToken _dayPassword({TokenOriginData? origin}) => DayPasswordToken(
+  id: 'day-id',
+  period: const Duration(hours: 24),
+  algorithm: Algorithms.SHA1,
+  digits: 6,
+  secret: _secret,
+  origin: origin,
+);
+
+SteamToken _steam({TokenOriginData? origin}) =>
+    SteamToken(id: 'steam-id', secret: _secret, origin: origin);
+
+PushToken _push({TokenOriginData? origin}) => PushToken(
+  id: 'push-id',
+  serial: 'PIPU0001',
+  url: Uri.parse('https://pi.example.com/ttype/push'),
+  origin: origin,
+);
+
+TokenContainerFinalized _container({String serial = 'SMPH0001'}) =>
+    TokenContainerFinalized(
+      issuer: 'privacyIDEA',
+      nonce: 'nonce',
+      timestamp: DateTime.utc(2026),
+      serverUrl: Uri.parse('https://pi.example.com'),
+      serial: serial,
+      ecKeyAlgorithm: EcKeyAlgorithm.secp384r1,
+      hashAlgorithm: Algorithms.SHA256,
+      sslVerify: true,
+      publicClientKey: 'pub',
+      privateClientKey: 'priv',
+    );
+
+/// What the security policy demands. Exportable: not a privacyIDEA token.
+///  - explicitly "no privacyIDEA token" (false): exportable
+///  - privacyIDEA token (true): never exportable
+///  - unknown (null): only if the user added it manually
+bool _policyExportable(TokenOriginSourceType source, bool? isPi) {
+  if (isPi == true) return false;
+  if (isPi == false) return true;
+  return source == TokenOriginSourceType.manually;
+}
+
+// --- tokens with pin, lock state and biometric option set (JSON round trip) ---
+
+HOTPToken _pinnedHotp() => HOTPToken(
+  id: 'hotp-id',
+  serial: 'HOTP-SERIAL',
+  algorithm: Algorithms.SHA256,
+  digits: 8,
+  secret: _secret,
+  pin: true,
+  isLocked: true,
+  isHidden: false,
+  forceBiometricOption: ForceBiometricOption.biometric,
+);
+
+TOTPToken _pinnedTotp() => TOTPToken(
+  id: 'totp-id',
+  serial: 'TOTP-SERIAL',
+  algorithm: Algorithms.SHA512,
+  digits: 7,
+  secret: _secret,
+  period: 45,
+  pin: true,
+  isLocked: true,
+  isHidden: true,
+  forceBiometricOption: ForceBiometricOption.pin,
+);
+
+DayPasswordToken _pinnedDayPassword() => DayPasswordToken(
+  id: 'day-id',
+  serial: 'DAY-SERIAL',
+  algorithm: Algorithms.SHA1,
+  digits: 9,
+  secret: _secret,
+  period: const Duration(hours: 6),
+  pin: true,
+  isLocked: true,
+  isHidden: false,
+  forceBiometricOption: ForceBiometricOption.any,
+);
+
+SteamToken _pinnedSteam() => SteamToken(
+  id: 'steam-id',
+  secret: _secret,
+  pin: true,
+  isLocked: true,
+  isHidden: true,
+  forceBiometricOption: ForceBiometricOption.any,
+);
+
+PushToken _pinnedPush() => PushToken(
+  id: 'push-id',
+  serial: 'PUSH-SERIAL',
+  url: Uri.parse('https://pi.example.com:8443/ttype/push'),
+  pin: true,
+  isLocked: true,
+  forceBiometricOption: ForceBiometricOption.biometric,
+);
+
+/// The storage format: Token -> String -> Token.
+Token _viaStorage(Token token) =>
+    Token.fromJson(jsonDecode(jsonEncode(token)) as Map<String, dynamic>);
+
+Map<String, dynamic> _jsonOf(Token token) =>
+    jsonDecode(jsonEncode(token)) as Map<String, dynamic>;
 
 void main() {
   group('Token Constants & Validators', () {
@@ -287,6 +441,269 @@ void main() {
 
     test('fromOtpAuthMap throws ArgumentError on missing tokentype key', () {
       expect(() => Token.fromOtpAuthMap({}), throwsArgumentError);
+    });
+  });
+
+  _testIsExportable();
+  _testJsonRoundTripAcrossTokenTypes();
+}
+
+void _testIsExportable() {
+  group('Token.isExportable', () {
+    final builders = <String, Token Function(TokenOriginData?)>{
+      'HOTP': (o) => _hotp(origin: o),
+      'HOTP with serial': (o) => _hotp(serial: 'OATH0001', origin: o),
+      'TOTP': (o) => _totp(origin: o),
+      'DayPassword': (o) => _dayPassword(origin: o),
+      'Steam': (o) => _steam(origin: o),
+    };
+
+    for (final entry in builders.entries) {
+      group(entry.key, () {
+        test('no origin: not exportable', () {
+          expect(entry.value(null).isExportable, isFalse);
+        });
+
+        test('follows the origin for every source and flag', () {
+          for (final source in TokenOriginSourceType.values) {
+            for (final isPi in <bool?>[false, null]) {
+              final origin = _origin(source, isPi: isPi);
+
+              expect(
+                entry.value(origin).isExportable,
+                origin.isExportable,
+                reason: '${source.name}/$isPi',
+              );
+              expect(
+                entry.value(origin).isExportable,
+                _policyExportable(source, isPi),
+                reason: '${source.name}/$isPi',
+              );
+            }
+          }
+        });
+
+        test('privacyIDEA tokens (flag true) are not exportable unless added manually', () {
+          for (final source in TokenOriginSourceType.values) {
+            if (source == TokenOriginSourceType.manually) continue; // see BUG test in the origin group
+            expect(
+              entry.value(_origin(source, isPi: true)).isExportable,
+              isFalse,
+              reason: source.name,
+            );
+          }
+        });
+      });
+    }
+
+    test('push tokens: no origin, privacyIDEA origin and container origin are not exportable', () {
+      expect(_push().isExportable, isFalse);
+      expect(
+        _push(origin: _origin(TokenOriginSourceType.qrScan, isPi: true)).isExportable,
+        isFalse,
+      );
+      expect(
+        _push(origin: _origin(TokenOriginSourceType.container, isPi: true)).isExportable,
+        isFalse,
+      );
+      expect(_push(origin: _origin(TokenOriginSourceType.unknown)).isExportable, isFalse);
+    });
+
+    test('isPrivacyIdeaToken true/false/null is taken from the origin (push and Steam override it)', () {
+      expect(
+        _hotp(origin: _origin(TokenOriginSourceType.qrScan, isPi: true)).isPrivacyIdeaToken,
+        isTrue,
+      );
+      expect(
+        _hotp(origin: _origin(TokenOriginSourceType.qrScan, isPi: false)).isPrivacyIdeaToken,
+        isFalse,
+      );
+      expect(_hotp(origin: _origin(TokenOriginSourceType.qrScan)).isPrivacyIdeaToken, isNull);
+      expect(_hotp().isPrivacyIdeaToken, isNull);
+      expect(_push().isPrivacyIdeaToken, isTrue);
+      expect(_steam().isPrivacyIdeaToken, isFalse);
+    });
+
+    test('changing the origin with copyWith changes the exportability', () {
+      final manual = _hotp(origin: _origin(TokenOriginSourceType.manually));
+      expect(manual.isExportable, isTrue);
+
+      final asContainerToken = manual.copyWith(
+        origin: _origin(TokenOriginSourceType.container, isPi: true),
+      );
+
+      expect(asContainerToken.isExportable, isFalse);
+      expect(manual.isExportable, isTrue);
+    });
+
+    test('exportability survives the token JSON round trip', () {
+      final tokens = <Token>[
+        _hotp(origin: _origin(TokenOriginSourceType.manually)),
+        _hotp(origin: _origin(TokenOriginSourceType.backupFile, isPi: false)),
+        _hotp(origin: _origin(TokenOriginSourceType.qrScan, isPi: true)),
+        _hotp(origin: _origin(TokenOriginSourceType.link)),
+        _hotp(),
+        _totp(origin: _origin(TokenOriginSourceType.qrScanImport, isPi: false)),
+        _totp(origin: _origin(TokenOriginSourceType.container, isPi: true)),
+        _push(origin: _origin(TokenOriginSourceType.qrScan, isPi: true)),
+      ];
+
+      for (final token in tokens) {
+        final restored = Token.fromJson(
+          jsonDecode(jsonEncode(token.toJson())) as Map<String, dynamic>,
+        );
+
+        expect(restored.runtimeType, token.runtimeType);
+        expect(
+          restored.isExportable,
+          token.isExportable,
+          reason: '${token.runtimeType} ${token.origin}',
+        );
+      }
+    });
+  });
+
+  group('linking a token to a container revokes the exportability', () {
+    final exportableTokens = <String, Token>{
+      'manually added': _hotp(origin: _origin(TokenOriginSourceType.manually)),
+      'imported from another app': _hotp(
+        origin: _origin(TokenOriginSourceType.backupFile, isPi: false),
+      ),
+      'google authenticator qr': _totp(
+        origin: _origin(TokenOriginSourceType.qrScanImport, isPi: false),
+      ),
+    };
+
+    for (final entry in exportableTokens.entries) {
+      test('container.addOriginToToken: ${entry.key}', () {
+        final token = entry.value;
+        expect(token.isExportable, isTrue);
+        final container = _container(serial: 'SMPH0042');
+
+        final linked = container.addOriginToToken(token: token);
+
+        expect(linked.containerSerial, 'SMPH0042');
+        expect(linked.origin!.source, TokenOriginSourceType.container);
+        expect(linked.origin!.isPrivacyIdeaToken, isTrue);
+        expect(linked.isExportable, isFalse);
+        // The input token is unchanged.
+        expect(token.isExportable, isTrue);
+        expect(token.containerSerial, isNull);
+      });
+    }
+
+    test('container.addOriginToToken for a token without origin gives a container origin', () {
+      final linked = _container().addOriginToToken(
+        token: _hotp(),
+        tokenData: 'otpauth-data',
+      );
+
+      expect(linked.origin!.source, TokenOriginSourceType.container);
+      expect(linked.origin!.data, 'otpauth-data');
+      expect(linked.isExportable, isFalse);
+    });
+
+    test('container.addOriginToToken keeps the original origin data but revokes the export', () {
+      final token = _hotp(
+        origin: _origin(TokenOriginSourceType.manually, data: 'original-data'),
+      );
+
+      final linked = _container().addOriginToToken(token: token, tokenData: 'new');
+
+      expect(linked.origin!.data, 'original-data');
+      expect(linked.origin!.appName, 'app');
+      expect(linked.isExportable, isFalse);
+    });
+
+    test('the sync result path (template -> token -> addOriginToToken) is never exportable', () {
+      final container = _container();
+      for (final entry in exportableTokens.entries) {
+        final withSerial = (entry.value as dynamic).copyWith(
+          serial: () => 'OATH-SYNC',
+        ) as Token;
+        for (final token in [entry.value, withSerial]) {
+          final template = token.toTemplate()!;
+
+          final updated = container.addOriginToToken(token: template.toToken());
+          final linkedTemplate = token.toTemplate(container: container)!.toToken();
+
+          expect(updated.isExportable, isFalse, reason: entry.key);
+          expect(linkedTemplate.isExportable, isFalse, reason: entry.key);
+        }
+      }
+    });
+  });
+}
+
+void _testJsonRoundTripAcrossTokenTypes() {
+  group('Token JSON round trip across token types', () {
+    final factories = <String, Token Function()>{
+      'HOTPToken': _pinnedHotp,
+      'TOTPToken': _pinnedTotp,
+      'DayPasswordToken': _pinnedDayPassword,
+      'SteamToken': _pinnedSteam,
+      'PushToken': _pinnedPush,
+    };
+
+    test('the lock state of a pin protected token is stored and restored', () {
+      for (final build in factories.values) {
+        final original = build();
+        expect(original.isLocked, isTrue);
+        final json = _jsonOf(original);
+        expect(json['pin'], isTrue);
+        expect(json['isLocked'], isTrue);
+        final restored = _viaStorage(original);
+        expect(restored.pin, isTrue);
+        expect(restored.isLocked, isTrue);
+        expect(restored.isHidden, original.isHidden);
+      }
+    });
+
+    test('Token.fromJson rejects a missing and an unknown type', () {
+      expect(() => Token.fromJson({'id': 'x'}), throwsArgumentError);
+      expect(
+        () => Token.fromJson({'id': 'x', 'type': 'DOESNOTEXIST'}),
+        throwsArgumentError,
+      );
+    });
+
+    test('Token.fromJson accepts the legacy type name PUSH and normalizes it to PIPUSH', () {
+      final json = _jsonOf(_pinnedPush())..['type'] = 'PUSH';
+      final restored = Token.fromJson(json);
+      expect(restored, isA<PushToken>());
+      expect(restored.type, 'PIPUSH');
+    });
+
+    test('Token.fromJson matches the type case insensitively', () {
+      final json = _jsonOf(_pinnedTotp())..['type'] = 'totp';
+      expect(Token.fromJson(json), isA<TOTPToken>());
+    });
+
+    test('a list of mixed tokens keeps order and types', () {
+      final tokens = <Token>[
+        _pinnedPush(),
+        _pinnedSteam(),
+        _pinnedHotp(),
+        _pinnedDayPassword(),
+        _pinnedTotp(),
+      ];
+      final decoded = (jsonDecode(jsonEncode(tokens)) as List)
+          .map((e) => Token.fromJson(e as Map<String, dynamic>))
+          .toList();
+      expect(decoded.map((t) => t.runtimeType).toList(), [
+        PushToken,
+        SteamToken,
+        HOTPToken,
+        DayPasswordToken,
+        TOTPToken,
+      ]);
+      expect(decoded.map((t) => t.id).toList(), [
+        'push-id',
+        'steam-id',
+        'hotp-id',
+        'day-id',
+        'totp-id',
+      ]);
     });
   });
 }

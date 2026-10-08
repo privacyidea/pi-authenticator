@@ -20,6 +20,7 @@
 import 'dart:typed_data';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/exception_errors/localized_argument_error.dart';
@@ -491,6 +492,8 @@ void main() {
       expect(result.containsKey('email'), isFalse);
     });
   });
+
+  _testValidatorMessages();
 }
 
 /// Validates [value] and returns the error it throws.
@@ -504,4 +507,153 @@ LocalizedArgumentError _errorOf({
     return e;
   }
   fail('Expected a LocalizedArgumentError for "$value"');
+}
+
+LocalizedArgumentError _catch(void Function() fn) {
+  try {
+    fn();
+  } on LocalizedArgumentError catch (e) {
+    return e;
+  }
+  fail('Expected a LocalizedArgumentError');
+}
+
+// Top level, so every tear-off is identical and can be compared with same().
+String _invalid(AppLocalizations _, String _, String _) => 'inv';
+String _unallowed(AppLocalizations _, String _, String _) => 'unal';
+
+void _testValidatorMessages() {
+  final en = AppLocalizationsEn();
+
+  group('default invalid message', () {
+    test('uses the argument order parameter, type, value', () {
+      final validator = RequiredObjectValidator<int>();
+      final e = _catch(
+        () => validate(value: 'abc', validator: validator, name: 'counter'),
+      );
+      expect(
+        e.localizedMessage(en),
+        'The String “abc“ is not valid for “counter“',
+      );
+      expect(e.name, 'counter');
+      expect(e.invalidValue, 'abc');
+    });
+
+    test('works for a non-string wrong type', () {
+      final e = _catch(
+        () => validate(value: 5, validator: Validators.string, name: 'label'),
+      );
+      expect(e.localizedMessage(en), 'The int “5“ is not valid for “label“');
+    });
+
+    test('null value for a required validator', () {
+      final e = _catch(
+        () => validate(value: null, validator: Validators.string, name: 'x'),
+      );
+      expect(e.localizedMessage(en), 'The Null “null“ is not valid for “x“');
+    });
+  });
+
+  group('invalidMessage / unallowedMessage', () {
+    test('httpUri uses invalidHttpUrl for an unallowed scheme', () {
+      final e = _catch(
+        () => validate(
+          value: 'ftp://example.com/x',
+          validator: Validators.httpUri,
+          name: 'url',
+        ),
+      );
+      expect(e.localizedMessage(en), en.invalidHttpUrl);
+    });
+
+    test('invalid transform still uses the generic text', () {
+      final validator = RequiredObjectValidator<Uri>(
+        unallowedMessage: (l, _, _) => l.invalidHttpUrl,
+      );
+      final e = _catch(
+        () => validate(value: 'abc', validator: validator, name: 'url'),
+      );
+      expect(e.localizedMessage(en), 'The String “abc“ is not valid for “url“');
+    });
+
+    test('custom invalidMessage is used for invalid transform', () {
+      final validator = RequiredObjectValidator<int>(
+        invalidMessage: (_, v, n) => 'custom $n $v',
+      );
+      final e = _catch(
+        () => validate(value: 'abc', validator: validator, name: 'n'),
+      );
+      expect(e.localizedMessage(en), 'custom n abc');
+    });
+  });
+
+  group('optional() and withDefault() keep the messages', () {
+    final base = RequiredObjectValidator<int>(
+      invalidMessage: _invalid,
+      unallowedMessage: _unallowed,
+    );
+    // Every validator type forwards the messages on its own,
+    // so every combination of the two calls is checked.
+    final chains = <String, BaseValidator<Object?>>{
+      'optional()': base.optional(),
+      'withDefault()': base.withDefault(1),
+      'optional().withDefault()': base.optional().withDefault(1),
+      'withDefault().optional()': base.withDefault(1).optional(),
+      'withDefault().withDefault()': base.withDefault(1).withDefault(2),
+    };
+    for (final MapEntry(key: chain, value: validator) in chains.entries) {
+      test('$chain keeps invalidMessage and unallowedMessage', () {
+        expect(validator.invalidMessage, same(_invalid));
+        expect(validator.unallowedMessage, same(_unallowed));
+      });
+    }
+
+    final fallback = Uri.parse('https://a.b');
+    final httpUriChains = <String, BaseValidator<Object?>>{
+      'optional()': Validators.httpUri.optional(),
+      'withDefault()': Validators.httpUri.withDefault(fallback),
+      'optional().withDefault()': Validators.httpUri.optional().withDefault(
+        fallback,
+      ),
+      'withDefault().optional()': Validators.httpUri
+          .withDefault(fallback)
+          .optional(),
+      'withDefault().withDefault()': Validators.httpUri
+          .withDefault(fallback)
+          .withDefault(fallback),
+    };
+    for (final MapEntry(key: chain, value: validator)
+        in httpUriChains.entries) {
+      test(
+        'httpUri.$chain rejects an unallowed scheme with invalidHttpUrl',
+        () {
+          final e = _catch(
+            () => validate(
+              value: 'ftp://example.com/x',
+              validator: validator,
+              name: 'u',
+            ),
+          );
+          expect(e.localizedMessage(en), en.invalidHttpUrl);
+        },
+      );
+    }
+  });
+
+  group('validate throws unallowed error', () {
+    test('otpPeriod 0 throws LocalizedArgumentError', () {
+      final e = _catch(
+        () =>
+            validate(value: 0, validator: Validators.otpPeriod, name: 'period'),
+      );
+      expect(e.localizedMessage(en), 'The int “0“ is not valid for “period“');
+    });
+
+    test('allowed value passes', () {
+      expect(
+        validate(value: 30, validator: Validators.otpPeriod, name: 'period'),
+        30,
+      );
+    });
+  });
 }

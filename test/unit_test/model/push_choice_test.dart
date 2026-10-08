@@ -20,7 +20,12 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:privacyidea_authenticator/model/push_request/push_choice_request.dart';
+import 'package:privacyidea_authenticator/model/push_request/push_request.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
+import 'package:privacyidea_authenticator/utils/globals.dart';
+
+import 'fake_push_server.dart';
+import 'legacy_token_url_fixture.dart';
 
 void main() {
   group('PushChoiceRequest Tests with Short Answers', () {
@@ -137,5 +142,168 @@ void main() {
       expect(req1, req2);
       expect(req1.hashCode, req2.hashCode);
     });
+  });
+
+  // PushChoiceRequest inherits `verifySignature` from PushDefaultRequest, so it
+  // has the same "re-add url and sslverify to android legacy tokens" step. The
+  // url and sslVerify of a request may only be written into the token after a
+  // successful signature check and never for a request that is rejected. See
+  // legacy_token_url_fixture.dart and push_default_request_test.dart.
+  group('PushChoiceRequest for a token without url', () {
+    final fx = useLegacyTokenUrlFixture();
+
+    Map<String, dynamic> challenge(
+      FakePushServer s, {
+      String? capabilitiesNonce,
+    }) => s.createChallenge(
+      requirePresence: ['1', '2', '3'],
+      capabilitiesNonce: capabilitiesNonce,
+    );
+    PushRequest parse(Map<String, dynamic> data) =>
+        PushChoiceRequest.fromMessageData(data);
+
+    testWidgets(
+      'control: a valid request is accepted and the url and sslVerify of the request are re-added',
+      (tester) async {
+        final notifier = await fx.mountApp(tester);
+        final data = challenge(fx.server);
+        final request = parse(data);
+
+        expect(request.verifySignature(fx.legacyToken()), isTrue);
+
+        expect(notifier.updates, hasLength(1));
+        expect(notifier.updates.single.before.url, isNull);
+        expect(
+          notifier.updates.single.after.url,
+          Uri.parse(FakePushServer.url),
+        );
+        expect(notifier.updates.single.after.url, request.uri);
+        expect(notifier.updates.single.after.sslVerify, isTrue);
+      },
+    );
+
+    testWidgets(
+      'control: the url of a token that has one is never touched, valid or forged',
+      (tester) async {
+        final notifier = await fx.mountApp(tester);
+        final tokenWithUrl = fx.legacyToken().copyWith(
+          url: Uri.parse(FakePushServer.url),
+          sslVerify: true,
+        );
+        final valid = parse(challenge(fx.server));
+        final forged = parse({...challenge(fx.server), 'url': evilUrl});
+
+        expect(valid.verifySignature(tokenWithUrl), isTrue);
+        expect(forged.verifySignature(tokenWithUrl), isFalse);
+
+        expect(notifier.updates, isEmpty);
+      },
+    );
+
+    test(
+      'control: verification works without a globalRef (background isolate)',
+      () {
+        // globalRef stays null: nothing is mounted.
+        final request = parse(challenge(fx.server));
+
+        expect(globalRef, isNull);
+        expect(request.verifySignature(fx.legacyToken()), isTrue);
+      },
+    );
+
+    bugTestWidgets(
+      'a request with a swapped url but the original signature is rejected and does not redirect the token',
+      (tester) async {
+        final notifier = await fx.mountApp(tester);
+        final forged = parse({...challenge(fx.server), 'url': evilUrl});
+
+        expect(forged.uri, Uri.parse(evilUrl));
+        expect(forged.verifySignature(fx.legacyToken()), isFalse);
+
+        expect(
+          notifier.updates.where((u) => u.after.url == Uri.parse(evilUrl)),
+          isEmpty,
+          reason: 'The url of a rejected request was written into the token',
+        );
+        expect(notifier.updates, isEmpty);
+      },
+      bug:
+          'BUG: push_default_request.dart:88-95 writes url and sslVerify of the unverified request into the token before super.verifySignature runs',
+    );
+
+    bugTestWidgets(
+      'a request signed with the key of an attacker (matching serial) is rejected and does not redirect the token',
+      (tester) async {
+        final notifier = await fx.mountApp(tester);
+        final data = challenge(fx.attacker);
+        data['url'] = evilUrl;
+        data['sslverify'] = '0';
+        // The attacker signs the exact message it sends, only the key is wrong.
+        data['signature'] = fx.attackerSignature(parse(data).signedData);
+        final forged = parse(data);
+
+        expect(forged.serial, fx.legacyToken().serial);
+        expect(forged.verifySignature(fx.legacyToken()), isFalse);
+
+        expect(notifier.updates, isEmpty);
+      },
+      bug:
+          'BUG: push_default_request.dart:88-95 writes url and sslVerify of the unverified request into the token before super.verifySignature runs',
+    );
+
+    bugTestWidgets(
+      'a request with a malformed signature is rejected and does not touch the token',
+      (tester) async {
+        final notifier = await fx.mountApp(tester);
+        final forged = parse({
+          ...challenge(fx.server),
+          'url': evilUrl,
+          'signature': '!not base32!',
+        });
+
+        expect(forged.verifySignature(fx.legacyToken()), isFalse);
+
+        expect(notifier.updates, isEmpty);
+      },
+      bug:
+          'BUG: push_default_request.dart:88-95 writes url and sslVerify of the unverified request into the token before super.verifySignature runs',
+    );
+
+    bugTestWidgets(
+      'a request whose capabilities signature is invalid is rejected as a whole and does not touch the token',
+      (tester) async {
+        final notifier = await fx.mountApp(tester);
+        // The main signature is valid, the detached capabilities signature is
+        // bound to another nonce.
+        final request = parse(
+          challenge(fx.server, capabilitiesNonce: 'another-nonce'),
+        );
+
+        expect(request.verifySignature(fx.legacyToken()), isFalse);
+
+        expect(notifier.updates, isEmpty);
+      },
+      bug:
+          'BUG: push_default_request.dart:88-95 writes url and sslVerify into the token even when verifySignature then returns false',
+    );
+
+    bugTestWidgets(
+      'a request for a token that has no server key (not rolled out) is rejected and does not touch the token',
+      (tester) async {
+        final notifier = await fx.mountApp(tester);
+        final notRolledOut = PushToken(
+          serial: fx.server.serial,
+          id: 'not-rolled-out',
+        );
+        final forged = parse({...challenge(fx.server), 'url': evilUrl});
+
+        expect(notRolledOut.url, isNull);
+        expect(forged.verifySignature(notRolledOut), isFalse);
+
+        expect(notifier.updates, isEmpty);
+      },
+      bug:
+          'BUG: push_default_request.dart:88-95 writes url and sslVerify into a token that has no server key to verify against',
+    );
   });
 }
