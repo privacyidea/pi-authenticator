@@ -50,6 +50,8 @@
 	<false/>
 	<key>FirebaseScreenReportingEnabled</key>
 	<false/>
+	<key>FlutterDeepLinkingEnabled</key>
+	<false/>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
