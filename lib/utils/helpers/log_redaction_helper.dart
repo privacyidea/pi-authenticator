@@ -119,12 +119,24 @@ const Set<String> sensitiveEntryNames = {
   'new_fb_token',
 };
 
-/// Finds every one of the [sensitiveEntryNames].
+/// The query parameters of a uri whose value never reaches the log.
 ///
-/// Matched case insensitively and as a substring, the way [_isSensitiveName]
-/// matches, so that the two cannot disagree about a name.
+/// Unlike the [sensitiveEntryNames] these are too common as words to be
+/// matched anywhere, so they only count right behind the '?' or '&' of a query
+/// and in front of its '='. 'data' carries every secret of an
+/// otpauth-migration uri and the token of a pia qrbackup uri.
+const Set<String> sensitiveQueryParameterNames = {'data'};
+
+/// Finds every one of the [sensitiveEntryNames] and every one of the
+/// [sensitiveQueryParameterNames] that stands in a query.
+///
+/// The entry names are matched case insensitively and as a substring, the way
+/// [_isSensitiveName] matches, so that the two cannot disagree about a name.
 final RegExp _sensitiveNamePattern = RegExp(
-  sensitiveEntryNames.map(RegExp.escape).join('|'),
+  [
+    ...sensitiveEntryNames.map(RegExp.escape),
+    '(?<=[?&])(?:${sensitiveQueryParameterNames.map(RegExp.escape).join('|')})(?==)',
+  ].join('|'),
   caseSensitive: false,
 );
 
@@ -133,14 +145,15 @@ final RegExp _sensitiveNamePattern = RegExp(
 final RegExp _nameRemainder = RegExp(r'[A-Za-z0-9_]*');
 
 /// Matches what can stand between a name and its value, the closing quote of
-/// the name, one assignment and the space around it.
-final RegExp _nameValueSeparator = RegExp(r'''["']?\s*[:=]?\s*''');
+/// the name, one assignment or the '|' of a table and the space around it.
+final RegExp _nameValueSeparator = RegExp(r'''["']?\s*[:=|]?\s*''');
 
 /// The characters that end a value that is neither quoted nor nested.
 const String _bareValueEnders = ' \t\r\n,;)}]"\'';
 
-/// [text] with the value behind every one of the [sensitiveEntryNames]
-/// replaced by `******`.
+/// [text] with the value behind every one of the [sensitiveEntryNames] and
+/// behind every one of the [sensitiveQueryParameterNames] in a query replaced
+/// by `******`.
 ///
 /// A quoted value keeps its quotes and an object or a list is replaced as a
 /// whole, so that a name which may not be logged does not leak through what is

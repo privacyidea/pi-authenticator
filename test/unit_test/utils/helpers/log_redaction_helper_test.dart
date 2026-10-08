@@ -315,6 +315,38 @@ void main() {
     test('keeps the name so the line stays readable', () {
       expect(filterSensitiveValues('secret: abc'), contains('secret'));
     });
+
+    test('scrubs the value behind the | of a table row', () {
+      // The query parameters of an imported otpauth uri are logged as a table.
+      final result = filterSensitiveValues(
+        '   secret | JBSWY3DPEHPK3PXP\n   issuer | Example',
+      );
+
+      expect(result, isNot(contains('JBSWY3DPEHPK3PXP')));
+      expect(result, contains('secret | ******'));
+      expect(result, contains('issuer | Example'));
+    });
+
+    test('scrubs the data of an otpauth-migration uri', () {
+      expect(
+        filterSensitiveValues(
+          'got new incoming uri: otpauth-migration://offline?data=CjEKCkhlbGxv',
+        ),
+        'got new incoming uri: otpauth-migration://offline?data=******',
+      );
+    });
+
+    test('scrubs the data of a pia uri that is not the first parameter', () {
+      final result = filterSensitiveValues('pia://qrbackup?v=1&data=Q2lwaGVy');
+
+      expect(result, isNot(contains('Q2lwaGVy')));
+      expect(result, contains('v=1'));
+    });
+
+    test('leaves data alone outside of a query', () {
+      const line = 'Malformed data: Invalid URL, metadata=1';
+      expect(filterSensitiveValues(line), line);
+    });
   });
 
   group('the allowlists the app passes', () {
