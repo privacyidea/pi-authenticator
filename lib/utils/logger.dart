@@ -477,8 +477,9 @@ Device Parameters $deviceInfo""";
 
   Future<void> _setupErrorHooks() async {
     FlutterError.onError = (FlutterErrorDetails details) async {
+      final context = details.context == null ? '' : ' (${details.context})';
       error(
-        'Uncaught Error: ${details.exception}',
+        'Uncaught Error: ${details.exception}$context',
         error: details.exception,
         stackTrace: details.stack ?? StackTrace.current,
       );

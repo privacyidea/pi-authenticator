@@ -425,6 +425,9 @@
   "@errorMissingPublicKey": {
     "description": "Error message when the public key is missing."
   },
+  "@errorOpeningLink": {
+    "description": "Error message when a link cannot be opened on the device, for example because no browser is installed."
+  },
   "@errorRollOutFailed": {
     "description": "Tells the user that the token could not be rolled out, because a network error occurred.",
     "placeholders": {
@@ -1912,6 +1915,7 @@
   "errorMailBody": "Het foutlogbestand is bijgevoegd.\nU kunt deze tekst vervangen door aanvullende informatie over de fout.",
   "errorMissingPrivateKey": "Ontbrekende privésleutel",
   "errorMissingPublicKey": "Ontbrekende openbare sleutel",
+  "errorOpeningLink": "De link kon niet worden geopend.",
   "errorRollOutFailed": "Uitrollen van token {name} mislukt.",
   "errorRollOutNoConnectionToServer": "Het uitrollen van token {name} is mislukt, de server kan niet worden bereikt.",
   "errorRollOutNotPossibleAnymore": "Het uitrollen van dit token is niet meer mogelijk.",

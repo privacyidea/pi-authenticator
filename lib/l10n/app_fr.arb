@@ -425,6 +425,9 @@
   "@errorMissingPublicKey": {
     "description": "Error message when the public key is missing."
   },
+  "@errorOpeningLink": {
+    "description": "Error message when a link cannot be opened on the device, for example because no browser is installed."
+  },
   "@errorRollOutFailed": {
     "description": "Tells the user that the token could not be rolled out, because a network error occurred.",
     "placeholders": {
@@ -1912,6 +1915,7 @@
   "errorMailBody": "Le fichier journal des erreurs est joint.\nVous pouvez remplacer ce texte par des informations supplémentaires sur l'erreur.",
   "errorMissingPrivateKey": "Clé privée manquante",
   "errorMissingPublicKey": "Clé publique manquante",
+  "errorOpeningLink": "Le lien n'a pas pu être ouvert.",
   "errorRollOutFailed": "Le déploiement du jeton {name} a échoué.",
   "errorRollOutNoConnectionToServer": "El despliegue del jeton {name} ha fallado, no se ha podido acceder al servidor.",
   "errorRollOutNotPossibleAnymore": "Le déploiement de ce jeton n'est plus possible.",

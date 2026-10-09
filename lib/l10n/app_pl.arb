@@ -425,6 +425,9 @@
   "@errorMissingPublicKey": {
     "description": "Error message when the public key is missing."
   },
+  "@errorOpeningLink": {
+    "description": "Error message when a link cannot be opened on the device, for example because no browser is installed."
+  },
   "@errorRollOutFailed": {
     "description": "Tells the user that the token could not be rolled out, because a network error occurred.",
     "placeholders": {
@@ -1912,6 +1915,7 @@
   "errorMailBody": "Plik dziennika błędów jest dołączony.\nTekst ten można zastąpić dodatkowymi informacjami o błędzie.",
   "errorMissingPrivateKey": "Brakujący klucz prywatny",
   "errorMissingPublicKey": "Brakujący klucz publiczny",
+  "errorOpeningLink": "Nie udało się otworzyć linku.",
   "errorRollOutFailed": "Wdrażanie tokenu {name} nieudane.",
   "errorRollOutNoConnectionToServer": "Rozwijanie tokena {name} nie powiodło się, nie można było uzyskać dostępu do serwera.",
   "errorRollOutNotPossibleAnymore": "Wstać z łóżka tego tokena nie jest już możliwe.",

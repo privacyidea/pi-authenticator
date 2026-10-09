@@ -253,6 +253,7 @@ class PiServerResultErrorCodes {
 class InAppErrorCodes {
   // 1xxxx — Parsing / serialization
   static const jsonParseError = 10001;
+  static const missingResultValue = 10002;
 
   // 4xxxx — Crypto / security
   static const failedToEncryptTokens = 40001;
@@ -269,6 +270,7 @@ class InAppErrorCodes {
   /// Intended for logs/debug output — NOT for user-facing UI (use localizations).
   static String? describe(int code) => switch (code) {
         jsonParseError => 'Failed to parse JSON response (non-JSON body)',
+        missingResultValue => 'Server response has no result value',
         failedToEncryptTokens => 'Failed to encrypt tokens',
         failedToDecryptTokens => 'Failed to decrypt tokens',
         failedToGenerateExportUri => 'Failed to generate export URI',

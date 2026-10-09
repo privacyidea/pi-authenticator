@@ -30,6 +30,7 @@ import 'package:http/http.dart';
 import 'package:image/image.dart' as img;
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:url_launcher/url_launcher.dart' show launchUrl;
 import 'package:zxing2/qrcode.dart';
 
 import '../../../../../../../mains/main_netknights.dart';
@@ -145,6 +146,20 @@ bool doesThrow(Function() f) {
 String getCurrentAppName() =>
     PrivacyIDEAAuthenticator.currentCustomization?.appName ??
     ApplicationCustomization.defaultCustomization.appName;
+
+/// Opens [url]. iOS reports false when the user closes the browser view before
+/// the page loaded, which is no error; Android throws when no browser is
+/// installed, which the user is told about.
+Future<void> openUrl(Uri url) async {
+  try {
+    if (!await launchUrl(url)) Logger.warning('Could not launch $url');
+  } catch (e) {
+    showErrorStatusMessage(
+      message: (l) => l.errorOpeningLink,
+      details: (_) => '$url: $e',
+    );
+  }
+}
 
 dynamic tryJsonDecode(String json) {
   try {

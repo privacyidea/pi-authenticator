@@ -18,10 +18,10 @@
  * limitations under the License.
  */
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/logger.dart';
+import '../../../utils/utils.dart';
 import '../../../widgets/dialog_widgets/default_dialog.dart';
 import '../settings_view.dart';
 import 'dialogs/ask_log_sended_dialog.dart';
@@ -51,7 +51,7 @@ class _SendErrorDialogState extends State<SendErrorDialog> {
           Text(AppLocalizations.of(context)!.sendErrorLogDescription),
           TextButton(
             child: Text(AppLocalizations.of(context)!.showPrivacyPolicy),
-            onPressed: () => launchUrl(
+            onPressed: () => openUrl(
               Uri.parse('https://netknights.it/en/privacy-statement/'),
             ),
           ),
