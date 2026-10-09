@@ -437,6 +437,10 @@ class HomeWidgetUtils {
       await unlink(widgetId);
       return;
     }
+    if (token.isLocked) {
+      Logger.info('Copy blocked because the token is locked');
+      return;
+    }
 
     HomeWidget.saveWidgetData('$keyCopyBlocked$widgetId', true);
 
