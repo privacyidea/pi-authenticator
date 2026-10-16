@@ -89,6 +89,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
     try {
       final tokenState = await ref.read(tokenProvider.future);
       if (mounted) unawaited(_syncContainers(tokenState));
+      if (mounted) await ref.read(tokenProvider.notifier).hideLockedTokens();
     } catch (e, s) {
       Logger.error(
         'Error while loading the token state.',

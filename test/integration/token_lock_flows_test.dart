@@ -85,6 +85,30 @@ void main() {
     app.expectNoErrorLogs();
   });
 
+  appTest('a locked token whose code was shown when the app ended is hidden '
+      'again on the next start', (app) async {
+    app.storage.putToken(
+      TOTPToken(
+        id: 'locked-shown',
+        label: 'Bank',
+        issuer: 'Example',
+        algorithm: Algorithms.SHA1,
+        digits: 6,
+        period: 30,
+        secret: base32(_secret),
+        isLocked: true,
+        isHidden: false,
+      ),
+    );
+    await app.start();
+    final tile = find.byType(TOTPTokenWidgetTile);
+    await app.pumpUntilFound(tile);
+
+    expect(_codesIn(tile), isEmpty);
+    expect(app.storage.storedTokens['locked-shown']!['isHidden'], isTrue);
+    app.expectNoErrorLogs();
+  });
+
   appTest('accepting a request of a locked push token needs the device '
       'authentication, a cancelled prompt sends nothing', (app) async {
     final push = FakePushEndpoint(FakePushServer.advertising(), app.backend);
