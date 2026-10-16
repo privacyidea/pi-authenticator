@@ -85,7 +85,7 @@ void main() {
       expect(microsOf(written.single), inInclusiveRange(before, after));
     });
 
-    test('same uri again within 2 s is dropped and does not extend the window', () async {
+    test('same uri again within the window is dropped and does not extend it', () async {
       await homeWidgetBackgroundCallback(uriA);
       final firstStored = store[key];
 
@@ -95,8 +95,8 @@ void main() {
       expect(store[key], firstStored, reason: 'timestamp must stay unchanged');
     });
 
-    test('same uri seeded 1.5 s ago is dropped', () async {
-      seed(uriA, const Duration(milliseconds: 1500));
+    test('same uri seeded 0.5 s ago is dropped', () async {
+      seed(uriA, const Duration(milliseconds: 500));
       final seeded = store[key];
 
       await homeWidgetBackgroundCallback(uriA);
@@ -117,7 +117,7 @@ void main() {
       expect(microsOf(written.single), greaterThan(oldMicros));
     });
 
-    test('different uri within 2 s is processed and replaces the stored one', () async {
+    test('different uri within the window is processed and replaces the stored one', () async {
       await homeWidgetBackgroundCallback(uriA);
       await homeWidgetBackgroundCallback(uriB);
 
@@ -127,7 +127,7 @@ void main() {
       expect((store[key] as String).startsWith('${uriB.toString()}|'), isTrue);
     });
 
-    test('only the last uri is remembered: A, B, A within 2 s processes all three', () async {
+    test('only the last uri is remembered: A, B, A within the window processes all three', () async {
       await homeWidgetBackgroundCallback(uriA);
       await homeWidgetBackgroundCallback(uriB);
       await homeWidgetBackgroundCallback(uriA);

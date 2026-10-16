@@ -680,18 +680,18 @@ void _testTokenExportUri() {
     });
 
     for (final name in tokens.keys) {
-      test('$name: every field survives (folderId and sortIndex are kept, unlike decrypt)', () {
+      test('$name: every field survives, the folder id is reset like decrypt does', () {
         final token = tokens[name]!;
         final restored = TokenEncryption.fromExportUri(TokenEncryption.generateExportUri(token: token));
-        _expectSameUriFields(restored, token, expectedFolderId: token.folderId);
-        expect(restored.folderId, isNotNull, reason: 'the fixture really has a folder');
+        _expectSameUriFields(restored, token, expectedFolderId: null);
+        expect(token.folderId, isNotNull, reason: 'the fixture really has a folder');
       });
     }
 
     test('the generated uri is accepted by Uri.parse(string) -> fromExportUri (what a qr scan delivers)', () {
       final token = exportUriHotp();
       final scanned = Uri.parse(TokenEncryption.generateExportUri(token: token).toString());
-      _expectSameUriFields(TokenEncryption.fromExportUri(scanned), token, expectedFolderId: token.folderId);
+      _expectSameUriFields(TokenEncryption.fromExportUri(scanned), token, expectedFolderId: null);
     });
 
     test('lock related combinations round trip', () {
