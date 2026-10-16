@@ -18,12 +18,39 @@
  * limitations under the License.
  */
 
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
+import 'package:privacyidea_authenticator/model/token_folder.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view.dart';
 
 import 'harness/app_harness.dart';
 
 void main() {
+  appTest('one unreadable folder entry does not take the other folders with it', (
+    app,
+  ) async {
+    await app.storage.setPreference(
+      'TOKEN_CATEGORIES',
+      jsonEncode([
+        {'label': 'Work', 'folderId': 1},
+        {'label': 'Broken', 'folderId': 'not a number'},
+        {'label': 'Private', 'folderId': 2},
+      ]),
+    );
+
+    await app.start();
+
+    expect(find.text('Work'), findsOneWidget);
+    expect(find.text('Private'), findsOneWidget);
+    expect(find.text('Broken'), findsNothing);
+    expect(app.container.read(tokenFolderProvider).folders, const [
+      TokenFolder(label: 'Work', folderId: 1),
+      TokenFolder(label: 'Private', folderId: 2),
+    ]);
+  });
+
   appTest('an empty device starts into the main view without traffic', (
     app,
   ) async {

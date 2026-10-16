@@ -18,6 +18,9 @@
  * limitations under the License.
  */
 
+import 'dart:async';
+
+import 'package:firebase_messaging/firebase_messaging.dart' show RemoteMessage;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
@@ -78,6 +81,24 @@ class FastKeyRsaUtils extends RsaUtils {
   generateRSAKeyPair() async => keyPairs[generated++ % keyPairs.length];
 }
 
+/// [NoFirebaseUtils] that keeps the foreground handler the app registers, so
+/// that a test can hand the running app a push message the way Firebase does.
+class CapturingFirebaseUtils extends NoFirebaseUtils {
+  Future<void> Function(RemoteMessage message)? _foregroundHandler;
+
+  bool get hasForegroundHandler => _foregroundHandler != null;
+
+  @override
+  Future<void> setupHandler({
+    required Future<void> Function(RemoteMessage p1) foregroundHandler,
+    required Future<void> Function(RemoteMessage p1) backgroundHandler,
+    required dynamic Function({String? firebaseToken}) updateFirebaseToken,
+  }) async => _foregroundHandler = foregroundHandler;
+
+  Future<void> deliverForeground(Map<String, dynamic> data) =>
+      _foregroundHandler!(RemoteMessage(data: data));
+}
+
 /// Runs the real app (AppWrapper + PrivacyIDEAAuthenticator, exactly as
 /// main_netknights.dart builds it) on fake platform boundaries:
 ///
@@ -96,7 +117,7 @@ class AppHarness {
   final PlatformFakes platform;
   final LogCapture logs;
   final RsaUtils rsaUtils;
-  final FirebaseUtils firebaseUtils = NoFirebaseUtils();
+  final CapturingFirebaseUtils firebaseUtils = CapturingFirebaseUtils();
   late PushProvider pushProvider;
   bool _started = false;
 
@@ -352,6 +373,20 @@ class AppHarness {
     await pumpUntilFound(indicator, reason: 'the pull to refresh indicator');
     await tester.fling(indicator.first, const Offset(0, 400), 1000);
     await settle(const Duration(seconds: 2));
+  }
+
+  /// Hands [data] to the running app the way Firebase delivers a push message
+  /// in the foreground and waits until the app handled it.
+  Future<void> receivePushMessage(Map<String, dynamic> data) async {
+    await pumpUntil(
+      () => firebaseUtils.hasForegroundHandler,
+      reason: 'the app to register its firebase handler',
+    );
+    var handled = false;
+    unawaited(
+      firebaseUtils.deliverForeground(data).whenComplete(() => handled = true),
+    );
+    await pumpUntil(() => handled, reason: 'the push message to be handled');
   }
 
   Future<void> tap(Finder finder) async {

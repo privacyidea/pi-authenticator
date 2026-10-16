@@ -122,8 +122,9 @@ void main() {
                 final value = next.value;
                 if (value == null) return;
                 seen.add(value.uri);
-                if (value.uri.host == 'boom')
+                if (value.uri.host == 'boom') {
                   throw StateError('onNewState failed');
+                }
               },
             ),
           ],
@@ -156,8 +157,9 @@ void main() {
                 final value = next.value;
                 if (value == null) return;
                 seen.add(value.uri);
-                if (value.uri.host == 'boom')
+                if (value.uri.host == 'boom') {
                   throw StateError('onNewState failed');
+                }
               },
             ),
           ],
@@ -199,8 +201,9 @@ void main() {
                 final value = next.value;
                 if (value == null) return;
                 seen.add(value.uri);
-                if (value.uri.host == 'boom')
+                if (value.uri.host == 'boom') {
                   throw StateError('onNewState failed');
+                }
               },
             ),
           ],

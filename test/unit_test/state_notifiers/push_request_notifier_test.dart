@@ -1018,8 +1018,9 @@ void _testPushRequestNotifierMore() {
             ),
           ).thenAnswer((_) async {
             calls++;
-            if (calls == 1)
+            if (calls == 1) {
               return ResponseBuilder.fromMessage('No route to host');
+            }
             throw StateError('something unexpected');
           });
 

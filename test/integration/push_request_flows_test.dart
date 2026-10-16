@@ -19,6 +19,8 @@
  */
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:privacyidea_authenticator/model/enums/push_token_rollout_state.dart';
+import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 import 'package:privacyidea_authenticator/widgets/dialog_widgets/push_request_dialogs/push_request_dialog.dart';
 import 'package:privacyidea_authenticator/widgets/dialog_widgets/push_request_dialogs/widgets/push_decline_confirm_dialog.dart';
 
@@ -369,6 +371,47 @@ void main() {
         expect(app.pushRequestState.pushRequests, isEmpty);
         expect(app.storage.storedPushRequestState!.pushRequests, isEmpty);
         app.expectNoErrorLogs();
+      },
+    );
+  });
+
+  group('a token enrolled by an old android version, stored without url', () {
+    appTest(
+      'a push message whose url was swapped is rejected and leaves the token '
+      'untouched, a genuine one re-adds the url',
+      (app) async {
+        final server = FakePushServer.advertising();
+        FakePushEndpoint(server, app.backend);
+        final legacy = PushToken(
+          serial: server.serial,
+          id: 'legacy-push-token',
+          label: 'Legacy push',
+          isRolledOut: true,
+          rolloutState: PushTokenRollOutState.rolloutComplete,
+        ).withPublicServerKey(server.keyPair.publicKey);
+        app.storage.putToken(legacy);
+        await app.start();
+
+        await app.receivePushMessage({
+          ...server.createChallenge(sslVerify: false),
+          'url': 'https://evil.example/ttype/push',
+        });
+        await app.settle();
+
+        expect(find.byType(PushDefaultDialog), findsNothing);
+        expect(app.tokenState.tokens.whereType<PushToken>().single.url, isNull);
+        expect(app.storage.storedTokens[legacy.id]!['url'], isNull);
+
+        await app.receivePushMessage(
+          server.createChallenge(question: 'Approve the login?'),
+        );
+        await app.pumpUntilFound(find.byType(PushDefaultDialog));
+
+        expect(find.text('Approve the login?'), findsOneWidget);
+        expect(
+          app.tokenState.tokens.whereType<PushToken>().single.url,
+          Uri.parse(FakePushServer.url),
+        );
       },
     );
   });

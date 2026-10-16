@@ -35,6 +35,7 @@ import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/toke
 import 'package:privacyidea_authenticator/widgets/dialog_widgets/container_dialogs/container_rollout_dialog.dart';
 import 'package:privacyidea_authenticator/widgets/dialog_widgets/container_dialogs/container_send_device_infos_dialog.dart';
 import 'package:privacyidea_authenticator/widgets/dialog_widgets/container_dialogs/container_show_url_dialog.dart';
+import 'package:privacyidea_authenticator/widgets/dialog_widgets/container_dialogs/initial_token_assignment_dialog.dart';
 import 'package:privacyidea_authenticator/widgets/dialog_widgets/enter_passphrase_dialog.dart';
 
 import 'harness/app_harness.dart';
@@ -436,6 +437,61 @@ void main() {
       expect(server.syncs.last.accepted, true);
       expect(server.syncs.last.clientSerials, [_door().serial]);
       expect(app.tokenState.tokens, hasLength(2));
+      app.expectNoErrorLogs();
+    },
+  );
+
+  appTest(
+    'the initial sync lets the user leave a token without serial out, even '
+    'one stored before tokens remembered the containers they were offered to',
+    (app) async {
+      final local = HOTPToken(
+        id: 'local-2',
+        label: 'Old token',
+        issuer: 'Example',
+        algorithm: Algorithms.SHA1,
+        digits: 6,
+        counter: 3,
+        secret: base32(utf8.encode('local-token-secret!')),
+      );
+      app.storage.putRawToken(
+        local.id,
+        jsonEncode(local.toJson()..remove('checkedContainer')),
+      );
+      final server = FakeContainerServer(
+        app.backend,
+        policies: const FakeContainerPolicies(initialTokenAssignment: true),
+        tokens: [_door()],
+      );
+      await app.start();
+
+      app.platform.appLinks.open(server.registrationLink());
+      await _confirmUrl(app);
+      await _answerDeviceInfos(app, send: false);
+      await app.pumpUntilFound(find.byType(InitialTokenAssignmentDialog));
+      final row = _inDialog(
+        InitialTokenAssignmentDialog,
+        find.text(local.label),
+      );
+      await app.tap(row);
+      await app.tap(row);
+      await app.tap(
+        _inDialog(
+          InitialTokenAssignmentDialog,
+          find.text(l10n.initialTokenAssignmentDialogButtonZero),
+        ),
+      );
+      await _dismissSyncResult(app);
+
+      expect(server.syncs.single.accepted, true);
+      expect(server.syncs.single.clientTokens, isEmpty);
+      final left = app.tokenState.tokens.firstWhere((t) => t.id == local.id);
+      expect(left.containerSerial, isNull);
+      expect(left.checkedContainer, contains(server.serial));
+      expect(
+        app.storage.storedTokens[local.id]!['checkedContainer'],
+        contains(server.serial),
+      );
       app.expectNoErrorLogs();
     },
   );
