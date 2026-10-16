@@ -19,7 +19,9 @@
  */
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
+import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
 import 'package:privacyidea_authenticator/views/import_tokens_view/pages/import_plain_tokens_page.dart';
 
 import 'harness/app_harness.dart';
@@ -47,6 +49,32 @@ void main() {
     expect(app.storage.storedTokens, hasLength(1));
     expect(find.text('vpn-gateway'), findsOneWidget);
     expect(find.byType(ImportPlainTokensPage), findsNothing);
+    app.expectNoErrorLogs();
+  });
+
+  appTest('a cold start through an otpauth link keeps the stored tokens and '
+      'adds the new one exactly once', (app) async {
+    app.storage.putToken(
+      TOTPToken(
+        id: 'stored-1',
+        label: 'Stored token',
+        issuer: 'Example',
+        algorithm: Algorithms.SHA1,
+        digits: 6,
+        period: 30,
+        secret: 'KRSXG5CTMVRXEZLU',
+      ),
+    );
+
+    await app.start();
+    await app.pumpUntil(() => app.tokenState.tokens.length == 2);
+    await app.settle(const Duration(seconds: 2));
+
+    expect(
+      app.tokenState.tokens.map((t) => t.label),
+      unorderedEquals(['Stored token', 'vpn-gateway']),
+    );
+    expect(app.storage.storedTokens, hasLength(2));
     app.expectNoErrorLogs();
   });
 }

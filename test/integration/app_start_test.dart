@@ -45,6 +45,28 @@ TOTPToken _totp(String id, String label, {int? folderId}) => TOTPToken(
 Finder _decryptDialog() => find.text(l10n.decryptErrorTitle);
 
 void main() {
+  appTest('a token whose folder does not exist stays visible at the top '
+      'level', (app) async {
+    app.storage.putToken(_totp('orphan', 'Orphan token', folderId: 99));
+
+    await app.start();
+
+    expect(find.text('Orphan token'), findsOneWidget);
+    app.expectNoErrorLogs();
+  });
+
+  appTest('a folder list that cannot be read leaves every token visible', (
+    app,
+  ) async {
+    await app.storage.setPreference('TOKEN_CATEGORIES', 'not json');
+    app.storage.putToken(_totp('in-folder', 'Token in a folder', folderId: 1));
+
+    await app.start();
+
+    expect(find.text('Token in a folder'), findsOneWidget);
+    expect(app.container.read(tokenFolderProvider).folders, isEmpty);
+  });
+
   appTest('a locked folder that was open when the app ended is closed on the '
       'next start', (app) async {
     await app.storage.setPreference(

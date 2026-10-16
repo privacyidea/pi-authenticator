@@ -137,4 +137,53 @@ void main() {
       );
     },
   );
+
+  appTest(
+    'a rollout that was interrupted when the app ended shows as failed and '
+    'can be started again',
+    rsaUtils: FastKeyRsaUtils([_deviceKeys]),
+    (app) async {
+      final push = FakePushEndpoint(
+        FakePushServer.advertising(serial: 'PIPU0044'),
+        app.backend,
+      );
+      app.storage.putToken(
+        PushToken(
+          serial: 'PIPU0044',
+          id: 'push-interrupted',
+          label: 'PIPU0044',
+          issuer: 'privacyIDEA',
+          url: Uri.parse(FakePushServer.url),
+          sslVerify: true,
+          enrollmentCredentials: FakePushServer.enrollmentCredential,
+          expirationDate: DateTime.now().add(const Duration(minutes: 10)),
+          isPollOnly: true,
+          isRolledOut: false,
+          rolloutState: PushTokenRollOutState.sendRSAPublicKey,
+        ),
+      );
+
+      await app.start();
+
+      expect(
+        _pushToken(app)!.rolloutState,
+        PushTokenRollOutState.sendRSAPublicKeyFailed,
+      );
+      await app.tap(find.text(l10n.retryRolloutButton));
+      await app.pumpUntil(
+        () => _pushToken(app)?.isRolledOut == true,
+        reason: 'the second rollout',
+      );
+
+      expect(
+        _pushToken(app)!.rolloutState,
+        PushTokenRollOutState.rolloutComplete,
+      );
+      expect(
+        push.server.smartphonePublicKey?.modulus,
+        _deviceKeys.publicKey.modulus,
+      );
+      app.expectNoErrorLogs();
+    },
+  );
 }

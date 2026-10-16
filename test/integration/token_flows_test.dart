@@ -23,15 +23,22 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
+import 'package:privacyidea_authenticator/model/enums/day_password_token_view_mode.dart';
+import 'package:privacyidea_authenticator/model/enums/force_biometric_option.dart';
 import 'package:privacyidea_authenticator/model/enums/token_types.dart';
+import 'package:privacyidea_authenticator/model/tokens/day_password_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
+import 'package:privacyidea_authenticator/model/tokens/steam_token.dart';
+import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
+import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:privacyidea_authenticator/views/add_token_manually_view/add_token_manually_view.dart';
 import 'package:privacyidea_authenticator/views/add_token_manually_view/add_token_manually_view_widgets/rows/add_token_button.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/hotp_token_widgets/hotp_token_widget_tile.dart';
 import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/totp_token_widgets/totp_token_widget_tile.dart';
 
 import 'harness/app_harness.dart';
+import 'harness/fake_push_endpoint.dart';
 import 'harness/reference_otp.dart';
 
 /// The RFC 4226 / RFC 6238 test secret.
@@ -238,6 +245,149 @@ void main() {
     expect(token.isLocked, isTrue);
     expect(app.storage.storedTokens['hotp-migrated']!['counter'], 7);
     expect(app.storage.legacyKeys, isEmpty);
+    app.expectNoErrorLogs();
+  });
+
+  appTest('tokens of every type stored by versions up to 4.5.3 load with the '
+      'defaults of the fields those versions did not know', (app) async {
+    final push = FakePushEndpoint(FakePushServer.advertising(), app.backend);
+    final tokens = <Token>[
+      HOTPToken(
+        id: 'old-hotp',
+        label: 'Old HOTP',
+        issuer: 'Example',
+        algorithm: Algorithms.SHA1,
+        digits: 6,
+        counter: 2,
+        secret: base32(_rfcSecret),
+      ),
+      _totp('old-totp', 'Old TOTP'),
+      DayPasswordToken(
+        id: 'old-day',
+        label: 'Old day password',
+        issuer: 'Example',
+        algorithm: Algorithms.SHA1,
+        digits: 6,
+        period: const Duration(days: 1),
+        secret: base32(_rfcSecret),
+      ),
+      SteamToken(
+        id: 'old-steam',
+        label: 'Old Steam',
+        issuer: 'Steam',
+        secret: base32(_rfcSecret),
+      ),
+      push.enrolledToken(id: 'old-push', label: 'Old push'),
+    ];
+    for (final token in tokens) {
+      app.storage.secure[FakeDeviceStorage.legacyKey(token.id)] = jsonEncode(
+        token.toJson()
+          ..remove('forceBiometricOption')
+          ..remove('viewMode'),
+      );
+    }
+    final firebaseConfig = FakeDeviceStorage.legacyKey('firebase-config');
+    app.storage.secure[firebaseConfig] = jsonEncode({'projectId': 'example'});
+
+    await app.start();
+
+    expect(
+      app.tokenState.tokens.map((t) => t.id),
+      unorderedEquals(tokens.map((t) => t.id)),
+    );
+    for (final token in app.tokenState.tokens) {
+      expect(token.forceBiometricOption, ForceBiometricOption.none);
+      expect(token.isLocked, isFalse);
+    }
+    expect(
+      app.tokenState.tokens.whereType<DayPasswordToken>().single.viewMode,
+      DayPasswordTokenViewMode.VALIDFOR,
+    );
+    expect(app.storage.legacyKeys, [firebaseConfig]);
+    app.expectNoErrorLogs();
+  });
+
+  appTest('container entries next to the tokens are neither loaded nor '
+      'reported as broken tokens', (app) async {
+    app.storage.putToken(_totp('only-token', 'Only token'));
+    app.storage.secure['${SECURE_REPO_PREFIX_TOKEN_CONTAINER}_SMPH0001'] =
+        jsonEncode({'serial': 'SMPH0001'});
+
+    await app.start();
+
+    expect(app.tokenState.tokens.map((t) => t.id), ['only-token']);
+    expect(
+      app.logs.warnings.where(
+        (w) =>
+            w.message.contains('Could not load token') ||
+            w.message.contains('of the token storage'),
+      ),
+      isEmpty,
+    );
+  });
+
+  appTest('entries of a token type or value this version does not know '
+      'survive changes to the other tokens', (app) async {
+    final known = HOTPToken(
+      id: 'hotp-known',
+      label: 'Known',
+      issuer: 'Example',
+      algorithm: Algorithms.SHA1,
+      digits: 6,
+      secret: base32(_rfcSecret),
+    );
+    app.storage.putToken(known);
+    final unknownType = jsonEncode({
+      'type': 'FUTURE',
+      'id': 'future-type',
+      'label': 'From a newer version',
+    });
+    final unknownValue = jsonEncode(
+      known.copyWith(id: 'future-value').toJson()..['algorithm'] = 'SHA3_512',
+    );
+    app.storage.putRawToken('future-type', unknownType);
+    app.storage.putRawToken('future-value', unknownValue);
+
+    await app.start();
+    await app.pumpUntilFound(find.byType(HOTPTokenWidgetTile));
+    await app.tap(find.byIcon(Icons.replay));
+    await app.pumpUntil(
+      () => app.storage.storedTokens['hotp-known']!['counter'] == 1,
+      reason: 'the counter to be saved',
+    );
+    await app.restart();
+
+    expect(app.tokenState.tokens.map((t) => t.id), ['hotp-known']);
+    expect(app.storage.secure[FakeDeviceStorage.tokenKey('future-type')], unknownType);
+    expect(app.storage.secure[FakeDeviceStorage.tokenKey('future-value')], unknownValue);
+    app.expectNoErrorLogs();
+  });
+
+  appTest('tokens without or with the same sort index keep their order across '
+      'a restart', (app) async {
+    const labels = ['Alpha', 'Bravo', 'Charlie', 'Delta'];
+    app.storage.putToken(_totp('a', 'Alpha'));
+    app.storage.putToken(_totp('b', 'Bravo').copyWith(sortIndex: 1));
+    app.storage.putToken(_totp('c', 'Charlie').copyWith(sortIndex: 1));
+    app.storage.putToken(_totp('d', 'Delta'));
+    List<String> shownOrder() {
+      final shown = labels.where((l) => find.text(l).evaluate().isNotEmpty);
+      return shown.toList()..sort(
+        (a, b) => app.tester
+            .getTopLeft(find.text(a))
+            .dy
+            .compareTo(app.tester.getTopLeft(find.text(b)).dy),
+      );
+    }
+
+    await app.start();
+    await app.settle();
+    final first = shownOrder();
+    await app.restart();
+    await app.settle();
+
+    expect(first, hasLength(labels.length));
+    expect(shownOrder(), first);
     app.expectNoErrorLogs();
   });
 }
