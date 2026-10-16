@@ -487,11 +487,10 @@ void main() {
       expect(server.syncs.single.clientTokens, isEmpty);
       final left = app.tokenState.tokens.firstWhere((t) => t.id == local.id);
       expect(left.containerSerial, isNull);
-      expect(left.checkedContainer, contains(server.serial));
-      expect(
-        app.storage.storedTokens[local.id]!['checkedContainer'],
-        contains(server.serial),
-      );
+      expect(left.checkedContainer, [server.serial]);
+      expect(app.storage.storedTokens[local.id]!['checkedContainer'], [
+        server.serial,
+      ]);
       app.expectNoErrorLogs();
     },
   );

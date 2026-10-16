@@ -247,12 +247,14 @@ class TokenContainerNotifier extends _$TokenContainerNotifier
                 .read(tokenProvider.notifier)
                 .updateTokens(
                   syncUpdate.initAssignmentChecked,
-                  (t) => t.copyWith(
-                    checkedContainer: [
-                      ...t.checkedContainer,
-                      syncUpdate.containerSerial,
-                    ],
-                  ),
+                  (t) => t.checkedContainer.contains(syncUpdate.containerSerial)
+                      ? t
+                      : t.copyWith(
+                          checkedContainer: [
+                            ...t.checkedContainer,
+                            syncUpdate.containerSerial,
+                          ],
+                        ),
                 );
             newPoliciesMap[syncUpdate.containerSerial] = syncUpdate.newPolicies;
           }
