@@ -152,6 +152,13 @@ class SecureTokenRepository implements TokenRepository {
         Logger.info(
           'Legacy entry that meets token criteria: ${entry.key} will be migrated to new secure storage',
         );
+        if (await _storage.read(key: entry.key) != null) {
+          Logger.info(
+            'Token ${valueJson['id']} was migrated before, only its legacy entry is deleted',
+          );
+          await _storageLegacy.delete(key: entry.key);
+          continue;
+        }
         await _storage.write(key: entry.key, value: entry.value);
         await _storageLegacy.delete(key: entry.key);
         Logger.info('Migrated token ${valueJson['id']} to new secure storage');

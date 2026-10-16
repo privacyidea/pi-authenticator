@@ -176,6 +176,29 @@ void main() {
         mockStorage.write(key: anyNamed('key'), value: anyNamed('value')),
       );
     });
+
+    test(
+      'a legacy entry whose token is already in the new storage does not overwrite it',
+      () async {
+        when(mockLegacyStorage.readAll()).thenAnswer(
+          (_) async => {
+            '${legacyPrefix}_id1': jsonEncode(createToken('id1').toJson()),
+          },
+        );
+        when(mockStorage.read(key: '${newPrefix}_id1')).thenAnswer(
+          (_) async =>
+              jsonEncode(createToken('id1').copyWith(label: 'newer').toJson()),
+        );
+        when(mockStorage.readAll()).thenAnswer((_) async => {});
+
+        await repository.loadTokens();
+
+        verifyNever(
+          mockStorage.write(key: anyNamed('key'), value: anyNamed('value')),
+        );
+        verify(mockLegacyStorage.delete(key: '${legacyPrefix}_id1')).called(1);
+      },
+    );
   });
 
   group('SecureTokenRepository - Bulk Operations', () {

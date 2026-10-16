@@ -216,4 +216,28 @@ void main() {
     expect(find.text('Legacy token'), findsOneWidget);
     expect(app.tokenState.tokens, hasLength(2));
   });
+
+  appTest('a legacy entry left behind by an interrupted migration does not '
+      'overwrite the newer token', (app) async {
+    final stale = HOTPToken(
+      id: 'hotp-migrated',
+      label: 'Door',
+      issuer: 'Example',
+      algorithm: Algorithms.SHA1,
+      digits: 6,
+      counter: 5,
+      secret: base32(_rfcSecret),
+    );
+    app.storage.putLegacyToken(stale);
+    app.storage.putToken(stale.copyWith(counter: 7, isLocked: true));
+
+    await app.start();
+
+    final token = app.tokenState.tokens.single as HOTPToken;
+    expect(token.counter, 7);
+    expect(token.isLocked, isTrue);
+    expect(app.storage.storedTokens['hotp-migrated']!['counter'], 7);
+    expect(app.storage.legacyKeys, isEmpty);
+    app.expectNoErrorLogs();
+  });
 }
