@@ -25,6 +25,7 @@ import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import '../../model/enums/introduction.dart';
 import '../../utils/customization/theme_extentions/extended_text_theme.dart';
 import '../../utils/home_widget_utils.dart';
+import '../../utils/logger.dart';
 import '../../utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
 import '../../utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
 import '../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
@@ -109,9 +110,14 @@ class _LinkHomeWidgetViewState extends ConsumerState<LinkHomeWidgetView> {
                       await ref
                           .read(introductionNotifierProvider.notifier)
                           .complete(Introduction.homeWidgetSetUp);
-                    } catch (_) {
+                    } catch (e, s) {
                       if (mounted) setState(() => alreadyTapped = false);
-                      rethrow;
+                      Logger.error(
+                        'Linking the home widget failed',
+                        error: e,
+                        stackTrace: s,
+                      );
+                      return;
                     }
                     await SystemNavigator.pop();
                     await Future.delayed(const Duration(milliseconds: 500));
