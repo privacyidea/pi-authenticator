@@ -77,7 +77,8 @@ Future<void> homeWidgetBackgroundCallback(Uri? uri) async {
       : null;
   if (lastUri == uri.toString() &&
       lastTime != null &&
-      Duration(microseconds: now - lastTime) < const Duration(seconds: 2)) {
+      Duration(microseconds: now - lastTime) <
+          const Duration(milliseconds: 900)) {
     Logger.info(
       'homeWidgetBackgroundCallback dropped duplicate uri: $uri',
       verbose: true,

@@ -592,9 +592,6 @@ void _testLogRedactionFormats() {
       test(
         'is scrubbed',
         () => expectPayloadGone(filterSensitiveValues(uri)),
-        skip:
-            'BUG: log_redaction_helper.dart has no rule for the data parameter of '
-            'otpauth-migration://, so every secret of an export reaches the log',
       );
 
       test(
@@ -604,9 +601,6 @@ void _testLogRedactionFormats() {
             'DeeplinkNotifier got new incoming uri: ${Uri.parse(uri)}',
           ),
         ),
-        skip:
-            'BUG: log_redaction_helper.dart has no rule for the data parameter of '
-            'otpauth-migration://, deeplink_notifier.dart logs the whole uri',
       );
 
       test(
@@ -614,9 +608,6 @@ void _testLogRedactionFormats() {
         () => expectPayloadGone(
           filterSensitiveValues('Got initial uri from intent: ${Uri.parse(uri)}'),
         ),
-        skip:
-            'BUG: log_redaction_helper.dart has no rule for the data parameter of '
-            'otpauth-migration://, deeplink_notifier.dart logs the whole uri',
       );
 
       test(

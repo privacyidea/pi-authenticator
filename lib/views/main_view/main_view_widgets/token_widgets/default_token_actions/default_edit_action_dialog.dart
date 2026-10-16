@@ -204,9 +204,7 @@ class _DefaultEditActionDialogState
   Future<void> _saveButtonPressed() async {
     await widget.onSaveButtonPressed!(
       newLabel: nameInputController.text,
-      newImageUrl: imageUrlController.text.isEmpty
-          ? null
-          : imageUrlController.text,
+      newImageUrl: imageUrlController.text,
     );
   }
 

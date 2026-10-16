@@ -24,6 +24,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:math' show min;
+import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -90,25 +91,31 @@ class Logger {
     final file = File(_fullPath!);
     if (!await file.exists()) return '';
     return _mutexWriteFile.protect(() async {
-      final length = await file.length();
-      if (maxBytes == null || length <= maxBytes) return file.readAsString();
-      final randomAccessFile = await file.open();
-      try {
-        // Start one byte early so that a chunk which begins right at a line
-        // keeps that line: the leading newline makes _startOfNextLine stop at
-        // the boundary instead of dropping the line as if it were a half line.
-        final position = length - maxBytes;
-        final readFrom = position > 0 ? position - 1 : 0;
-        await randomAccessFile.setPosition(readFrom);
-        final bytes = await randomAccessFile.read(length - readFrom);
-        return utf8.decode(
-          bytes.sublist(_startOfNextLine(bytes, 0)),
-          allowMalformed: true,
-        );
-      } finally {
-        await randomAccessFile.close();
-      }
+      if (maxBytes == null) return file.readAsString();
+      return _readTail(file, maxBytes);
     });
+  }
+
+  /// The newest [maxBytes] of [file], starting at a whole line.
+  Future<String> _readTail(File file, int maxBytes) async {
+    final length = await file.length();
+    if (length <= maxBytes) return file.readAsString();
+    final randomAccessFile = await file.open();
+    try {
+      // Start one byte early so that a chunk which begins right at a line
+      // keeps that line: the leading newline makes _startOfNextLine stop at
+      // the boundary instead of dropping the line as if it were a half line.
+      final position = length - maxBytes;
+      final readFrom = position > 0 ? position - 1 : 0;
+      await randomAccessFile.setPosition(readFrom);
+      final bytes = await randomAccessFile.read(length - readFrom);
+      return utf8.decode(
+        bytes.sublist(_startOfNextLine(bytes, 0)),
+        allowMalformed: true,
+      );
+    } finally {
+      await randomAccessFile.close();
+    }
   }
 
   /*----------- INSTANCE MEMBER & GETTER/SETTER -----------*/
@@ -473,6 +480,43 @@ Device Parameters $deviceInfo""";
     if (_flutterIsRunning == false) return;
     final directory = await getApplicationSupportDirectory();
     _logPath = directory.path;
+    await _migrateLegacyLogFile();
+  }
+
+  /// Moves the log file that versions before 4.8.1 kept in the documents
+  /// directory in front of the current log, because on iOS the documents
+  /// directory is visible in the Files app. Its entries are masked again,
+  /// since older versions masked fewer values.
+  ///
+  /// If anything fails, the old file stays and the next start tries again.
+  Future<void> _migrateLegacyLogFile() async {
+    try {
+      final legacyDirectory = await getApplicationDocumentsDirectory();
+      if (legacyDirectory.path == _logPath) return;
+      final legacyFile = File('${legacyDirectory.path}/$_filename');
+      if (!await legacyFile.exists()) return;
+      final file = File(_fullPath!);
+      await _mutexWriteFile.protect(() async {
+        final legacyLog = await compute(
+          _textFilter,
+          await _readTail(legacyFile, _maxLogFileSize),
+        );
+        final currentLog = await file.exists()
+            ? await file.readAsBytes()
+            : Uint8List(0);
+        final merged = BytesBuilder(copy: false)
+          ..add(utf8.encode(legacyLog))
+          ..add(currentLog);
+        await file.writeAsBytes(merged.takeBytes(), flush: true);
+        await _trimLogFile(file);
+        await legacyFile.delete();
+      });
+      _print('Migrated the log file of a previous app version');
+    } catch (e) {
+      _printError(
+        'Could not migrate the log file of a previous app version: $e',
+      );
+    }
   }
 
   Future<void> _setupErrorHooks() async {

@@ -2542,7 +2542,7 @@ void _testContainerApiSyncMerge() {
 
     testWidgets(
       'two local tokens with identical otp values and two server entries: each server token gets its own local token',
-      // BUG: privacy_idea_container_api.dart:562 matches every server entry against the first local token with equal otp values, so both entries merge into the same local token (same id, two serials) and the twin is never linked
+      // BUG: privacy_idea_container_api.dart:554 matches every server entry against the first local token with equal otp values, so both entries merge into the same local token (same id, two serials) and the twin is never linked
       skip: true,
       (tester) async {
         final twin1 = _hotp('idT1', secret: _secret3);
@@ -2914,8 +2914,6 @@ void _testContainerApiSyncMerge() {
 
       test(
         'a successful challenge without value is reported cleanly',
-        skip:
-            'BUG: privacy_idea_container_api.dart:439 result.value! throws a null check TypeError when the server answers status true without a value',
         () async {
           final error = await syncWithChallenge(
             Response(_piJson(status: true), 200),
@@ -2936,7 +2934,7 @@ void _testContainerApiSyncMerge() {
       test(
         'http 400 with privacyIDEA error json throws the server error with its code',
         skip:
-            'BUG: privacy_idea_container_api.dart:477 asPiErrorResponse() is only non null for unparsable bodies, so a valid privacyIDEA error json with an http error status is thrown as ResponseError and the error code is lost (privacy_idea_container_api_test.dart:658 expects ResponseError for it)',
+            'BUG: privacy_idea_container_api.dart:474 asPiErrorResponse() is only non null for unparsable bodies, so a valid privacyIDEA error json with an http error status is thrown as ResponseError and the error code is lost (privacy_idea_container_api_test.dart:665 expects ResponseError for it)',
         () async {
           final error = await syncWithAnswer(
             Response(_errorJson(3002, 'Could not verify signature'), 400),
@@ -2984,8 +2982,6 @@ void _testContainerApiSyncMerge() {
 
       test(
         'http 200 with status false and no error is reported cleanly',
-        skip:
-            'BUG: privacy_idea_container_api.dart:489 result.value! throws a null check TypeError when the sync answer has status false without error or value (finalizeContainer throws ResponseError in this case)',
         () async {
           final error = await syncWithAnswer(
             Response(_piJson(status: false), 200),
@@ -2997,8 +2993,6 @@ void _testContainerApiSyncMerge() {
 
       test(
         'http 200 with status true and no value is reported cleanly',
-        skip:
-            'BUG: privacy_idea_container_api.dart:489 result.value! throws a null check TypeError when the sync answer has status true without a value',
         () async {
           final error = await syncWithAnswer(Response(_piJson(status: true), 200));
 
@@ -3066,7 +3060,7 @@ void _testContainerApiSyncMerge() {
       test(
         'a decrypted json that is not an object is reported cleanly',
         skip:
-            'BUG: privacy_idea_container_api.dart:528 jsonDecode(...) as Map<String, dynamic> throws a TypeError for a json list',
+            'BUG: privacy_idea_container_api.dart:520 jsonDecode(...) as Map<String, dynamic> throws a TypeError for a json list',
         () async {
           final run = await _runWith(<Object?>[]);
 
@@ -3209,7 +3203,7 @@ void _testContainerApiSyncMerge() {
     test(
       'an otpauth uri without path does not abort the sync, the good token is still added',
       skip:
-          'BUG: otp_auth_processor.dart:138 uri.path.substring(1) throws a RangeError outside the try block for an otpauth uri without path, _parseNewTokens (privacy_idea_container_api.dart:539) does not catch it',
+          'BUG: otp_auth_processor.dart:138 uri.path.substring(1) throws a RangeError outside the try block for an otpauth uri without path, _parseNewTokens (privacy_idea_container_api.dart:531) does not catch it',
       () async {
         final run = await _runWith(
           _dict(add: ['otpauth://hotp?secret=$_secret1', _otpauthHotp('good')]),
