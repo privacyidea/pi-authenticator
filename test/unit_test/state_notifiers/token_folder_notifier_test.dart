@@ -373,7 +373,7 @@ void _testTokenFolderNotifierMore() {
       expect(result, before);
       expect(env.state, before);
       expect(env.folderRepo.saveCalls, isEmpty);
-    }, skip: 'BUG: token_folder_notifier.dart:143 updateFolderById does `oldState.currentOfId(folderId)!` and throws a null check error for an unknown id although the doc says "nothing will happen"');
+    });
 
     test('an unknown id does not block later updates', () async {
       final env = _setUp(const [TokenFolder(label: 'a', folderId: 1)]);
@@ -395,7 +395,7 @@ void _testTokenFolderNotifierMore() {
         reason: '_stateMutex must be released after the failed update',
       );
       expect((await next).folders, hasLength(2));
-    }, skip: 'BUG: token_folder_notifier.dart:141-143 updateFolderById acquires _stateMutex and then throws on the `!` without releasing it, every later folder operation hangs forever');
+    });
 
     test('updateFolder of an unknown folder changes nothing', () async {
       final env = _setUp(const [TokenFolder(label: 'a', folderId: 1)]);
@@ -436,7 +436,7 @@ void _testTokenFolderNotifierMore() {
       await env.notifier.toggleFolderLock(stale);
 
       expect(env.state.folders.single.isLocked, isFalse);
-    }, skip: 'BUG: token_folder_notifier.dart:173-174 toggleFolderLock uses `!folder.isLocked` of the argument instead of the current folder, a stale argument sets lock to true again instead of toggling');
+    });
   });
 
   group('TokenFolderNotifier.addNewFolder', () {
@@ -628,6 +628,6 @@ void _testTokenFolderNotifierMore() {
       expect(result.folders.map((f) => f.label), ['a', 'new']);
       expect(env.state.currentOfId(5), isNotNull);
       expect(env.folderRepo.stored.currentOfId(5), isNotNull);
-    }, skip: 'BUG: token_folder_state.dart:45-56 addOrReplaceFolders only replaces, a folder whose id does not exist yet is silently dropped (see TokenFolderState group)');
+    });
   });
 }

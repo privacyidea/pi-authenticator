@@ -211,7 +211,7 @@ void main() {
       },
     );
 
-    bugTestWidgets(
+    testWidgets(
       'a request with a swapped url but the original signature is rejected and does not redirect the token',
       (tester) async {
         final notifier = await fx.mountApp(tester);
@@ -227,11 +227,9 @@ void main() {
         );
         expect(notifier.updates, isEmpty);
       },
-      bug:
-          'BUG: push_default_request.dart:88-95 writes url and sslVerify of the unverified request into the token before super.verifySignature runs',
     );
 
-    bugTestWidgets(
+    testWidgets(
       'a request signed with the key of an attacker (matching serial) is rejected and does not redirect the token',
       (tester) async {
         final notifier = await fx.mountApp(tester);
@@ -247,11 +245,9 @@ void main() {
 
         expect(notifier.updates, isEmpty);
       },
-      bug:
-          'BUG: push_default_request.dart:88-95 writes url and sslVerify of the unverified request into the token before super.verifySignature runs',
     );
 
-    bugTestWidgets(
+    testWidgets(
       'a request with a malformed signature is rejected and does not touch the token',
       (tester) async {
         final notifier = await fx.mountApp(tester);
@@ -265,11 +261,9 @@ void main() {
 
         expect(notifier.updates, isEmpty);
       },
-      bug:
-          'BUG: push_default_request.dart:88-95 writes url and sslVerify of the unverified request into the token before super.verifySignature runs',
     );
 
-    bugTestWidgets(
+    testWidgets(
       'a request whose capabilities signature is invalid is rejected as a whole and does not touch the token',
       (tester) async {
         final notifier = await fx.mountApp(tester);
@@ -283,11 +277,9 @@ void main() {
 
         expect(notifier.updates, isEmpty);
       },
-      bug:
-          'BUG: push_default_request.dart:88-95 writes url and sslVerify into the token even when verifySignature then returns false',
     );
 
-    bugTestWidgets(
+    testWidgets(
       'a request for a token that has no server key (not rolled out) is rejected and does not touch the token',
       (tester) async {
         final notifier = await fx.mountApp(tester);
@@ -302,8 +294,6 @@ void main() {
 
         expect(notifier.updates, isEmpty);
       },
-      bug:
-          'BUG: push_default_request.dart:88-95 writes url and sslVerify into a token that has no server key to verify against',
     );
   });
 }

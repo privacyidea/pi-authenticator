@@ -69,9 +69,20 @@ Future<bool> lockAuth({
   try {
     final isBiometricForced =
         forceBiometricOption == ForceBiometricOption.biometric;
-    if (!await _checkSupport(isBiometricForced, autoAuthIfUnsupported)) {
-      return autoAuthIfUnsupported;
+    final bool isSupported;
+    try {
+      isSupported = await _checkSupport(
+        isBiometricForced,
+        autoAuthIfUnsupported,
+      );
+    } catch (e) {
+      showErrorStatusMessage(
+        message: (l) => l.authNotSupportedTitle,
+        details: (_) => '$e',
+      );
+      return false;
     }
+    if (!isSupported) return autoAuthIfUnsupported;
 
     return await _executeAuth(
       isBiometricForced: isBiometricForced,

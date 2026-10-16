@@ -985,10 +985,6 @@ void _testPushProviderIncoming() {
         );
       });
 
-      // The handler catches errors of the handling to log them. It returns the
-      // future of the handling without awaiting it inside the try block, so the
-      // catch block never sees an asynchronous error and it reaches the caller
-      // (firebase) as an unhandled error instead.
       incomingTest(
         'an error while handling the message is logged and does not reach the caller',
         () async {
@@ -1000,8 +996,6 @@ void _testPushProviderIncoming() {
             completes,
           );
         },
-        skip:
-            'BUG: push_provider.dart:199 returns the future inside try without await, so the catch at :200 never handles async errors',
       );
     });
 

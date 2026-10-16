@@ -418,12 +418,10 @@ void main() {
     );
 
     testWidgets(
-      'BUG (skipped): an error while linking must not leave the tiles dead (alreadyTapped stays true)',
+      'an error while linking does not leave the tiles dead',
       (tester) async {
-        // The link/complete chain has no try/finally, so after an exception the
-        // flag is never reset and every further tap is ignored. HomeWidgetUtils
-        // cannot be made to throw on a non-Android host, so the failing step is
-        // the introduction completion which lives in the very same onTap chain.
+        // HomeWidgetUtils cannot be made to throw on a non-Android host, so the
+        // failing step is the introduction completion in the same onTap chain.
         await pumpView(
           tester,
           tokens: [_token(id: 'a', label: 'Alpha')],
@@ -443,8 +441,6 @@ void main() {
           reason: 'the user must be able to retry after a failure',
         );
       },
-      // BUG: lib/views/link_home_widget_view/link_home_widget_view.dart:99-114 alreadyTapped is set to true but never reset when link/complete throws, tiles stay dead
-      skip: true,
     );
   });
 

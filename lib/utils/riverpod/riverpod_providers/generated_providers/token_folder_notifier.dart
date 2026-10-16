@@ -140,7 +140,11 @@ class TokenFolderNotifier extends _$TokenFolderNotifier {
   ) async {
     await _stateMutex.acquire();
     final oldState = state;
-    final folder = oldState.currentOfId(folderId)!;
+    final folder = oldState.currentOfId(folderId);
+    if (folder == null) {
+      _stateMutex.release();
+      return oldState;
+    }
     final newState = oldState.update(folder, updater);
     final success = await _saveToRepo(newState);
     if (!success) {
@@ -171,7 +175,7 @@ class TokenFolderNotifier extends _$TokenFolderNotifier {
   }
 
   Future<TokenFolderState> toggleFolderLock(TokenFolder folder) =>
-      updateFolder(folder, (p0) => p0.copyWith(isLocked: !folder.isLocked));
+      updateFolder(folder, (p0) => p0.copyWith(isLocked: !p0.isLocked));
   Future<TokenFolderState> updateLabel(TokenFolder folder, String label) =>
       updateFolder(folder, (p0) => p0.copyWith(label: label));
   Future<TokenFolderState> expandFolderById(int folderId) =>

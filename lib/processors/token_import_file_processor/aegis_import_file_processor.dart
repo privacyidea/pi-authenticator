@@ -166,7 +166,7 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
 
   Future<List<ProcessorResult<Token>>> _processPlain(
     Map<String, dynamic> json,
-  ) async => switch (json[AEGIS_JSON_DB][AEGIS_DB_VERSION] as int) {
+  ) async => switch (json[AEGIS_JSON_DB][AEGIS_DB_VERSION]) {
     2 => _processPlainV2(json),
     3 => _processPlainV3(json),
     _ => _processPlainTryLatest(json),
@@ -183,7 +183,7 @@ class AegisImportFileProcessor extends TokenImportFileProcessor {
             localizations.unsupported(name, value),
         unlocalizedMessage:
             'Unsupported backup version: ${json[AEGIS_JSON_DB][AEGIS_DB_VERSION]}.',
-        invalidValue: json[AEGIS_JSON_DB][AEGIS_DB_VERSION],
+        invalidValue: '${json[AEGIS_JSON_DB][AEGIS_DB_VERSION]}',
         name: 'aegis backup version',
       );
     }

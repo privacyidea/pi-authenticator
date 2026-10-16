@@ -50,6 +50,8 @@ class TokenFolderState {
       );
       if (index != -1) {
         newFolders[index] = newFolder;
+      } else {
+        newFolders.add(newFolder);
       }
     }
     return TokenFolderState(folders: newFolders);
@@ -62,6 +64,8 @@ class TokenFolderState {
     );
     if (index != -1) {
       newFolders[index] = newFolder;
+    } else {
+      newFolders.add(newFolder);
     }
     return TokenFolderState(folders: newFolders);
   }

@@ -103,7 +103,7 @@ class TokenEncryption {
       final bytes = base64Url.decode(base64String!);
       final jsonString = utf8.decode(bytes);
       final tokenJson = json.decode(jsonString) as Map<String, dynamic>;
-      token = Token.fromJson(tokenJson);
+      token = Token.fromJson(tokenJson).copyWith(folderId: () => null);
     } catch (e, s) {
       // The source of a FormatException would quote the token data into the log.
       final error = e is FormatException ? FormatException(e.message, null, e.offset) : e;

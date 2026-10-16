@@ -70,7 +70,7 @@ void _testTokenFolderState() {
       final result = state.addOrReplaceFolders([c]);
 
       expect(result.folders, [a, b, c]);
-    }, skip: 'BUG: token_folder_state.dart:45-56 addOrReplaceFolders never adds, the `if (index != -1)` has no else branch');
+    });
 
     test('addOrReplaceFolders handles a mix of new and existing folders', () {
       const b2 = TokenFolder(label: 'b2', folderId: 2);
@@ -79,7 +79,7 @@ void _testTokenFolderState() {
       final result = state.addOrReplaceFolders([c, b2]);
 
       expect(result.folders, [a, b2, c]);
-    }, skip: 'BUG: token_folder_state.dart:45-56 addOrReplaceFolders never adds, the `if (index != -1)` has no else branch');
+    });
 
     test('addOrReplaceFolder replaces by id', () {
       const b2 = TokenFolder(label: 'b2', folderId: 2);
@@ -93,7 +93,7 @@ void _testTokenFolderState() {
       final result = state.addOrReplaceFolder(c);
 
       expect(result.folders, [a, b, c]);
-    }, skip: 'BUG: token_folder_state.dart:58-67 addOrReplaceFolder never adds, the `if (index != -1)` has no else branch');
+    });
 
     test('addNewFolder uses max id + 1 also with gaps and does not modify the original', () {
       const gap = TokenFolderState(

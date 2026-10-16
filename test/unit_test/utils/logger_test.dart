@@ -799,10 +799,6 @@ void main() {
         expect(tail, contains('after'));
         expect(tail, contains('�'));
       },
-      skip:
-          'BUG: logger.dart:94 _readLogFile reads a file up to maxBytes with '
-          'readAsString, which throws a FormatException on malformed utf-8, while '
-          'the branch for a bigger file decodes with allowMalformed',
     );
 
     test(

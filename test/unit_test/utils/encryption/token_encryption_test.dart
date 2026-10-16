@@ -720,13 +720,11 @@ void _testTokenExportUri() {
     test(
       'folderId is reset to null on import, like TokenEncryption.decrypt does',
       () {
-        // decrypt() (token_encryption.dart:54) resets the folder id because folder ids are local to a device
-        // (a new folder gets max + 1), so an id from another device would put the imported token into an
-        // unrelated folder. fromExportUri imports from another device as well but keeps the id.
+        // Folder ids are local to a device (a new folder gets max + 1), so an id from another device would put
+        // the imported token into an unrelated folder.
         final restored = TokenEncryption.fromExportUri(TokenEncryption.generateExportUri(token: exportUriHotp()));
         expect(restored.folderId, isNull);
       },
-      skip: _runBugTests ? null : 'BUG: token_encryption.dart:106 fromExportUri keeps folderId of the exporting device, unlike decrypt (line 54) which resets it',
     );
   });
 

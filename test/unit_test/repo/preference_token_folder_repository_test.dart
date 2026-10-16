@@ -132,7 +132,7 @@ void main() {
           TokenFolder(label: 'Good2', folderId: 2),
         ],
       );
-    }, skip: 'BUG: preference_token_folder_repository.dart:48-53 one element that fails TokenFolder.fromJson makes the whole load fall into the catch and return an empty list, all folders are lost');
+    });
 
     test('one element that is not a map does not discard the valid folders', () async {
       await storeJson([
@@ -143,7 +143,7 @@ void main() {
       final state = await PreferenceTokenFolderRepository().loadState();
 
       expect(state.folders, const [TokenFolder(label: 'Good1', folderId: 1)]);
-    }, skip: 'BUG: preference_token_folder_repository.dart:48-53 one element that fails TokenFolder.fromJson makes the whole load fall into the catch and return an empty list, all folders are lost');
+    });
   });
 
   group('PreferenceTokenFolderRepository save', () {

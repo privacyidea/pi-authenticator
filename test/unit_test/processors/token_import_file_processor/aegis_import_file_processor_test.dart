@@ -861,8 +861,6 @@ void _testAegisImportFileProcessorEdgeCases() {
             throwsA(isA<LocalizedArgumentError>()),
           );
         },
-        skip:
-            'BUG: aegis_import_file_processor.dart:186 invalidValue: db[version] passes an int to the String parameter of LocalizedArgumentError, so the "unsupported version" error itself dies with a TypeError',
       );
 
       test(
@@ -876,8 +874,6 @@ void _testAegisImportFileProcessorEdgeCases() {
           expect((outcome as LocalizedArgumentError).invalidValue, '99');
           expect(outcome.message, contains('99'));
         },
-        skip:
-            'BUG: aegis_import_file_processor.dart:186 invalidValue: db[version] passes an int to the String parameter of LocalizedArgumentError, so the "unsupported version" error itself dies with a TypeError',
       );
 
       test(
@@ -902,8 +898,6 @@ void _testAegisImportFileProcessorEdgeCases() {
             isTrue,
           );
         },
-        skip:
-            'BUG: aegis_import_file_processor.dart:169 json[db][version] as int throws a raw TypeError for a missing version instead of reaching _processPlainTryLatest',
       );
 
       test(
@@ -931,8 +925,6 @@ void _testAegisImportFileProcessorEdgeCases() {
             isTrue,
           );
         },
-        skip:
-            'BUG: aegis_import_file_processor.dart:169 json[db][version] as int throws a raw TypeError for a non integer version instead of reaching _processPlainTryLatest',
       );
     });
 

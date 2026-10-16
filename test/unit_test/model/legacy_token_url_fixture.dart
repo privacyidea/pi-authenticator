@@ -50,10 +50,6 @@ import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
 
 import 'fake_push_server.dart';
 
-/// Run the tests of suspected bugs for real:
-/// `flutter test --dart-define=RUN_BUG_TESTS=true <test file>`
-const runBugTests = bool.fromEnvironment('RUN_BUG_TESTS');
-
 const evilUrl = 'https://evil.example/ttype/push';
 
 const _rsaUtils = RsaUtils();
@@ -140,19 +136,4 @@ LegacyTokenUrlFixture useLegacyTokenUrlFixture() {
   tearDown(() => globalRef = null);
 
   return fixture;
-}
-
-/// A test of the correct behaviour that fails because of a bug in lib. It is
-/// skipped until the bug is fixed (testWidgets itself only takes a bool, so
-/// the reason goes on a group).
-void bugTestWidgets(
-  String description,
-  Future<void> Function(WidgetTester tester) body, {
-  required String bug,
-}) {
-  group(
-    'SUSPECTED BUG',
-    () => testWidgets(description, body),
-    skip: runBugTests ? null : bug,
-  );
 }

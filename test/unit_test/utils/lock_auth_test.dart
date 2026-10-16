@@ -477,11 +477,7 @@ void _testLockAuthMore() {
       autoAuthIfUnsupported: autoAuth,
     );
 
-    group('lockAuth - support check throws (suspected bug)', () {
-      // lockAuth's own doc: "Returns true if authentication succeeds". The
-      // authenticate call is wrapped in try/catch (_executeAuth) and returns
-      // false on any exception, but _checkSupport is not, so a platform
-      // exception while querying the capabilities escapes lockAuth.
+    group('lockAuth - support check throws', () {
       test(
         'isDeviceSupported throws -> lockAuth returns false instead of throwing',
         () async {
@@ -494,8 +490,6 @@ void _testLockAuthMore() {
           expect(result, isFalse);
           verifyAuthenticateNeverCalled();
         },
-        skip:
-            'BUG: lock_auth.dart:72 _checkSupport runs outside try/catch, so an exception from isDeviceSupported escapes lockAuth',
       );
 
       test(
@@ -511,8 +505,6 @@ void _testLockAuthMore() {
           expect(result, isFalse);
           verifyAuthenticateNeverCalled();
         },
-        skip:
-            'BUG: lock_auth.dart:72 _checkSupport runs outside try/catch, so an exception from canCheckBiometrics escapes lockAuth',
       );
 
       test(
@@ -529,8 +521,6 @@ void _testLockAuthMore() {
           expect(result, isFalse);
           verifyAuthenticateNeverCalled();
         },
-        skip:
-            'BUG: lock_auth.dart:72 _checkSupport runs outside try/catch, so an exception from getAvailableBiometrics escapes lockAuth',
       );
 
       test(

@@ -116,8 +116,10 @@ class _InitialTokenAssignmentDialogState
                 .updateTokens(
                   _unselectedTokens.toList(),
                   (t) => t.copyWith(
-                    checkedContainer: t.checkedContainer
-                      ..add(widget.container.serial),
+                    checkedContainer: [
+                      ...t.checkedContainer,
+                      widget.container.serial,
+                    ],
                   ),
                 );
             Navigator.of(context).pop(_selectedTokens);

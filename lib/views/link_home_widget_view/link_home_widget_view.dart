@@ -101,13 +101,18 @@ class _LinkHomeWidgetViewState extends ConsumerState<LinkHomeWidgetView> {
                 : () async {
                     if (alreadyTapped) return;
                     setState(() => alreadyTapped = true);
-                    await HomeWidgetUtils().link(
-                      widget.homeWidgetId,
-                      otpToken.id,
-                    );
-                    await ref
-                        .read(introductionNotifierProvider.notifier)
-                        .complete(Introduction.homeWidgetSetUp);
+                    try {
+                      await HomeWidgetUtils().link(
+                        widget.homeWidgetId,
+                        otpToken.id,
+                      );
+                      await ref
+                          .read(introductionNotifierProvider.notifier)
+                          .complete(Introduction.homeWidgetSetUp);
+                    } catch (_) {
+                      if (mounted) setState(() => alreadyTapped = false);
+                      rethrow;
+                    }
                     await SystemNavigator.pop();
                     await Future.delayed(const Duration(milliseconds: 500));
                     if (context.mounted) Navigator.pop(context);

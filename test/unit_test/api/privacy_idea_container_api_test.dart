@@ -2765,8 +2765,6 @@ void _testContainerApiSyncMerge() {
 
     testWidgets(
       'a token with the default checkedContainer list can be left unselected',
-      // BUG: initial_token_assignment_dialog.dart:118-121 mutates t.checkedContainer with ..add(), which is the const [] default of Token and throws "Cannot add to an unmodifiable list" in the confirm handler
-      skip: true,
       (tester) async {
         // Same as a token loaded from storage that has no checkedContainer entry.
         final unselected = HOTPToken(

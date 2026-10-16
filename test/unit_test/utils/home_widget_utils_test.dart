@@ -218,15 +218,13 @@ void main() {
       }
     });
 
-    test('SUSPECTED BUG: stored timestamp in the future (clock moved backwards) must not suppress taps', () async {
-      // Elapsed time becomes negative, and a negative Duration is "< 2 s", so
-      // every identical tap is dropped until the clock catches up again.
+    test('a stored timestamp in the future (clock moved backwards) does not suppress taps', () async {
       seed(uriA, const Duration(hours: -1));
 
       await homeWidgetBackgroundCallback(uriA);
 
       expect(writes(), hasLength(1));
-    }, skip: 'BUG: lib/utils/home_widget_utils.dart:78-80 negative elapsed time (stored time in the future) counts as duplicate (< 2 s)');
+    });
 
     test('SUSPECTED BUG: two concurrent identical callbacks must only be processed once', () async {
       // Check-then-act on the stored value is not atomic: both calls read the

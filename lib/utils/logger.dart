@@ -91,15 +91,18 @@ class Logger {
     final file = File(_fullPath!);
     if (!await file.exists()) return '';
     return _mutexWriteFile.protect(() async {
-      if (maxBytes == null) return file.readAsString();
+      if (maxBytes == null) return _readWhole(file);
       return _readTail(file, maxBytes);
     });
   }
 
+  Future<String> _readWhole(File file) async =>
+      utf8.decode(await file.readAsBytes(), allowMalformed: true);
+
   /// The newest [maxBytes] of [file], starting at a whole line.
   Future<String> _readTail(File file, int maxBytes) async {
     final length = await file.length();
-    if (length <= maxBytes) return file.readAsString();
+    if (length <= maxBytes) return _readWhole(file);
     final randomAccessFile = await file.open();
     try {
       // Start one byte early so that a chunk which begins right at a line

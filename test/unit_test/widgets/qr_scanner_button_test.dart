@@ -219,7 +219,7 @@ void main() {
     });
 
     testWidgets(
-      'BUG: a Uri result is handled like a string',
+      'a Uri result is handled like a string',
       (tester) async {
         await pumpButton(tester, scanResult: Uri.parse('otpauth://totp/ACME:alice?secret=JBSWY3DPEHPK3PXP&issuer=ACME'));
         await tapScan(tester);
@@ -227,8 +227,6 @@ void main() {
         expect(tokenNotifier.handled, hasLength(1));
         expect(currentStatus(), isNull);
       },
-      // BUG: utils.dart:249 scanQrCode switches on qrCode.runtimeType with `const (Uri)`, which never matches (the runtime type is the private _Uri), so a Uri is rejected as invalidUrl (latent, the real scanner only returns Strings)
-      skip: true,
     );
 
     testWidgets('a container code is handed to the container handler', (tester) async {

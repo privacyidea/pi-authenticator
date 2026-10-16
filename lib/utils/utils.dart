@@ -259,9 +259,9 @@ Future<bool> scanQrCode({
   Uri uri;
   try {
     if (qrCode == null) return false;
-    uri = switch (qrCode.runtimeType) {
-      const (String) => Uri.parse(qrCode as String),
-      const (Uri) => qrCode as Uri,
+    uri = switch (qrCode) {
+      String value => Uri.parse(value),
+      Uri value => value,
       _ => throw ArgumentError('Invalid type for qrCode: $qrCode'),
     };
   } catch (e) {

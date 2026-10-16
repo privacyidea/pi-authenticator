@@ -77,6 +77,7 @@ Future<void> homeWidgetBackgroundCallback(Uri? uri) async {
       : null;
   if (lastUri == uri.toString() &&
       lastTime != null &&
+      now >= lastTime &&
       Duration(microseconds: now - lastTime) <
           const Duration(milliseconds: 900)) {
     Logger.info(

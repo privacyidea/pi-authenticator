@@ -84,43 +84,47 @@ class SettingsNotifier extends _$SettingsNotifier {
 
   Future<bool> _saveToRepo(SettingsState state) async {
     await _repoMutex.acquire();
-    Logger.info('Saving settings to repo: $state');
-    final success = await _repo.saveSettings(state);
-    _repoMutex.release();
-    return success;
+    try {
+      Logger.info('Saving settings to repo: $state');
+      return await _repo.saveSettings(state);
+    } finally {
+      _repoMutex.release();
+    }
   }
 
   Future<SettingsState> updateState(
     SettingsState Function(SettingsState oldState) updater,
   ) async {
     await _stateMutex.acquire();
-    final oldState = await future;
-    final newState = updater(oldState);
-    final success = await _saveToRepo(newState);
-    if (success) {
+    try {
+      final oldState = await future;
+      final newState = updater(oldState);
+      final success = await _saveToRepo(newState);
+      if (!success) return oldState;
       state = AsyncValue.data(newState);
-      _stateMutex.release();
       return newState;
-    } else {
+    } finally {
       _stateMutex.release();
-      return oldState;
     }
   }
 
   Future<SettingsState> addCrashReportRecipient(String email) async {
     Logger.info('Crash report recipient added: $email');
-    return updateState((oldState) {
-      final updatedSet = oldState.crashReportRecipients..add(email);
-      return oldState.copyWith(crashReportRecipients: updatedSet);
-    });
+    return updateState(
+      (oldState) => oldState.copyWith(
+        crashReportRecipients: {...oldState.crashReportRecipients, email},
+      ),
+    );
   }
 
   Future<SettingsState> removeCrashReportRecipient(String email) async {
     Logger.info('Crash report recipient removed: $email');
-    return updateState((oldState) {
-      final updatedSet = oldState.crashReportRecipients..remove(email);
-      return oldState.copyWith(crashReportRecipients: updatedSet);
-    });
+    return updateState(
+      (oldState) => oldState.copyWith(
+        crashReportRecipients: {...oldState.crashReportRecipients}
+          ..remove(email),
+      ),
+    );
   }
 
   Future<SettingsState> setIsFirstRun(bool value) {

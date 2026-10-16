@@ -271,8 +271,6 @@ void _testSettingsNotifier() {
           reason: 'the old state object must stay untouched',
         );
       },
-      skip:
-          'BUG: settings_notifier.dart:113 addCrashReportRecipient mutates the existing Set in place (oldState.crashReportRecipients..add)',
     );
 
     test(
@@ -291,8 +289,6 @@ void _testSettingsNotifier() {
           reason: 'the old state object must stay untouched',
         );
       },
-      skip:
-          'BUG: settings_notifier.dart:121 removeCrashReportRecipient mutates the existing Set in place (oldState.crashReportRecipients..remove)',
     );
 
     test(
@@ -323,8 +319,6 @@ void _testSettingsNotifier() {
         );
         expect((await second).enablePolling, isFalse);
       },
-      skip:
-          'BUG: settings_notifier.dart:86-91 _saveToRepo (and updateState:96-108) never release _repoMutex/_stateMutex when saveSettings throws (no try/finally), the notifier deadlocks',
     );
   });
 }
@@ -376,8 +370,6 @@ void _testSettingsNotifierWithRealRepo() {
         final reloaded = await PreferenceSettingsRepository().loadSettings();
         expect(reloaded.crashReportRecipients, {'crash@example.com'});
       },
-      skip:
-          'BUG: preference_settings_repository.dart:101 compares crashReportRecipients Sets by identity and the notifier mutates the loaded Set in place, so the change is never written',
     );
 
     test(
@@ -405,8 +397,6 @@ void _testSettingsNotifierWithRealRepo() {
         final reloaded = await PreferenceSettingsRepository().loadSettings();
         expect(reloaded.crashReportRecipients, {'b@example.com'});
       },
-      skip:
-          'BUG: preference_settings_repository.dart:101 compares crashReportRecipients Sets by identity and the notifier mutates the loaded Set in place, so the change is never written',
     );
 
     test('the published state after adding a recipient contains it', () async {
