@@ -45,6 +45,26 @@ TOTPToken _totp(String id, String label, {int? folderId}) => TOTPToken(
 Finder _decryptDialog() => find.text(l10n.decryptErrorTitle);
 
 void main() {
+  appTest('a locked folder that was open when the app ended is closed on the '
+      'next start', (app) async {
+    await app.storage.setPreference(
+      'TOKEN_CATEGORIES',
+      jsonEncode([
+        {'label': 'Vault', 'folderId': 1, 'isLocked': true, 'isExpanded': true},
+      ]),
+    );
+    app.storage.putToken(_totp('vaulted', 'Vaulted token', folderId: 1));
+
+    await app.start();
+
+    expect(find.text('Vault'), findsOneWidget);
+    expect(
+      app.container.read(tokenFolderProvider).folders.single.isExpanded,
+      isFalse,
+    );
+    app.expectNoErrorLogs();
+  });
+
   group('a token storage that cannot be decrypted', () {
     appTest('shows the decryption dialog and changes nothing in the storage', (
       app,
