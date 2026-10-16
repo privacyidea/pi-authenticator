@@ -20,12 +20,52 @@
 
 import 'dart:convert';
 
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/test/test_flutter_secure_storage_platform.dart';
+import 'package:flutter_secure_storage_platform_interface/flutter_secure_storage_platform_interface.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/introduction_state.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/push_request_state.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/utils/identifiers.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+/// The keystore backed secure storage of the device. While [unreadable], every
+/// read fails the way Android fails once the key that encrypts the entries is
+/// gone, writing and deleting a known key still work.
+class FakeSecureStoragePlatform extends TestFlutterSecureStoragePlatform {
+  FakeSecureStoragePlatform(super.data);
+
+  bool unreadable = false;
+
+  PlatformException get _decryptionFailed => PlatformException(
+    code: 'Exception',
+    message: 'javax.crypto.AEADBadTagException',
+  );
+
+  @override
+  Future<String?> read({
+    required String key,
+    required Map<String, String> options,
+  }) async {
+    if (unreadable) throw _decryptionFailed;
+    return super.read(key: key, options: options);
+  }
+
+  @override
+  Future<Map<String, String>> readAll({
+    required Map<String, String> options,
+  }) async {
+    if (unreadable) throw _decryptionFailed;
+    return super.readAll(options: options);
+  }
+
+  /// Deleting everything leaves an empty storage that can be read again.
+  @override
+  Future<void> deleteAll({required Map<String, String> options}) async {
+    unreadable = false;
+    return super.deleteAll(options: options);
+  }
+}
 
 /// The persistent storage of the device: the keystore backed secure storage
 /// and the shared preferences, both in memory.
@@ -37,6 +77,8 @@ class FakeDeviceStorage {
   /// this map and a test can read or corrupt it at any time.
   final Map<String, String> secure = {};
 
+  late final FakeSecureStoragePlatform keystore;
+
   FakeDeviceStorage._();
 
   /// Installs an empty device. The shared preferences are cleared rather than
@@ -44,7 +86,8 @@ class FakeDeviceStorage {
   /// `SharedPreferences.getInstance()` call (see AppHarness).
   static Future<FakeDeviceStorage> install() async {
     final storage = FakeDeviceStorage._();
-    FlutterSecureStorage.setMockInitialValues(storage.secure);
+    storage.keystore = FakeSecureStoragePlatform(storage.secure);
+    FlutterSecureStoragePlatform.instance = storage.keystore;
     await (await SharedPreferences.getInstance()).clear();
     return storage;
   }
