@@ -3,9 +3,11 @@ import 'package:mockito/mockito.dart';
 import 'package:privacyidea_authenticator/api/interfaces/container_api.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/token_container_repository.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/token_repository.dart';
+import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/token_container_state.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/token_state.dart';
 import 'package:privacyidea_authenticator/model/token_container.dart';
+import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/utils/ecc_utils.dart';
 import 'package:privacyidea_authenticator/utils/firebase_utils.dart';
@@ -131,5 +133,41 @@ void main() {
       ).called(1);
       verify(mockTokenInternal.updateTokens<Token>(any, any)).called(1);
     });
+
+    testWidgets(
+      'keeping the tokens lists the container serial in checkedContainer once',
+      (tester) async {
+        await pumpDialog(tester, mockFinalizedContainer);
+        when(
+          mockContainerInternal.unregisterDelete(any),
+        ).thenAnswer((_) async => true);
+
+        await tester.tap(find.text('Delete'));
+        await tester.pumpAndSettle();
+
+        final update =
+            verify(
+                  mockTokenInternal.updateTokens<Token>(any, captureAny),
+                ).captured.single
+                as Token Function(Token);
+        final assignedAtSync = HOTPToken(
+          id: 'assigned-at-sync',
+          algorithm: Algorithms.SHA1,
+          digits: 6,
+          secret: 'GEZDGNBVGY3TQOJQ',
+          containerSerial: 'finalized-serial',
+          checkedContainer: ['finalized-serial'],
+        );
+        final neverChecked = assignedAtSync.copyWith(
+          id: 'never-checked',
+          checkedContainer: [],
+        );
+
+        final updatedAssigned = update(assignedAtSync);
+        expect(updatedAssigned.checkedContainer, ['finalized-serial']);
+        expect(updatedAssigned.containerSerial, isNull);
+        expect(update(neverChecked).checkedContainer, ['finalized-serial']);
+      },
+    );
   });
 }

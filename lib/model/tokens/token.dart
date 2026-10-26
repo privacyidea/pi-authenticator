@@ -337,7 +337,7 @@ abstract class Token with SortableMixin {
       ISSUER: issuer,
       PIN: pin ? PIN_VALUE_TRUE : PIN_VALUE_FALSE,
       OFFLINE: isOffline,
-      IMAGE: ?tokenImage,
+      if (tokenImage?.isNotEmpty ?? false) IMAGE: tokenImage,
       FORCE_BIOMETRIC_OPTION: forceBiometricOption.name,
     };
   }

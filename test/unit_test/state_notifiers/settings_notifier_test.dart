@@ -320,6 +320,35 @@ void _testSettingsNotifier() {
         expect((await second).enablePolling, isFalse);
       },
     );
+
+    test('a throwing repo.loadSettings does not block a rebuild', () async {
+      final noRetryContainer = ProviderContainer(retry: (_, _) => null);
+      addTearDown(noRetryContainer.dispose);
+      var loadCalls = 0;
+      when(mockRepo.loadSettings()).thenAnswer((_) async {
+        if (loadCalls++ == 0) throw StateError('preferences unavailable');
+        return loadedState;
+      });
+      final testProvider = settingsProviderOf(repo: mockRepo);
+      await expectLater(
+        noRetryContainer.read(testProvider.future),
+        throwsStateError,
+      );
+
+      noRetryContainer.invalidate(testProvider);
+      var reloadCompleted = false;
+      final reload = noRetryContainer
+          .read(testProvider.future)
+          .whenComplete(() => reloadCompleted = true);
+      await pumpEventQueue();
+
+      expect(
+        reloadCompleted,
+        isTrue,
+        reason: 'the repo mutex must be released although loading threw',
+      );
+      expect(await reload, _newState());
+    });
   });
 }
 

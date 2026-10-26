@@ -120,7 +120,10 @@ class DeleteContainerDialog extends ConsumerWidget {
               containerTokens.noOffline,
               (token) => token.copyWith(
                 containerSerial: () => null,
-                checkedContainer: [...token.checkedContainer, container.serial],
+                checkedContainer:
+                    token.checkedContainer.contains(container.serial)
+                    ? token.checkedContainer
+                    : [...token.checkedContainer, container.serial],
               ),
             );
       }

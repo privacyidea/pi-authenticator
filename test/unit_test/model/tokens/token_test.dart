@@ -400,6 +400,23 @@ void main() {
       },
     );
 
+    test('toOtpAuthMap leaves out an emptied token image', () {
+      const withImage = FakeToken(
+        id: '1',
+        type: 'T',
+        tokenImage: 'https://example.com/logo.png',
+      );
+      const emptied = FakeToken(id: '1', type: 'T', tokenImage: '');
+      const withoutImage = FakeToken(id: '1', type: 'T');
+
+      expect(
+        withImage.toOtpAuthMap()[Token.IMAGE],
+        'https://example.com/logo.png',
+      );
+      expect(emptied.toOtpAuthMap().containsKey(Token.IMAGE), isFalse);
+      expect(withoutImage.toOtpAuthMap().containsKey(Token.IMAGE), isFalse);
+    });
+
     test('additionalData exports all internal fields', () {
       const t = FakeToken(
         id: 'uid',

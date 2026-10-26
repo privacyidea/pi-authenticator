@@ -63,7 +63,7 @@ class SettingsNotifier extends _$SettingsNotifier {
   @override
   SettingsRepository get repo => _repo;
   final SettingsRepository? _repoOverride;
-  late final SettingsRepository _repo;
+  late SettingsRepository _repo;
 
   @override
   Future<SettingsState> build({required SettingsRepository repo}) async {
@@ -76,10 +76,13 @@ class SettingsNotifier extends _$SettingsNotifier {
 
   Future<SettingsState> _loadFromRepo() async {
     await _repoMutex.acquire();
-    final newState = await _repo.loadSettings();
-    Logger.info('Loading settings from repo: $newState');
-    _repoMutex.release();
-    return newState;
+    try {
+      final newState = await _repo.loadSettings();
+      Logger.info('Loading settings from repo: $newState');
+      return newState;
+    } finally {
+      _repoMutex.release();
+    }
   }
 
   Future<bool> _saveToRepo(SettingsState state) async {
