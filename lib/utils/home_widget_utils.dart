@@ -137,12 +137,31 @@ class HomeWidgetUtils {
   static TokenFolderRepository? _folderRepository;
   static final Mutex _repoMutex = Mutex();
 
-  static Future<OTPToken?> _getTokenOfTokenId(String tokenId) async {
-    await _repoMutex.acquire();
-    final token = (await _loadTokenFromRepo(tokenId));
-    _repoMutex.release();
-    return token;
-  }
+  /// Lets a test hand in the token storage; the factory is Android-only.
+  @visibleForTesting
+  static set debugTokenRepository(TokenRepository? repository) =>
+      _tokenRepository = repository;
+
+  static Future<OTPToken?> _getTokenOfTokenId(String tokenId) =>
+      _repoMutex.protect(() => _loadTokenFromRepo(tokenId));
+
+  /// Raises the counter of the HOTP token [tokenId] by one and saves it.
+  ///
+  /// Reading, raising and saving share one lock, so two taps at once count
+  /// two steps. Returns null for a token that is gone or not HOTP.
+  @visibleForTesting
+  static Future<HOTPToken?> incrementHotpCounter(String tokenId) =>
+      _repoMutex.protect(() async {
+        final allTokens = await _loadTokensFromRepo();
+        final index = allTokens.indexWhere((t) => t.id == tokenId);
+        if (index == -1) return null;
+        final token = allTokens[index];
+        if (token is! HOTPToken) return null;
+        final updated = token.copyWith(counter: token.counter + 1);
+        allTokens[index] = updated;
+        await _saveTokensToRepo(allTokens);
+        return updated;
+      });
 
   //////////////////////////////////////
   /////// Keys for HomeWidgets /////////
@@ -583,20 +602,15 @@ class HomeWidgetUtils {
       '_hotpTokenAction called for widgetId: $widgetId',
       verbose: true,
     );
-    var token = await getTokenOfWidgetId(widgetId);
+    final token = await getTokenOfWidgetId(widgetId);
     if (token == null) {
       await unlink(widgetId);
       return;
     }
     if (token is! HOTPToken) return;
-    token = token.copyWith(counter: token.counter + 1);
-
-    await _repoMutex.acquire();
-    final allTokens = await _loadTokensFromRepo();
-    allTokens[allTokens.indexWhere((t) => t.id == token!.id)] = token;
-    await _saveTokensToRepo(allTokens);
-    _repoMutex.release();
-    await _updateTokenIfLinked(token);
+    final updated = await incrementHotpCounter(token.id);
+    if (updated == null) return;
+    await _updateTokenIfLinked(updated);
   }
 
   // Call AFTER saving to the repository
