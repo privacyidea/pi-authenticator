@@ -67,16 +67,9 @@ void main() {
 
   group('lockAuth - Hardware & Support', () {
     test(
-      'should skip support checks and attempt auth when autoAuthIfUnsupported is true',
+      'should let an unsupported device pass without asking when autoAuthIfUnsupported is true',
       () async {
         when(mockLocalAuth.isDeviceSupported()).thenAnswer((_) async => false);
-        when(
-          mockLocalAuth.authenticate(
-            localizedReason: anyNamed('localizedReason'),
-            biometricOnly: anyNamed('biometricOnly'),
-            authMessages: anyNamed('authMessages'),
-          ),
-        ).thenAnswer((_) async => true);
 
         final result = await lockAuth(
           reason: (localization) => 'reason',
@@ -85,13 +78,13 @@ void main() {
         );
 
         expect(result, isTrue);
-        verify(
+        verifyNever(
           mockLocalAuth.authenticate(
             localizedReason: anyNamed('localizedReason'),
             biometricOnly: anyNamed('biometricOnly'),
             authMessages: anyNamed('authMessages'),
           ),
-        ).called(1);
+        );
       },
     );
 
@@ -164,9 +157,9 @@ void main() {
     );
 
     test(
-      'should skip support checks when autoAuth is true, even if device unsupported',
+      'should still ask a supported device when autoAuth is true, a refusal is false',
       () async {
-        when(mockLocalAuth.isDeviceSupported()).thenAnswer((_) async => false);
+        when(mockLocalAuth.isDeviceSupported()).thenAnswer((_) async => true);
         when(
           mockLocalAuth.authenticate(
             localizedReason: anyNamed('localizedReason'),
@@ -181,8 +174,8 @@ void main() {
           autoAuthIfUnsupported: true,
         );
 
-        // autoAuth=true skips _checkSupport, so authenticate is called
-        // but authenticate returns false, so result is false
+        // The device has a screen lock, so autoAuth does not apply: the user
+        // is asked, and refusing denies the action.
         expect(result, isFalse);
         verify(
           mockLocalAuth.authenticate(
@@ -738,8 +731,6 @@ void _testLockAuthMore() {
           expect(result, isTrue);
           verifyAuthenticateNeverCalled();
         },
-        skip:
-            'BUG: lock_auth.dart:72-73,117 autoAuthIfUnsupported skips the support check instead of using it, so an unsupported device is still prompted and denied (doc says returns true)',
       );
 
       test(
@@ -772,27 +763,24 @@ void _testLockAuthMore() {
       );
 
       test(
-        'autoAuthIfUnsupported never reaches the "unsupported" branch (return autoAuth is dead code): '
-        'a failing authenticate yields false',
+        'autoAuthIfUnsupported asks a supported device and passes on its answer',
         () async {
-          // Characterization: with autoAuth=true _checkSupport always returns
-          // true, so `return autoAuthIfUnsupported` at line 73 can only ever
-          // return false.
-          when(localAuth.isDeviceSupported()).thenAnswer((_) async => false);
-          stubAuth(false);
+          when(localAuth.isDeviceSupported()).thenAnswer((_) async => true);
+          stubAuth(true);
 
-          expect(await callLockAuth(autoAuth: true), isFalse);
+          expect(await callLockAuth(autoAuth: true), isTrue);
         },
       );
 
-      test('autoAuthIfUnsupported does not query device support at all', () async {
-        // Characterization of the current behaviour. It is the root of the
-        // suspected autoAuthIfUnsupported bug above.
+      test('autoAuthIfUnsupported checks device support but no biometrics', () async {
+        // It needs the answer to let an unsupported device pass, but none of
+        // the dialogs that the biometric checks lead to.
+        when(localAuth.isDeviceSupported()).thenAnswer((_) async => true);
         stubAuth(true);
 
         await callLockAuth(autoAuth: true);
 
-        verifyNever(localAuth.isDeviceSupported());
+        verify(localAuth.isDeviceSupported()).called(1);
         verifyNever(localAuth.canCheckBiometrics);
       });
     });
@@ -1040,7 +1028,10 @@ void _testLockAuthMore() {
 
       test('autoAuthIfUnsupported is forwarded', () async {
         final ref = await refWith(ForceBiometricOption.any);
-        stubAuth(true);
+        // Only a forwarded autoAuthIfUnsupported lets a device without a
+        // screen lock pass without asking.
+        when(localAuth.isDeviceSupported()).thenAnswer((_) async => false);
+        stubAuth(false);
 
         final result = await lockAuthWithSettingsRef(
           ref: ref,
@@ -1050,8 +1041,7 @@ void _testLockAuthMore() {
         );
 
         expect(result, isTrue);
-        // autoAuthIfUnsupported skips the support check, so it was not queried.
-        verifyNever(localAuth.isDeviceSupported());
+        verifyAuthenticateNeverCalled();
       });
     });
 
