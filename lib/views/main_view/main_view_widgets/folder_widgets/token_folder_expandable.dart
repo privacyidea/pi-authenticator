@@ -73,6 +73,8 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable>
       }
 
       final newIsExpanded = expandableController.expanded;
+      // Following the stored folder (didUpdateWidget) needs no save.
+      if (newIsExpanded == widget.folder.isExpanded) return;
 
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         globalRef?.read(tokenFolderProvider.notifier).updateFolder(
@@ -83,6 +85,19 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable>
         );
       });
     });
+  }
+
+  @override
+  void didUpdateWidget(covariant TokenFolderExpandable oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // The stored folder can change without a tap on the panel: hiding the app
+    // collapses locked folders, a home widget link expands one. Only such a
+    // change is followed; a tap whose save is still pending must stay.
+    final stored = widget.folder.isExpanded;
+    if (stored != oldWidget.folder.isExpanded &&
+        stored != expandableController.expanded) {
+      expandableController.expanded = stored;
+    }
   }
 
   @override
