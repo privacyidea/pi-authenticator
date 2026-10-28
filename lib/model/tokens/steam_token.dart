@@ -114,7 +114,9 @@ class SteamToken extends TOTPToken {
       secret: validatedMap[OTPToken.SECRET_BASE32] as String,
       tokenImage: validatedMap[Token.IMAGE] as String?,
       pin: validatedMap[Token.PIN] as bool?,
-      isLocked: validatedMap[Token.PIN] as bool?,
+      isLocked:
+          validatedAdditionalData[Token.IS_LOCKED] as bool? ??
+          validatedMap[Token.PIN] as bool?,
       isOffline: (validatedMap[Token.OFFLINE] as bool?) ?? false,
       forceBiometricOption:
           (validatedMap[Token.FORCE_BIOMETRIC_OPTION]
@@ -213,7 +215,10 @@ class SteamToken extends TOTPToken {
       secret: uriMap[OTPToken.SECRET_BASE32] as String?,
       tokenImage: uriMap[Token.IMAGE] as String?,
       pin: uriMap[Token.PIN] as bool?,
-      isLocked: uriMap[Token.PIN] as bool?,
+      isLocked: Token.lockAfterServerPin(
+        serverPin: uriMap[Token.PIN] as bool?,
+        hadPin: pin,
+      ),
     );
   }
 

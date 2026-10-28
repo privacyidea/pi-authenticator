@@ -236,7 +236,9 @@ class PushToken extends Token {
       url: validatedMap[ROLLOUT_URL] as Uri,
       tokenImage: validatedMap[Token.IMAGE] as String?,
       pin: validatedMap[Token.PIN] as bool?,
-      isLocked: validatedMap[Token.PIN] as bool?,
+      isLocked:
+          validatedAdditionalData[Token.IS_LOCKED] as bool? ??
+          validatedMap[Token.PIN] as bool?,
       isOffline: validatedMap[Token.OFFLINE] as bool,
       forceBiometricOption:
           validatedMap[Token.FORCE_BIOMETRIC_OPTION] as ForceBiometricOption,
@@ -362,7 +364,10 @@ class PushToken extends Token {
       url: uriMap[ROLLOUT_URL] as Uri?,
       tokenImage: uriMap[Token.IMAGE] as String?,
       pin: uriMap[Token.PIN] as bool?,
-      isLocked: uriMap[Token.PIN] as bool?,
+      isLocked: Token.lockAfterServerPin(
+        serverPin: uriMap[Token.PIN] as bool?,
+        hadPin: pin,
+      ),
     );
   }
 

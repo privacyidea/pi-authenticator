@@ -56,6 +56,7 @@ abstract class Token with SortableMixin {
   static const String ID = 'id';
   static const String ORIGIN = 'origin';
   static const String IS_HIDDEN = 'isHidden';
+  static const String IS_LOCKED = 'isLocked';
   static const String CHECKED_CONTAINERS = 'checkedContainer';
   static const String FOLDER_ID = 'folderId';
   static const String SORT_INDEX = SortableMixin.SORT_INDEX;
@@ -109,10 +110,23 @@ abstract class Token with SortableMixin {
     ID: Validators.stringOptional,
     ORIGIN: OptionalObjectValidator<TokenOriginData>(),
     IS_HIDDEN: Validators.boolOptional,
+    IS_LOCKED: Validators.boolOptional,
     CHECKED_CONTAINERS: DefaultObjectValidator<List<String>>(defaultValue: []),
     FOLDER_ID: Validators.intOptional,
     SORT_INDEX: Validators.intOptional,
   };
+
+  /// The lock a server update leaves: a pin locks, a pin the server takes
+  /// away unlocks, and without a pin before or now the lock is the user's own
+  /// and stays (null keeps it).
+  static bool? lockAfterServerPin({
+    required bool? serverPin,
+    required bool hadPin,
+  }) {
+    if (serverPin == null) return null;
+    if (serverPin) return true;
+    return hadPin ? false : null;
+  }
 
   // --- Static Validation Methods ---
   static Map<String, Object?> validateOtpAuthMap(
@@ -348,6 +362,12 @@ abstract class Token with SortableMixin {
     SORT_INDEX: sortIndex,
     FOLDER_ID: folderId,
     // IS_HIDDEN: isHidden, // isHidden is derived from isLocked and pin, so we don't store it directly to avoid confusion
+    // The lock the user set by swipe: the server knows only pin, so a sync
+    // would drop it without this. With a pin or a forced option the stored
+    // lock may stem from them, and the server decides about it.
+    IS_LOCKED: pin || forceBiometricOption != ForceBiometricOption.none
+        ? null
+        : _isLocked,
     CHECKED_CONTAINERS: checkedContainer,
     CONTAINER_SERIAL: containerSerial,
   };
