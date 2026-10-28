@@ -66,3 +66,28 @@ class DefaultObjectValidator<T extends Object> extends BaseValidator<T> {
   bool valueIsAllowed(value, name) =>
       allowedValues?.call(transform(value, name)) ?? true;
 }
+
+/// Uses [defaultValue] only for a missing value. A value that is present but
+/// cannot be read is an error: for a field that decides what a token computes,
+/// a silent default would make it show wrong codes.
+class AbsentDefaultObjectValidator<T extends Object>
+    extends DefaultObjectValidator<T> {
+  AbsentDefaultObjectValidator({
+    required super.defaultValue,
+    super.transformer,
+    super.allowedValues,
+    super.invalidMessage,
+    super.unallowedMessage,
+  });
+
+  @override
+  T transform(value, name) {
+    // An empty value, `digits=` in a uri, says as little as a missing one.
+    if (value == null || value == '') return defaultValue;
+    try {
+      return _executeTransform(value, name);
+    } catch (_) {
+      throw _invalidError(value, name);
+    }
+  }
+}

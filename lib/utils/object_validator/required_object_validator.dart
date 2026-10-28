@@ -20,6 +20,12 @@
 
 part of 'object_validators.dart';
 
+/// Whether [name] is one whose value the log masks, a 'secret' for example.
+bool _namesASecret(String name) {
+  final lowerName = name.toLowerCase();
+  return sensitiveEntryNames.any(lowerName.contains);
+}
+
 class RequiredObjectValidator<T extends Object> extends BaseValidator<T> {
   RequiredObjectValidator({
     super.transformer,
@@ -31,7 +37,19 @@ class RequiredObjectValidator<T extends Object> extends BaseValidator<T> {
   @override
   T transform(value, name) {
     if (value == null) throw _invalidError(value, name);
-    return _executeTransform(value, name);
+    try {
+      return _executeTransform(value, name);
+    } on LocalizedArgumentError {
+      rethrow;
+    } catch (_) {
+      // That message quotes the value, which the log cannot mask in front of
+      // the name: an almost valid secret would end up in it.
+      if (_namesASecret(name)) rethrow;
+      // The transformer's own error (a FormatException of DateTime.parse, the
+      // ArgumentError of byName) would escape every caller that reports
+      // invalid input; it gets the message that names the field instead.
+      throw _invalidError(value, name);
+    }
   }
 
   @override
@@ -48,6 +66,17 @@ class RequiredObjectValidator<T extends Object> extends BaseValidator<T> {
   @override
   DefaultObjectValidator<T> withDefault(T defaultValue) =>
       DefaultObjectValidator<T>(
+        defaultValue: defaultValue,
+        transformer: transformer,
+        allowedValues: allowedValues,
+        invalidMessage: invalidMessage,
+        unallowedMessage: unallowedMessage,
+      );
+
+  /// Like [withDefault], but a value that is present and unreadable throws
+  /// instead of becoming [defaultValue].
+  AbsentDefaultObjectValidator<T> withDefaultIfAbsent(T defaultValue) =>
+      AbsentDefaultObjectValidator<T>(
         defaultValue: defaultValue,
         transformer: transformer,
         allowedValues: allowedValues,

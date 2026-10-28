@@ -1021,13 +1021,25 @@ void _testOtpAuthProcessorEdgeCases() {
         },
       );
 
-      test('non numeric or overflowing digits fall back to 6', () async {
-        for (final digits in ['abc', '', '99999999999999999999999', '6.5']) {
-          final token =
-              await _ok('otpauth://totp/u?secret=AAAAAAAA&digits=$digits')
-                  as OTPToken;
-          expect(token.digits, 6, reason: 'digits="$digits"');
-        }
+      test(
+        'non numeric or overflowing digits are rejected, they would give wrong codes',
+        () async {
+          for (final digits in ['abc', '99999999999999999999999', '6.5']) {
+            final failed = await _failed(
+              'otpauth://totp/u?secret=AAAAAAAA&digits=$digits',
+            );
+            expect(
+              failed.message(_l),
+              _l.invalidValue('digits', 'String', digits),
+            );
+          }
+        },
+      );
+
+      test('empty digits count as missing and give 6', () async {
+        final token =
+            await _ok('otpauth://totp/u?secret=AAAAAAAA&digits=') as OTPToken;
+        expect(token.digits, 6);
       });
 
       test('digits 6, 7, 8 and 10 are taken over', () async {
@@ -1072,12 +1084,15 @@ void _testOtpAuthProcessorEdgeCases() {
         }
       });
 
-      test('non numeric or overflowing period falls back to 30', () async {
-        for (final period in ['abc', '99999999999999999999999']) {
-          final token =
-              await _ok('otpauth://totp/u?secret=AAAAAAAA&period=$period')
-                  as TOTPToken;
-          expect(token.period, 30, reason: 'period="$period"');
+      test('non numeric or overflowing period is rejected', () async {
+        for (final period in ['abc', '30s', '99999999999999999999999']) {
+          final failed = await _failed(
+            'otpauth://totp/u?secret=AAAAAAAA&period=$period',
+          );
+          expect(
+            failed.message(_l),
+            _l.invalidValue('period', 'String', period),
+          );
         }
       });
 
@@ -1099,7 +1114,7 @@ void _testOtpAuthProcessorEdgeCases() {
       });
 
       test(
-        'HOTP counter: 0 and the maximum int are accepted, garbage falls back to 0',
+        'HOTP counter: 0 and the maximum int are accepted, garbage is rejected',
         () async {
           expect(
             (await _ok('otpauth://hotp/u?secret=AAAAAAAA&counter=0')
@@ -1116,12 +1131,12 @@ void _testOtpAuthProcessorEdgeCases() {
             9223372036854775807,
           );
           for (final counter in ['abc', '9223372036854775808']) {
+            final failed = await _failed(
+              'otpauth://hotp/u?secret=AAAAAAAA&counter=$counter',
+            );
             expect(
-              (await _ok('otpauth://hotp/u?secret=AAAAAAAA&counter=$counter')
-                      as HOTPToken)
-                  .counter,
-              0,
-              reason: counter,
+              failed.message(_l),
+              _l.invalidValue('counter', 'String', counter),
             );
           }
         },
@@ -1144,22 +1159,26 @@ void _testOtpAuthProcessorEdgeCases() {
       });
 
       test(
-        'unknown algorithms silently fall back to SHA1 (characterization)',
+        'unknown algorithms are rejected, SHA1 codes would be wrong for them',
         () async {
-          for (final algorithm in ['MD5', 'SHA-256', 'FOO', '']) {
-            final token =
-                await _ok(
-                      'otpauth://totp/u?secret=AAAAAAAA&algorithm=$algorithm',
-                    )
-                    as OTPToken;
+          for (final algorithm in ['MD5', 'SHA-256', 'FOO']) {
+            final failed = await _failed(
+              'otpauth://totp/u?secret=AAAAAAAA&algorithm=$algorithm',
+            );
             expect(
-              token.algorithm,
-              Algorithms.SHA1,
-              reason: 'algorithm="$algorithm"',
+              failed.message(_l),
+              _l.invalidValue('algorithm', 'String', algorithm),
             );
           }
         },
       );
+
+      test('an empty algorithm counts as missing and gives SHA1', () async {
+        final token =
+            await _ok('otpauth://totp/u?secret=AAAAAAAA&algorithm=')
+                as OTPToken;
+        expect(token.algorithm, Algorithms.SHA1);
+      });
     });
 
     group('scheme / host / token type', () {
@@ -1371,11 +1390,13 @@ void _testOtpAuthProcessorEdgeCases() {
             _run('otpauth://totp/u?secret=AAAAAAAA&2step_salt=10'),
             throwsA(isA<LocalizedArgumentError>()),
           );
+          // An unreadable number gets the same localized error as a missing
+          // one, so it names the parameter.
           await expectLater(
             _run(
               'otpauth://totp/u?secret=AAAAAAAA&2step_salt=abc&2step_output=20&2step_difficulty=10',
             ),
-            throwsA(isA<FormatException>()),
+            throwsA(isA<LocalizedArgumentError>()),
           );
         },
       );

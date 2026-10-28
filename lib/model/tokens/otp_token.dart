@@ -38,7 +38,7 @@ abstract class OTPToken extends Token {
   // --- Static Accessors & Validators ---
   static final Map<String, BaseValidator> otpAuthValidators = {
     ...Token.otpAuthValidators,
-    ALGORITHM: Validators.algorithms.withDefault(Algorithms.SHA1),
+    ALGORITHM: Validators.algorithms.withDefaultIfAbsent(Algorithms.SHA1),
     DIGITS: Validators.otpDigitsSafe,
     SECRET_BASE32: Validators.base32String,
   };

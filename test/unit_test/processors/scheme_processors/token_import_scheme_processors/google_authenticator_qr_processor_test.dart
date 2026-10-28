@@ -438,17 +438,21 @@ void _testGoogleAuthenticatorQrProcessorEdgeCases() {
       });
 
       test(
-        'MD5 is not supported by the app and silently becomes SHA1 (characterization)',
+        'MD5 is not supported by the app, its entry fails instead of giving SHA1 codes',
         () async {
-          final token =
-              await _single(
-                    _param(
-                      algorithm:
-                          GoogleAuthenticatorImport_Algorithm.ALGORITHM_MD5,
-                    ),
-                  )
-                  as OTPToken;
-          expect(token.algorithm, Algorithms.SHA1);
+          final results = await _run(
+            _uri([
+              _param(
+                algorithm: GoogleAuthenticatorImport_Algorithm.ALGORITHM_MD5,
+              ),
+            ]),
+          );
+          expect(results, hasLength(1));
+          expect(results.single.isFailed, isTrue);
+          expect(
+            results.single.asFailed!.message(_l),
+            _l.invalidValue('algorithm', 'String', 'MD5'),
+          );
         },
       );
 

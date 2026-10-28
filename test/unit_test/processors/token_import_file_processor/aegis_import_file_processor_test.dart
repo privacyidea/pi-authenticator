@@ -629,7 +629,7 @@ void _testAegisImportFileProcessorEdgeCases() {
       });
 
       test(
-        'an unknown algorithm silently falls back to SHA1 (withDefault validator)',
+        'an entry with an unknown algorithm fails alone, the others import',
         () async {
           final file = _xFile(
             _plainFile(
@@ -644,10 +644,10 @@ void _testAegisImportFileProcessorEdgeCases() {
 
           final results = await processor.processFile(file);
 
-          expect(results.map((r) => r.isSuccess), [true, true]);
+          expect(results.map((r) => r.isSuccess), [false, true]);
           expect(
-            (results[0].asSuccess!.resultData as TOTPToken).algorithm,
-            Algorithms.SHA1,
+            (results[1].asSuccess!.resultData as TOTPToken).label,
+            'ok',
           );
         },
       );

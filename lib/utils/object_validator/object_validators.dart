@@ -26,6 +26,7 @@ import '../../model/enums/algorithms.dart';
 import '../../model/enums/encodings.dart';
 import '../../model/exception_errors/localized_argument_error.dart';
 import '../../model/extensions/uri_extension.dart';
+import '../helpers/log_redaction_helper.dart';
 import '../logger.dart';
 
 part 'base_validator.dart';
@@ -69,19 +70,19 @@ abstract class Validators {
     transformer: (v) => v is String ? int.parse(v) : (v as int),
     allowedValues: (v) => v > 0,
   );
-  static final otpPeriodSafe = otpPeriod.withDefault(30);
+  static final otpPeriodSafe = otpPeriod.withDefaultIfAbsent(30);
 
   static final otpDigits = RequiredObjectValidator<int>(
     transformer: (v) => v is String ? int.parse(v) : (v as int),
     allowedValues: (v) => v > 0,
   );
-  static final otpDigitsSafe = otpDigits.withDefault(6);
+  static final otpDigitsSafe = otpDigits.withDefaultIfAbsent(6);
 
   static final otpCounter = RequiredObjectValidator<int>(
     transformer: (v) => v is String ? int.parse(v) : (v as int),
     allowedValues: (v) => v >= 0,
   );
-  static final otpCounterSafe = otpCounter.withDefault(0);
+  static final otpCounterSafe = otpCounter.withDefaultIfAbsent(0);
 
   static final algorithms = RequiredObjectValidator<Algorithms>(
     transformer: (v) => v is String

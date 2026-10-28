@@ -243,6 +243,52 @@ void _testHotpToken() {
 
   group('serialization', () {
     group('fromUriMap', () {
+
+      group('app_force_unlock', () {
+        HOTPToken withForceUnlock(String? value) => HOTPToken.fromOtpAuthMap({
+          OTPToken.SECRET_BASE32: 'JBSWY3DPEHPK3PXP',
+          Token.FORCE_BIOMETRIC_OPTION: ?value,
+        });
+
+        test('a known option is taken over, case insensitive', () {
+          expect(
+            withForceUnlock('BIOMETRIC').forceBiometricOption,
+            ForceBiometricOption.biometric,
+          );
+          expect(withForceUnlock('pin').forceBiometricOption, ForceBiometricOption.pin);
+        });
+
+        test('missing or empty means no forced unlock', () {
+          for (final value in [null, '']) {
+            final token = withForceUnlock(value);
+            expect(token.forceBiometricOption, ForceBiometricOption.none);
+            expect(token.isLocked, isFalse, reason: 'value="$value"');
+          }
+        });
+
+        test('an unknown option still locks the token', () {
+          // The server asked for a forced unlock the app does not know; not
+          // locking at all would be the weakest possible reading of it.
+          final token = withForceUnlock('face_id');
+          expect(token.forceBiometricOption, ForceBiometricOption.any);
+          expect(token.isLocked, isTrue);
+        });
+      });
+
+      test('with an unreadable counter throws', () {
+        final uriMap = {
+          OTPToken.SECRET_BASE32: 'JBSWY3DPEHPK3PXP',
+          HOTPToken.COUNTER: 'ten',
+        };
+        expect(() => HOTPToken.fromOtpAuthMap(uriMap), throwsArgumentError);
+      });
+
+      test('without counter starts at 0', () {
+        final token = HOTPToken.fromOtpAuthMap({
+          OTPToken.SECRET_BASE32: 'JBSWY3DPEHPK3PXP',
+        });
+        expect(token.counter, 0);
+      });
       test('with full map', () {
         final uriMap = {
           Token.LABEL: 'label',
@@ -290,13 +336,12 @@ void _testHotpToken() {
         expect(() => HOTPToken.fromOtpAuthMap(uriMap), throwsArgumentError);
       });
 
-      test('invalid counter format defaults to 0', () {
+      test('an invalid counter format is rejected', () {
         final uriMap = {
           OTPToken.SECRET_BASE32: 'JBSWY3DPEHPK3PXP',
           HOTPToken.COUNTER: 'abc',
         };
-        final token = HOTPToken.fromOtpAuthMap(uriMap);
-        expect(token.counter, 0);
+        expect(() => HOTPToken.fromOtpAuthMap(uriMap), throwsArgumentError);
       });
 
       test('with lowercase algorithm', () {

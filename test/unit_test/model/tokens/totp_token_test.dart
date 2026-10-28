@@ -308,6 +308,33 @@ void main() {
         expect(totpFromUriMap.type, 'TOTP');
       });
 
+      // A value that is present but unreadable must not turn into the
+      // default: the token would import and show wrong codes.
+      for (final (field, value) in [
+        (OTPToken.ALGORITHM, 'SHA-256'),
+        (OTPToken.ALGORITHM, 'MD5'),
+        (OTPToken.DIGITS, 'six'),
+        (TOTPToken.PERIOD_SECONDS, '30s'),
+        (TOTPToken.PERIOD_SECONDS, '1.5'),
+      ]) {
+        test('with an unreadable $field "$value" throws', () {
+          final uriMap = {
+            OTPToken.SECRET_BASE32: 'JBSWY3DPEHPK3PXP',
+            field: value,
+          };
+          expect(() => TOTPToken.fromOtpAuthMap(uriMap), throwsArgumentError);
+        });
+      }
+
+      test('without algorithm, digits and period uses SHA1, 6 and 30', () {
+        final token = TOTPToken.fromOtpAuthMap({
+          OTPToken.SECRET_BASE32: 'JBSWY3DPEHPK3PXP',
+        });
+        expect(token.algorithm, Algorithms.SHA1);
+        expect(token.digits, 6);
+        expect(token.period, 30);
+      });
+
       test('with missing secret throws', () {
         final uriMap = {
           Token.TOKENTYPE_OTPAUTH: 'totp',

@@ -45,7 +45,7 @@ class DayPasswordToken extends OTPToken {
 
   static final Map<String, BaseValidator> otpAuthValidators = {
     ...OTPToken.otpAuthValidators,
-    TOTPToken.PERIOD_SECONDS: Validators.secondsDuration.withDefault(
+    TOTPToken.PERIOD_SECONDS: Validators.secondsDuration.withDefaultIfAbsent(
       const Duration(hours: 24),
     ),
   };
