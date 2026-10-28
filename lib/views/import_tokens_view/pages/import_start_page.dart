@@ -151,13 +151,30 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
                                   ),
                                 },
                               );
-                              future!.then((errorText) {
-                                if (!mounted) return;
-                                setState(() {
-                                  future = null;
-                                  _errorText = errorText;
-                                });
-                              });
+                              future!.then(
+                                (errorText) {
+                                  if (!mounted) return;
+                                  setState(() {
+                                    future = null;
+                                    _errorText = errorText;
+                                  });
+                                },
+                                onError: (Object e, StackTrace s) {
+                                  // A processor that throws must not leave the
+                                  // spinner running: the user could only leave.
+                                  Logger.warning(
+                                    'Import from ${widget.selectedSource.type} failed',
+                                    error: e,
+                                    stackTrace: s,
+                                    verbose: true,
+                                  );
+                                  if (!mounted) return;
+                                  setState(() {
+                                    future = null;
+                                    _errorText = _invalidInputText(localizations);
+                                  });
+                                },
+                              );
                             });
                           },
                         ),
@@ -170,6 +187,17 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
       ),
     );
   }
+
+  /// What the page says when the chosen input could not be imported.
+  String _invalidInputText(AppLocalizations localizations) =>
+      switch (widget.selectedSource.type) {
+        TokenImportType.backupFile => localizations.invalidBackupFile(
+          widget.appName,
+        ),
+        TokenImportType.qrScan => localizations.invalidQrScan,
+        TokenImportType.qrFile => localizations.invalidQrFile(widget.appName),
+        TokenImportType.link => localizations.invalidLink(widget.appName),
+      };
 
   Future<String?> _pickBackupFile(TokenImportProcessor? processor) async {
     assert(processor is TokenImportFileProcessor);
@@ -306,7 +334,11 @@ class _ImportStartPageState extends ConsumerState<ImportStartPage> {
     if (uri == null) return localizations.invalidQrFile(widget.appName);
 
     final processorResults = await schemeProcessor.processUri(uri);
-    if (processorResults == null || processorResults.isEmpty) return _errorText;
+    // A QR code of another kind, a plain otpauth code in the Google import
+    // for example: say so instead of nothing.
+    if (processorResults == null || processorResults.isEmpty) {
+      return localizations.invalidQrFile(widget.appName);
+    }
 
     Logger.info("QR file imported successfully");
     return _routeImportPlainTokensPage(importResults: processorResults);

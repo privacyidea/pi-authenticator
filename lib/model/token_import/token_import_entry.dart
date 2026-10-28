@@ -29,6 +29,26 @@ class TokenImportEntry {
   TokenImportEntry({required this.newToken, this.oldToken})
     : selectedToken = oldToken == null ? newToken : null;
 
+  /// The token to store for this entry, or null while no side is chosen.
+  ///
+  /// A chosen new token replaces the data of the stored one, but not where the
+  /// user keeps it: its id, folder and place in the list stay, and so does a
+  /// lock it had. The container link is not carried over, an imported token
+  /// is not the one the server manages.
+  Token? get tokenToKeep {
+    final selected = selectedToken;
+    final old = oldToken;
+    if (selected == null || old == null || !identical(selected, newToken)) {
+      return selected;
+    }
+    return selected.copyWith(
+      id: old.id,
+      sortIndex: old.sortIndex,
+      folderId: () => old.folderId,
+      isLocked: old.isLocked || selected.isLocked,
+    );
+  }
+
   TokenImportEntry copySelect(Token? selectedToken) {
     assert(
       selectedToken == null ||

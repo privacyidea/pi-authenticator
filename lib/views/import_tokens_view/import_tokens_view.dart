@@ -25,6 +25,7 @@ import '../../model/token_import/token_import_origin.dart';
 import '../../model/tokens/token.dart';
 import '../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import '../../utils/token_import_origins.dart';
+import '../../utils/view_utils.dart';
 import '../view_interface.dart';
 import 'pages/import_start_page.dart';
 import 'pages/select_import_type_page.dart';
@@ -32,6 +33,22 @@ import 'pages/select_import_type_page.dart';
 /// The view to import tokens from different sources.
 /// The user can select the source from which the tokens should be imported.
 /// Pops with `true` if the tokens were imported successfully.
+/// Saves the imported [tokens] and tells the user about every one that could
+/// not be saved. Returns whether at least one token was saved.
+@visibleForTesting
+Future<bool> saveImportedTokens(WidgetRef ref, List<Token> tokens) async {
+  final failed = await ref
+      .read(tokenProvider.notifier)
+      .addOrReplaceTokens(tokens);
+  if (failed.isNotEmpty) {
+    showErrorStatusMessage(
+      message: (localizations) => localizations.importFailedToken(failed.length),
+      ref: ref,
+    );
+  }
+  return failed.length < tokens.length;
+}
+
 class ImportTokensView extends ConsumerStatefulView {
   @override
   RouteSettings get routeSettings => const RouteSettings(name: routeName);
@@ -69,10 +86,10 @@ class _ImportTokensViewState extends ConsumerState<ImportTokensView> {
       );
     }
     if (tokensToImport == null || !mounted) return;
-    if (tokensToImport.isNotEmpty) {
-      ref.read(tokenProvider.notifier).addOrReplaceTokens(tokensToImport);
-    }
-    if (mounted) return Navigator.of(context).pop(tokensToImport.isNotEmpty);
+    final saved =
+        tokensToImport.isNotEmpty &&
+        await saveImportedTokens(ref, tokensToImport);
+    if (mounted) return Navigator.of(context).pop(saved);
   }
 
   @override

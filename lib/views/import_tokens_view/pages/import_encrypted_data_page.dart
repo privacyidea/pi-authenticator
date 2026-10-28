@@ -25,6 +25,8 @@ import '../../../model/processor_result.dart';
 import '../../../model/tokens/token.dart';
 import '../../../processors/mixins/token_import_processor.dart';
 import '../../../processors/token_import_file_processor/two_fas_import_file_processor.dart';
+import '../../../utils/logger.dart';
+import '../../../utils/view_utils.dart';
 import '../../../widgets/pi_text_field.dart';
 import '../import_tokens_view.dart';
 import 'import_plain_tokens_page.dart';
@@ -51,6 +53,17 @@ class ImportEncryptedDataPage<T, V extends String?> extends StatefulWidget {
 
 class _ImportEncryptedDataPageState extends State<ImportEncryptedDataPage> {
   final _passwordController = TextEditingController();
+
+  /// What the page says when the data could not be read.
+  String _invalidDataText(AppLocalizations localizations) =>
+      switch (widget.selectedType) {
+        TokenImportType.backupFile => localizations.invalidBackupFile(
+          widget.appName,
+        ),
+        TokenImportType.qrScan ||
+        TokenImportType.qrFile => localizations.invalidQrBackup(widget.appName),
+        TokenImportType.link => localizations.invalidLink(widget.appName),
+      };
   final _passwordFocusNode = FocusNode();
   Future? processingFuture;
   bool wrongPassword = false;
@@ -136,6 +149,18 @@ class _ImportEncryptedDataPageState extends State<ImportEncryptedDataPage> {
                                                 });
                                           });
                                           return;
+                                        } catch (e, s) {
+                                          // Anything else, a broken file for
+                                          // example, must end the spinner too.
+                                          Logger.warning(
+                                            'Decrypting the import failed',
+                                            error: e,
+                                            stackTrace: s,
+                                            verbose: true,
+                                          );
+                                          showErrorStatusMessage(
+                                            message: _invalidDataText,
+                                          );
                                         }
                                       })..then(
                                         (_) => setState(
