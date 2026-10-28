@@ -77,13 +77,15 @@ bool _isLoggable(String name, Set<String>? allowedEntryNames) {
   return false;
 }
 
-/// Whether [name] is one of the [sensitiveEntryNames].
+/// Whether [name] is one of the [sensitiveEntryNames] or, as a whole, one of the
+/// [sensitiveWholeEntryNames].
 ///
 /// Matched the way [filterSensitiveValues] matches, case insensitively and as a
 /// substring, so that the two cannot disagree about a name.
 bool _isSensitiveName(String name) {
   final lowerName = name.toLowerCase();
-  return sensitiveEntryNames.any((sensitive) => lowerName.contains(sensitive));
+  return sensitiveEntryNames.any((sensitive) => lowerName.contains(sensitive)) ||
+      sensitiveWholeEntryNames.contains(lowerName);
 }
 
 /// The entry names whose value never reaches the log.
@@ -114,6 +116,9 @@ const Set<String> sensitiveEntryNames = {
   'public_client_key',
   'public_enc_key_client',
   'passphrase',
+  // The code a code-to-phone push request shows; it logs in like an OTP
+  'displaycode',
+  'display_code',
   // Firebase
   'fbtoken',
   'new_fb_token',
@@ -127,7 +132,14 @@ const Set<String> sensitiveEntryNames = {
 /// otpauth-migration uri and the token of a pia qrbackup uri.
 const Set<String> sensitiveQueryParameterNames = {'data'};
 
-/// Finds every one of the [sensitiveEntryNames] and every one of the
+/// Names whose value never reaches the log, but only as a whole name in front
+/// of a ':' or '='. As a substring they would hit harmless names: 'otp' is part
+/// of 'otplen' and 'otpauth'. 'otp' holds the current codes that a container
+/// sync exchanges to recognize a token.
+const Set<String> sensitiveWholeEntryNames = {'otp'};
+
+/// Finds every one of the [sensitiveEntryNames], every one of the
+/// [sensitiveWholeEntryNames] that stands as a whole name and every one of the
 /// [sensitiveQueryParameterNames] that stands in a query.
 ///
 /// The entry names are matched case insensitively and as a substring, the way
@@ -135,6 +147,8 @@ const Set<String> sensitiveQueryParameterNames = {'data'};
 final RegExp _sensitiveNamePattern = RegExp(
   [
     ...sensitiveEntryNames.map(RegExp.escape),
+    '(?<![A-Za-z0-9_])(?:${sensitiveWholeEntryNames.map(RegExp.escape).join('|')})'
+        '(?![A-Za-z0-9_])(?=["\']?\\s*[:=])',
     '(?<=[?&])(?:${sensitiveQueryParameterNames.map(RegExp.escape).join('|')})(?==)',
   ].join('|'),
   caseSensitive: false,

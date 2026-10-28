@@ -556,8 +556,11 @@ class PiContainerApi implements TokenContainerApi {
             const IterableEquality().equals(otps, maybePiToken.otpValues),
       );
       if (mergedTemplate == null) {
+        // The otp values are codes that may still be valid: name the entry by
+        // its serial and count, never by the values.
         Logger.warning(
-          'Server token with otps not found in local tokens: ${serverTokenWithOtp[OTPToken.OTP_VALUES]}',
+          'Server token ${serverTokenWithOtp[Token.SERIAL]} with ${otps.length} '
+          'otp values matches no local token',
         );
         continue;
       }

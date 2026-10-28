@@ -24,6 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart';
 import 'package:mockito/mockito.dart';
+import 'package:logger/logger.dart' as printer;
 import 'package:privacyidea_authenticator/api/impl/privacy_idea_container_api.dart';
 import 'package:privacyidea_authenticator/api/interfaces/container_api.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
@@ -2463,6 +2464,29 @@ void _testContainerApiSyncMerge() {
       expect(outcome.result!.initAssignmentChecked.map((t) => t.id), unorderedEquals(['idC1', 'idC2']));
     });
 
+    testWidgets('the otp values of a server token that matches no local token stay out of the log', (
+      tester,
+    ) async {
+      final output = _CollectedOutput();
+      final previousPrint = Logger.print;
+      Logger.print = printer.Logger(output: output, printer: printer.SimplePrinter(colors: false));
+      addTearDown(() => Logger.print = previousPrint);
+      final run = await _runWith(
+        _dict(
+          update: [
+            _serverToken('OATH000000XX', otp: ['482913', '771204']),
+          ],
+        ),
+      );
+
+      await _syncWithDialog(tester, run: run, tokens: [candidate1], pick: _Pick.all);
+
+      final logged = output.lines.join(' ');
+      expect(logged, contains('OATH000000XX'), reason: 'the entry is still named');
+      expect(logged, isNot(contains('482913')));
+      expect(logged, isNot(contains('771204')));
+    });
+
     testWidgets('only the local token with the same otp values is merged and gets the container', (
       tester,
     ) async {
@@ -3257,4 +3281,12 @@ void _testContainerApiSyncMerge() {
       expect(result.newPolicies.disabledTokenDeletion, isFalse);
     });
   });
+}
+
+/// Keeps every line the logger prints.
+class _CollectedOutput extends printer.LogOutput {
+  final lines = <String>[];
+
+  @override
+  void output(printer.OutputEvent event) => lines.addAll(event.lines);
 }

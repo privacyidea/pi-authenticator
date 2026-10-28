@@ -185,6 +185,46 @@ void main() {
       expect(result, contains('******'));
     });
 
+    test('scrubs the otp values a container sync exchanges', () {
+      final json = filterSensitiveValues(
+        '{"serial": "OATH0001", "otp": ["482913", "771204"], "otplen": 6}',
+      );
+      final dart = filterSensitiveValues('{serial: OATH0001, otp: [482913, 771204]}');
+
+      for (final result in [json, dart]) {
+        expect(result, isNot(contains('482913')));
+        expect(result, isNot(contains('771204')));
+        expect(result, contains('OATH0001'));
+      }
+      expect(json, contains('"otplen": 6'), reason: 'only the whole name counts');
+    });
+
+    test('leaves otp inside other names and in prose alone', () {
+      for (final text in [
+        'otpauth://totp/user?issuer=Example',
+        'otplen: 6',
+        'Server token OATH0001 with 2 otp values matches no local token',
+      ]) {
+        expect(filterSensitiveValues(text), text);
+      }
+    });
+
+    test('scrubs the display code of a code-to-phone push request', () {
+      // The toString of PushCodeToPhoneRequest, as a failed save logs it.
+      final request = filterSensitiveValues(
+        'PushCodeToPhoneRequest{title: Login, serial: PIPU0001, '
+        'accepted: true, displayCode: 834291}',
+      );
+      // The server's answer to a push reaction.
+      final response = filterSensitiveValues(
+        '{"result": {"value": true}, "detail": {"display_code": "834291"}}',
+      );
+
+      expect(request, isNot(contains('834291')));
+      expect(request, contains('serial: PIPU0001'));
+      expect(response, isNot(contains('834291')));
+    });
+
     test('scrubs base64 containing a slash', () {
       // The value alphabet used to omit '/', so everything from the first
       // slash on stayed readable.
