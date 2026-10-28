@@ -22,9 +22,12 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:logger/logger.dart' as printer;
 import 'package:path_provider/path_provider.dart';
+import 'package:privacyidea_authenticator/utils/globals.dart';
 import 'package:privacyidea_authenticator/utils/logger.dart';
 
 import '../../log_file.dart';
@@ -825,5 +828,75 @@ void main() {
           'cut is right behind a character start it returns 100 KB + 1 byte '
           '(trivial)',
     );
+  });
+
+  // A framework error carries no app frame in its stack trace, and without
+  // verbose logging nothing before it reaches the file: the entry itself has
+  // to tell where it came from and in which situation.
+  group('an error that Flutter reports', () {
+    /// What EventChannel.receiveBroadcastStream reports when the native side
+    /// had no stream left to cancel.
+    void reportStreamCancel(String channel) => FlutterError.reportError(
+      FlutterErrorDetails(
+        exception: PlatformException(
+          code: 'error',
+          message: 'No active stream to cancel',
+        ),
+        library: 'services library',
+        context: ErrorDescription(
+          'while de-activating platform stream on channel $channel',
+        ),
+      ),
+    );
+
+    Future<String> reportedEntry() async =>
+        (await logFile.entriesContaining('No active stream to cancel')).single;
+
+    tearDown(
+      () => TestWidgetsFlutterBinding.instance.handleAppLifecycleStateChanged(
+        AppLifecycleState.resumed,
+      ),
+    );
+
+    test('names the channel of a platform stream', () async {
+      reportStreamCancel('com.llfbandit.app_links/events');
+
+      expect(
+        await reportedEntry(),
+        contains(
+          'while de-activating platform stream on channel '
+          'com.llfbandit.app_links/events',
+        ),
+      );
+    });
+
+    test('names the library that reported it', () async {
+      reportStreamCancel('a/channel');
+
+      expect(await reportedEntry(), contains('library: services library'));
+    });
+
+    test('names the lifecycle state of the app', () async {
+      TestWidgetsFlutterBinding.instance.handleAppLifecycleStateChanged(
+        AppLifecycleState.paused,
+      );
+
+      reportStreamCancel('a/channel');
+
+      expect(await reportedEntry(), contains('app state: paused'));
+    });
+
+    test('names the page on top', () async {
+      final scanner = MaterialPageRoute<void>(
+        settings: const RouteSettings(name: '/qr_scanner'),
+        builder: (_) => const SizedBox(),
+      );
+      appRouteObserver.didPush(scanner, null);
+      addTearDown(() => appRouteObserver.didPop(scanner, null));
+
+      reportStreamCancel('a/channel');
+
+      expect(await reportedEntry(), contains('page: /qr_scanner'));
+    });
   });
 }

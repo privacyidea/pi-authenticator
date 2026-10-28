@@ -468,10 +468,31 @@ Device Parameters $deviceInfo""";
         }
       },
       (e, stack) {
-        error('Uncaught Error: $e', error: e, stackTrace: stack);
+        error(
+          'Uncaught Error: $e ${_situation()}',
+          error: e,
+          stackTrace: stack,
+        );
       },
     );
     WidgetsFlutterBinding.ensureInitialized();
+  }
+
+  /// Where the app stood when an uncaught error came in: the library that
+  /// reported it (framework errors only), the lifecycle state and the page on
+  /// top. Without verbose logging no entry before the error reaches the file,
+  /// so this is all a report tells about its situation.
+  static String _situation({String? library}) {
+    String appState;
+    try {
+      appState = WidgetsBinding.instance.lifecycleState?.name ?? 'unknown';
+    } catch (_) {
+      // A background isolate has no binding; the error must still be logged.
+      appState = 'no binding';
+    }
+    final page = appRouteObserver.currentRoute ?? 'none';
+    return '[${library != null ? 'library: $library, ' : ''}'
+        'app state: $appState, page: $page]';
   }
 
   // Has no effect if _navigatorKey is already set
@@ -526,7 +547,8 @@ Device Parameters $deviceInfo""";
     FlutterError.onError = (FlutterErrorDetails details) async {
       final context = details.context == null ? '' : ' (${details.context})';
       error(
-        'Uncaught Error: ${details.exception}$context',
+        'Uncaught Error: ${details.exception}$context '
+        '${_situation(library: details.library)}',
         error: details.exception,
         stackTrace: details.stack ?? StackTrace.current,
       );

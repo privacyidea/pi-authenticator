@@ -102,6 +102,7 @@ class PrivacyIDEAAuthenticator extends ConsumerWidget {
           darkTheme: _customization.generateDarkTheme(),
           scaffoldMessengerKey: globalSnackbarKey,
           navigatorKey: globalNavigatorKey,
+          navigatorObservers: [appRouteObserver],
           themeMode: EasyDynamicTheme.of(context).themeMode,
           initialRoute: SplashScreen.routeName,
           onGenerateRoute: (settings) {

@@ -20,18 +20,42 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_zxing/flutter_zxing.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../../../../../l10n/app_localizations.dart';
 
 class QRScannerWidget extends StatefulWidget {
-  const QRScannerWidget({super.key});
+  /// Opens the gallery; replaceable in tests.
+  final Future<XFile?> Function() pickImage;
+
+  /// Reads a QR code from a picked image; replaceable in tests.
+  final Future<Code> Function(XFile image) readQrCode;
+
+  const QRScannerWidget({
+    super.key,
+    this.pickImage = _pickFromGallery,
+    this.readQrCode = _readQrCode,
+  });
 
   @override
   State<QRScannerWidget> createState() => _QRScannerWidgetState();
 }
 
+Future<XFile?> _pickFromGallery() =>
+    ImagePicker().pickImage(source: ImageSource.gallery);
+
+Future<Code> _readQrCode(XFile image) => zx.readBarcodeImagePath(
+  image,
+  DecodeParams(imageFormat: ImageFormat.rgb, format: Format.qrCode),
+);
+
 class _QRScannerWidgetState extends State<QRScannerWidget> {
   bool isInitialized = false;
+
+  /// True while the gallery picker is open. Opening it again cancels the
+  /// pending call (iOS: multiple_request, Android: already_active), so a tap
+  /// in that time is ignored.
+  bool _isPickingImage = false;
 
   @override
   Widget build(BuildContext context) => Material(
@@ -63,9 +87,13 @@ class _QRScannerWidgetState extends State<QRScannerWidget> {
               )!.a11yScanQrCodeViewFlashlightOff,
               child: const Icon(Icons.flash_off),
             ),
-            galleryIcon: Semantics(
+            // The library's own gallery button opens a second picker on a
+            // second tap, so the scanner brings its own button.
+            showGallery: false,
+            onActionSecondButton: _onGalleryButtonTapped,
+            actionSecondButtonIcon: Semantics(
               label: AppLocalizations.of(context)!.a11yScanQrCodeViewGallery,
-              child: const Icon(Icons.image),
+              child: const Icon(Icons.image, color: Colors.white),
             ),
             showToggleCamera: false,
             codeFormat: Format.qrCode,
@@ -85,5 +113,18 @@ class _QRScannerWidgetState extends State<QRScannerWidget> {
   void _onQrCaptured(Code qrCode) {
     if (!mounted) return;
     Navigator.of(context).maybePop(qrCode.text);
+  }
+
+  Future<void> _onGalleryButtonTapped() async {
+    if (_isPickingImage) return;
+    _isPickingImage = true;
+    try {
+      final image = await widget.pickImage();
+      if (image == null) return;
+      final qrCode = await widget.readQrCode(image);
+      if (qrCode.isValid) _onQrCaptured(qrCode);
+    } finally {
+      _isPickingImage = false;
+    }
   }
 }

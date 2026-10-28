@@ -185,22 +185,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.12.0+2"
-  camera_android:
-    dependency: "direct main"
-    description:
-      name: camera_android
-      sha256: "8b3795d2f7f3c7e705821fe6cd82b7dd56c8a8e66f2df4ac6daf659876967dbf"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.10.11"
   camera_android_camerax:
     dependency: transitive
     description:
       name: camera_android_camerax
-      sha256: "294b02ae027ad9edc98414a25f5e958d2dc6c65e9f102f21e2b36f0f558751eb"
+      sha256: "977f54512d338b3b36d7f82929794886766d8f41ae84a48fe103eb0106ecfe25"
       url: "https://pub.dev"
     source: hosted
-    version: "0.7.4+4"
+    version: "0.7.4+8"
   camera_avfoundation:
     dependency: transitive
     description:
@@ -766,10 +758,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_zxing
-      sha256: "6bf0cb0fde122455e73ae78214457c106fbde3c633af4624ce29567ac590ef21"
+      sha256: "2c1ed2d0b1eb70c95231da33e9dea80e5b2f8a4711974bdadf7d9c1813b7ad5e"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.0"
+    version: "2.4.0"
   font_awesome_flutter:
     dependency: "direct main"
     description:

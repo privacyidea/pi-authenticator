@@ -125,6 +125,10 @@ class _FakeFolderRepo implements TokenFolderRepository {
   TokenFolderState stored;
   bool saveSucceeds = true;
 
+  /// If set, [loadState] or [saveState] throws it.
+  Object? loadError;
+  Object? saveError;
+
   /// If set, [loadState] waits for it (deterministic, no real time).
   Completer<void>? loadGate;
 
@@ -134,12 +138,14 @@ class _FakeFolderRepo implements TokenFolderRepository {
   @override
   Future<TokenFolderState> loadState() async {
     await loadGate?.future;
+    if (loadError != null) throw loadError!;
     return stored;
   }
 
   @override
   Future<bool> saveState(TokenFolderState state) async {
     saveCalls.add(state);
+    if (saveError != null) throw saveError!;
     if (!saveSucceeds) return false;
     stored = state;
     return true;
@@ -218,6 +224,53 @@ void _testTokenFolderNotifierMore() {
       expect(await initState, loaded);
       expect(env.state, loaded);
       expect(env.folderRepo.saveCalls, isEmpty, reason: 'loading must not save');
+    });
+
+    test('a throwing loadState does not block later changes', () async {
+      final env = _setUp(const []);
+      env.folderRepo.loadError = StateError('storage broken');
+      await expectLater(env.notifier.initState, throwsStateError);
+
+      var completed = false;
+      unawaited(env.notifier.addNewFolder('a').then((_) => completed = true));
+      await pumpEventQueue();
+
+      expect(
+        completed,
+        isTrue,
+        reason: 'the failed load must release the repo lock',
+      );
+      expect(env.folderRepo.stored.folders.map((f) => f.label), ['a']);
+    });
+
+    test('a throwing saveState does not block later changes', () async {
+      final env = _setUp(const []);
+      await env.notifier.initState;
+      env.folderRepo.saveError = StateError('storage broken');
+      await expectLater(env.notifier.addNewFolder('a'), throwsStateError);
+      env.folderRepo.saveError = null;
+
+      var completed = false;
+      unawaited(env.notifier.addNewFolder('b').then((_) => completed = true));
+      await pumpEventQueue();
+
+      expect(
+        completed,
+        isTrue,
+        reason: 'the failed save must release both locks',
+      );
+      expect(env.state.folders.map((f) => f.label), ['b']);
+    });
+
+    test('a rebuild loads the folders again', () async {
+      const folders = [TokenFolder(label: 'a', folderId: 1)];
+      final env = _setUp(folders);
+      await env.notifier.initState;
+
+      env.container.invalidate(tokenFolderProvider);
+      await env.notifier.initState;
+
+      expect(env.state.folders, folders);
     });
   });
 

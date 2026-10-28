@@ -25,6 +25,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../l10n/app_localizations.dart';
 import '../model/enums/patch_note_type.dart';
 import '../model/version.dart';
+import 'current_route_observer.dart';
 
 Map<Version, Map<PatchNoteType, List<String>>> getLocalizedPatchNotes(
   AppLocalizations localizations,
@@ -143,6 +144,9 @@ Map<Version, Map<PatchNoteType, List<String>>> getLocalizedPatchNotes(
 
 final globalSnackbarKey = GlobalKey<ScaffoldMessengerState>();
 final globalNavigatorKey = GlobalKey<NavigatorState>();
+
+/// Attached to the app's navigator; tells error reports which page was open.
+final appRouteObserver = CurrentRouteObserver();
 final Future<GlobalKey<NavigatorState>> contextedGlobalNavigatorKey = Future(
   () async => await _getContextedGlobalNavigatorKey(),
 );
