@@ -35,6 +35,15 @@ import '../../../../../utils/validators.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 import '../../../../../widgets/pi_text_field.dart';
 
+/// The lock an export of [tokens] has to ask for: biometric as soon as one of
+/// them requires it, otherwise the one from the settings.
+ForceBiometricOption? exportForceBiometricOption(Iterable<Token> tokens) =>
+    tokens.any(
+      (token) => token.forceBiometricOption == ForceBiometricOption.biometric,
+    )
+    ? ForceBiometricOption.biometric
+    : null;
+
 class ExportTokensToFileDialog extends ConsumerStatefulWidget {
   final Iterable<Token> tokens;
   const ExportTokensToFileDialog({super.key, required this.tokens});
@@ -106,10 +115,7 @@ class _ExportTokensToFileDialogState
               DialogAction(
                 label: appLocalizations.export,
                 intent: ActionIntent.confirm,
-                onPressed:
-                    _passwordTextController.text.isNotEmpty &&
-                        _passwordTextController.text ==
-                            _confirmTextController.text
+                onPressed: _passwordIsValid(appLocalizations)
                     ? _exportTokens
                     : null,
               ),
@@ -118,23 +124,21 @@ class _ExportTokensToFileDialogState
     );
   }
 
+  /// The password protects every secret in the file: the button follows the
+  /// same rules as the error text under the field.
+  bool _passwordIsValid(AppLocalizations appLocalizations) =>
+      Validators(appLocalizations).password(_passwordTextController.text) ==
+          null &&
+      _passwordTextController.text == _confirmTextController.text;
+
   Future<void> _exportTokens() async {
-    if (_passwordTextController.text.isEmpty ||
-        _passwordTextController.text != _confirmTextController.text) {
-      return;
-    }
     final appLocalizations = AppLocalizations.of(context)!;
+    if (!_passwordIsValid(appLocalizations)) return;
     final authenticated = await lockAuthWithSettings(
       ref: ref,
       reason: (localization) => localization.exportLockedTokenReason,
       localization: appLocalizations,
-      forceBiometricOption:
-          widget.tokens.any(
-            (token) =>
-                token.forceBiometricOption == ForceBiometricOption.biometric,
-          )
-          ? ForceBiometricOption.biometric
-          : null,
+      forceBiometricOption: exportForceBiometricOption(widget.tokens),
       autoAuthIfUnsupported: true,
     );
     if (!authenticated || !mounted) return;

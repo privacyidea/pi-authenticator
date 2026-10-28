@@ -2189,6 +2189,7 @@
   "pushRequestParseError": "Push request could not be parsed.",
   "pushToken": "Push Token",
   "pushTokensViewTitle": "Push-Tokens",
+  "qrCodeTooMuchData": "This token holds too much data for a QR code. Export it as a file instead.",
   "qrFileDecodeError": "It was not possible to decode the QR code from the selected image, please use the QR code scanner instead.",
   "qrInFileNotFound": "No QR code was found in the selected image.",
   "qrInFileNotFound2": "You can show me where the QR code is located.",

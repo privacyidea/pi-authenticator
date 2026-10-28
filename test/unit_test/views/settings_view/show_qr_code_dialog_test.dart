@@ -25,15 +25,10 @@ import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
 import 'package:privacyidea_authenticator/views/settings_view/settings_groups/import_export_tokens_widgets/dialogs/show_qr_code_dialog.dart';
 import 'package:privacyidea_authenticator/widgets/button_widgets/intent_button.dart';
 import 'package:privacyidea_authenticator/widgets/dialog_widgets/default_dialog.dart';
-import 'package:zxing2/src/writer_exception.dart';
 
 import '../../../tests_app_wrapper.dart';
 import '../../utils/encryption/token_export_fixtures.dart';
 import '../dialog_layout_helpers.dart';
-
-/// Run `flutter test --dart-define=RUN_BUG_TESTS=true <file>` to execute the tests that are
-/// marked as known bugs. They are skipped by default so that the suite stays green.
-const bool _runBugTests = bool.fromEnvironment('RUN_BUG_TESTS');
 
 final _l10n = AppLocalizationsEn();
 
@@ -219,22 +214,15 @@ void main() {
       expect(find.byType(Image), findsOneWidget);
     });
 
-    testWidgets(
-      'BUG: show_qr_code_dialog.dart:35 ShowQrCodeDialog must not crash while building for a token above the 2952 byte QR capacity',
-      (tester) async {
-        // ShowQrCodeDialog.build calls generateQrCodeImage without a try/catch, so the WriterException ends in the
-        // framework error widget (red screen) and the user can neither see a message nor a QR code.
-        await tester.pumpWidget(TestsAppWrapper(child: Scaffold(body: ShowQrCodeDialog(token: exportUriMinimalTotp(label: 'x' * 3000)))));
-        await tester.pump();
-        expect(tester.takeException(), isNull);
-      },
-      // BUG: build() lets WriterException from generateQrCodeImage escape (testWidgets only accepts a bool for skip)
-      skip: !_runBugTests,
-    );
-
-    testWidgets('characterization: ShowQrCodeDialog build throws WriterException for an oversized token', (tester) async {
+    testWidgets('a token above the QR capacity shows a message instead of crashing', (tester) async {
+      // generateQrCodeImage throws a WriterException past QR version 40; the
+      // dialog used to end in the framework's error widget.
       await tester.pumpWidget(TestsAppWrapper(child: Scaffold(body: ShowQrCodeDialog(token: exportUriMinimalTotp(label: 'x' * 3000)))));
-      expect(tester.takeException(), isA<WriterException>());
+      await tester.pump();
+
+      expect(tester.takeException(), isNull);
+      expect(find.text(_l10n.qrCodeTooMuchData), findsOneWidget);
+      expect(find.byType(Image), findsNothing);
     });
   });
 }

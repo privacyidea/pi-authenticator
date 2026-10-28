@@ -30,9 +30,15 @@ import '../../../../../widgets/select_tokens_widget.dart';
 class SelectExportTokensDialog extends ConsumerStatefulWidget {
   final bool multiSelect;
   final Widget Function(Set<Token> tokens) dialogBuilder;
+
+  /// Runs once the tokens are picked, before [dialogBuilder] shows them; the
+  /// export stops when it returns false. Picking first lets it ask for the
+  /// lock the picked tokens require.
+  final Future<bool> Function(Set<Token> tokens)? authorize;
   const SelectExportTokensDialog({
     this.multiSelect = true,
     required this.dialogBuilder,
+    this.authorize,
     super.key,
   });
 
@@ -139,6 +145,8 @@ class _SelectTokensDialogState extends ConsumerState<SelectExportTokensDialog> {
 
   Future<void> _showExportDialog(Set<Token> tokens) async {
     if (tokens.isEmpty) return;
+    if (widget.authorize != null && !await widget.authorize!(tokens)) return;
+    if (!mounted) return;
     final isExported = await showDialog<bool>(
       useRootNavigator: false,
       context: context,

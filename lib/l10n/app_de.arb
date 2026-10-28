@@ -2186,6 +2186,7 @@
   "pushRequestParseError": "Die Push-Anfrage konnte nicht verarbeitet werden.",
   "pushToken": "Push Token",
   "pushTokensViewTitle": "Push-Tokens",
+  "qrCodeTooMuchData": "Dieser Token enthält zu viele Daten für einen QR-Code. Exportieren Sie ihn stattdessen als Datei.",
   "qrFileDecodeError": "Es war nicht möglich, den QR-Code aus dem ausgewählten Bild zu dekodieren. Bitte verwenden Sie stattdessen den QR-Code-Scanner.",
   "qrInFileNotFound": "Es wurde kein QR-Code in dem ausgewählten Bild gefunden.",
   "qrInFileNotFound2": "Sie können mir zeigen, wo sich der QR-Code befindet.",
