@@ -92,21 +92,20 @@ class DeleteContainerDialog extends ConsumerWidget {
         : await DeleteContainerTokenDialog.showDialog(container);
     if (deleteContainerTokens == null || !ref.context.mounted) return;
 
+    // A tap outside can close the dialog during the server call, which ends ref.
+    final tokenNotifier = ref.read(tokenProvider.notifier);
+    final containerTokens = (await ref.read(
+      tokenProvider.future,
+    )).containerTokens(container.serial);
+    if (!ref.context.mounted) return;
     var wasContainerDeleted = await _deleteContainer(ref);
     if (!wasContainerDeleted) {
       wasContainerDeleted =
           (await ForceDeleteContainerDialog.showDialog(container)) == true;
     }
-    if (!ref.context.mounted) return;
-    final containerTokens = (await ref.read(
-      tokenProvider.future,
-    )).containerTokens(container.serial);
-    if (!context.mounted || !ref.context.mounted) return;
     if (wasContainerDeleted) {
       if (deleteContainerTokens) {
-        await ref
-            .read(tokenProvider.notifier)
-            .removeTokens(containerTokens.noOffline);
+        await tokenNotifier.removeTokens(containerTokens.noOffline);
       } else {
         Logger.info(
           "Container ${container.serial} deleted, but tokens were not removed.",
@@ -114,18 +113,15 @@ class DeleteContainerDialog extends ConsumerWidget {
         Logger.info(
           "Tokens: ${containerTokens.noOffline.map((token) => token.serial).join(", ")}",
         );
-        await ref
-            .read(tokenProvider.notifier)
-            .updateTokens(
-              containerTokens.noOffline,
-              (token) => token.copyWith(
-                containerSerial: () => null,
-                checkedContainer:
-                    token.checkedContainer.contains(container.serial)
-                    ? token.checkedContainer
-                    : [...token.checkedContainer, container.serial],
-              ),
-            );
+        await tokenNotifier.updateTokens(
+          containerTokens.noOffline,
+          (token) => token.copyWith(
+            containerSerial: () => null,
+            checkedContainer: token.checkedContainer.contains(container.serial)
+                ? token.checkedContainer
+                : [...token.checkedContainer, container.serial],
+          ),
+        );
       }
     }
 

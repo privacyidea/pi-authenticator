@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:privacyidea_authenticator/api/interfaces/container_api.dart';
@@ -167,6 +170,46 @@ void main() {
         expect(updatedAssigned.checkedContainer, ['finalized-serial']);
         expect(updatedAssigned.containerSerial, isNull);
         expect(update(neverChecked).checkedContainer, ['finalized-serial']);
+      },
+    );
+
+    testWidgets(
+      'a dialog closed during the server call still unlinks the tokens',
+      (tester) async {
+        final unregister = Completer<bool>();
+        when(
+          mockContainerInternal.unregisterDelete(any),
+        ).thenAnswer((_) => unregister.future);
+        final dialogShown = ValueNotifier(true);
+        await tester.pumpWidget(
+          TestsAppWrapper(
+            overrides: [
+              tokenProvider.overrideWith(
+                () => FakeTokenNotifier(mockTokenInternal),
+              ),
+              tokenContainerProvider.overrideWith(
+                () => FakeTokenContainerNotifier(mockContainerInternal),
+              ),
+            ],
+            child: ValueListenableBuilder<bool>(
+              valueListenable: dialogShown,
+              builder: (_, shown, _) => shown
+                  ? DeleteContainerDialog(mockFinalizedContainer)
+                  : const SizedBox(),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+
+        await tester.tap(find.text('Delete'));
+        await tester.pump();
+        // A tap outside closes the dialog while the server answers.
+        dialogShown.value = false;
+        await tester.pump();
+        unregister.complete(true);
+        await tester.pumpAndSettle();
+
+        verify(mockTokenInternal.updateTokens<Token>(any, any)).called(1);
       },
     );
   });
