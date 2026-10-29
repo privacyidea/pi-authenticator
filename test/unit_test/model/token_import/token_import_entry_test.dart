@@ -100,6 +100,22 @@ void main() {
         expect(kept.folderId, 7);
         expect(kept.isLocked, isTrue, reason: 'a lock must not get lost');
       });
+
+      test('hides the code of a chosen new token that the kept lock locks', () {
+        // A backup stores the token as it was shown at export time.
+        final shownNew = newToken.copyWith(isHidden: false);
+        final kept = TokenImportEntry(
+          newToken: shownNew,
+          oldToken: placedOld,
+        ).copySelect(shownNew).tokenToKeep!;
+
+        expect(kept.isLocked, isTrue);
+        expect(
+          kept.isHidden,
+          isTrue,
+          reason: 'a locked token shows its code only after authentication',
+        );
+      });
     });
   });
 }

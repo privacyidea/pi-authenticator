@@ -41,11 +41,13 @@ class TokenImportEntry {
     if (selected == null || old == null || !identical(selected, newToken)) {
       return selected;
     }
+    final isLocked = old.isLocked || selected.isLocked;
     return selected.copyWith(
       id: old.id,
       sortIndex: old.sortIndex,
       folderId: () => old.folderId,
-      isLocked: old.isLocked || selected.isLocked,
+      isLocked: isLocked,
+      isHidden: isLocked,
     );
   }
 
