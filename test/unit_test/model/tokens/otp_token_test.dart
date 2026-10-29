@@ -19,12 +19,14 @@
  */
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:logger/logger.dart' as printer;
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/enums/force_biometric_option.dart';
 import 'package:privacyidea_authenticator/model/token_import/token_origin_data.dart';
 import 'package:privacyidea_authenticator/model/token_template.dart';
 import 'package:privacyidea_authenticator/model/tokens/otp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
 
 class FakeOTPToken extends OTPToken {
   final String _testOtpValue;
@@ -104,6 +106,13 @@ class FakeOTPToken extends OTPToken {
   }
 }
 
+class _CollectedOutput extends printer.LogOutput {
+  final lines = <String>[];
+
+  @override
+  void output(printer.OutputEvent event) => lines.addAll(event.lines);
+}
+
 void main() {
   group('OTPToken Static Validators', () {
     test('validateOtpAuthMap provides default SHA1 and 6 digits', () {
@@ -166,6 +175,35 @@ void main() {
       expect(json['algorithm'], 'SHA256');
       expect(json['digits'], 8);
       expect(json['secret'], 'SECRET123');
+    });
+
+    test('toOtpAuthMap keeps the otp values out of the log', () {
+      final output = _CollectedOutput();
+      final previousPrint = Logger.print;
+      Logger.print = printer.Logger(
+        output: output,
+        printer: printer.SimplePrinter(colors: false),
+      );
+      addTearDown(() => Logger.print = previousPrint);
+      const loggedToken = FakeOTPToken(
+        algorithm: Algorithms.SHA1,
+        digits: 6,
+        secret: 'GEZDGNBVGY3TQOJQ',
+        id: 'id_logged',
+        otpValue: '482913',
+        nextValue: '771204',
+      );
+
+      loggedToken.toOtpAuthMap();
+
+      final logged = output.lines.join(' ');
+      expect(
+        logged,
+        contains(OTPToken.OTP_VALUES),
+        reason: 'the line is still written',
+      );
+      expect(logged, isNot(contains('482913')));
+      expect(logged, isNot(contains('771204')));
     });
   });
 

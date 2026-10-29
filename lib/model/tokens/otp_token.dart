@@ -152,7 +152,7 @@ abstract class OTPToken extends Token {
   // --- Serialization Helpers ---
   @override
   Map<String, dynamic> toOtpAuthMap() {
-    Logger.debug('$OTP_VALUES ${jsonEncode([otpValue, nextValue])}');
+    Logger.debug('$OTP_VALUES: ${jsonEncode([otpValue, nextValue])}');
     return super.toOtpAuthMap()..addAll({
       ALGORITHM: algorithm.name,
       DIGITS: digits.toString(),
