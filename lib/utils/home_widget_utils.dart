@@ -142,6 +142,16 @@ class HomeWidgetUtils {
   static set debugTokenRepository(TokenRepository? repository) =>
       _tokenRepository = repository;
 
+  /// Lets a test hand in the folder storage; the factory is Android-only.
+  @visibleForTesting
+  static set debugTokenFolderRepository(TokenFolderRepository? repository) =>
+      _folderRepository = repository;
+
+  /// Lets a test build an instance off Android, where the factory returns
+  /// [UnsupportedHomeWidgetUtils].
+  @visibleForTesting
+  static HomeWidgetUtils debugInstance() => HomeWidgetUtils._();
+
   static Future<OTPToken?> _getTokenOfTokenId(String tokenId) =>
       _repoMutex.protect(() => _loadTokenFromRepo(tokenId));
 
@@ -415,7 +425,7 @@ class HomeWidgetUtils {
       await unlink(widgetId);
       return;
     }
-    if (otpToken.isLocked) {
+    if (await _isLocked(otpToken)) {
       Logger.info(
         '[TRACE] showOtp($widgetId) token is locked -> abort',
         verbose: true,
@@ -458,7 +468,7 @@ class HomeWidgetUtils {
       await unlink(widgetId);
       return;
     }
-    if (token.isLocked) {
+    if (await _isLocked(token)) {
       Logger.info('Copy blocked because the token is locked');
       return;
     }
@@ -486,7 +496,11 @@ class HomeWidgetUtils {
       await unlink(widgetId);
       return;
     }
-    final tokenAction = _mapTokenAction[token!.type];
+    if (await _isLocked(token!)) {
+      Logger.info('Action blocked because the token is locked');
+      return;
+    }
+    final tokenAction = _mapTokenAction[token.type];
     if (tokenAction == null) return;
     final actionTimer = _actionTimers[tokenId];
     if (actionTimer != null && actionTimer.isActive) {
@@ -577,7 +591,7 @@ class HomeWidgetUtils {
     await HomeWidget.saveWidgetData('$keyTokenId$widgetId', token.id);
     await HomeWidget.saveWidgetData(
       '$keyTokenLocked$widgetId',
-      token.isLocked || ((await _folderOf(token))?.isLocked ?? false),
+      await _isLocked(token),
     );
     await _updateHomeWidgetHideOtp(token, widgetId);
     await _setTokenType(widgetId, token.type);
@@ -635,6 +649,10 @@ class HomeWidgetUtils {
     final allFolders = await _loadFoldersFromRepo();
     return allFolders.firstWhereOrNull((token) => token.folderId == folderId);
   }
+
+  /// Whether the widget treats [token] as locked: the token or its folder is.
+  Future<bool> _isLocked(OTPToken token) async =>
+      token.isLocked || ((await _folderOf(token))?.isLocked ?? false);
 
   ////////////////////////////////////////
   ////////////// Rendering ///////////////
@@ -883,6 +901,8 @@ class UnsupportedHomeWidgetUtils implements HomeWidgetUtils {
   Map<String, Timer?> get _copyTimers => {};
   @override
   Future<TokenFolder?> _folderOf(Token token) => Future.value();
+  @override
+  Future<bool> _isLocked(OTPToken token) => Future.value(false);
   @override
   Future<ThemeData> _getThemeData({bool dark = false}) =>
       Future.value(ThemeData.light());

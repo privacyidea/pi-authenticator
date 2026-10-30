@@ -2,8 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:privacyidea_authenticator/interfaces/repo/token_folder_repository.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/token_repository.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
+import 'package:privacyidea_authenticator/model/riverpod_states/token_folder_state.dart';
+import 'package:privacyidea_authenticator/model/token_folder.dart';
 import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
@@ -49,6 +52,21 @@ class _FakeTokenRepository implements TokenRepository {
 
   @override
   Future<List<T>> deleteTokens<T extends Token>(List<T> tokens) async => [];
+}
+
+/// In-memory folder storage.
+class _FakeFolderRepository implements TokenFolderRepository {
+  List<TokenFolder> folders = [];
+
+  @override
+  Future<TokenFolderState> loadState() async =>
+      TokenFolderState(folders: folders);
+
+  @override
+  Future<bool> saveState(TokenFolderState state) async {
+    folders = state.folders;
+    return true;
+  }
 }
 
 HOTPToken _hotp(String id, int counter) => HOTPToken(
@@ -297,6 +315,7 @@ void main() {
   });
 
   _testIncrementHotpCounter();
+  _testTapsOnLockedTokens();
 }
 
 void _testIncrementHotpCounter() {
@@ -370,6 +389,130 @@ void _testIncrementHotpCounter() {
       );
 
       expect(await HomeWidgetUtils.incrementHotpCounter('t'), isNull);
+    });
+  });
+}
+
+void _testTapsOnLockedTokens() {
+  group('HomeWidgetUtils taps on a locked token', () {
+    const channel = MethodChannel('home_widget');
+    const widgetId = '7';
+    late _FakeTokenRepository repository;
+    late _FakeFolderRepository folderRepository;
+    late Map<String, Object?> store;
+    late List<String> savedKeys;
+
+    setUp(() {
+      repository = _FakeTokenRepository();
+      HomeWidgetUtils.debugTokenRepository = repository;
+      folderRepository = _FakeFolderRepository();
+      HomeWidgetUtils.debugTokenFolderRepository = folderRepository;
+      store = {'${HomeWidgetUtils.keyTokenId}$widgetId': 'locked'};
+      savedKeys = [];
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(channel, (call) async {
+            switch (call.method) {
+              case 'getWidgetData':
+                return store[call.arguments['id']] ??
+                    call.arguments['defaultValue'];
+              case 'saveWidgetData':
+                savedKeys.add(call.arguments['id'] as String);
+                store[call.arguments['id']] = call.arguments['data'];
+                return true;
+            }
+            return null;
+          });
+    });
+
+    tearDown(() {
+      HomeWidgetUtils.debugTokenRepository = null;
+      HomeWidgetUtils.debugTokenFolderRepository = null;
+    });
+
+    test('copy writes nothing, so no OTP reaches the clipboard', () async {
+      repository.stored['locked'] = TOTPToken(
+        id: 'locked',
+        algorithm: Algorithms.SHA1,
+        digits: 6,
+        secret: 'secret',
+        period: 30,
+        isLocked: true,
+      );
+
+      await HomeWidgetUtils.debugInstance().copyOtp(widgetId);
+
+      expect(savedKeys, isEmpty);
+    });
+
+    test('action writes nothing, so a locked HOTP token does not count on',
+        () async {
+      repository.stored['locked'] = HOTPToken(
+        id: 'locked',
+        algorithm: Algorithms.SHA1,
+        digits: 6,
+        secret: 'secret',
+        counter: 3,
+        isLocked: true,
+      );
+
+      await HomeWidgetUtils.debugInstance().performAction(widgetId);
+
+      expect(savedKeys, isEmpty);
+      expect((repository.stored['locked'] as HOTPToken).counter, 3);
+    });
+
+    group('in a locked folder', () {
+      setUp(() {
+        folderRepository.folders = [
+          const TokenFolder(label: 'Locked folder', folderId: 4, isLocked: true),
+        ];
+      });
+
+      TOTPToken totpInFolder() => TOTPToken(
+        id: 'locked',
+        algorithm: Algorithms.SHA1,
+        digits: 6,
+        secret: 'secret',
+        period: 30,
+        folderId: 4,
+      );
+
+      test('show writes nothing, so the widget shows no OTP', () async {
+        repository.stored['locked'] = totpInFolder();
+
+        // Rendering cannot run on the host. A showOtp that gets that far has
+        // already written the OTP text, which the expectation catches.
+        await HomeWidgetUtils.debugInstance()
+            .showOtp(widgetId)
+            .then((_) {}, onError: (_) {});
+
+        expect(savedKeys, isEmpty);
+      });
+
+      test('copy writes nothing, so no OTP reaches the clipboard', () async {
+        repository.stored['locked'] = totpInFolder();
+
+        await HomeWidgetUtils.debugInstance().copyOtp(widgetId);
+
+        expect(savedKeys, isEmpty);
+      });
+
+      test('action writes nothing, so the HOTP token does not count on',
+          () async {
+        repository.stored['locked'] = HOTPToken(
+          id: 'locked',
+          algorithm: Algorithms.SHA1,
+          digits: 6,
+          secret: 'secret',
+          counter: 3,
+          folderId: 4,
+        );
+
+        await HomeWidgetUtils.debugInstance().performAction(widgetId);
+
+        expect(savedKeys, isEmpty);
+        expect((repository.stored['locked'] as HOTPToken).counter, 3);
+      });
     });
   });
 }
