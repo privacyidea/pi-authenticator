@@ -19,6 +19,7 @@
  */
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
@@ -223,6 +224,17 @@ void main() {
       expect(tester.takeException(), isNull);
       expect(find.text(_l10n.qrCodeTooMuchData), findsOneWidget);
       expect(find.byType(Image), findsNothing);
+    });
+
+    test('the message for a token above the QR capacity is translated into every app language', () {
+      final untranslated = [
+        for (final locale in AppLocalizations.supportedLocales)
+          if (locale.languageCode != 'en' &&
+              lookupAppLocalizations(locale).qrCodeTooMuchData == _l10n.qrCodeTooMuchData)
+            locale.languageCode,
+      ];
+
+      expect(untranslated, isEmpty);
     });
   });
 }

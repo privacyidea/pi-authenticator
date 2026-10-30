@@ -1365,6 +1365,9 @@
   "@pushTokensViewTitle": {
     "description": "Title of the push tokens view."
   },
+  "@qrCodeTooMuchData": {
+    "description": "Shown instead of the QR code when a token holds more data than one QR code can carry."
+  },
   "@qrFileDecodeError": {
     "description": "Error message when the qr file could not be decoded."
   },
@@ -2157,6 +2160,7 @@
   "pushRequestParseError": "Żądanie push nie mogło zostać przetworzone.",
   "pushToken": "Push token",
   "pushTokensViewTitle": "Push-Tokeny",
+  "qrCodeTooMuchData": "Ten token zawiera zbyt dużo danych dla kodu QR. Zamiast tego wyeksportuj go jako plik.",
   "qrFileDecodeError": "Nie można było zdekodować kodu QR z wybranego obrazu, zamiast tego użyj skanera kodów QR.",
   "qrInFileNotFound": "Nie znaleziono kodu QR na wybranym obrazie.",
   "qrInFileNotFound2": "Możesz pokazać mi, gdzie znajduje się kod QR.",

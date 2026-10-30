@@ -1365,6 +1365,9 @@
   "@pushTokensViewTitle": {
     "description": "Title of the push tokens view."
   },
+  "@qrCodeTooMuchData": {
+    "description": "Shown instead of the QR code when a token holds more data than one QR code can carry."
+  },
   "@qrFileDecodeError": {
     "description": "Error message when the qr file could not be decoded."
   },
@@ -2157,6 +2160,7 @@
   "pushRequestParseError": "Požadavek na odeslání se nepodařilo zpracovat.",
   "pushToken": "Push notifikace",
   "pushTokensViewTitle": "Push-Tokens",
+  "qrCodeTooMuchData": "Tento žeton obsahuje příliš mnoho dat pro QR kód. Exportujte jej místo toho jako soubor.",
   "qrFileDecodeError": "Z vybraného obrázku nebylo možné dekódovat QR kód, použijte prosím místo toho skener QR kódů.",
   "qrInFileNotFound": "Ve vybraném obrázku nebyl nalezen žádný QR kód.",
   "qrInFileNotFound2": "Můžete mi ukázat, kde se QR kód nachází.",

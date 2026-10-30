@@ -1365,6 +1365,9 @@
   "@pushTokensViewTitle": {
     "description": "Title of the push tokens view."
   },
+  "@qrCodeTooMuchData": {
+    "description": "Shown instead of the QR code when a token holds more data than one QR code can carry."
+  },
   "@qrFileDecodeError": {
     "description": "Error message when the qr file could not be decoded."
   },
@@ -2157,6 +2160,7 @@
   "pushRequestParseError": "Push request could not be parsed.",
   "pushToken": "Token Dorong",
   "pushTokensViewTitle": "Token Dorong",
+  "qrCodeTooMuchData": "Token ini berisi terlalu banyak data untuk kode QR. Ekspor sebagai file sebagai gantinya.",
   "qrFileDecodeError": "Tidak dapat memecahkan kode QR dari gambar yang dipilih, silakan gunakan pemindai kode QR sebagai gantinya.",
   "qrInFileNotFound": "Tidak ada kode QR yang ditemukan pada gambar yang dipilih.",
   "qrInFileNotFound2": "Anda dapat menunjukkan di mana letak kode QR.",
