@@ -53,6 +53,11 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable>
   late final AnimationController animationController;
   late final ExpandableController expandableController;
 
+  /// What this panel's last save asks for, until the stored folder shows it:
+  /// the store lags a tap by a frame and a write, so a second tap would
+  /// otherwise compare against a value that is about to change.
+  bool? _savingExpanded;
+
   @override
   void initState() {
     super.initState();
@@ -74,15 +79,23 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable>
 
       final newIsExpanded = expandableController.expanded;
       // Following the stored folder (didUpdateWidget) needs no save.
-      if (newIsExpanded == widget.folder.isExpanded) return;
+      if (newIsExpanded == (_savingExpanded ?? widget.folder.isExpanded)) {
+        return;
+      }
+      _savingExpanded = newIsExpanded;
 
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        globalRef?.read(tokenFolderProvider.notifier).updateFolder(
-          widget.folder,
-          (p0) {
-            return p0.copyWith(isExpanded: newIsExpanded);
-          },
-        );
+      final folder = widget.folder;
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+        final saved = await globalRef
+            ?.read(tokenFolderProvider.notifier)
+            .updateFolder(folder, (p0) {
+              return p0.copyWith(isExpanded: newIsExpanded);
+            });
+        // A failed save never reaches the stored folder.
+        if (saved?.currentOf(folder)?.isExpanded != newIsExpanded &&
+            _savingExpanded == newIsExpanded) {
+          _savingExpanded = null;
+        }
       });
     });
   }
@@ -94,6 +107,10 @@ class _TokenFolderExpandableState extends ConsumerState<TokenFolderExpandable>
     // collapses locked folders, a home widget link expands one. Only such a
     // change is followed; a tap whose save is still pending must stay.
     final stored = widget.folder.isExpanded;
+    if (_savingExpanded != null) {
+      if (stored == _savingExpanded) _savingExpanded = null;
+      return;
+    }
     if (stored != oldWidget.folder.isExpanded &&
         stored != expandableController.expanded) {
       expandableController.expanded = stored;

@@ -72,6 +72,24 @@ void main() {
       expect(_panelIsExpanded(tester), isTrue);
     });
 
+    testWidgets('keeps the second of two quick taps when the first save arrives', (
+      tester,
+    ) async {
+      const folder = TokenFolder(label: 'f', folderId: 1);
+      await tester.pumpWidget(_panel(folder));
+      await tester.pump();
+
+      // The user opens and closes the folder before the opening is stored.
+      final controller = tester
+          .widget<ExpandablePanel>(find.byType(ExpandablePanel))
+          .controller!;
+      controller.expanded = true;
+      controller.expanded = false;
+      await tester.pumpWidget(_panel(folder.copyWith(isExpanded: true)));
+
+      expect(_panelIsExpanded(tester), isFalse);
+    });
+
     testWidgets('expands when the stored folder is expanded', (tester) async {
       // What a home widget link to a token in a locked folder does.
       const folder = TokenFolder(label: 'f', folderId: 1, isLocked: true);
