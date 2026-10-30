@@ -37,9 +37,12 @@ import 'pages/select_import_type_page.dart';
 /// not be saved. Returns whether at least one token was saved.
 @visibleForTesting
 Future<bool> saveImportedTokens(WidgetRef ref, List<Token> tokens) async {
-  final failed = await ref
-      .read(tokenProvider.notifier)
-      .addOrReplaceTokens(tokens);
+  // The notifier saves the stored tokens again, so it also returns those.
+  final failed = (await ref
+          .read(tokenProvider.notifier)
+          .addOrReplaceTokens(tokens))
+      .where((f) => tokens.any((t) => t.isSameTokenAs(f) == true))
+      .toList();
   if (failed.isNotEmpty) {
     showErrorStatusMessage(
       message: (localizations) => localizations.importFailedToken(failed.length),

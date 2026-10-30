@@ -20,11 +20,15 @@ HOTPToken _token(String id) => HOTPToken(
   secret: 'secret$id',
 );
 
-/// Pumps an app whose token storage fails for every token in [failing] and
-/// returns a ref into it.
-Future<WidgetRef> _pumpApp(WidgetTester tester, Set<String> failing) async {
+/// Pumps an app that already holds the [stored] tokens and whose token storage
+/// fails for every token in [failing], and returns a ref into it.
+Future<WidgetRef> _pumpApp(
+  WidgetTester tester,
+  Set<String> failing, {
+  List<Token> stored = const [],
+}) async {
   final repo = MockTokenRepository();
-  when(repo.loadTokens()).thenAnswer((_) async => []);
+  when(repo.loadTokens()).thenAnswer((_) async => stored);
   when(repo.saveOrReplaceTokens(any)).thenAnswer(
     (invocation) async => (invocation.positionalArguments[0] as List<Token>)
         .where((t) => failing.contains(t.id))
@@ -71,6 +75,26 @@ void main() {
 
       expect(await saveImportedTokens(ref, [_token('a')]), isTrue);
       expect(ref.read(statusProvider).current, isNull);
+    });
+
+    testWidgets('ignores a stored token that fails to save again', (tester) async {
+      final ref = await _pumpApp(tester, {'stored'}, stored: [_token('stored')]);
+
+      expect(await saveImportedTokens(ref, [_token('a')]), isTrue);
+      expect(ref.read(statusProvider).current, isNull);
+    });
+
+    testWidgets('counts only the imported tokens that could not be saved', (tester) async {
+      final ref = await _pumpApp(
+        tester,
+        {'stored', 'a'},
+        stored: [_token('stored')],
+      );
+
+      expect(await saveImportedTokens(ref, [_token('a')]), isFalse);
+      final shown = ref.read(statusProvider).current;
+      expect(shown, isNotNull);
+      expect(shown!.message(AppLocalizationsEn()), AppLocalizationsEn().importFailedToken(1));
     });
   });
 }
