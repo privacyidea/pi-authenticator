@@ -683,4 +683,35 @@ void _testTokenFolderNotifierMore() {
       expect(env.folderRepo.stored.currentOfId(5), isNotNull);
     });
   });
+
+  group('TokenFolderNotifier.replaceExistingFolders', () {
+    test('replaces stored folders and leaves out a folder that is not stored', () async {
+      final env = _setUp(const [TokenFolder(label: 'a', folderId: 1)]);
+      await env.notifier.initState;
+
+      final result = await env.notifier.replaceExistingFolders(const [
+        TokenFolder(label: 'a2', folderId: 1),
+        TokenFolder(label: 'removed', folderId: 2),
+      ]);
+
+      expect(result.folders, const [TokenFolder(label: 'a2', folderId: 1)]);
+      expect(env.folderRepo.stored, result);
+    });
+
+    test('a list read before a folder was removed does not bring it back', () async {
+      const folders = [
+        TokenFolder(label: 'a', folderId: 1),
+        TokenFolder(label: 'b', folderId: 2),
+      ];
+      final env = _setUp(folders);
+      await env.notifier.initState;
+
+      final removal = env.notifier.removeFolder(folders[1]);
+      final stale = env.notifier.replaceExistingFolders(folders);
+      await Future.wait([removal, stale]);
+
+      expect(env.state.folders, [folders[0]]);
+      expect(env.folderRepo.stored.folders, [folders[0]]);
+    });
+  });
 }

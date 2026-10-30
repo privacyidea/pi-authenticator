@@ -185,6 +185,29 @@ class TokenFolderNotifier extends _$TokenFolderNotifier {
     }
   }
 
+  /// Replaces only the folders that are still stored. Drag and sort pass a
+  /// list read before their awaits, which can still hold a removed folder.
+  Future<TokenFolderState> replaceExistingFolders(
+    List<TokenFolder> folders,
+  ) async {
+    await _stateMutex.acquire();
+    try {
+      final oldState = state;
+      final newState = oldState.addOrReplaceFolders(
+        folders.where((f) => oldState.currentOf(f) != null).toList(),
+      );
+      final success = await _saveToRepo(newState);
+      if (!success) {
+        Logger.warning('Failed to replace folders');
+        return oldState;
+      }
+      if (ref.mounted) state = newState;
+      return newState;
+    } finally {
+      _stateMutex.release();
+    }
+  }
+
   Future<TokenFolderState> toggleFolderLock(TokenFolder folder) =>
       updateFolder(folder, (p0) => p0.copyWith(isLocked: !p0.isLocked));
   Future<TokenFolderState> updateLabel(TokenFolder folder, String label) =>
