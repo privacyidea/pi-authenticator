@@ -93,17 +93,18 @@ class DeleteContainerDialog extends ConsumerWidget {
     if (deleteContainerTokens == null || !ref.context.mounted) return;
 
     // A tap outside can close the dialog during the server call, which ends ref.
-    final tokenNotifier = ref.read(tokenProvider.notifier);
-    final containerTokens = (await ref.read(
-      tokenProvider.future,
-    )).containerTokens(container.serial);
-    if (!ref.context.mounted) return;
+    final providers = ProviderScope.containerOf(context, listen: false);
     var wasContainerDeleted = await _deleteContainer(ref);
     if (!wasContainerDeleted) {
       wasContainerDeleted =
           (await ForceDeleteContainerDialog.showDialog(container)) == true;
     }
     if (wasContainerDeleted) {
+      // Read after the call: a sync can add tokens to the container meanwhile.
+      final tokenNotifier = providers.read(tokenProvider.notifier);
+      final containerTokens = (await providers.read(
+        tokenProvider.future,
+      )).containerTokens(container.serial);
       if (deleteContainerTokens) {
         await tokenNotifier.removeTokens(containerTokens.noOffline);
       } else {
