@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
@@ -53,6 +54,22 @@ void main() {
     testWidgets('a strong password enables the export', (tester) async {
       final button = await _exportButtonAfter(tester, 'Str0ng!Passw');
       expect(button.onPressed, isNotNull);
+    });
+  });
+
+  group('exportFileSavedMessage', () {
+    setUpAll(setupMocks);
+    tearDown(() => debugDefaultTargetPlatformOverride = null);
+
+    test('on iOS names the app folder in the Files app', () {
+      // iOS writes the file to the app's Documents folder, not to Downloads.
+      debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+      expect(exportFileSavedMessage(_l), _l.fileSavedToFilesApp('privacyIDEA'));
+    });
+
+    test('on Android names the Downloads folder', () {
+      debugDefaultTargetPlatformOverride = TargetPlatform.android;
+      expect(exportFileSavedMessage(_l), _l.fileSavedToDownloadsFolder);
     });
   });
 }

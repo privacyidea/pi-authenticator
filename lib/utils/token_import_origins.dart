@@ -17,6 +17,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import 'package:flutter/foundation.dart';
+
 import '../mains/main_netknights.dart';
 import '../model/enums/token_import_type.dart';
 import '../model/token_import/token_import_origin.dart';
@@ -30,6 +32,7 @@ import '../processors/token_import_file_processor/authenticator_pro_import_file_
 import '../processors/token_import_file_processor/free_otp_plus_import_file_processor.dart';
 import '../processors/token_import_file_processor/privacyidea_authenticator_import_file_processor.dart';
 import '../processors/token_import_file_processor/two_fas_import_file_processor.dart';
+import 'app_info_utils.dart';
 
 class TokenImportOrigins {
   static final List<TokenImportOrigin> appList = [
@@ -55,7 +58,10 @@ class TokenImportOrigins {
       TokenImportSource(
         processor: const PrivacyIDEAAuthenticatorImportFileProcessor(),
         type: TokenImportType.backupFile,
-        importHint: (localizations) => localizations.importHintPrivacyIdeaFile,
+        // iOS keeps the backup in the app's folder in the Files app.
+        importHint: (localizations) => defaultTargetPlatform == TargetPlatform.iOS
+            ? localizations.importHintPrivacyIdeaFileIos(AppInfoUtils.appName)
+            : localizations.importHintPrivacyIdeaFile,
       ),
     ],
   );

@@ -29,6 +29,7 @@ import '../../../../../l10n/app_localizations.dart';
 import '../../../../../mains/main_netknights.dart';
 import '../../../../../model/enums/force_biometric_option.dart';
 import '../../../../../model/tokens/token.dart';
+import '../../../../../utils/app_info_utils.dart';
 import '../../../../../utils/encryption/token_encryption.dart';
 import '../../../../../utils/lock_auth.dart';
 import '../../../../../utils/validators.dart';
@@ -43,6 +44,13 @@ ForceBiometricOption? exportForceBiometricOption(Iterable<Token> tokens) =>
     )
     ? ForceBiometricOption.biometric
     : null;
+
+/// What the user is told after the export. iOS keeps the file in the app's
+/// Documents folder, which the Files app shows as a folder named like the app.
+String exportFileSavedMessage(AppLocalizations appLocalizations) =>
+    defaultTargetPlatform == TargetPlatform.iOS
+    ? appLocalizations.fileSavedToFilesApp(AppInfoUtils.appName)
+    : appLocalizations.fileSavedToDownloadsFolder;
 
 class ExportTokensToFileDialog extends ConsumerStatefulWidget {
   final Iterable<Token> tokens;
@@ -180,7 +188,7 @@ class _ExportTokensToFileDialogState
       );
       final file = File(path);
       await file.writeAsString(encryptedTokens);
-      showSnackBar(appLocalizations.fileSavedToDownloadsFolder);
+      showSnackBar(exportFileSavedMessage(appLocalizations));
       return true;
     } catch (e) {
       if (context.mounted) {
@@ -200,7 +208,7 @@ class _ExportTokensToFileDialogState
     final file = File('${downloadsDir.path}/${_getFileName()}');
     try {
       await file.writeAsString(encryptedTokens);
-      showSnackBar(appLocalizations.fileSavedToDownloadsFolder);
+      showSnackBar(exportFileSavedMessage(appLocalizations));
       return true;
     } catch (e) {
       if (context.mounted) {

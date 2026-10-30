@@ -611,6 +611,15 @@
   "@fileSavedToDownloadsFolder": {
     "description": "Tells the user that the file was saved to the downloads folder."
   },
+  "@fileSavedToFilesApp": {
+    "description": "Tells the user on iOS that the file was saved to the app's folder in the Files app.",
+    "placeholders": {
+      "appName": {
+        "example": "privacyIDEA Authenticator",
+        "type": "String"
+      }
+    }
+  },
   "@finalizationState": {
     "description": "Title of the finalization state field."
   },
@@ -724,6 +733,15 @@
   },
   "@importHintPrivacyIdeaFile": {
     "description": "Tells the user importent information about the import of privacyIDEA files."
+  },
+  "@importHintPrivacyIdeaFileIos": {
+    "description": "Tells the user on iOS importent information about the import of privacyIDEA files, including where the backup file is stored.",
+    "placeholders": {
+      "appName": {
+        "example": "privacyIDEA Authenticator",
+        "type": "String"
+      }
+    }
   },
   "@importHintPrivacyIdeaQrScan": {
     "description": "Tells the user importent information about the import of privacyIDEA qr codes."
@@ -1960,6 +1978,7 @@
   "feedbackTitle": "Umpan balik Anda selalu diterima!",
   "fileNotAvailable": "File saat ini tidak tersedia! Silakan coba lagi.",
   "fileSavedToDownloadsFolder": "File disimpan ke folder Unduhan",
+  "fileSavedToFilesApp": "File disimpan di app File, dalam folder “{appName}“",
   "finalizationState": "Status Finalisasi",
   "finalizeContainerFailed": "Menyelesaikan Kontainer Gagal",
   "firebaseToken": "Token Firebase",
@@ -1989,7 +2008,8 @@
   "importHintFreeOtpPlusQrScan": "Pindai kode QR yang Anda terima ketika Anda menekan tiga titik di ubin token dan pilih ",
   "importHintGoogleQrFile": "Pilih file gambar dengan kode QR yang Anda terima saat mengekspor akun Anda dari Google Authenticator.\n!! Perhatikan bahwa tidak aman untuk menyimpan kode QR di perangkat Anda karena token tidak dienkripsi !!",
   "importHintGoogleQrScan": "Pindai kode QR yang Anda terima saat mengekspor akun dari Google Authenticator.",
-  "importHintPrivacyIdeaFile": "Untuk membuat cadangan, buka pengaturan dan ketuk ",
+  "importHintPrivacyIdeaFile": "Untuk membuat cadangan, buka pengaturan dan ketuk “Ekspor“. Pilih “Sebagai file“, pilih token yang ingin Anda ekspor. Lalu ketuk “Ekspor“ dan tetapkan kata sandi. Lokasi penyimpanan adalah folder unduhan di perangkat Anda.",
+  "importHintPrivacyIdeaFileIos": "Untuk membuat cadangan, buka pengaturan dan ketuk “Ekspor“. Pilih “Sebagai file“, pilih token yang ingin Anda ekspor. Lalu ketuk “Ekspor“ dan tetapkan kata sandi. File disimpan di app File, dalam folder “{appName}“.",
   "importHintPrivacyIdeaQrScan": "Untuk membuat kode QR untuk token, buka pengaturan dan ketuk ",
   "importNTokens": "{count, plural, zero{Impor tanpa token} one{Impor satu token} other{Impor {count} token}}",
   "importNewToken": "{count, plural, zero{Tidak ada token baru yang ditemukan.} one{Token baru ditemukan dan dapat diimpor.} other{{count} token baru ditemukan dan dapat diimpor.}}",

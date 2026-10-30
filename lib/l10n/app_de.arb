@@ -632,6 +632,15 @@
   "@fileSavedToDownloadsFolder": {
     "description": "Tells the user that the file was saved to the downloads folder."
   },
+  "@fileSavedToFilesApp": {
+    "description": "Tells the user on iOS that the file was saved to the app's folder in the Files app.",
+    "placeholders": {
+      "appName": {
+        "example": "privacyIDEA Authenticator",
+        "type": "String"
+      }
+    }
+  },
   "@finalizationState": {
     "description": "Title of the finalization state field."
   },
@@ -745,6 +754,15 @@
   },
   "@importHintPrivacyIdeaFile": {
     "description": "Tells the user importent information about the import of privacyIDEA files."
+  },
+  "@importHintPrivacyIdeaFileIos": {
+    "description": "Tells the user on iOS importent information about the import of privacyIDEA files, including where the backup file is stored.",
+    "placeholders": {
+      "appName": {
+        "example": "privacyIDEA Authenticator",
+        "type": "String"
+      }
+    }
   },
   "@importHintPrivacyIdeaQrScan": {
     "description": "Tells the user importent information about the import of privacyIDEA qr codes."
@@ -1987,6 +2005,7 @@
   "feedbackTitle": "Ihr Feedback ist immer willkommen!",
   "fileNotAvailable": "Die Datei ist derzeit nicht verfügbar! Bitte versuchen Sie es erneut.",
   "fileSavedToDownloadsFolder": "Datei wurde im Download-Ordner gespeichert",
+  "fileSavedToFilesApp": "Datei wurde in der Dateien-App im Ordner “{appName}“ gespeichert",
   "finalizationState": "Status der Finalisierung",
   "finalizeContainerFailed": "Container finalisieren fehlgeschlagen",
   "firebaseToken": "Firebase Token",
@@ -2017,6 +2036,7 @@
   "importHintGoogleQrFile": "Wählen Sie eine Bilddatei mit dem QR-Code, den Sie erhalten, wenn Sie Ihre Konten aus dem Google Authenticator exportieren.\n!! Der QR-Code enthält die Token in unverschlüsselter Form. Es ist deshalb nicht sicher, diesen länger als nötig aufzubewahren !!",
   "importHintGoogleQrScan": "Scannen Sie den QR-Code, den Sie erhalten, wenn Sie Ihre Konten aus Google Authenticator exportieren.",
   "importHintPrivacyIdeaFile": "Um ein Backup zu erstellen, gehen Sie zu den Einstellungen und tippen auf “Exportieren“. Wählen Sie “Als Datei“ aus, wählen Sie die Token aus, die Sie exportieren möchten. Anschließend tippen Sie auf “Exportieren“ und setzen Sie ein Passwort. Der Speicherort ist der Download-Ordner auf Ihrem Gerät.",
+  "importHintPrivacyIdeaFileIos": "Um ein Backup zu erstellen, gehen Sie zu den Einstellungen und tippen auf “Exportieren“. Wählen Sie “Als Datei“ aus, wählen Sie die Token aus, die Sie exportieren möchten. Anschließend tippen Sie auf “Exportieren“ und setzen Sie ein Passwort. Die Datei liegt in der Dateien-App im Ordner “{appName}“.",
   "importHintPrivacyIdeaQrScan": "Um QR-Codes der Token zu erstellen, navigieren Sie zu den Einstellungen und tippen auf “Exportieren“. Wählen Sie dann “Als QR-Code“ und tippen Sie auf den zu exportierenden Token. Diese Variante ist nur für die direkte Übertragung auf ein anderes Gerät geeignet, da der QR-Code nicht verschlüsselt ist.",
   "importNTokens": "{count, plural, zero{Keine Token importieren} one{Ein Token importieren} other{{count} Token importieren}}",
   "importNewToken": "{count, plural, zero{Es wurde kein neues Token gefunden.} one{Es wurde ein neues Token gefunden, das importiert werden kann} other{Es wurden {count} neue Token gefunden, die importiert werden können.}}",

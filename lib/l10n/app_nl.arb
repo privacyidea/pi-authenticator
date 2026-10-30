@@ -611,6 +611,15 @@
   "@fileSavedToDownloadsFolder": {
     "description": "Tells the user that the file was saved to the downloads folder."
   },
+  "@fileSavedToFilesApp": {
+    "description": "Tells the user on iOS that the file was saved to the app's folder in the Files app.",
+    "placeholders": {
+      "appName": {
+        "example": "privacyIDEA Authenticator",
+        "type": "String"
+      }
+    }
+  },
   "@finalizationState": {
     "description": "Title of the finalization state field."
   },
@@ -724,6 +733,15 @@
   },
   "@importHintPrivacyIdeaFile": {
     "description": "Tells the user importent information about the import of privacyIDEA files."
+  },
+  "@importHintPrivacyIdeaFileIos": {
+    "description": "Tells the user on iOS importent information about the import of privacyIDEA files, including where the backup file is stored.",
+    "placeholders": {
+      "appName": {
+        "example": "privacyIDEA Authenticator",
+        "type": "String"
+      }
+    }
   },
   "@importHintPrivacyIdeaQrScan": {
     "description": "Tells the user importent information about the import of privacyIDEA qr codes."
@@ -1960,6 +1978,7 @@
   "feedbackTitle": "Uw feedback is altijd welkom!",
   "fileNotAvailable": "Het bestand is momenteel niet beschikbaar! Probeer het opnieuw.",
   "fileSavedToDownloadsFolder": "Bestand opgeslagen in de map Downloads",
+  "fileSavedToFilesApp": "Bestand opgeslagen in de app Bestanden, in de map “{appName}“",
   "finalizationState": "Afrondingsstatus",
   "finalizeContainerFailed": "Container voltooien mislukt",
   "firebaseToken": "Firebase Token",
@@ -1990,6 +2009,7 @@
   "importHintGoogleQrFile": "Selecteer een afbeeldingsbestand met de QR-code die u ontvangt wanneer u uw accounts exporteert vanuit Google Authenticator.\n!! Let op: het is niet veilig om de QR-code op je apparaat op te slaan, omdat de tokens niet versleuteld zijn !!",
   "importHintGoogleQrScan": "Scan de QR-code die u ontvangt wanneer u uw accounts exporteert vanuit Google Authenticator.",
   "importHintPrivacyIdeaFile": "Om een back-up te maken, ga je naar de instellingen en tik je op “Exporteren“. Selecteer “Als bestand“ en selecteer de tokens die je wilt exporteren. Tik dan op “Exporteren“ en stel een wachtwoord in. De opslaglocatie is de downloadmap op je apparaat.",
+  "importHintPrivacyIdeaFileIos": "Om een back-up te maken, ga je naar de instellingen en tik je op “Exporteren“. Selecteer “Als bestand“ en selecteer de tokens die je wilt exporteren. Tik dan op “Exporteren“ en stel een wachtwoord in. Het bestand staat in de app Bestanden, in de map “{appName}“.",
   "importHintPrivacyIdeaQrScan": "Om QR-codes van de tokens te maken, navigeer je naar de instellingen en tik je op “Exporteren“. Selecteer vervolgens “Als QR-code“ en tik op het muntje dat geëxporteerd moet worden. Deze variant is alleen geschikt voor directe overdracht naar een ander apparaat, omdat de QR-code niet versleuteld is.",
   "importNTokens": "{count, plural, zero{Geen tokens importeren} one{Eén token importeren} other{Importeer {count} tokens}}",
   "importNewToken": "{count, plural, zero{Er is geen nieuw token gevonden.} one{Er is een nieuw token gevonden dat geïmporteerd kan worden.} other{Er zijn {count} nieuwe tokens gevonden die geïmporteerd kunnen worden.}}",

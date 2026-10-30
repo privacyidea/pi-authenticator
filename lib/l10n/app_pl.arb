@@ -611,6 +611,15 @@
   "@fileSavedToDownloadsFolder": {
     "description": "Tells the user that the file was saved to the downloads folder."
   },
+  "@fileSavedToFilesApp": {
+    "description": "Tells the user on iOS that the file was saved to the app's folder in the Files app.",
+    "placeholders": {
+      "appName": {
+        "example": "privacyIDEA Authenticator",
+        "type": "String"
+      }
+    }
+  },
   "@finalizationState": {
     "description": "Title of the finalization state field."
   },
@@ -724,6 +733,15 @@
   },
   "@importHintPrivacyIdeaFile": {
     "description": "Tells the user importent information about the import of privacyIDEA files."
+  },
+  "@importHintPrivacyIdeaFileIos": {
+    "description": "Tells the user on iOS importent information about the import of privacyIDEA files, including where the backup file is stored.",
+    "placeholders": {
+      "appName": {
+        "example": "privacyIDEA Authenticator",
+        "type": "String"
+      }
+    }
   },
   "@importHintPrivacyIdeaQrScan": {
     "description": "Tells the user importent information about the import of privacyIDEA qr codes."
@@ -1960,6 +1978,7 @@
   "feedbackTitle": "Twoja opinia jest zawsze mile widziana!",
   "fileNotAvailable": "Plik jest obecnie niedostępny! Spróbuj ponownie.",
   "fileSavedToDownloadsFolder": "Plik zapisano w folderze Pobrane",
+  "fileSavedToFilesApp": "Plik zapisano w aplikacji Pliki, w folderze “{appName}“",
   "finalizationState": "Stan finalizacji",
   "finalizeContainerFailed": "Finalizacja kontenera nie powiodła się",
   "firebaseToken": "Token Firebase",
@@ -1990,6 +2009,7 @@
   "importHintGoogleQrFile": "Wybierz plik obrazu z kodem QR otrzymanym podczas eksportowania kont z Google Authenticator.\n!! Należy pamiętać, że zapisywanie kodu QR na urządzeniu nie jest bezpieczne, ponieważ tokeny nie są szyfrowane !!",
   "importHintGoogleQrScan": "Zeskanuj kod QR otrzymany podczas eksportowania kont z Google Authenticator",
   "importHintPrivacyIdeaFile": "Aby utworzyć kopię zapasową, przejdź do ustawień i wybierz “Eksportuj“. Wybierz “Jako plik“, wybierz tokeny, które chcesz wyeksportować. Następnie wybierz “Eksportuj“ i ustaw hasło. Miejscem przechowywania jest folder pobierania na urządzeniu.",
+  "importHintPrivacyIdeaFileIos": "Aby utworzyć kopię zapasową, przejdź do ustawień i wybierz “Eksportuj“. Wybierz “Jako plik“, wybierz tokeny, które chcesz wyeksportować. Następnie wybierz “Eksportuj“ i ustaw hasło. Plik znajduje się w aplikacji Pliki, w folderze “{appName}“.",
   "importHintPrivacyIdeaQrScan": "Aby utworzyć kody QR tokenów, przejdź do ustawień i wybierz opcję “Eksportuj“. Następnie wybierz opcję “Jako kod QR“ i dotknij tokenu, który ma zostać wyeksportowany. Ten wariant jest odpowiedni tylko do bezpośredniego przesyłania na inne urządzenie, ponieważ kod QR nie jest szyfrowany.",
   "importNTokens": "{count, plural, zero{Nie importuj tokenów} one{Importuj jeden token} other{Import {count} tokenów}}",
   "importNewToken": "{count, plural, zero{Nie znaleziono nowego tokena.} one{Znaleziono nowy token, który można zaimportować.} other{Znaleziono {count} nowych tokenów, które można zaimportować.}}",

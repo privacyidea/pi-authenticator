@@ -611,6 +611,15 @@
   "@fileSavedToDownloadsFolder": {
     "description": "Tells the user that the file was saved to the downloads folder."
   },
+  "@fileSavedToFilesApp": {
+    "description": "Tells the user on iOS that the file was saved to the app's folder in the Files app.",
+    "placeholders": {
+      "appName": {
+        "example": "privacyIDEA Authenticator",
+        "type": "String"
+      }
+    }
+  },
   "@finalizationState": {
     "description": "Title of the finalization state field."
   },
@@ -724,6 +733,15 @@
   },
   "@importHintPrivacyIdeaFile": {
     "description": "Tells the user importent information about the import of privacyIDEA files."
+  },
+  "@importHintPrivacyIdeaFileIos": {
+    "description": "Tells the user on iOS importent information about the import of privacyIDEA files, including where the backup file is stored.",
+    "placeholders": {
+      "appName": {
+        "example": "privacyIDEA Authenticator",
+        "type": "String"
+      }
+    }
   },
   "@importHintPrivacyIdeaQrScan": {
     "description": "Tells the user importent information about the import of privacyIDEA qr codes."
@@ -1960,6 +1978,7 @@
   "feedbackTitle": "Vaše zpětná vazba je vždy vítána!",
   "fileNotAvailable": "Soubor není v současné době k dispozici! Zkuste to prosím znovu.",
   "fileSavedToDownloadsFolder": "Soubor uložen do složky Stažené soubory",
+  "fileSavedToFilesApp": "Soubor uložen v aplikaci Soubory ve složce “{appName}“",
   "finalizationState": "Stav finalizace",
   "finalizeContainerFailed": "Finalizace kontejneru se nezdařila",
   "firebaseToken": "Token Firebase",
@@ -1990,6 +2009,7 @@
   "importHintGoogleQrFile": "Vyberte obrazový soubor s QR kódem, který obdržíte při exportu účtů z Google Authenticator.\n!! Upozorňujeme, že není bezpečné ukládat QR kód do zařízení, protože tokeny nejsou šifrovány !!",
   "importHintGoogleQrScan": "Naskenujte QR kód, který obdržíte při exportu účtů z Google Authenticator.",
   "importHintPrivacyIdeaFile": "Chcete-li vytvořit zálohu, přejděte do nastavení a klepněte na položku “Export“. Vyberte “Jako soubor“ a vyberte tokeny, které chcete exportovat. Potom klepněte na “Exportovat“ a nastavte heslo. Úložištěm je složka pro stahování ve vašem zařízení.",
+  "importHintPrivacyIdeaFileIos": "Chcete-li vytvořit zálohu, přejděte do nastavení a klepněte na položku “Export“. Vyberte “Jako soubor“ a vyberte tokeny, které chcete exportovat. Potom klepněte na “Exportovat“ a nastavte heslo. Soubor najdete v aplikaci Soubory ve složce “{appName}“.",
   "importHintPrivacyIdeaQrScan": "Chcete-li vytvořit QR kódy žetonů, přejděte do nastavení a klepněte na “Export“. Poté vyberte “Jako QR kód“ a klepněte na token, který chcete exportovat. Tato varianta je vhodná pouze pro přímý přenos do jiného zařízení, protože QR kód není šifrovaný.",
   "importNTokens": "{count, plural, zero{Neimportujte žádné tokeny} one{Importovat jeden token} other{Importovat {count} tokenů}}",
   "importNewToken": "{count, plural, zero{Nebyl nalezen žádný nový token.} one{Byl nalezen nový token, který lze importovat.} other{Bylo nalezeno {count} nových tokenů, které lze importovat.}}",

@@ -611,6 +611,15 @@
   "@fileSavedToDownloadsFolder": {
     "description": "Tells the user that the file was saved to the downloads folder."
   },
+  "@fileSavedToFilesApp": {
+    "description": "Tells the user on iOS that the file was saved to the app's folder in the Files app.",
+    "placeholders": {
+      "appName": {
+        "example": "privacyIDEA Authenticator",
+        "type": "String"
+      }
+    }
+  },
   "@finalizationState": {
     "description": "Title of the finalization state field."
   },
@@ -724,6 +733,15 @@
   },
   "@importHintPrivacyIdeaFile": {
     "description": "Tells the user importent information about the import of privacyIDEA files."
+  },
+  "@importHintPrivacyIdeaFileIos": {
+    "description": "Tells the user on iOS importent information about the import of privacyIDEA files, including where the backup file is stored.",
+    "placeholders": {
+      "appName": {
+        "example": "privacyIDEA Authenticator",
+        "type": "String"
+      }
+    }
   },
   "@importHintPrivacyIdeaQrScan": {
     "description": "Tells the user importent information about the import of privacyIDEA qr codes."
@@ -1960,6 +1978,7 @@
   "feedbackTitle": "¡Tus comentarios son siempre bienvenidos!",
   "fileNotAvailable": "El archivo no está disponible. Por favor, inténtelo de nuevo.",
   "fileSavedToDownloadsFolder": "Archivo guardado en la carpeta de descargas",
+  "fileSavedToFilesApp": "Archivo guardado en la app Archivos, en la carpeta “{appName}“",
   "finalizationState": "Estado de finalización",
   "finalizeContainerFailed": "Finalizar Contenedor Fallido",
   "firebaseToken": "Token de Firebase",
@@ -1990,6 +2009,7 @@
   "importHintGoogleQrFile": "Selecciona un archivo de imagen con el código QR que recibes al exportar tus cuentas desde Google Authenticator.\n!! Tenga en cuenta que no es seguro guardar el código QR en su dispositivo, ya que los tokens no están cifrados !!",
   "importHintGoogleQrScan": "Escanea el código QR que recibes al exportar tus cuentas desde Google Authenticator",
   "importHintPrivacyIdeaFile": "Para crear una copia de seguridad, vaya a los ajustes y pulse sobre “Exportar“. Seleccione “Como archivo“, seleccione los tokens que desea exportar. A continuación, pulse “Exportar“ y establezca una contraseña. La ubicación de almacenamiento es la carpeta de descargas de su dispositivo.",
+  "importHintPrivacyIdeaFileIos": "Para crear una copia de seguridad, vaya a los ajustes y pulse sobre “Exportar“. Seleccione “Como archivo“, seleccione los tokens que desea exportar. A continuación, pulse “Exportar“ y establezca una contraseña. El archivo se guarda en la app Archivos, en la carpeta “{appName}“.",
   "importHintPrivacyIdeaQrScan": "Para crear códigos QR de las fichas, vaya a la configuración y pulse sobre “Exportar“. A continuación, seleccione “Como código QR“ y pulse sobre la ficha que desea exportar. Esta variante sólo es adecuada para la transferencia directa a otro dispositivo, ya que el código QR no está cifrado.",
   "importNTokens": "{count, plural, zero{No importar tokens} one{Importar un token} other{Importar {count} tokens}}",
   "importNewToken": "{count, plural, zero{No se ha encontrado ningún token nuevo.} one{Se ha encontrado un nuevo token que se puede importar.} other{Se han encontrado {count} nuevos tokens que se pueden importar.}}",

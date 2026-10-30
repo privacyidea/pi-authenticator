@@ -611,6 +611,15 @@
   "@fileSavedToDownloadsFolder": {
     "description": "Tells the user that the file was saved to the downloads folder."
   },
+  "@fileSavedToFilesApp": {
+    "description": "Tells the user on iOS that the file was saved to the app's folder in the Files app.",
+    "placeholders": {
+      "appName": {
+        "example": "privacyIDEA Authenticator",
+        "type": "String"
+      }
+    }
+  },
   "@finalizationState": {
     "description": "Title of the finalization state field."
   },
@@ -724,6 +733,15 @@
   },
   "@importHintPrivacyIdeaFile": {
     "description": "Tells the user importent information about the import of privacyIDEA files."
+  },
+  "@importHintPrivacyIdeaFileIos": {
+    "description": "Tells the user on iOS importent information about the import of privacyIDEA files, including where the backup file is stored.",
+    "placeholders": {
+      "appName": {
+        "example": "privacyIDEA Authenticator",
+        "type": "String"
+      }
+    }
   },
   "@importHintPrivacyIdeaQrScan": {
     "description": "Tells the user importent information about the import of privacyIDEA qr codes."
@@ -1960,6 +1978,7 @@
   "feedbackTitle": "Vos commentaires sont toujours les bienvenus !",
   "fileNotAvailable": "Le fichier n'est actuellement pas disponible ! Veuillez réessayer de le télécharger.",
   "fileSavedToDownloadsFolder": "Fichier enregistré dans le dossier Téléchargements",
+  "fileSavedToFilesApp": "Fichier enregistré dans l'app Fichiers, dans le dossier “{appName}“",
   "finalizationState": "État de finalisation",
   "finalizeContainerFailed": "Échec de la finalisation du conteneur",
   "firebaseToken": "Jeton Firebase",
@@ -1990,6 +2009,7 @@
   "importHintGoogleQrFile": "Sélectionnez un fichier image avec le code QR que vous obtenez lorsque vous exportez vos comptes depuis Google Authenticator.\n!! Notez qu'il n'est pas sûr d'enregistrer le code QR sur votre appareil, car les jetons ne sont pas cryptés !!",
   "importHintGoogleQrScan": "Scannez le code QR que vous recevez lorsque vous exportez vos comptes depuis Google Authenticator",
   "importHintPrivacyIdeaFile": "Pour créer une sauvegarde, allez dans les paramètres et tapez sur “Exporter“. Choisissez “En tant que fichier“, sélectionnez les jetons que vous souhaitez exporter. Ensuite, appuyez sur “Exporter“ et définissez un mot de passe. L'emplacement de stockage est le dossier de téléchargement sur votre appareil.",
+  "importHintPrivacyIdeaFileIos": "Pour créer une sauvegarde, allez dans les paramètres et tapez sur “Exporter“. Choisissez “En tant que fichier“, sélectionnez les jetons que vous souhaitez exporter. Ensuite, appuyez sur “Exporter“ et définissez un mot de passe. Le fichier est enregistré dans l'app Fichiers, dans le dossier “{appName}“.",
   "importHintPrivacyIdeaQrScan": "Pour créer des codes QR des jetons, accédez aux paramètres et appuyez sur “Exporter“. Sélectionnez ensuite “En tant que code QR“ et tapez sur le jeton à exporter. Cette variante ne convient que pour un transfert direct vers un autre appareil, car le code QR n'est pas crypté.",
   "importNTokens": "{count, plural, zero{N'importer aucun jeton} one{Importer un jeton} other{Importer {count} jetons}}",
   "importNewToken": "{count, plural, zero{Aucun nouveau jeton n'a été trouvé.} one{Un nouveau jeton a été trouvé et peut être importé.} other{{count} nouveaux jetons ont été trouvés et peuvent être importés.}}",
