@@ -294,10 +294,10 @@ class AppHarness {
   }
 
   /// Kills the app and starts it again on the same device.
-  Future<void> restart() async {
+  Future<void> restart({bool untilMainView = true}) async {
     await stop();
     _newPushProvider();
-    await start();
+    await start(untilMainView: untilMainView);
   }
 
   /// The root container, which holds every provider of the running app.

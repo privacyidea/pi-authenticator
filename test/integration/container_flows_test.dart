@@ -496,6 +496,93 @@ void main() {
   );
 
   appTest(
+    'when the initial sync fails, the next start offers only the tokens the '
+    'user chose to send, not the ones left out',
+    (app) async {
+      HOTPToken unlinked(String id, String label, String secret) => HOTPToken(
+        id: id,
+        label: label,
+        issuer: 'Example',
+        algorithm: Algorithms.SHA1,
+        digits: 6,
+        secret: base32(utf8.encode(secret)),
+      );
+      final chosen = unlinked(
+        'local-chosen',
+        'Chosen token',
+        'chosen-token-secret!',
+      );
+      final leftOut = unlinked(
+        'local-left-out',
+        'Left out token',
+        'left-out-token-key!!',
+      );
+      app.storage.putToken(chosen);
+      app.storage.putToken(leftOut);
+      final server = FakeContainerServer(
+        app.backend,
+        policies: const FakeContainerPolicies(initialTokenAssignment: true),
+        tokens: [_door()],
+      );
+      await app.start();
+
+      app.platform.appLinks.open(server.registrationLink());
+      await _confirmUrl(app);
+      await _answerDeviceInfos(app, send: false);
+      await app.pumpUntilFound(find.byType(InitialTokenAssignmentDialog));
+      await app.tap(
+        _inDialog(InitialTokenAssignmentDialog, find.text(chosen.label)),
+      );
+      app.backend.networkFailure = FakeBackend.unreachable;
+      await app.tap(
+        _inDialog(
+          InitialTokenAssignmentDialog,
+          find.text(l10n.initialTokenAssignmentDialogButtonSelected),
+        ),
+      );
+      await app.pumpUntil(
+        () =>
+            (_containers(app).single as TokenContainerFinalized).syncState ==
+            SyncState.failed,
+        reason: 'the initial sync to fail',
+      );
+
+      expect(server.syncs, isEmpty);
+      final afterFailure = {for (final t in app.tokenState.tokens) t.id: t};
+      expect(afterFailure[chosen.id]!.checkedContainer, isEmpty);
+      expect(afterFailure[leftOut.id]!.checkedContainer, [server.serial]);
+
+      app.backend.networkFailure = null;
+      await app.restart(untilMainView: false);
+      await app.pumpUntilFound(find.byType(InitialTokenAssignmentDialog));
+      expect(
+        _inDialog(InitialTokenAssignmentDialog, find.text(chosen.label)),
+        findsOneWidget,
+      );
+      expect(
+        _inDialog(InitialTokenAssignmentDialog, find.text(leftOut.label)),
+        findsNothing,
+      );
+
+      await app.tap(
+        _inDialog(
+          InitialTokenAssignmentDialog,
+          find.text(l10n.initialTokenAssignmentDialogButtonZero),
+        ),
+      );
+      await _dismissSyncResult(app);
+
+      expect(server.syncs.single.accepted, true);
+      expect(server.syncs.single.clientTokens, isEmpty);
+      for (final token in app.tokenState.tokens.where(
+        (t) => t.id == chosen.id || t.id == leftOut.id,
+      )) {
+        expect(token.checkedContainer, [server.serial], reason: token.label);
+      }
+    },
+  );
+
+  appTest(
     'a passphrase protected container registers with the passphrase the user '
     'types, which is signed but not sent',
     (app) async {

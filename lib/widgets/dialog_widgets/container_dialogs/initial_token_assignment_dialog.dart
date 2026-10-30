@@ -62,7 +62,7 @@ class InitialTokenAssignmentDialog extends ConsumerStatefulWidget {
 class _InitialTokenAssignmentDialogState
     extends ConsumerState<InitialTokenAssignmentDialog> {
   Set<Token> _selectedTokens = {};
-  Set<Token> _unselectedTokens = {};
+  late Set<Token> _unselectedTokens = widget.tokens.toSet();
 
   @override
   Widget build(BuildContext context) {
