@@ -5,15 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../model/enums/introduction.dart';
 import '../utils/home_widget_utils.dart';
 import '../utils/logger.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/deeplink_notifier.dart';
-import '../utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/push_request_provider.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
 import '../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
-import '../utils/riverpod/riverpod_providers/state_providers/battery_optimization_provider.dart';
 import '../utils/riverpod/state_listeners/home_widget_deep_link_listener.dart';
 import '../utils/riverpod/state_listeners/home_widget_token_state_listener.dart';
 import '../utils/riverpod/state_listeners/navigation_deep_link_listener.dart';
@@ -22,7 +19,6 @@ import '../utils/riverpod/state_listeners/token_container_deep_link_listener.dar
 import '../utils/riverpod/state_listeners/token_deep_link_listener.dart';
 import 'app_wrappers/single_touch_recognizer.dart';
 import 'app_wrappers/state_observer.dart';
-import 'dialog_widgets/battery_optimization_dialog.dart';
 
 class AppWrapper extends StatelessWidget {
   final Widget child;
@@ -56,7 +52,6 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
           _refreshTokens(),
           _hideHomeWidgetOtps(),
         ]);
-        await _showBatteryOptimizationHintIfPending();
       },
       onHide: () async {
         await Future.wait([
@@ -108,29 +103,6 @@ class _AppWrapperState extends ConsumerState<_AppWrapper> {
     } catch (e) {
       Logger.error('Failed to hide HomeWidget OTPs', error: e);
     }
-  }
-
-  /// Shows the battery optimization hint at most once, if the user has linked
-  /// a home widget and has not yet been prompted about battery optimization.
-  Future<void> _showBatteryOptimizationHintIfPending() async {
-    if (!mounted) return;
-    ref.invalidate(batteryOptimizationsIsDisabledProvider);
-    final isDisabled = await ref.read(
-      batteryOptimizationsIsDisabledProvider.future,
-    );
-    if (isDisabled || !mounted) return;
-    final introductions = await ref.read(introductionNotifierProvider.future);
-    if (!introductions.isCompleted(Introduction.homeWidgetSetUp) ||
-        !introductions.isUncompleted(
-          Introduction.homeWidgetBatteryOptimization,
-        )) {
-      return;
-    }
-    await BatteryOptimizationDialog.showDialog();
-    if (!mounted) return;
-    await ref
-        .read(introductionNotifierProvider.notifier)
-        .complete(Introduction.homeWidgetBatteryOptimization);
   }
 
   //////////////////////////////////////////////////////////////////////////////

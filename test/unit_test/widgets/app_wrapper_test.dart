@@ -29,7 +29,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/introduction_repository.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/token_folder_repository.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations.dart';
-import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
 import 'package:privacyidea_authenticator/model/deeplink.dart';
 import 'package:privacyidea_authenticator/model/enums/introduction.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/introduction_state.dart';
@@ -47,8 +46,6 @@ import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/gene
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import 'package:privacyidea_authenticator/widgets/app_wrapper.dart';
-import 'package:privacyidea_authenticator/widgets/button_widgets/intent_button.dart';
-import 'package:privacyidea_authenticator/widgets/dialog_widgets/battery_optimization_dialog.dart';
 
 import '../../tests_app_wrapper.dart';
 
@@ -56,8 +53,6 @@ const _notificationsChannel = MethodChannel(
   'dexterous.com/flutter/local_notifications',
 );
 const _settingsChannel = MethodChannel('pi_authenticator/settings');
-
-final _l10n = AppLocalizationsEn();
 
 class _FakeDeeplinkNotifier extends DeeplinkNotifier {
   @override
@@ -220,7 +215,6 @@ void main() {
   late List<String> events;
   late List<MethodCall> notificationCalls;
   late List<MethodCall> settingsCalls;
-  late bool batteryOptimizationsDisabled;
   late bool cancelAllFails;
   late _FakeTokenNotifier tokenNotifier;
   late _FakePushRequestNotifier pushNotifier;
@@ -236,7 +230,6 @@ void main() {
     events = [];
     notificationCalls = [];
     settingsCalls = [];
-    batteryOptimizationsDisabled = true;
     cancelAllFails = false;
     tokenNotifier = _FakeTokenNotifier(events: events);
     pushNotifier = _FakePushRequestNotifier(events: events);
@@ -261,9 +254,6 @@ void main() {
     });
     messenger.setMockMethodCallHandler(_settingsChannel, (call) async {
       settingsCalls.add(call);
-      if (call.method == 'batteryOptimizationsIsDisabled') {
-        return batteryOptimizationsDisabled;
-      }
       return null;
     });
     addTearDown(() {
@@ -648,75 +638,10 @@ void main() {
     );
   });
 
-  group('AppWrapper battery optimization hint', () {
-    androidTest('is not shown when battery optimization is already disabled', (
+  group('AppWrapper after a home widget was linked', () {
+    androidTest('resume shows no dialog and does not ask the settings channel', (
       tester,
     ) async {
-      batteryOptimizationsDisabled = true;
-      introductionRepo = _MemoryIntroductionRepository(
-        const IntroductionState(
-          completedIntroductions: {Introduction.homeWidgetSetUp},
-        ),
-      );
-      await pumpApp(tester);
-      await backgroundAndResume(tester);
-
-      expect(find.byType(BatteryOptimizationDialog), findsNothing);
-      expect(
-        settingsCalls.where(
-          (c) => c.method == 'batteryOptimizationsIsDisabled',
-        ),
-        hasLength(1),
-      );
-      expect(introductionRepo.saved, isEmpty);
-    });
-
-    androidTest('is not shown when no home widget was set up', (tester) async {
-      batteryOptimizationsDisabled = false;
-      await pumpApp(tester);
-      await backgroundAndResume(tester);
-
-      expect(find.byType(BatteryOptimizationDialog), findsNothing);
-      expect(introductionRepo.saved, isEmpty);
-    });
-
-    androidTest('is not shown when it was already completed', (tester) async {
-      batteryOptimizationsDisabled = false;
-      introductionRepo = _MemoryIntroductionRepository(
-        const IntroductionState(
-          completedIntroductions: {
-            Introduction.homeWidgetSetUp,
-            Introduction.homeWidgetBatteryOptimization,
-          },
-        ),
-      );
-      await pumpApp(tester);
-      await backgroundAndResume(tester);
-
-      expect(find.byType(BatteryOptimizationDialog), findsNothing);
-      expect(introductionRepo.saved, isEmpty);
-    });
-
-    androidTest('is not shown when only the battery step was completed', (
-      tester,
-    ) async {
-      batteryOptimizationsDisabled = false;
-      introductionRepo = _MemoryIntroductionRepository(
-        const IntroductionState(
-          completedIntroductions: {Introduction.homeWidgetBatteryOptimization},
-        ),
-      );
-      await pumpApp(tester);
-      await backgroundAndResume(tester);
-
-      expect(find.byType(BatteryOptimizationDialog), findsNothing);
-      expect(introductionRepo.saved, isEmpty);
-    });
-
-    androidTest('is shown once and completed after it was dismissed', (
-      tester,
-    ) async {
-      batteryOptimizationsDisabled = false;
       introductionRepo = _MemoryIntroductionRepository(
         const IntroductionState(
           completedIntroductions: {Introduction.homeWidgetSetUp},
@@ -726,154 +651,9 @@ void main() {
       await backgroundAndResume(tester);
       await tester.pump(const Duration(milliseconds: 300));
 
-      expect(find.byType(BatteryOptimizationDialog), findsOneWidget);
-      expect(find.text(_l10n.batteryOptimizationTitle), findsOneWidget);
-      expect(
-        introductionRepo.current.isUncompleted(
-          Introduction.homeWidgetBatteryOptimization,
-        ),
-        isTrue,
-        reason: 'only completed once the user dealt with the dialog',
-      );
-
-      await tester.tap(find.widgetWithText(IntentButton, _l10n.cancel));
-      await tester.pumpAndSettle();
-
-      expect(find.byType(BatteryOptimizationDialog), findsNothing);
-      expect(
-        introductionRepo.current.isCompleted(
-          Introduction.homeWidgetBatteryOptimization,
-        ),
-        isTrue,
-      );
-      expect(introductionRepo.saved, hasLength(1));
-      expect(
-        settingsCalls.where(
-          (c) => c.method == 'requestIgnoreBatteryOptimizations',
-        ),
-        isEmpty,
-      );
-
-      await backgroundAndResume(tester);
-      await tester.pump(const Duration(milliseconds: 300));
-
-      expect(find.byType(BatteryOptimizationDialog), findsNothing);
-      expect(introductionRepo.saved, hasLength(1));
-      expect(
-        settingsCalls.where(
-          (c) => c.method == 'batteryOptimizationsIsDisabled',
-        ),
-        hasLength(2),
-        reason: 'the optimization state is queried again on every resume',
-      );
-    });
-
-    androidTest(
-      'requests the exemption when the user disables the optimization',
-      (tester) async {
-        batteryOptimizationsDisabled = false;
-        introductionRepo = _MemoryIntroductionRepository(
-          const IntroductionState(
-            completedIntroductions: {Introduction.homeWidgetSetUp},
-          ),
-        );
-        await pumpApp(tester);
-        await backgroundAndResume(tester);
-        await tester.pump(const Duration(milliseconds: 300));
-
-        await tester.tap(
-          find.widgetWithText(IntentButton, _l10n.disableButton),
-        );
-        await tester.pumpAndSettle();
-
-        expect(
-          settingsCalls.where(
-            (c) => c.method == 'requestIgnoreBatteryOptimizations',
-          ),
-          hasLength(1),
-        );
-        expect(find.byType(BatteryOptimizationDialog), findsNothing);
-        expect(
-          introductionRepo.current.isCompleted(
-            Introduction.homeWidgetBatteryOptimization,
-          ),
-          isTrue,
-        );
-      },
-    );
-
-    androidTest('is still shown when the other resume steps failed', (
-      tester,
-    ) async {
-      batteryOptimizationsDisabled = false;
-      cancelAllFails = true;
-      tokenNotifier = _FakeTokenNotifier(
-        events: events,
-        refreshError: Exception('storage broken'),
-      );
-      introductionRepo = _MemoryIntroductionRepository(
-        const IntroductionState(
-          completedIntroductions: {Introduction.homeWidgetSetUp},
-        ),
-      );
-      await pumpApp(tester);
-      await backgroundAndResume(tester);
-      await tester.pump(const Duration(milliseconds: 300));
-
-      expect(find.byType(BatteryOptimizationDialog), findsOneWidget);
-      await tester.tap(find.widgetWithText(IntentButton, _l10n.cancel));
-      await tester.pumpAndSettle();
-    });
-
-    androidTest('is not shown after the app was only hidden', (tester) async {
-      batteryOptimizationsDisabled = false;
-      introductionRepo = _MemoryIntroductionRepository(
-        const IntroductionState(
-          completedIntroductions: {Introduction.homeWidgetSetUp},
-        ),
-      );
-      await pumpApp(tester);
-      await goToBackground(tester);
-
-      expect(find.byType(BatteryOptimizationDialog), findsNothing);
+      expect(find.byType(Dialog), findsNothing);
       expect(settingsCalls, isEmpty);
+      expect(introductionRepo.saved, isEmpty);
     });
-    androidTest(
-      "BUG: hint is stacked a second time when the app resumes while the first is open",
-      (tester) async {
-        batteryOptimizationsDisabled = false;
-        introductionRepo = _MemoryIntroductionRepository(
-          const IntroductionState(
-            completedIntroductions: {Introduction.homeWidgetSetUp},
-          ),
-        );
-        await pumpApp(tester);
-        await backgroundAndResume(tester);
-        await tester.pump(const Duration(milliseconds: 300));
-        final afterFirstResume = find
-            .byType(BatteryOptimizationDialog)
-            .evaluate()
-            .length;
-
-        await backgroundAndResume(tester);
-        await tester.pump(const Duration(milliseconds: 300));
-        final afterSecondResume = find
-            .byType(BatteryOptimizationDialog)
-            .evaluate()
-            .length;
-
-        globalNavigatorKey.currentState!.popUntil((route) => route.isFirst);
-        await tester.pumpAndSettle();
-
-        expect(afterFirstResume, 1);
-        expect(
-          afterSecondResume,
-          1,
-          reason: 'the hint must be shown at most once',
-        );
-      },
-      skip:
-          "BUG: app_wrapper.dart:115-134 marks the hint completed only after the dialog is dismissed, so a second resume stacks a second dialog",
-    );
   });
 }

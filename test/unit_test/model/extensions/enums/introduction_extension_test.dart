@@ -15,12 +15,8 @@ import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/state_providers/battery_optimization_provider.dart';
 
 import '../../../../tests_app_wrapper.mocks.dart';
-
-/// How [batteryOptimizationsIsDisabledProvider] behaves in a test.
-enum _Battery { optimizationDisabled, optimizationActive, loading, error }
 
 HOTPToken _hotp(int i) => HOTPToken(
   id: 'hotp$i',
@@ -46,7 +42,6 @@ Future<bool> _isFulfilled(
   IntroductionState state, {
   List<Token>? tokens = const [],
   bool? hidePushTokens = false,
-  _Battery battery = _Battery.optimizationDisabled,
 }) async {
   final tokenRepo = MockTokenRepository();
   when(tokenRepo.loadTokens()).thenAnswer(
@@ -68,14 +63,6 @@ Future<bool> _isFulfilled(
         tokenProvider.overrideWith(() => TokenNotifier(repoOverride: tokenRepo)),
         settingsProvider.overrideWith(
           () => SettingsNotifier(repoOverride: settingsRepo),
-        ),
-        batteryOptimizationsIsDisabledProvider.overrideWith(
-          (ref) => switch (battery) {
-            _Battery.optimizationDisabled => Future.value(true),
-            _Battery.optimizationActive => Future.value(false),
-            _Battery.loading => Completer<bool>().future,
-            _Battery.error => Future<bool>.error(StateError('no battery info')),
-          },
         ),
       ],
       child: Directionality(
@@ -621,76 +608,21 @@ void main() {
     });
 
     group('homeWidgetBatteryOptimization', () {
-      final ready = _completed([Introduction.homeWidgetSetUp]);
-
-      testWidgets('is fulfilled if the battery optimization is still active', (tester) async {
-        // The provider reports "is disabled": false means still optimized.
-        expect(
-          await _isFulfilled(
-            tester,
-            Introduction.homeWidgetBatteryOptimization,
-            ready,
-            battery: _Battery.optimizationActive,
-          ),
-          isTrue,
-        );
-      });
-      testWidgets('is not fulfilled if the battery optimization is already disabled', (tester) async {
-        expect(
-          await _isFulfilled(
-            tester,
-            Introduction.homeWidgetBatteryOptimization,
-            ready,
-          ),
-          isFalse,
-        );
-      });
-      testWidgets('is not fulfilled while the battery state is loading', (tester) async {
-        expect(
-          await _isFulfilled(
-            tester,
-            Introduction.homeWidgetBatteryOptimization,
-            ready,
-            battery: _Battery.loading,
-          ),
-          isFalse,
-        );
-      });
-      testWidgets('is not fulfilled if the battery state cannot be determined', (tester) async {
-        expect(
-          await _isFulfilled(
-            tester,
-            Introduction.homeWidgetBatteryOptimization,
-            ready,
-            battery: _Battery.error,
-          ),
-          isFalse,
-        );
-      });
-      testWidgets('is not fulfilled without homeWidgetSetUp completed', (tester) async {
-        expect(
-          await _isFulfilled(
-            tester,
-            Introduction.homeWidgetBatteryOptimization,
-            _completed([]),
-            battery: _Battery.optimizationActive,
-          ),
-          isFalse,
-        );
-      });
-      testWidgets('is not fulfilled once completed', (tester) async {
-        expect(
-          await _isFulfilled(
-            tester,
-            Introduction.homeWidgetBatteryOptimization,
-            _completed([
-              Introduction.homeWidgetSetUp,
+      testWidgets('is never fulfilled, even right after homeWidgetSetUp', (tester) async {
+        for (final state in [
+          _completed([]),
+          _completed([Introduction.homeWidgetSetUp]),
+        ]) {
+          expect(
+            await _isFulfilled(
+              tester,
               Introduction.homeWidgetBatteryOptimization,
-            ]),
-            battery: _Battery.optimizationActive,
-          ),
-          isFalse,
-        );
+              state,
+            ),
+            isFalse,
+            reason: 'completed: ${state.completedIntroductions}',
+          );
+        }
       });
     });
 
@@ -703,7 +635,6 @@ void main() {
             IntroductionState.withAllCompleted(),
             tokens: [_push(), _hotp(1), _hotp(2)],
             hidePushTokens: true,
-            battery: _Battery.optimizationActive,
           ),
           isFalse,
           reason: '$intro must not be shown again when it is completed',

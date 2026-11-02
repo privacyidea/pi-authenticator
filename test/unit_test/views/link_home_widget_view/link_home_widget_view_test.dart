@@ -25,10 +25,8 @@ import 'package:privacyidea_authenticator/utils/privacyidea_io_client.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
-import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/state_providers/battery_optimization_provider.dart';
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
 import 'package:privacyidea_authenticator/views/link_home_widget_view/link_home_widget_view.dart';
-import 'package:privacyidea_authenticator/widgets/dialog_widgets/battery_optimization_dialog.dart';
 
 class _FakeTokenNotifier extends TokenNotifier {
   final List<Token> tokens;
@@ -112,7 +110,6 @@ void main() {
     WidgetTester tester, {
     List<Token> tokens = const [],
     List<TokenFolder> folders = const [],
-    bool batteryOptimizationsDisabled = true,
     String? veilingCharacter,
     Object? errorOnComplete,
     String widgetId = '32',
@@ -141,9 +138,6 @@ void main() {
               events,
               errorOnComplete: errorOnComplete,
             ),
-          ),
-          batteryOptimizationsIsDisabledProvider.overrideWith(
-            (ref) async => batteryOptimizationsDisabled,
           ),
         ],
         child: MaterialApp(
@@ -444,65 +438,9 @@ void main() {
     );
   });
 
-  group('help icon', () {
-    testWidgets('has the battery optimization title as tooltip', (
-      tester,
-    ) async {
-      await pumpView(tester);
+  testWidgets('the app bar has no actions', (tester) async {
+    await pumpView(tester);
 
-      final button = tester.widget<IconButton>(
-        find.widgetWithIcon(IconButton, Icons.help_outline),
-      );
-      expect(button.tooltip, l.batteryOptimizationTitle);
-    });
-
-    testWidgets(
-      'battery optimization already disabled: shows the "already disabled" dialog',
-      (tester) async {
-        await pumpView(tester);
-
-        await tester.tap(find.byIcon(Icons.help_outline));
-        await tester.pumpAndSettle();
-
-        expect(
-          find.byType(BatteryOptimizationAlreadyDisabledDialog),
-          findsOneWidget,
-        );
-        expect(find.byType(BatteryOptimizationDialog), findsNothing);
-        expect(
-          find.text(l.batteryOptimizationAlreadyDisabledBody),
-          findsOneWidget,
-        );
-      },
-    );
-
-    testWidgets(
-      'battery optimization still active: shows the explaining dialog',
-      (tester) async {
-        await pumpView(tester, batteryOptimizationsDisabled: false);
-
-        await tester.tap(find.byIcon(Icons.help_outline));
-        await tester.pumpAndSettle();
-
-        expect(find.byType(BatteryOptimizationDialog), findsOneWidget);
-        expect(
-          find.byType(BatteryOptimizationAlreadyDisabledDialog),
-          findsNothing,
-        );
-        expect(find.text(l.batteryOptimizationDialogBody), findsOneWidget);
-      },
-    );
-
-    testWidgets('help icon does not trigger the link flow', (tester) async {
-      await pumpView(
-        tester,
-        tokens: [_token(id: 'a', label: 'Alpha')],
-      );
-
-      await tester.tap(find.byIcon(Icons.help_outline));
-      await tester.pumpAndSettle();
-
-      expect(events, isEmpty);
-    });
+    expect(tester.widget<AppBar>(find.byType(AppBar)).actions, isNull);
   });
 }

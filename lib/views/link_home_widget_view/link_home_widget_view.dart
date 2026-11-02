@@ -29,9 +29,7 @@ import '../../utils/logger.dart';
 import '../../utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
 import '../../utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
 import '../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
-import '../../utils/riverpod/riverpod_providers/state_providers/battery_optimization_provider.dart';
 import '../../utils/utils.dart';
-import '../../widgets/dialog_widgets/battery_optimization_dialog.dart';
 import '../view_interface.dart';
 
 class LinkHomeWidgetView extends ConsumerStatefulView {
@@ -63,22 +61,6 @@ class _LinkHomeWidgetViewState extends ConsumerState<LinkHomeWidgetView> {
           overflow: TextOverflow.ellipsis, // maxLines: 2 only works like this.
           maxLines: 2, // Title can be shown on small screens too.
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.help_outline),
-            tooltip: AppLocalizations.of(context)!.batteryOptimizationTitle,
-            onPressed: () async {
-              final isIgnoring = await ref.read(
-                batteryOptimizationsIsDisabledProvider.future,
-              );
-              if (isIgnoring) {
-                BatteryOptimizationAlreadyDisabledDialog.showDialog();
-              } else {
-                BatteryOptimizationDialog.showDialog();
-              }
-            },
-          ),
-        ],
       ),
       body: ListView.builder(
         itemBuilder: (context, index) {
