@@ -97,10 +97,10 @@ class HomeWidgetUtils {
   HomeWidgetUtils._();
   static HomeWidgetUtils? _instance;
 
-  /// Check android/app/src/main/res/layout/widget_layout.xml for the sizes. Double it for better quality
+  /// Check android/app/src/main/res/drawable/widget_frame.xml for the sizes. Double it for better quality
   static const _widgetBackgroundSize = Size(130 * 2, 65 * 2);
 
-  /// Check android/app/src/main/res/layout/widget_layout.xml for the sizes. Double it for better quality
+  /// The widget_otp slot of android/app/src/main/res/layout/widget_layout.xml at the full frame size. Double it for better quality
   static const _widgetOtpSize = Size(98 * 2, 40 * 2);
 
   /// Check android/app/src/main/res/layout/widget_layout.xml for the sizes. Double it for better quality
