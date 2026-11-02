@@ -25,11 +25,22 @@ void main() {
     final manifest = File(
       'android/app/src/main/AndroidManifest.xml',
     ).readAsStringSync();
-    final declaration = RegExp(
-      r'<receiver\s+android:name="es\.antonborri\.home_widget\.HomeWidgetBackgroundReceiver"\s+android:exported="([^"]+)"',
-    ).firstMatch(manifest);
+    // The opening tag in any attribute order.
+    final declarations = RegExp(r'<receiver\b[^>]*>')
+        .allMatches(manifest)
+        .map((match) => match.group(0)!)
+        .where(
+          (tag) => tag.contains(
+            'android:name="es.antonborri.home_widget.HomeWidgetBackgroundReceiver"',
+          ),
+        );
 
-    expect(declaration, isNotNull);
-    expect(declaration!.group(1), 'false');
+    expect(declarations, hasLength(1));
+    expect(
+      RegExp(
+        r'android:exported="([^"]+)"',
+      ).firstMatch(declarations.single)?.group(1),
+      'false',
+    );
   });
 }
