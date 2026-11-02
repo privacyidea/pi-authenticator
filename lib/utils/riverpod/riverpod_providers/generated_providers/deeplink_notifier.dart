@@ -51,20 +51,24 @@ class DeeplinkNotifier extends _$DeeplinkNotifier {
     Logger.info('New DeeplinkNotifier created');
     final initial = await _handleInitialUri(sources);
     if (initial != null) yield initial;
-    await for (var dl in _handleIncomingLinks(sources)) {
+    await for (var dl in _handleIncomingLinks(sources, initial?.uri)) {
       yield dl;
     }
   }
 
   /// Handle incoming links - the ones that the app will receive from the OS
   /// while already started.
-  Stream<DeepLink> _handleIncomingLinks(List<DeeplinkSource> sources) async* {
+  Stream<DeepLink> _handleIncomingLinks(
+    List<DeeplinkSource> sources,
+    Uri? initialUri,
+  ) async* {
     if (kIsWeb) return;
     final groupedStream = StreamGroup.merge(
       sources.map((source) => source.stream),
     );
-    Uri? lastUri;
-    DateTime? lastUriTime;
+    // app_links also sends the launch link to the first stream listener.
+    Uri? lastUri = initialUri;
+    DateTime? lastUriTime = initialUri == null ? null : DateTime.now();
     await for (var uri in groupedStream) {
       if (uri == null) continue;
       final now = DateTime.now();

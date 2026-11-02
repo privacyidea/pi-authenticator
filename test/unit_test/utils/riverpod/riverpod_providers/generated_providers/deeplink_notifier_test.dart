@@ -259,16 +259,25 @@ void _testStreamRobustness() {
       });
 
       test(
-        'a link equal to the initial link is not treated as a duplicate of it',
+        'the initial link sent again on the stream is not delivered twice',
         () async {
-          // The filter state lives in _handleIncomingLinks, the initial link is
-          // handled before and does not take part in it.
+          // app_links 6+ sends the launch link to the first listener of its
+          // stream as well (AppLinksPlugin.onListen), after getInitialLink
+          // already returned it.
           await emit(_initialUri);
 
-          expect(recorder.uris, [_initialUri, _initialUri]);
-          expect(recorder.deliveries.map((e) => e.fromInit), [true, false]);
+          expect(recorder.uris, [_initialUri]);
+          expect(recorder.deliveries.single.fromInit, isTrue);
         },
       );
+
+      test('the initial link opened again after 2 seconds is delivered', () async {
+        await Future<void>.delayed(const Duration(milliseconds: 2100));
+        await emit(_initialUri);
+
+        expect(recorder.uris, [_initialUri, _initialUri]);
+        expect(recorder.deliveries.map((e) => e.fromInit), [true, false]);
+      });
 
       test('the same uri with a different query is not a duplicate', () async {
         final a1 = Uri.parse('otpauth://hotp/a?secret=AA');
