@@ -708,10 +708,6 @@ void main() {
   appTest(
     'a registration link whose time is a whole number of milliseconds still '
     'registers',
-    skip:
-        'BUG: the registration signature covers the timestamp printed again '
-        'by DateTime.toIso8601String (.500Z), not the one from the link '
-        '(.500000), so one link in a thousand is refused',
     (app) async {
       final server = FakeContainerServer(app.backend, tokens: [_door()]);
       await app.start();

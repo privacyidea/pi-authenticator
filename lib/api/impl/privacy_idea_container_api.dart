@@ -213,7 +213,7 @@ class PiContainerApi implements TokenContainerApi {
         : null;
     final message =
         '${container.nonce}'
-        '|${container.timestamp.toIso8601String().replaceFirst('Z', '+00:00')}'
+        '|${_isoFormatAsServer(container.timestamp)}'
         '|${container.serial}'
         '|${container.registrationUrl}'
         '${(container.addDeviceInfos == true) ? '|${AppInfoUtils.deviceBrand}' : ''}'
@@ -594,5 +594,17 @@ class PiContainerApi implements TokenContainerApi {
       }
     }
     return (mergedTemplatesWithSerial, deleteSerials);
+  }
+
+  /// The registration time as privacyIDEA printed it into the link (Python's
+  /// isoformat): six fraction digits, none for a whole second. The signature
+  /// has to cover exactly that text.
+  static String _isoFormatAsServer(DateTime time) {
+    String pad(int value, [int width = 2]) => value.toString().padLeft(width, '0');
+    final micros = time.millisecond * 1000 + time.microsecond;
+    return '${pad(time.year, 4)}-${pad(time.month)}-${pad(time.day)}'
+        'T${pad(time.hour)}:${pad(time.minute)}:${pad(time.second)}'
+        '${micros == 0 ? '' : '.${pad(micros, 6)}'}'
+        '${time.isUtc ? '+00:00' : ''}';
   }
 }

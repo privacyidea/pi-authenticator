@@ -345,6 +345,69 @@ void _testPrivacyIdeaContainerApi() {
       expect(policies.disabledTokenDeletion, true);
       expect(policies.disabledUnregister, true);
     });
+    group('finalizeContainer signs the registration time as privacyIDEA prints it', () {
+      Future<String> signatureFor(TokenContainerUnfinalized container) async {
+        final mockIoClient = MockPrivacyideaIOClient();
+        late String signature;
+        when(
+          mockIoClient.doPost(
+            url: anyNamed('url'),
+            body: anyNamed('body'),
+            sslVerify: anyNamed('sslVerify'),
+            expectedErrorStatusCodes: anyNamed('expectedErrorStatusCodes'),
+          ),
+        ).thenAnswer((invocation) async {
+          signature = invocation.namedArguments[Symbol('body')]['signature'];
+          return Response(
+            jsonEncode({
+              'id': 5,
+              'jsonrpc': '2.0',
+              'result': {
+                'status': true,
+                'value': {
+                  'public_server_key': publicServerKey,
+                  'policies': {
+                    'disable_client_container_unregister': false,
+                    'disable_client_token_deletion': false,
+                    'container_client_rollover': false,
+                    'initially_add_tokens_to_container': false,
+                  },
+                },
+              },
+              'time': 1.0,
+              'version': 'privacyIDEA 3.12',
+              'versionnumber': '3.12',
+              'detail': null,
+              'signature': 'signature',
+            }),
+            200,
+          );
+        });
+        await PiContainerApi(ioClient: mockIoClient).finalizeContainer(container);
+        return signature;
+      }
+
+      for (final (description, timestamp, printed) in [
+        ('a whole millisecond', DateTime.utc(2024, 12, 6, 11, 14, 26, 500), '2024-12-06T11:14:26.500000+00:00'),
+        ('a whole second', DateTime.utc(2024, 12, 6, 11, 14, 26), '2024-12-06T11:14:26+00:00'),
+        ('microseconds', DateTime.utc(2024, 12, 6, 11, 14, 26, 885, 409), '2024-12-06T11:14:26.885409+00:00'),
+      ]) {
+        test('at $description', () async {
+          final container = getNewTokenContainer(withTimestamp: timestamp);
+
+          final signature = await signatureFor(container);
+
+          expect(
+            EccUtils().validateSignature(
+              container.ecPublicClientKey!,
+              signature,
+              '${container.nonce}|$printed|${container.serial}|${container.registrationUrl}',
+            ),
+            true,
+          );
+        });
+      }
+    });
     test(
       'finalizeContainer throws PiServerResultError on status false with error',
       () async {
