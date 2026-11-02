@@ -483,7 +483,7 @@ class HomeWidgetUtils {
       return;
     }
     if (await _isLocked(token)) {
-      Logger.info('Copy blocked because the token is locked');
+      Logger.info('Copy blocked because the token is locked', verbose: true);
       return;
     }
 
@@ -511,7 +511,7 @@ class HomeWidgetUtils {
       return;
     }
     if (await _isLocked(token!)) {
-      Logger.info('Action blocked because the token is locked');
+      Logger.info('Action blocked because the token is locked', verbose: true);
       return;
     }
     final tokenAction = _mapTokenAction[token.type];

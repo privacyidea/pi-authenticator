@@ -12,6 +12,10 @@ import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
 import 'package:privacyidea_authenticator/utils/home_widget_utils.dart';
 
+import '../../log_file.dart';
+
+late LogFile _logFile;
+
 /// In-memory token storage; [failNextLoad] makes the next load throw once.
 class _FakeTokenRepository implements TokenRepository {
   final Map<String, Token> stored = {};
@@ -90,6 +94,16 @@ HOTPToken _hotp(String id, int counter) => HOTPToken(
 /// timestamp that the callback writes back into the store.
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+
+  // Before anything logs, only the first setup of the logger takes effect.
+  setUpAll(() async => _logFile = await LogFile.setUp());
+  tearDownAll(() async {
+    // A delayed widget update (at most 250 ms) of the last tests still writes
+    // to the file, which Windows does not let go of while it is open.
+    await Future<void>.delayed(const Duration(seconds: 1));
+    await _logFile.read();
+    _logFile.tearDown();
+  });
 
   const channel = MethodChannel('home_widget');
   const key = '_lastBackgroundCallback';
@@ -513,6 +527,44 @@ void _testTapsOnLockedTokens() {
 
         expect(savedKeys, isEmpty);
         expect((repository.stored['locked'] as HOTPToken).counter, 3);
+      });
+    });
+
+    group('leaves an entry in the log file the user can send', () {
+      setUp(() async {
+        await _logFile.clear();
+        repository.stored['locked'] = HOTPToken(
+          id: 'locked',
+          algorithm: Algorithms.SHA1,
+          digits: 6,
+          secret: 'secret',
+          counter: 3,
+          isLocked: true,
+        );
+      });
+
+      test('when show is refused', () async {
+        await HomeWidgetUtils.debugInstance().showOtp(widgetId);
+
+        expect(await _logFile.entriesContaining('token is locked'), hasLength(1));
+      });
+
+      test('when copy is refused', () async {
+        await HomeWidgetUtils.debugInstance().copyOtp(widgetId);
+
+        expect(
+          await _logFile.entriesContaining('Copy blocked because the token is locked'),
+          hasLength(1),
+        );
+      });
+
+      test('when the action is refused', () async {
+        await HomeWidgetUtils.debugInstance().performAction(widgetId);
+
+        expect(
+          await _logFile.entriesContaining('Action blocked because the token is locked'),
+          hasLength(1),
+        );
       });
     });
   });
