@@ -20,6 +20,7 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:logger/logger.dart' as printer;
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/enums/token_origin_source_type.dart';
 import 'package:privacyidea_authenticator/model/extensions/token_list_extension.dart';
@@ -31,6 +32,14 @@ import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/steam_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
+import 'package:privacyidea_authenticator/utils/logger.dart';
+
+class _CollectedOutput extends printer.LogOutput {
+  final lines = <String>[];
+
+  @override
+  void output(printer.OutputEvent event) => lines.addAll(event.lines);
+}
 
 HOTPToken _token({
   String id = 'id',
@@ -438,6 +447,28 @@ void _testMaybeContainerTokensOf() {
 
       expect(tokens.maybeContainerTokensOf('C1'), isEmpty);
       expect(tokens.maybeContainerTokensOf('C2'), isEmpty);
+    });
+
+    test('logs how many tokens could be in the container', () {
+      final output = _CollectedOutput();
+      final previousPrint = Logger.print;
+      Logger.print = printer.Logger(
+        output: output,
+        printer: printer.SimplePrinter(colors: false),
+      );
+      addTearDown(() => Logger.print = previousPrint);
+      final tokens = <Token>[
+        _hotp('checked', checkedContainer: ['C1']),
+        _hotp('free'),
+        _hotp('in-c1', containerSerial: 'C1', origin: _syncContainerOrigin()),
+      ];
+
+      tokens.maybeContainerTokensOf('C1');
+
+      expect(
+        output.lines.where((line) => line.contains('could be in container')),
+        [contains('1/3 tokens that could be in container C1')],
+      );
     });
   });
 }

@@ -66,7 +66,7 @@ extension TokenListExtension on List<Token> {
   /// Returns all tokens that could be a token of the container.
   List<Token> maybeContainerTokensOf(String containerSerial) {
     final maybeContainerTokenOf = maybeContainerTokens.where((token) => !token.checkedContainer.contains(containerSerial)).toList();
-    Logger.debug('${maybeContainerTokens.length}/$length tokens that could be in container $containerSerial');
+    Logger.debug('${maybeContainerTokenOf.length}/$length tokens that could be in container $containerSerial');
     return maybeContainerTokenOf;
   }
 
