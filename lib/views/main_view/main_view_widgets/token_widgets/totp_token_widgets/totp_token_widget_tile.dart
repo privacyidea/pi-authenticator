@@ -39,8 +39,14 @@ import 'totp_token_widget_tile_countdown.dart';
 class TOTPTokenWidgetTile extends ConsumerStatefulWidget {
   final TOTPToken token;
   final bool isPreview;
+  final bool showPreviewDetails;
 
-  const TOTPTokenWidgetTile(this.token, {super.key, this.isPreview = false});
+  const TOTPTokenWidgetTile(
+    this.token, {
+    super.key,
+    this.isPreview = false,
+    this.showPreviewDetails = true,
+  });
 
   @override
   ConsumerState<TOTPTokenWidgetTile> createState() =>
@@ -153,7 +159,7 @@ class _TOTPTokenWidgetTileState extends ConsumerState<TOTPTokenWidgetTile>
         (widget.token.digits / 2).ceil(),
       ),
       titleStyle: TextStyle(color: _currentOtpColor),
-      additionalSubtitles: widget.isPreview
+      additionalSubtitles: widget.isPreview && widget.showPreviewDetails
           ? [
               'Algorithm: ${widget.token.algorithm.name}',
               'Period: ${widget.token.period} seconds',

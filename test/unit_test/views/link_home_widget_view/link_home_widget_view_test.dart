@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:local_auth/local_auth.dart';
+import 'package:mockito/mockito.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/introduction_repository.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/token_folder_repository.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/token_repository.dart';
@@ -11,22 +13,33 @@ import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/enums/introduction.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/introduction_state.dart';
+import 'package:privacyidea_authenticator/model/riverpod_states/settings_state.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/token_folder_state.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/token_state.dart';
 import 'package:privacyidea_authenticator/model/token_folder.dart';
+import 'package:privacyidea_authenticator/model/tokens/day_password_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
+import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
+import 'package:privacyidea_authenticator/model/tokens/steam_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
+import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
 import 'package:privacyidea_authenticator/utils/customization/theme_extentions/app_dimensions.dart';
-import 'package:privacyidea_authenticator/utils/customization/theme_extentions/extended_text_theme.dart';
 import 'package:privacyidea_authenticator/utils/customization/theme_extentions/status_colors.dart';
 import 'package:privacyidea_authenticator/utils/firebase_utils.dart';
 import 'package:privacyidea_authenticator/utils/globals.dart';
+import 'package:privacyidea_authenticator/utils/lock_auth.dart';
 import 'package:privacyidea_authenticator/utils/privacyidea_io_client.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/introduction_provider.dart';
+import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_folder_notifier.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
 import 'package:privacyidea_authenticator/views/link_home_widget_view/link_home_widget_view.dart';
+import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/folder_widgets/token_folder_expandable_widgets/token_folder_expandable_header_icon.dart';
+import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/token_image.dart';
+import 'package:privacyidea_authenticator/views/main_view/main_view_widgets/token_widgets/token_widget_tile.dart';
+
+import '../../../tests_app_wrapper.mocks.dart';
 
 class _FakeTokenNotifier extends TokenNotifier {
   final List<Token> tokens;
@@ -43,11 +56,30 @@ class _FakeTokenNotifier extends TokenNotifier {
 
 class _FakeFolderNotifier extends TokenFolderNotifier {
   final List<TokenFolder> folders;
-  _FakeFolderNotifier(this.folders);
+  final List<String> events;
+  _FakeFolderNotifier(this.folders, this.events);
 
   @override
   TokenFolderState build({required TokenFolderRepository repo}) =>
       TokenFolderState(folders: folders);
+
+  @override
+  Future<TokenFolderState> updateFolder(
+    TokenFolder folder,
+    TokenFolder Function(TokenFolder) updater,
+  ) async {
+    events.add('saveFolder:${folder.folderId}');
+    return state;
+  }
+
+  @override
+  Future<TokenFolderState> updateFolderById(
+    int folderId,
+    TokenFolder Function(TokenFolder) updater,
+  ) async {
+    events.add('saveFolder:$folderId');
+    return state;
+  }
 }
 
 class _FakeIntroductionNotifier extends IntroductionNotifier {
@@ -79,40 +111,83 @@ class _RouteObserver extends NavigatorObserver {
   }
 }
 
+const _secret = 'JBSWY3DPEHPK3PXP';
+
 HOTPToken _token({
   required String id,
   required String label,
+  String issuer = '',
+  String? tokenImage,
   bool isLocked = false,
   int? folderId,
+  int? sortIndex,
   int digits = 6,
 }) => HOTPToken(
   id: id,
   label: label,
+  issuer: issuer,
+  tokenImage: tokenImage,
   algorithm: Algorithms.SHA1,
   digits: digits,
-  secret: 'JBSWY3DPEHPK3PXP',
+  secret: _secret,
   isLocked: isLocked,
   folderId: folderId,
+  sortIndex: sortIndex,
 );
+
+String _split(String otp) {
+  final half = (otp.length / 2).ceil();
+  return '${otp.substring(0, half)} ${otp.substring(half)}';
+}
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   final l = AppLocalizationsEn();
   late List<String> events;
+  late MockLocalAuthentication localAuth;
 
   setUp(() {
     events = [];
+    localAuth = MockLocalAuthentication();
+    when(localAuth.isDeviceSupported()).thenAnswer((_) async => true);
+    localAuthInstance = localAuth;
+    resetAuthMutex();
   });
 
+  tearDown(() {
+    localAuthInstance = LocalAuthentication();
+    resetAuthMutex();
+  });
+
+  void authResult(bool result) {
+    when(
+      localAuth.authenticate(
+        localizedReason: anyNamed('localizedReason'),
+        biometricOnly: anyNamed('biometricOnly'),
+        authMessages: anyNamed('authMessages'),
+      ),
+    ).thenAnswer((_) async => result);
+  }
+
+  int authPrompts() => verify(
+    localAuth.authenticate(
+      localizedReason: anyNamed('localizedReason'),
+      biometricOnly: anyNamed('biometricOnly'),
+      authMessages: anyNamed('authMessages'),
+    ),
+  ).callCount;
+
   /// Pumps an app with a first route and pushes the [LinkHomeWidgetView] on top.
+  ///
+  /// [settle] false is needed for TOTP tiles, whose countdown never settles.
   Future<void> pumpView(
     WidgetTester tester, {
     List<Token> tokens = const [],
     List<TokenFolder> folders = const [],
-    String? veilingCharacter,
     Object? errorOnComplete,
     String widgetId = '32',
+    bool settle = true,
   }) async {
     tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
       SystemChannels.platform,
@@ -127,17 +202,26 @@ void main() {
         null,
       ),
     );
+    final settingsRepo = MockSettingsRepository();
+    when(
+      settingsRepo.loadSettings(),
+    ).thenAnswer((_) async => SettingsState());
 
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
           tokenProvider.overrideWith(() => _FakeTokenNotifier(tokens)),
-          tokenFolderProvider.overrideWith(() => _FakeFolderNotifier(folders)),
+          tokenFolderProvider.overrideWith(
+            () => _FakeFolderNotifier(folders, events),
+          ),
           introductionNotifierProvider.overrideWith(
             () => _FakeIntroductionNotifier(
               events,
               errorOnComplete: errorOnComplete,
             ),
+          ),
+          settingsProvider.overrideWith(
+            () => SettingsNotifier(repoOverride: settingsRepo),
           ),
         ],
         child: MaterialApp(
@@ -152,8 +236,6 @@ void main() {
                 error: const Color(0xFFF44336),
                 neutral: const Color(0xFF9E9E9E),
               ),
-              if (veilingCharacter != null)
-                ExtendedTextTheme(veilingCharacter: veilingCharacter),
             ],
           ),
           localizationsDelegates: const [
@@ -171,13 +253,17 @@ void main() {
     globalNavigatorKey.currentState!.push(
       MaterialPageRoute(builder: (_) => view, settings: view.routeSettings),
     );
-    await tester.pumpAndSettle();
+    if (settle) {
+      await tester.pumpAndSettle();
+    } else {
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+    }
   }
 
-  /// The subtitle text of the list tile whose title is [label].
-  String subtitleOf(WidgetTester tester, String label) {
-    final tile = tester.widget<ListTile>(find.widgetWithText(ListTile, label));
-    return (tile.subtitle! as Text).data!;
+  Future<void> tapAndSettle(WidgetTester tester, String text) async {
+    await tester.tap(find.text(text));
+    await tester.pumpAndSettle();
   }
 
   test('routeName and routeSettings', () {
@@ -195,10 +281,10 @@ void main() {
       await pumpView(tester);
 
       expect(find.text(l.linkHomeWidgetViewTitle), findsOneWidget);
-      expect(find.byType(ListTile), findsNothing);
+      expect(find.byType(TokenWidgetTile), findsNothing);
     });
 
-    testWidgets('shows one tile per OTP token with label as title', (
+    testWidgets('shows every OTP token as a tile of the main list', (
       tester,
     ) async {
       await pumpView(
@@ -209,66 +295,263 @@ void main() {
         ],
       );
 
-      expect(find.byType(ListTile), findsNWidgets(2));
+      expect(find.byType(TokenWidgetTile), findsNWidgets(2));
       expect(find.text('Alpha'), findsOneWidget);
       expect(find.text('Beta'), findsOneWidget);
     });
 
-    testWidgets('unlocked token shows its real OTP split in the middle', (
+    testWidgets('shows the issuer and the token image of a token', (
+      tester,
+    ) async {
+      await pumpView(
+        tester,
+        tokens: [
+          _token(
+            id: 'a',
+            label: 'Alpha',
+            issuer: 'issuer.example.org',
+            tokenImage: 'https://img.example.org/logo.png',
+          ),
+        ],
+      );
+
+      expect(find.text('issuer.example.org'), findsOneWidget);
+      expect(
+        tester.widget<TokenImage>(find.byType(TokenImage)).tokenImage,
+        'https://img.example.org/logo.png',
+      );
+    });
+
+    testWidgets('shows no algorithm, counter or period lines of any OTP type', (
+      tester,
+    ) async {
+      await pumpView(
+        tester,
+        settle: false,
+        tokens: [
+          _token(id: 'hotp', label: 'live-check-hotp'),
+          TOTPToken(
+            id: 'totp',
+            label: 'live-check-totp',
+            algorithm: Algorithms.SHA1,
+            digits: 6,
+            secret: _secret,
+            period: 30,
+          ),
+          DayPasswordToken(
+            id: 'day',
+            label: 'live-check-day',
+            algorithm: Algorithms.SHA1,
+            digits: 6,
+            secret: _secret,
+            period: const Duration(hours: 24),
+          ),
+          SteamToken(
+            id: 'steam',
+            label: 'live-check-steam',
+            issuer: 'Steam',
+            secret: _secret,
+          ),
+        ],
+      );
+
+      expect(find.byType(TokenWidgetTile), findsNWidgets(4));
+      expect(find.textContaining('Algorithm:'), findsNothing);
+      expect(find.textContaining('Counter:'), findsNothing);
+      expect(find.textContaining('Period:'), findsNothing);
+    });
+
+    testWidgets('an unlocked token shows its real OTP split in the middle', (
       tester,
     ) async {
       final token = _token(id: 'a', label: 'Alpha');
       await pumpView(tester, tokens: [token]);
 
-      final otp = token.otpValue;
-      expect(otp, hasLength(6));
-      expect(
-        subtitleOf(tester, 'Alpha'),
-        '${otp.substring(0, 3)} ${otp.substring(3)}',
-      );
+      expect(token.otpValue, hasLength(6));
+      expect(find.text(_split(token.otpValue)), findsOneWidget);
     });
   });
 
-  group('locked tokens and folders are masked', () {
-    testWidgets('locked token shows veiling characters instead of the OTP', (
+  group('locked tokens are masked like in the main list', () {
+    testWidgets('a locked token shows bullets instead of the OTP', (
       tester,
     ) async {
       final token = _token(id: 'a', label: 'Locked', isLocked: true);
       await pumpView(tester, tokens: [token]);
 
-      expect(subtitleOf(tester, 'Locked'), '●●● ●●●');
-      expect(find.textContaining(token.otpValue.substring(0, 3)), findsNothing);
+      expect(find.text('••• •••'), findsOneWidget);
+      expect(find.text(_split(token.otpValue)), findsNothing);
     });
 
-    testWidgets(
-      'token in a locked folder is masked even if it is not locked itself',
-      (tester) async {
-        final token = _token(id: 'a', label: 'InFolder', folderId: 1);
-        await pumpView(
-          tester,
-          tokens: [token],
-          folders: const [
-            TokenFolder(label: 'Secret', folderId: 1, isLocked: true),
-          ],
-        );
+    testWidgets('only the locked token of several is masked', (tester) async {
+      final open = _token(id: 'a', label: 'Open');
+      await pumpView(
+        tester,
+        tokens: [
+          open,
+          _token(id: 'b', label: 'Locked', isLocked: true),
+        ],
+      );
 
-        expect(token.isLocked, isFalse);
-        expect(subtitleOf(tester, 'InFolder'), '●●● ●●●');
-      },
-    );
+      expect(find.text(_split(open.otpValue)), findsOneWidget);
+      expect(find.text('••• •••'), findsOneWidget);
+    });
 
-    testWidgets('token in an unlocked folder shows the OTP', (tester) async {
+    testWidgets('the mask length follows the number of digits (8 digits)', (
+      tester,
+    ) async {
+      await pumpView(
+        tester,
+        tokens: [_token(id: 'a', label: 'Long', isLocked: true, digits: 8)],
+      );
+
+      expect(find.text('•••• ••••'), findsOneWidget);
+    });
+
+    testWidgets('tapping a locked token links it without an auth prompt', (
+      tester,
+    ) async {
+      await pumpView(
+        tester,
+        tokens: [_token(id: 'a', label: 'Locked', isLocked: true)],
+      );
+
+      await tester.tap(find.text('Locked'));
+      await tester.pump();
+
+      expect(events, ['complete:homeWidgetSetUp', 'systemPop']);
+      verifyNever(localAuth.isDeviceSupported());
+      await tester.pump(const Duration(milliseconds: 600));
+      await tester.pumpAndSettle();
+    });
+  });
+
+  group('folders', () {
+    testWidgets('tokens of a collapsed folder show only after expanding it', (
+      tester,
+    ) async {
       final token = _token(id: 'a', label: 'InFolder', folderId: 1);
       await pumpView(
         tester,
         tokens: [token],
-        folders: const [TokenFolder(label: 'Open', folderId: 1)],
+        folders: const [TokenFolder(label: 'Work', folderId: 1)],
       );
 
-      expect(subtitleOf(tester, 'InFolder'), isNot(contains('●')));
+      expect(find.text('Work'), findsOneWidget);
+      expect(find.text('InFolder'), findsNothing);
+
+      await tapAndSettle(tester, 'Work');
+
+      expect(find.text('InFolder'), findsOneWidget);
+      expect(find.text(_split(token.otpValue)), findsOneWidget);
     });
 
-    testWidgets('token with unknown folderId is not masked', (tester) async {
+    testWidgets('a folder stored as expanded starts expanded', (tester) async {
+      await pumpView(
+        tester,
+        tokens: [_token(id: 'a', label: 'InFolder', folderId: 1)],
+        folders: const [
+          TokenFolder(label: 'Work', folderId: 1, isExpanded: true),
+        ],
+      );
+
+      expect(find.text('InFolder'), findsOneWidget);
+    });
+
+    testWidgets('tapping an expanded folder collapses it', (tester) async {
+      await pumpView(
+        tester,
+        tokens: [_token(id: 'a', label: 'InFolder', folderId: 1)],
+        folders: const [
+          TokenFolder(label: 'Work', folderId: 1, isExpanded: true),
+        ],
+      );
+
+      await tapAndSettle(tester, 'Work');
+
+      expect(find.text('InFolder'), findsNothing);
+    });
+
+    testWidgets('the header of an expanded folder stays inside its card', (
+      tester,
+    ) async {
+      await pumpView(
+        tester,
+        tokens: [_token(id: 'a', label: 'InFolder', folderId: 1)],
+        folders: const [
+          TokenFolder(label: 'Work', folderId: 1, isExpanded: true),
+        ],
+      );
+
+      final card = tester.getRect(
+        find.descendant(
+          of: find.byWidgetPredicate(
+            (widget) =>
+                widget is Container &&
+                widget.decoration is BoxDecoration &&
+                ((widget.decoration as BoxDecoration).boxShadow?.isNotEmpty ??
+                    false),
+          ),
+          matching: find.byType(DecoratedBox),
+        ),
+      );
+      final arrow = tester.getRect(find.byIcon(Icons.arrow_forward_ios_sharp));
+      final folderIcon = tester.getRect(
+        find.byType(TokenFolderExpandableHeaderIcon),
+      );
+
+      expect(arrow.left, greaterThanOrEqualTo(card.left));
+      expect(folderIcon.right, lessThanOrEqualTo(card.right));
+    });
+
+    testWidgets('folders and tokens keep the order of the main list', (
+      tester,
+    ) async {
+      await pumpView(
+        tester,
+        tokens: [
+          _token(id: 'c', label: 'Third', sortIndex: 2),
+          _token(id: 'a', label: 'First', sortIndex: 0),
+          _token(id: 'f', label: 'InFolder', folderId: 1, sortIndex: 0),
+        ],
+        folders: const [
+          TokenFolder(label: 'Second', folderId: 1, sortIndex: 1),
+        ],
+      );
+
+      final first = tester.getTopLeft(find.text('First')).dy;
+      final second = tester.getTopLeft(find.text('Second')).dy;
+      final third = tester.getTopLeft(find.text('Third')).dy;
+      expect(first, lessThan(second));
+      expect(second, lessThan(third));
+    });
+
+    testWidgets('a folder without OTP tokens is not shown', (tester) async {
+      await pumpView(
+        tester,
+        tokens: [
+          _token(id: 'a', label: 'Alpha'),
+          PushToken(
+            serial: 'live-check-push',
+            id: 'push',
+            label: 'PushInFolder',
+            folderId: 2,
+          ),
+        ],
+        folders: const [
+          TokenFolder(label: 'Empty', folderId: 1),
+          TokenFolder(label: 'PushOnly', folderId: 2),
+        ],
+      );
+
+      expect(find.text('Empty'), findsNothing);
+      expect(find.text('PushOnly'), findsNothing);
+      expect(find.text('Alpha'), findsOneWidget);
+    });
+
+    testWidgets('a token with an unknown folderId stays in the top list', (
+      tester,
+    ) async {
       await pumpView(
         tester,
         tokens: [_token(id: 'a', label: 'Orphan', folderId: 99)],
@@ -277,43 +560,168 @@ void main() {
         ],
       );
 
-      expect(subtitleOf(tester, 'Orphan'), isNot(contains('●')));
+      expect(find.text('Orphan'), findsOneWidget);
+      expect(find.text('Secret'), findsNothing);
     });
 
-    testWidgets('only the locked token of several is masked', (tester) async {
+    testWidgets('expanding and collapsing saves no folder state', (
+      tester,
+    ) async {
       await pumpView(
         tester,
-        tokens: [
-          _token(id: 'a', label: 'Open'),
-          _token(id: 'b', label: 'Locked', isLocked: true),
+        tokens: [_token(id: 'a', label: 'InFolder', folderId: 1)],
+        folders: const [TokenFolder(label: 'Work', folderId: 1)],
+      );
+
+      await tapAndSettle(tester, 'Work');
+      await tapAndSettle(tester, 'Work');
+
+      expect(events.where((e) => e.startsWith('saveFolder')), isEmpty);
+    });
+
+    testWidgets('tapping a token inside a folder links it', (tester) async {
+      await pumpView(
+        tester,
+        tokens: [_token(id: 'a', label: 'InFolder', folderId: 1)],
+        folders: const [TokenFolder(label: 'Work', folderId: 1)],
+      );
+
+      await tapAndSettle(tester, 'Work');
+      await tester.tap(find.text('InFolder'));
+      await tester.pump();
+
+      expect(events, ['complete:homeWidgetSetUp', 'systemPop']);
+      await tester.pump(const Duration(milliseconds: 600));
+      await tester.pumpAndSettle();
+    });
+  });
+
+  group('locked folders ask for authentication like in the main list', () {
+    const locked = TokenFolder(
+      label: 'Secret',
+      folderId: 1,
+      isLocked: true,
+      isExpanded: true,
+    );
+
+    testWidgets('a locked folder starts collapsed even if stored expanded', (
+      tester,
+    ) async {
+      await pumpView(
+        tester,
+        tokens: [_token(id: 'a', label: 'InFolder', folderId: 1)],
+        folders: const [locked],
+      );
+
+      expect(find.text('Secret'), findsOneWidget);
+      expect(find.text('InFolder'), findsNothing);
+    });
+
+    testWidgets('expands after a successful authentication', (tester) async {
+      authResult(true);
+      final token = _token(id: 'a', label: 'InFolder', folderId: 1);
+      await pumpView(tester, tokens: [token], folders: const [locked]);
+
+      await tapAndSettle(tester, 'Secret');
+
+      expect(authPrompts(), 1);
+      expect(find.text('InFolder'), findsOneWidget);
+      expect(find.text(_split(token.otpValue)), findsOneWidget);
+    });
+
+    testWidgets('stays collapsed when the authentication fails', (
+      tester,
+    ) async {
+      authResult(false);
+      await pumpView(
+        tester,
+        tokens: [_token(id: 'a', label: 'InFolder', folderId: 1)],
+        folders: const [locked],
+      );
+
+      await tapAndSettle(tester, 'Secret');
+
+      expect(authPrompts(), 1);
+      expect(find.text('InFolder'), findsNothing);
+    });
+
+    testWidgets('collapsing needs no authentication', (tester) async {
+      authResult(true);
+      await pumpView(
+        tester,
+        tokens: [_token(id: 'a', label: 'InFolder', folderId: 1)],
+        folders: const [locked],
+      );
+
+      await tapAndSettle(tester, 'Secret');
+      await tapAndSettle(tester, 'Secret');
+
+      expect(authPrompts(), 1);
+      expect(find.text('InFolder'), findsNothing);
+    });
+
+    testWidgets('an expanded locked folder collapses when the app is hidden', (
+      tester,
+    ) async {
+      authResult(true);
+      await pumpView(
+        tester,
+        tokens: [_token(id: 'a', label: 'InFolder', folderId: 1)],
+        folders: const [locked],
+      );
+      await tapAndSettle(tester, 'Secret');
+      expect(find.text('InFolder'), findsOneWidget);
+
+      for (final state in [
+        AppLifecycleState.inactive,
+        AppLifecycleState.hidden,
+        AppLifecycleState.inactive,
+        AppLifecycleState.resumed,
+      ]) {
+        tester.binding.handleAppLifecycleStateChanged(state);
+      }
+      await tester.pumpAndSettle();
+
+      expect(find.text('InFolder'), findsNothing);
+    });
+
+    testWidgets('an unlocked folder stays expanded when the app is hidden', (
+      tester,
+    ) async {
+      await pumpView(
+        tester,
+        tokens: [_token(id: 'a', label: 'InFolder', folderId: 1)],
+        folders: const [
+          TokenFolder(label: 'Work', folderId: 1, isExpanded: true),
         ],
       );
 
-      expect(subtitleOf(tester, 'Open'), isNot(contains('●')));
-      expect(subtitleOf(tester, 'Locked'), '●●● ●●●');
+      for (final state in [
+        AppLifecycleState.inactive,
+        AppLifecycleState.hidden,
+        AppLifecycleState.inactive,
+        AppLifecycleState.resumed,
+      ]) {
+        tester.binding.handleAppLifecycleStateChanged(state);
+      }
+      await tester.pumpAndSettle();
+
+      expect(find.text('InFolder'), findsOneWidget);
     });
 
-    testWidgets('mask length follows the number of digits (8 digits)', (
+    testWidgets('an unlocked folder expands without authentication', (
       tester,
     ) async {
       await pumpView(
         tester,
-        tokens: [_token(id: 'a', label: 'Long', isLocked: true, digits: 8)],
+        tokens: [_token(id: 'a', label: 'InFolder', folderId: 1)],
+        folders: const [TokenFolder(label: 'Work', folderId: 1)],
       );
 
-      expect(subtitleOf(tester, 'Long'), '●●●● ●●●●');
-    });
+      await tapAndSettle(tester, 'Work');
 
-    testWidgets('uses the veilingCharacter of the ExtendedTextTheme', (
-      tester,
-    ) async {
-      await pumpView(
-        tester,
-        tokens: [_token(id: 'a', label: 'Locked', isLocked: true)],
-        veilingCharacter: '*',
-      );
-
-      expect(subtitleOf(tester, 'Locked'), '*** ***');
+      verifyNever(localAuth.isDeviceSupported());
+      expect(find.text('InFolder'), findsOneWidget);
     });
   });
 
@@ -344,6 +752,20 @@ void main() {
         expect(find.text('first route'), findsOneWidget);
       },
     );
+
+    testWidgets('tapping the OTP of a tile links the token too', (
+      tester,
+    ) async {
+      final token = _token(id: 'a', label: 'Alpha');
+      await pumpView(tester, tokens: [token]);
+
+      await tester.tap(find.text(_split(token.otpValue)));
+      await tester.pump();
+
+      expect(events, ['complete:homeWidgetSetUp', 'systemPop']);
+      await tester.pump(const Duration(milliseconds: 600));
+      await tester.pumpAndSettle();
+    });
 
     testWidgets('alreadyTapped: a second tap on the same token does nothing', (
       tester,

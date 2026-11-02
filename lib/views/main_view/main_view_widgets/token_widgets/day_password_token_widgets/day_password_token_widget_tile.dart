@@ -37,10 +37,12 @@ import '../token_widget_tile.dart';
 class DayPasswordTokenWidgetTile extends ConsumerStatefulWidget {
   final DayPasswordToken token;
   final bool isPreview;
+  final bool showPreviewDetails;
 
   const DayPasswordTokenWidgetTile(
     this.token, {
     this.isPreview = false,
+    this.showPreviewDetails = true,
     super.key,
   });
 
@@ -141,7 +143,8 @@ class _DayPasswordTokenWidgetTileState
     return _copyOtpValue;
   }
 
-  List<String> get _additionalSubtitles => widget.isPreview
+  List<String> get _additionalSubtitles =>
+      widget.isPreview && widget.showPreviewDetails
       ? [
           'Algorithm: ${widget.token.algorithm.name}',
           'Period: ${widget.token.period.toString().split('.').first}',
