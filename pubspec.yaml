@@ -22,6 +22,9 @@ version: 4.8.1+408101 # TODO Set the right version number
 # iOS    : CFBundleShortVersionString + CFBundleVersion
 environment:
   sdk: ">=3.12.0 < 4.0.0"
+  # Flutter 3.47 crashes when rendering the home widget on Android (GLES).
+  # Check the widget on a GLES device before raising the upper bound.
+  flutter: ">=3.44.0 <3.45.0"
 
 dependencies:
   app_links: ^7.0.0
