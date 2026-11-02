@@ -24,6 +24,7 @@ import '../../../../../../../repo/preference_token_folder_repository.dart';
 import '../../../../interfaces/repo/token_folder_repository.dart';
 import '../../../../model/riverpod_states/token_folder_state.dart';
 import '../../../../model/token_folder.dart';
+import '../../../home_widget_utils.dart';
 import '../../../logger.dart';
 import 'token_notifier.dart';
 
@@ -208,8 +209,14 @@ class TokenFolderNotifier extends _$TokenFolderNotifier {
     }
   }
 
-  Future<TokenFolderState> toggleFolderLock(TokenFolder folder) =>
-      updateFolder(folder, (p0) => p0.copyWith(isLocked: !p0.isLocked));
+  Future<TokenFolderState> toggleFolderLock(TokenFolder folder) async {
+    final newState = await updateFolder(
+      folder,
+      (p0) => p0.copyWith(isLocked: !p0.isLocked),
+    );
+    await HomeWidgetUtils().updateLockOfLinkedWidgets();
+    return newState;
+  }
   Future<TokenFolderState> updateLabel(TokenFolder folder, String label) =>
       updateFolder(folder, (p0) => p0.copyWith(label: label));
   Future<TokenFolderState> expandFolderById(int folderId) =>

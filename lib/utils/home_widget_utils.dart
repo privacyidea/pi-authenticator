@@ -291,10 +291,9 @@ class HomeWidgetUtils {
   ) async {
     final tokenWigetPairs = <String, String>{};
     for (final widgetId in (await _widgetIds)) {
-      for (final tokenId in tokenIds) {
-        if (tokenId == await getTokenIdOfWidgetId(widgetId)) {
-          tokenWigetPairs[widgetId] = tokenId;
-        }
+      final tokenId = await getTokenIdOfWidgetId(widgetId);
+      if (tokenId != null && tokenIds.contains(tokenId)) {
+        tokenWigetPairs[widgetId] = tokenId;
       }
     }
     Logger.info('Found ${tokenWigetPairs.length} linked Widgets');
@@ -380,22 +379,37 @@ class HomeWidgetUtils {
   Future<void> updateTokensIfLinked(List<Token> tokens) async {
     // Map<widgetId, tokenId>
     if (tokens.isEmpty) return;
-    final hotpTokens = tokens.whereType<HOTPToken>().toList();
-    final hotpTokenIds = hotpTokens.map((e) => e.id).toList();
-    final linkedWidgetIds = await _getWidgetIdsOfTokens(hotpTokenIds);
+    final otpTokens = tokens.whereType<OTPToken>().toList();
+    final linkedWidgetIds = await _getWidgetIdsOfTokens(
+      otpTokens.map((e) => e.id).toList(),
+    );
     final futures = <Future>[];
     for (String widgetId in linkedWidgetIds.keys) {
-      final hotpToken = hotpTokens.firstWhereOrNull(
+      final token = otpTokens.firstWhereOrNull(
         (element) => element.id == linkedWidgetIds[widgetId],
       );
-      if (hotpToken == null) continue;
+      if (token == null) continue;
+      futures.add(_saveTokenLocked(widgetId, token));
+      if (token is! HOTPToken) continue;
       futures.addAll([
-        _updateHomeWidgetHideOtp(hotpToken, widgetId),
-        _updateHomeWidgetShowOtp(hotpToken, widgetId),
+        _updateHomeWidgetHideOtp(token, widgetId),
+        _updateHomeWidgetShowOtp(token, widgetId),
       ]);
     }
     await Future.wait(futures);
     await _notifyUpdate(linkedWidgetIds.keys);
+  }
+
+  // Call AFTER saving the folders to the repository
+  Future<void> updateLockOfLinkedWidgets() async {
+    final linkedWidgetIds = <String>[];
+    for (final widgetId in await _widgetIds) {
+      final token = await getTokenOfWidgetId(widgetId);
+      if (token == null) continue;
+      await _saveTokenLocked(widgetId, token);
+      linkedWidgetIds.add(widgetId);
+    }
+    await _notifyUpdate(linkedWidgetIds);
   }
 
   Future<void> link(String widgetId, String tokenId) async {
@@ -589,10 +603,7 @@ class HomeWidgetUtils {
 
   Future<void> _link(String widgetId, OTPToken token) async {
     await HomeWidget.saveWidgetData('$keyTokenId$widgetId', token.id);
-    await HomeWidget.saveWidgetData(
-      '$keyTokenLocked$widgetId',
-      await _isLocked(token),
-    );
+    await _saveTokenLocked(widgetId, token);
     await _updateHomeWidgetHideOtp(token, widgetId);
     await _setTokenType(widgetId, token.type);
     await _notifyUpdate([widgetId]);
@@ -653,6 +664,13 @@ class HomeWidgetUtils {
   /// Whether the widget treats [token] as locked: the token or its folder is.
   Future<bool> _isLocked(OTPToken token) async =>
       token.isLocked || ((await _folderOf(token))?.isLocked ?? false);
+
+  /// A locked widget opens the app to authenticate instead of showing the OTP.
+  Future<void> _saveTokenLocked(String widgetId, OTPToken token) async =>
+      HomeWidget.saveWidgetData(
+        '$keyTokenLocked$widgetId',
+        await _isLocked(token),
+      );
 
   ////////////////////////////////////////
   ////////////// Rendering ///////////////
@@ -904,6 +922,8 @@ class UnsupportedHomeWidgetUtils implements HomeWidgetUtils {
   @override
   Future<bool> _isLocked(OTPToken token) => Future.value(false);
   @override
+  Future<void> _saveTokenLocked(String widgetId, OTPToken token) async {}
+  @override
   Future<ThemeData> _getThemeData({bool dark = false}) =>
       Future.value(ThemeData.light());
   @override
@@ -1003,6 +1023,8 @@ class UnsupportedHomeWidgetUtils implements HomeWidgetUtils {
   Future<void> updateTokenIfLinked(Token token) async {}
   @override
   Future<void> updateTokensIfLinked(List<Token> tokens) async {}
+  @override
+  Future<void> updateLockOfLinkedWidgets() async {}
   @override
   Future<Uri?> initiallyLaunchedFromHomeWidget() => Future.value();
   @override

@@ -296,4 +296,28 @@ void main() {
       expect(state.addOrReplaceToken(replaced).lastlyUpdatedTokens, [replaced]);
     });
   });
+
+  group('tokensToUpdate', () {
+    test('passes on a token that moved into a folder', () {
+      final moved = _totp().copyWith(folderId: () => 4);
+
+      expect(HomeWidgetTokenStateListener.tokensToUpdate([_totp()], [moved]), [moved]);
+    });
+
+    test('passes on a token that left its folder', () {
+      final moved = _totp().copyWith(folderId: () => null);
+
+      expect(HomeWidgetTokenStateListener.tokensToUpdate([_totp().copyWith(folderId: () => 4)], [moved]), [moved]);
+    });
+
+    test('passes on a token that was locked', () {
+      final locked = _totp(isLocked: true);
+
+      expect(HomeWidgetTokenStateListener.tokensToUpdate([_totp()], [locked]), [locked]);
+    });
+
+    test('leaves out a token whose widget shows nothing new', () {
+      expect(HomeWidgetTokenStateListener.tokensToUpdate([_totp()], [_totp()]), isEmpty);
+    });
+  });
 }

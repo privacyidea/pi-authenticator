@@ -316,6 +316,7 @@ void main() {
 
   _testIncrementHotpCounter();
   _testTapsOnLockedTokens();
+  _testLockFlagRefresh();
 }
 
 void _testIncrementHotpCounter() {
@@ -514,5 +515,129 @@ void _testTapsOnLockedTokens() {
         expect((repository.stored['locked'] as HOTPToken).counter, 3);
       });
     });
+  });
+}
+
+void _testLockFlagRefresh() {
+  group('HomeWidgetUtils refreshes the lock flag of linked widgets', () {
+    const channel = MethodChannel('home_widget');
+    late _FakeTokenRepository repository;
+    late _FakeFolderRepository folderRepository;
+    late Map<String, Object?> store;
+
+    Object? lockFlag(String widgetId) =>
+        store['${HomeWidgetUtils.keyTokenLocked}$widgetId'];
+
+    TOTPToken totp(String id, {bool isLocked = false, int? folderId}) =>
+        TOTPToken(
+          id: id,
+          algorithm: Algorithms.SHA1,
+          digits: 6,
+          secret: 'secret$id',
+          period: 30,
+          isLocked: isLocked,
+          folderId: folderId,
+        );
+
+    const lockedFolder = TokenFolder(
+      label: 'Locked folder',
+      folderId: 4,
+      isLocked: true,
+    );
+
+    setUp(() {
+      repository = _FakeTokenRepository();
+      HomeWidgetUtils.debugTokenRepository = repository;
+      folderRepository = _FakeFolderRepository();
+      HomeWidgetUtils.debugTokenFolderRepository = folderRepository;
+      store = {
+        HomeWidgetUtils.keyWidgetIds: '7,8',
+        '${HomeWidgetUtils.keyTokenId}7': 'linked',
+        '${HomeWidgetUtils.keyTokenId}8': 'other',
+        '${HomeWidgetUtils.keyTokenLocked}7': false,
+        '${HomeWidgetUtils.keyTokenLocked}8': false,
+      };
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(channel, (call) async {
+            switch (call.method) {
+              case 'getWidgetData':
+                return store[call.arguments['id']] ??
+                    call.arguments['defaultValue'];
+              case 'saveWidgetData':
+                store[call.arguments['id']] = call.arguments['data'];
+                return true;
+            }
+            return null;
+          });
+    });
+
+    tearDown(() {
+      HomeWidgetUtils.debugTokenRepository = null;
+      HomeWidgetUtils.debugTokenFolderRepository = null;
+    });
+
+    test('a token locked after linking marks its widget locked', () async {
+      await HomeWidgetUtils.debugInstance().updateTokensIfLinked([
+        totp('linked', isLocked: true),
+      ]);
+
+      expect(lockFlag('7'), true);
+      expect(lockFlag('8'), false);
+    });
+
+    test('a token unlocked after linking marks its widget unlocked', () async {
+      store['${HomeWidgetUtils.keyTokenLocked}7'] = true;
+
+      await HomeWidgetUtils.debugInstance().updateTokensIfLinked([
+        totp('linked'),
+      ]);
+
+      expect(lockFlag('7'), false);
+    });
+
+    test(
+      'a token moved into a locked folder marks its widget locked',
+      () async {
+        folderRepository.folders = [lockedFolder];
+
+        await HomeWidgetUtils.debugInstance().updateTokensIfLinked([
+          totp('linked', folderId: 4),
+        ]);
+
+        expect(lockFlag('7'), true);
+        expect(lockFlag('8'), false);
+      },
+    );
+
+    test(
+      'locking a folder marks the widgets of its tokens locked',
+      () async {
+        repository.stored['linked'] = totp('linked', folderId: 4);
+        repository.stored['other'] = totp('other');
+        folderRepository.folders = [lockedFolder];
+
+        await HomeWidgetUtils.debugInstance().updateLockOfLinkedWidgets();
+
+        expect(lockFlag('7'), true);
+        expect(lockFlag('8'), false);
+      },
+    );
+
+    test(
+      'unlocking a folder marks the widgets of its tokens unlocked',
+      () async {
+        store['${HomeWidgetUtils.keyTokenLocked}7'] = true;
+        repository.stored['linked'] = totp('linked', folderId: 4);
+        repository.stored['other'] = totp('other');
+        folderRepository.folders = [
+          const TokenFolder(label: 'Open folder', folderId: 4),
+        ];
+
+        await HomeWidgetUtils.debugInstance().updateLockOfLinkedWidgets();
+
+        expect(lockFlag('7'), false);
+        expect(lockFlag('8'), false);
+      },
+    );
   });
 }
