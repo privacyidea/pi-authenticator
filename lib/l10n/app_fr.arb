@@ -2057,7 +2057,7 @@
   "noNetworkConnection": "Pas de connexion au réseau.",
   "noProcessorFoundForHost": "Aucun processeur trouvé pour l'hôte : {host}",
   "noPublicKey": "Pas de clé publique",
-  "noResultText1": "Appuyez sur le \n",
+  "noResultText1": "Appuyez sur le ",
   "noResultText2": "bouton pour commencer!",
   "noResultTitle": "Aucun jeton n'est encore stocké.",
   "hiddenTokensAmountHint": "{count, plural, one{{count} jeton n'est pas répertorié car il peut être un jeton privacyIDEA et ne peut pas être exporté.} other{{count} jetons ne sont pas répertoriés car ils peuvent être des jetons privacyIDEA et ne peuvent pas être exportés.}}",

@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_zxing/flutter_zxing.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:privacyidea_authenticator/views/qr_scanner_view/qr_scanner_view_widgets/qr_scanner_widget.dart';
 
 import '../../../tests_app_wrapper.dart';
