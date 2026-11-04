@@ -75,18 +75,20 @@ class SelectExportTypeDialog extends ConsumerWidget {
 
   Future<void> _selectTokenDialog(BuildContext context, WidgetRef ref) async {
     final localization = AppLocalizations.of(context)!;
-    final authenticated = await lockAuthWithSettings(
-      ref: ref,
-      reason: (l) => l.exportLockedTokenReason,
-      localization: localization,
-      autoAuthIfUnsupported: true,
-    );
-    if (!authenticated || !context.mounted) return;
     final isExported = await showDialog<bool>(
       useRootNavigator: false,
       context: context,
       builder: (context) => SelectExportTokensDialog(
         multiSelect: false,
+        // The QR code shows the secret unencrypted: ask after the pick, with
+        // the lock the picked token requires.
+        authorize: (tokens) => lockAuthWithSettings(
+          ref: ref,
+          reason: (l) => l.exportLockedTokenReason,
+          localization: localization,
+          forceBiometricOption: exportForceBiometricOption(tokens),
+          autoAuthIfUnsupported: true,
+        ),
         dialogBuilder: (tokens) => ShowQrCodeDialog(token: tokens.first),
       ),
     );

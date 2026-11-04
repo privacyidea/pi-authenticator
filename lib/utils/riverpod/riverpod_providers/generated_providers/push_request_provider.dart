@@ -394,6 +394,19 @@ class PushRequestNotifier extends _$PushRequestNotifier {
         url: updated.uri,
         body: body,
       );
+      // After a timeout or an unexpected failure the request may already have
+      // reached the server. Sending it again would answer the push request a
+      // second time, so it is only retried if it cannot have been delivered.
+      if (response.isConnectionFailure && response.mayHaveBeenDelivered) {
+        Logger.warning(
+          'Push reaction request failed and is not retried because it may '
+          'have reached the server',
+          error: response.body,
+        );
+        await _addOrReplacePushRequest(oldRequest);
+        ref.read(statusProvider.notifier).show((l) => l.connectionFailed);
+        return null;
+      }
       if (response.isConnectionFailure) {
         try {
           response = await _ioClient.doPost(

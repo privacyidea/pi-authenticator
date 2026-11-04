@@ -19,11 +19,11 @@
  */
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../../../../views/feedback_view/widgets/feedback_send_row.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/globals.dart';
+import '../../utils/utils.dart';
 import '../view_interface.dart';
 
 enum FeedbackCategory { improvement, bugReport, loginTokenHelp }
@@ -183,7 +183,7 @@ class _FeedbackViewState extends State<FeedbackView> {
                                     text: linkText,
                                     style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.blue),
                                     recognizer: TapGestureRecognizer()
-                                      ..onTap = () => launchUrl(policyStatementUri),
+                                      ..onTap = () => openUrl(policyStatementUri),
                                   ),
                                   TextSpan(
                                     text: parts[1],

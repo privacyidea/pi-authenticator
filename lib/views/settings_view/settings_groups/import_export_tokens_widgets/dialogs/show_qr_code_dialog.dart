@@ -23,6 +23,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../../l10n/app_localizations.dart';
 import '../../../../../model/tokens/token.dart';
 import '../../../../../utils/encryption/token_encryption.dart';
+import '../../../../../utils/logger.dart';
 import '../../../../../utils/utils.dart';
 import '../../../../../widgets/dialog_widgets/default_dialog.dart';
 
@@ -32,9 +33,17 @@ class ShowQrCodeDialog extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final qrImage = generateQrCodeImage(
-      data: TokenEncryption.generateExportUri(token: token).toString(),
-    );
+    final Image qrImage;
+    try {
+      qrImage = generateQrCodeImage(
+        data: TokenEncryption.generateExportUri(token: token).toString(),
+      );
+    } on Exception catch (e) {
+      // Past the capacity of the largest QR code zxing gives up with a
+      // WriterException ("Data too big"); the file export has no such limit.
+      Logger.warning('Token too big for a QR code', error: e);
+      return _tooMuchDataDialog(context);
+    }
     return DefaultDialog(
       // The qr code shrinks to the available space instead of scrolling.
       scrollableContent: false,
@@ -71,6 +80,18 @@ class ShowQrCodeDialog extends ConsumerWidget {
       ],
     );
   }
+
+  Widget _tooMuchDataDialog(BuildContext context) => DefaultDialog(
+    title: Text(AppLocalizations.of(context)!.asQrCode),
+    content: Text(AppLocalizations.of(context)!.qrCodeTooMuchData),
+    actions: [
+      DialogAction(
+        label: AppLocalizations.of(context)!.exportOneMore,
+        intent: ActionIntent.cancel,
+        onPressed: () => Navigator.of(context).pop(),
+      ),
+    ],
+  );
 
   void _showQrMaximized(BuildContext context, Image qrImage) {
     showDialog(

@@ -28,15 +28,16 @@ extension ForceBiometricOptionX on ForceBiometricOption {
     transformer: (v) {
       Logger.info('Transforming value to ForceBiometricOption: $v');
       if (v is ForceBiometricOption) return v;
-      if (v is String) {
-        return ForceBiometricOptionX.fromString(v)!;
-      }
+      if (v is String && v.isEmpty) return ForceBiometricOption.none;
+      final option = v is String ? ForceBiometricOptionX.fromString(v) : null;
+      if (option != null) return option;
+      // An option the app does not know still asks for a lock. Locking with
+      // any device authentication is safer than not locking at all.
       Logger.warning(
-        'Invalid type for ForceBiometricOption: ${v.runtimeType}, value: $v',
+        'Unknown ForceBiometricOption ${v.runtimeType} "$v", '
+        'locking with any device authentication',
       );
-      throw ArgumentError(
-        'Invalid type for ForceBiometricOption: ${v.runtimeType}, value: $v',
-      );
+      return ForceBiometricOption.any;
     },
   );
 

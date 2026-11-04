@@ -29,6 +29,7 @@ import '../../model/enums/app_feature.dart';
 import '../../model/enums/image_format.dart';
 import '../../model/widget_image.dart';
 import 'theme_extentions/app_dimensions.dart';
+import 'theme_extentions/required_theme_extensions.dart';
 
 /// The central hub for application-wide customization.
 /// It orchestrates branding (logos, names), technical metadata (support links, crash reporting),
@@ -155,17 +156,25 @@ class ApplicationCustomization {
 
   /// Generates a [ThemeData] for Light Mode.
   /// It merges color data, typography, and spatial [dimensions] into a single Flutter-compatible object.
-  ThemeData generateLightTheme() => lightTheme.generateTheme(
-    fontFamily: customFontBytes != null ? fontFamilyName : null,
-    dimensions: dimensions,
-  );
+  ThemeData generateLightTheme() {
+    final theme = lightTheme.generateTheme(
+      fontFamily: customFontBytes != null ? fontFamilyName : null,
+      dimensions: dimensions,
+    );
+    assert(theme.debugAssertHasRequiredExtensions('lightTheme of $appName'));
+    return theme;
+  }
 
   /// Generates a [ThemeData] for Dark Mode.
   /// Ensures consistent [dimensions] are used even when colors switch to dark variants.
-  ThemeData generateDarkTheme() => darkTheme.generateTheme(
-    fontFamily: customFontBytes != null ? fontFamilyName : null,
-    dimensions: dimensions,
-  );
+  ThemeData generateDarkTheme() {
+    final theme = darkTheme.generateTheme(
+      fontFamily: customFontBytes != null ? fontFamilyName : null,
+      dimensions: dimensions,
+    );
+    assert(theme.debugAssertHasRequiredExtensions('darkTheme of $appName'));
+    return theme;
+  }
 
   /// Standard 'immutable update' pattern. Creates a new instance with updated values.
   /// This ensures that [dimensions] can be updated dynamically (e.g., via a 'Compact Mode' setting).

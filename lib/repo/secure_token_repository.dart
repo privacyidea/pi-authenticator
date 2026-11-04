@@ -152,6 +152,13 @@ class SecureTokenRepository implements TokenRepository {
         Logger.info(
           'Legacy entry that meets token criteria: ${entry.key} will be migrated to new secure storage',
         );
+        if (await _storage.read(key: entry.key) != null) {
+          Logger.info(
+            'Token ${valueJson['id']} was migrated before, only its legacy entry is deleted',
+          );
+          await _storageLegacy.delete(key: entry.key);
+          continue;
+        }
         await _storage.write(key: entry.key, value: entry.value);
         await _storageLegacy.delete(key: entry.key);
         Logger.info('Migrated token ${valueJson['id']} to new secure storage');
@@ -296,7 +303,16 @@ class SecureTokenRepository implements TokenRepository {
   // ERROR HANDLING
   // ###########################################################################
 
-  Future<void> _decryptErrorDialog() => showAsyncDialog(
+  /// Loading the tokens can fail before the navigator of the app exists, and
+  /// showAsyncDialog drops a dialog without a navigator, so this waits for it.
+  Future<void> _decryptErrorDialog() async {
+    for (var i = 0; i < 100 && globalContextSync == null; i++) {
+      await Future.delayed(const Duration(milliseconds: 100));
+    }
+    return _showDecryptErrorDialog();
+  }
+
+  Future<void> _showDecryptErrorDialog() => showAsyncDialog(
     barrierDismissible: false,
     builder: (context) => DefaultDialog(
       title: Text(AppLocalizations.of(context)!.decryptErrorTitle),
@@ -378,7 +394,16 @@ class SecureTokenRepository implements TokenRepository {
                   'Deleting all tokens from secure storage',
                   verbose: true,
                 );
-                await _storage.deleteAll();
+                try {
+                  await _storage.deleteAll();
+                } on PlatformException catch (e, s) {
+                  Logger.warning(
+                    'The token storage cannot be read, so all app data in the secure storage is deleted',
+                    error: e,
+                    stackTrace: s,
+                  );
+                  await _storage.storage.deleteAll();
+                }
                 if (context.mounted) Navigator.pop(context, true);
               },
             ),

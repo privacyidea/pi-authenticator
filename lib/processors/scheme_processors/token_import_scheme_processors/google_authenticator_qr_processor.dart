@@ -62,7 +62,13 @@ class GoogleAuthenticatorQrProcessor extends TokenImportSchemeProcessor {
     if (encodedUrl == null) return [];
 
     final encoded = Uri.decodeComponent(encodedUrl);
-    var decoded = base64.decode(encoded);
+    final Uint8List decoded;
+    try {
+      decoded = base64.decode(encoded);
+    } on FormatException catch (e, s) {
+      // Its source would quote the secrets of the export into the log.
+      Error.throwWithStackTrace(FormatException(e.message, null, e.offset), s);
+    }
 
     final gai = GoogleAuthenticatorImport.fromBuffer(decoded);
     Logger.info("${gai.otpParameters.length} tokens found");

@@ -189,7 +189,7 @@ class PrivacyideaIOClient {
       return ResponseBuilder.fromStatusCode(525);
     } on TimeoutException {
       Logger.warning('POST request timed out');
-      return ResponseBuilder.fromStatusCode(408);
+      return ResponseBuilder.fromStatusCode(408, mayHaveBeenDelivered: true);
     } on SocketException catch (e, _) {
       Logger.warning('POST request failed', error: e.message);
       return ResponseBuilder.fromMessage(e.message);
@@ -202,7 +202,7 @@ class PrivacyideaIOClient {
         error: e,
         stackTrace: stack,
       );
-      return ResponseBuilder.fromStatusCode(520);
+      return ResponseBuilder.fromStatusCode(520, mayHaveBeenDelivered: true);
     } finally {
       ioClient.close();
     }
@@ -307,22 +307,41 @@ class PrivacyideaIOClient {
 extension ResponseBuilder on Response {
   static const connectionFailureHeader = 'x-privacyidea-connection-failure';
 
+  static const mayHaveBeenDeliveredHeader =
+      'x-privacyidea-may-have-been-delivered';
+
   bool get isConnectionFailure => headers[connectionFailureHeader] == 'true';
+
+  /// Whether a failed request may still have reached the server, e.g. after a
+  /// timeout. Such a request must not be sent again if that is not idempotent.
+  bool get mayHaveBeenDelivered =>
+      headers[mayHaveBeenDeliveredHeader] == 'true';
 
   static Response fromMessage(String message) =>
       _getResponseFromMessage(message);
-  static Response fromStatusCode(int statusCode) =>
-      _getResponseFromStatusCode(statusCode);
+  static Response fromStatusCode(
+    int statusCode, {
+    bool mayHaveBeenDelivered = false,
+  }) => _getResponseFromStatusCode(
+    statusCode,
+    mayHaveBeenDelivered: mayHaveBeenDelivered,
+  );
 
   static Response _getResponseFromMessage(String message) => Response(
     message,
     messageToCode[message] ?? 520,
     headers: {connectionFailureHeader: 'true'},
   );
-  static Response _getResponseFromStatusCode(int statusCode) => Response(
+  static Response _getResponseFromStatusCode(
+    int statusCode, {
+    required bool mayHaveBeenDelivered,
+  }) => Response(
     codeToMessage[statusCode] ?? 'Unknown Error',
     statusCode,
-    headers: {connectionFailureHeader: 'true'},
+    headers: {
+      connectionFailureHeader: 'true',
+      if (mayHaveBeenDelivered) mayHaveBeenDeliveredHeader: 'true',
+    },
   );
 
   static final messageToCode = {

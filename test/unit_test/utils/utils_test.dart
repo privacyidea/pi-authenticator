@@ -17,8 +17,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:privacyidea_authenticator/utils/encryption/token_encryption.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
+import 'package:zxing2/src/writer_exception.dart';
+
+import 'encryption/token_export_fixtures.dart';
 
 void main() {
   group('isPasskeyQrCode', () {
@@ -171,6 +176,18 @@ void main() {
       final original = BigInt.from(0x1234);
       final bytes = bigIntToBytes(original);
       expect(bytesToBigInt(bytes), original);
+    });
+  });
+
+  group('generateQrCodeImage', () {
+    test('generateQrCodeImage (used by ShowQrCodeDialog) throws WriterException for an oversized uri', () {
+      final uri = TokenEncryption.generateExportUri(token: exportUriMinimalTotp(label: 'x' * 3000)).toString();
+      expect(() => generateQrCodeImage(data: uri), throwsA(isA<WriterException>()));
+    });
+
+    test('generateQrCodeImage returns an image for a fitting uri', () {
+      final uri = TokenEncryption.generateExportUri(token: exportUriHotp()).toString();
+      expect(generateQrCodeImage(data: uri), isA<Image>());
     });
   });
 }

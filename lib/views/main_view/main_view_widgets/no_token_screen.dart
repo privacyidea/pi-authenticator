@@ -29,7 +29,8 @@ class NoTokenScreen extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Center(
-        child: Wrap(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             FittedBox(
               child: Text(
@@ -39,21 +40,28 @@ class NoTokenScreen extends StatelessWidget {
                 softWrap: false,
               ),
             ),
-            Text(
-              AppLocalizations.of(context)!.noResultText1,
-              style: Theme.of(context).textTheme.bodyMedium,
-              overflow: TextOverflow.fade,
-              softWrap: false,
-            ),
-            Semantics(
-              label: AppLocalizations.of(context)!.a11yScanQrCodeButton,
-              child: const Icon(Icons.qr_code_scanner_outlined),
-            ),
-            Text(
-              AppLocalizations.of(context)!.noResultText2,
-              style: Theme.of(context).textTheme.bodyMedium,
-              overflow: TextOverflow.fade,
-              softWrap: false,
+            FittedBox(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    AppLocalizations.of(context)!.noResultText1,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    overflow: TextOverflow.fade,
+                    softWrap: false,
+                  ),
+                  Semantics(
+                    label: AppLocalizations.of(context)!.a11yScanQrCodeButton,
+                    child: const Icon(Icons.qr_code_scanner_outlined),
+                  ),
+                  Text(
+                    AppLocalizations.of(context)!.noResultText2,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    overflow: TextOverflow.fade,
+                    softWrap: false,
+                  ),
+                ],
+              ),
             ),
           ],
         ),

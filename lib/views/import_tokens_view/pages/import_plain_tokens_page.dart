@@ -326,11 +326,7 @@ class _ImportFileNoPwState extends ConsumerState<ImportPlainTokensPage> {
         )) {
           continue;
         }
-        tokensToKeep!.add(
-          importTokenEntry.selectedToken?.copyWith(
-            id: importTokenEntry.oldToken?.id,
-          ),
-        );
+        tokensToKeep!.add(importTokenEntry.tokenToKeep);
       } else {
         if (importTokenEntry.selectedToken != null) {
           tokensToKeep!.add(importTokenEntry.selectedToken);

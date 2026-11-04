@@ -58,5 +58,64 @@ void main() {
       final b = TokenImportEntry(newToken: newToken, oldToken: oldToken);
       expect(a, equals(b));
     });
+
+    group('tokenToKeep', () {
+      // The stored token the user already placed: in a folder, in a spot of
+      // the list and locked.
+      final placedOld = oldToken.copyWith(
+        sortIndex: 3,
+        folderId: () => 7,
+        isLocked: true,
+      );
+
+      test('is the new token when nothing is stored yet', () {
+        expect(TokenImportEntry(newToken: newToken).tokenToKeep, same(newToken));
+      });
+
+      test('is nothing while no side of a conflict is chosen', () {
+        expect(
+          TokenImportEntry(newToken: newToken, oldToken: placedOld).tokenToKeep,
+          isNull,
+        );
+      });
+
+      test('is the stored token unchanged when it is chosen', () {
+        final entry = TokenImportEntry(
+          newToken: newToken,
+          oldToken: placedOld,
+        ).copySelect(placedOld);
+        expect(entry.tokenToKeep, same(placedOld));
+      });
+
+      test('takes the data of a chosen new token but keeps where the old one was', () {
+        final kept = TokenImportEntry(
+          newToken: newToken,
+          oldToken: placedOld,
+        ).copySelect(newToken).tokenToKeep! as HOTPToken;
+
+        expect(kept.secret, newToken.secret);
+        expect(kept.label, newToken.label);
+        expect(kept.id, placedOld.id);
+        expect(kept.sortIndex, 3);
+        expect(kept.folderId, 7);
+        expect(kept.isLocked, isTrue, reason: 'a lock must not get lost');
+      });
+
+      test('hides the code of a chosen new token that the kept lock locks', () {
+        // A backup stores the token as it was shown at export time.
+        final shownNew = newToken.copyWith(isHidden: false);
+        final kept = TokenImportEntry(
+          newToken: shownNew,
+          oldToken: placedOld,
+        ).copySelect(shownNew).tokenToKeep!;
+
+        expect(kept.isLocked, isTrue);
+        expect(
+          kept.isHidden,
+          isTrue,
+          reason: 'a locked token shows its code only after authentication',
+        );
+      });
+    });
   });
 }

@@ -259,6 +259,10 @@ class FirebaseUtils {
     return firebaseToken;
   }
 
+  /// Deletes the firebase token from Firebase and the secure storage.
+  /// Returns false if there is no firebase registration that could be deleted
+  /// (iOS without an APNS token). Throws a [SocketException] or
+  /// [FirebaseException] if the deletion failed.
   Future<bool> deleteFirebaseToken() async {
     Logger.info('Deleting firebase token..');
     try {
@@ -267,6 +271,12 @@ class FirebaseUtils {
       await FirebaseMessaging.instance.deleteToken();
       Logger.warning('Firebase token deleted from Firebase');
     } on FirebaseException catch (e) {
+      if (e.code == APNS_TOKEN_NOT_SET_ERROR_CODE) {
+        Logger.warning(
+          'No APNS token available, there is no firebase token to delete.',
+        );
+        return false;
+      }
       if (e.message?.contains('IOException') == true) {
         throw SocketException(e.message!);
       }

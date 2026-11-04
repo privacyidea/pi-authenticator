@@ -151,18 +151,6 @@
   "@backgroundImage": {
     "description": "Label for the background image setting."
   },
-  "@batteryOptimizationTitle": {
-    "description": "Tooltip for the button that opens the battery optimization dialog again."
-  },
-  "@batteryOptimizationDialogBody": {
-    "description": "Message shown as a dialog body hinting that, if the widget has problems, disabling battery optimization for the app can help."
-  },
-  "@batteryOptimizationAlreadyDisabledBody": {
-    "description": "Message shown when battery optimization is already disabled for the app."
-  },
-  "@batteryOptimizationSettingsButton": {
-    "description": "Button label to open battery optimization settings."
-  },
   "@biometricAuthNotSetupBody": {
     "description": "Message shown as a dialog body that tells the user that biometric authentication is not available on the device."
   },
@@ -446,6 +434,9 @@
   "@errorMissingPublicKey": {
     "description": "Error message when the public key is missing."
   },
+  "@errorOpeningLink": {
+    "description": "Error message when a link cannot be opened on the device, for example because no browser is installed."
+  },
   "@errorRollOutFailed": {
     "description": "Tells the user that the token could not be rolled out, because a network error occurred.",
     "placeholders": {
@@ -629,6 +620,15 @@
   "@fileSavedToDownloadsFolder": {
     "description": "Tells the user that the file was saved to the downloads folder."
   },
+  "@fileSavedToFilesApp": {
+    "description": "Tells the user on iOS that the file was saved to the app's folder in the Files app.",
+    "placeholders": {
+      "appName": {
+        "example": "privacyIDEA Authenticator",
+        "type": "String"
+      }
+    }
+  },
   "@finalizationState": {
     "description": "Title of the finalization state field."
   },
@@ -742,6 +742,15 @@
   },
   "@importHintPrivacyIdeaFile": {
     "description": "Tells the user importent information about the import of privacyIDEA files."
+  },
+  "@importHintPrivacyIdeaFileIos": {
+    "description": "Tells the user on iOS importent information about the import of privacyIDEA files, including where the backup file is stored.",
+    "placeholders": {
+      "appName": {
+        "example": "privacyIDEA Authenticator",
+        "type": "String"
+      }
+    }
   },
   "@importHintPrivacyIdeaQrScan": {
     "description": "Tells the user importent information about the import of privacyIDEA qr codes."
@@ -1257,6 +1266,21 @@
   "@patchNotesV4_6_1Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
+  "@patchNotesV4_8_1BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.8.1"
+  },
+  "@patchNotesV4_8_1BugFix2": {
+    "description": "Patch notes for a bug fix in version 4.8.1"
+  },
+  "@patchNotesV4_8_1BugFix3": {
+    "description": "Patch notes for a bug fix in version 4.8.1"
+  },
+  "@patchNotesV4_8_1Improvement1": {
+    "description": "Patch notes for an improvement in version 4.8.1"
+  },
+  "@patchNotesV4_8_1NewFeature1": {
+    "description": "Patch notes for a new feature in version 4.8.1"
+  },
   "@patchNotesV4_8_0BugFix1": {
     "description": "Patch notes for a bug fix in version 4.8.0"
   },
@@ -1374,6 +1398,9 @@
   "@pushTokensViewTitle": {
     "description": "Title of the push tokens view."
   },
+  "@qrCodeTooMuchData": {
+    "description": "Shown instead of the QR code when a token holds more data than one QR code can carry."
+  },
   "@qrFileDecodeError": {
     "description": "Error message when the qr file could not be decoded."
   },
@@ -1409,6 +1436,19 @@
   },
   "@replaceButton": {
     "description": "Button to replace something, depending on the context."
+  },
+  "@requestInfo": {
+    "description": "Description of the authentication request.",
+    "placeholders": {
+      "account": {
+        "example": "GitHub",
+        "type": "String"
+      },
+      "issuer": {
+        "example": "privacyIDEA",
+        "type": "String"
+      }
+    }
   },
   "@requestPushChallengesPeriodically": {
     "description": "The description of the polling feature."
@@ -1822,10 +1862,6 @@
   "autoCloseAppAfterAcceptingPushRequestDescription": "Wenn aktiviert, schließt sich die App automatisch, nachdem eine Push-Anfrage akzeptiert wurde.",
   "autoCloseAppAfterAcceptingPushRequestTitle": "App nach Push-Anfrage schließen",
   "backgroundImage": "Hintergrundbild",
-  "batteryOptimizationTitle": "Homescreen-Widget",
-  "batteryOptimizationDialogBody": "Falls es Probleme mit dem Homescreen-Widget gibt, kann es helfen, die Akkuoptimierung für die App zu deaktivieren.",
-  "batteryOptimizationAlreadyDisabledBody": "Die Akkuoptimierung ist für diese App deaktiviert. Möchten Sie sie wieder aktivieren, um die Akkulaufzeit zu verbessern?",
-  "batteryOptimizationSettingsButton": "Akku-Einstellungen öffnen",
   "biometricAuthNotSetupBody": "Bitte richten Sie die biometrische Authentifizierung in den Einstellungen Ihres Geräts ein, um diese Aktion auszuführen.",
   "biometricAuthNotSetupTitle": "Biometrische Authentifizierung nicht eingerichtet",
   "biometricAuthNotSupportedBody": "Ihr Gerät unterstützt keine biometrische Authentifizierung, die für diese Aktion erforderlich ist.",
@@ -1892,7 +1928,6 @@
   "deviceCredentialsRequiredTitle": "Gerätepasswort ist nicht eingerichtet",
   "deviceCredentialsSetupDescription": "Setzen Sie bitte ein Gerätepasswort in den Einstellungen",
   "digits": "Ziffern",
-  "disableButton": "Deaktivieren",
   "dismiss": "Schließen",
   "done": "Fertig",
   "edit": "Bearbeiten",
@@ -1911,6 +1946,7 @@
   "errorMailBody": "Die Fehlerprotokolldatei ist angehängt.\nSie können diesen Text durch zusätzliche Informationen über den Fehler ersetzen.",
   "errorMissingPrivateKey": "Privater Schlüssel fehlt",
   "errorMissingPublicKey": "Öffentlicher Schlüssel fehlt",
+  "errorOpeningLink": "Der Link konnte nicht geöffnet werden.",
   "errorRollOutFailed": "Ausrollen von {name} ist fehlgeschlagen.",
   "errorRollOutNoConnectionToServer": "Der Rollout von Token {name} ist fehlgeschlagen, der Server konnte nicht erreicht werden.",
   "errorRollOutNotPossibleAnymore": "Das Ausrollen dieses Tokens ist nicht mehr möglich.",
@@ -1952,6 +1988,7 @@
   "feedbackTitle": "Ihr Feedback ist immer willkommen!",
   "fileNotAvailable": "Die Datei ist derzeit nicht verfügbar! Bitte versuchen Sie es erneut.",
   "fileSavedToDownloadsFolder": "Datei wurde im Download-Ordner gespeichert",
+  "fileSavedToFilesApp": "Datei wurde in der Dateien-App im Ordner “{appName}“ gespeichert",
   "finalizationState": "Status der Finalisierung",
   "finalizeContainerFailed": "Container finalisieren fehlgeschlagen",
   "firebaseToken": "Firebase Token",
@@ -1982,6 +2019,7 @@
   "importHintGoogleQrFile": "Wählen Sie eine Bilddatei mit dem QR-Code, den Sie erhalten, wenn Sie Ihre Konten aus dem Google Authenticator exportieren.\n!! Der QR-Code enthält die Token in unverschlüsselter Form. Es ist deshalb nicht sicher, diesen länger als nötig aufzubewahren !!",
   "importHintGoogleQrScan": "Scannen Sie den QR-Code, den Sie erhalten, wenn Sie Ihre Konten aus Google Authenticator exportieren.",
   "importHintPrivacyIdeaFile": "Um ein Backup zu erstellen, gehen Sie zu den Einstellungen und tippen auf “Exportieren“. Wählen Sie “Als Datei“ aus, wählen Sie die Token aus, die Sie exportieren möchten. Anschließend tippen Sie auf “Exportieren“ und setzen Sie ein Passwort. Der Speicherort ist der Download-Ordner auf Ihrem Gerät.",
+  "importHintPrivacyIdeaFileIos": "Um ein Backup zu erstellen, gehen Sie zu den Einstellungen und tippen auf “Exportieren“. Wählen Sie “Als Datei“ aus, wählen Sie die Token aus, die Sie exportieren möchten. Anschließend tippen Sie auf “Exportieren“ und setzen Sie ein Passwort. Die Datei liegt in der Dateien-App im Ordner “{appName}“.",
   "importHintPrivacyIdeaQrScan": "Um QR-Codes der Token zu erstellen, navigieren Sie zu den Einstellungen und tippen auf “Exportieren“. Wählen Sie dann “Als QR-Code“ und tippen Sie auf den zu exportierenden Token. Diese Variante ist nur für die direkte Übertragung auf ein anderes Gerät geeignet, da der QR-Code nicht verschlüsselt ist.",
   "importNTokens": "{count, plural, zero{Keine Token importieren} one{Ein Token importieren} other{{count} Token importieren}}",
   "importNewToken": "{count, plural, zero{Es wurde kein neues Token gefunden.} one{Es wurde ein neues Token gefunden, das importiert werden kann} other{Es wurden {count} neue Token gefunden, die importiert werden können.}}",
@@ -2114,6 +2152,11 @@
   "patchNotesV4_6_0Improvement1": "Die internen Komponenten wurden aktualisiert, um die Sicherheit zu gewährleisten und die Kompatibilität mit den neuesten Geräten sicherzustellen.",
   "patchNotesV4_6_1BugFix1": "Fehler im expansion panel des TokenFolder behoben",
   "patchNotesV4_6_1Improvement1": "Mehrere Abhängigkeiten wurden aktualisiert.",
+  "patchNotesV4_8_1BugFix1": "Ein Fehler wurde behoben, durch den HOTP-Zählerstände verloren gehen konnten, wenn Codes schnell hintereinander erzeugt wurden.",
+  "patchNotesV4_8_1BugFix2": "Ein Fehler wurde behoben, durch den Steam-Token nicht den aktuellen Zeitschritt für ihre Codes verwendet haben.",
+  "patchNotesV4_8_1BugFix3": "Ein Fehler wurde behoben, durch den sich die Farbe des TOTP-Countdowns beim Wechsel des Designs nicht angepasst hat.",
+  "patchNotesV4_8_1Improvement1": "Serverfehler bei Container-Aktionen werden jetzt als Fehlermeldung angezeigt, statt einen Absturz zu verursachen.",
+  "patchNotesV4_8_1NewFeature1": "Push-Anfragen ohne Frage vom Server zeigen jetzt den Aussteller und das Konto des Tokens an.",
   "patchNotesV4_8_0BugFix1": "Das Flackern des Homescreen-Widgets unter Android wurde behoben.",
   "patchNotesV4_8_0BugFix2": "Ein Fehler wurde behoben, durch den die Einstellung zum automatischen Schließen von Push-Anfragen nicht gespeichert wurde.",
   "patchNotesV4_8_0BugFix3": "Ein Fehler beim Ausrollen von Token über die Container-Synchronisierung mit einer 'pia'-Rollout-URL wurde behoben.",
@@ -2149,6 +2192,7 @@
   "pushRequestParseError": "Die Push-Anfrage konnte nicht verarbeitet werden.",
   "pushToken": "Push Token",
   "pushTokensViewTitle": "Push-Tokens",
+  "qrCodeTooMuchData": "Dieser Token enthält zu viele Daten für einen QR-Code. Exportieren Sie ihn stattdessen als Datei.",
   "qrFileDecodeError": "Es war nicht möglich, den QR-Code aus dem ausgewählten Bild zu dekodieren. Bitte verwenden Sie stattdessen den QR-Code-Scanner.",
   "qrInFileNotFound": "Es wurde kein QR-Code in dem ausgewählten Bild gefunden.",
   "qrInFileNotFound2": "Sie können mir zeigen, wo sich der QR-Code befindet.",
@@ -2161,6 +2205,7 @@
   "renewSecretsDialogText": "Sie können die Geheimnisse der Token erneuern. Dies ist nützlich, wenn Sie vermuten, dass die Geheimnisse kompromittiert wurden.",
   "renewSecretsDialogTitle": "Token Secrets erneuern",
   "replaceButton": "Ersetzen",
+  "requestInfo": "Gesendet von {issuer} für Ihr Konto: “{account}“",
   "requestPushChallengesPeriodically": "Fordert regelmäßig Push-Anfragen vom Server an. Aktivieren Sie diese Funktion, wenn Nachrichten ansonsten nicht erhalten werden.",
   "requestTriggerdByUserQuestion": "Wurde diese Anfrage von Ihnen ausgelöst?",
   "retryRolloutButton": "Erneut ausrollen",

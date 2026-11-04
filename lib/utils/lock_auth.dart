@@ -69,9 +69,20 @@ Future<bool> lockAuth({
   try {
     final isBiometricForced =
         forceBiometricOption == ForceBiometricOption.biometric;
-    if (!await _checkSupport(isBiometricForced, autoAuthIfUnsupported)) {
-      return autoAuthIfUnsupported;
+    final bool isSupported;
+    try {
+      isSupported = await _checkSupport(
+        isBiometricForced,
+        autoAuthIfUnsupported,
+      );
+    } catch (e) {
+      showErrorStatusMessage(
+        message: (l) => l.authNotSupportedTitle,
+        details: (_) => '$e',
+      );
+      return false;
     }
+    if (!isSupported) return autoAuthIfUnsupported;
 
     return await _executeAuth(
       isBiometricForced: isBiometricForced,
@@ -114,8 +125,10 @@ Future<bool> _executeAuth({
 }
 
 Future<bool> _checkSupport(bool isBiometricForced, bool autoAuth) async {
-  if (autoAuth) return true;
   final isDeviceSupported = await _localAuth.isDeviceSupported() && !kIsWeb;
+  // The caller lets an unsupported device pass (lockAuth returns true), so
+  // it gets the answer without the dialogs that ask for a screen lock.
+  if (autoAuth) return isDeviceSupported;
 
   if (isBiometricForced) {
     if (!(await _localAuth.canCheckBiometrics)) {

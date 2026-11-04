@@ -31,7 +31,6 @@ import '../../../l10n/app_localizations.dart';
 import '../../../model/api_results/pi_server_results/pi_server_result_detail.dart';
 import '../../../model/api_results/pi_server_results/pi_server_result_value.dart';
 import '../../../model/pi_server_response.dart';
-import '../../../utils/customization/theme_extentions/push_request_theme.dart';
 import '../../../utils/lock_auth.dart';
 import '../../../utils/logger.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/push_request_provider.dart';
@@ -154,23 +153,44 @@ mixin PushDialogMixin {
   }
 
   Future<void> handleDiscard(BuildContext context, WidgetRef ref) async {
-    if (token.isHidden &&
-        !await lockAuthWithSettings(
-          ref: ref,
-          reason: (l10n) => l10n.authToDiscardPushRequest,
-          localization: AppLocalizations.of(context)!,
-          forceBiometricOption: token.forceBiometricOption,
-        )) {
-      return;
-    }
+    if (!await _authToDiscard(context, ref)) return;
     if (!ref.context.mounted) return;
     final response = await ref
         .read(pushRequestProvider.notifier)
         .cancel(token, pushRequest);
     if (!ref.context.mounted) return;
+    if (response == null) {
+      // The server could not be told, e.g. while offline. Discarding must work
+      // anyway, so the request is removed locally and expires on the server.
+      await ref.read(pushRequestProvider.notifier).remove(pushRequest);
+      if (!ref.context.mounted) return;
+    }
     if (context.mounted) {
       await _onHandled(context: context, ref: ref, response: response);
     }
+  }
+
+  /// Closes the push request without notifying the server.
+  /// Used once the user has seen a code to phone, the challenge is answered by
+  /// entering that code, so it must not be declined.
+  Future<void> handleDone(BuildContext context, WidgetRef ref) async {
+    if (!await _authToDiscard(context, ref)) return;
+    if (!ref.context.mounted) return;
+    await ref.read(pushRequestProvider.notifier).remove(pushRequest);
+    if (!ref.context.mounted) return;
+    if (context.mounted) {
+      await _onHandled(context: context, ref: ref);
+    }
+  }
+
+  Future<bool> _authToDiscard(BuildContext context, WidgetRef ref) async {
+    if (!token.isHidden) return true;
+    return lockAuthWithSettings(
+      ref: ref,
+      reason: (l10n) => l10n.authToDiscardPushRequest,
+      localization: AppLocalizations.of(context)!,
+      forceBiometricOption: token.forceBiometricOption,
+    );
   }
 
   Future<void>

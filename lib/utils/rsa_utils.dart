@@ -162,7 +162,7 @@ class RsaUtils {
     ASN1Sequence s = ASN1Sequence()
       ..add(ASN1Integer.fromInt(0)) // version
       ..add(ASN1Integer(key.modulus!)) // modulus
-      ..add(ASN1Integer(key.exponent!)) // e
+      ..add(ASN1Integer(key.publicExponent!)) // e
       ..add(ASN1Integer(key.privateExponent!)) // d
       ..add(ASN1Integer(key.p!)) // p
       ..add(ASN1Integer(key.q!)) // q
@@ -201,12 +201,12 @@ class RsaUtils {
         ASN1Parser(keyBytes).nextObject() as ASN1Sequence;
     BigInt modulus =
         (asn1sequence.elements[1] as ASN1Integer).valueAsBigInteger;
-    BigInt exponent =
-        (asn1sequence.elements[2] as ASN1Integer).valueAsBigInteger;
+    BigInt privateExponent =
+        (asn1sequence.elements[3] as ASN1Integer).valueAsBigInteger;
     BigInt p = (asn1sequence.elements[4] as ASN1Integer).valueAsBigInteger;
     BigInt q = (asn1sequence.elements[5] as ASN1Integer).valueAsBigInteger;
 
-    return RSAPrivateKey(modulus, exponent, p, q);
+    return RSAPrivateKey(modulus, privateExponent, p, q);
   }
 
   /// signedMessage is what was allegedly signed, signature gets validated

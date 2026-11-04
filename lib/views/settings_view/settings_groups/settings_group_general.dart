@@ -19,10 +19,10 @@
  */
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/globals.dart';
+import '../../../utils/utils.dart';
 import '../../license_view/license_view.dart';
 import '../settings_view_widgets/settings_group.dart';
 import '../settings_view_widgets/settings_list_tile_button.dart';
@@ -36,11 +36,7 @@ class SettingsGroupGeneral extends StatelessWidget {
       title: AppLocalizations.of(context)!.settingsGroupGeneral,
       children: [
         SettingsListTileButton(
-          onPressed: () async {
-            if (!await launchUrl(policyStatementUri)) {
-              throw Exception('Could not launch $policyStatementUri');
-            }
-          },
+          onPressed: () => openUrl(policyStatementUri),
           title: Text(
             AppLocalizations.of(context)!.privacyPolicy,
             style: Theme.of(context).textTheme.bodyMedium,
@@ -60,7 +56,7 @@ class SettingsGroupGeneral extends StatelessWidget {
           ),
         ),
         SettingsListTileButton(
-          onPressed: () => launchUrl(piAuthenticatorGitHubUri),
+          onPressed: () => openUrl(piAuthenticatorGitHubUri),
           title: Text(
             AppLocalizations.of(context)!.gitHubButton,
             //'This Application is a Open Source Project. Visit us on GitHub.',

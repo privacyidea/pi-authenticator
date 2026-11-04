@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:asn1lib/asn1lib.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:pointycastle/export.dart';
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
@@ -119,19 +120,72 @@ void _testSerializingRSAKeys() {
 
   group('Serialize RSA private keys', () {
     const rsaUtils = RsaUtils();
-    test('Converting key', () async {
-      RSAPrivateKey privateKey =
-          (await rsaUtils.generateRSAKeyPair()).privateKey;
-      String base64String = rsaUtils.serializeRSAPrivateKeyPKCS1(privateKey);
-      RSAPrivateKey convertedKey = rsaUtils.deserializeRSAPrivateKeyPKCS1(
-        base64String,
-      );
+    test(
+      'writes standard PKCS#1 and reads the previous encoding',
+      () async {
+        RSAPrivateKey privateKey =
+            (await rsaUtils.generateRSAKeyPair()).privateKey;
+        String base64String = rsaUtils.serializeRSAPrivateKeyPKCS1(privateKey);
+        final standardSequence =
+            ASN1Parser(base64.decode(base64String)).nextObject()
+                as ASN1Sequence;
 
-      expect(privateKey.modulus, convertedKey.modulus);
-      expect(privateKey.exponent, convertedKey.exponent);
-      expect(privateKey.p, convertedKey.p);
-      expect(privateKey.q, convertedKey.q);
-    }, timeout: const Timeout(Duration(seconds: 60)));
+        expect(
+          (standardSequence.elements[2] as ASN1Integer).valueAsBigInteger,
+          privateKey.publicExponent,
+        );
+        expect(
+          (standardSequence.elements[3] as ASN1Integer).valueAsBigInteger,
+          privateKey.privateExponent,
+        );
+
+        RSAPrivateKey convertedKey = rsaUtils.deserializeRSAPrivateKeyPKCS1(
+          base64String,
+        );
+
+        expect(privateKey.modulus, convertedKey.modulus);
+        expect(privateKey.privateExponent, convertedKey.privateExponent);
+        expect(privateKey.publicExponent, convertedKey.publicExponent);
+        expect(privateKey.p, convertedKey.p);
+        expect(privateKey.q, convertedKey.q);
+
+        final legacySequence = ASN1Sequence()
+          ..add(ASN1Integer.fromInt(0))
+          ..add(ASN1Integer(privateKey.modulus!))
+          // Previous versions wrote d into both the e and d fields.
+          ..add(ASN1Integer(privateKey.privateExponent!))
+          ..add(ASN1Integer(privateKey.privateExponent!))
+          ..add(ASN1Integer(privateKey.p!))
+          ..add(ASN1Integer(privateKey.q!))
+          ..add(
+            ASN1Integer(
+              privateKey.privateExponent! % (privateKey.p! - BigInt.one),
+            ),
+          )
+          ..add(
+            ASN1Integer(
+              privateKey.privateExponent! % (privateKey.q! - BigInt.one),
+            ),
+          )
+          ..add(ASN1Integer(privateKey.q!.modInverse(privateKey.p!)));
+        final recoveredKey = rsaUtils.deserializeRSAPrivateKeyPKCS1(
+          base64.encode(legacySequence.encodedBytes),
+        );
+
+        expect(recoveredKey.privateExponent, privateKey.privateExponent);
+        expect(recoveredKey.publicExponent, privateKey.publicExponent);
+        final message = utf8.encode('PKCS#1 compatibility');
+        expect(
+          rsaUtils.verifyRSASignature(
+            RSAPublicKey(privateKey.modulus!, privateKey.publicExponent!),
+            message,
+            rsaUtils.createRSASignature(recoveredKey, message),
+          ),
+          isTrue,
+        );
+      },
+      timeout: const Timeout(Duration(seconds: 60)),
+    );
   });
 
   group('RSA signing and verifying', () {

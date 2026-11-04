@@ -30,6 +30,7 @@ import 'package:http/http.dart';
 import 'package:image/image.dart' as img;
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:url_launcher/url_launcher.dart' show launchUrl;
 import 'package:zxing2/qrcode.dart';
 
 import '../../../../../../../mains/main_netknights.dart';
@@ -146,6 +147,20 @@ String getCurrentAppName() =>
     PrivacyIDEAAuthenticator.currentCustomization?.appName ??
     ApplicationCustomization.defaultCustomization.appName;
 
+/// Opens [url]. iOS reports false when the user closes the browser view before
+/// the page loaded, which is no error; Android throws when no browser is
+/// installed, which the user is told about.
+Future<void> openUrl(Uri url) async {
+  try {
+    if (!await launchUrl(url)) Logger.warning('Could not launch $url');
+  } catch (e) {
+    showErrorStatusMessage(
+      message: (l) => l.errorOpeningLink,
+      details: (_) => '$url: $e',
+    );
+  }
+}
+
 dynamic tryJsonDecode(String json) {
   try {
     return jsonDecode(json);
@@ -190,7 +205,9 @@ Future<void> dragSortableOnAccept({
   if (!ref.context.mounted) return;
   final futures = [
     ref.read(tokenProvider.notifier).addOrReplaceTokens(modifiedTokens),
-    ref.read(tokenFolderProvider.notifier).addOrReplaceFolders(modifiedFolders),
+    ref
+        .read(tokenFolderProvider.notifier)
+        .replaceExistingFolders(modifiedFolders),
   ];
   final draggingSortableProviderNotifier = ref.read(
     draggingSortableProvider.notifier,
@@ -244,9 +261,9 @@ Future<bool> scanQrCode({
   Uri uri;
   try {
     if (qrCode == null) return false;
-    uri = switch (qrCode.runtimeType) {
-      const (String) => Uri.parse(qrCode as String),
-      const (Uri) => qrCode as Uri,
+    uri = switch (qrCode) {
+      String value => Uri.parse(value),
+      Uri value => value,
       _ => throw ArgumentError('Invalid type for qrCode: $qrCode'),
     };
   } catch (e) {

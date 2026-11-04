@@ -19,6 +19,7 @@
  */
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/enums/ec_key_algorithm.dart';
 import 'package:privacyidea_authenticator/model/processor_result.dart';
@@ -197,6 +198,46 @@ void _testTokenContainerProcessor() {
         final container = result.first.asSuccess!.resultData as TokenContainerUnfinalized;
         expect(container.expirationDate!.isBefore(DateTime.now()), isTrue);
       });
+
+      // A value that cannot be read must give a message that names the field,
+      // not an uncaught error that only shows "An unexpected error occurred".
+      for (final (field, value) in [
+        ('ssl_verify', 'yes'),
+        ('time', 'yesterday'),
+        ('hash_algorithm', 'MD5'),
+      ]) {
+        test('an unreadable $field "$value" fails with a message naming it', () async {
+          final values = {
+            'issuer': 'privacyIDEA',
+            'ttl': '10',
+            'nonce': 'abc123',
+            'time': '2024-12-06T11:14:26Z',
+            'url': 'http://192.168.0.230:5000/',
+            'serial': 'SMPH00067A2F',
+            'key_algorithm': 'secp384r1',
+            'hash_algorithm': 'SHA256',
+            'ssl_verify': 'True',
+            'passphrase': '',
+            field: value,
+          };
+          final uri = Uri(
+            scheme: 'pia',
+            host: 'container',
+            path: '/SMPH00067A2F',
+            queryParameters: values,
+          );
+
+          final result = await processor.processUri(uri);
+
+          expect(result, isNotNull);
+          final failed = result!.single;
+          expect(failed, isA<ProcessorResultFailed>());
+          expect(
+            failed.asFailed!.message(AppLocalizationsEn()),
+            AppLocalizationsEn().invalidValue(field, 'String', value),
+          );
+        });
+      }
     });
   });
 }

@@ -130,18 +130,6 @@
   "@backgroundImage": {
     "description": "Label for the background image setting."
   },
-  "@batteryOptimizationTitle": {
-    "description": "Tooltip for the button that opens the battery optimization dialog again."
-  },
-  "@batteryOptimizationDialogBody": {
-    "description": "Message shown as a dialog body hinting that, if the widget has problems, disabling battery optimization for the app can help."
-  },
-  "@batteryOptimizationAlreadyDisabledBody": {
-    "description": "Message shown when battery optimization is already disabled for the app."
-  },
-  "@batteryOptimizationSettingsButton": {
-    "description": "Button label to open battery optimization settings."
-  },
   "@biometricAuthNotSetupBody": {
     "description": "Message shown as a dialog body that tells the user that biometric authentication is not available on the device."
   },
@@ -425,6 +413,9 @@
   "@errorMissingPublicKey": {
     "description": "Error message when the public key is missing."
   },
+  "@errorOpeningLink": {
+    "description": "Error message when a link cannot be opened on the device, for example because no browser is installed."
+  },
   "@errorRollOutFailed": {
     "description": "Tells the user that the token could not be rolled out, because a network error occurred.",
     "placeholders": {
@@ -608,6 +599,15 @@
   "@fileSavedToDownloadsFolder": {
     "description": "Tells the user that the file was saved to the downloads folder."
   },
+  "@fileSavedToFilesApp": {
+    "description": "Tells the user on iOS that the file was saved to the app's folder in the Files app.",
+    "placeholders": {
+      "appName": {
+        "example": "privacyIDEA Authenticator",
+        "type": "String"
+      }
+    }
+  },
   "@finalizationState": {
     "description": "Title of the finalization state field."
   },
@@ -721,6 +721,15 @@
   },
   "@importHintPrivacyIdeaFile": {
     "description": "Tells the user importent information about the import of privacyIDEA files."
+  },
+  "@importHintPrivacyIdeaFileIos": {
+    "description": "Tells the user on iOS importent information about the import of privacyIDEA files, including where the backup file is stored.",
+    "placeholders": {
+      "appName": {
+        "example": "privacyIDEA Authenticator",
+        "type": "String"
+      }
+    }
   },
   "@importHintPrivacyIdeaQrScan": {
     "description": "Tells the user importent information about the import of privacyIDEA qr codes."
@@ -1230,6 +1239,21 @@
   "@patchNotesV4_6_1Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
+  "@patchNotesV4_8_1BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.8.1"
+  },
+  "@patchNotesV4_8_1BugFix2": {
+    "description": "Patch notes for a bug fix in version 4.8.1"
+  },
+  "@patchNotesV4_8_1BugFix3": {
+    "description": "Patch notes for a bug fix in version 4.8.1"
+  },
+  "@patchNotesV4_8_1Improvement1": {
+    "description": "Patch notes for an improvement in version 4.8.1"
+  },
+  "@patchNotesV4_8_1NewFeature1": {
+    "description": "Patch notes for a new feature in version 4.8.1"
+  },
   "@patchNotesV4_8_0BugFix1": {
     "description": "Patch notes for a bug fix in version 4.8.0"
   },
@@ -1347,6 +1371,9 @@
   "@pushTokensViewTitle": {
     "description": "Title of the push tokens view."
   },
+  "@qrCodeTooMuchData": {
+    "description": "Shown instead of the QR code when a token holds more data than one QR code can carry."
+  },
   "@qrFileDecodeError": {
     "description": "Error message when the qr file could not be decoded."
   },
@@ -1382,6 +1409,19 @@
   },
   "@replaceButton": {
     "description": "Button to replace something, depending on the context."
+  },
+  "@requestInfo": {
+    "description": "Description of the authentication request.",
+    "placeholders": {
+      "account": {
+        "example": "GitHub",
+        "type": "String"
+      },
+      "issuer": {
+        "example": "privacyIDEA",
+        "type": "String"
+      }
+    }
   },
   "@requestPushChallengesPeriodically": {
     "description": "The description of the polling feature."
@@ -1795,10 +1835,6 @@
   "autoCloseAppAfterAcceptingPushRequestDescription": "Jika diaktifkan, aplikasi akan secara otomatis menutup setelah menerima permintaan push.",
   "autoCloseAppAfterAcceptingPushRequestTitle": "Tutup aplikasi setelah menerima permintaan",
   "backgroundImage": "Gambar latar belakang",
-  "batteryOptimizationTitle": "Widget layar utama",
-  "batteryOptimizationDialogBody": "Jika Anda mengalami masalah dengan widget layar utama, menonaktifkan pengoptimalan baterai untuk aplikasi dapat membantu.",
-  "batteryOptimizationAlreadyDisabledBody": "Pengoptimalan baterai dinonaktifkan untuk aplikasi ini. Apakah Anda ingin mengaktifkannya kembali untuk meningkatkan daya tahan baterai?",
-  "batteryOptimizationSettingsButton": "Buka pengaturan baterai",
   "biometricAuthNotSetupBody": "Silakan aktifkan otentikasi biometrik di pengaturan perangkat Anda untuk melakukan tindakan ini.",
   "biometricAuthNotSetupTitle": "Otentikasi biometrik belum diaktifkan",
   "biometricAuthNotSupportedBody": "Perangkat Anda tidak mendukung otentikasi biometrik, yang diperlukan untuk melakukan tindakan ini.",
@@ -1865,7 +1901,6 @@
   "deviceCredentialsRequiredTitle": "Kredensial perangkat tidak diatur",
   "deviceCredentialsSetupDescription": "Mengatur kredensial perangkat di pengaturan perangkat",
   "digits": "Digits",
-  "disableButton": "Nonaktifkan",
   "dismiss": "Bubarkan",
   "done": "Selesai",
   "edit": "Sunting",
@@ -1884,6 +1919,7 @@
   "errorMailBody": "File log kesalahan terlampir.\nAnda dapat mengganti teks ini dengan informasi tambahan tentang kesalahan.",
   "errorMissingPrivateKey": "Kunci pribadi hilang",
   "errorMissingPublicKey": "Kunci publik hilang",
+  "errorOpeningLink": "Tautan tidak dapat dibuka.",
   "errorRollOutFailed": "Peluncuran token {name} gagal.",
   "errorRollOutNoConnectionToServer": "Peluncuran token {name} gagal, server tidak dapat dihubungi.",
   "errorRollOutNotPossibleAnymore": "Peluncuran Token ini sudah tidak memungkinkan lagi.",
@@ -1925,6 +1961,7 @@
   "feedbackTitle": "Umpan balik Anda selalu diterima!",
   "fileNotAvailable": "File saat ini tidak tersedia! Silakan coba lagi.",
   "fileSavedToDownloadsFolder": "File disimpan ke folder Unduhan",
+  "fileSavedToFilesApp": "File disimpan di app File, dalam folder “{appName}“",
   "finalizationState": "Status Finalisasi",
   "finalizeContainerFailed": "Menyelesaikan Kontainer Gagal",
   "firebaseToken": "Token Firebase",
@@ -1954,7 +1991,8 @@
   "importHintFreeOtpPlusQrScan": "Pindai kode QR yang Anda terima ketika Anda menekan tiga titik di ubin token dan pilih ",
   "importHintGoogleQrFile": "Pilih file gambar dengan kode QR yang Anda terima saat mengekspor akun Anda dari Google Authenticator.\n!! Perhatikan bahwa tidak aman untuk menyimpan kode QR di perangkat Anda karena token tidak dienkripsi !!",
   "importHintGoogleQrScan": "Pindai kode QR yang Anda terima saat mengekspor akun dari Google Authenticator.",
-  "importHintPrivacyIdeaFile": "Untuk membuat cadangan, buka pengaturan dan ketuk ",
+  "importHintPrivacyIdeaFile": "Untuk membuat cadangan, buka pengaturan dan ketuk “Ekspor“. Pilih “Sebagai file“, pilih token yang ingin Anda ekspor. Lalu ketuk “Ekspor“ dan tetapkan kata sandi. Lokasi penyimpanan adalah folder unduhan di perangkat Anda.",
+  "importHintPrivacyIdeaFileIos": "Untuk membuat cadangan, buka pengaturan dan ketuk “Ekspor“. Pilih “Sebagai file“, pilih token yang ingin Anda ekspor. Lalu ketuk “Ekspor“ dan tetapkan kata sandi. File disimpan di app File, dalam folder “{appName}“.",
   "importHintPrivacyIdeaQrScan": "Untuk membuat kode QR untuk token, buka pengaturan dan ketuk ",
   "importNTokens": "{count, plural, zero{Impor tanpa token} one{Impor satu token} other{Impor {count} token}}",
   "importNewToken": "{count, plural, zero{Tidak ada token baru yang ditemukan.} one{Token baru ditemukan dan dapat diimpor.} other{{count} token baru ditemukan dan dapat diimpor.}}",
@@ -2085,6 +2123,11 @@
   "patchNotesV4_6_0Improvement1": "Komponen internal telah diperbarui untuk menjaga keamanan dan memastikan kompatibilitas dengan perangkat terbaru.",
   "patchNotesV4_6_1BugFix1": "Perbaikan kesalahan pada panel ekspansi TokenFolder",
   "patchNotesV4_6_1Improvement1": "Memperbarui beberapa dependensi.",
+  "patchNotesV4_8_1BugFix1": "Memperbaiki kenaikan penghitung HOTP yang hilang saat kode dibuat secara beruntun dengan cepat.",
+  "patchNotesV4_8_1BugFix2": "Memperbaiki token Steam yang tidak menggunakan langkah waktu saat ini untuk kodenya.",
+  "patchNotesV4_8_1BugFix3": "Memperbaiki warna hitung mundur TOTP yang tidak diperbarui saat tema diubah.",
+  "patchNotesV4_8_1Improvement1": "Kesalahan server selama operasi kontainer kini ditampilkan sebagai pesan kesalahan, bukan menyebabkan aplikasi berhenti.",
+  "patchNotesV4_8_1NewFeature1": "Permintaan push tanpa pertanyaan dari server kini menampilkan penerbit dan akun token.",
   "patchNotesV4_8_0BugFix1": "Perbaikan kedipan widget layar beranda di Android.",
   "patchNotesV4_8_0BugFix2": "Perbaikan pengaturan penutupan otomatis permintaan push yang tidak tersimpan.",
   "patchNotesV4_8_0BugFix3": "Perbaikan rollout token melalui sinkronisasi kontainer saat menggunakan URL rollout 'pia'.",
@@ -2120,6 +2163,7 @@
   "pushRequestParseError": "Push request could not be parsed.",
   "pushToken": "Token Dorong",
   "pushTokensViewTitle": "Token Dorong",
+  "qrCodeTooMuchData": "Token ini berisi terlalu banyak data untuk kode QR. Ekspor sebagai file sebagai gantinya.",
   "qrFileDecodeError": "Tidak dapat memecahkan kode QR dari gambar yang dipilih, silakan gunakan pemindai kode QR sebagai gantinya.",
   "qrInFileNotFound": "Tidak ada kode QR yang ditemukan pada gambar yang dipilih.",
   "qrInFileNotFound2": "Anda dapat menunjukkan di mana letak kode QR.",
@@ -2132,6 +2176,7 @@
   "renewSecretsDialogText": "Anda dapat memperbarui rahasia token. Hal ini berguna jika Anda mencurigai bahwa rahasia tersebut telah dibobol.",
   "renewSecretsDialogTitle": "Memperbarui Rahasia Token",
   "replaceButton": "Ganti",
+  "requestInfo": "Dikirim oleh {issuer} untuk akun Anda: {account}",
   "requestPushChallengesPeriodically": "Meminta tantangan push dari server secara berkala. Aktifkan ini jika tantangan push tidak diterima secara normal.",
   "requestTriggerdByUserQuestion": "Apakah permintaan ini dipicu oleh Anda?",
   "retryRolloutButton": "Mencoba peluncuran ulang",

@@ -196,7 +196,7 @@ class PushProvider {
     }
     // Here we can be sure that the data is valid
     try {
-      return _handleIncomingRequestForeground(data);
+      return await _handleIncomingRequestForeground(data);
     } catch (e, s) {
       Logger.error(
         AppLocalizationsEn().unexpectedError,

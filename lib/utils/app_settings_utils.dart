@@ -60,51 +60,6 @@ Future<void> openLockAndPasswordSettings() async {
   }
 }
 
-/// Returns whether the app is exempt from battery optimizations.
-Future<bool> batteryOptimizationsIsDisabled() async {
-  if (defaultTargetPlatform != TargetPlatform.android) return true;
-  try {
-    return await _settingsChannel.invokeMethod(
-      'batteryOptimizationsIsDisabled',
-    );
-  } catch (e, s) {
-    Logger.warning(
-      'Failed to check battery optimization state',
-      error: e,
-      stackTrace: s,
-    );
-    return true;
-  }
-}
-
-/// Lets the user exempt this app from battery optimizations.
-Future<void> requestIgnoreBatteryOptimizations() async {
-  if (defaultTargetPlatform != TargetPlatform.android) return;
-  try {
-    await _settingsChannel.invokeMethod('requestIgnoreBatteryOptimizations');
-  } catch (e, s) {
-    Logger.warning(
-      'Failed to request battery optimization exemption',
-      error: e,
-      stackTrace: s,
-    );
-  }
-}
-
-/// Opens the system battery optimization settings list.
-Future<void> openBatteryOptimizationSettings() async {
-  if (defaultTargetPlatform != TargetPlatform.android) return;
-  try {
-    await _settingsChannel.invokeMethod('openBatteryOptimizationSettings');
-  } catch (e, s) {
-    Logger.warning(
-      'Failed to open battery optimization settings',
-      error: e,
-      stackTrace: s,
-    );
-  }
-}
-
 @visibleForTesting
 set launchUrlOverride(Future<bool> Function(Uri url) launcher) =>
     _launchUrl = launcher;

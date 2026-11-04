@@ -24,6 +24,7 @@ import '../../../../../../../repo/preference_token_folder_repository.dart';
 import '../../../../interfaces/repo/token_folder_repository.dart';
 import '../../../../model/riverpod_states/token_folder_state.dart';
 import '../../../../model/token_folder.dart';
+import '../../../home_widget_utils.dart';
 import '../../../logger.dart';
 import 'token_notifier.dart';
 
@@ -35,14 +36,14 @@ final tokenFolderProvider = tokenFolderProviderOf(
 
 @Riverpod(keepAlive: true)
 class TokenFolderNotifier extends _$TokenFolderNotifier {
-  late final Future<TokenFolderState> initState;
+  late Future<TokenFolderState> initState;
   final Mutex _repoMutex = Mutex();
   final Mutex _stateMutex = Mutex();
 
   @override
   TokenFolderRepository get repo => _repo;
   final TokenFolderRepository? _repoOverride;
-  late final TokenFolderRepository _repo;
+  late TokenFolderRepository _repo;
 
   TokenFolderNotifier({this._repoOverride}) : super();
 
@@ -56,58 +57,66 @@ class TokenFolderNotifier extends _$TokenFolderNotifier {
 
   Future<TokenFolderState> _loadFromRepo() async {
     await _repoMutex.acquire();
-    final newState = await _repo.loadState();
-    _repoMutex.release();
-    return newState;
+    try {
+      return await _repo.loadState();
+    } finally {
+      _repoMutex.release();
+    }
   }
 
   Future<bool> _saveToRepo(TokenFolderState state) async {
     await _repoMutex.acquire();
-    final success = await _repo.saveState(state);
-    if (!success) {
-      Logger.warning('Failed to save folders');
+    try {
+      final success = await _repo.saveState(state);
+      if (!success) {
+        Logger.warning('Failed to save folders');
+        return false;
+      }
+      return true;
+    } finally {
       _repoMutex.release();
-      return false;
     }
-    _repoMutex.release();
-    return true;
   }
 
   Future<TokenFolderState> addNewFolder(String name) async {
     await _stateMutex.acquire();
-    final oldState = state;
-    final newState = oldState.addNewFolder(name);
-    final success = await _saveToRepo(newState);
-    if (!success) {
-      Logger.warning('Failed to add new folder');
+    try {
+      final oldState = state;
+      final newState = oldState.addNewFolder(name);
+      final success = await _saveToRepo(newState);
+      if (!success) {
+        Logger.warning('Failed to add new folder');
+        return oldState;
+      }
+      state = newState;
+      return newState;
+    } finally {
       _stateMutex.release();
-      return oldState;
     }
-    state = newState;
-    _stateMutex.release();
-    return newState;
   }
 
   Future<TokenFolderState> removeFolder(TokenFolder folder) async {
     await _stateMutex.acquire();
-    final oldState = state;
-    final newState = oldState.removeFolder(folder);
-    final success = await _saveToRepo(newState);
-    final folderTokens = await ref.read(
-      tokenProvider.selectAsync((v) => v.tokensInFolder(folder)),
-    );
-    ref.read(tokenProvider.notifier).updateTokens(folderTokens, (t) {
-      final updated = t.copyWith(folderId: () => null);
-      return updated;
-    });
-    if (!success) {
-      Logger.warning('Failed to remove folder');
+    try {
+      final oldState = state;
+      final newState = oldState.removeFolder(folder);
+      final success = await _saveToRepo(newState);
+      final folderTokens = await ref.read(
+        tokenProvider.selectAsync((v) => v.tokensInFolder(folder)),
+      );
+      ref.read(tokenProvider.notifier).updateTokens(folderTokens, (t) {
+        final updated = t.copyWith(folderId: () => null);
+        return updated;
+      });
+      if (!success) {
+        Logger.warning('Failed to remove folder');
+        return oldState;
+      }
+      state = newState;
+      return newState;
+    } finally {
       _stateMutex.release();
-      return oldState;
     }
-    state = newState;
-    _stateMutex.release();
-    return newState;
   }
 
   /// Search for the current version of the given folder and update it with the updater function.
@@ -118,17 +127,19 @@ class TokenFolderNotifier extends _$TokenFolderNotifier {
     TokenFolder Function(TokenFolder) updater,
   ) async {
     await _stateMutex.acquire();
-    final oldState = state;
-    final newState = oldState.update(folder, updater);
-    final success = await _saveToRepo(newState);
-    if (!success) {
-      Logger.warning('Failed to add or replace folders');
+    try {
+      final oldState = state;
+      final newState = oldState.update(folder, updater);
+      final success = await _saveToRepo(newState);
+      if (!success) {
+        Logger.warning('Failed to add or replace folders');
+        return oldState;
+      }
+      state = newState;
+      return newState;
+    } finally {
       _stateMutex.release();
-      return oldState;
     }
-    state = newState;
-    _stateMutex.release();
-    return newState;
   }
 
   /// Search for the current version of the given folder and update it with the updater function.
@@ -139,39 +150,73 @@ class TokenFolderNotifier extends _$TokenFolderNotifier {
     TokenFolder Function(TokenFolder) updater,
   ) async {
     await _stateMutex.acquire();
-    final oldState = state;
-    final folder = oldState.currentOfId(folderId)!;
-    final newState = oldState.update(folder, updater);
-    final success = await _saveToRepo(newState);
-    if (!success) {
-      Logger.warning('Failed to add or replace folders');
+    try {
+      final oldState = state;
+      final folder = oldState.currentOfId(folderId);
+      if (folder == null) return oldState;
+      final newState = oldState.update(folder, updater);
+      final success = await _saveToRepo(newState);
+      if (!success) {
+        Logger.warning('Failed to add or replace folders');
+        return oldState;
+      }
+      state = newState;
+      return newState;
+    } finally {
       _stateMutex.release();
-      return oldState;
     }
-    state = newState;
-    _stateMutex.release();
-    return newState;
   }
 
   Future<TokenFolderState> addOrReplaceFolders(
     List<TokenFolder> folders,
   ) async {
     await _stateMutex.acquire();
-    final oldState = state;
-    final newState = oldState.addOrReplaceFolders(folders);
-    final success = await _saveToRepo(newState);
-    if (!success) {
-      Logger.warning('Failed to add or replace folders');
+    try {
+      final oldState = state;
+      final newState = oldState.addOrReplaceFolders(folders);
+      final success = await _saveToRepo(newState);
+      if (!success) {
+        Logger.warning('Failed to add or replace folders');
+        return oldState;
+      }
+      if (ref.mounted) state = newState;
+      return newState;
+    } finally {
       _stateMutex.release();
-      return oldState;
     }
-    state = newState;
-    _stateMutex.release();
-    return newState;
   }
 
-  Future<TokenFolderState> toggleFolderLock(TokenFolder folder) =>
-      updateFolder(folder, (p0) => p0.copyWith(isLocked: !folder.isLocked));
+  /// Replaces only the folders that are still stored. Drag and sort pass a
+  /// list read before their awaits, which can still hold a removed folder.
+  Future<TokenFolderState> replaceExistingFolders(
+    List<TokenFolder> folders,
+  ) async {
+    await _stateMutex.acquire();
+    try {
+      final oldState = state;
+      final newState = oldState.addOrReplaceFolders(
+        folders.where((f) => oldState.currentOf(f) != null).toList(),
+      );
+      final success = await _saveToRepo(newState);
+      if (!success) {
+        Logger.warning('Failed to replace folders');
+        return oldState;
+      }
+      if (ref.mounted) state = newState;
+      return newState;
+    } finally {
+      _stateMutex.release();
+    }
+  }
+
+  Future<TokenFolderState> toggleFolderLock(TokenFolder folder) async {
+    final newState = await updateFolder(
+      folder,
+      (p0) => p0.copyWith(isLocked: !p0.isLocked),
+    );
+    await HomeWidgetUtils().updateLockOfLinkedWidgets();
+    return newState;
+  }
   Future<TokenFolderState> updateLabel(TokenFolder folder, String label) =>
       updateFolder(folder, (p0) => p0.copyWith(label: label));
   Future<TokenFolderState> expandFolderById(int folderId) =>
@@ -179,22 +224,24 @@ class TokenFolderNotifier extends _$TokenFolderNotifier {
 
   Future<TokenFolderState> collapseLockedFolders() async {
     await _stateMutex.acquire();
-    final lockedFolders = (state).folders
-        .where((element) => element.isLocked)
-        .toList();
-    for (var i = 0; i < lockedFolders.length; i++) {
-      lockedFolders[i] = lockedFolders[i].copyWith(isExpanded: false);
-    }
-    final oldState = state;
-    final newState = oldState.addOrReplaceFolders(lockedFolders);
-    final success = await _saveToRepo(newState);
-    if (!success) {
-      Logger.warning('Failed to add or replace folders');
+    try {
+      final lockedFolders = (state).folders
+          .where((element) => element.isLocked)
+          .toList();
+      for (var i = 0; i < lockedFolders.length; i++) {
+        lockedFolders[i] = lockedFolders[i].copyWith(isExpanded: false);
+      }
+      final oldState = state;
+      final newState = oldState.addOrReplaceFolders(lockedFolders);
+      final success = await _saveToRepo(newState);
+      if (!success) {
+        Logger.warning('Failed to add or replace folders');
+        return oldState;
+      }
+      state = newState;
+      return newState;
+    } finally {
       _stateMutex.release();
-      return oldState;
     }
-    state = newState;
-    _stateMutex.release();
-    return newState;
   }
 }
