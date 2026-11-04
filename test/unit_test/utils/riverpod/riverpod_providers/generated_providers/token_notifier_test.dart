@@ -20,7 +20,9 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 // fake_async is a transitive dependency of flutter_test.
 // ignore: depend_on_referenced_packages
@@ -1196,6 +1198,93 @@ void _testTokenNotifier() {
         verify(mockRepo.deleteToken(pushToken)).called(1);
       },
     );
+    group('removeToken of a push token with a firebase token', () {
+      PushToken rolledOutPushToken() => PushToken(
+        label: 'pushLabel',
+        issuer: 'issuer',
+        id: 'pushId',
+        serial: 'serial',
+        isRolledOut: true,
+        fbToken: 'oldFbToken',
+      );
+
+      (ProviderContainer, TokenNotifierProvider) setUpNotifier(
+        MockTokenRepository mockRepo,
+        MockFirebaseUtils mockFirebaseUtils,
+      ) {
+        final container = _container();
+        final provider = tokenProviderOf(
+          repo: mockRepo,
+          rsaUtils: const RsaUtils(),
+          ioClient: const PrivacyideaIOClient(),
+          firebaseUtils: mockFirebaseUtils,
+        );
+        return (container, provider);
+      }
+
+      test(
+        'keeps the token and does not throw when Firebase cannot delete the token (no internet)',
+        () async {
+          final mockRepo = MockTokenRepository();
+          final mockFirebaseUtils = MockFirebaseUtils();
+          final pushToken = rolledOutPushToken();
+          when(mockRepo.loadTokens()).thenAnswer((_) async => [pushToken]);
+          when(mockFirebaseUtils.deleteFirebaseToken()).thenThrow(
+            FirebaseException(
+              plugin: 'firebase_messaging',
+              code: 'unknown',
+              message: 'Es besteht anscheinend keine Verbindung zum Internet.',
+            ),
+          );
+          final (container, provider) = setUpNotifier(
+            mockRepo,
+            mockFirebaseUtils,
+          );
+          await container.read(provider.future);
+
+          await container.read(provider.notifier).removeToken(pushToken);
+
+          verifyNever(mockRepo.deleteToken(any));
+          final state = await container.read(provider.future);
+          expect(state.tokens, [pushToken]);
+          final status = container.read(statusProvider).current;
+          expect(status, isNotNull);
+          expect(
+            status!.message(AppLocalizationsEn()),
+            AppLocalizationsEn().errorUnlinkingPushToken('pushLabel'),
+          );
+        },
+      );
+
+      test(
+        'removes the token when there is no APNS token and no firebase token can be retrieved',
+        () async {
+          final mockRepo = MockTokenRepository();
+          final mockFirebaseUtils = MockFirebaseUtils();
+          final pushToken = rolledOutPushToken();
+          when(mockRepo.loadTokens()).thenAnswer((_) async => [pushToken]);
+          when(mockRepo.deleteToken(pushToken)).thenAnswer((_) async => true);
+          when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
+          when(
+            mockFirebaseUtils.deleteFirebaseToken(),
+          ).thenAnswer((_) async => false);
+          when(
+            mockFirebaseUtils.getFBToken(),
+          ).thenThrow(PlatformException(code: 'FIREBASE_TOKEN_ERROR_CODE'));
+          final (container, provider) = setUpNotifier(
+            mockRepo,
+            mockFirebaseUtils,
+          );
+          await container.read(provider.future);
+
+          await container.read(provider.notifier).removeToken(pushToken);
+
+          verify(mockRepo.deleteToken(pushToken)).called(1);
+          final state = await container.read(provider.future);
+          expect(state.tokens, isEmpty);
+        },
+      );
+    });
     test(
       'addNewTokens returns the tokens that failed to save instead of always []',
       () async {
