@@ -23,6 +23,7 @@ const String DEFAULT_SIGNING_ALGORITHM = 'SHA-256/RSA';
 
 // Custom error identifiers
 const String FIREBASE_TOKEN_ERROR_CODE = 'FIREBASE_TOKEN_ERROR_CODE';
+const String APNS_TOKEN_NOT_SET_ERROR_CODE = 'apns-token-not-set';
 
 const String GLOBAL_SECURE_REPO_PREFIX_LEGACY = 'app_v3';
 const String GLOBAL_SECURE_REPO_PREFIX = 'app_v4';
