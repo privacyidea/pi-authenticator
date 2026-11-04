@@ -22,6 +22,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -491,13 +492,19 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     }
     try {
       await firebaseUtils.deleteFirebaseToken();
-    } on SocketException {
-      Logger.warning('Could not delete firebase token.');
+    } catch (e, s) {
+      Logger.warning(
+        'Could not delete firebase token.',
+        error: e,
+        stackTrace: s,
+      );
+      final firebaseMessage = e is FirebaseException ? e.message : null;
       ref
           .read(statusProvider.notifier)
           .show(
             (localization) => localization.errorUnlinkingPushToken(token.label),
-            details: (localization) => localization.checkYourNetwork,
+            details: (localization) =>
+                firebaseMessage ?? localization.checkYourNetwork,
           );
       return false;
     }
