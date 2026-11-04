@@ -514,7 +514,16 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     } else {
       Logger.warning('Push token "${token.id}" could not be removed.');
     }
-    final fbToken = await firebaseUtils.getFBToken();
+    String? fbToken;
+    try {
+      fbToken = await firebaseUtils.getFBToken();
+    } catch (e, s) {
+      Logger.warning(
+        'Could not get firebase token after removing a push token.',
+        error: e,
+        stackTrace: s,
+      );
+    }
 
     if (fbToken == null) {
       await _updateTokens((await future).pushTokens, (p0) => p0.copyWith());
