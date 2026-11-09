@@ -318,6 +318,20 @@ void main() {
         expect(t.isHidden, isFalse);
       },
     );
+
+    test(
+      'an unlocked token is never hidden, even when hidden is set explicitly',
+      () {
+        const t = FakeToken(
+          id: '1',
+          type: 'T',
+          isLocked: false,
+          isHidden: true,
+        );
+        expect(t.isLocked, isFalse);
+        expect(t.isHidden, isFalse);
+      },
+    );
   });
 
   group('Token Identity Logic', () {

@@ -492,7 +492,7 @@ void _testTokenEncryptionRoundTrip() {
       expect(byId('locked-visible').isLocked, isTrue);
       expect(byId('locked-visible').isHidden, isFalse);
       expect(byId('hidden-only').isLocked, isFalse);
-      expect(byId('hidden-only').isHidden, isTrue);
+      expect(byId('hidden-only').isHidden, isFalse, reason: 'an unlocked token is never hidden');
       expect(byId('plain').isLocked, isFalse);
       expect(byId('plain').isHidden, isFalse);
       expect(byId('plain').origin, isNull);
