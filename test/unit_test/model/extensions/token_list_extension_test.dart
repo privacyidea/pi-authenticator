@@ -583,10 +583,10 @@ void _testExportableTokens() {
 
     test('exportability depends only on the origin, not on the hidden or locked state', () {
       final tokens = <Token>[
-        _hotp('hidden-pi', isHidden: true, origin: _origin(TokenOriginSourceType.qrScan, isPi: true)),
+        _hotp('hidden-pi', pin: true, isHidden: true, origin: _origin(TokenOriginSourceType.qrScan, isPi: true)),
         _hotp('locked-pi', pin: true, origin: _origin(TokenOriginSourceType.link, isPi: true)),
-        _hotp('hidden-no-origin', isHidden: true),
-        _hotp('hidden-non-pi', isHidden: true, origin: _origin(TokenOriginSourceType.backupFile, isPi: false)),
+        _hotp('hidden-no-origin', pin: true, isHidden: true),
+        _hotp('hidden-non-pi', pin: true, isHidden: true, origin: _origin(TokenOriginSourceType.backupFile, isPi: false)),
         _hotp('locked-manual', pin: true, origin: _origin(TokenOriginSourceType.manually)),
       ];
       expect(tokens.firstWhere((t) => t.id == 'hidden-pi').isHidden, isTrue);

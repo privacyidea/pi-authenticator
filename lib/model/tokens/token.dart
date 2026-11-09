@@ -177,7 +177,9 @@ abstract class Token with SortableMixin {
   }
 
   final bool? _isHidden;
-  bool get isHidden => _isHidden ?? isLocked;
+
+  /// Only a locked token can be hidden, an unlocked token is always visible.
+  bool get isHidden => isLocked && (_isHidden ?? true);
 
   bool? get isPrivacyIdeaToken => origin?.isPrivacyIdeaToken;
   bool get isExportable => origin?.isExportable ?? false;

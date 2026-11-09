@@ -616,10 +616,10 @@ void _testLockStateInCopyWith() {
           expect(copy.isLocked, isTrue);
         });
 
-          test('isHidden: true hides an unlocked token', () {
+          test('isHidden: true has no effect on an unlocked token', () {
             final copy = copyOf(build(), isHidden: true);
             expect(copy.isLocked, isFalse);
-            expect(copy.isHidden, isTrue);
+            expect(copy.isHidden, isFalse);
           });
 
           test('isHidden: false shows a locked token without unlocking it', () {
@@ -635,7 +635,7 @@ void _testLockStateInCopyWith() {
           });
 
           test('an explicit isHidden: true survives an unrelated copyWith', () {
-            final token = build(isHidden: true);
+            final token = build(pin: true, isHidden: true);
             expect(token.isHidden, isTrue);
             expect(copyOf(token, label: 'x').isHidden, isTrue);
           });

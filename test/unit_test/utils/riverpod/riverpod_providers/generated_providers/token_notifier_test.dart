@@ -1965,6 +1965,47 @@ void _testTokenNotifierShowHide() {
       },
     );
 
+    final unlockedId = _id('hideUnlocked');
+    _fakeTest(
+      'an unlocked token stays visible, because nothing could show it again',
+      tokens: [_hotp(unlockedId, isHidden: false)],
+      (env) {
+        final token = env.tokenOf(unlockedId) as HOTPToken;
+        expect(token.isLocked, isFalse);
+
+        final result = env.run(env.notifier.hideToken(token));
+
+        expect(result?.isHidden, isFalse);
+        expect(env.tokenOf(unlockedId).isHidden, isFalse);
+      },
+    );
+
+    final eyeThenUnlockId = _id('eyeThenUnlock');
+    _fakeTest(
+      'issue 564: unlocking a token that was shown with the eye is not hidden by the running timer',
+      tokens: [_hotp(eyeThenUnlockId).copyWith(isLocked: true, isHidden: true)],
+      (env) {
+        final token = env.tokenOf(eyeThenUnlockId) as HOTPToken;
+        env.supportedDevice();
+        env.authResult(true);
+        env.run(env.notifier.showToken(token));
+        expect(env.tokenOf(eyeThenUnlockId).isHidden, isFalse);
+
+        // The unlock swipe of the lock action.
+        env.run(
+          env.notifier.updateToken(
+            env.tokenOf(eyeThenUnlockId),
+            (p0) => p0.copyWith(isLocked: false, isHidden: false),
+          ),
+        );
+        env.async.elapse(token.showDuration + const Duration(seconds: 1));
+
+        final after = env.tokenOf(eyeThenUnlockId);
+        expect(after.isLocked, isFalse);
+        expect(after.isHidden, isFalse);
+      },
+    );
+
     _fakeTest('unknown token: null and nothing persisted', (env) {
       final result = env.run(
         env.notifier.hideToken(_hotp(_id('nope'), pin: true, isHidden: false)),

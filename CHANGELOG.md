@@ -1,5 +1,8 @@
 # Changelog
 
+## [4.8.2] - Unreleased
+ - Fixed the code of a locked token being masked again without a way to show it, when the token was unlocked while its code was visible
+
 ## [4.8.1] - 2026.11.03
  - Push requests without a question from the server now show the issuer and account of the token
  - Fixed HOTP counter increments getting lost when codes are generated in quick succession
