@@ -77,7 +77,9 @@ Future<void> homeWidgetBackgroundCallback(Uri? uri) async {
       : null;
   if (lastUri == uri.toString() &&
       lastTime != null &&
-      Duration(microseconds: now - lastTime) < const Duration(seconds: 2)) {
+      now >= lastTime &&
+      Duration(microseconds: now - lastTime) <
+          const Duration(milliseconds: 900)) {
     Logger.info(
       'homeWidgetBackgroundCallback dropped duplicate uri: $uri',
       verbose: true,
@@ -95,10 +97,10 @@ class HomeWidgetUtils {
   HomeWidgetUtils._();
   static HomeWidgetUtils? _instance;
 
-  /// Check android/app/src/main/res/layout/widget_layout.xml for the sizes. Double it for better quality
+  /// Check android/app/src/main/res/drawable/widget_frame.xml for the sizes. Double it for better quality
   static const _widgetBackgroundSize = Size(130 * 2, 65 * 2);
 
-  /// Check android/app/src/main/res/layout/widget_layout.xml for the sizes. Double it for better quality
+  /// The widget_otp slot of android/app/src/main/res/layout/widget_layout.xml at the full frame size. Double it for better quality
   static const _widgetOtpSize = Size(98 * 2, 40 * 2);
 
   /// Check android/app/src/main/res/layout/widget_layout.xml for the sizes. Double it for better quality
@@ -135,12 +137,41 @@ class HomeWidgetUtils {
   static TokenFolderRepository? _folderRepository;
   static final Mutex _repoMutex = Mutex();
 
-  static Future<OTPToken?> _getTokenOfTokenId(String tokenId) async {
-    await _repoMutex.acquire();
-    final token = (await _loadTokenFromRepo(tokenId));
-    _repoMutex.release();
-    return token;
-  }
+  /// Lets a test hand in the token storage; the factory is Android-only.
+  @visibleForTesting
+  static set debugTokenRepository(TokenRepository? repository) =>
+      _tokenRepository = repository;
+
+  /// Lets a test hand in the folder storage; the factory is Android-only.
+  @visibleForTesting
+  static set debugTokenFolderRepository(TokenFolderRepository? repository) =>
+      _folderRepository = repository;
+
+  /// Lets a test build an instance off Android, where the factory returns
+  /// [UnsupportedHomeWidgetUtils].
+  @visibleForTesting
+  static HomeWidgetUtils debugInstance() => HomeWidgetUtils._();
+
+  static Future<OTPToken?> _getTokenOfTokenId(String tokenId) =>
+      _repoMutex.protect(() => _loadTokenFromRepo(tokenId));
+
+  /// Raises the counter of the HOTP token [tokenId] by one and saves it.
+  ///
+  /// Reading, raising and saving share one lock, so two taps at once count
+  /// two steps. Returns null for a token that is gone or not HOTP.
+  @visibleForTesting
+  static Future<HOTPToken?> incrementHotpCounter(String tokenId) =>
+      _repoMutex.protect(() async {
+        final allTokens = await _loadTokensFromRepo();
+        final index = allTokens.indexWhere((t) => t.id == tokenId);
+        if (index == -1) return null;
+        final token = allTokens[index];
+        if (token is! HOTPToken) return null;
+        final updated = token.copyWith(counter: token.counter + 1);
+        allTokens[index] = updated;
+        await _saveTokensToRepo(allTokens);
+        return updated;
+      });
 
   //////////////////////////////////////
   /////// Keys for HomeWidgets /////////
@@ -192,8 +223,6 @@ class HomeWidgetUtils {
       '_copyBlocked'; // recive a bool if the copy of the linked widget is blocked. true = blocked, false = not blocked. _copyBlocked${widgetId} Example: _copyBlocked32
   static const keyRebuildingWidgetIds =
       '_rebuildingWidgetIds'; // recive the widgetIds that should be updated after the HomeWidget is ready. each widgetId is seperated by ',' Example value: "32,33,35"
-  static const keyPendingBatteryOptimizationHint =
-      '_pendingBatteryOptimizationHint'; // recive a bool if the battery optimization hint should be shown the next time the app is resumed. true = show, false = don't show
 
   ////////////////////////////////////////
   /////// Getter & Getterfunctions ///////
@@ -242,28 +271,15 @@ class HomeWidgetUtils {
     return _getTokenOfTokenId(tokenId);
   }
 
-  /// Returns whether the battery optimization hint should be shown the next time the app is resumed.
-  Future<bool> getPendingBatteryOptimizationHint() async =>
-      await HomeWidget.getWidgetData<bool>(
-        keyPendingBatteryOptimizationHint,
-      ) ??
-      false;
-
-  /// Sets whether the battery optimization hint should be shown the next time the app is resumed.
-  Future<void> setPendingBatteryOptimizationHint(bool value) async {
-    await HomeWidget.saveWidgetData(keyPendingBatteryOptimizationHint, value);
-  }
-
   /// &lt;widgetId, tokenId&gt; a token can be linked to multiple widgets but widgetIs can only be linked to one token
   Future<Map<String, String>> _getWidgetIdsOfTokens(
     List<String> tokenIds,
   ) async {
     final tokenWigetPairs = <String, String>{};
     for (final widgetId in (await _widgetIds)) {
-      for (final tokenId in tokenIds) {
-        if (tokenId == await getTokenIdOfWidgetId(widgetId)) {
-          tokenWigetPairs[widgetId] = tokenId;
-        }
+      final tokenId = await getTokenIdOfWidgetId(widgetId);
+      if (tokenId != null && tokenIds.contains(tokenId)) {
+        tokenWigetPairs[widgetId] = tokenId;
       }
     }
     Logger.info('Found ${tokenWigetPairs.length} linked Widgets');
@@ -349,22 +365,37 @@ class HomeWidgetUtils {
   Future<void> updateTokensIfLinked(List<Token> tokens) async {
     // Map<widgetId, tokenId>
     if (tokens.isEmpty) return;
-    final hotpTokens = tokens.whereType<HOTPToken>().toList();
-    final hotpTokenIds = hotpTokens.map((e) => e.id).toList();
-    final linkedWidgetIds = await _getWidgetIdsOfTokens(hotpTokenIds);
+    final otpTokens = tokens.whereType<OTPToken>().toList();
+    final linkedWidgetIds = await _getWidgetIdsOfTokens(
+      otpTokens.map((e) => e.id).toList(),
+    );
     final futures = <Future>[];
     for (String widgetId in linkedWidgetIds.keys) {
-      final hotpToken = hotpTokens.firstWhereOrNull(
+      final token = otpTokens.firstWhereOrNull(
         (element) => element.id == linkedWidgetIds[widgetId],
       );
-      if (hotpToken == null) continue;
+      if (token == null) continue;
+      futures.add(_saveTokenLocked(widgetId, token));
+      if (token is! HOTPToken) continue;
       futures.addAll([
-        _updateHomeWidgetHideOtp(hotpToken, widgetId),
-        _updateHomeWidgetShowOtp(hotpToken, widgetId),
+        _updateHomeWidgetHideOtp(token, widgetId),
+        _updateHomeWidgetShowOtp(token, widgetId),
       ]);
     }
     await Future.wait(futures);
     await _notifyUpdate(linkedWidgetIds.keys);
+  }
+
+  // Call AFTER saving the folders to the repository
+  Future<void> updateLockOfLinkedWidgets() async {
+    final linkedWidgetIds = <String>[];
+    for (final widgetId in await _widgetIds) {
+      final token = await getTokenOfWidgetId(widgetId);
+      if (token == null) continue;
+      await _saveTokenLocked(widgetId, token);
+      linkedWidgetIds.add(widgetId);
+    }
+    await _notifyUpdate(linkedWidgetIds);
   }
 
   Future<void> link(String widgetId, String tokenId) async {
@@ -394,7 +425,7 @@ class HomeWidgetUtils {
       await unlink(widgetId);
       return;
     }
-    if (otpToken.isLocked) {
+    if (await _isLocked(otpToken)) {
       Logger.info(
         '[TRACE] showOtp($widgetId) token is locked -> abort',
         verbose: true,
@@ -437,6 +468,10 @@ class HomeWidgetUtils {
       await unlink(widgetId);
       return;
     }
+    if (await _isLocked(token)) {
+      Logger.info('Copy blocked because the token is locked', verbose: true);
+      return;
+    }
 
     HomeWidget.saveWidgetData('$keyCopyBlocked$widgetId', true);
 
@@ -461,7 +496,11 @@ class HomeWidgetUtils {
       await unlink(widgetId);
       return;
     }
-    final tokenAction = _mapTokenAction[token!.type];
+    if (await _isLocked(token!)) {
+      Logger.info('Action blocked because the token is locked', verbose: true);
+      return;
+    }
+    final tokenAction = _mapTokenAction[token.type];
     if (tokenAction == null) return;
     final actionTimer = _actionTimers[tokenId];
     if (actionTimer != null && actionTimer.isActive) {
@@ -550,10 +589,7 @@ class HomeWidgetUtils {
 
   Future<void> _link(String widgetId, OTPToken token) async {
     await HomeWidget.saveWidgetData('$keyTokenId$widgetId', token.id);
-    await HomeWidget.saveWidgetData(
-      '$keyTokenLocked$widgetId',
-      token.isLocked || ((await _folderOf(token))?.isLocked ?? false),
-    );
+    await _saveTokenLocked(widgetId, token);
     await _updateHomeWidgetHideOtp(token, widgetId);
     await _setTokenType(widgetId, token.type);
     await _notifyUpdate([widgetId]);
@@ -581,20 +617,15 @@ class HomeWidgetUtils {
       '_hotpTokenAction called for widgetId: $widgetId',
       verbose: true,
     );
-    var token = await getTokenOfWidgetId(widgetId);
+    final token = await getTokenOfWidgetId(widgetId);
     if (token == null) {
       await unlink(widgetId);
       return;
     }
     if (token is! HOTPToken) return;
-    token = token.copyWith(counter: token.counter + 1);
-
-    await _repoMutex.acquire();
-    final allTokens = await _loadTokensFromRepo();
-    allTokens[allTokens.indexWhere((t) => t.id == token!.id)] = token;
-    await _saveTokensToRepo(allTokens);
-    _repoMutex.release();
-    await _updateTokenIfLinked(token);
+    final updated = await incrementHotpCounter(token.id);
+    if (updated == null) return;
+    await _updateTokenIfLinked(updated);
   }
 
   // Call AFTER saving to the repository
@@ -615,6 +646,17 @@ class HomeWidgetUtils {
     final allFolders = await _loadFoldersFromRepo();
     return allFolders.firstWhereOrNull((token) => token.folderId == folderId);
   }
+
+  /// Whether the widget treats [token] as locked: the token or its folder is.
+  Future<bool> _isLocked(OTPToken token) async =>
+      token.isLocked || ((await _folderOf(token))?.isLocked ?? false);
+
+  /// A locked widget opens the app to authenticate instead of showing the OTP.
+  Future<void> _saveTokenLocked(String widgetId, OTPToken token) async =>
+      HomeWidget.saveWidgetData(
+        '$keyTokenLocked$widgetId',
+        await _isLocked(token),
+      );
 
   ////////////////////////////////////////
   ////////////// Rendering ///////////////
@@ -864,6 +906,10 @@ class UnsupportedHomeWidgetUtils implements HomeWidgetUtils {
   @override
   Future<TokenFolder?> _folderOf(Token token) => Future.value();
   @override
+  Future<bool> _isLocked(OTPToken token) => Future.value(false);
+  @override
+  Future<void> _saveTokenLocked(String widgetId, OTPToken token) async {}
+  @override
   Future<ThemeData> _getThemeData({bool dark = false}) =>
       Future.value(ThemeData.light());
   @override
@@ -938,10 +984,6 @@ class UnsupportedHomeWidgetUtils implements HomeWidgetUtils {
   @override
   Future<OTPToken?> getTokenOfWidgetId(String? widgetId) => Future.value();
   @override
-  Future<bool> getPendingBatteryOptimizationHint() async => false;
-  @override
-  Future<void> setPendingBatteryOptimizationHint(bool value) async {}
-  @override
   Future<void> homeWidgetInit({TokenRepository? repository}) async {}
   @override
   Future<void> link(String widgetId, String tokenId) async {}
@@ -963,6 +1005,8 @@ class UnsupportedHomeWidgetUtils implements HomeWidgetUtils {
   Future<void> updateTokenIfLinked(Token token) async {}
   @override
   Future<void> updateTokensIfLinked(List<Token> tokens) async {}
+  @override
+  Future<void> updateLockOfLinkedWidgets() async {}
   @override
   Future<Uri?> initiallyLaunchedFromHomeWidget() => Future.value();
   @override

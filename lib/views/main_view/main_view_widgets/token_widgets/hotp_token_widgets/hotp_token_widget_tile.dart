@@ -35,8 +35,14 @@ import '../token_widget_tile.dart';
 class HOTPTokenWidgetTile extends ConsumerWidget {
   final HOTPToken token;
   final bool isPreview;
+  final bool showPreviewDetails;
 
-  const HOTPTokenWidgetTile(this.token, {super.key, this.isPreview = false});
+  const HOTPTokenWidgetTile(
+    this.token, {
+    super.key,
+    this.isPreview = false,
+    this.showPreviewDetails = true,
+  });
 
   void _updateOtpValue() {
     globalRef?.read(tokenProvider.notifier).incrementCounter(token);
@@ -68,7 +74,7 @@ class HOTPTokenWidgetTile extends ConsumerWidget {
         ? () async => await ref.read(tokenProvider.notifier).showToken(token)
         : () => _copyOtpValue(context),
     title: insertCharAt(token.otpValue, ' ', (token.digits / 2).ceil()),
-    additionalSubtitles: isPreview
+    additionalSubtitles: isPreview && showPreviewDetails
         ? ['Algorithm: ${token.algorithm.name}', 'Counter: ${token.counter}']
         : [],
     trailing: CustomTrailing(

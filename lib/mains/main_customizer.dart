@@ -76,6 +76,7 @@ class CustomizationAuthenticator extends ConsumerWidget {
             },
           ),
           navigatorKey: globalNavigatorKey,
+          navigatorObservers: [appRouteObserver],
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           locale:

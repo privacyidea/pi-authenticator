@@ -45,36 +45,31 @@ extension SortableList<T extends SortableMixin> on List<T> {
   /// Moves the [movedItem] to the position after [moveAfter] or before [moveBefore].
   /// If both [moveAfter] and [moveBefore] are null, the [movedItem] will be moved to the end of the list.
   /// If both is set, [moveBefore] will be prioritized.
-  List<T> moveBetween({T? moveAfter, required T movedItem, T? moveBefore}) {
-    var list = List<T>.from(this).sorted.withCurrentSortIndexSet();
-    final success = list.remove(movedItem);
-    if (!success) return list;
-    final newIndex = moveBefore != null
-        ? list.indexOf(moveBefore)
-        : moveAfter != null && list.contains(moveAfter)
-            ? list.indexOf(moveAfter) + 1
-            : list.length;
-    list.insert(newIndex, movedItem);
-    list = list.withCurrentSortIndexSet();
-    return list;
-  }
+  /// A [moveBefore] or [moveAfter] that is not in the list is ignored.
+  List<T> moveBetween({T? moveAfter, required T movedItem, T? moveBefore}) =>
+      moveAllBetween(moveAfter: moveAfter, movedItems: [movedItem], moveBefore: moveBefore);
 
   List<T> moveAllBetween({T? moveAfter, required List<T> movedItems, T? moveBefore}) {
-    var list = List<T>.from(this).sorted.withCurrentSortIndexSet();
-    List<T> removedItems = [];
+    // Look everything up before the sort indices are renumbered: TokenFolder.==
+    // compares sortIndex, so a folder whose stored index has a gap no longer
+    // equals the caller's copy once withCurrentSortIndexSet changed it.
+    final list = List<T>.from(this).sorted;
+    final removedItems = <T>[];
     for (final movedItem in movedItems) {
-      final success = list.remove(movedItem);
-      if (success) removedItems.add(movedItem);
+      final index = list.indexOf(movedItem);
+      // Keep the list's current version, not the possibly older dragged copy.
+      if (index != -1) removedItems.add(list.removeAt(index));
     }
-    if (removedItems.isEmpty) return list;
-    final newIndex = moveBefore != null
-        ? list.indexOf(moveBefore)
-        : moveAfter != null && list.contains(moveAfter)
-            ? list.indexOf(moveAfter) + 1
+    if (removedItems.isEmpty) return list.withCurrentSortIndexSet();
+    final beforeIndex = moveBefore != null ? list.indexOf(moveBefore) : -1;
+    final afterIndex = moveAfter != null ? list.indexOf(moveAfter) : -1;
+    final newIndex = beforeIndex != -1
+        ? beforeIndex
+        : afterIndex != -1
+            ? afterIndex + 1
             : list.length;
     list.insertAll(newIndex, removedItems);
-    list = list.withCurrentSortIndexSet();
-    return list;
+    return list.withCurrentSortIndexSet();
   }
 
   List<T> withCurrentSortIndexSet() {

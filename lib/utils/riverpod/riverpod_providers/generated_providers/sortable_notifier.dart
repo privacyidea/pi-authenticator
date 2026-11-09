@@ -49,6 +49,6 @@ void _handleSortIndexUpdates(
   if (hasFolders) {
     ref
         .read(tokenFolderProvider.notifier)
-        .addOrReplaceFolders(sorted.whereType<TokenFolder>().toList());
+        .replaceExistingFolders(sorted.whereType<TokenFolder>().toList());
   }
 }

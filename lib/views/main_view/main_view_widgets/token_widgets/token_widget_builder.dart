@@ -47,12 +47,13 @@ abstract class TokenWidgetBuilder {
     };
   }
 
-  static Widget previewFromToken(Token token, {Key? key}) => switch (token.runtimeType) {
-        const (TOTPToken) => TOTPTokenWidgetTile(token as TOTPToken, key: key, isPreview: true),
-        const (HOTPToken) => HOTPTokenWidgetTile(token as HOTPToken, key: key, isPreview: true),
+  /// [showDetails] adds the algorithm and the counter or period of OTP tokens.
+  static Widget previewFromToken(Token token, {Key? key, bool showDetails = true}) => switch (token.runtimeType) {
+        const (TOTPToken) => TOTPTokenWidgetTile(token as TOTPToken, key: key, isPreview: true, showPreviewDetails: showDetails),
+        const (HOTPToken) => HOTPTokenWidgetTile(token as HOTPToken, key: key, isPreview: true, showPreviewDetails: showDetails),
         const (PushToken) => PushTokenWidgetTile(token as PushToken, key: key, isPreview: true),
-        const (DayPasswordToken) => DayPasswordTokenWidgetTile(token as DayPasswordToken, key: key, isPreview: true),
-        const (SteamToken) => TOTPTokenWidgetTile(token as SteamToken, key: key, isPreview: true),
+        const (DayPasswordToken) => DayPasswordTokenWidgetTile(token as DayPasswordToken, key: key, isPreview: true, showPreviewDetails: showDetails),
+        const (SteamToken) => TOTPTokenWidgetTile(token as SteamToken, key: key, isPreview: true, showPreviewDetails: showDetails),
         _ => throw UnimplementedError('Preview for token type (${token.runtimeType}) not supported in this Version of the App')
       };
 }

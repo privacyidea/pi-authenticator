@@ -62,7 +62,7 @@ class InitialTokenAssignmentDialog extends ConsumerStatefulWidget {
 class _InitialTokenAssignmentDialogState
     extends ConsumerState<InitialTokenAssignmentDialog> {
   Set<Token> _selectedTokens = {};
-  Set<Token> _unselectedTokens = {};
+  late Set<Token> _unselectedTokens = widget.tokens.toSet();
 
   @override
   Widget build(BuildContext context) {
@@ -116,8 +116,10 @@ class _InitialTokenAssignmentDialogState
                 .updateTokens(
                   _unselectedTokens.toList(),
                   (t) => t.copyWith(
-                    checkedContainer: t.checkedContainer
-                      ..add(widget.container.serial),
+                    checkedContainer: [
+                      ...t.checkedContainer,
+                      widget.container.serial,
+                    ],
                   ),
                 );
             Navigator.of(context).pop(_selectedTokens);

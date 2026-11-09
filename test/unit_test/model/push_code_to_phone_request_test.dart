@@ -17,9 +17,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
+import 'package:pointycastle/export.dart';
 import 'package:privacyidea_authenticator/model/push_request/push_code_to_phone_request.dart';
 import 'package:privacyidea_authenticator/model/push_request/push_request.dart';
+import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
+
+import 'fake_push_server.dart';
+import 'legacy_token_url_fixture.dart';
+
+const _rsaUtils = RsaUtils();
 
 void main() {
   group('PushCodeToPhoneRequest Tests', () {
@@ -113,5 +122,63 @@ void main() {
       expect(result.type, PushCodeToPhoneRequest.TYPE);
       expect(result.accepted, true);
     });
+  });
+
+  // PushCodeToPhoneRequest has no override of `verifySignature`, unlike
+  // PushDefaultRequest and PushChoiceRequest, which re-add the url and
+  // sslverify of a request to an android legacy token. See
+  // legacy_token_url_fixture.dart.
+  group('PushCodeToPhoneRequest for a token without url', () {
+    final fx = useLegacyTokenUrlFixture();
+    const code = '123456';
+
+    /// A code to phone challenge, signed by [keys] over the documented sign
+    /// string `nonce|url|serial|question|title|sslverify|display_code`.
+    Map<String, dynamic> codeToPhoneData({
+      required AsymmetricKeyPair<RSAPublicKey, RSAPrivateKey> keys,
+      String url = FakePushServer.url,
+    }) {
+      final data = fx.server.createChallenge();
+      data['url'] = url;
+      data['display_code'] = code;
+      data['signature'] = _rsaUtils.createBase32Signature(
+        keys.privateKey,
+        utf8.encode(
+          '${data['nonce']}|$url|${data['serial']}|${data['question']}|${data['title']}|1|$code',
+        ),
+      );
+      return data;
+    }
+
+    testWidgets(
+      'a valid request is accepted but, unlike default and choice requests, does not re-add the url (INCONSISTENCY)',
+      (tester) async {
+        final notifier = await fx.mountApp(tester);
+        final request = PushCodeToPhoneRequest.fromMessageData(
+          codeToPhoneData(keys: fx.serverKeys),
+        );
+
+        expect(request.verifySignature(fx.legacyToken()), isTrue);
+
+        // There is no override of verifySignature in PushCodeToPhoneRequest, so
+        // a legacy token only gets its url back from a default or choice request.
+        expect(notifier.updates, isEmpty);
+      },
+    );
+
+    testWidgets(
+      'a forged request is rejected and does not touch the token (safe because there is no override)',
+      (tester) async {
+        final notifier = await fx.mountApp(tester);
+        final redirected = PushCodeToPhoneRequest.fromMessageData(
+          codeToPhoneData(keys: fx.attackerKeys, url: evilUrl),
+        );
+
+        expect(redirected.uri, Uri.parse(evilUrl));
+        expect(redirected.verifySignature(fx.legacyToken()), isFalse);
+
+        expect(notifier.updates, isEmpty);
+      },
+    );
   });
 }

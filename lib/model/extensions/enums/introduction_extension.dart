@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import '../../../utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
-import '../../../utils/riverpod/riverpod_providers/state_providers/battery_optimization_provider.dart';
 import '../../enums/introduction.dart';
 import '../../riverpod_states/introduction_state.dart';
 import '../../riverpod_states/settings_state.dart';
@@ -62,10 +61,7 @@ extension IntroductionX on Introduction {
     Introduction.homeWidgetSetUp => state.isUncompleted(
       Introduction.homeWidgetSetUp,
     ),
-    Introduction.homeWidgetBatteryOptimization =>
-      state.isCompleted(Introduction.homeWidgetSetUp) &&
-          state.isUncompleted(Introduction.homeWidgetBatteryOptimization) &&
-          ref.watch(batteryOptimizationsIsDisabledProvider).value == false,
+    Introduction.homeWidgetBatteryOptimization => false,
   };
 
   String hintText(AppLocalizations localizations) => switch (this) {

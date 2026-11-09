@@ -213,7 +213,7 @@ class PiContainerApi implements TokenContainerApi {
         : null;
     final message =
         '${container.nonce}'
-        '|${container.timestamp.toIso8601String().replaceFirst('Z', '+00:00')}'
+        '|${_isoFormatAsServer(container.timestamp)}'
         '|${container.serial}'
         '|${container.registrationUrl}'
         '${(container.addDeviceInfos == true) ? '|${AppInfoUtils.deviceBrand}' : ''}'
@@ -263,26 +263,10 @@ class PiContainerApi implements TokenContainerApi {
       throw ResponseError(response);
     }
 
-    final errorResponse = piResponse.asError;
-    if (errorResponse != null) {
-      throw errorResponse.piServerResultError;
-    }
+    final result = piResponse.resultOrThrow;
+    if (!result.status) throw ResponseError(response);
 
-    final result = piResponse.asSuccess!.result;
-    if (!result.status) {
-      if (result.error != null) throw result.error!;
-      throw ResponseError(response);
-    }
-
-    ContainerFinalizationResponse finalizationResponse;
-    try {
-      finalizationResponse = result.value!;
-    } catch (e) {
-      Logger.error('Failed to parse response', error: e);
-      rethrow;
-    }
-
-    return finalizationResponse;
+    return _requireValue(result.value, 'Failed to parse response');
   }
 
   @override
@@ -331,19 +315,17 @@ class PiContainerApi implements TokenContainerApi {
         PiServerResponse.fromResponse<TransferQrData, EmptyResultDetail>(
           response,
         );
-    if (piResponse.isError) {
-      Logger.error(
-        'Error while getting transfer qr data: ${piResponse.asError!.piServerResultError}',
-      );
-      throw piResponse.asError!.piServerResultError;
-    }
-
+    final TransferQrData? transferQrData;
     try {
-      return piResponse.asSuccess!.result.value!;
+      transferQrData = piResponse.resultOrThrow.value;
+    } on PiServerResultError catch (e) {
+      Logger.error('Error while getting transfer qr data: $e');
+      rethrow;
     } catch (e) {
       Logger.error('Failed to parse transfer qr data', error: e);
       rethrow;
     }
+    return _requireValue(transferQrData, 'Failed to parse transfer qr data');
   }
 
   @override
@@ -384,25 +366,30 @@ class PiContainerApi implements TokenContainerApi {
 
     final piResponse = response
         .asPiServerResponse<UnregisterContainerResult, EmptyResultDetail>();
-    final errorResponse = piResponse.asError;
-    if (errorResponse != null) {
-      throw errorResponse.piServerResultError;
-    }
+    final result = piResponse.resultOrThrow;
     if (HttpStatusChecker.isError(response.statusCode)) {
       throw ResponseError(response);
     }
 
-    try {
-      return piResponse.asSuccess!.result.value!;
-    } catch (e) {
-      Logger.error('Failed to parse unregister container response', error: e);
-      rethrow;
-    }
+    return _requireValue(
+      result.value,
+      'Failed to parse unregister container response',
+    );
   }
 
   /* //////////////////////////////
   /////// PRIVATE FUNCTIONS ///////
   ////////////////////////////// */
+
+  T _requireValue<T>(T? value, String logMessage) {
+    if (value != null) return value;
+    final error = PiServerResultError(
+      code: InAppErrorCodes.missingResultValue,
+      message: '$logMessage: the server response has no value',
+    );
+    Logger.error(logMessage, error: error);
+    throw error;
+  }
 
   Future<ContainerChallenge> _getChallenge(
     TokenContainerFinalized container,
@@ -448,16 +435,9 @@ class PiContainerApi implements TokenContainerApi {
         PiServerResponse.fromResponse<ContainerChallenge, EmptyResultDetail>(
           challengeResponse,
         );
-    if (piResponse.isError) {
-      throw piResponse.asError!.piServerResultError;
-    }
+    final result = piResponse.resultOrThrow;
 
-    try {
-      return piResponse.asSuccess!.result.value!;
-    } catch (e) {
-      Logger.error('Failed to parse container challenge', error: e);
-      rethrow;
-    }
+    return _requireValue(result.value, 'Failed to parse container challenge');
   }
 
   Future<ContainerSyncResult> _getContainerSyncResult({
@@ -500,16 +480,9 @@ class PiContainerApi implements TokenContainerApi {
         PiServerResponse.fromResponse<ContainerSyncResult, EmptyResultDetail>(
           response,
         );
-    if (containerSyncResponse.isError) {
-      throw containerSyncResponse.asError!.piServerResultError;
-    }
+    final result = containerSyncResponse.resultOrThrow;
 
-    try {
-      return containerSyncResponse.asSuccess!.result.value!;
-    } catch (e) {
-      Logger.error('Failed to parse container sync result', error: e);
-      rethrow;
-    }
+    return _requireValue(result.value, 'Failed to parse container sync result');
   }
 
   Future<Map<String, dynamic>> _getContainerDict({
@@ -583,8 +556,11 @@ class PiContainerApi implements TokenContainerApi {
             const IterableEquality().equals(otps, maybePiToken.otpValues),
       );
       if (mergedTemplate == null) {
+        // The otp values are codes that may still be valid: name the entry by
+        // its serial and count, never by the values.
         Logger.warning(
-          'Server token with otps not found in local tokens: ${serverTokenWithOtp[OTPToken.OTP_VALUES]}',
+          'Server token ${serverTokenWithOtp[Token.SERIAL]} with ${otps.length} '
+          'otp values matches no local token',
         );
         continue;
       }
@@ -618,5 +594,17 @@ class PiContainerApi implements TokenContainerApi {
       }
     }
     return (mergedTemplatesWithSerial, deleteSerials);
+  }
+
+  /// The registration time as privacyIDEA printed it into the link (Python's
+  /// isoformat): six fraction digits, none for a whole second. The signature
+  /// has to cover exactly that text.
+  static String _isoFormatAsServer(DateTime time) {
+    String pad(int value, [int width = 2]) => value.toString().padLeft(width, '0');
+    final micros = time.millisecond * 1000 + time.microsecond;
+    return '${pad(time.year, 4)}-${pad(time.month)}-${pad(time.day)}'
+        'T${pad(time.hour)}:${pad(time.minute)}:${pad(time.second)}'
+        '${micros == 0 ? '' : '.${pad(micros, 6)}'}'
+        '${time.isUtc ? '+00:00' : ''}';
   }
 }

@@ -84,8 +84,9 @@ class PushDefaultRequest extends PushRequest {
     PushToken token, {
     RsaUtils rsaUtils = const RsaUtils(),
   }) {
+    final isVerified = super.verifySignature(token, rsaUtils: rsaUtils);
     // Re-add url and sslverify to android legacy tokens:
-    if (token.url == null) {
+    if (isVerified && token.url == null) {
       globalRef
           ?.read(tokenProvider.notifier)
           .updateToken(
@@ -93,7 +94,7 @@ class PushDefaultRequest extends PushRequest {
             (p0) => p0.copyWith(url: uri, sslVerify: sslVerify),
           );
     }
-    return super.verifySignature(token, rsaUtils: rsaUtils);
+    return isVerified;
   }
 
   /// Verify that the data is valid.

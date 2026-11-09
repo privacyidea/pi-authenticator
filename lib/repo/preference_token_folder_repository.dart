@@ -46,7 +46,14 @@ class PreferenceTokenFolderRepository extends TokenFolderRepository {
       );
       if (foldersString == null) return const TokenFolderState(folders: []);
       final jsons = jsonDecode(foldersString) as List<dynamic>;
-      final folders = jsons.map((e) => TokenFolder.fromJson(e)).toList();
+      final folders = <TokenFolder>[];
+      for (final folderJson in jsons) {
+        try {
+          folders.add(TokenFolder.fromJson(folderJson));
+        } catch (e, s) {
+          Logger.error('Failed to load folder', error: e, stackTrace: s);
+        }
+      }
       Logger.info('Loaded ${folders.length} folders from preferences');
 
       return TokenFolderState(folders: folders);

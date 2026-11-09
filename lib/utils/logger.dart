@@ -24,6 +24,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:math' show min;
+import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -90,25 +91,34 @@ class Logger {
     final file = File(_fullPath!);
     if (!await file.exists()) return '';
     return _mutexWriteFile.protect(() async {
-      final length = await file.length();
-      if (maxBytes == null || length <= maxBytes) return file.readAsString();
-      final randomAccessFile = await file.open();
-      try {
-        // Start one byte early so that a chunk which begins right at a line
-        // keeps that line: the leading newline makes _startOfNextLine stop at
-        // the boundary instead of dropping the line as if it were a half line.
-        final position = length - maxBytes;
-        final readFrom = position > 0 ? position - 1 : 0;
-        await randomAccessFile.setPosition(readFrom);
-        final bytes = await randomAccessFile.read(length - readFrom);
-        return utf8.decode(
-          bytes.sublist(_startOfNextLine(bytes, 0)),
-          allowMalformed: true,
-        );
-      } finally {
-        await randomAccessFile.close();
-      }
+      if (maxBytes == null) return _readWhole(file);
+      return _readTail(file, maxBytes);
     });
+  }
+
+  Future<String> _readWhole(File file) async =>
+      utf8.decode(await file.readAsBytes(), allowMalformed: true);
+
+  /// The newest [maxBytes] of [file], starting at a whole line.
+  Future<String> _readTail(File file, int maxBytes) async {
+    final length = await file.length();
+    if (length <= maxBytes) return _readWhole(file);
+    final randomAccessFile = await file.open();
+    try {
+      // Start one byte early so that a chunk which begins right at a line
+      // keeps that line: the leading newline makes _startOfNextLine stop at
+      // the boundary instead of dropping the line as if it were a half line.
+      final position = length - maxBytes;
+      final readFrom = position > 0 ? position - 1 : 0;
+      await randomAccessFile.setPosition(readFrom);
+      final bytes = await randomAccessFile.read(length - readFrom);
+      return utf8.decode(
+        bytes.sublist(_startOfNextLine(bytes, 0)),
+        allowMalformed: true,
+      );
+    } finally {
+      await randomAccessFile.close();
+    }
   }
 
   /*----------- INSTANCE MEMBER & GETTER/SETTER -----------*/
@@ -458,10 +468,31 @@ Device Parameters $deviceInfo""";
         }
       },
       (e, stack) {
-        error('Uncaught Error: $e', error: e, stackTrace: stack);
+        error(
+          'Uncaught Error: $e ${_situation()}',
+          error: e,
+          stackTrace: stack,
+        );
       },
     );
     WidgetsFlutterBinding.ensureInitialized();
+  }
+
+  /// Where the app stood when an uncaught error came in: the library that
+  /// reported it (framework errors only), the lifecycle state and the page on
+  /// top. Without verbose logging no entry before the error reaches the file,
+  /// so this is all a report tells about its situation.
+  static String _situation({String? library}) {
+    String appState;
+    try {
+      appState = WidgetsBinding.instance.lifecycleState?.name ?? 'unknown';
+    } catch (_) {
+      // A background isolate has no binding; the error must still be logged.
+      appState = 'no binding';
+    }
+    final page = appRouteObserver.currentRoute ?? 'none';
+    return '[${library != null ? 'library: $library, ' : ''}'
+        'app state: $appState, page: $page]';
   }
 
   // Has no effect if _navigatorKey is already set
@@ -473,12 +504,51 @@ Device Parameters $deviceInfo""";
     if (_flutterIsRunning == false) return;
     final directory = await getApplicationSupportDirectory();
     _logPath = directory.path;
+    await _migrateLegacyLogFile();
+  }
+
+  /// Moves the log file that versions before 4.8.1 kept in the documents
+  /// directory in front of the current log, because on iOS the documents
+  /// directory is visible in the Files app. Its entries are masked again,
+  /// since older versions masked fewer values.
+  ///
+  /// If anything fails, the old file stays and the next start tries again.
+  Future<void> _migrateLegacyLogFile() async {
+    try {
+      final legacyDirectory = await getApplicationDocumentsDirectory();
+      if (legacyDirectory.path == _logPath) return;
+      final legacyFile = File('${legacyDirectory.path}/$_filename');
+      if (!await legacyFile.exists()) return;
+      final file = File(_fullPath!);
+      await _mutexWriteFile.protect(() async {
+        final legacyLog = await compute(
+          _textFilter,
+          await _readTail(legacyFile, _maxLogFileSize),
+        );
+        final currentLog = await file.exists()
+            ? await file.readAsBytes()
+            : Uint8List(0);
+        final merged = BytesBuilder(copy: false)
+          ..add(utf8.encode(legacyLog))
+          ..add(currentLog);
+        await file.writeAsBytes(merged.takeBytes(), flush: true);
+        await _trimLogFile(file);
+        await legacyFile.delete();
+      });
+      _print('Migrated the log file of a previous app version');
+    } catch (e) {
+      _printError(
+        'Could not migrate the log file of a previous app version: $e',
+      );
+    }
   }
 
   Future<void> _setupErrorHooks() async {
     FlutterError.onError = (FlutterErrorDetails details) async {
+      final context = details.context == null ? '' : ' (${details.context})';
       error(
-        'Uncaught Error: ${details.exception}',
+        'Uncaught Error: ${details.exception}$context '
+        '${_situation(library: details.library)}',
         error: details.exception,
         stackTrace: details.stack ?? StackTrace.current,
       );

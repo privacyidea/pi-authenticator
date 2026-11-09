@@ -130,18 +130,6 @@
   "@backgroundImage": {
     "description": "Label for the background image setting."
   },
-  "@batteryOptimizationTitle": {
-    "description": "Tooltip for the button that opens the battery optimization dialog again."
-  },
-  "@batteryOptimizationDialogBody": {
-    "description": "Message shown as a dialog body hinting that, if the widget has problems, disabling battery optimization for the app can help."
-  },
-  "@batteryOptimizationAlreadyDisabledBody": {
-    "description": "Message shown when battery optimization is already disabled for the app."
-  },
-  "@batteryOptimizationSettingsButton": {
-    "description": "Button label to open battery optimization settings."
-  },
   "@biometricAuthNotSetupBody": {
     "description": "Message shown as a dialog body that tells the user that biometric authentication is not available on the device."
   },
@@ -425,6 +413,9 @@
   "@errorMissingPublicKey": {
     "description": "Error message when the public key is missing."
   },
+  "@errorOpeningLink": {
+    "description": "Error message when a link cannot be opened on the device, for example because no browser is installed."
+  },
   "@errorRollOutFailed": {
     "description": "Tells the user that the token could not be rolled out, because a network error occurred.",
     "placeholders": {
@@ -608,6 +599,15 @@
   "@fileSavedToDownloadsFolder": {
     "description": "Tells the user that the file was saved to the downloads folder."
   },
+  "@fileSavedToFilesApp": {
+    "description": "Tells the user on iOS that the file was saved to the app's folder in the Files app.",
+    "placeholders": {
+      "appName": {
+        "example": "privacyIDEA Authenticator",
+        "type": "String"
+      }
+    }
+  },
   "@finalizationState": {
     "description": "Title of the finalization state field."
   },
@@ -721,6 +721,15 @@
   },
   "@importHintPrivacyIdeaFile": {
     "description": "Tells the user importent information about the import of privacyIDEA files."
+  },
+  "@importHintPrivacyIdeaFileIos": {
+    "description": "Tells the user on iOS importent information about the import of privacyIDEA files, including where the backup file is stored.",
+    "placeholders": {
+      "appName": {
+        "example": "privacyIDEA Authenticator",
+        "type": "String"
+      }
+    }
   },
   "@importHintPrivacyIdeaQrScan": {
     "description": "Tells the user importent information about the import of privacyIDEA qr codes."
@@ -1230,6 +1239,21 @@
   "@patchNotesV4_6_1Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
+  "@patchNotesV4_8_1BugFix1": {
+    "description": "Patch notes for a bug fix in version 4.8.1"
+  },
+  "@patchNotesV4_8_1BugFix2": {
+    "description": "Patch notes for a bug fix in version 4.8.1"
+  },
+  "@patchNotesV4_8_1BugFix3": {
+    "description": "Patch notes for a bug fix in version 4.8.1"
+  },
+  "@patchNotesV4_8_1Improvement1": {
+    "description": "Patch notes for an improvement in version 4.8.1"
+  },
+  "@patchNotesV4_8_1NewFeature1": {
+    "description": "Patch notes for a new feature in version 4.8.1"
+  },
   "@patchNotesV4_8_0BugFix1": {
     "description": "Patch notes for a bug fix in version 4.8.0"
   },
@@ -1347,6 +1371,9 @@
   "@pushTokensViewTitle": {
     "description": "Title of the push tokens view."
   },
+  "@qrCodeTooMuchData": {
+    "description": "Shown instead of the QR code when a token holds more data than one QR code can carry."
+  },
   "@qrFileDecodeError": {
     "description": "Error message when the qr file could not be decoded."
   },
@@ -1382,6 +1409,19 @@
   },
   "@replaceButton": {
     "description": "Button to replace something, depending on the context."
+  },
+  "@requestInfo": {
+    "description": "Description of the authentication request.",
+    "placeholders": {
+      "account": {
+        "example": "GitHub",
+        "type": "String"
+      },
+      "issuer": {
+        "example": "privacyIDEA",
+        "type": "String"
+      }
+    }
   },
   "@requestPushChallengesPeriodically": {
     "description": "The description of the polling feature."
@@ -1795,10 +1835,6 @@
   "autoCloseAppAfterAcceptingPushRequestDescription": "Pokud je povoleno, aplikace se automaticky zavře po přijetí požadavku na push.",
   "autoCloseAppAfterAcceptingPushRequestTitle": "Zavřít aplikaci po přijetí požadavku",
   "backgroundImage": "Obrázek na pozadí",
-  "batteryOptimizationTitle": "Widget na domovské obrazovce",
-  "batteryOptimizationDialogBody": "Pokud máte problémy s widgetem na domovské obrazovce, může pomoci vypnout optimalizaci baterie pro aplikaci.",
-  "batteryOptimizationAlreadyDisabledBody": "Optimalizace baterie je pro tuto aplikaci deaktivována. Chcete ji znovu aktivovat pro zlepšení výdrže baterie?",
-  "batteryOptimizationSettingsButton": "Otevřít nastavení baterie",
   "biometricAuthNotSetupBody": "Chcete-li tuto akci provést, nastavte prosím biometrické ověření v nastavení svého zařízení.",
   "biometricAuthNotSetupTitle": "Biometrické ověření není nastaveno",
   "biometricAuthNotSupportedBody": "Vaše zařízení nepodporuje biometrické ověření, které je pro provedení této akce nutné.",
@@ -1865,7 +1901,6 @@
   "deviceCredentialsRequiredTitle": "Není nastaven zámek zařízení",
   "deviceCredentialsSetupDescription": "Nastave zámek zařízení v nastavení zařízení",
   "digits": "Počet číslic",
-  "disableButton": "Deaktivovat",
   "dismiss": "Zavřít",
   "done": "Hotovo",
   "edit": "Upravit",
@@ -1884,6 +1919,7 @@
   "errorMailBody": "Přiložen je soubor protokolu o chybách.\nTento text můžete nahradit dalšími informacemi o chybě.",
   "errorMissingPrivateKey": "Chybějící soukromý klíč",
   "errorMissingPublicKey": "Chybějící veřejný klíč",
+  "errorOpeningLink": "Odkaz se nepodařilo otevřít.",
   "errorRollOutFailed": "Registrace tokenu {name} selhala.",
   "errorRollOutNoConnectionToServer": "Registrace tokenu {name} selhala. Server není dostupný.",
   "errorRollOutNotPossibleAnymore": "Roll-out tohoto tokenu již není možný.",
@@ -1925,6 +1961,7 @@
   "feedbackTitle": "Vaše zpětná vazba je vždy vítána!",
   "fileNotAvailable": "Soubor není v současné době k dispozici! Zkuste to prosím znovu.",
   "fileSavedToDownloadsFolder": "Soubor uložen do složky Stažené soubory",
+  "fileSavedToFilesApp": "Soubor uložen v aplikaci Soubory ve složce “{appName}“",
   "finalizationState": "Stav finalizace",
   "finalizeContainerFailed": "Finalizace kontejneru se nezdařila",
   "firebaseToken": "Token Firebase",
@@ -1955,6 +1992,7 @@
   "importHintGoogleQrFile": "Vyberte obrazový soubor s QR kódem, který obdržíte při exportu účtů z Google Authenticator.\n!! Upozorňujeme, že není bezpečné ukládat QR kód do zařízení, protože tokeny nejsou šifrovány !!",
   "importHintGoogleQrScan": "Naskenujte QR kód, který obdržíte při exportu účtů z Google Authenticator.",
   "importHintPrivacyIdeaFile": "Chcete-li vytvořit zálohu, přejděte do nastavení a klepněte na položku “Export“. Vyberte “Jako soubor“ a vyberte tokeny, které chcete exportovat. Potom klepněte na “Exportovat“ a nastavte heslo. Úložištěm je složka pro stahování ve vašem zařízení.",
+  "importHintPrivacyIdeaFileIos": "Chcete-li vytvořit zálohu, přejděte do nastavení a klepněte na položku “Export“. Vyberte “Jako soubor“ a vyberte tokeny, které chcete exportovat. Potom klepněte na “Exportovat“ a nastavte heslo. Soubor najdete v aplikaci Soubory ve složce “{appName}“.",
   "importHintPrivacyIdeaQrScan": "Chcete-li vytvořit QR kódy žetonů, přejděte do nastavení a klepněte na “Export“. Poté vyberte “Jako QR kód“ a klepněte na token, který chcete exportovat. Tato varianta je vhodná pouze pro přímý přenos do jiného zařízení, protože QR kód není šifrovaný.",
   "importNTokens": "{count, plural, zero{Neimportujte žádné tokeny} one{Importovat jeden token} other{Importovat {count} tokenů}}",
   "importNewToken": "{count, plural, zero{Nebyl nalezen žádný nový token.} one{Byl nalezen nový token, který lze importovat.} other{Bylo nalezeno {count} nových tokenů, které lze importovat.}}",
@@ -2085,6 +2123,11 @@
   "patchNotesV4_6_0Improvement1": "Interní komponenty byly aktualizovány, aby byla zachována bezpečnost a zajištěna kompatibilita s nejnovějšími zařízeními.",
   "patchNotesV4_6_1BugFix1": "Opravena chyba v rozbalovacím panelu TokenFolder.",
   "patchNotesV4_6_1Improvement1": "Aktualizováno několik závislostí.",
+  "patchNotesV4_8_1BugFix1": "Opravena chyba, kdy se při rychlém generování kódů za sebou mohlo ztratit navýšení čítače HOTP.",
+  "patchNotesV4_8_1BugFix2": "Opravena chyba, kdy tokeny Steam nepoužívaly pro své kódy aktuální časový krok.",
+  "patchNotesV4_8_1BugFix3": "Opravena chyba, kdy se barva odpočtu TOTP po změně motivu neaktualizovala.",
+  "patchNotesV4_8_1Improvement1": "Chyby serveru při operacích s kontejnery se nyní zobrazují jako chybové zprávy místo pádu aplikace.",
+  "patchNotesV4_8_1NewFeature1": "Push požadavky bez otázky ze serveru nyní zobrazují vydavatele a účet tokenu.",
   "patchNotesV4_8_0BugFix1": "Opraveno blikání widgetu na domovské obrazovce v systému Android.",
   "patchNotesV4_8_0BugFix2": "Opraveno neukládání nastavení pro automatické zavírání push požadavků.",
   "patchNotesV4_8_0BugFix3": "Opraveno zavádění tokenů přes synchronizaci kontejnerů při použití adresy URL pro zavedení 'pia'.",
@@ -2120,6 +2163,7 @@
   "pushRequestParseError": "Požadavek na odeslání se nepodařilo zpracovat.",
   "pushToken": "Push notifikace",
   "pushTokensViewTitle": "Push-Tokens",
+  "qrCodeTooMuchData": "Tento žeton obsahuje příliš mnoho dat pro QR kód. Exportujte jej místo toho jako soubor.",
   "qrFileDecodeError": "Z vybraného obrázku nebylo možné dekódovat QR kód, použijte prosím místo toho skener QR kódů.",
   "qrInFileNotFound": "Ve vybraném obrázku nebyl nalezen žádný QR kód.",
   "qrInFileNotFound2": "Můžete mi ukázat, kde se QR kód nachází.",
@@ -2132,6 +2176,7 @@
   "renewSecretsDialogText": "Můžete obnovit tajemství žetonů. To je užitečné, pokud máte podezření, že tajemství byla ohrožena.",
   "renewSecretsDialogTitle": "Obnovení tajemství žetonů",
   "replaceButton": "Vyměňte",
+  "requestInfo": "Odesláno {issuer} pro váš účet: “{account}“",
   "requestPushChallengesPeriodically": "Periodicky získávat výzvy ze serveru. Povolte pokud nefunguje příjem push notifikací.",
   "requestTriggerdByUserQuestion": "Byl tento požadavek vyvolán vámi?",
   "retryRolloutButton": "Zkusit znovu",

@@ -22,9 +22,31 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 class CustomPaintNavigationBar extends CustomPainter {
-  BuildContext buildContext;
+  final Color appBarColor;
+  final Color shadowColor;
+  final double elevation;
 
-  CustomPaintNavigationBar({required this.buildContext});
+  CustomPaintNavigationBar({
+    required this.appBarColor,
+    required this.shadowColor,
+    required this.elevation,
+  });
+
+  /// Reads the colors of the navigation bar from the given theme.
+  factory CustomPaintNavigationBar.of(BuildContext context) {
+    final theme = Theme.of(context);
+    return CustomPaintNavigationBar(
+      appBarColor:
+          theme.navigationBarTheme.backgroundColor ??
+          theme.appBarTheme.backgroundColor ??
+          theme.primaryColor,
+      shadowColor:
+          theme.navigationBarTheme.shadowColor ??
+          theme.appBarTheme.shadowColor ??
+          theme.shadowColor,
+      elevation: theme.navigationBarTheme.elevation ?? 3,
+    );
+  }
 
   // It is basicly grid of 1x1 from 0,0 top left to 1,1 bottom right with height and width of [size]
   // We use a maximum of px for radius to make sure the floating action button has enough space but not too much
@@ -41,15 +63,6 @@ class CustomPaintNavigationBar extends CustomPainter {
   // paints the curves of the appbar
   @override
   void paint(Canvas canvas, Size size) {
-    final Color appBarColor =
-        Theme.of(buildContext).navigationBarTheme.backgroundColor ??
-        Theme.of(buildContext).appBarTheme.backgroundColor ??
-        Theme.of(buildContext).primaryColor;
-    final Color shadowColor =
-        Theme.of(buildContext).navigationBarTheme.shadowColor ??
-        Theme.of(buildContext).appBarTheme.shadowColor ??
-        Theme.of(buildContext).shadowColor;
-    final elevation = Theme.of(buildContext).navigationBarTheme.elevation ?? 3;
     final double radiusPx = min(40, size.height * 0.8);
 
     // Paint for the main shape
@@ -139,7 +152,9 @@ class CustomPaintNavigationBar extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
+  bool shouldRepaint(covariant CustomPaintNavigationBar oldDelegate) {
+    return oldDelegate.appBarColor != appBarColor ||
+        oldDelegate.shadowColor != shadowColor ||
+        oldDelegate.elevation != elevation;
   }
 }

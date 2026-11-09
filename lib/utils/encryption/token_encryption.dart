@@ -103,10 +103,12 @@ class TokenEncryption {
       final bytes = base64Url.decode(base64String!);
       final jsonString = utf8.decode(bytes);
       final tokenJson = json.decode(jsonString) as Map<String, dynamic>;
-      token = Token.fromJson(tokenJson);
+      token = Token.fromJson(tokenJson).copyWith(folderId: () => null);
     } catch (e, s) {
-      Logger.error('[${InAppErrorCodes.failedToParseTokenFromUri}] Failed to parse token from URI', error: e, stackTrace: s);
-      rethrow;
+      // The source of a FormatException would quote the token data into the log.
+      final error = e is FormatException ? FormatException(e.message, null, e.offset) : e;
+      Logger.error('[${InAppErrorCodes.failedToParseTokenFromUri}] Failed to parse token from URI', error: error, stackTrace: s);
+      Error.throwWithStackTrace(error, s);
     }
     Logger.info('Parsed token ${token.label}');
     return token;

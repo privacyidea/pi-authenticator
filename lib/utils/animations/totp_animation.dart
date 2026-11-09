@@ -31,13 +31,19 @@ class TotpAnimation {
   final Duration warningDuration;
   final Duration criticalDuration;
 
-  final Color defaultOtpColor;
-  final Color warningOtpColor;
-  final Color criticalOtpColor;
+  Color defaultOtpColor;
+  Color? _warningOtpColor;
+  Color get warningOtpColor => _warningOtpColor ?? defaultOtpColor;
+  Color? _criticalOtpColor;
+  Color get criticalOtpColor => _criticalOtpColor ?? warningOtpColor;
 
-  final Color defaultCountdownColor;
-  final Color warningCountdownColor;
-  final Color criticalCountdownColor;
+  Color defaultCountdownColor;
+  Color? _warningCountdownColor;
+  Color get warningCountdownColor =>
+      _warningCountdownColor ?? defaultCountdownColor;
+  Color? _criticalCountdownColor;
+  Color get criticalCountdownColor =>
+      _criticalCountdownColor ?? warningCountdownColor;
 
   /// Creates a new animation that changes the color of a circle based on the time left.</br>
   /// The color will fade from [defaultOtpColor] to [warningOtpColor] for [warningDuration] before entering [criticalOtpColor].</br>
@@ -51,19 +57,29 @@ class TotpAnimation {
     required this.warningDuration,
     required this.criticalDuration,
     required this.defaultOtpColor,
+    this._warningOtpColor,
+    this._criticalOtpColor,
+    required this.defaultCountdownColor,
+    this._warningCountdownColor,
+    this._criticalCountdownColor,
+  });
+
+  /// Replaces the colors of the animation without restarting the running period.
+  void updateColors({
+    required Color defaultOtpColor,
     Color? warningOtpColor,
     Color? criticalOtpColor,
-    required this.defaultCountdownColor,
+    required Color defaultCountdownColor,
     Color? warningCountdownColor,
     Color? criticalCountdownColor,
-  }) : warningOtpColor = warningOtpColor ?? defaultOtpColor,
-       criticalOtpColor =
-           criticalOtpColor ?? warningOtpColor ?? defaultOtpColor,
-       warningCountdownColor = warningCountdownColor ?? defaultCountdownColor,
-       criticalCountdownColor =
-           criticalCountdownColor ??
-           warningCountdownColor ??
-           defaultCountdownColor;
+  }) {
+    this.defaultOtpColor = defaultOtpColor;
+    _warningOtpColor = warningOtpColor;
+    _criticalOtpColor = criticalOtpColor;
+    this.defaultCountdownColor = defaultCountdownColor;
+    _warningCountdownColor = warningCountdownColor;
+    _criticalCountdownColor = criticalCountdownColor;
+  }
 
   DateTime lastResync = DateTime.now();
 

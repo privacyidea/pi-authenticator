@@ -1,6 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/extensions/sortable_list.dart';
 import 'package:privacyidea_authenticator/model/mixins/sortable_mixin.dart';
+import 'package:privacyidea_authenticator/model/token_folder.dart';
+import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
 
 void main() {
   _testSortableList();
@@ -200,5 +203,90 @@ void _testSortableList() {
         ]);
       });
     });
+    // TokenFolder.== includes sortIndex, unlike _SortableTestClass, so these
+    // use the real sortables of the main view.
+    group('move between tokens and folders', () {
+      test('a token dropped right before a folder whose sort index has a gap', () {
+        final a = _token('a', 0);
+        const folder = TokenFolder(label: 'f', folderId: 1, sortIndex: 5);
+        final b = _token('b', 6);
+
+        final result = <SortableMixin>[
+          a,
+          folder,
+          b,
+        ].moveBetween(moveAfter: a, movedItem: b, moveBefore: folder);
+
+        expect(_order(result), ['a', 'b', 'f']);
+        expect(result.map((s) => s.sortIndex), [0, 1, 2]);
+      });
+
+      test('a folder dropped right before another folder whose sort index has a gap', () {
+        const first = TokenFolder(label: 'first', folderId: 1, sortIndex: 0);
+        final inFirst = _token('inFirst', 1);
+        const second = TokenFolder(label: 'second', folderId: 2, sortIndex: 7);
+        const moved = TokenFolder(label: 'moved', folderId: 3, sortIndex: 9);
+        final inMoved = _token('inMoved', 10);
+
+        final result = <SortableMixin>[first, inFirst, second, moved, inMoved]
+            .moveAllBetween(
+              moveAfter: inFirst,
+              movedItems: [moved, inMoved],
+              moveBefore: second,
+            );
+
+        expect(_order(result), [
+          'first',
+          'inFirst',
+          'moved',
+          'inMoved',
+          'second',
+        ]);
+        expect(result.map((s) => s.sortIndex), [0, 1, 2, 3, 4]);
+      });
+
+      test('a moveBefore that is not in the list falls back to moveAfter', () {
+        final a = _token('a', 0);
+        final b = _token('b', 1);
+        final c = _token('c', 2);
+        const goneFolder = TokenFolder(label: 'gone', folderId: 9, sortIndex: 1);
+
+        final result = <SortableMixin>[
+          a,
+          b,
+          c,
+        ].moveBetween(moveAfter: a, movedItem: c, moveBefore: goneFolder);
+
+        expect(_order(result), ['a', 'c', 'b']);
+      });
+
+      test('the moved token is the current one from the list, not the dragged copy', () {
+        final a = _token('a', 0);
+        final current = _token('b', 1, label: 'current');
+        final draggedCopy = _token('b', 1, label: 'stale');
+
+        final result = <SortableMixin>[
+          a,
+          current,
+        ].moveBetween(moveBefore: a, movedItem: draggedCopy);
+
+        expect(result.first, isA<HOTPToken>());
+        expect((result.first as HOTPToken).label, 'current');
+      });
+    });
   });
 }
+
+HOTPToken _token(String id, int sortIndex, {String label = ''}) => HOTPToken(
+  id: id,
+  label: label,
+  algorithm: Algorithms.SHA1,
+  digits: 6,
+  secret: 'secret$id',
+  sortIndex: sortIndex,
+);
+
+List<String> _order(List<SortableMixin> sortables) => [
+  for (final s in sortables)
+    if (s is TokenFolder) s.label else (s as HOTPToken).id,
+];

@@ -57,18 +57,25 @@ void main() {
     });
 
     test(
-      'validator transformer throws ArgumentError for unsupported types',
+      'validator transformer locks with any device authentication for an '
+      'unknown value or type',
       () {
-        expect(
-          () => ForceBiometricOptionX.validator.transformer!(123),
-          throwsArgumentError,
-        );
-        expect(
-          () => ForceBiometricOptionX.validator.transformer!(true),
-          throwsArgumentError,
-        );
+        for (final value in <Object>['face_id', 123, true]) {
+          expect(
+            ForceBiometricOptionX.validator.transformer!(value),
+            ForceBiometricOption.any,
+            reason: '$value',
+          );
+        }
       },
     );
+
+    test('validator transformer reads an empty value as none', () {
+      expect(
+        ForceBiometricOptionX.validator.transformer!(''),
+        ForceBiometricOption.none,
+      );
+    });
 
     test('validator uses defaultValue for null input', () {
       expect(

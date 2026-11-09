@@ -66,7 +66,7 @@ packages:
     source: hosted
     version: "1.0.3"
   app_links_platform_interface:
-    dependency: transitive
+    dependency: "direct dev"
     description:
       name: app_links_platform_interface
       sha256: "7546f09a6e93f4a2df2fe2bd40a5c6c64310ac461b036d82b43033be7a59f809"
@@ -185,22 +185,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.12.0+2"
-  camera_android:
-    dependency: "direct main"
-    description:
-      name: camera_android
-      sha256: "8b3795d2f7f3c7e705821fe6cd82b7dd56c8a8e66f2df4ac6daf659876967dbf"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.10.11"
   camera_android_camerax:
     dependency: transitive
     description:
       name: camera_android_camerax
-      sha256: "294b02ae027ad9edc98414a25f5e958d2dc6c65e9f102f21e2b36f0f558751eb"
+      sha256: "977f54512d338b3b36d7f82929794886766d8f41ae84a48fe103eb0106ecfe25"
       url: "https://pub.dev"
     source: hosted
-    version: "0.7.4+4"
+    version: "0.7.4+8"
   camera_avfoundation:
     dependency: transitive
     description:
@@ -306,7 +298,7 @@ packages:
     source: hosted
     version: "7.3.1"
   connectivity_plus_platform_interface:
-    dependency: transitive
+    dependency: "direct dev"
     description:
       name: connectivity_plus_platform_interface
       sha256: "3c09627c536d22fd24691a905cdd8b14520de69da52c7a97499c8be5284a32ed"
@@ -410,7 +402,7 @@ packages:
     source: hosted
     version: "5.0.1"
   fake_async:
-    dependency: transitive
+    dependency: "direct dev"
     description:
       name: fake_async
       sha256: "5368f224a74523e8d2e7399ea1638b37aecfca824a3cc4dfdf77bf1fa905ac44"
@@ -672,6 +664,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_material_design_icons:
+    dependency: "direct main"
+    description:
+      name: flutter_material_design_icons
+      sha256: "9a7b6308736e328f9ce2249c3727a56a289c915a65ebf1b1b5f237c8232e92b7"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.0+7447"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -692,18 +692,18 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_secure_storage
-      sha256: "15e8c8fe269fdf7d469b23008ab3df521c8b826ed345820532364c31bdebace6"
+      sha256: fe638107c5f69119156ada2db5a57734385fac3f64430bd7252a00d3ead2ca4b
       url: "https://pub.dev"
     source: hosted
-    version: "11.0.0"
+    version: "10.3.4"
   flutter_secure_storage_darwin:
     dependency: transitive
     description:
       name: flutter_secure_storage_darwin
-      sha256: ac6d76a752de0cd738334eb4b21743fc4943f449f5b6e308f18838b048c02ac0
+      sha256: "82329fa5cdf343773b1b6897dea959105a29f092454259edff92f9f6637e8149"
       url: "https://pub.dev"
     source: hosted
-    version: "0.4.0"
+    version: "0.3.2"
   flutter_secure_storage_linux:
     dependency: transitive
     description:
@@ -713,7 +713,7 @@ packages:
     source: hosted
     version: "3.0.2"
   flutter_secure_storage_platform_interface:
-    dependency: transitive
+    dependency: "direct dev"
     description:
       name: flutter_secure_storage_platform_interface
       sha256: "788060052712555182aba55ecb5f8b6e5cb9cfe8f776c83249a61fe3ce877db4"
@@ -766,10 +766,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_zxing
-      sha256: "6bf0cb0fde122455e73ae78214457c106fbde3c633af4624ce29567ac590ef21"
+      sha256: "2c1ed2d0b1eb70c95231da33e9dea80e5b2f8a4711974bdadf7d9c1813b7ad5e"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.0"
+    version: "2.4.0"
   font_awesome_flutter:
     dependency: "direct main"
     description:
@@ -1517,7 +1517,7 @@ packages:
     source: hosted
     version: "2.4.1"
   shared_preferences_platform_interface:
-    dependency: transitive
+    dependency: "direct dev"
     description:
       name: shared_preferences_platform_interface
       sha256: "649dc798a33931919ea356c4305c2d1f81619ea6e92244070b520187b5140ef9"
@@ -1931,4 +1931,4 @@ packages:
     version: "0.2.4"
 sdks:
   dart: ">=3.12.0 <4.0.0"
-  flutter: ">=3.44.0"
+  flutter: ">=3.44.0 <3.45.0"

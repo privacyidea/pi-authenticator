@@ -22,6 +22,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -181,24 +182,31 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     });
   }
 
-  /// Replaces a token if it exists and returns true if successful, false if not.
-  /// Updates repo and state.
-  Future<bool> _replaceToken(Token token) {
+  /// Updates a token if it exists and returns the updated token if successful,
+  /// the current token if saving fails and null if the token does not exist.
+  /// Updates repo and state atomically.
+  Future<T?> _replaceToken<T extends Token>(T token, T Function(T) updater) {
     return _stateMutex.protect(() async {
-      final (newState, replaced) = (await future).replaceToken(token);
+      final current = (await future).currentOf<T>(token);
+      if (current == null) {
+        Logger.warning('Tried to update a token that does not exist.');
+        return null;
+      }
+      final updated = updater(current);
+      final (newState, replaced) = (await future).replaceToken(updated);
       if (!replaced) {
         Logger.warning('Tried to replace a token that does not exist.');
-        return false;
+        return current;
       }
       final saved = await _repoMutex.protect(
-        () => repo.saveOrReplaceToken(token),
+        () => repo.saveOrReplaceToken(updated),
       );
       if (!saved) {
-        Logger.warning('Saving token failed. Token: ${token.id}');
-        return false;
+        Logger.warning('Saving token failed. Token: ${updated.id}');
+        return current;
       }
       state = AsyncValue.data(newState);
-      return true;
+      return updated;
     });
   }
 
@@ -313,19 +321,8 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   */
 
   /// Updates a token and returns the updated token if successful, the old token if not and null if the token does not exist.
-  Future<T?> _updateToken<T extends Token>(
-    T token,
-    T Function(T) updater,
-  ) async {
-    final current = (await future).currentOf<T>(token);
-    if (current == null) {
-      Logger.warning('Tried to update a token that does not exist.');
-      return null;
-    }
-    final updated = updater(current);
-    final replaced = await _replaceToken(updated);
-    return replaced ? updated : current;
-  }
+  Future<T?> _updateToken<T extends Token>(T token, T Function(T) updater) =>
+      _replaceToken(token, updater);
 
   /// Updates a list of tokens and returns the updated tokens if successful.
   /// Returns the old tokens if not and an empty list if the tokens does not exist.
@@ -389,8 +386,10 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
   ) => _updateTokens(tokens, updater);
 
   /// Increments the counter of a HOTPToken and returns the updated token if successful, the old token if not and null if the token does not exist.
-  Future<HOTPToken?> incrementCounter(HOTPToken token) =>
-      _updateToken(token, (p0) => p0.copyWith(counter: token.counter + 1));
+  Future<HOTPToken?> incrementCounter(HOTPToken token) => _updateToken(
+    token,
+    (current) => current.copyWith(counter: current.counter + 1),
+  );
 
   /// Hides a token and returns the updated token ifTok successful, the old token if not and null if the token does not exist.
   Future<T?> hideToken<T extends Token>(T token) =>
@@ -493,13 +492,19 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     }
     try {
       await firebaseUtils.deleteFirebaseToken();
-    } on SocketException {
-      Logger.warning('Could not delete firebase token.');
+    } catch (e, s) {
+      Logger.warning(
+        'Could not delete firebase token.',
+        error: e,
+        stackTrace: s,
+      );
+      final firebaseMessage = e is FirebaseException ? e.message : null;
       ref
           .read(statusProvider.notifier)
           .show(
             (localization) => localization.errorUnlinkingPushToken(token.label),
-            details: (localization) => localization.checkYourNetwork,
+            details: (localization) =>
+                firebaseMessage ?? localization.checkYourNetwork,
           );
       return false;
     }
@@ -509,7 +514,16 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
     } else {
       Logger.warning('Push token "${token.id}" could not be removed.');
     }
-    final fbToken = await firebaseUtils.getFBToken();
+    String? fbToken;
+    try {
+      fbToken = await firebaseUtils.getFBToken();
+    } catch (e, s) {
+      Logger.warning(
+        'Could not get firebase token after removing a push token.',
+        error: e,
+        stackTrace: s,
+      );
+    }
 
     if (fbToken == null) {
       await _updateTokens((await future).pushTokens, (p0) => p0.copyWith());

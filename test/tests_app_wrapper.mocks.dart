@@ -3594,24 +3594,6 @@ class MockHomeWidgetUtils extends _i1.Mock implements _i56.HomeWidgetUtils {
           as _i24.Future<_i48.OTPToken?>);
 
   @override
-  _i24.Future<bool> getPendingBatteryOptimizationHint() =>
-      (super.noSuchMethod(
-            Invocation.method(#getPendingBatteryOptimizationHint, []),
-            returnValue: _i24.Future<bool>.value(false),
-            returnValueForMissingStub: _i24.Future<bool>.value(false),
-          )
-          as _i24.Future<bool>);
-
-  @override
-  _i24.Future<void> setPendingBatteryOptimizationHint(bool? value) =>
-      (super.noSuchMethod(
-            Invocation.method(#setPendingBatteryOptimizationHint, [value]),
-            returnValue: _i24.Future<void>.value(),
-            returnValueForMissingStub: _i24.Future<void>.value(),
-          )
-          as _i24.Future<void>);
-
-  @override
   _i24.Future<bool?> registerInteractivityCallback(
     void Function(Uri?)? homeWidgetBackgroundCallback,
   ) =>
@@ -3673,6 +3655,15 @@ class MockHomeWidgetUtils extends _i1.Mock implements _i56.HomeWidgetUtils {
   _i24.Future<void> updateTokensIfLinked(List<_i16.Token>? tokens) =>
       (super.noSuchMethod(
             Invocation.method(#updateTokensIfLinked, [tokens]),
+            returnValue: _i24.Future<void>.value(),
+            returnValueForMissingStub: _i24.Future<void>.value(),
+          )
+          as _i24.Future<void>);
+
+  @override
+  _i24.Future<void> updateLockOfLinkedWidgets() =>
+      (super.noSuchMethod(
+            Invocation.method(#updateLockOfLinkedWidgets, []),
             returnValue: _i24.Future<void>.value(),
             returnValueForMissingStub: _i24.Future<void>.value(),
           )
@@ -4526,6 +4517,27 @@ class MockTokenFolderNotifier extends _i1.Mock
               _FakeTokenFolderState_1(
                 this,
                 Invocation.method(#addOrReplaceFolders, [folders]),
+              ),
+            ),
+          )
+          as _i24.Future<_i3.TokenFolderState>);
+
+  @override
+  _i24.Future<_i3.TokenFolderState> replaceExistingFolders(
+    List<_i67.TokenFolder>? folders,
+  ) =>
+      (super.noSuchMethod(
+            Invocation.method(#replaceExistingFolders, [folders]),
+            returnValue: _i24.Future<_i3.TokenFolderState>.value(
+              _FakeTokenFolderState_1(
+                this,
+                Invocation.method(#replaceExistingFolders, [folders]),
+              ),
+            ),
+            returnValueForMissingStub: _i24.Future<_i3.TokenFolderState>.value(
+              _FakeTokenFolderState_1(
+                this,
+                Invocation.method(#replaceExistingFolders, [folders]),
               ),
             ),
           )
