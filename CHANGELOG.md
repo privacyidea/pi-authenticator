@@ -10,6 +10,7 @@
  - Fixed a home widget showing an error after its token was deleted, it now asks to link a token again
  - Fixed data of removed home widgets staying on the device
  - Fixed the code of a locked token being masked again without a way to show it, when the token was unlocked while its code was visible
+ - The app icon on Android now has a blue background instead of a white one
 
 ## [4.8.1] - 2026.11.03
  - Push requests without a question from the server now show the issuer and account of the token
