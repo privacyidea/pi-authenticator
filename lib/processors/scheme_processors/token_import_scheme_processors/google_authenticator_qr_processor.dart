@@ -75,7 +75,7 @@ class GoogleAuthenticatorQrProcessor extends TokenImportSchemeProcessor {
     for (var param in gai.otpParameters) {
       try {
         var base32string = base32Encode(Uint8List.fromList(param.secret));
-        final name = Uri.encodeFull(param.name);
+        final name = Uri.encodeComponent(param.name);
         final issuer = Uri.encodeComponent(param.issuer);
         String algorithm = "";
         switch (param.algorithm) {

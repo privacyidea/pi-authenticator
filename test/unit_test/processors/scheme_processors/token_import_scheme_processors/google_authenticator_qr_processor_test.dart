@@ -651,8 +651,6 @@ void _testGoogleAuthenticatorQrProcessorEdgeCases() {
             expect(results.single.asSuccess!.resultData.label, name);
           }
         },
-        skip:
-            'BUG: google_authenticator_qr_processor.dart:72 Uri.encodeFull does not escape "#" and "?", the otpauth uri is cut off and the token fails with "secret is null"',
       );
 
       test('issuer with ampersand and equals sign is kept', () async {
