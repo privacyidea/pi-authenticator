@@ -20,6 +20,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:privacyidea_authenticator/utils/globals.dart';
 import 'package:privacyidea_authenticator/widgets/focused_item_as_overlay.dart';
 import 'package:privacyidea_authenticator/widgets/tooltip_container.dart';
 
@@ -85,6 +86,46 @@ void main() {
       await tester.pumpWidget(const TestsAppWrapper(child: SizedBox()));
       await tester.pumpAndSettle();
     });
+    testWidgets(
+      'hides the overlay while a page is open above and shows it again afterwards',
+      (tester) async {
+        await tester.pumpWidget(
+          TestsAppWrapper(
+            child: FocusedItemAsOverlay(
+              isFocused: true,
+              tooltipWhenFocused: 'Page Test',
+              onComplete: () {},
+              child: const Text('Target'),
+            ),
+          ),
+        );
+        await tester.pump();
+        expect(find.byType(BackdropFilter), findsOneWidget);
+        final navigator = globalNavigatorKey.currentState!;
+
+        navigator.push(
+          MaterialPageRoute(
+            builder: (_) => const Scaffold(body: Text('Pushed page')),
+          ),
+        );
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 1));
+
+        expect(find.text('Pushed page'), findsOneWidget);
+        expect(find.byType(BackdropFilter), findsNothing);
+        expect(find.text('Page Test'), findsNothing);
+
+        navigator.pop();
+        await tester.pump();
+        await tester.pump(const Duration(seconds: 1));
+        await tester.pump(const Duration(seconds: 1));
+
+        expect(find.byType(BackdropFilter), findsOneWidget);
+        expect(find.text('Page Test'), findsOneWidget);
+        await tester.pumpWidget(const TestsAppWrapper(child: SizedBox()));
+        await tester.pumpAndSettle();
+      },
+    );
     testWidgets('disposes overlay when widget is removed', (tester) async {
       await tester.pumpWidget(
         TestsAppWrapper(

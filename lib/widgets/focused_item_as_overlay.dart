@@ -99,6 +99,27 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
   OverlayEntry? _overlayEntryChild;
   OverlayEntry? _overlayEntryBackdrop;
 
+  Animation<double>? _routeCoverAnimation;
+
+  /// The overlay lies above every route, so it leaves while a page is opened
+  /// above the route of the anchor and comes back when that page is gone.
+  void _onRouteCoverChanged(AnimationStatus status) {
+    if (status == AnimationStatus.dismissed) {
+      _updateOverlay();
+    } else {
+      _disposeOverlay();
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final animation = ModalRoute.of(context)?.secondaryAnimation;
+    if (animation == _routeCoverAnimation) return;
+    _routeCoverAnimation?.removeStatusListener(_onRouteCoverChanged);
+    _routeCoverAnimation = animation?..addStatusListener(_onRouteCoverChanged);
+  }
+
   @override
   Widget build(BuildContext context) {
     final pad = _circlePadding / 2;
@@ -176,6 +197,7 @@ class _FocusedItemOverlayState extends State<_FocusedItemOverlay> {
 
   @override
   void dispose() {
+    _routeCoverAnimation?.removeStatusListener(_onRouteCoverChanged);
     _movementTimer?.cancel();
     _delayTimer?.cancel();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
