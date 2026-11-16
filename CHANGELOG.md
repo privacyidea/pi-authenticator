@@ -1,6 +1,14 @@
 # Changelog
 
 ## [4.8.2] - Unreleased
+ - Added a "Home widget" entry to the settings to put a token on the home screen, the token list lets you link a token, or remove it from its widget
+ - A token can now be on the home screen only once
+ - The home widget asks for confirmation before a locked token is linked, because its code is only shown in the app
+ - Fixed the code shown in the home widget being blurry
+ - Fixed the home widget keeping the old name of a renamed token
+ - Fixed the missing action icon of Steam tokens in the home widget
+ - Fixed a home widget showing an error after its token was deleted, it now asks to link a token again
+ - Fixed data of removed home widgets staying on the device
  - Fixed the code of a locked token being masked again without a way to show it, when the token was unlocked while its code was visible
 
 ## [4.8.1] - 2026.11.03

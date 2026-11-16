@@ -45,6 +45,46 @@ class _EmitTokenNotifier extends TokenNotifier {
       state = AsyncError<TokenState>(Exception('boom'), StackTrace.current);
 }
 
+void _removedTokenIdsTests() {
+  group('HomeWidgetTokenStateListener.removedTokenIds', () {
+    test('lists the tokens that are gone', () {
+      final removed = HomeWidgetTokenStateListener.removedTokenIds(
+        [_hotp(id: 'a'), _hotp(id: 'b'), _hotp(id: 'c')],
+        [_hotp(id: 'b')],
+      );
+
+      expect(removed, ['a', 'c']);
+    });
+
+    test('is empty when only a token changed', () {
+      expect(
+        HomeWidgetTokenStateListener.removedTokenIds(
+          [_hotp(id: 'a')],
+          [_hotp(id: 'a', label: 'renamed')],
+        ),
+        isEmpty,
+      );
+    });
+
+    test('is empty when tokens were added', () {
+      expect(
+        HomeWidgetTokenStateListener.removedTokenIds(
+          [_hotp(id: 'a')],
+          [_hotp(id: 'a'), _hotp(id: 'b')],
+        ),
+        isEmpty,
+      );
+    });
+
+    test('is empty before the first state', () {
+      expect(
+        HomeWidgetTokenStateListener.removedTokenIds([], [_hotp(id: 'a')]),
+        isEmpty,
+      );
+    });
+  });
+}
+
 HOTPToken _hotp({
   String id = 'hotp',
   String label = 'label',
@@ -94,6 +134,8 @@ DayPasswordToken _day({
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
+
+  _removedTokenIdsTests();
 
   /// `WidgetRef` is sealed, so a real one is captured from a pumped Consumer.
   /// `_onNewState` does not use it.

@@ -1,16 +1,23 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/token_folder_repository.dart';
 import 'package:privacyidea_authenticator/interfaces/repo/token_repository.dart';
+import 'package:privacyidea_authenticator/mains/main_netknights.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/riverpod_states/token_folder_state.dart';
 import 'package:privacyidea_authenticator/model/token_folder.dart';
 import 'package:privacyidea_authenticator/model/tokens/hotp_token.dart';
+import 'package:privacyidea_authenticator/model/tokens/otp_token.dart';
+import 'package:privacyidea_authenticator/model/tokens/steam_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
+import 'package:privacyidea_authenticator/utils/customization/application_customization.dart';
 import 'package:privacyidea_authenticator/utils/home_widget_utils.dart';
+import 'package:privacyidea_authenticator/widgets/home_widgets/home_widget_hidden.dart';
 
 import '../../log_file.dart';
 
@@ -73,6 +80,17 @@ class _FakeFolderRepository implements TokenFolderRepository {
   }
 }
 
+/// The theme the app stores at start, which every widget render reads.
+Map<String, Object?> _storedTheme() {
+  final customization = ApplicationCustomization.defaultCustomization;
+  return {
+    '${HomeWidgetUtils.keyThemeCustomization}${HomeWidgetUtils.keySuffixLight}':
+        jsonEncode(customization.lightTheme),
+    '${HomeWidgetUtils.keyThemeCustomization}${HomeWidgetUtils.keySuffixDark}':
+        jsonEncode(customization.darkTheme),
+  };
+}
+
 HOTPToken _hotp(String id, int counter) => HOTPToken(
   id: id,
   algorithm: Algorithms.SHA1,
@@ -131,6 +149,7 @@ void main() {
   setUp(() {
     store = {};
     calls = [];
+    HomeWidgetUtils.debugRenderer = (_, _, _, _) async {};
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(channel, (call) async {
           calls.add(call);
@@ -152,6 +171,7 @@ void main() {
   });
 
   tearDown(() {
+    HomeWidgetUtils.debugRenderer = null;
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(channel, null);
   });
@@ -603,6 +623,7 @@ void _testLockFlagRefresh() {
       folderRepository = _FakeFolderRepository();
       HomeWidgetUtils.debugTokenFolderRepository = folderRepository;
       store = {
+        ..._storedTheme(),
         HomeWidgetUtils.keyWidgetIds: '7,8',
         '${HomeWidgetUtils.keyTokenId}7': 'linked',
         '${HomeWidgetUtils.keyTokenId}8': 'other',
@@ -689,6 +710,371 @@ void _testLockFlagRefresh() {
 
         expect(lockFlag('7'), false);
         expect(lockFlag('8'), false);
+      },
+    );
+  });
+
+  group('HomeWidgetUtils renders linked widgets', () {
+    const channel = MethodChannel('home_widget');
+    const secret = 'JBSWY3DPEHPK3PXP';
+    late _FakeTokenRepository repository;
+    late Map<String, Object?> store;
+    late List<({Widget widget, String key, double? pixelRatio})> renders;
+    late Object installedWidgets;
+    late bool? pinSupported;
+    late List<Map> pinRequests;
+
+    String widgetKey(String name, String widgetId) => '$name$widgetId';
+
+    Map<String, Object?> widgetData(String widgetId) => {
+      widgetKey(HomeWidgetUtils.keyTokenId, widgetId): 'token$widgetId',
+      widgetKey(HomeWidgetUtils.keyTokenType, widgetId): 'TOTP',
+      widgetKey(HomeWidgetUtils.keyTokenLocked, widgetId): false,
+      widgetKey(HomeWidgetUtils.keyShowToken, widgetId): false,
+      widgetKey(HomeWidgetUtils.keyCopyBlocked, widgetId): false,
+      widgetKey(HomeWidgetUtils.keyTokenOtpText, widgetId): '123456',
+      for (final suffix in ['_light', '_dark', '_hidden_light', '_hidden_dark'])
+        '${HomeWidgetUtils.keyTokenOtp}$widgetId$suffix':
+            'live-check-$widgetId$suffix.png',
+    };
+
+    setUp(() {
+      repository = _FakeTokenRepository();
+      HomeWidgetUtils.debugTokenRepository = repository;
+      HomeWidgetUtils.debugTokenFolderRepository = _FakeFolderRepository();
+      PrivacyIDEAAuthenticator.currentCustomization =
+          ApplicationCustomization.defaultCustomization;
+      renders = [];
+      HomeWidgetUtils.debugRenderer = (widget, key, _, pixelRatio) async =>
+          renders.add((widget: widget, key: key, pixelRatio: pixelRatio));
+      store = {
+        ..._storedTheme(),
+        HomeWidgetUtils.keyWidgetIds: '7',
+        ...widgetData('7'),
+      };
+      installedWidgets = [
+        {'widgetId': 7},
+      ];
+      pinSupported = true;
+      pinRequests = [];
+      TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+          .setMockMethodCallHandler(channel, (call) async {
+            switch (call.method) {
+              case 'getWidgetData':
+                return store[call.arguments['id']] ??
+                    call.arguments['defaultValue'];
+              case 'saveWidgetData':
+                final data = call.arguments['data'];
+                if (data == null) {
+                  store.remove(call.arguments['id']);
+                } else {
+                  store[call.arguments['id']] = data;
+                }
+                return true;
+              case 'getInstalledWidgets':
+                final installed = installedWidgets;
+                if (installed is PlatformException) throw installed;
+                return installed;
+              case 'isRequestPinWidgetSupported':
+                return pinSupported;
+              case 'requestPinWidget':
+                pinRequests.add(call.arguments as Map);
+                return null;
+            }
+            return null;
+          });
+    });
+
+    tearDown(() {
+      HomeWidgetUtils.debugTokenRepository = null;
+      HomeWidgetUtils.debugTokenFolderRepository = null;
+      PrivacyIDEAAuthenticator.currentCustomization = null;
+      TestWidgetsFlutterBinding.instance.platformDispatcher.implicitView!
+          .resetDevicePixelRatio();
+    });
+
+    test(
+      'a widget rendered later uses the pixel ratio of the screen the app started on',
+      () async {
+        final view =
+            TestWidgetsFlutterBinding.instance.platformDispatcher.implicitView!;
+        view.devicePixelRatio = 2.625;
+        final utils = HomeWidgetUtils.debugInstance();
+        await utils.homeWidgetInit();
+
+        // A tap on the widget renders in the background, which has no screen.
+        view.devicePixelRatio = 1;
+        renders.clear();
+        await utils.renderFlutterWidget(
+          const SizedBox(),
+          key: 'live-check-render',
+          logicalSize: const Size(98, 40),
+        );
+
+        expect(renders.single.pixelRatio, 2.625);
+      },
+    );
+
+    final renamedTokens = <String, OTPToken Function(String label)>{
+      'TOTP': (label) => TOTPToken(
+        id: 'token7',
+        algorithm: Algorithms.SHA1,
+        digits: 6,
+        secret: secret,
+        period: 30,
+        label: label,
+      ),
+      'Steam': (label) => SteamToken(id: 'token7', secret: secret, label: label),
+      'HOTP': (label) => HOTPToken(
+        id: 'token7',
+        algorithm: Algorithms.SHA1,
+        digits: 6,
+        secret: secret,
+        label: label,
+      ),
+    };
+    for (final entry in renamedTokens.entries) {
+      test(
+        'a renamed ${entry.key} token shows its new label on the hidden widget',
+        () async {
+          await HomeWidgetUtils.debugInstance().updateTokensIfLinked([
+            entry.value('live-check-renamed'),
+          ]);
+
+          final hidden = renders
+              .where((r) => r.key == '${HomeWidgetUtils.keyTokenOtp}7_hidden_light')
+              .map((r) => r.widget)
+              .whereType<HomeWidgetHidden>();
+          expect(hidden.single.label, 'live-check-renamed');
+        },
+      );
+    }
+
+    test('a Steam widget gets the same countdown icon as a TOTP widget', () async {
+      await HomeWidgetUtils.debugInstance().homeWidgetInit();
+
+      final keys = renders.map((r) => r.key).toSet();
+      for (final state in ['_active', '_inactive']) {
+        for (final mode in ['_light', '_dark']) {
+          expect(keys, contains('${HomeWidgetUtils.keyTokenAction}_TOTP$state$mode'));
+          expect(keys, contains('${HomeWidgetUtils.keyTokenAction}_STEAM$state$mode'));
+        }
+      }
+    });
+
+    test(
+      'the data of a widget removed from the home screen is deleted at app start',
+      () async {
+        store
+          ..[HomeWidgetUtils.keyWidgetIds] = '7,8'
+          ..addAll(widgetData('8'));
+
+        await HomeWidgetUtils.debugInstance().homeWidgetInit();
+
+        expect(store.keys.where((key) => key.endsWith('8') || key.contains('8_')), isEmpty);
+        expect(store, containsPair(HomeWidgetUtils.keyWidgetIds, '7'));
+        expect(store, containsPair('${HomeWidgetUtils.keyTokenId}7', 'token7'));
+        expect(store, contains('${HomeWidgetUtils.keyTokenOtp}7_hidden_light'));
+      },
+    );
+
+    test(
+      'a widget update during app start does not bring back data of a removed widget',
+      () async {
+        store
+          ..[HomeWidgetUtils.keyWidgetIds] = '7,8'
+          ..addAll(widgetData('8'));
+        HomeWidgetUtils.debugRenderer = (_, key, _, _) async {
+          await Future<void>.delayed(Duration.zero);
+          store[key] = 'live-check-$key.png';
+        };
+        final utils = HomeWidgetUtils.debugInstance();
+
+        await Future.wait([
+          utils.homeWidgetInit(),
+          utils.updateTokensIfLinked([
+            TOTPToken(
+              id: 'token8',
+              algorithm: Algorithms.SHA1,
+              digits: 6,
+              secret: secret,
+              period: 30,
+            ),
+          ]),
+        ]);
+
+        expect(
+          store.keys.where((key) => key.endsWith('8') || key.contains('8_')),
+          isEmpty,
+        );
+      },
+    );
+
+    test(
+      'the data of every widget is deleted when none is left on the home screen',
+      () async {
+        installedWidgets = [];
+
+        await HomeWidgetUtils.debugInstance().homeWidgetInit();
+
+        expect(store, isNot(contains(HomeWidgetUtils.keyWidgetIds)));
+        expect(store, isNot(contains('${HomeWidgetUtils.keyTokenId}7')));
+        expect(store, isNot(contains('${HomeWidgetUtils.keyTokenOtp}7_light')));
+      },
+    );
+
+    group('a deleted token', () {
+      setUp(() {
+        store
+          ..[HomeWidgetUtils.keyWidgetIds] = '7,8'
+          ..addAll(widgetData('8'));
+        repository.stored['token7'] = TOTPToken(
+          id: 'token7',
+          algorithm: Algorithms.SHA1,
+          digits: 6,
+          secret: secret,
+          period: 30,
+        );
+      });
+
+      String? linkedTokenOf(String widgetId) =>
+          store['${HomeWidgetUtils.keyTokenId}$widgetId'] as String?;
+
+      test('releases its widget at once', () async {
+        await HomeWidgetUtils.debugInstance().unlinkWidgetsOfRemovedTokens([
+          'token8',
+        ]);
+
+        expect(linkedTokenOf('8'), isNull);
+        expect(store, isNot(contains('${HomeWidgetUtils.keyTokenType}8')));
+      });
+
+      test('leaves the widget of another token alone', () async {
+        await HomeWidgetUtils.debugInstance().unlinkWidgetsOfRemovedTokens([
+          'token8',
+        ]);
+
+        expect(linkedTokenOf('7'), 'token7');
+      });
+
+      test('keeps the widget when the token is still in storage', () async {
+        await HomeWidgetUtils.debugInstance().unlinkWidgetsOfRemovedTokens([
+          'token7',
+        ]);
+
+        expect(linkedTokenOf('7'), 'token7');
+      });
+
+      test('shows the empty widget again', () async {
+        await HomeWidgetUtils.debugInstance().unlinkWidgetsOfRemovedTokens([
+          'token8',
+        ]);
+
+        expect(
+          renders.map((r) => r.key),
+          contains('${HomeWidgetUtils.keyTokenContainerEmpty}_light'),
+        );
+      });
+    });
+
+    test('a widget can be added when the launcher supports it', () async {
+      expect(await HomeWidgetUtils.debugInstance().canPinWidget, true);
+    });
+
+    for (final answer in [false, null]) {
+      test(
+        'no widget can be added when the launcher answers $answer',
+        () async {
+          pinSupported = answer;
+
+          expect(await HomeWidgetUtils.debugInstance().canPinWidget, false);
+        },
+      );
+    }
+
+    test('the installed widgets are listed by their ids', () async {
+      installedWidgets = [
+        {'widgetId': 7},
+        {'widgetId': 12},
+      ];
+
+      expect(await HomeWidgetUtils.debugInstance().installedWidgetIds(), {
+        '7',
+        '12',
+      });
+    });
+
+    test('a widget request names the widget provider of the app', () async {
+      await HomeWidgetUtils.debugInstance().requestPinWidget();
+
+      expect(
+        pinRequests.single['qualifiedAndroidName'],
+        'it.netknights.piauthenticator.AppWidgetProvider',
+      );
+    });
+
+    test('a widget added since the request is found while it has no token',
+        () async {
+      installedWidgets = [
+        {'widgetId': 7},
+        {'widgetId': 9},
+      ];
+
+      expect(
+        await HomeWidgetUtils.debugInstance().newUnlinkedWidgetId({'7'}),
+        '9',
+      );
+    });
+
+    test('the tokens of the placed widgets count as linked', () async {
+      installedWidgets = [
+        {'widgetId': 7},
+        {'widgetId': 9},
+      ];
+      store['${HomeWidgetUtils.keyTokenId}9'] = 'token9';
+      store['${HomeWidgetUtils.keyTokenId}11'] = 'token11';
+
+      expect(await HomeWidgetUtils.debugInstance().linkedTokenIds(), {
+        'token7',
+        'token9',
+      });
+    });
+
+    test('unlinking a token empties its widgets and leaves the others', () async {
+      installedWidgets = [
+        {'widgetId': 7},
+        {'widgetId': 9},
+      ];
+      store['${HomeWidgetUtils.keyTokenId}9'] = 'token9';
+
+      await HomeWidgetUtils.debugInstance().unlinkToken('token9');
+
+      expect(store['${HomeWidgetUtils.keyTokenId}9'], isNull);
+      expect(store['${HomeWidgetUtils.keyTokenId}7'], 'token7');
+    });
+
+    test('a new widget that already has a token is not taken', () async {
+      installedWidgets = [
+        {'widgetId': 7},
+        {'widgetId': 9},
+      ];
+      store['${HomeWidgetUtils.keyTokenId}9'] = 'token9';
+
+      expect(
+        await HomeWidgetUtils.debugInstance().newUnlinkedWidgetId({'7'}),
+        isNull,
+      );
+    });
+
+    test(
+      'no widget data is deleted when the home screen widgets cannot be read',
+      () async {
+        installedWidgets = PlatformException(code: 'live-check-error');
+
+        await HomeWidgetUtils.debugInstance().homeWidgetInit();
+
+        expect(store, containsPair(HomeWidgetUtils.keyWidgetIds, '7'));
+        expect(store, containsPair('${HomeWidgetUtils.keyTokenId}7', 'token7'));
       },
     );
   });

@@ -35,6 +35,7 @@ import '../model/token_folder.dart';
 import '../model/tokens/day_password_token.dart';
 import '../model/tokens/hotp_token.dart';
 import '../model/tokens/otp_token.dart';
+import '../model/tokens/steam_token.dart';
 import '../model/tokens/token.dart';
 import '../model/tokens/totp_token.dart';
 import '../processors/scheme_processors/home_widget_processor.dart';
@@ -137,6 +138,9 @@ class HomeWidgetUtils {
   static TokenFolderRepository? _folderRepository;
   static final Mutex _repoMutex = Mutex();
 
+  /// Keeps a widget update from writing data back while removed widgets are cleaned up.
+  static final Mutex _widgetDataMutex = Mutex();
+
   /// Lets a test hand in the token storage; the factory is Android-only.
   @visibleForTesting
   static set debugTokenRepository(TokenRepository? repository) =>
@@ -151,6 +155,16 @@ class HomeWidgetUtils {
   /// [UnsupportedHomeWidgetUtils].
   @visibleForTesting
   static HomeWidgetUtils debugInstance() => HomeWidgetUtils._();
+
+  /// Lets a test see what would be rendered, rendering needs a device.
+  @visibleForTesting
+  static Future<void> Function(
+    Widget widget,
+    String key,
+    Size logicalSize,
+    double? pixelRatio,
+  )?
+  debugRenderer;
 
   static Future<OTPToken?> _getTokenOfTokenId(String tokenId) =>
       _repoMutex.protect(() => _loadTokenFromRepo(tokenId));
@@ -213,6 +227,7 @@ class HomeWidgetUtils {
   static String get keyTotpToken => '_${TOTPToken.tokenType}';
   static String get keyHotpToken => '_${HOTPToken.tokenType}';
   static String get keyDayPasswordToken => '_${DayPasswordToken.tokenType}';
+  static String get keySteamToken => '_${SteamToken.tokenType}';
   static const keyCopyText = '_copyText';
   static const keyTokenLocked =
       '_tokenLocked'; // recive a bool if the token of the linked widget is locked. true = locked, false = not locked. Example: _tokenLocked32
@@ -221,6 +236,7 @@ class HomeWidgetUtils {
       '_actionBlocked'; // recive a bool if the action of the linked widget is blocked. true = blocked, false = not blocked. _actionBlocked${token.id}
   static const keyCopyBlocked =
       '_copyBlocked'; // recive a bool if the copy of the linked widget is blocked. true = blocked, false = not blocked. _copyBlocked${widgetId} Example: _copyBlocked32
+  static const keyDevicePixelRatio = '_devicePixelRatio';
   static const keyRebuildingWidgetIds =
       '_rebuildingWidgetIds'; // recive the widgetIds that should be updated after the HomeWidget is ready. each widgetId is seperated by ',' Example value: "32,33,35"
 
@@ -329,9 +345,57 @@ class HomeWidgetUtils {
   Future<bool?> setAppGroupId(String appGroupId) =>
       HomeWidget.setAppGroupId(appGroupId);
 
+  /// Whether the launcher can add a widget of the app on request.
+  Future<bool> get canPinWidget async =>
+      await HomeWidget.isRequestPinWidgetSupported() ?? false;
+
+  Future<Set<String>> installedWidgetIds() async =>
+      (await HomeWidget.getInstalledWidgets())
+          .map((widget) => widget.androidWidgetId?.toString())
+          .nonNulls
+          .toSet();
+
+  /// Asks the launcher to add a widget, it shows its own dialog for that.
+  Future<void> requestPinWidget() => HomeWidget.requestPinWidget(
+    qualifiedAndroidName: 'it.netknights.piauthenticator.AppWidgetProvider',
+  );
+
+  /// The tokens that have a widget on the home screen.
+  Future<Set<String>> linkedTokenIds() async {
+    final tokenIds = <String>{};
+    for (final widgetId in await installedWidgetIds()) {
+      final tokenId = await getTokenIdOfWidgetId(widgetId);
+      if (tokenId != null) tokenIds.add(tokenId);
+    }
+    return tokenIds;
+  }
+
+  /// Takes the token off every widget on the home screen, the widgets stay.
+  Future<void> unlinkToken(String tokenId) async {
+    for (final widgetId in await installedWidgetIds()) {
+      if (await getTokenIdOfWidgetId(widgetId) == tokenId) {
+        await unlink(widgetId);
+      }
+    }
+  }
+
+  /// A widget on the home screen that has no token linked yet.
+  Future<String?> unlinkedWidgetId() => newUnlinkedWidgetId({});
+
+  /// A widget added since [before] that has no token linked yet.
+  Future<String?> newUnlinkedWidgetId(Set<String> before) async {
+    for (final widgetId in await installedWidgetIds()) {
+      if (before.contains(widgetId)) continue;
+      if (await getTokenIdOfWidgetId(widgetId) == null) return widgetId;
+    }
+    return null;
+  }
+
   /// This method has to be called at least once before any other method is called
   Future<void> homeWidgetInit({TokenRepository? repository}) async {
     if (repository != null) _tokenRepository = repository;
+    await _widgetDataMutex.protect(_removeDataOfRemovedWidgets);
+    await _saveDevicePixelRatio();
     await _setThemeCustomization();
     await _updateStaticWidgets();
     await _resetAllTokens();
@@ -362,7 +426,10 @@ class HomeWidgetUtils {
   }
 
   // Call AFTER saving to the repository
-  Future<void> updateTokensIfLinked(List<Token> tokens) async {
+  Future<void> updateTokensIfLinked(List<Token> tokens) =>
+      _widgetDataMutex.protect(() => _updateTokensIfLinked(tokens));
+
+  Future<void> _updateTokensIfLinked(List<Token> tokens) async {
     // Map<widgetId, tokenId>
     if (tokens.isEmpty) return;
     final otpTokens = tokens.whereType<OTPToken>().toList();
@@ -376,7 +443,6 @@ class HomeWidgetUtils {
       );
       if (token == null) continue;
       futures.add(_saveTokenLocked(widgetId, token));
-      if (token is! HOTPToken) continue;
       futures.addAll([
         _updateHomeWidgetHideOtp(token, widgetId),
         _updateHomeWidgetShowOtp(token, widgetId),
@@ -385,6 +451,23 @@ class HomeWidgetUtils {
     await Future.wait(futures);
     await _notifyUpdate(linkedWidgetIds.keys);
   }
+
+  // Call AFTER deleting the tokens from the repository
+  Future<void> unlinkWidgetsOfRemovedTokens(Iterable<String> tokenIds) =>
+      _widgetDataMutex.protect(() async {
+        final removedIds = tokenIds.toSet();
+        if (removedIds.isEmpty) return;
+        final unlinkedWidgetIds = <String>[];
+        for (final widgetId in await _widgetIds) {
+          final tokenId = await getTokenIdOfWidgetId(widgetId);
+          if (tokenId == null || !removedIds.contains(tokenId)) continue;
+          // The app state can lose a token that is still in the storage.
+          if (await _getTokenOfTokenId(tokenId) != null) continue;
+          await _unlink(widgetId);
+          unlinkedWidgetIds.add(widgetId);
+        }
+        await _notifyUpdate(unlinkedWidgetIds);
+      });
 
   // Call AFTER saving the folders to the repository
   Future<void> updateLockOfLinkedWidgets() async {
@@ -404,6 +487,12 @@ class HomeWidgetUtils {
     if (token == null) {
       await unlink(widgetId);
       return;
+    }
+    for (final otherWidgetId in await installedWidgetIds()) {
+      if (otherWidgetId != widgetId &&
+          await getTokenIdOfWidgetId(otherWidgetId) == tokenId) {
+        await unlink(otherWidgetId);
+      }
     }
     await _link(widgetId, token);
   }
@@ -551,6 +640,7 @@ class HomeWidgetUtils {
   Future<void> _updateHwActionIcons() async {
     await _updateHotpActionIcon();
     await _updateTotpActionIcon();
+    await _updateSteamActionIcon();
     await _updateDayPasswordActionIcon();
   }
 
@@ -666,10 +756,17 @@ class HomeWidgetUtils {
     required String key,
     required Size logicalSize,
   }) async {
+    // A tap renders in the background, whose view reports a pixel ratio of 1.
+    final pixelRatio = await HomeWidget.getWidgetData<double>(
+      keyDevicePixelRatio,
+    );
+    final renderer = debugRenderer;
+    if (renderer != null) return renderer(widget, key, logicalSize, pixelRatio);
     return HomeWidget.renderFlutterWidget(
       widget,
       key: '$key',
       logicalSize: logicalSize,
+      pixelRatio: pixelRatio,
     );
   }
 
@@ -696,6 +793,15 @@ class HomeWidgetUtils {
     darkTheme: await _getThemeData(dark: true),
     logicalSize: _widgetActionSize,
     homeWidgetKey: '$keyTokenAction$keyTotpToken',
+    utils: this,
+  ).renderFlutterWidgets();
+
+  Future<void> _updateSteamActionIcon() async => await HomeWidgetActionBuilder(
+    icon: Icons.timer_outlined,
+    lightTheme: await _getThemeData(),
+    darkTheme: await _getThemeData(dark: true),
+    logicalSize: _widgetActionSize,
+    homeWidgetKey: '$keyTokenAction$keySteamToken',
     utils: this,
   ).renderFlutterWidgets();
 
@@ -799,6 +905,57 @@ class HomeWidgetUtils {
 
   Future<void> _setCopyText(String copyText) async =>
       await HomeWidget.saveWidgetData('$keyCopyText', copyText);
+
+  /// Must run in the foreground: the background view reports a ratio of 1.
+  Future<void> _saveDevicePixelRatio() async {
+    final view = WidgetsBinding.instance.platformDispatcher.implicitView;
+    if (view == null) return;
+    await HomeWidget.saveWidgetData(keyDevicePixelRatio, view.devicePixelRatio);
+  }
+
+  /// Removing a widget from the home screen leaves its data behind.
+  Future<void> _removeDataOfRemovedWidgets() async {
+    final Set<String> installedIds;
+    try {
+      installedIds = await installedWidgetIds();
+    } catch (e, s) {
+      Logger.warning(
+        'Could not read the home screen widgets, keeping their data',
+        error: e,
+        stackTrace: s,
+      );
+      return;
+    }
+    final storedIds = (await _widgetIds).where((id) => id.isNotEmpty);
+    final removedIds = storedIds.where((id) => !installedIds.contains(id));
+    if (removedIds.isEmpty) return;
+    Logger.info('Deleting the data of removed home widgets: $removedIds');
+    for (final widgetId in removedIds) {
+      for (final key in [
+        keyTokenId,
+        keyTokenType,
+        keyTokenLocked,
+        keyShowToken,
+        keyCopyBlocked,
+        keyTokenOtpText,
+      ]) {
+        await HomeWidget.saveWidgetData('$key$widgetId', null);
+      }
+      for (final suffix in [
+        keySuffixLight,
+        keySuffixDark,
+        '$keySuffixHidden$keySuffixLight',
+        '$keySuffixHidden$keySuffixDark',
+      ]) {
+        await HomeWidget.saveWidgetData('$keyTokenOtp$widgetId$suffix', null);
+      }
+    }
+    final remainingIds = storedIds.where(installedIds.contains).toList();
+    await HomeWidget.saveWidgetData(
+      keyWidgetIds,
+      remainingIds.isEmpty ? null : remainingIds.join(','),
+    );
+  }
 
   ////////////////////////////////////////
   /////////// Notifiy Update /////////////
@@ -971,6 +1128,32 @@ class UnsupportedHomeWidgetUtils implements HomeWidgetUtils {
   Future<List<String>> _updateTokenIfLinked(Token token) => Future.value([]);
   @override
   Future<void> _updateTotpActionIcon() async {}
+  @override
+  Future<void> _updateSteamActionIcon() async {}
+  @override
+  Future<void> _saveDevicePixelRatio() async {}
+  @override
+  Future<void> _removeDataOfRemovedWidgets() async {}
+  @override
+  Future<void> _updateTokensIfLinked(List<Token> tokens) async {}
+  @override
+  Future<bool> get canPinWidget async => false;
+  @override
+  Future<Set<String>> installedWidgetIds() async => {};
+  @override
+  Future<void> requestPinWidget() async {}
+  @override
+  Future<String?> unlinkedWidgetId() async => null;
+
+  @override
+  Future<String?> newUnlinkedWidgetId(Set<String> before) async => null;
+  @override
+  Future<Set<String>> linkedTokenIds() async => {};
+
+  @override
+  Future<void> unlinkToken(String tokenId) async {}
+  @override
+  Future<void> unlinkWidgetsOfRemovedTokens(Iterable<String> tokenIds) async {}
   @override
   Set<String> get _updatedWidgetIds => {};
   @override

@@ -32,6 +32,20 @@ class HomeWidgetTokenStateListener extends TokenStateListener {
 
   static void _onNewState(AsyncValue<TokenState>? previous, AsyncValue<TokenState> next, WidgetRef ref) {
     HomeWidgetUtils().updateTokensIfLinked(tokensToUpdate(previous?.value?.tokens ?? [], next.value?.lastlyUpdatedTokens ?? []));
+    final nextTokens = next.value?.tokens;
+    if (nextTokens == null) return;
+    final removedIds = removedTokenIds(previous?.value?.tokens ?? [], nextTokens);
+    if (removedIds.isNotEmpty) HomeWidgetUtils().unlinkWidgetsOfRemovedTokens(removedIds);
+  }
+
+  /// The ids of the tokens that were in [previousTokens] and are not in [nextTokens] any more.
+  @visibleForTesting
+  static List<String> removedTokenIds(List<Token> previousTokens, List<Token> nextTokens) {
+    final nextIds = nextTokens.map((token) => token.id).toSet();
+    return [
+      for (final token in previousTokens)
+        if (!nextIds.contains(token.id)) token.id,
+    ];
   }
 
   /// The tokens of [nextTokens] that are new or changed in a way a linked home widget shows.
