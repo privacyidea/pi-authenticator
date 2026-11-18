@@ -1239,6 +1239,12 @@
   "@patchNotesV4_6_1Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
+  "@patchNotesV4_9_0Improvement1": {
+    "description": "Patch notes for an improvement in version 4.9.0"
+  },
+  "@patchNotesV4_9_0NewFeature1": {
+    "description": "Patch notes for a new feature in version 4.9.0"
+  },
   "@patchNotesV4_8_1BugFix1": {
     "description": "Patch notes for a bug fix in version 4.8.1"
   },
@@ -2123,6 +2129,8 @@
   "patchNotesV4_6_0Improvement1": "Wewnętrzne komponenty zostały zaktualizowane w celu zapewnienia bezpieczeństwa i kompatybilności z najnowszymi urządzeniami.",
   "patchNotesV4_6_1BugFix1": "Naprawiono błąd związany z panelem rozszerzeń TokenFolder.",
   "patchNotesV4_6_1Improvement1": "Zaktualizowano kilka zależności",
+  "patchNotesV4_9_0Improvement1": "Aplikacja informuje teraz serwer, które algorytmy kluczy obsługuje, podczas rejestracji tokenu push.",
+  "patchNotesV4_9_0NewFeature1": "Tokeny push używają teraz kluczy ECDSA P-256, gdy serwer o nie poprosi. Szczegóły tokenu pokazują typ klucza.",
   "patchNotesV4_8_1BugFix1": "Naprawiono utratę zwiększeń licznika HOTP podczas szybkiego generowania kodów jeden po drugim.",
   "patchNotesV4_8_1BugFix2": "Naprawiono tokeny Steam, które nie używały bieżącego kroku czasowego do generowania kodów.",
   "patchNotesV4_8_1BugFix3": "Naprawiono brak aktualizacji koloru odliczania TOTP po zmianie motywu.",

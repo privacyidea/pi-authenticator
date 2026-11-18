@@ -1,5 +1,10 @@
 # Changelog
 
+## [4.9.0] - Unreleased
+ - Added ECDSA P-256 keys for push tokens, used when the enrollment QR code of the server asks for them
+ - Added the key type (RSA or ECDSA) to the details of a push token
+ - Push token enrollment now tells the server which key algorithms the app supports
+
 ## [4.8.1] - 2026.11.03
  - Push requests without a question from the server now show the issuer and account of the token
  - Fixed HOTP counter increments getting lost when codes are generated in quick succession

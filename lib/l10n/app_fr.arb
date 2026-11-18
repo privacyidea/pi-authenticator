@@ -1239,6 +1239,12 @@
   "@patchNotesV4_6_1Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
+  "@patchNotesV4_9_0Improvement1": {
+    "description": "Patch notes for an improvement in version 4.9.0"
+  },
+  "@patchNotesV4_9_0NewFeature1": {
+    "description": "Patch notes for a new feature in version 4.9.0"
+  },
   "@patchNotesV4_8_1BugFix1": {
     "description": "Patch notes for a bug fix in version 4.8.1"
   },
@@ -2123,6 +2129,8 @@
   "patchNotesV4_6_0Improvement1": "Les composants internes ont été mis à jour afin de maintenir la sécurité et d'assurer la compatibilité avec les appareils les plus récents.",
   "patchNotesV4_6_1BugFix1": "Correction d'une erreur avec le panneau d'extension du TokenFolder",
   "patchNotesV4_6_1Improvement1": "Mise à jour de plusieurs dépendances.",
+  "patchNotesV4_9_0Improvement1": "L'application indique désormais au serveur les algorithmes de clé qu'elle prend en charge lors de l'enregistrement d'un jeton push.",
+  "patchNotesV4_9_0NewFeature1": "Les jetons push utilisent désormais des clés ECDSA P-256 lorsque le serveur les demande. Les détails du jeton affichent le type de clé.",
   "patchNotesV4_8_1BugFix1": "Correction de la perte d'incréments du compteur HOTP lorsque des codes sont générés en succession rapide.",
   "patchNotesV4_8_1BugFix2": "Correction des jetons Steam qui n'utilisaient pas l'intervalle de temps actuel pour leurs codes.",
   "patchNotesV4_8_1BugFix3": "Correction de la couleur du compte à rebours TOTP qui ne se mettait pas à jour lors du changement de thème.",

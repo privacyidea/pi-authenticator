@@ -1266,6 +1266,12 @@
   "@patchNotesV4_6_1Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
+  "@patchNotesV4_9_0Improvement1": {
+    "description": "Patch notes for an improvement in version 4.9.0"
+  },
+  "@patchNotesV4_9_0NewFeature1": {
+    "description": "Patch notes for a new feature in version 4.9.0"
+  },
   "@patchNotesV4_8_1BugFix1": {
     "description": "Patch notes for a bug fix in version 4.8.1"
   },
@@ -2152,6 +2158,8 @@
   "patchNotesV4_6_0Improvement1": "Die internen Komponenten wurden aktualisiert, um die Sicherheit zu gewährleisten und die Kompatibilität mit den neuesten Geräten sicherzustellen.",
   "patchNotesV4_6_1BugFix1": "Fehler im expansion panel des TokenFolder behoben",
   "patchNotesV4_6_1Improvement1": "Mehrere Abhängigkeiten wurden aktualisiert.",
+  "patchNotesV4_9_0Improvement1": "Die App teilt dem Server beim Einrichten eines Push-Tokens jetzt mit, welche Schlüsselverfahren sie unterstützt.",
+  "patchNotesV4_9_0NewFeature1": "Push-Token verwenden jetzt ECDSA-P-256-Schlüssel, wenn der Server sie anfordert. Die Token-Details zeigen den Schlüsseltyp.",
   "patchNotesV4_8_1BugFix1": "Ein Fehler wurde behoben, durch den HOTP-Zählerstände verloren gehen konnten, wenn Codes schnell hintereinander erzeugt wurden.",
   "patchNotesV4_8_1BugFix2": "Ein Fehler wurde behoben, durch den Steam-Token nicht den aktuellen Zeitschritt für ihre Codes verwendet haben.",
   "patchNotesV4_8_1BugFix3": "Ein Fehler wurde behoben, durch den sich die Farbe des TOTP-Countdowns beim Wechsel des Designs nicht angepasst hat.",

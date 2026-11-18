@@ -20,6 +20,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations_de.dart';
+import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
+import 'package:privacyidea_authenticator/model/enums/patch_note_type.dart';
+import 'package:privacyidea_authenticator/model/version.dart';
 import 'package:privacyidea_authenticator/utils/globals.dart';
 
 void main() {
@@ -82,6 +86,25 @@ void main() {
       await tester.pumpWidget(const SizedBox());
 
       expect(() => globalRef?.read(counterProvider), returnsNormally);
+    });
+  });
+
+  group('patch notes 4.9.0', () {
+    test('name the ECDSA push keys and the key algorithm announcement', () {
+      final en = getLocalizedPatchNotes(AppLocalizationsEn())[const Version(4, 9, 0)]!;
+      expect(en[PatchNoteType.newFeature], [
+        'Push tokens now use ECDSA P-256 keys when the server asks for them. The token details show the key type.',
+      ]);
+      expect(en[PatchNoteType.improvement], [
+        'The app now tells the server which key algorithms it supports when a push token is enrolled.',
+      ]);
+
+      final de = getLocalizedPatchNotes(AppLocalizationsDe())[const Version(4, 9, 0)]!;
+      for (final type in [PatchNoteType.newFeature, PatchNoteType.improvement]) {
+        expect(de[type], hasLength(1));
+        expect(de[type]!.single, isNotEmpty);
+        expect(de[type]!.single, isNot(en[type]!.single), reason: 'translated');
+      }
     });
   });
 }

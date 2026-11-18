@@ -1239,6 +1239,12 @@
   "@patchNotesV4_6_1Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
+  "@patchNotesV4_9_0Improvement1": {
+    "description": "Patch notes for an improvement in version 4.9.0"
+  },
+  "@patchNotesV4_9_0NewFeature1": {
+    "description": "Patch notes for a new feature in version 4.9.0"
+  },
   "@patchNotesV4_8_1BugFix1": {
     "description": "Patch notes for a bug fix in version 4.8.1"
   },
@@ -2123,6 +2129,8 @@
   "patchNotesV4_6_0Improvement1": "Interne componenten zijn bijgewerkt om de veiligheid te waarborgen en compatibiliteit met de nieuwste apparaten te garanderen.",
   "patchNotesV4_6_1BugFix1": "Een fout in het uitbreidingspaneel van de TokenFolder is verholpen.",
   "patchNotesV4_6_1Improvement1": "Verschillende afhankelijkheden bijgewerkt",
+  "patchNotesV4_9_0Improvement1": "De app laat de server nu weten welke sleutelalgoritmen hij ondersteunt wanneer een pushtoken wordt geregistreerd.",
+  "patchNotesV4_9_0NewFeature1": "Pushtokens gebruiken nu ECDSA P-256-sleutels wanneer de server daarom vraagt. De tokendetails tonen het sleuteltype.",
   "patchNotesV4_8_1BugFix1": "Probleem opgelost waarbij verhogingen van de HOTP-teller verloren gingen als codes snel na elkaar werden gegenereerd.",
   "patchNotesV4_8_1BugFix2": "Probleem opgelost waarbij Steam-tokens niet de huidige tijdstap voor hun codes gebruikten.",
   "patchNotesV4_8_1BugFix3": "Probleem opgelost waarbij de kleur van de TOTP-aftelling niet werd bijgewerkt bij het wijzigen van het thema.",

@@ -30,6 +30,10 @@ import 'current_route_observer.dart';
 Map<Version, Map<PatchNoteType, List<String>>> getLocalizedPatchNotes(
   AppLocalizations localizations,
 ) => {
+  const Version(4, 9, 0): {
+    PatchNoteType.improvement: [localizations.patchNotesV4_9_0Improvement1],
+    PatchNoteType.newFeature: [localizations.patchNotesV4_9_0NewFeature1],
+  },
   const Version(4, 8, 1): {
     PatchNoteType.bugFix: [
       localizations.patchNotesV4_8_1BugFix1,

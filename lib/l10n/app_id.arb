@@ -1239,6 +1239,12 @@
   "@patchNotesV4_6_1Improvement1": {
     "description": "Patch notes for an improvement in version 4.6.1"
   },
+  "@patchNotesV4_9_0Improvement1": {
+    "description": "Patch notes for an improvement in version 4.9.0"
+  },
+  "@patchNotesV4_9_0NewFeature1": {
+    "description": "Patch notes for a new feature in version 4.9.0"
+  },
   "@patchNotesV4_8_1BugFix1": {
     "description": "Patch notes for a bug fix in version 4.8.1"
   },
@@ -2123,6 +2129,8 @@
   "patchNotesV4_6_0Improvement1": "Komponen internal telah diperbarui untuk menjaga keamanan dan memastikan kompatibilitas dengan perangkat terbaru.",
   "patchNotesV4_6_1BugFix1": "Perbaikan kesalahan pada panel ekspansi TokenFolder",
   "patchNotesV4_6_1Improvement1": "Memperbarui beberapa dependensi.",
+  "patchNotesV4_9_0Improvement1": "Aplikasi kini memberi tahu server algoritma kunci mana yang didukungnya saat token push didaftarkan.",
+  "patchNotesV4_9_0NewFeature1": "Token push kini menggunakan kunci ECDSA P-256 jika server memintanya. Detail token menampilkan jenis kunci.",
   "patchNotesV4_8_1BugFix1": "Memperbaiki kenaikan penghitung HOTP yang hilang saat kode dibuat secara beruntun dengan cepat.",
   "patchNotesV4_8_1BugFix2": "Memperbaiki token Steam yang tidak menggunakan langkah waktu saat ini untuk kodenya.",
   "patchNotesV4_8_1BugFix3": "Memperbaiki warna hitung mundur TOTP yang tidak diperbarui saat tema diubah.",
