@@ -140,7 +140,9 @@ class EditPushTokenAction extends ConsumerSlideableAction {
           const SizedBox(height: 10),
           ExpansionTile(
             title: Text(
-              appLocalizations.publicKey,
+              token.keyTypeName == null
+                  ? appLocalizations.publicKey
+                  : '${appLocalizations.publicKey} (${token.keyTypeName})',
               style: Theme.of(context).textTheme.titleSmall,
               overflow: TextOverflow.fade,
               softWrap: false,
