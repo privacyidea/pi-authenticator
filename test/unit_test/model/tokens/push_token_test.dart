@@ -20,7 +20,10 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pointycastle/export.dart' show RSAPrivateKey, RSAPublicKey;
+import 'package:pointycastle/export.dart'
+    show ECPrivateKey, ECPublicKey, RSAPrivateKey, RSAPublicKey;
+import 'package:privacyidea_authenticator/model/capabilities/capabilities.dart';
+import 'package:privacyidea_authenticator/model/enums/push_key_algorithm.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/enums/day_password_token_view_mode.dart';
 import 'package:privacyidea_authenticator/model/enums/force_biometric_option.dart';
@@ -35,7 +38,10 @@ import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
 import 'package:privacyidea_authenticator/model/version.dart';
+import 'package:privacyidea_authenticator/utils/push_key_utils.dart';
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
+
+import '../fake_push_server.dart';
 
 /// Returns a skip reason unless the bug tests are enabled explicitly.
 String? bug(String description) =>
@@ -287,6 +293,221 @@ void main() {
     test('isHidden is constant false for PushToken', () {
       final token = createPush().copyWith(isHidden: true);
       expect(token.isHidden, isFalse);
+    });
+
+    group('key algorithm offered by the enrollment link', () {
+      Map<String, dynamic> linkWith([String? keyAlgorithm]) => {
+        PushToken.VERSION: '1',
+        Token.SERIAL: testSerial,
+        PushToken.ROLLOUT_URL: testUrl.toString(),
+        Token.LABEL: 'L',
+        Token.ISSUER: 'I',
+        if (keyAlgorithm != null) PushToken.KEY_ALGORITHM: keyAlgorithm,
+      };
+
+      test('takes the first algorithm of the list the app knows', () {
+        final ec = PushToken.fromOtpAuthMap(linkWith('secp256r1,rsa_4096'));
+        expect(ec.keyAlgorithm, PushKeyAlgorithm.secp256r1);
+        expect(ec.usesEcKey, isTrue);
+        expect(
+          PushToken.fromOtpAuthMap(linkWith('rsa_4096,secp256r1')).keyAlgorithm,
+          PushKeyAlgorithm.rsa4096,
+        );
+        expect(
+          PushToken.fromOtpAuthMap(linkWith('ed25519,secp256r1')).keyAlgorithm,
+          PushKeyAlgorithm.secp256r1,
+        );
+        expect(
+          PushToken.fromOtpAuthMap(linkWith()).keyAlgorithm,
+          PushKeyAlgorithm.rsa4096,
+        );
+      });
+
+      test('secp256r1 makes a P-256 token', () {
+        final token = PushToken.fromOtpAuthMap(linkWith('secp256r1'));
+        expect(token.keyAlgorithm, PushKeyAlgorithm.secp256r1);
+        expect(token.usesEcKey, isTrue);
+      });
+
+      test('prime256v1 means RSA', () {
+        final token = PushToken.fromOtpAuthMap(linkWith('prime256v1'));
+        expect(token.keyAlgorithm, PushKeyAlgorithm.rsa4096);
+      });
+
+      test('without the parameter the token uses RSA', () {
+        final token = PushToken.fromOtpAuthMap(linkWith());
+        expect(token.keyAlgorithm, PushKeyAlgorithm.rsa4096);
+        expect(token.usesEcKey, isFalse);
+      });
+
+      test('another curve or an unknown value falls back to RSA', () {
+        for (final value in ['secp384r1', 'rsa', 'live-check-unknown', '']) {
+          final token = PushToken.fromOtpAuthMap(linkWith(value));
+          expect(token.keyAlgorithm, PushKeyAlgorithm.rsa4096, reason: value);
+        }
+      });
+
+      test(
+        'the chosen key algorithm survives a template round trip and the link wish does not override it',
+        () {
+          final ecToken = PushToken.fromOtpAuthMap(linkWith('secp256r1'));
+          expect(
+            ecToken.toOtpAuthMap(),
+            isNot(contains(PushToken.KEY_ALGORITHM)),
+            reason: 'the token dict goes to the server on a container sync',
+          );
+          final copy = PushToken.fromOtpAuthMap(
+            ecToken.toOtpAuthMap(),
+            additionalData: ecToken.additionalData,
+          );
+          expect(copy.keyAlgorithm, PushKeyAlgorithm.secp256r1);
+
+          // The link wished for P-256, but the key generation fell back to RSA.
+          final fellBack = ecToken.copyWith(
+            keyAlgorithm: PushKeyAlgorithm.rsa4096,
+          );
+          final rebuilt = PushToken.fromOtpAuthMap(
+            {
+              ...fellBack.toOtpAuthMap(),
+              PushToken.KEY_ALGORITHM: 'secp256r1',
+            },
+            additionalData: fellBack.additionalData,
+          );
+          expect(rebuilt.keyAlgorithm, PushKeyAlgorithm.rsa4096);
+        },
+      );
+    });
+
+    group('capabilities in the enrollment link', () {
+      Map<String, dynamic> linkWith({String? capabilities, String? keyAlgorithm}) => {
+        PushToken.VERSION: '1',
+        Token.SERIAL: testSerial,
+        PushToken.ROLLOUT_URL: testUrl.toString(),
+        Token.LABEL: 'L',
+        Token.ISSUER: 'I',
+        if (capabilities != null) PushToken.CAPABILITIES: capabilities,
+        if (keyAlgorithm != null) PushToken.KEY_ALGORITHM: keyAlgorithm,
+      };
+
+      test('marks a server that knows capabilities, even when they cannot be read', () {
+        final readable = PushToken.fromOtpAuthMap(
+          linkWith(
+            capabilities:
+                '{"key_algorithm":{"values":["rsa_4096","secp256r1"]},"future_thing":{"x":true}}',
+          ),
+        ).serverCapabilities;
+        expect(readable, isNotNull);
+        expect(readable!.allowedValues('key_algorithm'), {'rsa_4096', 'secp256r1'});
+        expect(readable.supports('future_thing'), isTrue, reason: 'unknown entries are kept');
+
+        for (final broken in ['{', '[1]', '', '{"x":1}', 'live-check-not-json']) {
+          expect(
+            PushToken.fromOtpAuthMap(linkWith(capabilities: broken)).serverCapabilities,
+            Capabilities.none,
+            reason: broken,
+          );
+        }
+
+        expect(PushToken.fromOtpAuthMap(linkWith()).serverCapabilities, isNull);
+      });
+
+      test('a link with capabilities but without key_algorithm uses RSA', () {
+        final token = PushToken.fromOtpAuthMap(
+          linkWith(capabilities: '{"key_algorithm":{"values":["secp256r1"]}}'),
+        );
+        expect(token.keyAlgorithm, PushKeyAlgorithm.rsa4096);
+        expect(token.serverCapabilities, isNotNull);
+      });
+
+      test('the capabilities of the link survive storage and a template round trip', () {
+        const link = '{"key_algorithm":{"values":["rsa_4096","secp256r1"]}}';
+        final token = PushToken.fromOtpAuthMap(linkWith(capabilities: link));
+        final expected = token.serverCapabilities;
+        expect(expected, isNotNull);
+
+        final stored = PushToken.fromJson(
+          jsonDecode(jsonEncode(token.toJson())) as Map<String, dynamic>,
+        );
+        expect(stored.serverCapabilities, expected);
+
+        expect(
+          token.toOtpAuthMap(),
+          isNot(contains(PushToken.CAPABILITIES)),
+          reason: 'the token dict goes to the server on a container sync',
+        );
+        final rebuilt = PushToken.fromOtpAuthMap(
+          token.toOtpAuthMap(),
+          additionalData: token.additionalData,
+        );
+        expect(rebuilt.serverCapabilities, expected);
+
+        final without = PushToken.fromOtpAuthMap(linkWith());
+        expect(
+          PushToken.fromJson(
+            jsonDecode(jsonEncode(without.toJson())) as Map<String, dynamic>,
+          ).serverCapabilities,
+          isNull,
+        );
+      });
+    });
+
+    group('stored key type', () {
+      test('a token stored before the key type existed loads as RSA', () {
+        final keyPair = generateShortRsaKeyPair();
+        final stored = createPush()
+            .withPrivateTokenKey(keyPair.privateKey)
+            .withPublicTokenKey(keyPair.publicKey)
+            .withPublicServerKey(keyPair.publicKey)
+            .toJson()
+          ..remove('keyAlgorithm');
+
+        final token = PushToken.fromJson(stored);
+
+        expect(token.keyAlgorithm, PushKeyAlgorithm.rsa4096);
+        expect(token.parsedPublicServerKey, isA<RSAPublicKey>());
+        expect(token.parsedPublicTokenKey, isA<RSAPublicKey>());
+        expect(token.parsedPrivateTokenKey, isA<RSAPrivateKey>());
+        expect(token.rsaPublicServerKey!.modulus, keyPair.publicKey.modulus);
+      });
+
+      test('the key type is named for the token details', () {
+        final rsaKeys = generateShortRsaKeyPair();
+        final ecKeys = const PushKeyUtils().generateKeyPair();
+
+        expect(createPush().keyTypeName, isNull, reason: 'no key yet');
+        expect(
+          createPush().withPublicTokenKey(rsaKeys.publicKey).keyTypeName,
+          'RSA 1024',
+        );
+        expect(
+          createPush()
+              .copyWith(keyAlgorithm: PushKeyAlgorithm.secp256r1)
+              .withPublicTokenKey(ecKeys.publicKey)
+              .keyTypeName,
+          'ECDSA P-256',
+        );
+      });
+
+      test('a P-256 token keeps its type and keys through json', () {
+        const pushKeyUtils = PushKeyUtils();
+        final tokenKeys = pushKeyUtils.generateKeyPair();
+        final serverKeys = pushKeyUtils.generateKeyPair();
+        final token = createPush()
+            .copyWith(keyAlgorithm: PushKeyAlgorithm.secp256r1)
+            .withPrivateTokenKey(tokenKeys.privateKey)
+            .withPublicTokenKey(tokenKeys.publicKey)
+            .withPublicServerKey(serverKeys.publicKey);
+
+        final loaded = PushToken.fromJson(
+          jsonDecode(jsonEncode(token.toJson())) as Map<String, dynamic>,
+        );
+
+        expect(loaded.keyAlgorithm, PushKeyAlgorithm.secp256r1);
+        expect(loaded.rsaPublicServerKey, isNull);
+        expect((loaded.parsedPublicServerKey as ECPublicKey).Q, serverKeys.publicKey.Q);
+        expect((loaded.parsedPublicTokenKey as ECPublicKey).Q, tokenKeys.publicKey.Q);
+        expect((loaded.parsedPrivateTokenKey as ECPrivateKey).d, tokenKeys.privateKey.d);
+      });
     });
   });
 

@@ -27,6 +27,7 @@ import 'package:privacyidea_authenticator/model/push_request/push_requests.dart'
 
 import '../../utils/helpers/base32_helper.dart';
 import '../../utils/logger.dart';
+import '../../utils/push_key_utils.dart';
 import '../../utils/rsa_utils.dart';
 import '../capabilities/capabilities.dart';
 import '../tokens/push_token.dart';
@@ -119,7 +120,7 @@ abstract class PushRequest {
     PushToken token, {
     RsaUtils rsaUtils = const RsaUtils(),
   }) {
-    final publicServerKey = token.rsaPublicServerKey;
+    final publicServerKey = token.parsedPublicServerKey;
     if (publicServerKey == null) {
       Logger.warning(
         'Validating incoming message failed.',
@@ -140,10 +141,11 @@ abstract class PushRequest {
       return false;
     }
 
-    if (!rsaUtils.verifyRSASignature(
+    if (!verifyServerSignature(
       publicServerKey,
       utf8.encode(signedData),
       signatureBytes,
+      rsaUtils: rsaUtils,
     )) {
       Logger.warning(
         'Validating incoming message failed.',
@@ -172,7 +174,7 @@ abstract class PushRequest {
     PushToken token, {
     RsaUtils rsaUtils = const RsaUtils(),
   }) {
-    final publicServerKey = token.rsaPublicServerKey;
+    final publicServerKey = token.parsedPublicServerKey;
     if (signedCapabilities == null || publicServerKey == null) {
       return Capabilities.none;
     }

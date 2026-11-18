@@ -29,6 +29,7 @@ import '../model/tokens/push_token.dart';
 import '../utils/crypto_utils.dart';
 import '../utils/identifiers.dart';
 import '../utils/logger.dart';
+import 'push_key_utils.dart';
 
 class RsaUtils {
   const RsaUtils();
@@ -246,8 +247,15 @@ class RsaUtils {
   /// if a [context] is provided, telling the users that it might be better to enroll a new
   /// push token so that the app can directly access the private key.
   /// Returns the signature on success and null on failure.
+  /// A P-256 token signs with SHA-256/ECDSA (DER, base32) instead.
   Future<String?> trySignWithToken(PushToken token, String message) async {
     if (token.privateTokenKey != null) {
+      if (token.usesEcKey) {
+        return const PushKeyUtils().createBase32Signature(
+          token.parsedPrivateTokenKey! as ECPrivateKey,
+          utf8.encode(message),
+        );
+      }
       return createBase32Signature(
         token.rsaPrivateTokenKey!,
         utf8.encode(message),

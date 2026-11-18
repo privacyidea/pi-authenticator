@@ -316,4 +316,34 @@ void main() {
       expect(advertised.names, ['decline_reason']);
     });
   });
+
+  group('privacyidea#2943 V9', () {
+    test('the enrollment announcement names the key algorithms the app can create', () {
+      expect(
+        appEnrollmentCapabilities.toCanonicalJson(),
+        '{"decline_reason":true,"key_algorithm":{"values":["rsa_4096","secp256r1"]}}',
+      );
+      expect(
+        appPushCapabilities.names,
+        ['decline_reason'],
+        reason: 'poll and firebase token updates keep the names array',
+      );
+    });
+
+    test('capabilities of the enrollment link are never used for a challenge', () {
+      final server = FakePushServer.legacy();
+      final token = enrollAgainst(server).copyWith(
+        serverCapabilities: () => Capabilities.fromJson({'decline_reason': true}),
+      );
+      final request = PushRequestFactory.fromMessageData(
+        server.createChallenge(),
+      ).dynamicCopyWith(
+        accepted: () => false,
+        declineReason: () => DeclineReason.unknownTrigger,
+      );
+
+      expect(request.capabilitiesOf(token), Capabilities.none);
+      expect(request.negotiatedDeclineReason(token), isNull);
+    });
+  });
 }

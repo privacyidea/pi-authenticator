@@ -26,6 +26,7 @@ import 'package:pointycastle/export.dart';
 import '../../utils/helpers/base32_helper.dart';
 import '../../utils/helpers/json_canonicalizer.dart';
 import '../../utils/logger.dart';
+import '../../utils/push_key_utils.dart';
 import '../../utils/rsa_utils.dart';
 
 const String _VALUES = 'values';
@@ -51,6 +52,14 @@ class Capabilities {
   /// capability format.
   factory Capabilities.declared(Map<String, Object> entries) =>
       Capabilities._(validateCapabilityEntries(entries));
+
+  /// Capabilities the other side sent as a json object, entries this app does
+  /// not know included.
+  ///
+  /// Throws a [FormatException] if a value cannot be represented in the
+  /// capability format.
+  factory Capabilities.fromJson(Map<Object?, Object?> json) =>
+      Capabilities._(validateCapabilityEntries(json));
 
   /// A capability entry that accepts exactly [values].
   static Map<String, Object> accepting(Iterable<String> values) => {
@@ -187,12 +196,13 @@ class SignedCapabilities {
   };
 
   /// The advertised capabilities if [signature] matches them and was made for
-  /// [nonce], null if they cannot be trusted.
+  /// [nonce], null if they cannot be trusted. [publicKey] is an RSA or a P-256
+  /// server key.
   ///
   /// The nonce is part of the signed data, so a signature taken from another
   /// message of the same server does not verify here.
   Capabilities? verify({
-    required RSAPublicKey publicKey,
+    required PublicKey publicKey,
     required String nonce,
     RsaUtils rsaUtils = const RsaUtils(),
   }) {
@@ -213,10 +223,11 @@ class SignedCapabilities {
       return null;
     }
 
-    if (!rsaUtils.verifyRSASignature(
+    if (!verifyServerSignature(
       publicKey,
       utf8.encode(signedData),
       signatureBytes,
+      rsaUtils: rsaUtils,
     )) {
       Logger.warning(
         'Validating capabilities failed.',

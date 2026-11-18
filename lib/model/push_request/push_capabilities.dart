@@ -19,12 +19,16 @@
  */
 
 import '../capabilities/capabilities.dart';
+import '../enums/push_key_algorithm.dart';
 
 /// Names of the optional push features this app knows about, the vocabulary
 /// shared with the server.
 abstract final class PushCapability {
   /// Sending the reason why a push request was declined.
   static const String declineReason = 'decline_reason';
+
+  /// The key algorithms a push token can be enrolled with.
+  static const String keyAlgorithm = 'key_algorithm';
 }
 
 /// The push features this app implements.
@@ -33,4 +37,15 @@ abstract final class PushCapability {
 /// what a server advertises.
 final Capabilities appPushCapabilities = Capabilities.declared({
   PushCapability.declineReason: true,
+});
+
+/// What this app can do at enrollment, the answer to an enrollment link that
+/// carries capabilities. Sent as an object in enrollment step 2 only to a
+/// server whose link had capabilities. Everywhere else the app keeps sending
+/// the names of [appPushCapabilities], which older servers expect.
+final Capabilities appEnrollmentCapabilities = Capabilities.declared({
+  PushCapability.declineReason: true,
+  PushCapability.keyAlgorithm: Capabilities.accepting(
+    PushKeyAlgorithm.values.map((algorithm) => algorithm.wireName),
+  ),
 });

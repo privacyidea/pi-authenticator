@@ -18,7 +18,10 @@
  * limitations under the License.
  */
 
+import 'dart:convert';
+
 import 'package:flutter_test/flutter_test.dart';
+import 'package:pointycastle/export.dart' show ECPublicKey;
 import 'package:privacyidea_authenticator/model/capabilities/capabilities.dart';
 import 'package:privacyidea_authenticator/model/push_request/decline_reason.dart';
 import 'package:privacyidea_authenticator/model/push_request/push_capabilities.dart';
@@ -518,6 +521,111 @@ void main() {
 
       expect(
         PushRequestFactory.fromMessageData(data).verifySignature(token),
+        isFalse,
+      );
+    });
+  });
+
+  // privacyidea#2943: a token enrolled with a P-256 key gets a P-256 server
+  // key, and every signature in both directions is SHA-256/ECDSA, DER, base32.
+  group('Server with a P-256 token key', () {
+    late FakePushServer server;
+    late PushToken token;
+
+    setUp(() {
+      server = FakePushServer.advertising();
+      token = enroll(server, ecdsa: true);
+    });
+
+    test('takes the P-256 key and answers with a P-256 key', () {
+      expect(server.smartphoneEcPublicKey, isNotNull);
+      expect(server.smartphonePublicKey, isNull);
+      expect(token.parsedPublicServerKey, isA<ECPublicKey>());
+      expect(
+        (token.parsedPublicServerKey as ECPublicKey).Q,
+        server.ecKeyPair.publicKey.Q,
+      );
+    });
+
+    test('accepts a confirmed challenge signed by the app', () async {
+      final data = server.createChallenge();
+      final request = PushRequestFactory.fromMessageData(
+        data,
+      ).dynamicCopyWith(accepted: () => true);
+
+      final result = await answer(server, token, request);
+
+      expect(result.result, isTrue);
+      expect(
+        server.sessionOf(data['nonce'] as String),
+        ChallengeSession.answered,
+      );
+    });
+
+    test('accepts a decline signed by the app', () async {
+      final data = server.createChallenge();
+      final request = PushRequestFactory.fromMessageData(data).dynamicCopyWith(
+        accepted: () => false,
+        declineReason: () => DeclineReason.unknownTrigger,
+      );
+
+      final result = await answer(server, token, request);
+
+      expect(result.result, isTrue);
+      expect(result.session, ChallengeSession.declined);
+    });
+
+    test('accepts the poll signature of the app', () async {
+      // pollForChallenge signs '{serial}|{timestamp}'.
+      final message = '${token.serial}|2026-11-17T10:00:00.000Z';
+      final signature = await rsaUtils.trySignWithToken(token, message);
+
+      expect(signature, isNotNull);
+      expect(server.verifySmartphoneSignature(message, signature!), isTrue);
+      expect(
+        server.verifySmartphoneSignature('${message}0', signature),
+        isFalse,
+      );
+    });
+
+    test('sends a challenge and capabilities the app accepts', () {
+      final request = PushRequestFactory.fromMessageData(
+        server.createChallenge(),
+      );
+
+      expect(request.verifySignature(token), isTrue);
+      expect(
+        request.capabilitiesOf(token).supports(PushCapability.declineReason),
+        isTrue,
+      );
+    });
+
+    test('a manipulated challenge is rejected', () {
+      final data = server.createChallenge()..['question'] = 'Pay 1000 EUR?';
+
+      expect(
+        PushRequestFactory.fromMessageData(data).verifySignature(token),
+        isFalse,
+      );
+    });
+
+    test('manipulated capabilities are rejected', () {
+      final data = server.createChallenge();
+      data['capabilities'] = jsonEncode({'decline_reason': false});
+      final request = PushRequestFactory.fromMessageData(data);
+
+      expect(request.verifySignature(token), isFalse);
+      expect(request.capabilitiesOf(token).isEmpty, isTrue);
+    });
+
+    test('a challenge signed by another P-256 server is rejected', () {
+      final attacker = FakePushServer.advertising();
+      enroll(attacker, ecdsa: true);
+
+      expect(
+        PushRequestFactory.fromMessageData(
+          attacker.createChallenge(),
+        ).verifySignature(token),
         isFalse,
       );
     });

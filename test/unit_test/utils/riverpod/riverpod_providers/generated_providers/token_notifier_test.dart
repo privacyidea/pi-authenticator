@@ -32,6 +32,7 @@ import 'package:http/http.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:mockito/mockito.dart';
 import 'package:pointycastle/export.dart';
+import 'package:privacyidea_authenticator/model/enums/push_key_algorithm.dart';
 import 'package:privacyidea_authenticator/l10n/app_localizations_en.dart';
 import 'package:privacyidea_authenticator/model/enums/algorithms.dart';
 import 'package:privacyidea_authenticator/model/enums/force_biometric_option.dart';
@@ -47,6 +48,7 @@ import 'package:privacyidea_authenticator/model/tokens/token.dart';
 import 'package:privacyidea_authenticator/model/tokens/totp_token.dart';
 import 'package:privacyidea_authenticator/utils/lock_auth.dart';
 import 'package:privacyidea_authenticator/utils/privacyidea_io_client.dart';
+import 'package:privacyidea_authenticator/utils/push_key_utils.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/settings_notifier.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/token_notifier.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/state_providers/status_message_provider.dart';
@@ -54,6 +56,7 @@ import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
 import 'package:privacyidea_authenticator/utils/utils.dart';
 
 import '../../../../../tests_app_wrapper.mocks.dart';
+import '../../../../model/fake_push_server.dart';
 
 /// Waits for [check] to become true, throwing if [timeout] elapses first.
 Future<void> _waitUntil(
@@ -1441,6 +1444,175 @@ void _testTokenNotifierFixes() {
         expect(status!.message(l), l.errorRollOutFailed('label'));
         expect(status.details!(l), 'Enrollment broke');
       });
+
+      test('a rejected key type (HTTP 400) shows the server message as details', () async {
+        final status = await rolloutWith(
+          Response('{"result": {"status": false, "error": {"code": 10, "message": "live-check-only ECDSA keys are allowed"}}}', 400),
+        );
+        final l = AppLocalizationsEn();
+        expect(status!.message(l), l.errorRollOutFailed('label'));
+        expect(status.details!(l), 'live-check-only ECDSA keys are allowed');
+      });
+    });
+
+    // privacyidea#2943: the enrollment link offers key_algorithm=secp256r1.
+    group('rollout with a P-256 key', () {
+      late FakePushServer server;
+      late MockTokenRepository mockRepo;
+      late MockPrivacyideaIOClient mockIOClient;
+      late MockFirebaseUtils mockFirebaseUtils;
+      late MockRsaUtils mockRsaUtils;
+      late List<Map<String, String?>> sentBodies;
+
+      PushToken offeredToken({PushKeyAlgorithm? keyAlgorithm}) => PushToken(
+        label: 'label',
+        issuer: 'issuer',
+        id: 'id',
+        serial: server.serial,
+        url: Uri.parse(FakePushServer.url),
+        enrollmentCredentials: FakePushServer.enrollmentCredential,
+        keyAlgorithm: keyAlgorithm,
+      );
+
+      setUp(() {
+        server = FakePushServer.advertising();
+        mockRepo = MockTokenRepository();
+        mockIOClient = MockPrivacyideaIOClient();
+        mockFirebaseUtils = MockFirebaseUtils();
+        mockRsaUtils = MockRsaUtils();
+        sentBodies = [];
+        when(mockRepo.saveOrReplaceToken(any)).thenAnswer((_) async => true);
+        when(mockRepo.saveOrReplaceTokens(any)).thenAnswer((_) async => []);
+        when(mockFirebaseUtils.getFBToken()).thenAnswer((_) async => 'fbToken');
+        when(mockRsaUtils.generateRSAKeyPair()).thenAnswer((_) async => generateShortRsaKeyPair());
+        when(mockRsaUtils.serializeRSAPublicKeyPKCS8(any)).thenAnswer(
+          (i) => const RsaUtils().serializeRSAPublicKeyPKCS8(i.positionalArguments.first as RSAPublicKey),
+        );
+        when(mockRsaUtils.deserializeRSAPublicKeyPKCS1(any)).thenAnswer(
+          (i) => const RsaUtils().deserializeRSAPublicKeyPKCS1(i.positionalArguments.first as String),
+        );
+        // The rollout POST goes to the server simulation.
+        when(
+          mockIOClient.doPost(url: anyNamed('url'), body: anyNamed('body'), sslVerify: anyNamed('sslVerify')),
+        ).thenAnswer((i) async {
+          final body = Map<String, String?>.from(i.namedArguments[#body] as Map);
+          sentBodies.add(body);
+          final detail = server.enroll(body);
+          return Response(
+            jsonEncode({
+              'detail': {...detail, 'rollout_state': 'enrolled', 'serial': server.serial},
+              'result': {'status': true, 'value': true},
+            }),
+            200,
+          );
+        });
+      });
+
+      Future<PushToken> rollout(PushToken token) async {
+        final container = _container();
+        when(mockRepo.loadTokens()).thenAnswer((_) async => [token]);
+        final testProvider = tokenProviderOf(
+          repo: mockRepo,
+          ioClient: mockIOClient,
+          rsaUtils: mockRsaUtils,
+          firebaseUtils: mockFirebaseUtils,
+        );
+        await container.read(testProvider.future);
+        expect(await container.read(testProvider.notifier).rolloutPushToken(token), isTrue);
+        final state = await container.read(testProvider.future);
+        return state.tokens.single as PushToken;
+      }
+
+      test('sends a P-256 key and stores the P-256 server key', () async {
+        final rolledOut = await rollout(offeredToken(keyAlgorithm: PushKeyAlgorithm.secp256r1));
+
+        expect(rolledOut.rolloutState, PushTokenRollOutState.rolloutComplete);
+        expect(rolledOut.isRolledOut, isTrue);
+        expect(rolledOut.keyAlgorithm, PushKeyAlgorithm.secp256r1);
+        expect(server.smartphoneEcPublicKey, isNotNull);
+        expect(server.smartphonePublicKey, isNull);
+        expect(server.smartphoneEcPublicKey!.Q, (rolledOut.parsedPublicTokenKey as ECPublicKey).Q);
+        expect((rolledOut.parsedPublicServerKey as ECPublicKey).Q, server.ecKeyPair.publicKey.Q);
+        final pubkey = sentBodies.single['pubkey']!;
+        expect(pubkey, isNot(contains('-----')));
+        expect(pubkey, isNot(contains('\n')));
+        verifyNever(mockRsaUtils.generateRSAKeyPair());
+      });
+
+      test('answers a link with capabilities with the app capabilities as an object', () async {
+        final token = PushToken.fromOtpAuthMap({
+          PushToken.VERSION: '1',
+          Token.SERIAL: server.serial,
+          Token.LABEL: 'label',
+          Token.ISSUER: 'issuer',
+          PushToken.ROLLOUT_URL: FakePushServer.url,
+          PushToken.ENROLLMENT_CREDENTIAL: FakePushServer.enrollmentCredential,
+          PushToken.KEY_ALGORITHM: 'secp256r1,rsa_4096',
+          PushToken.CAPABILITIES: '{"key_algorithm":{"values":["rsa_4096","secp256r1"]}}',
+        }, additionalData: {Token.ID: 'id'});
+
+        final rolledOut = await rollout(token);
+
+        expect(
+          sentBodies.single['capabilities'],
+          '{"decline_reason":true,"key_algorithm":{"values":["rsa_4096","secp256r1"]}}',
+        );
+        expect(rolledOut.keyAlgorithm, PushKeyAlgorithm.secp256r1);
+        expect(server.smartphoneEcPublicKey, isNotNull);
+        verifyNever(mockRsaUtils.generateRSAKeyPair());
+      });
+
+      test('a retry after a restart still answers with the object', () async {
+        final keys = const PushKeyUtils().generateKeyPair();
+        final beforeRestart = offeredToken(keyAlgorithm: PushKeyAlgorithm.secp256r1)
+            .copyWith(
+              serverCapabilities: () => PushToken.serverCapabilitiesFrom(
+                '{"key_algorithm":{"values":["rsa_4096","secp256r1"]}}',
+              ),
+              rolloutState: PushTokenRollOutState.sendRSAPublicKeyFailed,
+            )
+            .withPrivateTokenKey(keys.privateKey)
+            .withPublicTokenKey(keys.publicKey);
+        final afterRestart = PushToken.fromJson(
+          jsonDecode(jsonEncode(beforeRestart.toJson())) as Map<String, dynamic>,
+        );
+        // A new key would come from here, the retry must reuse the stored one.
+        TokenNotifier.pushKeyUtils = const _FailingPushKeyUtils();
+        addTearDown(() => TokenNotifier.pushKeyUtils = const PushKeyUtils());
+
+        final rolledOut = await rollout(afterRestart);
+
+        expect(
+          sentBodies.single['capabilities'],
+          '{"decline_reason":true,"key_algorithm":{"values":["rsa_4096","secp256r1"]}}',
+        );
+        expect(rolledOut.keyAlgorithm, PushKeyAlgorithm.secp256r1);
+        expect(server.smartphoneEcPublicKey!.Q, keys.publicKey.Q);
+        verifyNever(mockRsaUtils.generateRSAKeyPair());
+      });
+
+      test('falls back to RSA when the P-256 key cannot be created', () async {
+        TokenNotifier.pushKeyUtils = const _FailingPushKeyUtils();
+        addTearDown(() => TokenNotifier.pushKeyUtils = const PushKeyUtils());
+
+        final rolledOut = await rollout(offeredToken(keyAlgorithm: PushKeyAlgorithm.secp256r1));
+
+        expect(rolledOut.rolloutState, PushTokenRollOutState.rolloutComplete);
+        expect(rolledOut.keyAlgorithm, PushKeyAlgorithm.rsa4096);
+        expect(server.smartphonePublicKey, isNotNull);
+        expect(server.smartphoneEcPublicKey, isNull);
+        expect(rolledOut.rsaPublicServerKey!.modulus, server.keyPair.publicKey.modulus);
+        verify(mockRsaUtils.generateRSAKeyPair()).called(1);
+      });
+
+      test('without an offer the token stays RSA', () async {
+        final rolledOut = await rollout(offeredToken());
+
+        expect(rolledOut.rolloutState, PushTokenRollOutState.rolloutComplete);
+        expect(rolledOut.keyAlgorithm, PushKeyAlgorithm.rsa4096);
+        expect(server.smartphonePublicKey, isNotNull);
+        expect(rolledOut.rsaPublicServerKey!.modulus, server.keyPair.publicKey.modulus);
+      });
     });
 
     group('failed tokens are returned', () {
@@ -1538,6 +1710,14 @@ void _testTokenNotifierFixes() {
       expect((state.tokens.single as HOTPToken).counter, 2);
     });
   });
+}
+
+class _FailingPushKeyUtils extends PushKeyUtils {
+  const _FailingPushKeyUtils();
+
+  @override
+  AsymmetricKeyPair<ECPublicKey, ECPrivateKey> generateKeyPair() =>
+      throw StateError('live-check: no P-256 key on this device');
 }
 
 void _testTokenNotifierShowHide() {

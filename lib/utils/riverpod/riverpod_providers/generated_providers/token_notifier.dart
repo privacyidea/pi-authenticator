@@ -26,7 +26,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
-import 'package:pointycastle/asymmetric/api.dart';
+import 'package:pointycastle/api.dart' show PublicKey;
+import 'package:pointycastle/ecc/api.dart';
 import 'package:privacyidea_authenticator/model/extensions/token_list_extension.dart';
 import 'package:privacyidea_authenticator/utils/helpers/mutex.dart';
 import 'package:privacyidea_authenticator/utils/riverpod/riverpod_providers/generated_providers/localization_notifier.dart';
@@ -36,6 +37,7 @@ import '../../../../../../model/extensions/enums/push_token_rollout_state_extens
 import '../../../../../../model/extensions/enums/token_origin_source_type.dart';
 import '../../../../interfaces/repo/token_repository.dart';
 import '../../../../l10n/app_localizations.dart';
+import '../../../../model/enums/push_key_algorithm.dart';
 import '../../../../model/enums/push_token_rollout_state.dart';
 import '../../../../model/enums/token_import_type.dart';
 import '../../../../model/enums/token_origin_source_type.dart';
@@ -56,6 +58,7 @@ import '../../../http_status_checker.dart';
 import '../../../lock_auth.dart';
 import '../../../logger.dart';
 import '../../../privacyidea_io_client.dart';
+import '../../../push_key_utils.dart';
 import '../../../rsa_utils.dart';
 import '../../../utils.dart';
 import '../state_providers/status_message_provider.dart';
@@ -73,6 +76,11 @@ final tokenProvider = tokenProviderOf(
 @Riverpod(keepAlive: true)
 class TokenNotifier extends _$TokenNotifier with ResultHandler {
   static final Map<String, Timer> _hidingTimers = {};
+
+  /// Creates the P-256 keys of push tokens. Replaced by tests in which the
+  /// key generation fails.
+  @visibleForTesting
+  static PushKeyUtils pushKeyUtils = const PushKeyUtils();
 
   /// Lock the repo before any update (e.g. [repo.saveOrReplaceTokens]) and release it after the change is done (await or .then).
   final _repoMutex = Mutex();
@@ -625,6 +633,24 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
           PushTokenRollOutState.generatingRSAKeyPair,
         ) ??
         token;
+    if (token.usesEcKey) {
+      try {
+        final keyPair = pushKeyUtils.generateKeyPair();
+        return await _updateToken(token, (p) {
+          p = p.withPrivateTokenKey(keyPair.privateKey);
+          return p.withPublicTokenKey(keyPair.publicKey);
+        });
+      } catch (e, s) {
+        Logger.error(
+          'Error while generating the P-256 key pair, falling back to RSA.',
+          error: e,
+          stackTrace: s,
+        );
+        PushToken toRsa(PushToken p) =>
+            p.copyWith(keyAlgorithm: PushKeyAlgorithm.rsa4096);
+        token = await _updateToken(token, toRsa) ?? toRsa(token);
+      }
+    }
     try {
       final keyPair = await rsaUtils.generateRSAKeyPair();
       return await _updateToken(token, (p) {
@@ -688,10 +714,16 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
           'enrollment_credential': token.enrollmentCredentials,
           'serial': token.serial,
           'fbtoken': fbToken ?? NoFirebaseUtils.NO_FIREBASE_TOKEN,
-          'pubkey': rsaUtils.serializeRSAPublicKeyPKCS8(
-            token.rsaPublicTokenKey!,
-          ),
-          'capabilities': canonicalizeJson(appPushCapabilities.names),
+          'pubkey': token.usesEcKey
+              ? pushKeyUtils.encodePublicKey(
+                  token.parsedPublicTokenKey! as ECPublicKey,
+                )
+              : rsaUtils.serializeRSAPublicKeyPKCS8(token.rsaPublicTokenKey!),
+          // A server whose link carried capabilities gets them as an object,
+          // every other server the names array it has always received.
+          'capabilities': token.serverCapabilities != null
+              ? appEnrollmentCapabilities.toCanonicalJson()
+              : canonicalizeJson(appPushCapabilities.names),
         },
       );
 
@@ -714,7 +746,10 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
           ) ??
           token;
 
-      final publicServerKey = await _parseRollOutResponse(response);
+      final publicServerKey = await _parseRollOutResponse(
+        response,
+        ecKey: token.usesEcKey,
+      );
       await _updateToken(
         token,
         (p) => p
@@ -1010,7 +1045,12 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
       )
       .toList();
 
-  Future<RSAPublicKey> _parseRollOutResponse(Response response) async {
+  /// The server key has the type of the token key: PKCS#1 for RSA,
+  /// SubjectPublicKeyInfo for a P-256 token ([ecKey]).
+  Future<PublicKey> _parseRollOutResponse(
+    Response response, {
+    required bool ecKey,
+  }) async {
     Logger.info('Parsing rollout response, try to extract public_key.');
     try {
       String key = json.decode(response.body)['detail']['public_key'];
@@ -1018,6 +1058,7 @@ class TokenNotifier extends _$TokenNotifier with ResultHandler {
 
       Logger.info('Extracting public key was successful.');
 
+      if (ecKey) return pushKeyUtils.decodePublicKey(key);
       return rsaUtils.deserializeRSAPublicKeyPKCS1(key);
     } on FormatException catch (e) {
       throw FormatException(

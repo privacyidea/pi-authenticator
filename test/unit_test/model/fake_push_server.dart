@@ -30,14 +30,19 @@
 library;
 
 import 'dart:convert';
+import 'dart:typed_data';
 
+import 'package:asn1lib/asn1lib.dart' as asn1;
+import 'package:basic_utils/basic_utils.dart' show CryptoUtils;
 import 'package:pointycastle/export.dart';
+import 'package:privacyidea_authenticator/model/enums/push_key_algorithm.dart';
 import 'package:privacyidea_authenticator/model/push_request/push_capabilities.dart';
 import 'package:privacyidea_authenticator/model/push_request/push_requests.dart';
 import 'package:privacyidea_authenticator/model/tokens/push_token.dart';
 import 'package:privacyidea_authenticator/utils/crypto_utils.dart';
 import 'package:privacyidea_authenticator/utils/helpers/base32_helper.dart';
 import 'package:privacyidea_authenticator/utils/helpers/json_canonicalizer.dart';
+import 'package:privacyidea_authenticator/utils/push_key_utils.dart';
 import 'package:privacyidea_authenticator/utils/rsa_utils.dart';
 
 /// The server versions the issue distinguishes.
@@ -102,6 +107,17 @@ class FakePushServer {
   final RsaUtils rsaUtils;
 
   RSAPublicKey? smartphonePublicKey;
+
+  /// The P-256 key of a smartphone that enrolled with ECDSA (privacyidea#2943).
+  /// The server key then is a P-256 key as well and every signature in both
+  /// directions is SHA-256/ECDSA, DER encoded, base32.
+  ECPublicKey? smartphoneEcPublicKey;
+
+  /// The server key for a smartphone that enrolled with a P-256 key.
+  late final AsymmetricKeyPair<ECPublicKey, ECPrivateKey> ecKeyPair =
+      generateP256KeyPair();
+
+  bool get usesEcdsa => smartphoneEcPublicKey != null;
 
   /// The `app_capabilities` tokeninfo of phase 1, null while nothing was
   /// stored: "a server that consumes later treats an absent set as legacy".
@@ -193,16 +209,80 @@ class FakePushServer {
       throw ArgumentError('Invalid enrollment credential.');
     }
     // "the pubkey is trust-on-first-use there anyway"
-    smartphonePublicKey = rsaUtils.deserializeRSAPublicKeyPKCS8(
-      requestData['pubkey'] as String,
-    );
+    // The server tells the key type by the pubkey (SubjectPublicKeyInfo).
+    final pubkey = requestData['pubkey'] as String;
+    if (_spkiAlgorithm(pubkey) == _ecPublicKeyOid) {
+      smartphoneEcPublicKey = _ecPublicKeyFromSpki(pubkey);
+    } else {
+      smartphonePublicKey = rsaUtils.deserializeRSAPublicKeyPKCS8(pubkey);
+    }
     // "Unsigned at enrollment is acceptable", so nothing is verified here.
     if (storesAppCapabilities) {
       appCapabilities = _parseAppCapabilities(requestData['capabilities']);
     }
     return {
-      'public_key': rsaUtils.serializeRSAPublicKeyPKCS1(keyPair.publicKey),
+      // The server key has the type of the smartphone key: PKCS#1 for RSA,
+      // SubjectPublicKeyInfo for P-256, both base64 without header.
+      'public_key': usesEcdsa
+          ? _ecPublicKeyToSpki(ecKeyPair.publicKey)
+          : rsaUtils.serializeRSAPublicKeyPKCS1(keyPair.publicKey),
     };
+  }
+
+  static const _ecPublicKeyOid = '1.2.840.10045.2.1';
+  static const _p256Oid = '1.2.840.10045.3.1.7';
+
+  static String _spkiAlgorithm(String base64Spki) {
+    final spki =
+        asn1.ASN1Parser(base64.decode(base64Spki)).nextObject()
+            as asn1.ASN1Sequence;
+    final algorithm = spki.elements[0] as asn1.ASN1Sequence;
+    return (algorithm.elements[0] as asn1.ASN1ObjectIdentifier).identifier!;
+  }
+
+  static ECPublicKey _ecPublicKeyFromSpki(String base64Spki) {
+    final spki =
+        asn1.ASN1Parser(base64.decode(base64Spki)).nextObject()
+            as asn1.ASN1Sequence;
+    final algorithm = spki.elements[0] as asn1.ASN1Sequence;
+    final curve =
+        (algorithm.elements[1] as asn1.ASN1ObjectIdentifier).identifier;
+    if (curve != _p256Oid) throw ArgumentError('Only P-256 is allowed.');
+    var point = (spki.elements[1] as asn1.ASN1BitString).contentBytes();
+    // An uncompressed point is 0x04 || X || Y, 65 bytes. A leading 0x00 is the
+    // unused-bits count of the BIT STRING.
+    if (point.length == 66 && point.first == 0) point = point.sublist(1);
+    final params = ECCurve_secp256r1();
+    return ECPublicKey(params.curve.decodePoint(point), params);
+  }
+
+  static String _ecPublicKeyToSpki(ECPublicKey key) => base64.encode(
+    CryptoUtils.getBytesFromPEMString(CryptoUtils.encodeEcPublicKeyToPem(key)),
+  );
+
+  /// Checks a signature of the smartphone over [message], the way the server
+  /// checks the poll and answer signatures.
+  bool verifySmartphoneSignature(String message, String base32Signature) {
+    final signature = base32Decode(base32Signature);
+    final data = utf8.encode(message);
+    if (usesEcdsa) {
+      final asn1.ASN1Sequence der;
+      try {
+        der = asn1.ASN1Parser(signature).nextObject() as asn1.ASN1Sequence;
+      } catch (_) {
+        return false;
+      }
+      final verifier = ECDSASigner(SHA256Digest())
+        ..init(false, PublicKeyParameter<ECPublicKey>(smartphoneEcPublicKey!));
+      return verifier.verifySignature(
+        data,
+        ECSignature(
+          (der.elements[0] as asn1.ASN1Integer).valueAsBigInteger,
+          (der.elements[1] as asn1.ASN1Integer).valueAsBigInteger,
+        ),
+      );
+    }
+    return rsaUtils.verifyRSASignature(smartphonePublicKey!, data, signature);
   }
 
   /// "Server parses it defensively": anything that is not an array of names is
@@ -301,11 +381,7 @@ class FakePushServer {
     }
     if (presenceAnswer != null) signData += '|$presenceAnswer';
 
-    if (!rsaUtils.verifyRSASignature(
-      smartphonePublicKey!,
-      utf8.encode(signData),
-      base32Decode(signature),
-    )) {
+    if (!verifySmartphoneSignature(signData, signature)) {
       return const PushAnswerResult(result: false);
     }
 
@@ -332,8 +408,32 @@ class FakePushServer {
 
   ChallengeSession? sessionOf(String nonce) => _challenges[nonce]?.session;
 
-  String _sign(String message) =>
-      rsaUtils.createBase32Signature(keyPair.privateKey, utf8.encode(message));
+  String _sign(String message) {
+    if (!usesEcdsa) {
+      return rsaUtils.createBase32Signature(
+        keyPair.privateKey,
+        utf8.encode(message),
+      );
+    }
+    final signature = CryptoUtils.ecSign(
+      ecKeyPair.privateKey,
+      Uint8List.fromList(utf8.encode(message)),
+      algorithmName: 'SHA-256/ECDSA',
+    );
+    final der = asn1.ASN1Sequence()
+      ..add(asn1.ASN1Integer(signature.r))
+      ..add(asn1.ASN1Integer(signature.s));
+    return base32Encode(der.encodedBytes);
+  }
+}
+
+/// A P-256 key pair as a smartphone or server of privacyidea#2943 has it.
+AsymmetricKeyPair<ECPublicKey, ECPrivateKey> generateP256KeyPair() {
+  final pair = CryptoUtils.generateEcKeyPair(curve: 'secp256r1');
+  return AsymmetricKeyPair(
+    pair.publicKey as ECPublicKey,
+    pair.privateKey as ECPrivateKey,
+  );
 }
 
 /// Enrolls a token against [server] the way `rolloutPushToken` does and returns
@@ -342,9 +442,16 @@ PushToken enrollAgainst(
   FakePushServer server, {
   Map<String, dynamic>? extraRequestData,
   RsaUtils rsaUtils = const RsaUtils(),
+  bool ecdsa = false,
 }) {
-  final keyPair = generateShortRsaKeyPair();
+  const pushKeyUtils = PushKeyUtils();
+  final AsymmetricKeyPair<PublicKey, PrivateKey> keyPair = ecdsa
+      ? generateP256KeyPair()
+      : generateShortRsaKeyPair();
   final token = PushToken(serial: server.serial, id: 'id')
+      .copyWith(
+        keyAlgorithm: ecdsa ? PushKeyAlgorithm.secp256r1 : PushKeyAlgorithm.rsa4096,
+      )
       .withPrivateTokenKey(keyPair.privateKey)
       .withPublicTokenKey(keyPair.publicKey)
       .copyWith(url: Uri.parse(FakePushServer.url), sslVerify: true);
@@ -353,13 +460,18 @@ PushToken enrollAgainst(
     'enrollment_credential': FakePushServer.enrollmentCredential,
     'serial': token.serial,
     'fbtoken': 'firebase_token',
-    'pubkey': rsaUtils.serializeRSAPublicKeyPKCS8(token.rsaPublicTokenKey!),
+    'pubkey': ecdsa
+        ? pushKeyUtils.encodePublicKey(keyPair.publicKey as ECPublicKey)
+        : rsaUtils.serializeRSAPublicKeyPKCS8(token.rsaPublicTokenKey!),
     'capabilities': canonicalizeJson(appPushCapabilities.names),
     ...?extraRequestData,
   });
 
+  final serverKey = response['public_key'] as String;
   return token.withPublicServerKey(
-    rsaUtils.deserializeRSAPublicKeyPKCS1(response['public_key'] as String),
+    ecdsa
+        ? pushKeyUtils.decodePublicKey(serverKey)
+        : rsaUtils.deserializeRSAPublicKeyPKCS1(serverKey),
   );
 }
 

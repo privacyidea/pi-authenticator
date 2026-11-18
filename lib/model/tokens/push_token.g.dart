@@ -27,6 +27,16 @@ PushToken _$PushTokenFromJson(Map<String, dynamic> json) => PushToken(
   publicTokenKey: json['publicTokenKey'] as String?,
   privateTokenKey: json['privateTokenKey'] as String?,
   isPollOnly: json['isPollOnly'] as bool?,
+  keyAlgorithm:
+      $enumDecodeNullable(
+        _$PushKeyAlgorithmEnumMap,
+        json['keyAlgorithm'],
+        unknownValue: PushKeyAlgorithm.rsa4096,
+      ) ??
+      PushKeyAlgorithm.rsa4096,
+  serverCapabilities: PushToken._serverCapabilitiesFromJson(
+    json['serverCapabilities'],
+  ),
   isRolledOut: json['isRolledOut'] as bool?,
   sslVerify: json['sslVerify'] as bool?,
   rolloutState: $enumDecodeNullable(
@@ -79,8 +89,17 @@ Map<String, dynamic> _$PushTokenToJson(PushToken instance) => <String, dynamic>{
   'publicServerKey': instance.publicServerKey,
   'privateTokenKey': instance.privateTokenKey,
   'publicTokenKey': instance.publicTokenKey,
+  'keyAlgorithm': _$PushKeyAlgorithmEnumMap[instance.keyAlgorithm]!,
+  'serverCapabilities': PushToken._serverCapabilitiesToJson(
+    instance.serverCapabilities,
+  ),
   'serial': instance.serial,
   'isHidden': instance.isHidden,
+};
+
+const _$PushKeyAlgorithmEnumMap = {
+  PushKeyAlgorithm.rsa4096: 'rsa_4096',
+  PushKeyAlgorithm.secp256r1: 'secp256r1',
 };
 
 const _$PushTokenRollOutStateEnumMap = {

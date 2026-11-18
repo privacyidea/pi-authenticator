@@ -17,15 +17,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import 'dart:convert';
+
 import 'package:json_annotation/json_annotation.dart';
+import 'package:pointycastle/api.dart' show PrivateKey, PublicKey;
 import 'package:pointycastle/asymmetric/api.dart';
+import 'package:pointycastle/ecc/api.dart';
 import 'package:privacyidea_authenticator/model/extensions/enums/push_token_rollout_state_extension.dart';
 import 'package:privacyidea_authenticator/utils/helpers/uuid_helper.dart';
 
 import '../../../../../../../model/token_template.dart';
+import '../../utils/ecc_utils.dart';
+import '../../utils/logger.dart';
 import '../../utils/object_validator/object_validators.dart';
 import '../../utils/rsa_utils.dart';
+import '../capabilities/capabilities.dart';
 import '../enums/force_biometric_option.dart';
+import '../enums/push_key_algorithm.dart';
 import '../enums/push_token_rollout_state.dart';
 import '../enums/token_types.dart';
 import '../exception_errors/localized_argument_error.dart';
@@ -39,6 +47,7 @@ part 'push_token.g.dart';
 class PushToken extends Token {
   // --- Constants ---
   static RsaUtils rsaParser = const RsaUtils();
+  static const EccUtils _eccParser = EccUtils();
 
   static const String ROLLOUT_URL = 'url';
   static const String TTL_MINUTES = 'ttl';
@@ -50,12 +59,27 @@ class PushToken extends Token {
   static const String IS_POLL_ONLY_VALUE_TRUE = 'True';
   static const String IS_POLL_ONLY_VALUE_FALSE = 'False';
   static const String VERSION = 'v';
+  static const String KEY_ALGORITHM = 'key_algorithm';
+
+  /// What the server can do at enrollment, sent only by servers that
+  /// understand capabilities.
+  static const String CAPABILITIES = 'capabilities';
   static const String EXPIRATION_DATE = 'expirationDate';
   static const String ROLLOUT_STATE = 'rolloutState';
   static const String IS_ROLLED_OUT = 'isRolledOut';
   static const String PUBLIC_SERVER_KEY = 'publicServerKey';
   static const String PRIVATE_TOKEN_KEY = 'privateTokenKey';
   static const String PUBLIC_TOKEN_KEY = 'publicTokenKey';
+
+  /// The key algorithm the token was enrolled with. Lives in the additional
+  /// data, never in the otpauth map, because that map goes to the server on a
+  /// container sync and comes back as the base of the rebuilt token.
+  static const String KEY_ALGORITHM_CHOSEN = 'keyAlgorithm';
+
+  /// The capabilities of the enrollment link, kept with the token so a retry
+  /// of the rollout after a restart answers the same way. Lives in the
+  /// additional data, never in the otpauth map (see [KEY_ALGORITHM_CHOSEN]).
+  static const String SERVER_CAPABILITIES = 'serverCapabilities';
 
   // --- Static Accessors & Validators ---
   static String get tokenType => TokenTypes.PIPUSH.name;
@@ -71,7 +95,39 @@ class PushToken extends Token {
     ENROLLMENT_CREDENTIAL: Validators.stringOptional,
     ROLLOUT_URL: Validators.httpUri,
     VERSION: Validators.string,
+    // The key algorithms the server wants, ordered by its preference. The
+    // first one this app knows wins, none known or no list means RSA.
+    KEY_ALGORITHM: OptionalObjectValidator<PushKeyAlgorithm>(
+      transformer: (v) => v is PushKeyAlgorithm
+          ? v
+          : PushKeyAlgorithm.firstSupported(v as String?)!,
+    ),
+    // Never throws: a parameter that is present marks a server that knows
+    // capabilities, even when its content cannot be read.
+    CAPABILITIES: OptionalObjectValidator<Capabilities>(
+      transformer: serverCapabilitiesFrom,
+    ),
   };
+
+  /// The capabilities of the enrollment link, [Capabilities.none] when they
+  /// cannot be read. Entries this app does not know are kept.
+  static Capabilities serverCapabilitiesFrom(Object? raw) {
+    if (raw is Capabilities) return raw;
+    try {
+      final decoded = raw is String ? jsonDecode(raw) : raw;
+      if (decoded is! Map) {
+        throw FormatException('Expected a json object, got $decoded');
+      }
+      return Capabilities.fromJson(decoded);
+    } catch (e, s) {
+      Logger.warning(
+        'The capabilities of the enrollment link cannot be read.',
+        error: e,
+        stackTrace: s,
+      );
+      return Capabilities.none;
+    }
+  }
 
   static final Map<String, BaseValidator> additionalDataValidators = {
     ...Token.additionalDataValidators,
@@ -83,6 +139,14 @@ class PushToken extends Token {
     PUBLIC_SERVER_KEY: Validators.stringOptional,
     PUBLIC_TOKEN_KEY: Validators.stringOptional,
     PRIVATE_TOKEN_KEY: Validators.stringOptional,
+    SERVER_CAPABILITIES: OptionalObjectValidator<Capabilities>(
+      transformer: serverCapabilitiesFrom,
+    ),
+    KEY_ALGORITHM_CHOSEN: OptionalObjectValidator<PushKeyAlgorithm>(
+      transformer: (v) => v is PushKeyAlgorithm
+          ? v
+          : PushKeyAlgorithm.values.firstWhere((a) => a.wireName == v),
+    ),
   };
 
   // --- Static Validation Methods ---
@@ -119,6 +183,32 @@ class PushToken extends Token {
   final String? privateTokenKey;
   final String? publicTokenKey;
 
+  /// The algorithm of the token key and the server key. Both keys are of the
+  /// same type, EC keys are stored as PEM. Tokens stored before this field
+  /// existed load as RSA.
+  @JsonKey(
+    defaultValue: PushKeyAlgorithm.rsa4096,
+    unknownEnumValue: PushKeyAlgorithm.rsa4096,
+  )
+  final PushKeyAlgorithm keyAlgorithm;
+
+  /// What the server said it can do in the enrollment link, null if the link
+  /// had no capabilities (a server that does not know them). Only used to
+  /// answer the enrollment, never for challenges.
+  @JsonKey(
+    fromJson: _serverCapabilitiesFromJson,
+    toJson: _serverCapabilitiesToJson,
+  )
+  final Capabilities? serverCapabilities;
+
+  /// Loading never fails on a stored value that cannot be read, it becomes
+  /// [Capabilities.none] and keeps the signal that the server knows them.
+  static Capabilities? _serverCapabilitiesFromJson(Object? json) =>
+      json == null ? null : serverCapabilitiesFrom(json);
+
+  static String? _serverCapabilitiesToJson(Capabilities? capabilities) =>
+      capabilities?.toCanonicalJson();
+
   @override
   String get serial => super.serial!;
   @override
@@ -126,23 +216,62 @@ class PushToken extends Token {
   @override
   bool? get isPrivacyIdeaToken => true;
 
+  bool get usesEcKey => keyAlgorithm == PushKeyAlgorithm.secp256r1;
+
+  /// The type of the token key as shown in the token details, null while the
+  /// token has no key.
+  String? get keyTypeName {
+    if (publicTokenKey == null) return null;
+    if (usesEcKey) return 'ECDSA P-256';
+    final bits = rsaPublicTokenKey?.modulus?.bitLength;
+    return bits == null ? 'RSA' : 'RSA $bits';
+  }
+
   // --- RSA Helpers ---
-  RSAPublicKey? get rsaPublicServerKey => publicServerKey == null
+  RSAPublicKey? get rsaPublicServerKey => publicServerKey == null || usesEcKey
       ? null
       : rsaParser.deserializeRSAPublicKeyPKCS1(publicServerKey!);
-  RSAPublicKey? get rsaPublicTokenKey => publicTokenKey == null
+  RSAPublicKey? get rsaPublicTokenKey => publicTokenKey == null || usesEcKey
       ? null
       : rsaParser.deserializeRSAPublicKeyPKCS1(publicTokenKey!);
-  RSAPrivateKey? get rsaPrivateTokenKey => privateTokenKey == null
+  RSAPrivateKey? get rsaPrivateTokenKey => privateTokenKey == null || usesEcKey
       ? null
       : rsaParser.deserializeRSAPrivateKeyPKCS1(privateTokenKey!);
 
-  PushToken withPublicServerKey(RSAPublicKey key) =>
-      copyWith(publicServerKey: rsaParser.serializeRSAPublicKeyPKCS1(key));
-  PushToken withPublicTokenKey(RSAPublicKey key) =>
-      copyWith(publicTokenKey: rsaParser.serializeRSAPublicKeyPKCS1(key));
-  PushToken withPrivateTokenKey(RSAPrivateKey key) =>
-      copyWith(privateTokenKey: rsaParser.serializeRSAPrivateKeyPKCS1(key));
+  // --- Key Helpers of either type ---
+  PublicKey? get parsedPublicServerKey => usesEcKey
+      ? (publicServerKey == null
+            ? null
+            : _eccParser.deserializeECPublicKey(publicServerKey!))
+      : rsaPublicServerKey;
+  PublicKey? get parsedPublicTokenKey => usesEcKey
+      ? (publicTokenKey == null
+            ? null
+            : _eccParser.deserializeECPublicKey(publicTokenKey!))
+      : rsaPublicTokenKey;
+  PrivateKey? get parsedPrivateTokenKey => usesEcKey
+      ? (privateTokenKey == null
+            ? null
+            : _eccParser.deserializeECPrivateKey(privateTokenKey!))
+      : rsaPrivateTokenKey;
+
+  PushToken withPublicServerKey(PublicKey key) =>
+      copyWith(publicServerKey: _serializePublicKey(key));
+  PushToken withPublicTokenKey(PublicKey key) =>
+      copyWith(publicTokenKey: _serializePublicKey(key));
+  PushToken withPrivateTokenKey(PrivateKey key) => copyWith(
+    privateTokenKey: switch (key) {
+      RSAPrivateKey() => rsaParser.serializeRSAPrivateKeyPKCS1(key),
+      ECPrivateKey() => _eccParser.serializeECPrivateKey(key),
+      _ => throw ArgumentError.value(key, 'key', 'Unsupported key type'),
+    },
+  );
+
+  static String _serializePublicKey(PublicKey key) => switch (key) {
+    RSAPublicKey() => rsaParser.serializeRSAPublicKeyPKCS1(key),
+    ECPublicKey() => _eccParser.serializeECPublicKey(key),
+    _ => throw ArgumentError.value(key, 'key', 'Unsupported key type'),
+  };
 
   // --- Constructor ---
   PushToken({
@@ -160,6 +289,8 @@ class PushToken extends Token {
     this.publicTokenKey,
     this.privateTokenKey,
     this.isPollOnly,
+    PushKeyAlgorithm? keyAlgorithm,
+    this.serverCapabilities,
     bool? isRolledOut,
     bool? sslVerify,
     PushTokenRollOutState? rolloutState,
@@ -173,7 +304,8 @@ class PushToken extends Token {
     super.origin,
     super.isOffline,
     super.forceBiometricOption,
-  }) : isRolledOut = isRolledOut ?? false,
+  }) : keyAlgorithm = keyAlgorithm ?? PushKeyAlgorithm.rsa4096,
+       isRolledOut = isRolledOut ?? false,
        sslVerify = sslVerify ?? false,
        rolloutState = rolloutState ?? PushTokenRollOutState.rolloutNotStarted,
        super(type: type ?? TokenTypes.PIPUSH.name, serial: serial);
@@ -253,6 +385,12 @@ class PushToken extends Token {
       publicServerKey: validatedAdditionalData[PUBLIC_SERVER_KEY] as String?,
       publicTokenKey: validatedAdditionalData[PUBLIC_TOKEN_KEY] as String?,
       privateTokenKey: validatedAdditionalData[PRIVATE_TOKEN_KEY] as String?,
+      serverCapabilities:
+          validatedAdditionalData[SERVER_CAPABILITIES] as Capabilities? ??
+          validatedMap[CAPABILITIES] as Capabilities?,
+      keyAlgorithm:
+          validatedAdditionalData[KEY_ALGORITHM_CHOSEN] as PushKeyAlgorithm? ??
+          validatedMap[KEY_ALGORITHM] as PushKeyAlgorithm?,
     );
   }
 
@@ -270,7 +408,9 @@ class PushToken extends Token {
       other.rolloutState == rolloutState &&
       other.publicServerKey == publicServerKey &&
       other.publicTokenKey == publicTokenKey &&
-      other.privateTokenKey == privateTokenKey;
+      other.privateTokenKey == privateTokenKey &&
+      other.keyAlgorithm == keyAlgorithm &&
+      other.serverCapabilities == serverCapabilities;
 
   @override
   bool isSameTokenAs(Token other) {
@@ -301,6 +441,8 @@ class PushToken extends Token {
     bool? isHidden,
     bool? sslVerify,
     bool? Function()? isPollOnly,
+    PushKeyAlgorithm? keyAlgorithm,
+    Capabilities? Function()? serverCapabilities,
     String? enrollmentCredentials,
     Uri? url,
     String? publicServerKey,
@@ -332,6 +474,10 @@ class PushToken extends Token {
       isHidden: isHidden ?? this.isHidden,
       sslVerify: sslVerify ?? this.sslVerify,
       isPollOnly: isPollOnly != null ? isPollOnly() : this.isPollOnly,
+      keyAlgorithm: keyAlgorithm ?? this.keyAlgorithm,
+      serverCapabilities: serverCapabilities != null
+          ? serverCapabilities()
+          : this.serverCapabilities,
       enrollmentCredentials:
           enrollmentCredentials ?? this.enrollmentCredentials,
       url: url ?? this.url,
@@ -393,6 +539,8 @@ class PushToken extends Token {
       PUBLIC_SERVER_KEY: publicServerKey,
       PUBLIC_TOKEN_KEY: publicTokenKey,
       PRIVATE_TOKEN_KEY: privateTokenKey,
+      KEY_ALGORITHM_CHOSEN: keyAlgorithm.wireName,
+      SERVER_CAPABILITIES: serverCapabilities?.toCanonicalJson(),
     });
 
   @override
